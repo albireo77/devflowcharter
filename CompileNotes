@@ -1,0 +1,6 @@
+
+To compile devFlowcharter you will need:
+ - Delphi 7 (any edition)
+ - stuff from ThirdParty\ThirdParty.zip
+
+Anyone interested to add support for new programming language on development level should check LangTemplates\Pascal_Template.pas file for some instructions.

@@ -1,0 +1,498 @@
+<!-- Example language definition file for devFlowcharter -->
+<Language>
+    <Name>Example</Name>
+    <CommentBegin>/*</CommentBegin>
+    <CommentEnd>*/</CommentEnd>
+    <InputFunction>in()</InputFunction>
+    <OutputFunction>out()</OutputFunction>
+    <DefaultExt>txt</DefaultExt>
+    <LibraryExt>.lib</LibraryExt>
+    <AssignOperator>=</AssignOperator>
+    <InOutCursorPos>-1</InOutCursorPos>
+    <EnabledConsts>1</EnabledConsts>
+    <EnabledVars>1</EnabledVars>
+    <EnabledCompiler>1</EnabledCompiler>
+    <EnabledUserFunctionHeader>1</EnabledUserFunctionHeader>
+    <EnabledUserFunctionBody>1</EnabledUserFunctionBody>
+    <EnabledUserDataTypes>1</EnabledUserDataTypes>
+    <EnabledExplorer>1</EnabledExplorer>
+    <EnabledCodeGenerator>1</EnabledCodeGenerator>
+    <EnabledMainProgram>1</EnabledMainProgram>
+    <CaseSensitiveSyntax>0</CaseSensitiveSyntax>
+    <UpperCaseConstId>1</UpperCaseConstId>
+    <AllowEnumsInForLoop>1</AllowEnumsInForLoop>
+    <AllowUserFunctionOverload>1</AllowUserFunctionOverload>
+    <FoldRegions>
+        <FoldRegion AddClose="0" NoSubFolds="0" Type="1" WholeWords="1">
+            <Open Keyword="BEGIN"/>
+            <Close Keyword="END"/>
+        </FoldRegion>
+        <FoldRegion AddClose="0" NoSubFolds="0" Type="1" WholeWords="1">
+            <Open Keyword="case"/>
+            <Close Keyword="END"/>
+        </FoldRegion>
+        <FoldRegion AddClose="1" NoSubFolds="1" Type="1" WholeWords="1">
+            <Open Keyword="/*"/>
+            <Close Keyword="*/"/>
+        </FoldRegion>
+    </FoldRegions>
+<!--
+Native data type declarations will follow.
+Valid values for "kind" attribute are: int real string bool ptr other
+If attribute "kind" is not present, data type is qualified as of "other" kind.
+"ptr" value determines pointer type.
+origtype attribute determines original type for pointer type.
+Pointer types must be declared AFTER their original ones.
+-->
+    <NativeDataTypes>
+        <DataType kind="int">bigInt</DataType>
+        <DataType kind="int">smallInt</DataType>
+        <DataType kind="int">character</DataType>
+        <DataType kind="bool">bool</DataType>
+        <DataType kind="ptr" origtype="bigInt">bigInt*</DataType>
+    </NativeDataTypes>
+    <KeyWords>
+        <KeyWord>BEGIN</KeyWord>
+        <KeyWord>END</KeyWord>
+        <KeyWord>while</KeyWord>
+        <KeyWord>for</KeyWord>
+        <KeyWord>if</KeyWord>
+        <KeyWord>else</KeyWord>
+    </KeyWords>
+    <NativeFunctions>
+        <Function>sin</Function>
+        <Function>cos</Function>
+    </NativeFunctions>
+
+<!--
+Element ProcedureLabelKey
+Description: Label displayed close to flowchart for body of function that does not return specific data type; it should contain name of key (free to be added) present in translation file (.lng) in section "Others"
+-->
+<ProcedureLabelKey>ProcedureLabelExample</ProcedureLabelKey>
+
+<!--
+Element FunctionLabelKey
+Description: Label displayed close to flowchart for body of function that returns specific data type
+-->
+<FunctionLabelKey>FunctionLabelExample</FunctionLabelKey>
+
+<!--
+Element ProgramLabelKey
+Description: Label displayed close to flowchart for body of project's main program
+-->
+<ProgramLabelKey>ProgramLabelExample</ProgramLabelKey>
+
+<!--
+Elements used in code generation will follow.
+The only valid character that is used to set indent level is tab. Whitespace chars will not work.
+In lines containing branch indicators (e.g. %b1) all characters except for leading tabs are disregarded.
+Template elements are intended to have many lines.
+-->
+
+<WhileTemplate>while %s1 execute
+BEGIN
+	%b1
+END;
+</WhileTemplate>
+
+<IfTemplate>if %s1 execute
+BEGIN
+	%b1
+END;
+</IfTemplate>
+
+<IfElseTemplate>if %s1 execute
+BEGIN
+	%b1
+END;
+else
+BEGIN
+	%b2
+END;
+</IfElseTemplate>
+
+<RepeatUntilTemplate>repeat execute
+BEGIN
+	%b1
+END;
+until %s1;
+</RepeatUntilTemplate>
+
+<!--
+Element ForDoTemplate
+Available placeholders:
+   %s1 - control variable
+   %s2 - start value
+   %s3 - stop value
+   %s4 - first direction (ascending/descending) dependent string (ForAsc1 or ForDesc1 element)
+   %s5 - second direction (ascending/descending) dependent string (ForAsc2 or ForDesc2 element)  
+-->
+<ForDoTemplate>for (%s1 = %s2; %s1 %s4 %s3; %s1%s5)
+BEGIN
+	%b1
+END;
+</ForDoTemplate>
+<ForAsc1>&lt;=</ForAsc1>
+<ForAsc2>++</ForAsc2>
+<ForDesc1>&gt;=</ForDesc1>
+<ForDesc2>--</ForDesc2>
+
+<!--
+Element CaseOfValueTemplate
+Available placeholders:
+   %s1 - given value
+   %b1 - body for given value section
+Used in elements: CaseOfTemplate   
+-->
+<CaseOfValueTemplate>%s1:
+BEGIN
+	%b1
+	break;
+END;
+</CaseOfValueTemplate>
+
+<!--
+Element CaseOfDefaultValueTemplate
+Available placeholders:
+   %b1 - body for case default section
+Used in elements: CaseOfTemplate   
+-->
+<CaseOfDefaultValueTemplate>	else
+	BEGIN
+		%b1
+	END;
+</CaseOfDefaultValueTemplate>
+
+<!--
+Element CaseOfTemplate
+Available placeholders:
+   %s1 - case of value
+   %s2 - list of sections for specific values (list of CaseOfValueTemplate elements)
+   %s3 - section for default value (CaseOfDefaultValueTemplate element)  
+-->
+<CaseOfTemplate>case %s1 of
+	%s2
+%s3
+END;
+</CaseOfTemplate>
+
+<ReturnTemplate>exit %s1;</ReturnTemplate>
+
+<FunctionCallTemplate>call %s1;</FunctionCallTemplate>
+
+<AssignTemplate>%s1;</AssignTemplate>
+
+<InputTemplate>%s1;</InputTemplate>
+
+<OutputTemplate>%s1;</OutputTemplate>
+
+<TextTemplate>/* %s1 */</TextTemplate>
+
+<!--
+Element ProgramHeaderMask
+Available placeholders:
+   %s - project name
+-->
+<ProgramHeaderMask>program %s;</ProgramHeaderMask>
+
+<!--
+Element FunctionHeaderArgsEntryMask
+Available placeholders:
+   %s1 - argument name
+   %s2 - argument type
+   %s3 - used if argument is passed by reference (element FunctionHeaderArgsEntryRef)
+   %s4 - used if argument is an array (element FunctionHeaderArgsEntryArray)
+   %s5 - used if argument is a record (element FunctionHeaderArgsEntryRecord)
+   %s6 - used if argument is an enumeration (element FunctionHeaderArgsEntryEnum)
+-->
+<FunctionHeaderArgsEntryMask>%s3%s1: %s4%s2, </FunctionHeaderArgsEntryMask>
+<FunctionHeaderArgsEntryRef>ref </FunctionHeaderArgsEntryRef>
+<FunctionHeaderArgsEntryArray>array of </FunctionHeaderArgsEntryArray>
+<FunctionHeaderArgsEntryRecord>record </FunctionHeaderArgsEntryRecord>
+<FunctionHeaderArgsEntryEnum>enum </FunctionHeaderArgsEntryEnum>
+
+<!--
+Element FunctionHeaderArgsStripCount
+Description: It contains number of chars to strip from end of argument list (element FunctionHeaderArgsEntryMask); in given example ending to be stripped is ", " 
+-->
+<FunctionHeaderArgsStripCount>2</FunctionHeaderArgsStripCount>
+
+<!--
+Element FunctionHeaderTemplate
+Description: Template for function header
+Available placeholders:
+   %s1 - name of the function
+   %s2 - description/prefix of the function
+   %s3 - list of function parameters (list of FunctionHeaderArgsEntryMask elements)
+   %s4 - return type
+   %s5 - first string that depends on return type (none or specific) - FunctionHeaderTypeNone1 or FunctionHeaderTypeNotNone1 element 
+   %s6 - second string that depends on return type (none or specific) - FunctionHeaderTypeNone2 or FunctionHeaderTypeNotNone2 element
+-->
+<FunctionHeaderTemplate>%s2
+%s5 %s1(%s3)%s6 %s4;
+</FunctionHeaderTemplate>
+<FunctionHeaderTypeNone1>procedure</FunctionHeaderTypeNone1>
+<FunctionHeaderTypeNotNone1>function</FunctionHeaderTypeNotNone1>
+<FunctionHeaderTypeNone2></FunctionHeaderTypeNone2>
+<FunctionHeaderTypeNotNone2>:</FunctionHeaderTypeNotNone2>
+
+<!--
+Element ProgramTemplate
+Description: Template for function body
+Available placeholders:
+   %s1 - function name
+   %s2 - function local variables (element VarsTemplate)
+   %b1 - body of function  
+-->
+<ProgramTemplate>BEGIN
+	%b1
+END %s1;
+</ProgramTemplate>
+
+<!--
+Element FunctionTemplate
+Description: Template for function (header + body)
+Available placeholders:
+   %s1 - function's header line (element FunctionHeaderTemplate)
+   %s2 - function's local variables (element VarsTemplate)
+   %s3 - function's body (element ProgramTemplate)  
+-->
+<FunctionTemplate>%s1
+%s2
+%s3
+
+</FunctionTemplate>
+
+<!--
+Element MainProgramTemplate
+Description: Template for main program body
+Available placeholders:
+   %s1 - project name
+   %s2 - global variables (element VarsTemplate)
+   %s3 - return statement which is generated if last statement of program isn't return block (element ProgramReturnTemplate)
+   %b1 - body of main program  
+-->
+<MainProgramTemplate>BEGIN
+	%b1
+	%s3
+END %s1;
+</MainProgramTemplate>
+
+<ProgramReturnTemplate>/* Program ends with no value returned. */</ProgramReturnTemplate>
+
+
+<!--
+Element VarEntry
+Description: Entry for single variable (non-array) declaration
+Available placeholders:
+   %s1 - variable name
+   %s2 - variable type
+   %s4 - variable initial value (element VarEntryInit) 
+   %s5 - used if variable is a record (element FunctionHeaderArgsEntryRecord)
+   %s6 - used if variable is an enumeration (element FunctionHeaderArgsEntryEnum)
+-->
+<VarEntry>%s5%s6%s2 %s1%s4;</VarEntry>
+
+<!--
+Element VarEntryArray
+Description: Entry for single array variable declaration
+Available placeholders are the same as for VarEntry element and:
+   %s3 - list of array sizes (VarEntryArraySize element)
+-->
+<VarEntryArray>%s5%s6%s2 %s1%s3%s4;</VarEntryArray>
+
+<!--
+Element VarEntryArraySize
+Description: Entry for array's single dimension
+   %s - size of array dimension
+-->
+<VarEntryArraySize>[%s]</VarEntryArraySize>
+
+<!--
+Element VarEntryArraySizeStripCount
+Description: Number of chars to strip from end of array size declaration (VarEntryArraySize) 
+-->
+<VarEntryArraySizeStripCount>0</VarEntryArraySizeStripCount>
+
+<!--
+Element VarEntryInit
+Description: Mask for variable initial value
+Available placeholders:
+   %s1 - variable initial value
+-->
+<VarEntryInit> = %s1</VarEntryInit>
+
+<!--
+Element VarTemplate
+Description: Template for section to declare variables
+Available placeholders:
+   %s1 - list of variables (VarEntry or VarEntryArray elements) 
+-->
+<VarTemplate>vars
+	%s1
+</VarTemplate>
+
+<!--
+Element ConstTemplate
+Description: Template for section to declare constants
+Available placeholders:
+   %s1 - list of constants (ConstEntry elements) 
+-->
+<ConstTemplate>consts
+	%s1
+</ConstTemplate>
+
+<!--
+Element ConstEntry
+Description: Entry for single declaration of constant
+Available placeholders:
+   %s1 - constant name
+   %s2 - constant value
+-->
+<ConstEntry>define %s1 = %s2;</ConstEntry>
+
+<!--
+Element LibTemplate
+Description: Template for section containing libraries
+Available placeholders:
+   %s1 - list of libraries as separated entries (list of LibEntry elements) 
+   %s2 - list of libraries as single list (element LibEntryList)
+Notice: %s1 and %s2 placeholders should be used interchangeably
+-->
+<LibTemplate>libraries
+	%s1
+
+</LibTemplate>
+<LibEntry>include %s;</LibEntry>
+<LibEntryList>%s, </LibEntryList>
+
+<!--
+Element LibEntryListStripCount
+Description: Number of chars to strip from end of library list (element LibEntryList) 
+-->
+<LibEntryListStripCount>2</LibEntryListStripCount>
+
+<!--
+Element PointerTypeMask
+Description: Mask to create pointer type based on given type
+Available placeholders:
+   %s - base type
+-->
+<PointerTypeMask>%s*</PointerTypeMask>
+
+<!--
+Element DataTypesTemplate
+Description: Template for data types section
+Available placeholders:
+   %s1 - list of data type declarations  
+-->
+<DataTypesTemplate>type
+	%s1
+
+</DataTypesTemplate>
+
+<!--
+Element DataTypeIntMask
+Description: Template for integer number types
+If there is no need to generate this kind of data types, it should be empty or removed.
+Available placeholders:
+   %s1 - data type name  
+-->
+<DataTypeIntMask>%s1 = integer;</DataTypeIntMask>
+
+<!--
+Element DataTypeRealMask
+Description: Template for real number types
+If there is no need to generate this kind of data types, it should be empty or removed.
+Available placeholders:
+   %s1 - type name  
+-->
+<DataTypeRealMask>%s1 = real;</DataTypeRealMask>
+
+<!--
+Element DataTypeOtherMask
+Description: Template for other types
+If there is no need to generate this kind of data types, it should be empty or removed.
+Available placeholders:
+   %s1 - type name
+   %s2 - base type
+-->
+<DataTypeOtherMask>%s1 = %s2;</DataTypeOtherMask>
+
+<!--
+Element DataTypeArrayMask
+Description: Template for other types
+If there is no need to generate this kind of data types, it should be empty or removed.
+Available placeholders:
+   %s1 - array type name
+   %s2 - base array type
+   %s3 - array type size   
+-->
+<DataTypeArrayMask>%s1 = %s2%s3;</DataTypeArrayMask>
+
+<!--
+Element DataTypeRecordTemplate
+Description: Template for record type
+Available placeholders:
+   %s1 - record name 
+   %s2 - list of fields (DataTypeRecordFieldMask or DataTypeRecordFieldArrayMask elements)
+-->
+<DataTypeRecordTemplate>%s1 = record
+BEGIN
+	%s2
+END;
+
+</DataTypeRecordTemplate>
+
+<!--
+Element DataTypeRecordFieldMask
+Description: Entry for single field (non-array) of record
+Available placeholders:
+   %s1 - field name
+   %s2 - field type
+   %s4 - used if field is a record (element FunctionHeaderArgsEntryRecord)
+   %s5 - used if field is an enumeration (element FunctionHeaderArgsEntryEnum)
+-->
+<DataTypeRecordFieldMask>%s4%s5%s2 %s1;</DataTypeRecordFieldMask>
+
+<!--
+Element DataTypeRecordFieldArrayMask
+Description: Entry for single field (array) of record
+Available placeholders are the same as for DataTypeRecordFieldMask element and:
+   %s3 - list of array sizes (VarEntryArraySize element)
+-->
+<DataTypeRecordFieldArrayMask>%s4%s5%s2 %s1%s3;</DataTypeRecordFieldArrayMask>
+
+<!--
+Element DataTypeEnumTemplate
+Description: Template for enumeration type
+Available placeholders:
+   %s1 - enumeration name 
+   %s2 - list of values (list of DataTypeEnumEntryList elements)
+-->
+<DataTypeEnumTemplate>%s1 = (%s2);</DataTypeEnumTemplate>
+
+<!--
+Element DataTypeEnumEntryList
+Description: Mask for list of enumerated values
+Available placeholders:
+   %s - enumerated value
+-->
+<DataTypeEnumEntryList>%s, </DataTypeEnumEntryList>
+
+<!--
+Element DataTypeEnumEntryListStripCount
+Description: It contains number of chars to strip from end of enumeration values list (element DataTypeEnumEntryList); in given example ending to be stripped is ", " 
+-->
+<DataTypeEnumEntryListStripCount>2</DataTypeEnumEntryListStripCount>
+
+<!--
+Element UserTypeDesc
+Description: Mask for user datatype description
+Available placeholders:
+   %s1 - type name
+   %s2 - type kind
+-->
+<UserTypeDesc>%s2 %s1</UserTypeDesc>
+
+</Language>

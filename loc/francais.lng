@@ -1,0 +1,538 @@
+; Fichier de localisation française pour devFlowcharter
+
+[CommonParserMessages]
+BadCondition=Syntaxe de la déclaration de condition non valide
+BadAssign=Syntaxe de la déclaration d'attribution non valide
+BadInput=Syntaxe de la déclaration d'entrée non valide
+BadOutput=Syntaxe de la déclaration de sortie non valide
+BadFunction=Syntaxe de l'appel de fonction non valide
+BadFor=Syntaxe ou type de déclaration non valide
+BadCase=Syntaxe ou type de déclaration de cas incorrect
+BadGeneric=Syntaxe de la déclaration non valide
+ExpOk=%s%sDéclaration valide
+ExpErr=%s%sERREUR: %s
+ExpErrMult=Ligne %d: %s%sERREUR: %s
+IntReq=Valeur de l'entier requise
+NoCVar=%sERREUR: aucune variable de contrôle spécifiée
+BadCVar=%s%sERREUR: variable de contrôle non valide
+NoCExp=%sERREUR: aucune déclaration conditionnelle
+NoCaseExp=%sERREUR: aucune déclaration de cas
+NoInstr=%sWARNING: aucune instruction d'attribution
+NoFCall=%sWARNING: aucun appel de fonction
+IncTypes=Types incompatibles: %s et %s
+BadFuncParm=Type (%s) d'argument de fonction %s incompatible
+BadFuncParmU=Type d'argument de fonction %s incompatible
+BreakErr=BREAK non permis ici
+ContErr=CONTINUE non permis ici
+BadConstOp=Opération sur constante "%s" non valide
+BadInOper=Opération d'entrée non valide sur la variable "%s"
+BadOperArg=Type (%s) d'argument non valide pour l'opérateur "%s"
+UnknId=Identificateur "%s" inconnu
+BadFuncParms=Liste d'arguments non valide pour la fonction "%s"
+BadCmpr=Comparaison non valide
+VarExpct=Identificateur de variable attendu
+NoOut=Aucune déclaration de sortie spécifiée
+NotPtrType=La variable "%s" n'est pas de type pointeur
+BadVarOper=Opération non valide sur la variable "%s"
+BadEnumOper=Invalid assignment to enumeration value "%s"
+NoTbl=Aucune table déclarée
+BadArrExp=Invalid array expression.%s"%s" is not of array type
+BadIndx=Invalid array index type (%s)
+NotStructType=La variable "%s" n'est pas de type structuré
+NoFieldStruct=Le type structuré "%s" ne définit pas le champ "%s"
+DupCaseVal=Duplication d'étiquette de cas
+BadReturnVal=Invalid return value
+BadIndxNumber=Incorrect number (%d) of indexes for array "%s"%sExpected number: %d
+BadPtrArray=Invalid pointer operation on array "%s"
+UnkFunc=Unknown function "%s"
+NotConst=Constant expression expected
+
+[Block]
+CaptionTrue=VRAI
+CaptionFalse=FAUX
+CaptionIn=in
+CaptionOut=out
+CaptionStart=START
+CaptionStop=STOP
+CaptionFor=for
+CaptionTo=to
+CaptionCase=CASE
+CaptionExit=RETURN
+AssignDesc=ATTRIBUTION: %s
+MultAssignDesc=ATTRIBUTIONS MULTIPLES: %s
+InputDesc=ENTRÉE: %s
+OutputDesc=SORTIE: %s
+RoutineDesc=APPEL DE FONCTION: %s
+RepeatUntilDesc=BOUCLE: répéter jusqu'à %s
+WhileDoDesc=BOUCLE: while %s do
+IfDesc=DÉCLARATION CONDITIONELLE: %s
+ForDesc=BOUCLE: for %s %s %s to %s do
+CaseDesc=CASE %s OF:
+ReturnDesc=RETURN %s
+TextDesc=TEXT
+DefValue=default
+
+[Others]
+Ok=Ok
+Cancel=Annuler
+Confirmation=Confirmer
+Error=Erreur
+Import=Importer
+Row=Ligne
+Warning=Avertissement
+AttrInfo=[Attribut "%s"]: value incorrecte - "%s"
+ValidationError=Erreur de validation
+ConvertError=Erreur de conversion
+SyntaxError=Erreur de syntaxe
+IOError=Erreur d'entrée/sortie
+PrintError=Printer Error
+DeclareError=Erreur de déclaration
+CompileError=Compilation Error
+ImportError=Import Error
+BadId=Identificateur incorrect.
+DupId=Identificateur en double.
+BadIdD=Identificateur incorrect
+DupIdD=Identificateur en double
+DupType=Nom de type en double
+DefNtvType=Type "%s" is already defined as native type
+DefNtvFunc=Function "%s" is already defined as native function
+DupField=Nom de champ en double
+OkIdD=Identificateur valide
+BadSize=Taille incorrecte.
+BadVarSize=La variable "%s" n'a pas  la bonne taille : %s
+IncorrectIdKeyword=Identificateur incorrect. "%s" est mot clé %s.
+BadCVal=Valeur incorrect de constante.
+NoPrinter=Il n'y a pas d'imprimante installée.
+ExeFilesFilter=Fichiers exécutables (*.exe;*.bat;*.cmd)|*.exe; *.bat; *.cmd;
+LngFilesFilter=Fichiers de translation (*.lng)|*.lng;
+RTFFilesFilter=Documents Rich Text (*.rtf)|*.rtf;
+BMPFilesFilter=Fichiers BMP (*.bmp)|*.bmp;
+JPGFilesFilter=Fichiers JPEG (*.jpg)|*.jpg;
+XMLFilesFilter=Fichiers XML (*.xml)|*.xml;
+HTMLFilesFilter=Fichiers HTML (*.html)|*.html;
+TextFilesFilter=Fichiers texte (*.txt)|*.txt;
+SourceFilesFilter=Fichiers %s (*.%s)|*.%s;
+ConfirmClose=Enregistrer les changements au projet %s?
+ImportFailed=L'importation n'a pas réussi.%s%s
+Functions=Fonctions
+Structures=DataTypes
+Function=Fonction
+Procedure=Procedure
+TagNotFound=Ne peut trouver l'étiquette du bloc principal
+ChangeLngAsk=Le projet à ouvrir a été crée en %s.%sVoulez-vous choisir cette langue?
+ChangeLngNone=Project that is being opened was created as plain flowchart.%s%sDo you want to switch to plain flowcharts?
+RegErr=Une erreur est survenu lors de l'enregistrement des paramètres de l'application.
+BadImportTag=Bloc importé introuvable ou de type incorrect.
+Unknown=inconnu
+NoType=aucun
+Modified=Modifié
+Default=par défaut
+NameTagNotFound=<Name> tag not found or is empty.
+FileError=Error while reading file %s.
+ParserError=XML parser error #%d at line %d, column %d: %s
+OpenError=Une erreur est survenue à l'ouverture du fichier %s:%s%s
+SaveReadOnlyFile=Le fichier %s est en lecture seulement et ne peut être ré-écrit.
+SaveError=Une erreur est survenue à l'écriture du fichier %s.
+HeaderRequest=Entrez l'en-tête:
+PrintError=Une erreur est survenue à l'impression:%s%s.
+PageCount=Page %d/%d
+ColumnCount=Colonne %d/%d
+RowCount=Ligne %d/%d
+OtherException=%sLe projet actuel sera fermé.
+CloseProjectAsk=Changing some settings requires the current project to be closed.%sDo you want to apply these changes?
+StatusBarInfo=Ligne %d, Col %d
+InsertMode=Insérer
+OverwriteMode=Ecraser
+CompilerNotFound=Undefined compilation command for %s.
+CompileFail=La tentative de compilation n'a pas fonctionnée.
+RunFail=La tentative d'exécution n'a pas fonctionnée.
+NoFileToRun=Ne peut trouver l'exécutable %s.
+VarLocal=local
+VarGlobal=global
+VarParm=function parameter
+HintVar=%s variable   %s: %s
+HintArray=%s %d-dimensional array   %s[%s]: %s
+HintArrayExp=Declaration after expanding %s array type:%s%s %d-dimensional array   %s[%s]: %s
+HintConst=constante   %s = %s
+HintRoutine=procedure/function   %s: %s
+HintEnum=enumerated value   %s: %s
+chkAddPtrType=Ajouter type de pointeur
+btnAddField=Ajouter champ
+btnAddValue=Add Value
+edtLibHintType=External declaration:##%s file containing type declaration
+lblName=Nom:
+lblType=Type:
+lblSize=Size:
+lblField=Field:
+lblValue=Value:
+lblRetType=Type de renvoi:
+chkExtDeclare=Déclaration externe
+lblLibrary=Bibliothèque:
+lblParameters=Identificateur:          Type:                       Table:        Référence:
+btnAddParm=Ajouter un paramètre
+edtLibraryHint=External declaration:##%s file containing function declaration
+RootNodeText=PROJET %s
+miFoldBlock=Replier
+miExpandBlock=Agrandir
+lblErrors=Erreurs: %d
+lblWarnings=Avertissements: %d
+MainProgram=Main Program
+LocalDeclare=Local Variables
+Header=Header
+Params=Formal Parameters
+btnAddVar=Ajouter une Variable
+btnAddConst=Ajouter une Constante
+btnChange=Changer
+btnRemove=Enlever
+sgVarListCol0=Name:
+sgVarListCol1=Type:
+sgVarListCol2=Taille:
+sgVarListCol3=Initial Value:
+sgConstListCol0=Name:
+sgConstListCol1=Valeur:
+sgConstListCol2=External:
+edtSizeHint=Examples of size declaration:##1 - variable##100 - array##ARRAY_SIZE+1 - array where ARRAY_SIZE is global constant of integer type##100,100 - 2-dimensional array
+gbVariable=Variable
+gbConstant=Constante
+GlobalVars=Global Variables
+GlobalConsts=Global Constants
+GlobalDeclares=Global Declarations
+ConfirmRemove=This operation cannot be undone. Are you sure to continue?
+BadInitVal=Incorrect initial value.
+rgTypeBox=Type Options:
+rbInt=Integer
+rbReal=Real
+rbStruct=Record
+rbEnum=Enumeration
+rbOther=Other
+rbArray=Array
+lblPrefix=Add Prefix:
+gbDesc=Description/Prefix
+chkInclDescCode=Include into code
+chkInclDescFlow=Include into function label
+Flowchart=Flowchart
+LngNoSprt=%s language is not supported by this instance of devFlowcharter.
+
+; The following keys (3 for each programming language) are used to display labels next to flowcharts
+
+; Key ProcedureLabelExample 
+; Available placeholders: %s1 - procedure name; %s2 - parameters list, %s4 - procedure description, ## - new line
+ProcedureLabelExample=%s4##procedure %s1(%s2)
+
+; Key FunctionLabelExample 
+; Available placeholders: %s1 - function name; %s2 - parameters list; %s3 - function return type, %s4 - function description, ## - new line 
+FunctionLabelExample=%s4##function %s1(%s2): %s3
+
+
+; Key ProgramLabelExample
+; Available placeholders: %s1 - name of the project
+ProgramLabelExample=program %s1
+
+ProcedureLabelPascal=%s4##procedure %s1
+FunctionLabelPascal=%s4##function %s1: %s3
+ProgramLabelPascal=Main Program
+
+ProcedureLabelC=%s4##void %s1
+FunctionLabelC=%s4##%s3 %s1
+ProgramLabelC=int main
+
+ProcedureLabelTiBasic=%s4##Prgm %s1
+FunctionLabelTiBasic=%s4##Func %s1
+ProgramLabelTiBasic=Prgm %s1
+
+[MainForm]
+miFile=Fichier
+miProject=Projet
+miOptions=Options
+miNew=Nouveau
+miOpen=Ouvrir...
+miReopen=Réouvrir
+miSave=Enregistrer
+miSaveAs=Enregistrer sous...
+miClose=Fermer
+miPrint=Imprimer...
+miPrint2=Imprimer...
+miExit=Sortir
+miDataTypes=Data Types
+miSubRoutines=Fonctions
+miDeclarations=Déclarations Globales
+miExplorer=Explorateur
+miNavigator=Navigator
+miAddMain=Add Main Program
+miUndoRemove=Annuler Enlever
+miGenerate=Générer le code
+miToolbox=Boîte à outils
+miSettings=Paramètres
+miManual=Aide
+miAbout=À propos de...
+miInsert=Insérer
+miNewFlowchart=Organigramme
+miNewFunction=Function Here
+miFont=Police
+miRemove= Enlever
+miCut=Couper
+miCopy=Copier
+miInstr=Déclaration
+miLoop=Boucle
+miRoutineCall=Appel de fonction
+miComment=Commentaire
+miPaste=Coller
+miAssign=Attribution
+miMultipleAssign=Attributions multiples
+miInput=Entrée
+miOutput=Sortie
+miIf=If
+miIfElse=If..Else
+miReturn=Return
+miFor=For
+miWhile=While
+miRepeat=Repeat
+miCase=Case
+miFontStyle=Style
+miFontSize=Taille
+miStyleNormal=Normal
+miStyleBold=Gras
+miStyleItalic=Italique
+miStyleUnderLine=Souligné
+miStyleStrikeOut=Barré
+miFrame=Cadre
+miExpandBlock=Agrandir
+miAddBranch=Ajouter une valeur de cas       
+miRemoveBranch=Enlever branche
+miExpandAll=Agrandir Tout
+miText=Text
+SaveDialog=Fichiers XML (*.xml)|*.xml;
+OpenDialog=Fichiers XML (*.xml)|*.xml;
+miExport=Exporter...
+miImport=Importer...
+miMemo=Memo
+miMemoEdit=Edit Text
+miMemoVScroll=Vertical ScrollBar
+miMemoHScroll=Horizontal ScrollBar
+miMemoWordWrap=Word Wrap
+
+[DeclarationsForm]
+FormCaption=Déclarations Globales
+
+[SettingsForm]
+FormCaption=Paramètres
+gbCompilers=Compilateurs
+gbProgLang=Programming Language
+gbTranslation=Application Language
+gbEditorSettings=Éditeur de Code
+gbEditorColors=Couleurs
+gbMiscSettings=Autres
+gbPrintSettings=Imprimer
+lblCompiler=Compiler command:
+lblCompilerNoMain=Compiler command for no-main projects:
+lblFile=Translation file:
+chkParseAssign=Attribution
+chkParseMAssign=Attributions multiples
+chkParseCondition=Déclaration conditionnelle
+chkParseFor=Boucle «For»
+chkParseCase=Déclaration de cas
+chkParseOutput=Instruction de sortie
+chkParseInput=Instruction d'entrée
+chkParseRoutine=Appel de fonction
+chkParseReturn=Return instruction
+chkConfirmRemove=Confirm irreversible removals
+lblIndent=Indentation:
+lblEditorFont=Police:
+lblEditorBkg=Arrière plan:
+lblEditorActiveLine=Ligne active:
+lblEditorGutter=Gouttière:
+lblEditorDigit=Nombres:
+lblEditorString=Chaînes:
+lblEditorSelect=Sélection:
+lblEditorComment=Commentaires:
+lblEditorBracket=Parenthèse:
+lblDesktop=Bureau:
+lblBlockColor=Sélection:
+lblFontColor=Police:
+gbFlowchartSettings=Paramètres de Organigramme
+chkEnableDBuffer.Caption=Double buffering
+chkEnableDBuffer.Hint=Can decrease scrolling performance for big flowcharts
+chkShowFlowLabels=Show function labels
+btnDefaultSettings=Paramètres par défaut
+btnBrowseCompilers=Parcourir...
+btnBrowseScripts=Parcourir...
+btnSaveSettings=OK
+btnDiscardSettings=Annuler
+chkMultiPrint=Imprimer sur plusieurs pages
+chkMultiPrintHorz=Imprimer sur plusieurs pages dans le sens horizontal
+gbPrintMargins=Marges (en pour cent)
+lblMarginLeft=Gauche:
+lblMarginRight=Droit:
+lblMarginTop=Haut:
+lblMarginBottom=Bas:
+edtCompilerHint=Available placeholders:##%s1 - saved source file name##%s2 - saved source file name without extension
+edtCompilerNoMainHint=Available placeholders:##%s1 - saved source file name##%s2 - saved source file name without extension##%s3 - standard compiler command
+chkValidateConsts=Enable additional validation for declarations
+chkAutoSelectCode=Auto-select code for highlighted flowchart elements
+chkAutoUpdateCode=Auto-update code for project changes
+lblInterGen=with internal code generation supported
+lblFontSize=Font size:
+pnlFont.Hint=It can be neither red nor olive
+
+[TreeViewForm]
+FormCaption=Explorateur
+miNextError=Erreur/avertissement suivant
+miPrevError=Erreur/avertissement précédent
+miExpand=Agrandir tous
+miCollapse=Réduire tous
+miRemove=Enlever
+miRefresh=Rafraîchir
+btnGenerate=Générer le code
+
+[SourceEditorForm]
+FormCaption=Éditeur de code
+miProgram=Programme
+miSave=Enregistrer...
+miCompile=Compiler...
+miRun=Exécuter
+miPrint=Imprimer...
+miEdit=Édition
+miFind=Rechercher...
+miReplace=Replacer...
+miGoto=Aller à...
+miView=Voir
+miStatusBar=Barre d'état
+miScrollbars=Barres de défilement
+miGutter=Gouttière
+miCodeFolding=Code Folding
+miCodeFoldingEnable=Enable
+miCollapseAll=Collapse All
+miUnCollapseAll=Expand All
+miIndentGuides=Indent Guides
+miRichText=Highlight Code
+miRegenerate=Régénérer
+miHelp=Aide
+miUndo=Annuler
+miRedo=Refaire
+miCut=Couper
+miCopy=Copier
+miCopyRichText=Copier spécial
+miPaste=Coller
+miPasteComment=Coller comme commentaire
+miRemove=Enlever
+miSelectAll=Sélectionner tout
+Modified=Modifié
+InsertMode=Insérer
+OverwriteMode=Ecraser
+miFindProj=Find in Project
+
+[GotoForm]
+FormCaption=Aller à
+rbLine=Ligne
+rbNextBookmark=Signet suivant
+rbPrevBookmark=Signet précédent
+btnGoTo=Ok
+
+[FunctionsForm]
+FormCaption=Fonctions
+miAction=Fonction
+miAdd=Ajouter
+miRemove=Enlever
+miRemoveAll=Enlever Tout
+miImport=Importer...
+miExport=Exporter...
+miExportAll=Exporter Tout...
+lblName=Nom:
+lblType=Type de renvoi:
+chkExtDeclare=Déclaration externe
+lblLibrary=Bibliothèque:
+lblParameters=Paramètre:        Type:                 Table:      Référence:
+btnAddParm=Ajouter un paramètre
+btnRemove=Enlever
+edtLibraryHint=Le fichier %s avec déclaration de fonctions
+NoType=aucun
+
+[DataTypesForm]
+FormCaption=Data Types
+miAction=Data Type
+miAdd=Ajouter
+miRemove=Enlever
+miRemoveAll=Enlever Tout
+miImport=Importer...
+miExport=Exporter...
+miExportAll=Exporter Tout...
+chkAddPtrType=Ajouter type de pointeur
+btnAddField=Ajouter champ
+btnAddValue=Add Value
+edtLibHintType=Le fichier %s avec déclaration de type
+lblType=Type:
+lblSize=Size:
+lblField=Field:
+lblValue=Value:
+btnRemove=Enlever
+lblLibrary=Bibliothèque:
+lblName=Nom:
+chkExtDeclare=Déclaration externe
+rgTypeBox=Type Options:
+rbInt=Integer
+rbReal=Real
+rbStruct=Record
+rbEnum=Enumeration
+rbOther=Other
+rbArray=Array
+
+[HelpForm]
+FormCaption=éditeur de code - Aide
+EditorHelp1=Touches:
+EditorHelp2=
+EditorHelp3=Combinaison:    Action:
+EditorHelp4=##
+EditorHelp5=Ctrl-Y          Enlever ligne
+EditorHelp6=Ctrl-A          Sélectionner tout
+EditorHelp7=Ctrl-C          Copier
+EditorHelp8=Ctrl-X          Couper
+EditorHelp9=Ctrl-V          Coller
+EditorHelp10=Ctrl-Z          annuler
+EditorHelp11=Ctrl-Home       Aller à la première ligne
+EditorHelp12=Ctrl-End        Aller à la dernière ligne
+EditorHelp13=Shift-Ctrl-Z    Refaire
+EditorHelp14=Shift-Ctrl-B    Trouver parenthèse correspondante
+EditorHelp15=Shift-Ctrl-I    Déplacer bloc sélectionné à la droite
+EditorHelp16=Shift-Ctrl-U    Déplacer bloc sélectionné à la gauche
+EditorHelp17=Shift-Ctrl-C    Passer à la sélection par colonne
+EditorHelp18=Shift-Ctrl-L    Passer à la sélection par ligne
+EditorHelp19=Shift-Ctrl-N    Passer à la sélection normale
+EditorHelp20=
+EditorHelp21=Astuces:
+EditorHelp22=##
+EditorHelp23=Afin de copier un commentaire de l'organigramme à
+EditorHelp24=la fenêtre d'édition, faites Shift et déplacer le
+EditorHelp25=commentaire où vous désirer dans l'éditeur.
+EditorHelp26=Afin de générer et coller du code du bloc
+EditorHelp27=sélectionné de l'organigramme, faites Shift
+EditorHelp28=et déplacer le bloc où vous désirer dans l'éditeur.
+
+[ToolBoxForm]
+FormCaption=ToolBox
+sbAssign=Attribution
+sbIf=If
+sbIfElse=If..Else
+sbInput=Entrée
+sbOutput=Sortie
+sbFor=For
+sbRepeat=Repeat
+sbWhile=While
+sbMultAssign=Attributions multiples
+sbFuncCall=Appel de fonction
+sbCase=Case
+sbReturn=Return
+
+[NavigatorForm]
+FormCaption=Navigator
+
+[AboutForm]
+FormCaption=À propos de...
+
+[MemoEditorForm]
+FormCaption=Memo Editor
+btnOK=OK
+btnCancel=Cancel
+
+
+
+

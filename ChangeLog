@@ -1,0 +1,761 @@
+3.3.0 [04.08.2015]
+- fixes for drawing ellipses with wide fonts
+- fixes to drawing input and output blocks with wide fonts
+- entirely reworked Project Explorer (include all project elements: datatypes, global declarations etc.)
+- Source Editor: improvements to "Find in Project" (e.g. retaining cursor position)
+- many minor fixes
+
+IMPORTANT NOTES:
+Project Explorer: in order to navigate among tree items with mouse wheel, press and hold Ctrl key
+
+
+3.2.2 [07.04.2015]
+- Localization: add possibility to translate many (not just one default) properties of GUI component
+- Navigator: fix not refreshing changes in block frames
+- optimize code generation process by performing memory preallocations
+- other minor fixes
+
+IMPORTANT NOTES:
+Examples of translatable properties for various component types:
+Component class:	Available properties:
+TMenuItem		Caption
+TButton			Caption
+TLabel			Caption
+TEdit			Text, Hint
+TOpenDialog		Filter
+TCheckBox		Caption, Hint
+TRadioButton		Caption, Hint
+TPanel			Caption, Hint
+		 
+Example to translate properties for TEdit component named edtInfo:
+
+Old way (assign value to default property which is Hint in this case):
+edtInfo=Hint for some text
+
+New way (assign values to Text and Hint properties):
+edtInfo.Text=Some text
+edtInfo.Hint=Hint for some text
+
+3.2.1 [27.12.2014]
+- fix various issues with detecting changes in project
+- few minor code updates and optimizations
+
+3.2.0 [18.12.2014]
+- global declarations form is now resizable in vertical direction
+- add possibility to change order of variable/constant declarations using drag and drop
+
+IMPORTANT NOTES:
+To change order of variable/constant declarations, hold Shift then press left mouse button on selected row
+and drag to different row.
+
+
+3.1.7 [24.11.2014]
+- fix flickering issues when unfolding big flowcharts
+
+3.1.6 [04.09.2014]
+- Translation Manager: fix issue with loading flowchart labels
+
+3.1.5 [04.09.2014]
+- fix situations when some parts of project area were not refreshed after operations that resized components
+
+3.1.4 [19.07.2014]
+- Main window: fix unexpected scrolling
+- more work on units decoupling
+
+3.1.3 [10.07.2014]
+- Flowchart: fix not refreshed expressions after changing "Syntax Check" settings
+
+3.1.2 [09.07.2014]
+- backend: all iterators as garbage collected interfaces
+- fix regression discovered in previous version
+- Source package: enable flags USE_FASTMM and USE_CODEFOLDING by default
+
+3.1.1 [04.07.2014]
+- Popup Menu: add "Function Here" item to insert function body at cursor position
+- massive code reorganization to reduce units coupling
+- Source package: add OmniXML to ThirdParty.zip
+
+3.1.0 [15.05.2014]
+- replace standard memory manager with FastMM 4
+- Editor: fix for flickering scrollbars when auto-update is on
+
+3.0.13 [08.05.2014]
+- fix form not being repainted correctly after block resize
+
+3.0.12 [06.05.2014]
+- fix form not being repainted correctly after block remove
+- many minor optimizations
+
+3.0.11 [27.04.2014]
+- drawing engine: eliminate repaint lags while scrolling and navigating
+- Explorer: fix some folded statements to report syntax errors when should not
+- XML input files: fix not setting saved values (size and style) for fonts  
+
+IMPORTANT NOTES:
+When working with big flowcharts it is advisable to disable Double Buffering to increase scrolling performance.
+
+3.0.10 [23.04.2014]
+- fix displaying output block with high fonts
+- further optimizations to drawing engine
+
+3.0.9 [16.04.2014]
+- optimize drawing engine (eliminate intermediary flowchart repaints during changes)
+- eliminate flickering when adding record fields or function parameters
+
+3.0.8 [09.04.2014]
+- fix not showing function header tab when searching for local variables by "Find in Project"
+- Settings: fix not updating color of rectangular components upon color change 
+- optimize drawing engine
+
+3.0.7 [03.04.2014]
+- various fixes to flowchart drawing when font other than Tahoma is used
+- Case block: make text boxes for case values as long as possible
+
+3.0.6 [07.03.2014]
+- fix Functions form not possible to translate
+- prevent top block to obscure function label
+- reduce flickering in some sections of function header during resize
+
+3.0.5 [05.03.2014]
+- Code Editor: fix scrolling issues when auto-update is on
+
+3.0.4.20 [26.02.2014]
+- settings: font size for Code Editor is now configurable
+
+3.0.4 [26.02.2014]
+- Code Editor: further improvements to "Find in Project" feature
+- smaller optimizations
+
+IMPORTANT NOTES:
+Clarification how "Find in Project" works:
+Upon clicking "Find in Project" in Editor popup menu devF will switch to form containing item associated with text line. If it's for example line 
+that contains declaration of global variable, then Global Declarations form will open. If additionally there is selected text, devF will search for 
+particular variable and will select correct row if it's found. It is working similar way for functions and data types. 
+If current line in Editor is associated with any flowchart component, after selecting "Find in Project" devF will make it visible and focused. If there is 
+selected text in Editor, devF will select the same text in found flowchart component.
+
+3.0.3 [22.02.2014]
+- Code Editor: improve "Find in Project" feature introduced in previous version; now selected text is taking into consideration too
+- Global Variables: various fixes for "external constant" checkboxes
+
+3.0.2 [19.02.2014]
+- add "AllowUserFunctionOverload" option to language definition file
+- Code Editor: add option "Find in Project" to popup menu that quickly locates project component associated with code line
+
+IMPORTANT NOTES:
+When AllowUserFunctionOverload = 1, devFlowcharter allows adding functions with identical names.
+
+3.0.1 [12.02.2014]
+- Pascal: fix getting incorrect index for "^string" data type
+- C: add "void" native data type to language definition file
+
+3.0.0 [11.02.2014]
+- add "kind" attribute for "datatype" tag in language definition XML files. For info search in Example.xml file around 
+  "NativeDataypes" tag.
+- minor fixes and optimizations
+
+IMPORTANT NOTES:
+Project files created in previous versions are not compatible with 3.x release.
+The reason is changed way how type information (for variables, function returns etc.) is saved to XML.
+Previously it was type index (e.g. "1" for real type in Pascal). In 3.x it is type name (e.g. boolean).
+
+To have older projects working in 3.x there are 2 ways:
+
+1. Opening 2.x project file in devFlowcharter 3.x and changing data types in dropdowns from "unknown" to intended one.
+
+2. Manual modification of old project files: 
+Values in "type" attributes must contain type name instead of type index number. Type index is number counted from 0 
+for given type name in "Type" dropdown on Global Variables panel.
+
+Example of "type" attribute modification in XML files for Pascal projects:
+Old:		New:
+type="0"	type="integer"
+type="3"	type="boolean"
+
+"type" attribute must be changed in the following tags:
+Tag:		Applies to:
+var		variable (local and global)
+header		function return value
+arg		function parameter
+field		record field
+
+
+Pascal:
+"char" data type is now included as native type in language definition file. So, there is no need to define it by user
+in GUI as part of the project. Such approach was suggested in notes for version 1.5.1.
+
+The following tag names were changed in language definition files:
+Old name:		New name:
+EnabledRoutineHeader	EnabledUserFunctionHeader
+EnabledRoutineBody	EnabledUserFunctionBody
+PreDefinedDataTypes	NativeDataTypes
+PreDefinedFunctions	NativeFunctions
+
+2.3.2 [13.12.2013]
+- Code Editor: fix for "List index out of bounds" exception in code folding
+
+2.3.1 [08.12.2013]
+- Code Editor: auto-updating implemented for all elements (function headers, data types etc.)
+- Code Editor: fix issues in auto-updating for big projects
+- improve speed of code generation with FastCode functions
+
+2.3.0 [26.11.2013]
+- Code Editor: initial implementation of auto-updating code for flowchart changes
+- Code Editor: fix for not auto-selecting line if it's last line
+- fix not working as expected templates for input and output blocks
+
+IMPORTANT NOTES:
+Turning on code auto-updating automatically disables code folding and vice versa.
+At the moment auto-updating code works only for flowchart changes. Changes in global variables or
+function headers have no effect.
+
+2.2.4 [04.11.2013]
+- Settings: modify placeholders in compilation command; add separate compilation command for
+            projects without main program (till now it was supported only on developer level)
+
+IMPORTANT NOTES:
+As placeholders for compilation commands were modified, updating these commands is required following
+new placeholders. To get know new placeholders check hints in edit boxes.
+
+Examples for MinGW C compiler using new placeholders:
+Compiler command: C:\MinGW\bin\gcc.exe %s1 -o %s2.exe
+Compiler command for no-main projects: C:\MinGW\bin\gcc.exe -c %s1
+
+If project is no-main and compiler command for such projects is not provided then
+standard (first) command is used.
+
+2.2.3 [30.09.2013]
+- fix for remaining placeholders in generated code
+- fix for remaining placeholders in function labels
+- Code Editor: fix for first fold region not being refreshed after "Expand All" operation
+
+2.2.2 [24.09.2013]
+- added missing tags in language definition file to set flowchart labels
+
+IMPORTANT NOTES:
+The involved keys for setting flowchart labels are:
+- ProcedureLabelKey
+- FunctionLabelKey
+- ProgramLabelKey
+
+2.2.1 [18.09.2013]
+- improved templates for generating data types
+- General Code Generation: fix always including function description
+- C Code Generation: fix for not including body of function when there is no main program
+- Code Editor: fix for not working code selection during highlight of flowchart element
+
+IMPORTANT NOTES:
+For changes in data type templates refer to LanguageDefinitions\Example.xml file.
+
+2.2.0 [11.09.2013]
+- significantly improved support (based on templates) for language defined by user
+- fix in setup program for Pascal compiler correcting wrong registry key
+
+IMPORTANT NOTES:
+For reference about using templates to define own language use LanguageDefinitions\Example.xml file. It contains all available
+templates with descriptions.
+devF no longer add ";" char at the end of instruction if it's not present. Adding or not of this char is determined by its presence
+in involved template. By default it is present, so adding it in flowchart will double this char at the end of instruction
+in generated code.
+If code is generated for some section even though template is not present, it means that code generation for this section is embedded.
+Example - case..of instruction for Pascal.
+
+2.1.0 [31.08.2013]
+- add support for languages defined by user
+
+IMPORTANT NOTES:
+Version 2.0 was never released.
+Language definitions are kept in LanguageDefinitions directory in form of XML files. Check Example.xml file for reference 
+how to add new language to devFlowcharter. Language definition files that contain non-ASCII characters must be saved as UTF files.
+Otherwise devFlowcharter will fail to read file.
+Project files created in previous versions are incompatible with 2.1.0. To fix this a small modifications must be done to a project file.
+"language" attribute of "project" root tag must be changed as follows:
+From "0" to "Pascal"
+From "1" to "ANSI C"
+From "2" to "TIBASIC"
+From "-1" to "   "
+Apart from support on user level, each language can have additional support for more sophisticated code generation on developer level.
+For instructions refer to LangTemplates\Pascal_Template.pas file in source package.
+
+1.9.15 [19.08.2013]
+- Code Editor: added code folding (thanks to Mystix editor project)
+- tab components: fix situation when tabs order could not be changed when some tabs were not visible
+- tab components: fix for generated library list not respecting order of tabs
+
+IMPORTANT NOTES:
+Most settings regarding Code Editor were removed from Settings form. They can be set from Code Editor main menu.
+C language: stdlib.h header file was removed from generated code. In case of need to include any library to
+            generated code suggested solution is to create dummy, external data type with desired library.
+
+1.9.14 [03.08.2013]
+- Code Editor: more information in hint for variables of array type
+- Flowchart: add new options (e.g. scrollbars, word wrapping) for memos (multi-line text controls)
+- Functions: moveable tabs (to set desired order) for headers
+- smaller optimizations
+
+IMPORTANT NOTES:
+Options for memos are available under Memo item in popup menu. Even when scrollbars
+are enabled they will only be visible if memo is not big enough to display entire text. 
+
+1.9.13.32 [16.01.2013]
+- fix sometimes incorrect z-order of flowchart components after reading from XML
+
+1.9.13.30 [16.01.2013]
+- fix memory access violation when inserting function call block
+- data types: enlarge form to accommodate labels in Polish translation
+- minor fixes and optimizations
+
+1.9.12 [20.10.2012]
+- fix comments get attached to wrong flowchart
+- fix comments having incorrect position after block was expanded
+
+1.9.11 [10.10.2012]
+- data types: fix sometimes incorrect order of elements (fields for records, values for enumerations) after
+  reading project from file
+- functions: fix sometimes incorrect order of parameters after reading project from file
+- Pascal: better support for "char" data type if defined by user
+- minor fixes and optimizations
+
+1.9.10 [15.07.2012]
+- Pascal parser: implement handling arrays of string
+- fix incorrect width of main block after it was expanded
+
+1.9.9 [29.06.2012]
+- Function window: allow resize in vertical direction;
+                   add splitters to allow sections resize
+- Data types window: allow resize in vertical direction
+- improvements to Gauss elimination example
+
+1.9.8 [10.06.2012]
+- backend: replace own dynamic list implementation with TObjectList
+- fixes to save and generate empty lines for Text and Multi-assign blocks
+- add new Pascal example: Gauss elimination algorithm
+
+1.9.7 [19.05.2012]
+- fix accepting non-integer value as array size
+- fix not disabled Value box for array data type
+
+1.9.6 [27.04.2012]
+- for block: allow user explicitly select ascending or descending order from popup menu
+- fix too narrow width of main block after reading project file
+- data types: change declaration of array types - only size and storing type required;
+              now also works for C language
+
+1.9.5 [23.04.2012]
+- add new data type kind - array
+- fix incorrect reading of project file when data type declaration included global constant
+
+IMPORTANT NOTES:
+Array data types allow create types for multidimensional arrays; it allows passing
+arrays as function parameters. Refer to PrintMatrix_Pascal.xml example.
+
+1.9.4 [17.04.2012]
+- Pascal Parser: read, readln, read(), readln(), write, writeln, write(),
+                 writeln() are accepted in input/output instructions
+
+1.9.3 [27.03.2012]
+- fix some performance issues when Navigator is visible
+- fix serveral cases when Navigator window was not refreshed
+- Navigator: add keyboard control (arrows, Page Up/Down)
+- Main window: add keyboard control (Ctrl + arrows, Page Up/Down)
+
+1.9.2 [19.03.2012]
+- fix memory access violation while closing project when Navigator is visible
+- Navigator: fix not reflecting z-order of flowchart components
+- Navigator: fix displaying border line for comments
+- Flowchart: fix visible pinned comments when their main block becomes invisible
+- Flowchart: fix indeterminate cursor position in text controls upon mouse button click
+- XML: fix not reflecting z-order of flowchart components after project opening
+- Global Constants: fix positioning checkbox in External column if it's not visible
+- Global Constants: fix blinking groupbox when adding constant
+
+1.9.1 [07.03.2012]
+- Code Editor: fix memory access violation in OnMouseMove event
+- Code Editor: fix not generating code for data types in exact order as they appear
+               in Data Types window
+- fix sizing of main block to accommodate function label
+- several code optimizations
+
+1.9.0 [23.02.2012]
+- fix memory access violation while pasting block with text block inside
+- fix serveral cases when Navigator window was not refreshed
+- Code Editor: add option to auto select/unselect block of code when moving cursor
+  over | sign in flowchart
+- Code Editor: save text selection to XML file
+- various code cleanups and modifications
+
+1.8.5 [03.02.2012]
+- various code cleanups and optimizations
+
+1.8.4 [31.12.2011]
+- Code Editor: fix memory access violation in OnMouseMove event
+- Flowchart: decrease minimal height of multiline components to one line
+- cosmetic GUI updates in Settings form
+- update Chinese localization file
+
+1.8.3 [19.12.2011]
+- add text block
+- add description/prefix box in function header
+
+IMPORTANT NOTES:
+Text block is used for entering any text to be generated without any changes.
+Text block name (and any other caption) can be freely changed in translation file. To do this,
+English users that use embedded translation (no translation file selected) must explicitly
+select english.lng file and modify it as needed.
+
+1.8.2 [25.10.2011]
+- introduce external constants
+- C code generator: changes for generating include section
+- fix disappearing flowcharts after folding operation
+
+IMPORTANT NOTES:
+Constant can now be marked as external so its declaration will not be included to generated code.
+Generation of include section for C now follows the rules below:
+- if library name includes . adding .h extension in code is not performed
+- if library name includes " adding <> brackets in code is not performed
+
+1.8.1 [07.10.2011]
+- fix not including comments into main block export to image file
+- allow create pointer type for "other" data type
+- Pascal compiler: modify installer to abort if directory path includes spaces
+
+1.8.0 [25.09.2011]
+- add support for enumerated types
+- Pascal parser: add support for Ord and Chr functions
+- Settings: allow to select flowchart font
+- Navigator: add checkbox to turn on/off transparency trackbar
+- minor optimizations
+
+IMPORTANT NOTES:
+Pascal: function Chr returns "char" data type. As this type is not predefined in devF
+        it should be added by user manually.
+Data Types: type "other" allows user to enter any single value as data type. However, this value
+            is not validated against syntax of current programming language.
+
+1.7.3 [18.08.2011]
+- fix updating Navigator window when main form is being scrolled using mouse wheel
+- fix updating Navigator window when function headers are selected
+- Navigator window: add scrolling with mouse wheel
+- Navigator window: add track bar to adjust window transparency
+- Data Types: fix detecting duplicates when names include spaces
+
+1.7.2 [31.07.2011]
+- added navigator to ease working with large flowcharts
+
+1.7.1 [01.07.2011]
+- reading from XML file: fix not generating code for functions/data types when their
+  forms are hidden
+- fix memory access violation upon project save when Code Editor is visible and
+  some data types/functions were deleted
+
+1.7.0 [19.06.2011]
+- Code Editor (hints): add information whether variable is local or global
+- Data Types: change label from "structure" to "record" since devF is rather Pascal compatible
+- For..do block: fix not refreshing combobox items list upon Data Types form deactivation
+- updated Chinese translation file
+- Declarations: any constant expression of integer type (e.g. (ARRAY_SIZE+5)*2)
+                can be used as array size
+- minor optimizations and fixes
+
+1.6.4 [12.05.2011]
+- Pascal: fix parser broken analysis for new projects
+- fix not populating dropdown box in for..do loop for new projects
+
+1.6.3.29 [11.05.2011]
+- fix to BubbleSort_C.xml
+- fix reading non-record data type that was created in previous versions as record
+- Settings: fix modifying compiler path if changing current language was not accepted
+
+1.6.3 [10.05.2011]
+- new feature: initial values for variable declarations
+- new feature: introduce data type kinds (integer, real, record etc.)
+- redesign of declarations window to better utilize displaying space 
+- Pascal: great number of fixes to Pascal parser 
+- C: identifier for constant can inlcude '(' and ')'; it allows to define function macros
+- TIBASIC: fixes to code generation
+- fixes to example files
+
+IMPORTANT NOTES:
+Global constants can be used in defining size or initial value for variable.
+Pascal parser: call for function without parameters is only accepted in form "function()"
+Additional validation (that can enabled/disabled in Settings window) means validation of
+size and initial value for variables, and value for constants. But initial value
+validation is not yet implemented for records and arrays.
+
+1.6.2 [20.04.2011]
+- new feature: global constants can be used in array declaration
+- add option to turn on/off validation of constants
+- C: fix generating code for functions parameters passed by reference
+- C: added new example (BubbleSort_C.xml)
+- Pascal: fix bug with generating incorrect declaration of multidimensional arrays
+- Pascal: fix code generation when project filename contains spaces
+- Pascal parser: length function now accepts array as parameter
+- Code Editor: fix incorrect block selection for function headers when project has no main program
+- improve marking datatype tab with red if some errors exist
+
+IMPORTANT NOTES:
+Turning off validation for constants allows C users to define macros.
+Example files were modified to use global constant as array size.
+Alphabetic characters can only be entered in size box if at least one global constant exists.
+
+1.6.1 [11.04.2011]
+- add Free Pascal compiler to devF package (thanks to Qiu Zhe)
+- release parser objects upon closing application
+- skip generating structures/functions code marked with red
+- minor fixes
+
+IMPORTANT NOTES:
+To make devF use delivered Pascal compiler, execute PascalCompiler/setup.exe file and allow it to modify Windows registry.
+Directory path where compiler is stored must not contain spaces.
+
+1.6.0 [24.03.2011]
+- rewritten backend for data types and function headers
+- "undo remove" for data types
+- add setting to confirm irreversible removals
+- minor fixes and optimizations
+
+IMPORTANT NOTES:
+Item "Remove Main Program" was removed from main menu. Body for main program can be removed using popup menu.
+
+1.5.3 [18.02.2011]
+- fix saving code editor contents to XML file
+
+IMPORTANT NOTES:
+To have contents of code editor correctly read from input XML file, it must be regenerated and saved using this version.
+Code editor contents read from XML files that were created in previous versions might not work properly.
+
+1.5.2 [27.01.2011]
+- Code Editor: saving contents to XML output file if modified flag is set.
+               If not, existing functionality is kept - don't save source code but generate on opening XML file
+- code optimizations mainly to reduce executable size
+
+1.5.1 [02.11.2010]
+- Pascal parser: add support for "char" data type
+- minor fixes and optimizations
+
+IMPORTANT NOTES:
+Since "char" data type is not predefined in devF, it should be added by user.
+
+1.5 [06.09.2010]
+- multidimensional arrays as structure members
+- add ability to define non-structural type definitions
+- various fixes to Pascal parser
+
+IMPORTANT NOTES:
+This version allows user to define and use non-structural data types that exist in
+language library (like "signed int" in C) but aren't predefined in devF.
+
+1.4.1 [16.08.2010]
+- add support for multidimensional arrays
+- fix for resizing columns in grid for global/local variable
+
+IMPORTANT NOTES:
+To declare multidimensional array, in Size field for global/local variables enter dimensions separated with commas.
+Examples of size declaration:
+1 - variable
+100 - array (one-dimensional)
+100,100,100 - three-dimensional array
+
+
+1.3 [26.07.2010]
+- fix drawing tabs on Win64 systems
+- fix changing return type of function if Structures form is deactivated (thanks to Louis Abraka)
+- fix memory access violations in code editor for TiBasic
+- make resizable columns in grids for global variables/constants
+- minor GUI updates
+
+1.2 [21.06.2010]
+- add "Pure Flowcharts" feature
+- add undo remove operation for entire functions (header + body)
+- can remove entire flowchart from popup menu
+- backend for settings rewritten from scratch
+- fixed comment positioning after reading from XML
+
+IMPORTANT NOTES:
+Pure Flowcharts feature is useful for users interested in creating flowcharts without
+any stuff related to programming like functions, structures or code generation.
+To enable this feature just select empty language option (Options->Settings->Compilers->Language).
+In this mode, flowcharts are added directly from popup menu (Insert->Flowchart).
+
+1.1 [24.05.2010]
+- add export to JPEG files
+
+IMPORTANT NOTES:
+Menu item Project->Save As BMP... has been removed. To save flowchart in graphic
+format use File->Save As...
+
+1.0.1 [30.03.2010]
+- fix setting scrollbars on main form
+- fix aligning of edit boxes in global declarations form
+- fix code editor to display hint for local variables
+- fix code generation for Pascal (case blocks including return statement)
+- fix code generation for Pascal tpu units when project is not already saved
+- optimizations
+
+1.0 [03.03.2010]
+- add implementation of flowchart as subroutine body
+- code generation for projects without main program (valid code for .tpu or .obj output files)
+- rename "exit" block to "return"; include return value
+- add possibility to fold entire flowchart to a single box
+- add export to BMP or XML for each block
+- add printing for each block
+- add export to XML for single function or structure
+- Code Editor: save bookmark positions to XML
+- introduce placeholders to compilation command
+- many cosmetic GUI and translation updates
+
+IMPORTANT NOTES:
+Input files created in previous releases (branch 0.9) will not work in 1.0.
+Compilation command now uses two placeholders. Taking from left to right:
+   %s - saved source file name
+   %s - saved source file name without extension
+For successful compilation at least first placeholder must be used.
+Example of compilation command for MinGW C compiler: gcc %s -o %s.exe
+For C projects without main program there is no need to explicitly include
+-c option (compile but do not link) to compilation command. devFlowcharter will do
+this automatically.
+Since 1.0 version uses multiple flowcharts on desktop, comments are now "pinned".
+Comment is pinned to specific flowchart if its upper left corner is situated inside
+flowchart area.
+Compiled programs can only be run externally. "Run" menu item was removed from
+Code Editor menu. Starting from 1.0, there is no way to determine executable name
+due to wildcards introduced in compilation command. Besides, internal launcher was
+sometimes out of sync.
+
+
+0.9.16 [10.12.2009]
+- lots of under the hood work for flowchart, XML and translation engines.
+- printing: add option to print flowchart on multiple pages (useful for large flowcharts)
+- printing: add page margins configuration
+- cosmetic GUI updates
+- added Chinese translation (thanks to Qiu Zhe)
+
+IMPORTANT NOTES:
+To have devFlowcharter 0.9.16 correctly translated, translation files
+delivered with this release must be used. Files from previous releases will not work.
+Additionally, default translation file (embedded file used if no file is selected
+by the user) was changed from Polish to English. Consequences are:
+- for Polish users: Polish translation file must be explicitly selected. It's in
+  loc subdirectory.
+- for English users: previously used English translation file must be removed
+  on Settings window. Though english.lng is located in loc subdirectory, there's no need
+  to select it. Its purpose is for use to create custom English translation
+  if needed. 
+
+0.9.15 [24.08.2008]
+- flowchart popup menu: added ExpandAll option to expand all folded blocks (if any) at once
+- saving windows positions, states etc. to XML file
+- minor fixes and optimizations
+
+0.9.14 [15.05.2008]
+- configurable colors of flowchart elements
+- configurable font color for valid expressions
+- source code saved as HTML files (if highlighter available)
+- frame indicator saved to XML
+- massive optimization in Pascal parser
+- added French translation file
+  CODE EDITOR:
+- case sensitive search/replace
+- insert/overwrite mode info in status bar
+- constant value shown instead of constant type in hint
+- minimal width decreased to 225
+
+0.9.13 [26.02.2008]
+- added exit block (thanks to Valery Kulikoff)
+  NOTE: exit block can only be inserted as a last block in branch
+- fixed bug when copy/paste folded case block
+- fixed bug when Explorer form is not refreshed upon change of localization language
+- compiled with latest OmniXML (dated on 15.02.2008)
+- few peformance fixes
+
+0.9.12 [20.11.2007]
+- reworked code for saving font styles
+- few localization fixes
+- bunch of minor optimizations
+
+0.9.11.53 [26.08.2007]
+- fixed "Cannot open clipboard" error when pasting comments to code editor
+
+0.9.11 [14.08.2007]
+- folder (folded flowchart component) is now resizable
+- numerous fixes and optimizations
+
+0.9.10 [24.07.2007]
+- new XML parser, OmniXML
+- finally compiled under Delphi 7
+- Synedit components upgraded to 2.0.6
+- added icon for Case component in Toolbox
+- fixed hot spots for custom cursors
+- fixed issues related to dragging in Code Editor
+- minor visual fixes in Flowchart Explorer
+- few minor fixes I forgot to mention
+IMPORTANT NOTE:
+There can be errors ("File is closed") while reading projects created in previous versions of devFlowcharter. It only concerns multirows components like multiple assignments and comments. So if your project involves such components, you have to make sure there are no newline characters inside <text> tags. Example how to modify:
+
+BEFORE:
+<block x = "30" y = "90" folded = "false" h = "91" w = "140" bh = "70" brx = "70" type = "mult-assign" fontsize = "8">
+<text>buf := a[i];
+a[i] := a[i+1];
+a[i+1] := buf;
+change := true;</text>
+</block>
+
+AFTER:
+<block x = "30" y = "90" folded = "false" h = "91" w = "140" bh = "70" brx = "70" type = "mult-assign" fontsize = "8">
+<text>buf := a[i];a[i] := a[i+1];a[i+1] := buf;change := true;</text>
+</block>
+
+After successful opening file under 0.9.10 modify text to be multirowed as desired and save. Next time file should be opened without problems.
+
+
+0.9.9 [07.07.2007]
+- added case/switch block
+- aligned statements
+- massive code reorganizations in branches management
+- support for Ti-Basic language (thanks to David Fernando Suescun Ramirez)
+- popup menu changed (fewer items displayed)
+- XML file format redesigned (previous XML files don't work)
+- new feature: source code gets selected upon selection of flowchart blocks using frame
+- added Spanish localization
+- lots of fixes and optimizations
+
+0.9.8 [08.05.2007]
+- Synedit components upgraded to 2.0.5
+- expand/fold feature for flowchart blocks (loops, if, if..else)
+- few minor fixes
+
+0.9.7 [01.03.2007]
+- comments are dragged along with flowchart
+- new code for printing flowchart. Should work with all printers
+- fix to minimize flickering while drawing flowchart
+- lots of minor fixes
+
+0.9.6 [30.01.2007]
+- improved error handlers when reading input files
+- cleanups in if..else block
+- lots of minor updates and optimizations
+
+0.9.5 [17.01.2007]
+- numerous code cleanups and restructurizations
+- several cosmetic improvements in GUI
+
+0.9.4 [07.01.2007]
+- massive code update before creating first CVS repository
+- added import/export functionality for flowchart blocks
+NOTES:
+The new functionality is import/export flowchart blocks to XML files. This also works for multiple blocks. Exporting one block is clear. To export multiple blocks click LMB on 'I' mark for blocks to export. They get framed. Then, select Export from popup menu for first block. Exported blocks must on the same level and succeeding each other! There is no need to select blocks inside already selected blocks. Those blocks will be exported automatically.
+
+0.9.3 [31.12.2006]
+- flowchart elements are now resizable
+- added hints in Code Editor
+- reduce flickering when drawing flowchart
+- lots of minor fixes and cleanups
+
+0.9.2 [11.09.2006]
+- fixes for minor bugs
+
+0.9.1 [22.10.2006]
+- added localization support
+
+0.9.0 [06.09.2006]
+ - initial version

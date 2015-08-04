@@ -1,0 +1,539 @@
+; 中文本地化文件 devFlowcharter
+; phoeagon
+; http://phoeagon.co.cc/
+; twitter.com/phoeagon
+
+[CommonParserMessages]
+BadCondition=无效的 条件语法
+BadAssign=无效的 赋值语法
+BadInput=无效的 输入格式
+BadOutput=无效的 输出格式
+BadFunction=无效的 函数调用
+BadFor=无效的 计数条件
+BadCase=无效的case条件标志
+BadGeneric=无效的声明语法
+ExpOk=%s%s条件有效
+ExpErr=%s%s错误: %s
+ExpErrMult=第 %d行: %s%s错误: %s
+IntReq=应填入整数值
+NoCVar=%s错误: 未指定控制变量
+BadCVar=%s%s错误: 无效控制变量
+NoCExp=%s错误: 无条件声明
+NoCaseExp=%s错误: 无跳转条件声明
+NoInstr=%s警告: 无赋值指令
+NoFCall=%s警告: 无函数调用
+IncTypes=不相容变量类型: %s 与 %s
+BadFuncParm=无效参数 (%s) 传递 - 函数 %s 
+BadFuncParmU=不匹配参数 传递 - 函数 %s 
+BreakErr=此处不可BREAK 
+ContErr=此处不可CONTINUE
+BadConstOp=对常数"%s"操作无效
+BadInOper=无效的变量读入"%s"
+BadOperArg=不匹配的类型 (%s) - "%s" 运算符
+UnknId=未知名称 "%s"
+BadFuncParms=无效的参数表 - 函数"%s"
+BadCmpr=无效比较
+VarExpct=应传入可变变量
+NoOut=未确定输出表达式
+NotPtrType=变量"%s"不是指针类型
+BadVarOper=对"%s"变量操作无效
+BadEnumOper=无效的枚举类型值"%s"
+NoTbl=未定义数组
+BadArrExp=无效的数组声明.%s"%s" 不是一个数组类型
+BadIndx=无效的数组下标类型 (%s)
+NotStructType=变量"%s"不是记录类型
+NoFieldStruct=记录类型"%s"无名称为"%s"的域
+DupCaseVal=重复的case跳转条件
+BadReturnVal=无效返回值
+BadIndxNumber=无效的数组下标(%d) ，调用数组"%s"%s 可能的下标: %d
+BadPtrArray=数组指针"%s"操作无效
+UnkFunc=未定义函数"%s"
+NotConst=必须使用常量表达式
+
+[Block]
+CaptionTrue=真(T)
+CaptionFalse=假(F)
+CaptionIn=in
+CaptionOut=out
+CaptionStart=开始
+CaptionStop=结束
+CaptionFor=for
+CaptionTo=to
+CaptionCase=CASE
+CaptionExit=返回
+AssignDesc=赋值: %s
+MultAssignDesc=多重赋值: %s
+InputDesc=输入 %s
+OutputDesc=输出 %s
+RoutineDesc=函数调用 %s
+RepeatUntilDesc=循环: Repeat %s
+WhileDoDesc=循环: while %s do
+IfDesc=跳转条件: %s
+ForDesc=循环: for %s %s %s to %s do
+CaseDesc=CASE %s OF:
+ReturnDesc=RETURN %s
+TextDesc=TEXT
+DefValue=默认
+
+[Others]
+Ok=确定
+Cancel=取消
+Confirmation=确认
+Error=错误
+Import=导入
+Row=行
+Warning=警告
+AttrInfo=[名称 "%s"]: 无效值 "%s"
+ValidationError=检查出错
+ConvertError=无效类型转换
+SyntaxError=语法错误
+IOError=输入输出错误
+PrintError=Printer Error
+DeclareError=定义错误
+CompileError=Compilation Error
+ImportError=Import Error
+BadId=无效的名称
+DupId=重复的名称
+BadIdD=无效的名称
+DupIdD=重复的名称
+DupType=重复的类型名称
+DefNtvType=Type "%s" is already defined as native type
+DefNtvFunc=Function "%s" is already defined as native function
+DupField=重复的域名
+OkIdD=变量名有效
+BadSize=下标范围错误
+BadVarSize=变量"%s"下标问题%s
+IncorrectIdKeyword=无效的名称 "%s" 是保留字 %s.
+BadCVal=无效的常量下标范围
+NoPrinter=检测不到打印机
+ExeFilesFilter=可执行文件(*.exe;*.bat;*.cmd)|*.exe; *.bat; *.cmd;
+LngFilesFilter=本地化语言文件(*.lng)|*.lng;
+RTFFilesFilter=写字版文档(*.rtf)|*.rtf;
+BMPFilesFilter=位图文件 (*.bmp)|*.bmp;
+JPGFilesFilter=JPEG图像(*.jpg)|*.jpg;
+XMLFilesFilter=XML文档 (*.xml)|*.xml;
+HTMLFilesFilter=HTML 网页(*.html)|*.html;
+TextFilesFilter=纯文本文件(*.txt)|*.txt;
+SourceFilesFilter=%s files (*.%s)|*.%s;
+ConfirmClose=保存对 %s 工程的修改?
+ImportFailed=导入失败.%s%s
+Functions=函数
+Structures=变量类型
+Function=函数
+Procedure=函数
+TagNotFound=找不到主流程
+ChangeLngAsk=文件是以%s语言创建的。你要设置为%s为默认语言吗？
+ChangeLngNone=Project that is being opened was created as plain flowchart.%s%sDo you want to switch to plain flowcharts?
+RegErr=设置保存失败
+BadImportTag=导入块错误.
+Unknown=未知错误
+NoType=无返回
+Modified=已修改
+Default=默认
+NameTagNotFound=<Name> tag not found or is empty.
+FileError=Error while reading file %s.
+ParserError=XML parser error #%d at line %d, column %d: %s
+OpenError=打开文件 %s:%s%s 时出错
+SaveReadOnlyFile=文件%s只读. 无法覆盖
+SaveError=保存文件 %s 出错.
+HeaderRequest=输入定义:
+PrintError=打印错误%s%s.
+PageCount=第 %d/%d 页
+ColumnCount=第%d/%d列
+RowCount=第%d/%d行
+OtherException=%s当前工程将被关闭
+CloseProjectAsk=保存某些设置时需要关闭当前工程%s是否要关闭工程并应用更改
+StatusBarInfo=%d行, %d列
+InsertMode=插入
+OverwriteMode=覆盖
+CompilerNotFound=未定义的编译选项%s.
+CompileFail=无法编译程序.
+RunFail=无法运行程序.
+NoFileToRun=无法打开可执行文件 %s.
+VarLocal=本地变量
+VarGlobal=全局变量
+VarParm=function parameter
+HintVar=%s 变量   %s: %s
+HintArray=%s %d-维数组   %s[%s]: %s
+HintArrayExp=Declaration after expanding %s array type:%s%s %d-dimensional array   %s[%s]: %s
+HintConst=常量   %s = %s
+HintRoutine=过程/函数   %s: %s
+HintEnum=枚举类型   %s: %s
+chkAddPtrType=添加指针类型
+btnAddField=添加域
+btnAddValue=添加值
+edtLibHintType=外部定义:文件##%s 包含外部函数的定义信息
+lblName=名称:
+lblType=类型:
+lblSize=下标范围:
+lblField=域:
+lblValue=值:
+lblRetType=返回值类型:
+chkExtDeclare=引用单元
+lblLibrary=调用单元:
+lblParameters=参数:               类型:                             数组类型:        是否引用传递:
+btnAddParm=添加参数
+edtLibraryHint=外部定义:文件##%s 包含外部函数的定义信息
+RootNodeText=工程 %s
+miFoldBlock=收缩
+miExpandBlock=展开
+lblErrors=错误 %d
+lblWarnings=警告 %d
+MainProgram=主流程
+LocalDeclare=局部变量
+Header=定义
+Params=形式参数
+btnAddVar=添加/修改变量
+btnAddConst=添加/修改常量
+btnChange=编辑
+btnRemove=删除
+sgVarListCol0=名:
+sgVarListCol1=类型:
+sgVarListCol2=下标范围:
+sgVarListCol3=初始值:
+sgConstListCol0=名:
+sgConstListCol1=值:
+sgConstListCol2=外部:
+edtSizeHint=数组大小定义:##1 - 单一变量##100 - 数组##ARRAY_SIZE+1 - [0,ARRAY_SIZE]的数组，ARRAY_SIZE是一个全局常量##100,100 - 二维数组
+gbVariable=变量
+gbConstant=常量
+GlobalVars=全局变量
+GlobalConsts=全局常量
+GlobalDeclares=Global Declarations
+ConfirmRemove=此操作无法撤销. 确认进行？
+BadInitVal=无效初始值
+rgTypeBox=类型:
+rbInt=整数
+rbReal=实数
+rbStruct=记录
+rbEnum=枚举类型
+rbOther=其他
+rbArray=Array
+lblPrefix=添加描述或限定词:
+gbDesc=函数描述或限定词（inline等）
+chkInclDescCode=生成代码时包括此描述
+chkInclDescFlow=Include into function label
+Flowchart=Flowchart
+LngNoSprt=%s language is not supported by this instance of devFlowcharter.
+
+; The following keys (3 for each programming language) are used to display labels next to flowcharts
+
+; Key ProcedureLabelExample 
+; Available placeholders: %s1 - procedure name; %s2 - parameters list, %s4 - procedure description, ## - new line
+ProcedureLabelExample=%s4##procedure %s1(%s2)
+
+; Key FunctionLabelExample 
+; Available placeholders: %s1 - function name; %s2 - parameters list; %s3 - function return type, %s4 - function description, ## - new line 
+FunctionLabelExample=%s4##function %s1(%s2): %s3
+
+
+; Key ProgramLabelExample
+; Available placeholders: %s1 - name of the project
+ProgramLabelExample=program %s1
+
+ProcedureLabelPascal=%s4##procedure %s1
+FunctionLabelPascal=%s4##function %s1: %s3
+ProgramLabelPascal=Main Program
+
+ProcedureLabelC=%s4##void %s1
+FunctionLabelC=%s4##%s3 %s1
+ProgramLabelC=int main
+
+ProcedureLabelTiBasic=%s4##Prgm %s1
+FunctionLabelTiBasic=%s4##Func %s1
+ProgramLabelTiBasic=Prgm %s1
+
+[MainForm]
+miFile=文件
+miProject=工程
+miOptions=选项
+miNew=新建
+miOpen=打开...
+miReopen=文件历史
+miSave=保存
+miSaveAs=另存为...
+miClose=关闭
+miPrint=打印...
+miPrint2=打印...
+miExit=退出
+miDataTypes=变量类型
+miSubRoutines=函数
+miDeclarations=全局变量
+miExplorer=流程图浏览器
+miNavigator=导览
+miAddMain=添加主流程
+miUndoRemove=撤销 删除
+miGenerate=生成代码
+miToolbox=元件工具箱
+miSettings=设置
+miManual=帮助
+miAbout=关于...
+miInsert=插入
+miNewFlowchart=Flowchart
+miNewFunction=Function Here
+miFont=字体
+miRemove=删除
+miCut=剪切
+miCopy=复制
+miInstr=语句
+miLoop=循环
+miRoutineCall=函数调用
+miComment=注释
+miPaste=粘贴
+miAssign=赋值
+miMultipleAssign=多重赋值
+miInput=输入
+miOutput=输出
+miIf=If(判断)
+miIfElse=If..Else(判断..否则)
+miReturn=Return(返回)
+miFor=For(计数循环)
+miWhile=While(当型循环)
+miRepeat=Repeat(直到型循环)
+miCase=Case(按情况跳转)
+miFontStyle=字体
+miFontSize=大小
+miStyleNormal=正常
+miStyleBold=粗体
+miStyleItalic=斜体
+miStyleUnderLine=下划线
+miStyleStrikeOut=删除线
+miFrame=外框
+miExpandBlock=展开
+miAddBranch=添加条件值      
+miRemoveBranch=删除分支
+miExpandAll=全部展开
+miText=任意代码
+SaveDialog=XML files (*.xml)|*.xml;
+OpenDialog=XML files (*.xml)|*.xml;
+miExport=导出...
+miImport=导入...
+miMemo=Memo
+miMemoEdit=Edit Text
+miMemoVScroll=Vertical ScrollBar
+miMemoHScroll=Horizontal ScrollBar
+miMemoWordWrap=Word Wrap
+
+[DeclarationsForm]
+FormCaption=全局变量
+
+[SettingsForm]
+FormCaption=设置
+gbProgLang=编程语言
+gbTranslation=界面语言
+gbParseSettings=语法检查
+gbEditorSettings=代码编辑器
+gbEditorColors=颜色
+gbMiscSettings=其他
+gbPrintSettings=打印
+lblCompiler=编译指令:
+lblCompilerNoMain=Compiler command for no-main projects:
+lblFile=本地化配置:
+chkParseAssign=赋值
+chkParseMAssign=多重赋值
+chkParseCondition=条件表达式
+chkParseFor=For(计数)循环
+chkParseCase=Case(分情况跳转)条件
+chkParseOutput=输出语句
+chkParseInput=输入语句
+chkParseRoutine=函数调用
+chkParseReturn=返回值表达式
+chkConfirmRemove=进行不能撤销的删除前需要确认
+lblIndent=缩进:
+lblEditorFont=字体:
+lblEditorBkg=背景:
+lblEditorActiveLine=当前行:
+lblEditorGutter=左边栏:
+lblEditorDigit=数字:
+lblEditorString=字串:
+lblEditorSelect=选择:
+lblEditorComment=注释:
+lblEditorBracket=括号:
+lblDesktop=画纸背景:
+lblBlockColor=选择:
+lblFontColor=字体:
+gbFlowchartSettings=流程图设置
+chkEnableDBuffer.Caption=启用绘图缓冲
+chkEnableDBuffer.Hint=Can decrease scrolling performance for big flowcharts
+chkShowFlowLabels=显示流程标签
+btnDefaultSettings=恢复为默认设定
+btnBrowseCompilers=浏览...
+btnBrowseScripts=浏览...
+btnSaveSettings=确定
+btnDiscardSettings=取消
+chkMultiPrint=多页打印
+chkMultiPrintHorz=水平方向多页打印
+gbPrintMargins=边距(百分比)
+lblMarginLeft=左:
+lblMarginRight=右:
+lblMarginTop=上:
+lblMarginBottom=下:
+edtCompilerHint=Available placeholders:##%s1 - saved source file name##%s2 - saved source file name without extension
+edtCompilerNoMainHint=Available placeholders:##%s1 - saved source file name##%s2 - saved source file name without extension##%s3 - standard compiler command
+chkValidateConsts=启用对变量声明的额外测错
+chkAutoSelectCode=Auto-select code for highlighted flowchart elements
+chkAutoUpdateCode=Auto-update code for project changes
+lblInterGen=with internal code generation supported
+lblFontSize=Font size:
+pnlFont.Hint=It can be neither red nor olive
+
+[TreeViewForm]
+FormCaption=流程图浏览器
+miNextError=下一信息
+miPrevError=上一信息
+miExpand=展开
+miCollapse=折叠
+miRemove=删除
+miRefresh=刷新
+btnGenerate=生成代码
+
+[SourceEditorForm]
+FormCaption=代码编辑器
+miProgram=程序
+miSave=保存...
+miCompile=编译...
+miRun=运行
+miPrint=打印...
+miEdit=编辑
+miFind=查找...
+miReplace=替换...
+miGoto=跳转至...
+miView=查看
+miStatusBar=状态栏
+miScrollbars=滚动栏
+miGutter=左边栏
+miCodeFolding=Code Folding
+miCodeFoldingEnable=Enable
+miCollapseAll=Collapse All
+miUnCollapseAll=Expand All
+miIndentGuides=Indent Guides
+miRichText=Highlight Code
+miRegenerate=重新生成
+miHelp=帮助
+miUndo=撤销
+miRedo=恢复
+miCut=剪切
+miCopy=复制
+miCopyRichText=复制为富格式文本
+miPaste=粘贴
+miPasteComment=粘贴为注释
+miRemove=删除
+miSelectAll=全选
+Modified=已修改
+InsertMode=插入模式
+OverwriteMode=覆盖模式
+miFindProj=Find in Project
+
+[GotoForm]
+FormCaption=跳转至...
+rbLine=行
+rbNextBookmark=下一书签
+rbPrevBookmark=上一书签
+btnGoTo=确定
+
+[FunctionsForm]
+FormCaption=函数
+miAction=函数
+miAdd=添加
+miRemove=删除
+miRemoveAll=全部删除
+miImport=导入...
+miExport=导出...
+miExportAll=全部导出...
+lblName=函数名:
+lblType=范围值类型:
+chkExtDeclare=引用单元
+lblLibrary=调用单元:
+lblParameters=参数:               类型:                         数组类型:        是否按引用传递:
+btnAddParm=添加参数
+btnRemove=删除
+edtLibraryHint= %s 文件包含函数定义
+NoType=无返回
+
+[DataTypesForm]
+FormCaption=变量类型
+miAction=变量类型
+miAdd=添加
+miRemove=删除
+miRemoveAll=全部删除
+miImport=导入...
+miExport=导出...
+miExportAll=全部导出...
+chkAddPtrType=添加指针类型
+btnAddField=添加记录域
+edtLibHintType= %s 文件包含数据类型定义
+lblType=类型:
+lblSize=下标范围:
+lblField=域:
+lblValue=值:
+btnRemove=删除
+lblLibrary=调用单元:
+lblName=名称:
+chkExtDeclare=引用单元
+rgTypeBox=变量类型:
+rbInt=整数
+rbReal=实数
+rbStruct=结构
+rbEnum=枚举类型
+rbOther=其他
+rbArray=Array
+
+[HelpForm]
+FormCaption=Code Editor - 帮助
+EditorHelp1=快捷键:
+EditorHelp2=
+EditorHelp3=键位            操作
+EditorHelp4=##
+EditorHelp5=Ctrl-Y          删除行
+EditorHelp6=Ctrl-A          全选
+EditorHelp7=Ctrl-C          复制
+EditorHelp8=Ctrl-X          剪切
+EditorHelp9=Ctrl-V          粘贴
+EditorHelp10=Ctrl-Z          撤销
+EditorHelp11=Ctrl-Home       跳至首行
+EditorHelp12=Ctrl-End        跳至末行
+EditorHelp13=Shift-Ctrl-Z    恢复
+EditorHelp14=Shift-Ctrl-B    标定配对括号
+EditorHelp15=Shift-Ctrl-I    把选定块移到右边
+EditorHelp16=Shift-Ctrl-U    把选定块移到左边
+EditorHelp17=Shift-Ctrl-C    启用按列选择模式
+EditorHelp18=Shift-Ctrl-L    启用按行选择模式
+EditorHelp19=Shift-Ctrl-N    正常选择模式
+EditorHelp20=
+EditorHelp21=提示:
+EditorHelp22=##
+EditorHelp23=为了从流程图中复制注释到编辑器
+EditorHelp24=按住shift键后拖动文字到
+EditorHelp25=编辑器的目标位置.
+EditorHelp26=为了复制特定部分的源代码
+EditorHelp27=按住shift然后把流程图区块拖动
+EditorHelp28=到编辑器的目标位置.
+
+[ToolBoxForm]
+FormCaption=元素工具箱
+sbAssign=赋值
+sbIf=If(判断)
+sbIfElse=If..Else(判断..否则..)
+sbInput=输入语句
+sbOutput=输出语句
+sbFor=For(计数循环)
+sbRepeat=Repeat(直到型循环)
+sbWhile=While(当型循环)
+sbMultAssign=多重赋值
+sbFuncCall=函数调用
+sbCase=Case(分情况跳转)
+sbReturn=Return(结束程序)
+
+[NavigatorForm]
+FormCaption=导览
+
+[AboutForm]
+FormCaption=关于...
+
+[MemoEditorForm]
+FormCaption=Memo Editor
+btnOK=OK
+btnCancel=Cancel
+
+
+

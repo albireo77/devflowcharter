@@ -1,0 +1,536 @@
+; English translation file for devFlowcharter
+
+[CommonParserMessages]
+BadCondition=Invalid syntax of condition statement
+BadAssign=Invalid syntax of assign statement
+BadInput=Invalid syntax of input statement
+BadOutput=Invalid syntax of output statement
+BadFunction=Invalid syntax of function call
+BadFor=Invalid syntax or type of statement
+BadCase=Incorrect syntax or type of case statement
+BadGeneric=Invalid syntax of statement
+ExpOk=%s%sStatement valid
+ExpErr=%s%sERROR: %s
+ExpErrMult=Line %d: %s%sERROR: %s
+IntReq=Integer value required
+NoCVar=%sERROR: No control variable specified
+BadCVar=%s%sERROR: Invalid control variable
+NoCExp=%sERROR: No conditional statement
+NoCaseExp=%sERROR: No case statement
+NoInstr=%sWARNING: No assignment instruction
+NoFCall=%sWARNING: No function call
+IncTypes=Incompatible types: %s and %s
+BadFuncParm=Incompatible argument (%s) for %s function
+BadFuncParmU=Incompatible argument for %s function
+BreakErr=BREAK not allowed here
+ContErr=CONTINUE not allowed here
+BadConstOp=Invalid operation on constant "%s"
+BadInOper=Invalid input operation on variable "%s"
+BadOperArg=Incompatible type (%s) of argument of "%s" operator
+UnknId=Unknown identifier "%s"
+BadFuncParms=Invalid list of arguments for function "%s"
+BadCmpr=Invalid comparison
+VarExpct=Variable identifier expected
+NoOut=No output statement specified
+NotPtrType=Variable "%s" is not of pointer type
+BadVarOper=Invalid operation on variable "%s"
+BadEnumOper=Invalid assignment to enumeration value "%s"
+NoTbl=No array declared
+BadArrExp=Invalid array expression.%s"%s" is not an array
+BadIndx=Invalid type (%s) of array index
+NotStructType=Variable "%s" is not of structural type
+NoFieldStruct=Structural type "%s" doesn't define field "%s"
+DupCaseVal=Duplicated case label
+BadReturnVal=Invalid return value
+BadIndxNumber=Incorrect number (%d) of indexes for array "%s"%sExpected number: %d
+BadPtrArray=Invalid pointer operation on array "%s"
+UnkFunc=Unknown function "%s"
+NotConst=Constant expression expected
+
+[Block]
+CaptionTrue=TRUE
+CaptionFalse=FALSE
+CaptionIn=in
+CaptionOut=out
+CaptionStart=START
+CaptionStop=STOP
+CaptionFor=for
+CaptionTo=to
+CaptionCase=CASE
+CaptionExit=RETURN
+AssignDesc=ASSIGNMENT: %s
+MultAssignDesc=MULTIPLE ASSIGNMENT: %s
+InputDesc=INPUT: %s
+OutputDesc=OUTPUT: %s
+RoutineDesc=FUNCTION CALL: %s
+RepeatUntilDesc=LOOP: repeat until %s
+WhileDoDesc=LOOP: while %s do
+IfDesc=CONDITIONAL STATEMENT: %s
+ForDesc=LOOP: for %s %s %s to %s do
+CaseDesc=CASE %s OF:
+ReturnDesc=RETURN %s
+TextDesc=TEXT
+DefValue=default
+
+[Others]
+Ok=Ok
+Cancel=Cancel
+Confirmation=Confirm
+Error=Error
+Import=Import
+Row=Row
+Warning=Warning
+AttrInfo=[Attribute "%s"]: Incorrect value - "%s"
+ValidationError=Validation Error
+ConvertError=Conversion Error
+SyntaxError=Syntax Error
+IOError=Input/Output Error
+DeclareError=Declaration Error
+PrintError=Printer Error
+CompileError=Compilation Error
+ImportError=Import Error
+BadId=Incorrect identifier.
+DupId=Duplicated identifier.
+BadIdD=Incorrect identifier
+DupIdD=Duplicated identifier
+DupType=Duplicated type name
+DefNtvType=Type "%s" is already defined as native type
+DefNtvFunc=Function "%s" is already defined as native function
+DupField=Duplicated field name
+OkIdD=Identifier valid
+BadSize=Incorrect size.
+BadVarSize=Variable "%s" has incorrect size: %s
+IncorrectIdKeyword=Incorrect identifier. "%s" is %s keyword.
+BadCVal=Incorrect constant value.
+NoPrinter=There is no printer installed.
+ExeFilesFilter=Executable files (*.exe;*.bat;*.cmd)|*.exe; *.bat; *.cmd;
+LngFilesFilter=Translation files (*.lng)|*.lng;
+RTFFilesFilter=Rich Text documents (*.rtf)|*.rtf;
+BMPFilesFilter=Bitmap files (*.bmp)|*.bmp;
+JPGFilesFilter=JPEG files (*.jpg)|*.jpg;
+XMLFilesFilter=XML documents (*.xml)|*.xml;
+HTMLFilesFilter=HTML documents (*.html)|*.html;
+TextFilesFilter=Text files (*.txt)|*.txt;
+SourceFilesFilter=%s files (*.%s)|*.%s;
+ConfirmClose=Save changes to project %s?
+ImportFailed=Import procedure has failed.%s%s
+Functions=Functions
+Structures=DataTypes
+Function=Function
+Procedure=Procedure
+TagNotFound=Cannot find tag for main block
+ChangeLngAsk=Project that is being opened was created in %s.%sDo you want to set this language as current?
+ChangeLngNone=Project that is being opened was created as plain flowchart.%s%sDo you want to switch to plain flowcharts?
+RegErr=An error occurred while saving application settings.
+BadImportTag=Cannot find or incorrect type of imported block.
+Unknown=unknown
+NoType=none
+Modified=Modified
+Default=default
+NameTagNotFound=<Name> tag not found or is empty.
+FileError=Error while reading file %s.
+ParserError=XML parser error #%d at line %d, column %d: %s
+OpenError=An error occured while opening file %s:%s%s
+SaveReadOnlyFile=File %s is marked as read-only. It cannot be overwritten.
+SaveError=An error occured while saving file %s.
+HeaderRequest=Enter header:
+PrintError=The following error occurred while printing:%s%s.
+PageCount=Page %d/%d
+ColumnCount=Column %d/%d
+RowCount=Row %d/%d
+OtherException=%sCurrent project will be closed.
+CloseProjectAsk=Changing some settings requires the current project to be closed.%sDo you want to apply these changes?
+StatusBarInfo=Line %d, Col %d
+InsertMode=Insert
+OverwriteMode=Overwrite
+CompilerNotFound=Undefined compilation command for %s.
+CompileFail=Attempt to run the compilation has failed.
+RunFail=Attempt to run the program has failed.
+NoFileToRun=Cannot find executable %s.
+VarLocal=local
+VarGlobal=global
+VarParm=function parameter
+HintVar=%s variable   %s: %s
+HintArray=%s %d-dimensional array   %s[%s]: %s
+HintArrayExp=Declaration after expanding %s array type:%s%s %d-dimensional array   %s[%s]: %s
+HintConst=constant   %s = %s
+HintRoutine=procedure/function   %s: %s
+HintEnum=enumerated value   %s: %s
+chkAddPtrType=Add pointer type
+btnAddField=Add Field
+btnAddValue=Add Value
+edtLibHintType=External declaration:##%s file containing type declaration
+lblName=Name:
+lblType=Type:
+lblSize=Size:
+lblField=Field:
+lblValue=Value:
+lblRetType=Return type:
+chkExtDeclare=External declaration
+lblLibrary=Library:
+lblParameters=Parameter:               Type:                       Array:        Reference:
+btnAddParm=Add Parameter
+edtLibraryHint=External declaration:##%s file containing function declaration
+RootNodeText=PROJECT %s
+miFoldBlock=Fold
+miExpandBlock=Expand
+lblErrors=Errors: %d
+lblWarnings=Warnings: %d
+MainProgram=Main Program
+LocalDeclare=Local Variables
+Header=Header
+Params=Formal Parameters
+btnAddVar=Add Variable
+btnAddConst=Add Constant
+btnChange=Change
+btnRemove=Remove
+sgVarListCol0=Name:
+sgVarListCol1=Type:
+sgVarListCol2=Size:
+sgVarListCol3=Initial Value:
+sgConstListCol0=Name:
+sgConstListCol1=Value:
+sgConstListCol2=External:
+edtSizeHint=Examples of size declaration:##1 - variable##100 - array##ARRAY_SIZE+1 - array where ARRAY_SIZE is global constant of integer type##100,100 - 2-dimensional array
+gbVariable=Variable
+gbConstant=Constant
+GlobalVars=Global Variables
+GlobalConsts=Global Constants
+GlobalDeclares=Global Declarations
+ConfirmRemove=This operation cannot be undone. Are you sure to continue?
+BadInitVal=Incorrect initial value.
+rgTypeBox=Type Options:
+rbInt=Integer
+rbReal=Real
+rbStruct=Record
+rbEnum=Enumeration
+rbOther=Other
+rbArray=Array
+lblPrefix=Add Prefix:
+gbDesc=Description/Prefix
+chkInclDescCode=Include into code
+chkInclDescFlow=Include into function label
+Flowchart=Flowchart
+LngNoSprt=%s language is not supported by this instance of devFlowcharter.
+
+; The following keys (3 for each programming language) are used to display labels next to flowcharts
+
+; Key ProcedureLabelExample 
+; Available placeholders: %s1 - procedure name; %s2 - parameters list, %s4 - procedure description, ## - new line
+ProcedureLabelExample=%s4##procedure %s1(%s2)
+
+; Key FunctionLabelExample 
+; Available placeholders: %s1 - function name; %s2 - parameters list; %s3 - function return type, %s4 - function description, ## - new line 
+FunctionLabelExample=%s4##function %s1(%s2): %s3
+
+
+; Key ProgramLabelExample
+; Available placeholders: %s1 - name of the project
+ProgramLabelExample=program %s1
+
+ProcedureLabelPascal=%s4##procedure %s1
+FunctionLabelPascal=%s4##function %s1: %s3
+ProgramLabelPascal=Main Program
+
+ProcedureLabelC=%s4##void %s1
+FunctionLabelC=%s4##%s3 %s1
+ProgramLabelC=int main
+
+ProcedureLabelTiBasic=%s4##Prgm %s1
+FunctionLabelTiBasic=%s4##Func %s1
+ProgramLabelTiBasic=Prgm %s1
+
+[MainForm]
+miFile=File
+miProject=Project
+miOptions=Options
+miNew=New
+miOpen=Open...
+miReopen=Reopen
+miSave=Save
+miSaveAs=Save As...
+miClose=Close
+miPrint=Print...
+miPrint2=Print...
+miExit=Exit
+miDataTypes=Data Types
+miSubRoutines=Functions
+miDeclarations=Global Declarations
+miExplorer=Explorer
+miNavigator=Navigator
+miAddMain=Add Main Program
+miUndoRemove=Undo Remove
+miGenerate=Generate Code
+miToolbox=Toolbox
+miSettings=Settings
+miManual=Help
+miAbout=About...
+miInsert=Insert
+miNewFlowchart=Flowchart
+miNewFunction=Function Here
+miFont=Font
+miRemove=Remove
+miCut=Cut
+miCopy=Copy
+miInstr=Statement
+miLoop=Loop
+miRoutineCall=Function Call
+miComment=Comment
+miPaste=Paste
+miAssign=Assignment
+miMultipleAssign=Multiple Assignment
+miInput=Input
+miOutput=Output
+miIf=If
+miIfElse=If..Else
+miReturn=Return
+miFor=For
+miWhile=While
+miRepeat=Repeat
+miCase=Case
+miFontStyle=Style
+miFontSize=Size
+miStyleNormal=Normal
+miStyleBold=Bold
+miStyleItalic=Italic
+miStyleUnderLine=Underlined
+miStyleStrikeOut=Strikeout
+miFrame=Frame
+miExpandBlock=Expand
+miAddBranch=Add Case Value       
+miRemoveBranch=Remove Branch
+miExpandAll=Expand All
+miText=Text
+SaveDialog=XML files (*.xml)|*.xml;
+OpenDialog=XML files (*.xml)|*.xml;
+miExport=Export...
+miImport=Import...
+miMemo=Memo
+miMemoEdit=Edit Text
+miMemoVScroll=Vertical ScrollBar
+miMemoHScroll=Horizontal ScrollBar
+miMemoWordWrap=Word Wrap
+
+[DeclarationsForm]
+FormCaption=Global Declarations
+
+[SettingsForm]
+FormCaption=Settings
+gbProgLang=Programming Language
+gbTranslation=Application Language
+gbParseSettings=Syntax Check
+gbEditorSettings=Code Editor
+gbEditorColors=Colors
+gbMiscSettings=Others
+gbPrintSettings=Printing
+lblCompiler=Compiler command:
+lblCompilerNoMain=Compiler command for no-main projects:
+lblFile=Translation file:
+chkParseAssign=Assignment
+chkParseMAssign=Multiple assignment
+chkParseCondition=Conditional statement
+chkParseFor=For loop
+chkParseCase=Case statement
+chkParseOutput=Output instruction
+chkParseInput=Input instruction
+chkParseRoutine=Function call
+chkParseReturn=Return instruction
+chkConfirmRemove=Confirm irreversible removals
+lblIndent=Indentation:
+lblEditorFont=Font:
+lblEditorBkg=Background:
+lblEditorActiveLine=Active line:
+lblEditorGutter=Gutter:
+lblEditorDigit=Numbers:
+lblEditorString=Strings:
+lblEditorSelect=Selection:
+lblEditorComment=Comments:
+lblEditorBracket=Brackets:
+lblDesktop=Desktop:
+lblBlockColor=Selection:
+lblFontColor=Font:
+gbFlowchartSettings=Flowchart Settings
+chkEnableDBuffer.Caption=Enable double buffering
+chkEnableDBuffer.Hint=Can decrease scrolling performance for big flowcharts
+chkShowFlowLabels=Show function labels
+btnDefaultSettings=Default Settings
+btnBrowseCompilers=Browse...
+btnBrowseScripts=Browse...
+btnSaveSettings=OK
+btnDiscardSettings=Cancel
+chkMultiPrint=Enable multi page printing
+chkMultiPrintHorz=Enable multi page printing in horizontal direction
+gbPrintMargins=Margins (in percent)
+lblMarginLeft=Left:
+lblMarginRight=Right:
+lblMarginTop=Top:
+lblMarginBottom=Bottom:
+edtCompilerHint=Available placeholders:##%s1 - saved source file name##%s2 - saved source file name without extension
+edtCompilerNoMainHint=Available placeholders:##%s1 - saved source file name##%s2 - saved source file name without extension##%s3 - standard compiler command
+chkValidateConsts=Enable additional validation for declarations
+chkAutoSelectCode=Auto-select code for highlighted flowchart elements
+chkAutoUpdateCode=Auto-update code for project changes
+lblInterGen=with internal code generation supported
+lblFontSize=Font size:
+pnlFont.Hint=It can be neither red nor olive
+
+[TreeViewForm]
+FormCaption=Explorer
+miNextError=Next error/warning
+miPrevError=Previous error/warning
+miExpand=Expand all
+miCollapse=Collapse all
+miRemove=Remove
+miRefresh=Refresh
+btnGenerate=Generate code
+
+[SourceEditorForm]
+FormCaption=Code Editor
+miProgram=Program
+miSave=Save...
+miCompile=Compile...
+miRun=Run
+miPrint=Print...
+miEdit=Edit
+miFind=Find...
+miReplace=Replace...
+miGoto=Go to...
+miView=View
+miStatusBar=Status Bar
+miScrollbars=Scrollbars
+miGutter=Gutter
+miCodeFolding=Code Folding
+miCodeFoldingEnable=Enable
+miCollapseAll=Collapse All
+miUnCollapseAll=Expand All
+miIndentGuides=Indent Guides
+miRichText=Highlight Code
+miRegenerate=Regenerate
+miHelp=Help
+miUndo=Undo
+miRedo=Redo
+miCut=Cut
+miCopy=Copy
+miCopyRichText=Copy Special
+miPaste=Paste
+miPasteComment=Paste as Comment
+miRemove=Remove
+miSelectAll=Select All
+Modified=Modified
+InsertMode=Insert
+OverwriteMode=Overwrite
+miFindProj=Find in Project
+
+[GotoForm]
+FormCaption=Go to
+rbLine=Line
+rbNextBookmark=Next bookmark
+rbPrevBookmark=Previous bookmark
+btnGoTo=Ok
+
+[FunctionsForm]
+FormCaption=Functions
+miAction=Function
+miAdd=Add
+miRemove=Remove
+miRemoveAll=Remove All
+miImport=Import...
+miExport=Export...
+miExportAll=Export All...
+lblName=Name:
+lblType=Return type:
+lblLibrary=Library:
+lblParameters=Parameter:         Type:                Array:       Reference:
+btnAddParm=Add Parameter
+btnRemove=Remove
+edtLibraryHint= %s file containing function declaration
+NoType=none
+chkExtDeclare=External declaration
+
+[DataTypesForm]
+FormCaption=Data Types
+miAction=Data Type
+miAdd=Add
+miRemove=Remove
+miRemoveAll=Remove All
+miImport=Import...
+miExport=Export...
+miExportAll=Export All...
+chkAddPtrType=Add pointer type
+btnAddField=Add Field
+edtLibHintType= %s file containing type declaration
+lblType=Type:
+lblSize=Size:
+lblField=Field:
+lblValue=Value:
+btnRemove=Remove
+lblLibrary=Library:
+lblName=Name:
+chkExtDeclare=External declaration
+rgTypeBox=Type Options:
+rbInt=Integer
+rbReal=Real
+rbStruct=Record
+rbEnum=Enumeration
+rbOther=Other
+rbArray=Array
+
+[HelpForm]
+FormCaption=Code Editor - Help
+EditorHelp1=Keys:
+EditorHelp2=
+EditorHelp3=Combination:    Action:
+EditorHelp4=##
+EditorHelp5=Ctrl-Y          Remove line
+EditorHelp6=Ctrl-A          Select all
+EditorHelp7=Ctrl-C          Copy
+EditorHelp8=Ctrl-X          Cut
+EditorHelp9=Ctrl-V          Paste
+EditorHelp10=Ctrl-Z          Undo
+EditorHelp11=Ctrl-Home       Jump to first line
+EditorHelp12=Ctrl-End        Jump to last line
+EditorHelp13=Shift-Ctrl-Z    Redo
+EditorHelp14=Shift-Ctrl-B    Find matching bracket
+EditorHelp15=Shift-Ctrl-I    Move selected block to the right
+EditorHelp16=Shift-Ctrl-U    Move selected block to the left
+EditorHelp17=Shift-Ctrl-C    Switch to column selection
+EditorHelp18=Shift-Ctrl-L    Switch to row selection
+EditorHelp19=Shift-Ctrl-N    Switch to normal selection
+EditorHelp20=
+EditorHelp21=Hints:
+EditorHelp22=##
+EditorHelp23=In order to copy comment from flowchart area to
+EditorHelp24=editor window, hold Shift and drag comment to desired
+EditorHelp25=position in editor.
+EditorHelp26=In order to generate and paste code of selected block
+EditorHelp27=in flowchart area, hold Shift and drag block to
+EditorHelp28=desired position in editor.
+
+[ToolBoxForm]
+FormCaption=ToolBox
+sbAssign=Assignment
+sbIf=If
+sbIfElse=If..Else
+sbInput=Input
+sbOutput=Output
+sbFor=For
+sbRepeat=Repeat
+sbWhile=While
+sbMultAssign=Multiple Assignment
+sbFuncCall=Function Call
+sbCase=Case
+sbReturn=Return
+
+[NavigatorForm]
+FormCaption=Navigator
+
+[AboutForm]
+FormCaption=About...
+
+[MemoEditorForm]
+FormCaption=Memo Editor
+btnOK=OK
+btnCancel=Cancel
+
+
+

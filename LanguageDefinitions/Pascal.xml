@@ -1,0 +1,286 @@
+<!-- Pascal definition file for devFlowcharter -->
+<Language>
+    <Name>Pascal</Name>
+    <CommentBegin>{</CommentBegin>
+    <CommentEnd>}</CommentEnd>
+    <InputFunction>readln()</InputFunction>
+    <OutputFunction>writeln()</OutputFunction>
+    <DefaultExt>pas</DefaultExt>
+    <LibraryExt>.tpu</LibraryExt>
+    <AssignOperator>:=</AssignOperator>
+    <InOutCursorPos>-1</InOutCursorPos>
+    <EnabledConsts>1</EnabledConsts>
+    <EnabledVars>1</EnabledVars>
+    <EnabledCompiler>1</EnabledCompiler>
+    <EnabledUserFunctionHeader>1</EnabledUserFunctionHeader>
+    <EnabledUserFunctionBody>1</EnabledUserFunctionBody>
+    <EnabledUserDataTypes>1</EnabledUserDataTypes>
+    <EnabledExplorer>1</EnabledExplorer>
+    <EnabledCodeGenerator>1</EnabledCodeGenerator>
+    <EnabledMainProgram>1</EnabledMainProgram>
+    <CaseSensitiveSyntax>0</CaseSensitiveSyntax>
+    <UpperCaseConstId>1</UpperCaseConstId>
+    <AllowEnumsInForLoop>1</AllowEnumsInForLoop>
+    <FoldRegions>
+        <FoldRegion AddClose="0" NoSubFolds="0" Type="1" WholeWords="1">
+            <Open Keyword="begin"/>
+            <Close Keyword="end"/>
+        </FoldRegion>
+		<FoldRegion AddClose="0" NoSubFolds="0" Type="1" WholeWords="1">
+			<Open Keyword="try"/>
+			<Close Keyword="end"/>
+		</FoldRegion>
+		<FoldRegion AddClose="0" NoSubFolds="0" Type="1" WholeWords="1">
+			<Open Keyword="case"/>
+			<Close Keyword="end"/>
+		</FoldRegion>		
+		<FoldRegion AddClose="1" NoSubFolds="1" Type="0" WholeWords="1">
+			<Open Keyword="{"/>
+			<Close Keyword="}"/>
+		</FoldRegion>
+    </FoldRegions>
+<!-- It is strongly suggested not to modify (remove any or change order) first 8 data types -->
+<!-- These are used in fixed order by internal Pascal parser -->
+    <NativeDataTypes>
+    	<DataType kind="int">integer</DataType>
+   		<DataType kind="real">real</DataType>
+   		<DataType kind="string">string</DataType>
+   		<DataType kind="bool">boolean</DataType>
+   		<DataType kind="ptr" origtype="integer">^integer</DataType>
+   		<DataType kind="ptr" origtype="real">^real</DataType>
+   		<DataType kind="ptr" origtype="string">^string</DataType>
+   		<DataType>text</DataType>
+   		<DataType kind="int">char</DataType>
+	</NativeDataTypes>
+    <KeyWords>
+		<KeyWord>asm</KeyWord>
+   		<KeyWord>array</KeyWord>
+   		<KeyWord>begin</KeyWord>
+   		<KeyWord>case</KeyWord>
+        <KeyWord>const</KeyWord>
+   		<KeyWord>constructor</KeyWord>
+        <KeyWord>destructor</KeyWord>
+   		<KeyWord>div</KeyWord>
+   		<KeyWord>do</KeyWord>
+   		<KeyWord>downto</KeyWord>
+   		<KeyWord>else</KeyWord>
+   		<KeyWord>end</KeyWord>
+   		<KeyWord>exports</KeyWord>
+   		<KeyWord>file</KeyWord>
+        <KeyWord>for</KeyWord>
+   		<KeyWord>function</KeyWord>
+   		<KeyWord>goto</KeyWord>
+   		<KeyWord>if</KeyWord>
+   		<KeyWord>implementation</KeyWord>
+        <KeyWord>in</KeyWord>
+   		<KeyWord>inherited</KeyWord>
+   		<KeyWord>inline</KeyWord>
+   		<KeyWord>interface</KeyWord>
+   		<KeyWord>label</KeyWord>
+   		<KeyWord>library</KeyWord>
+   		<KeyWord>mod</KeyWord>
+   		<KeyWord>nil</KeyWord>
+   		<KeyWord>not</KeyWord>
+   		<KeyWord>object</KeyWord>
+   		<KeyWord>of</KeyWord>
+   		<KeyWord>or</KeyWord>
+   		<KeyWord>packed</KeyWord>
+   		<KeyWord>procedure</KeyWord>
+   		<KeyWord>program</KeyWord>
+   		<KeyWord>record</KeyWord>
+   		<KeyWord>repeat</KeyWord>
+   		<KeyWord>set</KeyWord>
+   		<KeyWord>shl</KeyWord>
+   		<KeyWord>shr</KeyWord>
+   		<KeyWord>string</KeyWord>
+   		<KeyWord>then</KeyWord>
+   		<KeyWord>to</KeyWord>
+   		<KeyWord>type</KeyWord>
+   		<KeyWord>unit</KeyWord>
+   		<KeyWord>until</KeyWord>
+   		<KeyWord>uses</KeyWord>
+   		<KeyWord>var</KeyWord>
+   		<KeyWord>while</KeyWord>
+   		<KeyWord>with</KeyWord>
+   		<KeyWord>xor</KeyWord>
+    </KeyWords>
+    <NativeFunctions>
+		<Function>sin</Function>
+   		<Function>cos</Function>
+   		<Function>tan</Function>
+   		<Function>cotan</Function>
+   		<Function>ln</Function>
+   		<Function>exp</Function>
+   		<Function>sqr</Function>
+   		<Function>random</Function>
+   		<Function>trunc</Function>
+   		<Function>abs</Function>
+   		<Function>length</Function>
+		<Function>sqrt</Function>
+   		<Function>randomize</Function>
+   		<Function>new</Function>
+   		<Function>dispose</Function>
+   		<Function>write</Function>
+   		<Function>read</Function>
+        <Function>writeln</Function>
+   		<Function>readln</Function>
+   		<Function>pi</Function>
+   		<Function>break</Function>
+   		<Function>continue</Function>
+   		<Function>exit</Function>
+   		<Function>reset</Function>
+   		<Function>rewrite</Function>
+   		<Function>assign</Function>
+		<Function>close</Function>
+   		<Function>append</Function>
+   		<Function>eof</Function>
+   		<Function>eoln</Function>
+   		<Function>ord</Function>
+   		<Function>chr</Function>
+    </NativeFunctions>
+
+<ProcedureLabelKey>ProcedureLabelPascal</ProcedureLabelKey>
+<FunctionLabelKey>FunctionLabelPascal</FunctionLabelKey>
+<ProgramLabelKey>ProgramLabelPascal</ProgramLabelKey>
+
+<WhileTemplate>while %s1 do
+begin
+	%b1
+end;
+</WhileTemplate>
+
+<RepeatUntilTemplate>repeat
+	%b1
+until %s1;
+</RepeatUntilTemplate>
+
+<IfTemplate>if %s1 then
+begin
+	%b1
+end;
+</IfTemplate>
+
+<IfElseTemplate>if %s1 then
+begin
+	%b1
+end
+else
+begin
+	%b2
+end;
+</IfElseTemplate>
+
+<ForDoTemplate>for %s1 := %s2 %s4 %s3 do
+begin
+	%b1
+end;
+</ForDoTemplate>
+<ForAsc1>to</ForAsc1>
+<ForDesc1>downto</ForDesc1>
+
+<CaseOfValueTemplate>%s1:
+begin
+	%b1
+end;
+</CaseOfValueTemplate>
+
+<CaseOfDefaultValueTemplate>else
+	%b1
+</CaseOfDefaultValueTemplate>
+
+<CaseOfTemplate>case %s1 of
+	%s2
+%s3
+end;
+</CaseOfTemplate>
+
+<TextTemplate>{ %s1 }</TextTemplate>
+
+<FunctionCallTemplate>%s1;</FunctionCallTemplate>
+
+<AssignTemplate>%s1;</AssignTemplate>
+
+<InputTemplate>%s1;</InputTemplate>
+
+<OutputTemplate>%s1;</OutputTemplate>
+
+<MainProgramTemplate>begin
+	%b1
+end.
+</MainProgramTemplate>
+
+<ProgramTemplate>begin
+	%b1
+end;
+</ProgramTemplate>
+
+<FunctionHeaderTemplate>%s2
+%s5 %s1(%s3)%s6 %s4;
+</FunctionHeaderTemplate>
+<FunctionHeaderTypeNone1>procedure</FunctionHeaderTypeNone1>
+<FunctionHeaderTypeNotNone1>function</FunctionHeaderTypeNotNone1>
+<FunctionHeaderTypeNone2></FunctionHeaderTypeNone2>
+<FunctionHeaderTypeNotNone2>:</FunctionHeaderTypeNotNone2>
+<FunctionHeaderArgsEntryMask>%s3%s1: %s4%s2; </FunctionHeaderArgsEntryMask>
+<FunctionHeaderArgsEntryRef>var </FunctionHeaderArgsEntryRef>
+<FunctionHeaderArgsEntryArray>array of </FunctionHeaderArgsEntryArray>
+<FunctionHeaderArgsStripCount>2</FunctionHeaderArgsStripCount>
+
+<VarEntryArraySize>1..%s, </VarEntryArraySize>
+<VarEntryArraySizeStripCount>2</VarEntryArraySizeStripCount>
+
+<FunctionTemplate>%s1
+%s2
+%s3
+
+</FunctionTemplate>
+
+<!--
+Element ConstTemplate
+Description: Template for section to declare constants
+Available placeholders:
+   %s1 - list of constants (ConstEntry elements) 
+-->
+<ConstTemplate>const
+	%s1
+</ConstTemplate>
+
+<!--
+Element ConstEntry
+Description: Entry for single declaration of constant
+Available placeholders:
+   %s1 - constant name
+   %s2 - constant value
+-->
+<ConstEntry>%s1 = %s2;</ConstEntry>
+
+<!--
+Element PointerTypeMask
+Description: Mask to create pointer type based on given type
+-->
+<PointerTypeMask>^%s</PointerTypeMask>
+
+<DataTypesTemplate>type
+	%s1
+
+</DataTypesTemplate>
+
+<DataTypeOtherMask>%s1 = %s2;</DataTypeOtherMask>
+<DataTypeArrayMask>%s1 = array[%s3] of %s2;</DataTypeArrayMask>
+
+<DataTypeRecordTemplate>%s1 = record
+	%s2
+end;
+
+</DataTypeRecordTemplate>
+
+<DataTypeRecordFieldMask>%s1: %s2;</DataTypeRecordFieldMask>
+<DataTypeRecordFieldArrayMask>%s1: array[%s3] of %s2;</DataTypeRecordFieldArrayMask>
+
+<DataTypeEnumTemplate>%s1 = (%s2);</DataTypeEnumTemplate>
+<DataTypeEnumEntryList>%s, </DataTypeEnumEntryList>
+<DataTypeEnumEntryListStripCount>2</DataTypeEnumEntryListStripCount>
+
+<UserTypeDesc>%s2 %s1</UserTypeDesc>
+
+</Language>

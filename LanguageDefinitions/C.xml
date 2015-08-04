@@ -1,0 +1,313 @@
+<!-- C definition file for devFlowcharter -->
+<Language>
+	<Name>ANSI C</Name>
+    <CommentBegin>/*</CommentBegin>
+    <CommentEnd>*/</CommentEnd>
+    <InputFunction>scanf()</InputFunction>
+    <OutputFunction>printf()</OutputFunction>
+    <DefaultExt>c</DefaultExt>
+    <LibraryExt>.h</LibraryExt>
+    <AssignOperator>=</AssignOperator>
+    <InOutCursorPos>-1</InOutCursorPos>
+    <EnabledConsts>1</EnabledConsts>
+    <EnabledVars>1</EnabledVars>
+    <EnabledCompiler>1</EnabledCompiler>
+    <EnabledUserFunctionHeader>1</EnabledUserFunctionHeader>
+    <EnabledUserFunctionBody>1</EnabledUserFunctionBody>
+    <EnabledUserDataTypes>1</EnabledUserDataTypes>
+    <EnabledExplorer>1</EnabledExplorer>
+    <EnabledCodeGenerator>1</EnabledCodeGenerator>
+    <EnabledMainProgram>1</EnabledMainProgram>
+    <CaseSensitiveSyntax>1</CaseSensitiveSyntax>
+    <UpperCaseConstId>0</UpperCaseConstId>
+    <FoldRegions>
+		<FoldRegion AddClose="0" NoSubFolds="0" Type="0" WholeWords="0">
+			<Open Keyword="{"/>
+			<Close Keyword="}"/>
+		</FoldRegion>
+		<FoldRegion AddClose="1" NoSubFolds="1" Type="1" WholeWords="1">
+			<Open Keyword="/*"/>
+			<Close Keyword="*/"/>
+        </FoldRegion>
+    </FoldRegions>
+    <NativeDataTypes>
+    	<DataType kind="int">int</DataType>
+   		<DataType kind="real">float</DataType>
+   		<DataType kind="int">char</DataType>
+   		<DataType>void</DataType>
+   		<DataType kind="ptr" origtype="int">int*</DataType>
+   		<DataType kind="ptr" origtype="float">float*</DataType>
+   		<DataType kind="ptr" origtype="char">char*</DataType>
+   		<DataType>FILE</DataType>
+   		<DataType kind="ptr" origtype="FILE">FILE*</DataType>
+	</NativeDataTypes>
+    <KeyWords>
+		<KeyWord>auto</KeyWord>
+		<KeyWord>break</KeyWord>
+		<KeyWord>char</KeyWord>
+		<KeyWord>continue</KeyWord>
+		<KeyWord>default</KeyWord>
+		<KeyWord>double</KeyWord>
+		<KeyWord>enum</KeyWord>
+		<KeyWord>extern</KeyWord>
+		<KeyWord>float</KeyWord>
+		<KeyWord>int</KeyWord>
+		<KeyWord>long</KeyWord>
+		<KeyWord>register</KeyWord>
+		<KeyWord>return</KeyWord>
+		<KeyWord>short</KeyWord>
+		<KeyWord>signed</KeyWord>
+		<KeyWord>sizeof</KeyWord>
+		<KeyWord>static</KeyWord>
+		<KeyWord>struct</KeyWord>
+		<KeyWord>switch</KeyWord>
+		<KeyWord>typedef</KeyWord>
+		<KeyWord>union</KeyWord>
+		<KeyWord>unsigned</KeyWord>
+		<KeyWord>void</KeyWord>
+		<KeyWord>volatile</KeyWord>
+		<KeyWord>if</KeyWord>
+		<KeyWord>do</KeyWord>
+		<KeyWord>while</KeyWord>
+		<KeyWord>else</KeyWord>
+		<KeyWord>case</KeyWord>
+		<KeyWord>for</KeyWord>
+		<KeyWord>goto</KeyWord>
+		<KeyWord>const</KeyWord>
+    </KeyWords>
+
+<ProcedureLabelKey>ProcedureLabelC</ProcedureLabelKey>
+<FunctionLabelKey>FunctionLabelC</FunctionLabelKey>
+<ProgramLabelKey>ProgramLabelC</ProgramLabelKey>
+
+<WhileTemplate>while (%s1)
+{
+	%b1
+}
+</WhileTemplate>
+
+<RepeatUntilTemplate>do
+{
+	%b1
+}
+while (!(%s1));
+</RepeatUntilTemplate>
+
+<IfTemplate>if (%s1)
+{
+	%b1
+}
+</IfTemplate>
+
+<IfElseTemplate>if (%s1)
+{
+	%b1
+}
+else
+{
+	%b2
+}
+</IfElseTemplate>
+
+
+<ForDoTemplate>for (%s1 = %s2; %s1 %s4 %s3; %s1%s5)
+{
+	%b1
+}
+</ForDoTemplate>
+<ForAsc1>&lt;=</ForAsc1>
+<ForAsc2>++</ForAsc2>
+<ForDesc1>&gt;=</ForDesc1>
+<ForDesc2>--</ForDesc2>
+
+<CaseOfValueTemplate>case %s1:
+	%b1
+	break;
+</CaseOfValueTemplate>
+
+<CaseOfDefaultValueTemplate>default:
+	%b1
+</CaseOfDefaultValueTemplate>
+
+<CaseOfTemplate>switch (%s1)
+{
+	%s2
+	%s3
+}
+</CaseOfTemplate>
+
+<TextTemplate>/* %s1 */</TextTemplate>
+
+<FunctionCallTemplate>%s1;</FunctionCallTemplate>
+
+<ReturnTemplate>return %s1;</ReturnTemplate>
+
+<AssignTemplate>%s1;</AssignTemplate>
+
+<InputTemplate>%s1;</InputTemplate>
+
+<OutputTemplate>%s1;</OutputTemplate>
+
+<!--
+Element MainProgramTemplate
+Description: Template for main program body
+Available placeholders:
+   %s1 - project name
+   %s2 - global variables (element VarsTemplate)
+   %s3 - return statement which is generated if last statement of program isn't return block (element ProgramReturnTemplate)
+   %b1 - body of main program  
+-->
+<MainProgramTemplate>int main(int argc, char* argv[])
+{
+	%b1
+	%s3
+}
+</MainProgramTemplate>
+<ProgramReturnTemplate>return 0;</ProgramReturnTemplate>
+
+<!--
+Element ProgramTemplate
+Description: Template for function body
+Available placeholders:
+   %s1 - function name
+   %s2 - function local variables (element VarsTemplate)
+   %b1 - body of function  
+-->
+<ProgramTemplate>{
+	%s2
+
+	%b1
+}
+</ProgramTemplate>
+
+<!--
+Element FunctionHeaderTemplate
+Description: Template for function header
+Available placeholders:
+   %s1 - name of the function
+   %s2 - description/prefix of the function
+   %s3 - list of function parameters (list of FunctionHeaderArgsEntryMask elements)
+   %s4 - return type
+   %s5 - first return type dependent string (FunctionHeaderTypeNone1 or FunctionHeaderTypeNotNone1 element) 
+   %s6 - second return type dependent string (FunctionHeaderTypeNone2 or FunctionHeaderTypeNotNone2 element)
+-->
+<FunctionHeaderTemplate>%s2
+%s4%s5 %s1(%s3)
+</FunctionHeaderTemplate>
+
+<FunctionHeaderTypeNone1>void</FunctionHeaderTypeNone1>
+<FunctionHeaderTypeNotNone1></FunctionHeaderTypeNotNone1>
+<FunctionHeaderArgsEntryMask>%s5%s6%s2%s3 %s1%s4, </FunctionHeaderArgsEntryMask>
+<FunctionHeaderArgsEntryRef>*</FunctionHeaderArgsEntryRef>
+<FunctionHeaderArgsEntryArray>[]</FunctionHeaderArgsEntryArray>
+<FunctionHeaderArgsEntryRecord>struct </FunctionHeaderArgsEntryRecord>
+<FunctionHeaderArgsEntryEnum>enum </FunctionHeaderArgsEntryEnum>
+<FunctionHeaderArgsStripCount>2</FunctionHeaderArgsStripCount>
+
+<!--
+Element FunctionTemplate
+Description: Template for function (header + body)
+Available placeholders:
+   %s1 - function's header line (element FunctionHeaderTemplate)
+   %s2 - function's local variables (element VarsTemplate)
+   %s3 - function's body (element ProgramTemplate)  
+-->
+<FunctionTemplate>%s1
+%s3
+
+</FunctionTemplate>
+
+<!--
+Element VarEntry
+Description: Entry for single variable (non-array) declaration
+Available placeholders:
+   %s1 - variable name
+   %s2 - variable type
+   %s4 - variable initial value 
+   %s5 - used if variable is a record (element FunctionHeaderArgsEntryRecord)
+   %s6 - used if variable is an enumeration (element FunctionHeaderArgsEntryEnum)
+-->
+<VarEntry>%s5%s6%s2 %s1%s4;</VarEntry>
+
+<!--
+Element VarEntryArray
+Description: Entry for single array variable declaration
+Available placeholders are the same as for VarEntry element and:
+   %s3 - list of array sizes (VarEntryArraySize element)
+-->
+<VarEntryArray>%s5%s6%s2 %s1%s3%s4;</VarEntryArray>
+
+<!--
+Element VarEntryArraySize
+Description: Entry for array's single dimension
+Available placeholders are the same as for VarEntry element and:
+   %s - size of array dimension
+-->
+<VarEntryArraySize>[%s]</VarEntryArraySize>
+
+<!--
+Element VarEntryInit
+Description: Mask for variable initial value
+Available placeholders:
+   %s1 - variable initial value
+-->
+<VarEntryInit> = %s1</VarEntryInit>
+
+<!--
+Element VarTemplate
+Description: Template for section to declare variables
+Available placeholders:
+   %s1 - list of variables (VarEntry or VarEntryArray elements) 
+-->
+<VarTemplate>%s1
+</VarTemplate>
+
+<!--
+Element ConstTemplate
+Description: Template for section to declare constants
+Available placeholders:
+   %s1 - list of constants (ConstEntry elements) 
+-->
+<ConstTemplate>%s1
+</ConstTemplate>
+
+<!--
+Element ConstEntry
+Description: Entry for single declaration of constant
+Available placeholders:
+   %s1 - constant name
+   %s2 - constant value
+-->
+<ConstEntry>#define %s1 %s2</ConstEntry>
+
+<!--
+Element PointerTypeMask
+Description: Mask to create pointer type based on given type
+-->
+<PointerTypeMask>%s*</PointerTypeMask>
+
+<DataTypesTemplate>%s1
+</DataTypesTemplate>
+
+<DataTypeOtherMask>typedef %s2 %s1;</DataTypeOtherMask>
+
+<DataTypeArrayMask>typedef %s2 %s1%s3;</DataTypeArrayMask>
+
+<DataTypeRecordTemplate>struct %s1
+{
+	%s2
+};
+
+</DataTypeRecordTemplate>
+
+<DataTypeRecordFieldMask>%s4%s5%s2 %s1;</DataTypeRecordFieldMask>
+<DataTypeRecordFieldArrayMask>%s4%s5%s2 %s1%s3;</DataTypeRecordFieldArrayMask>
+
+<DataTypeEnumTemplate>enum %s1 {%s2};</DataTypeEnumTemplate>
+<DataTypeEnumEntryList>%s, </DataTypeEnumEntryList>
+<DataTypeEnumEntryListStripCount>2</DataTypeEnumEntryListStripCount>
+
+<UserTypeDesc>%s2 %s1</UserTypeDesc>
+
+
+</Language>
