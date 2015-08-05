@@ -213,7 +213,7 @@ begin
       while i <> endValue do
       begin
          lFocusable := GetFocusable(tvExplorer.Items[i]);
-         if (lFocusable <> nil) and ((lFocusable.GetFocusColor = NOK_COLOR) or (lFocusable.GetFocusColor = WARN_COLOR)) then
+         if (lFocusable <> nil) and TInfra.IsRestricted(lFocusable.GetFocusColor) then
          begin
             if not tvExplorer.Items[i].IsVisible then
                tvExplorer.Items[i].MakeVisible;
