@@ -83,7 +83,8 @@ uses
   LangDefinition in 'Common\LangDefinition.pas',
   Dummy_Template in 'LangTemplates\Dummy_Template.pas',
   BlockFactory in 'Common\BlockFactory.pas',
-  StatementMemo in 'Common\StatementMemo.pas';
+  StatementMemo in 'Common\StatementMemo.pas',
+  MultiLine_Block in 'Blocks\MultiLine_Block.pas';
 
 {$R *.res}
 

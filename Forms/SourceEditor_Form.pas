@@ -985,13 +985,22 @@ begin
       begin
          if ADoSelect and CanFocus then
          begin
-            SelStart := RowColToCharIndex(BufferCoord(1, idx1+1));
-            SelEnd := RowColToCharIndex(BufferCoord(Length(lLines[idx2]+CRLF), idx2+1));
+            SelStart := RowColToCharIndex(BufferCoord(Length(lLines[idx2])+1, idx2+1));
+            SelEnd := RowColToCharIndex(BufferCoord(1, idx1+1));
          end;
       end;
    end;
    result.FirstLineIdx := idx1;
    result.LastLineIdx := idx2;
+end;
+
+procedure  TSourceEditorForm.UnSelectCodeBlock(const AObject: TObject);
+begin
+   with memCodeEditor do
+   begin
+      if SelAvail and CanFocus and (Lines.IndexOfObject(AObject) = CharIndexToRowCol(SelStart).Line-1) then
+         SelStart := SelEnd;
+   end;
 end;
 
 procedure TSourceEditorForm.ModifyCodeLine(const ALine: string; AIndex: integer);
@@ -1078,15 +1087,6 @@ begin
             break;
       end;
       result := result div GSettings.IndentLength;
-   end;
-end;
-
-procedure  TSourceEditorForm.UnSelectCodeBlock(const AObject: TObject);
-begin
-   with memCodeEditor do
-   begin
-      if SelAvail and CanFocus and (Lines.IndexOfObject(AObject) = CharIndexToRowCol(SelStart).Line-1) then
-         SelLength := 0;
    end;
 end;
 
