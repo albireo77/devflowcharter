@@ -111,6 +111,7 @@ end;
 procedure TTextBlock.OnChangeMemo(Sender: TObject);
 begin
    inherited;
+   FStatements.Font.Color := GSettings.FontColor;
    if GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor then
       UpdateCodeEditor(nil);
 end;

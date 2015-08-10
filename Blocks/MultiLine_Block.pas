@@ -128,7 +128,7 @@ begin
       FStatements.Color := AColor
    else
       FStatements.Color := GSettings.RectColor;
-   FStatements.Font.Color := GSettings.FontColor;
+   FStatements.OnChange(FStatements);
 end;
 
 procedure TMultiLineBlock.UpdateCodeEditor(AEdit: TCustomEdit);
