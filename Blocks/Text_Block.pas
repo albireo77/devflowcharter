@@ -39,6 +39,7 @@ type
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
          constructor Create(const ABranch: TBranch; const ASource: TTextBlock); overload;
          constructor Create(const ABranch: TBranch); overload;
+         procedure ChangeColor(const AColor: TColor); override;
       protected
          FCorner: TCornerPanel;
          procedure Paint; override;
@@ -111,9 +112,14 @@ end;
 procedure TTextBlock.OnChangeMemo(Sender: TObject);
 begin
    inherited;
-   FStatements.Font.Color := GSettings.FontColor;
    if GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor then
       UpdateCodeEditor(nil);
+end;
+
+procedure TTextBlock.ChangeColor(const AColor: TColor);
+begin
+   inherited ChangeColor(AColor);
+   FStatements.Font.Color := GSettings.FontColor;
 end;
 
 end.

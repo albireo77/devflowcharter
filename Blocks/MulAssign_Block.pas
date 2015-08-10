@@ -37,6 +37,7 @@ type
          constructor Create(const ABranch: TBranch; const ASource: TMultiAssignBlock); overload;
          constructor Create(const ABranch: TBranch); overload;
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
+         procedure ChangeColor(const AColor: TColor); override;
    end;
 
 implementation
@@ -130,6 +131,12 @@ begin
          lTmpList.Free;
       end;
    end;
+end;
+
+procedure TMultiAssignBlock.ChangeColor(const AColor: TColor);
+begin
+   inherited ChangeColor(AColor);
+   FStatements.OnChange(FStatements);
 end;
 
 end.
