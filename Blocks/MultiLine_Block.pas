@@ -40,14 +40,16 @@ type
          constructor Create(const ABranch: TBranch; const ASource: TMultiLineBlock); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
          procedure Paint; override;
-         procedure MyOnDblClick(Sender: TObject);
+         procedure OnDblClickMemo(Sender: TObject);
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
+         procedure OnMouseDownMemo(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+         procedure OnKeyUpMemo(Sender: TObject; var Key: Word; Shift: TShiftState);
    end;
 
 implementation
 
 uses
-   ApplicationCommon, StrUtils, CommonTypes, Forms, LangDefinition, SourceEditor_Form;
+   ApplicationCommon, StrUtils, CommonTypes, Forms, LangDefinition, SourceEditor_Form, Windows, Messages;
 
 constructor TMultiLineBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 begin
@@ -57,8 +59,9 @@ begin
    FStatements := TStatementMemo.Create(Self);
    FStatements.Parent := Self;
    FStatements.SetBounds(0, 0, AWidth, Height-31);
-   FStatements.OnDblClick := MyOnDblClick;
-   FStatements.OnMouseDown := OnMouseDown;
+   FStatements.OnDblClick := OnDblClickMemo;
+   FStatements.OnMouseDown := OnMouseDownMemo;
+   FStatements.OnKeyUp := OnKeyUpMemo;
    FStatements.OnChange := OnChangeMemo;
    if FStatements.CanFocus then
       FStatements.SetFocus;
@@ -85,7 +88,7 @@ begin
    FStatements.Text := ASource.FStatements.Text;
 end;
 
-procedure TMultiLineBlock.MyOnDblClick(Sender: TObject);
+procedure TMultiLineBlock.OnDblClickMemo(Sender: TObject);
 begin
    FStatements.SelectAll;
 end;
@@ -157,6 +160,42 @@ begin
          lTemplateLines.Free;
       end;
    end;
+end;
+
+procedure TMultiLineBlock.OnMouseDownMemo(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+   lRange: TCodeRange;
+   lTemplateLines: TStringList;
+   i, lRow: integer;
+begin
+   if GSettings.UpdateCodeEditor and (Button = mbLeft) then
+   begin
+      lRange := SourceEditorForm.SelectCodeBlock(Self, false);
+      if lRange.FirstLineIdx <> -1 then
+      begin
+         lTemplateLines := TStringList.Create;
+         try
+            lTemplateLines.Text := GInfra.CurrentLang.GetTemplate(ClassType);
+            for i := 0 to lTemplateLines.Count-1 do
+            begin
+               if AnsiPos(PRIMARY_PLACEHOLDER, lTemplateLines[i]) <> 0 then
+               begin
+                  lRow := SendMessage(FStatements.Handle, EM_LINEFROMCHAR, FStatements.SelStart, 0);
+                  SourceEditorForm.memCodeEditor.GotoLineAndCenter(lRange.FirstLineIdx + i + lRow + 1);
+                  break;
+               end;
+            end;
+         finally
+            lTemplateLines.Free;
+         end;
+      end;
+   end;
+end;
+
+procedure TMultiLineBlock.OnKeyUpMemo(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+   if Key in [VK_UP, VK_DOWN] then
+      OnMouseDownMemo(Sender, mbLeft, Shift, 0, 0);
 end;
 
 end.
