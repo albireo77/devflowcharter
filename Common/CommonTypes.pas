@@ -61,6 +61,11 @@ type
       WarningCount: integer;
    end;
 
+   TPlaceHolderLine = record
+      Text: string;
+      Index: integer;
+   end;
+
    TIntegerTypes = 0..100;
    TIntegerTypesSet = set of TIntegerTypes;
 

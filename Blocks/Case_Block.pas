@@ -426,37 +426,18 @@ end;
 
 procedure TCaseBlock.UpdateCodeEditor(AEdit: TCustomEdit);
 var
-   lRange: TCodeRange;
-   lTemplateLines: TStringList;
-   i, idx: integer;
    lLine: string;
+   lPHLine: TPlaceHolderLine;
 begin
    if AEdit = FStatement then
       inherited UpdateCodeEditor(AEdit)
    else if AEdit <> nil then
    begin
-      lRange := SourceEditorForm.SelectCodeBlock(AEdit, false);
-      if lRange.FirstLineIdx <> -1 then
+      lPHLine := TInfra.GetPlaceHolderLine(AEdit, GInfra.CurrentLang.CaseOfValueTemplate);
+      if lPHLine.Index <> -1 then
       begin
-         lTemplateLines := TStringList.Create;
-         try
-            lTemplateLines.Text := GInfra.CurrentLang.CaseOfValueTemplate;
-            for i := 0 to lTemplateLines.Count-1 do
-            begin
-               if AnsiPos(PRIMARY_PLACEHOLDER, lTemplateLines[i]) <> 0 then
-               begin
-                  if i = lTemplateLines.Count-1 then
-                     idx := lRange.LastLineIdx
-                  else
-                     idx := lRange.FirstLineIdx + i;
-                  lLine := FastCodeAnsiStringReplace(lTemplateLines[i], PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
-                  SourceEditorForm.ModifyCodeLine(lLine, idx);
-                  break;
-               end;
-            end;
-         finally
-            lTemplateLines.Free;
-         end;
+         lLine := FastCodeAnsiStringReplace(lPHLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
+         SourceEditorForm.ModifyCodeLine(lLine, lPHLine.Index);
       end;
    end;
 end;

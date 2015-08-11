@@ -164,30 +164,16 @@ end;
 
 procedure TMultiLineBlock.OnMouseDownMemo(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-   lRange: TCodeRange;
-   lTemplateLines: TStringList;
-   i, lRow: integer;
+   lRow: integer;
+   lPHLine: TPlaceHolderLine;
 begin
    if GSettings.UpdateCodeEditor and (Button = mbLeft) then
    begin
-      lRange := SourceEditorForm.SelectCodeBlock(Self, false);
-      if lRange.FirstLineIdx <> -1 then
+      lPHLine := TInfra.GetPlaceHolderLine(Self);
+      if lPHLine.Index <> -1 then
       begin
-         lTemplateLines := TStringList.Create;
-         try
-            lTemplateLines.Text := GInfra.CurrentLang.GetTemplate(ClassType);
-            for i := 0 to lTemplateLines.Count-1 do
-            begin
-               if AnsiPos(PRIMARY_PLACEHOLDER, lTemplateLines[i]) <> 0 then
-               begin
-                  lRow := SendMessage(FStatements.Handle, EM_LINEFROMCHAR, FStatements.SelStart, 0);
-                  SourceEditorForm.memCodeEditor.GotoLineAndCenter(lRange.FirstLineIdx + i + lRow + 1);
-                  break;
-               end;
-            end;
-         finally
-            lTemplateLines.Free;
-         end;
+         lRow := SendMessage(FStatements.Handle, EM_LINEFROMCHAR, FStatements.SelStart, 0);
+         SourceEditorForm.memCodeEditor.GotoLineAndCenter(lPHLine.Index + lRow + 1);
       end;
    end;
 end;

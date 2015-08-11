@@ -1864,32 +1864,16 @@ end;
 
 procedure TBlock.UpdateCodeEditor(AEdit: TCustomEdit);
 var
-   lRange: TCodeRange;
-   lTemplateLines: TStringList;
-   i, idx: integer;
+   lPHLine: TPlaceHolderLine;
    lLine: string;
 begin
-   lRange := SourceEditorForm.SelectCodeBlock(Self, false);
-   if (lRange.FirstLineIdx <> -1) and (AEdit <> nil) then
+   if AEdit <> nil then
    begin
-      lTemplateLines := TStringList.Create;
-      try
-         lTemplateLines.Text := GInfra.CurrentLang.GetTemplate(ClassType);
-         for i := 0 to lTemplateLines.Count-1 do
-         begin
-            if AnsiPos(PRIMARY_PLACEHOLDER, lTemplateLines[i]) <> 0 then
-            begin
-               if i = lTemplateLines.Count-1 then
-                  idx := lRange.LastLineIdx
-               else
-                  idx := lRange.FirstLineIdx + i;
-               lLine := FastCodeAnsiStringReplace(lTemplateLines[i], PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
-               SourceEditorForm.ModifyCodeLine(lLine, idx);
-               break;
-            end;
-         end;
-      finally
-         lTemplateLines.Free;
+      lPHLine := TInfra.GetPlaceHolderLine(Self);
+      if lPHLine.Index <> -1 then
+      begin
+         lLine := FastCodeAnsiStringReplace(lPHLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
+         SourceEditorForm.ModifyCodeLine(lLine, lPHLine.Index);
       end;
    end;
 end;

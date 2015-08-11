@@ -120,6 +120,7 @@ type
          class function Parse(const AEdit: TCustomEdit; const AParserMode: TParserMode): boolean; overload;
          class function Parse(const AText: string; const AParserMode: TParserMode): boolean; overload;
          class function IsRestricted(const AColor: TColor): boolean;
+         class function GetPlaceHolderLine(AObject: TObject; const ATemplate: string = ''): TPlaceHolderLine;
          constructor Create;
          destructor Destroy; override;
    end;
@@ -1175,6 +1176,44 @@ end;
 class function TInfra.IsRestricted(const AColor: TColor): boolean;
 begin
    result := (AColor = NOK_COLOR) or (AColor = WARN_COLOR);
+end;
+
+class function TInfra.GetPlaceHolderLine(AObject: TObject; const ATemplate: string = ''): TPlaceHolderLine;
+var
+   lTemplateLines: TStringList;
+   lRange: TCodeRange;
+   i, idx: integer;
+begin
+   result.Text := '';
+   result.Index := -1;
+   if AObject <> nil then
+   begin
+      lRange := SourceEditorForm.SelectCodeBlock(AObject, false);
+      if lRange.FirstLineIdx <> -1 then
+      begin
+         lTemplateLines := TStringList.Create;
+         try
+            if ATemplate <> '' then
+               lTemplateLines.Text := ATemplate
+            else
+               lTemplateLines.Text := GInfra.CurrentLang.GetTemplate(AObject.ClassType);
+            for i := 0 to lTemplateLines.Count-1 do
+            begin
+               if AnsiPos(PRIMARY_PLACEHOLDER, lTemplateLines[i]) <> 0 then
+               begin
+                  if (i = lTemplateLines.Count-1) and (i <> 0) then
+                     result.Index := lRange.LastLineIdx
+                  else
+                     result.Index := lRange.FirstLineIdx + i;
+                  result.Text := lTemplateLines[i];
+                  break;
+               end;
+            end;
+         finally
+            lTemplateLines.Free;
+         end;
+      end;
+   end;
 end;
 
 function ValidateId(const AIdent: string): integer;

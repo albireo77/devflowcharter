@@ -491,47 +491,28 @@ end;
 
 procedure TForDoBlock.UpdateCodeEditor(AEdit: TCustomEdit);
 var
-   lRange: TCodeRange;
-   lTemplateLines: TStringList;
-   i, idx: integer;
    lLine, lStr1, lStr2: string;
+   lPHLine: TPlaceHolderLine;
 begin
-   lRange := SourceEditorForm.SelectCodeBlock(Self, false);
-   if lRange.FirstLineIdx <> -1 then
+   lPHLine := TInfra.GetPlaceHolderLine(Self);
+   if lPHLine.Index <> -1 then
    begin
-      lTemplateLines := TStringList.Create;
-      try
-         lTemplateLines.Text := GInfra.CurrentLang.GetTemplate(ClassType);
-         for i := 0 to lTemplateLines.Count-1 do
-         begin
-            if AnsiPos(PRIMARY_PLACEHOLDER, lTemplateLines[i]) <> 0 then
-            begin
-               if i = lTemplateLines.Count-1 then
-                  idx := lRange.LastLineIdx
-               else
-                  idx := lRange.FirstLineIdx + i;
-               lLine := FastCodeAnsiStringReplace(lTemplateLines[i], PRIMARY_PLACEHOLDER, edtVariable.Text);
-               lLine := FastCodeAnsiStringReplace(lLine, '%s2', Trim(edtStartVal.Text));
-               lLine := FastCodeAnsiStringReplace(lLine, '%s3', Trim(edtStopVal.Text));
-               if FOrder = orAsc then
-               begin
-                  lStr1 := GInfra.CurrentLang.ForAsc1;
-                  lStr2 := GInfra.CurrentLang.ForAsc2;
-               end
-               else
-               begin
-                  lStr1 := GInfra.CurrentLang.ForDesc1;
-                  lStr2 := GInfra.CurrentLang.ForDesc2;
-               end;
-               lLine := FastCodeAnsiStringReplace(lLine, '%s4', lStr1);
-               lLine := FastCodeAnsiStringReplace(lLine, '%s5', lStr2);
-               SourceEditorForm.ModifyCodeLine(lLine, idx);
-               break;
-            end;
-         end;
-      finally
-         lTemplateLines.Free;
+      lLine := FastCodeAnsiStringReplace(lPHLine.Text, PRIMARY_PLACEHOLDER, edtVariable.Text);
+      lLine := FastCodeAnsiStringReplace(lLine, '%s2', Trim(edtStartVal.Text));
+      lLine := FastCodeAnsiStringReplace(lLine, '%s3', Trim(edtStopVal.Text));
+      if FOrder = orAsc then
+      begin
+         lStr1 := GInfra.CurrentLang.ForAsc1;
+         lStr2 := GInfra.CurrentLang.ForAsc2;
+      end
+      else
+      begin
+         lStr1 := GInfra.CurrentLang.ForDesc1;
+         lStr2 := GInfra.CurrentLang.ForDesc2;
       end;
+      lLine := FastCodeAnsiStringReplace(lLine, '%s4', lStr1);
+      lLine := FastCodeAnsiStringReplace(lLine, '%s5', lStr2);
+      SourceEditorForm.ModifyCodeLine(lLine, lPHLine.Index);
    end;
 end;
 
