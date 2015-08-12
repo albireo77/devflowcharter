@@ -59,7 +59,7 @@ type
          procedure SaveInXML(const ATag: IXMLElement); override;
          procedure ChangeColor(const AColor: TColor); override;
          procedure PopulateComboBoxes; override;
-         procedure UpdateCodeEditor(AEdit: TCustomEdit); override;
+         procedure UpdateEditor(AEdit: TCustomEdit); override;
          function RetrieveFocus(AInfo: TFocusInfo): boolean; override;
    end;
 
@@ -67,7 +67,7 @@ implementation
 
 uses
    ApplicationCommon, StrUtils, XMLProcessor, Main_Block, UserFunction, Return_Block,
-   LangDefinition, SourceEditor_Form, FastcodeAnsiStringReplaceUnit, Dialogs;
+   LangDefinition, SourceEditor_Form, FastcodeAnsiStringReplaceUnit;
 
 constructor TForDoBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, px1, p1Y: integer; const AId: integer = ID_INVALID);
 begin
@@ -193,7 +193,7 @@ begin
       FOrder := AValue;
       Repaint;
       if GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor then
-         UpdateCodeEditor(nil);
+         UpdateEditor(nil);
    end;
 end;
 
@@ -270,7 +270,7 @@ begin
       edtVariable.Font.Color := NOK_COLOR;
    end;
    if GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor then
-      UpdateCodeEditor(nil);
+      UpdateEditor(nil);
 end;
 
 function TForDoBlock.GetDescription:string;
@@ -489,17 +489,17 @@ begin
    edtVariable.SetBounds(0, lTop, 33, edtVariable.Height);
 end;
 
-procedure TForDoBlock.UpdateCodeEditor(AEdit: TCustomEdit);
+procedure TForDoBlock.UpdateEditor(AEdit: TCustomEdit);
 var
-   lLine, lStr1, lStr2: string;
+   lText, lStr1, lStr2: string;
    lPHLine: TPlaceHolderLine;
 begin
    lPHLine := TInfra.GetPlaceHolderLine(Self);
    if lPHLine.Index <> -1 then
    begin
-      lLine := FastCodeAnsiStringReplace(lPHLine.Text, PRIMARY_PLACEHOLDER, edtVariable.Text);
-      lLine := FastCodeAnsiStringReplace(lLine, '%s2', Trim(edtStartVal.Text));
-      lLine := FastCodeAnsiStringReplace(lLine, '%s3', Trim(edtStopVal.Text));
+      lText := FastCodeAnsiStringReplace(lPHLine.Text, PRIMARY_PLACEHOLDER, edtVariable.Text);
+      lText := FastCodeAnsiStringReplace(lText, '%s2', Trim(edtStartVal.Text));
+      lText := FastCodeAnsiStringReplace(lText, '%s3', Trim(edtStopVal.Text));
       if FOrder = orAsc then
       begin
          lStr1 := GInfra.CurrentLang.ForAsc1;
@@ -510,9 +510,9 @@ begin
          lStr1 := GInfra.CurrentLang.ForDesc1;
          lStr2 := GInfra.CurrentLang.ForDesc2;
       end;
-      lLine := FastCodeAnsiStringReplace(lLine, '%s4', lStr1);
-      lLine := FastCodeAnsiStringReplace(lLine, '%s5', lStr2);
-      SourceEditorForm.ModifyCodeLine(lLine, lPHLine.Index);
+      lText := FastCodeAnsiStringReplace(lText, '%s4', lStr1);
+      lText := FastCodeAnsiStringReplace(lText, '%s5', lStr2);
+      SourceEditorForm.ChangeLine(lText, lPHLine.Index);
    end;
 end;
 

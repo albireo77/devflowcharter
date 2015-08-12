@@ -214,7 +214,7 @@ begin
    GChange := 1;
    Hint := i18Manager.GetFormattedString('ExpOk', [lText, CRLF]);
    if GSettings.UpdateCodeEditor and not TBlock(Parent).SkipUpdateCodeEditor then
-      TBlock(Parent).UpdateCodeEditor(Self);
+      TBlock(Parent).UpdateEditor(Self);
 
    if FExecuteParse then
    begin

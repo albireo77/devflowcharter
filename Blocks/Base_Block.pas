@@ -132,7 +132,7 @@ type
          function ImportFromXMLFile(const filename: string): TErrorType;
          function ImportFromXMLTag(const root: IXMLElement): TErrorType;
          procedure ExportToGraphic(const AImage: TGraphic); virtual;
-         procedure UpdateCodeEditor(AEdit: TCustomEdit); virtual;
+         procedure UpdateEditor(AEdit: TCustomEdit); virtual;
          function SkipUpdateCodeEditor: boolean;
          function RetrieveFocus(AInfo: TFocusInfo): boolean; virtual;
          function CanBeFocused: boolean;
@@ -1862,18 +1862,18 @@ begin
       result := OK_COLOR;
 end;
 
-procedure TBlock.UpdateCodeEditor(AEdit: TCustomEdit);
+procedure TBlock.UpdateEditor(AEdit: TCustomEdit);
 var
    lPHLine: TPlaceHolderLine;
-   lLine: string;
+   lText: string;
 begin
    if AEdit <> nil then
    begin
       lPHLine := TInfra.GetPlaceHolderLine(Self);
       if lPHLine.Index <> -1 then
       begin
-         lLine := FastCodeAnsiStringReplace(lPHLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
-         SourceEditorForm.ModifyCodeLine(lLine, lPHLine.Index);
+         lText := FastCodeAnsiStringReplace(lPHLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
+         SourceEditorForm.ChangeLine(lText, lPHLine.Index);
       end;
    end;
 end;

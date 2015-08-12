@@ -129,7 +129,7 @@ type
     procedure ImportSettingsFromXMLTag(const root: IXMLElement); override;
     procedure ReloadFoldRegions;
     function GetIndentLevel(const idx: integer): integer;
-    procedure ModifyCodeLine(const ALine: string; AIndex: integer);
+    procedure ChangeLine(const AText: string; AIndex: integer);
     procedure RefreshEditorForObject(const AObject: TObject);
   end;
 
@@ -1003,7 +1003,7 @@ begin
    end;
 end;
 
-procedure TSourceEditorForm.ModifyCodeLine(const ALine: string; AIndex: integer);
+procedure TSourceEditorForm.ChangeLine(const AText: string; AIndex: integer);
 var
 {$IFDEF USE_CODEFOLDING}
    lFoldRange: TSynEditFoldRange;
@@ -1031,7 +1031,7 @@ begin
    begin
       if lCenter then
          memCodeEditor.GotoLineAndCenter(AIndex+1);
-      lLines[AIndex] := lIndentStr + ALine;
+      lLines[AIndex] := lIndentStr + AText;
    end;
 end;
 

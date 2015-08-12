@@ -50,7 +50,7 @@ type
 implementation
 
 uses
-   ApplicationCommon, StrUtils, CommonTypes, Forms;
+   ApplicationCommon, StrUtils, CommonTypes;
 
 constructor TTextBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 begin
@@ -113,7 +113,7 @@ procedure TTextBlock.OnChangeMemo(Sender: TObject);
 begin
    inherited;
    if GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor then
-      UpdateCodeEditor(nil);
+      UpdateEditor(nil);
 end;
 
 procedure TTextBlock.ChangeColor(const AColor: TColor);

@@ -54,7 +54,7 @@ type
          procedure SaveInXML(const ATag: IXMLElement); override;
          procedure RefreshCaseValues;
          procedure ChangeColor(const AColor: TColor); override;
-         procedure UpdateCodeEditor(AEdit: TCustomEdit); override;
+         procedure UpdateEditor(AEdit: TCustomEdit); override;
    end;
 
 const
@@ -424,20 +424,20 @@ begin
       end;
 end;
 
-procedure TCaseBlock.UpdateCodeEditor(AEdit: TCustomEdit);
+procedure TCaseBlock.UpdateEditor(AEdit: TCustomEdit);
 var
-   lLine: string;
+   lText: string;
    lPHLine: TPlaceHolderLine;
 begin
    if AEdit = FStatement then
-      inherited UpdateCodeEditor(AEdit)
+      inherited UpdateEditor(AEdit)
    else if AEdit <> nil then
    begin
       lPHLine := TInfra.GetPlaceHolderLine(AEdit, GInfra.CurrentLang.CaseOfValueTemplate);
       if lPHLine.Index <> -1 then
       begin
-         lLine := FastCodeAnsiStringReplace(lPHLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
-         SourceEditorForm.ModifyCodeLine(lLine, lPHLine.Index);
+         lText := FastCodeAnsiStringReplace(lPHLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
+         SourceEditorForm.ChangeLine(lText, lPHLine.Index);
       end;
    end;
 end;

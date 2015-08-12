@@ -72,7 +72,7 @@ begin
    lText := Trim(FStatements.Text);
    FStatements.Hint := i18Manager.GetFormattedString('ExpOk', [lText, CRLF]);
    if GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor then
-      UpdateCodeEditor(nil);
+      UpdateEditor(nil);
    if GSettings.ParseAssignMult then
    begin
       if lText = '' then

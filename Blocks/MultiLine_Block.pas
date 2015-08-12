@@ -34,7 +34,7 @@ type
          function GetTextControl: TCustomEdit; override;
          procedure ChangeColor(const AColor: TColor); override;
          function GetFrontMemo: TMemo; override;
-         procedure UpdateCodeEditor(AEdit: TCustomEdit); override;
+         procedure UpdateEditor(AEdit: TCustomEdit); override;
       protected
          FStatements: TStatementMemo;
          constructor Create(const ABranch: TBranch; const ASource: TMultiLineBlock); overload;
@@ -133,7 +133,7 @@ begin
       FStatements.Color := GSettings.RectColor;
 end;
 
-procedure TMultiLineBlock.UpdateCodeEditor(AEdit: TCustomEdit);
+procedure TMultiLineBlock.UpdateEditor(AEdit: TCustomEdit);
 var
    lRange: TCodeRange;
    lTemplateLines: TStringList;
