@@ -63,7 +63,8 @@ type
 
    TPlaceHolderLine = record
       Text: string;
-      Index: integer;
+      Row,
+      Col: integer;
    end;
 
    TIntegerTypes = 0..100;

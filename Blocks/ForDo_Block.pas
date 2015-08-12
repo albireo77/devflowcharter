@@ -495,7 +495,7 @@ var
    lPHLine: TPlaceHolderLine;
 begin
    lPHLine := TInfra.GetPlaceHolderLine(Self);
-   if lPHLine.Index <> -1 then
+   if lPHLine.Row <> -1 then
    begin
       lText := FastCodeAnsiStringReplace(lPHLine.Text, PRIMARY_PLACEHOLDER, edtVariable.Text);
       lText := FastCodeAnsiStringReplace(lText, '%s2', Trim(edtStartVal.Text));
@@ -512,7 +512,7 @@ begin
       end;
       lText := FastCodeAnsiStringReplace(lText, '%s4', lStr1);
       lText := FastCodeAnsiStringReplace(lText, '%s5', lStr2);
-      SourceEditorForm.ChangeLine(lText, lPHLine.Index);
+      SourceEditorForm.ChangeLine(lText, lPHLine.Row);
    end;
 end;
 

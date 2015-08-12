@@ -1870,10 +1870,10 @@ begin
    if AEdit <> nil then
    begin
       lPHLine := TInfra.GetPlaceHolderLine(Self);
-      if lPHLine.Index <> -1 then
+      if lPHLine.Row <> -1 then
       begin
          lText := FastCodeAnsiStringReplace(lPHLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
-         SourceEditorForm.ChangeLine(lText, lPHLine.Index);
+         SourceEditorForm.ChangeLine(lText, lPHLine.Row);
       end;
    end;
 end;

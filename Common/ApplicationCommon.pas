@@ -1182,10 +1182,11 @@ class function TInfra.GetPlaceHolderLine(AObject: TObject; const ATemplate: stri
 var
    lTemplateLines: TStringList;
    lRange: TCodeRange;
-   i, idx: integer;
+   i, lPos: integer;
 begin
    result.Text := '';
-   result.Index := -1;
+   result.Row := -1;
+   result.Col := -1;
    if AObject <> nil then
    begin
       lRange := SourceEditorForm.SelectCodeBlock(AObject, false);
@@ -1199,12 +1200,14 @@ begin
                lTemplateLines.Text := GInfra.CurrentLang.GetTemplate(AObject.ClassType);
             for i := 0 to lTemplateLines.Count-1 do
             begin
-               if AnsiPos(PRIMARY_PLACEHOLDER, lTemplateLines[i]) <> 0 then
+               lPos := AnsiPos(PRIMARY_PLACEHOLDER, lTemplateLines[i]);
+               if lPos <> 0 then
                begin
                   if (i = lTemplateLines.Count-1) and (i <> 0) then
-                     result.Index := lRange.LastLineIdx
+                     result.Row := lRange.LastLineIdx
                   else
-                     result.Index := lRange.FirstLineIdx + i;
+                     result.Row := lRange.FirstLineIdx + i;
+                  result.Col := lPos + SourceEditorForm.GetIndentLevel(result.Row)*Length(GSettings.IndentString);
                   result.Text := lTemplateLines[i];
                   break;
                end;
