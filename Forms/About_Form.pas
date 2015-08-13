@@ -59,7 +59,7 @@ const
    DELPHI_LINK  = 'www.embarcadero.com/products/delphi';
    SYNEDIT_LINK = 'synedit.sourceforge.net';
    IcXML_LINK   = 'www.omnixml.com';
-   PROJECT_LINK = 'sourceforge.net/projects/devflowcharter';
+   PROJECT_LINK = 'github.com/albireo77/devflowcharter';
 
 {$R *.dfm}
 
