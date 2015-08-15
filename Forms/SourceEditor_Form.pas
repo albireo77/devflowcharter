@@ -27,7 +27,7 @@ uses
    Windows, Controls, Forms, StdCtrls, ExtCtrls, Graphics, Dialogs, ComCtrls,
    Menus, Clipbrd, SysUtils, SynExportRTF, SynEditPrint, CommonTypes, SynHighlighterPas,
    SynHighlighterCpp, Classes, SynEdit, SynMemo, SynExportHTML, OmniXML, Base_Form, CommonInterfaces,
-   SynEditExport, SynEditHighlighter;
+   SynEditExport, SynEditHighlighter, SynEditTypes;
 
 type
 
@@ -131,6 +131,7 @@ type
     function GetIndentLevel(const idx: integer): integer;
     procedure ChangeLine(const AText: string; AIndex: integer);
     procedure RefreshEditorForObject(const AObject: TObject);
+    procedure SetEditorCaretPos(const APHLine: TPlaceHolderLine; const ACaretPos: TBufferCoord);
   end;
 
 var
@@ -143,7 +144,7 @@ uses
    SynEditCodeFolding,
 {$ENDIF}
    ApplicationCommon, Goto_Form, Settings, LangDefinition, Main_Block, Help_Form,
-   Comment, ParserCommon, XMLProcessor, StrUtils, Main_Form, Base_Block, SynEditTypes;
+   Comment, ParserCommon, XMLProcessor, StrUtils, Main_Form, Base_Block;
 
 const
    InfoPanel2: array[boolean] of string = ('OverwriteMode', 'InsertMode');
@@ -1374,6 +1375,19 @@ begin
    if memCodeEditor.CodeFolding.Enabled then
       memCodeEditor.ReScanForFoldRanges;
 {$ENDIF}
+end;
+
+procedure TSourceEditorForm.SetEditorCaretPos(const APHLine: TPlaceHolderLine; const ACaretPos: TBufferCoord);
+var
+   lChar, lLine: integer;
+begin
+   lChar := APHLine.Col + ACaretPos.Char;
+   lLine := APHLine.Row + ACaretPos.Line + 1;
+   if (lLine > 0) and (lLine <= memCodeEditor.Lines.Count) then
+   begin
+      memCodeEditor.CaretXY := BufferCoord(lChar, lLine);
+      memCodeEditor.EnsureCursorPosVisible;
+   end;
 end;
 
 procedure TSourceEditorForm.miFindProjClick(Sender: TObject);

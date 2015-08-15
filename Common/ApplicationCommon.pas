@@ -27,7 +27,7 @@ uses
    Windows, Forms, StdCtrls, Grids, Controls, Graphics, Registry, SysUtils, Classes,
    StrUtils, Types, ComCtrls, LocalizationManager, Statement, Project, Settings,
    LangDefinition, CommonTypes, Base_Form, CommonInterfaces, Functions_Form,
-   DataTypes_Form, Declarations_Form, Main_Form, Base_Block;
+   DataTypes_Form, Declarations_Form, Main_Form, Base_Block, SynEditTypes;
 
 type
 
@@ -120,7 +120,8 @@ type
          class function Parse(const AEdit: TCustomEdit; const AParserMode: TParserMode): boolean; overload;
          class function Parse(const AText: string; const AParserMode: TParserMode): boolean; overload;
          class function IsRestricted(const AColor: TColor): boolean;
-         class function GetPlaceHolderLine(AObject: TObject; const ATemplate: string = ''): TPlaceHolderLine;
+         class function GetPlaceHolderLine(const AObject: TObject; const ATemplate: string = ''): TPlaceHolderLine;
+         class function GetCaretPos(const AEdit: TCustomEdit): TBufferCoord;
          constructor Create;
          destructor Destroy; override;
    end;
@@ -217,7 +218,7 @@ implementation
 
 uses
    Printers, UserDataType, XMLProcessor, SourceEditor_Form, SynEditHighlighter,
-   Main_Block;
+   Main_Block, Messages;
 
 var
    FParsedEdit: TCustomEdit;
@@ -1178,7 +1179,7 @@ begin
    result := (AColor = NOK_COLOR) or (AColor = WARN_COLOR);
 end;
 
-class function TInfra.GetPlaceHolderLine(AObject: TObject; const ATemplate: string = ''): TPlaceHolderLine;
+class function TInfra.GetPlaceHolderLine(const AObject: TObject; const ATemplate: string = ''): TPlaceHolderLine;
 var
    lTemplateLines: TStringList;
    lRange: TCodeRange;
@@ -1217,6 +1218,19 @@ begin
          end;
       end;
    end;
+end;
+
+class function TInfra.GetCaretPos(const AEdit: TCustomEdit): TBufferCoord;
+begin
+   result.Line := 0;
+   result.Char := 0;
+   if AEdit is TCustomMemo then
+   begin
+      result.Line := SendMessage(AEdit.Handle, EM_LINEFROMCHAR, AEdit.SelStart, 0);
+      result.Char := AEdit.SelStart - SendMessage(AEdit.Handle, EM_LINEINDEX, result.Line, 0);
+   end
+   else if AEdit <> nil then
+      result.Char := AEdit.SelStart;
 end;
 
 function ValidateId(const AIdent: string): integer;

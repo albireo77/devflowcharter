@@ -1872,8 +1872,9 @@ begin
       lPHLine := TInfra.GetPlaceHolderLine(Self);
       if lPHLine.Row <> -1 then
       begin
-         lText := FastCodeAnsiStringReplace(lPHLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
+         lText := FastCodeAnsiStringReplace(lPHLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
          SourceEditorForm.ChangeLine(lText, lPHLine.Row);
+         SourceEditorForm.SetEditorCaretPos(lPHLine, TInfra.GetCaretPos(AEdit));
       end;
    end;
 end;

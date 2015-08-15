@@ -49,7 +49,7 @@ type
 implementation
 
 uses
-   ApplicationCommon, StrUtils, CommonTypes, Forms, LangDefinition, SourceEditor_Form, Windows, Messages;
+   ApplicationCommon, StrUtils, CommonTypes, Forms, LangDefinition, SourceEditor_Form, Windows;
 
 constructor TMultiLineBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 begin
@@ -145,16 +145,19 @@ begin
       lTemplateLines := TStringList.Create;
       try
          GenerateCode(lTemplateLines, GInfra.CurrentLang.Name, SourceEditorForm.GetIndentLevel(lRange.FirstLineIdx));
-         with SourceEditorForm.memCodeEditor do
+         if lTemplateLines.Count > 0 then
          begin
-            Lines.BeginUpdate;
-            for i := 0 to lRange.LastLineIdx - lRange.FirstLineIdx do
-               Lines.Delete(lRange.FirstLineIdx);
-            for i := lTemplateLines.Count-1 downto 0 do
-               Lines.InsertObject(lRange.FirstLineIdx, lTemplateLines[i], lTemplateLines.Objects[i]);
-            GotoLineAndCenter(lRange.FirstLineIdx);
-            Lines.EndUpdate;
-            OnChange(SourceEditorForm.memCodeEditor);
+            with SourceEditorForm do
+            begin
+               memCodeEditor.Lines.BeginUpdate;
+               for i := 0 to lRange.LastLineIdx - lRange.FirstLineIdx do
+                  memCodeEditor.Lines.Delete(lRange.FirstLineIdx);
+               for i := lTemplateLines.Count-1 downto 0 do
+                  memCodeEditor.Lines.InsertObject(lRange.FirstLineIdx, lTemplateLines[i], lTemplateLines.Objects[i]);
+               memCodeEditor.Lines.EndUpdate;
+               SetEditorCaretPos(TInfra.GetPlaceHolderLine(Self), TInfra.GetCaretPos(FStatements));
+               memCodeEditor.OnChange(memCodeEditor);
+            end;
          end;
       finally
          lTemplateLines.Free;
@@ -163,24 +166,14 @@ begin
 end;
 
 procedure TMultiLineBlock.OnMouseDownMemo(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-   lMemoRow: integer;
-   lPHLine: TPlaceHolderLine;
 begin
    if GSettings.UpdateCodeEditor and (Button = mbLeft) then
-   begin
-      lPHLine := TInfra.GetPlaceHolderLine(Self);
-      if lPHLine.Row <> -1 then
-      begin
-         lMemoRow := SendMessage(FStatements.Handle, EM_LINEFROMCHAR, FStatements.SelStart, 0);
-         SourceEditorForm.memCodeEditor.GotoLineAndCenter(lPHLine.Row + lMemoRow + 1);
-      end;
-   end;
+      SourceEditorForm.SetEditorCaretPos(TInfra.GetPlaceHolderLine(Self), TInfra.GetCaretPos(FStatements));
 end;
 
 procedure TMultiLineBlock.OnKeyUpMemo(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-   if Key in [VK_UP, VK_DOWN] then
+   if Key in [VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT] then
       OnMouseDownMemo(Sender, mbLeft, Shift, 0, 0);
 end;
 
