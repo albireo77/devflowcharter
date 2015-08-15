@@ -1192,7 +1192,7 @@ begin
    lPos := 0;
    result.Text := '';
    result.Row := ROW_NOT_FOUND;
-   result.Col := -1;
+   result.Col := 0;
    result.EditCaretXY := TInfra.GetCaretPos(AEdit);
    if AObject <> nil then
    begin
@@ -1222,7 +1222,6 @@ begin
             begin
                result.Row := lRange.FirstRow;
                result.Text := SourceEditorForm.memCodeEditor.Lines[result.Row];
-               result.Col := 0;
             end
             else
             begin
