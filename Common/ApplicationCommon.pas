@@ -166,7 +166,7 @@ const   // Global constants
         MARGIN_X         = 50;
         MARGIN_Y         = 50;
 
-        ROW_NOT_FOUND = -1;
+        ROW_NOT_FOUND    = -1;
 
         OK_COLOR         = clGreen;
         NOK_COLOR        = clRed;
@@ -1187,9 +1187,9 @@ var
    lTemplateLines: TStringList;
    lRange: TCodeRange;
    i, lPos: integer;
-   lIndent, lText: string;
+   lIndent: string;
 begin
-   lText := '';
+   lPos := 0;
    result.Text := '';
    result.Row := ROW_NOT_FOUND;
    result.Col := -1;
@@ -1214,18 +1214,22 @@ begin
                      result.Row := lRange.LastRow
                   else
                      result.Row := lRange.FirstRow + i;
-                  lText := lTemplateLines[i];
+                  result.Text := lTemplateLines[i];
                   break;
                end;
             end;
-            if result.Row = ROW_NOT_FOUND then
+            if result.Row = ROW_NOT_FOUND then    // row with placeholder not found
             begin
                result.Row := lRange.FirstRow;
-               lText := SourceEditorForm.memCodeEditor.Lines[result.Row];
+               result.Text := SourceEditorForm.memCodeEditor.Lines[result.Row];
+               result.Col := 0;
+            end
+            else
+            begin
+               lIndent := TInfra.ExtractIndentString(SourceEditorForm.memCodeEditor.Lines[result.Row]);
+               result.Text := lIndent + result.Text;
+               result.Col := lPos + Length(lIndent);
             end;
-            lIndent := TInfra.ExtractIndentString(SourceEditorForm.memCodeEditor.Lines[result.Row]);
-            result.Col := lPos + Length(lIndent);
-            result.Text := lIndent + lText;
          finally
             lTemplateLines.Free;
          end;
