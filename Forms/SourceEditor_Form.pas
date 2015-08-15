@@ -129,9 +129,9 @@ type
     procedure ImportSettingsFromXMLTag(const root: IXMLElement); override;
     procedure ReloadFoldRegions;
     function GetIndentLevel(const idx: integer): integer;
-    procedure ChangeLine(const AText: string; AIndex: integer);
+    procedure ChangeLine(ALine: TChangeLine);
     procedure RefreshEditorForObject(const AObject: TObject);
-    procedure SetEditorCaretPos(const APHLine: TPlaceHolderLine; const ACaretPos: TBufferCoord);
+    procedure SetEditorCaretPos(const ALine: TChangeLine);
   end;
 
 var
@@ -1004,35 +1004,42 @@ begin
    end;
 end;
 
-procedure TSourceEditorForm.ChangeLine(const AText: string; AIndex: integer);
+procedure TSourceEditorForm.ChangeLine(ALine: TChangeLine);
 var
 {$IFDEF USE_CODEFOLDING}
    lFoldRange: TSynEditFoldRange;
 {$ENDIF}
    lLines: TStrings;
-   lIndentStr: string;
-   lCenter: boolean;
 begin
-   lCenter := true;
-   lIndentStr := DupeString(GSettings.IndentString, GetIndentLevel(AIndex));
 {$IFDEF USE_CODEFOLDING}
-   lFoldRange := memCodeEditor.FindCollapsedFoldRangeForLine(AIndex+1);
+   lFoldRange := memCodeEditor.FindCollapsedFoldRangeForLine(ALine.Row + 1);
    if lFoldRange <> nil then
    begin
       lLines := lFoldRange.CollapsedLines;
-      AIndex := lLines.Count-1-AIndex+lFoldRange.FromLine;
-      lCenter := false;
+      ALine.Row := lLines.Count - ALine.Row + lFoldRange.FromLine - 1;
    end
    else
       lLines := memCodeEditor.Lines;
 {$ELSE}
    lLines := memCodeEditor.Lines;
 {$ENDIF}
-   if (AIndex >= 0) and (AIndex < lLines.Count) then
+   if (ALine.Row >= 0) and (ALine.Row < lLines.Count) then
    begin
-      if lCenter then
-         memCodeEditor.GotoLineAndCenter(AIndex+1);
-      lLines[AIndex] := lIndentStr + AText;
+      lLines[ALine.Row] := ALine.Text;
+      SetEditorCaretPos(ALine);
+   end;
+end;
+
+procedure TSourceEditorForm.SetEditorCaretPos(const ALine: TChangeLine);
+var
+   lChar, lLine: integer;
+begin
+   lChar := ALine.Col + ALine.EditCaretXY.Char;
+   lLine := ALine.Row + ALIne.EditCaretXY.Line + 1;
+   if (lLine > 0) and (lLine <= memCodeEditor.Lines.Count) then
+   begin
+      memCodeEditor.CaretXY := BufferCoord(lChar, lLine);
+      memCodeEditor.EnsureCursorPosVisible;
    end;
 end;
 
@@ -1375,19 +1382,6 @@ begin
    if memCodeEditor.CodeFolding.Enabled then
       memCodeEditor.ReScanForFoldRanges;
 {$ENDIF}
-end;
-
-procedure TSourceEditorForm.SetEditorCaretPos(const APHLine: TPlaceHolderLine; const ACaretPos: TBufferCoord);
-var
-   lChar, lLine: integer;
-begin
-   lChar := APHLine.Col + ACaretPos.Char;
-   lLine := APHLine.Row + ACaretPos.Line + 1;
-   if (lLine > 0) and (lLine <= memCodeEditor.Lines.Count) then
-   begin
-      memCodeEditor.CaretXY := BufferCoord(lChar, lLine);
-      memCodeEditor.EnsureCursorPosVisible;
-   end;
 end;
 
 procedure TSourceEditorForm.miFindProjClick(Sender: TObject);

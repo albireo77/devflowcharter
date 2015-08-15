@@ -155,7 +155,7 @@ begin
                for i := lTemplateLines.Count-1 downto 0 do
                   memCodeEditor.Lines.InsertObject(lRange.FirstLineIdx, lTemplateLines[i], lTemplateLines.Objects[i]);
                memCodeEditor.Lines.EndUpdate;
-               SetEditorCaretPos(TInfra.GetPlaceHolderLine(Self), TInfra.GetCaretPos(FStatements));
+               SetEditorCaretPos(TInfra.GetChangeLine(Self, FStatements));
                memCodeEditor.OnChange(memCodeEditor);
             end;
          end;
@@ -168,7 +168,7 @@ end;
 procedure TMultiLineBlock.OnMouseDownMemo(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
    if GSettings.UpdateCodeEditor and (Button = mbLeft) then
-      SourceEditorForm.SetEditorCaretPos(TInfra.GetPlaceHolderLine(Self), TInfra.GetCaretPos(FStatements));
+      SourceEditorForm.SetEditorCaretPos(TInfra.GetChangeLine(Self, FStatements));
 end;
 
 procedure TMultiLineBlock.OnKeyUpMemo(Sender: TObject; var Key: Word; Shift: TShiftState);

@@ -491,15 +491,15 @@ end;
 
 procedure TForDoBlock.UpdateEditor(AEdit: TCustomEdit);
 var
-   lText, lStr1, lStr2: string;
-   lPHLine: TPlaceHolderLine;
+   lStr1, lStr2: string;
+   lLine: TChangeLine;
 begin
-   lPHLine := TInfra.GetPlaceHolderLine(Self);
-   if lPHLine.Row <> -1 then
+   lLine := TInfra.GetChangeLine(Self);
+   if lLine.Row <> -1 then
    begin
-      lText := FastCodeAnsiStringReplace(lPHLine.Text, PRIMARY_PLACEHOLDER, edtVariable.Text);
-      lText := FastCodeAnsiStringReplace(lText, '%s2', Trim(edtStartVal.Text));
-      lText := FastCodeAnsiStringReplace(lText, '%s3', Trim(edtStopVal.Text));
+      lLine.Text := FastCodeAnsiStringReplace(lLine.Text, PRIMARY_PLACEHOLDER, edtVariable.Text);
+      lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s2', Trim(edtStartVal.Text));
+      lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s3', Trim(edtStopVal.Text));
       if FOrder = orAsc then
       begin
          lStr1 := GInfra.CurrentLang.ForAsc1;
@@ -510,9 +510,9 @@ begin
          lStr1 := GInfra.CurrentLang.ForDesc1;
          lStr2 := GInfra.CurrentLang.ForDesc2;
       end;
-      lText := FastCodeAnsiStringReplace(lText, '%s4', lStr1);
-      lText := FastCodeAnsiStringReplace(lText, '%s5', lStr2);
-      SourceEditorForm.ChangeLine(lText, lPHLine.Row);
+      lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s4', lStr1);
+      lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s5', lStr2);
+      SourceEditorForm.ChangeLine(lLine);
    end;
 end;
 

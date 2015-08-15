@@ -247,11 +247,9 @@ type
          procedure UndoRemove(ABlock: TBlock);
    end;
 
-   TBranchIterator = class(TBaseIterator)
-   end;
+   TBranchIterator = class(TBaseIterator);
 
-   TBlockIterator = class(TBaseIterator)
-   end;
+   TBlockIterator = class(TBaseIterator);
 
 implementation
 
@@ -1864,17 +1862,15 @@ end;
 
 procedure TBlock.UpdateEditor(AEdit: TCustomEdit);
 var
-   lPHLine: TPlaceHolderLine;
-   lText: string;
+   lLine: TChangeLine;
 begin
    if AEdit <> nil then
    begin
-      lPHLine := TInfra.GetPlaceHolderLine(Self);
-      if lPHLine.Row <> -1 then
+      lLine := TInfra.GetChangeLine(Self, AEdit);
+      if lLine.Row <> -1 then
       begin
-         lText := FastCodeAnsiStringReplace(lPHLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
-         SourceEditorForm.ChangeLine(lText, lPHLine.Row);
-         SourceEditorForm.SetEditorCaretPos(lPHLine, TInfra.GetCaretPos(AEdit));
+         lLine.Text := FastCodeAnsiStringReplace(lLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
+         SourceEditorForm.ChangeLine(lLine);
       end;
    end;
 end;

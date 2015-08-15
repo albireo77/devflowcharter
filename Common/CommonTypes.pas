@@ -24,7 +24,7 @@ unit CommonTypes;
 interface
 
 uses
-   Windows, SysUtils, Classes, Types;
+   Windows, SysUtils, Classes, Types, SynEditTypes;
 
 type
 
@@ -61,10 +61,11 @@ type
       WarningCount: integer;
    end;
 
-   TPlaceHolderLine = record
+   TChangeLine = record
       Text: string;
       Row,
       Col: integer;
+      EditCaretXY: TBufferCoord;
    end;
 
    TIntegerTypes = 0..100;

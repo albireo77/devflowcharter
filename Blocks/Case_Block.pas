@@ -64,7 +64,7 @@ implementation
 
 uses
    StrUtils, XMLProcessor, Return_Block, Navigator_Form, FastcodeAnsiStringReplaceUnit, Messages,
-   LangDefinition, SourceEditor_Form, Windows, Statement, ApplicationCommon, SynEditTypes;
+   LangDefinition, SourceEditor_Form, Windows, Statement, ApplicationCommon;
 
 constructor TCaseBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
 begin
@@ -426,19 +426,17 @@ end;
 
 procedure TCaseBlock.UpdateEditor(AEdit: TCustomEdit);
 var
-   lText: string;
-   lPHLine: TPlaceHolderLine;
+   lLine: TChangeLine;
 begin
    if AEdit = FStatement then
       inherited UpdateEditor(AEdit)
    else if AEdit <> nil then
    begin
-      lPHLine := TInfra.GetPlaceHolderLine(AEdit, GInfra.CurrentLang.CaseOfValueTemplate);
-      if lPHLine.Row <> -1 then
+      lLine := TInfra.GetChangeLine(AEdit, AEdit, GInfra.CurrentLang.CaseOfValueTemplate);
+      if lLine.Row <> -1 then
       begin
-         lText := FastCodeAnsiStringReplace(lPHLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
-         SourceEditorForm.ChangeLine(lText, lPHLine.Row);
-         SourceEditorForm.SetEditorCaretPos(lPHLine, BufferCoord(0, 0));
+         lLine.Text := FastCodeAnsiStringReplace(lLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
+         SourceEditorForm.ChangeLine(lLine);
       end;
    end;
 end;

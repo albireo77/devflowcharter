@@ -120,7 +120,7 @@ type
          class function Parse(const AEdit: TCustomEdit; const AParserMode: TParserMode): boolean; overload;
          class function Parse(const AText: string; const AParserMode: TParserMode): boolean; overload;
          class function IsRestricted(const AColor: TColor): boolean;
-         class function GetPlaceHolderLine(const AObject: TObject; const ATemplate: string = ''): TPlaceHolderLine;
+         class function GetChangeLine(const AObject: TObject; const AEdit: TCustomEdit = nil; const ATemplate: string = ''): TChangeLine;
          class function GetCaretPos(const AEdit: TCustomEdit): TBufferCoord;
          constructor Create;
          destructor Destroy; override;
@@ -1179,15 +1179,17 @@ begin
    result := (AColor = NOK_COLOR) or (AColor = WARN_COLOR);
 end;
 
-class function TInfra.GetPlaceHolderLine(const AObject: TObject; const ATemplate: string = ''): TPlaceHolderLine;
+class function TInfra.GetChangeLine(const AObject: TObject; const AEdit: TCustomEdit = nil; const ATemplate: string = ''): TChangeLine;
 var
    lTemplateLines: TStringList;
    lRange: TCodeRange;
    i, lPos: integer;
+   lIndent: string;
 begin
    result.Text := '';
    result.Row := -1;
    result.Col := -1;
+   result.EditCaretXY := TInfra.GetCaretPos(AEdit);
    if AObject <> nil then
    begin
       lRange := SourceEditorForm.SelectCodeBlock(AObject, false);
@@ -1208,8 +1210,9 @@ begin
                      result.Row := lRange.LastLineIdx
                   else
                      result.Row := lRange.FirstLineIdx + i;
-                  result.Col := lPos + SourceEditorForm.GetIndentLevel(result.Row)*Length(GSettings.IndentString);
-                  result.Text := lTemplateLines[i];
+                  lIndent := DupeString(GSettings.IndentString, SourceEditorForm.GetIndentLevel(result.Row));
+                  result.Col := lPos + Length(lIndent);
+                  result.Text := lIndent + lTemplateLines[i];
                   break;
                end;
             end;
