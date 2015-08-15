@@ -122,6 +122,7 @@ type
          class function IsRestricted(const AColor: TColor): boolean;
          class function GetChangeLine(const AObject: TObject; const AEdit: TCustomEdit = nil; const ATemplate: string = ''): TChangeLine;
          class function GetCaretPos(const AEdit: TCustomEdit): TBufferCoord;
+         class function ExtractIndentString(const AText: string): string;
          constructor Create;
          destructor Destroy; override;
    end;
@@ -164,6 +165,8 @@ const   // Global constants
 
         MARGIN_X         = 50;
         MARGIN_Y         = 50;
+
+        ROW_NOT_FOUND = -1;
 
         OK_COLOR         = clGreen;
         NOK_COLOR        = clRed;
@@ -1184,16 +1187,17 @@ var
    lTemplateLines: TStringList;
    lRange: TCodeRange;
    i, lPos: integer;
-   lIndent: string;
+   lIndent, lText: string;
 begin
+   lText := '';
    result.Text := '';
-   result.Row := -1;
+   result.Row := ROW_NOT_FOUND;
    result.Col := -1;
    result.EditCaretXY := TInfra.GetCaretPos(AEdit);
    if AObject <> nil then
    begin
       lRange := SourceEditorForm.SelectCodeBlock(AObject, false);
-      if lRange.FirstLineIdx <> -1 then
+      if lRange.FirstRow <> ROW_NOT_FOUND then
       begin
          lTemplateLines := TStringList.Create;
          try
@@ -1207,15 +1211,21 @@ begin
                if lPos <> 0 then
                begin
                   if (i = lTemplateLines.Count-1) and (i <> 0) then
-                     result.Row := lRange.LastLineIdx
+                     result.Row := lRange.LastRow
                   else
-                     result.Row := lRange.FirstLineIdx + i;
-                  lIndent := DupeString(GSettings.IndentString, SourceEditorForm.GetIndentLevel(result.Row));
-                  result.Col := lPos + Length(lIndent);
-                  result.Text := lIndent + lTemplateLines[i];
+                     result.Row := lRange.FirstRow + i;
+                  lText := lTemplateLines[i];
                   break;
                end;
             end;
+            if result.Row = ROW_NOT_FOUND then
+            begin
+               result.Row := lRange.FirstRow;
+               lText := SourceEditorForm.memCodeEditor.Lines[result.Row];
+            end;
+            lIndent := TInfra.ExtractIndentString(SourceEditorForm.memCodeEditor.Lines[result.Row]);
+            result.Col := lPos + Length(lIndent);
+            result.Text := lIndent + lText;
          finally
             lTemplateLines.Free;
          end;
@@ -1234,6 +1244,18 @@ begin
    end
    else if AEdit <> nil then
       result.Char := AEdit.SelStart;
+end;
+
+class function TInfra.ExtractIndentString(const AText: string): string;
+var
+   i: integer;
+begin
+   for i := 1 to Length(AText) do
+   begin
+      if not (AText[i] in [#32, #9, INDENT_CHAR]) then
+         break;
+   end;
+   result := AnsiLeftStr(AText, i-1);
 end;
 
 function ValidateId(const AIdent: string): integer;

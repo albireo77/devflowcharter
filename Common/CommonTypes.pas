@@ -45,8 +45,8 @@ type
    TArrowPlace = (apMiddle, apEnd);
 
    TCodeRange = record
-      FirstLineIdx,
-      LastLineIdx: integer;
+      FirstRow,
+      LastRow: integer;
    end;
 
    PNativeDataType = ^TNativeDataType;

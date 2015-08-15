@@ -433,7 +433,7 @@ begin
    else if AEdit <> nil then
    begin
       lLine := TInfra.GetChangeLine(AEdit, AEdit, GInfra.CurrentLang.CaseOfValueTemplate);
-      if lLine.Row <> -1 then
+      if lLine.Row <> ROW_NOT_FOUND then
       begin
          lLine.Text := FastCodeAnsiStringReplace(lLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
          SourceEditorForm.ChangeLine(lLine);

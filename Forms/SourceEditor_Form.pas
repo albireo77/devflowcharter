@@ -967,7 +967,7 @@ begin
 {$ELSE}
    lLines := memCodeEditor.Lines;
 {$ENDIF}
-   idx2 := -1;
+   idx2 := ROW_NOT_FOUND;
    idx1 := lLines.IndexOfObject(AObject);
    if idx1 <> -1 then
    begin
@@ -991,8 +991,8 @@ begin
          end;
       end;
    end;
-   result.FirstLineIdx := idx1;
-   result.LastLineIdx := idx2;
+   result.FirstRow := idx1;
+   result.LastRow := idx2;
 end;
 
 procedure  TSourceEditorForm.UnSelectCodeBlock(const AObject: TObject);
@@ -1056,7 +1056,7 @@ begin
       FormShow(Self);
       if AObject <> nil then
       begin
-         lLine := SelectCodeBlock(AObject, false).FirstLineIdx + 1;
+         lLine := SelectCodeBlock(AObject, false).FirstRow + 1;
          if lLine > 0 then
          begin
             if (lLine < lTopLine) or (lLine > lTopLine+memCodeEditor.LinesInWindow) then
@@ -1404,8 +1404,8 @@ begin
             lFocusInfo.Line := lCoord.Row - 1;
             lFocusInfo.LineText := TrimLeft(Lines[lFocusInfo.Line]);
             lCodeRange := SelectCodeBlock(Lines.Objects[lFocusInfo.Line], false);
-            if lCodeRange.FirstLineIdx <> -1 then
-               lFocusInfo.RelativeLine := lFocusInfo.Line - lCodeRange.FirstLineIdx;
+            if lCodeRange.FirstRow <> ROW_NOT_FOUND then
+               lFocusInfo.RelativeLine := lFocusInfo.Line - lCodeRange.FirstRow;
             lSelCoord := CharIndexToRowCol(SelStart);
             if lSelCoord.Line = lCoord.Row then
             begin

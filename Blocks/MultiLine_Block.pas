@@ -140,20 +140,20 @@ var
    i: integer;
 begin
    lRange := SourceEditorForm.SelectCodeBlock(Self, false);
-   if lRange.FirstLineIdx <> -1 then
+   if lRange.FirstRow <> ROW_NOT_FOUND then
    begin
       lTemplateLines := TStringList.Create;
       try
-         GenerateCode(lTemplateLines, GInfra.CurrentLang.Name, SourceEditorForm.GetIndentLevel(lRange.FirstLineIdx));
+         GenerateCode(lTemplateLines, GInfra.CurrentLang.Name, SourceEditorForm.GetIndentLevel(lRange.FirstRow));
          if lTemplateLines.Count > 0 then
          begin
             with SourceEditorForm do
             begin
                memCodeEditor.Lines.BeginUpdate;
-               for i := 0 to lRange.LastLineIdx - lRange.FirstLineIdx do
-                  memCodeEditor.Lines.Delete(lRange.FirstLineIdx);
+               for i := 0 to lRange.LastRow - lRange.FirstRow do
+                  memCodeEditor.Lines.Delete(lRange.FirstRow);
                for i := lTemplateLines.Count-1 downto 0 do
-                  memCodeEditor.Lines.InsertObject(lRange.FirstLineIdx, lTemplateLines[i], lTemplateLines.Objects[i]);
+                  memCodeEditor.Lines.InsertObject(lRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
                memCodeEditor.Lines.EndUpdate;
                SetEditorCaretPos(TInfra.GetChangeLine(Self, FStatements));
                memCodeEditor.OnChange(memCodeEditor);

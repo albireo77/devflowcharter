@@ -495,7 +495,7 @@ var
    lLine: TChangeLine;
 begin
    lLine := TInfra.GetChangeLine(Self);
-   if lLine.Row <> -1 then
+   if lLine.Row <> ROW_NOT_FOUND then
    begin
       lLine.Text := FastCodeAnsiStringReplace(lLine.Text, PRIMARY_PLACEHOLDER, edtVariable.Text);
       lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s2', Trim(edtStartVal.Text));

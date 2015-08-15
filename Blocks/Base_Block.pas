@@ -1867,7 +1867,7 @@ begin
    if AEdit <> nil then
    begin
       lLine := TInfra.GetChangeLine(Self, AEdit);
-      if lLine.Row <> -1 then
+      if lLine.Row <> ROW_NOT_FOUND then
       begin
          lLine.Text := FastCodeAnsiStringReplace(lLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
          SourceEditorForm.ChangeLine(lLine);
