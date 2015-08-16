@@ -47,7 +47,6 @@ type
    TCodeRange = record
       FirstRow,
       LastRow: integer;
-      Lines: TStrings;
    end;
 
    PNativeDataType = ^TNativeDataType;

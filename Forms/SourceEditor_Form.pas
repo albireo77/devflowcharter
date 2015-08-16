@@ -993,7 +993,6 @@ begin
    end;
    result.FirstRow := idx1;
    result.LastRow := idx2;
-   result.Lines := lLines;
 end;
 
 procedure  TSourceEditorForm.UnSelectCodeBlock(const AObject: TObject);
