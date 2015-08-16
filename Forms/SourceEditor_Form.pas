@@ -1004,14 +1004,12 @@ begin
    end;
 end;
 
+{$IFDEF USE_CODEFOLDING}
 procedure TSourceEditorForm.ChangeLine(ALine: TChangeLine);
 var
-{$IFDEF USE_CODEFOLDING}
    lFoldRange: TSynEditFoldRange;
-{$ENDIF}
    lLines: TStrings;
 begin
-{$IFDEF USE_CODEFOLDING}
    lFoldRange := memCodeEditor.FindCollapsedFoldRangeForLine(ALine.Row + 1);
    if lFoldRange <> nil then
    begin
@@ -1020,16 +1018,19 @@ begin
    end
    else
       lLines := memCodeEditor.Lines;
-{$ELSE}
-   lLines := memCodeEditor.Lines;
-{$ENDIF}
    if ALine.PerformChange and (ALine.Row >= 0) and (ALine.Row < lLines.Count) then
       lLines[ALine.Row] := ALine.Text;
-{$IFDEF USE_CODEFOLDING}
    if lFoldRange = nil then
-{$ENDIF}
+      SetEditorCaretPos(ALine);
+end;
+{$ELSE}
+procedure TSourceEditorForm.ChangeLine(ALine: TChangeLine);
+begin
+   if ALine.PerformChange and (ALine.Row >= 0) and (ALine.Row < memCodeEditor.Lines.Count) then
+      memCodeEditor.Lines[ALine.Row] := ALine.Text;
    SetEditorCaretPos(ALine);
 end;
+{$ENDIF}
 
 procedure TSourceEditorForm.SetEditorCaretPos(const ALine: TChangeLine);
 var
