@@ -1193,14 +1193,12 @@ begin
    result.Text := '';
    result.Row := ROW_NOT_FOUND;
    result.Col := 0;
-   result.Lines := nil;
    result.EditCaretXY := TInfra.GetCaretPos(AEdit);
    if AObject <> nil then
    begin
       lRange := SourceEditorForm.SelectCodeBlock(AObject, false);
       if lRange.FirstRow <> ROW_NOT_FOUND then
       begin
-         result.Lines := lRange.Lines;
          lTemplateLines := TStringList.Create;
          try
             if ATemplate <> '' then
