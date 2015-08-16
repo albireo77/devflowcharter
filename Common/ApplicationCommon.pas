@@ -1220,6 +1220,8 @@ begin
                   break;
                end;
             end;
+            lIndent := TInfra.ExtractIndentString(SourceEditorForm.memCodeEditor.Lines[result.Row]);
+            result.Col := Length(lIndent);
             if result.Row = ROW_NOT_FOUND then    // row with placeholder not found
             begin
                result.Row := lRange.FirstRow;
@@ -1227,9 +1229,8 @@ begin
             end
             else
             begin
-               lIndent := TInfra.ExtractIndentString(SourceEditorForm.memCodeEditor.Lines[result.Row]);
                result.Text := lIndent + result.Text;
-               result.Col := lPos + Length(lIndent);
+               result.Col := lPos + result.Col;
             end;
          finally
             lTemplateLines.Free;
