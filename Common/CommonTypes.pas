@@ -47,6 +47,7 @@ type
    TCodeRange = record
       FirstRow,
       LastRow: integer;
+      Lines: TStrings;
    end;
 
    PNativeDataType = ^TNativeDataType;
@@ -66,6 +67,7 @@ type
       Row,
       Col: integer;
       EditCaretXY: TBufferCoord;
+      Lines: TStrings;
    end;
 
    TIntegerTypes = 0..100;
