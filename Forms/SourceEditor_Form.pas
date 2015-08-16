@@ -1017,11 +1017,12 @@ begin
       ALine.Row := lLines.Count - ALine.Row + lFoldRange.FromLine - 1;
    end
    else
+   begin
       lLines := memCodeEditor.Lines;
+      SetEditorCaretPos(ALine);
+   end;
    if ALine.PerformChange and (ALine.Row >= 0) and (ALine.Row < lLines.Count) then
       lLines[ALine.Row] := ALine.Text;
-   if lFoldRange = nil then
-      SetEditorCaretPos(ALine);
 end;
 {$ELSE}
 procedure TSourceEditorForm.ChangeLine(ALine: TChangeLine);
