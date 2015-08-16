@@ -112,8 +112,7 @@ end;
 procedure TTextBlock.OnChangeMemo(Sender: TObject);
 begin
    inherited;
-   if GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor then
-      UpdateEditor(nil);
+   UpdateEditor(nil);
 end;
 
 procedure TTextBlock.ChangeColor(const AColor: TColor);

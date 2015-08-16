@@ -436,6 +436,7 @@ begin
       if lLine.Row <> ROW_NOT_FOUND then
       begin
          lLine.Text := FastCodeAnsiStringReplace(lLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
+         lLine.PerformChange := GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor;
          SourceEditorForm.ChangeLine(lLine);
       end;
    end;

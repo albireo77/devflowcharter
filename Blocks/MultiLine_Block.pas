@@ -142,32 +142,35 @@ begin
    lRange := SourceEditorForm.SelectCodeBlock(Self, false);
    if lRange.FirstRow <> ROW_NOT_FOUND then
    begin
-      lTemplateLines := TStringList.Create;
-      try
-         GenerateCode(lTemplateLines, GInfra.CurrentLang.Name, SourceEditorForm.GetIndentLevel(lRange.FirstRow));
-         if lTemplateLines.Count > 0 then
+      with SourceEditorForm do
+      begin
+         if GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor then
          begin
-            with SourceEditorForm do
-            begin
-               memCodeEditor.Lines.BeginUpdate;
-               for i := 0 to lRange.LastRow - lRange.FirstRow do
-                  memCodeEditor.Lines.Delete(lRange.FirstRow);
-               for i := lTemplateLines.Count-1 downto 0 do
-                  memCodeEditor.Lines.InsertObject(lRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
-               memCodeEditor.Lines.EndUpdate;
-               SetEditorCaretPos(TInfra.GetChangeLine(Self, FStatements));
-               memCodeEditor.OnChange(memCodeEditor);
+            lTemplateLines := TStringList.Create;
+            try
+               GenerateCode(lTemplateLines, GInfra.CurrentLang.Name, SourceEditorForm.GetIndentLevel(lRange.FirstRow));
+               if lTemplateLines.Count > 0 then
+               begin
+                  memCodeEditor.Lines.BeginUpdate;
+                  for i := 0 to lRange.LastRow - lRange.FirstRow do
+                     memCodeEditor.Lines.Delete(lRange.FirstRow);
+                  for i := lTemplateLines.Count-1 downto 0 do
+                     memCodeEditor.Lines.InsertObject(lRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
+                  memCodeEditor.Lines.EndUpdate;
+               end;
+            finally
+               lTemplateLines.Free;
             end;
          end;
-      finally
-         lTemplateLines.Free;
+         SetEditorCaretPos(TInfra.GetChangeLine(Self, FStatements));
+         memCodeEditor.OnChange(memCodeEditor);
       end;
    end;
 end;
 
 procedure TMultiLineBlock.OnMouseDownMemo(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-   if GSettings.UpdateCodeEditor and (Button = mbLeft) then
+   if Button = mbLeft then
       SourceEditorForm.SetEditorCaretPos(TInfra.GetChangeLine(Self, FStatements));
 end;
 

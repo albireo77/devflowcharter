@@ -1023,11 +1023,12 @@ begin
 {$ELSE}
    lLines := memCodeEditor.Lines;
 {$ENDIF}
-   if (ALine.Row >= 0) and (ALine.Row < lLines.Count) then
-   begin
+   if ALine.PerformChange and (ALine.Row >= 0) and (ALine.Row < lLines.Count) then
       lLines[ALine.Row] := ALine.Text;
-      SetEditorCaretPos(ALine);
-   end;
+{$IFDEF USE_CODEFOLDING}
+   if lFoldRange = nil then
+{$ENDIF}
+   SetEditorCaretPos(ALine);
 end;
 
 procedure TSourceEditorForm.SetEditorCaretPos(const ALine: TChangeLine);
@@ -1036,7 +1037,11 @@ var
 begin
    lChar := ALine.Col + ALine.EditCaretXY.Char;
    lLine := ALine.Row + ALIne.EditCaretXY.Line + 1;
-   if (lLine > 0) and (lLine <= memCodeEditor.Lines.Count) then
+   if (lLine > 0) and (lLine <= memCodeEditor.Lines.Count)
+{$IFDEF USE_CODEFOLDING}
+   and (memCodeEditor.FindCollapsedFoldRangeForLine(lLine) = nil)
+{$ENDIF}
+   then
    begin
       memCodeEditor.CaretXY := BufferCoord(lChar, lLine);
       memCodeEditor.EnsureCursorPosVisible;

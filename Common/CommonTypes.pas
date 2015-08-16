@@ -66,6 +66,7 @@ type
       Row,
       Col: integer;
       EditCaretXY: TBufferCoord;
+      PerformChange: boolean;
    end;
 
    TIntegerTypes = 0..100;

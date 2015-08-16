@@ -1194,6 +1194,7 @@ begin
    result.Row := ROW_NOT_FOUND;
    result.Col := 0;
    result.EditCaretXY := TInfra.GetCaretPos(AEdit);
+   result.PerformChange := true;
    if AObject <> nil then
    begin
       lRange := SourceEditorForm.SelectCodeBlock(AObject, false);

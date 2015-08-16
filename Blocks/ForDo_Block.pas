@@ -512,6 +512,7 @@ begin
       end;
       lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s4', lStr1);
       lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s5', lStr2);
+      lLine.PerformChange := GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor;
       SourceEditorForm.ChangeLine(lLine);
    end;
 end;
