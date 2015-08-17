@@ -1219,12 +1219,12 @@ begin
                   break;
                end;
             end;
-            lIndent := TInfra.ExtractIndentString(SourceEditorForm.memCodeEditor.Lines[result.Row]);
+            lIndent := TInfra.ExtractIndentString(SourceEditorForm.GetEditorAllLines[result.Row]);
             result.Col := Length(lIndent);
             if result.Row = ROW_NOT_FOUND then    // row with placeholder not found
             begin
                result.Row := lRange.FirstRow;
-               result.Text := SourceEditorForm.memCodeEditor.Lines[result.Row];
+               result.Text := SourceEditorForm.GetEditorAllLines[result.Row];
             end
             else
             begin

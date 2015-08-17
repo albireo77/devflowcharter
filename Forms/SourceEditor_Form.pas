@@ -132,6 +132,7 @@ type
     procedure ChangeLine(ALine: TChangeLine);
     procedure RefreshEditorForObject(const AObject: TObject);
     procedure SetEditorCaretPos(const ALine: TChangeLine);
+    function GetEditorAllLines: TStrings;
   end;
 
 var
@@ -954,6 +955,15 @@ begin
    end;
 end;
 
+function TSourceEditorForm.GetEditorAllLines: TStrings;
+begin
+{$IFDEF USE_CODEFOLDING}
+   result := memCodeEditor.GetUncollapsedStrings;
+{$ELSE}
+   result := memCodeEditor.Lines;
+{$ENDIF}
+end;
+
 function TSourceEditorForm.SelectCodeBlock(const AObject: TObject; ADoSelect: boolean = true): TCodeRange;
 var
 {$IFDEF USE_CODEFOLDING}
@@ -962,11 +972,7 @@ var
    i, idx1, idx2: integer;
    lLines: TStrings;
 begin
-{$IFDEF USE_CODEFOLDING}
-   lLines := memCodeEditor.GetUncollapsedStrings;
-{$ELSE}
-   lLines := memCodeEditor.Lines;
-{$ENDIF}
+   lLines := GetEditorAllLines;
    idx2 := ROW_NOT_FOUND;
    idx1 := lLines.IndexOfObject(AObject);
    if idx1 <> -1 then
