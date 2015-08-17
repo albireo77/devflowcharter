@@ -972,8 +972,8 @@ begin
    if idx1 <> -1 then
    begin
 {$IFDEF USE_CODEFOLDING}
-      lFoldRange := memCodeEditor.CollapsableFoldRangeForLine(idx1);
-      if (lFoldRange <> nil) and lFoldRange.Collapsed then
+      lFoldRange := memCodeEditor.FindCollapsedFoldRangeForLine(idx1+1);
+      if lFoldRange <> nil then
          ADoSelect := false;
 {$ENDIF}
       idx2 := idx1;
@@ -1010,7 +1010,7 @@ var
    lFoldRange: TSynEditFoldRange;
    lLines: TStrings;
 begin
-   lFoldRange := memCodeEditor.FindCollapsedFoldRangeForLine(ALine.Row + 1);
+   lFoldRange := memCodeEditor.FindCollapsedFoldRangeForLine(ALine.Row+1);
    if lFoldRange <> nil then
    begin
       lLines := lFoldRange.CollapsedLines;
