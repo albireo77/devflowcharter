@@ -208,7 +208,7 @@ begin
 {$ENDIF}
    end;
    GInfra.SetLangHiglighterAttributes;
-end;
+end; 
 
 procedure TSourceEditorForm.ResetForm;
 begin
@@ -1342,7 +1342,7 @@ begin
 {$ENDIF}
    end;
    GSettings.LoadFromSourceEditor;
-end;
+end; 
 
 procedure TSourceEditorForm.memCodeEditorChange(Sender: TObject);
 begin
