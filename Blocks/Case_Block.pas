@@ -64,7 +64,7 @@ implementation
 
 uses
    StrUtils, XMLProcessor, Return_Block, Navigator_Form, FastcodeAnsiStringReplaceUnit, Messages,
-   LangDefinition, SourceEditor_Form, Windows, Statement, ApplicationCommon;
+   LangDefinition, Windows, Statement, ApplicationCommon;
 
 constructor TCaseBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
 begin
@@ -436,8 +436,9 @@ begin
       if lLine.Row <> ROW_NOT_FOUND then
       begin
          lLine.Text := FastCodeAnsiStringReplace(lLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
-         lLine.PerformChange := GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor;
-         SourceEditorForm.ChangeLine(lLine);
+         if GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor then
+            TInfra.ChangeLine(lLine);
+         TInfra.SetEditorCaretPos(lLine);
       end;
    end;
 end;

@@ -67,7 +67,7 @@ implementation
 
 uses
    ApplicationCommon, StrUtils, XMLProcessor, Main_Block, UserFunction, Return_Block,
-   LangDefinition, SourceEditor_Form, FastcodeAnsiStringReplaceUnit;
+   LangDefinition, FastcodeAnsiStringReplaceUnit;
 
 constructor TForDoBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, px1, p1Y: integer; const AId: integer = ID_INVALID);
 begin
@@ -512,8 +512,9 @@ begin
       end;
       lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s4', lStr1);
       lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s5', lStr2);
-      lLine.PerformChange := GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor;
-      SourceEditorForm.ChangeLine(lLine);
+      if GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor then
+         TInfra.ChangeLine(lLine);
+      TInfra.SetEditorCaretPos(lLine);
    end;
 end;
 

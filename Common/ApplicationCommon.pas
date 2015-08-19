@@ -123,6 +123,8 @@ type
          class function GetChangeLine(const AObject: TObject; const AEdit: TCustomEdit = nil; const ATemplate: string = ''): TChangeLine;
          class function GetCaretPos(const AEdit: TCustomEdit): TBufferCoord;
          class function ExtractIndentString(const AText: string): string;
+         class procedure ChangeLine(const ALine: TChangeLine);
+         class procedure SetEditorCaretPos(const ALine: TChangeLine);
          constructor Create;
          destructor Destroy; override;
    end;
@@ -1194,12 +1196,15 @@ begin
    result.Row := ROW_NOT_FOUND;
    result.Col := 0;
    result.EditCaretXY := TInfra.GetCaretPos(AEdit);
-   result.PerformChange := true;
+   result.Lines := nil;
+   result.IsFolded := false;
    if AObject <> nil then
    begin
       lRange := SourceEditorForm.SelectCodeBlock(AObject, false);
       if lRange.FirstRow <> ROW_NOT_FOUND then
       begin
+         result.Lines := lRange.Lines;
+         result.IsFolded := lRange.IsFolded;
          lTemplateLines := TStringList.Create;
          try
             if ATemplate <> '' then
@@ -1219,12 +1224,12 @@ begin
                   break;
                end;
             end;
-            lIndent := TInfra.ExtractIndentString(SourceEditorForm.GetEditorAllLines[result.Row]);
+            lIndent := TInfra.ExtractIndentString(result.Lines[result.Row]);
             result.Col := Length(lIndent);
             if result.Row = ROW_NOT_FOUND then    // row with placeholder not found
             begin
                result.Row := lRange.FirstRow;
-               result.Text := SourceEditorForm.GetEditorAllLines[result.Row];
+               result.Text := result.Lines[result.Row];
             end
             else
             begin
@@ -1261,6 +1266,25 @@ begin
          break;
    end;
    result := AnsiLeftStr(AText, i-1);
+end;
+
+class procedure TInfra.ChangeLine(const ALine: TChangeLine);
+begin
+   if (ALine.Lines <> nil) and (ALine.Row >= 0) and (ALine.Row < ALine.Lines.Count) then
+      ALine.Lines[ALine.Row] := ALine.Text;
+end;
+
+class procedure TInfra.SetEditorCaretPos(const ALine: TChangeLine);
+var
+   lChar, lLine: integer;
+begin
+   lChar := ALine.Col + ALine.EditCaretXY.Char;
+   lLine := ALine.Row + ALIne.EditCaretXY.Line + 1;
+   if (lLine > 0) and (lLine <= ALine.Lines.Count) and not ALine.IsFolded then
+   begin
+      SourceEditorForm.memCodeEditor.CaretXY := BufferCoord(lChar, lLine);
+      SourceEditorForm.memCodeEditor.EnsureCursorPosVisible;
+   end;
 end;
 
 function ValidateId(const AIdent: string): integer;

@@ -148,21 +148,21 @@ begin
          begin
             lTemplateLines := TStringList.Create;
             try
-               GenerateCode(lTemplateLines, GInfra.CurrentLang.Name, SourceEditorForm.GetIndentLevel(lRange.FirstRow));
+               GenerateCode(lTemplateLines, GInfra.CurrentLang.Name, SourceEditorForm.GetIndentLevel(lRange.FirstRow, lRange.Lines));
                if lTemplateLines.Count > 0 then
                begin
-                  memCodeEditor.Lines.BeginUpdate;
+                  lRange.Lines.BeginUpdate;
                   for i := 0 to lRange.LastRow - lRange.FirstRow do
-                     memCodeEditor.Lines.Delete(lRange.FirstRow);
+                     lRange.Lines.Delete(lRange.FirstRow);
                   for i := lTemplateLines.Count-1 downto 0 do
-                     memCodeEditor.Lines.InsertObject(lRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
-                  memCodeEditor.Lines.EndUpdate;
+                     lRange.Lines.InsertObject(lRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
+                  lRange.Lines.EndUpdate;
                end;
             finally
                lTemplateLines.Free;
             end;
          end;
-         SetEditorCaretPos(TInfra.GetChangeLine(Self, FStatements));
+         TInfra.SetEditorCaretPos(TInfra.GetChangeLine(Self, FStatements));
          memCodeEditor.OnChange(memCodeEditor);
       end;
    end;
@@ -171,7 +171,7 @@ end;
 procedure TMultiLineBlock.OnMouseDownMemo(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
    if Button = mbLeft then
-      SourceEditorForm.SetEditorCaretPos(TInfra.GetChangeLine(Self, FStatements));
+      TInfra.SetEditorCaretPos(TInfra.GetChangeLine(Self, FStatements));
 end;
 
 procedure TMultiLineBlock.OnKeyUpMemo(Sender: TObject; var Key: Word; Shift: TShiftState);

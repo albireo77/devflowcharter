@@ -128,10 +128,8 @@ type
     procedure ExportSettingsToXMLTag(const root: IXMLElement); override;
     procedure ImportSettingsFromXMLTag(const root: IXMLElement); override;
     procedure ReloadFoldRegions;
-    function GetIndentLevel(const idx: integer): integer;
-    procedure ChangeLine(ALine: TChangeLine);
+    function GetIndentLevel(const idx: integer; ALines: TStrings = nil): integer;
     procedure RefreshEditorForObject(const AObject: TObject);
-    procedure SetEditorCaretPos(const ALine: TChangeLine);
     function GetEditorAllLines: TStrings;
   end;
 
@@ -957,10 +955,10 @@ end;
 
 function TSourceEditorForm.GetEditorAllLines: TStrings;
 begin
-{$IFDEF USE_CODEFOLDING}
-   result := memCodeEditor.GetUncollapsedStrings;
-{$ELSE}
    result := memCodeEditor.Lines;
+{$IFDEF USE_CODEFOLDING}
+   if GSettings.EditorCodeFolding then
+      result := memCodeEditor.GetUncollapsedStrings
 {$ENDIF}
 end;
 
@@ -970,29 +968,36 @@ var
    lFoldRange: TSynEditFoldRange;
 {$ENDIF}
    i, idx1, idx2: integer;
-   lLines: TStrings;
 begin
-   lLines := GetEditorAllLines;
+   result.Lines := memCodeEditor.Lines;
+   result.IsFolded := false;
    idx2 := ROW_NOT_FOUND;
-   idx1 := lLines.IndexOfObject(AObject);
+   idx1 := GetEditorAllLines.IndexOfObject(AObject);
    if idx1 <> -1 then
    begin
 {$IFDEF USE_CODEFOLDING}
       lFoldRange := memCodeEditor.FindCollapsedFoldRangeForLine(idx1+1);
       if lFoldRange <> nil then
+      begin
          ADoSelect := false;
+         result.Lines := lFoldRange.CollapsedLines;
+         idx1 := result.Lines.IndexOfObject(AObject);
+         result.IsFolded := true;
+      end
+      else
+         idx1 := memCodeEditor.Lines.IndexOfObject(AObject);
 {$ENDIF}
       idx2 := idx1;
-      for i := idx1+1 to lLines.Count-1 do
+      for i := idx1+1 to result.Lines.Count-1 do
       begin
-         if lLines.Objects[i] = AObject then
+         if result.Lines.Objects[i] = AObject then
             idx2 := i;
       end;
       with memCodeEditor do
       begin
          if ADoSelect and CanFocus then
          begin
-            SelStart := RowColToCharIndex(BufferCoord(Length(lLines[idx2])+1, idx2+1));
+            SelStart := RowColToCharIndex(BufferCoord(Length(result.Lines[idx2])+1, idx2+1));
             SelEnd := RowColToCharIndex(BufferCoord(1, idx1+1));
          end;
       end;
@@ -1010,55 +1015,10 @@ begin
    end;
 end;
 
-{$IFDEF USE_CODEFOLDING}
-procedure TSourceEditorForm.ChangeLine(ALine: TChangeLine);
-var
-   lFoldRange: TSynEditFoldRange;
-   lLines: TStrings;
-begin
-   lFoldRange := memCodeEditor.FindCollapsedFoldRangeForLine(ALine.Row+1);
-   if lFoldRange <> nil then
-   begin
-      lLines := lFoldRange.CollapsedLines;
-      ALine.Row := lLines.Count - ALine.Row + lFoldRange.FromLine - 1;
-   end
-   else
-   begin
-      lLines := memCodeEditor.Lines;
-      SetEditorCaretPos(ALine);
-   end;
-   if ALine.PerformChange and (ALine.Row >= 0) and (ALine.Row < lLines.Count) then
-      lLines[ALine.Row] := ALine.Text;
-end;
-{$ELSE}
-procedure TSourceEditorForm.ChangeLine(ALine: TChangeLine);
-begin
-   if ALine.PerformChange and (ALine.Row >= 0) and (ALine.Row < memCodeEditor.Lines.Count) then
-      memCodeEditor.Lines[ALine.Row] := ALine.Text;
-   SetEditorCaretPos(ALine);
-end;
-{$ENDIF}
-
-procedure TSourceEditorForm.SetEditorCaretPos(const ALine: TChangeLine);
-var
-   lChar, lLine: integer;
-begin
-   lChar := ALine.Col + ALine.EditCaretXY.Char;
-   lLine := ALine.Row + ALIne.EditCaretXY.Line + 1;
-   if (lLine > 0) and (lLine <= memCodeEditor.Lines.Count)
-{$IFDEF USE_CODEFOLDING}
-   and (memCodeEditor.FindCollapsedFoldRangeForLine(lLine) = nil)
-{$ENDIF}
-   then
-   begin
-      memCodeEditor.CaretXY := BufferCoord(lChar, lLine);
-      memCodeEditor.EnsureCursorPosVisible;
-   end;
-end;
-
 procedure TSourceEditorForm.RefreshEditorForObject(const AObject: TObject);
 var
    lTopLine, lLine: integer;
+   lRange: TCodeRange;
    lScrollStyle: TScrollStyle;
 begin
    FFocusEditor := false;
@@ -1069,10 +1029,11 @@ begin
       FormShow(Self);
       if AObject <> nil then
       begin
-         lLine := SelectCodeBlock(AObject, false).FirstRow + 1;
-         if lLine > 0 then
+         lRange := SelectCodeBlock(AObject, false);
+         lLine := lRange.FirstRow + 1;
+         if (lLine > 0) and not lRange.IsFolded then
          begin
-            if (lLine < lTopLine) or (lLine > lTopLine+memCodeEditor.LinesInWindow) then
+            if (lLine < lTopLine) or (lLine > lTopLine + memCodeEditor.LinesInWindow) then
                memCodeEditor.GotoLineAndCenter(lLine)
             else
                memCodeEditor.TopLine := lTopLine;
@@ -1085,21 +1046,17 @@ begin
    end;
 end;
 
-function TSourceEditorForm.GetIndentLevel(const idx: integer): integer;
+function TSourceEditorForm.GetIndentLevel(const idx: integer; ALines: TStrings = nil): integer;
 var
    lLine: string;
    i: integer;
-   lLines: TStrings;
 begin
-{$IFDEF USE_CODEFOLDING}
-   lLines := memCodeEditor.GetUncollapsedStrings;
-{$ELSE}
-   lLines := memCodeEditor.Lines;
-{$ENDIF}
    result := 0;
-   if (idx >= 0) and (idx < lLines.Count) then
+   if ALines = nil then
+      ALines := GetEditorAllLines;
+   if (idx >= 0) and (idx < ALines.Count) then
    begin
-      lLine := lLines[idx];
+      lLine := ALines[idx];
       for i := 1 to Length(lLine) do
       begin
          if lLine[i] = INDENT_CHAR then
@@ -1167,10 +1124,8 @@ begin
                end;
             end;
          end;
-         lLines := GetUncollapsedStrings;
-{$ELSE}
-         lLines := Lines;
 {$ENDIF}
+         lLines := GetEditorAllLines;
          for i := 0 to lLines.Count-1 do
          begin
             tag2 := root.OwnerDocument.CreateElement('text_line');

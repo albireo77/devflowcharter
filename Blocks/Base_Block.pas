@@ -906,18 +906,21 @@ begin
     NavigatorForm.RepaintInd := false;
     lInd2 := GSettings.EditorAutoUpdate;
     GSettings.EditorAutoUpdate := false;
-    for i := 0 to ControlCount-1 do
-    begin
-       if Controls[i] is TStatement then
-          TStatement(Controls[i]).DoEnter
-       else if (Controls[i] is TMemo) and Assigned(TMemo(Controls[i]).OnChange) then
-          TMemo(Controls[i]).OnChange(Controls[i])
-       else if (Controls[i] is TEdit) and Assigned(TEdit(Controls[i]).OnChange) then
-          TEdit(Controls[i]).OnChange(Controls[i])
-       else if (Controls[i] is TBlock) and (Controls[i] <> GClpbrd.UndoObject) then
-          TBlock(Controls[i]).RefreshStatements;
+    try
+       for i := 0 to ControlCount-1 do
+       begin
+          if Controls[i] is TStatement then
+             TStatement(Controls[i]).DoEnter
+          else if (Controls[i] is TMemo) and Assigned(TMemo(Controls[i]).OnChange) then
+             TMemo(Controls[i]).OnChange(Controls[i])
+          else if (Controls[i] is TEdit) and Assigned(TEdit(Controls[i]).OnChange) then
+             TEdit(Controls[i]).OnChange(Controls[i])
+          else if (Controls[i] is TBlock) and (Controls[i] <> GClpbrd.UndoObject) then
+             TBlock(Controls[i]).RefreshStatements;
+       end;
+    finally
+       GSettings.EditorAutoUpdate := lInd2;
     end;
-    GSettings.EditorAutoUpdate := lInd2;
     NavigatorForm.RepaintInd := lInd;
 end;
 
@@ -1870,8 +1873,9 @@ begin
       if lLine.Row <> ROW_NOT_FOUND then
       begin
          lLine.Text := FastCodeAnsiStringReplace(lLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
-         lLine.PerformChange :=  GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor;
-         SourceEditorForm.ChangeLine(lLine);
+         if GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor then
+            TInfra.ChangeLine(lLine);
+         TInfra.SetEditorCaretPos(lLine);
       end;
    end;
 end;
