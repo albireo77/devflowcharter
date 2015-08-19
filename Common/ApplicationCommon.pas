@@ -125,6 +125,7 @@ type
          class function ExtractIndentString(const AText: string): string;
          class procedure ChangeLine(const ALine: TChangeLine);
          class procedure SetEditorCaretPos(const ALine: TChangeLine);
+         class procedure InitChangeLine(var AChangeLine: TChangeLine);
          constructor Create;
          destructor Destroy; override;
    end;
@@ -1184,6 +1185,22 @@ begin
    result := (AColor = NOK_COLOR) or (AColor = WARN_COLOR);
 end;
 
+class procedure TInfra.InitChangeLine(var AChangeLine: TChangeLine);
+begin
+   with AChangeLine do
+   begin
+      Text := '';
+      Row := ROW_NOT_FOUND;
+      Col := 0;
+      EditCaretXY := BufferCoord(0, 0);
+      Lines := nil;
+      IsFolded := false;
+{$IFDEF USE_CODEFOLDING}
+      FoldRange := nil;
+{$ENDIF}
+   end;
+end;
+
 class function TInfra.GetChangeLine(const AObject: TObject; const AEdit: TCustomEdit = nil; const ATemplate: string = ''): TChangeLine;
 var
    lTemplateLines: TStringList;
@@ -1192,12 +1209,8 @@ var
    lIndent: string;
 begin
    lPos := 0;
-   result.Text := '';
-   result.Row := ROW_NOT_FOUND;
-   result.Col := 0;
+   InitChangeLine(result);
    result.EditCaretXY := TInfra.GetCaretPos(AEdit);
-   result.Lines := nil;
-   result.IsFolded := false;
    if AObject <> nil then
    begin
       lRange := SourceEditorForm.SelectCodeBlock(AObject, false);
@@ -1205,6 +1218,9 @@ begin
       begin
          result.Lines := lRange.Lines;
          result.IsFolded := lRange.IsFolded;
+{$IFDEF USE_CODEFOLDING}
+         result.FoldRange := lRange.FoldRange;
+{$ENDIF}
          lTemplateLines := TStringList.Create;
          try
             if ATemplate <> '' then

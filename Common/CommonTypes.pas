@@ -24,6 +24,9 @@ unit CommonTypes;
 interface
 
 uses
+{$IFDEF USE_CODEFOLDING}
+   SynEditCodeFolding,
+{$ENDIF}
    Windows, SysUtils, Classes, Types, SynEditTypes;
 
 type
@@ -49,6 +52,9 @@ type
       LastRow: integer;
       Lines: TStrings;
       IsFolded: boolean;
+{$IFDEF USE_CODEFOLDING}
+      FoldRange: TSynEditFoldRange;
+{$ENDIF}
    end;
 
    PNativeDataType = ^TNativeDataType;
@@ -70,6 +76,9 @@ type
       EditCaretXY: TBufferCoord;
       IsFolded: boolean;
       Lines: TStrings;
+{$IFDEF USE_CODEFOLDING}
+      FoldRange: TSynEditFoldRange;
+{$ENDIF}
    end;
 
    TIntegerTypes = 0..100;

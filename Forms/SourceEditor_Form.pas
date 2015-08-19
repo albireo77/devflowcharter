@@ -964,11 +964,11 @@ end;
 
 function TSourceEditorForm.SelectCodeBlock(const AObject: TObject; ADoSelect: boolean = true): TCodeRange;
 var
-{$IFDEF USE_CODEFOLDING}
-   lFoldRange: TSynEditFoldRange;
-{$ENDIF}
    i, idx1, idx2: integer;
 begin
+{$IFDEF USE_CODEFOLDING}
+   result.FoldRange := nil;
+{$ENDIF}
    result.Lines := memCodeEditor.Lines;
    result.IsFolded := false;
    idx2 := ROW_NOT_FOUND;
@@ -976,11 +976,11 @@ begin
    if idx1 <> -1 then
    begin
 {$IFDEF USE_CODEFOLDING}
-      lFoldRange := memCodeEditor.FindCollapsedFoldRangeForLine(idx1+1);
-      if lFoldRange <> nil then
+      result.FoldRange := memCodeEditor.FindCollapsedFoldRangeForLine(idx1+1);
+      if result.FoldRange <> nil then
       begin
          ADoSelect := false;
-         result.Lines := lFoldRange.CollapsedLines;
+         result.Lines := result.FoldRange.CollapsedLines;
          idx1 := result.Lines.IndexOfObject(AObject);
          result.IsFolded := true;
       end
