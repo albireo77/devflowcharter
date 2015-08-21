@@ -290,8 +290,12 @@ var
    lLines: TStringList;
 begin
 
+{$IFDEF USE_CODEFOLDING}
+   memCodeEditor.AllFoldRanges.ClearAll;
+{$ENDIF}
    memCodeEditor.ClearAll;
    memCodeEditor.Highlighter := nil;
+
 
    lSkipFuncBody := false;
    lLang := nil;
@@ -955,10 +959,10 @@ end;
 
 function TSourceEditorForm.GetEditorAllLines: TStrings;
 begin
-   result := memCodeEditor.Lines;
 {$IFDEF USE_CODEFOLDING}
-   if GSettings.EditorCodeFolding then
-      result := memCodeEditor.GetUncollapsedStrings
+   result := memCodeEditor.GetUncollapsedStrings;
+{$ELSE}
+   result := memCodeEditor.Lines;
 {$ENDIF}
 end;
 
@@ -971,9 +975,11 @@ begin
 {$ENDIF}
    result.Lines := memCodeEditor.Lines;
    result.IsFolded := false;
+   idx1 := ROW_NOT_FOUND;
    idx2 := ROW_NOT_FOUND;
-   idx1 := GetEditorAllLines.IndexOfObject(AObject);
-   if idx1 <> -1 then
+   if memCodeEditor.Lines.Count > 0 then
+      idx1 := GetEditorAllLines.IndexOfObject(AObject);
+   if idx1 <> ROW_NOT_FOUND then
    begin
 {$IFDEF USE_CODEFOLDING}
       result.FoldRange := memCodeEditor.FindCollapsedFoldRangeForLine(idx1+1);

@@ -439,11 +439,7 @@ begin
          if registry.ValueExists(KEY_AUTOSELECT_CODE_BLOCK) then
             FEditorAutoSelectBlock := registry.ReadBool(KEY_AUTOSELECT_CODE_BLOCK);
          if registry.ValueExists(KEY_AUTOUPDATE_CODE) then
-         begin
             FEditorAutoUpdate := registry.ReadBool(KEY_AUTOUPDATE_CODE);
-            if FEditorAutoUpdate then
-               FEditorCodeFolding := false;
-         end;
          if registry.ValueExists(KEY_COLV1_WIDTH) then
             FColumnV1Width := registry.ReadInteger(KEY_COLV1_WIDTH);
          if registry.ValueExists(KEY_COLV2_WIDTH) then
@@ -569,8 +565,6 @@ begin
       FEditorIndentGuides := miIndentGuides.Checked;
       FEditorShowRichText := miRichText.Checked;
       FEditorCodeFolding := miCodeFoldingEnable.Checked;
-      if FEditorCodeFolding then
-         FEditorAutoUpdate := false;
    end;
 end;
 
@@ -712,9 +706,6 @@ begin
       if GProject <> nil then
          GProject.RefreshStatements;
 
-      if FEditorAutoUpdate and FSourceEditorForm.miCodeFoldingEnable.Checked then
-         FSourceEditorForm.miCodeFoldingEnable.Click;
-         
       FSourceEditorForm.SetEditorFormAttributes;
 
       FPrintMargins.Left   := StrToIntDef(edtMarginLeft.Text, 5);

@@ -137,7 +137,7 @@ procedure TMultiLineBlock.UpdateEditor(AEdit: TCustomEdit);
 var
    lRange: TCodeRange;
    lTemplateLines: TStringList;
-   i: integer;
+   i, lRowDiff: integer;
 begin
    lRange := SourceEditorForm.SelectCodeBlock(Self, false);
    if lRange.FirstRow <> ROW_NOT_FOUND then
@@ -149,13 +149,26 @@ begin
             lTemplateLines := TStringList.Create;
             try
                GenerateCode(lTemplateLines, GInfra.CurrentLang.Name, SourceEditorForm.GetIndentLevel(lRange.FirstRow, lRange.Lines));
-               if lTemplateLines.Count > 0 then
+               if (lTemplateLines.Count > 0) and (lRange.Lines <> nil) then
                begin
                   lRange.Lines.BeginUpdate;
                   for i := 0 to lRange.LastRow - lRange.FirstRow do
                      lRange.Lines.Delete(lRange.FirstRow);
-                  for i := lTemplateLines.Count-1 downto 0 do
-                     lRange.Lines.InsertObject(lRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
+{$IFDEF USE_CODEFOLDING}
+                  if lRange.FoldRange <> nil then
+                  begin
+                     lRowDiff := lTemplateLines.Count - (lRange.LastRow - lRange.FirstRow + 1);
+                     lRange.FoldRange.LinesCollapsed := lRange.FoldRange.LinesCollapsed + lRowDiff;
+                     lRange.FoldRange.ToLine := lRange.FoldRange.ToLine + lRowDiff;
+                     for i := 0 to lTemplateLines.Count-1 do
+                        lRange.Lines.InsertObject(lRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
+                  end
+                  else
+{$ENDIF}
+                  begin
+                     for i := lTemplateLines.Count-1 downto 0 do
+                        lRange.Lines.InsertObject(lRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
+                  end;
                   lRange.Lines.EndUpdate;
                end;
             finally

@@ -1294,12 +1294,15 @@ class procedure TInfra.SetEditorCaretPos(const ALine: TChangeLine);
 var
    lChar, lLine: integer;
 begin
-   lChar := ALine.Col + ALine.EditCaretXY.Char;
-   lLine := ALine.Row + ALIne.EditCaretXY.Line + 1;
-   if (lLine > 0) and (lLine <= ALine.Lines.Count) and not ALine.IsFolded then
+   if (ALine.Lines <> nil) and not ALine.IsFolded then
    begin
-      SourceEditorForm.memCodeEditor.CaretXY := BufferCoord(lChar, lLine);
-      SourceEditorForm.memCodeEditor.EnsureCursorPosVisible;
+      lChar := ALine.Col + ALine.EditCaretXY.Char;
+      lLine := ALine.Row + ALIne.EditCaretXY.Line + 1;
+      if (lLine > 0) and (lLine <= ALine.Lines.Count) then
+      begin
+         SourceEditorForm.memCodeEditor.CaretXY := BufferCoord(lChar, lLine);
+         SourceEditorForm.memCodeEditor.EnsureCursorPosVisible;
+      end;
    end;
 end;
 
