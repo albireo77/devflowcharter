@@ -430,7 +430,7 @@ var
 begin
    if AEdit = FStatement then
       inherited UpdateEditor(AEdit)
-   else if (AEdit <> nil) and not FRefreshMode then
+   else if (AEdit <> nil) and PerformEditorUpdate then
    begin
       lLine := TInfra.GetChangeLine(AEdit, AEdit, GInfra.CurrentLang.CaseOfValueTemplate);
       if lLine.Row <> ROW_NOT_FOUND then

@@ -139,7 +139,7 @@ var
    lTemplateLines: TStringList;
    i, lRowDiff: integer;
 begin
-   if not FRefreshMode then
+   if PerformEditorUpdate then
    begin
       lRange := SourceEditorForm.SelectCodeBlock(Self, false);
       if lRange.FirstRow <> ROW_NOT_FOUND then

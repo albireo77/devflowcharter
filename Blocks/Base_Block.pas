@@ -88,6 +88,7 @@ type
          procedure Paint; override;
          procedure DrawI;
          function GetId: integer;
+         function PerformEditorUpdate: boolean;
          procedure SelectBlock(const APoint: TPoint);
          procedure SetCursor(const APoint: TPoint);
          procedure PutTextControls; virtual;
@@ -1863,7 +1864,7 @@ procedure TBlock.UpdateEditor(AEdit: TCustomEdit);
 var
    lLine: TChangeLine;
 begin
-   if (AEdit <> nil) and not FRefreshMode then
+   if (AEdit <> nil) and PerformEditorUpdate then
    begin
       lLine := TInfra.GetChangeLine(Self, AEdit);
       if lLine.Row <> ROW_NOT_FOUND then
@@ -1874,6 +1875,11 @@ begin
          TInfra.SetEditorCaretPos(lLine);
       end;
    end;
+end;
+
+function TBlock.PerformEditorUpdate: boolean;
+begin
+   result := SourceEditorForm.Visible and not FRefreshMode;
 end;
 
 function TBlock.GetDescription: string;

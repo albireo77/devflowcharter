@@ -494,7 +494,7 @@ var
    lStr1, lStr2: string;
    lLine: TChangeLine;
 begin
-   if not FRefreshMode then
+   if PerformEditorUpdate then
    begin
       lLine := TInfra.GetChangeLine(Self);
       if lLine.Row <> ROW_NOT_FOUND then
