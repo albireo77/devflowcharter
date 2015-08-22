@@ -562,7 +562,7 @@ begin
    end
    else if Supports(GClpbrd.UndoObject, IXMLable, lActiveObject) then
       lActiveObject.Active := true;
-   if GSettings.UpdateCodeEditor then
+   if GSettings.UpdateEditor then
       SourceEditorForm.RefreshEditorForObject(GClpbrd.UndoObject);
    GClpbrd.UndoObject := nil;
    miUndoRemove.Enabled := false;
@@ -809,7 +809,7 @@ begin
                   lNewBlock.Show;
                   lNewBlock.RefreshStatements;
                end;
-               if GSettings.UpdateCodeEditor then
+               if GSettings.UpdateEditor then
                   SourceEditorForm.RefreshEditorForObject(lNewBlock);
                GChange := 1;
             end;
@@ -949,7 +949,7 @@ begin
          lFunction.Active := false;
          GClpbrd.UndoObject := lFunction;
       end;
-      if GSettings.UpdateCodeEditor then
+      if GSettings.UpdateEditor then
          SourceEditorForm.RefreshEditorForObject(nil);
       NavigatorForm.Repaint;
    end
@@ -1080,7 +1080,7 @@ begin
          TInfra.ShowFormattedErrorBox('ImportFailed', [CRLF, Gerr_text], erImport)
       else
       begin
-         if GSettings.UpdateCodeEditor then
+         if GSettings.UpdateEditor then
             SourceEditorForm.RefreshEditorForObject(nil);
          GChange := 1;
       end;
@@ -1116,7 +1116,7 @@ begin
       lCaseBlock := TCaseBlock(PopupMenu.PopupComponent);
       lPoint := Point(lCaseBlock.GetRMostX(lCaseBlock.BranchCount)+60, lCaseBlock.Height-32);
       lBranch := lCaseBlock.AddBranch(lPoint, true);
-      if GSettings.UpdateCodeEditor then
+      if GSettings.UpdateEditor then
          SourceEditorForm.RefreshEditorForObject(lBranch);
    end;
 end;
@@ -1135,7 +1135,7 @@ begin
       begin
          lCaseBlock := TCaseBlock(PopupMenu.PopupComponent);
          lCaseBlock.RemoveBranch;
-         if GSettings.UpdateCodeEditor then
+         if GSettings.UpdateEditor then
             SourceEditorForm.RefreshEditorForObject(lCaseBlock.Branch);
       end;
    end;
@@ -1220,7 +1220,7 @@ begin
    begin
       lBody := TMainBlock.Create(Self, GInfra.GetMainBlockNextTopLeft(Self));
       TUserFunction.Create(nil, lBody);
-      if GSettings.UpdateCodeEditor then
+      if GSettings.UpdateEditor then
          SourceEditorForm.RefreshEditorForObject(lBody);
       GChange := 1;
    end;

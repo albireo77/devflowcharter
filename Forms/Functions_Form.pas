@@ -74,7 +74,7 @@ begin
    if lHeader.edtName.CanFocus then
       lHeader.edtName.SetFocus;
    lHeader.edtName.OnChange(lHeader.edtName);
-   if GSettings.UpdateCodeEditor and (lHeader.Font.Color <> NOK_COLOR) then
+   if GSettings.UpdateEditor and (lHeader.Font.Color <> NOK_COLOR) then
       SourceEditorForm.RefreshEditorForObject(lHeader);
    GChange := 1;
 end;

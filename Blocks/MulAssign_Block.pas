@@ -50,6 +50,7 @@ constructor TMultiAssignBlock.Create(const ABranch: TBranch; const ALeft, ATop, 
 begin
    FType := blMultAssign;
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
+   FStatements.ShowHint := true;
 end;
 
 constructor TMultiAssignBlock.Create(const ABranch: TBranch; const ASource: TMultiAssignBlock);

@@ -111,7 +111,7 @@ type
       procedure SetDefaultSettingsForm;
       procedure SetSettingsForm(const ASettingsForm: TSettingsForm);
       procedure SetSourceEditorForm(const ASourceEditorForm: TSourceEditorForm);
-      function UpdateCodeEditor: boolean;
+      function UpdateEditor: boolean;
       property ParseInput: boolean read FParseInput;
       property ParseOutput: boolean read FParseOutput;
       property ParseAssign: boolean read FParseAssign;
@@ -944,7 +944,7 @@ begin
    FSourceEditorForm := ASourceEditorForm;
 end;
 
-function TSettings.UpdateCodeEditor: boolean;
+function TSettings.UpdateEditor: boolean;
 begin
    result := FSourceEditorForm.Visible and FEditorAutoUpdate;
 end;

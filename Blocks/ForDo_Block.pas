@@ -192,7 +192,7 @@ begin
    begin
       FOrder := AValue;
       Repaint;
-      if GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor then
+      if GSettings.UpdateEditor and not SkipUpdateEditor then
          UpdateEditor(nil);
    end;
 end;
@@ -269,7 +269,7 @@ begin
       edtVariable.Hint := i18Manager.GetFormattedString('NoCVar', [CRLF]);
       edtVariable.Font.Color := NOK_COLOR;
    end;
-   if GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor then
+   if GSettings.UpdateEditor and not SkipUpdateEditor then
       UpdateEditor(nil);
 end;
 
@@ -494,27 +494,30 @@ var
    lStr1, lStr2: string;
    lLine: TChangeLine;
 begin
-   lLine := TInfra.GetChangeLine(Self);
-   if lLine.Row <> ROW_NOT_FOUND then
+   if not FRefreshMode then
    begin
-      lLine.Text := FastCodeAnsiStringReplace(lLine.Text, PRIMARY_PLACEHOLDER, edtVariable.Text);
-      lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s2', Trim(edtStartVal.Text));
-      lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s3', Trim(edtStopVal.Text));
-      if FOrder = orAsc then
+      lLine := TInfra.GetChangeLine(Self);
+      if lLine.Row <> ROW_NOT_FOUND then
       begin
-         lStr1 := GInfra.CurrentLang.ForAsc1;
-         lStr2 := GInfra.CurrentLang.ForAsc2;
-      end
-      else
-      begin
-         lStr1 := GInfra.CurrentLang.ForDesc1;
-         lStr2 := GInfra.CurrentLang.ForDesc2;
+         lLine.Text := FastCodeAnsiStringReplace(lLine.Text, PRIMARY_PLACEHOLDER, edtVariable.Text);
+         lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s2', Trim(edtStartVal.Text));
+         lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s3', Trim(edtStopVal.Text));
+         if FOrder = orAsc then
+         begin
+            lStr1 := GInfra.CurrentLang.ForAsc1;
+            lStr2 := GInfra.CurrentLang.ForAsc2;
+         end
+         else
+         begin
+            lStr1 := GInfra.CurrentLang.ForDesc1;
+            lStr2 := GInfra.CurrentLang.ForDesc2;
+         end;
+         lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s4', lStr1);
+         lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s5', lStr2);
+         if GSettings.UpdateEditor and not SkipUpdateEditor then
+            TInfra.ChangeLine(lLine);
+         TInfra.SetEditorCaretPos(lLine);
       end;
-      lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s4', lStr1);
-      lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s5', lStr2);
-      if GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor then
-         TInfra.ChangeLine(lLine);
-      TInfra.SetEditorCaretPos(lLine);
    end;
 end;
 

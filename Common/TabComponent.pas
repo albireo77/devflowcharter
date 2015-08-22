@@ -153,7 +153,7 @@ end;
 
 procedure TTabComponent.OnChangeLib(Sender: TObject);
 begin
-   if GSettings.UpdateCodeEditor and (Font.Color <> NOK_COLOR) and chkExtDeclare.Checked then
+   if GSettings.UpdateEditor and (Font.Color <> NOK_COLOR) and chkExtDeclare.Checked then
       SourceEditorForm.RefreshEditorForObject(Self);
 end;
 
@@ -279,7 +279,7 @@ begin
    if lElem.edtName.CanFocus then
       lElem.edtName.SetFocus;
    PageControl.Refresh;
-   if GSettings.UpdateCodeEditor and not chkExtDeclare.Checked then
+   if GSettings.UpdateEditor and not chkExtDeclare.Checked then
       SourceEditorForm.RefreshEditorForObject(Self);
 end;
 
@@ -300,7 +300,7 @@ procedure TTabComponent.OnChangeName(Sender: TObject);
 begin
    Caption := Trim(edtName.Text);
    PageControl.Refresh;
-   if GSettings.UpdateCodeEditor and FParentForm.UpdateCodeEditor and not chkExtDeclare.Checked then
+   if GSettings.UpdateEditor and FParentForm.UpdateCodeEditor and not chkExtDeclare.Checked then
       SourceEditorForm.RefreshEditorForObject(Self);
    GChange := 1;
 end;

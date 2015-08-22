@@ -299,7 +299,7 @@ end;
 
 procedure TUserDataType.ExtDeclareOnClick(Sender: TObject);
 begin
-   if GSettings.UpdateCodeEditor and (Font.Color <> NOK_COLOR) then
+   if GSettings.UpdateEditor and (Font.Color <> NOK_COLOR) then
       SourceEditorForm.RefreshEditorForObject(Self);
 end;
 
@@ -365,7 +365,7 @@ begin
    if GProject <> nil then
       GProject.RefreshStatements;
    PageControl.Refresh;
-   if GSettings.UpdateCodeEditor and not chkExtDeclare.Checked then
+   if GSettings.UpdateEditor and not chkExtDeclare.Checked then
       SourceEditorForm.RefreshEditorForObject(Self);
 end;
 
@@ -594,7 +594,7 @@ procedure TField.OnChangeSize(Sender: TObject);
 begin
    edtSize.OnChangeSize(edtSize);
    UpdateMe;
-   if GSettings.UpdateCodeEditor and ParentForm.UpdateCodeEditor and not TTabComponent(ParentTab).chkExtDeclare.Checked then
+   if GSettings.UpdateEditor and ParentForm.UpdateCodeEditor and not TTabComponent(ParentTab).chkExtDeclare.Checked then
       SourceEditorForm.RefreshEditorForObject(ParentTab);
 end;
 

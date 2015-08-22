@@ -430,13 +430,13 @@ var
 begin
    if AEdit = FStatement then
       inherited UpdateEditor(AEdit)
-   else if AEdit <> nil then
+   else if (AEdit <> nil) and not FRefreshMode then
    begin
       lLine := TInfra.GetChangeLine(AEdit, AEdit, GInfra.CurrentLang.CaseOfValueTemplate);
       if lLine.Row <> ROW_NOT_FOUND then
       begin
          lLine.Text := FastCodeAnsiStringReplace(lLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
-         if GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor then
+         if GSettings.UpdateEditor and not SkipUpdateEditor then
             TInfra.ChangeLine(lLine);
          TInfra.SetEditorCaretPos(lLine);
       end;

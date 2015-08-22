@@ -64,6 +64,7 @@ type
          FType: TBlockType;
          FStatement: TStatement;
          FTopParentBlock: TGroupBlock;
+         FRefreshMode: boolean;
          procedure MyOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MyOnMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); virtual;
@@ -133,7 +134,7 @@ type
          function ImportFromXMLTag(const root: IXMLElement): TErrorType;
          procedure ExportToGraphic(const AImage: TGraphic); virtual;
          procedure UpdateEditor(AEdit: TCustomEdit); virtual;
-         function SkipUpdateCodeEditor: boolean;
+         function SkipUpdateEditor: boolean;
          function RetrieveFocus(AInfo: TFocusInfo): boolean; virtual;
          function CanBeFocused: boolean;
          procedure GenerateDefaultTemplate(const ALines: TStringList; const ALangId: string; const ADeep: integer);
@@ -300,13 +301,8 @@ begin
    FStatement := TStatement.Create(Self);
 
    Ired       := -1;
-   FrameInd   := false;
-   HResizeInd := false;
-   VResizeInd := false;
    memoWidth  := 280;
    memoHeight := 182;
-   FMemoVScroll := false;
-   FMemoHScroll := false;
 
    OnMouseDown := MyOnMouseDown;
    OnMouseUp   := MyOnMouseUp;
@@ -900,12 +896,12 @@ end;
 procedure TBlock.RefreshStatements;
 var
    i: integer;
-   lInd, lInd2: boolean;
+   lBool, lBool2: boolean;
 begin
-    lInd := NavigatorForm.RepaintInd;
+    lBool := NavigatorForm.RepaintInd;
     NavigatorForm.RepaintInd := false;
-    lInd2 := GSettings.EditorAutoUpdate;
-    GSettings.EditorAutoUpdate := false;
+    lBool2 := FRefreshMode;
+    FRefreshMode := true;
     try
        for i := 0 to ControlCount-1 do
        begin
@@ -919,9 +915,9 @@ begin
              TBlock(Controls[i]).RefreshStatements;
        end;
     finally
-       GSettings.EditorAutoUpdate := lInd2;
+       FRefreshMode := lBool2;
     end;
-    NavigatorForm.RepaintInd := lInd;
+    NavigatorForm.RepaintInd := lBool;
 end;
 
 function TBlock.GetId: integer;
@@ -1867,13 +1863,13 @@ procedure TBlock.UpdateEditor(AEdit: TCustomEdit);
 var
    lLine: TChangeLine;
 begin
-   if AEdit <> nil then
+   if (AEdit <> nil) and not FRefreshMode then
    begin
       lLine := TInfra.GetChangeLine(Self, AEdit);
       if lLine.Row <> ROW_NOT_FOUND then
       begin
          lLine.Text := FastCodeAnsiStringReplace(lLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
-         if GSettings.UpdateCodeEditor and not SkipUpdateCodeEditor then
+         if GSettings.UpdateEditor and not SkipUpdateEditor then
             TInfra.ChangeLine(lLine);
          TInfra.SetEditorCaretPos(lLine);
       end;
@@ -2015,7 +2011,7 @@ begin
    result := lIterator;
 end;
 
-function TBlock.SkipUpdateCodeEditor: boolean;
+function TBlock.SkipUpdateEditor: boolean;
 var
    lHeader: TUserFunctionHeader;
 begin

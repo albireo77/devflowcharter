@@ -570,14 +570,14 @@ procedure TUserFunctionHeader.OnChangeDesc(Sender: TObject);
 begin
    if GSettings.ShowFlowchartLabels and chkInclDescFlow.Checked then
       RedrawBody;
-   if GSettings.UpdateCodeEditor and not chkExtDeclare.Checked and (Font.Color <> NOK_COLOR) and chkInclDescCode.Checked then
+   if GSettings.UpdateEditor and not chkExtDeclare.Checked and (Font.Color <> NOK_COLOR) and chkInclDescCode.Checked then
       SourceEditorForm.RefreshEditorForObject(Self);
    GChange := 1;
 end;
 
 procedure TUserFunctionHeader.OnChangeType(Sender: TObject);
 begin
-   if GSettings.UpdateCodeEditor and (Font.Color <> NOK_COLOR) and not chkExtDeclare.Checked then
+   if GSettings.UpdateEditor and (Font.Color <> NOK_COLOR) and not chkExtDeclare.Checked then
       SourceEditorForm.RefreshEditorForObject(Self);
    GChange := 1;
    RedrawBody;
@@ -640,7 +640,7 @@ begin
    begin
       FOwnerFunction.Body.SetVisible(not chkExtDeclare.Checked);
       FOwnerFunction.Body.ParentForm.SetScrollBars;
-      if GSettings.UpdateCodeEditor and (Font.Color <> NOK_COLOR) then
+      if GSettings.UpdateEditor and (Font.Color <> NOK_COLOR) then
          SourceEditorForm.RefreshEditorForObject(Self);
    end;
    GChange := 1;
@@ -658,7 +658,7 @@ end;
 
 procedure TUserFunctionHeader.OnClickInclDescCode(Sender: TObject);
 begin
-   if GSettings.UpdateCodeEditor and (Font.Color <> NOK_COLOR) and not chkExtDeclare.Checked then
+   if GSettings.UpdateEditor and (Font.Color <> NOK_COLOR) and not chkExtDeclare.Checked then
       SourceEditorForm.RefreshEditorForObject(Self);
 end;
 

@@ -93,7 +93,7 @@ begin
       GClpbrd.UndoObject.Free;
       pgcTabs.OwnerDraw := true;
       GClpbrd.UndoObject := lTabComp.OverlayObject;
-      if GSettings.UpdateCodeEditor then
+      if GSettings.UpdateEditor then
          SourceEditorForm.RefreshEditorForObject(nil);
    end;
 end;
@@ -231,7 +231,7 @@ begin
          TInfra.ShowFormattedErrorBox('ImportFailed', [CRLF, Gerr_text], erImport)
       else
       begin
-         if GSettings.UpdateCodeEditor then
+         if GSettings.UpdateEditor then
             SourceEditorForm.RefreshEditorForObject(nil);
          GChange := 1;
       end;
@@ -259,7 +259,7 @@ begin
          end;
       end;
       GChange := 1;
-      if GSettings.UpdateCodeEditor then
+      if GSettings.UpdateEditor then
          SourceEditorForm.RefreshEditorForObject(nil);
    end;
 end;
@@ -304,7 +304,7 @@ begin
       pgcTabs.Pages[lIndex].PageIndex := TTabSheet(Source).PageIndex;
       TTabSheet(Source).PageIndex := lIndex;
       RefreshTabs;
-      if GSettings.UpdateCodeEditor then
+      if GSettings.UpdateEditor then
          SourceEditorForm.RefreshEditorForObject(nil);
    end;
 end;

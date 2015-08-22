@@ -136,13 +136,13 @@ begin
    TTabComponent(FParentTab).RefreshElements;
    FParentForm.UpdateCodeEditor := true;
    UpdateMe;
-   if GSettings.UpdateCodeEditor and not TTabComponent(FParentTab).chkExtDeclare.Checked then
+   if GSettings.UpdateEditor and not TTabComponent(FParentTab).chkExtDeclare.Checked then
       SourceEditorForm.RefreshEditorForObject(nil);
 end;
 
 procedure TElement.OnChangeType(Sender: TObject);
 begin
-   if GSettings.UpdateCodeEditor and (FParentTab.Font.Color <> NOK_COLOR) and not TTabComponent(FParentTab).chkExtDeclare.Checked then
+   if GSettings.UpdateEditor and (FParentTab.Font.Color <> NOK_COLOR) and not TTabComponent(FParentTab).chkExtDeclare.Checked then
       SourceEditorForm.RefreshEditorForObject(FParentTab);
    GChange := 1;
 end;
@@ -180,7 +180,7 @@ begin
    edtName.Font.Color := lColor;
    edtName.Hint := i18Manager.GetString(lInfo);
    UpdateMe;
-   if GSettings.UpdateCodeEditor and FParentForm.UpdateCodeEditor and not TTabComponent(FParentTab).chkExtDeclare.Checked then
+   if GSettings.UpdateEditor and FParentForm.UpdateCodeEditor and not TTabComponent(FParentTab).chkExtDeclare.Checked then
       SourceEditorForm.RefreshEditorForObject(FParentTab);
 end;
 

@@ -627,7 +627,7 @@ end;
 
 procedure TDeclareList.UpdateCodeEditor;
 begin
-   if GSettings.UpdateCodeEditor then
+   if GSettings.UpdateEditor then
       SourceEditorForm.RefreshEditorForObject(nil);
 end;
 
