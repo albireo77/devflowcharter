@@ -897,11 +897,10 @@ end;
 procedure TBlock.RefreshStatements;
 var
    i: integer;
-   lBool, lBool2: boolean;
+   lBool: boolean;
 begin
     lBool := NavigatorForm.RepaintInd;
     NavigatorForm.RepaintInd := false;
-    lBool2 := FRefreshMode;
     FRefreshMode := true;
     try
        for i := 0 to ControlCount-1 do
@@ -916,7 +915,7 @@ begin
              TBlock(Controls[i]).RefreshStatements;
        end;
     finally
-       FRefreshMode := lBool2;
+       FRefreshMode := false;
     end;
     NavigatorForm.RepaintInd := lBool;
 end;

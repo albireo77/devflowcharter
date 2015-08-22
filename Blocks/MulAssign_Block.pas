@@ -137,8 +137,11 @@ procedure TMultiAssignBlock.ChangeColor(const AColor: TColor);
 begin
    inherited ChangeColor(AColor);
    FRefreshMode := true;
-   FStatements.OnChange(FStatements);
-   FRefreshMode := false;
+   try
+      FStatements.OnChange(FStatements);
+   finally
+      FRefreshMode := false;
+   end;
 end;
 
 end.
