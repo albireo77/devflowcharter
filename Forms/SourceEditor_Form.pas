@@ -569,11 +569,7 @@ begin
     begin
        if SaveDialog1.Execute then
        begin
-{$IFDEF USE_CODEFOLDING}
-          memCodeEditor.GetUncollapsedStrings.SaveToFile(SaveDialog1.FileName);
-{$ELSE}
-          memCodeEditor.Lines.SaveToFile(SaveDialog1.FileName);
-{$ENDIF}
+          GetEditorAllLines.SaveToFile(SaveDialog1.FileName);
           lFileName := ExtractFileName(SaveDialog1.FileName);
           lFileNameNoExt := lFileName;
           lPos := AnsiPos('.', lFileNameNoExt);
@@ -627,11 +623,7 @@ begin
    SetSaveDialog(SaveDialog2);
    if SaveDialog2.Execute then
    begin
-{$IFDEF USE_CODEFOLDING}
-      lStrings := memCodeEditor.GetUncollapsedStrings;
-{$ELSE}
-      lStrings := memCodeEditor.Lines;
-{$ENDIF}
+      lStrings := GetEditorAllLines;
       if (SaveDialog2.FilterIndex > 1) and Assigned(memCodeEditor.Highlighter) then
       begin
          case SaveDialog2.FilterIndex of
