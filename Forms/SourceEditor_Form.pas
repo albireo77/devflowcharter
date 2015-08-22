@@ -212,6 +212,9 @@ end;
 
 procedure TSourceEditorForm.ResetForm;
 begin
+{$IFDEF USE_CODEFOLDING}
+   memCodeEditor.AllFoldRanges.ClearAll;
+{$ENDIF}
    memCodeEditor.ClearAll;
    memCodeEditor.Highlighter := nil;
    FFocusEditor := true;
