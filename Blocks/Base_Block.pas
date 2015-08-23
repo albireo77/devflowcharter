@@ -1616,7 +1616,11 @@ begin
       lTag := TXMLProcessor.FindChildTag(ATag, 'text');
       lTextControl := GetTextControl;
       if (lTag <> nil) and (lTextControl <> nil) then
+      begin
+         FRefreshMode := true;
          lTextControl.Text := AnsiReplaceStr(lTag.Text, '#!', CRLF);
+         FRefreshMode := false;
+      end;
       lValue := StrToIntDef(ATag.GetAttribute('fontsize'), 8);
       if lValue in [8, 10, 12] then
          ChangeFontSize(lValue);

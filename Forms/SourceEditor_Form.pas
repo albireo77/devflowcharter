@@ -968,7 +968,7 @@ begin
 {$IFDEF USE_CODEFOLDING}
    result.FoldRange := nil;
 {$ENDIF}
-   result.Lines := memCodeEditor.Lines;
+   result.Lines := nil;
    result.IsFolded := false;
    idx1 := ROW_NOT_FOUND;
    idx2 := ROW_NOT_FOUND;
@@ -977,29 +977,42 @@ begin
    if idx1 <> ROW_NOT_FOUND then
    begin
 {$IFDEF USE_CODEFOLDING}
-      result.FoldRange := memCodeEditor.FindCollapsedFoldRangeForLine(idx1+1);
-      if result.FoldRange <> nil then
+      idx1 := memCodeEditor.Lines.IndexOfObject(AObject);
+      if idx1 = ROW_NOT_FOUND then
       begin
-         ADoSelect := false;
-         result.Lines := result.FoldRange.CollapsedLines;
-         idx1 := result.Lines.IndexOfObject(AObject);
-         result.IsFolded := true;
+         for i := 0 to memCodeEditor.AllFoldRanges.Count do
+         begin
+            result.Lines := memCodeEditor.AllFoldRanges[i].CollapsedLines;
+            idx1 := result.Lines.IndexOfObject(AObject);
+            if idx1 <> ROW_NOT_FOUND then
+            begin
+               ADoSelect := false;
+               result.IsFolded := true;
+               result.FoldRange := memCodeEditor.AllFoldRanges[i];
+               break;
+            end
+            else
+               result.Lines := nil;
+         end;
       end
       else
-         idx1 := memCodeEditor.Lines.IndexOfObject(AObject);
+         result.Lines := memCodeEditor.Lines;
 {$ENDIF}
-      idx2 := idx1;
-      for i := idx1+1 to result.Lines.Count-1 do
+      if result.Lines <> nil then
       begin
-         if result.Lines.Objects[i] = AObject then
-            idx2 := i;
-      end;
-      with memCodeEditor do
-      begin
-         if ADoSelect and CanFocus then
+         idx2 := idx1;
+         for i := idx1+1 to result.Lines.Count-1 do
          begin
-            SelStart := RowColToCharIndex(BufferCoord(Length(result.Lines[idx2])+1, idx2+1));
-            SelEnd := RowColToCharIndex(BufferCoord(1, idx1+1));
+            if result.Lines.Objects[i] = AObject then
+               idx2 := i;
+         end;
+         with memCodeEditor do
+         begin
+            if ADoSelect and CanFocus then
+            begin
+               SelStart := RowColToCharIndex(BufferCoord(Length(result.Lines[idx2])+1, idx2+1));
+               SelEnd := RowColToCharIndex(BufferCoord(1, idx1+1));
+            end;
          end;
       end;
    end;
