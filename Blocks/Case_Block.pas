@@ -634,6 +634,7 @@ begin
       if lTag <> nil then
       begin
          lTag := TXMLProcessor.FindNextTag(lTag);   // skip default branch stored in first tag
+         FRefreshMode := true;
          for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
          begin
             lStatement := FBranchArray[i].Statement;
@@ -645,6 +646,7 @@ begin
             end;
             lTag := TXMLProcessor.FindNextTag(lTag);
          end;
+         FRefreshMode := false;
       end;
    end;
 end;

@@ -534,12 +534,14 @@ begin
          cbVariable.Text := lTag.Text;
          edtVariable.Text := lTag.Text;
       end;
+      FRefreshMode := true;
       lTag := TXMLProcessor.FindChildTag(ATag, 'init_val');
       if lTag <> nil then
          edtStartVal.Text := AnsiReplaceStr(lTag.Text, '#', ' ');
       lTag := TXMLProcessor.FindChildTag(ATag, 'end_val');
       if lTag <> nil then
          edtStopVal.Text := AnsiReplaceStr(lTag.Text, '#' , ' ');
+      FRefreshMode := false;
       FOrder := TForOrder(StrToIntDef(ATag.GetAttribute('order'), 0));
    end
 end;

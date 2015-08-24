@@ -980,7 +980,7 @@ begin
       idx1 := memCodeEditor.Lines.IndexOfObject(AObject);
       if idx1 = ROW_NOT_FOUND then
       begin
-         for i := 0 to memCodeEditor.AllFoldRanges.Count do
+         for i := 0 to memCodeEditor.AllFoldRanges.AllCount-1 do
          begin
             result.Lines := memCodeEditor.AllFoldRanges[i].CollapsedLines;
             idx1 := result.Lines.IndexOfObject(AObject);
