@@ -1156,10 +1156,9 @@ end;
 procedure TSourceEditorForm.ImportSettingsFromXMLTag(const root: IXMLElement);
 var
    lRect: TRect;
-   lInt, i: integer;
+   i: integer;
    tag1, tag2: IXMLElement;
    lMark: TSynEditMark;
-   lIntArray: array of integer;
 {$IFDEF USE_CODEFOLDING}
    lFoldRange: TSynEditFoldRange;
 {$ENDIF}
@@ -1205,36 +1204,26 @@ begin
                tag2 := TXMLProcessor.FindChildTag(tag1, 'fold_range');
                while tag2 <> nil do
                begin
-                  lInt := StrToIntDef(tag2.Text, -1);
-                  if lInt > 0 then
+                  i := StrToIntDef(tag2.Text, 0);
+                  if i > 0 then
                   begin
-                     SetLength(lIntArray, Length(lIntArray)+1);
-                     lIntArray[High(lIntArray)] := lInt;
-                  end;
-                  tag2 := TXMLProcessor.FindNextTag(tag2);
-               end;
-               if Length(lIntArray) > 0 then
-               begin
-                  TInfra.Sort(lIntArray);
-                  for i := High(lIntArray) downto Low(lIntArray) do
-                  begin
-                     lFoldRange := CollapsableFoldRangeForLine(lIntArray[i]);
+                     lFoldRange := CollapsableFoldRangeForLine(i);
                      if (lFoldRange <> nil) and not lFoldRange.Collapsed then
                      begin
                         Collapse(lFoldRange);
                         Refresh;
                      end;
                   end;
-                  lIntArray := nil;
+                  tag2 := TXMLProcessor.FindNextTag(tag2);
                end;
             end;
          end;
 {$ENDIF}
       end;
       root.OwnerDocument.PreserveWhiteSpace := false;
-      lInt := StrToIntDef(root.GetAttribute('src_top_line'), 0);
-      if lInt > 0 then
-         memCodeEditor.TopLine := lInt;
+      i := StrToIntDef(root.GetAttribute('src_top_line'), 0);
+      if i > 0 then
+         memCodeEditor.TopLine := i;
       tag1 := TXMLProcessor.FindChildTag(root, 'src_win_mark');
       while tag1 <> nil do
       begin
@@ -1251,7 +1240,6 @@ begin
       end;
    end;
 end;
-
 procedure TSourceEditorForm.SetSaveDialog(Sender: TSaveDialog);
 begin
    with Sender do
