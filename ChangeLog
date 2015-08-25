@@ -1,3 +1,7 @@
+3.3.2 [25.08.2015]
+- Editor: add preliminary support for simultaneous auto update and code folding
+- fix not displayed hint for multiple assign block
+
 3.3.1 [13.08.2015]
 - Editor: fix autoselecting code blocks for long lines
 - Editor: fix setting active line for multiline components
