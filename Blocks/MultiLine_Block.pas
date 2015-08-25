@@ -135,51 +135,48 @@ end;
 
 procedure TMultiLineBlock.UpdateEditor(AEdit: TCustomEdit);
 var
-   lRange: TCodeRange;
+   lLine: TChangeLine;
    lTemplateLines: TStringList;
    i, lRowDiff: integer;
 begin
    if PerformEditorUpdate then
    begin
-      lRange := SourceEditorForm.SelectCodeBlock(Self, false);
-      if lRange.FirstRow <> ROW_NOT_FOUND then
+      lLine := TInfra.GetChangeLine(Self, FStatements);
+      if lLine.CodeRange.FirstRow <> ROW_NOT_FOUND then
       begin
-         with SourceEditorForm do
+         if GSettings.UpdateEditor and not SkipUpdateEditor then
          begin
-            if GSettings.UpdateEditor and not SkipUpdateEditor then
-            begin
-               lTemplateLines := TStringList.Create;
-               try
-                  GenerateCode(lTemplateLines, GInfra.CurrentLang.Name, SourceEditorForm.GetIndentLevel(lRange.FirstRow, lRange.Lines));
-                  if (lTemplateLines.Count > 0) and (lRange.Lines <> nil) then
-                  begin
-                     lRange.Lines.BeginUpdate;
-                     for i := 0 to lRange.LastRow - lRange.FirstRow do
-                        lRange.Lines.Delete(lRange.FirstRow);
+            lTemplateLines := TStringList.Create;
+            try
+               GenerateCode(lTemplateLines, GInfra.CurrentLang.Name, SourceEditorForm.GetIndentLevel(lLine.CodeRange.FirstRow, lLine.CodeRange.Lines));
+               if (lTemplateLines.Count > 0) and (lLine.CodeRange.Lines <> nil) then
+               begin
+                  lLine.CodeRange.Lines.BeginUpdate;
+                  for i := 0 to lLine.CodeRange.LastRow-lLine.CodeRange.FirstRow do
+                     lLine.CodeRange.Lines.Delete(lLine.CodeRange.FirstRow);
 {$IFDEF USE_CODEFOLDING}
-                     if lRange.FoldRange <> nil then
-                     begin
-                        lRowDiff := lTemplateLines.Count - (lRange.LastRow - lRange.FirstRow + 1);
-                        lRange.FoldRange.LinesCollapsed := lRange.FoldRange.LinesCollapsed + lRowDiff;
-                        lRange.FoldRange.ToLine := lRange.FoldRange.ToLine + lRowDiff;
-                        for i := 0 to lTemplateLines.Count-1 do
-                           lRange.Lines.InsertObject(lRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
-                     end
-                     else
+                  if lLine.CodeRange.FoldRange <> nil then
+                  begin
+                     lRowDiff := lTemplateLines.Count - (lLine.CodeRange.LastRow - lLine.CodeRange.FirstRow + 1);
+                     lLine.CodeRange.FoldRange.LinesCollapsed := lLine.CodeRange.FoldRange.LinesCollapsed + lRowDiff;
+                     lLine.CodeRange.FoldRange.ToLine := lLine.CodeRange.FoldRange.ToLine + lRowDiff;
+                     for i := 0 to lTemplateLines.Count-1 do
+                        lLine.CodeRange.Lines.InsertObject(lLine.CodeRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
+                  end
+                  else
 {$ENDIF}
-                     begin
-                        for i := lTemplateLines.Count-1 downto 0 do
-                           lRange.Lines.InsertObject(lRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
-                     end;
-                     lRange.Lines.EndUpdate;
+                  begin
+                     for i := lTemplateLines.Count-1 downto 0 do
+                        lLine.CodeRange.Lines.InsertObject(lLine.CodeRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
                   end;
-               finally
-                  lTemplateLines.Free;
+                  lLine.CodeRange.Lines.EndUpdate;
                end;
+            finally
+               lTemplateLines.Free;
             end;
-            TInfra.SetEditorCaretPos(TInfra.GetChangeLine(Self, FStatements));
-            memCodeEditor.OnChange(memCodeEditor);
          end;
+         TInfra.SetEditorCaretPos(lLine);
+         SourceEditorForm.memCodeEditor.OnChange(SourceEditorForm.memCodeEditor);
       end;
    end;
 end;

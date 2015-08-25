@@ -50,8 +50,8 @@ type
    TCodeRange = record
       FirstRow,
       LastRow: integer;
-      Lines: TStrings;
       IsFolded: boolean;
+      Lines: TStrings;
 {$IFDEF USE_CODEFOLDING}
       FoldRange: TSynEditFoldRange;
 {$ENDIF}
@@ -74,11 +74,7 @@ type
       Row,
       Col: integer;
       EditCaretXY: TBufferCoord;
-      IsFolded: boolean;
-      Lines: TStrings;
-{$IFDEF USE_CODEFOLDING}
-      FoldRange: TSynEditFoldRange;
-{$ENDIF}
+      CodeRange: TCodeRange;
    end;
 
    TIntegerTypes = 0..100;

@@ -125,6 +125,7 @@ type
          class procedure ChangeLine(const ALine: TChangeLine);
          class procedure SetEditorCaretPos(const ALine: TChangeLine);
          class procedure InitChangeLine(var AChangeLine: TChangeLine);
+         class procedure InitCodeRange(var ACodeRange: TCodeRange);
          constructor Create;
          destructor Destroy; override;
    end;
@@ -1153,6 +1154,20 @@ begin
    result := (AColor = NOK_COLOR) or (AColor = WARN_COLOR);
 end;
 
+class procedure TInfra.InitCodeRange(var ACodeRange: TCodeRange);
+begin
+   with ACodeRange do
+   begin
+      IsFolded := false;
+      FirstRow := ROW_NOT_FOUND;
+      LastRow := ROW_NOT_FOUND;
+      Lines := nil;
+{$IFDEF USE_CODEFOLDING}
+      FoldRange := nil;
+{$ENDIF}
+   end;
+end;
+
 class procedure TInfra.InitChangeLine(var AChangeLine: TChangeLine);
 begin
    with AChangeLine do
@@ -1161,18 +1176,13 @@ begin
       Row := ROW_NOT_FOUND;
       Col := 0;
       EditCaretXY := BufferCoord(0, 0);
-      Lines := nil;
-      IsFolded := false;
-{$IFDEF USE_CODEFOLDING}
-      FoldRange := nil;
-{$ENDIF}
+      InitCodeRange(CodeRange);
    end;
 end;
 
 class function TInfra.GetChangeLine(const AObject: TObject; const AEdit: TCustomEdit = nil; const ATemplate: string = ''): TChangeLine;
 var
    lTemplateLines: TStringList;
-   lRange: TCodeRange;
    i, lPos: integer;
    lIndent: string;
 begin
@@ -1181,14 +1191,9 @@ begin
    result.EditCaretXY := TInfra.GetCaretPos(AEdit);
    if AObject <> nil then
    begin
-      lRange := SourceEditorForm.SelectCodeBlock(AObject, false);
-      if lRange.FirstRow <> ROW_NOT_FOUND then
+      result.CodeRange := SourceEditorForm.SelectCodeBlock(AObject, false);
+      if result.CodeRange.FirstRow <> ROW_NOT_FOUND then
       begin
-         result.Lines := lRange.Lines;
-         result.IsFolded := lRange.IsFolded;
-{$IFDEF USE_CODEFOLDING}
-         result.FoldRange := lRange.FoldRange;
-{$ENDIF}
          lTemplateLines := TStringList.Create;
          try
             if ATemplate <> '' then
@@ -1201,19 +1206,19 @@ begin
                if lPos <> 0 then
                begin
                   if (i = lTemplateLines.Count-1) and (i <> 0) then
-                     result.Row := lRange.LastRow
+                     result.Row := result.CodeRange.LastRow
                   else
-                     result.Row := lRange.FirstRow + i;
+                     result.Row := result.CodeRange.FirstRow + i;
                   result.Text := lTemplateLines[i];
                   break;
                end;
             end;
-            lIndent := TInfra.ExtractIndentString(result.Lines[result.Row]);
+            lIndent := TInfra.ExtractIndentString(result.CodeRange.Lines[result.Row]);
             result.Col := Length(lIndent);
             if result.Row = ROW_NOT_FOUND then    // row with placeholder not found
             begin
-               result.Row := lRange.FirstRow;
-               result.Text := result.Lines[result.Row];
+               result.Row := result.CodeRange.FirstRow;
+               result.Text := result.CodeRange.Lines[result.Row];
             end
             else
             begin
@@ -1254,19 +1259,19 @@ end;
 
 class procedure TInfra.ChangeLine(const ALine: TChangeLine);
 begin
-   if (ALine.Lines <> nil) and (ALine.Row >= 0) and (ALine.Row < ALine.Lines.Count) then
-      ALine.Lines[ALine.Row] := ALine.Text;
+   if (ALine.CodeRange.Lines <> nil) and (ALine.Row >= 0) and (ALine.Row < ALine.CodeRange.Lines.Count) then
+      ALine.CodeRange.Lines[ALine.Row] := ALine.Text;
 end;
 
 class procedure TInfra.SetEditorCaretPos(const ALine: TChangeLine);
 var
    lChar, lLine: integer;
 begin
-   if (ALine.Lines <> nil) and not ALine.IsFolded then
+   if (ALine.CodeRange.Lines <> nil) and not ALine.CodeRange.IsFolded then
    begin
       lChar := ALine.Col + ALine.EditCaretXY.Char;
       lLine := ALine.Row + ALIne.EditCaretXY.Line + 1;
-      if (lLine > 0) and (lLine <= ALine.Lines.Count) then
+      if (lLine > 0) and (lLine <= ALine.CodeRange.Lines.Count) then
       begin
          SourceEditorForm.memCodeEditor.CaretXY := BufferCoord(lChar, lLine);
          SourceEditorForm.memCodeEditor.EnsureCursorPosVisible;

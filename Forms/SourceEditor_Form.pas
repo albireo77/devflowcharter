@@ -965,13 +965,7 @@ function TSourceEditorForm.SelectCodeBlock(const AObject: TObject; ADoSelect: bo
 var
    i, idx1, idx2: integer;
 begin
-{$IFDEF USE_CODEFOLDING}
-   result.FoldRange := nil;
-{$ENDIF}
-   result.Lines := nil;
-   result.IsFolded := false;
-   idx1 := ROW_NOT_FOUND;
-   idx2 := ROW_NOT_FOUND;
+   TInfra.InitCodeRange(result);
    if memCodeEditor.Lines.Count > 0 then
       idx1 := GetEditorAllLines.IndexOfObject(AObject);
    if idx1 <> ROW_NOT_FOUND then
