@@ -186,6 +186,8 @@ end;
 
 procedure TMultiLineBlock.OnMouseDownMemo(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
+   if ssLeft in Shift then
+      OnMouseDown(Sender, Button, Shift, X, Y);
    if Button = mbLeft then
       TInfra.SetEditorCaretPos(TInfra.GetChangeLine(Self, FStatements));
 end;
