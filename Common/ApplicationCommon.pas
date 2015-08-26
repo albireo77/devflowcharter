@@ -1299,7 +1299,7 @@ class procedure TInfra.SetEditorCaretPos(const ALine: TChangeLine);
 var
    lChar, lLine: integer;
 begin
-   if (ALine.CodeRange.Lines = SourceEditorForm.memCodeEditor.Lines) and not ALine.CodeRange.IsFolded then
+   if ALine.CodeRange.Lines = SourceEditorForm.memCodeEditor.Lines then
    begin
       lChar := ALine.Col + ALine.EditCaretXY.Char;
       lLine := ALine.Row + ALIne.EditCaretXY.Line + 1;
