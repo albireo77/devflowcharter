@@ -84,6 +84,7 @@ type
          class function RPos(const AChar: char; const AString: string): integer;
          class function FindText(ASubstr, AText: string; const AStartIndex: integer; const ACaseSensitive: boolean): integer;
          class function IsPrinter: boolean;
+         class procedure Sort(var iArray: array of integer);
          class function IsValid(const AObject: TObject): boolean;
          class function SameStrings(const AStr1: string; const AStr2: string): boolean;
          class procedure PopulateDataTypeCombo(const AcbType: TComboBox; const ASkipIndex: integer = 100);
@@ -989,6 +990,37 @@ begin
    result.cy := lViewPort.cy / lExt.cy;
 end;
 
+class procedure TInfra.Sort(var iArray: array of integer);
+
+  procedure QuickSort(iLow, iHigh: integer);
+  var
+    iLo, iHi: integer;
+    x, Temp: integer;
+  begin
+    iLo := iLow;
+    iHi := iHigh;
+    X := iArray[(iLow + iHigh) div 2];
+    repeat
+      while iArray[iLo] < X do Inc(iLo);
+      while iArray[iHi] > X do Dec(iHi);
+      if iLo <= iHi then
+      begin
+        Temp := iArray[iLo];
+        iArray[iLo] := iArray[iHi];
+        iArray[iHi] := Temp;
+        Inc(iLo);
+        Dec(iHi);
+      end;
+    until iLo > iHi;
+    if iHi > iLow then QuickSort(iLow, iHi);
+    if iLo < iHigh then QuickSort(iLo, iHigh);
+  end;
+
+begin
+  if Length(iArray) > 1 then
+     QuickSort(Low(iArray), High(iArray));
+end;
+
 class function TInfra.GetEllipseTextRect(const ACanvas: TCanvas; const APoint: TPoint; const AText: string): TRect;
 const
    MIN_HALF_HEIGHT = 15;
@@ -1267,7 +1299,7 @@ class procedure TInfra.SetEditorCaretPos(const ALine: TChangeLine);
 var
    lChar, lLine: integer;
 begin
-   if (ALine.CodeRange.Lines <> nil) and not ALine.CodeRange.IsFolded then
+   if (ALine.CodeRange.Lines = SourceEditorForm.memCodeEditor.Lines) and not ALine.CodeRange.IsFolded then
    begin
       lChar := ALine.Col + ALine.EditCaretXY.Char;
       lLine := ALine.Row + ALIne.EditCaretXY.Line + 1;

@@ -139,6 +139,7 @@ var
    lTemplateLines: TStringList;
    i, lRowDiff: integer;
 begin
+   lRowDiff := 0;
    if PerformEditorUpdate then
    begin
       lLine := TInfra.GetChangeLine(Self, FStatements);
@@ -170,13 +171,14 @@ begin
                         lLine.CodeRange.Lines.InsertObject(lLine.CodeRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
                   end;
                   lLine.CodeRange.Lines.EndUpdate;
+                  if lRowDiff <> 0 then
+                     SourceEditorForm.memCodeEditor.OnChange(SourceEditorForm.memCodeEditor);
                end;
             finally
                lTemplateLines.Free;
             end;
          end;
          TInfra.SetEditorCaretPos(lLine);
-         SourceEditorForm.memCodeEditor.OnChange(SourceEditorForm.memCodeEditor);
       end;
    end;
 end;
