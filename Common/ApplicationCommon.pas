@@ -84,7 +84,6 @@ type
          class function RPos(const AChar: char; const AString: string): integer;
          class function FindText(ASubstr, AText: string; const AStartIndex: integer; const ACaseSensitive: boolean): integer;
          class function IsPrinter: boolean;
-         class procedure Sort(var iArray: array of integer);
          class function IsValid(const AObject: TObject): boolean;
          class function SameStrings(const AStr1: string; const AStr2: string): boolean;
          class procedure PopulateDataTypeCombo(const AcbType: TComboBox; const ASkipIndex: integer = 100);
@@ -220,6 +219,7 @@ var     // Global variables
     errString:      string;       // error string returned from parser
 
     function ValidateId(const AIdent: string): integer;
+    function CompareIntegers(AList: TStringList; idx1, idx2: integer): integer;
 
 implementation
 
@@ -990,37 +990,6 @@ begin
    result.cy := lViewPort.cy / lExt.cy;
 end;
 
-class procedure TInfra.Sort(var iArray: array of integer);
-
-  procedure QuickSort(iLow, iHigh: integer);
-  var
-    iLo, iHi: integer;
-    x, Temp: integer;
-  begin
-    iLo := iLow;
-    iHi := iHigh;
-    X := iArray[(iLow + iHigh) div 2];
-    repeat
-      while iArray[iLo] < X do Inc(iLo);
-      while iArray[iHi] > X do Dec(iHi);
-      if iLo <= iHi then
-      begin
-        Temp := iArray[iLo];
-        iArray[iLo] := iArray[iHi];
-        iArray[iHi] := Temp;
-        Inc(iLo);
-        Dec(iHi);
-      end;
-    until iLo > iHi;
-    if iHi > iLow then QuickSort(iLow, iHi);
-    if iLo < iHigh then QuickSort(iLo, iHigh);
-  end;
-
-begin
-  if Length(iArray) > 1 then
-     QuickSort(Low(iArray), High(iArray));
-end;
-
 class function TInfra.GetEllipseTextRect(const ACanvas: TCanvas; const APoint: TPoint; const AText: string): TRect;
 const
    MIN_HALF_HEIGHT = 15;
@@ -1318,6 +1287,11 @@ begin
       result := INCORRECT_IDENT
    else if GInfra.CurrentLang.Keywords.IndexOf(AIdent) <> -1 then
       result := RESERVED_IDENT;
+end;
+
+function CompareIntegers(AList: TStringList; idx1, idx2: integer): integer;
+begin
+   result := StrToInt(AList[idx1]) - StrToInt(AList[idx2]);
 end;
 
 initialization

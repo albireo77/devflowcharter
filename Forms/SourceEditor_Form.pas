@@ -963,22 +963,22 @@ end;
 
 function TSourceEditorForm.SelectCodeBlock(const AObject: TObject; ADoSelect: boolean = true): TCodeRange;
 var
-   i, idx1, idx2: integer;
+   i: integer;
 begin
    TInfra.InitCodeRange(result);
    if memCodeEditor.Lines.Count > 0 then
-      idx1 := GetEditorAllLines.IndexOfObject(AObject);
-   if idx1 <> ROW_NOT_FOUND then
+      result.FirstRow := GetEditorAllLines.IndexOfObject(AObject);
+   if result.FirstRow <> ROW_NOT_FOUND then
    begin
 {$IFDEF USE_CODEFOLDING}
-      idx1 := memCodeEditor.Lines.IndexOfObject(AObject);
-      if idx1 = ROW_NOT_FOUND then
+      result.FirstRow := memCodeEditor.Lines.IndexOfObject(AObject);
+      if result.FirstRow = ROW_NOT_FOUND then
       begin
          for i := 0 to memCodeEditor.AllFoldRanges.AllCount-1 do
          begin
             result.Lines := memCodeEditor.AllFoldRanges[i].CollapsedLines;
-            idx1 := result.Lines.IndexOfObject(AObject);
-            if idx1 <> ROW_NOT_FOUND then
+            result.FirstRow := result.Lines.IndexOfObject(AObject);
+            if result.FirstRow <> ROW_NOT_FOUND then
             begin
                ADoSelect := false;
                result.IsFolded := true;
@@ -994,24 +994,22 @@ begin
 {$ENDIF}
       if result.Lines <> nil then
       begin
-         idx2 := idx1;
-         for i := idx1+1 to result.Lines.Count-1 do
+         result.LastRow := result.FirstRow;
+         for i := result.FirstRow+1 to result.Lines.Count-1 do
          begin
             if result.Lines.Objects[i] = AObject then
-               idx2 := i;
+               result.LastRow := i;
          end;
          with memCodeEditor do
          begin
             if ADoSelect and CanFocus then
             begin
-               SelStart := RowColToCharIndex(BufferCoord(Length(result.Lines[idx2])+1, idx2+1));
-               SelEnd := RowColToCharIndex(BufferCoord(1, idx1+1));
+               SelStart := RowColToCharIndex(BufferCoord(Length(result.Lines[result.LastRow])+1, result.LastRow+1));
+               SelEnd := RowColToCharIndex(BufferCoord(1, result.FirstRow+1));
             end;
          end;
       end;
    end;
-   result.FirstRow := idx1;
-   result.LastRow := idx2;
 end;
 
 procedure  TSourceEditorForm.UnSelectCodeBlock(const AObject: TObject);
@@ -1150,10 +1148,10 @@ end;
 procedure TSourceEditorForm.ImportSettingsFromXMLTag(const root: IXMLElement);
 var
    lRect: TRect;
-   lInt, i: integer;
+   i: integer;
    tag1, tag2: IXMLElement;
    lMark: TSynEditMark;
-   lIntArray: array of integer;
+   lFoldedLines: TStringList;
 {$IFDEF USE_CODEFOLDING}
    lFoldRange: TSynEditFoldRange;
 {$ENDIF}
@@ -1196,39 +1194,35 @@ begin
             tag1 := TXMLProcessor.FindChildTag(root, 'fold_ranges');
             if tag1 <> nil then
             begin
-               tag2 := TXMLProcessor.FindChildTag(tag1, 'fold_range');
-               while tag2 <> nil do
-               begin
-                  lInt := StrToIntDef(tag2.Text, -1);
-                  if lInt > 0 then
+               lFoldedLines := TStringList.Create;
+               try
+                  tag2 := TXMLProcessor.FindChildTag(tag1, 'fold_range');
+                  while tag2 <> nil do
                   begin
-                     SetLength(lIntArray, Length(lIntArray)+1);
-                     lIntArray[High(lIntArray)] := lInt;
+                     lFoldedLines.Add(tag2.Text);
+                     tag2 := TXMLProcessor.FindNextTag(tag2);
                   end;
-                  tag2 := TXMLProcessor.FindNextTag(tag2);
-               end;
-               if Length(lIntArray) > 0 then
-               begin
-                  TInfra.Sort(lIntArray);
-                  for i := High(lIntArray) downto Low(lIntArray) do
+                  lFoldedLines.CustomSort(@CompareIntegers);
+                  for i := lFoldedLines.Count-1 downto 0 do
                   begin
-                     lFoldRange := CollapsableFoldRangeForLine(lIntArray[i]);
+                     lFoldRange := CollapsableFoldRangeForLine(StrToInt(lFoldedLines[i]));
                      if (lFoldRange <> nil) and not lFoldRange.Collapsed then
                      begin
                         Collapse(lFoldRange);
                         Refresh;
                      end;
                   end;
-                  lIntArray := nil;
+               finally
+                  lFoldedLines.Free;
                end;
             end;
          end;
 {$ENDIF}
       end;
       root.OwnerDocument.PreserveWhiteSpace := false;
-      lInt := StrToIntDef(root.GetAttribute('src_top_line'), 0);
-      if lInt > 0 then
-         memCodeEditor.TopLine := lInt;
+      i := StrToIntDef(root.GetAttribute('src_top_line'), 0);
+      if i > 0 then
+         memCodeEditor.TopLine := i;
       tag1 := TXMLProcessor.FindChildTag(root, 'src_win_mark');
       while tag1 <> nil do
       begin
