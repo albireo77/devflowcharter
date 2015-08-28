@@ -1009,7 +1009,9 @@ begin
             end;
          end;
       end;
-   end;
+   end
+   else
+      result.Lines := nil;
 end;
 
 procedure  TSourceEditorForm.UnSelectCodeBlock(const AObject: TObject);
