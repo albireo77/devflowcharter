@@ -966,8 +966,8 @@ var
    i: integer;
 begin
    TInfra.InitCodeRange(result);
-   if memCodeEditor.Lines.Count > 0 then
-      result.FirstRow := GetEditorAllLines.IndexOfObject(AObject);
+   result.Lines := GetEditorAllLines;
+   result.FirstRow := result.Lines.IndexOfObject(AObject);
    if result.FirstRow <> ROW_NOT_FOUND then
    begin
 {$IFDEF USE_CODEFOLDING}
