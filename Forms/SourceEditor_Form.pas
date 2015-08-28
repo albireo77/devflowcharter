@@ -1199,7 +1199,8 @@ begin
                   tag2 := TXMLProcessor.FindChildTag(tag1, 'fold_range');
                   while tag2 <> nil do
                   begin
-                     lFoldedLines.Add(tag2.Text);
+                     if StrToIntDef(tag2.Text, 0) > 0 then
+                        lFoldedLines.Add(tag2.Text);
                      tag2 := TXMLProcessor.FindNextTag(tag2);
                   end;
                   lFoldedLines.CustomSort(@CompareIntegers);
