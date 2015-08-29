@@ -82,8 +82,8 @@ end;
 constructor TMultiLineBlock.Create(const ABranch: TBranch; const ASource: TMultiLineBlock);
 begin
    Create(ABranch, ASource.Left, ASource.Top, ASource.Width, ASource.Height);
-   ChangeFontSize(ASource.FStatement.Font.Size);
-   ChangeFontStyle(ASource.FStatement.Font.Style);
+   ChangeFontSize(ASource.FStatements.Font.Size);
+   ChangeFontStyle(ASource.FStatements.Font.Style);
    Visible := ASource.Visible;
    FStatements.Text := ASource.FStatements.Text;
 end;
