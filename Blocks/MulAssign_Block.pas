@@ -33,7 +33,7 @@ type
       protected
          procedure OnChangeMemo(Sender: TObject); override;
       public
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
+         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; override;
          constructor Create(const ABranch: TBranch; const ASource: TMultiAssignBlock); overload;
          constructor Create(const ABranch: TBranch); overload;
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;

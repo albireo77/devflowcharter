@@ -36,7 +36,7 @@ type
 
    TTextBlock = class(TMultiLineBlock)
       public
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
+         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; override;
          constructor Create(const ABranch: TBranch; const ASource: TTextBlock); overload;
          constructor Create(const ABranch: TBranch); overload;
          procedure ChangeColor(const AColor: TColor); override;
