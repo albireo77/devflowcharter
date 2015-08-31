@@ -1,3 +1,7 @@
+3.3.3 [31.08.2015]
+- fix issues when copy/cut/paste multiline blocks
+- fix memory access violation when folding main block
+
 3.3.2 [25.08.2015]
 - Editor: add preliminary support for simultaneous auto update and code folding
 - fix not displayed hint for multiple assign block
