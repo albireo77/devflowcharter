@@ -122,7 +122,7 @@ begin
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    OnResize := MyOnResize;
-   FStatement.Visible := false;    // statement isn't used in this block
+   FStatement.Free;
    FStatement := nil;
    OwnerUserFunction := nil;
 
@@ -497,7 +497,6 @@ var
    lComment: TComment;
 begin
    inherited ExpandFold(AResizeInd);
-   FStatement.Visible := false;
    iter := GetPinnedCommentsIterator;
    while iter.HasNext do
    begin

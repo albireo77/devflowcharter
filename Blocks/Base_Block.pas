@@ -355,14 +355,16 @@ var
    i: integer;
    lTextControl, lSourceTextControl: TCustomEdit;
 begin
-
-   ChangeFontSize(ASource.FStatement.Font.Size);
-   ChangeFontStyle(ASource.FStatement.Font.Style);
    Visible := ASource.Visible;
-   lTextControl := GetTextControl;
    lSourceTextControl := ASource.GetTextControl;
-   if (lTextControl <> nil) and (lSourceTextControl <> nil) then
-      lTextControl.Text := lSourceTextControl.Text;
+   lTextControl := GetTextControl;
+   if lSourceTextControl <> nil then
+   begin
+      ChangeFontSize(THackControl(lSourceTextControl).Font.Size);
+      ChangeFontStyle(THackControl(lSourceTextControl).Font.Style);
+      if lTextControl <> nil then
+         lTextControl.Text := lSourceTextControl.Text;
+   end;
    FMemoFolder.Text := ASource.FMemoFolder.Text;
 
    for i := PRIMARY_BRANCH_IND to High(ASource.FBranchArray) do

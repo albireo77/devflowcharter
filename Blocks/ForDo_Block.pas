@@ -147,7 +147,8 @@ begin
    Constraints.MinHeight := FInitParms.Height;
    FOrder := orAsc;
    FForLabel := i18Manager.GetString('CaptionFor');
-   FStatement.Visible := false;       // statement is not used in this block
+   FStatement.Free;
+   FStatement := nil;
 
 end;
 
@@ -363,7 +364,6 @@ end;
 
 procedure TForDoBlock.ExpandFold(const AResizeInd: boolean);
 begin
-   FStatement.Visible := false;
    edtStartVal.Visible := not Expanded;
    edtStopVal.Visible := not Expanded;
    cbVariable.Visible := false;
@@ -377,10 +377,8 @@ begin
       result := edtStartVal
    else if (edtVariable <> nil) and (edtVariable.Font.Color = NOK_COLOR) then
       result := edtVariable
-   else if edtStopVal <> nil then
-      result := edtStopVal
    else
-      result := FStatement;
+      result := edtStopVal;
 end;
 
 function TForDoBlock.CountErrWarn: TErrWarnCount;

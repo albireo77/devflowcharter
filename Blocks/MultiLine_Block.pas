@@ -74,7 +74,7 @@ begin
    TopHook.X := BottomPoint.X;
    Constraints.MinWidth := 140;
    Constraints.MinHeight := 48;
-   FStatement.Visible := false;         // statement isn't used in this block
+   FStatement.Free;
    FStatement := nil;
 
 end;
