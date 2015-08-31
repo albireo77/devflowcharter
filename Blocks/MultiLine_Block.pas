@@ -137,9 +137,8 @@ procedure TMultiLineBlock.UpdateEditor(AEdit: TCustomEdit);
 var
    lLine: TChangeLine;
    lTemplateLines: TStringList;
-   i, lRowDiff: integer;
+   i, lRowNumber: integer;
 begin
-   lRowDiff := 0;
    if PerformEditorUpdate then
    begin
       lLine := TInfra.GetChangeLine(Self, FStatements);
@@ -152,17 +151,35 @@ begin
                GenerateCode(lTemplateLines, GInfra.CurrentLang.Name, SourceEditorForm.GetIndentLevel(lLine.CodeRange.FirstRow, lLine.CodeRange.Lines));
                if (lTemplateLines.Count > 0) and (lLine.CodeRange.Lines <> nil) then
                begin
+                  lRowNumber := lLine.CodeRange.LastRow - lLine.CodeRange.FirstRow + 1;
                   lLine.CodeRange.Lines.BeginUpdate;
-                  for i := 0 to lLine.CodeRange.LastRow-lLine.CodeRange.FirstRow do
+                  for i := 1 to lRowNumber do         
                      lLine.CodeRange.Lines.Delete(lLine.CodeRange.FirstRow);
 {$IFDEF USE_CODEFOLDING}
                   if lLine.CodeRange.FoldRange <> nil then
                   begin
-                     lRowDiff := lTemplateLines.Count - (lLine.CodeRange.LastRow - lLine.CodeRange.FirstRow + 1);
-                     lLine.CodeRange.FoldRange.LinesCollapsed := lLine.CodeRange.FoldRange.LinesCollapsed + lRowDiff;
-                     lLine.CodeRange.FoldRange.ToLine := lLine.CodeRange.FoldRange.ToLine + lRowDiff;
-                     for i := 0 to lTemplateLines.Count-1 do
-                        lLine.CodeRange.Lines.InsertObject(lLine.CodeRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
+                     if lLine.CodeRange.IsFolded then
+                     begin
+                        lRowNumber := lTemplateLines.Count - lRowNumber;
+                        lLine.CodeRange.FoldRange.LinesCollapsed := lLine.CodeRange.FoldRange.LinesCollapsed + lRowNumber;
+                        lLine.CodeRange.FoldRange.ToLine := lLine.CodeRange.FoldRange.ToLine + lRowNumber;
+                        for i := 0 to lTemplateLines.Count-1 do
+                           lLine.CodeRange.Lines.InsertObject(lLine.CodeRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
+                     end;
+                     {else
+                     begin
+                        a := 0;
+                        lLine.CodeRange.FoldRange.CollapsedLines.Clear;
+                        for i := lTemplateLines.Count-1 downto 0 do
+                        begin
+                           lRow := lLine.CodeRange.FirstRow + a + 1;
+                           if (lRow > lLine.CodeRange.FoldRange.FromLine) and (lRow < lLine.CodeRange.FoldRange.ToLine) then
+                              lLine.CodeRange.FoldRange.CollapsedLines.AddObject(lTemplateLines[i], lTemplateLines.Objects[i])
+                           else
+                              lLine.CodeRange.Lines.InsertObject(lLine.CodeRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
+                           a := a + 1;
+                        end;
+                     end;}
                   end
                   else
 {$ENDIF}
@@ -171,7 +188,7 @@ begin
                         lLine.CodeRange.Lines.InsertObject(lLine.CodeRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
                   end;
                   lLine.CodeRange.Lines.EndUpdate;
-                  if lRowDiff <> 0 then
+                  if lRowNumber <> 0 then
                      SourceEditorForm.memCodeEditor.OnChange(SourceEditorForm.memCodeEditor);
                end;
             finally

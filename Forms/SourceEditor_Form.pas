@@ -964,6 +964,7 @@ end;
 function TSourceEditorForm.SelectCodeBlock(const AObject: TObject; ADoSelect: boolean = true): TCodeRange;
 var
    i: integer;
+   lRange: TSynEditFoldRange;
 begin
    TInfra.InitCodeRange(result);
    result.Lines := GetEditorAllLines;
@@ -1007,6 +1008,23 @@ begin
                SelStart := RowColToCharIndex(BufferCoord(Length(result.Lines[result.LastRow])+1, result.LastRow+1));
                SelEnd := RowColToCharIndex(BufferCoord(1, result.FirstRow+1));
             end;
+{$IFDEF USE_CODEFOLDING}
+            if not result.IsFolded and not ADoSelect then
+            begin
+               for i := result.FirstRow to result.LastRow do
+               begin
+                  if result.Lines.Objects[i] = AObject then
+                  begin
+                     lRange := CollapsableFoldRangeForLine(i+1);
+                     if (lRange <> nil) and lRange.Collapsed then
+                     begin
+                        result.FoldRange := lRange;
+                        break;
+                     end
+                  end;
+               end;
+            end;
+{$ENDIF}
          end;
       end;
    end
