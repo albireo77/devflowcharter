@@ -149,7 +149,7 @@ begin
             lTemplateLines := TStringList.Create;
             try
                GenerateCode(lTemplateLines, GInfra.CurrentLang.Name, SourceEditorForm.GetIndentLevel(lLine.CodeRange.FirstRow, lLine.CodeRange.Lines));
-               if (lTemplateLines.Count > 0) and (lLine.CodeRange.Lines <> nil) then
+               if lLine.CodeRange.Lines <> nil then
                begin
                   lRowNumber := lLine.CodeRange.LastRow - lLine.CodeRange.FirstRow + 1;
                   lLine.CodeRange.Lines.BeginUpdate;
