@@ -24,6 +24,9 @@ unit SourceEditor_Form;
 interface
 
 uses
+{$IFDEF USE_CODEFOLDING}
+   SynEditCodeFolding,
+{$ENDIF}
    Windows, Controls, Forms, StdCtrls, ExtCtrls, Graphics, Dialogs, ComCtrls,
    Menus, Clipbrd, SysUtils, SynExportRTF, SynEditPrint, CommonTypes, SynHighlighterPas,
    SynHighlighterCpp, Classes, SynEdit, SynMemo, SynExportHTML, OmniXML, Base_Form, CommonInterfaces,
@@ -131,6 +134,10 @@ type
     function GetIndentLevel(const idx: integer; ALines: TStrings = nil): integer;
     procedure RefreshEditorForObject(const AObject: TObject);
     function GetEditorAllLines: TStrings;
+{$IFDEF USE_CODEFOLDING}
+    function RemoveFoldRange(const AFoldRange: TSynEditFoldRange): boolean;
+    function FindFoldRangeInCodeRange(const ACodeRange: TCodeRange; const ACount: integer): TSynEditFoldRange;
+{$ENDIF}
   end;
 
 var
@@ -139,9 +146,6 @@ var
 implementation
 
 uses
-{$IFDEF USE_CODEFOLDING}
-   SynEditCodeFolding,
-{$ENDIF}
    ApplicationCommon, Goto_Form, Settings, LangDefinition, Main_Block, Help_Form,
    Comment, ParserCommon, XMLProcessor, StrUtils, Main_Form, Base_Block;
 
@@ -1031,6 +1035,48 @@ begin
    else
       result.Lines := nil;
 end;
+
+{$IFDEF USE_CODEFOLDING}
+function TSourceEditorForm.RemoveFoldRange(const AFoldRange: TSynEditFoldRange): boolean;
+var
+   idx: integer;
+begin
+   result := false;
+   if AFoldRange <> nil then
+   begin
+      with memCodeEditor do
+      begin
+         idx := AllFoldRanges.AllRanges.IndexOf(AFoldRange);
+         if idx <> -1 then
+         begin
+            AllFoldRanges.AllRanges.Delete(idx);
+            AFoldRange.Free;
+            result := true;
+         end;
+      end;
+   end;
+end;
+
+function TSourceEditorForm.FindFoldRangeInCodeRange(const ACodeRange: TCodeRange; const ACount: integer): TSynEditFoldRange;
+var
+   i: integer;
+   lRange: TSynEditFoldRange;
+begin
+   result := nil;
+   if ACodeRange.Lines = memCodeEditor.Lines then
+   begin
+      for i := ACodeRange.FirstRow to ACodeRange.FirstRow+ACount-1 do
+      begin
+         lRange := memCodeEditor.CollapsableFoldRangeForLine(i+1);
+         if lRange <> nil then
+         begin
+            result := lRange;
+            break;
+         end
+      end;
+   end;
+end;
+{$ENDIF}
 
 procedure  TSourceEditorForm.UnSelectCodeBlock(const AObject: TObject);
 begin

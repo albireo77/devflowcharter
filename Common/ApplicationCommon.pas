@@ -1272,7 +1272,7 @@ begin
    begin
       lChar := ALine.Col + ALine.EditCaretXY.Char;
       lLine := ALine.Row + ALIne.EditCaretXY.Line + 1;
-      if (lLine > 0) and (lLine <= ALine.CodeRange.Lines.Count) then
+      if (lLine > ALine.CodeRange.FirstRow) and (lLine <= ALine.CodeRange.LastRow+1) and (lLine <= ALine.CodeRange.Lines.Count) then
       begin
          SourceEditorForm.memCodeEditor.CaretXY := BufferCoord(lChar, lLine);
          SourceEditorForm.memCodeEditor.EnsureCursorPosVisible;

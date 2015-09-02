@@ -49,6 +49,9 @@ type
 implementation
 
 uses
+{$IFDEF USE_CODEFOLDING}
+   SynEditCodeFolding,
+{$ENDIF}
    ApplicationCommon, StrUtils, CommonTypes, Forms, LangDefinition, SourceEditor_Form, Windows;
 
 constructor TMultiLineBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
@@ -138,6 +141,10 @@ var
    lLine: TChangeLine;
    lTemplateLines: TStringList;
    i, lRowNumber: integer;
+{$IFDEF USE_CODEFOLDING}
+   lFoldRegion: TFoldRegionItem;
+   lFoldRange: TSynEditFoldRange;
+{$ENDIF}
 begin
    if PerformEditorUpdate then
    begin
@@ -153,7 +160,7 @@ begin
                begin
                   lRowNumber := lLine.CodeRange.LastRow - lLine.CodeRange.FirstRow + 1;
                   lLine.CodeRange.Lines.BeginUpdate;
-                  for i := 1 to lRowNumber do         
+                  for i := 1 to lRowNumber do
                      lLine.CodeRange.Lines.Delete(lLine.CodeRange.FirstRow);
 {$IFDEF USE_CODEFOLDING}
                   if lLine.CodeRange.FoldRange <> nil then
@@ -165,21 +172,21 @@ begin
                         lLine.CodeRange.FoldRange.ToLine := lLine.CodeRange.FoldRange.ToLine + lRowNumber;
                         for i := 0 to lTemplateLines.Count-1 do
                            lLine.CodeRange.Lines.InsertObject(lLine.CodeRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
-                     end;
-                     {else
+                     end
+                     else
                      begin
-                        a := 0;
-                        lLine.CodeRange.FoldRange.CollapsedLines.Clear;
+                        lFoldRegion := lLine.CodeRange.FoldRange.FoldRegion;
+                        SourceEditorForm.RemoveFoldRange(lLine.CodeRange.FoldRange);
                         for i := lTemplateLines.Count-1 downto 0 do
+                           lLine.CodeRange.Lines.InsertObject(lLine.CodeRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
+                        SourceEditorForm.memCodeEditor.OnChange(SourceEditorForm.memCodeEditor);
+                        lFoldRange := SourceEditorForm.FindFoldRangeInCodeRange(lLine.CodeRange, lTemplateLines.Count);
+                        if (lFoldRange <> nil) and (lFoldRange.FoldRegion = lFoldRegion) and not lFoldRange.Collapsed then
                         begin
-                           lRow := lLine.CodeRange.FirstRow + a + 1;
-                           if (lRow > lLine.CodeRange.FoldRange.FromLine) and (lRow < lLine.CodeRange.FoldRange.ToLine) then
-                              lLine.CodeRange.FoldRange.CollapsedLines.AddObject(lTemplateLines[i], lTemplateLines.Objects[i])
-                           else
-                              lLine.CodeRange.Lines.InsertObject(lLine.CodeRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
-                           a := a + 1;
+                           SourceEditorForm.memCodeEditor.Collapse(lFoldRange);
+                           SourceEditorForm.memCodeEditor.Refresh;
                         end;
-                     end;}
+                     end;
                   end
                   else
 {$ENDIF}
