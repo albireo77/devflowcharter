@@ -143,7 +143,7 @@ var
    i, lRowNumber: integer;
 {$IFDEF USE_CODEFOLDING}
    lFoldRegion: TFoldRegionItem;
-   lFoldRange: TSynEditFoldRange;
+   lFoldRanges: TSynEditFoldRanges;
 {$ENDIF}
 begin
    if PerformEditorUpdate then
@@ -180,11 +180,15 @@ begin
                         for i := lTemplateLines.Count-1 downto 0 do
                            lLine.CodeRange.Lines.InsertObject(lLine.CodeRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
                         SourceEditorForm.memCodeEditor.OnChange(SourceEditorForm.memCodeEditor);
-                        lFoldRange := SourceEditorForm.FindFoldRangeInCodeRange(lLine.CodeRange, lTemplateLines.Count);
-                        if (lFoldRange <> nil) and (lFoldRange.FoldRegion = lFoldRegion) and not lFoldRange.Collapsed then
-                        begin
-                           SourceEditorForm.memCodeEditor.Collapse(lFoldRange);
-                           SourceEditorForm.memCodeEditor.Refresh;
+                        lFoldRanges := SourceEditorForm.FindFoldRangesInCodeRange(lLine.CodeRange, lTemplateLines.Count);
+                        try
+                           if (lFoldRanges <> nil) and (lFoldRanges.Count > 0) and (lFoldRanges[0].FoldRegion = lFoldRegion) and not lFoldRanges[0].Collapsed then
+                           begin
+                              SourceEditorForm.memCodeEditor.Collapse(lFoldRanges[0]);
+                              SourceEditorForm.memCodeEditor.Refresh;
+                           end;
+                        finally
+                           lFoldRanges.Free;
                         end;
                      end;
                   end

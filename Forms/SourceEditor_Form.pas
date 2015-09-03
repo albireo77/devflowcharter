@@ -136,7 +136,7 @@ type
     function GetEditorAllLines: TStrings;
 {$IFDEF USE_CODEFOLDING}
     function RemoveFoldRange(const AFoldRange: TSynEditFoldRange): boolean;
-    function FindFoldRangeInCodeRange(const ACodeRange: TCodeRange; const ACount: integer): TSynEditFoldRange;
+    function FindFoldRangesInCodeRange(const ACodeRange: TCodeRange; const ACount: integer): TSynEditFoldRanges;
 {$ENDIF}
   end;
 
@@ -1059,22 +1059,19 @@ begin
    end;
 end;
 
-function TSourceEditorForm.FindFoldRangeInCodeRange(const ACodeRange: TCodeRange; const ACount: integer): TSynEditFoldRange;
+function TSourceEditorForm.FindFoldRangesInCodeRange(const ACodeRange: TCodeRange; const ACount: integer): TSynEditFoldRanges;
 var
    i: integer;
    lRange: TSynEditFoldRange;
 begin
-   result := nil;
+   result := TSynEditFoldRanges.Create;
    if ACodeRange.Lines = memCodeEditor.Lines then
    begin
-      for i := ACodeRange.FirstRow to ACodeRange.FirstRow+ACount-1 do
+      for i := ACodeRange.FirstRow to ACodeRange.FirstRow+ACount do
       begin
          lRange := memCodeEditor.CollapsableFoldRangeForLine(i+1);
-         if lRange <> nil then
-         begin
-            result := lRange;
-            break;
-         end
+         if (lRange <> nil) and (result.Ranges.IndexOf(lRange) = -1) then
+            result.AddF(lRange);
       end;
    end;
 end;
