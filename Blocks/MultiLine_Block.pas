@@ -168,8 +168,7 @@ begin
                      if lLine.CodeRange.IsFolded then
                      begin
                         lRowNumber := lTemplateLines.Count - lRowNumber;
-                        lLine.CodeRange.FoldRange.LinesCollapsed := lLine.CodeRange.FoldRange.LinesCollapsed + lRowNumber;
-                        lLine.CodeRange.FoldRange.ToLine := lLine.CodeRange.FoldRange.ToLine + lRowNumber;
+                        lLine.CodeRange.FoldRange.Widen(lRowNumber);
                         for i := 0 to lTemplateLines.Count-1 do
                            lLine.CodeRange.Lines.InsertObject(lLine.CodeRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
                      end
@@ -199,8 +198,7 @@ begin
                         lLine.CodeRange.Lines.InsertObject(lLine.CodeRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
                   end;
                   lLine.CodeRange.Lines.EndUpdate;
-                  if lRowNumber <> 0 then
-                     SourceEditorForm.memCodeEditor.OnChange(SourceEditorForm.memCodeEditor);
+                  SourceEditorForm.memCodeEditor.OnChange(SourceEditorForm.memCodeEditor);
                end;
             finally
                lTemplateLines.Free;
