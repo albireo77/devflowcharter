@@ -1039,7 +1039,7 @@ end;
 {$IFDEF USE_CODEFOLDING}
 function TSourceEditorForm.RemoveFoldRange(const AFoldRange: TSynEditFoldRange): boolean;
 var
-   idx: integer;
+   idx, i: integer;
 begin
    result := false;
    if AFoldRange <> nil then
@@ -1049,6 +1049,8 @@ begin
          idx := AllFoldRanges.AllRanges.IndexOf(AFoldRange);
          if idx <> -1 then
          begin
+            for i := 0 to AFoldRange.SubFoldRanges.Count-1 do
+               RemoveFoldRange(AFoldRange.SubFoldRanges[i]);
             AllFoldRanges.AllRanges.Delete(idx);
             AFoldRange.Free;
             result := true;
