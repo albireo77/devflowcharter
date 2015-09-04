@@ -1041,17 +1041,14 @@ procedure TSourceEditorForm.RemoveFoldRange(var AFoldRange: TSynEditFoldRange);
 var
    idx: integer;
 begin
-   if AFoldRange <> nil then
+   with memCodeEditor do
    begin
-      with memCodeEditor do
+      idx := AllFoldRanges.AllRanges.IndexOf(AFoldRange);
+      if idx <> -1 then
       begin
-         idx := AllFoldRanges.AllRanges.IndexOf(AFoldRange);
-         if idx <> -1 then
-         begin
-            AllFoldRanges.AllRanges.Delete(idx);
-            AFoldRange.Free;
-            AFoldRange := nil;
-         end;
+         AllFoldRanges.AllRanges.Delete(idx);
+         AFoldRange.Free;
+         AFoldRange := nil;
       end;
    end;
 end;
