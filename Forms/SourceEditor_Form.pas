@@ -135,7 +135,7 @@ type
     procedure RefreshEditorForObject(const AObject: TObject);
     function GetEditorAllLines: TStrings;
 {$IFDEF USE_CODEFOLDING}
-    function RemoveFoldRange(const AFoldRange: TSynEditFoldRange): boolean;
+    procedure RemoveFoldRange(var AFoldRange: TSynEditFoldRange);
     function FindFoldRangesInCodeRange(const ACodeRange: TCodeRange; const ACount: integer): TSynEditFoldRanges;
 {$ENDIF}
   end;
@@ -1037,11 +1037,10 @@ begin
 end;
 
 {$IFDEF USE_CODEFOLDING}
-function TSourceEditorForm.RemoveFoldRange(const AFoldRange: TSynEditFoldRange): boolean;
+procedure TSourceEditorForm.RemoveFoldRange(var AFoldRange: TSynEditFoldRange);
 var
    idx: integer;
 begin
-   result := false;
    if AFoldRange <> nil then
    begin
       with memCodeEditor do
@@ -1051,7 +1050,7 @@ begin
          begin
             AllFoldRanges.AllRanges.Delete(idx);
             AFoldRange.Free;
-            result := true;
+            AFoldRange := nil;
          end;
       end;
    end;
