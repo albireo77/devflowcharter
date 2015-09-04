@@ -1045,11 +1045,9 @@ begin
    begin
       idx := AllFoldRanges.AllRanges.IndexOf(AFoldRange);
       if idx <> -1 then
-      begin
          AllFoldRanges.AllRanges.Delete(idx);
-         AFoldRange.Free;
-         AFoldRange := nil;
-      end;
+      AFoldRange.Free;
+      AFoldRange := nil;
    end;
 end;
 
