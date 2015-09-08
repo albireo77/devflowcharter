@@ -567,9 +567,9 @@ begin
    Invalidate;
    ClearSelection;
    if FrameInd then
-      SourceEditorForm.SelectCodeBlock(Self)
+      SourceEditorForm.SelectCodeRange(Self)
    else
-      SourceEditorForm.UnSelectCodeBlock(Self);
+      SourceEditorForm.UnSelectCodeRange(Self);
 end;
 
 function TGroupBlock.GenerateNestedCode(const ALines: TStringList; const ABranchInd, ADeep: integer; const ALangId: string): integer;
@@ -973,7 +973,7 @@ begin
       begin
          ChangeColor(GSettings.HighlightColor);
          if GSettings.EditorAutoSelectBlock then
-            SourceEditorForm.SelectCodeBlock(Self);
+            SourceEditorForm.SelectCodeRange(Self);
          NavigatorForm.Repaint;
       end;
    end
@@ -981,7 +981,7 @@ begin
    begin
       ChangeColor(FParentForm.Color);
       if GSettings.EditorAutoSelectBlock and not FrameInd then
-         SourceEditorForm.UnSelectCodeBlock(Self);
+         SourceEditorForm.UnSelectCodeRange(Self);
       NavigatorForm.Repaint;
    end;
 end;

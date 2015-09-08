@@ -1192,7 +1192,7 @@ begin
    result.EditCaretXY := TInfra.GetCaretPos(AEdit);
    if AObject <> nil then
    begin
-      result.CodeRange := SourceEditorForm.SelectCodeBlock(AObject, false);
+      result.CodeRange := SourceEditorForm.SelectCodeRange(AObject, false);
       if result.CodeRange.FirstRow <> ROW_NOT_FOUND then
       begin
          lTemplateLines := TStringList.Create;

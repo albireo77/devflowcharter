@@ -266,7 +266,7 @@ end;
 
 procedure TPageControlForm.pgcTabsChange(Sender: TObject);
 begin
-   SourceEditorForm.SelectCodeBlock(pgcTabs.ActivePage);
+   SourceEditorForm.SelectCodeRange(pgcTabs.ActivePage);
 end;
 
 procedure TPageControlForm.FormDeactivate(Sender: TObject);

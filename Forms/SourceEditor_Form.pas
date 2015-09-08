@@ -110,8 +110,8 @@ type
       TransientType: TTransientType);
     procedure memCodeEditorMouseMove(Sender: TObject; Shift: TShiftState;
       X, Y: Integer);
-    function SelectCodeBlock(const AObject: TObject; ADoSelect: boolean = true): TCodeRange;
-    procedure UnSelectCodeBlock(const AObject: TObject);
+    function SelectCodeRange(const AObject: TObject; ADoSelect: boolean = true): TCodeRange;
+    procedure UnSelectCodeRange(const AObject: TObject);
     procedure Localize(const AList: TStringList); override;
     procedure ResetForm; override;
     procedure SetSaveDialog(Sender: TSaveDialog);
@@ -965,7 +965,7 @@ begin
 {$ENDIF}
 end;
 
-function TSourceEditorForm.SelectCodeBlock(const AObject: TObject; ADoSelect: boolean = true): TCodeRange;
+function TSourceEditorForm.SelectCodeRange(const AObject: TObject; ADoSelect: boolean = true): TCodeRange;
 var
    i: integer;
    lRange: TSynEditFoldRange;
@@ -1066,7 +1066,7 @@ begin
 end;
 {$ENDIF}
 
-procedure  TSourceEditorForm.UnSelectCodeBlock(const AObject: TObject);
+procedure  TSourceEditorForm.UnSelectCodeRange(const AObject: TObject);
 begin
    with memCodeEditor do
    begin
@@ -1089,7 +1089,7 @@ begin
       FormShow(Self);
       if AObject <> nil then
       begin
-         lRange := SelectCodeBlock(AObject, false);
+         lRange := SelectCodeRange(AObject, false);
          lLine := lRange.FirstRow + 1;
          if (lLine > 0) and not lRange.IsFolded then
          begin
@@ -1428,7 +1428,7 @@ begin
          begin
             lFocusInfo.Line := lCoord.Row - 1;
             lFocusInfo.LineText := TrimLeft(Lines[lFocusInfo.Line]);
-            lCodeRange := SelectCodeBlock(Lines.Objects[lFocusInfo.Line], false);
+            lCodeRange := SelectCodeRange(Lines.Objects[lFocusInfo.Line], false);
             if lCodeRange.FirstRow <> ROW_NOT_FOUND then
                lFocusInfo.RelativeLine := lFocusInfo.Line - lCodeRange.FirstRow;
             lSelCoord := CharIndexToRowCol(SelStart);
