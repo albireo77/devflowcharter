@@ -1036,6 +1036,22 @@ begin
       result.Lines := nil;
 end;
 
+procedure  TSourceEditorForm.UnSelectCodeRange(const AObject: TObject);
+var
+   lCodeRange: TCodeRange;
+begin
+   with memCodeEditor do
+   begin
+      if SelAvail and CanFocus then
+      begin
+         lCodeRange := SelectCodeRange(AObject, false);
+         if (lCodeRange.FirstRow = CharIndexToRowCol(SelStart).Line-1) and
+            (lCodeRange.LastRow = CharIndexToRowCol(SelEnd).Line-1) then
+               SelStart := SelEnd;
+      end;
+   end;
+end;
+
 {$IFDEF USE_CODEFOLDING}
 procedure TSourceEditorForm.RemoveFoldRange(var AFoldRange: TSynEditFoldRange);
 var
@@ -1065,15 +1081,6 @@ begin
    end;
 end;
 {$ENDIF}
-
-procedure  TSourceEditorForm.UnSelectCodeRange(const AObject: TObject);
-begin
-   with memCodeEditor do
-   begin
-      if SelAvail and CanFocus and (Lines.IndexOfObject(AObject) = CharIndexToRowCol(SelStart).Line-1) then
-         SelStart := SelEnd;
-   end;
-end;
 
 procedure TSourceEditorForm.RefreshEditorForObject(const AObject: TObject);
 var
