@@ -223,16 +223,18 @@ begin
 
    result := erNone;
 
+   lVal := '';
    tag := TXMLProcessor.FindChildTag(root, 'Name');
    if tag <> nil then
-      Name := Trim(tag.Text);
-
-   if (tag = nil) or (Name = '') then
+      lVal := Trim(tag.Text);
+   if lVal = '' then
    begin
       GErr_Text := i18Manager.GetString('NameTagNotFound');
       result := erValidate;
       exit;
-   end;
+   end
+   else
+      Name := lVal;
 
    tag := TXMLProcessor.FindChildTag(root, 'CommentBegin');
    if tag <> nil then

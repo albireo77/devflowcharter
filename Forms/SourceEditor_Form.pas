@@ -217,7 +217,7 @@ end;
 procedure TSourceEditorForm.ResetForm;
 begin
 {$IFDEF USE_CODEFOLDING}
-   memCodeEditor.AllFoldRanges.ClearAll;
+   memCodeEditor.AllFoldRanges.DestroyAll;
 {$ENDIF}
    memCodeEditor.ClearAll;
    memCodeEditor.Highlighter := nil;
