@@ -78,17 +78,19 @@ end;
 
 constructor TBaseFormIterator.Create;
 var
-   i: integer;
+   i, a: integer;
    lComp: TComponent;
 begin
    inherited Create;
+   a := 0;
    for i := 0 to Application.ComponentCount-1 do
    begin
       lComp := Application.Components[i];
       if lComp is TBaseForm then
       begin
-         SetLength(FArray, Length(FArray)+1);
-         FArray[High(FArray)] := lComp;
+         SetLength(FArray, a+1);
+         FArray[a] := lComp;
+         a := a + 1;
       end;
    end;
 end;
