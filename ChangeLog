@@ -1,3 +1,6 @@
+3.3.4 [23.09.2015]
+- improve editor auto update in folded areas for multiline components
+
 3.3.3 [31.08.2015]
 - fix issues when copy/cut/paste multiline blocks
 - fix memory access violation when folding main block
