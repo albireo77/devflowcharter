@@ -35,13 +35,15 @@ type
     sbIfElse: TSpeedButton;
     sbFor: TSpeedButton;
     sbAssign: TSpeedButton;
-    sbMultAssign: TSpeedButton;
+    sbMultiAssign: TSpeedButton;
     sbInput: TSpeedButton;
     sbOutput: TSpeedButton;
     sbFuncCall: TSpeedButton;
     sbIf: TSpeedButton;
     sbCase: TSpeedButton;
     sbReturn: TSpeedButton;
+    sbText: TSpeedButton;
+    sbFolder: TSpeedButton;
     procedure sbNormalClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -66,42 +68,46 @@ procedure TToolboxForm.sbNormalClick(Sender: TObject);
 begin
     (Sender as TSpeedButton).Down := true;
     if Sender = sbNormal then
-        GCustomCursor := crNormal
+       GCustomCursor := crNormal
     else if Sender = sbRepeat then
-        GCustomCursor := crRepeat
+       GCustomCursor := crRepeat
     else if Sender = sbWhile then
-        GCustomCursor := crWhile
+       GCustomCursor := crWhile
     else if Sender = sbIfElse then
-        GCustomCursor := crIfElse
+       GCustomCursor := crIfElse
     else if Sender = sbIf then
-        GCustomCursor := crIf
+       GCustomCursor := crIf
     else if Sender = sbFor then
-        GCustomCursor := crFor
+       GCustomCursor := crFor
     else if Sender = sbAssign then
-        GCustomCursor := crAssign
-    else if Sender = sbMultAssign then
-        GCustomCursor := crMultAssign
+       GCustomCursor := crAssign
+    else if Sender = sbMultiAssign then
+       GCustomCursor := crMultiAssign
     else if Sender = sbInput then
-        GCustomCursor := crInput
+       GCustomCursor := crInput
     else if Sender = sbOutput then
-        GCustomCursor := crOutput
+       GCustomCursor := crOutput
     else if Sender = sbFuncCall then
-        GCustomCursor := crFuncCall
+       GCustomCursor := crFuncCall
     else if Sender = sbCase then
-        GCustomCursor := crCase
+       GCustomCursor := crCase
     else if Sender = sbReturn then
-        GCustomCursor := crReturn;
+       GCustomCursor := crReturn
+    else if Sender = sbText then
+       GCustomCursor := crText
+    else if Sender = sbFolder then
+       GCustomCursor := crFolder;
 end;
 
 procedure TToolboxForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-    GCustomCursor := crNormal;
-    sbNormal.Down := true;
+   GCustomCursor := crNormal;
+   sbNormal.Down := true;
 end;
 
 procedure TToolboxForm.FormCreate(Sender: TObject);
 begin
-    Left := Screen.Width - Width;
+   Left := Screen.Width - Width;
 end;
 
 procedure TToolboxForm.ResetForm;

@@ -187,7 +187,7 @@ begin
       if MainForm.ExportDialog.Execute then
       begin
          status := TXMLProcessor.ExportToXMLFile(MainForm.ExportDialog.Filename, lTab.ExportToXMLTag);
-         if status <> erNone then
+         if status <> errNone then
             TInfra.ShowFormattedErrorBox('SaveError', [MainForm.ExportDialog.FileName], status);
       end;
    end;
@@ -204,7 +204,7 @@ begin
       if MainForm.ExportDialog.Execute then
       begin
          status := TXMLProcessor.ExportToXMLFile(MainForm.ExportDialog.Filename, ExportTabsToXMLTag);
-         if status <> erNone then
+         if status <> errNone then
             TInfra.ShowFormattedErrorBox('SaveError', [MainForm.ExportDialog.FileName], status);
       end;
    end;
@@ -227,8 +227,8 @@ begin
    MainForm.OpenDialog.Filename := '';
    if MainForm.OpenDialog.Execute then
    begin
-      if TXMLProcessor.ImportFromXMLFile(MainForm.OpenDialog.Filename, ImportTabsFromXMLTag) <> erNone then
-         TInfra.ShowFormattedErrorBox('ImportFailed', [CRLF, Gerr_text], erImport)
+      if TXMLProcessor.ImportFromXMLFile(MainForm.OpenDialog.Filename, ImportTabsFromXMLTag) <> errNone then
+         TInfra.ShowFormattedErrorBox('ImportFailed', [CRLF, Gerr_text], errImport)
       else
       begin
          if GSettings.UpdateEditor then

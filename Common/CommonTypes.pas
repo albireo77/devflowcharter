@@ -31,21 +31,21 @@ uses
 
 type
 
-   TCustomCursor = (crNormal, crIfElse, crFor, crRepeat, crWhile, crAssign, crMultAssign,
-                    crIf, crFuncCall, crInput, crOutput, crCase, crReturn);
+   TCustomCursor = (crNormal, crIfElse, crFor, crRepeat, crWhile, crAssign, crMultiAssign,
+                    crIf, crFuncCall, crInput, crOutput, crCase, crReturn, crText, crFolder);
 
-   TErrorType = (erNone, erDeclare, erIO, erValidate, erConvert, erSyntax, erPrinter, erCompile, erImport, erGeneral);
+   TErrorType = (errNone, errDeclare, errIO, errValidate, errConvert, errSyntax, errPrinter, errCompile, errImport, errGeneral);
 
    TBlockType = (blUnknown, blAssign, blMultAssign, blInput, blOutput, blFuncCall,
                  blWhile, blRepeat, blIf, blIfElse, blFor, blCase, blMain, blComment,
-                 blReturn, blText);
+                 blReturn, blText, blFolder);
 
    TDataTypeKind = (tpInt, tpReal, tpString, tpBool, tpStruct, tpEnum, tpArray, tpPtr, tpOther);
 
-   TParserMode = (prNone, prCondition, prAssign, prInput, prOutput, prFor, prFuncCall,
-                 prCase, prCaseValue, prReturn, prVarSize);
+   TParserMode = (prsNone, prsCondition, prsAssign, prsInput, prsOutput, prsFor, prsFuncCall,
+                 prsCase, prsCaseValue, prsReturn, prsVarSize);
 
-   TArrowPlace = (apMiddle, apEnd);
+   TArrowPosition = (arrMiddle, arrEnd);
 
    TCodeRange = record
       FirstRow,

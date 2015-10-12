@@ -73,12 +73,10 @@ begin
    FStatement.Color := GSettings.DiamondColor;
    FStatement.Alignment := taCenter;
    PutTextControls;
-
 end;
 
 constructor TIfBlock.Create(const ABranch: TBranch; const ASource: TIfBlock);
 begin
-
    Create(ABranch,
           ASource.Left,
           ASource.Top,
@@ -87,9 +85,7 @@ begin
           ASource.BottomHook,
           ASource.Branch.Hook.X,
           ASource.Branch.Hook.Y);
-
    inherited Create(ASource);
-
 end;
 
 constructor TIfBlock.Create(const ABranch: TBranch);
@@ -106,8 +102,8 @@ begin
       PutTextControls;
       BottomPoint.Y := Height - 31;
       TInfra.DrawArrowLine(Canvas, Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
-      TInfra.DrawArrowLine(Canvas, Point(BottomPoint.X, Height-31), Point(BottomPoint.X, Height-1));
-      TInfra.DrawArrowLine(Canvas, Point(Width-11, 30), Point(Width-11, Height-31), apMiddle);
+      TInfra.DrawArrowLine(Canvas, BottomPoint, Point(BottomPoint.X, Height-1));
+      TInfra.DrawArrowLine(Canvas, Point(Width-11, 30), Point(Width-11, Height-31), arrMiddle);
       with Canvas do
       begin
          Brush.Style := bsClear;

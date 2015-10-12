@@ -70,7 +70,7 @@ var
 %%
 
 input_line:		assignment		{
-							if GParser_Mode <> prAssign then
+							if GParser_Mode <> prsAssign then
                                                         begin
                                                            errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
                                                            yyabort;
@@ -78,7 +78,7 @@ input_line:		assignment		{
 						}
 
 		|	condition		{
-							if GParser_Mode <> prCondition then
+							if GParser_Mode <> prsCondition then
                                                         begin
                                                            errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
                                                            yyabort;
@@ -86,7 +86,7 @@ input_line:		assignment		{
 						}
 
 		|	input			{
-							if GParser_Mode <> prInput then
+							if GParser_Mode <> prsInput then
                                                         begin
                                                            errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
                                                            yyabort;
@@ -94,31 +94,31 @@ input_line:		assignment		{
 						}
 
 		|	output			{
-							if GParser_Mode <> prOutput then
+							if GParser_Mode <> prsOutput then
                                                         begin
                                                            errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
                                                            yyabort;
                                                         end;
 						}
 
-		|	case			{	
-							if GParser_Mode <> prCaseValue then
+		|	case			{
+							if GParser_Mode <> prsCaseValue then
                                                         begin
                                                            errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
                                                            yyabort;
                                                         end;
 						}
 
-		|	range			{	
-							if not (GParser_Mode in [prFor, prCase, prCaseValue, prReturn, prVarSize]) then
+		|	range			{
+							if not (GParser_Mode in [prsFor, prsCase, prsCaseValue, prsReturn, prsVarSize]) then
                                                         begin
                                                            errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
                                                            yyabort;
                                                         end;
 						}
 
-		|	routine_call		{	
-							if not (GParser_Mode in [prFuncCall, prReturn]) then
+		|	routine_call		{
+							if not (GParser_Mode in [prsFuncCall, prsReturn]) then
                                                         begin
                                                            errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
                                                            yyabort;
@@ -1007,21 +1007,21 @@ range:			statement		{
 							rval := GetFunctionType();
 							lIsEnum := IsEnumType($1);
 							lIsInteger := IsIntegerType($1); 
-							if not is_constant and (GParser_Mode = prVarSize) then
+							if not is_constant and (GParser_Mode = prsVarSize) then
 							begin
 							   errString := i18Manager.GetString('NotConst');
 							   yyabort;
 							end
-							else if  (GParser_Mode = prReturn) and (($1 <> rval) and not (IsPointerType(rval) and ($1 = GENERIC_PTR_TYPE)) and not ((IsNumericType(rval) and IsNumericType($1)) and not (IsIntegerType(rval) and IsRealType($1)))) then
+							else if  (GParser_Mode = prsReturn) and (($1 <> rval) and not (IsPointerType(rval) and ($1 = GENERIC_PTR_TYPE)) and not ((IsNumericType(rval) and IsNumericType($1)) and not (IsIntegerType(rval) and IsRealType($1)))) then
 							begin
 							   errString := i18Manager.GetFormattedString('IncTypes', [GetTypeAsString($1), GetTypeAsString(rval)]);
 							   yyabort;	
 							end
-							else if GParser_Mode in [prFor, prCase, prCaseValue, prVarSize] then
+							else if GParser_Mode in [prsFor, prsCase, prsCaseValue, prsVarSize] then
 							begin	
-							   if not (GParser_Mode in [prFor, prVarSize]) then
+							   if not (GParser_Mode in [prsFor, prsVarSize]) then
 							   begin
-							      if (GParser_Mode = prCaseValue) and IsDuplicatedCaseValue() then
+							      if (GParser_Mode = prsCaseValue) and IsDuplicatedCaseValue() then
                                                               begin
                                                                  errString := i18Manager.GetString('DupCaseVal');
                                                                  yyabort;
@@ -1031,7 +1031,7 @@ range:			statement		{
                                                                  errString := i18Manager.GetFormattedString('IncTypes', [GetTypeAsString($1), 'integer']);
                                                                  yyabort;
                                                               end
-							      else if GParser_Mode = prCaseValue then
+							      else if GParser_Mode = prsCaseValue then
 							      begin
 							         lType := GetCaseVarType();
 								 if (lType <> $1) and not (IsIntegerType(lType) and lIsInteger) then
@@ -1041,7 +1041,7 @@ range:			statement		{
 								 end;
 							      end;
 							   end
-							   else if GParser_Mode = prFor then
+							   else if GParser_Mode = prsFor then
 							   begin
   							      lType := GetForLoopVarType();
 							      if (lType <> $1) and not (IsIntegerType(lType) and lIsInteger) then
@@ -1050,12 +1050,12 @@ range:			statement		{
                                                                  yyabort;
                                                               end;
 							   end
-                                                           else if not lIsInteger and (GParser_Mode = prVarSize) then
+                                                           else if not lIsInteger and (GParser_Mode = prsVarSize) then
 							      yyabort;
 							end;
 						}
 
-		|	range ',' statement	{	if GParser_Mode <> prVarSize then yyabort;	}
+		|	range ',' statement	{	if GParser_Mode <> prsVarSize then yyabort;	}
 ;
 
 case:		

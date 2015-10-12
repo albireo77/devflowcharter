@@ -125,7 +125,6 @@ begin
    FStatement.Free;
    FStatement := nil;
    OwnerUserFunction := nil;
-
 end;
 
 constructor TMainBlock.Create(const AParent: TMainForm; const ATopLeft: TPoint);

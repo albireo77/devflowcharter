@@ -85,6 +85,7 @@ type
       OutputTemplate,
       AssignTemplate,
       TextTemplate,
+      FolderTemplate,
       ReturnTemplate,
       FunctionCallTemplate,
       ProgramHeaderMask,
@@ -170,7 +171,8 @@ implementation
 uses
    ApplicationCommon, StrUtils, XMLProcessor, WhileDo_Block, RepeatUntil_Block,
    ForDo_Block, Case_Block, If_Block, IfElse_Block, Main_Block, InOut_Block,
-   Assign_Block, MulAssign_Block, Return_Block, Text_Block, FunctionCall_Block;
+   Assign_Block, MulAssign_Block, Return_Block, Text_Block, FunctionCall_Block,
+   Folder_Block;
 
 constructor TLangDefinition.Create;
 begin
@@ -221,7 +223,7 @@ var
    i, a, lCount: integer;
 begin
 
-   result := erNone;
+   result := errNone;
 
    lVal := '';
    tag := TXMLProcessor.FindChildTag(root, 'Name');
@@ -230,7 +232,7 @@ begin
    if lVal = '' then
    begin
       GErr_Text := i18Manager.GetString('NameTagNotFound');
-      result := erValidate;
+      result := errValidate;
       exit;
    end
    else
@@ -371,6 +373,10 @@ begin
    tag := TXMLProcessor.FindChildTag(root, 'TextTemplate');
    if tag <> nil then
       TextTemplate := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'FolderTemplate');
+   if tag <> nil then
+      FolderTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(root, 'FunctionCallTemplate');
    if tag <> nil then
@@ -701,6 +707,8 @@ begin
       result := ReturnTemplate
    else if AClass = TTextBlock then
       result := TextTemplate
+   else if AClass = TFolderBlock then
+      result := FolderTemplate
    else if AClass = TFunctionCallBlock then
       result := FunctionCallTemplate;
    if result = '' then

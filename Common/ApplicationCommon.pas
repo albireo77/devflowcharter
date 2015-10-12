@@ -103,7 +103,7 @@ type
          class function FindParentForm(const AControl: TControl): TBaseForm;
          class function DrawEllipsedText(const ACanvas: TCanvas; const APoint: TPoint; const AText: string): TRect;
          class function GetEllipseTextRect(const ACanvas: TCanvas; const APoint: TPoint; const AText: string): TRect;
-         class procedure DrawArrowLine(const ACanvas: TCanvas; const ABeginPoint, AEndPoint: TPoint; const AArrowPos: TArrowPlace = apEnd; const AColor: TColor = clBlack);
+         class procedure DrawArrowLine(const ACanvas: TCanvas; const ABeginPoint, AEndPoint: TPoint; const AArrowPos: TArrowPosition = arrEnd; const AColor: TColor = clBlack);
          procedure ReadFromRegistry;
          procedure WriteToRegistry;
          procedure SetHLighters;
@@ -199,7 +199,7 @@ const   // Global constants
                                  'MultAssignDesc', 'InputDesc', 'OutputDesc',
                                  'RoutineDesc', 'WhileDoDesc', 'RepeatUntilDesc', 'IfDesc',
                                  'IfDesc', 'ForDesc', 'CaseDesc', '', '', 'ReturnDesc',
-                                 'TextDesc');
+                                 'TextDesc', '');
 
         PARSER_ERRORS_ARRAY:  array[TParserMode] of string = ('BadGeneric', 'BadCondition',
                                  'BadAssign', 'BadInput', 'BadOutput', 'BadFor', 'BadFunction',
@@ -245,7 +245,7 @@ begin
       begin
          lLangDef := TLangDefinition.Create;
          lResult := TXMLProcessor.ImportFromXMLFile(LANG_DEFS_PATH + SearchRec.Name, lLangDef.ImportLangDef, true);
-         if lResult = erNone then
+         if lResult = errNone then
          begin
             SetLength(FLangArray, i+1);
             FLangArray[i] := lLangDef;
@@ -467,7 +467,7 @@ const
    ErrorsTypeArray: array[TErrorType] of string = (' ', 'DeclareError', 'IOError', 'ValidationError',
                                                    'ConvertError', 'SyntaxError', 'PrintError', 'CompileError', 'ImportError', 'Error');
 begin
-   if AErrType <> erNone then
+   if AErrType <> errNone then
       Application.MessageBox(PChar(AErrMsg), PChar(i18Manager.GetString(ErrorsTypeArray[AErrType])), MB_ICONERROR);
 end;
 
@@ -528,7 +528,7 @@ var
    BitmapImage: POINTER;
 begin
    if not IsPrinter then
-      ShowErrorBox(i18Manager.GetString('NoPrinter'), erPrinter)
+      ShowErrorBox(i18Manager.GetString('NoPrinter'), errPrinter)
    else if MainForm.PrintDialog.Execute then
    begin
       last_err := 0;
@@ -662,7 +662,7 @@ begin
          if status <> GDI_ERROR then
             EndDoc
          else
-            ShowErrorBox(i18Manager.GetFormattedString('PrintError', [CRLF, SysErrorMessage(last_err)]), erPrinter);
+            ShowErrorBox(i18Manager.GetFormattedString('PrintError', [CRLF, SysErrorMessage(last_err)]), errPrinter);
       end; { with }
    end;  { else }
    
@@ -941,7 +941,7 @@ begin
    end;
 end;
 
-class procedure TInfra.DrawArrowLine(const ACanvas: TCanvas; const ABeginPoint, AEndPoint: TPoint; const AArrowPos: TArrowPlace = apEnd; const AColor: TColor = clBlack);
+class procedure TInfra.DrawArrowLine(const ACanvas: TCanvas; const ABeginPoint, AEndPoint: TPoint; const AArrowPos: TArrowPosition = arrEnd; const AColor: TColor = clBlack);
 const
    MX: array[boolean, boolean] of integer = ((10, -10), (-5, -5));
    MY: array[boolean, boolean] of integer = ((5, 5), (10, -10));
@@ -957,7 +957,7 @@ begin
       lToBottomRight := AEndPoint.Y > ABeginPoint.Y
    else
       lToBottomRight := AEndPoint.X > ABeginPoint.X;
-   if AArrowPos = apMiddle then
+   if AArrowPos = arrMiddle then
    begin
       if lIsVertical then
          lArrPoint.Y := lArrPoint.Y + (ABeginPoint.Y-AEndPoint.Y) div 2

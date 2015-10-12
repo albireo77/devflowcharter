@@ -40,7 +40,7 @@ type
   public
     { Public declarations }
     OnChangeComplement: TOnChangeComplement;
-    property ParserMode: TParserMode read FParserMode default prNone;
+    property ParserMode: TParserMode read FParserMode default prsNone;
     property Id: integer read GetId;
     class procedure SetFontSize(const AControl: TControl; const ASize: integer);
     class procedure SetFontStyle(const AControl: TControl; const AStyle: TFontStyles);
@@ -124,9 +124,9 @@ type
 
 constructor TStatement.Create(AOwner: TComponent);
 const
-   BlockToParserMapping: array[TBlockType] of TParserMode = (prNone, prAssign, prAssign,
-                         prInput, prOutput, prFuncCall, prCondition, prCondition, prCondition,
-                         prCondition, prFor, prCase, prNone, prNone, prReturn, prNone);
+   BlockToParserMapping: array[TBlockType] of TParserMode = (prsNone, prsAssign, prsAssign,
+                         prsInput, prsOutput, prsFuncCall, prsCondition, prsCondition, prsCondition,
+                         prsCondition, prsFor, prsCase, prsNone, prsNone, prsReturn, prsNone, prsNone);
 var
    lBlock: TBlock;
    lControl: TControl;
@@ -143,8 +143,8 @@ begin
          if Parent.Parent is TBlock then
             lBlock := TBlock(Parent.Parent);
       end
-      else if FParserMode = prCase then
-         FParserMode := prCaseValue;
+      else if FParserMode = prsCase then
+         FParserMode := prsCaseValue;
    end;
    lControl := lBlock.GetTextControl;
    if lControl <> nil then
@@ -220,27 +220,27 @@ begin
       if lText = '' then
       begin
          case FParserMode of
-            prFor:
+            prsFor:
             begin
                Hint := i18Manager.GetFormattedString('ExpErr', ['', CRLF, i18Manager.GetString('IntReq')]);
                Font.Color := NOK_COLOR;
             end;
-            prCondition:
+            prsCondition:
             begin
                lText := 'NoCExp';
                Font.Color := NOK_COLOR;
             end;
-            prCase:
+            prsCase:
             begin
                lText := 'NoCaseExp';
                Font.Color := NOK_COLOR;
             end;
-            prAssign:
+            prsAssign:
             begin
                lText := 'NoInstr';
                Font.Color := WARN_COLOR;
             end;
-            prFuncCall:
+            prsFuncCall:
             begin
                lText := 'NoFCall';
                Font.Color := WARN_COLOR;
@@ -273,15 +273,15 @@ var
 begin
    inherited DoEnter;
    case FParserMode of
-      prInput:     FExecuteParse := GSettings.ParseInput;
-      prOutput:    FExecuteParse := GSettings.ParseOutput;
-      prAssign:    FExecuteParse := GSettings.ParseAssign;
-      prFuncCall:  FExecuteParse := GSettings.ParseRoutineCall;
-      prFor:       FExecuteParse := GSettings.ParseFor;
-      prReturn:    FExecuteParse := GSettings.ParseReturn;
-      prCondition: FExecuteParse := GSettings.ParseCondition;
-      prCase,
-      prCaseValue: FExecuteParse := GSettings.ParseCase;
+      prsInput:     FExecuteParse := GSettings.ParseInput;
+      prsOutput:    FExecuteParse := GSettings.ParseOutput;
+      prsAssign:    FExecuteParse := GSettings.ParseAssign;
+      prsFuncCall:  FExecuteParse := GSettings.ParseRoutineCall;
+      prsFor:       FExecuteParse := GSettings.ParseFor;
+      prsReturn:    FExecuteParse := GSettings.ParseReturn;
+      prsCondition: FExecuteParse := GSettings.ParseCondition;
+      prsCase,
+      prsCaseValue: FExecuteParse := GSettings.ParseCase;
    else
       FExecuteParse := false;
    end;

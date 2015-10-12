@@ -395,6 +395,8 @@ EndFor
 
 <AssignTemplate>%s1</AssignTemplate>
 
+<FolderTemplate>%b1</FolderTemplate>
+
 <UserTypeDesc>%s2 %s1</UserTypeDesc>
 
 </Language>

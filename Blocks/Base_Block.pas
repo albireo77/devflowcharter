@@ -310,7 +310,6 @@ begin
    OnMouseMove := MyOnMouseMove;
    OnClick     := MyOnClick;
    OnCanResize := MyOnCanResize;
-
 end;
 
 constructor TGroupBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: Integer; const AHook: TPoint; const AId: integer = ID_INVALID);
@@ -344,7 +343,6 @@ begin
    FFalseLabel := i18Manager.GetString('CaptionFalse');
 
    Branch := AddBranch(AHook, false);
-
 end;
 
 constructor TGroupBlock.Create(const ASource: TGroupBlock);
@@ -409,7 +407,6 @@ begin
       FFoldParms.Width := ASource.FFoldParms.Width;
       FFoldParms.Height := ASource.FFoldParms.Height;
    end;
-
 end;
 
 destructor TBlock.Destroy;
@@ -438,7 +435,7 @@ begin
    SetCursor(Point(X, Y));
    if PtInRect(Rect(BottomPoint.X-5, BottomPoint.Y, BottomPoint.X+5, Height), Point(X, Y)) then
    begin
-      TInfra.DrawArrowLine(Canvas, BottomPoint, Point(BottomPoint.X, Height-1), apEnd, clRed);
+      TInfra.DrawArrowLine(Canvas, BottomPoint, Point(BottomPoint.X, Height-1), arrEnd, clRed);
       Ired := 0;
       Cursor := TCursor(GCustomCursor);
    end
@@ -462,7 +459,7 @@ begin
          lPoint := FBranchArray[i].Hook;
          if PtInRect(Rect(lPoint.X-5, TopHook.Y, lPoint.X+5, lPoint.Y), Point(X, Y)) then
          begin
-            TInfra.DrawArrowLine(Canvas, Point(lPoint.X, TopHook.Y), lPoint, apEnd, clRed);
+            TInfra.DrawArrowLine(Canvas, Point(lPoint.X, TopHook.Y), lPoint, arrEnd, clRed);
             Ired := i;
             Cursor := TCursor(GCustomCursor);
             break;
@@ -614,17 +611,19 @@ begin
          begin
             lMitem := nil;
             case GCustomCursor of
-               crAssign:     lMitem := FParentForm.miAssign;
-               crMultAssign: lMitem := FParentForm.miMultipleAssign;
-               crIfElse:     lMitem := FParentForm.miIfElse;
-               crWhile:      lMitem := FParentForm.miWhile;
-               crFor:        lMitem := FParentForm.miFor;
-               crRepeat:     lMitem := FParentForm.miRepeat;
-               crInput:      lMitem := FParentForm.miInput;
-               crOutput:     lMitem := FParentForm.miOutput;
-               crFuncCall:   lMitem := FParentForm.miRoutineCall;
-               crIf:         lMitem := FParentForm.miIf;
-               crCase:       lMitem := FParentForm.miCase;
+               crAssign:      lMitem := FParentForm.miAssign;
+               crMultiAssign: lMitem := FParentForm.miMultipleAssign;
+               crIfElse:      lMitem := FParentForm.miIfElse;
+               crWhile:       lMitem := FParentForm.miWhile;
+               crFor:         lMitem := FParentForm.miFor;
+               crRepeat:      lMitem := FParentForm.miRepeat;
+               crInput:       lMitem := FParentForm.miInput;
+               crOutput:      lMitem := FParentForm.miOutput;
+               crFuncCall:    lMitem := FParentForm.miRoutineCall;
+               crIf:          lMitem := FParentForm.miIf;
+               crCase:        lMitem := FParentForm.miCase;
+               crFolder:      lMitem := FParentForm.miFolder;
+               crText:        lMitem := FParentForm.miText;
                crReturn:
                begin
                   if CanInsertReturnBlock then
@@ -1468,7 +1467,7 @@ var
    lTextControl: TCustomEdit;
    lColor: TColor;
 begin
-   result := nil;
+   result := AParentNode;
    lTextControl := GetTextControl;
    if lTextControl <> nil then
    begin
@@ -1612,7 +1611,7 @@ var
    lTextControl: TCustomEdit;
    lValue: integer;
 begin
-   result := erNone;
+   result := errNone;
    if ATag <> nil then
    begin
       lTag := TXMLProcessor.FindChildTag(ATag, 'text');
@@ -1769,7 +1768,7 @@ begin
             if lTag2 <> nil then
             begin
                TXMLProcessor.ImportFlowchartFromXMLTag(lTag2, Self, nil, result, lBranchIdx);
-               if result <> erNone then break;
+               if result <> errNone then break;
             end;
             lBranchIdx := lBranchIdx + 1;
             lTag1 := TXMLProcessor.FindNextTag(lTag1);
@@ -1827,7 +1826,7 @@ var
    lParent: TGroupBlock;
    lBlockTag: IXMLElement;
 begin
-   result := erValidate;
+   result := errValidate;
    lBlockTag := TXMLProcessor.FindChildTag(root, 'block');
    if (lBlockTag = nil) or (lBlockTag.GetAttribute('type') = IntToStr(Ord(blMain))) then
       Gerr_text := i18Manager.GetString('BadImportTag')
@@ -1845,7 +1844,7 @@ begin
       if lParent <> nil then
       begin
          TXMLProcessor.ImportFlowchartFromXMLTag(lBlockTag, lParent, lBlock, result, Ired);
-         if result = erNone then
+         if result = errNone then
             lParent.ResizeWithDrawLock;
       end;
    end;
@@ -2148,7 +2147,7 @@ begin
       b := ExtractBranchIndex(ATemplate[i]);
       if b > 0 then
       begin
-         if ALines.Objects[ALines.Count-1] = nil then
+         if (ALines.Count > 0) and (ALines.Objects[ALines.Count-1] = nil) then
             ALines.Objects[ALines.Count-1] := FBranchArray[b];
          GenerateNestedCode(ALines, b, ADeep+CountLeadIndentChars(ATemplate[i]), ALangId);
       end

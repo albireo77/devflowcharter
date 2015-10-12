@@ -699,7 +699,9 @@ begin
          if GInfra.CurrentLang.Name <> cbLanguage.Text then
          begin
             GInfra.SetCurrentLang(cbLanguage.Text);
+{$IFDEF USE_CODEFOLDING}
             FSourceEditorForm.ReloadFoldRegions;
+{$ENDIF}
          end;
       end;
 

@@ -378,7 +378,7 @@ var
    lLangDef: TLangDefinition;
 begin
 
-   result := erNone;
+   result := errNone;
    
    lang := rootTag.GetAttribute('language');
    lLangDef := GInfra.GetLangDefinition(lang);
@@ -392,14 +392,16 @@ begin
          (TInfra.ShowFormattedQuestionBox(lString, [Trim(lang), CRLF], MB_YESNO+MB_ICONQUESTION) = IDYES) then
       begin
          GInfra.SetCurrentLang(lang);
+{$IFDEF USE_CODEFOLDING}
          SourceEditorForm.ReloadFoldRegions;
+{$ENDIF}
          SourceEditorForm.SetEditorFormAttributes;
          SetGlobals;
       end;
    end
    else
    begin
-      result := erValidate;
+      result := errValidate;
       Gerr_text := i18Manager.GetFormattedString('LngNoSprt', [lang]);
       exit;
    end;
@@ -411,7 +413,7 @@ begin
       ImportUserDataTypesFromXML(rootTag);
 
    result := ImportUserFunctionsFromXML(rootTag);
-   if result = erNone then
+   if result = errNone then
    begin
       if FGlobalVars <> nil then
          FGlobalVars.ImportFromXMLTag(rootTag);
@@ -500,9 +502,9 @@ var
    lBody: TMainBlock;
    lTmpBlock: TBlock;
 begin
-   result := erNone;
+   result := errNone;
    tag := TXMLProcessor.FindChildTag(rootTag, 'routine');
-   while (tag <> nil) and (result = erNone) do
+   while (tag <> nil) and (result = errNone) do
    begin
       lHeader := nil;
       lBody := nil;
@@ -520,7 +522,7 @@ begin
          if lTmpBlock is TMainBlock then
             lBody := TMainBlock(lTmpBlock);
       end;
-      if result = erNone then
+      if result = errNone then
          TUserFunction.Create(lHeader, lBody)
       else
          lHeader.Free;
@@ -535,7 +537,7 @@ var
    iter: IIterator;
    lType: TUserDataType;
 begin
-   result := erNone;
+   result := errNone;
    lDataType := nil;
    tag := TXMLProcessor.FindChildTag(rootTag, 'structure');
    while tag <> nil do

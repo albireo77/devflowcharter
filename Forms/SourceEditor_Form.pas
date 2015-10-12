@@ -130,13 +130,13 @@ type
     procedure ExecuteCopyToClipboard(const AIfRichText: boolean);
     procedure ExportSettingsToXMLTag(const root: IXMLElement); override;
     procedure ImportSettingsFromXMLTag(const root: IXMLElement); override;
-    procedure ReloadFoldRegions;
     function GetIndentLevel(const idx: integer; ALines: TStrings = nil): integer;
     procedure RefreshEditorForObject(const AObject: TObject);
     function GetEditorAllLines: TStrings;
 {$IFDEF USE_CODEFOLDING}
     procedure RemoveFoldRange(var AFoldRange: TSynEditFoldRange);
     function FindFoldRangesInCodeRange(const ACodeRange: TCodeRange; const ACount: integer): TSynEditFoldRanges;
+    procedure ReloadFoldRegions;
 {$ENDIF}
   end;
 
@@ -559,7 +559,9 @@ begin
    GInfra.SetHLighters;
    GSettings.SetSourceEditorForm(Self);
    SetEditorFormAttributes;
+{$IFDEF USE_CODEFOLDING}
    ReloadFoldRegions;
+{$ENDIF}
 end;
 
 procedure TSourceEditorForm.miCompileClick(Sender: TObject);
@@ -597,17 +599,17 @@ begin
              lCommand := 'cmd.exe /k ' + lCommand;
 
           if not TInfra.CreateDOSProcess(lCommand, ExtractFileDir(SaveDialog1.FileName)) then
-             TInfra.ShowErrorBox(i18Manager.GetString('CompileFail'), erCompile);
+             TInfra.ShowErrorBox(i18Manager.GetString('CompileFail'), errCompile);
        end;
     end
     else
-       TInfra.ShowFormattedErrorBox('CompilerNotFound', [GInfra.CurrentLang.Name], erCompile)
+       TInfra.ShowFormattedErrorBox('CompilerNotFound', [GInfra.CurrentLang.Name], errCompile)
 end;
 
 procedure TSourceEditorForm.miPrintClick(Sender: TObject);
 begin
    if not TInfra.IsPrinter then
-      TInfra.ShowErrorBox(i18Manager.GetString('NoPrinter'), erPrinter)
+      TInfra.ShowErrorBox(i18Manager.GetString('NoPrinter'), errPrinter)
    else if (GProject <> nil) and MainForm.PrintDialog.Execute then
    begin
       with SynEditPrint1 do
@@ -968,7 +970,9 @@ end;
 function TSourceEditorForm.SelectCodeRange(const AObject: TObject; ADoSelect: boolean = true): TCodeRange;
 var
    i: integer;
+{$IFDEF USE_CODEFOLDING}
    lRange: TSynEditFoldRange;
+{$ENDIF}
 begin
    TInfra.InitCodeRange(result);
    result.Lines := GetEditorAllLines;
@@ -1326,11 +1330,11 @@ begin
    GotoForm.Show;
 end;
 
+{$IFDEF USE_CODEFOLDING}
 procedure TSourceEditorForm.ReloadFoldRegions;
 var
    i: integer;
 begin
-{$IFDEF USE_CODEFOLDING}
    memCodeEditor.CodeFolding.FoldRegions.Clear;
    for i := 0 to High(GInfra.CurrentLang.FoldRegions) do
    begin
@@ -1338,8 +1342,8 @@ begin
          memCodeEditor.CodeFolding.FoldRegions.Add(RegionType, AddClose, NoSubFolds, WholeWords, PChar(Open), PChar(Close));
    end;
    memCodeEditor.InitCodeFolding;
-{$ENDIF}
 end;
+{$ENDIF}
 
 procedure TSourceEditorForm.miCollapseAllClick(Sender: TObject);
 begin

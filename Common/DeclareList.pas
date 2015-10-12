@@ -618,7 +618,7 @@ begin
             RESERVED_IDENT:   lInfo := i18Manager.GetFormattedString('IncorrectIdKeyword', [edtName.Text, GInfra.CurrentLang.Name]);
          end;
       end;
-      TInfra.ShowErrorBox(i18Manager.GetString(lInfo), erDeclare);
+      TInfra.ShowErrorBox(i18Manager.GetString(lInfo), errDeclare);
       lEdit.SetFocus;
    end
    else
@@ -682,7 +682,7 @@ begin
          end;
          lEdit := edtName;
       end;
-      TInfra.ShowErrorBox(i18Manager.GetString(lInfo), erDeclare);
+      TInfra.ShowErrorBox(i18Manager.GetString(lInfo), errDeclare);
       lEdit.SetFocus;
    end
    else

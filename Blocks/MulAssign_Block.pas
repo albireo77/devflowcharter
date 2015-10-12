@@ -85,7 +85,7 @@ begin
          for i := 0 to FStatements.Lines.Count-1 do
          begin
             lLine := Trim(FStatements.Lines.Strings[i]);
-            if not TInfra.Parse(lLine, prAssign) then
+            if not TInfra.Parse(lLine, prsAssign) then
             begin
                FStatements.Font.Color := NOK_COLOR;
                FStatements.Hint := i18Manager.GetFormattedString('ExpErrMult', [i+1, lLine, CRLF, errString]);

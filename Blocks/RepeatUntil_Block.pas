@@ -106,7 +106,7 @@ begin
       PutTextControls;
 
       TInfra.DrawArrowLine(Canvas, Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
-      TInfra.DrawArrowLine(Canvas, Point(5, Height-51), Point(5, 0), apMiddle);
+      TInfra.DrawArrowLine(Canvas, Point(5, Height-51), Point(5, 0), arrMiddle);
       TInfra.DrawArrowLine(Canvas, Point(BottomPoint.X, Height-51), Point(BottomPoint.X, Height-1));
       with Canvas do
       begin

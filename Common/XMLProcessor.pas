@@ -153,7 +153,7 @@ begin
     result := nil;
     lForm := nil;
     lBranch := nil;
-    AErrorType := erNone;
+    AErrorType := errNone;
     Gerr_text := '';
     initCount := AParent.ControlCount;
     lTag := ATag;
@@ -183,13 +183,13 @@ begin
        end
        else
        begin
-          AErrorType := erValidate;
+          AErrorType := errValidate;
           break;
        end;
        lTag := FindNextTag(lTag);
     end;
 
-    if AErrorType <> erNone then
+    if AErrorType <> errNone then
     begin
        while initCount < AParent.ControlCount do   // destroy all previously created blocks
        begin
@@ -213,21 +213,21 @@ begin
    docXML := CreateXMLDoc;
    docXML.PreserveWhiteSpace := APreserveSpace;
    try
-      if not docXML.Load(AFilename) then
+      if docXML.Load(AFilename) then
+         result := AImportProc(docXML.DocumentElement)
+      else
       begin
-         result := erSyntax;
+         result := errSyntax;
          with docXML.ParseError do
             Gerr_text := i18Manager.GetFormattedString('ParserError', [ErrorCode, Line, LinePos, Reason]);
-      end
-      else
-         result := AImportProc(docXML.DocumentElement);
+      end;
    except on E: Exception do
       begin
          Gerr_text := E.Message;
-         result := erIO;
+         result := errIO;
       end;
    end;
-   if result <> erNone then
+   if result <> errNone then
       Gerr_text := i18Manager.GetFormattedString('FileError', [ExpandFileName(AFileName)]) + CRLF + Gerr_text;
 end;
 
@@ -237,7 +237,7 @@ var
    lInstr: IXMLProcessingInstruction;
    lRootTag: IXMLElement;
 begin
-   result := erNone;
+   result := errNone;
    docXML := CreateXMLDoc;
    lInstr := docXML.CreateProcessingInstruction('xml', XML_HEADER);
    docXML.AppendChild(lInstr);
@@ -247,7 +247,7 @@ begin
    try
       docXML.Save(AFilename, ofIndent);
    except
-      result := erIO;
+      result := errIO;
    end;
 end;
 

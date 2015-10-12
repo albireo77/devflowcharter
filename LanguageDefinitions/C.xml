@@ -138,6 +138,8 @@ else
 
 <TextTemplate>/* %s1 */</TextTemplate>
 
+<FolderTemplate>%b1</FolderTemplate>
+
 <FunctionCallTemplate>%s1;</FunctionCallTemplate>
 
 <ReturnTemplate>return %s1;</ReturnTemplate>

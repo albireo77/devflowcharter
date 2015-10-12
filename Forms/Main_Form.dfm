@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 387
-  Top = 154
+  Left = 574
+  Top = 185
   HorzScrollBar.Tracking = True
   VertScrollBar.Tracking = True
   Align = alCustom
@@ -118,6 +118,11 @@ object MainForm: TMainForm
       object miText: TMenuItem
         Tag = 2
         Caption = 'Text'
+        OnClick = miAssignClick
+      end
+      object miFolder: TMenuItem
+        Tag = 2
+        Caption = 'Folder'
         OnClick = miAssignClick
       end
       object miNewFlowchart: TMenuItem

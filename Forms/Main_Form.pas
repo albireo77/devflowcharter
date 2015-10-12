@@ -125,6 +125,7 @@ type
     miMemoHScroll: TMenuItem;
     miMemoWordWrap: TMenuItem;
     miNewFunction: TMenuItem;
+    miFolder: TMenuItem;
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -213,8 +214,8 @@ type
 procedure TMainForm.FormCreate(Sender: TObject);
 const
    CursorIdsArray: array[TCustomCursor] of PChar = (' ', 'IFELSE', 'FOR', 'REPEAT',
-                   'WHILE', 'ASSIGN', 'MULTASSIGN', 'IF', 'SUBROUTINE', 'INPUT', 'OUTPUT',
-                   'CASE', 'EXIT');
+                   'WHILE', 'ASSIGN', 'MULTIASSIGN', 'IF', 'SUBROUTINE', 'INPUT', 'OUTPUT',
+                   'CASE', 'RETURN', 'TEXT', 'FOLDER');
 var
    lCursor: TCustomCursor;
 begin
@@ -369,7 +370,7 @@ begin
        TInfra.SetInitialSettings;
        lTmpCursor := Screen.Cursor;
        Screen.Cursor := crHourGlass;
-       lStatus := erGeneral;
+       lStatus := errGeneral;
        try
           try
              GProject := TProject.GetInstance;
@@ -381,7 +382,7 @@ begin
        finally
           Screen.Cursor := lTmpCursor;
           GChange := 0;
-          if lStatus = erNone then
+          if lStatus = errNone then
           begin
              Caption := MAIN_FORM_CAPTION + lFileName;
              FHistoryMenu.Add(lFileName);
@@ -417,11 +418,11 @@ begin
        if ExportDialog.FilterIndex = 1 then
        begin
           if FileExists(lFileName) and FileIsReadOnly(lFileName) then
-             TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [lFileName], erIO)
+             TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [lFileName], errIO)
           else
           begin
              status := TXMLProcessor.ExportToXMLFile(lFileName, GProject.ExportToXMLTag);
-             if status = erNone then
+             if status = errNone then
              begin
                 Caption := MAIN_FORM_CAPTION + lFileName;
                 GProject.Name :=  ExtractFileName(lFileName);
@@ -494,11 +495,11 @@ begin
     begin
        fileToWrite := AnsiReplaceText(Caption, MAIN_FORM_CAPTION, '');
        if FileExists(fileToWrite) and FileIsReadOnly(fileToWrite) then
-          TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [fileToWrite], erIO)
+          TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [fileToWrite], errIO)
        else
        begin
           status := TXMLProcessor.ExportToXMLFile(fileToWrite, GProject.ExportToXMLTag);
-          if status <> erNone then
+          if status <> errNone then
              TInfra.ShowFormattedErrorBox('SaveError', [fileToWrite], status)
           else
              GChange := 0;
@@ -541,7 +542,7 @@ var
 begin
    if (ExceptAddr = nil) or (ExceptionErrorMessage(E, ExceptAddr, lExceptMsg, SizeOf(lExceptMsg)) = 0) then
       lExceptMsg := '';
-   TInfra.ShowFormattedErrorBox('OtherException', [lExceptMsg], erGeneral);
+   TInfra.ShowFormattedErrorBox('OtherException', [lExceptMsg], errGeneral);
    TInfra.SetInitialSettings;
 end;
 
@@ -592,15 +593,16 @@ begin
    miAddBranch.Visible := False;
    miRemoveBranch.Visible := False;
    miText.Enabled := False;
+   miFolder.Enabled := False;
    miExpFold.Caption := i18Manager.GetString('miFoldBlock');
    miReturn.Enabled := False;
    miExpandAll.Visible := False;
    miPrint2.Visible := False;
    miNewFlowchart.Visible := GInfra.CurrentLang = GInfra.DummyLang;
    miNewFunction.Visible := GInfra.CurrentLang.EnabledUserFunctionHeader and GInfra.CurrentLang.EnabledUserFunctionBody;
-   miForAsc.Visible := false;
-   miForDesc.Visible := false;
-   miMemo.Visible := false;
+   miForAsc.Visible := False;
+   miForDesc.Visible := False;
+   miMemo.Visible := False;
 
 
    miStyleBold.Checked := False;
@@ -629,6 +631,7 @@ begin
           miInstr.Enabled := True;
           miLoop.Enabled := True;
           miText.Enabled := True;
+          miFolder.Enabled := True;
           miReturn.Enabled := lBlock.CanInsertReturnBlock;
           if (GClpbrd.Instance is TComment) or ((GClpbrd.Instance is TReturnBlock) and not miReturn.Enabled) then
              miPaste.Enabled := False;
@@ -790,6 +793,8 @@ begin
                lBlockType := blReturn
             else if Sender = miText then
                lBlockType := blText
+            else if Sender = miFolder then
+               lBlockType := blFolder
             else if (Sender = miPaste) and TInfra.IsValid(GClpbrd.Instance) and (GClpbrd.Instance is TBlock) then
             begin
                lTmpCursor := Screen.Cursor;
@@ -1027,7 +1032,7 @@ begin
                status := TXMLProcessor.ExportToXMLFile(ExportDialog.Filename, TUserFunction(TMainBlock(lBlock).OwnerUserFunction).ExportToXMLTag)
             else
                status := lBlock.ExportToXMLFile(ExportDialog.FileName);
-            if status <> erNone then
+            if status <> errNone then
                TInfra.ShowFormattedErrorBox('SaveError', [ExportDialog.FileName], status);
          end
          else
@@ -1064,7 +1069,7 @@ begin
       else
       begin
          status := TXMLProcessor.ImportFromXMLFile(OpenDialog.Filename, GProject.ImportUserFunctionsFromXML);
-         if status = erNone then
+         if status = errNone then
          begin
             lFunction := GProject.LastUserFunction;
             if (lFunction <> nil) and lFunction.Active and (lFunction.Body <> nil) and lFunction.Body.Visible then
@@ -1076,8 +1081,8 @@ begin
             end;
          end;
       end;
-      if status <> erNone then
-         TInfra.ShowFormattedErrorBox('ImportFailed', [CRLF, Gerr_text], erImport)
+      if status <> errNone then
+         TInfra.ShowFormattedErrorBox('ImportFailed', [CRLF, Gerr_text], errImport)
       else
       begin
          if GSettings.UpdateEditor then

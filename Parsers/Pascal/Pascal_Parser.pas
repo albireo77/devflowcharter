@@ -184,7 +184,7 @@ begin
 
    1 : begin
          
-         							if GParser_Mode <> prAssign then
+         							if GParser_Mode <> prsAssign then
          begin
          errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
          yyabort;
@@ -193,7 +193,7 @@ begin
        end;
    2 : begin
          
-         							if GParser_Mode <> prCondition then
+         							if GParser_Mode <> prsCondition then
          begin
          errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
          yyabort;
@@ -202,7 +202,7 @@ begin
        end;
    3 : begin
          
-         							if GParser_Mode <> prInput then
+         							if GParser_Mode <> prsInput then
          begin
          errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
          yyabort;
@@ -211,7 +211,7 @@ begin
        end;
    4 : begin
          
-         							if GParser_Mode <> prOutput then
+         							if GParser_Mode <> prsOutput then
          begin
          errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
          yyabort;
@@ -219,8 +219,8 @@ begin
          						
        end;
    5 : begin
-         	
-         							if GParser_Mode <> prCaseValue then
+         
+         							if GParser_Mode <> prsCaseValue then
          begin
          errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
          yyabort;
@@ -228,8 +228,8 @@ begin
          						
        end;
    6 : begin
-         	
-         							if not (GParser_Mode in [prFor, prCase, prCaseValue, prReturn, prVarSize]) then
+         
+         							if not (GParser_Mode in [prsFor, prsCase, prsCaseValue, prsReturn, prsVarSize]) then
          begin
          errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
          yyabort;
@@ -237,8 +237,8 @@ begin
          						
        end;
    7 : begin
-         	
-         							if not (GParser_Mode in [prFuncCall, prReturn]) then
+         
+         							if not (GParser_Mode in [prsFuncCall, prsReturn]) then
          begin
          errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
          yyabort;
@@ -1206,21 +1206,21 @@ begin
          							rval := GetFunctionType();
          							lIsEnum := IsEnumType(yyv[yysp-0].yyInteger);
          							lIsInteger := IsIntegerType(yyv[yysp-0].yyInteger); 
-         							if not is_constant and (GParser_Mode = prVarSize) then
+         							if not is_constant and (GParser_Mode = prsVarSize) then
          							begin
          							   errString := i18Manager.GetString('NotConst');
          							   yyabort;
          							end
-         							else if  (GParser_Mode = prReturn) and ((yyv[yysp-0].yyInteger <> rval) and not (IsPointerType(rval) and (yyv[yysp-0].yyInteger = GENERIC_PTR_TYPE)) and not ((IsNumericType(rval) and IsNumericType(yyv[yysp-0].yyInteger)) and not (IsIntegerType(rval) and IsRealType(yyv[yysp-0].yyInteger)))) then
+         							else if  (GParser_Mode = prsReturn) and ((yyv[yysp-0].yyInteger <> rval) and not (IsPointerType(rval) and (yyv[yysp-0].yyInteger = GENERIC_PTR_TYPE)) and not ((IsNumericType(rval) and IsNumericType(yyv[yysp-0].yyInteger)) and not (IsIntegerType(rval) and IsRealType(yyv[yysp-0].yyInteger)))) then
          							begin
          							   errString := i18Manager.GetFormattedString('IncTypes', [GetTypeAsString(yyv[yysp-0].yyInteger), GetTypeAsString(rval)]);
          							   yyabort;	
          							end
-         							else if GParser_Mode in [prFor, prCase, prCaseValue, prVarSize] then
+         							else if GParser_Mode in [prsFor, prsCase, prsCaseValue, prsVarSize] then
          							begin	
-         							   if not (GParser_Mode in [prFor, prVarSize]) then
+         							   if not (GParser_Mode in [prsFor, prsVarSize]) then
          							   begin
-         							      if (GParser_Mode = prCaseValue) and IsDuplicatedCaseValue() then
+         							      if (GParser_Mode = prsCaseValue) and IsDuplicatedCaseValue() then
          begin
          errString := i18Manager.GetString('DupCaseVal');
          yyabort;
@@ -1230,7 +1230,7 @@ begin
          errString := i18Manager.GetFormattedString('IncTypes', [GetTypeAsString(yyv[yysp-0].yyInteger), 'integer']);
          yyabort;
          end
-         							      else if GParser_Mode = prCaseValue then
+         							      else if GParser_Mode = prsCaseValue then
          							      begin
          							         lType := GetCaseVarType();
          								 if (lType <> yyv[yysp-0].yyInteger) and not (IsIntegerType(lType) and lIsInteger) then
@@ -1240,7 +1240,7 @@ begin
          								 end;
          							      end;
          							   end
-         							   else if GParser_Mode = prFor then
+         							   else if GParser_Mode = prsFor then
          							   begin
          							      lType := GetForLoopVarType();
          							      if (lType <> yyv[yysp-0].yyInteger) and not (IsIntegerType(lType) and lIsInteger) then
@@ -1249,13 +1249,13 @@ begin
          yyabort;
          end;
          							   end
-         else if not lIsInteger and (GParser_Mode = prVarSize) then
+         else if not lIsInteger and (GParser_Mode = prsVarSize) then
          							      yyabort;
          							end;
          						
        end;
  114 : begin
-         	if GParser_Mode <> prVarSize then yyabort;	
+         	if GParser_Mode <> prsVarSize then yyabort;	
        end;
  115 : begin
          yyval := yyv[yysp-0];

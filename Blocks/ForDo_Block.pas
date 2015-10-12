@@ -215,7 +215,7 @@ begin
       TInfra.DrawArrowLine(Canvas, Point(Width-11, 19), Point(Width-11, Height-1));
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
       begin
-         TInfra.DrawArrowLine(Canvas, Point(5, Height-21), Point(5, 19), apMiddle);
+         TInfra.DrawArrowLine(Canvas, Point(5, Height-21), Point(5, 19), arrMiddle);
          Canvas.Polyline([Point(BottomHook, Height-21),
                           Point(5, Height-21),
                           Point(5, 19),

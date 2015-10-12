@@ -37,7 +37,7 @@ implementation
 
 uses
    Assign_Block, MulAssign_Block, InOut_Block, FunctionCall_Block, WhileDo_Block, RepeatUntil_Block, ApplicationCommon,
-   ForDo_Block, IfElse_Block, If_Block, Case_Block, Return_Block, Text_Block, Main_Block, CommonInterfaces;
+   ForDo_Block, IfElse_Block, If_Block, Case_Block, Return_Block, Text_Block, Main_Block, CommonInterfaces, Folder_Block;
 
 class function TBlockFactory.CloneBlock(const ABranch: TBranch; const ABlock: TBlock): TBlock;
 begin
@@ -58,6 +58,7 @@ begin
          blCase:       result := TCaseBlock.Create(ABranch, TCaseBlock(ABlock));
          blReturn:     result := TReturnBlock.Create(ABranch, TReturnBlock(ABlock));
          blText:       result := TTextBlock.Create(ABranch, TTextBlock(ABlock));
+         blFolder:     result := TFolderBlock.Create(ABranch, TFolderBlock(ABlock));
       end;
    end;
 end;
@@ -81,6 +82,7 @@ begin
          blCase:       result := TCaseBlock.Create(ABranch);
          blReturn:     result := TReturnBlock.Create(ABranch);
          blText:       result := TTextBlock.Create(ABranch);
+         blFolder:     result := TFolderBlock.Create(ABranch);
       end;
    end;
 end;
@@ -121,6 +123,7 @@ begin
             blCase:       result := TCaseBlock.Create(ABranch, left, top, width, height, bh, brx, bry, bid);
             blReturn:     result := TReturnBlock.Create(ABranch, left, top, width, height, bid);
             blText:       result := TTextBlock.Create(ABranch, left, top, width, height, bid);
+            blFolder:     result := TFolderBlock.Create(ABranch, left, top, width, height, bh, brx, bry, bid);
             blIfElse:
             begin
                th := StrToInt(ATag.GetAttribute('th'));

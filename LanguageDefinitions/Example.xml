@@ -1,4 +1,4 @@
-<!-- Example language definition file for devFlowcharter -->
+<!-- Example of language definition file for devFlowcharter -->
 <Language>
     <Name>Example</Name>
     <CommentBegin>/*</CommentBegin>
@@ -8,7 +8,7 @@
     <DefaultExt>txt</DefaultExt>
     <LibraryExt>.lib</LibraryExt>
     <AssignOperator>=</AssignOperator>
-    <InOutCursorPos>-1</InOutCursorPos>
+    <InOutCursorPos>-1</InOutCursorPos>    <!-- counted from end -->
     <EnabledConsts>1</EnabledConsts>
     <EnabledVars>1</EnabledVars>
     <EnabledCompiler>1</EnabledCompiler>
@@ -187,6 +187,8 @@ END;
 <OutputTemplate>%s1;</OutputTemplate>
 
 <TextTemplate>/* %s1 */</TextTemplate>
+
+<FolderTemplate>%b1</FolderTemplate>
 
 <!--
 Element ProgramHeaderMask

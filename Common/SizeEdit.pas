@@ -74,7 +74,7 @@ begin
       begin
          for i := 1 to GetDimensionCount do
          begin
-            result := lLangDef.Parse(GetDimension(i), prVarSize) = 0;
+            result := lLangDef.Parse(GetDimension(i), prsVarSize) = 0;
             if not result then break;
          end;
       end;

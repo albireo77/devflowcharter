@@ -84,7 +84,8 @@ uses
   Dummy_Template in 'LangTemplates\Dummy_Template.pas',
   BlockFactory in 'Common\BlockFactory.pas',
   StatementMemo in 'Common\StatementMemo.pas',
-  MultiLine_Block in 'Blocks\MultiLine_Block.pas';
+  MultiLine_Block in 'Blocks\MultiLine_Block.pas',
+  Folder_Block in 'Blocks\Folder_Block.pas';
 
 {$R *.res}
 
