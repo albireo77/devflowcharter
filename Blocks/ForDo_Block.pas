@@ -147,9 +147,7 @@ begin
    Constraints.MinHeight := FInitParms.Height;
    FOrder := orAsc;
    FForLabel := i18Manager.GetString('CaptionFor');
-   FStatement.Free;
-   FStatement := nil;
-
+   FStatement.Visible := false;
 end;
 
 constructor TForDoBlock.Create(const ABranch: TBranch; const ASource: TForDoBlock);

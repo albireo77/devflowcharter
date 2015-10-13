@@ -122,8 +122,7 @@ begin
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    OnResize := MyOnResize;
-   FStatement.Free;
-   FStatement := nil;
+   FStatement.Visible := false;
    OwnerUserFunction := nil;
 end;
 

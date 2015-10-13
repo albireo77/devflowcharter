@@ -77,9 +77,7 @@ begin
    TopHook.X := BottomPoint.X;
    Constraints.MinWidth := 140;
    Constraints.MinHeight := 48;
-   FStatement.Free;
-   FStatement := nil;
-
+   FStatement.Visible := false;
 end;
 
 constructor TMultiLineBlock.Create(const ABranch: TBranch; const ASource: TMultiLineBlock);

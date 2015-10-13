@@ -68,8 +68,7 @@ begin
    IPoint.Y := 8;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
-   FStatement.Free;
-   FStatement := nil;
+   FStatement.Visible := false;
 end;
 
 constructor TFolderBlock.Create(const ABranch: TBranch; const ASource: TFolderBlock);
