@@ -101,13 +101,9 @@ type
          class function DecodeFontStyle(AValue: integer): TFontStyles;
          class function EncodeFontStyle(AStyle: TFontStyles): string;
          class function FindParentForm(const AControl: TControl): TBaseForm;
-         class function DrawEllipsedText(const ACanvas: TCanvas; const APoint: TPoint; const AText: string): TRect;
-         class function GetEllipseTextRect(const ACanvas: TCanvas; const APoint: TPoint; const AText: string): TRect;
-         class procedure DrawArrowLine(const ACanvas: TCanvas; const ABeginPoint, AEndPoint: TPoint; const AArrowPos: TArrowPosition = arrEnd; const AColor: TColor = clBlack);
          procedure ReadFromRegistry;
          procedure WriteToRegistry;
          procedure SetHLighters;
-         class function GetScaleFactor(const ACanvas: TCanvas): TScaleFactor;
          class procedure InitFocusInfo(var AFocusInfo: TFocusInfo);
          class function GetDataTypesForm: TDataTypesForm;
          class function GetFunctionsForm: TFunctionsForm;
@@ -946,104 +942,7 @@ begin
    end;
 end;
 
-class procedure TInfra.DrawArrowLine(const ACanvas: TCanvas; const ABeginPoint, AEndPoint: TPoint; const AArrowPos: TArrowPosition = arrEnd; const AColor: TColor = clBlack);
-const
-   MX: array[boolean, boolean] of integer = ((10, -10), (-5, -5));
-   MY: array[boolean, boolean] of integer = ((5, 5), (10, -10));
-   MD: array[boolean, boolean] of integer = ((0, -10), (10, 0));
-var
-   lIsVertical, lToBottomRight: boolean;
-   x, y: integer;
-   lArrPoint: TPoint;
-begin
-   lIsVertical := ABeginPoint.X = AEndPoint.X;
-   lArrPoint := AEndPoint;
-   if lIsVertical then
-      lToBottomRight := AEndPoint.Y > ABeginPoint.Y
-   else
-      lToBottomRight := AEndPoint.X > ABeginPoint.X;
-   if AArrowPos = arrMiddle then
-   begin
-      if lIsVertical then
-         lArrPoint.Y := lArrPoint.Y + (ABeginPoint.Y-AEndPoint.Y) div 2
-      else
-         lArrPoint.X := lArrPoint.X + (ABeginPoint.X-AEndPoint.X) div 2;
-   end;
-   x := MX[lIsVertical, lToBottomRight];
-   y := MY[lIsVertical, lToBottomRight];
-   with ACanvas do
-   begin
-      Brush.Style := bsSolid;
-      Pen.Color := AColor;
-      Brush.Color := AColor;
-      MoveTo(ABeginPoint.X, ABeginPoint.Y);
-      LineTo(AEndPoint.X, AEndPoint.Y);
-      Polygon([Point(lArrPoint.X+x, lArrPoint.Y+y),
-               Point(lArrPoint.X+x+MD[lIsVertical, false], lArrPoint.Y+y+MD[lIsVertical, true]),
-               lArrPoint,
-               Point(lArrPoint.X+x, lArrPoint.Y+y)]);
-   end;
-end;
 
-class function TInfra.GetScaleFactor(const ACanvas: TCanvas): TScaleFactor;
-var
-   lExt, lViewPort: TSize;
-begin
-   GetWindowExtEx(ACanvas.Handle, lExt);
-   GetViewportExtEx(ACanvas.Handle, lViewPort);
-   result.cx := lViewPort.cx / lExt.cx;
-   result.cy := lViewPort.cy / lExt.cy;
-end;
-
-class function TInfra.GetEllipseTextRect(const ACanvas: TCanvas; const APoint: TPoint; const AText: string): TRect;
-const
-   MIN_HALF_HEIGHT = 15;
-   MIN_HALF_WIDTH = 30;
-var
-   a, b: integer;
-   ar, br: real;
-   R: TRect;
-   lScl: TScaleFactor;
-begin
-   lScl := GetScaleFactor(ACanvas);
-   R := Rect(0, 0, 0, 0);
-   DrawText(ACanvas.Handle, PChar(AText), -1, R, DT_CALCRECT);
-   ar := (R.Bottom - R.Top) * lScl.cy / Sqrt(2);
-   br := (R.Right - R.Left) * lScl.cx / Sqrt(2);
-   if ar < MIN_HALF_HEIGHT then
-   begin
-      if ar = 0 then
-         br := MIN_HALF_WIDTH
-      else
-         br := MIN_HALF_HEIGHT * br / ar;
-      ar := MIN_HALF_HEIGHT;
-   end;
-   {if br < MIN_HALF_WIDTH then
-   begin
-      if br = 0 then
-         ar := MIN_HALF_HEIGHT
-      else
-         ar := MIN_HALF_WIDTH * ar / br;
-      br := MIN_HALF_WIDTH;
-   end;}
-   a := Round(ar);
-   b := Round(br);
-   result := Rect(APoint.X-b, APoint.Y-2*a, APoint.X+b, APoint.Y);
-end;
-
-class function TInfra.DrawEllipsedText(const ACanvas: TCanvas; const APoint: TPoint; const AText: string): TRect;
-begin
-   result := Rect(0, 0, 0, 0);
-   if not InvalidPoint(APoint) then
-   begin
-      result := GetEllipseTextRect(ACanvas, APoint, AText);
-      ACanvas.Brush.Style := bsClear;
-      if GSettings.EllipseColor <> GSettings.DesktopColor then
-         ACanvas.Brush.Color := GSettings.EllipseColor;
-      ACanvas.Ellipse(result.Left, result.Top, result.Right, result.Bottom);
-      DrawText(ACanvas.Handle, PChar(AText), -1, result, DT_CENTER or DT_SINGLELINE or DT_VCENTER);
-   end;
-end;
 
 class function TInfra.DecodeFontStyle(AValue: integer): TFontStyles;
 begin

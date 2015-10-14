@@ -119,7 +119,7 @@ var
 begin
    inherited;
    w := Canvas.TextWidth(FLabel);
-   TInfra.DrawArrowLine(Canvas, Point(BottomPoint.X, 30), Point(BottomPoint.X, Height-1));
+   DrawArrowLine(Point(BottomPoint.X, 30), Point(BottomPoint.X, Height-1));
    with Canvas do
    begin
       Brush.Style := bsClear;

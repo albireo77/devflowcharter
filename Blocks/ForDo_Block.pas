@@ -212,11 +212,11 @@ begin
       edtVariable.Left := Branch.Hook.X-75;
       edtStartVal.Left := Branch.Hook.X-30;
       edtStopVal.Left := Branch.Hook.X+11;
-      TInfra.DrawArrowLine(Canvas, Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
-      TInfra.DrawArrowLine(Canvas, Point(Width-11, 19), Point(Width-11, Height-1));
+      DrawArrowLine(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
+      DrawArrowLine(Point(Width-11, 19), Point(Width-11, Height-1));
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
       begin
-         TInfra.DrawArrowLine(Canvas, Point(5, Height-21), Point(5, 19), arrMiddle);
+         DrawArrowLine(Point(5, Height-21), Point(5, 19), arrMiddle);
          Canvas.Polyline([Point(BottomHook, Height-21),
                           Point(5, Height-21),
                           Point(5, 19),

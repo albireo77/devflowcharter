@@ -83,7 +83,7 @@ end;
 procedure TAssignBlock.Paint;
 begin
    inherited;
-   TInfra.DrawArrowLine(Canvas, Point(BottomPoint.X, 19), Point(BottomPoint.X, Height-1));
+   DrawArrowLine(Point(BottomPoint.X, 19), Point(BottomPoint.X, Height-1));
    DrawI;
 end;
 

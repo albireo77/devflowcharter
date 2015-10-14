@@ -103,11 +103,11 @@ begin
       IPoint.X := Branch.Hook.X + 40;
       PutTextControls;
       
-      TInfra.DrawArrowLine(Canvas, Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
-      TInfra.DrawArrowLine(Canvas, Point(BottomPoint.X, 49), Point(BottomPoint.X, Height-1));
+      DrawArrowLine(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
+      DrawArrowLine(Point(BottomPoint.X, 49), Point(BottomPoint.X, Height-1));
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
       begin
-         TInfra.DrawArrowLine(Canvas, Point(5, Height-21), Point(5, 0), arrMiddle);
+         DrawArrowLine(Point(5, Height-21), Point(5, 0), arrMiddle);
          Canvas.Polyline([Point(BottomHook, Height-21),
                           Point(5, Height-21),
                           Point(5, 0),

@@ -105,13 +105,13 @@ begin
       BottomPoint.Y := Height - 50;
       PutTextControls;
 
-      TInfra.DrawArrowLine(Canvas, Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
-      TInfra.DrawArrowLine(Canvas, Point(5, Height-51), Point(5, 0), arrMiddle);
-      TInfra.DrawArrowLine(Canvas, Point(BottomPoint.X, Height-51), Point(BottomPoint.X, Height-1));
+      DrawArrowLine(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
+      DrawArrowLine(Point(5, Height-51), Point(5, 0), arrMiddle);
+      DrawArrowLine(Point(BottomPoint.X, Height-51), Point(BottomPoint.X, Height-1));
+      DrawTextLabel(BottomHook-60, Height-72, FFalseLabel, true);
+      DrawTextLabel(BottomHook+60, Height-72, FTrueLabel);
       with Canvas do
       begin
-         DrawTextLabel(BottomHook-60, Height-72, FFalseLabel, true);
-         DrawTextLabel(BottomHook+60, Height-72, FTrueLabel);
          MoveTo(BottomPoint.X, Height-51);
          LineTo(BottomHook+60, Height-51);
          MoveTo(BottomHook-60, Height-51);

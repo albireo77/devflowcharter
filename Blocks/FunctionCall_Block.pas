@@ -87,7 +87,7 @@ begin
    begin
       if FStatement <> nil then
       begin
-         TInfra.DrawArrowLine(Canvas, Point(BottomPoint.X, FStatement.Height-1), Point(BottomPoint.X, Height-1));
+         DrawArrowLine(Point(BottomPoint.X, FStatement.Height-1), Point(BottomPoint.X, Height-1));
          Polygon([Point(8, 0), Point(10, 0),
                   Point(10, FStatement.Height-1),
                   Point(8, FStatement.Height-1),

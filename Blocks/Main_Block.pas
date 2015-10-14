@@ -156,9 +156,9 @@ var
    R: TRect;
    lWidth: integer;
 begin
-   R := TInfra.GetEllipseTextRect(Canvas, Point(0, 0), FStartLabel);
+   R := GetEllipseTextRect(Point(0, 0), FStartLabel);
    result := R.Right - R.Left;
-   R := TInfra.GetEllipseTextRect(Canvas, Point(0, 0), FStopLabel);
+   R := GetEllipseTextRect(Point(0, 0), FStopLabel);
    lWidth := R.Right - R.Left;
    if lWidth > result then
       result := lWidth;
@@ -308,11 +308,11 @@ begin
             Font.Color := lColor;
          end;
       end;
-      TInfra.DrawEllipsedText(Canvas, Point(Branch.Hook.X, TopHook.Y), FStartLabel);
+      DrawEllipsedText(Point(Branch.Hook.X, TopHook.Y), FStartLabel);
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
-         TInfra.DrawEllipsedText(Canvas, Point(BottomHook, Height-11), FStopLabel);
+         DrawEllipsedText(Point(BottomHook, Height-11), FStopLabel);
       Font.Style := lFontStyles;
-      TInfra.DrawArrowLine(Canvas, Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
+      DrawArrowLine(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
    end;
    DrawI;
 end;

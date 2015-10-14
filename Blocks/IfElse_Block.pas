@@ -129,13 +129,13 @@ begin
       BottomPoint.Y := Height - 25;
       PutTextControls;
       
-      TInfra.DrawArrowLine(Canvas, Point(BottomHook, Height-30), Point(BottomHook, Height-1));
-      TInfra.DrawArrowLine(Canvas, Point(TrueBranch.Hook.X, 30), TrueBranch.Hook);
-      TInfra.DrawArrowLine(Canvas, Point(FalseBranch.Hook.X, 30), FalseBranch.Hook);
+      DrawArrowLine(Point(BottomHook, Height-30), Point(BottomHook, Height-1));
+      DrawArrowLine(Point(TrueBranch.Hook.X, 30), TrueBranch.Hook);
+      DrawArrowLine(Point(FalseBranch.Hook.X, 30), FalseBranch.Hook);
       if TrueBranch.FindInstanceOf(TReturnBlock) = -1 then
-         TInfra.DrawArrowLine(Canvas, Point(TrueHook, Height-30), Point(BottomHook-5, Height-30));
+         DrawArrowLine(Point(TrueHook, Height-30), Point(BottomHook-5, Height-30));
       if FalseBranch.FindInstanceOf(TReturnBlock) = -1 then
-         TInfra.DrawArrowLine(Canvas, Point(FalseHook, Height-30), Point(BottomHook+4, Height-30));
+         DrawArrowLine(Point(FalseHook, Height-30), Point(BottomHook+4, Height-30));
       with Canvas do
       begin
          Ellipse(BottomHook-5, Height-34, BottomHook+5, Height-24);

@@ -146,12 +146,12 @@ begin
       IPoint.X := DefaultBranch.Hook.X - 40;
       PutTextControls;
       BottomPoint.Y := Height - 31;
-      TInfra.DrawArrowLine(Canvas, Point(DefaultBranch.Hook.X, TopHook.Y), DefaultBranch.Hook);
-      TInfra.DrawArrowLine(Canvas, BottomPoint, Point(BottomPoint.X, Height-1));
+      DrawArrowLine(Point(DefaultBranch.Hook.X, TopHook.Y), DefaultBranch.Hook);
+      DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1));
       for i := DEFAULT_BRANCH_IND to High(FBranchArray) do
       begin
-         lPoint := FBranchArray[i].hook;
-         TInfra.DrawArrowLine(Canvas, Point(lPoint.X, TopHook.Y), lPoint);
+         lPoint := FBranchArray[i].Hook;
+         DrawArrowLine(Point(lPoint.X, TopHook.Y), lPoint);
       end;
       with Canvas do
       begin

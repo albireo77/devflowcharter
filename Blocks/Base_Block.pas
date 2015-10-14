@@ -94,6 +94,9 @@ type
          procedure SetCursor(const APoint: TPoint);
          procedure PutTextControls; virtual;
          function GetDefaultWidth: integer; virtual; abstract;
+         procedure DrawArrowLine(const ABeginPoint, AEndPoint: TPoint; const AArrowPos: TArrowPosition = arrEnd; const AColor: TColor = clBlack);
+         function GetEllipseTextRect(const APoint: TPoint; const AText: string): TRect;
+         function DrawEllipsedText(const APoint: TPoint; const AText: string): TRect;
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -434,13 +437,13 @@ begin
    SetCursor(Point(X, Y));
    if PtInRect(Rect(BottomPoint.X-5, BottomPoint.Y, BottomPoint.X+5, Height), Point(X, Y)) then
    begin
-      TInfra.DrawArrowLine(Canvas, BottomPoint, Point(BottomPoint.X, Height-1), arrEnd, clRed);
+      DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1), arrEnd, clRed);
       Ired := 0;
       Cursor := TCursor(GCustomCursor);
    end
    else if Ired = 0 then
    begin
-      TInfra.DrawArrowLine(Canvas, BottomPoint, Point(BottomPoint.X, Height-1));
+      DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1));
       Ired := -1;
       Cursor := crDefault;
    end;
@@ -458,14 +461,14 @@ begin
          lPoint := FBranchArray[i].Hook;
          if PtInRect(Rect(lPoint.X-5, TopHook.Y, lPoint.X+5, lPoint.Y), Point(X, Y)) then
          begin
-            TInfra.DrawArrowLine(Canvas, Point(lPoint.X, TopHook.Y), lPoint, arrEnd, clRed);
+            DrawArrowLine(Point(lPoint.X, TopHook.Y), lPoint, arrEnd, clRed);
             Ired := i;
             Cursor := TCursor(GCustomCursor);
             break;
          end
          else if Ired = i then
          begin
-            TInfra.DrawArrowLine(Canvas, Point(lPoint.X, TopHook.Y), lPoint);
+            DrawArrowLine(Point(lPoint.X, TopHook.Y), lPoint);
             Ired := -1;
             Cursor := crDefault;
             break;
@@ -493,7 +496,7 @@ begin
       Cursor := crDefault;
    ClearSelection;
    if Ired = 0 then
-      TInfra.DrawArrowLine(Canvas, BottomPoint, Point(BottomPoint.X, Height-1));
+      DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1));
    Ired := -1;
    if VResizeInd or HResizeInd then
       SendMessage(Handle, WM_NCHITTEST, 0, 0);
@@ -508,7 +511,7 @@ begin
    if lBranch <> nil then
    begin
       lPoint := lBranch.Hook;
-      TInfra.DrawArrowLine(Canvas, Point(lPoint.X, TopHook.Y), lPoint);
+      DrawArrowLine(Point(lPoint.X, TopHook.Y), lPoint);
    end;
    inherited OnMouseLeave;
 end;
@@ -1114,6 +1117,99 @@ begin
    Canvas.Font.Style := lFontStyles;
 end;
 
+procedure TBlock.DrawArrowLine(const ABeginPoint, AEndPoint: TPoint; const AArrowPos: TArrowPosition = arrEnd; const AColor: TColor = clBlack);
+const
+   MX: array[boolean, boolean] of integer = ((10, -10), (-5, -5));
+   MY: array[boolean, boolean] of integer = ((5, 5), (10, -10));
+   MD: array[boolean, boolean] of integer = ((0, -10), (10, 0));
+var
+   lIsVertical, lToBottomRight: boolean;
+   x, y: integer;
+   lArrPoint: TPoint;
+begin
+   lIsVertical := ABeginPoint.X = AEndPoint.X;
+   lArrPoint := AEndPoint;
+   if lIsVertical then
+      lToBottomRight := AEndPoint.Y > ABeginPoint.Y
+   else
+      lToBottomRight := AEndPoint.X > ABeginPoint.X;
+   if AArrowPos = arrMiddle then
+   begin
+      if lIsVertical then
+         lArrPoint.Y := lArrPoint.Y + (ABeginPoint.Y-AEndPoint.Y) div 2
+      else
+         lArrPoint.X := lArrPoint.X + (ABeginPoint.X-AEndPoint.X) div 2;
+   end;
+   x := MX[lIsVertical, lToBottomRight];
+   y := MY[lIsVertical, lToBottomRight];
+   with Canvas do
+   begin
+      Brush.Style := bsSolid;
+      Pen.Color := AColor;
+      Brush.Color := AColor;
+      MoveTo(ABeginPoint.X, ABeginPoint.Y);
+      LineTo(AEndPoint.X, AEndPoint.Y);
+      Polygon([Point(lArrPoint.X+x, lArrPoint.Y+y),
+               Point(lArrPoint.X+x+MD[lIsVertical, false], lArrPoint.Y+y+MD[lIsVertical, true]),
+               lArrPoint,
+               Point(lArrPoint.X+x, lArrPoint.Y+y)]);
+   end;
+end;
+
+function TBlock.GetEllipseTextRect(const APoint: TPoint; const AText: string): TRect;
+const
+   MIN_HALF_HEIGHT = 15;
+   MIN_HALF_WIDTH = 30;
+var
+   a, b: integer;
+   ar, br: real;
+   R: TRect;
+   lScl: TScaleFactor;
+   lExt, lViewPort: TSize;
+begin
+   GetWindowExtEx(Canvas.Handle, lExt);
+   GetViewportExtEx(Canvas.Handle, lViewPort);
+   lScl.cx := lViewPort.cx / lExt.cx;
+   lScl.cy := lViewPort.cy / lExt.cy;
+   R := Rect(0, 0, 0, 0);
+   DrawText(Canvas.Handle, PChar(AText), -1, R, DT_CALCRECT);
+   ar := (R.Bottom - R.Top) * lScl.cy / Sqrt(2);
+   br := (R.Right - R.Left) * lScl.cx / Sqrt(2);
+   if ar < MIN_HALF_HEIGHT then
+   begin
+      if ar = 0 then
+         br := MIN_HALF_WIDTH
+      else
+         br := MIN_HALF_HEIGHT * br / ar;
+      ar := MIN_HALF_HEIGHT;
+   end;
+   {if br < MIN_HALF_WIDTH then
+   begin
+      if br = 0 then
+         ar := MIN_HALF_HEIGHT
+      else
+         ar := MIN_HALF_WIDTH * ar / br;
+      br := MIN_HALF_WIDTH;
+   end;}
+   a := Round(ar);
+   b := Round(br);
+   result := Rect(APoint.X-b, APoint.Y-2*a, APoint.X+b, APoint.Y);
+end;
+
+function TBlock.DrawEllipsedText(const APoint: TPoint; const AText: string): TRect;
+begin
+   result := Rect(0, 0, 0, 0);
+   if not InvalidPoint(APoint) then
+   begin
+      result := GetEllipseTextRect(APoint, AText);
+      Canvas.Brush.Style := bsClear;
+      if GSettings.EllipseColor <> GSettings.DesktopColor then
+         Canvas.Brush.Color := GSettings.EllipseColor;
+      Canvas.Ellipse(result.Left, result.Top, result.Right, result.Bottom);
+      DrawText(Canvas.Handle, PChar(AText), -1, result, DT_CENTER or DT_SINGLELINE or DT_VCENTER);
+   end;
+end;
+
 function TBlock.GetFrontMemo: TMemo;
 begin
    result := nil;
@@ -1188,7 +1284,7 @@ begin
       else if FMemoFolder <> nil then
       begin
          if FTopParentBlock <> Self then
-            TInfra.DrawArrowLine(Canvas, Point(BottomPoint.X, Height-31), Point(BottomPoint.X, Height-1));
+            DrawArrowLine(Point(BottomPoint.X, Height-31), Point(BottomPoint.X, Height-1));
          Pen.Width := 2;
          Brush.Style := bsClear;
          if GSettings.FoldColor <> GSettings.DesktopColor then

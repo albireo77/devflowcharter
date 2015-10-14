@@ -96,8 +96,8 @@ begin
    begin
       IPoint.X := Branch.Hook.X + 30;
       BottomPoint.Y := Height - 31;
-      TInfra.DrawArrowLine(Canvas, BottomPoint, Point(BottomPoint.X, Height-1));
-      TInfra.DrawArrowLine(Canvas, Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
+      DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1));
+      DrawArrowLine(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
    end;
    DrawI;
 end;

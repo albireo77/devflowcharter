@@ -98,7 +98,7 @@ end;
 procedure TMultiLineBlock.Paint;
 begin
    inherited;
-   TInfra.DrawArrowLine(Canvas, Point(BottomPoint.X, Height-31), Point(BottomPoint.X, Height-1));
+   DrawArrowLine(Point(BottomPoint.X, Height-31), Point(BottomPoint.X, Height-1));
    DrawI;
 end;
 
