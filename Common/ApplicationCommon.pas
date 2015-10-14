@@ -126,6 +126,7 @@ type
          class procedure SetEditorCaretPos(const ALine: TChangeLine);
          class procedure InitChangeLine(var AChangeLine: TChangeLine);
          class procedure InitCodeRange(var ACodeRange: TCodeRange);
+         class procedure SetFontSize(const AControl: TControl; const ASize: integer);
          constructor Create;
          destructor Destroy; override;
    end;
@@ -226,6 +227,10 @@ implementation
 uses
    Printers, UserDataType, XMLProcessor, SourceEditor_Form, SynEditHighlighter,
    Main_Block, Messages;
+
+type
+   THackCustomEdit = class(TCustomEdit);
+   THackControl = class(TControl);
 
 var
    FParsedEdit: TCustomEdit;
@@ -1278,6 +1283,16 @@ begin
          SourceEditorForm.memCodeEditor.EnsureCursorPosVisible;
       end;
    end;
+end;
+
+class procedure TInfra.SetFontSize(const AControl: TControl; const ASize: integer);
+var
+   lFlag: boolean;
+begin
+   lFlag := (AControl is TCustomEdit) and (THackCustomEdit(AControl).BorderStyle = bsNone);
+   if lFlag then THackCustomEdit(AControl).BorderStyle := bsSingle;
+   THackControl(AControl).Font.Size := ASize;
+   if lFlag then THackCustomEdit(AControl).BorderStyle := bsNone;
 end;
 
 function ValidateId(const AIdent: string): integer;

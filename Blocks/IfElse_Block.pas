@@ -139,9 +139,8 @@ begin
       with Canvas do
       begin
          Ellipse(BottomHook-5, Height-34, BottomHook+5, Height-24);
-         Brush.Style := bsClear;
-         TextOut(TopHook.X-60-TextWidth(FTrueLabel), 9, FTrueLabel);
-         TextOut(TopHook.X+60, 9, FFalseLabel);
+         DrawTextLabel(TopHook.X-60-TextWidth(FTrueLabel), 9, FTrueLabel);
+         DrawTextLabel(TopHook.X+60, 9, FFalseLabel);
          MoveTo(TrueBranch.Hook.X, 30);
          LineTo(TopHook.X-60, 30);
          MoveTo(FalseBranch.Hook.X, 30);

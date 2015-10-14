@@ -147,7 +147,8 @@ begin
    Constraints.MinHeight := FInitParms.Height;
    FOrder := orAsc;
    FForLabel := i18Manager.GetString('CaptionFor');
-   FStatement.Visible := false;
+   FStatement.Free;
+   FStatement := nil;
 end;
 
 constructor TForDoBlock.Create(const ABranch: TBranch; const ASource: TForDoBlock);
@@ -199,6 +200,8 @@ end;
 procedure TForDoBlock.Paint;
 const
    lForDirect: array[TForOrder] of char = ('»', '«');
+var
+   y: integer;
 begin
    inherited;
    if Expanded and (cbVariable <> nil) and (edtVariable <> nil) and (edtStartVal <> nil) and (edtStopVal <> nil) then
@@ -232,11 +235,10 @@ begin
                   Point(Branch.Hook.X+35, TopHook.Y),
                   Point(Branch.Hook.X-100, TopHook.Y),
                   Point(Branch.Hook.X-100, 0)]);
-         Font.Style := [fsBold];
-         TextOut(Branch.Hook.X-42, 13, GInfra.CurrentLang.AssignOperator);
-         TextOut(Branch.Hook.X+1, 13, lForDirect[FOrder]);
-         TextOut(Branch.Hook.X-97, 13, FForLabel);
-         Font.Style := [];
+         y :=  edtStartVal.BoundsRect.Bottom - TextHeight('X') - 6;
+         DrawTextLabel(Branch.Hook.X-42, y, GInfra.CurrentLang.AssignOperator);
+         DrawTextLabel(Branch.Hook.X+1, y, lForDirect[FOrder]);
+         DrawTextLabel(Branch.Hook.X-97, y, FForLabel);
       end;      
    end;
    DrawI;

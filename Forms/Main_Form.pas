@@ -574,7 +574,6 @@ var
    lComponent: TComponent;
    lBlock: TBlock;
    lFont: TFont;
-   lControl: TControl;
 begin
    lFont := nil;
    miFont.Visible := False;
@@ -621,10 +620,7 @@ begin
    if lComponent is TBlock then
    begin
        lBlock := TBlock(lComponent);
-       lControl := lBlock.GetTextControl;
-       if lControl <> nil then
-          lFont := TDerivedControl(lControl).Font;
-
+       lFont := lBlock.GetFont;
        if lBlock.Ired >= 0 then
        begin
           miInsert.Visible := True;
@@ -851,21 +847,18 @@ end;
 procedure TMainForm.miStyleBoldClick(Sender: TObject);
 var
    lComponent: TComponent;
-   lFontStyleSet: TFontStyles;
+   lFontStyles: TFontStyles;
    lFontStyle: TFontStyle;
-   lControl: TControl;
 begin
+
    lComponent := PopupMenu.PopupComponent;
+
    if (lComponent is TBlock) or (lComponent is TComment) then
    begin
       if lComponent is TBlock then
-      begin
-         lControl := TBlock(lComponent).GetTextControl;
-         if lControl <> nil then
-            lFontStyleSet := TDerivedControl(lControl).Font.Style;
-      end
+         lFontStyles := TBlock(lComponent).GetFont.Style
       else if lComponent is TComment then
-         lFontStyleSet := TComment(lComponent).Font.Style;
+         lFontStyles := TComment(lComponent).Font.Style;
 
       if Sender = miStyleBold then
          lFontStyle := fsBold
@@ -877,17 +870,16 @@ begin
          lFontStyle := fsStrikeOut;
 
       if Sender = miStyleNormal then
-         lFontStyleSet := []
-      else if lFontStyle in lFontStyleSet then
-         Exclude(lFontStyleSet, lFontStyle)
+         lFontStyles := []
+      else if lFontStyle in lFontStyles then
+         Exclude(lFontStyles, lFontStyle)
       else
-         Include(lFontStyleSet, lFontStyle);
+         Include(lFontStyles, lFontStyle);
 
       if lComponent is TBlock then
-         TBlock(lComponent).ChangeFontStyle(lFontStyleSet)
+         TBlock(lComponent).SetFontStyle(lFontStyles)
       else if lComponent is TComment then
-         TComment(lComponent).Font.Style := lFontStyleSet;
-
+         TComment(lComponent).Font.Style := lFontStyles;
       GChange := 1;
    end;
 end;
@@ -907,7 +899,7 @@ begin
       else
          lFontSize := 8;
       if lComponent is TBlock then
-         TBlock(lComponent).ChangeFontSize(lFontSize)
+         TBlock(lComponent).SetFontSize(lFontSize)
       else if lComponent is TComment then
          TComment(lComponent).Font.Size := lFontSize;
       GChange := 1;

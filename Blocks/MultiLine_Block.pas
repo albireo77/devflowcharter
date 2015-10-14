@@ -77,14 +77,14 @@ begin
    TopHook.X := BottomPoint.X;
    Constraints.MinWidth := 140;
    Constraints.MinHeight := 48;
-   FStatement.Visible := false;
+   FStatement.Free;
+   FStatement := nil;
 end;
 
 constructor TMultiLineBlock.Create(const ABranch: TBranch; const ASource: TMultiLineBlock);
 begin
    Create(ABranch, ASource.Left, ASource.Top, ASource.Width, ASource.Height);
-   ChangeFontSize(ASource.FStatements.Font.Size);
-   ChangeFontStyle(ASource.FStatements.Font.Style);
+   SetFont(ASource.Font);
    Visible := ASource.Visible;
    FStatements.Text := ASource.FStatements.Text;
 end;

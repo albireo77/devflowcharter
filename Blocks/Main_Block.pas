@@ -122,7 +122,8 @@ begin
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    OnResize := MyOnResize;
-   FStatement.Visible := false;
+   FStatement.Free;
+   FStatement := nil;
    OwnerUserFunction := nil;
 end;
 
@@ -286,6 +287,7 @@ var
    lColor: TColor;
    lLabel: string;
    R: TRect;
+   lFontStyles: TFontStyles;
 begin
    inherited;
    if Expanded then
@@ -294,6 +296,8 @@ begin
       IPoint.Y := 35;
       with Canvas do
       begin
+         lFontStyles := Font.Style;
+         Font.Style := [];
          Brush.Style := bsClear;
          lLabel := GetFunctionLabel(R);
          if lLabel <> '' then
@@ -307,6 +311,7 @@ begin
       TInfra.DrawEllipsedText(Canvas, Point(Branch.Hook.X, TopHook.Y), FStartLabel);
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
          TInfra.DrawEllipsedText(Canvas, Point(BottomHook, Height-11), FStopLabel);
+      Font.Style := lFontStyles;
       TInfra.DrawArrowLine(Canvas, Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
    end;
    DrawI;

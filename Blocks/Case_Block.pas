@@ -160,8 +160,7 @@ begin
          LineTo(DefaultBranch.Hook.X, TopHook.Y-10);
          MoveTo(BottomHook, BottomPoint.Y);
          LineTo(BottomPoint.X, BottomPoint.Y);
-         Brush.Style := bsClear;
-         TextOut(DefaultBranch.Hook.X+40, 48, FCaseLabel);
+         DrawTextLabel(DefaultBranch.Hook.X+40, 48, FCaseLabel);
       end;
    end;
    DrawI;

@@ -59,6 +59,7 @@ uses
 constructor TInOutBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 begin
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
+   
    FStatement.Anchors := [akRight, akLeft, akTop];
    FStatement.Color := GSettings.InOutColor;
    PutTextControls;
@@ -95,8 +96,7 @@ begin
    FType := ASource.BType;
    FLabel := ASource.FLabel;
    Create(ABranch, ASource.Left, ASource.Top, ASource.Width, ASource.Height);
-   ChangeFontSize(ASource.FStatement.Font.Size);
-   ChangeFontStyle(ASource.FStatement.Font.Style);
+   SetFont(ASource.Font);
    Visible := ASource.Visible;
    FStatement.Text := ASource.FStatement.Text;
 end;
@@ -115,6 +115,7 @@ procedure TInOutBlock.Paint;
 var
    R: TRect;
    w: integer;
+   lFontStyles: TFontStyles;
 begin
    inherited;
    w := Canvas.TextWidth(FLabel);
@@ -132,7 +133,10 @@ begin
       MoveTo(w+32, 0);
       LineTo(w+12, 30);
       R := Rect(17, 8, w+17, 23);
+      lFontStyles := Font.Style;
+      Font.Style := [];
       DrawText(Handle, PChar(FLabel), -1, R, DT_CENTER);
+      Font.Style := lFontStyles;
    end;
    DrawI;
 end;

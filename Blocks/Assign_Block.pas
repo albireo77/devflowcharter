@@ -63,7 +63,6 @@ begin
    TopHook.X := BottomPoint.X;
    Constraints.MinWidth := 140;
    Constraints.MinHeight := 51;
-
 end;
 
 constructor TAssignBlock.Create(const ABranch: TBranch);
@@ -75,12 +74,10 @@ constructor TAssignBlock.Create(const ABranch: TBranch; const ASource: TAssignBl
 begin
 
    Create(ABranch, ASource.Left, ASource.Top, ASource.Width, ASource.Height);
-   
-   ChangeFontSize(ASource.FStatement.Font.Size);
-   ChangeFontStyle(ASource.FStatement.Font.Style);
+
+   SetFont(ASource.Font);
    Visible := ASource.Visible;
    FStatement.Text := ASource.FStatement.Text;
-
 end;
 
 procedure TAssignBlock.Paint;

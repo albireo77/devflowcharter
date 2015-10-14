@@ -106,9 +106,8 @@ begin
       TInfra.DrawArrowLine(Canvas, Point(Width-11, 30), Point(Width-11, Height-31), arrMiddle);
       with Canvas do
       begin
-         Brush.Style := bsClear;
-         TextOut(Branch.Hook.X-10-TextWidth(FTrueLabel), 60, FTrueLabel);
-         TextOut(Branch.Hook.X+60, 9, FFalseLabel);
+         DrawTextLabel(Branch.Hook.X-10-TextWidth(FTrueLabel), 60, FTrueLabel);
+         DrawTextLabel(Branch.Hook.X+60, 9, FFalseLabel);
          MoveTo(BottomPoint.X, Height-31);
          LineTo(Width-11, Height-31);
          MoveTo(Width-11, 30);

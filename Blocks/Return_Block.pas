@@ -70,14 +70,12 @@ begin
    IPoint.Y := 30;
    BottomHook := BottomPoint.X;
    TopHook.X := BottomPoint.X;
-
 end;
 
 constructor TReturnBlock.Create(const ABranch: TBranch; const ASource: TReturnBlock);
 begin
    Create(ABranch, ASource.Left, ASource.Top, ASource.Width, ASource.Height);
-   ChangeFontSize(ASource.FStatement.Font.Size);
-   ChangeFontStyle(ASource.FStatement.Font.Style);
+   SetFont(ASource.Font);
    Visible := ASource.Visible;
    FStatement.Text := ASource.FStatement.Text;
 end;
@@ -88,9 +86,14 @@ begin
 end;
 
 procedure TReturnBlock.Paint;
+var
+   lFontStyles: TFontStyles;
 begin
    inherited;
+   lFontStyles := Canvas.Font.Style;
+   Canvas.Font.Style := [];
    TInfra.DrawEllipsedText(Canvas, Point(Width div 2, 30), FReturnLabel);
+   Canvas.Font.Style := lFontStyles;
    DrawI;
 end;
 

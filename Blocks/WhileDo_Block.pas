@@ -115,9 +115,8 @@ begin
       end;
       with Canvas do
       begin
-         Brush.Style := bsClear;
-         TextOut(Branch.Hook.X-TextWidth(FTrueLabel)-10, 80, FTrueLabel);
-         TextOut(Branch.Hook.X+60, 28, FFalseLabel);
+         DrawTextLabel(Branch.Hook.X-TextWidth(FTrueLabel)-10, 80, FTrueLabel);
+         DrawTextLabel(Branch.Hook.X+60, 28, FFalseLabel);
          MoveTo(Branch.Hook.X, 0);
          LineTo(Branch.Hook.X, 19);
          MoveTo(Branch.Hook.X+60, 49);

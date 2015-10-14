@@ -46,7 +46,6 @@ uses
 
 constructor TFunctionCallBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 begin
-
    FType := blFuncCall;
 
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
@@ -64,21 +63,16 @@ begin
    TopHook.X := BottomPoint.X;
    Constraints.MinWidth := 140;
    Constraints.MinHeight := 51;
-
 end;
 
 constructor TFunctionCallBlock.Create(const ABranch: TBranch; const ASource: TFunctionCallBlock);
 begin
-
    Create(ABranch, ASource.Left, ASource.Top, ASource.Width, ASource.Height);
-   
-   ChangeFontSize(ASource.FStatement.Font.Size);
-   ChangeFontStyle(ASource.FStatement.Font.Style);
+   SetFont(ASource.Font);
    Visible := ASource.Visible;
    FStatement.Text := ASource.FStatement.Text;
    if FStatement.CanFocus then
       FStatement.SetFocus;
-
 end;
 
 constructor TFunctionCallBlock.Create(const ABranch: TBranch);

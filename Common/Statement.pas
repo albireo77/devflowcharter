@@ -42,8 +42,6 @@ type
     OnChangeComplement: TOnChangeComplement;
     property ParserMode: TParserMode read FParserMode default prsNone;
     property Id: integer read GetId;
-    class procedure SetFontSize(const AControl: TControl; const ASize: integer);
-    class procedure SetFontStyle(const AControl: TControl; const AStyle: TFontStyles);
     procedure Change; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
     procedure DoEnter; override;
@@ -118,10 +116,6 @@ implementation
 uses
    ApplicationCommon, Base_Block, Navigator_Form;
 
-type
-  THackCustomEdit = class(TCustomEdit);
-  THackControl = class(TControl);
-
 constructor TStatement.Create(AOwner: TComponent);
 const
    BlockToParserMapping: array[TBlockType] of TParserMode = (prsNone, prsAssign, prsAssign,
@@ -129,7 +123,6 @@ const
                          prsCondition, prsFor, prsCase, prsNone, prsNone, prsReturn, prsNone, prsNone);
 var
    lBlock: TBlock;
-   lControl: TControl;
 begin
    inherited Create(AOwner);
    Parent := TWinControl(AOwner);
@@ -146,9 +139,7 @@ begin
       else if FParserMode = prsCase then
          FParserMode := prsCaseValue;
    end;
-   lControl := lBlock.GetTextControl;
-   if lControl <> nil then
-      Font.Assign(THackControl(lControl).Font);
+   Font.Assign(lBlock.GetFont);
    BorderStyle := bsNone;
    DoubleBuffered := True;
    ShowHint := True;
@@ -289,21 +280,6 @@ begin
    Change;
    if lChange = 0 then
       GChange := 0;
-end;
-
-class procedure TStatement.SetFontSize(const AControl: TControl; const ASize: integer);
-var
-   lFlag: boolean;
-begin
-   lFlag := (AControl is TCustomEdit) and (THackCustomEdit(AControl).BorderStyle = bsNone);
-   if lFlag then THackCustomEdit(AControl).BorderStyle := bsSingle;
-   THackControl(AControl).Font.Size := ASize;
-   if lFlag then THackCustomEdit(AControl).BorderStyle := bsNone;
-end;
-
-class procedure TStatement.SetFontStyle(const AControl: TControl; const AStyle: TFontStyles);
-begin
-   THackControl(AControl).Font.Style := AStyle;
 end;
 
 function TStatement.GetId: integer;

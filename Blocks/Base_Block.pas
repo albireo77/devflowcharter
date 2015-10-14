@@ -87,6 +87,7 @@ type
          procedure OnMouseLeave; virtual;
          procedure Paint; override;
          procedure DrawI;
+         procedure DrawTextLabel(const x, y: integer; const AText: string);
          function GetId: integer;
          function PerformEditorUpdate: boolean;
          procedure SelectBlock(const APoint: TPoint);
@@ -116,8 +117,10 @@ type
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: Integer; const AId: integer = ID_INVALID);
          destructor Destroy; override;
          procedure ChangeColor(const AColor: TColor); virtual;
-         procedure ChangeFontStyle(const AStyle: TFontStyles);
-         procedure ChangeFontSize(const ASize: integer);
+         procedure SetFontStyle(const AStyle: TFontStyles);
+         procedure SetFontSize(const ASize: integer);
+         function GetFont: TFont;
+         procedure SetFont(const AFont: TFont);
          procedure RefreshStatements;
          procedure PopulateComboBoxes; virtual;
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; virtual;
@@ -354,15 +357,11 @@ var
    lTextControl, lSourceTextControl: TCustomEdit;
 begin
    Visible := ASource.Visible;
+   SetFont(ASource.Font);
    lSourceTextControl := ASource.GetTextControl;
    lTextControl := GetTextControl;
-   if lSourceTextControl <> nil then
-   begin
-      ChangeFontSize(THackControl(lSourceTextControl).Font.Size);
-      ChangeFontStyle(THackControl(lSourceTextControl).Font.Style);
-      if lTextControl <> nil then
-         lTextControl.Text := lSourceTextControl.Text;
-   end;
+   if (lSourceTextControl <> nil) and (lTextControl <> nil) then
+      lTextControl.Text := lSourceTextControl.Text;
    FMemoFolder.Text := ASource.FMemoFolder.Text;
 
    for i := PRIMARY_BRANCH_IND to High(ASource.FBranchArray) do
@@ -844,29 +843,57 @@ begin
    OnMouseLeave;
 end;
 
-procedure TBlock.ChangeFontStyle(const AStyle: TFontStyles);
+procedure TBlock.SetFontStyle(const AStyle: TFontStyles);
 var
    i: Integer;
 begin
+   Font.Style := AStyle;
    for i := 0 to ControlCount-1 do
    begin
       if Controls[i] is TBlock then
-         TBlock(Controls[i]).ChangeFontStyle(AStyle)
+         TBlock(Controls[i]).SetFontStyle(AStyle)
       else
-         TStatement.SetFontStyle(Controls[i], AStyle);
+         THackControl(Controls[i]).Font.Style := AStyle;
    end;
 end;
 
-procedure TBlock.ChangeFontSize(const ASize: integer);
+procedure TBlock.SetFontSize(const ASize: integer);
 var
    i: Integer;
 begin
+   Font.Size := ASize;
    for i := 0 to ControlCount-1 do
    begin
       if Controls[i] is TBlock then
-         TBlock(Controls[i]).ChangeFontSize(ASize)
+         TBlock(Controls[i]).SetFontSize(ASize)
       else
-         TStatement.SetFontSize(Controls[i], ASize);
+         TInfra.SetFontSize(Controls[i], ASize);
+   end;
+   PutTextControls;
+end;
+
+function TBlock.GetFont: TFont;
+begin
+   result := Font;
+end;
+
+procedure TBlock.SetFont(const AFont: TFont);
+var
+   i: integer;
+begin
+   Font.Assign(AFont);
+   for i := 0 to ControlCount-1 do
+   begin
+      if Controls[i] is TBlock then
+      begin
+         TBlock(Controls[i]).SetFontStyle(AFont.Style);
+         TBlock(Controls[i]).SetFontSize(AFont.Size);
+      end
+      else
+      begin
+         THackControl(Controls[i]).Font.Style := AFont.Style;
+         TInfra.SetFontSize(Controls[i], AFont.Size);
+      end;
    end;
    PutTextControls;
 end;
@@ -1060,12 +1087,27 @@ begin
 end;
 
 procedure TBlock.DrawI;
+var
+   lFontSize: integer;
 begin
    if TMainBlock(FTopParentBlock).ShowI then
    begin
-      Canvas.Brush.Color := Color;
-      Canvas.TextOut(IPoint.X, IPoint.Y, '|');
+      lFontSize := Canvas.Font.Size;
+      Canvas.Font.Size := 8;
+      DrawTextLabel(IPoint.X, IPoint.Y, '|');
+      Canvas.Font.Size := lFontSize;
    end;
+end;
+
+procedure TBlock.DrawTextLabel(const x, y: integer; const AText: string);
+var
+   lFontStyles: TFontStyles;
+begin
+   lFontStyles := Canvas.Font.Style;
+   Canvas.Font.Style := [];
+   Canvas.Brush.Style := bsClear;
+   Canvas.TextOut(x, y, AText);
+   Canvas.Font.Style := lFontStyles;
 end;
 
 function TBlock.GetFrontMemo: TMemo;
@@ -1624,9 +1666,9 @@ begin
       end;
       lValue := StrToIntDef(ATag.GetAttribute('fontsize'), 8);
       if lValue in [8, 10, 12] then
-         ChangeFontSize(lValue);
+         SetFontSize(lValue);
       lValue := StrToIntDef(ATag.GetAttribute('fontstyle'), 0);
-      ChangeFontStyle(TInfra.DecodeFontStyle(lValue));
+      SetFontStyle(TInfra.DecodeFontStyle(lValue));
       FrameInd := ATag.GetAttribute('frame') = 'True';
       memoWidth := StrToIntDef(ATag.GetAttribute('memW'), 280);
       memoHeight := StrToIntDef(ATag.GetAttribute('memH'), 182);
