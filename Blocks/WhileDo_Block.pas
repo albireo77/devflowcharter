@@ -113,10 +113,10 @@ begin
                           Point(5, 0),
                           Point(Branch.Hook.X, 0)]);
       end;
+      DrawTextLabel(Branch.Hook.X-10, 80, FTrueLabel, true);
+      DrawTextLabel(Branch.Hook.X+60, 28, FFalseLabel);
       with Canvas do
       begin
-         DrawTextLabel(Branch.Hook.X-10, 80, FTrueLabel, true);
-         DrawTextLabel(Branch.Hook.X+60, 28, FFalseLabel);
          MoveTo(Branch.Hook.X, 0);
          LineTo(Branch.Hook.X, 19);
          MoveTo(Branch.Hook.X+60, 49);
