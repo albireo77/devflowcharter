@@ -87,7 +87,7 @@ type
          procedure OnMouseLeave; virtual;
          procedure Paint; override;
          procedure DrawI;
-         procedure DrawTextLabel(const x, y: integer; const AText: string);
+         procedure DrawTextLabel(x, y: integer; const AText: string; adjX: boolean = false; adjY: boolean = false);
          function GetId: integer;
          function PerformEditorUpdate: boolean;
          procedure SelectBlock(const APoint: TPoint);
@@ -1099,13 +1099,17 @@ begin
    end;
 end;
 
-procedure TBlock.DrawTextLabel(const x, y: integer; const AText: string);
+procedure TBlock.DrawTextLabel(x, y: integer; const AText: string; adjX: boolean = false; adjY: boolean = false);
 var
    lFontStyles: TFontStyles;
 begin
    lFontStyles := Canvas.Font.Style;
    Canvas.Font.Style := [];
    Canvas.Brush.Style := bsClear;
+   if adjX then
+      x := x - Canvas.TextWidth(AText);
+   if adjY then
+      y := y - Canvas.TextHeight('X');
    Canvas.TextOut(x, y, AText);
    Canvas.Font.Style := lFontStyles;
 end;

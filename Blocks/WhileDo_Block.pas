@@ -115,7 +115,7 @@ begin
       end;
       with Canvas do
       begin
-         DrawTextLabel(Branch.Hook.X-TextWidth(FTrueLabel)-10, 80, FTrueLabel);
+         DrawTextLabel(Branch.Hook.X-10, 80, FTrueLabel, true);
          DrawTextLabel(Branch.Hook.X+60, 28, FFalseLabel);
          MoveTo(Branch.Hook.X, 0);
          LineTo(Branch.Hook.X, 19);

@@ -235,10 +235,10 @@ begin
                   Point(Branch.Hook.X+35, TopHook.Y),
                   Point(Branch.Hook.X-100, TopHook.Y),
                   Point(Branch.Hook.X-100, 0)]);
-         y :=  edtStartVal.BoundsRect.Bottom - TextHeight('X') - 6;
-         DrawTextLabel(Branch.Hook.X-42, y, GInfra.CurrentLang.AssignOperator);
-         DrawTextLabel(Branch.Hook.X+1, y, lForDirect[FOrder]);
-         DrawTextLabel(Branch.Hook.X-97, y, FForLabel);
+         y :=  edtStartVal.BoundsRect.Bottom - 6;
+         DrawTextLabel(Branch.Hook.X-42, y, GInfra.CurrentLang.AssignOperator, false, true);
+         DrawTextLabel(Branch.Hook.X+1, y, lForDirect[FOrder], false, true);
+         DrawTextLabel(Branch.Hook.X-97, y, FForLabel, false, true);
       end;      
    end;
    DrawI;

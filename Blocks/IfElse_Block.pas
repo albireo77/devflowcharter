@@ -139,7 +139,7 @@ begin
       with Canvas do
       begin
          Ellipse(BottomHook-5, Height-34, BottomHook+5, Height-24);
-         DrawTextLabel(TopHook.X-60-TextWidth(FTrueLabel), 9, FTrueLabel);
+         DrawTextLabel(TopHook.X-60, 9, FTrueLabel, true);
          DrawTextLabel(TopHook.X+60, 9, FFalseLabel);
          MoveTo(TrueBranch.Hook.X, 30);
          LineTo(TopHook.X-60, 30);

@@ -110,7 +110,7 @@ begin
       TInfra.DrawArrowLine(Canvas, Point(BottomPoint.X, Height-51), Point(BottomPoint.X, Height-1));
       with Canvas do
       begin
-         DrawTextLabel(BottomHook-TextWidth(FFalseLabel)-60, Height-72, FFalseLabel);
+         DrawTextLabel(BottomHook-60, Height-72, FFalseLabel, true);
          DrawTextLabel(BottomHook+60, Height-72, FTrueLabel);
          MoveTo(BottomPoint.X, Height-51);
          LineTo(BottomHook+60, Height-51);
