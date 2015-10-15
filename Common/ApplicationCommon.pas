@@ -58,11 +58,6 @@ type
       Scope: integer;
    end;
 
-   TScaleFactor = record
-      cx,
-      cy: real;
-   end;
-
    TClockPos = (cp12, cp3, cp6, cp9);
 
    TInfra = class(TObject)

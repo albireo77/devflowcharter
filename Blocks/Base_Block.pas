@@ -1162,19 +1162,18 @@ const
    MIN_HALF_WIDTH = 30;
 var
    a, b: integer;
-   ar, br: real;
+   ar, br, cx, cy: real;
    R: TRect;
-   lScl: TScaleFactor;
    lExt, lViewPort: TSize;
 begin
    GetWindowExtEx(Canvas.Handle, lExt);
    GetViewportExtEx(Canvas.Handle, lViewPort);
-   lScl.cx := lViewPort.cx / lExt.cx;
-   lScl.cy := lViewPort.cy / lExt.cy;
+   cx := lViewPort.cx / lExt.cx;
+   cy := lViewPort.cy / lExt.cy;
    R := Rect(0, 0, 0, 0);
    DrawText(Canvas.Handle, PChar(AText), -1, R, DT_CALCRECT);
-   ar := (R.Bottom - R.Top) * lScl.cy / Sqrt(2);
-   br := (R.Right - R.Left) * lScl.cx / Sqrt(2);
+   ar := (R.Bottom - R.Top) * cy / Sqrt(2);
+   br := (R.Right - R.Left) * cx / Sqrt(2);
    if ar < MIN_HALF_HEIGHT then
    begin
       if ar = 0 then
