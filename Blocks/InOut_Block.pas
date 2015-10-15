@@ -132,9 +132,9 @@ begin
                Point(20, 0)]);
       MoveTo(w+32, 0);
       LineTo(w+12, 30);
-      R := Rect(17, 8, w+17, 23);
       lFontStyles := Font.Style;
       Font.Style := [];
+      R := Rect(16, 15-(TextHeight('X') div 2), w+16, 23);
       DrawText(Handle, PChar(FLabel), -1, R, DT_CENTER);
       Font.Style := lFontStyles;
    end;

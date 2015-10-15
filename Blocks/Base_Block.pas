@@ -851,6 +851,7 @@ var
    i: Integer;
 begin
    Font.Style := AStyle;
+   Refresh;
    for i := 0 to ControlCount-1 do
    begin
       if Controls[i] is TBlock then
@@ -865,6 +866,7 @@ var
    i: Integer;
 begin
    Font.Size := ASize;
+   Refresh;
    for i := 0 to ControlCount-1 do
    begin
       if Controls[i] is TBlock then
@@ -885,6 +887,7 @@ var
    i: integer;
 begin
    Font.Assign(AFont);
+   Refresh;
    for i := 0 to ControlCount-1 do
    begin
       if Controls[i] is TBlock then
