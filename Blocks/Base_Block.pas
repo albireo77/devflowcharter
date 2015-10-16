@@ -1567,7 +1567,7 @@ var
    lMemo: TMemo;
 begin
    result := false;
-   if (AInfo.FocusEdit <> nil) and ContainsControl(AInfo.FocusEdit) and AInfo.FocusEdit.CanFocus then
+   if ContainsControl(AInfo.FocusEdit) and AInfo.FocusEdit.CanFocus then
    begin
       FParentForm.Show;
       TMainBlock(FTopParentBlock).BringAllToFront;
