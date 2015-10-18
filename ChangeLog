@@ -1,3 +1,9 @@
+3.4.0 [18.10.2015]
+- add folder block as container for child blocks
+- Toolbox: add buttons for Folder and Text blocks
+- enable bigger fonts for flowchart labels
+- many minor fixes
+
 3.3.4 [23.09.2015]
 - improve editor auto update in folded areas for multiline components
 
