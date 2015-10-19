@@ -1872,7 +1872,7 @@ begin
       ATag.SetAttribute('fontsize', IntToStr(Font.Size));
       ATag.SetAttribute('fontstyle', TInfra.EncodeFontStyle(Font.Style));
       lTextControl := GetTextControl;
-      if (lTextControl is TControl) and (lTextControl.Text <> '') then
+      if (lTextControl <> nil) and (lTextControl.Text <> '') then
       begin
          lText := AnsiReplaceStr(lTextControl.Text, CRLF, '#!');
          lTag := ATag.OwnerDocument.CreateElement('text');
