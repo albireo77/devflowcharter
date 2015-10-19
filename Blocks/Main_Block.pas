@@ -29,8 +29,7 @@ uses
 
 type
 
-   TCommentIterator = class(TBaseIterator)
-   end;
+   TCommentIterator = class(TBaseIterator);
 
    TMainBlock = class(TGroupBlock, IWinControl, IMaxBoundable)
       public

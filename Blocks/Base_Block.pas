@@ -1869,18 +1869,15 @@ begin
       ATag.SetAttribute('mem_vscroll', BoolToStr(FMemoVScroll, true));
       ATag.SetAttribute('mem_hscroll', BoolToStr(FMemoHScroll, true));
       ATag.SetAttribute('mem_wordwrap', BoolToStr(MemoWordWrap, true));
+      ATag.SetAttribute('fontsize', IntToStr(Font.Size));
+      ATag.SetAttribute('fontstyle', TInfra.EncodeFontStyle(Font.Style));
       lTextControl := GetTextControl;
-      if lTextControl is TControl then
+      if (lTextControl is TControl) and (lTextControl.Text <> '') then
       begin
-         ATag.SetAttribute('fontsize', IntToStr(THackControl(lTextControl).Font.Size));
-         ATag.SetAttribute('fontstyle', TInfra.EncodeFontStyle(THackControl(lTextControl).Font.Style));
-         if lTextControl.Text <> '' then
-         begin
-            lText := AnsiReplaceStr(lTextControl.Text, CRLF, '#!');
-            lTag := ATag.OwnerDocument.CreateElement('text');
-            TXMLProcessor.AddCDATA(lTag, lText);
-            ATag.AppendChild(lTag);
-         end;
+         lText := AnsiReplaceStr(lTextControl.Text, CRLF, '#!');
+         lTag := ATag.OwnerDocument.CreateElement('text');
+         TXMLProcessor.AddCDATA(lTag, lText);
+         ATag.AppendChild(lTag);
       end;
    end;
 end;
