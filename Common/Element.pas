@@ -197,17 +197,14 @@ end;
 
 procedure TElement.ImportFromXMLTag(const root: IXMLElement);
 var
-   lIdx: integer;
+   idx: integer;
 begin
    edtName.Text := root.GetAttribute('name');
-   if cbType.Items.Count > 0 then
-   begin
-      lIdx := cbType.Items.IndexOf(root.GetAttribute('type'));
-      if lIdx = -1 then
-         cbType.ItemIndex := 0
-      else
-         cbType.ItemIndex := lIdx;
-   end;
+   idx := cbType.Items.IndexOf(root.GetAttribute('type'));
+   if idx <> -1 then
+      cbType.ItemIndex := idx
+   else if cbType.Items.Count > 0 then 
+      cbType.ItemIndex := 0;
 end;
 
 function TElement.ExportToXMLTag(const root: IXMLElement): IXMLElement;
