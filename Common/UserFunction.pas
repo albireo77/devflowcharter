@@ -705,40 +705,37 @@ end;
 
 procedure TUserFunctionHeader.ImportFromXMLTag(const rootTag: IXMLElement; const APinControl: TControl = nil);
 var
-   lIdx: integer;
+   idx: integer;
    tag2: IXMLElement;
 begin
    inherited ImportFromXMLTag(rootTag, APinControl);
-   if cbType.Items.Count > 0 then
-   begin
-      lIdx := cbType.Items.IndexOf(rootTag.GetAttribute('type'));
-      if lIdx = -1 then
-         cbType.ItemIndex := 0
-      else
-         cbType.ItemIndex := lIdx;
-      cbType.OnChange(cbType);
-   end;
+   idx := cbType.Items.IndexOf(rootTag.GetAttribute('type'));
+   if idx <> -1 then
+      cbType.ItemIndex := idx
+   else if cbType.Items.Count > 0 then
+      cbType.ItemIndex := 0;
+   cbType.OnChange(cbType);
    tag2 := TXMLProcessor.FindChildTag(rootTag, 'desc');
    if tag2 <> nil then
       memDescription.Text := AnsiReplaceStr(tag2.Text, '#!', CRLF);
    chkInclDescCode.Checked := rootTag.GetAttribute('desc_incl') = 'True';
    chkInclDescFlow.Checked := rootTag.GetAttribute('desc_incl_flow') = 'True';
    FLocalVars.ImportFromXMLTag(rootTag);
-   lIdx := StrToIntDef(rootTag.GetAttribute('descrh'), -1);
-   if lIdx > -1 then
-      gbDescription.Height := lIdx;
-   lIdx := StrToIntDef(rootTag.GetAttribute('headerh'), -1);
-   if lIdx > -1 then
-      gbHeader.Height := lIdx;
-   lIdx := StrToIntDef(rootTag.GetAttribute('parmsh'), -1);
-   if lIdx > -1 then
+   idx := StrToIntDef(rootTag.GetAttribute('descrh'), -1);
+   if idx > -1 then
+      gbDescription.Height := idx;
+   idx := StrToIntDef(rootTag.GetAttribute('headerh'), -1);
+   if idx > -1 then
+      gbHeader.Height := idx;
+   idx := StrToIntDef(rootTag.GetAttribute('parmsh'), -1);
+   if idx > -1 then
    begin
-      gbParameters.Height := lIdx;
+      gbParameters.Height := idx;
       sbxElements.Constraints.MaxHeight := gbParameters.Height - 66;
    end;
-   lIdx := StrToIntDef(rootTag.GetAttribute('lvarsh'), -1);
-   if lIdx > -1 then
-      FLocalVars.Height := lIdx;
+   idx := StrToIntDef(rootTag.GetAttribute('lvarsh'), -1);
+   if idx > -1 then
+      FLocalVars.Height := idx;
 end;
 
 procedure TParameter.ImportFromXMLTag(const root: IXMLElement);
