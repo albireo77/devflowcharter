@@ -199,11 +199,10 @@ var
 implementation
 
 uses
-     Toolbox_Form, ApplicationCommon, Settings_Form, About_Form, Main_Block,
-     TreeView_Form, Functions_Form, ParseGlobals, DataTypes_Form,
-     LocalizationManager, XMLProcessor, UserFunction, ForDo_Block, Return_Block, Project,
-     Declarations_Form, Base_Block, Comment, Case_Block, jpeg, CommonInterfaces,
-     Navigator_Form, CommonTypes, LangDefinition, EditMemo_Form, BlockFactory;
+   Toolbox_Form, ApplicationCommon, About_Form, Main_Block, ParseGlobals, LocalizationManager,
+   XMLProcessor, UserFunction, ForDo_Block, Return_Block, Project, Declarations_Form,
+   Base_Block, Comment, Case_Block, jpeg, CommonInterfaces, Navigator_Form, CommonTypes,
+   LangDefinition, EditMemo_Form, BlockFactory;
 
 type
      TDerivedControl = class(TControl);
@@ -466,7 +465,7 @@ end;
 
 procedure TMainForm.miSettingsClick(Sender: TObject);
 begin
-   SettingsForm.ShowModal;
+   TInfra.GetSettingsForm.ShowModal;
 end;
 
 procedure TMainForm.miExitClick(Sender: TObject);
@@ -991,15 +990,15 @@ end;
 procedure TMainForm.miSubRoutinesClick(Sender: TObject);
 begin
    if Sender = miSubRoutines then
-      FunctionsForm.Visible := not FunctionsForm.Visible
+      TInfra.GetFunctionsForm.Visible := not TInfra.GetFunctionsForm.Visible
    else if Sender = miToolbox then
       ToolboxForm.Visible := not ToolboxForm.Visible
    else if Sender = miDeclarations then
       DeclarationsForm.Visible := not DeclarationsForm.Visible
    else if Sender = miExplorer then
-      TreeViewForm.Visible := not TreeViewForm.Visible
+      TInfra.GetExplorerForm.Visible := not TInfra.GetExplorerForm.Visible
    else if Sender = miDataTypes then
-      DataTypesForm.Visible := not DataTypesForm.Visible
+      TInfra.GetDataTypesForm.Visible := not TInfra.GetDataTypesForm.Visible
    else if Sender = miNavigator then
       NavigatorForm.Visible := not NavigatorForm.Visible
 end;

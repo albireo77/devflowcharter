@@ -37,9 +37,9 @@ uses
   Declarations_Form in 'Forms\Declarations_Form.pas' {DeclarationsForm},
   Main_Form in 'Forms\Main_Form.pas' {MainForm},
   Settings_Form in 'Forms\Settings_Form.pas' {SettingsForm},
-  SourceEditor_Form in 'Forms\SourceEditor_Form.pas' {SourceEditorForm},
+  Editor_Form in 'Forms\Editor_Form.pas' {EditorForm},
   Toolbox_Form in 'Forms\Toolbox_Form.pas' {ToolboxForm},
-  TreeView_Form in 'Forms\TreeView_Form.pas' {TreeViewForm},
+  Explorer_Form in 'Forms\Explorer_Form.pas' {ExplorerForm},
   Pascal_Parser in 'Parsers\Pascal\Pascal_Parser.pas',
   FlashThread in 'Common\FlashThread.pas',
   History in 'Common\History.pas',
@@ -99,7 +99,7 @@ begin
   Application.CreateForm(TDeclarationsForm, DeclarationsForm);
   Application.CreateForm(TFunctionsForm, FunctionsForm);
   Application.CreateForm(TEditorForm, EditorForm);
-  Application.CreateForm(TTreeViewForm, TreeViewForm);
+  Application.CreateForm(TExplorerForm, ExplorerForm);
   Application.CreateForm(TGotoForm, GotoForm);
   Application.CreateForm(THelpForm, HelpForm);
   Application.CreateForm(TNavigatorForm, NavigatorForm);

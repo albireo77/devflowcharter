@@ -22,8 +22,7 @@ unit Settings;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  Settings_Form, LangDefinition;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, LangDefinition;
 
 type
 
@@ -95,20 +94,18 @@ type
       FColumnC2Width,
       FColumnC3Width: integer;
 
-      FSettingsForm: TSettingsForm;
       procedure SetDefaultValues;
   public
     { Public declarations }
       constructor Create;
       procedure ReadFromRegistry;
       procedure WriteToRegistry;
-      procedure LoadFromSettingsForm;
+      procedure LoadFromForm;
       procedure LoadFromEditor;
-      procedure SetOnSettingsForm;
+      procedure SetForm;
       procedure UpdateForLang(const ALang: TLangDefinition);
       procedure ProtectFields;
-      procedure SetDefaultSettingsForm;
-      procedure SetSettingsForm(const ASettingsForm: TSettingsForm);
+      procedure SetDefaultForm;
       function UpdateEditor: boolean;
       property ParseInput: boolean read FParseInput;
       property ParseOutput: boolean read FParseOutput;
@@ -243,7 +240,6 @@ uses
 constructor TSettings.Create;
 begin
    inherited Create;
-   FSettingsForm := nil;
    SetDefaultValues;
 end;
 
@@ -565,17 +561,17 @@ begin
    end;
 end;
 
-procedure TSettings.LoadFromSettingsForm;
+procedure TSettings.LoadFromForm;
 var
-   lRedrawFlow, lColorChanged, lApplyAllSettings: boolean;
+   lRedrawFlow, lColorChanged, lApplyAll: boolean;
    lLangDef: TLangDefinition;
 begin
 
    lRedrawFlow := false;
    lColorChanged := false;
-   lApplyAllSettings := true;
+   lApplyAll := true;
    
-   with FSettingsForm do
+   with TInfra.GetSettingsForm do
    begin
       FParseInput       := chkParseInput.Checked;
       FParseOutput      := chkParseOutput.Checked;
@@ -686,10 +682,10 @@ begin
          if TInfra.ShowFormattedQuestionBox('CloseProjectAsk', [CRLF]) = IDYES then
             TInfra.SetInitialSettings
          else
-            lApplyAllSettings := false;
+            lApplyAll := false;
       end;
 
-      if lApplyAllSettings then
+      if lApplyAll then
       begin
          FEnableDBuffering := chkEnableDBuffer.Checked;
          FFlowchartFontName := edtFontName.Text;
@@ -729,11 +725,11 @@ begin
       GProject.RepaintFlowcharts;
 end;
 
-procedure TSettings.SetOnSettingsForm;
+procedure TSettings.SetForm;
 var
    i: integer;
 begin
-   with FSettingsForm do
+   with TInfra.GetSettingsForm do
    begin
       chkConfirmRemove.Checked := FConfirmRemove;
       chkMultiPrint.Checked := FPrintMultPages;
@@ -809,7 +805,7 @@ var
    lBool: boolean;
    lLangDef: TLangDefinition;
 begin
-   with FSettingsForm do
+   with TInfra.GetSettingsForm do
    begin
       lLangDef := GInfra.GetLangDefinition(cbLanguage.Text);
       lBool := lLangDef.Parser <> nil;
@@ -858,13 +854,13 @@ begin
    end;
 end;
 
-procedure TSettings.SetDefaultSettingsForm;
+procedure TSettings.SetDefaultForm;
 var
    lBool: boolean;
    lLangDef: TLangDefinition;
    i: integer;
 begin
-   with FSettingsForm do
+   with TInfra.GetSettingsForm do
    begin
       pnlFill.Color := clAqua;
       pnlDesktop.Color := clWhite;
@@ -931,11 +927,6 @@ begin
          FloodFill(206, 41, clBlack, fsBorder);
       end;
    end;
-end;
-
-procedure TSettings.SetSettingsForm(const ASettingsForm: TSettingsForm);
-begin
-   FSettingsForm := ASettingsForm;
 end;
 
 function TSettings.UpdateEditor: boolean;

@@ -138,6 +138,7 @@ const
   ROUTINE_SELECTED = 5;
   RSIGN_SELECTED   = 6;
   FOLDER_SELECTED  = 7;
+
 var
   SettingsForm: TSettingsForm;
 
@@ -196,13 +197,13 @@ end;
 procedure TSettingsForm.CloseFormClick(Sender: TObject);
 begin
     if Sender = btnSaveSettings then
-       GSettings.LoadFromSettingsForm;
+       GSettings.LoadFromForm;
     Close;
 end;
 
 procedure TSettingsForm.FormShow(Sender: TObject);
 begin
-   GSettings.SetOnSettingsForm;
+   GSettings.SetForm;
 end;
 
 procedure TSettingsForm.FormCreate(Sender: TObject);
@@ -211,7 +212,6 @@ begin
    imgColors.Canvas.FillRect(imgColors.Canvas.ClipRect);
    GInfra.GetLangNames(cbLanguage.Items);
    cbLanguage.ItemIndex := GInfra.GetLangIndex(GInfra.CurrentLang.Name);
-   GSettings.SetSettingsForm(Self);
 end;
 
 procedure TSettingsForm.pnlFillClick(Sender: TObject);
@@ -222,7 +222,7 @@ end;
 
 procedure TSettingsForm.btnDefaultSettingsClick(Sender: TObject);
 begin
-   GSettings.SetDefaultSettingsForm;
+   GSettings.SetDefaultForm;
 end;
 
 procedure TSettingsForm.cbLanguageChange(Sender: TObject);

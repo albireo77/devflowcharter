@@ -27,8 +27,8 @@ uses
    Windows, Forms, StdCtrls, Grids, Controls, Graphics, Registry, SysUtils, Classes,
    StrUtils, Types, ComCtrls, LocalizationManager, Statement, Project, Settings,
    LangDefinition, CommonTypes, Base_Form, CommonInterfaces, Functions_Form,
-   DataTypes_Form, Declarations_Form, Main_Form, Base_Block, SynEditTypes,
-   SourceEditor_Form;
+   DataTypes_Form, Declarations_Form, Main_Form, Base_Block, SynEditTypes, Settings_Form,
+   Editor_Form, Explorer_Form;
 
 type
 
@@ -105,6 +105,8 @@ type
          class function GetFunctionsForm: TFunctionsForm;
          class function GetDeclarationsForm: TDeclarationsForm;
          class function GetEditorForm: TEditorForm;
+         class function GetSettingsForm: TSettingsForm;
+         class function GetExplorerForm: TExplorerForm;
          class function GetMainForm: TMainForm;
          class function GetActiveEdit: TCustomEdit;
          class function GetParsedBlock: TBlock;
@@ -217,8 +219,7 @@ var     // Global variables
 implementation
 
 uses
-   Printers, UserDataType, XMLProcessor, SynEditHighlighter,
-   Main_Block, Messages;
+   Printers, UserDataType, XMLProcessor, SynEditHighlighter, Main_Block, Messages;
 
 type
    THackCustomEdit = class(TCustomEdit);
@@ -1007,6 +1008,16 @@ end;
 class function TInfra.GetEditorForm: TEditorForm;
 begin
    result := EditorForm;
+end;
+
+class function TInfra.GetSettingsForm: TSettingsForm;
+begin
+   result := SettingsForm;
+end;
+
+class function TInfra.GetExplorerForm: TExplorerForm;
+begin
+   result := ExplorerForm;
 end;
 
 class function TInfra.GetActiveEdit: TCustomEdit;
