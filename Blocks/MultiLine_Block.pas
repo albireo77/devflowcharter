@@ -52,7 +52,7 @@ uses
 {$IFDEF USE_CODEFOLDING}
    SynEditCodeFolding,
 {$ENDIF}
-   ApplicationCommon, StrUtils, CommonTypes, Forms, LangDefinition, SourceEditor_Form, Windows;
+   ApplicationCommon, StrUtils, CommonTypes, Forms, LangDefinition, Windows;
 
 constructor TMultiLineBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 begin
@@ -153,7 +153,7 @@ begin
          begin
             lTemplateLines := TStringList.Create;
             try
-               GenerateCode(lTemplateLines, GInfra.CurrentLang.Name, SourceEditorForm.GetIndentLevel(lLine.CodeRange.FirstRow, lLine.CodeRange.Lines));
+               GenerateCode(lTemplateLines, GInfra.CurrentLang.Name, TInfra.GetEditorForm.GetIndentLevel(lLine.CodeRange.FirstRow, lLine.CodeRange.Lines));
                if lLine.CodeRange.Lines <> nil then
                begin
                   lRowNumber := lLine.CodeRange.LastRow - lLine.CodeRange.FirstRow + 1;
@@ -173,16 +173,16 @@ begin
                      else
                      begin
                         lFoldRegion := lLine.CodeRange.FoldRange.FoldRegion;
-                        SourceEditorForm.RemoveFoldRange(lLine.CodeRange.FoldRange);
+                        TInfra.GetEditorForm.RemoveFoldRange(lLine.CodeRange.FoldRange);
                         for i := lTemplateLines.Count-1 downto 0 do
                            lLine.CodeRange.Lines.InsertObject(lLine.CodeRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
-                        SourceEditorForm.memCodeEditor.OnChange(SourceEditorForm.memCodeEditor);
-                        lFoldRanges := SourceEditorForm.FindFoldRangesInCodeRange(lLine.CodeRange, lTemplateLines.Count);
+                        TInfra.GetEditorForm.OnChangeEditor;
+                        lFoldRanges := TInfra.GetEditorForm.FindFoldRangesInCodeRange(lLine.CodeRange, lTemplateLines.Count);
                         try
                            if (lFoldRanges <> nil) and (lFoldRanges.Count > 0) and (lFoldRanges[0].FoldRegion = lFoldRegion) and not lFoldRanges[0].Collapsed then
                            begin
-                              SourceEditorForm.memCodeEditor.Collapse(lFoldRanges[0]);
-                              SourceEditorForm.memCodeEditor.Refresh;
+                              TInfra.GetEditorForm.memCodeEditor.Collapse(lFoldRanges[0]);
+                              TInfra.GetEditorForm.memCodeEditor.Refresh;
                            end;
                         finally
                            lFoldRanges.Free;
@@ -196,13 +196,13 @@ begin
                         lLine.CodeRange.Lines.InsertObject(lLine.CodeRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
                   end;
                   lLine.CodeRange.Lines.EndUpdate;
-                  SourceEditorForm.memCodeEditor.OnChange(SourceEditorForm.memCodeEditor);
+                  TInfra.GetEditorForm.OnChangeEditor;
                end;
             finally
                lTemplateLines.Free;
             end;
          end;
-         TInfra.SetEditorCaretPos(lLine);
+         TInfra.GetEditorForm.SetCaretPos(lLine);
       end;
    end;
 end;
@@ -212,7 +212,7 @@ begin
    if ssLeft in Shift then
       OnMouseDown(Sender, Button, Shift, X, Y);
    if Button = mbLeft then
-      TInfra.SetEditorCaretPos(TInfra.GetChangeLine(Self, FStatements));
+      TInfra.GetEditorForm.SetCaretPos(TInfra.GetChangeLine(Self, FStatements));
 end;
 
 procedure TMultiLineBlock.OnKeyUpMemo(Sender: TObject; var Key: Word; Shift: TShiftState);

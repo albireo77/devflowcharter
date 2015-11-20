@@ -151,7 +151,7 @@ implementation
 
 uses
    ApplicationCommon, SysUtils, XMLProcessor, ParserCommon, Dialogs, Project,
-   StrUtils, CommonTypes, UserDataType, LangDefinition, SourceEditor_Form;
+   StrUtils, CommonTypes, UserDataType, LangDefinition;
 
 
 constructor TDeclareList.Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
@@ -628,7 +628,7 @@ end;
 procedure TDeclareList.UpdateCodeEditor;
 begin
    if GSettings.UpdateEditor then
-      SourceEditorForm.RefreshEditorForObject(nil);
+      TInfra.GetEditorForm.RefreshEditorForObject(nil);
 end;
 
 function TVarDeclareList.AddUpdateRow: integer;

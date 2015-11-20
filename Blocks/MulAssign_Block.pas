@@ -43,8 +43,7 @@ type
 implementation
 
 uses
-   ApplicationCommon, StrUtils, CommonTypes, Windows, LangDefinition, SourceEditor_Form,
-   FastcodeAnsiStringReplaceUnit;
+   ApplicationCommon, StrUtils, CommonTypes, Windows, LangDefinition, FastcodeAnsiStringReplaceUnit;
 
 constructor TMultiAssignBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 begin

@@ -79,7 +79,7 @@ implementation
 {$R *.dfm}
 
 uses
-   ApplicationCommon, SourceEditor_Form, XMLProcessor, TabComponent, StrUtils, Main_Form;
+   ApplicationCommon, XMLProcessor, TabComponent, StrUtils, Main_Form;
 
 procedure TPageControlForm.miRemoveClick(Sender: TObject);
 var
@@ -94,7 +94,7 @@ begin
       pgcTabs.OwnerDraw := true;
       GClpbrd.UndoObject := lTabComp.OverlayObject;
       if GSettings.UpdateEditor then
-         SourceEditorForm.RefreshEditorForObject(nil);
+         TInfra.GetEditorForm.RefreshEditorForObject(nil);
    end;
 end;
 
@@ -232,7 +232,7 @@ begin
       else
       begin
          if GSettings.UpdateEditor then
-            SourceEditorForm.RefreshEditorForObject(nil);
+            TInfra.GetEditorForm.RefreshEditorForObject(nil);
          GChange := 1;
       end;
    end;
@@ -260,13 +260,13 @@ begin
       end;
       GChange := 1;
       if GSettings.UpdateEditor then
-         SourceEditorForm.RefreshEditorForObject(nil);
+         TInfra.GetEditorForm.RefreshEditorForObject(nil);
    end;
 end;
 
 procedure TPageControlForm.pgcTabsChange(Sender: TObject);
 begin
-   SourceEditorForm.SelectCodeRange(pgcTabs.ActivePage);
+   TInfra.GetEditorForm.SelectCodeRange(pgcTabs.ActivePage);
 end;
 
 procedure TPageControlForm.FormDeactivate(Sender: TObject);
@@ -305,7 +305,7 @@ begin
       TTabSheet(Source).PageIndex := lIndex;
       RefreshTabs;
       if GSettings.UpdateEditor then
-         SourceEditorForm.RefreshEditorForObject(nil);
+         TInfra.GetEditorForm.RefreshEditorForObject(nil);
    end;
 end;
 

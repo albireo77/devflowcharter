@@ -514,7 +514,7 @@ begin
          lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s5', lStr2);
          if GSettings.UpdateEditor and not SkipUpdateEditor then
             TInfra.ChangeLine(lLine);
-         TInfra.SetEditorCaretPos(lLine);
+         TInfra.GetEditorForm.SetCaretPos(lLine);
       end;
    end;
 end;

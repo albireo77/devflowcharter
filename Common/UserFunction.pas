@@ -115,7 +115,7 @@ implementation
 
 uses
    SysUtils, ApplicationCommon, Main_Form, XMLProcessor, Windows, Grids, StrUtils,
-   LangDefinition, SourceEditor_Form, Navigator_Form;
+   LangDefinition, Navigator_Form;
 
 constructor TUserFunction.Create(const AFunctionHeader: TUserFunctionHeader; const AFunctionBody: TMainBlock);
 begin
@@ -571,14 +571,14 @@ begin
    if GSettings.ShowFlowchartLabels and chkInclDescFlow.Checked then
       RedrawBody;
    if GSettings.UpdateEditor and not chkExtDeclare.Checked and (Font.Color <> NOK_COLOR) and chkInclDescCode.Checked then
-      SourceEditorForm.RefreshEditorForObject(Self);
+      TInfra.GetEditorForm.RefreshEditorForObject(Self);
    GChange := 1;
 end;
 
 procedure TUserFunctionHeader.OnChangeType(Sender: TObject);
 begin
    if GSettings.UpdateEditor and (Font.Color <> NOK_COLOR) and not chkExtDeclare.Checked then
-      SourceEditorForm.RefreshEditorForObject(Self);
+      TInfra.GetEditorForm.RefreshEditorForObject(Self);
    GChange := 1;
    RedrawBody;
 end;
@@ -641,7 +641,7 @@ begin
       FOwnerFunction.Body.SetVisible(not chkExtDeclare.Checked);
       FOwnerFunction.Body.ParentForm.SetScrollBars;
       if GSettings.UpdateEditor and (Font.Color <> NOK_COLOR) then
-         SourceEditorForm.RefreshEditorForObject(Self);
+         TInfra.GetEditorForm.RefreshEditorForObject(Self);
    end;
    GChange := 1;
 end;
@@ -659,7 +659,7 @@ end;
 procedure TUserFunctionHeader.OnClickInclDescCode(Sender: TObject);
 begin
    if GSettings.UpdateEditor and (Font.Color <> NOK_COLOR) and not chkExtDeclare.Checked then
-      SourceEditorForm.RefreshEditorForObject(Self);
+      TInfra.GetEditorForm.RefreshEditorForObject(Self);
 end;
 
 procedure TUserFunctionHeader.RedrawBody;

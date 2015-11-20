@@ -202,9 +202,8 @@ uses
      Toolbox_Form, ApplicationCommon, Settings_Form, About_Form, Main_Block,
      TreeView_Form, Functions_Form, ParseGlobals, DataTypes_Form,
      LocalizationManager, XMLProcessor, UserFunction, ForDo_Block, Return_Block, Project,
-     Declarations_Form, SourceEditor_Form, Base_Block, Comment, Case_Block, jpeg,
-     CommonInterfaces, Navigator_Form, CommonTypes, LangDefinition,
-     EditMemo_Form, BlockFactory;
+     Declarations_Form, Base_Block, Comment, Case_Block, jpeg, CommonInterfaces,
+     Navigator_Form, CommonTypes, LangDefinition, EditMemo_Form, BlockFactory;
 
 type
      TDerivedControl = class(TControl);
@@ -451,15 +450,18 @@ begin
 end;
 
 procedure TMainForm.miGenerateClick(Sender: TObject);
+var
+   lForm: TForm;
 begin
-   if SourceEditorForm.Showing then
+   lForm := TInfra.GetEditorForm;
+   if lForm.Showing then
    begin
-      if SourceEditorForm.WindowState = wsMinimized then
-         SourceEditorForm.WindowState := wsNormal;
-      SourceEditorForm.OnShow(SourceEditorForm);
+      if lForm.WindowState = wsMinimized then
+         lForm.WindowState := wsNormal;
+      lForm.OnShow(lForm);
    end
    else
-      SourceEditorForm.Show;
+      lForm.Show;
 end;
 
 procedure TMainForm.miSettingsClick(Sender: TObject);
@@ -564,7 +566,7 @@ begin
    else if Supports(GClpbrd.UndoObject, IXMLable, lActiveObject) then
       lActiveObject.Active := true;
    if GSettings.UpdateEditor then
-      SourceEditorForm.RefreshEditorForObject(GClpbrd.UndoObject);
+      TInfra.GetEditorForm.RefreshEditorForObject(GClpbrd.UndoObject);
    GClpbrd.UndoObject := nil;
    miUndoRemove.Enabled := false;
 end;
@@ -811,7 +813,7 @@ begin
                   lNewBlock.RefreshStatements;
                end;
                if GSettings.UpdateEditor then
-                  SourceEditorForm.RefreshEditorForObject(lNewBlock);
+                  TInfra.GetEditorForm.RefreshEditorForObject(lNewBlock);
                GChange := 1;
             end;
          finally
@@ -947,7 +949,7 @@ begin
          GClpbrd.UndoObject := lFunction;
       end;
       if GSettings.UpdateEditor then
-         SourceEditorForm.RefreshEditorForObject(nil);
+         TInfra.GetEditorForm.RefreshEditorForObject(nil);
       NavigatorForm.Repaint;
    end
    else if lComponent is TComment then
@@ -1078,7 +1080,7 @@ begin
       else
       begin
          if GSettings.UpdateEditor then
-            SourceEditorForm.RefreshEditorForObject(nil);
+            TInfra.GetEditorForm.RefreshEditorForObject(nil);
          GChange := 1;
       end;
    end;
@@ -1114,7 +1116,7 @@ begin
       lPoint := Point(lCaseBlock.GetRMostX(lCaseBlock.BranchCount)+60, lCaseBlock.Height-32);
       lBranch := lCaseBlock.AddBranch(lPoint, true);
       if GSettings.UpdateEditor then
-         SourceEditorForm.RefreshEditorForObject(lBranch);
+         TInfra.GetEditorForm.RefreshEditorForObject(lBranch);
    end;
 end;
 
@@ -1133,7 +1135,7 @@ begin
          lCaseBlock := TCaseBlock(PopupMenu.PopupComponent);
          lCaseBlock.RemoveBranch;
          if GSettings.UpdateEditor then
-            SourceEditorForm.RefreshEditorForObject(lCaseBlock.Branch);
+            TInfra.GetEditorForm.RefreshEditorForObject(lCaseBlock.Branch);
       end;
    end;
 end;
@@ -1218,7 +1220,7 @@ begin
       lBody := TMainBlock.Create(Self, GInfra.GetMainBlockNextTopLeft(Self));
       TUserFunction.Create(nil, lBody);
       if GSettings.UpdateEditor then
-         SourceEditorForm.RefreshEditorForObject(lBody);
+         TInfra.GetEditorForm.RefreshEditorForObject(lBody);
       GChange := 1;
    end;
 end;

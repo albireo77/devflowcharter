@@ -51,7 +51,7 @@ implementation
 {$R *.dfm}
 
 uses
-   SourceEditor_Form, SynEdit;
+   SynEdit, ApplicationCommon;
 
 procedure TGotoForm.FormShow(Sender: TObject);
 begin
@@ -65,7 +65,7 @@ var
    goto_flag: boolean;
 begin
 
-   with SourceEditorForm.memCodeEditor do
+   with TInfra.GetEditorForm.memCodeEditor do
    begin
       goto_flag := false;
       line := 0;

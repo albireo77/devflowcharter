@@ -51,8 +51,7 @@ implementation
 {$R *.dfm}
 
 uses
-   ApplicationCommon, SourceEditor_Form, Base_Block, Main_Block,
-   Navigator_Form, UserFunction, CommonInterfaces;
+   ApplicationCommon, Base_Block, Main_Block, Navigator_Form, UserFunction, CommonInterfaces;
 
 procedure TFunctionsForm.miAddClick(Sender: TObject);
 begin
@@ -75,7 +74,7 @@ begin
       lHeader.edtName.SetFocus;
    lHeader.edtName.OnChange(lHeader.edtName);
    if GSettings.UpdateEditor and (lHeader.Font.Color <> NOK_COLOR) then
-      SourceEditorForm.RefreshEditorForObject(lHeader);
+      TInfra.GetEditorForm.RefreshEditorForObject(lHeader);
    GChange := 1;
 end;
 

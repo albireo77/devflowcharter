@@ -63,7 +63,7 @@ const
 implementation
 
 uses
-   ApplicationCommon, TabComponent, Graphics, SysUtils, SourceEditor_Form;
+   ApplicationCommon, TabComponent, Graphics, SysUtils;
 
 constructor TElement.Create(AParent: TScrollBox);
 begin
@@ -137,13 +137,13 @@ begin
    FParentForm.UpdateCodeEditor := true;
    UpdateMe;
    if GSettings.UpdateEditor and not TTabComponent(FParentTab).chkExtDeclare.Checked then
-      SourceEditorForm.RefreshEditorForObject(nil);
+      TInfra.GetEditorForm.RefreshEditorForObject(nil);
 end;
 
 procedure TElement.OnChangeType(Sender: TObject);
 begin
    if GSettings.UpdateEditor and (FParentTab.Font.Color <> NOK_COLOR) and not TTabComponent(FParentTab).chkExtDeclare.Checked then
-      SourceEditorForm.RefreshEditorForObject(FParentTab);
+      TInfra.GetEditorForm.RefreshEditorForObject(FParentTab);
    GChange := 1;
 end;
 
@@ -181,7 +181,7 @@ begin
    edtName.Hint := i18Manager.GetString(lInfo);
    UpdateMe;
    if GSettings.UpdateEditor and FParentForm.UpdateCodeEditor and not TTabComponent(FParentTab).chkExtDeclare.Checked then
-      SourceEditorForm.RefreshEditorForObject(FParentTab);
+      TInfra.GetEditorForm.RefreshEditorForObject(FParentTab);
 end;
 
 procedure TElement.UpdateMe;

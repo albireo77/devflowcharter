@@ -107,8 +107,7 @@ implementation
 
 uses
    SysUtils, ApplicationCommon, XMLProcessor, Base_Form, LangDefinition, ParserCommon,
-   Messages, Navigator_Form, SortListDecorator, Base_Block, SourceEditor_Form, Comment,
-   TabComponent;
+   Messages, Navigator_Form, SortListDecorator, Base_Block, Comment, TabComponent;
 
 var
    Instance: TProject;
@@ -393,9 +392,9 @@ begin
       begin
          GInfra.SetCurrentLang(lang);
 {$IFDEF USE_CODEFOLDING}
-         SourceEditorForm.ReloadFoldRegions;
+         TInfra.GetEditorForm.ReloadFoldRegions;
 {$ENDIF}
-         SourceEditorForm.SetEditorFormAttributes;
+         TInfra.GetEditorForm.SetFormAttributes;
          SetGlobals;
       end;
    end

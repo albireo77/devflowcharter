@@ -1,4 +1,4 @@
-object SourceEditorForm: TSourceEditorForm
+object EditorForm: TEditorForm
   Left = 544
   Top = 235
   Width = 425

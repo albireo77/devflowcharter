@@ -92,8 +92,8 @@ type
 implementation
 
 uses
-   ApplicationCommon, SysUtils, XMLProcessor, Contnrs, SortListDecorator,
-   SourceEditor_Form, Windows, Messages;
+   ApplicationCommon, SysUtils, XMLProcessor, Contnrs, SortListDecorator, Windows,
+   Messages;
 
 constructor TTabComponent.Create(const AParentForm: TPageControlForm);
 begin
@@ -154,7 +154,7 @@ end;
 procedure TTabComponent.OnChangeLib(Sender: TObject);
 begin
    if GSettings.UpdateEditor and (Font.Color <> NOK_COLOR) and chkExtDeclare.Checked then
-      SourceEditorForm.RefreshEditorForObject(Self);
+      TInfra.GetEditorForm.RefreshEditorForObject(Self);
 end;
 
 procedure TTabComponent.SetActive(const AValue: boolean);
@@ -280,7 +280,7 @@ begin
       lElem.edtName.SetFocus;
    PageControl.Refresh;
    if GSettings.UpdateEditor and not chkExtDeclare.Checked then
-      SourceEditorForm.RefreshEditorForObject(Self);
+      TInfra.GetEditorForm.RefreshEditorForObject(Self);
 end;
 
 function TTabComponent.GetName: string;
@@ -301,7 +301,7 @@ begin
    Caption := Trim(edtName.Text);
    PageControl.Refresh;
    if GSettings.UpdateEditor and FParentForm.UpdateCodeEditor and not chkExtDeclare.Checked then
-      SourceEditorForm.RefreshEditorForObject(Self);
+      TInfra.GetEditorForm.RefreshEditorForObject(Self);
    GChange := 1;
 end;
 

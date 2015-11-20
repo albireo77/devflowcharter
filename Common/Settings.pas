@@ -23,7 +23,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  Settings_Form, SourceEditor_Form, LangDefinition;
+  Settings_Form, LangDefinition;
 
 type
 
@@ -96,7 +96,6 @@ type
       FColumnC3Width: integer;
 
       FSettingsForm: TSettingsForm;
-      FSourceEditorForm: TSourceEditorForm;
       procedure SetDefaultValues;
   public
     { Public declarations }
@@ -104,13 +103,12 @@ type
       procedure ReadFromRegistry;
       procedure WriteToRegistry;
       procedure LoadFromSettingsForm;
-      procedure LoadFromSourceEditor;
+      procedure LoadFromEditor;
       procedure SetOnSettingsForm;
       procedure UpdateForLang(const ALang: TLangDefinition);
       procedure ProtectFields;
       procedure SetDefaultSettingsForm;
       procedure SetSettingsForm(const ASettingsForm: TSettingsForm);
-      procedure SetSourceEditorForm(const ASourceEditorForm: TSourceEditorForm);
       function UpdateEditor: boolean;
       property ParseInput: boolean read FParseInput;
       property ParseOutput: boolean read FParseOutput;
@@ -246,7 +244,6 @@ constructor TSettings.Create;
 begin
    inherited Create;
    FSettingsForm := nil;
-   FSourceEditorForm := nil;
    SetDefaultValues;
 end;
 
@@ -555,9 +552,9 @@ begin
       FEditorShowRichText := false;
 end;
 
-procedure TSettings.LoadFromSourceEditor;
+procedure TSettings.LoadFromEditor;
 begin
-   with FSourceEditorForm do
+   with TInfra.GetEditorForm do
    begin
       FEditorShowStatusBar := miStatusBar.Checked;
       FEditorShowScrollbars := miScrollBars.Checked;
@@ -700,7 +697,7 @@ begin
          begin
             GInfra.SetCurrentLang(cbLanguage.Text);
 {$IFDEF USE_CODEFOLDING}
-            FSourceEditorForm.ReloadFoldRegions;
+            TInfra.GetEditorForm.ReloadFoldRegions;
 {$ENDIF}
          end;
       end;
@@ -708,7 +705,7 @@ begin
       if GProject <> nil then
          GProject.RefreshStatements;
 
-      FSourceEditorForm.SetEditorFormAttributes;
+      TInfra.GetEditorForm.SetFormAttributes;
 
       FPrintMargins.Left   := StrToIntDef(edtMarginLeft.Text, 5);
       FPrintMargins.Right  := StrToIntDef(edtMarginRight.Text, 5);
@@ -941,14 +938,9 @@ begin
    FSettingsForm := ASettingsForm;
 end;
 
-procedure TSettings.SetSourceEditorForm(const ASourceEditorForm: TSourceEditorForm);
-begin
-   FSourceEditorForm := ASourceEditorForm;
-end;
-
 function TSettings.UpdateEditor: boolean;
 begin
-   result := FSourceEditorForm.Visible and FEditorAutoUpdate;
+   result := TInfra.GetEditorForm.Visible and FEditorAutoUpdate;
 end;
 
 end.

@@ -49,7 +49,7 @@ var
 implementation
 
 uses
-   ApplicationCommon, SourceEditor_Form, XMLProcessor, UserDataType, CommonInterfaces;
+   ApplicationCommon, XMLProcessor, UserDataType, CommonInterfaces;
 
 {$R *.dfm}
 
@@ -78,7 +78,7 @@ begin
    lDataType.edtName.SetFocus;
    lDataType.edtName.OnChange(lDataType.edtName);
    if GSettings.UpdateEditor then
-      SourceEditorForm.RefreshEditorForObject(lDataType);
+      TInfra.GetEditorForm.RefreshEditorForObject(lDataType);
    GChange := 1;
 end;
 

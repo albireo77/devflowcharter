@@ -81,8 +81,7 @@ type
 implementation
 
 uses
-   SysUtils, ApplicationCommon, StrUtils, ParserCommon, SourceEditor_Form,
-   CommonTypes, LangDefinition;
+   SysUtils, ApplicationCommon, StrUtils, ParserCommon, CommonTypes, LangDefinition;
 
 constructor TUserDataType.Create(const AParentForm: TDataTypesForm);
 begin
@@ -300,7 +299,7 @@ end;
 procedure TUserDataType.ExtDeclareOnClick(Sender: TObject);
 begin
    if GSettings.UpdateEditor and (Font.Color <> NOK_COLOR) then
-      SourceEditorForm.RefreshEditorForObject(Self);
+      TInfra.GetEditorForm.RefreshEditorForObject(Self);
 end;
 
 procedure TUserDataType.WMSize(var Msg: TMessage);
@@ -366,7 +365,7 @@ begin
       GProject.RefreshStatements;
    PageControl.Refresh;
    if GSettings.UpdateEditor and not chkExtDeclare.Checked then
-      SourceEditorForm.RefreshEditorForObject(Self);
+      TInfra.GetEditorForm.RefreshEditorForObject(Self);
 end;
 
 
@@ -595,7 +594,7 @@ begin
    edtSize.OnChangeSize(edtSize);
    UpdateMe;
    if GSettings.UpdateEditor and ParentForm.UpdateCodeEditor and not TTabComponent(ParentTab).chkExtDeclare.Checked then
-      SourceEditorForm.RefreshEditorForObject(ParentTab);
+      TInfra.GetEditorForm.RefreshEditorForObject(ParentTab);
 end;
 
 function TField.IsValid: boolean;

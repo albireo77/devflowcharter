@@ -98,7 +98,7 @@ begin
   Application.CreateForm(TDataTypesForm, DataTypesForm);
   Application.CreateForm(TDeclarationsForm, DeclarationsForm);
   Application.CreateForm(TFunctionsForm, FunctionsForm);
-  Application.CreateForm(TSourceEditorForm, SourceEditorForm);
+  Application.CreateForm(TEditorForm, EditorForm);
   Application.CreateForm(TTreeViewForm, TreeViewForm);
   Application.CreateForm(TGotoForm, GotoForm);
   Application.CreateForm(THelpForm, HelpForm);

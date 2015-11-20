@@ -437,7 +437,7 @@ begin
          lLine.Text := FastCodeAnsiStringReplace(lLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
          if GSettings.UpdateEditor and not SkipUpdateEditor then
             TInfra.ChangeLine(lLine);
-         TInfra.SetEditorCaretPos(lLine);
+         TInfra.GetEditorForm.SetCaretPos(lLine);
       end;
    end;
 end;

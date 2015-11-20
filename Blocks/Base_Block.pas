@@ -262,9 +262,9 @@ type
 implementation
 
 uses
-   Main_Block, ApplicationCommon, BlockFactory, StrUtils, SourceEditor_Form,
-   UserFunction, Menus, XMLProcessor, Navigator_Form, LangDefinition,
-   FastcodeAnsiStringReplaceUnit, FlashThread;
+   Main_Block, ApplicationCommon, BlockFactory, StrUtils, UserFunction, Menus,
+   XMLProcessor, Navigator_Form, LangDefinition, FastcodeAnsiStringReplaceUnit,
+   FlashThread;
 
 type
    THackCustomEdit = class(TCustomEdit);
@@ -566,9 +566,9 @@ begin
    Invalidate;
    ClearSelection;
    if FrameInd then
-      SourceEditorForm.SelectCodeRange(Self)
+      TInfra.GetEditorForm.SelectCodeRange(Self)
    else
-      SourceEditorForm.UnSelectCodeRange(Self);
+      TInfra.GetEditorForm.UnSelectCodeRange(Self);
 end;
 
 function TGroupBlock.GenerateNestedCode(const ALines: TStringList; const ABranchInd, ADeep: integer; const ALangId: string): integer;
@@ -1005,7 +1005,7 @@ begin
       begin
          ChangeColor(GSettings.HighlightColor);
          if GSettings.EditorAutoSelectBlock then
-            SourceEditorForm.SelectCodeRange(Self);
+            TInfra.GetEditorForm.SelectCodeRange(Self);
          NavigatorForm.Repaint;
       end;
    end
@@ -1013,7 +1013,7 @@ begin
    begin
       ChangeColor(FParentForm.Color);
       if GSettings.EditorAutoSelectBlock and not FrameInd then
-         SourceEditorForm.UnSelectCodeRange(Self);
+         TInfra.GetEditorForm.UnSelectCodeRange(Self);
       NavigatorForm.Repaint;
    end;
 end;
@@ -2018,14 +2018,14 @@ begin
          lLine.Text := FastCodeAnsiStringReplace(lLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
          if GSettings.UpdateEditor and not SkipUpdateEditor then
             TInfra.ChangeLine(lLine);
-         TInfra.SetEditorCaretPos(lLine);
+         TInfra.GetEditorForm.SetCaretPos(lLine);
       end;
    end;
 end;
 
 function TBlock.PerformEditorUpdate: boolean;
 begin
-   result := SourceEditorForm.Visible and not FRefreshMode;
+   result := TInfra.GetEditorForm.Visible and not FRefreshMode;
 end;
 
 function TBlock.GetDescription: string;

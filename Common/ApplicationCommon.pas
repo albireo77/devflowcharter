@@ -27,7 +27,8 @@ uses
    Windows, Forms, StdCtrls, Grids, Controls, Graphics, Registry, SysUtils, Classes,
    StrUtils, Types, ComCtrls, LocalizationManager, Statement, Project, Settings,
    LangDefinition, CommonTypes, Base_Form, CommonInterfaces, Functions_Form,
-   DataTypes_Form, Declarations_Form, Main_Form, Base_Block, SynEditTypes;
+   DataTypes_Form, Declarations_Form, Main_Form, Base_Block, SynEditTypes,
+   SourceEditor_Form;
 
 type
 
@@ -103,6 +104,7 @@ type
          class function GetDataTypesForm: TDataTypesForm;
          class function GetFunctionsForm: TFunctionsForm;
          class function GetDeclarationsForm: TDeclarationsForm;
+         class function GetEditorForm: TEditorForm;
          class function GetMainForm: TMainForm;
          class function GetActiveEdit: TCustomEdit;
          class function GetParsedBlock: TBlock;
@@ -114,7 +116,6 @@ type
          class function GetCaretPos(const AEdit: TCustomEdit): TBufferCoord;
          class function ExtractIndentString(const AText: string): string;
          class procedure ChangeLine(const ALine: TChangeLine);
-         class procedure SetEditorCaretPos(const ALine: TChangeLine);
          class procedure InitChangeLine(var AChangeLine: TChangeLine);
          class procedure InitCodeRange(var ACodeRange: TCodeRange);
          class procedure SetFontSize(const AControl: TControl; const ASize: integer);
@@ -216,7 +217,7 @@ var     // Global variables
 implementation
 
 uses
-   Printers, UserDataType, XMLProcessor, SourceEditor_Form, SynEditHighlighter,
+   Printers, UserDataType, XMLProcessor, SynEditHighlighter,
    Main_Block, Messages;
 
 type
@@ -380,7 +381,7 @@ begin
    begin
       if Assigned(FLangArray[i].GetHLighterVarName) then
       begin
-         lComponent := SourceEditorForm.FindComponent(FLangArray[i].GetHLighterVarName);
+         lComponent := GetEditorForm.FindComponent(FLangArray[i].GetHLighterVarName);
          if lComponent is TSynCustomHighlighter then
             FLangArray[i].HighLighter := TSynCustomHighlighter(lComponent);
       end;
@@ -1003,6 +1004,11 @@ begin
    result := MainForm;
 end;
 
+class function TInfra.GetEditorForm: TEditorForm;
+begin
+   result := EditorForm;
+end;
+
 class function TInfra.GetActiveEdit: TCustomEdit;
 var
    lControl: TControl;
@@ -1091,7 +1097,7 @@ begin
    result.EditCaretXY := TInfra.GetCaretPos(AEdit);
    if AObject <> nil then
    begin
-      result.CodeRange := SourceEditorForm.SelectCodeRange(AObject, false);
+      result.CodeRange := GetEditorForm.SelectCodeRange(AObject, false);
       if result.CodeRange.FirstRow <> ROW_NOT_FOUND then
       begin
          lTemplateLines := TStringList.Create;
@@ -1161,22 +1167,6 @@ class procedure TInfra.ChangeLine(const ALine: TChangeLine);
 begin
    if (ALine.CodeRange.Lines <> nil) and (ALine.Row >= 0) and (ALine.Row < ALine.CodeRange.Lines.Count) then
       ALine.CodeRange.Lines[ALine.Row] := ALine.Text;
-end;
-
-class procedure TInfra.SetEditorCaretPos(const ALine: TChangeLine);
-var
-   lChar, lLine: integer;
-begin
-   if ALine.CodeRange.Lines = SourceEditorForm.memCodeEditor.Lines then
-   begin
-      lChar := ALine.Col + ALine.EditCaretXY.Char;
-      lLine := ALine.Row + ALIne.EditCaretXY.Line + 1;
-      if (lLine > ALine.CodeRange.FirstRow) and (lLine <= ALine.CodeRange.LastRow+1) and (lLine <= ALine.CodeRange.Lines.Count) then
-      begin
-         SourceEditorForm.memCodeEditor.CaretXY := BufferCoord(lChar, lLine);
-         SourceEditorForm.memCodeEditor.EnsureCursorPosVisible;
-      end;
-   end;
 end;
 
 class procedure TInfra.SetFontSize(const AControl: TControl; const ASize: integer);
