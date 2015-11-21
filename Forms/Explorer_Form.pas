@@ -77,8 +77,7 @@ implementation
 {$R *.dfm}
 
 uses
-   ApplicationCommon, Statement, MulAssign_Block, Case_Block, Base_Block, Navigator_Form,
-   Return_Block, Windows;
+   ApplicationCommon, Case_Block, Base_Block, Windows;
 
 const
    NODE_OK   = 15;      // indexes for images in MainForm.ImageList1

@@ -25,10 +25,9 @@ interface
 
 uses
    Windows, Forms, StdCtrls, Grids, Controls, Graphics, Registry, SysUtils, Classes,
-   StrUtils, Types, ComCtrls, LocalizationManager, Statement, Project, Settings,
-   LangDefinition, CommonTypes, Base_Form, CommonInterfaces, Functions_Form,
-   DataTypes_Form, Declarations_Form, Main_Form, Base_Block, SynEditTypes, Settings_Form,
-   Editor_Form, Explorer_Form;
+   StrUtils, Types, ComCtrls, LocalizationManager, Project, Settings, LangDefinition,
+   CommonTypes, Base_Form, CommonInterfaces, Functions_Form, DataTypes_Form, Declarations_Form,
+   Main_Form, Base_Block, SynEditTypes, Settings_Form, Editor_Form, Explorer_Form;
 
 type
 

@@ -29,8 +29,8 @@ uses
 {$ENDIF}
    Windows, Controls, Forms, StdCtrls, ExtCtrls, Graphics, Dialogs, ComCtrls,
    Menus, Clipbrd, SysUtils, SynExportRTF, SynEditPrint, CommonTypes, SynHighlighterPas,
-   SynHighlighterCpp, Classes, SynEdit, SynMemo, SynExportHTML, OmniXML, Base_Form, CommonInterfaces,
-   SynEditExport, SynEditHighlighter, SynEditTypes;
+   SynHighlighterCpp, Classes, SynEdit, SynMemo, SynExportHTML, OmniXML, Base_Form,
+   CommonInterfaces;
 
 type
 
@@ -150,7 +150,8 @@ implementation
 
 uses
    ApplicationCommon, Goto_Form, Settings, LangDefinition, Main_Block, Help_Form,
-   Comment, ParserCommon, XMLProcessor, StrUtils, Main_Form, Base_Block;
+   Comment, ParserCommon, XMLProcessor, StrUtils, Main_Form, Base_Block, SynEditTypes,
+   SynEditExport, SynEditHighlighter;
 
 const
    InfoPanel2: array[boolean] of string = ('OverwriteMode', 'InsertMode');

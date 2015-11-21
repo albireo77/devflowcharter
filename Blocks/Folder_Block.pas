@@ -43,7 +43,7 @@ type
 implementation
 
 uses
-   ApplicationCommon, StrUtils, CommonTypes;
+   StrUtils, CommonTypes;
 
 constructor TFolderBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
 begin

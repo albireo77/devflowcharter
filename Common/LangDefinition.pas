@@ -27,7 +27,7 @@ uses
 {$ENDIF}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, SizeEdit,
     SynEditHighlighter, YaccLib, DeclareList, UserFunction, CommonTypes, OmniXML,
-    Statement, UserDataType;
+    UserDataType;
 
 type
 

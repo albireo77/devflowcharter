@@ -205,7 +205,7 @@ uses
    LangDefinition, EditMemo_Form, BlockFactory;
 
 type
-     TDerivedControl = class(TControl);
+   TDerivedControl = class(TControl);
 
 {$R *.dfm}
 
