@@ -1647,12 +1647,14 @@ begin
 end;
 
 function TGroupBlock.AddBranch(const AHook: TPoint; const AResizeInd: boolean; const ABranchId: integer = ID_INVALID; const ABranchStmntId: integer = ID_INVALID): TBranch;
+var
+   l: integer;
 begin
    result := TBranch.Create(Self, AHook, ABranchId);
-   if Length(FBranchArray) = 0 then
-      SetLength(FBranchArray, 1);
-   SetLength(FBranchArray, Length(FBranchArray)+1);
-   FBranchArray[High(FBranchArray)] := result;
+   l := Length(FBranchArray);
+   if l = 0 then l := 1;
+   SetLength(FBranchArray, l+1);
+   FBranchArray[l] := result;
 end;
 
 function TBlock.CanBeRemoved: boolean;
