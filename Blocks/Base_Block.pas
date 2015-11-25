@@ -185,7 +185,6 @@ type
          function ExtractBranchIndex(const AStr: string): integer;
          procedure PutTextControls; override;
          function GetDiamondPoint: TPoint; virtual;
-         procedure PlaceBranchStatement(const ABranchIdx: integer); virtual; abstract;
       public
          Branch: TBranch;     // primary branch to order child blocks
          Expanded: boolean;

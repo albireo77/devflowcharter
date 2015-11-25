@@ -36,7 +36,7 @@ type
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
          procedure OnStatementChangeComplement;
          function GetDiamondPoint: TPoint; override;
-         procedure PlaceBranchStatement(const ABranchIdx: integer); override;
+         procedure PlaceBranchStatement(const ABranch: TBranch);
       public
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
          constructor Create(const ABranch: TBranch; const ASource: TCaseBlock); overload;
@@ -192,7 +192,7 @@ begin
       try
          result.Statement := TStatement.Create(Self, ABranchStmntId);
          result.Statement.Alignment := taRightJustify;
-         PlaceBranchStatement(result.Index);
+         PlaceBranchStatement(result);
          if AResizeInd then
          begin
             Width := result.Hook.X + 30;
@@ -206,16 +206,15 @@ begin
    end;
 end;
 
-procedure TCaseBlock.PlaceBranchStatement(const ABranchIdx: integer);
+procedure TCaseBlock.PlaceBranchStatement(const ABranch: TBranch);
 var
-   lBranch: TBranch;
-   lWidth: integer;
+   lPrevBranch: TBranch;
 begin
-   lBranch := GetBranch(ABranchIdx);
-   if (ABranchIdx > DEFAULT_BRANCH_IND) and (lBranch <> nil) and (lBranch.Statement <> nil) then
+   if ABranch <> nil then
    begin
-      lWidth := lBranch.Hook.X - FBranchArray[ABranchIdx-1].Hook.X - 10;
-      lBranch.Statement.SetBounds(FBranchArray[ABranchIdx-1].Hook.X+5, 71, lWidth, lBranch.Statement.Height);
+      lPrevBranch := ABranch.ParentBlock.GetBranch(ABranch.Index-1);
+      if (lPrevBranch <> nil) and (ABranch.Statement <> nil) then
+         ABranch.Statement.SetBounds(lPrevBranch.Hook.X+5, 71, ABranch.Hook.X-lPrevBranch.Hook.X-10, ABranch.Statement.Height);
    end;
 end;
 
@@ -265,7 +264,7 @@ begin
 
       Inc(lBranch.hook.X, left_edge-left_x);
       LinkChildBlocks(i);
-      PlaceBranchStatement(i);
+      PlaceBranchStatement(lBranch);
       if lBranch.FindInstanceOf(TReturnBlock) = -1 then
       begin
          lBlock := lBranch.Last;
