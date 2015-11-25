@@ -214,8 +214,8 @@ begin
    lBranch := GetBranch(ABranchIdx);
    if (ABranchIdx > DEFAULT_BRANCH_IND) and (lBranch <> nil) and (lBranch.Statement <> nil) then
    begin
-      lWidth := lBranch.hook.X - FBranchArray[ABranchIdx-1].hook.X - 10;
-      lBranch.Statement.SetBounds(FBranchArray[ABranchIdx-1].hook.X+5, 71, lWidth, lBranch.Statement.Height);
+      lWidth := lBranch.Hook.X - FBranchArray[ABranchIdx-1].Hook.X - 10;
+      lBranch.Statement.SetBounds(FBranchArray[ABranchIdx-1].Hook.X+5, 71, lWidth, lBranch.Statement.Height);
    end;
 end;
 
@@ -227,7 +227,7 @@ begin
    lBranch := GetBranch(ABranchIndex);
    if lBranch <> nil then
    begin
-      result := lBranch.hook.X;
+      result := lBranch.Hook.X;
       lBlock := lBranch.First;
       while lBlock <> nil do
       begin
