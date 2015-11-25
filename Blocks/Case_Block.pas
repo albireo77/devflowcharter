@@ -155,7 +155,7 @@ begin
       end;
       with Canvas do
       begin
-         MoveTo(FBranchArray[High(FBranchArray)].Hook.X, TopHook.Y);
+         MoveTo(lPoint.X, TopHook.Y);
          LineTo(DefaultBranch.Hook.X, TopHook.Y);
          LineTo(DefaultBranch.Hook.X, TopHook.Y-10);
          MoveTo(BottomHook, BottomPoint.Y);
@@ -181,12 +181,10 @@ end;
 
 function TCaseBlock.AddBranch(const AHook: TPoint; const AResizeInd: boolean; const ABranchId: integer = ID_INVALID; const ABranchStmntId: integer = ID_INVALID): TBranch;
 var
-   lIdx: integer;
    lLocked: boolean;
 begin
    result := inherited AddBranch(AHook, AResizeInd, ABranchId);
-   lIdx := result.Index;
-   if lIdx > DEFAULT_BRANCH_IND then       // don't execute when default branch is being added in constructor
+   if result.Index > DEFAULT_BRANCH_IND then       // don't execute when default branch is being added in constructor
    begin
       lLocked := false;                    // statement edit box must not exist for default (primary) branch
       if AResizeInd then
@@ -194,11 +192,11 @@ begin
       try
          result.Statement := TStatement.Create(Self, ABranchStmntId);
          result.Statement.Alignment := taRightJustify;
-         PlaceBranchStatement(lIdx);
+         PlaceBranchStatement(result.Index);
          if AResizeInd then
          begin
-            Width := result.hook.X + 30;
-            BottomHook := result.hook.X;
+            Width := result.Hook.X + 30;
+            BottomHook := result.Hook.X;
             ParentBlock.ResizeHorz(true);
          end;
       finally
@@ -253,7 +251,7 @@ begin
    begin
       lBranch := FBranchArray[i];
       left_edge := GetRMostX(i-1) + 60;
-      lBranch.hook.X := left_edge;
+      lBranch.Hook.X := left_edge;
       left_x := left_edge;
       LinkChildBlocks(i);
 
@@ -274,7 +272,7 @@ begin
          if lBlock <> nil then
             BottomHook := lBlock.Left + lBlock.BottomPoint.X
          else
-            BottomHook := lBranch.hook.X;
+            BottomHook := lBranch.Hook.X;
       end;
    end;
 
@@ -311,11 +309,11 @@ begin
       lBranch := FBranchArray[i];
       if i = idx then
       begin
-         lBranch.hook.Y := 99;
+         lBranch.Hook.Y := 99;
          Height := lMaxHeight + 131;
       end
       else
-         lBranch.hook.Y := lMaxHeight - lBranch.Height + 99;
+         lBranch.Hook.Y := lMaxHeight - lBranch.Height + 99;
    end;
 
    LinkChildBlocks;
@@ -472,7 +470,7 @@ begin
       if Expanded then
       begin
          for i := DEFAULT_BRANCH_IND to High(FBranchArray) do
-            Inc(FBranchArray[i].hook.Y, NewHeight-Height);
+            Inc(FBranchArray[i].Hook.Y, NewHeight-Height);
       end
       else
       begin
