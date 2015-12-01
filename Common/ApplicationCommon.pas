@@ -58,14 +58,11 @@ type
       Scope: integer;
    end;
 
-   TClockPos = (cp12, cp3, cp6, cp9);
-
    TInfra = class(TObject)
       private
          FDummyLang,
          FCurrentLang: TLangDefinition;
          FLangArray: array of TLangDefinition;
-         FClockPos: TClockPos;
       public
          property CurrentLang: TLangDefinition read FCurrentLang;
          property DummyLang: TLangDefinition read FDummyLang;
@@ -88,7 +85,6 @@ type
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetLangDefinition(const AName: string): TLangDefinition;
          function GetLangIndex(const AName: string): integer;
-         function GetMainBlockNextTopLeft(const AForm: TForm): TPoint;
          procedure SetLangHiglighterAttributes;
          function SetCurrentLang(const ALangName: string): TLangDefinition;
          class procedure InsertLinesIntoList(ADestList, ASourceList: TStringList; AFromLine: integer);
@@ -262,7 +258,6 @@ begin
    FLangArray[i] := TLangDefinition.Create;
    FDummyLang := FLangArray[i];
    FCurrentLang := FLangArray[0];
-   FClockPos := Low(TClockPos);
 end;
 
 destructor TInfra.Destroy;
@@ -323,17 +318,6 @@ begin
    finally
       lRegistry.Free;
    end;
-end;
-
-function TInfra.GetMainBlockNextTopLeft(const AForm: TForm): TPoint;
-const
-   NextPos: array[TClockPos] of TClockPos = (cp3, cp6, cp9, cp12);
-   xShift: array[TClockPos] of integer = (0, 20, 0, -20);
-   yShift: array[TClockPos] of integer = (20, 40, 60, 40);
-begin
-   result.X := ((AForm.Width - MAIN_BLOCK_DEF_WIDTH) div 2) + xShift[FClockPos];
-   result.Y := yShift[FClockPos];
-   FClockPos := NextPos[FClockPos];
 end;
 
 function TInfra.SetCurrentLang(const ALangName: string): TLangDefinition;

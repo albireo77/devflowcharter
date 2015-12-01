@@ -32,6 +32,8 @@ uses
 
 type
 
+  TClockPos = (cp12, cp3, cp6, cp9);
+
   TMainForm = class(TBaseForm)
     PopupMenu: TPopupMenu;
     ExportDialog: TSaveDialog;
@@ -185,12 +187,14 @@ type
   private
     { Private declarations }
     FHistoryMenu: THistoryMenu;
+    FClockPos: TClockPos;
   public
     { Public declarations }
     procedure ExportSettingsToXMLTag(const root: IXMLElement); override;
     procedure ImportSettingsFromXMLTag(const root: IXMLElement); override;
     function ConfirmSave: integer;
     function GetDisplayedRect: TRect;
+    function GetMainBlockNextTopLeft: TPoint;
   end;
 
 var
@@ -232,6 +236,7 @@ begin
    FHistoryMenu := THistoryMenu.Create(miReopen, miOpen.OnClick);
    ControlStyle := ControlStyle + [csOpaque];
    FHistoryMenu.Load;
+   FClockPos := Low(TClockPos);
 end;
 
 procedure TMainForm.ScrollV(var Msg: TWMVScroll);
@@ -254,6 +259,7 @@ begin
    VertScrollbar.Position := 0;
    HorzScrollBar.Position := 0;
    Caption := PROGRAM_NAME;
+   FClockPos := Low(TClockPos);
    SetMenu(false);
 end;
 
@@ -320,6 +326,17 @@ begin
    i18Manager := nil;
 end;
 
+function TMainForm.GetMainBlockNextTopLeft: TPoint;
+const
+   NextPos: array[TClockPos] of TClockPos = (cp3, cp6, cp9, cp12);
+   xShift: array[TClockPos] of integer = (0, 20, 0, -20);
+   yShift: array[TClockPos] of integer = (20, 40, 60, 40);
+begin
+   result.X := ((Width - MAIN_BLOCK_DEF_WIDTH) div 2) + xShift[FClockPos];
+   result.Y := yShift[FClockPos];
+   FClockPos := NextPos[FClockPos];
+end;
+
 procedure TMainForm.miNewClick(Sender: TObject);
 var
    lBlock: TMainBlock;
@@ -333,7 +350,7 @@ begin
    end;
    TInfra.SetInitialSettings;
    GProject := TProject.GetInstance;
-   lBlock := TMainBlock.Create(Self, GInfra.GetMainBlockNextTopLeft(Self));
+   lBlock := TMainBlock.Create(Self, GetMainBlockNextTopLeft);
    lBlock.OnResize(lBlock);
    TUserFunction.Create(nil, lBlock);
    ExportDialog.FileName := '';
@@ -1216,7 +1233,7 @@ var
 begin
    if GProject <> nil then
    begin
-      lBody := TMainBlock.Create(Self, GInfra.GetMainBlockNextTopLeft(Self));
+      lBody := TMainBlock.Create(Self, GetMainBlockNextTopLeft);
       TUserFunction.Create(nil, lBody);
       if GSettings.UpdateEditor then
          TInfra.GetEditorForm.RefreshEditorForObject(lBody);

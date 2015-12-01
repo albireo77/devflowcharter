@@ -55,7 +55,7 @@ uses
 
 procedure TFunctionsForm.miAddClick(Sender: TObject);
 begin
-   AddUserFunction(GInfra.GetMainBlockNextTopLeft(TInfra.GetMainForm));
+   AddUserFunction(TInfra.GetMainForm.GetMainBlockNextTopLeft);
 end;
 
 procedure TFunctionsForm.AddUserFunction(const ABodyTopLeft: TPoint);
