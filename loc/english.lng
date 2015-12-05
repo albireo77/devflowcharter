@@ -375,7 +375,7 @@ lblInterGen=with internal code generation supported
 lblFontSize=Font size:
 pnlFont.Hint=It can be neither red nor olive
 
-[TreeViewForm]
+[ExplorerForm]
 FormCaption=Explorer
 miNextError=Next error/warning
 miPrevError=Previous error/warning
@@ -385,7 +385,7 @@ miRemove=Remove
 miRefresh=Refresh
 btnGenerate=Generate code
 
-[SourceEditorForm]
+[EditorForm]
 FormCaption=Code Editor
 miProgram=Program
 miSave=Save...

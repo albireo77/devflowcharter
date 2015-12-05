@@ -378,7 +378,7 @@ lblInterGen=with internal code generation supported
 lblFontSize=Font size:
 pnlFont.Hint=It can be neither red nor olive
 
-[TreeViewForm]
+[ExplorerForm]
 FormCaption=流程图浏览器
 miNextError=下一信息
 miPrevError=上一信息
@@ -388,7 +388,7 @@ miRemove=删除
 miRefresh=刷新
 btnGenerate=生成代码
 
-[SourceEditorForm]
+[EditorForm]
 FormCaption=代码编辑器
 miProgram=程序
 miSave=保存...

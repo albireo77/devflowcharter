@@ -410,7 +410,7 @@ lblInterGen=z wewnêtrznym wsparciem dla generowania kodu
 lblFontSize=Rozmiar czcionki:
 pnlFont.Hint=Nie mo¿e byæ ani czerwony ani oliwkowy
 
-[SourceEditorForm]
+[EditorForm]
 FormCaption=Edytor Kodu
 miProgram=Program
 miSave=Zapisz...
@@ -494,7 +494,7 @@ btnRemove=Usuñ
 edtLibraryHint=Plik %s zawieraj¹cy definicjê funkcji
 NoType=brak
 
-[TreeViewForm]
+[ExplorerForm]
 FormCaption=Eksplorator
 miNextError=Nastêpny b³¹d/ostrze¿enie
 miPrevError=Poprzedni b³¹d/ostrze¿enie
