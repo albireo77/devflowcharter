@@ -65,6 +65,7 @@ type
          FStatement: TStatement;
          FTopParentBlock: TGroupBlock;
          FRefreshMode: boolean;
+         FFrame: boolean;
          procedure MyOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MyOnMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); virtual;
@@ -92,6 +93,7 @@ type
          function PerformEditorUpdate: boolean;
          procedure SelectBlock(const APoint: TPoint);
          procedure SetCursor(const APoint: TPoint);
+         procedure SetFrame(const AValue: boolean);
          procedure PutTextControls; virtual;
          function GetDefaultWidth: integer; virtual; abstract;
          procedure DrawArrowLine(const ABeginPoint, AEndPoint: TPoint; const AArrowPos: TArrowPosition = arrEnd; const AColor: TColor = clBlack);
@@ -105,9 +107,9 @@ type
          Ired: Integer;           // indicates active arrow; -1: none, 0: bottom, 1: branch1, 2: branch2 and so on...
          HResizeInd: boolean;
          VResizeInd: boolean;
-         FrameInd: boolean;
          memoWidth,
          memoHeight: integer;
+         property Frame: boolean read FFrame write SetFrame;
          property MemoVScroll: boolean read FMemoVScroll write SetMemoVScroll;
          property MemoHScroll: boolean read FMemoHScroll write SetMemoHScroll;
          property MemoWordWrap: boolean read GetMemoWordWrap write SetMemoWordWrap;
@@ -479,11 +481,11 @@ end;
 
 procedure TBlock.SetCursor(const APoint: TPoint);
 begin
-   if FrameInd and PtInRect(Rect(Width-5, 0, Width, Height-5), APoint) then
+   if FFrame and PtInRect(Rect(Width-5, 0, Width, Height-5), APoint) then
       Cursor := crSizeWE
-   else if FrameInd and PtInRect(Rect(0, Height-5, Width-5, Height), APoint) then
+   else if FFrame and PtInRect(Rect(0, Height-5, Width-5, Height), APoint) then
       Cursor := crSizeNS
-   else if FrameInd and PtInRect(Rect(Width-5, Height-5, Width, Height), APoint) then
+   else if FFrame and PtInRect(Rect(Width-5, Height-5, Width, Height), APoint) then
       Cursor := crSizeNWSE
    else if IsCursorResize then
       Cursor := crDefault;
@@ -560,14 +562,7 @@ end;
 
 procedure TBlock.ChangeFrame;
 begin
-   FrameInd := not FrameInd;
-   GChange := 1;
-   Invalidate;
-   ClearSelection;
-   if FrameInd then
-      TInfra.GetEditorForm.SelectCodeRange(Self)
-   else
-      TInfra.GetEditorForm.UnSelectCodeRange(Self);
+   Frame := not Frame;
 end;
 
 function TGroupBlock.GenerateNestedCode(const ALines: TStringList; const ABranchInd, ADeep: integer; const ALangId: string): integer;
@@ -708,6 +703,21 @@ begin
       lPoint := ClientToScreen(Point(X, Y));
       PopupMenu.PopupComponent := Self;
       PopupMenu.Popup(lPoint.X, lPoint.Y);
+   end;
+end;
+
+procedure TBlock.SetFrame(const AValue: boolean);
+begin
+   if AValue <> FFrame then
+   begin
+      FFrame := AValue;
+      GChange := 1;
+      ClearSelection;
+      if FFrame then
+         TInfra.GetEditorForm.SelectCodeRange(Self)
+      else
+         TInfra.GetEditorForm.UnSelectCodeRange(Self);
+      Invalidate;
    end;
 end;
 
@@ -1011,7 +1021,7 @@ begin
    else if Color <> FParentForm.Color then
    begin
       ChangeColor(FParentForm.Color);
-      if GSettings.EditorAutoSelectBlock and not FrameInd then
+      if GSettings.EditorAutoSelectBlock and not FFrame then
          TInfra.GetEditorForm.UnSelectCodeRange(Self);
       NavigatorForm.Repaint;
    end;
@@ -1082,7 +1092,7 @@ begin
    begin
       Pen.Color := clBlack;
       Pen.Width := 1;
-      if FrameInd then
+      if FFrame then
       begin
          Pen.Style := psDashDot;
          PolyLine([Point(0, 0), Point(Width-1, 0), Point(Width-1, Height-1), Point(0, Height-1), Point(0, 0)]);
@@ -1772,7 +1782,7 @@ begin
          SetFontSize(lValue);
       lValue := StrToIntDef(ATag.GetAttribute('fontstyle'), 0);
       SetFontStyle(TInfra.DecodeFontStyle(lValue));
-      FrameInd := ATag.GetAttribute('frame') = 'True';
+      Frame := ATag.GetAttribute('frame') = 'True';
       memoWidth := StrToIntDef(ATag.GetAttribute('memW'), 280);
       memoHeight := StrToIntDef(ATag.GetAttribute('memH'), 182);
       MemoVScroll := StrToBoolDef(ATag.GetAttribute('mem_vscroll'), false);
@@ -1857,7 +1867,7 @@ begin
    if ATag <> nil then
    begin
       ATag.SetAttribute('type', IntToStr(Ord(BType)));
-      ATag.SetAttribute('frame', BoolToStr(FrameInd, true));
+      ATag.SetAttribute('frame', BoolToStr(FFrame, true));
       ATag.SetAttribute('x', IntToStr(Left));
       ATag.SetAttribute('y', IntToStr(Top));
       ATag.SetAttribute('h', IntToStr(Height));
@@ -1949,7 +1959,8 @@ begin
          lBlock := lBlock.Next;
          while lBlock <> nil do
          begin
-            if not lBlock.FrameInd then break;
+            if not lBlock.Frame then
+               break;
             TXMLProcessor.ExportBlockToXML(lBlock, rootTag);
             lBlock := lBlock.Next;
          end;

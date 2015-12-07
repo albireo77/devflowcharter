@@ -700,7 +700,7 @@ begin
              miPaste.Enabled := False;
        end;
        miFrame.Visible := True;
-       miFrame.Checked := lBlock.FrameInd;
+       miFrame.Checked := lBlock.Frame;
        if (lBlock is TCaseBlock) and (lBlock.Ired > PRIMARY_BRANCH_IND) then
           miRemoveBranch.Visible := True;
    end
