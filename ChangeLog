@@ -1,3 +1,7 @@
+3.4.1 [08.12.2015]
+- fix not drawing block's frame after loading project
+- minor fixes and optimizations
+
 3.4.0 [18.10.2015]
 - add folder block as container for child blocks
 - Toolbox: add buttons for Folder and Text blocks
@@ -23,7 +27,7 @@
 - fixes for drawing ellipses with wide fonts
 - fixes to drawing input and output blocks with wide fonts
 - entirely reworked Project Explorer (include all project elements: datatypes, global declarations etc.)
-- Source Editor: improvements to "Find in Project" (e.g. retaining cursor position)
+- Source Editor: improvements to "Find in Project" like retaining cursor position
 - many minor fixes
 
 IMPORTANT NOTES:
