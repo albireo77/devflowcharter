@@ -713,11 +713,11 @@ begin
       FFrame := AValue;
       GChange := 1;
       ClearSelection;
+      Invalidate;
       if FFrame then
          TInfra.GetEditorForm.SelectCodeRange(Self)
       else
          TInfra.GetEditorForm.UnSelectCodeRange(Self);
-      Invalidate;
    end;
 end;
 
