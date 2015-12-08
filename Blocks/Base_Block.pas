@@ -708,7 +708,7 @@ end;
 
 procedure TBlock.SetFrame(const AValue: boolean);
 begin
-   if AValue <> FFrame then
+   if FFrame <> AValue then
    begin
       FFrame := AValue;
       GChange := 1;
