@@ -81,34 +81,37 @@ begin
 end;
 
 procedure TFunctionCallBlock.Paint;
+var
+   y: integer;
 begin
    inherited;
    with Canvas do
    begin
       if FStatement <> nil then
       begin
-         DrawArrowLine(Point(BottomPoint.X, FStatement.Height-1), Point(BottomPoint.X, Height-1));
+         y := FStatement.Height - 1;
+         DrawArrowLine(Point(BottomPoint.X, y), Point(BottomPoint.X, Height-1));
          Polygon([Point(8, 0), Point(10, 0),
-                  Point(10, FStatement.Height-1),
-                  Point(8, FStatement.Height-1),
+                  Point(10, y),
+                  Point(8, y),
                   Point(8, 0)]);
          Polygon([Point(Width-11, 0),
                   Point(Width-9, 0),
-                  Point(Width-9, FStatement.Height-1),
-                  Point(Width-11, FStatement.Height-1),
+                  Point(Width-9, y),
+                  Point(Width-11, y),
                   Point(Width-11, 0)]);
          Brush.Style := bsClear;
          if GSettings.RoutineColor <> GSettings.DesktopColor then
             Brush.Color := GSettings.RoutineColor;
          Polygon([Point(0, 0),
                   Point(7, 0),
-                  Point(7, FStatement.Height-1),
-                  Point(0, FStatement.Height-1),
+                  Point(7, y),
+                  Point(0, y),
                   Point(0, 0)]);
          Polygon([Point(Width-8, 0),
                   Point(Width-1, 0),
-                  Point(Width-1, FStatement.Height-1),
-                  Point(Width-8, FStatement.Height-1),
+                  Point(Width-1, y),
+                  Point(Width-8, y),
                   Point(Width-8, 0)]);
       end;
    end;
