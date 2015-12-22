@@ -74,7 +74,7 @@ type
          class function ShowFormattedQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
          class procedure SetInitialSettings;
          class function RPos(const AChar: char; const AString: string): integer;
-         class function FindText(ASubstr, AText: string; const AStartIndex: integer; const ACaseSensitive: boolean): integer;
+         class function FindText(ASubstr, AText: string; const AStartIndex: integer; const ACaseSens: boolean): integer;
          class function IsPrinter: boolean;
          class function IsValid(const AObject: TObject): boolean;
          class function SameStrings(const AStr1: string; const AStr2: string): boolean;
@@ -664,27 +664,17 @@ begin
    end;
 end;
 
-class function TInfra.FindText(ASubstr, AText: string; const AStartIndex: integer; const ACaseSensitive: boolean): integer;
-var
-   idx, len: integer;
+class function TInfra.FindText(ASubstr, AText: string; const AStartIndex: integer; const ACaseSens: boolean): integer;
 begin
-
-   result := -1;
-   len := Length(AText);
-   
-   if len > 0 then
+   AText := AnsiRightStr(AText, Length(AText)-AStartIndex);
+   if not ACaseSens then
    begin
-      AText := AnsiRightStr(AText, len - AStartIndex);
-      if not ACaseSensitive then
-      begin
-         AText := AnsiUpperCase(AText);
-         ASubstr := AnsiUpperCase(ASubstr);
-      end;
-      idx := AnsiPos(ASubstr, AText);
-      if idx <> 0 then
-         result := idx + AStartIndex - 1;
+      AText := AnsiUpperCase(AText);
+      ASubstr := AnsiUpperCase(ASubstr);
    end;
-
+   result := AnsiPos(ASubstr, AText) - 1;
+   if result <> -1 then
+      result :=  result + AStartIndex;
 end;
 
 class function TInfra.IsPrinter: boolean;
