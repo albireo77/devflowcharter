@@ -121,7 +121,7 @@ begin
       lIsInFunc := false;
       if lExpr <> '' then
       begin
-         iter := GProject.GetUserFunctionIterator;
+         iter := GProject.GetUserFunctions;
          while iter.HasNext do
          begin
             lFunction := TUserFunction(iter.Next);

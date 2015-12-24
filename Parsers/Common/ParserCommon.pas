@@ -171,7 +171,7 @@ begin
    lEdit := TInfra.GetParsedEdit;
    if (lEdit <> nil) and (lEdit.Parent is TCaseBlock) then
    begin
-      iter := TCaseBlock(lEdit.Parent).GetBranchIterator(PRIMARY_BRANCH_IND+1);
+      iter := TCaseBlock(lEdit.Parent).GetBranches(PRIMARY_BRANCH_IND+1);
       while iter.HasNext do
       begin
          lStatement := TBranch(iter.Next).Statement;
@@ -304,7 +304,7 @@ begin
    result := NOT_DEFINED;
    if GProject <> nil then
    begin
-      iter := GProject.GetUserDataTypeIterator;
+      iter := GProject.GetUserDataTypes;
       while iter.HasNext do
       begin
          lDataType := TUserDataType(iter.Next);
@@ -610,7 +610,7 @@ begin
    result := true;
    if GProject <> nil then
    begin
-      iter := GProject.GetUserDataTypeIterator;
+      iter := GProject.GetUserDataTypes;
       while iter.HasNext do
       begin
          lDataType := TUserDataType(iter.Next);

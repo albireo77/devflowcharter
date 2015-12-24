@@ -37,11 +37,9 @@ type
          OwnerUserFunction: TObject;
          constructor Create(const AParent: TMainForm; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
          constructor Create(const AParent: TMainForm; const ATopLeft: TPoint); overload;
-         destructor Destroy; override;
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
          function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
          function GetDescription: string; override;
-         procedure ExpandFold(const AResizeInd: boolean); override;
          procedure BringAllToFront;
          procedure SetVisible(const AValue: boolean);
          function GetFromXML(const ATag: IXMLElement): TErrorType; override;
@@ -60,11 +58,11 @@ type
          FStopLabel: string;
          procedure MyOnResize(Sender: TObject);
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); override;
-         procedure Paint; override;
          procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
-         function GetPinnedCommentsIterator: IIterator;
+         procedure Paint; override;
          function GetFunctionLabel(var ARect: TRect): string;
          function GetDefaultWidth: integer; override;
+         function GetAllPinComments: IIterator;
    end;
 
 const
@@ -138,18 +136,6 @@ begin
           MAIN_BLOCK_DEF_HEIGHT-42);
 end;
 
-destructor TMainBlock.Destroy;
-var
-   iter: IIterator;
-begin
-   iter := GetPinnedCommentsIterator;
-   while iter.HasNext do
-      iter.Next.Free;
-   Hide;
-   FParentForm.SetScrollBars;
-   inherited Destroy;
-end;
-
 function TMainBlock.GetDefaultWidth: integer;
 var
    R: TRect;
@@ -178,7 +164,7 @@ begin
       PaintTo(ACanvas, Left + FParentForm.HorzScrollBar.Position, Top + FParentForm.VertScrollBar.Position);
       if Expanded then
       begin
-         iter := GetPinnedCommentsIterator;
+         iter := GetAllPinComments;
          while iter.HasNext do
          begin
             lComment := TComment(iter.Next);
@@ -217,7 +203,7 @@ begin
       result.Y := BoundsRect.Bottom + FParentForm.VertScrollBar.Position + MARGIN_Y;
       if Expanded then
       begin
-         iter := GetPinnedCommentsIterator;
+         iter := GetAllPinComments;
          while iter.HasNext do
          begin
             lPoint := TComment(iter.Next).GetMaxBounds;
@@ -260,7 +246,7 @@ begin
    PaintTo(lBitmap.Canvas, 1, 1);
    if Expanded then
    begin
-      iter := GetPinnedCommentsIterator;
+      iter := GetAllPinComments;
       while iter.HasNext do
       begin
          lComment := TComment(iter.Next);
@@ -491,27 +477,6 @@ begin
    end;
 end;
 
-procedure TMainBlock.ExpandFold(const AResizeInd: boolean);
-const
-   lMultp: array[boolean] of integer = (-1, 1);
-var
-   iter: IIterator;
-   lComment: TComment;
-begin
-   inherited ExpandFold(AResizeInd);
-   iter := GetPinnedCommentsIterator;
-   while iter.HasNext do
-   begin
-      lComment := TComment(iter.Next);
-      lComment.Visible := Expanded;
-      lComment.SetBounds(lComment.Left + (Left + FParentForm.HorzScrollBar.Position) * lMultp[Expanded],
-                         lComment.Top + (Top + FParentForm.VertScrollBar.Position) * lMultp[Expanded],
-                         lComment.Width,
-                         lComment.Height);
-   end;
-   NavigatorForm.Repaint;
-end;
-
 procedure TMainBlock.SetVisible(const AValue: boolean);
 var
    iter: IIterator;
@@ -519,7 +484,7 @@ begin
    Visible := AValue;
    if Expanded then
    begin
-      iter := GetPinnedCommentsIterator;
+      iter := GetAllPinComments;
       while iter.HasNext do
          TComment(iter.Next).Visible := AValue;
    end;
@@ -527,18 +492,18 @@ begin
       BringAllToFront;
 end;
 
-function TMainBlock.GetPinnedCommentsIterator: IIterator;
+function TMainBlock.GetAllPinComments: IIterator;
 var
    lComment: TComment;
    iterc: IIterator;
    lIterator: TCommentIterator;
 begin
    lIterator := TCommentIterator.Create;
-   iterc := GProject.GetCommentIterator;
+   iterc := GProject.GetComments;
    while iterc.HasNext do
    begin
       lComment := TComment(iterc.Next);
-      if lComment.PinnedControl = Self then
+      if (lComment.PinControl is TBlock) and (TBlock(lComment.PinControl).TopParentBlock = Self) then
       begin
          SetLength(lIterator.FArray, Length(lIterator.FArray)+1);
          lIterator.FArray[High(lIterator.FArray)] := lComment;
@@ -552,7 +517,7 @@ var
    iter: IIterator;
 begin
    BringToFront;
-   iter := GetPinnedCommentsIterator;
+   iter := GetAllPinComments;
    while iter.HasNext do
       TComment(iter.Next).BringToFront;
 end;
@@ -570,12 +535,15 @@ begin
       GChange := 1;
       if Expanded then
       begin
-         iter := GetPinnedCommentsIterator;
+         iter := GetAllPinComments;
          while iter.HasNext do
          begin
             lComment := TComment(iter.Next);
-            lComment.SetBounds(lComment.Left+x-Left, lComment.Top+y-Top, lComment.Width, lComment.Height);
-            lComment.BringToFront;
+            if lComment.Visible then
+            begin
+               lComment.SetBounds(lComment.Left+x-Left, lComment.Top+y-Top, lComment.Width, lComment.Height);
+               lComment.BringToFront;
+            end;
          end;
       end;
    end;
@@ -583,8 +551,6 @@ begin
 end;
 
 procedure TMainBlock.SaveInXML(const ATag: IXMLElement);
-var
-   iter: IIterator;
 begin
    inherited SaveInXML(ATag);
    if ATag <> nil then
@@ -592,29 +558,14 @@ begin
       ATag.SetAttribute('x', IntToStr(Left+FParentForm.HorzScrollBar.Position));
       ATag.SetAttribute('y', IntToStr(Top+FParentForm.VertScrollBar.Position));
       ATag.SetAttribute('ZOrdVal', IntToStr(FZOrderValue));
-      iter := GetPinnedCommentsIterator;
-      while iter.HasNext do
-         TComment(iter.Next).ExportToXMLTag2(ATag);
    end;
 end;
 
 function TMainBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
-var
-   lTag: IXMLElement;
-   lComment: TComment;
 begin
    result := inherited GetFromXML(ATag);
    if ATag <> nil then
-   begin
       FZOrderValue := StrToIntDef(ATag.GetAttribute('ZOrdVal'), -1);
-      lTag := TXMLProcessor.FindChildTag(ATag, 'comment');
-      while lTag <> nil do
-      begin
-         lComment := TComment.Create(TInfra.GetMainForm);
-         lComment.ImportFromXMLTag(lTag, Self);
-         lTag := TXMLProcessor.FindNextTag(lTag);
-      end;
-   end;
 end;
 
 function TMainBlock.IsBoldDesc: boolean;

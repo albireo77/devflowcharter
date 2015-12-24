@@ -300,7 +300,7 @@ procedure TExplorerForm.miRemoveClick(Sender: TObject);
        if (lControl.Parent is TCaseBlock) and (lControl <> TCaseBlock(lControl.Parent).GetTextControl) then
        begin
           lCaseBlock := TCaseBlock(lControl.Parent);
-          iter := lCaseBlock.GetBranchIterator(PRIMARY_BRANCH_IND+1);
+          iter := lCaseBlock.GetBranches(PRIMARY_BRANCH_IND+1);
           while iter.HasNext do
           begin
              lBranch := TBranch(iter.Next);

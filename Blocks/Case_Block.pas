@@ -45,7 +45,7 @@ type
          function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
          procedure ResizeHorz(const AContinue: boolean); override;
          procedure ResizeVert(const AContinue: boolean); override;
-         procedure ExpandFold(const AResizeInd: boolean); override;
+         procedure ExpandFold(const AResize: boolean); override;
          procedure RemoveBranch;
          function GetRMostX(const ABranchIndex: integer): integer;
          function AddBranch(const AHook: TPoint; const AResizeInd: boolean; const ABranchId: integer = ID_INVALID; const ABranchStmntId: integer = ID_INVALID): TBranch; override;
@@ -557,11 +557,11 @@ begin
 
 end;
 
-procedure TCaseBlock.ExpandFold(const AResizeInd: boolean);
+procedure TCaseBlock.ExpandFold(const AResize: boolean);
 var
    i: integer;
 begin
-   inherited ExpandFold(AResizeInd);
+   inherited ExpandFold(AResize);
    for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
    begin
       if FBranchArray[i].Statement <> nil then

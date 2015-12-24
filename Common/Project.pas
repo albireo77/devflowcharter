@@ -73,9 +73,9 @@ type
       destructor Destroy; override;
       procedure AddComponent(const AComponent: TComponent);
       procedure SetCommentsColor(const AColor: TColor);
-      function GetCommentIterator: IIterator;
-      function GetUserFunctionIterator(const ASortType: integer = PAGE_INDEX_SORT): IIterator;
-      function GetUserDataTypeIterator: IIterator;
+      function GetComments: IIterator;
+      function GetUserFunctions(const ASortType: integer = PAGE_INDEX_SORT): IIterator;
+      function GetUserDataTypes: IIterator;
       function GetUserDataType(const ATypeName: string): TUserDataType;
       function GetUserFunction(const AFunctionName: string): TUserFunction;
       procedure ExportToGraphic(const AImage: TGraphic);
@@ -98,7 +98,7 @@ type
       function FindObject(const AId: integer): TObject;
       procedure RefreshSizeEdits;
       procedure PopulateDataTypes;
-      procedure UpdateZOrderComponents;
+      procedure UpdateZOrder;
       function Register(const AObject: TObject; const AId: integer = ID_INVALID): integer;
       procedure UnRegister(const AObject: TObject);
    end;
@@ -223,17 +223,17 @@ begin
    FComponentList.Add(AComponent);
 end;
 
-function TProject.GetCommentIterator: IIterator;
+function TProject.GetComments: IIterator;
 begin
    result := GetComponentIterator(NO_SORT, TComment.ClassName);
 end;
 
-function TProject.GetUserFunctionIterator(const ASortType: integer = PAGE_INDEX_SORT): IIterator;
+function TProject.GetUserFunctions(const ASortType: integer = PAGE_INDEX_SORT): IIterator;
 begin
    result := GetComponentIterator(ASortType, TUserFunction.ClassName);
 end;
 
-function TProject.GetUserDataTypeIterator: IIterator;
+function TProject.GetUserDataTypes: IIterator;
 begin
    result := GetComponentIterator(PAGE_INDEX_SORT, TUserDataType.ClassName);
 end;
@@ -355,7 +355,7 @@ begin
    if FGlobalConsts <> nil then
       FGlobalConsts.ExportToXMLTag(rootTag);
 
-   UpdateZOrderComponents;
+   UpdateZOrder;
 
    iter := GetComponentIterator(PAGE_INDEX_SORT);
    while iter.HasNext do
@@ -551,7 +551,7 @@ begin
    if lDataType <> nil then
    begin
       PopulateDataTypes;
-      iter := GetUserDataTypeIterator;
+      iter := GetUserDataTypes;
       while iter.HasNext do
       begin
          lType := TUserDataType(iter.Next);
@@ -612,7 +612,7 @@ begin
    end;
 end;
 
-procedure TProject.UpdateZOrderComponents;
+procedure TProject.UpdateZOrder;
 var
    lWinControl: IWinControl;
    lWnd: THandle;
@@ -794,7 +794,7 @@ begin
    if GInfra.CurrentLang.EnabledUserDataTypes then
    begin
       lNode := ANode.Owner.AddChildObject(ANode, i18Manager.GetString('Structures'), TInfra.GetDataTypesForm);
-      lDataTypes := GetUserDataTypeIterator;
+      lDataTypes := GetUserDataTypes;
       while lDataTypes.HasNext do
       begin
          lDataType := TUserDataType(lDataTypes.Next);
@@ -811,7 +811,7 @@ begin
    else
       lNode := ANode;
 
-   lFunctions := GetUserFunctionIterator;
+   lFunctions := GetUserFunctions;
    while lFunctions.HasNext do
    begin
       lFunction := TUserFunction(lFunctions.Next);

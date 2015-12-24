@@ -45,7 +45,7 @@ type
          constructor Create(const ABranch: TBranch); overload;
          procedure ResizeHorz(const AContinue: boolean); override;
          procedure ResizeVert(const AContinue: boolean); override;
-         procedure ExpandFold(const AResizeInd: boolean); override;
+         procedure ExpandFold(const AResize: boolean); override;
          function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
          procedure SaveInXML(const ATag: IXMLElement); override;
          procedure ChangeColor(const AColor: TColor); override;
@@ -352,13 +352,13 @@ begin
 
 end;
 
-procedure TIfElseBlock.ExpandFold(const AResizeInd: boolean);
+procedure TIfElseBlock.ExpandFold(const AResize: boolean);
 begin
    if Expanded then
       FFoldParms.P2X := FalseBranch.Hook.X
    else
       FalseBranch.Hook.X := FFoldParms.P2X;
-   inherited ExpandFold(AResizeInd);
+   inherited ExpandFold(AResize);
 end;
 
 procedure TIfElseBlock.ChangeColor(const AColor: TColor);

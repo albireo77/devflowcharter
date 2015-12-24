@@ -43,7 +43,7 @@ begin
    begin
       lDataTypeList := TStringList.Create;
       try
-         iter := GProject.GetUserDataTypeIterator;
+         iter := GProject.GetUserDataTypes;
          while iter.HasNext do
          begin
             lDataType := TUserDataType(iter.Next);
@@ -355,7 +355,7 @@ var
    lTypeInt: integer;
 begin
    lLang := GInfra.CurrentLang;
-   iter := GProject.GetUserFunctionIterator;
+   iter := GProject.GetUserFunctions;
    while iter.HasNext do
    begin
       lFunction := TUserFunction(iter.Next);

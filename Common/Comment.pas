@@ -31,7 +31,7 @@ type
 
    TComment = class(TMemo, IXMLable, IWinControl, IMaxBoundable, ISortable)
       private
-         FPinnedControl: TControl;
+         FPinControl: TControl;
          FParentForm: TMainForm;
          FActive: boolean;
          FZOrderValue: integer;
@@ -48,7 +48,7 @@ type
          function GetActive: boolean;
          procedure MyOnChange(Sender: TObject);
       public
-         property PinnedControl: TControl read FPinnedControl default nil;
+         property PinControl: TControl read FPinControl default nil;
          property ParentForm: TMainForm read FParentForm default nil;
          constructor Create(const AParent: TMainForm); overload;
          constructor Create(const AParent: TMainForm; const ALeft, ATop, AWidth, AHeight: Integer; const AUpdateZOrderComponents: boolean = true); overload;
@@ -170,7 +170,7 @@ var
    lBStyle: TBorderStyle;
    lStart: integer;
 begin
-   if Visible and (FPinnedControl = nil) then
+   if Visible and (FPinControl = nil) then
    begin
       ACanvas.Lock;
       try
@@ -213,17 +213,17 @@ var
    iter: IIterator;
    lBlock: TMainBlock;
 begin
-   FPinnedControl := nil;
+   FPinControl := nil;
    if UpdateZOrderComponents then
-      GProject.UpdateZOrderComponents;
-   iter := GProject.GetUserFunctionIterator(Z_ORDER_SORT);
+      GProject.UpdateZOrder;
+   iter := GProject.GetUserFunctions(Z_ORDER_SORT);
    iter.Reverse;
    while iter.HasNext do
    begin
       lBlock := TUserFunction(iter.Next).Body;
-      if (lBlock <> nil) and (lBlock.ParentForm = FParentForm) and lBlock.Visible and PtInRect(lBlock.BoundsRect, Point(Left, Top)) then
+      if (lBlock <> nil) and (lBlock.ParentForm = FParentForm) and lBlock.Visible and PtInRect(lBlock.BoundsRect, BoundsRect.TopLeft) then
       begin
-         FPinnedControl := lBlock;
+         FPinControl := lBlock.GetPinBlock(BoundsRect.TopLeft);
          break;
       end;
    end;
@@ -292,8 +292,7 @@ end;
 
 procedure TComment.ImportFromXMLTag(const rootTag: IXMLElement; const APinControl: TControl);
 var
-   lText: string;
-   lStyleValue: integer;
+   lValue: integer;
 begin
    FParentForm.VertScrollBar.Position := 0;
    FParentForm.HorzScrollBar.Position := 0;
@@ -301,21 +300,21 @@ begin
              StrToInt(rootTag.GetAttribute('y')),
              StrToInt(rootTag.GetAttribute('w')),
              StrToInt(rootTag.GetAttribute('h')));
-   lText := rootTag.GetAttribute('fontsize');
-   if (lText = '10') or (lText = '12') then
-      Font.Size := StrToInt(lText);
+   lValue := StrToIntDef(rootTag.GetAttribute('fontsize'), 8);
+   if lValue in [8, 10, 12] then
+      Font.Size := lValue;
    FZOrderValue := StrToIntDef(rootTag.GetAttribute('ZOrdVal'), -1);
-   lStyleValue := StrToIntDef(rootTag.GetAttribute('fontstyle'), 0);
-   if lStyleValue > 0 then
-      Font.Style := TInfra.DecodeFontStyle(lStyleValue);
+   lValue := StrToIntDef(rootTag.GetAttribute('fontstyle'), 0);
+   if lValue > 0 then
+      Font.Style := TInfra.DecodeFontStyle(lValue);
    Text := rootTag.Text;
    Visible := rootTag.GetAttribute('v') = IntToStr(Ord(true));
-   FPinnedControl := APinControl;
+   FPinControl := APinControl;
 end;
 
 procedure TComment.ExportToXMLTag(const rootTag: IXMLElement);
 begin
-   if FPinnedControl = nil then
+   if FPinControl = nil then
       ExportToXMLTag2(rootTag);
 end;
 

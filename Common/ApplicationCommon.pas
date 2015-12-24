@@ -766,7 +766,7 @@ begin
 // next, populate with user data types defined in GUI
    if GInfra.CurrentLang.EnabledUserDataTypes and (GProject <> nil) then
    begin
-      iter := GProject.GetUserDataTypeIterator;
+      iter := GProject.GetUserDataTypes;
       while iter.HasNext do
       begin
          lDataType := TUserDataType(iter.Next);

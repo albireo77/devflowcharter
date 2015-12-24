@@ -63,7 +63,7 @@ var
 begin
    if GProject <> nil then
    begin
-      iter := GProject.GetUserFunctionIterator;
+      iter := GProject.GetUserFunctions;
       while iter.HasNext do
       begin
          params := '';

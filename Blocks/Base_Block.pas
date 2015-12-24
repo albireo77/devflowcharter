@@ -198,7 +198,7 @@ type
          procedure ResizeHorz(const AContinue: boolean); virtual;
          procedure ResizeVert(const AContinue: boolean); virtual;
          function GenerateNestedCode(const ALines: TStringList; const ABranchInd, ADeep: integer; const ALangId: string): integer;
-         procedure ExpandFold(const AResizeInd: boolean); virtual;
+         procedure ExpandFold(const AResize: boolean); virtual;
          function GetBranch(const idx: integer): TBranch;
          procedure ChangeColor(const AColor: TColor); override;
          function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
@@ -211,12 +211,14 @@ type
          function GetFromXML(const ATag: IXMLElement): TErrorType; override;
          procedure SaveInXML(const ATag: IXMLElement); override;
          procedure GenerateTemplateSection(const ALines: TStringList; const ATemplate: TStringList; const ALangId: string; const ADeep: integer); override;
-         function GetBlockIterator(const AIndex: integer = PRIMARY_BRANCH_IND-1): IIterator;
-         function GetBranchIterator(const AStart: integer = PRIMARY_BRANCH_IND-1): IIterator;
+         function GetBlocks(const AIndex: integer = PRIMARY_BRANCH_IND-1): IIterator;
+         function GetBranches(const AStart: integer = PRIMARY_BRANCH_IND-1): IIterator;
          procedure ResizeWithDrawLock;
          function GetFoldedText: string;
          procedure SetFoldedText(const AText: string);
          function CountErrWarn: TErrWarnCount; override;
+         function GetPinBlock(const APoint: TPoint): TGroupBlock;
+         function GetPinComments: IIterator;
    end;
 
    TBranch = class(TObjectList, IIdentifiable)
@@ -257,15 +259,15 @@ type
    end;
 
    TBranchIterator = class(TBaseIterator);
-
    TBlockIterator = class(TBaseIterator);
+   TCommentIterator = class(TBaseIterator);
 
 implementation
 
 uses
    Main_Block, ApplicationCommon, BlockFactory, StrUtils, UserFunction, Menus,
    XMLProcessor, Navigator_Form, LangDefinition, FastcodeAnsiStringReplaceUnit,
-   FlashThread;
+   FlashThread, Comment;
 
 type
    THackCustomEdit = class(TCustomEdit);
@@ -425,7 +427,13 @@ end;
 destructor TGroupBlock.Destroy;
 var
    i: integer;
+   iter: IIterator;
 begin
+   iter := GetPinComments;
+   while iter.HasNext do
+      iter.Next.Free;
+   Hide;
+   FParentForm.SetScrollBars;
    for i := Low(FBranchArray) to High(FBranchArray) do
       FBranchArray[i].Free;
    FBranchArray := nil;
@@ -913,6 +921,44 @@ begin
    PutTextControls;
 end;
 
+function TGroupBlock.GetPinBlock(const APoint: TPoint): TGroupBlock;
+var
+   iter: IIterator;
+   lBlock: TBlock;
+begin
+   result := Self;
+   iter := GetBlocks;
+   while iter.HasNext do
+   begin
+      lBlock := TBlock(iter.Next);
+      if PtInRect(lBlock.BoundsRect, ParentToClient(APoint, FParentForm)) and (lBlock is TGroupBlock) then
+      begin
+         result := TGroupBlock(lBlock).GetPinBlock(APoint);
+         break;
+      end;
+   end;
+end;
+
+function TGroupBlock.GetPinComments: IIterator;
+var
+   lComment: TComment;
+   iterc: IIterator;
+   lIterator: TCommentIterator;
+begin
+   lIterator := TCommentIterator.Create;
+   iterc := GProject.GetComments;
+   while iterc.HasNext do
+   begin
+      lComment := TComment(iterc.Next);
+      if lComment.PinControl = Self then
+      begin
+         SetLength(lIterator.FArray, Length(lIterator.FArray)+1);
+         lIterator.FArray[High(lIterator.FArray)] := lComment;
+      end;
+   end;
+   result := lIterator;
+end;
+
 procedure TBlock.PutTextControls;
 begin
 end;
@@ -1255,7 +1301,7 @@ var
    lErrWarnCount: TErrWarnCount;
 begin
    result := inherited CountErrWarn;
-   iter := GetBlockIterator;
+   iter := GetBlocks;
    while iter.HasNext do
    begin
       lErrWarnCount := TBlock(iter.Next).CountErrWarn;
@@ -1685,11 +1731,14 @@ begin
    result := false;
 end;
 
-procedure TGroupBlock.ExpandFold(const AResizeInd: boolean);
+procedure TGroupBlock.ExpandFold(const AResize: boolean);
 var
    lTmpWidth, lTmpHeight, i: integer;
    lBlock: TBlock;
    lTextControl: TCustomEdit;
+   iter: IIterator;
+   lComment: TComment;
+   lTopLeft: TPoint;
 begin
    GChange := 1;
    Expanded := not Expanded;
@@ -1707,6 +1756,9 @@ begin
          lBlock := lBlock.next;
       end;
    end;
+
+   if not Expanded then
+      lTopLeft := ClientToParent(Point(0, 0), FParentForm);
 
    if Expanded then
    begin
@@ -1753,11 +1805,33 @@ begin
       TopHook.X := Width div 2;
       BottomHook := Width div 2;
    end;
-   if AResizeInd and (FParentBlock <> nil) then
+
+   if AResize and (FParentBlock <> nil) then
    begin
       FParentBlock.ResizeWithDrawLock;
       NavigatorForm.Repaint;
    end;
+
+   if Expanded then
+   begin
+      lTopLeft := ClientToParent(Point(0, 0), FParentForm);
+      i := 1;
+   end
+   else
+      i := -1;
+
+   iter := GetPinComments;
+   while iter.HasNext do
+   begin
+      lComment := TComment(iter.Next);
+      lComment.Visible := Expanded;
+      if AResize then
+         lComment.SetBounds(lComment.Left + (lTopLeft.X + FParentForm.HorzScrollBar.Position) * i,
+                            lComment.Top + (lTopLeft.Y + FParentForm.VertScrollBar.Position) * i,
+                            lComment.Width,
+                            lComment.Height);
+   end;
+
 end;
 
 function TBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
@@ -1830,6 +1904,10 @@ begin
          ATag.AppendChild(tag1);
       end;
 
+      iter := GetPinComments;
+      while iter.HasNext do
+         TComment(iter.Next).ExportToXMLTag2(ATag);
+
       for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
       begin
          lBranch := FBranchArray[i];
@@ -1850,7 +1928,7 @@ begin
          TXMLProcessor.AddText(tag1, IntToStr(lBranch.hook.Y));
          tag2.AppendChild(tag1);
 
-         iter := GetBlockIterator(lBranch.Index);
+         iter := GetBlocks(lBranch.Index);
          while iter.HasNext do
             TXMLProcessor.ExportBlockToXML(TBlock(iter.Next), tag2);
       end;
@@ -1897,6 +1975,7 @@ function TGroupBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
 var
    lTag1, lTag2: IXMLElement;
    lBranchId, lBranchIdx, lBranchStmntId, hx, hy: integer;
+   lComment: TComment;
 begin
    result := inherited GetFromXML(ATag);
    if ATag <> nil then
@@ -1931,6 +2010,15 @@ begin
          SetFoldedText(lTag2.Text);
       FFoldParms.Width := StrToIntDef(ATag.GetAttribute('fw'), 140);
       FFoldParms.Height := StrToIntDef(ATag.GetAttribute('fh'), 91);
+
+      lTag1 := TXMLProcessor.FindChildTag(ATag, 'comment');
+      while lTag1 <> nil do
+      begin
+         lComment := TComment.Create(TInfra.GetMainForm);
+         lComment.ImportFromXMLTag(lTag1, Self);
+         lTag1 := TXMLProcessor.FindNextTag(lTag1);
+      end;
+
       if ATag.GetAttribute('folded') = 'True' then
          ExpandFold(false);
    end;
@@ -2096,7 +2184,7 @@ begin
    result := Length(FBranchArray) - 1;
 end;
 
-function TGroupBlock.GetBlockIterator(const AIndex: integer = PRIMARY_BRANCH_IND-1): IIterator;
+function TGroupBlock.GetBlocks(const AIndex: integer = PRIMARY_BRANCH_IND-1): IIterator;
 var
    lFBranchIdx, lLBranchIdx, i, a: integer;
    lBlock: TBlock;
@@ -2142,7 +2230,7 @@ begin
    result := lIterator;
 end;
 
-function TGroupBlock.GetBranchIterator(const AStart: integer = PRIMARY_BRANCH_IND-1): IIterator;
+function TGroupBlock.GetBranches(const AStart: integer = PRIMARY_BRANCH_IND-1): IIterator;
 var
    i, lFBranchIdx, lLBranchIdx, a: integer;
    lIterator: TBranchIterator;
@@ -2386,7 +2474,7 @@ begin
    result := -1;
    if FParentBlock <> nil then
    begin
-      iter := FParentBlock.GetBranchIterator;
+      iter := FParentBlock.GetBranches;
       result := iter.GetObjectIndex(Self);
       if result <> -1 then
          Inc(result);

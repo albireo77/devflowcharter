@@ -51,7 +51,7 @@ type
          constructor Create(const ABranch: TBranch; const ASource: TForDoBlock); overload;
          constructor Create(const ABranch: TBranch); overload;
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
-         procedure ExpandFold(const AResizeInd: boolean); override;
+         procedure ExpandFold(const AResize: boolean); override;
          function GetDescription: string; override;
          function GetTextControl: TCustomEdit; override;
          function CountErrWarn: TErrWarnCount; override;
@@ -362,13 +362,13 @@ begin
    BottomPoint.X := Width - 11;
 end;
 
-procedure TForDoBlock.ExpandFold(const AResizeInd: boolean);
+procedure TForDoBlock.ExpandFold(const AResize: boolean);
 begin
    edtStartVal.Visible := not Expanded;
    edtStopVal.Visible := not Expanded;
    cbVariable.Visible := false;
    edtVariable.Visible := not Expanded;
-   inherited ExpandFold(AResizeInd);
+   inherited ExpandFold(AResize);
 end;
 
 function TForDoBlock.GetTextControl: TCustomEdit;
