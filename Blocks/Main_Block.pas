@@ -62,7 +62,7 @@ type
          procedure Paint; override;
          function GetFunctionLabel(var ARect: TRect): string;
          function GetDefaultWidth: integer; override;
-         function GetAllPinComments: IIterator;
+         function GetPinComments: IIterator; override;
    end;
 
 const
@@ -164,7 +164,7 @@ begin
       PaintTo(ACanvas, Left + FParentForm.HorzScrollBar.Position, Top + FParentForm.VertScrollBar.Position);
       if Expanded then
       begin
-         iter := GetAllPinComments;
+         iter := GetPinComments;
          while iter.HasNext do
          begin
             lComment := TComment(iter.Next);
@@ -203,7 +203,7 @@ begin
       result.Y := BoundsRect.Bottom + FParentForm.VertScrollBar.Position + MARGIN_Y;
       if Expanded then
       begin
-         iter := GetAllPinComments;
+         iter := GetPinComments;
          while iter.HasNext do
          begin
             lPoint := TComment(iter.Next).GetMaxBounds;
@@ -246,7 +246,7 @@ begin
    PaintTo(lBitmap.Canvas, 1, 1);
    if Expanded then
    begin
-      iter := GetAllPinComments;
+      iter := GetPinComments;
       while iter.HasNext do
       begin
          lComment := TComment(iter.Next);
@@ -484,7 +484,7 @@ begin
    Visible := AValue;
    if Expanded then
    begin
-      iter := GetAllPinComments;
+      iter := GetPinComments;
       while iter.HasNext do
          TComment(iter.Next).Visible := AValue;
    end;
@@ -492,7 +492,7 @@ begin
       BringAllToFront;
 end;
 
-function TMainBlock.GetAllPinComments: IIterator;
+function TMainBlock.GetPinComments: IIterator;
 var
    lComment: TComment;
    iterc: IIterator;
@@ -517,7 +517,7 @@ var
    iter: IIterator;
 begin
    BringToFront;
-   iter := GetAllPinComments;
+   iter := GetPinComments;
    while iter.HasNext do
       TComment(iter.Next).BringToFront;
 end;
@@ -535,7 +535,7 @@ begin
       GChange := 1;
       if Expanded then
       begin
-         iter := GetAllPinComments;
+         iter := GetPinComments;
          while iter.HasNext do
          begin
             lComment := TComment(iter.Next);

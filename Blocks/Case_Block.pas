@@ -277,7 +277,7 @@ begin
 
    TopHook.X := DefaultBranch.Hook.X;
    BottomPoint.X := DefaultBranch.Hook.X;
-   Width := GetRMostX(i) + 30;
+   Width := GetRMostX(High(FBranchArray)) + 30;
 
    if AContinue then
       ParentBlock.ResizeHorz(AContinue);

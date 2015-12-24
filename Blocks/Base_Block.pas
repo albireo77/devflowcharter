@@ -163,6 +163,7 @@ type
          procedure Remove;
          function CanBeRemoved: boolean;
          function IsBoldDesc: boolean; virtual;
+         function GetPinComments: IIterator; virtual;
       published
          property Color;
          property OnMouseDown;
@@ -218,7 +219,7 @@ type
          procedure SetFoldedText(const AText: string);
          function CountErrWarn: TErrWarnCount; override;
          function GetPinBlock(const APoint: TPoint): TGroupBlock;
-         function GetPinComments: IIterator;
+         function GetPinComments: IIterator; override;
    end;
 
    TBranch = class(TObjectList, IIdentifiable)
@@ -937,6 +938,26 @@ begin
          break;
       end;
    end;
+end;
+
+function TBlock.GetPinComments: IIterator;
+var
+   lComment: TComment;
+   iterc: IIterator;
+   lIterator: TCommentIterator;
+begin
+   lIterator := TCommentIterator.Create;
+   iterc := FParentBlock.GetPinComments;
+   while iterc.HasNext do
+   begin
+      lComment := TComment(iterc.Next);
+      if PtInRect(BoundsRect, FParentBlock.ParentToClient(lComment.BoundsRect.TopLeft, FParentForm)) then
+      begin
+         SetLength(lIterator.FArray, Length(lIterator.FArray)+1);
+         lIterator.FArray[High(lIterator.FArray)] := lComment;
+      end;
+   end;
+   result := lIterator;
 end;
 
 function TGroupBlock.GetPinComments: IIterator;
@@ -2140,6 +2161,9 @@ end;
 procedure TBlock.ExportToGraphic(const AImage: TGraphic);
 var
    lBitmap: TBitmap;
+   iterc: IIterator;
+   lComment: TComment;
+   lPoint: TPoint;
 begin
    if AImage is TBitmap then
       lBitmap := TBitmap(AImage)
@@ -2151,6 +2175,13 @@ begin
    lBitmap.Canvas.Lock;
    try
       PaintTo(lBitmap.Canvas.Handle, 1, 1);
+      iterc := GetPinComments;
+      while iterc.HasNext do
+      begin
+         lComment := TComment(iterc.Next);
+         lPoint := ParentToClient(lComment.BoundsRect.TopLeft, FParentForm);
+         lComment.PaintTo(lBitmap.Canvas.Handle, lPoint.X, lPoint.Y);
+      end;
    finally
       lBitmap.Canvas.Unlock;
       TMainBlock(FTopParentBlock).ShowI := true;
