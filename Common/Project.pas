@@ -50,10 +50,10 @@ type
       FObjectIds: TStringList;
       FObjectIdSeed: integer;
       procedure SetGlobals;
-      function GetComponentIterator(const ASortType: integer = NO_SORT; const AClassName: string = ''): IIterator;
+      function GetComponents(const ASortType: integer = NO_SORT; const AClassName: string = ''): IIterator;
       function GetComponentByName(const AClassName: string; const AName: string): TComponent;
       function GetIWinControlComponent(const AHandle: THandle): IWinControl;
-      procedure RefreshZOrderComponents;
+      procedure RefreshZOrder;
       constructor Create;
    public
       Name: string;
@@ -225,25 +225,25 @@ end;
 
 function TProject.GetComments: IIterator;
 begin
-   result := GetComponentIterator(NO_SORT, TComment.ClassName);
+   result := GetComponents(NO_SORT, TComment.ClassName);
 end;
 
 function TProject.GetUserFunctions(const ASortType: integer = PAGE_INDEX_SORT): IIterator;
 begin
-   result := GetComponentIterator(ASortType, TUserFunction.ClassName);
+   result := GetComponents(ASortType, TUserFunction.ClassName);
 end;
 
 function TProject.GetUserDataTypes: IIterator;
 begin
-   result := GetComponentIterator(PAGE_INDEX_SORT, TUserDataType.ClassName);
+   result := GetComponents(PAGE_INDEX_SORT, TUserDataType.ClassName);
 end;
 
-procedure TProject.RefreshZOrderComponents;
+procedure TProject.RefreshZOrder;
 var
    iter: IIterator;
    lWinControl: IWinControl;
 begin
-   iter := GetComponentIterator(Z_ORDER_SORT);
+   iter := GetComponents(Z_ORDER_SORT);
    while iter.HasNext do
    begin
       if Supports(iter.Next, IWinControl, lWinControl) then
@@ -251,7 +251,7 @@ begin
    end;
 end;
 
-function TProject.GetComponentIterator(const ASortType: integer = NO_SORT; const AClassName: string = ''): IIterator;
+function TProject.GetComponents(const ASortType: integer = NO_SORT; const AClassName: string = ''): IIterator;
 var
    i: integer;
    lIterator: TBaseIteratorFriend;
@@ -357,7 +357,7 @@ begin
 
    UpdateZOrder;
 
-   iter := GetComponentIterator(PAGE_INDEX_SORT);
+   iter := GetComponents(PAGE_INDEX_SORT);
    while iter.HasNext do
    begin
       if Supports(iter.Next, IXMLable, lXmlObj) and lXmlObj.Active then
@@ -420,7 +420,7 @@ begin
       RefreshSizeEdits;
       RefreshStatements;
       ImportCommentsFromXML(rootTag);
-      RefreshZOrderComponents;
+      RefreshZOrder;
       itr := TBaseFormIterator.Create;
       while itr.HasNext do
          TBaseForm(itr.Next).ImportSettingsFromXMLTag(rootTag);
@@ -890,7 +890,7 @@ var
 begin
    result := TStringList.Create;
    result.CaseSensitive := GInfra.CurrentLang.CaseSensitiveSyntax;
-   iter := GetComponentIterator(PAGE_INDEX_SORT);
+   iter := GetComponents(PAGE_INDEX_SORT);
    while iter.HasNext do
    begin
       if Supports(iter.Next, ITabbable, lTabObj) then
