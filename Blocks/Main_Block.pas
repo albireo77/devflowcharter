@@ -62,7 +62,6 @@ type
          procedure Paint; override;
          function GetFunctionLabel(var ARect: TRect): string;
          function GetDefaultWidth: integer; override;
-         function GetPinComments: IIterator; override;
    end;
 
 const
@@ -164,7 +163,7 @@ begin
       PaintTo(ACanvas, Left + FParentForm.HorzScrollBar.Position, Top + FParentForm.VertScrollBar.Position);
       if Expanded then
       begin
-         iter := GetPinComments;
+         iter := GetAllComments;
          while iter.HasNext do
          begin
             lComment := TComment(iter.Next);
@@ -207,7 +206,7 @@ begin
       result.Y := BoundsRect.Bottom + FParentForm.VertScrollBar.Position + MARGIN_Y;
       if Expanded then
       begin
-         iter := GetPinComments;
+         iter := GetAllComments;
          while iter.HasNext do
          begin
             lComment := TComment(iter.Next);
@@ -254,7 +253,7 @@ begin
    PaintTo(lBitmap.Canvas, 1, 1);
    if Expanded then
    begin
-      iter := GetPinComments;
+      iter := GetAllComments;
       while iter.HasNext do
       begin
          lComment := TComment(iter.Next);
@@ -495,7 +494,7 @@ begin
    Visible := AValue;
    if Expanded then
    begin
-      iter := GetPinComments;
+      iter := GetAllComments;
       while iter.HasNext do
          TComment(iter.Next).Visible := AValue;
    end;
@@ -503,32 +502,12 @@ begin
       BringAllToFront;
 end;
 
-function TMainBlock.GetPinComments: IIterator;
-var
-   lComment: TComment;
-   iterc: IIterator;
-   lIterator: TCommentIterator;
-begin
-   lIterator := TCommentIterator.Create;
-   iterc := GProject.GetComments;
-   while iterc.HasNext do
-   begin
-      lComment := TComment(iterc.Next);
-      if (lComment.PinControl is TBlock) and (TBlock(lComment.PinControl).TopParentBlock = Self) then
-      begin
-         SetLength(lIterator.FArray, Length(lIterator.FArray)+1);
-         lIterator.FArray[High(lIterator.FArray)] := lComment;
-      end;
-   end;
-   result := lIterator;
-end;
-
 procedure TMainBlock.BringAllToFront;
 var
    iter: IIterator;
 begin
    BringToFront;
-   iter := GetPinComments;
+   iter := GetAllComments;
    while iter.HasNext do
       TComment(iter.Next).BringToFront;
 end;
@@ -546,7 +525,7 @@ begin
       GChange := 1;
       if Expanded then
       begin
-         iter := GetPinComments;
+         iter := GetAllComments;
          while iter.HasNext do
          begin
             lComment := TComment(iter.Next);

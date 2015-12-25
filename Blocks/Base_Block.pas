@@ -188,6 +188,7 @@ type
          function ExtractBranchIndex(const AStr: string): integer;
          procedure PutTextControls; override;
          function GetDiamondPoint: TPoint; virtual;
+         function GetAllComments: IIterator;
       public
          Branch: TBranch;     // primary branch to order child blocks
          Expanded: boolean;
@@ -218,7 +219,7 @@ type
          function GetFoldedText: string;
          procedure SetFoldedText(const AText: string);
          function CountErrWarn: TErrWarnCount; override;
-         function GetPinBlock(const APoint: TPoint): TGroupBlock;
+         function GetPinControl(const APoint: TPoint): TGroupBlock;
          function GetPinComments: IIterator; override;
    end;
 
@@ -922,7 +923,7 @@ begin
    PutTextControls;
 end;
 
-function TGroupBlock.GetPinBlock(const APoint: TPoint): TGroupBlock;
+function TGroupBlock.GetPinControl(const APoint: TPoint): TGroupBlock;
 var
    iter: IIterator;
    lBlock: TBlock;
@@ -934,7 +935,7 @@ begin
       lBlock := TBlock(iter.Next);
       if PtInRect(lBlock.BoundsRect, ParentToClient(APoint, FParentForm)) and (lBlock is TGroupBlock) then
       begin
-         result := TGroupBlock(lBlock).GetPinBlock(APoint);
+         result := TGroupBlock(lBlock).GetPinControl(APoint);
          break;
       end;
    end;
@@ -945,16 +946,19 @@ var
    lComment: TComment;
    iterc: IIterator;
    lIterator: TCommentIterator;
+   l: integer;
 begin
+   l := 0;
    lIterator := TCommentIterator.Create;
    iterc := FParentBlock.GetPinComments;
    while iterc.HasNext do
    begin
       lComment := TComment(iterc.Next);
-      if PtInRect(BoundsRect, FParentBlock.ParentToClient(lComment.BoundsRect.TopLeft, FParentForm)) then
+      if PtInRect(ClientRect, ParentToClient(lComment.BoundsRect.TopLeft, FParentForm)) then
       begin
-         SetLength(lIterator.FArray, Length(lIterator.FArray)+1);
-         lIterator.FArray[High(lIterator.FArray)] := lComment;
+         SetLength(lIterator.FArray, l+1);
+         lIterator.FArray[l] := lComment;
+         l := l + 1;
       end;
    end;
    result := lIterator;
@@ -965,7 +969,9 @@ var
    lComment: TComment;
    iterc: IIterator;
    lIterator: TCommentIterator;
+   l: integer;
 begin
+   l := 0;
    lIterator := TCommentIterator.Create;
    iterc := GProject.GetComments;
    while iterc.HasNext do
@@ -973,8 +979,32 @@ begin
       lComment := TComment(iterc.Next);
       if lComment.PinControl = Self then
       begin
-         SetLength(lIterator.FArray, Length(lIterator.FArray)+1);
-         lIterator.FArray[High(lIterator.FArray)] := lComment;
+         SetLength(lIterator.FArray, l+1);
+         lIterator.FArray[l] := lComment;
+         l := l + 1;
+      end;
+   end;
+   result := lIterator;
+end;
+
+function TGroupBlock.GetAllComments: IIterator;
+var
+   lComment: TComment;
+   iterc: IIterator;
+   lIterator: TCommentIterator;
+   l: integer;
+begin
+   l := 0;
+   lIterator := TCommentIterator.Create;
+   iterc := GProject.GetComments;
+   while iterc.HasNext do
+   begin
+      lComment := TComment(iterc.Next);
+      if PtInRect(ClientRect, ParentToClient(lComment.BoundsRect.TopLeft, FParentForm)) then
+      begin
+         SetLength(lIterator.FArray, l+1);
+         lIterator.FArray[l] := lComment;
+         l := l + 1;
       end;
    end;
    result := lIterator;
@@ -1759,7 +1789,7 @@ var
    lTextControl: TCustomEdit;
    iter: IIterator;
    lComment: TComment;
-   lTopLeft: TPoint;
+   lTopLeft, lTopLeft2: TPoint;
 begin
    GChange := 1;
    Expanded := not Expanded;
@@ -1779,7 +1809,10 @@ begin
    end;
 
    if not Expanded then
-      lTopLeft := ClientToParent(Point(0, 0), FParentForm);
+   begin
+      lTopLeft := ClientToParent(ClientRect.TopLeft, FParentForm);
+      iter := GetAllComments;
+   end;
 
    if Expanded then
    begin
@@ -1835,22 +1868,29 @@ begin
 
    if Expanded then
    begin
-      lTopLeft := ClientToParent(Point(0, 0), FParentForm);
-      i := 1;
-   end
-   else
-      i := -1;
+      lTopLeft := ClientToParent(ClientRect.TopLeft, FParentForm);
+      iter := GetPinComments;
+   end;
 
-   iter := GetPinComments;
    while iter.HasNext do
    begin
       lComment := TComment(iter.Next);
+      if Expanded then
+      begin
+         lTopLeft2 := Point(lComment.Left + lTopLeft.X + FParentForm.HorzScrollBar.Position,
+                            lComment.Top + lTopLeft.Y + FParentForm.VertScrollBar.Position);
+         lComment.PinControl := GetPinControl(lTopLeft2);
+      end
+      else
+      begin
+         if not lComment.Visible then
+            continue;
+         lTopLeft2 := Point(lComment.Left - lTopLeft.X - FParentForm.HorzScrollBar.Position,
+                            lComment.Top - lTopLeft.Y - FParentForm.VertScrollBar.Position);
+         lComment.PinControl := Self;
+      end;
+      lComment.SetBounds(lTopLeft2.X, lTopLeft2.Y, lComment.Width, lComment.Height);
       lComment.Visible := Expanded;
-      if AResize then
-         lComment.SetBounds(lComment.Left + (lTopLeft.X + FParentForm.HorzScrollBar.Position) * i,
-                            lComment.Top + (lTopLeft.Y + FParentForm.VertScrollBar.Position) * i,
-                            lComment.Width,
-                            lComment.Height);
    end;
 
 end;

@@ -48,8 +48,8 @@ type
          function GetActive: boolean;
          procedure MyOnChange(Sender: TObject);
       public
-         property PinControl: TControl read FPinControl default nil;
-         property ParentForm: TMainForm read FParentForm default nil;
+         property PinControl: TControl read FPinControl write FPinControl;
+         property ParentForm: TMainForm read FParentForm;
          constructor Create(const AParent: TMainForm); overload;
          constructor Create(const AParent: TMainForm; const ALeft, ATop, AWidth, AHeight: Integer; const AUpdateZOrderComponents: boolean = true); overload;
          destructor Destroy; override;
@@ -223,7 +223,7 @@ begin
       lBlock := TUserFunction(iter.Next).Body;
       if (lBlock <> nil) and (lBlock.ParentForm = FParentForm) and lBlock.Visible and PtInRect(lBlock.BoundsRect, BoundsRect.TopLeft) then
       begin
-         FPinControl := lBlock.GetPinBlock(BoundsRect.TopLeft);
+         FPinControl := lBlock.GetPinControl(BoundsRect.TopLeft);
          break;
       end;
    end;
