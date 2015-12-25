@@ -168,12 +168,15 @@ begin
          while iter.HasNext do
          begin
             lComment := TComment(iter.Next);
-            lBStyle := lComment.BorderStyle;
-            lStart := lComment.SelStart;
-            lComment.BorderStyle := bsNone;
-            lComment.PaintTo(ACanvas, lComment.Left + lComment.ParentForm.HorzScrollBar.Position, lComment.Top + lComment.ParentForm.VertScrollBar.Position);
-            lComment.BorderStyle := lBStyle;
-            lComment.SelStart := lStart;
+            if lComment.Visible then
+            begin
+               lBStyle := lComment.BorderStyle;
+               lStart := lComment.SelStart;
+               lComment.BorderStyle := bsNone;
+               lComment.PaintTo(ACanvas, lComment.Left + lComment.ParentForm.HorzScrollBar.Position, lComment.Top + lComment.ParentForm.VertScrollBar.Position);
+               lComment.BorderStyle := lBStyle;
+               lComment.SelStart := lStart;
+            end;
          end;
       end;
       ACanvas.Unlock;
@@ -195,6 +198,7 @@ function TMainBlock.GetMaxBounds: TPoint;
 var
    lPoint: TPoint;
    iter: IIterator;
+   lComment: TComment;
 begin
    result := Point(0, 0);
    if Visible then
@@ -206,11 +210,15 @@ begin
          iter := GetPinComments;
          while iter.HasNext do
          begin
-            lPoint := TComment(iter.Next).GetMaxBounds;
-            if lPoint.X > result.X then
-               result.X := lPoint.X;
-            if lPoint.Y > result.Y then
-               result.Y := lPoint.Y;
+            lComment := TComment(iter.Next);
+            if lComment.Visible then
+            begin
+               lPoint := lComment.GetMaxBounds;
+               if lPoint.X > result.X then
+                  result.X := lPoint.X;
+               if lPoint.Y > result.Y then
+                  result.Y := lPoint.Y;
+            end;
          end;
       end;
    end;
@@ -250,12 +258,15 @@ begin
       while iter.HasNext do
       begin
          lComment := TComment(iter.Next);
-         lBStyle := lComment.BorderStyle;
-         lStart := lComment.SelStart;
-         lComment.BorderStyle := bsNone;
-         lComment.PaintTo(lBitmap.Canvas, lComment.Left-Left, lComment.Top-Top);
-         lComment.BorderStyle := lBStyle;
-         lComment.SelStart := lStart;
+         if lComment.Visible then
+         begin
+            lBStyle := lComment.BorderStyle;
+            lStart := lComment.SelStart;
+            lComment.BorderStyle := bsNone;
+            lComment.PaintTo(lBitmap.Canvas, lComment.Left-Left, lComment.Top-Top);
+            lComment.BorderStyle := lBStyle;
+            lComment.SelStart := lStart;
+         end;
       end;
    end;
    lBitmap.Canvas.Unlock;
