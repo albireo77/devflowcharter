@@ -321,6 +321,7 @@ begin
    OnMouseMove := MyOnMouseMove;
    OnClick     := MyOnClick;
    OnCanResize := MyOnCanResize;
+   //OnResize    := MyOnResize;
 end;
 
 constructor TGroupBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: Integer; const AHook: TPoint; const AId: integer = ID_INVALID);
@@ -1067,8 +1068,19 @@ begin
 end;
 
 procedure TBlock.ChangeColor(const AColor: TColor);
+var
+   iter: IIterator;
+   lComment: TComment;
 begin
    Color := AColor;
+   Repaint;
+   iter := GetPinComments;
+   while iter.HasNext do
+   begin
+      lComment := TComment(iter.Next);
+      if lComment.Visible then
+         lComment.Color := AColor;
+   end;
 end;
 
 procedure TBlock.ClearSelection;
@@ -1891,6 +1903,7 @@ begin
       end;
       lComment.SetBounds(lTopLeft2.X, lTopLeft2.Y, lComment.Width, lComment.Height);
       lComment.Visible := Expanded;
+      lComment.BringToFront;
    end;
 
 end;

@@ -518,8 +518,8 @@ var
    lComment: TComment;
    iter: IIterator;
 begin
-   y := Msg.WindowPos^.Y;
-   x := Msg.WindowPos^.X;
+   x := Msg.WindowPos^.x;
+   y := Msg.WindowPos^.y;
    if (x <> 0) or (y <> 0) then
    begin
       GChange := 1;
