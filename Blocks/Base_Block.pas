@@ -320,7 +320,6 @@ begin
    OnMouseMove := MyOnMouseMove;
    OnClick     := MyOnClick;
    OnCanResize := MyOnCanResize;
-   //OnResize    := MyOnResize;
 end;
 
 constructor TGroupBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: Integer; const AHook: TPoint; const AId: integer = ID_INVALID);
