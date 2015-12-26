@@ -163,7 +163,7 @@ type
          procedure Remove;
          function CanBeRemoved: boolean;
          function IsBoldDesc: boolean; virtual;
-         function GetPinComments: IIterator; virtual;
+         function GetComments: IIterator;
       published
          property Color;
          property OnMouseDown;
@@ -188,7 +188,6 @@ type
          function ExtractBranchIndex(const AStr: string): integer;
          procedure PutTextControls; override;
          function GetDiamondPoint: TPoint; virtual;
-         function GetAllComments: IIterator;
       public
          Branch: TBranch;     // primary branch to order child blocks
          Expanded: boolean;
@@ -220,7 +219,7 @@ type
          procedure SetFoldedText(const AText: string);
          function CountErrWarn: TErrWarnCount; override;
          function GetPinControl(const APoint: TPoint): TGroupBlock;
-         function GetPinComments: IIterator; override;
+         function GetPinComments: IIterator;
    end;
 
    TBranch = class(TObjectList, IIdentifiable)
@@ -942,7 +941,7 @@ begin
    end;
 end;
 
-function TBlock.GetPinComments: IIterator;
+function TBlock.GetComments: IIterator;
 var
    lComment: TComment;
    iterc: IIterator;
@@ -986,11 +985,6 @@ begin
       end;
    end;
    result := lIterator;
-end;
-
-function TGroupBlock.GetAllComments: IIterator;
-begin
-   result := inherited GetPinComments;
 end;
 
 procedure TBlock.PutTextControls;
@@ -1055,7 +1049,7 @@ var
    lComment: TComment;
 begin
    Color := AColor;
-   iter := GetPinComments;
+   iter := GetComments;
    while iter.HasNext do
    begin
       lComment := TComment(iter.Next);
@@ -1804,7 +1798,7 @@ begin
    if not Expanded then
    begin
       lTopLeft := ClientToParent(ClientRect.TopLeft, FParentForm);
-      iter := GetAllComments;
+      iter := GetComments;
    end;
 
    if Expanded then
@@ -2209,7 +2203,7 @@ begin
    lBitmap.Canvas.Lock;
    try
       PaintTo(lBitmap.Canvas.Handle, 1, 1);
-      iterc := GetPinComments;
+      iterc := GetComments;
       while iterc.HasNext do
       begin
          lComment := TComment(iterc.Next);

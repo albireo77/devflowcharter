@@ -163,7 +163,7 @@ begin
       PaintTo(ACanvas, Left + FParentForm.HorzScrollBar.Position, Top + FParentForm.VertScrollBar.Position);
       if Expanded then
       begin
-         iter := GetAllComments;
+         iter := GetComments;
          while iter.HasNext do
          begin
             lComment := TComment(iter.Next);
@@ -206,7 +206,7 @@ begin
       result.Y := BoundsRect.Bottom + FParentForm.VertScrollBar.Position + MARGIN_Y;
       if Expanded then
       begin
-         iter := GetAllComments;
+         iter := GetComments;
          while iter.HasNext do
          begin
             lComment := TComment(iter.Next);
@@ -253,7 +253,7 @@ begin
    PaintTo(lBitmap.Canvas, 1, 1);
    if Expanded then
    begin
-      iter := GetAllComments;
+      iter := GetComments;
       while iter.HasNext do
       begin
          lComment := TComment(iter.Next);
@@ -494,7 +494,7 @@ begin
    Visible := AValue;
    if Expanded then
    begin
-      iter := GetAllComments;
+      iter := GetComments;
       while iter.HasNext do
          TComment(iter.Next).Visible := AValue;
    end;
@@ -507,7 +507,7 @@ var
    iter: IIterator;
 begin
    BringToFront;
-   iter := GetAllComments;
+   iter := GetComments;
    while iter.HasNext do
       TComment(iter.Next).BringToFront;
 end;
@@ -525,7 +525,7 @@ begin
       GChange := 1;
       if Expanded then
       begin
-         iter := GetAllComments;
+         iter := GetComments;
          while iter.HasNext do
          begin
             lComment := TComment(iter.Next);
