@@ -832,8 +832,8 @@ begin
       lBlock := FBranchArray[i].First;
       if lBlock <> nil then
       begin
-         lLeft := FBranchArray[i].hook.X - lBlock.TopHook.X;
-         lTop := FBranchArray[i].hook.Y + 1;
+         lLeft := FBranchArray[i].Hook.X - lBlock.TopHook.X;
+         lTop := FBranchArray[i].Hook.Y + 1;
          lBlock.SetBounds(lLeft, lTop, lBlock.Width, lBlock.Height);
          lBlock := lBlock.Next;
          while lBlock <> nil do
