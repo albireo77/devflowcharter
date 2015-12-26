@@ -951,7 +951,7 @@ var
 begin
    l := 0;
    lIterator := TCommentIterator.Create;
-   iterc := FParentBlock.GetPinComments;
+   iterc := GProject.GetComments;
    while iterc.HasNext do
    begin
       lComment := TComment(iterc.Next);
@@ -989,26 +989,8 @@ begin
 end;
 
 function TGroupBlock.GetAllComments: IIterator;
-var
-   lComment: TComment;
-   iterc: IIterator;
-   lIterator: TCommentIterator;
-   l: integer;
 begin
-   l := 0;
-   lIterator := TCommentIterator.Create;
-   iterc := GProject.GetComments;
-   while iterc.HasNext do
-   begin
-      lComment := TComment(iterc.Next);
-      if PtInRect(ClientRect, ParentToClient(lComment.BoundsRect.TopLeft, FParentForm)) then
-      begin
-         SetLength(lIterator.FArray, l+1);
-         lIterator.FArray[l] := lComment;
-         l := l + 1;
-      end;
-   end;
-   result := lIterator;
+   result := inherited GetPinComments;
 end;
 
 procedure TBlock.PutTextControls;
@@ -1073,7 +1055,6 @@ var
    lComment: TComment;
 begin
    Color := AColor;
-   Repaint;
    iter := GetPinComments;
    while iter.HasNext do
    begin
