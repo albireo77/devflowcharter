@@ -246,7 +246,7 @@ end;
 
 procedure TUserFunction.SetActive(const AValue: boolean);
 begin
-   if AValue <> FActive then
+   if FActive <> AValue then
    begin
       FActive := AValue;
       if FBody <> nil then

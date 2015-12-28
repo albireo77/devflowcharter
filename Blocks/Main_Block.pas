@@ -41,7 +41,6 @@ type
          function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
          function GetDescription: string; override;
          procedure BringAllToFront;
-         procedure SetVisible(const AValue: boolean);
          function GetFromXML(const ATag: IXMLElement): TErrorType; override;
          procedure SaveInXML(const ATag: IXMLElement); override;
          procedure PaintToCanvas(const ACanvas: TCanvas);
@@ -485,21 +484,6 @@ begin
       lBlock.GenerateTree(AParentNode);
       lBlock := lBlock.Next;
    end;
-end;
-
-procedure TMainBlock.SetVisible(const AValue: boolean);
-var
-   iter: IIterator;
-begin
-   Visible := AValue;
-   if Expanded then
-   begin
-      iter := GetComments;
-      while iter.HasNext do
-         TComment(iter.Next).Visible := AValue;
-   end;
-   if Visible then
-      BringAllToFront;
 end;
 
 procedure TMainBlock.BringAllToFront;

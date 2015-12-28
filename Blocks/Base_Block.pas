@@ -99,6 +99,7 @@ type
          procedure DrawArrowLine(const ABeginPoint, AEndPoint: TPoint; const AArrowPos: TArrowPosition = arrEnd; const AColor: TColor = clBlack);
          function GetEllipseTextRect(const APoint: TPoint; const AText: string): TRect;
          function DrawEllipsedText(const APoint: TPoint; const AText: string): TRect;
+         procedure SetComments(const AVisible: boolean; const ATopLeft: TPoint);
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -164,6 +165,9 @@ type
          function CanBeRemoved: boolean;
          function IsBoldDesc: boolean; virtual;
          function GetComments: IIterator;
+         function GetPinComments: IIterator;
+         procedure SetVisible(const AValue: boolean; const ASetComments: boolean = true); virtual;
+         function GetPinControl(const APoint: TPoint): TControl; virtual;
       published
          property Color;
          property OnMouseDown;
@@ -188,6 +192,7 @@ type
          function ExtractBranchIndex(const AStr: string): integer;
          procedure PutTextControls; override;
          function GetDiamondPoint: TPoint; virtual;
+         procedure SetVisible(const AValue: boolean; const ASetComments: boolean = true); override;
       public
          Branch: TBranch;     // primary branch to order child blocks
          Expanded: boolean;
@@ -218,8 +223,7 @@ type
          function GetFoldedText: string;
          procedure SetFoldedText(const AText: string);
          function CountErrWarn: TErrWarnCount; override;
-         function GetPinControl(const APoint: TPoint): TGroupBlock;
-         function GetPinComments: IIterator;
+         function GetPinControl(const APoint: TPoint): TControl; override;
    end;
 
    TBranch = class(TObjectList, IIdentifiable)
@@ -922,20 +926,31 @@ begin
    PutTextControls;
 end;
 
-function TGroupBlock.GetPinControl(const APoint: TPoint): TGroupBlock;
+function TBlock.GetPinControl(const APoint: TPoint): TControl;
+begin
+   if PtInRect(ClientRect, ParentToClient(APoint, FParentForm)) then
+      result := Self
+   else
+      result := nil;
+end;
+
+function TGroupBlock.GetPinControl(const APoint: TPoint): TControl;
 var
    iter: IIterator;
-   lBlock: TBlock;
+   lControl: TControl;
 begin
-   result := Self;
-   iter := GetBlocks;
-   while iter.HasNext do
+   result := inherited GetPinControl(APoint);
+   if result <> nil then
    begin
-      lBlock := TBlock(iter.Next);
-      if PtInRect(lBlock.BoundsRect, ParentToClient(APoint, FParentForm)) and (lBlock is TGroupBlock) then
+      iter := GetBlocks;
+      while iter.HasNext do
       begin
-         result := TGroupBlock(lBlock).GetPinControl(APoint);
-         break;
+         lControl := TBlock(iter.Next).GetPinControl(APoint);
+         if lControl <> nil then
+         begin
+            result := lControl;
+            break;
+         end;
       end;
    end;
 end;
@@ -963,7 +978,7 @@ begin
    result := lIterator;
 end;
 
-function TGroupBlock.GetPinComments: IIterator;
+function TBlock.GetPinComments: IIterator;
 var
    lComment: TComment;
    iterc: IIterator;
@@ -1768,14 +1783,57 @@ begin
    result := false;
 end;
 
+procedure TBlock.SetComments(const AVisible: boolean; const ATopLeft: TPoint);
+var
+   iter: IIterator;
+   lComment: TComment;
+   lTopLeft: TPoint;
+begin
+   if AVisible then
+      iter := GetPinComments
+   else
+      iter := GetComments;
+   while iter.HasNext do
+   begin
+      lComment := TComment(iter.Next);
+      if AVisible then
+      begin
+         lTopLeft := Point(lComment.Left + ATopLeft.X + FParentForm.HorzScrollBar.Position,
+                           lComment.Top + ATopLeft.Y + FParentForm.VertScrollBar.Position);
+         lComment.PinControl := GetPinControl(lTopLeft);
+      end
+      else
+      begin
+         lTopLeft := Point(lComment.Left - ATopLeft.X - FParentForm.HorzScrollBar.Position,
+                           lComment.Top - ATopLeft.Y - FParentForm.VertScrollBar.Position);
+         lComment.PinControl := Self;
+      end;
+      lComment.SetBounds(lTopLeft.X, lTopLeft.Y, lComment.Width, lComment.Height);
+      lComment.Visible := AVisible;
+      lComment.BringToFront;
+   end;
+end;
+
+procedure TBlock.SetVisible(const AValue: boolean; const ASetComments: boolean = true);
+begin
+   if Visible <> AValue then
+   begin
+      Visible := AValue;
+      if ASetComments then
+         SetComments(AValue, ClientToParent(ClientRect.TopLeft, FParentForm));
+   end;
+end;
+
+procedure TGroupBlock.SetVisible(const AValue: boolean; const ASetComments: boolean = true);
+begin
+   inherited SetVisible(AValue, Expanded);
+end;
+
 procedure TGroupBlock.ExpandFold(const AResize: boolean);
 var
    lTmpWidth, lTmpHeight, i: integer;
    lBlock: TBlock;
    lTextControl: TCustomEdit;
-   iter: IIterator;
-   lComment: TComment;
-   lTopLeft, lTopLeft2: TPoint;
 begin
    GChange := 1;
    Expanded := not Expanded;
@@ -1792,12 +1850,6 @@ begin
          lBlock.Visible := Expanded;
          lBlock := lBlock.next;
       end;
-   end;
-
-   if not Expanded then
-   begin
-      lTopLeft := ClientToParent(ClientRect.TopLeft, FParentForm);
-      iter := GetComments;
    end;
 
    if Expanded then
@@ -1821,6 +1873,7 @@ begin
    end
    else
    begin
+      SetComments(Expanded, ClientToParent(ClientRect.TopLeft, FParentForm));
       lTmpWidth := FFoldParms.Width;
       lTmpHeight := FFoldParms.Height;
       FFoldParms.Width := Width;
@@ -1853,33 +1906,7 @@ begin
    end;
 
    if Expanded then
-   begin
-      lTopLeft := ClientToParent(ClientRect.TopLeft, FParentForm);
-      iter := GetPinComments;
-   end;
-
-   while iter.HasNext do
-   begin
-      lComment := TComment(iter.Next);
-      if Expanded then
-      begin
-         lTopLeft2 := Point(lComment.Left + lTopLeft.X + FParentForm.HorzScrollBar.Position,
-                            lComment.Top + lTopLeft.Y + FParentForm.VertScrollBar.Position);
-         lComment.PinControl := GetPinControl(lTopLeft2);
-      end
-      else
-      begin
-         if not lComment.Visible then
-            continue;
-         lTopLeft2 := Point(lComment.Left - lTopLeft.X - FParentForm.HorzScrollBar.Position,
-                            lComment.Top - lTopLeft.Y - FParentForm.VertScrollBar.Position);
-         lComment.PinControl := Self;
-      end;
-      lComment.SetBounds(lTopLeft2.X, lTopLeft2.Y, lComment.Width, lComment.Height);
-      lComment.Visible := Expanded;
-      lComment.BringToFront;
-   end;
-
+      SetComments(Expanded, ClientToParent(ClientRect.TopLeft, FParentForm));
 end;
 
 function TBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
