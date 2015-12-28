@@ -576,7 +576,7 @@ begin
          not lBlock.ParentBlock.Expanded or ((lBlock is TReturnBlock) and (lBlock.ParentBranch.FindInstanceOf(TReturnBlock) <> -1)) then exit;
       lBlock.ParentBranch.UndoRemove(lBlock);
       lBlock.ParentBlock.ResizeWithDrawLock;
-      lBlock.Show;
+      lBlock.SetVisible(true);
       NavigatorForm.Repaint;
    end
    else if Supports(GClpbrd.UndoObject, IXMLable, lActiveObject) then
@@ -950,12 +950,13 @@ begin
    begin
       GClpbrd.UndoObject.Free;
       lBlock := TBlock(lComponent);
+      lBlock.ClearSelection;
       if lBlock.ParentBranch <> nil then
       begin
          lBlock.ParentBranch.Remove(lBlock);
          if lBlock.ParentBlock <> nil then
             lBlock.ParentBlock.ResizeWithDrawLock;
-         lBlock.Hide;
+         lBlock.SetVisible(false);
          GClpbrd.UndoObject := lBlock;
       end
       else
