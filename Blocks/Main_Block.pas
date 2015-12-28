@@ -502,8 +502,8 @@ var
    lComment: TComment;
    iter: IIterator;
 begin
-   x := Msg.WindowPos^.x;
-   y := Msg.WindowPos^.y;
+   x := Msg.WindowPos^.x - Left;
+   y := Msg.WindowPos^.y - Top;
    if (x <> 0) or (y <> 0) then
    begin
       GChange := 1;
@@ -515,7 +515,7 @@ begin
             lComment := TComment(iter.Next);
             if lComment.Visible then
             begin
-               lComment.SetBounds(lComment.Left+x-Left, lComment.Top+y-Top, lComment.Width, lComment.Height);
+               lComment.SetBounds(lComment.Left+x, lComment.Top+y, lComment.Width, lComment.Height);
                lComment.BringToFront;
             end;
          end;
