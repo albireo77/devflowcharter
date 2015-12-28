@@ -35,7 +35,6 @@ type
          FParentForm: TMainForm;
          FActive: boolean;
          FZOrderValue: integer;
-         procedure PinToControl(const UpdateZOrderComponents: boolean = true);
       protected
          procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -127,7 +126,6 @@ begin
    PopupMenu := AParent.PopupMenu;
    SetBounds(ALeft, ATop, AWidth, AHeight);
    GProject.AddComponent(Self);
-   PinToControl(AUpdateZOrderComponents);
 
    OnKeyDown   := MyOnKeyDown;
    OnMouseDown := MouseDown;
@@ -159,7 +157,6 @@ begin
          BringToFront;
          ReleaseCapture;
          SendMessage(Handle, WM_SYSCOMMAND, $F012, 0);
-         PinToControl;
          FParentForm.SetScrollBars
       end;
    end;
@@ -206,27 +203,6 @@ end;
 procedure TComment.MyOnChange(Sender: TObject);
 begin
    NavigatorForm.Repaint;
-end;
-
-procedure TComment.PinToControl(const UpdateZOrderComponents: boolean = true);
-var
-   iter: IIterator;
-   lBlock: TMainBlock;
-begin
-   FPinControl := nil;
-   if UpdateZOrderComponents then
-      GProject.UpdateZOrder;
-   iter := GProject.GetUserFunctions(Z_ORDER_SORT);
-   iter.Reverse;
-   while iter.HasNext do
-   begin
-      lBlock := TUserFunction(iter.Next).Body;
-      if (lBlock <> nil) and (lBlock.ParentForm = FParentForm) and lBlock.Visible and PtInRect(lBlock.BoundsRect, BoundsRect.TopLeft) then
-      begin
-         FPinControl := lBlock.GetPinControl(BoundsRect.TopLeft);
-         break;
-      end;
-   end;
 end;
 
 procedure TComment.CMMouseLeave(var Msg: TMessage);

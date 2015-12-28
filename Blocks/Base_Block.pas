@@ -167,7 +167,6 @@ type
          function GetComments: IIterator;
          function GetPinComments: IIterator;
          procedure SetVisible(const AValue: boolean; const ASetComments: boolean = true); virtual;
-         function GetPinControl(const APoint: TPoint): TControl; virtual;
       published
          property Color;
          property OnMouseDown;
@@ -223,7 +222,6 @@ type
          function GetFoldedText: string;
          procedure SetFoldedText(const AText: string);
          function CountErrWarn: TErrWarnCount; override;
-         function GetPinControl(const APoint: TPoint): TControl; override;
    end;
 
    TBranch = class(TObjectList, IIdentifiable)
@@ -924,35 +922,6 @@ begin
       end;
    end;
    PutTextControls;
-end;
-
-function TBlock.GetPinControl(const APoint: TPoint): TControl;
-begin
-   if PtInRect(ClientRect, ParentToClient(APoint, FParentForm)) then
-      result := Self
-   else
-      result := nil;
-end;
-
-function TGroupBlock.GetPinControl(const APoint: TPoint): TControl;
-var
-   iter: IIterator;
-   lControl: TControl;
-begin
-   result := inherited GetPinControl(APoint);
-   if result <> nil then
-   begin
-      iter := GetBlocks;
-      while iter.HasNext do
-      begin
-         lControl := TBlock(iter.Next).GetPinControl(APoint);
-         if lControl <> nil then
-         begin
-            result := lControl;
-            break;
-         end;
-      end;
-   end;
 end;
 
 function TBlock.GetComments: IIterator;
@@ -1788,6 +1757,7 @@ var
    iter: IIterator;
    lComment: TComment;
    lTopLeft: TPoint;
+   i: integer;
 begin
    if AVisible then
       iter := GetPinComments
@@ -1798,16 +1768,16 @@ begin
       lComment := TComment(iter.Next);
       if AVisible then
       begin
-         lTopLeft := Point(lComment.Left + ATopLeft.X + FParentForm.HorzScrollBar.Position,
-                           lComment.Top + ATopLeft.Y + FParentForm.VertScrollBar.Position);
-         lComment.PinControl := GetPinControl(lTopLeft);
+         i := 1;
+         lComment.PinControl := nil;
       end
       else
       begin
-         lTopLeft := Point(lComment.Left - ATopLeft.X - FParentForm.HorzScrollBar.Position,
-                           lComment.Top - ATopLeft.Y - FParentForm.VertScrollBar.Position);
+         i := -1;
          lComment.PinControl := Self;
       end;
+      lTopLeft := Point(lComment.Left + (ATopLeft.X + FParentForm.HorzScrollBar.Position) * i,
+                        lComment.Top + (ATopLeft.Y + FParentForm.VertScrollBar.Position) * i);
       lComment.SetBounds(lTopLeft.X, lTopLeft.Y, lComment.Width, lComment.Height);
       lComment.Visible := AVisible;
       lComment.BringToFront;
