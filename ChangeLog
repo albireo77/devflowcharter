@@ -1,3 +1,6 @@
+3.4.2 [29.12.2015]
+- many improvements to comments (sticky to every block, automatically changing position, color etc.)
+
 3.4.1 [08.12.2015]
 - fix not drawing block's frame after loading project
 - minor fixes and optimizations
