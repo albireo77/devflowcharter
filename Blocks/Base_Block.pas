@@ -85,6 +85,7 @@ type
          procedure NCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
          procedure WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo); message WM_GETMINMAXINFO;
          procedure WMExitSizeMove(var Msg: TMessage); message WM_EXITSIZEMOVE;
+         procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
          procedure OnMouseLeave; virtual;
          procedure Paint; override;
          procedure DrawI;
@@ -191,7 +192,6 @@ type
          function ExtractBranchIndex(const AStr: string): integer;
          procedure PutTextControls; override;
          function GetDiamondPoint: TPoint; virtual;
-         procedure SetVisible(const AValue: boolean; const ASetComments: boolean = true); override;
       public
          Branch: TBranch;     // primary branch to order child blocks
          Expanded: boolean;
@@ -222,6 +222,7 @@ type
          function GetFoldedText: string;
          procedure SetFoldedText(const AText: string);
          function CountErrWarn: TErrWarnCount; override;
+         procedure SetVisible(const AValue: boolean; const ASetComments: boolean = true); override;
    end;
 
    TBranch = class(TObjectList, IIdentifiable)
@@ -574,6 +575,30 @@ end;
 procedure TBlock.ChangeFrame;
 begin
    Frame := not Frame;
+end;
+
+procedure TBlock.WMWindowPosChanging(var Msg: TWMWindowPosChanging);
+var
+   y, x: integer;
+   lComment: TComment;
+   iter: IIterator;
+begin
+   x := Msg.WindowPos^.x;
+   y := Msg.WindowPos^.y;
+   if (x <> 0) or (y <> 0) then
+   begin
+      iter := GetComments;
+      while iter.HasNext do
+      begin
+         lComment := TComment(iter.Next);
+         if lComment.Visible then
+         begin
+            lComment.SetBounds(lComment.Left+x-Left, lComment.Top+y-Top, lComment.Width, lComment.Height);
+            lComment.BringToFront;
+         end;
+      end;
+   end;
+   inherited;
 end;
 
 function TGroupBlock.GenerateNestedCode(const ALines: TStringList; const ABranchInd, ADeep: integer; const ALangId: string): integer;
@@ -1053,24 +1078,23 @@ var
    i: integer;
    lBlock: TBlock;
 begin
-
    inherited ChangeColor(AColor);
-
-   for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
+   if Expanded then
    begin
-      lBlock := FBranchArray[i].First;
-      while lBlock <> nil do
+      for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
       begin
-         lBlock.ChangeColor(AColor);
-         lBlock := lBlock.Next;
+         lBlock := FBranchArray[i].First;
+         while lBlock <> nil do
+         begin
+            lBlock.ChangeColor(AColor);
+            lBlock := lBlock.Next;
+         end;
       end;
    end;
-   
    if GSettings.FoldColor = GSettings.DesktopColor then
       FMemoFolder.Color := AColor
    else
       FMemoFolder.Color := GSettings.FoldColor;
-
 end;
 
 procedure TBlock.SelectBlock(const APoint: TPoint);

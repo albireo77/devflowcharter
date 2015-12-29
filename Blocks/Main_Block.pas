@@ -57,7 +57,6 @@ type
          FStopLabel: string;
          procedure MyOnResize(Sender: TObject);
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); override;
-         procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
          procedure Paint; override;
          function GetFunctionLabel(var ARect: TRect): string;
          function GetDefaultWidth: integer; override;
@@ -494,34 +493,6 @@ begin
    iter := GetComments;
    while iter.HasNext do
       TComment(iter.Next).BringToFront;
-end;
-
-procedure TMainBlock.WMWindowPosChanging(var Msg: TWMWindowPosChanging);
-var
-   x, y: integer;
-   lComment: TComment;
-   iter: IIterator;
-begin
-   x := Msg.WindowPos^.x;
-   y := Msg.WindowPos^.y;
-   if (x <> 0) or (y <> 0) then
-   begin
-      GChange := 1;
-      if Expanded then
-      begin
-         iter := GetComments;
-         while iter.HasNext do
-         begin
-            lComment := TComment(iter.Next);
-            if lComment.Visible then
-            begin
-               lComment.SetBounds(lComment.Left+x-Left, lComment.Top+y-Top, lComment.Width, lComment.Height);
-               lComment.BringToFront;
-            end;
-         end;
-      end;
-   end;
-   inherited;
 end;
 
 procedure TMainBlock.SaveInXML(const ATag: IXMLElement);
