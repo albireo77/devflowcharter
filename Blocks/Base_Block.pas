@@ -1777,12 +1777,12 @@ begin
    begin
       GClpbrd.UndoObject.Free;
       ClearSelection;
+      SetVisible(false);
       if FParentBranch <> nil then
       begin
          FParentBranch.Remove(Self);
          if FParentBlock <> nil then
             FParentBlock.ResizeWithDrawLock;
-         SetVisible(false);
       end;
       GClpbrd.UndoObject := GetUndoObject;
       if GSettings.UpdateEditor then
