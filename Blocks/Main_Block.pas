@@ -60,6 +60,7 @@ type
          procedure Paint; override;
          function GetFunctionLabel(var ARect: TRect): string;
          function GetDefaultWidth: integer; override;
+         procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
    end;
 
 const
@@ -516,6 +517,12 @@ end;
 function TMainBlock.IsBoldDesc: boolean;
 begin
    result := true;
+end;
+
+procedure TMainBlock.WMWindowPosChanging(var Msg: TWMWindowPosChanging);
+begin
+   MoveComments(Msg.WindowPos^.x, Msg.WindowPos^.y);
+   inherited;
 end;
 
 end.

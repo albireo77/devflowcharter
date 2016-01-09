@@ -85,7 +85,6 @@ type
          procedure NCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
          procedure WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo); message WM_GETMINMAXINFO;
          procedure WMExitSizeMove(var Msg: TMessage); message WM_EXITSIZEMOVE;
-         procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
          procedure OnMouseLeave; virtual;
          procedure Paint; override;
          procedure DrawI;
@@ -101,6 +100,7 @@ type
          function GetEllipseTextRect(const APoint: TPoint; const AText: string): TRect;
          function DrawEllipsedText(const APoint: TPoint; const AText: string): TRect;
          procedure SetComments(const AVisible: boolean; const ATopLeft: TPoint);
+         procedure MoveComments(const x, y: integer);
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -187,7 +187,7 @@ type
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
          procedure SetWidth(const AMinX: integer); virtual; abstract;
          procedure OnMouseLeave; override;
-         procedure LinkChildBlocks(const idx: integer = PRIMARY_BRANCH_IND-1);
+         procedure LinkBlocks(const idx: integer = PRIMARY_BRANCH_IND-1);
          procedure Paint; override;
          function ExtractBranchIndex(const AStr: string): integer;
          procedure PutTextControls; override;
@@ -577,14 +577,12 @@ begin
    Frame := not Frame;
 end;
 
-procedure TBlock.WMWindowPosChanging(var Msg: TWMWindowPosChanging);
+procedure TBlock.MoveComments(const x, y: integer);
 var
-   y, x: integer;
-   lComment: TComment;
    iter: IIterator;
+   xDiff, yDiff: integer;
+   lComment: TComment;
 begin
-   x := Msg.WindowPos^.x;
-   y := Msg.WindowPos^.y;
    if (x <> 0) or (y <> 0) then
    begin
       iter := GetComments;
@@ -598,7 +596,6 @@ begin
          end;
       end;
    end;
-   inherited;
 end;
 
 function TGroupBlock.GenerateNestedCode(const ALines: TStringList; const ABranchInd, ADeep: integer; const ALangId: string): integer;
@@ -714,7 +711,7 @@ begin
          if VResizeInd then
          begin
             if Self is TGroupBlock then
-               TGroupBlock(Self).LinkChildBlocks;
+               TGroupBlock(Self).LinkBlocks;
             if FParentBlock <> nil then
                FParentBlock.ResizeVert(true);
             VResizeInd := false;
@@ -775,7 +772,7 @@ procedure TGroupBlock.ResizeVert(const AContinue: boolean);
 begin
 
    Height := Branch.Height + Branch.Hook.Y + FInitParms.HeightAffix;
-   LinkChildBlocks;
+   LinkBlocks;
 
    if AContinue and (FParentBlock <> nil) then
       FParentBlock.ResizeVert(AContinue);
@@ -790,7 +787,7 @@ begin
 
    Branch.Hook.X := FInitParms.BranchPoint.X;
    TopHook.X := Branch.Hook.X;
-   LinkChildBlocks;
+   LinkBlocks;
 
    lBlock := Branch.First;
    if lBlock = nil then   // case if primary branch is empty
@@ -811,7 +808,7 @@ begin
 
       Branch.Hook.X := Branch.Hook.X + 30 - lLeftX;
       TopHook.X := Branch.Hook.X;
-      LinkChildBlocks;
+      LinkBlocks;
       lBlock := Branch.Last;
       BottomHook := lBlock.Left + lBlock.BottomPoint.X;
 
@@ -837,7 +834,7 @@ begin
 
 end;
 
-procedure TGroupBlock.LinkChildBlocks(const idx: integer = PRIMARY_BRANCH_IND-1);
+procedure TGroupBlock.LinkBlocks(const idx: integer = PRIMARY_BRANCH_IND-1);
 var
    lBlock, lBlockPrev: TBlock;
    i, lStart, lStop, lLeft, lTop: integer;
@@ -861,6 +858,7 @@ begin
       begin
          lLeft := FBranchArray[i].Hook.X - lBlock.TopHook.X;
          lTop := FBranchArray[i].Hook.Y + 1;
+         lBlock.MoveComments(lLeft, lTop);
          lBlock.SetBounds(lLeft, lTop, lBlock.Width, lBlock.Height);
          lBlock := lBlock.Next;
          while lBlock <> nil do
@@ -868,6 +866,7 @@ begin
             lBlockPrev := lBlock.Prev;
             lLeft := lBlockPrev.BottomPoint.X + lBlockPrev.Left - lBlock.TopHook.X;
             lTop :=  lBlockPrev.BoundsRect.Bottom;
+            lBlock.MoveComments(lLeft, lTop);
             lBlock.SetBounds(lLeft, lTop, lBlock.Width, lBlock.Height);
             lBlock := lBlock.Next;
          end;
@@ -956,17 +955,20 @@ var
    lIterator: TCommentIterator;
    l: integer;
 begin
-   l := 0;
    lIterator := TCommentIterator.Create;
-   iterc := GProject.GetComments;
-   while iterc.HasNext do
+   if Visible then
    begin
-      lComment := TComment(iterc.Next);
-      if PtInRect(ClientRect, ParentToClient(lComment.BoundsRect.TopLeft, FParentForm)) then
+      l := 0;
+      iterc := GProject.GetComments;
+      while iterc.HasNext do
       begin
-         SetLength(lIterator.FArray, l+1);
-         lIterator.FArray[l] := lComment;
-         l := l + 1;
+         lComment := TComment(iterc.Next);
+         if PtInRect(ClientRect, ParentToClient(lComment.BoundsRect.TopLeft, FParentForm)) then
+         begin
+            SetLength(lIterator.FArray, l+1);
+            lIterator.FArray[l] := lComment;
+            l := l + 1;
+         end;
       end;
    end;
    result := lIterator;
@@ -1784,22 +1786,22 @@ var
    i: integer;
 begin
    if AVisible then
-      iter := GetPinComments
+   begin
+      i := 1;
+      iter := GetPinComments;
+   end
    else
+   begin
+      i := -1;
       iter := GetComments;
+   end;
    while iter.HasNext do
    begin
       lComment := TComment(iter.Next);
       if AVisible then
-      begin
-         i := 1;
-         lComment.PinControl := nil;
-      end
+         lComment.PinControl := nil
       else
-      begin
-         i := -1;
          lComment.PinControl := Self;
-      end;
       lTopLeft := Point(lComment.Left + (ATopLeft.X + FParentForm.HorzScrollBar.Position) * i,
                         lComment.Top + (ATopLeft.Y + FParentForm.VertScrollBar.Position) * i);
       lComment.SetBounds(lTopLeft.X, lTopLeft.Y, lComment.Width, lComment.Height);
@@ -1812,9 +1814,9 @@ procedure TBlock.SetVisible(const AValue: boolean; const ASetComments: boolean =
 begin
    if Visible <> AValue then
    begin
-      Visible := AValue;
       if ASetComments then
          SetComments(AValue, ClientToParent(ClientRect.TopLeft, FParentForm));
+      Visible := AValue;
    end;
 end;
 

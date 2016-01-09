@@ -954,9 +954,9 @@ begin
       if lBlock.ParentBranch <> nil then
       begin
          lBlock.ParentBranch.Remove(lBlock);
+         lBlock.SetVisible(false);
          if lBlock.ParentBlock <> nil then
             lBlock.ParentBlock.ResizeWithDrawLock;
-         lBlock.SetVisible(false);
          GClpbrd.UndoObject := lBlock;
       end
       else

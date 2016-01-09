@@ -252,7 +252,7 @@ begin
       left_edge := GetRMostX(i-1) + 60;
       lBranch.Hook.X := left_edge;
       left_x := left_edge;
-      LinkChildBlocks(i);
+      LinkBlocks(i);
 
       lBlock := lBranch.First;
       while lBlock <> nil do
@@ -263,7 +263,7 @@ begin
       end;
 
       Inc(lBranch.hook.X, left_edge-left_x);
-      LinkChildBlocks(i);
+      LinkBlocks(i);
       PlaceBranchStatement(lBranch);
       if lBranch.FindInstanceOf(TReturnBlock) = -1 then
       begin
@@ -315,7 +315,7 @@ begin
          lBranch.Hook.Y := lMaxHeight - lBranch.Height + 99;
    end;
 
-   LinkChildBlocks;
+   LinkBlocks;
 
    if AContinue then
       ParentBlock.ResizeVert(AContinue);

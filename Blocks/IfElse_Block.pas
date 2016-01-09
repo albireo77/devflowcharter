@@ -174,7 +174,7 @@ begin
       exit;
    end;
 
-   LinkChildBlocks;
+   LinkBlocks;
 
    if Ired <> FALSE_BRANCH_IND then           // TRUE branch
    begin
@@ -188,7 +188,7 @@ begin
             lBlock := lBlock.Next;
          until lBlock = nil;
          TrueBranch.Hook.X := TrueBranch.Hook.X - lLeftX + 10;
-         LinkChildBlocks;
+         LinkBlocks;
 
          lBlock := TrueBranch.First;
          lMaxXTrue := BottomHook - 30;
@@ -203,7 +203,7 @@ begin
          BottomPoint.X := BottomHook;
          Width := Width + lDlt + 10;
          Inc(FalseBranch.Hook.X, lDlt);
-         LinkChildBlocks;
+         LinkBlocks;
          TrueHook := TrueBranch.Last.Left + TrueBranch.Last.BottomPoint.X;
          if FalseBranch.Last <> nil then
             FalseHook := FalseBranch.Last.Left + FalseBranch.Last.BottomPoint.X
@@ -229,7 +229,7 @@ begin
          until lBlock = nil;
          lDlt := BottomHook + 30 - lMinXFalse;
          FalseBranch.Hook.X := FalseBranch.Hook.X + lDlt;
-         LinkChildBlocks;
+         LinkBlocks;
 
          lRightX := 0;
          lBlock := FalseBranch.First;
@@ -239,7 +239,7 @@ begin
             lBlock := lBlock.next;
          until lBlock = nil;
          Width := lRightX + 10;
-         LinkChildBlocks;
+         LinkBlocks;
          FalseHook := FalseBranch.Last.Left + FalseBranch.Last.BottomPoint.X;
          if TrueBranch.Last <> nil then
             TrueHook := TrueBranch.Last.Left + TrueBranch.Last.BottomPoint.X
@@ -274,7 +274,7 @@ begin
       TrueBranch.Hook.Y := Height - lHeightTrue - 31;
    end;
 
-   LinkChildBlocks;
+   LinkBlocks;
 
    if AContinue then
       ParentBlock.ResizeVert(AContinue);
