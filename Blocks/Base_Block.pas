@@ -101,6 +101,7 @@ type
          function DrawEllipsedText(const APoint: TPoint; const AText: string): TRect;
          procedure SetComments(const AVisible: boolean; const ATopLeft: TPoint);
          procedure MoveComments(const x, y: integer);
+         function GetUndoObject: TObject; virtual;
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -162,7 +163,7 @@ type
          function LockDrawing: boolean;
          procedure UnLockDrawing;
          function GetFocusColor: TColor;
-         procedure Remove;
+         function Remove: boolean; virtual;
          function CanBeRemoved: boolean;
          function IsBoldDesc: boolean; virtual;
          function GetComments: IIterator;
@@ -1764,12 +1765,29 @@ begin
    result := Visible;
 end;
 
-procedure TBlock.Remove;
+function TBlock.GetUndoObject: TObject;
 begin
-   if CanBeRemoved then
+   result := Self;
+end;
+
+function TBlock.Remove: boolean;
+begin
+   result := CanBeRemoved;
+   if result then
    begin
-      FParentForm.PopupMenu.PopupComponent := Self;
-      FParentForm.miRemove.Click;
+      GClpbrd.UndoObject.Free;
+      ClearSelection;
+      if FParentBranch <> nil then
+      begin
+         FParentBranch.Remove(Self);
+         if FParentBlock <> nil then
+            FParentBlock.ResizeWithDrawLock;
+         SetVisible(false);
+      end;
+      GClpbrd.UndoObject := GetUndoObject;
+      if GSettings.UpdateEditor then
+         TInfra.GetEditorForm.RefreshEditorForObject(nil);
+      NavigatorForm.Repaint;
    end;
 end;
 
@@ -2349,8 +2367,8 @@ var
    lHeader: TUserFunctionHeader;
 begin
    lHeader := nil;
-   if TMainBlock(FTopParentBlock).OwnerUserFunction <> nil then
-      lHeader := TUserFunction(TMainBlock(FTopParentBlock).OwnerUserFunction).Header;
+   if TMainBlock(FTopParentBlock).OwnerFunction <> nil then
+      lHeader := TUserFunction(TMainBlock(FTopParentBlock).OwnerFunction).Header;
    result := (lHeader <> nil) and (TInfra.IsRestricted(lHeader.Font.Color) or lHeader.chkExtDeclare.Checked);
 end;
 

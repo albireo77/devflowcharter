@@ -54,7 +54,7 @@ type
     function CanBeFocused: boolean;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     function GetFocusColor: TColor;
-    procedure Remove;
+    function Remove: boolean;
     function CanBeRemoved: boolean;
     function IsBoldDesc: boolean;
   published
@@ -292,10 +292,11 @@ begin
    result := Font.Color;
 end;
 
-procedure TStatement.Remove;
+function TStatement.Remove: boolean;
 begin
-   if CanBeRemoved then
-      TBlock(Parent).Remove;
+   result := CanBeRemoved;
+   if result then
+      result := TBlock(Parent).Remove;
 end;
 
 function TStatement.CanBeRemoved: boolean;

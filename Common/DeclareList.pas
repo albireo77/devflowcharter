@@ -79,7 +79,7 @@ type
          function RetrieveFocus(AInfo: TFocusInfo): boolean;
          function CanBeFocused: boolean;
          function GetFocusColor: TColor;
-         procedure Remove;
+         function Remove: boolean;
          function CanBeRemoved: boolean;
          function IsBoldDesc: boolean;
          procedure SetDefaultFocus;
@@ -1051,8 +1051,9 @@ begin
    result := OK_COLOR;
 end;
 
-procedure TDeclareList.Remove;
+function TDeclareList.Remove: boolean;
 begin
+   result := CanBeRemoved;
 end;
 
 function TDeclareLIst.CanBeRemoved: boolean;

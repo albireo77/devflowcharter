@@ -100,7 +100,7 @@ type
       function RetrieveFocus(AInfo: TFocusInfo): boolean;
       function CanBeFocused: boolean;
       function GetFocusColor: TColor;
-      procedure Remove;
+      function Remove: boolean;
       function CanBeRemoved: boolean;
       function IsBoldDesc: boolean;
    end;

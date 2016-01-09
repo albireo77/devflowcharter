@@ -84,7 +84,7 @@ type
          function HasInvalidElement: boolean;
          function HasFocusedComboBox: boolean;
          function GetFocusColor: TColor;
-         procedure Remove;
+         function Remove: boolean;
          function CanBeRemoved: boolean;
          function IsBoldDesc: boolean;
    end;
@@ -436,9 +436,10 @@ begin
    result := Font.Color;
 end;
 
-procedure TTabComponent.Remove;
+function TTabComponent.Remove: boolean;
 begin
-   if CanBeRemoved then
+   result := CanBeRemoved;
+   if result then
    begin
       FParentForm.pgcTabs.ActivePage := Self;
       FParentForm.miRemove.Click;

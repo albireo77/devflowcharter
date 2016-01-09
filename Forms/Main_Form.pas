@@ -940,35 +940,12 @@ end;
 procedure TMainForm.miRemoveClick(Sender: TObject);
 var
    lComponent: TComponent;
-   lBlock: TBlock;
-   lFunction: TUserFunction;
 begin
    lComponent := PopupMenu.PopupComponent;
    if (lComponent = GClpbrd.Instance) or (GClpbrd.UndoObject = GClpbrd.Instance) then
       GClpbrd.Instance := nil;
    if lComponent is TBlock then
-   begin
-      GClpbrd.UndoObject.Free;
-      lBlock := TBlock(lComponent);
-      lBlock.ClearSelection;
-      if lBlock.ParentBranch <> nil then
-      begin
-         lBlock.ParentBranch.Remove(lBlock);
-         lBlock.SetVisible(false);
-         if lBlock.ParentBlock <> nil then
-            lBlock.ParentBlock.ResizeWithDrawLock;
-         GClpbrd.UndoObject := lBlock;
-      end
-      else
-      begin
-         lFunction := TUserFunction(TMainBlock(lBlock.TopParentBlock).OwnerUserFunction);
-         lFunction.Active := false;
-         GClpbrd.UndoObject := lFunction;
-      end;
-      if GSettings.UpdateEditor then
-         TInfra.GetEditorForm.RefreshEditorForObject(nil);
-      NavigatorForm.Repaint;
-   end
+      TBlock(lComponent).Remove
    else if lComponent is TComment then
       lComponent.Free;
    GChange := 1;
@@ -1040,7 +1017,7 @@ begin
          if ExportDialog.FilterIndex = 1 then
          begin
             if lBlock is TMainBlock then
-               status := TXMLProcessor.ExportToXMLFile(ExportDialog.Filename, TUserFunction(TMainBlock(lBlock).OwnerUserFunction).ExportToXMLTag)
+               status := TXMLProcessor.ExportToXMLFile(ExportDialog.Filename, TUserFunction(TMainBlock(lBlock).OwnerFunction).ExportToXMLTag)
             else
                status := lBlock.ExportToXMLFile(ExportDialog.FileName);
             if status <> errNone then

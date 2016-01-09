@@ -34,7 +34,7 @@ type
    TMainBlock = class(TGroupBlock, IWinControl, IMaxBoundable)
       public
          ShowI: boolean;
-         OwnerUserFunction: TObject;
+         OwnerFunction: TObject;
          constructor Create(const AParent: TMainForm; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
          constructor Create(const AParent: TMainForm; const ATopLeft: TPoint); overload;
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
@@ -51,6 +51,7 @@ type
          procedure SetZOrderValue(const AValue: integer);
          function GetZOrderValue: integer;
          function IsBoldDesc: boolean; override;
+         function Remove: boolean; override;
       protected
          FZOrderValue: integer;
          FStartLabel,
@@ -61,6 +62,7 @@ type
          function GetFunctionLabel(var ARect: TRect): string;
          function GetDefaultWidth: integer; override;
          procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
+         function GetUndoObject: TObject; override;
    end;
 
 const
@@ -119,7 +121,6 @@ begin
    OnResize := MyOnResize;
    FStatement.Free;
    FStatement := nil;
-   OwnerUserFunction := nil;
 end;
 
 constructor TMainBlock.Create(const AParent: TMainForm; const ATopLeft: TPoint);
@@ -319,10 +320,10 @@ var
 begin
    result := '';
    ARect := Rect(Branch.Hook.X+75, 7, 0, 0);
-   if GSettings.ShowFlowchartLabels and (OwnerUserFunction <> nil) and Expanded then
+   if GSettings.ShowFlowchartLabels and (OwnerFunction <> nil) and Expanded then
    begin
       lLang := nil;
-      lHeader := TUserFunction(OwnerUserFunction).Header;
+      lHeader := TUserFunction(OwnerFunction).Header;
       if lHeader <> nil then
       begin
          if Assigned(GInfra.CurrentLang.GetUserFuncDesc) then
@@ -384,10 +385,10 @@ var
    lIsMainProgram: boolean;
 begin
    result := 0;
-   if (OwnerUserFunction is TUserFunction) and (TUserFunction(OwnerUserFunction).Header <> nil) then
+   if (OwnerFunction is TUserFunction) and (TUserFunction(OwnerFunction).Header <> nil) then
    begin
-      lVars := TUserFunction(OwnerUserFunction).Header.LocalVars;
-      lName := TUserFunction(OwnerUserFunction).Header.GetName;
+      lVars := TUserFunction(OwnerFunction).Header.LocalVars;
+      lName := TUserFunction(OwnerFunction).Header.GetName;
       lIsMainProgram := false;
    end
    else
@@ -523,6 +524,18 @@ procedure TMainBlock.WMWindowPosChanging(var Msg: TWMWindowPosChanging);
 begin
    MoveComments(Msg.WindowPos^.x, Msg.WindowPos^.y);
    inherited;
+end;
+
+function TMainBlock.GetUndoObject: TObject;
+begin
+   result := OwnerFunction;
+end;
+
+function TMainBlock.Remove: boolean;
+begin
+   result := inherited Remove;
+   if result then
+      TUserFunction(OwnerFunction).Active := false;
 end;
 
 end.

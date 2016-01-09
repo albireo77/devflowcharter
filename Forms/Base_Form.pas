@@ -39,7 +39,7 @@ type
       function CanBeFocused: boolean;
       function IsOverlapped: boolean;
       function GetFocusColor: TColor;
-      procedure Remove;
+      function Remove: boolean;
       function CanBeRemoved: boolean;
       function IsBoldDesc: boolean;
   end;
@@ -151,8 +151,9 @@ begin
    result := OK_COLOR;
 end;
 
-procedure TBaseForm.Remove;
+function TBaseForm.Remove: boolean;
 begin
+   result := CanBeRemoved;
 end;
 
 function TBaseForm.CanBeRemoved: boolean;

@@ -298,9 +298,9 @@ begin
       else
       begin
          lParentBlock := TMainBlock(FTopParentBlock);
-         if lParentBlock.OwnerUserFunction <> nil then
+         if lParentBlock.OwnerFunction <> nil then
          begin
-            lFunction := TUserFunction(lParentBlock.OwnerUserFunction);
+            lFunction := TUserFunction(lParentBlock.OwnerFunction);
             isOk := (lFunction.Header <> nil) and lFunction.Header.LocalVars.IsValidLoopVar(edtVariable.Text);
          end;
       end;
@@ -417,7 +417,7 @@ end;
 procedure TForDoBlock.PopulateComboBoxes;
 var
    lParentBlock: TMainBlock;
-   lRoutine: TUserFunction;
+   lFunction: TUserFunction;
 begin
    inherited PopulateComboBoxes;
    if GInfra.CurrentLang.EnabledVars then
@@ -428,11 +428,11 @@ begin
          if GProject.GlobalVars <> nil then
             GProject.GlobalVars.FillForList(Items);
          lParentBlock := TMainBlock(FTopParentBlock);
-         if lParentBlock.OwnerUserFunction <> nil then
+         if lParentBlock.OwnerFunction <> nil then
          begin
-            lRoutine := TUserFunction(lParentBlock.OwnerUserFunction);
-            if lRoutine.Header <> nil then
-               lRoutine.Header.LocalVars.FillForList(Items);
+            lFunction := TUserFunction(lParentBlock.OwnerFunction);
+            if lFunction.Header <> nil then
+               lFunction.Header.LocalVars.FillForList(Items);
          end;
          ItemIndex := Items.IndexOf(edtVariable.Text);
       end;

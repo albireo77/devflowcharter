@@ -134,7 +134,7 @@ begin
    end;
    if FBody <> nil then
    begin
-      FBody.OwnerUserFunction := Self;
+      FBody.OwnerFunction := Self;
       FBody.SetWidth(FBody.Width);
       FBody.ParentForm.SetScrollBars;
    end;

@@ -27,17 +27,15 @@ uses
 type
 
   TStatementMemo = class(TMemo, IFocusable)
-  protected
-     
-  public
-    { Public declarations }
-    constructor Create(AOwner: TComponent); override;
-    function RetrieveFocus(AInfo: TFocusInfo): boolean;
-    function CanBeFocused: boolean;
-    function GetFocusColor: TColor;
-    procedure Remove;
-    function CanBeRemoved: boolean;
-    function IsBoldDesc: boolean;
+     public
+     { Public declarations }
+        constructor Create(AOwner: TComponent); override;
+        function RetrieveFocus(AInfo: TFocusInfo): boolean;
+        function CanBeFocused: boolean;
+        function GetFocusColor: TColor;
+        function Remove: boolean;
+        function CanBeRemoved: boolean;
+        function IsBoldDesc: boolean;
   end;
 
 implementation
@@ -74,10 +72,11 @@ begin
    result := Font.Color;
 end;
 
-procedure TStatementMemo.Remove;
+function TStatementMemo.Remove: boolean;
 begin
-   if CanBeRemoved then
-      TBlock(Parent).Remove;
+   result := CanBeRemoved;
+   if result then
+      result := TBlock(Parent).Remove;
 end;
 
 function TStatementMemo.CanBeRemoved: boolean;

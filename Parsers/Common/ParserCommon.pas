@@ -195,7 +195,7 @@ begin
    lBlock := TInfra.GetParsedBlock;
    if lBlock <> nil then
    begin
-      lObject := TMainBlock(lBlock.TopParentBlock).OwnerUserFunction;
+      lObject := TMainBlock(lBlock.TopParentBlock).OwnerFunction;
       if lObject is TUserFunction then
       begin
          lFunction := TUserFunction(lObject);
@@ -334,8 +334,8 @@ begin
    if ABlock <> nil then
    begin
       lMBlock := TMainBlock(ABlock.TopParentBlock);
-      if lMBlock.OwnerUserFunction is TUserFunction then
-         result := TUserFunction(lMBlock.OwnerUserFunction).Header;
+      if lMBlock.OwnerFunction is TUserFunction then
+         result := TUserFunction(lMBlock.OwnerFunction).Header;
    end;
 end;
 
