@@ -102,6 +102,7 @@ type
          procedure SetComments(const AVisible: boolean; const ATopLeft: TPoint);
          procedure MoveComments(const x, y: integer);
          function GetUndoObject: TObject; virtual;
+         function IsInFront(const AControl: TWinControl): boolean;
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -166,7 +167,7 @@ type
          function Remove: boolean; virtual;
          function CanBeRemoved: boolean;
          function IsBoldDesc: boolean; virtual;
-         function GetComments: IIterator;
+         function GetComments(const AInFront: boolean = false): IIterator;
          function GetPinComments: IIterator;
          procedure SetVisible(const AValue: boolean; const ASetComments: boolean = true); virtual;
       published
@@ -578,27 +579,6 @@ begin
    Frame := not Frame;
 end;
 
-procedure TBlock.MoveComments(const x, y: integer);
-var
-   iter: IIterator;
-   xDiff, yDiff: integer;
-   lComment: TComment;
-begin
-   if (x <> 0) or (y <> 0) then
-   begin
-      iter := GetComments;
-      while iter.HasNext do
-      begin
-         lComment := TComment(iter.Next);
-         if lComment.Visible then
-         begin
-            lComment.SetBounds(lComment.Left+x-Left, lComment.Top+y-Top, lComment.Width, lComment.Height);
-            lComment.BringToFront;
-         end;
-      end;
-   end;
-end;
-
 function TGroupBlock.GenerateNestedCode(const ALines: TStringList; const ABranchInd, ADeep: integer; const ALangId: string): integer;
 var
    lBlock: TBlock;
@@ -634,7 +614,7 @@ begin
       else if (not PtInRect(Rect(IPoint.X-5, IPoint.Y, IPoint.X+5, IPoint.Y+10), Point(X, Y))) and not IsCursorResize then
       begin          // drag entire flowchart
          ReleaseCapture;
-         FTopParentBlock.BringToFront;
+         TMainBlock(FTopParentBlock).BringAllToFront;
          SendMessage(FTopParentBlock.Handle, WM_SYSCOMMAND, $F012, 0);
          FTopParentBlock.OnResize(FTopParentBlock);
          if Ired >= 0 then
@@ -949,12 +929,13 @@ begin
    PutTextControls;
 end;
 
-function TBlock.GetComments: IIterator;
+function TBlock.GetComments(const AInFront: boolean = false): IIterator;
 var
    lComment: TComment;
    iterc: IIterator;
    lIterator: TCommentIterator;
    l: integer;
+   lInFront: boolean;
 begin
    lIterator := TCommentIterator.Create;
    if Visible then
@@ -964,7 +945,11 @@ begin
       while iterc.HasNext do
       begin
          lComment := TComment(iterc.Next);
-         if PtInRect(ClientRect, ParentToClient(lComment.BoundsRect.TopLeft, FParentForm)) then
+         if AInFront then
+            lInFront := IsInFront(lComment)
+         else
+            lInFront := true;
+         if lInFront and PtInRect(ClientRect, ParentToClient(lComment.BoundsRect.TopLeft, FParentForm)) then
          begin
             SetLength(lIterator.FArray, l+1);
             lIterator.FArray[l] := lComment;
@@ -973,6 +958,46 @@ begin
       end;
    end;
    result := lIterator;
+end;
+
+function TBlock.IsInFront(const AControl: TWinControl): boolean;
+var
+   lWnd: THandle;
+begin
+   result := false;
+   lWnd := GetWindow(GetTopWindow(FParentForm.Handle), GW_HWNDLAST);
+   while lWnd <> 0 do
+   begin
+      if lWnd = FTopParentBlock.Handle then
+      begin
+         result := true;
+         break;
+      end
+      else if lWnd = AControl.Handle then
+         break;
+      lWnd := GetNextWindow(lWnd, GW_HWNDPREV);
+   end;
+end;
+
+procedure TBlock.MoveComments(const x, y: integer);
+var
+   iter: IIterator;
+   xDiff, yDiff: integer;
+   lComment: TComment;
+begin
+   if (x <> 0) or (y <> 0) then
+   begin
+      iter := GetComments(true);
+      while iter.HasNext do
+      begin
+         lComment := TComment(iter.Next);
+         if lComment.Visible then
+         begin
+            lComment.SetBounds(lComment.Left+x-Left, lComment.Top+y-Top, lComment.Width, lComment.Height);
+            lComment.BringToFront;
+         end;
+      end;
+   end;
 end;
 
 function TBlock.GetPinComments: IIterator;
