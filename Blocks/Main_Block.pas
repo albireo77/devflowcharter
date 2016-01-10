@@ -40,7 +40,6 @@ type
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
          function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
          function GetDescription: string; override;
-         procedure BringAllToFront;
          function GetFromXML(const ATag: IXMLElement): TErrorType; override;
          procedure SaveInXML(const ATag: IXMLElement); override;
          procedure PaintToCanvas(const ACanvas: TCanvas);
@@ -485,16 +484,6 @@ begin
       lBlock.GenerateTree(AParentNode);
       lBlock := lBlock.Next;
    end;
-end;
-
-procedure TMainBlock.BringAllToFront;
-var
-   iter: IIterator;
-begin
-   BringToFront;
-   iter := GetComments;
-   while iter.HasNext do
-      TComment(iter.Next).BringToFront;
 end;
 
 procedure TMainBlock.SaveInXML(const ATag: IXMLElement);

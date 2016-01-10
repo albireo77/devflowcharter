@@ -170,6 +170,7 @@ type
          function GetComments(const AInFront: boolean = false): IIterator;
          function GetPinComments: IIterator;
          procedure SetVisible(const AValue: boolean; const ASetComments: boolean = true); virtual;
+         procedure BringAllToFront;
       published
          property Color;
          property OnMouseDown;
@@ -614,7 +615,7 @@ begin
       else if (not PtInRect(Rect(IPoint.X-5, IPoint.Y, IPoint.X+5, IPoint.Y+10), Point(X, Y))) and not IsCursorResize then
       begin          // drag entire flowchart
          ReleaseCapture;
-         TMainBlock(FTopParentBlock).BringAllToFront;
+         FTopParentBlock.BringAllToFront;
          SendMessage(FTopParentBlock.Handle, WM_SYSCOMMAND, $F012, 0);
          FTopParentBlock.OnResize(FTopParentBlock);
          if Ired >= 0 then
@@ -703,7 +704,7 @@ begin
       end;
       GChange := 1;
       if Self is TMainBlock then
-         TMainBlock(Self).BringAllToFront;
+         BringAllToFront;
       NavigatorForm.Repaint;
    end;
 end;
@@ -958,6 +959,16 @@ begin
       end;
    end;
    result := lIterator;
+end;
+
+procedure TBlock.BringAllToFront;
+var
+   iter: IIterator;
+begin
+   BringToFront;
+   iter := GetComments;
+   while iter.HasNext do
+      TComment(iter.Next).BringToFront;
 end;
 
 function TBlock.IsInFront(const AControl: TWinControl): boolean;
@@ -1698,7 +1709,7 @@ begin
    if ContainsControl(AInfo.FocusEdit) and AInfo.FocusEdit.CanFocus then
    begin
       FParentForm.Show;
-      TMainBlock(FTopParentBlock).BringAllToFront;
+      FTopParentBlock.BringAllToFront;
       FParentForm.ScrollInView(AInfo.FocusEdit);
       idx2 := 0;
       if AInfo.FocusEdit is TMemo then
