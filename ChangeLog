@@ -1,3 +1,7 @@
+3.4.3 [11.01.2016]
+- fix stealing comments when moving flowcharts
+- fix performance regression while moving flocharts introduced in 3.4.2
+
 3.4.2 [29.12.2015]
 - many improvements to comments (sticky to every block, automatically changing position, color etc.)
 
