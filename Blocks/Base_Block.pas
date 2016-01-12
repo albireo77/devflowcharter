@@ -703,7 +703,7 @@ begin
             UnLockDrawing;
       end;
       GChange := 1;
-      if Self is TMainBlock then
+      if FParentBlock = nil then
          BringAllToFront;
       NavigatorForm.Repaint;
    end;
