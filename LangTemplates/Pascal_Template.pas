@@ -118,13 +118,13 @@ begin
          progName := i18Manager.GetString('Unknown')
       else
          progName := GProject.Name;
-      progName := AnsiReplaceStr(progName, ' ', '_');
+      progName := AnsiReplaceStr(progName, ' ', '_') + ';';
 
       if GProject.GetMainBlock <> nil then
-         ALines.Add('program ' + progName + ';')
+         ALines.Add('program ' + progName)
       else
       begin
-         ALines.Add('unit ' + progName + ';');
+         ALines.Add('unit ' + progName);
          ALines.Add('');
          ALines.Add('interface');
       end;
@@ -152,7 +152,7 @@ end;
 
 procedure Pascal_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
 var
-   bufor, sizeString, lInit, lLine, lName: string;
+   bufor, sizeString, lInit, lLine, lName, lType, lCurrentType: string;
    i, a, b, dimensCount: integer;
 begin
    if (AVarList <> nil) and (AVarList.sgList.RowCount > 2) and (GProject <> nil) and (GProject.GlobalVars <> nil) then
@@ -161,12 +161,14 @@ begin
       for a := 0 to GProject.GlobalVars.cbType.Items.Count-1 do
       begin
          bufor := '';
+         lCurrentType := GProject.GlobalVars.cbType.Items[a];
          for i := 1 to AVarList.sgList.RowCount-2 do
          begin
             lName := AVarList.sgList.Cells[VAR_NAME_COL, i];
-            if AVarList.sgList.Cells[VAR_TYPE_COL, i] = GProject.GlobalVars.cbType.Items[a] then
+            lType := AVarList.sgList.Cells[VAR_TYPE_COL, i];
+            if lType = lCurrentType then
             begin
-               lInit := Trim(AVarList.sgList.Cells[VAR_INIT_COL, i]);
+               lInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
                dimensCount := AVarList.GetDimensionCount(lName);
                if (dimensCount = 0) and (lInit = '') then
                begin
@@ -189,7 +191,7 @@ begin
                      end;
                      lLine := lLine + 'array[' + sizeString + '] of ';
                   end;
-                  lLine := lLine + AVarList.sgList.Cells[VAR_TYPE_COL, i];
+                  lLine := lLine + lType;
                   if lInit <> '' then
                      lLine := lLine + ' = ' + lInit;
                   ALines.AddObject(lLine + ';', AVarList);
@@ -197,7 +199,7 @@ begin
             end;
          end;
          if bufor <> '' then
-            ALines.AddObject(GSettings.IndentString + bufor + ': ' + GProject.GlobalVars.cbType.Items[a] + ';', AVarList);
+            ALines.AddObject(GSettings.IndentString + bufor + ': ' + lCurrentType + ';', AVarList);
       end;
    end;
 
