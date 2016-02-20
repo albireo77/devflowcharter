@@ -456,7 +456,7 @@ var
    minVal, lVal: integer;
    R: TRect;
 begin
-   minVal := BottomHook + 55;
+   minVal := Branch.GetMostRight + 30;
    if GetFunctionLabel(R) <> '' then
       lVal := R.Right + 10
    else

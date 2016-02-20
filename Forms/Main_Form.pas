@@ -1107,7 +1107,7 @@ begin
    if PopupMenu.PopupComponent is TCaseBlock then
    begin
       lCaseBlock := TCaseBlock(PopupMenu.PopupComponent);
-      lPoint := Point(lCaseBlock.GetRMostX(lCaseBlock.BranchCount)+60, lCaseBlock.Height-32);
+      lPoint := Point(lCaseBlock.GetBranch(lCaseBlock.BranchCount).GetMostRight+60, lCaseBlock.Height-32);
       lBranch := lCaseBlock.AddBranch(lPoint, true);
       if GSettings.UpdateEditor then
          TInfra.GetEditorForm.RefreshEditorForObject(lBranch);

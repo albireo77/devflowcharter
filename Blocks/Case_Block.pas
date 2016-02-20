@@ -47,7 +47,6 @@ type
          procedure ResizeVert(const AContinue: boolean); override;
          procedure ExpandFold(const AResize: boolean); override;
          procedure RemoveBranch;
-         function GetRMostX(const ABranchIndex: integer): integer;
          function AddBranch(const AHook: TPoint; const AResizeInd: boolean; const ABranchId: integer = ID_INVALID; const ABranchStmntId: integer = ID_INVALID): TBranch; override;
          function CountErrWarn: TErrWarnCount; override;
          function GetFromXML(const ATag: IXMLElement): TErrorType; override;
@@ -218,27 +217,6 @@ begin
    end;
 end;
 
-function TCaseBlock.GetRMostX(const ABranchIndex: integer): integer;
-var
-   lBranch: TBranch;
-   lBlock: TBlock;
-begin
-   lBranch := GetBranch(ABranchIndex);
-   if lBranch <> nil then
-   begin
-      result := lBranch.Hook.X;
-      lBlock := lBranch.First;
-      while lBlock <> nil do
-      begin
-         if lBlock.BoundsRect.Right > result then
-            result := lBlock.BoundsRect.Right;
-         lBlock := lBlock.Next;
-      end;
-   end
-   else
-      result := 40;
-end;
-
 procedure TCaseBlock.ResizeHorz(const AContinue: boolean);
 var
    left_x, left_edge, i: integer;
@@ -246,10 +224,14 @@ var
    lBlock: TBlock;
 begin
    BottomHook := Branch.Hook.X;
+   lBranch := nil;
    for i := DEFAULT_BRANCH_IND to High(FBranchArray) do
    begin
+      if lBranch <> nil then
+         left_edge := lBranch.GetMostRight + 60
+      else
+         left_edge := 100;
       lBranch := FBranchArray[i];
-      left_edge := GetRMostX(i-1) + 60;
       lBranch.Hook.X := left_edge;
       left_x := left_edge;
       LinkBlocks(i);
@@ -277,7 +259,7 @@ begin
 
    TopHook.X := DefaultBranch.Hook.X;
    BottomPoint.X := DefaultBranch.Hook.X;
-   Width := GetRMostX(High(FBranchArray)) + 30;
+   Width := lBranch.GetMostRight + 30;
 
    if AContinue then
       ParentBlock.ResizeHorz(AContinue);

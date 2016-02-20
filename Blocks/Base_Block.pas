@@ -263,6 +263,7 @@ type
          function Add(ABlock: TBlock): integer;
          function Remove(ABlock: TObject): integer;
          procedure UndoRemove(ABlock: TBlock);
+         function GetMostRight: integer;
    end;
 
    TBranchIterator = class(TBaseIterator);
@@ -2586,6 +2587,20 @@ begin
    OwnsObjects := true;
    GProject.UnRegister(Self);
    inherited Destroy;
+end;
+
+function TBranch.GetMostRight: integer;
+var
+   lBlock: TBlock;
+begin
+   result := Hook.X;
+   lBlock := First;
+   while lBlock <> nil do
+   begin
+      if lBlock.BoundsRect.Right > result then
+         result := lBlock.BoundsRect.Right;
+      lBlock := lBlock.Next;
+   end;
 end;
 
 procedure TBranch.InsertAfter(ANewBlock, APosBlock: TBlock);
