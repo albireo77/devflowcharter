@@ -91,7 +91,11 @@ begin
          begin
             FFocusInfo.ActiveControl.SetFocus;
             if FFocusInfo.FocusEditForm <> nil then
+            begin
                FFocusInfo.FocusEditForm.ActiveControl := FFocusInfo.FocusEdit;
+               if Assigned(FFocusInfo.FocusEditCallBack) then
+                  FFocusInfo.FocusEditCallBack(FFocusInfo.FocusEdit);
+            end;
          end;
       end;
    end;

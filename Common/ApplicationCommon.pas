@@ -954,6 +954,7 @@ begin
       LineText := '';
       FocusEdit := nil;
       FocusEditForm := nil;
+      FocusEditCallBack := nil;
       ActiveControl := nil;
    end;
 end;

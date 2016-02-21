@@ -43,6 +43,7 @@ type
       SelStart: integer;
       FocusEdit: TCustomEdit;
       FocusEditForm: TForm;
+      FocusEditCallBack: procedure(AEdit: TCustomEdit) of object;
       ActiveControl: TWinControl;
    end;
 

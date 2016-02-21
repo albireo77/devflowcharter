@@ -1739,6 +1739,7 @@ begin
          if idx <> 0 then
             AInfo.SelStart := idx - 1 + idx2;
       end;
+      AInfo.FocusEditCallBack := UpdateEditor;
       TFlashThread.Create(AInfo);
       result := true;
    end;
