@@ -44,8 +44,7 @@ type
 implementation
 
 uses
-   Types, Windows, ApplicationCommon, StrUtils, Forms, Project, UserFunction, Main_Block,
-   CommonTypes, FastcodeAnsiStringReplaceUnit;
+   Types, Windows, ApplicationCommon, StrUtils, Forms, Project, UserFunction, Main_Block, CommonTypes;
 
 constructor TReturnBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 var
