@@ -2591,15 +2591,13 @@ end;
 
 function TBranch.GetMostRight: integer;
 var
-   lBlock: TBlock;
+   i: integer;
 begin
    result := Hook.X;
-   lBlock := First;
-   while lBlock <> nil do
+   for i := 0 to Count-1 do
    begin
-      if lBlock.BoundsRect.Right > result then
-         result := lBlock.BoundsRect.Right;
-      lBlock := lBlock.Next;
+      if Items[i].BoundsRect.Right > result then
+         result := Items[i].BoundsRect.Right;
    end;
 end;
 
