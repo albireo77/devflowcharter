@@ -22,7 +22,7 @@ unit Return_Block;
 interface
 
 uses
-   Controls, Graphics, Classes, SysUtils, Base_Block, ComCtrls, CommonInterfaces;
+   Controls, Graphics, Classes, SysUtils, Base_Block, ComCtrls, CommonInterfaces, StdCtrls;
 
 type
 
@@ -38,12 +38,14 @@ type
          procedure Paint; override;
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); override;
          function GetDefaultWidth: integer; override;
+         procedure UpdateEditor(AEdit: TCustomEdit); override;
    end;
 
 implementation
 
 uses
-   Types, Windows, ApplicationCommon, StrUtils, Forms, Project, UserFunction, Main_Block, CommonTypes;
+   Types, Windows, ApplicationCommon, StrUtils, Forms, Project, UserFunction, Main_Block,
+   CommonTypes, FastcodeAnsiStringReplaceUnit;
 
 constructor TReturnBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 var
@@ -143,6 +145,30 @@ begin
    end
    else
       result := inherited GenerateCode(ALines, ALangId, ADeep, AFromLine);
+end;
+
+procedure TReturnBlock.UpdateEditor(AEdit: TCustomEdit);
+var
+   lLine: TChangeLine;
+   lList: TStringList;
+begin
+   if PerformEditorUpdate then
+   begin
+      lLine := TInfra.GetChangeLine(Self, FStatement);
+      if lLine.Row <> ROW_NOT_FOUND then
+      begin
+         lList := TStringList.Create;
+         try
+            GenerateCode(lList, GInfra.CurrentLang.Name, 0);
+            lLine.Text := TInfra.ExtractIndentString(lLine.Text) + lList.Text;
+         finally
+            lList.Free;
+         end;
+         if GSettings.UpdateEditor and not SkipUpdateEditor then
+            TInfra.ChangeLine(lLine);
+         TInfra.GetEditorForm.SetCaretPos(lLine);
+      end;
+   end;
 end;
 
 procedure TReturnBlock.ChangeColor(const AColor: TColor);
