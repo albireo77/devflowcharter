@@ -170,7 +170,7 @@ begin
 
     while lTag <> nil do
     begin
-       lNewBlock := TBlockFactory.GetBlock(lTag, lBranch, lForm);
+       lNewBlock := TBlockFactory.CreateBlock(lTag, lBranch, lForm);
        lForm := nil;               // to prevent main block inside other block
        if lNewBlock <> nil then
        begin

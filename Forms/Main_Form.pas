@@ -817,7 +817,7 @@ begin
                Screen.Cursor := lTmpCursor;
             end;
             if lBlockType <> blUnknown then
-               lNewBlock := TBlockFactory.GetBlock(lBranch, lBlockType);
+               lNewBlock := TBlockFactory.CreateBlock(lBranch, lBlockType);
             if lNewBlock <> nil then
             begin
                lBranch.InsertAfter(lNewBlock, lCurrentBlock);

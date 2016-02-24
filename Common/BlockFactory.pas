@@ -29,8 +29,8 @@ type
    TBlockFactory = class(TObject)
    public
       class function CloneBlock(const ABranch: TBranch; const ABlock: TBlock): TBlock;
-      class function GetBlock(const ABranch: TBranch; const ABlockType: TBlockType): TBlock; overload;
-      class function GetBlock(const ATag: IXMLElement; const ABranch: TBranch; const AForm: TMainForm = nil): TBlock; overload;
+      class function CreateBlock(const ABranch: TBranch; const ABlockType: TBlockType): TBlock; overload;
+      class function CreateBlock(const ATag: IXMLElement; const ABranch: TBranch; const AForm: TMainForm = nil): TBlock; overload;
    end;
 
 implementation
@@ -63,7 +63,7 @@ begin
    end;
 end;
 
-class function TBlockFactory.GetBlock(const ABranch: TBranch; const ABlockType: TBlockType): TBlock;
+class function TBlockFactory.CreateBlock(const ABranch: TBranch; const ABlockType: TBlockType): TBlock;
 begin
    result := nil;
    if ABranch <> nil then
@@ -87,7 +87,7 @@ begin
    end;
 end;
 
-class function TBlockFactory.GetBlock(const ATag: IXMLElement; const ABranch: TBranch; const AForm: TMainForm = nil): TBlock;
+class function TBlockFactory.CreateBlock(const ATag: IXMLElement; const ABranch: TBranch; const AForm: TMainForm = nil): TBlock;
 var
    left,top,height,width,brx,bh,th,bry,fbry,fbrx,trh,flh,bid,bt: integer;
 begin

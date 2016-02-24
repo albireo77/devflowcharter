@@ -219,32 +219,29 @@ end;
 
 procedure TCaseBlock.ResizeHorz(const AContinue: boolean);
 var
-   left_x, left_edge, i: integer;
+   x, leftX, rightX, i: integer;
    lBranch: TBranch;
    lBlock: TBlock;
 begin
    BottomHook := Branch.Hook.X;
-   lBranch := nil;
+   rightX := 100;
    for i := DEFAULT_BRANCH_IND to High(FBranchArray) do
    begin
-      if lBranch <> nil then
-         left_edge := lBranch.GetMostRight + 60
-      else
-         left_edge := 100;
+      leftX := rightX;
       lBranch := FBranchArray[i];
-      lBranch.Hook.X := left_edge;
-      left_x := left_edge;
+      lBranch.Hook.X := leftX;
+      x := leftX;
       LinkBlocks(i);
 
       lBlock := lBranch.First;
       while lBlock <> nil do
       begin
-         if lBlock.Left < left_x then
-            left_x := lBlock.Left;
+         if lBlock.Left < x then
+            x := lBlock.Left;
          lBlock := lBlock.Next;
       end;
 
-      Inc(lBranch.hook.X, left_edge-left_x);
+      Inc(lBranch.hook.X, leftX-x);
       LinkBlocks(i);
       PlaceBranchStatement(lBranch);
       if lBranch.FindInstanceOf(TReturnBlock) = -1 then
@@ -255,11 +252,12 @@ begin
          else
             BottomHook := lBranch.Hook.X;
       end;
+      rightX := lBranch.GetMostRight + 60;
    end;
 
    TopHook.X := DefaultBranch.Hook.X;
    BottomPoint.X := DefaultBranch.Hook.X;
-   Width := lBranch.GetMostRight + 30;
+   Width := rightX - 30;
 
    if AContinue then
       ParentBlock.ResizeHorz(AContinue);
@@ -626,6 +624,7 @@ begin
          end;
          FRefreshMode := false;
       end;
+      Repaint;
    end;
 end;
 
