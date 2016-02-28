@@ -442,7 +442,7 @@ begin
       iter.Next.Free;
    Hide;
    FParentForm.SetScrollBars;
-   for i := Low(FBranchArray) to High(FBranchArray) do
+   for i := 0 to High(FBranchArray) do
       FBranchArray[i].Free;
    FBranchArray := nil;
    inherited Destroy;
@@ -584,11 +584,13 @@ end;
 function TGroupBlock.GenerateNestedCode(const ALines: TStringList; const ABranchInd, ADeep: integer; const ALangId: string): integer;
 var
    lBlock: TBlock;
+   lBranch: TBranch;
 begin
    result := 0;
-   if (ABranchInd >= PRIMARY_BRANCH_IND) and (ABranchInd <= High(FBranchArray)) then
+   lBranch := GetBranch(ABranchInd);
+   if lBranch <> nil then
    begin
-      lBlock := FBranchArray[ABranchInd].First;
+      lBlock := lBranch.First;
       while lBlock <> nil do
       begin
          result := result + lBlock.GenerateCode(ALines, ALangId, ADeep);
@@ -823,7 +825,7 @@ var
    i, lStart, lStop, lLeft, lTop: integer;
 begin
 
-   if (idx >= PRIMARY_BRANCH_IND) and (idx <= High(FBranchArray)) then
+   if GetBranch(idx) <> nil then
    begin
       lStart := idx;
       lStop := idx;
@@ -2328,7 +2330,7 @@ var
    lIterator: TBlockIterator;
 begin
    lIterator := TBlockIterator.Create;
-   if (AIndex >= PRIMARY_BRANCH_IND) and (AIndex <= High(FBranchArray)) then
+   if GetBranch(AIndex) <> nil then
    begin
       lFBranchIdx := AIndex;
       lLBranchIdx := AIndex;
@@ -2373,7 +2375,7 @@ var
    lIterator: TBranchIterator;
 begin
    lIterator := TBranchIterator.Create;
-   if (AStart >= PRIMARY_BRANCH_IND) and (AStart <= High(FBranchArray)) then
+   if GetBranch(AStart) <> nil then
       lFBranchIdx := AStart
    else
    begin
