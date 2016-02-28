@@ -266,14 +266,15 @@ end;
 
 procedure TCaseBlock.ResizeVert(const AContinue: boolean);
 var
-   lMaxHeight, lHeight, idx, i: integer;
+   lMaxHeight, lHeight, idx, i, lLastBranch: integer;
    lBranch: TBranch;
 begin
 
    lMaxHeight := 0;
    idx := DEFAULT_BRANCH_IND;
+   lLastBranch := High(FBranchArray);
 
-   for i := DEFAULT_BRANCH_IND to High(FBranchArray) do
+   for i := DEFAULT_BRANCH_IND to lLastBranch do
    begin
       lHeight := FBranchArray[i].Height;
       if lHeight > lMaxHeight then
@@ -283,7 +284,7 @@ begin
       end;
    end;
 
-   for i := DEFAULT_BRANCH_IND to High(FBranchArray) do
+   for i := DEFAULT_BRANCH_IND to lLastBranch do
    begin
       lBranch := FBranchArray[i];
       if i = idx then
@@ -421,7 +422,7 @@ end;
 
 procedure TCaseBlock.RemoveBranch;
 var
-   i: integer;
+   i, lLastBranch: integer;
    lBranch: TBranch;
 begin
    lBranch := GetBranch(Ired);
@@ -430,9 +431,10 @@ begin
        if (GClpbrd.UndoObject is TBlock) and (TBlock(GClpbrd.UndoObject).ParentBranch = lBranch) then
           GClpbrd.UndoObject.Free;
        lBranch.Free;
-       for i := Ired to High(FBranchArray)-1 do
+       lLastBranch := High(FBranchArray);
+       for i := Ired to lLastBranch-1 do
           FBranchArray[i] := FBranchArray[i+1];
-       SetLength(FBranchArray, Length(FBranchArray)-1);
+       SetLength(FBranchArray, lLastBranch);
        ResizeWithDrawLock;
        RefreshCaseValues;
        NavigatorForm.Repaint;
