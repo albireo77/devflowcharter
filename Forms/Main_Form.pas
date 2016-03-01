@@ -426,7 +426,6 @@ begin
                            i18Manager.GetString('BMPFilesFilter') + '|' +
                            i18Manager.GetString('JPGFilesFilter');
     ExportDialog.FilterIndex := 1;
-
     if ExportDialog.Execute then
     begin
        lFileName := ExportDialog.Filename;
@@ -504,21 +503,21 @@ end;
 
 procedure TMainForm.miSaveClick(Sender: TObject);
 var
-   fileToWrite: string;
+   lFileName: string;
    status: TErrorType;
 begin
     if Caption = PROGRAM_NAME then
        miSaveAs.Click
     else if GProject <> nil then
     begin
-       fileToWrite := AnsiReplaceText(Caption, MAIN_FORM_CAPTION, '');
-       if FileExists(fileToWrite) and FileIsReadOnly(fileToWrite) then
-          TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [fileToWrite], errIO)
+       lFileName := AnsiReplaceText(Caption, MAIN_FORM_CAPTION, '');
+       if FileExists(lFileName) and FileIsReadOnly(lFileName) then
+          TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [lFileName], errIO)
        else
        begin
-          status := TXMLProcessor.ExportToXMLFile(fileToWrite, GProject.ExportToXMLTag);
+          status := TXMLProcessor.ExportToXMLFile(lFileName, GProject.ExportToXMLTag);
           if status <> errNone then
-             TInfra.ShowFormattedErrorBox('SaveError', [fileToWrite], status)
+             TInfra.ShowFormattedErrorBox('SaveError', [lFileName], status)
           else
              GChange := 0;
        end;
@@ -556,11 +555,20 @@ end;
 
 procedure TMainForm.MyOnException(Sender: TObject; E: Exception);
 var
-   lExceptMsg: array[0..255] of Char;
+   msg: array[0..255] of Char;
 begin
-   if (ExceptAddr = nil) or (ExceptionErrorMessage(E, ExceptAddr, lExceptMsg, SizeOf(lExceptMsg)) = 0) then
-      lExceptMsg := '';
-   TInfra.ShowFormattedErrorBox('OtherException', [lExceptMsg], errGeneral);
+   if (ExceptAddr = nil) or (ExceptionErrorMessage(E, ExceptAddr, msg, SizeOf(msg)) = 0) then
+      msg := '';
+   if msg <> '' then
+   begin
+      if GProject <> nil then
+      begin
+         TInfra.ShowFormattedErrorBox('OtherException', [msg], errGeneral);
+         miSaveAs.Click;
+      end
+      else
+         TInfra.ShowErrorBox(msg, errGeneral);
+   end;
    TInfra.SetInitialSettings;
 end;
 
