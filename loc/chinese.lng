@@ -53,13 +53,13 @@ NotConst=必须使用常量表达式
 [Block]
 CaptionTrue=真(T)
 CaptionFalse=假(F)
-CaptionIn=in
-CaptionOut=out
+CaptionIn=输入
+CaptionOut=输出
 CaptionStart=开始
 CaptionStop=结束
-CaptionFor=for
-CaptionTo=to
-CaptionCase=CASE
+CaptionFor=循环(for)
+CaptionTo=至
+CaptionCase=若(case)
 CaptionExit=返回
 AssignDesc=赋值: %s
 MultAssignDesc=多重赋值: %s
@@ -69,10 +69,10 @@ RoutineDesc=函数调用 %s
 RepeatUntilDesc=循环: Repeat %s
 WhileDoDesc=循环: while %s do
 IfDesc=跳转条件: %s
-ForDesc=循环: for %s %s %s to %s do
-CaseDesc=CASE %s OF:
-ReturnDesc=RETURN %s
-TextDesc=TEXT
+ForDesc=循环: 当%s %s %s到%s循环做
+CaseDesc=若 %s 则:
+ReturnDesc=返回 %s
+TextDesc=文字
 DefValue=默认
 
 [Others]
@@ -83,22 +83,22 @@ Error=错误
 Import=导入
 Row=行
 Warning=警告
-AttrInfo=[名称 "%s"]: 无效值 "%s"
+AttrInfo=[名称 "%s"]: 无效值"%s"
 ValidationError=检查出错
 ConvertError=无效类型转换
 SyntaxError=语法错误
 IOError=输入输出错误
-PrintError=Printer Error
+PrintError=打印错误
 DeclareError=定义错误
-CompileError=Compilation Error
-ImportError=Import Error
+CompileError=编译错误
+ImportError=导入错误
 BadId=无效的名称
 DupId=重复的名称
 BadIdD=无效的名称
 DupIdD=重复的名称
 DupType=重复的类型名称
-DefNtvType=Type "%s" is already defined as native type
-DefNtvFunc=Function "%s" is already defined as native function
+DefNtvType=不得使用同名于内置类型"%s"的类型
+DefNtvFunc=不得使用同名于内置函数"%s"的函数
 DupField=重复的域名
 OkIdD=变量名有效
 BadSize=下标范围错误
@@ -123,16 +123,16 @@ Function=函数
 Procedure=函数
 TagNotFound=找不到主流程
 ChangeLngAsk=文件是以%s语言创建的。你要设置为%s为默认语言吗？
-ChangeLngNone=Project that is being opened was created as plain flowchart.%s%sDo you want to switch to plain flowcharts?
+ChangeLngNone=文件是按普通流程图创建的。%s%s 是否按普通流程图打开？
 RegErr=设置保存失败
 BadImportTag=导入块错误.
 Unknown=未知错误
 NoType=无返回
 Modified=已修改
 Default=默认
-NameTagNotFound=<Name> tag not found or is empty.
-FileError=Error while reading file %s.
-ParserError=XML parser error #%d at line %d, column %d: %s
+NameTagNotFound=<Name> 标志未找到或为空
+FileError=文件%s读取错误.
+ParserError=XML 解析错误 #%d 于第%d行, 第%d列: %s
 OpenError=打开文件 %s:%s%s 时出错
 SaveReadOnlyFile=文件%s只读. 无法覆盖
 SaveError=保存文件 %s 出错.
@@ -141,7 +141,7 @@ PrintError=打印错误%s%s.
 PageCount=第 %d/%d 页
 ColumnCount=第%d/%d列
 RowCount=第%d/%d行
-OtherException=%sCurrent project will be saved and closed.
+OtherException=%s当前工程将被保存并关闭
 CloseProjectAsk=保存某些设置时需要关闭当前工程%s是否要关闭工程并应用更改
 StatusBarInfo=%d行, %d列
 InsertMode=插入
@@ -152,10 +152,10 @@ RunFail=无法运行程序.
 NoFileToRun=无法打开可执行文件 %s.
 VarLocal=本地变量
 VarGlobal=全局变量
-VarParm=function parameter
+VarParm=函数变量
 HintVar=%s 变量   %s: %s
 HintArray=%s %d-维数组   %s[%s]: %s
-HintArrayExp=Declaration after expanding %s array type:%s%s %d-dimensional array   %s[%s]: %s
+HintArrayExp=展开%s声明的数组定义:%s%s %d维数组   %s[%s]: %s
 HintConst=常量   %s = %s
 HintRoutine=过程/函数   %s: %s
 HintEnum=枚举类型   %s: %s
@@ -199,7 +199,7 @@ gbVariable=变量
 gbConstant=常量
 GlobalVars=全局变量
 GlobalConsts=全局常量
-GlobalDeclares=Global Declarations
+GlobalDeclares=全局声明变量
 ConfirmRemove=此操作无法撤销. 确认进行？
 BadInitVal=无效初始值
 rgTypeBox=类型:
@@ -212,24 +212,24 @@ rbArray=Array
 lblPrefix=添加描述或限定词:
 gbDesc=函数描述或限定词（inline等）
 chkInclDescCode=生成代码时包括此描述
-chkInclDescFlow=Include into function label
+chkInclDescFlow=包含进函数标志
 Flowchart=Flowchart
-LngNoSprt=%s language is not supported by this instance of devFlowcharter.
+LngNoSprt=%s 语言不被当前的devFlowcharter支持.
 
 ; The following keys (3 for each programming language) are used to display labels next to flowcharts
 
 ; Key ProcedureLabelExample 
 ; Available placeholders: %s1 - procedure name; %s2 - parameters list, %s4 - procedure description, ## - new line
-ProcedureLabelExample=%s4##procedure %s1(%s2)
+ProcedureLabelExample=%s4##过程 %s1(%s2)
 
 ; Key FunctionLabelExample 
 ; Available placeholders: %s1 - function name; %s2 - parameters list; %s3 - function return type, %s4 - function description, ## - new line 
-FunctionLabelExample=%s4##function %s1(%s2): %s3
+FunctionLabelExample=%s4##函数 %s1(%s2): %s3
 
 
 ; Key ProgramLabelExample
 ; Available placeholders: %s1 - name of the project
-ProgramLabelExample=program %s1
+ProgramLabelExample=程序 %s1
 
 ProcedureLabelPascal=%s4##procedure %s1
 FunctionLabelPascal=%s4##function %s1: %s3
@@ -270,7 +270,7 @@ miManual=帮助
 miAbout=关于...
 miInsert=插入
 miNewFlowchart=Flowchart
-miNewFunction=Function
+miNewFunction=函数
 miFont=字体
 miRemove=删除
 miCut=剪切
@@ -310,10 +310,10 @@ OpenDialog=XML files (*.xml)|*.xml;
 miExport=导出...
 miImport=导入...
 miMemo=Memo
-miMemoEdit=Edit Text
-miMemoVScroll=Vertical ScrollBar
-miMemoHScroll=Horizontal ScrollBar
-miMemoWordWrap=Word Wrap
+miMemoEdit=编辑文字
+miMemoVScroll=纵向滚动条
+miMemoHScroll=横向滚动条
+miMemoWordWrap=断词换行
 
 [DeclarationsForm]
 FormCaption=全局变量
@@ -328,7 +328,7 @@ gbEditorColors=颜色
 gbMiscSettings=其他
 gbPrintSettings=打印
 lblCompiler=编译指令:
-lblCompilerNoMain=Compiler command for no-main projects:
+lblCompilerNoMain=非主工程的编译指令:
 lblFile=本地化配置:
 chkParseAssign=赋值
 chkParseMAssign=多重赋值
@@ -355,7 +355,7 @@ lblBlockColor=选择:
 lblFontColor=字体:
 gbFlowchartSettings=流程图设置
 chkEnableDBuffer.Caption=启用绘图缓冲
-chkEnableDBuffer.Hint=Can decrease scrolling performance for big flowcharts
+chkEnableDBuffer.Hint=可能降低大流程图的滚动效率
 chkShowFlowLabels=显示流程标签
 btnDefaultSettings=恢复为默认设定
 btnBrowseCompilers=浏览...
@@ -369,14 +369,14 @@ lblMarginLeft=左:
 lblMarginRight=右:
 lblMarginTop=上:
 lblMarginBottom=下:
-edtCompilerHint=Available placeholders:##%s1 - saved source file name##%s2 - saved source file name without extension
-edtCompilerNoMainHint=Available placeholders:##%s1 - saved source file name##%s2 - saved source file name without extension##%s3 - standard compiler command
+edtCompilerHint=可用的替换符:##%s1 - 保存的源文件名##%s2 - 除后缀名的保存源文件名
+edtCompilerNoMainHint=可用的替换符:##%s1 - 保存的源文件名##%s2 - 除后缀名的保存源文件名##%s3 - 标准编译指令
 chkValidateConsts=启用对变量声明的额外测错
-chkAutoSelectCode=Auto-select code for highlighted flowchart elements
-chkAutoUpdateCode=Auto-update code for project changes
-lblInterGen=with internal code generation supported
-lblFontSize=Font size:
-pnlFont.Hint=It can be neither red nor olive
+chkAutoSelectCode=高亮流程图框时自动高亮代码
+chkAutoUpdateCode=更改工程时自动更新代码
+lblInterGen=支持内部代码生成
+lblFontSize=文字大小:
+pnlFont.Hint=红色或橄榄绿
 
 [ExplorerForm]
 FormCaption=流程图浏览器
@@ -403,12 +403,12 @@ miView=查看
 miStatusBar=状态栏
 miScrollbars=滚动栏
 miGutter=左边栏
-miCodeFolding=Code Folding
-miCodeFoldingEnable=Enable
-miCollapseAll=Collapse All
-miUnCollapseAll=Expand All
-miIndentGuides=Indent Guides
-miRichText=Highlight Code
+miCodeFolding=折叠
+miCodeFoldingEnable=启用
+miCollapseAll=全部折叠
+miUnCollapseAll=全部展开
+miIndentGuides=缩进帮助
+miRichText=高亮代码
 miRegenerate=重新生成
 miHelp=帮助
 miUndo=撤销
@@ -423,7 +423,7 @@ miSelectAll=全选
 Modified=已修改
 InsertMode=插入模式
 OverwriteMode=覆盖模式
-miFindProj=Find in Project
+miFindProj=在工程中查找
 
 [GotoForm]
 FormCaption=跳转至...
@@ -477,7 +477,7 @@ rbReal=实数
 rbStruct=结构
 rbEnum=枚举类型
 rbOther=其他
-rbArray=Array
+rbArray=数组
 
 [HelpForm]
 FormCaption=Code Editor - 帮助
@@ -524,8 +524,8 @@ sbMultiAssign=多重赋值
 sbFuncCall=函数调用
 sbCase=Case(分情况跳转)
 sbReturn=Return(结束程序)
-sbFolder=Folder
-sbText=Text
+sbFolder=文件夹
+sbText=文本
 
 [NavigatorForm]
 FormCaption=导览
@@ -535,8 +535,8 @@ FormCaption=关于...
 
 [MemoEditorForm]
 FormCaption=Memo Editor
-btnOK=OK
-btnCancel=Cancel
+btnOK=确认
+btnCancel=取消
 
 
 
