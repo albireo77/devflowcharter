@@ -1,3 +1,8 @@
+3.4.5 [03.03.2016]
+- Flowchart: fix case block not entirely drawn after loading project
+- give user a chance to save project when general exception is raised
+- update Chinese translation file
+
 3.4.4 [23.02.2016]
 - Editor: fix selecting wrong lines when navigating flowcharts in Project Explorer
 - Editor: fix generating wrong return statement during auto-update for Pascal
