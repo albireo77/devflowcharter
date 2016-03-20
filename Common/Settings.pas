@@ -726,8 +726,6 @@ begin
 end;
 
 procedure TSettings.SetForm;
-var
-   i: integer;
 begin
    with TInfra.GetSettingsForm do
    begin
@@ -770,9 +768,7 @@ begin
       chkAutoSelectCode.Checked := FEditorAutoSelectBlock;
       chkAutoUpdateCode.Checked := FEditorAutoUpdate;
       edtFontName.Text := FFlowchartFontName;
-      i := cbFontSize.Items.IndexOf(IntToStr(FEditorFontSize));
-      if i = -1 then i := 0;
-      cbFontSize.ItemIndex := i;
+      SetCbFontSize(FEditorFontSize);
       with imgColors.Canvas do
       begin
          Brush.Color := FEllipseColor;
@@ -808,7 +804,7 @@ begin
    with TInfra.GetSettingsForm do
    begin
       lLangDef := GInfra.GetLangDefinition(cbLanguage.Text);
-      lBool := lLangDef.Parser <> nil;
+      lBool := (lLangDef <> nil) and (lLangDef.Parser <> nil);
       chkParseInput.Enabled := lBool;
       chkParseOutput.Enabled := lBool;
       chkParseAssign.Enabled := lBool;
@@ -858,14 +854,13 @@ procedure TSettings.SetDefaultForm;
 var
    lBool: boolean;
    lLangDef: TLangDefinition;
-   i: integer;
 begin
    with TInfra.GetSettingsForm do
    begin
       pnlFill.Color := clAqua;
       pnlDesktop.Color := clWhite;
       lLangDef := GInfra.GetLangDefinition(cbLanguage.Text);
-      lBool := lLangDef.Parser <> nil;
+      lBool := (lLangDef <> nil) and (lLangDef.Parser <> nil);
       chkParseInput.Enabled := lBool;
       chkParseInput.Checked := lBool;
       chkParseOutput.Enabled := lBool;
@@ -909,9 +904,7 @@ begin
       chkAutoUpdateCode.Checked := false;
       edtEditorIndent.Text := IntToStr(EDITOR_DEFAULT_INDENT_LENGTH);
       edtFontName.Text := FLOWCHART_DEFAULT_FONT_NAME;
-      i := cbFontSize.Items.IndexOf(IntToStr(EDITOR_DEFAULT_FONT_SIZE));
-      if i = -1 then i := 0;
-      cbFontSize.ItemIndex := i;
+      SetCbFontSize(EDITOR_DEFAULT_FONT_SIZE);
       with imgColors.Canvas do
       begin
          Brush.Color := clWhite;

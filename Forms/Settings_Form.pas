@@ -123,6 +123,7 @@ type
     procedure edtMarginLeftKeyPress(Sender: TObject; var Key: Char);
     procedure ResetForm; override;
     procedure edtFontNameClick(Sender: TObject);
+    procedure SetCbFontSize(const AFontSize: integer);
   private
     { Private declarations }
   public
@@ -309,6 +310,16 @@ procedure TSettingsForm.edtFontNameClick(Sender: TObject);
 begin
    if FontDialog.Execute then
       edtFontName.Text := FontDialog.Font.Name;
+end;
+
+procedure TSettingsForm.SetCbFontSize(const AFontSize: integer);
+var
+   i: integer;
+begin
+   i := cbFontSize.Items.IndexOf(IntToStr(AFontSize));
+   if i = -1 then
+      i := 0;
+   cbFontSize.ItemIndex := i;
 end;
 
 end.
