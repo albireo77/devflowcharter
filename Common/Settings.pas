@@ -798,23 +798,23 @@ end;
 
 procedure TSettings.ProtectFields;
 var
-   lBool: boolean;
-   lLangDef: TLangDefinition;
+   parserOn, compilerOn: boolean;
+   langDef: TLangDefinition;
 begin
    with TInfra.GetSettingsForm do
    begin
-      lLangDef := GInfra.GetLangDefinition(cbLanguage.Text);
-      lBool := (lLangDef <> nil) and (lLangDef.Parser <> nil);
-      chkParseInput.Enabled := lBool;
-      chkParseOutput.Enabled := lBool;
-      chkParseAssign.Enabled := lBool;
-      chkParseMAssign.Enabled := lBool;
-      chkParseCondition.Enabled := lBool;
-      chkParseFor.Enabled := lBool;
-      chkParseCase.Enabled := lBool;
-      chkParseRoutine.Enabled := lBool;
-      chkParseReturn.Enabled := lBool;
-      if not lBool then
+      langDef := GInfra.GetLangDefinition(cbLanguage.Text);
+      parserOn := (langDef <> nil) and (langDef.Parser <> nil);
+      chkParseInput.Enabled := parserOn;
+      chkParseOutput.Enabled := parserOn;
+      chkParseAssign.Enabled := parserOn;
+      chkParseMAssign.Enabled := parserOn;
+      chkParseCondition.Enabled := parserOn;
+      chkParseFor.Enabled := parserOn;
+      chkParseCase.Enabled := parserOn;
+      chkParseRoutine.Enabled := parserOn;
+      chkParseReturn.Enabled := parserOn;
+      if not parserOn then
       begin
          chkParseInput.Checked := false;
          chkParseOutput.Checked := false;
@@ -826,59 +826,58 @@ begin
          chkParseRoutine.Checked := false;
          chkParseReturn.Checked := false;
       end;
-      lBool := lLangDef.EnabledCompiler;
-      lblCompiler.Enabled := lBool;
-      lblCompilerNoMain.Enabled := lBool;
-      edtCompiler.Enabled := lBool;
-      edtCompilerNoMain.Enabled := lBool;
-      btnBrowseCompilers.Enabled := lBool;
-      lblInterGen.Visible := Assigned(lLangDef.MainProgramSectionGenerator) and (lLangDef <> GInfra.DummyLang);
-      if lBool then
+      compilerOn := (langDef <> nil) and langDef.EnabledCompiler;
+      lblCompiler.Enabled := compilerOn;
+      lblCompilerNoMain.Enabled := compilerOn;
+      edtCompiler.Enabled := compilerOn;
+      edtCompilerNoMain.Enabled := compilerOn;
+      btnBrowseCompilers.Enabled := compilerOn;
+      lblInterGen.Visible := (langDef <> nil) and Assigned(langDef.MainProgramSectionGenerator) and (langDef <> GInfra.DummyLang);
+      if compilerOn then
       begin
-         edtCompiler.Text := lLangDef.CompilerCommand;
-         edtCompilerNoMain.Text := lLangDef.CompilerCommandNoMain;
+         edtCompiler.Text := langDef.CompilerCommand;
+         edtCompilerNoMain.Text := langDef.CompilerCommandNoMain;
       end
       else
       begin
          edtCompiler.Text := '';
          edtCompilerNoMain.Text := '';
       end;
-      lBool := chkMultiPrint.Checked;
-      chkMultiPrintHorz.Enabled := lBool;
-      if not lBool then
+      chkMultiPrintHorz.Enabled := chkMultiPrint.Checked;
+      if not chkMultiPrint.Checked then
          chkMultiPrintHorz.Checked := false;
    end;
 end;
 
 procedure TSettings.SetDefaultForm;
 var
-   lBool: boolean;
-   lLangDef: TLangDefinition;
+   parserOn: boolean;
+   langDef: TLangDefinition;
 begin
    with TInfra.GetSettingsForm do
    begin
       pnlFill.Color := clAqua;
       pnlDesktop.Color := clWhite;
-      lLangDef := GInfra.GetLangDefinition(cbLanguage.Text);
-      lBool := (lLangDef <> nil) and (lLangDef.Parser <> nil);
-      chkParseInput.Enabled := lBool;
-      chkParseInput.Checked := lBool;
-      chkParseOutput.Enabled := lBool;
-      chkParseOutput.Checked := lBool;
-      chkParseAssign.Enabled := lBool;
-      chkParseAssign.Checked := lBool;
-      chkParseMAssign.Enabled := lBool;
-      chkParseMAssign.Checked := lBool;
-      chkParseCondition.Enabled := lBool;
-      chkParseCondition.Checked := lBool;
-      chkParseRoutine.Enabled := lBool;
-      chkParseRoutine.Checked := lBool;
-      chkParseFor.Enabled := lBool;
-      chkParseFor.Checked := lBool;
-      chkParseCase.Enabled := lBool;
-      chkParseCase.Checked := lBool;
-      chkParseReturn.Enabled := lBool;
-      chkParseReturn.Checked := lBool;
+      langDef := GInfra.GetLangDefinition(cbLanguage.Text);
+      parserOn := (langDef <> nil) and (langDef.Parser <> nil);
+      chkParseInput.Enabled := parserOn;
+      chkParseInput.Checked := parserOn;
+      chkParseOutput.Enabled := parserOn;
+      chkParseOutput.Checked := parserOn;
+      chkParseAssign.Enabled := parserOn;
+      chkParseAssign.Checked := parserOn;
+      chkParseMAssign.Enabled := parserOn;
+      chkParseMAssign.Checked := parserOn;
+      chkParseCondition.Enabled := parserOn;
+      chkParseCondition.Checked := parserOn;
+      chkParseRoutine.Enabled := parserOn;
+      chkParseRoutine.Checked := parserOn;
+      chkParseFor.Enabled := parserOn;
+      chkParseFor.Checked := parserOn;
+      chkParseCase.Enabled := parserOn;
+      chkParseCase.Checked := parserOn;
+      chkParseReturn.Enabled := parserOn;
+      chkParseReturn.Checked := parserOn;
       chkConfirmRemove.Checked := true;
       chkMultiPrint.Checked := false;
       chkMultiPrintHorz.Checked := false;
