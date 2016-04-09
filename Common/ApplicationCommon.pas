@@ -33,7 +33,7 @@ type
 
    TClipbrd = record
       UndoObject: TObject;  // last removed TBlock or TComment
-      Instance: TControl;     // TBlock or TComment which actually is copied to clipboard
+      Instance: TControl;   // TBlock or TComment which actually is copied to clipboard
    end;
 
    TIdentInfo = record
@@ -174,8 +174,7 @@ const   // Global constants
 
         LANG_DEFS_PATH = 'LanguageDefinitions\';
 
-        // Language identifiers; must be identical to value in <Name> tag in
-        // XML language definition file
+        // Language identifiers; must be identical to value in <Name> tag in XML language definition file
         PASCAL_LANG_ID  = 'Pascal';
         C_LANG_ID       = 'ANSI C';
         TIBASIC_LANG_ID = 'TIBASIC';
@@ -185,15 +184,12 @@ const   // Global constants
         KEY_COMPILER_COMMAND_NOMAIN = 'CompilerPathNoMain';
         KEY_CURRENT_LANGUAGE        = 'CurrentLanguageName';
 
-        BLOCK_TO_DESCKEY_MAP: array[TBlockType] of string = ( '', 'AssignDesc',
-                                 'MultAssignDesc', 'InputDesc', 'OutputDesc',
-                                 'RoutineDesc', 'WhileDoDesc', 'RepeatUntilDesc', 'IfDesc',
-                                 'IfDesc', 'ForDesc', 'CaseDesc', '', '', 'ReturnDesc',
-                                 'TextDesc', '');
+        BLOCK_TO_DESCKEY_MAP: array[TBlockType] of string = ( '', 'AssignDesc', 'MultAssignDesc', 'InputDesc', 'OutputDesc',
+                              'RoutineDesc', 'WhileDoDesc', 'RepeatUntilDesc', 'IfDesc', 'IfDesc', 'ForDesc', 'CaseDesc',
+                              '', '', 'ReturnDesc', 'TextDesc', '');
 
-        PARSER_ERRORS_ARRAY:  array[TParserMode] of string = ('BadGeneric', 'BadCondition',
-                                 'BadAssign', 'BadInput', 'BadOutput', 'BadFor', 'BadFunction',
-                                 'BadCase', 'BadCase', 'BadReturnVal', '');
+        PARSER_ERRORS_ARRAY: array[TParserMode] of string = ('BadGeneric', 'BadCondition', 'BadAssign', 'BadInput',
+                             'BadOutput', 'BadFor', 'BadFunction', 'BadCase', 'BadCase', 'BadReturnVal', '');
 
 var     // Global variables
 
@@ -232,7 +228,7 @@ var
 begin
    inherited Create;
    i := 0;
-   idx := FindFirst(LANG_DEFS_PATH+'*.xml', faAnyFile, SearchRec);
+   idx := FindFirst(LANG_DEFS_PATH + '*.xml', faAnyFile, SearchRec);
    try
       while idx = 0 do
       begin
@@ -445,8 +441,8 @@ end;
 
 class procedure TInfra.ShowErrorBox(const AErrMsg: string; const AErrType: TErrorType);
 const
-   ErrorsTypeArray: array[TErrorType] of string = (' ', 'DeclareError', 'IOError', 'ValidationError',
-                                                   'ConvertError', 'SyntaxError', 'PrintError', 'CompileError', 'ImportError', 'Error');
+   ErrorsTypeArray: array[TErrorType] of string = (' ', 'DeclareError', 'IOError', 'ValidationError', 'ConvertError', 'SyntaxError',
+                    'PrintError', 'CompileError', 'ImportError', 'Error');
 begin
    if AErrType <> errNone then
       Application.MessageBox(PChar(AErrMsg), PChar(i18Manager.GetString(ErrorsTypeArray[AErrType])), MB_ICONERROR);
