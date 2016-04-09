@@ -188,8 +188,8 @@ const   // Global constants
                               'RoutineDesc', 'WhileDoDesc', 'RepeatUntilDesc', 'IfDesc', 'IfDesc', 'ForDesc', 'CaseDesc',
                               '', '', 'ReturnDesc', 'TextDesc', '');
 
-        PARSER_ERRORS_ARRAY: array[TParserMode] of string = ('BadGeneric', 'BadCondition', 'BadAssign', 'BadInput',
-                             'BadOutput', 'BadFor', 'BadFunction', 'BadCase', 'BadCase', 'BadReturnVal', '');
+        PARSER_ERRORS_ARRAY: array[TParserMode] of string = ('BadGeneric', 'BadCondition', 'BadAssign', 'BadInput', 'BadOutput',
+                             'BadFor', 'BadFunction', 'BadCase', 'BadCase', 'BadReturnVal', '');
 
 var     // Global variables
 
