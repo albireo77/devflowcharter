@@ -142,10 +142,11 @@ begin
    inherited;
    if Expanded then
    begin
-      IPoint.X := DefaultBranch.Hook.X - 40;
+      lPoint := DefaultBranch.Hook;
+      IPoint.X := lPoint.X - 40;
       PutTextControls;
       BottomPoint.Y := Height - 31;
-      DrawArrowLine(Point(DefaultBranch.Hook.X, TopHook.Y), DefaultBranch.Hook);
+      DrawArrowLine(Point(lPoint.X, TopHook.Y), lPoint);
       DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1));
       for i := DEFAULT_BRANCH_IND to High(FBranchArray) do
       begin
