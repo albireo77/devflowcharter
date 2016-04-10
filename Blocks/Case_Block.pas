@@ -146,9 +146,8 @@ begin
       IPoint.X := lPoint.X - 40;
       PutTextControls;
       BottomPoint.Y := Height - 31;
-      DrawArrowLine(Point(lPoint.X, TopHook.Y), lPoint);
       DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1));
-      for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
+      for i := DEFAULT_BRANCH_IND to High(FBranchArray) do
       begin
          lPoint := FBranchArray[i].Hook;
          DrawArrowLine(Point(lPoint.X, TopHook.Y), lPoint);
