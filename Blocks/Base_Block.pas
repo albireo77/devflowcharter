@@ -51,8 +51,8 @@ type
    TGroupBlock = class;
    TBranch = class;
    THackControl = class(TControl);
-                                                            // base class derived from TCustomPanel
-   TBlock = class(TCustomPanel, IIdentifiable, IFocusable)     // <-- the most important line in entire project; all started here
+
+   TBlock = class(TCustomControl, IIdentifiable, IFocusable)
       private
          FParentBlock: TGroupBlock;
          FParentBranch: TBranch;
@@ -303,7 +303,6 @@ begin
 
    ParentFont  := true;
    ParentColor := true;
-   BevelOuter  := bvNone;
    Ctl3D       := false;
    Color       := FParentForm.Color;
    Font.Name   := GSettings.FlowchartFontName;
@@ -877,7 +876,7 @@ end;
 
 procedure TBlock.SetFontStyle(const AStyle: TFontStyles);
 var
-   i: Integer;
+   i: integer;
 begin
    Font.Style := AStyle;
    Refresh;
@@ -892,7 +891,7 @@ end;
 
 procedure TBlock.SetFontSize(const ASize: integer);
 var
-   i: Integer;
+   i: integer;
 begin
    Font.Size := ASize;
    Refresh;
@@ -996,7 +995,6 @@ end;
 procedure TBlock.MoveComments(const x, y: integer);
 var
    iter: IIterator;
-   xDiff, yDiff: integer;
    lComment: TComment;
 begin
    if (x <> 0) or (y <> 0) then
@@ -1223,6 +1221,10 @@ begin
    inherited;
    with Canvas do
    begin
+      Font.Assign(Self.Font);
+      Brush.Style := bsSolid;
+      Brush.Color := Color;
+      PatBlt(Handle, ClipRect.Left, ClipRect.Top, ClipRect.Right, ClipRect.Bottom, PATCOPY);
       Pen.Color := clBlack;
       Pen.Width := 1;
       if FFrame then
