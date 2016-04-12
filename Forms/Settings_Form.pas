@@ -175,6 +175,7 @@ begin
    pnlFont.Left := lval;
    edtCompiler.Hint := AnsiReplaceStr(AList.Values['edtCompilerHint'], '##', CRLF);
    edtCompilerNoMain.Hint := AnsiReplaceStr(AList.Values['edtCompilerNoMainHint'], '##', CRLF);
+   chkEnableDBuffer.Hint := AnsiReplaceStr(AList.Values['chkEnableDBufferHint'], '##', CRLF);
    inherited Localize(AList);
 end;
 
