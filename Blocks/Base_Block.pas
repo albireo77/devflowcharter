@@ -306,7 +306,6 @@ begin
    Ctl3D       := false;
    Color       := FParentForm.Color;
    Font.Name   := GSettings.FlowchartFontName;
-   Canvas.Font := Font;
    PopupMenu   := FParentForm.PopupMenu;
    DoubleBuffered := GSettings.EnableDBuffering;
    ControlStyle := ControlStyle + [csOpaque];
