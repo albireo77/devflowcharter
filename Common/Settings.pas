@@ -299,7 +299,7 @@ begin
    FConfirmRemove         := true;
    FPrintMultPages        := false;
    FPrintMultPagesHorz    := false;
-   FEnableDBuffering      := true;
+   FEnableDBuffering      := false;
    FShowFlowchartLabels   := true;
    FValidateDeclaration   := true;
    FPrintMargins          := Rect(5, 5, 5, 5);
@@ -886,7 +886,7 @@ begin
       edtMarginRight.Text := '5';
       edtMarginTop.Text := '5';
       edtMarginBottom.Text := '5';
-      chkEnableDBuffer.Checked := true;
+      chkEnableDBuffer.Checked := false;
       chkShowFlowLabels.Checked := true;
       pnlEditorBkg.Color := clWindow;
       pnlEditorFont.Color := clWindowText;
