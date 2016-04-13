@@ -1,3 +1,6 @@
+3.4.6 [13.04.2016]
+- Flowchart: improve drawing performance and reduce flickering
+
 3.4.5 [03.03.2016]
 - Flowchart: fix case block not entirely drawn after loading project
 - give user a chance to save project when general exception is raised
