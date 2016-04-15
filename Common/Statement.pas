@@ -27,7 +27,7 @@ uses
 
 type
 
-  TOnChangeComplement = procedure of object;
+  TOnEditChange = procedure(const AEdit: TCustomEdit) of object;
 
   TStatement = class(TCustomEdit, IIdentifiable, IFocusable)
   private
@@ -39,7 +39,7 @@ type
     function GetId: integer;
   public
     { Public declarations }
-    OnChangeComplement: TOnChangeComplement;
+    OnChangeCallBack: TOnEditChange;
     property ParserMode: TParserMode read FParserMode default prsNone;
     property Id: integer read GetId;
     procedure Change; override;
@@ -146,7 +146,7 @@ begin
    BevelKind := bkNone;
    AutoSelect := False;
    FId := GProject.Register(Self);
-   OnChangeComplement := nil;
+   OnChangeCallBack := nil;
    Font.Name := GSettings.FlowchartFontName;
    ControlStyle := ControlStyle + [csOpaque];
    if CanFocus then SetFocus;
@@ -245,8 +245,8 @@ begin
          Hint := i18Manager.GetFormattedString('ExpErr', [lText, CRLF, errString]);
          Font.Color := NOK_COLOR;
       end;
-      if Assigned(OnChangeComplement) then
-         OnChangeComplement;
+      if Assigned(OnChangeCallBack) then
+         OnChangeCallBack(Self);
    end;
    NavigatorForm.ExecuteRepaint
 end;

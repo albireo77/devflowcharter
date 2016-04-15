@@ -34,7 +34,7 @@ type
          DefaultBranch: TBranch;
          procedure Paint; override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
-         procedure OnStatementChangeComplement;
+         procedure OnEditChange(const AEdit: TCustomEdit);
          function GetDiamondPoint: TPoint; override;
          procedure PlaceBranchStatement(const ABranch: TBranch);
       public
@@ -93,7 +93,7 @@ begin
    Constraints.MinHeight := FInitParms.Height;
    FStatement.Color := GSettings.DiamondColor;
    FStatement.Alignment := taCenter;
-   FStatement.OnChangeComplement := OnStatementChangeComplement;
+   FStatement.OnChangeCallBack := OnEditChange;
    PutTextControls;
 
 end;
@@ -165,7 +165,7 @@ begin
    DrawI;
 end;
 
-procedure TCaseBlock.OnStatementChangeComplement;
+procedure TCaseBlock.OnEditChange(const AEdit: TCustomEdit);
 var
    i: integer;
    lBranch: TBranch;
@@ -173,7 +173,7 @@ begin
    for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
    begin
       lBranch := FBranchArray[i];
-      if lBranch.Statement <> nil then
+      if (lBranch.Statement <> nil) and (lBranch.Statement <> AEdit) then
          lBranch.Statement.Change;
    end;
 end;
