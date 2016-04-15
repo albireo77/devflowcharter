@@ -34,7 +34,7 @@ type
          DefaultBranch: TBranch;
          procedure Paint; override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
-         procedure OnEditChange(const AEdit: TCustomEdit);
+         procedure OnFStatementChange(const AEdit: TCustomEdit);
          function GetDiamondPoint: TPoint; override;
          procedure PlaceBranchStatement(const ABranch: TBranch);
       public
@@ -93,7 +93,7 @@ begin
    Constraints.MinHeight := FInitParms.Height;
    FStatement.Color := GSettings.DiamondColor;
    FStatement.Alignment := taCenter;
-   FStatement.OnChangeCallBack := OnEditChange;
+   FStatement.OnChangeCallBack := OnFStatementChange;
    PutTextControls;
 
 end;
@@ -165,7 +165,7 @@ begin
    DrawI;
 end;
 
-procedure TCaseBlock.OnEditChange(const AEdit: TCustomEdit);
+procedure TCaseBlock.OnFStatementChange(const AEdit: TCustomEdit);
 var
    i: integer;
    lBranch: TBranch;
