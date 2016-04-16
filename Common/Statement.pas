@@ -27,7 +27,7 @@ uses
 
 type
 
-  TOnEditChange = procedure(const AEdit: TCustomEdit) of object;
+  TOnEditChange = procedure(AEdit: TCustomEdit) of object;
 
   TStatement = class(TCustomEdit, IIdentifiable, IFocusable)
   private

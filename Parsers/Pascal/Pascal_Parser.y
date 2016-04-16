@@ -1021,7 +1021,7 @@ range:			statement		{
 							begin	
 							   if not (GParser_Mode in [prsFor, prsVarSize]) then
 							   begin
-							      if (GParser_Mode = prsCaseValue) and IsDuplicatedCaseValue() then
+							      if (GParser_Mode = prsCaseValue) and IsDuplicatedCase() then
                                                               begin
                                                                  errString := i18Manager.GetString('DupCaseVal');
                                                                  yyabort;
@@ -1043,7 +1043,7 @@ range:			statement		{
 							   end
 							   else if GParser_Mode = prsFor then
 							   begin
-  							      lType := GetForLoopVarType();
+  							      lType := GetForVarType();
 							      if (lType <> $1) and not (IsIntegerType(lType) and lIsInteger) then
                                                               begin
                                                                  errString := i18Manager.GetFormattedString('IncTypes', [GetTypeAsString(lType), GetTypeAsString($1)]);
@@ -1067,7 +1067,7 @@ case:
 ;
 
 
-blad:			ILLEGAL			{ yyabort; }
+err:			ILLEGAL			{ yyabort; }
 ;        
 
 %%

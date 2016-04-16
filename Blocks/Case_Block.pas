@@ -34,7 +34,7 @@ type
          DefaultBranch: TBranch;
          procedure Paint; override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
-         procedure OnFStatementChange(const AEdit: TCustomEdit);
+         procedure OnFStatementChange(AEdit: TCustomEdit);
          function GetDiamondPoint: TPoint; override;
          procedure PlaceBranchStatement(const ABranch: TBranch);
       public
@@ -54,6 +54,7 @@ type
          procedure RefreshCaseValues;
          procedure ChangeColor(const AColor: TColor); override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
+         function IsDuplicatedCase(AEdit: TCustomEdit): boolean;
    end;
 
 const
@@ -165,7 +166,7 @@ begin
    DrawI;
 end;
 
-procedure TCaseBlock.OnFStatementChange(const AEdit: TCustomEdit);
+procedure TCaseBlock.OnFStatementChange(AEdit: TCustomEdit);
 var
    i: integer;
    lBranch: TBranch;
@@ -175,6 +176,26 @@ begin
       lBranch := FBranchArray[i];
       if (lBranch.Statement <> nil) and (lBranch.Statement <> AEdit) then
          lBranch.Statement.Change;
+   end;
+end;
+
+function TCaseBlock.IsDuplicatedCase(AEdit: TCustomEdit): boolean;
+var
+   i: integer;
+   lStatement: TCustomEdit;
+begin
+   result := false;
+   if AEdit.Parent = Self then
+   begin
+      for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
+      begin
+         lStatement := FBranchArray[i].Statement;
+         if (lStatement <> AEdit) and (lStatement <> nil) and (Trim(lStatement.Text) = Trim(AEdit.Text)) then
+         begin
+            result := true;
+            break;
+         end;
+      end;
    end;
 end;
 

@@ -38,7 +38,7 @@ function GetType(const ATypeName: string; const ALangName: string = ''): integer
 function GetFieldType(const AVarName, AField: string): integer; overload;
 function GetFieldType(const AType: integer; const AField: string): integer; overload;
 function IsDeclared(const AIdentName: string): boolean;
-function IsDuplicatedCaseValue: boolean;
+function IsDuplicatedCase: boolean;
 function GetConstValue(const AConstName: string): string;
 function GetIdentInfo(const AIdentName: string): TIdentInfo;
 function GetFunctionType: integer;
@@ -57,7 +57,7 @@ function IsStringType(const AType: integer): boolean;
 function IsOtherType(const AType: integer): boolean;
 function GetPointerType(const AType: integer): integer;
 function GetOriginalType(const AType: integer): integer;
-function GetForLoopVarType: integer;
+function GetForVarType: integer;
 function GetCaseVarType: integer;
 procedure InitIdentInfo(var AIdentInfo: TIdentInfo);
 function GetVarInfo(const AVarName: string): TIdentInfo;
@@ -119,7 +119,7 @@ begin
    end;
 end;
 
-function GetForLoopVarType: integer;
+function GetForVarType: integer;
 var
    lBlock: TBlock;
 begin
@@ -161,28 +161,14 @@ begin
    end;
 end;
 
-function IsDuplicatedCaseValue: boolean;
+function IsDuplicatedCase: boolean;
 var
-   lStatement: TStatement;
-   iter: IIterator;
    lEdit: TCustomEdit;
 begin
    result := false;
    lEdit := TInfra.GetParsedEdit;
    if (lEdit <> nil) and (lEdit.Parent is TCaseBlock) then
-   begin
-      iter := TCaseBlock(lEdit.Parent).GetBranches(PRIMARY_BRANCH_IND+1);
-      while iter.HasNext do
-      begin
-         lStatement := TBranch(iter.Next).Statement;
-         if (lStatement <> lEdit) and (lStatement <> nil) and
-            (Trim(lStatement.Text) = Trim(lEdit.Text)) then
-         begin
-            result := true;
-            break;
-         end;
-      end;
-   end;
+      result := TCaseBlock(lEdit.Parent).IsDuplicatedCase(lEdit);
 end;
 
 function GetFunctionType: integer;
