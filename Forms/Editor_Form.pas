@@ -922,7 +922,7 @@ begin
          lIdent.Ident := lWord;
          if TInfra.IsValid(lObject) and (lObject is TBlock) then
             lBlock := TBlock(lObject);
-         GetParameterInfo(FindUserFunctionHeader(lBlock), lIdent);
+         GetParameterInfo(TInfra.GetFunctionHeader(lBlock), lIdent);
          if lIdent.TType <> NOT_DEFINED then
          begin
             lLocalCheck := false;
