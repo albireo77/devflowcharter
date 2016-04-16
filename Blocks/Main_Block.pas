@@ -382,12 +382,14 @@ var
    lStrListProgram, lVarStrList, lTmpList: TStringList;
    lVars: TVarDeclareList;
    lIsMainProgram: boolean;
+   lHeader: TUserFunctionHeader;
 begin
    result := 0;
-   if (OwnerFunction is TUserFunction) and (TUserFunction(OwnerFunction).Header <> nil) then
+   lHeader := TInfra.GetFunctionHeader(Self);
+   if lHeader <> nil then
    begin
-      lVars := TUserFunction(OwnerFunction).Header.LocalVars;
-      lName := TUserFunction(OwnerFunction).Header.GetName;
+      lVars := lHeader.LocalVars;
+      lName := lHeader.GetName;
       lIsMainProgram := false;
    end
    else

@@ -2407,9 +2407,7 @@ function TBlock.SkipUpdateEditor: boolean;
 var
    lHeader: TUserFunctionHeader;
 begin
-   lHeader := nil;
-   if TMainBlock(FTopParentBlock).OwnerFunction <> nil then
-      lHeader := TUserFunction(TMainBlock(FTopParentBlock).OwnerFunction).Header;
+   lHeader := TInfra.GetFunctionHeader(Self);
    result := (lHeader <> nil) and (TInfra.IsRestricted(lHeader.Font.Color) or lHeader.chkExtDeclare.Checked);
 end;
 

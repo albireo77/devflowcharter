@@ -43,7 +43,6 @@ function GetConstValue(const AConstName: string): string;
 function GetIdentInfo(const AIdentName: string): TIdentInfo;
 function GetFunctionType: integer;
 function FindUserFunctionVarList(const ABlock: TBlock): TVarDeclareList;
-function FindUserFunctionHeader(const ABlock: TBlock): TUserFunctionHeader;
 procedure GetParameterInfo(const AHeader: TUserFunctionHeader; var AResult: TIdentInfo);
 procedure GetVariableInfo(const AVarList: TVarDeclareList; var AResult: TIdentInfo);
 function IsStructType(const AType: integer): boolean;
@@ -173,22 +172,12 @@ end;
 
 function GetFunctionType: integer;
 var
-   lObject: TObject;
-   lFunction: TUserFunction;
-   lBlock: TBlock;
+   lHeader: TUserFunctionHeader;
 begin
    result := NOT_DEFINED;
-   lBlock := TInfra.GetParsedBlock;
-   if lBlock <> nil then
-   begin
-      lObject := TMainBlock(lBlock.TopParentBlock).OwnerFunction;
-      if lObject is TUserFunction then
-      begin
-         lFunction := TUserFunction(lObject);
-         if (lFunction.Header <> nil) and (lFunction.Header.Font.Color <> NOK_COLOR) then
-            result := lFunction.Header.cbType.ItemIndex-1;
-      end;
-   end;
+   lHeader := TInfra.GetFunctionHeader(TInfra.GetParsedBlock);
+   if (lHeader <> nil) and (lHeader.Font.Color <> NOK_COLOR) then
+      result := lHeader.cbType.ItemIndex - 1;
 end;
 
 // get type descriptor for given type string
@@ -312,25 +301,12 @@ begin
    end;
 end;
 
-function FindUserFunctionHeader(const ABlock: TBlock): TUserFunctionHeader;
-var
-   lMBlock: TMainBlock;
-begin
-   result := nil;
-   if ABlock <> nil then
-   begin
-      lMBlock := TMainBlock(ABlock.TopParentBlock);
-      if lMBlock.OwnerFunction is TUserFunction then
-         result := TUserFunction(lMBlock.OwnerFunction).Header;
-   end;
-end;
-
 function FindUserFunctionVarList(const ABlock: TBlock): TVarDeclareList;
 var
    lHeader: TUserFunctionHeader;
 begin
    result := nil;
-   lHeader := FindUserFunctionHeader(ABlock);
+   lHeader := TInfra.GetFunctionHeader(ABlock);
    if lHeader <> nil then
       result := lHeader.LocalVars;
 end;
@@ -467,7 +443,7 @@ begin
    lBlock := TInfra.GetParsedBlock;
    if lBlock <> nil then
    begin
-      GetParameterInfo(FindUserFunctionHeader(lBlock), result);
+      GetParameterInfo(TInfra.GetFunctionHeader(lBlock), result);
       if result.TType = NOT_DEFINED  then
          GetVariableInfo(FindUserFunctionVarList(lBlock), result);
    end;

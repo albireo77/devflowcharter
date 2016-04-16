@@ -27,7 +27,8 @@ uses
    Windows, Forms, StdCtrls, Grids, Controls, Graphics, Registry, SysUtils, Classes,
    StrUtils, Types, ComCtrls, LocalizationManager, Project, Settings, LangDefinition,
    CommonTypes, Base_Form, CommonInterfaces, Functions_Form, DataTypes_Form, Declarations_Form,
-   Main_Form, Base_Block, SynEditTypes, Settings_Form, Editor_Form, Explorer_Form;
+   Main_Form, Base_Block, SynEditTypes, Settings_Form, Editor_Form, Explorer_Form,
+   UserFunction;
 
 type
 
@@ -116,6 +117,7 @@ type
          class procedure InitChangeLine(var AChangeLine: TChangeLine);
          class procedure InitCodeRange(var ACodeRange: TCodeRange);
          class procedure SetFontSize(const AControl: TControl; const ASize: integer);
+         class function GetFunctionHeader(ABlock: TBlock): TUserFunctionHeader;
          constructor Create;
          destructor Destroy; override;
    end;
@@ -1142,6 +1144,19 @@ begin
          break;
    end;
    result := AnsiLeftStr(AText, i-1);
+end;
+
+class function TInfra.GetFunctionHeader(ABlock: TBlock): TUserFunctionHeader;
+var
+   lMainBlock: TMainBlock;
+begin
+   result := nil;
+   if ABlock <> nil then
+   begin
+      lMainBlock := TMainBlock(ABlock.TopParentBlock);
+      if lMainBlock.OwnerFunction is TUserFunction then
+         result := TUserFunction(lMainBlock.OwnerFunction).Header;
+   end;
 end;
 
 class procedure TInfra.ChangeLine(const ALine: TChangeLine);

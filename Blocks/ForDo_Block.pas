@@ -284,8 +284,7 @@ end;
 
 procedure TForDoBlock.MyOnChange(Sender: TObject);
 var
-   lParentBlock: TMainBlock;
-   lFunction: TUserFunction;
+   lHeader: TUserFunctionHeader;
    isOk: boolean;
 begin
    edtVariable.Font.Color := GSettings.FontColor;
@@ -297,12 +296,8 @@ begin
          isOk := true
       else
       begin
-         lParentBlock := TMainBlock(FTopParentBlock);
-         if lParentBlock.OwnerFunction <> nil then
-         begin
-            lFunction := TUserFunction(lParentBlock.OwnerFunction);
-            isOk := (lFunction.Header <> nil) and lFunction.Header.LocalVars.IsValidLoopVar(edtVariable.Text);
-         end;
+         lHeader := TInfra.GetFunctionHeader(Self);
+         isOk := (lHeader <> nil) and lHeader.LocalVars.IsValidLoopVar(edtVariable.Text);
       end;
       if not isOk then
       begin
@@ -416,8 +411,7 @@ end;
 
 procedure TForDoBlock.PopulateComboBoxes;
 var
-   lParentBlock: TMainBlock;
-   lFunction: TUserFunction;
+   lHeader: TUserFunctionHeader;
 begin
    inherited PopulateComboBoxes;
    if GInfra.CurrentLang.EnabledVars then
@@ -427,13 +421,9 @@ begin
          Items.Clear;
          if GProject.GlobalVars <> nil then
             GProject.GlobalVars.FillForList(Items);
-         lParentBlock := TMainBlock(FTopParentBlock);
-         if lParentBlock.OwnerFunction <> nil then
-         begin
-            lFunction := TUserFunction(lParentBlock.OwnerFunction);
-            if lFunction.Header <> nil then
-               lFunction.Header.LocalVars.FillForList(Items);
-         end;
+         lHeader := TInfra.GetFunctionHeader(Self);
+         if lHeader <> nil then
+            lHeader.LocalVars.FillForList(Items);
          ItemIndex := Items.IndexOf(edtVariable.Text);
       end;
    end;
