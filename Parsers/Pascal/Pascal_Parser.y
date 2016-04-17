@@ -1,7 +1,7 @@
 %{
 
 uses 
-   YaccLib, LexLib, Pascal_Template, ParserCommon, ApplicationCommon, CommonTypes;
+   YaccLib, LexLib, Pascal_Template, ParserHelper, ApplicationCommon, CommonTypes;
 
 var
    paramList: array of integer;
@@ -128,7 +128,7 @@ input_line:		assignment		{
 ;
 
 routine_call:		T_BREAK			{
-							if not IsInLoop() then
+							if not TParserHelper.IsInLoop() then
                                                         begin
                                                            errString := i18Manager.GetString('BreakErr');
                                                            yyabort;
@@ -138,7 +138,7 @@ routine_call:		T_BREAK			{
 		|	T_EXIT
 
 		|	T_CONTINUE		{
-							if not IsInLoop() then
+							if not TParserHelper.IsInLoop() then
                                                         begin
                                                            errString := i18Manager.GetString('ContErr');
                                                            yyabort;
@@ -152,7 +152,7 @@ routine_call:		T_BREAK			{
 ;
 
 assignment:		var_const T_ASSIGN_SIGN statement   {
-                                                        arg1 := GetIdentInfo($1);
+                                                        arg1 := TParserHelper.GetIdentInfo($1);
                                                         if arg1.IdentType = CONSTANT then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadConstOp', [$1]);
@@ -168,15 +168,15 @@ assignment:		var_const T_ASSIGN_SIGN statement   {
                                                            errString := i18Manager.GetFormattedString('BadEnumOper', [$1]);
                                                            yyabort;
                                                         end
-							else if not AreTypesCompatible(arg1.TType, $3) then
+							else if not TParserHelper.AreTypesCompatible(arg1.TType, $3) then
 							begin
-                                                           errString := i18Manager.GetFormattedString('IncTypes', [arg1.TypeAsString, GetTypeAsString($3)]);
+                                                           errString := i18Manager.GetFormattedString('IncTypes', [arg1.TypeAsString, TParserHelper.GetTypeAsString($3)]);
                                                            yyabort;
                                                         end;
 						}
 
 		|	var_const '^' T_ASSIGN_SIGN statement	{
-                                                        arg1 := GetIdentInfo($1);
+                                                        arg1 := TParserHelper.GetIdentInfo($1);
 							if arg1.IdentType = CONSTANT then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadConstOp', [$1]);
@@ -187,31 +187,31 @@ assignment:		var_const T_ASSIGN_SIGN statement   {
                                                            errString := i18Manager.GetFormattedString('NotPtrType', [$1]);
                                                            yyabort;
                                                         end
-							else if not AreTypesCompatible(arg1.TypeOriginal, $4) then
+							else if not TParserHelper.AreTypesCompatible(arg1.TypeOriginal, $4) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('IncTypes', [arg1.TypeAsString, GetTypeAsString($4)]);
+                                                           errString := i18Manager.GetFormattedString('IncTypes', [arg1.TypeAsString, TParserHelper.GetTypeAsString($4)]);
                                                            yyabort;
                                                         end;
 						}
 
 		|	table_exp T_ASSIGN_SIGN statement  {
-							if not AreTypesCompatible($1, $3) then
+							if not TParserHelper.AreTypesCompatible($1, $3) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('IncTypes', [GetTypeAsString($1), GetTypeAsString($3)]);
+                                                           errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
                                                            yyabort;
                                                         end;
 						}
 
 		|	struct_exp T_ASSIGN_SIGN statement  {
-							if not AreTypesCompatible($1, $3) then
+							if not TParserHelper.AreTypesCompatible($1, $3) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('IncTypes', [GetTypeAsString($1), GetTypeAsString($3)]);
+                                                           errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
                                                            yyabort;
                                                         end;
 						}
 
 		|	var_const T_ASSIGN_SIGN condition	{
-                                                        arg1 := GetIdentInfo($1);
+                                                        arg1 := TParserHelper.GetIdentInfo($1);
 							if arg1.IdentType = CONSTANT then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadConstOp', [$1]);
@@ -247,7 +247,7 @@ input:			T_READLN '(' list_read ')'
 ;
 
 list_read:		var_const		{
-                                                        arg1 := GetIdentInfo($1);
+                                                        arg1 := TParserHelper.GetIdentInfo($1);
 							if arg1.IdentType = CONSTANT then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadConstOp', [$1]);
@@ -261,7 +261,7 @@ list_read:		var_const		{
 						}
 
 		|	var_const '^'		{
-                                                        arg1 := GetIdentInfo($1);
+                                                        arg1 := TParserHelper.GetIdentInfo($1);
 							if arg1.IdentType = CONSTANT then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadConstOp', [$1]);
@@ -280,7 +280,7 @@ list_read:		var_const		{
 						}
 
 		|	table_exp		{
-							if ($1 = PASCAL_BOOL_TYPE) or IsPointerType($1) or IsStructType($1) then
+							if ($1 = PASCAL_BOOL_TYPE) or TParserHelper.IsPointerType($1) or TParserHelper.IsStructType($1) then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadInOper', ['']);
                                                            yyabort;
@@ -314,7 +314,7 @@ statement:		L_INT			{       $$ := PASCAL_INT_TYPE; is_constant := true;	}
 		|	T_NIL			{       $$ := GENERIC_PTR_TYPE; is_constant := true;	}
 
 		|	var_const		{
-                                                        arg1 := GetIdentInfo($1);
+                                                        arg1 := TParserHelper.GetIdentInfo($1);
 							is_constant := arg1.IdentType = CONSTANT;
                                                         $$ := (arg1.DimensCount * DIMENSION_LEVEL_STEP) + arg1.TType
 						}
@@ -339,7 +339,7 @@ statement:		L_INT			{       $$ := PASCAL_INT_TYPE; is_constant := true;	}
 		|	T_PI			{       $$ := PASCAL_REAL_TYPE; is_constant := true;	}
 
 		|	var_const '^'		{
-                                                        arg1 := GetIdentInfo($1);
+                                                        arg1 := TParserHelper.GetIdentInfo($1);
 							is_constant := false;
 							if arg1.IdentType = CONSTANT then
                                                         begin
@@ -361,7 +361,7 @@ statement:		L_INT			{       $$ := PASCAL_INT_TYPE; is_constant := true;	}
 						}
 
 		|	'@' var_const		{
-                                                        arg1 := GetIdentInfo($2);
+                                                        arg1 := TParserHelper.GetIdentInfo($2);
 							is_constant := false;
 							if arg1.IdentType = CONSTANT then
                                                         begin
@@ -372,64 +372,64 @@ statement:		L_INT			{       $$ := PASCAL_INT_TYPE; is_constant := true;	}
 							   $$ := arg1.TypePointer;
 						}
 
-		|	'@' table_exp		{       $$ := GetPointerType($2); is_constant := false;	}
+		|	'@' table_exp		{       $$ := TParserHelper.GetPointerType($2); is_constant := false;	}
 
-                |	'@' struct_exp		{       $$ := GetPointerType($2); is_constant := false;	}
+                |	'@' struct_exp		{       $$ := TParserHelper.GetPointerType($2); is_constant := false;	}
 
 		|	'-' statement %prec UMINUS	{
-							if not IsNumericType($2) then
+							if not TParserHelper.IsNumericType($2) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadOperArg', [GetTypeAsString($2), '-']);
+                                                           errString := i18Manager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString($2), '-']);
                                                            yyabort;
                                                         end;
 							$$ := $2;
 						}
 
 		|	statement '+' statement	{
-							if not IsNumericType($1) or not IsNumericType($3) then
+							if not TParserHelper.IsNumericType($1) or not TParserHelper.IsNumericType($3) then
                                                         begin
                                                            if ($1 = PASCAL_STRING_TYPE) and ($3 = PASCAL_STRING_TYPE) then
                                                            begin
                                                               $$ := PASCAL_STRING_TYPE;
                                                               exit;
                                                            end;
-                                                           errString := i18Manager.GetFormattedString('IncTypes', [GetTypeAsString($1), GetTypeAsString($3)]);
+                                                           errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
                                                            yyabort;
                                                         end;
-							if IsRealType($1) or IsRealType($3) then
+							if TParserHelper.IsRealType($1) or TParserHelper.IsRealType($3) then
 							   $$ := PASCAL_REAL_TYPE
 							else
 							   $$ := PASCAL_INT_TYPE;
 						}
 
 		|	statement '-' statement	{
-							if not IsNumericType($1) or not IsNumericType($3) then
+							if not TParserHelper.IsNumericType($1) or not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('IncTypes', [GetTypeAsString($1), GetTypeAsString($3)]);
+                                                           errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
                                                            yyabort;
                                                         end;
-							if IsRealType($1) or IsRealType($3) then
+							if TParserHelper.IsRealType($1) or TParserHelper.IsRealType($3) then
 							   $$ := PASCAL_REAL_TYPE
 							else
 							   $$ := PASCAL_INT_TYPE;
 						}
 
 		|	statement '*' statement	{
-							if not IsNumericType($1) or not IsNumericType($3) then
+							if not TParserHelper.IsNumericType($1) or not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('IncTypes', [GetTypeAsString($1), GetTypeAsString($3)]);
+                                                           errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
                                                            yyabort;
                                                         end;
-							if IsRealType($1) or IsRealType($3) then
+							if TParserHelper.IsRealType($1) or TParserHelper.IsRealType($3) then
 							   $$ := PASCAL_REAL_TYPE
 							else
 							   $$ := PASCAL_INT_TYPE;
 						}
 
 		|	statement '/' statement	{
-							if not IsNumericType($1) or not IsNumericType($3) then
+							if not TParserHelper.IsNumericType($1) or not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('IncTypes', [GetTypeAsString($1), GetTypeAsString($3)]);
+                                                           errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_REAL_TYPE;
@@ -440,28 +440,28 @@ statement:		L_INT			{       $$ := PASCAL_INT_TYPE; is_constant := true;	}
 
 
 		|	statement T_DIV statement	{
-							if not IsIntegerType($1) then
+							if not TParserHelper.IsIntegerType($1) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadOperArg', [GetTypeAsString($1), 'div']);
+                                                           errString := i18Manager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString($1), 'div']);
                                                            yyabort;
                                                         end
-							else if not IsIntegerType($3) then
+							else if not TParserHelper.IsIntegerType($3) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadOperArg', [GetTypeAsString($3), 'div']);
+                                                           errString := i18Manager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString($3), 'div']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_INT_TYPE;
 						}
 
 		|	statement T_MOD statement	  {
-							if not IsIntegerType($1) then
+							if not TParserHelper.IsIntegerType($1) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadOperArg', [GetTypeAsString($1), 'mod']);
+                                                           errString := i18Manager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString($1), 'mod']);
                                                            yyabort;
                                                         end
-							else if not IsIntegerType($3) then
+							else if not TParserHelper.IsIntegerType($3) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadOperArg', [GetTypeAsString($3), 'mod']);
+                                                           errString := i18Manager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString($3), 'mod']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_INT_TYPE;
@@ -482,18 +482,18 @@ condition:		T_NOT condition
                                                         end
 							else if $1 <> $3 then
                                                         begin
-                                                           if (IsNumericType($1) and IsNumericType($3)) or
-                                                              (IsPointerType($1) and ($3 = GENERIC_PTR_TYPE)) or
-                                                              (IsPointerType($3) and ($1 = GENERIC_PTR_TYPE)) or
+                                                           if (TParserHelper.IsNumericType($1) and TParserHelper.IsNumericType($3)) or
+                                                              (TParserHelper.IsPointerType($1) and ($3 = GENERIC_PTR_TYPE)) or
+                                                              (TParserHelper.IsPointerType($3) and ($1 = GENERIC_PTR_TYPE)) or
 							      (($1 = PASCAL_CHAR_TYPE) and (($3 = PASCAL_STRING_TYPE) and (slength = 1))) or
 							      (($3 = PASCAL_CHAR_TYPE) and (($1 = PASCAL_STRING_TYPE) and (slength = 1))) then exit;
-                                                           errString := i18Manager.GetFormattedString('IncTypes', [GetTypeAsString($1), GetTypeAsString($3)]);
+                                                           errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
                                                            yyabort;
                                                         end;
 						}
 
 		 |	statement GL statement	{
-							if not IsNumericType($1) or not IsNumericType($3) then
+							if not TParserHelper.IsNumericType($1) or not TParserHelper.IsNumericType($3) then
                                                         begin
                                                            errString := i18Manager.GetString('BadCmpr');
                                                            yyabort;
@@ -501,7 +501,7 @@ condition:		T_NOT condition
 						}
 	
 		 |	statement GE statement	{
-							if not IsNumericType($1) or not IsNumericType($3) then
+							if not TParserHelper.IsNumericType($1) or not TParserHelper.IsNumericType($3) then
                                                         begin
                                                            errString := i18Manager.GetString('BadCmpr');
                                                            yyabort;
@@ -509,7 +509,7 @@ condition:		T_NOT condition
 						}
 
 		 |	statement LE statement	{
-							if not IsNumericType($1) or not IsNumericType($3) then
+							if not TParserHelper.IsNumericType($1) or not TParserHelper.IsNumericType($3) then
                                                         begin
                                                            errString := i18Manager.GetString('BadCmpr');
                                                            yyabort;
@@ -524,12 +524,12 @@ condition:		T_NOT condition
                                                         end
 							else if $1 <> $3 then
                                                         begin
-                                                           if (IsNumericType($1) and IsNumericType($3)) or
-                                                              (IsPointerType($1) and ($3 = GENERIC_PTR_TYPE)) or
-                                                              (IsPointerType($3) and ($1 = GENERIC_PTR_TYPE)) or
+                                                           if (TParserHelper.IsNumericType($1) and TParserHelper.IsNumericType($3)) or
+                                                              (TParserHelper.IsPointerType($1) and ($3 = GENERIC_PTR_TYPE)) or
+                                                              (TParserHelper.IsPointerType($3) and ($1 = GENERIC_PTR_TYPE)) or
 							      (($1 = PASCAL_CHAR_TYPE) and (($3 = PASCAL_STRING_TYPE) and (slength = 1))) or
 							      (($3 = PASCAL_CHAR_TYPE) and (($1 = PASCAL_STRING_TYPE) and (slength = 1))) then exit;
-                                                           errString := i18Manager.GetFormattedString('IncTypes', [GetTypeAsString($1), GetTypeAsString($3)]);
+                                                           errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
                                                            yyabort;
                                                         end;
 						}
@@ -538,7 +538,7 @@ condition:		T_NOT condition
 ;
 
 valid_identifier:	T_IDENTIFIER		{
-							if not IsDeclared($1) then
+							if not TParserHelper.IsDeclared($1) then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('UnknId', [$1]);
                                                            yyabort;
@@ -549,7 +549,7 @@ valid_identifier:	T_IDENTIFIER		{
 
 
 var_const:		valid_identifier	{
-                                                        arg1 := GetIdentInfo($1);
+                                                        arg1 := TParserHelper.GetIdentInfo($1);
 							if not (arg1.IdentType in [VARIABLE, VARRAY, CONSTANT, ENUM_VALUE]) then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('UnknId', [$1]);
@@ -561,13 +561,13 @@ var_const:		valid_identifier	{
 ;
 
 routine:		valid_identifier '(' parameters_list ')'	{
-                                                        arg1 := GetIdentInfo($1);
+                                                        arg1 := TParserHelper.GetIdentInfo($1);
 							if arg1.IdentType <> ROUTINE_ID then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('UnknId', [$1]);
                                                            yyabort;
                                                         end
-							else if not ValidateUserFunctionParms($1, paramList) then
+							else if not TParserHelper.ValidateUserFunctionParms($1, paramList) then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadFuncParms', [$1]);
                                                            yyabort;
@@ -577,7 +577,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 						}
 
 		|	T_NEW '(' statement ')'	{
-							if not IsPointerType($3) then
+							if not TParserHelper.IsPointerType($3) then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadFuncParmU', ['new']);
                                                            yyabort;
@@ -586,7 +586,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 						}
 
 		|	T_DISPOSE '(' statement ')'	{
-							if not IsPointerType($3) then
+							if not TParserHelper.IsPointerType($3) then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadFuncParmU', ['dispose']);
                                                            yyabort;
@@ -595,75 +595,75 @@ routine:		valid_identifier '(' parameters_list ')'	{
 						}
 
 		|	T_SIN '(' statement ')'	{
-							if not IsNumericType($3) then
+							if not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [GetTypeAsString($3), 'sin']);
+                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'sin']);
                                                            yyabort;
                                                         end;
                                         		$$ := PASCAL_REAL_TYPE;
 						}
 
 		|	T_COS '(' statement ')'	{
-							if not IsNumericType($3) then
+							if not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [GetTypeAsString($3), 'cos']);
+                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'cos']);
                                                            yyabort;
                                                         end;
                                         		$$ := PASCAL_REAL_TYPE;
 						}
 
 		|	T_TAN '(' statement ')'	{
-							if not IsNumericType($3) then
+							if not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [GetTypeAsString($3), 'tan']);
+                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'tan']);
                                                            yyabort;
                                                         end;
                                         		$$ := PASCAL_REAL_TYPE;
 						}
 
 		|	T_COTAN '(' statement ')'	{
-							if not IsNumericType($3) then
+							if not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [GetTypeAsString($3), 'cotan']);
+                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'cotan']);
                                                            yyabort;
                                                         end;
                                         		$$ := PASCAL_REAL_TYPE;
 						}
 
 		|	T_ABS '(' statement ')'	{
-							if not IsNumericType($3) then
+							if not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [GetTypeAsString($3), 'abs']);
+                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'abs']);
                                                            yyabort;
                                                         end;
-							if IsRealType($3) then
+							if TParserHelper.IsRealType($3) then
                                         		   $$ := PASCAL_REAL_TYPE
 							else
-							   $$ := PASCAL_INT_TYPE; 							
+							   $$ := PASCAL_INT_TYPE;
 						}
 
 		|	T_SQRT '(' statement ')'	{
-							if not IsNumericType($3) then
+							if not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [GetTypeAsString($3), 'sqrt']);
+                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'sqrt']);
                                                            yyabort;
                                                         end;
                                         		$$ := PASCAL_REAL_TYPE;
 						}
 
 		|	T_LN '(' statement ')'	{
-							if not IsNumericType($3) then
+							if not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [GetTypeAsString($3), 'ln']);
+                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'ln']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_REAL_TYPE;
 						}
 
 		|	T_EXP '(' statement ')'	{
-							if not IsNumericType($3) then
+							if not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [GetTypeAsString($3), 'exp']);
+                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'exp']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_REAL_TYPE;
@@ -672,14 +672,14 @@ routine:		valid_identifier '(' parameters_list ')'	{
 		|	T_LEN '(' statement ')'	{
 							if $3 <> PASCAL_STRING_TYPE then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [GetTypeAsString($3), 'length']);
+                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'length']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_INT_TYPE;
 						}
 
 		|	T_LEN '(' var_const ')'	{
-                                                        arg1 := GetIdentInfo($3);
+                                                        arg1 := TParserHelper.GetIdentInfo($3);
 							if (arg1.DimensCount = 0) and (arg1.TType <> PASCAL_STRING_TYPE) then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadFuncParmU', ['length']);
@@ -691,24 +691,24 @@ routine:		valid_identifier '(' parameters_list ')'	{
 		|	T_RAND '(' '-' L_INT ')'	{
 							rand_flag := 1;
 							errString := i18Manager.GetFormattedString('BadFuncParmU', ['random']);
-							yyabort;							
+							yyabort;
 						}
 
 		|	T_RAND '(' statement ')'	{
 							rand_flag := 1;
-							if not IsIntegerType($3) then
+							if not TParserHelper.IsIntegerType($3) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [GetTypeAsString($3), 'random']);
+                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'random']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_INT_TYPE;
 						}
 
 		|	T_SQR '(' statement ')'	{
-                                                        lIsInteger := IsIntegerType($3);
-							if not lIsInteger and not IsRealType($3) then
+                                                        lIsInteger := TParserHelper.IsIntegerType($3);
+							if not lIsInteger and not TParserHelper.IsRealType($3) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [GetTypeAsString($3), 'sqr']);
+                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'sqr']);
                                                            yyabort;
                                                         end;
 							if lIsInteger then
@@ -718,16 +718,16 @@ routine:		valid_identifier '(' parameters_list ')'	{
 						}
 
 		|	T_TRUNC '(' statement ')'	{
-							if not IsRealType($3) then
+							if not TParserHelper.IsRealType($3) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [GetTypeAsString($3), 'trunc']);
+                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'trunc']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_INT_TYPE;
 						}
 
 		|	T_ASSIGN '(' var_const ',' statement ')'	{
-                                                        arg1 := GetIdentInfo($3);
+                                                        arg1 := TParserHelper.GetIdentInfo($3);
 							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'assign']);
@@ -735,14 +735,14 @@ routine:		valid_identifier '(' parameters_list ')'	{
                                                         end
 							else if $5 <> PASCAL_STRING_TYPE then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [GetTypeAsString($5), 'assign']);
+                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($5), 'assign']);
                                                            yyabort;
                                                         end;
 							$$ := UNKNOWN_TYPE;
 						}
 
 		|	T_CLOSE '(' var_const ')'	{
-                                                        arg1 := GetIdentInfo($3);
+                                                        arg1 := TParserHelper.GetIdentInfo($3);
 							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'close']);
@@ -752,7 +752,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 						}
 
 		|	T_RESET '(' var_const ')'	{
-                                                        arg1 := GetIdentInfo($3);
+                                                        arg1 := TParserHelper.GetIdentInfo($3);
 							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'reset']);
@@ -762,7 +762,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 						}
 
 		|	T_REWRITE '(' var_const ')'	{
-                                                        arg1 := GetIdentInfo($3);
+                                                        arg1 := TParserHelper.GetIdentInfo($3);
 							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'rewrite']);
@@ -772,7 +772,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 						}
 
 		|	T_APPEND '(' var_const ')'	{
-                                                        arg1 := GetIdentInfo($3);
+                                                        arg1 := TParserHelper.GetIdentInfo($3);
 							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'append']);
@@ -782,7 +782,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 						}
 
 		|	T_EOF '(' var_const ')'	{
-                                                        arg1 := GetIdentInfo($3);
+                                                        arg1 := TParserHelper.GetIdentInfo($3);
 							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'eof']);
@@ -792,7 +792,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 						}
 
 		|	T_EOLN '(' var_const ')'	{
-                                                        arg1 := GetIdentInfo($3);
+                                                        arg1 := TParserHelper.GetIdentInfo($3);
 							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'eoln']);
@@ -802,9 +802,9 @@ routine:		valid_identifier '(' parameters_list ')'	{
 						}
 
 		|	T_ORD '(' statement ')'	{
-							if ($3 <> PASCAL_CHAR_TYPE) and not IsEnumType($3) then
+							if ($3 <> PASCAL_CHAR_TYPE) and not TParserHelper.IsEnumType($3) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [GetTypeAsString($3), 'ord']);
+                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'ord']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_INT_TYPE;
@@ -813,7 +813,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 		|	T_CHR '(' statement ')'	{
 							if $3 <> PASCAL_INT_TYPE then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [GetTypeAsString($3), 'chr']);
+                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'chr']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_CHAR_TYPE;
@@ -830,12 +830,12 @@ parameters_list:	statement		{
 							SetLength(paramList, Length(paramList)+1);
 							paramList[High(paramList)] := $3;
 						}
-                                                
+
                 |                               {       paramList := nil; }
 ;
 
 struct_exp:		var_const '.' valid_identifier	{
-                                                        arg1 := GetIdentInfo($1);
+                                                        arg1 := TParserHelper.GetIdentInfo($1);
 							if not arg1.IsStruct then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('NotStructType', [$1]);
@@ -846,18 +846,18 @@ struct_exp:		var_const '.' valid_identifier	{
                                                            errString := i18Manager.GetFormattedString('BadVarOper', [$1]);
                                                            yyabort;
                                                         end
-							else if GetFieldType($1, $3) = NOT_DEFINED then
+							else if TParserHelper.GetFieldType($1, $3) = NOT_DEFINED then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('NoFieldStruct', [arg1.TypeAsString, $3]);
                                                            yyabort;
                                                         end;
-							$$ := GetFieldType($1, $3);
+							$$ := TParserHelper.GetFieldType($1, $3);
 						}
 
                 |       var_const '^' '.' valid_identifier      {
-                                                        arg1 := GetIdentInfo($1);
-                                                        lType := GetFieldType($1, $4);
-							if not IsStructType(arg1.TypeOriginal) then
+                                                        arg1 := TParserHelper.GetIdentInfo($1);
+                                                        lType := TParserHelper.GetFieldType($1, $4);
+							if not TParserHelper.IsStructType(arg1.TypeOriginal) then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('NotStructType', [$1]);
                                                            yyabort;
@@ -874,44 +874,44 @@ struct_exp:		var_const '.' valid_identifier	{
                                                         end
 							else if lType = NOT_DEFINED then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('NoFieldStruct', [GetTypeAsString(arg1.TypeOriginal), $4]);
+                                                           errString := i18Manager.GetFormattedString('NoFieldStruct', [TParserHelper.GetTypeAsString(arg1.TypeOriginal), $4]);
                                                            yyabort;
                                                         end;
 							$$ := lType;
                                                 }
 
 		|	table_exp '.' valid_identifier	{
-							if not IsStructType($1) then
+							if not TParserHelper.IsStructType($1) then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadVarOper', ['']);
                                                            yyabort;
                                                         end
-							else if GetFieldType($1, $3) = NOT_DEFINED then
+							else if TParserHelper.GetFieldType($1, $3) = NOT_DEFINED then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('NoFieldStruct', [GetTypeAsString($1), $3]);
+                                                           errString := i18Manager.GetFormattedString('NoFieldStruct', [TParserHelper.GetTypeAsString($1), $3]);
                                                            yyabort;
                                                         end;
-							$$ := GetFieldType($1, $3);
+							$$ := TParserHelper.GetFieldType($1, $3);
 						}
 
                 |       struct_exp '^'          {
-                                                        if not IsPointerType($1) then
+                                                        if not TParserHelper.IsPointerType($1) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('IncTypes', [GetTypeAsString($1), 'pointer']);
+                                                           errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), 'pointer']);
                                                            yyabort;
                                                         end;
-                                                        $$ := GetOriginalType($1);
+                                                        $$ := TParserHelper.GetOriginalType($1);
                                                 }
 ;
 
 table_index:
                         statement               {
-                                                        if not IsIntegerType($1) then
+                                                        if not TParserHelper.IsIntegerType($1) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadIndx', [GetTypeAsString($1)]);
+                                                           errString := i18Manager.GetFormattedString('BadIndx', [TParserHelper.GetTypeAsString($1)]);
                                                            yyabort;
                                                         end;
-							pcount := 1; 
+							pcount := 1;
                                                 }
 
                 |       table_index ',' table_index {   Inc(pcount);    }
@@ -920,7 +920,7 @@ table_index:
 table_exp:
 
 			var_const '[' table_index ']'	{
-                                                        arg1 := GetIdentInfo($1);
+                                                        arg1 := TParserHelper.GetIdentInfo($1);
 							if arg1.TypeOriginal <> PASCAL_STRING_TYPE then
 							begin
 							   if arg1.IdentType <> VARRAY then
@@ -964,18 +964,18 @@ table_exp:
 						}
 
 		|	table_exp '^'		{
-                                                        if not IsPointerType($1) then
+                                                        if not TParserHelper.IsPointerType($1) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('IncTypes', [GetTypeAsString($1), 'pointer']);
+                                                           errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), 'pointer']);
                                                            yyabort;
                                                         end;
-                                                        $$ := GetOriginalType($1);
+                                                        $$ := TParserHelper.GetOriginalType($1);
                                                 }
 ;
 
 output_statement:	
 			statement		{
-							if IsPointerType($1) or IsStructType($1) or ($1 = UNKNOWN_TYPE) then
+							if TParserHelper.IsPointerType($1) or TParserHelper.IsStructType($1) or ($1 = UNKNOWN_TYPE) then
                                                         begin
                                                            errString := i18Manager.GetString('BadOutput');
                                                            yyabort;
@@ -985,9 +985,9 @@ output_statement:
 
 
 		|	output_statement ':' statement  {
-							if not IsIntegerType($3) then
+							if not TParserHelper.IsIntegerType($3) then
                                                         begin
-                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [GetTypeAsString($3), 'writeln']);
+                                                           errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'writeln']);
                                                            yyabort;
                                                         end;
 							$$ := $1;
@@ -1004,49 +1004,49 @@ output_statement:
 ;
 
 range:			statement		{
-							rval := GetFunctionType();
-							lIsEnum := IsEnumType($1);
-							lIsInteger := IsIntegerType($1); 
+							rval := TParserHelper.GetFunctionType();
+							lIsEnum := TParserHelper.IsEnumType($1);
+							lIsInteger := TParserHelper.IsIntegerType($1);
 							if not is_constant and (GParser_Mode = prsVarSize) then
 							begin
 							   errString := i18Manager.GetString('NotConst');
 							   yyabort;
 							end
-							else if  (GParser_Mode = prsReturn) and (($1 <> rval) and not (IsPointerType(rval) and ($1 = GENERIC_PTR_TYPE)) and not ((IsNumericType(rval) and IsNumericType($1)) and not (IsIntegerType(rval) and IsRealType($1)))) then
+							else if  (GParser_Mode = prsReturn) and (($1 <> rval) and not (TParserHelper.IsPointerType(rval) and ($1 = GENERIC_PTR_TYPE)) and not ((TParserHelper.IsNumericType(rval) and TParserHelper.IsNumericType($1)) and not (TParserHelper.IsIntegerType(rval) and TParserHelper.IsRealType($1)))) then
 							begin
-							   errString := i18Manager.GetFormattedString('IncTypes', [GetTypeAsString($1), GetTypeAsString(rval)]);
+							   errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString(rval)]);
 							   yyabort;	
 							end
 							else if GParser_Mode in [prsFor, prsCase, prsCaseValue, prsVarSize] then
 							begin	
 							   if not (GParser_Mode in [prsFor, prsVarSize]) then
 							   begin
-							      if (GParser_Mode = prsCaseValue) and IsDuplicatedCase() then
+							      if (GParser_Mode = prsCaseValue) and TParserHelper.IsDuplicatedCase then
                                                               begin
                                                                  errString := i18Manager.GetString('DupCaseVal');
                                                                  yyabort;
                                                               end
 							      else if ($1 <> PASCAL_CHAR_TYPE) and not lIsInteger and not lIsEnum then
                                                               begin
-                                                                 errString := i18Manager.GetFormattedString('IncTypes', [GetTypeAsString($1), 'integer']);
+                                                                 errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), 'integer']);
                                                                  yyabort;
                                                               end
 							      else if GParser_Mode = prsCaseValue then
 							      begin
-							         lType := GetCaseVarType();
-								 if (lType <> $1) and not (IsIntegerType(lType) and lIsInteger) then
+							         lType := TParserHelper.GetCaseVarType;
+								 if (lType <> $1) and not (TParserHelper.IsIntegerType(lType) and lIsInteger) then
 							         begin
-                                                                    errString := i18Manager.GetFormattedString('IncTypes', [GetTypeAsString(lType), GetTypeAsString($1)]);
+                                                                    errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(lType), TParserHelper.GetTypeAsString($1)]);
                                                                     yyabort;
 								 end;
 							      end;
 							   end
 							   else if GParser_Mode = prsFor then
 							   begin
-  							      lType := GetForVarType();
-							      if (lType <> $1) and not (IsIntegerType(lType) and lIsInteger) then
+  							      lType := TParserHelper.GetForVarType();
+							      if (lType <> $1) and not (TParserHelper.IsIntegerType(lType) and lIsInteger) then
                                                               begin
-                                                                 errString := i18Manager.GetFormattedString('IncTypes', [GetTypeAsString(lType), GetTypeAsString($1)]);
+                                                                 errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(lType), TParserHelper.GetTypeAsString($1)]);
                                                                  yyabort;
                                                               end;
 							   end

@@ -42,8 +42,8 @@ var
 implementation
 
 uses
-   SysUtils, SynHighlighterCpp, StrUtils, Main_Block, ApplicationCommon,
-   LangDefinition, ParserCommon, Classes;
+   SysUtils, SynHighlighterCpp, StrUtils, Main_Block, ApplicationCommon, LangDefinition,
+   Classes, ParserHelper;
 
 var
    lLangDef: TLangDefinition;
@@ -425,10 +425,10 @@ end;
 
 initialization
 
-   C_INT_TYPE      := GetType('int', C_LANG_ID);
-   C_REAL_TYPE     := GetType('float', C_LANG_ID);
-   C_CHAR_TYPE     := GetType('char', C_LANG_ID);
-   C_CHAR_PTR_TYPE := GetType('char*', C_LANG_ID);
+   C_INT_TYPE      := TParserHelper.GetType('int', C_LANG_ID);
+   C_REAL_TYPE     := TParserHelper.GetType('float', C_LANG_ID);
+   C_CHAR_TYPE     := TParserHelper.GetType('char', C_LANG_ID);
+   C_CHAR_PTR_TYPE := TParserHelper.GetType('char*', C_LANG_ID);
 
    lLangDef := GInfra.GetLangDefinition(C_LANG_ID);
    if lLangDef <> nil then

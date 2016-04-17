@@ -81,7 +81,7 @@ type
 implementation
 
 uses
-   SysUtils, ApplicationCommon, StrUtils, ParserCommon, CommonTypes, LangDefinition;
+   SysUtils, ApplicationCommon, StrUtils, CommonTypes, LangDefinition, ParserHelper;
 
 constructor TUserDataType.Create(const AParentForm: TDataTypesForm);
 begin
@@ -513,11 +513,11 @@ function TUserDataType.GetOriginalType: integer;
 var
    lField: TField;
 begin
-   result := GetType(Trim(edtName.Text));
+   result := TParserHelper.GetType(Trim(edtName.Text));
    if rbArray.Checked and (sbxElements.ControlCount > 0) then
    begin
       lField := TField(sbxElements.Controls[0]);
-      result := GetType(lField.cbType.Text);
+      result := TParserHelper.GetType(lField.cbType.Text);
    end;
 end;
 

@@ -25,7 +25,7 @@ implementation
 
 uses
    Base_Block, LangDefinition, UserFunction, SysUtils, StrUtils, DeclareList, CommonInterfaces,
-   UserDataType, ParserCommon, FastcodeAnsiStringReplaceUnit, Classes, ApplicationCommon;
+   UserDataType, FastcodeAnsiStringReplaceUnit, Classes, ApplicationCommon, ParserHelper;
 
 procedure Dummy_UserDataTypesSectionGenerator(ALines: TStringList);
 var
@@ -120,10 +120,10 @@ begin
                                  lFieldStr := FastCodeAnsiStringReplace(lFieldStr, '%s3', lSizeStr);
                               lRecord := '';
                               lEnum := '';
-                              lType := GetType(lField.cbType.Text);
-                              if IsStructType(lType) then
+                              lType := TParserHelper.GetType(lField.cbType.Text);
+                              if TParserHelper.IsStructType(lType) then
                                  lRecord := lLang.FunctionHeaderArgsEntryRecord
-                              else if IsEnumType(lType) then
+                              else if TParserHelper.IsEnumType(lType) then
                                  lEnum := lLang.FunctionHeaderArgsEntryEnum;
                               lFieldStr := FastCodeAnsiStringReplace(lFieldStr, '%s4', lRecord);
                               lFieldStr := FastCodeAnsiStringReplace(lFieldStr, '%s5', lEnum);
@@ -310,12 +310,12 @@ begin
             else
                lInit := '';
             lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s4', lInit);
-            lType := GetType(AVarList.sgList.Cells[VAR_TYPE_COL, i]);
+            lType := TParserHelper.GetType(AVarList.sgList.Cells[VAR_TYPE_COL, i]);
             lRecord := '';
             lEnum := '';
-            if IsStructType(lType) then
+            if TParserHelper.IsStructType(lType) then
                lRecord := lLang.FunctionHeaderArgsEntryRecord
-            else if IsEnumType(lType) then
+            else if TParserHelper.IsEnumType(lType) then
                lEnum := lLang.FunctionHeaderArgsEntryEnum;
             lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s5', lRecord);
             lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s6', lEnum);
@@ -379,10 +379,10 @@ begin
                lRef := lLang.FunctionHeaderArgsEntryRef;
             if lParm.chkTable.Checked then
                lArray := lLang.FunctionHeaderArgsEntryArray;
-            lTypeInt := GetType(lParm.cbType.Text);
-            if IsStructType(lTypeInt) then
+            lTypeInt := TParserHelper.GetType(lParm.cbType.Text);
+            if TParserHelper.IsStructType(lTypeInt) then
                lRecord := lLang.FunctionHeaderArgsEntryRecord
-            else if IsEnumType(lTypeInt) then
+            else if TParserHelper.IsEnumType(lTypeInt) then
                lEnum := lLang.FunctionHeaderArgsEntryEnum;
             lParmStr := FastCodeAnsiStringReplace(lParmStr, '%s3', lRef);
             lParmStr := FastCodeAnsiStringReplace(lParmStr, '%s4', lArray);

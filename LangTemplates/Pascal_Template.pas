@@ -92,8 +92,7 @@ implementation
 
 uses
    SysUtils, SynHighlighterPas, StrUtils, Pascal_Parser, Main_Block, ApplicationCommon,
-   DeclareList, Settings, LocalizationManager, LangDefinition, ParserCommon,
-   Classes, CommonTypes;
+   DeclareList, Settings, LocalizationManager, LangDefinition, Classes, CommonTypes, ParserHelper;
 
 var
    lLangDef: TLangDefinition;
@@ -537,15 +536,15 @@ end;
 
 initialization
 
-   PASCAL_INT_TYPE        := GetType('integer', PASCAL_LANG_ID);
-   PASCAL_REAL_TYPE       := GetType('real', PASCAL_LANG_ID);
-   PASCAL_STRING_TYPE     := GetType('string', PASCAL_LANG_ID);
-   PASCAL_BOOL_TYPE       := GetType('boolean', PASCAL_LANG_ID);
-   PASCAL_CHAR_TYPE       := GetType('char', PASCAL_LANG_ID);
-   PASCAL_INT_PTR_TYPE    := GetType('^integer', PASCAL_LANG_ID);
-   PASCAL_REAL_PTR_TYPE   := GetType('^real', PASCAL_LANG_ID);
-   PASCAL_STRING_PTR_TYPE := GetType('^string', PASCAL_LANG_ID);
-   PASCAL_TEXT_FILE_TYPE  := GetType('text', PASCAL_LANG_ID);
+   PASCAL_INT_TYPE        := TParserHelper.GetType('integer', PASCAL_LANG_ID);
+   PASCAL_REAL_TYPE       := TParserHelper.GetType('real', PASCAL_LANG_ID);
+   PASCAL_STRING_TYPE     := TParserHelper.GetType('string', PASCAL_LANG_ID);
+   PASCAL_BOOL_TYPE       := TParserHelper.GetType('boolean', PASCAL_LANG_ID);
+   PASCAL_CHAR_TYPE       := TParserHelper.GetType('char', PASCAL_LANG_ID);
+   PASCAL_INT_PTR_TYPE    := TParserHelper.GetType('^integer', PASCAL_LANG_ID);
+   PASCAL_REAL_PTR_TYPE   := TParserHelper.GetType('^real', PASCAL_LANG_ID);
+   PASCAL_STRING_PTR_TYPE := TParserHelper.GetType('^string', PASCAL_LANG_ID);
+   PASCAL_TEXT_FILE_TYPE  := TParserHelper.GetType('text', PASCAL_LANG_ID);
 
    lLangDef := GInfra.GetLangDefinition(PASCAL_LANG_ID);
    if lLangDef <> nil then

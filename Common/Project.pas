@@ -106,8 +106,8 @@ type
 implementation
 
 uses
-   SysUtils, ApplicationCommon, XMLProcessor, Base_Form, LangDefinition, ParserCommon,
-   Messages, Navigator_Form, SortListDecorator, Base_Block, Comment, TabComponent;
+   SysUtils, ApplicationCommon, XMLProcessor, Base_Form, LangDefinition, Messages, Navigator_Form,
+   SortListDecorator, Base_Block, Comment, TabComponent, ParserHelper;
 
 var
    Instance: TProject;

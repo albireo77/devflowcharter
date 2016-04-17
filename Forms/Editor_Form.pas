@@ -149,9 +149,9 @@ var
 implementation
 
 uses
-   ApplicationCommon, Goto_Form, Settings, LangDefinition, Main_Block, Help_Form,
-   Comment, ParserCommon, XMLProcessor, StrUtils, Main_Form, Base_Block, SynEditTypes,
-   SynEditExport, SynEditHighlighter;
+   ApplicationCommon, Goto_Form, Settings, LangDefinition, Main_Block, Help_Form, Comment,
+   XMLProcessor, StrUtils, Main_Form, Base_Block, SynEditTypes, SynEditExport, SynEditHighlighter,
+   ParserHelper;
 
 const
    InfoPanel2: array[boolean] of string = ('OverwriteMode', 'InsertMode');
@@ -917,12 +917,12 @@ begin
          lBlock := nil;
          lGlobalCheck := true;
          lLocalCheck := true;
-         InitIdentInfo(lIdent);
+         TParserHelper.InitIdentInfo(lIdent);
          lObject := Lines.Objects[P.Line-1];
          lIdent.Ident := lWord;
          if TInfra.IsValid(lObject) and (lObject is TBlock) then
             lBlock := TBlock(lObject);
-         GetParameterInfo(TInfra.GetFunctionHeader(lBlock), lIdent);
+         TParserHelper.GetParameterInfo(TInfra.GetFunctionHeader(lBlock), lIdent);
          if lIdent.TType <> NOT_DEFINED then
          begin
             lLocalCheck := false;
@@ -930,12 +930,12 @@ begin
          end;
          if lLocalCheck then
          begin
-            GetVariableInfo(FindUserFunctionVarList(lBlock), lIdent);
+            TParserHelper.GetVariableInfo(TParserHelper.FindUserFunctionVarList(lBlock), lIdent);
             if lIdent.TType <> NOT_DEFINED then
                lGlobalCheck := false;
          end;
          if lGlobalCheck then
-            lIdent := GetIdentInfo(lWord);
+            lIdent := TParserHelper.GetIdentInfo(lWord);
          case lIdent.Scope of
             LOCAL:     lScope := 'VarLocal';
             PARAMETER: lScope := 'VarParm';

@@ -150,9 +150,8 @@ const
 implementation
 
 uses
-   ApplicationCommon, SysUtils, XMLProcessor, ParserCommon, Dialogs, Project,
-   StrUtils, CommonTypes, UserDataType, LangDefinition;
-
+   ApplicationCommon, SysUtils, XMLProcessor, Dialogs, Project, StrUtils, CommonTypes, UserDataType,
+   LangDefinition, ParserHelper;
 
 constructor TDeclareList.Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
 var
@@ -572,7 +571,7 @@ var
    lDataType: TUserDataType;
 begin
    status := ValidateId(edtName.Text);
-   lType := GetType(cbType.Text);
+   lType := TParserHelper.GetType(cbType.Text);
    if status <> VALID_IDENT then
    else if IsDeclared(edtName.Text, true) then
       status := DUPLICATED_IDENT
@@ -580,19 +579,19 @@ begin
    begin
       if not edtSize.ParseSize then
          status := INCORRECT_SIZE
-      else if (edtSize.Text = '1') and not IsStructType(lType) and Assigned(GInfra.CurrentLang.GetLiteralType) then
+      else if (edtSize.Text = '1') and not TParserHelper.IsStructType(lType) and Assigned(GInfra.CurrentLang.GetLiteralType) then
       begin
          lInitString := Trim(edtInit.Text);
          if lInitString <> '' then
          begin
-            if IsEnumType(lType) then
+            if TParserHelper.IsEnumType(lType) then
             begin
                lDataType := GProject.GetUserDataType(cbType.Text);
                if (lDataType <> nil) and not lDataType.IsValidEnumValue(lInitString) then
                   status := INVALID_INIT_VAL;
             end
-            else if not AreTypesCompatible(lType, GInfra.CurrentLang.GetLiteralType(lInitString)) and
-                    not AreTypesCompatible(lType, GetConstType(lInitString)) then status := INVALID_INIT_VAL;
+            else if not TParserHelper.AreTypesCompatible(lType, GInfra.CurrentLang.GetLiteralType(lInitString)) and
+                    not TParserHelper.AreTypesCompatible(lType, TParserHelper.GetConstType(lInitString)) then status := INVALID_INIT_VAL;
          end;
       end;
    end;
@@ -778,7 +777,7 @@ end;
 procedure TVarDeclareList.OnClickChange(Sender: TObject);
 begin
    inherited OnClickChange(Sender);
-   cbType.ItemIndex := GetType(sgList.Cells[VAR_TYPE_COL, sgList.Row]);
+   cbType.ItemIndex := TParserHelper.GetType(sgList.Cells[VAR_TYPE_COL, sgList.Row]);
    edtSize.Text := sgList.Cells[VAR_SIZE_COL, sgList.Row];
    edtInit.Text := sgList.Cells[VAR_INIT_COL, sgList.Row];
 end;
@@ -822,8 +821,8 @@ begin
    AList.BeginUpdate;
    for i := 1 to sgList.RowCount-2 do
    begin
-      lType := GetType(sgList.Cells[VAR_TYPE_COL, i]);
-      if (IsIntegerType(lType) or (IsEnumType(lType) and  GInfra.CurrentLang.AllowEnumsInForLoop)) and (sgList.Cells[VAR_SIZE_COL, i] = '1') then
+      lType := TParserHelper.GetType(sgList.Cells[VAR_TYPE_COL, i]);
+      if (TParserHelper.IsIntegerType(lType) or (TParserHelper.IsEnumType(lType) and  GInfra.CurrentLang.AllowEnumsInForLoop)) and (sgList.Cells[VAR_SIZE_COL, i] = '1') then
          AList.Add(sgList.Cells[VAR_NAME_COL, i]);
    end;
    AList.EndUpdate;
@@ -837,8 +836,8 @@ begin
    i := sgList.Cols[VAR_NAME_COL].IndexOf(AName);
    if i > 0 then
    begin
-      lType := GetType(sgList.Cells[VAR_TYPE_COL, i]);
-      result := (IsIntegerType(lType) or (IsEnumType(lType) and  GInfra.CurrentLang.AllowEnumsInForLoop)) and (sgList.Cells[VAR_SIZE_COL, i] = '1');
+      lType := TParserHelper.GetType(sgList.Cells[VAR_TYPE_COL, i]);
+      result := (TParserHelper.IsIntegerType(lType) or (TParserHelper.IsEnumType(lType) and  GInfra.CurrentLang.AllowEnumsInForLoop)) and (sgList.Cells[VAR_SIZE_COL, i] = '1');
    end;
 end;
 

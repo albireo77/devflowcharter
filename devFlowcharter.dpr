@@ -54,7 +54,6 @@ uses
   LexLib in 'Parsers\Common\Lexlib.pas',
   ParseGlobals in 'Parsers\Common\ParseGlobals.pas',
   YaccLib in 'Parsers\Common\Yacclib.pas',
-  ParserCommon in 'Parsers\Common\ParserCommon.pas',
   DataTypes_Form in 'Forms\DataTypes_Form.pas' {DataTypesForm},
   UserDataType in 'Common\UserDataType.pas',
   Help_Form in 'Forms\Help_Form.pas' {HelpForm},
@@ -85,7 +84,8 @@ uses
   BlockFactory in 'Common\BlockFactory.pas',
   StatementMemo in 'Common\StatementMemo.pas',
   MultiLine_Block in 'Blocks\MultiLine_Block.pas',
-  Folder_Block in 'Blocks\Folder_Block.pas';
+  Folder_Block in 'Blocks\Folder_Block.pas',
+  ParserHelper in 'Parsers\Common\ParserHelper.pas';
 
 {$R *.res}
 
