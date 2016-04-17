@@ -185,7 +185,7 @@ var
    lStatement: TCustomEdit;
 begin
    result := false;
-   if AEdit.Parent = Self then
+   if (AEdit <> nil) and (AEdit.Parent = Self) then
    begin
       for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
       begin
