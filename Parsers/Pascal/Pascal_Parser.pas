@@ -247,7 +247,7 @@ begin
        end;
    8 : begin
          
-         							if not TParserHelper.IsInLoop() then
+         							if not TParserHelper.IsInLoop then
          begin
          errString := i18Manager.GetString('BreakErr');
          yyabort;
@@ -259,7 +259,7 @@ begin
        end;
   10 : begin
          
-         							if not TParserHelper.IsInLoop() then
+         							if not TParserHelper.IsInLoop then
          begin
          errString := i18Manager.GetString('ContErr');
          yyabort;
@@ -1203,7 +1203,7 @@ begin
        end;
  113 : begin
          
-         							rval := TParserHelper.GetFunctionType();
+         							rval := TParserHelper.GetUserFunctionType;
          							lIsEnum := TParserHelper.IsEnumType(yyv[yysp-0].yyInteger);
          							lIsInteger := TParserHelper.IsIntegerType(yyv[yysp-0].yyInteger);
          							if not is_constant and (GParser_Mode = prsVarSize) then
@@ -1242,7 +1242,7 @@ begin
          							   end
          							   else if GParser_Mode = prsFor then
          							   begin
-         							      lType := TParserHelper.GetForVarType();
+         							      lType := TParserHelper.GetForVarType;
          							      if (lType <> yyv[yysp-0].yyInteger) and not (TParserHelper.IsIntegerType(lType) and lIsInteger) then
          begin
          errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(lType), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);

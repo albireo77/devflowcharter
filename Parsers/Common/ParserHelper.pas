@@ -37,7 +37,8 @@ type
    public
       class function IsInLoop: boolean;
       class function ValidateUserFunctionParms(const AFunctionName: string; AParmList: array of integer): boolean;
-      class function GetUserFunctionType(const AFunctionName: string): integer;
+      class function GetUserFunctionType(const AFunctionName: string): integer; overload;
+      class function GetUserFunctionType: integer; overload;
       class function GetConstType(const AConstName: string): integer;
       class function GetEnumeratedType(const AValue: string): integer;
       class function GetTypeAsString(const AType: integer):string;
@@ -48,7 +49,6 @@ type
       class function IsDuplicatedCase: boolean;
       class function GetConstValue(const AConstName: string): string;
       class function GetIdentInfo(const AIdentName: string): TIdentInfo;
-      class function GetFunctionType: integer;
       class function FindUserFunctionVarList(const ABlock: TBlock): TVarDeclareList;
       class procedure GetParameterInfo(const AHeader: TUserFunctionHeader; var AResult: TIdentInfo);
       class procedure GetVariableInfo(const AVarList: TVarDeclareList; var AResult: TIdentInfo);
@@ -179,14 +179,28 @@ begin
       result := TCaseBlock(lEdit.Parent).IsDuplicatedCase(lEdit);
 end;
 
-class function TParserHelper.GetFunctionType: integer;
+// get function type for active edit control
+class function TParserHelper.GetUserFunctionType: integer;
 var
    lHeader: TUserFunctionHeader;
 begin
    result := NOT_DEFINED;
    lHeader := TInfra.GetFunctionHeader(TInfra.GetParsedBlock);
    if (lHeader <> nil) and (lHeader.Font.Color <> NOK_COLOR) then
-      result := lHeader.cbType.ItemIndex - 1;
+      result := GetType(lHeader.cbType.Text);
+end;
+
+class function TParserHelper.GetUserFunctionType(const AFunctionName: string): integer;
+var
+   lFunction: TUserFunction;
+begin
+   result := NOT_DEFINED;
+   if GProject <> nil then
+   begin
+      lFunction := GProject.GetUserFunction(AFunctionName);
+      if (lFunction <> nil) and (lFunction.Header <> nil) and (lFunction.Header.Font.Color <> NOK_COLOR) then
+         result := GetType(lFunction.Header.cbType.Text);
+   end;
 end;
 
 // get type descriptor for given type string
@@ -214,7 +228,8 @@ begin
    if (result = UNKNOWN_TYPE) and (GProject <> nil) and (GProject.GlobalVars <> nil) then
    begin
       result := GProject.GlobalVars.cbType.Items.IndexOf(ATypeName);
-      if result = -1 then result := UNKNOWN_TYPE;
+      if result = -1 then
+         result := UNKNOWN_TYPE;
    end;
 end;
 
@@ -253,19 +268,6 @@ begin
          end;
          result := true;
       end;
-   end;
-end;
-
-class function TParserHelper.GetUserFunctionType(const AFunctionName: string): integer;
-var
-   lFunction: TUserFunction;
-begin
-   result := NOT_DEFINED;
-   if GProject <> nil then
-   begin
-      lFunction := GProject.GetUserFunction(AFunctionName);
-      if (lFunction <> nil) and (lFunction.Header <> nil) then
-         result := GetType(lFunction.Header.cbType.Text);
    end;
 end;
 

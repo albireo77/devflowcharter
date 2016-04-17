@@ -128,7 +128,7 @@ input_line:		assignment		{
 ;
 
 routine_call:		T_BREAK			{
-							if not TParserHelper.IsInLoop() then
+							if not TParserHelper.IsInLoop then
                                                         begin
                                                            errString := i18Manager.GetString('BreakErr');
                                                            yyabort;
@@ -138,7 +138,7 @@ routine_call:		T_BREAK			{
 		|	T_EXIT
 
 		|	T_CONTINUE		{
-							if not TParserHelper.IsInLoop() then
+							if not TParserHelper.IsInLoop then
                                                         begin
                                                            errString := i18Manager.GetString('ContErr');
                                                            yyabort;
@@ -1004,7 +1004,7 @@ output_statement:
 ;
 
 range:			statement		{
-							rval := TParserHelper.GetFunctionType();
+							rval := TParserHelper.GetUserFunctionType;
 							lIsEnum := TParserHelper.IsEnumType($1);
 							lIsInteger := TParserHelper.IsIntegerType($1);
 							if not is_constant and (GParser_Mode = prsVarSize) then
@@ -1043,7 +1043,7 @@ range:			statement		{
 							   end
 							   else if GParser_Mode = prsFor then
 							   begin
-  							      lType := TParserHelper.GetForVarType();
+  							      lType := TParserHelper.GetForVarType;
 							      if (lType <> $1) and not (TParserHelper.IsIntegerType(lType) and lIsInteger) then
                                                               begin
                                                                  errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(lType), TParserHelper.GetTypeAsString($1)]);
