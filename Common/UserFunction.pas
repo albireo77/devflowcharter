@@ -115,7 +115,7 @@ implementation
 
 uses
    SysUtils, ApplicationCommon, Main_Form, XMLProcessor, Windows, Grids, StrUtils,
-   LangDefinition, Navigator_Form;
+   LangDefinition, Navigator_Form, Messages;
 
 constructor TUserFunction.Create(const AFunctionHeader: TUserFunctionHeader; const AFunctionBody: TMainBlock);
 begin
@@ -663,11 +663,15 @@ begin
 end;
 
 procedure TUserFunctionHeader.RedrawBody;
+var
+   R: TRect;
 begin
    if (FOwnerFunction <> nil) and (FOwnerFunction.Body <> nil) then
    begin
-      FOwnerFunction.Body.SetWidth(0);
-      FOwnerFunction.Body.RepaintAll;
+      //FOwnerFunction.Body.SetWidth(0);
+      //FOwnerFunction.Body.RepaintAll;
+      FOwnerFunction.Body.GetFunctionLabel(R);
+      RedrawWindow(FOwnerFunction.Body.Handle, nil, 0, RDW_INVALIDATE);
    end;
 end;
 
