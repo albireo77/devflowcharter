@@ -51,7 +51,6 @@ type
          function GetZOrderValue: integer;
          function IsBoldDesc: boolean; override;
          function Remove: boolean; override;
-         function GetFunctionLabel(var ARect: TRect): string;
       protected
          FZOrderValue: integer;
          FStartLabel,
@@ -59,6 +58,7 @@ type
          procedure MyOnResize(Sender: TObject);
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); override;
          procedure Paint; override;
+         function GetFunctionLabel(var ARect: TRect): string;
          function GetDefaultWidth: integer; override;
          procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
          function GetUndoObject: TObject; override;
