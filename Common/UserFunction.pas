@@ -25,7 +25,7 @@ interface
 
 uses
    Controls, Forms, StdCtrls, ComCtrls, Graphics, ExtCtrls, Classes, OmniXML, Types,
-   DeclareList, CommonInterfaces, TabComponent, Element, Functions_Form, Main_Block;
+   Main_Block, DeclareList, CommonInterfaces, TabComponent, Element, Functions_Form;
 
 type
 
