@@ -32,6 +32,8 @@ type
    TCommentIterator = class(TBaseIterator);
 
    TMainBlock = class(TGroupBlock, IWinControl, IMaxBoundable)
+      private
+         FLabelRect: TRect;
       public
          ShowI: boolean;
          OwnerFunction: TObject;
@@ -51,6 +53,7 @@ type
          function GetZOrderValue: integer;
          function IsBoldDesc: boolean; override;
          function Remove: boolean; override;
+         procedure DrawLabel;
       protected
          FZOrderValue: integer;
          FStartLabel,
@@ -67,7 +70,6 @@ type
 const
    MAIN_BLOCK_DEF_WIDTH = 100;
    MAIN_BLOCK_DEF_HEIGHT = 101;
-
 
 implementation
 
@@ -118,6 +120,7 @@ begin
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    OnResize := MyOnResize;
+   FLabelRect := Rect(0, 0, 0, 0);
    FStatement.Free;
    FStatement := nil;
 end;
@@ -296,11 +299,14 @@ begin
          lLabel := GetFunctionLabel(R);
          if lLabel <> '' then
          begin
+            FLabelRect := R;
             lColor := Font.Color;
             Font.Color := clNavy;
             DrawText(Handle, PChar(lLabel), -1, R, 0);
             Font.Color := lColor;
-         end;
+         end
+         else
+            FLabelRect := Rect(0, 0, 0, 0);
       end;
       DrawEllipsedText(Point(Branch.Hook.X, TopHook.Y), FStartLabel);
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
@@ -350,6 +356,32 @@ begin
          lDelta := Branch.First.BoundsRect.Right + 5 - ARect.Left;
          ARect.Left := ARect.Left + lDelta;
          ARect.Right := ARect.Right + lDelta;
+      end;
+   end;
+end;
+
+procedure TMainBlock.DrawLabel;
+var
+   R: TRect;
+   lLabel: string;
+   lColor: TColor;
+begin
+   lLabel := GetFunctionLabel(R);
+   if lLabel <> '' then
+   begin
+      with Canvas do
+      begin
+         if not IsRectEmpty(FLabelRect) then
+         begin
+            Brush.Style := bsSolid;
+            Brush.Color := Color;
+            PatBlt(Handle, FLabelRect.Left, FLabelRect.Top, FLabelRect.Right, FLabelRect.Bottom, PATCOPY);
+         end;
+         lColor := Font.Color;
+         Font.Color := clNavy;
+         DrawText(Handle, PChar(lLabel), -1, R, 0);
+         Font.Color := lColor;
+         FLabelRect := R;
       end;
    end;
 end;
