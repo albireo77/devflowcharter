@@ -34,6 +34,7 @@ type
    TMainBlock = class(TGroupBlock, IWinControl, IMaxBoundable)
       private
          FLabelRect: TRect;
+         FHandle: HDC;
       public
          ShowI: boolean;
          OwnerFunction: TObject;
@@ -121,6 +122,7 @@ begin
    Constraints.MinHeight := FInitParms.Height;
    OnResize := MyOnResize;
    FLabelRect := Rect(0, 0, 0, 0);
+   FHandle := Canvas.Handle;
    FStatement.Free;
    FStatement := nil;
 end;
@@ -299,11 +301,12 @@ begin
          lLabel := GetFunctionLabel(R);
          if lLabel <> '' then
          begin
-            FLabelRect := R;
             lColor := Font.Color;
             Font.Color := clNavy;
             DrawText(Handle, PChar(lLabel), -1, R, 0);
             Font.Color := lColor;
+            if Handle = FHandle then
+               FLabelRect := R;
          end
          else
             FLabelRect := Rect(0, 0, 0, 0);
