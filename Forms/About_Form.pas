@@ -125,7 +125,7 @@ begin
    lblXML.Hint := IcXML_LINK;
    lblProjectLink.Caption := PROJECT_LINK;
    lblProjectLink.Hint := PROJECT_LINK;
-   lblInfo.Caption := ' This program is freeware and released under the'#13#10'                GNU General Public License.'#13#10#13#10'    Copyright(C) 2006-2015 The devFlowcharter'#13#10'                             project';
+   lblInfo.Caption := ' This program is freeware and released under the'#13#10'                GNU General Public License.'#13#10#13#10'    Copyright(C) 2006-2016 The devFlowcharter'#13#10'                             project';
    lblInfo1.Caption := '                   ' + PROGRAM_NAME + CRLF +
                        'The easiest way from flowchart to program!' + CRLF +
                        '             ' + GetVersionInfo;
