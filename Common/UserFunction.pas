@@ -55,7 +55,7 @@ type
       procedure OnClickExtDecl(Sender: TObject);
       procedure SetActive(const AValue: boolean); override;
       function CreateElement: TElement; override;
-      procedure RedrawBody(const ALabelOnly: boolean = false);
+      procedure DrawBodyLabel;
    public
       cbType: TComboBox;
       lblType,
@@ -562,14 +562,14 @@ begin
       lInfo := 'OkIdD';
    end;
    edtName.Hint := i18Manager.GetFormattedString(lInfo, [lFuncName]);
-   RedrawBody(true);
+   DrawBodyLabel;
    inherited OnChangeName(Sender);
 end;
 
 procedure TUserFunctionHeader.OnChangeDesc(Sender: TObject);
 begin
    if GSettings.ShowFlowchartLabels and chkInclDescFlow.Checked then
-      RedrawBody(true);
+      DrawBodyLabel;
    if GSettings.UpdateEditor and not chkExtDeclare.Checked and (Font.Color <> NOK_COLOR) and chkInclDescCode.Checked then
       TInfra.GetEditorForm.RefreshEditorForObject(Self);
    GChange := 1;
@@ -580,7 +580,7 @@ begin
    if GSettings.UpdateEditor and (Font.Color <> NOK_COLOR) and not chkExtDeclare.Checked then
       TInfra.GetEditorForm.RefreshEditorForObject(Self);
    GChange := 1;
-   RedrawBody(true);
+   DrawBodyLabel;
 end;
 
 procedure TUserFunction.GenerateTree(const ANode: TTreeNode);
@@ -650,7 +650,7 @@ procedure TUserFunctionHeader.OnClickInclDescFlow(Sender: TObject);
 begin
    if GSettings.ShowFlowchartLabels then
    begin
-      RedrawBody(true);
+      DrawBodyLabel;
       NavigatorForm.Repaint;
    end;
    GChange := 1;
@@ -662,15 +662,12 @@ begin
       TInfra.GetEditorForm.RefreshEditorForObject(Self);
 end;
 
-procedure TUserFunctionHeader.RedrawBody(const ALabelOnly: boolean = false);
+procedure TUserFunctionHeader.DrawBodyLabel;
 begin
    if (FOwnerFunction <> nil) and (FOwnerFunction.Body <> nil) then
    begin
       FOwnerFunction.Body.SetWidth(0);
-      if ALabelOnly then
-         FOwnerFunction.Body.DrawLabel
-      else
-         FOwnerFunction.Body.RepaintAll;
+      FOwnerFunction.Body.DrawLabel;
    end;
 end;
 
