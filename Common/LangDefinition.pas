@@ -742,9 +742,12 @@ var
    i: integer;
 begin
    result := '';
-   for i := 1 to ASizeEdit.DimensionCount do
-      result := result + Format(VarEntryArraySize, [ASizeEdit.GetDimension(i)]);
-   result := AnsiLeftStr(result, Length(result)-VarEntryArraySizeStripCount);
+   if ASizeEdit <> nil then
+   begin
+      for i := 1 to ASizeEdit.DimensionCount do
+         result := result + Format(VarEntryArraySize, [ASizeEdit.GetDimension(i)]);
+      result := AnsiLeftStr(result, Length(result)-VarEntryArraySizeStripCount);
+   end;
 end;
 
 end.

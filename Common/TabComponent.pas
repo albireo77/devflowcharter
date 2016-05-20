@@ -345,7 +345,7 @@ var
    iter: IIterator;
 begin
    result := false;
-   if AElement.ParentTab = Self then
+   if (AElement <> nil) and (AElement.ParentTab = Self) then
    begin
       iter := GetElementIterator;
       while iter.HasNext do
