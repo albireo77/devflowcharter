@@ -67,7 +67,7 @@ type
          constructor Create(const AParentForm: TPageControlForm);
          destructor Destroy; override;
          procedure ExportToXMLTag(const rootTag: IXMLElement); virtual;
-         function IsDuplicated(AName: TEdit): boolean;
+         function IsDuplicated(ANameEdit: TEdit): boolean;
          procedure Localize(const list: TStringList); virtual;
          procedure ImportFromXMLTag(const root: IXMLElement; const APinControl: TControl = nil); virtual;
          function GetLibName: string;
@@ -202,19 +202,22 @@ begin
       result := PageIndex;
 end;
 
-function TTabComponent.IsDuplicated(AName: TEdit): boolean;
+function TTabComponent.IsDuplicated(ANameEdit: TEdit): boolean;
 var
    lTab: TTabComponent;
    i: integer;
 begin
    result := false;
-   for i := 0 to PageControl.PageCount-1 do
+   if ANameEdit <> nil then
    begin
-      lTab := TTabComponent(PageControl.Pages[i]);
-      if lTab.TabVisible and (lTab.edtName <> AName) and TInfra.SameStrings(Trim(lTab.edtName.Text), Trim(AName.Text)) then
+      for i := 0 to PageControl.PageCount-1 do
       begin
-         result := true;
-         break;
+         lTab := TTabComponent(PageControl.Pages[i]);
+         if lTab.TabVisible and (lTab.edtName <> ANameEdit) and TInfra.SameStrings(Trim(lTab.edtName.Text), Trim(ANameEdit.Text)) then
+         begin
+            result := true;
+            break;
+         end;
       end;
    end;
 end;
