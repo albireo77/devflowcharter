@@ -3,3 +3,4 @@
 *.~dfm
 *.exe
 ThirdParty/*
+!ThirdParty/ThirdParty.zip
