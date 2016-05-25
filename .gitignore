@@ -1,4 +1,5 @@
 *.dcu
 *.~pas
+*.~dfm
 *.exe
 ThirdParty/*
