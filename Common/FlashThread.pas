@@ -65,37 +65,37 @@ end;
 procedure TFlashThread.PerformFlash;
 var
    lFontColor: TColor;
+   lEdit: THackEdit;
 begin
    if FFocusInfo.FocusEdit <> nil then
    begin
-      with THackEdit(FFocusInfo.FocusEdit) do
+      lEdit := THackEdit(FFocusInfo.FocusEdit); 
+      lFontColor := lEdit.Font.Color;
+      lEdit.Font.Color := lEdit.Color;
+      lEdit.Color := lFontColor;
+      lEdit.Repaint;
+      Sleep(SLEEP_TIME);
+      lEdit.Color := lEdit.Font.Color;
+      lEdit.Font.Color := lFontColor;
+      lEdit.Repaint;
+      if FFocusInfo.ActiveControl = nil then
       begin
-         lFontColor := Font.Color;
-         Font.Color := Color;
-         Color := lFontColor;
-         Repaint;
-         Sleep(SLEEP_TIME);
-         Color := Font.Color;
-         Font.Color := lFontColor;
-         Repaint;
-         if FFocusInfo.ActiveControl = nil then
+         if FFocusInfo.SelStart >= 0 then
          begin
-            if FFocusInfo.SelStart >= 0 then
-            begin
-               SelStart := FFocusInfo.SelStart;
-               SelLength := Length(FFocusInfo.SelText);
-            end;
-            if CanFocus then SetFocus;
-         end
-         else if FFocusInfo.ActiveControl.CanFocus then
+            lEdit.SelStart := FFocusInfo.SelStart;
+            lEdit.SelLength := Length(FFocusInfo.SelText);
+         end;
+         if lEdit.CanFocus then
+            lEdit.SetFocus;
+      end
+      else if FFocusInfo.ActiveControl.CanFocus then
+      begin
+         FFocusInfo.ActiveControl.SetFocus;
+         if FFocusInfo.FocusEditForm <> nil then
          begin
-            FFocusInfo.ActiveControl.SetFocus;
-            if FFocusInfo.FocusEditForm <> nil then
-            begin
-               FFocusInfo.FocusEditForm.ActiveControl := FFocusInfo.FocusEdit;
-               if Assigned(FFocusInfo.FocusEditCallBack) then
-                  FFocusInfo.FocusEditCallBack(FFocusInfo.FocusEdit);
-            end;
+            FFocusInfo.FocusEditForm.ActiveControl := FFocusInfo.FocusEdit;
+            if Assigned(FFocusInfo.FocusEditCallBack) then
+               FFocusInfo.FocusEditCallBack(FFocusInfo.FocusEdit);
          end;
       end;
    end;
