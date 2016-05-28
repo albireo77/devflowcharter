@@ -1406,44 +1406,41 @@ var
    lWidth: integer;
 begin
    inherited;
-   with Canvas do
+   lStyle := Canvas.Brush.Style;
+   lColor := Canvas.Brush.Color;
+   lWidth := Canvas.Pen.Width;
+   if Expanded then
    begin
-      lStyle := Brush.Style;
-      lColor := Brush.Color;
-      lWidth := Pen.Width;
-      if Expanded then
+      lTop := GetDiamondPoint;
+      if not InvalidPoint(lTop) then
       begin
-         lTop := GetDiamondPoint;
-         if not InvalidPoint(lTop) then
-         begin
-            Brush.Style := bsClear;
-            if GSettings.DiamondColor <> GSettings.DesktopColor then
-               Brush.Color := GSettings.DiamondColor;
-            Polygon([Point(lTop.X-60, lTop.Y+30),
-                     Point(lTop.X, lTop.Y+60),
-                     Point(lTop.X+60, lTop.Y+30),
-                     lTop,
-                     Point(lTop.X-60, lTop.Y+30)]);
+         Canvas.Brush.Style := bsClear;
+         if GSettings.DiamondColor <> GSettings.DesktopColor then
+            Canvas.Brush.Color := GSettings.DiamondColor;
+         Canvas.Polygon([Point(lTop.X-60, lTop.Y+30),
+                         Point(lTop.X, lTop.Y+60),
+                         Point(lTop.X+60, lTop.Y+30),
+                         lTop,
+                         Point(lTop.X-60, lTop.Y+30)]);
          end;
-      end
-      else if FMemoFolder <> nil then
-      begin
-         if FTopParentBlock <> Self then
-            DrawArrowLine(Point(BottomPoint.X, Height-31), Point(BottomPoint.X, Height-1));
-         Pen.Width := 2;
-         Brush.Style := bsClear;
-         if GSettings.FoldColor <> GSettings.DesktopColor then
-            Brush.Color := GSettings.FoldColor;
-         Polygon([Point(1, 1),
-                  Point(Width-1, 1),
-                  Point(Width-1, FMemoFolder.Height+5),
-                  Point(1, FMemoFolder.Height+5),
-                  Point(1, 0)]);
-      end;
-      Brush.Style := lStyle;
-      Brush.Color := lColor;
-      Pen.Width := lWidth;
+   end
+   else if FMemoFolder <> nil then
+   begin
+      if FTopParentBlock <> Self then
+         DrawArrowLine(Point(BottomPoint.X, Height-31), Point(BottomPoint.X, Height-1));
+      Canvas.Pen.Width := 2;
+      Canvas.Brush.Style := bsClear;
+      if GSettings.FoldColor <> GSettings.DesktopColor then
+         Canvas.Brush.Color := GSettings.FoldColor;
+      Canvas.Polygon([Point(1, 1),
+                      Point(Width-1, 1),
+                      Point(Width-1, FMemoFolder.Height+5),
+                      Point(1, FMemoFolder.Height+5),
+                      Point(1, 0)]);
    end;
+   Canvas.Brush.Style := lStyle;
+   Canvas.Brush.Color := lColor;
+   Canvas.Pen.Width := lWidth;
 end;
 
 // return value indicates if drawing was in fact locked by this call
