@@ -1154,8 +1154,8 @@ begin
    if ABlock <> nil then
    begin
       lMainBlock := TMainBlock(ABlock.TopParentBlock);
-      if lMainBlock.OwnerFunction is TUserFunction then
-         result := TUserFunction(lMainBlock.OwnerFunction).Header;
+      if lMainBlock.UserFunction is TUserFunction then
+         result := TUserFunction(lMainBlock.UserFunction).Header;
    end;
 end;
 

@@ -83,7 +83,7 @@ var
    lBody: TMainBlock;
 begin
    inherited pgcTabsChange(Sender);
-   lBody := TUserFunctionHeader(pgcTabs.ActivePage).OwnerFunction.Body;
+   lBody := TUserFunctionHeader(pgcTabs.ActivePage).UserFunction.Body;
    if (lBody <> nil) and lBody.Visible then
    begin
       lBody.ParentForm.ScrollInView(lBody);

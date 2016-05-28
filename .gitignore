@@ -1,6 +1,7 @@
 *.dcu
 *.~pas
 *.~dfm
+*.~dpr
 *.exe
 ThirdParty/*
 !ThirdParty/ThirdParty.zip

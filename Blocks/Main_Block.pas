@@ -37,7 +37,7 @@ type
          FHandle: HDC;
       public
          ShowI: boolean;
-         OwnerFunction: TObject;
+         UserFunction: TObject;
          constructor Create(const AParent: TMainForm; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
          constructor Create(const AParent: TMainForm; const ATopLeft: TPoint); overload;
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
@@ -328,10 +328,10 @@ var
 begin
    result := '';
    ARect := Rect(Branch.Hook.X+75, 7, 0, 0);
-   if GSettings.ShowFlowchartLabels and (OwnerFunction <> nil) and Expanded then
+   if GSettings.ShowFlowchartLabels and (UserFunction <> nil) and Expanded then
    begin
       lLang := nil;
-      lHeader := TUserFunction(OwnerFunction).Header;
+      lHeader := TUserFunction(UserFunction).Header;
       if lHeader <> nil then
       begin
          if Assigned(GInfra.CurrentLang.GetUserFuncDesc) then
@@ -554,14 +554,14 @@ end;
 
 function TMainBlock.GetUndoObject: TObject;
 begin
-   result := OwnerFunction;
+   result := UserFunction;
 end;
 
 function TMainBlock.Remove: boolean;
 begin
    result := inherited Remove;
    if result then
-      TUserFunction(OwnerFunction).Active := false;
+      TUserFunction(UserFunction).Active := false;
 end;
 
 end.

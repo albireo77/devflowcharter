@@ -43,7 +43,7 @@ type
 
    TUserFunctionHeader = class(TTabComponent)
    private
-      FOwnerFunction: TUserFunction;
+      FUserFunction: TUserFunction;
       FLocalVars: TVarDeclareList;
    protected
       procedure OnChangeName(Sender: TObject); override;
@@ -68,9 +68,9 @@ type
       chkInclDescFlow: TCheckBox;
       splDescription,
       splParameters: TSplitter;
-      property OwnerFunction: TUserFunction read FOwnerFunction default nil;
-      property LocalVars: TVarDeclareList read FLocalVars default nil;
-      property ParameterCount: integer read GetElementCount default 0;
+      property UserFunction: TUserFunction read FUserFunction;
+      property LocalVars: TVarDeclareList read FLocalVars;
+      property ParameterCount: integer read GetElementCount;
       constructor Create(const AParentForm: TFunctionsForm);
       destructor Destroy; override;
       procedure ExportToXMLTag(const rootTag: IXMLElement); override;
@@ -90,8 +90,8 @@ type
       function GetActive: boolean;
       procedure ImportFromXMLTag(const rootTag: IXMLElement; const APinControl: TControl = nil); virtual; abstract;
    public
-      property Header: TUserFunctionHeader read FHeader default nil;
-      property Body: TMainBlock read FBody default nil;
+      property Header: TUserFunctionHeader read FHeader;
+      property Body: TMainBlock read FBody;
       property Active: boolean read GetActive write SetActive;
       constructor Create(const AFunctionHeader: TUserFunctionHeader; const AFunctionBody: TMainBlock);
       destructor Destroy; override;
@@ -127,14 +127,14 @@ begin
    GProject.LastUserFunction := Self;
    if FHeader <> nil then
    begin
-      FHeader.FOwnerFunction := Self;
+      FHeader.FUserFunction := Self;
       FHeader.FOverlayObject := Self;
       if (FBody <> nil) and FHeader.chkExtDeclare.Checked then
          FBody.Visible := false;
    end;
    if FBody <> nil then
    begin
-      FBody.OwnerFunction := Self;
+      FBody.UserFunction := Self;
       FBody.SetWidth(FBody.Width);
       FBody.ParentForm.SetScrollBars;
    end;
@@ -226,8 +226,8 @@ begin
    if AValue <> FActive then
    begin
       inherited SetActive(AValue);
-      if (OwnerFunction <> nil) and (OwnerFunction.Active <> AValue) then
-         OwnerFunction.Active := AValue;
+      if (FUserFunction <> nil) and (FUserFunction.Active <> AValue) then
+         FUserFunction.Active := AValue;
    end;
 end;
 
@@ -636,10 +636,10 @@ end;
 
 procedure TUserFunctionHeader.OnClickExtDecl(Sender: TObject);
 begin
-   if (FOwnerFunction <> nil) and (FOwnerFunction.Body <> nil) then
+   if (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
    begin
-      FOwnerFunction.Body.SetVisible(not chkExtDeclare.Checked);
-      FOwnerFunction.Body.ParentForm.SetScrollBars;
+      FUserFunction.Body.SetVisible(not chkExtDeclare.Checked);
+      FUserFunction.Body.ParentForm.SetScrollBars;
       if GSettings.UpdateEditor and (Font.Color <> NOK_COLOR) then
          TInfra.GetEditorForm.RefreshEditorForObject(Self);
    end;
@@ -664,10 +664,10 @@ end;
 
 procedure TUserFunctionHeader.DrawBodyLabel;
 begin
-   if (FOwnerFunction <> nil) and (FOwnerFunction.Body <> nil) then
+   if (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
    begin
-      FOwnerFunction.Body.SetWidth(0);
-      FOwnerFunction.Body.DrawLabel;
+      FUserFunction.Body.SetWidth(0);
+      FUserFunction.Body.DrawLabel;
    end;
 end;
 
@@ -699,8 +699,8 @@ begin
    tag2.SetAttribute('headerh', IntToStr(gbHeader.Height));
    tag2.SetAttribute('parmsh', IntToStr(gbParameters.Height));
    tag2.SetAttribute('lvarsh', IntToStr(FLocalVars.Height));
-   if (OwnerFunction <> nil) and (OwnerFunction.Body <> nil) then
-      OwnerFunction.Body.ExportToXMLTag(tag);
+   if (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
+      FUserFunction.Body.ExportToXMLTag(tag);
 end;
 
 procedure TUserFunctionHeader.ImportFromXMLTag(const rootTag: IXMLElement; const APinControl: TControl = nil);

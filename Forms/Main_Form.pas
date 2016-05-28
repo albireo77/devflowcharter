@@ -1025,7 +1025,7 @@ begin
          if ExportDialog.FilterIndex = 1 then
          begin
             if lBlock is TMainBlock then
-               status := TXMLProcessor.ExportToXMLFile(ExportDialog.Filename, TUserFunction(TMainBlock(lBlock).OwnerFunction).ExportToXMLTag)
+               status := TXMLProcessor.ExportToXMLFile(ExportDialog.Filename, TUserFunction(TMainBlock(lBlock).UserFunction).ExportToXMLTag)
             else
                status := lBlock.ExportToXMLFile(ExportDialog.FileName);
             if status <> errNone then
