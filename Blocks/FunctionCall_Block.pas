@@ -47,14 +47,11 @@ uses
 constructor TFunctionCallBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 begin
    FType := blFuncCall;
-
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
-
    FStatement.SetBounds(10, 0, AWidth-20, 19);
    FStatement.Anchors := [akRight, akLeft, akTop];
    FStatement.BorderStyle := bsSingle;
    FStatement.Color := GSettings.RoutineColor;
-
    BottomPoint.X := AWidth div 2;
    BottomPoint.Y := 19;
    IPoint.X := BottomPoint.X + 30;
