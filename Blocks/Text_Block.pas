@@ -56,7 +56,6 @@ constructor TTextBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth,
 begin
    FType := blText;
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
-
    FCorner := TCornerPanel.Create(Self);
    FCorner.Parent := Self;
    FCorner.Color := GSettings.RectColor;
