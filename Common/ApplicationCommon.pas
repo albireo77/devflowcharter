@@ -507,144 +507,138 @@ var
    BitmapImage: POINTER;
 begin
    if not IsPrinter then
-      ShowErrorBox(i18Manager.GetString('NoPrinter'), errPrinter)
+     ShowErrorBox(i18Manager.GetString('NoPrinter'), errPrinter)
    else if MainForm.PrintDialog.Execute then
    begin
-      last_err := 0;
-      ABitmap.PixelFormat := pf24bit;
-
-      with Printer do
-      begin
-         status := GDI_ERROR;
-         Orientation := poPortrait;
-         Copies := MainForm.PrintDialog.Copies;
-         BeginDoc;
-         Canvas.Font.Name := 'Times New Roman';
-         Canvas.Font.Height := MulDiv(GetDeviceCaps(Canvas.Handle, LOGPIXELSY), 12, 72);
-         lineHeight := Canvas.TextHeight('X');
-         Inc(lineHeight, MulDiv(lineHeight, 8, 100));
-         regionX := MulDiv(PageWidth, GSettings.PrintMargins.Left, 100);
-         regionY := MulDiv(PageHeight, GSettings.PrintMargins.Top, 100);
-         regionWidth := MulDiv(PageWidth, 100-(GSettings.PrintMargins.Left+GSettings.PrintMargins.Right), 100);
-         regionHeight := MulDiv(PageHeight, 100-(GSettings.PrintMargins.Top+GSettings.PrintMargins.Bottom), 100) - lineHeight;
-         fPoint.X := regionX + regionWidth;
-         fPoint.Y := regionY + regionHeight;
-         stepX := ABitmap.Width;
-         stepY := ABitmap.Height;
-         rowCount := 1;
-         colCount := 1;
-         if GSettings.PrintMultPages then
-         begin
-            Dec(regionHeight, lineHeight);
-            if GSettings.PrintMultPagesHorz then
-            begin
-               Dec(regionHeight, 2*lineHeight);
-               LogPixX1 := GetDeviceCaps(ABitmap.Canvas.Handle, LOGPIXELSX);
-               LogPixY1 := GetDeviceCaps(ABitmap.Canvas.Handle, LOGPIXELSY);
-               LogPixX2 := GetDeviceCaps(Canvas.Handle, LOGPIXELSX);
-               LogPixY2 := GetDeviceCaps(Canvas.Handle, LOGPIXELSY);
-               if LogPixX1 > LogPixX2 then      // horizontal
-                  ScaleX := LogPixX1 div LogPixX2
-               else
-                  ScaleX := LogPixX2 div LogPixX1;
-               if LogPixY1 > LogPixY2 then      // vertical
-                  ScaleY := LogPixY1 div LogPixY2
-               else
-                  ScaleY := LogPixY2 div LogPixY1;
-               stepX := regionWidth div ScaleX;
-               stepY := regionHeight div ScaleY;
-            end
-            else
-               stepY := MulDiv(regionHeight, ABitmap.Width, regionWidth);
-            colCount := ABitmap.Width div stepX;
-            if (ABitmap.Width mod stepX) <> 0 then
-               Inc(colCount);
-            rowCount := ABitmap.Height div stepY;
-            if (ABitmap.Height mod stepY) <> 0 then
-               Inc(rowCount);
-         end;
-         if (stepX/stepY) > (regionWidth/regionHeight) then
-            regionHeight := MulDiv(stepY, regionWidth, stepX)
-         else
-            regionWidth  := MulDiv(stepX, regionHeight, stepY);
-         for i := 1 to colCount do
-         begin
-            for j := 1 to rowCount do
-            begin
-               GetDIBSizes(ABitmap.Handle, HeaderSize, ImageSize);
-               GetMem(BitmapHeader, HeaderSize);
-               GetMem(BitmapImage, ImageSize);
-               try
-                  GetDIB(ABitmap.Handle, ABitmap.Palette, BitmapHeader^, BitmapImage^);
-                  status := StretchDIBits(Canvas.Handle,
-                                          regionX,
-                                          regionY,
-                                          regionWidth,
-                                          regionHeight,
-                                          (i-1)*stepX,
-                                          ABitmap.Height-j*stepY,
-                                          stepX,
-                                          stepY,
-                                          BitmapImage,
-                                          TBitmapInfo(BitmapHeader^),
-                                          DIB_RGB_COLORS,
-                                          SRCCOPY);
-               finally
-                  FreeMem(BitmapHeader, HeaderSize);
-                  FreeMem(BitmapImage, ImageSize);
-               end;
-               if status = GDI_ERROR then
-               begin
-                  last_err := GetLastError;
-                  Abort;
-                  break;
-               end
-               else
-               begin
-                  pos := fPoint;
-                  if GSettings.PrintMultPages then
-                  begin
-                     fLine1 := i18Manager.GetFormattedString('PageCount', [(i-1)*rowCount+j, colCount*rowCount]);
-                     fLine2 := i18Manager.GetFormattedString('ColumnCount', [i, colCount]);
-                     fLine3 := i18Manager.GetFormattedString('RowCount', [j, rowCount]);
-                     maxValue := Canvas.TextWidth(GProject.Name);
-                     maxTmp := Canvas.TextWidth(fLine1);
-                     if maxValue < maxTmp then
-                        maxValue := maxTmp;
-                     maxTmp := Canvas.TextWidth(fLine2);
-                     if maxValue < maxTmp then
-                        maxValue := maxTmp;
-                     maxTmp := Canvas.TextWidth(fLine3);
-                     if maxValue < maxTmp then
-                        maxValue := maxTmp;
-                     Dec(pos.X, maxValue);
-                     if GSettings.PrintMultPagesHorz then
-                     begin
-                        Canvas.TextOut(pos.X, pos.Y, fLine3);
-                        Dec(pos.Y, lineHeight);
-                        Canvas.TextOut(pos.X, pos.Y, fLine2);
-                        Dec(pos.Y, lineHeight);
-                     end;
-                     Canvas.TextOut(pos.X, pos.Y, fLine1);
-                     Dec(pos.Y, lineHeight);
-                  end
-                  else
-                     Dec(pos.X, Canvas.TextWidth(GProject.Name));
-                  Canvas.TextOut(pos.X, pos.Y, GProject.Name);
-                  if not ((j = rowCount) and (i = colCount)) then
-                     NewPage;
-               end;
-            end;
-            if status = GDI_ERROR then break;
-         end;
-
-         if status <> GDI_ERROR then
-            EndDoc
-         else
-            ShowErrorBox(i18Manager.GetFormattedString('PrintError', [CRLF, SysErrorMessage(last_err)]), errPrinter);
-      end; { with }
-   end;  { else }
-   
+     last_err := 0;
+     ABitmap.PixelFormat := pf24bit;
+     status := GDI_ERROR;
+     Printer.Orientation := poPortrait;
+     Printer.Copies := MainForm.PrintDialog.Copies;
+     Printer.BeginDoc;
+     Printer.Canvas.Font.Name := 'Tahoma';
+     Printer.Canvas.Font.Height := MulDiv(GetDeviceCaps(Printer.Canvas.Handle, LOGPIXELSY), 12, 72);
+     lineHeight := Printer.Canvas.TextHeight('X');
+     Inc(lineHeight, MulDiv(lineHeight, 8, 100));
+     regionX := MulDiv(Printer.PageWidth, GSettings.PrintMargins.Left, 100);
+     regionY := MulDiv(Printer.PageHeight, GSettings.PrintMargins.Top, 100);
+     regionWidth := MulDiv(Printer.PageWidth, 100-(GSettings.PrintMargins.Left+GSettings.PrintMargins.Right), 100);
+     regionHeight := MulDiv(Printer.PageHeight, 100-(GSettings.PrintMargins.Top+GSettings.PrintMargins.Bottom), 100) - lineHeight;
+     fPoint.X := regionX + regionWidth;
+     fPoint.Y := regionY + regionHeight;
+     stepX := ABitmap.Width;
+     stepY := ABitmap.Height;
+     rowCount := 1;
+     colCount := 1;
+     if GSettings.PrintMultPages then
+     begin
+        Dec(regionHeight, lineHeight);
+        if GSettings.PrintMultPagesHorz then
+        begin
+           Dec(regionHeight, 2*lineHeight);
+           LogPixX1 := GetDeviceCaps(ABitmap.Canvas.Handle, LOGPIXELSX);
+           LogPixY1 := GetDeviceCaps(ABitmap.Canvas.Handle, LOGPIXELSY);
+           LogPixX2 := GetDeviceCaps(Printer.Canvas.Handle, LOGPIXELSX);
+           LogPixY2 := GetDeviceCaps(Printer.Canvas.Handle, LOGPIXELSY);
+           if LogPixX1 > LogPixX2 then      // horizontal
+              ScaleX := LogPixX1 div LogPixX2
+           else
+              ScaleX := LogPixX2 div LogPixX1;
+           if LogPixY1 > LogPixY2 then      // vertical
+              ScaleY := LogPixY1 div LogPixY2
+           else
+              ScaleY := LogPixY2 div LogPixY1;
+           stepX := regionWidth div ScaleX;
+           stepY := regionHeight div ScaleY;
+        end
+        else
+           stepY := MulDiv(regionHeight, ABitmap.Width, regionWidth);
+        colCount := ABitmap.Width div stepX;
+        if (ABitmap.Width mod stepX) <> 0 then
+           Inc(colCount);
+        rowCount := ABitmap.Height div stepY;
+        if (ABitmap.Height mod stepY) <> 0 then
+           Inc(rowCount);
+     end;
+     if (stepX / stepY) > (regionWidth / regionHeight) then
+        regionHeight := MulDiv(stepY, regionWidth, stepX)
+     else
+        regionWidth  := MulDiv(stepX, regionHeight, stepY);
+     for i := 1 to colCount do
+     begin
+        for j := 1 to rowCount do
+        begin
+           GetDIBSizes(ABitmap.Handle, HeaderSize, ImageSize);
+           GetMem(BitmapHeader, HeaderSize);
+           GetMem(BitmapImage, ImageSize);
+           try
+              GetDIB(ABitmap.Handle, ABitmap.Palette, BitmapHeader^, BitmapImage^);
+              status := StretchDIBits(Printer.Canvas.Handle,
+                                      regionX,
+                                      regionY,
+                                      regionWidth,
+                                      regionHeight,
+                                      (i-1)*stepX,
+                                      ABitmap.Height-j*stepY,
+                                      stepX,
+                                      stepY,
+                                      BitmapImage,
+                                      TBitmapInfo(BitmapHeader^),
+                                      DIB_RGB_COLORS,
+                                      SRCCOPY);
+           finally
+              FreeMem(BitmapHeader, HeaderSize);
+              FreeMem(BitmapImage, ImageSize);
+           end;
+           if status = GDI_ERROR then
+           begin
+              last_err := GetLastError;
+              Printer.Abort;
+              break;
+           end
+           else
+           begin
+              pos := fPoint;
+              if GSettings.PrintMultPages then
+              begin
+                 fLine1 := i18Manager.GetFormattedString('PageCount', [(i-1)*rowCount+j, colCount*rowCount]);
+                 fLine2 := i18Manager.GetFormattedString('ColumnCount', [i, colCount]);
+                 fLine3 := i18Manager.GetFormattedString('RowCount', [j, rowCount]);
+                 maxValue := Printer.Canvas.TextWidth(GProject.Name);
+                 maxTmp := Printer.Canvas.TextWidth(fLine1);
+                 if maxValue < maxTmp then
+                    maxValue := maxTmp;
+                 maxTmp := Printer.Canvas.TextWidth(fLine2);
+                 if maxValue < maxTmp then
+                    maxValue := maxTmp;
+                 maxTmp := Printer.Canvas.TextWidth(fLine3);
+                 if maxValue < maxTmp then
+                    maxValue := maxTmp;
+                 Dec(pos.X, maxValue);
+                 if GSettings.PrintMultPagesHorz then
+                 begin
+                    Printer.Canvas.TextOut(pos.X, pos.Y, fLine3);
+                    Dec(pos.Y, lineHeight);
+                    Printer.Canvas.TextOut(pos.X, pos.Y, fLine2);
+                    Dec(pos.Y, lineHeight);
+                 end;
+                 Printer.Canvas.TextOut(pos.X, pos.Y, fLine1);
+                 Dec(pos.Y, lineHeight);
+              end
+              else
+                 Dec(pos.X, Printer.Canvas.TextWidth(GProject.Name));
+              Printer.Canvas.TextOut(pos.X, pos.Y, GProject.Name);
+              if not ((j = rowCount) and (i = colCount)) then
+                 Printer.NewPage;
+           end;
+        end;
+        if status = GDI_ERROR then break;
+     end;
+     if status <> GDI_ERROR then
+        Printer.EndDoc
+     else
+        ShowErrorBox(i18Manager.GetFormattedString('PrintError', [CRLF, SysErrorMessage(last_err)]), errPrinter);
+   end;
 end;
 
 class function TInfra.RPos(const AChar: char; const AString: string): integer;
