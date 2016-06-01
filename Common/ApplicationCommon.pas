@@ -516,7 +516,7 @@ begin
      Printer.Orientation := poPortrait;
      Printer.Copies := MainForm.PrintDialog.Copies;
      Printer.BeginDoc;
-     Printer.Canvas.Font.Name := 'Tahoma';
+     Printer.Canvas.Font.Name := FLOWCHART_DEFAULT_FONT_NAME;
      Printer.Canvas.Font.Height := MulDiv(GetDeviceCaps(Printer.Canvas.Handle, LOGPIXELSY), 12, 72);
      lineHeight := Printer.Canvas.TextHeight('X');
      Inc(lineHeight, MulDiv(lineHeight, 8, 100));
