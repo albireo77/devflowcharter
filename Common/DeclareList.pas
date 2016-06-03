@@ -110,11 +110,11 @@ type
    TConstDeclareList = class(TDeclareList)
       protected
          function AddUpdateRow: integer; override;
-         function CreateChBox(const ACol, ARow: integer): TCheckBox;
+         function CreateCheckBox(const ACol, ARow: integer): TCheckBox;
          procedure OnColWidthsChanged(Sender: TObject);
          procedure OnTopLeftChanged(Sender: TObject);
          procedure RefreshChBoxes;
-         function GetChBoxPoint(const ACol, ARow: integer): TPoint;
+         function GetCheckBoxPoint(const ACol, ARow: integer): TPoint;
          procedure OnClickChBox(Sender: TObject);
          procedure OnClickAdd(Sender: TObject); override;
          procedure OnClickChange(Sender: TObject); override;
@@ -512,13 +512,13 @@ begin
    if sgList.Objects[CONST_CHBOX_COL, FromIndex] is TControl then
    begin
       lControl := TControl(sgList.Objects[CONST_CHBOX_COL, FromIndex]);
-      lPoint := GetChBoxPoint(CONST_CHBOX_COL, ToIndex);
+      lPoint := GetCheckBoxPoint(CONST_CHBOX_COL, ToIndex);
       lControl.SetBounds(lPoint.X, lPoint.Y, lControl.Width, lControl.Height);
    end;
    if sgList.Objects[CONST_CHBOX_COL, ToIndex] is TControl then
    begin
       lControl := TControl(sgList.Objects[CONST_CHBOX_COL, ToIndex]);
-      lPoint := GetChBoxPoint(CONST_CHBOX_COL, FromIndex);
+      lPoint := GetCheckBoxPoint(CONST_CHBOX_COL, FromIndex);
       lControl.SetBounds(lPoint.X, lPoint.Y, lControl.Width, lControl.Height);
    end;
    OnTopLeftChanged(sgList);
@@ -697,7 +697,7 @@ begin
    sgList.Cells[CONST_VALUE_COL, result] := edtValue.Text;
    if not lModifying then
    begin
-      sgList.Objects[CONST_CHBOX_COL, result] := CreateChBox(CONST_CHBOX_COL, result);
+      sgList.Objects[CONST_CHBOX_COL, result] := CreateCheckBox(CONST_CHBOX_COL, result);
       RefreshChBoxes;
    end;
    edtValue.Clear;
@@ -890,8 +890,7 @@ begin
       tag := rootTag.OwnerDocument.CreateElement('const');
       tag.SetAttribute('name', sgList.Cells[CONST_NAME_COL, i]);
       tag.SetAttribute('value', sgList.Cells[CONST_VALUE_COL, i]);
-      if sgList.Objects[CONST_CHBOX_COL, i] is TCheckBox then
-         tag.SetAttribute('extern', BoolToStr(TCheckBox(sgList.Objects[CONST_CHBOX_COL, i]).Checked, true));
+      tag.SetAttribute('extern', BoolToStr(IsExternal(i), true));
       rootTag.AppendChild(tag);
    end;
    inherited ExportToXMLTag(rootTag);
@@ -909,7 +908,7 @@ begin
       lRowIndex := sgList.RowCount - 1;
       sgList.Cells[CONST_NAME_COL, lRowIndex] := tag.GetAttribute('name');
       sgList.Cells[CONST_VALUE_COL, lRowIndex] := tag.GetAttribute('value');
-      lchkExtern := CreateChBox(CONST_CHBOX_COL, lRowIndex);
+      lchkExtern := CreateCheckBox(CONST_CHBOX_COL, lRowIndex);
       lchkExtern.Checked := tag.GetAttribute('extern') = 'True';
       sgList.Objects[CONST_CHBOX_COL, lRowIndex] := lchkExtern;
       sgList.RowCount := lRowIndex + 2;
@@ -941,7 +940,7 @@ begin
    UpdateCodeEditor;
 end;
 
-function TConstDeclareList.GetChBoxPoint(const ACol, ARow: integer): TPoint;
+function TConstDeclareList.GetCheckBoxPoint(const ACol, ARow: integer): TPoint;
 begin
    result := sgList.CellRect(ACol, ARow).TopLeft;
    if result.X = 0 then
@@ -952,11 +951,11 @@ begin
    result.Y := result.Y + sgList.Top + 5;
 end;
 
-function TConstDeclareList.CreateChBox(const ACol, ARow: integer): TCheckBox;
+function TConstDeclareList.CreateCheckBox(const ACol, ARow: integer): TCheckBox;
 var
    lPoint: TPoint;
 begin
-   lPoint := GetChBoxPoint(ACol, ARow);
+   lPoint := GetCheckBoxPoint(ACol, ARow);
    result := TCheckBox.Create(Self);
    result.Parent := Self;
    result.Visible := IsRowVisible(ARow) and (lPoint.X <= GetRightMargin);
@@ -984,7 +983,7 @@ var
    i, xPos: integer;
    lControl: TControl;
 begin
-   xPos := GetChBoxPoint(CONST_CHBOX_COL, 0).X;
+   xPos := GetCheckBoxPoint(CONST_CHBOX_COL, 0).X;
    for i := 1 to sgList.RowCount-2 do
    begin
       if sgList.Objects[CONST_CHBOX_COL, i] is TControl then
@@ -1006,7 +1005,7 @@ begin
    begin
       if sgList.Objects[CONST_CHBOX_COL, i] is TControl then
       begin
-         lPoint := GetChBoxPoint(CONST_CHBOX_COL, i);
+         lPoint := GetCheckBoxPoint(CONST_CHBOX_COL, i);
          lControl := TControl(sgList.Objects[CONST_CHBOX_COL, i]);
          lControl.SetBounds(lPoint.X, lPoint.Y, lControl.Width, lControl.Height);
       end;
