@@ -275,11 +275,14 @@ begin
             Clipboard.AsText := GInfra.CurrentLang.CommentBegin + ' ' +
                                 Trim(lStrings[i]) + ' ' +
                                 GInfra.CurrentLang.CommentEnd;
-            memCodeEditor.CaretY := lPos.Line + i;
-            memCodeEditor.CaretX := lPos.Char;
-            if memCodeEditor.CaretX <= Length(memCodeEditor.Lines[memCodeEditor.CaretY-1]) then
-               memCodeEditor.Lines.Insert(memCodeEditor.CaretY-1, '');
-            memCodeEditor.PasteFromClipboard;
+            with memCodeEditor do
+            begin
+               CaretY := lPos.Line + i;
+               CaretX := lPos.Char;
+               if CaretX <= Length(Lines[CaretY-1]) then
+                  Lines.Insert(CaretY-1, '');
+               PasteFromClipboard;
+            end;
          end;
       except
       end;
@@ -434,7 +437,8 @@ begin
    if AIfRichText then
    begin
       SynExporterRTF1.Highlighter := memCodeEditor.Highlighter;
-      SynExporterRTF1.ExportRange(memCodeEditor.Lines, memCodeEditor.BlockBegin, memCodeEditor.BlockEnd);
+      with memCodeEditor do
+         SynExporterRTF1.ExportRange(Lines, BlockBegin, BlockEnd);
       SynExporterRTF1.CopyToClipboard;
       SynExporterRTF1.Highlighter := nil;
    end
@@ -652,8 +656,7 @@ begin
    lDialog.Execute;
 end;
 
-procedure TEditorForm.memCodeEditorStatusChange(Sender: TObject;
-  Changes: TSynStatusChanges);
+procedure TEditorForm.memCodeEditorStatusChange(Sender: TObject; Changes: TSynStatusChanges);
 var
    p: TBufferCoord;
 begin
@@ -720,8 +723,7 @@ begin
    OnShow(Self);
 end;
 
-procedure TEditorForm.FormClose(Sender: TObject;
-  var Action: TCloseAction);
+procedure TEditorForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
    GotoForm.Close;
    memCodeEditor.TopLine := 0;
@@ -795,8 +797,7 @@ begin
    HelpForm.Visible := not HelpForm.Visible;
 end;
 
-procedure TEditorForm.memCodeEditorPaintTransient(Sender: TObject;
-  Canvas: TCanvas; TransientType: TTransientType);
+procedure TEditorForm.memCodeEditorPaintTransient(Sender: TObject; Canvas: TCanvas; TransientType: TTransientType);
 const
    Brackets = ['{', '[', '(', '<', '}', ']', ')', '>'];
 var
@@ -810,7 +811,7 @@ begin
    idx := memCodeEditor.SelStart;
    lChar := #0;
    if (idx >= 0) and (idx < Length(memCodeEditor.Text)) then
-         lChar := memCodeEditor.Text[idx+1];
+      lChar := memCodeEditor.Text[idx+1];
    if (memCodeEditor.Highlighter = nil) or memCodeEditor.SelAvail or (GSettings.EditorBracketColor = memCodeEditor.Font.Color) or not
       (lChar in Brackets) then exit;
    P := memCodeEditor.CaretXY;
@@ -851,8 +852,7 @@ begin
    end;
 end;
 
-procedure TEditorForm.memCodeEditorMouseMove(Sender: TObject;
-  Shift: TShiftState; X, Y: Integer);
+procedure TEditorForm.memCodeEditorMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 var
    P: TBufferCoord;
    lWord, lScope: string;
@@ -862,8 +862,7 @@ var
    lObject: TObject;
    lBlock: TBlock;
 begin
-   if memCodeEditor.ShowHint then
-      memCodeEditor.ShowHint := false;
+   memCodeEditor.ShowHint := false;
    memCodeEditor.Hint := '';
    lShow := false;
    P := memCodeEditor.DisplayToBufferPos(memCodeEditor.PixelsToRowColumn(X, Y));
@@ -1132,62 +1131,59 @@ var
 begin
    if Visible then
    begin
-      with memCodeEditor do
+      root.SetAttribute('src_win_show', '1');
+      root.SetAttribute('src_win_x', IntToStr(Left));
+      root.SetAttribute('src_win_y', IntToStr(Top));
+      root.SetAttribute('src_win_w', IntToStr(Width));
+      root.SetAttribute('src_win_h', IntToStr(Height));
+      root.SetAttribute('src_win_sel_start', IntToStr(memCodeEditor.SelStart));
+      if memCodeEditor.SelAvail then
+         root.SetAttribute('src_win_sel_length', IntToStr(memCodeEditor.SelLength));
+      if memCodeEditor.Marks.Count > 0 then
       begin
-         root.SetAttribute('src_win_show', '1');
-         root.SetAttribute('src_win_x', IntToStr(Self.Left));
-         root.SetAttribute('src_win_y', IntToStr(Self.Top));
-         root.SetAttribute('src_win_w', IntToStr(Self.Width));
-         root.SetAttribute('src_win_h', IntToStr(Self.Height));
-         root.SetAttribute('src_win_sel_start', IntToStr(SelStart));
-         if SelAvail then
-            root.SetAttribute('src_win_sel_length', IntToStr(SelLength));
-         if Marks.Count > 0 then
+         for i := 0 to memCodeEditor.Marks.Count-1 do
          begin
-            for i := 0 to Marks.Count-1 do
-            begin
-               tag2 := root.OwnerDocument.CreateElement('src_win_mark');
-               tag2.SetAttribute('line', IntToStr(Marks[i].Line));
-               tag2.SetAttribute('index', IntToStr(Marks[i].ImageIndex));
-               root.AppendChild(tag2);
-            end;
-         end;
-         if TopLine > 1 then
-            root.SetAttribute('src_top_line', IntToStr(TopLine));
-         if WindowState = wsMinimized then
-            root.SetAttribute('src_win_min', '1');
-{$IFDEF USE_CODEFOLDING}
-         if CodeFolding.Enabled then
-         begin
-            tag1 := nil;
-            for i := 0 to AllFoldRanges.AllCount-1 do
-            begin
-               lFoldRange := AllFoldRanges[i];
-               if lFoldRange.Collapsed then
-               begin
-                  if tag1 = nil then
-                  begin
-                     tag1 := root.OwnerDocument.CreateElement('fold_ranges');
-                     root.AppendChild(tag1);
-                  end;
-                  tag2 := root.OwnerDocument.CreateElement('fold_range');
-                  TXMLProcessor.AddText(tag2, IntToStr(GetRealLineNumber(lFoldRange.FromLine)));
-                  tag1.AppendChild(tag2);
-               end;
-            end;
-         end;
-{$ENDIF}
-         lLines := GetAllLines;
-         for i := 0 to lLines.Count-1 do
-         begin
-            tag2 := root.OwnerDocument.CreateElement('text_line');
-            TXMLProcessor.AddCDATA(tag2, lLines[i]);
-            if TInfra.IsValid(lLines.Objects[i]) and Supports(lLines.Objects[i], IIdentifiable, idObject) then
-               tag2.SetAttribute(ID_ATTR_NAME, IntToStr(idObject.Id));
+            tag2 := root.OwnerDocument.CreateElement('src_win_mark');
+            tag2.SetAttribute('line', IntToStr(memCodeEditor.Marks[i].Line));
+            tag2.SetAttribute('index', IntToStr(memCodeEditor.Marks[i].ImageIndex));
             root.AppendChild(tag2);
          end;
-         root.SetAttribute('modified', BoolToStr(Modified, true));
       end;
+      if memCodeEditor.TopLine > 1 then
+         root.SetAttribute('src_top_line', IntToStr(memCodeEditor.TopLine));
+      if WindowState = wsMinimized then
+         root.SetAttribute('src_win_min', '1');
+{$IFDEF USE_CODEFOLDING}
+      if memCodeEditor.CodeFolding.Enabled then
+      begin
+         tag1 := nil;
+         for i := 0 to memCodeEditor.AllFoldRanges.AllCount-1 do
+         begin
+            lFoldRange := memCodeEditor.AllFoldRanges[i];
+            if lFoldRange.Collapsed then
+            begin
+               if tag1 = nil then
+               begin
+                  tag1 := root.OwnerDocument.CreateElement('fold_ranges');
+                  root.AppendChild(tag1);
+               end;
+               tag2 := root.OwnerDocument.CreateElement('fold_range');
+               TXMLProcessor.AddText(tag2, IntToStr(memCodeEditor.GetRealLineNumber(lFoldRange.FromLine)));
+               tag1.AppendChild(tag2);
+            end;
+         end;
+      end;
+{$ENDIF}
+      lLines := GetAllLines;
+      for i := 0 to lLines.Count-1 do
+      begin
+         tag2 := root.OwnerDocument.CreateElement('text_line');
+         TXMLProcessor.AddCDATA(tag2, lLines[i]);
+         if TInfra.IsValid(lLines.Objects[i]) and Supports(lLines.Objects[i], IIdentifiable, idObject) then
+            tag2.SetAttribute(ID_ATTR_NAME, IntToStr(idObject.Id));
+         root.AppendChild(tag2);
+      end;
+      root.SetAttribute('modified', BoolToStr(memCodeEditor.Modified, true));
    end;
 end;
 
@@ -1216,56 +1212,53 @@ begin
       Show;
       OnShow := FormShow;
       root.OwnerDocument.PreserveWhiteSpace := true;
-      with memCodeEditor do
+      tag1 := TXMLProcessor.FindChildTag(root, 'text_line');
+      memCodeEditor.Lines.BeginUpdate;
+      while tag1 <> nil do
       begin
-         tag1 := TXMLProcessor.FindChildTag(root, 'text_line');
-         Lines.BeginUpdate;
-         while tag1 <> nil do
-         begin
-            Lines.AddObject(tag1.Text, GProject.FindObject(StrToIntDef(tag1.GetAttribute(ID_ATTR_NAME), ID_INVALID)));
-            tag1 := TXMLProcessor.FindNextTag(tag1);
-         end;
-         Lines.EndUpdate;
-         if GSettings.EditorShowRichText then
-            Highlighter := GInfra.CurrentLang.HighLighter;
-         ClearUndo;
-         SetFocus;
-         Modified := root.GetAttribute('modified') = 'True';
-         SelStart := StrToIntDef(root.GetAttribute('src_win_sel_start'), 0);
-         SelLength := StrToIntDef(root.GetAttribute('src_win_sel_length'), 0);
+         memCodeEditor.Lines.AddObject(tag1.Text, GProject.FindObject(StrToIntDef(tag1.GetAttribute(ID_ATTR_NAME), ID_INVALID)));
+         tag1 := TXMLProcessor.FindNextTag(tag1);
+      end;
+      memCodeEditor.Lines.EndUpdate;
+      if GSettings.EditorShowRichText then
+         memCodeEditor.Highlighter := GInfra.CurrentLang.HighLighter;
+      memCodeEditor.ClearUndo;
+      memCodeEditor.SetFocus;
+      memCodeEditor.Modified := root.GetAttribute('modified') = 'True';
+      memCodeEditor.SelStart := StrToIntDef(root.GetAttribute('src_win_sel_start'), 0);
+      memCodeEditor.SelLength := StrToIntDef(root.GetAttribute('src_win_sel_length'), 0);
 {$IFDEF USE_CODEFOLDING}
-         if CodeFolding.Enabled then
+      if memCodeEditor.CodeFolding.Enabled then
+      begin
+         memCodeEditor.ReScanForFoldRanges;
+         tag1 := TXMLProcessor.FindChildTag(root, 'fold_ranges');
+         if tag1 <> nil then
          begin
-            ReScanForFoldRanges;
-            tag1 := TXMLProcessor.FindChildTag(root, 'fold_ranges');
-            if tag1 <> nil then
-            begin
-               lFoldedLines := TStringList.Create;
-               try
-                  tag2 := TXMLProcessor.FindChildTag(tag1, 'fold_range');
-                  while tag2 <> nil do
-                  begin
-                     if StrToIntDef(tag2.Text, 0) > 0 then
-                        lFoldedLines.Add(tag2.Text);
-                     tag2 := TXMLProcessor.FindNextTag(tag2);
-                  end;
-                  lFoldedLines.CustomSort(@CompareIntegers);
-                  for i := lFoldedLines.Count-1 downto 0 do
-                  begin
-                     lFoldRange := CollapsableFoldRangeForLine(StrToInt(lFoldedLines[i]));
-                     if (lFoldRange <> nil) and not lFoldRange.Collapsed then
-                     begin
-                        Collapse(lFoldRange);
-                        Refresh;
-                     end;
-                  end;
-               finally
-                  lFoldedLines.Free;
+            lFoldedLines := TStringList.Create;
+            try
+               tag2 := TXMLProcessor.FindChildTag(tag1, 'fold_range');
+               while tag2 <> nil do
+               begin
+                  if StrToIntDef(tag2.Text, 0) > 0 then
+                     lFoldedLines.Add(tag2.Text);
+                  tag2 := TXMLProcessor.FindNextTag(tag2);
                end;
+               lFoldedLines.CustomSort(@CompareIntegers);
+               for i := lFoldedLines.Count-1 downto 0 do
+               begin
+                  lFoldRange := memCodeEditor.CollapsableFoldRangeForLine(StrToInt(lFoldedLines[i]));
+                  if (lFoldRange <> nil) and not lFoldRange.Collapsed then
+                  begin
+                     memCodeEditor.Collapse(lFoldRange);
+                     memCodeEditor.Refresh;
+                  end;
+               end;
+            finally
+               lFoldedLines.Free;
             end;
          end;
-{$ENDIF}
       end;
+{$ENDIF}
       root.OwnerDocument.PreserveWhiteSpace := false;
       i := StrToIntDef(root.GetAttribute('src_top_line'), 0);
       if i > 0 then
