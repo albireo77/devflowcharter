@@ -1455,23 +1455,20 @@ begin
    if (FFocusControl <> nil) and FFocusControl.CanBeFocused then
    begin
       TInfra.InitFocusInfo(lFocusInfo);
-      with memCodeEditor do
+      lPoint := memCodeEditor.ScreenToClient(pmPopMenu.PopupPoint);
+      lCoord := memCodeEditor.PixelsToRowColumn(lPoint.X, lPoint.Y);
+      if lCoord.Row > 0 then
       begin
-         lPoint := ScreenToClient(pmPopMenu.PopupPoint);
-         lCoord := PixelsToRowColumn(lPoint.X, lPoint.Y);
-         if lCoord.Row > 0 then
+         lFocusInfo.Line := lCoord.Row - 1;
+         lFocusInfo.LineText := TrimLeft(memCodeEditor.Lines[lFocusInfo.Line]);
+         lCodeRange := SelectCodeRange(memCodeEditor.Lines.Objects[lFocusInfo.Line], false);
+         if lCodeRange.FirstRow <> ROW_NOT_FOUND then
+            lFocusInfo.RelativeLine := lFocusInfo.Line - lCodeRange.FirstRow;
+         lSelCoord := memCodeEditor.CharIndexToRowCol(memCodeEditor.SelStart);
+         if lSelCoord.Line = lCoord.Row then
          begin
-            lFocusInfo.Line := lCoord.Row - 1;
-            lFocusInfo.LineText := TrimLeft(Lines[lFocusInfo.Line]);
-            lCodeRange := SelectCodeRange(Lines.Objects[lFocusInfo.Line], false);
-            if lCodeRange.FirstRow <> ROW_NOT_FOUND then
-               lFocusInfo.RelativeLine := lFocusInfo.Line - lCodeRange.FirstRow;
-            lSelCoord := CharIndexToRowCol(SelStart);
-            if lSelCoord.Line = lCoord.Row then
-            begin
-               lFocusInfo.SelStart := lSelCoord.Char - Length(Lines[lCoord.Row-1]) + Length(lFocusInfo.LineText);
-               lFocusInfo.SelText := AnsiMidStr(lFocusInfo.LineText, lFocusInfo.SelStart, SelLength);
-            end;
+            lFocusInfo.SelStart := lSelCoord.Char - Length(memCodeEditor.Lines[lCoord.Row-1]) + Length(lFocusInfo.LineText);
+            lFocusInfo.SelText := AnsiMidStr(lFocusInfo.LineText, lFocusInfo.SelStart, memCodeEditor.SelLength);
          end;
       end;
       FFocusControl.RetrieveFocus(lFocusInfo);
