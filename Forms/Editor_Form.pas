@@ -269,20 +269,17 @@ begin
          Clipboard.Open;
          if Clipboard.HasFormat(CF_TEXT) then
             lLine := Clipboard.AsText;
-         with memCodeEditor do
+         lPos := memCodeEditor.CaretXY;
+         for i := 0 to lStrings.Count-1 do
          begin
-            lPos := CaretXY;
-            for i := 0 to lStrings.Count-1 do
-            begin
-               Clipboard.AsText := GInfra.CurrentLang.CommentBegin + ' ' +
-                                   Trim(lStrings[i]) + ' ' +
-                                   GInfra.CurrentLang.CommentEnd;
-               CaretY := lPos.Line + i;
-               CaretX := lPos.Char;
-               if CaretX <= Length(Lines[CaretY-1]) then
-                  Lines.Insert(CaretY-1, '');
-               PasteFromClipboard;
-            end;
+            Clipboard.AsText := GInfra.CurrentLang.CommentBegin + ' ' +
+                                Trim(lStrings[i]) + ' ' +
+                                GInfra.CurrentLang.CommentEnd;
+            memCodeEditor.CaretY := lPos.Line + i;
+            memCodeEditor.CaretX := lPos.Char;
+            if memCodeEditor.CaretX <= Length(memCodeEditor.Lines[memCodeEditor.CaretY-1]) then
+               memCodeEditor.Lines.Insert(memCodeEditor.CaretY-1, '');
+            memCodeEditor.PasteFromClipboard;
          end;
       except
       end;
@@ -387,22 +384,19 @@ begin
       if lLang <> nil then
          lLang.MainProgramSectionGenerator(lLines, 0);
 
-      with memCodeEditor do
+      memCodeEditor.Lines.Assign(lLines);
+      if GSettings.EditorShowRichText then
+         memCodeEditor.Highlighter := GInfra.CurrentLang.HighLighter;
+      memCodeEditor.OnChange(memCodeEditor);
+      if FFocusEditor then
       begin
-         Lines.Assign(lLines);
-         if GSettings.EditorShowRichText then
-            Highlighter := GInfra.CurrentLang.HighLighter;
-         OnChange(memCodeEditor);
-         if FFocusEditor then
-         begin
-            if CanFocus then
-               SetFocus;
-         end
-         else
-            FFocusEditor := true;
-         ClearUndo;
-         Modified := false;
-      end;
+         if memCodeEditor.CanFocus then
+            memCodeEditor.SetFocus;
+      end
+      else
+         FFocusEditor := true;
+      memCodeEditor.ClearUndo;
+      memCodeEditor.Modified := false;
 
    finally
       lLines.Free;
@@ -417,66 +411,57 @@ var
    lObject: TObject;
 begin
    FFocusControl := nil;
-   with memCodeEditor do
+   miFindProj.Enabled := false;
+   miCut.Enabled := memCodeEditor.SelAvail;
+   miCopy.Enabled := miCut.Enabled;
+   miCopyRichText.Enabled := miCopy.Enabled and (memCodeEditor.Highlighter <> nil);
+   miRemove.Enabled := miCut.Enabled;
+   miPaste.Enabled := Clipboard.HasFormat(CF_TEXT);
+   miPasteComment.Enabled := miPaste.Enabled;
+   miUndo.Enabled := memCodeEditor.CanUndo;
+   miRedo.Enabled := memCodeEditor.CanRedo;
+   lPoint := memCodeEditor.ScreenToClient(Mouse.CursorPos);
+   lCoord := memCodeEditor.PixelsToRowColumn(lPoint.X, lPoint.Y);
+   if lCoord.Row > 0 then
    begin
-      miFindProj.Enabled := false;
-      miCut.Enabled := SelAvail;
-      miCopy.Enabled := miCut.Enabled;
-      miCopyRichText.Enabled := miCopy.Enabled and (Highlighter <> nil);
-      miRemove.Enabled := miCut.Enabled;
-      miPaste.Enabled := Clipboard.HasFormat(CF_TEXT);
-      miPasteComment.Enabled := miPaste.Enabled;
-      miUndo.Enabled := CanUndo;
-      miRedo.Enabled := CanRedo;
-      lPoint := ScreenToClient(Mouse.CursorPos);
-      lCoord := PixelsToRowColumn(lPoint.X, lPoint.Y);
-      if lCoord.Row > 0 then
-      begin
-         lObject := Lines.Objects[lCoord.Row-1];
-         miFindProj.Enabled := TInfra.IsValid(lObject) and Supports(lObject, IFocusable, FFocusControl) and FFocusControl.CanBeFocused;
-      end;
+      lObject := memCodeEditor.Lines.Objects[lCoord.Row-1];
+      miFindProj.Enabled := TInfra.IsValid(lObject) and Supports(lObject, IFocusable, FFocusControl) and FFocusControl.CanBeFocused;
    end;
 end;
 
 procedure TEditorForm.ExecuteCopyToClipboard(const AIfRichText: boolean);
 begin
-   with memCodeEditor do
+   if AIfRichText then
    begin
-      if AIfRichText then
-      begin
-         SynExporterRTF1.Highlighter := Highlighter;
-         SynExporterRTF1.ExportRange(Lines, BlockBegin, BlockEnd);
-         SynExporterRTF1.CopyToClipboard;
-         SynExporterRTF1.Highlighter := nil;
-      end
-      else
-         Clipboard.AsText := SelText;
-   end;
+      SynExporterRTF1.Highlighter := memCodeEditor.Highlighter;
+      SynExporterRTF1.ExportRange(memCodeEditor.Lines, memCodeEditor.BlockBegin, memCodeEditor.BlockEnd);
+      SynExporterRTF1.CopyToClipboard;
+      SynExporterRTF1.Highlighter := nil;
+   end
+   else
+      Clipboard.AsText := memCodeEditor.SelText;
 end;
 
 procedure TEditorForm.miUndoClick(Sender: TObject);
 begin
-   with memCodeEditor do
-   begin
-      if Sender = miUndo then
-         Undo
-      else if Sender = miRedo then
-         Redo   
-      else if Sender = miCut then
-         CutToClipboard
-      else if Sender = miCopy then
-         ExecuteCopyToClipboard(false)
-      else if Sender = miCopyRichText then
-         ExecuteCopyToClipboard(true)
-      else if Sender = miPaste then
-         PasteFromClipboard
-      else if Sender = miRemove then
-         ClearSelection
-      else if Sender = miSelectAll then
-         SelectAll
-      else if (Sender = miPasteComment) and Clipboard.HasFormat(CF_TEXT) then
-         PasteComment(Clipboard.AsText);
-   end;
+   if Sender = miUndo then
+      memCodeEditor.Undo
+   else if Sender = miRedo then
+      memCodeEditor.Redo
+   else if Sender = miCut then
+      memCodeEditor.CutToClipboard
+   else if Sender = miCopy then
+      ExecuteCopyToClipboard(false)
+   else if Sender = miCopyRichText then
+      ExecuteCopyToClipboard(true)
+   else if Sender = miPaste then
+      memCodeEditor.PasteFromClipboard
+   else if Sender = miRemove then
+      memCodeEditor.ClearSelection
+   else if Sender = miSelectAll then
+      memCodeEditor.SelectAll
+   else if (Sender = miPasteComment) and Clipboard.HasFormat(CF_TEXT) then
+      PasteComment(Clipboard.AsText);
 end;
 
 procedure TEditorForm.ReplaceDialogReplace(Sender: TObject);
@@ -492,19 +477,16 @@ begin
       Clipboard.AsText := ReplaceDialog.ReplaceText;
       if frReplaceAll in ReplaceDialog.Options then
       begin
-         with memCodeEditor do
+         memCodeEditor.SelStart := 0;
+         while True do
          begin
-            SelStart := 0;
-            while True do
-            begin
-               idx := TInfra.FindText(ReplaceDialog.FindText, Text, SelStart, frMatchCase in ReplaceDialog.Options);
-               if idx = -1 then exit;
-               SelStart := idx;
-               SelLength := Length(ReplaceDialog.FindText);
-               ClearSelection;
-               PasteFromClipboard;
-               SelStart := SelStart + Length(ReplaceDialog.ReplaceText);
-            end;
+            idx := TInfra.FindText(ReplaceDialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart, frMatchCase in ReplaceDialog.Options);
+            if idx = -1 then exit;
+            memCodeEditor.SelStart := idx;
+            memCodeEditor.SelLength := Length(ReplaceDialog.FindText);
+            memCodeEditor.ClearSelection;
+            memCodeEditor.PasteFromClipboard;
+            memCodeEditor.SelStart := memCodeEditor.SelStart + Length(ReplaceDialog.ReplaceText);
          end;
       end;
       if memCodeEditor.SelAvail then
@@ -527,34 +509,31 @@ begin
    lDialog := TFindDialog(Sender);
    lLength := Length(lDialog.FindText);
    idx := -1;
-   with memCodeEditor do
+   if frDown in lDialog.Options then
+      idx := TInfra.FindText(lDialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart + memCodeEditor.SelLength, frMatchCase in lDialog.Options)
+   else
    begin
-      if frDown in lDialog.Options then
-         idx := TInfra.FindText(lDialog.FindText, Text, SelStart + SelLength, frMatchCase in lDialog.Options)
-      else
+      lStartPos := 0;
+      while True do
       begin
-         lStartPos := 0;
-         while True do
+         idx := TInfra.FindText(lDialog.FindText, memCodeEditor.Text, lStartPos, frMatchCase in lDialog.Options);
+         if (idx <> -1) and (idx < memCodeEditor.SelStart) then
+            lStartPos := idx + lLength
+         else
          begin
-            idx := TInfra.FindText(lDialog.FindText, Text, lStartPos, frMatchCase in lDialog.Options);
-            if (idx <> -1) and (idx < SelStart) then
-               lStartPos := idx + lLength
-            else
-            begin
-               if lStartPos > 0 then
-                  idx := lStartPos - lLength;
-               if idx >= SelStart then
-                  idx := -1;
-               break;
-            end;
+            if lStartPos > 0 then
+               idx := lStartPos - lLength;
+            if idx >= memCodeEditor.SelStart then
+               idx := -1;
+            break;
          end;
       end;
-      if idx <> -1 then
-      begin
-         SetFocus;
-         SelStart := idx;
-         SelLength := lLength;
-      end;
+   end;
+   if idx <> -1 then
+   begin
+      memCodeEditor.SetFocus;
+      memCodeEditor.SelStart := idx;
+      memCodeEditor.SelLength := lLength;
    end;
 end;
 
@@ -767,14 +746,12 @@ end;
 procedure TEditorForm.memCodeEditorDragOver(Sender, Source: TObject;
   X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-   with memCodeEditor do
-   begin
-      if State = dsDragEnter then SetFocus;
-      if not ((Source is TComment) or (Source is TBlock)) then
-         Accept := false
-      else
-         CaretXY := DisplayToBufferPos(PixelsToRowColumn(X, Y));
-   end;
+   if State = dsDragEnter then
+      memCodeEditor.SetFocus;
+   if not ((Source is TComment) or (Source is TBlock)) then
+      Accept := false
+   else
+      memCodeEditor.CaretXY := memCodeEditor.DisplayToBufferPos(memCodeEditor.PixelsToRowColumn(X, Y));
 end;
 
 procedure TEditorForm.memCodeEditorDragDrop(Sender, Source: TObject;
@@ -796,19 +773,16 @@ begin
       lTmpList := TStringList.Create;
       try
          TBlock(Source).GenerateCode(lTmpList, GInfra.CurrentLang.Name, 0);
-         with memCodeEditor do
+         memCodeEditor.BeginUpdate;
+         for i := 0 to lTmpList.Count-1 do
          begin
-            BeginUpdate;
-            for i := 0 to lTmpList.Count-1 do
-            begin
-               Clipboard.AsText := lTmpList.Strings[i];
-               CaretY := lPos.Row + i;
-               CaretX := lPos.Column;
-               Lines.Insert(CaretY-1, '');
-               PasteFromClipboard;
-            end;
-            EndUpdate;
+            Clipboard.AsText := lTmpList.Strings[i];
+            memCodeEditor.CaretY := lPos.Row + i;
+            memCodeEditor.CaretX := lPos.Column;
+            memCodeEditor.Lines.Insert(memCodeEditor.CaretY-1, '');
+            memCodeEditor.PasteFromClipboard;
          end;
+         memCodeEditor.EndUpdate;
       finally
          lTmpList.Free;
          Clipboard.Close;
@@ -833,53 +807,47 @@ var
    S: string;
    lPos: TPoint;
 begin
-   with memCodeEditor do
+   idx := memCodeEditor.SelStart;
+   lChar := #0;
+   if (idx >= 0) and (idx < Length(memCodeEditor.Text)) then
+         lChar := memCodeEditor.Text[idx+1];
+   if (memCodeEditor.Highlighter = nil) or memCodeEditor.SelAvail or (GSettings.EditorBracketColor = memCodeEditor.Font.Color) or not
+      (lChar in Brackets) then exit;
+   P := memCodeEditor.CaretXY;
+   S := lChar;
+   memCodeEditor.GetHighlighterAttriAtRowCol(P, S, lAttr);
+   if memCodeEditor.Highlighter.SymbolAttribute = lAttr then
    begin
-      idx := SelStart;
-      lChar := #0;
-
-      if (idx >= 0) and (idx < Length(Text)) then
-         lChar := Text[idx+1];
-      if (Highlighter = nil) or SelAvail or (GSettings.EditorBracketColor = Font.Color) or not
-         (lChar in Brackets) then exit;
-
-      P := CaretXY;
-      S := lChar;
-      GetHighlighterAttriAtRowCol(P, S, lAttr);
-      if Highlighter.SymbolAttribute = lAttr then
+      memCodeEditor.Canvas.Brush.Style := bsSolid;
+      memCodeEditor.Canvas.Font.Assign(memCodeEditor.Font);
+      memCodeEditor.Canvas.Font.Style := lAttr.Style;
+      lPos := memCodeEditor.RowColumnToPixels(memCodeEditor.BufferToDisplayPos(P));
+      if TransientType = ttAfter then
       begin
-         Canvas.Brush.Style := bsSolid;
-         Canvas.Font.Assign(Font);
-         Canvas.Font.Style := lAttr.Style;
-         lPos := RowColumnToPixels(BufferToDisplayPos(P));
-         if TransientType = ttAfter then
-         begin
-            Canvas.Font.Color := GSettings.EditorBracketColor;
-            Canvas.Brush.Color := clNone;
-         end
-         else
-         begin
-            Canvas.Font.Color := lAttr.Foreground;
-            Canvas.Brush.Color := lAttr.Background;
-         end;
-         if Canvas.Font.Color = clNone then
-            Canvas.Font.Color := Font.Color;
-         if Canvas.Brush.Color = clNone then
-            Canvas.Brush.Color := ActiveLineColor;
-         Canvas.TextOut(lPos.X, lPos.Y, S);
-
-         P := GetMatchingBracketEx(P);
-         if (P.Char > 0) and (P.Line > 0) then
-         begin
-            idx := RowColToCharIndex(P);
-            S := Text[idx+1];
-            lPos := RowColumnToPixels(BufferToDisplayPos(P));
-            if P.Line <> CaretY then
-               Canvas.Brush.Color := Color;
-            Canvas.TextOut(lPos.X, lPos.Y, S);
-         end;
-         Canvas.Brush.Style := bsSolid;
+         memCodeEditor.Canvas.Font.Color := GSettings.EditorBracketColor;
+         memCodeEditor.Canvas.Brush.Color := clNone;
+      end
+      else
+      begin
+         memCodeEditor.Canvas.Font.Color := lAttr.Foreground;
+         memCodeEditor.Canvas.Brush.Color := lAttr.Background;
       end;
+      if memCodeEditor.Canvas.Font.Color = clNone then
+         memCodeEditor.Canvas.Font.Color := memCodeEditor.Font.Color;
+      if memCodeEditor.Canvas.Brush.Color = clNone then
+         memCodeEditor.Canvas.Brush.Color := memCodeEditor.ActiveLineColor;
+      memCodeEditor.Canvas.TextOut(lPos.X, lPos.Y, S);
+      P := memCodeEditor.GetMatchingBracketEx(P);
+      if (P.Char > 0) and (P.Line > 0) then
+      begin
+         idx := memCodeEditor.RowColToCharIndex(P);
+         S := memCodeEditor.Text[idx+1];
+         lPos := memCodeEditor.RowColumnToPixels(memCodeEditor.BufferToDisplayPos(P));
+         if P.Line <> memCodeEditor.CaretY then
+            memCodeEditor.Canvas.Brush.Color := memCodeEditor.Color;
+         memCodeEditor.Canvas.TextOut(lPos.X, lPos.Y, S);
+      end;
+      memCodeEditor.Canvas.Brush.Style := bsSolid;
    end;
 end;
 
@@ -894,70 +862,67 @@ var
    lObject: TObject;
    lBlock: TBlock;
 begin
-   with memCodeEditor do
+   if memCodeEditor.ShowHint then
+      memCodeEditor.ShowHint := false;
+   memCodeEditor.Hint := '';
+   lShow := false;
+   P := memCodeEditor.DisplayToBufferPos(memCodeEditor.PixelsToRowColumn(X, Y));
+   lWord := memCodeEditor.GetWordAtRowCol(P);
+   if lWord <> '' then
    begin
-      if ShowHint then
-         ShowHint := false;
-      Hint := '';
-      lShow := false;
-      P := DisplayToBufferPos(PixelsToRowColumn(X, Y));
-      lWord := GetWordAtRowCol(P);
-      if lWord <> '' then
+      lShow := true;
+      if memCodeEditor.Highlighter <> nil then
       begin
-         lShow := true;
-         if Highlighter <> nil then
-         begin
-            GetHighlighterAttriAtRowCol(P, lWord, lAttr);
-            if Highlighter.StringAttribute = lAttr then
-               lShow := false;
-         end;
+         memCodeEditor.GetHighlighterAttriAtRowCol(P, lWord, lAttr);
+         if memCodeEditor.Highlighter.StringAttribute = lAttr then
+            lShow := false;
       end;
-      if lShow then
+   end;
+   if lShow then
+   begin
+      lBlock := nil;
+      lGlobalCheck := true;
+      lLocalCheck := true;
+      TParserHelper.InitIdentInfo(lIdent);
+      lObject := memCodeEditor.Lines.Objects[P.Line-1];
+      lIdent.Ident := lWord;
+      if TInfra.IsValid(lObject) and (lObject is TBlock) then
+         lBlock := TBlock(lObject);
+      TParserHelper.GetParameterInfo(TInfra.GetFunctionHeader(lBlock), lIdent);
+      if lIdent.TType <> NOT_DEFINED then
       begin
-         lBlock := nil;
-         lGlobalCheck := true;
-         lLocalCheck := true;
-         TParserHelper.InitIdentInfo(lIdent);
-         lObject := Lines.Objects[P.Line-1];
-         lIdent.Ident := lWord;
-         if TInfra.IsValid(lObject) and (lObject is TBlock) then
-            lBlock := TBlock(lObject);
-         TParserHelper.GetParameterInfo(TInfra.GetFunctionHeader(lBlock), lIdent);
+         lLocalCheck := false;
+         lGlobalCheck := false;
+      end;
+      if lLocalCheck then
+      begin
+         TParserHelper.GetVariableInfo(TParserHelper.FindUserFunctionVarList(lBlock), lIdent);
          if lIdent.TType <> NOT_DEFINED then
-         begin
-            lLocalCheck := false;
             lGlobalCheck := false;
-         end;
-         if lLocalCheck then
-         begin
-            TParserHelper.GetVariableInfo(TParserHelper.FindUserFunctionVarList(lBlock), lIdent);
-            if lIdent.TType <> NOT_DEFINED then
-               lGlobalCheck := false;
-         end;
-         if lGlobalCheck then
-            lIdent := TParserHelper.GetIdentInfo(lWord);
-         case lIdent.Scope of
-            LOCAL:     lScope := 'VarLocal';
-            PARAMETER: lScope := 'VarParm';
-         else
-            lScope := 'VarGlobal';
-         end;
-         lScope := i18Manager.GetString(lScope);
-         case lIdent.IdentType of
-            VARRAY:
-            begin
-               Hint := i18Manager.GetFormattedString('HintArray', [lScope, lIdent.DimensCount, lWord, lIdent.SizeAsString, lIdent.TypeAsString]);
-               if (lIdent.SizeExpArrayAsString <> '') and (lIdent.SizeExpArrayAsString <> lIdent.SizeAsString) then
-                  Hint := Hint + CRLF + i18Manager.GetFormattedString('HintArrayExp', [lIdent.TypeAsString, CRLF, lScope, lIdent.DimensCount, lWord, lIdent.SizeExpArrayAsString, lIdent.TypeOriginalAsString]);
-            end;
-            VARIABLE:    Hint := i18Manager.GetFormattedString('HintVar', [lScope, lWord, lIdent.TypeAsString]);
-            CONSTANT:    Hint := i18Manager.GetFormattedString('HintConst', [lWord, lIdent.Value]);
-            ROUTINE_ID:  Hint := i18Manager.GetFormattedString('HintRoutine', [lWord, lIdent.TypeAsString]);
-            ENUM_VALUE:  Hint := i18Manager.GetFormattedString('HintEnum', [lWord, lIdent.TypeAsString]);
-         end;
-         if Hint <> '' then
-            ShowHint := true;
       end;
+      if lGlobalCheck then
+         lIdent := TParserHelper.GetIdentInfo(lWord);
+      case lIdent.Scope of
+         LOCAL: lScope := 'VarLocal';
+         PARAMETER: lScope := 'VarParm';
+      else
+         lScope := 'VarGlobal';
+      end;
+      lScope := i18Manager.GetString(lScope);
+      case lIdent.IdentType of
+         VARRAY:
+         begin
+            memCodeEditor.Hint := i18Manager.GetFormattedString('HintArray', [lScope, lIdent.DimensCount, lWord, lIdent.SizeAsString, lIdent.TypeAsString]);
+            if (lIdent.SizeExpArrayAsString <> '') and (lIdent.SizeExpArrayAsString <> lIdent.SizeAsString) then
+               memCodeEditor.Hint := memCodeEditor.Hint + CRLF + i18Manager.GetFormattedString('HintArrayExp', [lIdent.TypeAsString, CRLF, lScope, lIdent.DimensCount, lWord, lIdent.SizeExpArrayAsString, lIdent.TypeOriginalAsString]);
+         end;
+         VARIABLE:   memCodeEditor.Hint := i18Manager.GetFormattedString('HintVar', [lScope, lWord, lIdent.TypeAsString]);
+         CONSTANT:   memCodeEditor.Hint := i18Manager.GetFormattedString('HintConst', [lWord, lIdent.Value]);
+         ROUTINE_ID: memCodeEditor.Hint := i18Manager.GetFormattedString('HintRoutine', [lWord, lIdent.TypeAsString]);
+         ENUM_VALUE: memCodeEditor.Hint := i18Manager.GetFormattedString('HintEnum', [lWord, lIdent.TypeAsString]);
+      end;
+      if memCodeEditor.Hint <> '' then
+         memCodeEditor.ShowHint := true;
    end;
 end;
 
@@ -1063,15 +1028,12 @@ procedure TEditorForm.UnSelectCodeRange(const AObject: TObject);
 var
    lCodeRange: TCodeRange;
 begin
-   with memCodeEditor do
+   if memCodeEditor.SelAvail and memCodeEditor.CanFocus then
    begin
-      if SelAvail and CanFocus then
-      begin
-         lCodeRange := SelectCodeRange(AObject, false);
-         if (lCodeRange.FirstRow = CharIndexToRowCol(SelStart).Line-1) and
-            (lCodeRange.LastRow = CharIndexToRowCol(SelEnd).Line-1) then
-               SelStart := SelEnd;
-      end;
+      lCodeRange := SelectCodeRange(AObject, false);
+      if (lCodeRange.FirstRow = memCodeEditor.CharIndexToRowCol(memCodeEditor.SelStart).Line-1) and
+         (lCodeRange.LastRow = memCodeEditor.CharIndexToRowCol(memCodeEditor.SelEnd).Line-1) then
+            memCodeEditor.SelStart := memCodeEditor.SelEnd;
    end;
 end;
 
@@ -1386,23 +1348,20 @@ begin
    else if Sender = miCodeFoldingEnable then
    begin
 {$IFDEF USE_CODEFOLDING}
-      with memCodeEditor do
-      begin
-         if (not miCodeFoldingEnable.Checked) and CodeFolding.Enabled then
-            UnCollapseAll;
-         CodeFolding.Enabled := miCodeFoldingEnable.Checked;
-         CodeFolding.HighlighterFoldRegions := false;
-         miIndentGuides.Enabled := CodeFolding.Enabled;
-         miCollapseAll.Enabled := CodeFolding.Enabled;
-         miUnCollapseAll.Enabled := CodeFolding.Enabled;
-         if not miIndentGuides.Enabled then
-            miIndentGuides.Checked := false;
-         CodeFolding.IndentGuides := miIndentGuides.Checked;
-         if CodeFolding.Enabled then
-            Gutter.RightOffset := 21
-         else
-            Gutter.RightOffset := 0;
-      end;
+      if (not miCodeFoldingEnable.Checked) and memCodeEditor.CodeFolding.Enabled then
+         memCodeEditor.UnCollapseAll;
+      memCodeEditor.CodeFolding.Enabled := miCodeFoldingEnable.Checked;
+      memCodeEditor.CodeFolding.HighlighterFoldRegions := false;
+      miIndentGuides.Enabled := memCodeEditor.CodeFolding.Enabled;
+      miCollapseAll.Enabled := memCodeEditor.CodeFolding.Enabled;
+      miUnCollapseAll.Enabled := memCodeEditor.CodeFolding.Enabled;
+      if not miIndentGuides.Enabled then
+         miIndentGuides.Checked := false;
+      memCodeEditor.CodeFolding.IndentGuides := miIndentGuides.Checked;
+      if memCodeEditor.CodeFolding.Enabled then
+         memCodeEditor.Gutter.RightOffset := 21
+      else
+         memCodeEditor.Gutter.RightOffset := 0;
 {$ENDIF}
    end
    else if Sender = miStatusBar then
