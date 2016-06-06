@@ -38,22 +38,12 @@ end;
 function TSortListDecorator.FDefaultCompareMethod(AItem1, AItem2: TObject; ASortType: integer): integer;
 var
    lSortObj: ISortable;
-   lVal1, lVal2: integer;
 begin
+   result := 1;
    if Supports(AItem1, ISortable, lSortObj) then
-      lVal1 := lSortObj.GetSortValue(ASortType)
-   else
-      lVal1 := -1;
+      result := lSortObj.GetSortValue(ASortType);
    if Supports(AItem2, ISortable, lSortObj) then
-      lVal2 := lSortObj.GetSortValue(ASortType)
-   else
-      lVal2 := -1;
-   if lVal1 = lVal2 then
-      result := 0
-   else if lVal1 > lVal2 then
-      result := 1
-   else
-      result := -1;
+      result := result - lSortObj.GetSortValue(ASortType);
 end;
 
 procedure TSortListDecorator.QuickSort(L, R: integer; SCompare: TSortCompareMethod);
