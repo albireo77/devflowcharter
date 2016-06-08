@@ -7,7 +7,7 @@ uses
 
 type
 
-   TCompareMethod = function (Ptr, Ptr2: TObject; SortArg: integer): integer of object;
+   TCompareMethod = function(AObject1, AObject2: TObject; ASortType: integer): integer of object;
 
    { TSortListDecorator is a decorator class for TObjectList and overrides its Sort method.
      It allows comparing function to be an object's method and pass additional argument of integer type. }
