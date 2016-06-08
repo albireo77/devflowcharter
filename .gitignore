@@ -2,6 +2,7 @@
 *.~pas
 *.~dfm
 *.~dpr
+*.~lng
 *.exe
 ThirdParty/*
 !ThirdParty/ThirdParty.zip
