@@ -26,7 +26,7 @@ interface
 uses
    Windows, Graphics, UserFunction, OmniXML, UserDataType, Classes, Main_Block,
    ComCtrls, DeclareList, Controls, Forms, Contnrs, BaseIterator, CommonTypes,
-   StdCtrls, CommonInterfaces;
+   StdCtrls, CommonInterfaces, BlockTabSheet;
 
 type
 
@@ -76,15 +76,17 @@ type
       function GetComments: IIterator;
       function GetUserFunctions(const ASortType: integer = PAGE_INDEX_SORT): IIterator;
       function GetUserDataTypes: IIterator;
+      //function GetTabs: IIterator;
       function GetUserDataType(const ATypeName: string): TUserDataType;
       function GetUserFunction(const AFunctionName: string): TUserFunction;
+      //function GetBlockTab(const ATabName: string): TBlockTabSheet;
       procedure ExportToGraphic(const AImage: TGraphic);
-      procedure ExportToXMLTag(const rootTag: IXMLElement);
+      procedure ExportToXMLTag(const ATag: IXMLElement);
       procedure PaintToCanvas(const ACanvas: TCanvas);
-      function ImportFromXMLTag(const rootTag: IXMLElement): TErrorType;
-      function ImportUserFunctionsFromXML(const rootTag: IXMLElement): TErrorType;
-      function ImportUserDataTypesFromXML(const rootTag: IXMLElement): TErrorType;
-      function ImportCommentsFromXML(const rootTag: IXMLElement): integer;
+      function ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
+      function ImportUserFunctionsFromXML(const ATag: IXMLElement): TErrorType;
+      function ImportUserDataTypesFromXML(const ATag: IXMLElement): TErrorType;
+      function ImportCommentsFromXML(const ATag: IXMLElement): integer;
       function GetMainBlock: TMainBlock;
       function GetBottomRight: TPoint;
       procedure PopulateDataTypeCombos;
@@ -238,6 +240,11 @@ begin
    result := GetComponents(PAGE_INDEX_SORT, TUserDataType.ClassName);
 end;
 
+{function TProject.GetTabs: IIterator;
+begin
+   result := GetComponents(PAGE_INDEX_SORT, TBlockTabSheet.ClassName);
+end;}
+
 procedure TProject.RefreshZOrder;
 var
    iter: IIterator;
@@ -342,18 +349,18 @@ begin
       result := FObjectIds.Objects[idx];
 end;
 
-procedure TProject.ExportToXMLTag(const rootTag: IXMLElement);
+procedure TProject.ExportToXMLTag(const ATag: IXMLElement);
 var
    itr, iter: IIterator;
    lXmlObj: IXMLable;
 begin
 
-   rootTag.SetAttribute('language', GInfra.CurrentLang.Name);
+   ATag.SetAttribute('language', GInfra.CurrentLang.Name);
 
    if FGlobalVars <> nil then
-      FGlobalVars.ExportToXMLTag(rootTag);
+      FGlobalVars.ExportToXMLTag(ATag);
    if FGlobalConsts <> nil then
-      FGlobalConsts.ExportToXMLTag(rootTag);
+      FGlobalConsts.ExportToXMLTag(ATag);
 
    UpdateZOrder;
 
@@ -361,27 +368,27 @@ begin
    while iter.HasNext do
    begin
       if Supports(iter.Next, IXMLable, lXmlObj) and lXmlObj.Active then
-         lXmlObj.ExportToXMLTag(rootTag);
+         lXmlObj.ExportToXMLTag(ATag);
    end;
 
    itr := TBaseFormIterator.Create;
    while itr.HasNext do
-      TBaseForm(itr.Next).ExportSettingsToXMLTag(rootTag);
+      TBaseForm(itr.Next).ExportSettingsToXMLTag(ATag);
    
 end;
 
-function TProject.ImportFromXMLTag(const rootTag: IXMLElement): TErrorType;
+function TProject.ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
 var
    itr: IIterator;
    lString, lang: string;
    lLangDef: TLangDefinition;
 begin
-
-   result := errNone;
-   
-   lang := rootTag.GetAttribute('language');
+   result := errValidate;
+   lang := ATag.GetAttribute('language');
    lLangDef := GInfra.GetLangDefinition(lang);
-   if lLangDef <> nil then
+   if lLangDef = nil then
+      Gerr_text := i18Manager.GetFormattedString('LngNoSprt', [lang])
+   else
    begin
       if AnsiSameText(lang, GInfra.DummyLang.Name) then
          lString := 'ChangeLngNone'
@@ -397,35 +404,28 @@ begin
          TInfra.GetEditorForm.SetFormAttributes;
          SetGlobals;
       end;
-   end
-   else
-   begin
-      result := errValidate;
-      Gerr_text := i18Manager.GetFormattedString('LngNoSprt', [lang]);
-      exit;
-   end;
-
-   if FGlobalConsts <> nil then
-      FGlobalConsts.ImportFromXMLTag(rootTag);
+      
+      if FGlobalConsts <> nil then
+         FGlobalConsts.ImportFromXMLTag(ATag);
          
-   if GInfra.CurrentLang.EnabledUserDataTypes then
-      ImportUserDataTypesFromXML(rootTag);
+      if GInfra.CurrentLang.EnabledUserDataTypes then
+         ImportUserDataTypesFromXML(ATag);
 
-   result := ImportUserFunctionsFromXML(rootTag);
-   if result = errNone then
-   begin
-      if FGlobalVars <> nil then
-         FGlobalVars.ImportFromXMLTag(rootTag);
-      PopulateDataTypeCombos;
-      RefreshSizeEdits;
-      RefreshStatements;
-      ImportCommentsFromXML(rootTag);
-      RefreshZOrder;
-      itr := TBaseFormIterator.Create;
-      while itr.HasNext do
-         TBaseForm(itr.Next).ImportSettingsFromXMLTag(rootTag);
+      result := ImportUserFunctionsFromXML(ATag);
+      if result = errNone then
+      begin
+         if FGlobalVars <> nil then
+            FGlobalVars.ImportFromXMLTag(ATag);
+         PopulateDataTypeCombos;
+         RefreshSizeEdits;
+         RefreshStatements;
+         ImportCommentsFromXML(ATag);
+         RefreshZOrder;
+         itr := TBaseFormIterator.Create;
+         while itr.HasNext do
+            TBaseForm(itr.Next).ImportSettingsFromXMLTag(ATag);
+      end;
    end;
-
 end;
 
 procedure TProject.SetGlobals;
@@ -494,15 +494,17 @@ begin
    TInfra.GetMainForm.SetMenu(true);
 end;
 
-function TProject.ImportUserFunctionsFromXML(const rootTag: IXMLElement): TErrorType;
+function TProject.ImportUserFunctionsFromXML(const ATag: IXMLElement): TErrorType;
 var
    tag, tag1: IXMLElement;
    lHeader: TUserFunctionHeader;
    lBody: TMainBlock;
    lTmpBlock: TBlock;
+   lPage: TTabSheet;
+   lPageCaption: string;
 begin
    result := errNone;
-   tag := TXMLProcessor.FindChildTag(rootTag, 'routine');
+   tag := TXMLProcessor.FindChildTag(ATag, 'routine');
    while (tag <> nil) and (result = errNone) do
    begin
       lHeader := nil;
@@ -517,7 +519,11 @@ begin
       tag1 := TXMLProcessor.FindChildTag(tag, 'block');
       if (tag1 <> nil) and GInfra.CurrentLang.EnabledUserFunctionBody then
       begin
-         lTmpBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag1, TInfra.GetMainForm, nil, result);
+         lPageCaption := tag1.GetAttribute(PAGE_CAPTION_ATTR);
+         if lPageCaption = '' then
+            lPageCaption := i18Manager.GetString(DEF_PAGE_CAPTION_KEY);
+         lPage := TInfra.GetMainForm.GetPage(lPageCaption);
+         lTmpBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag1, lPage, nil, result);
          if lTmpBlock is TMainBlock then
             lBody := TMainBlock(lTmpBlock);
       end;
@@ -529,7 +535,7 @@ begin
    end;
 end;
 
-function TProject.ImportUserDataTypesFromXML(const rootTag: IXMLElement): TErrorType;
+function TProject.ImportUserDataTypesFromXML(const ATag: IXMLElement): TErrorType;
 var
    lDataType: TUserDataType;
    tag: IXMLElement;
@@ -538,7 +544,7 @@ var
 begin
    result := errNone;
    lDataType := nil;
-   tag := TXMLProcessor.FindChildTag(rootTag, 'structure');
+   tag := TXMLProcessor.FindChildTag(ATag, 'structure');
    while tag <> nil do
    begin
       lDataType := TUserDataType.Create(TInfra.GetDataTypesForm);
@@ -561,16 +567,20 @@ begin
    end;
 end;
 
-function TProject.ImportCommentsFromXML(const rootTag: IXMLElement): integer;
+function TProject.ImportCommentsFromXML(const ATag: IXMLElement): integer;
 var
    lComment: TComment;
    tag: IXMLElement;
+   lPageCaption: string;
 begin
    result := NO_ERROR;
-   tag := TXMLProcessor.FindChildTag(rootTag, 'comment');
+   tag := TXMLProcessor.FindChildTag(ATag, 'comment');
    while tag <> nil do
    begin
-      lComment := TComment.Create(TInfra.GetMainForm);
+      lPageCaption := tag.GetAttribute(PAGE_CAPTION_ATTR);
+      if lPageCaption = '' then
+         lPageCaption := i18Manager.GetString(DEF_PAGE_CAPTION_KEY);
+      lComment := TComment.CreateDefault(TBlockTabSheet(TInfra.GetMainForm.GetPage(lPageCaption)));
       lComment.ImportFromXMLTag(tag, nil);
       tag := TXMLProcessor.FindNextTag(tag);
    end;
@@ -925,6 +935,11 @@ function TProject.GetUserFunction(const AFunctionName: string): TUserFunction;
 begin
    result := TUserFunction(GetComponentByName(TUserFunction.ClassName, AFunctionName));
 end;
+
+{function TProject.GetBlockTab(const ATabName: string): TBlockTabSheet;
+begin
+   result := TBlockTabSheet(GetComponentByName(TBlockTabSheet.ClassName, ATabName));
+end;}
 
 function TProject.GetComponentByName(const AClassName: string; const AName: string): TComponent;
 var

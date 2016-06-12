@@ -25,7 +25,7 @@ interface
 
 uses
    Windows, Controls, Forms, Graphics, Classes, Base_Block, ComCtrls, Messages,
-   OmniXML, CommonInterfaces, Main_Form, CommonTypes, BaseIterator;
+   OmniXML, CommonInterfaces, CommonTypes, BaseIterator, BlockTabSheet;
 
 type
 
@@ -33,13 +33,14 @@ type
 
    TMainBlock = class(TGroupBlock, IWinControl, IMaxBoundable)
       private
+         FPage: TBlockTabSheet;
          FLabelRect: TRect;
          FHandle: HDC;
       public
          ShowI: boolean;
          UserFunction: TObject;
-         constructor Create(const AParent: TMainForm; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
-         constructor Create(const AParent: TMainForm; const ATopLeft: TPoint); overload;
+         constructor Create(const APage: TBlockTabSheet; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
+         constructor Create(const APage: TBlockTabSheet; const ATopLeft: TPoint); overload;
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
          function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
          function GetDescription: string; override;
@@ -66,6 +67,8 @@ type
          function GetDefaultWidth: integer; override;
          procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
          function GetUndoObject: TObject; override;
+         procedure SetPage(APage: TBlockTabSheet); override;
+         function GetPage: TBlockTabSheet; override;
    end;
 
 const
@@ -78,13 +81,13 @@ uses
    ApplicationCommon, SysUtils, XMLProcessor, StrUtils, DeclareList, FastcodeAnsiStringReplaceUnit,
    Navigator_Form, Return_Block, LangDefinition, UserFunction, Comment;
 
-constructor TMainBlock.Create(const AParent: TMainForm; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
+constructor TMainBlock.Create(const APage: TBlockTabSheet; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
 var
    lDefWidth, lHalfDefWidth: integer;
 begin
 
    FType := blMain;
-   FParentForm := AParent;
+   FPage := APage;
 
    inherited Create(nil, ALeft, ATop, AWidth, AHeight, Point(p1X, p1Y), AId);
 
@@ -127,9 +130,9 @@ begin
    FStatement := nil;
 end;
 
-constructor TMainBlock.Create(const AParent: TMainForm; const ATopLeft: TPoint);
+constructor TMainBlock.Create(const APage: TBlockTabSheet; const ATopLeft: TPoint);
 begin
-   Create(AParent,
+   Create(APage,
           ATopLeft.X,
           ATopLeft.Y,
           MAIN_BLOCK_DEF_WIDTH,
@@ -137,6 +140,25 @@ begin
           MAIN_BLOCK_DEF_WIDTH div 2,
           MAIN_BLOCK_DEF_WIDTH div 2,
           MAIN_BLOCK_DEF_HEIGHT-42);
+end;
+
+procedure TMainBlock.SetPage(APage: TBlockTabSheet);
+var
+   iter: IIterator;
+begin
+   if FPage <> APage then
+   begin
+      FPage := APage;
+      Parent := APage;
+      iter := GetComments;
+      while iter.HasNext do
+         TComment(iter.Next).Page := APage;
+   end;
+end;
+
+function TMainBlock.GetPage: TBlockTabSheet;
+begin
+   result := FPage;
 end;
 
 function TMainBlock.GetDefaultWidth: integer;
@@ -164,7 +186,7 @@ begin
    begin
       ShowI := false;
       ACanvas.Lock;
-      PaintTo(ACanvas, Left + FParentForm.HorzScrollBar.Position, Top + FParentForm.VertScrollBar.Position);
+      PaintTo(ACanvas, Left + FPage.Form.HorzScrollBar.Position, Top + FPage.Form.VertScrollBar.Position);
       if Expanded then
       begin
          iter := GetComments;
@@ -176,7 +198,9 @@ begin
                lBStyle := lComment.BorderStyle;
                lStart := lComment.SelStart;
                lComment.BorderStyle := bsNone;
-               lComment.PaintTo(ACanvas, lComment.Left + lComment.ParentForm.HorzScrollBar.Position, lComment.Top + lComment.ParentForm.VertScrollBar.Position);
+               lComment.PaintTo(ACanvas,
+                                lComment.Left + lComment.Page.Form.HorzScrollBar.Position,
+                                lComment.Top + lComment.Page.Form.VertScrollBar.Position);
                lComment.BorderStyle := lBStyle;
                lComment.SelStart := lStart;
             end;
@@ -206,8 +230,8 @@ begin
    result := Point(0, 0);
    if Visible then
    begin
-      result.X := BoundsRect.Right + FParentForm.HorzScrollBar.Position + MARGIN_X;
-      result.Y := BoundsRect.Bottom + FParentForm.VertScrollBar.Position + MARGIN_Y;
+      result.X := BoundsRect.Right + FPage.Form.HorzScrollBar.Position + MARGIN_X;
+      result.Y := BoundsRect.Bottom + FPage.Form.VertScrollBar.Position + MARGIN_Y;
       if Expanded then
       begin
          iter := GetComments;
@@ -248,8 +272,8 @@ begin
    else
       lBitmap := TBitmap.Create;
    lPoint := GetMaxBounds;
-   lPoint.X := lPoint.X - Left - FParentForm.HorzScrollBar.Position - MARGIN_X + 1;
-   lPoint.Y := lPoint.Y - Top - FParentForm.VertScrollBar.Position - MARGIN_Y + 1;
+   lPoint.X := lPoint.X - Left - FPage.Form.HorzScrollBar.Position - MARGIN_X + 1;
+   lPoint.Y := lPoint.Y - Top - FPage.Form.VertScrollBar.Position - MARGIN_Y + 1;
    lBitmap.Width := lPoint.X;
    lBitmap.Height := lPoint.Y;
    ShowI := false;
@@ -402,10 +426,10 @@ end;
 
 procedure TMainBlock.MyOnResize(Sender: TObject);
 begin
-   FParentForm.SetScrollbars;
-   if FParentForm.HorzScrollBar.Position + BoundsRect.Right < MARGIN_X then
+   FPage.Form.SetScrollbars;
+   if FPage.Form.HorzScrollBar.Position + BoundsRect.Right < MARGIN_X then
       Left := 0;
-   if FParentForm.VertScrollBar.Position + BoundsRect.Bottom < MARGIN_Y then
+   if FPage.Form.VertScrollBar.Position + BoundsRect.Bottom < MARGIN_Y then
       Top := 0;
    BringAllToFront;
 end;
@@ -528,9 +552,10 @@ begin
    inherited SaveInXML(ATag);
    if ATag <> nil then
    begin
-      ATag.SetAttribute('x', IntToStr(Left+FParentForm.HorzScrollBar.Position));
-      ATag.SetAttribute('y', IntToStr(Top+FParentForm.VertScrollBar.Position));
+      ATag.SetAttribute('x', IntToStr(Left + FPage.Form.HorzScrollBar.Position));
+      ATag.SetAttribute('y', IntToStr(Top + FPage.Form.VertScrollBar.Position));
       ATag.SetAttribute('ZOrdVal', IntToStr(FZOrderValue));
+      ATag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
    end;
 end;
 

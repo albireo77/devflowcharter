@@ -85,7 +85,8 @@ uses
   BlockFactory in 'Common\BlockFactory.pas',
   StatementMemo in 'Common\StatementMemo.pas',
   MultiLine_Block in 'Blocks\MultiLine_Block.pas',
-  Folder_Block in 'Blocks\Folder_Block.pas';
+  Folder_Block in 'Blocks\Folder_Block.pas',
+  BlockTabSheet in 'Common\BlockTabSheet.pas';
 
 {$R *.res}
 

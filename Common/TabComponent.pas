@@ -383,7 +383,7 @@ var
    iter: IIterator;
 begin
    rootTag.SetAttribute('name', Trim(edtName.Text));
-   rootTag.SetAttribute(ID_ATTR_NAME, IntToStr(FId));
+   rootTag.SetAttribute(ID_ATTR, IntToStr(FId));
    rootTag.SetAttribute('ext_decl', BoolToStr(chkExtDeclare.Checked, true));
    rootTag.SetAttribute('library', Trim(edtLibrary.Text));
    iter := GetElementIterator;
@@ -409,7 +409,7 @@ begin
       lElem.ImportFromXMLTag(tag);
       tag := TXMLProcessor.FindNextTag(tag);
    end;
-   FId := GProject.Register(Self, StrToIntDef(root.GetAttribute(ID_ATTR_NAME), ID_INVALID));
+   FId := GProject.Register(Self, StrToIntDef(root.GetAttribute(ID_ATTR), ID_INVALID));
 end;
 
 procedure TTabComponent.Localize(const list: TStringList);

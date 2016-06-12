@@ -22,7 +22,8 @@ unit BlockFactory;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, StdCtrls, Base_Block, CommonTypes, OmniXML, Main_Form;
+  Windows, SysUtils, Classes, Graphics, StdCtrls, Base_Block, CommonTypes, OmniXML,
+  BlockTabSheet;
 
 type
 
@@ -30,7 +31,7 @@ type
    public
       class function CloneBlock(const ABranch: TBranch; const ABlock: TBlock): TBlock;
       class function CreateBlock(const ABranch: TBranch; const ABlockType: TBlockType): TBlock; overload;
-      class function CreateBlock(const ATag: IXMLElement; const ABranch: TBranch; const AForm: TMainForm = nil): TBlock; overload;
+      class function CreateBlock(const ATag: IXMLElement; const ABranch: TBranch; const ATab: TBlockTabSheet = nil): TBlock; overload;
    end;
 
 implementation
@@ -87,7 +88,7 @@ begin
    end;
 end;
 
-class function TBlockFactory.CreateBlock(const ATag: IXMLElement; const ABranch: TBranch; const AForm: TMainForm = nil): TBlock;
+class function TBlockFactory.CreateBlock(const ATag: IXMLElement; const ABranch: TBranch; const ATab: TBlockTabSheet = nil): TBlock;
 var
    left,top,height,width,brx,bh,th,bry,fbry,fbrx,trh,flh,bid,bt: integer;
 begin
@@ -102,11 +103,11 @@ begin
       brx := StrToInt(ATag.GetAttribute('brx'));
       bh := StrToInt(ATag.GetAttribute('bh'));
       bry := StrToIntDef(ATag.GetAttribute('bry'), 0);
-      bid := StrToIntDef(ATag.GetAttribute(ID_ATTR_NAME), ID_INVALID);
-      if AForm <> nil then
+      bid := StrToIntDef(ATag.GetAttribute(ID_ATTR), ID_INVALID);
+      if ATab <> nil then
       begin
          if TBlockType(bt) = blMain then
-            result := TMainBlock.Create(AForm, left, top, width, height, bh, brx, bry, bid);
+            result := TMainBlock.Create(ATab, left, top, width, height, bh, brx, bry, bid);
       end
       else if ABranch <> nil then
       begin

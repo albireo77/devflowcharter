@@ -27,8 +27,8 @@ interface
 
 uses
    Windows, Forms, StdCtrls, ExtCtrls, Controls, Graphics, Messages, SysUtils,
-   Classes, ComCtrls, Statement, OmniXML, Main_Form, BaseIterator, CommonInterfaces,
-   CommonTypes, Contnrs;
+   Classes, ComCtrls, Statement, OmniXML, BaseIterator, CommonInterfaces,
+   CommonTypes, Contnrs, BlockTabSheet;
 
 const
    PRIMARY_BRANCH_IND = 1;
@@ -60,7 +60,6 @@ type
          FMemoVScroll,
          FMemoHScroll: boolean;
       protected
-         FParentForm: TMainForm;
          FType: TBlockType;
          FStatement: TStatement;
          FTopParentBlock: TGroupBlock;
@@ -103,6 +102,8 @@ type
          procedure MoveComments(const x, y: integer);
          function GetUndoObject: TObject; virtual;
          function IsInFront(const AControl: TWinControl): boolean;
+         procedure SetPage(APage: TBlockTabSheet); virtual;
+         function GetPage: TBlockTabSheet; virtual;
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -117,11 +118,11 @@ type
          property MemoVScroll: boolean read FMemoVScroll write SetMemoVScroll;
          property MemoHScroll: boolean read FMemoHScroll write SetMemoHScroll;
          property MemoWordWrap: boolean read GetMemoWordWrap write SetMemoWordWrap;
-         property TopParentBlock: TGroupBlock read FTopParentBlock default nil;
-         property ParentForm: TMainForm read FParentForm default nil;
-         property ParentBlock: TGroupBlock read FParentBlock default nil;
+         property TopParentBlock: TGroupBlock read FTopParentBlock;
+         property Page: TBlockTabSheet read GetPage write SetPage;
+         property ParentBlock: TGroupBlock read FParentBlock;
          property BType: TBlockType read FType default blUnknown;
-         property ParentBranch: TBranch read FParentBranch default nil;
+         property ParentBranch: TBranch read FParentBranch;
          property Id: integer read GetId;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: Integer; const AId: integer = ID_INVALID);
          destructor Destroy; override;
@@ -290,23 +291,20 @@ begin
       FParentBranch := ABranch;
       FParentBlock := TGroupBlock(Parent);
       FTopParentBlock := FParentBlock.TopParentBlock;
-      FParentForm := FParentBlock.ParentForm;
    end
-   else                                     // the current object is in fact of TMainBlock class
+   else                                     // current object is TMainBlock class
    begin
-      if FParentForm = nil then
-         FParentForm := TInfra.GetMainForm;
-      inherited Create(FParentForm);
-      Parent := FParentForm;
+      inherited Create(Page.Form);
+      Parent := Page;
       FTopParentBlock := TGroupBlock(Self);
    end;
 
    ParentFont  := true;
    ParentColor := true;
    Ctl3D       := false;
-   Color       := FParentForm.Color;
+   Color       := Page.Brush.Color;
    Font.Name   := GSettings.FlowchartFontName;
-   PopupMenu   := FParentForm.PopupMenu;
+   PopupMenu   := Page.PopupMenu;
    DoubleBuffered := GSettings.EnableDBuffering;
    ControlStyle := ControlStyle + [csOpaque];
    Canvas.TextFlags := Canvas.TextFlags or ETO_OPAQUE;
@@ -439,7 +437,7 @@ begin
    while iter.HasNext do
       iter.Next.Free;
    Hide;
-   FParentForm.SetScrollBars;
+   Page.Form.SetScrollBars;
    for i := 0 to High(FBranchArray) do
       FBranchArray[i].Free;
    FBranchArray := nil;
@@ -610,7 +608,7 @@ begin
    begin
       if ssShift in Shift then
       begin
-         if Color <> FParentForm.Color then
+         if Color <> Page.Brush.Color then
             BeginDrag(true);
       end
       else if (not PtInRect(Rect(IPoint.X-5, IPoint.Y, IPoint.X+5, IPoint.Y+10), Point(X, Y))) and not IsCursorResize then
@@ -623,23 +621,23 @@ begin
          begin
             lMitem := nil;
             case GCustomCursor of
-               crAssign:      lMitem := FParentForm.miAssign;
-               crMultiAssign: lMitem := FParentForm.miMultipleAssign;
-               crIfElse:      lMitem := FParentForm.miIfElse;
-               crWhile:       lMitem := FParentForm.miWhile;
-               crFor:         lMitem := FParentForm.miFor;
-               crRepeat:      lMitem := FParentForm.miRepeat;
-               crInput:       lMitem := FParentForm.miInput;
-               crOutput:      lMitem := FParentForm.miOutput;
-               crFuncCall:    lMitem := FParentForm.miRoutineCall;
-               crIf:          lMitem := FParentForm.miIf;
-               crCase:        lMitem := FParentForm.miCase;
-               crFolder:      lMitem := FParentForm.miFolder;
-               crText:        lMitem := FParentForm.miText;
+               crAssign:      lMitem := Page.Form.miAssign;
+               crMultiAssign: lMitem := Page.Form.miMultipleAssign;
+               crIfElse:      lMitem := Page.Form.miIfElse;
+               crWhile:       lMitem := Page.Form.miWhile;
+               crFor:         lMitem := Page.Form.miFor;
+               crRepeat:      lMitem := Page.Form.miRepeat;
+               crInput:       lMitem := Page.Form.miInput;
+               crOutput:      lMitem := Page.Form.miOutput;
+               crFuncCall:    lMitem := Page.Form.miRoutineCall;
+               crIf:          lMitem := Page.Form.miIf;
+               crCase:        lMitem := Page.Form.miCase;
+               crFolder:      lMitem := Page.Form.miFolder;
+               crText:        lMitem := Page.Form.miText;
                crReturn:
                begin
                   if CanInsertReturnBlock then
-                     lMitem := FParentForm.miReturn;
+                     lMitem := Page.Form.miReturn;
                end;
             end;
             if lMitem <> nil then
@@ -873,6 +871,15 @@ begin
    OnMouseLeave;
 end;
 
+procedure TBlock.SetPage(APage: TBlockTabSheet);
+begin
+end;
+
+function TBlock.GetPage: TBlockTabSheet;
+begin
+   result := FTopParentBlock.Page;
+end;
+
 procedure TBlock.SetFontStyle(const AStyle: TFontStyles);
 var
    i: integer;
@@ -951,7 +958,7 @@ begin
             lInFront := IsInFront(lComment)
          else
             lInFront := true;
-         if lInFront and PtInRect(ClientRect, ParentToClient(lComment.BoundsRect.TopLeft, FParentForm)) then
+         if lInFront and PtInRect(ClientRect, ParentToClient(lComment.BoundsRect.TopLeft, Page)) then
          begin
             SetLength(lIterator.FArray, l+1);
             lIterator.FArray[l] := lComment;
@@ -977,7 +984,7 @@ var
    lWnd: THandle;
 begin
    result := false;
-   lWnd := GetWindow(GetTopWindow(FParentForm.Handle), GW_HWNDLAST);
+   lWnd := GetWindow(GetTopWindow(Page.Handle), GW_HWNDLAST);
    while lWnd <> 0 do
    begin
       if lWnd = FTopParentBlock.Handle then
@@ -1107,8 +1114,8 @@ end;
 
 procedure TBlock.ClearSelection;
 begin
-   if Color <> FParentForm.Color then
-      ChangeColor(FParentForm.Color);
+   if Color <> Page.Brush.Color then
+      ChangeColor(Page.Brush.Color);
    NavigatorForm.Repaint;
 end;
 
@@ -1148,9 +1155,9 @@ begin
          NavigatorForm.Repaint;
       end;
    end
-   else if Color <> FParentForm.Color then
+   else if Color <> Page.Brush.Color then
    begin
-      ChangeColor(FParentForm.Color);
+      ChangeColor(Page.Brush.Color);
       if GSettings.EditorAutoSelectBlock and not FFrame then
          TInfra.GetEditorForm.UnSelectCodeRange(Self);
       NavigatorForm.Repaint;
@@ -1463,7 +1470,7 @@ begin
       SendMessage(FTopParentBlock.Handle, WM_SETREDRAW, WPARAM(True), 0);
       GProject.RepaintFlowcharts;
       GProject.RepaintComments;
-      RedrawWindow(FParentForm.Handle, nil, 0, RDW_INVALIDATE or RDW_FRAME or RDW_ERASE);
+      RedrawWindow(Page.Handle, nil, 0, RDW_INVALIDATE or RDW_FRAME or RDW_ERASE);
       FTopParentBlock.FDrawingFlag := false;
    end;
 end;
@@ -1491,11 +1498,11 @@ var
    lPoint: TPoint;
 begin
    inherited;
-   lPoint := ClientToParent(Point(0, 0), FParentForm);
+   lPoint := ClientToParent(Point(0, 0), Page);
    if HResizeInd then
-      Msg.MinMaxInfo.ptMaxTrackSize.X := FParentForm.ClientWidth - lPoint.X;
+      Msg.MinMaxInfo.ptMaxTrackSize.X := Page.ClientWidth - lPoint.X;
    if VResizeInd then
-      Msg.MinMaxInfo.ptMaxTrackSize.Y := FParentForm.ClientHeight - lPoint.Y;
+      Msg.MinMaxInfo.ptMaxTrackSize.Y := Page.ClientHeight - lPoint.Y;
 end;
 
 function TBlock.IsCursorSelect: boolean;
@@ -1696,7 +1703,7 @@ function TBlock.RetrieveFocus(AInfo: TFocusInfo): boolean;
 begin
    if AInfo.FocusEdit = nil then
       AInfo.FocusEdit := GetTextControl;
-   AInfo.FocusEditForm := FParentForm;
+   AInfo.FocusEditForm := Page.Form;
    result := FocusOnTextControl(AInfo);
 end;
 
@@ -1709,9 +1716,9 @@ begin
    result := false;
    if ContainsControl(AInfo.FocusEdit) and AInfo.FocusEdit.CanFocus then
    begin
-      FParentForm.Show;
+      Page.Show;
       FTopParentBlock.BringAllToFront;
-      FParentForm.ScrollInView(AInfo.FocusEdit);
+      Page.Form.ScrollInView(AInfo.FocusEdit);
       idx2 := 0;
       if AInfo.FocusEdit is TMemo then
       begin
@@ -1858,8 +1865,8 @@ begin
          lComment.PinControl := nil
       else
          lComment.PinControl := Self;
-      lTopLeft := Point(lComment.Left + (ATopLeft.X + FParentForm.HorzScrollBar.Position) * i,
-                        lComment.Top + (ATopLeft.Y + FParentForm.VertScrollBar.Position) * i);
+      lTopLeft := Point(lComment.Left + (ATopLeft.X + Page.Form.HorzScrollBar.Position) * i,
+                        lComment.Top + (ATopLeft.Y + Page.Form.VertScrollBar.Position) * i);
       lComment.SetBounds(lTopLeft.X, lTopLeft.Y, lComment.Width, lComment.Height);
       lComment.Visible := AVisible;
       lComment.BringToFront;
@@ -1871,7 +1878,7 @@ begin
    if Visible <> AValue then
    begin
       if ASetComments then
-         SetComments(AValue, ClientToParent(ClientRect.TopLeft, FParentForm));
+         SetComments(AValue, ClientToParent(ClientRect.TopLeft, Page));
       Visible := AValue;
    end;
 end;
@@ -1925,7 +1932,7 @@ begin
    end
    else
    begin
-      SetComments(Expanded, ClientToParent(ClientRect.TopLeft, FParentForm));
+      SetComments(Expanded, ClientToParent(ClientRect.TopLeft, Page));
       lTmpWidth := FFoldParms.Width;
       lTmpHeight := FFoldParms.Height;
       FFoldParms.Width := Width;
@@ -1958,7 +1965,7 @@ begin
    end;
 
    if Expanded then
-      SetComments(Expanded, ClientToParent(ClientRect.TopLeft, FParentForm));
+      SetComments(Expanded, ClientToParent(ClientRect.TopLeft, Page));
 end;
 
 function TBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
@@ -2042,7 +2049,7 @@ begin
          tag2 := ATag.OwnerDocument.CreateElement('branch');
          ATag.AppendChild(tag2);
 
-         tag2.SetAttribute(ID_ATTR_NAME, IntToStr(lBranch.Id));
+         tag2.SetAttribute(ID_ATTR, IntToStr(lBranch.Id));
 
          if lBranch.Statement <> nil then
             tag2.SetAttribute('bstmnt_hash', IntToStr(lBranch.Statement.Id));
@@ -2079,7 +2086,7 @@ begin
       ATag.SetAttribute('w', IntToStr(Width));
       ATag.SetAttribute('bh', IntToStr(BottomHook));
       ATag.SetAttribute('brx', IntToStr(BottomPoint.X));
-      ATag.SetAttribute(ID_ATTR_NAME, IntToStr(FId));
+      ATag.SetAttribute(ID_ATTR, IntToStr(FId));
       ATag.SetAttribute('memW', IntToStr(memoWidth));
       ATag.SetAttribute('memH', IntToStr(memoHeight));
       ATag.SetAttribute('mem_vscroll', BoolToStr(FMemoVScroll, true));
@@ -2118,7 +2125,7 @@ begin
             lTag2 := TXMLProcessor.FindChildTag(lTag1, 'y');
             if lTag2 <> nil then
                hy := StrToIntDef(lTag2.Text, 0);
-            lBranchId := StrToIntDef(lTag1.GetAttribute(ID_ATTR_NAME), ID_INVALID);
+            lBranchId := StrToIntDef(lTag1.GetAttribute(ID_ATTR), ID_INVALID);
             lBranchStmntId := StrToIntDef(lTag1.GetAttribute('bstmnt_hash'), ID_INVALID);
             if GetBranch(lBranchIdx) = nil then
                AddBranch(Point(hx, hy), false, lBranchId, lBranchStmntId);
@@ -2141,7 +2148,7 @@ begin
       lTag1 := TXMLProcessor.FindChildTag(ATag, 'comment');
       while lTag1 <> nil do
       begin
-         lComment := TComment.Create(TInfra.GetMainForm);
+         lComment := TComment.CreateDefault(Page);
          lComment.ImportFromXMLTag(lTag1, Self);
          lTag1 := TXMLProcessor.FindNextTag(lTag1);
       end;
@@ -2285,7 +2292,7 @@ begin
       while iterc.HasNext do
       begin
          lComment := TComment(iterc.Next);
-         lPoint := ParentToClient(lComment.BoundsRect.TopLeft, FParentForm);
+         lPoint := ParentToClient(lComment.BoundsRect.TopLeft, Page);
          lComment.PaintTo(lBitmap.Canvas.Handle, lPoint.X, lPoint.Y);
       end;
    finally

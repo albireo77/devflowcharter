@@ -1180,7 +1180,7 @@ begin
          tag2 := root.OwnerDocument.CreateElement('text_line');
          TXMLProcessor.AddCDATA(tag2, lLines[i]);
          if TInfra.IsValid(lLines.Objects[i]) and Supports(lLines.Objects[i], IIdentifiable, idObject) then
-            tag2.SetAttribute(ID_ATTR_NAME, IntToStr(idObject.Id));
+            tag2.SetAttribute(ID_ATTR, IntToStr(idObject.Id));
          root.AppendChild(tag2);
       end;
       root.SetAttribute('modified', BoolToStr(memCodeEditor.Modified, true));
@@ -1216,7 +1216,7 @@ begin
       memCodeEditor.Lines.BeginUpdate;
       while tag1 <> nil do
       begin
-         memCodeEditor.Lines.AddObject(tag1.Text, GProject.FindObject(StrToIntDef(tag1.GetAttribute(ID_ATTR_NAME), ID_INVALID)));
+         memCodeEditor.Lines.AddObject(tag1.Text, GProject.FindObject(StrToIntDef(tag1.GetAttribute(ID_ATTR), ID_INVALID)));
          tag1 := TXMLProcessor.FindNextTag(tag1);
       end;
       memCodeEditor.Lines.EndUpdate;

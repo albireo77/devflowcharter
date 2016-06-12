@@ -45,6 +45,7 @@ type
    private
       FUserFunction: TUserFunction;
       FLocalVars: TVarDeclareList;
+      procedure PopulatePageCombo(const ACaption: string = '');
    protected
       procedure OnChangeName(Sender: TObject); override;
       procedure OnChangeDesc(Sender: TObject);
@@ -55,12 +56,17 @@ type
       procedure OnClickExtDecl(Sender: TObject);
       procedure SetActive(const AValue: boolean); override;
       function CreateElement: TElement; override;
+      procedure OnChangeBodyPage(Sender: TObject);
+      procedure OnDropDownBodyPage(Sender: TObject);
       procedure DrawBodyLabel;
    public
-      cbType: TComboBox;
+      cbType,
+      cbBodyPage: TComboBox;
       lblType,
+      lblBodyPage,
       lblParameters: TLabel;
       gbHeader,
+      gbBody,
       gbParameters,
       gbDescription: TGroupBox;
       memDescription: TMemo;
@@ -115,7 +121,7 @@ implementation
 
 uses
    SysUtils, ApplicationCommon, Main_Form, XMLProcessor, Windows, Grids, StrUtils,
-   LangDefinition, Navigator_Form;
+   LangDefinition, Navigator_Form, BlockTabSheet;
 
 constructor TUserFunction.Create(const AFunctionHeader: TUserFunctionHeader; const AFunctionBody: TMainBlock);
 begin
@@ -129,14 +135,18 @@ begin
    begin
       FHeader.FUserFunction := Self;
       FHeader.FOverlayObject := Self;
-      if (FBody <> nil) and FHeader.chkExtDeclare.Checked then
-         FBody.Visible := false;
+      if FBody <> nil then
+      begin
+         FHeader.PopulatePageCombo(FBody.Page.Caption);
+         if FHeader.chkExtDeclare.Checked then
+            FBody.Visible := false;
+      end;
    end;
    if FBody <> nil then
    begin
       FBody.UserFunction := Self;
       FBody.SetWidth(FBody.Width);
-      FBody.ParentForm.SetScrollBars;
+      FBody.Page.Form.SetScrollBars;
    end;
 end;
 
@@ -254,7 +264,7 @@ begin
          FBody.SetVisible(AValue and not ((FHeader <> nil) and FHeader.chkExtDeclare.Checked));
          if FBody.Visible then
             FBody.RefreshStatements;
-         FBody.ParentForm.SetScrollBars;
+         FBody.Page.Form.SetScrollBars;
       end;
       if (FHeader <> nil) and (AValue <> FHeader.Active) then
          FHeader.Active := AValue;
@@ -294,7 +304,7 @@ begin
 
    FElementMode := PARAMETER_IDENT;
 
-   FLocalVars := TVarDeclareList.Create(Self, 0, 300, 389, 3, 4, 380);
+   FLocalVars := TVarDeclareList.Create(Self, 0, 350, 389, 3, 4, 380);
    FLocalVars.Caption := i18Manager.GetString('LocalDeclare');
    FLocalVars.sgList.Options := FLocalVars.sgList.Options - [goColSizing];
    FLocalVars.gbBox.DoubleBuffered := true;
@@ -347,9 +357,38 @@ begin
    chkInclDescFlow.Anchors := [akBottom, akLeft];
    chkInclDescFlow.OnClick := OnClickInclDescFlow;
 
+   gbBody := TGroupBox.Create(Self);
+   gbBody.Parent := Self;
+   gbBody.SetBounds(0, 80, 400, 50);
+   gbBody.ParentFont := false;
+   gbBody.Font.Color := clBlack;
+   gbBody.Caption := i18Manager.GetString('Body');
+   gbBody.DoubleBuffered := true;
+   gbBody.Align := alTop;
+
+   lblBodyPage := TLabel.Create(gbBody);
+   lblBodyPage.Parent := gbBody;
+   lblBodyPage.SetBounds(8, 25, 0, 13);
+   lblBodyPage.ParentFont := false;
+   lblBodyPage.Caption := i18Manager.GetString('lblBodyPage');
+   lblBodyPage.Font.Style := [];
+   lblBodyPage.Font.Color := clWindowText;
+
+   cbBodyPage := TComboBox.Create(gbBody);
+   cbBodyPage.Parent := gbBody;
+   cbBodyPage.SetBounds(lblBodyPage.BoundsRect.Right + 6, 20, 85, 21);
+   cbBodyPage.Style := csDropDownList;
+   cbBodyPage.ParentFont := false;
+   cbBodyPage.Font.Style := [];
+   cbBodyPage.Font.Color := clWindowText;
+   cbBodyPage.DropDownCount := 9;
+   cbBodyPage.OnDropDown := OnDropDownBodyPage;
+   cbBodyPage.OnChange := OnChangeBodyPage;
+   PopulatePageCombo;
+
    gbHeader := TGroupBox.Create(Self);
    gbHeader.Parent := Self;
-   gbHeader.SetBounds(0, 80, 400, 83);
+   gbHeader.SetBounds(0, 130, 400, 83);
    gbHeader.ParentFont := false;
    gbHeader.Font.Color := clBlack;
    gbHeader.Caption := i18Manager.GetString('Header');
@@ -384,7 +423,7 @@ begin
 
    cbType := TComboBox.Create(gbHeader);
    cbType.Parent := gbHeader;
-   cbType.SetBounds(lblType.Left + lblType.Width + 6, 20, 85, 21);
+   cbType.SetBounds(lblType.BoundsRect.Right + 6, 20, 85, 21);
    cbType.Style := csDropDownList;
    cbType.ParentFont := false;
    cbType.Font.Style := [];
@@ -426,7 +465,7 @@ begin
 
    gbParameters := TGroupBox.Create(Self);
    gbParameters.Parent := Self;
-   gbParameters.SetBounds(0, 165, 400, 110);
+   gbParameters.SetBounds(0, 215, 400, 110);
    gbParameters.ParentFont := false;
    gbParameters.Font.Color := clBlack;
    gbParameters.Caption := i18Manager.GetString('Params');
@@ -469,7 +508,6 @@ begin
    btnAddElement.Anchors := [akLeft, akRight, akBottom];
 
    FLocalVars.Align := alClient;
-
 end;
 
 procedure TUserFunctionHeader.OnMovedParams(Sender: TObject);
@@ -575,6 +613,47 @@ begin
    GChange := 1;
 end;
 
+procedure TUserFunctionHeader.OnDropDownBodyPage(Sender: TObject);
+begin
+   PopulatePageCombo(cbBodyPage.Text);
+end;
+
+procedure TUserFunctionHeader.PopulatePageCombo(const ACaption: string = '');
+var
+   i: integer;
+   lPageControl: TPageControl;
+   lCaption: string;
+begin
+   cbBodyPage.Items.Clear;
+   cbBodyPage.Items.BeginUpdate;
+   lPageControl := TInfra.GetMainForm.pgcPages;
+   for i := 0 to lPageControl.PageCount-1 do
+      cbBodyPage.Items.Add(lPageControl.Pages[i].Caption);
+   cbBodyPage.Items.EndUpdate;
+   if ACaption = '' then
+      lCaption := lPageControl.ActivePage.Caption
+   else
+      lCaption := ACaption;
+   i := cbBodyPage.Items.IndexOf(lCaption);
+   if i <> -1 then
+      cbBodyPage.ItemIndex := i
+   else if cbBodyPage.Items.Count > 0 then
+      cbBodyPage.ItemIndex := 0;
+end;
+
+procedure TUserFunctionHeader.OnChangeBodyPage(Sender: TObject);
+var
+   lPage: TBlockTabSheet;
+begin
+   lPage := TBlockTabSheet(TInfra.GetMainForm.GetPage(cbBodyPage.Text));
+   if (lPage <> nil) and (FUserFunction.Body <> nil) then
+   begin
+      FUserFunction.Body.Page := lPage;
+      lPage.PageControl.ActivePage := lPage;
+      lPage.Form.ScrollInView(FUserFunction.Body);
+   end;
+end;
+
 procedure TUserFunctionHeader.OnChangeType(Sender: TObject);
 begin
    if GSettings.UpdateEditor and (Font.Color <> NOK_COLOR) and not chkExtDeclare.Checked then
@@ -639,7 +718,7 @@ begin
    if (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
    begin
       FUserFunction.Body.SetVisible(not chkExtDeclare.Checked);
-      FUserFunction.Body.ParentForm.SetScrollBars;
+      FUserFunction.Body.Page.Form.SetScrollBars;
       if GSettings.UpdateEditor and (Font.Color <> NOK_COLOR) then
          TInfra.GetEditorForm.RefreshEditorForObject(Self);
    end;

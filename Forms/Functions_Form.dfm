@@ -3,11 +3,11 @@ object FunctionsForm: TFunctionsForm
   Top = 223
   AutoScroll = False
   Caption = 'Functions'
-  ClientHeight = 537
+  ClientHeight = 587
   ClientWidth = 397
   Color = clBtnFace
   Constraints.MaxWidth = 413
-  Constraints.MinHeight = 575
+  Constraints.MinHeight = 625
   Constraints.MinWidth = 413
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

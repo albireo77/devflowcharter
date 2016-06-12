@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 574
-  Top = 185
+  Left = 531
+  Top = 160
   HorzScrollBar.Tracking = True
   VertScrollBar.Tracking = True
   Align = alCustom
@@ -18,22 +18,28 @@ object MainForm: TMainForm
   KeyPreview = True
   Menu = mmMainMenu
   OldCreateOrder = False
-  PopupMenu = PopupMenu
   Position = poDefault
   WindowState = wsMaximized
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
-  OnMouseUp = FormMouseUp
   OnMouseWheelDown = FormMouseWheelDown
   OnMouseWheelUp = FormMouseWheelUp
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object PopupMenu: TPopupMenu
+  object pgcPages: TPageControl
+    Left = 0
+    Top = 0
+    Width = 1040
+    Height = 772
+    Align = alClient
+    TabOrder = 0
+  end
+  object pmPages: TPopupMenu
     AutoPopup = False
-    OnPopup = PopupMenuPopup
+    OnPopup = pmPagesPopup
     Left = 32
     object miInsert: TMenuItem
       Tag = 2

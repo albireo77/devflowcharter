@@ -56,7 +56,7 @@ const
 implementation
 
 uses
-   ApplicationCommon, BlockFactory, Main_Form;
+   ApplicationCommon, BlockFactory, BlockTabSheet;
 
 class function TXMLProcessor.FindChildTag(const ATag: IXMLElement; const AName: string): IXMLElement;
 var
@@ -146,12 +146,11 @@ var
    lNewBlock: TBlock;
    lBranch: TBranch;
    initCount: integer;
-   lForm: TMainForm;
+   lTab: TBlockTabSheet;
    lControl: TControl;
 begin
-
     result := nil;
-    lForm := nil;
+    lTab := nil;
     lBranch := nil;
     AErrorType := errNone;
     Gerr_text := '';
@@ -165,13 +164,13 @@ begin
        else                                                      // predBlock is nil so newBlock will be put at the beginning of the list
           lBranch := TGroupBlock(AParent).GetBranch(ABranchInd);   // branch is determined by branch_id
     end
-    else if AParent is TMainForm then
-       lForm := TMainForm(AParent);
+    else if AParent is TBlockTabSheet then
+       lTab := TBlockTabSheet(AParent);
 
     while lTag <> nil do
     begin
-       lNewBlock := TBlockFactory.CreateBlock(lTag, lBranch, lForm);
-       lForm := nil;               // to prevent main block inside other block
+       lNewBlock := TBlockFactory.CreateBlock(lTag, lBranch, lTab);
+       lTab := nil;
        if lNewBlock <> nil then
        begin
           result := lNewBlock;

@@ -24,15 +24,15 @@ unit Comment;
 interface
 
 uses
-   Windows, Messages, Controls, Forms, StdCtrls, Graphics, Classes, OmniXML,
-   Main_Form, CommonInterfaces;
+   Windows, Messages, Controls, Forms, StdCtrls, Graphics, Classes, OmniXML, CommonInterfaces,
+   BlockTabSheet;
 
 type
 
    TComment = class(TMemo, IXMLable, IWinControl, IMaxBoundable, ISortable)
       private
          FPinControl: TControl;
-         FParentForm: TMainForm;
+         FPage: TBlockTabSheet;
          FActive: boolean;
          FZOrderValue: integer;
       protected
@@ -46,15 +46,16 @@ type
          procedure SetActive(const AValue: boolean);
          function GetActive: boolean;
          procedure MyOnChange(Sender: TObject);
+         procedure SetPage(APage: TBlockTabSheet);
       public
          property PinControl: TControl read FPinControl write FPinControl;
-         property ParentForm: TMainForm read FParentForm;
-         constructor Create(const AParent: TMainForm); overload;
-         constructor Create(const AParent: TMainForm; const ALeft, ATop, AWidth, AHeight: Integer; const AUpdateZOrderComponents: boolean = true); overload;
+         property Page: TBlockTabSheet read FPage write SetPage;
+         constructor Create(const APage: TBlockTabSheet; const ALeft, ATop, AWidth, AHeight: Integer; const AUpdateZOrderComponents: boolean = true);
+         constructor CreateDefault(const APage: TBlockTabSheet);
          destructor Destroy; override;
          procedure ImportFromXMLTag(const rootTag: IXMLElement; const APinControl: TControl);
-         procedure ExportToXMLTag(const rootTag: IXMLElement);
-         procedure ExportToXMLTag2(const rootTag: IXMLElement);
+         procedure ExportToXMLTag(const ATag: IXMLElement);
+         procedure ExportToXMLTag2(const ATag: IXMLElement);
          procedure PaintToCanvas(const ACanvas: TCanvas);
          function GetMaxBounds: TPoint;
          function GetHandle: THandle;
@@ -69,9 +70,55 @@ implementation
 uses
    ApplicationCommon, SysUtils, XMLProcessor, UserFunction, Main_Block, Navigator_Form;
 
-constructor TComment.Create(const AParent: TMainForm);
+constructor TComment.Create(const APage: TBlockTabSheet; const ALeft, ATop, AWidth, AHeight: Integer; const AUpdateZOrderComponents: boolean = true);
 begin
-   Create(AParent, 20, 20, 150, 50, false);
+
+   inherited Create(APage.Form);
+
+   FPage := APage;
+   Parent := APage;
+   Color := APage.Brush.Color;
+   Font.Size := 8;
+   Font.Color := clNavy;
+   Font.Name := GSettings.FlowchartFontName;
+   FActive := true;
+   DoubleBuffered := true;
+   Constraints.MinWidth := 25;
+   Constraints.MinHeight := 25;
+   BorderStyle := bsNone;
+   Ctl3D := false;
+   FZOrderValue := -1;
+   PopupMenu := APage.PopupMenu;
+   SetBounds(ALeft, ATop, AWidth, AHeight);
+   GProject.AddComponent(Self);
+
+   OnKeyDown   := MyOnKeyDown;
+   OnMouseDown := MouseDown;
+   OnMouseMove := MouseMove;
+   OnDblClick  := MyOnDblClick;
+   OnChange    := MyOnChange;
+   OnContextPopup := MyOnContextPopup;
+end;
+
+constructor TComment.CreateDefault(const APage: TBlockTabSheet);
+begin
+   Create(APage, 20, 20, 150, 50, false);
+end;
+
+destructor TComment.Destroy;
+begin
+   Hide;
+   FPage.Form.SetScrollBars;
+   inherited Destroy;
+end;
+
+procedure TComment.SetPage(APage: TBlockTabSheet);
+begin
+   if FPage <> APage then
+   begin
+      FPage := APage;
+      Parent := APage;
+   end;
 end;
 
 procedure TComment.SetActive(const AValue: boolean);
@@ -105,43 +152,6 @@ begin
    result := FZOrderValue;
 end;
 
-constructor TComment.Create(const AParent: TMainForm; const ALeft, ATop, AWidth, AHeight: Integer; const AUpdateZOrderComponents: boolean = true);
-begin
-
-   inherited Create(AParent);
-
-   Parent := AParent;
-   FParentForm := AParent;
-   Color := AParent.Color;
-   Font.Size := 8;
-   Font.Color := clNavy;
-   Font.Name := GSettings.FlowchartFontName;
-   FActive := true;
-   DoubleBuffered := true;
-   Constraints.MinWidth := 25;
-   Constraints.MinHeight := 25;
-   BorderStyle := bsNone;
-   Ctl3D := false;
-   FZOrderValue := -1;
-   PopupMenu := AParent.PopupMenu;
-   SetBounds(ALeft, ATop, AWidth, AHeight);
-   GProject.AddComponent(Self);
-
-   OnKeyDown   := MyOnKeyDown;
-   OnMouseDown := MouseDown;
-   OnMouseMove := MouseMove;
-   OnDblClick  := MyOnDblClick;
-   OnChange    := MyOnChange;
-   OnContextPopup := MyOnContextPopup;
-end;
-
-destructor TComment.Destroy;
-begin
-   Hide;
-   FParentForm.SetScrollBars;
-   inherited Destroy;
-end;
-
 procedure TComment.MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
    if Button = mbLeft then
@@ -157,7 +167,7 @@ begin
          BringToFront;
          ReleaseCapture;
          SendMessage(Handle, WM_SYSCOMMAND, $F012, 0);
-         FParentForm.SetScrollBars
+         FPage.Form.SetScrollBars
       end;
    end;
 end;
@@ -174,7 +184,7 @@ begin
          lBStyle := BorderStyle;
          lStart := SelStart;
          BorderStyle := bsNone;
-         PaintTo(ACanvas, Left + FParentForm.HorzScrollBar.Position, Top + FParentForm.VertScrollBar.Position);
+         PaintTo(ACanvas, Left + FPage.Form.HorzScrollBar.Position, Top + FPage.Form.VertScrollBar.Position);
          BorderStyle := lBStyle;
          SelStart := lStart;
       finally
@@ -195,8 +205,8 @@ begin
    result := Point(0, 0);
    if Visible then
    begin
-      result.X := BoundsRect.Right + FParentForm.HorzScrollBar.Position + MARGIN_X;
-      result.Y := BoundsRect.Bottom + FParentForm.VertScrollBar.Position + MARGIN_Y;
+      result.X := BoundsRect.Right + FPage.Form.HorzScrollBar.Position + MARGIN_X;
+      result.Y := BoundsRect.Bottom + FPage.Form.VertScrollBar.Position + MARGIN_Y;
    end;
 end;
 
@@ -270,8 +280,8 @@ procedure TComment.ImportFromXMLTag(const rootTag: IXMLElement; const APinContro
 var
    lValue: integer;
 begin
-   FParentForm.VertScrollBar.Position := 0;
-   FParentForm.HorzScrollBar.Position := 0;
+   FPage.Form.VertScrollBar.Position := 0;
+   FPage.Form.HorzScrollBar.Position := 0;
    SetBounds(StrToInt(rootTag.GetAttribute('x')),
              StrToInt(rootTag.GetAttribute('y')),
              StrToInt(rootTag.GetAttribute('w')),
@@ -288,28 +298,29 @@ begin
    FPinControl := APinControl;
 end;
 
-procedure TComment.ExportToXMLTag(const rootTag: IXMLElement);
+procedure TComment.ExportToXMLTag(const ATag: IXMLElement);
 begin
    if FPinControl = nil then
-      ExportToXMLTag2(rootTag);
+      ExportToXMLTag2(ATag);
 end;
 
-procedure TComment.ExportToXMLTag2(const rootTag: IXMLElement);
+procedure TComment.ExportToXMLTag2(const ATag: IXMLElement);
 var
    tag: IXMLElement;
 begin
-   tag := rootTag.OwnerDocument.CreateElement('comment');
+   tag := ATag.OwnerDocument.CreateElement('comment');
    TXMLProcessor.AddCDATA(tag, Text);
-   tag.SetAttribute('x', IntToStr(Left + FParentForm.HorzScrollBar.Position));
-   tag.SetAttribute('y', IntToStr(Top + FParentForm.VertScrollBar.Position));
+   tag.SetAttribute('x', IntToStr(Left + FPage.Form.HorzScrollBar.Position));
+   tag.SetAttribute('y', IntToStr(Top + FPage.Form.VertScrollBar.Position));
    tag.SetAttribute('w', IntToStr(Width));
    tag.SetAttribute('h', IntToStr(Height));
    tag.SetAttribute('fontsize', IntToStr(Font.Size));
    tag.SetAttribute('v', IntToStr(Ord(Visible)));
    tag.SetAttribute('ZOrdVal', IntToStr(FZOrderValue));
+   tag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
    if Font.Style <> [] then
       tag.SetAttribute('fontstyle', TInfra.EncodeFontStyle(Font.Style));
-   rootTag.AppendChild(tag);
+   ATag.AppendChild(tag);
 end;
 
 end.

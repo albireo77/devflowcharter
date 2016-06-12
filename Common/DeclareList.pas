@@ -920,12 +920,12 @@ end;
 
 procedure TDeclareList.ImportFromXMLTag(const rootTag: IXMLElement);
 begin
-   FId := GProject.Register(Self, StrToIntDef(rootTag.GetAttribute(ID_ATTR_NAME), ID_INVALID));
+   FId := GProject.Register(Self, StrToIntDef(rootTag.GetAttribute(ID_ATTR), ID_INVALID));
 end;
 
 procedure TDeclareList.ExportToXMLTag(const rootTag: IXMLElement);
 begin
-   rootTag.SetAttribute(ID_ATTR_NAME, IntToStr(FId));
+   rootTag.SetAttribute(ID_ATTR, IntToStr(FId));
 end;
 
 function TConstDeclareList.IsExternal(const ARow: integer): boolean;

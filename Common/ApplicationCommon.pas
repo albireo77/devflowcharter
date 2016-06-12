@@ -134,8 +134,6 @@ const   // Global constants
         // hint duration in milliseconds
         HINT_PAUSE       = 5000;
 
-        ID_ATTR_NAME     = 'hash';
-
         INCORRECT_IDENT  = -6;
         DUPLICATED_IDENT = -7;
         RESERVED_IDENT   = -8;
@@ -153,28 +151,33 @@ const   // Global constants
         EDITOR_DEFAULT_FONT_SIZE = 10;
         EDITOR_DEFAULT_GUTTER_FONT_SIZE = 8;
         
-        INDENT_CHAR      = #32;         // space
-        INDENT_XML_CHAR  = #9;          // tab
+        INDENT_CHAR     = #32;         // space
+        INDENT_XML_CHAR = #9;          // tab
 
-        CRLF             = #13#10;
+        PAGE_CAPTION_ATTR = 'tab';
+        ID_ATTR           = 'hash';
 
-        MARGIN_X         = 50;
-        MARGIN_Y         = 50;
+        MARGIN_X = 50;
+        MARGIN_Y = 50;
 
-        ROW_NOT_FOUND    = -1;
-
-        OK_COLOR         = clGreen;
-        NOK_COLOR        = clRed;
-        WARN_COLOR       = clOlive;
-        BLACK_COLOR      = clWindowText;
+        OK_COLOR    = clGreen;
+        NOK_COLOR   = clRed;
+        WARN_COLOR  = clOlive;
+        BLACK_COLOR = clWindowText;
 
         FLOWCHART_DEFAULT_FONT_NAME = 'Tahoma';
 
+        CRLF = #13#10;
+
+        ROW_NOT_FOUND = -1;
+
         FUNCTION_TYPE_IND = -5;
 
-        PRIMARY_PLACEHOLDER  = '%s1';
+        PRIMARY_PLACEHOLDER = '%s1';
 
         LANG_DEFS_PATH = 'LanguageDefinitions\';
+
+        DEF_PAGE_CAPTION_KEY = 'defPageCaption';
 
         // Language identifiers; must be identical to value in <Name> tag in XML language definition file
         PASCAL_LANG_ID  = 'Pascal';

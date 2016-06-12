@@ -51,7 +51,8 @@ implementation
 {$R *.dfm}
 
 uses
-   ApplicationCommon, Base_Block, Main_Block, Navigator_Form, UserFunction, CommonInterfaces;
+   ApplicationCommon, Base_Block, Main_Block, Navigator_Form, UserFunction,
+   CommonInterfaces, BlockTabSheet;
 
 procedure TFunctionsForm.miAddClick(Sender: TObject);
 begin
@@ -64,7 +65,7 @@ var
    lBody: TMainBlock;
 begin
    Show;
-   lBody := TMainBlock.Create(TInfra.GetMainForm, ABodyTopLeft);
+   lBody := TMainBlock.Create(TBlockTabSheet(TInfra.GetMainForm.pgcPages.ActivePage), ABodyTopLeft);
    lHeader := TUserFunctionHeader.Create(Self);
    TUserFunction.Create(lHeader, lBody);
    if CanFocus then
@@ -86,7 +87,7 @@ begin
    lBody := TUserFunctionHeader(pgcTabs.ActivePage).UserFunction.Body;
    if (lBody <> nil) and lBody.Visible then
    begin
-      lBody.ParentForm.ScrollInView(lBody);
+      lBody.Page.Form.ScrollInView(lBody);
       lBody.BringAllToFront;
       NavigatorForm.Repaint;
    end;
@@ -175,7 +176,7 @@ end;
 procedure TFunctionsForm.ResetForm;
 begin
    inherited ResetForm;
-   Height := 575;
+   Height := 625;
 end;
 
 end.
