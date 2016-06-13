@@ -645,7 +645,7 @@ procedure TUserFunctionHeader.OnChangeBodyPage(Sender: TObject);
 var
    lPage: TBlockTabSheet;
 begin
-   lPage := TBlockTabSheet(TInfra.GetMainForm.GetPage(cbBodyPage.Text));
+   lPage := GProject.GetPage(cbBodyPage.Text);
    if (lPage <> nil) and (FUserFunction.Body <> nil) then
    begin
       FUserFunction.Body.Page := lPage;

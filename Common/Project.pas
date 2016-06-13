@@ -103,13 +103,16 @@ type
       procedure UpdateZOrder;
       function Register(const AObject: TObject; const AId: integer = ID_INVALID): integer;
       procedure UnRegister(const AObject: TObject);
+      function GetPage(const ACaption: string): TBlockTabSheet;
+      function GetMainPage: TBlockTabSheet;
+      function GetActivePage: TBlockTabSheet;
    end;
 
 implementation
 
 uses
    SysUtils, ApplicationCommon, XMLProcessor, Base_Form, LangDefinition, Messages, Navigator_Form,
-   SortListDecorator, Base_Block, Comment, TabComponent, ParserHelper;
+   SortListDecorator, Base_Block, Comment, TabComponent, ParserHelper, Menus;
 
 var
    Instance: TProject;
@@ -119,6 +122,7 @@ begin
    inherited Create;
    FObjectIds := TStringList.Create;
    FComponentList := TComponentList.Create;
+   GetMainPage;
 end;
 
 destructor TProject.Destroy;
@@ -158,6 +162,43 @@ begin
       Instance.PopulateDataTypes;
    end;
    result := Instance;
+end;
+
+function TProject.GetPage(const ACaption: string): TBlockTabSheet;
+var
+   i: integer;
+   lCaption: string;
+   lPageControl: TPageControl;
+begin
+   result := nil;
+   lCaption := Trim(ACaption);
+   if lCaption <> '' then
+   begin
+      lPageControl := TInfra.GetMainForm.pgcPages;
+      for i := 0 to lPageControl.PageCount-1 do
+      begin
+         if AnsiSameCaption(lPageControl.Pages[i].Caption, lCaption) then
+         begin
+            result := TBlockTabSheet(lPageControl.Pages[i]);
+            break;
+         end;
+      end;
+      if result = nil then
+      begin
+         result := TBlockTabSheet.Create(TInfra.GetMainForm);
+         result.Caption := lCaption;
+      end;
+   end;
+end;
+
+function TProject.GetMainPage: TBlockTabSheet;
+begin
+   result := GetPage(i18Manager.GetString(DEF_PAGE_CAPTION_KEY));
+end;
+
+function TProject.GetActivePage: TBlockTabSheet;
+begin
+   result := TBlockTabSheet(TInfra.GetMainForm.pgcPages.ActivePage);
 end;
 
 procedure TProject.PopulateDataTypes;
@@ -501,7 +542,6 @@ var
    lBody: TMainBlock;
    lTmpBlock: TBlock;
    lPage: TTabSheet;
-   lPageCaption: string;
 begin
    result := errNone;
    tag := TXMLProcessor.FindChildTag(ATag, 'routine');
@@ -519,10 +559,9 @@ begin
       tag1 := TXMLProcessor.FindChildTag(tag, 'block');
       if (tag1 <> nil) and GInfra.CurrentLang.EnabledUserFunctionBody then
       begin
-         lPageCaption := tag1.GetAttribute(PAGE_CAPTION_ATTR);
-         if lPageCaption = '' then
-            lPageCaption := i18Manager.GetString(DEF_PAGE_CAPTION_KEY);
-         lPage := TInfra.GetMainForm.GetPage(lPageCaption);
+         lPage := GetPage(tag1.GetAttribute(PAGE_CAPTION_ATTR));
+         if lPage = nil then
+            lPage := GetMainPage;
          lTmpBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag1, lPage, nil, result);
          if lTmpBlock is TMainBlock then
             lBody := TMainBlock(lTmpBlock);
@@ -571,16 +610,16 @@ function TProject.ImportCommentsFromXML(const ATag: IXMLElement): integer;
 var
    lComment: TComment;
    tag: IXMLElement;
-   lPageCaption: string;
+   lPage: TBlockTabSheet;
 begin
    result := NO_ERROR;
    tag := TXMLProcessor.FindChildTag(ATag, 'comment');
    while tag <> nil do
    begin
-      lPageCaption := tag.GetAttribute(PAGE_CAPTION_ATTR);
-      if lPageCaption = '' then
-         lPageCaption := i18Manager.GetString(DEF_PAGE_CAPTION_KEY);
-      lComment := TComment.CreateDefault(TBlockTabSheet(TInfra.GetMainForm.GetPage(lPageCaption)));
+      lPage := GetPage(tag.GetAttribute(PAGE_CAPTION_ATTR));
+      if lPage = nil then
+         lPage := GetMainPage;
+      lComment := TComment.CreateDefault(lPage);
       lComment.ImportFromXMLTag(tag, nil);
       tag := TXMLProcessor.FindNextTag(tag);
    end;

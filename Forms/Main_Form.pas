@@ -194,7 +194,6 @@ type
     function ConfirmSave: integer;
     function GetDisplayedRect: TRect;
     function GetMainBlockNextTopLeft: TPoint;
-    function GetPage(const ACaption: string): TTabSheet;
   end;
 
 var
@@ -343,7 +342,6 @@ end;
 procedure TMainForm.miNewClick(Sender: TObject);
 var
    lBlock: TMainBlock;
-   lPage: TBlockTabSheet;
 begin
    if GChange = 1 then
    begin
@@ -354,9 +352,7 @@ begin
    end;
    TInfra.SetInitialSettings;
    GProject := TProject.GetInstance;
-   lPage := TBlockTabSheet.Create(TInfra.GetMainForm);
-   lPage.Caption := i18Manager.GetString(DEF_PAGE_CAPTION_KEY);
-   lBlock := TMainBlock.Create(lPage, GetMainBlockNextTopLeft);
+   lBlock := TMainBlock.Create(GProject.GetMainPage, GetMainBlockNextTopLeft);
    lBlock.OnResize(lBlock);
    TUserFunction.Create(nil, lBlock);
    ExportDialog.FileName := '';
@@ -374,7 +370,7 @@ begin
           IDYES: miSave.Click;
           IDCANCEL: exit;
        end;
-    end;   
+    end;
 
     lFileName := '';
     lErrMsg := '';
@@ -749,10 +745,15 @@ end;
 procedure TMainForm.miCommentClick(Sender: TObject);
 var
    lPoint: TPoint;
+   lPage: TBlockTabSheet;
 begin
-   lPoint := pgcPages.ActivePage.ScreenToClient(pmPages.PopupPoint);
-   TComment.Create(TBlockTabSheet(pgcPages.ActivePage), lPoint.X, lPoint.Y, 150, 50);
-   GChange := 1;
+   if GProject <> nil then
+   begin
+      lPage := GProject.GetActivePage;
+      lPoint := lPage.ScreenToClient(pmPages.PopupPoint);
+      TComment.Create(lPage, lPoint.X, lPoint.Y, 150, 50);
+      GChange := 1;
+   end;
 end;
 
 procedure TMainForm.miAssignClick(Sender: TObject);
@@ -765,8 +766,8 @@ var
    lPoint: TPoint;
    lBlockType: TBlockType;
    lLocked: boolean;
+   lPage: TBlockTabSheet;
 begin
-
    lParent := nil;
 
    if pmPages.PopupComponent is TBlock then
@@ -780,7 +781,7 @@ begin
 
    if lParent <> nil then
    begin
-
+   
       lBranch := lParent.GetBranch(lParent.Ired);
       if lBranch <> nil then
          lCurrentBlock := nil
@@ -853,8 +854,9 @@ begin
 
    if (Sender = miPaste) and (GClpbrd.Instance is TComment) then
    begin
-      lPoint := pgcPages.ActivePage.ScreenToClient(pmPages.PopupPoint);
-      lNewComment := TComment.Create(TBlockTabSheet(pgcPages.ActivePage),
+      lPage := GProject.GetActivePage;
+      lPoint := lPage.ScreenToClient(pmPages.PopupPoint);
+      lNewComment := TComment.Create(lPage,
                                      lPoint.X,
                                      lPoint.Y,
                                      GClpbrd.Instance.Width,
@@ -882,9 +884,7 @@ var
    lFontStyles: TFontStyles;
    lFontStyle: TFontStyle;
 begin
-
    lComponent := pmPages.PopupComponent;
-
    if (lComponent is TBlock) or (lComponent is TComment) then
    begin
       if lComponent is TBlock then
@@ -907,7 +907,7 @@ begin
          Exclude(lFontStyles, lFontStyle)
       else
          Include(lFontStyles, lFontStyle);
-
+         
       if lComponent is TBlock then
          TBlock(lComponent).SetFontStyle(lFontStyles)
       else if lComponent is TComment then
@@ -1063,7 +1063,7 @@ begin
             lFunction := GProject.LastUserFunction;
             if (lFunction <> nil) and lFunction.Active and (lFunction.Body <> nil) and lFunction.Body.Visible then
             begin
-               lPoint := pgcPages.ActivePage.ScreenToClient(pmPages.PopupPoint);
+               lPoint := GProject.GetActivePage.ScreenToClient(pmPages.PopupPoint);
                lFunction.Body.Left := lPoint.X;
                lFunction.Body.Top := lPoint.Y;
                lFunction.Body.Page.Form.SetScrollBars;
@@ -1212,7 +1212,7 @@ var
 begin
    if GProject <> nil then
    begin
-      lBody := TMainBlock.Create(TBlockTabSheet(pgcPages.ActivePage), GetMainBlockNextTopLeft);
+      lBody := TMainBlock.Create(GProject.GetActivePage, GetMainBlockNextTopLeft);
       TUserFunction.Create(nil, lBody);
       if GSettings.UpdateEditor then
          TInfra.GetEditorForm.RefreshEditorForObject(lBody);
@@ -1253,11 +1253,16 @@ end;
 procedure TMainForm.miNewFlowchartClick(Sender: TObject);
 var
    lBlock: TMainBlock;
+   lPage: TBlockTabSheet;
 begin
-   lBlock := TMainBlock.Create(TBlockTabSheet(pgcPages.ActivePage), pgcPages.ActivePage.ScreenToClient(pmPages.PopupPoint));
-   lBlock.OnResize(lBlock);
-   TUserFunction.Create(nil, lBlock);
-   GChange := 1;
+   if GProject <> nil then
+   begin
+      lPage := GProject.GetActivePage;
+      lBlock := TMainBlock.Create(lPage, lPage.ScreenToClient(pmPages.PopupPoint));
+      lBlock.OnResize(lBlock);
+      TUserFunction.Create(nil, lBlock);
+      GChange := 1;
+   end;
 end;
 
 procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word;
@@ -1358,32 +1363,8 @@ end;
 
 procedure TMainForm.miNewFunctionClick(Sender: TObject);
 begin
-   TInfra.GetFunctionsForm.AddUserFunction(pgcPages.ActivePage.ScreenToClient(pmPages.PopupPoint));
-end;
-
-function TMainForm.GetPage(const ACaption: string): TTabSheet;
-var
-   i: integer;
-   lCaption: string;
-begin
-   result := nil;
-   lCaption := Trim(ACaption);
-   if lCaption <> '' then
-   begin
-      for i := 0 to pgcPages.PageCount-1 do
-      begin
-         if AnsiSameCaption(pgcPages.Pages[i].Caption, lCaption) then
-         begin
-            result := pgcPages.Pages[i];
-            break;
-         end;
-      end;
-      if result = nil then
-      begin
-         result := TBlockTabSheet.Create(Self);
-         result.Caption := lCaption;
-      end;
-   end;
+   if GProject <> nil then
+      TInfra.GetFunctionsForm.AddUserFunction(GProject.GetActivePage.ScreenToClient(pmPages.PopupPoint));
 end;
 
 end.
