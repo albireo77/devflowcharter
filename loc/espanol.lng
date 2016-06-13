@@ -160,7 +160,6 @@ chkAddPtrType=Agregar tipo apuntador
 btnAddField=Agregar campo
 btnAddValue=Add Value
 edtLibHintType=External declaration:##%s file with type declaration
-defPageCaption=default
 Body=Flowchart
 lblBodyPage=Tab:
 lblName=Nombre:

@@ -163,7 +163,6 @@ chkAddPtrType=添加指针类型
 btnAddField=添加域
 btnAddValue=添加值
 edtLibHintType=外部定义:文件##%s 包含外部函数的定义信息
-defPageCaption=default
 Body=Flowchart
 lblBodyPage=Tab:
 lblName=名称:

@@ -193,7 +193,7 @@ end;
 
 function TProject.GetMainPage: TBlockTabSheet;
 begin
-   result := GetPage(i18Manager.GetString(DEF_PAGE_CAPTION_KEY));
+   result := GetPage(DEFAULT_PAGE_CAPTION);
 end;
 
 function TProject.GetActivePage: TBlockTabSheet;

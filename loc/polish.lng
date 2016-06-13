@@ -158,7 +158,6 @@ chkAddPtrType=Utwórz typ wskaŸnikowy
 btnAddField=Dodaj Pole
 btnAddValue=Dodaj Wartoœæ
 edtLibHintType=Deklaracja zewnêtrzna:##Plik %s z deklaracj¹ typu
-defPageCaption=domyœlny
 Body=Diagram
 lblBodyPage=Zak³adka:
 lblName=Nazwa:
