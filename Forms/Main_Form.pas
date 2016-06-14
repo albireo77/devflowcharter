@@ -1410,14 +1410,8 @@ begin
 end;
 
 procedure TMainForm.miRemovePageClick(Sender: TObject);
-var
-   lPage: TTabSheet;
 begin
-   if pmTabs.PopupComponent is TTabSheet then
-   begin
-      lPage := TTabSheet(pmTabs.PopupComponent);
-      lPage.Free;
-   end;
+   pmTabs.PopupComponent.Free;
 end;
 
 end.
