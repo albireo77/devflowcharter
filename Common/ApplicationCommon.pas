@@ -177,7 +177,7 @@ const   // Global constants
 
         LANG_DEFS_PATH = 'LanguageDefinitions\';
 
-        DEFAULT_PAGE_CAPTION = 'main';
+        DEF_PAGE_CAPTION_KEY = 'mainPage';
 
         // Language identifiers; must be identical to value in <Name> tag in XML language definition file
         PASCAL_LANG_ID  = 'Pascal';

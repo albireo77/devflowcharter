@@ -52,7 +52,7 @@ implementation
 
 uses
    ApplicationCommon, Base_Block, Main_Block, Navigator_Form, UserFunction,
-   CommonInterfaces, BlockTabSheet;
+   CommonInterfaces;
 
 procedure TFunctionsForm.miAddClick(Sender: TObject);
 begin
@@ -65,7 +65,7 @@ var
    lBody: TMainBlock;
 begin
    Show;
-   lBody := TMainBlock.Create(TBlockTabSheet(TInfra.GetMainForm.pgcPages.ActivePage), ABodyTopLeft);
+   lBody := TMainBlock.Create(GProject.GetActivePage, ABodyTopLeft);
    lHeader := TUserFunctionHeader.Create(Self);
    TUserFunction.Create(lHeader, lBody);
    if CanFocus then

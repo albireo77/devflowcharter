@@ -165,6 +165,7 @@ btnAddValue=添加值
 edtLibHintType=外部定义:文件##%s 包含外部函数的定义信息
 Body=Flowchart
 lblBodyPage=Tab:
+mainPage=main
 lblName=名称:
 lblType=类型:
 lblSize=下标范围:

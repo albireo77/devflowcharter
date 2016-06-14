@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 531
-  Top = 160
+  Left = 343
+  Top = 142
   HorzScrollBar.Tracking = True
   VertScrollBar.Tracking = True
   Align = alCustom
@@ -36,6 +36,7 @@ object MainForm: TMainForm
     Height = 772
     Align = alClient
     TabOrder = 0
+    OnContextPopup = pgcPagesContextPopup
   end
   object pmPages: TPopupMenu
     AutoPopup = False
@@ -1155,5 +1156,28 @@ object MainForm: TMainForm
       EFFBDAAF8001E821EFC3C00F8001EFF7EFD7E7F88001F417EFCFFFFC8001F7FB
       E01FFFB98001F803FFFFFFC3FFFFFFFF00000000000000000000000000000000
       000000000000}
+  end
+  object pmTabs: TPopupMenu
+    AutoPopup = False
+    OnPopup = pmTabsPopup
+    Left = 160
+    Top = 88
+    object miAddPage: TMenuItem
+      Tag = 2
+      Caption = 'Add Page'
+    end
+    object miInsertPage: TMenuItem
+      Tag = 2
+      Caption = 'Insert Page'
+    end
+    object miRemovePage: TMenuItem
+      Tag = 2
+      Caption = 'Remove Page'
+      OnClick = miRemovePageClick
+    end
+    object miRenamePage: TMenuItem
+      Tag = 2
+      Caption = 'Rename Page'
+    end
   end
 end

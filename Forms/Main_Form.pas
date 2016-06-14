@@ -129,6 +129,11 @@ type
     miNewFunction: TMenuItem;
     miFolder: TMenuItem;
     pgcPages: TPageControl;
+    pmTabs: TPopupMenu;
+    miAddPage: TMenuItem;
+    miInsertPage: TMenuItem;
+    miRemovePage: TMenuItem;
+    miRenamePage: TMenuItem;
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -183,6 +188,10 @@ type
     procedure PerformFormsRepaint;
     procedure miNewFunctionClick(Sender: TObject);
     procedure AutoScrollInView(AControl: TControl); override;
+    procedure pgcPagesContextPopup(Sender: TObject; MousePos: TPoint;
+      var Handled: Boolean);
+    procedure pmTabsPopup(Sender: TObject);
+    procedure miRemovePageClick(Sender: TObject);
   private
     { Private declarations }
     FHistoryMenu: THistoryMenu;
@@ -1365,6 +1374,50 @@ procedure TMainForm.miNewFunctionClick(Sender: TObject);
 begin
    if GProject <> nil then
       TInfra.GetFunctionsForm.AddUserFunction(GProject.GetActivePage.ScreenToClient(pmPages.PopupPoint));
+end;
+
+procedure TMainForm.pgcPagesContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
+var
+   lPoint: TPoint;
+   idx: integer;
+begin
+   if (GProject <> nil) and (htOnItem in pgcPages.GetHitTestInfoAt(MousePos.X, MousePos.Y)) then
+   begin
+      idx := pgcPages.IndexOfTabAt(MousePos.X, MousePos.Y);
+      if idx <> -1 then
+         pmTabs.PopupComponent := pgcPages.Pages[idx];
+      lPoint := pgcPages.ClientToScreen(MousePos);
+      pmTabs.Popup(lPoint.X, lPoint.Y);
+   end
+end;
+
+procedure TMainForm.pmTabsPopup(Sender: TObject);
+var
+   lPage: TTabSheet;
+begin
+   miInsertPage.Enabled := false;
+   miRemovePage.Enabled := false;
+   miRenamePage.Enabled := false;
+   miAddPage.Enabled := false;
+   if pmTabs.PopupComponent is TTabSheet then
+   begin
+      lPage := TTabSheet(pmTabs.PopupComponent);
+      miInsertPage.Enabled := (pgcPages.PageCount > 0) and (lPage <> pgcPages.Pages[0]);
+      miRemovePage.Enabled := lPage <> GProject.GetMainPage;
+      miRenamePage.Enabled := miRemovePage.Enabled;
+      miAddPage.Enabled := true;
+   end;
+end;
+
+procedure TMainForm.miRemovePageClick(Sender: TObject);
+var
+   lPage: TTabSheet;
+begin
+   if pmTabs.PopupComponent is TTabSheet then
+   begin
+      lPage := TTabSheet(pmTabs.PopupComponent);
+      lPage.Free;
+   end;
 end;
 
 end.

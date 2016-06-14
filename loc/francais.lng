@@ -162,6 +162,7 @@ btnAddValue=Add Value
 edtLibHintType=External declaration:##%s file with type declaration
 Body=Flowchart
 lblBodyPage=Tab:
+mainPage=main
 lblName=Nom:
 lblType=Type:
 lblSize=Size:

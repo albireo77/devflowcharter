@@ -33,6 +33,7 @@ type
       FForm: TMainForm;
    public
       constructor Create(AMainForm: TMainForm);
+      destructor Destroy; override;
       property Form: TMainForm read FForm;
    protected
       procedure PageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -41,7 +42,7 @@ type
 implementation
 
 uses
-   Graphics, ApplicationCommon, Types;
+   Graphics, ApplicationCommon, Types, UserFunction;
 
 constructor TBlockTabSheet.Create(AMainForm: TMainForm);
 begin
@@ -53,8 +54,25 @@ begin
    Font.Color := clNavy;
    Brush.Color := GSettings.DesktopColor;
    Align := alClient;
-   PopupMenu := AMainForm.pmPages;
    OnMouseUp := PageMouseUp;
+end;
+
+destructor TBlockTabSheet.Destroy;
+var
+   iter: IIterator;
+   lFunction: TUserFunction;
+begin
+   if GProject <> nil then
+   begin
+      iter := GProject.GetUserFunctions;
+      while iter.HasNext do
+      begin
+         lFunction := TUserFunction(iter.Next);
+         if lFunction.Body.Page = Self then
+            lFunction.Free;
+      end;
+   end;
+   inherited Destroy;
 end;
 
 procedure TBlockTabSheet.PageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -64,8 +82,8 @@ begin
    if (Button = mbRight) and (GProject <> nil) then
    begin
       lPoint := ClientToScreen(Point(X, Y));
-      PopupMenu.PopupComponent := Self;
-      PopupMenu.Popup(lPoint.X, lPoint.Y);
+      FForm.pmPages.PopupComponent := Self;
+      FForm.pmPages.Popup(lPoint.X, lPoint.Y);
    end;
 end;
 

@@ -304,7 +304,7 @@ begin
    Ctl3D       := false;
    Color       := Page.Brush.Color;
    Font.Name   := GSettings.FlowchartFontName;
-   PopupMenu   := Page.PopupMenu;
+   PopupMenu   := Page.Form.pmPages;
    DoubleBuffered := GSettings.EnableDBuffering;
    ControlStyle := ControlStyle + [csOpaque];
    Canvas.TextFlags := Canvas.TextFlags or ETO_OPAQUE;

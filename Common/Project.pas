@@ -76,10 +76,8 @@ type
       function GetComments: IIterator;
       function GetUserFunctions(const ASortType: integer = PAGE_INDEX_SORT): IIterator;
       function GetUserDataTypes: IIterator;
-      //function GetTabs: IIterator;
       function GetUserDataType(const ATypeName: string): TUserDataType;
       function GetUserFunction(const AFunctionName: string): TUserFunction;
-      //function GetBlockTab(const ATabName: string): TBlockTabSheet;
       procedure ExportToGraphic(const AImage: TGraphic);
       procedure ExportToXMLTag(const ATag: IXMLElement);
       procedure PaintToCanvas(const ACanvas: TCanvas);
@@ -103,7 +101,7 @@ type
       procedure UpdateZOrder;
       function Register(const AObject: TObject; const AId: integer = ID_INVALID): integer;
       procedure UnRegister(const AObject: TObject);
-      function GetPage(const ACaption: string): TBlockTabSheet;
+      function GetPage(const ACaption: string; const ACreate: boolean = true): TBlockTabSheet;
       function GetMainPage: TBlockTabSheet;
       function GetActivePage: TBlockTabSheet;
    end;
@@ -164,7 +162,7 @@ begin
    result := Instance;
 end;
 
-function TProject.GetPage(const ACaption: string): TBlockTabSheet;
+function TProject.GetPage(const ACaption: string; const ACreate: boolean = true): TBlockTabSheet;
 var
    i: integer;
    lCaption: string;
@@ -183,7 +181,7 @@ begin
             break;
          end;
       end;
-      if result = nil then
+      if (result = nil) and ACreate then
       begin
          result := TBlockTabSheet.Create(TInfra.GetMainForm);
          result.Caption := lCaption;
@@ -193,7 +191,7 @@ end;
 
 function TProject.GetMainPage: TBlockTabSheet;
 begin
-   result := GetPage(DEFAULT_PAGE_CAPTION);
+   result := GetPage(i18Manager.GetString(DEF_PAGE_CAPTION_KEY));
 end;
 
 function TProject.GetActivePage: TBlockTabSheet;
@@ -280,11 +278,6 @@ function TProject.GetUserDataTypes: IIterator;
 begin
    result := GetComponents(PAGE_INDEX_SORT, TUserDataType.ClassName);
 end;
-
-{function TProject.GetTabs: IIterator;
-begin
-   result := GetComponents(PAGE_INDEX_SORT, TBlockTabSheet.ClassName);
-end;}
 
 procedure TProject.RefreshZOrder;
 var
@@ -974,11 +967,6 @@ function TProject.GetUserFunction(const AFunctionName: string): TUserFunction;
 begin
    result := TUserFunction(GetComponentByName(TUserFunction.ClassName, AFunctionName));
 end;
-
-{function TProject.GetBlockTab(const ATabName: string): TBlockTabSheet;
-begin
-   result := TBlockTabSheet(GetComponentByName(TBlockTabSheet.ClassName, ATabName));
-end;}
 
 function TProject.GetComponentByName(const AClassName: string; const AName: string): TComponent;
 var

@@ -160,6 +160,7 @@ btnAddValue=Dodaj Wartoœæ
 edtLibHintType=Deklaracja zewnêtrzna:##Plik %s z deklaracj¹ typu
 Body=Diagram
 lblBodyPage=Zak³adka:
+mainPage=g³ówny
 lblName=Nazwa:
 lblType=Typ:
 lblSize=Rozmiar:

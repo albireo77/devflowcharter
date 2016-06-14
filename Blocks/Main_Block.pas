@@ -555,7 +555,8 @@ begin
       ATag.SetAttribute('x', IntToStr(Left + FPage.Form.HorzScrollBar.Position));
       ATag.SetAttribute('y', IntToStr(Top + FPage.Form.VertScrollBar.Position));
       ATag.SetAttribute('ZOrdVal', IntToStr(FZOrderValue));
-      ATag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
+      if FPage <> GProject.GetMainPage then
+         ATag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
    end;
 end;
 
