@@ -79,7 +79,7 @@ implementation
 
 uses
    ApplicationCommon, SysUtils, XMLProcessor, StrUtils, DeclareList, FastcodeAnsiStringReplaceUnit,
-   Navigator_Form, Return_Block, LangDefinition, UserFunction, Comment;
+   Navigator_Form, Return_Block, LangDefinition, UserFunction, Comment, Menus;
 
 constructor TMainBlock.Create(const APage: TBlockTabSheet; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
 var
@@ -145,11 +145,21 @@ end;
 procedure TMainBlock.SetPage(APage: TBlockTabSheet);
 var
    iter: IIterator;
+   lHeader: TUserFunctionHeader;
 begin
    if FPage <> APage then
    begin
       FPage := APage;
       Parent := APage;
+      if UserFunction <> nil then
+      begin
+         lHeader := TUserFunction(UserFunction).Header;
+         if lHeader <> nil then
+         begin
+            if not AnsiSameCaption(APage.Caption, lHeader.cbBodyPage.Text) then
+               lHeader.UpdatePageCombo(APage.Caption);
+         end;
+      end;
       iter := GetComments;
       while iter.HasNext do
          TComment(iter.Next).Page := APage;

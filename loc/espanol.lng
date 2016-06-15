@@ -215,6 +215,8 @@ chkInclDescCode=Include into code
 chkInclDescFlow=Include into function label
 Flowchart=Flowchart
 LngNoSprt=%s language is not supported by this instance of devFlowcharter.
+EnterPage=Enter tab name:
+Page=Tab
 
 ; The following keys (3 for each programming language) are used to display labels next to flowcharts
 
@@ -313,6 +315,9 @@ miMemoEdit=Edit Text
 miMemoVScroll=Vertical ScrollBar
 miMemoHScroll=Horizontal ScrollBar
 miMemoWordWrap=Word Wrap
+miAddPage=Add
+miRemovePage=Remove
+miRenamePage=Rename
 
 [DeclarationsForm]
 FormCaption=Declaraciones Globales

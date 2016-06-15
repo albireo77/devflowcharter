@@ -52,7 +52,6 @@ type
     procedure miExportAllClick(Sender: TObject);
     procedure ExportTabsToXMLTag(const rootTag: IXMLElement);
     function ImportTabsFromXMLTag(const rootTag: IXMLElement): TErrorType; virtual; abstract;
-    function GetCorrectIndex(X, Y: integer): integer;
     procedure FormDeactivate(Sender: TObject); virtual;
     procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
       MousePos: TPoint; var Handled: Boolean);
@@ -126,30 +125,13 @@ begin
 {}
 end;
 
-// function to fix getting wrong tab index in pgcTabs.OnDrawTab event when
-// some tabs are not visible
-function TPageControlForm.GetCorrectIndex(X, Y: integer): integer;
-var
-   i, c: integer;
-begin
-  c := pgcTabs.IndexOfTabAt(X, Y);
-  i := 0;
-  while i <= c do
-  begin
-    if not pgcTabs.Pages[i].TabVisible then
-      Inc(c);
-    Inc(i);
-  end;
-  result := c;
-end;
-
 procedure TPageControlForm.pgcTabsDrawTab(Control: TCustomTabControl;
   TabIndex: Integer; const Rect: TRect; Active: Boolean);
 var
    ARect: TRect;
    lTab: TTabComponent;
 begin
-   TabIndex := GetCorrectIndex(Rect.Left+5, Rect.Top+5);
+   TabIndex := TInfra.GetPageIndex(TPageControl(Control), Rect.Left+5, Rect.Top+5);
    if TabIndex <> -1 then
    begin
       ARect := Rect;
@@ -293,16 +275,15 @@ begin
       TTabComponent(pgcTabs.ActivePage).ScrollElements(AValue);
 end;
 
-procedure TPageControlForm.pgcTabsDragDrop(Sender, Source: TObject; X,
-  Y: Integer);
+procedure TPageControlForm.pgcTabsDragDrop(Sender, Source: TObject; X, Y: Integer);
 var
-   lIndex: integer;
+   idx: integer;
 begin
-   lIndex := GetCorrectIndex(X, Y);
-   if lIndex <> -1 then
+   idx := TInfra.GetPageIndex(pgcTabs, X, Y);
+   if idx <> -1 then
    begin
-      pgcTabs.Pages[lIndex].PageIndex := TTabSheet(Source).PageIndex;
-      TTabSheet(Source).PageIndex := lIndex;
+      pgcTabs.Pages[idx].PageIndex := TTabSheet(Source).PageIndex;
+      TTabSheet(Source).PageIndex := idx;
       RefreshTabs;
       if GSettings.UpdateEditor then
          TInfra.GetEditorForm.RefreshEditorForObject(nil);
@@ -319,11 +300,14 @@ end;
 procedure TPageControlForm.pgcTabsMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-   lIndex: integer;
+   idx: integer;
 begin
-   lIndex := GetCorrectIndex(X, Y);
-   if lIndex <> -1 then
-      pgcTabs.Pages[lIndex].BeginDrag(false, 3);
+   if Button = mbLeft then
+   begin
+      idx := TInfra.GetPageIndex(pgcTabs, X, Y);
+      if idx <> -1 then
+         pgcTabs.Pages[idx].BeginDrag(false, 3);
+   end;
 end;
 
 end.

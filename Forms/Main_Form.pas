@@ -131,7 +131,6 @@ type
     pgcPages: TPageControl;
     pmTabs: TPopupMenu;
     miAddPage: TMenuItem;
-    miInsertPage: TMenuItem;
     miRemovePage: TMenuItem;
     miRenamePage: TMenuItem;
 
@@ -192,6 +191,13 @@ type
       var Handled: Boolean);
     procedure pmTabsPopup(Sender: TObject);
     procedure miRemovePageClick(Sender: TObject);
+    procedure pgcPagesMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure pgcPagesDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure pgcPagesDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure miRenamePageClick(Sender: TObject);
+    procedure miAddPageClick(Sender: TObject);
   private
     { Private declarations }
     FHistoryMenu: THistoryMenu;
@@ -1385,7 +1391,10 @@ begin
    begin
       idx := pgcPages.IndexOfTabAt(MousePos.X, MousePos.Y);
       if idx <> -1 then
+      begin
          pmTabs.PopupComponent := pgcPages.Pages[idx];
+         pgcPages.ActivePageIndex := idx;
+      end;
       lPoint := pgcPages.ClientToScreen(MousePos);
       pmTabs.Popup(lPoint.X, lPoint.Y);
    end
@@ -1395,14 +1404,12 @@ procedure TMainForm.pmTabsPopup(Sender: TObject);
 var
    lPage: TTabSheet;
 begin
-   miInsertPage.Enabled := false;
    miRemovePage.Enabled := false;
    miRenamePage.Enabled := false;
    miAddPage.Enabled := false;
    if pmTabs.PopupComponent is TTabSheet then
    begin
       lPage := TTabSheet(pmTabs.PopupComponent);
-      miInsertPage.Enabled := (pgcPages.PageCount > 0) and (lPage <> pgcPages.Pages[0]);
       miRemovePage.Enabled := lPage <> GProject.GetMainPage;
       miRenamePage.Enabled := miRemovePage.Enabled;
       miAddPage.Enabled := true;
@@ -1410,8 +1417,73 @@ begin
 end;
 
 procedure TMainForm.miRemovePageClick(Sender: TObject);
+var
+   res: integer;
 begin
-   pmTabs.PopupComponent.Free;
+   res := IDYES;
+   if GSettings.ConfirmRemove then
+      res := TInfra.ShowQuestionBox(i18Manager.GetString('ConfirmRemove'));
+   if res = IDYES then
+      pmTabs.PopupComponent.Free;
+end;
+
+procedure TMainForm.pgcPagesMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+   idx: integer;
+begin
+   if Button = mbLeft then
+   begin
+      idx := TInfra.GetPageIndex(pgcPages, X, Y);
+      if idx <> -1 then
+         pgcPages.Pages[idx].BeginDrag(false, 3);
+   end;
+end;
+
+procedure TMainForm.pgcPagesDragOver(Sender, Source: TObject; X,
+  Y: Integer; State: TDragState; var Accept: Boolean);
+begin
+   if not (Source is TTabSheet) then
+      Accept := false;
+end;
+
+procedure TMainForm.pgcPagesDragDrop(Sender, Source: TObject; X, Y: Integer);
+var
+   idx: integer;
+begin
+   idx := TInfra.GetPageIndex(pgcPages, X, Y);
+   if idx <> -1 then
+   begin
+      pgcPages.Pages[idx].PageIndex := TTabSheet(Source).PageIndex;
+      TTabSheet(Source).PageIndex := idx;
+   end;
+end;
+
+procedure TMainForm.miRenamePageClick(Sender: TObject);
+var
+   lCaption: TCaption;
+   lPage: TTabSheet;
+begin
+   if pmTabs.PopupComponent is TTabSheet then
+   begin
+      lPage := TTabSheet(pmTabs.PopupComponent);
+      lCaption := Trim(InputBox(i18Manager.GetString('Page'), i18Manager.GetString('EnterPage'), lPage.Caption));
+      if (lCaption <> '') and (TInfra.FindDuplicatedPage(lPage, lCaption) = nil) then
+         lPage.Caption := lCaption;
+   end;
+end;
+
+procedure TMainForm.miAddPageClick(Sender: TObject);
+var
+   lCaption: TCaption;
+   lPage: TTabSheet;
+begin
+   lCaption := Trim(InputBox(i18Manager.GetString('Page'), i18Manager.GetString('EnterPage'), ''));
+   if (lCaption <> '') and (GProject.GetPage(lCaption, false) = nil) then
+   begin
+      lPage := GProject.GetPage(lCaption);
+      lPage.PageControl.ActivePage := lPage;
+   end;
 end;
 
 end.

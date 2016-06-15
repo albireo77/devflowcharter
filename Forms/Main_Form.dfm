@@ -37,6 +37,9 @@ object MainForm: TMainForm
     Align = alClient
     TabOrder = 0
     OnContextPopup = pgcPagesContextPopup
+    OnDragDrop = pgcPagesDragDrop
+    OnDragOver = pgcPagesDragOver
+    OnMouseDown = pgcPagesMouseDown
   end
   object pmPages: TPopupMenu
     AutoPopup = False
@@ -1165,10 +1168,7 @@ object MainForm: TMainForm
     object miAddPage: TMenuItem
       Tag = 2
       Caption = 'Add Page'
-    end
-    object miInsertPage: TMenuItem
-      Tag = 2
-      Caption = 'Insert Page'
+      OnClick = miAddPageClick
     end
     object miRemovePage: TMenuItem
       Tag = 2
@@ -1178,6 +1178,7 @@ object MainForm: TMainForm
     object miRenamePage: TMenuItem
       Tag = 2
       Caption = 'Rename Page'
+      OnClick = miRenamePageClick
     end
   end
 end

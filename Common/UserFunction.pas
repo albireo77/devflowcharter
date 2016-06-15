@@ -45,7 +45,6 @@ type
    private
       FUserFunction: TUserFunction;
       FLocalVars: TVarDeclareList;
-      procedure PopulatePageCombo(const ACaption: string = '');
    protected
       procedure OnChangeName(Sender: TObject); override;
       procedure OnChangeDesc(Sender: TObject);
@@ -85,6 +84,7 @@ type
       procedure Localize(const list: TStringList); override;
       procedure RefreshSizeEdits; override;
       procedure GenerateDescription(const ALines: TStrings);
+      procedure UpdatePageCombo(const ACaption: TCaption = '');
    end;
 
    TUserFunction = class(TComponent, IXMLable, ITabbable, IIdentifiable, ISizeEditable, IWinControl, IMaxBoundable, ISortable)
@@ -137,7 +137,7 @@ begin
       FHeader.FOverlayObject := Self;
       if FBody <> nil then
       begin
-         FHeader.PopulatePageCombo(FBody.Page.Caption);
+         FHeader.UpdatePageCombo(FBody.Page.Caption);
          if FHeader.chkExtDeclare.Checked then
             FBody.Visible := false;
       end;
@@ -384,7 +384,7 @@ begin
    cbBodyPage.DropDownCount := 9;
    cbBodyPage.OnDropDown := OnDropDownBodyPage;
    cbBodyPage.OnChange := OnChangeBodyPage;
-   PopulatePageCombo;
+   UpdatePageCombo;
 
    gbHeader := TGroupBox.Create(Self);
    gbHeader.Parent := Self;
@@ -615,15 +615,16 @@ end;
 
 procedure TUserFunctionHeader.OnDropDownBodyPage(Sender: TObject);
 begin
-   PopulatePageCombo(cbBodyPage.Text);
+   UpdatePageCombo(cbBodyPage.Text);
 end;
 
-procedure TUserFunctionHeader.PopulatePageCombo(const ACaption: string = '');
+procedure TUserFunctionHeader.UpdatePageCombo(const ACaption: TCaption = '');
 var
    i: integer;
    lPageControl: TPageControl;
-   lCaption: string;
+   lCaption: TCaption;
 begin
+   lCaption := cbBodyPage.Text;
    cbBodyPage.Items.Clear;
    cbBodyPage.Items.BeginUpdate;
    lPageControl := TInfra.GetMainForm.pgcPages;
@@ -631,14 +632,15 @@ begin
       cbBodyPage.Items.Add(lPageControl.Pages[i].Caption);
    cbBodyPage.Items.EndUpdate;
    if ACaption = '' then
-      lCaption := lPageControl.ActivePage.Caption
+   begin
+      if lCaption = '' then
+         lCaption := lPageControl.ActivePage.Caption;
+   end
    else
       lCaption := ACaption;
    i := cbBodyPage.Items.IndexOf(lCaption);
    if i <> -1 then
-      cbBodyPage.ItemIndex := i
-   else if cbBodyPage.Items.Count > 0 then
-      cbBodyPage.ItemIndex := 0;
+      cbBodyPage.ItemIndex := i;
 end;
 
 procedure TUserFunctionHeader.OnChangeBodyPage(Sender: TObject);
@@ -646,7 +648,7 @@ var
    lPage: TBlockTabSheet;
 begin
    lPage := GProject.GetPage(cbBodyPage.Text);
-   if (lPage <> nil) and (FUserFunction.Body <> nil) then
+   if (lPage <> nil) and (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
    begin
       FUserFunction.Body.Page := lPage;
       lPage.PageControl.ActivePage := lPage;

@@ -118,6 +118,8 @@ type
          class procedure InitCodeRange(var ACodeRange: TCodeRange);
          class procedure SetFontSize(const AControl: TControl; const ASize: integer);
          class function GetFunctionHeader(ABlock: TBlock): TUserFunctionHeader;
+         class function GetPageIndex(const APageControl: TPageControl; X, Y: integer): integer;
+         class function FindDuplicatedPage(const APage: TTabSheet; const ACaption: TCaption): TTabSheet;
          constructor Create;
          destructor Destroy; override;
    end;
@@ -215,7 +217,7 @@ var     // Global variables
 implementation
 
 uses
-   Printers, UserDataType, XMLProcessor, SynEditHighlighter, Main_Block, Messages;
+   Printers, UserDataType, XMLProcessor, SynEditHighlighter, Main_Block, Messages, Menus;
 
 type
    THackCustomEdit = class(TCustomEdit);
@@ -1170,6 +1172,40 @@ begin
    if lFlag then THackCustomEdit(AControl).BorderStyle := bsSingle;
    THackControl(AControl).Font.Size := ASize;
    if lFlag then THackCustomEdit(AControl).BorderStyle := bsNone;
+end;
+
+// function to get correct page index iwhen some pages are not visible in PageControl
+class function TInfra.GetPageIndex(const APageControl: TPageControl; X, Y: integer): integer;
+var
+   i, c: integer;
+begin
+  c := APageControl.IndexOfTabAt(X, Y);
+  i := 0;
+  while i <= c do
+  begin
+    if not APageControl.Pages[i].TabVisible then
+      Inc(c);
+    Inc(i);
+  end;
+  result := c;
+end;
+
+class function TInfra.FindDuplicatedPage(const APage: TTabSheet; const ACaption: TCaption): TTabSheet;
+var
+   i: integer;
+begin
+   result := nil;
+   if APage <> nil then
+   begin
+      for i := 0 to APage.PageControl.PageCount-1 do
+      begin
+         if AnsiSameCaption(APage.PageControl.Pages[i].Caption, ACaption) and (APage.PageControl.Pages[i] <> APage) then
+         begin
+            result := APage.PageControl.Pages[i];
+            break;
+         end;
+      end;
+   end;
 end;
 
 function ValidateId(const AIdent: string): integer;

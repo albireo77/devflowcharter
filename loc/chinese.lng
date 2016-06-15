@@ -218,6 +218,8 @@ chkInclDescCode=生成代码时包括此描述
 chkInclDescFlow=包含进函数标志
 Flowchart=Flowchart
 LngNoSprt=%s 语言不被当前的devFlowcharter支持.
+EnterPage=Enter tab name:
+Page=Tab
 
 ; The following keys (3 for each programming language) are used to display labels next to flowcharts
 
@@ -317,6 +319,9 @@ miMemoEdit=编辑文字
 miMemoVScroll=纵向滚动条
 miMemoHScroll=横向滚动条
 miMemoWordWrap=断词换行
+miAddPage=Add
+miRemovePage=Remove
+miRenamePage=Rename
 
 [DeclarationsForm]
 FormCaption=全局变量

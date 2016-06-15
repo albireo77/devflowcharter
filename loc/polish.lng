@@ -213,6 +213,8 @@ chkInclDescCode=Do³¹cz do kodu
 chkInclDescFlow=Do³¹cz do opisu funkcji
 Flowchart=Flowchart
 LngNoSprt=Jêzyk %s nie jest wspierany przez t¹ instancjê devFlowcharter'a.
+EnterPage=Podaj nazwê zak³adki:
+Page=Zak³adka
 
 ; Klucze poni¿ej (po 3 na ka¿dy jêzyk programowania) s¹ u¿ywane do wyœwietlania informacji o funkcji na diagramie
  
@@ -352,6 +354,9 @@ miMemoEdit=Edytuj Tekst
 miMemoVScroll=Pionowy Suwak
 miMemoHScroll=Poziomy Suwak
 miMemoWordWrap=Zawijanie Tekstu
+miAddPage=Dodaj
+miRemovePage=Usuñ
+miRenamePage=Zmieñ nazwê
 
 [SettingsForm]
 FormCaption=Ustawienia
