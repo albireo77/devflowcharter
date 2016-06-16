@@ -88,7 +88,7 @@ begin
    BorderStyle := bsNone;
    Ctl3D := false;
    FZOrderValue := -1;
-   PopupMenu := APage.PopupMenu;
+   PopupMenu := APage.Form.pmPages;
    SetBounds(ALeft, ATop, AWidth, AHeight);
    GProject.AddComponent(Self);
 

@@ -779,7 +779,7 @@ var
    lBranch: TBranch;
    lParent: TGroupBlock;
    lTmpCursor: TCursor;
-   lNewComment: TComment;
+   lComment, lNewComment: TComment;
    lPoint: TPoint;
    lBlockType: TBlockType;
    lLocked: boolean;
@@ -788,20 +788,36 @@ var
    lFunction: TUserFunction;
 begin
 
-   lPage := GProject.GetActivePage;
-   lPoint := lPage.ScreenToClient(pmPages.PopupPoint);
    lParent := nil;
+   lFunction := nil;
+   lComment := nil;
 
-   if (Sender = miPaste) and TInfra.IsValid(GClpbrd.UndoObject) and (GClpbrd.UndoObject is TUserFunction) then
+   if TInfra.IsValid(GClpbrd.UndoObject) and (GClpbrd.UndoObject is TUserFunction) then
+      lFunction := TUserFunction(GClpbrd.UndoObject)
+   else if GClpbrd.Instance is TComment then
+      lComment := TComment(GClpbrd.Instance);
+
+   if (Sender = miPaste) and ((lFunction <> nil) or (lComment <> nil)) then
    begin
-      lFunction := TUserFunction(GClpbrd.UndoObject);
-      if lFunction.Body <> nil then
+      lPage := GProject.GetActivePage;
+      lPoint := lPage.ScreenToClient(pmPages.PopupPoint);
+      if lFunction <> nil then
       begin
-         lFunction.Body.Page := lPage;
-         lFunction.Body.Top := lPoint.Y;
-         lFunction.Body.Left := lPoint.X;
+         if lFunction.Body <> nil then
+         begin
+            lFunction.Body.Page := lPage;
+            lFunction.Body.Top := lPoint.Y;
+            lFunction.Body.Left := lPoint.X;
+         end;
+         miUndoRemoveClick(miUndoRemove);
+      end
+      else if lComment <> nil then
+      begin
+         lNewComment := TComment.Create(lPage, lPoint.X, lPoint.Y, lComment.Width, lComment.Height);
+         lNewComment.Text := lComment.Text;
+         lNewComment.Font.Assign(lComment.Font);
       end;
-      miUndoRemoveClick(miUndoRemove);
+      GChange := 1;
       NavigatorForm.Repaint;
       exit;
    end;
@@ -887,22 +903,7 @@ begin
          end;
       end;
    end;
-
-   if (Sender = miPaste) and (GClpbrd.Instance is TComment) then
-   begin
-      lNewComment := TComment.Create(lPage,
-                                     lPoint.X,
-                                     lPoint.Y,
-                                     GClpbrd.Instance.Width,
-                                     GClpbrd.Instance.Height);
-      lNewComment.Text := TComment(GClpbrd.Instance).Text;
-      lNewComment.Font.Size := TComment(GClpbrd.Instance).Font.Size;
-      lNewComment.Font.Style := TComment(GClpbrd.Instance).Font.Style;
-      GChange := 1;
-   end;
-
    NavigatorForm.Repaint;
-
 end;
 
 function TMainForm.ConfirmSave: integer;
