@@ -685,7 +685,7 @@ begin
       Brush.Color := TInfra.GetMainForm.Color;
       PatBlt(Handle, ClipRect.Left, ClipRect.Top, ClipRect.Right, ClipRect.Bottom, PATCOPY);
    end;
-   lWnd := GetWindow(GetTopWindow(TInfra.GetMainForm.Handle), GW_HWNDLAST);
+   lWnd := GetWindow(GetTopWindow(GetActivePage.Handle), GW_HWNDLAST);
    while lWnd <> 0 do
    begin
       lWinControl := GetIWinControlComponent(lWnd);

@@ -293,7 +293,7 @@ end;
 procedure TPageControlForm.pgcTabsDragOver(Sender, Source: TObject; X,
   Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-   if not (Source is TTabSheet) then
+   if not (Source is TTabComponent) then
       Accept := false;
 end;
 

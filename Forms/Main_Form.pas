@@ -784,7 +784,6 @@ var
    lBlockType: TBlockType;
    lLocked: boolean;
    lPage: TBlockTabSheet;
-   lMainBlock: TMainBlock;
    lFunction: TUserFunction;
 begin
 
@@ -1463,7 +1462,7 @@ end;
 procedure TMainForm.pgcPagesDragOver(Sender, Source: TObject; X,
   Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-   if not (Source is TTabSheet) then
+   if not (Source is TBlockTabSheet) then
       Accept := false;
 end;
 
