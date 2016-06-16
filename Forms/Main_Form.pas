@@ -617,6 +617,7 @@ var
    lComponent: TComponent;
    lBlock: TBlock;
    lFont: TFont;
+   lIsFunction: boolean;
 begin
    lFont := nil;
    miFont.Visible := False;
@@ -655,8 +656,9 @@ begin
    miSize12.Checked := False;
 
    lComponent := pmPages.PopupComponent;
+   lIsFunction := TInfra.IsValid(GClpbrd.UndoObject) and (GClpbrd.UndoObject is TUserFunction);
 
-   miPaste.Enabled := TInfra.IsValid(GClpbrd.Instance);
+   miPaste.Enabled := TInfra.IsValid(GClpbrd.Instance) or lIsFunction;
 
    if lComponent is TBlock then
    begin
@@ -681,11 +683,9 @@ begin
           if not (lBlock is TReturnBlock) then
              miExport.Visible := True;
           miPrint2.Visible := True;
+          miCut.Visible := true;
           if not (lBlock is TMainBlock) then
-          begin
              miCopy.Visible := True;
-             miCut.Visible := True;
-          end;
           if lBlock is TGroupBlock then
           begin
              miExpFold.Visible := true;
@@ -719,7 +719,7 @@ begin
        begin
           miInsert.Visible := True;
           miComment.Enabled := True;
-          if GClpbrd.Instance is TBlock then
+          if (GClpbrd.Instance is TBlock) and not lIsFunction then
              miPaste.Enabled := False;
        end;
        miFrame.Visible := True;
@@ -739,7 +739,9 @@ begin
    else
    begin
       miInsert.Visible := True;
-      if GClpbrd.Instance is TBlock then
+      if GClpbrd.Instance is TMainBlock then
+         miPaste.Enabled := true
+      else if GClpbrd.Instance is TBlock then
          miPaste.Enabled := false;
    end;
    if lFont <> nil then
@@ -782,8 +784,27 @@ var
    lBlockType: TBlockType;
    lLocked: boolean;
    lPage: TBlockTabSheet;
+   lMainBlock: TMainBlock;
+   lFunction: TUserFunction;
 begin
+
+   lPage := GProject.GetActivePage;
+   lPoint := lPage.ScreenToClient(pmPages.PopupPoint);
    lParent := nil;
+
+   if (Sender = miPaste) and TInfra.IsValid(GClpbrd.UndoObject) and (GClpbrd.UndoObject is TUserFunction) then
+   begin
+      lFunction := TUserFunction(GClpbrd.UndoObject);
+      if lFunction.Body <> nil then
+      begin
+         lFunction.Body.Page := lPage;
+         lFunction.Body.Top := lPoint.Y;
+         lFunction.Body.Left := lPoint.X;
+      end;
+      miUndoRemoveClick(miUndoRemove);
+      NavigatorForm.Repaint;
+      exit;
+   end;
 
    if pmPages.PopupComponent is TBlock then
    begin
@@ -869,8 +890,6 @@ begin
 
    if (Sender = miPaste) and (GClpbrd.Instance is TComment) then
    begin
-      lPage := GProject.GetActivePage;
-      lPoint := lPage.ScreenToClient(pmPages.PopupPoint);
       lNewComment := TComment.Create(lPage,
                                      lPoint.X,
                                      lPoint.Y,
@@ -1389,7 +1408,7 @@ var
 begin
    if (GProject <> nil) and (htOnItem in pgcPages.GetHitTestInfoAt(MousePos.X, MousePos.Y)) then
    begin
-      idx := pgcPages.IndexOfTabAt(MousePos.X, MousePos.Y);
+      idx := TInfra.GetPageIndex(pgcPages, MousePos.X, MousePos.Y);
       if idx <> -1 then
       begin
          pmTabs.PopupComponent := pgcPages.Pages[idx];
