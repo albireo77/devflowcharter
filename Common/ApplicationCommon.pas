@@ -158,7 +158,11 @@ const   // Global constants
         INDENT_XML_CHAR = #9;          // tab
 
         PAGE_CAPTION_ATTR = 'tab';
+        PAGE_ORDER_ATTR   = 'pageOrder';
+        LANG_ATTR         = 'language';
         ID_ATTR           = 'hash';
+
+        PAGE_LIST_DELIM   = ',';
 
         MARGIN_X = 50;
         MARGIN_Y = 50;

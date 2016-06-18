@@ -1475,6 +1475,7 @@ begin
    begin
       pgcPages.Pages[idx].PageIndex := TTabSheet(Source).PageIndex;
       TTabSheet(Source).PageIndex := idx;
+      GChange := 1;
    end;
 end;
 
@@ -1491,6 +1492,7 @@ begin
       begin
          lPage.Caption := lCaption;
          GProject.UpdateHeadersBody(lPage);
+         GChange := 1;
       end;
    end;
 end;
@@ -1505,6 +1507,7 @@ begin
    begin
       lPage := GProject.GetPage(lCaption);
       lPage.PageControl.ActivePage := lPage;
+      GChange := 1; 
    end;
 end;
 

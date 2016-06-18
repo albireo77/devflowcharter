@@ -85,6 +85,7 @@ type
       function ImportUserFunctionsFromXML(const ATag: IXMLElement): TErrorType;
       function ImportUserDataTypesFromXML(const ATag: IXMLElement): TErrorType;
       function ImportCommentsFromXML(const ATag: IXMLElement): integer;
+      procedure ImportPagesFromXML(const ATag: IXMLElement);
       function GetMainBlock: TMainBlock;
       function GetBottomRight: TPoint;
       procedure PopulateDataTypeCombos;
@@ -105,6 +106,7 @@ type
       function GetMainPage: TBlockTabSheet;
       function GetActivePage: TBlockTabSheet;
       procedure UpdateHeadersBody(const APage: TTabSheet);
+      function GetPageOrder: string;
    end;
 
 implementation
@@ -121,7 +123,6 @@ begin
    inherited Create;
    FObjectIds := TStringList.Create;
    FComponentList := TComponentList.Create;
-   GetMainPage;
 end;
 
 destructor TProject.Destroy;
@@ -384,13 +385,29 @@ begin
       result := FObjectIds.Objects[idx];
 end;
 
+function TProject.GetPageOrder: string;
+var
+   i: integer;
+   lPageControl: TPageControl;
+begin
+   result := '';
+   lPageControl := TInfra.GetMainForm.pgcPages;
+   for i := 0 to lPageControl.PageCount-1 do
+   begin
+      if i <> 0 then
+         result := result + PAGE_LIST_DELIM;
+      result := result + lPageControl.Pages[i].Caption;
+   end;
+end;
+
 procedure TProject.ExportToXMLTag(const ATag: IXMLElement);
 var
    itr, iter: IIterator;
    lXmlObj: IXMLable;
 begin
 
-   ATag.SetAttribute('language', GInfra.CurrentLang.Name);
+   ATag.SetAttribute(LANG_ATTR, GInfra.CurrentLang.Name);
+   ATag.SetAttribute(PAGE_ORDER_ATTR, GetPageOrder);
 
    if FGlobalVars <> nil then
       FGlobalVars.ExportToXMLTag(ATag);
@@ -412,6 +429,33 @@ begin
    
 end;
 
+procedure TProject.ImportPagesFromXML(const ATag: IXMLElement);
+var
+   lPageList, lPageName: string;
+   i, len: integer;
+begin
+   if ATag <> nil then
+   begin
+      lPageName := '';
+      lPageList := ATag.GetAttribute(PAGE_ORDER_ATTR);
+      len := Length(lPageList);
+      for i := 1 to len do
+      begin
+         if lPageList[i] = PAGE_LIST_DELIM then
+         begin
+            GetPage(lPageName);
+            lPageName := '';
+         end
+         else
+         begin
+            lPageName := lPageName + lPageList[i];
+            if i = len then
+               GetPage(lPageName);
+         end;
+      end;
+   end;
+end;
+
 function TProject.ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
 var
    itr: IIterator;
@@ -419,7 +463,7 @@ var
    lLangDef: TLangDefinition;
 begin
    result := errValidate;
-   lang := ATag.GetAttribute('language');
+   lang := ATag.GetAttribute(LANG_ATTR);
    lLangDef := GInfra.GetLangDefinition(lang);
    if lLangDef = nil then
       Gerr_text := i18Manager.GetFormattedString('LngNoSprt', [lang])
@@ -439,12 +483,14 @@ begin
          TInfra.GetEditorForm.SetFormAttributes;
          SetGlobals;
       end;
-      
+
       if FGlobalConsts <> nil then
          FGlobalConsts.ImportFromXMLTag(ATag);
          
       if GInfra.CurrentLang.EnabledUserDataTypes then
          ImportUserDataTypesFromXML(ATag);
+
+      ImportPagesFromXML(ATag);
 
       result := ImportUserFunctionsFromXML(ATag);
       if result = errNone then
