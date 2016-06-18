@@ -155,10 +155,7 @@ begin
       begin
          lHeader := TUserFunction(UserFunction).Header;
          if lHeader <> nil then
-         begin
-            if not AnsiSameCaption(APage.Caption, lHeader.cbBodyPage.Text) then
-               lHeader.UpdatePageCombo(APage.Caption);
-         end;
+            lHeader.SetPageCombo(APage.Caption);
       end;
       iter := GetComments;
       while iter.HasNext do

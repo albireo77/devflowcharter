@@ -84,7 +84,7 @@ type
       procedure Localize(const list: TStringList); override;
       procedure RefreshSizeEdits; override;
       procedure GenerateDescription(const ALines: TStrings);
-      procedure UpdatePageCombo(const ACaption: TCaption = '');
+      procedure SetPageCombo(const ACaption: TCaption = '');
    end;
 
    TUserFunction = class(TComponent, IXMLable, ITabbable, IIdentifiable, ISizeEditable, IWinControl, IMaxBoundable, ISortable)
@@ -137,7 +137,7 @@ begin
       FHeader.FOverlayObject := Self;
       if FBody <> nil then
       begin
-         FHeader.UpdatePageCombo(FBody.Page.Caption);
+         FHeader.SetPageCombo(FBody.Page.Caption);
          if FHeader.chkExtDeclare.Checked then
             FBody.Visible := false;
       end;
@@ -384,7 +384,7 @@ begin
    cbBodyPage.DropDownCount := 9;
    cbBodyPage.OnDropDown := OnDropDownBodyPage;
    cbBodyPage.OnChange := OnChangeBodyPage;
-   UpdatePageCombo;
+   SetPageCombo;
 
    gbHeader := TGroupBox.Create(Self);
    gbHeader.Parent := Self;
@@ -615,10 +615,10 @@ end;
 
 procedure TUserFunctionHeader.OnDropDownBodyPage(Sender: TObject);
 begin
-   UpdatePageCombo(cbBodyPage.Text);
+   SetPageCombo(cbBodyPage.Text);
 end;
 
-procedure TUserFunctionHeader.UpdatePageCombo(const ACaption: TCaption = '');
+procedure TUserFunctionHeader.SetPageCombo(const ACaption: TCaption = '');
 var
    i: integer;
    lPageControl: TPageControl;
@@ -641,6 +641,8 @@ begin
    i := cbBodyPage.Items.IndexOf(lCaption);
    if i <> -1 then
       cbBodyPage.ItemIndex := i;
+   cbBodyPage.DropDownCount := cbBodyPage.Items.Count;
+   cbBodyPage.Width := TInfra.GetComboMaxWidth(cbBodyPage);
 end;
 
 procedure TUserFunctionHeader.OnChangeBodyPage(Sender: TObject);

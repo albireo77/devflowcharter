@@ -104,6 +104,7 @@ type
       function GetPage(const ACaption: string; const ACreate: boolean = true): TBlockTabSheet;
       function GetMainPage: TBlockTabSheet;
       function GetActivePage: TBlockTabSheet;
+      procedure UpdateHeadersBody(const APage: TTabSheet);
    end;
 
 implementation
@@ -869,6 +870,20 @@ begin
    if lMainFunction <> nil then
       lMainFunction.GenerateTree(ANode);
 
+end;
+
+procedure TProject.UpdateHeadersBody(const APage: TTabSheet);
+var
+   iter: IIterator;
+   lFunction: TUserFunction;
+begin
+   iter := GetUserFunctions;
+   while iter.HasNext do
+   begin
+      lFunction := TUserFunction(iter.Next);
+      if (lFunction.Header <> nil ) and (lFunction.Body <> nil) and (lFunction.Body.Page = APage) then
+         lFunction.Header.SetPageCombo(APage.Caption);
+   end;
 end;
 
 procedure TProject.RefreshStatements;

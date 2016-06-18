@@ -120,6 +120,7 @@ type
          class function GetFunctionHeader(ABlock: TBlock): TUserFunctionHeader;
          class function GetPageIndex(const APageControl: TPageControl; X, Y: integer): integer;
          class function FindDuplicatedPage(const APage: TTabSheet; const ACaption: TCaption): TTabSheet;
+         class function GetComboMaxWidth(const ACombo: TComboBox): integer;
          constructor Create;
          destructor Destroy; override;
    end;
@@ -725,30 +726,31 @@ begin
    end;
 end;
 
-class procedure TInfra.PopulateDataTypeCombo(const AcbType: TComboBox; const ASkipIndex: integer = 100);
-
-   function GetMaxWidth: integer;
-   var
-      i, len: integer;
+class function TInfra.GetComboMaxWidth(const ACombo: TComboBox): integer;
+var
+   i, len: integer;
+begin
+   result := 0;
+   if ACombo <> nil then
    begin
-      result := 0;
-      for i := 0 to AcbType.Items.Count-1 do
+      for i := 0 to ACombo.Items.Count-1 do
       begin
-         len := AcbType.Canvas.TextWidth(AcbType.Items[i]);
+         len := ACombo.Canvas.TextWidth(ACombo.Items[i]);
          if len > result then
             result := len;
       end;
       result := result + 28;
    end;
+end;
 
+class procedure TInfra.PopulateDataTypeCombo(const AcbType: TComboBox; const ASkipIndex: integer = 100);
 var
-   i, index: integer;
+   i, idx: integer;
    lDataType: TUserDataType;
    lType, lName: string;
    iter: IIterator;
    lLang: TLangDefinition;
 begin
-
    lType := AcbType.Text;
    AcbType.Items.BeginUpdate;
    AcbType.Clear;
@@ -784,17 +786,13 @@ begin
          end;
       end;
    end;
-
-   with AcbType do
-   begin
-      index := Items.IndexOf(lType);
-      if index = -1 then index := 0;
-      ItemIndex := index;
-      Items.EndUpdate;
-      Width := GetMaxWidth;
-      DropDownCount := Items.Count;
-   end;
-
+   idx := AcbType.Items.IndexOf(lType);
+   if idx = -1 then
+      idx := 0;
+   AcbType.ItemIndex := idx;
+   AcbType.Items.EndUpdate;
+   AcbType.Width := GetComboMaxWidth(AcbType);
+   AcbType.DropDownCount := AcbType.Items.Count;
 end;
 
 function TInfra.GetLangIndex(const AName: string): integer;

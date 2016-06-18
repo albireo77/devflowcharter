@@ -1488,7 +1488,10 @@ begin
       lPage := TTabSheet(pmTabs.PopupComponent);
       lCaption := Trim(InputBox(i18Manager.GetString('Page'), i18Manager.GetString('EnterPage'), lPage.Caption));
       if (lCaption <> '') and (TInfra.FindDuplicatedPage(lPage, lCaption) = nil) then
+      begin
          lPage.Caption := lCaption;
+         GProject.UpdateHeadersBody(lPage);
+      end;
    end;
 end;
 

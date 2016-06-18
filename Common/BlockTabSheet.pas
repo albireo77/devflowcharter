@@ -51,7 +51,6 @@ begin
    PageControl := AMainForm.pgcPages;
    FForm := AMainForm;
    ParentFont := false;
-   Font.Color := clNavy;
    Brush.Color := GSettings.DesktopColor;
    Align := alClient;
    OnMouseUp := PageMouseUp;
