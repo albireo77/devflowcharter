@@ -59,12 +59,22 @@ end;
 function TStatementMemo.RetrieveFocus(AInfo: TFocusInfo): boolean;
 begin
    AInfo.FocusEdit := Self;
-   result := TBlock(Parent).RetrieveFocus(AInfo);
+   if Parent is TBlock then
+      result := TBlock(Parent).RetrieveFocus(AInfo)
+   else
+   begin
+      if CanFocus then
+         SetFocus;
+      result := true;
+   end;
 end;
 
 function TStatementMemo.CanBeFocused: boolean;
 begin
-   result := CanFocus;
+   if Parent is TBlock then
+      result := TBlock(Parent).CanBeFocused
+   else
+      result := CanFocus;
 end;
 
 function TStatementMemo.GetFocusColor: TColor;
@@ -75,13 +85,15 @@ end;
 function TStatementMemo.Remove: boolean;
 begin
    result := CanBeRemoved;
-   if result then
+   if result and (Parent is TBlock) then
       result := TBlock(Parent).Remove;
 end;
 
 function TStatementMemo.CanBeRemoved: boolean;
 begin
-   result := HasParent and TBlock(Parent).CanBeRemoved;
+   result := HasParent;
+   if result and (Parent is TBlock) then
+      result := TBlock(Parent).CanBeRemoved;
 end;
 
 function TStatementMemo.IsBoldDesc: boolean;

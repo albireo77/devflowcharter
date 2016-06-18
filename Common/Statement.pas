@@ -181,7 +181,7 @@ end;
 
 function TStatement.CanBeFocused: boolean;
 begin
-   result := CanFocus;
+   result := TBlock(Parent).CanBeFocused;
 end;
 
 procedure TStatement.SetAlignment(AValue: TAlignment);

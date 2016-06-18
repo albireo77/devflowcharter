@@ -150,7 +150,7 @@ type
          procedure UpdateEditor(AEdit: TCustomEdit); virtual;
          function SkipUpdateEditor: boolean;
          function RetrieveFocus(AInfo: TFocusInfo): boolean; virtual;
-         function CanBeFocused: boolean;
+         function CanBeFocused: boolean; virtual;
          procedure GenerateDefaultTemplate(const ALines: TStringList; const ALangId: string; const ADeep: integer);
          procedure GenerateTemplateSection(const ALines: TStringList; const ATemplate: TStringList; const ALangId: string; const ADeep: integer); overload; virtual;
          procedure GenerateTemplateSection(const ALines: TStringList; const ATemplate: string; const ALangId: string; const ADeep: integer); overload;
@@ -227,6 +227,7 @@ type
          procedure SetFoldedText(const AText: string);
          function CountErrWarn: TErrWarnCount; override;
          procedure SetVisible(const AValue: boolean; const ASetComments: boolean = true); override;
+         function CanBeFocused: boolean; override;
    end;
 
    TBranch = class(TObjectList, IIdentifiable)
@@ -1693,10 +1694,41 @@ end;
 
 function TBlock.CanBeFocused: boolean;
 var
+   lParent: TGroupBlock;
+   lFunction: TUserFunction;
+begin
+   result := true;
+   lParent := FParentBlock;
+   while lParent <> nil do
+   begin
+      if not lParent.Expanded then
+      begin
+         result := false;
+         break;
+      end;
+      lParent := lParent.ParentBlock;
+   end;
+   if result then
+   begin
+      lFunction := TUserFunction(TMainBlock(FTopParentBlock).UserFunction);
+      result := lFunction.Active;
+      if result then
+      begin
+         if (lFunction <> nil) and (lFunction.Header <> nil) then
+            result := not lFunction.Header.chkExtDeclare.Checked;
+         if result and (FParentBranch <> nil) and (FParentBranch.IndexOf(Self) = -1) then
+            result := false;
+      end;
+   end;
+end;
+
+function TGroupBlock.CanBeFocused: boolean;
+var
    lTextControl: TCustomEdit;
 begin
-   lTextControl := GetTextControl;
-   result := (lTextControl <> nil) and lTextControl.CanFocus;
+   result := Expanded;
+   if result then
+      result := inherited CanBeFocused;
 end;
 
 function TBlock.RetrieveFocus(AInfo: TFocusInfo): boolean;
@@ -1704,6 +1736,7 @@ begin
    if AInfo.FocusEdit = nil then
       AInfo.FocusEdit := GetTextControl;
    AInfo.FocusEditForm := Page.Form;
+   Page.PageControl.ActivePage := Page;
    result := FocusOnTextControl(AInfo);
 end;
 
