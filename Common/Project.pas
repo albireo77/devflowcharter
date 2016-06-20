@@ -729,7 +729,7 @@ begin
    with ACanvas do
    begin
       Brush.Style := bsSolid;
-      Brush.Color := TInfra.GetMainForm.Color;
+      Brush.Color := GetActivePage.Brush.Color;
       PatBlt(Handle, ClipRect.Left, ClipRect.Top, ClipRect.Right, ClipRect.Bottom, PATCOPY);
    end;
    lWnd := GetWindow(GetTopWindow(GetActivePage.Handle), GW_HWNDLAST);
