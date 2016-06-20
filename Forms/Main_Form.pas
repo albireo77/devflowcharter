@@ -1,7 +1,7 @@
 {
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
-    
+
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
    as published by the Free Software Foundation; either version 2
@@ -148,7 +148,7 @@ type
     procedure miPrintClick(Sender: TObject);
     procedure miAboutClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure MyOnException(Sender: TObject; E: Exception);
+    procedure OnException(Sender: TObject; E: Exception);
     procedure miUndoRemoveClick(Sender: TObject);
     procedure pmPagesPopup(Sender: TObject);
     procedure miCommentClick(Sender: TObject);
@@ -198,6 +198,7 @@ type
     procedure pgcPagesDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure miRenamePageClick(Sender: TObject);
     procedure miAddPageClick(Sender: TObject);
+    procedure pgcPagesChange(Sender: TObject);
   private
     { Private declarations }
     FHistoryMenu: THistoryMenu;
@@ -244,7 +245,7 @@ begin
    DecimalSeparator := '.';
    SystemParametersInfo(SPI_SETDRAGFULLWINDOWS, Ord(True), nil, 0);
    Application.HintHidePause := HINT_PAUSE;
-   Application.OnException := MyOnException;
+   Application.OnException := OnException;
    Application.Title := PROGRAM_NAME;
    Caption := PROGRAM_NAME;
    FHistoryMenu := THistoryMenu.Create(miReopen, miOpen.OnClick);
@@ -570,7 +571,7 @@ begin
    end;
 end;
 
-procedure TMainForm.MyOnException(Sender: TObject; E: Exception);
+procedure TMainForm.OnException(Sender: TObject; E: Exception);
 var
    msg: array[0..255] of Char;
 begin
@@ -1443,7 +1444,10 @@ begin
    if GSettings.ConfirmRemove then
       res := TInfra.ShowQuestionBox(i18Manager.GetString('ConfirmRemove'));
    if res = IDYES then
+   begin
       pmTabs.PopupComponent.Free;
+      NavigatorForm.Repaint;
+   end;
 end;
 
 procedure TMainForm.pgcPagesMouseDown(Sender: TObject;
@@ -1507,8 +1511,14 @@ begin
    begin
       lPage := GProject.GetPage(lCaption);
       lPage.PageControl.ActivePage := lPage;
+      NavigatorForm.Repaint;
       GChange := 1; 
    end;
+end;
+
+procedure TMainForm.pgcPagesChange(Sender: TObject);
+begin
+   NavigatorForm.Repaint;
 end;
 
 end.

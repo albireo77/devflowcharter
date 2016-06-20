@@ -152,7 +152,7 @@ VarGlobal=global
 VarParm=function parameter
 HintVar=%s variable   %s: %s
 HintArray=%s %d-dimensional array   %s[%s]: %s
-HintArrayExp=Declaration after expanding %s array type:%s%s %d-dimensional array   %s[%s]: %s
+HintArrayExp=After expanding %s type:%s%s %d-dimensional array   %s[%s]: %s
 HintConst=constante   %s = %s
 HintRoutine=procedure/function   %s: %s
 HintEnum=enumerated value   %s: %s
@@ -272,7 +272,7 @@ miManual=Ayuda
 miAbout=Acerca De...
 miInsert=Insertar
 miNewFlowchart=Diagrama
-miNewFunction=Function
+miNewFunction=New Function
 miFont=Letra
 miRemove=Eliminar
 miCut=Cortar

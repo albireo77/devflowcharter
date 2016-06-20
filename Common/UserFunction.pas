@@ -655,6 +655,7 @@ begin
       FUserFunction.Body.Page := lPage;
       lPage.PageControl.ActivePage := lPage;
       lPage.Form.ScrollInView(FUserFunction.Body);
+      NavigatorForm.Repaint;
    end;
 end;
 

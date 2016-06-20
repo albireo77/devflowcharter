@@ -150,7 +150,7 @@ VarGlobal=globalna
 VarParm=parametr funkcji
 HintVar=zmienna %s   %s: %s
 HintArray=%s tablica %d-wymiarowa   %s[%s]: %s
-HintArrayExp=Deklaracja po rozwiniêciu typu tablicowego %s:%s%s tablica %d-wymiarowa   %s[%s]: %s
+HintArrayExp=Po rozwiniêciu typu %s:%s%s tablica %d-wymiarowa   %s[%s]: %s
 HintConst=sta³a   %s = %s
 HintRoutine=procedura/funkcja   %s: %s
 HintEnum=wartoœæ wyliczeniowa   %s: %s
@@ -310,7 +310,7 @@ miManual=Pomoc
 miAbout=O Programie...
 miInsert=Wstaw
 miNewFlowchart=Algorytm
-miNewFunction=Funkcjê
+miNewFunction=Nowa Funkcja
 miFont=Czcionka
 miRemove=Usuñ
 miCut=Wytnij

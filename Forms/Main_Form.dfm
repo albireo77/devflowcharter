@@ -36,6 +36,7 @@ object MainForm: TMainForm
     Height = 772
     Align = alClient
     TabOrder = 0
+    OnChange = pgcPagesChange
     OnContextPopup = pgcPagesContextPopup
     OnDragDrop = pgcPagesDragDrop
     OnDragOver = pgcPagesDragOver

@@ -94,6 +94,7 @@ type
     procedure miPrintClick(Sender: TObject);
     procedure miSaveClick(Sender: TObject);
     procedure miFindClick(Sender: TObject);
+    procedure OnShowHint(var HintStr: string; var CanShow: Boolean; var HintInfo: THintInfo);
     procedure memCodeEditorStatusChange(Sender: TObject;
       Changes: TSynStatusChanges);
     procedure memCodeEditorGutterClick(Sender: TObject;
@@ -123,9 +124,12 @@ type
     procedure OnChangeEditor;
   private
     { Private declarations }
+    FCloseBracketPos: TPoint;
+    FCloseBracketHint,
     FFocusEditor: boolean;
     FFocusControl: IFocusable;
     procedure PasteComment(const AText: string);
+    function BuildBracketHint(startLine, endLine: integer): string;
   public
     { Public declarations }
     procedure SetFormAttributes;
@@ -143,6 +147,11 @@ type
 {$ENDIF}
   end;
 
+  TEditorHintWindow = class(THintWindow)
+     constructor Create (AOwner: TComponent); override;
+     procedure ActivateHintData(ARect: TRect; const AHint: string; AData: Pointer); override;
+  end;
+
 var
    EditorForm: TEditorForm;
 
@@ -157,6 +166,98 @@ const
    InfoPanel2: array[boolean] of string = ('OverwriteMode', 'InsertMode');
 
 {$R *.dfm}
+
+constructor TEditorHintWindow.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Canvas.Font.Assign(EditorForm.memCodeEditor.Font);
+end;
+
+procedure TEditorHintWindow.ActivateHintData(ARect: TRect; const AHint: string; AData: Pointer);
+var
+   x, y, h: integer;
+   lPoint: TPoint;
+begin
+   if (AData <> nil) and not InvalidPoint(TPoint(AData^)) then
+   begin
+      lPoint := TPoint(AData^);
+      x := lPoint.X - ARect.Left;
+      y := lPoint.Y - ARect.Top;
+      ARect.Left := lPoint.X;
+      Inc(ARect.Right, x);
+      ARect.Top := lPoint.Y;
+      Inc(ARect.Bottom, y);
+   end;
+   h := ARect.Bottom - ARect.Top;
+   Dec(ARect.Top, h);
+   Dec(ARect.Bottom, h);
+   inherited ActivateHintData(ARect, AHint, AData);
+end;
+
+procedure TEditorForm.FormCreate(Sender: TObject);
+begin
+   GInfra.SetHLighters;
+   SetFormAttributes;
+   Application.OnShowHint := OnShowHint;
+{$IFDEF USE_CODEFOLDING}
+   ReloadFoldRegions;
+{$ENDIF}
+end;
+
+procedure TEditorForm.OnShowHint(var HintStr: string; var CanShow: Boolean; var HintInfo: THintInfo);
+begin
+   if (HintInfo.HintControl = memCodeEditor) and FCloseBracketHint then
+   begin
+      FCloseBracketHint := false;
+      HintInfo.HintWindowClass := TEditorHintWindow;
+      HintInfo.HintData := @FCloseBracketPos;
+   end;
+end;
+
+function TEditorForm.BuildBracketHint(startLine, endLine: integer): string;
+var
+   i, min, l: integer;
+   lLines: TStringList;
+begin
+   result := '';
+   if (endLine < 0) or (endLine >= memCodeEditor.Lines.Count) or (startLine >= endLine) or (endLine < 0) then
+      exit;
+   min := 0;
+   lLines := TStringList.Create;
+   try
+      if (endLine - startLine) > (memCodeEditor.LinesInWindow div 2) then
+      begin
+         lLines.Add(memCodeEditor.Lines[startLine]);
+         lLines.Add(memCodeEditor.Lines[startLine+1]);
+         lLines.Add(TInfra.ExtractIndentString(memCodeEditor.Lines[startLine+1]) + '...');
+      end
+      else
+      begin
+         for i := startLine to endLine do
+            lLines.Add(memCodeEditor.Lines[i]);
+      end;
+      for i := 0 to lLines.Count-1 do
+      begin
+         if Trim(lLines[i]) = '' then
+            continue;
+         l := Length(TInfra.ExtractIndentString(lLines[i]));
+         if i = 0 then
+            min := l
+         else if l < min then
+            min := l;
+      end;
+      for i := 0 to lLines.Count-1 do
+         lLines[i] := AnsiRightStr(lLines[i], Length(lLines[i])-min);
+      for i := 0 to lLines.Count-1 do
+      begin
+         if i <> 0 then
+            result := result + CRLF;
+         result := result + lLines[i];
+      end;
+   finally
+      lLines.Free;
+   end;
+end;
 
 procedure TEditorForm.SetFormAttributes;
 var
@@ -226,6 +327,8 @@ begin
    memCodeEditor.ClearAll;
    memCodeEditor.Highlighter := nil;
    FFocusEditor := true;
+   FCloseBracketHint := false;
+   FCloseBracketPos := Point(-1, -1);
    FFocusControl := nil;
    Width := 425;
    Height := 558;
@@ -541,15 +644,6 @@ begin
    end;
 end;
 
-procedure TEditorForm.FormCreate(Sender: TObject);
-begin
-   GInfra.SetHLighters;
-   SetFormAttributes;
-{$IFDEF USE_CODEFOLDING}
-   ReloadFoldRegions;
-{$ENDIF}
-end;
-
 procedure TEditorForm.miCompileClick(Sender: TObject);
 var
    lCommand, lCommandNoMain, lFileName, lFileNameNoExt: string;
@@ -854,18 +948,45 @@ end;
 
 procedure TEditorForm.memCodeEditorMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 var
-   P: TBufferCoord;
-   lWord, lScope: string;
+   P, P1: TBufferCoord;
+   lWord, lScope, lHint: string;
    lAttr: TSynHighlighterAttributes;
    lShow, lGlobalCheck, lLocalCheck: boolean;
    lIdent: TIdentInfo;
    lObject: TObject;
    lBlock: TBlock;
+   lPos: TPoint;
+   i: integer;
 begin
+   lHint := '';
+   FCloseBracketHint := false;
+   FCloseBracketPos := Point(-1, -1);
    memCodeEditor.ShowHint := false;
    memCodeEditor.Hint := '';
    lShow := false;
    P := memCodeEditor.DisplayToBufferPos(memCodeEditor.PixelsToRowColumn(X, Y));
+   P1 := memCodeEditor.GetMatchingBracketEx(P);
+   if (P1.Line > 0) and (P1.Line < P.Line) then
+   begin
+      i := P1.Line - 1;
+      if (Length(Trim(memCodeEditor.Lines[i])) < 2) and (i > 0) and (Trim(memCodeEditor.Lines[i-1]) <> '') then
+         Dec(i);
+      lHint := BuildBracketHint(i, P.Line-2);
+      if lHint <> '' then
+      begin
+         with memCodeEditor do
+         begin
+            lPos := ClientToScreen(RowColumnToPixels(BufferToDisplayPos(P)));
+            Dec(lPos.Y, LineHeight-Canvas.TextHeight('I')+1);
+            Dec(lPos.X, 3);
+         end;
+         FCloseBracketPos := lPos;
+         FCloseBracketHint := true;
+         memCodeEditor.Hint := lHint;
+         memCodeEditor.ShowHint := true;
+         exit;
+      end;
+   end;
    lWord := memCodeEditor.GetWordAtRowCol(P);
    if lWord <> '' then
    begin
@@ -911,17 +1032,20 @@ begin
       case lIdent.IdentType of
          VARRAY:
          begin
-            memCodeEditor.Hint := i18Manager.GetFormattedString('HintArray', [lScope, lIdent.DimensCount, lWord, lIdent.SizeAsString, lIdent.TypeAsString]);
+            lHint := i18Manager.GetFormattedString('HintArray', [lScope, lIdent.DimensCount, lWord, lIdent.SizeAsString, lIdent.TypeAsString]);
             if (lIdent.SizeExpArrayAsString <> '') and (lIdent.SizeExpArrayAsString <> lIdent.SizeAsString) then
-               memCodeEditor.Hint := memCodeEditor.Hint + CRLF + i18Manager.GetFormattedString('HintArrayExp', [lIdent.TypeAsString, CRLF, lScope, lIdent.DimensCount, lWord, lIdent.SizeExpArrayAsString, lIdent.TypeOriginalAsString]);
+               lHint := lHint + CRLF + i18Manager.GetFormattedString('HintArrayExp', [lIdent.TypeAsString, CRLF, lScope, lIdent.DimensCount, lWord, lIdent.SizeExpArrayAsString, lIdent.TypeOriginalAsString]);
          end;
-         VARIABLE:   memCodeEditor.Hint := i18Manager.GetFormattedString('HintVar', [lScope, lWord, lIdent.TypeAsString]);
-         CONSTANT:   memCodeEditor.Hint := i18Manager.GetFormattedString('HintConst', [lWord, lIdent.Value]);
-         ROUTINE_ID: memCodeEditor.Hint := i18Manager.GetFormattedString('HintRoutine', [lWord, lIdent.TypeAsString]);
-         ENUM_VALUE: memCodeEditor.Hint := i18Manager.GetFormattedString('HintEnum', [lWord, lIdent.TypeAsString]);
+         VARIABLE:   lHint := i18Manager.GetFormattedString('HintVar', [lScope, lWord, lIdent.TypeAsString]);
+         CONSTANT:   lHint := i18Manager.GetFormattedString('HintConst', [lWord, lIdent.Value]);
+         ROUTINE_ID: lHint := i18Manager.GetFormattedString('HintRoutine', [lWord, lIdent.TypeAsString]);
+         ENUM_VALUE: lHint := i18Manager.GetFormattedString('HintEnum', [lWord, lIdent.TypeAsString]);
       end;
-      if memCodeEditor.Hint <> '' then
+      if lHint <> '' then
+      begin
+         memCodeEditor.Hint := lHint;
          memCodeEditor.ShowHint := true;
+      end;
    end;
 end;
 
