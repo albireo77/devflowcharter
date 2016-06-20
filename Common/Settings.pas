@@ -235,7 +235,7 @@ const
 implementation
 
 uses
-   ApplicationCommon, Registry, Main_Form;
+   ApplicationCommon, Registry, Main_Form, Navigator_Form;
 
 constructor TSettings.Create;
 begin
@@ -722,7 +722,10 @@ begin
    end;
 
    if lRedrawFlow and (GProject <> nil) then
+   begin
       GProject.RepaintFlowcharts;
+      NavigatorForm.Repaint;
+   end;
 end;
 
 procedure TSettings.SetForm;
