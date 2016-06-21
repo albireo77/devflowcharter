@@ -205,8 +205,8 @@ begin
    result := Point(0, 0);
    if Visible then
    begin
-      result.X := BoundsRect.Right + FPage.Form.HorzScrollBar.Position + MARGIN_X;
-      result.Y := BoundsRect.Bottom + FPage.Form.VertScrollBar.Position + MARGIN_Y;
+      result.X := BoundsRect.Right + MARGIN_X;
+      result.Y := BoundsRect.Bottom + MARGIN_Y;
    end;
 end;
 
@@ -310,8 +310,8 @@ var
 begin
    tag := ATag.OwnerDocument.CreateElement('comment');
    TXMLProcessor.AddCDATA(tag, Text);
-   tag.SetAttribute('x', IntToStr(Left + FPage.Form.HorzScrollBar.Position));
-   tag.SetAttribute('y', IntToStr(Top + FPage.Form.VertScrollBar.Position));
+   tag.SetAttribute('x', IntToStr(Left));
+   tag.SetAttribute('y', IntToStr(Top));
    tag.SetAttribute('w', IntToStr(Width));
    tag.SetAttribute('h', IntToStr(Height));
    tag.SetAttribute('fontsize', IntToStr(Font.Size));

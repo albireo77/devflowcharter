@@ -235,8 +235,8 @@ begin
    result := Point(0, 0);
    if Visible then
    begin
-      result.X := BoundsRect.Right + FPage.Form.HorzScrollBar.Position + MARGIN_X;
-      result.Y := BoundsRect.Bottom + FPage.Form.VertScrollBar.Position + MARGIN_Y;
+      result.X := BoundsRect.Right + MARGIN_X;
+      result.Y := BoundsRect.Bottom + MARGIN_Y;
       if Expanded then
       begin
          iter := GetComments;
@@ -277,8 +277,8 @@ begin
    else
       lBitmap := TBitmap.Create;
    lPoint := GetMaxBounds;
-   lPoint.X := lPoint.X - Left - FPage.Form.HorzScrollBar.Position - MARGIN_X + 1;
-   lPoint.Y := lPoint.Y - Top - FPage.Form.VertScrollBar.Position - MARGIN_Y + 1;
+   lPoint.X := lPoint.X - Left - MARGIN_X + 1;
+   lPoint.Y := lPoint.Y - Top - MARGIN_Y + 1;
    lBitmap.Width := lPoint.X;
    lBitmap.Height := lPoint.Y;
    ShowI := false;
@@ -557,8 +557,8 @@ begin
    inherited SaveInXML(ATag);
    if ATag <> nil then
    begin
-      ATag.SetAttribute('x', IntToStr(Left + FPage.Form.HorzScrollBar.Position));
-      ATag.SetAttribute('y', IntToStr(Top + FPage.Form.VertScrollBar.Position));
+      ATag.SetAttribute('x', IntToStr(Left));
+      ATag.SetAttribute('y', IntToStr(Top));
       ATag.SetAttribute('ZOrdVal', IntToStr(FZOrderValue));
       if FPage <> GProject.GetMainPage then
          ATag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
