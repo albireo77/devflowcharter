@@ -29,7 +29,7 @@ uses
 
 type
 
-  TCornerPanel = class(TPanel)
+  TCorner = class(TPanel)
      protected
         procedure Paint; override;
   end;
@@ -41,7 +41,7 @@ type
          constructor Create(const ABranch: TBranch); overload;
          procedure ChangeColor(const AColor: TColor); override;
       protected
-         FCorner: TCornerPanel;
+         FCorner: TCorner;
          procedure Paint; override;
          procedure OnChangeMemo(Sender: TObject); override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
@@ -56,7 +56,7 @@ constructor TTextBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth,
 begin
    FType := blText;
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
-   FCorner := TCornerPanel.Create(Self);
+   FCorner := TCorner.Create(Self);
    FCorner.Parent := Self;
    FCorner.Color := GSettings.RectColor;
    FCorner.BevelOuter := bvNone;
@@ -81,24 +81,21 @@ procedure TTextBlock.Paint;
 begin
    inherited;
    if FCorner <> nil then
-      FCorner.Repaint;
+      FCorner.Invalidate;
 end;
 
-procedure TCornerPanel.Paint;
+procedure TCorner.Paint;
 var
    lParent: TTextBlock;
 begin
    inherited;
-   with Canvas do
-   begin
-      lParent := TTextBlock(Parent);
-      Pen.Color := clBlack;
-      PolyLine([Point(0, 0), Point(Width-1, Height-1), Point(0, Height-1), Point(0, 0)]);
-      Brush.Color := lParent.FStatements.Color;
-      FloodFill(2, Height-2, clBlack, fsBorder);
-      Brush.Color := lParent.ParentBlock.Color;
-      FloodFill(Width-1, 0, clBlack, fsBorder);
-   end;
+   lParent := TTextBlock(Parent);
+   Canvas.Pen.Color := clBlack;
+   Canvas.PolyLine([Point(0, 0), Point(Width-1, Height-1), Point(0, Height-1), Point(0, 0)]);
+   Canvas.Brush.Color := lParent.FStatements.Color;
+   Canvas.FloodFill(2, Height-2, clBlack, fsBorder);
+   Canvas.Brush.Color := lParent.ParentBlock.Color;
+   Canvas.FloodFill(Width-1, 0, clBlack, fsBorder);
 end;
 
 procedure TTextBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);

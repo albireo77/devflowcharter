@@ -184,7 +184,7 @@ begin
          lBStyle := BorderStyle;
          lStart := SelStart;
          BorderStyle := bsNone;
-         PaintTo(ACanvas, Left + FPage.Form.HorzScrollBar.Position, Top + FPage.Form.VertScrollBar.Position);
+         PaintTo(ACanvas, Left + Parent.Left, Top + Parent.Top);
          BorderStyle := lBStyle;
          SelStart := lStart;
       finally

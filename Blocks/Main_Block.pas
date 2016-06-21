@@ -193,7 +193,7 @@ begin
    begin
       ShowI := false;
       ACanvas.Lock;
-      PaintTo(ACanvas, Left + FPage.Form.HorzScrollBar.Position, Top + FPage.Form.VertScrollBar.Position);
+      PaintTo(ACanvas, Left + Parent.Left, Top + Parent.Top);
       if Expanded then
       begin
          iter := GetComments;
@@ -205,9 +205,7 @@ begin
                lBStyle := lComment.BorderStyle;
                lStart := lComment.SelStart;
                lComment.BorderStyle := bsNone;
-               lComment.PaintTo(ACanvas,
-                                lComment.Left + lComment.Page.Form.HorzScrollBar.Position,
-                                lComment.Top + lComment.Page.Form.VertScrollBar.Position);
+               lComment.PaintTo(ACanvas, lComment.Left + lComment.Parent.Left, lComment.Top + lComment.Parent.Top);
                lComment.BorderStyle := lBStyle;
                lComment.SelStart := lStart;
             end;
