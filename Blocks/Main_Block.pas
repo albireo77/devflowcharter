@@ -157,7 +157,7 @@ begin
          if lHeader <> nil then
             lHeader.SetPageCombo(APage.Caption);
       end;
-      iter := GetComments;
+      iter := GetPinComments;
       while iter.HasNext do
          TComment(iter.Next).Page := APage;
    end;

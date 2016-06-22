@@ -946,25 +946,30 @@ var
    lIterator: TCommentIterator;
    l: integer;
    lInFront: boolean;
+   lPage: TTabSheet;
 begin
    lIterator := TCommentIterator.Create;
    if Visible then
    begin
       l := 0;
+      lPage := Page;
       iterc := GProject.GetComments;
       while iterc.HasNext do
       begin
          lComment := TComment(iterc.Next);
-         if AInFront then
-            lInFront := IsInFront(lComment)
-         else
-            lInFront := true;
-         if lInFront and PtInRect(ClientRect, ParentToClient(lComment.BoundsRect.TopLeft, Page)) then
+         if lComment.Page = lPage then
          begin
-            SetLength(lIterator.FArray, l+1);
-            lIterator.FArray[l] := lComment;
-            l := l + 1;
-         end;
+            if AInFront then
+               lInFront := IsInFront(lComment)
+            else
+               lInFront := true;
+            if lInFront and PtInRect(ClientRect, ParentToClient(lComment.BoundsRect.TopLeft, lPage)) then
+            begin
+               SetLength(lIterator.FArray, l+1);
+               lIterator.FArray[l] := lComment;
+               l := l + 1;
+            end;
+         end
       end;
    end;
    result := lIterator;
@@ -1898,8 +1903,7 @@ begin
          lComment.PinControl := nil
       else
          lComment.PinControl := Self;
-      lTopLeft := Point(lComment.Left + (ATopLeft.X + Page.Form.HorzScrollBar.Position) * i,
-                        lComment.Top + (ATopLeft.Y + Page.Form.VertScrollBar.Position) * i);
+      lTopLeft := Point(lComment.Left + ATopLeft.X*i, lComment.Top + ATopLeft.Y*i);
       lComment.SetBounds(lTopLeft.X, lTopLeft.Y, lComment.Width, lComment.Height);
       lComment.Visible := AVisible;
       lComment.BringToFront;
