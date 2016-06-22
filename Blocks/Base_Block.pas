@@ -947,7 +947,6 @@ var
    l: integer;
    lInFront: boolean;
    lPage: TTabSheet;
-   lPoint: TPoint;
 begin
    lIterator := TCommentIterator.Create;
    if Visible then
@@ -964,8 +963,7 @@ begin
                lInFront := IsInFront(lComment)
             else
                lInFront := true;
-            lPoint := ParentToClient(Point(lComment.Left + lComment.Parent.Left, lComment.Top + lComment.Parent.Top), lPage);
-            if lInFront and PtInRect(ClientRect, lPoint) then
+            if lInFront and PtInRect(ClientRect, TInfra.ParentToClient(Self, lComment.BoundsRect.TopLeft, lPage)) then
             begin
                SetLength(lIterator.FArray, l+1);
                lIterator.FArray[l] := lComment;

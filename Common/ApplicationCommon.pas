@@ -121,6 +121,7 @@ type
          class function GetPageIndex(const APageControl: TPageControl; X, Y: integer): integer;
          class function FindDuplicatedPage(const APage: TTabSheet; const ACaption: TCaption): TTabSheet;
          class function GetComboMaxWidth(const ACombo: TComboBox): integer;
+         class function ParentToClient(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
          constructor Create;
          destructor Destroy; override;
    end;
@@ -1208,6 +1209,14 @@ begin
          end;
       end;
    end;
+end;
+
+// function below is wrapper to fix buggy VCL TControl.ParentToClient implementation when AParent.Parent is not nil
+class function TInfra.ParentToClient(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
+begin
+   result := AControl.ParentToClient(APoint, AParent);
+   if AParent <> nil then
+      result := Point(result.X + AParent.Left, result.Y + AParent.Top);
 end;
 
 function ValidateId(const AIdent: string): integer;
