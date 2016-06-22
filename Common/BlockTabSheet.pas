@@ -47,7 +47,6 @@ uses
 constructor TBlockTabSheet.Create(AMainForm: TMainForm);
 begin
    inherited Create(AMainForm.pgcPages);
-   Parent := AMainForm.pgcPages;
    PageControl := AMainForm.pgcPages;
    FForm := AMainForm;
    ParentFont := false;

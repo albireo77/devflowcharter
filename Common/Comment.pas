@@ -72,11 +72,9 @@ uses
 
 constructor TComment.Create(const APage: TBlockTabSheet; const ALeft, ATop, AWidth, AHeight: Integer; const AUpdateZOrderComponents: boolean = true);
 begin
-
    inherited Create(APage.Form);
-
-   FPage := APage;
    Parent := APage;
+   FPage := APage;
    Color := APage.Brush.Color;
    Font.Size := 8;
    Font.Color := clNavy;

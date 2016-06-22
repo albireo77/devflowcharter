@@ -98,7 +98,6 @@ uses
 constructor TTabComponent.Create(const AParentForm: TPageControlForm);
 begin
    inherited Create(AParentForm.pgcTabs);
-   Parent := AParentForm.pgcTabs;
    PageControl := AParentForm.pgcTabs;
    ParentFont := false;
    Align := alClient;
