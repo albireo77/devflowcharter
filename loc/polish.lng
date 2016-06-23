@@ -510,8 +510,7 @@ miExpand=Rozwiñ wszystko
 miCollapse=Zwiñ wszystko
 miRemove=Usuñ
 miRefresh=Odœwie¿
-btnGenerate=Generuj Kod
-chkAutoNav=W³¹cz auto-nawigacjê diagramu
+chkAutoNav=W³¹cz auto-nawigacjê
 
 [ToolBoxForm]
 FormCaption=ToolBox

@@ -390,8 +390,7 @@ miExpand=Expandir todos
 miCollapse=Contraer todos
 miRemove=Quitar
 miRefresh=Actualizar
-btnGenerate=Generar Código
-chkAutoNav=Enable flowchart auto-navigation
+chkAutoNav=Enable auto-navigation
 
 [EditorForm]
 FormCaption=Editor de Código
