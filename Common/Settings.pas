@@ -82,7 +82,8 @@ type
       FEnableDBuffering,
       FShowFlowchartLabels,
       FValidateDeclaration,
-      FNavigatorAlphaVisible: boolean;
+      FNavigatorAlphaVisible,
+      FExplorerAutoNav: boolean;
       FNavigatorAlphaValue: integer;
       FFlowchartFontName: string;
 
@@ -157,6 +158,7 @@ type
       property ValidateDeclaration: boolean read FValidateDeclaration;
       property NavigatorAlphaValue: integer read FNavigatorAlphaValue write FNavigatorAlphaValue;
       property NavigatorAlphaVisible: boolean read FNavigatorAlphaVisible write FNavigatorAlphaVisible;
+      property ExplorerAutoNav: boolean read FExplorerAutoNav write FExplorerAutoNav;
       property ColumnV1Width: integer read FColumnV1Width write FColumnV1Width;
       property ColumnV2Width: integer read FColumnV2Width write FColumnV2Width;
       property ColumnV3Width: integer read FColumnV3Width write FColumnV3Width;
@@ -220,6 +222,7 @@ const
    KEY_VALIDATE_DECLARATION = 'ValidateConsts';
    KEY_NAVIGATOR_ALPHA_VALUE = 'NavigatorAlphaValue';
    KEY_NAVIGATOR_ALPHA_VISIBLE = 'NavigatorAlphaVisible';
+   KEY_EXPLORER_AUTO_NAV = 'ExplorerAutoNav';
    KEY_FLOWCHART_FONT_NAME = 'FlowchartFontName';
    KEY_AUTOSELECT_CODE_BLOCK = 'AutoSelectCodeBlock';
    KEY_AUTOUPDATE_CODE = 'AutoUpdateCode';
@@ -306,6 +309,7 @@ begin
    FTranslateFile         := '';
    FNavigatorAlphaValue   := 255;
    FNavigatorAlphaVisible := true;
+   FExplorerAutoNav       := true;
    FFlowchartFontName     := FLOWCHART_DEFAULT_FONT_NAME;
 
 end;
@@ -344,6 +348,8 @@ begin
             FNavigatorAlphaValue := registry.ReadInteger(KEY_NAVIGATOR_ALPHA_VALUE);
          if registry.ValueExists(KEY_NAVIGATOR_ALPHA_VISIBLE) then
             FNavigatorAlphaVisible := registry.ReadBool(KEY_NAVIGATOR_ALPHA_VISIBLE);
+         if registry.ValueExists(KEY_EXPLORER_AUTO_NAV) then
+            FExplorerAutoNav := registry.ReadBool(KEY_EXPLORER_AUTO_NAV);
          if registry.ValueExists(KEY_ENABLE_DBUFFERING) then
             FEnableDBuffering := registry.ReadBool(KEY_ENABLE_DBUFFERING);
          if registry.ValueExists(KEY_PARSE_INPUT) then
@@ -490,6 +496,7 @@ begin
          registry.WriteBool(KEY_VALIDATE_DECLARATION, FValidateDeclaration);
          registry.WriteInteger(KEY_NAVIGATOR_ALPHA_VALUE, FNavigatorAlphaValue);
          registry.WriteBool(KEY_NAVIGATOR_ALPHA_VISIBLE, FNavigatorAlphaVisible);
+         registry.WriteBool(KEY_EXPLORER_AUTO_NAV, FExplorerAutoNav);
          registry.WriteInteger(KEY_HIGHLIGHT_COLOR, FHighlightColor);
          registry.WriteInteger(KEY_EDITOR_FONT_COLOR, FEditorFontColor);
          registry.WriteInteger(KEY_EDITOR_BKG_COLOR, FEditorBkgColor);

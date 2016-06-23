@@ -392,6 +392,7 @@ miCollapse=Réduire tous
 miRemove=Enlever
 miRefresh=Rafraîchir
 btnGenerate=Générer le code
+chkAutoNav=Enable flowchart auto-navigation
 
 [EditorForm]
 FormCaption=Éditeur de code

@@ -291,7 +291,6 @@ begin
    edtVariable.Hint := i18Manager.GetFormattedString('ExpOk', [edtVariable.Text, CRLF]);
    if GSettings.ParseFor then
    begin
-      isOk := false;
       if (GProject.GlobalVars <> nil) and GProject.GlobalVars.IsValidLoopVar(edtVariable.Text) then
          isOk := true
       else

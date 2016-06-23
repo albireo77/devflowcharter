@@ -1502,13 +1502,15 @@ end;
 procedure TBlock.WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo);
 var
    lPoint: TPoint;
+   lPage: TTabSheet;
 begin
    inherited;
-   lPoint := ClientToParent(Point(0, 0), Page);
+   lPage := Page;
+   lPoint := ClientToParent(Point(0, 0), lPage);
    if HResizeInd then
-      Msg.MinMaxInfo.ptMaxTrackSize.X := Page.ClientWidth - lPoint.X;
+      Msg.MinMaxInfo.ptMaxTrackSize.X := lPage.ClientWidth - lPoint.X;
    if VResizeInd then
-      Msg.MinMaxInfo.ptMaxTrackSize.Y := Page.ClientHeight - lPoint.Y;
+      Msg.MinMaxInfo.ptMaxTrackSize.Y := lPage.ClientHeight - lPoint.Y;
 end;
 
 function TBlock.IsCursorSelect: boolean;
@@ -2329,7 +2331,7 @@ begin
       while iterc.HasNext do
       begin
          lComment := TComment(iterc.Next);
-         lPoint := ParentToClient(lComment.BoundsRect.TopLeft, Page);
+         lPoint := TInfra.ParentToClient(Self, lComment.BoundsRect.TopLeft, Page);
          lComment.PaintTo(lBitmap.Canvas.Handle, lPoint.X, lPoint.Y);
       end;
    finally

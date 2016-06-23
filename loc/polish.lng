@@ -511,6 +511,7 @@ miCollapse=Zwiñ wszystko
 miRemove=Usuñ
 miRefresh=Odœwie¿
 btnGenerate=Generuj Kod
+chkAutoNav=W³¹cz auto-nawigacjê diagramu
 
 [ToolBoxForm]
 FormCaption=ToolBox

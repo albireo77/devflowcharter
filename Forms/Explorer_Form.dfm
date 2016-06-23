@@ -2,7 +2,7 @@ object ExplorerForm: TExplorerForm
   Left = 389
   Top = 133
   Width = 300
-  Height = 577
+  Height = 586
   HorzScrollBar.Visible = False
   Caption = 'Project Explorer'
   Color = clBtnFace
@@ -11,19 +11,20 @@ object ExplorerForm: TExplorerForm
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   Position = poScreenCenter
+  OnCreate = FormCreate
   OnMouseWheelDown = FormMouseWheelDown
   OnMouseWheelUp = FormMouseWheelUp
   OnShow = FormShow
   DesignSize = (
     284
-    539)
+    548)
   PixelsPerInch = 96
   TextHeight = 13
   object lblErrors: TLabel
     Tag = 6
-    Left = 17
-    Top = 514
-    Width = 128
+    Left = 23
+    Top = 503
+    Width = 120
     Height = 21
     Anchors = [akLeft, akBottom]
     AutoSize = False
@@ -40,7 +41,7 @@ object ExplorerForm: TExplorerForm
   object lblWarnings: TLabel
     Tag = 6
     Left = 152
-    Top = 514
+    Top = 503
     Width = 145
     Height = 21
     Anchors = [akLeft, akBottom]
@@ -57,7 +58,7 @@ object ExplorerForm: TExplorerForm
     Left = 1
     Top = 1
     Width = 283
-    Height = 508
+    Height = 496
     Anchors = [akLeft, akTop, akRight, akBottom]
     Constraints.MinWidth = 283
     Font.Charset = DEFAULT_CHARSET
@@ -77,6 +78,17 @@ object ExplorerForm: TExplorerForm
     OnCustomDrawItem = tvExplorerCustomDrawItem
     OnGetImageIndex = tvExplorerGetImageIndex
     OnGetSelectedIndex = tvExplorerGetSelectedIndex
+  end
+  object chkAutoNav: TCheckBox
+    Tag = 8
+    Left = 5
+    Top = 528
+    Width = 268
+    Height = 17
+    Anchors = [akLeft, akBottom]
+    Caption = 'Flowchart autonavigation'
+    TabOrder = 1
+    OnClick = chkAutoNavClick
   end
   object PopupMenu: TPopupMenu
     OnPopup = PopupMenuPopup

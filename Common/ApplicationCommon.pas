@@ -1211,11 +1211,11 @@ begin
    end;
 end;
 
-// function below is wrapper to fix buggy VCL TControl.ParentToClient implementation when AParent.Parent is not nil
+// function below is wrapper to fix buggy VCL TControl.ParentToClient when AParent.Parent is not nil
 class function TInfra.ParentToClient(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
 begin
    result := AControl.ParentToClient(APoint, AParent);
-   if AParent <> nil then
+   if (AParent <> nil) and (AParent.Parent <> nil) then
       result := Point(result.X + AParent.Left, result.Y + AParent.Top);
 end;
 

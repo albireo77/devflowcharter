@@ -395,6 +395,7 @@ miCollapse=折叠
 miRemove=删除
 miRefresh=刷新
 btnGenerate=生成代码
+chkAutoNav=Enable flowchart auto-navigation
 
 [EditorForm]
 FormCaption=代码编辑器

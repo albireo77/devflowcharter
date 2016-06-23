@@ -41,6 +41,7 @@ type
     N1: TMenuItem;
     N2: TMenuItem;
     miRemove: TMenuItem;
+    chkAutoNav: TCheckBox;
     procedure FormShow(Sender: TObject);
     procedure tvExplorerChange(Sender: TObject; Node: TTreeNode);
     procedure miExpandClick(Sender: TObject);
@@ -59,6 +60,8 @@ type
       MousePos: TPoint; var Handled: Boolean);
     procedure FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
       MousePos: TPoint; var Handled: Boolean);
+    procedure FormCreate(Sender: TObject);
+    procedure chkAutoNavClick(Sender: TObject);
   private
     { Private declarations }
     FErrWarnCount: TErrWarnCount;
@@ -141,13 +144,16 @@ var
    lFocusable: IFocusable;
    lFocusInfo: TFocusInfo;
 begin
-   lFocusable := GetFocusable(Node);
-   if (lFocusable <> nil) and lFocusable.CanBeFocused then
+   if chkAutoNav.Checked then
    begin
-      TInfra.InitFocusInfo(lFocusInfo);
-      lFocusInfo.ActiveControl := tvExplorer;
-      lFocusable.RetrieveFocus(lFocusInfo);
-      GProject.RepaintFlowcharts;
+      lFocusable := GetFocusable(Node);
+      if (lFocusable <> nil) and lFocusable.CanBeFocused then
+      begin
+         TInfra.InitFocusInfo(lFocusInfo);
+         lFocusInfo.ActiveControl := tvExplorer;
+         lFocusable.RetrieveFocus(lFocusInfo);
+         GProject.RepaintFlowcharts;
+      end;
    end;
 end;
 
@@ -388,6 +394,16 @@ begin
       tvExplorer.Selected := tvExplorer.Selected.GetNextVisible;
       Handled := true;
    end;
+end;
+
+procedure TExplorerForm.FormCreate(Sender: TObject);
+begin
+   chkAutoNav.Checked := GSettings.ExplorerAutoNav;
+end;
+
+procedure TExplorerForm.chkAutoNavClick(Sender: TObject);
+begin
+   GSettings.ExplorerAutoNav := chkAutoNav.Checked;
 end;
 
 end.
