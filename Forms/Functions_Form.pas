@@ -89,7 +89,7 @@ begin
    begin
       lBody.Page.Form.ScrollInView(lBody);
       lBody.BringAllToFront;
-      NavigatorForm.Repaint;
+      NavigatorForm.Invalidate;
    end;
 end;
 

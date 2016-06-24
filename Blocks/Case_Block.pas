@@ -458,7 +458,7 @@ begin
        SetLength(FBranchArray, lLastBranch);
        ResizeWithDrawLock;
        RefreshCaseValues;
-       NavigatorForm.Repaint;
+       NavigatorForm.Invalidate;
    end;
 end;
 

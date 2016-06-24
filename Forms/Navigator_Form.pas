@@ -25,11 +25,11 @@ type
     procedure SetAlphaValVisible(const AValue: boolean);
   public
     { Public declarations }
-    RepaintInd: boolean;
+    InvalidateInd: boolean;
     procedure ResetForm; override;
     procedure ExportSettingsToXMLTag(const root: IXMLElement); override;
     procedure ImportSettingsFromXMLTag(const root: IXMLElement); override;
-    procedure ExecuteRepaint;
+    procedure DoInvalidate;
   end;
 
 var
@@ -45,7 +45,7 @@ uses
 procedure TNavigatorForm.FormCreate(Sender: TObject);
 begin
    DoubleBuffered := true;
-   RepaintInd := true;
+   InvalidateInd := true;
    SetBounds(50, 50, 426, 341);
    Constraints.MinWidth := 150;
    Constraints.MinHeight := 150;
@@ -101,16 +101,16 @@ end;
 
 procedure TNavigatorForm.FormMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+   lForm: TMainForm;
 begin
    if (Button = mbLeft) and (GProject <> nil) then
    begin
-      with TInfra.GetMainForm do
-      begin
-         HorzScrollBar.Position := MulDiv(X, HorzScrollBar.Range, Self.ClientWidth) - (ClientWidth div 2);
-         VertScrollBar.Position := MulDiv(Y, VertScrollBar.Range, Self.ClientHeight) - (ClientHeight div 2);
-         Self.Repaint;
-         Repaint;
-      end;
+      lForm := TInfra.GetMainForm;
+      lForm.HorzScrollBar.Position := MulDiv(X, lForm.HorzScrollBar.Range, ClientWidth) - (lForm.ClientWidth div 2);
+      lForm.VertScrollBar.Position := MulDiv(Y, lForm.VertScrollBar.Range, ClientHeight) - (lForm.ClientHeight div 2);
+      Invalidate;
+      lForm.Repaint;
    end;
 end;
 
@@ -119,7 +119,7 @@ procedure TNavigatorForm.ResetForm;
 begin
    inherited ResetForm;
    Position := poDesigned;
-   RepaintInd := true;
+   InvalidateInd := true;
    SetBounds(50, 50, 426, 341);
 end;
 
@@ -193,10 +193,10 @@ begin
    end;
 end;
 
-procedure TNavigatorForm.ExecuteRepaint;
+procedure TNavigatorForm.DoInvalidate;
 begin
-   if RepaintInd then
-      Repaint;
+   if InvalidateInd then
+      Invalidate;
 end;
 
 procedure TNavigatorForm.scbAlphaValChange(Sender: TObject);

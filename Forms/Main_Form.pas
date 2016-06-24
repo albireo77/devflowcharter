@@ -603,7 +603,7 @@ begin
       lBlock.ParentBranch.UndoRemove(lBlock);
       lBlock.ParentBlock.ResizeWithDrawLock;
       lBlock.SetVisible(true);
-      NavigatorForm.Repaint;
+      NavigatorForm.Invalidate;
    end
    else if Supports(GClpbrd.UndoObject, IXMLable, lActiveObject) then
       lActiveObject.Active := true;
@@ -818,7 +818,7 @@ begin
          lNewComment.Font.Assign(lComment.Font);
       end;
       GChange := 1;
-      NavigatorForm.Repaint;
+      NavigatorForm.Invalidate;
       exit;
    end;
 
@@ -903,7 +903,7 @@ begin
          end;
       end;
    end;
-   NavigatorForm.Repaint;
+   NavigatorForm.Invalidate;
 end;
 
 function TMainForm.ConfirmSave: integer;
@@ -1270,7 +1270,7 @@ begin
          VertScrollBar.Range := lPoint.Y
       else
          VertScrollBar.Range := ClientHeight;
-      NavigatorForm.Repaint;
+      NavigatorForm.Invalidate;
    end;
 end;
 
@@ -1393,7 +1393,7 @@ procedure TMainForm.PerformFormsRepaint;
 begin
    if GSettings.EnableDBuffering or NavigatorForm.Visible then
       Repaint;
-   NavigatorForm.Repaint;
+   NavigatorForm.Invalidate;
 end;
 
 procedure TMainForm.miNewFunctionClick(Sender: TObject);
@@ -1446,7 +1446,7 @@ begin
    if res = IDYES then
    begin
       pmTabs.PopupComponent.Free;
-      NavigatorForm.Repaint;
+      NavigatorForm.Invalidate;
    end;
 end;
 
@@ -1511,14 +1511,14 @@ begin
    begin
       lPage := GProject.GetPage(lCaption);
       lPage.PageControl.ActivePage := lPage;
-      NavigatorForm.Repaint;
+      NavigatorForm.Invalidate;
       GChange := 1; 
    end;
 end;
 
 procedure TMainForm.pgcPagesChange(Sender: TObject);
 begin
-   NavigatorForm.Repaint;
+   NavigatorForm.Invalidate;
 end;
 
 end.

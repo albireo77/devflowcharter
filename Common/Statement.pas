@@ -248,7 +248,7 @@ begin
       if Assigned(OnChangeCallBack) then
          OnChangeCallBack(Self);
    end;
-   NavigatorForm.ExecuteRepaint
+   NavigatorForm.DoInvalidate;
 end;
 
 procedure TStatement.MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer);

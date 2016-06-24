@@ -705,7 +705,7 @@ begin
       GChange := 1;
       if FParentBlock = nil then
          BringAllToFront;
-      NavigatorForm.Repaint;
+      NavigatorForm.Invalidate;
    end;
 end;
 
@@ -1076,8 +1076,8 @@ var
    i: integer;
    lBool, lBool2: boolean;
 begin
-    lBool := NavigatorForm.RepaintInd;
-    NavigatorForm.RepaintInd := false;
+    lBool := NavigatorForm.InvalidateInd;
+    NavigatorForm.InvalidateInd := false;
     lBool2 := FRefreshMode;
     FRefreshMode := true;
     try
@@ -1095,7 +1095,7 @@ begin
     finally
        FRefreshMode := lBool2;
     end;
-    NavigatorForm.RepaintInd := lBool;
+    NavigatorForm.InvalidateInd := lBool;
 end;
 
 function TBlock.GetId: integer;
@@ -1122,7 +1122,7 @@ procedure TBlock.ClearSelection;
 begin
    if Color <> Page.Brush.Color then
       ChangeColor(Page.Brush.Color);
-   NavigatorForm.Repaint;
+   NavigatorForm.Invalidate;
 end;
 
 procedure TGroupBlock.ChangeColor(const AColor: TColor);
@@ -1158,7 +1158,7 @@ begin
          ChangeColor(GSettings.HighlightColor);
          if GSettings.EditorAutoSelectBlock then
             TInfra.GetEditorForm.SelectCodeRange(Self);
-         NavigatorForm.Repaint;
+         NavigatorForm.Invalidate;
       end;
    end
    else if Color <> Page.Brush.Color then
@@ -1166,7 +1166,7 @@ begin
       ChangeColor(Page.Brush.Color);
       if GSettings.EditorAutoSelectBlock and not FFrame then
          TInfra.GetEditorForm.UnSelectCodeRange(Self);
-      NavigatorForm.Repaint;
+      NavigatorForm.Invalidate;
    end;
 end;
 
@@ -1537,14 +1537,14 @@ end;
 
 procedure TBlock.MyOnChange(Sender: TObject);
 begin
-   NavigatorForm.ExecuteRepaint;
+   NavigatorForm.DoInvalidate;
 end;
 
 procedure TBlock.OnChangeMemo(Sender: TObject);
 begin
    UpdateMemoVScroll;
    UpdateMemoHScroll;
-   NavigatorForm.ExecuteRepaint;
+   NavigatorForm.DoInvalidate;
 end;
 
 procedure TBlock.SetMemoVScroll(AValue: boolean);

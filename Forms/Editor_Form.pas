@@ -220,7 +220,7 @@ var
    lLines: TStringList;
 begin
    result := '';
-   if (endLine < 0) or (endLine >= memCodeEditor.Lines.Count) or (startLine >= endLine) or (endLine < 0) then
+   if (endLine < 0) or (endLine >= memCodeEditor.Lines.Count) or (startLine >= endLine) or (startLine < 0) then
       exit;
    min := 0;
    lLines := TStringList.Create;

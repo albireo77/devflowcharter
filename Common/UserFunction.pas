@@ -655,7 +655,7 @@ begin
       FUserFunction.Body.Page := lPage;
       lPage.PageControl.ActivePage := lPage;
       lPage.Form.ScrollInView(FUserFunction.Body);
-      NavigatorForm.Repaint;
+      NavigatorForm.Invalidate;
    end;
 end;
 
@@ -735,7 +735,7 @@ begin
    if GSettings.ShowFlowchartLabels then
    begin
       DrawBodyLabel;
-      NavigatorForm.Repaint;
+      NavigatorForm.Invalidate;
    end;
    GChange := 1;
 end;

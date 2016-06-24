@@ -210,7 +210,7 @@ end;
 
 procedure TComment.MyOnChange(Sender: TObject);
 begin
-   NavigatorForm.Repaint;
+   NavigatorForm.Invalidate;
 end;
 
 procedure TComment.CMMouseLeave(var Msg: TMessage);

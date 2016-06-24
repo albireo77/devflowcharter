@@ -731,7 +731,7 @@ begin
    if lRedrawFlow and (GProject <> nil) then
    begin
       GProject.RepaintFlowcharts;
-      NavigatorForm.Repaint;
+      NavigatorForm.Invalidate;
    end;
 end;
 

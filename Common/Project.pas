@@ -948,7 +948,7 @@ begin
             lFunction.Body.RefreshStatements;
       end;
    end;
-   NavigatorForm.Repaint;
+   NavigatorForm.Invalidate;
    if lChange = 0 then
       GChange := 0;
 end;
