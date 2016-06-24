@@ -75,15 +75,15 @@ begin
          lSelStart := lEdit.SelStart;
       lhdc := SaveDC(Canvas.Handle);
       try
-         xExt := MulDiv(EXTENT_X, TInfra.GetMainForm.HorzScrollBar.Range, ClientWidth);
-         yExt := MulDiv(EXTENT_Y, TInfra.GetMainForm.VertScrollBar.Range, ClientHeight);
+         xExt := MulDiv(EXTENT_X, MainForm.HorzScrollBar.Range, ClientWidth);
+         yExt := MulDiv(EXTENT_Y, MainForm.VertScrollBar.Range, ClientHeight);
          SetMapMode(Canvas.Handle, MM_ANISOTROPIC);
          SetWindowExtEx(Canvas.Handle, xExt, yExt, nil);
          SetViewPortExtEx(Canvas.Handle, EXTENT_X, EXTENT_Y, nil);
          GProject.PaintToCanvas(Canvas);
          Canvas.Pen.Width := 5;
          Canvas.Pen.Color := clRed;
-         with TInfra.GetMainForm.GetDisplayedRect do
+         with MainForm.GetDisplayedRect do
          begin
             Canvas.Polyline([Point(Left+2, Top+2),
                              Point(Right-3, Top+2),
@@ -99,18 +99,14 @@ begin
    end;
 end;
 
-procedure TNavigatorForm.FormMouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-   lForm: TMainForm;
+procedure TNavigatorForm.FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-   if (Button = mbLeft) and (GProject <> nil) then
+   if Button = mbLeft then
    begin
-      lForm := TInfra.GetMainForm;
-      lForm.HorzScrollBar.Position := MulDiv(X, lForm.HorzScrollBar.Range, ClientWidth) - (lForm.ClientWidth div 2);
-      lForm.VertScrollBar.Position := MulDiv(Y, lForm.VertScrollBar.Range, ClientHeight) - (lForm.ClientHeight div 2);
+      MainForm.HorzScrollBar.Position := MulDiv(X, MainForm.HorzScrollBar.Range, ClientWidth) - (MainForm.ClientWidth div 2);
+      MainForm.VertScrollBar.Position := MulDiv(Y, MainForm.VertScrollBar.Range, ClientHeight) - (MainForm.ClientHeight div 2);
       Invalidate;
-      lForm.Repaint;
+      MainForm.Repaint;
    end;
 end;
 
@@ -125,11 +121,10 @@ end;
 
 procedure TNavigatorForm.FormResize(Sender: TObject);
 begin
-   Repaint;
+   Invalidate;
 end;
 
-procedure TNavigatorForm.FormMouseMove(Sender: TObject; Shift: TShiftState;
-  X, Y: Integer);
+procedure TNavigatorForm.FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
    if ssLeft in Shift then
       FormMouseDown(Sender, mbLeft, Shift, X, Y);
