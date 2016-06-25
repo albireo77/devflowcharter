@@ -963,7 +963,7 @@ begin
                lInFront := IsInFront(lComment)
             else
                lInFront := true;
-            if lInFront and PtInRect(ClientRect, TInfra.ParentToClient(Self, lComment.BoundsRect.TopLeft, lPage)) then
+            if lInFront and (lComment.PinControl = nil) and PtInRect(ClientRect, TInfra.ParentToClient(Self, lComment.BoundsRect.TopLeft, lPage)) then
             begin
                SetLength(lIterator.FArray, l+1);
                lIterator.FArray[l] := lComment;
@@ -1506,7 +1506,7 @@ var
 begin
    inherited;
    lPage := Page;
-   lPoint := ClientToParent(Point(0, 0), lPage);
+   lPoint := TInfra.ClientToParent(Self, Point(0, 0), lPage);
    if HResizeInd then
       Msg.MinMaxInfo.ptMaxTrackSize.X := lPage.ClientWidth - lPoint.X;
    if VResizeInd then
@@ -1917,7 +1917,7 @@ begin
    if Visible <> AValue then
    begin
       if ASetComments then
-         SetComments(AValue, ClientToParent(ClientRect.TopLeft, Page));
+         SetComments(AValue, TInfra.ClientToParent(Self, ClientRect.TopLeft, Page));
       Visible := AValue;
    end;
 end;
@@ -1971,7 +1971,7 @@ begin
    end
    else
    begin
-      SetComments(Expanded, ClientToParent(ClientRect.TopLeft, Page));
+      SetComments(Expanded, TInfra.ClientToParent(Self, ClientRect.TopLeft, Page));
       lTmpWidth := FFoldParms.Width;
       lTmpHeight := FFoldParms.Height;
       FFoldParms.Width := Width;
@@ -2004,7 +2004,7 @@ begin
    end;
 
    if Expanded then
-      SetComments(Expanded, ClientToParent(ClientRect.TopLeft, Page));
+      SetComments(Expanded, TInfra.ClientToParent(Self, ClientRect.TopLeft, Page));
 end;
 
 function TBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
@@ -2105,7 +2105,6 @@ begin
          while iter.HasNext do
             TXMLProcessor.ExportBlockToXML(TBlock(iter.Next), tag2);
       end;
-
    end;
 end;
 

@@ -122,6 +122,7 @@ type
          class function FindDuplicatedPage(const APage: TTabSheet; const ACaption: TCaption): TTabSheet;
          class function GetComboMaxWidth(const ACombo: TComboBox): integer;
          class function ParentToClient(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
+         class function ClientToParent(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
          constructor Create;
          destructor Destroy; override;
    end;
@@ -1217,6 +1218,13 @@ begin
    result := AControl.ParentToClient(APoint, AParent);
    if (AParent <> nil) and (AParent.Parent <> nil) then
       result := Point(result.X + AParent.Left, result.Y + AParent.Top);
+end;
+
+class function TInfra.ClientToParent(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
+begin
+   result := AControl.ClientToParent(APoint, AParent);
+   if (AParent <> nil) and (AParent.Parent <> nil) then
+      result := Point(result.X - AParent.Left, result.Y - AParent.Top);
 end;
 
 function ValidateId(const AIdent: string): integer;
