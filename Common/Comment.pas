@@ -53,7 +53,7 @@ type
          constructor Create(const APage: TBlockTabSheet; const ALeft, ATop, AWidth, AHeight: Integer; const AUpdateZOrderComponents: boolean = true);
          constructor CreateDefault(const APage: TBlockTabSheet);
          destructor Destroy; override;
-         procedure ImportFromXMLTag(const rootTag: IXMLElement; const APinControl: TControl);
+         procedure ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl);
          procedure ExportToXMLTag(const ATag: IXMLElement);
          procedure ExportToXMLTag2(const ATag: IXMLElement);
          procedure PaintToCanvas(const ACanvas: TCanvas);
@@ -274,26 +274,29 @@ begin
    PopupMenu.Popup(lPoint.X, lPoint.Y);
 end;
 
-procedure TComment.ImportFromXMLTag(const rootTag: IXMLElement; const APinControl: TControl);
+procedure TComment.ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl);
 var
-   lValue: integer;
+   v: integer;
 begin
-   FPage.Form.VertScrollBar.Position := 0;
-   FPage.Form.HorzScrollBar.Position := 0;
-   SetBounds(StrToInt(rootTag.GetAttribute('x')),
-             StrToInt(rootTag.GetAttribute('y')),
-             StrToInt(rootTag.GetAttribute('w')),
-             StrToInt(rootTag.GetAttribute('h')));
-   lValue := StrToIntDef(rootTag.GetAttribute('fontsize'), 8);
-   if lValue in [8, 10, 12] then
-      Font.Size := lValue;
-   FZOrderValue := StrToIntDef(rootTag.GetAttribute('ZOrdVal'), -1);
-   lValue := StrToIntDef(rootTag.GetAttribute('fontstyle'), 0);
-   if lValue > 0 then
-      Font.Style := TInfra.DecodeFontStyle(lValue);
-   Text := rootTag.Text;
-   Visible := rootTag.GetAttribute('v') = IntToStr(Ord(true));
-   FPinControl := APinControl;
+   if ATag <> nil then
+   begin
+      FPage.Form.VertScrollBar.Position := 0;
+      FPage.Form.HorzScrollBar.Position := 0;
+      SetBounds(StrToInt(ATag.GetAttribute('x')),
+                StrToInt(ATag.GetAttribute('y')),
+                StrToInt(ATag.GetAttribute('w')),
+                StrToInt(ATag.GetAttribute('h')));
+      v := StrToIntDef(ATag.GetAttribute('fontsize'), 8);
+      if v in [8, 10, 12] then
+         Font.Size := v;
+      FZOrderValue := StrToIntDef(ATag.GetAttribute('ZOrdVal'), -1);
+      v := StrToIntDef(ATag.GetAttribute('fontstyle'), 0);
+      if v > 0 then
+         Font.Style := TInfra.DecodeFontStyle(v);
+      Text := ATag.Text;
+      Visible := ATag.GetAttribute('v') = IntToStr(Ord(true));
+      FPinControl := APinControl;
+   end;
 end;
 
 procedure TComment.ExportToXMLTag(const ATag: IXMLElement);
@@ -306,7 +309,7 @@ procedure TComment.ExportToXMLTag2(const ATag: IXMLElement);
 var
    tag: IXMLElement;
 begin
-   tag := ATag.OwnerDocument.CreateElement('comment');
+   tag := ATag.OwnerDocument.CreateElement(COMMENT_ATTR);
    TXMLProcessor.AddCDATA(tag, Text);
    tag.SetAttribute('x', IntToStr(Left));
    tag.SetAttribute('y', IntToStr(Top));

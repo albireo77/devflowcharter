@@ -160,9 +160,11 @@ const   // Global constants
         INDENT_XML_CHAR = #9;          // tab
 
         PAGE_CAPTION_ATTR = 'tab';
+        COMMENT_ATTR      = 'comment';
         PAGE_ORDER_ATTR   = 'pageOrder';
         LANG_ATTR         = 'language';
         ID_ATTR           = 'hash';
+
 
         PAGE_LIST_DELIM   = ',';
 
@@ -1212,7 +1214,7 @@ begin
    end;
 end;
 
-// function below is wrapper to fix buggy VCL TControl.ParentToClient when AParent.Parent is not nil
+// functions below are to fix buggy VCL TControl.ParentToClient/ClientToParent when AParent.Parent is not nil
 class function TInfra.ParentToClient(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
 begin
    result := AControl.ParentToClient(APoint, AParent);

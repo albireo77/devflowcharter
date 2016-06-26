@@ -653,7 +653,7 @@ var
    lPage: TBlockTabSheet;
 begin
    result := NO_ERROR;
-   tag := TXMLProcessor.FindChildTag(ATag, 'comment');
+   tag := TXMLProcessor.FindChildTag(ATag, COMMENT_ATTR);
    while tag <> nil do
    begin
       lPage := GetPage(tag.GetAttribute(PAGE_CAPTION_ATTR));
