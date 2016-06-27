@@ -25,7 +25,7 @@ interface
 
 uses
    Windows, Messages, Controls, Forms, StdCtrls, Graphics, Classes, OmniXML, CommonInterfaces,
-   BlockTabSheet;
+   BlockTabSheet, ComCtrls;
 
 type
 
@@ -51,6 +51,7 @@ type
          property PinControl: TControl read FPinControl write FPinControl;
          property Page: TBlockTabSheet read FPage write SetPage;
          constructor Create(const APage: TBlockTabSheet; const ALeft, ATop, AWidth, AHeight: Integer; const AUpdateZOrderComponents: boolean = true);
+         constructor Clone(const APage: TBlockTabSheet; const ASource: TComment);
          constructor CreateDefault(const APage: TBlockTabSheet);
          destructor Destroy; override;
          procedure ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl);
@@ -96,6 +97,17 @@ begin
    OnDblClick  := MyOnDblClick;
    OnChange    := MyOnChange;
    OnContextPopup := MyOnContextPopup;
+end;
+
+constructor TComment.Clone(const APage: TBlockTabSheet; const ASource: TComment);
+begin
+   Create(APage,
+          ASource.Left,
+          ASource.Top,
+          ASource.Width,
+          ASource.Height);
+   Font.Assign(ASource.Font);
+   Text := ASource.Text;
 end;
 
 constructor TComment.CreateDefault(const APage: TBlockTabSheet);
@@ -301,7 +313,7 @@ end;
 
 procedure TComment.ExportToXMLTag(const ATag: IXMLElement);
 begin
-   if FPinControl = nil then
+   if (FPinControl = nil) and (GProject.FindMainBlockForControl(Self) = nil) then
       ExportToXMLTag2(ATag);
 end;
 
@@ -309,19 +321,22 @@ procedure TComment.ExportToXMLTag2(const ATag: IXMLElement);
 var
    tag: IXMLElement;
 begin
-   tag := ATag.OwnerDocument.CreateElement(COMMENT_ATTR);
-   TXMLProcessor.AddCDATA(tag, Text);
-   tag.SetAttribute('x', IntToStr(Left));
-   tag.SetAttribute('y', IntToStr(Top));
-   tag.SetAttribute('w', IntToStr(Width));
-   tag.SetAttribute('h', IntToStr(Height));
-   tag.SetAttribute('fontsize', IntToStr(Font.Size));
-   tag.SetAttribute('v', IntToStr(Ord(Visible)));
-   tag.SetAttribute('ZOrdVal', IntToStr(FZOrderValue));
-   tag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
-   if Font.Style <> [] then
-      tag.SetAttribute('fontstyle', TInfra.EncodeFontStyle(Font.Style));
-   ATag.AppendChild(tag);
+   if ATag <> nil then
+   begin
+      tag := ATag.OwnerDocument.CreateElement(COMMENT_ATTR);
+      TXMLProcessor.AddCDATA(tag, Text);
+      tag.SetAttribute('x', IntToStr(Left));
+      tag.SetAttribute('y', IntToStr(Top));
+      tag.SetAttribute('w', IntToStr(Width));
+      tag.SetAttribute('h', IntToStr(Height));
+      tag.SetAttribute('fontsize', IntToStr(Font.Size));
+      tag.SetAttribute('v', IntToStr(Ord(Visible)));
+      tag.SetAttribute('ZOrdVal', IntToStr(FZOrderValue));
+      tag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
+      if Font.Style <> [] then
+         tag.SetAttribute('fontstyle', TInfra.EncodeFontStyle(Font.Style));
+      ATag.AppendChild(tag);
+   end;
 end;
 
 end.

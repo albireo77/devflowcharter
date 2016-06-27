@@ -173,6 +173,7 @@ begin
        lTab := nil;
        if lNewBlock <> nil then
        begin
+          lNewBlock.UnPinComments;
           result := lNewBlock;
           if lBranch <> nil then
           begin

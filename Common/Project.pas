@@ -107,6 +107,7 @@ type
       function GetActivePage: TBlockTabSheet;
       procedure UpdateHeadersBody(const APage: TTabSheet);
       function GetPageOrder: string;
+      function FindMainBlockForControl(const AControl: TControl): TMainBlock;
    end;
 
 implementation
@@ -920,15 +921,17 @@ end;
 
 procedure TProject.UpdateHeadersBody(const APage: TTabSheet);
 var
-   iter: IIterator;
+   i: integer;
    lFunction: TUserFunction;
 begin
-   iter := GetUserFunctions;
-   while iter.HasNext do
+   for i := 0 to FComponentList.Count-1 do
    begin
-      lFunction := TUserFunction(iter.Next);
-      if (lFunction.Header <> nil ) and (lFunction.Body <> nil) and (lFunction.Body.Page = APage) then
-         lFunction.Header.SetPageCombo(APage.Caption);
+      if FComponentList[i] is TUserFunction then
+      begin
+         lFunction := TUserFunction(FComponentList[i]);
+         if (lFunction.Header <> nil ) and (lFunction.Body <> nil) and (lFunction.Body.Page = APage) then
+            lFunction.Header.SetPageCombo(APage.Caption);
+      end;
    end;
 end;
 
@@ -951,6 +954,26 @@ begin
    NavigatorForm.Invalidate;
    if lChange = 0 then
       GChange := 0;
+end;
+
+function TProject.FindMainBlockForControl(const AControl: TControl): TMainBlock;
+var
+   i: integer;
+   lFunction: TUserFunction;
+begin
+   result := nil;
+   for i := 0 to FComponentList.Count-1 do
+   begin
+      if FComponentList[i] is TUserFunction then
+      begin
+         lFunction := TUserFunction(FComponentList[i]);
+         if lFunction.Active and (lFunction.Body <> nil) and (lFunction.Body.Parent = AControl.Parent) and PtInRect(lFunction.Body.BoundsRect, AControl.BoundsRect.TopLeft) then
+         begin
+            result := lFunction.Body;
+            break;
+         end;
+      end;
+   end;
 end;
 
 procedure TProject.RepaintComments;

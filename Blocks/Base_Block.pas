@@ -171,8 +171,8 @@ type
          function GetPinComments: IIterator;
          procedure SetVisible(const AVisible: boolean; const ASetComments: boolean = true); virtual;
          procedure BringAllToFront;
-         procedure PinComments(AHide: boolean = true);
-         procedure UnPinComments(AShow: boolean = true);
+         function PinComments(AHide: boolean = true): integer;
+         function UnPinComments(AShow: boolean = true): integer; virtual;
       published
          property Color;
          property OnMouseDown;
@@ -229,6 +229,7 @@ type
          function CountErrWarn: TErrWarnCount; override;
          procedure SetVisible(const AVisible: boolean; const ASetComments: boolean = true); override;
          function CanBeFocused: boolean; override;
+         function UnPinComments(AShow: boolean = true): integer; override;
    end;
 
    TBranch = class(TObjectList, IIdentifiable)
@@ -367,7 +368,11 @@ var
    lBranch, lBranch2: TBranch;
    i: integer;
    lTextControl, lSourceTextControl: TCustomEdit;
+   iter: IIterator;
+   lComment, lNewComment: TComment;
+   lUnPin: boolean;
 begin
+   lUnPin := false;
    Visible := ASource.Visible;
    SetFont(ASource.Font);
    lSourceTextControl := ASource.GetTextControl;
@@ -417,7 +422,20 @@ begin
    begin
       FFoldParms.Width := ASource.FFoldParms.Width;
       FFoldParms.Height := ASource.FFoldParms.Height;
+      lUnPin := ASource.PinComments(false) > 0;
    end;
+
+   iter := ASource.GetPinComments;
+   while iter.HasNext do
+   begin
+      lComment := TComment(iter.Next);
+      lNewComment := TComment.Clone(Page, lComment);
+      lNewComment.PinControl := Self;
+      lNewComment.Visible := false;
+   end;
+
+   if lUnPin then
+      ASource.UnPinComments(false);
 end;
 
 destructor TBlock.Destroy;
@@ -991,7 +1009,7 @@ var
    lWnd: THandle;
 begin
    result := false;
-   lWnd := GetWindow(GetTopWindow(Page.Handle), GW_HWNDLAST);
+   lWnd := GetWindow(FTopParentBlock.Handle, GW_HWNDLAST);
    while lWnd <> 0 do
    begin
       if lWnd = FTopParentBlock.Handle then
@@ -1880,7 +1898,7 @@ begin
    result := false;
 end;
 
-procedure TBlock.PinComments(AHide: boolean = true);
+function TBlock.PinComments(AHide: boolean = true): integer;
 var
    iter: IIterator;
    lComment: TComment;
@@ -1896,9 +1914,10 @@ begin
       if AHide then
          lComment.Visible := false;
    end;
+   result := iter.Count;
 end;
 
-procedure TBlock.UnPinComments(AShow: boolean = true);
+function TBlock.UnPinComments(AShow: boolean = true): integer;
 var
    iter: IIterator;
    lComment: TComment;
@@ -1917,6 +1936,14 @@ begin
          lComment.BringToFront;
       end;
    end;
+   result := iter.Count;
+end;
+
+function TGroupBlock.UnPinComments(AShow: boolean = true): integer;
+begin
+   result := 0;
+   if Expanded then
+      result := inherited UnPinComments(AShow);
 end;
 
 procedure TBlock.SetVisible(const AVisible: boolean; const ASetComments: boolean = true);
@@ -2014,9 +2041,8 @@ begin
       FParentBlock.ResizeWithDrawLock;
       NavigatorForm.Repaint;
    end;
-
-   if Expanded then
-      UnPinComments;
+   
+   UnPinComments;
 end;
 
 function TBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
@@ -2060,13 +2086,16 @@ var
    lUnPin: boolean;
 begin
    inherited SaveInXML(ATag);
+   lUnPin := false;
    if ATag <> nil then
    begin
+
       if Expanded then
       begin
          fw := FFoldParms.Width;
          fh := FFoldParms.Height;
          brx := Branch.Hook.X;
+         lUnPin := PinComments(false) > 0;
       end
       else
       begin
@@ -2076,12 +2105,13 @@ begin
          ATag.SetAttribute('h', IntToStr(FFoldParms.Height));
          ATag.SetAttribute('w', IntToStr(FFoldParms.Width));
          ATag.SetAttribute('bh', IntToStr(FFoldParms.BottomHook));
-      end;
+      end;      
       ATag.SetAttribute('brx', IntToStr(brx));
       ATag.SetAttribute('bry', IntToStr(Branch.Hook.Y));
       ATag.SetAttribute('fw', IntToStr(fw));
       ATag.SetAttribute('fh', IntToStr(fh));
       ATag.SetAttribute('folded', BoolToStr(not Expanded, true));
+      
       lText := GetFoldedText;
       if lText <> '' then
       begin
@@ -2089,16 +2119,8 @@ begin
          TXMLProcessor.AddCDATA(tag1, lText);
          ATag.AppendChild(tag1);
       end;
-
-      lUnPin := false;
+      
       iter := GetPinComments;
-      if (iter.Count = 0) and Visible then
-      begin
-         PinComments(false);
-         iter := GetPinComments;
-         if iter.Count > 0 then
-            lUnPin := true;
-      end;
       while iter.HasNext do
          TComment(iter.Next).ExportToXMLTag2(ATag);
 
@@ -2282,11 +2304,7 @@ begin
       begin
          lNewBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag, lParent, lBlock, result, Ired);
          if result = errNone then
-         begin
             lParent.ResizeWithDrawLock;
-            if (lNewBlock is TGroupBlock) and TGroupBlock(lNewBlock).Expanded then
-               lNewBlock.UnPinComments;
-         end;
       end;
    end;
 end;

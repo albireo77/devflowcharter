@@ -893,6 +893,7 @@ begin
                   lNewBlock.Show;
                   lNewBlock.RefreshStatements;
                end;
+               lNewBlock.UnPinComments;
                if GSettings.UpdateEditor then
                   TInfra.GetEditorForm.RefreshEditorForObject(lNewBlock);
                GChange := 1;
