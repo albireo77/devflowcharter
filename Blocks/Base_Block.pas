@@ -83,7 +83,7 @@ type
          procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
          procedure NCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
          procedure WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo); message WM_GETMINMAXINFO;
-         procedure WMExitSizeMove(var Msg: TMessage); message WM_EXITSIZEMOVE;
+         procedure WMExitSizeMove(var Msg: TWMMove); message WM_EXITSIZEMOVE;
          procedure OnMouseLeave; virtual;
          procedure Paint; override;
          procedure DrawI;
@@ -154,6 +154,7 @@ type
          procedure GenerateTemplateSection(const ALines: TStringList; const ATemplate: TStringList; const ALangId: string; const ADeep: integer); overload; virtual;
          procedure GenerateTemplateSection(const ALines: TStringList; const ATemplate: string; const ALangId: string; const ADeep: integer); overload;
          function GetFrontMemo: TMemo; virtual;
+         procedure CreateParams(var Params: TCreateParams); override;
          function FocusOnTextControl(AInfo: TFocusInfo): boolean;
          procedure ClearSelection;
          procedure ChangeFrame;
@@ -431,7 +432,6 @@ begin
       lComment := TComment(iter.Next);
       lNewComment := TComment.Clone(Page, lComment);
       lNewComment.PinControl := Self;
-      lNewComment.Visible := false;
    end;
 
    if lUnPin then
@@ -462,6 +462,19 @@ begin
       FBranchArray[i].Free;
    FBranchArray := nil;
    inherited Destroy;
+end;
+
+procedure TBlock.CreateParams(var Params: TCreateParams);
+begin
+   inherited CreateParams(Params);
+   Params.Style := Params.Style or WS_CLIPCHILDREN;
+end;
+
+procedure TBlock.WMExitSizeMove(var Msg: TWMMove);
+begin
+   inherited;
+   UpdateMemoVScroll;
+   UpdateMemoHScroll;
 end;
 
 procedure TBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -1009,17 +1022,20 @@ var
    lWnd: THandle;
 begin
    result := false;
-   lWnd := GetWindow(FTopParentBlock.Handle, GW_HWNDLAST);
-   while lWnd <> 0 do
+   if AControl <> nil then
    begin
-      if lWnd = FTopParentBlock.Handle then
+      lWnd := GetWindow(AControl.Handle, GW_HWNDLAST);
+      while lWnd <> 0 do
       begin
-         result := true;
-         break;
-      end
-      else if lWnd = AControl.Handle then
-         break;
-      lWnd := GetNextWindow(lWnd, GW_HWNDPREV);
+         if lWnd = FTopParentBlock.Handle then
+         begin
+            result := true;
+            break;
+         end
+         else if lWnd = AControl.Handle then
+            break;
+         lWnd := GetNextWindow(lWnd, GW_HWNDPREV);
+      end;
    end;
 end;
 
@@ -1711,13 +1727,6 @@ begin
    result := (lMemo <> nil) and lMemo.WordWrap;
 end;
 
-procedure TBlock.WMExitSizeMove(var Msg: TMessage);
-begin
-   inherited;
-   UpdateMemoVScroll;
-   UpdateMemoHScroll;
-end;
-
 function TBlock.CanBeFocused: boolean;
 var
    lParent: TGroupBlock;
@@ -2045,37 +2054,6 @@ begin
    UnPinComments;
 end;
 
-function TBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
-var
-   lTag: IXMLElement;
-   lTextControl: TCustomEdit;
-   lValue: integer;
-begin
-   result := errNone;
-   if ATag <> nil then
-   begin
-      lTag := TXMLProcessor.FindChildTag(ATag, 'text');
-      lTextControl := GetTextControl;
-      if (lTag <> nil) and (lTextControl <> nil) then
-      begin
-         FRefreshMode := true;
-         lTextControl.Text := AnsiReplaceStr(lTag.Text, '#!', CRLF);
-         FRefreshMode := false;
-      end;
-      lValue := StrToIntDef(ATag.GetAttribute('fontsize'), 8);
-      if lValue in [8, 10, 12] then
-         SetFontSize(lValue);
-      lValue := StrToIntDef(ATag.GetAttribute('fontstyle'), 0);
-      SetFontStyle(TInfra.DecodeFontStyle(lValue));
-      Frame := ATag.GetAttribute('frame') = 'True';
-      memoWidth := StrToIntDef(ATag.GetAttribute('memW'), 280);
-      memoHeight := StrToIntDef(ATag.GetAttribute('memH'), 182);
-      MemoVScroll := StrToBoolDef(ATag.GetAttribute('mem_vscroll'), false);
-      MemoHScroll := StrToBoolDef(ATag.GetAttribute('mem_hscroll'), false);
-      MemoWordWrap := StrToBoolDef(ATag.GetAttribute('mem_wordwrap'), false);
-   end;
-end;
-
 procedure TGroupBlock.SaveInXML(const ATag: IXMLElement);
 var
    brx, fw, fh, i: integer;
@@ -2084,11 +2062,35 @@ var
    lBranch: TBranch;
    iter: IIterator;
    lUnPin: boolean;
+   lTextControl: TCustomEdit;
 begin
-   inherited SaveInXML(ATag);
    lUnPin := false;
    if ATag <> nil then
    begin
+      ATag.SetAttribute('type', IntToStr(Ord(BType)));
+      ATag.SetAttribute('frame', BoolToStr(FFrame, true));
+      ATag.SetAttribute('x', IntToStr(Left));
+      ATag.SetAttribute('y', IntToStr(Top));
+      ATag.SetAttribute('h', IntToStr(Height));
+      ATag.SetAttribute('w', IntToStr(Width));
+      ATag.SetAttribute('bh', IntToStr(BottomHook));
+      ATag.SetAttribute('brx', IntToStr(BottomPoint.X));
+      ATag.SetAttribute(ID_ATTR, IntToStr(FId));
+      ATag.SetAttribute('memW', IntToStr(memoWidth));
+      ATag.SetAttribute('memH', IntToStr(memoHeight));
+      ATag.SetAttribute('mem_vscroll', BoolToStr(FMemoVScroll, true));
+      ATag.SetAttribute('mem_hscroll', BoolToStr(FMemoHScroll, true));
+      ATag.SetAttribute('mem_wordwrap', BoolToStr(MemoWordWrap, true));
+      ATag.SetAttribute('fontsize', IntToStr(Font.Size));
+      ATag.SetAttribute('fontstyle', TInfra.EncodeFontStyle(Font.Style));
+      lTextControl := GetTextControl;
+      if (lTextControl <> nil) and (lTextControl.Text <> '') then
+      begin
+         lText := AnsiReplaceStr(lTextControl.Text, CRLF, '#!');
+         tag1 := ATag.OwnerDocument.CreateElement('text');
+         TXMLProcessor.AddCDATA(tag1, lText);
+         ATag.AppendChild(tag1);
+      end;
 
       if Expanded then
       begin
@@ -2159,6 +2161,8 @@ var
    lTextControl: TCustomEdit;
    lText: string;
    lTag: IXMLElement;
+   iter: IIterator;
+   lUnPin: boolean;
 begin
    if ATag <> nil then
    begin
@@ -2186,6 +2190,58 @@ begin
          TXMLProcessor.AddCDATA(lTag, lText);
          ATag.AppendChild(lTag);
       end;
+      lUnPin := PinComments(false) > 0;
+      if lUnPin then
+      begin
+         iter := GetPinComments;
+         while iter.HasNext do
+            TComment(iter.Next).ExportToXMLTag2(ATag);
+         UnPinComments(false);
+      end;
+   end;
+end;
+
+function TBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
+var
+   lTag, lTag1: IXMLElement;
+   lTextControl: TCustomEdit;
+   lValue: integer;
+   lComment: TComment;
+begin
+   result := errNone;
+   if ATag <> nil then
+   begin
+      lTag := TXMLProcessor.FindChildTag(ATag, 'text');
+      lTextControl := GetTextControl;
+      if (lTag <> nil) and (lTextControl <> nil) then
+      begin
+         FRefreshMode := true;
+         lTextControl.Text := AnsiReplaceStr(lTag.Text, '#!', CRLF);
+         FRefreshMode := false;
+      end;
+
+      lValue := StrToIntDef(ATag.GetAttribute('fontsize'), 8);
+      if lValue in [8, 10, 12] then
+         SetFontSize(lValue);
+
+      lValue := StrToIntDef(ATag.GetAttribute('fontstyle'), 0);
+      SetFontStyle(TInfra.DecodeFontStyle(lValue));
+      
+      Frame := ATag.GetAttribute('frame') = 'True';
+      memoWidth := StrToIntDef(ATag.GetAttribute('memW'), 280);
+      memoHeight := StrToIntDef(ATag.GetAttribute('memH'), 182);
+      MemoVScroll := StrToBoolDef(ATag.GetAttribute('mem_vscroll'), false);
+      MemoHScroll := StrToBoolDef(ATag.GetAttribute('mem_hscroll'), false);
+      MemoWordWrap := StrToBoolDef(ATag.GetAttribute('mem_wordwrap'), false);
+
+      lTag1 := TXMLProcessor.FindChildTag(ATag, COMMENT_ATTR);
+      while lTag1 <> nil do
+      begin
+         lComment := TComment.CreateDefault(Page);
+         lComment.ImportFromXMLTag(lTag1, Self);
+         lTag1 := TXMLProcessor.FindNextTag(lTag1);
+      end;
+      UnPinComments;
    end;
 end;
 
@@ -2193,7 +2249,6 @@ function TGroupBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
 var
    lTag1, lTag2: IXMLElement;
    lBranchId, lBranchIdx, lBranchStmntId, hx, hy: integer;
-   lComment: TComment;
 begin
    result := inherited GetFromXML(ATag);
    if ATag <> nil then
@@ -2228,15 +2283,6 @@ begin
          SetFoldedText(lTag2.Text);
       FFoldParms.Width := StrToIntDef(ATag.GetAttribute('fw'), 140);
       FFoldParms.Height := StrToIntDef(ATag.GetAttribute('fh'), 91);
-
-      lTag1 := TXMLProcessor.FindChildTag(ATag, COMMENT_ATTR);
-      while lTag1 <> nil do
-      begin
-         lComment := TComment.CreateDefault(Page);
-         lComment.ImportFromXMLTag(lTag1, Self);
-         lTag1 := TXMLProcessor.FindNextTag(lTag1);
-      end;
-
       if ATag.GetAttribute('folded') = 'True' then
          ExpandFold(false);
    end;

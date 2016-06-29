@@ -99,7 +99,7 @@ type
       function FindObject(const AId: integer): TObject;
       procedure RefreshSizeEdits;
       procedure PopulateDataTypes;
-      procedure UpdateZOrder;
+      procedure UpdateZOrder(const AParent: TWinControl);
       function Register(const AObject: TObject; const AId: integer = ID_INVALID): integer;
       procedure UnRegister(const AObject: TObject);
       function GetPage(const ACaption: string; const ACreate: boolean = true): TBlockTabSheet;
@@ -282,19 +282,6 @@ begin
    result := GetComponents(PAGE_INDEX_SORT, TUserDataType.ClassName);
 end;
 
-procedure TProject.RefreshZOrder;
-var
-   iter: IIterator;
-   lWinControl: IWinControl;
-begin
-   iter := GetComponents(Z_ORDER_SORT);
-   while iter.HasNext do
-   begin
-      if Supports(iter.Next, IWinControl, lWinControl) then
-         lWinControl.BringAllToFront;
-   end;
-end;
-
 function TProject.GetComponents(const ASortType: integer = NO_SORT; const AClassName: string = ''): IIterator;
 var
    i: integer;
@@ -405,6 +392,8 @@ procedure TProject.ExportToXMLTag(const ATag: IXMLElement);
 var
    itr, iter: IIterator;
    lXmlObj: IXMLable;
+   i: integer;
+   lPageControl: TPageControl;
 begin
 
    ATag.SetAttribute(LANG_ATTR, GInfra.CurrentLang.Name);
@@ -415,7 +404,9 @@ begin
    if FGlobalConsts <> nil then
       FGlobalConsts.ExportToXMLTag(ATag);
 
-   UpdateZOrder;
+   lPageControl := TInfra.GetMainForm.pgcPages;
+   for i := 0 to lPageControl.PageCount-1 do
+      UpdateZOrder(lPageControl.Pages[i]);
 
    iter := GetComponents(PAGE_INDEX_SORT);
    while iter.HasNext do
@@ -702,23 +693,39 @@ begin
    end;
 end;
 
-procedure TProject.UpdateZOrder;
+procedure TProject.UpdateZOrder(const AParent: TWinControl);
 var
    lWinControl: IWinControl;
    lWnd: THandle;
    i: integer;
 begin
    i := 0;
-   lWnd := GetWindow(GetTopWindow(TInfra.GetMainForm.Handle), GW_HWNDLAST);
-   while lWnd <> 0 do
+   if AParent <> nil then
    begin
-      lWinControl := GetIWinControlComponent(lWnd);
-      if lWinControl <> nil then
+      lWnd := GetWindow(GetTopWindow(AParent.Handle), GW_HWNDLAST);
+      while lWnd <> 0 do
       begin
-         lWinControl.SetZOrderValue(i);
-         i := i + 1;
+         lWinControl := GetIWinControlComponent(lWnd);
+         if lWinControl <> nil then
+         begin
+            lWinControl.SetZOrderValue(i);
+            i := i + 1;
+         end;
+         lWnd := GetNextWindow(lWnd, GW_HWNDPREV);
       end;
-      lWnd := GetNextWindow(lWnd, GW_HWNDPREV);
+   end;
+end;
+
+procedure TProject.RefreshZOrder;
+var
+   iter: IIterator;
+   lWinControl: IWinControl;
+begin
+   iter := GetComponents(Z_ORDER_SORT);
+   while iter.HasNext do
+   begin
+      if Supports(iter.Next, IWinControl, lWinControl) then
+         lWinControl.BringAllToFront;
    end;
 end;
 

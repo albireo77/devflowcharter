@@ -108,6 +108,7 @@ begin
           ASource.Height);
    Font.Assign(ASource.Font);
    Text := ASource.Text;
+   Visible := ASource.Visible;
 end;
 
 constructor TComment.CreateDefault(const APage: TBlockTabSheet);
