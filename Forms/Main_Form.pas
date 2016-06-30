@@ -1448,6 +1448,8 @@ begin
    begin
       pmTabs.PopupComponent.Free;
       NavigatorForm.Invalidate;
+      if GSettings.UpdateEditor then
+         TInfra.GetEditorForm.RefreshEditorForObject(nil);
    end;
 end;
 

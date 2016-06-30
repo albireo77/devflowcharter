@@ -382,23 +382,6 @@ begin
       lTextControl.Text := lSourceTextControl.Text;
    FMemoFolder.Text := ASource.FMemoFolder.Text;
 
-   for i := PRIMARY_BRANCH_IND to High(ASource.FBranchArray) do
-   begin
-      lBranch := ASource.FBranchArray[i];
-      lBranch2 := GetBranch(i);
-      if lBranch2 = nil then
-         lBranch2 := AddBranch(lBranch.Hook, false);
-      lBlock := lBranch.First;
-      lPrevBlock := nil;
-      while lBlock <> nil do
-      begin
-         lNewBlock := TBlockFactory.CloneBlock(lBranch2, lBlock);
-         lBranch2.InsertAfter(lNewBlock, lPrevBlock);
-         lPrevBlock := lBranch2.Last;
-         lBlock := lBlock.Next;
-      end;
-   end;
-
    if not ASource.Expanded then
    begin
       Expanded := false;
@@ -424,6 +407,23 @@ begin
       FFoldParms.Width := ASource.FFoldParms.Width;
       FFoldParms.Height := ASource.FFoldParms.Height;
       lUnPin := ASource.PinComments(false) > 0;
+   end;
+
+   for i := PRIMARY_BRANCH_IND to High(ASource.FBranchArray) do
+   begin
+      lBranch := ASource.FBranchArray[i];
+      lBranch2 := GetBranch(i);
+      if lBranch2 = nil then
+         lBranch2 := AddBranch(lBranch.Hook, false);
+      lBlock := lBranch.First;
+      lPrevBlock := nil;
+      while lBlock <> nil do
+      begin
+         lNewBlock := TBlockFactory.CloneBlock(lBranch2, lBlock);
+         lBranch2.InsertAfter(lNewBlock, lPrevBlock);
+         lPrevBlock := lBranch2.Last;
+         lBlock := lBlock.Next;
+      end;
    end;
 
    iter := ASource.GetPinComments;
