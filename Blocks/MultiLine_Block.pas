@@ -82,11 +82,15 @@ begin
 end;
 
 constructor TMultiLineBlock.Create(const ABranch: TBranch; const ASource: TMultiLineBlock);
+var
+   lUnPin: boolean;
 begin
    Create(ABranch, ASource.Left, ASource.Top, ASource.Width, ASource.Height);
    SetFont(ASource.Font);
    Visible := ASource.Visible;
    FStatements.Text := ASource.FStatements.Text;
+   lUnPin := ASource.PinComments(false) > 0;
+   CloneComments(ASource, lUnPin);
 end;
 
 procedure TMultiLineBlock.OnDblClickMemo(Sender: TObject);

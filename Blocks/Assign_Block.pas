@@ -71,13 +71,15 @@ begin
 end;
 
 constructor TAssignBlock.Create(const ABranch: TBranch; const ASource: TAssignBlock);
+var
+   lUnPin: boolean;
 begin
-
    Create(ABranch, ASource.Left, ASource.Top, ASource.Width, ASource.Height);
-
    SetFont(ASource.Font);
    Visible := ASource.Visible;
    FStatement.Text := ASource.FStatement.Text;
+   lUnPin := ASource.PinComments(false) > 0;
+   CloneComments(ASource, lUnPin);
 end;
 
 procedure TAssignBlock.Paint;

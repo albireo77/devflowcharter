@@ -92,6 +92,8 @@ begin
 end;
 
 constructor TInOutBlock.Create(const ABranch: TBranch; const ASource: TInOutBlock);
+var
+   lUnPin: boolean;
 begin
    FType := ASource.BType;
    FLabel := ASource.FLabel;
@@ -99,6 +101,10 @@ begin
    SetFont(ASource.Font);
    Visible := ASource.Visible;
    FStatement.Text := ASource.FStatement.Text;
+   with ASource.FStatement do
+      FStatement.SetBounds(Left, Top, Width, Height);
+   lUnPin := ASource.PinComments(false) > 0;
+   CloneComments(ASource, lUnPin);
 end;
 
 constructor TInputBlock.Create(const ABranch: TBranch);

@@ -174,6 +174,7 @@ type
          procedure BringAllToFront;
          function PinComments(AHide: boolean = true): integer;
          function UnPinComments(AShow: boolean = true): integer; virtual;
+         procedure CloneComments(const ASource: TBlock; const AUnPin: boolean);
       published
          property Color;
          property OnMouseDown;
@@ -369,8 +370,6 @@ var
    lBranch, lBranch2: TBranch;
    i: integer;
    lTextControl, lSourceTextControl: TCustomEdit;
-   iter: IIterator;
-   lComment, lNewComment: TComment;
    lUnPin: boolean;
 begin
    lUnPin := false;
@@ -426,16 +425,7 @@ begin
       end;
    end;
 
-   iter := ASource.GetPinComments;
-   while iter.HasNext do
-   begin
-      lComment := TComment(iter.Next);
-      lNewComment := TComment.Clone(Page, lComment);
-      lNewComment.PinControl := Self;
-   end;
-
-   if lUnPin then
-      ASource.UnPinComments(false);
+   CloneComments(ASource, lUnPin);
 end;
 
 destructor TBlock.Destroy;
@@ -475,6 +465,22 @@ begin
    inherited;
    UpdateMemoVScroll;
    UpdateMemoHScroll;
+end;
+
+procedure TBlock.CloneComments(const ASource: TBlock; const AUnPin: boolean);
+var
+   iter: IIterator;
+   lComment, lNewComment: TComment;
+begin
+   iter := ASource.GetPinComments;
+   while iter.HasNext do
+   begin
+      lComment := TComment(iter.Next);
+      lNewComment := TComment.Clone(Page, lComment);
+      lNewComment.PinControl := Self;
+   end;
+   if AUnPin then
+      ASource.UnPinComments(false);
 end;
 
 procedure TBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
