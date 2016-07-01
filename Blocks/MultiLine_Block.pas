@@ -89,8 +89,13 @@ begin
    SetFont(ASource.Font);
    Visible := ASource.Visible;
    FStatements.Text := ASource.FStatements.Text;
-   lUnPin := ASource.PinComments(false) > 0;
-   CloneComments(ASource, lUnPin);
+   lUnPin := ASource.PinComments > 0;
+   try
+      CloneComments(ASource);
+   finally
+      if lUnPin then
+         ASource.UnPinComments;
+   end;
 end;
 
 procedure TMultiLineBlock.OnDblClickMemo(Sender: TObject);

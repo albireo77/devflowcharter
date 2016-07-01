@@ -103,8 +103,13 @@ begin
    FStatement.Text := ASource.FStatement.Text;
    with ASource.FStatement do
       FStatement.SetBounds(Left, Top, Width, Height);
-   lUnPin := ASource.PinComments(false) > 0;
-   CloneComments(ASource, lUnPin);
+   lUnPin := ASource.PinComments > 0;
+   try
+      CloneComments(ASource);
+   finally
+      if lUnPin then
+         ASource.UnPinComments;
+   end;
 end;
 
 constructor TInputBlock.Create(const ABranch: TBranch);

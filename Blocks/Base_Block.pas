@@ -172,9 +172,9 @@ type
          function GetPinComments: IIterator;
          procedure SetVisible(const AVisible: boolean; const ASetComments: boolean = true); virtual;
          procedure BringAllToFront;
-         function PinComments(AHide: boolean = true): integer;
-         function UnPinComments(AShow: boolean = true): integer; virtual;
-         procedure CloneComments(const ASource: TBlock; const AUnPin: boolean);
+         function PinComments: integer;
+         function UnPinComments: integer; virtual;
+         procedure CloneComments(const ASource: TBlock);
       published
          property Color;
          property OnMouseDown;
@@ -231,7 +231,7 @@ type
          function CountErrWarn: TErrWarnCount; override;
          procedure SetVisible(const AVisible: boolean; const ASetComments: boolean = true); override;
          function CanBeFocused: boolean; override;
-         function UnPinComments(AShow: boolean = true): integer; override;
+         function UnPinComments: integer; override;
    end;
 
    TBranch = class(TObjectList, IIdentifiable)
@@ -405,27 +405,32 @@ begin
    begin
       FFoldParms.Width := ASource.FFoldParms.Width;
       FFoldParms.Height := ASource.FFoldParms.Height;
-      lUnPin := ASource.PinComments(false) > 0;
+      lUnPin := ASource.PinComments > 0;
    end;
 
-   for i := PRIMARY_BRANCH_IND to High(ASource.FBranchArray) do
-   begin
-      lBranch := ASource.FBranchArray[i];
-      lBranch2 := GetBranch(i);
-      if lBranch2 = nil then
-         lBranch2 := AddBranch(lBranch.Hook, false);
-      lBlock := lBranch.First;
-      lPrevBlock := nil;
-      while lBlock <> nil do
+   try
+      for i := PRIMARY_BRANCH_IND to High(ASource.FBranchArray) do
       begin
-         lNewBlock := TBlockFactory.CloneBlock(lBranch2, lBlock);
-         lBranch2.InsertAfter(lNewBlock, lPrevBlock);
-         lPrevBlock := lBranch2.Last;
-         lBlock := lBlock.Next;
+         lBranch := ASource.FBranchArray[i];
+         lBranch2 := GetBranch(i);
+         if lBranch2 = nil then
+            lBranch2 := AddBranch(lBranch.Hook, false);
+         lBlock := lBranch.First;
+         lPrevBlock := nil;
+         while lBlock <> nil do
+         begin
+            lNewBlock := TBlockFactory.CloneBlock(lBranch2, lBlock);
+            lBranch2.InsertAfter(lNewBlock, lPrevBlock);
+            lPrevBlock := lBranch2.Last;
+            lBlock := lBlock.Next;
+         end;
       end;
+      CloneComments(ASource);
+   finally
+      if lUnPin then
+         ASource.UnPinComments;
    end;
 
-   CloneComments(ASource, lUnPin);
 end;
 
 destructor TBlock.Destroy;
@@ -467,7 +472,7 @@ begin
    UpdateMemoHScroll;
 end;
 
-procedure TBlock.CloneComments(const ASource: TBlock; const AUnPin: boolean);
+procedure TBlock.CloneComments(const ASource: TBlock);
 var
    iter: IIterator;
    lComment, lNewComment: TComment;
@@ -479,8 +484,6 @@ begin
       lNewComment := TComment.Clone(Page, lComment);
       lNewComment.PinControl := Self;
    end;
-   if AUnPin then
-      ASource.UnPinComments(false);
 end;
 
 procedure TBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -1913,7 +1916,7 @@ begin
    result := false;
 end;
 
-function TBlock.PinComments(AHide: boolean = true): integer;
+function TBlock.PinComments: integer;
 var
    iter: IIterator;
    lComment: TComment;
@@ -1925,14 +1928,13 @@ begin
    begin
       lComment := TComment(iter.Next);
       lComment.PinControl := Self;
+      lComment.Visible := false;
       lComment.SetBounds(lComment.Left - lPoint.X, lComment.Top - lPoint.Y, lComment.Width, lComment.Height);
-      if AHide then
-         lComment.Visible := false;
    end;
    result := iter.Count;
 end;
 
-function TBlock.UnPinComments(AShow: boolean = true): integer;
+function TBlock.UnPinComments: integer;
 var
    iter: IIterator;
    lComment: TComment;
@@ -1945,20 +1947,17 @@ begin
       lComment := TComment(iter.Next);
       lComment.PinControl := nil;
       lComment.SetBounds(lComment.Left + lPoint.X, lComment.Top + lPoint.Y, lComment.Width, lComment.Height);
-      if AShow then
-      begin
-         lComment.Visible := true;
-         lComment.BringToFront;
-      end;
+      lComment.Visible := true;
+      lComment.BringToFront;
    end;
    result := iter.Count;
 end;
 
-function TGroupBlock.UnPinComments(AShow: boolean = true): integer;
+function TGroupBlock.UnPinComments: integer;
 begin
    result := 0;
    if Expanded then
-      result := inherited UnPinComments(AShow);
+      result := inherited UnPinComments;
 end;
 
 procedure TBlock.SetVisible(const AVisible: boolean; const ASetComments: boolean = true);
@@ -2103,7 +2102,7 @@ begin
          fw := FFoldParms.Width;
          fh := FFoldParms.Height;
          brx := Branch.Hook.X;
-         lUnPin := PinComments(false) > 0;
+         lUnPin := PinComments > 0;
       end
       else
       begin
@@ -2113,52 +2112,58 @@ begin
          ATag.SetAttribute('h', IntToStr(FFoldParms.Height));
          ATag.SetAttribute('w', IntToStr(FFoldParms.Width));
          ATag.SetAttribute('bh', IntToStr(FFoldParms.BottomHook));
-      end;      
-      ATag.SetAttribute('brx', IntToStr(brx));
-      ATag.SetAttribute('bry', IntToStr(Branch.Hook.Y));
-      ATag.SetAttribute('fw', IntToStr(fw));
-      ATag.SetAttribute('fh', IntToStr(fh));
-      ATag.SetAttribute('folded', BoolToStr(not Expanded, true));
-      
-      lText := GetFoldedText;
-      if lText <> '' then
-      begin
-         tag1 := ATag.OwnerDocument.CreateElement('foldtext');
-         TXMLProcessor.AddCDATA(tag1, lText);
-         ATag.AppendChild(tag1);
-      end;
-      
-      iter := GetPinComments;
-      while iter.HasNext do
-         TComment(iter.Next).ExportToXMLTag2(ATag);
-
-      for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
-      begin
-         lBranch := FBranchArray[i];
-
-         tag2 := ATag.OwnerDocument.CreateElement('branch');
-         ATag.AppendChild(tag2);
-
-         tag2.SetAttribute(ID_ATTR, IntToStr(lBranch.Id));
-
-         if lBranch.Statement <> nil then
-            tag2.SetAttribute('bstmnt_hash', IntToStr(lBranch.Statement.Id));
-
-         tag1 := ATag.OwnerDocument.CreateElement('x');
-         TXMLProcessor.AddText(tag1, IntToStr(lBranch.hook.X));
-         tag2.AppendChild(tag1);
-
-         tag1 := ATag.OwnerDocument.CreateElement('y');
-         TXMLProcessor.AddText(tag1, IntToStr(lBranch.hook.Y));
-         tag2.AppendChild(tag1);
-
-         iter := GetBlocks(lBranch.Index);
-         while iter.HasNext do
-            TXMLProcessor.ExportBlockToXML(TBlock(iter.Next), tag2);
       end;
 
-      if lUnPin then
-         UnPinComments(false);
+      try
+
+        ATag.SetAttribute('brx', IntToStr(brx));
+        ATag.SetAttribute('bry', IntToStr(Branch.Hook.Y));
+        ATag.SetAttribute('fw', IntToStr(fw));
+        ATag.SetAttribute('fh', IntToStr(fh));
+        ATag.SetAttribute('folded', BoolToStr(not Expanded, true));
+
+        lText := GetFoldedText;
+        if lText <> '' then
+        begin
+           tag1 := ATag.OwnerDocument.CreateElement('foldtext');
+           TXMLProcessor.AddCDATA(tag1, lText);
+           ATag.AppendChild(tag1);
+        end;
+
+        iter := GetPinComments;
+        while iter.HasNext do
+           TComment(iter.Next).ExportToXMLTag2(ATag);
+
+        for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
+        begin
+           lBranch := FBranchArray[i];
+
+           tag2 := ATag.OwnerDocument.CreateElement('branch');
+           ATag.AppendChild(tag2);
+
+           tag2.SetAttribute(ID_ATTR, IntToStr(lBranch.Id));
+
+           if lBranch.Statement <> nil then
+              tag2.SetAttribute('bstmnt_hash', IntToStr(lBranch.Statement.Id));
+
+           tag1 := ATag.OwnerDocument.CreateElement('x');
+           TXMLProcessor.AddText(tag1, IntToStr(lBranch.hook.X));
+           tag2.AppendChild(tag1);
+
+           tag1 := ATag.OwnerDocument.CreateElement('y');
+           TXMLProcessor.AddText(tag1, IntToStr(lBranch.hook.Y));
+           tag2.AppendChild(tag1);
+
+           iter := GetBlocks(lBranch.Index);
+           while iter.HasNext do
+              TXMLProcessor.ExportBlockToXML(TBlock(iter.Next), tag2);
+        end;
+
+      finally
+         if lUnPin then
+            UnPinComments;
+      end;
+
    end;
 end;
 
@@ -2196,13 +2201,13 @@ begin
          TXMLProcessor.AddCDATA(lTag, lText);
          ATag.AppendChild(lTag);
       end;
-      lUnPin := PinComments(false) > 0;
+      lUnPin := PinComments > 0;
       if lUnPin then
       begin
          iter := GetPinComments;
          while iter.HasNext do
             TComment(iter.Next).ExportToXMLTag2(ATag);
-         UnPinComments(false);
+         UnPinComments;
       end;
    end;
 end;
