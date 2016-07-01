@@ -878,7 +878,7 @@ begin
             begin
                lTmpCursor := Screen.Cursor;
                Screen.Cursor := crHourGlass;
-               lNewBlock := TBlockFactory.CloneBlock(lBranch, TBlock(GClpbrd.Instance));
+               lNewBlock := TBlockFactory.Clone(lBranch, TBlock(GClpbrd.Instance));
                Screen.Cursor := lTmpCursor;
             end;
             if lBlockType <> blUnknown then

@@ -419,7 +419,7 @@ begin
          lPrevBlock := nil;
          while lBlock <> nil do
          begin
-            lNewBlock := TBlockFactory.CloneBlock(lBranch2, lBlock);
+            lNewBlock := TBlockFactory.Clone(lBranch2, lBlock);
             lBranch2.InsertAfter(lNewBlock, lPrevBlock);
             lPrevBlock := lBranch2.Last;
             lBlock := lBlock.Next;

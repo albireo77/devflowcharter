@@ -29,7 +29,7 @@ type
 
    TBlockFactory = class(TObject)
    public
-      class function CloneBlock(const ABranch: TBranch; const ABlock: TBlock): TBlock;
+      class function Clone(const ABranch: TBranch; const ABlock: TBlock): TBlock;
       class function CreateBlock(const ABranch: TBranch; const ABlockType: TBlockType): TBlock; overload;
       class function CreateBlock(const ATag: IXMLElement; const ABranch: TBranch; const ATab: TBlockTabSheet = nil): TBlock; overload;
    end;
@@ -40,7 +40,7 @@ uses
    Assign_Block, MulAssign_Block, InOut_Block, FunctionCall_Block, WhileDo_Block, RepeatUntil_Block, ApplicationCommon,
    ForDo_Block, IfElse_Block, If_Block, Case_Block, Return_Block, Text_Block, Main_Block, CommonInterfaces, Folder_Block;
 
-class function TBlockFactory.CloneBlock(const ABranch: TBranch; const ABlock: TBlock): TBlock;
+class function TBlockFactory.Clone(const ABranch: TBranch; const ABlock: TBlock): TBlock;
 begin
    result := nil;
    if (ABranch <> nil) and (ABlock <> nil) then
