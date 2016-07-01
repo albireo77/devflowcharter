@@ -169,7 +169,7 @@ begin
 
     while lTag <> nil do
     begin
-       lNewBlock := TBlockFactory.CreateBlock(lTag, lBranch, lTab);
+       lNewBlock := TBlockFactory.Create(lTag, lBranch, lTab);
        lTab := nil;
        if lNewBlock <> nil then
        begin
