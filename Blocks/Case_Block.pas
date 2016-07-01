@@ -38,9 +38,9 @@ type
          function GetDiamondPoint: TPoint; override;
          procedure PlaceBranchStatement(const ABranch: TBranch);
       public
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
-         constructor Create(const ABranch: TBranch; const ASource: TCaseBlock); overload;
          constructor Create(const ABranch: TBranch); overload;
+         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
+         constructor Clone(const ABranch: TBranch; const ASource: TCaseBlock);
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
          function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
          procedure ResizeHorz(const AContinue: boolean); override;
@@ -99,7 +99,7 @@ begin
 
 end;
 
-constructor TCaseBlock.Create(const ABranch: TBranch; const ASource: TCaseBlock);
+constructor TCaseBlock.Clone(const ABranch: TBranch; const ASource: TCaseBlock);
 var
    i: integer;
    lBranch, lBranch2: TBranch;
@@ -114,7 +114,7 @@ begin
           ASource.DefaultBranch.Hook.X,
           ASource.DefaultBranch.Hook.Y);
 
-   inherited Create(ASource);
+   inherited Clone(ASource);
 
    for i := DEFAULT_BRANCH_IND+1 to High(ASource.FBranchArray) do
    begin

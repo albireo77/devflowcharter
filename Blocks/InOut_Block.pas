@@ -35,7 +35,7 @@ type
          procedure Paint; override;
          procedure PutTextControls; override;
       public
-         constructor Create(const ABranch: TBranch; const ASource: TInOutBlock); overload;
+         constructor Clone(const ABranch: TBranch; const ASource: TInOutBlock);
          procedure ChangeColor(const AColor: TColor); override;
    end;
 
@@ -91,7 +91,7 @@ begin
    FStatement.SelStart := Length(FStatement.Text) + GInfra.CurrentLang.InOutCursorPos;
 end;
 
-constructor TInOutBlock.Create(const ABranch: TBranch; const ASource: TInOutBlock);
+constructor TInOutBlock.Clone(const ABranch: TBranch; const ASource: TInOutBlock);
 var
    lUnPin: boolean;
 begin

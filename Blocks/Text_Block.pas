@@ -36,9 +36,9 @@ type
 
    TTextBlock = class(TMultiLineBlock)
       public
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; override;
-         constructor Create(const ABranch: TBranch; const ASource: TTextBlock); overload;
          constructor Create(const ABranch: TBranch); overload;
+         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; override;
+         constructor Clone(const ABranch: TBranch; const ASource: TTextBlock);
          procedure ChangeColor(const AColor: TColor); override;
       protected
          FCorner: TCorner;
@@ -66,9 +66,9 @@ begin
    FCorner.SetBounds(Width-15, 0, 15, 15);
 end;
 
-constructor TTextBlock.Create(const ABranch: TBranch; const ASource: TTextBlock);
+constructor TTextBlock.Clone(const ABranch: TBranch; const ASource: TTextBlock);
 begin
-   inherited Create(ABranch, ASource);
+   inherited Clone(ABranch, ASource);
 end;
 
 constructor TTextBlock.Create(const ABranch: TBranch);

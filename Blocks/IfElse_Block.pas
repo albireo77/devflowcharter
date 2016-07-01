@@ -40,9 +40,9 @@ type
          procedure SetWidth(const AMinX: integer); override;
          function GetDiamondPoint: TPoint; override;
       public
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, p1X, p3X, b_hook, t_hook, p1Y, p3Y, f_hook, tt_hook: integer; const AId: integer = ID_INVALID); overload;
-         constructor Create(const ABranch: TBranch; const ASource: TIfElseBlock); overload;
          constructor Create(const ABranch: TBranch); overload;
+         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, p1X, p3X, b_hook, t_hook, p1Y, p3Y, f_hook, tt_hook: integer; const AId: integer = ID_INVALID); overload;
+         constructor Clone(const ABranch: TBranch; const ASource: TIfElseBlock);
          procedure ResizeHorz(const AContinue: boolean); override;
          procedure ResizeVert(const AContinue: boolean); override;
          procedure ExpandFold(const AResize: boolean); override;
@@ -93,9 +93,8 @@ begin
 
 end;
 
-constructor TIfElseBlock.Create(const ABranch: TBranch; const ASource: TIfElseBlock);
+constructor TIfElseBlock.Clone(const ABranch: TBranch; const ASource: TIfElseBlock);
 begin
-
    Create(ABranch,
           ASource.Left,
           ASource.Top,
@@ -109,9 +108,7 @@ begin
           ASource.FalseBranch.Hook.Y,
           ASource.FalseHook,
           ASource.TrueHook);
-
-   inherited Create(ASource);
-
+   inherited Clone(ASource);
 end;
 
 constructor TIfElseBlock.Create(const ABranch: TBranch);

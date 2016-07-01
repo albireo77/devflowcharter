@@ -205,7 +205,7 @@ type
          FFoldParms: TInitParms;
          property BranchCount: integer read GetBranchCount default 0;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: Integer; const AHook: TPoint; const AId: integer = ID_INVALID); overload;
-         constructor Create(const ASource: TGroupBlock); overload;
+         constructor Clone(const ASource: TGroupBlock); overload;
          destructor Destroy; override;
          procedure ResizeHorz(const AContinue: boolean); virtual;
          procedure ResizeVert(const AContinue: boolean); virtual;
@@ -363,7 +363,7 @@ begin
    Branch := AddBranch(AHook, false);
 end;
 
-constructor TGroupBlock.Create(const ASource: TGroupBlock);
+constructor TGroupBlock.Clone(const ASource: TGroupBlock);
 var
    lBlock: TBlock;
    lNewBlock, lPrevBlock: TBlock;

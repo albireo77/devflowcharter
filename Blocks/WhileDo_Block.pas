@@ -30,9 +30,9 @@ type
 
    TWhileDoBlock = class(TGroupBlock)
       public
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
-         constructor Create(const ABranch: TBranch; const ASource: TWhileDoBlock); overload;
          constructor Create(const ABranch: TBranch); overload;
+         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
+         constructor Clone(const ABranch: TBranch; const ASource: TWhileDoBlock);
          procedure ChangeColor(const AColor: TColor); override;
       protected
          procedure Paint; override;
@@ -74,9 +74,8 @@ begin
 
 end;
 
-constructor TWhileDoBlock.Create(const ABranch: TBranch; const ASource: TWhileDoBlock);
+constructor TWhileDoBlock.Clone(const ABranch: TBranch; const ASource: TWhileDoBlock);
 begin
-
    Create(ABranch,
           ASource.Left,
           ASource.Top,
@@ -85,9 +84,7 @@ begin
           ASource.BottomHook,
           ASource.Branch.Hook.X,
           ASource.Branch.Hook.Y);
-
-   inherited Create(ASource);
-
+   inherited Clone(ASource);
 end;
 
 constructor TWhileDoBlock.Create(const ABranch: TBranch);

@@ -37,7 +37,7 @@ type
          procedure UpdateEditor(AEdit: TCustomEdit); override;
       protected
          FStatements: TStatementMemo;
-         constructor Create(const ABranch: TBranch; const ASource: TMultiLineBlock); overload;
+         constructor Clone(const ABranch: TBranch; const ASource: TMultiLineBlock);
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; virtual;
          procedure Paint; override;
          procedure OnDblClickMemo(Sender: TObject);
@@ -81,7 +81,7 @@ begin
    FStatement := nil;
 end;
 
-constructor TMultiLineBlock.Create(const ABranch: TBranch; const ASource: TMultiLineBlock);
+constructor TMultiLineBlock.Clone(const ABranch: TBranch; const ASource: TMultiLineBlock);
 var
    lUnPin: boolean;
 begin

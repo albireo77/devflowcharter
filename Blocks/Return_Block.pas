@@ -28,9 +28,9 @@ type
 
    TReturnBlock = class(TBlock)
       public
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
-         constructor Create(const ABranch: TBranch; const ASource: TReturnBlock); overload;
          constructor Create(const ABranch: TBranch); overload;
+         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
+         constructor Clone(const ABranch: TBranch; const ASource: TReturnBlock);
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
          procedure ChangeColor(const AColor: TColor); override;
       protected
@@ -73,7 +73,7 @@ begin
    TopHook.X := BottomPoint.X;
 end;
 
-constructor TReturnBlock.Create(const ABranch: TBranch; const ASource: TReturnBlock);
+constructor TReturnBlock.Clone(const ABranch: TBranch; const ASource: TReturnBlock);
 var
    lUnPin: boolean;
 begin

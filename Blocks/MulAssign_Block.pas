@@ -33,9 +33,9 @@ type
       protected
          procedure OnChangeMemo(Sender: TObject); override;
       public
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; override;
-         constructor Create(const ABranch: TBranch; const ASource: TMultiAssignBlock); overload;
          constructor Create(const ABranch: TBranch); overload;
+         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; override;
+         constructor Clone(const ABranch: TBranch; const ASource: TMultiAssignBlock);
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
          procedure ChangeColor(const AColor: TColor); override;
    end;
@@ -52,9 +52,9 @@ begin
    FStatements.ShowHint := true;
 end;
 
-constructor TMultiAssignBlock.Create(const ABranch: TBranch; const ASource: TMultiAssignBlock);
+constructor TMultiAssignBlock.Clone(const ABranch: TBranch; const ASource: TMultiAssignBlock);
 begin
-   inherited Create(ABranch, ASource);
+   inherited Clone(ABranch, ASource);
 end;
 
 constructor TMultiAssignBlock.Create(const ABranch: TBranch);

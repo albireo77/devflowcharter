@@ -30,9 +30,9 @@ type
 
    TIfBlock = class(TGroupBlock)
       public
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
-         constructor Create(const ABranch: TBranch; const ASource: TIfBlock); overload;
          constructor Create(const ABranch: TBranch); overload;
+         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
+         constructor Clone(const ABranch: TBranch; const ASource: TIfBlock);
          function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
          procedure ChangeColor(const AColor: TColor); override;
       protected
@@ -75,7 +75,7 @@ begin
    PutTextControls;
 end;
 
-constructor TIfBlock.Create(const ABranch: TBranch; const ASource: TIfBlock);
+constructor TIfBlock.Clone(const ABranch: TBranch; const ASource: TIfBlock);
 begin
    Create(ABranch,
           ASource.Left,
@@ -85,7 +85,7 @@ begin
           ASource.BottomHook,
           ASource.Branch.Hook.X,
           ASource.Branch.Hook.Y);
-   inherited Create(ASource);
+   inherited Clone(ASource);
 end;
 
 constructor TIfBlock.Create(const ABranch: TBranch);

@@ -30,9 +30,9 @@ type
 
    TFunctionCallBlock = class(TBlock)
       public
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
-         constructor Create(const ABranch: TBranch; const ASource: TFunctionCallBlock); overload;
          constructor Create(const ABranch: TBranch); overload;
+         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
+         constructor Clone(const ABranch: TBranch; const ASource: TFunctionCallBlock);
          procedure ChangeColor(const AColor: TColor); override;
       protected
          procedure Paint; override;
@@ -62,7 +62,7 @@ begin
    Constraints.MinHeight := 51;
 end;
 
-constructor TFunctionCallBlock.Create(const ABranch: TBranch; const ASource: TFunctionCallBlock);
+constructor TFunctionCallBlock.Clone(const ABranch: TBranch; const ASource: TFunctionCallBlock);
 var
    lUnPin: boolean;
 begin

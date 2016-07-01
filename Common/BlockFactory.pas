@@ -46,20 +46,20 @@ begin
    if (ABranch <> nil) and (ABlock <> nil) then
    begin
       case ABlock.BType of
-         blAssign:     result := TAssignBlock.Create(ABranch, TAssignBlock(ABlock));
-         blMultAssign: result := TMultiAssignBlock.Create(ABranch, TMultiAssignBlock(ABlock));
-         blInput:      result := TInputBlock.Create(ABranch, TInputBlock(ABlock));
-         blOutput:     result := TOutputBlock.Create(ABranch, TOutputBlock(ABlock));
-         blFuncCall:   result := TFunctionCallBlock.Create(ABranch, TFunctionCallBlock(ABlock));
-         blWhile:      result := TWhileDoBlock.Create(ABranch, TWhileDoBlock(ABlock));
-         blRepeat:     result := TRepeatUntilBlock.Create(ABranch, TRepeatUntilBlock(ABlock));
-         blFor:        result := TForDoBlock.Create(ABranch, TForDoBlock(ABlock));
-         blIfElse:     result := TIfElseBlock.Create(ABranch, TIfElseBlock(ABlock));
-         blIf:         result := TIfBlock.Create(ABranch, TIfBlock(ABlock));
-         blCase:       result := TCaseBlock.Create(ABranch, TCaseBlock(ABlock));
-         blReturn:     result := TReturnBlock.Create(ABranch, TReturnBlock(ABlock));
-         blText:       result := TTextBlock.Create(ABranch, TTextBlock(ABlock));
-         blFolder:     result := TFolderBlock.Create(ABranch, TFolderBlock(ABlock));
+         blAssign:     result := TAssignBlock.Clone(ABranch, TAssignBlock(ABlock));
+         blMultAssign: result := TMultiAssignBlock.Clone(ABranch, TMultiAssignBlock(ABlock));
+         blInput:      result := TInputBlock.Clone(ABranch, TInputBlock(ABlock));
+         blOutput:     result := TOutputBlock.Clone(ABranch, TOutputBlock(ABlock));
+         blFuncCall:   result := TFunctionCallBlock.Clone(ABranch, TFunctionCallBlock(ABlock));
+         blWhile:      result := TWhileDoBlock.Clone(ABranch, TWhileDoBlock(ABlock));
+         blRepeat:     result := TRepeatUntilBlock.Clone(ABranch, TRepeatUntilBlock(ABlock));
+         blFor:        result := TForDoBlock.Clone(ABranch, TForDoBlock(ABlock));
+         blIfElse:     result := TIfElseBlock.Clone(ABranch, TIfElseBlock(ABlock));
+         blIf:         result := TIfBlock.Clone(ABranch, TIfBlock(ABlock));
+         blCase:       result := TCaseBlock.Clone(ABranch, TCaseBlock(ABlock));
+         blReturn:     result := TReturnBlock.Clone(ABranch, TReturnBlock(ABlock));
+         blText:       result := TTextBlock.Clone(ABranch, TTextBlock(ABlock));
+         blFolder:     result := TFolderBlock.Clone(ABranch, TFolderBlock(ABlock));
       end;
    end;
 end;

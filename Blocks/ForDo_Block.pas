@@ -47,9 +47,9 @@ type
          edtStartVal, edtStopVal: TStatement;
          edtVariable: TEdit;
          property Order: TForOrder read FOrder write SetForOrder;
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, px1, p1Y: integer; const AId: integer = ID_INVALID); overload;
-         constructor Create(const ABranch: TBranch; const ASource: TForDoBlock); overload;
          constructor Create(const ABranch: TBranch); overload;
+         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, px1, p1Y: integer; const AId: integer = ID_INVALID); overload;
+         constructor Clone(const ABranch: TBranch; const ASource: TForDoBlock);
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
          procedure ExpandFold(const AResize: boolean); override;
          function GetDescription: string; override;
@@ -151,7 +151,7 @@ begin
    FStatement := nil;
 end;
 
-constructor TForDoBlock.Create(const ABranch: TBranch; const ASource: TForDoBlock);
+constructor TForDoBlock.Clone(const ABranch: TBranch; const ASource: TForDoBlock);
 begin
 
    Create(ABranch,
@@ -177,7 +177,7 @@ begin
       edtVariable.Visible := false;
    end;
 
-   inherited Create(ASource);
+   inherited Clone(ASource);
 
 end;
 

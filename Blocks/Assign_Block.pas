@@ -29,9 +29,9 @@ type
 
    TAssignBlock = class(TBlock)
       public
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
-         constructor Create(const ABranch: TBranch; const ASource: TAssignBlock); overload;
          constructor Create(const ABranch: TBranch); overload;
+         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
+         constructor Clone(const ABranch: TBranch; const ASource: TAssignBlock);
          procedure ChangeColor(const AColor: TColor); override;
       protected
          procedure Paint; override;
@@ -70,7 +70,7 @@ begin
    Create(ABranch, 0, 0, 140, 51);
 end;
 
-constructor TAssignBlock.Create(const ABranch: TBranch; const ASource: TAssignBlock);
+constructor TAssignBlock.Clone(const ABranch: TBranch; const ASource: TAssignBlock);
 var
    lUnPin: boolean;
 begin
