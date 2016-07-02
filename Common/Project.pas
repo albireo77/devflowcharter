@@ -398,6 +398,7 @@ begin
 
    ATag.SetAttribute(LANG_ATTR, GInfra.CurrentLang.Name);
    ATag.SetAttribute(PAGE_ORDER_ATTR, GetPageOrder);
+   ATag.SetAttribute(PAGE_FRONT_ATTR, GetActivePage.Caption);
 
    if FGlobalVars <> nil then
       FGlobalVars.ExportToXMLTag(ATag);
