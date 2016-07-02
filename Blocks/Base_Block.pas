@@ -103,6 +103,7 @@ type
          function IsInFront(const AControl: TWinControl): boolean;
          procedure SetPage(APage: TBlockTabSheet); virtual;
          function GetPage: TBlockTabSheet; virtual;
+         procedure CreateParams(var Params: TCreateParams); override;
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -154,7 +155,6 @@ type
          procedure GenerateTemplateSection(const ALines: TStringList; const ATemplate: TStringList; const ALangId: string; const ADeep: integer); overload; virtual;
          procedure GenerateTemplateSection(const ALines: TStringList; const ATemplate: string; const ALangId: string; const ADeep: integer); overload;
          function GetFrontMemo: TMemo; virtual;
-         procedure CreateParams(var Params: TCreateParams); override;
          function FocusOnTextControl(AInfo: TFocusInfo): boolean;
          procedure ClearSelection;
          procedure ChangeFrame;
@@ -312,6 +312,7 @@ begin
    PopupMenu   := Page.Form.pmPages;
    DoubleBuffered := GSettings.EnableDBuffering;
    ControlStyle := ControlStyle + [csOpaque];
+   ParentBackground := false;
    Canvas.TextFlags := Canvas.TextFlags or ETO_OPAQUE;
    SetBounds(ALeft, ATop, AWidth, AHeight);
 

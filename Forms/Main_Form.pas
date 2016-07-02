@@ -1301,8 +1301,7 @@ begin
    end;
 end;
 
-procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 const
    STEP = 15;
    MULTP = 20;

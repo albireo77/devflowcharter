@@ -218,7 +218,7 @@ end;
 
 procedure TMainBlock.SetZOrderValue(const AValue: integer);
 begin
-   FZOrderValue := AValue;
+   FZOrderValue := FPage.PageIndex * 100 + AValue;
 end;
 
 function TMainBlock.GetZOrderValue: integer;

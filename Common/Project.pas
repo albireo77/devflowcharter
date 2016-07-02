@@ -423,27 +423,32 @@ end;
 
 procedure TProject.ImportPagesFromXML(const ATag: IXMLElement);
 var
-   lPageList, lPageName: string;
+   lPageList, lPageName, lPageFront: string;
    i, len: integer;
+   lPage: TTabSheet;
 begin
    if ATag <> nil then
    begin
       lPageName := '';
+      lPageFront := ATag.GetAttribute(PAGE_FRONT_ATTR);
       lPageList := ATag.GetAttribute(PAGE_ORDER_ATTR);
       len := Length(lPageList);
       for i := 1 to len do
       begin
+         lPage := nil;
          if lPageList[i] = PAGE_LIST_DELIM then
          begin
-            GetPage(lPageName);
+            lPage := GetPage(lPageName);
             lPageName := '';
          end
          else
          begin
             lPageName := lPageName + lPageList[i];
             if i = len then
-               GetPage(lPageName);
+               lPage := GetPage(lPageName);
          end;
+         if (lPage <> nil) and AnsiSameCaption(lPage.Caption, lPageFront) then
+            lPage.PageControl.ActivePage := lPage;
       end;
    end;
 end;

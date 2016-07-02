@@ -150,7 +150,7 @@ end;
 
 procedure TComment.SetZOrderValue(const AValue: integer);
 begin
-   FZOrderValue := AValue;
+   FZOrderValue := FPage.PageIndex * 100 + AValue;
 end;
 
 function TComment.GetZOrderValue: integer;
