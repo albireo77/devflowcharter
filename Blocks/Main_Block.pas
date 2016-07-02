@@ -51,13 +51,13 @@ type
          procedure ExportToGraphic(const AImage: TGraphic); override;
          procedure SetWidth(const AMinX: integer); override;
          function GetHandle: THandle;
-         procedure SetZOrderValue(const AValue: integer);
-         function GetZOrderValue: integer;
+         procedure SetZOrder(const AValue: integer);
+         function GetZOrder: integer;
          function IsBoldDesc: boolean; override;
          function Remove: boolean; override;
          procedure DrawLabel;
       protected
-         FZOrderValue: integer;
+         FZOrder: integer;
          FStartLabel,
          FStopLabel: string;
          procedure MyOnResize(Sender: TObject);
@@ -120,7 +120,7 @@ begin
    BottomPoint.X := FInitParms.BottomPoint.X;
    TopHook.Y := 30;
    ShowI := true;
-   FZOrderValue := -1;
+   FZOrder := -1;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    OnResize := MyOnResize;
@@ -216,14 +216,14 @@ begin
    end;
 end;
 
-procedure TMainBlock.SetZOrderValue(const AValue: integer);
+procedure TMainBlock.SetZOrder(const AValue: integer);
 begin
-   FZOrderValue := FPage.PageIndex * 100 + AValue;
+   FZOrder := FPage.PageIndex * 100 + AValue;
 end;
 
-function TMainBlock.GetZOrderValue: integer;
+function TMainBlock.GetZOrder: integer;
 begin
-   result := FZOrderValue;
+   result := FZOrder;
 end;
 
 function TMainBlock.GetMaxBounds: TPoint;
@@ -557,9 +557,7 @@ begin
    inherited SaveInXML(ATag);
    if ATag <> nil then
    begin
-      ATag.SetAttribute('x', IntToStr(Left));
-      ATag.SetAttribute('y', IntToStr(Top));
-      ATag.SetAttribute('ZOrdVal', IntToStr(FZOrderValue));
+      ATag.SetAttribute('ZOrdVal', IntToStr(FZOrder));
       if FPage <> GProject.GetMainPage then
          ATag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
    end;
@@ -569,7 +567,7 @@ function TMainBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
 begin
    result := inherited GetFromXML(ATag);
    if ATag <> nil then
-      FZOrderValue := StrToIntDef(ATag.GetAttribute('ZOrdVal'), -1);
+      FZOrder := StrToIntDef(ATag.GetAttribute('ZOrdVal'), -1);
 end;
 
 function TMainBlock.IsBoldDesc: boolean;

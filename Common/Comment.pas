@@ -34,7 +34,7 @@ type
          FPinControl: TControl;
          FPage: TBlockTabSheet;
          FActive: boolean;
-         FZOrderValue: integer;
+         FZOrder: integer;
       protected
          procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -61,8 +61,8 @@ type
          function GetMaxBounds: TPoint;
          function GetHandle: THandle;
          procedure BringAllToFront;
-         procedure SetZOrderValue(const AValue: integer);
-         function GetZOrderValue: integer;
+         procedure SetZOrder(const AValue: integer);
+         function GetZOrder: integer;
          function GetSortValue(const ASortType: integer): integer;
    end;
 
@@ -86,7 +86,7 @@ begin
    Constraints.MinHeight := 25;
    BorderStyle := bsNone;
    Ctl3D := false;
-   FZOrderValue := -1;
+   FZOrder := -1;
    PopupMenu := APage.Form.pmPages;
    SetBounds(ALeft, ATop, AWidth, AHeight);
    GProject.AddComponent(Self);
@@ -148,19 +148,19 @@ begin
    BringToFront;
 end;
 
-procedure TComment.SetZOrderValue(const AValue: integer);
+procedure TComment.SetZOrder(const AValue: integer);
 begin
-   FZOrderValue := FPage.PageIndex * 100 + AValue;
+   FZOrder := FPage.PageIndex * 100 + AValue;
 end;
 
-function TComment.GetZOrderValue: integer;
+function TComment.GetZOrder: integer;
 begin
-   result := FZOrderValue;
+   result := FZOrder;
 end;
 
 function TComment.GetSortValue(const ASortType: integer): integer;
 begin
-   result := FZOrderValue;
+   result := FZOrder;
 end;
 
 procedure TComment.MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -302,7 +302,7 @@ begin
       v := StrToIntDef(ATag.GetAttribute('fontsize'), 8);
       if v in [8, 10, 12] then
          Font.Size := v;
-      FZOrderValue := StrToIntDef(ATag.GetAttribute('ZOrdVal'), -1);
+      FZOrder := StrToIntDef(ATag.GetAttribute('ZOrdVal'), -1);
       v := StrToIntDef(ATag.GetAttribute('fontstyle'), 0);
       if v > 0 then
          Font.Style := TInfra.DecodeFontStyle(v);
@@ -332,7 +332,7 @@ begin
       tag.SetAttribute('h', IntToStr(Height));
       tag.SetAttribute('fontsize', IntToStr(Font.Size));
       tag.SetAttribute('v', IntToStr(Ord(Visible)));
-      tag.SetAttribute('ZOrdVal', IntToStr(FZOrderValue));
+      tag.SetAttribute('ZOrdVal', IntToStr(FZOrder));
       tag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
       if Font.Style <> [] then
          tag.SetAttribute('fontstyle', TInfra.EncodeFontStyle(Font.Style));

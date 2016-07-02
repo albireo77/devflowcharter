@@ -112,8 +112,8 @@ type
       function GetSortValue(const ASortType: integer): integer;
       function GetHandle: THandle;
       procedure BringAllToFront;
-      procedure SetZOrderValue(const AValue: integer);
-      function GetZOrderValue: integer;
+      procedure SetZOrder(const AValue: integer);
+      function GetZOrder: integer;
       function IsMain: boolean;
    end;
 
@@ -193,7 +193,7 @@ begin
    if ASortType = Z_ORDER_SORT then
    begin
       if FBody <> nil then
-         result := FBody.GetZOrderValue;
+         result := FBody.GetZOrder;
    end
    else if FHeader <> nil then
       result := FHeader.GetSortValue(ASortType);
@@ -205,17 +205,17 @@ begin
       FBody.BringAllToFront;
 end;
 
-procedure TUserFunction.SetZOrderValue(const AValue: integer);
+procedure TUserFunction.SetZOrder(const AValue: integer);
 begin
    if FBody <> nil then
-      FBody.SetZOrderValue(AValue);
+      FBody.SetZOrder(AValue);
 end;
 
-function TUserFunction.GetZOrderValue: integer;
+function TUserFunction.GetZOrder: integer;
 begin
    result := -1;
    if FBody <> nil then
-      result := FBody.GetZOrderValue;
+      result := FBody.GetZOrder;
 end;
 
 function TUserFunction.GetLibName: string;

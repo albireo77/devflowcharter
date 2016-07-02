@@ -87,8 +87,8 @@ type
       procedure PaintToCanvas(const ACanvas: TCanvas);
       function GetHandle: THandle;
       procedure BringAllToFront;
-      procedure SetZOrderValue(const AValue: integer);
-      function GetZOrderValue: integer;
+      procedure SetZOrder(const AValue: integer);
+      function GetZOrder: integer;
    end;
 
    IMaxBoundable = interface

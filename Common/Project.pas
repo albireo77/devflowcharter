@@ -714,7 +714,7 @@ begin
          lWinControl := GetIWinControlComponent(lWnd);
          if lWinControl <> nil then
          begin
-            lWinControl.SetZOrderValue(i);
+            lWinControl.SetZOrder(i);
             i := i + 1;
          end;
          lWnd := GetNextWindow(lWnd, GW_HWNDPREV);
