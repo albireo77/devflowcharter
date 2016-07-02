@@ -249,7 +249,7 @@ begin
    Application.Title := PROGRAM_NAME;
    Caption := PROGRAM_NAME;
    FHistoryMenu := THistoryMenu.Create(miReopen, miOpen.OnClick);
-   ControlStyle := ControlStyle + [csOpaque];
+   pgcPages.DoubleBuffered := true;
    FHistoryMenu.Load;
    FClockPos := Low(TClockPos);
 end;
