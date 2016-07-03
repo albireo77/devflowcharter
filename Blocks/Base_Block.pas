@@ -435,7 +435,12 @@ begin
 end;
 
 destructor TBlock.Destroy;
+var
+   iter: IIterator;
 begin
+   iter := GetPinComments;
+   while iter.HasNext do
+      iter.Next.Free;
    if Self = GClpbrd.Instance then
       GClpbrd.Instance := nil;
    if Self = GClpbrd.UndoObject then
@@ -447,11 +452,7 @@ end;
 destructor TGroupBlock.Destroy;
 var
    i: integer;
-   iter: IIterator;
 begin
-   iter := GetPinComments;
-   while iter.HasNext do
-      iter.Next.Free;
    Hide;
    Page.Form.SetScrollBars;
    for i := 0 to High(FBranchArray) do
