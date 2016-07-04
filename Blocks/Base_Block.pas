@@ -84,6 +84,7 @@ type
          procedure NCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
          procedure WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo); message WM_GETMINMAXINFO;
          procedure WMExitSizeMove(var Msg: TWMMove); message WM_EXITSIZEMOVE;
+         procedure WMWindowPosChanged(var Msg: TWMWindowPosChanged); message WM_WINDOWPOSCHANGED;
          procedure OnMouseLeave; virtual;
          procedure Paint; override;
          procedure DrawI;
@@ -104,6 +105,7 @@ type
          procedure SetPage(APage: TBlockTabSheet); virtual;
          function GetPage: TBlockTabSheet; virtual;
          procedure CreateParams(var Params: TCreateParams); override;
+         procedure OnWindowPosChanged(x, y: integer); virtual;
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -883,7 +885,6 @@ begin
       begin
          lLeft := FBranchArray[i].Hook.X - lBlock.TopHook.X;
          lTop := FBranchArray[i].Hook.Y + 1;
-         lBlock.MoveComments(lLeft, lTop);
          lBlock.SetBounds(lLeft, lTop, lBlock.Width, lBlock.Height);
          lBlock := lBlock.Next;
          while lBlock <> nil do
@@ -891,7 +892,6 @@ begin
             lBlockPrev := lBlock.Prev;
             lLeft := lBlockPrev.BottomPoint.X + lBlockPrev.Left - lBlock.TopHook.X;
             lTop :=  lBlockPrev.BoundsRect.Bottom;
-            lBlock.MoveComments(lLeft, lTop);
             lBlock.SetBounds(lLeft, lTop, lBlock.Width, lBlock.Height);
             lBlock := lBlock.Next;
          end;
@@ -1055,7 +1055,7 @@ var
    iter: IIterator;
    lComment: TComment;
 begin
-   if (x <> 0) or (y <> 0) then
+   if (x <> 0) and (y <> 0) then
    begin
       iter := GetComments(true);
       while iter.HasNext do
@@ -1068,6 +1068,17 @@ begin
          end;
       end;
    end;
+end;
+
+procedure TBlock.OnWindowPosChanged(x, y: integer);
+begin
+   MoveComments(x, y);
+end;
+
+procedure TBlock.WMWindowPosChanged(var Msg: TWMWindowPosChanged);
+begin
+   OnWindowPosChanged(Msg.WindowPos^.x, Msg.WindowPos^.y);
+   inherited;
 end;
 
 function TBlock.GetPinComments: IIterator;
@@ -2001,7 +2012,7 @@ begin
       while lBlock <> nil do
       begin
          lBlock.Visible := Expanded;
-         lBlock := lBlock.next;
+         lBlock := lBlock.Next;
       end;
    end;
 
@@ -2055,7 +2066,7 @@ begin
    if AResize and (FParentBlock <> nil) then
    begin
       FParentBlock.ResizeWithDrawLock;
-      NavigatorForm.Repaint;
+      NavigatorForm.Invalidate;
    end;
    
    UnPinComments;

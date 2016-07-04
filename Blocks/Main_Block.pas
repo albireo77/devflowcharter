@@ -69,6 +69,7 @@ type
          function GetUndoObject: TObject; override;
          procedure SetPage(APage: TBlockTabSheet); override;
          function GetPage: TBlockTabSheet; override;
+         procedure OnWindowPosChanged(x, y: integer); override;
    end;
 
 const
@@ -579,6 +580,11 @@ procedure TMainBlock.WMWindowPosChanging(var Msg: TWMWindowPosChanging);
 begin
    MoveComments(Msg.WindowPos^.x, Msg.WindowPos^.y);
    inherited;
+end;
+
+procedure TMainBlock.OnWindowPosChanged(x, y: integer);
+begin
+// do nothing
 end;
 
 function TMainBlock.GetUndoObject: TObject;
