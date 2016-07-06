@@ -2242,7 +2242,7 @@ var
    tag: IXMLElement;
    lComment: TComment;
 begin
-   if (ATag <> nil) and ProcessComments then
+   if ProcessComments then
    begin
       tag := TXMLProcessor.FindChildTag(ATag, COMMENT_ATTR);
       while tag <> nil do
