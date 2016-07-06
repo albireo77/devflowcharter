@@ -106,6 +106,7 @@ type
          function GetPage: TBlockTabSheet; virtual;
          procedure CreateParams(var Params: TCreateParams); override;
          procedure OnWindowPosChanged(x, y: integer); virtual;
+         function ProcessComments: boolean;
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -177,6 +178,7 @@ type
          function PinComments: integer;
          function UnPinComments: integer; virtual;
          procedure CloneComments(const ASource: TBlock);
+         procedure ImportCommentsFromXML(const ATag: IXMLElement);
       published
          property Color;
          property OnMouseDown;
@@ -187,6 +189,7 @@ type
       private
          function GetBranchCount: integer;
       protected
+         FBlockImportMode: boolean;
          FMemoFolder: TMemo;
          FInitParms: TInitParms;
          FDrawingFlag: boolean;
@@ -205,7 +208,8 @@ type
          Branch: TBranch;     // primary branch to order child blocks
          Expanded: boolean;
          FFoldParms: TInitParms;
-         property BranchCount: integer read GetBranchCount default 0;
+         property BlockImportMode: boolean read FBlockImportMode write FBlockImportMode;
+         property BranchCount: integer read GetBranchCount;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: Integer; const AHook: TPoint; const AId: integer = ID_INVALID); overload;
          constructor Clone(const ASource: TGroupBlock); overload;
          destructor Destroy; override;
@@ -1055,7 +1059,7 @@ var
    iter: IIterator;
    lComment: TComment;
 begin
-   if (x <> 0) and (y <> 0) then
+   if (x <> 0) or (y <> 0) then
    begin
       iter := GetComments(true);
       while iter.HasNext do
@@ -1787,11 +1791,14 @@ begin
 end;
 
 function TBlock.RetrieveFocus(AInfo: TFocusInfo): boolean;
+var
+   lPage: TBlockTabSheet;
 begin
    if AInfo.FocusEdit = nil then
       AInfo.FocusEdit := GetTextControl;
-   AInfo.FocusEditForm := Page.Form;
-   Page.PageControl.ActivePage := Page;
+   lPage := Page;
+   AInfo.FocusEditForm := lPage.Form;
+   lPage.PageControl.ActivePage := lPage;
    result := FocusOnTextControl(AInfo);
 end;
 
@@ -1993,6 +2000,11 @@ begin
    inherited SetVisible(AVisible, Expanded);
 end;
 
+function TBlock.ProcessComments: boolean;
+begin
+   result := (FParentBlock = nil) or not FParentBlock.BlockImportMode;
+end;
+
 procedure TGroupBlock.ExpandFold(const AResize: boolean);
 var
    lTmpWidth, lTmpHeight, i: integer;
@@ -2037,7 +2049,8 @@ begin
    end
    else
    begin
-      PinComments;
+      if ProcessComments then
+         PinComments;
       lTmpWidth := FFoldParms.Width;
       lTmpHeight := FFoldParms.Height;
       FFoldParms.Width := Width;
@@ -2176,7 +2189,6 @@ begin
          if lUnPin then
             UnPinComments;
       end;
-
    end;
 end;
 
@@ -2225,22 +2237,39 @@ begin
    end;
 end;
 
+procedure TBlock.ImportCommentsFromXML(const ATag: IXMLElement);
+var
+   tag: IXMLElement;
+   lComment: TComment;
+begin
+   if (ATag <> nil) and ProcessComments then
+   begin
+      tag := TXMLProcessor.FindChildTag(ATag, COMMENT_ATTR);
+      while tag <> nil do
+      begin
+         lComment := TComment.CreateDefault(Page);
+         lComment.ImportFromXMLTag(tag, Self);
+         tag := TXMLProcessor.FindNextTag(tag);
+      end;
+      UnPinComments;
+   end;
+end;
+
 function TBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
 var
-   lTag, lTag1: IXMLElement;
+   tag: IXMLElement;
    lTextControl: TCustomEdit;
    lValue: integer;
-   lComment: TComment;
 begin
    result := errNone;
    if ATag <> nil then
    begin
-      lTag := TXMLProcessor.FindChildTag(ATag, 'text');
+      tag := TXMLProcessor.FindChildTag(ATag, 'text');
       lTextControl := GetTextControl;
-      if (lTag <> nil) and (lTextControl <> nil) then
+      if (tag <> nil) and (lTextControl <> nil) then
       begin
          FRefreshMode := true;
-         lTextControl.Text := AnsiReplaceStr(lTag.Text, '#!', CRLF);
+         lTextControl.Text := AnsiReplaceStr(tag.Text, '#!', CRLF);
          FRefreshMode := false;
       end;
 
@@ -2258,14 +2287,7 @@ begin
       MemoHScroll := StrToBoolDef(ATag.GetAttribute('mem_hscroll'), false);
       MemoWordWrap := StrToBoolDef(ATag.GetAttribute('mem_wordwrap'), false);
 
-      lTag1 := TXMLProcessor.FindChildTag(ATag, COMMENT_ATTR);
-      while lTag1 <> nil do
-      begin
-         lComment := TComment.CreateDefault(Page);
-         lComment.ImportFromXMLTag(lTag1, Self);
-         lTag1 := TXMLProcessor.FindNextTag(lTag1);
-      end;
-      UnPinComments;
+      ImportCommentsFromXML(ATag);
    end;
 end;
 
@@ -2372,9 +2394,14 @@ begin
       end;
       if lParent <> nil then
       begin
+         lParent.BlockImportMode := true;
          lNewBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag, lParent, lBlock, result, Ired);
          if result = errNone then
+         begin
             lParent.ResizeWithDrawLock;
+            lParent.BlockImportMode := false;
+            lNewBlock.ImportCommentsFromXML(tag);
+         end;
       end;
    end;
 end;
