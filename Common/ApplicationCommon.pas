@@ -164,6 +164,8 @@ const   // Global constants
         PAGE_ORDER_ATTR   = 'pageOrder';
         PAGE_FRONT_ATTR   = 'pageFront';
         LANG_ATTR         = 'language';
+        FOLDED_ATTR       = 'folded';
+        FOLD_TEXT_ATTR    = 'foldtext';
         ID_ATTR           = 'hash';
 
 

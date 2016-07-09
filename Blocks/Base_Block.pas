@@ -99,7 +99,7 @@ type
          procedure DrawArrowLine(const ABeginPoint, AEndPoint: TPoint; const AArrowPos: TArrowPosition = arrEnd; const AColor: TColor = clBlack);
          function GetEllipseTextRect(const APoint: TPoint; const AText: string): TRect;
          function DrawEllipsedText(const APoint: TPoint; const AText: string): TRect;
-         procedure MoveComments(const x, y: integer);
+         procedure MoveComments(x, y: integer);
          function GetUndoObject: TObject; virtual;
          function IsInFront(const AControl: TWinControl): boolean;
          procedure SetPage(APage: TBlockTabSheet); virtual;
@@ -243,7 +243,6 @@ type
    TBranch = class(TObjectList, IIdentifiable)
       private
          FParentBlock: TGroupBlock;
-         FParentWinControl: TWinControl;
          FRmvBlockIdx: integer;
          FId: integer;
          function GetIndex: integer;
@@ -259,15 +258,14 @@ type
       public
          Hook: TPoint;           // hook determines position of blocks within a branch in parent window coordinates
          Statement: TStatement;
-         property ParentBlock: TGroupBlock read FParentBlock default nil;
-         property ParentWinControl: TWinControl read FParentWinControl default nil;
-         property Index: integer read GetIndex default 0;
-         property Height: integer read GetHeight default 0;
+         property ParentBlock: TGroupBlock read FParentBlock;
+         property Index: integer read GetIndex;
+         property Height: integer read GetHeight;
          property Items[Index: integer]: TBlock read GetItems write SetItems; default;
          property First: TBlock read GetFirst;
          property Last: TBlock read GetLast;
          property Id: integer read GetId;
-         constructor Create(const AParent: TWinControl; const AHook: TPoint; const AId: integer = ID_INVALID);
+         constructor Create(const AParent: TGroupBlock; const AHook: TPoint; const AId: integer = ID_INVALID);
          destructor Destroy; override;
          procedure InsertAfter(ANewBlock, APosBlock: TBlock);
          procedure Insert(AIndex: integer; ABlock: TBlock);
@@ -297,17 +295,17 @@ begin
 
    if ABranch <> nil then
    begin
-      inherited Create(ABranch.ParentWinControl);
-      Parent := ABranch.ParentWinControl;
-      FParentBranch := ABranch;
-      FParentBlock := TGroupBlock(Parent);
+      FParentBlock := ABranch.ParentBlock;
       FTopParentBlock := FParentBlock.TopParentBlock;
+      inherited Create(FParentBlock);
+      Parent := FParentBlock;
+      FParentBranch := ABranch;
    end
    else                                     // current object is TMainBlock class
    begin
+      FTopParentBlock := TGroupBlock(Self);
       inherited Create(Page.Form);
       Parent := Page;
-      FTopParentBlock := TGroupBlock(Self);
    end;
 
    ParentFont  := true;
@@ -1054,12 +1052,12 @@ begin
    end;
 end;
 
-procedure TBlock.MoveComments(const x, y: integer);
+procedure TBlock.MoveComments(x, y: integer);
 var
    iter: IIterator;
    lComment: TComment;
 begin
-   if (x <> 0) or (y <> 0) then
+   if (x <> 0) and (y <> 0) and ((x <> Left) or (y <> Top)) then
    begin
       iter := GetComments(true);
       while iter.HasNext do
@@ -2146,12 +2144,12 @@ begin
         ATag.SetAttribute('bry', IntToStr(Branch.Hook.Y));
         ATag.SetAttribute('fw', IntToStr(fw));
         ATag.SetAttribute('fh', IntToStr(fh));
-        ATag.SetAttribute('folded', BoolToStr(not Expanded, true));
+        ATag.SetAttribute(FOLDED_ATTR, BoolToStr(not Expanded, true));
 
         lText := GetFoldedText;
         if lText <> '' then
         begin
-           tag1 := ATag.OwnerDocument.CreateElement('foldtext');
+           tag1 := ATag.OwnerDocument.CreateElement(FOLD_TEXT_ATTR);
            TXMLProcessor.AddCDATA(tag1, lText);
            ATag.AppendChild(tag1);
         end;
@@ -2324,12 +2322,12 @@ begin
             lTag1 := TXMLProcessor.FindNextTag(lTag1);
          until lTag1 = nil;
       end;
-      lTag2 := TXMLProcessor.FindChildTag(ATag, 'foldtext');
+      lTag2 := TXMLProcessor.FindChildTag(ATag, FOLD_TEXT_ATTR);
       if lTag2 <> nil then
          SetFoldedText(lTag2.Text);
       FFoldParms.Width := StrToIntDef(ATag.GetAttribute('fw'), 140);
       FFoldParms.Height := StrToIntDef(ATag.GetAttribute('fh'), 91);
-      if ATag.GetAttribute('folded') = 'True' then
+      if ATag.GetAttribute(FOLDED_ATTR) = 'True' then
          ExpandFold(false);
    end;
 end;
@@ -2395,11 +2393,14 @@ begin
       if lParent <> nil then
       begin
          lParent.BlockImportMode := true;
-         lNewBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag, lParent, lBlock, result, Ired);
+         try
+            lNewBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag, lParent, lBlock, result, Ired);
+         finally
+            lParent.BlockImportMode := false;
+         end;
          if result = errNone then
          begin
             lParent.ResizeWithDrawLock;
-            lParent.BlockImportMode := false;
             lNewBlock.ImportCommentsFromXML(tag);
          end;
       end;
@@ -2753,14 +2754,10 @@ begin
    end;
 end;
 
-constructor TBranch.Create(const AParent: TWinControl; const AHook: TPoint; const AId: integer = ID_INVALID);
+constructor TBranch.Create(const AParent: TGroupBlock; const AHook: TPoint; const AId: integer = ID_INVALID);
 begin
    inherited Create;
-   if AParent is TGroupBlock then
-      FParentBlock := TGroupBlock(AParent)
-   else
-      FParentBlock := nil;
-   FParentWinControl := AParent;
+   FParentBlock := AParent;
    Hook := AHook;
    FRmvBlockIdx := -1;
    Statement := nil;
