@@ -474,17 +474,23 @@ var
    lComment, lNewComment: TComment;
    lUnPin: boolean;
 begin
-   lUnPin := ASource.PinComments > 0;
-   iter := ASource.GetPinComments;
-   while iter.HasNext do
+   if ASource <> nil then
    begin
-      lComment := TComment(iter.Next);
-      lNewComment := TComment.Clone(Page, lComment);
-      lNewComment.PinControl := Self;
+      lUnPin := ASource.PinComments > 0;
+      try
+         iter := ASource.GetPinComments;
+         while iter.HasNext do
+         begin
+            lComment := TComment(iter.Next);
+            lNewComment := TComment.Clone(Page, lComment);
+            lNewComment.PinControl := Self;
+         end;
+         UnPinComments;
+      finally
+         if lUnPin then
+            ASource.UnPinComments;
+      end;
    end;
-   if lUnPin then
-      ASource.UnPinComments;
-   UnPinComments;
 end;
 
 procedure TBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
