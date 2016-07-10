@@ -2097,8 +2097,8 @@ begin
    lUnPin := false;
    if ATag <> nil then
    begin
-      ATag.SetAttribute('type', IntToStr(Ord(BType)));
-      ATag.SetAttribute('frame', BoolToStr(FFrame, true));
+      ATag.SetAttribute(BLOCK_TYPE_ATTR, IntToStr(Ord(BType)));
+      ATag.SetAttribute(FRAME_ATTR, BoolToStr(FFrame, true));
       ATag.SetAttribute('x', IntToStr(Left));
       ATag.SetAttribute('y', IntToStr(Top));
       ATag.SetAttribute('h', IntToStr(Height));
@@ -2111,13 +2111,13 @@ begin
       ATag.SetAttribute('mem_vscroll', BoolToStr(FMemoVScroll, true));
       ATag.SetAttribute('mem_hscroll', BoolToStr(FMemoHScroll, true));
       ATag.SetAttribute('mem_wordwrap', BoolToStr(MemoWordWrap, true));
-      ATag.SetAttribute('fontsize', IntToStr(Font.Size));
-      ATag.SetAttribute('fontstyle', TInfra.EncodeFontStyle(Font.Style));
+      ATag.SetAttribute(FONT_SIZE_ATTR, IntToStr(Font.Size));
+      ATag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style));
       lTextControl := GetTextControl;
       if (lTextControl <> nil) and (lTextControl.Text <> '') then
       begin
-         lText := AnsiReplaceStr(lTextControl.Text, CRLF, '#!');
-         tag1 := ATag.OwnerDocument.CreateElement('text');
+         lText := AnsiReplaceStr(lTextControl.Text, CRLF, CRLF_PLACEHOLDER);
+         tag1 := ATag.OwnerDocument.CreateElement(TEXT_TAG);
          TXMLProcessor.AddCDATA(tag1, lText);
          ATag.AppendChild(tag1);
       end;
@@ -2163,13 +2163,13 @@ begin
         begin
            lBranch := FBranchArray[i];
 
-           tag2 := ATag.OwnerDocument.CreateElement('branch');
+           tag2 := ATag.OwnerDocument.CreateElement(BRANCH_TAG);
            ATag.AppendChild(tag2);
 
            tag2.SetAttribute(ID_ATTR, IntToStr(lBranch.Id));
 
            if lBranch.Statement <> nil then
-              tag2.SetAttribute('bstmnt_hash', IntToStr(lBranch.Statement.Id));
+              tag2.SetAttribute(BRANCH_STMNT_ATTR, IntToStr(lBranch.Statement.Id));
 
            tag1 := ATag.OwnerDocument.CreateElement('x');
            TXMLProcessor.AddText(tag1, IntToStr(lBranch.hook.X));
@@ -2201,8 +2201,8 @@ var
 begin
    if ATag <> nil then
    begin
-      ATag.SetAttribute('type', IntToStr(Ord(BType)));
-      ATag.SetAttribute('frame', BoolToStr(FFrame, true));
+      ATag.SetAttribute(BLOCK_TYPE_ATTR, IntToStr(Ord(BType)));
+      ATag.SetAttribute(FRAME_ATTR, BoolToStr(FFrame, true));
       ATag.SetAttribute('x', IntToStr(Left));
       ATag.SetAttribute('y', IntToStr(Top));
       ATag.SetAttribute('h', IntToStr(Height));
@@ -2215,13 +2215,13 @@ begin
       ATag.SetAttribute('mem_vscroll', BoolToStr(FMemoVScroll, true));
       ATag.SetAttribute('mem_hscroll', BoolToStr(FMemoHScroll, true));
       ATag.SetAttribute('mem_wordwrap', BoolToStr(MemoWordWrap, true));
-      ATag.SetAttribute('fontsize', IntToStr(Font.Size));
-      ATag.SetAttribute('fontstyle', TInfra.EncodeFontStyle(Font.Style));
+      ATag.SetAttribute(FONT_SIZE_ATTR, IntToStr(Font.Size));
+      ATag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style));
       lTextControl := GetTextControl;
       if (lTextControl <> nil) and (lTextControl.Text <> '') then
       begin
-         lText := AnsiReplaceStr(lTextControl.Text, CRLF, '#!');
-         lTag := ATag.OwnerDocument.CreateElement('text');
+         lText := AnsiReplaceStr(lTextControl.Text, CRLF, CRLF_PLACEHOLDER);
+         lTag := ATag.OwnerDocument.CreateElement(TEXT_TAG);
          TXMLProcessor.AddCDATA(lTag, lText);
          ATag.AppendChild(lTag);
       end;
@@ -2263,23 +2263,23 @@ begin
    result := errNone;
    if ATag <> nil then
    begin
-      tag := TXMLProcessor.FindChildTag(ATag, 'text');
+      tag := TXMLProcessor.FindChildTag(ATag, TEXT_TAG);
       lTextControl := GetTextControl;
       if (tag <> nil) and (lTextControl <> nil) then
       begin
          FRefreshMode := true;
-         lTextControl.Text := AnsiReplaceStr(tag.Text, '#!', CRLF);
+         lTextControl.Text := AnsiReplaceStr(tag.Text, CRLF_PLACEHOLDER, CRLF);
          FRefreshMode := false;
       end;
 
-      lValue := StrToIntDef(ATag.GetAttribute('fontsize'), 8);
+      lValue := StrToIntDef(ATag.GetAttribute(FONT_SIZE_ATTR), 8);
       if lValue in [8, 10, 12] then
          SetFontSize(lValue);
 
-      lValue := StrToIntDef(ATag.GetAttribute('fontstyle'), 0);
+      lValue := StrToIntDef(ATag.GetAttribute(FONT_STYLE_ATTR), 0);
       SetFontStyle(TInfra.DecodeFontStyle(lValue));
       
-      Frame := ATag.GetAttribute('frame') = 'True';
+      Frame := ATag.GetAttribute(FRAME_ATTR) = 'True';
       memoWidth := StrToIntDef(ATag.GetAttribute('memW'), 280);
       memoHeight := StrToIntDef(ATag.GetAttribute('memH'), 182);
       MemoVScroll := StrToBoolDef(ATag.GetAttribute('mem_vscroll'), false);
@@ -2298,7 +2298,7 @@ begin
    result := inherited GetFromXML(ATag);
    if ATag <> nil then
    begin
-      lTag1 := TXMLProcessor.FindChildTag(ATag, 'branch');
+      lTag1 := TXMLProcessor.FindChildTag(ATag, BRANCH_TAG);
       if lTag1 <> nil then
       begin
          lBranchIdx := PRIMARY_BRANCH_IND;
@@ -2310,10 +2310,10 @@ begin
             if lTag2 <> nil then
                hy := StrToIntDef(lTag2.Text, 0);
             lBranchId := StrToIntDef(lTag1.GetAttribute(ID_ATTR), ID_INVALID);
-            lBranchStmntId := StrToIntDef(lTag1.GetAttribute('bstmnt_hash'), ID_INVALID);
+            lBranchStmntId := StrToIntDef(lTag1.GetAttribute(BRANCH_STMNT_ATTR), ID_INVALID);
             if GetBranch(lBranchIdx) = nil then
                AddBranch(Point(hx, hy), false, lBranchId, lBranchStmntId);
-            lTag2 := TXMLProcessor.FindChildTag(lTag1, 'block');
+            lTag2 := TXMLProcessor.FindChildTag(lTag1, BLOCK_TAG);
             if lTag2 <> nil then
             begin
                TXMLProcessor.ImportFlowchartFromXMLTag(lTag2, Self, nil, result, lBranchIdx);
@@ -2377,8 +2377,8 @@ var
    tag: IXMLElement;
 begin
    result := errValidate;
-   tag := TXMLProcessor.FindChildTag(ATag, 'block');
-   if (tag = nil) or (tag.GetAttribute('type') = IntToStr(Ord(blMain))) then
+   tag := TXMLProcessor.FindChildTag(ATag, BLOCK_TAG);
+   if (tag = nil) or (tag.GetAttribute(BLOCK_TYPE_ATTR) = IntToStr(Ord(blMain))) then
       Gerr_text := i18Manager.GetString('BadImportTag')
    else
    begin

@@ -95,7 +95,7 @@ begin
    result := nil;
    if ATag <> nil then
    begin
-      bt := StrToInt(ATag.GetAttribute('type'));
+      bt := StrToInt(ATag.GetAttribute(BLOCK_TYPE_ATTR));
       left := StrToInt(ATag.GetAttribute('x'));
       top := StrToInt(ATag.GetAttribute('y'));
       height := StrToInt(ATag.GetAttribute('h'));

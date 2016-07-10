@@ -558,7 +558,7 @@ begin
    inherited SaveInXML(ATag);
    if ATag <> nil then
    begin
-      ATag.SetAttribute('ZOrdVal', IntToStr(FZOrder));
+      ATag.SetAttribute(Z_ORDER_ATTR, IntToStr(FZOrder));
       if FPage <> GProject.GetMainPage then
          ATag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
    end;
@@ -568,7 +568,7 @@ function TMainBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
 begin
    result := inherited GetFromXML(ATag);
    if ATag <> nil then
-      FZOrder := StrToIntDef(ATag.GetAttribute('ZOrdVal'), -1);
+      FZOrder := StrToIntDef(ATag.GetAttribute(Z_ORDER_ATTR), -1);
 end;
 
 function TMainBlock.IsBoldDesc: boolean;

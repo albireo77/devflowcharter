@@ -594,7 +594,7 @@ begin
          lHeader.ImportFromXMLTag(tag1);
          lHeader.CallOnDrawTab;
       end;
-      tag1 := TXMLProcessor.FindChildTag(tag, 'block');
+      tag1 := TXMLProcessor.FindChildTag(tag, BLOCK_TAG);
       if (tag1 <> nil) and GInfra.CurrentLang.EnabledUserFunctionBody then
       begin
          lPage := GetPage(tag1.GetAttribute(PAGE_CAPTION_ATTR));

@@ -629,7 +629,7 @@ begin
    result := inherited GetFromXML(ATag);
    if ATag <> nil then
    begin
-      lTag := TXMLProcessor.FindChildTag(ATag, 'branch');
+      lTag := TXMLProcessor.FindChildTag(ATag, BRANCH_TAG);
       if lTag <> nil then
       begin
          lTag := TXMLProcessor.FindNextTag(lTag);   // skip default branch stored in first tag
@@ -660,7 +660,7 @@ begin
    inherited SaveInXML(ATag);
    if ATag <> nil then
    begin
-      lTag := TXMLProcessor.FindChildTag(ATag, 'branch');
+      lTag := TXMLProcessor.FindChildTag(ATag, BRANCH_TAG);
       if lTag <> nil then
       begin
          lTag := TXMLProcessor.FindNextTag(lTag);   // skip default branch stored in first tag

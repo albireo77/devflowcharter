@@ -773,7 +773,7 @@ begin
    if memDescription.Text <> '' then
    begin
       tag3 := rootTag.OwnerDocument.CreateElement('desc');
-      TXMLProcessor.AddCDATA(tag3, AnsiReplaceStr(memDescription.Text, CRLF, '#!'));
+      TXMLProcessor.AddCDATA(tag3, AnsiReplaceStr(memDescription.Text, CRLF, CRLF_PLACEHOLDER));
       tag2.AppendChild(tag3);
    end;
    tag2.SetAttribute('desc_incl', BoolToStr(chkInclDescCode.Checked, true));
@@ -801,7 +801,7 @@ begin
    cbType.OnChange(cbType);
    tag2 := TXMLProcessor.FindChildTag(rootTag, 'desc');
    if tag2 <> nil then
-      memDescription.Text := AnsiReplaceStr(tag2.Text, '#!', CRLF);
+      memDescription.Text := AnsiReplaceStr(tag2.Text, CRLF_PLACEHOLDER, CRLF);
    chkInclDescCode.Checked := rootTag.GetAttribute('desc_incl') = 'True';
    chkInclDescFlow.Checked := rootTag.GetAttribute('desc_incl_flow') = 'True';
    FLocalVars.ImportFromXMLTag(rootTag);

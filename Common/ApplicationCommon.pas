@@ -166,8 +166,18 @@ const   // Global constants
         LANG_ATTR         = 'language';
         FOLDED_ATTR       = 'folded';
         FOLD_TEXT_ATTR    = 'foldtext';
+        FRAME_ATTR        = 'frame';
+        BLOCK_TYPE_ATTR   = 'type';
         ID_ATTR           = 'hash';
+        BRANCH_STMNT_ATTR = 'bstmnt_hash';
+        FONT_SIZE_ATTR    = 'fontsize';
+        FONT_STYLE_ATTR   = 'fontstyle';
+        Z_ORDER_ATTR      = 'ZOrdVal';
+        BLOCK_TAG         = 'block';
+        BRANCH_TAG        = 'branch';
+        TEXT_TAG          = 'text';
 
+        CRLF_PLACEHOLDER  = '#!';
 
         PAGE_LIST_DELIM   = ',';
 

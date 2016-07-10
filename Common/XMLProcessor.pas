@@ -130,7 +130,7 @@ var
 begin
    if (ATag <> nil) and (ABlock <> nil) then
    begin
-      lTag := ATag.OwnerDocument.CreateElement('block');
+      lTag := ATag.OwnerDocument.CreateElement(BLOCK_TAG);
       ATag.AppendChild(lTag);
       ABlock.SaveInXML(lTag);
    end;

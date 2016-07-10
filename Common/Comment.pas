@@ -299,11 +299,11 @@ begin
                 StrToInt(ATag.GetAttribute('y')),
                 StrToInt(ATag.GetAttribute('w')),
                 StrToInt(ATag.GetAttribute('h')));
-      v := StrToIntDef(ATag.GetAttribute('fontsize'), 8);
+      v := StrToIntDef(ATag.GetAttribute(FONT_SIZE_ATTR), 8);
       if v in [8, 10, 12] then
          Font.Size := v;
-      FZOrder := StrToIntDef(ATag.GetAttribute('ZOrdVal'), -1);
-      v := StrToIntDef(ATag.GetAttribute('fontstyle'), 0);
+      FZOrder := StrToIntDef(ATag.GetAttribute(Z_ORDER_ATTR), -1);
+      v := StrToIntDef(ATag.GetAttribute(FONT_STYLE_ATTR), 0);
       if v > 0 then
          Font.Style := TInfra.DecodeFontStyle(v);
       Text := ATag.Text;
@@ -330,12 +330,12 @@ begin
       tag.SetAttribute('y', IntToStr(Top));
       tag.SetAttribute('w', IntToStr(Width));
       tag.SetAttribute('h', IntToStr(Height));
-      tag.SetAttribute('fontsize', IntToStr(Font.Size));
+      tag.SetAttribute(FONT_SIZE_ATTR, IntToStr(Font.Size));
       tag.SetAttribute('v', IntToStr(Ord(Visible)));
-      tag.SetAttribute('ZOrdVal', IntToStr(FZOrder));
+      tag.SetAttribute(Z_ORDER_ATTR, IntToStr(FZOrder));
       tag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
       if Font.Style <> [] then
-         tag.SetAttribute('fontstyle', TInfra.EncodeFontStyle(Font.Style));
+         tag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style));
       ATag.AppendChild(tag);
    end;
 end;
