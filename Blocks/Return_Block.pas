@@ -74,20 +74,11 @@ begin
 end;
 
 constructor TReturnBlock.Clone(const ABranch: TBranch; const ASource: TReturnBlock);
-var
-   lUnPin: boolean;
 begin
    Create(ABranch, ASource.Left, ASource.Top, ASource.Width, ASource.Height);
    SetFont(ASource.Font);
    Visible := ASource.Visible;
    FStatement.Text := ASource.FStatement.Text;
-   lUnPin := ASource.PinComments > 0;
-   try
-      CloneComments(ASource);
-   finally
-      if lUnPin then
-         ASource.UnPinComments;
-   end;
 end;
 
 constructor TReturnBlock.Create(const ABranch: TBranch);

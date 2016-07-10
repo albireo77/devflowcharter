@@ -92,8 +92,6 @@ begin
 end;
 
 constructor TInOutBlock.Clone(const ABranch: TBranch; const ASource: TInOutBlock);
-var
-   lUnPin: boolean;
 begin
    FType := ASource.BType;
    FLabel := ASource.FLabel;
@@ -103,13 +101,6 @@ begin
    FStatement.Text := ASource.FStatement.Text;
    with ASource.FStatement do
       FStatement.SetBounds(Left, Top, Width, Height);
-   lUnPin := ASource.PinComments > 0;
-   try
-      CloneComments(ASource);
-   finally
-      if lUnPin then
-         ASource.UnPinComments;
-   end;
 end;
 
 constructor TInputBlock.Create(const ABranch: TBranch);

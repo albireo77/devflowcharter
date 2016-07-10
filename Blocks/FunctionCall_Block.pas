@@ -63,8 +63,6 @@ begin
 end;
 
 constructor TFunctionCallBlock.Clone(const ABranch: TBranch; const ASource: TFunctionCallBlock);
-var
-   lUnPin: boolean;
 begin
    Create(ABranch, ASource.Left, ASource.Top, ASource.Width, ASource.Height);
    SetFont(ASource.Font);
@@ -72,13 +70,6 @@ begin
    FStatement.Text := ASource.FStatement.Text;
    if FStatement.CanFocus then
       FStatement.SetFocus;
-   lUnPin := ASource.PinComments > 0;
-   try
-      CloneComments(ASource);
-   finally
-      if lUnPin then
-         ASource.UnPinComments;
-   end;
 end;
 
 constructor TFunctionCallBlock.Create(const ABranch: TBranch);

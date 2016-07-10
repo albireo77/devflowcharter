@@ -375,9 +375,7 @@ var
    lBranch, lBranch2: TBranch;
    i: integer;
    lTextControl, lSourceTextControl: TCustomEdit;
-   lUnPin: boolean;
 begin
-   lUnPin := false;
    Visible := ASource.Visible;
    SetFont(ASource.Font);
    lSourceTextControl := ASource.GetTextControl;
@@ -410,32 +408,24 @@ begin
    begin
       FFoldParms.Width := ASource.FFoldParms.Width;
       FFoldParms.Height := ASource.FFoldParms.Height;
-      lUnPin := ASource.PinComments > 0;
    end;
 
-   try
-      for i := PRIMARY_BRANCH_IND to High(ASource.FBranchArray) do
+   for i := PRIMARY_BRANCH_IND to High(ASource.FBranchArray) do
+   begin
+      lBranch := ASource.FBranchArray[i];
+      lBranch2 := GetBranch(i);
+      if lBranch2 = nil then
+         lBranch2 := AddBranch(lBranch.Hook, false);
+      lBlock := lBranch.First;
+      lPrevBlock := nil;
+      while lBlock <> nil do
       begin
-         lBranch := ASource.FBranchArray[i];
-         lBranch2 := GetBranch(i);
-         if lBranch2 = nil then
-            lBranch2 := AddBranch(lBranch.Hook, false);
-         lBlock := lBranch.First;
-         lPrevBlock := nil;
-         while lBlock <> nil do
-         begin
-            lNewBlock := TBlockFactory.Clone(lBranch2, lBlock);
-            lBranch2.InsertAfter(lNewBlock, lPrevBlock);
-            lPrevBlock := lBranch2.Last;
-            lBlock := lBlock.Next;
-         end;
+         lNewBlock := TBlockFactory.Clone(lBranch2, lBlock);
+         lBranch2.InsertAfter(lNewBlock, lPrevBlock);
+         lPrevBlock := lBranch2.Last;
+         lBlock := lBlock.Next;
       end;
-      CloneComments(ASource);
-   finally
-      if lUnPin then
-         ASource.UnPinComments;
    end;
-
 end;
 
 destructor TBlock.Destroy;
@@ -482,7 +472,9 @@ procedure TBlock.CloneComments(const ASource: TBlock);
 var
    iter: IIterator;
    lComment, lNewComment: TComment;
+   lUnPin: boolean;
 begin
+   lUnPin := ASource.PinComments > 0;
    iter := ASource.GetPinComments;
    while iter.HasNext do
    begin
@@ -490,6 +482,9 @@ begin
       lNewComment := TComment.Clone(Page, lComment);
       lNewComment.PinControl := Self;
    end;
+   if lUnPin then
+      ASource.UnPinComments;
+   UnPinComments;
 end;
 
 procedure TBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);

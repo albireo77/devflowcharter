@@ -776,7 +776,7 @@ end;
 
 procedure TMainForm.miAssignClick(Sender: TObject);
 var
-   lNewBlock, lCurrentBlock: TBlock;
+   lNewBlock, lCurrentBlock, lSourceBlock: TBlock;
    lBranch: TBranch;
    lParent: TGroupBlock;
    lTmpCursor: TCursor;
@@ -788,6 +788,7 @@ var
    lFunction: TUserFunction;
 begin
 
+   lSourceBlock := nil;
    lParent := nil;
    lFunction := nil;
    lComment := nil;
@@ -876,9 +877,10 @@ begin
                lBlockType := blFolder
             else if (Sender = miPaste) and TInfra.IsValid(GClpbrd.Instance) and (GClpbrd.Instance is TBlock) then
             begin
+               lSourceBlock := TBlock(GClpbrd.Instance);
                lTmpCursor := Screen.Cursor;
                Screen.Cursor := crHourGlass;
-               lNewBlock := TBlockFactory.Clone(lBranch, TBlock(GClpbrd.Instance));
+               lNewBlock := TBlockFactory.Clone(lBranch, lSourceBlock);
                Screen.Cursor := lTmpCursor;
             end;
             if lBlockType <> blUnknown then
@@ -893,7 +895,8 @@ begin
                   lNewBlock.Show;
                   lNewBlock.RefreshStatements;
                end;
-               lNewBlock.UnPinComments;
+               if lSourceBlock <> nil then
+                  lNewBlock.CloneComments(lSourceBlock);
                if GSettings.UpdateEditor then
                   TInfra.GetEditorForm.RefreshEditorForObject(lNewBlock);
                GChange := 1;
