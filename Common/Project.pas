@@ -184,11 +184,11 @@ begin
             break;
          end;
       end;
-      if (result = nil) and ACreate then
+      if result = nil then
       begin
          if AnsiSameCaption(lCaption, MAIN_PAGE_MARKER) then
             result := GetMainPage
-         else
+         else if ACreate then
          begin
             result := TBlockTabSheet.Create(TInfra.GetMainForm);
             result.Caption := lCaption;
