@@ -652,12 +652,14 @@ end;
 procedure TBlock.MyOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
    lMitem: TMenuItem;
+   lPage: TBlockTabSheet;
 begin
    if Button = mbLeft then
    begin
+      lPage := Page;
       if ssShift in Shift then
       begin
-         if Color <> Page.Brush.Color then
+         if Color <> lPage.Brush.Color then
             BeginDrag(true);
       end
       else if (not PtInRect(Rect(IPoint.X-5, IPoint.Y, IPoint.X+5, IPoint.Y+10), Point(X, Y))) and not IsCursorResize then
@@ -670,23 +672,23 @@ begin
          begin
             lMitem := nil;
             case GCustomCursor of
-               crAssign:      lMitem := Page.Form.miAssign;
-               crMultiAssign: lMitem := Page.Form.miMultipleAssign;
-               crIfElse:      lMitem := Page.Form.miIfElse;
-               crWhile:       lMitem := Page.Form.miWhile;
-               crFor:         lMitem := Page.Form.miFor;
-               crRepeat:      lMitem := Page.Form.miRepeat;
-               crInput:       lMitem := Page.Form.miInput;
-               crOutput:      lMitem := Page.Form.miOutput;
-               crFuncCall:    lMitem := Page.Form.miRoutineCall;
-               crIf:          lMitem := Page.Form.miIf;
-               crCase:        lMitem := Page.Form.miCase;
-               crFolder:      lMitem := Page.Form.miFolder;
-               crText:        lMitem := Page.Form.miText;
+               crAssign:      lMitem := lPage.Form.miAssign;
+               crMultiAssign: lMitem := lPage.Form.miMultipleAssign;
+               crIfElse:      lMitem := lPage.Form.miIfElse;
+               crWhile:       lMitem := lPage.Form.miWhile;
+               crFor:         lMitem := lPage.Form.miFor;
+               crRepeat:      lMitem := lPage.Form.miRepeat;
+               crInput:       lMitem := lPage.Form.miInput;
+               crOutput:      lMitem := lPage.Form.miOutput;
+               crFuncCall:    lMitem := lPage.Form.miRoutineCall;
+               crIf:          lMitem := lPage.Form.miIf;
+               crCase:        lMitem := lPage.Form.miCase;
+               crFolder:      lMitem := lPage.Form.miFolder;
+               crText:        lMitem := lPage.Form.miText;
                crReturn:
                begin
                   if CanInsertReturnBlock then
-                     lMitem := Page.Form.miReturn;
+                     lMitem := lPage.Form.miReturn;
                end;
             end;
             if lMitem <> nil then

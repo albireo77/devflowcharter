@@ -147,9 +147,19 @@ procedure TMainBlock.SetPage(APage: TBlockTabSheet);
 var
    iter: IIterator;
    lHeader: TUserFunctionHeader;
+   lUnPin: boolean;
 begin
    if FPage <> APage then
    begin
+      lUnPin := Expanded and (PinComments > 0);
+      try
+         iter := GetPinComments;
+         while iter.HasNext do
+            TComment(iter.Next).Page := APage;
+      finally
+         if lUnPin then
+            UnPinComments;
+      end;
       FPage := APage;
       Parent := APage;
       if UserFunction <> nil then
@@ -158,9 +168,6 @@ begin
          if lHeader <> nil then
             lHeader.SetPageCombo(APage.Caption);
       end;
-      iter := GetPinComments;
-      while iter.HasNext do
-         TComment(iter.Next).Page := APage;
    end;
 end;
 

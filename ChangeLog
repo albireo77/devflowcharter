@@ -1,3 +1,16 @@
+3.5.0 [11.07.2016]
+- Flowchart: now can be displayed on multiple tabs
+- Flowchart: eliminate flicker when resizing memo components
+- Flowchart: comment copy/paste/export/import along with parent block
+- Flowchart: fix displaying corner in text block when double buffering is on
+- Editor: Eclipse-style hints showing closing bracket (for brackets in different lines)
+
+IMPORTANT NOTES:
+Tabs can be added/removed/renamed using popup menu displayed upon click on tab labels.
+There are 2 ways to move flowcharts between tabs:
+1. By selecting tab from dropdown in Flowchart section on Functions page
+2. By cut/paste of function body flowchart
+
 3.4.7 [19.04.2016]
 - Flowchart: reduce flickering when updating function labels
 
