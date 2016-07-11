@@ -333,7 +333,8 @@ begin
       tag.SetAttribute(FONT_SIZE_ATTR, IntToStr(Font.Size));
       tag.SetAttribute('v', IntToStr(Ord(Visible)));
       tag.SetAttribute(Z_ORDER_ATTR, IntToStr(FZOrder));
-      tag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
+      if FPage <> GProject.GetMainPage then
+         tag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
       if Font.Style <> [] then
          tag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style));
       ATag.AppendChild(tag);
