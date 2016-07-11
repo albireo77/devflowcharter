@@ -181,6 +181,8 @@ const   // Global constants
 
         PAGE_LIST_DELIM   = ',';
 
+        MAIN_PAGE_MARKER  = 'mainPage#!';
+
         MARGIN_X = 50;
         MARGIN_Y = 50;
 

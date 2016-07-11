@@ -186,8 +186,13 @@ begin
       end;
       if (result = nil) and ACreate then
       begin
-         result := TBlockTabSheet.Create(TInfra.GetMainForm);
-         result.Caption := lCaption;
+         if AnsiSameCaption(lCaption, MAIN_PAGE_MARKER) then
+            result := GetMainPage
+         else
+         begin
+            result := TBlockTabSheet.Create(TInfra.GetMainForm);
+            result.Caption := lCaption;
+         end;
       end;
    end;
 end;
@@ -384,7 +389,10 @@ begin
    begin
       if i <> 0 then
          result := result + PAGE_LIST_DELIM;
-      result := result + lPageControl.Pages[i].Caption;
+      if GetMainPage = lPageControl.Pages[i] then
+         result := result + MAIN_PAGE_MARKER
+      else
+         result := result + lPageControl.Pages[i].Caption;
    end;
 end;
 
@@ -398,7 +406,8 @@ begin
 
    ATag.SetAttribute(LANG_ATTR, GInfra.CurrentLang.Name);
    ATag.SetAttribute(PAGE_ORDER_ATTR, GetPageOrder);
-   ATag.SetAttribute(PAGE_FRONT_ATTR, GetActivePage.Caption);
+   if GetMainPage <> GetActivePage then
+      ATag.SetAttribute(PAGE_FRONT_ATTR, GetActivePage.Caption);
 
    if FGlobalVars <> nil then
       FGlobalVars.ExportToXMLTag(ATag);
@@ -426,12 +435,15 @@ procedure TProject.ImportPagesFromXML(const ATag: IXMLElement);
 var
    lPageList, lPageName, lPageFront: string;
    i, len: integer;
-   lPage: TTabSheet;
+   lPage, lActivePage: TTabSheet;
 begin
    if ATag <> nil then
    begin
+      lActivePage := nil;
       lPageName := '';
       lPageFront := ATag.GetAttribute(PAGE_FRONT_ATTR);
+      if lPageFront = '' then
+         lActivePage := GetMainPage;
       lPageList := ATag.GetAttribute(PAGE_ORDER_ATTR);
       len := Length(lPageList);
       for i := 1 to len do
@@ -448,9 +460,11 @@ begin
             if i = len then
                lPage := GetPage(lPageName);
          end;
-         if (lPage <> nil) and AnsiSameCaption(lPage.Caption, lPageFront) then
-            lPage.PageControl.ActivePage := lPage;
+         if (lPage <> nil) and (lActivePage = nil) and AnsiSameCaption(lPage.Caption, lPageFront) then
+            lActivePage := lPage;
       end;
+      if lActivePage <> nil then
+         lActivePage.PageControl.ActivePage := lActivePage;
    end;
 end;
 
