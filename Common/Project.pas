@@ -49,6 +49,7 @@ type
       FComponentList: TComponentList;
       FObjectIds: TStringList;
       FObjectIdSeed: integer;
+      FMainPage: TBlockTabSheet;
       procedure SetGlobals;
       function GetComponents(const ASortType: integer = NO_SORT; const AClassName: string = ''): IIterator;
       function GetComponentByName(const AClassName: string; const AName: string): TComponent;
@@ -199,7 +200,9 @@ end;
 
 function TProject.GetMainPage: TBlockTabSheet;
 begin
-   result := GetPage(i18Manager.GetString(DEF_PAGE_CAPTION_KEY));
+   if FMainPage = nil then
+      FMainPage := GetPage(i18Manager.GetString(DEF_PAGE_CAPTION_KEY));
+   result := FMainPage;
 end;
 
 function TProject.GetActivePage: TBlockTabSheet;
