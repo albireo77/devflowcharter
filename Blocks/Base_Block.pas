@@ -482,7 +482,7 @@ begin
          while iter.HasNext do
          begin
             lComment := TComment(iter.Next);
-            lNewComment := TComment.Clone(Page, lComment);
+            lNewComment := TComment.Clone(lComment, Page);
             lNewComment.PinControl := Self;
          end;
          UnPinComments;

@@ -51,7 +51,7 @@ type
          property PinControl: TControl read FPinControl write FPinControl;
          property Page: TBlockTabSheet read FPage write SetPage;
          constructor Create(const APage: TBlockTabSheet; const ALeft, ATop, AWidth, AHeight: Integer; const AUpdateZOrderComponents: boolean = true);
-         constructor Clone(const APage: TBlockTabSheet; const ASource: TComment);
+         constructor Clone(const ASource: TComment; const APage: TBlockTabSheet);
          constructor CreateDefault(const APage: TBlockTabSheet);
          destructor Destroy; override;
          procedure ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl);
@@ -99,7 +99,7 @@ begin
    OnContextPopup := MyOnContextPopup;
 end;
 
-constructor TComment.Clone(const APage: TBlockTabSheet; const ASource: TComment);
+constructor TComment.Clone(const ASource: TComment; const APage: TBlockTabSheet);
 begin
    Create(APage,
           ASource.Left,

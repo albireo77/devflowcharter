@@ -781,7 +781,7 @@ var
    lParent: TGroupBlock;
    lTmpCursor: TCursor;
    lComment, lNewComment: TComment;
-   lPoint: TPoint;
+   lTopLeft: TPoint;
    lBlockType: TBlockType;
    lLocked: boolean;
    lPage: TBlockTabSheet;
@@ -801,22 +801,20 @@ begin
    if (Sender = miPaste) and ((lFunction <> nil) or (lComment <> nil)) then
    begin
       lPage := GProject.GetActivePage;
-      lPoint := lPage.ScreenToClient(pmPages.PopupPoint);
+      lTopLeft := lPage.ScreenToClient(pmPages.PopupPoint);
       if lFunction <> nil then
       begin
          if lFunction.Body <> nil then
          begin
             lFunction.Body.Page := lPage;
-            lFunction.Body.Top := lPoint.Y;
-            lFunction.Body.Left := lPoint.X;
+            lFunction.Body.SetBounds(lTopLeft.X, lTopLeft.Y, lFunction.Body.Width, lFunction.Body.Height);
          end;
          miUndoRemoveClick(miUndoRemove);
       end
       else if lComment <> nil then
       begin
-         lNewComment := TComment.Create(lPage, lPoint.X, lPoint.Y, lComment.Width, lComment.Height);
-         lNewComment.Text := lComment.Text;
-         lNewComment.Font.Assign(lComment.Font);
+         lNewComment := TComment.Clone(lComment, lPage);
+         lNewComment.SetBounds(lTopLeft.X, lTopLeft.Y, lNewComment.Width, lNewComment.Height);
       end;
       GChange := 1;
       NavigatorForm.Invalidate;
