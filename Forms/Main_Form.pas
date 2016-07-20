@@ -780,7 +780,7 @@ var
    lBranch: TBranch;
    lParent: TGroupBlock;
    lTmpCursor: TCursor;
-   lComment, lNewComment: TComment;
+   lComment: TComment;
    lTopLeft: TPoint;
    lBlockType: TBlockType;
    lLocked: boolean;
@@ -812,7 +812,7 @@ begin
          miUndoRemoveClick(miUndoRemove);
       end
       else if lComment <> nil then
-         lNewComment := lComment.Clone(lPage, @lTopLeft);
+         lComment.Clone(lPage, @lTopLeft);
       GChange := 1;
       NavigatorForm.Invalidate;
       exit;
