@@ -812,10 +812,7 @@ begin
          miUndoRemoveClick(miUndoRemove);
       end
       else if lComment <> nil then
-      begin
-         lNewComment := TComment.Clone(lComment, lPage);
-         lNewComment.SetBounds(lTopLeft.X, lTopLeft.Y, lNewComment.Width, lNewComment.Height);
-      end;
+         lNewComment := lComment.Clone(lPage, @lTopLeft);
       GChange := 1;
       NavigatorForm.Invalidate;
       exit;

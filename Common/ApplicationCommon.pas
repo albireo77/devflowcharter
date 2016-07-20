@@ -878,7 +878,7 @@ end;
 
 class procedure TInfra.InsertTemplateLines(const ADestList: TStringList; const APlaceHolder: string; const ATemplate: TStringList; const AObject: TObject = nil);
 var
-   i, lCount, a, lPos: integer;
+   i, lCount, a, lPos, lLineCount: integer;
    lBegin, lEnd: string;
    lObject: TObject;
 begin
@@ -898,8 +898,9 @@ begin
          if ATemplate <> nil then
          begin
             lCount := ATemplate.Count;
-            if ADestList.Capacity < ADestList.Count + lCount then
-               ADestList.Capacity := ADestList.Count + lCount;
+            lLineCount := ADestList.Count + lCount; 
+            if ADestList.Capacity < lLineCount then
+               ADestList.Capacity := lLineCount;
             for a := lCount-1 downto 0 do
             begin
                if AObject <> nil then
@@ -917,14 +918,15 @@ end;
 
 class procedure TInfra.InsertLinesIntoList(ADestList, ASourceList: TStringList; AFromLine: integer);
 var
-   i: integer;
+   i, lLineCount: integer;
 begin
    if AFromLine < 0 then
       ADestList.AddStrings(ASourceList)
    else
    begin
-      if ADestList.Capacity < ADestList.Count + ASourceList.Count then
-         ADestList.Capacity := ADestList.Count + ASourceList.Count;
+      lLineCount := ADestList.Count + ASourceList.Count;
+      if ADestList.Capacity < lLineCount then
+         ADestList.Capacity := lLineCount;
       for i := ASourceList.Count-1 downto 0 do
          ADestList.InsertObject(AFromLine, ASourceList.Strings[i], ASourceList.Objects[i]);
    end;

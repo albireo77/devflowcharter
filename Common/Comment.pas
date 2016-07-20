@@ -29,6 +29,8 @@ uses
 
 type
 
+   PPoint = ^TPoint;
+
    TComment = class(TMemo, IXMLable, IWinControl, IMaxBoundable, ISortable)
       private
          FPinControl: TControl;
@@ -51,8 +53,8 @@ type
          property PinControl: TControl read FPinControl write FPinControl;
          property Page: TBlockTabSheet read FPage write SetPage;
          constructor Create(const APage: TBlockTabSheet; const ALeft, ATop, AWidth, AHeight: Integer; const AUpdateZOrderComponents: boolean = true);
-         constructor Clone(const ASource: TComment; const APage: TBlockTabSheet);
          constructor CreateDefault(const APage: TBlockTabSheet);
+         function Clone(const APage: TBlockTabSheet; ATopLeft: PPoint = nil): TComment;
          destructor Destroy; override;
          procedure ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl);
          procedure ExportToXMLTag(const ATag: IXMLElement);
@@ -99,16 +101,18 @@ begin
    OnContextPopup := MyOnContextPopup;
 end;
 
-constructor TComment.Clone(const ASource: TComment; const APage: TBlockTabSheet);
+function TComment.Clone(const APage: TBlockTabSheet; ATopLeft: PPoint = nil): TComment;
+var
+   lTopLeft: TPoint;
 begin
-   Create(APage,
-          ASource.Left,
-          ASource.Top,
-          ASource.Width,
-          ASource.Height);
-   Font.Assign(ASource.Font);
-   Text := ASource.Text;
-   Visible := ASource.Visible;
+   if ATopLeft = nil then
+      lTopLeft := BoundsRect.TopLeft
+   else
+      lTopLeft := ATopLeft^;
+   result := TComment.Create(APage, lTopLeft.X, lTopLeft.Y, Width, Height);
+   result.Font.Assign(Font);
+   result.Text := Text;
+   result.Visible := Visible;
 end;
 
 constructor TComment.CreateDefault(const APage: TBlockTabSheet);

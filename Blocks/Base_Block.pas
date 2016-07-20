@@ -471,18 +471,19 @@ end;
 procedure TBlock.CloneComments(const ASource: TBlock);
 var
    iter: IIterator;
-   lComment, lNewComment: TComment;
+   lNewComment: TComment;
    lUnPin: boolean;
+   lPage: TBlockTabSheet;
 begin
    if ASource <> nil then
    begin
+      lPage := Page;
       lUnPin := ASource.PinComments > 0;
       try
          iter := ASource.GetPinComments;
          while iter.HasNext do
          begin
-            lComment := TComment(iter.Next);
-            lNewComment := TComment.Clone(lComment, Page);
+            lNewComment := TComment(iter.Next).Clone(lPage);
             lNewComment.PinControl := Self;
          end;
          UnPinComments;
@@ -2673,11 +2674,12 @@ end;
 procedure TBlock.GenerateTemplateSection(const ALines: TStringList; const ATemplate: TStringList; const ALangId: string; const ADeep: integer);
 var
    lLine: string;
-   i: integer;
+   i, lLineCount: integer;
    lObject: TObject;
 begin
-   if ALines.Capacity < ALines.Count + ATemplate.Count then
-      ALines.Capacity := ALines.Count + ATemplate.Count;
+   lLineCount := ALines.Count + ATemplate.Count;
+   if ALines.Capacity < lLineCount then
+      ALines.Capacity := lLineCount;
    for i := 0 to ATemplate.Count-1 do
    begin
       lLine := DupeString(GSettings.IndentString, ADeep) + ATemplate[i];
