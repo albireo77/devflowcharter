@@ -388,6 +388,7 @@ begin
                lTextControl.Text := Text;
                lTextControl.SetBounds(Left, Top, Width, Height);
                lTextControl.Visible := Visible;
+               lTextControl.SelStart := SelStart;
             end;
          end;
          if lTextControl.CanFocus then
