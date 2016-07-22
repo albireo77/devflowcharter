@@ -93,21 +93,15 @@ begin
 end;
 
 function TInputBlock.Clone(const ABranch: TBranch): TBlock;
-var
-   lBlock: TBlock;
 begin
-   lBlock := TInputBlock.Create(ABranch, Left, Top, Width, Height);
-   lBlock.CloneFrom(Self);
-   result := lBlock;
+   result := TInputBlock.Create(ABranch, Left, Top, Width, Height);
+   result.CloneFrom(Self);
 end;
 
 function TOutputBlock.Clone(const ABranch: TBranch): TBlock;
-var
-   lBlock: TBlock;
 begin
-   lBlock := TOutputBlock.Create(ABranch, Left, Top, Width, Height);
-   lBlock.CloneFrom(Self);
-   result := lBlock;
+   result := TOutputBlock.Create(ABranch, Left, Top, Width, Height);
+   result.CloneFrom(Self);
 end;
 
 constructor TInputBlock.Create(const ABranch: TBranch);

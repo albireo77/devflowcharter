@@ -33,12 +33,12 @@ type
          function Clone(const ABranch: TBranch): TBlock; override;
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
          procedure ChangeColor(const AColor: TColor); override;
+         procedure UpdateEditor(AEdit: TCustomEdit); override;
       protected
          FReturnLabel: string;
          procedure Paint; override;
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); override;
-         function GetDefaultWidth: integer; override;
-         procedure UpdateEditor(AEdit: TCustomEdit); override;
+         function GetDefaultWidth: integer;
    end;
 
 implementation
@@ -74,12 +74,9 @@ begin
 end;
 
 function TReturnBlock.Clone(const ABranch: TBranch): TBlock;
-var
-   lBlock: TBlock;
 begin
-   lBlock := TReturnBlock.Create(ABranch, Left, Top, Width, Height);
-   lBlock.CloneFrom(Self);
-   result := lBlock;
+   result := TReturnBlock.Create(ABranch, Left, Top, Width, Height);
+   result.CloneFrom(Self);
 end;
 
 constructor TReturnBlock.Create(const ABranch: TBranch);

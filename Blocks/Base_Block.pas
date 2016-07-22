@@ -95,7 +95,6 @@ type
          procedure SetCursor(const APoint: TPoint);
          procedure SetFrame(const AValue: boolean);
          procedure PutTextControls; virtual;
-         function GetDefaultWidth: integer; virtual; abstract;
          procedure DrawArrowLine(const ABeginPoint, AEndPoint: TPoint; const AArrowPos: TArrowPosition = arrEnd; const AColor: TColor = clBlack);
          function GetEllipseTextRect(const APoint: TPoint; const AText: string): TRect;
          function DrawEllipsedText(const APoint: TPoint; const AText: string): TRect;

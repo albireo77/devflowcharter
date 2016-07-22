@@ -73,12 +73,9 @@ begin
 end;
 
 function TFolderBlock.Clone(const ABranch: TBranch): TBlock;
-var
-   lBlock: TBlock;
 begin
-   lBlock := TFolderBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, Branch.Hook.X, Branch.Hook.Y);
-   lBlock.CloneFrom(Self);
-   result := lBlock;
+   result := TFolderBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, Branch.Hook.X, Branch.Hook.Y);
+   result.CloneFrom(Self);
 end;
 
 constructor TFolderBlock.Create(const ABranch: TBranch);

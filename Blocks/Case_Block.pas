@@ -37,7 +37,6 @@ type
          procedure OnFStatementChange(AEdit: TCustomEdit);
          function GetDiamondPoint: TPoint; override;
          procedure PlaceBranchStatement(const ABranch: TBranch);
-         procedure CloneFrom(ABlock: TBlock); override;
       public
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
@@ -56,6 +55,7 @@ type
          procedure ChangeColor(const AColor: TColor); override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
          function IsDuplicatedCase(AEdit: TCustomEdit): boolean;
+         procedure CloneFrom(ABlock: TBlock); override;
    end;
 
 const
@@ -101,12 +101,9 @@ begin
 end;
 
 function TCaseBlock.Clone(const ABranch: TBranch): TBlock;
-var
-   lBlock: TBlock;
 begin
-   lBlock := TCaseBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, DefaultBranch.Hook.X, DefaultBranch.Hook.Y);
-   lBlock.CloneFrom(Self);
-   result := lBlock;
+   result := TCaseBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, DefaultBranch.Hook.X, DefaultBranch.Hook.Y);
+   result.CloneFrom(Self);
 end;
 
 procedure TCaseBlock.CloneFrom(ABlock: TBlock);

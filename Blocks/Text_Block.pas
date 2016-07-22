@@ -72,12 +72,9 @@ begin
 end;
 
 function TTextBlock.Clone(const ABranch: TBranch): TBlock;
-var
-   lBlock: TBlock;
 begin
-   lBlock := TTextBlock.Create(ABranch, Left, Top, Width, Height);
-   lBlock.CloneFrom(Self);
-   result := lBlock;
+   result := TTextBlock.Create(ABranch, Left, Top, Width, Height);
+   result.CloneFrom(Self);
 end;
 
 procedure TTextBlock.Paint;

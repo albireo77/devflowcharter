@@ -71,12 +71,9 @@ begin
 end;
 
 function TAssignBlock.Clone(const ABranch: TBranch): TBlock;
-var
-   lBlock: TBlock;
 begin
-   lBlock := TAssignBlock.Create(ABranch, Left, Top, Width, Height);
-   lBlock.CloneFrom(Self);
-   result := lBlock;
+   result := TAssignBlock.Create(ABranch, Left, Top, Width, Height);
+   result.CloneFrom(Self);
 end;
 
 procedure TAssignBlock.Paint;

@@ -76,12 +76,9 @@ begin
 end;
 
 function TIfBlock.Clone(const ABranch: TBranch): TBlock;
-var
-   lBlock: TBlock;
 begin
-   lBlock := TIfBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, Branch.Hook.X, Branch.Hook.Y);
-   lBlock.CloneFrom(Self);
-   result := lBlock;
+   result := TIfBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, Branch.Hook.X, Branch.Hook.Y);
+   result.CloneFrom(Self);
 end;
 
 constructor TIfBlock.Create(const ABranch: TBranch);

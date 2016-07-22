@@ -64,7 +64,7 @@ type
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); override;
          procedure Paint; override;
          function GetFunctionLabel(var ARect: TRect): string;
-         function GetDefaultWidth: integer; override;
+         function GetDefaultWidth: integer;
          procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
          function GetUndoObject: TObject; override;
          procedure SetPage(APage: TBlockTabSheet); override;

@@ -94,13 +94,10 @@ begin
 end;
 
 function TIfElseBlock.Clone(const ABranch: TBranch): TBlock;
-var
-   lBlock: TBlock;
 begin
-   lBlock := TIfElseBlock.Create(ABranch, Left, Top, Width, Height, TrueBranch.Hook.X, FalseBranch.Hook.X, BottomHook,
+   result := TIfElseBlock.Create(ABranch, Left, Top, Width, Height, TrueBranch.Hook.X, FalseBranch.Hook.X, BottomHook,
                                  TopHook.X, TrueBranch.Hook.Y, FalseBranch.Hook.Y, FalseHook, TrueHook);
-   lBlock.CloneFrom(Self);
-   result := lBlock;
+   result.CloneFrom(Self);
 end;
 
 constructor TIfElseBlock.Create(const ABranch: TBranch);

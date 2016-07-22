@@ -32,7 +32,7 @@ type
 
    TParserHelper = class(TObject)
    private
-      class function DecodeDimension(const AType: integer): integer;
+      //class function DecodeDimension(const AType: integer): integer;
       class function DecodeType(const AType: integer): integer;
    public
       class function IsInLoop: boolean;
@@ -709,10 +709,10 @@ begin
    end;
 end;
 
-class function TParserHelper.DecodeDimension(const AType: integer): integer;
+{class function TParserHelper.DecodeDimension(const AType: integer): integer;
 begin
    result := AType div DIMENSION_LEVEL_STEP;
-end;
+end;}
 
 class function TParserHelper.DecodeType(const AType: integer): integer;
 begin

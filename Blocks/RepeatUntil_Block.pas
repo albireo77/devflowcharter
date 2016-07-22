@@ -75,12 +75,9 @@ begin
 end;
 
 function TRepeatUntilBlock.Clone(const ABranch: TBranch): TBlock;
-var
-   lBlock: TBlock;
 begin
-   lBlock := TRepeatUntilBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, Branch.Hook.X, Branch.Hook.Y);
-   lBlock.CloneFrom(Self);
-   result := lBlock;
+   result := TRepeatUntilBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, Branch.Hook.X, Branch.Hook.Y);
+   result.CloneFrom(Self);
 end;
 
 constructor TRepeatUntilBlock.Create(const ABranch: TBranch);

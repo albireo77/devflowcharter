@@ -42,7 +42,6 @@ type
          procedure MyOnChange(Sender: TObject);
          procedure SetForOrder(const AValue: TForOrder);
          procedure PutTextControls; override;
-         procedure CloneFrom(ABlock: TBlock); override;
       public
          cbVariable: TComboBox;
          edtStartVal, edtStopVal: TStatement;
@@ -62,6 +61,7 @@ type
          procedure PopulateComboBoxes; override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
          function RetrieveFocus(AInfo: TFocusInfo): boolean; override;
+         procedure CloneFrom(ABlock: TBlock); override;
    end;
 
 implementation
@@ -153,12 +153,9 @@ begin
 end;
 
 function TForDoBlock.Clone(const ABranch: TBranch): TBlock;
-var
-   lBlock: TBlock;
 begin
-   lBlock := TForDoBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, Branch.Hook.X, Branch.Hook.Y);
-   lBlock.CloneFrom(Self);
-   result := lBlock;
+   result := TForDoBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, Branch.Hook.X, Branch.Hook.Y);
+   result.CloneFrom(Self);
 end;
 
 procedure TForDoBlock.CloneFrom(ABlock: TBlock);

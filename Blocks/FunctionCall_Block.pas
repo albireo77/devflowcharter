@@ -63,12 +63,9 @@ begin
 end;
 
 function TFunctionCallBlock.Clone(const ABranch: TBranch): TBlock;
-var
-   lBlock: TBlock;
 begin
-   lBlock := TFunctionCallBlock.Create(ABranch, Left, Top, Width, Height);
-   lBlock.CloneFrom(Self);
-   result := lBlock;
+   result := TFunctionCallBlock.Create(ABranch, Left, Top, Width, Height);
+   result.CloneFrom(Self);
 end;
 
 constructor TFunctionCallBlock.Create(const ABranch: TBranch);

@@ -53,12 +53,9 @@ begin
 end;
 
 function TMultiAssignBlock.Clone(const ABranch: TBranch): TBlock;
-var
-   lBlock: TBlock;
 begin
-   lBlock := TMultiAssignBlock.Create(ABranch, Left, Top, Width, Height);
-   lBlock.CloneFrom(Self);
-   result := lBlock;
+   result := TMultiAssignBlock.Create(ABranch, Left, Top, Width, Height);
+   result.CloneFrom(Self);
 end;
 
 constructor TMultiAssignBlock.Create(const ABranch: TBranch);
