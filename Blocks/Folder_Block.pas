@@ -32,7 +32,7 @@ type
       public
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
-         constructor Clone(const ABranch: TBranch; const ASource: TFolderBlock);
+         function Clone(const ABranch: TBranch): TBlock; override;
       protected
          procedure Paint; override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
@@ -72,17 +72,13 @@ begin
    FStatement := nil;
 end;
 
-constructor TFolderBlock.Clone(const ABranch: TBranch; const ASource: TFolderBlock);
+function TFolderBlock.Clone(const ABranch: TBranch): TBlock;
+var
+   lBlock: TBlock;
 begin
-   Create(ABranch,
-          ASource.Left,
-          ASource.Top,
-          ASource.Width,
-          ASource.Height,
-          ASource.BottomHook,
-          ASource.Branch.Hook.X,
-          ASource.Branch.Hook.Y);
-   inherited Clone(ASource);
+   lBlock := TFolderBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, Branch.Hook.X, Branch.Hook.Y);
+   lBlock.CloneFrom(Self);
+   result := lBlock;
 end;
 
 constructor TFolderBlock.Create(const ABranch: TBranch);

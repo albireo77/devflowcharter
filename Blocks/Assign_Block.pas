@@ -31,7 +31,7 @@ type
       public
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
-         constructor Clone(const ABranch: TBranch; const ASource: TAssignBlock);
+         function Clone(const ABranch: TBranch): TBlock; override;
          procedure ChangeColor(const AColor: TColor); override;
       protected
          procedure Paint; override;
@@ -70,12 +70,13 @@ begin
    Create(ABranch, 0, 0, 140, 51);
 end;
 
-constructor TAssignBlock.Clone(const ABranch: TBranch; const ASource: TAssignBlock);
+function TAssignBlock.Clone(const ABranch: TBranch): TBlock;
+var
+   lBlock: TBlock;
 begin
-   Create(ABranch, ASource.Left, ASource.Top, ASource.Width, ASource.Height);
-   SetFont(ASource.Font);
-   Visible := ASource.Visible;
-   FStatement.Text := ASource.FStatement.Text;
+   lBlock := TAssignBlock.Create(ABranch, Left, Top, Width, Height);
+   lBlock.CloneFrom(Self);
+   result := lBlock;
 end;
 
 procedure TAssignBlock.Paint;

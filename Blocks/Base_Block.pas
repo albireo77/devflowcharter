@@ -129,6 +129,7 @@ type
          property Id: integer read GetId;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: Integer; const AId: integer = ID_INVALID);
          destructor Destroy; override;
+         function Clone(const ABranch: TBranch): TBlock; virtual;
          procedure ChangeColor(const AColor: TColor); virtual;
          procedure SetFontStyle(const AStyle: TFontStyles);
          procedure SetFontSize(const ASize: integer);
@@ -179,6 +180,7 @@ type
          function UnPinComments: integer; virtual;
          procedure CloneComments(const ASource: TBlock);
          procedure ImportCommentsFromXML(const ATag: IXMLElement);
+         procedure CloneFrom(ABlock: TBlock); virtual;
       published
          property Color;
          property OnMouseDown;
@@ -210,8 +212,7 @@ type
          FFoldParms: TInitParms;
          property BlockImportMode: boolean read FBlockImportMode write FBlockImportMode;
          property BranchCount: integer read GetBranchCount;
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: Integer; const AHook: TPoint; const AId: integer = ID_INVALID); overload;
-         constructor Clone(const ASource: TGroupBlock); overload;
+         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: Integer; const AHook: TPoint; const AId: integer = ID_INVALID);
          destructor Destroy; override;
          procedure ResizeHorz(const AContinue: boolean); virtual;
          procedure ResizeVert(const AContinue: boolean); virtual;
@@ -238,6 +239,7 @@ type
          procedure SetVisible(const AVisible: boolean; const ASetComments: boolean = true); override;
          function CanBeFocused: boolean; override;
          function UnPinComments: integer; override;
+         procedure CloneFrom(ABlock: TBlock); override;
    end;
 
    TBranch = class(TObjectList, IIdentifiable)
@@ -368,62 +370,86 @@ begin
    Branch := AddBranch(AHook, false);
 end;
 
-constructor TGroupBlock.Clone(const ASource: TGroupBlock);
+procedure TBlock.CloneFrom(ABlock: TBlock);
 var
-   lBlock: TBlock;
-   lNewBlock, lPrevBlock: TBlock;
-   lBranch, lBranch2: TBranch;
-   i: integer;
    lTextControl, lSourceTextControl: TCustomEdit;
 begin
-   Visible := ASource.Visible;
-   SetFont(ASource.Font);
-   lSourceTextControl := ASource.GetTextControl;
-   lTextControl := GetTextControl;
-   if (lSourceTextControl <> nil) and (lTextControl <> nil) then
-      lTextControl.Text := lSourceTextControl.Text;
-   FMemoFolder.Text := ASource.FMemoFolder.Text;
-
-   if not ASource.Expanded then
+   if ABlock <> nil then
    begin
-      Expanded := false;
-      FFoldParms := ASource.FFoldParms;
-      Constraints.MinWidth := 140;
-      Constraints.MinHeight := 54;
-      Width := ASource.Width;
-      Height := ASource.Height;
-      FMemoFolder.SetBounds(3, 3, Width-6, Height-36);
-      FMemoFolder.Anchors := [akRight, akLeft, akBottom, akTop];
-      BottomPoint.X := Width div 2;
-      BottomPoint.Y := Height - 30;
-      IPoint.X := (Width div 2) + 30;
-      IPoint.Y := FMemoFolder.Height + 15;
-      TopHook.X := Width div 2;
-      BottomHook := Width div 2;
+      Visible := ABlock.Visible;
+      SetFont(ABlock.Font);
+      lSourceTextControl := ABlock.GetTextControl;
+      lTextControl := GetTextControl;
       if lTextControl <> nil then
-         lTextControl.Visible := false;
-      FMemoFolder.Visible := true;
-   end
-   else
-   begin
-      FFoldParms.Width := ASource.FFoldParms.Width;
-      FFoldParms.Height := ASource.FFoldParms.Height;
-   end;
-
-   for i := PRIMARY_BRANCH_IND to High(ASource.FBranchArray) do
-   begin
-      lBranch := ASource.FBranchArray[i];
-      lBranch2 := GetBranch(i);
-      if lBranch2 = nil then
-         lBranch2 := AddBranch(lBranch.Hook, false);
-      lBlock := lBranch.First;
-      lPrevBlock := nil;
-      while lBlock <> nil do
       begin
-         lNewBlock := TBlockFactory.Clone(lBranch2, lBlock);
-         lBranch2.InsertAfter(lNewBlock, lPrevBlock);
-         lPrevBlock := lBranch2.Last;
-         lBlock := lBlock.Next;
+         if lSourceTextControl <> nil then
+         begin
+            with lSourceTextControl do
+            begin
+               lTextControl.Text := Text;
+               lTextControl.SetBounds(Left, Top, Width, Height);
+            end;
+         end;
+         if lTextControl.CanFocus then
+            lTextControl.SetFocus;
+      end;
+   end;
+end;
+
+procedure TGroupBlock.CloneFrom(ABlock: TBlock);
+var
+   lGroupBlock: TGroupBlock;
+   lNewBlock, lPrevBlock, lBlock: TBlock;
+   lBranch, lBranch2: TBranch;
+   i: integer;
+   lTextControl: TCustomEdit;
+begin
+   inherited CloneFrom(ABlock);
+   if ABlock is TGroupBlock then
+   begin
+      lGroupBlock := TGroupBlock(ABlock);
+      FMemoFolder.Text := lGroupBlock.FMemoFolder.Text;
+      if not lGroupBlock.Expanded then
+      begin
+         Expanded := false;
+         FFoldParms := lGroupBlock.FFoldParms;
+         Constraints.MinWidth := 140;
+         Constraints.MinHeight := 54;
+         Width := lGroupBlock.Width;
+         Height := lGroupBlock.Height;
+         FMemoFolder.SetBounds(3, 3, Width-6, Height-36);
+         FMemoFolder.Anchors := [akRight, akLeft, akBottom, akTop];
+         BottomPoint.X := Width div 2;
+         BottomPoint.Y := Height - 30;
+         IPoint.X := (Width div 2) + 30;
+         IPoint.Y := FMemoFolder.Height + 15;
+         TopHook.X := Width div 2;
+         BottomHook := Width div 2;
+         lTextControl := GetTextControl;
+         if lTextControl <> nil then
+            lTextControl.Visible := false;
+         FMemoFolder.Visible := true;
+      end
+      else
+      begin
+         FFoldParms.Width := lGroupBlock.FFoldParms.Width;
+         FFoldParms.Height := lGroupBlock.FFoldParms.Height;
+      end;
+      for i := PRIMARY_BRANCH_IND to High(lGroupBlock.FBranchArray) do
+      begin
+         lBranch := lGroupBlock.FBranchArray[i];
+         lBranch2 := GetBranch(i);
+         if lBranch2 = nil then
+            lBranch2 := AddBranch(lBranch.Hook, false);
+         lBlock := lBranch.First;
+         lPrevBlock := nil;
+         while lBlock <> nil do
+         begin
+            lNewBlock := lBlock.Clone(lBranch2);
+            lBranch2.InsertAfter(lNewBlock, lPrevBlock);
+            lPrevBlock := lBranch2.Last;
+            lBlock := lBlock.Next;
+         end;
       end;
    end;
 end;
@@ -700,6 +726,11 @@ begin
          end;
       end;
    end;
+end;
+
+function TBlock.Clone(const ABranch: TBranch): TBlock;
+begin
+{}
 end;
 
 procedure TBlock.NCHitTest(var Msg: TWMNCHitTest);

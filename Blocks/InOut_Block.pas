@@ -31,24 +31,25 @@ type
    TInOutBlock = class(TBlock)
       protected
          FLabel: string;
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
+         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; virtual;
          procedure Paint; override;
          procedure PutTextControls; override;
       public
-         constructor Clone(const ABranch: TBranch; const ASource: TInOutBlock);
          procedure ChangeColor(const AColor: TColor); override;
    end;
 
    TInputBlock = class(TInOutBlock)
       public
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
+         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; override;
          constructor Create(const ABranch: TBranch); overload;
+         function Clone(const ABranch: TBranch): TBlock; override;
    end;
 
    TOutputBlock = class(TInOutBlock)
       public
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
+         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; override;
          constructor Create(const ABranch: TBranch); overload;
+         function Clone(const ABranch: TBranch): TBlock; override;
    end;
 
 implementation
@@ -91,16 +92,22 @@ begin
    FStatement.SelStart := Length(FStatement.Text) + GInfra.CurrentLang.InOutCursorPos;
 end;
 
-constructor TInOutBlock.Clone(const ABranch: TBranch; const ASource: TInOutBlock);
+function TInputBlock.Clone(const ABranch: TBranch): TBlock;
+var
+   lBlock: TBlock;
 begin
-   FType := ASource.BType;
-   FLabel := ASource.FLabel;
-   Create(ABranch, ASource.Left, ASource.Top, ASource.Width, ASource.Height);
-   SetFont(ASource.Font);
-   Visible := ASource.Visible;
-   FStatement.Text := ASource.FStatement.Text;
-   with ASource.FStatement do
-      FStatement.SetBounds(Left, Top, Width, Height);
+   lBlock := TInputBlock.Create(ABranch, Left, Top, Width, Height);
+   lBlock.CloneFrom(Self);
+   result := lBlock;
+end;
+
+function TOutputBlock.Clone(const ABranch: TBranch): TBlock;
+var
+   lBlock: TBlock;
+begin
+   lBlock := TOutputBlock.Create(ABranch, Left, Top, Width, Height);
+   lBlock.CloneFrom(Self);
+   result := lBlock;
 end;
 
 constructor TInputBlock.Create(const ABranch: TBranch);

@@ -35,7 +35,7 @@ type
       public
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; override;
-         constructor Clone(const ABranch: TBranch; const ASource: TMultiAssignBlock);
+         function Clone(const ABranch: TBranch): TBlock; override;
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
          procedure ChangeColor(const AColor: TColor); override;
    end;
@@ -52,9 +52,13 @@ begin
    FStatements.ShowHint := true;
 end;
 
-constructor TMultiAssignBlock.Clone(const ABranch: TBranch; const ASource: TMultiAssignBlock);
+function TMultiAssignBlock.Clone(const ABranch: TBranch): TBlock;
+var
+   lBlock: TBlock;
 begin
-   inherited Clone(ABranch, ASource);
+   lBlock := TMultiAssignBlock.Create(ABranch, Left, Top, Width, Height);
+   lBlock.CloneFrom(Self);
+   result := lBlock;
 end;
 
 constructor TMultiAssignBlock.Create(const ABranch: TBranch);

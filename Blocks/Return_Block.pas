@@ -30,7 +30,7 @@ type
       public
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
-         constructor Clone(const ABranch: TBranch; const ASource: TReturnBlock);
+         function Clone(const ABranch: TBranch): TBlock; override;
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
          procedure ChangeColor(const AColor: TColor); override;
       protected
@@ -73,12 +73,13 @@ begin
    TopHook.X := BottomPoint.X;
 end;
 
-constructor TReturnBlock.Clone(const ABranch: TBranch; const ASource: TReturnBlock);
+function TReturnBlock.Clone(const ABranch: TBranch): TBlock;
+var
+   lBlock: TBlock;
 begin
-   Create(ABranch, ASource.Left, ASource.Top, ASource.Width, ASource.Height);
-   SetFont(ASource.Font);
-   Visible := ASource.Visible;
-   FStatement.Text := ASource.FStatement.Text;
+   lBlock := TReturnBlock.Create(ABranch, Left, Top, Width, Height);
+   lBlock.CloneFrom(Self);
+   result := lBlock;
 end;
 
 constructor TReturnBlock.Create(const ABranch: TBranch);

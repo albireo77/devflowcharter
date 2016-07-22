@@ -31,13 +31,12 @@ type
 
    TMultiLineBlock = class(TBlock)
       public
+         FStatements: TStatementMemo;
          function GetTextControl: TCustomEdit; override;
          procedure ChangeColor(const AColor: TColor); override;
          function GetFrontMemo: TMemo; override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
       protected
-         FStatements: TStatementMemo;
-         constructor Clone(const ABranch: TBranch; const ASource: TMultiLineBlock);
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; virtual;
          procedure Paint; override;
          procedure OnDblClickMemo(Sender: TObject);
@@ -81,19 +80,10 @@ begin
    FStatement := nil;
 end;
 
-constructor TMultiLineBlock.Clone(const ABranch: TBranch; const ASource: TMultiLineBlock);
-begin
-   Create(ABranch, ASource.Left, ASource.Top, ASource.Width, ASource.Height);
-   SetFont(ASource.Font);
-   Visible := ASource.Visible;
-   FStatements.Text := ASource.FStatements.Text;
-end;
-
 procedure TMultiLineBlock.OnDblClickMemo(Sender: TObject);
 begin
    FStatements.SelectAll;
 end;
-
 
 procedure TMultiLineBlock.Paint;
 begin

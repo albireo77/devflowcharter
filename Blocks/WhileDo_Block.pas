@@ -32,7 +32,7 @@ type
       public
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
-         constructor Clone(const ABranch: TBranch; const ASource: TWhileDoBlock);
+         function Clone(const ABranch: TBranch): TBlock; override;
          procedure ChangeColor(const AColor: TColor); override;
       protected
          procedure Paint; override;
@@ -74,17 +74,13 @@ begin
 
 end;
 
-constructor TWhileDoBlock.Clone(const ABranch: TBranch; const ASource: TWhileDoBlock);
+function TWhileDoBlock.Clone(const ABranch: TBranch): TBlock;
+var
+   lBlock: TBlock;
 begin
-   Create(ABranch,
-          ASource.Left,
-          ASource.Top,
-          ASource.Width,
-          ASource.Height,
-          ASource.BottomHook,
-          ASource.Branch.Hook.X,
-          ASource.Branch.Hook.Y);
-   inherited Clone(ASource);
+   lBlock := TWhileDoBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, Branch.Hook.X, Branch.Hook.Y);
+   lBlock.CloneFrom(Self);
+   result := lBlock;
 end;
 
 constructor TWhileDoBlock.Create(const ABranch: TBranch);

@@ -42,6 +42,7 @@ type
          procedure MyOnChange(Sender: TObject);
          procedure SetForOrder(const AValue: TForOrder);
          procedure PutTextControls; override;
+         procedure CloneFrom(ABlock: TBlock); override;
       public
          cbVariable: TComboBox;
          edtStartVal, edtStopVal: TStatement;
@@ -49,7 +50,7 @@ type
          property Order: TForOrder read FOrder write SetForOrder;
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, px1, p1Y: integer; const AId: integer = ID_INVALID); overload;
-         constructor Clone(const ABranch: TBranch; const ASource: TForDoBlock);
+         function Clone(const ABranch: TBranch): TBlock; override;
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
          procedure ExpandFold(const AResize: boolean); override;
          function GetDescription: string; override;
@@ -151,34 +152,36 @@ begin
    FStatement := nil;
 end;
 
-constructor TForDoBlock.Clone(const ABranch: TBranch; const ASource: TForDoBlock);
+function TForDoBlock.Clone(const ABranch: TBranch): TBlock;
+var
+   lBlock: TBlock;
 begin
+   lBlock := TForDoBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, Branch.Hook.X, Branch.Hook.Y);
+   lBlock.CloneFrom(Self);
+   result := lBlock;
+end;
 
-   Create(ABranch,
-          ASource.Left,
-          ASource.Top,
-          ASource.Width,
-          ASource.Height,
-          ASource.BottomHook,
-          ASource.Branch.Hook.X,
-          ASource.Branch.Hook.Y);
-
-   edtStartVal.Text := ASource.edtStartVal.Text;
-   edtStopVal.Text := ASource.edtStopVal.Text;
-   edtVariable.Text := ASource.edtVariable.Text;
-   MyOnChange(edtVariable);
-   cbVariable.ItemIndex := ASource.cbVariable.ItemIndex;
-   FOrder := ASource.Order;
-
-   if not ASource.Expanded then
+procedure TForDoBlock.CloneFrom(ABlock: TBlock);
+var
+   lForBlock: TForDoBlock;
+begin
+   if ABlock is TForDoBlock then
    begin
-      edtStartVal.Visible := false;
-      edtStopVal.Visible := false;
-      edtVariable.Visible := false;
+      lForBlock := TForDoBlock(ABlock);
+      edtStartVal.Text := lForBlock.edtStartVal.Text;
+      edtStopVal.Text := lForBlock.edtStopVal.Text;
+      edtVariable.Text := lForBlock.edtVariable.Text;
+      MyOnChange(edtVariable);
+      cbVariable.ItemIndex := lForBlock.cbVariable.ItemIndex;
+      FOrder := lForBlock.FOrder;
+      if not lForBlock.Expanded then
+      begin
+         edtStartVal.Visible := false;
+         edtStopVal.Visible := false;
+         edtVariable.Visible := false;
+      end;
    end;
-
-   inherited Clone(ASource);
-
+   inherited CloneFrom(ABlock);
 end;
 
 constructor TForDoBlock.Create(const ABranch: TBranch);

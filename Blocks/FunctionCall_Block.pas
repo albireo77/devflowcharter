@@ -32,7 +32,7 @@ type
       public
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
-         constructor Clone(const ABranch: TBranch; const ASource: TFunctionCallBlock);
+         function Clone(const ABranch: TBranch): TBlock; override;
          procedure ChangeColor(const AColor: TColor); override;
       protected
          procedure Paint; override;
@@ -62,14 +62,13 @@ begin
    Constraints.MinHeight := 51;
 end;
 
-constructor TFunctionCallBlock.Clone(const ABranch: TBranch; const ASource: TFunctionCallBlock);
+function TFunctionCallBlock.Clone(const ABranch: TBranch): TBlock;
+var
+   lBlock: TBlock;
 begin
-   Create(ABranch, ASource.Left, ASource.Top, ASource.Width, ASource.Height);
-   SetFont(ASource.Font);
-   Visible := ASource.Visible;
-   FStatement.Text := ASource.FStatement.Text;
-   if FStatement.CanFocus then
-      FStatement.SetFocus;
+   lBlock := TFunctionCallBlock.Create(ABranch, Left, Top, Width, Height);
+   lBlock.CloneFrom(Self);
+   result := lBlock;
 end;
 
 constructor TFunctionCallBlock.Create(const ABranch: TBranch);

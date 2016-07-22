@@ -42,7 +42,7 @@ type
       public
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, p1X, p3X, b_hook, t_hook, p1Y, p3Y, f_hook, tt_hook: integer; const AId: integer = ID_INVALID); overload;
-         constructor Clone(const ABranch: TBranch; const ASource: TIfElseBlock);
+         function Clone(const ABranch: TBranch): TBlock; override;
          procedure ResizeHorz(const AContinue: boolean); override;
          procedure ResizeVert(const AContinue: boolean); override;
          procedure ExpandFold(const AResize: boolean); override;
@@ -93,22 +93,14 @@ begin
 
 end;
 
-constructor TIfElseBlock.Clone(const ABranch: TBranch; const ASource: TIfElseBlock);
+function TIfElseBlock.Clone(const ABranch: TBranch): TBlock;
+var
+   lBlock: TBlock;
 begin
-   Create(ABranch,
-          ASource.Left,
-          ASource.Top,
-          ASource.Width,
-          ASource.Height,
-          ASource.TrueBranch.Hook.X,
-          ASource.FalseBranch.Hook.X,
-          ASource.BottomHook,
-          ASource.TopHook.X,
-          ASource.TrueBranch.Hook.Y,
-          ASource.FalseBranch.Hook.Y,
-          ASource.FalseHook,
-          ASource.TrueHook);
-   inherited Clone(ASource);
+   lBlock := TIfElseBlock.Create(ABranch, Left, Top, Width, Height, TrueBranch.Hook.X, FalseBranch.Hook.X, BottomHook,
+                                 TopHook.X, TrueBranch.Hook.Y, FalseBranch.Hook.Y, FalseHook, TrueHook);
+   lBlock.CloneFrom(Self);
+   result := lBlock;
 end;
 
 constructor TIfElseBlock.Create(const ABranch: TBranch);

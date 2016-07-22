@@ -37,10 +37,11 @@ type
          procedure OnFStatementChange(AEdit: TCustomEdit);
          function GetDiamondPoint: TPoint; override;
          procedure PlaceBranchStatement(const ABranch: TBranch);
+         procedure CloneFrom(ABlock: TBlock); override;
       public
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
-         constructor Clone(const ABranch: TBranch; const ASource: TCaseBlock);
+         function Clone(const ABranch: TBranch): TBlock; override;
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
          function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
          procedure ResizeHorz(const AContinue: boolean); override;
@@ -99,35 +100,38 @@ begin
 
 end;
 
-constructor TCaseBlock.Clone(const ABranch: TBranch; const ASource: TCaseBlock);
+function TCaseBlock.Clone(const ABranch: TBranch): TBlock;
+var
+   lBlock: TBlock;
+begin
+   lBlock := TCaseBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, DefaultBranch.Hook.X, DefaultBranch.Hook.Y);
+   lBlock.CloneFrom(Self);
+   result := lBlock;
+end;
+
+procedure TCaseBlock.CloneFrom(ABlock: TBlock);
 var
    i: integer;
    lBranch, lBranch2: TBranch;
+   lCaseBlock: TCaseBlock;
 begin
-
-   Create(ABranch,
-          ASource.Left,
-          ASource.Top,
-          ASource.Width,
-          ASource.Height,
-          ASource.BottomHook,
-          ASource.DefaultBranch.Hook.X,
-          ASource.DefaultBranch.Hook.Y);
-
-   inherited Clone(ASource);
-
-   for i := DEFAULT_BRANCH_IND+1 to High(ASource.FBranchArray) do
+   if ABlock is TCaseBlock then
    begin
-      lBranch2 := GetBranch(i);
-      if lBranch2 = nil then break;
-      lBranch := ASource.FBranchArray[i];
-      if (lBranch2.Statement <> nil) and (lBranch.Statement <> nil) then
+      lCaseBlock := TCaseBlock(ABlock);
+      for i := DEFAULT_BRANCH_IND+1 to High(lCaseBlock.FBranchArray) do
       begin
-         lBranch2.Statement.Text := lBranch.Statement.Text;
-         lBranch2.Statement.Visible := lBranch.Statement.Visible;
+         lBranch2 := GetBranch(i);
+         if lBranch2 = nil then
+            continue;
+         lBranch := lCaseBlock.GetBranch(i);
+         if (lBranch2.Statement <> nil) and (lBranch.Statement <> nil) then
+         begin
+            lBranch2.Statement.Text := lBranch.Statement.Text;
+            lBranch2.Statement.Visible := lBranch.Statement.Visible;
+         end;
       end;
    end;
-
+   inherited CloneFrom(ABlock);
 end;
 
 constructor TCaseBlock.Create(const ABranch: TBranch);

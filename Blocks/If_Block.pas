@@ -32,7 +32,7 @@ type
       public
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
-         constructor Clone(const ABranch: TBranch; const ASource: TIfBlock);
+         function Clone(const ABranch: TBranch): TBlock; override;
          function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
          procedure ChangeColor(const AColor: TColor); override;
       protected
@@ -75,17 +75,13 @@ begin
    PutTextControls;
 end;
 
-constructor TIfBlock.Clone(const ABranch: TBranch; const ASource: TIfBlock);
+function TIfBlock.Clone(const ABranch: TBranch): TBlock;
+var
+   lBlock: TBlock;
 begin
-   Create(ABranch,
-          ASource.Left,
-          ASource.Top,
-          ASource.Width,
-          ASource.Height,
-          ASource.BottomHook,
-          ASource.Branch.Hook.X,
-          ASource.Branch.Hook.Y);
-   inherited Clone(ASource);
+   lBlock := TIfBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, Branch.Hook.X, Branch.Hook.Y);
+   lBlock.CloneFrom(Self);
+   result := lBlock;
 end;
 
 constructor TIfBlock.Create(const ABranch: TBranch);

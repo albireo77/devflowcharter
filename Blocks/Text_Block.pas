@@ -38,7 +38,7 @@ type
       public
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; override;
-         constructor Clone(const ABranch: TBranch; const ASource: TTextBlock);
+         function Clone(const ABranch: TBranch): TBlock; override;
          procedure ChangeColor(const AColor: TColor); override;
       protected
          FCorner: TCorner;
@@ -66,16 +66,19 @@ begin
    FCorner.SetBounds(Width-15, 0, 15, 15);
 end;
 
-constructor TTextBlock.Clone(const ABranch: TBranch; const ASource: TTextBlock);
-begin
-   inherited Clone(ABranch, ASource);
-end;
-
 constructor TTextBlock.Create(const ABranch: TBranch);
 begin
    Create(ABranch, 0, 0, 140, 91);
 end;
 
+function TTextBlock.Clone(const ABranch: TBranch): TBlock;
+var
+   lBlock: TBlock;
+begin
+   lBlock := TTextBlock.Create(ABranch, Left, Top, Width, Height);
+   lBlock.CloneFrom(Self);
+   result := lBlock;
+end;
 
 procedure TTextBlock.Paint;
 begin
