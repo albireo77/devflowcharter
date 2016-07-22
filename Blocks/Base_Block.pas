@@ -388,6 +388,7 @@ begin
             begin
                lTextControl.Text := Text;
                lTextControl.SetBounds(Left, Top, Width, Height);
+               lTextControl.Visible := Visible;
             end;
          end;
          if lTextControl.CanFocus then
@@ -402,7 +403,6 @@ var
    lNewBlock, lPrevBlock, lBlock: TBlock;
    lBranch, lBranch2: TBranch;
    i: integer;
-   lTextControl: TCustomEdit;
 begin
    inherited CloneFrom(ABlock);
    if ABlock is TGroupBlock then
@@ -425,9 +425,6 @@ begin
          IPoint.Y := FMemoFolder.Height + 15;
          TopHook.X := Width div 2;
          BottomHook := Width div 2;
-         lTextControl := GetTextControl;
-         if lTextControl <> nil then
-            lTextControl.Visible := false;
          FMemoFolder.Visible := true;
       end
       else
