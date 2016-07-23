@@ -371,28 +371,26 @@ end;
 
 procedure TBlock.CloneFrom(ABlock: TBlock);
 var
-   lTextControl, lSourceTextControl: TCustomEdit;
+   lEdit, lEditSource: TCustomEdit;
 begin
    if ABlock <> nil then
    begin
       Visible := ABlock.Visible;
       SetFont(ABlock.Font);
-      lSourceTextControl := ABlock.GetTextControl;
-      lTextControl := GetTextControl;
-      if lTextControl <> nil then
+      lEditSource := ABlock.GetTextControl;
+      lEdit := GetTextControl;
+      if lEdit <> nil then
       begin
-         if lSourceTextControl <> nil then
+         if lEditSource <> nil then
          begin
-            with lSourceTextControl do
-            begin
-               lTextControl.Text := Text;
-               lTextControl.SetBounds(Left, Top, Width, Height);
-               lTextControl.Visible := Visible;
-               lTextControl.SelStart := SelStart;
-            end;
+            lEdit.Text := lEditSource.Text;
+            if not EqualRect(lEdit.BoundsRect, lEditSource.BoundsRect) then
+               lEdit.SetBounds(lEditSource.Left, lEditSource.Top, lEditSource.Width, lEditSource.Height);
+            lEdit.Visible := lEditSource.Visible;
+            lEdit.SelStart := lEditSource.SelStart;
          end;
-         if lTextControl.CanFocus then
-            lTextControl.SetFocus;
+         if lEdit.CanFocus then
+            lEdit.SetFocus;
       end;
    end;
 end;
