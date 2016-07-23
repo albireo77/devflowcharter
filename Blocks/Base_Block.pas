@@ -896,9 +896,9 @@ end;
 procedure TGroupBlock.LinkBlocks(const idx: integer = PRIMARY_BRANCH_IND-1);
 var
    lBlock, lBlockPrev: TBlock;
-   i, lStart, lStop, lLeft, lTop: integer;
+   i, lStart, lStop: integer;
+   lTopLeft: TPoint;
 begin
-
    if GetBranch(idx) <> nil then
    begin
       lStart := idx;
@@ -909,27 +909,25 @@ begin
       lStart := PRIMARY_BRANCH_IND;
       lStop := High(FBranchArray);
    end;
-
    for i := lStart to lStop do
    begin
       lBlock := FBranchArray[i].First;
       if lBlock <> nil then
       begin
-         lLeft := FBranchArray[i].Hook.X - lBlock.TopHook.X;
-         lTop := FBranchArray[i].Hook.Y + 1;
-         lBlock.SetBounds(lLeft, lTop, lBlock.Width, lBlock.Height);
+         lTopLeft := Point(FBranchArray[i].Hook.X-lBlock.TopHook.X, FBranchArray[i].Hook.Y+1);
+         if not PointsEqual(lBlock.BoundsRect.TopLeft, lTopLeft) then
+            lBlock.SetBounds(lTopLeft.X, lTopLeft.Y, lBlock.Width, lBlock.Height);
          lBlock := lBlock.Next;
          while lBlock <> nil do
          begin
             lBlockPrev := lBlock.Prev;
-            lLeft := lBlockPrev.BottomPoint.X + lBlockPrev.Left - lBlock.TopHook.X;
-            lTop :=  lBlockPrev.BoundsRect.Bottom;
-            lBlock.SetBounds(lLeft, lTop, lBlock.Width, lBlock.Height);
+            lTopLeft := Point(lBlockPrev.BottomPoint.X+lBlockPrev.Left-lBlock.TopHook.X, lBlockPrev.BoundsRect.Bottom);
+            if not PointsEqual(lBlock.BoundsRect.TopLeft, lTopLeft) then
+               lBlock.SetBounds(lTopLeft.X, lTopLeft.Y, lBlock.Width, lBlock.Height);
             lBlock := lBlock.Next;
          end;
       end;
    end;
-   
 end;
 
 function TGroupBlock.GetFoldedText: string;
