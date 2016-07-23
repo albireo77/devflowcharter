@@ -384,8 +384,7 @@ begin
          if lEditSource <> nil then
          begin
             lEdit.Text := lEditSource.Text;
-            if not EqualRect(lEdit.BoundsRect, lEditSource.BoundsRect) then
-               lEdit.SetBounds(lEditSource.Left, lEditSource.Top, lEditSource.Width, lEditSource.Height);
+            lEdit.BoundsRect := lEditSource.BoundsRect;
             lEdit.Visible := lEditSource.Visible;
             lEdit.SelStart := lEditSource.SelStart;
          end;
@@ -915,15 +914,13 @@ begin
       if lBlock <> nil then
       begin
          lTopLeft := Point(FBranchArray[i].Hook.X-lBlock.TopHook.X, FBranchArray[i].Hook.Y+1);
-         if not PointsEqual(lBlock.BoundsRect.TopLeft, lTopLeft) then
-            lBlock.SetBounds(lTopLeft.X, lTopLeft.Y, lBlock.Width, lBlock.Height);
+         lBlock.SetBounds(lTopLeft.X, lTopLeft.Y, lBlock.Width, lBlock.Height);
          lBlock := lBlock.Next;
          while lBlock <> nil do
          begin
             lBlockPrev := lBlock.Prev;
             lTopLeft := Point(lBlockPrev.BottomPoint.X+lBlockPrev.Left-lBlock.TopHook.X, lBlockPrev.BoundsRect.Bottom);
-            if not PointsEqual(lBlock.BoundsRect.TopLeft, lTopLeft) then
-               lBlock.SetBounds(lTopLeft.X, lTopLeft.Y, lBlock.Width, lBlock.Height);
+            lBlock.SetBounds(lTopLeft.X, lTopLeft.Y, lBlock.Width, lBlock.Height);
             lBlock := lBlock.Next;
          end;
       end;
