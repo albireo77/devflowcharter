@@ -1085,7 +1085,7 @@ var
    iter: IIterator;
    lComment: TComment;
 begin
-   if (x <> 0) and (y <> 0) and ((x <> Left) or (y <> Top)) then
+   if (x <> 0) and (y <> 0) and (Left <> 0) and (Top <> 0) and ((x <> Left) or (y <> Top)) then
    begin
       iter := GetComments(true);
       while iter.HasNext do
