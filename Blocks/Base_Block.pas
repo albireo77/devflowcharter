@@ -1022,7 +1022,7 @@ var
    lPage: TTabSheet;
 begin
    lIterator := TCommentIterator.Create;
-   if Visible and not IsRectEmpty(BoundsRect) then
+   if Visible then
    begin
       l := 0;
       lPage := Page;
