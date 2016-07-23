@@ -1,9 +1,13 @@
+3.5.1 [23.07.2016]
+- fix moving comments in parent block when inserting new block
+- various fixes and optimizations
+
 3.5.0 [11.07.2016]
 - Flowchart: now can be displayed on multiple tabs
 - Flowchart: eliminate flicker when resizing memo components
-- Flowchart: comment copy/paste/export/import along with parent block
+- Flowchart: copy/paste/export/import comment along with parent block
 - Flowchart: fix displaying corner in text block when double buffering is on
-- Editor: Eclipse-style hints showing closing bracket (for brackets in different lines)
+- Editor: Eclipse-style hints showing closing bracket (for brackets across different lines)
 
 IMPORTANT NOTES:
 Tabs can be added/removed/renamed using popup menu displayed upon click on tab labels.
