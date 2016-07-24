@@ -262,7 +262,7 @@ begin
       FActive := AValue;
       if FBody <> nil then
       begin
-         FBody.SetVisible(AValue);
+         FBody.SetVisible(AValue and ((FHeader <> nil) and FHeader.chkFlowVisible.Checked));
          if FBody.Visible then
             FBody.RefreshStatements;
          FBody.Page.Form.SetScrollBars;
