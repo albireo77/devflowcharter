@@ -1796,13 +1796,8 @@ begin
    begin
       lFunction := TUserFunction(TMainBlock(FTopParentBlock).UserFunction);
       result := lFunction.Active;
-      if result then
-      begin
-         if (lFunction <> nil) and (lFunction.Header <> nil) then
-            result := not lFunction.Header.chkExtDeclare.Checked;
-         if result and (FParentBranch <> nil) and (FParentBranch.IndexOf(Self) = -1) then
-            result := false;
-      end;
+      if result and (FParentBranch <> nil) and (FParentBranch.IndexOf(Self) = -1) then
+         result := false;
    end;
 end;
 

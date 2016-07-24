@@ -59,7 +59,6 @@ type
       procedure OnChangeBodyPage(Sender: TObject);
       procedure OnDropDownBodyPage(Sender: TObject);
       procedure DrawBodyLabel;
-      procedure SetBodyVisible;
    public
       cbType,
       cbBodyPage: TComboBox;
@@ -141,7 +140,6 @@ begin
       if FBody <> nil then
       begin
          FHeader.SetPageCombo(FBody.Page.Caption);
-         FHeader.chkExtDeclare.OnClick(FHeader.chkExtDeclare);
          FHeader.chkFlowVisible.OnClick(FHeader.chkFlowVisible);
       end;
    end;
@@ -264,7 +262,7 @@ begin
       FActive := AValue;
       if FBody <> nil then
       begin
-         FBody.SetVisible(AValue and not ((FHeader <> nil) and FHeader.chkExtDeclare.Checked));
+         FBody.SetVisible(AValue);
          if FBody.Visible then
             FBody.RefreshStatements;
          FBody.Page.Form.SetScrollBars;
@@ -457,6 +455,8 @@ begin
    chkExtDeclare.Font.Color := clWindowText;
    chkExtDeclare.Alignment := taLeftJustify;
    chkExtDeclare.DoubleBuffered := true;
+   chkExtDeclare.ShowHint := true;
+   chkExtDeclare.Hint := i18Manager.GetString('chkExtDeclare.Hint');
    chkExtDeclare.OnClick := OnClickExtDecl;
 
    lblLibrary := TLabel.Create(gbHeader);
@@ -744,7 +744,6 @@ end;
 
 procedure TUserFunctionHeader.OnClickExtDecl(Sender: TObject);
 begin
-   SetBodyVisible;
    if GSettings.UpdateEditor and (Font.Color <> NOK_COLOR) then
       TInfra.GetEditorForm.RefreshEditorForObject(Self);
    GChange := 1;
@@ -752,21 +751,13 @@ end;
 
 procedure TUserFunctionHeader.OnClickFlowVisible(Sender: TObject);
 begin
-   SetBodyVisible;
-   cbBodyPage.Enabled := chkFlowVisible.Checked;
-   GChange := 1;
-end;
-
-procedure TUserFunctionHeader.SetBodyVisible;
-var
-   lVisible: boolean;
-begin
    if (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
    begin
-      lVisible := chkFlowVisible.Checked and not chkExtDeclare.Checked;
-      FUserFunction.Body.SetVisible(lVisible);
+      FUserFunction.Body.SetVisible(chkFlowVisible.Checked);
       FUserFunction.Body.Page.Form.SetScrollBars;
    end;
+   cbBodyPage.Enabled := chkFlowVisible.Checked;
+   GChange := 1;
 end;
 
 procedure TUserFunctionHeader.OnClickInclDescCode(Sender: TObject);

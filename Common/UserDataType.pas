@@ -199,6 +199,8 @@ begin
    chkExtDeclare.DoubleBuffered := true;
    chkExtDeclare.OnClick := ExtDeclareOnClick;
    chkExtDeclare.Caption := i18Manager.GetString('chkExtDeclare');
+   chkExtDeclare.ShowHint := true;
+   chkExtDeclare.Hint := i18Manager.GetString('chkExtDeclare.Hint');
 
    rbInt := TRadioButton.Create(gbTypeBox);
    rbInt.Parent := gbTypeBox;
