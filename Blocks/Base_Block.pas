@@ -1798,14 +1798,11 @@ begin
       if lFunction <> nil then
       begin
          result := lFunction.Active;
-         if result then
-         begin
-            if lFunction.Header <> nil then
-               result := lFunction.Header.chkFlowVisible.Checked;
-            if result and (FParentBranch <> nil) and (FParentBranch.IndexOf(Self) = -1) then
-               result := false;
-         end;
+         if result and (lFunction.Header <> nil) then
+            result := lFunction.Header.chkFlowVisible.Checked;
       end;
+      if result and (FParentBranch <> nil) and (FParentBranch.IndexOf(Self) = -1) then
+         result := false;
    end;
 end;
 
