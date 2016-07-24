@@ -217,6 +217,7 @@ Flowchart=Flowchart
 LngNoSprt=%s language is not supported by this instance of devFlowcharter.
 EnterPage=Enter tab name:
 Page=Tab
+Visible=Visible
 
 ; The following keys (3 for each programming language) are used to display labels next to flowcharts
 

@@ -37,8 +37,8 @@ type
    public
       chkTable: TCheckBox;
       chkReference: TCheckBox;
-      function ExportToXMLTag(const root: IXMLElement): IXMLElement; override;
-      procedure ImportFromXMLTag(const root: IXMLElement); override;
+      function ExportToXMLTag(const ATag: IXMLElement): IXMLElement; override;
+      procedure ImportFromXMLTag(const ATag: IXMLElement); override;
    end;
 
    TUserFunctionHeader = class(TTabComponent)
@@ -50,6 +50,7 @@ type
       procedure OnChangeDesc(Sender: TObject);
       procedure OnClickInclDescFlow(Sender: TObject);
       procedure OnClickInclDescCode(Sender: TObject);
+      procedure OnClickFlowVisible(Sender: TObject);
       procedure OnChangeType(Sender: TObject);
       procedure OnMovedParams(Sender: TObject);
       procedure OnClickExtDecl(Sender: TObject);
@@ -58,6 +59,7 @@ type
       procedure OnChangeBodyPage(Sender: TObject);
       procedure OnDropDownBodyPage(Sender: TObject);
       procedure DrawBodyLabel;
+      procedure SetBodyVisible;
    public
       cbType,
       cbBodyPage: TComboBox;
@@ -70,7 +72,8 @@ type
       gbDescription: TGroupBox;
       memDescription: TMemo;
       chkInclDescCode,
-      chkInclDescFlow: TCheckBox;
+      chkInclDescFlow,
+      chkFlowVisible: TCheckBox;
       splDescription,
       splParameters: TSplitter;
       property UserFunction: TUserFunction read FUserFunction;
@@ -78,10 +81,10 @@ type
       property ParameterCount: integer read GetElementCount;
       constructor Create(const AParentForm: TFunctionsForm);
       destructor Destroy; override;
-      procedure ExportToXMLTag(const rootTag: IXMLElement); override;
-      procedure ImportFromXMLTag(const rootTag: IXMLElement; const APinControl: TControl = nil);
+      procedure ExportToXMLTag(const ATag: IXMLElement); override;
+      procedure ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
       function GetParameterIterator: IIterator;
-      procedure Localize(const list: TStringList); override;
+      procedure Localize(const AList: TStringList); override;
       procedure RefreshSizeEdits; override;
       procedure GenerateDescription(const ALines: TStrings);
       procedure SetPageCombo(const ACaption: TCaption = '');
@@ -138,8 +141,8 @@ begin
       if FBody <> nil then
       begin
          FHeader.SetPageCombo(FBody.Page.Caption);
-         if FHeader.chkExtDeclare.Checked then
-            FBody.Visible := false;
+         FHeader.chkExtDeclare.OnClick(FHeader.chkExtDeclare);
+         FHeader.chkFlowVisible.OnClick(FHeader.chkFlowVisible);
       end;
    end;
    if FBody <> nil then
@@ -386,6 +389,18 @@ begin
    cbBodyPage.OnChange := OnChangeBodyPage;
    SetPageCombo;
 
+   chkFlowVisible := TCheckBox.Create(gbBody);
+   chkFlowVisible.Parent := gbBody;
+   chkFlowVisible.ParentFont := false;
+   chkFlowVisible.Font.Style := [];
+   chkFlowVisible.Font.Color := clWindowText;
+   chkFlowVisible.SetBounds(180, 20, 150, 17);
+   chkFlowVisible.Caption := i18Manager.GetString('Visible');
+   chkFlowVisible.DoubleBuffered := true;
+   chkFlowVisible.Anchors := [akBottom, akLeft];
+   chkFlowVisible.OnClick := OnClickFlowVisible;
+   chkFlowVisible.Checked := true;
+
    gbHeader := TGroupBox.Create(Self);
    gbHeader.Parent := Self;
    gbHeader.SetBounds(0, 130, 400, 83);
@@ -520,19 +535,19 @@ begin
    result := TParameter.Create(Self);
 end;
 
-procedure TUserFunctionHeader.Localize(const list: TStringList);
+procedure TUserFunctionHeader.Localize(const AList: TStringList);
 begin
-   lblType.Caption := list.Values['lblType'];
-   lblParameters.Caption := list.Values['lblParameters'];
-   btnAddElement.Caption := list.Values['btnAddParm'];
-   edtLibrary.Hint := Format(list.Values['edtLibraryHint'], [GInfra.CurrentLang.LibraryExt]);
+   lblType.Caption := AList.Values['lblType'];
+   lblParameters.Caption := AList.Values['lblParameters'];
+   btnAddElement.Caption := AList.Values['btnAddParm'];
+   edtLibrary.Hint := Format(AList.Values['edtLibraryHint'], [GInfra.CurrentLang.LibraryExt]);
    if cbType.Items.Count > 0 then
    begin
-      cbType.Items[0] := list.Values['NoType'];
+      cbType.Items[0] := AList.Values['NoType'];
       if cbType.ItemIndex = -1 then
          cbType.ItemIndex := 0;
    end;
-   inherited Localize(list);
+   inherited Localize(AList);
 end;
 
 constructor TParameter.Create(const AParentTab: TUserFunctionHeader);
@@ -712,22 +727,9 @@ begin
    end;
 end;
 
-
 function TUserFunction.IsMain: boolean;
 begin
    result := FHeader = nil;
-end;
-
-procedure TUserFunctionHeader.OnClickExtDecl(Sender: TObject);
-begin
-   if (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
-   begin
-      FUserFunction.Body.SetVisible(not chkExtDeclare.Checked);
-      FUserFunction.Body.Page.Form.SetScrollBars;
-      if GSettings.UpdateEditor and (Font.Color <> NOK_COLOR) then
-         TInfra.GetEditorForm.RefreshEditorForObject(Self);
-   end;
-   GChange := 1;
 end;
 
 procedure TUserFunctionHeader.OnClickInclDescFlow(Sender: TObject);
@@ -738,6 +740,33 @@ begin
       NavigatorForm.Invalidate;
    end;
    GChange := 1;
+end;
+
+procedure TUserFunctionHeader.OnClickExtDecl(Sender: TObject);
+begin
+   SetBodyVisible;
+   if GSettings.UpdateEditor and (Font.Color <> NOK_COLOR) then
+      TInfra.GetEditorForm.RefreshEditorForObject(Self);
+   GChange := 1;
+end;
+
+procedure TUserFunctionHeader.OnClickFlowVisible(Sender: TObject);
+begin
+   SetBodyVisible;
+   cbBodyPage.Enabled := chkFlowVisible.Checked;
+   GChange := 1;
+end;
+
+procedure TUserFunctionHeader.SetBodyVisible;
+var
+   lVisible: boolean;
+begin
+   if (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
+   begin
+      lVisible := chkFlowVisible.Checked and not chkExtDeclare.Checked;
+      FUserFunction.Body.SetVisible(lVisible);
+      FUserFunction.Body.Page.Form.SetScrollBars;
+   end;
 end;
 
 procedure TUserFunctionHeader.OnClickInclDescCode(Sender: TObject);
@@ -755,14 +784,14 @@ begin
    end;
 end;
 
-procedure TUserFunctionHeader.ExportToXMLTag(const rootTag: IXMLElement);
+procedure TUserFunctionHeader.ExportToXMLTag(const ATag: IXMLElement);
 var
    tag, tag2, tag3: IXMLElement;
    lType: string;
 begin
-   tag := rootTag.OwnerDocument.CreateElement('routine');
-   rootTag.AppendChild(tag);
-   tag2 := rootTag.OwnerDocument.CreateElement('header');
+   tag := ATag.OwnerDocument.CreateElement('routine');
+   ATag.AppendChild(tag);
+   tag2 := ATag.OwnerDocument.CreateElement('header');
    tag.AppendChild(tag2);
    inherited ExportToXMLTag(tag2);
    if cbType.ItemIndex = 0 then
@@ -772,10 +801,11 @@ begin
    tag2.SetAttribute('type', lType);
    if memDescription.Text <> '' then
    begin
-      tag3 := rootTag.OwnerDocument.CreateElement('desc');
+      tag3 := ATag.OwnerDocument.CreateElement('desc');
       TXMLProcessor.AddCDATA(tag3, AnsiReplaceStr(memDescription.Text, CRLF, CRLF_PLACEHOLDER));
       tag2.AppendChild(tag3);
    end;
+   tag2.SetAttribute('show_flow', BoolToStr(chkFlowVisible.Checked, true));
    tag2.SetAttribute('desc_incl', BoolToStr(chkInclDescCode.Checked, true));
    tag2.SetAttribute('desc_incl_flow', BoolToStr(chkInclDescFlow.Checked, true));
    FLocalVars.ExportToXMLTag(tag2);
@@ -787,53 +817,57 @@ begin
       FUserFunction.Body.ExportToXMLTag(tag);
 end;
 
-procedure TUserFunctionHeader.ImportFromXMLTag(const rootTag: IXMLElement; const APinControl: TControl = nil);
+procedure TUserFunctionHeader.ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
 var
    idx: integer;
    tag2: IXMLElement;
+   lValue: string;
 begin
-   inherited ImportFromXMLTag(rootTag, APinControl);
-   idx := cbType.Items.IndexOf(rootTag.GetAttribute('type'));
+   inherited ImportFromXMLTag(ATag, APinControl);
+   idx := cbType.Items.IndexOf(ATag.GetAttribute('type'));
    if idx <> -1 then
       cbType.ItemIndex := idx
    else if cbType.Items.Count > 0 then
       cbType.ItemIndex := 0;
    cbType.OnChange(cbType);
-   tag2 := TXMLProcessor.FindChildTag(rootTag, 'desc');
+   tag2 := TXMLProcessor.FindChildTag(ATag, 'desc');
    if tag2 <> nil then
       memDescription.Text := AnsiReplaceStr(tag2.Text, CRLF_PLACEHOLDER, CRLF);
-   chkInclDescCode.Checked := rootTag.GetAttribute('desc_incl') = 'True';
-   chkInclDescFlow.Checked := rootTag.GetAttribute('desc_incl_flow') = 'True';
-   FLocalVars.ImportFromXMLTag(rootTag);
-   idx := StrToIntDef(rootTag.GetAttribute('descrh'), -1);
+   lValue := ATag.GetAttribute('show_flow');
+   if lValue <> '' then
+      chkFlowVisible.Checked := lValue = 'True';
+   chkInclDescCode.Checked := ATag.GetAttribute('desc_incl') = 'True';
+   chkInclDescFlow.Checked := ATag.GetAttribute('desc_incl_flow') = 'True';
+   FLocalVars.ImportFromXMLTag(ATag);
+   idx := StrToIntDef(ATag.GetAttribute('descrh'), -1);
    if idx > -1 then
       gbDescription.Height := idx;
-   idx := StrToIntDef(rootTag.GetAttribute('headerh'), -1);
+   idx := StrToIntDef(ATag.GetAttribute('headerh'), -1);
    if idx > -1 then
       gbHeader.Height := idx;
-   idx := StrToIntDef(rootTag.GetAttribute('parmsh'), -1);
+   idx := StrToIntDef(ATag.GetAttribute('parmsh'), -1);
    if idx > -1 then
    begin
       gbParameters.Height := idx;
       sbxElements.Constraints.MaxHeight := gbParameters.Height - 66;
    end;
-   idx := StrToIntDef(rootTag.GetAttribute('lvarsh'), -1);
+   idx := StrToIntDef(ATag.GetAttribute('lvarsh'), -1);
    if idx > -1 then
       FLocalVars.Height := idx;
 end;
 
-procedure TParameter.ImportFromXMLTag(const root: IXMLElement);
+procedure TParameter.ImportFromXMLTag(const ATag: IXMLElement);
 begin
-   inherited ImportFromXMLTag(root);
-   chkTable.Checked := CompareText(root.GetAttribute('table'), 'true') = 0;
-   chkReference.Checked := CompareText(root.GetAttribute('reference'), 'true') = 0;
+   inherited ImportFromXMLTag(ATag);
+   chkTable.Checked := CompareText(ATag.GetAttribute('table'), 'true') = 0;
+   chkReference.Checked := CompareText(ATag.GetAttribute('reference'), 'true') = 0;
 end;
 
-function TParameter.ExportToXMLTag(const root: IXMLElement): IXMLElement;
+function TParameter.ExportToXMLTag(const ATag: IXMLElement): IXMLElement;
 var
    tag: IXMLElement;
 begin
-   tag := inherited ExportToXMLTag(root);
+   tag := inherited ExportToXMLTag(ATag);
    tag.SetAttribute('table', BoolToStr(chkTable.Checked, true));
    tag.SetAttribute('reference', BoolToStr(chkReference.Checked, true));
 end;

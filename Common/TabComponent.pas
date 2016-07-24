@@ -66,10 +66,10 @@ type
          property ParentForm: TPageControlForm read FParentForm;
          constructor Create(const AParentForm: TPageControlForm);
          destructor Destroy; override;
-         procedure ExportToXMLTag(const rootTag: IXMLElement); virtual;
+         procedure ExportToXMLTag(const ATag: IXMLElement); virtual;
          function IsDuplicated(ANameEdit: TEdit): boolean;
-         procedure Localize(const list: TStringList); virtual;
-         procedure ImportFromXMLTag(const root: IXMLElement; const APinControl: TControl = nil); virtual;
+         procedure Localize(const AList: TStringList); virtual;
+         procedure ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil); virtual;
          function GetLibName: string;
          procedure CallOnDrawTab;
          procedure ScrollElements(const AValue: integer);
@@ -377,29 +377,29 @@ begin
    FParentForm.UpdateCodeEditor := true;
 end;
 
-procedure TTabComponent.ExportToXMLTag(const rootTag: IXMLElement);
+procedure TTabComponent.ExportToXMLTag(const ATag: IXMLElement);
 var
    iter: IIterator;
 begin
-   rootTag.SetAttribute('name', Trim(edtName.Text));
-   rootTag.SetAttribute(ID_ATTR, IntToStr(FId));
-   rootTag.SetAttribute('ext_decl', BoolToStr(chkExtDeclare.Checked, true));
-   rootTag.SetAttribute('library', Trim(edtLibrary.Text));
+   ATag.SetAttribute('name', Trim(edtName.Text));
+   ATag.SetAttribute(ID_ATTR, IntToStr(FId));
+   ATag.SetAttribute('ext_decl', BoolToStr(chkExtDeclare.Checked, true));
+   ATag.SetAttribute('library', Trim(edtLibrary.Text));
    iter := GetElementIterator;
    while iter.HasNext do
-      TElement(iter.Next).ExportToXMLTag(rootTag);
+      TElement(iter.Next).ExportToXMLTag(ATag);
 end;
 
-procedure TTabComponent.ImportFromXMLTag(const root: IXMLElement; const APinControl: TControl = nil);
+procedure TTabComponent.ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
 var
    lElem: TElement;
    tag: IXMLElement;
 begin
-   edtName.Text := root.GetAttribute('name');
+   edtName.Text := ATag.GetAttribute('name');
    edtName.OnChange(edtName);
-   chkExtDeclare.Checked := CompareText(root.GetAttribute('ext_decl'), 'true') = 0;
-   edtLibrary.Text := root.GetAttribute('library');
-   tag := TXMLProcessor.FindChildTag(root, FElementMode);
+   chkExtDeclare.Checked := ATag.GetAttribute('ext_decl') = 'True';
+   edtLibrary.Text := ATag.GetAttribute('library');
+   tag := TXMLProcessor.FindChildTag(ATag, FElementMode);
    while tag <> nil do
    begin
       lElem := CreateElement;
@@ -408,22 +408,22 @@ begin
       lElem.ImportFromXMLTag(tag);
       tag := TXMLProcessor.FindNextTag(tag);
    end;
-   FId := GProject.Register(Self, StrToIntDef(root.GetAttribute(ID_ATTR), ID_INVALID));
+   FId := GProject.Register(Self, StrToIntDef(ATag.GetAttribute(ID_ATTR), ID_INVALID));
 end;
 
-procedure TTabComponent.Localize(const list: TStringList);
+procedure TTabComponent.Localize(const AList: TStringList);
 var
    a: integer;
    lElem: TElement;
 begin
-   lblName.Caption := list.Values['lblName'];
-   chkExtDeclare.Caption := list.Values['chkExtDeclare'];
-   lblLibrary.Caption := list.Values['lblLibrary'];
+   lblName.Caption := AList.Values['lblName'];
+   chkExtDeclare.Caption := AList.Values['chkExtDeclare'];
+   lblLibrary.Caption := AList.Values['lblLibrary'];
    edtName.OnChange(edtName);
    for a := 0 to sbxElements.ControlCount-1 do
    begin
       lElem := TElement(sbxElements.Controls[a]);
-      lElem.btnRemove.Caption := list.Values['btnRemove'];
+      lElem.btnRemove.Caption := AList.Values['btnRemove'];
       lElem.edtName.OnChange(lElem.edtName);
    end;
 end;

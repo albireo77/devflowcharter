@@ -38,8 +38,8 @@ type
       procedure OnChangeName(Sender: TObject); override;
    public
       edtSize: TSizeEdit;
-      function ExportToXMLTag(const root: IXMLElement): IXMLElement; override;
-      procedure ImportFromXMLTag(const root: IXMLElement); override;
+      function ExportToXMLTag(const ATag: IXMLElement): IXMLElement; override;
+      procedure ImportFromXMLTag(const ATag: IXMLElement); override;
       function IsValid: boolean; override;
    end;
 
@@ -66,10 +66,10 @@ type
       lblSize: TLabel;
       property FieldCount: integer read GetElementCount default 0;
       constructor Create(const AParentForm: TDataTypesForm);
-      procedure ExportToXMLTag(const root: IXMLElement); override;
-      procedure ImportFromXMLTag(const root: IXMLElement; const APinControl: TControl = nil);
+      procedure ExportToXMLTag(const ATag: IXMLElement); override;
+      procedure ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
       function GetFieldIterator: IIterator;
-      procedure Localize(const list: TStringList); override;
+      procedure Localize(const AList: TStringList); override;
       procedure RefreshSizeEdits; override;
       function IsValidEnumValue(const AValue: string): boolean;
       function GetDimensionCount: integer;
@@ -426,13 +426,13 @@ begin
    inherited OnChangeName(Sender);
 end;
 
-procedure TUserDataType.ExportToXMLTag(const root: IXMLElement);
+procedure TUserDataType.ExportToXMLTag(const ATag: IXMLElement);
 var
    tag: IXMLElement;
    lTypeId: string;
 begin
-   tag := root.OwnerDocument.CreateElement('structure');
-   root.AppendChild(tag);
+   tag := ATag.OwnerDocument.CreateElement('structure');
+   ATag.AppendChild(tag);
    inherited ExportToXMLTag(tag);
    tag.SetAttribute('pointer', BoolToStr(chkAddPtrType.Checked, true));
    if rbStruct.Checked then
@@ -450,36 +450,36 @@ begin
    tag.SetAttribute(lTypeId, 'True');
 end;
 
-procedure TUserDataType.Localize(const list: TStringList);
+procedure TUserDataType.Localize(const AList: TStringList);
 begin
-   lblName2.Caption := list.Values['lblName'];
-   btnAddElement.Caption := list.Values['btnAddField'];
-   btnAddElement.Hint := list.Values['btnAddFieldHint'];
-   chkAddPtrType.Caption := list.Values['chkAddPtrType'];
-   rbStruct.Caption := list.Values['rbStruct'];
-   rbEnum.Caption := list.Values['rbEnum'];
-   rbOther.Caption := list.Values['rbOther'];
-   rbArray.Caption := list.Values['rbArray'];
-   rbInt.Caption := list.Values['rbInt'];
-   rbReal.Caption := list.Values['rbReal'];
-   gbTypeBox.Caption := list.Values['rgTypeBox'];
-   edtLibrary.Hint := Format(list.Values['edtLibHintType'], [GInfra.CurrentLang.LibraryExt]);
-   inherited Localize(list);
+   lblName2.Caption := AList.Values['lblName'];
+   btnAddElement.Caption := AList.Values['btnAddField'];
+   btnAddElement.Hint := AList.Values['btnAddFieldHint'];
+   chkAddPtrType.Caption := AList.Values['chkAddPtrType'];
+   rbStruct.Caption := AList.Values['rbStruct'];
+   rbEnum.Caption := AList.Values['rbEnum'];
+   rbOther.Caption := AList.Values['rbOther'];
+   rbArray.Caption := AList.Values['rbArray'];
+   rbInt.Caption := AList.Values['rbInt'];
+   rbReal.Caption := AList.Values['rbReal'];
+   gbTypeBox.Caption := AList.Values['rgTypeBox'];
+   edtLibrary.Hint := Format(AList.Values['edtLibHintType'], [GInfra.CurrentLang.LibraryExt]);
+   inherited Localize(AList);
 end;
 
-procedure TUserDataType.ImportFromXMLTag(const root: IXMLElement; const APinControl: TControl = nil);
+procedure TUserDataType.ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
 begin
-   inherited ImportFromXMLTag(root, APinControl);
-   chkAddPtrType.Checked := root.GetAttribute('pointer') = 'True';
-   if root.GetAttribute('struct_type') = 'True' then
+   inherited ImportFromXMLTag(ATag, APinControl);
+   chkAddPtrType.Checked := ATag.GetAttribute('pointer') = 'True';
+   if ATag.GetAttribute('struct_type') = 'True' then
       rbStruct.Checked := true
-   else if root.GetAttribute('int_type') = 'True' then
+   else if ATag.GetAttribute('int_type') = 'True' then
       rbInt.Checked := true
-   else if root.GetAttribute('real_type') = 'True' then
+   else if ATag.GetAttribute('real_type') = 'True' then
       rbReal.Checked := true
-   else if root.GetAttribute('enum_type') = 'True' then
+   else if ATag.GetAttribute('enum_type') = 'True' then
       rbEnum.Checked := true
-   else if root.GetAttribute('array_type') = 'True' then
+   else if ATag.GetAttribute('array_type') = 'True' then
       rbArray.Checked := true
    else
       rbOther.Checked := true;
@@ -568,21 +568,21 @@ begin
       inherited OnChangeName(Sender);
 end;
 
-function TField.ExportToXMLTag(const root: IXMLElement): IXMLElement;
+function TField.ExportToXMLTag(const ATag: IXMLElement): IXMLElement;
 begin
-   inherited ExportToXMLTag(root).SetAttribute('size', edtSize.Text);
+   inherited ExportToXMLTag(ATag).SetAttribute('size', edtSize.Text);
 end;
 
-procedure TField.ImportFromXMLTag(const root: IXMLElement);
+procedure TField.ImportFromXMLTag(const ATag: IXMLElement);
 var
    lSize: string;
 begin
-   inherited ImportFromXMLTag(root);
-   if CompareText(root.GetAttribute('table'), 'true') = 0 then  // for backward compatibility
+   inherited ImportFromXMLTag(ATag);
+   if CompareText(ATag.GetAttribute('table'), 'true') = 0 then  // for backward compatibility
       edtSize.Text := '100'
    else
    begin
-      lSize := root.GetAttribute('size');
+      lSize := ATag.GetAttribute('size');
       if lSize = '' then
          lSize := '1';
       edtSize.Text := lSize;
