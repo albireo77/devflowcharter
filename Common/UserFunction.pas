@@ -50,7 +50,7 @@ type
       procedure OnChangeDesc(Sender: TObject);
       procedure OnClickInclDescFlow(Sender: TObject);
       procedure OnClickInclDescCode(Sender: TObject);
-      procedure OnClickFlowVisible(Sender: TObject);
+      procedure OnClickBodyVisible(Sender: TObject);
       procedure OnChangeType(Sender: TObject);
       procedure OnMovedParams(Sender: TObject);
       procedure OnClickExtDecl(Sender: TObject);
@@ -72,7 +72,7 @@ type
       memDescription: TMemo;
       chkInclDescCode,
       chkInclDescFlow,
-      chkFlowVisible: TCheckBox;
+      chkBodyVisible: TCheckBox;
       splDescription,
       splParameters: TSplitter;
       property UserFunction: TUserFunction read FUserFunction;
@@ -96,14 +96,14 @@ type
       FActive: boolean;
       procedure SetActive(const AValue: boolean);
       function GetActive: boolean;
-      procedure ImportFromXMLTag(const rootTag: IXMLElement; const APinControl: TControl = nil); virtual; abstract;
    public
       property Header: TUserFunctionHeader read FHeader;
       property Body: TMainBlock read FBody;
       property Active: boolean read GetActive write SetActive;
       constructor Create(const AFunctionHeader: TUserFunctionHeader; const AFunctionBody: TMainBlock);
       destructor Destroy; override;
-      procedure ExportToXMLTag(const rootTag: IXMLElement);
+      procedure ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
+      procedure ExportToXMLTag(const ATag: IXMLElement);
       procedure GenerateTree(const ANode: TTreeNode);
       function GetId: integer;
       function GetLibName: string;
@@ -140,7 +140,7 @@ begin
       if FBody <> nil then
       begin
          FHeader.SetPageCombo(FBody.Page.Caption);
-         FHeader.chkFlowVisible.OnClick(FHeader.chkFlowVisible);
+         FHeader.chkBodyVisible.OnClick(FHeader.chkBodyVisible);
       end;
    end;
    if FBody <> nil then
@@ -262,7 +262,7 @@ begin
       FActive := AValue;
       if FBody <> nil then
       begin
-         FBody.SetVisible(AValue and ((FHeader <> nil) and FHeader.chkFlowVisible.Checked));
+         FBody.SetVisible(AValue and ((FHeader <> nil) and FHeader.chkBodyVisible.Checked));
          if FBody.Visible then
             FBody.RefreshStatements;
          FBody.Page.Form.SetScrollBars;
@@ -284,18 +284,23 @@ begin
    result := FActive;
 end;
 
-procedure TUserFunction.ExportToXMLTag(const rootTag: IXMLElement);
+procedure TUserFunction.ExportToXMLTag(const ATag: IXMLElement);
 var
    tag: IXMLElement;
 begin
    if FHeader <> nil then
-      FHeader.ExportToXMLTag(rootTag)
+      FHeader.ExportToXMLTag(ATag)
    else if FBody <> nil then
    begin
-      tag := rootTag.OwnerDocument.CreateElement('routine');
-      rootTag.AppendChild(tag);
+      tag := ATag.OwnerDocument.CreateElement('routine');
+      ATag.AppendChild(tag);
       FBody.ExportToXMLTag(tag);
    end;
+end;
+
+procedure TUserFunction.ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
+begin
+{}
 end;
 
 constructor TUserFunctionHeader.Create(const AParentForm: TFunctionsForm);
@@ -387,17 +392,17 @@ begin
    cbBodyPage.OnChange := OnChangeBodyPage;
    SetPageCombo;
 
-   chkFlowVisible := TCheckBox.Create(gbBody);
-   chkFlowVisible.Parent := gbBody;
-   chkFlowVisible.ParentFont := false;
-   chkFlowVisible.Font.Style := [];
-   chkFlowVisible.Font.Color := clWindowText;
-   chkFlowVisible.SetBounds(180, 20, 150, 17);
-   chkFlowVisible.Caption := i18Manager.GetString('Visible');
-   chkFlowVisible.DoubleBuffered := true;
-   chkFlowVisible.Anchors := [akBottom, akLeft];
-   chkFlowVisible.OnClick := OnClickFlowVisible;
-   chkFlowVisible.Checked := true;
+   chkBodyVisible := TCheckBox.Create(gbBody);
+   chkBodyVisible.Parent := gbBody;
+   chkBodyVisible.ParentFont := false;
+   chkBodyVisible.Font.Style := [];
+   chkBodyVisible.Font.Color := clWindowText;
+   chkBodyVisible.SetBounds(180, 20, 150, 17);
+   chkBodyVisible.Caption := i18Manager.GetString('Visible');
+   chkBodyVisible.DoubleBuffered := true;
+   chkBodyVisible.Anchors := [akBottom, akLeft];
+   chkBodyVisible.OnClick := OnClickBodyVisible;
+   chkBodyVisible.Checked := true;
 
    gbHeader := TGroupBox.Create(Self);
    gbHeader.Parent := Self;
@@ -718,7 +723,7 @@ begin
          lDesc := lLang.GetUserFuncDesc(FHeader);
    end;
    lNode := ANode.Owner.AddChildObject(ANode, lDesc, lObject);
-   if (FBody <> nil) and FBody.Visible then
+   if FBody <> nil then
       FBody.GenerateTree(lNode);
    if (FHeader <> nil) and TInfra.IsRestricted(FHeader.Font.Color) then
    begin
@@ -749,14 +754,14 @@ begin
    GChange := 1;
 end;
 
-procedure TUserFunctionHeader.OnClickFlowVisible(Sender: TObject);
+procedure TUserFunctionHeader.OnClickBodyVisible(Sender: TObject);
 begin
    if (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
    begin
-      FUserFunction.Body.SetVisible(chkFlowVisible.Checked);
+      FUserFunction.Body.SetVisible(chkBodyVisible.Checked);
       FUserFunction.Body.Page.Form.SetScrollBars;
    end;
-   cbBodyPage.Enabled := chkFlowVisible.Checked;
+   cbBodyPage.Enabled := chkBodyVisible.Checked;
    GChange := 1;
 end;
 
@@ -796,7 +801,7 @@ begin
       TXMLProcessor.AddCDATA(tag3, AnsiReplaceStr(memDescription.Text, CRLF, CRLF_PLACEHOLDER));
       tag2.AppendChild(tag3);
    end;
-   tag2.SetAttribute('show_flow', BoolToStr(chkFlowVisible.Checked, true));
+   tag2.SetAttribute('show_body', BoolToStr(chkBodyVisible.Checked, true));
    tag2.SetAttribute('desc_incl', BoolToStr(chkInclDescCode.Checked, true));
    tag2.SetAttribute('desc_incl_flow', BoolToStr(chkInclDescFlow.Checked, true));
    FLocalVars.ExportToXMLTag(tag2);
@@ -812,7 +817,6 @@ procedure TUserFunctionHeader.ImportFromXMLTag(const ATag: IXMLElement; const AP
 var
    idx: integer;
    tag2: IXMLElement;
-   lValue: string;
 begin
    inherited ImportFromXMLTag(ATag, APinControl);
    idx := cbType.Items.IndexOf(ATag.GetAttribute('type'));
@@ -824,9 +828,8 @@ begin
    tag2 := TXMLProcessor.FindChildTag(ATag, 'desc');
    if tag2 <> nil then
       memDescription.Text := AnsiReplaceStr(tag2.Text, CRLF_PLACEHOLDER, CRLF);
-   lValue := ATag.GetAttribute('show_flow');
-   if lValue <> '' then
-      chkFlowVisible.Checked := lValue = 'True';
+   if ATag.GetAttribute('show_body') = 'False' then
+      chkBodyVisible.Checked := false;
    chkInclDescCode.Checked := ATag.GetAttribute('desc_incl') = 'True';
    chkInclDescFlow.Checked := ATag.GetAttribute('desc_incl_flow') = 'True';
    FLocalVars.ImportFromXMLTag(ATag);

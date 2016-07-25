@@ -37,7 +37,7 @@ type
          procedure ChangeColor(const AColor: TColor); override;
       protected
          procedure Paint; override;
-         procedure SetWidth(const min_x: integer); override;
+         procedure SetWidth(const AMinX: integer); override;
          function GetDiamondPoint: TPoint; override;
    end;
 
@@ -113,12 +113,12 @@ begin
    DrawI;
 end;
 
-procedure TRepeatUntilBlock.SetWidth(const min_x: integer);
+procedure TRepeatUntilBlock.SetWidth(const AMinX: integer);
 begin
-   if min_x < BottomHook + 121 then
+   if AMinX < BottomHook + 121 then
       Width := BottomHook + 121
    else
-      Width := min_x;
+      Width := AMinX;
    BottomPoint.X := Width - 11;
 end;
 
