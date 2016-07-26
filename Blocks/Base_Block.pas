@@ -69,6 +69,8 @@ type
          procedure MyOnMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); virtual;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); virtual;
+         procedure MyOnDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
+         procedure MyOnDragDrop(Sender, Source: TObject; X, Y: Integer);
          procedure MyOnClick(Sender: TObject);
          procedure MyOnChange(Sender: TObject);
          procedure OnChangeMemo(Sender: TObject); virtual;
@@ -106,6 +108,7 @@ type
          procedure CreateParams(var Params: TCreateParams); override;
          procedure OnWindowPosChanged(x, y: integer); virtual;
          function ProcessComments: boolean;
+         function IsForeParent(const ABlock: TBlock): boolean;
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -334,6 +337,8 @@ begin
    OnMouseMove := MyOnMouseMove;
    OnClick     := MyOnClick;
    OnCanResize := MyOnCanResize;
+   OnDragOver  := MyOnDragOver;
+   OnDragDrop  := MyOnDragDrop;
 end;
 
 constructor TGroupBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: Integer; const AHook: TPoint; const AId: integer = ID_INVALID);
@@ -571,6 +576,48 @@ begin
       Cursor := crSizeNWSE
    else if IsCursorResize then
       Cursor := crDefault;
+end;
+
+function TBlock.IsForeParent(const ABlock: TBlock): boolean;
+var
+   lParent: TWinControl;
+begin
+   result := false;
+   if ABlock <> nil then
+   begin
+      lParent := Parent;
+      while lParent is TBlock do
+      begin
+         if lParent = ABlock then
+         begin
+            result := true;
+            break;
+         end;
+         lParent := lParent.Parent;
+      end;
+   end;
+end;
+
+procedure TBlock.MyOnDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
+begin
+   MyOnMouseMove(Sender, [ssLeft], X, Y);
+   if (Source = Self) or (Ired < 0) or (not (Source is TBlock)) or (Source is TMainBlock) or IsForeParent(TBlock(Source)) then
+      Accept := false;
+end;
+
+procedure TBlock.MyOnDragDrop(Sender, Source: TObject; X, Y: Integer);
+var
+   lPage, lSourcePage: TBlockTabSheet;
+begin
+   if Source is TBlock then
+   begin
+      lSourcePage := TBlock(Source).Page;
+      lSourcePage.Form.pmPages.PopupComponent := TBlock(Source);
+      lSourcePage.Form.miCopyClick(lSourcePage.Form.miCut);
+      lPage := Page;
+      lPage.Form.pmPages.PopupComponent := Self;
+      lPage.Form.miAssignClick(lPage.Form.miPaste);
+   end;
 end;
 
 procedure TBlock.OnMouseLeave;
