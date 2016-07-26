@@ -215,6 +215,8 @@ Flowchart=Flowchart
 LngNoSprt=Jêzyk %s nie jest wspierany przez t¹ instancjê devFlowcharter'a.
 EnterPage=Podaj nazwê zak³adki:
 Page=Zak³adka
+Visible=Widoczny
+chkExtDeclare.Hint=Wy³¹cza z generowania kodu
 
 ; Klucze poni¿ej (po 3 na ka¿dy jêzyk programowania) s¹ u¿ywane do wyœwietlania informacji o funkcji na diagramie
  

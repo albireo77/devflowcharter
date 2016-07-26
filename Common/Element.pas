@@ -47,8 +47,8 @@ type
          btnRemove: TButton;
          property ParentTab: TTabSheet read FParentTab;
          property ParentForm: TPageControlForm read FParentForm;
-         function ExportToXMLTag(const root: IXMLElement): IXMLElement; virtual;
-         procedure ImportFromXMLTag(const root: IXMLElement); virtual;
+         function ExportToXMLTag(const ATag: IXMLElement): IXMLElement; virtual;
+         procedure ImportFromXMLTag(const ATag: IXMLElement); virtual;
          function IsValid: boolean; virtual;
          function GetSortValue(const ASortType: integer): integer;
    end;
@@ -195,22 +195,22 @@ begin
    result := Top;
 end;
 
-procedure TElement.ImportFromXMLTag(const root: IXMLElement);
+procedure TElement.ImportFromXMLTag(const ATag: IXMLElement);
 var
    idx: integer;
 begin
-   edtName.Text := root.GetAttribute('name');
-   idx := cbType.Items.IndexOf(root.GetAttribute('type'));
+   edtName.Text := ATag.GetAttribute('name');
+   idx := cbType.Items.IndexOf(ATag.GetAttribute('type'));
    if idx <> -1 then
       cbType.ItemIndex := idx
    else if cbType.Items.Count > 0 then 
       cbType.ItemIndex := 0;
 end;
 
-function TElement.ExportToXMLTag(const root: IXMLElement): IXMLElement;
+function TElement.ExportToXMLTag(const ATag: IXMLElement): IXMLElement;
 begin
-   result := root.OwnerDocument.CreateElement(FElem_Id);
-   root.AppendChild(result);
+   result := ATag.OwnerDocument.CreateElement(FElem_Id);
+   ATag.AppendChild(result);
    result.SetAttribute('name', Trim(edtName.Text));
    result.SetAttribute('type', cbType.Text);
 end;

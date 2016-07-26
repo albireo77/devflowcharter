@@ -198,7 +198,7 @@ type
          FTrueLabel, FFalseLabel: string;
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
-         procedure SetWidth(const AMinX: integer); virtual; abstract;
+         procedure SetWidth(const AMinX: integer); virtual;
          procedure OnMouseLeave; override;
          procedure LinkBlocks(const idx: integer = PRIMARY_BRANCH_IND-1);
          procedure Paint; override;
@@ -890,6 +890,11 @@ begin
    else if GSettings.ShowFlowchartLabels then
       RepaintAll;
 
+end;
+
+procedure TGroupBlock.SetWidth(const AMinX: integer);
+begin
+{}
 end;
 
 procedure TGroupBlock.LinkBlocks(const idx: integer = PRIMARY_BRANCH_IND-1);
@@ -1795,14 +1800,14 @@ begin
    if result then
    begin
       lFunction := TUserFunction(TMainBlock(FTopParentBlock).UserFunction);
-      result := lFunction.Active;
-      if result then
+      if lFunction <> nil then
       begin
-         if (lFunction <> nil) and (lFunction.Header <> nil) then
-            result := not lFunction.Header.chkExtDeclare.Checked;
-         if result and (FParentBranch <> nil) and (FParentBranch.IndexOf(Self) = -1) then
-            result := false;
+         result := lFunction.Active;
+         if result and (lFunction.Header <> nil) then
+            result := lFunction.Header.chkBodyVisible.Checked;
       end;
+      if result and (FParentBranch <> nil) and (FParentBranch.IndexOf(Self) = -1) then
+         result := false;
    end;
 end;
 
