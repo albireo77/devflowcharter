@@ -600,7 +600,7 @@ end;
 
 procedure TBlock.MyOnDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-   MyOnMouseMove(Sender, [ssLeft], X, Y);
+   MyOnMouseMove(Sender, [ssShift], X, Y);
    if (Source = Self) or (Ired < 0) or (not (Source is TBlock)) or (Source is TMainBlock) or IsForeParent(TBlock(Source)) then
       Accept := false;
 end;
