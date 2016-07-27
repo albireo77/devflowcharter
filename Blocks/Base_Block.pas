@@ -71,8 +71,8 @@ type
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); virtual;
          procedure MyOnDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
          procedure MyOnDragDrop(Sender, Source: TObject; X, Y: Integer);
-         procedure MyOnClick(Sender: TObject);
          procedure MyOnChange(Sender: TObject);
+         procedure MyOnDblClick(Sender: TObject);
          procedure OnChangeMemo(Sender: TObject); virtual;
          procedure SetMemoVScroll(AValue: boolean);
          procedure UpdateMemoVScroll;
@@ -335,8 +335,8 @@ begin
    OnMouseDown := MyOnMouseDown;
    OnMouseUp   := MyOnMouseUp;
    OnMouseMove := MyOnMouseMove;
-   OnClick     := MyOnClick;
    OnCanResize := MyOnCanResize;
+   OnDblClick  := MyOnDblClick;
    OnDragOver  := MyOnDragOver;
    OnDragDrop  := MyOnDragDrop;
 end;
@@ -683,9 +683,9 @@ begin
    end;
 end;
 
-procedure TBlock.MyOnClick(Sender: TObject);
+procedure TBlock.MyOnDblClick(Sender: TObject);
 begin
-   if IsCursorSelect and (GetAsyncKeyState(VK_SHIFT) = 0) then
+   if IsCursorSelect then
       ChangeFrame;
 end;
 
