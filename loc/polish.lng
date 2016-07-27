@@ -281,9 +281,9 @@ EditorHelp22=##
 EditorHelp23=Aby skopiowaæ komentarz z obszaru algorytmu do edytora
 EditorHelp24=wciœnij Shift i przeci¹gnij komentarz w po¿¹dane
 EditorHelp25=miejsce w edytorze.
-EditorHelp26=Aby wygenerowaæ i wkleiæ kod aktualnie zaznaczonego
-EditorHelp27=bloku w algorytmie wciœnij Shift i przeci¹gnij go w
-EditorHelp28=po¿¹dane miejsce na edytorze.
+EditorHelp26=Aby wygenerowaæ i wkleiæ kod pojedynczego bloku,
+EditorHelp27=zaznacz i przeci¹gnij-upuœæ go w po¿¹danym miejscu w
+EditorHelp28=edytorze.
 
 [MainForm]
 miFile=Plik

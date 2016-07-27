@@ -516,9 +516,8 @@ EditorHelp22=##
 EditorHelp23=为了从流程图中复制注释到编辑器
 EditorHelp24=按住shift键后拖动文字到
 EditorHelp25=编辑器的目标位置.
-EditorHelp26=为了复制特定部分的源代码
-EditorHelp27=按住shift然后把流程图区块拖动
-EditorHelp28=到编辑器的目标位置.
+EditorHelp26=In order to generate code for single block, select it
+EditorHelp27=and drag-and-drop on desired position in editor.
 
 [ToolBoxForm]
 FormCaption=元素工具箱

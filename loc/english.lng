@@ -513,9 +513,8 @@ EditorHelp22=##
 EditorHelp23=In order to copy comment from flowchart area to
 EditorHelp24=editor window, hold Shift and drag comment to desired
 EditorHelp25=position in editor.
-EditorHelp26=In order to generate and paste code of selected block
-EditorHelp27=in flowchart area, hold Shift and drag block to
-EditorHelp28=desired position in editor.
+EditorHelp26=In order to generate code for single block, select it
+EditorHelp27=and drag-and-drop on desired position in editor.
 
 [ToolBoxForm]
 FormCaption=ToolBox

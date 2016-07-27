@@ -512,9 +512,8 @@ EditorHelp22=##
 EditorHelp23=Para copiar un comentario del diagrama en la
 EditorHelp24=ventanadel Editor, presione Shift y arrastre el
 EditorHelp25=comentario a la posición deseada en el editor.
-EditorHelp26=Para generar y pegar el código del bloque
-EditorHelp27=seleccionado en el diagrama, presione Shift y
-EditorHelp28=arrástrelo a la posición deseada en el editor.
+EditorHelp26=In order to generate code for single block, select it
+EditorHelp27=and drag-and-drop on desired position in editor.
 
 [ToolBoxForm]
 FormCaption=ToolBox

@@ -514,9 +514,8 @@ EditorHelp22=##
 EditorHelp23=Afin de copier un commentaire de l'organigramme à
 EditorHelp24=la fenêtre d'édition, faites Shift et déplacer le
 EditorHelp25=commentaire où vous désirer dans l'éditeur.
-EditorHelp26=Afin de générer et coller du code du bloc
-EditorHelp27=sélectionné de l'organigramme, faites Shift
-EditorHelp28=et déplacer le bloc où vous désirer dans l'éditeur.
+EditorHelp26=In order to generate code for single block, select it
+EditorHelp27=and drag-and-drop on desired position in editor.
 
 [ToolBoxForm]
 FormCaption=ToolBox

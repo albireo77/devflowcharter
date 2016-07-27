@@ -724,13 +724,9 @@ var
 begin
    if Button = mbLeft then
    begin
-      lPage := Page;
-      if ssShift in Shift then
-      begin
-         if Color <> lPage.Brush.Color then
-            BeginDrag(true);
-      end
-      else if (not PtInRect(Rect(IPoint.X-5, IPoint.Y, IPoint.X+5, IPoint.Y+10), Point(X, Y))) and not IsCursorResize then
+      if PtInRect(Rect(IPoint.X-5, IPoint.Y, IPoint.X+5, IPoint.Y+10), Point(X, Y)) then
+         BeginDrag(false, 3)
+      else if not IsCursorResize then
       begin          // drag entire flowchart
          ReleaseCapture;
          FTopParentBlock.BringAllToFront;
@@ -738,6 +734,7 @@ begin
          FTopParentBlock.OnResize(FTopParentBlock);
          if Ired >= 0 then
          begin
+            lPage := Page;
             lMitem := nil;
             case GCustomCursor of
                crAssign:      lMitem := lPage.Form.miAssign;
