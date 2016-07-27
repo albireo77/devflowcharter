@@ -108,7 +108,7 @@ type
          procedure CreateParams(var Params: TCreateParams); override;
          procedure OnWindowPosChanged(x, y: integer); virtual;
          function ProcessComments: boolean;
-         function IsForeParent(const ABlock: TBlock): boolean;
+         function IsForeParent(const AParent: TObject): boolean;
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -578,17 +578,17 @@ begin
       Cursor := crDefault;
 end;
 
-function TBlock.IsForeParent(const ABlock: TBlock): boolean;
+function TBlock.IsForeParent(const AParent: TObject): boolean;
 var
    lParent: TWinControl;
 begin
    result := false;
-   if ABlock <> nil then
+   if AParent <> nil then
    begin
       lParent := Parent;
       while lParent is TBlock do
       begin
-         if lParent = ABlock then
+         if lParent = AParent then
          begin
             result := true;
             break;
@@ -601,7 +601,7 @@ end;
 procedure TBlock.MyOnDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
    MyOnMouseMove(Sender, [ssShift], X, Y);
-   if (Source = Self) or (Ired < 0) or (not (Source is TBlock)) or (Source is TMainBlock) or IsForeParent(TBlock(Source)) then
+   if (Source = Self) or (Ired < 0) or (not (Source is TBlock)) or (Source is TMainBlock) or IsForeParent(Source) then
       Accept := false;
 end;
 
@@ -613,10 +613,10 @@ begin
    begin
       lSourcePage := TBlock(Source).Page;
       lSourcePage.Form.pmPages.PopupComponent := TBlock(Source);
-      lSourcePage.Form.miCopyClick(lSourcePage.Form.miCut);
+      lSourcePage.Form.miCut.OnClick(lSourcePage.Form.miCut);
       lPage := Page;
       lPage.Form.pmPages.PopupComponent := Self;
-      lPage.Form.miAssignClick(lPage.Form.miPaste);
+      lPage.Form.miPaste.OnClick(lPage.Form.miPaste);
    end;
 end;
 
