@@ -321,6 +321,12 @@ miMemoWordWrap=Word Wrap
 miAddPage=Add
 miRemovePage=Remove
 miRenamePage=Rename
+miUndo=Undo
+miCut1=Cut
+miCopy1=Copy
+miPaste1=Paste
+miRemove1=Remove
+miInsertFunc=Insert Function
 
 [DeclarationsForm]
 FormCaption=Global Declarations

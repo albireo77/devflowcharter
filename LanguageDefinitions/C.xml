@@ -20,6 +20,8 @@
     <EnabledMainProgram>1</EnabledMainProgram>
     <CaseSensitiveSyntax>1</CaseSensitiveSyntax>
     <UpperCaseConstId>0</UpperCaseConstId>
+    <FuncBrackets>()</FuncBrackets>
+    <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>
     <FoldRegions>
 		<FoldRegion AddClose="0" NoSubFolds="0" Type="0" WholeWords="0">
 			<Open Keyword="{"/>

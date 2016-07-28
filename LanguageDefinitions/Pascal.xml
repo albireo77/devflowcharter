@@ -21,6 +21,8 @@
     <CaseSensitiveSyntax>0</CaseSensitiveSyntax>
     <UpperCaseConstId>1</UpperCaseConstId>
     <AllowEnumsInForLoop>1</AllowEnumsInForLoop>
+    <FuncBrackets>()</FuncBrackets>
+    <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>
     <FoldRegions>
         <FoldRegion AddClose="0" NoSubFolds="0" Type="1" WholeWords="1">
             <Open Keyword="begin"/>

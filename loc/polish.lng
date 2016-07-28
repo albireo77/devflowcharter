@@ -359,6 +359,12 @@ miMemoWordWrap=Zawijanie Tekstu
 miAddPage=Dodaj
 miRemovePage=Usuñ
 miRenamePage=Zmieñ nazwê
+miUndo=Cofnij
+miCut1=Wytnij
+miCopy1=Kopiuj
+miPaste1=Wklej
+miRemove1=Usuñ
+miInsertFunc=Wstaw Funkcjê
 
 [SettingsForm]
 FormCaption=Ustawienia

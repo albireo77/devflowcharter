@@ -3,6 +3,7 @@
 *.~dfm
 *.~dpr
 *.~lng
+*.~xml
 *.exe
 ThirdParty/*
 !ThirdParty/ThirdParty.zip

@@ -1,13 +1,13 @@
 object MainForm: TMainForm
-  Left = 343
-  Top = 142
+  Left = 190
+  Top = 118
   HorzScrollBar.Tracking = True
   VertScrollBar.Tracking = True
   Align = alCustom
   AutoScroll = False
   Caption = 'devFlowcharter'
-  ClientHeight = 772
-  ClientWidth = 1040
+  ClientHeight = 800
+  ClientWidth = 1078
   Color = clWhite
   DragKind = dkDock
   Font.Charset = DEFAULT_CHARSET
@@ -32,8 +32,8 @@ object MainForm: TMainForm
   object pgcPages: TPageControl
     Left = 0
     Top = 0
-    Width = 1040
-    Height = 772
+    Width = 1078
+    Height = 800
     Align = alClient
     TabOrder = 0
     OnChange = pgcPagesChange
@@ -1180,6 +1180,46 @@ object MainForm: TMainForm
       Tag = 2
       Caption = 'Rename Page'
       OnClick = miRenamePageClick
+    end
+  end
+  object pmEdits: TPopupMenu
+    OnPopup = pmEditsPopup
+    Left = 80
+    Top = 56
+    object miUndo: TMenuItem
+      Tag = 2
+      Caption = 'Undo'
+      OnClick = miUndoClick
+    end
+    object N16: TMenuItem
+      Caption = '-'
+    end
+    object miCut1: TMenuItem
+      Tag = 2
+      Caption = 'Cut'
+      OnClick = miCut1Click
+    end
+    object miCopy1: TMenuItem
+      Tag = 2
+      Caption = 'Copy'
+      OnClick = miCopy1Click
+    end
+    object miPaste1: TMenuItem
+      Tag = 2
+      Caption = 'Paste'
+      OnClick = miPaste1Click
+    end
+    object miRemove1: TMenuItem
+      Tag = 2
+      Caption = 'Remove'
+      OnClick = miRemove1Click
+    end
+    object N17: TMenuItem
+      Caption = '-'
+    end
+    object miInsertFunc: TMenuItem
+      Tag = 2
+      Caption = 'Insert Function'
     end
   end
 end

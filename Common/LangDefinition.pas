@@ -110,7 +110,8 @@ type
       DataTypeEnumEntryList,
       ProcedureLabelKey,
       FunctionLabelKey,
-      ProgramLabelKey: string;
+      ProgramLabelKey,
+      FuncBrackets: string;
       FunctionHeaderArgsStripCount,
       VarEntryArraySizeStripCount,
       LibEntryListStripCount,
@@ -136,7 +137,8 @@ type
       UpperCaseConstId: boolean;
       AllowEnumsInForLoop: boolean;
       AllowUserFunctionOverload: boolean;
-      InOutCursorPos: integer;
+      InOutCursorPos,
+      FuncBracketsCursorPos: integer;
       PreGenerationActivities: procedure;
       ProgramHeaderSectionGenerator: procedure (lines: TStringList);
       UserDataTypesSectionGenerator: procedure (lines: TStringList);
@@ -277,6 +279,14 @@ begin
    tag := TXMLProcessor.FindChildTag(root, 'ProgramLabelKey');
    if tag <> nil then
       ProgramLabelKey := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'FuncBracketsCursorPos');
+   if tag <> nil then
+      FuncBracketsCursorPos := StrToIntDef(tag.Text, 0);
+
+   tag := TXMLProcessor.FindChildTag(root, 'FuncBrackets');
+   if tag <> nil then
+      FuncBrackets := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(root, 'VarTemplate');
    if tag <> nil then

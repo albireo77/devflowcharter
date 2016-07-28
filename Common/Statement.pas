@@ -128,6 +128,7 @@ begin
    Parent := TWinControl(AOwner);
    lBlock := TBlock(AOwner);
    Color := lBlock.Color;
+   PopupMenu := lBlock.Page.Form.pmEdits;
    FParserMode := BlockToParserMapping[lBlock.BType];
    if Parent.ControlCount > 0 then
    begin

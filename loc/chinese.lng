@@ -324,6 +324,12 @@ miMemoWordWrap=断词换行
 miAddPage=Add
 miRemovePage=Remove
 miRenamePage=Rename
+miUndo=Undo
+miCut1=Cut
+miCopy1=Copy
+miPaste1=Paste
+miRemove1=Remove
+miInsertFunc=Insert Function
 
 [DeclarationsForm]
 FormCaption=全局变量

@@ -22,6 +22,8 @@
     <UpperCaseConstId>1</UpperCaseConstId>
     <AllowEnumsInForLoop>1</AllowEnumsInForLoop>
     <AllowUserFunctionOverload>1</AllowUserFunctionOverload>
+    <FuncBrackets>()</FuncBrackets>
+    <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>	<!-- counted from end -->
     <FoldRegions>
         <FoldRegion AddClose="0" NoSubFolds="0" Type="1" WholeWords="1">
             <Open Keyword="BEGIN"/>

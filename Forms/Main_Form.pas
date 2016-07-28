@@ -133,6 +133,15 @@ type
     miAddPage: TMenuItem;
     miRemovePage: TMenuItem;
     miRenamePage: TMenuItem;
+    pmEdits: TPopupMenu;
+    miUndo: TMenuItem;
+    N16: TMenuItem;
+    miCut1: TMenuItem;
+    miCopy1: TMenuItem;
+    miPaste1: TMenuItem;
+    miRemove1: TMenuItem;
+    N17: TMenuItem;
+    miInsertFunc: TMenuItem;
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -199,10 +208,19 @@ type
     procedure miRenamePageClick(Sender: TObject);
     procedure miAddPageClick(Sender: TObject);
     procedure pgcPagesChange(Sender: TObject);
+    procedure pmEditsPopup(Sender: TObject);
+    procedure miUndoClick(Sender: TObject);
+    procedure miCut1Click(Sender: TObject);
+    procedure miCopy1Click(Sender: TObject);
+    procedure miPaste1Click(Sender: TObject);
+    procedure FuncMenuClick(Sender: TObject);
+    procedure miRemove1Click(Sender: TObject);
   private
     { Private declarations }
     FHistoryMenu: THistoryMenu;
     FClockPos: TClockPos;
+    function BuildFuncMenu(AParent: TMenuItem): integer;
+    procedure DestroyFuncMenu;
   public
     { Public declarations }
     procedure ExportSettingsToXMLTag(const root: IXMLElement); override;
@@ -214,6 +232,7 @@ type
 
 var
   MainForm: TMainForm;
+  FFuncMenu: array of TMenuItem;
 
 implementation
 
@@ -276,6 +295,7 @@ begin
    Caption := PROGRAM_NAME;
    FClockPos := Low(TClockPos);
    SetMenu(false);
+   DestroyFuncMenu;
    while pgcPages.PageCount > 0 do
       pgcPages.Pages[0].Free;
 end;
@@ -1519,6 +1539,119 @@ end;
 procedure TMainForm.pgcPagesChange(Sender: TObject);
 begin
    NavigatorForm.Invalidate;
+end;
+
+procedure TMainForm.pmEditsPopup(Sender: TObject);
+var
+   lEdit: TCustomEdit;
+begin
+   miUndo.Enabled := false;
+   miCut1.Enabled := false;
+   miCopy1.Enabled := false;
+   miPaste1.Enabled := false;
+   miRemove1.Enabled := false;
+   miInsertFunc.Visible := false;
+   if pmEdits.PopupComponent is TCustomEdit then
+   begin
+      lEdit := TCustomEdit(pmEdits.PopupComponent);
+      miUndo.Enabled := lEdit.CanUndo;
+      miCut1.Enabled := lEdit.SelText <> '';
+      miCopy1.Enabled := miCut1.Enabled;
+      miRemove1.Enabled := miCut1.Enabled;
+      miPaste1.Enabled := Clipboard.HasFormat(CF_TEXT);
+      miInsertFunc.Visible := BuildFuncMenu(miInsertFunc) > 0;
+      miInsertFunc.Enabled := true;
+   end;
+end;
+
+procedure TMainForm.miUndoClick(Sender: TObject);
+begin
+   TCustomEdit(pmEdits.PopupComponent).Undo;
+end;
+
+procedure TMainForm.miCut1Click(Sender: TObject);
+begin
+   TCustomEdit(pmEdits.PopupComponent).CutToClipboard;
+end;
+
+procedure TMainForm.miCopy1Click(Sender: TObject);
+begin
+   TCustomEdit(pmEdits.PopupComponent).CopyToClipboard;
+end;
+
+procedure TMainForm.miPaste1Click(Sender: TObject);
+begin
+   TCustomEdit(pmEdits.PopupComponent).PasteFromClipboard;
+end;
+
+procedure TMainForm.miRemove1Click(Sender: TObject);
+begin
+   TCustomEdit(pmEdits.PopupComponent).SelText := '';
+end;
+
+procedure TMainForm.FuncMenuClick(Sender: TObject);
+var
+   lFuncName, lBackup: string;
+   lEdit: TCustomEdit;
+begin
+   if (Sender is TMenuItem) and (pmEdits.PopupComponent is TCustomEdit) then
+   begin
+      lEdit := TCustomEdit(pmEdits.PopupComponent);
+      lFuncName := StripHotKey(TMenuItem(Sender).Caption);
+      lFuncName := lFuncName + GInfra.CurrentLang.FuncBrackets;
+      lBackup := '';
+      if Clipboard.HasFormat(CF_TEXT) then
+         lBackup := Clipboard.AsText;
+      Clipboard.AsText := lFuncName;
+      lEdit.PasteFromClipboard;
+      lEdit.SelStart := lEdit.SelStart + GInfra.CurrentLang.FuncBracketsCursorPos;
+      if lBackup <> '' then
+         Clipboard.AsText := lBackup;
+   end;
+end;
+
+procedure TMainForm.DestroyFuncMenu;
+var
+   i: integer;
+begin
+   for i := 0 to Length(FFuncMenu)-1 do
+      FFuncMenu[i].Free;
+   FFuncMenu := nil;
+end;
+
+function TMainForm.BuildFuncMenu(AParent: TMenuItem): integer;
+var
+   i: integer;
+   it: IIterator;
+   lFuncList: TStringList;
+   lName: string;
+begin
+   DestroyFuncMenu;
+   lFuncList := TStringList.Create;
+   try
+      lFuncList.Sorted := true;
+      lFuncList.Duplicates := dupIgnore;
+      lFuncList.AddStrings(GInfra.CurrentLang.NativeFunctions);
+      it := GProject.GetUserFunctions;
+      while it.HasNext do
+      begin
+         lName := TUserFunction(it.Next).GetName;
+         if lName <> '' then
+            lFuncList.Add(lName);
+      end;
+      SetLength(FFuncMenu, lFuncList.Count);
+      for i := 0 to lFuncList.Count-1 do
+      begin
+         FFuncMenu[i] := TMenuItem.Create(AParent);
+         FFuncMenu[i].Caption := lFuncList[i];
+         FFuncMenu[i].OnClick := FuncMenuClick;
+      end;
+   finally
+      lFuncList.Free;
+   end;
+   result := Length(FFuncMenu);
+   if result > 0 then
+      AParent.Add(FFuncMenu);
 end;
 
 end.
