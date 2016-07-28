@@ -50,7 +50,6 @@ type
 
    TGroupBlock = class;
    TBranch = class;
-   THackControl = class(TControl);
 
    TBlock = class(TCustomControl, IIdentifiable, IFocusable)
       private
@@ -292,6 +291,7 @@ uses
    FlashThread, Comment;
 
 type
+   THackControl = class(TControl);
    THackCustomEdit = class(TCustomEdit);
 
 constructor TBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: Integer; const AId: integer = ID_INVALID);
@@ -599,21 +599,34 @@ begin
 end;
 
 procedure TBlock.MyOnDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
+var
+   isShift: boolean;
+   shiftState: TShiftState;
 begin
-   MyOnMouseMove(Sender, [ssShift], X, Y);
-   if (Source = Self) or (Ired < 0) or (not (Source is TBlock)) or (Source is TMainBlock) or IsForeParent(Source) then
+   isShift := GetAsyncKeyState(VK_SHIFT) <> 0;
+   if isShift then
+      shiftState := [ssShift]
+   else
+      shiftState := [];
+   MyOnMouseMove(Sender, shiftState, X, Y);
+   if (Ired < 0) or (not (Source is TBlock)) or (Source is TMainBlock) or ((not isShift) and ((Source = Self) or IsForeParent(Source))) then
       Accept := false;
 end;
 
 procedure TBlock.MyOnDragDrop(Sender, Source: TObject; X, Y: Integer);
 var
    lPage, lSourcePage: TBlockTabSheet;
+   lMItem: TMenuItem;
 begin
    if Source is TBlock then
    begin
       lSourcePage := TBlock(Source).Page;
       lSourcePage.Form.pmPages.PopupComponent := TBlock(Source);
-      lSourcePage.Form.miCut.OnClick(lSourcePage.Form.miCut);
+      if GetAsyncKeyState(VK_SHIFT) <> 0 then
+         lMItem := lSourcePage.Form.miCopy
+      else
+         lMItem := lSourcePage.Form.miCut;
+      lMItem.OnClick(lMitem);
       lPage := Page;
       lPage.Form.pmPages.PopupComponent := Self;
       lPage.Form.miPaste.OnClick(lPage.Form.miPaste);
