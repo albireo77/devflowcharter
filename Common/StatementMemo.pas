@@ -54,8 +54,6 @@ begin
    Font.Name := GSettings.FlowchartFontName;
    Anchors := [akRight, akLeft, akBottom, akTop];
    DoubleBuffered := true;
-   if AOwner is TBlock then
-      PopupMenu := TBlock(AOwner).Page.Form.pmEdits;
 end;
 
 function TStatementMemo.RetrieveFocus(AInfo: TFocusInfo): boolean;

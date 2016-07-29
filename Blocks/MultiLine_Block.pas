@@ -65,6 +65,7 @@ begin
    FStatements.OnMouseDown := OnMouseDownMemo;
    FStatements.OnKeyUp := OnKeyUpMemo;
    FStatements.OnChange := OnChangeMemo;
+   FStatements.PopupMenu := Page.Form.pmEdits;
    if FStatements.CanFocus then
       FStatements.SetFocus;
 
