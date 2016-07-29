@@ -1,5 +1,5 @@
 3.6.0 []
-- Flowchart: new popup menu for edits with list of function calls available
+- Flowchart: new popup menu for edit boxes with list of function calls available
 - Flowchart: copy/cut blocks within flowchart structure using drag-and-drop
 - Functions: add new checkbox to show/hide flowchart (function body)
 
@@ -15,6 +15,8 @@ To enable frame for block, double click with left mouse button when it's highlig
 it could be done with single click.
 For functions, checking External declaration option now only exclude function from code generation. Before 3.6,
 it also hid flowchart (function body).
+FuncBrackets and FuncBracketsCursorPos tags were introduced to language definition XML files. These are
+to adjust pasting function calls to edit boxes using new popup menu.
 
 3.5.1 [23.07.2016]
 - fix moving comments in parent block when inserting new block
