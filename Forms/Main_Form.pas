@@ -328,7 +328,7 @@ begin
    end;
 end;
 
-// don't you dare to remove this method
+// don't remove this method
 procedure TMainForm.AutoScrollInView(AControl: TControl);
 begin
    //inherited AutoScrollInView(AControl);
@@ -1560,7 +1560,6 @@ begin
       miRemove1.Enabled := miCut1.Enabled;
       miPaste1.Enabled := Clipboard.HasFormat(CF_TEXT);
       miInsertFunc.Visible := BuildFuncMenu(miInsertFunc) > 0;
-      miInsertFunc.Enabled := true;
    end;
 end;
 
@@ -1639,8 +1638,9 @@ begin
          if lName <> '' then
             lFuncList.Add(lName);
       end;
-      SetLength(FFuncMenu, lFuncList.Count);
-      for i := 0 to lFuncList.Count-1 do
+      result := lFuncList.Count;
+      SetLength(FFuncMenu, result);
+      for i := 0 to result-1 do
       begin
          FFuncMenu[i] := TMenuItem.Create(AParent);
          FFuncMenu[i].Caption := lFuncList[i];
@@ -1649,7 +1649,6 @@ begin
    finally
       lFuncList.Free;
    end;
-   result := Length(FFuncMenu);
    if result > 0 then
       AParent.Add(FFuncMenu);
 end;
