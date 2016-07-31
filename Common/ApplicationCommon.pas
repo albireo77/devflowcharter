@@ -215,10 +215,6 @@ const   // Global constants
         KEY_COMPILER_COMMAND_NOMAIN = 'CompilerPathNoMain';
         KEY_CURRENT_LANGUAGE        = 'CurrentLanguageName';
 
-        BLOCK_TO_DESCKEY_MAP: array[TBlockType] of string = ( '', 'AssignDesc', 'MultAssignDesc', 'InputDesc', 'OutputDesc',
-                              'RoutineDesc', 'WhileDoDesc', 'RepeatUntilDesc', 'IfDesc', 'IfDesc', 'ForDesc', 'CaseDesc',
-                              '', '', 'ReturnDesc', 'TextDesc', '');
-
         PARSER_ERRORS_ARRAY: array[TParserMode] of string = ('BadGeneric', 'BadCondition', 'BadAssign', 'BadInput', 'BadOutput',
                              'BadFor', 'BadFunction', 'BadCase', 'BadCase', 'BadReturnVal', '');
 
