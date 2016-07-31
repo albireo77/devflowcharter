@@ -95,6 +95,8 @@
 while (!(%s1));
 </RepeatUntilTemplate>
 
+<RepeatDesc>do while (%s1)</RepeatDesc>
+
 <IfTemplate>if (%s1)
 {
 	%b1

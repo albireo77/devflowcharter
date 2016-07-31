@@ -35,6 +35,7 @@ type
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
          function Clone(const ABranch: TBranch): TBlock; override;
          procedure ChangeColor(const AColor: TColor); override;
+         function GetDescription: string; override;
       protected
          procedure Paint; override;
          procedure SetWidth(const AMinX: integer); override;
@@ -44,7 +45,7 @@ type
 implementation
 
 uses
-   ApplicationCommon, Windows, StrUtils, CommonTypes;
+   ApplicationCommon, Windows, StrUtils, CommonTypes, FastcodeAnsiStringReplaceUnit;
 
 constructor TRepeatUntilBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
 begin
@@ -134,6 +135,14 @@ begin
       FStatement.Color := AColor
    else
       FStatement.Color := GSettings.DiamondColor;
+end;
+
+function TRepeatUntilBlock.GetDescription: string;
+begin
+   if GInfra.CurrentLang.RepeatDesc <> '' then
+      result := FastCodeAnsiStringReplace(GInfra.CurrentLang.RepeatDesc, PRIMARY_PLACEHOLDER, Trim(FStatement.Text))
+   else
+      result := inherited GetDescription;
 end;
 
 end.

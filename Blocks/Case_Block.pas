@@ -491,46 +491,33 @@ end;
 
 function TCaseBlock.GenerateTree(const AParentNode: TTreeNode): TTreeNode;
 var
-   stringError: string;
+   lErrMsg: string;
    lNewNode: TTreeNode;
    lBranch: TBranch;
    lExpand1, lExpand2: boolean;
-   idx, i: integer;
+   i: integer;
    lBlock: TBlock;
 begin
 
    lExpand1 := false;
    lExpand2 := false;
-   stringError := '';
-   
-   if TInfra.IsRestricted(FStatement.GetFocusColor) then
-   begin
-      lExpand1 := true;
-      stringError := FStatement.Hint;
-      idx := TInfra.RPos(#10, stringError);
-      if idx <> 0 then
-         stringError := ' - ' + AnsiRightStr(stringError, Length(stringError)-idx);
-   end;
 
-   result := AParentNode.Owner.AddChildObject(AParentNode, GetDescription + stringError, FStatement);
+   lErrMsg := GetErrorMsg(FStatement);
+   if lErrMsg <> '' then
+      lExpand1 := true;
+
+   result := AParentNode.Owner.AddChildObject(AParentNode, GetDescription + lErrMsg, FStatement);
 
    for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
    begin
       lBranch := FBranchArray[i];
-      stringError := '';
       if lBranch.Statement <> nil then
       begin
-         if TInfra.IsRestricted(lBranch.Statement.GetFocusColor) then
-         begin
+         lErrMsg := GetErrorMsg(lBranch.Statement);
+         if lErrMsg <> '' then
             lExpand2 := true;
-            stringError := lBranch.Statement.Hint;
-            idx := TInfra.RPos(#10, stringError);
-            if idx <> 0 then
-               stringError := ' - ' + AnsiRightStr(stringError, Length(stringError)-idx);
-         end;
-         lNewNode := AParentNode.Owner.AddChildObject(result, lBranch.Statement.Text + ': ' + stringError, lBranch.Statement);
+         lNewNode := AParentNode.Owner.AddChildObject(result, lBranch.Statement.Text + ': ' + lErrMsg, lBranch.Statement);
       end;
-
       lBlock := lBranch.First;
       while lBlock <> nil do
       begin

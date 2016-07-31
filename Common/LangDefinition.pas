@@ -65,6 +65,7 @@ type
       ForDoTemplate,
       ElseLabel,
       ReturnDesc,
+      RepeatDesc,
       ForAsc1,
       ForAsc2,
       ForDesc1,
@@ -353,6 +354,10 @@ begin
    tag := TXMLProcessor.FindChildTag(root, 'ReturnDesc');
    if tag <> nil then
       ReturnDesc := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'RepeatDesc');
+   if tag <> nil then
+      RepeatDesc := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(root, 'RepeatUntilTemplate');
    if tag <> nil then

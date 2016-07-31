@@ -156,6 +156,8 @@ end;
 until %s1;
 </RepeatUntilTemplate>
 
+<RepeatDesc>repeat until %s1</RepeatDesc>
+
 <IfTemplate>if %s1 then
 begin
 	%b1

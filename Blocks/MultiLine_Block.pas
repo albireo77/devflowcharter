@@ -217,41 +217,26 @@ end;
 
 function TMultiLineBlock.GenerateTree(const AParentNode: TTreeNode): TTreeNode;
 var
-   lStrErr, lLabel: string;
-   lExpand: boolean;
+   lErrMsg, lLabel: string;
    i: integer;
 begin
-
    result := AParentNode;
-   lExpand := false;
-   lStrErr := '';
-   
-   if TInfra.IsRestricted(FStatements.GetFocusColor) then
-   begin
-      lExpand := true;
-      lStrErr := FStatements.Hint;
-      i := TInfra.RPos(#10, lStrErr);
-      if i <> 0 then
-         lStrErr := ' - ' + AnsiRightStr(lStrErr, Length(lStrErr)-i);
-   end;
-
+   lErrMsg := GetErrorMsg(FStatements);
    for i := 0 to FStatements.Lines.Count-1 do
    begin
       if Trim(FStatements.Lines[i]) <> '' then
       begin
          lLabel := FStatements.Lines[i];
          if i = FErrLine then
-            lLabel := lLabel + lStrErr;
+            lLabel := lLabel + lErrMsg;
          AParentNode.Owner.AddChildObject(AParentNode, lLabel, FStatements);
       end;
    end;
-
-   if lExpand then
+   if lErrMsg <> '' then
    begin
       AParentNode.MakeVisible;
       AParentNode.Expand(false);
    end;
-
 end;
 
 end.

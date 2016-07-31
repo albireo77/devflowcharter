@@ -108,6 +108,7 @@ type
          procedure OnWindowPosChanged(x, y: integer); virtual;
          function ProcessComments: boolean;
          function IsForeParent(const AParent: TObject): boolean;
+         function GetErrorMsg(AEdit: TCustomEdit): string;
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -1932,28 +1933,37 @@ begin
    end;
 end;
 
+function TBlock.GetErrorMsg(AEdit: TCustomEdit): string;
+var
+   lColor: TColor;
+   i: integer;
+begin
+   result := '';
+   if AEdit <>  nil then
+   begin
+      lColor := THackControl(AEdit).Font.Color;
+      if TInfra.IsRestricted(lColor) then
+      begin
+         result := AEdit.Hint;
+         i := TInfra.RPos(#10, result);
+         if i <> 0 then
+            result := ' - ' + AnsiRightStr(result, Length(result)-i);
+      end;
+   end;
+end;
+
 function TBlock.GenerateTree(const AParentNode: TTreeNode): TTreeNode;
 var
-   lStrErr: string;
-   idx: integer;
+   lErrMsg: string;
    lTextControl: TCustomEdit;
-   lColor: TColor;
 begin
    result := AParentNode;
    lTextControl := GetTextControl;
    if lTextControl <> nil then
    begin
-      lStrErr := '';
-      lColor := THackControl(lTextControl).Font.Color;
-      if TInfra.IsRestricted(lColor) then
-      begin
-         lStrErr := lTextControl.Hint;
-         idx := TInfra.RPos(#10, lStrErr);
-         if idx <> 0 then
-            lStrErr := ' - ' + AnsiRightStr(lStrErr, Length(lStrErr)-idx);
-      end;
-      result := AParentNode.Owner.AddChildObject(AParentNode, GetDescription + lStrErr, lTextControl);
-      if TInfra.IsRestricted(lColor) then
+      lErrMsg := GetErrorMsg(lTextControl);
+      result := AParentNode.Owner.AddChildObject(AParentNode, GetDescription + lErrMsg, lTextControl);
+      if lErrMsg <> '' then
       begin
          AParentNode.MakeVisible;
          AParentNode.Expand(false);

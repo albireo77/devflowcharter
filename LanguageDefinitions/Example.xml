@@ -123,6 +123,14 @@ until %s1;
 </RepeatUntilTemplate>
 
 <!--
+Element RepeatDesc
+Used in Explorer window for repeat..until block
+Available placeholders:
+   %s1 - conditional expression 
+-->
+<RepeatDesc>repeat execute until %s1</RepeatDesc>
+
+<!--
 Element ForDoTemplate
 Available placeholders:
    %s1 - control variable
