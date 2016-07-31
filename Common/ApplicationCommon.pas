@@ -189,6 +189,7 @@ const   // Global constants
         OK_COLOR    = clGreen;
         NOK_COLOR   = clRed;
         WARN_COLOR  = clOlive;
+        TEXT_COLOR  = clGray;
         BLACK_COLOR = clWindowText;
 
         FLOWCHART_DEFAULT_FONT_NAME = 'Tahoma';
@@ -1058,7 +1059,7 @@ end;
 
 class function TInfra.IsRestricted(const AColor: TColor): boolean;
 begin
-   result := (AColor = NOK_COLOR) or (AColor = WARN_COLOR);
+   result := (AColor = NOK_COLOR) or (AColor = WARN_COLOR) or (AColor = TEXT_COLOR);
 end;
 
 class procedure TInfra.InitCodeRange(var ACodeRange: TCodeRange);
