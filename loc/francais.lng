@@ -58,18 +58,6 @@ CaptionFor=for
 CaptionTo=to
 CaptionCase=CASE
 CaptionExit=RETURN
-AssignDesc=ATTRIBUTION: %s
-MultAssignDesc=ATTRIBUTIONS MULTIPLES: %s
-InputDesc=ENTRÉE: %s
-OutputDesc=SORTIE: %s
-RoutineDesc=APPEL DE FONCTION: %s
-RepeatUntilDesc=BOUCLE: répéter jusqu'à %s
-WhileDoDesc=BOUCLE: while %s do
-IfDesc=DÉCLARATION CONDITIONELLE: %s
-ForDesc=BOUCLE: for %s %s %s to %s do
-CaseDesc=CASE %s OF:
-ReturnDesc=RETURN %s
-TextDesc=TEXT
 DefValue=default
 
 [Others]

@@ -113,6 +113,8 @@ BEGIN
 END;
 </IfElseTemplate>
 
+<ElseLabel>else</ElseLabel>
+
 <RepeatUntilTemplate>repeat execute
 BEGIN
 	%b1
@@ -179,6 +181,16 @@ END;
 </CaseOfTemplate>
 
 <ReturnTemplate>exit %s1;</ReturnTemplate>
+
+<!--
+Element ReturnDesc
+Used in Explorer window when ReturnTemplate template cannot be present
+Available placeholders:
+   %s1 - return expression
+-->
+<!-- 
+<ReturnDesc>return %s1</ReturnDesc>
+-->
 
 <FunctionCallTemplate>call %s1;</FunctionCallTemplate>
 

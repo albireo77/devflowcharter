@@ -58,18 +58,6 @@ CaptionFor=For
 CaptionTo=To
 CaptionCase=CASO
 CaptionExit=VOLVER
-AssignDesc=Acción: %s
-MultAssignDesc=Múltiples Acciones: %s
-InputDesc=INGRESO: %s
-OutputDesc=SALIDA: %s
-RoutineDesc=LLAMADO DE SUBRUTINA: %s
-RepeatUntilDesc=BUCLE: Repetir hasta %s
-WhileDoDesc=BUCLE: Mientras %s hacer
-IfDesc=DECLARACIÓN CONDICIONAL: %s
-ForDesc=BUCLE: Para %s %s %s hasta %s hacer
-CaseDesc=CASO %s DE:
-ReturnDesc=RETURN %s
-TextDesc=TEXT
 DefValue=Predefinido
 
 [Others]

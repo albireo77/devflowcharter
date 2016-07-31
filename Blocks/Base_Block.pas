@@ -2537,7 +2537,7 @@ var
 begin
    lTextControl := GetTextControl;
    if lTextControl <> nil then
-      result := i18Manager.GetFormattedString(BLOCK_TO_DESCKEY_MAP[FType], [AnsiReplaceStr(Trim(lTextControl.Text), CRLF, ' ')]);
+      result := FastCodeAnsiStringReplace(GInfra.CurrentLang.GetTemplateExpr(ClassType), PRIMARY_PLACEHOLDER, Trim(lTextControl.Text));
 end;
 
 procedure TBlock.ExportToGraphic(const AImage: TGraphic);

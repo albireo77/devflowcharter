@@ -111,6 +111,7 @@ else
 }
 </IfElseTemplate>
 
+<ElseLabel>else</ElseLabel>
 
 <ForDoTemplate>for (%s1 = %s2; %s1 %s4 %s3; %s1%s5)
 {

@@ -172,6 +172,8 @@ begin
 end;
 </IfElseTemplate>
 
+<ElseLabel>else</ElseLabel>
+
 <ForDoTemplate>for %s1 := %s2 %s4 %s3 do
 begin
 	%b1
@@ -195,6 +197,8 @@ end;
 %s3
 end;
 </CaseOfTemplate>
+
+<ReturnDesc>exit %s1</ReturnDesc>
 
 <TextTemplate>{ %s1 }</TextTemplate>
 

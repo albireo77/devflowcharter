@@ -501,6 +501,7 @@ begin
 
    lExpand1 := false;
    lExpand2 := false;
+   stringError := '';
    
    if TInfra.IsRestricted(FStatement.GetFocusColor) then
    begin

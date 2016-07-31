@@ -61,18 +61,6 @@ CaptionFor=循环(for)
 CaptionTo=至
 CaptionCase=若(case)
 CaptionExit=返回
-AssignDesc=赋值: %s
-MultAssignDesc=多重赋值: %s
-InputDesc=输入 %s
-OutputDesc=输出 %s
-RoutineDesc=函数调用 %s
-RepeatUntilDesc=循环: Repeat %s
-WhileDoDesc=循环: while %s do
-IfDesc=跳转条件: %s
-ForDesc=循环: 当%s %s %s到%s循环做
-CaseDesc=若 %s 则:
-ReturnDesc=返回 %s
-TextDesc=文字
 DefValue=默认
 
 [Others]

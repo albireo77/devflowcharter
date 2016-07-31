@@ -33,7 +33,6 @@ type
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
          function Clone(const ABranch: TBranch): TBlock; override;
-         function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
          procedure ChangeColor(const AColor: TColor); override;
       protected
          procedure Paint; override;
@@ -152,40 +151,6 @@ end;
 function TIfBlock.GetDiamondPoint: TPoint;
 begin
    result := Point(Branch.Hook.X, 0);
-end;
-
-function TIfBlock.GenerateTree(const AParentNode: TTreeNode): TTreeNode;
-var
-   stringError: string;
-   newNode: TTreeNode;
-   idx: integer;
-   lBlock: TBlock;
-begin
-
-   if TInfra.IsRestricted(FStatement.GetFocusColor) then
-   begin
-      stringError := FStatement.Hint;
-      idx := TInfra.RPos(#10, stringError);
-      if idx <> 0 then
-         stringError := ' - ' + AnsiRightStr(stringError, Length(stringError)-idx);
-   end;
-   
-   result := AParentNode.Owner.AddChildObject(AParentNode, GetDescription + stringError, FStatement);
-   newNode := AParentNode.Owner.AddChild(result, i18Manager.GetString('CaptionTrue'));
-
-   lBlock := Branch.First;
-   while lBlock <> nil do
-   begin
-      lBlock.GenerateTree(newNode);
-      lBlock := lBlock.next;
-   end;
-
-   if TInfra.IsRestricted(FStatement.GetFocusColor) then
-   begin
-      AParentNode.MakeVisible;
-      AParentNode.Expand(false);
-   end;
-   
 end;
 
 end.

@@ -384,6 +384,8 @@ Else
 EndIf
 </IfElseTemplate>
 
+<ElseLabel>Else</ElseLabel>
+
 <ForDoTemplate>For %s1,%s2,%s3
 	%b1
 EndFor

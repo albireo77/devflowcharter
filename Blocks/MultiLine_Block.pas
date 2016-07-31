@@ -25,7 +25,7 @@ interface
 
 uses
    Controls, StdCtrls, Graphics, Classes, Base_Block, SysUtils, CommonInterfaces,
-   ExtCtrls, StatementMemo;
+   ExtCtrls, StatementMemo, ComCtrls;
 
 type
 
@@ -37,12 +37,14 @@ type
          function GetFrontMemo: TMemo; override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
       protected
+         FErrLine: integer;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; virtual;
          procedure Paint; override;
          procedure OnDblClickMemo(Sender: TObject);
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
          procedure OnMouseDownMemo(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure OnKeyUpMemo(Sender: TObject; var Key: Word; Shift: TShiftState);
+         function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
    end;
 
 implementation
@@ -79,6 +81,7 @@ begin
    Constraints.MinHeight := 48;
    FStatement.Free;
    FStatement := nil;
+   FErrLine := -1;
 end;
 
 procedure TMultiLineBlock.OnDblClickMemo(Sender: TObject);
@@ -210,6 +213,45 @@ procedure TMultiLineBlock.OnKeyUpMemo(Sender: TObject; var Key: Word; Shift: TSh
 begin
    if Key in [VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT] then
       OnMouseDownMemo(Sender, mbLeft, Shift, 0, 0);
+end;
+
+function TMultiLineBlock.GenerateTree(const AParentNode: TTreeNode): TTreeNode;
+var
+   lStrErr, lLabel: string;
+   lExpand: boolean;
+   i: integer;
+begin
+
+   result := AParentNode;
+   lExpand := false;
+   lStrErr := '';
+   
+   if TInfra.IsRestricted(FStatements.GetFocusColor) then
+   begin
+      lExpand := true;
+      lStrErr := FStatements.Hint;
+      i := TInfra.RPos(#10, lStrErr);
+      if i <> 0 then
+         lStrErr := ' - ' + AnsiRightStr(lStrErr, Length(lStrErr)-i);
+   end;
+
+   for i := 0 to FStatements.Lines.Count-1 do
+   begin
+      if Trim(FStatements.Lines[i]) <> '' then
+      begin
+         lLabel := FStatements.Lines[i];
+         if i = FErrLine then
+            lLabel := lLabel + lStrErr;
+         AParentNode.Owner.AddChildObject(AParentNode, lLabel, FStatements);
+      end;
+   end;
+
+   if lExpand then
+   begin
+      AParentNode.MakeVisible;
+      AParentNode.Expand(false);
+   end;
+
 end;
 
 end.

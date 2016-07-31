@@ -34,6 +34,7 @@ type
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
          procedure ChangeColor(const AColor: TColor); override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
+         function GetDescription: string; override;
       protected
          FReturnLabel: string;
          procedure Paint; override;
@@ -44,7 +45,8 @@ type
 implementation
 
 uses
-   Types, Windows, ApplicationCommon, StrUtils, Forms, Project, UserFunction, Main_Block, CommonTypes;
+   Types, Windows, ApplicationCommon, StrUtils, Forms, Project, UserFunction,
+   Main_Block, CommonTypes, FastcodeAnsiStringReplaceUnit;
 
 constructor TReturnBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 var
@@ -178,6 +180,14 @@ procedure TReturnBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y:
     Integer);
 begin
    SelectBlock(Point(X, Y));
+end;
+
+function TReturnBlock.GetDescription: string;
+begin
+   if GInfra.CurrentLang.ReturnDesc <> '' then
+      result := FastCodeAnsiStringReplace(GInfra.CurrentLang.ReturnDesc, PRIMARY_PLACEHOLDER, Trim(FStatement.Text))
+   else
+      result := inherited GetDescription;
 end;
 
 

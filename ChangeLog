@@ -1,13 +1,13 @@
 3.6.0 []
 - Flowchart: new popup menu for edit boxes with list of function calls available
-- Flowchart: copy/cut blocks within flowchart structure using drag-and-drop
+- Flowchart: move/copy blocks within flowchart structure using drag-and-drop
 - Functions: add new checkbox to show/hide flowchart (function body)
 
 IMPORTANT NOTES:
-Blocks can be now moved/copied within different flowcharts by drag-and-drop.
+Blocks can be now moved/copied in flowcharts by drag-and-drop.
 To move block, highlight and drag it to any red arrow. Constraints:
 - you cannot move main blocks
-- you cannot move block to inside of itself
+- you cannot move block to inside of it
 To copy block, highlight it, hold SHIFT key and drag it to any red arrow.
 When dragging blocks to editor window to generate code, there is no need to hold SHIFT key. Before 3.6,
 you had to hold SHIFT key. 

@@ -725,7 +725,7 @@ begin
           begin
              miForAsc.Visible := true;
              miForDesc.Visible := true;
-             miForAsc.Checked := TForDoBlock(lBlock).Order = orAsc;
+             miForAsc.Checked := TForDoBlock(lBlock).Order = ordAsc;
              miForDesc.Checked := not miForAsc.Checked;
           end;
           miMemo.Visible := lBlock.GetFrontMemo <> nil;
@@ -1369,9 +1369,9 @@ begin
    begin
       lBlock := TForDoBlock(pmPages.PopupComponent);
       if Sender = miForAsc then
-         lBlock.Order := orAsc
+         lBlock.Order := ordAsc
       else
-         lBlock.Order := orDesc;
+         lBlock.Order := ordDesc;
    end;
 end;
 
@@ -1638,14 +1638,14 @@ begin
          if lName <> '' then
             lFuncList.Add(lName);
       end;
-      result := lFuncList.Count;
-      SetLength(FFuncMenu, result);
-      for i := 0 to result-1 do
+      SetLength(FFuncMenu, lFuncList.Count);
+      for i := 0 to lFuncList.Count-1 do
       begin
          FFuncMenu[i] := TMenuItem.Create(AParent);
          FFuncMenu[i].Caption := lFuncList[i];
          FFuncMenu[i].OnClick := FuncMenuClick;
       end;
+      result := lFuncList.Count;
    finally
       lFuncList.Free;
    end;

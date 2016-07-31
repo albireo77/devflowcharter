@@ -16,8 +16,8 @@ object ExplorerForm: TExplorerForm
   OnMouseWheelUp = FormMouseWheelUp
   OnShow = FormShow
   DesignSize = (
-    284
-    548)
+    292
+    555)
   PixelsPerInch = 96
   TextHeight = 13
   object lblErrors: TLabel
@@ -67,7 +67,6 @@ object ExplorerForm: TExplorerForm
     Font.Name = 'Default'
     Font.Style = []
     HideSelection = False
-    Images = MainForm.ImageList1
     Indent = 19
     MultiSelectStyle = [msControlSelect, msShiftSelect, msVisibleOnly, msSiblingOnly]
     ParentFont = False
@@ -76,8 +75,6 @@ object ExplorerForm: TExplorerForm
     TabOrder = 0
     OnChange = tvExplorerChange
     OnCustomDrawItem = tvExplorerCustomDrawItem
-    OnGetImageIndex = tvExplorerGetImageIndex
-    OnGetSelectedIndex = tvExplorerGetSelectedIndex
   end
   object chkAutoNav: TCheckBox
     Tag = 8
