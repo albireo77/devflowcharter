@@ -269,7 +269,7 @@ begin
    FEditorFontColor       := clWindowText;
    FEditorNumberColor     := clTeal;
    FEditorStringColor     := clTeal;
-   FEditorCommentColor    := clGrayText;
+   FEditorCommentColor    := TEXT_COLOR;
    FEditorALineColor      := clCream;
    FEditorSelectColor     := clHighlight;
    FEditorGutterColor     := clBtnFace;
@@ -341,7 +341,7 @@ begin
          if registry.ValueExists(KEY_FONT_COLOR) then
          begin
             FFontColor := registry.ReadInteger(KEY_FONT_COLOR);
-            if TInfra.IsRestricted(FFontColor) then
+            if TInfra.IsNOkColor(FFontColor) then
                FFontColor := OK_COLOR;
          end;
          if registry.ValueExists(KEY_NAVIGATOR_ALPHA_VALUE) then
@@ -644,7 +644,7 @@ begin
             FFoldColor := Pixels[230, 52];
          end;
       end;
-      if (FFontColor <> pnlFont.Color) and not TInfra.IsRestricted(pnlFont.Color) then
+      if (FFontColor <> pnlFont.Color) and not TInfra.IsNOkColor(pnlFont.Color) then
       begin
          lColorChanged := true;
          FFontColor := pnlFont.Color;
@@ -902,7 +902,7 @@ begin
       pnlEditorFont.Color := clWindowText;
       pnlEditorNumber.Color := clTeal;
       pnlEditorString.Color := clTeal;
-      pnlEditorComment.Color := clGrayText;
+      pnlEditorComment.Color := TEXT_COLOR;
       pnlEditorActiveLine.Color := clCream;
       pnlEditorSelect.Color := clHighlight;
       pnlEditorGutter.Color := clBtnFace;

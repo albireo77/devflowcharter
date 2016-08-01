@@ -625,7 +625,7 @@ begin
    if lLang <> nil then
       lDesc := lLang.GetUserTypeDesc(Self);
    ANode.Owner.AddChildObject(ANode, lDesc, Self);
-   if TInfra.IsRestricted(Font.Color) then
+   if TInfra.IsNOkColor(Font.Color) then
    begin
       ANode.MakeVisible;
       ANode.Expand(false);

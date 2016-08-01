@@ -725,7 +725,7 @@ begin
    lNode := ANode.Owner.AddChildObject(ANode, lDesc, lObject);
    if FBody <> nil then
       FBody.GenerateTree(lNode);
-   if (FHeader <> nil) and TInfra.IsRestricted(FHeader.Font.Color) then
+   if (FHeader <> nil) and TInfra.IsNOkColor(FHeader.Font.Color) then
    begin
       ANode.MakeVisible;
       ANode.Expand(false);

@@ -209,7 +209,7 @@ begin
       while i <> endValue do
       begin
          lFocusable := GetFocusable(tvExplorer.Items[i]);
-         if (lFocusable <> nil) and TInfra.IsRestricted(lFocusable.GetFocusColor) then
+         if (lFocusable <> nil) and TInfra.IsNOkColor(lFocusable.GetFocusColor) then
          begin
             if not tvExplorer.Items[i].IsVisible then
                tvExplorer.Items[i].MakeVisible;
@@ -226,7 +226,7 @@ procedure TExplorerForm.tvExplorerCustomDrawItem(Sender: TCustomTreeView;
 var
    NodeRect: TRect;
    lFocusable: IFocusable;
-   lColor: TColor;
+   lColor, lColor2: TColor;
 begin
    lFocusable := GetFocusable(Node);
    with Sender.Canvas do
@@ -234,8 +234,12 @@ begin
       lColor := OK_COLOR;
       if cdsSelected in State then
          lColor := TTreeView(Sender).Color
-      else if (lFocusable <> nil) and TInfra.IsRestricted(lFocusable.GetFocusColor) then
-         lColor := lFocusable.GetFocusColor;
+      else if lFocusable <> nil then
+      begin
+         lColor2 := lFocusable.GetFocusColor;
+         if TInfra.IsNOkColor(lColor2) or (lColor2 = TEXT_COLOR) then
+            lColor := lColor2;
+      end;
       Font.Color := lColor;
       if (lFocusable <> nil) and lFocusable.IsBoldDesc then
          Font.Style := Font.Style + [fsBold];

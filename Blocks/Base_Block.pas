@@ -1942,7 +1942,7 @@ begin
    if AEdit <>  nil then
    begin
       lColor := THackControl(AEdit).Font.Color;
-      if TInfra.IsRestricted(lColor) then
+      if TInfra.IsNOkColor(lColor) then
       begin
          result := AEdit.Hint;
          i := TInfra.RPos(#10, result);
@@ -2691,7 +2691,7 @@ var
    lHeader: TUserFunctionHeader;
 begin
    lHeader := TInfra.GetFunctionHeader(Self);
-   result := (lHeader <> nil) and (TInfra.IsRestricted(lHeader.Font.Color) or lHeader.chkExtDeclare.Checked);
+   result := (lHeader <> nil) and (TInfra.IsNOkColor(lHeader.Font.Color) or lHeader.chkExtDeclare.Checked);
 end;
 
 function TBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;

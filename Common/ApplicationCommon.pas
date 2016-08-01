@@ -109,7 +109,7 @@ type
          class function GetParsedEdit: TCustomEdit;
          class function Parse(const AEdit: TCustomEdit; const AParserMode: TParserMode): boolean; overload;
          class function Parse(const AText: string; const AParserMode: TParserMode): boolean; overload;
-         class function IsRestricted(const AColor: TColor): boolean;
+         class function IsNOkColor(const AColor: TColor): boolean;
          class function GetChangeLine(const AObject: TObject; const AEdit: TCustomEdit = nil; const ATemplate: string = ''): TChangeLine;
          class function GetCaretPos(const AEdit: TCustomEdit): TBufferCoord;
          class function ExtractIndentString(const AText: string): string;
@@ -189,7 +189,7 @@ const   // Global constants
         OK_COLOR    = clGreen;
         NOK_COLOR   = clRed;
         WARN_COLOR  = clOlive;
-        TEXT_COLOR  = clGray;
+        TEXT_COLOR  = clGrayText;
         BLACK_COLOR = clWindowText;
 
         FLOWCHART_DEFAULT_FONT_NAME = 'Tahoma';
@@ -1057,9 +1057,9 @@ begin
    end;
 end;
 
-class function TInfra.IsRestricted(const AColor: TColor): boolean;
+class function TInfra.IsNOkColor(const AColor: TColor): boolean;
 begin
-   result := (AColor = NOK_COLOR) or (AColor = WARN_COLOR) or (AColor = TEXT_COLOR);
+   result := (AColor = NOK_COLOR) or (AColor = WARN_COLOR);
 end;
 
 class procedure TInfra.InitCodeRange(var ACodeRange: TCodeRange);
