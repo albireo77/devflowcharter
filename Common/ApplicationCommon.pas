@@ -189,6 +189,7 @@ const   // Global constants
         OK_COLOR    = clGreen;
         NOK_COLOR   = clRed;
         WARN_COLOR  = clOlive;
+        TEXT_COLOR  = clGray;
         BLACK_COLOR = clWindowText;
 
         FLOWCHART_DEFAULT_FONT_NAME = 'Tahoma';
@@ -214,10 +215,6 @@ const   // Global constants
         KEY_COMPILER_COMMAND        = 'CompilerPath';
         KEY_COMPILER_COMMAND_NOMAIN = 'CompilerPathNoMain';
         KEY_CURRENT_LANGUAGE        = 'CurrentLanguageName';
-
-        BLOCK_TO_DESCKEY_MAP: array[TBlockType] of string = ( '', 'AssignDesc', 'MultAssignDesc', 'InputDesc', 'OutputDesc',
-                              'RoutineDesc', 'WhileDoDesc', 'RepeatUntilDesc', 'IfDesc', 'IfDesc', 'ForDesc', 'CaseDesc',
-                              '', '', 'ReturnDesc', 'TextDesc', '');
 
         PARSER_ERRORS_ARRAY: array[TParserMode] of string = ('BadGeneric', 'BadCondition', 'BadAssign', 'BadInput', 'BadOutput',
                              'BadFor', 'BadFunction', 'BadCase', 'BadCase', 'BadReturnVal', '');
@@ -1062,7 +1059,7 @@ end;
 
 class function TInfra.IsRestricted(const AColor: TColor): boolean;
 begin
-   result := (AColor = NOK_COLOR) or (AColor = WARN_COLOR);
+   result := (AColor = NOK_COLOR) or (AColor = WARN_COLOR) or (AColor = TEXT_COLOR);
 end;
 
 class procedure TInfra.InitCodeRange(var ACodeRange: TCodeRange);

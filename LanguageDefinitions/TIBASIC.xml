@@ -372,6 +372,8 @@ If (%s1)
 EndLoop
 </RepeatUntilTemplate>
 
+<RepeatDesc>Loop If (%s1)</RepeatDesc>
+
 <IfTemplate>If (%s1) Then
 	%b1
 EndIf
@@ -383,6 +385,8 @@ Else
 	%b2
 EndIf
 </IfElseTemplate>
+
+<ElseLabel>Else</ElseLabel>
 
 <ForDoTemplate>For %s1,%s2,%s3
 	%b1

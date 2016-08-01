@@ -150,7 +150,8 @@ begin
    OnChangeCallBack := nil;
    Font.Name := GSettings.FlowchartFontName;
    ControlStyle := ControlStyle + [csOpaque];
-   if CanFocus then SetFocus;
+   if CanFocus then
+      SetFocus;
 end;
 
 constructor TStatement.Create(AOwner: TComponent; const AId: integer);

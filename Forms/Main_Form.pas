@@ -328,7 +328,7 @@ begin
    end;
 end;
 
-// don't you dare to remove this method
+// don't remove this method
 procedure TMainForm.AutoScrollInView(AControl: TControl);
 begin
    //inherited AutoScrollInView(AControl);
@@ -725,7 +725,7 @@ begin
           begin
              miForAsc.Visible := true;
              miForDesc.Visible := true;
-             miForAsc.Checked := TForDoBlock(lBlock).Order = orAsc;
+             miForAsc.Checked := TForDoBlock(lBlock).Order = ordAsc;
              miForDesc.Checked := not miForAsc.Checked;
           end;
           miMemo.Visible := lBlock.GetFrontMemo <> nil;
@@ -1369,9 +1369,9 @@ begin
    begin
       lBlock := TForDoBlock(pmPages.PopupComponent);
       if Sender = miForAsc then
-         lBlock.Order := orAsc
+         lBlock.Order := ordAsc
       else
-         lBlock.Order := orDesc;
+         lBlock.Order := ordDesc;
    end;
 end;
 
@@ -1560,7 +1560,6 @@ begin
       miRemove1.Enabled := miCut1.Enabled;
       miPaste1.Enabled := Clipboard.HasFormat(CF_TEXT);
       miInsertFunc.Visible := BuildFuncMenu(miInsertFunc) > 0;
-      miInsertFunc.Enabled := true;
    end;
 end;
 
@@ -1646,10 +1645,10 @@ begin
          FFuncMenu[i].Caption := lFuncList[i];
          FFuncMenu[i].OnClick := FuncMenuClick;
       end;
+      result := lFuncList.Count;
    finally
       lFuncList.Free;
    end;
-   result := Length(FFuncMenu);
    if result > 0 then
       AParent.Add(FFuncMenu);
 end;

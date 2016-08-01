@@ -25,11 +25,11 @@ interface
 
 uses
    Controls, Forms, StdCtrls, Graphics, Classes, Menus, SysUtils, Base_Block,
-   Statement, OmniXML, CommonInterfaces, CommonTypes;
+   Statement, OmniXML, CommonInterfaces, CommonTypes, LangDefinition;
 
 type
 
-  TForOrder = (orAsc, orDesc);
+  TForOrder = (ordAsc, ordDesc);
 
    TForDoBlock = class(TGroupBlock)
       protected
@@ -42,6 +42,7 @@ type
          procedure MyOnChange(Sender: TObject);
          procedure SetForOrder(const AValue: TForOrder);
          procedure PutTextControls; override;
+         function GetTemplate(ALangDef: TLangDefinition; const ATemplate: string = ''): string;
       public
          cbVariable: TComboBox;
          edtStartVal, edtStopVal: TStatement;
@@ -68,7 +69,7 @@ implementation
 
 uses
    ApplicationCommon, StrUtils, XMLProcessor, Main_Block, UserFunction, Return_Block,
-   LangDefinition, FastcodeAnsiStringReplaceUnit;
+   FastcodeAnsiStringReplaceUnit;
 
 constructor TForDoBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, px1, p1Y: integer; const AId: integer = ID_INVALID);
 begin
@@ -146,7 +147,7 @@ begin
    BottomHook := b_hook;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
-   FOrder := orAsc;
+   FOrder := ordAsc;
    FForLabel := i18Manager.GetString('CaptionFor');
    FStatement.Free;
    FStatement := nil;
@@ -276,10 +277,7 @@ end;
 
 function TForDoBlock.GetDescription:string;
 begin
-   result := i18Manager.GetFormattedString('ForDesc', [edtVariable.Text,
-                                                  GInfra.CurrentLang.AssignOperator,
-                                                  Trim(edtStartVal.Text),
-                                                  Trim(edtStopVal.Text)]);
+   result := GetTemplate(GInfra.CurrentLang, GInfra.CurrentLang.GetTemplateExpr(ClassType));
 end;
 
 procedure TForDoBlock.MyOnChange(Sender: TObject);
@@ -311,9 +309,34 @@ begin
    end;
 end;
 
+function TForDoBlock.GetTemplate(ALangDef: TLangDefinition; const ATemplate: string = ''): string;
+var
+   dir1, dir2, lTemplate: string;
+begin
+   if ATemplate = '' then
+      lTemplate := ALangDef.ForDoTemplate
+   else
+      lTemplate := ATemplate;
+   result := FastCodeAnsiStringReplace(lTemplate, PRIMARY_PLACEHOLDER, edtVariable.Text);
+   result := FastCodeAnsiStringReplace(result, '%s2', Trim(edtStartVal.Text));
+   result := FastCodeAnsiStringReplace(result, '%s3', Trim(edtStopVal.Text));
+   if FOrder = ordAsc then
+   begin
+      dir1 := ALangDef.ForAsc1;
+      dir2 := ALangDef.ForAsc2;
+   end
+   else
+   begin
+      dir1 := ALangDef.ForDesc1;
+      dir2 := ALangDef.ForDesc2;
+   end;
+   result := FastCodeAnsiStringReplace(result, '%s4', dir1);
+   result := FastCodeAnsiStringReplace(result, '%s5', dir2);
+end;
+
 function TForDoBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
 var
-   lTemplate, lDir1, lDir2: string;
+   lTemplate: string;
    lLangDef: TLangDefinition;
    lTmpList: TStringList;
 begin
@@ -323,21 +346,7 @@ begin
    begin
       lTmpList := TStringList.Create;
       try
-         lTemplate := FastCodeAnsiStringReplace(lLangDef.ForDoTemplate, PRIMARY_PLACEHOLDER, edtVariable.Text);
-         lTemplate := FastCodeAnsiStringReplace(lTemplate, '%s2', Trim(edtStartVal.Text));
-         lTemplate := FastCodeAnsiStringReplace(lTemplate, '%s3', Trim(edtStopVal.Text));
-         if FOrder = orAsc then
-         begin
-            lDir1 := lLangDef.ForAsc1;
-            lDir2 := lLangDef.ForAsc2;
-         end
-         else
-         begin
-            lDir1 := lLangDef.ForDesc1;
-            lDir2 := lLangDef.ForDesc2;
-         end;
-         lTemplate := FastCodeAnsiStringReplace(lTemplate, '%s4', lDir1);
-         lTemplate := FastCodeAnsiStringReplace(lTemplate, '%s5', lDir2);
+         lTemplate := GetTemplate(lLangDef);
          GenerateTemplateSection(lTmpList, lTemplate, ALangId, ADeep);
          TInfra.InsertLinesIntoList(ALines, lTmpList, AFromLine);
          result := lTmpList.Count;
@@ -489,7 +498,7 @@ begin
          lLine.Text := FastCodeAnsiStringReplace(lLine.Text, PRIMARY_PLACEHOLDER, edtVariable.Text);
          lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s2', Trim(edtStartVal.Text));
          lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s3', Trim(edtStopVal.Text));
-         if FOrder = orAsc then
+         if FOrder = ordAsc then
          begin
             lStr1 := GInfra.CurrentLang.ForAsc1;
             lStr2 := GInfra.CurrentLang.ForAsc2;

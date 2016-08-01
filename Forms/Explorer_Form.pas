@@ -48,9 +48,6 @@ type
     procedure PopupMenuPopup(Sender: TObject);
     procedure miRefreshClick(Sender: TObject);
     procedure miNextErrorClick(Sender: TObject);
-    procedure tvExplorerGetImageIndex(Sender: TObject; Node: TTreeNode);
-    procedure tvExplorerGetSelectedIndex(Sender: TObject;
-      Node: TTreeNode);
     procedure tvExplorerCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure miRemoveClick(Sender: TObject);
@@ -81,12 +78,6 @@ implementation
 
 uses
    ApplicationCommon, Case_Block, Base_Block, Windows;
-
-const
-   NODE_OK   = 15;      // indexes for images in MainForm.ImageList1
-   NODE_ERR  = 14;      // as icon nodes on TreeViewForm.tvFlowChart
-   NODE_WARN = 16;
-   NODE_NONE = 17;
 
 procedure TExplorerForm.FormShow(Sender: TObject);
 begin
@@ -226,40 +217,6 @@ begin
             break;
          end;
          i := i + c;
-      end;
-   end;
-end;
-
-procedure TExplorerForm.tvExplorerGetImageIndex(Sender: TObject; Node: TTreeNode);
-var
-   lFocusable: IFocusable;
-begin
-   Node.ImageIndex := NODE_NONE;
-   lFocusable := GetFocusable(Node);
-   if (lFocusable <> nil) and not lFocusable.IsBoldDesc then
-   begin
-      case lFocusable.GetFocusColor of
-         NOK_COLOR:  Node.ImageIndex := NODE_ERR;
-         WARN_COLOR: Node.ImageIndex := NODE_WARN;
-      else
-         Node.ImageIndex := NODE_OK;
-      end;
-   end;
-end;
-
-procedure TExplorerForm.tvExplorerGetSelectedIndex(Sender: TObject; Node: TTreeNode);
-var
-   lFocusable: IFocusable;
-begin
-   Node.SelectedIndex := NODE_NONE;
-   lFocusable := GetFocusable(Node);
-   if (lFocusable <> nil) and not lFocusable.IsBoldDesc then
-   begin
-      case lFocusable.GetFocusColor of
-         NOK_COLOR:  Node.SelectedIndex := NODE_ERR;
-         WARN_COLOR: Node.SelectedIndex := NODE_WARN;
-      else
-         Node.SelectedIndex := NODE_OK;
       end;
    end;
 end;

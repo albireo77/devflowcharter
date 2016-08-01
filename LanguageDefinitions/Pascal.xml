@@ -156,6 +156,8 @@ end;
 until %s1;
 </RepeatUntilTemplate>
 
+<RepeatDesc>repeat until %s1</RepeatDesc>
+
 <IfTemplate>if %s1 then
 begin
 	%b1
@@ -171,6 +173,8 @@ begin
 	%b2
 end;
 </IfElseTemplate>
+
+<ElseLabel>else</ElseLabel>
 
 <ForDoTemplate>for %s1 := %s2 %s4 %s3 do
 begin
@@ -195,6 +199,8 @@ end;
 %s3
 end;
 </CaseOfTemplate>
+
+<ReturnDesc>exit %s1</ReturnDesc>
 
 <TextTemplate>{ %s1 }</TextTemplate>
 

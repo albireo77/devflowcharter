@@ -56,18 +56,6 @@ CaptionFor=dla
 CaptionTo=do
 CaptionCase=WYBIERZ
 CaptionExit=POWRÓT
-AssignDesc=INSTRUKCJA PRZYPISANIA: %s
-MultAssignDesc=WIELOKROTNA INSTRUKCJA PRZYPISANIA: %s
-InputDesc=INSTRUKCJA WEJŒCIA: %s
-OutputDesc=INSTRUKCJA WYJŒCIA: %s
-RoutineDesc=WYWO£ANIE FUNKCJI: %s
-RepeatUntilDesc=PÊTLA: powtarzaj a¿ %s
-WhileDoDesc=PÊTLA: dopóki %s wykonuj
-IfDesc=INSTRUKCJA WARUNKOWA: %s
-ForDesc=PÊTLA: dla %s %s %s do %s wykonuj
-CaseDesc=WYBIERZ %s SPOŒRÓD:
-ReturnDesc=ZWRÓÆ %s
-TextDesc=TEKST
 DefValue=WARTOŒÆ DOMYŒLNA:
 
 [Others]

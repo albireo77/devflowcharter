@@ -296,46 +296,17 @@ end;
 
 function TIfElseBlock.GenerateTree(const AParentNode: TTreeNode): TTreeNode;
 var
-   lStrErr: string;
    lNewNode: TTreeNode;
-   lIdx: integer;
    lBlock: TBlock;
 begin
-
-   if TInfra.IsRestricted(FStatement.GetFocusColor) then
-   begin
-      lStrErr := FStatement.Hint;
-      lIdx := TInfra.RPos(#10, lStrErr);
-      if lIdx <> 0 then
-         lStrErr := ' - ' + AnsiRightStr(lStrErr, Length(lStrErr)-lIdx);
-   end;
-
-   result := AParentNode.Owner.AddChildObject(AParentNode, GetDescription + lStrErr, FStatement);
-
-   lNewNode := AParentNode.Owner.AddChild(result, i18Manager.GetString('CaptionTrue'));
-
-   lBlock := TrueBranch.First;
+   result := inherited GenerateTree(AParentNode);
+   lNewNode := AParentNode.Owner.AddChild(AParentNode, GInfra.CurrentLang.ElseLabel);
+   lBlock := FalseBranch.First;
    while lBlock <> nil do
    begin
       lBlock.GenerateTree(lNewNode);
       lBlock := lBlock.Next;
    end;
-  
-   lNewNode := AParentNode.Owner.AddChild(result, i18Manager.GetString('CaptionFalse'));
-
-   lBlock := FalseBranch.First;
-   while lBlock <> nil do
-   begin
-      lBlock.GenerateTree(lNewNode);
-      lBlock := lBlock.next;
-   end;
-
-   if TInfra.IsRestricted(FStatement.GetFocusColor) then
-   begin
-      AParentNode.MakeVisible;
-      AParentNode.Expand(false);
-   end;
-
 end;
 
 procedure TIfElseBlock.ExpandFold(const AResize: boolean);

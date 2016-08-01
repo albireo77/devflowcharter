@@ -69,6 +69,7 @@ var
    i: integer;
 begin
    GChange := 1;
+   FErrLine := -1;
    FStatements.Font.Color := GSettings.FontColor;
    lText := Trim(FStatements.Text);
    FStatements.Hint := i18Manager.GetFormattedString('ExpOk', [lText, CRLF]);
@@ -89,6 +90,7 @@ begin
             begin
                FStatements.Font.Color := NOK_COLOR;
                FStatements.Hint := i18Manager.GetFormattedString('ExpErrMult', [i+1, lLine, CRLF, errString]);
+               FErrLine := i;
                break;
             end;
          end;

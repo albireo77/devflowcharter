@@ -95,6 +95,8 @@
 while (!(%s1));
 </RepeatUntilTemplate>
 
+<RepeatDesc>do while (%s1)</RepeatDesc>
+
 <IfTemplate>if (%s1)
 {
 	%b1
@@ -111,6 +113,7 @@ else
 }
 </IfElseTemplate>
 
+<ElseLabel>else</ElseLabel>
 
 <ForDoTemplate>for (%s1 = %s2; %s1 %s4 %s3; %s1%s5)
 {

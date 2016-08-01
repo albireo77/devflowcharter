@@ -58,18 +58,6 @@ CaptionFor=for
 CaptionTo=to
 CaptionCase=CASE
 CaptionExit=RETURN
-AssignDesc=ASSIGNMENT: %s
-MultAssignDesc=MULTIPLE ASSIGNMENT: %s
-InputDesc=INPUT: %s
-OutputDesc=OUTPUT: %s
-RoutineDesc=FUNCTION CALL: %s
-RepeatUntilDesc=LOOP: repeat until %s
-WhileDoDesc=LOOP: while %s do
-IfDesc=CONDITIONAL STATEMENT: %s
-ForDesc=LOOP: for %s %s %s to %s do
-CaseDesc=CASE %s OF:
-ReturnDesc=RETURN %s
-TextDesc=TEXT
 DefValue=default
 
 [Others]

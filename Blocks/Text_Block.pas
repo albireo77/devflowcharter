@@ -56,6 +56,7 @@ constructor TTextBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth,
 begin
    FType := blText;
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
+   FStatements.Font.Color := TEXT_COLOR;
    FCorner := TCorner.Create(Self);
    FCorner.Parent := Self;
    FCorner.Color := GSettings.RectColor;
