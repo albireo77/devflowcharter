@@ -365,8 +365,6 @@
 EndWhile
 </WhileTemplate>
 
-<WhileLabel>While</WhileLabel>
-
 <RepeatUntilTemplate>Loop
 	%b1
 If (%s1)
@@ -374,7 +372,7 @@ If (%s1)
 EndLoop
 </RepeatUntilTemplate>
 
-<RepeatDesc>Loop If (%s1)</RepeatDesc>
+<RepeatDesc>Loop If Not (%s1)</RepeatDesc>
 
 <IfTemplate>If (%s1) Then
 	%b1
