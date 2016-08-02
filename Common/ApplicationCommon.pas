@@ -388,12 +388,9 @@ var
 begin
    for i := 0 to High(FLangArray)-1 do
    begin
-      if Assigned(FLangArray[i].GetHLighterVarName) then
-      begin
-         lComponent := GetEditorForm.FindComponent(FLangArray[i].GetHLighterVarName);
-         if lComponent is TSynCustomHighlighter then
-            FLangArray[i].HighLighter := TSynCustomHighlighter(lComponent);
-      end;
+      lComponent := GetEditorForm.FindComponent(FLangArray[i].HighLighterVarName);
+      if lComponent is TSynCustomHighlighter then
+         FLangArray[i].HighLighter := TSynCustomHighlighter(lComponent);
    end;
 end;
 

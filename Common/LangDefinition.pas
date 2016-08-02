@@ -116,6 +116,7 @@ type
       ProcedureLabelKey,
       FunctionLabelKey,
       ProgramLabelKey,
+      HighLighterVarName,
       FuncBrackets: string;
       FunctionHeaderArgsStripCount,
       VarEntryArraySizeStripCount,
@@ -161,7 +162,6 @@ type
       GetOriginalType: function (const APtrType: string): string;
       AreTypesCompatible: function (const AType1, AType2: integer): boolean;
       Parse: function (const AText: string; const AParserMode: TParserMode): integer;
-      GetHLighterVarName: function: string;
       SkipFuncBodyGen: function: boolean;
       GetMainProgramDesc: function: string;
       constructor Create;
@@ -202,7 +202,6 @@ begin
    SetHLighterAttrs := nil;
    GetLiteralType := nil;
    GetPointerTypeName := nil;
-   GetHLighterVarName := nil;
    IsPointerType := nil;
    Parse := nil;
    ValidateConstId := ApplicationCommon.ValidateId;
@@ -284,6 +283,10 @@ begin
    tag := TXMLProcessor.FindChildTag(root, 'ProgramLabelKey');
    if tag <> nil then
       ProgramLabelKey := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'HighLighterVarName');
+   if tag <> nil then
+      HighLighterVarName := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(root, 'FuncBracketsCursorPos');
    if tag <> nil then

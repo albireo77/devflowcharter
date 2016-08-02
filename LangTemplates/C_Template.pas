@@ -413,11 +413,6 @@ begin
       result := INCORRECT_IDENT;
 end;
 
-function C_GetHLighterVarName: string;
-begin
-   result := 'SynCppSyn1';
-end;
-
 function C_SkipFuncBodyGen: boolean;
 begin
    result := false;
@@ -447,7 +442,6 @@ initialization
       lLangDef.IsPointerType := C_IsPointerType;
       lLangDef.ValidateConstId := C_ValidateConstId;
       lLangDef.GetOriginalType := C_GetOriginalType;
-      lLangDef.GetHLighterVarName := C_GetHLighterVarName;
       lLangDef.SkipFuncBodyGen := C_SkipFuncBodyGen;
    end;
    

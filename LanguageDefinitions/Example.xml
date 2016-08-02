@@ -117,6 +117,17 @@ Available placeholders:
 <ElseLabel>else</ElseLabel>
 
 <!--
+Element HighLighterVarName
+Contains name of highlighter component
+Currently there are 2 highlighter components available:
+SynCppSyn1 for ANSI C
+SynPasSyn1 for Pascal
+-->
+<!--
+<HighLighterVarName></HighLighterVarName>
+-->
+
+<!--
 Elements used in code generation will follow.
 The only valid character that is used to set indent level is tab. Whitespace chars will not work.
 In lines containing branch indicators (e.g. %b1) all characters except for leading tabs are disregarded.

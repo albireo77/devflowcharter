@@ -524,11 +524,6 @@ begin
    end;
 end;
 
-function Pascal_GetHLighterVarName: string;
-begin
-   result := 'SynPasSyn1';
-end;
-
 function Pascal_SkipFuncBodyGen: boolean;
 begin
    result := (GProject <> nil) and (GProject.GetMainBlock = nil);
@@ -565,7 +560,6 @@ initialization
       lLangDef.AreTypesCompatible := Pascal_AreTypesCompatible;
       lLangDef.GetOriginalType := Pascal_GetOriginalType;
       lLangDef.Parse := Pascal_Parse;
-      lLangDef.GetHLighterVarName := Pascal_GetHLighterVarName;
       lLangDef.SkipFuncBodyGen := Pascal_SkipFuncBodyGen;
    end;
 

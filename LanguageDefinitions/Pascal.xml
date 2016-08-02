@@ -145,6 +145,8 @@
 <FunctionLabelKey>FunctionLabelPascal</FunctionLabelKey>
 <ProgramLabelKey>ProgramLabelPascal</ProgramLabelKey>
 
+<HighLighterVarName>SynPasSyn1</HighLighterVarName>
+
 <WhileTemplate>while %s1 do
 begin
 	%b1

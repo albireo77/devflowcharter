@@ -82,6 +82,8 @@
 <FunctionLabelKey>FunctionLabelC</FunctionLabelKey>
 <ProgramLabelKey>ProgramLabelC</ProgramLabelKey>
 
+<HighLighterVarName>SynCppSyn1</HighLighterVarName>
+
 <WhileTemplate>while (%s1)
 {
 	%b1
