@@ -334,6 +334,8 @@ var
    lTemplateCaseValue, lTmpList, lTmpList1: TStringList;
 begin
    result := 0;
+   if fsStrikeOut in Font.Style then
+      exit;
    lIndent := DupeString(GSettings.IndentString, ADeep);
    lIndent2 := lIndent + GSettings.IndentString;
    lLine := Trim(FStatement.Text);

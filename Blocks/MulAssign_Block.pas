@@ -107,6 +107,8 @@ var
    lTmpList: TStringList;
 begin
    result := 0;
+   if fsStrikeOut in Font.Style then
+      exit;
    lLangDef := GInfra.GetLangDefinition(ALangId);
    if (lLangDef <> nil) and (lLangDef.AssignTemplate <> '') then
    begin

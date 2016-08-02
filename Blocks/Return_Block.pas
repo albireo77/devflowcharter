@@ -115,6 +115,8 @@ var
    lTmpList: TStringList;
 begin
    result := 0;
+   if fsStrikeOut in Font.Style then
+      exit;
    if ALangId = PASCAL_LANG_ID then
    begin
       lIndent := DupeString(GSettings.IndentString, ADeep);

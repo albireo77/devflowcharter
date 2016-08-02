@@ -90,6 +90,7 @@ type
          procedure Paint; override;
          procedure DrawI;
          procedure DrawTextLabel(x, y: integer; const AText: string; adjX: boolean = false; adjY: boolean = false);
+         procedure DrawSegoeTextLabel(x, y: integer; const AText: string; adjX: boolean = false; adjY: boolean = false);
          function GetId: integer;
          function PerformEditorUpdate: boolean;
          procedure SelectBlock(const APoint: TPoint);
@@ -1408,19 +1409,43 @@ begin
    end;
 end;
 
+procedure TBlock.DrawSegoeTextLabel(x, y: integer; const AText: string; adjX: boolean = false; adjY: boolean = false);
+var
+   lFontName: string;
+   lFontStyles: TFontStyles;
+begin
+   if (AText <> '') and (Screen.Fonts.IndexOf(SEGOE_FONT_NAME) <> -1) then
+   begin
+      lFontName := Canvas.Font.Name;
+      lFontStyles := Canvas.Font.Style;
+      Canvas.Font.Name := SEGOE_FONT_NAME;
+      Canvas.Font.Style := [fsBold];
+      Canvas.Font.Size := Canvas.Font.Size + 4;
+      DrawTextLabel(x, y, AText, adjX, adjY);
+      Canvas.Font.Name := lFontName;
+      Canvas.Font.Size := Canvas.Font.Size - 4;
+      Canvas.Font.Style := lFontStyles;
+   end;
+end;
+
 procedure TBlock.DrawTextLabel(x, y: integer; const AText: string; adjX: boolean = false; adjY: boolean = false);
 var
    lFontStyles: TFontStyles;
 begin
-   lFontStyles := Canvas.Font.Style;
-   Canvas.Font.Style := [];
-   Canvas.Brush.Style := bsClear;
-   if adjX then
-      x := x - Canvas.TextWidth(AText);
-   if adjY then
-      y := y - Canvas.TextHeight('X');
-   Canvas.TextOut(x, y, AText);
-   Canvas.Font.Style := lFontStyles;
+   if AText <> '' then
+   begin
+      lFontStyles := Canvas.Font.Style;
+      Canvas.Font.Style := [];
+      if fsBold in lFontStyles then
+         Canvas.Font.Style := Canvas.Font.Style + [fsBold];
+      Canvas.Brush.Style := bsClear;
+      if adjX then
+         x := x - Canvas.TextWidth(AText);
+      if adjY then
+         y := y - Canvas.TextHeight('X');
+      Canvas.TextOut(x, y, AText);
+      Canvas.Font.Style := lFontStyles;
+   end;
 end;
 
 procedure TBlock.DrawArrowLine(const ABeginPoint, AEndPoint: TPoint; const AArrowPos: TArrowPosition = arrEnd; const AColor: TColor = clBlack);
@@ -2698,6 +2723,9 @@ function TBlock.GenerateCode(const ALines: TStringList; const ALangId: string; c
 var
    lTmpList: TStringList;
 begin
+   result := 0;
+   if fsStrikeOut in Font.Style then
+      exit;
    lTmpList := TStringList.Create;
    try
       GenerateDefaultTemplate(lTmpList, ALangId, ADeep);

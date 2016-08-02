@@ -85,6 +85,38 @@ Description: Label displayed close to flowchart for body of project's main progr
 <ProgramLabelKey>ProgramLabelExample</ProgramLabelKey>
 
 <!--
+Element WhileLabel
+Will be written inside while..do block
+-->
+<WhileLabel>while</WhileLabel>
+
+<!--
+Element RepeatLabel
+Will be written inside repeat..until block
+-->
+<RepeatLabel>repeat until</RepeatLabel>
+
+<!--
+Element RepeatDesc
+Used in Explorer window for repeat..until block
+Available placeholders:
+   %s1 - conditional expression 
+-->
+<RepeatDesc>repeat execute until %s1</RepeatDesc>
+
+<!--
+Element ReturnDesc
+Used in Explorer window when ReturnTemplate template cannot be present
+Available placeholders:
+   %s1 - return expression
+-->
+<!-- 
+<ReturnDesc>return %s1</ReturnDesc>
+-->
+
+<ElseLabel>else</ElseLabel>
+
+<!--
 Elements used in code generation will follow.
 The only valid character that is used to set indent level is tab. Whitespace chars will not work.
 In lines containing branch indicators (e.g. %b1) all characters except for leading tabs are disregarded.
@@ -113,22 +145,12 @@ BEGIN
 END;
 </IfElseTemplate>
 
-<ElseLabel>else</ElseLabel>
-
 <RepeatUntilTemplate>repeat execute
 BEGIN
 	%b1
 END;
 until %s1;
 </RepeatUntilTemplate>
-
-<!--
-Element RepeatDesc
-Used in Explorer window for repeat..until block
-Available placeholders:
-   %s1 - conditional expression 
--->
-<RepeatDesc>repeat execute until %s1</RepeatDesc>
 
 <!--
 Element ForDoTemplate
@@ -189,16 +211,6 @@ END;
 </CaseOfTemplate>
 
 <ReturnTemplate>exit %s1;</ReturnTemplate>
-
-<!--
-Element ReturnDesc
-Used in Explorer window when ReturnTemplate template cannot be present
-Available placeholders:
-   %s1 - return expression
--->
-<!-- 
-<ReturnDesc>return %s1</ReturnDesc>
--->
 
 <FunctionCallTemplate>call %s1;</FunctionCallTemplate>
 

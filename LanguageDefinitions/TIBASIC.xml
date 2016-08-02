@@ -365,6 +365,8 @@
 EndWhile
 </WhileTemplate>
 
+<WhileLabel>While</WhileLabel>
+
 <RepeatUntilTemplate>Loop
 	%b1
 If (%s1)
