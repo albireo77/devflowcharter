@@ -35,9 +35,9 @@ type
     procedure pgcTabsChange(Sender: TObject); override;
   public
     { Public declarations }
-    function ImportTabsFromXMLTag(const rootTag: IXMLElement): TErrorType; override;
-    procedure ExportSettingsToXMLTag(const root: IXMLElement); override;
-    procedure ImportSettingsFromXMLTag(const root: IXMLElement); override;
+    function ImportTabsFromXMLTag(const ATag: IXMLElement): TErrorType; override;
+    procedure ExportSettingsToXMLTag(const ATag: IXMLElement); override;
+    procedure ImportSettingsFromXMLTag(const ATag: IXMLElement); override;
     procedure RefreshTabs; override;
     procedure ResetForm; override;
     procedure AddUserFunction(const ABodyTopLeft: TPoint);
@@ -93,61 +93,61 @@ begin
    end;
 end;
 
-procedure TFunctionsForm.ExportSettingsToXMLTag(const root: IXMLElement);
+procedure TFunctionsForm.ExportSettingsToXMLTag(const ATag: IXMLElement);
 var
    lFunctionHeader: TUserFunctionHeader;
    val: integer;
 begin
    RefreshTabs;
-   root.SetAttribute('func_win_h', IntToStr(Height));
+   ATag.SetAttribute('func_win_h', IntToStr(Height));
    if Visible then
    begin
-      root.SetAttribute('func_win_show', '1');
-      root.SetAttribute('func_win_x', IntToStr(Left));
-      root.SetAttribute('func_win_y', IntToStr(Top));
+      ATag.SetAttribute('func_win_show', '1');
+      ATag.SetAttribute('func_win_x', IntToStr(Left));
+      ATag.SetAttribute('func_win_y', IntToStr(Top));
       if pgcTabs.ActivePageIndex <> -1 then
       begin
          lFunctionHeader := TUserFunctionHeader(pgcTabs.Pages[pgcTabs.ActivePageIndex]);
-         root.SetAttribute('func_idx', IntToStr(lFunctionHeader.PageIndex));
+         ATag.SetAttribute('func_idx', IntToStr(lFunctionHeader.PageIndex));
          val := lFunctionHeader.ScrollPos;
          if val > 0 then
-            root.SetAttribute('func_scroll_v', IntToStr(val));
+            ATag.SetAttribute('func_scroll_v', IntToStr(val));
       end;
       if WindowState = wsMinimized then
-         root.SetAttribute('func_win_min', '1');
+         ATag.SetAttribute('func_win_min', '1');
    end;
 end;
 
-function TFunctionsForm.ImportTabsFromXMLTag(const rootTag: IXMLElement): TErrorType;
+function TFunctionsForm.ImportTabsFromXMLTag(const ATag: IXMLElement): TErrorType;
 begin
-   result := GProject.ImportUserFunctionsFromXML(rootTag);
+   result := GProject.ImportUserFunctionsFromXML(ATag);
 end;
 
-procedure TFunctionsForm.ImportSettingsFromXMLTag(const root: IXMLElement);
+procedure TFunctionsForm.ImportSettingsFromXMLTag(const ATag: IXMLElement);
 var
    lFunctionHeader: TUserFunctionHeader;
    val: integer;
 begin
-   val := StrToIntDef(root.GetAttribute('func_win_h'), -1);
+   val := StrToIntDef(ATag.GetAttribute('func_win_h'), -1);
    if val > -1 then
       Height := val;
-   if (root.GetAttribute('func_win_show') = '1') and GInfra.CurrentLang.EnabledUserFunctionHeader then
+   if (ATag.GetAttribute('func_win_show') = '1') and GInfra.CurrentLang.EnabledUserFunctionHeader then
    begin
       Position := poDesigned;
-      if root.GetAttribute('func_win_min') = '1' then
+      if ATag.GetAttribute('func_win_min') = '1' then
          WindowState := wsMinimized;
-      val := StrToIntDef(root.GetAttribute('func_win_x'), -1);
+      val := StrToIntDef(ATag.GetAttribute('func_win_x'), -1);
       if val > -1 then
          Left := val;
-      val := StrToIntDef(root.GetAttribute('func_win_y'), -1);
+      val := StrToIntDef(ATag.GetAttribute('func_win_y'), -1);
       if val > -1 then
          Top := val;
-      val := StrToIntDef(root.GetAttribute('func_idx'), -2);
+      val := StrToIntDef(ATag.GetAttribute('func_idx'), -2);
       if (pgcTabs.PageCount > 0) and (val in [0..pgcTabs.PageCount-1]) then
       begin
          pgcTabs.ActivePageIndex := val;
          lFunctionHeader := TUserFunctionHeader(pgcTabs.Pages[val]);
-         val := StrToIntDef(root.GetAttribute('func_scroll_v'), 0);
+         val := StrToIntDef(ATag.GetAttribute('func_scroll_v'), 0);
          if val > 0 then
             lFunctionHeader.ScrollPos := val;
       end;

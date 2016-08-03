@@ -2563,7 +2563,7 @@ end;
 
 function TBlock.PerformEditorUpdate: boolean;
 begin
-   result := TInfra.GetEditorForm.Visible and not FRefreshMode;
+   result := TInfra.GetEditorForm.Visible and (not FRefreshMode) and not (fsStrikeOut in Font.Style);
 end;
 
 function TBlock.GetDescription: string;

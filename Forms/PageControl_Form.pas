@@ -50,8 +50,8 @@ type
     procedure miRemoveAllClick(Sender: TObject);
     procedure pgcTabsChange(Sender: TObject); virtual;
     procedure miExportAllClick(Sender: TObject);
-    procedure ExportTabsToXMLTag(const rootTag: IXMLElement);
-    function ImportTabsFromXMLTag(const rootTag: IXMLElement): TErrorType; virtual; abstract;
+    procedure ExportTabsToXMLTag(const ATag: IXMLElement);
+    function ImportTabsFromXMLTag(const ATag: IXMLElement): TErrorType; virtual; abstract;
     procedure FormDeactivate(Sender: TObject); virtual;
     procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
       MousePos: TPoint; var Handled: Boolean);
@@ -145,14 +145,14 @@ begin
    end;
 end;
 
-procedure TPageControlForm.ExportTabsToXMLTag(const rootTag: IXMLElement);
+procedure TPageControlForm.ExportTabsToXMLTag(const ATag: IXMLElement);
 var
    i: integer;
 begin
    for i:= 0 to pgcTabs.PageCount-1 do
    begin
       if pgcTabs.Pages[i].TabVisible then
-         TTabComponent(pgcTabs.Pages[i]).ExportToXMLTag(rootTag);
+         TTabComponent(pgcTabs.Pages[i]).ExportToXMLTag(ATag);
    end;
 end;
 

@@ -35,10 +35,10 @@ type
     procedure pgcTabsChanging(Sender: TObject; var AllowChange: Boolean);
   public
     { Public declarations }
-    function ImportFromXMLTag(const root: IXMLElement): integer;
-    procedure ExportSettingsToXMLTag(const root: IXMLElement); override;
-    procedure ImportSettingsFromXMLTag(const root: IXMLElement); override;
-    function ImportTabsFromXMLTag(const rootTag: IXMLElement): TErrorType; override;
+    function ImportFromXMLTag(ATag: IXMLElement): integer;
+    procedure ExportSettingsToXMLTag(const ATag: IXMLElement); override;
+    procedure ImportSettingsFromXMLTag(const ATag: IXMLElement); override;
+    function ImportTabsFromXMLTag(const ATag: IXMLElement): TErrorType; override;
     procedure RefreshTabs; override;
     procedure ResetForm; override;
   end;
@@ -101,17 +101,17 @@ begin
    RefreshTabs;
 end;
 
-function TDataTypesForm.ImportTabsFromXMLTag(const rootTag: IXMLElement): TErrorType;
+function TDataTypesForm.ImportTabsFromXMLTag(const ATag: IXMLElement): TErrorType;
 begin
-   result := GProject.ImportUserDataTypesFromXML(rootTag);
+   result := GProject.ImportUserDataTypesFromXML(ATag);
 end;
 
-function TDataTypesForm.ImportFromXMLTag(const root: IXMLElement): integer;
+function TDataTypesForm.ImportFromXMLTag(ATag: IXMLElement): integer;
 var
    lDataType: TUserDataType;
    tag: IXMLElement;
 begin
-   tag := TXMLProcessor.FindChildTag(root, 'types');
+   tag := TXMLProcessor.FindChildTag(ATag, 'types');
    if tag <> nil then
    begin
       tag := TXMLProcessor.FindChildTag(tag, 'type');
@@ -124,55 +124,55 @@ begin
    end;
 end;
 
-procedure TDataTypesForm.ExportSettingsToXMLTag(const root: IXMLElement);
+procedure TDataTypesForm.ExportSettingsToXMLTag(const ATag: IXMLElement);
 var
    lDataType: TUserDataType;
    val: integer;
 begin
-   root.SetAttribute('struct_win_h', IntToStr(Height));
+   ATag.SetAttribute('struct_win_h', IntToStr(Height));
    if Visible then
    begin
-      root.SetAttribute('struct_win_show', '1');
-      root.SetAttribute('struct_win_x', IntToStr(Left));
-      root.SetAttribute('struct_win_y', IntToStr(Top));
+      ATag.SetAttribute('struct_win_show', '1');
+      ATag.SetAttribute('struct_win_x', IntToStr(Left));
+      ATag.SetAttribute('struct_win_y', IntToStr(Top));
       if pgcTabs.ActivePageIndex <> -1 then
       begin
          lDataType := TUserDataType(pgcTabs.Pages[pgcTabs.ActivePageIndex]);
-         root.SetAttribute('struct_idx', IntToStr(lDataType.PageIndex));
+         ATag.SetAttribute('struct_idx', IntToStr(lDataType.PageIndex));
          val := lDataType.ScrollPos;
          if val > 0 then
-            root.SetAttribute('struct_scroll_v', IntToStr(val));
+            ATag.SetAttribute('struct_scroll_v', IntToStr(val));
       end;
       if WindowState = wsMinimized then
-         root.SetAttribute('struct_win_min', '1');
+         ATag.SetAttribute('struct_win_min', '1');
    end;
 end;
 
-procedure TDataTypesForm.ImportSettingsFromXMLTag(const root: IXMLElement);
+procedure TDataTypesForm.ImportSettingsFromXMLTag(const ATag: IXMLElement);
 var
    lDataType: TUserDataType;
    val: integer;
 begin
-   val := StrToIntDef(root.GetAttribute('struct_win_h'), -1);
+   val := StrToIntDef(ATag.GetAttribute('struct_win_h'), -1);
    if val > -1 then
       Height := val;
-   if (root.GetAttribute('struct_win_show') = '1') and GInfra.CurrentLang.EnabledUserDataTypes then
+   if (ATag.GetAttribute('struct_win_show') = '1') and GInfra.CurrentLang.EnabledUserDataTypes then
    begin
       Position := poDesigned;
-      if root.GetAttribute('struct_win_min') = '1' then
+      if ATag.GetAttribute('struct_win_min') = '1' then
          WindowState := wsMinimized;
-      val := StrToIntDef(root.GetAttribute('struct_win_x'), -1);
+      val := StrToIntDef(ATag.GetAttribute('struct_win_x'), -1);
       if val > -1 then
          Left := val;
-      val := StrToIntDef(root.GetAttribute('struct_win_y'), -1);
+      val := StrToIntDef(ATag.GetAttribute('struct_win_y'), -1);
       if val > -1 then
          Top := val;
-      val := StrToIntDef(root.GetAttribute('struct_idx'), -2);
+      val := StrToIntDef(ATag.GetAttribute('struct_idx'), -2);
       if (pgcTabs.PageCount > 0) and (val in [0..pgcTabs.PageCount-1]) then
       begin
          pgcTabs.ActivePageIndex := val;
          lDataType := TUserDataType(pgcTabs.Pages[val]);
-         val := StrToIntDef(root.GetAttribute('struct_scroll_v'), 0);
+         val := StrToIntDef(ATag.GetAttribute('struct_scroll_v'), 0);
          if val > 0 then
             lDataType.ScrollPos := val;
       end;

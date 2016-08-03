@@ -57,6 +57,7 @@ begin
    FType := blText;
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
    FStatements.Font.Color := TEXT_COLOR;
+   Font.Color := TEXT_COLOR;
    FCorner := TCorner.Create(Self);
    FCorner.Parent := Self;
    FCorner.Color := GSettings.RectColor;
@@ -115,7 +116,7 @@ end;
 procedure TTextBlock.ChangeColor(const AColor: TColor);
 begin
    inherited ChangeColor(AColor);
-   FStatements.Font.Color := GSettings.FontColor;
+   FStatements.Font.Color := Font.Color;
 end;
 
 end.

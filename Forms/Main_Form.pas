@@ -937,14 +937,24 @@ var
    lComponent: TComponent;
    lFontStyles: TFontStyles;
    lFontStyle: TFontStyle;
+   lBlock: TBlock;
+   lComment: TComment;
 begin
+   lBlock := nil;
+   lComment := nil;
    lComponent := pmPages.PopupComponent;
    if (lComponent is TBlock) or (lComponent is TComment) then
    begin
       if lComponent is TBlock then
-         lFontStyles := TBlock(lComponent).GetFont.Style
+      begin
+         lBlock := TBlock(lComponent);
+         lFontStyles := lBlock.GetFont.Style;
+      end
       else if lComponent is TComment then
-         lFontStyles := TComment(lComponent).Font.Style;
+      begin
+         lComment := TComment(lComponent);
+         lFontStyles := lComment.Font.Style;
+      end;
 
       if Sender = miStyleBold then
          lFontStyle := fsBold
@@ -962,10 +972,14 @@ begin
       else
          Include(lFontStyles, lFontStyle);
          
-      if lComponent is TBlock then
-         TBlock(lComponent).SetFontStyle(lFontStyles)
-      else if lComponent is TComment then
-         TComment(lComponent).Font.Style := lFontStyles;
+      if lBlock <> nil then
+      begin
+         lBlock.SetFontStyle(lFontStyles);
+         if (Sender = miStyleStrikeOut) and GSettings.UpdateEditor and not lBlock.SkipUpdateEditor then
+            TInfra.GetEditorForm.RefreshEditorForObject(nil);
+      end
+      else if lComment <> nil then
+         lComment.Font.Style := lFontStyles;
       GChange := 1;
    end;
 end;
