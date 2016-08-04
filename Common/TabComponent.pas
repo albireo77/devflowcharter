@@ -71,7 +71,6 @@ type
          procedure Localize(const AList: TStringList); virtual;
          procedure ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil); virtual;
          function GetLibName: string;
-         procedure CallOnDrawTab;
          procedure ScrollElements(const AValue: integer);
          property ScrollPos: integer read GetScrollPos write SetScrollPos;
          function GetName: string;
@@ -87,6 +86,7 @@ type
          function Remove: boolean;
          function CanBeRemoved: boolean;
          function IsBoldDesc: boolean;
+         procedure RefreshTab;
    end;
 
 implementation
@@ -221,9 +221,14 @@ begin
    end;
 end;
 
-procedure TTabComponent.CallOnDrawTab;
+procedure TTabComponent.RefreshTab;
+var
+   lColor: TColor;
 begin
-   PageControl.OnDrawTab(PageControl, PageIndex, PageControl.TabRect(PageIndex), PageControl.ActivePageIndex = PageIndex);
+   lColor := edtName.Font.Color;
+   if HasInvalidElement then
+      lColor := NOK_COLOR;
+   Font.Color := lColor;
 end;
 
 function TTabComponent.GetElementIterator: IIterator;

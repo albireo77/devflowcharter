@@ -609,7 +609,7 @@ begin
       begin
          lHeader := TUserFunctionHeader.Create(TInfra.GetFunctionsForm);
          lHeader.ImportFromXMLTag(tag1);
-         lHeader.CallOnDrawTab;
+         lHeader.RefreshTab;
       end;
       tag1 := TXMLProcessor.FindChildTag(tag, BLOCK_TAG);
       if (tag1 <> nil) and GInfra.CurrentLang.EnabledUserFunctionBody then
@@ -631,10 +631,9 @@ end;
 
 function TProject.ImportUserDataTypesFromXML(const ATag: IXMLElement): TErrorType;
 var
-   lDataType: TUserDataType;
+   lDataType, lType: TUserDataType;
    tag: IXMLElement;
    iter: IIterator;
-   lType: TUserDataType;
 begin
    result := errNone;
    lDataType := nil;
@@ -643,7 +642,7 @@ begin
    begin
       lDataType := TUserDataType.Create(TInfra.GetDataTypesForm);
       lDataType.ImportFromXMLTag(tag);
-      lDataType.CallOnDrawTab;
+      lDataType.RefreshTab;
       tag := TXMLProcessor.FindNextTag(tag);
    end;
    if FGlobalVars <> nil then
@@ -656,7 +655,7 @@ begin
       begin
          lType := TUserDataType(iter.Next);
          lType.RefreshSizeEdits;
-         lType.CallOnDrawTab;
+         lType.RefreshTab;
       end;
    end;
 end;

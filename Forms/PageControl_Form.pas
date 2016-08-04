@@ -137,10 +137,8 @@ begin
       ARect := Rect;
       ARect.Right := ARect.Right-3;
       lTab := TTabComponent(TPageControl(Control).Pages[TabIndex]);
-      Control.Canvas.Font.Color := lTab.edtName.Font.Color;
-      if lTab.HasInvalidElement then
-         Control.Canvas.Font.Color := NOK_COLOR;
-      lTab.Font.Color := Control.Canvas.Font.Color;
+      lTab.RefreshTab;
+      Control.Canvas.Font.Color := lTab.Font.Color;
       Control.Canvas.TextRect(ARect, ARect.Left+5, ARect.Top+3, lTab.Caption);
    end;
 end;
