@@ -773,8 +773,8 @@ end;
 procedure TEditorForm.memCodeEditorGutterClick(Sender: TObject;
   Button: TMouseButton; X, Y, Line: Integer; Mark: TSynEditMark);
 const
-   MARK_FIRST_INDEX = 9;   // index of first bookmark image in MainForm.ImageList1
-   MARK_LAST_INDEX = 13;   // index of last bookmark image in MainForm.ImageList1
+   MARK_FIRST_INDEX = 0;   // index of first bookmark image in MainForm.ImageList1
+   MARK_LAST_INDEX = 4;   // index of last bookmark image in MainForm.ImageList1
    MAX_MARKS = MARK_LAST_INDEX - MARK_FIRST_INDEX + 1;
 var
    i, a: integer;
