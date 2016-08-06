@@ -180,9 +180,9 @@ until %s1;
 
 <!--
 Element RepeatUntilAsDoWhile
-False - break loop when condition is true (default, Pascal)
-True - continue loop when condition is true (ANSI C)
-Used to transform repeat..until loop (Pascal) to do..while (ANSI C) 
+False - break loop when condition is true (default, Pascal like)
+True - continue loop when condition is true (C like)
+Used to switch default repeat..until loop behaviour to work as do..while in C
 -->
 <RepeatUntilAsDoWhile>false</RepeatUntilAsDoWhile>
 
