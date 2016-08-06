@@ -304,6 +304,8 @@ begin
 end;
 
 constructor TUserFunctionHeader.Create(const AParentForm: TFunctionsForm);
+var
+   lLeft: integer;
 begin
 
    inherited Create(AParentForm);
@@ -392,12 +394,16 @@ begin
    cbBodyPage.OnChange := OnChangeBodyPage;
    SetPageCombo;
 
+   if cbBodyPage.BoundsRect.Right > 170 then
+      lLeft := cbBodyPage.BoundsRect.Right + 10
+   else
+      lLeft := 180;
    chkBodyVisible := TCheckBox.Create(gbBody);
    chkBodyVisible.Parent := gbBody;
    chkBodyVisible.ParentFont := false;
    chkBodyVisible.Font.Style := [];
    chkBodyVisible.Font.Color := clWindowText;
-   chkBodyVisible.SetBounds(180, 20, 150, 17);
+   chkBodyVisible.SetBounds(lLeft, 20, 150, 17);
    chkBodyVisible.Caption := i18Manager.GetString('Visible');
    chkBodyVisible.DoubleBuffered := true;
    chkBodyVisible.Anchors := [akBottom, akLeft];
