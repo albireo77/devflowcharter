@@ -1,7 +1,9 @@
-<!-- Reference language definition file for devFlowcharter.
-     This file contains all supported tags.
-     To create file for new language just Save As this file and modify new file as you wish. 
-     Most of the tags are optional and may be removed if not needed. -->
+<!-- 
+Reference language definition file for devFlowcharter.
+This file contains all supported tags.
+To create file for new language just Save As this file and modify new file as you wish. 
+Most of the tags are optional and may be removed if not needed.
+-->
 
 <Language>
     <Name>Example</Name>
@@ -175,6 +177,14 @@ BEGIN
 END;
 until %s1;
 </RepeatUntilTemplate>
+
+<!--
+Element RepeatUntilAsDoWhile
+False - break loop when condition is true (default, Pascal)
+True - continue loop when condition is true (ANSI C)
+Used to transform repeat..until loop (Pascal) to do..while (ANSI C) 
+-->
+<RepeatUntilAsDoWhile>false</RepeatUntilAsDoWhile>
 
 <!--
 Element ForDoTemplate

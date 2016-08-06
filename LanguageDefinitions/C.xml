@@ -1,6 +1,8 @@
-<!-- C definition file for devFlowcharter -->
-<!-- This file may not contain all supported tags. -->
-<!-- For all supported tags refer to Example.xml file. -->
+<!-- 
+C definition file for devFlowcharter
+This file may not contain all supported tags.
+For all supported tags refer to Example.xml file.
+-->
 
 <Language>
     <Name>ANSI C</Name>
@@ -97,10 +99,12 @@
 {
 	%b1
 }
-while (!(%s1));
+while (%s1);
 </RepeatUntilTemplate>
 
-<RepeatDesc>do while (!(%s1))</RepeatDesc>
+<RepeatUntilAsDoWhile>true</RepeatUntilAsDoWhile>
+
+<RepeatDesc>do while (%s1)</RepeatDesc>
 
 <IfTemplate>if (%s1)
 {

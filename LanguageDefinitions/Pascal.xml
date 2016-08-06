@@ -1,6 +1,8 @@
-<!-- Pascal definition file for devFlowcharter -->
-<!-- This file may not contain all supported tags. -->
-<!-- For all supported tags refer to Example.xml file. -->
+<!-- 
+Pascal definition file for devFlowcharter
+This file may not contain all supported tags.
+For all supported tags refer to Example.xml file. 
+-->
 
 <Language>
     <Name>Pascal</Name>

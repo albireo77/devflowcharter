@@ -145,19 +145,20 @@ type
       NativeDataTypes: array of TNativeDataType;
       KeyWords: TStringList;
       NativeFunctions: TStringList;
-      EnabledConsts: boolean;
-      EnabledVars: boolean;
-      EnabledCompiler: boolean;
-      EnabledUserFunctionHeader: boolean;
-      EnabledUserFunctionBody: boolean;
-      EnabledUserDataTypes: boolean;
-      EnabledExplorer: boolean;
-      EnabledCodeGenerator: boolean;
-      EnabledMainProgram: boolean;
-      CaseSensitiveSyntax: boolean;
-      UpperCaseConstId: boolean;
-      AllowEnumsInForLoop: boolean;
-      AllowUserFunctionOverload: boolean;
+      EnabledConsts,
+      EnabledVars,
+      EnabledCompiler,
+      EnabledUserFunctionHeader,
+      EnabledUserFunctionBody,
+      EnabledUserDataTypes,
+      EnabledExplorer,
+      EnabledCodeGenerator,
+      EnabledMainProgram,
+      CaseSensitiveSyntax,
+      UpperCaseConstId,
+      AllowEnumsInForLoop,
+      AllowUserFunctionOverload,
+      RepeatUntilAsDoWhile: boolean;
       InOutCursorPos,
       FuncBracketsCursorPos: integer;
       PreGenerationActivities: procedure;
@@ -446,6 +447,10 @@ begin
    tag := TXMLProcessor.FindChildTag(root, 'RepeatUntilTemplate');
    if tag <> nil then
       RepeatUntilTemplate := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'RepeatUntilAsDoWhile');
+   if tag <> nil then
+      RepeatUntilAsDoWhile := CompareText(tag.Text, 'True') = 0;
 
    tag := TXMLProcessor.FindChildTag(root, 'MainProgramTemplate');
    if tag <> nil then

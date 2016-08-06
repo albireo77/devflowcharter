@@ -30,6 +30,8 @@ uses
 type
 
    TRepeatUntilBlock = class(TGroupBlock)
+      private
+         FLeftLabel, FRightLabel: string;
       public
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
@@ -62,6 +64,16 @@ begin
    FInitParms.P2X := 0;
    FInitParms.HeightAffix := 82;
 
+   if GInfra.CurrentLang.RepeatUntilAsDoWhile then
+   begin
+      FLeftLabel := FTrueLabel;
+      FRightLabel := FFalseLabel;
+   end
+   else
+   begin
+      FLeftLabel := FFalseLabel;
+      FRightLabel := FTrueLabel;
+   end;
    BottomPoint.X := Width - 11;
    BottomPoint.Y := Height - 50;
    TopHook.Y := 0;
@@ -87,6 +99,8 @@ begin
 end;
 
 procedure TRepeatUntilBlock.Paint;
+var
+   lLeftLabel, lRightLabel: string;
 begin
    inherited;
    if Expanded then
@@ -99,8 +113,8 @@ begin
       DrawArrowLine(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
       DrawArrowLine(Point(5, Height-51), Point(5, 0), arrMiddle);
       DrawArrowLine(Point(BottomPoint.X, Height-51), Point(BottomPoint.X, Height-1));
-      DrawTextLabel(BottomHook-60, Height-72, FFalseLabel, true);
-      DrawTextLabel(BottomHook+60, Height-72, FTrueLabel);
+      DrawTextLabel(BottomHook-60, Height-72, FLeftLabel, true);
+      DrawTextLabel(BottomHook+60, Height-72, FRightLabel);
       DrawSegoeLabel(BottomHook-20, Height-32, GInfra.CurrentLang.LabelRepeat, true);
       with Canvas do
       begin

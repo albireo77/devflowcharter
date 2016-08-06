@@ -1,6 +1,8 @@
-﻿<!-- TIBASIC definition file for devFlowcharter -->
-<!-- This file may not contain all supported tags. -->
-<!-- For all supported tags refer to Example.xml file. -->
+﻿<!--
+TIBASIC definition file for devFlowcharter
+This file may not contain all supported tags.
+For all supported tags refer to Example.xml file.
+-->
 
 <Language>
     <Name>TIBASIC</Name>
