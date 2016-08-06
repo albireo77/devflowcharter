@@ -98,7 +98,7 @@ These will be displayed in flowchart
 <LabelCase>Case</LabelCase>
 <LabelIf>if</LabelIf>
 <LabelIfElse>if else</LabelIfElse>
-<LabelFuncCall>function call</LabelFuncCall>
+<LabelFuncCall>func call</LabelFuncCall>
 <LabelReturn>return</LabelReturn>
 <LabelFolder>folder</LabelFolder>
 <LabelText>text</LabelText>

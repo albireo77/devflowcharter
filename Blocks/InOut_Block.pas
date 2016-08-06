@@ -144,7 +144,7 @@ begin
       DrawText(Handle, PChar(FLabel), -1, R, DT_CENTER);
       Font.Style := lFontStyles;
    end;
-   DrawSegoeLabel((Width div 2)-15, 30, FLabelSegoe, true);
+   DrawSegoeLabel(5, 30, FLabelSegoe);
    DrawI;
 end;
 

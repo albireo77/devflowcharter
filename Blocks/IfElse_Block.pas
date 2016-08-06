@@ -122,9 +122,6 @@ begin
          DrawArrowLine(Point(TrueHook, Height-30), Point(BottomHook-5, Height-30));
       if FalseBranch.FindInstanceOf(TReturnBlock) = -1 then
          DrawArrowLine(Point(FalseHook, Height-30), Point(BottomHook+4, Height-30));
-      DrawTextLabel(TopHook.X-60, 9, FTrueLabel, true);
-      DrawTextLabel(TopHook.X+60, 9, FFalseLabel);
-      DrawSegoeLabel(TopHook.X-52, 35, GInfra.CurrentLang.LabelIfElse, true);
       with Canvas do
       begin
          Ellipse(BottomHook-5, Height-34, BottomHook+5, Height-24);
@@ -133,6 +130,9 @@ begin
          MoveTo(FalseBranch.Hook.X, 30);
          LineTo(TopHook.X+60, 30);
       end;
+      DrawTextLabel(TopHook.X-60, 9, FTrueLabel, true);
+      DrawTextLabel(TopHook.X+60, 9, FFalseLabel);
+      DrawSegoeLabel(TopHook.X-52, 35, GInfra.CurrentLang.LabelIfElse, true);
    end;
    DrawI;
 end;
