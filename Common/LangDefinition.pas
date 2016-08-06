@@ -64,8 +64,22 @@ type
       RepeatUntilTemplate,
       ForDoTemplate,
       ElseLabel,
-      RepeatLabel,
-      WhileLabel,
+      LabelFontName,
+      LabelRepeat,
+      LabelWhile,
+      LabelIf,
+      LabelIfElse,
+      LabelIn,
+      LabelOut,
+      LabelFor,
+      LabelFuncCall,
+      LabelAssign,
+      LabelMultiAssign,
+      LabelReturn,
+      LabelCase,
+      LabelText,
+      LabelFolder,
+      LabelMain,
       ReturnDesc,
       RepeatDesc,
       ForAsc1,
@@ -118,6 +132,7 @@ type
       ProgramLabelKey,
       HighLighterVarName,
       FuncBrackets: string;
+      LabelFontSize,
       FunctionHeaderArgsStripCount,
       VarEntryArraySizeStripCount,
       LibEntryListStripCount,
@@ -356,13 +371,69 @@ begin
    if tag <> nil then
       ElseLabel := tag.Text;
 
-   tag := TXMLProcessor.FindChildTag(root, 'RepeatLabel');
+   tag := TXMLProcessor.FindChildTag(root, 'LabelFontName');
    if tag <> nil then
-      RepeatLabel := tag.Text;
+      LabelFontName := tag.Text;
 
-   tag := TXMLProcessor.FindChildTag(root, 'WhileLabel');
+   tag := TXMLProcessor.FindChildTag(root, 'LabelFontSize');
    if tag <> nil then
-      WhileLabel := tag.Text;
+      LabelFontSize := StrToIntDef(tag.Text, 12);
+
+   tag := TXMLProcessor.FindChildTag(root, 'LabelRepeat');
+   if tag <> nil then
+      LabelRepeat := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'LabelWhile');
+   if tag <> nil then
+      LabelWhile := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'LabelFor');
+   if tag <> nil then
+      LabelFor := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'LabelCase');
+   if tag <> nil then
+      LabelCase := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'LabelIf');
+   if tag <> nil then
+      LabelIf := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'LabelIfElse');
+   if tag <> nil then
+      LabelIfElse := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'LabelFuncCall');
+   if tag <> nil then
+      LabelFuncCall := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'LabelReturn');
+   if tag <> nil then
+      LabelReturn := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'LabelText');
+   if tag <> nil then
+      LabelText := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'LabelFolder');
+   if tag <> nil then
+      LabelFolder := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'LabelIn');
+   if tag <> nil then
+      LabelIn := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'LabelOut');
+   if tag <> nil then
+      LabelOut := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'LabelAssign');
+   if tag <> nil then
+      LabelAssign := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'LabelMultiAssign');
+   if tag <> nil then
+      LabelMultiAssign := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(root, 'ReturnDesc');
    if tag <> nil then

@@ -30,7 +30,8 @@ type
 
    TInOutBlock = class(TBlock)
       protected
-         FLabel: string;
+         FLabel,
+         FLabelSegoe: string;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; virtual;
          procedure Paint; override;
          procedure PutTextControls; override;
@@ -78,6 +79,7 @@ constructor TInputBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth
 begin
    FType := blInput;
    FLabel := i18Manager.GetString('CaptionIn');
+   FLabelSegoe := GInfra.CurrentLang.LabelIn;
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
    FStatement.Text := GInfra.CurrentLang.InputFunction;
    FStatement.SelStart := Length(FStatement.Text) + GInfra.CurrentLang.InOutCursorPos;
@@ -87,6 +89,7 @@ constructor TOutputBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidt
 begin
    FType := blOutput;
    FLabel := i18Manager.GetString('CaptionOut');
+   FLabelSegoe := GInfra.CurrentLang.LabelOut;
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
    FStatement.Text := GInfra.CurrentLang.OutputFunction;
    FStatement.SelStart := Length(FStatement.Text) + GInfra.CurrentLang.InOutCursorPos;
@@ -141,6 +144,7 @@ begin
       DrawText(Handle, PChar(FLabel), -1, R, DT_CENTER);
       Font.Style := lFontStyles;
    end;
+   DrawSegoeLabel((Width div 2)-15, 30, FLabelSegoe, true);
    DrawI;
 end;
 

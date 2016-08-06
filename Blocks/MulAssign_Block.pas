@@ -32,6 +32,7 @@ type
    TMultiAssignBlock = class(TMultiLineBlock)
       protected
          procedure OnChangeMemo(Sender: TObject); override;
+         procedure Paint; override;
       public
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; override;
@@ -56,6 +57,12 @@ function TMultiAssignBlock.Clone(const ABranch: TBranch): TBlock;
 begin
    result := TMultiAssignBlock.Create(ABranch, Left, Top, Width, Height);
    result.CloneFrom(Self);
+end;
+
+procedure TMultiAssignBlock.Paint;
+begin
+   inherited;
+   DrawSegoeLabel(5, FStatements.BoundsRect.Bottom+1, GInfra.CurrentLang.LabelMultiAssign);
 end;
 
 constructor TMultiAssignBlock.Create(const ABranch: TBranch);

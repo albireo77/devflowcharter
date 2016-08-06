@@ -193,7 +193,6 @@ const   // Global constants
         BLACK_COLOR = clWindowText;
 
         FLOWCHART_DEFAULT_FONT_NAME = 'Tahoma';
-        SEGOE_FONT_NAME = 'Segoe Print';
 
         CRLF = #13#10;
 

@@ -82,6 +82,7 @@ end;
 procedure TTextBlock.Paint;
 begin
    inherited;
+   DrawSegoeLabel(5, FStatements.BoundsRect.Bottom+1, GInfra.CurrentLang.LabelText);
    if FCorner <> nil then
       FCorner.Invalidate;
 end;

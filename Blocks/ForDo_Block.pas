@@ -240,6 +240,7 @@ begin
          DrawTextLabel(Branch.Hook.X-42, y, GInfra.CurrentLang.AssignOperator, false, true);
          DrawTextLabel(Branch.Hook.X+1, y, lForDirect[FOrder], false, true);
          DrawTextLabel(Branch.Hook.X-97, y, FForLabel, false, true);
+         DrawSegoeLabel(Branch.Hook.X-100, 40, GInfra.CurrentLang.LabelFor);
       end;      
    end;
    DrawI;

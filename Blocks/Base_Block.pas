@@ -89,8 +89,8 @@ type
          procedure OnMouseLeave; virtual;
          procedure Paint; override;
          procedure DrawI;
-         procedure DrawTextLabel(x, y: integer; const AText: string; adjX: boolean = false; adjY: boolean = false);
-         procedure DrawSegoeTextLabel(x, y: integer; const AText: string; adjX: boolean = false; adjY: boolean = false);
+         procedure DrawTextLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false);
+         procedure DrawSegoeLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false);
          function GetId: integer;
          function PerformEditorUpdate: boolean;
          procedure SelectBlock(const APoint: TPoint);
@@ -1409,26 +1409,28 @@ begin
    end;
 end;
 
-procedure TBlock.DrawSegoeTextLabel(x, y: integer; const AText: string; adjX: boolean = false; adjY: boolean = false);
+procedure TBlock.DrawSegoeLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false);
 var
    lFontName: string;
+   lFontSize: integer;
    lFontStyles: TFontStyles;
 begin
-   if (AText <> '') and (Screen.Fonts.IndexOf(SEGOE_FONT_NAME) <> -1) then
+   if (AText <> '') and (Screen.Fonts.IndexOf(GInfra.CurrentLang.LabelFontName) <> -1) then
    begin
       lFontName := Canvas.Font.Name;
       lFontStyles := Canvas.Font.Style;
-      Canvas.Font.Name := SEGOE_FONT_NAME;
+      Canvas.Font.Name := GInfra.CurrentLang.LabelFontName;
       Canvas.Font.Style := [fsBold];
-      Canvas.Font.Size := Canvas.Font.Size + 4;
-      DrawTextLabel(x, y, AText, adjX, adjY);
+      lFontSize := Canvas.Font.Size;
+      Canvas.Font.Size := GInfra.CurrentLang.LabelFontSize;
+      DrawTextLabel(x, y, AText, rightJust, downJust);
       Canvas.Font.Name := lFontName;
-      Canvas.Font.Size := Canvas.Font.Size - 4;
+      Canvas.Font.Size := lFontSize;
       Canvas.Font.Style := lFontStyles;
    end;
 end;
 
-procedure TBlock.DrawTextLabel(x, y: integer; const AText: string; adjX: boolean = false; adjY: boolean = false);
+procedure TBlock.DrawTextLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false);
 var
    lFontStyles: TFontStyles;
 begin
@@ -1439,9 +1441,9 @@ begin
       if fsBold in lFontStyles then
          Canvas.Font.Style := Canvas.Font.Style + [fsBold];
       Canvas.Brush.Style := bsClear;
-      if adjX then
+      if rightJust then
          x := x - Canvas.TextWidth(AText);
-      if adjY then
+      if downJust then
          y := y - Canvas.TextHeight('X');
       Canvas.TextOut(x, y, AText);
       Canvas.Font.Style := lFontStyles;

@@ -80,6 +80,7 @@ procedure TAssignBlock.Paint;
 begin
    inherited;
    DrawArrowLine(Point(BottomPoint.X, 19), Point(BottomPoint.X, Height-1));
+   DrawSegoeLabel(5, 20, GInfra.CurrentLang.LabelAssign);
    DrawI;
 end;
 

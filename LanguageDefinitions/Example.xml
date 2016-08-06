@@ -1,4 +1,8 @@
-<!-- Example of language definition file for devFlowcharter -->
+<!-- Reference language definition file for devFlowcharter.
+     This file contains all supported tags.
+     To create file for new language just Save As this file and modify new file as you wish. 
+     Most of the tags are optional and may be removed if not needed. -->
+
 <Language>
     <Name>Example</Name>
     <CommentBegin>/*</CommentBegin>
@@ -85,16 +89,25 @@ Description: Label displayed close to flowchart for body of project's main progr
 <ProgramLabelKey>ProgramLabelExample</ProgramLabelKey>
 
 <!--
-Element WhileLabel
-Will be written inside while..do block
+Label elements will follow
+These will be displayed in flowchart
 -->
-<WhileLabel>while</WhileLabel>
-
-<!--
-Element RepeatLabel
-Will be written inside repeat..until block
--->
-<RepeatLabel>repeat until</RepeatLabel>
+<LabelWhile>while</LabelWhile>
+<LabelRepeat>repeat until</LabelRepeat>
+<LabelFor>for</LabelFor>
+<LabelCase>Case</LabelCase>
+<LabelIf>if</LabelIf>
+<LabelIfElse>if else</LabelIfElse>
+<LabelFuncCall>function call</LabelFuncCall>
+<LabelReturn>return</LabelReturn>
+<LabelFolder>folder</LabelFolder>
+<LabelText>text</LabelText>
+<LabelIn>input</LabelIn>
+<LabelOut>output</LabelOut>
+<LabelAssign>assign</LabelAssign>
+<LabelMultiAssign>assign</LabelMultiAssign>
+<LabelFontName>Segoe Print</LabelFontName>
+<LabelFontSize>12</LabelFontSize>
 
 <!--
 Element RepeatDesc

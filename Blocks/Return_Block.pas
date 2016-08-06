@@ -63,7 +63,7 @@ begin
    if lDefWidth > Width then
       Width := lDefWidth;
 
-   FStatement.SetBounds((Width div 2)-30, 31, 60, 19);
+   FStatement.SetBounds((Width div 2)-26, 31, 52, 19);
    FStatement.Anchors := [akRight, akLeft, akTop];
    FStatement.Alignment := taCenter;
 
@@ -94,6 +94,7 @@ begin
    lFontStyles := Canvas.Font.Style;
    Canvas.Font.Style := [];
    DrawEllipsedText(Point(Width div 2, 30), FReturnLabel);
+   DrawSegoeLabel(1, Height-1, GInfra.CurrentLang.LabelReturn, false, true);
    Canvas.Font.Style := lFontStyles;
    DrawI;
 end;

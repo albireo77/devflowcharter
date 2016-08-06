@@ -43,7 +43,7 @@ type
 implementation
 
 uses
-   StrUtils, CommonTypes;
+   StrUtils, CommonTypes, ApplicationCommon;
 
 constructor TFolderBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
 begin
@@ -92,6 +92,7 @@ begin
       BottomPoint.Y := Height - 31;
       DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1));
       DrawArrowLine(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
+      DrawSegoeLabel(5, 2, GInfra.CurrentLang.LabelFolder);
    end;
    DrawI;
 end;

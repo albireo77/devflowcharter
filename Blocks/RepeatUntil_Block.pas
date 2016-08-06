@@ -101,7 +101,7 @@ begin
       DrawArrowLine(Point(BottomPoint.X, Height-51), Point(BottomPoint.X, Height-1));
       DrawTextLabel(BottomHook-60, Height-72, FFalseLabel, true);
       DrawTextLabel(BottomHook+60, Height-72, FTrueLabel);
-      DrawSegoeTextLabel(BottomHook-20, Height-32, GInfra.CurrentLang.RepeatLabel, true);
+      DrawSegoeLabel(BottomHook-20, Height-32, GInfra.CurrentLang.LabelRepeat, true);
       with Canvas do
       begin
          MoveTo(BottomPoint.X, Height-51);

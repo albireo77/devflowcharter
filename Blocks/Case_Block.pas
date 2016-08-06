@@ -112,6 +112,7 @@ var
    lBranch, lBranch2: TBranch;
    lCaseBlock: TCaseBlock;
 begin
+   inherited CloneFrom(ABlock);
    if ABlock is TCaseBlock then
    begin
       lCaseBlock := TCaseBlock(ABlock);
@@ -128,7 +129,6 @@ begin
          end;
       end;
    end;
-   inherited CloneFrom(ABlock);
 end;
 
 constructor TCaseBlock.Create(const ABranch: TBranch);
@@ -154,6 +154,8 @@ begin
          lPoint := FBranchArray[i].Hook;
          DrawArrowLine(Point(lPoint.X, TopHook.Y), lPoint);
       end;
+      DrawTextLabel(DefaultBranch.Hook.X+40, 48, FCaseLabel);
+      DrawSegoeLabel(DefaultBranch.Hook.X+60, 1, GInfra.CurrentLang.LabelCase);
       with Canvas do
       begin
          MoveTo(lPoint.X, TopHook.Y);
@@ -161,7 +163,6 @@ begin
          LineTo(DefaultBranch.Hook.X, TopHook.Y-10);
          MoveTo(BottomHook, BottomPoint.Y);
          LineTo(BottomPoint.X, BottomPoint.Y);
-         DrawTextLabel(DefaultBranch.Hook.X+40, 48, FCaseLabel);
       end;
    end;
    DrawI;

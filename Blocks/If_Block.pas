@@ -98,6 +98,7 @@ begin
       DrawArrowLine(Point(Width-11, 30), Point(Width-11, Height-31), arrMiddle);
       DrawTextLabel(Branch.Hook.X-10, 60, FTrueLabel, true);
       DrawTextLabel(Branch.Hook.X+60, 9, FFalseLabel);
+      DrawSegoeLabel(Branch.Hook.X-60, 2, GInfra.CurrentLang.LabelIf, true);
       with Canvas do
       begin
          MoveTo(BottomPoint.X, Height-31);
