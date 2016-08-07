@@ -358,7 +358,6 @@ begin
       SetBounds(3, 3, 134, 55);
       Ctl3D := false;
       Color := GSettings.FoldColor;
-      DoubleBuffered := true;
       Font.Assign(FStatement.Font);
       OnMouseDown := Self.OnMouseDown;
       Font.Color := clNavy;
@@ -786,6 +785,27 @@ begin
 {}
 end;
 
+var
+   lControl: TCustomEdit;
+begin
+   lControl := GetTextControl;
+   if lControl <> nil then
+      lControl.DoubleBuffered := AValue;
+end;
+
+var
+   lControl: TCustomEdit;
+   i: integer;
+begin
+   for i := 0 to ControlCount-1 do
+   begin
+      if Controls[i] is TBlock then
+      else if Controls[i] is TWinControl then
+         TWinControl(Controls[i]).DoubleBuffered := AValue;
+   end;
+   FMemoFolder.DoubleBuffered := AValue;
+end;
+
 procedure TBlock.NCHitTest(var Msg: TWMNCHitTest);
 var
    lLocked: boolean;
@@ -793,6 +813,7 @@ begin
    inherited;
    if GetAsyncKeyState(VK_LBUTTON) <> 0 then
    begin
+      if IsCursorResize then
       case Cursor of
          crSizeWE:
          begin
@@ -887,13 +908,10 @@ end;
 
 procedure TGroupBlock.ResizeVert(const AContinue: boolean);
 begin
-
    Height := Branch.Height + Branch.Hook.Y + FInitParms.HeightAffix;
    LinkBlocks;
-
    if AContinue and (FParentBlock <> nil) then
       FParentBlock.ResizeVert(AContinue);
-
 end;
 
 procedure TGroupBlock.ResizeHorz(const AContinue: boolean);

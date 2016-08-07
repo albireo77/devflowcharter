@@ -142,7 +142,6 @@ begin
    end;
    Font.Assign(lBlock.GetFont);
    BorderStyle := bsNone;
-   DoubleBuffered := True;
    ShowHint := True;
    BevelKind := bkNone;
    AutoSelect := False;
