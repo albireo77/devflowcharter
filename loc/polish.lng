@@ -94,6 +94,7 @@ LngFilesFilter=Pliki t³umaczeñ (*.lng)|*.lng;
 RTFFilesFilter=Dokumenty RTF (*.rtf)|*.rtf;
 BMPFilesFilter=Pliki map bitowych (*.bmp)|*.bmp;
 JPGFilesFilter=Pliki JPEG (*.jpg)|*.jpg;
+PNGFilesFilter=Pliki PNG (*.png)|*.png;
 XMLFilesFilter=Dokumenty XML (*.xml)|*.xml;
 HTMLFilesFilter=Dokumenty HTML (*.html)|*.html;
 TextFilesFilter=Pliki tekstowe (*.txt)|*.txt;

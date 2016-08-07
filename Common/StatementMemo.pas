@@ -53,7 +53,6 @@ begin
    Font.Color := GSettings.FontColor;
    Font.Name := GSettings.FlowchartFontName;
    Anchors := [akRight, akLeft, akBottom, akTop];
-   DoubleBuffered := true;
 end;
 
 function TStatementMemo.RetrieveFocus(AInfo: TFocusInfo): boolean;

@@ -96,6 +96,7 @@ LngFilesFilter=Translation files (*.lng)|*.lng;
 RTFFilesFilter=Rich Text documents (*.rtf)|*.rtf;
 BMPFilesFilter=Bitmap files (*.bmp)|*.bmp;
 JPGFilesFilter=JPEG files (*.jpg)|*.jpg;
+PNGFilesFilter=PNG files (*.png)|*.png;
 XMLFilesFilter=XML documents (*.xml)|*.xml;
 HTMLFilesFilter=HTML documents (*.html)|*.html;
 TextFilesFilter=Text files (*.txt)|*.txt;

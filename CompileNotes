@@ -1,6 +1,12 @@
 
 To compile devFlowcharter you will need:
  - Delphi 7 (any edition)
- - stuff from ThirdParty\ThirdParty.zip: unpack FastCode, FastMM4, OmniXML, Synedit directories and add to library paths in Delphi (Tools->Environment Options->Library->Library path)
+ - stuff from ThirdParty\ThirdParty.zip. So unpack 
+     FastCode, 
+     FastMM4, 
+     OmniXML, 
+     Synedit,
+     pngimage 
+   directories and add to library paths in Delphi (Tools->Environment Options->Library->Library path).
 
 If interested to add support for new programming language check LangTemplates\Pascal_Template.pas.

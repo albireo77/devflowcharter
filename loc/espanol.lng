@@ -96,6 +96,7 @@ LngFilesFilter=localización de archivos (*.lng)|*.lng;
 RTFFilesFilter=Rich Text File (*.rtf)|*.rtf;
 BMPFilesFilter=Archivo BMP (*.bmp)|*.bmp;
 JPGFilesFilter=Archivo JPEG (*.jpg)|*.jpg;
+PNGFilesFilter=PNG files (*.png)|*.png;
 XMLFilesFilter=Archivo XML (*.xml)|*.xml;
 HTMLFilesFilter=HTML File (*.html)|*.html;
 TextFilesFilter=Archivo de texto (*.txt)|*.txt;

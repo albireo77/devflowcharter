@@ -240,7 +240,7 @@ uses
    Toolbox_Form, ApplicationCommon, About_Form, Main_Block, ParseGlobals, LocalizationManager,
    XMLProcessor, UserFunction, ForDo_Block, Return_Block, Project, Declarations_Form,
    Base_Block, Comment, Case_Block, jpeg, CommonInterfaces, Navigator_Form, CommonTypes,
-   LangDefinition, EditMemo_Form, BlockFactory, BlockTabSheet;
+   LangDefinition, EditMemo_Form, BlockFactory, BlockTabSheet, pngimage;
 
 type
    TDerivedControl = class(TControl);
@@ -462,6 +462,7 @@ begin
     ExportDialog.FileName := GProject.Name;
     ExportDialog.Filter := i18Manager.GetString('XMLFilesFilter') + '|' +
                            i18Manager.GetString('BMPFilesFilter') + '|' +
+                           i18Manager.GetString('PNGFilesFilter') + '|' +
                            i18Manager.GetString('JPGFilesFilter');
     ExportDialog.FilterIndex := 1;
     if ExportDialog.Execute then
@@ -488,10 +489,12 @@ begin
        end
        else
        begin
-          if ExportDialog.FilterIndex = 2 then
-             lGraphic := TBitmap.Create
+          case ExportDialog.FilterIndex of
+             3: lGraphic := TPNGObject.Create;
+             4: lGraphic := TJPEGImage.Create;
           else
-             lGraphic := TJPEGImage.Create;
+                lGraphic := TBitmap.Create;
+          end;
           try
              GProject.ExportToGraphic(lGraphic);
              lGraphic.SaveToFile(lFileName);
@@ -1079,6 +1082,7 @@ begin
       ExportDialog.Filename := '';
       ExportDialog.Filter := i18Manager.GetString('XMLFilesFilter') + '|' +
                              i18Manager.GetString('BMPFilesFilter') + '|' +
+                             i18Manager.GetString('PNGFilesFilter') + '|' +
                              i18Manager.GetString('JPGFilesFilter');
       ExportDialog.FilterIndex := 1;
       if ExportDialog.Execute then
@@ -1094,10 +1098,12 @@ begin
          end
          else
          begin
-            if ExportDialog.FilterIndex = 2 then
-               lGraphic := TBitmap.Create
+            case ExportDialog.FilterIndex of
+               3: lGraphic := TPNGObject.Create;
+               4: lGraphic := TJPEGImage.Create;
             else
-               lGraphic := TJPEGImage.Create;
+                  lGraphic := TBitmap.Create;
+            end;
             try
                lBlock.ClearSelection;
                lblock.ExportToGraphic(lGraphic);

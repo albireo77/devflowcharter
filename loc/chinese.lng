@@ -99,6 +99,7 @@ LngFilesFilter=本地化语言文件(*.lng)|*.lng;
 RTFFilesFilter=写字版文档(*.rtf)|*.rtf;
 BMPFilesFilter=位图文件 (*.bmp)|*.bmp;
 JPGFilesFilter=JPEG图像(*.jpg)|*.jpg;
+PNGFilesFilter=PNG files (*.png)|*.png;
 XMLFilesFilter=XML文档 (*.xml)|*.xml;
 HTMLFilesFilter=HTML 网页(*.html)|*.html;
 TextFilesFilter=纯文本文件(*.txt)|*.txt;
