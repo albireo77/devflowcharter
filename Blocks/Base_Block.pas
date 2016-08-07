@@ -184,6 +184,7 @@ type
          procedure CloneComments(const ASource: TBlock);
          procedure ImportCommentsFromXML(const ATag: IXMLElement);
          procedure CloneFrom(ABlock: TBlock); virtual;
+         procedure SetDoubleBuffered(AValue: boolean); virtual;
       published
          property Color;
          property OnMouseDown;
@@ -243,6 +244,7 @@ type
          function CanBeFocused: boolean; override;
          function UnPinComments: integer; override;
          procedure CloneFrom(ABlock: TBlock); override;
+         procedure SetDoubleBuffered(AValue: boolean); override;
    end;
 
    TBranch = class(TObjectList, IIdentifiable)
@@ -785,6 +787,7 @@ begin
 {}
 end;
 
+procedure TBlock.SetDoubleBuffered(AValue: boolean);
 var
    lControl: TCustomEdit;
 begin
@@ -793,13 +796,16 @@ begin
       lControl.DoubleBuffered := AValue;
 end;
 
+procedure TGroupBlock.SetDoubleBuffered(AValue: boolean);
 var
    lControl: TCustomEdit;
    i: integer;
 begin
+   inherited SetDoubleBuffered(AValue);
    for i := 0 to ControlCount-1 do
    begin
       if Controls[i] is TBlock then
+         TBlock(Controls[i]).SetDoubleBuffered(AValue)
       else if Controls[i] is TWinControl then
          TWinControl(Controls[i]).DoubleBuffered := AValue;
    end;
@@ -814,6 +820,7 @@ begin
    if GetAsyncKeyState(VK_LBUTTON) <> 0 then
    begin
       if IsCursorResize then
+         SetDoubleBuffered(true);
       case Cursor of
          crSizeWE:
          begin
@@ -840,6 +847,7 @@ begin
    begin
       lLocked := LockDrawing;
       try
+         SetDoubleBuffered(false);
          if HResizeInd then
          begin
             if FParentBlock <> nil then
