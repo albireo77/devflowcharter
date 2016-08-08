@@ -221,6 +221,7 @@ type
     FClockPos: TClockPos;
     function BuildFuncMenu(AParent: TMenuItem): integer;
     procedure DestroyFuncMenu;
+    function GetGraphicFileFilter: string;
   public
     { Public declarations }
     procedure ExportSettingsToXMLTag(const root: IXMLElement); override;
@@ -460,10 +461,7 @@ var
    lFileName: string;
 begin
     ExportDialog.FileName := GProject.Name;
-    ExportDialog.Filter := i18Manager.GetString('XMLFilesFilter') + '|' +
-                           i18Manager.GetString('BMPFilesFilter') + '|' +
-                           i18Manager.GetString('PNGFilesFilter') + '|' +
-                           i18Manager.GetString('JPGFilesFilter');
+    ExportDialog.Filter := GetGraphicFileFilter;
     ExportDialog.FilterIndex := 1;
     if ExportDialog.Execute then
     begin
@@ -1070,6 +1068,14 @@ begin
       NavigatorForm.Visible := not NavigatorForm.Visible
 end;
 
+function TMainForm.GetGraphicFileFilter: string;
+begin
+   result := i18Manager.GetString('XMLFilesFilter') + '|' +
+             i18Manager.GetString('BMPFilesFilter') + '|' +
+             i18Manager.GetString('PNGFilesFilter') + '|' +
+             i18Manager.GetString('JPGFilesFilter');
+end;
+
 procedure TMainForm.miExportClick(Sender: TObject);
 var
    lBlock: TBlock;
@@ -1080,10 +1086,7 @@ begin
    begin
       lBlock := TBlock(pmPages.PopupComponent);
       ExportDialog.Filename := '';
-      ExportDialog.Filter := i18Manager.GetString('XMLFilesFilter') + '|' +
-                             i18Manager.GetString('BMPFilesFilter') + '|' +
-                             i18Manager.GetString('PNGFilesFilter') + '|' +
-                             i18Manager.GetString('JPGFilesFilter');
+      ExportDialog.Filter := GetGraphicFileFilter;
       ExportDialog.FilterIndex := 1;
       if ExportDialog.Execute then
       begin

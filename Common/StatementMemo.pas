@@ -52,6 +52,7 @@ begin
    WordWrap := false;
    Font.Color := GSettings.FontColor;
    Font.Name := GSettings.FlowchartFontName;
+   DoubleBuffered := true;
    Anchors := [akRight, akLeft, akBottom, akTop];
 end;
 

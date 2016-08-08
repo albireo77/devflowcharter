@@ -145,6 +145,7 @@ begin
    ShowHint := True;
    BevelKind := bkNone;
    AutoSelect := False;
+   DoubleBuffered := true;
    FId := GProject.Register(Self);
    OnChangeCallBack := nil;
    Font.Name := GSettings.FlowchartFontName;

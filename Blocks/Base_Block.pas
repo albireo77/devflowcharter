@@ -184,7 +184,6 @@ type
          procedure CloneComments(const ASource: TBlock);
          procedure ImportCommentsFromXML(const ATag: IXMLElement);
          procedure CloneFrom(ABlock: TBlock); virtual;
-         procedure SetDoubleBuffered(AValue: boolean); virtual;
       published
          property Color;
          property OnMouseDown;
@@ -244,7 +243,6 @@ type
          function CanBeFocused: boolean; override;
          function UnPinComments: integer; override;
          procedure CloneFrom(ABlock: TBlock); override;
-         procedure SetDoubleBuffered(AValue: boolean); override;
    end;
 
    TBranch = class(TObjectList, IIdentifiable)
@@ -787,31 +785,6 @@ begin
 {}
 end;
 
-procedure TBlock.SetDoubleBuffered(AValue: boolean);
-var
-   lControl: TCustomEdit;
-begin
-   lControl := GetTextControl;
-   if lControl <> nil then
-      lControl.DoubleBuffered := AValue;
-end;
-
-procedure TGroupBlock.SetDoubleBuffered(AValue: boolean);
-var
-   lControl: TCustomEdit;
-   i: integer;
-begin
-   inherited SetDoubleBuffered(AValue);
-   for i := 0 to ControlCount-1 do
-   begin
-      if Controls[i] is TBlock then
-         TBlock(Controls[i]).SetDoubleBuffered(AValue)
-      else if Controls[i] is TWinControl then
-         TWinControl(Controls[i]).DoubleBuffered := AValue;
-   end;
-   FMemoFolder.DoubleBuffered := AValue;
-end;
-
 procedure TBlock.NCHitTest(var Msg: TWMNCHitTest);
 var
    lLocked: boolean;
@@ -819,8 +792,6 @@ begin
    inherited;
    if GetAsyncKeyState(VK_LBUTTON) <> 0 then
    begin
-      if IsCursorResize then
-         SetDoubleBuffered(true);
       case Cursor of
          crSizeWE:
          begin
@@ -847,7 +818,6 @@ begin
    begin
       lLocked := LockDrawing;
       try
-         SetDoubleBuffered(false);
          if HResizeInd then
          begin
             if FParentBlock <> nil then
@@ -1293,9 +1263,12 @@ begin
 end;
 
 procedure TBlock.ClearSelection;
+var
+   lColor: TColor;
 begin
-   if Color <> Page.Brush.Color then
-      ChangeColor(Page.Brush.Color);
+   lColor := Page.Brush.Color;
+   if Color <> lColor then
+      ChangeColor(lColor);
    NavigatorForm.Invalidate;
 end;
 
