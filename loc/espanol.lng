@@ -121,7 +121,7 @@ FileError=Error while reading file %s.
 ParserError=XML parser error #%d at line %d, column %d: %s
 OpenError=Un error ha ocurrido mientras se abría el archivo %s:%s%s
 SaveReadOnlyFile=El archivo %s esta marcado sólo para lectura. No se puede sobrescribir
-SaveError=Ha ocurrido un error mientras se guardaba el archivo %s
+SaveError=Ha ocurrido un error mientras se guardaba el archivo %s:%s%s
 HeaderRequest=Introduzca encabezado:
 PrintError=Un error ha ocurrido mientras se imprimía:%s%s.
 PageCount=Página %d/%d
@@ -172,8 +172,9 @@ MainProgram=Main Program
 LocalDeclare=Local Variables
 Header=Header
 Params=Formal Parameters
-btnAddVar=Agregar Variable
-btnAddConst=Agregar Constante
+btnAdd=Agregar
+btnImport=Import
+btnExport=Export
 btnChange=Cambiar
 btnRemove=Quitar
 sgVarListCol0=Name:
@@ -208,6 +209,8 @@ EnterPage=Enter tab name:
 Page=Tab
 Visible=Visible
 chkExtDeclare.Hint=Excludes from code generation
+consts=constants
+vars=variables
 
 ; The following keys (3 for each programming language) are used to display labels next to flowcharts
 

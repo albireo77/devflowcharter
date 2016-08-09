@@ -221,7 +221,7 @@ type
     FClockPos: TClockPos;
     function BuildFuncMenu(AParent: TMenuItem): integer;
     procedure DestroyFuncMenu;
-    function GetGraphicFileFilter: string;
+    function GetOutFileFilter: string;
   public
     { Public declarations }
     procedure ExportSettingsToXMLTag(const root: IXMLElement); override;
@@ -456,12 +456,11 @@ end;
 
 procedure TMainForm.miSaveAsClick(Sender: TObject);
 var
-   status: TErrorType;
    lGraphic: TGraphic;
    lFileName: string;
 begin
     ExportDialog.FileName := GProject.Name;
-    ExportDialog.Filter := GetGraphicFileFilter;
+    ExportDialog.Filter := GetOutFileFilter;
     ExportDialog.FilterIndex := 1;
     if ExportDialog.Execute then
     begin
@@ -472,17 +471,14 @@ begin
              TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [lFileName], errIO)
           else
           begin
-             status := TXMLProcessor.ExportToXMLFile(lFileName, GProject.ExportToXMLTag);
-             if status = errNone then
+             if TXMLProcessor.ExportToXMLFile(lFileName, GProject.ExportToXMLTag) = errNone then
              begin
                 Caption := MAIN_FORM_CAPTION + lFileName;
                 GProject.Name :=  ExtractFileName(lFileName);
                 GProject.Name :=  AnsiReplaceText(GProject.Name, '.xml', '');
                 FHistoryMenu.Add(lFileName);
                 GChange := 0;
-             end
-             else
-                TInfra.ShowFormattedErrorBox('SaveError', [lFileName], status);
+             end;
           end;
        end
        else
@@ -543,7 +539,6 @@ end;
 procedure TMainForm.miSaveClick(Sender: TObject);
 var
    lFileName: string;
-   status: TErrorType;
 begin
     if Caption = PROGRAM_NAME then
        miSaveAs.Click
@@ -552,14 +547,8 @@ begin
        lFileName := AnsiReplaceText(Caption, MAIN_FORM_CAPTION, '');
        if FileExists(lFileName) and FileIsReadOnly(lFileName) then
           TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [lFileName], errIO)
-       else
-       begin
-          status := TXMLProcessor.ExportToXMLFile(lFileName, GProject.ExportToXMLTag);
-          if status <> errNone then
-             TInfra.ShowFormattedErrorBox('SaveError', [lFileName], status)
-          else
-             GChange := 0;
-       end;
+       else if TXMLProcessor.ExportToXMLFile(lFileName, GProject.ExportToXMLTag) = errNone then
+          GChange := 0;
     end;
 end;
 
@@ -1068,7 +1057,7 @@ begin
       NavigatorForm.Visible := not NavigatorForm.Visible
 end;
 
-function TMainForm.GetGraphicFileFilter: string;
+function TMainForm.GetOutFileFilter: string;
 begin
    result := i18Manager.GetString('XMLFilesFilter') + '|' +
              i18Manager.GetString('BMPFilesFilter') + '|' +
@@ -1080,24 +1069,23 @@ procedure TMainForm.miExportClick(Sender: TObject);
 var
    lBlock: TBlock;
    lGraphic: TGraphic;
-   status: TErrorType;
+   lExportProc: TExportProc;
 begin
    if pmPages.PopupComponent is TBlock then
    begin
       lBlock := TBlock(pmPages.PopupComponent);
       ExportDialog.Filename := '';
-      ExportDialog.Filter := GetGraphicFileFilter;
+      ExportDialog.Filter := GetOutFileFilter;
       ExportDialog.FilterIndex := 1;
       if ExportDialog.Execute then
       begin
          if ExportDialog.FilterIndex = 1 then
          begin
             if lBlock is TMainBlock then
-               status := TXMLProcessor.ExportToXMLFile(ExportDialog.Filename, TUserFunction(TMainBlock(lBlock).UserFunction).ExportToXMLTag)
+               lExportProc := TUserFunction(TMainBlock(lBlock).UserFunction).ExportToXMLTag
             else
-               status := lBlock.ExportToXMLFile(ExportDialog.FileName);
-            if status <> errNone then
-               TInfra.ShowFormattedErrorBox('SaveError', [ExportDialog.FileName], status);
+               lExportProc := lBlock.ExportToXMLTag;
+            TXMLProcessor.ExportToXMLFile(ExportDialog.Filename, lExportProc);
          end
          else
          begin
@@ -1110,7 +1098,7 @@ begin
             try
                lBlock.ClearSelection;
                lblock.ExportToGraphic(lGraphic);
-               lGraphic.SaveToFile(ExportDialog.FileName);
+               lGraphic.SaveToFile(ExportDialog.Filename);
             finally
                lGraphic.Free;
             end;

@@ -56,7 +56,7 @@ const
 implementation
 
 uses
-   ApplicationCommon, BlockFactory, BlockTabSheet;
+   ApplicationCommon, BlockFactory, BlockTabSheet, Dialogs;
 
 class function TXMLProcessor.FindChildTag(const ATag: IXMLElement; const AName: string): IXMLElement;
 var
@@ -230,23 +230,43 @@ begin
       Gerr_text := i18Manager.GetFormattedString('FileError', [ExpandFileName(AFileName)]) + CRLF + Gerr_text;
 end;
 
-class function TXMLProcessor.ExportToXMLFile(const AFilename: string; AExportProc: TExportProc): TErrorType;
+class function TXMLProcessor.ExportToXMLFile(const AFileName: string; AExportProc: TExportProc): TErrorType;
 var
    docXML: IXMLDocument;
    lInstr: IXMLProcessingInstruction;
    lRootTag: IXMLElement;
+   lDialog: TSaveDialog;
+   lFileName: string;
 begin
    result := errNone;
-   docXML := CreateXMLDoc;
-   lInstr := docXML.CreateProcessingInstruction('xml', XML_HEADER);
-   docXML.AppendChild(lInstr);
-   lRootTag := docXML.CreateElement('project');
-   docXML.AppendChild(lRootTag);
-   AExportProc(lRootTag);
-   try
-      docXML.Save(AFilename, ofIndent);
-   except
-      result := errIO;
+   if (AFileName <> '') and Assigned(AExportProc) then
+   begin
+      if ExtractFilePath(AFileName) = '' then
+      begin
+         lDialog := TInfra.GetMainForm.ExportDialog;
+         lDialog.FileName := AFileName;
+         lDialog.Filter := i18Manager.GetString('XMLFilesFilter');
+         if lDialog.Execute then
+            lFileName := lDialog.FileName
+         else
+            exit;
+      end
+      else
+         lFileName := AFileName;
+      docXML := CreateXMLDoc;
+      lInstr := docXML.CreateProcessingInstruction('xml', XML_HEADER);
+      docXML.AppendChild(lInstr);
+      lRootTag := docXML.CreateElement('project');
+      docXML.AppendChild(lRootTag);
+      AExportProc(lRootTag);
+      try
+         docXML.Save(lFileName, ofIndent);
+      except on E: Exception do
+         begin
+            result := errIO;
+            TInfra.ShowFormattedErrorBox('SaveError', [lFileName, CRLF, E.Message], result);
+         end;
+      end;
    end;
 end;
 

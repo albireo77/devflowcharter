@@ -156,38 +156,21 @@ end;
 
 procedure TPageControlForm.miExportClick(Sender: TObject);
 var
-   status: TErrorType;
    lTab: TTabComponent;
 begin
    if pgcTabs.ActivePage <> nil then
    begin
       lTab := TTabComponent(pgcTabs.ActivePage);
-      MainForm.ExportDialog.FileName := lTab.edtName.Text;
-      MainForm.ExportDialog.Filter := i18Manager.GetString('XMLFilesFilter');
-      if MainForm.ExportDialog.Execute then
-      begin
-         status := TXMLProcessor.ExportToXMLFile(MainForm.ExportDialog.Filename, lTab.ExportToXMLTag);
-         if status <> errNone then
-            TInfra.ShowFormattedErrorBox('SaveError', [MainForm.ExportDialog.FileName], status);
-      end;
+      TXMLProcessor.ExportToXMLFile(lTab.edtName.Text, lTab.ExportToXMLTag);
    end;
 end;
 
 procedure TPageControlForm.miExportAllClick(Sender: TObject);
 var
-   status: TErrorType;
+   lFileName: string;
 begin
-   if GProject <> nil then
-   begin
-      MainForm.ExportDialog.FileName :=  AnsiReplaceStr(GProject.Name + ' ' + Caption, ' ', '_');
-      MainForm.ExportDialog.Filter := i18Manager.GetString('XMLFilesFilter');
-      if MainForm.ExportDialog.Execute then
-      begin
-         status := TXMLProcessor.ExportToXMLFile(MainForm.ExportDialog.Filename, ExportTabsToXMLTag);
-         if status <> errNone then
-            TInfra.ShowFormattedErrorBox('SaveError', [MainForm.ExportDialog.FileName], status);
-      end;
-   end;
+   lFileName := AnsiReplaceStr(GProject.Name + ' ' + Caption, ' ', '_');
+   TXMLProcessor.ExportToXMLFile(lFileName, ExportTabsToXMLTag);
 end;
 
 function TPageControlForm.GetVisiblePageCount: integer;

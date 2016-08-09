@@ -23,7 +23,7 @@ interface
 
 uses
    Controls, Types, OmniXML, StdCtrls, Grids, Classes, Windows, SizeEdit, CommonInterfaces,
-   Base_Form, Messages, Graphics;
+   Base_Form, Messages, Graphics, CommonTypes;
 
 type
 
@@ -45,6 +45,7 @@ type
          FParentForm: TBaseForm;
          FId,
          FDragRow: integer;
+         FPlural: string;
          function GetId: integer;
          function IsDeclared(const AName: string; const AssociatedListCheck: boolean): boolean;
          function AddUpdateRow: integer; virtual;
@@ -52,6 +53,8 @@ type
          function FindValidRowByPoint(const APoint: TPoint): integer;
          procedure OnRowMovedList(Sender: TObject; FromIndex, ToIndex: Longint); virtual;
          procedure OnClickAdd(Sender: TObject); virtual; abstract;
+         procedure OnClickImport(Sender: TObject);
+         procedure OnClickExport(Sender: TObject);
          procedure OnClickRemove(Sender: TObject); virtual;
          procedure OnClickChange(Sender: TObject); virtual;
          procedure OnDblClickList(Sender: TObject);
@@ -65,7 +68,9 @@ type
          sgList: TStringGridEx;
          btnRemove,
          btnChange,
-         btnAdd: TButton;
+         btnAdd,
+         btnImport,
+         btnExport: TButton;
          gbBox: TGroupBox;
          lblName: TLabel;
          edtName: TEdit;
@@ -74,8 +79,8 @@ type
          property ParentForm: TBaseForm read FParentForm;
          constructor Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
          destructor Destroy; override;
-         procedure ImportFromXMLTag(const rootTag: IXMLElement); virtual;
-         procedure ExportToXMLTag(const rootTag: IXMLElement); virtual;
+         function ImportFromXMLTag(const ATag: IXMLElement): TErrorType; virtual;
+         procedure ExportToXMLTag(const ATag: IXMLElement); virtual;
          function RetrieveFocus(AInfo: TFocusInfo): boolean;
          function CanBeFocused: boolean;
          function GetFocusColor: TColor;
@@ -99,8 +104,8 @@ type
          lblSize,
          lblInit: TLabel;
          constructor Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
-         procedure ImportFromXMLTag(const rootTag: IXMLElement); override;
-         procedure ExportToXMLTag(const rootTag: IXMLElement); override;
+         function ImportFromXMLTag(const ATag: IXMLElement): TErrorType; override;
+         procedure ExportToXMLTag(const ATag: IXMLElement); override;
          procedure FillForList(const AList: TStrings);
          function IsValidLoopVar(const AName: string): boolean;
          function GetDimensionCount(const AVarName: string; const AIncludeTypeDimens: boolean = false): integer;
@@ -126,8 +131,8 @@ type
          edtValue: TEdit;
          lblValue: TLabel;
          constructor Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
-         procedure ImportFromXMLTag(const rootTag: IXMLElement); override;
-         procedure ExportToXMLTag(const rootTag: IXMLElement); override;
+         function ImportFromXMLTag(const ATag: IXMLElement): TErrorType; override;
+         procedure ExportToXMLTag(const ATag: IXMLElement); override;
          function GetValue(const AIdent: string): string;
          function IsExternal(const ARow: integer): boolean;
    end;
@@ -150,8 +155,8 @@ const
 implementation
 
 uses
-   ApplicationCommon, SysUtils, XMLProcessor, Dialogs, Project, StrUtils, CommonTypes, UserDataType,
-   LangDefinition, ParserHelper;
+   ApplicationCommon, SysUtils, XMLProcessor, Dialogs, Project, StrUtils, UserDataType,
+   LangDefinition, ParserHelper, Main_Form;
 
 constructor TDeclareList.Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
 var
@@ -237,11 +242,30 @@ begin
 
    btnAdd := TButton.Create(Self);
    btnAdd.Parent := Self;
-   btnAdd.SetBounds(5, gbBox.Top+gbBox.Height+3, Width-9, 25);
+   btnAdd.SetBounds(5, gbBox.Top+gbBox.Height+3, (Width-11) div 3, 25);
    btnAdd.OnClick := OnClickAdd;
    btnAdd.ParentFont := false;
    btnAdd.Font.Style := [];
    btnAdd.Anchors := [akLeft, akBottom, akRight];
+   btnAdd.Caption := i18Manager.GetString('btnAdd');
+
+   btnImport := TButton.Create(Self);
+   btnImport.Parent := Self;
+   btnImport.SetBounds(btnAdd.BoundsRect.Right+1, btnAdd.Top, btnAdd.Width, 25);
+   btnImport.OnClick := OnClickImport;
+   btnImport.ParentFont := false;
+   btnImport.Font.Style := [];
+   btnImport.Anchors := [akLeft, akBottom, akRight];
+   btnImport.Caption := i18Manager.GetString('btnImport');
+
+   btnExport := TButton.Create(Self);
+   btnExport.Parent := Self;
+   btnExport.SetBounds(btnImport.BoundsRect.Right+1, btnAdd.Top, btnAdd.Width, 25);
+   btnExport.OnClick := OnClickExport;
+   btnExport.ParentFont := false;
+   btnExport.Font.Style := [];
+   btnExport.Anchors := [akLeft, akBottom, akRight];
+   btnExport.Caption := i18Manager.GetString('btnExport');
 
 end;
 
@@ -282,9 +306,9 @@ begin
    edtValue.OnKeyDown := OnKeyDownCommon;
 
    gbBox.Caption := i18Manager.GetString('gbConstant');
-   btnAdd.Caption := i18Manager.GetString('btnAddConst');
-
    Anchors := Anchors + [akBottom];
+
+   FPlural := i18Manager.GetString('consts');
 
 end;
 
@@ -337,9 +361,9 @@ begin
    edtInit.OnKeyDown := OnKeyDownCommon;
 
    gbBox.Caption := i18Manager.GetString('gbVariable');
-   btnAdd.Caption := i18Manager.GetString('btnAddVar');
-
    Anchors := Anchors + [akBottom];
+
+   FPlural := i18Manager.GetString('vars');
    
 end;
 
@@ -624,6 +648,33 @@ begin
       AddUpdateRow;
 end;
 
+procedure TDeclareList.OnClickImport(Sender: TObject);
+var
+   lForm: TMainForm;
+begin
+   lForm := TInfra.GetMainForm;
+   lForm.OpenDialog.Filename := '';
+   if lForm.OpenDialog.Execute then
+   begin
+      if TXMLProcessor.ImportFromXMLFile(lForm.OpenDialog.Filename, ImportFromXMLTag) <> errNone then
+         TInfra.ShowFormattedErrorBox('ImportFailed', [CRLF, Gerr_text], errImport)
+      else
+      begin
+         if GSettings.UpdateEditor then
+            TInfra.GetEditorForm.RefreshEditorForObject(nil);
+         GChange := 1;
+      end;
+   end;
+end;
+
+procedure TDeclareList.OnClickExport(Sender: TObject);
+var
+   lFileName: string;
+begin
+   lFileName := GProject.Name + '_' + FPlural;
+   TXMLProcessor.ExportToXMLFile(lFileName, ExportToXMLTag);
+end;
+
 procedure TDeclareList.UpdateCodeEditor;
 begin
    if GSettings.UpdateEditor then
@@ -841,91 +892,103 @@ begin
    end;
 end;
 
-procedure TVarDeclareList.ExportToXMLTag(const rootTag: IXMLElement);
+procedure TVarDeclareList.ExportToXMLTag(const ATag: IXMLElement);
 var
    tag: IXMLElement;
    i: integer;
 begin
    for i := 1 to sgList.RowCount-2 do
    begin
-      tag := rootTag.OwnerDocument.CreateElement('var');
+      tag := ATag.OwnerDocument.CreateElement('var');
       tag.SetAttribute('name', sgList.Cells[VAR_NAME_COL, i]);
       tag.SetAttribute('type', sgList.Cells[VAR_TYPE_COL, i]);
       tag.SetAttribute('size', sgList.Cells[VAR_SIZE_COL, i]);
       tag.SetAttribute('init', sgList.Cells[VAR_INIT_COL, i]);
-      rootTag.AppendChild(tag);
+      ATag.AppendChild(tag);
    end;
-   inherited ExportToXMLTag(rootTag);
+   inherited ExportToXMLTag(ATag);
 end;
 
-procedure TVarDeclareList.ImportFromXMLTag(const rootTag: IXMLElement);
+function TVarDeclareList.ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
 var
    tag: IXMLElement;
-   lType: string;
+   lType, lName: string;
+   idx: integer;
 begin
    TInfra.PopulateDataTypeCombo(cbType);
-   tag := TXMLProcessor.FindChildTag(rootTag, 'var');
+   tag := TXMLProcessor.FindChildTag(ATag, 'var');
    while tag <> nil do
    begin
-      sgList.Cells[VAR_NAME_COL, sgList.RowCount-1] := tag.GetAttribute('name');
-      lType := tag.GetAttribute('type');
-      if cbType.Items.IndexOf(lType) = -1 then
-         lType := i18Manager.GetString('Unknown');
-      sgList.Cells[VAR_TYPE_COL, sgList.RowCount-1] := lType;
-      sgList.Cells[VAR_SIZE_COL, sgList.RowCount-1] := tag.GetAttribute('size');
-      sgList.Cells[VAR_INIT_COL, sgList.RowCount-1] := tag.GetAttribute('init');
-      sgList.RowCount := sgList.RowCount + 1;
+      lName := Trim(tag.GetAttribute('name'));
+      if (lName <> '') and (sgList.Cols[VAR_NAME_COL].IndexOf(lName) < 1) then
+      begin
+         idx := sgList.RowCount - 1;
+         sgList.Cells[VAR_NAME_COL, idx] := lName;
+         lType := tag.GetAttribute('type');
+         if cbType.Items.IndexOf(lType) = -1 then
+            lType := i18Manager.GetString('Unknown');
+         sgList.Cells[VAR_TYPE_COL, idx] := lType;
+         sgList.Cells[VAR_SIZE_COL, idx] := tag.GetAttribute('size');
+         sgList.Cells[VAR_INIT_COL, idx] := tag.GetAttribute('init');
+         sgList.RowCount := idx + 2;
+      end;
       tag := TXMLProcessor.FindNextTag(tag);
    end;
-   inherited ImportFromXMLTag(rootTag);
+   result := inherited ImportFromXMLTag(ATag);
 end;
 
-procedure TConstDeclareList.ExportToXMLTag(const rootTag: IXMLElement);
+procedure TConstDeclareList.ExportToXMLTag(const ATag: IXMLElement);
 var
    tag: IXMLElement;
    i: integer;
 begin
    for i := 1 to sgList.RowCount-2 do
    begin
-      tag := rootTag.OwnerDocument.CreateElement('const');
+      tag := ATag.OwnerDocument.CreateElement('const');
       tag.SetAttribute('name', sgList.Cells[CONST_NAME_COL, i]);
       tag.SetAttribute('value', sgList.Cells[CONST_VALUE_COL, i]);
       tag.SetAttribute('extern', BoolToStr(IsExternal(i), true));
-      rootTag.AppendChild(tag);
+      ATag.AppendChild(tag);
    end;
-   inherited ExportToXMLTag(rootTag);
+   inherited ExportToXMLTag(ATag);
 end;
 
-procedure TConstDeclareList.ImportFromXMLTag(const rootTag: IXMLElement);
+function TConstDeclareList.ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
 var
    tag: IXMLElement;
-   lRowIndex: integer;
+   idx: integer;
    lchkExtern: TCheckBox;
+   lName: string;
 begin
-   tag := TXMLProcessor.FindChildTag(rootTag, 'const');
+   tag := TXMLProcessor.FindChildTag(ATag, 'const');
    while tag <> nil do
    begin
-      lRowIndex := sgList.RowCount - 1;
-      sgList.Cells[CONST_NAME_COL, lRowIndex] := tag.GetAttribute('name');
-      sgList.Cells[CONST_VALUE_COL, lRowIndex] := tag.GetAttribute('value');
-      lchkExtern := CreateCheckBox(CONST_CHBOX_COL, lRowIndex);
-      lchkExtern.Checked := tag.GetAttribute('extern') = 'True';
-      sgList.Objects[CONST_CHBOX_COL, lRowIndex] := lchkExtern;
-      sgList.RowCount := lRowIndex + 2;
+      lName := Trim(tag.GetAttribute('name'));
+      if (lName <> '') and (sgList.Cols[CONST_NAME_COL].IndexOf(lName) < 1) then
+      begin
+         idx := sgList.RowCount - 1;
+         sgList.Cells[CONST_NAME_COL, idx] := lName;
+         sgList.Cells[CONST_VALUE_COL, idx] := tag.GetAttribute('value');
+         lchkExtern := CreateCheckBox(CONST_CHBOX_COL, idx);
+         lchkExtern.Checked := tag.GetAttribute('extern') = 'True';
+         sgList.Objects[CONST_CHBOX_COL, idx] := lchkExtern;
+         sgList.RowCount := idx + 2;
+      end;
       tag := TXMLProcessor.FindNextTag(tag);
    end;
    RefreshChBoxes;
-   inherited ImportFromXMLTag(rootTag);
+   result := inherited ImportFromXMLTag(ATag);
 end;
 
-procedure TDeclareList.ImportFromXMLTag(const rootTag: IXMLElement);
+function TDeclareList.ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
 begin
-   FId := GProject.Register(Self, StrToIntDef(rootTag.GetAttribute(ID_ATTR), ID_INVALID));
+   result := errNone;
+   FId := GProject.Register(Self, StrToIntDef(ATag.GetAttribute(ID_ATTR), ID_INVALID));
 end;
 
-procedure TDeclareList.ExportToXMLTag(const rootTag: IXMLElement);
+procedure TDeclareList.ExportToXMLTag(const ATag: IXMLElement);
 begin
-   rootTag.SetAttribute(ID_ATTR, IntToStr(FId));
+   ATag.SetAttribute(ID_ATTR, IntToStr(FId));
 end;
 
 function TConstDeclareList.IsExternal(const ARow: integer): boolean;

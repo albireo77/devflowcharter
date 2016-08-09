@@ -119,7 +119,7 @@ FileError=B³¹d podczas wczytywania pliku %s.
 ParserError=B³¹d parsowania pliku XML #%d w linii %d, kolumna %d: %s
 OpenError=Wyst¹pi³ b³¹d podczas otwierania pliku %s:%s%s
 SaveReadOnlyFile=Plik %s jest oznaczony jako tylko do odczytu. Nie mo¿e byæ nadpisany.
-SaveError=Wyst¹pi³ b³¹d podczas zapisu pliku %s.
+SaveError=Wyst¹pi³ b³¹d podczas zapisu pliku %s:%s%s
 HeaderRequest=Podaj nag³ówek:
 PrintError=Podczas drukowania wyst¹pi³ b³¹d:%s%s.
 PageCount=Strona %d/%d
@@ -170,8 +170,9 @@ MainProgram=Program G³ówny
 LocalDeclare=Zmienne Lokalne
 Header=Nag³ówek
 Params=Parametry Formalne
-btnAddVar=Dodaj Zmienn¹
-btnAddConst=Dodaj Sta³¹
+btnAdd=Dodaj
+btnImport=Import
+btnExport=Eksport
 btnChange=Zmieñ
 btnRemove=Usuñ
 sgVarListCol0=Nazwa:
@@ -206,6 +207,8 @@ EnterPage=Podaj nazwê zak³adki:
 Page=Zak³adka
 Visible=Widoczny
 chkExtDeclare.Hint=Wy³¹cza z generowania kodu
+consts=sta³e
+vars=zmienne
 
 ; Klucze poni¿ej (po 3 na ka¿dy jêzyk programowania) s¹ u¿ywane do wyœwietlania informacji o funkcji na diagramie
  

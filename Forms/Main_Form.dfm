@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 285
-  Top = 120
+  Left = 287
+  Top = 115
   HorzScrollBar.Tracking = True
   VertScrollBar.Tracking = True
   Align = alCustom

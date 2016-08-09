@@ -149,7 +149,6 @@ type
          function IsCursorSelect: boolean;
          function IsCursorResize: boolean;
          function CanInsertReturnBlock: boolean; virtual;
-         function ExportToXMLFile(const filename: string): TErrorType;
          procedure ExportToXMLTag(const ATag: IXMLElement);
          function ImportFromXMLFile(const filename: string): TErrorType;
          function ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
@@ -2453,11 +2452,6 @@ begin
       if ATag.GetAttribute(FOLDED_ATTR) = 'True' then
          ExpandFold(false);
    end;
-end;
-
-function TBlock.ExportToXMLFile(const filename: string): TErrorType;
-begin
-   result := TXMLProcessor.ExportToXMLFile(filename, ExportToXMLTag);
 end;
 
 procedure TBlock.ExportToXMLTag(const ATag: IXMLElement);

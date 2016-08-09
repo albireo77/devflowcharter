@@ -124,7 +124,7 @@ FileError=文件%s读取错误.
 ParserError=XML 解析错误 #%d 于第%d行, 第%d列: %s
 OpenError=打开文件 %s:%s%s 时出错
 SaveReadOnlyFile=文件%s只读. 无法覆盖
-SaveError=保存文件 %s 出错.
+SaveError=An error occured while saving file %s:%s%s
 HeaderRequest=输入定义:
 PrintError=打印错误%s%s.
 PageCount=第 %d/%d 页
@@ -175,8 +175,9 @@ MainProgram=主流程
 LocalDeclare=局部变量
 Header=定义
 Params=形式参数
-btnAddVar=添加/修改变量
-btnAddConst=添加/修改常量
+btnAdd=Add
+btnImport=Import
+btnExport=Export
 btnChange=编辑
 btnRemove=删除
 sgVarListCol0=名:
@@ -211,6 +212,8 @@ EnterPage=Enter tab name:
 Page=Tab
 Visible=Visible
 chkExtDeclare.Hint=Excludes from code generation
+consts=constants
+vars=variables
 
 ; The following keys (3 for each programming language) are used to display labels next to flowcharts
 
