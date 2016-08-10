@@ -161,7 +161,7 @@ begin
    if pgcTabs.ActivePage <> nil then
    begin
       lTab := TTabComponent(pgcTabs.ActivePage);
-      TXMLProcessor.ExportToXMLFile(lTab.edtName.Text, lTab.ExportToXMLTag);
+      TXMLProcessor.ExportToXMLFile(lTab.ExportToXMLTag, lTab.edtName.Text);
    end;
 end;
 
@@ -170,7 +170,7 @@ var
    lFileName: string;
 begin
    lFileName := AnsiReplaceStr(GProject.Name + ' ' + Caption, ' ', '_');
-   TXMLProcessor.ExportToXMLFile(lFileName, ExportTabsToXMLTag);
+   TXMLProcessor.ExportToXMLFile(ExportTabsToXMLTag, lFileName);
 end;
 
 function TPageControlForm.GetVisiblePageCount: integer;

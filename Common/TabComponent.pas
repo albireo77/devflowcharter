@@ -386,7 +386,7 @@ procedure TTabComponent.ExportToXMLTag(const ATag: IXMLElement);
 var
    iter: IIterator;
 begin
-   ATag.SetAttribute('name', Trim(edtName.Text));
+   ATag.SetAttribute(NAME_ATTR, Trim(edtName.Text));
    ATag.SetAttribute(ID_ATTR, IntToStr(FId));
    ATag.SetAttribute('ext_decl', BoolToStr(chkExtDeclare.Checked, true));
    ATag.SetAttribute('library', Trim(edtLibrary.Text));
@@ -400,7 +400,7 @@ var
    lElem: TElement;
    tag: IXMLElement;
 begin
-   edtName.Text := ATag.GetAttribute('name');
+   edtName.Text := ATag.GetAttribute(NAME_ATTR);
    edtName.OnChange(edtName);
    chkExtDeclare.Checked := ATag.GetAttribute('ext_decl') = 'True';
    edtLibrary.Text := ATag.GetAttribute('library');

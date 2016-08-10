@@ -599,12 +599,12 @@ var
    lPage: TTabSheet;
 begin
    result := errNone;
-   tag := TXMLProcessor.FindChildTag(ATag, 'routine');
+   tag := TXMLProcessor.FindChildTag(ATag, FUNCTION_TAG);
    while (tag <> nil) and (result = errNone) do
    begin
       lHeader := nil;
       lBody := nil;
-      tag1 := TXMLProcessor.FindChildTag(tag, 'header');
+      tag1 := TXMLProcessor.FindChildTag(tag, HEADER_TAG);
       if (tag1 <> nil) and GInfra.CurrentLang.EnabledUserFunctionHeader then
       begin
          lHeader := TUserFunctionHeader.Create(TInfra.GetFunctionsForm);
@@ -637,7 +637,7 @@ var
 begin
    result := errNone;
    lDataType := nil;
-   tag := TXMLProcessor.FindChildTag(ATag, 'structure');
+   tag := TXMLProcessor.FindChildTag(ATag, DATATYPE_TAG);
    while tag <> nil do
    begin
       lDataType := TUserDataType.Create(TInfra.GetDataTypesForm);

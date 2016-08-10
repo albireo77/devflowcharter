@@ -471,7 +471,7 @@ begin
              TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [lFileName], errIO)
           else
           begin
-             if TXMLProcessor.ExportToXMLFile(lFileName, GProject.ExportToXMLTag) = errNone then
+             if TXMLProcessor.ExportToXMLFile(GProject.ExportToXMLTag, lFileName) = errNone then
              begin
                 Caption := MAIN_FORM_CAPTION + lFileName;
                 GProject.Name :=  ExtractFileName(lFileName);
@@ -547,7 +547,7 @@ begin
        lFileName := AnsiReplaceText(Caption, MAIN_FORM_CAPTION, '');
        if FileExists(lFileName) and FileIsReadOnly(lFileName) then
           TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [lFileName], errIO)
-       else if TXMLProcessor.ExportToXMLFile(lFileName, GProject.ExportToXMLTag) = errNone then
+       else if TXMLProcessor.ExportToXMLFile(GProject.ExportToXMLTag, lFileName) = errNone then
           GChange := 0;
     end;
 end;
@@ -1085,7 +1085,7 @@ begin
                lExportProc := TUserFunction(TMainBlock(lBlock).UserFunction).ExportToXMLTag
             else
                lExportProc := lBlock.ExportToXMLTag;
-            TXMLProcessor.ExportToXMLFile(ExportDialog.Filename, lExportProc);
+            TXMLProcessor.ExportToXMLFile(lExportProc, ExportDialog.Filename);
          end
          else
          begin

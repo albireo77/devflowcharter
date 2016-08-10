@@ -292,7 +292,7 @@ begin
       FHeader.ExportToXMLTag(ATag)
    else if FBody <> nil then
    begin
-      tag := ATag.OwnerDocument.CreateElement('routine');
+      tag := ATag.OwnerDocument.CreateElement(FUNCTION_TAG);
       ATag.AppendChild(tag);
       FBody.ExportToXMLTag(tag);
    end;
@@ -791,16 +791,16 @@ var
    tag, tag2, tag3: IXMLElement;
    lType: string;
 begin
-   tag := ATag.OwnerDocument.CreateElement('routine');
+   tag := ATag.OwnerDocument.CreateElement(FUNCTION_TAG);
    ATag.AppendChild(tag);
-   tag2 := ATag.OwnerDocument.CreateElement('header');
+   tag2 := ATag.OwnerDocument.CreateElement(HEADER_TAG);
    tag.AppendChild(tag2);
    inherited ExportToXMLTag(tag2);
    if cbType.ItemIndex = 0 then
       lType := 'none'
    else
       lType := cbType.Text;
-   tag2.SetAttribute('type', lType);
+   tag2.SetAttribute(TYPE_ATTR, lType);
    if memDescription.Text <> '' then
    begin
       tag3 := ATag.OwnerDocument.CreateElement('desc');
@@ -825,7 +825,7 @@ var
    tag2: IXMLElement;
 begin
    inherited ImportFromXMLTag(ATag, APinControl);
-   idx := cbType.Items.IndexOf(ATag.GetAttribute('type'));
+   idx := cbType.Items.IndexOf(ATag.GetAttribute(TYPE_ATTR));
    if idx <> -1 then
       cbType.ItemIndex := idx
    else if cbType.Items.Count > 0 then

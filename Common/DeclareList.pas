@@ -672,7 +672,7 @@ var
    lFileName: string;
 begin
    lFileName := GProject.Name + '_' + FPlural;
-   TXMLProcessor.ExportToXMLFile(lFileName, ExportToXMLTag);
+   TXMLProcessor.ExportToXMLFile(ExportToXMLTag, lFileName);
 end;
 
 procedure TDeclareList.UpdateCodeEditor;
@@ -899,9 +899,9 @@ var
 begin
    for i := 1 to sgList.RowCount-2 do
    begin
-      tag := ATag.OwnerDocument.CreateElement('var');
-      tag.SetAttribute('name', sgList.Cells[VAR_NAME_COL, i]);
-      tag.SetAttribute('type', sgList.Cells[VAR_TYPE_COL, i]);
+      tag := ATag.OwnerDocument.CreateElement(VAR_TAG);
+      tag.SetAttribute(NAME_ATTR, sgList.Cells[VAR_NAME_COL, i]);
+      tag.SetAttribute(TYPE_ATTR, sgList.Cells[VAR_TYPE_COL, i]);
       tag.SetAttribute('size', sgList.Cells[VAR_SIZE_COL, i]);
       tag.SetAttribute('init', sgList.Cells[VAR_INIT_COL, i]);
       ATag.AppendChild(tag);
@@ -916,15 +916,25 @@ var
    idx: integer;
 begin
    TInfra.PopulateDataTypeCombo(cbType);
-   tag := TXMLProcessor.FindChildTag(ATag, 'var');
+   tag := TXMLProcessor.FindChildTag(ATag, VAR_TAG);
+   if tag = nil then
+   begin
+      tag := TXMLProcessor.FindChildTag(ATag, FUNCTION_TAG);
+      if tag <> nil then
+      begin
+         tag := TXMLProcessor.FindChildTag(tag, HEADER_TAG);
+         if tag <> nil then
+            tag := TXMLProcessor.FindChildTag(tag, VAR_TAG);
+      end;
+   end;
    while tag <> nil do
    begin
-      lName := Trim(tag.GetAttribute('name'));
+      lName := Trim(tag.GetAttribute(NAME_ATTR));
       if (lName <> '') and (sgList.Cols[VAR_NAME_COL].IndexOf(lName) < 1) then
       begin
          idx := sgList.RowCount - 1;
          sgList.Cells[VAR_NAME_COL, idx] := lName;
-         lType := tag.GetAttribute('type');
+         lType := tag.GetAttribute(TYPE_ATTR);
          if cbType.Items.IndexOf(lType) = -1 then
             lType := i18Manager.GetString('Unknown');
          sgList.Cells[VAR_TYPE_COL, idx] := lType;
@@ -944,8 +954,8 @@ var
 begin
    for i := 1 to sgList.RowCount-2 do
    begin
-      tag := ATag.OwnerDocument.CreateElement('const');
-      tag.SetAttribute('name', sgList.Cells[CONST_NAME_COL, i]);
+      tag := ATag.OwnerDocument.CreateElement(CONST_TAG);
+      tag.SetAttribute(NAME_ATTR, sgList.Cells[CONST_NAME_COL, i]);
       tag.SetAttribute('value', sgList.Cells[CONST_VALUE_COL, i]);
       tag.SetAttribute('extern', BoolToStr(IsExternal(i), true));
       ATag.AppendChild(tag);
@@ -960,10 +970,10 @@ var
    lchkExtern: TCheckBox;
    lName: string;
 begin
-   tag := TXMLProcessor.FindChildTag(ATag, 'const');
+   tag := TXMLProcessor.FindChildTag(ATag, CONST_TAG);
    while tag <> nil do
    begin
-      lName := Trim(tag.GetAttribute('name'));
+      lName := Trim(tag.GetAttribute(NAME_ATTR));
       if (lName <> '') and (sgList.Cols[CONST_NAME_COL].IndexOf(lName) < 1) then
       begin
          idx := sgList.RowCount - 1;

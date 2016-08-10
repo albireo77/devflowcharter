@@ -199,8 +199,8 @@ procedure TElement.ImportFromXMLTag(const ATag: IXMLElement);
 var
    idx: integer;
 begin
-   edtName.Text := ATag.GetAttribute('name');
-   idx := cbType.Items.IndexOf(ATag.GetAttribute('type'));
+   edtName.Text := ATag.GetAttribute(NAME_ATTR);
+   idx := cbType.Items.IndexOf(ATag.GetAttribute(TYPE_ATTR));
    if idx <> -1 then
       cbType.ItemIndex := idx
    else if cbType.Items.Count > 0 then 
@@ -211,8 +211,8 @@ function TElement.ExportToXMLTag(const ATag: IXMLElement): IXMLElement;
 begin
    result := ATag.OwnerDocument.CreateElement(FElem_Id);
    ATag.AppendChild(result);
-   result.SetAttribute('name', Trim(edtName.Text));
-   result.SetAttribute('type', cbType.Text);
+   result.SetAttribute(NAME_ATTR, Trim(edtName.Text));
+   result.SetAttribute(TYPE_ATTR, cbType.Text);
 end;
 
 end.

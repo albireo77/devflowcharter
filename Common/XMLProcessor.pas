@@ -35,7 +35,7 @@ type
 
    TXMLProcessor = class(TObject)
    public
-      class function ExportToXMLFile(const AFilename: string; AExportProc: TExportProc): TErrorType;
+      class function ExportToXMLFile(AExportProc: TExportProc; const AFileName: string = ''): TErrorType;
       class function ImportFromXMLFile(const AFilename: string; AImportProc: TImportProc; const APreserveSpace: boolean = false): TErrorType;
       class function FindChildTag(const ATag: IXMLElement; const AName: string): IXMLElement;
       class function FindNextTag(const ATag: IXMLElement): IXMLElement;
@@ -230,7 +230,7 @@ begin
       Gerr_text := i18Manager.GetFormattedString('FileError', [ExpandFileName(AFileName)]) + CRLF + Gerr_text;
 end;
 
-class function TXMLProcessor.ExportToXMLFile(const AFileName: string; AExportProc: TExportProc): TErrorType;
+class function TXMLProcessor.ExportToXMLFile(AExportProc: TExportProc; const AFileName: string = ''): TErrorType;
 var
    docXML: IXMLDocument;
    lInstr: IXMLProcessingInstruction;
@@ -239,7 +239,7 @@ var
    lFileName: string;
 begin
    result := errNone;
-   if (AFileName <> '') and Assigned(AExportProc) then
+   if Assigned(AExportProc) then
    begin
       if ExtractFilePath(AFileName) = '' then
       begin

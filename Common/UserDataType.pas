@@ -433,7 +433,7 @@ var
    tag: IXMLElement;
    lTypeId: string;
 begin
-   tag := ATag.OwnerDocument.CreateElement('structure');
+   tag := ATag.OwnerDocument.CreateElement(DATATYPE_TAG);
    ATag.AppendChild(tag);
    inherited ExportToXMLTag(tag);
    tag.SetAttribute('pointer', BoolToStr(chkAddPtrType.Checked, true));

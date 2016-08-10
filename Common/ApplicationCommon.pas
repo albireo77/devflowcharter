@@ -173,9 +173,16 @@ const   // Global constants
         FONT_SIZE_ATTR    = 'fontsize';
         FONT_STYLE_ATTR   = 'fontstyle';
         Z_ORDER_ATTR      = 'ZOrdVal';
+        NAME_ATTR         = 'name';
+        TYPE_ATTR         = 'type';
         BLOCK_TAG         = 'block';
         BRANCH_TAG        = 'branch';
         TEXT_TAG          = 'text';
+        VAR_TAG           = 'var';
+        CONST_TAG         = 'const';
+        DATATYPE_TAG      = 'structure';
+        FUNCTION_TAG      = 'routine';
+        HEADER_TAG        = 'header';
 
         CRLF_PLACEHOLDER  = '#!';
 
