@@ -36,7 +36,7 @@ type
    TXMLProcessor = class(TObject)
    public
       class function ExportToXMLFile(AExportProc: TExportProc; const AFileName: string = ''): TErrorType;
-      class function ImportFromXMLFile(const AFilename: string; AImportProc: TImportProc; const APreserveSpace: boolean = false): TErrorType;
+      class function ImportFromXMLFile(AImportProc: TImportProc; const AFileName: string = ''; const APreserveSpace: boolean = false): string;
       class function FindChildTag(const ATag: IXMLElement; const AName: string): IXMLElement;
       class function FindNextTag(const ATag: IXMLElement): IXMLElement;
       class procedure AddText(const ATag: IXMLElement; const AText: string);
@@ -205,29 +205,51 @@ begin
 
 end;
 
-class function TXMLProcessor.ImportFromXMLFile(const AFilename: string; AImportProc: TImportProc; const APreserveSpace: boolean = false): TErrorType;
+class function TXMLProcessor.ImportFromXMLFile(AImportProc: TImportProc; const AFileName: string = ''; const APreserveSpace: boolean = false): string;
 var
    docXML: IXMLDocument;
+   lDialog: TOpenDialog;
+   lErrText: string;
+   status: TErrorType;
 begin
-   docXML := CreateXMLDoc;
-   docXML.PreserveWhiteSpace := APreserveSpace;
-   try
-      if docXML.Load(AFilename) then
-         result := AImportProc(docXML.DocumentElement)
-      else
+   result := '';
+   if Assigned(AImportProc) then
+   begin
+      result := AFileName;
+      if result = '' then
       begin
-         result := errSyntax;
-         with docXML.ParseError do
-            Gerr_text := i18Manager.GetFormattedString('ParserError', [ErrorCode, Line, LinePos, Reason]);
+         lDialog := TInfra.GetMainForm.OpenDialog;
+         lDialog.Filter := i18Manager.GetString('XMLFilesFilter');
+         lDialog.FileName := '';
+         if lDialog.Execute then
+            result := lDialog.FileName
+         else
+            exit;
       end;
-   except on E: Exception do
+      docXML := CreateXMLDoc;
+      docXML.PreserveWhiteSpace := APreserveSpace;
+      try
+         if docXML.Load(result) then
+            status := AImportProc(docXML.DocumentElement)
+         else
+         begin
+            status := errSyntax;
+            with docXML.ParseError do
+               lErrText := i18Manager.GetFormattedString('ParserError', [ErrorCode, Line, LinePos, Reason]);
+         end;
+      except on E: Exception do
+         begin
+            status := errIO;
+            lErrText := E.Message;
+         end;
+      end;
+      if status <> errNone then
       begin
-         Gerr_text := E.Message;
-         result := errIO;
+         lErrText := i18Manager.GetFormattedString('FileError', [result]) + CRLF + lErrText;
+         TInfra.ShowFormattedErrorBox('ImportFailed', [CRLF, lErrText], errImport);
+         result := '';
       end;
    end;
-   if result <> errNone then
-      Gerr_text := i18Manager.GetFormattedString('FileError', [ExpandFileName(AFileName)]) + CRLF + Gerr_text;
 end;
 
 class function TXMLProcessor.ExportToXMLFile(AExportProc: TExportProc; const AFileName: string = ''): TErrorType;

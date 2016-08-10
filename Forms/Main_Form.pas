@@ -398,8 +398,7 @@ end;
 procedure TMainForm.miOpenClick(Sender: TObject);
 var
    lTmpCursor: TCursor;
-   lFileName, lErrMsg: string;
-   lStatus: TErrorType;
+   lFile: string;
 begin
     if (GChange = 1) and (GProject <> nil) then
     begin
@@ -408,50 +407,24 @@ begin
           IDCANCEL: exit;
        end;
     end;
-
-    lFileName := '';
-    lErrMsg := '';
-    if Sender = miOpen then
+    lFile := '';
+    if Sender <> miOpen then
+       lFile := StripHotKey(TMenuItem(Sender).Caption);
+    TInfra.SetInitialSettings;
+    lTmpCursor := Screen.Cursor;
+    Screen.Cursor := crHourGlass;
+    GProject := TProject.GetInstance;
+    lFile := TXMLProcessor.ImportFromXMLFile(GProject.ImportFromXMLTag, lFile);
+    Screen.Cursor := lTmpCursor;
+    if lFile <> '' then
     begin
-       if OpenDialog.Execute then
-          lFileName := OpenDialog.FileName;
+       GProject.Name := AnsiReplaceText(ExtractFileName(lFile), '.xml', '');
+       GChange := 0;
+       Caption := MAIN_FORM_CAPTION + lFile;
+       FHistoryMenu.Add(lFile);
     end
     else
-       lFileName := StripHotKey(TMenuItem(Sender).Caption);
-
-    if FileExists(lFileName) then
-    begin
        TInfra.SetInitialSettings;
-       lTmpCursor := Screen.Cursor;
-       Screen.Cursor := crHourGlass;
-       lStatus := errGeneral;
-       try
-          try
-             GProject := TProject.GetInstance;
-             GProject.Name := AnsiReplaceText(ExtractFileName(lFileName), '.xml', '');
-             lStatus := TXMLProcessor.ImportFromXMLFile(lFileName, GProject.ImportFromXMLTag);
-          except on E: Exception do
-             lErrMsg := E.Message;
-          end;
-       finally
-          Screen.Cursor := lTmpCursor;
-          GChange := 0;
-          if lStatus = errNone then
-          begin
-             Caption := MAIN_FORM_CAPTION + lFileName;
-             FHistoryMenu.Add(lFileName);
-          end
-          else
-          begin
-             if lErrMsg <> '' then
-                lErrMsg := i18Manager.GetFormattedString('FileError', [ExpandFileName(lFileName)]) + CRLF + lErrMsg
-             else
-                lErrMsg := Gerr_text;
-             TInfra.ShowErrorBox(lErrMsg, lStatus);
-             TInfra.SetInitialSettings;
-          end;
-       end;
-    end;
 end;
 
 procedure TMainForm.miSaveAsClick(Sender: TObject);
@@ -1110,20 +1083,25 @@ end;
 procedure TMainForm.miImportClick(Sender: TObject);
 var
    lComponent: TComponent;
-   status: TErrorType;
    lPoint: TPoint;
    lFunction: TUserFunction;
+   lImportProc: TImportProc;
+   lImportFunc: boolean;
 begin
-   OpenDialog.Filename := '';
-   lComponent := pmPages.PopupComponent;
-   if (GProject <> nil) and OpenDialog.Execute then
+   if GProject <> nil then
    begin
+      lImportFunc := false;
+      lComponent := pmPages.PopupComponent;
       if (lComponent is TBlock) and (TBlock(lComponent).Ired >= 0) then
-         status := TBlock(lComponent).ImportFromXMLFile(OpenDialog.FileName)
+         lImportProc := TBlock(lComponent).ImportFromXMLTag
       else
       begin
-         status := TXMLProcessor.ImportFromXMLFile(OpenDialog.Filename, GProject.ImportUserFunctionsFromXML);
-         if status = errNone then
+         lImportProc := GProject.ImportUserFunctionsFromXML;
+         lImportFunc := true;
+      end;
+      if TXMLProcessor.ImportFromXMLFile(lImportProc) <> '' then
+      begin
+         if lImportFunc then
          begin
             lFunction := GProject.LastUserFunction;
             if (lFunction <> nil) and lFunction.Active and (lFunction.Body <> nil) and lFunction.Body.Visible then
@@ -1134,14 +1112,7 @@ begin
                lFunction.Body.Page.Form.SetScrollBars;
             end;
          end;
-      end;
-      if status <> errNone then
-         TInfra.ShowFormattedErrorBox('ImportFailed', [CRLF, Gerr_text], errImport)
-      else
-      begin
-         if GSettings.UpdateEditor then
-            TInfra.GetEditorForm.RefreshEditorForObject(nil);
-         GChange := 1;
+         TInfra.AfterXMLImport;
       end;
    end;
 end;

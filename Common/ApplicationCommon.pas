@@ -123,6 +123,7 @@ type
          class function GetComboMaxWidth(const ACombo: TComboBox): integer;
          class function ParentToClient(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
          class function ClientToParent(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
+         class procedure AfterXMLImport;
          constructor Create;
          destructor Destroy; override;
    end;
@@ -258,7 +259,6 @@ constructor TInfra.Create;
 var
    idx, i: integer;
    SearchRec: TSearchRec;
-   lResult: TErrorType;
    lLangDef: TLangDefinition;
 begin
    inherited Create;
@@ -268,18 +268,14 @@ begin
       while idx = 0 do
       begin
          lLangDef := TLangDefinition.Create;
-         lResult := TXMLProcessor.ImportFromXMLFile(LANG_DEFS_PATH + SearchRec.Name, lLangDef.ImportLangDef, true);
-         if lResult = errNone then
+         if TXMLProcessor.ImportFromXMLFile(lLangDef.ImportLangDef, LANG_DEFS_PATH + SearchRec.Name, true) <> '' then
          begin
             SetLength(FLangArray, i+1);
             FLangArray[i] := lLangDef;
             i := i + 1;
          end
          else
-         begin
-            TInfra.ShowErrorBox(Gerr_text, lResult);
             lLangDef.Free;
-         end;
          idx := FindNext(SearchRec);
       end;
    finally
@@ -299,6 +295,13 @@ begin
       FLangArray[i].Free;
    FLangArray := nil;
    inherited Destroy;
+end;
+
+class procedure TInfra.AfterXMLImport;
+begin
+   if GSettings.UpdateEditor then
+      GetEditorForm.RefreshEditorForObject(nil);
+   GChange := 1;
 end;
 
 procedure TInfra.WriteToRegistry;

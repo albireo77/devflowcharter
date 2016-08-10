@@ -150,7 +150,6 @@ type
          function IsCursorResize: boolean;
          function CanInsertReturnBlock: boolean; virtual;
          procedure ExportToXMLTag(const ATag: IXMLElement);
-         function ImportFromXMLFile(const filename: string): TErrorType;
          function ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
          procedure ExportToGraphic(const AImage: TGraphic); virtual;
          procedure UpdateEditor(AEdit: TCustomEdit); virtual;
@@ -2479,11 +2478,6 @@ begin
          end;
       end;
    end;
-end;
-
-function TBlock.ImportFromXMLFile(const filename: string): TErrorType;
-begin
-   result := TXMLProcessor.ImportFromXMLFile(filename, ImportFromXMLTag);
 end;
 
 function TBlock.ImportFromXMLTag(const ATag: IXMLElement): TErrorType;

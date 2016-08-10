@@ -78,7 +78,7 @@ implementation
 {$R *.dfm}
 
 uses
-   ApplicationCommon, XMLProcessor, TabComponent, StrUtils, Main_Form;
+   ApplicationCommon, XMLProcessor, TabComponent, StrUtils;
 
 procedure TPageControlForm.miRemoveClick(Sender: TObject);
 var
@@ -187,18 +187,8 @@ end;
 
 procedure TPageControlForm.miImportClick(Sender: TObject);
 begin
-   MainForm.OpenDialog.Filename := '';
-   if MainForm.OpenDialog.Execute then
-   begin
-      if TXMLProcessor.ImportFromXMLFile(MainForm.OpenDialog.Filename, ImportTabsFromXMLTag) <> errNone then
-         TInfra.ShowFormattedErrorBox('ImportFailed', [CRLF, Gerr_text], errImport)
-      else
-      begin
-         if GSettings.UpdateEditor then
-            TInfra.GetEditorForm.RefreshEditorForObject(nil);
-         GChange := 1;
-      end;
-   end;
+   if TXMLProcessor.ImportFromXMLFile(ImportTabsFromXMLTag) <> '' then
+      TInfra.AfterXMLImport;
 end;
 
 procedure TPageControlForm.miRemoveAllClick(Sender: TObject);

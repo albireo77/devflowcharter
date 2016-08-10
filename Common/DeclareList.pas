@@ -156,7 +156,7 @@ implementation
 
 uses
    ApplicationCommon, SysUtils, XMLProcessor, Dialogs, Project, StrUtils, UserDataType,
-   LangDefinition, ParserHelper, Main_Form;
+   LangDefinition, ParserHelper;
 
 constructor TDeclareList.Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
 var
@@ -649,22 +649,9 @@ begin
 end;
 
 procedure TDeclareList.OnClickImport(Sender: TObject);
-var
-   lForm: TMainForm;
 begin
-   lForm := TInfra.GetMainForm;
-   lForm.OpenDialog.Filename := '';
-   if lForm.OpenDialog.Execute then
-   begin
-      if TXMLProcessor.ImportFromXMLFile(lForm.OpenDialog.Filename, ImportFromXMLTag) <> errNone then
-         TInfra.ShowFormattedErrorBox('ImportFailed', [CRLF, Gerr_text], errImport)
-      else
-      begin
-         if GSettings.UpdateEditor then
-            TInfra.GetEditorForm.RefreshEditorForObject(nil);
-         GChange := 1;
-      end;
-   end;
+   if TXMLProcessor.ImportFromXMLFile(ImportFromXMLTag) <> '' then
+      TInfra.AfterXMLImport;
 end;
 
 procedure TDeclareList.OnClickExport(Sender: TObject);
