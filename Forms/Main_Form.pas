@@ -1585,7 +1585,8 @@ begin
          lBackup := Clipboard.AsText;
       Clipboard.AsText := lFuncName;
       lEdit.PasteFromClipboard;
-      lEdit.SelStart := lEdit.SelStart + GInfra.CurrentLang.FuncBracketsCursorPos;
+      if GInfra.CurrentLang.FuncBrackets <> '' then
+         lEdit.SelStart := lEdit.SelStart + GInfra.CurrentLang.FuncBracketsCursorPos;
       if lBackup <> '' then
          Clipboard.AsText := lBackup;
    end;
