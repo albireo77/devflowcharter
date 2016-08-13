@@ -24,16 +24,16 @@ unit BaseIterator;
 interface
 
 uses
-   Classes, CommonInterfaces;
+   Classes, CommonInterfaces, Contnrs;
 
 type
 
    TBaseIterator = class(TInterfacedObject, IIterator)
       private
          idx: integer;
+         FList: TObjectList;
       protected
-         FArray: array of TObject;
-         constructor Create;
+         constructor Create(AList: TObjectList);
          function GetCount: integer;
       public
          property Count: integer read GetCount;
@@ -46,21 +46,22 @@ type
 
 implementation
 
-constructor TBaseIterator.Create;
+constructor TBaseIterator.Create(AList: TObjectList);
 begin
    inherited Create;
+   FList := AList;
    idx := -1;
 end;
 
 destructor TBaseIterator.Destroy;
 begin
-   FArray := nil;
+   FList.Free;
    inherited Destroy;
 end;
 
 function TBaseIterator.HasNext: boolean;
 begin
-   result := (idx+1 >= 0) and (idx+1 < Count);
+   result := (idx+1 >= 0) and (FList <> nil) and (idx+1 < FList.Count);
 end;
 
 function TBaseIterator.Next: TObject;
@@ -69,41 +70,37 @@ begin
    if HasNext then
    begin
       Inc(idx);
-      result := FArray[idx];
+      result := FList[idx];
    end;
 end;
 
 function TBaseIterator.GetCount: integer;
 begin
-   result := Length(FArray);
+   result := 0;
+   if FList <> nil then
+      result := FList.Count;
 end;
 
 function TBaseIterator.GetObjectIndex(const AObject: TObject): integer;
-var
-   i: integer;
 begin
    result := -1;
-   for i := 0 to Count-1 do
-   begin
-      if FArray[i] = AObject then
-      begin
-         result := i;
-         break;
-      end;
-   end;
+   if FList <> nil then
+      result := FList.IndexOf(AObject);
 end;
 
 procedure TBaseIterator.Reverse;
 var
-   lBuf: TObject;
-   i, lLength: integer;
+   lObject: TObject;
+   i: integer;
 begin
-   lLength := Count;
-   for i := 0 to (lLength div 2)-1 do
+   if (FList <> nil) and (FList.Count > 1) then
    begin
-      lBuf := FArray[i];
-      FArray[i] := FArray[lLength-i-1];
-      FArray[lLength-i-1] := lBuf;
+      for i := 0 to (FList.Count div 2)-1 do
+      begin
+         lObject := FList[i];
+         FList[i] := FList[FList.Count-i-1];
+         FList[FList.Count-i-1] := lObject;
+      end;
    end;
 end;
 

@@ -52,7 +52,7 @@ type
 implementation
 
 uses
-   Types, ApplicationCommon, Windows;
+   Types, ApplicationCommon, Windows, Contnrs;
 
 procedure TBaseForm.Localize(const AList: TStringList);
 begin
@@ -78,20 +78,17 @@ end;
 
 constructor TBaseFormIterator.Create;
 var
-   i, a: integer;
+   i: integer;
    lComp: TComponent;
+   lList: TObjectList;
 begin
-   inherited Create;
-   a := 0;
+   lList := TObjectList.Create(false);
+   inherited Create(lList);
    for i := 0 to Application.ComponentCount-1 do
    begin
       lComp := Application.Components[i];
       if lComp is TBaseForm then
-      begin
-         SetLength(FArray, a+1);
-         FArray[a] := lComp;
-         a := a + 1;
-      end;
+         lList.Add(lComp);
    end;
 end;
 

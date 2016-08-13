@@ -234,31 +234,21 @@ end;
 function TTabComponent.GetElementIterator: IIterator;
 var
    i: integer;
-   lIterator: TElementIteratorFriend;
-   lTmpList: TComponentList;
-   lTmpListSortWrap: TSortListDecorator;
+   lList: TObjectList;
+   lListSortWrap: TSortListDecorator;
 begin
-   lTmpListSortWrap := nil;
-   lIterator := TElementIteratorFriend.Create;
-   lTmpList := TComponentList.Create(false);
-   try
-      if lTmpList.Capacity < sbxElements.ControlCount then
-         lTmpList.Capacity := sbxElements.ControlCount;
-      for i := 0 to sbxElements.ControlCount-1 do
-         lTmpList.Add(sbxElements.Controls[i]);
-      if lTmpList.Count > 1 then
-      begin
-         lTmpListSortWrap := TSortListDecorator.Create(lTmpList, 0);
-         lTmpListSortWrap.Sort;
-      end;
-      SetLength(lIterator.FArray, lTmpList.Count);
-      for i := 0 to lTmpList.Count-1 do
-         lIterator.FArray[i] := lTmpList[i];
-   finally
-      lTmpListSortWrap.Free;
-      lTmpList.Free;
+   lList := TObjectList.Create(false);
+   if lList.Capacity < sbxElements.ControlCount then
+      lList.Capacity := sbxElements.ControlCount;
+   for i := 0 to sbxElements.ControlCount-1 do
+      lList.Add(sbxElements.Controls[i]);
+   if lList.Count > 1 then
+   begin
+      lListSortWrap := TSortListDecorator.Create(lList, 0);
+      lListSortWrap.Sort;
+      lListSortWrap.Free;
    end;
-   result := lIterator;
+   result := TElementIteratorFriend.Create(lList);
 end;
 
 function TTabComponent.GetScrollPos: integer;

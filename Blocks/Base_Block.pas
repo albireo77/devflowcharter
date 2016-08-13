@@ -1071,15 +1071,13 @@ function TBlock.GetComments(const AInFront: boolean = false): IIterator;
 var
    lComment: TComment;
    iterc: IIterator;
-   lIterator: TCommentIterator;
-   l: integer;
    lInFront: boolean;
    lPage: TTabSheet;
+   lList: TObjectList;
 begin
-   lIterator := TCommentIterator.Create;
+   lList := TObjectList.Create(false);
    if Visible then
    begin
-      l := 0;
       lPage := Page;
       iterc := GProject.GetComments;
       while iterc.HasNext do
@@ -1092,15 +1090,11 @@ begin
             else
                lInFront := true;
             if lInFront and (lComment.PinControl = nil) and PtInRect(ClientRect, TInfra.ParentToClient(Self, lComment.BoundsRect.TopLeft, lPage)) then
-            begin
-               SetLength(lIterator.FArray, l+1);
-               lIterator.FArray[l] := lComment;
-               l := l + 1;
-            end;
+               lList.Add(lComment);
          end
       end;
    end;
-   result := lIterator;
+   result := TCommentIterator.Create(lList);
 end;
 
 procedure TBlock.BringAllToFront;
@@ -1170,23 +1164,17 @@ function TBlock.GetPinComments: IIterator;
 var
    lComment: TComment;
    iterc: IIterator;
-   lIterator: TCommentIterator;
-   l: integer;
+   lList: TObjectList;
 begin
-   l := 0;
-   lIterator := TCommentIterator.Create;
+   lList := TObjectList.Create(false);
    iterc := GProject.GetComments;
    while iterc.HasNext do
    begin
       lComment := TComment(iterc.Next);
       if lComment.PinControl = Self then
-      begin
-         SetLength(lIterator.FArray, l+1);
-         lIterator.FArray[l] := lComment;
-         l := l + 1;
-      end;
+         lList.Add(lComment);
    end;
-   result := lIterator;
+   result := TCommentIterator.Create(lList);
 end;
 
 procedure TBlock.PutTextControls;
@@ -2625,9 +2613,9 @@ function TGroupBlock.GetBlocks(const AIndex: integer = PRIMARY_BRANCH_IND-1): II
 var
    lFBranchIdx, lLBranchIdx, i, a: integer;
    lBlock: TBlock;
-   lIterator: TBlockIterator;
+   lList: TObjectList;
 begin
-   lIterator := TBlockIterator.Create;
+   lList := TObjectList.Create(false);
    if GetBranch(AIndex) <> nil then
    begin
       lFBranchIdx := AIndex;
@@ -2649,30 +2637,26 @@ begin
    a := 0;
    for i := lFBranchIdx to lLBranchIdx do
       a := a + FBranchArray[i].Count;
-   if a > 0 then
+   if lList.Capacity < a then
+      lList.Capacity := a;
+   for i := lFBranchIdx to lLBranchIdx do
    begin
-      SetLength(lIterator.FArray, a);
-      a := 0;
-      for i := lFBranchIdx to lLBranchIdx do
+      lBlock := FBranchArray[i].First;
+      while lBlock <> nil do
       begin
-         lBlock := FBranchArray[i].First;
-         while lBlock <> nil do
-         begin
-            lIterator.FArray[a] := lBlock;
-            lBlock := lBlock.Next;
-            a := a + 1;
-         end;
+         lList.Add(lBlock);
+         lBlock := lBlock.Next;
       end;
    end;
-   result := lIterator;
+   result := TBlockIterator.Create(lList);
 end;
 
 function TGroupBlock.GetBranches(const AStart: integer = PRIMARY_BRANCH_IND-1): IIterator;
 var
-   i, lFBranchIdx, lLBranchIdx, a: integer;
-   lIterator: TBranchIterator;
+   i, lFBranchIdx, lLBranchIdx: integer;
+   lList: TObjectList;
 begin
-   lIterator := TBranchIterator.Create;
+   lList := TObjectList.Create(false);
    if GetBranch(AStart) <> nil then
       lFBranchIdx := AStart
    else
@@ -2686,18 +2670,9 @@ begin
       lLBranchIdx := -1
    else
       lLBranchIdx := High(FBranchArray);
-   a := lLBranchIdx - lFBranchIdx + 1;
-   if a > 0 then
-   begin
-      SetLength(lIterator.FArray, a);
-      a := 0;
-      for i := lFBranchIdx to lLBranchIdx do
-      begin
-         lIterator.FArray[a] := FBranchArray[i];
-         a := a + 1;
-      end;
-   end;
-   result := lIterator;
+   for i := lFBranchIdx to lLBranchIdx do
+      lList.Add(FBranchArray[i]);
+   result := TBranchIterator.Create(lList);
 end;
 
 function TBlock.SkipUpdateEditor: boolean;

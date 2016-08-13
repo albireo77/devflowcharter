@@ -294,39 +294,29 @@ end;
 function TProject.GetComponents(const ASortType: integer = NO_SORT; const AClassName: string = ''): IIterator;
 var
    i: integer;
-   lIterator: TBaseIteratorFriend;
-   lTmpList: TComponentList;
-   lTmpListSortWrap: TSortListDecorator;
+   lList: TComponentList;
+   lListSortWrap: TSortListDecorator;
 begin
-   lTmpListSortWrap := nil;
-   lIterator := TBaseIteratorFriend.Create;
-   lTmpList := TComponentList.Create(false);
-   try
-      if lTmpList.Capacity < FComponentList.Count then
-         lTmpList.Capacity := FComponentList.Count;
-      for i := 0 to FComponentList.Count-1 do
-      begin
-         if AClassName <> '' then
-         begin
-            if FComponentList[i].ClassNameIs(AClassName) then
-               lTmpList.Add(FComponentList[i]);
-         end
-         else
-            lTmpList.Add(FComponentList[i]);
-      end;
-      if (ASortType <> NO_SORT) and (lTmpList.Count > 1) then
-      begin
-         lTmpListSortWrap := TSortListDecorator.Create(lTmpList, ASortType);
-         lTmpListSortWrap.Sort;
-      end;
-      SetLength(lIterator.FArray, lTmpList.Count);
-      for i := 0 to lTmpList.Count-1 do
-         lIterator.FArray[i] := lTmpList[i];
-   finally
-      lTmpListSortWrap.Free;
-      lTmpList.Free;
+   lList := TComponentList.Create(false);
+   if lList.Capacity < FComponentList.Count then
+      lList.Capacity := FComponentList.Count;
+   for i := 0 to FComponentList.Count-1 do
+   begin
+       if AClassName <> '' then
+       begin
+          if FComponentList[i].ClassNameIs(AClassName) then
+             lList.Add(FComponentList[i]);
+       end
+       else
+          lList.Add(FComponentList[i]);
    end;
-   result := lIterator;
+   if (ASortType <> NO_SORT) and (lList.Count > 1) then
+   begin
+      lListSortWrap := TSortListDecorator.Create(lList, ASortType);
+      lListSortWrap.Sort;
+      lListSortWrap.Free;
+   end;
+   result := TBaseIteratorFriend.Create(lList);
 end;
 
 function TProject.Register(const AObject: TObject; const AId: integer = ID_INVALID): integer;
