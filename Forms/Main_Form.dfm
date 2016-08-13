@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 574
-  Top = 158
+  Left = 197
+  Top = 122
   HorzScrollBar.Tracking = True
   VertScrollBar.Tracking = True
   Align = alCustom
@@ -437,7 +437,7 @@ object MainForm: TMainForm
       object miAddMain: TMenuItem
         Tag = 2
         Caption = 'Add Main Program'
-        ShortCut = 16449
+        ShortCut = 16461
         OnClick = miAddMainClick
       end
       object N12: TMenuItem

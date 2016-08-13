@@ -116,7 +116,7 @@ implementation
 
 uses
    SysUtils, ApplicationCommon, XMLProcessor, Base_Form, LangDefinition, Messages, Navigator_Form,
-   SortListDecorator, Base_Block, Comment, TabComponent, ParserHelper, Menus;
+   SortListDecorator, Base_Block, Comment, TabComponent, ParserHelper, Menus, StrUtils;
 
 var
    Instance: TProject;
@@ -694,6 +694,8 @@ begin
          if lComment.IsHeader then
          begin
             result := lComment.Text;
+            if AnsiEndsText(CRLF, lComment.Text) then
+               result := result + CRLF;
             break;
          end;
       end;
