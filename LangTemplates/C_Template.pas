@@ -58,43 +58,37 @@ begin
       GProject.RefreshStatements;
 end;
 
-procedure C_ProgramHeaderSectionGenerator(ALines: TStringList);
+procedure C_LibSectionGenerator(ALines: TStringList);
 var
-   i: integer;
    libList: TStringList;
+   i: integer;
    lIncludeStr: string;
    lIsQuoted: boolean;
 begin
-   if GProject <> nil then
-   begin
-      if GProject.Name <> '' then
-         ALines.Add(lLangDef.CommentBegin + ' ' + GProject.Name + ' ' + lLangDef.CommentEnd);
-      ALines.Add('');
-      libList := GProject.GetLibraryList;
-      try
-         if math_flag = 1 then libList.Add('math');
-         if str_flag = 1 then libList.Add('string');
-         if io_flag = 1 then libList.Add('stdio');
-         if libList.Count > 0 then
+   libList := GProject.GetLibraryList;
+   try
+      if math_flag = 1 then libList.Add('math');
+      if str_flag = 1 then libList.Add('string');
+      if io_flag = 1 then libList.Add('stdio');
+      if libList.Count > 0 then
+      begin
+         for i := 0 to libList.Count-1 do
          begin
-            for i := 0 to libList.Count-1 do
-            begin
-               lIncludeStr := '#include ';
-               lIsQuoted := AnsiPos('"', libList[i]) <> 0;
-               if not lIsQuoted then
-                  lIncludeStr := lIncludeStr + '<';
-               lIncludeStr := lIncludeStr + libList[i];
-               if AnsiPos('.', libList[i]) = 0 then
-                  lIncludeStr := lIncludeStr + lLangDef.LibraryExt;
-               if not lIsQuoted then
-                  lIncludeStr := lIncludeStr + '>';
-               ALines.Add(lIncludeStr);
-            end;
-            ALines.Add('');
+            lIncludeStr := '#include ';
+            lIsQuoted := AnsiPos('"', libList[i]) <> 0;
+            if not lIsQuoted then
+               lIncludeStr := lIncludeStr + '<';
+            lIncludeStr := lIncludeStr + libList[i];
+            if AnsiPos('.', libList[i]) = 0 then
+               lIncludeStr := lIncludeStr + lLangDef.LibraryExt;
+            if not lIsQuoted then
+               lIncludeStr := lIncludeStr + '>';
+            ALines.Add(lIncludeStr);
          end;
-      finally
-         libList.Free;
+         ALines.Add('');
       end;
+   finally
+      libList.Free;
    end;
 end;
 
@@ -429,7 +423,7 @@ initialization
    if lLangDef <> nil then
    begin
       lLangDef.PreGenerationActivities :=  C_PreGenerationActivities;
-      lLangDef.ProgramHeaderSectionGenerator := C_ProgramHeaderSectionGenerator;
+      lLangDef.LibSectionGenerator := C_LibSectionGenerator;
       //lLangDef.TypeSectionGenerator := C_TypeSectionGenerator;
       //lLangDef.VarSectionGenerator := C_VarSectionGenerator;
       //lLangDef.ConstSectionGenerator := C_ConstSectionGenerator;

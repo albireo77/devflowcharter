@@ -192,50 +192,68 @@ end;
 
 procedure Dummy_ProgramHeaderSectionGenerator(ALines: TStringList);
 var
-   i: integer;
-   libList, lLibTemplate: TStringList;
-   lLibStr, lPlaceHolder, lPlaceHolder2: string;
+   headerTemplate: TStringList;
    lLang: TLangDefinition;
-   lIss1: boolean;
 begin
     lLang := GInfra.CurrentLang;
-    if lLang.ProgramHeaderMask <> '' then
-       ALines.Add(Format(lLang.ProgramHeaderMask, [GProject.Name]));
-    ALines.Add('');
-    libList := GProject.GetLibraryList;
-    try
-       if (libList.Count > 0) and (lLang.LibTemplate <> '') and ((lLang.LibEntry <> '') or (lLang.LibEntryList <> '')) then
-       begin
-          lLibStr := '';
-          lLibTemplate := TStringList.Create;
-          try
-             lIss1 := AnsiPos('%s1', lLang.LibTemplate) <> 0;
-             lLibTemplate.Text := lLang.LibTemplate;
-             for i := 0 to libList.Count-1 do
-             begin
-                if lIss1 then
-                   lLibStr := lLibStr + Format(lLang.LibEntry, [libList[i]]) + CRLF
-                else
-                   lLibStr := lLibStr + Format(lLang.LibEntryList, [libList[i]]);
-             end;
-             if lIss1 then
-             begin
-                lPlaceHolder := '%s1';
-                lPlaceHolder2 := '%s2';
-             end
-             else
-             begin
-                lLibStr := AnsiLeftStr(lLibStr, Length(lLibStr)-lLang.LibEntryListStripCount);
-                lPlaceHolder := '%s2';
-                lPlaceHolder2 := '%s1';
-             end;
-             TInfra.InsertTemplateLines(lLibTemplate, lPlaceHolder, lLibStr);
-             TInfra.InsertTemplateLines(lLibTemplate, lPlaceHolder2, '');
-             ALines.AddStrings(lLibTemplate);
-          finally
-             lLibTemplate.Free;
-          end;
+    if lLang.ProgramHeaderTemplate <> '' then
+    begin
+       headerTemplate := TStringList.Create;
+       try
+          headerTemplate.Text := lLang.ProgramHeaderTemplate;
+          TInfra.InsertTemplateLines(headerTemplate, '%s1', GProject.Name);
+          TInfra.InsertTemplateLines(headerTemplate, '%s2', GInfra.CurrentLang.Name);
+          TInfra.InsertTemplateLines(headerTemplate, '%s3', GProject.GetProgramHeader);
+          ALines.AddStrings(headerTemplate);
+       finally
+          headerTemplate.Free;
        end;
+    end;
+end;
+
+procedure Dummy_LibSectionGenerator(ALines: TStringList);
+var
+   i: integer;
+   libList, libTemplate: TStringList;
+   lLang: TLangDefinition;
+   lLibStr, lPlaceHolder, lPlaceHolder2: string;
+   lIss1: boolean;
+begin
+   lLang := GInfra.CurrentLang;
+   libList := GProject.GetLibraryList;
+   try
+      if (libList.Count > 0) and (lLang.LibTemplate <> '') and ((lLang.LibEntry <> '') or (lLang.LibEntryList <> '')) then
+      begin
+         lLibStr := '';
+         libTemplate := TStringList.Create;
+         try
+            lIss1 := AnsiPos('%s1', lLang.LibTemplate) <> 0;
+            libTemplate.Text := lLang.LibTemplate;
+            for i := 0 to libList.Count-1 do
+            begin
+               if lIss1 then
+                  lLibStr := lLibStr + Format(lLang.LibEntry, [libList[i]]) + CRLF
+               else
+                  lLibStr := lLibStr + Format(lLang.LibEntryList, [libList[i]]);
+            end;
+            if lIss1 then
+            begin
+               lPlaceHolder := '%s1';
+               lPlaceHolder2 := '%s2';
+            end
+            else
+            begin
+               lLibStr := AnsiLeftStr(lLibStr, Length(lLibStr)-lLang.LibEntryListStripCount);
+               lPlaceHolder := '%s2';
+               lPlaceHolder2 := '%s1';
+            end;
+            TInfra.InsertTemplateLines(libTemplate, lPlaceHolder, lLibStr);
+            TInfra.InsertTemplateLines(libTemplate, lPlaceHolder2, '');
+            ALines.AddStrings(libTemplate);
+         finally
+            libTemplate.Free;
+         end;
+      end;
    finally
       libList.Free;
    end;
@@ -553,6 +571,7 @@ initialization
       UserFunctionsSectionGenerator := Dummy_UserFunctionsSectionGenerator;
       VarSectionGenerator := Dummy_VarSectionGenerator;
       ProgramHeaderSectionGenerator := Dummy_ProgramHeaderSectionGenerator;
+      LibSectionGenerator := Dummy_LibSectionGenerator;
       ConstSectionGenerator := Dummy_ConstSectionGenerator;
       UserDataTypesSectionGenerator  := Dummy_UserDataTypesSectionGenerator;
       GetLiteralType := Dummy_GetLiteralType;

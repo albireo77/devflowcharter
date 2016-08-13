@@ -142,6 +142,7 @@ type
     miRemove1: TMenuItem;
     N17: TMenuItem;
     miInsertFunc: TMenuItem;
+    miIsHeader: TMenuItem;
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -215,6 +216,7 @@ type
     procedure miPaste1Click(Sender: TObject);
     procedure FuncMenuClick(Sender: TObject);
     procedure miRemove1Click(Sender: TObject);
+    procedure miIsHeaderClick(Sender: TObject);
   private
     { Private declarations }
     FHistoryMenu: THistoryMenu;
@@ -638,6 +640,7 @@ begin
    miSize8.Checked := False;
    miSize10.Checked := False;
    miSize12.Checked := False;
+   miIsHeader.Visible := False;
 
    lComponent := pmPages.PopupComponent;
    lIsFunction := TInfra.IsValid(GClpbrd.UndoObject) and (GClpbrd.UndoObject is TUserFunction);
@@ -717,6 +720,8 @@ begin
       miRemove.Visible := True;
       miFont.Visible := True;
       miCopy.Visible := True;
+      miIsHeader.Visible := true;
+      miIsHeader.Checked := TComment(lComponent).IsHeader;
       if GClpbrd.Instance is TBlock then
          miPaste.Enabled := false;
    end
@@ -1634,6 +1639,18 @@ begin
    end;
    if result > 0 then
       AParent.Add(FFuncMenu);
+end;
+
+procedure TMainForm.miIsHeaderClick(Sender: TObject);
+var
+   lComment: TComment;
+begin
+   if pmPages.PopupComponent is TComment then
+   begin
+      TComment(pmPages.PopupComponent).IsHeader := miIsHeader.Checked;
+      if GSettings.UpdateEditor then
+         TInfra.GetEditorForm.RefreshEditorForObject(nil);
+   end;
 end;
 
 end.

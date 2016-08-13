@@ -318,6 +318,7 @@ miCopy1=Copy
 miPaste1=Paste
 miRemove1=Remove
 miInsertFunc=Insert Function
+miIsHeader=Program Header
 
 [DeclarationsForm]
 FormCaption=Declaraciones Globales

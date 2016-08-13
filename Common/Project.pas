@@ -109,6 +109,7 @@ type
       procedure UpdateHeadersBody(const APage: TTabSheet);
       function GetPageOrder: string;
       function FindMainBlockForControl(const AControl: TControl): TMainBlock;
+      function GetProgramHeader: string;
    end;
 
 implementation
@@ -676,6 +677,26 @@ begin
       lComment := TComment.CreateDefault(lPage);
       lComment.ImportFromXMLTag(tag, nil);
       tag := TXMLProcessor.FindNextTag(tag);
+   end;
+end;
+
+function TProject.GetProgramHeader: string;
+var
+   i: integer;
+   lComment: TComment;
+begin
+   result := '';
+   for i := 0 to FComponentList.Count-1 do
+   begin
+      if FComponentList[i] is TComment then
+      begin
+         lComment := TComment(FComponentList[i]);
+         if lComment.IsHeader then
+         begin
+            result := lComment.Text;
+            break;
+         end;
+      end;
    end;
 end;
 

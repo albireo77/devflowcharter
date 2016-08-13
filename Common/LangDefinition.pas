@@ -107,7 +107,7 @@ type
       FolderTemplate,
       ReturnTemplate,
       FunctionCallTemplate,
-      ProgramHeaderMask,
+      ProgramHeaderTemplate,
       FunctionHeaderArgsEntryMask,
       FunctionHeaderArgsEntryRef,
       FunctionHeaderArgsEntryArray,
@@ -162,12 +162,13 @@ type
       InOutCursorPos,
       FuncBracketsCursorPos: integer;
       PreGenerationActivities: procedure;
-      ProgramHeaderSectionGenerator: procedure (lines: TStringList);
-      UserDataTypesSectionGenerator: procedure (lines: TStringList);
-      VarSectionGenerator: procedure (lines: TStringList; VarList: TVarDeclareList);
-      ConstSectionGenerator: procedure (lines: TStringList; ConstList: TConstDeclareList);
-      UserFunctionsSectionGenerator: procedure (lines: TStringList; skipBodyGenerate: boolean);
-      MainProgramSectionGenerator: procedure (lines: TStringList; deep: integer);
+      ProgramHeaderSectionGenerator: procedure (ALines: TStringList);
+      LibSectionGenerator: procedure (ALines: TStringList);
+      UserDataTypesSectionGenerator: procedure (ALines: TStringList);
+      VarSectionGenerator: procedure (ALines: TStringList; AVarList: TVarDeclareList);
+      ConstSectionGenerator: procedure (ALines: TStringList; AConstList: TConstDeclareList);
+      UserFunctionsSectionGenerator: procedure (ALines: TStringList; ASkipBodyGenerate: boolean);
+      MainProgramSectionGenerator: procedure (ALines: TStringList; ADeep: integer);
       GetUserFuncDesc: function (AHeader: TUserFunctionHeader): string;
       GetUserTypeDesc: function (ADataType: TUserDataType): string;
       SetHLighterAttrs: procedure;
@@ -208,6 +209,7 @@ begin
    UpperCaseConstId := true;
    PreGenerationActivities := nil;
    ProgramHeaderSectionGenerator := nil;
+   LibSectionGenerator := nil;
    UserDataTypesSectionGenerator := nil;
    ConstSectionGenerator := nil;
    UserFunctionsSectionGenerator := nil;
@@ -608,9 +610,9 @@ begin
    if tag <> nil then
       FunctionHeaderArgsStripCount := StrToIntDef(tag.Text, 0);
 
-   tag := TXMLProcessor.FindChildTag(root, 'ProgramHeaderMask');
+   tag := TXMLProcessor.FindChildTag(root, 'ProgramHeaderTemplate');
    if tag <> nil then
-      ProgramHeaderMask := tag.Text;
+      ProgramHeaderTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(root, 'ReturnTemplate');
    if tag <> nil then

@@ -31,12 +31,9 @@ var
 
 procedure TIBASIC_ProgramHeaderSectionGenerator(ALines: TStringList);
 begin
-   if GProject <> nil then
-   begin
-      if GProject.Name <> '' then
-         ALines.Add(GProject.Name + '()');
-      ALines.AddObject('Prgm', GProject.GetMainBlock);
-   end;
+   if GProject.Name <> '' then
+      ALines.Add(GProject.Name + '()');
+   ALines.AddObject('Prgm', GProject.GetMainBlock);
 end;
 
 procedure TIBASIC_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);

@@ -319,6 +319,11 @@ object MainForm: TMainForm
         OnClick = miMemoEditClick
       end
     end
+    object miIsHeader: TMenuItem
+      Tag = 2
+      Caption = 'Program Header'
+      OnClick = miIsHeaderClick
+    end
   end
   object ExportDialog: TSaveDialog
     Tag = 3

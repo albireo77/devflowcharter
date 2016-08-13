@@ -436,6 +436,14 @@ begin
       if lLang <> nil then
          lLang.ProgramHeaderSectionGenerator(lLines);
 
+      lLang := nil;
+      if Assigned(GInfra.CurrentLang.LibSectionGenerator) then
+         lLang := GInfra.CurrentLang
+      else if Assigned(GInfra.DummyLang.LibSectionGenerator) then
+         lLang := GInfra.DummyLang;
+      if lLang <> nil then
+         lLang.LibSectionGenerator(lLines);
+
       if GInfra.CurrentLang.EnabledConsts then
       begin
          lLang := nil;

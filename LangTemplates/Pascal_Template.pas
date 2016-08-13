@@ -107,47 +107,51 @@ end;
 
 procedure Pascal_ProgramHeaderSectionGenerator(ALines: TStringList);
 var
-   i: integer;
-   unitsString, progName: string;
-   libList: TStringList;
+   progName: string;
 begin
-   if GProject <> nil then
+
+   GInfra.DummyLang.ProgramHeaderSectionGenerator(ALines);
+
+   if GProject.Name = '' then
+      progName := i18Manager.GetString('Unknown')
+   else
+      progName := GProject.Name;
+   progName := AnsiReplaceStr(progName, ' ', '_') + ';';
+
+   if GProject.GetMainBlock <> nil then
+      ALines.Add('program ' + progName)
+   else
    begin
-      if GProject.Name = '' then
-         progName := i18Manager.GetString('Unknown')
-      else
-         progName := GProject.Name;
-      progName := AnsiReplaceStr(progName, ' ', '_') + ';';
-
-      if GProject.GetMainBlock <> nil then
-         ALines.Add('program ' + progName)
-      else
-      begin
-         ALines.Add('unit ' + progName);
-         ALines.Add('');
-         ALines.Add('interface');
-      end;
-
+      ALines.Add('unit ' + progName);
       ALines.Add('');
-
-      libList := GProject.GetLibraryList;
-      try
-         if libList.Count > 0 then
-         begin
-            unitsString := '';
-            for i := 0 to libList.Count-2 do
-               unitsString := unitsString + libList[i] + ',';
-            unitsString := unitsString + libList[libList.Count-1] + ';';
-            unitsString := AnsiReplaceStr(unitsString, ',', ', ');
-            ALines.Add('uses');
-            ALines.Add(GSettings.IndentString + unitsString);
-            ALines.Add('');
-         end;
-      finally
-         libList.Free;
-      end;
+      ALines.Add('interface');
    end;
+   ALines.Add('');
 end;
+
+{procedure Pascal_LibSectionGenerator(ALines: TStringList);
+var
+   i: integer;
+   libList: TStringList;
+   unitsString: string;
+begin
+   libList := GProject.GetLibraryList;
+   try
+      if libList.Count > 0 then
+      begin
+         unitsString := '';
+         for i := 0 to libList.Count-2 do
+            unitsString := unitsString + libList[i] + ',';
+         unitsString := unitsString + libList[libList.Count-1] + ';';
+         unitsString := AnsiReplaceStr(unitsString, ',', ', ');
+         ALines.Add('uses');
+         ALines.Add(GSettings.IndentString + unitsString);
+         ALines.Add('');
+      end;
+   finally
+      libList.Free;
+   end;
+end;}
 
 procedure Pascal_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
 var
@@ -547,6 +551,7 @@ initialization
       lLangDef.Parser := TPascalParser.Create;
       lLangDef.PreGenerationActivities :=  Pascal_PreGenerationActivities;
       lLangDef.ProgramHeaderSectionGenerator := Pascal_ProgramHeaderSectionGenerator;
+      //lLangDef.LibSectionGenerator := Pascal_LibSectionGenerator;
       //lLangDef.TypeSectionGenerator := Pascal_TypeSectionGenerator;
       lLangDef.VarSectionGenerator := Pascal_VarSectionGenerator;
       //lLangDef.ConstSectionGenerator := Pascal_ConstSectionGenerator;

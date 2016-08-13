@@ -357,6 +357,7 @@ miCopy1=Kopiuj
 miPaste1=Wklej
 miRemove1=Usuñ
 miInsertFunc=Wstaw Funkcjê
+miIsHeader=Nag³ówek Programu
 
 [SettingsForm]
 FormCaption=Ustawienia

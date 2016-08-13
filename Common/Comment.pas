@@ -35,7 +35,8 @@ type
       private
          FPinControl: TControl;
          FPage: TBlockTabSheet;
-         FActive: boolean;
+         FActive,
+         FIsHeader: boolean;
          FZOrder: integer;
       protected
          procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -49,9 +50,11 @@ type
          function GetActive: boolean;
          procedure MyOnChange(Sender: TObject);
          procedure SetPage(APage: TBlockTabSheet);
+         procedure SetIsHeader(AValue: boolean);
       public
          property PinControl: TControl read FPinControl write FPinControl;
          property Page: TBlockTabSheet read FPage write SetPage;
+         property IsHeader: boolean read FIsHeader write SetIsHeader;
          constructor Create(const APage: TBlockTabSheet; const ALeft, ATop, AWidth, AHeight: Integer; const AUpdateZOrderComponents: boolean = true);
          constructor CreateDefault(const APage: TBlockTabSheet);
          function Clone(const APage: TBlockTabSheet; ATopLeft: PPoint = nil): TComment;
@@ -167,6 +170,29 @@ begin
    result := FZOrder;
 end;
 
+procedure TComment.SetIsHeader(AValue: boolean);
+var
+   iter: IIterator;
+   lComment: TComment;
+begin
+   if FIsHeader then
+      FIsHeader := false
+   else
+   begin
+      iter := GProject.GetComments;
+      while iter.HasNext do
+      begin
+         lComment := TComment(iter.Next);
+         if (lComment <> Self) and lComment.FIsHeader then
+         begin
+            lComment.FIsHeader := false;
+            break;
+         end;
+      end;
+      FIsHeader := true;
+   end;
+end;
+
 procedure TComment.MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
    if Button = mbLeft then
@@ -227,6 +253,8 @@ end;
 
 procedure TComment.MyOnChange(Sender: TObject);
 begin
+   if FIsHeader and GSettings.UpdateEditor then
+      TInfra.GetEditorForm.RefreshEditorForObject(nil);
    NavigatorForm.Invalidate;
 end;
 
@@ -313,6 +341,7 @@ begin
       Text := ATag.Text;
       Visible := ATag.GetAttribute('v') = IntToStr(Ord(true));
       FPinControl := APinControl;
+      FIsHeader := ATag.GetAttribute('isHeader') = 'True';
    end;
 end;
 
@@ -337,6 +366,8 @@ begin
       tag.SetAttribute(FONT_SIZE_ATTR, IntToStr(Font.Size));
       tag.SetAttribute('v', IntToStr(Ord(Visible)));
       tag.SetAttribute(Z_ORDER_ATTR, IntToStr(FZOrder));
+      if FIsHeader then
+         tag.SetAttribute('isHeader', 'True');
       if FPage <> GProject.GetMainPage then
          tag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
       if Font.Style <> [] then
