@@ -480,16 +480,16 @@ begin
                end;
             end;
          end;
-         if lFunctionList.Count > 0 then
-         begin
-            lFunctionsTemplate := TStringList.Create;
-            try
-               lFunctionsTemplate.Text := lLang.FunctionsTemplate;
-               TInfra.InsertTemplateLines(lFunctionsTemplate, '%s1', lFunctionList);
-               ALines.AddStrings(lFunctionsTemplate);
-            finally
-               lFunctionsTemplate.Free;
-            end;
+         lFunctionsTemplate := TStringList.Create;
+         try
+            lFunctionsTemplate.Text := lLang.FunctionsTemplate;
+            if lFunctionList.Count > 0 then
+               TInfra.InsertTemplateLines(lFunctionsTemplate, '%s1', lFunctionList)
+            else
+               TInfra.InsertTemplateLines(lFunctionsTemplate, '%s1', '');
+            ALines.AddStrings(lFunctionsTemplate);
+         finally
+            lFunctionsTemplate.Free;
          end;
       finally
          lFunctionList.Free;
