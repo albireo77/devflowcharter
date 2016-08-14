@@ -109,7 +109,7 @@ These will be displayed in flowchart for given blocks
 <LabelAssign>assign</LabelAssign>
 <LabelMultiAssign>assign</LabelMultiAssign>
 <LabelFontName>Segoe Print</LabelFontName>
-<LabelFontSize>12</LabelFontSize>
+<LabelFontSize>10</LabelFontSize>
 
 <!--
 Element RepeatDesc
@@ -341,6 +341,14 @@ Available placeholders:
 %s3
 
 </FunctionTemplate>
+
+<!--
+Element FunctionsTemplate
+Description: Template for user functions section
+Available placeholders:
+   %s1 - list of function declarations (list of FunctionTemplate elements)  
+-->
+<FunctionsTemplate>%s1</FunctionsTemplate>
 
 <!--
 Element MainProgramTemplate

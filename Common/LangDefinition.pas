@@ -118,6 +118,7 @@ type
       LibEntry,
       LibEntryList,
       DataTypesTemplate,
+      FunctionsTemplate,
       DataTypeIntMask,
       DataTypeRealMask,
       DataTypeOtherMask,
@@ -501,6 +502,10 @@ begin
    tag := TXMLProcessor.FindChildTag(root, 'DataTypesTemplate');
    if tag <> nil then
       DataTypesTemplate := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'FunctionsTemplate');
+   if tag <> nil then
+      FunctionsTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(root, 'DataTypeIntMask');
    if tag <> nil then
