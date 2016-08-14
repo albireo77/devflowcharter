@@ -105,7 +105,7 @@ begin
       end;
       DrawTextLabel(Branch.Hook.X-10, 80, FTrueLabel, true);
       DrawTextLabel(Branch.Hook.X+60, 28, FFalseLabel);
-      DrawSegoeLabel(Branch.Hook.X-40, 10, GInfra.CurrentLang.LabelWhile, true);
+      DrawBlockLabel(Branch.Hook.X-40, 10, GInfra.CurrentLang.LabelWhile, true);
       with Canvas do
       begin
          MoveTo(Branch.Hook.X, 0);

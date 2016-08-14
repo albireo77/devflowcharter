@@ -96,7 +96,7 @@ type
     lblMarginTop: TLabel;
     lblMarginBottom: TLabel;
     chkEnableDBuffer: TCheckBox;
-    chkShowFlowLabels: TCheckBox;
+    chkShowFuncLabels: TCheckBox;
     chkParseReturn: TCheckBox;
     chkConfirmRemove: TCheckBox;
     chkValidateConsts: TCheckBox;
@@ -109,6 +109,7 @@ type
     chkAutoUpdateCode: TCheckBox;
     lblFontSize: TLabel;
     cbFontSize: TComboBox;
+    chkShowBlockLabels: TCheckBox;
     procedure btnBrowseCCompClick(Sender: TObject);
     procedure CloseFormClick(Sender: TObject);
     procedure FormShow(Sender: TObject);

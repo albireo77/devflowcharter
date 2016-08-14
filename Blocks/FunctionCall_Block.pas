@@ -107,7 +107,7 @@ begin
                   Point(Width-8, y),
                   Point(Width-8, 0)]);
       end;
-      DrawSegoeLabel(5, 20, GInfra.CurrentLang.LabelFuncCall);
+      DrawBlockLabel(5, 20, GInfra.CurrentLang.LabelFuncCall);
    end;
    DrawI;
 end;

@@ -90,7 +90,7 @@ type
          procedure Paint; override;
          procedure DrawI;
          procedure DrawTextLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false);
-         procedure DrawSegoeLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false);
+         procedure DrawBlockLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false);
          function GetId: integer;
          function PerformEditorUpdate: boolean;
          procedure SelectBlock(const APoint: TPoint);
@@ -940,7 +940,7 @@ begin
       if AContinue then
          FParentBlock.ResizeHorz(AContinue);
    end
-   else if GSettings.ShowFlowchartLabels then
+   else if GSettings.ShowFuncLabels then
       RepaintAll;
 
 end;
@@ -1394,13 +1394,13 @@ begin
    end;
 end;
 
-procedure TBlock.DrawSegoeLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false);
+procedure TBlock.DrawBlockLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false);
 var
    lFontName: string;
    lFontSize: integer;
    lFontStyles: TFontStyles;
 begin
-   if (AText <> '') and (Screen.Fonts.IndexOf(GInfra.CurrentLang.LabelFontName) <> -1) then
+   if GSettings.ShowBlockLabels and (AText <> '') and (Screen.Fonts.IndexOf(GInfra.CurrentLang.LabelFontName) <> -1) then
    begin
       lFontName := Canvas.Font.Name;
       lFontStyles := Canvas.Font.Style;

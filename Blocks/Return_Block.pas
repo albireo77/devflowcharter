@@ -94,7 +94,7 @@ begin
    lFontStyles := Canvas.Font.Style;
    Canvas.Font.Style := [];
    DrawEllipsedText(Point(Width div 2, 30), FReturnLabel);
-   DrawSegoeLabel(1, Height-1, GInfra.CurrentLang.LabelReturn, false, true);
+   DrawBlockLabel(1, Height-1, GInfra.CurrentLang.LabelReturn, false, true);
    Canvas.Font.Style := lFontStyles;
    DrawI;
 end;

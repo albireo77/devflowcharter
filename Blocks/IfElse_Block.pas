@@ -132,7 +132,7 @@ begin
       end;
       DrawTextLabel(TopHook.X-60, 9, FTrueLabel, true);
       DrawTextLabel(TopHook.X+60, 9, FFalseLabel);
-      DrawSegoeLabel(TopHook.X-52, 35, GInfra.CurrentLang.LabelIfElse, true);
+      DrawBlockLabel(TopHook.X-52, 35, GInfra.CurrentLang.LabelIfElse, true);
    end;
    DrawI;
 end;

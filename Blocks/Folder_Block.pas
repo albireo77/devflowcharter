@@ -92,7 +92,7 @@ begin
       BottomPoint.Y := Height - 31;
       DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1));
       DrawArrowLine(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
-      DrawSegoeLabel(5, 2, GInfra.CurrentLang.LabelFolder);
+      DrawBlockLabel(5, 2, GInfra.CurrentLang.LabelFolder);
    end;
    DrawI;
 end;

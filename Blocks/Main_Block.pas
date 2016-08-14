@@ -365,7 +365,7 @@ var
 begin
    result := '';
    ARect := Rect(Branch.Hook.X+75, 7, 0, 0);
-   if GSettings.ShowFlowchartLabels and (UserFunction <> nil) and Expanded then
+   if GSettings.ShowFuncLabels and (UserFunction <> nil) and Expanded then
    begin
       lLang := nil;
       lHeader := TUserFunction(UserFunction).Header;

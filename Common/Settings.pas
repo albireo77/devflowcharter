@@ -80,7 +80,8 @@ type
 
       FPrintMargins: TRect;
       FEnableDBuffering,
-      FShowFlowchartLabels,
+      FShowFuncLabels,
+      FShowBlockLabels,
       FValidateDeclaration,
       FNavigatorAlphaVisible,
       FExplorerAutoNav: boolean;
@@ -154,7 +155,8 @@ type
       property FontColor: TColor read FFontColor;
       property PrintMargins: TRect read FPrintMargins;
       property EnableDBuffering: boolean read FEnableDBuffering;
-      property ShowFlowchartLabels: boolean read FShowFlowchartLabels;
+      property ShowFuncLabels: boolean read FShowFuncLabels;
+      property ShowBlockLabels: boolean read FShowBlockLabels;
       property ValidateDeclaration: boolean read FValidateDeclaration;
       property NavigatorAlphaValue: integer read FNavigatorAlphaValue write FNavigatorAlphaValue;
       property NavigatorAlphaVisible: boolean read FNavigatorAlphaVisible write FNavigatorAlphaVisible;
@@ -218,7 +220,8 @@ const
    KEY_PRINT_MARGIN_TOP = 'PrintMarginTop';
    KEY_PRINT_MARGIN_BOTTOM = 'PrintMarginBottom';
    KEY_ENABLE_DBUFFERING = 'EnableDBuffering';
-   KEY_SHOW_FLOW_LABELS = 'ShowFlowchartLabels';
+   KEY_SHOW_FUNC_LABELS = 'ShowFuncLabels';
+   KEY_SHOW_BLOCK_LABELS = 'ShowBlockLabels';
    KEY_VALIDATE_DECLARATION = 'ValidateConsts';
    KEY_NAVIGATOR_ALPHA_VALUE = 'NavigatorAlphaValue';
    KEY_NAVIGATOR_ALPHA_VISIBLE = 'NavigatorAlphaVisible';
@@ -303,7 +306,8 @@ begin
    FPrintMultPages        := false;
    FPrintMultPagesHorz    := false;
    FEnableDBuffering      := false;
-   FShowFlowchartLabels   := true;
+   FShowFuncLabels        := true;
+   FShowBlockLabels       := false;
    FValidateDeclaration   := true;
    FPrintMargins          := Rect(5, 5, 5, 5);
    FTranslateFile         := '';
@@ -423,8 +427,10 @@ begin
          end;
          if registry.ValueExists(KEY_EDITOR_FONT_SIZE) then
             FEditorFontSize := registry.ReadInteger(KEY_EDITOR_FONT_SIZE);
-         if registry.ValueExists(KEY_SHOW_FLOW_LABELS) then
-            FShowFlowchartLabels := registry.ReadBool(KEY_SHOW_FLOW_LABELS);
+         if registry.ValueExists(KEY_SHOW_FUNC_LABELS) then
+            FShowFuncLabels := registry.ReadBool(KEY_SHOW_FUNC_LABELS);
+         if registry.ValueExists(KEY_SHOW_BLOCK_LABELS) then
+            FShowBlockLabels := registry.ReadBool(KEY_SHOW_BLOCK_LABELS);
          if registry.ValueExists(KEY_VALIDATE_DECLARATION) then
             FValidateDeclaration := registry.ReadBool(KEY_VALIDATE_DECLARATION);
          if registry.ValueExists(KEY_FLOWCHART_FONT_NAME) then
@@ -492,7 +498,8 @@ begin
          registry.WriteBool(KEY_EDITOR_INDENT_GUIDES, FEditorIndentGuides);
          registry.WriteBool(KEY_SHOW_STATUSBAR, FEditorShowStatusBar);
          registry.WriteBool(KEY_ENABLE_DBUFFERING, FEnableDBuffering);
-         registry.WriteBool(KEY_SHOW_FLOW_LABELS, FShowFlowchartLabels);
+         registry.WriteBool(KEY_SHOW_FUNC_LABELS, FShowFuncLabels);
+         registry.WriteBool(KEY_SHOW_BLOCK_LABELS, FShowBlockLabels);
          registry.WriteBool(KEY_VALIDATE_DECLARATION, FValidateDeclaration);
          registry.WriteInteger(KEY_NAVIGATOR_ALPHA_VALUE, FNavigatorAlphaValue);
          registry.WriteBool(KEY_NAVIGATOR_ALPHA_VISIBLE, FNavigatorAlphaVisible);
@@ -678,9 +685,15 @@ begin
          lLangDef.CompilerCommandNoMain := Trim(edtCompilerNoMain.Text);
       end;
 
-      if FShowFlowchartLabels <> chkShowFlowLabels.Checked then
+      if FShowFuncLabels <> chkShowFuncLabels.Checked then
       begin
-         FShowFlowchartLabels := not FShowFlowchartLabels;
+         FShowFuncLabels := not FShowFuncLabels;
+         lRedrawFlow := true;
+      end;
+
+      if FShowBlockLabels <> chkShowBlockLabels.Checked then
+      begin
+         FShowBlockLabels := not FShowBlockLabels;
          lRedrawFlow := true;
       end;
 
@@ -742,7 +755,8 @@ begin
       chkConfirmRemove.Checked := FConfirmRemove;
       chkMultiPrint.Checked := FPrintMultPages;
       chkEnableDBuffer.Checked := FEnableDBuffering;
-      chkShowFlowLabels.Checked := FShowFlowchartLabels;
+      chkShowFuncLabels.Checked := FShowFuncLabels;
+      chkShowBlockLabels.Checked := FShowBlockLabels;
       chkMultiPrintHorz.Checked := FPrintMultPagesHorz;
       edtMarginLeft.Text := IntToStr(FPrintMargins.Left);
       edtMarginRight.Text := IntToStr(FPrintMargins.Right);
@@ -897,7 +911,8 @@ begin
       edtMarginTop.Text := '5';
       edtMarginBottom.Text := '5';
       chkEnableDBuffer.Checked := false;
-      chkShowFlowLabels.Checked := true;
+      chkShowFuncLabels.Checked := true;
+      chkShowBlockLabels.Checked := false;
       pnlEditorBkg.Color := clWindow;
       pnlEditorFont.Color := clWindowText;
       pnlEditorNumber.Color := clTeal;

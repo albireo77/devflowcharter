@@ -62,7 +62,7 @@ end;
 procedure TMultiAssignBlock.Paint;
 begin
    inherited;
-   DrawSegoeLabel(5, FStatements.BoundsRect.Bottom+1, GInfra.CurrentLang.LabelMultiAssign);
+   DrawBlockLabel(5, FStatements.BoundsRect.Bottom+1, GInfra.CurrentLang.LabelMultiAssign);
 end;
 
 constructor TMultiAssignBlock.Create(const ABranch: TBranch);

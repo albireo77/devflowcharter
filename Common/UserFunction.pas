@@ -632,7 +632,7 @@ end;
 
 procedure TUserFunctionHeader.OnChangeDesc(Sender: TObject);
 begin
-   if GSettings.ShowFlowchartLabels and chkInclDescFlow.Checked then
+   if GSettings.ShowFuncLabels and chkInclDescFlow.Checked then
       DrawBodyLabel;
    if GSettings.UpdateEditor and not chkExtDeclare.Checked and (Font.Color <> NOK_COLOR) and chkInclDescCode.Checked then
       TInfra.GetEditorForm.RefreshEditorForObject(Self);
@@ -745,7 +745,7 @@ end;
 
 procedure TUserFunctionHeader.OnClickInclDescFlow(Sender: TObject);
 begin
-   if GSettings.ShowFlowchartLabels then
+   if GSettings.ShowFuncLabels then
    begin
       DrawBodyLabel;
       NavigatorForm.Invalidate;

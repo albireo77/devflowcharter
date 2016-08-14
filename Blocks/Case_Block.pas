@@ -155,7 +155,7 @@ begin
          DrawArrowLine(Point(lPoint.X, TopHook.Y), lPoint);
       end;
       DrawTextLabel(DefaultBranch.Hook.X+40, 48, FCaseLabel);
-      DrawSegoeLabel(DefaultBranch.Hook.X+60, 1, GInfra.CurrentLang.LabelCase);
+      DrawBlockLabel(DefaultBranch.Hook.X+60, 1, GInfra.CurrentLang.LabelCase);
       with Canvas do
       begin
          MoveTo(lPoint.X, TopHook.Y);
