@@ -920,7 +920,11 @@ begin
             if Trim(ADestList[i]) = APlaceHolder then
                ADestList.Delete(i)
             else
+            begin
                ADestList[i] := FastCodeAnsiStringReplace(ADestList[i], APlaceHolder, '');
+               if AObject <> nil then
+                  ADestList.Objects[i] := AObject;
+            end;
          end
          else
             ADestList.Delete(i+lCount);
