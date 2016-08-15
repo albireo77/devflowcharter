@@ -179,6 +179,7 @@ sgVarListCol0=Nazwa:
 sgVarListCol1=Typ:
 sgVarListCol2=Rozmiar:
 sgVarListCol3=Inicjalizacja:
+sgVarListCol4=Zewnêtrzna:
 sgConstListCol0=Nazwa:
 sgConstListCol1=Wartoœæ:
 sgConstListCol2=Zewnêtrzna:

@@ -181,6 +181,7 @@ sgVarListCol0=Name:
 sgVarListCol1=Tipo:
 sgVarListCol2=Tamaño:
 sgVarListCol3=Initial Value:
+sgVarListCol4=External:
 sgConstListCol0=Name:
 sgConstListCol1=Valor:
 sgConstListCol2=External:

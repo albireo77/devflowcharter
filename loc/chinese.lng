@@ -184,6 +184,7 @@ sgVarListCol0=名:
 sgVarListCol1=类型:
 sgVarListCol2=下标范围:
 sgVarListCol3=初始值:
+sgVarListCol4=External:
 sgConstListCol0=名:
 sgConstListCol1=值:
 sgConstListCol2=外部:

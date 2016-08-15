@@ -44,14 +44,15 @@ type
          FModifying: boolean;
          FParentForm: TBaseForm;
          FId,
-         FDragRow: integer;
+         FDragRow,
+         FCheckBoxCol: integer;
          FPlural: string;
          function GetId: integer;
          function IsDeclared(const AName: string; const AssociatedListCheck: boolean): boolean;
          function AddUpdateRow: integer; virtual;
          function IsRowVisible(const ARow: integer): boolean;
          function FindValidRowByPoint(const APoint: TPoint): integer;
-         procedure OnRowMovedList(Sender: TObject; FromIndex, ToIndex: Longint); virtual;
+         procedure OnRowMovedList(Sender: TObject; FromIndex, ToIndex: Longint);
          procedure OnClickAdd(Sender: TObject); virtual; abstract;
          procedure OnClickImport(Sender: TObject);
          procedure OnClickExport(Sender: TObject);
@@ -64,6 +65,14 @@ type
          procedure OnDragOverList(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
          procedure OnKeyDownCommon(Sender: TObject; var Key: Word; Shift: TShiftState);
          procedure UpdateCodeEditor;
+         function GetCheckBoxPoint(const ACol, ARow: integer): TPoint;
+         procedure OnTopLeftChanged(Sender: TObject);
+         function CreateCheckBox(const ACol, ARow: integer): TCheckBox;
+         procedure RefreshChBoxes;
+         function GetRightMargin(const AControl: TControl = nil): integer;
+         procedure OnClickChBox(Sender: TObject);
+         procedure OnColWidthsChanged(Sender: TObject);
+         procedure WMSize(var Msg: TMessage); message WM_SIZE;
       public
          sgList: TStringGridEx;
          btnRemove,
@@ -88,6 +97,8 @@ type
          function CanBeRemoved: boolean;
          function IsBoldDesc: boolean;
          procedure SetDefaultFocus;
+         function IsExternal(const ARow: integer): boolean;
+         procedure SetCheckBoxCol(ACheckBoxCol: integer);
    end;
 
    TVarDeclareList = class(TDeclareList)
@@ -111,22 +122,13 @@ type
          function GetDimensionCount(const AVarName: string; const AIncludeTypeDimens: boolean = false): integer;
          function GetDimension(const AVarName: string; const ADimensIndex: integer): string;
    end;
-   
+
    TConstDeclareList = class(TDeclareList)
       protected
          function AddUpdateRow: integer; override;
-         function CreateCheckBox(const ACol, ARow: integer): TCheckBox;
-         procedure OnColWidthsChanged(Sender: TObject);
-         procedure OnTopLeftChanged(Sender: TObject);
-         procedure RefreshChBoxes;
-         function GetCheckBoxPoint(const ACol, ARow: integer): TPoint;
-         procedure OnClickChBox(Sender: TObject);
          procedure OnClickAdd(Sender: TObject); override;
          procedure OnClickChange(Sender: TObject); override;
          procedure OnClickRemove(Sender: TObject); override;
-         function GetRightMargin(const AControl: TControl = nil): integer;
-         procedure OnRowMovedList(Sender: TObject; FromIndex, ToIndex: Longint); override;
-         procedure WMSize(var Msg: TMessage); message WM_SIZE;
       public
          edtValue: TEdit;
          lblValue: TLabel;
@@ -134,7 +136,6 @@ type
          function ImportFromXMLTag(const ATag: IXMLElement): TErrorType; override;
          procedure ExportToXMLTag(const ATag: IXMLElement); override;
          function GetValue(const AIdent: string): string;
-         function IsExternal(const ARow: integer): boolean;
    end;
 
 const
@@ -147,10 +148,9 @@ const
 
    CONST_NAME_COL  = NAME_COL;
    CONST_VALUE_COL = 1;
-   CONST_CHBOX_COL = 2;
 
-   DEF_VARLIST_WIDTH = 289;
-   DEF_CONSTLIST_WIDTH = 200;
+   DEF_VARLIST_WIDTH = 358;
+   DEF_CONSTLIST_WIDTH = 235;
 
 implementation
 
@@ -162,7 +162,7 @@ constructor TDeclareList.Create(const AParent: TWinControl; const ALeft, ATop, A
 var
    i, colWidth: integer;
 begin
-
+   FCheckBoxCol := -1;
    inherited Create(AParent);
    Parent := AParent;
    FParentForm := TInfra.FindParentForm(Self);
@@ -198,6 +198,8 @@ begin
    sgList.OnDragDrop := OnDragDropList;
    sgList.OnDragOver := OnDragOverList;
    sgList.OnRowMoved := OnRowMovedList;
+   sgList.OnColWidthsChanged := OnColWidthsChanged;
+   sgList.OnTopLeftChanged := OnTopLeftChanged;
 
    SetBounds(ALeft, ATop, AWidth, (ADispRowCount+1)*(sgList.DefaultRowHeight+2)+157);
    sgList.Anchors := [akTop, akBottom, akLeft, akRight];
@@ -293,9 +295,6 @@ begin
    lblValue.Caption := i18Manager.GetString('sgConstListCol1');
    lblValue.Left := 5;
 
-   sgList.OnColWidthsChanged := OnColWidthsChanged;
-   sgList.OnTopLeftChanged := OnTopLeftChanged;
-
    if GInfra.CurrentLang.UpperCaseConstId then
       edtName.CharCase := ecUpperCase;
 
@@ -307,7 +306,6 @@ begin
 
    gbBox.Caption := i18Manager.GetString('gbConstant');
    Anchors := Anchors + [akBottom];
-
    FPlural := i18Manager.GetString('consts');
 
 end;
@@ -362,9 +360,14 @@ begin
 
    gbBox.Caption := i18Manager.GetString('gbVariable');
    Anchors := Anchors + [akBottom];
-
    FPlural := i18Manager.GetString('vars');
    
+end;
+
+procedure TDeclareList.SetCheckBoxCol(ACheckBoxCol: integer);
+begin
+   if (ACheckBoxCol >= 0) and (ACheckBoxCol < sgList.ColCount) then
+      FCheckBoxCol := ACheckBoxCol;
 end;
 
 function TDeclareList.RetrieveFocus(AInfo: TFocusInfo): boolean;
@@ -422,10 +425,11 @@ begin
    result := FId;
 end;
 
-procedure TConstDeclareList.WMSize(var Msg: TMessage);
+procedure TDeclareList.WMSize(var Msg: TMessage);
 begin
    inherited;
-   RefreshChBoxes;
+   if FCheckBoxCol <> -1 then
+      RefreshChBoxes;
 end;
 
 procedure TDeclareList.SetDefaultFocus;
@@ -523,27 +527,25 @@ begin
 end;
 
 procedure TDeclareList.OnRowMovedList(Sender: TObject; FromIndex, ToIndex: Longint);
-begin
-   UpdateCodeEditor;
-end;
-
-procedure TConstDeclareList.OnRowMovedList(Sender: TObject; FromIndex, ToIndex: Longint);
 var
    lControl: TControl;
    lPoint: TPoint;
 begin
-   inherited OnRowMovedList(Sender, FromIndex, ToIndex);
-   if sgList.Objects[CONST_CHBOX_COL, FromIndex] is TControl then
+   UpdateCodeEditor;
+   if FCheckBoxCol <> -1 then
    begin
-      lControl := TControl(sgList.Objects[CONST_CHBOX_COL, FromIndex]);
-      lPoint := GetCheckBoxPoint(CONST_CHBOX_COL, ToIndex);
-      lControl.SetBounds(lPoint.X, lPoint.Y, lControl.Width, lControl.Height);
-   end;
-   if sgList.Objects[CONST_CHBOX_COL, ToIndex] is TControl then
-   begin
-      lControl := TControl(sgList.Objects[CONST_CHBOX_COL, ToIndex]);
-      lPoint := GetCheckBoxPoint(CONST_CHBOX_COL, FromIndex);
-      lControl.SetBounds(lPoint.X, lPoint.Y, lControl.Width, lControl.Height);
+      if sgList.Objects[FCheckBoxCol, FromIndex] is TControl then
+      begin
+         lControl := TControl(sgList.Objects[FCheckBoxCol, FromIndex]);
+         lPoint := GetCheckBoxPoint(FCheckBoxCol, ToIndex);
+         lControl.SetBounds(lPoint.X, lPoint.Y, lControl.Width, lControl.Height);
+      end;
+      if sgList.Objects[FCheckBoxCol, ToIndex] is TControl then
+      begin
+         lControl := TControl(sgList.Objects[FCheckBoxCol, ToIndex]);
+         lPoint := GetCheckBoxPoint(FCheckBoxCol, FromIndex);
+         lControl.SetBounds(lPoint.X, lPoint.Y, lControl.Width, lControl.Height);
+      end;
    end;
    OnTopLeftChanged(sgList);
 end;
@@ -727,17 +729,9 @@ begin
 end;
 
 function TConstDeclareList.AddUpdateRow: integer;
-var
-   lModifying: boolean;
 begin
-   lModifying := FModifying;
    result := inherited AddUpdateRow;
    sgList.Cells[CONST_VALUE_COL, result] := edtValue.Text;
-   if not lModifying then
-   begin
-      sgList.Objects[CONST_CHBOX_COL, result] := CreateCheckBox(CONST_CHBOX_COL, result);
-      RefreshChBoxes;
-   end;
    edtValue.Clear;
    GProject.RefreshStatements;
    GProject.RefreshSizeEdits;
@@ -758,6 +752,11 @@ begin
    begin
       sgList.RowCount := sgList.RowCount + 1;
       result := sgList.RowCount - 2;
+      if FCheckBoxCol <> -1 then
+      begin
+         sgList.Objects[FCheckBoxCol, result] := CreateCheckBox(FCheckBoxCol, result);
+         RefreshChBoxes;
+      end;
    end;
    sgList.Cells[NAME_COL, result] := edtName.Text;
    edtName.Clear;
@@ -771,6 +770,8 @@ var
 begin
    with sgList do
    begin
+      if FCheckBoxCol <> -1 then
+         Objects[FCheckBoxCol, Row].Free;
       for i := Row to RowCount-2 do
          Rows[i].Assign(Rows[i+1]);
       RowCount := RowCount - 1;
@@ -782,10 +783,11 @@ begin
          btnRemove.Enabled := False;
       end;
    end;
+   OnTopLeftChanged(sgList);
    GChange := 1;
    edtName.SetFocus;
    GProject.RefreshStatements;
-   UpdateCodeEditor; 
+   UpdateCodeEditor;
 end;
 
 procedure TVarDeclareList.OnClickRemove(Sender: TObject);
@@ -796,9 +798,7 @@ end;
 
 procedure TConstDeclareList.OnClickRemove(Sender: TObject);
 begin
-   sgList.Objects[CONST_CHBOX_COL, sgList.Row].Free;
    inherited OnClickRemove(Sender);
-   OnTopLeftChanged(sgList);
    GProject.RefreshSizeEdits;
 end;
 
@@ -891,6 +891,7 @@ begin
       tag.SetAttribute(TYPE_ATTR, sgList.Cells[VAR_TYPE_COL, i]);
       tag.SetAttribute('size', sgList.Cells[VAR_SIZE_COL, i]);
       tag.SetAttribute('init', sgList.Cells[VAR_INIT_COL, i]);
+      tag.SetAttribute('extern', BoolToStr(IsExternal(i), true));
       ATag.AppendChild(tag);
    end;
    inherited ExportToXMLTag(ATag);
@@ -901,6 +902,7 @@ var
    tag: IXMLElement;
    lType, lName: string;
    idx: integer;
+   lchkExtern: TCheckBox;
 begin
    TInfra.PopulateDataTypeCombo(cbType);
    tag := TXMLProcessor.FindChildTag(ATag, VAR_TAG);
@@ -927,6 +929,12 @@ begin
          sgList.Cells[VAR_TYPE_COL, idx] := lType;
          sgList.Cells[VAR_SIZE_COL, idx] := tag.GetAttribute('size');
          sgList.Cells[VAR_INIT_COL, idx] := tag.GetAttribute('init');
+         if FCheckBoxCol <> -1 then
+         begin
+            lchkExtern := CreateCheckBox(FCheckBoxCol, idx);
+            lchkExtern.Checked := tag.GetAttribute('extern') = 'True';
+            sgList.Objects[FCheckBoxCol, idx] := lchkExtern;
+         end;
          sgList.RowCount := idx + 2;
       end;
       tag := TXMLProcessor.FindNextTag(tag);
@@ -966,9 +974,12 @@ begin
          idx := sgList.RowCount - 1;
          sgList.Cells[CONST_NAME_COL, idx] := lName;
          sgList.Cells[CONST_VALUE_COL, idx] := tag.GetAttribute('value');
-         lchkExtern := CreateCheckBox(CONST_CHBOX_COL, idx);
-         lchkExtern.Checked := tag.GetAttribute('extern') = 'True';
-         sgList.Objects[CONST_CHBOX_COL, idx] := lchkExtern;
+         if FCheckBoxCol <> -1 then
+         begin
+            lchkExtern := CreateCheckBox(FCheckBoxCol, idx);
+            lchkExtern.Checked := tag.GetAttribute('extern') = 'True';
+            sgList.Objects[FCheckBoxCol, idx] := lchkExtern;
+         end;
          sgList.RowCount := idx + 2;
       end;
       tag := TXMLProcessor.FindNextTag(tag);
@@ -988,19 +999,19 @@ begin
    ATag.SetAttribute(ID_ATTR, IntToStr(FId));
 end;
 
-function TConstDeclareList.IsExternal(const ARow: integer): boolean;
+function TDeclareList.IsExternal(const ARow: integer): boolean;
 begin
    result := false;
-   if (ARow > 0) and (ARow < sgList.RowCount-1) then
-      result := (sgList.Objects[CONST_CHBOX_COL, ARow] is TCheckBox) and TCheckBox(sgList.Objects[CONST_CHBOX_COL, ARow]).Checked;
+   if (ARow > 0) and (ARow < sgList.RowCount-1) and (FCheckBoxCol <> -1) then
+      result := (sgList.Objects[FCheckBoxCol, ARow] is TCheckBox) and TCheckBox(sgList.Objects[FCheckBoxCol, ARow]).Checked;
 end;
 
-procedure TConstDeclareList.OnClickChBox(Sender: TObject);
+procedure TDeclareList.OnClickChBox(Sender: TObject);
 begin
    UpdateCodeEditor;
 end;
 
-function TConstDeclareList.GetCheckBoxPoint(const ACol, ARow: integer): TPoint;
+function TDeclareList.GetCheckBoxPoint(const ACol, ARow: integer): TPoint;
 begin
    result := sgList.CellRect(ACol, ARow).TopLeft;
    if result.X = 0 then
@@ -1011,7 +1022,7 @@ begin
    result.Y := result.Y + sgList.Top + 5;
 end;
 
-function TConstDeclareList.CreateCheckBox(const ACol, ARow: integer): TCheckBox;
+function TDeclareList.CreateCheckBox(const ACol, ARow: integer): TCheckBox;
 var
    lPoint: TPoint;
 begin
@@ -1038,57 +1049,66 @@ begin
       OnTopLeftChanged(Self);
 end;
 
-procedure TConstDeclareList.OnColWidthsChanged(Sender: TObject);
+procedure TDeclareList.OnColWidthsChanged(Sender: TObject);
 var
    i, xPos: integer;
    lControl: TControl;
 begin
-   xPos := GetCheckBoxPoint(CONST_CHBOX_COL, 0).X;
-   for i := 1 to sgList.RowCount-2 do
+   if FCheckBoxCol <> -1 then
    begin
-      if sgList.Objects[CONST_CHBOX_COL, i] is TControl then
+      xPos := GetCheckBoxPoint(FCheckBoxCol, 0).X;
+      for i := 1 to sgList.RowCount-2 do
       begin
-         lControl := TControl(sgList.Objects[CONST_CHBOX_COL, i]);
-         lControl.Left := xPos;
-         lControl.Visible := IsRowVisible(i) and (lControl.Left <= GetRightMargin(lControl));
+         if sgList.Objects[FCheckBoxCol, i] is TControl then
+         begin
+            lControl := TControl(sgList.Objects[FCheckBoxCol, i]);
+            lControl.Left := xPos;
+            lControl.Visible := IsRowVisible(i) and (lControl.Left <= GetRightMargin(lControl));
+         end;
       end;
    end;
 end;
 
-procedure TConstDeclareList.OnTopLeftChanged(Sender: TObject);
+procedure TDeclareList.OnTopLeftChanged(Sender: TObject);
 var
    i: integer;
    lControl: TControl;
    lPoint: TPoint;
 begin
-   for i := 1 to sgList.RowCount-2 do
+   if FCheckBoxCol <> -1 then
    begin
-      if sgList.Objects[CONST_CHBOX_COL, i] is TControl then
+      for i := 1 to sgList.RowCount-2 do
       begin
-         lPoint := GetCheckBoxPoint(CONST_CHBOX_COL, i);
-         lControl := TControl(sgList.Objects[CONST_CHBOX_COL, i]);
-         lControl.SetBounds(lPoint.X, lPoint.Y, lControl.Width, lControl.Height);
+         if sgList.Objects[FCheckBoxCol, i] is TControl then
+         begin
+            lPoint := GetCheckBoxPoint(FCheckBoxCol, i);
+            lControl := TControl(sgList.Objects[FCheckBoxCol, i]);
+            lControl.SetBounds(lPoint.X, lPoint.Y, lControl.Width, lControl.Height);
+         end;
       end;
+      RefreshChBoxes;
    end;
-   RefreshChBoxes;
 end;
 
-procedure TConstDeclareList.RefreshChBoxes;
+procedure TDeclareList.RefreshChBoxes;
 var
    i: integer;
    lControl: TControl;
 begin
-   for i := 1 to sgList.RowCount-2 do
+   if FCheckBoxCol <> -1 then
    begin
-      if sgList.Objects[CONST_CHBOX_COL, i] is TControl then
+      for i := 1 to sgList.RowCount-2 do
       begin
-         lControl := TControl(sgList.Objects[CONST_CHBOX_COL, i]);
-         lControl.Visible := IsRowVisible(i) and (lControl.Left <= GetRightMargin(lControl));
+         if sgList.Objects[FCheckBoxCol, i] is TControl then
+         begin
+            lControl := TControl(sgList.Objects[FCheckBoxCol, i]);
+            lControl.Visible := IsRowVisible(i) and (lControl.Left <= GetRightMargin(lControl));
+         end;
       end;
    end;
 end;
 
-function TConstDeclareList.GetRightMargin(const AControl: TControl = nil): integer;
+function TDeclareList.GetRightMargin(const AControl: TControl = nil): integer;
 begin
    result := Width - 6;
    if AControl <> nil then

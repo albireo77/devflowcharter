@@ -138,6 +138,7 @@ begin
          GSettings.ColumnV2Width := FGlobalVars.sgList.ColWidths[1];
          GSettings.ColumnV3Width := FGlobalVars.sgList.ColWidths[2];
          GSettings.ColumnV4Width := FGlobalVars.sgList.ColWidths[3];
+         GSettings.ColumnV5Width := FGlobalVars.sgList.ColWidths[4];
       end;
       if FGlobalConsts <> nil then
       begin
@@ -524,8 +525,9 @@ begin
    begin
       if FGlobalVars = nil then
       begin
-         FGlobalVars := TVarDeclareList.Create(TInfra.GetDeclarationsForm, 2, 1, DEF_VARLIST_WIDTH, 6, 4, 279);
+         FGlobalVars := TVarDeclareList.Create(TInfra.GetDeclarationsForm, 2, 1, DEF_VARLIST_WIDTH, 6, 5, DEF_VARLIST_WIDTH-10);
          FGlobalVars.Caption := i18Manager.GetString('GlobalVars');
+         FGlobalVars.SetCheckBoxCol(4);
       end;
    end
    else
@@ -541,8 +543,9 @@ begin
             lLeft := FGlobalVars.BoundsRect.Right
          else
             lLeft := 2;
-         FGlobalConsts := TConstDeclareList.Create(TInfra.GetDeclarationsForm, lLeft, 1, DEF_CONSTLIST_WIDTH, 6, 3, 190);
+         FGlobalConsts := TConstDeclareList.Create(TInfra.GetDeclarationsForm, lLeft, 1, DEF_CONSTLIST_WIDTH, 6, 3, DEF_CONSTLIST_WIDTH-10);
          FGlobalConsts.Caption := i18Manager.GetString('GlobalConsts');
+         FGlobalConsts.SetCheckBoxCol(2);
       end;
    end
    else
@@ -560,6 +563,7 @@ begin
          FGlobalVars.sgList.ColWidths[1] := GSettings.ColumnV2Width;
          FGlobalVars.sgList.ColWidths[2] := GSettings.ColumnV3Width;
          FGlobalVars.sgList.ColWidths[3] := GSettings.ColumnV4Width;
+         FGlobalVars.sgList.ColWidths[4] := GSettings.ColumnV5Width;
       end;
    end;
    if FGlobalConsts <> nil then

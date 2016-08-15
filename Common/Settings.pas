@@ -92,6 +92,7 @@ type
       FColumnV2Width,
       FColumnV3Width,
       FColumnV4Width,
+      FColumnV5Width,
       FColumnC1Width,
       FColumnC2Width,
       FColumnC3Width: integer;
@@ -165,6 +166,7 @@ type
       property ColumnV2Width: integer read FColumnV2Width write FColumnV2Width;
       property ColumnV3Width: integer read FColumnV3Width write FColumnV3Width;
       property ColumnV4Width: integer read FColumnV4Width write FColumnV4Width;
+      property ColumnV5Width: integer read FColumnV5Width write FColumnV5Width;
       property ColumnC1Width: integer read FColumnC1Width write FColumnC1Width;
       property ColumnC2Width: integer read FColumnC2Width write FColumnC2Width;
       property ColumnC3Width: integer read FColumnC3Width write FColumnC3Width;
@@ -234,6 +236,7 @@ const
    KEY_COLV2_WIDTH = 'ColumnVariable2Width';
    KEY_COLV3_WIDTH = 'ColumnVariable3Width';
    KEY_COLV4_WIDTH = 'ColumnVariable4Width';
+   KEY_COLV5_WIDTH = 'ColumnVariable5Width';
    KEY_COLC1_WIDTH = 'ColumnConstant1Width';
    KEY_COLC2_WIDTH = 'ColumnConstant2Width';
    KEY_COLC3_WIDTH = 'ColumnConstant3Width';
@@ -298,6 +301,7 @@ begin
    FColumnV2Width  := 68;
    FColumnV3Width  := 68;
    FColumnV4Width  := 68;
+   FColumnV5Width  := 68;
    FColumnC1Width  := 73;
    FColumnC2Width  := 73;
    FColumnC3Width  := 73;
@@ -453,6 +457,8 @@ begin
             FColumnV3Width := registry.ReadInteger(KEY_COLV3_WIDTH);
          if registry.ValueExists(KEY_COLV4_WIDTH) then
             FColumnV4Width := registry.ReadInteger(KEY_COLV4_WIDTH);
+         if registry.ValueExists(KEY_COLV5_WIDTH) then
+            FColumnV5Width := registry.ReadInteger(KEY_COLV5_WIDTH);
          if registry.ValueExists(KEY_COLC1_WIDTH) then
             FColumnC1Width := registry.ReadInteger(KEY_COLC1_WIDTH);
          if registry.ValueExists(KEY_COLC2_WIDTH) then
@@ -529,6 +535,7 @@ begin
          registry.WriteInteger(KEY_COLV2_WIDTH, FColumnV2Width);
          registry.WriteInteger(KEY_COLV3_WIDTH, FColumnV3Width);
          registry.WriteInteger(KEY_COLV4_WIDTH, FColumnV4Width);
+         registry.WriteInteger(KEY_COLV5_WIDTH, FColumnV5Width);
          registry.WriteInteger(KEY_COLC1_WIDTH, FColumnC1Width);
          registry.WriteInteger(KEY_COLC2_WIDTH, FColumnC2Width);
          registry.WriteInteger(KEY_COLC3_WIDTH, FColumnC3Width);
