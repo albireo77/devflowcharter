@@ -246,7 +246,8 @@ var     // Global variables
 implementation
 
 uses
-   Printers, UserDataType, XMLProcessor, SynEditHighlighter, Main_Block, Messages, Menus;
+   Printers, UserDataType, XMLProcessor, SynEditHighlighter, Main_Block, Messages, Menus,
+   FastcodeAnsiStringReplaceUnit;
 
 type
    THackCustomEdit = class(TCustomEdit);
@@ -895,14 +896,14 @@ begin
          lCount := 0;
          lBegin := '';
          lEnd := '';
-         for a := lPos+Length(APlaceHolder) to Length(ADestList[i]) do
-            lEnd := lEnd + ADestList[i][a];
-         for a := 1 to lPos-1 do
-            lBegin := lBegin + ADestList[i][a];
-         if ATemplate <> nil then
+         if (ATemplate <> nil) and (ATemplate.Count > 0) then
          begin
+            for a := lPos+Length(APlaceHolder) to Length(ADestList[i]) do
+               lEnd := lEnd + ADestList[i][a];
+            for a := 1 to lPos-1 do
+               lBegin := lBegin + ADestList[i][a];
             lCount := ATemplate.Count;
-            lLineCount := ADestList.Count + lCount; 
+            lLineCount := ADestList.Count + lCount;
             if ADestList.Capacity < lLineCount then
                ADestList.Capacity := lLineCount;
             for a := lCount-1 downto 0 do
@@ -914,7 +915,16 @@ begin
                ADestList.InsertObject(i, lBegin + ATemplate[a] + lEnd, lObject);
             end;
          end;
-         ADestList.Delete(i+lCount);
+         if lCount = 0 then
+         begin
+            if Trim(ADestList[i]) = APlaceHolder then
+               ADestList.Delete(i)
+            else
+               ADestList[i] := FastCodeAnsiStringReplace(ADestList[i], APlaceHolder, '');
+         end
+         else
+            ADestList.Delete(i+lCount);
+         break;
       end;
       i := i + 1;
    end;
