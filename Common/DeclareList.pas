@@ -90,7 +90,8 @@ type
          destructor Destroy; override;
          function ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
          function ImportItemFromXMLTag(const ATag: IXMLElement): TErrorType; virtual;
-         procedure ExportToXMLTag(const ATag: IXMLElement); virtual;
+         procedure ExportItemToXMLTag(ATag: IXMLElement; idx: integer); virtual;
+         procedure ExportToXMLTag(const ATag: IXMLElement);
          function GetImportTag(const ATag: IXMLElement): IXMLElement; virtual;
          function RetrieveFocus(AInfo: TFocusInfo): boolean;
          function CanBeFocused: boolean;
@@ -118,7 +119,7 @@ type
          lblInit: TLabel;
          constructor Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
          function ImportItemFromXMLTag(const ATag: IXMLElement): TErrorType; override;
-         procedure ExportToXMLTag(const ATag: IXMLElement); override;
+         procedure ExportItemToXMLTag(ATag: IXMLElement; idx: integer); override;
          function GetImportTag(const ATag: IXMLElement): IXMLElement; override;
          procedure FillForList(const AList: TStrings);
          function IsValidLoopVar(const AName: string): boolean;
@@ -137,7 +138,7 @@ type
          lblValue: TLabel;
          constructor Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
          function ImportItemFromXMLTag(const ATag: IXMLElement): TErrorType; override;
-         procedure ExportToXMLTag(const ATag: IXMLElement); override;
+         procedure ExportItemToXMLTag(ATag: IXMLElement; idx: integer); override;
          function GetImportTag(const ATag: IXMLElement): IXMLElement; override;
          function GetValue(const AIdent: string): string;
    end;
@@ -883,24 +884,6 @@ begin
    end;
 end;
 
-procedure TVarDeclareList.ExportToXMLTag(const ATag: IXMLElement);
-var
-   tag: IXMLElement;
-   i: integer;
-begin
-   for i := 1 to sgList.RowCount-2 do
-   begin
-      tag := ATag.OwnerDocument.CreateElement(VAR_TAG);
-      tag.SetAttribute(NAME_ATTR, sgList.Cells[VAR_NAME_COL, i]);
-      tag.SetAttribute(TYPE_ATTR, sgList.Cells[VAR_TYPE_COL, i]);
-      tag.SetAttribute('size', sgList.Cells[VAR_SIZE_COL, i]);
-      tag.SetAttribute('init', sgList.Cells[VAR_INIT_COL, i]);
-      tag.SetAttribute('extern', BoolToStr(IsExternal(i), true));
-      ATag.AppendChild(tag);
-   end;
-   inherited ExportToXMLTag(ATag);
-end;
-
 function TDeclareList.GetImportTag(const ATag: IXMLElement): IXMLElement;
 begin
    result := ATag;
@@ -997,25 +980,41 @@ begin
    end;
 end;
 
-procedure TConstDeclareList.ExportToXMLTag(const ATag: IXMLElement);
+procedure TDeclareList.ExportToXMLTag(const ATag: IXMLElement);
 var
-   tag: IXMLElement;
    i: integer;
 begin
    for i := 1 to sgList.RowCount-2 do
-   begin
-      tag := ATag.OwnerDocument.CreateElement(CONST_TAG);
-      tag.SetAttribute(NAME_ATTR, sgList.Cells[CONST_NAME_COL, i]);
-      tag.SetAttribute('value', sgList.Cells[CONST_VALUE_COL, i]);
-      tag.SetAttribute('extern', BoolToStr(IsExternal(i), true));
-      ATag.AppendChild(tag);
-   end;
-   inherited ExportToXMLTag(ATag);
+      ExportItemToXMLTag(ATag, i);
+   ATag.SetAttribute(ID_ATTR, IntToStr(FId));
 end;
 
-procedure TDeclareList.ExportToXMLTag(const ATag: IXMLElement);
+procedure TDeclareList.ExportItemToXMLTag(ATag: IXMLElement; idx: integer);
 begin
-   ATag.SetAttribute(ID_ATTR, IntToStr(FId));
+   ATag.SetAttribute(NAME_ATTR, sgList.Cells[NAME_COL, idx]);
+   ATag.SetAttribute('extern', BoolToStr(IsExternal(idx), true));
+end;
+
+procedure TVarDeclareList.ExportItemToXMLTag(ATag: IXMLElement; idx: integer);
+var
+   tag: IXMLElement;
+begin
+   tag := ATag.OwnerDocument.CreateElement(VAR_TAG);
+   ATag.AppendChild(tag);
+   tag.SetAttribute(TYPE_ATTR, sgList.Cells[VAR_TYPE_COL, idx]);
+   tag.SetAttribute('size', sgList.Cells[VAR_SIZE_COL, idx]);
+   tag.SetAttribute('init', sgList.Cells[VAR_INIT_COL, idx]);
+   inherited ExportItemToXMLTag(tag, idx);
+end;
+
+procedure TConstDeclareList.ExportItemToXMLTag(ATag: IXMLElement; idx: integer);
+var
+   tag: IXMLElement;
+begin
+   tag := ATag.OwnerDocument.CreateElement(CONST_TAG);
+   ATag.AppendChild(tag);
+   tag.SetAttribute('value', sgList.Cells[CONST_VALUE_COL, idx]);
+   inherited ExportItemToXMLTag(tag, idx);
 end;
 
 function TDeclareList.IsExternal(const ARow: integer): boolean;
