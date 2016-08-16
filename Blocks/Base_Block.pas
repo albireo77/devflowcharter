@@ -1400,7 +1400,7 @@ var
    lFontSize: integer;
    lFontStyles: TFontStyles;
 begin
-   if GSettings.ShowBlockLabels and (AText <> '') and (Screen.Fonts.IndexOf(GInfra.CurrentLang.LabelFontName) <> -1) then
+   if GSettings.ShowBlockLabels and (AText <> '') then
    begin
       lFontName := Canvas.Font.Name;
       lFontStyles := Canvas.Font.Style;

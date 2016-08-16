@@ -88,8 +88,10 @@ type
          property ParentForm: TBaseForm read FParentForm;
          constructor Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
          destructor Destroy; override;
-         function ImportFromXMLTag(const ATag: IXMLElement): TErrorType; virtual;
+         function ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
+         function ImportItemFromXMLTag(const ATag: IXMLElement): TErrorType; virtual;
          procedure ExportToXMLTag(const ATag: IXMLElement); virtual;
+         function GetImportTag(const ATag: IXMLElement): IXMLElement; virtual;
          function RetrieveFocus(AInfo: TFocusInfo): boolean;
          function CanBeFocused: boolean;
          function GetFocusColor: TColor;
@@ -115,8 +117,9 @@ type
          lblSize,
          lblInit: TLabel;
          constructor Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
-         function ImportFromXMLTag(const ATag: IXMLElement): TErrorType; override;
+         function ImportItemFromXMLTag(const ATag: IXMLElement): TErrorType; override;
          procedure ExportToXMLTag(const ATag: IXMLElement); override;
+         function GetImportTag(const ATag: IXMLElement): IXMLElement; override;
          procedure FillForList(const AList: TStrings);
          function IsValidLoopVar(const AName: string): boolean;
          function GetDimensionCount(const AVarName: string; const AIncludeTypeDimens: boolean = false): integer;
@@ -133,8 +136,9 @@ type
          edtValue: TEdit;
          lblValue: TLabel;
          constructor Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
-         function ImportFromXMLTag(const ATag: IXMLElement): TErrorType; override;
+         function ImportItemFromXMLTag(const ATag: IXMLElement): TErrorType; override;
          procedure ExportToXMLTag(const ATag: IXMLElement); override;
+         function GetImportTag(const ATag: IXMLElement): IXMLElement; override;
          function GetValue(const AIdent: string): string;
    end;
 
@@ -897,49 +901,100 @@ begin
    inherited ExportToXMLTag(ATag);
 end;
 
-function TVarDeclareList.ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
+function TDeclareList.GetImportTag(const ATag: IXMLElement): IXMLElement;
+begin
+   result := ATag;
+end;
+
+function TVarDeclareList.GetImportTag(const ATag: IXMLElement): IXMLElement;
+begin
+   result := TXMLProcessor.FindChildTag(ATag, VAR_TAG);
+   if result = nil then
+   begin
+      result := TXMLProcessor.FindChildTag(ATag, FUNCTION_TAG);
+      if result <> nil then
+      begin
+         result := TXMLProcessor.FindChildTag(result, HEADER_TAG);
+         if result <> nil then
+            result := TXMLProcessor.FindChildTag(result, VAR_TAG);
+      end;
+   end;
+end;
+
+function TConstDeclareList.GetImportTag(const ATag: IXMLElement): IXMLElement;
+begin
+   result := TXMLProcessor.FindChildTag(ATag, CONST_TAG);
+end;
+
+function TDeclareList.ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
 var
    tag: IXMLElement;
-   lType, lName: string;
-   idx: integer;
-   lchkExtern: TCheckBox;
 begin
-   TInfra.PopulateDataTypeCombo(cbType);
-   tag := TXMLProcessor.FindChildTag(ATag, VAR_TAG);
-   if tag = nil then
-   begin
-      tag := TXMLProcessor.FindChildTag(ATag, FUNCTION_TAG);
-      if tag <> nil then
-      begin
-         tag := TXMLProcessor.FindChildTag(tag, HEADER_TAG);
-         if tag <> nil then
-            tag := TXMLProcessor.FindChildTag(tag, VAR_TAG);
-      end;
-   end;
+   if ATag <> nil then
+      FId := GProject.Register(Self, StrToIntDef(ATag.GetAttribute(ID_ATTR), ID_INVALID));
+   tag := GetImportTag(ATag);
    while tag <> nil do
    begin
-      lName := Trim(tag.GetAttribute(NAME_ATTR));
-      if (lName <> '') and (sgList.Cols[VAR_NAME_COL].IndexOf(lName) < 1) then
-      begin
-         idx := sgList.RowCount - 1;
-         sgList.Cells[VAR_NAME_COL, idx] := lName;
-         lType := tag.GetAttribute(TYPE_ATTR);
-         if cbType.Items.IndexOf(lType) = -1 then
-            lType := i18Manager.GetString('Unknown');
-         sgList.Cells[VAR_TYPE_COL, idx] := lType;
-         sgList.Cells[VAR_SIZE_COL, idx] := tag.GetAttribute('size');
-         sgList.Cells[VAR_INIT_COL, idx] := tag.GetAttribute('init');
-         if FCheckBoxCol <> -1 then
-         begin
-            lchkExtern := CreateCheckBox(FCheckBoxCol, idx);
-            lchkExtern.Checked := tag.GetAttribute('extern') = 'True';
-            sgList.Objects[FCheckBoxCol, idx] := lchkExtern;
-         end;
-         sgList.RowCount := idx + 2;
-      end;
+      ImportItemFromXMLTag(tag);
       tag := TXMLProcessor.FindNextTag(tag);
    end;
-   result := inherited ImportFromXMLTag(ATag);
+   RefreshChBoxes;
+   result := errNone;
+end;
+
+function TDeclareList.ImportItemFromXMLTag(const ATag: IXMLElement): TErrorType;
+var
+   lName: string;
+   lchkExtern: TCheckBox;
+   idx: integer;
+begin
+   result := errValidate;
+   lName := Trim(ATag.GetAttribute(NAME_ATTR));
+   if (lName <> '') and (sgList.Cols[NAME_COL].IndexOf(lName) < 1) then
+   begin
+      idx := sgList.RowCount - 1;
+      sgList.Cells[NAME_COL, idx] := lName;
+      if FCheckBoxCol <> -1 then
+      begin
+         lchkExtern := CreateCheckBox(FCheckBoxCol, idx);
+         lchkExtern.Checked := ATag.GetAttribute('extern') = 'True';
+         sgList.Objects[FCheckBoxCol, idx] := lchkExtern;
+      end;
+      result := errNone;
+   end;
+end;
+
+function TConstDeclareList.ImportItemFromXMLTag(const ATag: IXMLElement): TErrorType;
+var
+   idx: integer;
+begin
+   result := inherited ImportItemFromXMLTag(ATag);
+   if result = errNone then
+   begin
+      idx := sgList.RowCount - 1;
+      sgList.Cells[CONST_VALUE_COL, idx] := ATag.GetAttribute('value');
+      sgList.RowCount := idx + 2;
+   end;
+end;
+
+function TVarDeclareList.ImportItemFromXMLTag(const ATag: IXMLElement): TErrorType;
+var
+   lType: string;
+   idx: integer;
+begin
+   result := inherited ImportItemFromXMLTag(ATag);
+   if result = errNone then
+   begin
+      idx := sgList.RowCount - 1;
+      TInfra.PopulateDataTypeCombo(cbType);
+      lType := ATag.GetAttribute(TYPE_ATTR);
+      if cbType.Items.IndexOf(lType) = -1 then
+         lType := i18Manager.GetString('Unknown');
+      sgList.Cells[VAR_TYPE_COL, idx] := lType;
+      sgList.Cells[VAR_SIZE_COL, idx] := ATag.GetAttribute('size');
+      sgList.Cells[VAR_INIT_COL, idx] := ATag.GetAttribute('init');
+      sgList.RowCount := idx + 2;
+   end;
 end;
 
 procedure TConstDeclareList.ExportToXMLTag(const ATag: IXMLElement);
@@ -956,42 +1011,6 @@ begin
       ATag.AppendChild(tag);
    end;
    inherited ExportToXMLTag(ATag);
-end;
-
-function TConstDeclareList.ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
-var
-   tag: IXMLElement;
-   idx: integer;
-   lchkExtern: TCheckBox;
-   lName: string;
-begin
-   tag := TXMLProcessor.FindChildTag(ATag, CONST_TAG);
-   while tag <> nil do
-   begin
-      lName := Trim(tag.GetAttribute(NAME_ATTR));
-      if (lName <> '') and (sgList.Cols[CONST_NAME_COL].IndexOf(lName) < 1) then
-      begin
-         idx := sgList.RowCount - 1;
-         sgList.Cells[CONST_NAME_COL, idx] := lName;
-         sgList.Cells[CONST_VALUE_COL, idx] := tag.GetAttribute('value');
-         if FCheckBoxCol <> -1 then
-         begin
-            lchkExtern := CreateCheckBox(FCheckBoxCol, idx);
-            lchkExtern.Checked := tag.GetAttribute('extern') = 'True';
-            sgList.Objects[FCheckBoxCol, idx] := lchkExtern;
-         end;
-         sgList.RowCount := idx + 2;
-      end;
-      tag := TXMLProcessor.FindNextTag(tag);
-   end;
-   RefreshChBoxes;
-   result := inherited ImportFromXMLTag(ATag);
-end;
-
-function TDeclareList.ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
-begin
-   result := errNone;
-   FId := GProject.Register(Self, StrToIntDef(ATag.GetAttribute(ID_ATTR), ID_INVALID));
 end;
 
 procedure TDeclareList.ExportToXMLTag(const ATag: IXMLElement);

@@ -227,6 +227,7 @@ begin
    AreTypesCompatible := nil;
    GetOriginalType := nil;
    SkipFuncBodyGen := nil;
+   LabelFontName := FLOWCHART_DEFAULT_FONT_NAME;
 end;
 
 destructor TLangDefinition.Destroy;
@@ -376,7 +377,7 @@ begin
       ElseLabel := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(root, 'LabelFontName');
-   if tag <> nil then
+   if (tag <> nil) and (Screen.Fonts.IndexOf(tag.Text) <> -1) then
       LabelFontName := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(root, 'LabelFontSize');
