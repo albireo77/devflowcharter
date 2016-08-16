@@ -665,8 +665,11 @@ procedure TDeclareList.OnClickExport(Sender: TObject);
 var
    lFileName: string;
 begin
-   lFileName := GProject.Name + '_' + FPlural;
-   TXMLProcessor.ExportToXMLFile(ExportToXMLTag, lFileName);
+   if sgList.RowCount > 2 then
+   begin
+      lFileName := GProject.Name + '_' + FPlural;
+      TXMLProcessor.ExportToXMLFile(ExportToXMLTag, lFileName);
+   end;
 end;
 
 procedure TDeclareList.UpdateCodeEditor;
