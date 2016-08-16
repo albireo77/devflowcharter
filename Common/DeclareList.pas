@@ -940,7 +940,7 @@ begin
       if FCheckBoxCol <> -1 then
       begin
          lchkExtern := CreateCheckBox(FCheckBoxCol, idx);
-         lchkExtern.Checked := ATag.GetAttribute('extern') = 'True';
+         lchkExtern.Checked := ATag.GetAttribute(EXTERN_ATTR) = 'True';
          sgList.Objects[FCheckBoxCol, idx] := lchkExtern;
       end;
       result := errNone;
@@ -992,7 +992,7 @@ end;
 procedure TDeclareList.ExportItemToXMLTag(ATag: IXMLElement; idx: integer);
 begin
    ATag.SetAttribute(NAME_ATTR, sgList.Cells[NAME_COL, idx]);
-   ATag.SetAttribute('extern', BoolToStr(IsExternal(idx), true));
+   ATag.SetAttribute(EXTERN_ATTR, BoolToStr(IsExternal(idx), true));
 end;
 
 procedure TVarDeclareList.ExportItemToXMLTag(ATag: IXMLElement; idx: integer);

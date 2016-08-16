@@ -174,6 +174,7 @@ const   // Global constants
         FONT_SIZE_ATTR    = 'fontsize';
         FONT_STYLE_ATTR   = 'fontstyle';
         Z_ORDER_ATTR      = 'ZOrdVal';
+        EXTERN_ATTR       = 'extern';
         NAME_ATTR         = 'name';
         TYPE_ATTR         = 'type';
         BLOCK_TAG         = 'block';
