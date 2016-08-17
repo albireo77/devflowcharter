@@ -262,9 +262,10 @@ end;
 procedure Dummy_ConstSectionGenerator(ALines: TStringList; AConstList: TConstDeclareList);
 var
    i: integer;
-   lConstStr: string;
+   lConstStr, lExtern: string;
    lLang: TLangDefinition;
    lConstList, lConstTemplate: TStringList;
+   lIsExtern: boolean;
 begin
    lLang := GInfra.CurrentLang;
    if (AConstList <> nil) and (AConstList.sgList.RowCount > 2) and (lLang.ConstTemplate <> '') then
@@ -273,10 +274,16 @@ begin
       try
          for i := 1 to AConstList.sgList.RowCount-2 do
          begin
-            if not AConstList.IsExternal(i) then
+            lIsExtern := AConstList.IsExternal(i);
+            if (lIsExtern and lLang.GenExternVarConst) or not lIsExtern then
             begin
                lConstStr := FastCodeAnsiStringReplace(llang.ConstEntry, '%s1', AConstList.sgList.Cells[CONST_NAME_COL, i]);
                lConstStr := FastCodeAnsiStringReplace(lConstStr, '%s2', AConstList.sgList.Cells[CONST_VALUE_COL, i]);
+               if lIsExtern then
+                  lExtern := lLang.ExternEntry
+               else
+                  lExtern := '';
+               lConstStr := FastCodeAnsiStringReplace(lConstStr, '%s3', lExtern);
                lConstList.AddObject(lConstStr, AConstList);
             end;
          end;
@@ -301,8 +308,9 @@ procedure Dummy_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareLi
 var
    lLang: TLangDefinition;
    i, b, lType: integer;
-   lVarStr, lSizeStr, lInit, lRecord, lEnum: string;
+   lVarStr, lSizeStr, lInit, lRecord, lEnum, lExtern: string;
    lVarTemplate, lVarList: TStringList;
+   lIsExtern: boolean;
 begin
    lLang := GInfra.CurrentLang;
    if (AVarList <> nil) and (AVarList.sgList.RowCount > 2) and (lLang.VarTemplate <> '') then
@@ -312,32 +320,41 @@ begin
          for i := 1 to AVarList.sgList.RowCount-2 do
          begin
             lSizeStr := '';
-            for b := 1 to AVarList.GetDimensionCount(AVarList.sgList.Cells[VAR_NAME_COL, i]) do
-               lSizeStr := lSizeStr + Format(lLang.VarEntryArraySize, [AVarList.GetDimension(AVarList.sgList.Cells[VAR_NAME_COL, i], b)]);
-            if lSizeStr <> '' then
+            lIsExtern := AVarList.IsExternal(i);
+            if (lIsExtern and lLang.GenExternVarConst) or not lIsExtern then
             begin
-               lVarStr := FastCodeAnsiStringReplace(lLang.VarEntryArray, '%s1', AVarList.sgList.Cells[VAR_NAME_COL, i]);
-               lSizeStr := AnsiLeftStr(lSizeStr, Length(lSizeStr)-lLang.VarEntryArraySizeStripCount);
-               lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s3', lSizeStr);
-            end
-            else
-               lVarStr := FastCodeAnsiStringReplace(llang.VarEntry, '%s1', AVarList.sgList.Cells[VAR_NAME_COL, i]);
-            lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s2', AVarList.sgList.Cells[VAR_TYPE_COL, i]);
-            if AVarList.sgList.Cells[VAR_INIT_COL, i] <> '' then
-               lInit := FastCodeAnsiStringReplace(lLang.VarEntryInit, '%s1', AVarList.sgList.Cells[VAR_INIT_COL, i])
-            else
-               lInit := '';
-            lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s4', lInit);
-            lType := TParserHelper.GetType(AVarList.sgList.Cells[VAR_TYPE_COL, i]);
-            lRecord := '';
-            lEnum := '';
-            if TParserHelper.IsStructType(lType) then
-               lRecord := lLang.FunctionHeaderArgsEntryRecord
-            else if TParserHelper.IsEnumType(lType) then
-               lEnum := lLang.FunctionHeaderArgsEntryEnum;
-            lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s5', lRecord);
-            lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s6', lEnum);
-            lVarList.AddObject(lVarStr, AVarList);
+               for b := 1 to AVarList.GetDimensionCount(AVarList.sgList.Cells[VAR_NAME_COL, i]) do
+                  lSizeStr := lSizeStr + Format(lLang.VarEntryArraySize, [AVarList.GetDimension(AVarList.sgList.Cells[VAR_NAME_COL, i], b)]);
+               if lSizeStr <> '' then
+               begin
+                  lVarStr := FastCodeAnsiStringReplace(lLang.VarEntryArray, '%s1', AVarList.sgList.Cells[VAR_NAME_COL, i]);
+                  lSizeStr := AnsiLeftStr(lSizeStr, Length(lSizeStr)-lLang.VarEntryArraySizeStripCount);
+                  lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s3', lSizeStr);
+               end
+               else
+                  lVarStr := FastCodeAnsiStringReplace(llang.VarEntry, '%s1', AVarList.sgList.Cells[VAR_NAME_COL, i]);
+               lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s2', AVarList.sgList.Cells[VAR_TYPE_COL, i]);
+               if AVarList.sgList.Cells[VAR_INIT_COL, i] <> '' then
+                  lInit := FastCodeAnsiStringReplace(lLang.VarEntryInit, '%s1', AVarList.sgList.Cells[VAR_INIT_COL, i])
+               else
+                  lInit := '';
+               lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s4', lInit);
+               lType := TParserHelper.GetType(AVarList.sgList.Cells[VAR_TYPE_COL, i]);
+               lRecord := '';
+               lEnum := '';
+               if TParserHelper.IsStructType(lType) then
+                  lRecord := lLang.FunctionHeaderArgsEntryRecord
+               else if TParserHelper.IsEnumType(lType) then
+                  lEnum := lLang.FunctionHeaderArgsEntryEnum;
+               lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s5', lRecord);
+               lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s6', lEnum);
+               if lIsExtern then
+                  lExtern := lLang.ExternEntry
+               else
+                  lExtern := '';
+               lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s7', lExtern);
+               lVarList.AddObject(lVarStr, AVarList);
+            end;
          end;
          lVarTemplate := TStringList.Create;
          try

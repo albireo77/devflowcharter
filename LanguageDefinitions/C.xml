@@ -25,6 +25,7 @@ For all supported tags refer to Example.xml file.
     <EnabledMainProgram>1</EnabledMainProgram>
     <CaseSensitiveSyntax>1</CaseSensitiveSyntax>
     <UpperCaseConstId>0</UpperCaseConstId>
+    <GenExternVarConst>1</GenExternVarConst>
     <FuncBrackets>()</FuncBrackets>
     <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>
     <FoldRegions>
@@ -149,6 +150,8 @@ else
 
 <ElseLabel>else</ElseLabel>
 
+<ExternEntry>extern </ExternEntry>
+
 <ForDoTemplate>for (%s1 = %s2; %s1 %s4 %s3; %s1%s5)
 {
 	%b1
@@ -269,8 +272,9 @@ Available placeholders:
    %s4 - variable initial value 
    %s5 - used if variable is a record (element FunctionHeaderArgsEntryRecord)
    %s6 - used if variable is an enumeration (element FunctionHeaderArgsEntryEnum)
+   %s7 - used if variable is marked as external and GenExternVarConst element is true (element ExternEntry)
 -->
-<VarEntry>%s5%s6%s2 %s1%s4;</VarEntry>
+<VarEntry>%s7%s5%s6%s2 %s1%s4;</VarEntry>
 
 <!--
 Element VarEntryArray
@@ -278,7 +282,7 @@ Description: Entry for single array variable declaration
 Available placeholders are the same as for VarEntry element and:
    %s3 - list of array sizes (VarEntryArraySize element)
 -->
-<VarEntryArray>%s5%s6%s2 %s1%s3%s4;</VarEntryArray>
+<VarEntryArray>%s7%s5%s6%s2 %s1%s3%s4;</VarEntryArray>
 
 <!--
 Element VarEntryArraySize

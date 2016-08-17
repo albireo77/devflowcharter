@@ -14,8 +14,9 @@ Most of the tags are optional and may be removed if not needed.
     <DefaultExt>txt</DefaultExt>
     <LibraryExt>.lib</LibraryExt>
     <AssignOperator>=</AssignOperator>
-    <InOutCursorPos>-1</InOutCursorPos>    <!-- counted from end -->
-    <EnabledConsts>1</EnabledConsts>
+    <InOutCursorPos>-1</InOutCursorPos>		<!-- counted from end -->
+
+    <EnabledConsts>1</EnabledConsts>		<!-- 0 is false, 1 is true -->				
     <EnabledVars>1</EnabledVars>
     <EnabledCompiler>1</EnabledCompiler>
     <EnabledUserFunctionHeader>1</EnabledUserFunctionHeader>
@@ -28,6 +29,7 @@ Most of the tags are optional and may be removed if not needed.
     <UpperCaseConstId>1</UpperCaseConstId>
     <AllowEnumsInForLoop>1</AllowEnumsInForLoop>
     <AllowUserFunctionOverload>1</AllowUserFunctionOverload>
+    <GenExternVarConst>0</GenExternVarConst>
     <FuncBrackets>()</FuncBrackets>
     <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>	<!-- counted from end -->
     <FoldRegions>
@@ -367,6 +369,11 @@ END %s1;
 
 <ProgramReturnTemplate>/* Program ends with no value returned. */</ProgramReturnTemplate>
 
+<!--
+Element ExternEntry
+Description: Declaration modifier for external variables or constants
+-->
+<ExternEntry>extern </ExternEntry>
 
 <!--
 Element VarEntry
@@ -377,8 +384,9 @@ Available placeholders:
    %s4 - variable initial value (element VarEntryInit) 
    %s5 - used if variable is a record (element FunctionHeaderArgsEntryRecord)
    %s6 - used if variable is an enumeration (element FunctionHeaderArgsEntryEnum)
+   %s7 - used if variable is marked as external and GenExternVarConst element is true (element ExternEntry)
 -->
-<VarEntry>%s5%s6%s2 %s1%s4;</VarEntry>
+<VarEntry>%s7%s5%s6%s2 %s1%s4;</VarEntry>
 
 <!--
 Element VarEntryArray
@@ -386,7 +394,7 @@ Description: Entry for single array variable declaration
 Available placeholders are the same as for VarEntry element and:
    %s3 - list of array sizes (VarEntryArraySize element)
 -->
-<VarEntryArray>%s5%s6%s2 %s1%s3%s4;</VarEntryArray>
+<VarEntryArray>%s7%s5%s6%s2 %s1%s3%s4;</VarEntryArray>
 
 <!--
 Element VarEntryArraySize
@@ -435,6 +443,7 @@ Description: Entry for single declaration of constant
 Available placeholders:
    %s1 - constant name
    %s2 - constant value
+   %s3 - used if constant is marked as external and GenExternVarConst element is true (element ExternEntry)
 -->
 <ConstEntry>define %s1 = %s2;</ConstEntry>
 

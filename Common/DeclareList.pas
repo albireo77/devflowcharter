@@ -905,6 +905,8 @@ begin
             result := TXMLProcessor.FindChildTag(result, VAR_TAG);
       end;
    end;
+   if result <> nil then
+      TInfra.PopulateDataTypeCombo(cbType);
 end;
 
 function TConstDeclareList.GetImportTag(const ATag: IXMLElement): IXMLElement;
@@ -972,7 +974,6 @@ begin
    if result = errNone then
    begin
       idx := sgList.RowCount - 1;
-      TInfra.PopulateDataTypeCombo(cbType);
       lType := ATag.GetAttribute(TYPE_ATTR);
       if cbType.Items.IndexOf(lType) = -1 then
          lType := i18Manager.GetString('Unknown');

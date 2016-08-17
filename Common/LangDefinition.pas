@@ -132,7 +132,8 @@ type
       FunctionLabelKey,
       ProgramLabelKey,
       HighLighterVarName,
-      FuncBrackets: string;
+      FuncBrackets,
+      ExternEntry: string;
       LabelFontSize,
       FunctionHeaderArgsStripCount,
       VarEntryArraySizeStripCount,
@@ -159,7 +160,8 @@ type
       UpperCaseConstId,
       AllowEnumsInForLoop,
       AllowUserFunctionOverload,
-      RepeatUntilAsDoWhile: boolean;
+      RepeatUntilAsDoWhile,
+      GenExternVarConst: boolean;
       InOutCursorPos,
       FuncBracketsCursorPos: integer;
       PreGenerationActivities: procedure;
@@ -315,6 +317,10 @@ begin
    tag := TXMLProcessor.FindChildTag(root, 'FuncBrackets');
    if tag <> nil then
       FuncBrackets := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'ExternEntry');
+   if tag <> nil then
+      ExternEntry := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(root, 'VarTemplate');
    if tag <> nil then
@@ -679,6 +685,10 @@ begin
    tag := TXMLProcessor.FindChildTag(root, 'EnabledMainProgram');
    if tag <> nil then
       EnabledMainProgram := Odd(StrToIntDef(tag.Text, 0));
+
+   tag := TXMLProcessor.FindChildTag(root, 'GenExternVarConst');
+   if tag <> nil then
+      GenExternVarConst := Odd(StrToIntDef(tag.Text, 0));
 
    tag := TXMLProcessor.FindChildTag(root, 'CaseSensitiveSyntax');
    if tag <> nil then
