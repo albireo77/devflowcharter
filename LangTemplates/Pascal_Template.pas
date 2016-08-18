@@ -167,6 +167,8 @@ begin
          lCurrentType := GProject.GlobalVars.cbType.Items[a];
          for i := 1 to AVarList.sgList.RowCount-2 do
          begin
+            if AVarList.IsExternal(i) then
+               continue;
             lName := AVarList.sgList.Cells[VAR_NAME_COL, i];
             lType := AVarList.sgList.Cells[VAR_TYPE_COL, i];
             if lType = lCurrentType then
