@@ -156,11 +156,11 @@ end;}
 procedure Pascal_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
 var
    bufor, sizeString, lInit, lLine, lName, lType, lCurrentType: string;
-   i, a, b, dimensCount: integer;
+   i, a, b, dimensCount, lCount: integer;
 begin
    if (AVarList <> nil) and (AVarList.sgList.RowCount > 2) and (GProject <> nil) and (GProject.GlobalVars <> nil) then
    begin
-      ALines.Add('var');
+      lCount := 0;
       for a := 0 to GProject.GlobalVars.cbType.Items.Count-1 do
       begin
          bufor := '';
@@ -199,12 +199,24 @@ begin
                   lLine := lLine + lType;
                   if lInit <> '' then
                      lLine := lLine + ' = ' + lInit;
+                  if lCount = 0 then
+                  begin
+                     ALines.Add('var');
+                     lCount := 1;
+                  end;
                   ALines.AddObject(lLine + ';', AVarList);
                end;
             end;
          end;
          if bufor <> '' then
+         begin
+            if lCount = 0 then
+            begin
+               ALines.Add('var');
+               lCount := 1;
+            end;
             ALines.AddObject(GSettings.IndentString + bufor + ': ' + lCurrentType + ';', AVarList);
+         end;
       end;
    end;
 
