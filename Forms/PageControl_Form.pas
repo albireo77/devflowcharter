@@ -92,8 +92,7 @@ begin
       GClpbrd.UndoObject.Free;
       pgcTabs.OwnerDraw := true;
       GClpbrd.UndoObject := lTabComp.OverlayObject;
-      if GSettings.UpdateEditor then
-         TInfra.GetEditorForm.RefreshEditorForObject(nil);
+      TInfra.UpdateCodeEditor;
    end;
 end;
 
@@ -188,7 +187,7 @@ end;
 procedure TPageControlForm.miImportClick(Sender: TObject);
 begin
    if TXMLProcessor.ImportFromXMLFile(ImportTabsFromXMLTag) <> '' then
-      TInfra.AfterXMLImport;
+      TInfra.UpdateCodeEditor;
 end;
 
 procedure TPageControlForm.miRemoveAllClick(Sender: TObject);
@@ -211,9 +210,7 @@ begin
             end;
          end;
       end;
-      GChange := 1;
-      if GSettings.UpdateEditor then
-         TInfra.GetEditorForm.RefreshEditorForObject(nil);
+      TInfra.UpdateCodeEditor;
    end;
 end;
 
@@ -256,8 +253,7 @@ begin
       pgcTabs.Pages[idx].PageIndex := TTabSheet(Source).PageIndex;
       TTabSheet(Source).PageIndex := idx;
       RefreshTabs;
-      if GSettings.UpdateEditor then
-         TInfra.GetEditorForm.RefreshEditorForObject(nil);
+      TInfra.UpdateCodeEditor;
    end;
 end;
 

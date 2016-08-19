@@ -123,7 +123,7 @@ type
          class function GetComboMaxWidth(const ACombo: TComboBox): integer;
          class function ParentToClient(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
          class function ClientToParent(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
-         class procedure AfterXMLImport;
+         class procedure UpdateCodeEditor;
          constructor Create;
          destructor Destroy; override;
    end;
@@ -299,7 +299,7 @@ begin
    inherited Destroy;
 end;
 
-class procedure TInfra.AfterXMLImport;
+class procedure TInfra.UpdateCodeEditor;
 begin
    if GSettings.UpdateEditor then
       GetEditorForm.RefreshEditorForObject(nil);

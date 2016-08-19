@@ -64,7 +64,6 @@ type
          procedure OnDragDropList(Sender, Source: TObject; X, Y: Integer);
          procedure OnDragOverList(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
          procedure OnKeyDownCommon(Sender: TObject; var Key: Word; Shift: TShiftState);
-         procedure UpdateCodeEditor;
          function GetCheckBoxPoint(const ACol, ARow: integer): TPoint;
          procedure OnTopLeftChanged(Sender: TObject);
          function CreateCheckBox(const ACol, ARow: integer): TCheckBox;
@@ -536,7 +535,7 @@ var
    lControl: TControl;
    lPoint: TPoint;
 begin
-   UpdateCodeEditor;
+   TInfra.UpdateCodeEditor;
    if FCheckBoxCol <> -1 then
    begin
       if sgList.Objects[FCheckBoxCol, FromIndex] is TControl then
@@ -658,7 +657,7 @@ end;
 procedure TDeclareList.OnClickImport(Sender: TObject);
 begin
    if TXMLProcessor.ImportFromXMLFile(ImportFromXMLTag) <> '' then
-      TInfra.AfterXMLImport;
+      TInfra.UpdateCodeEditor;
 end;
 
 procedure TDeclareList.OnClickExport(Sender: TObject);
@@ -672,12 +671,6 @@ begin
    end;
 end;
 
-procedure TDeclareList.UpdateCodeEditor;
-begin
-   if GSettings.UpdateEditor then
-      TInfra.GetEditorForm.RefreshEditorForObject(nil);
-end;
-
 function TVarDeclareList.AddUpdateRow: integer;
 begin
    result := inherited AddUpdateRow;
@@ -688,7 +681,7 @@ begin
    edtInit.Clear;
    GProject.PopulateDataTypeCombos;
    GProject.RefreshStatements;
-   UpdateCodeEditor;
+   TInfra.UpdateCodeEditor;
 end;
 
 procedure TConstDeclareList.OnClickAdd(Sender: TObject);
@@ -743,7 +736,7 @@ begin
    edtValue.Clear;
    GProject.RefreshStatements;
    GProject.RefreshSizeEdits;
-   UpdateCodeEditor;
+   TInfra.UpdateCodeEditor;
 end;
 
 function TDeclareList.AddUpdateRow: integer;
@@ -795,7 +788,7 @@ begin
    GChange := 1;
    edtName.SetFocus;
    GProject.RefreshStatements;
-   UpdateCodeEditor;
+   TInfra.UpdateCodeEditor;
 end;
 
 procedure TVarDeclareList.OnClickRemove(Sender: TObject);
@@ -1030,7 +1023,7 @@ end;
 
 procedure TDeclareList.OnClickChBox(Sender: TObject);
 begin
-   UpdateCodeEditor;
+   TInfra.UpdateCodeEditor;
 end;
 
 function TDeclareList.GetCheckBoxPoint(const ACol, ARow: integer): TPoint;

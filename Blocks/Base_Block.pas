@@ -2032,8 +2032,7 @@ begin
             FParentBlock.ResizeWithDrawLock;
       end;
       GClpbrd.UndoObject := GetUndoObject;
-      if GSettings.UpdateEditor then
-         TInfra.GetEditorForm.RefreshEditorForObject(nil);
+      TInfra.UpdateCodeEditor;
       NavigatorForm.Repaint;
    end;
 end;

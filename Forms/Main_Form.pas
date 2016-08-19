@@ -1117,7 +1117,7 @@ begin
                lFunction.Body.Page.Form.SetScrollBars;
             end;
          end;
-         TInfra.AfterXMLImport;
+         TInfra.UpdateCodeEditor;
       end;
    end;
 end;
