@@ -592,8 +592,7 @@ begin
    end
    else if Supports(GClpbrd.UndoObject, IXMLable, lActiveObject) then
       lActiveObject.Active := true;
-   if GSettings.UpdateEditor then
-      TInfra.GetEditorForm.RefreshEditorForObject(GClpbrd.UndoObject);
+   TInfra.UpdateCodeEditor(GClpbrd.UndoObject);
    GClpbrd.UndoObject := nil;
    miUndoRemove.Enabled := false;
 end;
@@ -880,9 +879,7 @@ begin
                end;
                if lSourceBlock <> nil then
                   lNewBlock.CloneComments(lSourceBlock);
-               if GSettings.UpdateEditor then
-                  TInfra.GetEditorForm.RefreshEditorForObject(lNewBlock);
-               GChange := 1;
+               TInfra.UpdateCodeEditor(lNewBlock);
             end;
          finally
             if lLocked then
@@ -1151,8 +1148,7 @@ begin
       lCaseBlock := TCaseBlock(pmPages.PopupComponent);
       lPoint := Point(lCaseBlock.GetBranch(lCaseBlock.BranchCount).GetMostRight+60, lCaseBlock.Height-32);
       lBranch := lCaseBlock.AddBranch(lPoint, true);
-      if GSettings.UpdateEditor then
-         TInfra.GetEditorForm.RefreshEditorForObject(lBranch);
+      TInfra.UpdateCodeEditor(lBranch);
    end;
 end;
 
@@ -1170,8 +1166,7 @@ begin
       begin
          lCaseBlock := TCaseBlock(pmPages.PopupComponent);
          lCaseBlock.RemoveBranch;
-         if GSettings.UpdateEditor then
-            TInfra.GetEditorForm.RefreshEditorForObject(lCaseBlock.Branch);
+         TInfra.UpdateCodeEditor(lCaseBlock.Branch);
       end;
    end;
 end;
@@ -1255,9 +1250,7 @@ begin
    begin
       lBody := TMainBlock.Create(GProject.GetActivePage, GetMainBlockNextTopLeft);
       TUserFunction.Create(nil, lBody);
-      if GSettings.UpdateEditor then
-         TInfra.GetEditorForm.RefreshEditorForObject(lBody);
-      GChange := 1;
+      TInfra.UpdateCodeEditor(lBody);
    end;
 end;
 
@@ -1452,8 +1445,7 @@ begin
    begin
       pmTabs.PopupComponent.Free;
       NavigatorForm.Invalidate;
-      if GSettings.UpdateEditor then
-         TInfra.GetEditorForm.RefreshEditorForObject(nil);
+      TInfra.UpdateCodeEditor;
    end;
 end;
 
@@ -1648,8 +1640,7 @@ begin
    if pmPages.PopupComponent is TComment then
    begin
       TComment(pmPages.PopupComponent).IsHeader := miIsHeader.Checked;
-      if GSettings.UpdateEditor then
-         TInfra.GetEditorForm.RefreshEditorForObject(nil);
+      TInfra.UpdateCodeEditor;
    end;
 end;
 

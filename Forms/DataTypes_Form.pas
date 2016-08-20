@@ -76,9 +76,7 @@ begin
    pgcTabs.ActivePage := lDataType;
    lDataType.edtName.SetFocus;
    lDataType.edtName.OnChange(lDataType.edtName);
-   if GSettings.UpdateEditor then
-      TInfra.GetEditorForm.RefreshEditorForObject(lDataType);
-   GChange := 1;
+   TInfra.UpdateCodeEditor(lDataType);
 end;
 
 procedure TDataTypesForm.FormDeactivate(Sender: TObject);
