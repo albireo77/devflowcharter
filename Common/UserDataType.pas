@@ -300,8 +300,8 @@ end;
 
 procedure TUserDataType.ExtDeclareOnClick(Sender: TObject);
 begin
-   if GSettings.UpdateEditor and (Font.Color <> NOK_COLOR) then
-      TInfra.GetEditorForm.RefreshEditorForObject(Self);
+   if Font.Color <> NOK_COLOR then
+      TInfra.UpdateCodeEditor(Self);
 end;
 
 procedure TUserDataType.WMSize(var Msg: TMessage);
@@ -366,8 +366,8 @@ begin
    if GProject <> nil then
       GProject.RefreshStatements;
    PageControl.Refresh;
-   if GSettings.UpdateEditor and not chkExtDeclare.Checked then
-      TInfra.GetEditorForm.RefreshEditorForObject(Self);
+   if not chkExtDeclare.Checked then
+      TInfra.UpdateCodeEditor(Self);
 end;
 
 
@@ -595,8 +595,8 @@ procedure TField.OnChangeSize(Sender: TObject);
 begin
    edtSize.OnChangeSize(edtSize);
    UpdateMe;
-   if GSettings.UpdateEditor and ParentForm.UpdateCodeEditor and not TTabComponent(ParentTab).chkExtDeclare.Checked then
-      TInfra.GetEditorForm.RefreshEditorForObject(ParentTab);
+   if ParentForm.UpdateCodeEditor and not TTabComponent(ParentTab).chkExtDeclare.Checked then
+      TInfra.UpdateCodeEditor(ParentTab);
 end;
 
 function TField.IsValid: boolean;

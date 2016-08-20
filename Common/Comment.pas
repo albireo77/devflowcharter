@@ -253,8 +253,8 @@ end;
 
 procedure TComment.MyOnChange(Sender: TObject);
 begin
-   if FIsHeader and GSettings.UpdateEditor then
-      TInfra.GetEditorForm.RefreshEditorForObject(nil);
+   if FIsHeader then
+      TInfra.UpdateCodeEditor;
    NavigatorForm.Invalidate;
 end;
 

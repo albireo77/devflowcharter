@@ -940,8 +940,8 @@ begin
       if lBlock <> nil then
       begin
          lBlock.SetFontStyle(lFontStyles);
-         if (Sender = miStyleStrikeOut) and GSettings.UpdateEditor and not lBlock.SkipUpdateEditor then
-            TInfra.GetEditorForm.RefreshEditorForObject(nil);
+         if (Sender = miStyleStrikeOut) and not lBlock.SkipUpdateEditor then
+            TInfra.UpdateCodeEditor;
       end
       else if lComment <> nil then
          lComment.Font.Style := lFontStyles;
