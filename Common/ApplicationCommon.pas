@@ -884,7 +884,7 @@ end;
 
 class procedure TInfra.InsertTemplateLines(const ADestList: TStringList; const APlaceHolder: string; const ATemplate: TStringList; const AObject: TObject = nil);
 var
-   i, lCount, a, lPos, lLineCount: integer;
+   i, a, lPos: integer;
    lBegin, lEnd: string;
    lObject: TObject;
 begin
@@ -894,7 +894,6 @@ begin
       lPos := AnsiPos(APlaceHolder, ADestList[i]);
       if lPos <> 0 then
       begin
-         lCount := 0;
          lBegin := '';
          lEnd := '';
          if (ATemplate <> nil) and (ATemplate.Count > 0) then
@@ -903,11 +902,9 @@ begin
                lEnd := lEnd + ADestList[i][a];
             for a := 1 to lPos-1 do
                lBegin := lBegin + ADestList[i][a];
-            lCount := ATemplate.Count;
-            lLineCount := ADestList.Count + lCount;
-            if ADestList.Capacity < lLineCount then
-               ADestList.Capacity := lLineCount;
-            for a := lCount-1 downto 0 do
+            if ADestList.Capacity < ADestList.Count + ATemplate.Count then
+               ADestList.Capacity := ADestList.Count + ATemplate.Count;
+            for a := ATemplate.Count-1 downto 0 do
             begin
                if AObject <> nil then
                   lObject := AObject
@@ -915,8 +912,9 @@ begin
                   lObject := ATemplate.Objects[a];
                ADestList.InsertObject(i, lBegin + ATemplate[a] + lEnd, lObject);
             end;
-         end;
-         if lCount = 0 then
+            ADestList.Delete(i+ATemplate.Count);
+         end
+         else
          begin
             if Trim(ADestList[i]) = APlaceHolder then
                ADestList.Delete(i)
@@ -926,9 +924,7 @@ begin
                if AObject <> nil then
                   ADestList.Objects[i] := AObject;
             end;
-         end
-         else
-            ADestList.Delete(i+lCount);
+         end;
          break;
       end;
       i := i + 1;
