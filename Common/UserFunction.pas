@@ -256,13 +256,18 @@ begin
 end;
 
 procedure TUserFunction.SetActive(const AValue: boolean);
+var
+   lVisible: boolean;
 begin
    if FActive <> AValue then
    begin
       FActive := AValue;
       if FBody <> nil then
       begin
-         FBody.SetVisible(AValue and ((FHeader <> nil) and FHeader.chkBodyVisible.Checked));
+         lVisible := AValue;
+         if FHeader <> nil then
+            lVisible := lVisible and FHeader.chkBodyVisible.Checked;
+         FBody.SetVisible(lVisible);
          if FBody.Visible then
             FBody.RefreshStatements;
          FBody.Page.Form.SetScrollBars;
