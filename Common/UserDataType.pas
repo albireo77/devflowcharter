@@ -366,8 +366,7 @@ begin
    if GProject <> nil then
       GProject.RefreshStatements;
    PageControl.Refresh;
-   if not chkExtDeclare.Checked then
-      TInfra.UpdateCodeEditor(Self);
+   UpdateCodeEditor;
 end;
 
 
@@ -595,8 +594,8 @@ procedure TField.OnChangeSize(Sender: TObject);
 begin
    edtSize.OnChangeSize(edtSize);
    UpdateMe;
-   if ParentForm.UpdateCodeEditor and not TTabComponent(ParentTab).chkExtDeclare.Checked then
-      TInfra.UpdateCodeEditor(ParentTab);
+   if ParentForm.UpdateCodeEditor then
+      TTabComponent(ParentTab).UpdateCodeEditor;
 end;
 
 function TField.IsValid: boolean;

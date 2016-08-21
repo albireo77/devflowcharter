@@ -634,8 +634,8 @@ procedure TUserFunctionHeader.OnChangeDesc(Sender: TObject);
 begin
    if GSettings.ShowFuncLabels and chkInclDescFlow.Checked then
       DrawBodyLabel;
-   if (not chkExtDeclare.Checked) and (Font.Color <> NOK_COLOR) and chkInclDescCode.Checked then
-      TInfra.UpdateCodeEditor(Self);
+   if (Font.Color <> NOK_COLOR) and chkInclDescCode.Checked then
+      UpdateCodeEditor;
 end;
 
 procedure TUserFunctionHeader.OnDropDownBodyPage(Sender: TObject);
@@ -686,8 +686,8 @@ end;
 
 procedure TUserFunctionHeader.OnChangeType(Sender: TObject);
 begin
-   if (Font.Color <> NOK_COLOR) and not chkExtDeclare.Checked then
-      TInfra.UpdateCodeEditor(Self);
+   if Font.Color <> NOK_COLOR then
+      UpdateCodeEditor;
    GChange := 1;
    DrawBodyLabel;
 end;
@@ -771,8 +771,8 @@ end;
 
 procedure TUserFunctionHeader.OnClickInclDescCode(Sender: TObject);
 begin
-   if (Font.Color <> NOK_COLOR) and not chkExtDeclare.Checked then
-      TInfra.UpdateCodeEditor(Self);
+   if Font.Color <> NOK_COLOR then
+      UpdateCodeEditor;
 end;
 
 procedure TUserFunctionHeader.DrawBodyLabel;

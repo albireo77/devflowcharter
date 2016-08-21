@@ -87,6 +87,7 @@ type
          function CanBeRemoved: boolean;
          function IsBoldDesc: boolean;
          procedure RefreshTab;
+         procedure UpdateCodeEditor;
    end;
 
 implementation
@@ -114,6 +115,12 @@ destructor TTabComponent.Destroy;
 begin
    GProject.UnRegister(Self);
    inherited Destroy;
+end;
+
+procedure TTabComponent.UpdateCodeEditor;
+begin
+   if not chkExtDeclare.Checked then
+      TInfra.UpdateCodeEditor(Self);
 end;
 
 function TTabComponent.RetrieveFocus(AInfo: TFocusInfo): boolean;
@@ -276,8 +283,7 @@ begin
    if lElem.edtName.CanFocus then
       lElem.edtName.SetFocus;
    PageControl.Refresh;
-   if not chkExtDeclare.Checked then
-      TInfra.UpdateCodeEditor(Self);
+   UpdateCodeEditor;
 end;
 
 function TTabComponent.GetName: string;
@@ -297,8 +303,8 @@ procedure TTabComponent.OnChangeName(Sender: TObject);
 begin
    Caption := Trim(edtName.Text);
    PageControl.Refresh;
-   if FParentForm.UpdateCodeEditor and not chkExtDeclare.Checked then
-      TInfra.UpdateCodeEditor(Self);
+   if FParentForm.UpdateCodeEditor then
+      UpdateCodeEditor;
    GChange := 1;
 end;
 
