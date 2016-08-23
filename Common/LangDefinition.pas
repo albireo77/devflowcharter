@@ -56,8 +56,10 @@ type
       VarEntryArray,
       VarEntryArraySize,
       VarEntryInit,
+      VarEntryInitExtern,
       ConstTemplate,
       ConstEntry,
+      ConstEntryExtern,
       WhileTemplate,
       IfTemplate,
       IfElseTemplate,
@@ -562,9 +564,17 @@ begin
    if tag <> nil then
       ConstEntry := tag.Text;
 
+   tag := TXMLProcessor.FindChildTag(root, 'ConstEntryExtern');
+   if tag <> nil then
+      ConstEntryExtern := tag.Text;
+
    tag := TXMLProcessor.FindChildTag(root, 'VarEntryInit');
    if tag <> nil then
       VarEntryInit := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'VarEntryInitExtern');
+   if tag <> nil then
+      VarEntryInitExtern := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(root, 'VarEntry');
    if tag <> nil then
