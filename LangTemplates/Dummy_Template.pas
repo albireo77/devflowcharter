@@ -278,18 +278,11 @@ begin
             if (lIsExtern and lLang.GenExternVarConst) or not lIsExtern then
             begin
                if lIsExtern then
-               begin
-                  lConstEntry := llang.ConstEntryExtern;
-                  lExtern := lLang.ExternEntry;
-               end
+                  lConstEntry := llang.ConstEntryExtern
                else
-               begin
                   lConstEntry := llang.ConstEntry;
-                  lExtern := '';
-               end;
                lConstStr := FastCodeAnsiStringReplace(lConstEntry, '%s1', AConstList.sgList.Cells[CONST_NAME_COL, i]);
                lConstStr := FastCodeAnsiStringReplace(lConstStr, '%s2', AConstList.sgList.Cells[CONST_VALUE_COL, i]);
-               lConstStr := FastCodeAnsiStringReplace(lConstStr, '%s3', lExtern);
                lConstList.AddObject(lConstStr, AConstList);
             end;
          end;

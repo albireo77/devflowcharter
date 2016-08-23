@@ -456,11 +456,10 @@ Available placeholders:
 
 <!--
 Element ConstEntryExtern
-Description: Entry for single declaration of external constant
+Description: Entry for single declaration of external constant. Applicable if GenExternVarConst is true.
 Available placeholders:
    %s1 - constant name
    %s2 - constant value
-   %s3 - used if GenExternVarConst element is true (element ExternEntry)
 -->
 <ConstEntryExtern>define %s1 = %s2;</ConstEntryExtern>
 
