@@ -262,7 +262,7 @@ end;
 procedure Dummy_ConstSectionGenerator(ALines: TStringList; AConstList: TConstDeclareList);
 var
    i: integer;
-   lConstStr, lExtern, lConstEntry: string;
+   lConstStr, lConstEntry: string;
    lLang: TLangDefinition;
    lConstList, lConstTemplate: TStringList;
    lIsExtern: boolean;

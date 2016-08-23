@@ -371,7 +371,7 @@ END %s1;
 
 <!--
 Element ExternEntry
-Description: Declaration modifier for external variables or constants
+Description: Declaration modifier for external variables
 -->
 <ExternEntry>extern </ExternEntry>
 
