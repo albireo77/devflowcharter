@@ -135,7 +135,8 @@ type
       ProgramLabelKey,
       HighLighterVarName,
       FuncBrackets,
-      ExternEntry: string;
+      ExternEntry,
+      ConstIDSpecChars: string;
       LabelFontSize,
       FunctionHeaderArgsStripCount,
       VarEntryArraySizeStripCount,
@@ -180,7 +181,6 @@ type
       GetPointerTypeName: function (const val: string): string;
       GetLiteralType: function (const val: string): integer;
       IsPointerType: function (const AName: string): boolean;
-      ValidateConstId: function (const val: string): integer;
       GetOriginalType: function (const APtrType: string): string;
       AreTypesCompatible: function (const AType1, AType2: integer): boolean;
       Parse: function (const AText: string; const AParserMode: TParserMode): integer;
@@ -227,7 +227,6 @@ begin
    GetPointerTypeName := nil;
    IsPointerType := nil;
    Parse := nil;
-   ValidateConstId := ApplicationCommon.ValidateId;
    AreTypesCompatible := nil;
    GetOriginalType := nil;
    SkipFuncBodyGen := nil;
@@ -323,6 +322,10 @@ begin
    tag := TXMLProcessor.FindChildTag(root, 'ExternEntry');
    if tag <> nil then
       ExternEntry := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(root, 'ConstIDSpecChars');
+   if tag <> nil then
+      ConstIDSpecChars := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(root, 'VarTemplate');
    if tag <> nil then

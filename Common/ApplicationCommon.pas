@@ -124,6 +124,8 @@ type
          class function ParentToClient(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
          class function ClientToParent(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
          class procedure UpdateCodeEditor(AObject: TObject = nil);
+         function ValidateConstId(const AId: string): integer;
+         function ValidateId(const AId: string): integer;
          constructor Create;
          destructor Destroy; override;
    end;
@@ -205,6 +207,8 @@ const   // Global constants
 
         CRLF = #13#10;
 
+        ID_ALLOW_CHARS = ['a'..'z', 'A'..'Z', '0'..'9', '_'];
+
         ROW_NOT_FOUND = -1;
 
         FUNCTION_TYPE_IND = -5;
@@ -241,7 +245,6 @@ var     // Global variables
     i18Manager:     Ti18Manager;
     errString:      string;       // error string returned from parser
 
-    function ValidateId(const AIdent: string): integer;
     function CompareIntegers(AList: TStringList; idx1, idx2: integer): integer;
 
 implementation
@@ -1261,12 +1264,31 @@ begin
       result := Point(result.X - AParent.Left, result.Y - AParent.Top);
 end;
 
-function ValidateId(const AIdent: string): integer;
+function TInfra.ValidateConstId(const AId: string): integer;
+var
+   i: integer;
+begin
+   result := ValidateId(AId);
+   if (result = INCORRECT_IDENT) and (CurrentLang.ConstIDSpecChars <> '') and (AId <> '') then
+   begin
+      result := VALID_IDENT;
+      for i := 1 to Length(AId) do
+      begin
+         if (AnsiPos(AId[i], CurrentLang.ConstIDSpecChars) = 0) and not (AId[i] in ID_ALLOW_CHARS) then
+         begin
+            result := INCORRECT_IDENT;
+            break;
+         end;
+      end;
+   end;
+end;
+
+function TInfra.ValidateId(const AId: string): integer;
 begin
    result := VALID_IDENT;
-   if not IsValidIdent(AIdent) then
+   if not IsValidIdent(AId) then
       result := INCORRECT_IDENT
-   else if GInfra.CurrentLang.Keywords.IndexOf(AIdent) <> -1 then
+   else if CurrentLang.Keywords.IndexOf(AId) <> -1 then
       result := RESERVED_IDENT;
 end;
 

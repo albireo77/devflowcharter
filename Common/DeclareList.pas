@@ -600,7 +600,7 @@ var
    lEdit: TWinControl;
    lDataType: TUserDataType;
 begin
-   status := ValidateId(edtName.Text);
+   status := GInfra.ValidateId(edtName.Text);
    lType := TParserHelper.GetType(cbType.Text);
    if status <> VALID_IDENT then
    else if IsDeclared(edtName.Text, true) then
@@ -690,10 +690,8 @@ var
    lInfo: string;
    lEdit: TWinControl;
 begin
-   status := VALID_IDENT;
    const_type := GENERIC_INT_TYPE;
-   if Assigned(GInfra.CurrentLang.ValidateConstId) then
-      status := GInfra.CurrentLang.ValidateConstId(edtName.Text);
+   status := GInfra.ValidateConstId(edtName.Text);
    if status <> VALID_IDENT then
    else if IsDeclared(edtName.Text, true) then
       status := DUPLICATED_IDENT

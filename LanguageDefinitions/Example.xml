@@ -93,8 +93,8 @@ Description: Label displayed close to flowchart for body of project's main progr
 <ProgramLabelKey>ProgramLabelExample</ProgramLabelKey>
 
 <!--
-Block label elements will follow
-These will be displayed in flowchart for given blocks
+Block label elements will follow.
+Will be displayed in flowchart for given blocks.
 -->
 <LabelWhile>while</LabelWhile>
 <LabelRepeat>repeat until</LabelRepeat>
@@ -143,6 +143,13 @@ SynPasSyn1 for Pascal
 <!--
 <HighLighterVarName></HighLighterVarName>
 -->
+
+<!--
+Element ConstIDSpecChars
+Character string containing special characters that are valid in constant identifier.
+It is used for example in C to allow declaring function macros as constants.
+-->
+<ConstIDSpecChars></ConstIDSpecChars>
 
 <!--
 Elements used in code generation will follow.

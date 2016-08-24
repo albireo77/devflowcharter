@@ -384,29 +384,6 @@ begin
       result := APtrType;
 end;
 
-function C_ValidateConstId(const AValue: string): integer;
-var
-   i: integer;
-begin
-   result := VALID_IDENT;
-   if AValue <> '' then
-   begin
-      for i := 1 to Length(AValue) do
-      begin
-         if not (AValue[i] in ['a'..'z', 'A'..'Z', '0'..'9', '_', ')', '(']) or
-            ((i = 1) and not (AValue[i] in ['a'..'z', 'A'..'Z', '_'])) then
-         begin
-            result := INCORRECT_IDENT;
-            break;
-         end
-      end;
-      if (result = VALID_IDENT) and (GInfra.CurrentLang.Keywords.IndexOf(AValue) <> -1) then
-         result := RESERVED_IDENT;
-   end
-   else
-      result := INCORRECT_IDENT;
-end;
-
 function C_SkipFuncBodyGen: boolean;
 begin
    result := false;
@@ -434,7 +411,6 @@ initialization
       lLangDef.GetLiteralType := C_GetLiteralType;
       //lLangDef.GetPointerTypeName := C_GetPointerTypeName;
       lLangDef.IsPointerType := C_IsPointerType;
-      lLangDef.ValidateConstId := C_ValidateConstId;
       lLangDef.GetOriginalType := C_GetOriginalType;
       lLangDef.SkipFuncBodyGen := C_SkipFuncBodyGen;
    end;

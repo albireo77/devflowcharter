@@ -616,7 +616,7 @@ begin
    lInfo := '';
    edtName.Font.Color := NOK_COLOR;
    lFuncName := Trim(edtName.Text);
-   if ValidateId(lFuncName) <> VALID_IDENT then
+   if GInfra.ValidateId(lFuncName) <> VALID_IDENT then
       lInfo := 'BadIdD'
    else if not GInfra.CurrentLang.AllowUserFunctionOverload then
    begin

@@ -160,7 +160,7 @@ var
    lInfo: string;
    lColor: TColor;
 begin
-   if ValidateId(edtName.Text) <> VALID_IDENT then
+   if GInfra.ValidateId(edtName.Text) <> VALID_IDENT then
    begin
       lColor := NOK_COLOR;
       lInfo := 'BadIdD';
