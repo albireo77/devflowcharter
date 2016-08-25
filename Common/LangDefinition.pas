@@ -136,7 +136,8 @@ type
       HighLighterVarName,
       FuncBrackets,
       ExternEntry,
-      ConstIDSpecChars: string;
+      ConstIDSpecChars,
+      DefFilename: string;
       LabelFontSize,
       FunctionHeaderArgsStripCount,
       VarEntryArraySizeStripCount,

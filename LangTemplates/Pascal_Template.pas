@@ -44,23 +44,21 @@ In general, support for programming language in devFlowcharter can be done on 2 
        Parsers\Common\ParserFunctions.pas contains language independent routines helpful in creating various parsers.
    2c. SaveAs this template unit (e.g. Python_Template.pas), add it to devFlowcharter Delphi project and implement template procedures:
           _PreGenerationActivities
+          _ProgramHeaderSectionGenerator
           _RoutineSectionGenerator
           _MainProgramSectionGenerator
           _TypeSectionGenerator
           _VarSectionGenerator
           _ConstSectionGenerator
-          _RoutineHeaderGenerator
-          _GetRoutineDescription
+          _LibSectionGenerator
           _SetHighlighterAttributes   (should be implemented only if SynEdit highlighter component exists)
           _GetLiteralType   (function to get datatype of given literal; Example: _GetLiteralType('6.5e-2') = PASCAL_REAL_TYPE)
           _GetPointerTypeName  (function to obtain pointer datatype for given datatype; Example: _GetPointerTypeName('integer') = '^integer')
           _IsPointerType    (function to verify if given datatype is of pointer type; Example: _IsPointerType('^integer') = true)
-          _ValidateConstId   (function to verify if constant name is valid)
           _GetOriginalType    (function to obtain original datatype from given pointer data type; Example: _GetOriginalType('^integer') = 'integer')
           _Parse (function to parse expressions with internal parser)
           _GetHLighterVarName (function to obtain variable name of highlighter component from point 2a)
        If any template method is not needed, it may not be implemented at all.
-       First 7 procedures is responsible for source code generation before main section of the program.
    2d. Add language identifier string constant (e.g. PYTHON_LANG_ID) to ApplicationCommon unit.
        It should contain the same value as <Name> tag in language definition XML file.
    2e. Refer to _Block.pas units in Blocks directory. Modify GenerateCode method in _Block classes by adding new section in "if" instruction.

@@ -275,6 +275,7 @@ begin
          lLangDef := TLangDefinition.Create;
          if TXMLProcessor.ImportFromXMLFile(lLangDef.ImportLangDef, LANG_DEFS_PATH + SearchRec.Name, true) <> '' then
          begin
+            lLangDef.DefFilename := SearchRec.Name;
             SetLength(FLangArray, i+1);
             FLangArray[i] := lLangDef;
             i := i + 1;
@@ -1269,7 +1270,7 @@ var
    i: integer;
 begin
    result := ValidateId(AId);
-   if (result = INCORRECT_IDENT) and (CurrentLang.ConstIDSpecChars <> '') and (AId <> '') then
+   if (result = INCORRECT_IDENT) and (CurrentLang.ConstIDSpecChars <> '') and (Trim(AId) <> '') then
    begin
       result := VALID_IDENT;
       for i := 1 to Length(AId) do

@@ -204,6 +204,8 @@ begin
           TInfra.InsertTemplateLines(headerTemplate, '%s1', GProject.Name);
           TInfra.InsertTemplateLines(headerTemplate, '%s2', GInfra.CurrentLang.Name);
           TInfra.InsertTemplateLines(headerTemplate, '%s3', GProject.GetProgramHeader);
+          TInfra.InsertTemplateLines(headerTemplate, '%s4', DateTimeToStr(Now));
+          TInfra.InsertTemplateLines(headerTemplate, '%s5', lLang.DefFilename);
           ALines.AddStrings(headerTemplate);
        finally
           headerTemplate.Free;
