@@ -265,6 +265,7 @@ var
    idx, i: integer;
    SearchRec: TSearchRec;
    lLangDef: TLangDefinition;
+   lFile: string;
 begin
    inherited Create;
    i := 0;
@@ -272,10 +273,11 @@ begin
    try
       while idx = 0 do
       begin
+         lFile := LANG_DEFS_PATH + SearchRec.Name;
          lLangDef := TLangDefinition.Create;
-         if TXMLProcessor.ImportFromXMLFile(lLangDef.ImportLangDef, LANG_DEFS_PATH + SearchRec.Name, true) <> '' then
+         if TXMLProcessor.ImportFromXMLFile(lLangDef.ImportLangDef, lFile, true) <> '' then
          begin
-            lLangDef.DefFilename := SearchRec.Name;
+            lLangDef.DefFile := lFile;
             SetLength(FLangArray, i+1);
             FLangArray[i] := lLangDef;
             i := i + 1;

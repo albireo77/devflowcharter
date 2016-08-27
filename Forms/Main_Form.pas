@@ -542,7 +542,7 @@ end;
 
 procedure TMainForm.miAboutClick(Sender: TObject);
 begin
-    AboutForm.ShowModal;
+   AboutForm.ShowModal;
 end;
 
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -558,7 +558,7 @@ end;
 
 procedure TMainForm.OnException(Sender: TObject; E: Exception);
 var
-   msg: array[0..255] of Char;
+   msg: array[0..255] of char;
 begin
    if (ExceptAddr = nil) or (ExceptionErrorMessage(E, ExceptAddr, msg, SizeOf(msg)) = 0) then
       msg := '';

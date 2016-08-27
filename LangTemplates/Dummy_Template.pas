@@ -192,23 +192,23 @@ end;
 
 procedure Dummy_ProgramHeaderSectionGenerator(ALines: TStringList);
 var
-   headerTemplate: TStringList;
+   hdrTemplate: TStringList;
    lLang: TLangDefinition;
 begin
     lLang := GInfra.CurrentLang;
     if lLang.ProgramHeaderTemplate <> '' then
     begin
-       headerTemplate := TStringList.Create;
+       hdrTemplate := TStringList.Create;
        try
-          headerTemplate.Text := lLang.ProgramHeaderTemplate;
-          TInfra.InsertTemplateLines(headerTemplate, '%s1', GProject.Name);
-          TInfra.InsertTemplateLines(headerTemplate, '%s2', GInfra.CurrentLang.Name);
-          TInfra.InsertTemplateLines(headerTemplate, '%s3', GProject.GetProgramHeader);
-          TInfra.InsertTemplateLines(headerTemplate, '%s4', DateTimeToStr(Now));
-          TInfra.InsertTemplateLines(headerTemplate, '%s5', lLang.DefFilename);
-          ALines.AddStrings(headerTemplate);
+          hdrTemplate.Text := lLang.ProgramHeaderTemplate;
+          TInfra.InsertTemplateLines(hdrTemplate, '%s1', GProject.Name);
+          TInfra.InsertTemplateLines(hdrTemplate, '%s2', lLang.Name);
+          TInfra.InsertTemplateLines(hdrTemplate, '%s3', GProject.GetProgramHeader);
+          TInfra.InsertTemplateLines(hdrTemplate, '%s4', DateTimeToStr(Now));
+          TInfra.InsertTemplateLines(hdrTemplate, '%s5', ExtractFileName(lLang.DefFile));
+          ALines.AddStrings(hdrTemplate);
        finally
-          headerTemplate.Free;
+          hdrTemplate.Free;
        end;
     end;
 end;

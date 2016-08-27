@@ -137,7 +137,7 @@ type
       FuncBrackets,
       ExternEntry,
       ConstIDSpecChars,
-      DefFilename: string;
+      DefFile: string;
       LabelFontSize,
       FunctionHeaderArgsStripCount,
       VarEntryArraySizeStripCount,

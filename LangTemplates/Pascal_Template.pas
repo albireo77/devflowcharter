@@ -51,6 +51,8 @@ In general, support for programming language in devFlowcharter can be done on 2 
           _VarSectionGenerator
           _ConstSectionGenerator
           _LibSectionGenerator
+          _GetUserTypeDesc
+          _GetUserFuncDesc
           _SetHighlighterAttributes   (should be implemented only if SynEdit highlighter component exists)
           _GetLiteralType   (function to get datatype of given literal; Example: _GetLiteralType('6.5e-2') = PASCAL_REAL_TYPE)
           _GetPointerTypeName  (function to obtain pointer datatype for given datatype; Example: _GetPointerTypeName('integer') = '^integer')

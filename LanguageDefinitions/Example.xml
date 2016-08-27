@@ -147,7 +147,7 @@ SynPasSyn1 for Pascal
 <!--
 Element ConstIDSpecChars
 Character string containing special characters that are valid in constant identifier.
-It is used for example in C to allow declaring function macros as constants.
+It is used for example in C to allow declaring constants acting as function macros.
 -->
 <ConstIDSpecChars></ConstIDSpecChars>
 
