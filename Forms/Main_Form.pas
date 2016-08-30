@@ -1605,32 +1605,36 @@ var
    lFuncList: TStringList;
    lName: string;
 begin
-   DestroyFuncMenu;
-   lFuncList := TStringList.Create;
-   try
-      lFuncList.Sorted := true;
-      lFuncList.Duplicates := dupIgnore;
-      lFuncList.AddStrings(GInfra.CurrentLang.NativeFunctions);
-      it := GProject.GetUserFunctions;
-      while it.HasNext do
-      begin
-         lName := TUserFunction(it.Next).GetName;
-         if lName <> '' then
-            lFuncList.Add(lName);
+   result := 0;
+   if AParent <> nil then
+   begin
+      DestroyFuncMenu;
+      lFuncList := TStringList.Create;
+      try
+         lFuncList.Sorted := true;
+         lFuncList.Duplicates := dupIgnore;
+         lFuncList.AddStrings(GInfra.CurrentLang.NativeFunctions);
+         it := GProject.GetUserFunctions;
+         while it.HasNext do
+         begin
+            lName := TUserFunction(it.Next).GetName;
+            if lName <> '' then
+               lFuncList.Add(lName);
+         end;
+         SetLength(FFuncMenu, lFuncList.Count);
+         for i := 0 to lFuncList.Count-1 do
+         begin
+            FFuncMenu[i] := TMenuItem.Create(AParent);
+            FFuncMenu[i].Caption := lFuncList[i];
+            FFuncMenu[i].OnClick := FuncMenuClick;
+         end;
+         result := lFuncList.Count;
+      finally
+         lFuncList.Free;
       end;
-      SetLength(FFuncMenu, lFuncList.Count);
-      for i := 0 to lFuncList.Count-1 do
-      begin
-         FFuncMenu[i] := TMenuItem.Create(AParent);
-         FFuncMenu[i].Caption := lFuncList[i];
-         FFuncMenu[i].OnClick := FuncMenuClick;
-      end;
-      result := lFuncList.Count;
-   finally
-      lFuncList.Free;
+      if result > 0 then
+         AParent.Add(FFuncMenu);
    end;
-   if result > 0 then
-      AParent.Add(FFuncMenu);
 end;
 
 procedure TMainForm.miIsHeaderClick(Sender: TObject);
