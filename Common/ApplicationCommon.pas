@@ -262,17 +262,16 @@ var
 
 constructor TInfra.Create;
 var
-   idx, i: integer;
+   i: integer;
    SearchRec: TSearchRec;
    lLangDef: TLangDefinition;
    lFile: string;
 begin
    inherited Create;
    i := 0;
-   idx := FindFirst(LANG_DEFS_PATH + '*.xml', faAnyFile, SearchRec);
+   if FindFirst(LANG_DEFS_PATH + '*.xml', faAnyFile, SearchRec) = 0 then
    try
-      while idx = 0 do
-      begin
+      repeat
          lFile := LANG_DEFS_PATH + SearchRec.Name;
          lLangDef := TLangDefinition.Create;
          if TXMLProcessor.ImportFromXMLFile(lLangDef.ImportLangDef, lFile, true) <> '' then
@@ -284,8 +283,7 @@ begin
          end
          else
             lLangDef.Free;
-         idx := FindNext(SearchRec);
-      end;
+      until FindNext(SearchRec) <> 0;
    finally
       FindClose(SearchRec);
    end;
