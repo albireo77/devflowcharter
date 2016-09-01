@@ -1,22 +1,28 @@
 3.6.0 []
-- Flowchart: new popup menu for edit boxes with list of function calls available
+- Flowchart: new popup menu for text boxes with list of functions available
 - Flowchart: move/copy blocks within flowchart structure using drag-and-drop
+- Flowchart: add block labels (while, if, assign etc.)
+- Flowchart: enabling strikeout style for block exclude it from code generation
+- Flowchart: add export to PNG files
 - Functions: add new checkbox to show/hide flowchart (function body)
+- Explorer: simplify project tree
+- global variables can now be external
+- add XML export/import for variables/constants
+- lots of updates and new tags added to XML language definition files to enhance code generation (check LanguageDefinitions/Example.xml file for reference)
 
 IMPORTANT NOTES:
 Blocks can be now moved/copied in flowcharts by drag-and-drop.
-To move block, highlight and drag it to any red arrow. Constraints:
+To move block, highlight and drag to any red arrow. Constraints:
 - you cannot move main blocks
 - you cannot move block to inside of it
-To copy block, highlight it, hold SHIFT key and drag it to any red arrow.
-When dragging blocks to editor window to generate code, there is no need to hold SHIFT key. Before 3.6,
+To copy block, highlight it, hold SHIFT key and drag to any red arrow.
+When dragging blocks inside editor window to generate code, there is no need to hold SHIFT key. Before 3.6.0,
 you had to hold SHIFT key. 
-To enable frame for block, double click with left mouse button when it's highlighted. Before 3.6,
+To enable frame for block, double click with left mouse button when it's highlighted. Before 3.6.0,
 it could be done with single click.
-For functions, checking External declaration option now only exclude function from code generation. Before 3.6,
+For functions, checking External declaration option now only exclude function from code generation. Before 3.6.0,
 it also hid flowchart (function body).
-FuncBrackets and FuncBracketsCursorPos tags were introduced to language definition XML files. These are
-to adjust pasting function calls to edit boxes using new popup menu.
+Due to massive updates in XML language definition files, it is strongly advised to use files delivered with 3.6.0. Files copied from earlier versions may not work correctly.
 
 3.5.1 [23.07.2016]
 - fix moving comments in parent block when inserting new block

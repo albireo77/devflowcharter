@@ -420,7 +420,7 @@ begin
     Screen.Cursor := lTmpCursor;
     if lFile <> '' then
     begin
-       GProject.Name := AnsiReplaceText(ExtractFileName(lFile), '.xml', '');
+       GProject.Name := AnsiReplaceText(ExtractFileName(lFile), PROJ_FILE_EXT, '');
        GChange := 0;
        Caption := MAIN_FORM_CAPTION + lFile;
        FHistoryMenu.Add(lFile);
@@ -450,7 +450,7 @@ begin
              begin
                 Caption := MAIN_FORM_CAPTION + lFileName;
                 GProject.Name :=  ExtractFileName(lFileName);
-                GProject.Name :=  AnsiReplaceText(GProject.Name, '.xml', '');
+                GProject.Name :=  AnsiReplaceText(GProject.Name, PROJ_FILE_EXT, '');
                 FHistoryMenu.Add(lFileName);
                 GChange := 0;
              end;

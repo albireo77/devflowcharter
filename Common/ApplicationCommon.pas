@@ -188,6 +188,9 @@ const   // Global constants
         FUNCTION_TAG      = 'routine';
         HEADER_TAG        = 'header';
 
+        PROJ_FILE_EXT = '.xml';
+        DEF_FILE_EXT  = PROJ_FILE_EXT;
+
         CRLF_PLACEHOLDER  = '#!';
 
         PAGE_LIST_DELIM   = ',';
@@ -269,7 +272,7 @@ var
 begin
    inherited Create;
    i := 0;
-   if FindFirst(LANG_DEFS_PATH + '*.xml', faAnyFile, SearchRec) = 0 then
+   if FindFirst(LANG_DEFS_PATH + '*' + DEF_FILE_EXT, faAnyFile, SearchRec) = 0 then
    try
       repeat
          lFile := LANG_DEFS_PATH + SearchRec.Name;
