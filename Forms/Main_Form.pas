@@ -224,6 +224,7 @@ type
     function BuildFuncMenu(AParent: TMenuItem): integer;
     procedure DestroyFuncMenu;
     function GetOutFileFilter: string;
+    procedure AcceptFile(const AFilePath: string);
   public
     { Public declarations }
     procedure ExportSettingsToXMLTag(const root: IXMLElement); override;
@@ -419,41 +420,36 @@ begin
     lFile := TXMLProcessor.ImportFromXMLFile(GProject.ImportFromXMLTag, lFile);
     Screen.Cursor := lTmpCursor;
     if lFile <> '' then
-    begin
-       GProject.Name := TInfra.GetBaseName(lFile);
-       GChange := 0;
-       Caption := MAIN_FORM_CAPTION + lFile;
-       FHistoryMenu.Add(lFile);
-    end
+       AcceptFile(lFile)
     else
        TInfra.SetInitialSettings;
+end;
+
+procedure TMainForm.AcceptFile(const AFilePath: string);
+begin
+   Caption := MAIN_FORM_CAPTION + AFilePath;
+   GProject.Name := ChangeFileExt(ExtractFilename(AFilePath), '');
+   FHistoryMenu.Add(AFilePath);
+   GChange := 0;
 end;
 
 procedure TMainForm.miSaveAsClick(Sender: TObject);
 var
    lGraphic: TGraphic;
-   lFileName: string;
+   lFilePath: string;
 begin
     ExportDialog.FileName := GProject.Name;
     ExportDialog.Filter := GetOutFileFilter;
     ExportDialog.FilterIndex := 1;
     if ExportDialog.Execute then
     begin
-       lFileName := ExportDialog.Filename;
+       lFilePath := ExportDialog.Filename;
        if ExportDialog.FilterIndex = 1 then
        begin
-          if FileExists(lFileName) and FileIsReadOnly(lFileName) then
-             TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [lFileName], errIO)
-          else
-          begin
-             if TXMLProcessor.ExportToXMLFile(GProject.ExportToXMLTag, lFileName) = errNone then
-             begin
-                Caption := MAIN_FORM_CAPTION + lFileName;
-                GProject.Name := TInfra.GetBaseName(lFileName);
-                FHistoryMenu.Add(lFileName);
-                GChange := 0;
-             end;
-          end;
+          if FileExists(lFilePath) and FileIsReadOnly(lFilePath) then
+             TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [lFilePath], errIO)
+          else if TXMLProcessor.ExportToXMLFile(GProject.ExportToXMLTag, lFilePath) = errNone then
+             AcceptFile(lFilePath);
        end
        else
        begin
@@ -465,7 +461,7 @@ begin
           end;
           try
              GProject.ExportToGraphic(lGraphic);
-             lGraphic.SaveToFile(lFileName);
+             lGraphic.SaveToFile(lFilePath);
           finally
              lGraphic.Free;
           end;
