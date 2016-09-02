@@ -420,7 +420,7 @@ begin
     Screen.Cursor := lTmpCursor;
     if lFile <> '' then
     begin
-       GProject.Name := AnsiReplaceText(ExtractFileName(lFile), PROJ_FILE_EXT, '');
+       GProject.Name := TInfra.GetBaseName(lFile);
        GChange := 0;
        Caption := MAIN_FORM_CAPTION + lFile;
        FHistoryMenu.Add(lFile);
@@ -449,8 +449,7 @@ begin
              if TXMLProcessor.ExportToXMLFile(GProject.ExportToXMLTag, lFileName) = errNone then
              begin
                 Caption := MAIN_FORM_CAPTION + lFileName;
-                GProject.Name :=  ExtractFileName(lFileName);
-                GProject.Name :=  AnsiReplaceText(GProject.Name, PROJ_FILE_EXT, '');
+                GProject.Name := TInfra.GetBaseName(lFileName);
                 FHistoryMenu.Add(lFileName);
                 GChange := 0;
              end;

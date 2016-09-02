@@ -124,6 +124,7 @@ type
          class function ParentToClient(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
          class function ClientToParent(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
          class procedure UpdateCodeEditor(AObject: TObject = nil);
+         class function GetBaseName(const AFilePath: string): string;
          function ValidateConstId(const AId: string): integer;
          function ValidateId(const AId: string): integer;
          constructor Create;
@@ -187,9 +188,6 @@ const   // Global constants
         DATATYPE_TAG      = 'structure';
         FUNCTION_TAG      = 'routine';
         HEADER_TAG        = 'header';
-
-        PROJ_FILE_EXT = '.xml';
-        DEF_FILE_EXT  = PROJ_FILE_EXT;
 
         CRLF_PLACEHOLDER  = '#!';
 
@@ -272,7 +270,7 @@ var
 begin
    inherited Create;
    i := 0;
-   if FindFirst(LANG_DEFS_PATH + '*' + DEF_FILE_EXT, faAnyFile, SearchRec) = 0 then
+   if FindFirst(LANG_DEFS_PATH + '*.xml', faAnyFile, SearchRec) = 0 then
    try
       repeat
          lFile := LANG_DEFS_PATH + SearchRec.Name;
@@ -1294,6 +1292,12 @@ begin
       result := INCORRECT_IDENT
    else if CurrentLang.Keywords.IndexOf(AId) <> -1 then
       result := RESERVED_IDENT;
+end;
+
+class function TInfra.GetBaseName(const AFilePath: string): string;
+begin
+   result := ExtractFilename(AFilePath);
+   result := ChangeFileExt(result, '');
 end;
 
 function CompareIntegers(AList: TStringList; idx1, idx2: integer): integer;
