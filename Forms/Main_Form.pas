@@ -225,7 +225,6 @@ type
     procedure DestroyFuncMenu;
     function GetOutFileFilter: string;
     procedure AcceptFile(const AFilePath: string);
-    function ExportProjectToXML(const AFile: string): boolean;
   public
     { Public declarations }
     procedure ExportSettingsToXMLTag(const root: IXMLElement); override;
@@ -434,15 +433,6 @@ begin
    GChange := 0;
 end;
 
-function TMainForm.ExportProjectToXML(const AFile: string): boolean;
-begin
-   result := false;
-   if FileExists(AFile) and FileIsReadOnly(AFile) then
-      TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [AFile], errIO)
-   else if (GProject <> nil) and (TXMLProcessor.ExportToXMLFile(GProject.ExportToXMLTag, AFile) = errNone) then
-      result := true;
-end;
-
 procedure TMainForm.miSaveAsClick(Sender: TObject);
 var
    lGraphic: TGraphic;
@@ -456,7 +446,7 @@ begin
        lFilePath := ExportDialog.Filename;
        if ExportDialog.FilterIndex = 1 then
        begin
-          if ExportProjectToXML(lFilePath) then
+          if GProject.ExportToXMLFile(lFilePath) = errNone then
              AcceptFile(lFilePath);
        end
        else
@@ -518,7 +508,7 @@ procedure TMainForm.miSaveClick(Sender: TObject);
 begin
     if Caption = PROGRAM_NAME then
        miSaveAs.Click
-    else if ExportProjectToXML(AnsiReplaceText(Caption, MAIN_FORM_CAPTION, '')) then
+    else if (GProject <> nil) and (GProject.ExportToXMLFile(AnsiReplaceText(Caption, MAIN_FORM_CAPTION, '')) = errNone) then
        GChange := 0;
 end;
 

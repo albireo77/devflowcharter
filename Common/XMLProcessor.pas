@@ -35,7 +35,7 @@ type
 
    TXMLProcessor = class(TObject)
    public
-      class function ExportToXMLFile(AExportProc: TExportProc; const AFileName: string = ''): TErrorType;
+      class function ExportToXMLFile(AExportProc: TExportProc; const AFilePath: string = ''): TErrorType;
       class function ImportFromXMLFile(AImportProc: TImportProc; const AFileName: string = ''; const APreserveSpace: boolean = false): string;
       class function FindChildTag(const ATag: IXMLElement; const AName: string): IXMLElement;
       class function FindNextTag(const ATag: IXMLElement): IXMLElement;
@@ -252,41 +252,49 @@ begin
    end;
 end;
 
-class function TXMLProcessor.ExportToXMLFile(AExportProc: TExportProc; const AFileName: string = ''): TErrorType;
+class function TXMLProcessor.ExportToXMLFile(AExportProc: TExportProc; const AFilePath: string = ''): TErrorType;
 var
    docXML: IXMLDocument;
    lInstr: IXMLProcessingInstruction;
-   lRootTag: IXMLElement;
+   lTag: IXMLElement;
    lDialog: TSaveDialog;
-   lFileName: string;
+   lFilePath: string;
 begin
    result := errNone;
    if Assigned(AExportProc) then
    begin
-      if ExtractFilePath(AFileName) = '' then
+      if ExtractFilePath(AFilePath) = '' then
       begin
          lDialog := TInfra.GetMainForm.ExportDialog;
-         lDialog.FileName := AFileName;
+         lDialog.FileName := AFilePath;
          lDialog.Filter := i18Manager.GetString('XMLFilesFilter');
          if lDialog.Execute then
-            lFileName := lDialog.FileName
+            lFilePath := lDialog.FileName
          else
             exit;
       end
       else
-         lFileName := AFileName;
-      docXML := CreateXMLDoc;
-      lInstr := docXML.CreateProcessingInstruction('xml', XML_HEADER);
-      docXML.AppendChild(lInstr);
-      lRootTag := docXML.CreateElement('project');
-      docXML.AppendChild(lRootTag);
-      AExportProc(lRootTag);
-      try
-         docXML.Save(lFileName, ofIndent);
-      except on E: Exception do
-         begin
-            result := errIO;
-            TInfra.ShowFormattedErrorBox('SaveError', [lFileName, CRLF, E.Message], result);
+         lFilePath := AFilePath;
+      if FileExists(lFilePath) and FileIsReadOnly(lFilePath) then
+      begin
+         TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [lFilePath], errIO);
+         result := errIO;
+      end
+      else
+      begin
+         docXML := CreateXMLDoc;
+         lInstr := docXML.CreateProcessingInstruction('xml', XML_HEADER);
+         docXML.AppendChild(lInstr);
+         lTag := docXML.CreateElement('project');
+         docXML.AppendChild(lTag);
+         AExportProc(lTag);
+         try
+            docXML.Save(lFilePath, ofIndent);
+         except on E: Exception do
+            begin
+               result := errIO;
+               TInfra.ShowFormattedErrorBox('SaveError', [lFilePath, CRLF, E.Message], result);
+            end;
          end;
       end;
    end;

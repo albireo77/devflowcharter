@@ -81,6 +81,7 @@ type
       function GetUserFunction(const AFunctionName: string): TUserFunction;
       procedure ExportToGraphic(const AImage: TGraphic);
       procedure ExportToXMLTag(const ATag: IXMLElement);
+      function ExportToXMLFile(const AFile: string): TErrorType;
       procedure PaintToCanvas(const ACanvas: TCanvas);
       function ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
       function ImportUserFunctionsFromXML(const ATag: IXMLElement): TErrorType;
@@ -389,6 +390,11 @@ begin
       else
          result := result + lPageControl.Pages[i].Caption;
    end;
+end;
+
+function TProject.ExportToXMLFile(const AFile: string): TErrorType;
+begin
+   result := TXMLProcessor.ExportToXMLFile(ExportToXMLTag, AFile);
 end;
 
 procedure TProject.ExportToXMLTag(const ATag: IXMLElement);
