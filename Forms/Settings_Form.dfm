@@ -957,7 +957,7 @@ object SettingsForm: TSettingsForm
       Tag = 8
       Left = 392
       Top = 96
-      Width = 145
+      Width = 153
       Height = 17
       Caption = 'Enable double buffering'
       Font.Charset = DEFAULT_CHARSET
