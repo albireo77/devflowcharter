@@ -225,6 +225,7 @@ type
     procedure DestroyFuncMenu;
     function GetOutFileFilter: string;
     procedure AcceptFile(const AFilePath: string);
+    function ExportProjectToXML(const AFile: string): boolean;
   public
     { Public declarations }
     procedure ExportSettingsToXMLTag(const root: IXMLElement); override;
@@ -433,6 +434,15 @@ begin
    GChange := 0;
 end;
 
+function TMainForm.ExportProjectToXML(const AFile: string): boolean;
+begin
+   result := false;
+   if FileExists(AFile) and FileIsReadOnly(AFile) then
+      TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [AFile], errIO)
+   else if (GProject <> nil) and (TXMLProcessor.ExportToXMLFile(GProject.ExportToXMLTag, AFile) = errNone) then
+      result := true;
+end;
+
 procedure TMainForm.miSaveAsClick(Sender: TObject);
 var
    lGraphic: TGraphic;
@@ -446,9 +456,7 @@ begin
        lFilePath := ExportDialog.Filename;
        if ExportDialog.FilterIndex = 1 then
        begin
-          if FileExists(lFilePath) and FileIsReadOnly(lFilePath) then
-             TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [lFilePath], errIO)
-          else if TXMLProcessor.ExportToXMLFile(GProject.ExportToXMLTag, lFilePath) = errNone then
+          if ExportProjectToXML(lFilePath) then
              AcceptFile(lFilePath);
        end
        else
@@ -507,19 +515,11 @@ begin
 end;
 
 procedure TMainForm.miSaveClick(Sender: TObject);
-var
-   lFileName: string;
 begin
     if Caption = PROGRAM_NAME then
        miSaveAs.Click
-    else if GProject <> nil then
-    begin
-       lFileName := AnsiReplaceText(Caption, MAIN_FORM_CAPTION, '');
-       if FileExists(lFileName) and FileIsReadOnly(lFileName) then
-          TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [lFileName], errIO)
-       else if TXMLProcessor.ExportToXMLFile(GProject.ExportToXMLTag, lFileName) = errNone then
-          GChange := 0;
-    end;
+    else if ExportProjectToXML(AnsiReplaceText(Caption, MAIN_FORM_CAPTION, '')) then
+       GChange := 0;
 end;
 
 procedure TMainForm.miPrintClick(Sender: TObject);
