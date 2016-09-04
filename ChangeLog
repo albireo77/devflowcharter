@@ -1,4 +1,4 @@
-3.6.0 []
+3.6.0 [04.09.2016]
 - Flowchart: new popup menu for text boxes with list of functions available
 - Flowchart: move/copy blocks within flowchart structure using drag-and-drop
 - Flowchart: add block labels (while, if, assign etc.)
@@ -9,6 +9,7 @@
 - global variables can now be external
 - add XML export/import for variables/constants
 - lots of updates and new tags added to XML language definition files to enhance code generation (check LanguageDefinitions/Example.xml file for reference)
+- add German translation (thanks to Rudi Wagner)
 
 IMPORTANT NOTES:
 Blocks can be now moved/copied in flowcharts by drag-and-drop.
