@@ -394,7 +394,7 @@ begin
 
    tag := TXMLProcessor.FindChildTag(root, 'LabelFontSize');
    if tag <> nil then
-      LabelFontSize := StrToIntDef(tag.Text, 12);
+      LabelFontSize := StrToIntDef(tag.Text, 10);
 
    tag := TXMLProcessor.FindChildTag(root, 'LabelRepeat');
    if tag <> nil then
