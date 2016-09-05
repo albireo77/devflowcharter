@@ -1139,7 +1139,6 @@ begin
       lBlock := TBlock(pmPages.PopupComponent);
       lBitmap := TBitmap.Create;
       try
-         lBlock.ClearSelection;
          lBlock.ExportToGraphic(lBitmap);
          TInfra.PrintBitmap(lBitmap);
       finally
