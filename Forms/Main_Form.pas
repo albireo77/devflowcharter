@@ -426,7 +426,7 @@ end;
 
 procedure TMainForm.miSaveAsClick(Sender: TObject);
 begin
-   TInfra.ExportToFile(GProject, true);
+   TInfra.ExportToFile(GProject);
 end;
 
 procedure TMainForm.miGenerateClick(Sender: TObject);

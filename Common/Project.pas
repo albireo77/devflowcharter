@@ -404,6 +404,8 @@ end;
 function TProject.ExportToXMLFile(const AFile: string): TErrorType;
 begin
    result := TXMLProcessor.ExportToXMLFile(ExportToXMLTag, AFile);
+   if result = errNone then
+      TInfra.GetMainForm.AcceptFile(AFile);
 end;
 
 procedure TProject.ExportToXMLTag(const ATag: IXMLElement);
