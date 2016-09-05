@@ -51,7 +51,7 @@ type
    TGroupBlock = class;
    TBranch = class;
 
-   TBlock = class(TCustomControl, IIdentifiable, IFocusable)
+   TBlock = class(TCustomControl, IIdentifiable, IFocusable, IExportable)
       private
          FParentBlock: TGroupBlock;
          FParentBranch: TBranch;
@@ -151,7 +151,7 @@ type
          function CanInsertReturnBlock: boolean; virtual;
          procedure ExportToXMLTag(const ATag: IXMLElement);
          function ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
-         procedure ExportToGraphic(const AImage: TGraphic); virtual;
+         procedure ExportToGraphic(const AGraphic: TGraphic); virtual;
          procedure UpdateEditor(AEdit: TCustomEdit); virtual;
          function SkipUpdateEditor: boolean;
          function RetrieveFocus(AInfo: TFocusInfo): boolean; virtual;
@@ -182,6 +182,8 @@ type
          procedure CloneComments(const ASource: TBlock);
          procedure ImportCommentsFromXML(const ATag: IXMLElement);
          procedure CloneFrom(ABlock: TBlock); virtual;
+         function GetExportFileName: string; virtual;
+         function ExportToXMLFile(const AFile: string): TErrorType; virtual;
       published
          property Color;
          property OnMouseDown;
@@ -2101,6 +2103,11 @@ begin
    end;
 end;
 
+function TBlock.ExportToXMLFile(const AFile: string): TErrorType;
+begin
+   result := TXMLProcessor.ExportToXMLFile(ExportToXMLTag, AFile);
+end;
+
 procedure TGroupBlock.SetVisible(const AVisible: boolean; const ASetComments: boolean = true);
 begin
    inherited SetVisible(AVisible, Expanded);
@@ -2509,6 +2516,11 @@ procedure TBlock.PopulateComboBoxes;
 begin
 end;
 
+function TBlock.GetExportFileName: string;
+begin
+   result := '';
+end;
+
 function TBlock.GetFocusColor: TColor;
 var
    lEdit: TCustomEdit;
@@ -2551,15 +2563,16 @@ begin
       result := FastCodeAnsiStringReplace(GInfra.CurrentLang.GetTemplateExpr(ClassType), PRIMARY_PLACEHOLDER, Trim(lTextControl.Text));
 end;
 
-procedure TBlock.ExportToGraphic(const AImage: TGraphic);
+procedure TBlock.ExportToGraphic(const AGraphic: TGraphic);
 var
    lBitmap: TBitmap;
    iterc: IIterator;
    lComment: TComment;
    lPoint: TPoint;
 begin
-   if AImage is TBitmap then
-      lBitmap := TBitmap(AImage)
+   ClearSelection;
+   if AGraphic is TBitmap then
+      lBitmap := TBitmap(AGraphic)
    else
       lBitmap := TBitmap.Create;
    lBitmap.Width := Width + 2;
@@ -2579,9 +2592,9 @@ begin
       lBitmap.Canvas.Unlock;
       TMainBlock(FTopParentBlock).ShowI := true;
    end;
-   if AImage <> lBitmap then
+   if AGraphic <> lBitmap then
    begin
-      AImage.Assign(lBitmap);
+      AGraphic.Assign(lBitmap);
       lBitmap.Free;
    end;
 end;

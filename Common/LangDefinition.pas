@@ -232,6 +232,7 @@ begin
    GetOriginalType := nil;
    SkipFuncBodyGen := nil;
    LabelFontName := FLOWCHART_DEFAULT_FONT_NAME;
+   LabelFontSize := LABEL_DEFAULT_FONT_SIZE;
 end;
 
 destructor TLangDefinition.Destroy;
@@ -394,7 +395,7 @@ begin
 
    tag := TXMLProcessor.FindChildTag(root, 'LabelFontSize');
    if tag <> nil then
-      LabelFontSize := StrToIntDef(tag.Text, 10);
+      LabelFontSize := StrToIntDef(tag.Text, LABEL_DEFAULT_FONT_SIZE);
 
    tag := TXMLProcessor.FindChildTag(root, 'LabelRepeat');
    if tag <> nil then

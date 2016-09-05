@@ -28,7 +28,7 @@ interface
 uses
   Windows, Graphics, Controls, Forms, StdCtrls, ExtCtrls, Menus, Printers,
   ImgList, Clipbrd, Types, OmniXML, SysUtils, Classes, ShellApi, StrUtils, Base_Form,
-  Messages, History, Dialogs, ComCtrls;
+  Messages, History, Dialogs, ComCtrls, CommonInterfaces;
 
 type
 
@@ -219,12 +219,10 @@ type
     procedure miIsHeaderClick(Sender: TObject);
   private
     { Private declarations }
-    FHistoryMenu: THistoryMenu;
     FClockPos: TClockPos;
+    FHistoryMenu: THistoryMenu;
     function BuildFuncMenu(AParent: TMenuItem): integer;
     procedure DestroyFuncMenu;
-    function GetOutFileFilter: string;
-    procedure AcceptFile(const AFilePath: string);
   public
     { Public declarations }
     procedure ExportSettingsToXMLTag(const root: IXMLElement); override;
@@ -232,6 +230,7 @@ type
     function ConfirmSave: integer;
     function GetDisplayedRect: TRect;
     function GetMainBlockNextTopLeft: TPoint;
+    procedure AcceptFile(const AFilePath: string);
   end;
 
 var
@@ -243,8 +242,8 @@ implementation
 uses
    Toolbox_Form, ApplicationCommon, About_Form, Main_Block, ParseGlobals, LocalizationManager,
    XMLProcessor, UserFunction, ForDo_Block, Return_Block, Project, Declarations_Form,
-   Base_Block, Comment, Case_Block, jpeg, CommonInterfaces, Navigator_Form, CommonTypes,
-   LangDefinition, EditMemo_Form, BlockFactory, BlockTabSheet, pngimage;
+   Base_Block, Comment, Case_Block, Navigator_Form, CommonTypes, LangDefinition,
+   EditMemo_Form, BlockFactory, BlockTabSheet;
 
 type
    TDerivedControl = class(TControl);
@@ -425,46 +424,9 @@ begin
        TInfra.SetInitialSettings;
 end;
 
-procedure TMainForm.AcceptFile(const AFilePath: string);
-begin
-   Caption := MAIN_FORM_CAPTION + AFilePath;
-   GProject.Name := ChangeFileExt(ExtractFilename(AFilePath), '');
-   FHistoryMenu.Add(AFilePath);
-   GChange := 0;
-end;
-
 procedure TMainForm.miSaveAsClick(Sender: TObject);
-var
-   lGraphic: TGraphic;
-   lFilePath: string;
 begin
-    ExportDialog.FileName := GProject.Name;
-    ExportDialog.Filter := GetOutFileFilter;
-    ExportDialog.FilterIndex := 1;
-    if ExportDialog.Execute then
-    begin
-       lFilePath := ExportDialog.Filename;
-       if ExportDialog.FilterIndex = 1 then
-       begin
-          if GProject.ExportToXMLFile(lFilePath) = errNone then
-             AcceptFile(lFilePath);
-       end
-       else
-       begin
-          case ExportDialog.FilterIndex of
-             3: lGraphic := TPNGObject.Create;
-             4: lGraphic := TJPEGImage.Create;
-          else
-                lGraphic := TBitmap.Create;
-          end;
-          try
-             GProject.ExportToGraphic(lGraphic);
-             lGraphic.SaveToFile(lFilePath);
-          finally
-             lGraphic.Free;
-          end;
-       end
-    end;
+   TInfra.ExportToFile(GProject, true);
 end;
 
 procedure TMainForm.miGenerateClick(Sender: TObject);
@@ -1017,54 +979,12 @@ begin
       NavigatorForm.Visible := not NavigatorForm.Visible
 end;
 
-function TMainForm.GetOutFileFilter: string;
-begin
-   result := i18Manager.GetString('XMLFilesFilter') + '|' +
-             i18Manager.GetString('BMPFilesFilter') + '|' +
-             i18Manager.GetString('PNGFilesFilter') + '|' +
-             i18Manager.GetString('JPGFilesFilter');
-end;
-
 procedure TMainForm.miExportClick(Sender: TObject);
 var
-   lBlock: TBlock;
-   lGraphic: TGraphic;
-   lExportProc: TExportProc;
+   lExportable: IExportable;
 begin
-   if pmPages.PopupComponent is TBlock then
-   begin
-      lBlock := TBlock(pmPages.PopupComponent);
-      ExportDialog.Filename := '';
-      ExportDialog.Filter := GetOutFileFilter;
-      ExportDialog.FilterIndex := 1;
-      if ExportDialog.Execute then
-      begin
-         if ExportDialog.FilterIndex = 1 then
-         begin
-            if lBlock is TMainBlock then
-               lExportProc := TUserFunction(TMainBlock(lBlock).UserFunction).ExportToXMLTag
-            else
-               lExportProc := lBlock.ExportToXMLTag;
-            TXMLProcessor.ExportToXMLFile(lExportProc, ExportDialog.Filename);
-         end
-         else
-         begin
-            case ExportDialog.FilterIndex of
-               3: lGraphic := TPNGObject.Create;
-               4: lGraphic := TJPEGImage.Create;
-            else
-                  lGraphic := TBitmap.Create;
-            end;
-            try
-               lBlock.ClearSelection;
-               lblock.ExportToGraphic(lGraphic);
-               lGraphic.SaveToFile(ExportDialog.Filename);
-            finally
-               lGraphic.Free;
-            end;
-         end;
-      end;
-   end;
+   if Supports(pmPages.PopupComponent, IExportable, lExportable) then
+      TInfra.ExportToFile(lExportable);
 end;
 
 procedure TMainForm.miImportClick(Sender: TObject);
@@ -1173,6 +1093,14 @@ begin
             lBlock.UnLockDrawing;
       end;
    end;
+end;
+
+procedure TMainForm.AcceptFile(const AFilePath: string);
+begin
+   Caption := MAIN_FORM_CAPTION + AFilePath;
+   GProject.Name := ChangeFileExt(ExtractFilename(AFilePath), '');
+   FHistoryMenu.Add(AFilePath);
+   GChange := 0;
 end;
 
 procedure TMainForm.ExportSettingsToXMLTag(const root: IXMLElement);

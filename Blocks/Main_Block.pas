@@ -56,6 +56,8 @@ type
          function IsBoldDesc: boolean; override;
          function Remove: boolean; override;
          procedure DrawLabel;
+         function ExportToXMLFile(const AFile: string): TErrorType; override;
+         function GetExportFileName: string; override;
       protected
          FZOrder: integer;
          FStartLabel,
@@ -280,6 +282,7 @@ var
    lBStyle: TBorderStyle;
    lStart: integer;
 begin
+   ClearSelection;
    if AImage is TBitmap then
       lBitmap := TBitmap(AImage)
    else
@@ -398,6 +401,16 @@ begin
          ARect.Right := ARect.Right + lDelta;
       end;
    end;
+end;
+
+function TMainBlock.GetExportFileName: string;
+begin
+   result := TUserFunction(UserFunction).GetName;
+end;
+
+function TMainBlock.ExportToXMLFile(const AFile: string): TErrorType;
+begin
+   result := TXMLProcessor.ExportToXMLFile(TUserFunction(UserFunction).ExportToXMLTag, AFile);
 end;
 
 procedure TMainBlock.DrawLabel;

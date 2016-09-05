@@ -24,7 +24,7 @@ unit CommonInterfaces;
 interface
 
 uses
-   Classes, Controls, StdCtrls, OmniXML, Graphics, Types, ComCtrls, Forms;
+   Classes, Controls, StdCtrls, OmniXML, Graphics, Types, ComCtrls, Forms, CommonTypes;
 
 const
    ID_INVALID      = -1;
@@ -114,6 +114,13 @@ type
       function GetObjectIndex(const AObject: TObject): integer;
       procedure Reverse;
       property Count: integer read GetCount;
+   end;
+
+   IExportable = interface
+      ['{3AB6F6EE-5088-4791-8C11-620A1F768269}']
+      function ExportToXMLFile(const AFile: string): TErrorType;
+      procedure ExportToGraphic(const AGraphic: TGraphic);
+      function GetExportFileName: string;
    end;
 
 implementation

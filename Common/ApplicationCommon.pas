@@ -124,6 +124,8 @@ type
          class function ParentToClient(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
          class function ClientToParent(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
          class procedure UpdateCodeEditor(AObject: TObject = nil);
+         class procedure ExportToFile(AExport: IExportable; AAcceptFile: boolean = false);
+         class function GetExportFileFilter: string;
          function ValidateConstId(const AId: string): integer;
          function ValidateId(const AId: string): integer;
          constructor Create;
@@ -157,6 +159,7 @@ const   // Global constants
 
         EDITOR_DEFAULT_INDENT_LENGTH = 2;
         EDITOR_DEFAULT_FONT_SIZE = 10;
+        LABEL_DEFAULT_FONT_SIZE = 10;
         EDITOR_DEFAULT_GUTTER_FONT_SIZE = 8;
         
         INDENT_CHAR     = #32;         // space
@@ -251,7 +254,7 @@ implementation
 
 uses
    Printers, UserDataType, XMLProcessor, SynEditHighlighter, Main_Block, Messages, Menus,
-   FastcodeAnsiStringReplaceUnit;
+   FastcodeAnsiStringReplaceUnit, Dialogs, pngimage, jpeg;
 
 type
    THackCustomEdit = class(TCustomEdit);
@@ -357,6 +360,53 @@ begin
       end;
    finally
       lRegistry.Free;
+   end;
+end;
+
+class function TInfra.GetExportFileFilter: string;
+begin
+   result := i18Manager.GetString('XMLFilesFilter') + '|' +
+             i18Manager.GetString('BMPFilesFilter') + '|' +
+             i18Manager.GetString('PNGFilesFilter') + '|' +
+             i18Manager.GetString('JPGFilesFilter');
+end;
+
+class procedure TInfra.ExportToFile(AExport: IExportable; AAcceptFile: boolean = false);
+var
+   lGraphic: TGraphic;
+   lFilePath: string;
+   lDialog: TSaveDialog;
+begin
+   if AExport <> nil then
+   begin
+      lDialog := GetMainForm.ExportDialog;
+      lDialog.FileName := AExport.GetExportFileName;
+      lDialog.Filter := GetExportFileFilter;
+      lDialog.FilterIndex := 1;
+      if lDialog.Execute then
+      begin
+         lFilePath := lDialog.Filename;
+         if lDialog.FilterIndex = 1 then
+         begin
+            if (AExport.ExportToXMLFile(lFilePath) = errNone) and AAcceptFile then
+               GetMainForm.AcceptFile(lFilePath);
+         end
+         else
+         begin
+            case lDialog.FilterIndex of
+               3: lGraphic := TPNGObject.Create;
+               4: lGraphic := TJPEGImage.Create;
+            else
+               lGraphic := TBitmap.Create;
+            end;
+            try
+               AExport.ExportToGraphic(lGraphic);
+               lGraphic.SaveToFile(lFilePath);
+            finally
+               lGraphic.Free;
+            end;
+         end
+      end;
    end;
 end;
 

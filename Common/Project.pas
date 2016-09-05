@@ -33,7 +33,7 @@ type
    TBaseIteratorFriend = class(TBaseIterator)
    end;
 
-   TProject = class(TObject)
+   TProject = class(TObject, IExportable)
    private
       FGlobalVars: TVarDeclareList;
       FGlobalConsts: TConstDeclareList;
@@ -55,6 +55,9 @@ type
       function GetComponentByName(const AClassName: string; const AName: string): TComponent;
       function GetIWinControlComponent(const AHandle: THandle): IWinControl;
       procedure RefreshZOrder;
+      function _AddRef: Integer; stdcall;
+      function _Release: Integer; stdcall;
+      function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
       constructor Create;
    public
       Name: string;
@@ -79,7 +82,7 @@ type
       function GetUserDataTypes: IIterator;
       function GetUserDataType(const ATypeName: string): TUserDataType;
       function GetUserFunction(const AFunctionName: string): TUserFunction;
-      procedure ExportToGraphic(const AImage: TGraphic);
+      procedure ExportToGraphic(const AGraphic: TGraphic);
       procedure ExportToXMLTag(const ATag: IXMLElement);
       function ExportToXMLFile(const AFile: string): TErrorType;
       procedure PaintToCanvas(const ACanvas: TCanvas);
@@ -111,6 +114,7 @@ type
       function GetPageOrder: string;
       function FindMainBlockForControl(const AControl: TControl): TMainBlock;
       function GetProgramHeader: string;
+      function GetExportFileName: string;
    end;
 
 implementation
@@ -211,6 +215,11 @@ end;
 function TProject.GetActivePage: TBlockTabSheet;
 begin
    result := TBlockTabSheet(TInfra.GetMainForm.pgcPages.ActivePage);
+end;
+
+function TProject.GetExportFileName: string;
+begin
+   result := Name;
 end;
 
 procedure TProject.PopulateDataTypes;
@@ -795,22 +804,22 @@ begin
    end;
 end;
 
-procedure TProject.ExportToGraphic(const AImage: TGraphic);
+procedure TProject.ExportToGraphic(const AGraphic: TGraphic);
 var
    lPoint: TPoint;
    lBitmap: TBitmap;
 begin
-   if AImage is TBitmap then
-      lBitmap := TBitmap(AImage)
+   if AGraphic is TBitmap then
+      lBitmap := TBitmap(AGraphic)
    else
       lBitmap := TBitmap.Create;
    lPoint := GetBottomRight;
    lBitmap.Width := lPoint.X;
    lBitmap.Height := lPoint.Y;
    PaintToCanvas(lBitmap.Canvas);
-   if AImage <> lBitmap then
+   if AGraphic <> lBitmap then
    begin
-      AImage.Assign(lBitmap);
+      AGraphic.Assign(lBitmap);
       lBitmap.Free;
    end;
 end;
@@ -1124,6 +1133,24 @@ begin
          end;
       end;
    end;
+end;
+
+function TProject.QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+begin
+   if GetInterface(IID, Obj) then
+      result := 0
+   else
+      result := E_NOINTERFACE;
+end;
+
+function TProject._AddRef: Integer; stdcall;    // no reference counting
+begin
+   result := -1;
+end;
+
+function TProject._Release: Integer; stdcall;
+begin
+   result := -1;
 end;
 
 initialization
