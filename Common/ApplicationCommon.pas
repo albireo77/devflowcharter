@@ -125,7 +125,6 @@ type
          class function ClientToParent(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
          class procedure UpdateCodeEditor(AObject: TObject = nil);
          class procedure ExportToFile(AExport: IExportable);
-         class function GetExportFileFilter: string;
          function ValidateConstId(const AId: string): integer;
          function ValidateId(const AId: string): integer;
          constructor Create;
@@ -363,14 +362,6 @@ begin
    end;
 end;
 
-class function TInfra.GetExportFileFilter: string;
-begin
-   result := i18Manager.GetString('XMLFilesFilter') + '|' +
-             i18Manager.GetString('BMPFilesFilter') + '|' +
-             i18Manager.GetString('PNGFilesFilter') + '|' +
-             i18Manager.GetString('JPGFilesFilter');
-end;
-
 class procedure TInfra.ExportToFile(AExport: IExportable);
 var
    lGraphic: TGraphic;
@@ -380,7 +371,10 @@ begin
    begin
       lDialog := GetMainForm.ExportDialog;
       lDialog.FileName := AExport.GetExportFileName;
-      lDialog.Filter := GetExportFileFilter;
+      lDialog.Filter := i18Manager.GetString('XMLFilesFilter') + '|' +
+                        i18Manager.GetString('BMPFilesFilter') + '|' +
+                        i18Manager.GetString('PNGFilesFilter') + '|' +
+                        i18Manager.GetString('JPGFilesFilter');
       lDialog.FilterIndex := 1;
       if lDialog.Execute then
       begin
