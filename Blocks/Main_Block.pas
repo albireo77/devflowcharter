@@ -405,12 +405,16 @@ end;
 
 function TMainBlock.GetExportFileName: string;
 begin
-   result := TUserFunction(UserFunction).GetName;
+   result := '';
+   if UserFunction <> nil then
+      result := TUserFunction(UserFunction).GetName;
 end;
 
 function TMainBlock.ExportToXMLFile(const AFile: string): TErrorType;
 begin
-   result := TXMLProcessor.ExportToXMLFile(TUserFunction(UserFunction).ExportToXMLTag, AFile);
+   result := errNone;
+   if UserFunction <> nil then
+      result := TXMLProcessor.ExportToXMLFile(TUserFunction(UserFunction).ExportToXMLTag, AFile);
 end;
 
 procedure TMainBlock.DrawLabel;
@@ -615,7 +619,7 @@ end;
 function TMainBlock.Remove: boolean;
 begin
    result := inherited Remove;
-   if result then
+   if result and (UserFunction <> nil) then
       TUserFunction(UserFunction).Active := false;
 end;
 
