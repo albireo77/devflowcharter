@@ -33,7 +33,7 @@ type
    TBaseIteratorFriend = class(TBaseIterator)
    end;
 
-   TProject = class(TObject, IExportable)
+   TProject = class(TComponent, IExportable)
    private
       FGlobalVars: TVarDeclareList;
       FGlobalConsts: TConstDeclareList;
@@ -55,9 +55,6 @@ type
       function GetComponentByName(const AClassName: string; const AName: string): TComponent;
       function GetIWinControlComponent(const AHandle: THandle): IWinControl;
       procedure RefreshZOrder;
-      function _AddRef: Integer; stdcall;
-      function _Release: Integer; stdcall;
-      function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
       constructor Create;
    public
       Name: string;
@@ -128,7 +125,7 @@ var
 
 constructor TProject.Create;
 begin
-   inherited Create;
+   inherited Create(Application);
    FObjectIds := TStringList.Create;
    FComponentList := TComponentList.Create;
 end;
@@ -1135,24 +1132,6 @@ begin
          end;
       end;
    end;
-end;
-
-function TProject.QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
-begin
-   if GetInterface(IID, Obj) then
-      result := 0
-   else
-      result := E_NOINTERFACE;
-end;
-
-function TProject._AddRef: Integer; stdcall;    // no reference counting
-begin
-   result := -1;
-end;
-
-function TProject._Release: Integer; stdcall;
-begin
-   result := -1;
 end;
 
 initialization
