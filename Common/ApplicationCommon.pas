@@ -124,7 +124,7 @@ type
          class function ParentToClient(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
          class function ClientToParent(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
          class procedure UpdateCodeEditor(AObject: TObject = nil);
-         class procedure ExportToFile(AExport: IExportable);
+         class function ExportToFile(AExport: IExportable): TErrorType;
          function ValidateConstId(const AId: string): integer;
          function ValidateId(const AId: string): integer;
          constructor Create;
@@ -362,11 +362,12 @@ begin
    end;
 end;
 
-class procedure TInfra.ExportToFile(AExport: IExportable);
+class function TInfra.ExportToFile(AExport: IExportable): TErrorType;
 var
    lGraphic: TGraphic;
    lDialog: TSaveDialog;
 begin
+   result := errNone;
    if AExport <> nil then
    begin
       lDialog := GetMainForm.ExportDialog;
@@ -380,11 +381,10 @@ begin
       begin
          lGraphic := nil;
          case lDialog.FilterIndex of
+            1: result := AExport.ExportToXMLFile(lDialog.Filename);
             2: lGraphic := TBitmap.Create;
             3: lGraphic := TPNGObject.Create;
             4: lGraphic := TJPEGImage.Create;
-         else
-            AExport.ExportToXMLFile(lDialog.Filename);
          end;
          if lGraphic <> nil then
          try

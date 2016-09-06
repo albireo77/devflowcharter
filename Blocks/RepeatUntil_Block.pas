@@ -99,8 +99,6 @@ begin
 end;
 
 procedure TRepeatUntilBlock.Paint;
-var
-   lLeftLabel, lRightLabel: string;
 begin
    inherited;
    if Expanded then
