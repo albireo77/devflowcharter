@@ -405,7 +405,6 @@ end;
 
 function TMainBlock.GetExportFileName: string;
 begin
-   result := '';
    if UserFunction <> nil then
       result := TUserFunction(UserFunction).GetName
    else
@@ -414,7 +413,6 @@ end;
 
 function TMainBlock.ExportToXMLFile(const AFile: string): TErrorType;
 begin
-   result := errNone;
    if UserFunction <> nil then
       result := TXMLProcessor.ExportToXMLFile(TUserFunction(UserFunction).ExportToXMLTag, AFile)
    else
