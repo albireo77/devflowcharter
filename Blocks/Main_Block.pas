@@ -407,14 +407,18 @@ function TMainBlock.GetExportFileName: string;
 begin
    result := '';
    if UserFunction <> nil then
-      result := TUserFunction(UserFunction).GetName;
+      result := TUserFunction(UserFunction).GetName
+   else
+      result := inherited GetExportFileName;
 end;
 
 function TMainBlock.ExportToXMLFile(const AFile: string): TErrorType;
 begin
    result := errNone;
    if UserFunction <> nil then
-      result := TXMLProcessor.ExportToXMLFile(TUserFunction(UserFunction).ExportToXMLTag, AFile);
+      result := TXMLProcessor.ExportToXMLFile(TUserFunction(UserFunction).ExportToXMLTag, AFile)
+   else
+      result := inherited ExportToXMLFile(AFile);
 end;
 
 procedure TMainBlock.DrawLabel;
