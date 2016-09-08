@@ -33,7 +33,7 @@ type
    TBaseIteratorFriend = class(TBaseIterator)
    end;
 
-   TProject = class(TComponent, IExportable)
+   TProject = class(TInterfacedPersistent, IExportable)
    private
       FGlobalVars: TVarDeclareList;
       FGlobalConsts: TConstDeclareList;
@@ -125,7 +125,7 @@ var
 
 constructor TProject.Create;
 begin
-   inherited Create(Application);
+   inherited Create;
    FObjectIds := TStringList.Create;
    FComponentList := TComponentList.Create;
 end;
