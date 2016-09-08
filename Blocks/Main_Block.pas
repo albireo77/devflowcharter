@@ -48,7 +48,7 @@ type
          procedure SaveInXML(const ATag: IXMLElement); override;
          procedure PaintToCanvas(const ACanvas: TCanvas);
          function GetMaxBounds: TPoint;
-         procedure ExportToGraphic(const AImage: TGraphic); override;
+         procedure ExportToGraphic(const AGraphic: TGraphic); override;
          procedure SetWidth(const AMinX: integer); override;
          function GetHandle: THandle;
          procedure SetZOrder(const AValue: integer);
@@ -273,7 +273,7 @@ begin
       result := Handle;
 end;
 
-procedure TMainBlock.ExportToGraphic(const AImage: TGraphic);
+procedure TMainBlock.ExportToGraphic(const AGraphic: TGraphic);
 var
    lBitmap: TBitmap;
    lPoint: TPoint;
@@ -283,8 +283,8 @@ var
    lStart: integer;
 begin
    ClearSelection;
-   if AImage is TBitmap then
-      lBitmap := TBitmap(AImage)
+   if AGraphic is TBitmap then
+      lBitmap := TBitmap(AGraphic)
    else
       lBitmap := TBitmap.Create;
    lPoint := GetMaxBounds;
@@ -314,9 +314,9 @@ begin
    end;
    lBitmap.Canvas.Unlock;
    ShowI := true;
-   if AImage <> lBitmap then
+   if AGraphic <> lBitmap then
    begin
-      AImage.Assign(lBitmap);
+      AGraphic.Assign(lBitmap);
       lBitmap.Free;
    end;
 end;

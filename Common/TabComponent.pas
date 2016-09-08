@@ -25,14 +25,14 @@ interface
 
 uses
    Classes, ComCtrls, Forms, CommonInterfaces, OmniXML, StdCtrls, Element, ExtCtrls,
-   Controls, PageControl_Form, Graphics, Menus;
+   Controls, PageControl_Form, Windows, Graphics, Menus, CommonTypes;
 
 type
 
    TElementIteratorFriend = class(TElementIterator)
    end;
 
-   TTabComponent = class(TTabSheet, IXMLable, IIdentifiable, ITabbable, ISizeEditable, ISortable, IFocusable)
+   TTabComponent = class(TTabSheet, IXMLable, IIdentifiable, ITabbable, ISizeEditable, ISortable, IFocusable, IExportable)
       private
          FParentForm: TPageControlForm;
          FId: integer;
@@ -67,6 +67,9 @@ type
          constructor Create(const AParentForm: TPageControlForm);
          destructor Destroy; override;
          procedure ExportToXMLTag(const ATag: IXMLElement); virtual;
+         function ExportToXMLFile(const AFile: string): TErrorType;
+         procedure ExportToGraphic(const AGraphic: TGraphic);
+         function GetExportFileName: string;
          function IsDuplicated(ANameEdit: TEdit): boolean;
          procedure Localize(const AList: TStringList); virtual;
          procedure ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil); virtual;
@@ -93,8 +96,7 @@ type
 implementation
 
 uses
-   ApplicationCommon, SysUtils, XMLProcessor, Contnrs, SortListDecorator, Windows,
-   Messages;
+   ApplicationCommon, SysUtils, XMLProcessor, Contnrs, SortListDecorator, Messages;
 
 constructor TTabComponent.Create(const AParentForm: TPageControlForm);
 begin
@@ -161,6 +163,36 @@ procedure TTabComponent.OnChangeLib(Sender: TObject);
 begin
    if (Font.Color <> NOK_COLOR) and chkExtDeclare.Checked then
       TInfra.UpdateCodeEditor(Self);
+end;
+
+function TTabComponent.ExportToXMLFile(const AFile: string): TErrorType;
+begin
+   result := TXMLProcessor.ExportToXMLFile(ExportToXMLTag, AFile);
+end;
+
+function TTabComponent.GetExportFileName: string;
+begin
+   result := edtName.Text;
+end;
+
+procedure TTabComponent.ExportToGraphic(const AGraphic: TGraphic);
+var
+   lBitmap: TBitmap;
+begin
+   if AGraphic is TBitmap then
+      lBitmap := TBitmap(AGraphic)
+   else
+      lBitmap := TBitmap.Create;
+   lBitmap.Width := Width;
+   lBitmap.Height := Height;
+   lBitmap.Canvas.Lock;
+   PaintTo(lBitmap.Canvas, 0, 0);
+   lBitmap.Canvas.Unlock;
+   if AGraphic <> lBitmap then
+   begin
+      AGraphic.Assign(lBitmap);
+      lBitmap.Free;
+   end;
 end;
 
 procedure TTabComponent.SetActive(const AValue: boolean);

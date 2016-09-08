@@ -78,7 +78,7 @@ implementation
 {$R *.dfm}
 
 uses
-   ApplicationCommon, XMLProcessor, TabComponent, StrUtils;
+   ApplicationCommon, XMLProcessor, TabComponent, StrUtils, CommonInterfaces;
 
 procedure TPageControlForm.miRemoveClick(Sender: TObject);
 var
@@ -145,23 +145,21 @@ end;
 procedure TPageControlForm.ExportTabsToXMLTag(const ATag: IXMLElement);
 var
    i: integer;
+   lXMLable: IXMLable;
 begin
    for i:= 0 to pgcTabs.PageCount-1 do
    begin
-      if pgcTabs.Pages[i].TabVisible then
-         TTabComponent(pgcTabs.Pages[i]).ExportToXMLTag(ATag);
+      if pgcTabs.Pages[i].TabVisible and Supports(pgcTabs.Pages[i], IXMLable, lXMLable) then
+         lXMLable.ExportToXMLTag(ATag);
    end;
 end;
 
 procedure TPageControlForm.miExportClick(Sender: TObject);
 var
-   lTab: TTabComponent;
+   lExportable: IExportable;
 begin
-   if pgcTabs.ActivePage <> nil then
-   begin
-      lTab := TTabComponent(pgcTabs.ActivePage);
-      TXMLProcessor.ExportToXMLFile(lTab.ExportToXMLTag, lTab.edtName.Text);
-   end;
+   if Supports(pgcTabs.ActivePage, IExportable, lExportable) then
+      TInfra.ExportToFile(lExportable);
 end;
 
 procedure TPageControlForm.miExportAllClick(Sender: TObject);
