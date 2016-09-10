@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Base_Form, Base_Block;
+  StdCtrls, Base_Form, Base_Block;
 
 type
   TMemoEditorForm = class(TBaseForm)
@@ -28,7 +28,7 @@ var
 implementation
 
 uses
-   ApplicationCommon;
+   ApplicationCommon, Dialogs;
 
 {$R *.dfm}
 
@@ -78,7 +78,10 @@ procedure TMemoEditorForm.FormCreate(Sender: TObject);
 begin
    memEditor.DoubleBuffered := true;
    if (i18Manager.LoadStaticLabels(GSettings.TranslateFile) = 0) and (i18Manager.LoadDefaultLabels = 0) then
+   begin
+      ShowMessage('Failed to load translation labels. Application will terminate.');
       Application.Terminate;
+   end;
 end;
 
 end.
