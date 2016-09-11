@@ -53,12 +53,10 @@ type
     procedure miRemoveClick(Sender: TObject);
     procedure Localize(const AList: TStringList); override;
     procedure ResetForm; override;
-    procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
-      MousePos: TPoint; var Handled: Boolean);
-    procedure FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
-      MousePos: TPoint; var Handled: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure chkAutoNavClick(Sender: TObject);
+    procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
   private
     { Private declarations }
     FErrWarnCount: TErrWarnCount;
@@ -339,21 +337,15 @@ begin
    end;
 end;
 
-procedure TExplorerForm.FormMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+procedure TExplorerForm.FormMouseWheel(Sender: TObject; Shift: TShiftState;
+   WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 begin
    if (ssCtrl in Shift) and (tvExplorer.Selected <> nil) then
    begin
-      tvExplorer.Selected := tvExplorer.Selected.GetPrevVisible;
-      Handled := true;
-   end;
-end;
-
-procedure TExplorerForm.FormMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
-begin
-   if (ssCtrl in Shift) and (tvExplorer.Selected <> nil) then
-   begin
-      tvExplorer.Selected := tvExplorer.Selected.GetNextVisible;
-      Handled := true;
+      if WheelDelta < 0 then
+         tvExplorer.Selected := tvExplorer.Selected.GetNextVisible
+      else
+         tvExplorer.Selected := tvExplorer.Selected.GetPrevVisible;
    end;
 end;
 

@@ -12,8 +12,7 @@ object ExplorerForm: TExplorerForm
   OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
-  OnMouseWheelDown = FormMouseWheelDown
-  OnMouseWheelUp = FormMouseWheelUp
+  OnMouseWheel = FormMouseWheel
   OnShow = FormShow
   DesignSize = (
     292

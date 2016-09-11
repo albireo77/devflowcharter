@@ -167,10 +167,6 @@ type
     procedure miSize8Click(Sender: TObject);
     procedure miCopyClick(Sender: TObject);
     procedure miRemoveClick(Sender: TObject);
-    procedure FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
-      MousePos: TPoint; var Handled: Boolean);
-    procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
-      MousePos: TPoint; var Handled: Boolean);
     procedure miSubRoutinesClick(Sender: TObject);
     procedure miExportClick(Sender: TObject);
     procedure miImportClick(Sender: TObject);
@@ -217,6 +213,8 @@ type
     procedure FuncMenuClick(Sender: TObject);
     procedure miRemove1Click(Sender: TObject);
     procedure miIsHeaderClick(Sender: TObject);
+    procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
   private
     { Private declarations }
     FClockPos: TClockPos;
@@ -945,21 +943,15 @@ begin
    GChange := 1;
 end;
 
-procedure TMainForm.FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
-  MousePos: TPoint; var Handled: Boolean);
+procedure TMainForm.FormMouseWheel(Sender: TObject; Shift: TShiftState;
+   WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 var
    lWord: Word;
 begin
-   lWord := VK_DOWN;
-   FormKeyDown(Self, lWord, [ssCtrl]);
-end;
-
-procedure TMainForm.FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
-  MousePos: TPoint; var Handled: Boolean);
-var
-   lWord: Word;
-begin
-   lWord := VK_UP;
+   if WheelDelta < 0 then
+      lWord := VK_DOWN
+   else
+      lWord := VK_UP;
    FormKeyDown(Self, lWord, [ssCtrl]);
 end;
 

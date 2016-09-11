@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 197
-  Top = 122
+  Left = 303
+  Top = 207
   HorzScrollBar.Tracking = True
   VertScrollBar.Tracking = True
   Align = alCustom
@@ -24,8 +24,7 @@ object MainForm: TMainForm
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
-  OnMouseWheelDown = FormMouseWheelDown
-  OnMouseWheelUp = FormMouseWheelUp
+  OnMouseWheel = FormMouseWheel
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13

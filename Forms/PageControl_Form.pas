@@ -53,10 +53,6 @@ type
     procedure ExportTabsToXMLTag(const ATag: IXMLElement);
     function ImportTabsFromXMLTag(const ATag: IXMLElement): TErrorType; virtual; abstract;
     procedure FormDeactivate(Sender: TObject); virtual;
-    procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
-      MousePos: TPoint; var Handled: Boolean);
-    procedure FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
-      MousePos: TPoint; var Handled: Boolean);
     procedure RefreshTabs; virtual;
     procedure Localize(const list: TStringList); override;
     procedure pgcTabsDragDrop(Sender, Source: TObject; X, Y: Integer);
@@ -65,6 +61,8 @@ type
     procedure pgcTabsMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure ResetForm; override;
+    procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
   private
     procedure ScrollElements(const AValue: integer);
   public
@@ -223,16 +221,10 @@ begin
       GProject.RefreshStatements;
 end;
 
-procedure TPageControlForm.FormMouseWheelUp(Sender: TObject;
-  Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+procedure TPageControlForm.FormMouseWheel(Sender: TObject; Shift: TShiftState;
+   WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 begin
-   ScrollElements(-2);
-end;
-
-procedure TPageControlForm.FormMouseWheelDown(Sender: TObject;
-  Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
-begin
-   ScrollElements(2);
+   ScrollElements(-WheelDelta div 10);
 end;
 
 procedure TPageControlForm.ScrollElements(const AValue: integer);

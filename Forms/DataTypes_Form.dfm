@@ -17,8 +17,7 @@ object DataTypesForm: TDataTypesForm
   OldCreateOrder = True
   Position = poMainFormCenter
   OnDeactivate = FormDeactivate
-  OnMouseWheelDown = FormMouseWheelDown
-  OnMouseWheelUp = FormMouseWheelUp
+  OnMouseWheel = FormMouseWheel
   PixelsPerInch = 96
   TextHeight = 13
   inherited pgcTabs: TPageControl

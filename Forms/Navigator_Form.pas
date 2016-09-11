@@ -55,8 +55,7 @@ begin
    scbAlphaVal.Position := GSettings.NavigatorAlphaValue;
    scbAlphaVal.OnKeyDown := MainForm.OnKeyDown;
    chkAlphaVisible.Checked := GSettings.NavigatorAlphaVisible;
-   OnMouseWheelUp := MainForm.OnMouseWheelUp;
-   OnMouseWheelDown := MainForm.OnMouseWheelDown;
+   OnMouseWheel := MainForm.OnMouseWheel;
 end;
 
 procedure TNavigatorForm.FormPaint(Sender: TObject);

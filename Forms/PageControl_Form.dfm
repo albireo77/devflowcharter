@@ -13,8 +13,7 @@ object PageControlForm: TPageControlForm
   OldCreateOrder = False
   Position = poMainFormCenter
   OnDeactivate = FormDeactivate
-  OnMouseWheelDown = FormMouseWheelDown
-  OnMouseWheelUp = FormMouseWheelUp
+  OnMouseWheel = FormMouseWheel
   PixelsPerInch = 96
   TextHeight = 13
   object pgcTabs: TPageControl
