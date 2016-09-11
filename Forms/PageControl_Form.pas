@@ -63,8 +63,6 @@ type
     procedure ResetForm; override;
     procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
-  private
-    procedure ScrollElements(const AValue: integer);
   public
     UpdateCodeEditor: boolean;
     { Public declarations }
@@ -223,14 +221,15 @@ end;
 
 procedure TPageControlForm.FormMouseWheel(Sender: TObject; Shift: TShiftState;
    WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+var
+   lTab: TTabComponent;
 begin
-   ScrollElements(-WheelDelta div 10);
-end;
-
-procedure TPageControlForm.ScrollElements(const AValue: integer);
-begin
-   if (pgcTabs.ActivePage <> nil) and not TTabComponent(pgcTabs.ActivePage).HasFocusedComboBox then
-      TTabComponent(pgcTabs.ActivePage).ScrollElements(AValue);
+   if pgcTabs.ActivePage is TTabComponent then
+   begin
+      lTab := TTabComponent(pgcTabs.ActivePage);
+      if not lTab.HasFocusedComboBox then
+         lTab.ScrollElements(-WheelDelta div 10);
+   end;
 end;
 
 procedure TPageControlForm.pgcTabsDragDrop(Sender, Source: TObject; X, Y: Integer);
