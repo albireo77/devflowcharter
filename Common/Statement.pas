@@ -168,8 +168,7 @@ end;
 
 procedure TStatement.CreateParams(var Params: TCreateParams);
 const
-   Alignments: array[Boolean, TAlignment] of Longint =
-    ((ES_LEFT, ES_RIGHT, ES_CENTER),(ES_RIGHT, ES_LEFT, ES_CENTER));
+   Alignments: array[boolean, TAlignment] of longint = ((ES_LEFT, ES_RIGHT, ES_CENTER), (ES_RIGHT, ES_LEFT, ES_CENTER));
 begin
    inherited CreateParams(Params);
    Params.Style := Params.Style {or ES_MULTILINE} or Alignments[UseRightToLeftAlignment, FAlignment];
