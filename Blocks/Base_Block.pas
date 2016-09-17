@@ -1959,7 +1959,7 @@ begin
       if TInfra.IsNOkColor(lColor) then
       begin
          result := AEdit.Hint;
-         i := LastDelimiter(#10, result);
+         i := LastDelimiter(CRLF, result);
          if i > 0 then
             result := ' - ' + AnsiRightStr(result, Length(result)-i);
       end;
