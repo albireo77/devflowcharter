@@ -74,7 +74,6 @@ type
          class function ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
          class function ShowFormattedQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
          class procedure SetInitialSettings;
-         class function RPos(const AChar: char; const AString: string): integer;
          class function FindText(ASubstr, AText: string; const AStartIndex: integer; const ACaseSens: boolean): integer;
          class function IsPrinter: boolean;
          class function IsValid(const AObject: TObject): boolean;
@@ -714,21 +713,6 @@ begin
         Printer.EndDoc
      else
         ShowErrorBox(i18Manager.GetFormattedString('PrintError', [CRLF, SysErrorMessage(last_err)]), errPrinter);
-   end;
-end;
-
-class function TInfra.RPos(const AChar: char; const AString: string): integer;
-var
-   i: integer;
-begin
-   result := 0;
-   for i := Length(AString) downto 1 do
-   begin
-      if AString[i] = AChar then
-      begin
-         result := i;
-         break;
-      end;
    end;
 end;
 
