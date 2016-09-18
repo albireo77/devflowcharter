@@ -151,7 +151,7 @@ begin
                      lPos := AnsiPos('.', lName);
                      if lPos > 0 then
                      begin
-                        lField := AnsiRightStr(lName, Length(lName)-lPos);
+                        lField := Copy(lName, lPos+1, MAXINT);
                         lName := AnsiLeftStr(lName, lPos-1);
                      end;
                      lComponent := lBaseForm.FindComponent(lName);

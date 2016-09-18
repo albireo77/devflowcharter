@@ -74,7 +74,7 @@ type
          class function ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
          class function ShowFormattedQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
          class procedure SetInitialSettings;
-         class function FindText(ASubstr, AText: string; const AStartIndex: integer; const ACaseSens: boolean): integer;
+         class function FindText(ASubstr, AText: string; const idx: integer; const ACaseSens: boolean): integer;
          class function IsPrinter: boolean;
          class function IsValid(const AObject: TObject): boolean;
          class function SameStrings(const AStr1: string; const AStr2: string): boolean;
@@ -716,9 +716,9 @@ begin
    end;
 end;
 
-class function TInfra.FindText(ASubstr, AText: string; const AStartIndex: integer; const ACaseSens: boolean): integer;
+class function TInfra.FindText(ASubstr, AText: string; const idx: integer; const ACaseSens: boolean): integer;
 begin
-   AText := AnsiRightStr(AText, Length(AText)-AStartIndex);
+   AText := Copy(AText, idx+1, MAXINT);
    if not ACaseSens then
    begin
       AText := AnsiUpperCase(AText);
@@ -726,7 +726,7 @@ begin
    end;
    result := AnsiPos(ASubstr, AText) - 1;
    if result <> -1 then
-      result :=  result + AStartIndex;
+      result :=  result + idx;
 end;
 
 class function TInfra.IsPrinter: boolean;

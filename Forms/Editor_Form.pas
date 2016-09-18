@@ -247,7 +247,7 @@ begin
             min := l;
       end;
       for i := 0 to lLines.Count-1 do
-         lLines[i] := AnsiRightStr(lLines[i], Length(lLines[i])-min);
+         lLines[i] := Copy(lLines[i], min+1, MAXINT);
       for i := 0 to lLines.Count-1 do
       begin
          if i <> 0 then

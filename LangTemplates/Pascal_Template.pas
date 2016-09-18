@@ -515,7 +515,7 @@ end;}
 function Pascal_GetOriginalType(const APtrType: string): string;
 begin
    if (APtrType <> '') and (APtrType[1] = '^') then
-      result := AnsiRightStr(APtrType, Length(APtrType)-1)
+      result := Copy(APtrType, 2, MAXINT)
    else
       result := APtrType;
 end;
