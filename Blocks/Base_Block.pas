@@ -1961,7 +1961,7 @@ begin
          result := AEdit.Hint;
          i := LastDelimiter(CRLF, result);
          if i > 0 then
-            result := ' - ' + AnsiRightStr(result, Length(result)-i);
+            result := ' - ' + Copy(result, i, MAXINT);
       end;
    end;
 end;
