@@ -216,7 +216,7 @@ end;
 
 function TEditorForm.BuildBracketHint(startLine, endLine: integer): string;
 var
-   i, min, l: integer;
+   i, min, len: integer;
    lLines: TStringList;
 begin
    result := '';
@@ -240,11 +240,9 @@ begin
       begin
          if Trim(lLines[i]) = '' then
             continue;
-         l := Length(TInfra.ExtractIndentString(lLines[i]));
-         if i = 0 then
-            min := l
-         else if l < min then
-            min := l;
+         len := Length(TInfra.ExtractIndentString(lLines[i]));
+         if (i = 0) or (len < min) then
+            min := len;
       end;
       for i := 0 to lLines.Count-1 do
          lLines[i] := Copy(lLines[i], min+1, MAXINT);

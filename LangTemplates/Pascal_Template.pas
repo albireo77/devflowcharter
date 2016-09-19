@@ -512,17 +512,17 @@ begin
    result := '^' + AName;
 end;}
 
-function Pascal_GetOriginalType(const APtrType: string): string;
-begin
-   if (APtrType <> '') and (APtrType[1] = '^') then
-      result := Copy(APtrType, 2, MAXINT)
-   else
-      result := APtrType;
-end;
-
 function Pascal_IsPointerType(const AName: string): boolean;
 begin
    result := (AName <> '') and (AName[1] = '^');
+end;
+
+function Pascal_GetOriginalType(const AType: string): string;
+begin
+   if Pascal_IsPointerType(AType) then
+      result := Copy(AType, 2, MAXINT)
+   else
+      result := AType;
 end;
 
 function Pascal_AreTypesCompatible(const AType1, AType2: integer): boolean;
