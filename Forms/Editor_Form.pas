@@ -244,6 +244,8 @@ begin
          if (min = -1) or (len < min) then
             min := len;
       end;
+      if min = -1 then
+         min := 0;
       for i := 0 to lLines.Count-1 do
          lLines[i] := Copy(lLines[i], min+1, MAXINT);
       for i := 0 to lLines.Count-1 do
