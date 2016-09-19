@@ -222,7 +222,6 @@ begin
    result := '';
    if (endLine < 0) or (endLine >= memCodeEditor.Lines.Count) or (startLine >= endLine) or (startLine < 0) then
       exit;
-   min := 0;
    lLines := TStringList.Create;
    try
       if (endLine - startLine) > (memCodeEditor.LinesInWindow div 2) then
@@ -236,12 +235,13 @@ begin
          for i := startLine to endLine do
             lLines.Add(memCodeEditor.Lines[i]);
       end;
+      min := -1;
       for i := 0 to lLines.Count-1 do
       begin
          if Trim(lLines[i]) = '' then
             continue;
          len := Length(TInfra.ExtractIndentString(lLines[i]));
-         if (i = 0) or (len < min) then
+         if (min = -1) or (len < min) then
             min := len;
       end;
       for i := 0 to lLines.Count-1 do
