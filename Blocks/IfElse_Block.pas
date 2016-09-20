@@ -242,27 +242,22 @@ end;
 
 procedure TIfElseBlock.ResizeVert(const AContinue: boolean);
 var
-   lHeightTrue, lHeightFalse: integer;
+   b1, b2: TBranch;
 begin
-
-   lHeightTrue := TrueBranch.Height;
-   lHeightFalse := FalseBranch.Height;
-
-   if lHeightTrue > lHeightFalse then
+   if TrueBranch.Height > FalseBranch.Height then
    begin
-      TrueBranch.Hook.Y := 70;
-      Height := lHeightTrue + TrueBranch.Hook.Y + 31;
-      FalseBranch.Hook.Y := Height - lHeightFalse - 31;
+      b1 := TrueBranch;
+      b2 := FalseBranch;
    end
    else
    begin
-      FalseBranch.Hook.Y := 70;
-      Height := lHeightFalse + FalseBranch.Hook.Y + 31;
-      TrueBranch.Hook.Y := Height - lHeightTrue - 31;
+      b1 := FalseBranch;
+      b2 := TrueBranch;
    end;
-
+   b1.Hook.Y := 70;
+   Height := b1.Height + b1.Hook.Y + 31;
+   b2.Hook.Y := Height - b2.Height - 31;
    LinkBlocks;
-
    if AContinue then
       ParentBlock.ResizeVert(AContinue);
 end;
