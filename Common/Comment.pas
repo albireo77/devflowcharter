@@ -51,6 +51,7 @@ type
          procedure MyOnChange(Sender: TObject);
          procedure SetPage(APage: TBlockTabSheet);
          procedure SetIsHeader(AValue: boolean);
+         procedure ChangeBorderStyle(AStyle: TBorderStyle);
       public
          property PinControl: TControl read FPinControl write FPinControl;
          property Page: TBlockTabSheet read FPage write SetPage;
@@ -155,6 +156,17 @@ begin
    BringToFront;
 end;
 
+procedure TComment.ChangeBorderStyle(AStyle: TBorderStyle);
+var
+   lStart, lLength: integer;
+begin
+   lStart := SelStart;
+   lLength := SelLength;
+   BorderStyle := AStyle;
+   SelStart := lStart;
+   SelLength := lLength;
+end;
+
 procedure TComment.SetZOrder(const AValue: integer);
 begin
    FZOrder := FPage.PageIndex * 100 + AValue;
@@ -215,19 +227,16 @@ end;
 
 procedure TComment.PaintToCanvas(const ACanvas: TCanvas);
 var
-   lBStyle: TBorderStyle;
-   lStart: integer;
+   lStyle: TBorderStyle;
 begin
    if Visible and (FPinControl = nil) then
    begin
       ACanvas.Lock;
       try
-         lBStyle := BorderStyle;
-         lStart := SelStart;
-         BorderStyle := bsNone;
+         lStyle := BorderStyle;
+         ChangeBorderStyle(bsNone);
          PaintTo(ACanvas, Left + Parent.Left, Top + Parent.Top);
-         BorderStyle := lBStyle;
-         SelStart := lStart;
+         ChangeBorderStyle(lStyle);
       finally
          ACanvas.Unlock;
       end;
@@ -259,12 +268,9 @@ begin
 end;
 
 procedure TComment.CMMouseLeave(var Msg: TMessage);
-var
-   lStart: integer;
 begin
-   lStart := SelStart;
-   BorderStyle := bsNone;
-   SelStart := lStart;
+   inherited;
+   ChangeBorderStyle(bsNone);
 end;
 
 procedure TComment.MyOnDblClick(Sender: TObject);
@@ -285,13 +291,9 @@ begin
 end;
 
 procedure TComment.NCHitTest(var Msg: TWMNCHitTest);
-var
-   lStart: integer;
 begin
    inherited;
-   lStart := SelStart;
-   BorderStyle := bsSingle;
-   SelStart := lStart;
+   ChangeBorderStyle(bsSingle);
    if GetAsyncKeyState(VK_LBUTTON) <> 0 then
    begin
       GChange := 1;
