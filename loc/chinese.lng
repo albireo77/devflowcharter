@@ -324,6 +324,7 @@ miPaste1=Paste
 miRemove1=Remove
 miInsertFunc=Insert Function
 miIsHeader=Program Header
+miPasteText=Paste
 
 [DeclarationsForm]
 FormCaption=全局变量

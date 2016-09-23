@@ -329,6 +329,7 @@ miPaste1=Einfügen
 miRemove1=Entferne
 miInsertFunc=Funktion einfügen
 miIsHeader=Programm Header
+miPasteText=Einfügen
 
 [DeclarationsForm]
 FormCaption=Globale Deklarationen

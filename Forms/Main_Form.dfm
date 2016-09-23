@@ -257,6 +257,11 @@ object MainForm: TMainForm
       Caption = 'Copy'
       OnClick = miCopyClick
     end
+    object miPasteText: TMenuItem
+      Tag = 2
+      Caption = 'Paste'
+      OnClick = miPasteTextClick
+    end
     object miRemove: TMenuItem
       Tag = 2
       Caption = 'Remove'

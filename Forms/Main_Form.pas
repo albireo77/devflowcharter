@@ -143,6 +143,7 @@ type
     N17: TMenuItem;
     miInsertFunc: TMenuItem;
     miIsHeader: TMenuItem;
+    miPasteText: TMenuItem;
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -215,6 +216,7 @@ type
     procedure miIsHeaderClick(Sender: TObject);
     procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure miPasteTextClick(Sender: TObject);
   private
     { Private declarations }
     FClockPos: TClockPos;
@@ -556,6 +558,7 @@ begin
    miRemove.Visible := False;
    miInsert.Visible := False;
    miPaste.Enabled := False;
+   miPasteText.Visible := False;
    miInstr.Enabled := False;
    miLoop.Enabled := False;
    miFrame.Visible := False;
@@ -660,10 +663,12 @@ begin
    end
    else if lComponent is TComment then
    begin
+      miPasteText.Visible := Clipboard.HasFormat(CF_TEXT);
       lFont := TComment(lComponent).Font;
       miRemove.Visible := True;
       miFont.Visible := True;
       miCopy.Visible := True;
+      miCut.Visible := TComment(lComponent).SelLength > 0;
       miIsHeader.Visible := true;
       miIsHeader.Checked := TComment(lComponent).IsHeader;
       if GClpbrd.Instance is TBlock then
@@ -918,14 +923,22 @@ end;
 
 procedure TMainForm.miCopyClick(Sender: TObject);
 var
-   lComponent: TComponent;
+   lComp: TComponent;
 begin
-   lComponent := pmPages.PopupComponent;
-   if (lComponent is TBlock) or (lComponent is TComment) then
+   lComp := pmPages.PopupComponent;
+   if (lComp is TCustomEdit) and (TCustomEdit(lComp).SelLength > 0) then
+   begin
+      if Sender = miCopy then
+         TCustomEdit(lComp).CopyToClipboard
+      else if Sender = miCut then
+         TCustomEdit(lComp).CutToClipboard;
+   end
+   else if (lComp is TBlock) or (lComp is TComment) then
    begin
       if Sender = miCut then
          miRemove.Click;
-      GClpbrd.Instance := TControl(lComponent);
+      GClpbrd.Instance := TControl(lComp);
+      Clipboard.Clear;
    end;
 end;
 
@@ -1550,6 +1563,12 @@ begin
       TComment(pmPages.PopupComponent).IsHeader := miIsHeader.Checked;
       TInfra.UpdateCodeEditor;
    end;
+end;
+
+procedure TMainForm.miPasteTextClick(Sender: TObject);
+begin
+   if Clipboard.HasFormat(CF_TEXT) and (pmPages.PopupComponent is TCustomEdit) then
+      TCustomEdit(pmPages.PopupComponent).PasteFromClipboard;
 end;
 
 end.
