@@ -944,15 +944,20 @@ end;
 
 procedure TMainForm.miRemoveClick(Sender: TObject);
 var
-   lComponent: TComponent;
+   lComp: TComponent;
 begin
-   lComponent := pmPages.PopupComponent;
-   if (lComponent = GClpbrd.Instance) or (GClpbrd.UndoObject = GClpbrd.Instance) then
+   lComp := pmPages.PopupComponent;
+   if (lComp = GClpbrd.Instance) or (GClpbrd.UndoObject = GClpbrd.Instance) then
       GClpbrd.Instance := nil;
-   if lComponent is TBlock then
-      TBlock(lComponent).Remove
-   else if lComponent is TComment then
-      lComponent.Free;
+   if lComp is TBlock then
+      TBlock(lComp).Remove
+   else if lComp is TComment then
+   begin
+      if TComment(lComp).SelLength > 0 then
+         TComment(lComp).SelText := ''
+      else
+         lComp.Free;
+   end;
    GChange := 1;
 end;
 
