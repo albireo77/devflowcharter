@@ -521,10 +521,13 @@ begin
 end;
 
 procedure TBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+var
+   lPoint: TPoint;
 begin
-   SelectBlock(Point(X, Y));
-   SetCursor(Point(X, Y));
-   if PtInRect(Rect(BottomPoint.X-5, BottomPoint.Y, BottomPoint.X+5, Height), Point(X, Y)) then
+   lPoint := Point(X, Y);
+   SelectBlock(lPoint);
+   SetCursor(lPoint);
+   if PtInRect(Rect(BottomPoint.X-5, BottomPoint.Y, BottomPoint.X+5, Height), lPoint) then
    begin
       DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1), arrEnd, clRed);
       Ired := 0;

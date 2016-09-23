@@ -160,11 +160,14 @@ procedure TComment.ChangeBorderStyle(AStyle: TBorderStyle);
 var
    lStart, lLength: integer;
 begin
-   lStart := SelStart;
-   lLength := SelLength;
-   BorderStyle := AStyle;
-   SelStart := lStart;
-   SelLength := lLength;
+   if BorderStyle <> AStyle then
+   begin
+      lStart := SelStart;
+      lLength := SelLength;
+      BorderStyle := AStyle;
+      SelStart := lStart;
+      SelLength := lLength;
+   end;
 end;
 
 procedure TComment.SetZOrder(const AValue: integer);
@@ -279,12 +282,15 @@ begin
 end;
 
 procedure TComment.MouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+var
+   lPoint: TPoint;
 begin
-   if PtInRect(Rect(Width-5, 0, Width, Height-5), Point(X, Y)) then
+   lPoint := Point(X, Y);
+   if PtInRect(Rect(Width-5, 0, Width, Height-5), lPoint) then
       Cursor := crSizeWE
-   else if PtInRect(Rect(0, Height-5, Width-5, Height), Point(X, Y)) then
+   else if PtInRect(Rect(0, Height-5, Width-5, Height), lPoint) then
       Cursor := crSizeNS
-   else if PtInRect(Rect(Width-5, Height-5, Width, Height), Point(X, Y)) then
+   else if PtInRect(Rect(Width-5, Height-5, Width, Height), lPoint) then
       Cursor := crSizeNWSE
    else if Cursor <> crDefault then
       Cursor := crDefault;
