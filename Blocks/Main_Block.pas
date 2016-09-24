@@ -549,17 +549,20 @@ var
    minVal, lVal: integer;
    R: TRect;
 begin
-   minVal := Branch.GetMostRight + 30;
-   if GetFunctionLabel(R) <> '' then
-      lVal := R.Right + 10
-   else
-      lVal := minVal;
-   if lVal > minVal then
-      minVal := lVal;
-   if AMinX < minVal then
-      Width := minVal
-   else
-      Width := AMinX + 5;
+   if Expanded then
+   begin
+      minVal := Branch.GetMostRight + 30;
+      if GetFunctionLabel(R) <> '' then
+         lVal := R.Right + 10
+      else
+         lVal := minVal;
+      if lVal > minVal then
+         minVal := lVal;
+      if AMinX < minVal then
+         Width := minVal
+      else
+         Width := AMinX + 5;
+   end;
 end;
 
 function TMainBlock.GetDescription: string;
