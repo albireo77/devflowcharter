@@ -202,18 +202,19 @@ procedure TForDoBlock.Paint;
 const
    lForDirect: array[TForOrder] of char = ('»', '«');
 var
-   y: integer;
+   y, bhx: integer;
 begin
    inherited;
    if Expanded and (cbVariable <> nil) and (edtVariable <> nil) and (edtStartVal <> nil) and (edtStopVal <> nil) then
    begin
-      IPoint.X := Branch.Hook.X + 60;
+      bhx := Branch.Hook.X;
+      IPoint.X := bhx + 60;
       IPoint.Y := 35;
-      cbVariable.Left := Branch.Hook.X-79;
-      edtVariable.Left := Branch.Hook.X-75;
-      edtStartVal.Left := Branch.Hook.X-30;
-      edtStopVal.Left := Branch.Hook.X+11;
-      DrawArrowLine(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
+      cbVariable.Left := bhx - 79;
+      edtVariable.Left := bhx - 75;
+      edtStartVal.Left := bhx - 30;
+      edtStopVal.Left := bhx + 11;
+      DrawArrowLine(Point(bhx, TopHook.Y), Branch.Hook);
       DrawArrowLine(Point(Width-11, 19), Point(Width-11, Height-1));
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
       begin
@@ -221,26 +222,26 @@ begin
          Canvas.Polyline([Point(BottomHook, Height-21),
                           Point(5, Height-21),
                           Point(5, 19),
-                          Point(Branch.Hook.X-100, 19)]);
+                          Point(bhx-100, 19)]);
       end;
       with Canvas do
       begin
-         MoveTo(Branch.Hook.X+74, 19);
+         MoveTo(bhx+74, 19);
          LineTo(Width-11, 19);
          Brush.Style := bsClear;
          if GSettings.RoadSignColor <> GSettings.DesktopColor then
             Brush.Color := GSettings.RoadSignColor;
-         Polygon([Point(Branch.Hook.X-100, 0),
-                  Point(Branch.Hook.X+35, 0),
-                  Point(Branch.Hook.X+74, 19),
-                  Point(Branch.Hook.X+35, TopHook.Y),
-                  Point(Branch.Hook.X-100, TopHook.Y),
-                  Point(Branch.Hook.X-100, 0)]);
+         Polygon([Point(bhx-100, 0),
+                  Point(bhx+35, 0),
+                  Point(bhx+74, 19),
+                  Point(bhx+35, TopHook.Y),
+                  Point(bhx-100, TopHook.Y),
+                  Point(bhx-100, 0)]);
          y :=  edtStartVal.BoundsRect.Bottom - 6;
-         DrawTextLabel(Branch.Hook.X-42, y, GInfra.CurrentLang.AssignOperator, false, true);
-         DrawTextLabel(Branch.Hook.X+1, y, lForDirect[FOrder], false, true);
-         DrawTextLabel(Branch.Hook.X-97, y, FForLabel, false, true);
-         DrawBlockLabel(Branch.Hook.X-100, 40, GInfra.CurrentLang.LabelFor);
+         DrawTextLabel(bhx-42, y, GInfra.CurrentLang.AssignOperator, false, true);
+         DrawTextLabel(bhx+1, y, lForDirect[FOrder], false, true);
+         DrawTextLabel(bhx-97, y, FForLabel, false, true);
+         DrawBlockLabel(bhx-100, 40, GInfra.CurrentLang.LabelFor);
       end;      
    end;
    DrawI;
