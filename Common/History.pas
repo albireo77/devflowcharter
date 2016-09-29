@@ -55,7 +55,7 @@ var
    i: integer;
 begin
    inherited Create;
-   for i := 1 to Length(FMenuList) do
+   for i := 1 to HISTORY_SIZE do
    begin
       FMenuList[i] := TMenuItem.Create(AParentItem);
       FMenuList[i].OnClick := AOnClick;
@@ -74,7 +74,7 @@ begin
    try
       if lReg.OpenKeyReadOnly(REGISTRY_KEY) then
       begin
-         for i := Length(FList) downto 1 do
+         for i := HISTORY_SIZE downto 1 do
          begin
             if lReg.ValueExists(KEY_HISTORY + IntToStr(i)) then
                Add(lReg.ReadString(KEY_HISTORY + IntToStr(i)));
@@ -89,7 +89,7 @@ procedure THistoryMenu.ResetList;
 var
    i: integer;
 begin
-   for i := 1 to Length(FList) do
+   for i := 1 to HISTORY_SIZE do
       FList[i] := '';
 end;
 
@@ -97,7 +97,7 @@ procedure THistoryMenu.ResetMenuList;
 var
    i: integer;
 begin
-   for i := 1 to Length(FMenuList) do
+   for i := 1 to HISTORY_SIZE do
    begin
       FMenuList[i].Caption := '';
       FMenuList[i].Visible := false;
@@ -106,26 +106,25 @@ end;
 
 procedure THistoryMenu.Add(const AFilePath: string);
 var
-   i, a, len: integer;
+   i, a: integer;
 begin
    if FileExists(AFilePath) then
    begin
-      len := Length(FList);
-      for i := 1 to len do
+      for i := 1 to HISTORY_SIZE do
       begin
          if SameFileName(FList[i], AFilePath) then
          begin
-            for a := i to len-1 do
+            for a := i to HISTORY_SIZE-1 do
                FList[a] := FList[a+1];
             break;
          end;
       end;
-      for i := len downto 2 do
+      for i := HISTORY_SIZE downto 2 do
          FList[i] := FList[i-1];
       FList[1] := AFilePath;
       ResetMenuList;
       a := 1;
-      for i := 1 to len do
+      for i := 1 to HISTORY_SIZE do
       begin
          if FileExists(FList[i]) then
          begin
@@ -147,7 +146,7 @@ begin
    try
       if lReg.OpenKey(REGISTRY_KEY, true) then
       begin
-         for i := 1 to Length(FList) do
+         for i := 1 to HISTORY_SIZE do
          begin
             if FileExists(FList[i]) then
             begin
