@@ -40,7 +40,7 @@ type
          procedure ResetMenuList;
       public
          constructor Create(AParentItem: TMenuItem; AOnClick: TNotifyEvent);
-         procedure Add(const AEntry: string);
+         procedure Add(const AFilePath: string);
          procedure Save;
          procedure Load;
    end;
@@ -104,24 +104,25 @@ begin
    end;
 end;
 
-procedure THistoryMenu.Add(const AEntry: string);
+procedure THistoryMenu.Add(const AFilePath: string);
 var
    i, a, len: integer;
 begin
-   if FileExists(AEntry) then
+   if FileExists(AFilePath) then
    begin
       len := Length(FList);
       for i := 1 to len do
       begin
-         if AnsiSameText(FList[i], AEntry) then
+         if SameFileName(FList[i], AFilePath) then
          begin
             for a := i to len-1 do
                FList[a] := FList[a+1];
+            break;
          end;
       end;
       for i := len downto 2 do
          FList[i] := FList[i-1];
-      FList[1] := AEntry;
+      FList[1] := AFilePath;
       ResetMenuList;
       a := 1;
       for i := 1 to len do
