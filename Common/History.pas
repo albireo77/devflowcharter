@@ -31,16 +31,13 @@ const
    KEY_HISTORY = 'HistoryEntry';
 
 type
-
    THistoryMenu = class(TObject)
       private
-         FList: array [1..HISTORY_SIZE] of string;
-         FMenuList: array [1..HISTORY_SIZE] of TMenuItem;
-         procedure ResetList;
-         procedure ResetMenuList;
+         FParentMenu: TMenuItem;
+         FOnClick: TNotifyEvent;
       public
-         constructor Create(AParentItem: TMenuItem; AOnClick: TNotifyEvent);
-         procedure Add(const AFilePath: string);
+         constructor Create(AParentMenu: TMenuItem; AOnClick: TNotifyEvent);
+         procedure AddFile(const AFilePath: string);
          procedure Save;
          procedure Load;
    end;
@@ -50,19 +47,11 @@ implementation
 uses
    Registry, SysUtils, ApplicationCommon;
 
-constructor THistoryMenu.Create(AParentItem: TMenuItem; AOnClick: TNotifyEvent);
-var
-   i: integer;
+constructor THistoryMenu.Create(AParentMenu: TMenuItem; AOnClick: TNotifyEvent);
 begin
    inherited Create;
-   for i := 1 to HISTORY_SIZE do
-   begin
-      FMenuList[i] := TMenuItem.Create(AParentItem);
-      FMenuList[i].OnClick := AOnClick;
-   end;
-   AParentItem.Add(FMenuList);
-   ResetList;
-   ResetMenuList;
+   FParentMenu := AParentMenu;
+   FOnClick := AOnClick;
 end;
 
 procedure THistoryMenu.Load;
@@ -74,10 +63,10 @@ begin
    try
       if lReg.OpenKeyReadOnly(REGISTRY_KEY) then
       begin
-         for i := HISTORY_SIZE downto 1 do
+         for i := HISTORY_SIZE-1 downto 0 do
          begin
             if lReg.ValueExists(KEY_HISTORY + IntToStr(i)) then
-               Add(lReg.ReadString(KEY_HISTORY + IntToStr(i)));
+               AddFile(lReg.ReadString(KEY_HISTORY + IntToStr(i)));
          end;
       end;
    finally
@@ -85,75 +74,42 @@ begin
    end;
 end;
 
-procedure THistoryMenu.ResetList;
+procedure THistoryMenu.AddFile(const AFilePath: string);
 var
    i: integer;
-begin
-   for i := 1 to HISTORY_SIZE do
-      FList[i] := '';
-end;
-
-procedure THistoryMenu.ResetMenuList;
-var
-   i: integer;
-begin
-   for i := 1 to HISTORY_SIZE do
-   begin
-      FMenuList[i].Caption := '';
-      FMenuList[i].Visible := false;
-   end;
-end;
-
-procedure THistoryMenu.Add(const AFilePath: string);
-var
-   i, a: integer;
+   lMenuItem: TMenuItem;
 begin
    if FileExists(AFilePath) then
    begin
-      for i := 1 to HISTORY_SIZE do
+      i := FParentMenu.IndexOf(FParentMenu.Find(AFilePath));
+      if i <> -1 then
       begin
-         if SameFileName(FList[i], AFilePath) then
-         begin
-            for a := i to HISTORY_SIZE-1 do
-               FList[a] := FList[a+1];
-            break;
-         end;
-      end;
-      for i := HISTORY_SIZE downto 2 do
-         FList[i] := FList[i-1];
-      FList[1] := AFilePath;
-      ResetMenuList;
-      a := 1;
-      for i := 1 to HISTORY_SIZE do
+         lMenuItem := FParentMenu[i];
+         FParentMenu.Delete(i);
+      end
+      else
       begin
-         if FileExists(FList[i]) then
-         begin
-            FMenuList[a].Caption := FList[i];
-            FMenuList[a].Visible := true;
-            a := a + 1;
-         end;
+         lMenuItem := TMenuItem.Create(FParentMenu);
+         lMenuItem.OnClick := FOnClick;
+         lMenuItem.Caption := AFilePath;
       end;
+      FParentMenu.Insert(0, lMenuItem);
+      if FParentMenu.Count > HISTORY_SIZE then
+         FParentMenu[FParentMenu.Count-1].Free;
    end;
 end;
 
 procedure THistoryMenu.Save;
 var
    lReg: TRegistry;
-   i, a: integer;
+   i: integer;
 begin
-   a := 1;
    lReg := TRegistry.Create;
    try
       if lReg.OpenKey(REGISTRY_KEY, true) then
       begin
-         for i := 1 to HISTORY_SIZE do
-         begin
-            if FileExists(FList[i]) then
-            begin
-               lReg.WriteString(KEY_HISTORY + IntToStr(a), FList[i]);
-               a := a + 1;
-            end;
-         end;
+         for i := 0 to FParentMenu.Count-1 do
+            lReg.WriteString(KEY_HISTORY + IntToStr(i), FParentMenu[i].Caption);
       end;
    finally
       lReg.Free;
