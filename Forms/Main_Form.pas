@@ -271,8 +271,8 @@ begin
    Application.Title := PROGRAM_NAME;
    Caption := PROGRAM_NAME;
    FHistoryMenu := THistoryMenu.Create(miReopen, miOpen.OnClick);
-   pgcPages.DoubleBuffered := true;
    FHistoryMenu.Load;
+   pgcPages.DoubleBuffered := true;
    FClockPos := Low(TClockPos);
 end;
 
@@ -1109,7 +1109,7 @@ procedure TMainForm.AcceptFile(const AFilePath: string);
 begin
    Caption := MAIN_FORM_CAPTION + AFilePath;
    GProject.Name := ChangeFileExt(ExtractFilename(AFilePath), '');
-   FHistoryMenu.Add(AFilePath);
+   FHistoryMenu.AddFile(AFilePath);
    GChange := 0;
 end;
 
