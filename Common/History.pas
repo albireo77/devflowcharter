@@ -76,17 +76,13 @@ end;
 
 procedure THistoryMenu.AddFile(const AFilePath: string);
 var
-   i: integer;
    lMenuItem: TMenuItem;
 begin
    if FileExists(AFilePath) then
    begin
-      i := FParentMenu.IndexOf(FParentMenu.Find(AFilePath));
-      if i <> -1 then
-      begin
-         lMenuItem := FParentMenu[i];
-         FParentMenu.Delete(i);
-      end
+      lMenuItem := FParentMenu.Find(AFilePath);
+      if lMenuItem <> nil then
+         FParentMenu.Remove(lMenuItem)
       else
       begin
          lMenuItem := TMenuItem.Create(FParentMenu);
