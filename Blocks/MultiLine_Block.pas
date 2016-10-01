@@ -36,6 +36,7 @@ type
          procedure ChangeColor(const AColor: TColor); override;
          function GetFrontMemo: TMemo; override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
+         function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
       protected
          FErrLine: integer;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; virtual;
@@ -44,7 +45,6 @@ type
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
          procedure OnMouseDownMemo(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure OnKeyUpMemo(Sender: TObject; var Key: Word; Shift: TShiftState);
-         function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
    end;
 
 implementation
