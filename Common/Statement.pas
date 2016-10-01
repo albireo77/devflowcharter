@@ -44,6 +44,7 @@ type
     property Id: integer read GetId;
     procedure Change; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure DoEnter; override;
     constructor Create(AOwner: TComponent); overload; override;
     constructor Create(AOwner: TComponent; const AId: integer); overload;
@@ -250,6 +251,13 @@ begin
          OnChangeCallBack(Self);
    end;
    NavigatorForm.DoInvalidate;
+end;
+
+procedure TStatement.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+   inherited KeyDown(Key, Shift);
+   if (ssCtrl in Shift) and (Key = Ord('A')) then
+      SelectAll;
 end;
 
 procedure TStatement.MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer);
