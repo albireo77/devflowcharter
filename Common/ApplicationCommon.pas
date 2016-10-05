@@ -350,10 +350,11 @@ begin
          end;
          for i := 0 to High(FLangArray)-1 do
          begin
-            if lRegistry.ValueExists(KEY_COMPILER_COMMAND + '_' + FLangArray[i].Name) then
-                FLangArray[i].CompilerCommand := lRegistry.ReadString(KEY_COMPILER_COMMAND + '_' + FLangArray[i].Name);
-            if lRegistry.ValueExists(KEY_COMPILER_COMMAND_NOMAIN + '_' + FLangArray[i].Name) then
-                FLangArray[i].CompilerCommandNoMain := lRegistry.ReadString(KEY_COMPILER_COMMAND_NOMAIN + '_' + FLangArray[i].Name);
+            lLangDef := FLangArray[i];
+            if lRegistry.ValueExists(KEY_COMPILER_COMMAND + '_' + lLangDef.Name) then
+                lLangDef.CompilerCommand := lRegistry.ReadString(KEY_COMPILER_COMMAND + '_' + lLangDef.Name);
+            if lRegistry.ValueExists(KEY_COMPILER_COMMAND_NOMAIN + '_' + lLangDef.Name) then
+                lLangDef.CompilerCommandNoMain := lRegistry.ReadString(KEY_COMPILER_COMMAND_NOMAIN + '_' + lLangDef.Name);
          end;
       end;
    finally
