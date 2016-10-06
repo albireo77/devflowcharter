@@ -214,7 +214,7 @@ begin
    imgColors.Canvas.Brush.Color := gbFlowchartSettings.Color;
    imgColors.Canvas.FillRect(imgColors.Canvas.ClipRect);
    GInfra.GetLangNames(cbLanguage.Items);
-   cbLanguage.ItemIndex := GInfra.GetLangIndex(GInfra.CurrentLang.Name);
+   cbLanguage.ItemIndex := cbLanguage.Items.IndexOf(GInfra.CurrentLang.Name);
 end;
 
 procedure TSettingsForm.pnlFillClick(Sender: TObject);

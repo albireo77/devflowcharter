@@ -84,7 +84,6 @@ type
          class procedure InsertTemplateLines(const ADestList: TStringList; const APlaceHolder: string; const ATemplate: TStringList; const AObject: TObject = nil); overload;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetLangDefinition(const AName: string): TLangDefinition;
-         function GetLangIndex(const AName: string): integer;
          procedure SetLangHiglighterAttributes;
          function SetCurrentLang(const ALangName: string): TLangDefinition;
          class procedure InsertLinesIntoList(ADestList, ASourceList: TStringList; AFromLine: integer);
@@ -848,21 +847,6 @@ begin
    AcbType.Items.EndUpdate;
    AcbType.Width := GetComboMaxWidth(AcbType);
    AcbType.DropDownCount := AcbType.Items.Count;
-end;
-
-function TInfra.GetLangIndex(const AName: string): integer;
-var
-   i: integer;
-begin
-   result := -1;
-   for i := 0 to High(FLangArray) do
-   begin
-      if AnsiSameText(FLangArray[i].Name, AName) then
-      begin
-         result := i;
-         break;
-      end;
-   end;
 end;
 
 function TInfra.GetLangDefinition(const AName: string): TLangDefinition;

@@ -783,7 +783,7 @@ begin
       edtEditorIndent.Text := IntToStr(FIndentLength);
       pnlFont.Color := FFontColor;
       edtTranslateFile.Text := FTranslateFile;
-      cbLanguage.ItemIndex := GInfra.GetLangIndex(GInfra.CurrentLang.Name);
+      cbLanguage.ItemIndex := cbLanguage.Items.IndexOf(GInfra.CurrentLang.Name);
       edtCompiler.Text := GInfra.CurrentLang.CompilerCommand;
       edtCompilerNoMain.Text := GInfra.CurrentLang.CompilerCommandNoMain;
       chkParseAssign.Checked := FParseAssign;
