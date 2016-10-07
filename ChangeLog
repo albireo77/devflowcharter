@@ -1,3 +1,9 @@
+3.6.1 [08.10.2016]
+- Flowchart: fix selecting all text in text box using Ctrl-A shortcut (and mouse double click for multiline components)
+- Flowchart: enable copy (if any text is selected)/paste text with clipboard for text boxes
+- Flowchart: reduce flickering for comments in some cases
+- minor fixes and optimizations
+
 3.6.0 [04.09.2016]
 - Flowchart: new popup menu for text boxes with list of functions available
 - Flowchart: move/copy blocks within flowchart structure using drag-and-drop
