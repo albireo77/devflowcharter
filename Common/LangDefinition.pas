@@ -893,7 +893,7 @@ begin
    begin
       for i := 1 to ASizeEdit.DimensionCount do
          result := result + Format(VarEntryArraySize, [ASizeEdit.GetDimension(i)]);
-      result := AnsiLeftStr(result, Length(result)-VarEntryArraySizeStripCount);
+      SetLength(result, Length(result)-VarEntryArraySizeStripCount);
    end;
 end;
 

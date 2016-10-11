@@ -46,7 +46,7 @@ begin
       buffer := '';
       for i := 1 to AVarList.sgList.RowCount-2 do
          buffer := buffer + AVarList.sgList.Cells[VAR_NAME_COL, i] + ', ';
-      buffer := AnsiLeftStr(buffer, Length(buffer)-2);
+      SetLength(buffer, Length(buffer)-2);
       if buffer <> '' then
          ALines.AddObject('Local ' + buffer, AVarList);
    end;

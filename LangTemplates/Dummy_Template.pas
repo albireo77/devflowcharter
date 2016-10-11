@@ -153,7 +153,7 @@ begin
                            lField := TField(iterf.Next);
                            lValueStr := lValueStr + Format(lLang.DataTypeEnumEntryList, [Trim(lField.edtName.Text)]);
                         end;
-                        lValueStr := AnsiLeftStr(lValueStr, Length(lValueStr)-lLang.DataTypeEnumEntryListStripCount);
+                        SetLength(lValueStr, Length(lValueStr)-lLang.DataTypeEnumEntryListStripCount);
                         TInfra.InsertTemplateLines(lEnumTemplate, '%s2', lValueStr);
                         for b := 0 to lEnumTemplate.Count-1 do
                            lDataTypeList.AddObject(lEnumTemplate[b], lDataType)
@@ -245,7 +245,7 @@ begin
             end
             else
             begin
-               lLibStr := AnsiLeftStr(lLibStr, Length(lLibStr)-lLang.LibEntryListStripCount);
+               SetLength(lLibStr, Length(lLibStr)-lLang.LibEntryListStripCount);
                lPlaceHolder := '%s2';
                lPlaceHolder2 := '%s1';
             end;
@@ -331,7 +331,7 @@ begin
                if lSizeStr <> '' then
                begin
                   lVarStr := FastCodeAnsiStringReplace(lLang.VarEntryArray, '%s1', lName);
-                  lSizeStr := AnsiLeftStr(lSizeStr, Length(lSizeStr)-lLang.VarEntryArraySizeStripCount);
+                  SetLength(lSizeStr, Length(lSizeStr)-lLang.VarEntryArraySizeStripCount);
                   lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s3', lSizeStr);
                end
                else
@@ -436,7 +436,7 @@ begin
                   lParmStr := FastCodeAnsiStringReplace(lParmStr, '%s6', lEnum);
                   lArgList := lArgList + lParmStr;
                end;
-               lArgList := AnsiLeftStr(lArgList, Length(lArgList)-lLang.FunctionHeaderArgsStripCount);
+               SetLength(lArgList, Length(lArgList)-lLang.FunctionHeaderArgsStripCount);
 
                lHeaderTemplate := TStringList.Create;
                try
@@ -577,7 +577,7 @@ begin
       iterp := AHeader.GetParameterIterator;
       while iterp.HasNext do
          lFuncParmList := lFuncParmList + TParameter(iterp.Next).cbType.Text + ',';
-      lFuncParmList := AnsiLeftStr(lFuncParmList, Length(lFuncParmList)-1);
+      SetLength(lFuncParmList, Length(lFuncParmList)-1);
       if AHeader.cbType.ItemIndex <> 0 then
       begin
          lKey := lLang.FunctionLabelKey;

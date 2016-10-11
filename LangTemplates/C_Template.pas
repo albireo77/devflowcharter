@@ -378,10 +378,9 @@ end;
 
 function C_GetOriginalType(const APtrType: string): string;
 begin
-   if C_IsPointerType(APtrType) then
-      result := AnsiLeftStr(APtrType, Length(APtrType)-1)
-   else
-      result := APtrType;
+   result := APtrType;
+   if C_IsPointerType(result) then
+      SetLength(result, Length(result)-1);
 end;
 
 function C_SkipFuncBodyGen: boolean;
