@@ -671,7 +671,7 @@ begin
           lFileNameNoExt := lFileName;
           lPos := AnsiPos('.', lFileNameNoExt);
           if lPos <> 0 then
-             lFileNameNoExt := AnsiLeftStr(lFileNameNoExt, lPos-1);
+             SetLength(lFileNameNoExt, lPos-1);
 
           if lMainBlock = nil then
           begin

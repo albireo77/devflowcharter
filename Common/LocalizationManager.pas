@@ -152,7 +152,7 @@ begin
                      if lPos > 0 then
                      begin
                         lField := Copy(lName, lPos+1, MAXINT);
-                        lName := Copy(lName, 1, lPos-1);
+                        SetLength(lName, lPos-1);
                      end;
                      lComponent := lBaseForm.FindComponent(lName);
                      if lComponent <> nil then
