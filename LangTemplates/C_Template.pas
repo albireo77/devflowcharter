@@ -371,14 +371,14 @@ begin
    result := AValue + '*';
 end;}
 
-function C_IsPointerType(const AValue: string): boolean;
+function C_IsPointerType(const AType: string): boolean;
 begin
-   result := (AValue <> '') and (AnsiLastChar(AValue) = '*');
+   result := (Length(AType) > 1) and (AnsiLastChar(AType) = '*');
 end;
 
-function C_GetOriginalType(const APtrType: string): string;
+function C_GetOriginalType(const AType: string): string;
 begin
-   result := APtrType;
+   result := AType;
    if C_IsPointerType(result) then
       SetLength(result, Length(result)-1);
 end;

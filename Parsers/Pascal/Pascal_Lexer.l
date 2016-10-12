@@ -71,7 +71,7 @@ D				[0-9]
 [Ee][Oo][Ll][Nn]	return(T_EOLN);
 
 [Pp][Ii]		begin
-				yylval.yyString := Copy(yytext, 1, Length(yytext));
+				yylval.yyString := yytext;
 				return(T_PI);
 			end;
 
@@ -95,12 +95,12 @@ D				[0-9]
 [$][0-9A-Fa-f]+		return(L_HEX);
 
 [_A-Za-z][A-Za-z0-9_]*	begin
-				yylval.yyString := Copy(yytext, 1, Length(yytext));
+				yylval.yyString := yytext;
 				return(T_IDENTIFIER);
 			end;
                                     
 ['][^\']*[']		begin                             
-				yylval.yyString := Copy(yytext, 1, Length(yytext));
+				yylval.yyString := yytext;
 				return(T_STRING);
 			end;
 

@@ -138,7 +138,7 @@ begin
 
   35:
         		begin
-				yylval.yyString := Copy(yytext, 1, Length(yytext));
+				yylval.yyString := yytext;
 				return(T_PI);
 			end;
 
@@ -171,13 +171,13 @@ begin
 
   44:
                       	begin
-				yylval.yyString := Copy(yytext, 1, Length(yytext));
+				yylval.yyString := yytext;
 				return(T_IDENTIFIER);
 			end;
                                     
   45:
             		begin                             
-				yylval.yyString := Copy(yytext, 1, Length(yytext));
+				yylval.yyString := yytext;
 				return(T_STRING);
 			end;
 
