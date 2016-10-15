@@ -373,7 +373,7 @@ const
    xShift: array[TClockPos] of integer = (0, 20, 0, -20);
    yShift: array[TClockPos] of integer = (20, 40, 60, 40);
 begin
-   result.X := ((Width - MAIN_BLOCK_DEF_WIDTH) div 2) + xShift[FClockPos];
+   result.X := ((pgcPages.ClientWidth - MAIN_BLOCK_DEF_WIDTH) div 2) + xShift[FClockPos];
    result.Y := yShift[FClockPos];
    FClockPos := NextPos[FClockPos];
 end;
@@ -1159,8 +1159,7 @@ end;
 
 procedure TMainForm.miProjectClick(Sender: TObject);
 begin
-   miAddMain.Enabled := GInfra.CurrentLang.EnabledMainProgram and
-                        (GProject <> nil) and (GProject.GetMainBlock = nil);
+   miAddMain.Enabled := GInfra.CurrentLang.EnabledMainProgram and (GProject <> nil) and (GProject.GetMainBlock = nil);
    miUndoRemove.Enabled := GClpbrd.UndoObject <> nil;
 end;
 
