@@ -4,7 +4,7 @@ object SettingsForm: TSettingsForm
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Settings'
-  ClientHeight = 737
+  ClientHeight = 697
   ClientWidth = 557
   Color = clBtnFace
   ParentFont = True
@@ -17,7 +17,7 @@ object SettingsForm: TSettingsForm
   object btnSaveSettings: TButton
     Tag = 1
     Left = 398
-    Top = 708
+    Top = 668
     Width = 75
     Height = 25
     Caption = 'OK'
@@ -28,7 +28,7 @@ object SettingsForm: TSettingsForm
   object gbMiscSettings: TGroupBox
     Tag = 4
     Left = 5
-    Top = 648
+    Top = 608
     Width = 550
     Height = 57
     Caption = 'Others'
@@ -198,7 +198,7 @@ object SettingsForm: TSettingsForm
   object btnDiscardSettings: TButton
     Tag = 1
     Left = 479
-    Top = 708
+    Top = 668
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -210,7 +210,7 @@ object SettingsForm: TSettingsForm
     Left = 5
     Top = 171
     Width = 550
-    Height = 91
+    Height = 78
     Caption = 'Syntax Check'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -240,7 +240,7 @@ object SettingsForm: TSettingsForm
     object chkParseOutput: TCheckBox
       Tag = 8
       Left = 384
-      Top = 41
+      Top = 36
       Width = 145
       Height = 17
       Caption = 'Output instruction'
@@ -274,7 +274,7 @@ object SettingsForm: TSettingsForm
     object chkParseMAssign: TCheckBox
       Tag = 8
       Left = 8
-      Top = 41
+      Top = 36
       Width = 201
       Height = 17
       Caption = 'Multiple assignment'
@@ -291,7 +291,7 @@ object SettingsForm: TSettingsForm
     object chkParseCondition: TCheckBox
       Tag = 8
       Left = 216
-      Top = 65
+      Top = 55
       Width = 161
       Height = 17
       Caption = 'Conditional statement'
@@ -308,7 +308,7 @@ object SettingsForm: TSettingsForm
     object chkParseRoutine: TCheckBox
       Tag = 8
       Left = 8
-      Top = 65
+      Top = 55
       Width = 201
       Height = 17
       Caption = 'Function call'
@@ -342,7 +342,7 @@ object SettingsForm: TSettingsForm
     object chkParseCase: TCheckBox
       Tag = 8
       Left = 216
-      Top = 41
+      Top = 36
       Width = 145
       Height = 17
       Caption = 'Case statement'
@@ -359,7 +359,7 @@ object SettingsForm: TSettingsForm
     object chkParseReturn: TCheckBox
       Tag = 8
       Left = 384
-      Top = 65
+      Top = 55
       Width = 145
       Height = 17
       Caption = 'Return instruction'
@@ -377,9 +377,9 @@ object SettingsForm: TSettingsForm
   object gbEditorSettings: TGroupBox
     Tag = 4
     Left = 5
-    Top = 264
+    Top = 252
     Width = 550
-    Height = 153
+    Height = 143
     Caption = 'Code Editor'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -391,11 +391,11 @@ object SettingsForm: TSettingsForm
     TabStop = True
     DesignSize = (
       550
-      153)
+      143)
     object lblIndent: TLabel
       Tag = 6
       Left = 431
-      Top = 25
+      Top = 17
       Width = 56
       Height = 13
       Alignment = taRightJustify
@@ -411,7 +411,7 @@ object SettingsForm: TSettingsForm
     object lblFontSize: TLabel
       Tag = 6
       Left = 440
-      Top = 54
+      Top = 46
       Width = 47
       Height = 13
       Alignment = taRightJustify
@@ -427,7 +427,7 @@ object SettingsForm: TSettingsForm
     object gbEditorColors: TGroupBox
       Tag = 4
       Left = 6
-      Top = 72
+      Top = 63
       Width = 535
       Height = 73
       Caption = 'Colors'
@@ -704,7 +704,7 @@ object SettingsForm: TSettingsForm
     object edtEditorIndent: TEdit
       Tag = 5
       Left = 491
-      Top = 19
+      Top = 11
       Width = 50
       Height = 21
       Font.Charset = DEFAULT_CHARSET
@@ -719,7 +719,7 @@ object SettingsForm: TSettingsForm
     object chkAutoSelectCode: TCheckBox
       Tag = 8
       Left = 8
-      Top = 22
+      Top = 20
       Width = 337
       Height = 17
       Caption = 'Auto-select code for highlighted flowchart elements'
@@ -734,7 +734,7 @@ object SettingsForm: TSettingsForm
     object chkAutoUpdateCode: TCheckBox
       Tag = 8
       Left = 8
-      Top = 46
+      Top = 39
       Width = 289
       Height = 17
       Caption = 'Auto-update for flowchart changes'
@@ -748,7 +748,7 @@ object SettingsForm: TSettingsForm
     end
     object cbFontSize: TComboBox
       Left = 492
-      Top = 48
+      Top = 40
       Width = 50
       Height = 21
       Style = csDropDownList
@@ -776,7 +776,7 @@ object SettingsForm: TSettingsForm
   object btnDefaultSettings: TButton
     Tag = 1
     Left = 5
-    Top = 708
+    Top = 668
     Width = 124
     Height = 25
     Caption = 'Default Settings'
@@ -849,9 +849,9 @@ object SettingsForm: TSettingsForm
   object gbFlowchartSettings: TGroupBox
     Tag = 4
     Left = 5
-    Top = 420
-    Width = 550
-    Height = 125
+    Top = 396
+    Width = 548
+    Height = 109
     Caption = 'Flowchart Settings'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -860,10 +860,31 @@ object SettingsForm: TSettingsForm
     Font.Style = [fsBold]
     ParentFont = False
     TabOrder = 8
+    object imgColors: TImage
+      Left = 256
+      Top = 20
+      Width = 265
+      Height = 67
+      OnClick = imgColorsClick
+    end
+    object lblFontColor: TLabel
+      Tag = 6
+      Left = 8
+      Top = 29
+      Width = 24
+      Height = 13
+      Caption = 'Font:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+    end
     object lblDesktop: TLabel
       Tag = 6
-      Left = 288
-      Top = 48
+      Left = 8
+      Top = 56
       Width = 43
       Height = 13
       Caption = 'Desktop:'
@@ -876,8 +897,8 @@ object SettingsForm: TSettingsForm
     end
     object lblBlockColor: TLabel
       Tag = 6
-      Left = 288
-      Top = 76
+      Left = 8
+      Top = 84
       Width = 47
       Height = 13
       Caption = 'Selection:'
@@ -888,30 +909,9 @@ object SettingsForm: TSettingsForm
       Font.Style = []
       ParentFont = False
     end
-    object imgColors: TImage
-      Left = 8
-      Top = 22
-      Width = 265
-      Height = 73
-      OnClick = imgColorsClick
-    end
-    object lblFontColor: TLabel
-      Tag = 6
-      Left = 288
-      Top = 21
-      Width = 24
-      Height = 13
-      Caption = 'Font:'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = []
-      ParentFont = False
-    end
-    object pnlDesktop: TPanel
-      Left = 350
-      Top = 42
+    object pnlFill: TPanel
+      Left = 70
+      Top = 80
       Width = 25
       Height = 20
       BevelOuter = bvNone
@@ -923,9 +923,9 @@ object SettingsForm: TSettingsForm
       TabOrder = 0
       OnClick = pnlFillClick
     end
-    object pnlFill: TPanel
-      Left = 350
-      Top = 70
+    object pnlDesktop: TPanel
+      Left = 70
+      Top = 51
       Width = 25
       Height = 20
       BevelOuter = bvNone
@@ -938,8 +938,8 @@ object SettingsForm: TSettingsForm
       OnClick = pnlFillClick
     end
     object pnlFont: TPanel
-      Left = 350
-      Top = 14
+      Left = 70
+      Top = 22
       Width = 25
       Height = 20
       BevelOuter = bvNone
@@ -953,27 +953,28 @@ object SettingsForm: TSettingsForm
       TabOrder = 2
       OnClick = pnlFillClick
     end
-    object chkEnableDBuffer: TCheckBox
-      Tag = 8
-      Left = 392
-      Top = 96
-      Width = 153
-      Height = 17
-      Caption = 'Enable double buffering'
+    object edtFontName: TEdit
+      Tag = 5
+      Left = 104
+      Top = 22
+      Width = 137
+      Height = 21
+      TabStop = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []
       ParentFont = False
-      ParentShowHint = False
-      ShowHint = True
+      ReadOnly = True
       TabOrder = 3
+      Text = 'Tahoma'
+      OnClick = edtFontNameClick
     end
     object chkShowFuncLabels: TCheckBox
       Tag = 8
-      Left = 392
-      Top = 42
+      Left = 104
+      Top = 48
       Width = 145
       Height = 17
       Caption = 'Show function labels'
@@ -985,31 +986,30 @@ object SettingsForm: TSettingsForm
       ParentFont = False
       TabOrder = 4
     end
-    object edtFontName: TEdit
-      Tag = 5
-      Left = 392
-      Top = 14
-      Width = 137
-      Height = 21
-      TabStop = False
+    object chkShowBlockLabels: TCheckBox
+      Tag = 8
+      Left = 104
+      Top = 67
+      Width = 145
+      Height = 17
+      Caption = 'Show block labels'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []
       ParentFont = False
-      ReadOnly = True
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 5
-      Text = 'Tahoma'
-      OnClick = edtFontNameClick
     end
-    object chkShowBlockLabels: TCheckBox
+    object chkEnableDBuffer: TCheckBox
       Tag = 8
-      Left = 392
-      Top = 69
+      Left = 104
+      Top = 86
       Width = 145
       Height = 17
-      Caption = 'Show block labels'
+      Caption = 'Enable double buffering'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -1024,7 +1024,7 @@ object SettingsForm: TSettingsForm
   object gbPrintSettings: TGroupBox
     Tag = 4
     Left = 5
-    Top = 548
+    Top = 508
     Width = 550
     Height = 98
     Caption = 'Printing'
@@ -1054,7 +1054,7 @@ object SettingsForm: TSettingsForm
     object chkMultiPrintHorz: TCheckBox
       Tag = 8
       Left = 8
-      Top = 48
+      Top = 43
       Width = 297
       Height = 17
       Caption = 'Enable multi page printing in horizontal directiron'
@@ -1202,12 +1202,12 @@ object SettingsForm: TSettingsForm
     Filter = 'Executable files|*.exe; *.bat; *.cmd;'
     Options = [ofReadOnly, ofHideReadOnly, ofFileMustExist, ofEnableSizing]
     Left = 232
-    Top = 704
+    Top = 664
   end
   object ColorDialog: TColorDialog
     Tag = 3
-    Left = 200
-    Top = 704
+    Left = 192
+    Top = 664
   end
   object FontDialog: TFontDialog
     Font.Charset = DEFAULT_CHARSET
@@ -1219,6 +1219,6 @@ object SettingsForm: TSettingsForm
     MaxFontSize = 8
     Options = [fdEffects, fdScalableOnly]
     Left = 264
-    Top = 704
+    Top = 664
   end
 end
