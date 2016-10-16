@@ -45,8 +45,11 @@ begin
    begin
       buffer := '';
       for i := 1 to AVarList.sgList.RowCount-2 do
-         buffer := buffer + AVarList.sgList.Cells[VAR_NAME_COL, i] + ', ';
-      SetLength(buffer, Length(buffer)-2);
+      begin
+         if buffer <> '' then
+            buffer := buffer + ', ';
+         buffer := buffer + AVarList.sgList.Cells[VAR_NAME_COL, i];
+      end;
       if buffer <> '' then
          ALines.AddObject('Local ' + buffer, AVarList);
    end;
