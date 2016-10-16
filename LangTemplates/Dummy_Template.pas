@@ -561,13 +561,13 @@ end;
 
 function Dummy_GetUserFuncDesc(AHeader: TUserFunctionHeader): string;
 var
-   lFuncParmList, lDesc, lName, lType, lKey: string;
+   lParams, lDesc, lName, lType, lKey: string;
    lLang: TLangDefinition;
    iterp: IIterator;
 begin
    result := '';
    lDesc := '';
-   lFuncParmList := '';
+   lParams := '';
    lName := '';
    lType := '';
    lKey := '';
@@ -576,8 +576,11 @@ begin
    begin
       iterp := AHeader.GetParameterIterator;
       while iterp.HasNext do
-         lFuncParmList := lFuncParmList + TParameter(iterp.Next).cbType.Text + ',';
-      SetLength(lFuncParmList, Length(lFuncParmList)-1);
+      begin
+         if lParams <> '' then
+            lParams := lParams + ',';
+         lParams := lParams + TParameter(iterp.Next).cbType.Text;
+      end;
       if AHeader.cbType.ItemIndex <> 0 then
       begin
          lKey := lLang.FunctionLabelKey;
@@ -594,7 +597,7 @@ begin
       result := i18Manager.GetString(lKey);
       result := FastCodeAnsiStringReplace(result, '##', CRLF);
       result := FastCodeAnsiStringReplace(result, '%s1', lName);
-      result := FastCodeAnsiStringReplace(result, '%s2', lFuncParmList);
+      result := FastCodeAnsiStringReplace(result, '%s2', lParams);
       result := FastCodeAnsiStringReplace(result, '%s3', lType);
       result := FastCodeAnsiStringReplace(result, '%s4', lDesc);
    end;
