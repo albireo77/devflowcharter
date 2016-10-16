@@ -4,7 +4,7 @@ object SettingsForm: TSettingsForm
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Settings'
-  ClientHeight = 697
+  ClientHeight = 685
   ClientWidth = 557
   Color = clBtnFace
   ParentFont = True
@@ -17,7 +17,7 @@ object SettingsForm: TSettingsForm
   object btnSaveSettings: TButton
     Tag = 1
     Left = 398
-    Top = 668
+    Top = 658
     Width = 75
     Height = 25
     Caption = 'OK'
@@ -30,7 +30,7 @@ object SettingsForm: TSettingsForm
     Left = 5
     Top = 608
     Width = 550
-    Height = 57
+    Height = 49
     Caption = 'Others'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -42,7 +42,7 @@ object SettingsForm: TSettingsForm
     object chkConfirmRemove: TCheckBox
       Tag = 8
       Left = 320
-      Top = 24
+      Top = 21
       Width = 209
       Height = 17
       Caption = 'Confirm irreversible removals'
@@ -57,7 +57,7 @@ object SettingsForm: TSettingsForm
     object chkValidateConsts: TCheckBox
       Tag = 8
       Left = 8
-      Top = 24
+      Top = 21
       Width = 273
       Height = 17
       Caption = 'Enable full validation for declarations'
@@ -198,7 +198,7 @@ object SettingsForm: TSettingsForm
   object btnDiscardSettings: TButton
     Tag = 1
     Left = 479
-    Top = 668
+    Top = 658
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -776,7 +776,7 @@ object SettingsForm: TSettingsForm
   object btnDefaultSettings: TButton
     Tag = 1
     Left = 5
-    Top = 668
+    Top = 658
     Width = 124
     Height = 25
     Caption = 'Default Settings'
@@ -1202,12 +1202,12 @@ object SettingsForm: TSettingsForm
     Filter = 'Executable files|*.exe; *.bat; *.cmd;'
     Options = [ofReadOnly, ofHideReadOnly, ofFileMustExist, ofEnableSizing]
     Left = 232
-    Top = 664
+    Top = 656
   end
   object ColorDialog: TColorDialog
     Tag = 3
     Left = 192
-    Top = 664
+    Top = 656
   end
   object FontDialog: TFontDialog
     Font.Charset = DEFAULT_CHARSET
@@ -1219,6 +1219,6 @@ object SettingsForm: TSettingsForm
     MaxFontSize = 8
     Options = [fdEffects, fdScalableOnly]
     Left = 264
-    Top = 664
+    Top = 656
   end
 end
