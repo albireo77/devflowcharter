@@ -66,7 +66,6 @@ begin
       iter := GProject.GetUserFunctions;
       while iter.HasNext do
       begin
-         params := '';
          lFunction := TUserFunction(iter.Next);
          lName := lFunction.GetName;
          if (lName = '') or lFunction.Header.chkExtDeclare.Checked then continue;
@@ -75,11 +74,16 @@ begin
          else
             funcPrefix := 'Prgm';
          header := 'Define ' + lName + '(';
+         params := '';
          iterp := lFunction.Header.GetParameterIterator;
          while iterp.HasNext do
-            params := params + Trim(TParameter(iterp.Next).edtName.Text) + ',';
+         begin
+            if params <> '' then
+               params := params + ',';
+            params := params + Trim(TParameter(iterp.Next).edtName.Text);
+         end;
          if params <> '' then
-            header := header + AnsiLeftStr(params, Length(params)-1);
+            header := header + params;
          header := header + ')=' + funcPrefix;
          lFunction.Header.GenerateDescription(ALines);
          ALines.AddObject(header, lFunction.Header);
