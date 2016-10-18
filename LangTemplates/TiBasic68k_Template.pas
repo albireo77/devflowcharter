@@ -68,12 +68,12 @@ begin
       begin
          lFunction := TUserFunction(iter.Next);
          lName := lFunction.GetName;
-         if (lName = '') or lFunction.Header.chkExtDeclare.Checked then continue;
+         if (lName = '') or lFunction.Header.chkExtDeclare.Checked then
+            continue;
          if lFunction.Header.cbType.ItemIndex <> 0 then
             funcPrefix := 'Func'
          else
             funcPrefix := 'Prgm';
-         header := 'Define ' + lName + '(';
          params := '';
          iterp := lFunction.Header.GetParameterIterator;
          while iterp.HasNext do
@@ -82,7 +82,7 @@ begin
                params := params + ',';
             params := params + Trim(TParameter(iterp.Next).edtName.Text);
          end;
-         header := header + params + ')=' + funcPrefix;
+         header := 'Define ' + lName + '(' + params + ')=' + funcPrefix;
          lFunction.Header.GenerateDescription(ALines);
          ALines.AddObject(header, lFunction.Header);
          if lFunction.Body <> nil then
