@@ -46,7 +46,7 @@ begin
       buffer := '';
       for i := 1 to AVarList.sgList.RowCount-2 do
       begin
-         if buffer <> '' then
+         if i <> 1 then
             buffer := buffer + ', ';
          buffer := buffer + AVarList.sgList.Cells[VAR_NAME_COL, i];
       end;
@@ -82,9 +82,7 @@ begin
                params := params + ',';
             params := params + Trim(TParameter(iterp.Next).edtName.Text);
          end;
-         if params <> '' then
-            header := header + params;
-         header := header + ')=' + funcPrefix;
+         header := header + params + ')=' + funcPrefix;
          lFunction.Header.GenerateDescription(ALines);
          ALines.AddObject(header, lFunction.Header);
          if lFunction.Body <> nil then
