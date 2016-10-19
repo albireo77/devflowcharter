@@ -378,12 +378,13 @@ end;
 
 function Pascal_GetLiteralType(const AValue: string): integer;
 var
-   i: integer;
+   i, len: integer;
    f: double;
    b: boolean;
 begin
    result := UNKNOWN_TYPE;
-   if AValue <> '' then
+   len := Length(AValue);
+   if len > 0 then
    begin
       if not TryStrToInt(AValue, i) then
       begin
@@ -393,7 +394,7 @@ begin
             begin
                if (AValue[1] = PASCAL_STRING_DELIM) and (AnsiLastChar(AValue) = PASCAL_STRING_DELIM) then
                begin
-                  if Length(AValue) = 3 then
+                  if len = 3 then
                      result := PASCAL_CHAR_TYPE
                   else
                      result := PASCAL_STRING_TYPE;
