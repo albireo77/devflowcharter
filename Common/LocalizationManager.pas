@@ -214,9 +214,10 @@ end;
 function Ti18Manager.LoadDefaultLabels: integer;
 var
    lResStream: TResourceStream;
-   lLangFile: string;
+   lLangFile, lErrorMsg: string;
    lTmpPath: array[0..MAX_PATH] of Char;
 begin
+   lErrorMsg := '';
    GetTempPath(SizeOf(lTmpPath)-1, lTmpPath);
    lLangFile := lTmpPath + 'english.lng';
    lResStream := TResourceStream.Create(Hinstance, 'DEFAULT_LOCALIZATION_FILE', 'LNG_FILE');
@@ -226,13 +227,19 @@ begin
          result := LoadAllLabels(lLangFile);
       except on E: EFCreateError do
          begin
-            Application.MessageBox(PChar('Could not create default translation file ' + lLangFile + ':' + CRLF + E.Message), 'IO Error', MB_ICONERROR);
+            lErrorMsg := 'Could not create default translation file ' + lLangFile + ':' + CRLF + E.Message;
             result := 0;
          end;
       end;
    finally
       SysUtils.DeleteFile(lLangFile);
       lResStream.Free;
+   end;
+   if result = 0 then
+   begin
+      if lErrorMsg = '' then
+         lErrorMsg := 'Failed to load translation labels.';
+      Application.MessageBox(PChar(lErrorMsg), 'IO Error', MB_ICONERROR);
    end;
 end;
 
