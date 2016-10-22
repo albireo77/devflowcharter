@@ -117,9 +117,8 @@ begin
    lTag := FindChildTag(ATag, AChildTagName);
    while lTag <> nil do
    begin
-      result := result + 1;
-      if AWithText and (Trim(lTag.Text) = '') then
-         result := result - 1;
+      if not (AWithText and (Trim(lTag.Text) = '')) then
+         result := result + 1;
       lTag := FindNextTag(lTag);
    end;
 end;
