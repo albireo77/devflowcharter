@@ -1185,12 +1185,13 @@ class function TInfra.ExtractIndentString(const AText: string): string;
 var
    i: integer;
 begin
-   for i := 1 to Length(AText) do
+   result := AText;
+   for i := 1 to Length(result) do
    begin
-      if not (AText[i] in [#32, #9, INDENT_CHAR]) then
+      if not (result[i] in [#32, #9, INDENT_CHAR]) then
          break;
    end;
-   result := AnsiLeftStr(AText, i-1);
+   SetLength(result, i-1);
 end;
 
 class function TInfra.GetFunctionHeader(ABlock: TBlock): TUserFunctionHeader;
