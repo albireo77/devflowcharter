@@ -575,7 +575,7 @@ var
    lRowTo: integer;
 begin
    lRowTo := FindValidRowByPoint(Point(X, Y));
-   if (Source = sgList) and (lRowTo <> -1) and (FDragRow <> -1) then
+   if (lRowTo <> -1) and (Source = sgList) and (FDragRow <> -1) then
       sgList.MoveRow(FDragRow, lRowTo);
    FDragRow := -1;
 end;
@@ -586,7 +586,7 @@ var
 begin
    edtName.SetFocus;
    lRow := FindValidRowByPoint(Point(X, Y));
-   if (Button = mbLeft) and (ssShift in Shift) and (lRow <> -1) then
+   if (lRow <> -1) and (Button = mbLeft) and (ssShift in Shift) then
    begin
       FDragRow := lRow;
       sgList.BeginDrag(true);
