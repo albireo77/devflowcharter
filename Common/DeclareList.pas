@@ -572,11 +572,14 @@ end;
 
 procedure TDeclareList.OnDragDropList(Sender, Source: TObject; X, Y: Integer);
 var
-   lRowTo: integer;
+   lRow: integer;
 begin
-   lRowTo := FindValidRowByPoint(Point(X, Y));
-   if (lRowTo <> -1) and (Source = sgList) and (FDragRow <> -1) then
-      sgList.MoveRow(FDragRow, lRowTo);
+   if (Source = sgList) and (FDragRow <> -1) then
+   begin
+      lRow := FindValidRowByPoint(Point(X, Y));
+      if lRow <> -1 then
+         sgList.MoveRow(FDragRow, lRow);
+   end;
    FDragRow := -1;
 end;
 
@@ -585,11 +588,14 @@ var
    lRow: integer;
 begin
    edtName.SetFocus;
-   lRow := FindValidRowByPoint(Point(X, Y));
-   if (lRow <> -1) and (Button = mbLeft) and (ssShift in Shift) then
+   if (Button = mbLeft) and (ssShift in Shift) then
    begin
-      FDragRow := lRow;
-      sgList.BeginDrag(true);
+      lRow := FindValidRowByPoint(Point(X, Y));
+      if lRow <> -1 then
+      begin
+         FDragRow := lRow;
+         sgList.BeginDrag(true);
+      end;
    end;
 end;
 
