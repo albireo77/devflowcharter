@@ -149,10 +149,7 @@ begin
                         lEnumTemplate.Text := FastCodeAnsiStringReplace(lLang.DataTypeEnumTemplate, '%s1', lName);
                         lValueStr := '';
                         while iterf.HasNext do
-                        begin
-                           lField := TField(iterf.Next);
-                           lValueStr := lValueStr + Format(lLang.DataTypeEnumEntryList, [Trim(lField.edtName.Text)]);
-                        end;
+                           lValueStr := lValueStr + Format(lLang.DataTypeEnumEntryList, [Trim(TField(iterf.Next).edtName.Text)]);
                         SetLength(lValueStr, Length(lValueStr)-lLang.DataTypeEnumEntryListStripCount);
                         TInfra.InsertTemplateLines(lEnumTemplate, '%s2', lValueStr);
                         for b := 0 to lEnumTemplate.Count-1 do
