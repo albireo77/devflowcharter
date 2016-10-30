@@ -870,7 +870,7 @@ object SettingsForm: TSettingsForm
     object lblFontColor: TLabel
       Tag = 6
       Left = 8
-      Top = 29
+      Top = 27
       Width = 24
       Height = 13
       Caption = 'Font:'
@@ -884,7 +884,7 @@ object SettingsForm: TSettingsForm
     object lblDesktop: TLabel
       Tag = 6
       Left = 8
-      Top = 56
+      Top = 55
       Width = 43
       Height = 13
       Caption = 'Desktop:'
@@ -925,7 +925,7 @@ object SettingsForm: TSettingsForm
     end
     object pnlDesktop: TPanel
       Left = 70
-      Top = 51
+      Top = 50
       Width = 25
       Height = 20
       BevelOuter = bvNone
@@ -939,7 +939,7 @@ object SettingsForm: TSettingsForm
     end
     object pnlFont: TPanel
       Left = 70
-      Top = 22
+      Top = 21
       Width = 25
       Height = 20
       BevelOuter = bvNone
