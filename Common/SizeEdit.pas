@@ -66,7 +66,7 @@ var
 begin
    lText := AnsiReplaceStr(Text, ' ', '');
    result := false;
-   if (lText <> '') and (lText[1] <> '0') and (lText[1] <> '-') and (AnsiPos(',-', lText) = 0) and (AnsiPos(',0', lText) = 0) then
+   if (lText <> '') and (AnsiPos(',-', lText) = 0) and (AnsiPos(',0', lText) = 0) and not (lText[1] in ['0', '-']) then
    begin
       result := true;
       lLangDef := GInfra.GetLangDefinition(PASCAL_LANG_ID);
