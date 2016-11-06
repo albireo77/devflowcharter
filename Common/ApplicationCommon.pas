@@ -321,10 +321,7 @@ begin
       begin
          lRegistry.WriteString(KEY_CURRENT_LANGUAGE, FCurrentLang.Name);
          for i := 0 to High(FLangArray)-1 do
-         begin
-            lRegistry.WriteString(KEY_COMPILER_COMMAND + '_' + FLangArray[i].Name, FLangArray[i].CompilerCommand);
-            lRegistry.WriteString(KEY_COMPILER_COMMAND_NOMAIN + '_' + FLangArray[i].Name, FLangArray[i].CompilerCommandNoMain);
-         end;
+            FLangArray[i].WriteCompilerCommands(lRegistry);
       end;
    finally
       lRegistry.Free;
@@ -348,13 +345,7 @@ begin
                FCurrentLang := lLangDef
          end;
          for i := 0 to High(FLangArray)-1 do
-         begin
-            lLangDef := FLangArray[i];
-            if lRegistry.ValueExists(KEY_COMPILER_COMMAND + '_' + lLangDef.Name) then
-                lLangDef.CompilerCommand := lRegistry.ReadString(KEY_COMPILER_COMMAND + '_' + lLangDef.Name);
-            if lRegistry.ValueExists(KEY_COMPILER_COMMAND_NOMAIN + '_' + lLangDef.Name) then
-                lLangDef.CompilerCommandNoMain := lRegistry.ReadString(KEY_COMPILER_COMMAND_NOMAIN + '_' + lLangDef.Name);
-         end;
+            FLangArray[i].ReadCompilerCommands(lRegistry);
       end;
    finally
       lRegistry.Free;

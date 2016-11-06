@@ -27,7 +27,7 @@ uses
 {$ENDIF}
     Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, SizeEdit,
     SynEditHighlighter, YaccLib, DeclareList, UserFunction, CommonTypes, OmniXML,
-    UserDataType;
+    UserDataType, Registry;
 
 type
 
@@ -46,8 +46,6 @@ type
       Name,
       CommentBegin, CommentEnd,
       DefaultExt,
-      CompilerCommand,
-      CompilerCommandNoMain,
       InputFunction,
       OutputFunction,
       LibraryExt,
@@ -137,7 +135,9 @@ type
       FuncBrackets,
       ExternEntry,
       ConstIDSpecChars,
-      DefFile: string;
+      DefFile,
+      CompilerCommand,
+      CompilerCommandNoMain: string;
       LabelFontSize,
       FunctionHeaderArgsStripCount,
       VarEntryArraySizeStripCount,
@@ -193,6 +193,11 @@ type
       function GetTemplate(const AClass: TClass): string;
       function GetTemplateExpr(const AClass: TClass): string;
       function GetArraySizes(const ASizeEdit: TSizeEdit): string;
+      procedure WriteCompilerCommands(ARegistry: TRegistry);
+      procedure ReadCompilerCommands(ARegistry: TRegistry);
+   private
+      FCompilerRegKey,
+      FCompilerNoMainRegKey: string;
    end;
 
 
@@ -268,6 +273,9 @@ begin
    end
    else
       Name := lVal;
+
+   FCompilerRegKey := KEY_COMPILER_COMMAND + '_' + Name;
+   FCompilerNoMainRegKey := KEY_COMPILER_COMMAND_NOMAIN + '_' + Name;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'CommentBegin');
    if tag <> nil then
@@ -825,6 +833,20 @@ begin
       end;
    end;
 {$ENDIF}
+end;
+
+procedure TLangDefinition.WriteCompilerCommands(ARegistry: TRegistry);
+begin
+   ARegistry.WriteString(FCompilerRegKey, CompilerCommand);
+   ARegistry.WriteString(FCompilerNoMainRegKey, CompilerCommandNoMain);
+end;
+
+procedure TLangDefinition.ReadCompilerCommands(ARegistry: TRegistry);
+begin
+   if ARegistry.ValueExists(FCompilerRegKey) then
+      CompilerCommand := ARegistry.ReadString(FCompilerRegKey);
+   if ARegistry.ValueExists(FCompilerNoMainRegKey) then
+      CompilerCommandNoMain := ARegistry.ReadString(FCompilerNoMainRegKey);
 end;
 
 function TLangDefinition.GetTemplate(const AClass: TClass): string;

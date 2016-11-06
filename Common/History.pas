@@ -58,6 +58,7 @@ procedure THistoryMenu.Load;
 var
    lReg: TRegistry;
    i: integer;
+   lFileKey: string;
 begin
    lReg := TRegistry.Create;
    try
@@ -65,8 +66,9 @@ begin
       begin
          for i := HISTORY_SIZE-1 downto 0 do
          begin
-            if lReg.ValueExists(KEY_HISTORY + IntToStr(i)) then
-               AddFile(lReg.ReadString(KEY_HISTORY + IntToStr(i)));
+            lFileKey := KEY_HISTORY + IntToStr(i);
+            if lReg.ValueExists(lFileKey) then
+               AddFile(lReg.ReadString(lFileKey));
          end;
       end;
    finally
