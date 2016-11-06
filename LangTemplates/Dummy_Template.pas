@@ -604,7 +604,6 @@ initialization
 
    with GInfra.DummyLang do
    begin
-      Name := DUMMY_LANG_ID;
       EnabledUserFunctionBody := true;
       EnabledExplorer := true;
       MainProgramSectionGenerator := Dummy_MainProgramSectionGenerator;

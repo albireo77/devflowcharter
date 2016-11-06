@@ -43,7 +43,11 @@ type
 {$ENDIF}
 
    TLangDefinition = class
-      Name,
+   private
+      FName,
+      FCompilerRegKey,
+      FCompilerNoMainRegKey: string;
+   public
       CommentBegin, CommentEnd,
       DefaultExt,
       InputFunction,
@@ -187,6 +191,7 @@ type
       Parse: function (const AText: string; const AParserMode: TParserMode): integer;
       SkipFuncBodyGen: function: boolean;
       GetMainProgramDesc: function: string;
+      property Name: string read FName;
       constructor Create;
       destructor Destroy; override;
       function ImportLangDef(const ATag: IXMLElement): TErrorType;
@@ -195,9 +200,6 @@ type
       function GetArraySizes(const ASizeEdit: TSizeEdit): string;
       procedure WriteCompilerCommands(ARegistry: TRegistry);
       procedure ReadCompilerCommands(ARegistry: TRegistry);
-   private
-      FCompilerRegKey,
-      FCompilerNoMainRegKey: string;
    end;
 
 
@@ -212,6 +214,7 @@ uses
 constructor TLangDefinition.Create;
 begin
    inherited;
+   FName := '   ';
    DefaultExt := 'txt';
    LibraryExt := '.lib';
    AssignOperator := '=';
@@ -272,10 +275,10 @@ begin
       exit;
    end
    else
-      Name := lVal;
+      FName := lVal;
 
-   FCompilerRegKey := KEY_COMPILER_COMMAND + '_' + Name;
-   FCompilerNoMainRegKey := KEY_COMPILER_COMMAND_NOMAIN + '_' + Name;
+   FCompilerRegKey := KEY_COMPILER_COMMAND + '_' + FName;
+   FCompilerNoMainRegKey := KEY_COMPILER_COMMAND_NOMAIN + '_' + FName;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'CommentBegin');
    if tag <> nil then

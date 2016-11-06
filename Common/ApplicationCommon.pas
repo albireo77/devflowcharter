@@ -223,7 +223,6 @@ const   // Global constants
         PASCAL_LANG_ID  = 'Pascal';
         C_LANG_ID       = 'ANSI C';
         TIBASIC_LANG_ID = 'TIBASIC';
-        DUMMY_LANG_ID   = '   ';
 
         KEY_COMPILER_COMMAND        = 'CompilerPath';
         KEY_COMPILER_COMMAND_NOMAIN = 'CompilerPathNoMain';
