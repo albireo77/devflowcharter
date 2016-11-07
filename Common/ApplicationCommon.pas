@@ -64,6 +64,7 @@ type
          FDummyLang,
          FCurrentLang: TLangDefinition;
          FLangArray: array of TLangDefinition;
+         FLangArrayCount: integer;
       public
          property CurrentLang: TLangDefinition read FCurrentLang;
          property DummyLang: TLangDefinition read FDummyLang;
@@ -286,7 +287,8 @@ begin
    finally
       FindClose(SearchRec);
    end;
-   SetLength(FLangArray, i+1);
+   FLangArrayCount := i + 1;
+   SetLength(FLangArray, FLangArrayCount);
    FLangArray[i] := TLangDefinition.Create;
    FDummyLang := FLangArray[i];
    FCurrentLang := FLangArray[0];
@@ -296,7 +298,7 @@ destructor TInfra.Destroy;
 var
    i: integer;
 begin
-   for i := 0 to High(FLangArray) do
+   for i := 0 to FLangArrayCount-1 do
       FLangArray[i].Free;
    FLangArray := nil;
    inherited Destroy;
@@ -319,7 +321,7 @@ begin
       if lRegistry.OpenKey(REGISTRY_KEY, true) then
       begin
          lRegistry.WriteString(KEY_CURRENT_LANGUAGE, FCurrentLang.Name);
-         for i := 0 to High(FLangArray)-1 do
+         for i := 0 to FLangArrayCount-2 do
             FLangArray[i].WriteCompilerCommands(lRegistry);
       end;
    finally
@@ -343,7 +345,7 @@ begin
             if lLangDef <> nil then
                FCurrentLang := lLangDef
          end;
-         for i := 0 to High(FLangArray)-1 do
+         for i := 0 to FLangArrayCount-2 do
             FLangArray[i].ReadCompilerCommands(lRegistry);
       end;
    finally
@@ -403,7 +405,7 @@ procedure TInfra.GetLangNames(const AList: TStrings);
 var
    i: integer;
 begin
-   for i := 0 to High(FLangArray) do
+   for i := 0 to FLangArrayCount-1 do
       AList.Add(FLangArray[i].Name);
 end;
 
@@ -427,7 +429,7 @@ var
    i: integer;
    lComponent: TComponent;
 begin
-   for i := 0 to High(FLangArray)-1 do
+   for i := 0 to FLangArrayCount-2 do
    begin
       lComponent := GetEditorForm.FindComponent(FLangArray[i].HighLighterVarName);
       if lComponent is TSynCustomHighlighter then
@@ -844,7 +846,7 @@ var
    i: integer;
 begin
    result := nil;
-   for i := 0 to High(FLangArray) do
+   for i := 0 to FLangArrayCount-1 do
    begin
       if AnsiSameText(FLangArray[i].Name, AName) then
       begin
@@ -858,7 +860,7 @@ procedure TInfra.SetLangHiglighterAttributes;
 var
    i: integer;
 begin
-   for i := 0 to High(FLangArray) do
+   for i := 0 to FLangArrayCount-1 do
    begin
       if Assigned(FLangArray[i].SetHLighterAttrs) then
          FLangArray[i].SetHLighterAttrs;
