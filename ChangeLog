@@ -1,7 +1,7 @@
 3.6.1 [08.10.2016]
 - Flowchart: fix selecting all text in text box by Ctrl-A (and by mouse double click for multiline components)
 - Flowchart: enable clipboard copy/paste operations for text boxes
-- Flowchart: fix flickering for comments in some cases
+- Flowchart: fix comments flicker in some cases
 - minor fixes and optimizations
 
 3.6.0 [04.09.2016]
