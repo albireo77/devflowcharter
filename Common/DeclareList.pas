@@ -957,7 +957,7 @@ begin
    if result = errNone then
    begin
       idx := sgList.RowCount - 1;
-      sgList.Cells[CONST_VALUE_COL, idx] := ATag.GetAttribute('value');
+      sgList.Cells[CONST_VALUE_COL, idx] := ATag.GetAttribute(VALUE_ATTR);
       sgList.RowCount := idx + 2;
    end;
 end;
@@ -975,8 +975,8 @@ begin
       if cbType.Items.IndexOf(lType) = -1 then
          lType := i18Manager.GetString('Unknown');
       sgList.Cells[VAR_TYPE_COL, idx] := lType;
-      sgList.Cells[VAR_SIZE_COL, idx] := ATag.GetAttribute('size');
-      sgList.Cells[VAR_INIT_COL, idx] := ATag.GetAttribute('init');
+      sgList.Cells[VAR_SIZE_COL, idx] := ATag.GetAttribute(SIZE_ATTR);
+      sgList.Cells[VAR_INIT_COL, idx] := ATag.GetAttribute(INIT_ATTR);
       sgList.RowCount := idx + 2;
    end;
 end;
@@ -1003,8 +1003,8 @@ begin
    tag := ATag.OwnerDocument.CreateElement(VAR_TAG);
    ATag.AppendChild(tag);
    tag.SetAttribute(TYPE_ATTR, sgList.Cells[VAR_TYPE_COL, idx]);
-   tag.SetAttribute('size', sgList.Cells[VAR_SIZE_COL, idx]);
-   tag.SetAttribute('init', sgList.Cells[VAR_INIT_COL, idx]);
+   tag.SetAttribute(SIZE_ATTR, sgList.Cells[VAR_SIZE_COL, idx]);
+   tag.SetAttribute(INIT_ATTR, sgList.Cells[VAR_INIT_COL, idx]);
    inherited ExportItemToXMLTag(tag, idx);
 end;
 
@@ -1014,7 +1014,7 @@ var
 begin
    tag := ATag.OwnerDocument.CreateElement(CONST_TAG);
    ATag.AppendChild(tag);
-   tag.SetAttribute('value', sgList.Cells[CONST_VALUE_COL, idx]);
+   tag.SetAttribute(VALUE_ATTR, sgList.Cells[CONST_VALUE_COL, idx]);
    inherited ExportItemToXMLTag(tag, idx);
 end;
 

@@ -571,7 +571,7 @@ end;
 
 function TField.ExportToXMLTag(const ATag: IXMLElement): IXMLElement;
 begin
-   inherited ExportToXMLTag(ATag).SetAttribute('size', edtSize.Text);
+   inherited ExportToXMLTag(ATag).SetAttribute(SIZE_ATTR, edtSize.Text);
 end;
 
 procedure TField.ImportFromXMLTag(const ATag: IXMLElement);
@@ -583,7 +583,7 @@ begin
       edtSize.Text := '100'
    else
    begin
-      lSize := ATag.GetAttribute('size');
+      lSize := ATag.GetAttribute(SIZE_ATTR);
       if lSize = '' then
          lSize := '1';
       edtSize.Text := lSize;
