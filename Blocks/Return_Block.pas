@@ -89,12 +89,13 @@ end;
 procedure TReturnBlock.Paint;
 var
    lFontStyles: TFontStyles;
+   lRect: TRect;
 begin
    inherited;
    lFontStyles := Canvas.Font.Style;
    Canvas.Font.Style := [];
-   DrawEllipsedText(Point(Width div 2, 30), FReturnLabel);
-   DrawBlockLabel(Width div 2 - 45, Height-5, GInfra.CurrentLang.LabelReturn, true, true);
+   lRect := DrawEllipsedText(Point(Width div 2, 30), FReturnLabel);
+   DrawBlockLabel(lRect.Left, lRect.Bottom, GInfra.CurrentLang.LabelReturn, true);
    Canvas.Font.Style := lFontStyles;
    DrawI;
 end;
