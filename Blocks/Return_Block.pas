@@ -94,7 +94,7 @@ begin
    lFontStyles := Canvas.Font.Style;
    Canvas.Font.Style := [];
    DrawEllipsedText(Point(Width div 2, 30), FReturnLabel);
-   DrawBlockLabel(1, Height-1, GInfra.CurrentLang.LabelReturn, false, true);
+   DrawBlockLabel(Width div 2 - 45, Height-5, GInfra.CurrentLang.LabelReturn, true, true);
    Canvas.Font.Style := lFontStyles;
    DrawI;
 end;
@@ -179,8 +179,7 @@ begin
    FStatement.Color := AColor;
 end;
 
-procedure TReturnBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y:
-    Integer);
+procedure TReturnBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
    SelectBlock(Point(X, Y));
 end;
