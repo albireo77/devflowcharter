@@ -1432,9 +1432,17 @@ begin
          Canvas.Font.Style := Canvas.Font.Style + [fsBold];
       Canvas.Brush.Style := bsClear;
       if rightJust then
+      begin
          x := x - Canvas.TextWidth(AText);
+         if x < 0 then
+            x := 0;
+      end;
       if downJust then
+      begin
          y := y - Canvas.TextHeight('X');
+         if y < 0 then
+            y := 0;
+      end;
       Canvas.TextOut(x, y, AText);
       Canvas.Font.Style := lFontStyles;
    end;
