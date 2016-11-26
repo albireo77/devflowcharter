@@ -1,3 +1,8 @@
+3.6.2 [26.11.2016]
+- XML language definition files saved as UTF to properly handle non-English characters
+- make Settings page a bit smaller to be displayed entirely on 1024x768 screen
+- minor fixes and optimizations 
+
 3.6.1 [08.10.2016]
 - Flowchart: fix selecting all text in text box by Ctrl-A (and by mouse double click for multiline components)
 - Flowchart: enable clipboard copy/paste operations for text boxes
