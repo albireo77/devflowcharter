@@ -227,10 +227,9 @@ begin
    begin
       result := AFileName;
       if result = '' then
-      begin
          result := TXMLProcessor.DialogXMLFile(TInfra.GetMainForm.OpenDialog);
-         if result = '' then exit;
-      end;
+      if result = '' then
+         exit;
       docXML := CreateXMLDoc;
       docXML.PreserveWhiteSpace := APreserveSpace;
       try
@@ -268,12 +267,11 @@ begin
    if Assigned(AExportProc) then
    begin
       if ExtractFilePath(AFilePath) = '' then
-      begin
-         lFilePath := TXMLProcessor.DialogXMLFile(TInfra.GetMainForm.ExportDialog, AFilePath);
-         if lFilePath = '' then exit;
-      end
+         lFilePath := TXMLProcessor.DialogXMLFile(TInfra.GetMainForm.ExportDialog, AFilePath)
       else
          lFilePath := AFilePath;
+      if lFilePath = '' then
+         exit;
       if FileExists(lFilePath) and FileIsReadOnly(lFilePath) then
       begin
          TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [lFilePath], errIO);
