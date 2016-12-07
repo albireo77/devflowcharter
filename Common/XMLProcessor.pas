@@ -26,7 +26,8 @@ unit XMLProcessor;
 interface
 
 uses
-   Windows, Controls, Forms, StdCtrls, SysUtils, Classes, StrUtils, OmniXML, Base_Block, CommonTypes, Graphics;
+   Windows, Controls, Forms, StdCtrls, SysUtils, Classes, StrUtils, OmniXML, Base_Block,
+   CommonTypes, Graphics, Dialogs;
 
 type
 
@@ -34,6 +35,8 @@ type
    TImportProc = function(const root: IXMLElement): TErrorType of object;
 
    TXMLProcessor = class(TObject)
+   private
+      class function DialogXMLFile(ADialog: TOpenDialog; const AFileName: string = ''): string;
    public
       class function ExportToXMLFile(AExportProc: TExportProc; const AFilePath: string = ''): TErrorType;
       class function ImportFromXMLFile(AImportProc: TImportProc; const AFileName: string = ''; const APreserveSpace: boolean = false): string;
@@ -56,7 +59,7 @@ const
 implementation
 
 uses
-   ApplicationCommon, BlockFactory, BlockTabSheet, Dialogs;
+   ApplicationCommon, BlockFactory, BlockTabSheet;
 
 class function TXMLProcessor.FindChildTag(const ATag: IXMLElement; const AName: string): IXMLElement;
 var
@@ -204,10 +207,18 @@ begin
 
 end;
 
+class function TXMLProcessor.DialogXMLFile(ADialog: TOpenDialog; const AFileName: string = ''): string;
+begin
+   result := '';
+   ADialog.Filter := i18Manager.GetString('XMLFilesFilter');
+   ADialog.FileName := AFileName;
+   if ADialog.Execute then
+      result := ADialog.FileName;
+end;
+
 class function TXMLProcessor.ImportFromXMLFile(AImportProc: TImportProc; const AFileName: string = ''; const APreserveSpace: boolean = false): string;
 var
    docXML: IXMLDocument;
-   lDialog: TOpenDialog;
    lErrText: string;
    status: TErrorType;
 begin
@@ -217,13 +228,8 @@ begin
       result := AFileName;
       if result = '' then
       begin
-         lDialog := TInfra.GetMainForm.OpenDialog;
-         lDialog.Filter := i18Manager.GetString('XMLFilesFilter');
-         lDialog.FileName := '';
-         if lDialog.Execute then
-            result := lDialog.FileName
-         else
-            exit;
+         result := TXMLProcessor.DialogXMLFile(TInfra.GetMainForm.OpenDialog);
+         if result = '' then exit;
       end;
       docXML := CreateXMLDoc;
       docXML.PreserveWhiteSpace := APreserveSpace;
@@ -256,7 +262,6 @@ var
    docXML: IXMLDocument;
    lInstr: IXMLProcessingInstruction;
    lTag: IXMLElement;
-   lDialog: TSaveDialog;
    lFilePath: string;
 begin
    result := errNone;
@@ -264,13 +269,8 @@ begin
    begin
       if ExtractFilePath(AFilePath) = '' then
       begin
-         lDialog := TInfra.GetMainForm.ExportDialog;
-         lDialog.FileName := AFilePath;
-         lDialog.Filter := i18Manager.GetString('XMLFilesFilter');
-         if lDialog.Execute then
-            lFilePath := lDialog.FileName
-         else
-            exit;
+         lFilePath := TXMLProcessor.DialogXMLFile(TInfra.GetMainForm.ExportDialog, AFilePath);
+         if lFilePath = '' then exit;
       end
       else
          lFilePath := AFilePath;
