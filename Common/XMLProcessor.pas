@@ -270,14 +270,12 @@ begin
          lFilePath := TXMLProcessor.DialogXMLFile(TInfra.GetMainForm.ExportDialog, AFilePath)
       else
          lFilePath := AFilePath;
-      if lFilePath = '' then
-         exit;
       if FileExists(lFilePath) and FileIsReadOnly(lFilePath) then
       begin
          TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [lFilePath], errIO);
          result := errIO;
       end
-      else
+      else if lFilePath <> '' then
       begin
          docXML := CreateXMLDoc;
          lInstr := docXML.CreateProcessingInstruction('xml', XML_HEADER);
