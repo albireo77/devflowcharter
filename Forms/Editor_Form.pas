@@ -585,7 +585,7 @@ end;
 
 procedure TEditorForm.ReplaceDialogReplace(Sender: TObject);
 var
-   idx: Integer;
+   i: Integer;
    lText: string;
 begin
    lText := '';
@@ -599,10 +599,10 @@ begin
          memCodeEditor.SelStart := 0;
          while True do
          begin
-            idx := TInfra.FindText(ReplaceDialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart+1, frMatchCase in ReplaceDialog.Options);
-            if idx = 0 then
+            i := TInfra.FindText(ReplaceDialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart+1, frMatchCase in ReplaceDialog.Options);
+            if i = 0 then
                exit;
-            memCodeEditor.SelStart := idx - 1;
+            memCodeEditor.SelStart := i - 1;
             memCodeEditor.SelLength := Length(ReplaceDialog.FindText);
             memCodeEditor.ClearSelection;
             memCodeEditor.PasteFromClipboard;
@@ -920,7 +920,7 @@ procedure TEditorForm.memCodeEditorPaintTransient(Sender: TObject; Canvas: TCanv
 const
    Brackets = ['{', '[', '(', '<', '}', ']', ')', '>'];
 var
-   i, f: integer;
+   i, f, l: integer;
    lChar: char;
    lAttr: TSynHighlighterAttributes;
    p: TBufferCoord;
@@ -929,6 +929,7 @@ var
 begin
    if FDialog <> nil then
    begin
+      l := Length(FDialog.FindText);
       for i := 0 to memCodeEditor.Lines.Count-1 do
       begin
          s := memCodeEditor.Lines[i];
@@ -937,11 +938,12 @@ begin
          begin
             p := BufferCoord(f, i+1);
             memCodeEditor.GetHighlighterAttriAtRowCol(p, s1, lAttr);
+            s1 := Copy(s, f, l);
             lPos := memCodeEditor.RowColumnToPixels(memCodeEditor.BufferToDisplayPos(p));
             Canvas.Font.Style := lAttr.Style;
             Canvas.Brush.Color := clYellow;
-            Canvas.TextOut(lPos.X, lPos.Y, FDialog.FindText);
-            f := TInfra.FindText(FDialog.FindText, s, f + Length(FDialog.FindText), frMatchCase in FDialog.Options);
+            Canvas.TextOut(lPos.X, lPos.Y, s1);
+            f := TInfra.FindText(FDialog.FindText, s, f+l, frMatchCase in FDialog.Options);
          end;
       end;
    end;
