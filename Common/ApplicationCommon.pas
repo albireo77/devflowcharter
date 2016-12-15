@@ -713,15 +713,15 @@ end;
 
 class function TInfra.FindText(ASubstr, AText: string; const idx: integer; const ACaseSens: boolean): integer;
 begin
-   AText := Copy(AText, idx+1, MAXINT);
+   AText := Copy(AText, idx, MAXINT);
    if not ACaseSens then
    begin
       AText := AnsiUpperCase(AText);
       ASubstr := AnsiUpperCase(ASubstr);
    end;
-   result := AnsiPos(ASubstr, AText) - 1;
-   if result <> -1 then
-      result :=  result + idx;
+   result := AnsiPos(ASubstr, AText);
+   if result > 0 then
+      result :=  result + idx - 1;
 end;
 
 class function TInfra.IsPrinter: boolean;

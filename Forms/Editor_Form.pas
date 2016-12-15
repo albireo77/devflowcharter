@@ -89,6 +89,8 @@ type
     procedure miUndoClick(Sender: TObject);
     procedure ReplaceDialogReplace(Sender: TObject);
     procedure ReplaceDialogFind(Sender: TObject);
+    procedure FindDialogShow(Sender: TObject);
+    procedure FindDialogClose(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure miCompileClick(Sender: TObject);
     procedure miPrintClick(Sender: TObject);
@@ -127,6 +129,7 @@ type
     FCloseBracketPos: TPoint;
     FCloseBracketHint,
     FFocusEditor: boolean;
+    FDialog: TFindDialog;
     FFocusControl: IFocusable;
     procedure PasteComment(const AText: string);
     function BuildBracketHint(startLine, endLine: integer): string;
@@ -332,6 +335,7 @@ begin
    FFocusControl := nil;
    Width := 425;
    Height := 558;
+   FDialog := nil;
    inherited ResetForm;
 end;
 
@@ -595,9 +599,10 @@ begin
          memCodeEditor.SelStart := 0;
          while True do
          begin
-            idx := TInfra.FindText(ReplaceDialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart, frMatchCase in ReplaceDialog.Options);
-            if idx = -1 then exit;
-            memCodeEditor.SelStart := idx;
+            idx := TInfra.FindText(ReplaceDialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart+1, frMatchCase in ReplaceDialog.Options);
+            if idx = 0 then
+               exit;
+            memCodeEditor.SelStart := idx - 1;
             memCodeEditor.SelLength := Length(ReplaceDialog.FindText);
             memCodeEditor.ClearSelection;
             memCodeEditor.PasteFromClipboard;
@@ -616,38 +621,50 @@ begin
    end;
 end;
 
+procedure TEditorForm.FindDialogShow(Sender: TObject);
+begin
+   FDialog := TFindDialog(Sender);
+end;
+
+procedure TEditorForm.FindDialogClose(Sender: TObject);
+begin
+   FDialog := nil;
+   memCodeEditor.Repaint;
+end;
+
 procedure TEditorForm.ReplaceDialogFind(Sender: TObject);
 var
-   idx, lStartPos, lLength: Integer;
+   i, lStartPos, lLength: Integer;
    lDialog: TFindDialog;
 begin
    lDialog := TFindDialog(Sender);
    lLength := Length(lDialog.FindText);
-   idx := -1;
+   i := 0;
+   memCodeEditor.Repaint;
    if frDown in lDialog.Options then
-      idx := TInfra.FindText(lDialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart + memCodeEditor.SelLength, frMatchCase in lDialog.Options)
+      i := TInfra.FindText(lDialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart + memCodeEditor.SelLength + 1, frMatchCase in lDialog.Options)
    else
    begin
-      lStartPos := 0;
+      lStartPos := 1;
       while True do
       begin
-         idx := TInfra.FindText(lDialog.FindText, memCodeEditor.Text, lStartPos, frMatchCase in lDialog.Options);
-         if (idx <> -1) and (idx < memCodeEditor.SelStart) then
-            lStartPos := idx + lLength
+         i := TInfra.FindText(lDialog.FindText, memCodeEditor.Text, lStartPos, frMatchCase in lDialog.Options);
+         if (i > 0) and (i <= memCodeEditor.SelStart) then
+            lStartPos := i + lLength
          else
          begin
-            if lStartPos > 0 then
-               idx := lStartPos - lLength;
-            if idx >= memCodeEditor.SelStart then
-               idx := -1;
+            if lStartPos > 1 then
+               i := lStartPos - lLength;
+            if i >= memCodeEditor.SelStart then
+               i := 0;
             break;
          end;
       end;
    end;
-   if idx <> -1 then
+   if i > 0 then
    begin
       memCodeEditor.SetFocus;
-      memCodeEditor.SelStart := idx;
+      memCodeEditor.SelStart := i - 1;
       memCodeEditor.SelLength := lLength;
    end;
 end;
@@ -903,54 +920,72 @@ procedure TEditorForm.memCodeEditorPaintTransient(Sender: TObject; Canvas: TCanv
 const
    Brackets = ['{', '[', '(', '<', '}', ']', ')', '>'];
 var
-   idx: integer;
+   i, f: integer;
    lChar: char;
    lAttr: TSynHighlighterAttributes;
-   P: TBufferCoord;
-   S: string;
+   p: TBufferCoord;
+   s, s1: string;
    lPos: TPoint;
 begin
-   idx := memCodeEditor.SelStart;
+   if FDialog <> nil then
+   begin
+      for i := 0 to memCodeEditor.Lines.Count-1 do
+      begin
+         s := memCodeEditor.Lines[i];
+         f := TInfra.FindText(FDialog.FindText, s, 1, frMatchCase in FDialog.Options);
+         while f > 0 do
+         begin
+            p := BufferCoord(f, i+1);
+            memCodeEditor.GetHighlighterAttriAtRowCol(p, s1, lAttr);
+            lPos := memCodeEditor.RowColumnToPixels(memCodeEditor.BufferToDisplayPos(p));
+            Canvas.Font.Style := lAttr.Style;
+            Canvas.Brush.Color := clYellow;
+            Canvas.TextOut(lPos.X, lPos.Y, FDialog.FindText);
+            f := TInfra.FindText(FDialog.FindText, s, f + Length(FDialog.FindText), frMatchCase in FDialog.Options);
+         end;
+      end;
+   end;
+   i := memCodeEditor.SelStart;
    lChar := #0;
-   if (idx >= 0) and (idx < Length(memCodeEditor.Text)) then
-      lChar := memCodeEditor.Text[idx+1];
+   if (i >= 0) and (i < Length(memCodeEditor.Text)) then
+      lChar := memCodeEditor.Text[i+1];
    if (memCodeEditor.Highlighter = nil) or memCodeEditor.SelAvail or (GSettings.EditorBracketColor = memCodeEditor.Font.Color) or not
       (lChar in Brackets) then exit;
-   P := memCodeEditor.CaretXY;
-   S := lChar;
-   memCodeEditor.GetHighlighterAttriAtRowCol(P, S, lAttr);
+   p := memCodeEditor.CaretXY;
+   s := lChar;
+   memCodeEditor.GetHighlighterAttriAtRowCol(p, s, lAttr);
    if memCodeEditor.Highlighter.SymbolAttribute = lAttr then
    begin
-      memCodeEditor.Canvas.Brush.Style := bsSolid;
-      memCodeEditor.Canvas.Font.Assign(memCodeEditor.Font);
-      memCodeEditor.Canvas.Font.Style := lAttr.Style;
-      lPos := memCodeEditor.RowColumnToPixels(memCodeEditor.BufferToDisplayPos(P));
+      Canvas.Brush.Style := bsSolid;
+      Canvas.Font.Assign(memCodeEditor.Font);
+      Canvas.Font.Style := lAttr.Style;
+      lPos := memCodeEditor.RowColumnToPixels(memCodeEditor.BufferToDisplayPos(p));
       if TransientType = ttAfter then
       begin
-         memCodeEditor.Canvas.Font.Color := GSettings.EditorBracketColor;
-         memCodeEditor.Canvas.Brush.Color := clNone;
+         Canvas.Font.Color := GSettings.EditorBracketColor;
+         Canvas.Brush.Color := clNone;
       end
       else
       begin
-         memCodeEditor.Canvas.Font.Color := lAttr.Foreground;
-         memCodeEditor.Canvas.Brush.Color := lAttr.Background;
+         Canvas.Font.Color := lAttr.Foreground;
+         Canvas.Brush.Color := lAttr.Background;
       end;
-      if memCodeEditor.Canvas.Font.Color = clNone then
-         memCodeEditor.Canvas.Font.Color := memCodeEditor.Font.Color;
-      if memCodeEditor.Canvas.Brush.Color = clNone then
-         memCodeEditor.Canvas.Brush.Color := memCodeEditor.ActiveLineColor;
-      memCodeEditor.Canvas.TextOut(lPos.X, lPos.Y, S);
-      P := memCodeEditor.GetMatchingBracketEx(P);
-      if (P.Char > 0) and (P.Line > 0) then
+      if Canvas.Font.Color = clNone then
+         Canvas.Font.Color := memCodeEditor.Font.Color;
+      if Canvas.Brush.Color = clNone then
+         Canvas.Brush.Color := memCodeEditor.ActiveLineColor;
+      Canvas.TextOut(lPos.X, lPos.Y, s);
+      P := memCodeEditor.GetMatchingBracketEx(p);
+      if (p.Char > 0) and (p.Line > 0) then
       begin
-         idx := memCodeEditor.RowColToCharIndex(P);
-         S := memCodeEditor.Text[idx+1];
-         lPos := memCodeEditor.RowColumnToPixels(memCodeEditor.BufferToDisplayPos(P));
-         if P.Line <> memCodeEditor.CaretY then
-            memCodeEditor.Canvas.Brush.Color := memCodeEditor.Color;
-         memCodeEditor.Canvas.TextOut(lPos.X, lPos.Y, S);
+         i := memCodeEditor.RowColToCharIndex(p);
+         s := memCodeEditor.Text[i+1];
+         lPos := memCodeEditor.RowColumnToPixels(memCodeEditor.BufferToDisplayPos(p));
+         if p.Line <> memCodeEditor.CaretY then
+            Canvas.Brush.Color := memCodeEditor.Color;
+         Canvas.TextOut(lPos.X, lPos.Y, s);
       end;
-      memCodeEditor.Canvas.Brush.Style := bsSolid;
+      Canvas.Brush.Style := bsSolid;
    end;
 end;
 

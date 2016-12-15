@@ -166,6 +166,8 @@ object EditorForm: TEditorForm
     Tag = 3
     Options = [frDown, frHideWholeWord]
     OnFind = ReplaceDialogFind
+    OnShow = FindDialogShow
+    OnClose = FindDialogClose
     Left = 344
     Top = 280
   end
@@ -173,6 +175,8 @@ object EditorForm: TEditorForm
     Tag = 3
     Options = [frDown, frHideWholeWord, frDisableWholeWord]
     OnFind = ReplaceDialogFind
+    OnShow = FindDialogShow
+    OnClose = FindDialogClose
     OnReplace = ReplaceDialogReplace
     Left = 344
     Top = 240
