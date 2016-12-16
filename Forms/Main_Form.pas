@@ -369,13 +369,13 @@ end;
 
 function TMainForm.GetMainBlockNextTopLeft: TPoint;
 const
-   NextPos: array[TClockPos] of TClockPos = (cp3, cp6, cp9, cp12);
+   nextPos: array[TClockPos] of TClockPos = (cp3, cp6, cp9, cp12);
    xShift: array[TClockPos] of integer = (0, 20, 0, -20);
    yShift: array[TClockPos] of integer = (20, 40, 60, 40);
 begin
    result.X := ((pgcPages.ClientWidth - MAIN_BLOCK_DEF_WIDTH) div 2) + xShift[FClockPos];
    result.Y := yShift[FClockPos];
-   FClockPos := NextPos[FClockPos];
+   FClockPos := nextPos[FClockPos];
 end;
 
 procedure TMainForm.miNewClick(Sender: TObject);
@@ -399,8 +399,8 @@ end;
 
 procedure TMainForm.miOpenClick(Sender: TObject);
 var
-   lTmpCursor: TCursor;
-   lFile: string;
+   tmpCursor: TCursor;
+   filePath: string;
 begin
     if (GChange = 1) and (GProject <> nil) then
     begin
@@ -409,17 +409,17 @@ begin
           IDCANCEL: exit;
        end;
     end;
-    lFile := '';
+    filePath := '';
     if Sender <> miOpen then
-       lFile := StripHotKey(TMenuItem(Sender).Caption);
+       filePath := StripHotKey(TMenuItem(Sender).Caption);
     TInfra.SetInitialSettings;
-    lTmpCursor := Screen.Cursor;
+    tmpCursor := Screen.Cursor;
     Screen.Cursor := crHourGlass;
     GProject := TProject.GetInstance;
-    lFile := TXMLProcessor.ImportFromXMLFile(GProject.ImportFromXMLTag, lFile);
-    Screen.Cursor := lTmpCursor;
-    if lFile <> '' then
-       AcceptFile(lFile)
+    filePath := TXMLProcessor.ImportFromXMLFile(GProject.ImportFromXMLTag, filePath);
+    Screen.Cursor := tmpCursor;
+    if filePath <> '' then
+       AcceptFile(filePath)
     else
        TInfra.SetInitialSettings;
 end;
@@ -431,17 +431,17 @@ end;
 
 procedure TMainForm.miGenerateClick(Sender: TObject);
 var
-   lForm: TForm;
+   form: TForm;
 begin
-   lForm := TInfra.GetEditorForm;
-   if lForm.Showing then
+   form := TInfra.GetEditorForm;
+   if form.Showing then
    begin
-      if lForm.WindowState = wsMinimized then
-         lForm.WindowState := wsNormal;
-      lForm.OnShow(lForm);
+      if form.WindowState = wsMinimized then
+         form.WindowState := wsNormal;
+      form.OnShow(form);
    end
    else
-      lForm.Show;
+      form.Show;
 end;
 
 procedure TMainForm.miSettingsClick(Sender: TObject);
@@ -476,14 +476,14 @@ end;
 
 procedure TMainForm.miPrintClick(Sender: TObject);
 var
-   lBitmap: TBitmap;
+   bitmap: TBitmap;
 begin
-   lBitmap := TBitmap.Create;
+   bitmap := TBitmap.Create;
    try
-      GProject.ExportToGraphic(lBitmap);
-      TInfra.PrintBitmap(lBitmap);
+      GProject.ExportToGraphic(bitmap);
+      TInfra.PrintBitmap(bitmap);
    finally
-      lBitmap.Free;
+      bitmap.Free;
    end;
 end;
 
@@ -524,21 +524,21 @@ end;
 
 procedure TMainForm.miUndoRemoveClick(Sender: TObject);
 var
-   lBlock: TBlock;
-   lActiveObject: IXMLable;
+   block: TBlock;
+   xmlObj: IXMLable;
 begin
    if (GClpbrd.UndoObject is TBlock) and (TBlock(GClpbrd.UndoObject).ParentBlock <> nil) then
    begin
-      lBlock := TBlock(GClpbrd.UndoObject);
-      if not lBlock.ParentBlock.CanFocus or
-         not lBlock.ParentBlock.Expanded or ((lBlock is TReturnBlock) and (lBlock.ParentBranch.FindInstanceOf(TReturnBlock) <> -1)) then exit;
-      lBlock.ParentBranch.UndoRemove(lBlock);
-      lBlock.ParentBlock.ResizeWithDrawLock;
-      lBlock.SetVisible(true);
+      block := TBlock(GClpbrd.UndoObject);
+      if not block.ParentBlock.CanFocus or
+         not block.ParentBlock.Expanded or ((block is TReturnBlock) and (block.ParentBranch.FindInstanceOf(TReturnBlock) <> -1)) then exit;
+      block.ParentBranch.UndoRemove(block);
+      block.ParentBlock.ResizeWithDrawLock;
+      block.SetVisible(true);
       NavigatorForm.Invalidate;
    end
-   else if Supports(GClpbrd.UndoObject, IXMLable, lActiveObject) then
-      lActiveObject.Active := true;
+   else if Supports(GClpbrd.UndoObject, IXMLable, xmlObj) then
+      xmlObj.Active := true;
    TInfra.UpdateCodeEditor(GClpbrd.UndoObject);
    GClpbrd.UndoObject := nil;
    miUndoRemove.Enabled := false;
@@ -546,10 +546,10 @@ end;
 
 procedure TMainForm.pmPagesPopup(Sender: TObject);
 var
-   lComponent: TComponent;
-   lBlock: TBlock;
+   comp: TComponent;
+   block: TBlock;
    lFont: TFont;
-   lIsFunction: boolean;
+   isFunction: boolean;
 begin
    lFont := nil;
    miFont.Visible := False;
@@ -589,88 +589,88 @@ begin
    miSize12.Checked := False;
    miIsHeader.Visible := False;
 
-   lComponent := pmPages.PopupComponent;
-   lIsFunction := TInfra.IsValid(GClpbrd.UndoObject) and (GClpbrd.UndoObject is TUserFunction);
+   comp := pmPages.PopupComponent;
+   isFunction := TInfra.IsValid(GClpbrd.UndoObject) and (GClpbrd.UndoObject is TUserFunction);
 
-   miPaste.Enabled := TInfra.IsValid(GClpbrd.Instance) or lIsFunction;
+   miPaste.Enabled := TInfra.IsValid(GClpbrd.Instance) or isFunction;
 
-   if lComponent is TBlock then
+   if comp is TBlock then
    begin
-       lBlock := TBlock(lComponent);
-       lFont := lBlock.GetFont;
-       if lBlock.Ired >= 0 then
+       block := TBlock(comp);
+       lFont := block.GetFont;
+       if block.Ired >= 0 then
        begin
           miInsert.Visible := True;
           miInstr.Enabled := True;
           miLoop.Enabled := True;
           miText.Enabled := True;
           miFolder.Enabled := True;
-          miReturn.Enabled := lBlock.CanInsertReturnBlock;
+          miReturn.Enabled := block.CanInsertReturnBlock;
           if (GClpbrd.Instance is TComment) or ((GClpbrd.Instance is TReturnBlock) and not miReturn.Enabled) then
              miPaste.Enabled := False;
        end
-       else if lBlock.IsCursorSelect then
+       else if block.IsCursorSelect then
        begin
           miRemove.Visible := True;
           miFont.Visible := True;
-          miMemoEdit.Visible := lBlock.GetFrontMemo <> nil;
-          if not (lBlock is TReturnBlock) then
+          miMemoEdit.Visible := block.GetFrontMemo <> nil;
+          if not (block is TReturnBlock) then
              miExport.Visible := True;
           miPrint2.Visible := True;
           miCut.Visible := true;
-          if not (lBlock is TMainBlock) then
+          if not (block is TMainBlock) then
              miCopy.Visible := True;
-          if lBlock is TGroupBlock then
+          if block is TGroupBlock then
           begin
              miExpFold.Visible := true;
-             if TGroupBlock(lBlock).Expanded then
+             if TGroupBlock(block).Expanded then
              begin
                 miExpFold.Caption := i18Manager.GetString('miFoldBlock');
-                if lBlock is TCaseBlock then
+                if block is TCaseBlock then
                    miAddBranch.Visible := True;
              end
              else
                 miExpFold.Caption := i18Manager.GetString('miExpandBlock');
           end;
-          if (lBlock is TGroupBlock) and TGroupBlock(lBlock).Expanded and TGroupBlock(lBlock).HasFoldedBlocks then
+          if (block is TGroupBlock) and TGroupBlock(block).Expanded and TGroupBlock(block).HasFoldedBlocks then
              miExpandAll.Visible := true;
-          if lBlock is TForDoBlock then
+          if block is TForDoBlock then
           begin
              miForAsc.Visible := true;
              miForDesc.Visible := true;
-             miForAsc.Checked := TForDoBlock(lBlock).Order = ordAsc;
+             miForAsc.Checked := TForDoBlock(block).Order = ordAsc;
              miForDesc.Checked := not miForAsc.Checked;
           end;
-          miMemo.Visible := lBlock.GetFrontMemo <> nil;
+          miMemo.Visible := block.GetFrontMemo <> nil;
           if miMemo.Visible then
           begin
-             miMemoVScroll.Checked := lBlock.MemoVScroll;
-             miMemoHScroll.Checked := lBlock.MemoHScroll;
-             miMemoWordWrap.Checked := lBlock.MemoWordWrap;
+             miMemoVScroll.Checked := block.MemoVScroll;
+             miMemoHScroll.Checked := block.MemoHScroll;
+             miMemoWordWrap.Checked := block.MemoWordWrap;
           end;
        end
        else
        begin
           miInsert.Visible := True;
           miComment.Enabled := True;
-          if (GClpbrd.Instance is TBlock) and not lIsFunction then
+          if (GClpbrd.Instance is TBlock) and not isFunction then
              miPaste.Enabled := False;
        end;
        miFrame.Visible := True;
-       miFrame.Checked := lBlock.Frame;
-       if (lBlock is TCaseBlock) and (lBlock.Ired > PRIMARY_BRANCH_IND) then
+       miFrame.Checked := block.Frame;
+       if (block is TCaseBlock) and (block.Ired > PRIMARY_BRANCH_IND) then
           miRemoveBranch.Visible := True;
    end
-   else if lComponent is TComment then
+   else if comp is TComment then
    begin
       miPasteText.Visible := Clipboard.HasFormat(CF_TEXT);
-      lFont := TComment(lComponent).Font;
+      lFont := TComment(comp).Font;
       miRemove.Visible := True;
       miFont.Visible := True;
       miCopy.Visible := True;
-      miCut.Visible := TComment(lComponent).SelLength > 0;
+      miCut.Visible := TComment(comp).SelLength > 0;
       miIsHeader.Visible := true;
-      miIsHeader.Checked := TComment(lComponent).IsHeader;
+      miIsHeader.Checked := TComment(comp).IsHeader;
       if GClpbrd.Instance is TBlock then
          miPaste.Enabled := false;
    end
@@ -699,57 +699,57 @@ end;
 
 procedure TMainForm.miCommentClick(Sender: TObject);
 var
-   lPoint: TPoint;
-   lPage: TBlockTabSheet;
+   ptn: TPoint;
+   page: TBlockTabSheet;
 begin
    if GProject <> nil then
    begin
-      lPage := GProject.GetActivePage;
-      lPoint := lPage.ScreenToClient(pmPages.PopupPoint);
-      TComment.Create(lPage, lPoint.X, lPoint.Y, 150, 50);
+      page := GProject.GetActivePage;
+      ptn := page.ScreenToClient(pmPages.PopupPoint);
+      TComment.Create(page, ptn.X, ptn.Y, 150, 50);
       GChange := 1;
    end;
 end;
 
 procedure TMainForm.miAssignClick(Sender: TObject);
 var
-   lNewBlock, lCurrentBlock, lSourceBlock: TBlock;
-   lBranch: TBranch;
+   newBlock, currBlock, srcBlock: TBlock;
+   branch: TBranch;
    lParent: TGroupBlock;
-   lTmpCursor: TCursor;
-   lComment: TComment;
-   lTopLeft: TPoint;
-   lBlockType: TBlockType;
-   lLocked: boolean;
-   lPage: TBlockTabSheet;
-   lFunction: TUserFunction;
+   tmpCursor: TCursor;
+   comment: TComment;
+   topLeft: TPoint;
+   blockType: TBlockType;
+   lock: boolean;
+   page: TBlockTabSheet;
+   func: TUserFunction;
 begin
 
-   lSourceBlock := nil;
+   srcBlock := nil;
    lParent := nil;
-   lFunction := nil;
-   lComment := nil;
+   func := nil;
+   comment := nil;
 
    if TInfra.IsValid(GClpbrd.UndoObject) and (GClpbrd.UndoObject is TUserFunction) then
-      lFunction := TUserFunction(GClpbrd.UndoObject)
+      func := TUserFunction(GClpbrd.UndoObject)
    else if GClpbrd.Instance is TComment then
-      lComment := TComment(GClpbrd.Instance);
+      comment := TComment(GClpbrd.Instance);
 
-   if (Sender = miPaste) and ((lFunction <> nil) or (lComment <> nil)) then
+   if (Sender = miPaste) and ((func <> nil) or (comment <> nil)) then
    begin
-      lPage := GProject.GetActivePage;
-      lTopLeft := lPage.ScreenToClient(pmPages.PopupPoint);
-      if lFunction <> nil then
+      page := GProject.GetActivePage;
+      topLeft := page.ScreenToClient(pmPages.PopupPoint);
+      if func <> nil then
       begin
-         if lFunction.Body <> nil then
+         if func.Body <> nil then
          begin
-            lFunction.Body.Page := lPage;
-            lFunction.Body.SetBounds(lTopLeft.X, lTopLeft.Y, lFunction.Body.Width, lFunction.Body.Height);
+            func.Body.Page := page;
+            func.Body.SetBounds(topLeft.X, topLeft.Y, func.Body.Width, func.Body.Height);
          end;
          miUndoRemoveClick(miUndoRemove);
       end
-      else if lComment <> nil then
-         lComment.Clone(lPage, @lTopLeft);
+      else if comment <> nil then
+         comment.Clone(page, @topLeft);
       GChange := 1;
       NavigatorForm.Invalidate;
       exit;
@@ -757,83 +757,83 @@ begin
 
    if pmPages.PopupComponent is TBlock then
    begin
-      lCurrentBlock := TBlock(pmPages.PopupComponent);
-      if (lCurrentBlock.Ired > 0) and (lCurrentBlock is TGroupBlock) then
-         lParent := TGroupBlock(lCurrentBlock)
-      else if lCurrentBlock.Ired = 0 then
-         lParent := lCurrentBlock.ParentBlock;
+      currBlock := TBlock(pmPages.PopupComponent);
+      if (currBlock.Ired > 0) and (currBlock is TGroupBlock) then
+         lParent := TGroupBlock(currBlock)
+      else if currBlock.Ired = 0 then
+         lParent := currBlock.ParentBlock;
    end;
 
    if lParent <> nil then
    begin
    
-      lBranch := lParent.GetBranch(lParent.Ired);
-      if lBranch <> nil then
-         lCurrentBlock := nil
+      branch := lParent.GetBranch(lParent.Ired);
+      if branch <> nil then
+         currBlock := nil
       else
-         lBranch := lCurrentBlock.ParentBranch;
+         branch := currBlock.ParentBranch;
 
-      if lBranch <> nil then
+      if branch <> nil then
       begin
-         lLocked := lBranch.ParentBlock.LockDrawing;
+         lock := branch.ParentBlock.LockDrawing;
          try
-            lNewBlock := nil;
-            lBlockType := blUnknown;
+            newBlock := nil;
+            blockType := blUnknown;
             if Sender = miAssign then
-               lBlockType := blAssign
+               blockType := blAssign
             else if Sender = miMultipleAssign then
-               lBlockType := blMultAssign
+               blockType := blMultAssign
             else if Sender = miIfElse then
-               lBlockType := blIfElse
+               blockType := blIfElse
             else if Sender = miWhile then
-               lBlockType := blWhile
+               blockType := blWhile
             else if Sender = miFor then
-               lBlockType := blFor
+               blockType := blFor
             else if Sender = miRepeat then
-               lBlockType := blRepeat
+               blockType := blRepeat
             else if Sender = miInput then
-               lBlockType := blInput
+               blockType := blInput
             else if Sender = miOutput then
-               lBlockType := blOutput
+               blockType := blOutput
             else if Sender = miRoutineCall then
-               lBlockType := blFuncCall
+               blockType := blFuncCall
             else if Sender = miIf then
-               lBlockType := blIf
+               blockType := blIf
             else if Sender = miCase then
-               lBlockType := blCase
+               blockType := blCase
             else if Sender = miReturn then
-               lBlockType := blReturn
+               blockType := blReturn
             else if Sender = miText then
-               lBlockType := blText
+               blockType := blText
             else if Sender = miFolder then
-               lBlockType := blFolder
+               blockType := blFolder
             else if (Sender = miPaste) and TInfra.IsValid(GClpbrd.Instance) and (GClpbrd.Instance is TBlock) then
             begin
-               lSourceBlock := TBlock(GClpbrd.Instance);
-               lTmpCursor := Screen.Cursor;
+               srcBlock := TBlock(GClpbrd.Instance);
+               tmpCursor := Screen.Cursor;
                Screen.Cursor := crHourGlass;
-               lNewBlock := lSourceBlock.Clone(lBranch);
-               Screen.Cursor := lTmpCursor;
+               newBlock := srcBlock.Clone(branch);
+               Screen.Cursor := tmpCursor;
             end;
-            if lBlockType <> blUnknown then
-               lNewBlock := TBlockFactory.Create(lBranch, lBlockType);
-            if lNewBlock <> nil then
+            if blockType <> blUnknown then
+               newBlock := TBlockFactory.Create(branch, blockType);
+            if newBlock <> nil then
             begin
-               lBranch.InsertAfter(lNewBlock, lCurrentBlock);
+               branch.InsertAfter(newBlock, currBlock);
                lParent.ResizeHorz(true);
                lParent.ResizeVert(true);
-               if not lNewBlock.Visible then
+               if not newBlock.Visible then
                begin
-                  lNewBlock.Show;
-                  lNewBlock.RefreshStatements;
+                  newBlock.Show;
+                  newBlock.RefreshStatements;
                end;
-               if lSourceBlock <> nil then
-                  lNewBlock.CloneComments(lSourceBlock);
-               TInfra.UpdateCodeEditor(lNewBlock);
+               if srcBlock <> nil then
+                  newBlock.CloneComments(srcBlock);
+               TInfra.UpdateCodeEditor(newBlock);
             end;
          finally
-            if lLocked then
-               lBranch.ParentBlock.UnLockDrawing;
+            if lock then
+               branch.ParentBlock.UnLockDrawing;
          end;
       end;
    end;
@@ -849,114 +849,114 @@ end;
 
 procedure TMainForm.miStyleBoldClick(Sender: TObject);
 var
-   lComponent: TComponent;
-   lFontStyles: TFontStyles;
-   lFontStyle: TFontStyle;
-   lBlock: TBlock;
-   lComment: TComment;
+   comp: TComponent;
+   fontStyles: TFontStyles;
+   fontStyle: TFontStyle;
+   block: TBlock;
+   comment: TComment;
 begin
-   lBlock := nil;
-   lComment := nil;
-   lComponent := pmPages.PopupComponent;
-   if (lComponent is TBlock) or (lComponent is TComment) then
+   block := nil;
+   comment := nil;
+   comp := pmPages.PopupComponent;
+   if (comp is TBlock) or (comp is TComment) then
    begin
-      if lComponent is TBlock then
+      if comp is TBlock then
       begin
-         lBlock := TBlock(lComponent);
-         lFontStyles := lBlock.GetFont.Style;
+         block := TBlock(comp);
+         fontStyles := block.GetFont.Style;
       end
-      else if lComponent is TComment then
+      else if comp is TComment then
       begin
-         lComment := TComment(lComponent);
-         lFontStyles := lComment.Font.Style;
+         comment := TComment(comp);
+         fontStyles := comment.Font.Style;
       end;
 
       if Sender = miStyleBold then
-         lFontStyle := fsBold
+         fontStyle := fsBold
       else if Sender = miStyleItalic then
-         lFontStyle := fsItalic
+         fontStyle := fsItalic
       else if Sender = miStyleUnderline then
-         lFontStyle := fsUnderline
+         fontStyle := fsUnderline
       else if Sender = miStyleStrikeOut then
-         lFontStyle := fsStrikeOut;
+         fontStyle := fsStrikeOut;
 
       if Sender = miStyleNormal then
-         lFontStyles := []
-      else if lFontStyle in lFontStyles then
-         Exclude(lFontStyles, lFontStyle)
+         fontStyles := []
+      else if fontStyle in fontStyles then
+         Exclude(fontStyles, fontStyle)
       else
-         Include(lFontStyles, lFontStyle);
+         Include(fontStyles, fontStyle);
          
-      if lBlock <> nil then
+      if block <> nil then
       begin
-         lBlock.SetFontStyle(lFontStyles);
-         if (Sender = miStyleStrikeOut) and not lBlock.SkipUpdateEditor then
+         block.SetFontStyle(fontStyles);
+         if (Sender = miStyleStrikeOut) and not block.SkipUpdateEditor then
             TInfra.UpdateCodeEditor;
       end
-      else if lComment <> nil then
-         lComment.Font.Style := lFontStyles;
+      else if comment <> nil then
+         comment.Font.Style := fontStyles;
       GChange := 1;
    end;
 end;
 
 procedure TMainForm.miSize8Click(Sender: TObject);
 var
-   lComponent: TComponent;
-   lFontSize: integer;
+   comp: TComponent;
+   fontSize: integer;
 begin
-   lComponent := pmPages.PopupComponent;
-   if (lComponent is TBlock) or (lComponent is TComment) then
+   comp := pmPages.PopupComponent;
+   if (comp is TBlock) or (comp is TComment) then
    begin
       if Sender = miSize10 then
-         lFontSize := 10
+         fontSize := 10
       else if Sender = miSize12 then
-         lFontSize := 12
+         fontSize := 12
       else
-         lFontSize := 8;
-      if lComponent is TBlock then
-         TBlock(lComponent).SetFontSize(lFontSize)
-      else if lComponent is TComment then
-         TComment(lComponent).Font.Size := lFontSize;
+         fontSize := 8;
+      if comp is TBlock then
+         TBlock(comp).SetFontSize(fontSize)
+      else if comp is TComment then
+         TComment(comp).Font.Size := fontSize;
       GChange := 1;
    end;
 end;
 
 procedure TMainForm.miCopyClick(Sender: TObject);
 var
-   lComp: TComponent;
+   comp: TComponent;
 begin
-   lComp := pmPages.PopupComponent;
-   if (lComp is TCustomEdit) and (TCustomEdit(lComp).SelLength > 0) then
+   comp := pmPages.PopupComponent;
+   if (comp is TCustomEdit) and (TCustomEdit(comp).SelLength > 0) then
    begin
       if Sender = miCopy then
-         TCustomEdit(lComp).CopyToClipboard
+         TCustomEdit(comp).CopyToClipboard
       else if Sender = miCut then
-         TCustomEdit(lComp).CutToClipboard;
+         TCustomEdit(comp).CutToClipboard;
    end
-   else if (lComp is TBlock) or (lComp is TComment) then
+   else if (comp is TBlock) or (comp is TComment) then
    begin
       if Sender = miCut then
          miRemove.Click;
-      GClpbrd.Instance := TControl(lComp);
+      GClpbrd.Instance := TControl(comp);
       Clipboard.Clear;
    end;
 end;
 
 procedure TMainForm.miRemoveClick(Sender: TObject);
 var
-   lComp: TComponent;
+   comp: TComponent;
 begin
-   lComp := pmPages.PopupComponent;
-   if (lComp = GClpbrd.Instance) or (GClpbrd.UndoObject = GClpbrd.Instance) then
+   comp := pmPages.PopupComponent;
+   if (comp = GClpbrd.Instance) or (GClpbrd.UndoObject = GClpbrd.Instance) then
       GClpbrd.Instance := nil;
-   if lComp is TBlock then
-      TBlock(lComp).Remove
-   else if lComp is TComment then
+   if comp is TBlock then
+      TBlock(comp).Remove
+   else if comp is TComment then
    begin
-      if TComment(lComp).SelLength > 0 then
-         TComment(lComp).SelText := ''
+      if TComment(comp).SelLength > 0 then
+         TComment(comp).SelText := ''
       else
-         lComp.Free;
+         comp.Free;
    end;
    GChange := 1;
 end;
@@ -964,13 +964,13 @@ end;
 procedure TMainForm.FormMouseWheel(Sender: TObject; Shift: TShiftState;
    WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 var
-   lWord: Word;
+   w: Word;
 begin
    if WheelDelta < 0 then
-      lWord := VK_DOWN
+      w := VK_DOWN
    else
-      lWord := VK_UP;
-   FormKeyDown(Self, lWord, [ssCtrl]);
+      w := VK_UP;
+   FormKeyDown(Self, w, [ssCtrl]);
 end;
 
 procedure TMainForm.miSubRoutinesClick(Sender: TObject);
@@ -991,42 +991,42 @@ end;
 
 procedure TMainForm.miExportClick(Sender: TObject);
 var
-   lExportable: IExportable;
+   exp: IExportable;
 begin
-   if Supports(pmPages.PopupComponent, IExportable, lExportable) then
-      TInfra.ExportToFile(lExportable);
+   if Supports(pmPages.PopupComponent, IExportable, exp) then
+      TInfra.ExportToFile(exp);
 end;
 
 procedure TMainForm.miImportClick(Sender: TObject);
 var
-   lComponent: TComponent;
-   lPoint: TPoint;
-   lFunction: TUserFunction;
-   lImportProc: TImportProc;
-   lImportFunc: boolean;
+   comp: TComponent;
+   ptn: TPoint;
+   func: TUserFunction;
+   impProc: TImportProc;
+   impFunc: boolean;
 begin
    if GProject <> nil then
    begin
-      lImportFunc := false;
-      lComponent := pmPages.PopupComponent;
-      if (lComponent is TBlock) and (TBlock(lComponent).Ired >= 0) then
-         lImportProc := TBlock(lComponent).ImportFromXMLTag
+      impFunc := false;
+      comp := pmPages.PopupComponent;
+      if (comp is TBlock) and (TBlock(comp).Ired >= 0) then
+         impProc := TBlock(comp).ImportFromXMLTag
       else
       begin
-         lImportProc := GProject.ImportUserFunctionsFromXML;
-         lImportFunc := true;
+         impProc := GProject.ImportUserFunctionsFromXML;
+         impFunc := true;
       end;
-      if TXMLProcessor.ImportFromXMLFile(lImportProc) <> '' then
+      if TXMLProcessor.ImportFromXMLFile(impProc) <> '' then
       begin
-         if lImportFunc then
+         if impFunc then
          begin
-            lFunction := GProject.LastUserFunction;
-            if (lFunction <> nil) and lFunction.Active and (lFunction.Body <> nil) and lFunction.Body.Visible then
+            func := GProject.LastUserFunction;
+            if (func <> nil) and func.Active and (func.Body <> nil) and func.Body.Visible then
             begin
-               lPoint := GProject.GetActivePage.ScreenToClient(pmPages.PopupPoint);
-               lFunction.Body.Left := lPoint.X;
-               lFunction.Body.Top := lPoint.Y;
-               lFunction.Body.Page.Form.SetScrollBars;
+               ptn := GProject.GetActivePage.ScreenToClient(pmPages.PopupPoint);
+               func.Body.Left := ptn.X;
+               func.Body.Top := ptn.Y;
+               func.Body.Page.Form.SetScrollBars;
             end;
          end;
          TInfra.UpdateCodeEditor;
@@ -1042,35 +1042,35 @@ end;
 
 procedure TMainForm.miExpFoldClick(Sender: TObject);
 var
-   lBlock: TGroupBlock;
+   block: TGroupBlock;
 begin
    if pmPages.PopupComponent is TGroupBlock then
    begin
-      lBlock := TGroupBlock(pmPages.PopupComponent);
-      lBlock.ClearSelection;
-      lBlock.ExpandFold(true);
+      block := TGroupBlock(pmPages.PopupComponent);
+      block.ClearSelection;
+      block.ExpandFold(true);
    end;
 end;
 
 procedure TMainForm.miAddBranchClick(Sender: TObject);
 var
-   lPoint: TPoint;
-   lCaseBlock: TCaseBlock;
-   lBranch: TBranch;
+   ptn: TPoint;
+   caseBlock: TCaseBlock;
+   branch: TBranch;
 begin
    if pmPages.PopupComponent is TCaseBlock then
    begin
-      lCaseBlock := TCaseBlock(pmPages.PopupComponent);
-      lPoint := Point(lCaseBlock.GetBranch(lCaseBlock.BranchCount).GetMostRight+60, lCaseBlock.Height-32);
-      lBranch := lCaseBlock.AddBranch(lPoint, true);
-      TInfra.UpdateCodeEditor(lBranch);
+      caseBlock := TCaseBlock(pmPages.PopupComponent);
+      ptn := Point(caseBlock.GetBranch(caseBlock.BranchCount).GetMostRight+60, caseBlock.Height-32);
+      branch := caseBlock.AddBranch(ptn, true);
+      TInfra.UpdateCodeEditor(branch);
    end;
 end;
 
 procedure TMainForm.miRemoveBranchClick(Sender: TObject);
 var
    res: integer;
-   lCaseBlock: TCaseBlock;
+   caseBlock: TCaseBlock;
 begin
    if pmPages.PopupComponent is TCaseBlock then
    begin
@@ -1079,28 +1079,28 @@ begin
          res := TInfra.ShowQuestionBox(i18Manager.GetString('ConfirmRemove'));
       if res = IDYES then
       begin
-         lCaseBlock := TCaseBlock(pmPages.PopupComponent);
-         lCaseBlock.RemoveBranch;
-         TInfra.UpdateCodeEditor(lCaseBlock.Branch);
+         caseBlock := TCaseBlock(pmPages.PopupComponent);
+         caseBlock.RemoveBranch;
+         TInfra.UpdateCodeEditor(caseBlock.Branch);
       end;
    end;
 end;
 
 procedure TMainForm.miExpandAllClick(Sender: TObject);
 var
-   lBlock: TGroupBlock;
-   lLocked: boolean;
+   block: TGroupBlock;
+   lock: boolean;
 begin
    if pmPages.PopupComponent is TGroupBlock then
    begin
-      lBlock := TGroupBlock(pmPages.PopupComponent);
-      lBlock.ClearSelection;
-      lLocked := lBlock.LockDrawing;
+      block := TGroupBlock(pmPages.PopupComponent);
+      block.ClearSelection;
+      lock := block.LockDrawing;
       try
-         lBlock.ExpandAll;
+         block.ExpandAll;
       finally
-         if lLocked then
-            lBlock.UnLockDrawing;
+         if lock then
+            block.UnLockDrawing;
       end;
    end;
 end;
@@ -1141,18 +1141,18 @@ end;
 
 procedure TMainForm.miPrint2Click(Sender: TObject);
 var
-   lBitmap: TBitmap;
-   lBlock: TBlock;
+   bitmap: TBitmap;
+   block: TBlock;
 begin
    if pmPages.PopupComponent is TBlock then
    begin
-      lBlock := TBlock(pmPages.PopupComponent);
-      lBitmap := TBitmap.Create;
+      block := TBlock(pmPages.PopupComponent);
+      bitmap := TBitmap.Create;
       try
-         lBlock.ExportToGraphic(lBitmap);
-         TInfra.PrintBitmap(lBitmap);
+         block.ExportToGraphic(bitmap);
+         TInfra.PrintBitmap(bitmap);
       finally
-         lBitmap.Free;
+         bitmap.Free;
       end;
    end;
 end;
@@ -1165,29 +1165,29 @@ end;
 
 procedure TMainForm.miAddMainClick(Sender: TObject);
 var
-   lBody: TMainBlock;
+   body: TMainBlock;
 begin
    if GProject <> nil then
    begin
-      lBody := TMainBlock.Create(GProject.GetActivePage, GetMainBlockNextTopLeft);
-      TUserFunction.Create(nil, lBody);
-      TInfra.UpdateCodeEditor(lBody);
+      body := TMainBlock.Create(GProject.GetActivePage, GetMainBlockNextTopLeft);
+      TUserFunction.Create(nil, body);
+      TInfra.UpdateCodeEditor(body);
    end;
 end;
 
 procedure TMainForm.SetScrollBars;
 var
-   lPoint: TPoint;
+   ptn: TPoint;
 begin
    if GProject <> nil then
    begin
-      lPoint := GProject.GetBottomRight;
-      if lPoint.X > ClientWidth then
-         HorzScrollBar.Range := lPoint.X
+      ptn := GProject.GetBottomRight;
+      if ptn.X > ClientWidth then
+         HorzScrollBar.Range := ptn.X
       else
          HorzScrollBar.Range := ClientWidth;
-      if lPoint.Y > ClientHeight then
-         VertScrollBar.Range := lPoint.Y
+      if ptn.Y > ClientHeight then
+         VertScrollBar.Range := ptn.Y
       else
          VertScrollBar.Range := ClientHeight;
       NavigatorForm.Invalidate;
@@ -1207,15 +1207,15 @@ end;
 
 procedure TMainForm.miNewFlowchartClick(Sender: TObject);
 var
-   lBlock: TMainBlock;
-   lPage: TBlockTabSheet;
+   mainBlock: TMainBlock;
+   page: TBlockTabSheet;
 begin
    if GProject <> nil then
    begin
-      lPage := GProject.GetActivePage;
-      lBlock := TMainBlock.Create(lPage, lPage.ScreenToClient(pmPages.PopupPoint));
-      lBlock.OnResize(lBlock);
-      TUserFunction.Create(nil, lBlock);
+      page := GProject.GetActivePage;
+      mainBlock := TMainBlock.Create(page, page.ScreenToClient(pmPages.PopupPoint));
+      mainBlock.OnResize(mainBlock);
+      TUserFunction.Create(nil, mainBlock);
       GChange := 1;
    end;
 end;
@@ -1225,38 +1225,36 @@ const
    STEP = 15;
    MULTP = 20;
 var
-   lPos: integer;
-   lScrollBar: TControlScrollBar;
+   y: integer;
 begin
-   lPos := 0;
+   y := 0;
    if Sender = Self then
    begin
       if ssCtrl in Shift then
       begin
          case Key of
-            VK_DOWN, VK_RIGHT: lPos := STEP;
-            VK_UP, VK_LEFT:    lPos := -STEP;
+            VK_DOWN, VK_RIGHT: y := STEP;
+            VK_UP, VK_LEFT:    y := -STEP;
          end;
       end;
    end
    else
    begin
       case Key of
-         VK_DOWN, VK_RIGHT: lPos := STEP;
-         VK_UP, VK_LEFT:    lPos := -STEP;
+         VK_DOWN, VK_RIGHT: y := STEP;
+         VK_UP, VK_LEFT:    y := -STEP;
       end;
    end;
    case Key of
-      VK_NEXT:  lPos := STEP * MULTP;
-      VK_PRIOR: lPos := -STEP * MULTP;
+      VK_NEXT:  y := STEP * MULTP;
+      VK_PRIOR: y := -STEP * MULTP;
    end;
-   if lPos <> 0 then
+   if y <> 0 then
    begin
       if Key in [VK_LEFT, VK_RIGHT] then
-         lScrollBar := HorzScrollBar
+         HorzScrollBar.Position := HorzScrollBar.Position + y
       else
-         lScrollBar := VertScrollBar;
-      lScrollBar.Position := lScrollBar.Position + lPos;
+         VertScrollBar.Position := VertScrollBar.Position + y;
       Key := 0;
       PerformFormsRepaint;
    end;
@@ -1264,28 +1262,28 @@ end;
 
 procedure TMainForm.miForAscClick(Sender: TObject);
 var
-   lBlock: TForDoBlock;
+   block: TForDoBlock;
 begin
    if pmPages.PopupComponent is TForDoBlock then
    begin
-      lBlock := TForDoBlock(pmPages.PopupComponent);
+      block := TForDoBlock(pmPages.PopupComponent);
       if Sender = miForAsc then
-         lBlock.Order := ordAsc
+         block.Order := ordAsc
       else
-         lBlock.Order := ordDesc;
+         block.Order := ordDesc;
    end;
 end;
 
 procedure TMainForm.miMemoEditClick(Sender: TObject);
 var
-   lBlock: TBlock;
+   block: TBlock;
 begin
    if pmPages.PopupComponent is TBlock then
    begin
-      lBlock := TBlock(pmPages.PopupComponent);
-      if lBlock.GetFrontMemo <> nil then
+      block := TBlock(pmPages.PopupComponent);
+      if block.GetFrontMemo <> nil then
       begin
-         MemoEditorForm.SourceBlock := lBlock;
+         MemoEditorForm.SourceBlock := block;
          MemoEditorForm.ShowModal;
       end;
    end;
@@ -1294,17 +1292,17 @@ end;
 
 procedure TMainForm.miMemoVScrollClick(Sender: TObject);
 var
-   lBlock: TBlock;
+   block: TBlock;
 begin
    if pmPages.PopupComponent is TBlock then
    begin
-      lBlock := TBlock(pmPages.PopupComponent);
+      block := TBlock(pmPages.PopupComponent);
       if Sender = miMemoVScroll then
-         lBlock.MemoVScroll := miMemoVScroll.Checked
+         block.MemoVScroll := miMemoVScroll.Checked
       else if Sender = miMemoHScroll then
-         lBlock.MemoHScroll := miMemoHScroll.Checked
+         block.MemoHScroll := miMemoHScroll.Checked
       else if Sender = miMemoWordWrap then
-         lBlock.MemoWordWrap := miMemoWordWrap.Checked;
+         block.MemoWordWrap := miMemoWordWrap.Checked;
    end;
 end;
 
@@ -1323,7 +1321,7 @@ end;
 
 procedure TMainForm.pgcPagesContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
 var
-   lPoint: TPoint;
+   ptn: TPoint;
    idx: integer;
 begin
    if (GProject <> nil) and (htOnItem in pgcPages.GetHitTestInfoAt(MousePos.X, MousePos.Y)) then
@@ -1334,22 +1332,22 @@ begin
          pmTabs.PopupComponent := pgcPages.Pages[idx];
          pgcPages.ActivePageIndex := idx;
       end;
-      lPoint := pgcPages.ClientToScreen(MousePos);
-      pmTabs.Popup(lPoint.X, lPoint.Y);
+      ptn := pgcPages.ClientToScreen(MousePos);
+      pmTabs.Popup(ptn.X, ptn.Y);
    end
 end;
 
 procedure TMainForm.pmTabsPopup(Sender: TObject);
 var
-   lPage: TTabSheet;
+   page: TTabSheet;
 begin
    miRemovePage.Enabled := false;
    miRenamePage.Enabled := false;
    miAddPage.Enabled := false;
    if pmTabs.PopupComponent is TTabSheet then
    begin
-      lPage := TTabSheet(pmTabs.PopupComponent);
-      miRemovePage.Enabled := lPage <> GProject.GetMainPage;
+      page := TTabSheet(pmTabs.PopupComponent);
+      miRemovePage.Enabled := page <> GProject.GetMainPage;
       miRenamePage.Enabled := miRemovePage.Enabled;
       miAddPage.Enabled := true;
    end;
@@ -1406,16 +1404,16 @@ end;
 procedure TMainForm.miRenamePageClick(Sender: TObject);
 var
    lCaption: TCaption;
-   lPage: TTabSheet;
+   page: TTabSheet;
 begin
    if pmTabs.PopupComponent is TTabSheet then
    begin
-      lPage := TTabSheet(pmTabs.PopupComponent);
-      lCaption := Trim(InputBox(i18Manager.GetString('Page'), i18Manager.GetString('EnterPage'), lPage.Caption));
-      if (lCaption <> '') and (TInfra.FindDuplicatedPage(lPage, lCaption) = nil) then
+      page := TTabSheet(pmTabs.PopupComponent);
+      lCaption := Trim(InputBox(i18Manager.GetString('Page'), i18Manager.GetString('EnterPage'), page.Caption));
+      if (lCaption <> '') and (TInfra.FindDuplicatedPage(page, lCaption) = nil) then
       begin
-         lPage.Caption := lCaption;
-         GProject.UpdateHeadersBody(lPage);
+         page.Caption := lCaption;
+         GProject.UpdateHeadersBody(page);
          GChange := 1;
       end;
    end;
@@ -1424,13 +1422,13 @@ end;
 procedure TMainForm.miAddPageClick(Sender: TObject);
 var
    lCaption: TCaption;
-   lPage: TTabSheet;
+   page: TTabSheet;
 begin
    lCaption := Trim(InputBox(i18Manager.GetString('Page'), i18Manager.GetString('EnterPage'), ''));
    if (lCaption <> '') and (GProject.GetPage(lCaption, false) = nil) then
    begin
-      lPage := GProject.GetPage(lCaption);
-      lPage.PageControl.ActivePage := lPage;
+      page := GProject.GetPage(lCaption);
+      page.PageControl.ActivePage := page;
       NavigatorForm.Invalidate;
       GChange := 1; 
    end;
@@ -1443,7 +1441,7 @@ end;
 
 procedure TMainForm.pmEditsPopup(Sender: TObject);
 var
-   lEdit: TCustomEdit;
+   edit: TCustomEdit;
 begin
    miUndo.Enabled := false;
    miCut1.Enabled := false;
@@ -1453,9 +1451,9 @@ begin
    miInsertFunc.Visible := false;
    if pmEdits.PopupComponent is TCustomEdit then
    begin
-      lEdit := TCustomEdit(pmEdits.PopupComponent);
-      miUndo.Enabled := lEdit.CanUndo;
-      miCut1.Enabled := lEdit.SelText <> '';
+      edit := TCustomEdit(pmEdits.PopupComponent);
+      miUndo.Enabled := edit.CanUndo;
+      miCut1.Enabled := edit.SelText <> '';
       miCopy1.Enabled := miCut1.Enabled;
       miRemove1.Enabled := miCut1.Enabled;
       miPaste1.Enabled := Clipboard.HasFormat(CF_TEXT);
@@ -1490,23 +1488,23 @@ end;
 
 procedure TMainForm.FuncMenuClick(Sender: TObject);
 var
-   lFuncName, lBackup: string;
-   lEdit: TCustomEdit;
+   funcName, backup: string;
+   edit: TCustomEdit;
 begin
    if (Sender is TMenuItem) and (pmEdits.PopupComponent is TCustomEdit) then
    begin
-      lEdit := TCustomEdit(pmEdits.PopupComponent);
-      lFuncName := StripHotKey(TMenuItem(Sender).Caption);
-      lFuncName := lFuncName + GInfra.CurrentLang.FuncBrackets;
-      lBackup := '';
+      edit := TCustomEdit(pmEdits.PopupComponent);
+      funcName := StripHotKey(TMenuItem(Sender).Caption);
+      funcName := funcName + GInfra.CurrentLang.FuncBrackets;
+      backup := '';
       if Clipboard.HasFormat(CF_TEXT) then
-         lBackup := Clipboard.AsText;
-      Clipboard.AsText := lFuncName;
-      lEdit.PasteFromClipboard;
+         backup := Clipboard.AsText;
+      Clipboard.AsText := funcName;
+      edit.PasteFromClipboard;
       if GInfra.CurrentLang.FuncBrackets <> '' then
-         lEdit.SelStart := lEdit.SelStart + GInfra.CurrentLang.FuncBracketsCursorPos;
-      if lBackup <> '' then
-         Clipboard.AsText := lBackup;
+         edit.SelStart := edit.SelStart + GInfra.CurrentLang.FuncBracketsCursorPos;
+      if backup <> '' then
+         Clipboard.AsText := backup;
    end;
 end;
 
@@ -1523,35 +1521,35 @@ function TMainForm.BuildFuncMenu(AParent: TMenuItem): integer;
 var
    i: integer;
    it: IIterator;
-   lFuncList: TStringList;
+   funcList: TStringList;
    lName: string;
 begin
    result := 0;
    if AParent <> nil then
    begin
       DestroyFuncMenu;
-      lFuncList := TStringList.Create;
+      funcList := TStringList.Create;
       try
-         lFuncList.Sorted := true;
-         lFuncList.Duplicates := dupIgnore;
-         lFuncList.AddStrings(GInfra.CurrentLang.NativeFunctions);
+         funcList.Sorted := true;
+         funcList.Duplicates := dupIgnore;
+         funcList.AddStrings(GInfra.CurrentLang.NativeFunctions);
          it := GProject.GetUserFunctions;
          while it.HasNext do
          begin
             lName := TUserFunction(it.Next).GetName;
             if lName <> '' then
-               lFuncList.Add(lName);
+               funcList.Add(lName);
          end;
-         SetLength(FFuncMenu, lFuncList.Count);
-         for i := 0 to lFuncList.Count-1 do
+         SetLength(FFuncMenu, funcList.Count);
+         for i := 0 to funcList.Count-1 do
          begin
             FFuncMenu[i] := TMenuItem.Create(AParent);
-            FFuncMenu[i].Caption := lFuncList[i];
+            FFuncMenu[i].Caption := funcList[i];
             FFuncMenu[i].OnClick := FuncMenuClick;
          end;
-         result := lFuncList.Count;
+         result := funcList.Count;
       finally
-         lFuncList.Free;
+         funcList.Free;
       end;
       if result > 0 then
          AParent.Add(FFuncMenu);
@@ -1559,8 +1557,6 @@ begin
 end;
 
 procedure TMainForm.miIsHeaderClick(Sender: TObject);
-var
-   lComment: TComment;
 begin
    if pmPages.PopupComponent is TComment then
    begin
