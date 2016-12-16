@@ -104,7 +104,7 @@ end;
 procedure TTextBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
 begin
    inherited MyOnCanResize(Sender, NewWidth, NewHeight, Resize);
-   if HResizeInd and Resize then
+   if resHorz and Resize then
       FCorner.Left := Width - 15;
 end;
 

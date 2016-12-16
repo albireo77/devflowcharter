@@ -265,7 +265,7 @@ end;
 procedure TIfElseBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
 begin
    Resize := (NewWidth >= Constraints.MinWidth) and (NewHeight >= Constraints.MinHeight);
-   if Resize and VResizeInd then
+   if Resize and resVert then
    begin
       if Expanded then
       begin
@@ -278,7 +278,7 @@ begin
          BottomPoint.Y := NewHeight - 30;
       end;
    end;
-   if HResizeInd and Resize and not Expanded then
+   if resHorz and Resize and not Expanded then
    begin
       BottomPoint.X := NewWidth div 2;
       TopHook.X := BottomPoint.X;

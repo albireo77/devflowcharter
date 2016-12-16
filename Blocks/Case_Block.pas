@@ -471,7 +471,7 @@ var
    i: integer;
 begin
    Resize := (NewHeight >= Constraints.MinHeight) and (NewWidth >= Constraints.MinWidth);
-   if Resize and VResizeInd then
+   if Resize and resVert then
    begin
       if Expanded then
       begin
@@ -484,7 +484,7 @@ begin
          BottomPoint.Y := NewHeight - 30;
       end;
    end;
-   if Resize and HResizeInd and not Expanded then
+   if Resize and resHorz and not Expanded then
    begin
       BottomPoint.X := NewWidth div 2;
       TopHook.X := BottomPoint.X;

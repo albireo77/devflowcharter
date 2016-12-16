@@ -116,8 +116,8 @@ type
          BottomHook: integer;
          TopHook: TPoint;
          Ired: Integer;           // indicates active arrow; -1: none, 0: bottom, 1: branch1, 2: branch2 and so on...
-         HResizeInd: boolean;
-         VResizeInd: boolean;
+         resHorz: boolean;
+         resVert: boolean;
          memoWidth,
          memoHeight: integer;
          property Frame: boolean read FFrame write SetFrame;
@@ -377,49 +377,49 @@ end;
 
 procedure TBlock.CloneFrom(ABlock: TBlock);
 var
-   lEdit, lEditSource: TCustomEdit;
+   edit, editSrc: TCustomEdit;
 begin
    if ABlock <> nil then
    begin
       Visible := ABlock.Visible;
       SetFont(ABlock.Font);
-      lEditSource := ABlock.GetTextControl;
-      lEdit := GetTextControl;
-      if lEdit <> nil then
+      editSrc := ABlock.GetTextControl;
+      edit := GetTextControl;
+      if edit <> nil then
       begin
-         if lEditSource <> nil then
+         if editSrc <> nil then
          begin
-            lEdit.Text := lEditSource.Text;
-            lEdit.BoundsRect := lEditSource.BoundsRect;
-            lEdit.Visible := lEditSource.Visible;
-            lEdit.SelStart := lEditSource.SelStart;
+            edit.Text := editSrc.Text;
+            edit.BoundsRect := editSrc.BoundsRect;
+            edit.Visible := editSrc.Visible;
+            edit.SelStart := editSrc.SelStart;
          end;
-         if lEdit.CanFocus then
-            lEdit.SetFocus;
+         if edit.CanFocus then
+            edit.SetFocus;
       end;
    end;
 end;
 
 procedure TGroupBlock.CloneFrom(ABlock: TBlock);
 var
-   lGroupBlock: TGroupBlock;
-   lNewBlock, lPrevBlock, lBlock: TBlock;
+   grpBlock: TGroupBlock;
+   newBlock, prevBlock, block: TBlock;
    lBranch, lBranch2: TBranch;
    i: integer;
 begin
    inherited CloneFrom(ABlock);
    if ABlock is TGroupBlock then
    begin
-      lGroupBlock := TGroupBlock(ABlock);
-      FMemoFolder.Text := lGroupBlock.FMemoFolder.Text;
-      if not lGroupBlock.Expanded then
+      grpBlock := TGroupBlock(ABlock);
+      FMemoFolder.Text := grpBlock.FMemoFolder.Text;
+      if not grpBlock.Expanded then
       begin
          Expanded := false;
-         FFoldParms := lGroupBlock.FFoldParms;
+         FFoldParms := grpBlock.FFoldParms;
          Constraints.MinWidth := 140;
          Constraints.MinHeight := 54;
-         Width := lGroupBlock.Width;
-         Height := lGroupBlock.Height;
+         Width := grpBlock.Width;
+         Height := grpBlock.Height;
          FMemoFolder.SetBounds(3, 3, Width-6, Height-36);
          FMemoFolder.Anchors := [akRight, akLeft, akBottom, akTop];
          BottomPoint.X := Width div 2;
@@ -432,23 +432,23 @@ begin
       end
       else
       begin
-         FFoldParms.Width := lGroupBlock.FFoldParms.Width;
-         FFoldParms.Height := lGroupBlock.FFoldParms.Height;
+         FFoldParms.Width := grpBlock.FFoldParms.Width;
+         FFoldParms.Height := grpBlock.FFoldParms.Height;
       end;
-      for i := PRIMARY_BRANCH_IND to High(lGroupBlock.FBranchArray) do
+      for i := PRIMARY_BRANCH_IND to High(grpBlock.FBranchArray) do
       begin
-         lBranch := lGroupBlock.FBranchArray[i];
+         lBranch := grpBlock.FBranchArray[i];
          lBranch2 := GetBranch(i);
          if lBranch2 = nil then
             lBranch2 := AddBranch(lBranch.Hook, false);
-         lBlock := lBranch.First;
-         lPrevBlock := nil;
-         while lBlock <> nil do
+         block := lBranch.First;
+         prevBlock := nil;
+         while block <> nil do
          begin
-            lNewBlock := lBlock.Clone(lBranch2);
-            lBranch2.InsertAfter(lNewBlock, lPrevBlock);
-            lPrevBlock := lBranch2.Last;
-            lBlock := lBlock.Next;
+            newBlock := block.Clone(lBranch2);
+            lBranch2.InsertAfter(newBlock, prevBlock);
+            prevBlock := lBranch2.Last;
+            block := block.Next;
          end;
       end;
    end;
@@ -497,24 +497,24 @@ end;
 procedure TBlock.CloneComments(const ASource: TBlock);
 var
    iter: IIterator;
-   lNewComment: TComment;
-   lUnPin: boolean;
+   newComment: TComment;
+   unPin: boolean;
    lPage: TBlockTabSheet;
 begin
    if ASource <> nil then
    begin
       lPage := Page;
-      lUnPin := ASource.PinComments > 0;
+      unPin := ASource.PinComments > 0;
       try
          iter := ASource.GetPinComments;
          while iter.HasNext do
          begin
-            lNewComment := TComment(iter.Next).Clone(lPage);
-            lNewComment.PinControl := Self;
+            newComment := TComment(iter.Next).Clone(lPage);
+            newComment.PinControl := Self;
          end;
          UnPinComments;
       finally
-         if lUnPin then
+         if unPin then
             ASource.UnPinComments;
       end;
    end;
@@ -522,12 +522,12 @@ end;
 
 procedure TBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 var
-   lPoint: TPoint;
+   pnt: TPoint;
 begin
-   lPoint := Point(X, Y);
-   SelectBlock(lPoint);
-   SetCursor(lPoint);
-   if PtInRect(Rect(BottomPoint.X-5, BottomPoint.Y, BottomPoint.X+5, Height), lPoint) then
+   pnt := Point(X, Y);
+   SelectBlock(pnt);
+   SetCursor(pnt);
+   if PtInRect(Rect(BottomPoint.X-5, BottomPoint.Y, BottomPoint.X+5, Height), pnt) then
    begin
       DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1), arrEnd, clRed);
       Ired := 0;
@@ -544,23 +544,23 @@ end;
 procedure TGroupBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 var
    i: integer;
-   lPoint: TPoint;
+   pnt: TPoint;
 begin
    if Expanded then
    begin
       for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
       begin
-         lPoint := FBranchArray[i].Hook;
-         if PtInRect(Rect(lPoint.X-5, TopHook.Y, lPoint.X+5, lPoint.Y), Point(X, Y)) then
+         pnt := FBranchArray[i].Hook;
+         if PtInRect(Rect(pnt.X-5, TopHook.Y, pnt.X+5, pnt.Y), Point(X, Y)) then
          begin
-            DrawArrowLine(Point(lPoint.X, TopHook.Y), lPoint, arrEnd, clRed);
+            DrawArrowLine(Point(pnt.X, TopHook.Y), pnt, arrEnd, clRed);
             Ired := i;
             Cursor := TCursor(GCustomCursor);
             break;
          end
          else if Ired = i then
          begin
-            DrawArrowLine(Point(lPoint.X, TopHook.Y), lPoint);
+            DrawArrowLine(Point(pnt.X, TopHook.Y), pnt);
             Ired := -1;
             Cursor := crDefault;
             break;
@@ -619,18 +619,18 @@ end;
 
 procedure TBlock.MyOnDragDrop(Sender, Source: TObject; X, Y: Integer);
 var
-   lPage, lSourcePage: TBlockTabSheet;
-   lMItem: TMenuItem;
+   lPage, srcPage: TBlockTabSheet;
+   menuItem: TMenuItem;
 begin
    if Source is TBlock then
    begin
-      lSourcePage := TBlock(Source).Page;
-      lSourcePage.Form.pmPages.PopupComponent := TBlock(Source);
+      srcPage := TBlock(Source).Page;
+      srcPage.Form.pmPages.PopupComponent := TBlock(Source);
       if GetAsyncKeyState(VK_SHIFT) <> 0 then
-         lMItem := lSourcePage.Form.miCopy
+         menuItem := srcPage.Form.miCopy
       else
-         lMItem := lSourcePage.Form.miCut;
-      lMItem.OnClick(lMitem);
+         menuItem := srcPage.Form.miCut;
+      menuItem.OnClick(menuItem);
       lPage := Page;
       lPage.Form.pmPages.PopupComponent := Self;
       lPage.Form.miPaste.OnClick(lPage.Form.miPaste);
@@ -645,20 +645,20 @@ begin
    if Ired = 0 then
       DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1));
    Ired := -1;
-   if VResizeInd or HResizeInd then
+   if resVert or resHorz then
       SendMessage(Handle, WM_NCHITTEST, 0, 0);
 end;
 
 procedure TGroupBlock.OnMouseLeave;
 var
-   lPoint: TPoint;
+   pnt: TPoint;
    lBranch: TBranch;
 begin
    lBranch := GetBranch(Ired);
    if lBranch <> nil then
    begin
-      lPoint := lBranch.Hook;
-      DrawArrowLine(Point(lPoint.X, TopHook.Y), lPoint);
+      pnt := lBranch.Hook;
+      DrawArrowLine(Point(pnt.X, TopHook.Y), pnt);
    end;
    inherited OnMouseLeave;
 end;
@@ -666,7 +666,7 @@ end;
 procedure TBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
 begin
    Resize := (NewWidth >= Constraints.MinWidth) and (NewHeight >= Constraints.MinHeight);
-   if HResizeInd and Resize then
+   if resHorz and Resize then
    begin
       BottomPoint.X := NewWidth div 2;
       TopHook.X := BottomPoint.X;
@@ -677,7 +677,7 @@ end;
 procedure TGroupBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
 begin
    Resize := (NewWidth >= Constraints.MinWidth) and (NewHeight >= Constraints.MinHeight);
-   if HResizeInd and Resize then
+   if resHorz and Resize then
    begin
       if Expanded then
          Inc(BottomPoint.X, NewWidth-Width)
@@ -688,7 +688,7 @@ begin
          IPoint.X := BottomPoint.X + 30;
       end;
    end;
-   if VResizeInd and Resize then
+   if resVert and Resize then
    begin
       if Expanded then
          Inc(Branch.Hook.Y, NewHeight-Height)
@@ -713,18 +713,18 @@ end;
 
 function TGroupBlock.GenerateNestedCode(const ALines: TStringList; const ABranchInd, ADeep: integer; const ALangId: string): integer;
 var
-   lBlock: TBlock;
+   block: TBlock;
    lBranch: TBranch;
 begin
    result := 0;
    lBranch := GetBranch(ABranchInd);
    if lBranch <> nil then
    begin
-      lBlock := lBranch.First;
-      while lBlock <> nil do
+      block := lBranch.First;
+      while block <> nil do
       begin
-         result := result + lBlock.GenerateCode(ALines, ALangId, ADeep);
-         lBlock := lBlock.Next;
+         result := result + block.GenerateCode(ALines, ALangId, ADeep);
+         block := block.Next;
       end;
    end;
 end;
@@ -736,7 +736,7 @@ end;
 
 procedure TBlock.MyOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-   lMitem: TMenuItem;
+   menuItem: TMenuItem;
    lPage: TBlockTabSheet;
 begin
    if Button = mbLeft then
@@ -752,31 +752,31 @@ begin
          if Ired >= 0 then
          begin
             lPage := Page;
-            lMitem := nil;
+            menuItem := nil;
             case GCustomCursor of
-               crAssign:      lMitem := lPage.Form.miAssign;
-               crMultiAssign: lMitem := lPage.Form.miMultipleAssign;
-               crIfElse:      lMitem := lPage.Form.miIfElse;
-               crWhile:       lMitem := lPage.Form.miWhile;
-               crFor:         lMitem := lPage.Form.miFor;
-               crRepeat:      lMitem := lPage.Form.miRepeat;
-               crInput:       lMitem := lPage.Form.miInput;
-               crOutput:      lMitem := lPage.Form.miOutput;
-               crFuncCall:    lMitem := lPage.Form.miRoutineCall;
-               crIf:          lMitem := lPage.Form.miIf;
-               crCase:        lMitem := lPage.Form.miCase;
-               crFolder:      lMitem := lPage.Form.miFolder;
-               crText:        lMitem := lPage.Form.miText;
+               crAssign:      menuItem := lPage.Form.miAssign;
+               crMultiAssign: menuItem := lPage.Form.miMultipleAssign;
+               crIfElse:      menuItem := lPage.Form.miIfElse;
+               crWhile:       menuItem := lPage.Form.miWhile;
+               crFor:         menuItem := lPage.Form.miFor;
+               crRepeat:      menuItem := lPage.Form.miRepeat;
+               crInput:       menuItem := lPage.Form.miInput;
+               crOutput:      menuItem := lPage.Form.miOutput;
+               crFuncCall:    menuItem := lPage.Form.miRoutineCall;
+               crIf:          menuItem := lPage.Form.miIf;
+               crCase:        menuItem := lPage.Form.miCase;
+               crFolder:      menuItem := lPage.Form.miFolder;
+               crText:        menuItem := lPage.Form.miText;
                crReturn:
                begin
                   if CanInsertReturnBlock then
-                     lMitem := lPage.Form.miReturn;
+                     menuItem := lPage.Form.miReturn;
                end;
             end;
-            if lMitem <> nil then
+            if menuItem <> nil then
             begin
                PopupMenu.PopupComponent := Self;
-               lMitem.OnClick(lMitem);
+               menuItem.OnClick(menuItem);
             end;
          end;
       end;
@@ -790,7 +790,7 @@ end;
 
 procedure TBlock.NCHitTest(var Msg: TWMNCHitTest);
 var
-   lLocked: boolean;
+   lock: boolean;
 begin
    inherited;
    if GetAsyncKeyState(VK_LBUTTON) <> 0 then
@@ -799,44 +799,44 @@ begin
          crSizeWE:
          begin
             Msg.Result := HTRIGHT;
-            HResizeInd := true;
+            resHorz := true;
             BringToFront;
          end;
          crSizeNS:
          begin
             Msg.Result := HTBOTTOM;
-            VResizeInd := true;
+            resVert := true;
             BringToFront;
          end;
          crSizeNWSE:
          begin
             Msg.Result := HTBOTTOMRIGHT;
-            HResizeInd := true;
-            VResizeInd := true;
+            resHorz := true;
+            resVert := true;
             BringToFront;
          end;
       end;
    end
-   else if HResizeInd or VResizeInd then
+   else if resHorz or resVert then
    begin
-      lLocked := LockDrawing;
+      lock := LockDrawing;
       try
-         if HResizeInd then
+         if resHorz then
          begin
             if FParentBlock <> nil then
                FParentBlock.ResizeHorz(true);
-            HResizeInd := false;
+            resHorz := false;
          end;
-         if VResizeInd then
+         if resVert then
          begin
             if Self is TGroupBlock then
                TGroupBlock(Self).LinkBlocks;
             if FParentBlock <> nil then
                FParentBlock.ResizeVert(true);
-            VResizeInd := false;
+            resVert := false;
          end;
       finally
-         if lLocked then
+         if lock then
             UnLockDrawing;
       end;
       GChange := 1;
@@ -848,13 +848,13 @@ end;
 
 procedure TBlock.MyOnMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-   lPoint: TPoint;
+   pnt: TPoint;
 begin
    if Button = mbRight then
    begin
-      lPoint := ClientToScreen(Point(X, Y));
+      pnt := ClientToScreen(Point(X, Y));
       PopupMenu.PopupComponent := Self;
-      PopupMenu.Popup(lPoint.X, lPoint.Y);
+      PopupMenu.Popup(pnt.X, pnt.Y);
    end;
 end;
 
@@ -875,14 +875,14 @@ end;
 
 procedure TGroupBlock.ResizeWithDrawLock;
 var
-   lLocked: boolean;
+   lock: boolean;
 begin
-   lLocked := LockDrawing;
+   lock := LockDrawing;
    try
       ResizeHorz(true);
       ResizeVert(true);
    finally
-      if lLocked then
+      if lock then
          UnlockDrawing;
    end;
 end;
@@ -897,16 +897,16 @@ end;
 
 procedure TGroupBlock.ResizeHorz(const AContinue: boolean);
 var
-   lLeftX, lRightX: Integer;
-   lBlock: TBlock;
+   xLeft, xRight: integer;
+   block: TBlock;
 begin
 
    Branch.Hook.X := FInitParms.BranchPoint.X;
    TopHook.X := Branch.Hook.X;
    LinkBlocks;
 
-   lBlock := Branch.First;
-   if lBlock = nil then   // case if primary branch is empty
+   block := Branch.First;
+   if block = nil then   // case if primary branch is empty
    begin
       Width := FInitParms.Width;
       BottomHook := FInitParms.BottomHook;
@@ -915,29 +915,29 @@ begin
    else
    begin
       // resize in left direction
-      lLeftX := 30;   // 30 - left margin
+      xLeft := 30;   // 30 - left margin
       repeat
-         if lBlock.Left < lLeftX then
-            lLeftX := lBlock.Left;
-         lBlock := lBlock.Next;
-      until lBlock = nil;
+         if block.Left < xLeft then
+            xLeft := block.Left;
+         block := block.Next;
+      until block = nil;
 
-      Branch.Hook.X := Branch.Hook.X + 30 - lLeftX;
+      Branch.Hook.X := Branch.Hook.X + 30 - xLeft;
       TopHook.X := Branch.Hook.X;
       LinkBlocks;
-      lBlock := Branch.Last;
-      BottomHook := lBlock.Left + lBlock.BottomPoint.X;
+      block := Branch.Last;
+      BottomHook := block.Left + block.BottomPoint.X;
 
       // resize in right direction
-      lRightX := 0;
-      lBlock := Branch.First;
+      xRight := 0;
+      block := Branch.First;
       repeat
-         if lBlock.BoundsRect.Right > lRightX then
-            lRightX := lBlock.BoundsRect.Right;
-         lBlock := lBlock.Next;
-      until lBlock = nil;
+         if block.BoundsRect.Right > xRight then
+            xRight := block.BoundsRect.Right;
+         block := block.Next;
+      until block = nil;
 
-      SetWidth(lRightX);  // set final width
+      SetWidth(xRight);  // set final width
    end;
 
    if FParentBlock <> nil then
@@ -957,34 +957,34 @@ end;
 
 procedure TGroupBlock.LinkBlocks(const idx: integer = PRIMARY_BRANCH_IND-1);
 var
-   lBlock, lBlockPrev: TBlock;
-   i, lStart, lStop: integer;
-   lTopLeft: TPoint;
+   block, blockPrev: TBlock;
+   i, first, last: integer;
+   topLeft: TPoint;
 begin
    if GetBranch(idx) <> nil then
    begin
-      lStart := idx;
-      lStop := idx;
+      first := idx;
+      last := idx;
    end
    else
    begin
-      lStart := PRIMARY_BRANCH_IND;
-      lStop := High(FBranchArray);
+      first := PRIMARY_BRANCH_IND;
+      last := High(FBranchArray);
    end;
-   for i := lStart to lStop do
+   for i := first to last do
    begin
-      lBlock := FBranchArray[i].First;
-      if lBlock <> nil then
+      block := FBranchArray[i].First;
+      if block <> nil then
       begin
-         lTopLeft := Point(FBranchArray[i].Hook.X-lBlock.TopHook.X, FBranchArray[i].Hook.Y+1);
-         lBlock.SetBounds(lTopLeft.X, lTopLeft.Y, lBlock.Width, lBlock.Height);
-         lBlock := lBlock.Next;
-         while lBlock <> nil do
+         topLeft := Point(FBranchArray[i].Hook.X-block.TopHook.X, FBranchArray[i].Hook.Y+1);
+         block.SetBounds(topLeft.X, topLeft.Y, block.Width, block.Height);
+         block := block.Next;
+         while block <> nil do
          begin
-            lBlockPrev := lBlock.Prev;
-            lTopLeft := Point(lBlockPrev.BottomPoint.X+lBlockPrev.Left-lBlock.TopHook.X, lBlockPrev.BoundsRect.Bottom);
-            lBlock.SetBounds(lTopLeft.X, lTopLeft.Y, lBlock.Width, lBlock.Height);
-            lBlock := lBlock.Next;
+            blockPrev := block.Prev;
+            topLeft := Point(blockPrev.BottomPoint.X+blockPrev.Left-block.TopHook.X, blockPrev.BoundsRect.Bottom);
+            block.SetBounds(topLeft.X, topLeft.Y, block.Width, block.Height);
+            block := block.Next;
          end;
       end;
    end;
@@ -1074,32 +1074,32 @@ end;
 
 function TBlock.GetComments(const AInFront: boolean = false): IIterator;
 var
-   lComment: TComment;
+   comment: TComment;
    iterc: IIterator;
-   lInFront: boolean;
+   isFront: boolean;
    lPage: TTabSheet;
-   lList: TObjectList;
+   objList: TObjectList;
 begin
-   lList := TObjectList.Create(false);
+   objList := TObjectList.Create(false);
    if Visible then
    begin
       lPage := Page;
       iterc := GProject.GetComments;
       while iterc.HasNext do
       begin
-         lComment := TComment(iterc.Next);
-         if lComment.Page = lPage then
+         comment := TComment(iterc.Next);
+         if comment.Page = lPage then
          begin
             if AInFront then
-               lInFront := IsInFront(lComment)
+               isFront := IsInFront(comment)
             else
-               lInFront := true;
-            if lInFront and (lComment.PinControl = nil) and PtInRect(ClientRect, TInfra.ParentToClient(Self, lComment.BoundsRect.TopLeft, lPage)) then
-               lList.Add(lComment);
+               isFront := true;
+            if isFront and (comment.PinControl = nil) and PtInRect(ClientRect, TInfra.ParentToClient(Self, comment.BoundsRect.TopLeft, lPage)) then
+               objList.Add(comment);
          end
       end;
    end;
-   result := TCommentIterator.Create(lList);
+   result := TCommentIterator.Create(objList);
 end;
 
 procedure TBlock.BringAllToFront;
@@ -1114,22 +1114,22 @@ end;
 
 function TBlock.IsInFront(const AControl: TWinControl): boolean;
 var
-   lWnd: THandle;
+   hnd: THandle;
 begin
    result := false;
    if AControl <> nil then
    begin
-      lWnd := GetWindow(AControl.Handle, GW_HWNDLAST);
-      while lWnd <> 0 do
+      hnd := GetWindow(AControl.Handle, GW_HWNDLAST);
+      while hnd <> 0 do
       begin
-         if lWnd = FTopParentBlock.Handle then
+         if hnd = FTopParentBlock.Handle then
          begin
             result := true;
             break;
          end
-         else if lWnd = AControl.Handle then
+         else if hnd = AControl.Handle then
             break;
-         lWnd := GetNextWindow(lWnd, GW_HWNDPREV);
+         hnd := GetNextWindow(hnd, GW_HWNDPREV);
       end;
    end;
 end;
@@ -1137,18 +1137,18 @@ end;
 procedure TBlock.MoveComments(x, y: integer);
 var
    iter: IIterator;
-   lComment: TComment;
+   comment: TComment;
 begin
    if (x <> 0) and (y <> 0) and (Left <> 0) and (Top <> 0) and ((x <> Left) or (y <> Top)) then
    begin
       iter := GetComments(true);
       while iter.HasNext do
       begin
-         lComment := TComment(iter.Next);
-         if lComment.Visible then
+         comment := TComment(iter.Next);
+         if comment.Visible then
          begin
-            lComment.SetBounds(lComment.Left+x-Left, lComment.Top+y-Top, lComment.Width, lComment.Height);
-            lComment.BringToFront;
+            comment.SetBounds(comment.Left+x-Left, comment.Top+y-Top, comment.Width, comment.Height);
+            comment.BringToFront;
          end;
       end;
    end;
@@ -1167,19 +1167,19 @@ end;
 
 function TBlock.GetPinComments: IIterator;
 var
-   lComment: TComment;
+   comment: TComment;
    iterc: IIterator;
-   lList: TObjectList;
+   objList: TObjectList;
 begin
-   lList := TObjectList.Create(false);
+   objList := TObjectList.Create(false);
    iterc := GProject.GetComments;
    while iterc.HasNext do
    begin
-      lComment := TComment(iterc.Next);
-      if lComment.PinControl = Self then
-         lList.Add(lComment);
+      comment := TComment(iterc.Next);
+      if comment.PinControl = Self then
+         objList.Add(comment);
    end;
-   result := TCommentIterator.Create(lList);
+   result := TCommentIterator.Create(objList);
 end;
 
 procedure TBlock.PutTextControls;
@@ -1193,27 +1193,27 @@ end;
 
 procedure TGroupBlock.PutTextControls;
 var
-   lTopLeft, lPoint: TPoint;
-   lTextControl: TCustomEdit;
+   topLeft, pnt: TPoint;
+   textControl: TCustomEdit;
 begin
-   lTextControl := GetTextControl;
-   lPoint := GetDiamondPoint;
-   if (lTextControl <> nil) and not InvalidPoint(lPoint) then
+   textControl := GetTextControl;
+   pnt := GetDiamondPoint;
+   if (textControl <> nil) and not InvalidPoint(pnt) then
    begin
-      lTopLeft.X := lTextControl.Height + lPoint.X - 60 + 4;
-      lTopLeft.Y := Trunc((60-lTextControl.Height)/2) + lPoint.Y + 2;
-      lTextControl.SetBounds(lTopLeft.X, lTopLeft.Y, 120-2*lTextControl.Height-7, lTextControl.Height);
+      topLeft.X := textControl.Height + pnt.X - 60 + 4;
+      topLeft.Y := Trunc((60-textControl.Height)/2) + pnt.Y + 2;
+      textControl.SetBounds(topLeft.X, topLeft.Y, 120-2*textControl.Height-7, textControl.Height);
    end
 end;
 
 procedure TBlock.RefreshStatements;
 var
    i: integer;
-   lBool, lBool2: boolean;
+   b, b1: boolean;
 begin
-    lBool := NavigatorForm.InvalidateInd;
+    b := NavigatorForm.InvalidateInd;
     NavigatorForm.InvalidateInd := false;
-    lBool2 := FRefreshMode;
+    b1 := FRefreshMode;
     FRefreshMode := true;
     try
        for i := 0 to ControlCount-1 do
@@ -1228,9 +1228,9 @@ begin
              TBlock(Controls[i]).RefreshStatements;
        end;
     finally
-       FRefreshMode := lBool2;
+       FRefreshMode := b1;
     end;
-    NavigatorForm.InvalidateInd := lBool;
+    NavigatorForm.InvalidateInd := b;
 end;
 
 function TBlock.GetId: integer;
@@ -1241,15 +1241,15 @@ end;
 procedure TBlock.ChangeColor(const AColor: TColor);
 var
    iter: IIterator;
-   lComment: TComment;
+   comment: TComment;
 begin
    Color := AColor;
    iter := GetComments;
    while iter.HasNext do
    begin
-      lComment := TComment(iter.Next);
-      if lComment.Visible then
-         lComment.Color := AColor;
+      comment := TComment(iter.Next);
+      if comment.Visible then
+         comment.Color := AColor;
    end;
 end;
 
@@ -1266,18 +1266,18 @@ end;
 procedure TGroupBlock.ChangeColor(const AColor: TColor);
 var
    i: integer;
-   lBlock: TBlock;
+   block: TBlock;
 begin
    inherited ChangeColor(AColor);
    if Expanded then
    begin
       for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
       begin
-         lBlock := FBranchArray[i].First;
-         while lBlock <> nil do
+         block := FBranchArray[i].First;
+         while block <> nil do
          begin
-            lBlock.ChangeColor(AColor);
-            lBlock := lBlock.Next;
+            block.ChangeColor(AColor);
+            block := block.Next;
          end;
       end;
    end;
@@ -1311,18 +1311,18 @@ end;
 procedure TGroupBlock.ExpandAll;
 var
    i: integer;
-   lBlock: TBlock;
+   block: TBlock;
 begin
    if not Expanded then
       ExpandFold(true);
    for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
    begin
-      lBlock := FBranchArray[i].First;
-      while lBlock <> nil do
+      block := FBranchArray[i].First;
+      while block <> nil do
       begin
-         if lBlock is TGroupBlock then
-            TGroupBlock(lBlock).ExpandAll;
-         lBlock := lBlock.Next;
+         if block is TGroupBlock then
+            TGroupBlock(block).ExpandAll;
+         block := block.Next;
       end;
    end;
 end;
@@ -1343,7 +1343,7 @@ end;
 
 function TGroupBlock.HasFoldedBlocks: boolean;
 var
-   lBlock: TBlock;
+   block: TBlock;
    i: integer;
 begin
    result := not Expanded;
@@ -1351,15 +1351,15 @@ begin
    begin
       for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
       begin
-         lBlock := FBranchArray[i].First;
-         while lBlock <> nil do
+         block := FBranchArray[i].First;
+         while block <> nil do
          begin
-            if lBlock is TGroupBlock then
+            if block is TGroupBlock then
             begin
-               result := TGroupBlock(lblock).HasFoldedBlocks;
+               result := TGroupBlock(block).HasFoldedBlocks;
                if result then break;
             end;
-            lBlock := lBlock.Next;
+            block := block.Next;
          end;
          if result then break;
       end;
@@ -1388,47 +1388,47 @@ end;
 
 procedure TBlock.DrawI;
 var
-   lFontSize: integer;
+   fontSize: integer;
 begin
    if TMainBlock(FTopParentBlock).ShowI then
    begin
-      lFontSize := Canvas.Font.Size;
+      fontSize := Canvas.Font.Size;
       Canvas.Font.Size := 8;
       DrawTextLabel(IPoint.X, IPoint.Y, '|');
-      Canvas.Font.Size := lFontSize;
+      Canvas.Font.Size := fontSize;
    end;
 end;
 
 procedure TBlock.DrawBlockLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false);
 var
-   lFontName: string;
-   lFontSize: integer;
-   lFontStyles: TFontStyles;
+   fontName: string;
+   fontSize: integer;
+   fontStyles: TFontStyles;
 begin
    if GSettings.ShowBlockLabels and (AText <> '') then
    begin
-      lFontName := Canvas.Font.Name;
-      lFontStyles := Canvas.Font.Style;
+      fontName := Canvas.Font.Name;
+      fontStyles := Canvas.Font.Style;
       Canvas.Font.Name := GInfra.CurrentLang.LabelFontName;
       Canvas.Font.Style := [fsBold];
-      lFontSize := Canvas.Font.Size;
+      fontSize := Canvas.Font.Size;
       Canvas.Font.Size := GInfra.CurrentLang.LabelFontSize;
       DrawTextLabel(x, y, AText, rightJust, downJust);
-      Canvas.Font.Name := lFontName;
-      Canvas.Font.Size := lFontSize;
-      Canvas.Font.Style := lFontStyles;
+      Canvas.Font.Name := fontName;
+      Canvas.Font.Size := fontSize;
+      Canvas.Font.Style := fontStyles;
    end;
 end;
 
 procedure TBlock.DrawTextLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false);
 var
-   lFontStyles: TFontStyles;
+   fontStyles: TFontStyles;
 begin
    if AText <> '' then
    begin
-      lFontStyles := Canvas.Font.Style;
+      fontStyles := Canvas.Font.Style;
       Canvas.Font.Style := [];
-      if fsBold in lFontStyles then
+      if fsBold in fontStyles then
          Canvas.Font.Style := Canvas.Font.Style + [fsBold];
       Canvas.Brush.Style := bsClear;
       if rightJust then
@@ -1444,7 +1444,7 @@ begin
             y := 0;
       end;
       Canvas.TextOut(x, y, AText);
-      Canvas.Font.Style := lFontStyles;
+      Canvas.Font.Style := fontStyles;
    end;
 end;
 
@@ -1454,25 +1454,25 @@ const
    MY: array[boolean, boolean] of integer = ((5, 5), (10, -10));
    MD: array[boolean, boolean] of integer = ((0, -10), (10, 0));
 var
-   lIsVertical, lToBottomRight: boolean;
+   isVert, toBtmRigth: boolean;
    x, y: integer;
-   lArrPoint: TPoint;
+   pnt: TPoint;
 begin
-   lIsVertical := ABeginPoint.X = AEndPoint.X;
-   lArrPoint := AEndPoint;
-   if lIsVertical then
-      lToBottomRight := AEndPoint.Y > ABeginPoint.Y
+   isVert := ABeginPoint.X = AEndPoint.X;
+   pnt := AEndPoint;
+   if isVert then
+      toBtmRigth := AEndPoint.Y > ABeginPoint.Y
    else
-      lToBottomRight := AEndPoint.X > ABeginPoint.X;
+      toBtmRigth := AEndPoint.X > ABeginPoint.X;
    if AArrowPos = arrMiddle then
    begin
-      if lIsVertical then
-         lArrPoint.Y := lArrPoint.Y + (ABeginPoint.Y-AEndPoint.Y) div 2
+      if isVert then
+         pnt.Y := pnt.Y + (ABeginPoint.Y-AEndPoint.Y) div 2
       else
-         lArrPoint.X := lArrPoint.X + (ABeginPoint.X-AEndPoint.X) div 2;
+         pnt.X := pnt.X + (ABeginPoint.X-AEndPoint.X) div 2;
    end;
-   x := MX[lIsVertical, lToBottomRight];
-   y := MY[lIsVertical, lToBottomRight];
+   x := MX[isVert, toBtmRigth];
+   y := MY[isVert, toBtmRigth];
    with Canvas do
    begin
       Brush.Style := bsSolid;
@@ -1480,10 +1480,10 @@ begin
       Brush.Color := AColor;
       MoveTo(ABeginPoint.X, ABeginPoint.Y);
       LineTo(AEndPoint.X, AEndPoint.Y);
-      Polygon([Point(lArrPoint.X+x, lArrPoint.Y+y),
-               Point(lArrPoint.X+x+MD[lIsVertical, false], lArrPoint.Y+y+MD[lIsVertical, true]),
-               lArrPoint,
-               Point(lArrPoint.X+x, lArrPoint.Y+y)]);
+      Polygon([Point(pnt.X+x, pnt.Y+y),
+               Point(pnt.X+x+MD[isVert, false], pnt.Y+y+MD[isVert, true]),
+               pnt,
+               Point(pnt.X+x, pnt.Y+y)]);
    end;
 end;
 
@@ -1495,12 +1495,12 @@ var
    a, b: integer;
    ar, br, cx, cy: real;
    R: TRect;
-   lExt, lViewPort: TSize;
+   wndExt, viewPort: TSize;
 begin
-   GetWindowExtEx(Canvas.Handle, lExt);
-   GetViewportExtEx(Canvas.Handle, lViewPort);
-   cx := lViewPort.cx / lExt.cx;
-   cy := lViewPort.cy / lExt.cy;
+   GetWindowExtEx(Canvas.Handle, wndExt);
+   GetViewportExtEx(Canvas.Handle, viewPort);
+   cx := viewPort.cx / wndExt.cx;
+   cy := viewPort.cy / wndExt.cy;
    R := Rect(0, 0, 0, 0);
    DrawText(Canvas.Handle, PChar(AText), -1, R, DT_CALCRECT);
    ar := (R.Bottom - R.Top) * cy / Sqrt(2);
@@ -1554,16 +1554,16 @@ end;
 
 function TBlock.CountErrWarn: TErrWarnCount;
 var
-   lTextControl: TCustomEdit;
+   textControl: TCustomEdit;
 begin
    result.ErrorCount := 0;
    result.WarningCount := 0;
-   lTextControl := GetTextControl;
-   if lTextControl <> nil then
+   textControl := GetTextControl;
+   if textControl <> nil then
    begin
-      if THackControl(lTextControl).Font.Color = NOK_COLOR then
+      if THackControl(textControl).Font.Color = NOK_COLOR then
          result.ErrorCount := 1
-      else if THackControl(lTextControl).Font.Color = WARN_COLOR then
+      else if THackControl(textControl).Font.Color = WARN_COLOR then
          result.WarningCount := 1;
    end;
 end;
@@ -1571,42 +1571,42 @@ end;
 function TGroupBlock.CountErrWarn: TErrWarnCount;
 var
    iter: IIterator;
-   lErrWarnCount: TErrWarnCount;
+   errWarnCount: TErrWarnCount;
 begin
    result := inherited CountErrWarn;
    iter := GetBlocks;
    while iter.HasNext do
    begin
-      lErrWarnCount := TBlock(iter.Next).CountErrWarn;
-      Inc(result.ErrorCount, lErrWarnCount.ErrorCount);
-      Inc(result.WarningCount, lErrWarnCount.WarningCount);
+      errWarnCount := TBlock(iter.Next).CountErrWarn;
+      Inc(result.ErrorCount, errWarnCount.ErrorCount);
+      Inc(result.WarningCount, errWarnCount.WarningCount);
    end;
 end;
 
 procedure TGroupBlock.Paint;
 var
-   lTop: TPoint;
-   lStyle: TBrushStyle;
+   pnt: TPoint;
+   brushStyle: TBrushStyle;
    lColor: TColor;
-   lWidth: integer;
+   w: integer;
 begin
    inherited;
-   lStyle := Canvas.Brush.Style;
+   brushStyle := Canvas.Brush.Style;
    lColor := Canvas.Brush.Color;
-   lWidth := Canvas.Pen.Width;
+   w := Canvas.Pen.Width;
    if Expanded then
    begin
-      lTop := GetDiamondPoint;
-      if not InvalidPoint(lTop) then
+      pnt := GetDiamondPoint;
+      if not InvalidPoint(pnt) then
       begin
          Canvas.Brush.Style := bsClear;
          if GSettings.DiamondColor <> GSettings.DesktopColor then
             Canvas.Brush.Color := GSettings.DiamondColor;
-         Canvas.Polygon([Point(lTop.X-60, lTop.Y+30),
-                         Point(lTop.X, lTop.Y+60),
-                         Point(lTop.X+60, lTop.Y+30),
-                         lTop,
-                         Point(lTop.X-60, lTop.Y+30)]);
+         Canvas.Polygon([Point(pnt.X-60, pnt.Y+30),
+                         Point(pnt.X, pnt.Y+60),
+                         Point(pnt.X+60, pnt.Y+30),
+                         pnt,
+                         Point(pnt.X-60, pnt.Y+30)]);
          end;
    end
    else if FMemoFolder <> nil then
@@ -1623,9 +1623,9 @@ begin
                       Point(1, FMemoFolder.Height+5),
                       Point(1, 0)]);
    end;
-   Canvas.Brush.Style := lStyle;
+   Canvas.Brush.Style := brushStyle;
    Canvas.Brush.Color := lColor;
-   Canvas.Pen.Width := lWidth;
+   Canvas.Pen.Width := w;
 end;
 
 // return value indicates if drawing was in fact locked by this call
@@ -1673,16 +1673,16 @@ end;
 
 procedure TBlock.WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo);
 var
-   lPoint: TPoint;
+   pnt: TPoint;
    lPage: TTabSheet;
 begin
    inherited;
    lPage := Page;
-   lPoint := TInfra.ClientToParent(Self, Point(0, 0), lPage);
-   if HResizeInd then
-      Msg.MinMaxInfo.ptMaxTrackSize.X := lPage.ClientWidth - lPoint.X;
-   if VResizeInd then
-      Msg.MinMaxInfo.ptMaxTrackSize.Y := lPage.ClientHeight - lPoint.Y;
+   pnt := TInfra.ClientToParent(Self, Point(0, 0), lPage);
+   if resHorz then
+      Msg.MinMaxInfo.ptMaxTrackSize.X := lPage.ClientWidth - pnt.X;
+   if resVert then
+      Msg.MinMaxInfo.ptMaxTrackSize.Y := lPage.ClientHeight - pnt.Y;
 end;
 
 function TBlock.IsCursorSelect: boolean;
@@ -1730,46 +1730,46 @@ end;
 
 procedure TBlock.UpdateMemoVScroll;
 var
-   lPos, lCount, lLineCount: integer;
-   lMemo: TMemo;
-   lOldFont: HFont;
-   lHandle: THandle;
-   lTextMetric: TTextMetric;
+   pos, count, lineCount: integer;
+   memo: TMemo;
+   oldFont: HFont;
+   hnd: THandle;
+   txtMetric: TTextMetric;
 begin
-   lMemo := GetFrontMemo;
-   if lMemo <> nil then
+   memo := GetFrontMemo;
+   if memo <> nil then
    begin
-      lPos := lMemo.SelStart;
+      pos := memo.SelStart;
       if FMemoVScroll then
       begin
-         lHandle := GetDC(lMemo.Handle);
+         hnd := GetDC(memo.Handle);
          try
-            lOldFont := SelectObject(lHandle, lMemo.Font.Handle);
+            oldFont := SelectObject(hnd, memo.Font.Handle);
             try
-               GetTextMetrics(lHandle, lTextMetric);
-               lLineCount := (lMemo.ClientHeight - 4)  div (lTextMetric.tmHeight + lTextMetric.tmExternalLeading)
+               GetTextMetrics(hnd, txtMetric);
+               lineCount := (memo.ClientHeight - 4)  div (txtMetric.tmHeight + txtMetric.tmExternalLeading)
             finally
-               SelectObject(lHandle, lOldFont);
+               SelectObject(hnd, oldFont);
             end;
          finally
-            ReleaseDC(lMemo.Handle, lHandle);
+            ReleaseDC(memo.Handle, hnd);
          end;
-         lCount := lMemo.Lines.Count;
-         if AnsiEndsText(CRLF, lMemo.Text) then
-            lCount := lCount + 1;
-         if lCount > lLineCount then
+         count := memo.Lines.Count;
+         if AnsiEndsText(CRLF, memo.Text) then
+            count := count + 1;
+         if count > lineCount then
          begin
-            if lMemo.ScrollBars = ssNone then
-               lMemo.ScrollBars := ssVertical
-            else if lMemo.ScrollBars = ssHorizontal then
-               lMemo.ScrollBars := ssBoth;
+            if memo.ScrollBars = ssNone then
+               memo.ScrollBars := ssVertical
+            else if memo.ScrollBars = ssHorizontal then
+               memo.ScrollBars := ssBoth;
          end
          else
-            ResetMemoScrollBars(ssHorizontal, lMemo);
+            ResetMemoScrollBars(ssHorizontal, memo);
       end
       else
-         ResetMemoScrollBars(ssHorizontal, lMemo);
-      lMemo.SelStart := lPos;
+         ResetMemoScrollBars(ssHorizontal, memo);
+      memo.SelStart := pos;
    end;
 end;
 
@@ -1786,88 +1786,88 @@ end;
 
 procedure TBlock.UpdateMemoHScroll;
 var
-   lPos, lCount, lWidth, i: integer;
-   lMemo: TMemo;
+   pos, cnt, w, i: integer;
+   memo: TMemo;
    lCanvas: TCanvas;
-   lMargins: longint;
+   mrgns: longint;
 begin
-   lMemo := GetFrontMemo;
-   if lMemo <> nil then
+   memo := GetFrontMemo;
+   if memo <> nil then
    begin
-      lPos := lMemo.SelStart;
-      if FMemoHScroll and not lMemo.WordWrap then
+      pos := memo.SelStart;
+      if FMemoHScroll and not memo.WordWrap then
       begin
-         lWidth := 0;
+         w := 0;
          lCanvas := TCanvas.Create;
          try
-            lCanvas.Font.Assign(lMemo.Font);
-            lCanvas.Handle := GetDC(lMemo.Handle);
-            for i := 0 to lMemo.Lines.Count-1 do
+            lCanvas.Font.Assign(memo.Font);
+            lCanvas.Handle := GetDC(memo.Handle);
+            for i := 0 to memo.Lines.Count-1 do
             begin
-               lCount := lCanvas.TextWidth(lMemo.Lines[i]);
-               if lCount > lWidth then
-                  lWidth := lCount;
+               cnt := lCanvas.TextWidth(memo.Lines[i]);
+               if cnt > w then
+                  w := cnt;
             end;
-            lMargins := SendMessage(lMemo.Handle, EM_GETMARGINS, 0, 0);
-            if lWidth > (lMemo.ClientWidth - HiWord(lMargins) - LoWord(lMargins) - 3) then
+            mrgns := SendMessage(memo.Handle, EM_GETMARGINS, 0, 0);
+            if w > (memo.ClientWidth - HiWord(mrgns) - LoWord(mrgns) - 3) then
             begin
-               if lMemo.ScrollBars = ssNone then
-                  lMemo.ScrollBars := ssHorizontal
-               else if lMemo.ScrollBars = ssVertical then
-                  lMemo.ScrollBars := ssBoth;
+               if memo.ScrollBars = ssNone then
+                  memo.ScrollBars := ssHorizontal
+               else if memo.ScrollBars = ssVertical then
+                  memo.ScrollBars := ssBoth;
             end
             else
-               ResetMemoScrollBars(ssVertical, lMemo);
+               ResetMemoScrollBars(ssVertical, memo);
          finally
-            ReleaseDC(lMemo.Handle, lCanvas.Handle);
+            ReleaseDC(memo.Handle, lCanvas.Handle);
             lCanvas.Free;
          end;
       end
       else
-         ResetMemoScrollBars(ssVertical, lMemo);
-      lMemo.SelStart := lPos;
+         ResetMemoScrollBars(ssVertical, memo);
+      memo.SelStart := pos;
    end;
 end;
 
 procedure TBlock.ResetMemoScrollBars(const AScrollStyle: TScrollStyle; const AMemo: TMemo);
 var
-   lScrollStyle: TScrollStyle;
+   scrollStyle: TScrollStyle;
 begin
    if AScrollStyle = ssVertical then
-      lScrollStyle := ssHorizontal
+      scrollStyle := ssHorizontal
    else
-      lScrollStyle := ssVertical;
+      scrollStyle := ssVertical;
    if AMemo.ScrollBars = ssBoth then
       AMemo.ScrollBars := AScrollStyle
-   else if AMemo.ScrollBars = lScrollStyle then
+   else if AMemo.ScrollBars = scrollStyle then
       AMemo.ScrollBars := ssNone;
 end;
 
 procedure TBlock.SetMemoWordWrap(AValue: boolean);
 var
-   lMemo: TMemo;
+   memo: TMemo;
 begin
-   lMemo := GetFrontMemo;
-   if (lMemo <> nil) and (AValue <> lMemo.WordWrap) then
+   memo := GetFrontMemo;
+   if (memo <> nil) and (AValue <> memo.WordWrap) then
    begin
-      lMemo.WordWrap := AValue;
-      if lMemo.WordWrap then
+      memo.WordWrap := AValue;
+      if memo.WordWrap then
          MemoHScroll := false;
    end;
 end;
 
 function TBlock.GetMemoWordWrap: boolean;
 var
-   lMemo: TMemo;
+   memo: TMemo;
 begin
-   lMemo := GetFrontMemo;
-   result := (lMemo <> nil) and lMemo.WordWrap;
+   memo := GetFrontMemo;
+   result := (memo <> nil) and memo.WordWrap;
 end;
 
 function TBlock.CanBeFocused: boolean;
 var
    lParent: TGroupBlock;
-   lFunction: TUserFunction;
+   func: TUserFunction;
 begin
    result := true;
    lParent := FParentBlock;
@@ -1882,12 +1882,12 @@ begin
    end;
    if result then
    begin
-      lFunction := TUserFunction(TMainBlock(FTopParentBlock).UserFunction);
-      if lFunction <> nil then
+      func := TUserFunction(TMainBlock(FTopParentBlock).UserFunction);
+      if func <> nil then
       begin
-         result := lFunction.Active;
-         if result and (lFunction.Header <> nil) then
-            result := lFunction.Header.chkBodyVisible.Checked;
+         result := func.Active;
+         if result and (func.Header <> nil) then
+            result := func.Header.chkBodyVisible.Checked;
       end;
       if result and (FParentBranch <> nil) and (FParentBranch.IndexOf(Self) = -1) then
          result := false;
@@ -1916,8 +1916,8 @@ end;
 function TBlock.FocusOnTextControl(AInfo: TFocusInfo): boolean;
 var
    idx, idx2, i: integer;
-   lText: string;
-   lMemo: TMemo;
+   txt: string;
+   memo: TMemo;
 begin
    result := false;
    if ContainsControl(AInfo.FocusEdit) and AInfo.FocusEdit.CanFocus then
@@ -1928,27 +1928,27 @@ begin
       idx2 := 0;
       if AInfo.FocusEdit is TMemo then
       begin
-         lMemo := TMemo(AInfo.FocusEdit);
-         if AInfo.RelativeLine < lMemo.Lines.Count then
+         memo := TMemo(AInfo.FocusEdit);
+         if AInfo.RelativeLine < memo.Lines.Count then
          begin
-            lText := lMemo.Lines[AInfo.RelativeLine];
+            txt := memo.Lines[AInfo.RelativeLine];
             if AInfo.RelativeLine > 0 then
             begin
                for i := 0 to AInfo.RelativeLine-1 do
-                  idx2 := idx2 + Length(lMemo.Lines[i] + CRLF);
+                  idx2 := idx2 + Length(memo.Lines[i] + CRLF);
             end;
          end
          else
-            lText := lMemo.Text;
+            txt := memo.Text;
       end
       else
-         lText := AInfo.FocusEdit.Text;
-      idx := AnsiPos(lText, AInfo.LineText);
+         txt := AInfo.FocusEdit.Text;
+      idx := AnsiPos(txt, AInfo.LineText);
       if idx <> 0 then
          AInfo.SelStart := AInfo.SelStart - idx + idx2
       else
       begin
-         idx := AnsiPos(AInfo.SelText, lText);
+         idx := AnsiPos(AInfo.SelText, txt);
          if idx <> 0 then
             AInfo.SelStart := idx - 1 + idx2;
       end;
@@ -1979,16 +1979,16 @@ end;
 
 function TBlock.GenerateTree(const AParentNode: TTreeNode): TTreeNode;
 var
-   lErrMsg: string;
-   lTextControl: TCustomEdit;
+   errMsg: string;
+   textControl: TCustomEdit;
 begin
    result := AParentNode;
-   lTextControl := GetTextControl;
-   if lTextControl <> nil then
+   textControl := GetTextControl;
+   if textControl <> nil then
    begin
-      lErrMsg := GetErrorMsg(lTextControl);
-      result := AParentNode.Owner.AddChildObject(AParentNode, GetDescription + lErrMsg, lTextControl);
-      if lErrMsg <> '' then
+      errMsg := GetErrorMsg(textControl);
+      result := AParentNode.Owner.AddChildObject(AParentNode, GetDescription + errMsg, textControl);
+      if errMsg <> '' then
       begin
          AParentNode.MakeVisible;
          AParentNode.Expand(false);
@@ -1998,26 +1998,27 @@ end;
 
 function TGroupBlock.GenerateTree(const AParentNode: TTreeNode): TTreeNode;
 var
-   lBlock: TBlock;
+   block: TBlock;
 begin
    result := inherited GenerateTree(AParentNode);
-   lBlock := FBranchArray[PRIMARY_BRANCH_IND].First;
-   while lBlock <> nil do
+   block := FBranchArray[PRIMARY_BRANCH_IND].First;
+   while block <> nil do
    begin
-      lBlock.GenerateTree(result);
-      lBlock := lBlock.Next;
+      block.GenerateTree(result);
+      block := block.Next;
    end;
 end;
 
 function TGroupBlock.AddBranch(const AHook: TPoint; const AResizeInd: boolean; const ABranchId: integer = ID_INVALID; const ABranchStmntId: integer = ID_INVALID): TBranch;
 var
-   l: integer;
+   len: integer;
 begin
    result := TBranch.Create(Self, AHook, ABranchId);
-   l := Length(FBranchArray);
-   if l = 0 then l := 1;
-   SetLength(FBranchArray, l+1);
-   FBranchArray[l] := result;
+   len := Length(FBranchArray);
+   if len = 0 then
+      len := 1;
+   SetLength(FBranchArray, len+1);
+   FBranchArray[len] := result;
 end;
 
 function TBlock.CanBeRemoved: boolean;
@@ -2058,17 +2059,17 @@ end;
 function TBlock.PinComments: integer;
 var
    iter: IIterator;
-   lComment: TComment;
-   lPoint: TPoint;
+   comment: TComment;
+   pnt: TPoint;
 begin
-   lPoint := TInfra.ClientToParent(Self, ClientRect.TopLeft, Page);
+   pnt := TInfra.ClientToParent(Self, ClientRect.TopLeft, Page);
    iter := GetComments;
    while iter.HasNext do
    begin
-      lComment := TComment(iter.Next);
-      lComment.PinControl := Self;
-      lComment.Visible := false;
-      lComment.SetBounds(lComment.Left - lPoint.X, lComment.Top - lPoint.Y, lComment.Width, lComment.Height);
+      comment := TComment(iter.Next);
+      comment.PinControl := Self;
+      comment.Visible := false;
+      comment.SetBounds(comment.Left - pnt.X, comment.Top - pnt.Y, comment.Width, comment.Height);
    end;
    result := iter.Count;
 end;
@@ -2076,18 +2077,18 @@ end;
 function TBlock.UnPinComments: integer;
 var
    iter: IIterator;
-   lComment: TComment;
-   lPoint: TPoint;
+   comment: TComment;
+   pnt: TPoint;
 begin
-   lPoint := TInfra.ClientToParent(Self, ClientRect.TopLeft, Page);
+   pnt := TInfra.ClientToParent(Self, ClientRect.TopLeft, Page);
    iter := GetPinComments;
    while iter.HasNext do
    begin
-      lComment := TComment(iter.Next);
-      lComment.PinControl := nil;
-      lComment.SetBounds(lComment.Left + lPoint.X, lComment.Top + lPoint.Y, lComment.Width, lComment.Height);
-      lComment.Visible := true;
-      lComment.BringToFront;
+      comment := TComment(iter.Next);
+      comment.PinControl := nil;
+      comment.SetBounds(comment.Left + pnt.X, comment.Top + pnt.Y, comment.Width, comment.Height);
+      comment.Visible := true;
+      comment.BringToFront;
    end;
    result := iter.Count;
 end;
@@ -2131,35 +2132,35 @@ end;
 
 procedure TGroupBlock.ExpandFold(const AResize: boolean);
 var
-   lTmpWidth, lTmpHeight, i: integer;
-   lBlock: TBlock;
-   lTextControl: TCustomEdit;
+   tmpWidth, tmpHeight, i: integer;
+   block: TBlock;
+   textControl: TCustomEdit;
 begin
    GChange := 1;
    Expanded := not Expanded;
-   lTextControl := GetTextControl;
-   if lTextControl <> nil then
-      lTextControl.Visible := Expanded;
+   textControl := GetTextControl;
+   if textControl <> nil then
+      textControl.Visible := Expanded;
    FMemoFolder.Visible := not Expanded;
 
    for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
    begin
-      lBlock := FBranchArray[i].First;
-      while lBlock <> nil do
+      block := FBranchArray[i].First;
+      while block <> nil do
       begin
-         lBlock.Visible := Expanded;
-         lBlock := lBlock.Next;
+         block.Visible := Expanded;
+         block := block.Next;
       end;
    end;
 
    if Expanded then
    begin
-      lTmpWidth := Width;
-      lTmpHeight := Height;
+      tmpWidth := Width;
+      tmpHeight := Height;
       Width := FFoldParms.Width;
       Height := FFoldParms.Height;
-      FFoldParms.Width := lTmpWidth;
-      FFoldParms.Height := lTmpHeight;
+      FFoldParms.Width := tmpWidth;
+      FFoldParms.Height := tmpHeight;
       BottomHook := FFoldParms.BottomHook;
       TopHook.X := FFoldParms.TopHook;
       BottomPoint.X := FFoldParms.BottomPoint.X;
@@ -2175,8 +2176,8 @@ begin
    begin
       if ProcessComments then
          PinComments;
-      lTmpWidth := FFoldParms.Width;
-      lTmpHeight := FFoldParms.Height;
+      tmpWidth := FFoldParms.Width;
+      tmpHeight := FFoldParms.Height;
       FFoldParms.Width := Width;
       FFoldParms.Height := Height;
       FFoldParms.BottomHook := BottomHook;
@@ -2188,8 +2189,8 @@ begin
       FFoldParms.IPoint.Y := IPoint.Y;
       Constraints.MinWidth := 140;
       Constraints.MinHeight := 54;
-      Width := lTmpWidth;
-      Height := lTmpHeight;
+      Width := tmpWidth;
+      Height := tmpHeight;
       FMemoFolder.SetBounds(3, 3, Width-6, Height-36);
       FMemoFolder.Anchors := [akRight, akLeft, akBottom, akTop];
       BottomPoint.X := Width div 2;
@@ -2212,14 +2213,14 @@ end;
 procedure TGroupBlock.SaveInXML(const ATag: IXMLElement);
 var
    brx, fw, fh, i: integer;
-   lText: string;
+   txt: string;
    tag1, tag2: IXMLElement;
    lBranch: TBranch;
    iter: IIterator;
-   lUnPin: boolean;
-   lTextControl: TCustomEdit;
+   unPin: boolean;
+   textControl: TCustomEdit;
 begin
-   lUnPin := false;
+   unPin := false;
    if ATag <> nil then
    begin
       ATag.SetAttribute(BLOCK_TYPE_ATTR, IntToStr(Ord(BType)));
@@ -2238,12 +2239,12 @@ begin
       ATag.SetAttribute('mem_wordwrap', BoolToStr(MemoWordWrap, true));
       ATag.SetAttribute(FONT_SIZE_ATTR, IntToStr(Font.Size));
       ATag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style));
-      lTextControl := GetTextControl;
-      if (lTextControl <> nil) and (lTextControl.Text <> '') then
+      textControl := GetTextControl;
+      if (textControl <> nil) and (textControl.Text <> '') then
       begin
-         lText := AnsiReplaceStr(lTextControl.Text, CRLF, CRLF_PLACEHOLDER);
+         txt := AnsiReplaceStr(textControl.Text, CRLF, CRLF_PLACEHOLDER);
          tag1 := ATag.OwnerDocument.CreateElement(TEXT_TAG);
-         TXMLProcessor.AddCDATA(tag1, lText);
+         TXMLProcessor.AddCDATA(tag1, txt);
          ATag.AppendChild(tag1);
       end;
 
@@ -2252,7 +2253,7 @@ begin
          fw := FFoldParms.Width;
          fh := FFoldParms.Height;
          brx := Branch.Hook.X;
-         lUnPin := PinComments > 0;
+         unPin := PinComments > 0;
       end
       else
       begin
@@ -2272,11 +2273,11 @@ begin
         ATag.SetAttribute('fh', IntToStr(fh));
         ATag.SetAttribute(FOLDED_ATTR, BoolToStr(not Expanded, true));
 
-        lText := GetFoldedText;
-        if lText <> '' then
+        txt := GetFoldedText;
+        if txt <> '' then
         begin
            tag1 := ATag.OwnerDocument.CreateElement(FOLD_TEXT_ATTR);
-           TXMLProcessor.AddCDATA(tag1, lText);
+           TXMLProcessor.AddCDATA(tag1, txt);
            ATag.AppendChild(tag1);
         end;
 
@@ -2310,7 +2311,7 @@ begin
         end;
 
       finally
-         if lUnPin then
+         if unPin then
             UnPinComments;
       end;
    end;
@@ -2318,11 +2319,11 @@ end;
 
 procedure TBlock.SaveInXML(const ATag: IXMLElement);
 var
-   lTextControl: TCustomEdit;
-   lText: string;
-   lTag: IXMLElement;
+   textControl: TCustomEdit;
+   txt: string;
+   tag: IXMLElement;
    iter: IIterator;
-   lUnPin: boolean;
+   unPin: boolean;
 begin
    if ATag <> nil then
    begin
@@ -2342,16 +2343,16 @@ begin
       ATag.SetAttribute('mem_wordwrap', BoolToStr(MemoWordWrap, true));
       ATag.SetAttribute(FONT_SIZE_ATTR, IntToStr(Font.Size));
       ATag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style));
-      lTextControl := GetTextControl;
-      if (lTextControl <> nil) and (lTextControl.Text <> '') then
+      textControl := GetTextControl;
+      if (textControl <> nil) and (textControl.Text <> '') then
       begin
-         lText := AnsiReplaceStr(lTextControl.Text, CRLF, CRLF_PLACEHOLDER);
-         lTag := ATag.OwnerDocument.CreateElement(TEXT_TAG);
-         TXMLProcessor.AddCDATA(lTag, lText);
-         ATag.AppendChild(lTag);
+         txt := AnsiReplaceStr(textControl.Text, CRLF, CRLF_PLACEHOLDER);
+         tag := ATag.OwnerDocument.CreateElement(TEXT_TAG);
+         TXMLProcessor.AddCDATA(tag, txt);
+         ATag.AppendChild(tag);
       end;
-      lUnPin := PinComments > 0;
-      if lUnPin then
+      unPin := PinComments > 0;
+      if unPin then
       begin
          iter := GetPinComments;
          while iter.HasNext do
@@ -2364,15 +2365,15 @@ end;
 procedure TBlock.ImportCommentsFromXML(const ATag: IXMLElement);
 var
    tag: IXMLElement;
-   lComment: TComment;
+   comment: TComment;
 begin
    if ProcessComments then
    begin
       tag := TXMLProcessor.FindChildTag(ATag, COMMENT_ATTR);
       while tag <> nil do
       begin
-         lComment := TComment.CreateDefault(Page);
-         lComment.ImportFromXMLTag(tag, Self);
+         comment := TComment.CreateDefault(Page);
+         comment.ImportFromXMLTag(tag, Self);
          tag := TXMLProcessor.FindNextTag(tag);
       end;
       UnPinComments;
@@ -2382,27 +2383,27 @@ end;
 function TBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
 var
    tag: IXMLElement;
-   lTextControl: TCustomEdit;
-   lValue: integer;
+   textControl: TCustomEdit;
+   i: integer;
 begin
    result := errNone;
    if ATag <> nil then
    begin
       tag := TXMLProcessor.FindChildTag(ATag, TEXT_TAG);
-      lTextControl := GetTextControl;
-      if (tag <> nil) and (lTextControl <> nil) then
+      textControl := GetTextControl;
+      if (tag <> nil) and (textControl <> nil) then
       begin
          FRefreshMode := true;
-         lTextControl.Text := AnsiReplaceStr(tag.Text, CRLF_PLACEHOLDER, CRLF);
+         textControl.Text := AnsiReplaceStr(tag.Text, CRLF_PLACEHOLDER, CRLF);
          FRefreshMode := false;
       end;
 
-      lValue := StrToIntDef(ATag.GetAttribute(FONT_SIZE_ATTR), 8);
-      if lValue in [8, 10, 12] then
-         SetFontSize(lValue);
+      i := StrToIntDef(ATag.GetAttribute(FONT_SIZE_ATTR), 8);
+      if i in [8, 10, 12] then
+         SetFontSize(i);
 
-      lValue := StrToIntDef(ATag.GetAttribute(FONT_STYLE_ATTR), 0);
-      SetFontStyle(TInfra.DecodeFontStyle(lValue));
+      i := StrToIntDef(ATag.GetAttribute(FONT_STYLE_ATTR), 0);
+      SetFontStyle(TInfra.DecodeFontStyle(i));
       
       Frame := ATag.GetAttribute(FRAME_ATTR) = 'True';
       memoWidth := StrToIntDef(ATag.GetAttribute('memW'), 280);
@@ -2417,40 +2418,40 @@ end;
 
 function TGroupBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
 var
-   lTag1, lTag2: IXMLElement;
-   lBranchId, lBranchIdx, lBranchStmntId, hx, hy: integer;
+   tag1, tag2: IXMLElement;
+   bId, idx, bStmntId, hx, hy: integer;
 begin
    result := inherited GetFromXML(ATag);
    if ATag <> nil then
    begin
-      lTag1 := TXMLProcessor.FindChildTag(ATag, BRANCH_TAG);
-      if lTag1 <> nil then
+      tag1 := TXMLProcessor.FindChildTag(ATag, BRANCH_TAG);
+      if tag1 <> nil then
       begin
-         lBranchIdx := PRIMARY_BRANCH_IND;
+         idx := PRIMARY_BRANCH_IND;
          repeat
-            lTag2 := TXMLProcessor.FindChildTag(lTag1, 'x');
-            if lTag2 <> nil then
-               hx := StrToIntDef(lTag2.Text, 0);
-            lTag2 := TXMLProcessor.FindChildTag(lTag1, 'y');
-            if lTag2 <> nil then
-               hy := StrToIntDef(lTag2.Text, 0);
-            lBranchId := StrToIntDef(lTag1.GetAttribute(ID_ATTR), ID_INVALID);
-            lBranchStmntId := StrToIntDef(lTag1.GetAttribute(BRANCH_STMNT_ATTR), ID_INVALID);
-            if GetBranch(lBranchIdx) = nil then
-               AddBranch(Point(hx, hy), false, lBranchId, lBranchStmntId);
-            lTag2 := TXMLProcessor.FindChildTag(lTag1, BLOCK_TAG);
-            if lTag2 <> nil then
+            tag2 := TXMLProcessor.FindChildTag(tag1, 'x');
+            if tag2 <> nil then
+               hx := StrToIntDef(tag2.Text, 0);
+            tag2 := TXMLProcessor.FindChildTag(tag1, 'y');
+            if tag2 <> nil then
+               hy := StrToIntDef(tag2.Text, 0);
+            bId := StrToIntDef(tag1.GetAttribute(ID_ATTR), ID_INVALID);
+            bStmntId := StrToIntDef(tag1.GetAttribute(BRANCH_STMNT_ATTR), ID_INVALID);
+            if GetBranch(idx) = nil then
+               AddBranch(Point(hx, hy), false, bId, bStmntId);
+            tag2 := TXMLProcessor.FindChildTag(tag1, BLOCK_TAG);
+            if tag2 <> nil then
             begin
-               TXMLProcessor.ImportFlowchartFromXMLTag(lTag2, Self, nil, result, lBranchIdx);
+               TXMLProcessor.ImportFlowchartFromXMLTag(tag2, Self, nil, result, idx);
                if result <> errNone then break;
             end;
-            lBranchIdx := lBranchIdx + 1;
-            lTag1 := TXMLProcessor.FindNextTag(lTag1);
-         until lTag1 = nil;
+            idx := idx + 1;
+            tag1 := TXMLProcessor.FindNextTag(tag1);
+         until tag1 = nil;
       end;
-      lTag2 := TXMLProcessor.FindChildTag(ATag, FOLD_TEXT_ATTR);
-      if lTag2 <> nil then
-         SetFoldedText(lTag2.Text);
+      tag2 := TXMLProcessor.FindChildTag(ATag, FOLD_TEXT_ATTR);
+      if tag2 <> nil then
+         SetFoldedText(tag2.Text);
       FFoldParms.Width := StrToIntDef(ATag.GetAttribute('fw'), 140);
       FFoldParms.Height := StrToIntDef(ATag.GetAttribute('fh'), 91);
       if ATag.GetAttribute(FOLDED_ATTR) = 'True' then
@@ -2460,26 +2461,27 @@ end;
 
 procedure TBlock.ExportToXMLTag(const ATag: IXMLElement);
 var
-   lBlock: TBlock;
+   block: TBlock;
 begin
    TXMLProcessor.ExportBlockToXML(Self, ATag);
    if ParentBranch <> nil then
    begin
-      lBlock := ParentBranch.First;
-      while lBlock <> nil do
+      block := ParentBranch.First;
+      while block <> nil do
       begin
-         if lBlock = Self then break;
-         lBlock := lBlock.Next;
+         if block = Self then
+            break;
+         block := block.Next;
       end;
-      if lBlock <> nil then
+      if block <> nil then
       begin
-         lBlock := lBlock.Next;
-         while lBlock <> nil do
+         block := block.Next;
+         while block <> nil do
          begin
-            if not lBlock.Frame then
+            if not block.Frame then
                break;
-            TXMLProcessor.ExportBlockToXML(lBlock, ATag);
-            lBlock := lBlock.Next;
+            TXMLProcessor.ExportBlockToXML(block, ATag);
+            block := block.Next;
          end;
       end;
    end;
@@ -2487,7 +2489,7 @@ end;
 
 function TBlock.ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
 var
-   lBlock, lNewBlock: TBlock;
+   block, newBlock: TBlock;
    lParent: TGroupBlock;
    tag: IXMLElement;
 begin
@@ -2498,26 +2500,26 @@ begin
    else
    begin
       lParent := nil;
-      lBlock := Self;
+      block := Self;
       if (Ired = 0) and (FParentBlock <> nil) then
          lParent := FParentBlock
       else if Self is TGroupBlock then
       begin
          lParent := TGroupBlock(Self);
-         lBlock := nil;
+         block := nil;
       end;
       if lParent <> nil then
       begin
          lParent.BlockImportMode := true;
          try
-            lNewBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag, lParent, lBlock, result, Ired);
+            newBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag, lParent, block, result, Ired);
          finally
             lParent.BlockImportMode := false;
          end;
          if result = errNone then
          begin
             lParent.ResizeWithDrawLock;
-            lNewBlock.ImportCommentsFromXML(tag);
+            newBlock.ImportCommentsFromXML(tag);
          end;
       end;
    end;
@@ -2534,28 +2536,28 @@ end;
 
 function TBlock.GetFocusColor: TColor;
 var
-   lEdit: TCustomEdit;
+   edit: TCustomEdit;
 begin
-   lEdit := GetTextControl;
-   if lEdit <> nil then
-      result := THackControl(lEdit).Font.Color
+   edit := GetTextControl;
+   if edit <> nil then
+      result := THackControl(edit).Font.Color
    else
       result := OK_COLOR;
 end;
 
 procedure TBlock.UpdateEditor(AEdit: TCustomEdit);
 var
-   lLine: TChangeLine;
+   chLine: TChangeLine;
 begin
    if (AEdit <> nil) and PerformEditorUpdate then
    begin
-      lLine := TInfra.GetChangeLine(Self, AEdit);
-      if lLine.Row <> ROW_NOT_FOUND then
+      chLine := TInfra.GetChangeLine(Self, AEdit);
+      if chLine.Row <> ROW_NOT_FOUND then
       begin
-         lLine.Text := FastCodeAnsiStringReplace(lLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
+         chLine.Text := FastCodeAnsiStringReplace(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
          if GSettings.UpdateEditor and not SkipUpdateEditor then
-            TInfra.ChangeLine(lLine);
-         TInfra.GetEditorForm.SetCaretPos(lLine);
+            TInfra.ChangeLine(chLine);
+         TInfra.GetEditorForm.SetCaretPos(chLine);
       end;
    end;
 end;
@@ -2567,62 +2569,62 @@ end;
 
 function TBlock.GetDescription: string;
 var
-   lTextControl: TCustomEdit;
+   textControl: TCustomEdit;
 begin
-   lTextControl := GetTextControl;
-   if lTextControl <> nil then
-      result := FastCodeAnsiStringReplace(GInfra.CurrentLang.GetTemplateExpr(ClassType), PRIMARY_PLACEHOLDER, Trim(lTextControl.Text));
+   textControl := GetTextControl;
+   if textControl <> nil then
+      result := FastCodeAnsiStringReplace(GInfra.CurrentLang.GetTemplateExpr(ClassType), PRIMARY_PLACEHOLDER, Trim(textControl.Text));
 end;
 
 procedure TBlock.ExportToGraphic(const AGraphic: TGraphic);
 var
-   lBitmap: TBitmap;
+   bitmap: TBitmap;
    iterc: IIterator;
-   lComment: TComment;
-   lPoint: TPoint;
+   comment: TComment;
+   pnt: TPoint;
 begin
    ClearSelection;
    if AGraphic is TBitmap then
-      lBitmap := TBitmap(AGraphic)
+      bitmap := TBitmap(AGraphic)
    else
-      lBitmap := TBitmap.Create;
-   lBitmap.Width := Width + 2;
-   lBitmap.Height := Height + 2;
+      bitmap := TBitmap.Create;
+   bitmap.Width := Width + 2;
+   bitmap.Height := Height + 2;
    TMainBlock(FTopParentBlock).ShowI := false;
-   lBitmap.Canvas.Lock;
+   bitmap.Canvas.Lock;
    try
-      PaintTo(lBitmap.Canvas.Handle, 1, 1);
+      PaintTo(bitmap.Canvas.Handle, 1, 1);
       iterc := GetComments;
       while iterc.HasNext do
       begin
-         lComment := TComment(iterc.Next);
-         lPoint := TInfra.ParentToClient(Self, lComment.BoundsRect.TopLeft, Page);
-         lComment.PaintTo(lBitmap.Canvas.Handle, lPoint.X, lPoint.Y);
+         comment := TComment(iterc.Next);
+         pnt := TInfra.ParentToClient(Self, comment.BoundsRect.TopLeft, Page);
+         comment.PaintTo(bitmap.Canvas.Handle, pnt.X, pnt.Y);
       end;
    finally
-      lBitmap.Canvas.Unlock;
+      bitmap.Canvas.Unlock;
       TMainBlock(FTopParentBlock).ShowI := true;
    end;
-   if AGraphic <> lBitmap then
+   if AGraphic <> bitmap then
    begin
-      AGraphic.Assign(lBitmap);
-      lBitmap.Free;
+      AGraphic.Assign(bitmap);
+      bitmap.Free;
    end;
 end;
 
 procedure TGroupBlock.PopulateComboBoxes;
 var
    i: integer;
-   lBlock: TBlock;
+   block: TBlock;
 begin
    inherited PopulateComboBoxes;
    for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
    begin
-      lBlock := FBranchArray[i].First;
-      while lBlock <> nil do
+      block := FBranchArray[i].First;
+      while block <> nil do
       begin
-         lBlock.PopulateComboBoxes;
-         lBlock := lBlock.Next;
+         block.PopulateComboBoxes;
+         block := block.Next;
       end;
    end;
 end;
@@ -2634,133 +2636,133 @@ end;
 
 function TGroupBlock.GetBlocks(const AIndex: integer = PRIMARY_BRANCH_IND-1): IIterator;
 var
-   lFBranchIdx, lLBranchIdx, i, a: integer;
-   lBlock: TBlock;
-   lList: TObjectList;
+   first, last, i, a: integer;
+   block: TBlock;
+   objList: TObjectList;
 begin
-   lList := TObjectList.Create(false);
+   objList := TObjectList.Create(false);
    if GetBranch(AIndex) <> nil then
    begin
-      lFBranchIdx := AIndex;
-      lLBranchIdx := AIndex;
+      first := AIndex;
+      last := AIndex;
    end
    else
    begin
       if AIndex < PRIMARY_BRANCH_IND then
       begin
-         lFBranchIdx := PRIMARY_BRANCH_IND;
-         lLBranchIdx := High(FBranchArray);
+         first := PRIMARY_BRANCH_IND;
+         last := High(FBranchArray);
       end
       else
       begin
-         lFBranchIdx := 0;
-         lLBranchIdx := -1;
+         first := 0;
+         last := -1;
       end;
    end;
    a := 0;
-   for i := lFBranchIdx to lLBranchIdx do
+   for i := first to last do
       a := a + FBranchArray[i].Count;
-   if lList.Capacity < a then
-      lList.Capacity := a;
-   for i := lFBranchIdx to lLBranchIdx do
+   if objList.Capacity < a then
+      objList.Capacity := a;
+   for i := first to last do
    begin
-      lBlock := FBranchArray[i].First;
-      while lBlock <> nil do
+      block := FBranchArray[i].First;
+      while block <> nil do
       begin
-         lList.Add(lBlock);
-         lBlock := lBlock.Next;
+         objList.Add(block);
+         block := block.Next;
       end;
    end;
-   result := TBlockIterator.Create(lList);
+   result := TBlockIterator.Create(objList);
 end;
 
 function TGroupBlock.GetBranches(const AStart: integer = PRIMARY_BRANCH_IND-1): IIterator;
 var
-   i, lFBranchIdx, lLBranchIdx: integer;
-   lList: TObjectList;
+   i, first, last: integer;
+   objList: TObjectList;
 begin
-   lList := TObjectList.Create(false);
+   objList := TObjectList.Create(false);
    if GetBranch(AStart) <> nil then
-      lFBranchIdx := AStart
+      first := AStart
    else
    begin
       if AStart < PRIMARY_BRANCH_IND then
-         lFBranchIdx := PRIMARY_BRANCH_IND
+         first := PRIMARY_BRANCH_IND
       else
-         lFBranchIdx := 0;           // case if lower index is greater than upper bound of branch_collection
+         first := 0;           // case if lower index is greater than upper bound of branch_collection
    end;
-   if lFBranchIdx = 0 then
-      lLBranchIdx := -1
+   if first = 0 then
+      last := -1
    else
-      lLBranchIdx := High(FBranchArray);
-   for i := lFBranchIdx to lLBranchIdx do
-      lList.Add(FBranchArray[i]);
-   result := TBranchIterator.Create(lList);
+      last := High(FBranchArray);
+   for i := first to last do
+      objList.Add(FBranchArray[i]);
+   result := TBranchIterator.Create(objList);
 end;
 
 function TBlock.SkipUpdateEditor: boolean;
 var
-   lHeader: TUserFunctionHeader;
+   funcHeader: TUserFunctionHeader;
 begin
-   lHeader := TInfra.GetFunctionHeader(Self);
-   result := (lHeader <> nil) and (TInfra.IsNOkColor(lHeader.Font.Color) or lHeader.chkExtDeclare.Checked);
+   funcHeader := TInfra.GetFunctionHeader(Self);
+   result := (funcHeader <> nil) and (TInfra.IsNOkColor(funcHeader.Font.Color) or funcHeader.chkExtDeclare.Checked);
 end;
 
 function TBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
 var
-   lTmpList: TStringList;
+   tmpList: TStringList;
 begin
    result := 0;
    if fsStrikeOut in Font.Style then
       exit;
-   lTmpList := TStringList.Create;
+   tmpList := TStringList.Create;
    try
-      GenerateDefaultTemplate(lTmpList, ALangId, ADeep);
-      TInfra.InsertLinesIntoList(ALines, lTmpList, AFromLine);
-      result := lTmpList.Count;
+      GenerateDefaultTemplate(tmpList, ALangId, ADeep);
+      TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
+      result := tmpList.Count;
    finally
-      lTmpList.Free;
+      tmpList.Free;
    end;
 end;
 
 procedure TBlock.GenerateDefaultTemplate(const ALines: TStringList; const ALangId: string; const ADeep: integer);
 var
-   lLangDef: TLangDefinition;
-   lTemplate, lText: string;
-   lTextControl: TCustomEdit;
+   langDef: TLangDefinition;
+   template, txt: string;
+   textControl: TCustomEdit;
 begin
-   lLangDef := GInfra.GetLangDefinition(ALangId);
-   if lLangDef <> nil then
+   langDef := GInfra.GetLangDefinition(ALangId);
+   if langDef <> nil then
    begin
-      lText := '';
-      lTemplate := lLangDef.GetTemplate(Self.ClassType);
-      lTextControl := GetTextControl;
-      if lTextControl is TMemo then
-         lText := lTextControl.Text
-      else if lTextControl <> nil then
-         lText := Trim(lTextControl.Text);
-      lTemplate := FastCodeAnsiStringReplace(lTemplate, PRIMARY_PLACEHOLDER, lText);
-      GenerateTemplateSection(ALines, lTemplate, ALangId, ADeep);
+      txt := '';
+      template := langDef.GetTemplate(Self.ClassType);
+      textControl := GetTextControl;
+      if textControl is TMemo then
+         txt := textControl.Text
+      else if textControl <> nil then
+         txt := Trim(textControl.Text);
+      template := FastCodeAnsiStringReplace(template, PRIMARY_PLACEHOLDER, txt);
+      GenerateTemplateSection(ALines, template, ALangId, ADeep);
    end;
 end;
 
 function TGroupBlock.ExtractBranchIndex(const AStr: string): integer;
 var
    i, b: integer;
-   lInt: string;
+   val: string;
 begin
    result := AnsiPos('%b', AStr);
    if result <> 0 then
    begin
-      lInt := '';
+      val := '';
       for i := result+2 to Length(AStr) do
       begin
          if TryStrToInt(AStr[i], b) then
-            lInt := lInt + AStr[i]
+            val := val + AStr[i]
          else
             break;
       end;
-      result := StrToIntDef(lInt, 0);
+      result := StrToIntDef(val, 0);
       if result > High(FBranchArray) then
          result := 0;
    end;
@@ -2768,34 +2770,34 @@ end;
 
 procedure TBlock.GenerateTemplateSection(const ALines: TStringList; const ATemplate: string; const ALangId: string; const ADeep: integer);
 var
-   lStringList: TStringList;
+   strList: TStringList;
 begin
-   lStringList := TStringList.Create;
+   strList := TStringList.Create;
    try
-      lStringList.Text := ATemplate;
-      GenerateTemplateSection(ALines, lStringList, ALangId, ADeep);
+      strList.Text := ATemplate;
+      GenerateTemplateSection(ALines, strList, ALangId, ADeep);
    finally
-      lStringList.Free;
+      strList.Free;
    end;
 end;
 
 procedure TBlock.GenerateTemplateSection(const ALines: TStringList; const ATemplate: TStringList; const ALangId: string; const ADeep: integer);
 var
-   lLine: string;
-   i, lLineCount: integer;
-   lObject: TObject;
+   line: string;
+   i: integer;
+   obj: TObject;
 begin
-   lLineCount := ALines.Count + ATemplate.Count;
-   if ALines.Capacity < lLineCount then
-      ALines.Capacity := lLineCount;
+   i := ALines.Count + ATemplate.Count;
+   if ALines.Capacity < i then
+      ALines.Capacity := i;
    for i := 0 to ATemplate.Count-1 do
    begin
-      lLine := DupeString(GSettings.IndentString, ADeep) + ATemplate[i];
-      lLine := FastCodeAnsiStringReplace(lLine, INDENT_XML_CHAR, GSettings.IndentString);
-      lObject := ATemplate.Objects[i];
-      if lObject = nil then
-         lObject := Self;
-      ALines.AddObject(lLine, lObject);
+      line := DupeString(GSettings.IndentString, ADeep) + ATemplate[i];
+      line := FastCodeAnsiStringReplace(line, INDENT_XML_CHAR, GSettings.IndentString);
+      obj := ATemplate.Objects[i];
+      if obj = nil then
+         obj := Self;
+      ALines.AddObject(line, obj);
    end;
 end;
 
@@ -2817,8 +2819,8 @@ procedure TGroupBlock.GenerateTemplateSection(const ALines: TStringList; const A
 
 var
    i, b: integer;
-   lLine: string;
-   lObject: TObject;
+   line: string;
+   obj: TObject;
 begin
    for i := 0 to ATemplate.Count-1 do
    begin
@@ -2831,39 +2833,39 @@ begin
       end
       else
       begin
-         lLine := DupeString(GSettings.IndentString, ADeep) + ATemplate[i];
-         lLine := FastCodeAnsiStringReplace(lLine, INDENT_XML_CHAR, GSettings.IndentString);
-         lObject := ATemplate.Objects[i];
-         if lObject = nil then
-            lObject := Self;
-         ALines.AddObject(lLine, lObject);
+         line := DupeString(GSettings.IndentString, ADeep) + ATemplate[i];
+         line := FastCodeAnsiStringReplace(line, INDENT_XML_CHAR, GSettings.IndentString);
+         obj := ATemplate.Objects[i];
+         if obj = nil then
+            obj := Self;
+         ALines.AddObject(line, obj);
       end;
    end;
 end;
 
 function TBlock.Next: TBlock;
 var
-   lIndex: integer;
+   idx: integer;
 begin
    result := nil;
    if FParentBranch <> nil then
    begin
-      lIndex := FParentBranch.IndexOf(Self);
-      if (lIndex <> -1) and (FParentBranch.Last <> Self) then
-         result := FParentBranch.Items[lIndex+1];
+      idx := FParentBranch.IndexOf(Self);
+      if (idx <> -1) and (FParentBranch.Last <> Self) then
+         result := FParentBranch.Items[idx+1];
    end;
 end;
 
 function TBlock.Prev: TBlock;
 var
-   lIndex: integer;
+   idx: integer;
 begin
    result := nil;
    if FParentBranch <> nil then
    begin
-      lIndex := FParentBranch.IndexOf(Self);
-      if (lIndex <> -1) and (FParentBranch.First <> Self) then
-         result := FParentBranch.Items[lIndex-1];
+      idx := FParentBranch.IndexOf(Self);
+      if (idx <> -1) and (FParentBranch.First <> Self) then
+         result := FParentBranch.Items[idx-1];
    end;
 end;
 

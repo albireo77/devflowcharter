@@ -109,13 +109,13 @@ end;
 procedure TMultiLineBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
 begin
    Resize := (NewWidth >= Constraints.MinWidth) and (NewHeight >= Constraints.MinHeight);
-   if HResizeInd and Resize then
+   if resHorz and Resize then
    begin
       BottomPoint.X := Width div 2;
       IPoint.X := BottomPoint.X + 30;
       TopHook.X := BottomPoint.X;
    end;
-   if VResizeInd and Resize then
+   if resVert and Resize then
       IPoint.Y := FStatements.Height + 10;
 end;
 

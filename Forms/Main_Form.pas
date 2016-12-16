@@ -699,14 +699,14 @@ end;
 
 procedure TMainForm.miCommentClick(Sender: TObject);
 var
-   ptn: TPoint;
+   pnt: TPoint;
    page: TBlockTabSheet;
 begin
    if GProject <> nil then
    begin
       page := GProject.GetActivePage;
-      ptn := page.ScreenToClient(pmPages.PopupPoint);
-      TComment.Create(page, ptn.X, ptn.Y, 150, 50);
+      pnt := page.ScreenToClient(pmPages.PopupPoint);
+      TComment.Create(page, pnt.X, pnt.Y, 150, 50);
       GChange := 1;
    end;
 end;
@@ -1000,7 +1000,7 @@ end;
 procedure TMainForm.miImportClick(Sender: TObject);
 var
    comp: TComponent;
-   ptn: TPoint;
+   pnt: TPoint;
    func: TUserFunction;
    impProc: TImportProc;
    impFunc: boolean;
@@ -1023,9 +1023,9 @@ begin
             func := GProject.LastUserFunction;
             if (func <> nil) and func.Active and (func.Body <> nil) and func.Body.Visible then
             begin
-               ptn := GProject.GetActivePage.ScreenToClient(pmPages.PopupPoint);
-               func.Body.Left := ptn.X;
-               func.Body.Top := ptn.Y;
+               pnt := GProject.GetActivePage.ScreenToClient(pmPages.PopupPoint);
+               func.Body.Left := pnt.X;
+               func.Body.Top := pnt.Y;
                func.Body.Page.Form.SetScrollBars;
             end;
          end;
@@ -1054,15 +1054,15 @@ end;
 
 procedure TMainForm.miAddBranchClick(Sender: TObject);
 var
-   ptn: TPoint;
+   pnt: TPoint;
    caseBlock: TCaseBlock;
    branch: TBranch;
 begin
    if pmPages.PopupComponent is TCaseBlock then
    begin
       caseBlock := TCaseBlock(pmPages.PopupComponent);
-      ptn := Point(caseBlock.GetBranch(caseBlock.BranchCount).GetMostRight+60, caseBlock.Height-32);
-      branch := caseBlock.AddBranch(ptn, true);
+      pnt := Point(caseBlock.GetBranch(caseBlock.BranchCount).GetMostRight+60, caseBlock.Height-32);
+      branch := caseBlock.AddBranch(pnt, true);
       TInfra.UpdateCodeEditor(branch);
    end;
 end;
@@ -1177,17 +1177,17 @@ end;
 
 procedure TMainForm.SetScrollBars;
 var
-   ptn: TPoint;
+   pnt: TPoint;
 begin
    if GProject <> nil then
    begin
-      ptn := GProject.GetBottomRight;
-      if ptn.X > ClientWidth then
-         HorzScrollBar.Range := ptn.X
+      pnt := GProject.GetBottomRight;
+      if pnt.X > ClientWidth then
+         HorzScrollBar.Range := pnt.X
       else
          HorzScrollBar.Range := ClientWidth;
-      if ptn.Y > ClientHeight then
-         VertScrollBar.Range := ptn.Y
+      if pnt.Y > ClientHeight then
+         VertScrollBar.Range := pnt.Y
       else
          VertScrollBar.Range := ClientHeight;
       NavigatorForm.Invalidate;
@@ -1321,7 +1321,7 @@ end;
 
 procedure TMainForm.pgcPagesContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
 var
-   ptn: TPoint;
+   pnt: TPoint;
    idx: integer;
 begin
    if (GProject <> nil) and (htOnItem in pgcPages.GetHitTestInfoAt(MousePos.X, MousePos.Y)) then
@@ -1332,8 +1332,8 @@ begin
          pmTabs.PopupComponent := pgcPages.Pages[idx];
          pgcPages.ActivePageIndex := idx;
       end;
-      ptn := pgcPages.ClientToScreen(MousePos);
-      pmTabs.Popup(ptn.X, ptn.Y);
+      pnt := pgcPages.ClientToScreen(MousePos);
+      pmTabs.Popup(pnt.X, pnt.Y);
    end
 end;
 
