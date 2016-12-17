@@ -78,16 +78,16 @@ uses
 
 procedure TPageControlForm.miRemoveClick(Sender: TObject);
 var
-   lTabComp: TTabComponent;
+   tab: TTabComponent;
 begin
    if pgcTabs.ActivePage <> nil then
    begin
-      lTabComp := TTabComponent(pgcTabs.ActivePage);
+      tab := TTabComponent(pgcTabs.ActivePage);
       pgcTabs.OwnerDraw := false;
-      lTabComp.Active := false;
+      tab.Active := false;
       GClpbrd.UndoObject.Free;
       pgcTabs.OwnerDraw := true;
-      GClpbrd.UndoObject := lTabComp.OverlayObject;
+      GClpbrd.UndoObject := tab.OverlayObject;
       TInfra.UpdateCodeEditor;
    end;
 end;
@@ -123,47 +123,47 @@ end;
 procedure TPageControlForm.pgcTabsDrawTab(Control: TCustomTabControl;
   TabIndex: Integer; const Rect: TRect; Active: Boolean);
 var
-   ARect: TRect;
-   lTab: TTabComponent;
+   lRect: TRect;
+   tab: TTabComponent;
 begin
    TabIndex := TInfra.GetPageIndex(TPageControl(Control), Rect.Left+5, Rect.Top+5);
    if TabIndex <> -1 then
    begin
-      ARect := Rect;
-      ARect.Right := ARect.Right-3;
-      lTab := TTabComponent(TPageControl(Control).Pages[TabIndex]);
-      lTab.RefreshTab;
-      Control.Canvas.Font.Color := lTab.Font.Color;
-      Control.Canvas.TextRect(ARect, ARect.Left+5, ARect.Top+3, lTab.Caption);
+      lRect := Rect;
+      lRect.Right := lRect.Right-3;
+      tab := TTabComponent(TPageControl(Control).Pages[TabIndex]);
+      tab.RefreshTab;
+      Control.Canvas.Font.Color := tab.Font.Color;
+      Control.Canvas.TextRect(lRect, lRect.Left+5, lRect.Top+3, tab.Caption);
    end;
 end;
 
 procedure TPageControlForm.ExportTabsToXMLTag(const ATag: IXMLElement);
 var
    i: integer;
-   lXMLable: IXMLable;
+   xmlable: IXMLable;
 begin
    for i:= 0 to pgcTabs.PageCount-1 do
    begin
-      if pgcTabs.Pages[i].TabVisible and Supports(pgcTabs.Pages[i], IXMLable, lXMLable) then
-         lXMLable.ExportToXMLTag(ATag);
+      if pgcTabs.Pages[i].TabVisible and Supports(pgcTabs.Pages[i], IXMLable, xmlable) then
+         xmlable.ExportToXMLTag(ATag);
    end;
 end;
 
 procedure TPageControlForm.miExportClick(Sender: TObject);
 var
-   lExportable: IExportable;
+   exportable: IExportable;
 begin
-   if Supports(pgcTabs.ActivePage, IExportable, lExportable) then
-      TInfra.ExportToFile(lExportable);
+   if Supports(pgcTabs.ActivePage, IExportable, exportable) then
+      TInfra.ExportToFile(exportable);
 end;
 
 procedure TPageControlForm.miExportAllClick(Sender: TObject);
 var
-   lFileName: string;
+   fileName: string;
 begin
-   lFileName := AnsiReplaceStr(GProject.Name + ' ' + Caption, ' ', '_');
-   TXMLProcessor.ExportToXMLFile(ExportTabsToXMLTag, lFileName);
+   fileName := AnsiReplaceStr(GProject.Name + ' ' + Caption, ' ', '_');
+   TXMLProcessor.ExportToXMLFile(ExportTabsToXMLTag, fileName);
 end;
 
 function TPageControlForm.GetVisiblePageCount: integer;
@@ -222,13 +222,13 @@ end;
 procedure TPageControlForm.FormMouseWheel(Sender: TObject; Shift: TShiftState;
    WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 var
-   lTab: TTabComponent;
+   tab: TTabComponent;
 begin
    if pgcTabs.ActivePage is TTabComponent then
    begin
-      lTab := TTabComponent(pgcTabs.ActivePage);
-      if not lTab.HasFocusedComboBox then
-         lTab.ScrollElements(-WheelDelta div 10);
+      tab := TTabComponent(pgcTabs.ActivePage);
+      if not tab.HasFocusedComboBox then
+         tab.ScrollElements(-WheelDelta div 10);
    end;
 end;
 

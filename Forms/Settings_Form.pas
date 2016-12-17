@@ -154,7 +154,7 @@ uses
 
 procedure TSettingsForm.Localize(const AList: TStringList);
 var
-   lval: integer;
+   val: integer;
 begin
    lblInterGen.Left := cbLanguage.Left + cbLanguage.Width + 10;
    lblCompiler.Left := 7;
@@ -165,15 +165,15 @@ begin
    edtCompilerNoMain.Width := 449 - edtCompilerNoMain.Left;
    edtTranslateFile.Left := lblFile.Width + lblFile.Left + 5;;
    edtTranslateFile.Width := 449 - edtTranslateFile.Left;
-   lval := lblDesktop.Width;
-   if lval < lblBlockColor.Width then
-      lval := lblBlockColor.Width;
-   if lval < lblFontColor.Width then
-      lval := lblFontColor.Width;
-   Inc(lval, lblDesktop.Left+10);
-   pnlDesktop.Left := lval;
-   pnlFill.Left := lval;
-   pnlFont.Left := lval;
+   val := lblDesktop.Width;
+   if val < lblBlockColor.Width then
+      val := lblBlockColor.Width;
+   if val < lblFontColor.Width then
+      val := lblFontColor.Width;
+   Inc(val, lblDesktop.Left+10);
+   pnlDesktop.Left := val;
+   pnlFill.Left := val;
+   pnlFont.Left := val;
    edtCompiler.Hint := AnsiReplaceStr(AList.Values['edtCompilerHint'], '##', CRLF);
    edtCompilerNoMain.Hint := AnsiReplaceStr(AList.Values['edtCompilerNoMainHint'], '##', CRLF);
    chkEnableDBuffer.Hint := AnsiReplaceStr(AList.Values['chkEnableDBufferHint'], '##', CRLF);
@@ -187,21 +187,21 @@ end;
 
 procedure TSettingsForm.btnBrowseCCompClick(Sender: TObject);
 begin
-    with OpenDialog do
-    begin
-       Filter := i18Manager.GetString('ExeFilesFilter');
-       DefaultExt := '*.exe';
-       FileName := '';
-       if Execute then
-          edtCompiler.Text := FileName;
-    end;
+   with OpenDialog do
+   begin
+      Filter := i18Manager.GetString('ExeFilesFilter');
+      DefaultExt := '*.exe';
+      FileName := '';
+      if Execute then
+         edtCompiler.Text := FileName;
+   end;
 end;
 
 procedure TSettingsForm.CloseFormClick(Sender: TObject);
 begin
-    if Sender = btnSaveSettings then
-       GSettings.LoadFromForm;
-    Close;
+   if Sender = btnSaveSettings then
+      GSettings.LoadFromForm;
+   Close;
 end;
 
 procedure TSettingsForm.FormShow(Sender: TObject);
@@ -235,61 +235,60 @@ end;
 
 procedure TSettingsForm.btnBrowseScriptsClick(Sender: TObject);
 begin
-    with OpenDialog do
-    begin
-       Filter := i18Manager.GetString('LngFilesFilter');
-       DefaultExt := '*.lng';
-       FileName := '';
-       if Execute then
-          edtTranslateFile.Text := FileName;
-    end;
+   with OpenDialog do
+   begin
+      Filter := i18Manager.GetString('LngFilesFilter');
+      DefaultExt := '*.lng';
+      FileName := '';
+      if Execute then
+         edtTranslateFile.Text := FileName;
+   end;
 end;
 
 procedure TSettingsForm.imgColorsClick(Sender: TObject);
 var
-   lPoint: TPoint;
+   pnt: TPoint;
 begin
-
    imgColors.Tag := NONE_SELECTED;
-   lPoint := imgColors.ScreenToClient(Mouse.CursorPos);
+   pnt := imgColors.ScreenToClient(Mouse.CursorPos);
 
-   if PtInRect(Rect(10, 10, 60, 35), lPoint) then
+   if PtInRect(Rect(10, 10, 60, 35), pnt) then
       imgColors.Tag := ELLIPSE_SELECTED
-   else if PtInRect(Rect(10, 45, 60, 65), lPoint) then
+   else if PtInRect(Rect(10, 45, 60, 65), pnt) then
       imgColors.Tag := INOUT_SELECTED
-   else if PtInRect(Rect(75, 13, 125, 63), lPoint) then
+   else if PtInRect(Rect(75, 13, 125, 63), pnt) then
       imgColors.Tag := DIAMOND_SELECTED
-   else if PtInRect(Rect(140, 10, 190, 35), lPoint) then
+   else if PtInRect(Rect(140, 10, 190, 35), pnt) then
       imgColors.Tag := RECT_SELECTED
-   else if PtInRect(Rect(140, 40, 190, 65), lPoint) then
+   else if PtInRect(Rect(140, 40, 190, 65), pnt) then
       imgColors.Tag := ROUTINE_SELECTED
-   else if PtInRect(Rect(205, 10, 252, 34), lPoint) then
+   else if PtInRect(Rect(205, 10, 252, 34), pnt) then
       imgColors.Tag := RSIGN_SELECTED
-   else if PtInRect(Rect(205, 40, 255, 65), lPoint) then
+   else if PtInRect(Rect(205, 40, 255, 65), pnt) then
       imgColors.Tag := FOLDER_SELECTED;
 
    if (imgColors.Tag <> NONE_SELECTED) and ColorDialog.Execute then
    begin
       imgColors.Canvas.Brush.Color := ColorDialog.Color;
       case imgColors.Tag of
-         ELLIPSE_SELECTED: lPoint := Point(35, 22);
-         INOUT_SELECTED:   lPoint := Point(35, 55);
-         DIAMOND_SELECTED: lPoint := Point(100, 38);
-         RECT_SELECTED:    lPoint := Point(165, 22);
-         RSIGN_SELECTED:   lPoint := Point(229, 22);
+         ELLIPSE_SELECTED: pnt := Point(35, 22);
+         INOUT_SELECTED:   pnt := Point(35, 55);
+         DIAMOND_SELECTED: pnt := Point(100, 38);
+         RECT_SELECTED:    pnt := Point(165, 22);
+         RSIGN_SELECTED:   pnt := Point(229, 22);
          ROUTINE_SELECTED:
          begin
-            lPoint := Point(165, 52);
+            pnt := Point(165, 52);
             imgColors.Canvas.FloodFill(143, 42, clBlack, fsBorder);
             imgColors.Canvas.FloodFill(187, 42, clBlack, fsBorder);
          end;
          FOLDER_SELECTED:
          begin
-            lPoint := Point(230, 52);
+            pnt := Point(230, 52);
             imgColors.Canvas.FloodFill(206, 41, clBlack, fsBorder);
          end;
       end;
-      imgColors.Canvas.FloodFill(lPoint.X, lPoint.Y, clBlack, fsBorder);
+      imgColors.Canvas.FloodFill(pnt.X, pnt.Y, clBlack, fsBorder);
    end;
 
 end;

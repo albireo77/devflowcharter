@@ -55,28 +55,28 @@ uses
 procedure TDataTypesForm.RefreshTabs;
 var
    i: integer;
-   lDataType: TUserDataType;
+   dataType: TUserDataType;
    iter: IIterator;
 begin
    inherited;
    for i := 0 to pgcTabs.PageCount-1 do
    begin
-      lDataType := TUserDataType(pgcTabs.Pages[i]);
-      iter := lDataType.GetFieldIterator;
+      dataType := TUserDataType(pgcTabs.Pages[i]);
+      iter := dataType.GetFieldIterator;
       while iter.HasNext do
-         TInfra.PopulateDataTypeCombo(TField(iter.Next).cbType, lDataType.PageIndex);
+         TInfra.PopulateDataTypeCombo(TField(iter.Next).cbType, dataType.PageIndex);
    end;
 end;
 
 procedure TDataTypesForm.miAddClick(Sender: TObject);
 var
-   lDataType: TUserDataType;
+   dataType: TUserDataType;
 begin
-   lDataType := TUserDataType.Create(Self);
-   pgcTabs.ActivePage := lDataType;
-   lDataType.edtName.SetFocus;
-   lDataType.edtName.OnChange(lDataType.edtName);
-   TInfra.UpdateCodeEditor(lDataType);
+   dataType := TUserDataType.Create(Self);
+   pgcTabs.ActivePage := dataType;
+   dataType.edtName.SetFocus;
+   dataType.edtName.OnChange(dataType.edtName);
+   TInfra.UpdateCodeEditor(dataType);
 end;
 
 procedure TDataTypesForm.FormDeactivate(Sender: TObject);
@@ -92,8 +92,7 @@ begin
    inherited FormDeactivate(Sender);
 end;
 
-procedure TDataTypesForm.pgcTabsChanging(Sender: TObject;
-  var AllowChange: Boolean);
+procedure TDataTypesForm.pgcTabsChanging(Sender: TObject; var AllowChange: Boolean);
 begin
    RefreshTabs;
 end;
@@ -105,7 +104,7 @@ end;
 
 procedure TDataTypesForm.ExportSettingsToXMLTag(const ATag: IXMLElement);
 var
-   lDataType: TUserDataType;
+   dataType: TUserDataType;
    val: integer;
 begin
    ATag.SetAttribute('struct_win_h', IntToStr(Height));
@@ -116,9 +115,9 @@ begin
       ATag.SetAttribute('struct_win_y', IntToStr(Top));
       if pgcTabs.ActivePageIndex <> -1 then
       begin
-         lDataType := TUserDataType(pgcTabs.Pages[pgcTabs.ActivePageIndex]);
-         ATag.SetAttribute('struct_idx', IntToStr(lDataType.PageIndex));
-         val := lDataType.ScrollPos;
+         dataType := TUserDataType(pgcTabs.Pages[pgcTabs.ActivePageIndex]);
+         ATag.SetAttribute('struct_idx', IntToStr(dataType.PageIndex));
+         val := dataType.ScrollPos;
          if val > 0 then
             ATag.SetAttribute('struct_scroll_v', IntToStr(val));
       end;
@@ -129,7 +128,7 @@ end;
 
 procedure TDataTypesForm.ImportSettingsFromXMLTag(const ATag: IXMLElement);
 var
-   lDataType: TUserDataType;
+   dataType: TUserDataType;
    val: integer;
 begin
    val := StrToIntDef(ATag.GetAttribute('struct_win_h'), -1);
@@ -150,10 +149,10 @@ begin
       if (pgcTabs.PageCount > 0) and (val in [0..pgcTabs.PageCount-1]) then
       begin
          pgcTabs.ActivePageIndex := val;
-         lDataType := TUserDataType(pgcTabs.Pages[val]);
+         dataType := TUserDataType(pgcTabs.Pages[val]);
          val := StrToIntDef(ATag.GetAttribute('struct_scroll_v'), 0);
          if val > 0 then
-            lDataType.ScrollPos := val;
+            dataType.ScrollPos := val;
       end;
       Show;
    end;

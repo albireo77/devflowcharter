@@ -64,14 +64,14 @@ const
    EXTENT_Y = 1024;
 var
    lhdc: HDC;
-   lEdit: TCustomEdit;
-   lSelStart, xExt, yExt: integer;
+   edit: TCustomEdit;
+   selStart, xExt, yExt: integer;
 begin
    if GProject <> nil then
    begin
-      lEdit := TInfra.GetActiveEdit;
-      if lEdit <> nil then
-         lSelStart := lEdit.SelStart;
+      edit := TInfra.GetActiveEdit;
+      if edit <> nil then
+         selStart := edit.SelStart;
       lhdc := SaveDC(Canvas.Handle);
       try
          xExt := MulDiv(EXTENT_X, MainForm.HorzScrollBar.Range, ClientWidth);
@@ -92,8 +92,8 @@ begin
          end;
       finally
          RestoreDC(Canvas.Handle, lhdc);
-         if lEdit <> nil then
-            lEdit.SelStart := lSelStart;
+         if edit <> nil then
+            edit.SelStart := selStart;
       end;
    end;
 end;

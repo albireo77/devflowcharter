@@ -90,31 +90,31 @@ procedure TAboutForm.FormCreate(Sender: TObject);
 
    function GetVersionInfo: string;
    var
-      S: string;
-      VMajor, VMinor, VRelease, VBuild: integer;
-      n, Len: DWORD;
-      Buf: PChar;
-      Value: PVSFixedFileInfo;
-      VerH, VerL: integer;
+      s: string;
+      vMajor, vMinor, vRelease, vBuild: integer;
+      n, len: DWORD;
+      buf: PChar;
+      value: PVSFixedFileInfo;
+      verH, verL: integer;
    begin
-      S := Application.ExeName;
-      n := GetFileVersionInfoSize(PChar(S), n);
+      s := Application.ExeName;
+      n := GetFileVersionInfoSize(PChar(s), n);
       if n > 0 then
       begin
-         Buf := AllocMem(n);
+         buf := AllocMem(n);
          try
-            if GetFileVersionInfo(PChar(S), 0, n, Buf) and VerQueryValue(Buf, '\', Pointer(Value), Len) then
+            if GetFileVersionInfo(PChar(s), 0, n, buf) and VerQueryValue(buf, '\', Pointer(value), len) then
             begin
-               VerH := Value.dwFileVersionMS;
-               VerL := Value.dwFileVersionLS;
-      	       VMajor := ($FFFF0000 and VerH) shr 16;
-      	       VMinor := $0000FFFF and VerH;
-      	       VRelease := ($FFFF0000 and VerL) shr 16;
-      	       VBuild := $0000FFFF and VerL;
-      	       result := Format('Version: %d.%d.%d (Build %d)', [VMajor, VMinor, VRelease, VBuild]);
+               verH := value.dwFileVersionMS;
+               verL := value.dwFileVersionLS;
+      	       vMajor := ($FFFF0000 and verH) shr 16;
+      	       vMinor := $0000FFFF and verH;
+      	       vRelease := ($FFFF0000 and verL) shr 16;
+      	       vBuild := $0000FFFF and verL;
+      	       result := Format('Version: %d.%d.%d (Build %d)', [vMajor, vMinor, vRelease, vBuild]);
             end;
          finally
-            FreeMem(Buf, n);
+            FreeMem(buf, n);
          end;
       end;
    end;

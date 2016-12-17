@@ -61,41 +61,41 @@ end;
 
 procedure TFunctionsForm.AddUserFunction(const ABodyTopLeft: TPoint);
 var
-   lHeader: TUserFunctionHeader;
-   lBody: TMainBlock;
+   header: TUserFunctionHeader;
+   body: TMainBlock;
 begin
    Show;
-   lBody := TMainBlock.Create(GProject.GetActivePage, ABodyTopLeft);
-   lHeader := TUserFunctionHeader.Create(Self);
-   TUserFunction.Create(lHeader, lBody);
+   body := TMainBlock.Create(GProject.GetActivePage, ABodyTopLeft);
+   header := TUserFunctionHeader.Create(Self);
+   TUserFunction.Create(header, body);
    if CanFocus then
       SetFocus;
-   pgcTabs.ActivePage := lHeader;
-   if lHeader.edtName.CanFocus then
-      lHeader.edtName.SetFocus;
-   lHeader.edtName.OnChange(lHeader.edtName);
-   if lHeader.Font.Color <> NOK_COLOR then
-      TInfra.UpdateCodeEditor(lHeader);
+   pgcTabs.ActivePage := header;
+   if header.edtName.CanFocus then
+      header.edtName.SetFocus;
+   header.edtName.OnChange(header.edtName);
+   if header.Font.Color <> NOK_COLOR then
+      TInfra.UpdateCodeEditor(header);
    GChange := 1;
 end;
 
 procedure TFunctionsForm.pgcTabsChange(Sender: TObject);
 var
-   lBody: TMainBlock;
+   body: TMainBlock;
 begin
    inherited pgcTabsChange(Sender);
-   lBody := TUserFunctionHeader(pgcTabs.ActivePage).UserFunction.Body;
-   if (lBody <> nil) and lBody.Visible then
+   body := TUserFunctionHeader(pgcTabs.ActivePage).UserFunction.Body;
+   if (body <> nil) and body.Visible then
    begin
-      lBody.Page.Form.ScrollInView(lBody);
-      lBody.BringAllToFront;
+      body.Page.Form.ScrollInView(body);
+      body.BringAllToFront;
       NavigatorForm.Invalidate;
    end;
 end;
 
 procedure TFunctionsForm.ExportSettingsToXMLTag(const ATag: IXMLElement);
 var
-   lFunctionHeader: TUserFunctionHeader;
+   header: TUserFunctionHeader;
    val: integer;
 begin
    RefreshTabs;
@@ -107,9 +107,9 @@ begin
       ATag.SetAttribute('func_win_y', IntToStr(Top));
       if pgcTabs.ActivePageIndex <> -1 then
       begin
-         lFunctionHeader := TUserFunctionHeader(pgcTabs.Pages[pgcTabs.ActivePageIndex]);
-         ATag.SetAttribute('func_idx', IntToStr(lFunctionHeader.PageIndex));
-         val := lFunctionHeader.ScrollPos;
+         header := TUserFunctionHeader(pgcTabs.Pages[pgcTabs.ActivePageIndex]);
+         ATag.SetAttribute('func_idx', IntToStr(header.PageIndex));
+         val := header.ScrollPos;
          if val > 0 then
             ATag.SetAttribute('func_scroll_v', IntToStr(val));
       end;
@@ -125,7 +125,7 @@ end;
 
 procedure TFunctionsForm.ImportSettingsFromXMLTag(const ATag: IXMLElement);
 var
-   lFunctionHeader: TUserFunctionHeader;
+   header: TUserFunctionHeader;
    val: integer;
 begin
    val := StrToIntDef(ATag.GetAttribute('func_win_h'), -1);
@@ -146,10 +146,10 @@ begin
       if (pgcTabs.PageCount > 0) and (val in [0..pgcTabs.PageCount-1]) then
       begin
          pgcTabs.ActivePageIndex := val;
-         lFunctionHeader := TUserFunctionHeader(pgcTabs.Pages[val]);
+         header := TUserFunctionHeader(pgcTabs.Pages[val]);
          val := StrToIntDef(ATag.GetAttribute('func_scroll_v'), 0);
          if val > 0 then
-            lFunctionHeader.ScrollPos := val;
+            header.ScrollPos := val;
       end;
       Show;
    end;
@@ -158,16 +158,16 @@ end;
 procedure TFunctionsForm.RefreshTabs;
 var
    i: integer;
-   lFunctionHeader: TUserFunctionHeader;
+   header: TUserFunctionHeader;
    iter: IIterator;
 begin
    inherited;
    for i := 0 to pgcTabs.PageCount-1 do
    begin
-      lFunctionHeader := TUserFunctionHeader(pgcTabs.Pages[i]);
-      TInfra.PopulateDataTypeCombo(lFunctionHeader.LocalVars.cbType);
-      TInfra.PopulateDataTypeCombo(lFunctionHeader.cbType);
-      iter := lFunctionHeader.GetParameterIterator;
+      header := TUserFunctionHeader(pgcTabs.Pages[i]);
+      TInfra.PopulateDataTypeCombo(header.LocalVars.cbType);
+      TInfra.PopulateDataTypeCombo(header.cbType);
+      iter := header.GetParameterIterator;
       while iter.HasNext do
          TInfra.PopulateDataTypeCombo(TParameter(iter.Next).cbType);
    end;

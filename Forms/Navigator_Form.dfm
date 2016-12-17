@@ -22,8 +22,8 @@ object NavigatorForm: TNavigatorForm
   OnResize = FormResize
   OnShow = FormShow
   DesignSize = (
-    344
-    590)
+    352
+    597)
   PixelsPerInch = 96
   TextHeight = 13
   object scbAlphaVal: TScrollBar

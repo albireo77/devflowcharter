@@ -39,14 +39,14 @@ end;
 
 procedure TMemoEditorForm.btnOKClick(Sender: TObject);
 var
-   lMemo: TMemo;
+   memo: TMemo;
 begin
    if (Sender = btnOK) and (SourceBlock <> nil) then
    begin
-      lMemo := SourceBlock.GetFrontMemo;
-      if lMemo <> nil then
+      memo := SourceBlock.GetFrontMemo;
+      if memo <> nil then
       begin
-         lMemo.Text := memEditor.Text;
+         memo.Text := memEditor.Text;
          SourceBlock.memoWidth := Width;
          SourceBlock.memoHeight := Height;
       end;
@@ -57,19 +57,19 @@ end;
 
 procedure TMemoEditorForm.FormShow(Sender: TObject);
 var
-   lMemo: TMemo;
-   lPoint: TPoint;
+   memo: TMemo;
+   pnt: TPoint;
 begin
    if SourceBlock <> nil then
    begin
-      lMemo := SourceBlock.GetFrontMemo;
-      if lMemo <> nil then
+      memo := SourceBlock.GetFrontMemo;
+      if memo <> nil then
       begin
-         lPoint := lMemo.ClientToScreen(Point(0, 0));
-         SetBounds(lPoint.X, lPoint.Y, SourceBlock.memoWidth, SourceBlock.memoHeight);
-         memEditor.Font.Assign(lMemo.Font);
+         pnt := memo.ClientToScreen(Point(0, 0));
+         SetBounds(pnt.X, pnt.Y, SourceBlock.memoWidth, SourceBlock.memoHeight);
+         memEditor.Font.Assign(memo.Font);
          memEditor.Font.Color := clNavy;
-         memEditor.Text := lMemo.Text;
+         memEditor.Text := memo.Text;
       end;
    end;
 end;

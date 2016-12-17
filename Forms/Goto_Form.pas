@@ -62,18 +62,18 @@ end;
 procedure TGotoForm.btnGotoClick(Sender: TObject);
 var
    i, line: integer;
-   goto_flag: boolean;
+   gotoFlag: boolean;
 begin
 
    with TInfra.GetEditorForm.memCodeEditor do
    begin
-      goto_flag := false;
+      gotoFlag := false;
       line := 0;
       if rbLine.Checked then
       begin
          line := StrToIntDef(edtNumber.Text, 0);
          if line > 0 then
-            goto_flag := true;
+            gotoFlag := true;
          SetFocus;
          Self.Close;
       end
@@ -85,7 +85,7 @@ begin
             if (Marks[i].Line > CaretY) and (Marks[i].Line <= line) then
             begin
                line := Marks[i].Line;
-               goto_flag := true;
+               gotoFlag := true;
             end;
          end;
       end
@@ -97,14 +97,13 @@ begin
             if (Marks[i].Line < CaretY) and (Marks[i].Line >= line) then
             begin
                line := Marks[i].Line;
-               goto_flag := true;
+               gotoFlag := true;
             end;
          end;
       end;
-      if goto_flag then
+      if gotoFlag then
          GotoLineAndCenter(line);
    end;
-
 end;
 
 end.

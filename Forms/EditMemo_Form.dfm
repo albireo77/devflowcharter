@@ -17,15 +17,15 @@ object MemoEditorForm: TMemoEditorForm
   OnCreate = FormCreate
   OnShow = FormShow
   DesignSize = (
-    264
-    144)
+    272
+    151)
   PixelsPerInch = 96
   TextHeight = 13
   object memEditor: TMemo
     Left = 0
     Top = 0
-    Width = 264
-    Height = 144
+    Width = 272
+    Height = 151
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNavy

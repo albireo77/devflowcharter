@@ -79,16 +79,16 @@ end;
 constructor TBaseFormIterator.Create;
 var
    i: integer;
-   lComp: TComponent;
-   lList: TObjectList;
+   comp: TComponent;
+   list: TObjectList;
 begin
-   lList := TObjectList.Create(false);
-   inherited Create(lList);
+   list := TObjectList.Create(false);
+   inherited Create(list);
    for i := 0 to Application.ComponentCount-1 do
    begin
-      lComp := Application.Components[i];
-      if lComp is TBaseForm then
-         lList.Add(lComp);
+      comp := Application.Components[i];
+      if comp is TBaseForm then
+         list.Add(comp);
    end;
 end;
 
@@ -107,30 +107,30 @@ end;
 
 function TBaseForm.IsOverlapped: boolean;
 var
-   Rect: TRect;
-   Rgn, TempRgn: HRGN;
-   RType: integer;
-   Wnd: HWND;
+   rect: TRect;
+   rgn, tmpRgn: HRGN;
+   rType: integer;
+   wnd: HWND;
 begin
-   Rect := BoundsRect;
-   Rgn := CreateRectRgnIndirect(Rect);
-   Wnd := GetWindow(TInfra.GetMainForm.Handle, GW_HWNDFIRST);
+   rect := BoundsRect;
+   rgn := CreateRectRgnIndirect(rect);
+   wnd := GetWindow(TInfra.GetMainForm.Handle, GW_HWNDFIRST);
    RType := NULLREGION;
-   while (Wnd <> 0) and (Wnd <> Handle) do
+   while (wnd <> 0) and (wnd <> Handle) do
    begin
-      if IsWindowVisible(Wnd) then
+      if IsWindowVisible(wnd) then
       begin
-         GetWindowRect(Wnd, Rect);
-         TempRgn := CreateRectRgnIndirect(Rect);
-         RType := CombineRgn(TempRgn, Rgn, TempRgn, RGN_AND);
-         DeleteObject(TempRgn);
+         GetWindowRect(wnd, rect);
+         tmpRgn := CreateRectRgnIndirect(rect);
+         rType := CombineRgn(tmpRgn, rgn, tmpRgn, RGN_AND);
+         DeleteObject(tmpRgn);
        end;
-       if RType <> NULLREGION then
+       if rType <> NULLREGION then
           break;
-       Wnd := GetNextWindow(Wnd, GW_HWNDNEXT)
+       wnd := GetNextWindow(wnd, GW_HWNDNEXT)
    end;
-   DeleteObject(Rgn);
-   result := RType <> NULLREGION;
+   DeleteObject(rgn);
+   result := rType <> NULLREGION;
 end;
 
 procedure TBaseForm.Show;

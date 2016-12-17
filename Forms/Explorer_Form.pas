@@ -110,14 +110,14 @@ end;
 
 function TExplorerForm.GetFocusable(const ANode: TTreeNode): IFocusable;
 var
-   lControl: TWinControl;
+   winControl: TWinControl;
 begin
    result := nil;
    if (ANode <> nil) and TInfra.IsValid(ANode.Data) then
    begin
-      lControl := ANode.Data;
-      if TObject(lControl) is TWinControl then
-         Supports(lControl, IFocusable, result);
+      winControl := ANode.Data;
+      if TObject(winControl) is TWinControl then
+         Supports(winControl, IFocusable, result);
    end;
 end;
 
@@ -130,17 +130,17 @@ end;
 
 procedure TExplorerForm.tvExplorerChange(Sender: TObject; Node: TTreeNode);
 var
-   lFocusable: IFocusable;
-   lFocusInfo: TFocusInfo;
+   focusable: IFocusable;
+   focusInfo: TFocusInfo;
 begin
    if chkAutoNav.Checked then
    begin
-      lFocusable := GetFocusable(Node);
-      if (lFocusable <> nil) and lFocusable.CanBeFocused then
+      focusable := GetFocusable(Node);
+      if (focusable <> nil) and focusable.CanBeFocused then
       begin
-         TInfra.InitFocusInfo(lFocusInfo);
-         lFocusInfo.ActiveControl := tvExplorer;
-         lFocusable.RetrieveFocus(lFocusInfo);
+         TInfra.InitFocusInfo(focusInfo);
+         focusInfo.ActiveControl := tvExplorer;
+         focusable.RetrieveFocus(focusInfo);
          GProject.RepaintFlowcharts;
       end;
    end;
@@ -161,7 +161,7 @@ end;
 
 procedure TExplorerForm.PopupMenuPopup(Sender: TObject);
 var
-   lFocusable: IFocusable;
+   focusable: IFocusable;
 begin
    miExpand.Enabled    := false;
    miCollapse.Enabled  := false;
@@ -174,8 +174,8 @@ begin
       miPrevError.Enabled := miNextError.Enabled;
       miExpand.Enabled := tvExplorer.Selected.HasChildren;
       miCollapse.Enabled := miExpand.Enabled;
-      lFocusable := GetFocusable(tvExplorer.Selected);
-      miRemove.Enabled := (lFocusable <> nil) and lFocusable.CanBeRemoved;
+      focusable := GetFocusable(tvExplorer.Selected);
+      miRemove.Enabled := (focusable <> nil) and focusable.CanBeRemoved;
    end;
 end;
 
@@ -188,26 +188,26 @@ end;
 
 procedure TExplorerForm.miNextErrorClick(Sender: TObject);
 var
-   i, c, endValue: integer;
-   lFocusable: IFocusable;
+   i, c, last: integer;
+   focusable: IFocusable;
 begin
    if tvExplorer.Selected <> nil then
    begin
       if Sender = miNextError then
       begin
          c := 1;
-         endValue := tvExplorer.Items.Count;
+         last := tvExplorer.Items.Count;
       end
       else
       begin
          c := -1;
-         endValue := -1;
+         last := -1;
       end;
       i := tvExplorer.Selected.AbsoluteIndex + c;
-      while i <> endValue do
+      while i <> last do
       begin
-         lFocusable := GetFocusable(tvExplorer.Items[i]);
-         if (lFocusable <> nil) and TInfra.IsNOkColor(lFocusable.GetFocusColor) then
+         focusable := GetFocusable(tvExplorer.Items[i]);
+         if (focusable <> nil) and TInfra.IsNOkColor(focusable.GetFocusColor) then
          begin
             if not tvExplorer.Items[i].IsVisible then
                tvExplorer.Items[i].MakeVisible;
@@ -222,27 +222,27 @@ end;
 procedure TExplorerForm.tvExplorerCustomDrawItem(Sender: TCustomTreeView;
   Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
 var
-   NodeRect: TRect;
-   lFocusable: IFocusable;
+   nodeRect: TRect;
+   focusable: IFocusable;
    lColor, lColor2: TColor;
 begin
-   lFocusable := GetFocusable(Node);
+   focusable := GetFocusable(Node);
    with Sender.Canvas do
    begin
       lColor := OK_COLOR;
       if cdsSelected in State then
          lColor := TTreeView(Sender).Color
-      else if lFocusable <> nil then
+      else if focusable <> nil then
       begin
-         lColor2 := lFocusable.GetFocusColor;
+         lColor2 := focusable.GetFocusColor;
          if TInfra.IsNOkColor(lColor2) or (lColor2 = TEXT_COLOR) then
             lColor := lColor2;
       end;
       Font.Color := lColor;
-      if (lFocusable <> nil) and lFocusable.IsBoldDesc then
+      if (focusable <> nil) and focusable.IsBoldDesc then
          Font.Style := Font.Style + [fsBold];
-      NodeRect := Node.DisplayRect(True);
-      TextOut(NodeRect.Left, NodeRect.Top, Node.Text);
+      nodeRect := Node.DisplayRect(True);
+      TextOut(nodeRect.Left, nodeRect.Top, Node.Text);
    end;
 end;
 
@@ -250,30 +250,30 @@ procedure TExplorerForm.miRemoveClick(Sender: TObject);
 
  function RemoveData(const ANode: TTreeNode): boolean;
  var
-    lControl: TWinControl;
-    lCaseBlock: TCaseBlock;
+    winControl: TWinControl;
+    caseBlock: TCaseBlock;
     iter: IIterator;
-    lBranch: TBranch;
-    lFocusable: IFocusable;
+    branch: TBranch;
+    focusable: IFocusable;
  begin
     result := false;
     if ANode <> nil then
     begin
-       lControl := ANode.Data;
-       if not (TInfra.IsValid(lControl) or (TObject(lControl) is TWinControl)) then
+       winControl := ANode.Data;
+       if not (TInfra.IsValid(winControl) or (TObject(winControl) is TWinControl)) then
           exit;
-       if (lControl.Parent is TCaseBlock) and (lControl <> TCaseBlock(lControl.Parent).GetTextControl) then
+       if (winControl.Parent is TCaseBlock) and (winControl <> TCaseBlock(winControl.Parent).GetTextControl) then
        begin
-          lCaseBlock := TCaseBlock(lControl.Parent);
-          iter := lCaseBlock.GetBranches(PRIMARY_BRANCH_IND+1);
+          caseBlock := TCaseBlock(winControl.Parent);
+          iter := caseBlock.GetBranches(PRIMARY_BRANCH_IND+1);
           while iter.HasNext do
           begin
-             lBranch := TBranch(iter.Next);
-             if lBranch.Statement = lControl then
+             branch := TBranch(iter.Next);
+             if branch.Statement = winControl then
              begin
-                lCaseBlock.Ired := lBranch.Index;
-                lCaseBlock.RemoveBranch;
-                lCaseBlock.Ired := -1;
+                caseBlock.Ired := branch.Index;
+                caseBlock.RemoveBranch;
+                caseBlock.Ired := -1;
                 result := true;
                 break;
              end;
@@ -281,10 +281,10 @@ procedure TExplorerForm.miRemoveClick(Sender: TObject);
        end
        else
        begin
-          lFocusable := GetFocusable(ANode);
-          if (lFocusable <> nil) and lFocusable.CanBeRemoved then
+          focusable := GetFocusable(ANode);
+          if (focusable <> nil) and focusable.CanBeRemoved then
           begin
-             lFocusable.Remove;
+             focusable.Remove;
              result := true;
           end;
        end;
@@ -317,23 +317,23 @@ end;
 
 procedure TExplorerForm.ImportSettingsFromXMLTag(const root: IXMLElement);
 var
-   lRect: TRect;
-   lTopIndex: integer;
+   rect: TRect;
+   topY: integer;
 begin
    if (root.GetAttribute('tree_win_show') = '1') and GInfra.CurrentLang.EnabledExplorer then
    begin
-      lRect.Left := StrToIntDef(root.GetAttribute('tree_win_x'), 50);
-      lRect.Top := StrToIntDef(root.GetAttribute('tree_win_y'), 50);
-      lRect.Right := StrToIntDef(root.GetAttribute('tree_win_w'), 498);
-      lRect.Bottom := StrToIntDef(root.GetAttribute('tree_win_h'), 574);
+      rect.Left := StrToIntDef(root.GetAttribute('tree_win_x'), 50);
+      rect.Top := StrToIntDef(root.GetAttribute('tree_win_y'), 50);
+      rect.Right := StrToIntDef(root.GetAttribute('tree_win_w'), 498);
+      rect.Bottom := StrToIntDef(root.GetAttribute('tree_win_h'), 574);
       Position := poDesigned;
-      SetBounds(lRect.Left, lRect.Top, lRect.Right, lRect.Bottom);
+      SetBounds(rect.Left, rect.Top, rect.Right, rect.Bottom);
       if root.GetAttribute('tree_win_min') = '1' then
          WindowState := wsMinimized;
       Show;
-      lTopIndex := StrToIntDef(root.GetAttribute('tree_top_y'), -2);
-      if (lTopIndex >= 0) and (lTopIndex < tvExplorer.Items.Count) then
-         tvExplorer.TopItem := tvExplorer.Items[lTopIndex];
+      topY := StrToIntDef(root.GetAttribute('tree_top_y'), -2);
+      if (topY >= 0) and (topY < tvExplorer.Items.Count) then
+         tvExplorer.TopItem := tvExplorer.Items[topY];
    end;
 end;
 

@@ -51,12 +51,12 @@ uses
 procedure THelpForm.Localize(const AList: TStringList);
 var
    i: integer;
-   lText: string;
+   txt: string;
 begin
-   lText := '';
+   txt := '';
    for i := 1 to 28 do
-      lText := lText + ' ' + AList.Values['EditorHelp' + IntToStr(i)] + CRLF;
-   memHelp.Text := AnsiReplaceText(lText, ' ##', StringOfChar('-', 55));
+      txt := txt + ' ' + AList.Values['EditorHelp' + IntToStr(i)] + CRLF;
+   memHelp.Text := AnsiReplaceText(txt, ' ##', StringOfChar('-', 55));
    inherited Localize(AList);
 end;
 
