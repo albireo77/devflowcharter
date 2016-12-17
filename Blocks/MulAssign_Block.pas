@@ -72,18 +72,18 @@ end;
 
 procedure TMultiAssignBlock.OnChangeMemo(Sender: TObject);
 var
-   lText, lLine: string;
+   txt, line: string;
    i: integer;
 begin
    GChange := 1;
    FErrLine := -1;
    FStatements.Font.Color := GSettings.FontColor;
-   lText := Trim(FStatements.Text);
-   FStatements.Hint := i18Manager.GetFormattedString('ExpOk', [lText, CRLF]);
+   txt := Trim(FStatements.Text);
+   FStatements.Hint := i18Manager.GetFormattedString('ExpOk', [txt, CRLF]);
    UpdateEditor(nil);
    if GSettings.ParseAssignMult then
    begin
-      if lText = '' then
+      if txt = '' then
       begin
          FStatements.Hint := i18Manager.GetFormattedString('NoInstr', [CRLF]);
          FStatements.Font.Color := WARN_COLOR
@@ -92,11 +92,11 @@ begin
       begin
          for i := 0 to FStatements.Lines.Count-1 do
          begin
-            lLine := Trim(FStatements.Lines.Strings[i]);
-            if not TInfra.Parse(lLine, prsAssign) then
+            line := Trim(FStatements.Lines.Strings[i]);
+            if not TInfra.Parse(line, prsAssign) then
             begin
                FStatements.Font.Color := NOK_COLOR;
-               FStatements.Hint := i18Manager.GetFormattedString('ExpErrMult', [i+1, lLine, CRLF, errString]);
+               FStatements.Hint := i18Manager.GetFormattedString('ExpErrMult', [i+1, line, CRLF, errString]);
                FErrLine := i;
                break;
             end;
@@ -109,52 +109,52 @@ end;
 function TMultiAssignBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
 var
    i: integer;
-   lTemplate, lLine: string;
-   lLangDef: TLangDefinition;
-   lTmpList: TStringList;
+   template, line: string;
+   lang: TLangDefinition;
+   tmpList: TStringList;
 begin
    result := 0;
    if fsStrikeOut in Font.Style then
       exit;
-   lLangDef := GInfra.GetLangDefinition(ALangId);
-   if (lLangDef <> nil) and (lLangDef.AssignTemplate <> '') then
+   lang := GInfra.GetLangDefinition(ALangId);
+   if (lang <> nil) and (lang.AssignTemplate <> '') then
    begin
-      lTmpList := TStringList.Create;
+      tmpList := TStringList.Create;
       try
          for i := 0 to FStatements.Lines.Count-1 do
          begin
-            lLine := Trim(FStatements.Lines.Strings[i]);
-            if lLine <> '' then
+            line := Trim(FStatements.Lines.Strings[i]);
+            if line <> '' then
             begin
-               lTemplate := FastCodeAnsiStringReplace(lLangDef.AssignTemplate, PRIMARY_PLACEHOLDER, lLine);
-               GenerateTemplateSection(lTmpList, lTemplate, ALangId, ADeep);
+               template := FastCodeAnsiStringReplace(lang.AssignTemplate, PRIMARY_PLACEHOLDER, line);
+               GenerateTemplateSection(tmpList, template, ALangId, ADeep);
             end
             else
-               lTmpList.AddObject('', Self);
+               tmpList.AddObject('', Self);
          end;
-         if lTmpList.Text = '' then
-            GenerateTemplateSection(lTmpList, FastCodeAnsiStringReplace(lLangDef.AssignTemplate, PRIMARY_PLACEHOLDER, ''), ALangId, ADeep);
+         if tmpList.Text = '' then
+            GenerateTemplateSection(tmpList, FastCodeAnsiStringReplace(lang.AssignTemplate, PRIMARY_PLACEHOLDER, ''), ALangId, ADeep);
          if AnsiEndsText(CRLF, FStatements.Text) then
-            lTmpList.AddObject('', Self);
-         TInfra.InsertLinesIntoList(ALines, lTmpList, AFromLine);
-         result := lTmpList.Count;
+            tmpList.AddObject('', Self);
+         TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
+         result := tmpList.Count;
       finally
-         lTmpList.Free;
+         tmpList.Free;
       end;
    end;
 end;
 
 procedure TMultiAssignBlock.ChangeColor(const AColor: TColor);
 var
-   lBool: boolean;
+   b: boolean;
 begin
    inherited ChangeColor(AColor);
-   lBool := FRefreshMode;
+   b := FRefreshMode;
    FRefreshMode := true;
    try
       FStatements.OnChange(FStatements);
    finally
-      FRefreshMode := lBool;
+      FRefreshMode := b;
    end;
 end;
 

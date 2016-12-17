@@ -50,7 +50,7 @@ uses
 
 constructor TReturnBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 var
-   lDefWidth: integer;
+   defWidth: integer;
 begin
 
    FType := blReturn;
@@ -59,9 +59,9 @@ begin
 
    FReturnLabel := i18Manager.GetString('CaptionExit');
 
-   lDefWidth := GetDefaultWidth;
-   if lDefWidth > Width then
-      Width := lDefWidth;
+   defWidth := GetDefaultWidth;
+   if defWidth > Width then
+      Width := defWidth;
 
    FStatement.SetBounds((Width div 2)-26, 31, 52, 19);
    FStatement.Anchors := [akRight, akLeft, akTop];
@@ -88,15 +88,15 @@ end;
 
 procedure TReturnBlock.Paint;
 var
-   lFontStyles: TFontStyles;
-   lRect: TRect;
+   fontStyles: TFontStyles;
+   R: TRect;
 begin
    inherited;
-   lFontStyles := Canvas.Font.Style;
+   fontStyles := Canvas.Font.Style;
    Canvas.Font.Style := [];
-   lRect := DrawEllipsedText(Point(Width div 2, 30), FReturnLabel);
-   DrawBlockLabel(lRect.Left, lRect.Bottom, GInfra.CurrentLang.LabelReturn, true);
-   Canvas.Font.Style := lFontStyles;
+   R := DrawEllipsedText(Point(Width div 2, 30), FReturnLabel);
+   DrawBlockLabel(R.Left, R.Bottom, GInfra.CurrentLang.LabelReturn, true);
+   Canvas.Font.Style := fontStyles;
    DrawI;
 end;
 
@@ -110,40 +110,41 @@ end;
 
 function TReturnBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
 var
-   lIndent, lExpr: string;
+   indnt, expr: string;
    iter: IIterator;
-   lFunction: TUserFunction;
-   lIsInFunc: boolean;
-   lTmpList: TStringList;
+   func: TUserFunction;
+   inFunc: boolean;
+   tmpList: TStringList;
 begin
    result := 0;
    if fsStrikeOut in Font.Style then
       exit;
    if ALangId = PASCAL_LANG_ID then
    begin
-      lIndent := DupeString(GSettings.IndentString, ADeep);
-      lExpr := Trim(FStatement.Text);
-      lIsInFunc := false;
-      if lExpr <> '' then
+      indnt := DupeString(GSettings.IndentString, ADeep);
+      expr := Trim(FStatement.Text);
+      inFunc := false;
+      if expr <> '' then
       begin
          iter := GProject.GetUserFunctions;
          while iter.HasNext do
          begin
-            lFunction := TUserFunction(iter.Next);
-            lIsInFunc := lFunction.Active and (lFunction.Body = FTopParentBlock) and (lFunction.Header <> nil) and (lFunction.Header.cbType.ItemIndex > 0);
-            if lIsInFunc then break;
+            func := TUserFunction(iter.Next);
+            inFunc := func.Active and (func.Body = FTopParentBlock) and (func.Header <> nil) and (func.Header.cbType.ItemIndex > 0);
+            if inFunc then
+               break;
          end;
       end;
-      lTmpList := TStringList.Create;
+      tmpList := TStringList.Create;
       try
-         if lIsInFunc then
-            lTmpList.AddObject(lIndent + lFunction.Header.edtName.Text + ' ' + GInfra.GetLangDefinition(ALangId).AssignOperator + ' ' + lExpr + ';', Self);
-         if not ((TMainBlock(FTopParentBlock).GetBranch(PRIMARY_BRANCH_IND).Last = Self) and lIsInFunc) then
-            lTmpList.AddObject(lIndent + 'exit;', Self);
-         TInfra.InsertLinesIntoList(ALines, lTmpList, AFromLine);
-         result := lTmpList.Count;
+         if inFunc then
+            tmpList.AddObject(indnt + func.Header.edtName.Text + ' ' + GInfra.GetLangDefinition(ALangId).AssignOperator + ' ' + expr + ';', Self);
+         if not ((TMainBlock(FTopParentBlock).GetBranch(PRIMARY_BRANCH_IND).Last = Self) and inFunc) then
+            tmpList.AddObject(indnt + 'exit;', Self);
+         TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
+         result := tmpList.Count;
       finally
-         lTmpList.Free;
+         tmpList.Free;
       end;
    end
    else
@@ -152,24 +153,24 @@ end;
 
 procedure TReturnBlock.UpdateEditor(AEdit: TCustomEdit);
 var
-   lLine: TChangeLine;
-   lList: TStringList;
+   chLine: TChangeLine;
+   list: TStringList;
 begin
    if PerformEditorUpdate then
    begin
-      lLine := TInfra.GetChangeLine(Self, FStatement);
-      if lLine.Row <> ROW_NOT_FOUND then
+      chLine := TInfra.GetChangeLine(Self, FStatement);
+      if chLine.Row <> ROW_NOT_FOUND then
       begin
-         lList := TStringList.Create;
+         list := TStringList.Create;
          try
-            GenerateCode(lList, GInfra.CurrentLang.Name, 0);
-            lLine.Text := TInfra.ExtractIndentString(lLine.Text) + lList.Text;
+            GenerateCode(list, GInfra.CurrentLang.Name, 0);
+            chLine.Text := TInfra.ExtractIndentString(chLine.Text) + list.Text;
          finally
-            lList.Free;
+            list.Free;
          end;
          if GSettings.UpdateEditor and not SkipUpdateEditor then
-            TInfra.ChangeLine(lLine);
-         TInfra.GetEditorForm.SetCaretPos(lLine);
+            TInfra.ChangeLine(chLine);
+         TInfra.GetEditorForm.SetCaretPos(chLine);
       end;
    end;
 end;

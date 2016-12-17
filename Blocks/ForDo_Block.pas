@@ -161,18 +161,18 @@ end;
 
 procedure TForDoBlock.CloneFrom(ABlock: TBlock);
 var
-   lForBlock: TForDoBlock;
+   forBlock: TForDoBlock;
 begin
    if ABlock is TForDoBlock then
    begin
-      lForBlock := TForDoBlock(ABlock);
-      edtStartVal.Text := lForBlock.edtStartVal.Text;
-      edtStopVal.Text := lForBlock.edtStopVal.Text;
-      edtVariable.Text := lForBlock.edtVariable.Text;
+      forBlock := TForDoBlock(ABlock);
+      edtStartVal.Text := forBlock.edtStartVal.Text;
+      edtStopVal.Text := forBlock.edtStopVal.Text;
+      edtVariable.Text := forBlock.edtVariable.Text;
       MyOnChange(edtVariable);
-      cbVariable.ItemIndex := lForBlock.cbVariable.ItemIndex;
-      FOrder := lForBlock.FOrder;
-      if not lForBlock.Expanded then
+      cbVariable.ItemIndex := forBlock.cbVariable.ItemIndex;
+      FOrder := forBlock.FOrder;
+      if not forBlock.Expanded then
       begin
          edtStartVal.Visible := false;
          edtStopVal.Visible := false;
@@ -284,7 +284,7 @@ end;
 
 procedure TForDoBlock.MyOnChange(Sender: TObject);
 var
-   lHeader: TUserFunctionHeader;
+   header: TUserFunctionHeader;
    isOk: boolean;
 begin
    edtVariable.Font.Color := GSettings.FontColor;
@@ -295,8 +295,8 @@ begin
          isOk := true
       else
       begin
-         lHeader := TInfra.GetFunctionHeader(Self);
-         isOk := (lHeader <> nil) and lHeader.LocalVars.IsValidLoopVar(edtVariable.Text);
+         header := TInfra.GetFunctionHeader(Self);
+         isOk := (header <> nil) and header.LocalVars.IsValidLoopVar(edtVariable.Text);
       end;
       if not isOk then
       begin
@@ -313,13 +313,13 @@ end;
 
 function TForDoBlock.GetTemplate(ALangDef: TLangDefinition; const ATemplate: string = ''): string;
 var
-   dir1, dir2, lTemplate: string;
+   dir1, dir2, template: string;
 begin
    if ATemplate = '' then
-      lTemplate := ALangDef.ForDoTemplate
+      template := ALangDef.ForDoTemplate
    else
-      lTemplate := ATemplate;
-   result := FastCodeAnsiStringReplace(lTemplate, PRIMARY_PLACEHOLDER, edtVariable.Text);
+      template := ATemplate;
+   result := FastCodeAnsiStringReplace(template, PRIMARY_PLACEHOLDER, edtVariable.Text);
    result := FastCodeAnsiStringReplace(result, '%s2', Trim(edtStartVal.Text));
    result := FastCodeAnsiStringReplace(result, '%s3', Trim(edtStopVal.Text));
    if FOrder = ordAsc then
@@ -338,24 +338,24 @@ end;
 
 function TForDoBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
 var
-   lTemplate: string;
-   lLangDef: TLangDefinition;
-   lTmpList: TStringList;
+   template: string;
+   langDef: TLangDefinition;
+   tmpList: TStringList;
 begin
    result := 0;
    if fsStrikeOut in Font.Style then
       exit;
-   lLangDef := GInfra.GetLangDefinition(ALangId);
-   if (lLangDef <> nil) and (lLangDef.ForDoTemplate <> '') then
+   langDef := GInfra.GetLangDefinition(ALangId);
+   if (langDef <> nil) and (langDef.ForDoTemplate <> '') then
    begin
-      lTmpList := TStringList.Create;
+      tmpList := TStringList.Create;
       try
-         lTemplate := GetTemplate(lLangDef);
-         GenerateTemplateSection(lTmpList, lTemplate, ALangId, ADeep);
-         TInfra.InsertLinesIntoList(ALines, lTmpList, AFromLine);
-         result := lTmpList.Count;
+         template := GetTemplate(langDef);
+         GenerateTemplateSection(tmpList, template, ALangId, ADeep);
+         TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
+         result := tmpList.Count;
       finally
-         lTmpList.Free;
+         tmpList.Free;
       end;
    end;
 end;
@@ -423,7 +423,7 @@ end;
 
 procedure TForDoBlock.PopulateComboBoxes;
 var
-   lHeader: TUserFunctionHeader;
+   header: TUserFunctionHeader;
 begin
    inherited PopulateComboBoxes;
    if GInfra.CurrentLang.EnabledVars then
@@ -433,9 +433,9 @@ begin
          Items.Clear;
          if GProject.GlobalVars <> nil then
             GProject.GlobalVars.FillForList(Items);
-         lHeader := TInfra.GetFunctionHeader(Self);
-         if lHeader <> nil then
-            lHeader.LocalVars.FillForList(Items);
+         header := TInfra.GetFunctionHeader(Self);
+         if header <> nil then
+            header.LocalVars.FillForList(Items);
          ItemIndex := Items.IndexOf(edtVariable.Text);
       end;
    end;
@@ -443,104 +443,104 @@ end;
 
 function TForDoBlock.RetrieveFocus(AInfo: TFocusInfo): boolean;
 var
-   lEdit: TCustomEdit;
-   lExpr: string;
+   edit: TCustomEdit;
+   expr: string;
    i: integer;
 begin
-   lEdit := edtStopVal;
+   edit := edtStopVal;
    if AInfo.SelText <> '' then
    begin
-      lExpr := GInfra.CurrentLang.GetTemplateExpr(Self.ClassType);
-      i := AnsiPos(PRIMARY_PLACEHOLDER, lExpr);
+      expr := GInfra.CurrentLang.GetTemplateExpr(Self.ClassType);
+      i := AnsiPos(PRIMARY_PLACEHOLDER, expr);
       if i <> 0 then
       begin
          i := i + Length(edtVariable.Text);
          if AInfo.SelStart < i then
-            lEdit := edtVariable
+            edit := edtVariable
          else
          begin
-            lExpr := FastCodeAnsiStringReplace(lExpr, PRIMARY_PLACEHOLDER, edtVariable.Text);
-            i := AnsiPos('%s2', lExpr);
+            expr := FastCodeAnsiStringReplace(expr, PRIMARY_PLACEHOLDER, edtVariable.Text);
+            i := AnsiPos('%s2', expr);
             if i <> 0 then
             begin
                i := i + Length(Trim(edtStartVal.Text));
                if AInfo.SelStart < i then
-                  lEdit := edtStartVal;
+                  edit := edtStartVal;
             end;
          end;
       end;
    end;
-   AInfo.FocusEdit := lEdit;
+   AInfo.FocusEdit := edit;
    result := inherited RetrieveFocus(AInfo);
 end;
 
 procedure TForDoBlock.PutTextControls;
 var
-   lTop, lWidth: integer;
+   t, w: integer;
 begin
-   lTop := 22 - edtStartVal.Height div 2;
-   if lTop > 8 then
-      lWidth := 33
+   t := 22 - edtStartVal.Height div 2;
+   if t > 8 then
+      w := 33
    else
-      lWidth := 30;
-   edtStartVal.SetBounds(90, lTop, 30, edtStartVal.Height);
-   edtStopVal.SetBounds(131, lTop, lWidth, edtStopVal.Height);
-   cbVariable.SetBounds(0, lTop-4, 38, cbVariable.Height);
-   edtVariable.SetBounds(0, lTop, 33, edtVariable.Height);
+      w := 30;
+   edtStartVal.SetBounds(90, t, 30, edtStartVal.Height);
+   edtStopVal.SetBounds(131, t, w, edtStopVal.Height);
+   cbVariable.SetBounds(0, t-4, 38, cbVariable.Height);
+   edtVariable.SetBounds(0, t, 33, edtVariable.Height);
 end;
 
 procedure TForDoBlock.UpdateEditor(AEdit: TCustomEdit);
 var
-   lStr1, lStr2: string;
-   lLine: TChangeLine;
+   str1, str2: string;
+   chLine: TChangeLine;
 begin
    if PerformEditorUpdate then
    begin
-      lLine := TInfra.GetChangeLine(Self);
-      if lLine.Row <> ROW_NOT_FOUND then
+      chLine := TInfra.GetChangeLine(Self);
+      if chLine.Row <> ROW_NOT_FOUND then
       begin
-         lLine.Text := FastCodeAnsiStringReplace(lLine.Text, PRIMARY_PLACEHOLDER, edtVariable.Text);
-         lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s2', Trim(edtStartVal.Text));
-         lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s3', Trim(edtStopVal.Text));
+         chLine.Text := FastCodeAnsiStringReplace(chLine.Text, PRIMARY_PLACEHOLDER, edtVariable.Text);
+         chLine.Text := FastCodeAnsiStringReplace(chLine.Text, '%s2', Trim(edtStartVal.Text));
+         chLine.Text := FastCodeAnsiStringReplace(chLine.Text, '%s3', Trim(edtStopVal.Text));
          if FOrder = ordAsc then
          begin
-            lStr1 := GInfra.CurrentLang.ForAsc1;
-            lStr2 := GInfra.CurrentLang.ForAsc2;
+            str1 := GInfra.CurrentLang.ForAsc1;
+            str2 := GInfra.CurrentLang.ForAsc2;
          end
          else
          begin
-            lStr1 := GInfra.CurrentLang.ForDesc1;
-            lStr2 := GInfra.CurrentLang.ForDesc2;
+            str1 := GInfra.CurrentLang.ForDesc1;
+            str2 := GInfra.CurrentLang.ForDesc2;
          end;
-         lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s4', lStr1);
-         lLine.Text := FastCodeAnsiStringReplace(lLine.Text, '%s5', lStr2);
+         chLine.Text := FastCodeAnsiStringReplace(chLine.Text, '%s4', str1);
+         chLine.Text := FastCodeAnsiStringReplace(chLine.Text, '%s5', str2);
          if GSettings.UpdateEditor and not SkipUpdateEditor then
-            TInfra.ChangeLine(lLine);
-         TInfra.GetEditorForm.SetCaretPos(lLine);
+            TInfra.ChangeLine(chLine);
+         TInfra.GetEditorForm.SetCaretPos(chLine);
       end;
    end;
 end;
 
 function TForDoBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
 var
-   lTag: IXMLElement;
+   tag: IXMLElement;
 begin
    inherited GetFromXML(ATag);
    if ATag <> nil then
    begin
-      lTag := TXMLProcessor.FindChildTag(ATag, 'i_var');
-      if lTag <> nil then
+      tag := TXMLProcessor.FindChildTag(ATag, 'i_var');
+      if tag <> nil then
       begin
-         cbVariable.Text := lTag.Text;
-         edtVariable.Text := lTag.Text;
+         cbVariable.Text := tag.Text;
+         edtVariable.Text := tag.Text;
       end;
       FRefreshMode := true;
-      lTag := TXMLProcessor.FindChildTag(ATag, 'init_val');
-      if lTag <> nil then
-         edtStartVal.Text := AnsiReplaceStr(lTag.Text, '#', ' ');
-      lTag := TXMLProcessor.FindChildTag(ATag, 'end_val');
-      if lTag <> nil then
-         edtStopVal.Text := AnsiReplaceStr(lTag.Text, '#' , ' ');
+      tag := TXMLProcessor.FindChildTag(ATag, 'init_val');
+      if tag <> nil then
+         edtStartVal.Text := AnsiReplaceStr(tag.Text, '#', ' ');
+      tag := TXMLProcessor.FindChildTag(ATag, 'end_val');
+      if tag <> nil then
+         edtStopVal.Text := AnsiReplaceStr(tag.Text, '#' , ' ');
       FRefreshMode := false;
       FOrder := TForOrder(StrToIntDef(ATag.GetAttribute('order'), 0));
    end
@@ -548,20 +548,20 @@ end;
 
 procedure TForDoBlock.SaveInXML(const ATag: IXMLElement);
 var
-   lTag: IXMLElement;
+   tag: IXMLElement;
 begin
    inherited SaveInXML(ATag);
    if ATag <> nil then
    begin
-      lTag := ATag.OwnerDocument.CreateElement('i_var');
-      TXMLProcessor.AddText(lTag, edtVariable.Text);
-      ATag.AppendChild(lTag);
-      lTag := ATag.OwnerDocument.CreateElement('init_val');
-      TXMLProcessor.AddText(lTag, AnsiReplaceStr(edtStartVal.Text, ' ', '#'));
-      ATag.AppendChild(lTag);
-      lTag := ATag.OwnerDocument.CreateElement('end_val');
-      TXMLProcessor.AddText(lTag, AnsiReplaceStr(edtStopVal.Text, ' ', '#'));
-      ATag.AppendChild(lTag);
+      tag := ATag.OwnerDocument.CreateElement('i_var');
+      TXMLProcessor.AddText(tag, edtVariable.Text);
+      ATag.AppendChild(tag);
+      tag := ATag.OwnerDocument.CreateElement('init_val');
+      TXMLProcessor.AddText(tag, AnsiReplaceStr(edtStartVal.Text, ' ', '#'));
+      ATag.AppendChild(tag);
+      tag := ATag.OwnerDocument.CreateElement('end_val');
+      TXMLProcessor.AddText(tag, AnsiReplaceStr(edtStopVal.Text, ' ', '#'));
+      ATag.AppendChild(tag);
       ATag.SetAttribute('order', IntToStr(Ord(FOrder)));
    end;
 end;

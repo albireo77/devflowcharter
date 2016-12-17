@@ -121,7 +121,7 @@ procedure TInOutBlock.Paint;
 var
    R: TRect;
    w: integer;
-   lFontStyles: TFontStyles;
+   fontStyles: TFontStyles;
 begin
    inherited;
    w := Canvas.TextWidth(FLabel);
@@ -138,11 +138,11 @@ begin
                Point(20, 0)]);
       MoveTo(w+32, 0);
       LineTo(w+12, 30);
-      lFontStyles := Font.Style;
+      fontStyles := Font.Style;
       Font.Style := [];
       R := Rect(16, 15-(TextHeight('X') div 2), w+16, 23);
       DrawText(Handle, PChar(FLabel), -1, R, DT_CENTER);
-      Font.Style := lFontStyles;
+      Font.Style := fontStyles;
    end;
    DrawBlockLabel(5, 30, FLabelSegoe);
    DrawI;
@@ -159,15 +159,15 @@ end;
 
 procedure TInOutBlock.PutTextControls;
 var
-   lTop, lLeft: integer;
+   t, l: integer;
 begin
-   lLeft := Canvas.TextWidth(FLabel) + 31;
-   lTop := 17 - FStatement.Height div 2;
-   if lTop + FStatement.Height > 29 then
-      lTop := 30 - FStatement.Height;
-   if lTop < 4 then
-      lLeft := lLeft + 4 - lTop;
-   FStatement.SetBounds(lLeft, lTop, Width-lLeft-20, FStatement.Height);
+   l := Canvas.TextWidth(FLabel) + 31;
+   t := 17 - FStatement.Height div 2;
+   if t + FStatement.Height > 29 then
+      t := 30 - FStatement.Height;
+   if t < 4 then
+      l := l + 4 - t;
+   FStatement.SetBounds(l, t, Width-l-20, FStatement.Height);
 end;
 
 end.

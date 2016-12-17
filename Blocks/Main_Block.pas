@@ -86,7 +86,7 @@ uses
 
 constructor TMainBlock.Create(const APage: TBlockTabSheet; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
 var
-   lDefWidth, lHalfDefWidth: integer;
+   defWidth, defWidthHalf: integer;
 begin
 
    FType := blMain;
@@ -97,14 +97,14 @@ begin
    FStartLabel := i18Manager.GetString('CaptionStart');
    FStopLabel := i18Manager.GetString('CaptionStop');
 
-   lDefWidth := GetDefaultWidth;
-   lHalfDefWidth := lDefWidth div 2;
-   if lDefWidth > Width then
+   defWidth := GetDefaultWidth;
+   defWidthHalf := defWidth div 2;
+   if defWidth > Width then
    begin
-      Width := lDefWidth;
-      Branch.Hook.X := lHalfDefWidth;
-      BottomHook := lHalfDefWidth;
-      TopHook.X := lHalfDefWidth;
+      Width := defWidth;
+      Branch.Hook.X := defWidthHalf;
+      BottomHook := defWidthHalf;
+      TopHook.X := defWidthHalf;
    end
    else
    begin
@@ -112,10 +112,10 @@ begin
       TopHook.X := p1X;
    end;
 
-   FInitParms.Width := lDefWidth;
+   FInitParms.Width := defWidth;
    FInitParms.Height := MAIN_BLOCK_DEF_HEIGHT;
-   FInitParms.BottomHook := lHalfDefWidth;
-   FInitParms.BranchPoint.X := lHalfDefWidth;
+   FInitParms.BottomHook := defWidthHalf;
+   FInitParms.BranchPoint.X := defWidthHalf;
    FInitParms.BottomPoint.X := -60000;
    FInitParms.P2X := 0;
    FInitParms.HeightAffix := 42;
@@ -148,27 +148,27 @@ end;
 procedure TMainBlock.SetPage(APage: TBlockTabSheet);
 var
    iter: IIterator;
-   lHeader: TUserFunctionHeader;
-   lUnPin: boolean;
+   header: TUserFunctionHeader;
+   unPin: boolean;
 begin
    if FPage <> APage then
    begin
-      lUnPin := Expanded and (PinComments > 0);
+      unPin := Expanded and (PinComments > 0);
       try
          iter := GetPinComments;
          while iter.HasNext do
             TComment(iter.Next).Page := APage;
       finally
-         if lUnPin then
+         if unPin then
             UnPinComments;
       end;
       FPage := APage;
       Parent := APage;
       if UserFunction <> nil then
       begin
-         lHeader := TUserFunction(UserFunction).Header;
-         if lHeader <> nil then
-            lHeader.SetPageCombo(APage.Caption);
+         header := TUserFunction(UserFunction).Header;
+         if header <> nil then
+            header.SetPageCombo(APage.Caption);
       end;
    end;
 end;
@@ -181,23 +181,23 @@ end;
 function TMainBlock.GetDefaultWidth: integer;
 var
    R: TRect;
-   lWidth: integer;
+   w: integer;
 begin
    R := GetEllipseTextRect(Point(0, 0), FStartLabel);
    result := R.Right - R.Left;
    R := GetEllipseTextRect(Point(0, 0), FStopLabel);
-   lWidth := R.Right - R.Left;
-   if lWidth > result then
-      result := lWidth;
+   w := R.Right - R.Left;
+   if w > result then
+      result := w;
    result := result + 40;
 end;
 
 procedure TMainBlock.PaintToCanvas(const ACanvas: TCanvas);
 var
    iter: IIterator;
-   lComment: TComment;
-   lBStyle: TBorderStyle;
-   lStart: integer;
+   comment: TComment;
+   bStyle: TBorderStyle;
+   selStart: integer;
 begin
    if Visible then
    begin
@@ -209,15 +209,15 @@ begin
          iter := GetComments;
          while iter.HasNext do
          begin
-            lComment := TComment(iter.Next);
-            if lComment.Visible then
+            comment := TComment(iter.Next);
+            if comment.Visible then
             begin
-               lBStyle := lComment.BorderStyle;
-               lStart := lComment.SelStart;
-               lComment.BorderStyle := bsNone;
-               lComment.PaintTo(ACanvas, lComment.Left + lComment.Parent.Left, lComment.Top + lComment.Parent.Top);
-               lComment.BorderStyle := lBStyle;
-               lComment.SelStart := lStart;
+               bStyle := comment.BorderStyle;
+               selStart := comment.SelStart;
+               comment.BorderStyle := bsNone;
+               comment.PaintTo(ACanvas, comment.Left + comment.Parent.Left, comment.Top + comment.Parent.Top);
+               comment.BorderStyle := bStyle;
+               comment.SelStart := selStart;
             end;
          end;
       end;
@@ -238,9 +238,9 @@ end;
 
 function TMainBlock.GetMaxBounds: TPoint;
 var
-   lPoint: TPoint;
+   pnt: TPoint;
    iter: IIterator;
-   lComment: TComment;
+   comment: TComment;
 begin
    result := Point(0, 0);
    if Visible then
@@ -252,14 +252,14 @@ begin
          iter := GetComments;
          while iter.HasNext do
          begin
-            lComment := TComment(iter.Next);
-            if lComment.Visible then
+            comment := TComment(iter.Next);
+            if comment.Visible then
             begin
-               lPoint := lComment.GetMaxBounds;
-               if lPoint.X > result.X then
-                  result.X := lPoint.X;
-               if lPoint.Y > result.Y then
-                  result.Y := lPoint.Y;
+               pnt := comment.GetMaxBounds;
+               if pnt.X > result.X then
+                  result.X := pnt.X;
+               if pnt.Y > result.Y then
+                  result.Y := pnt.Y;
             end;
          end;
       end;
@@ -275,49 +275,49 @@ end;
 
 procedure TMainBlock.ExportToGraphic(const AGraphic: TGraphic);
 var
-   lBitmap: TBitmap;
-   lPoint: TPoint;
+   bitmap: TBitmap;
+   pnt: TPoint;
    iter: IIterator;
-   lComment: TComment;
-   lBStyle: TBorderStyle;
-   lStart: integer;
+   comment: TComment;
+   bStyle: TBorderStyle;
+   selStart: integer;
 begin
    ClearSelection;
    if AGraphic is TBitmap then
-      lBitmap := TBitmap(AGraphic)
+      bitmap := TBitmap(AGraphic)
    else
-      lBitmap := TBitmap.Create;
-   lPoint := GetMaxBounds;
-   lPoint.X := lPoint.X - Left - MARGIN_X + 1;
-   lPoint.Y := lPoint.Y - Top - MARGIN_Y + 1;
-   lBitmap.Width := lPoint.X;
-   lBitmap.Height := lPoint.Y;
+      bitmap := TBitmap.Create;
+   pnt := GetMaxBounds;
+   pnt.X := pnt.X - Left - MARGIN_X + 1;
+   pnt.Y := pnt.Y - Top - MARGIN_Y + 1;
+   bitmap.Width := pnt.X;
+   bitmap.Height := pnt.Y;
    ShowI := false;
-   lBitmap.Canvas.Lock;
-   PaintTo(lBitmap.Canvas, 1, 1);
+   bitmap.Canvas.Lock;
+   PaintTo(bitmap.Canvas, 1, 1);
    if Expanded then
    begin
       iter := GetComments;
       while iter.HasNext do
       begin
-         lComment := TComment(iter.Next);
-         if lComment.Visible then
+         comment := TComment(iter.Next);
+         if comment.Visible then
          begin
-            lBStyle := lComment.BorderStyle;
-            lStart := lComment.SelStart;
-            lComment.BorderStyle := bsNone;
-            lComment.PaintTo(lBitmap.Canvas, lComment.Left-Left, lComment.Top-Top);
-            lComment.BorderStyle := lBStyle;
-            lComment.SelStart := lStart;
+            bStyle := comment.BorderStyle;
+            selStart := comment.SelStart;
+            comment.BorderStyle := bsNone;
+            comment.PaintTo(bitmap.Canvas, comment.Left-Left, comment.Top-Top);
+            comment.BorderStyle := bStyle;
+            comment.SelStart := selStart;
          end;
       end;
    end;
-   lBitmap.Canvas.Unlock;
+   bitmap.Canvas.Unlock;
    ShowI := true;
-   if AGraphic <> lBitmap then
+   if AGraphic <> bitmap then
    begin
-      AGraphic.Assign(lBitmap);
-      lBitmap.Free;
+      AGraphic.Assign(bitmap);
+      bitmap.Free;
    end;
 end;
 
@@ -326,7 +326,7 @@ var
    lColor: TColor;
    lLabel: string;
    R: TRect;
-   lFontStyles: TFontStyles;
+   fontStyles: TFontStyles;
 begin
    inherited;
    if Expanded then
@@ -335,7 +335,7 @@ begin
       IPoint.Y := 35;
       with Canvas do
       begin
-         lFontStyles := Font.Style;
+         fontStyles := Font.Style;
          Font.Style := [];
          Brush.Style := bsClear;
          lLabel := GetFunctionLabel(R);
@@ -354,7 +354,7 @@ begin
       DrawEllipsedText(Point(Branch.Hook.X, TopHook.Y), FStartLabel);
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
          DrawEllipsedText(Point(BottomHook, Height-11), FStopLabel);
-      Font.Style := lFontStyles;
+      Font.Style := fontStyles;
       DrawArrowLine(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
    end;
    DrawI;
@@ -362,33 +362,33 @@ end;
 
 function TMainBlock.GetFunctionLabel(var ARect: TRect): string;
 var
-   lLang: TLangDefinition;
-   lDelta: integer;
-   lHeader: TUserFunctionHeader;
+   lang: TLangDefinition;
+   d: integer;
+   header: TUserFunctionHeader;
 begin
    result := '';
    ARect := Rect(Branch.Hook.X+75, 7, 0, 0);
    if GSettings.ShowFuncLabels and (UserFunction <> nil) and Expanded then
    begin
-      lLang := nil;
-      lHeader := TUserFunction(UserFunction).Header;
-      if lHeader <> nil then
+      lang := nil;
+      header := TUserFunction(UserFunction).Header;
+      if header <> nil then
       begin
          if Assigned(GInfra.CurrentLang.GetUserFuncDesc) then
-            lLang := GInfra.CurrentLang
+            lang := GInfra.CurrentLang
          else if Assigned(GInfra.DummyLang.GetUserFuncDesc) then
-            lLang := GInfra.DummyLang;
-         if lLang <> nil then
-            result := lLang.GetUserFuncDesc(lHeader);
+            lang := GInfra.DummyLang;
+         if lang <> nil then
+            result := lang.GetUserFuncDesc(header);
       end
       else
       begin
          if Assigned(GInfra.CurrentLang.GetMainProgramDesc) then
-            lLang := GInfra.CurrentLang
+            lang := GInfra.CurrentLang
          else if Assigned(GInfra.DummyLang.GetMainProgramDesc) then
-            lLang := GInfra.DummyLang;
-         if lLang <> nil then
-            result := lLang.GetMainProgramDesc;
+            lang := GInfra.DummyLang;
+         if lang <> nil then
+            result := lang.GetMainProgramDesc;
       end;
    end;
    if result <> '' then
@@ -396,9 +396,9 @@ begin
       DrawText(Canvas.Handle, PChar(result), -1, ARect, DT_CALCRECT);
       if (Branch.First <> nil) and (ARect.Bottom > Branch.First.Top-5) and (ARect.Left < Branch.First.BoundsRect.Right+5) then
       begin
-         lDelta := Branch.First.BoundsRect.Right + 5 - ARect.Left;
-         ARect.Left := ARect.Left + lDelta;
-         ARect.Right := ARect.Right + lDelta;
+         d := Branch.First.BoundsRect.Right + 5 - ARect.Left;
+         ARect.Left := ARect.Left + d;
+         ARect.Right := ARect.Right + d;
       end;
    end;
 end;
@@ -468,76 +468,76 @@ end;
 
 function TMainBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
 var
-   lName, lTemplate, lEnding: string;
-   lLangDef: TLangDefinition;
-   lStrListProgram, lVarStrList, lTmpList: TStringList;
-   lVars: TVarDeclareList;
-   lIsMainProgram: boolean;
-   lHeader: TUserFunctionHeader;
+   lName, template, ending: string;
+   lang: TLangDefinition;
+   progList, varList, tmpList: TStringList;
+   vars: TVarDeclareList;
+   isMain: boolean;
+   header: TUserFunctionHeader;
 begin
    result := 0;
-   lHeader := TInfra.GetFunctionHeader(Self);
-   if lHeader <> nil then
+   header := TInfra.GetFunctionHeader(Self);
+   if header <> nil then
    begin
-      lVars := lHeader.LocalVars;
-      lName := lHeader.GetName;
-      lIsMainProgram := false;
+      vars := header.LocalVars;
+      lName := header.GetName;
+      isMain := false;
    end
    else
    begin
-      lVars := GProject.GlobalVars;
+      vars := GProject.GlobalVars;
       lName := GProject.Name;
-      lIsMainProgram := true;
+      isMain := true;
    end;
    if ALangId = TIBASIC_LANG_ID then
    begin
-      lTmpList := TStringList.Create;
+      tmpList := TStringList.Create;
       try
-         GenerateNestedCode(lTmpList, PRIMARY_BRANCH_IND, ADeep+1, ALangId);
-         TInfra.InsertLinesIntoList(ALines, lTmpList, AFromLine);
-         result := lTmpList.Count;
+         GenerateNestedCode(tmpList, PRIMARY_BRANCH_IND, ADeep+1, ALangId);
+         TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
+         result := tmpList.Count;
       finally
-         lTmpList.Free;
+         tmpList.Free;
       end;
    end
    else
    begin
-      lLangDef := GInfra.GetLangDefinition(ALangId);
-      if lLangDef <> nil then
+      lang := GInfra.GetLangDefinition(ALangId);
+      if lang <> nil then
       begin
-         if lIsMainProgram then
-            lTemplate := lLangDef.MainProgramTemplate
+         if isMain then
+            template := lang.MainProgramTemplate
          else
-            lTemplate := lLangDef.ProgramTemplate;
-         if lTemplate <> '' then
+            template := lang.ProgramTemplate;
+         if template <> '' then
          begin
-            lStrListProgram := TStringList.Create;
-            lTmpList := TStringList.Create;
+            progList := TStringList.Create;
+            tmpList := TStringList.Create;
             try
-               lStrListProgram.Text := FastCodeAnsiStringReplace(lTemplate, PRIMARY_PLACEHOLDER, lName);
-               if lIsMainProgram then
+               progList.Text := FastCodeAnsiStringReplace(template, PRIMARY_PLACEHOLDER, lName);
+               if isMain then
                begin
-                  lEnding := '';
+                  ending := '';
                   if not (GetBranch(PRIMARY_BRANCH_IND).Last is TReturnBlock) then
-                     lEnding := lLangDef.ProgramReturnTemplate;
-                  TInfra.InsertTemplateLines(lStrListProgram, '%s3', lEnding);
+                     ending := lang.ProgramReturnTemplate;
+                  TInfra.InsertTemplateLines(progList, '%s3', ending);
                end;
-               lVarStrList := TStringList.Create;
+               varList := TStringList.Create;
                try
                   if Assigned(GInfra.CurrentLang.VarSectionGenerator) then
-                     GInfra.CurrentLang.VarSectionGenerator(lVarStrList, lVars)
+                     GInfra.CurrentLang.VarSectionGenerator(varList, vars)
                   else if Assigned(GInfra.DummyLang.VarSectionGenerator) then
-                     GInfra.DummyLang.VarSectionGenerator(lVarStrList, lVars);
-                  TInfra.InsertTemplateLines(lStrListProgram, '%s2', lVarStrList);
+                     GInfra.DummyLang.VarSectionGenerator(varList, vars);
+                  TInfra.InsertTemplateLines(progList, '%s2', varList);
                finally
-                  lVarStrList.Free;
+                  varList.Free;
                end;
-               GenerateTemplateSection(lTmpList, lStrListProgram, ALangId, ADeep);
-               TInfra.InsertLinesIntoList(ALines, lTmpList, AFromLine);
-               result := lTmpList.Count;
+               GenerateTemplateSection(tmpList, progList, ALangId, ADeep);
+               TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
+               result := tmpList.Count;
             finally
-               lStrListProgram.Free;
-               lTmpList.Free;
+               progList.Free;
+               tmpList.Free;
             end;
          end;
       end;
@@ -546,18 +546,18 @@ end;
 
 procedure TMainBlock.SetWidth(const AMinX: integer);
 var
-   minVal, lVal: integer;
+   minVal, val: integer;
    R: TRect;
 begin
    if Expanded then
    begin
       minVal := Branch.GetMostRight + 30;
       if GetFunctionLabel(R) <> '' then
-         lVal := R.Right + 10
+         val := R.Right + 10
       else
-         lVal := minVal;
-      if lVal > minVal then
-         minVal := lVal;
+         val := minVal;
+      if val > minVal then
+         minVal := val;
       if AMinX < minVal then
          Width := minVal
       else
@@ -571,14 +571,14 @@ end;
 
 function TMainBlock.GenerateTree(const AParentNode: TTreeNode): TTreeNode;
 var
-   lBlock: TBlock;
+   block: TBlock;
 begin
    result := AParentNode;
-   lBlock := Branch.First;
-   while lBlock <> nil do
+   block := Branch.First;
+   while block <> nil do
    begin
-      lBlock.GenerateTree(AParentNode);
-      lBlock := lBlock.Next;
+      block.GenerateTree(AParentNode);
+      block := block.Next;
    end;
 end;
 

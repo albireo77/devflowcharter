@@ -130,73 +130,73 @@ end;
 
 procedure TMultiLineBlock.UpdateEditor(AEdit: TCustomEdit);
 var
-   lLine: TChangeLine;
-   lTemplateLines: TStringList;
-   i, lRowNumber: integer;
+   chLine: TChangeLine;
+   templateLines: TStringList;
+   i, rowNum: integer;
 {$IFDEF USE_CODEFOLDING}
-   lFoldRegion: TFoldRegionItem;
-   lFoldRanges: TSynEditFoldRanges;
+   foldRegion: TFoldRegionItem;
+   foldRanges: TSynEditFoldRanges;
 {$ENDIF}
 begin
    if PerformEditorUpdate then
    begin
-      lLine := TInfra.GetChangeLine(Self, FStatements);
-      if lLine.CodeRange.FirstRow <> ROW_NOT_FOUND then
+      chLine := TInfra.GetChangeLine(Self, FStatements);
+      if chLine.CodeRange.FirstRow <> ROW_NOT_FOUND then
       begin
          if GSettings.UpdateEditor and not SkipUpdateEditor then
          begin
-            lTemplateLines := TStringList.Create;
+            templateLines := TStringList.Create;
             try
-               GenerateCode(lTemplateLines, GInfra.CurrentLang.Name, TInfra.GetEditorForm.GetIndentLevel(lLine.CodeRange.FirstRow, lLine.CodeRange.Lines));
-               if lLine.CodeRange.Lines <> nil then
+               GenerateCode(templateLines, GInfra.CurrentLang.Name, TInfra.GetEditorForm.GetIndentLevel(chLine.CodeRange.FirstRow, chLine.CodeRange.Lines));
+               if chLine.CodeRange.Lines <> nil then
                begin
-                  lRowNumber := lLine.CodeRange.LastRow - lLine.CodeRange.FirstRow + 1;
-                  lLine.CodeRange.Lines.BeginUpdate;
-                  for i := 1 to lRowNumber do
-                     lLine.CodeRange.Lines.Delete(lLine.CodeRange.FirstRow);
+                  rowNum := chLine.CodeRange.LastRow - chLine.CodeRange.FirstRow + 1;
+                  chLine.CodeRange.Lines.BeginUpdate;
+                  for i := 1 to rowNum do
+                     chLine.CodeRange.Lines.Delete(chLine.CodeRange.FirstRow);
 {$IFDEF USE_CODEFOLDING}
-                  if lLine.CodeRange.FoldRange <> nil then
+                  if chLine.CodeRange.FoldRange <> nil then
                   begin
-                     if lLine.CodeRange.IsFolded then
+                     if chLine.CodeRange.IsFolded then
                      begin
-                        lRowNumber := lTemplateLines.Count - lRowNumber;
-                        lLine.CodeRange.FoldRange.Widen(lRowNumber);
-                        for i := 0 to lTemplateLines.Count-1 do
-                           lLine.CodeRange.Lines.InsertObject(lLine.CodeRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
+                        rowNum := templateLines.Count - rowNum;
+                        chLine.CodeRange.FoldRange.Widen(rowNum);
+                        for i := 0 to templateLines.Count-1 do
+                           chLine.CodeRange.Lines.InsertObject(chLine.CodeRange.FirstRow, templateLines[i], templateLines.Objects[i]);
                      end
                      else
                      begin
-                        lFoldRegion := lLine.CodeRange.FoldRange.FoldRegion;
-                        TInfra.GetEditorForm.RemoveFoldRange(lLine.CodeRange.FoldRange);
-                        for i := lTemplateLines.Count-1 downto 0 do
-                           lLine.CodeRange.Lines.InsertObject(lLine.CodeRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
+                        foldRegion := chLine.CodeRange.FoldRange.FoldRegion;
+                        TInfra.GetEditorForm.RemoveFoldRange(chLine.CodeRange.FoldRange);
+                        for i := templateLines.Count-1 downto 0 do
+                           chLine.CodeRange.Lines.InsertObject(chLine.CodeRange.FirstRow, templateLines[i], templateLines.Objects[i]);
                         TInfra.GetEditorForm.OnChangeEditor;
-                        lFoldRanges := TInfra.GetEditorForm.FindFoldRangesInCodeRange(lLine.CodeRange, lTemplateLines.Count);
+                        foldRanges := TInfra.GetEditorForm.FindFoldRangesInCodeRange(chLine.CodeRange, templateLines.Count);
                         try
-                           if (lFoldRanges <> nil) and (lFoldRanges.Count > 0) and (lFoldRanges[0].FoldRegion = lFoldRegion) and not lFoldRanges[0].Collapsed then
+                           if (foldRanges <> nil) and (foldRanges.Count > 0) and (foldRanges[0].FoldRegion = foldRegion) and not foldRanges[0].Collapsed then
                            begin
-                              TInfra.GetEditorForm.memCodeEditor.Collapse(lFoldRanges[0]);
+                              TInfra.GetEditorForm.memCodeEditor.Collapse(foldRanges[0]);
                               TInfra.GetEditorForm.memCodeEditor.Refresh;
                            end;
                         finally
-                           lFoldRanges.Free;
+                           foldRanges.Free;
                         end;
                      end;
                   end
                   else
 {$ENDIF}
                   begin
-                     for i := lTemplateLines.Count-1 downto 0 do
-                        lLine.CodeRange.Lines.InsertObject(lLine.CodeRange.FirstRow, lTemplateLines[i], lTemplateLines.Objects[i]);
+                     for i := templateLines.Count-1 downto 0 do
+                        chLine.CodeRange.Lines.InsertObject(chLine.CodeRange.FirstRow, templateLines[i], templateLines.Objects[i]);
                   end;
-                  lLine.CodeRange.Lines.EndUpdate;
+                  chLine.CodeRange.Lines.EndUpdate;
                   TInfra.GetEditorForm.OnChangeEditor;
                end;
             finally
-               lTemplateLines.Free;
+               templateLines.Free;
             end;
          end;
-         TInfra.GetEditorForm.SetCaretPos(lLine);
+         TInfra.GetEditorForm.SetCaretPos(chLine);
       end;
    end;
 end;
@@ -217,22 +217,22 @@ end;
 
 function TMultiLineBlock.GenerateTree(const AParentNode: TTreeNode): TTreeNode;
 var
-   lErrMsg, lLabel: string;
+   errMsg, lLabel: string;
    i: integer;
 begin
    result := AParentNode;
-   lErrMsg := GetErrorMsg(FStatements);
+   errMsg := GetErrorMsg(FStatements);
    for i := 0 to FStatements.Lines.Count-1 do
    begin
       if Trim(FStatements.Lines[i]) <> '' then
       begin
          lLabel := FStatements.Lines[i];
          if i = FErrLine then
-            lLabel := lLabel + lErrMsg;
+            lLabel := lLabel + errMsg;
          AParentNode.Owner.AddChildObject(AParentNode, lLabel, FStatements);
       end;
    end;
-   if lErrMsg <> '' then
+   if errMsg <> '' then
    begin
       AParentNode.MakeVisible;
       AParentNode.Expand(false);

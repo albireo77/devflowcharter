@@ -139,8 +139,8 @@ end;
 
 procedure TIfElseBlock.ResizeHorz(const AContinue: boolean);
 var
-   lLeftX, lMaxXTrue, lMinXFalse, lRightX, lDlt: Integer;
-   lBlock: TBlock;
+   leftX, maxXTrue, minXFalse, rightX, dlt: integer;
+   block: TBlock;
 begin
 
    if (TrueBranch.First = nil) and (FalseBranch.First = nil) then  // no child blocks
@@ -165,31 +165,31 @@ begin
 
    if Ired <> FALSE_BRANCH_IND then           // TRUE branch
    begin
-      lBlock := TrueBranch.First;
-      if lBlock <> nil then
+      block := TrueBranch.First;
+      if block <> nil then
       begin
-         lLeftX := 10;
+         leftX := 10;
          repeat
-            if lBlock.Left < lLeftX then
-               lLeftX := lBlock.Left;
-            lBlock := lBlock.Next;
-         until lBlock = nil;
-         TrueBranch.Hook.X := TrueBranch.Hook.X - lLeftX + 10;
+            if block.Left < leftX then
+               leftX := block.Left;
+            block := block.Next;
+         until block = nil;
+         TrueBranch.Hook.X := TrueBranch.Hook.X - leftX + 10;
          LinkBlocks;
 
-         lBlock := TrueBranch.First;
-         lMaxXTrue := BottomHook - 30;
+         block := TrueBranch.First;
+         maxXTrue := BottomHook - 30;
          repeat
-            if lBlock.BoundsRect.Right > lMaxXTrue then
-               lMaxXTrue := lBlock.BoundsRect.Right;
-            lBlock := lBlock.Next;
-         until lBlock = nil;
-         lDlt := lMaxXTrue - BottomHook + 30;
-         Inc(TopHook.X, lDlt);
-         BottomHook := BottomHook + lDlt;
+            if block.BoundsRect.Right > maxXTrue then
+               maxXTrue := block.BoundsRect.Right;
+            block := block.Next;
+         until block = nil;
+         dlt := maxXTrue - BottomHook + 30;
+         Inc(TopHook.X, dlt);
+         BottomHook := BottomHook + dlt;
          BottomPoint.X := BottomHook;
-         Width := Width + lDlt + 10;
-         Inc(FalseBranch.Hook.X, lDlt);
+         Width := Width + dlt + 10;
+         Inc(FalseBranch.Hook.X, dlt);
          LinkBlocks;
          TrueHook := TrueBranch.Last.Left + TrueBranch.Last.BottomPoint.X;
          if FalseBranch.Last <> nil then
@@ -205,27 +205,27 @@ begin
 
    if Ired <> TRUE_BRANCH_IND then           // FALSE branch
    begin
-      lBlock := FalseBranch.First;
-      if lBlock <> nil then
+      block := FalseBranch.First;
+      if block <> nil then
       begin
-         lMinXFalse := BottomHook + 30;
+         minXFalse := BottomHook + 30;
          repeat
-            if lBlock.Left < lMinXFalse then
-               lMinXFalse := lBlock.Left;
-            lBlock := lBlock.Next;
-         until lBlock = nil;
-         lDlt := BottomHook + 30 - lMinXFalse;
-         FalseBranch.Hook.X := FalseBranch.Hook.X + lDlt;
+            if block.Left < minXFalse then
+               minXFalse := block.Left;
+            block := block.Next;
+         until block = nil;
+         dlt := BottomHook + 30 - minXFalse;
+         FalseBranch.Hook.X := FalseBranch.Hook.X + dlt;
          LinkBlocks;
 
-         lRightX := 0;
-         lBlock := FalseBranch.First;
+         rightX := 0;
+         block := FalseBranch.First;
          repeat
-            if lBlock.BoundsRect.Right > lRightX then
-               lRightX := lBlock.BoundsRect.Right;
-            lBlock := lBlock.next;
-         until lBlock = nil;
-         Width := lRightX + 10;
+            if block.BoundsRect.Right > rightX then
+               rightX := block.BoundsRect.Right;
+            block := block.next;
+         until block = nil;
+         Width := rightX + 10;
          LinkBlocks;
          FalseHook := FalseBranch.Last.Left + FalseBranch.Last.BottomPoint.X;
          if TrueBranch.Last <> nil then
@@ -292,16 +292,16 @@ end;
 
 function TIfElseBlock.GenerateTree(const AParentNode: TTreeNode): TTreeNode;
 var
-   lNewNode: TTreeNode;
-   lBlock: TBlock;
+   newNode: TTreeNode;
+   block: TBlock;
 begin
    result := inherited GenerateTree(AParentNode);
-   lNewNode := AParentNode.Owner.AddChild(AParentNode, GInfra.CurrentLang.ElseLabel);
-   lBlock := FalseBranch.First;
-   while lBlock <> nil do
+   newNode := AParentNode.Owner.AddChild(AParentNode, GInfra.CurrentLang.ElseLabel);
+   block := FalseBranch.First;
+   while block <> nil do
    begin
-      lBlock.GenerateTree(lNewNode);
-      lBlock := lBlock.Next;
+      block.GenerateTree(newNode);
+      block := block.Next;
    end;
 end;
 
