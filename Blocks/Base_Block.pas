@@ -2548,13 +2548,17 @@ end;
 procedure TBlock.UpdateEditor(AEdit: TCustomEdit);
 var
    chLine: TChangeLine;
+   line: string;
 begin
    if (AEdit <> nil) and PerformEditorUpdate then
    begin
       chLine := TInfra.GetChangeLine(Self, AEdit);
       if chLine.Row <> ROW_NOT_FOUND then
       begin
-         chLine.Text := FastCodeAnsiStringReplace(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
+         line := FastCodeAnsiStringReplace(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
+         if Trim(line) = GInfra.CurrentLang.InstrEnd then
+            line := '';
+         chLine.Text := line;
          if GSettings.UpdateEditor and not SkipUpdateEditor then
             TInfra.ChangeLine(chLine);
          TInfra.GetEditorForm.SetCaretPos(chLine);
@@ -2735,12 +2739,12 @@ begin
    if langDef <> nil then
    begin
       txt := '';
-      template := langDef.GetTemplate(Self.ClassType);
       textControl := GetTextControl;
       if textControl is TMemo then
          txt := textControl.Text
       else if textControl <> nil then
          txt := Trim(textControl.Text);
+      template := langDef.GetTemplate(Self.ClassType);
       template := FastCodeAnsiStringReplace(template, PRIMARY_PLACEHOLDER, txt);
       GenerateTemplateSection(ALines, template, ALangId, ADeep);
    end;
@@ -2770,14 +2774,21 @@ end;
 
 procedure TBlock.GenerateTemplateSection(const ALines: TStringList; const ATemplate: string; const ALangId: string; const ADeep: integer);
 var
-   strList: TStringList;
+   lines: TStringList;
+   line: string;
 begin
-   strList := TStringList.Create;
-   try
-      strList.Text := ATemplate;
-      GenerateTemplateSection(ALines, strList, ALangId, ADeep);
-   finally
-      strList.Free;
+   line := Trim(ATemplate);
+   if (line = '') or (line = GInfra.CurrentLang.InstrEnd) then
+      ALines.AddObject('', Self)
+   else
+   begin
+      lines := TStringList.Create;
+      try
+         lines.Text := ATemplate;
+         GenerateTemplateSection(ALines, lines, ALangId, ADeep);
+      finally
+         lines.Free;
+      end;
    end;
 end;
 
@@ -2794,6 +2805,7 @@ begin
    begin
       line := DupeString(GSettings.IndentString, ADeep) + ATemplate[i];
       line := FastCodeAnsiStringReplace(line, INDENT_XML_CHAR, GSettings.IndentString);
+
       obj := ATemplate.Objects[i];
       if obj = nil then
          obj := Self;

@@ -30,6 +30,7 @@ For all supported tags refer to Example.xml file.
     <GenExternVarConst>1</GenExternVarConst>
     <FuncBrackets>()</FuncBrackets>
     <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>
+    <InstrEnd>;</InstrEnd>
     <FoldRegions>
 		<FoldRegion AddClose="0" NoSubFolds="0" Type="0" WholeWords="0">
 			<Open Keyword="{"/>

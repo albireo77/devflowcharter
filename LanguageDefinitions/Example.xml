@@ -34,6 +34,7 @@ Most of the tags are optional and may be removed if not needed.
     <GenExternVarConst>0</GenExternVarConst>
     <FuncBrackets>()</FuncBrackets>
     <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>	<!-- counted from end -->
+    <InstrEnd>;</InstrEnd>
     <FoldRegions>
         <FoldRegion AddClose="0" NoSubFolds="0" Type="1" WholeWords="1">
             <Open Keyword="BEGIN"/>

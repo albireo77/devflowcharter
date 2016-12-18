@@ -141,7 +141,8 @@ type
       ConstIDSpecChars,
       DefFile,
       CompilerCommand,
-      CompilerCommandNoMain: string;
+      CompilerCommandNoMain,
+      InstrEnd: string;
       LabelFontSize,
       FunctionHeaderArgsStripCount,
       VarEntryArraySizeStripCount,
@@ -339,6 +340,10 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'ConstIDSpecChars');
    if tag <> nil then
       ConstIDSpecChars := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'InstrEnd');
+   if tag <> nil then
+      InstrEnd := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'VarTemplate');
    if tag <> nil then
