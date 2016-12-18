@@ -2557,7 +2557,7 @@ begin
       begin
          line := FastCodeAnsiStringReplace(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
          if Trim(line) = GInfra.CurrentLang.InstrEnd then
-            SetLength(line, AnsiPos(GInfra.CurrentLang.InstrEnd, line)-1);
+            line := FastCodeAnsiStringReplace(line, GInfra.CurrentLang.InstrEnd, '');
          chLine.Text := line;
          if GSettings.UpdateEditor and not SkipUpdateEditor then
             TInfra.ChangeLine(chLine);
@@ -2799,7 +2799,7 @@ begin
       line := DupeString(GSettings.IndentString, ADeep) + ATemplate[i];
       line := FastCodeAnsiStringReplace(line, INDENT_XML_CHAR, GSettings.IndentString);
       if Trim(line) = GInfra.CurrentLang.InstrEnd then
-         SetLength(line, AnsiPos(GInfra.CurrentLang.InstrEnd, line)-1);
+         line := FastCodeAnsiStringReplace(line, GInfra.CurrentLang.InstrEnd, '');
       obj := ATemplate.Objects[i];
       if obj = nil then
          obj := Self;

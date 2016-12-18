@@ -266,29 +266,29 @@ var
 constructor TInfra.Create;
 var
    i: integer;
-   SearchRec: TSearchRec;
-   lLangDef: TLangDefinition;
+   searchRec: TSearchRec;
+   lang: TLangDefinition;
    lFile: string;
 begin
    inherited Create;
    i := 0;
-   if FindFirst(LANG_DEFS_PATH + '*.xml', faAnyFile, SearchRec) = 0 then
+   if FindFirst(LANG_DEFS_PATH + '*.xml', faAnyFile, searchRec) = 0 then
    try
       repeat
-         lFile := LANG_DEFS_PATH + SearchRec.Name;
-         lLangDef := TLangDefinition.Create;
-         if TXMLProcessor.ImportFromXMLFile(lLangDef.ImportLangDef, lFile, true) <> '' then
+         lFile := LANG_DEFS_PATH + searchRec.Name;
+         lang := TLangDefinition.Create;
+         if TXMLProcessor.ImportFromXMLFile(lang.ImportLangDef, lFile, true) <> '' then
          begin
-            lLangDef.DefFile := lFile;
+            lang.DefFile := lFile;
             SetLength(FLangArray, i+1);
-            FLangArray[i] := lLangDef;
+            FLangArray[i] := lang;
             i := i + 1;
          end
          else
-            lLangDef.Free;
-      until FindNext(SearchRec) <> 0;
+            lang.Free;
+      until FindNext(searchRec) <> 0;
    finally
-      FindClose(SearchRec);
+      FindClose(searchRec);
    end;
    FLangArrayCount := i + 1;
    SetLength(FLangArray, FLangArrayCount);
@@ -317,75 +317,75 @@ end;
 procedure TInfra.WriteToRegistry;
 var
    i: integer;
-   lRegistry: TRegistry;
+   reg: TRegistry;
 begin
-   lRegistry := TRegistry.Create;
+   reg := TRegistry.Create;
    try
-      if lRegistry.OpenKey(REGISTRY_KEY, true) then
+      if reg.OpenKey(REGISTRY_KEY, true) then
       begin
-         lRegistry.WriteString(KEY_CURRENT_LANGUAGE, FCurrentLang.Name);
+         reg.WriteString(KEY_CURRENT_LANGUAGE, FCurrentLang.Name);
          for i := 0 to FLangArrayCount-2 do
-            FLangArray[i].WriteCompilerCommands(lRegistry);
+            FLangArray[i].WriteCompilerCommands(reg);
       end;
    finally
-      lRegistry.Free;
+      reg.Free;
    end;
 end;
 
 procedure TInfra.ReadFromRegistry;
 var
-   lLangDef: TLangDefinition;
-   lRegistry: TRegistry;
+   lang: TLangDefinition;
+   reg: TRegistry;
    i: integer;
 begin
-   lRegistry := TRegistry.Create;
+   reg := TRegistry.Create;
    try
-      if lRegistry.OpenKeyReadOnly(REGISTRY_KEY) then
+      if reg.OpenKeyReadOnly(REGISTRY_KEY) then
       begin
-         if lRegistry.ValueExists(KEY_CURRENT_LANGUAGE) then
+         if reg.ValueExists(KEY_CURRENT_LANGUAGE) then
          begin
-            lLangDef := GetLangDefinition(lRegistry.ReadString(KEY_CURRENT_LANGUAGE));
-            if lLangDef <> nil then
-               FCurrentLang := lLangDef
+            lang := GetLangDefinition(reg.ReadString(KEY_CURRENT_LANGUAGE));
+            if lang <> nil then
+               FCurrentLang := lang
          end;
          for i := 0 to FLangArrayCount-2 do
-            FLangArray[i].ReadCompilerCommands(lRegistry);
+            FLangArray[i].ReadCompilerCommands(reg);
       end;
    finally
-      lRegistry.Free;
+      reg.Free;
    end;
 end;
 
 class function TInfra.ExportToFile(AExport: IExportable): TErrorType;
 var
-   lGraphic: TGraphic;
-   lDialog: TSaveDialog;
+   graphic: TGraphic;
+   dialog: TSaveDialog;
 begin
    result := errNone;
    if AExport <> nil then
    begin
-      lDialog := GetMainForm.ExportDialog;
-      lDialog.FileName := AExport.GetExportFileName;
-      lDialog.Filter := i18Manager.GetString('XMLFilesFilter') + '|' +
-                        i18Manager.GetString('BMPFilesFilter') + '|' +
-                        i18Manager.GetString('PNGFilesFilter') + '|' +
-                        i18Manager.GetString('JPGFilesFilter');
-      lDialog.FilterIndex := 1;
-      if lDialog.Execute then
+      dialog := GetMainForm.ExportDialog;
+      dialog.FileName := AExport.GetExportFileName;
+      dialog.Filter := i18Manager.GetString('XMLFilesFilter') + '|' +
+                       i18Manager.GetString('BMPFilesFilter') + '|' +
+                       i18Manager.GetString('PNGFilesFilter') + '|' +
+                       i18Manager.GetString('JPGFilesFilter');
+      dialog.FilterIndex := 1;
+      if dialog.Execute then
       begin
-         lGraphic := nil;
-         case lDialog.FilterIndex of
-            1: result := AExport.ExportToXMLFile(lDialog.Filename);
-            2: lGraphic := TBitmap.Create;
-            3: lGraphic := TPNGObject.Create;
-            4: lGraphic := TJPEGImage.Create;
+         graphic := nil;
+         case dialog.FilterIndex of
+            1: result := AExport.ExportToXMLFile(dialog.Filename);
+            2: graphic := TBitmap.Create;
+            3: graphic := TPNGObject.Create;
+            4: graphic := TJPEGImage.Create;
          end;
-         if lGraphic <> nil then
+         if graphic <> nil then
          try
-            AExport.ExportToGraphic(lGraphic);
-            lGraphic.SaveToFile(lDialog.Filename);
+            AExport.ExportToGraphic(graphic);
+            graphic.SaveToFile(dialog.Filename);
          finally
-            lGraphic.Free;
+            graphic.Free;
          end;
       end;
    end;
@@ -393,12 +393,12 @@ end;
 
 function TInfra.SetCurrentLang(const ALangName: string): TLangDefinition;
 var
-   lLangDef: TLangDefinition;
+   lang: TLangDefinition;
 begin
-   lLangDef := GetLangDefinition(ALangName);
-   if (lLangDef <> nil) and (lLangDef <> FCurrentLang) then
+   lang := GetLangDefinition(ALangName);
+   if (lang <> nil) and (lang <> FCurrentLang) then
    begin
-      FCurrentLang := lLangDef;
+      FCurrentLang := lang;
       GSettings.UpdateForLang(FCurrentLang);
    end;
    result := FCurrentLang;
@@ -430,32 +430,32 @@ end;
 procedure TInfra.SetHLighters;
 var
    i: integer;
-   lComponent: TComponent;
+   comp: TComponent;
 begin
    for i := 0 to FLangArrayCount-2 do
    begin
-      lComponent := GetEditorForm.FindComponent(FLangArray[i].HighLighterVarName);
-      if lComponent is TSynCustomHighlighter then
-         FLangArray[i].HighLighter := TSynCustomHighlighter(lComponent);
+      comp := GetEditorForm.FindComponent(FLangArray[i].HighLighterVarName);
+      if comp is TSynCustomHighlighter then
+         FLangArray[i].HighLighter := TSynCustomHighlighter(comp);
    end;
 end;
 
 class function TInfra.IsWin9x: boolean;
 var
-   lpVerInfo: OSVERSIONINFO;
+   pVerInfo: OSVERSIONINFO;
 begin
-    FillChar(lpVerInfo, SizeOf(lpVerInfo), #0);
-    lpVerInfo.dwOSVersionInfoSize := SizeOf(lpVerInfo);
-    result := GetVersionEx(lpVerInfo) and (lpVerInfo.dwPlatformId = VER_PLATFORM_WIN32_WINDOWS);   // check if Win 9x
+   FillChar(pVerInfo, SizeOf(pVerInfo), #0);
+   pVerInfo.dwOSVersionInfoSize := SizeOf(pVerInfo);
+   result := GetVersionEx(pVerInfo) and (pVerInfo.dwPlatformId = VER_PLATFORM_WIN32_WINDOWS);   // check if Win 9x
 end;
 
 class function TInfra.CreateDOSProcess(const ACmdLine: string; const ADir: string = ''): Boolean;
 var
-  OldCursor: TCursor;
-  pCommandLine, pDirectory: array[0..MAX_PATH] of Char;
-  StartupInfo: TStartupInfo;
-  ProcessInfo: TProcessInformation;
-  hAppProcess, hAppThread: THandle;
+   OldCursor: TCursor;
+   pCommandLine, pDirectory: array[0..MAX_PATH] of Char;
+   StartupInfo: TStartupInfo;
+   ProcessInfo: TProcessInformation;
+   hAppProcess, hAppThread: THandle;
 begin
 
   { save the cursor }
@@ -760,18 +760,18 @@ end;
 
 class function TInfra.FindParentForm(const AControl: TControl): TBaseForm;
 var
-   lWinControl: TWinControl;
+   winControl: TWinControl;
 begin
    result := nil;
    if AControl is TBaseForm then
       result := TBaseForm(AControl)
    else if AControl <> nil then
    begin
-      lWinControl := AControl.Parent;
-      while (lWinControl <> nil) and not (lWinControl is TBaseForm) do
-         lWinControl := lWinControl.Parent;
-      if lWinControl is TBaseForm then
-         result := TBaseForm(lWinControl);
+      winControl := AControl.Parent;
+      while (winControl <> nil) and not (winControl is TBaseForm) do
+         winControl := winControl.Parent;
+      if winControl is TBaseForm then
+         result := TBaseForm(winControl);
    end;
 end;
 
@@ -795,10 +795,10 @@ end;
 class procedure TInfra.PopulateDataTypeCombo(const AcbType: TComboBox; const ASkipIndex: integer = 100);
 var
    i, idx: integer;
-   lDataType: TUserDataType;
+   dataType: TUserDataType;
    lType, lName: string;
    iter: IIterator;
-   lLang: TLangDefinition;
+   lang: TLangDefinition;
 begin
    lType := AcbType.Text;
    AcbType.Items.BeginUpdate;
@@ -817,20 +817,20 @@ begin
       iter := GProject.GetUserDataTypes;
       while iter.HasNext do
       begin
-         lDataType := TUserDataType(iter.Next);
-         lName := lDataType.GetName;
-         if (lDataType.PageIndex < ASkipIndex) and (lName <> '') then
+         dataType := TUserDataType(iter.Next);
+         lName := dataType.GetName;
+         if (dataType.PageIndex < ASkipIndex) and (lName <> '') then
          begin
             AcbType.Items.Add(lName);
-            if lDataType.chkAddPtrType.Checked then
+            if dataType.chkAddPtrType.Checked then
             begin
-               lLang := nil;
+               lang := nil;
                if Assigned(GInfra.CurrentLang.GetPointerTypeName) then
-                  lLang := GInfra.CurrentLang
+                  lang := GInfra.CurrentLang
                else if Assigned(GInfra.DummyLang.GetPointerTypeName) then
-                  lLang := GInfra.DummyLang;
-               if lLang <> nil then
-                  AcbType.Items.Add(lLang.GetPointerTypeName(lName));
+                  lang := GInfra.DummyLang;
+               if lang <> nil then
+                  AcbType.Items.Add(lang.GetPointerTypeName(lName));
             end;
          end;
       end;
@@ -872,50 +872,50 @@ end;
 
 class procedure TInfra.InsertTemplateLines(const ADestList: TStringList; const APlaceHolder: string; const ATemplateString: string; const AObject: TObject = nil);
 var
-   lTemplate: TStringList;
+   template: TStringList;
 begin
-   lTemplate := nil;
+   template := nil;
    if ATemplateString <> '' then
    begin
-      lTemplate := TStringList.Create;
-      lTemplate.Text := ATemplateString;
+      template := TStringList.Create;
+      template.Text := ATemplateString;
    end;
    try
-      InsertTemplateLines(ADestList, APlaceHolder, lTemplate, AObject);
+      InsertTemplateLines(ADestList, APlaceHolder, template, AObject);
    finally
-      lTemplate.Free;
+      template.Free;
    end;
 end;
 
 class procedure TInfra.InsertTemplateLines(const ADestList: TStringList; const APlaceHolder: string; const ATemplate: TStringList; const AObject: TObject = nil);
 var
-   i, a, lPos: integer;
+   i, a, p: integer;
    lBegin, lEnd: string;
-   lObject: TObject;
+   obj: TObject;
 begin
    i := 0;
    while i < ADestList.Count do
    begin
-      lPos := AnsiPos(APlaceHolder, ADestList[i]);
-      if lPos <> 0 then
+      p := AnsiPos(APlaceHolder, ADestList[i]);
+      if p <> 0 then
       begin
          lBegin := '';
          lEnd := '';
          if (ATemplate <> nil) and (ATemplate.Count > 0) then
          begin
-            for a := lPos+Length(APlaceHolder) to Length(ADestList[i]) do
+            for a := p+Length(APlaceHolder) to Length(ADestList[i]) do
                lEnd := lEnd + ADestList[i][a];
-            for a := 1 to lPos-1 do
+            for a := 1 to p-1 do
                lBegin := lBegin + ADestList[i][a];
             if ADestList.Capacity < ADestList.Count + ATemplate.Count then
                ADestList.Capacity := ADestList.Count + ATemplate.Count;
             for a := ATemplate.Count-1 downto 0 do
             begin
                if AObject <> nil then
-                  lObject := AObject
+                  obj := AObject
                else
-                  lObject := ATemplate.Objects[a];
-               ADestList.InsertObject(i, lBegin + ATemplate[a] + lEnd, lObject);
+                  obj := ATemplate.Objects[a];
+               ADestList.InsertObject(i, lBegin + ATemplate[a] + lEnd, obj);
             end;
             ADestList.Delete(i+ATemplate.Count);
          end
@@ -938,15 +938,15 @@ end;
 
 class procedure TInfra.InsertLinesIntoList(ADestList, ASourceList: TStringList; AFromLine: integer);
 var
-   i, lLineCount: integer;
+   i, lineCount: integer;
 begin
    if AFromLine < 0 then
       ADestList.AddStrings(ASourceList)
    else
    begin
-      lLineCount := ADestList.Count + ASourceList.Count;
-      if ADestList.Capacity < lLineCount then
-         ADestList.Capacity := lLineCount;
+      lineCount := ADestList.Count + ASourceList.Count;
+      if ADestList.Capacity < lineCount then
+         ADestList.Capacity := lineCount;
       for i := ASourceList.Count-1 downto 0 do
          ADestList.InsertObject(AFromLine, ASourceList.Strings[i], ASourceList.Objects[i]);
    end;
@@ -969,18 +969,18 @@ end;
 
 class function TInfra.EncodeFontStyle(AStyle: TFontStyles): string;
 var
-   lValue: integer;
+   val: integer;
 begin
-   lValue := 0;
+   val := 0;
    if fsBold in AStyle then
-      lValue := 1;
+      val := 1;
    if fsItalic in AStyle then
-      lValue := lValue + 2;
+      val := val + 2;
    if fsUnderline in AStyle then
-      lValue := lValue + 4;
+      val := val + 4;
    if fsStrikeOut in AStyle then
-      lValue := lValue + 8;
-   result := IntToStr(lValue);
+      val := val + 8;
+   result := IntToStr(val);
 end;
 
 class procedure TInfra.InitFocusInfo(var AFocusInfo: TFocusInfo);
@@ -1113,11 +1113,11 @@ end;
 
 class function TInfra.GetChangeLine(const AObject: TObject; const AEdit: TCustomEdit = nil; const ATemplate: string = ''): TChangeLine;
 var
-   lTemplateLines: TStringList;
-   i, lPos: integer;
-   lIndent: string;
+   templateLines: TStringList;
+   i, p: integer;
+   indent: string;
 begin
-   lPos := 0;
+   p := 0;
    InitChangeLine(result);
    result.EditCaretXY := TInfra.GetCaretPos(AEdit);
    if AObject <> nil then
@@ -1125,27 +1125,27 @@ begin
       result.CodeRange := GetEditorForm.SelectCodeRange(AObject, false);
       if result.CodeRange.FirstRow <> ROW_NOT_FOUND then
       begin
-         lTemplateLines := TStringList.Create;
+         templateLines := TStringList.Create;
          try
             if ATemplate <> '' then
-               lTemplateLines.Text := ATemplate
+               templateLines.Text := ATemplate
             else
-               lTemplateLines.Text := GInfra.CurrentLang.GetTemplate(AObject.ClassType);
-            for i := 0 to lTemplateLines.Count-1 do
+               templateLines.Text := GInfra.CurrentLang.GetTemplate(AObject.ClassType);
+            for i := 0 to templateLines.Count-1 do
             begin
-               lPos := AnsiPos(PRIMARY_PLACEHOLDER, lTemplateLines[i]);
-               if lPos <> 0 then
+               p := AnsiPos(PRIMARY_PLACEHOLDER, templateLines[i]);
+               if p <> 0 then
                begin
-                  if (i = lTemplateLines.Count-1) and (i <> 0) then
+                  if (i = templateLines.Count-1) and (i <> 0) then
                      result.Row := result.CodeRange.LastRow
                   else
                      result.Row := result.CodeRange.FirstRow + i;
-                  result.Text := lTemplateLines[i];
+                  result.Text := templateLines[i];
                   break;
                end;
             end;
-            lIndent := TInfra.ExtractIndentString(result.CodeRange.Lines[result.Row]);
-            result.Col := Length(lIndent);
+            indent := TInfra.ExtractIndentString(result.CodeRange.Lines[result.Row]);
+            result.Col := Length(indent);
             if result.Row = ROW_NOT_FOUND then    // row with placeholder not found
             begin
                result.Row := result.CodeRange.FirstRow;
@@ -1153,11 +1153,11 @@ begin
             end
             else
             begin
-               result.Text := lIndent + result.Text;
-               result.Col := lPos + result.Col;
+               result.Text := indent + result.Text;
+               result.Col := p + result.Col;
             end;
          finally
-            lTemplateLines.Free;
+            templateLines.Free;
          end;
       end;
    end;
