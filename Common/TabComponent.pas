@@ -128,7 +128,7 @@ end;
 function TTabComponent.RetrieveFocus(AInfo: TFocusInfo): boolean;
 var
    iter: IIterator;
-   lElem: TElement;
+   elem: TElement;
 begin
    if FActive then
    begin
@@ -139,11 +139,11 @@ begin
          iter := GetElementIterator;
          while iter.HasNext do
          begin
-            lElem := TElement(iter.Next);
-            if AnsiSameText(Trim(lElem.edtName.Text), AInfo.SelText) then
+            elem := TElement(iter.Next);
+            if AnsiSameText(Trim(elem.edtName.Text), AInfo.SelText) then
             begin
-               if lElem.edtName.CanFocus and (AInfo.ActiveControl = nil) then
-                  lElem.edtName.SetFocus;
+               if elem.edtName.CanFocus and (AInfo.ActiveControl = nil) then
+                  elem.edtName.SetFocus;
                break;
             end;
          end;
@@ -177,28 +177,28 @@ end;
 
 procedure TTabComponent.ExportToGraphic(const AGraphic: TGraphic);
 var
-   lBitmap: TBitmap;
+   bitmap: TBitmap;
 begin
    if AGraphic is TBitmap then
-      lBitmap := TBitmap(AGraphic)
+      bitmap := TBitmap(AGraphic)
    else
-      lBitmap := TBitmap.Create;
-   lBitmap.Width := Width;
-   lBitmap.Height := Height;
-   lBitmap.Canvas.Lock;
-   PaintTo(lBitmap.Canvas, 0, 0);
-   lBitmap.Canvas.Unlock;
-   if AGraphic <> lBitmap then
+      bitmap := TBitmap.Create;
+   bitmap.Width := Width;
+   bitmap.Height := Height;
+   bitmap.Canvas.Lock;
+   PaintTo(bitmap.Canvas, 0, 0);
+   bitmap.Canvas.Unlock;
+   if AGraphic <> bitmap then
    begin
-      AGraphic.Assign(lBitmap);
-      lBitmap.Free;
+      AGraphic.Assign(bitmap);
+      bitmap.Free;
    end;
 end;
 
 procedure TTabComponent.SetActive(const AValue: boolean);
 var
    i: integer;
-   lTab: TTabComponent;
+   tab: TTabComponent;
 begin
    if AValue <> FActive then
    begin
@@ -208,9 +208,9 @@ begin
       FParentForm.UpdateCodeEditor := false;
       for i := 0 to PageControl.PageCount-1 do
       begin
-         lTab := TTabComponent(PageControl.Pages[i]);
-         if lTab.TabVisible then
-            lTab.edtName.OnChange(lTab.edtName);
+         tab := TTabComponent(PageControl.Pages[i]);
+         if tab.TabVisible then
+            tab.edtName.OnChange(tab.edtName);
       end;
       FParentForm.UpdateCodeEditor := true;
    end;
@@ -242,7 +242,7 @@ end;
 
 function TTabComponent.IsDuplicated(ANameEdit: TEdit): boolean;
 var
-   lTab: TTabComponent;
+   tab: TTabComponent;
    i: integer;
 begin
    result := false;
@@ -250,8 +250,8 @@ begin
    begin
       for i := 0 to PageControl.PageCount-1 do
       begin
-         lTab := TTabComponent(PageControl.Pages[i]);
-         if lTab.TabVisible and (lTab.edtName <> ANameEdit) and TInfra.SameStrings(Trim(lTab.edtName.Text), Trim(ANameEdit.Text)) then
+         tab := TTabComponent(PageControl.Pages[i]);
+         if tab.TabVisible and (tab.edtName <> ANameEdit) and TInfra.SameStrings(Trim(tab.edtName.Text), Trim(ANameEdit.Text)) then
          begin
             result := true;
             break;
@@ -273,21 +273,21 @@ end;
 function TTabComponent.GetElementIterator: IIterator;
 var
    i: integer;
-   lList: TObjectList;
-   lListSortWrap: TSortListDecorator;
+   objList: TObjectList;
+   decorList: TSortListDecorator;
 begin
-   lList := TObjectList.Create(false);
-   if lList.Capacity < sbxElements.ControlCount then
-      lList.Capacity := sbxElements.ControlCount;
+   objList := TObjectList.Create(false);
+   if objList.Capacity < sbxElements.ControlCount then
+      objList.Capacity := sbxElements.ControlCount;
    for i := 0 to sbxElements.ControlCount-1 do
-      lList.Add(sbxElements.Controls[i]);
-   if lList.Count > 1 then
+      objList.Add(sbxElements.Controls[i]);
+   if objList.Count > 1 then
    begin
-      lListSortWrap := TSortListDecorator.Create(lList, 0);
-      lListSortWrap.Sort;
-      lListSortWrap.Free;
+      decorList := TSortListDecorator.Create(objList, 0);
+      decorList.Sort;
+      decorList.Free;
    end;
-   result := TElementIteratorFriend.Create(lList);
+   result := TElementIteratorFriend.Create(objList);
 end;
 
 function TTabComponent.GetScrollPos: integer;
@@ -302,18 +302,18 @@ end;
 
 procedure TTabComponent.AddElement(Sender: TObject);
 var
-   lElem: TElement;
+   elem: TElement;
 begin
    SendMessage(sbxElements.Handle, WM_SETREDRAW, WPARAM(False), 0);
    try
-      lElem := CreateElement;
+      elem := CreateElement;
       sbxElements.Height := sbxElements.Height + 22;
    finally
       SendMessage(sbxElements.Handle, WM_SETREDRAW, WPARAM(True), 0);
       RedrawWindow(sbxElements.Handle, nil, 0, RDW_INVALIDATE or RDW_FRAME or RDW_ERASE or RDW_ALLCHILDREN);
    end;
-   if lElem.edtName.CanFocus then
-      lElem.edtName.SetFocus;
+   if elem.edtName.CanFocus then
+      elem.edtName.SetFocus;
    PageControl.Refresh;
    UpdateCodeEditor;
 end;
@@ -358,15 +358,15 @@ end;
 
 function TTabComponent.HasFocusedComboBox: boolean;
 var
-   lHandle: THandle;
+   hnd: THandle;
    iter: IIterator;
 begin
    result := false;
-   lHandle := GetFocus();
+   hnd := GetFocus();
    iter := GetElementIterator;
    while iter.HasNext do
    begin
-      if TElement(iter.Next).cbType.Handle = lHandle then
+      if TElement(iter.Next).cbType.Handle = hnd then
       begin
          result := true;
          break;
@@ -376,7 +376,7 @@ end;
 
 function TTabComponent.IsDuplicatedElement(const AElement: TElement): boolean;
 var
-   lElement: TElement;
+   elem: TElement;
    iter: IIterator;
 begin
    result := false;
@@ -385,8 +385,8 @@ begin
       iter := GetElementIterator;
       while iter.HasNext do
       begin
-         lElement := TElement(iter.Next);
-         if (lElement <> AElement) and TInfra.SameStrings(Trim(AElement.edtName.Text), Trim(lElement.edtName.Text)) then
+         elem := TElement(iter.Next);
+         if (elem <> AElement) and TInfra.SameStrings(Trim(AElement.edtName.Text), Trim(elem.edtName.Text)) then
          begin
             result := true;
             break;
@@ -398,14 +398,14 @@ end;
 procedure TTabComponent.RefreshElements;
 var
    iter: IIterator;
-   lElement: TElement;
+   elem: TElement;
 begin
    FParentForm.UpdateCodeEditor := false;
    iter := GetElementIterator;
    while iter.HasNext do
    begin
-      lElement := TElement(iter.Next);
-      lElement.edtName.OnChange(lElement.edtName);
+      elem := TElement(iter.Next);
+      elem.edtName.OnChange(elem.edtName);
    end;
    FParentForm.UpdateCodeEditor := true;
 end;
@@ -425,7 +425,7 @@ end;
 
 procedure TTabComponent.ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
 var
-   lElem: TElement;
+   elem: TElement;
    tag: IXMLElement;
 begin
    edtName.Text := ATag.GetAttribute(NAME_ATTR);
@@ -435,10 +435,10 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, FElementMode);
    while tag <> nil do
    begin
-      lElem := CreateElement;
+      elem := CreateElement;
       sbxElements.Constraints.MaxHeight := sbxElements.Constraints.MaxHeight + 22;
       sbxElements.Height := sbxElements.Height + 22;
-      lElem.ImportFromXMLTag(tag);
+      elem.ImportFromXMLTag(tag);
       tag := TXMLProcessor.FindNextTag(tag);
    end;
    FId := GProject.Register(Self, StrToIntDef(ATag.GetAttribute(ID_ATTR), ID_INVALID));
@@ -447,7 +447,7 @@ end;
 procedure TTabComponent.Localize(const AList: TStringList);
 var
    a: integer;
-   lElem: TElement;
+   elem: TElement;
 begin
    lblName.Caption := AList.Values['lblName'];
    chkExtDeclare.Caption := AList.Values['chkExtDeclare'];
@@ -455,9 +455,9 @@ begin
    edtName.OnChange(edtName);
    for a := 0 to sbxElements.ControlCount-1 do
    begin
-      lElem := TElement(sbxElements.Controls[a]);
-      lElem.btnRemove.Caption := AList.Values['btnRemove'];
-      lElem.edtName.OnChange(lElem.edtName);
+      elem := TElement(sbxElements.Controls[a]);
+      elem.btnRemove.Caption := AList.Values['btnRemove'];
+      elem.edtName.OnChange(elem.edtName);
    end;
 end;
 

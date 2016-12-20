@@ -57,8 +57,8 @@ end;
 
 procedure TIBASIC_UserFunctionsSectionGenerator(ALines: TStringList; ASkipBodyGen: boolean);
 var
-   lFunction: TUserFunction;
-   header, params, funcPrefix, lName: string;
+   func: TUserFunction;
+   header, params, funcPrefix, name: string;
    iterp, iter: IIterator;
 begin
    if GProject <> nil then
@@ -66,31 +66,31 @@ begin
       iter := GProject.GetUserFunctions;
       while iter.HasNext do
       begin
-         lFunction := TUserFunction(iter.Next);
-         lName := lFunction.GetName;
-         if (lName = '') or lFunction.Header.chkExtDeclare.Checked then
+         func := TUserFunction(iter.Next);
+         name := func.GetName;
+         if (name = '') or func.Header.chkExtDeclare.Checked then
             continue;
-         if lFunction.Header.cbType.ItemIndex <> 0 then
+         if func.Header.cbType.ItemIndex <> 0 then
             funcPrefix := 'Func'
          else
             funcPrefix := 'Prgm';
          params := '';
-         iterp := lFunction.Header.GetParameterIterator;
+         iterp := func.Header.GetParameterIterator;
          while iterp.HasNext do
          begin
             if params <> '' then
                params := params + ',';
             params := params + Trim(TParameter(iterp.Next).edtName.Text);
          end;
-         header := 'Define ' + lName + '(' + params + ')=' + funcPrefix;
-         lFunction.Header.GenerateDescription(ALines);
-         ALines.AddObject(header, lFunction.Header);
-         if lFunction.Body <> nil then
+         header := 'Define ' + name + '(' + params + ')=' + funcPrefix;
+         func.Header.GenerateDescription(ALines);
+         ALines.AddObject(header, func.Header);
+         if func.Body <> nil then
          begin
-            TIBASIC_VarSectionGenerator(ALines, lFunction.Header.LocalVars);
-            lFunction.Body.GenerateCode(ALines, lLangDef.Name, 0);
+            TIBASIC_VarSectionGenerator(ALines, func.Header.LocalVars);
+            func.Body.GenerateCode(ALines, lLangDef.Name, 0);
          end;
-         ALines.AddObject('End' + funcPrefix, lFunction.Header);
+         ALines.AddObject('End' + funcPrefix, func.Header);
          ALines.Add('');
       end;
    end;
@@ -98,15 +98,15 @@ end;
 
 procedure TIBASIC_MainProgramSectionGenerator(ALines: TStringList; deep: integer);
 var
-   lBlock: TMainBlock;
+   block: TMainBlock;
 begin
    if GProject <> nil then
    begin
-      lBlock := GProject.GetMainBlock;
-      if lBlock <> nil then
+      block := GProject.GetMainBlock;
+      if block <> nil then
       begin
-         lBlock.GenerateCode(ALines, lLangDef.Name, deep);
-         ALines.AddObject('EndPrgm', lBlock);
+         block.GenerateCode(ALines, lLangDef.Name, deep);
+         ALines.AddObject('EndPrgm', block);
       end;
    end;
 end;

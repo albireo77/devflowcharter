@@ -37,13 +37,13 @@ end;
 
 function TSortListDecorator.FDefaultCompareMethod(AObject1, AObject2: TObject; ASortType: integer): integer;
 var
-   lSortObj: ISortable;
+   sortObj: ISortable;
 begin
    result := 1;
-   if Supports(AObject1, ISortable, lSortObj) then
-      result := lSortObj.GetSortValue(ASortType);
-   if Supports(AObject2, ISortable, lSortObj) then
-      result := result - lSortObj.GetSortValue(ASortType);
+   if Supports(AObject1, ISortable, sortObj) then
+      result := sortObj.GetSortValue(ASortType);
+   if Supports(AObject2, ISortable, sortObj) then
+      result := result - sortObj.GetSortValue(ASortType);
 end;
 
 procedure TSortListDecorator.QuickSort(L, R: integer; ACompare: TCompareMethod);

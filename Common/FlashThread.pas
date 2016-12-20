@@ -64,29 +64,29 @@ end;
 
 procedure TFlashThread.PerformFlash;
 var
-   lFontColor: TColor;
-   lEdit: THackEdit;
+   fontColor: TColor;
+   edit: THackEdit;
 begin
    if FFocusInfo.FocusEdit <> nil then
    begin
-      lEdit := THackEdit(FFocusInfo.FocusEdit); 
-      lFontColor := lEdit.Font.Color;
-      lEdit.Font.Color := lEdit.Color;
-      lEdit.Color := lFontColor;
-      lEdit.Repaint;
+      edit := THackEdit(FFocusInfo.FocusEdit);
+      fontColor := edit.Font.Color;
+      edit.Font.Color := edit.Color;
+      edit.Color := fontColor;
+      edit.Repaint;
       Sleep(SLEEP_TIME);
-      lEdit.Color := lEdit.Font.Color;
-      lEdit.Font.Color := lFontColor;
-      lEdit.Repaint;
+      edit.Color := edit.Font.Color;
+      edit.Font.Color := fontColor;
+      edit.Repaint;
       if FFocusInfo.ActiveControl = nil then
       begin
          if FFocusInfo.SelStart >= 0 then
          begin
-            lEdit.SelStart := FFocusInfo.SelStart;
-            lEdit.SelLength := Length(FFocusInfo.SelText);
+            edit.SelStart := FFocusInfo.SelStart;
+            edit.SelLength := Length(FFocusInfo.SelText);
          end;
-         if lEdit.CanFocus then
-            lEdit.SetFocus;
+         if edit.CanFocus then
+            edit.SetFocus;
       end
       else if FFocusInfo.ActiveControl.CanFocus then
       begin

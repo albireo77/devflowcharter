@@ -60,21 +60,21 @@ end;
 
 function TSizeEdit.ParseSize: boolean;
 var
-   lText: string;
+   txt: string;
    i: integer;
-   lLangDef: TLangDefinition;
+   lang: TLangDefinition;
 begin
-   lText := AnsiReplaceStr(Text, ' ', '');
+   txt := AnsiReplaceStr(Text, ' ', '');
    result := false;
-   if (lText <> '') and (AnsiPos(',-', lText) = 0) and (AnsiPos(',0', lText) = 0) and not (lText[1] in ['0', '-']) then
+   if (txt <> '') and (AnsiPos(',-', txt) = 0) and (AnsiPos(',0', txt) = 0) and not (txt[1] in ['0', '-']) then
    begin
       result := true;
-      lLangDef := GInfra.GetLangDefinition(PASCAL_LANG_ID);
-      if (lLangDef <> nil) and Assigned(lLangDef.Parse) then
+      lang := GInfra.GetLangDefinition(PASCAL_LANG_ID);
+      if (lang <> nil) and Assigned(lang.Parse) then
       begin
          for i := 1 to GetDimensionCount do
          begin
-            result := lLangDef.Parse(GetDimension(i), prsVarSize) = 0;
+            result := lang.Parse(GetDimension(i), prsVarSize) = 0;
             if not result then break;
          end;
       end;
@@ -83,40 +83,40 @@ end;
 
 function TSizeEdit.GetDimensionCount: integer;
 var
-   i, lTextLen: integer;
-   lText: string;
+   i, len: integer;
+   txt: string;
 begin
    result := 0;
-   lText := Trim(Text);
-   lTextLen := Length(lText);
-   if lTextLen > 0 then
+   txt := Trim(Text);
+   len := Length(txt);
+   if len > 0 then
    begin
-      for i := 1 to lTextLen do
+      for i := 1 to len do
       begin
-         if lText[i] = ',' then
+         if txt[i] = ',' then
             Inc(result);
       end;
-      if lText <> '1' then
+      if txt <> '1' then
          Inc(result);
    end;
 end;
 
 function TSizeEdit.GetDimension(const ADimensIndex: integer): string;
 var
-   i, lCount: integer;
-   lText: string;
+   i, cnt: integer;
+   txt: string;
 begin
    result := '';
-   lCount := 1;
-   lText := Trim(Text);
-   for i := 1 to Length(lText) do
+   cnt := 1;
+   txt := Trim(Text);
+   for i := 1 to Length(txt) do
    begin
-      if lText[i] <> ',' then
-         result := result + lText[i]
+      if txt[i] <> ',' then
+         result := result + txt[i]
       else
       begin
-         Inc(lCount);
-         if lCount > ADimensIndex then
+         Inc(cnt);
+         if cnt > ADimensIndex then
             break
          else
             result := '';

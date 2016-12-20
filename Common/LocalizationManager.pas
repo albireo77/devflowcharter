@@ -78,38 +78,38 @@ end;
 // on incorrect action); in ini file section names with dynamic labels don't end with 'Form'
 function Ti18Manager.LoadDynamicLabels(const AFileName: string; const AClearRepository: boolean = false): integer;
 var
-   lKeys, lSections: TStringList;
+   keys, sections: TStringList;
    i: integer;
-   lIniFile: TIniFile;
+   iniFile: TIniFile;
 begin
    result := 0;
    if FileExists(AFileName) then
    begin
-      lSections := TStringList.Create;
-      lKeys := TStringList.Create;
-      lInifile := TIniFile.Create(AFilename);
+      sections := TStringList.Create;
+      keys := TStringList.Create;
+      iniFile := TIniFile.Create(AFilename);
       try
-         lInifile.ReadSections(lSections);
-         if lSections.Count > 0 then
+         iniFile.ReadSections(sections);
+         if sections.Count > 0 then
          begin
             if AClearRepository then
                FRepository.Clear;
             FRepository.Sorted := false;
-            for i := 0 to lSections.Count-1 do
+            for i := 0 to sections.Count-1 do
             begin
-               if not AnsiEndsText('Form', lSections[i]) then
+               if not AnsiEndsText('Form', sections[i]) then
                begin
-                  lInifile.ReadSectionValues(lSections[i], lKeys);
-                  FRepository.AddStrings(lKeys);
-                  result := result + lKeys.Count;
-                  lKeys.Clear;
+                  iniFile.ReadSectionValues(sections[i], keys);
+                  FRepository.AddStrings(keys);
+                  result := result + keys.Count;
+                  keys.Clear;
                end
             end;
          end;
       finally
-         lKeys.Free;
-         lSections.Free;
-         lIniFile.Free;
+         keys.Free;
+         sections.Free;
+         iniFile.Free;
       end;
    end;
    FRepository.Sort;
@@ -120,126 +120,126 @@ end;
 // in ini file section names with static labels end with 'Form' - one section for each application form
 function Ti18Manager.LoadStaticLabels(const AFileName: string): integer;
 var
-   lComponent: TComponent;
-   i, a, lPos: integer;
-   lKeys, lSections: TStringList;
-   lBaseForm: TBaseForm;
-   lValue, lName, lField: string;
-   lIniFile: TIniFile;
+   comp: TComponent;
+   i, a, pos: integer;
+   keys, sections: TStringList;
+   baseForm: TBaseForm;
+   value, lName, field: string;
+   iniFile: TIniFile;
 begin
    result := 0;
    if FileExists(AFileName) then
    begin
-      lSections := TStringList.Create;
-      lKeys := TStringList.Create;
-      lInifile := TIniFile.Create(AFilename);
+      sections := TStringList.Create;
+      keys := TStringList.Create;
+      iniFile := TIniFile.Create(AFilename);
       try
-         lIniFile.ReadSections(lSections);
-         if lSections.Count > 0 then
+         iniFile.ReadSections(sections);
+         if sections.Count > 0 then
          begin
-            for i := 0 to lSections.Count-1 do
+            for i := 0 to sections.Count-1 do
             begin
-               lIniFile.ReadSectionValues(lSections[i], lKeys);
-               lComponent := Application.FindComponent(lSections[i]);
-               if lComponent is TBaseForm then
+               iniFile.ReadSectionValues(sections[i], keys);
+               comp := Application.FindComponent(sections[i]);
+               if comp is TBaseForm then
                begin
-                  lBaseForm := TBaseForm(lComponent);
-                  for a := 0 to lKeys.Count-1 do
+                  baseForm := TBaseForm(comp);
+                  for a := 0 to keys.Count-1 do
                   begin
-                     lField := '';
-                     lName := lKeys.Names[a];
-                     lPos := AnsiPos('.', lName);
-                     if lPos > 0 then
+                     field := '';
+                     lName := keys.Names[a];
+                     pos := AnsiPos('.', lName);
+                     if pos > 0 then
                      begin
-                        lField := Copy(lName, lPos+1, MAXINT);
-                        SetLength(lName, lPos-1);
+                        field := Copy(lName, pos+1, MAXINT);
+                        SetLength(lName, pos-1);
                      end;
-                     lComponent := lBaseForm.FindComponent(lName);
-                     if lComponent <> nil then
+                     comp := baseForm.FindComponent(lName);
+                     if comp <> nil then
                      begin
-                        lValue := lKeys.ValueFromIndex[a];
-                        if AnsiSameText(lField, 'Caption') then
+                        value := keys.ValueFromIndex[a];
+                        if AnsiSameText(field, 'Caption') then
                         begin
-                           if lComponent is TMenuItem then
-                              TMenuItem(lComponent).Caption := lValue
-                           else if lComponent is TControl then
-                              THackControl(lComponent).Caption := lValue;
+                           if comp is TMenuItem then
+                              TMenuItem(comp).Caption := value
+                           else if comp is TControl then
+                              THackControl(comp).Caption := value;
                         end
-                        else if AnsiSameText(lField, 'Text') then
+                        else if AnsiSameText(field, 'Text') then
                         begin
-                           if lComponent is TControl then
-                              THackControl(lComponent).Text := lValue;
+                           if comp is TControl then
+                              THackControl(comp).Text := value;
                         end
-                        else if AnsiSameText(lField, 'Hint') then
+                        else if AnsiSameText(field, 'Hint') then
                         begin
-                           if lComponent is TControl then
-                              TControl(lComponent).Hint := lValue;
+                           if comp is TControl then
+                              TControl(comp).Hint := value;
                         end
-                        else if AnsiSameText(lField, 'Filter') then
+                        else if AnsiSameText(field, 'Filter') then
                         begin
-                           if lComponent is TOpenDialog then
-                              TOpenDialog(lComponent).Filter := lValue;
+                           if comp is TOpenDialog then
+                              TOpenDialog(comp).Filter := value;
                         end
                         else
                         begin
-                           case lComponent.Tag of
-                              BUTTON:       TButton(lComponent).Caption := lValue;
-                              MENU_ITEM:    TMenuItem(lComponent).Caption := lValue;
-                              DIALOG:       TOpenDialog(lComponent).Filter := lValue;
-                              GROUP_BOX:    TGroupBox(lComponent).Caption := lValue;
-                              EDIT_HINT:    TEdit(lComponent).Hint := lValue;
-                              EDIT_TEXT:    TEdit(lComponent).Text := lValue;
-                              LABELL:       TLabel(lComponent).Caption := lValue;
-                              RADIO_BUTTON: TRadioButton(lComponent).Caption := lValue;
-                              CHECK_BOX:    TCheckBox(lComponent).Caption := lValue;
-                              SPEED_BUTTON: TSpeedButton(lComponent).Hint := lValue;
+                           case comp.Tag of
+                              BUTTON:       TButton(comp).Caption := value;
+                              MENU_ITEM:    TMenuItem(comp).Caption := value;
+                              DIALOG:       TOpenDialog(comp).Filter := value;
+                              GROUP_BOX:    TGroupBox(comp).Caption := value;
+                              EDIT_HINT:    TEdit(comp).Hint := value;
+                              EDIT_TEXT:    TEdit(comp).Text := value;
+                              LABELL:       TLabel(comp).Caption := value;
+                              RADIO_BUTTON: TRadioButton(comp).Caption := value;
+                              CHECK_BOX:    TCheckBox(comp).Caption := value;
+                              SPEED_BUTTON: TSpeedButton(comp).Hint := value;
                            end;
                         end;
                      end;
                   end;
-                  lBaseForm.Localize(lKeys);
-                  result := result + lKeys.Count;
+                  baseForm.Localize(keys);
+                  result := result + keys.Count;
                end;
-               lKeys.Clear;
+               keys.Clear;
             end;
          end;
       finally
-         lSections.Free;
-         lKeys.Free;
-         lIniFile.Free;
+         sections.Free;
+         keys.Free;
+         iniFile.Free;
       end;
    end;
 end;
 
 function Ti18Manager.LoadDefaultLabels: integer;
 var
-   lResStream: TResourceStream;
-   lLangFile, lErrorMsg: string;
-   lTmpPath: array[0..MAX_PATH] of Char;
+   resStream: TResourceStream;
+   langFile, errMsg: string;
+   tmpPath: array[0..MAX_PATH] of char;
 begin
-   lErrorMsg := '';
-   GetTempPath(SizeOf(lTmpPath)-1, lTmpPath);
-   lLangFile := lTmpPath + 'english.lng';
-   lResStream := TResourceStream.Create(Hinstance, 'DEFAULT_LOCALIZATION_FILE', 'LNG_FILE');
+   errMsg := '';
+   GetTempPath(SizeOf(tmpPath)-1, tmpPath);
+   langFile := tmpPath + 'english.lng';
+   resStream := TResourceStream.Create(Hinstance, 'DEFAULT_LOCALIZATION_FILE', 'LNG_FILE');
    try
       try
-         lResStream.SaveToFile(lLangFile);
-         result := LoadAllLabels(lLangFile);
+         resStream.SaveToFile(langFile);
+         result := LoadAllLabels(langFile);
       except on E: EFCreateError do
          begin
-            lErrorMsg := 'Could not create default translation file ' + lLangFile + ':' + CRLF + E.Message;
+            errMsg := 'Could not create default translation file ' + langFile + ':' + CRLF + E.Message;
             result := 0;
          end;
       end;
    finally
-      SysUtils.DeleteFile(lLangFile);
-      lResStream.Free;
+      SysUtils.DeleteFile(langFile);
+      resStream.Free;
    end;
    if result = 0 then
    begin
-      if lErrorMsg = '' then
-         lErrorMsg := 'Failed to load translation labels.';
-      Application.MessageBox(PChar(lErrorMsg), 'IO Error', MB_ICONERROR);
+      if errMsg = '' then
+         errMsg := 'Failed to load translation labels.';
+      Application.MessageBox(PChar(errMsg), 'IO Error', MB_ICONERROR);
    end;
 end;
 

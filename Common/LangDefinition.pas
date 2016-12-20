@@ -260,7 +260,7 @@ function TLangDefinition.ImportLangDef(const ATag: IXMLElement): TErrorType;
 var
    tag, tag1: IXMLElement;
    lVal: string;
-   i, a, lCount: integer;
+   i, a, count: integer;
 begin
 
    result := errNone;
@@ -741,10 +741,10 @@ begin
    if tag <> nil then
    begin
       a := 0;
-      lCount := TXMLProcessor.CountChildTags(tag, 'DataType', true);
-      SetLength(NativeDataTypes, lCount);
+      count := TXMLProcessor.CountChildTags(tag, 'DataType', true);
+      SetLength(NativeDataTypes, count);
       tag := TXMLProcessor.FindChildTag(tag, 'DataType');
-      while (tag <> nil) and (a < lCount) do
+      while (tag <> nil) and (a < count) do
       begin
          lVal := Trim(tag.Text);
          if lVal <> '' then
@@ -816,10 +816,10 @@ begin
    if tag <> nil then
    begin
       i := 0;
-      lCount := TXMLProcessor.CountChildTags(tag, 'FoldRegion');
-      SetLength(FoldRegions, lCount);
+      count := TXMLProcessor.CountChildTags(tag, 'FoldRegion');
+      SetLength(FoldRegions, count);
       tag := TXMLProcessor.FindChildTag(tag, 'FoldRegion');
-      while (tag <> nil) and (i < lCount) do
+      while (tag <> nil) and (i < count) do
       begin
          with FoldRegions[i] do
          begin
@@ -894,23 +894,23 @@ end;
 
 function TLangDefinition.GetTemplateExpr(const AClass: TClass): string;
 var
-   lTemplateLines: TStringList;
+   templateLines: TStringList;
    i: integer;
 begin
    result := '';
-   lTemplateLines := TStringList.Create;
+   templateLines := TStringList.Create;
    try
-      lTemplateLines.Text := GetTemplate(AClass);
-      for i := 0 to lTemplateLines.Count-1 do
+      templateLines.Text := GetTemplate(AClass);
+      for i := 0 to templateLines.Count-1 do
       begin
-         if AnsiPos(PRIMARY_PLACEHOLDER, lTemplateLines[i]) <> 0 then
+         if AnsiPos(PRIMARY_PLACEHOLDER, templateLines[i]) <> 0 then
          begin
-            result := lTemplateLines[i];
+            result := templateLines[i];
             break;
          end;
       end;
    finally
-      lTemplateLines.Free;
+      templateLines.Free;
    end;
 end;
 

@@ -56,42 +56,42 @@ end;
 
 procedure THistoryMenu.Load;
 var
-   lReg: TRegistry;
+   reg: TRegistry;
    i: integer;
-   lFileKey: string;
+   fileKey: string;
 begin
-   lReg := TRegistry.Create;
+   reg := TRegistry.Create;
    try
-      if lReg.OpenKeyReadOnly(REGISTRY_KEY) then
+      if reg.OpenKeyReadOnly(REGISTRY_KEY) then
       begin
          for i := HISTORY_SIZE-1 downto 0 do
          begin
-            lFileKey := KEY_HISTORY + IntToStr(i);
-            if lReg.ValueExists(lFileKey) then
-               AddFile(lReg.ReadString(lFileKey));
+            fileKey := KEY_HISTORY + IntToStr(i);
+            if reg.ValueExists(fileKey) then
+               AddFile(reg.ReadString(fileKey));
          end;
       end;
    finally
-      lReg.Free;
+      reg.Free;
    end;
 end;
 
 procedure THistoryMenu.AddFile(const AFilePath: string);
 var
-   lMenuItem: TMenuItem;
+   menuItem: TMenuItem;
 begin
    if FileExists(AFilePath) then
    begin
-      lMenuItem := FParentMenu.Find(AFilePath);
-      if lMenuItem <> nil then
-         FParentMenu.Remove(lMenuItem)
+      menuItem := FParentMenu.Find(AFilePath);
+      if menuItem <> nil then
+         FParentMenu.Remove(menuItem)
       else
       begin
-         lMenuItem := TMenuItem.Create(FParentMenu);
-         lMenuItem.OnClick := FOnClick;
-         lMenuItem.Caption := AFilePath;
+         menuItem := TMenuItem.Create(FParentMenu);
+         menuItem.OnClick := FOnClick;
+         menuItem.Caption := AFilePath;
       end;
-      FParentMenu.Insert(0, lMenuItem);
+      FParentMenu.Insert(0, menuItem);
       if FParentMenu.Count > HISTORY_SIZE then
          FParentMenu[FParentMenu.Count-1].Free;
    end;
@@ -99,18 +99,18 @@ end;
 
 procedure THistoryMenu.Save;
 var
-   lReg: TRegistry;
+   reg: TRegistry;
    i: integer;
 begin
-   lReg := TRegistry.Create;
+   reg := TRegistry.Create;
    try
-      if lReg.OpenKey(REGISTRY_KEY, true) then
+      if reg.OpenKey(REGISTRY_KEY, true) then
       begin
          for i := 0 to FParentMenu.Count-1 do
-            lReg.WriteString(KEY_HISTORY + IntToStr(i), FParentMenu[i].Caption);
+            reg.WriteString(KEY_HISTORY + IntToStr(i), FParentMenu[i].Caption);
       end;
    finally
-      lReg.Free;
+      reg.Free;
    end;
 end;
 

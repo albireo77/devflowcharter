@@ -155,67 +155,67 @@ end;}
 
 procedure Pascal_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
 var
-   bufor, sizeString, lInit, lLine, lName, lType, lCurrentType: string;
-   i, a, b, dimensCount, lCount: integer;
+   bufor, varSize, varInit, line, name, lType, currType: string;
+   i, a, b, dimensCount, cnt: integer;
 begin
    if (AVarList <> nil) and (AVarList.sgList.RowCount > 2) and (GProject <> nil) and (GProject.GlobalVars <> nil) then
    begin
-      lCount := 0;
+      cnt := 0;
       for a := 0 to GProject.GlobalVars.cbType.Items.Count-1 do
       begin
          bufor := '';
-         lCurrentType := GProject.GlobalVars.cbType.Items[a];
+         currType := GProject.GlobalVars.cbType.Items[a];
          for i := 1 to AVarList.sgList.RowCount-2 do
          begin
             if AVarList.IsExternal(i) then
                continue;
-            lName := AVarList.sgList.Cells[VAR_NAME_COL, i];
+            name := AVarList.sgList.Cells[VAR_NAME_COL, i];
             lType := AVarList.sgList.Cells[VAR_TYPE_COL, i];
-            if lType = lCurrentType then
+            if lType = currType then
             begin
-               lInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
-               dimensCount := AVarList.GetDimensionCount(lName);
-               if (dimensCount = 0) and (lInit = '') then
+               varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
+               dimensCount := AVarList.GetDimensionCount(name);
+               if (dimensCount = 0) and (varInit = '') then
                begin
                   if bufor = '' then
-                     bufor := lName
+                     bufor := name
                   else
-                     bufor := bufor + ', ' + lName;
+                     bufor := bufor + ', ' + name;
                end
                else
                begin
-                  lLine := GSettings.IndentString + lName + ': ';
+                  line := GSettings.IndentString + name + ': ';
                   if dimensCount > 0 then
                   begin
-                     sizeString := '';
+                     varSize := '';
                      for b := 1 to dimensCount do
                      begin
-                        sizeString := sizeString + '1..' + AVarList.GetDimension(lName, b);
+                        varSize := varSize + '1..' + AVarList.GetDimension(name, b);
                         if b < dimensCount then
-                           sizeString := sizeString + ', ';
+                           varSize := varSize + ', ';
                      end;
-                     lLine := lLine + 'array[' + sizeString + '] of ';
+                     line := line + 'array[' + varSize + '] of ';
                   end;
-                  lLine := lLine + lType;
-                  if lInit <> '' then
-                     lLine := lLine + ' = ' + lInit;
-                  if lCount = 0 then
+                  line := line + lType;
+                  if varInit <> '' then
+                     line := line + ' = ' + varInit;
+                  if cnt = 0 then
                   begin
                      ALines.Add('var');
-                     lCount := 1;
+                     cnt := 1;
                   end;
-                  ALines.AddObject(lLine + ';', AVarList);
+                  ALines.AddObject(line + ';', AVarList);
                end;
             end;
          end;
          if bufor <> '' then
          begin
-            if lCount = 0 then
+            if cnt = 0 then
             begin
                ALines.Add('var');
-               lCount := 1;
+               cnt := 1;
             end;
-            ALines.AddObject(GSettings.IndentString + bufor + ': ' + lCurrentType + ';', AVarList);
+            ALines.AddObject(GSettings.IndentString + bufor + ': ' + currType + ';', AVarList);
          end;
       end;
    end;
@@ -326,16 +326,16 @@ end;}
 
 procedure Pascal_MainProgramSectionGenerator(ALines: TStringList; deep: integer);
 var
-   lBlock: TMainBlock;
+   block: TMainBlock;
    idx: integer;
 begin
    if GProject <> nil then
    begin
-      lBlock := GProject.GetMainBlock;
-      if lBlock <> nil then
+      block := GProject.GetMainBlock;
+      if block <> nil then
       begin
-          idx := ALines.Count;
-         lBlock.GenerateCode(ALines, lLangDef.Name, deep);
+         idx := ALines.Count;
+         block.GenerateCode(ALines, lLangDef.Name, deep);
          if rand_flag = 1 then
             ALines.Insert(idx+1, DupeString(GSettings.IndentString, deep+1) + 'Randomize;');
       end

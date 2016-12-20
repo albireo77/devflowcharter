@@ -123,25 +123,25 @@ const
                          prsInput, prsOutput, prsFuncCall, prsCondition, prsCondition, prsCondition,
                          prsCondition, prsFor, prsCase, prsNone, prsNone, prsReturn, prsNone, prsNone);
 var
-   lBlock: TBlock;
+   block: TBlock;
 begin
    inherited Create(AOwner);
    Parent := TWinControl(AOwner);
-   lBlock := TBlock(AOwner);
-   Color := lBlock.Color;
-   PopupMenu := lBlock.Page.Form.pmEdits;
-   FParserMode := BlockToParserMapping[lBlock.BType];
+   block := TBlock(AOwner);
+   Color := block.Color;
+   PopupMenu := block.Page.Form.pmEdits;
+   FParserMode := BlockToParserMapping[block.BType];
    if Parent.ControlCount > 0 then
    begin
       if Parent.Controls[0] = Self then
       begin
          if Parent.Parent is TBlock then
-            lBlock := TBlock(Parent.Parent);
+            block := TBlock(Parent.Parent);
       end
       else if FParserMode = prsCase then
          FParserMode := prsCaseValue;
    end;
-   Font.Assign(lBlock.GetFont);
+   Font.Assign(block.GetFont);
    BorderStyle := bsNone;
    ShowHint := True;
    BevelKind := bkNone;
@@ -197,20 +197,20 @@ end;
 
 procedure TStatement.Change;
 var
-   lText: string;
+   txt: string;
 begin
 
    inherited Change;
    
-   lText := Trim(Text);
+   txt := Trim(Text);
    Font.Color := GSettings.FontColor;
    GChange := 1;
-   Hint := i18Manager.GetFormattedString('ExpOk', [lText, CRLF]);
+   Hint := i18Manager.GetFormattedString('ExpOk', [txt, CRLF]);
    TBlock(Parent).UpdateEditor(Self);
 
    if FExecuteParse then
    begin
-      if lText = '' then
+      if txt = '' then
       begin
          case FParserMode of
             prsFor:
@@ -220,31 +220,31 @@ begin
             end;
             prsCondition:
             begin
-               lText := 'NoCExp';
+               txt := 'NoCExp';
                Font.Color := NOK_COLOR;
             end;
             prsCase:
             begin
-               lText := 'NoCaseExp';
+               txt := 'NoCaseExp';
                Font.Color := NOK_COLOR;
             end;
             prsAssign:
             begin
-               lText := 'NoInstr';
+               txt := 'NoInstr';
                Font.Color := WARN_COLOR;
             end;
             prsFuncCall:
             begin
-               lText := 'NoFCall';
+               txt := 'NoFCall';
                Font.Color := WARN_COLOR;
             end;
          end;
-         if lText <> '' then
-            Hint := i18Manager.GetFormattedString(lText, [CRLF]);
+         if txt <> '' then
+            Hint := i18Manager.GetFormattedString(txt, [CRLF]);
       end
       else if not TInfra.Parse(Self, FParserMode) then
       begin
-         Hint := i18Manager.GetFormattedString('ExpErr', [lText, CRLF, errString]);
+         Hint := i18Manager.GetFormattedString('ExpErr', [txt, CRLF, errString]);
          Font.Color := NOK_COLOR;
       end;
       if Assigned(OnChangeCallBack) then
@@ -269,7 +269,7 @@ end;
 
 procedure TStatement.DoEnter;
 var
-   lChange: byte;
+   chg: byte;
 begin
    inherited DoEnter;
    case FParserMode of
@@ -285,9 +285,9 @@ begin
    else
       FExecuteParse := false;
    end;
-   lChange := GChange;
+   chg := GChange;
    Change;
-   if lChange = 0 then
+   if chg = 0 then
       GChange := 0;
 end;
 

@@ -110,19 +110,19 @@ end;
 
 function TElement.GetParentTab: TTabSheet;
 var
-   lObject: TWinControl;
+   winControl: TWinControl;
 begin
    result := nil;
-   lObject := Parent;
-   while not (lObject is TForm) do
+   winControl := Parent;
+   while not (winControl is TForm) do
    begin
-      if lObject is TTabComponent then
+      if winControl is TTabComponent then
       begin
-         result := TTabComponent(lObject);
+         result := TTabComponent(winControl);
          break;
       end
       else
-         lObject := lObject.Parent;
+         winControl := winControl.Parent;
    end;
 end;
 
@@ -157,26 +157,26 @@ end;
 
 procedure TElement.OnChangeName(Sender: TObject);
 var
-   lInfo: string;
+   info: string;
    lColor: TColor;
 begin
    if GInfra.ValidateId(edtName.Text) <> VALID_IDENT then
    begin
       lColor := NOK_COLOR;
-      lInfo := 'BadIdD';
+      info := 'BadIdD';
    end
    else if TTabComponent(FParentTab).IsDuplicatedElement(Self) then
    begin
       lColor := NOK_COLOR;
-      lInfo := 'DupIdD';
+      info := 'DupIdD';
    end
    else
    begin
       lColor := OK_COLOR;
-      lInfo := 'OkIdD';
+      info := 'OkIdD';
    end;
    edtName.Font.Color := lColor;
-   edtName.Hint := i18Manager.GetString(lInfo);
+   edtName.Hint := i18Manager.GetString(info);
    UpdateMe;
    if FParentForm.UpdateCodeEditor then
       TTabComponent(FParentTab).UpdateCodeEditor;

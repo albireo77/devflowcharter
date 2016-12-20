@@ -286,14 +286,14 @@ end;
 procedure TUserDataType.RefreshSizeEdits;
 var
    i: integer;
-   lField: TField;
+   field: TField;
 begin
    ParentForm.UpdateCodeEditor := false;
    for i := 0 to sbxElements.ControlCount-1 do
    begin
-      lField := TField(sbxElements.Controls[i]);
-      if lField.edtSize.Text <> '1' then
-         lField.edtSize.OnChange(lField.edtSize);
+      field := TField(sbxElements.Controls[i]);
+      if field.edtSize.Text <> '1' then
+         field.edtSize.OnChange(field.edtSize);
    end;
    ParentForm.UpdateCodeEditor := true;
 end;
@@ -316,41 +316,41 @@ end;
 
 procedure TUserDataType.OnClickType(Sender: TObject);
 var
-   lval: boolean;
-   lField: TField;
+   b: boolean;
+   field: TField;
    i: integer;
-   lStr: string;
+   str: string;
 begin
-   lval := rbStruct.Checked or rbEnum.Checked or rbOther.Checked or rbArray.Checked;
-   sbxElements.Enabled := lval;
-   lblName2.Enabled := lval and not rbArray.Checked;
+   b := rbStruct.Checked or rbEnum.Checked or rbOther.Checked or rbArray.Checked;
+   sbxElements.Enabled := b;
+   lblName2.Enabled := b and not rbArray.Checked;
    lblSize.Enabled := rbStruct.Checked or rbArray.Checked;
    lblType.Enabled := lblSize.Enabled;
-   if lval then
+   if b then
    begin
       if rbStruct.Checked then
-         lStr := 'field'
+         str := 'field'
       else
-         lStr := 'value';
-      btnAddElement.Caption := i18Manager.GetString('btnAdd' + lStr);
-      lblName2.Caption := i18Manager.GetString('lbl' + lStr);
+         str := 'value';
+      btnAddElement.Caption := i18Manager.GetString('btnAdd' + str);
+      lblName2.Caption := i18Manager.GetString('lbl' + str);
    end;
    for i := 0 to sbxElements.ControlCount-1 do
    begin
-      lField := TField(sbxElements.Controls[i]);
-      with lField do
+      field := TField(sbxElements.Controls[i]);
+      with field do
       begin
-         edtName.Enabled := lval;
+         edtName.Enabled := b;
          cbType.Enabled := rbStruct.Checked;
-         btnRemove.Enabled := lval;
+         btnRemove.Enabled := b;
          edtSize.Enabled := rbStruct.Checked;
          if i = 0 then
          begin
             if rbOther.Checked then
-               lval := false;
+               b := false;
             if rbArray.Checked then
             begin
-               lval := false;
+               b := false;
                edtName.Enabled := false;
                edtSize.Enabled := true;
                cbType.Enabled := true;
@@ -358,7 +358,7 @@ begin
          end;
       end;
    end;
-   btnAddElement.Enabled := lval;
+   btnAddElement.Enabled := b;
    if rbEnum.Checked then
       chkAddPtrType.Checked := false;
    chkAddPtrType.Enabled := not rbEnum.Checked;
@@ -395,60 +395,60 @@ end;
 
 function TUserDataType.CreateElement: TElement;
 var
-   lField: TField;
+   field: TField;
 begin
-   lField := TField.Create(Self);
-   lField.cbType.Enabled := rbStruct.Checked or rbArray.Checked;
-   lField.edtSize.Enabled := lField.cbType.Enabled;
-   lField.edtName.Enabled := not rbArray.Checked;
-   result := lField;
+   field := TField.Create(Self);
+   field.cbType.Enabled := rbStruct.Checked or rbArray.Checked;
+   field.edtSize.Enabled := field.cbType.Enabled;
+   field.edtName.Enabled := not rbArray.Checked;
+   result := field;
 end;
 
 procedure TUserDataType.OnChangeName(Sender: TObject);
 var
-   lInfo, lTypeName: string;
-   lNativeDataType: PNativeDataType;
+   info, typeName: string;
+   dataType: PNativeDataType;
 begin
    edtName.Font.Color := NOK_COLOR;
-   lTypeName := Trim(edtName.Text);
-   lNativeDataType := GInfra.GetNativeDataType(lTypeName);
-   if lTypeName = '' then
-      lInfo := 'BadIdD'
+   typeName := Trim(edtName.Text);
+   dataType := GInfra.GetNativeDataType(typeName);
+   if typeName = '' then
+      info := 'BadIdD'
    else if IsDuplicated(edtName) then
-      lInfo := 'DupType'
-   else if lNativeDataType <> nil then
-      lInfo := 'DefNtvType'
+      info := 'DupType'
+   else if dataType <> nil then
+      info := 'DefNtvType'
    else
    begin
       edtName.Font.Color := OK_COLOR;
-      lInfo := 'OkIdD';
+      info := 'OkIdD';
    end;
-   edtName.Hint := i18Manager.GetFormattedString(lInfo, [lTypeName]);
+   edtName.Hint := i18Manager.GetFormattedString(info, [typeName]);
    inherited OnChangeName(Sender);
 end;
 
 procedure TUserDataType.ExportToXMLTag(const ATag: IXMLElement);
 var
    tag: IXMLElement;
-   lTypeId: string;
+   typeId: string;
 begin
    tag := ATag.OwnerDocument.CreateElement(DATATYPE_TAG);
    ATag.AppendChild(tag);
    inherited ExportToXMLTag(tag);
    tag.SetAttribute('pointer', BoolToStr(chkAddPtrType.Checked, true));
    if rbStruct.Checked then
-      lTypeId := 'struct_type'
+      typeId := 'struct_type'
    else if rbInt.Checked then
-      lTypeId := 'int_type'
+      typeId := 'int_type'
    else if rbReal.Checked then
-      lTypeId := 'real_type'
+      typeId := 'real_type'
    else if rbEnum.Checked then
-      lTypeId := 'enum_type'
+      typeId := 'enum_type'
    else if rbArray.Checked then
-      lTypeId := 'array_type'
+      typeId := 'array_type'
    else
-      lTypeId := 'other_type';
-   tag.SetAttribute(lTypeId, 'True');
+      typeId := 'other_type';
+   tag.SetAttribute(typeId, 'True');
 end;
 
 procedure TUserDataType.Localize(const AList: TStringList);
@@ -488,43 +488,43 @@ end;
 
 function TUserDataType.GetDimensionCount: integer;
 var
-   lField: TField;
+   field: TField;
 begin
    result := 0;
    if rbArray.Checked and (sbxElements.ControlCount > 0) then
    begin
-      lField := TField(sbxElements.Controls[0]);
-      result := lField.edtSize.DimensionCount;
+      field := TField(sbxElements.Controls[0]);
+      result := field.edtSize.DimensionCount;
    end;
 end;
 
 function TUserDataType.GetDimensions: string;
 var
-   lField: TField;
+   field: TField;
 begin
    result := '';
    if rbArray.Checked and (sbxElements.ControlCount > 0) then
    begin
-      lField := TField(sbxElements.Controls[0]);
-      result := Trim(lField.edtSize.Text);
+      field := TField(sbxElements.Controls[0]);
+      result := Trim(field.edtSize.Text);
    end;
 end;
 
 function TUserDataType.GetOriginalType: integer;
 var
-   lField: TField;
+   field: TField;
 begin
    result := TParserHelper.GetType(Trim(edtName.Text));
    if rbArray.Checked and (sbxElements.ControlCount > 0) then
    begin
-      lField := TField(sbxElements.Controls[0]);
-      result := TParserHelper.GetType(lField.cbType.Text);
+      field := TField(sbxElements.Controls[0]);
+      result := TParserHelper.GetType(field.cbType.Text);
    end;
 end;
 
 function TUserDataType.IsValidEnumValue(const AValue: string): boolean;
 var
-   lField: TField;
+   field: TField;
    i: integer;
 begin
    result := false;
@@ -532,8 +532,8 @@ begin
    begin
       for i := 0 to sbxElements.ControlCount-1 do
       begin
-         lField := TField(sbxElements.Controls[i]);
-         if Trim(lField.edtName.Text) = AValue then
+         field := TField(sbxElements.Controls[i]);
+         if Trim(field.edtName.Text) = AValue then
          begin
             result := true;
             break;
@@ -546,10 +546,10 @@ procedure TField.OnChangeName(Sender: TObject);
 var
    lColor: TColor;
    lHint: string;
-   lDataType: TUserDataType;
+   dataType: TUserDataType;
 begin
-   lDataType := TUserDataType(ParentTab);
-   if lDataType.rbOther.Checked or lDataType.rbArray.Checked then
+   dataType := TUserDataType(ParentTab);
+   if dataType.rbOther.Checked or dataType.rbArray.Checked then
    begin
       if Trim(edtName.Text) = '' then
       begin
@@ -576,17 +576,17 @@ end;
 
 procedure TField.ImportFromXMLTag(const ATag: IXMLElement);
 var
-   lSize: string;
+   size: string;
 begin
    inherited ImportFromXMLTag(ATag);
    if CompareText(ATag.GetAttribute('table'), 'true') = 0 then  // for backward compatibility
       edtSize.Text := '100'
    else
    begin
-      lSize := ATag.GetAttribute(SIZE_ATTR);
-      if lSize = '' then
-         lSize := '1';
-      edtSize.Text := lSize;
+      size := ATag.GetAttribute(SIZE_ATTR);
+      if size = '' then
+         size := '1';
+      edtSize.Text := size;
    end;
 end;
 
@@ -612,18 +612,18 @@ end;
 
 procedure TUserDataType.GenerateTree(const ANode: TTreeNode);
 var
-   lDesc: string;
-   lLang: TLangDefinition;
+   desc: string;
+   lang: TLangDefinition;
 begin
-   lDesc := '';
-   lLang := nil;
+   desc := '';
+   lang := nil;
    if Assigned(GInfra.CurrentLang.GetUserTypeDesc) then
-      lLang := GInfra.CurrentLang
+      lang := GInfra.CurrentLang
    else if Assigned(GInfra.DummyLang.GetUserTypeDesc) then
-      lLang := GInfra.DummyLang;
-   if lLang <> nil then
-      lDesc := lLang.GetUserTypeDesc(Self);
-   ANode.Owner.AddChildObject(ANode, lDesc, Self);
+      lang := GInfra.DummyLang;
+   if lang <> nil then
+      desc := lang.GetUserTypeDesc(Self);
+   ANode.Owner.AddChildObject(ANode, desc, Self);
    if TInfra.IsNOkColor(Font.Color) then
    begin
       ANode.MakeVisible;

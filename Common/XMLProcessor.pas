@@ -63,40 +63,40 @@ uses
 
 class function TXMLProcessor.FindChildTag(const ATag: IXMLElement; const AName: string): IXMLElement;
 var
-   lNode: IXMLNode;
+   node: IXMLNode;
 begin
     result := nil;
     if (ATag <> nil) and ATag.HasChildNodes then
     begin
-        lNode := ATag.FirstChild;
-        while lNode <> nil do
+        node := ATag.FirstChild;
+        while node <> nil do
         begin
-            if lNode.NodeName = AName then
+            if node.NodeName = AName then
             begin
-               result := lNode as IXMLElement;
+               result := node as IXMLElement;
                break;
             end;
-            lNode := lNode.NextSibling;
+            node := node.NextSibling;
         end;
     end;
 end;
 
 class function TXMLProcessor.FindNextTag(const ATag: IXMLElement): IXMLElement;
 var
-   lNode: IXMLNode;
+   node: IXMLNode;
 begin
     result := nil;
-    lNode := nil;
+    node := nil;
     if ATag <> nil then
-       lNode := ATag.NextSibling;
-    while lNode <> nil do
+       node := ATag.NextSibling;
+    while node <> nil do
     begin
-        if lNode.NodeName = ATag.NodeName then
+        if node.NodeName = ATag.NodeName then
         begin
-           result := lNode as IXMLElement;
+           result := node as IXMLElement;
            break;
         end;
-        lNode := lNode.NextSibling;
+        node := node.NextSibling;
     end;
 end;
 
@@ -114,27 +114,27 @@ end;
 
 class function TXMLProcessor.CountChildTags(const ATag: IXMLElement; const AChildTagName: string; const AWithText: boolean = false): integer;
 var
-   lTag: IXMLElement;
+   tag: IXMLElement;
 begin
    result := 0;
-   lTag := FindChildTag(ATag, AChildTagName);
-   while lTag <> nil do
+   tag := FindChildTag(ATag, AChildTagName);
+   while tag <> nil do
    begin
-      if not (AWithText and (Trim(lTag.Text) = '')) then
+      if not (AWithText and (Trim(tag.Text) = '')) then
          result := result + 1;
-      lTag := FindNextTag(lTag);
+      tag := FindNextTag(tag);
    end;
 end;
 
 class procedure TXMLProcessor.ExportBlockToXML(const ABlock: TBlock; const ATag: IXMLElement);
 var
-   lTag: IXMLElement;
+   tag: IXMLElement;
 begin
    if (ATag <> nil) and (ABlock <> nil) then
    begin
-      lTag := ATag.OwnerDocument.CreateElement(BLOCK_TAG);
-      ATag.AppendChild(lTag);
-      ABlock.SaveInXML(lTag);
+      tag := ATag.OwnerDocument.CreateElement(BLOCK_TAG);
+      ATag.AppendChild(tag);
+      ABlock.SaveInXML(tag);
    end;
 end;
 
@@ -144,42 +144,42 @@ class function TXMLProcessor.ImportFlowchartFromXMLTag(const ATag: IXMLElement; 
                                                        var AErrorType: TErrorType;
                                                        const ABranchInd: integer = PRIMARY_BRANCH_IND): TBlock;
 var
-   lTag: IXMLElement;
-   lNewBlock: TBlock;
-   lBranch: TBranch;
+   tag: IXMLElement;
+   newBlock: TBlock;
+   branch: TBranch;
    initCount: integer;
-   lTab: TBlockTabSheet;
-   lControl: TControl;
+   tab: TBlockTabSheet;
+   control: TControl;
 begin
     result := nil;
-    lTab := nil;
-    lBranch := nil;
+    tab := nil;
+    branch := nil;
     AErrorType := errNone;
     Gerr_text := '';
     initCount := AParent.ControlCount;
-    lTag := ATag;
+    tag := ATag;
 
     if AParent is TGroupBlock then
     begin
        if APrevBlock <> nil then                                  // predBlock is not nil so newBlock will be put into list
-          lBranch := APrevBlock.ParentBranch                       // containing predBlock, just after predBlock
+          branch := APrevBlock.ParentBranch                       // containing predBlock, just after predBlock
        else                                                      // predBlock is nil so newBlock will be put at the beginning of the list
-          lBranch := TGroupBlock(AParent).GetBranch(ABranchInd);   // branch is determined by branch_id
+          branch := TGroupBlock(AParent).GetBranch(ABranchInd);   // branch is determined by branch_id
     end
     else if AParent is TBlockTabSheet then
-       lTab := TBlockTabSheet(AParent);
+       tab := TBlockTabSheet(AParent);
 
-    while lTag <> nil do
+    while tag <> nil do
     begin
-       lNewBlock := TBlockFactory.Create(lTag, lBranch, lTab);
-       lTab := nil;
-       if lNewBlock <> nil then
+       newBlock := TBlockFactory.Create(tag, branch, tab);
+       tab := nil;
+       if newBlock <> nil then
        begin
-          result := lNewBlock;
-          if lBranch <> nil then
+          result := newBlock;
+          if branch <> nil then
           begin
-             lBranch.InsertAfter(lNewBlock, APrevBlock);
-             APrevBlock := lNewBlock;
+             branch.InsertAfter(newBlock, APrevBlock);
+             APrevBlock := newBlock;
           end;
        end
        else
@@ -187,20 +187,20 @@ begin
           AErrorType := errValidate;
           break;
        end;
-       lTag := FindNextTag(lTag);
+       tag := FindNextTag(tag);
     end;
 
     if AErrorType <> errNone then
     begin
        while initCount < AParent.ControlCount do   // destroy all previously created blocks
        begin
-          lBranch := nil;
-          lControl := AParent.Controls[initCount];
-          if lControl is TBlock then
-             lBranch := TBlock(lControl).ParentBranch;
-          if lBranch <> nil then
-             lBranch.Remove(lControl);
-          lControl.Destroy;
+          branch := nil;
+          control := AParent.Controls[initCount];
+          if control is TBlock then
+             branch := TBlock(control).ParentBranch;
+          if branch <> nil then
+             branch.Remove(control);
+          control.Destroy;
        end;
        result := nil;
     end;
@@ -219,7 +219,7 @@ end;
 class function TXMLProcessor.ImportFromXMLFile(AImportProc: TImportProc; const AFileName: string = ''; const APreserveSpace: boolean = false): string;
 var
    docXML: IXMLDocument;
-   lErrText: string;
+   errText: string;
    status: TErrorType;
 begin
    result := '';
@@ -239,18 +239,18 @@ begin
          begin
             status := errSyntax;
             with docXML.ParseError do
-               lErrText := i18Manager.GetFormattedString('ParserError', [ErrorCode, Line, LinePos, Reason]);
+               errText := i18Manager.GetFormattedString('ParserError', [ErrorCode, Line, LinePos, Reason]);
          end;
       except on E: Exception do
          begin
             status := errIO;
-            lErrText := E.Message;
+            errText := E.Message;
          end;
       end;
       if status <> errNone then
       begin
-         lErrText := i18Manager.GetFormattedString('FileError', [result]) + CRLF + lErrText;
-         TInfra.ShowFormattedErrorBox('ImportFailed', [CRLF, lErrText], errImport);
+         errText := i18Manager.GetFormattedString('FileError', [result]) + CRLF + errText;
+         TInfra.ShowFormattedErrorBox('ImportFailed', [CRLF, errText], errImport);
          result := '';
       end;
    end;
@@ -259,36 +259,36 @@ end;
 class function TXMLProcessor.ExportToXMLFile(AExportProc: TExportProc; const AFilePath: string = ''): TErrorType;
 var
    docXML: IXMLDocument;
-   lInstr: IXMLProcessingInstruction;
-   lTag: IXMLElement;
-   lFilePath: string;
+   xmlInstr: IXMLProcessingInstruction;
+   tag: IXMLElement;
+   filePath: string;
 begin
    result := errNone;
    if Assigned(AExportProc) then
    begin
       if ExtractFilePath(AFilePath) = '' then
-         lFilePath := TXMLProcessor.DialogXMLFile(TInfra.GetMainForm.ExportDialog, AFilePath)
+         filePath := TXMLProcessor.DialogXMLFile(TInfra.GetMainForm.ExportDialog, AFilePath)
       else
-         lFilePath := AFilePath;
-      if FileExists(lFilePath) and FileIsReadOnly(lFilePath) then
+         filePath := AFilePath;
+      if FileExists(filePath) and FileIsReadOnly(filePath) then
       begin
-         TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [lFilePath], errIO);
+         TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [filePath], errIO);
          result := errIO;
       end
-      else if lFilePath <> '' then
+      else if filePath <> '' then
       begin
          docXML := CreateXMLDoc;
-         lInstr := docXML.CreateProcessingInstruction('xml', XML_HEADER);
-         docXML.AppendChild(lInstr);
-         lTag := docXML.CreateElement('project');
-         docXML.AppendChild(lTag);
-         AExportProc(lTag);
+         xmlInstr := docXML.CreateProcessingInstruction('xml', XML_HEADER);
+         docXML.AppendChild(xmlInstr);
+         tag := docXML.CreateElement('project');
+         docXML.AppendChild(tag);
+         AExportProc(tag);
          try
-            docXML.Save(lFilePath, ofIndent);
+            docXML.Save(filePath, ofIndent);
          except on E: Exception do
             begin
                result := errIO;
-               TInfra.ShowFormattedErrorBox('SaveError', [lFilePath, CRLF, E.Message], result);
+               TInfra.ShowFormattedErrorBox('SaveError', [filePath, CRLF, E.Message], result);
             end;
          end;
       end;

@@ -324,230 +324,230 @@ end;
 
 procedure TSettings.ReadFromRegistry;
 var
-   registry: TRegistry;
+   reg: TRegistry;
 begin
-   registry := TRegistry.Create;
+   reg := TRegistry.Create;
    try
-      if registry.OpenKeyReadOnly(REGISTRY_KEY) then
+      if reg.OpenKeyReadOnly(REGISTRY_KEY) then
       begin
-         if registry.ValueExists(KEY_HIGHLIGHT_COLOR) then
-            FHighlightColor := registry.ReadInteger(KEY_HIGHLIGHT_COLOR);
-         if registry.ValueExists(KEY_ELLIPSE_COLOR) then
-            FEllipseColor := registry.ReadInteger(KEY_ELLIPSE_COLOR);
-         if registry.ValueExists(KEY_DIAMOND_COLOR) then
-            FDiamondColor := registry.ReadInteger(KEY_DIAMOND_COLOR);
-         if registry.ValueExists(KEY_INOUT_COLOR) then
-            FInOutColor := registry.ReadInteger(KEY_INOUT_COLOR);
-         if registry.ValueExists(KEY_RECT_COLOR) then
-            FRectColor := registry.ReadInteger(KEY_RECT_COLOR);
-         if registry.ValueExists(KEY_FOLD_COLOR) then
-            FFoldColor := registry.ReadInteger(KEY_FOLD_COLOR);
-         if registry.ValueExists(KEY_ROADSIGN_COLOR) then
-            FRoadSignColor := registry.ReadInteger(KEY_ROADSIGN_COLOR);
-         if registry.ValueExists(KEY_ROUTINE_COLOR) then
-            FRoutineColor := registry.ReadInteger(KEY_ROUTINE_COLOR);
-         if registry.ValueExists(KEY_FONT_COLOR) then
+         if reg.ValueExists(KEY_HIGHLIGHT_COLOR) then
+            FHighlightColor := reg.ReadInteger(KEY_HIGHLIGHT_COLOR);
+         if reg.ValueExists(KEY_ELLIPSE_COLOR) then
+            FEllipseColor := reg.ReadInteger(KEY_ELLIPSE_COLOR);
+         if reg.ValueExists(KEY_DIAMOND_COLOR) then
+            FDiamondColor := reg.ReadInteger(KEY_DIAMOND_COLOR);
+         if reg.ValueExists(KEY_INOUT_COLOR) then
+            FInOutColor := reg.ReadInteger(KEY_INOUT_COLOR);
+         if reg.ValueExists(KEY_RECT_COLOR) then
+            FRectColor := reg.ReadInteger(KEY_RECT_COLOR);
+         if reg.ValueExists(KEY_FOLD_COLOR) then
+            FFoldColor := reg.ReadInteger(KEY_FOLD_COLOR);
+         if reg.ValueExists(KEY_ROADSIGN_COLOR) then
+            FRoadSignColor := reg.ReadInteger(KEY_ROADSIGN_COLOR);
+         if reg.ValueExists(KEY_ROUTINE_COLOR) then
+            FRoutineColor := reg.ReadInteger(KEY_ROUTINE_COLOR);
+         if reg.ValueExists(KEY_FONT_COLOR) then
          begin
-            FFontColor := registry.ReadInteger(KEY_FONT_COLOR);
+            FFontColor := reg.ReadInteger(KEY_FONT_COLOR);
             if TInfra.IsNOkColor(FFontColor) then
                FFontColor := OK_COLOR;
          end;
-         if registry.ValueExists(KEY_NAVIGATOR_ALPHA_VALUE) then
-            FNavigatorAlphaValue := registry.ReadInteger(KEY_NAVIGATOR_ALPHA_VALUE);
-         if registry.ValueExists(KEY_NAVIGATOR_ALPHA_VISIBLE) then
-            FNavigatorAlphaVisible := registry.ReadBool(KEY_NAVIGATOR_ALPHA_VISIBLE);
-         if registry.ValueExists(KEY_EXPLORER_AUTO_NAV) then
-            FExplorerAutoNav := registry.ReadBool(KEY_EXPLORER_AUTO_NAV);
-         if registry.ValueExists(KEY_ENABLE_DBUFFERING) then
-            FEnableDBuffering := registry.ReadBool(KEY_ENABLE_DBUFFERING);
-         if registry.ValueExists(KEY_PARSE_INPUT) then
-            FParseInput := registry.ReadBool(KEY_PARSE_INPUT);
-         if registry.ValueExists(KEY_PARSE_OUTPUT) then
-            FParseOutput := registry.ReadBool(KEY_PARSE_OUTPUT);
-         if registry.ValueExists(KEY_PARSE_RETURN) then
-            FParseReturn := registry.ReadBool(KEY_PARSE_RETURN);
-         if registry.ValueExists(KEY_PARSE_ASSIGN) then
-            FParseAssign := registry.ReadBool(KEY_PARSE_ASSIGN);
-         if registry.ValueExists(KEY_PARSE_MULT_ASSIGN) then
-            FParseAssignMult := registry.ReadBool(KEY_PARSE_MULT_ASSIGN);
-         if registry.ValueExists(KEY_PARSE_CONDITION) then
-            FParseCondition := registry.ReadBool(KEY_PARSE_CONDITION);
-         if registry.ValueExists(KEY_PARSE_SUBROUTINE) then
-            FParseRoutineCall := registry.ReadBool(KEY_PARSE_SUBROUTINE);
-         if registry.ValueExists(KEY_PARSE_FOR) then
-            FParseFor := registry.ReadBool(KEY_PARSE_FOR);
-         if registry.ValueExists(KEY_PARSE_CASE) then
-            FParseCase := registry.ReadBool(KEY_PARSE_CASE);
-         if registry.ValueExists(KEY_CONFIRM_REMOVE) then
-            FConfirmRemove := registry.ReadBool(KEY_CONFIRM_REMOVE);
-         if registry.ValueExists(KEY_PRINT_MULTI_PAGES) then
-            FPrintMultPages := registry.ReadBool(KEY_PRINT_MULTI_PAGES);
-         if registry.ValueExists(KEY_PRINT_MULTI_PAGES_HORZ) then
-            FPrintMultPagesHorz := registry.ReadBool(KEY_PRINT_MULTI_PAGES_HORZ);
-         if registry.ValueExists(KEY_PRINT_MARGIN_LEFT) then
-            FPrintMargins.Left := registry.ReadInteger(KEY_PRINT_MARGIN_LEFT);
-         if registry.ValueExists(KEY_PRINT_MARGIN_RIGHT) then
-            FPrintMargins.Right := registry.ReadInteger(KEY_PRINT_MARGIN_RIGHT);
-         if registry.ValueExists(KEY_PRINT_MARGIN_TOP) then
-            FPrintMargins.Top := registry.ReadInteger(KEY_PRINT_MARGIN_TOP);
-         if registry.ValueExists(KEY_PRINT_MARGIN_BOTTOM) then
-            FPrintMargins.Bottom := registry.ReadInteger(KEY_PRINT_MARGIN_BOTTOM);
-         if registry.ValueExists(KEY_EDITOR_SHOW_GUTTER) then
-            FEditorShowGutter := registry.ReadBool(KEY_EDITOR_SHOW_GUTTER);
-         if registry.ValueExists(KEY_EDITOR_INDENT_GUIDES) then
-            FEditorIndentGuides := registry.ReadBool(KEY_EDITOR_INDENT_GUIDES);
-         if registry.ValueExists(KEY_EDITOR_SHOW_RICHTEXT) then
-            FEditorShowRichText := registry.ReadBool(KEY_EDITOR_SHOW_RICHTEXT);
-         if registry.ValueExists(KEY_EDITOR_CODE_FOLDING) then
-            FEditorCodeFolding := registry.ReadBool(KEY_EDITOR_CODE_FOLDING);
-         if registry.ValueExists(KEY_EDITOR_SHOW_SCROLLBARS) then
-            FEditorShowScrollbars := registry.ReadBool(KEY_EDITOR_SHOW_SCROLLBARS);
-         if registry.ValueExists(KEY_SHOW_STATUSBAR) then
-            FEditorShowStatusBar := registry.ReadBool(KEY_SHOW_STATUSBAR);
-         if registry.ValueExists(KEY_EDITOR_BKG_COLOR) then
-            FEditorBkgColor := registry.ReadInteger(KEY_EDITOR_BKG_COLOR);
-         if registry.ValueExists(KEY_EDITOR_FONT_COLOR) then
-            FEditorFontColor := registry.ReadInteger(KEY_EDITOR_FONT_COLOR);
-         if registry.ValueExists(KEY_EDITOR_STRING_COLOR) then
-            FEditorStringColor := registry.ReadInteger(KEY_EDITOR_STRING_COLOR);
-         if registry.ValueExists(KEY_EDITOR_NUMBER_COLOR) then
-            FEditorNumberColor := registry.ReadInteger(KEY_EDITOR_NUMBER_COLOR);
-         if registry.ValueExists(KEY_EDITOR_COMMENT_COLOR) then
-            FEditorCommentColor := registry.ReadInteger(KEY_EDITOR_COMMENT_COLOR);
-         if registry.ValueExists(KEY_EDITOR_ALINE_COLOR) then
-            FEditorALineColor := registry.ReadInteger(KEY_EDITOR_ALINE_COLOR);
-         if registry.ValueExists(KEY_EDITOR_SELECT_COLOR) then
-            FEditorSelectColor := registry.ReadInteger(KEY_EDITOR_SELECT_COLOR);
-         if registry.ValueExists(KEY_EDITOR_GUTTER_COLOR) then
-            FEditorGutterColor := registry.ReadInteger(KEY_EDITOR_GUTTER_COLOR);
-         if registry.ValueExists(KEY_DESKTOP_COLOR) then
-            FDesktopColor := registry.ReadInteger(KEY_DESKTOP_COLOR);
-         if registry.ValueExists(KEY_EDITOR_BRACKET_COLOR) then
-            FEditorBracketColor := registry.ReadInteger(KEY_EDITOR_BRACKET_COLOR);
-         if registry.ValueExists(KEY_EDITOR_INDENT) then
+         if reg.ValueExists(KEY_NAVIGATOR_ALPHA_VALUE) then
+            FNavigatorAlphaValue := reg.ReadInteger(KEY_NAVIGATOR_ALPHA_VALUE);
+         if reg.ValueExists(KEY_NAVIGATOR_ALPHA_VISIBLE) then
+            FNavigatorAlphaVisible := reg.ReadBool(KEY_NAVIGATOR_ALPHA_VISIBLE);
+         if reg.ValueExists(KEY_EXPLORER_AUTO_NAV) then
+            FExplorerAutoNav := reg.ReadBool(KEY_EXPLORER_AUTO_NAV);
+         if reg.ValueExists(KEY_ENABLE_DBUFFERING) then
+            FEnableDBuffering := reg.ReadBool(KEY_ENABLE_DBUFFERING);
+         if reg.ValueExists(KEY_PARSE_INPUT) then
+            FParseInput := reg.ReadBool(KEY_PARSE_INPUT);
+         if reg.ValueExists(KEY_PARSE_OUTPUT) then
+            FParseOutput := reg.ReadBool(KEY_PARSE_OUTPUT);
+         if reg.ValueExists(KEY_PARSE_RETURN) then
+            FParseReturn := reg.ReadBool(KEY_PARSE_RETURN);
+         if reg.ValueExists(KEY_PARSE_ASSIGN) then
+            FParseAssign := reg.ReadBool(KEY_PARSE_ASSIGN);
+         if reg.ValueExists(KEY_PARSE_MULT_ASSIGN) then
+            FParseAssignMult := reg.ReadBool(KEY_PARSE_MULT_ASSIGN);
+         if reg.ValueExists(KEY_PARSE_CONDITION) then
+            FParseCondition := reg.ReadBool(KEY_PARSE_CONDITION);
+         if reg.ValueExists(KEY_PARSE_SUBROUTINE) then
+            FParseRoutineCall := reg.ReadBool(KEY_PARSE_SUBROUTINE);
+         if reg.ValueExists(KEY_PARSE_FOR) then
+            FParseFor := reg.ReadBool(KEY_PARSE_FOR);
+         if reg.ValueExists(KEY_PARSE_CASE) then
+            FParseCase := reg.ReadBool(KEY_PARSE_CASE);
+         if reg.ValueExists(KEY_CONFIRM_REMOVE) then
+            FConfirmRemove := reg.ReadBool(KEY_CONFIRM_REMOVE);
+         if reg.ValueExists(KEY_PRINT_MULTI_PAGES) then
+            FPrintMultPages := reg.ReadBool(KEY_PRINT_MULTI_PAGES);
+         if reg.ValueExists(KEY_PRINT_MULTI_PAGES_HORZ) then
+            FPrintMultPagesHorz := reg.ReadBool(KEY_PRINT_MULTI_PAGES_HORZ);
+         if reg.ValueExists(KEY_PRINT_MARGIN_LEFT) then
+            FPrintMargins.Left := reg.ReadInteger(KEY_PRINT_MARGIN_LEFT);
+         if reg.ValueExists(KEY_PRINT_MARGIN_RIGHT) then
+            FPrintMargins.Right := reg.ReadInteger(KEY_PRINT_MARGIN_RIGHT);
+         if reg.ValueExists(KEY_PRINT_MARGIN_TOP) then
+            FPrintMargins.Top := reg.ReadInteger(KEY_PRINT_MARGIN_TOP);
+         if reg.ValueExists(KEY_PRINT_MARGIN_BOTTOM) then
+            FPrintMargins.Bottom := reg.ReadInteger(KEY_PRINT_MARGIN_BOTTOM);
+         if reg.ValueExists(KEY_EDITOR_SHOW_GUTTER) then
+            FEditorShowGutter := reg.ReadBool(KEY_EDITOR_SHOW_GUTTER);
+         if reg.ValueExists(KEY_EDITOR_INDENT_GUIDES) then
+            FEditorIndentGuides := reg.ReadBool(KEY_EDITOR_INDENT_GUIDES);
+         if reg.ValueExists(KEY_EDITOR_SHOW_RICHTEXT) then
+            FEditorShowRichText := reg.ReadBool(KEY_EDITOR_SHOW_RICHTEXT);
+         if reg.ValueExists(KEY_EDITOR_CODE_FOLDING) then
+            FEditorCodeFolding := reg.ReadBool(KEY_EDITOR_CODE_FOLDING);
+         if reg.ValueExists(KEY_EDITOR_SHOW_SCROLLBARS) then
+            FEditorShowScrollbars := reg.ReadBool(KEY_EDITOR_SHOW_SCROLLBARS);
+         if reg.ValueExists(KEY_SHOW_STATUSBAR) then
+            FEditorShowStatusBar := reg.ReadBool(KEY_SHOW_STATUSBAR);
+         if reg.ValueExists(KEY_EDITOR_BKG_COLOR) then
+            FEditorBkgColor := reg.ReadInteger(KEY_EDITOR_BKG_COLOR);
+         if reg.ValueExists(KEY_EDITOR_FONT_COLOR) then
+            FEditorFontColor := reg.ReadInteger(KEY_EDITOR_FONT_COLOR);
+         if reg.ValueExists(KEY_EDITOR_STRING_COLOR) then
+            FEditorStringColor := reg.ReadInteger(KEY_EDITOR_STRING_COLOR);
+         if reg.ValueExists(KEY_EDITOR_NUMBER_COLOR) then
+            FEditorNumberColor := reg.ReadInteger(KEY_EDITOR_NUMBER_COLOR);
+         if reg.ValueExists(KEY_EDITOR_COMMENT_COLOR) then
+            FEditorCommentColor := reg.ReadInteger(KEY_EDITOR_COMMENT_COLOR);
+         if reg.ValueExists(KEY_EDITOR_ALINE_COLOR) then
+            FEditorALineColor := reg.ReadInteger(KEY_EDITOR_ALINE_COLOR);
+         if reg.ValueExists(KEY_EDITOR_SELECT_COLOR) then
+            FEditorSelectColor := reg.ReadInteger(KEY_EDITOR_SELECT_COLOR);
+         if reg.ValueExists(KEY_EDITOR_GUTTER_COLOR) then
+            FEditorGutterColor := reg.ReadInteger(KEY_EDITOR_GUTTER_COLOR);
+         if reg.ValueExists(KEY_DESKTOP_COLOR) then
+            FDesktopColor := reg.ReadInteger(KEY_DESKTOP_COLOR);
+         if reg.ValueExists(KEY_EDITOR_BRACKET_COLOR) then
+            FEditorBracketColor := reg.ReadInteger(KEY_EDITOR_BRACKET_COLOR);
+         if reg.ValueExists(KEY_EDITOR_INDENT) then
          begin
-            FIndentLength := registry.ReadInteger(KEY_EDITOR_INDENT);
+            FIndentLength := reg.ReadInteger(KEY_EDITOR_INDENT);
             FIndentString := StringOfChar(INDENT_CHAR, FIndentLength);
          end;
-         if registry.ValueExists(KEY_EDITOR_FONT_SIZE) then
-            FEditorFontSize := registry.ReadInteger(KEY_EDITOR_FONT_SIZE);
-         if registry.ValueExists(KEY_SHOW_FUNC_LABELS) then
-            FShowFuncLabels := registry.ReadBool(KEY_SHOW_FUNC_LABELS);
-         if registry.ValueExists(KEY_SHOW_BLOCK_LABELS) then
-            FShowBlockLabels := registry.ReadBool(KEY_SHOW_BLOCK_LABELS);
-         if registry.ValueExists(KEY_VALIDATE_DECLARATION) then
-            FValidateDeclaration := registry.ReadBool(KEY_VALIDATE_DECLARATION);
-         if registry.ValueExists(KEY_FLOWCHART_FONT_NAME) then
-            FFlowchartFontName := registry.ReadString(KEY_FLOWCHART_FONT_NAME);
-         if registry.ValueExists(KEY_LOCALIZATION_FILE) then
+         if reg.ValueExists(KEY_EDITOR_FONT_SIZE) then
+            FEditorFontSize := reg.ReadInteger(KEY_EDITOR_FONT_SIZE);
+         if reg.ValueExists(KEY_SHOW_FUNC_LABELS) then
+            FShowFuncLabels := reg.ReadBool(KEY_SHOW_FUNC_LABELS);
+         if reg.ValueExists(KEY_SHOW_BLOCK_LABELS) then
+            FShowBlockLabels := reg.ReadBool(KEY_SHOW_BLOCK_LABELS);
+         if reg.ValueExists(KEY_VALIDATE_DECLARATION) then
+            FValidateDeclaration := reg.ReadBool(KEY_VALIDATE_DECLARATION);
+         if reg.ValueExists(KEY_FLOWCHART_FONT_NAME) then
+            FFlowchartFontName := reg.ReadString(KEY_FLOWCHART_FONT_NAME);
+         if reg.ValueExists(KEY_LOCALIZATION_FILE) then
          begin
-            FTranslateFile := registry.ReadString(KEY_LOCALIZATION_FILE);
+            FTranslateFile := reg.ReadString(KEY_LOCALIZATION_FILE);
             if not FileExists(FTranslateFile) then
                FTranslateFile := '';
          end;
-         if registry.ValueExists(KEY_AUTOSELECT_CODE_BLOCK) then
-            FEditorAutoSelectBlock := registry.ReadBool(KEY_AUTOSELECT_CODE_BLOCK);
-         if registry.ValueExists(KEY_AUTOUPDATE_CODE) then
-            FEditorAutoUpdate := registry.ReadBool(KEY_AUTOUPDATE_CODE);
-         if registry.ValueExists(KEY_COLV1_WIDTH) then
-            FColumnV1Width := registry.ReadInteger(KEY_COLV1_WIDTH);
-         if registry.ValueExists(KEY_COLV2_WIDTH) then
-            FColumnV2Width := registry.ReadInteger(KEY_COLV2_WIDTH);
-         if registry.ValueExists(KEY_COLV3_WIDTH) then
-            FColumnV3Width := registry.ReadInteger(KEY_COLV3_WIDTH);
-         if registry.ValueExists(KEY_COLV4_WIDTH) then
-            FColumnV4Width := registry.ReadInteger(KEY_COLV4_WIDTH);
-         if registry.ValueExists(KEY_COLV5_WIDTH) then
-            FColumnV5Width := registry.ReadInteger(KEY_COLV5_WIDTH);
-         if registry.ValueExists(KEY_COLC1_WIDTH) then
-            FColumnC1Width := registry.ReadInteger(KEY_COLC1_WIDTH);
-         if registry.ValueExists(KEY_COLC2_WIDTH) then
-            FColumnC2Width := registry.ReadInteger(KEY_COLC2_WIDTH);
-         if registry.ValueExists(KEY_COLC3_WIDTH) then
-            FColumnC3Width := registry.ReadInteger(KEY_COLC3_WIDTH);
+         if reg.ValueExists(KEY_AUTOSELECT_CODE_BLOCK) then
+            FEditorAutoSelectBlock := reg.ReadBool(KEY_AUTOSELECT_CODE_BLOCK);
+         if reg.ValueExists(KEY_AUTOUPDATE_CODE) then
+            FEditorAutoUpdate := reg.ReadBool(KEY_AUTOUPDATE_CODE);
+         if reg.ValueExists(KEY_COLV1_WIDTH) then
+            FColumnV1Width := reg.ReadInteger(KEY_COLV1_WIDTH);
+         if reg.ValueExists(KEY_COLV2_WIDTH) then
+            FColumnV2Width := reg.ReadInteger(KEY_COLV2_WIDTH);
+         if reg.ValueExists(KEY_COLV3_WIDTH) then
+            FColumnV3Width := reg.ReadInteger(KEY_COLV3_WIDTH);
+         if reg.ValueExists(KEY_COLV4_WIDTH) then
+            FColumnV4Width := reg.ReadInteger(KEY_COLV4_WIDTH);
+         if reg.ValueExists(KEY_COLV5_WIDTH) then
+            FColumnV5Width := reg.ReadInteger(KEY_COLV5_WIDTH);
+         if reg.ValueExists(KEY_COLC1_WIDTH) then
+            FColumnC1Width := reg.ReadInteger(KEY_COLC1_WIDTH);
+         if reg.ValueExists(KEY_COLC2_WIDTH) then
+            FColumnC2Width := reg.ReadInteger(KEY_COLC2_WIDTH);
+         if reg.ValueExists(KEY_COLC3_WIDTH) then
+            FColumnC3Width := reg.ReadInteger(KEY_COLC3_WIDTH);
       end;
    finally
-      registry.Free;
+      reg.Free;
    end;
 end;
 
 procedure TSettings.WriteToRegistry;
 var
-   registry: TRegistry;
+   reg: TRegistry;
 begin
-   registry := TRegistry.Create;
+   reg := TRegistry.Create;
    try
-      if registry.OpenKey(REGISTRY_KEY, true) then
+      if reg.OpenKey(REGISTRY_KEY, true) then
       begin
-         registry.WriteBool(KEY_PARSE_INPUT, FParseInput);
-         registry.WriteBool(KEY_PARSE_OUTPUT, FParseOutput);
-         registry.WriteBool(KEY_PARSE_ASSIGN, FParseAssign);
-         registry.WriteBool(KEY_PARSE_MULT_ASSIGN, FParseAssignMult);
-         registry.WriteBool(KEY_PARSE_CONDITION, FParseCondition);
-         registry.WriteBool(KEY_PARSE_FOR, FParseFor);
-         registry.WriteBool(KEY_PARSE_CASE, FParseCase);
-         registry.WriteBool(KEY_PARSE_SUBROUTINE, FParseRoutineCall);
-         registry.WriteBool(KEY_PARSE_RETURN, FParseReturn);
-         registry.WriteBool(KEY_CONFIRM_REMOVE, FConfirmRemove);
-         registry.WriteBool(KEY_PRINT_MULTI_PAGES, FPrintMultPages);
-         registry.WriteBool(KEY_PRINT_MULTI_PAGES_HORZ, FPrintMultPagesHorz);
-         registry.WriteBool(KEY_AUTOSELECT_CODE_BLOCK, FEditorAutoSelectBlock);
-         registry.WriteBool(KEY_AUTOUPDATE_CODE, FEditorAutoUpdate);
-         registry.WriteInteger(KEY_PRINT_MARGIN_LEFT, FPrintMargins.Left);
-         registry.WriteInteger(KEY_PRINT_MARGIN_RIGHT, FPrintMargins.Right);
-         registry.WriteInteger(KEY_PRINT_MARGIN_TOP, FPrintMargins.Top);
-         registry.WriteInteger(KEY_PRINT_MARGIN_BOTTOM, FPrintMargins.Bottom);
-         registry.WriteBool(KEY_EDITOR_SHOW_GUTTER, FEditorShowGutter);
-         registry.WriteBool(KEY_EDITOR_CODE_FOLDING, FEditorCodeFolding);
-         registry.WriteBool(KEY_EDITOR_SHOW_RICHTEXT, FEditorShowRichText);
-         registry.WriteBool(KEY_EDITOR_SHOW_SCROLLBARS, FEditorShowScrollbars);
-         registry.WriteBool(KEY_EDITOR_INDENT_GUIDES, FEditorIndentGuides);
-         registry.WriteBool(KEY_SHOW_STATUSBAR, FEditorShowStatusBar);
-         registry.WriteBool(KEY_ENABLE_DBUFFERING, FEnableDBuffering);
-         registry.WriteBool(KEY_SHOW_FUNC_LABELS, FShowFuncLabels);
-         registry.WriteBool(KEY_SHOW_BLOCK_LABELS, FShowBlockLabels);
-         registry.WriteBool(KEY_VALIDATE_DECLARATION, FValidateDeclaration);
-         registry.WriteInteger(KEY_NAVIGATOR_ALPHA_VALUE, FNavigatorAlphaValue);
-         registry.WriteBool(KEY_NAVIGATOR_ALPHA_VISIBLE, FNavigatorAlphaVisible);
-         registry.WriteBool(KEY_EXPLORER_AUTO_NAV, FExplorerAutoNav);
-         registry.WriteInteger(KEY_HIGHLIGHT_COLOR, FHighlightColor);
-         registry.WriteInteger(KEY_EDITOR_FONT_COLOR, FEditorFontColor);
-         registry.WriteInteger(KEY_EDITOR_BKG_COLOR, FEditorBkgColor);
-         registry.WriteInteger(KEY_EDITOR_STRING_COLOR, FEditorStringColor);
-         registry.WriteInteger(KEY_EDITOR_NUMBER_COLOR, FEditorNumberColor);
-         registry.WriteInteger(KEY_EDITOR_COMMENT_COLOR, FEditorCommentColor);
-         registry.WriteInteger(KEY_EDITOR_ALINE_COLOR, FEditorALineColor);
-         registry.WriteInteger(KEY_EDITOR_SELECT_COLOR, FEditorSelectColor);
-         registry.WriteInteger(KEY_EDITOR_GUTTER_COLOR, FEditorGutterColor);
-         registry.WriteInteger(KEY_EDITOR_BRACKET_COLOR, FEditorBracketColor);
-         registry.WriteInteger(KEY_EDITOR_FONT_SIZE, FEditorFontSize);
-         registry.WriteInteger(KEY_DESKTOP_COLOR, FDesktopColor);
-         registry.WriteInteger(KEY_EDITOR_INDENT, FIndentLength);
-         registry.WriteInteger(KEY_ELLIPSE_COLOR, FEllipseColor);
-         registry.WriteInteger(KEY_DIAMOND_COLOR, FDiamondColor);
-         registry.WriteInteger(KEY_INOUT_COLOR, FInOutColor);
-         registry.WriteInteger(KEY_RECT_COLOR, FRectColor);
-         registry.WriteInteger(KEY_FOLD_COLOR, FFoldColor);
-         registry.WriteInteger(KEY_ROADSIGN_COLOR, FRoadSignColor);
-         registry.WriteInteger(KEY_ROUTINE_COLOR, FRoutineColor);
-         registry.WriteInteger(KEY_FONT_COLOR, FFontColor);
-         registry.WriteInteger(KEY_COLV1_WIDTH, FColumnV1Width);
-         registry.WriteInteger(KEY_COLV2_WIDTH, FColumnV2Width);
-         registry.WriteInteger(KEY_COLV3_WIDTH, FColumnV3Width);
-         registry.WriteInteger(KEY_COLV4_WIDTH, FColumnV4Width);
-         registry.WriteInteger(KEY_COLV5_WIDTH, FColumnV5Width);
-         registry.WriteInteger(KEY_COLC1_WIDTH, FColumnC1Width);
-         registry.WriteInteger(KEY_COLC2_WIDTH, FColumnC2Width);
-         registry.WriteInteger(KEY_COLC3_WIDTH, FColumnC3Width);
-         registry.WriteString(KEY_LOCALIZATION_FILE, FTranslateFile);
-         registry.WriteString(KEY_FLOWCHART_FONT_NAME, FFlowchartFontName);
+         reg.WriteBool(KEY_PARSE_INPUT, FParseInput);
+         reg.WriteBool(KEY_PARSE_OUTPUT, FParseOutput);
+         reg.WriteBool(KEY_PARSE_ASSIGN, FParseAssign);
+         reg.WriteBool(KEY_PARSE_MULT_ASSIGN, FParseAssignMult);
+         reg.WriteBool(KEY_PARSE_CONDITION, FParseCondition);
+         reg.WriteBool(KEY_PARSE_FOR, FParseFor);
+         reg.WriteBool(KEY_PARSE_CASE, FParseCase);
+         reg.WriteBool(KEY_PARSE_SUBROUTINE, FParseRoutineCall);
+         reg.WriteBool(KEY_PARSE_RETURN, FParseReturn);
+         reg.WriteBool(KEY_CONFIRM_REMOVE, FConfirmRemove);
+         reg.WriteBool(KEY_PRINT_MULTI_PAGES, FPrintMultPages);
+         reg.WriteBool(KEY_PRINT_MULTI_PAGES_HORZ, FPrintMultPagesHorz);
+         reg.WriteBool(KEY_AUTOSELECT_CODE_BLOCK, FEditorAutoSelectBlock);
+         reg.WriteBool(KEY_AUTOUPDATE_CODE, FEditorAutoUpdate);
+         reg.WriteInteger(KEY_PRINT_MARGIN_LEFT, FPrintMargins.Left);
+         reg.WriteInteger(KEY_PRINT_MARGIN_RIGHT, FPrintMargins.Right);
+         reg.WriteInteger(KEY_PRINT_MARGIN_TOP, FPrintMargins.Top);
+         reg.WriteInteger(KEY_PRINT_MARGIN_BOTTOM, FPrintMargins.Bottom);
+         reg.WriteBool(KEY_EDITOR_SHOW_GUTTER, FEditorShowGutter);
+         reg.WriteBool(KEY_EDITOR_CODE_FOLDING, FEditorCodeFolding);
+         reg.WriteBool(KEY_EDITOR_SHOW_RICHTEXT, FEditorShowRichText);
+         reg.WriteBool(KEY_EDITOR_SHOW_SCROLLBARS, FEditorShowScrollbars);
+         reg.WriteBool(KEY_EDITOR_INDENT_GUIDES, FEditorIndentGuides);
+         reg.WriteBool(KEY_SHOW_STATUSBAR, FEditorShowStatusBar);
+         reg.WriteBool(KEY_ENABLE_DBUFFERING, FEnableDBuffering);
+         reg.WriteBool(KEY_SHOW_FUNC_LABELS, FShowFuncLabels);
+         reg.WriteBool(KEY_SHOW_BLOCK_LABELS, FShowBlockLabels);
+         reg.WriteBool(KEY_VALIDATE_DECLARATION, FValidateDeclaration);
+         reg.WriteInteger(KEY_NAVIGATOR_ALPHA_VALUE, FNavigatorAlphaValue);
+         reg.WriteBool(KEY_NAVIGATOR_ALPHA_VISIBLE, FNavigatorAlphaVisible);
+         reg.WriteBool(KEY_EXPLORER_AUTO_NAV, FExplorerAutoNav);
+         reg.WriteInteger(KEY_HIGHLIGHT_COLOR, FHighlightColor);
+         reg.WriteInteger(KEY_EDITOR_FONT_COLOR, FEditorFontColor);
+         reg.WriteInteger(KEY_EDITOR_BKG_COLOR, FEditorBkgColor);
+         reg.WriteInteger(KEY_EDITOR_STRING_COLOR, FEditorStringColor);
+         reg.WriteInteger(KEY_EDITOR_NUMBER_COLOR, FEditorNumberColor);
+         reg.WriteInteger(KEY_EDITOR_COMMENT_COLOR, FEditorCommentColor);
+         reg.WriteInteger(KEY_EDITOR_ALINE_COLOR, FEditorALineColor);
+         reg.WriteInteger(KEY_EDITOR_SELECT_COLOR, FEditorSelectColor);
+         reg.WriteInteger(KEY_EDITOR_GUTTER_COLOR, FEditorGutterColor);
+         reg.WriteInteger(KEY_EDITOR_BRACKET_COLOR, FEditorBracketColor);
+         reg.WriteInteger(KEY_EDITOR_FONT_SIZE, FEditorFontSize);
+         reg.WriteInteger(KEY_DESKTOP_COLOR, FDesktopColor);
+         reg.WriteInteger(KEY_EDITOR_INDENT, FIndentLength);
+         reg.WriteInteger(KEY_ELLIPSE_COLOR, FEllipseColor);
+         reg.WriteInteger(KEY_DIAMOND_COLOR, FDiamondColor);
+         reg.WriteInteger(KEY_INOUT_COLOR, FInOutColor);
+         reg.WriteInteger(KEY_RECT_COLOR, FRectColor);
+         reg.WriteInteger(KEY_FOLD_COLOR, FFoldColor);
+         reg.WriteInteger(KEY_ROADSIGN_COLOR, FRoadSignColor);
+         reg.WriteInteger(KEY_ROUTINE_COLOR, FRoutineColor);
+         reg.WriteInteger(KEY_FONT_COLOR, FFontColor);
+         reg.WriteInteger(KEY_COLV1_WIDTH, FColumnV1Width);
+         reg.WriteInteger(KEY_COLV2_WIDTH, FColumnV2Width);
+         reg.WriteInteger(KEY_COLV3_WIDTH, FColumnV3Width);
+         reg.WriteInteger(KEY_COLV4_WIDTH, FColumnV4Width);
+         reg.WriteInteger(KEY_COLV5_WIDTH, FColumnV5Width);
+         reg.WriteInteger(KEY_COLC1_WIDTH, FColumnC1Width);
+         reg.WriteInteger(KEY_COLC2_WIDTH, FColumnC2Width);
+         reg.WriteInteger(KEY_COLC3_WIDTH, FColumnC3Width);
+         reg.WriteString(KEY_LOCALIZATION_FILE, FTranslateFile);
+         reg.WriteString(KEY_FLOWCHART_FONT_NAME, FFlowchartFontName);
        end
        else
           Application.MessageBox(PChar(i18Manager.GetString('RegErr')),
                                  PChar(i18Manager.GetString('Warning')),
                                  MB_OK+MB_ICONEXCLAMATION);
    finally
-      registry.Free;
+      reg.Free;
    end;
 end;
 
@@ -584,13 +584,13 @@ end;
 
 procedure TSettings.LoadFromForm;
 var
-   lRedrawFlow, lColorChanged, lApplyAll: boolean;
-   lLangDef: TLangDefinition;
+   redrawFlow, colorChanged, applyAll: boolean;
+   langDef: TLangDefinition;
 begin
 
-   lRedrawFlow := false;
-   lColorChanged := false;
-   lApplyAll := true;
+   redrawFlow := false;
+   colorChanged := false;
+   applyAll := true;
    
    with TInfra.GetSettingsForm do
    begin
@@ -624,48 +624,48 @@ begin
       begin
          if FEllipseColor <> Pixels[35, 22] then
          begin
-            lColorChanged := true;
+            colorChanged := true;
             FEllipseColor := Pixels[35, 22];
          end;
          if FInOutColor <> Pixels[35, 55] then
          begin
-            lColorChanged := true;
+            colorChanged := true;
             FInOutColor := Pixels[35, 55];
          end;
          if FRoutineColor <> Pixels[165, 52] then
          begin
-            lColorChanged := true;
+            colorChanged := true;
             FRoutineColor := Pixels[165, 52];
          end;
          if FDiamondColor <> Pixels[100, 38] then
          begin
-            lColorChanged := true;
+            colorChanged := true;
             FDiamondColor := Pixels[100, 38];
          end;
          if FRoadSignColor <> Pixels[229, 22] then
          begin
-            lColorChanged := true;
+            colorChanged := true;
             FRoadSignColor := Pixels[229, 22];
          end;
          if FRectColor <> Pixels[165, 22] then
          begin
-            lColorChanged := true;
+            colorChanged := true;
             FRectColor := Pixels[165, 22];
          end;
          if FFoldColor <> Pixels[230, 52] then
          begin
-            lColorChanged := true;
+            colorChanged := true;
             FFoldColor := Pixels[230, 52];
          end;
       end;
       if (FFontColor <> pnlFont.Color) and not TInfra.IsNOkColor(pnlFont.Color) then
       begin
-         lColorChanged := true;
+         colorChanged := true;
          FFontColor := pnlFont.Color;
       end;
       if FDesktopColor <> pnlDesktop.Color then
       begin
-         lColorChanged := true;
+         colorChanged := true;
          FDesktopColor := pnlDesktop.Color;
       end;
       FHighlightColor := pnlFill.Color;
@@ -685,23 +685,23 @@ begin
             FTranslateFile := edtTranslateFile.Text;
       end;
 
-      lLangDef := GInfra.GetLangDefinition(cbLanguage.Text);
-      if lLangDef <> nil then
+      langDef := GInfra.GetLangDefinition(cbLanguage.Text);
+      if langDef <> nil then
       begin
-         lLangDef.CompilerCommand := Trim(edtCompiler.Text);
-         lLangDef.CompilerCommandNoMain := Trim(edtCompilerNoMain.Text);
+         langDef.CompilerCommand := Trim(edtCompiler.Text);
+         langDef.CompilerCommandNoMain := Trim(edtCompilerNoMain.Text);
       end;
 
       if FShowFuncLabels <> chkShowFuncLabels.Checked then
       begin
          FShowFuncLabels := not FShowFuncLabels;
-         lRedrawFlow := true;
+         redrawFlow := true;
       end;
 
       if FShowBlockLabels <> chkShowBlockLabels.Checked then
       begin
          FShowBlockLabels := not FShowBlockLabels;
-         lRedrawFlow := true;
+         redrawFlow := true;
       end;
 
       if (GProject <> nil) and ((FEnableDBuffering <> chkEnableDBuffer.Checked) or (FFlowchartFontName <> edtFontName.Text) or (GInfra.CurrentLang.Name <> cbLanguage.Text)) then
@@ -709,10 +709,10 @@ begin
          if TInfra.ShowFormattedQuestionBox('CloseProjectAsk', [CRLF]) = IDYES then
             TInfra.SetInitialSettings
          else
-            lApplyAll := false;
+            applyAll := false;
       end;
 
-      if lApplyAll then
+      if applyAll then
       begin
          FEnableDBuffering := chkEnableDBuffer.Checked;
          FFlowchartFontName := edtFontName.Text;
@@ -737,18 +737,18 @@ begin
       
    end;
 
-   if lColorChanged then
+   if colorChanged then
    begin
       MainForm.Color := FDesktopColor;
       if GProject <> nil then
       begin
          GProject.SetCommentsColor(FDesktopColor);
          GProject.ChangeFlowchartsColor(FDesktopColor);
-         lRedrawFlow := true;
+         redrawFlow := true;
       end;
    end;
 
-   if lRedrawFlow and (GProject <> nil) then
+   if redrawFlow and (GProject <> nil) then
    begin
       GProject.RepaintFlowcharts;
       NavigatorForm.Invalidate;
