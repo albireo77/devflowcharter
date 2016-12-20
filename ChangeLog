@@ -1,3 +1,7 @@
+3.6.3 [20.12.2016]
+- Editor's Find/Replace: highlight in yellow all findings in file
+- Code Generation: don't write instruction end ; when line does not contain anything else; just generate empty line
+
 3.6.2 [26.11.2016]
 - XML language definition files saved as UTF to properly handle non-English characters
 - make Settings page a bit smaller to be displayed entirely on 1024x768 screen
