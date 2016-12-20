@@ -379,8 +379,8 @@ var
    i: integer;
    lName: string;
    lList: TDeclareList;
-   lForm: TBaseForm;
-   lType: TUserDataType;
+   baseForm: TBaseForm;
+   dataType: TUserDataType;
 begin
    i := 0;
    lList := nil;
@@ -398,24 +398,24 @@ begin
       end;
       if lList = nil then
       begin
-         lType := GProject.GetUserDataType(lName);
-         if lType <> nil then
+         dataType := GProject.GetUserDataType(lName);
+         if dataType <> nil then
          begin
-            result := lType.RetrieveFocus(AInfo);
+            result := dataType.RetrieveFocus(AInfo);
             if result then exit;
          end;
       end;
    end;
    if lList <> nil then
    begin
-      lForm := lList.ParentForm;
+      baseForm := lList.ParentForm;
       lList.sgList.Row := i;
       lList.Show;
    end
    else
-      lForm := FParentForm;
-   if lForm <> nil then
-      lForm.Show;
+      baseForm := FParentForm;
+   if baseForm <> nil then
+      baseForm.Show;
    result := i > 0;
 end;
 
@@ -445,8 +445,8 @@ end;
 function TVarDeclareList.GetDimensionCount(const AVarName: string; const AIncludeTypeDimens: boolean = false): integer;
 var
    i, a: integer;
-   lDataType: TUserDataType;
-   lSize: string;
+   dataType: TUserDataType;
+   size: string;
 begin
    result := 0;
    if GProject <> nil then
@@ -456,17 +456,17 @@ begin
       begin
          if AIncludeTypeDimens then
          begin
-            lDataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
-            if lDataType <> nil then
-               result := lDataType.GetDimensionCount;
+            dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
+            if dataType <> nil then
+               result := dataType.GetDimensionCount;
          end;
-         lSize := sgList.Cells[VAR_SIZE_COL, i];
-         for a := 1 to Length(lSize) do
+         size := sgList.Cells[VAR_SIZE_COL, i];
+         for a := 1 to Length(size) do
          begin
-            if lSize[a] = ',' then
+            if size[a] = ',' then
                Inc(result);
          end;
-         if lSize <> '1' then
+         if size <> '1' then
             Inc(result);
       end;
    end;
@@ -475,29 +475,29 @@ end;
 function TVarDeclareList.GetDimension(const AVarName: string; const ADimensIndex: integer): string;
 var
    i, a, cnt: integer;
-   lString, lDims: string;
-   lDataType: TUserDataType;
+   size, dims: string;
+   dataType: TUserDataType;
 begin
    result := '';
    i := sgList.Cols[VAR_NAME_COL].IndexOf(AVarName);
    if i > 0 then
    begin
       cnt := 1;
-      lString := sgList.Cells[VAR_SIZE_COL, i];
+      size := sgList.Cells[VAR_SIZE_COL, i];
       if GProject <> nil then
       begin
-         lDataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
-         if lDataType <> nil then
+         dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
+         if dataType <> nil then
          begin
-            lDims := lDataType.GetDimensions;
-            if lDims <> '' then
-               lString := lString + ',' + lDims;
+            dims := dataType.GetDimensions;
+            if dims <> '' then
+               size := size + ',' + dims;
          end;
       end;
-      for a := 1 to Length(lString) do
+      for a := 1 to Length(size) do
       begin
-         if lString[a] <> ',' then
-            result := result + lString[a]
+         if size[a] <> ',' then
+            result := result + size[a]
          else
          begin
             Inc(cnt);
@@ -512,10 +512,10 @@ end;
 
 procedure TDeclareList.OnDblClickList(Sender: TObject);
 var
-   lPoint: TPoint;
+   pnt: TPoint;
 begin
-   lPoint := sgList.ScreenToClient(Mouse.CursorPos);
-   if FindValidRowByPoint(lPoint) <> -1 then
+   pnt := sgList.ScreenToClient(Mouse.CursorPos);
+   if FindValidRowByPoint(pnt) <> -1 then
       btnChange.Click;
 end;
 
@@ -532,23 +532,23 @@ end;
 
 procedure TDeclareList.OnRowMovedList(Sender: TObject; FromIndex, ToIndex: Longint);
 var
-   lControl: TControl;
-   lPoint: TPoint;
+   control: TControl;
+   pnt: TPoint;
 begin
    TInfra.UpdateCodeEditor;
    if FCheckBoxCol <> -1 then
    begin
       if sgList.Objects[FCheckBoxCol, FromIndex] is TControl then
       begin
-         lControl := TControl(sgList.Objects[FCheckBoxCol, FromIndex]);
-         lPoint := GetCheckBoxPoint(FCheckBoxCol, ToIndex);
-         lControl.SetBounds(lPoint.X, lPoint.Y, lControl.Width, lControl.Height);
+         control := TControl(sgList.Objects[FCheckBoxCol, FromIndex]);
+         pnt := GetCheckBoxPoint(FCheckBoxCol, ToIndex);
+         control.SetBounds(pnt.X, pnt.Y, control.Width, control.Height);
       end;
       if sgList.Objects[FCheckBoxCol, ToIndex] is TControl then
       begin
-         lControl := TControl(sgList.Objects[FCheckBoxCol, ToIndex]);
-         lPoint := GetCheckBoxPoint(FCheckBoxCol, FromIndex);
-         lControl.SetBounds(lPoint.X, lPoint.Y, lControl.Width, lControl.Height);
+         control := TControl(sgList.Objects[FCheckBoxCol, ToIndex]);
+         pnt := GetCheckBoxPoint(FCheckBoxCol, FromIndex);
+         control.SetBounds(pnt.X, pnt.Y, control.Width, control.Height);
       end;
    end;
    OnTopLeftChanged(sgList);
@@ -602,9 +602,9 @@ end;
 procedure TVarDeclareList.OnClickAdd(Sender: TObject);
 var
    status, lType: integer;
-   lInfo, lInitString: string;
-   lEdit: TWinControl;
-   lDataType: TUserDataType;
+   info, initVal: string;
+   edit: TWinControl;
+   dataType: TUserDataType;
 begin
    status := GInfra.ValidateId(edtName.Text);
    lType := TParserHelper.GetType(cbType.Text);
@@ -617,17 +617,17 @@ begin
          status := INCORRECT_SIZE
       else if (edtSize.Text = '1') and not TParserHelper.IsStructType(lType) and Assigned(GInfra.CurrentLang.GetLiteralType) then
       begin
-         lInitString := Trim(edtInit.Text);
-         if lInitString <> '' then
+         initVal := Trim(edtInit.Text);
+         if initVal <> '' then
          begin
             if TParserHelper.IsEnumType(lType) then
             begin
-               lDataType := GProject.GetUserDataType(cbType.Text);
-               if (lDataType <> nil) and not lDataType.IsValidEnumValue(lInitString) then
+               dataType := GProject.GetUserDataType(cbType.Text);
+               if (dataType <> nil) and not dataType.IsValidEnumValue(initVal) then
                   status := INVALID_INIT_VAL;
             end
-            else if not TParserHelper.AreTypesCompatible(lType, GInfra.CurrentLang.GetLiteralType(lInitString)) and
-                    not TParserHelper.AreTypesCompatible(lType, TParserHelper.GetConstType(lInitString)) then status := INVALID_INIT_VAL;
+            else if not TParserHelper.AreTypesCompatible(lType, GInfra.CurrentLang.GetLiteralType(initVal)) and
+                    not TParserHelper.AreTypesCompatible(lType, TParserHelper.GetConstType(initVal)) then status := INVALID_INIT_VAL;
          end;
       end;
    end;
@@ -637,24 +637,24 @@ begin
       case status of
          INCORRECT_SIZE:
          begin
-            lEdit := edtSize;
-            lInfo := 'BadSize';
+            edit := edtSize;
+            info := 'BadSize';
          end;
          INVALID_INIT_VAL:
          begin
-            lEdit := edtInit;
-            lInfo := 'BadInitVal';
+            edit := edtInit;
+            info := 'BadInitVal';
          end;
       else
-         lEdit := edtName;
+         edit := edtName;
          case status of
-            INCORRECT_IDENT:  lInfo := 'BadId';
-            DUPLICATED_IDENT: lInfo := 'DupId';
-            RESERVED_IDENT:   lInfo := i18Manager.GetFormattedString('IncorrectIdKeyword', [edtName.Text, GInfra.CurrentLang.Name]);
+            INCORRECT_IDENT:  info := 'BadId';
+            DUPLICATED_IDENT: info := 'DupId';
+            RESERVED_IDENT:   info := i18Manager.GetFormattedString('IncorrectIdKeyword', [edtName.Text, GInfra.CurrentLang.Name]);
          end;
       end;
-      TInfra.ShowErrorBox(i18Manager.GetString(lInfo), errDeclare);
-      lEdit.SetFocus;
+      TInfra.ShowErrorBox(i18Manager.GetString(info), errDeclare);
+      edit.SetFocus;
    end
    else
       AddUpdateRow;
@@ -668,12 +668,12 @@ end;
 
 procedure TDeclareList.OnClickExport(Sender: TObject);
 var
-   lFileName: string;
+   fileName: string;
 begin
    if sgList.RowCount > 2 then
    begin
-      lFileName := GProject.Name + '_' + FPlural;
-      TXMLProcessor.ExportToXMLFile(ExportToXMLTag, lFileName);
+      fileName := GProject.Name + '_' + FPlural;
+      TXMLProcessor.ExportToXMLFile(ExportToXMLTag, fileName);
    end;
 end;
 
@@ -692,11 +692,11 @@ end;
 
 procedure TConstDeclareList.OnClickAdd(Sender: TObject);
 var
-   status, const_type: integer;
-   lInfo: string;
-   lEdit: TWinControl;
+   status, constType: integer;
+   info: string;
+   edit: TCustomEdit;
 begin
-   const_type := GENERIC_INT_TYPE;
+   constType := GENERIC_INT_TYPE;
    status := GInfra.ValidateConstId(edtName.Text);
    if status <> VALID_IDENT then
    else if IsDeclared(edtName.Text, true) then
@@ -704,8 +704,8 @@ begin
    else
    begin
       if GSettings.ValidateDeclaration and Assigned(GInfra.CurrentLang.GetLiteralType) then
-         const_type := GInfra.CurrentLang.GetLiteralType(edtValue.Text);
-      if const_type = UNKNOWN_TYPE then
+         constType := GInfra.CurrentLang.GetLiteralType(edtValue.Text);
+      if constType = UNKNOWN_TYPE then
          status := UNKNOWN_TYPE;
    end;
 
@@ -713,21 +713,20 @@ begin
    begin
       if status = UNKNOWN_TYPE then
       begin
-         lInfo := 'BadCVal';
-         lEdit := edtValue;
-
+         info := 'BadCVal';
+         edit := edtValue;
       end
       else
       begin
          case status of
-            INCORRECT_IDENT:  lInfo := 'BadId';
-            DUPLICATED_IDENT: lInfo := 'DupId';
-            RESERVED_IDENT:   lInfo := i18Manager.GetFormattedString('IncorrectIdKeyword', [edtName.Text, GInfra.CurrentLang.Name]);
+            INCORRECT_IDENT:  info := 'BadId';
+            DUPLICATED_IDENT: info := 'DupId';
+            RESERVED_IDENT:   info := i18Manager.GetFormattedString('IncorrectIdKeyword', [edtName.Text, GInfra.CurrentLang.Name]);
          end;
-         lEdit := edtName;
+         edit := edtName;
       end;
-      TInfra.ShowErrorBox(i18Manager.GetString(lInfo), errDeclare);
-      lEdit.SetFocus;
+      TInfra.ShowErrorBox(i18Manager.GetString(info), errDeclare);
+      edit.SetFocus;
    end
    else
       AddUpdateRow;
@@ -1043,13 +1042,13 @@ end;
 
 function TDeclareList.CreateCheckBox(const ACol, ARow: integer): TCheckBox;
 var
-   lPoint: TPoint;
+   pnt: TPoint;
 begin
-   lPoint := GetCheckBoxPoint(ACol, ARow);
+   pnt := GetCheckBoxPoint(ACol, ARow);
    result := TCheckBox.Create(Self);
    result.Parent := Self;
-   result.Visible := IsRowVisible(ARow) and (lPoint.X <= GetRightMargin);
-   result.SetBounds(lPoint.X, lPoint.Y, 10, 10);
+   result.Visible := IsRowVisible(ARow) and (pnt.X <= GetRightMargin);
+   result.SetBounds(pnt.X, pnt.Y, 10, 10);
    result.OnClick := OnClickChBox;
    Repaint;
 end;
@@ -1071,7 +1070,7 @@ end;
 procedure TDeclareList.OnColWidthsChanged(Sender: TObject);
 var
    i, xPos: integer;
-   lControl: TControl;
+   control: TControl;
 begin
    if FCheckBoxCol <> -1 then
    begin
@@ -1080,9 +1079,9 @@ begin
       begin
          if sgList.Objects[FCheckBoxCol, i] is TControl then
          begin
-            lControl := TControl(sgList.Objects[FCheckBoxCol, i]);
-            lControl.Left := xPos;
-            lControl.Visible := IsRowVisible(i) and (lControl.Left <= GetRightMargin(lControl));
+            control := TControl(sgList.Objects[FCheckBoxCol, i]);
+            control.Left := xPos;
+            control.Visible := IsRowVisible(i) and (control.Left <= GetRightMargin(control));
          end;
       end;
    end;
@@ -1091,8 +1090,8 @@ end;
 procedure TDeclareList.OnTopLeftChanged(Sender: TObject);
 var
    i: integer;
-   lControl: TControl;
-   lPoint: TPoint;
+   control: TControl;
+   pnt: TPoint;
 begin
    if FCheckBoxCol <> -1 then
    begin
@@ -1100,9 +1099,9 @@ begin
       begin
          if sgList.Objects[FCheckBoxCol, i] is TControl then
          begin
-            lPoint := GetCheckBoxPoint(FCheckBoxCol, i);
-            lControl := TControl(sgList.Objects[FCheckBoxCol, i]);
-            lControl.SetBounds(lPoint.X, lPoint.Y, lControl.Width, lControl.Height);
+            pnt := GetCheckBoxPoint(FCheckBoxCol, i);
+            control := TControl(sgList.Objects[FCheckBoxCol, i]);
+            control.SetBounds(pnt.X, pnt.Y, control.Width, control.Height);
          end;
       end;
       RefreshChBoxes;
@@ -1112,7 +1111,7 @@ end;
 procedure TDeclareList.RefreshChBoxes;
 var
    i: integer;
-   lControl: TControl;
+   control: TControl;
 begin
    if FCheckBoxCol <> -1 then
    begin
@@ -1120,8 +1119,8 @@ begin
       begin
          if sgList.Objects[FCheckBoxCol, i] is TControl then
          begin
-            lControl := TControl(sgList.Objects[FCheckBoxCol, i]);
-            lControl.Visible := IsRowVisible(i) and (lControl.Left <= GetRightMargin(lControl));
+            control := TControl(sgList.Objects[FCheckBoxCol, i]);
+            control.Visible := IsRowVisible(i) and (control.Left <= GetRightMargin(control));
          end;
       end;
    end;

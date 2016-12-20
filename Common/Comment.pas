@@ -188,7 +188,7 @@ end;
 procedure TComment.SetIsHeader(AValue: boolean);
 var
    iter: IIterator;
-   lComment: TComment;
+   comment: TComment;
 begin
    if FIsHeader then
       FIsHeader := false
@@ -197,10 +197,10 @@ begin
       iter := GProject.GetComments;
       while iter.HasNext do
       begin
-         lComment := TComment(iter.Next);
-         if (lComment <> Self) and lComment.FIsHeader then
+         comment := TComment(iter.Next);
+         if (comment <> Self) and comment.FIsHeader then
          begin
-            lComment.FIsHeader := false;
+            comment.FIsHeader := false;
             break;
          end;
       end;
@@ -230,16 +230,16 @@ end;
 
 procedure TComment.PaintToCanvas(const ACanvas: TCanvas);
 var
-   lStyle: TBorderStyle;
+   borderStyle: TBorderStyle;
 begin
    if Visible and (FPinControl = nil) then
    begin
       ACanvas.Lock;
       try
-         lStyle := BorderStyle;
+         borderStyle := BorderStyle;
          ChangeBorderStyle(bsNone);
          PaintTo(ACanvas, Left + Parent.Left, Top + Parent.Top);
-         ChangeBorderStyle(lStyle);
+         ChangeBorderStyle(borderStyle);
       finally
          ACanvas.Unlock;
       end;
@@ -283,14 +283,14 @@ end;
 
 procedure TComment.MouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 var
-   lPoint: TPoint;
+   pnt: TPoint;
 begin
-   lPoint := Point(X, Y);
-   if PtInRect(Rect(Width-5, 0, Width, Height-5), lPoint) then
+   pnt := Point(X, Y);
+   if PtInRect(Rect(Width-5, 0, Width, Height-5), pnt) then
       Cursor := crSizeWE
-   else if PtInRect(Rect(0, Height-5, Width-5, Height), lPoint) then
+   else if PtInRect(Rect(0, Height-5, Width-5, Height), pnt) then
       Cursor := crSizeNS
-   else if PtInRect(Rect(Width-5, Height-5, Width, Height), lPoint) then
+   else if PtInRect(Rect(Width-5, Height-5, Width, Height), pnt) then
       Cursor := crSizeNWSE
    else if Cursor <> crDefault then
       Cursor := crDefault;
@@ -319,12 +319,12 @@ end;
 
 procedure TComment.MyOnContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
 var
-   lPoint: TPoint;
+   pnt: TPoint;
 begin
    Handled := true;   
-   lPoint := ClientToScreen(MousePos);
+   pnt := ClientToScreen(MousePos);
    PopupMenu.PopupComponent := Self;
-   PopupMenu.Popup(lPoint.X, lPoint.Y);
+   PopupMenu.Popup(pnt.X, pnt.Y);
 end;
 
 procedure TComment.ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl);

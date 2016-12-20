@@ -90,16 +90,16 @@ end;
 
 procedure TBaseIterator.Reverse;
 var
-   lObject: TObject;
+   obj: TObject;
    i: integer;
 begin
    if (FList <> nil) and (FList.Count > 1) then
    begin
       for i := 0 to (FList.Count div 2)-1 do
       begin
-         lObject := FList[i];
+         obj := FList[i];
          FList[i] := FList[FList.Count-i-1];
-         FList[FList.Count-i-1] := lObject;
+         FList[FList.Count-i-1] := obj;
       end;
    end;
 end;

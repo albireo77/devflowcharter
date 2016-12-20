@@ -2548,17 +2548,17 @@ end;
 procedure TBlock.UpdateEditor(AEdit: TCustomEdit);
 var
    chLine: TChangeLine;
-   line: string;
+   instrEnd: string;
 begin
    if (AEdit <> nil) and PerformEditorUpdate then
    begin
       chLine := TInfra.GetChangeLine(Self, AEdit);
       if chLine.Row <> ROW_NOT_FOUND then
       begin
-         line := FastCodeAnsiStringReplace(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
-         if Trim(line) = GInfra.CurrentLang.InstrEnd then
-            line := FastCodeAnsiStringReplace(line, GInfra.CurrentLang.InstrEnd, '');
-         chLine.Text := line;
+         chLine.Text := FastCodeAnsiStringReplace(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
+         instrEnd := GInfra.CurrentLang.InstrEnd;
+         if (instrEnd <> '') and (Trim(chLine.Text) = instrEnd) then
+            chLine.Text := FastCodeAnsiStringReplace(chLine.Text, instrEnd, '');
          if GSettings.UpdateEditor and not SkipUpdateEditor then
             TInfra.ChangeLine(chLine);
          TInfra.GetEditorForm.SetCaretPos(chLine);
@@ -2787,7 +2787,7 @@ end;
 
 procedure TBlock.GenerateTemplateSection(const ALines: TStringList; const ATemplate: TStringList; const ALangId: string; const ADeep: integer);
 var
-   line: string;
+   line, instrEnd: string;
    i: integer;
    obj: TObject;
 begin
@@ -2798,8 +2798,9 @@ begin
    begin
       line := DupeString(GSettings.IndentString, ADeep) + ATemplate[i];
       line := FastCodeAnsiStringReplace(line, INDENT_XML_CHAR, GSettings.IndentString);
-      if Trim(line) = GInfra.CurrentLang.InstrEnd then
-         line := FastCodeAnsiStringReplace(line, GInfra.CurrentLang.InstrEnd, '');
+      instrEnd := GInfra.CurrentLang.InstrEnd;
+      if (instrEnd <> '') and (Trim(line) = instrEnd) then
+         line := FastCodeAnsiStringReplace(line, instrEnd, '');
       obj := ATemplate.Objects[i];
       if obj = nil then
          obj := Self;

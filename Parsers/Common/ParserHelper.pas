@@ -129,23 +129,23 @@ end;
 
 class function TParserHelper.GetForVarType: integer;
 var
-   lBlock: TBlock;
+   block: TBlock;
 begin
    result := NOT_DEFINED;
-   lBlock := TInfra.GetParsedBlock;
-   if lBlock is TForDoBlock then
-      result := GetVarInfo(TForDoBlock(lBlock).edtVariable.Text).TType;
+   block := TInfra.GetParsedBlock;
+   if block is TForDoBlock then
+      result := GetVarInfo(TForDoBlock(block).edtVariable.Text).TType;
 end;
 
 class function TParserHelper.GetCaseVarType: integer;
 var
-   lBlock: TBlock;
+   block: TBlock;
 begin
    result := NOT_DEFINED;
-   lBlock := TInfra.GetParsedBlock;
-   if lBlock is TCaseBlock then
+   block := TInfra.GetParsedBlock;
+   if block is TCaseBlock then
    begin
-      result := GetVarInfo(TCaseBlock(lBlock).GetTextControl.Text).TType;
+      result := GetVarInfo(TCaseBlock(block).GetTextControl.Text).TType;
       if result = NOT_DEFINED then
          result := GENERIC_INT_TYPE;
    end;
@@ -154,52 +154,52 @@ end;
 // check if active statement is inside loop
 class function TParserHelper.IsInLoop: boolean;
 var
-   lBlock: TBlock;
+   block: TBlock;
 begin
    result := false;
-   lBlock := TInfra.GetParsedBlock;
-   while lBlock <> nil do
+   block := TInfra.GetParsedBlock;
+   while block <> nil do
    begin
-      if lBlock.BType in LOOP_BLOCKS then
+      if block.BType in LOOP_BLOCKS then
       begin
          result := true;
          break;
       end;
-      lBlock := lBlock.ParentBlock;
+      block := block.ParentBlock;
    end;
 end;
 
 class function TParserHelper.IsDuplicatedCase: boolean;
 var
-   lEdit: TCustomEdit;
+   edit: TCustomEdit;
 begin
    result := false;
-   lEdit := TInfra.GetParsedEdit;
-   if (lEdit <> nil) and (lEdit.Parent is TCaseBlock) then
-      result := TCaseBlock(lEdit.Parent).IsDuplicatedCase(lEdit);
+   edit := TInfra.GetParsedEdit;
+   if (edit <> nil) and (edit.Parent is TCaseBlock) then
+      result := TCaseBlock(edit.Parent).IsDuplicatedCase(edit);
 end;
 
 // get function type for active edit control
 class function TParserHelper.GetUserFunctionType: integer;
 var
-   lHeader: TUserFunctionHeader;
+   header: TUserFunctionHeader;
 begin
    result := NOT_DEFINED;
-   lHeader := TInfra.GetFunctionHeader(TInfra.GetParsedBlock);
-   if (lHeader <> nil) and (lHeader.Font.Color <> NOK_COLOR) then
-      result := GetType(lHeader.cbType.Text);
+   header := TInfra.GetFunctionHeader(TInfra.GetParsedBlock);
+   if (header <> nil) and (header.Font.Color <> NOK_COLOR) then
+      result := GetType(header.cbType.Text);
 end;
 
 class function TParserHelper.GetUserFunctionType(const AFunctionName: string): integer;
 var
-   lFunction: TUserFunction;
+   func: TUserFunction;
 begin
    result := NOT_DEFINED;
    if GProject <> nil then
    begin
-      lFunction := GProject.GetUserFunction(AFunctionName);
-      if (lFunction <> nil) and (lFunction.Header <> nil) and (lFunction.Header.Font.Color <> NOK_COLOR) then
-         result := GetType(lFunction.Header.cbType.Text);
+      func := GProject.GetUserFunction(AFunctionName);
+      if (func <> nil) and (func.Header <> nil) and (func.Header.Font.Color <> NOK_COLOR) then
+         result := GetType(func.Header.cbType.Text);
    end;
 end;
 
@@ -207,18 +207,18 @@ end;
 class function TParserHelper.GetType(const ATypeName: string; const ALangName: string = ''): integer;
 var
    i: integer;
-   lLangDef: TLangDefinition;
+   lang: TLangDefinition;
 begin
    result := UNKNOWN_TYPE;
    if ALangName = '' then
-      lLangDef := GInfra.CurrentLang
+      lang := GInfra.CurrentLang
    else
-      lLangDef := GInfra.GetLangDefinition(ALangName);
-   if lLangDef <> nil then
+      lang := GInfra.GetLangDefinition(ALangName);
+   if lang <> nil then
    begin
-      for i := 0 to High(lLangDef.NativeDataTypes) do
+      for i := 0 to High(lang.NativeDataTypes) do
       begin
-         if TInfra.SameStrings(lLangDef.NativeDataTypes[i].Name, ATypeName) then
+         if TInfra.SameStrings(lang.NativeDataTypes[i].Name, ATypeName) then
          begin
             result := i;
             break;
@@ -235,34 +235,34 @@ end;
 
 class function TParserHelper.ValidateUserFunctionParms(const AFunctionName: string; AParmList: array of integer): boolean;
 var
-   i, lParmType, lCurrentType: integer;
-   lFunction: TUserFunction;
-   lIsArray: boolean;
-   lParm: TParameter;
+   i, paramType, currType: integer;
+   func: TUserFunction;
+   isArray: boolean;
+   param: TParameter;
    iterp: IIterator;
 begin
    result := false;
    if GProject <> nil then
    begin
-      lFunction := GProject.GetUserFunction(AFunctionName);
-      if (lFunction <> nil) and (lFunction.Header <> nil) and (Length(AParmList) = lFunction.Header.ParameterCount) then
+      func := GProject.GetUserFunction(AFunctionName);
+      if (func <> nil) and (func.Header <> nil) and (Length(AParmList) = func.Header.ParameterCount) then
       begin
          i := 0;
-         iterp := lFunction.Header.GetParameterIterator;
+         iterp := func.Header.GetParameterIterator;
          while iterp.HasNext do
          begin
-            lParm := TParameter(iterp.Next);
-            lParmType := GetType(lParm.cbType.Text);
-            lCurrentType := AParmList[i];
-            lIsArray := lCurrentType >= DIMENSION_LEVEL_STEP;
-            if lIsArray then
-               lCurrentType := DecodeType(lCurrentType);
-            if lIsArray then
+            param := TParameter(iterp.Next);
+            paramType := GetType(param.cbType.Text);
+            currType := AParmList[i];
+            isArray := currType >= DIMENSION_LEVEL_STEP;
+            if isArray then
+               currType := DecodeType(currType);
+            if isArray then
             begin
-               if (lCurrentType <> lParmType) or (not lParm.chkTable.Checked and not IsArrayType(lParmType)) then
+               if (currType <> paramType) or (not param.chkTable.Checked and not IsArrayType(paramType)) then
                   exit;
             end
-            else if (not AreTypesCompatible(lParmType, lCurrentType)) or lParm.chkTable.Checked then
+            else if (not AreTypesCompatible(paramType, currType)) or param.chkTable.Checked then
                exit;
             i := i + 1;
          end;
@@ -274,8 +274,8 @@ end;
 class function TParserHelper.GetEnumeratedType(const AValue: string): integer;
 var
    iterf, iter: IIterator;
-   lDataType: TUserDataType;
-   lField: TField;
+   dataType: TUserDataType;
+   field: TField;
 begin
    result := NOT_DEFINED;
    if GProject <> nil then
@@ -283,16 +283,16 @@ begin
       iter := GProject.GetUserDataTypes;
       while iter.HasNext do
       begin
-         lDataType := TUserDataType(iter.Next);
-         if lDataType.Active and (lDataType.Font.Color <> NOK_COLOR) and lDataType.rbEnum.Checked then
+         dataType := TUserDataType(iter.Next);
+         if dataType.Active and (dataType.Font.Color <> NOK_COLOR) and dataType.rbEnum.Checked then
          begin
-            iterf := lDataType.GetFieldIterator;
+            iterf := dataType.GetFieldIterator;
             while iterf.HasNext do
             begin
-               lField := TField(iterf.Next);
-               if (lField.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(AValue, Trim(lField.edtName.Text)) then
+               field := TField(iterf.Next);
+               if (field.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(AValue, Trim(field.edtName.Text)) then
                begin
-                  result := GetType(lDataType.edtName.Text);
+                  result := GetType(dataType.edtName.Text);
                   break;
                end;
             end;
@@ -304,32 +304,32 @@ end;
 
 class function TParserHelper.FindUserFunctionVarList(const ABlock: TBlock): TVarDeclareList;
 var
-   lHeader: TUserFunctionHeader;
+   header: TUserFunctionHeader;
 begin
    result := nil;
-   lHeader := TInfra.GetFunctionHeader(ABlock);
-   if lHeader <> nil then
-      result := lHeader.LocalVars;
+   header := TInfra.GetFunctionHeader(ABlock);
+   if header <> nil then
+      result := header.LocalVars;
 end;
 
 class function TParserHelper.GetSizeExpArrayAsString(const ATypeAsString: string; const ASizeAsString: string): string;
 var
-   lDataType: TUserDataType;
-   lSize: string;
+   dataType: TUserDataType;
+   size: string;
 begin
    result := ASizeAsString;
    if GProject <> nil then
    begin
-      lDataType := GProject.GetUserDataType(ATypeAsString);
-      if lDataType <> nil then
+      dataType := GProject.GetUserDataType(ATypeAsString);
+      if dataType <> nil then
       begin
-         lSize := lDataType.GetDimensions;
-         if lSize <> '' then
+         size := dataType.GetDimensions;
+         if size <> '' then
          begin
             if result <> '1' then
-               result := result + ',' + lSize
+               result := result + ',' + size
             else
-               result := lSize;
+               result := size;
          end;
       end;
    end;
@@ -338,20 +338,20 @@ end;
 class procedure TParserHelper.GetParameterInfo(const AHeader: TUserFunctionHeader; var AResult: TIdentInfo);
 var
    iter: IIterator;
-   lParam: TParameter;
-   lDataType: TUserDataType;
+   param: TParameter;
+   dataType: TUserDataType;
 begin
    if AHeader <> nil then
    begin
       iter := AHeader.GetParameterIterator;
       while iter.HasNext do
       begin
-         lParam := TParameter(iter.Next);
-         if (lParam.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(AResult.Ident, Trim(lParam.edtName.Text)) then
+         param := TParameter(iter.Next);
+         if (param.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(AResult.Ident, Trim(param.edtName.Text)) then
          begin
             with AResult do
             begin
-               TypeAsString := lParam.cbType.Text;
+               TypeAsString := param.cbType.Text;
                TType := GetType(TypeAsString);
                TypeOriginal := GetOriginalType(TType);
                TypeOriginalAsString := GetTypeAsString(TypeOriginal);
@@ -363,7 +363,7 @@ begin
                IsEnum := IsEnumType(TType);
                IsPointer := IsPointerType(TType);
                Scope := PARAMETER;
-               if lParam.chkTable.Checked then
+               if param.chkTable.Checked then
                begin
                   Size := 0;
                   SizeAsString := '';
@@ -377,9 +377,9 @@ begin
                end;
                if GProject <> nil then
                begin
-                  lDataType := GProject.GetUserDataType(lParam.cbType.Text);
-                  if lDataType <> nil then
-                     Inc(DimensCount, lDataType.GetDimensionCount);
+                  dataType := GProject.GetUserDataType(param.cbType.Text);
+                  if dataType <> nil then
+                     Inc(DimensCount, dataType.GetDimensionCount);
                end;
                if DimensCount > 0 then
                begin
@@ -436,16 +436,16 @@ end;
 
 class function TParserHelper.GetVarInfo(const AVarName: string): TIdentInfo;
 var
-   lBlock: TBlock;
+   block: TBlock;
 begin
    InitIdentInfo(result);
    result.Ident := AVarName;
-   lBlock := TInfra.GetParsedBlock;
-   if lBlock <> nil then
+   block := TInfra.GetParsedBlock;
+   if block <> nil then
    begin
-      GetParameterInfo(TInfra.GetFunctionHeader(lBlock), result);
+      GetParameterInfo(TInfra.GetFunctionHeader(block), result);
       if result.TType = NOT_DEFINED  then
-         GetVariableInfo(FindUserFunctionVarList(lBlock), result);
+         GetVariableInfo(FindUserFunctionVarList(block), result);
    end;
    if (result.TType = NOT_DEFINED) and (GProject <> nil) then
       GetVariableInfo(GProject.GlobalVars, result);
@@ -460,25 +460,25 @@ end;
 // get field type for given structural type
 class function TParserHelper.GetFieldType(const AType: integer; const AField: string): integer;
 var
-   lTypeString: string;
-   lDataType: TUserDataType;
-   lField: TField;
+   typeString: string;
+   dataType: TUserDataType;
+   field: TField;
    iterf: IIterator;
 begin
    result := NOT_DEFINED;
-   lTypeString := GetTypeAsString(AType);
-   if (lTypeString <> i18Manager.GetString('Unknown')) and (GProject <> nil) then
+   typeString := GetTypeAsString(AType);
+   if (typeString <> i18Manager.GetString('Unknown')) and (GProject <> nil) then
    begin
-      lDataType := GProject.GetUserDataType(lTypeString);
-      if (lDataType <> nil) and lDataType.rbStruct.Checked then
+      dataType := GProject.GetUserDataType(typeString);
+      if (dataType <> nil) and dataType.rbStruct.Checked then
       begin
-         iterf := lDataType.GetFieldIterator;
+         iterf := dataType.GetFieldIterator;
          while iterf.HasNext do
          begin
-            lField := TField(iterf.Next);
-            if (lField.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(Trim(lField.edtName.Text), AField) then
+            field := TField(iterf.Next);
+            if (field.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(Trim(field.edtName.Text), AField) then
             begin
-               result := GetType(lField.cbType.Text);
+               result := GetType(field.cbType.Text);
                break;
             end;
          end;
@@ -489,16 +489,16 @@ end;
 // interface for _GetConstType template function
 class function TParserHelper.GetConstType(const AConstName: string): integer;
 var
-   lValue: string;
+   value: string;
 begin
    result := NOT_DEFINED;
-   lValue := GetConstValue(AConstName);
-   if lValue <> '' then
+   value := GetConstValue(AConstName);
+   if value <> '' then
    begin
       if Assigned(GInfra.CurrentLang.GetLiteralType) then
-         result := GInfra.CurrentLang.GetLiteralType(lValue)
+         result := GInfra.CurrentLang.GetLiteralType(value)
       else if Assigned(GInfra.DummyLang.GetLiteralType) then
-         result := GInfra.DummyLang.GetLiteralType(lValue)
+         result := GInfra.DummyLang.GetLiteralType(value)
    end;
 end;
 
@@ -566,8 +566,8 @@ end;
 class function TParserHelper.IsDeclared(const AIdentName: string): boolean;
 var
    iterf, iter: IIterator;
-   lDataType: TUserDataType;
-   lField: TField;
+   dataType: TUserDataType;
+   field: TField;
 begin
    result := true;
    if GProject <> nil then
@@ -575,14 +575,14 @@ begin
       iter := GProject.GetUserDataTypes;
       while iter.HasNext do
       begin
-         lDataType := TUserDataType(iter.Next);
-         if lDataType.Active and (lDataType.Font.Color <> NOK_COLOR) then
+         dataType := TUserDataType(iter.Next);
+         if dataType.Active and (dataType.Font.Color <> NOK_COLOR) then
          begin
-            iterf := lDataType.GetFieldIterator;
+            iterf := dataType.GetFieldIterator;
             while iterf.HasNext do
             begin
-               lField := TField(iterf.Next);
-               if (lField.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(AIdentName, Trim(lField.edtName.Text)) then exit;
+               field := TField(iterf.Next);
+               if (field.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(AIdentName, Trim(field.edtName.Text)) then exit;
             end;
          end;
       end;
@@ -593,37 +593,37 @@ end;
 
 class function TParserHelper.GetOriginalType(const AType: integer): integer;
 var
-   lUserDataType: TUserDataType;
-   lNativeDataType: PNativeDataType;
-   lTypeName: string;
+   userType: TUserDataType;
+   pNativeType: PNativeDataType;
+   typeName: string;
 begin
    result := AType;
    if GProject <> nil then
    begin
-      lTypeName := GetTypeAsString(AType);
-      lNativeDataType := GInfra.GetNativeDataType(lTypeName);
-      lUserDataType := GProject.GetUserDataType(lTypeName);
-      if lNativeDataType <> nil then
-         result := GetType(lNativeDataType.OrigType.Name)
-      else if (lUserDataType <> nil) and (lUserDataType.GetDimensionCount > 0) then
-         result := lUserDataType.GetOriginalType
+      typeName := GetTypeAsString(AType);
+      pNativeType := GInfra.GetNativeDataType(typeName);
+      userType := GProject.GetUserDataType(typeName);
+      if pNativeType <> nil then
+         result := GetType(pNativeType.OrigType.Name)
+      else if (userType <> nil) and (userType.GetDimensionCount > 0) then
+         result := userType.GetOriginalType
       else if Assigned(GInfra.CurrentLang.GetOriginalType) then
-         result := GetType(GInfra.CurrentLang.GetOriginalType(lTypeName));
+         result := GetType(GInfra.CurrentLang.GetOriginalType(typeName));
    end;
 end;
 
 class function TParserHelper.GetPointerType(const AType: integer): integer;
 var
-   lLang: TLangDefinition;
+   lang: TLangDefinition;
 begin
    result := UNKNOWN_TYPE;
-   lLang := nil;
+   lang := nil;
    if Assigned(GInfra.CurrentLang.GetPointerTypeName) then
-      lLang := GInfra.CurrentLang
+      lang := GInfra.CurrentLang
    else if Assigned(GInfra.DummyLang.GetPointerTypeName) then
-      lLang := GInfra.DummyLang;
-   if lLang <> nil then
-      result := GetType(lLang.GetPointerTypeName(GetTypeAsString(AType)))
+      lang := GInfra.DummyLang;
+   if lang <> nil then
+      result := GetType(lang.GetPointerTypeName(GetTypeAsString(AType)))
 end;
 
 class function TParserHelper.IsIntegerType(const AType: integer): boolean;
@@ -678,20 +678,20 @@ end;
 
 class function TParserHelper.AreTypesCompatible(const AType1, AType2: integer): boolean;
 var
-   lIsRealType1, lIsIntegerType2: boolean;
+   isReal, isInt: boolean;
 begin
    result := AType1 = AType2;
    if not result then
    begin
-      lIsRealType1 := IsRealType(AType1);
-      result := lIsRealType1 and IsRealType(AType2);
+      isReal := IsRealType(AType1);
+      result := isReal and IsRealType(AType2);
       if not result then
       begin
-         lIsIntegerType2 := IsIntegerType(AType2);
-         result := lIsRealType1 and lIsIntegerType2;
+         isInt := IsIntegerType(AType2);
+         result := isReal and isInt;
          if not result then
          begin
-            result := IsIntegerType(AType1) and lIsIntegerType2;
+            result := IsIntegerType(AType1) and isInt;
             if not result then
             begin
                result := IsBoolType(AType1) and IsBoolType(AType2);

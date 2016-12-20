@@ -46,7 +46,7 @@ uses
    Classes, ParserHelper;
 
 var
-   lLangDef: TLangDefinition;
+   cLang: TLangDefinition;
 
 procedure C_PreGenerationActivities;
 begin
@@ -63,7 +63,7 @@ var
    libList: TStringList;
    i: integer;
    lIncludeStr: string;
-   lIsQuoted: boolean;
+   isQuote: boolean;
 begin
    libList := GProject.GetLibraryList;
    try
@@ -75,13 +75,13 @@ begin
          for i := 0 to libList.Count-1 do
          begin
             lIncludeStr := '#include ';
-            lIsQuoted := AnsiPos('"', libList[i]) <> 0;
-            if not lIsQuoted then
+            isQuote := AnsiPos('"', libList[i]) <> 0;
+            if not isQuote then
                lIncludeStr := lIncludeStr + '<';
             lIncludeStr := lIncludeStr + libList[i];
             if AnsiPos('.', libList[i]) = 0 then
-               lIncludeStr := lIncludeStr + lLangDef.LibraryExt;
-            if not lIsQuoted then
+               lIncludeStr := lIncludeStr + cLang.LibraryExt;
+            if not isQuote then
                lIncludeStr := lIncludeStr + '>';
             ALines.Add(lIncludeStr);
          end;
@@ -311,31 +311,31 @@ begin
    begin
       lBlock := GProject.GetMainBlock;
       if lBlock <> nil then
-         lBlock.GenerateCode(ALines, lLangDef.Name, ADeep);
+         lBlock.GenerateCode(ALines, cLang.Name, ADeep);
    end;
 end;
 
 procedure C_SetHLighterAttrs;
 var
-   cHighlighter: TSynCppSyn;
+   hlighter: TSynCppSyn;
 begin
-   if (lLangDef <> nil) and (lLangDef.HighLighter is TSynCppSyn) then
+   if (cLang <> nil) and (cLang.HighLighter is TSynCppSyn) then
    begin
-      cHighlighter := TSynCppSyn(lLangDef.HighLighter);
-      cHighlighter.StringAttri.Foreground  := GSettings.EditorStringColor;
-      cHighlighter.CharAttri.Foreground    := GSettings.EditorStringColor;
-      cHighlighter.NumberAttri.Foreground  := GSettings.EditorNumberColor;
-      cHighlighter.FloatAttri.Foreground   := GSettings.EditorNumberColor;
-      cHighlighter.HexAttri.Foreground     := GSettings.EditorNumberColor;
-      cHighlighter.OctalAttri.Foreground   := GSettings.EditorNumberColor;
-      cHighlighter.CommentAttri.Foreground := GSettings.EditorCommentColor;
-      cHighlighter.StringAttri.Background  := GSettings.EditorBkgColor;
-      cHighlighter.NumberAttri.Background  := GSettings.EditorBkgColor;
-      cHighlighter.FloatAttri.Background   := GSettings.EditorBkgColor;
-      cHighlighter.OctalAttri.Background   := GSettings.EditorBkgColor;
-      cHighlighter.HexAttri.Background     := GSettings.EditorBkgColor;
-      cHighlighter.CommentAttri.Background := GSettings.EditorBkgColor;
-      cHighlighter.CharAttri.Background    := GSettings.EditorBkgColor;
+      hlighter := TSynCppSyn(cLang.HighLighter);
+      hlighter.StringAttri.Foreground  := GSettings.EditorStringColor;
+      hlighter.CharAttri.Foreground    := GSettings.EditorStringColor;
+      hlighter.NumberAttri.Foreground  := GSettings.EditorNumberColor;
+      hlighter.FloatAttri.Foreground   := GSettings.EditorNumberColor;
+      hlighter.HexAttri.Foreground     := GSettings.EditorNumberColor;
+      hlighter.OctalAttri.Foreground   := GSettings.EditorNumberColor;
+      hlighter.CommentAttri.Foreground := GSettings.EditorCommentColor;
+      hlighter.StringAttri.Background  := GSettings.EditorBkgColor;
+      hlighter.NumberAttri.Background  := GSettings.EditorBkgColor;
+      hlighter.FloatAttri.Background   := GSettings.EditorBkgColor;
+      hlighter.OctalAttri.Background   := GSettings.EditorBkgColor;
+      hlighter.HexAttri.Background     := GSettings.EditorBkgColor;
+      hlighter.CommentAttri.Background := GSettings.EditorBkgColor;
+      hlighter.CharAttri.Background    := GSettings.EditorBkgColor;
    end;
 end;
 
@@ -396,23 +396,23 @@ initialization
    C_CHAR_TYPE     := TParserHelper.GetType('char', C_LANG_ID);
    C_CHAR_PTR_TYPE := TParserHelper.GetType('char*', C_LANG_ID);
 
-   lLangDef := GInfra.GetLangDefinition(C_LANG_ID);
-   if lLangDef <> nil then
+   cLang := GInfra.GetLangDefinition(C_LANG_ID);
+   if cLang <> nil then
    begin
-      lLangDef.PreGenerationActivities :=  C_PreGenerationActivities;
-      lLangDef.LibSectionGenerator := C_LibSectionGenerator;
-      //lLangDef.TypeSectionGenerator := C_TypeSectionGenerator;
-      //lLangDef.VarSectionGenerator := C_VarSectionGenerator;
-      //lLangDef.ConstSectionGenerator := C_ConstSectionGenerator;
-      //lLangDef.RoutineSectionGenerator := C_RoutineSectionGenerator;
-      //lLangDef.GetRoutineDescription := C_GetRoutineDescription;
-      lLangDef.MainProgramSectionGenerator := C_MainProgramSectionGenerator;
-      lLangDef.SetHLighterAttrs := C_SetHLighterAttrs;
-      lLangDef.GetLiteralType := C_GetLiteralType;
-      //lLangDef.GetPointerTypeName := C_GetPointerTypeName;
-      lLangDef.IsPointerType := C_IsPointerType;
-      lLangDef.GetOriginalType := C_GetOriginalType;
-      lLangDef.SkipFuncBodyGen := C_SkipFuncBodyGen;
+      cLang.PreGenerationActivities :=  C_PreGenerationActivities;
+      cLang.LibSectionGenerator := C_LibSectionGenerator;
+      //cLang.TypeSectionGenerator := C_TypeSectionGenerator;
+      //cLang.VarSectionGenerator := C_VarSectionGenerator;
+      //cLang.ConstSectionGenerator := C_ConstSectionGenerator;
+      //cLang.RoutineSectionGenerator := C_RoutineSectionGenerator;
+      //cLang.GetRoutineDescription := C_GetRoutineDescription;
+      cLang.MainProgramSectionGenerator := C_MainProgramSectionGenerator;
+      cLang.SetHLighterAttrs := C_SetHLighterAttrs;
+      cLang.GetLiteralType := C_GetLiteralType;
+      //cLang.GetPointerTypeName := C_GetPointerTypeName;
+      cLang.IsPointerType := C_IsPointerType;
+      cLang.GetOriginalType := C_GetOriginalType;
+      cLang.SkipFuncBodyGen := C_SkipFuncBodyGen;
    end;
    
 end.

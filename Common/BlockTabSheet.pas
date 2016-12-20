@@ -58,16 +58,16 @@ end;
 destructor TBlockTabSheet.Destroy;
 var
    iter: IIterator;
-   lFunction: TUserFunction;
+   func: TUserFunction;
 begin
    if GProject <> nil then
    begin
       iter := GProject.GetUserFunctions;
       while iter.HasNext do
       begin
-         lFunction := TUserFunction(iter.Next);
-         if lFunction.Body.Page = Self then
-            lFunction.Free;
+         func := TUserFunction(iter.Next);
+         if func.Body.Page = Self then
+            func.Free;
       end;
    end;
    inherited Destroy;
@@ -75,13 +75,13 @@ end;
 
 procedure TBlockTabSheet.PageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-   lPoint: TPoint;
+   pnt: TPoint;
 begin
    if (Button = mbRight) and (GProject <> nil) then
    begin
-      lPoint := ClientToScreen(Point(X, Y));
+      pnt := ClientToScreen(Point(X, Y));
       FForm.pmPages.PopupComponent := Self;
-      FForm.pmPages.Popup(lPoint.X, lPoint.Y);
+      FForm.pmPages.Popup(pnt.X, pnt.Y);
    end;
 end;
 

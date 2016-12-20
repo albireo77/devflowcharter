@@ -257,17 +257,17 @@ end;
 
 procedure TUserFunction.SetActive(const AValue: boolean);
 var
-   lVisible: boolean;
+   vis: boolean;
 begin
    if FActive <> AValue then
    begin
       FActive := AValue;
       if FBody <> nil then
       begin
-         lVisible := AValue;
+         vis := AValue;
          if FHeader <> nil then
-            lVisible := lVisible and FHeader.chkBodyVisible.Checked;
-         FBody.SetVisible(lVisible);
+            vis := vis and FHeader.chkBodyVisible.Checked;
+         FBody.SetVisible(vis);
          if FBody.Visible then
             FBody.RefreshStatements;
          FBody.Page.Form.SetScrollBars;
@@ -310,7 +310,7 @@ end;
 
 constructor TUserFunctionHeader.Create(const AParentForm: TFunctionsForm);
 var
-   lLeft: integer;
+   l: integer;
 begin
 
    inherited Create(AParentForm);
@@ -400,15 +400,15 @@ begin
    SetPageCombo;
 
    if cbBodyPage.BoundsRect.Right > 170 then
-      lLeft := cbBodyPage.BoundsRect.Right + 10
+      l := cbBodyPage.BoundsRect.Right + 10
    else
-      lLeft := 180;
+      l := 180;
    chkBodyVisible := TCheckBox.Create(gbBody);
    chkBodyVisible.Parent := gbBody;
    chkBodyVisible.ParentFont := false;
    chkBodyVisible.Font.Style := [];
    chkBodyVisible.Font.Color := clWindowText;
-   chkBodyVisible.SetBounds(lLeft, 20, 150, 17);
+   chkBodyVisible.SetBounds(l, 20, 150, 17);
    chkBodyVisible.Caption := i18Manager.GetString('Visible');
    chkBodyVisible.DoubleBuffered := true;
    chkBodyVisible.Anchors := [akBottom, akLeft];
@@ -611,26 +611,26 @@ end;
 
 procedure TUserFunctionHeader.OnChangeName(Sender: TObject);
 var
-   lInfo, lFuncName: string;
+   info, funcName: string;
 begin
-   lInfo := '';
+   info := '';
    edtName.Font.Color := NOK_COLOR;
-   lFuncName := Trim(edtName.Text);
-   if GInfra.ValidateId(lFuncName) <> VALID_IDENT then
-      lInfo := 'BadIdD'
+   funcName := Trim(edtName.Text);
+   if GInfra.ValidateId(funcName) <> VALID_IDENT then
+      info := 'BadIdD'
    else if not GInfra.CurrentLang.AllowUserFunctionOverload then
    begin
-      if GInfra.CurrentLang.NativeFunctions.IndexOf(lFuncName) <> -1 then
-         lInfo := 'DefNtvFunc'
+      if GInfra.CurrentLang.NativeFunctions.IndexOf(funcName) <> -1 then
+         info := 'DefNtvFunc'
       else if IsDuplicated(edtName) then
-         lInfo := 'DupIdD';
+         info := 'DupIdD';
    end;
-   if lInfo = '' then
+   if info = '' then
    begin
       edtName.Font.Color := OK_COLOR;
-      lInfo := 'OkIdD';
+      info := 'OkIdD';
    end;
-   edtName.Hint := i18Manager.GetFormattedString(lInfo, [lFuncName]);
+   edtName.Hint := i18Manager.GetFormattedString(info, [funcName]);
    DrawBodyLabel;
    inherited OnChangeName(Sender);
 end;
@@ -651,20 +651,20 @@ end;
 procedure TUserFunctionHeader.SetPageCombo(const ACaption: TCaption = '');
 var
    i: integer;
-   lPageControl: TPageControl;
+   pageControl: TPageControl;
    lCaption: TCaption;
 begin
    lCaption := cbBodyPage.Text;
    cbBodyPage.Items.Clear;
    cbBodyPage.Items.BeginUpdate;
-   lPageControl := TInfra.GetMainForm.pgcPages;
-   for i := 0 to lPageControl.PageCount-1 do
-      cbBodyPage.Items.Add(lPageControl.Pages[i].Caption);
+   pageControl := TInfra.GetMainForm.pgcPages;
+   for i := 0 to pageControl.PageCount-1 do
+      cbBodyPage.Items.Add(pageControl.Pages[i].Caption);
    cbBodyPage.Items.EndUpdate;
    if ACaption = '' then
    begin
       if lCaption = '' then
-         lCaption := lPageControl.ActivePage.Caption;
+         lCaption := pageControl.ActivePage.Caption;
    end
    else
       lCaption := ACaption;
@@ -677,14 +677,14 @@ end;
 
 procedure TUserFunctionHeader.OnChangeBodyPage(Sender: TObject);
 var
-   lPage: TBlockTabSheet;
+   page: TBlockTabSheet;
 begin
-   lPage := GProject.GetPage(cbBodyPage.Text);
-   if (lPage <> nil) and (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
+   page := GProject.GetPage(cbBodyPage.Text);
+   if (page <> nil) and (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
    begin
-      FUserFunction.Body.Page := lPage;
-      lPage.PageControl.ActivePage := lPage;
-      lPage.Form.ScrollInView(FUserFunction.Body);
+      FUserFunction.Body.Page := page;
+      page.PageControl.ActivePage := page;
+      page.Form.ScrollInView(FUserFunction.Body);
       NavigatorForm.Invalidate;
    end;
 end;
@@ -699,42 +699,42 @@ end;
 
 procedure TUserFunction.GenerateTree(const ANode: TTreeNode);
 var
-   lNode: TTreeNode;
-   lDesc: string;
-   lLang: TLangDefinition;
-   lObject: TObject;
+   node: TTreeNode;
+   desc: string;
+   lang: TLangDefinition;
+   obj: TObject;
 begin
-   lDesc := '';
+   desc := '';
    if IsMain then
    begin
-      lObject := FBody;
+      obj := FBody;
       if GInfra.CurrentLang.EnabledUserFunctionHeader then
       begin
-         lLang := nil;
+         lang := nil;
          if Assigned(GInfra.CurrentLang.GetMainProgramDesc) then
-            lLang := GInfra.CurrentLang
+            lang := GInfra.CurrentLang
          else if Assigned(GInfra.DummyLang.GetMainProgramDesc) then
-            lLang := GInfra.DummyLang;
-         if lLang <> nil then
-            lDesc := lLang.GetMainProgramDesc;
+            lang := GInfra.DummyLang;
+         if lang <> nil then
+            desc := lang.GetMainProgramDesc;
       end
       else
-         lDesc := i18Manager.GetString('Flowchart');
+         desc := i18Manager.GetString('Flowchart');
    end
    else
    begin
-      lObject := FHeader;
-      lLang := nil;
+      obj := FHeader;
+      lang := nil;
       if Assigned(GInfra.CurrentLang.GetUserFuncDesc) then
-         lLang := GInfra.CurrentLang
+         lang := GInfra.CurrentLang
       else if Assigned(GInfra.DummyLang.GetUserFuncDesc) then
-         lLang := GInfra.DummyLang;
-      if lLang <> nil then
-         lDesc := lLang.GetUserFuncDesc(FHeader);
+         lang := GInfra.DummyLang;
+      if lang <> nil then
+         desc := lang.GetUserFuncDesc(FHeader);
    end;
-   lNode := ANode.Owner.AddChildObject(ANode, lDesc, lObject);
+   node := ANode.Owner.AddChildObject(ANode, desc, obj);
    if FBody <> nil then
-      FBody.GenerateTree(lNode);
+      FBody.GenerateTree(node);
    if (FHeader <> nil) and TInfra.IsNOkColor(FHeader.Font.Color) then
    begin
       ANode.MakeVisible;

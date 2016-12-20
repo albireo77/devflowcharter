@@ -29,151 +29,151 @@ uses
 
 procedure Dummy_UserDataTypesSectionGenerator(ALines: TStringList);
 var
-   lDataType: TUserDataType;
-   lField: TField;
-   lName, lSizeStr, lRecord, lEnum: string;
+   dataType: TUserDataType;
+   field: TField;
+   name, sizeStr, lRecord, enum: string;
    iterf, iter: IIterator;
    b, lType: integer;
-   lLang: TLangDefinition;
-   lDataTypeList, lDataTypesTemplate, lRecordTemplate, lFieldList, lEnumTemplate: TStringList;
-   lDataTypeStr, lFieldStr, lValueStr, lValueStr2: string;
+   lang: TLangDefinition;
+   typesList, typesTemplate, recTemplate, fieldList, enumTemplate: TStringList;
+   typeStr, fieldStr, valStr, valStr2: string;
 begin
-   lLang := GInfra.CurrentLang;
-   if lLang.DataTypesTemplate <> '' then
+   lang := GInfra.CurrentLang;
+   if lang.DataTypesTemplate <> '' then
    begin
-      lDataTypeList := TStringList.Create;
+      typesList := TStringList.Create;
       try
          iter := GProject.GetUserDataTypes;
          while iter.HasNext do
          begin
-            lDataType := TUserDataType(iter.Next);
-            lName := lDataType.GetName;
-            if (lName <> '') and not lDataType.chkExtDeclare.Checked then
+            dataType := TUserDataType(iter.Next);
+            name := dataType.GetName;
+            if (name <> '') and not dataType.chkExtDeclare.Checked then
             begin
-               iterf := lDataType.GetFieldIterator;
-               if lDataType.rbInt.Checked then
+               iterf := dataType.GetFieldIterator;
+               if dataType.rbInt.Checked then
                begin
-                  if lLang.DataTypeIntMask <> '' then
+                  if lang.DataTypeIntMask <> '' then
                   begin
-                     lDataTypeStr := FastCodeAnsiStringReplace(llang.DataTypeIntMask, '%s1', lName);
-                     lDataTypeList.AddObject(lDataTypeStr, lDataType);
+                     typeStr := FastCodeAnsiStringReplace(lang.DataTypeIntMask, PRIMARY_PLACEHOLDER, name);
+                     typesList.AddObject(typeStr, dataType);
                   end;
                end
-               else if lDataType.rbReal.Checked then
+               else if dataType.rbReal.Checked then
                begin
-                  if lLang.DataTypeRealMask <> '' then
+                  if lang.DataTypeRealMask <> '' then
                   begin
-                     lDataTypeStr := FastCodeAnsiStringReplace(llang.DataTypeRealMask, '%s1', lName);
-                     lDataTypeList.AddObject(lDataTypeStr, lDataType);
+                     typeStr := FastCodeAnsiStringReplace(lang.DataTypeRealMask, PRIMARY_PLACEHOLDER, name);
+                     typesList.AddObject(typeStr, dataType);
                   end;
                end
-               else if lDataType.rbOther.Checked then
+               else if dataType.rbOther.Checked then
                begin
-                  if lLang.DataTypeOtherMask <> '' then
+                  if lang.DataTypeOtherMask <> '' then
                   begin
-                     lDataTypeStr := FastCodeAnsiStringReplace(llang.DataTypeOtherMask, '%s1', lName);
-                     lValueStr := '';
+                     typeStr := FastCodeAnsiStringReplace(lang.DataTypeOtherMask, PRIMARY_PLACEHOLDER, name);
+                     valStr := '';
                      if iterf.HasNext then
-                        lValueStr := Trim(TField(iterf.Next).edtName.Text);
-                     lDataTypeStr := FastCodeAnsiStringReplace(lDataTypeStr, '%s2', lValueStr);
-                     lDataTypeList.AddObject(lDataTypeStr, lDataType);
+                        valStr := Trim(TField(iterf.Next).edtName.Text);
+                     typeStr := FastCodeAnsiStringReplace(typeStr, '%s2', valStr);
+                     typesList.AddObject(typeStr, dataType);
                   end;
                end
-               else if lDataType.rbArray.Checked then
+               else if dataType.rbArray.Checked then
                begin
-                  if lLang.DataTypeArrayMask <> '' then
+                  if lang.DataTypeArrayMask <> '' then
                   begin
-                     lDataTypeStr := FastCodeAnsiStringReplace(llang.DataTypeArrayMask, '%s1', lName);
-                     lValueStr := '';
-                     lValueStr2 := '';
+                     typeStr := FastCodeAnsiStringReplace(lang.DataTypeArrayMask, PRIMARY_PLACEHOLDER, name);
+                     valStr := '';
+                     valStr2 := '';
                      if iterf.HasNext then
                      begin
-                        lField := TField(iterf.Next);
-                        lValueStr := lField.cbType.Text;
-                        lValueStr2 := lLang.GetArraySizes(lField.edtSize);
+                        field := TField(iterf.Next);
+                        valStr := field.cbType.Text;
+                        valStr2 := lang.GetArraySizes(field.edtSize);
                      end;
-                     lDataTypeStr := FastCodeAnsiStringReplace(lDataTypeStr, '%s2', lValueStr);
-                     lDataTypeStr := FastCodeAnsiStringReplace(lDataTypeStr, '%s3', lValueStr2);
-                     lDataTypeList.AddObject(lDataTypeStr, lDataType);
+                     typeStr := FastCodeAnsiStringReplace(typeStr, '%s2', valStr);
+                     typeStr := FastCodeAnsiStringReplace(typeStr, '%s3', valStr2);
+                     typesList.AddObject(typeStr, dataType);
                   end;
                end
-               else if lDataType.rbStruct.Checked then
+               else if dataType.rbStruct.Checked then
                begin
-                  if lLang.DataTypeRecordTemplate <> '' then
+                  if lang.DataTypeRecordTemplate <> '' then
                   begin
-                     lRecordTemplate := TStringList.Create;
+                     recTemplate := TStringList.Create;
                      try
-                        lRecordTemplate.Text := FastCodeAnsiStringReplace(lLang.DataTypeRecordTemplate, '%s1', lName);
-                        lFieldList := TStringList.Create;
+                        recTemplate.Text := FastCodeAnsiStringReplace(lang.DataTypeRecordTemplate, PRIMARY_PLACEHOLDER, name);
+                        fieldList := TStringList.Create;
                         try
                            while iterf.HasNext do
                            begin
-                              lField := TField(iterf.Next);
-                              lSizeStr := lLang.GetArraySizes(lField.edtSize);
-                              if lSizeStr <> '' then
-                                 lFieldStr := lLang.DataTypeRecordFieldArrayMask
+                              field := TField(iterf.Next);
+                              sizeStr := lang.GetArraySizes(field.edtSize);
+                              if sizeStr <> '' then
+                                 fieldStr := lang.DataTypeRecordFieldArrayMask
                               else
-                                 lFieldStr := lLang.DataTypeRecordFieldMask;
-                              lFieldStr := FastCodeAnsiStringReplace(lFieldStr, '%s1', Trim(lField.edtName.Text));
-                              lFieldStr := FastCodeAnsiStringReplace(lFieldStr, '%s2', lField.cbType.Text);
-                              if lSizeStr <> '' then
-                                 lFieldStr := FastCodeAnsiStringReplace(lFieldStr, '%s3', lSizeStr);
+                                 fieldStr := lang.DataTypeRecordFieldMask;
+                              fieldStr := FastCodeAnsiStringReplace(fieldStr, PRIMARY_PLACEHOLDER, Trim(field.edtName.Text));
+                              fieldStr := FastCodeAnsiStringReplace(fieldStr, '%s2', field.cbType.Text);
+                              if sizeStr <> '' then
+                                 fieldStr := FastCodeAnsiStringReplace(fieldStr, '%s3', sizeStr);
                               lRecord := '';
-                              lEnum := '';
-                              lType := TParserHelper.GetType(lField.cbType.Text);
+                              enum := '';
+                              lType := TParserHelper.GetType(field.cbType.Text);
                               if TParserHelper.IsStructType(lType) then
-                                 lRecord := lLang.FunctionHeaderArgsEntryRecord
+                                 lRecord := lang.FunctionHeaderArgsEntryRecord
                               else if TParserHelper.IsEnumType(lType) then
-                                 lEnum := lLang.FunctionHeaderArgsEntryEnum;
-                              lFieldStr := FastCodeAnsiStringReplace(lFieldStr, '%s4', lRecord);
-                              lFieldStr := FastCodeAnsiStringReplace(lFieldStr, '%s5', lEnum);
-                              lFieldList.Add(lFieldStr);
+                                 enum := lang.FunctionHeaderArgsEntryEnum;
+                              fieldStr := FastCodeAnsiStringReplace(fieldStr, '%s4', lRecord);
+                              fieldStr := FastCodeAnsiStringReplace(fieldStr, '%s5', enum);
+                              fieldList.Add(fieldStr);
                            end;
-                           TInfra.InsertTemplateLines(lRecordTemplate, '%s2', lFieldList);
+                           TInfra.InsertTemplateLines(recTemplate, '%s2', fieldList);
                         finally
-                           lFieldList.Free;
+                           fieldList.Free;
                         end;
-                        for b := 0 to lRecordTemplate.Count-1 do
-                           lDataTypeList.AddObject(lRecordTemplate[b], lDataType)
+                        for b := 0 to recTemplate.Count-1 do
+                           typesList.AddObject(recTemplate[b], dataType)
                      finally
-                        lRecordTemplate.Free;
+                        recTemplate.Free;
                      end;
                   end;
                end
-               else if lDataType.rbEnum.Checked then
+               else if dataType.rbEnum.Checked then
                begin
-                  if lLang.DataTypeEnumTemplate <> '' then
+                  if lang.DataTypeEnumTemplate <> '' then
                   begin
-                     lEnumTemplate := TStringList.Create;
+                     enumTemplate := TStringList.Create;
                      try
-                        lEnumTemplate.Text := FastCodeAnsiStringReplace(lLang.DataTypeEnumTemplate, '%s1', lName);
-                        lValueStr := '';
+                        enumTemplate.Text := FastCodeAnsiStringReplace(lang.DataTypeEnumTemplate, PRIMARY_PLACEHOLDER, name);
+                        valStr := '';
                         while iterf.HasNext do
-                           lValueStr := lValueStr + Format(lLang.DataTypeEnumEntryList, [Trim(TField(iterf.Next).edtName.Text)]);
-                        SetLength(lValueStr, Length(lValueStr)-lLang.DataTypeEnumEntryListStripCount);
-                        TInfra.InsertTemplateLines(lEnumTemplate, '%s2', lValueStr);
-                        for b := 0 to lEnumTemplate.Count-1 do
-                           lDataTypeList.AddObject(lEnumTemplate[b], lDataType)
+                           valStr := valStr + Format(lang.DataTypeEnumEntryList, [Trim(TField(iterf.Next).edtName.Text)]);
+                        SetLength(valStr, Length(valStr)-lang.DataTypeEnumEntryListStripCount);
+                        TInfra.InsertTemplateLines(enumTemplate, '%s2', valStr);
+                        for b := 0 to enumTemplate.Count-1 do
+                           typesList.AddObject(enumTemplate[b], dataType)
                      finally
-                        lEnumTemplate.Free;
+                        enumTemplate.Free;
                      end;
                   end;
                end;
             end;
          end;
-         if lDataTypeList.Count > 0 then
+         if typesList.Count > 0 then
          begin
-            lDataTypesTemplate := TStringList.Create;
+            typesTemplate := TStringList.Create;
             try
-               lDataTypesTemplate.Text := lLang.DataTypesTemplate;
-               TInfra.InsertTemplateLines(lDataTypesTemplate, '%s1', lDataTypeList);
-               ALines.AddStrings(lDataTypesTemplate);
+               typesTemplate.Text := lang.DataTypesTemplate;
+               TInfra.InsertTemplateLines(typesTemplate, PRIMARY_PLACEHOLDER, typesList);
+               ALines.AddStrings(typesTemplate);
             finally
-               lDataTypesTemplate.Free;
+               typesTemplate.Free;
             end;
          end;
       finally
-         lDataTypeList.Free;
+         typesList.Free;
       end;
    end;
 end;
@@ -190,19 +190,19 @@ end;
 procedure Dummy_ProgramHeaderSectionGenerator(ALines: TStringList);
 var
    hdrTemplate: TStringList;
-   lLang: TLangDefinition;
+   lang: TLangDefinition;
 begin
-    lLang := GInfra.CurrentLang;
-    if lLang.ProgramHeaderTemplate <> '' then
+    lang := GInfra.CurrentLang;
+    if lang.ProgramHeaderTemplate <> '' then
     begin
        hdrTemplate := TStringList.Create;
        try
-          hdrTemplate.Text := lLang.ProgramHeaderTemplate;
-          TInfra.InsertTemplateLines(hdrTemplate, '%s1', GProject.Name);
-          TInfra.InsertTemplateLines(hdrTemplate, '%s2', lLang.Name);
+          hdrTemplate.Text := lang.ProgramHeaderTemplate;
+          TInfra.InsertTemplateLines(hdrTemplate, PRIMARY_PLACEHOLDER, GProject.Name);
+          TInfra.InsertTemplateLines(hdrTemplate, '%s2', lang.Name);
           TInfra.InsertTemplateLines(hdrTemplate, '%s3', GProject.GetProgramHeader);
           TInfra.InsertTemplateLines(hdrTemplate, '%s4', DateTimeToStr(Now));
-          TInfra.InsertTemplateLines(hdrTemplate, '%s5', ExtractFileName(lLang.DefFile));
+          TInfra.InsertTemplateLines(hdrTemplate, '%s5', ExtractFileName(lang.DefFile));
           ALines.AddStrings(hdrTemplate);
        finally
           hdrTemplate.Free;
@@ -214,40 +214,40 @@ procedure Dummy_LibSectionGenerator(ALines: TStringList);
 var
    i: integer;
    libList, libTemplate: TStringList;
-   lLang: TLangDefinition;
-   lLibStr, lPlaceHolder, lPlaceHolder2: string;
-   lIss1: boolean;
+   lang: TLangDefinition;
+   libStr, p1, p2: string;
+   isS1: boolean;
 begin
-   lLang := GInfra.CurrentLang;
+   lang := GInfra.CurrentLang;
    libList := GProject.GetLibraryList;
    try
-      if (libList.Count > 0) and (lLang.LibTemplate <> '') and ((lLang.LibEntry <> '') or (lLang.LibEntryList <> '')) then
+      if (libList.Count > 0) and (lang.LibTemplate <> '') and ((lang.LibEntry <> '') or (lang.LibEntryList <> '')) then
       begin
-         lLibStr := '';
+         libStr := '';
          libTemplate := TStringList.Create;
          try
-            lIss1 := AnsiPos('%s1', lLang.LibTemplate) <> 0;
-            libTemplate.Text := lLang.LibTemplate;
+            isS1 := AnsiPos(PRIMARY_PLACEHOLDER, lang.LibTemplate) <> 0;
+            libTemplate.Text := lang.LibTemplate;
             for i := 0 to libList.Count-1 do
             begin
-               if lIss1 then
-                  lLibStr := lLibStr + Format(lLang.LibEntry, [libList[i]]) + CRLF
+               if isS1 then
+                  libStr := libStr + Format(lang.LibEntry, [libList[i]]) + CRLF
                else
-                  lLibStr := lLibStr + Format(lLang.LibEntryList, [libList[i]]);
+                  libStr := libStr + Format(lang.LibEntryList, [libList[i]]);
             end;
-            if lIss1 then
+            if isS1 then
             begin
-               lPlaceHolder := '%s1';
-               lPlaceHolder2 := '%s2';
+               p1 := PRIMARY_PLACEHOLDER;
+               p2 := '%s2';
             end
             else
             begin
-               SetLength(lLibStr, Length(lLibStr)-lLang.LibEntryListStripCount);
-               lPlaceHolder := '%s2';
-               lPlaceHolder2 := '%s1';
+               SetLength(libStr, Length(libStr)-lang.LibEntryListStripCount);
+               p1 := '%s2';
+               p2 := PRIMARY_PLACEHOLDER;
             end;
-            TInfra.InsertTemplateLines(libTemplate, lPlaceHolder, lLibStr);
-            TInfra.InsertTemplateLines(libTemplate, lPlaceHolder2, '');
+            TInfra.InsertTemplateLines(libTemplate, p1, libStr);
+            TInfra.InsertTemplateLines(libTemplate, p2, '');
             ALines.AddStrings(libTemplate);
          finally
             libTemplate.Free;
@@ -261,257 +261,257 @@ end;
 procedure Dummy_ConstSectionGenerator(ALines: TStringList; AConstList: TConstDeclareList);
 var
    i: integer;
-   lConstStr, lConstEntry: string;
-   lLang: TLangDefinition;
-   lConstList, lConstTemplate: TStringList;
-   lIsExtern: boolean;
+   constStr, constEntry: string;
+   lang: TLangDefinition;
+   constList, constTemplate: TStringList;
+   isExtern: boolean;
 begin
-   lLang := GInfra.CurrentLang;
-   if (AConstList <> nil) and (AConstList.sgList.RowCount > 2) and (lLang.ConstTemplate <> '') then
+   lang := GInfra.CurrentLang;
+   if (AConstList <> nil) and (AConstList.sgList.RowCount > 2) and (lang.ConstTemplate <> '') then
    begin
-      lConstList := TStringList.Create;
+      constList := TStringList.Create;
       try
          for i := 1 to AConstList.sgList.RowCount-2 do
          begin
-            lIsExtern := AConstList.IsExternal(i);
-            if (lIsExtern and lLang.GenExternVarConst) or not lIsExtern then
+            isExtern := AConstList.IsExternal(i);
+            if (isExtern and lang.GenExternVarConst) or not isExtern then
             begin
-               if lIsExtern then
-                  lConstEntry := llang.ConstEntryExtern
+               if isExtern then
+                  constEntry := lang.ConstEntryExtern
                else
-                  lConstEntry := llang.ConstEntry;
-               lConstStr := FastCodeAnsiStringReplace(lConstEntry, '%s1', AConstList.sgList.Cells[CONST_NAME_COL, i]);
-               lConstStr := FastCodeAnsiStringReplace(lConstStr, '%s2', AConstList.sgList.Cells[CONST_VALUE_COL, i]);
-               lConstList.AddObject(lConstStr, AConstList);
+                  constEntry := lang.ConstEntry;
+               constStr := FastCodeAnsiStringReplace(constEntry, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
+               constStr := FastCodeAnsiStringReplace(constStr, '%s2', AConstList.sgList.Cells[CONST_VALUE_COL, i]);
+               constList.AddObject(constStr, AConstList);
             end;
          end;
-         if lConstList.Count > 0 then
+         if constList.Count > 0 then
          begin
-            lConstTemplate := TStringList.Create;
+            constTemplate := TStringList.Create;
             try
-               lConstTemplate.Text := lLang.ConstTemplate;
-               TInfra.InsertTemplateLines(lConstTemplate, '%s1', lConstList);
-               ALines.AddStrings(lConstTemplate);
+               constTemplate.Text := lang.ConstTemplate;
+               TInfra.InsertTemplateLines(constTemplate, PRIMARY_PLACEHOLDER, constList);
+               ALines.AddStrings(constTemplate);
             finally
-               lConstTemplate.Free;
+               constTemplate.Free;
             end;
          end;
       finally
-         lConstList.Free;
+         constList.Free;
       end;
    end;
 end;
 
 procedure Dummy_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
 var
-   lLang: TLangDefinition;
+   lang: TLangDefinition;
    i, b, lType: integer;
-   lVarStr, lSizeStr, lInit, lInitEntry, lRecord, lEnum, lExtern, lName, lTypeStr: string;
-   lVarTemplate, lVarList: TStringList;
-   lIsExtern: boolean;
+   varStr, varSize, varInit, initEntry, lRecord, enum, extern, name, typeStr: string;
+   varTemplate, varList: TStringList;
+   isExtern: boolean;
 begin
-   lLang := GInfra.CurrentLang;
-   if (AVarList <> nil) and (AVarList.sgList.RowCount > 2) and (lLang.VarTemplate <> '') then
+   lang := GInfra.CurrentLang;
+   if (AVarList <> nil) and (AVarList.sgList.RowCount > 2) and (lang.VarTemplate <> '') then
    begin
-      lVarList := TStringList.Create;
+      varList := TStringList.Create;
       try
          for i := 1 to AVarList.sgList.RowCount-2 do
          begin
-            lSizeStr := '';
-            lName := AVarList.sgList.Cells[VAR_NAME_COL, i];
-            lTypeStr := AVarList.sgList.Cells[VAR_TYPE_COL, i];
-            lIsExtern := AVarList.IsExternal(i);
-            if (lIsExtern and lLang.GenExternVarConst) or not lIsExtern then
+            varSize := '';
+            name := AVarList.sgList.Cells[VAR_NAME_COL, i];
+            typeStr := AVarList.sgList.Cells[VAR_TYPE_COL, i];
+            isExtern := AVarList.IsExternal(i);
+            if (isExtern and lang.GenExternVarConst) or not isExtern then
             begin
-               for b := 1 to AVarList.GetDimensionCount(lName) do
-                  lSizeStr := lSizeStr + Format(lLang.VarEntryArraySize, [AVarList.GetDimension(lName, b)]);
-               if lSizeStr <> '' then
+               for b := 1 to AVarList.GetDimensionCount(name) do
+                  varSize := varSize + Format(lang.VarEntryArraySize, [AVarList.GetDimension(name, b)]);
+               if varSize <> '' then
                begin
-                  lVarStr := FastCodeAnsiStringReplace(lLang.VarEntryArray, '%s1', lName);
-                  SetLength(lSizeStr, Length(lSizeStr)-lLang.VarEntryArraySizeStripCount);
-                  lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s3', lSizeStr);
+                  varStr := FastCodeAnsiStringReplace(lang.VarEntryArray, PRIMARY_PLACEHOLDER, name);
+                  SetLength(varSize, Length(varSize)-lang.VarEntryArraySizeStripCount);
+                  varStr := FastCodeAnsiStringReplace(varStr, '%s3', varSize);
                end
                else
-                  lVarStr := FastCodeAnsiStringReplace(llang.VarEntry, '%s1', lName);
-               lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s2', lTypeStr);
-               lInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
-               if lInit <> '' then
+                  varStr := FastCodeAnsiStringReplace(lang.VarEntry, PRIMARY_PLACEHOLDER, name);
+               varStr := FastCodeAnsiStringReplace(varStr, '%s2', typeStr);
+               varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
+               if varInit <> '' then
                begin
-                  if lIsExtern then
-                     lInitEntry := lLang.VarEntryInitExtern
+                  if isExtern then
+                     initEntry := lang.VarEntryInitExtern
                   else
-                     lInitEntry := lLang.VarEntryInit;
-                  lInit := FastCodeAnsiStringReplace(lInitEntry, '%s1', lInit);
+                     initEntry := lang.VarEntryInit;
+                  varInit := FastCodeAnsiStringReplace(initEntry, PRIMARY_PLACEHOLDER, varInit);
                end;
-               lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s4', lInit);
-               lType := TParserHelper.GetType(lTypeStr);
+               varStr := FastCodeAnsiStringReplace(varStr, '%s4', varInit);
+               lType := TParserHelper.GetType(typeStr);
                lRecord := '';
-               lEnum := '';
+               enum := '';
                if TParserHelper.IsStructType(lType) then
-                  lRecord := lLang.FunctionHeaderArgsEntryRecord
+                  lRecord := lang.FunctionHeaderArgsEntryRecord
                else if TParserHelper.IsEnumType(lType) then
-                  lEnum := lLang.FunctionHeaderArgsEntryEnum;
-               lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s5', lRecord);
-               lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s6', lEnum);
-               if lIsExtern then
-                  lExtern := lLang.ExternEntry
+                  enum := lang.FunctionHeaderArgsEntryEnum;
+               varStr := FastCodeAnsiStringReplace(varStr, '%s5', lRecord);
+               varStr := FastCodeAnsiStringReplace(varStr, '%s6', enum);
+               if isExtern then
+                  extern := lang.ExternEntry
                else
-                  lExtern := '';
-               lVarStr := FastCodeAnsiStringReplace(lVarStr, '%s7', lExtern);
-               lVarList.AddObject(lVarStr, AVarList);
+                  extern := '';
+               varStr := FastCodeAnsiStringReplace(varStr, '%s7', extern);
+               varList.AddObject(varStr, AVarList);
             end;
          end;
-         lVarTemplate := TStringList.Create;
+         varTemplate := TStringList.Create;
          try
-            lVarTemplate.Text := lLang.VarTemplate;
-            TInfra.InsertTemplateLines(lVarTemplate, '%s1', lVarList);
-            ALines.AddStrings(lVarTemplate);
+            varTemplate.Text := lang.VarTemplate;
+            TInfra.InsertTemplateLines(varTemplate, PRIMARY_PLACEHOLDER, varList);
+            ALines.AddStrings(varTemplate);
          finally
-            lVarTemplate.Free;
+            varTemplate.Free;
          end;
       finally
-         lVarList.Free;
+         varList.Free;
       end;
    end;
 end;
 
 procedure Dummy_MainProgramSectionGenerator(ALines: TStringList; ADeep: integer);
 var
-   lBlock: TBlock;
+   block: TBlock;
 begin
-   lBlock := GProject.GetMainBlock;
-   if lBlock <> nil then
-      lBlock.GenerateCode(ALines, GInfra.CurrentLang.Name, ADeep);
+   block := GProject.GetMainBlock;
+   if block <> nil then
+      block.GenerateCode(ALines, GInfra.CurrentLang.Name, ADeep);
 end;
 
 procedure Dummy_UserFunctionsSectionGenerator(ALines: TStringList; ASkipBodyGen: boolean);
 var
-   lFunction: TUserFunction;
-   lParm: TParameter;
-   lName, lArgList, lParmStr, lNoneType1, lNoneType2, lType, lRef, lArray, lRecord, lEnum: string;
+   func: TUserFunction;
+   param: TParameter;
+   name, argList, paramStr, noneType1, noneType2, lType, ref, lArray, lRecord, enum: string;
    iterp, iter: IIterator;
-   lLang: TLangDefinition;
-   lHeaderTemplate, lVarStrList, lFunctionTemplate, lBodyTemplate, lFunctionList, lFunctionsTemplate: TStringList;
-   lTypeInt: integer;
+   lang: TLangDefinition;
+   headerTemplate, varList, funcTemplate, bodyTemplate, funcList, funcsTemplate: TStringList;
+   intType: integer;
 begin
-   lLang := GInfra.CurrentLang;
-   if lLang.FunctionsTemplate <> '' then
+   lang := GInfra.CurrentLang;
+   if lang.FunctionsTemplate <> '' then
    begin
-      lFunctionList := TStringList.Create;
+      funcList := TStringList.Create;
       try
          iter := GProject.GetUserFunctions;
          while iter.HasNext do
          begin
-            lFunction := TUserFunction(iter.Next);
-            lName := lFunction.GetName;
-            if (lName <> '') and not lFunction.Header.chkExtDeclare.Checked and (lLang.FunctionTemplate <> '') then
+            func := TUserFunction(iter.Next);
+            name := func.GetName;
+            if (name <> '') and not func.Header.chkExtDeclare.Checked and (lang.FunctionTemplate <> '') then
             begin
                // assemble list of function parameters
-               lArgList := '';
-               iterp := lFunction.Header.GetParameterIterator;
+               argList := '';
+               iterp := func.Header.GetParameterIterator;
                while iterp.HasNext do
                begin
-                  lParm := TParameter(iterp.Next);
-                  lParmStr := FastCodeAnsiStringReplace(lLang.FunctionHeaderArgsEntryMask, '%s1', Trim(lParm.edtName.Text));
-                  lParmStr := FastCodeAnsiStringReplace(lParmStr, '%s2', lParm.cbType.Text);
-                  lRef := '';
+                  param := TParameter(iterp.Next);
+                  paramStr := FastCodeAnsiStringReplace(lang.FunctionHeaderArgsEntryMask, PRIMARY_PLACEHOLDER, Trim(param.edtName.Text));
+                  paramStr := FastCodeAnsiStringReplace(paramStr, '%s2', param.cbType.Text);
+                  ref := '';
                   lArray := '';
                   lRecord := '';
-                  lEnum := '';
-                  if lParm.chkReference.Checked then
-                     lRef := lLang.FunctionHeaderArgsEntryRef;
-                  if lParm.chkTable.Checked then
-                     lArray := lLang.FunctionHeaderArgsEntryArray;
-                  lTypeInt := TParserHelper.GetType(lParm.cbType.Text);
-                  if TParserHelper.IsStructType(lTypeInt) then
-                     lRecord := lLang.FunctionHeaderArgsEntryRecord
-                  else if TParserHelper.IsEnumType(lTypeInt) then
-                     lEnum := lLang.FunctionHeaderArgsEntryEnum;
-                  lParmStr := FastCodeAnsiStringReplace(lParmStr, '%s3', lRef);
-                  lParmStr := FastCodeAnsiStringReplace(lParmStr, '%s4', lArray);
-                  lParmStr := FastCodeAnsiStringReplace(lParmStr, '%s5', lRecord);
-                  lParmStr := FastCodeAnsiStringReplace(lParmStr, '%s6', lEnum);
-                  lArgList := lArgList + lParmStr;
+                  enum := '';
+                  if param.chkReference.Checked then
+                     ref := lang.FunctionHeaderArgsEntryRef;
+                  if param.chkTable.Checked then
+                     lArray := lang.FunctionHeaderArgsEntryArray;
+                  intType := TParserHelper.GetType(param.cbType.Text);
+                  if TParserHelper.IsStructType(intType) then
+                     lRecord := lang.FunctionHeaderArgsEntryRecord
+                  else if TParserHelper.IsEnumType(intType) then
+                     enum := lang.FunctionHeaderArgsEntryEnum;
+                  paramStr := FastCodeAnsiStringReplace(paramStr, '%s3', ref);
+                  paramStr := FastCodeAnsiStringReplace(paramStr, '%s4', lArray);
+                  paramStr := FastCodeAnsiStringReplace(paramStr, '%s5', lRecord);
+                  paramStr := FastCodeAnsiStringReplace(paramStr, '%s6', enum);
+                  argList := argList + paramStr;
                end;
-               SetLength(lArgList, Length(lArgList)-lLang.FunctionHeaderArgsStripCount);
+               SetLength(argList, Length(argList)-lang.FunctionHeaderArgsStripCount);
 
-               lHeaderTemplate := TStringList.Create;
+               headerTemplate := TStringList.Create;
                try
                   // assemble function header line
-                  lHeaderTemplate.Text := FastCodeAnsiStringReplace(lLang.FunctionHeaderTemplate, '%s1', lName);
-                  lHeaderTemplate.Text := FastCodeAnsiStringReplace(lHeaderTemplate.Text, '%s3', lArgList);
-                  if lFunction.Header.cbType.ItemIndex <> 0 then
+                  headerTemplate.Text := FastCodeAnsiStringReplace(lang.FunctionHeaderTemplate, PRIMARY_PLACEHOLDER, name);
+                  headerTemplate.Text := FastCodeAnsiStringReplace(headerTemplate.Text, '%s3', argList);
+                  if func.Header.cbType.ItemIndex <> 0 then
                   begin
-                     lNoneType1 := lLang.FunctionHeaderTypeNotNone1;
-                     lNoneType2 := lLang.FunctionHeaderTypeNotNone2;
-                     lType := lFunction.Header.cbType.Text;
+                     noneType1 := lang.FunctionHeaderTypeNotNone1;
+                     noneType2 := lang.FunctionHeaderTypeNotNone2;
+                     lType := func.Header.cbType.Text;
                   end
                   else
                   begin
-                     lNoneType1 := lLang.FunctionHeaderTypeNone1;
-                     lNoneType2 := lLang.FunctionHeaderTypeNone2;
+                     noneType1 := lang.FunctionHeaderTypeNone1;
+                     noneType2 := lang.FunctionHeaderTypeNone2;
                      lType := '';
                   end;
-                  lHeaderTemplate.Text := FastCodeAnsiStringReplace(lHeaderTemplate.Text, '%s4', lType);
-                  lHeaderTemplate.Text := FastCodeAnsiStringReplace(lHeaderTemplate.Text, '%s5', lNoneType1);
-                  lHeaderTemplate.Text := FastCodeAnsiStringReplace(lHeaderTemplate.Text, '%s6', lNoneType2);
+                  headerTemplate.Text := FastCodeAnsiStringReplace(headerTemplate.Text, '%s4', lType);
+                  headerTemplate.Text := FastCodeAnsiStringReplace(headerTemplate.Text, '%s5', noneType1);
+                  headerTemplate.Text := FastCodeAnsiStringReplace(headerTemplate.Text, '%s6', noneType2);
 
                   if ASkipBodyGen then
                   begin
-                     TInfra.InsertTemplateLines(lHeaderTemplate, '%s2', nil);
-                     lFunctionList.AddStrings(lHeaderTemplate);
+                     TInfra.InsertTemplateLines(headerTemplate, '%s2', nil);
+                     funcList.AddStrings(headerTemplate);
                   end
                   else
                   begin
                      // assemble entire function section
-                     if lFunction.Header.chkInclDescCode.Checked then
-                        lHeaderTemplate.Text := FastCodeAnsiStringReplace(lHeaderTemplate.Text, '%s2', lFunction.Header.memDescription.Text)
+                     if func.Header.chkInclDescCode.Checked then
+                        headerTemplate.Text := FastCodeAnsiStringReplace(headerTemplate.Text, '%s2', func.Header.memDescription.Text)
                      else
-                        TInfra.InsertTemplateLines(lHeaderTemplate, '%s2', nil);
-                     lFunctionTemplate := TStringList.Create;
+                        TInfra.InsertTemplateLines(headerTemplate, '%s2', nil);
+                     funcTemplate := TStringList.Create;
                      try
-                        lFunctionTemplate.Text := lLang.FunctionTemplate;
-                        TInfra.InsertTemplateLines(lFunctionTemplate, '%s1', lHeaderTemplate, lFunction.Header);
-                        lVarStrList := TStringList.Create;
+                        funcTemplate.Text := lang.FunctionTemplate;
+                        TInfra.InsertTemplateLines(funcTemplate, PRIMARY_PLACEHOLDER, headerTemplate, func.Header);
+                        varList := TStringList.Create;
                         try
-                           if Assigned(lLang.VarSectionGenerator) then
-                              lLang.VarSectionGenerator(lVarStrList, lFunction.Header.LocalVars)
+                           if Assigned(lang.VarSectionGenerator) then
+                              lang.VarSectionGenerator(varList, func.Header.LocalVars)
                            else
-                              Dummy_VarSectionGenerator(lVarStrList, lFunction.Header.LocalVars);
-                           TInfra.InsertTemplateLines(lFunctionTemplate, '%s2', lVarStrList);
+                              Dummy_VarSectionGenerator(varList, func.Header.LocalVars);
+                           TInfra.InsertTemplateLines(funcTemplate, '%s2', varList);
                         finally
-                           lVarStrList.Free;
+                           varList.Free;
                         end;
-                        if lFunction.Body <> nil then
+                        if func.Body <> nil then
                         begin
-                           lBodyTemplate := TStringList.Create;
+                           bodyTemplate := TStringList.Create;
                            try
-                              lFunction.Body.GenerateCode(lBodyTemplate, lLang.Name, 0);
-                              TInfra.InsertTemplateLines(lFunctionTemplate, '%s3', lBodyTemplate);
+                              func.Body.GenerateCode(bodyTemplate, lang.Name, 0);
+                              TInfra.InsertTemplateLines(funcTemplate, '%s3', bodyTemplate);
                            finally
-                              lBodyTemplate.Free;
+                              bodyTemplate.Free;
                            end;
-                           lFunction.Body.GenerateTemplateSection(lFunctionList, lFunctionTemplate, lLang.Name, 0);
+                           func.Body.GenerateTemplateSection(funcList, funcTemplate, lang.Name, 0);
                         end;
                      finally
-                        lFunctionTemplate.Free;
+                        funcTemplate.Free;
                      end;
                   end;
                finally
-                  lHeaderTemplate.Free;
+                  headerTemplate.Free;
                end;
             end;
          end;
-         lFunctionsTemplate := TStringList.Create;
+         funcsTemplate := TStringList.Create;
          try
-            lFunctionsTemplate.Text := lLang.FunctionsTemplate;
-            TInfra.InsertTemplateLines(lFunctionsTemplate, '%s1', lFunctionList);
-            ALines.AddStrings(lFunctionsTemplate);
+            funcsTemplate.Text := lang.FunctionsTemplate;
+            TInfra.InsertTemplateLines(funcsTemplate, PRIMARY_PLACEHOLDER, funcList);
+            ALines.AddStrings(funcsTemplate);
          finally
-            lFunctionsTemplate.Free;
+            funcsTemplate.Free;
          end;
       finally
-         lFunctionList.Free;
+         funcList.Free;
       end;
    end;
 end;
@@ -528,75 +528,75 @@ end;
 
 function Dummy_GetUserTypeDesc(ADataType: TUserDataType): string;
 var
-   lKey: string;
+   key: string;
 begin
    result := GInfra.CurrentLang.UserTypeDesc;
    if result <> '' then
    begin
-      result := FastCodeAnsiStringReplace(result, '%s1', ADataType.edtName.Text);
+      result := FastCodeAnsiStringReplace(result, PRIMARY_PLACEHOLDER, ADataType.edtName.Text);
       if ADataType.rbReal.Checked then
-         lKey := 'rbReal'
+         key := 'rbReal'
       else if ADataType.rbInt.Checked then
-         lKey := 'rbInt'
+         key := 'rbInt'
       else if ADataType.rbStruct.Checked then
-         lKey := 'rbStruct'
+         key := 'rbStruct'
       else if ADataType.rbEnum.Checked then
-         lKey := 'rbEnum'
+         key := 'rbEnum'
       else if ADataType.rbArray.Checked then
-         lKey := 'rbArray'
+         key := 'rbArray'
       else
-         lKey := 'rbOther';
-      result := FastCodeAnsiStringReplace(result, '%s2', i18Manager.GetString(lKey));
+         key := 'rbOther';
+      result := FastCodeAnsiStringReplace(result, '%s2', i18Manager.GetString(key));
    end;
 end;
 
 function Dummy_GetMainProgramDesc: string;
 begin
    result := i18Manager.GetString(GInfra.CurrentLang.ProgramLabelKey);
-   result := FastCodeAnsiStringReplace(result, '%s1', GProject.Name);
+   result := FastCodeAnsiStringReplace(result, PRIMARY_PLACEHOLDER, GProject.Name);
 end;
 
 function Dummy_GetUserFuncDesc(AHeader: TUserFunctionHeader): string;
 var
-   lParams, lDesc, lName, lType, lKey: string;
-   lLang: TLangDefinition;
+   params, desc, name, lType, key: string;
+   lang: TLangDefinition;
    iterp: IIterator;
 begin
    result := '';
-   lDesc := '';
-   lParams := '';
-   lName := '';
+   desc := '';
+   params := '';
+   name := '';
    lType := '';
-   lKey := '';
-   lLang := GInfra.CurrentLang;
+   key := '';
+   lang := GInfra.CurrentLang;
    if AHeader <> nil then
    begin
       iterp := AHeader.GetParameterIterator;
       while iterp.HasNext do
       begin
-         if lParams <> '' then
-            lParams := lParams + ',';
-         lParams := lParams + TParameter(iterp.Next).cbType.Text;
+         if params <> '' then
+            params := params + ',';
+         params := params + TParameter(iterp.Next).cbType.Text;
       end;
       if AHeader.cbType.ItemIndex <> 0 then
       begin
-         lKey := lLang.FunctionLabelKey;
+         key := lang.FunctionLabelKey;
          lType := AHeader.cbType.Text;
       end
       else
-         lKey := lLang.ProcedureLabelKey;
-      lName := Trim(AHeader.edtName.Text);
+         key := lang.ProcedureLabelKey;
+      name := Trim(AHeader.edtName.Text);
       if AHeader.chkInclDescFlow.Checked then
-         lDesc := AHeader.memDescription.Text;
+         desc := AHeader.memDescription.Text;
    end;
-   if lKey <> '' then
+   if key <> '' then
    begin
-      result := i18Manager.GetString(lKey);
+      result := i18Manager.GetString(key);
       result := FastCodeAnsiStringReplace(result, '##', CRLF);
-      result := FastCodeAnsiStringReplace(result, '%s1', lName);
-      result := FastCodeAnsiStringReplace(result, '%s2', lParams);
+      result := FastCodeAnsiStringReplace(result, PRIMARY_PLACEHOLDER, name);
+      result := FastCodeAnsiStringReplace(result, '%s2', params);
       result := FastCodeAnsiStringReplace(result, '%s3', lType);
-      result := FastCodeAnsiStringReplace(result, '%s4', lDesc);
+      result := FastCodeAnsiStringReplace(result, '%s4', desc);
    end;
 end;
 

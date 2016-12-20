@@ -173,30 +173,30 @@ end;
 function TProject.GetPage(const ACaption: string; const ACreate: boolean = true): TBlockTabSheet;
 var
    i: integer;
-   lCaption: string;
-   lPageControl: TPageControl;
+   caption: string;
+   pageControl: TPageControl;
 begin
    result := nil;
-   lCaption := Trim(ACaption);
-   if lCaption <> '' then
+   caption := Trim(ACaption);
+   if caption <> '' then
    begin
-      lPageControl := TInfra.GetMainForm.pgcPages;
-      for i := 0 to lPageControl.PageCount-1 do
+      pageControl := TInfra.GetMainForm.pgcPages;
+      for i := 0 to pageControl.PageCount-1 do
       begin
-         if AnsiSameCaption(lPageControl.Pages[i].Caption, lCaption) then
+         if AnsiSameCaption(pageControl.Pages[i].Caption, caption) then
          begin
-            result := TBlockTabSheet(lPageControl.Pages[i]);
+            result := TBlockTabSheet(pageControl.Pages[i]);
             break;
          end;
       end;
       if result = nil then
       begin
-         if AnsiSameCaption(lCaption, MAIN_PAGE_MARKER) then
+         if AnsiSameCaption(caption, MAIN_PAGE_MARKER) then
             result := GetMainPage
          else if ACreate then
          begin
             result := TBlockTabSheet.Create(TInfra.GetMainForm);
-            result.Caption := lCaption;
+            result.Caption := caption;
          end;
       end;
    end;
@@ -221,10 +221,10 @@ end;
 
 procedure TProject.PopulateDataTypes;
 var
-   lUserDataType: TUserDataType;
+   userType: TUserDataType;
    i: integer;
-   lName: string;
-   lNativeDataType: PNativeDataType;
+   name: string;
+   nativeType: PNativeDataType;
 begin
    FIntegerTypesSet := [];
    FRealTypesSet := [];
@@ -241,12 +241,12 @@ begin
    begin
       for i := 0 to FGlobalVars.cbType.Items.Count-1 do
       begin
-         lName := FGlobalVars.cbType.Items[i];
-         lUserDataType := GetUserDataType(lName);
-         lNativeDataType := GInfra.GetNativeDataType(lName);
-         if lNativeDataType <> nil then
+         name := FGlobalVars.cbType.Items[i];
+         userType := GetUserDataType(name);
+         nativeType := GInfra.GetNativeDataType(name);
+         if nativeType <> nil then
          begin
-            case lNativeDataType.Kind of
+            case nativeType.Kind of
                tpInt:    Include(FIntegerTypesSet, i);
                tpReal:   Include(FRealTypesSet, i);
                tpString: Include(FStringTypesSet, i);
@@ -256,22 +256,22 @@ begin
                Include(FOtherTypesSet, i);
             end;
          end
-         else if lUserDataType <> nil then
+         else if userType <> nil then
          begin
-            if lUserDataType.rbInt.Checked then
+            if userType.rbInt.Checked then
                Include(FIntegerTypesSet, i)
-            else if lUserDataType.rbReal.Checked then
+            else if userType.rbReal.Checked then
                Include(FRealTypesSet, i)
-            else if lUserDataType.rbStruct.Checked then
+            else if userType.rbStruct.Checked then
                Include(FStructTypesSet, i)
-            else if lUserDataType.rbEnum.Checked then
+            else if userType.rbEnum.Checked then
                Include(FEnumTypesSet, i)
-            else if lUserDataType.rbArray.Checked then
+            else if userType.rbArray.Checked then
                Include(FArrayTypesSet, i)
             else
                Include(FOtherTypesSet, i);
          end
-         else if Assigned(GInfra.CurrentLang.IsPointerType) and GInfra.CurrentLang.IsPointerType(lName) then
+         else if Assigned(GInfra.CurrentLang.IsPointerType) and GInfra.CurrentLang.IsPointerType(name) then
             Include(FPointerTypesSet, i)
          else
             Include(FOtherTypesSet, i);
@@ -302,50 +302,50 @@ end;
 function TProject.GetComponents(const ASortType: integer = NO_SORT; const AClassName: string = ''): IIterator;
 var
    i: integer;
-   lList: TComponentList;
-   lListSortWrap: TSortListDecorator;
+   list: TComponentList;
+   listDecor: TSortListDecorator;
 begin
-   lList := TComponentList.Create(false);
-   if lList.Capacity < FComponentList.Count then
-      lList.Capacity := FComponentList.Count;
+   list := TComponentList.Create(false);
+   if list.Capacity < FComponentList.Count then
+      list.Capacity := FComponentList.Count;
    for i := 0 to FComponentList.Count-1 do
    begin
        if AClassName <> '' then
        begin
           if FComponentList[i].ClassNameIs(AClassName) then
-             lList.Add(FComponentList[i]);
+             list.Add(FComponentList[i]);
        end
        else
-          lList.Add(FComponentList[i]);
+          list.Add(FComponentList[i]);
    end;
-   if (ASortType <> NO_SORT) and (lList.Count > 1) then
+   if (ASortType <> NO_SORT) and (list.Count > 1) then
    begin
-      lListSortWrap := TSortListDecorator.Create(lList, ASortType);
-      lListSortWrap.Sort;
-      lListSortWrap.Free;
+      listDecor := TSortListDecorator.Create(list, ASortType);
+      listDecor.Sort;
+      listDecor.Free;
    end;
-   result := TBaseIteratorFriend.Create(lList);
+   result := TBaseIteratorFriend.Create(list);
 end;
 
 function TProject.Register(const AObject: TObject; const AId: integer = ID_INVALID): integer;
 var
    idx: integer;
-   lStrId: string;
-   lIdAccepted: boolean;
+   id: string;
+   accepted: boolean;
 begin
-   lStrId := IntToStr(AId);
-   lIdAccepted := (AId <> ID_INVALID) and (FObjectIds.IndexOf(lStrId) = -1);
+   id := IntToStr(AId);
+   accepted := (AId <> ID_INVALID) and (FObjectIds.IndexOf(id) = -1);
    idx := FObjectIds.IndexOfObject(AObject);
    if idx <> -1 then
    begin
       result := StrToInt(FObjectIds.Strings[idx]);
-      if lIdAccepted then
-         FObjectIds.Strings[idx] := lStrId;
+      if accepted then
+         FObjectIds.Strings[idx] := id;
    end
    else
    begin
-      if lIdAccepted then
-         FObjectIds.AddObject(lStrId, AObject)
+      if accepted then
+         FObjectIds.AddObject(id, AObject)
       else
       begin
          FObjectIds.AddObject(IntToStr(FObjectIdSeed), AObject);
@@ -353,7 +353,7 @@ begin
          FObjectIdSeed := FObjectIdSeed + 1;
       end;
    end;
-   if lIdAccepted then
+   if accepted then
    begin
       if FObjectIdSeed <= AId then
          FObjectIdSeed := AId + 1;
@@ -383,18 +383,18 @@ end;
 function TProject.GetPageOrder: string;
 var
    i: integer;
-   lPageControl: TPageControl;
+   pageControl: TPageControl;
 begin
    result := '';
-   lPageControl := TInfra.GetMainForm.pgcPages;
-   for i := 0 to lPageControl.PageCount-1 do
+   pageControl := TInfra.GetMainForm.pgcPages;
+   for i := 0 to pageControl.PageCount-1 do
    begin
       if i <> 0 then
          result := result + PAGE_LIST_DELIM;
-      if GetMainPage = lPageControl.Pages[i] then
+      if GetMainPage = pageControl.Pages[i] then
          result := result + MAIN_PAGE_MARKER
       else
-         result := result + lPageControl.Pages[i].Caption;
+         result := result + pageControl.Pages[i].Caption;
    end;
 end;
 
@@ -408,9 +408,9 @@ end;
 procedure TProject.ExportToXMLTag(const ATag: IXMLElement);
 var
    itr, iter: IIterator;
-   lXmlObj: IXMLable;
+   xmlObj: IXMLable;
    i: integer;
-   lPageControl: TPageControl;
+   pageControl: TPageControl;
 begin
 
    ATag.SetAttribute(LANG_ATTR, GInfra.CurrentLang.Name);
@@ -423,15 +423,15 @@ begin
    if FGlobalConsts <> nil then
       FGlobalConsts.ExportToXMLTag(ATag);
 
-   lPageControl := TInfra.GetMainForm.pgcPages;
-   for i := 0 to lPageControl.PageCount-1 do
-      UpdateZOrder(lPageControl.Pages[i]);
+   pageControl := TInfra.GetMainForm.pgcPages;
+   for i := 0 to pageControl.PageCount-1 do
+      UpdateZOrder(pageControl.Pages[i]);
 
    iter := GetComponents(PAGE_INDEX_SORT);
    while iter.HasNext do
    begin
-      if Supports(iter.Next, IXMLable, lXmlObj) and lXmlObj.Active then
-         lXmlObj.ExportToXMLTag(ATag);
+      if Supports(iter.Next, IXMLable, xmlObj) and xmlObj.Active then
+         xmlObj.ExportToXMLTag(ATag);
    end;
 
    itr := TBaseFormIterator.Create;
@@ -442,99 +442,100 @@ end;
 
 procedure TProject.ImportPagesFromXML(const ATag: IXMLElement);
 var
-   lPageList, lPageName, lPageFront: string;
+   pageList, pageName, pageFront: string;
    i, len: integer;
-   lPage, lActivePage: TTabSheet;
+   page, activePage: TTabSheet;
 begin
    if ATag <> nil then
    begin
-      lActivePage := nil;
-      lPageName := '';
-      lPageFront := ATag.GetAttribute(PAGE_FRONT_ATTR);
-      if lPageFront = '' then
-         lActivePage := GetMainPage;
-      lPageList := ATag.GetAttribute(PAGE_ORDER_ATTR);
-      len := Length(lPageList);
+      activePage := nil;
+      pageName := '';
+      pageFront := ATag.GetAttribute(PAGE_FRONT_ATTR);
+      if pageFront = '' then
+         activePage := GetMainPage;
+      pageList := ATag.GetAttribute(PAGE_ORDER_ATTR);
+      len := Length(pageList);
       for i := 1 to len do
       begin
-         lPage := nil;
-         if lPageList[i] = PAGE_LIST_DELIM then
+         page := nil;
+         if pageList[i] = PAGE_LIST_DELIM then
          begin
-            lPage := GetPage(lPageName);
-            lPageName := '';
+            page := GetPage(pageName);
+            pageName := '';
          end
          else
          begin
-            lPageName := lPageName + lPageList[i];
+            pageName := pageName + pageList[i];
             if i = len then
-               lPage := GetPage(lPageName);
+               page := GetPage(pageName);
          end;
-         if (lPage <> nil) and (lActivePage = nil) and AnsiSameCaption(lPage.Caption, lPageFront) then
-            lActivePage := lPage;
+         if (page <> nil) and (activePage = nil) and AnsiSameCaption(page.Caption, pageFront) then
+            activePage := page;
       end;
-      if lActivePage <> nil then
-         lActivePage.PageControl.ActivePage := lActivePage;
+      if activePage <> nil then
+         activePage.PageControl.ActivePage := activePage;
    end;
 end;
 
 function TProject.ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
 var
    itr: IIterator;
-   lString, lang: string;
-   lLangDef: TLangDefinition;
+   s, langName: string;
 begin
+
    result := errValidate;
-   lang := ATag.GetAttribute(LANG_ATTR);
-   lLangDef := GInfra.GetLangDefinition(lang);
-   if lLangDef = nil then
-      Gerr_text := i18Manager.GetFormattedString('LngNoSprt', [lang])
-   else
+
+   langName := ATag.GetAttribute(LANG_ATTR);
+   if GInfra.GetLangDefinition(langName) = nil then
    begin
-      if AnsiSameText(lang, GInfra.DummyLang.Name) then
-         lString := 'ChangeLngNone'
-      else
-         lString := 'ChangeLngAsk';
-      if (not AnsiSameText(GInfra.CurrentLang.Name, lang)) and
-         (TInfra.ShowFormattedQuestionBox(lString, [Trim(lang), CRLF], MB_YESNO+MB_ICONQUESTION) = IDYES) then
-      begin
-         GInfra.SetCurrentLang(lang);
+      Gerr_text := i18Manager.GetFormattedString('LngNoSprt', [langName]);
+      exit;
+   end;
+
+   if AnsiSameText(langName, GInfra.DummyLang.Name) then
+      s := 'ChangeLngNone'
+   else
+      s := 'ChangeLngAsk';
+   if (not AnsiSameText(GInfra.CurrentLang.Name, langName)) and
+      (TInfra.ShowFormattedQuestionBox(s, [Trim(langName), CRLF], MB_YESNO+MB_ICONQUESTION) = IDYES) then
+   begin
+      GInfra.SetCurrentLang(langName);
 {$IFDEF USE_CODEFOLDING}
-         TInfra.GetEditorForm.ReloadFoldRegions;
+      TInfra.GetEditorForm.ReloadFoldRegions;
 {$ENDIF}
-         TInfra.GetEditorForm.SetFormAttributes;
-         SetGlobals;
-      end;
+      TInfra.GetEditorForm.SetFormAttributes;
+      SetGlobals;
+   end;
 
-      if FGlobalConsts <> nil then
-         FGlobalConsts.ImportFromXMLTag(ATag);
+   if FGlobalConsts <> nil then
+      FGlobalConsts.ImportFromXMLTag(ATag);
          
-      if GInfra.CurrentLang.EnabledUserDataTypes then
-         ImportUserDataTypesFromXML(ATag);
+   if GInfra.CurrentLang.EnabledUserDataTypes then
+      ImportUserDataTypesFromXML(ATag);
 
-      ImportPagesFromXML(ATag);
+   ImportPagesFromXML(ATag);
 
-      result := ImportUserFunctionsFromXML(ATag);
-      if result = errNone then
-      begin
-         if FGlobalVars <> nil then
-            FGlobalVars.ImportFromXMLTag(ATag);
-         PopulateDataTypeCombos;
-         RefreshSizeEdits;
-         RefreshStatements;
-         ImportCommentsFromXML(ATag);
-         RefreshZOrder;
-         itr := TBaseFormIterator.Create;
-         while itr.HasNext do
-            TBaseForm(itr.Next).ImportSettingsFromXMLTag(ATag);
-      end;
+   result := ImportUserFunctionsFromXML(ATag);
+   if result = errNone then
+   begin
+      if FGlobalVars <> nil then
+         FGlobalVars.ImportFromXMLTag(ATag);
+      PopulateDataTypeCombos;
+      RefreshSizeEdits;
+      RefreshStatements;
+      ImportCommentsFromXML(ATag);
+      RefreshZOrder;
+      itr := TBaseFormIterator.Create;
+      while itr.HasNext do
+         TBaseForm(itr.Next).ImportSettingsFromXMLTag(ATag);
    end;
 end;
 
 procedure TProject.SetGlobals;
 var
-   lLeft, lWidth: integer;
+   l, w: integer;
 begin
-   lWidth := 0;
+   w := 0;
    if GInfra.CurrentLang.EnabledVars then
    begin
       if FGlobalVars = nil then
@@ -554,10 +555,10 @@ begin
       if FGlobalConsts = nil then
       begin
          if FGlobalVars <> nil then
-            lLeft := FGlobalVars.BoundsRect.Right
+            l := FGlobalVars.BoundsRect.Right
          else
-            lLeft := 2;
-         FGlobalConsts := TConstDeclareList.Create(TInfra.GetDeclarationsForm, lLeft, 1, DEF_CONSTLIST_WIDTH, 6, 3, DEF_CONSTLIST_WIDTH-10);
+            l := 2;
+         FGlobalConsts := TConstDeclareList.Create(TInfra.GetDeclarationsForm, l, 1, DEF_CONSTLIST_WIDTH, 6, 3, DEF_CONSTLIST_WIDTH-10);
          FGlobalConsts.Caption := i18Manager.GetString('GlobalConsts');
          FGlobalConsts.SetCheckBoxCol(2);
       end;
@@ -570,7 +571,7 @@ begin
    if FGlobalVars <> nil then
    begin
       FGlobalVars.AssociatedList := FGlobalConsts;
-      lWidth := FGlobalVars.BoundsRect.Right + 16;
+      w := FGlobalVars.BoundsRect.Right + 16;
       if GSettings <> nil then
       begin
          FGlobalVars.sgList.ColWidths[0] := GSettings.ColumnV1Width;
@@ -583,7 +584,7 @@ begin
    if FGlobalConsts <> nil then
    begin
       FGlobalConsts.AssociatedList := FGlobalVars;
-      lWidth := FGlobalConsts.BoundsRect.Right + 16;
+      w := FGlobalConsts.BoundsRect.Right + 16;
       if GSettings <> nil then
       begin
          FGlobalConsts.sgList.ColWidths[0] := GSettings.ColumnC1Width;
@@ -591,10 +592,10 @@ begin
          FGlobalConsts.sgList.ColWidths[2] := GSettings.ColumnC3Width;
       end;
    end;
-   if lWidth > 0 then
+   if w > 0 then
    begin
-      TInfra.GetDeclarationsForm.Constraints.MaxWidth := lWidth;
-      TInfra.GetDeclarationsForm.Constraints.MinWidth := lWidth;
+      TInfra.GetDeclarationsForm.Constraints.MaxWidth := w;
+      TInfra.GetDeclarationsForm.Constraints.MinWidth := w;
    end;
    TInfra.GetMainForm.SetMenu(true);
 end;
@@ -602,88 +603,88 @@ end;
 function TProject.ImportUserFunctionsFromXML(const ATag: IXMLElement): TErrorType;
 var
    tag, tag1: IXMLElement;
-   lHeader: TUserFunctionHeader;
-   lBody: TMainBlock;
-   lTmpBlock: TBlock;
-   lPage: TTabSheet;
+   header: TUserFunctionHeader;
+   body: TMainBlock;
+   tmpBlock: TBlock;
+   page: TTabSheet;
 begin
    result := errNone;
    tag := TXMLProcessor.FindChildTag(ATag, FUNCTION_TAG);
    while (tag <> nil) and (result = errNone) do
    begin
-      lHeader := nil;
-      lBody := nil;
+      header := nil;
+      body := nil;
       tag1 := TXMLProcessor.FindChildTag(tag, HEADER_TAG);
       if (tag1 <> nil) and GInfra.CurrentLang.EnabledUserFunctionHeader then
       begin
-         lHeader := TUserFunctionHeader.Create(TInfra.GetFunctionsForm);
-         lHeader.ImportFromXMLTag(tag1);
-         lHeader.RefreshTab;
+         header := TUserFunctionHeader.Create(TInfra.GetFunctionsForm);
+         header.ImportFromXMLTag(tag1);
+         header.RefreshTab;
       end;
       tag1 := TXMLProcessor.FindChildTag(tag, BLOCK_TAG);
       if (tag1 <> nil) and GInfra.CurrentLang.EnabledUserFunctionBody then
       begin
-         lPage := GetPage(tag1.GetAttribute(PAGE_CAPTION_ATTR));
-         if lPage = nil then
-            lPage := GetMainPage;
-         lTmpBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag1, lPage, nil, result);
-         if lTmpBlock is TMainBlock then
-            lBody := TMainBlock(lTmpBlock);
+         page := GetPage(tag1.GetAttribute(PAGE_CAPTION_ATTR));
+         if page = nil then
+            page := GetMainPage;
+         tmpBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag1, page, nil, result);
+         if tmpBlock is TMainBlock then
+            body := TMainBlock(tmpBlock);
       end;
       if result = errNone then
-         TUserFunction.Create(lHeader, lBody)
+         TUserFunction.Create(header, body)
       else
-         lHeader.Free;
+         header.Free;
       tag := TXMLProcessor.FindNextTag(tag);
    end;
 end;
 
 function TProject.ImportUserDataTypesFromXML(const ATag: IXMLElement): TErrorType;
 var
-   lDataType, lType: TUserDataType;
+   dataType: TUserDataType;
    tag: IXMLElement;
    iter: IIterator;
 begin
    result := errNone;
-   lDataType := nil;
+   dataType := nil;
    tag := TXMLProcessor.FindChildTag(ATag, DATATYPE_TAG);
    while tag <> nil do
    begin
-      lDataType := TUserDataType.Create(TInfra.GetDataTypesForm);
-      lDataType.ImportFromXMLTag(tag);
-      lDataType.RefreshTab;
+      dataType := TUserDataType.Create(TInfra.GetDataTypesForm);
+      dataType.ImportFromXMLTag(tag);
+      dataType.RefreshTab;
       tag := TXMLProcessor.FindNextTag(tag);
    end;
    if FGlobalVars <> nil then
       TInfra.PopulateDataTypeCombo(FGlobalVars.cbType);
-   if lDataType <> nil then
+   if dataType <> nil then
    begin
       PopulateDataTypes;
       iter := GetUserDataTypes;
       while iter.HasNext do
       begin
-         lType := TUserDataType(iter.Next);
-         lType.RefreshSizeEdits;
-         lType.RefreshTab;
+         dataType := TUserDataType(iter.Next);
+         dataType.RefreshSizeEdits;
+         dataType.RefreshTab;
       end;
    end;
 end;
 
 function TProject.ImportCommentsFromXML(const ATag: IXMLElement): integer;
 var
-   lComment: TComment;
+   comment: TComment;
    tag: IXMLElement;
-   lPage: TBlockTabSheet;
+   page: TBlockTabSheet;
 begin
    result := NO_ERROR;
    tag := TXMLProcessor.FindChildTag(ATag, COMMENT_ATTR);
    while tag <> nil do
    begin
-      lPage := GetPage(tag.GetAttribute(PAGE_CAPTION_ATTR));
-      if lPage = nil then
-         lPage := GetMainPage;
-      lComment := TComment.CreateDefault(lPage);
-      lComment.ImportFromXMLTag(tag, nil);
+      page := GetPage(tag.GetAttribute(PAGE_CAPTION_ATTR));
+      if page = nil then
+         page := GetMainPage;
+      comment := TComment.CreateDefault(page);
+      comment.ImportFromXMLTag(tag, nil);
       tag := TXMLProcessor.FindNextTag(tag);
    end;
 end;
@@ -691,18 +692,18 @@ end;
 function TProject.GetProgramHeader: string;
 var
    i: integer;
-   lComment: TComment;
+   comment: TComment;
 begin
    result := '';
    for i := 0 to FComponentList.Count-1 do
    begin
       if FComponentList[i] is TComment then
       begin
-         lComment := TComment(FComponentList[i]);
-         if lComment.IsHeader then
+         comment := TComment(FComponentList[i]);
+         if comment.IsHeader then
          begin
-            result := lComment.Text;
-            if AnsiEndsText(CRLF, lComment.Text) then
+            result := comment.Text;
+            if AnsiEndsText(CRLF, comment.Text) then
                result := result + CRLF;
             break;
          end;
@@ -712,20 +713,20 @@ end;
 
 function TProject.GetBottomRight: TPoint;
 var
-   lPoint: TPoint;
+   pnt: TPoint;
    i: integer;
-   lBoundsObj: IMaxBoundable;
+   maxBounds: IMaxBoundable;
 begin
    result := Point(0, 0);
    for i := 0 to FComponentList.Count-1 do
    begin
-      if Supports(FComponentList[i], IMaxBoundable, lBoundsObj) then
+      if Supports(FComponentList[i], IMaxBoundable, maxBounds) then
       begin
-         lPoint := lBoundsObj.GetMaxBounds;
-         if lPoint.X > result.X then
-            result.X := lPoint.X;
-         if lPoint.Y > result.Y then
-            result.Y := lPoint.Y;
+         pnt := maxBounds.GetMaxBounds;
+         if pnt.X > result.X then
+            result.X := pnt.X;
+         if pnt.Y > result.Y then
+            result.Y := pnt.Y;
       end;
    end;
 end;
@@ -733,14 +734,14 @@ end;
 function TProject.GetIWinControlComponent(const AHandle: THandle): IWinControl;
 var
    i: integer;
-   lWinControl: IWinControl;
+   winControl: IWinControl;
 begin
    result := nil;
    for i := 0 to FComponentList.Count-1 do
    begin
-      if Supports(FComponentList[i], IWinControl, lWinControl) and (lWinControl.GetHandle = AHandle) then
+      if Supports(FComponentList[i], IWinControl, winControl) and (winControl.GetHandle = AHandle) then
       begin
-         result := lWinControl;
+         result := winControl;
          break;
       end;
    end;
@@ -748,23 +749,23 @@ end;
 
 procedure TProject.UpdateZOrder(const AParent: TWinControl);
 var
-   lWinControl: IWinControl;
-   lWnd: THandle;
+   winControl: IWinControl;
+   hnd: THandle;
    i: integer;
 begin
    i := 0;
    if AParent <> nil then
    begin
-      lWnd := GetWindow(GetTopWindow(AParent.Handle), GW_HWNDLAST);
-      while lWnd <> 0 do
+      hnd := GetWindow(GetTopWindow(AParent.Handle), GW_HWNDLAST);
+      while hnd <> 0 do
       begin
-         lWinControl := GetIWinControlComponent(lWnd);
-         if lWinControl <> nil then
+         winControl := GetIWinControlComponent(hnd);
+         if winControl <> nil then
          begin
-            lWinControl.SetZOrder(i);
+            winControl.SetZOrder(i);
             i := i + 1;
          end;
-         lWnd := GetNextWindow(lWnd, GW_HWNDPREV);
+         hnd := GetNextWindow(hnd, GW_HWNDPREV);
       end;
    end;
 end;
@@ -772,20 +773,20 @@ end;
 procedure TProject.RefreshZOrder;
 var
    iter: IIterator;
-   lWinControl: IWinControl;
+   winControl: IWinControl;
 begin
    iter := GetComponents(Z_ORDER_SORT);
    while iter.HasNext do
    begin
-      if Supports(iter.Next, IWinControl, lWinControl) then
-         lWinControl.BringAllToFront;
+      if Supports(iter.Next, IWinControl, winControl) then
+         winControl.BringAllToFront;
    end;
 end;
 
 procedure TProject.PaintToCanvas(const ACanvas: TCanvas);
 var
-   lWinControl: IWinControl;
-   lWnd: THandle;
+   winControl: IWinControl;
+   hnd: THandle;
 begin
    with ACanvas do
    begin
@@ -793,33 +794,33 @@ begin
       Brush.Color := GetActivePage.Brush.Color;
       PatBlt(Handle, ClipRect.Left, ClipRect.Top, ClipRect.Right, ClipRect.Bottom, PATCOPY);
    end;
-   lWnd := GetWindow(GetTopWindow(GetActivePage.Handle), GW_HWNDLAST);
-   while lWnd <> 0 do
+   hnd := GetWindow(GetTopWindow(GetActivePage.Handle), GW_HWNDLAST);
+   while hnd <> 0 do
    begin
-      lWinControl := GetIWinControlComponent(lWnd);
-      if lWinControl <> nil then
-         lWinControl.PaintToCanvas(ACanvas);
-      lWnd := GetNextWindow(lWnd, GW_HWNDPREV);
+      winControl := GetIWinControlComponent(hnd);
+      if winControl <> nil then
+         winControl.PaintToCanvas(ACanvas);
+      hnd := GetNextWindow(hnd, GW_HWNDPREV);
    end;
 end;
 
 procedure TProject.ExportToGraphic(const AGraphic: TGraphic);
 var
-   lPoint: TPoint;
-   lBitmap: TBitmap;
+   pnt: TPoint;
+   bitmap: TBitmap;
 begin
    if AGraphic is TBitmap then
-      lBitmap := TBitmap(AGraphic)
+      bitmap := TBitmap(AGraphic)
    else
-      lBitmap := TBitmap.Create;
-   lPoint := GetBottomRight;
-   lBitmap.Width := lPoint.X;
-   lBitmap.Height := lPoint.Y;
-   PaintToCanvas(lBitmap.Canvas);
-   if AGraphic <> lBitmap then
+      bitmap := TBitmap.Create;
+   pnt := GetBottomRight;
+   bitmap.Width := pnt.X;
+   bitmap.Height := pnt.Y;
+   PaintToCanvas(bitmap.Canvas);
+   if AGraphic <> bitmap then
    begin
-      AGraphic.Assign(lBitmap);
-      lBitmap.Free;
+      AGraphic.Assign(bitmap);
+      bitmap.Free;
    end;
 end;
 
@@ -837,17 +838,17 @@ end;
 function TProject.GetMainBlock: TMainBlock;
 var
    i: integer;
-   lFunction: TUserFunction;
+   func: TUserFunction;
 begin
    result := nil;
    for i := 0 to FComponentList.Count-1 do
    begin
       if FComponentList[i] is TUserFunction then
       begin
-         lFunction := TUserFunction(FComponentList[i]);
-         if (lFunction.Header = nil) and lFunction.Active then
+         func := TUserFunction(FComponentList[i]);
+         if (func.Header = nil) and func.Active then
          begin
-            result := lFunction.Body;
+            result := func.Body;
             break;
          end;
       end;
@@ -857,15 +858,15 @@ end;
 procedure TProject.PopulateDataTypeCombos;
 var
    i: integer;
-   lFunction: TUserFunction;
+   func: TUserFunction;
 begin
    for i := 0 to FComponentList.Count-1 do
    begin
       if FComponentList[i] is TUserFunction then
       begin
-         lFunction := TUserFunction(FComponentList[i]);
-         if lFunction.Body <> nil then
-            lFunction.Body.PopulateComboBoxes;
+         func := TUserFunction(FComponentList[i]);
+         if func.Body <> nil then
+            func.Body.PopulateComboBoxes;
       end;
    end;
 end;
@@ -873,15 +874,15 @@ end;
 procedure TProject.ChangeFlowchartsColor(const AColor: TColor);
 var
    i: integer;
-   lFunction: TUserFunction;
+   func: TUserFunction;
 begin
    for i := 0 to FComponentList.Count-1 do
    begin
       if FComponentList[i] is TUserFunction then
       begin
-         lFunction := TUserFunction(FComponentList[i]);
-         if lFunction.Body <> nil then
-            lFunction.Body.ChangeColor(AColor);
+         func := TUserFunction(FComponentList[i]);
+         if func.Body <> nil then
+            func.Body.ChangeColor(AColor);
       end;
    end;
 end;
@@ -889,9 +890,9 @@ end;
 function TProject.CountErrWarn: TErrWarnCount;
 var
    i: integer;
-   lFunction: TUserFunction;
-   lDataType: TUserDataType;
-   lErrWarnCount: TErrWarnCount; 
+   func: TUserFunction;
+   dataType: TUserDataType;
+   errWarnCount: TErrWarnCount;
 begin
    result.ErrorCount := 0;
    result.WarningCount := 0;
@@ -899,30 +900,30 @@ begin
    begin
       if FComponentList[i] is TUserFunction then
       begin
-         lFunction := TUserFunction(FComponentList[i]);
-         if lFunction.Active then
+         func := TUserFunction(FComponentList[i]);
+         if func.Active then
          begin
-            if lFunction.Header <> nil then
+            if func.Header <> nil then
             begin
-               case lFunction.Header.GetFocusColor of
+               case func.Header.GetFocusColor of
                   NOK_COLOR:  Inc(result.ErrorCount);
                   WARN_COLOR: Inc(result.WarningCount);
                end;
             end;
-            if lFunction.Body <> nil then
+            if func.Body <> nil then
             begin
-               lErrWarnCount := lFunction.Body.CountErrWarn;
-               Inc(result.ErrorCount, lErrWarnCount.ErrorCount);
-               Inc(result.WarningCount, lErrWarnCount.WarningCount);
+               errWarnCount := func.Body.CountErrWarn;
+               Inc(result.ErrorCount, errWarnCount.ErrorCount);
+               Inc(result.WarningCount, errWarnCount.WarningCount);
             end;
          end;
       end
       else if FComponentList[i] is TUserDataType then
       begin
-         lDataType := TUserDataType(FComponentList[i]);
-         if lDataType.Active then
+         dataType := TUserDataType(FComponentList[i]);
+         if dataType.Active then
          begin
-            case lDataType.GetFocusColor of
+            case dataType.GetFocusColor of
                NOK_COLOR:  Inc(result.ErrorCount);
                WARN_COLOR: Inc(result.WarningCount);
             end;
@@ -933,23 +934,23 @@ end;
 
 procedure TProject.GenerateTree(const ANode: TTreeNode);
 var
-   lDataTypes, lFunctions: IIterator;
-   lDataType: TUserDataType;
-   lMainFunction, lFunction: TUserFunction;
-   lNode: TTreeNode;
+   it, iter: IIterator;
+   dataType: TUserDataType;
+   mainFunc, func: TUserFunction;
+   node: TTreeNode;
 begin
 
-   lMainFunction := nil;
+   mainFunc := nil;
 
    if GInfra.CurrentLang.EnabledUserDataTypes then
    begin
-      lNode := ANode.Owner.AddChildObject(ANode, i18Manager.GetString('Structures'), TInfra.GetDataTypesForm);
-      lDataTypes := GetUserDataTypes;
-      while lDataTypes.HasNext do
+      node := ANode.Owner.AddChildObject(ANode, i18Manager.GetString('Structures'), TInfra.GetDataTypesForm);
+      it := GetUserDataTypes;
+      while it.HasNext do
       begin
-         lDataType := TUserDataType(lDataTypes.Next);
-         if lDataType.Active then
-            lDataType.GenerateTree(lNode);
+         dataType := TUserDataType(it.Next);
+         if dataType.Active then
+            dataType.GenerateTree(node);
       end;
    end;
 
@@ -957,40 +958,40 @@ begin
       ANode.Owner.AddChildObject(ANode, i18Manager.GetString('GlobalDeclares'), TInfra.GetDeclarationsForm);
 
    if GInfra.CurrentLang.EnabledUserFunctionHeader then
-      lNode := ANode.Owner.AddChildObject(ANode, i18Manager.GetString('Functions'), TInfra.GetFunctionsForm)
+      node := ANode.Owner.AddChildObject(ANode, i18Manager.GetString('Functions'), TInfra.GetFunctionsForm)
    else
-      lNode := ANode;
+      node := ANode;
 
-   lFunctions := GetUserFunctions;
-   while lFunctions.HasNext do
+   iter := GetUserFunctions;
+   while iter.HasNext do
    begin
-      lFunction := TUserFunction(lFunctions.Next);
-      if lFunction.Active then
+      func := TUserFunction(iter.Next);
+      if func.Active then
       begin
-         if lFunction.IsMain and (lMainFunction = nil) then
-            lMainFunction := lFunction
+         if func.IsMain and (mainFunc = nil) then
+            mainFunc := func
          else
-            lFunction.GenerateTree(lNode);
+            func.GenerateTree(node);
       end;
    end;
 
-   if lMainFunction <> nil then
-      lMainFunction.GenerateTree(ANode);
+   if mainFunc <> nil then
+      mainFunc.GenerateTree(ANode);
 
 end;
 
 procedure TProject.UpdateHeadersBody(const APage: TTabSheet);
 var
    i: integer;
-   lFunction: TUserFunction;
+   func: TUserFunction;
 begin
    for i := 0 to FComponentList.Count-1 do
    begin
       if FComponentList[i] is TUserFunction then
       begin
-         lFunction := TUserFunction(FComponentList[i]);
-         if (lFunction.Header <> nil ) and (lFunction.Body <> nil) and (lFunction.Body.Page = APage) then
-            lFunction.Header.SetPageCombo(APage.Caption);
+         func := TUserFunction(FComponentList[i]);
+         if (func.Header <> nil ) and (func.Body <> nil) and (func.Body.Page = APage) then
+            func.Header.SetPageCombo(APage.Caption);
       end;
    end;
 end;
@@ -998,38 +999,38 @@ end;
 procedure TProject.RefreshStatements;
 var
    i: integer;
-   lChange: byte;
-   lFunction: TUserFunction;
+   c: byte;
+   func: TUserFunction;
 begin
-   lChange := GChange;
+   c := GChange;
    for i := 0 to FComponentList.Count-1 do
    begin
       if FComponentList[i] is TUserFunction then
       begin
-         lFunction := TUserFunction(FComponentList[i]);
-         if lFunction.Active and (lFunction.Body <> nil) then
-            lFunction.Body.RefreshStatements;
+         func := TUserFunction(FComponentList[i]);
+         if func.Active and (func.Body <> nil) then
+            func.Body.RefreshStatements;
       end;
    end;
    NavigatorForm.Invalidate;
-   if lChange = 0 then
+   if c = 0 then
       GChange := 0;
 end;
 
 function TProject.FindMainBlockForControl(const AControl: TControl): TMainBlock;
 var
    i: integer;
-   lFunction: TUserFunction;
+   func: TUserFunction;
 begin
    result := nil;
    for i := 0 to FComponentList.Count-1 do
    begin
       if FComponentList[i] is TUserFunction then
       begin
-         lFunction := TUserFunction(FComponentList[i]);
-         if lFunction.Active and (lFunction.Body <> nil) and (lFunction.Body.Parent = AControl.Parent) and PtInRect(lFunction.Body.BoundsRect, AControl.BoundsRect.TopLeft) then
+         func := TUserFunction(FComponentList[i]);
+         if func.Active and (func.Body <> nil) and (func.Body.Parent = AControl.Parent) and PtInRect(func.Body.BoundsRect, AControl.BoundsRect.TopLeft) then
          begin
-            result := lFunction.Body;
+            result := func.Body;
             break;
          end;
       end;
@@ -1039,15 +1040,15 @@ end;
 procedure TProject.RepaintComments;
 var
    i: integer;
-   lComment: TComment;
+   comment: TComment;
 begin
    for i := 0 to FComponentList.Count-1 do
    begin
       if FComponentList[i] is TComment then
       begin
-         lComment := TComment(FComponentList[i]);
-         if lComment.Visible then
-            lComment.Repaint;
+         comment := TComment(FComponentList[i]);
+         if comment.Visible then
+            comment.Repaint;
       end;
    end;
 end;
@@ -1055,23 +1056,23 @@ end;
 procedure TProject.RepaintFlowcharts;
 var
    i: integer;
-   lFunction: TUserFunction;
+   func: TUserFunction;
 begin
    for i := 0 to FComponentList.Count-1 do
    begin
       if FComponentList[i] is TUserFunction then
       begin
-         lFunction := TUserFunction(FComponentList[i]);
-         if (lFunction.Body <> nil) and lFunction.Body.Visible then
-            lFunction.Body.RepaintAll;
+         func := TUserFunction(FComponentList[i]);
+         if (func.Body <> nil) and func.Body.Visible then
+            func.Body.RepaintAll;
       end;
    end;
 end;
 
 function TProject.GetLibraryList: TStringList;
 var
-   lLibName: string;
-   lTabObj: ITabbable;
+   libName: string;
+   tab: ITabbable;
    iter: IIterator;
 begin
    result := TStringList.Create;
@@ -1079,11 +1080,11 @@ begin
    iter := GetComponents(PAGE_INDEX_SORT);
    while iter.HasNext do
    begin
-      if Supports(iter.Next, ITabbable, lTabObj) then
+      if Supports(iter.Next, ITabbable, tab) then
       begin
-         lLibName := lTabObj.GetLibName;
-         if (lLibName <> '') and (result.IndexOf(lLibName) = -1) then
-            result.Add(lLibName);
+         libName := tab.GetLibName;
+         if (libName <> '') and (result.IndexOf(libName) = -1) then
+            result.Add(libName);
       end;
    end;
 end;
@@ -1091,14 +1092,14 @@ end;
 procedure TProject.RefreshSizeEdits;
 var
    i: integer;
-   lSizeEdit: ISizeEditable;
+   sizeEdit: ISizeEditable;
 begin
    if (GlobalVars <> nil) and (GlobalVars.edtSize.Text <> '1') then
       GlobalVars.edtSize.OnChange(GlobalVars.edtSize);
    for i := 0 to FComponentList.Count-1 do
    begin
-      if Supports(FComponentList[i], ISizeEditable, lSizeEdit) then
-         lSizeEdit.RefreshSizeEdits;
+      if Supports(FComponentList[i], ISizeEditable, sizeEdit) then
+         sizeEdit.RefreshSizeEdits;
    end;
 end;
 
@@ -1115,16 +1116,16 @@ end;
 function TProject.GetComponentByName(const AClassName: string; const AName: string): TComponent;
 var
    i: integer;
-   lTabObj: ITabbable;
+   tab: ITabbable;
 begin
    result := nil;
    if Trim(AName) <> '' then
    begin
       for i := 0 to FComponentList.Count-1 do
       begin
-         if FComponentList[i].ClassNameIs(AClassName) and Supports(FComponentList[i], ITabbable, lTabObj) then
+         if FComponentList[i].ClassNameIs(AClassName) and Supports(FComponentList[i], ITabbable, tab) then
          begin
-            if TInfra.SameStrings(lTabObj.GetName, AName) then
+            if TInfra.SameStrings(tab.GetName, AName) then
             begin
                result := FComponentList[i];
                break;
