@@ -442,11 +442,11 @@ end;
 
 class function TInfra.IsWin9x: boolean;
 var
-   pVerInfo: OSVERSIONINFO;
+   verInfo: OSVERSIONINFO;
 begin
-   FillChar(pVerInfo, SizeOf(pVerInfo), #0);
-   pVerInfo.dwOSVersionInfoSize := SizeOf(pVerInfo);
-   result := GetVersionEx(pVerInfo) and (pVerInfo.dwPlatformId = VER_PLATFORM_WIN32_WINDOWS);   // check if Win 9x
+   FillChar(verInfo, SizeOf(verInfo), #0);
+   verInfo.dwOSVersionInfoSize := SizeOf(verInfo);
+   result := GetVersionEx(verInfo) and (verInfo.dwPlatformId = VER_PLATFORM_WIN32_WINDOWS);   // check if Win 9x
 end;
 
 class function TInfra.CreateDOSProcess(const ACmdLine: string; const ADir: string = ''): Boolean;
@@ -1036,22 +1036,22 @@ end;
 
 class function TInfra.GetActiveEdit: TCustomEdit;
 var
-   lControl: TControl;
+   control: TControl;
 begin
    result := nil;
-   lControl := GetMainForm.ActiveControl;
-   if (lControl is TCustomEdit) and lControl.HasParent then
-      result := TCustomEdit(lControl);
+   control := GetMainForm.ActiveControl;
+   if (control is TCustomEdit) and control.HasParent then
+      result := TCustomEdit(control);
 end;
 
 class function TInfra.GetParsedBlock: TBlock;
 var
-   lEdit: TCustomEdit;
+   edit: TCustomEdit;
 begin
    result := nil;
-   lEdit := GetParsedEdit;
-   if (lEdit <> nil) and (lEdit.Parent is TBlock) then
-      result := TBlock(lEdit.Parent);
+   edit := GetParsedEdit;
+   if (edit <> nil) and (edit.Parent is TBlock) then
+      result := TBlock(edit.Parent);
 end;
 
 class function TInfra.GetParsedEdit: TCustomEdit;
@@ -1191,14 +1191,14 @@ end;
 
 class function TInfra.GetFunctionHeader(ABlock: TBlock): TUserFunctionHeader;
 var
-   lMainBlock: TMainBlock;
+   mainBlock: TMainBlock;
 begin
    result := nil;
    if ABlock <> nil then
    begin
-      lMainBlock := TMainBlock(ABlock.TopParentBlock);
-      if lMainBlock.UserFunction is TUserFunction then
-         result := TUserFunction(lMainBlock.UserFunction).Header;
+      mainBlock := TMainBlock(ABlock.TopParentBlock);
+      if mainBlock.UserFunction is TUserFunction then
+         result := TUserFunction(mainBlock.UserFunction).Header;
    end;
 end;
 
@@ -1210,12 +1210,12 @@ end;
 
 class procedure TInfra.SetFontSize(const AControl: TControl; const ASize: integer);
 var
-   lFlag: boolean;
+   flag: boolean;
 begin
-   lFlag := (AControl is TCustomEdit) and (THackCustomEdit(AControl).BorderStyle = bsNone);
-   if lFlag then THackCustomEdit(AControl).BorderStyle := bsSingle;
+   flag := (AControl is TCustomEdit) and (THackCustomEdit(AControl).BorderStyle = bsNone);
+   if flag then THackCustomEdit(AControl).BorderStyle := bsSingle;
    THackControl(AControl).Font.Size := ASize;
-   if lFlag then THackCustomEdit(AControl).BorderStyle := bsNone;
+   if flag then THackCustomEdit(AControl).BorderStyle := bsNone;
 end;
 
 // function to get correct page index iwhen some pages are not visible in PageControl

@@ -115,7 +115,7 @@ begin
    rect := BoundsRect;
    rgn := CreateRectRgnIndirect(rect);
    wnd := GetWindow(TInfra.GetMainForm.Handle, GW_HWNDFIRST);
-   RType := NULLREGION;
+   rType := NULLREGION;
    while (wnd <> 0) and (wnd <> Handle) do
    begin
       if IsWindowVisible(wnd) then
