@@ -603,7 +603,7 @@ procedure TVarDeclareList.OnClickAdd(Sender: TObject);
 var
    status, lType: integer;
    info, initVal: string;
-   edit: TWinControl;
+   edit: TCustomEdit;
    dataType: TUserDataType;
 begin
    status := GInfra.ValidateId(edtName.Text);
