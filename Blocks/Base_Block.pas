@@ -110,6 +110,7 @@ type
          function ProcessComments: boolean;
          function IsForeParent(const AParent: TObject): boolean;
          function GetErrorMsg(AEdit: TCustomEdit): string;
+         procedure SaveInXML2(const ATag: IXMLElement);
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -2216,38 +2217,13 @@ var
    txt: string;
    tag1, tag2: IXMLElement;
    lBranch: TBranch;
-   iter: IIterator;
+   it: IIterator;
    unPin: boolean;
-   textControl: TCustomEdit;
 begin
    unPin := false;
    if ATag <> nil then
    begin
-      ATag.SetAttribute(BLOCK_TYPE_ATTR, IntToStr(Ord(BType)));
-      ATag.SetAttribute(FRAME_ATTR, BoolToStr(FFrame, true));
-      ATag.SetAttribute('x', IntToStr(Left));
-      ATag.SetAttribute('y', IntToStr(Top));
-      ATag.SetAttribute('h', IntToStr(Height));
-      ATag.SetAttribute('w', IntToStr(Width));
-      ATag.SetAttribute('bh', IntToStr(BottomHook));
-      ATag.SetAttribute('brx', IntToStr(BottomPoint.X));
-      ATag.SetAttribute(ID_ATTR, IntToStr(FId));
-      ATag.SetAttribute('memW', IntToStr(memoWidth));
-      ATag.SetAttribute('memH', IntToStr(memoHeight));
-      ATag.SetAttribute('mem_vscroll', BoolToStr(FMemoVScroll, true));
-      ATag.SetAttribute('mem_hscroll', BoolToStr(FMemoHScroll, true));
-      ATag.SetAttribute('mem_wordwrap', BoolToStr(MemoWordWrap, true));
-      ATag.SetAttribute(FONT_SIZE_ATTR, IntToStr(Font.Size));
-      ATag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style));
-      textControl := GetTextControl;
-      if (textControl <> nil) and (textControl.Text <> '') then
-      begin
-         txt := AnsiReplaceStr(textControl.Text, CRLF, CRLF_PLACEHOLDER);
-         tag1 := ATag.OwnerDocument.CreateElement(TEXT_TAG);
-         TXMLProcessor.AddCDATA(tag1, txt);
-         ATag.AppendChild(tag1);
-      end;
-
+      SaveInXML2(ATag);
       if Expanded then
       begin
          fw := FFoldParms.Width;
@@ -2281,9 +2257,9 @@ begin
            ATag.AppendChild(tag1);
         end;
 
-        iter := GetPinComments;
-        while iter.HasNext do
-           TComment(iter.Next).ExportToXMLTag2(ATag);
+        it := GetPinComments;
+        while it.HasNext do
+           TComment(it.Next).ExportToXMLTag2(ATag);
 
         for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
         begin
@@ -2305,9 +2281,9 @@ begin
            TXMLProcessor.AddText(tag1, IntToStr(lBranch.hook.Y));
            tag2.AppendChild(tag1);
 
-           iter := GetBlocks(lBranch.Index);
-           while iter.HasNext do
-              TXMLProcessor.ExportBlockToXML(TBlock(iter.Next), tag2);
+           it := GetBlocks(lBranch.Index);
+           while it.HasNext do
+              TXMLProcessor.ExportBlockToXML(TBlock(it.Next), tag2);
         end;
 
       finally
@@ -2319,11 +2295,23 @@ end;
 
 procedure TBlock.SaveInXML(const ATag: IXMLElement);
 var
-   textControl: TCustomEdit;
+   it: IIterator;
+begin
+   SaveInXML2(ATag);
+   if (ATag <> nil) and (PinComments > 0) then
+   begin
+      it := GetPinComments;
+      while it.HasNext do
+         TComment(it.Next).ExportToXMLTag2(ATag);
+      UnPinComments;
+   end;
+end;
+
+procedure TBlock.SaveInXML2(const ATag: IXMLElement);
+var
+   txtControl: TCustomEdit;
    txt: string;
    tag: IXMLElement;
-   iter: IIterator;
-   unPin: boolean;
 begin
    if ATag <> nil then
    begin
@@ -2343,21 +2331,13 @@ begin
       ATag.SetAttribute('mem_wordwrap', BoolToStr(MemoWordWrap, true));
       ATag.SetAttribute(FONT_SIZE_ATTR, IntToStr(Font.Size));
       ATag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style));
-      textControl := GetTextControl;
-      if (textControl <> nil) and (textControl.Text <> '') then
+      txtControl := GetTextControl;
+      if (txtControl <> nil) and (txtControl.Text <> '') then
       begin
-         txt := AnsiReplaceStr(textControl.Text, CRLF, CRLF_PLACEHOLDER);
+         txt := AnsiReplaceStr(txtControl.Text, CRLF, CRLF_PLACEHOLDER);
          tag := ATag.OwnerDocument.CreateElement(TEXT_TAG);
          TXMLProcessor.AddCDATA(tag, txt);
          ATag.AppendChild(tag);
-      end;
-      unPin := PinComments > 0;
-      if unPin then
-      begin
-         iter := GetPinComments;
-         while iter.HasNext do
-            TComment(iter.Next).ExportToXMLTag2(ATag);
-         UnPinComments;
       end;
    end;
 end;
