@@ -2220,10 +2220,10 @@ var
    it: IIterator;
    unPin: boolean;
 begin
-   unPin := false;
+   SaveInXML2(ATag);
    if ATag <> nil then
    begin
-      SaveInXML2(ATag);
+      unPin := false;
       if Expanded then
       begin
          fw := FFoldParms.Width;
@@ -2242,50 +2242,48 @@ begin
       end;
 
       try
+         ATag.SetAttribute('brx', IntToStr(brx));
+         ATag.SetAttribute('bry', IntToStr(Branch.Hook.Y));
+         ATag.SetAttribute('fw', IntToStr(fw));
+         ATag.SetAttribute('fh', IntToStr(fh));
+         ATag.SetAttribute(FOLDED_ATTR, BoolToStr(not Expanded, true));
 
-        ATag.SetAttribute('brx', IntToStr(brx));
-        ATag.SetAttribute('bry', IntToStr(Branch.Hook.Y));
-        ATag.SetAttribute('fw', IntToStr(fw));
-        ATag.SetAttribute('fh', IntToStr(fh));
-        ATag.SetAttribute(FOLDED_ATTR, BoolToStr(not Expanded, true));
+         txt := GetFoldedText;
+         if txt <> '' then
+         begin
+            tag1 := ATag.OwnerDocument.CreateElement(FOLD_TEXT_ATTR);
+            TXMLProcessor.AddCDATA(tag1, txt);
+            ATag.AppendChild(tag1);
+         end;
 
-        txt := GetFoldedText;
-        if txt <> '' then
-        begin
-           tag1 := ATag.OwnerDocument.CreateElement(FOLD_TEXT_ATTR);
-           TXMLProcessor.AddCDATA(tag1, txt);
-           ATag.AppendChild(tag1);
-        end;
+         it := GetPinComments;
+         while it.HasNext do
+            TComment(it.Next).ExportToXMLTag2(ATag);
 
-        it := GetPinComments;
-        while it.HasNext do
-           TComment(it.Next).ExportToXMLTag2(ATag);
+         for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
+         begin
+            lBranch := FBranchArray[i];
 
-        for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
-        begin
-           lBranch := FBranchArray[i];
+            tag2 := ATag.OwnerDocument.CreateElement(BRANCH_TAG);
+            ATag.AppendChild(tag2);
 
-           tag2 := ATag.OwnerDocument.CreateElement(BRANCH_TAG);
-           ATag.AppendChild(tag2);
+            tag2.SetAttribute(ID_ATTR, IntToStr(lBranch.Id));
 
-           tag2.SetAttribute(ID_ATTR, IntToStr(lBranch.Id));
+            if lBranch.Statement <> nil then
+               tag2.SetAttribute(BRANCH_STMNT_ATTR, IntToStr(lBranch.Statement.Id));
 
-           if lBranch.Statement <> nil then
-              tag2.SetAttribute(BRANCH_STMNT_ATTR, IntToStr(lBranch.Statement.Id));
+            tag1 := ATag.OwnerDocument.CreateElement('x');
+            TXMLProcessor.AddText(tag1, IntToStr(lBranch.hook.X));
+            tag2.AppendChild(tag1);
 
-           tag1 := ATag.OwnerDocument.CreateElement('x');
-           TXMLProcessor.AddText(tag1, IntToStr(lBranch.hook.X));
-           tag2.AppendChild(tag1);
+            tag1 := ATag.OwnerDocument.CreateElement('y');
+            TXMLProcessor.AddText(tag1, IntToStr(lBranch.hook.Y));
+            tag2.AppendChild(tag1);
 
-           tag1 := ATag.OwnerDocument.CreateElement('y');
-           TXMLProcessor.AddText(tag1, IntToStr(lBranch.hook.Y));
-           tag2.AppendChild(tag1);
-
-           it := GetBlocks(lBranch.Index);
-           while it.HasNext do
-              TXMLProcessor.ExportBlockToXML(TBlock(it.Next), tag2);
-        end;
-
+            it := GetBlocks(lBranch.Index);
+            while it.HasNext do
+               TXMLProcessor.ExportBlockToXML(TBlock(it.Next), tag2);
+         end;
       finally
          if unPin then
             UnPinComments;
