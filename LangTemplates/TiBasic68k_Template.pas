@@ -58,7 +58,7 @@ end;
 procedure TIBASIC_UserFunctionsSectionGenerator(ALines: TStringList; ASkipBodyGen: boolean);
 var
    func: TUserFunction;
-   header, params, funcPrefix, name: string;
+   funcHeader, funcParms, funcPrefix, funcName: string;
    iterp, iter: IIterator;
 begin
    if GProject <> nil then
@@ -67,24 +67,24 @@ begin
       while iter.HasNext do
       begin
          func := TUserFunction(iter.Next);
-         name := func.GetName;
-         if (name = '') or func.Header.chkExtDeclare.Checked then
+         funcName := func.GetName;
+         if (funcName = '') or func.Header.chkExtDeclare.Checked then
             continue;
          if func.Header.cbType.ItemIndex <> 0 then
             funcPrefix := 'Func'
          else
             funcPrefix := 'Prgm';
-         params := '';
+         funcParms := '';
          iterp := func.Header.GetParameterIterator;
          while iterp.HasNext do
          begin
-            if params <> '' then
-               params := params + ',';
-            params := params + Trim(TParameter(iterp.Next).edtName.Text);
+            if funcParms <> '' then
+               funcParms := funcParms + ',';
+            funcParms := funcParms + Trim(TParameter(iterp.Next).edtName.Text);
          end;
-         header := 'Define ' + name + '(' + params + ')=' + funcPrefix;
+         funcHeader := 'Define ' + funcName + '(' + funcParms + ')=' + funcPrefix;
          func.Header.GenerateDescription(ALines);
-         ALines.AddObject(header, func.Header);
+         ALines.AddObject(funcHeader, func.Header);
          if func.Body <> nil then
          begin
             TIBASIC_VarSectionGenerator(ALines, func.Header.LocalVars);
