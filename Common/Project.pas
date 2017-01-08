@@ -786,6 +786,7 @@ procedure TProject.ExportToGraphic(const AGraphic: TGraphic);
 var
    pnt: TPoint;
    bitmap: TBitmap;
+   page: TBlockTabSheet;
 begin
    if AGraphic is TBitmap then
       bitmap := TBitmap(AGraphic)
@@ -794,7 +795,13 @@ begin
    pnt := GetBottomRight;
    bitmap.Width := pnt.X;
    bitmap.Height := pnt.Y;
-   GetActivePage.PaintTo(bitmap.Canvas, 0, 0);
+   page := GetActivePage;
+   page.DrawI := false;
+   try
+      page.PaintTo(bitmap.Canvas, 0, 0);
+   finally
+      page.DrawI := true;
+   end;
    if AGraphic <> bitmap then
    begin
       AGraphic.Assign(bitmap);

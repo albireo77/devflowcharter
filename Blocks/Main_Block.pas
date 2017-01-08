@@ -37,7 +37,6 @@ type
          FLabelRect: TRect;
          FHandle: HDC;
       public
-         ShowI: boolean;
          UserFunction: TObject;
          constructor Create(const APage: TBlockTabSheet; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
          constructor Create(const APage: TBlockTabSheet; const ATopLeft: TPoint); overload;
@@ -121,7 +120,6 @@ begin
 
    BottomPoint.X := FInitParms.BottomPoint.X;
    TopHook.Y := 30;
-   ShowI := true;
    FZOrder := -1;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
@@ -257,7 +255,7 @@ begin
    pnt.Y := pnt.Y - Top - MARGIN_Y + 1;
    bitmap.Width := pnt.X;
    bitmap.Height := pnt.Y;
-   ShowI := false;
+   FPage.DrawI := false;
    bitmap.Canvas.Lock;
    PaintTo(bitmap.Canvas, 1, 1);
    if Expanded then
@@ -278,7 +276,7 @@ begin
       end;
    end;
    bitmap.Canvas.Unlock;
-   ShowI := true;
+   FPage.DrawI := true;
    if AGraphic <> bitmap then
    begin
       AGraphic.Assign(bitmap);

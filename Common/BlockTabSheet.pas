@@ -32,6 +32,7 @@ type
    private
       FForm: TMainForm;
    public
+      DrawI: boolean;
       constructor Create(AMainForm: TMainForm);
       destructor Destroy; override;
       property Form: TMainForm read FForm;
@@ -53,6 +54,7 @@ begin
    Brush.Color := GSettings.DesktopColor;
    Align := alClient;
    OnMouseUp := PageMouseUp;
+   DrawI := true;
 end;
 
 destructor TBlockTabSheet.Destroy;

@@ -1391,7 +1391,7 @@ procedure TBlock.DrawI;
 var
    fontSize: integer;
 begin
-   if TMainBlock(FTopParentBlock).ShowI then
+   if Page.DrawI then
    begin
       fontSize := Canvas.Font.Size;
       Canvas.Font.Size := 8;
@@ -2564,6 +2564,7 @@ var
    iterc: IIterator;
    comment: TComment;
    pnt: TPoint;
+   lPage: TBlockTabSheet;
 begin
    ClearSelection;
    if AGraphic is TBitmap then
@@ -2572,7 +2573,8 @@ begin
       bitmap := TBitmap.Create;
    bitmap.Width := Width + 2;
    bitmap.Height := Height + 2;
-   TMainBlock(FTopParentBlock).ShowI := false;
+   lPage := Page;
+   lPage.DrawI := false;
    bitmap.Canvas.Lock;
    try
       PaintTo(bitmap.Canvas.Handle, 1, 1);
@@ -2585,7 +2587,7 @@ begin
       end;
    finally
       bitmap.Canvas.Unlock;
-      TMainBlock(FTopParentBlock).ShowI := true;
+      lPage.DrawI := true;
    end;
    if AGraphic <> bitmap then
    begin
