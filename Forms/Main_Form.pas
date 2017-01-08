@@ -1198,8 +1198,10 @@ function TMainForm.GetDisplayedRect: TRect;
 begin
    with result do
    begin
+      Top := VertScrollBar.Position - pgcPages.ActivePage.Top;
+      if Top < 0 then
+         Top := 0;
       Left := HorzScrollBar.Position;
-      Top := VertScrollBar.Position;
       Right := Left + ClientWidth;
       Bottom := Top + ClientHeight;
    end;

@@ -740,6 +740,7 @@ begin
    if colorChanged then
    begin
       MainForm.Color := FDesktopColor;
+      NavigatorForm.Color := FDesktopColor;
       if GProject <> nil then
       begin
          GProject.SetCommentsColor(FDesktopColor);

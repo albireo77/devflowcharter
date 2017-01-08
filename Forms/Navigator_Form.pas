@@ -56,6 +56,7 @@ begin
    scbAlphaVal.OnKeyDown := TInfra.GetMainForm.OnKeyDown;
    chkAlphaVisible.Checked := GSettings.NavigatorAlphaVisible;
    OnMouseWheel := TInfra.GetMainForm.OnMouseWheel;
+   Color := GSettings.DesktopColor;
 end;
 
 procedure TNavigatorForm.FormPaint(Sender: TObject);
