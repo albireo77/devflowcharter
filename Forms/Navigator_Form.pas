@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Base_Form, OmniXML, ComCtrls, StdCtrls, ExtCtrls;
+  Base_Form, OmniXML, ComCtrls, StdCtrls, ExtCtrls;
 
 type
   TNavigatorForm = class(TBaseForm)
@@ -38,7 +38,7 @@ var
 implementation
 
 uses
-   ApplicationCommon, Main_Form;
+   ApplicationCommon, BlockTabSheet;
 
 {$R *.dfm}
 
@@ -53,19 +53,21 @@ begin
    Constraints.MaxWidth := (Screen.Width*9) div 10;
    Constraints.MaxHeight := (Screen.Height*9) div 10;
    scbAlphaVal.Position := GSettings.NavigatorAlphaValue;
-   scbAlphaVal.OnKeyDown := MainForm.OnKeyDown;
+   scbAlphaVal.OnKeyDown := TInfra.GetMainForm.OnKeyDown;
    chkAlphaVisible.Checked := GSettings.NavigatorAlphaVisible;
-   OnMouseWheel := MainForm.OnMouseWheel;
+   OnMouseWheel := TInfra.GetMainForm.OnMouseWheel;
 end;
 
 procedure TNavigatorForm.FormPaint(Sender: TObject);
 const
    EXTENT_X = 1024;
    EXTENT_Y = 1024;
+   PEN_WIDTH = 2;
 var
    lhdc: HDC;
    edit: TCustomEdit;
    selStart, xExt, yExt: integer;
+   page: TBlockTabSheet;
 begin
    if GProject <> nil then
    begin
@@ -74,21 +76,22 @@ begin
          selStart := edit.SelStart;
       lhdc := SaveDC(Canvas.Handle);
       try
-         xExt := MulDiv(EXTENT_X, MainForm.HorzScrollBar.Range, ClientWidth);
-         yExt := MulDiv(EXTENT_Y, MainForm.VertScrollBar.Range, ClientHeight);
+         page := GProject.GetActivePage;
+         xExt := MulDiv(EXTENT_X, page.Form.HorzScrollBar.Range, ClientWidth);
+         yExt := MulDiv(EXTENT_Y, page.Form.VertScrollBar.Range, ClientHeight);
          SetMapMode(Canvas.Handle, MM_ANISOTROPIC);
          SetWindowExtEx(Canvas.Handle, xExt, yExt, nil);
          SetViewPortExtEx(Canvas.Handle, EXTENT_X, EXTENT_Y, nil);
-         GProject.GetActivePage.PaintTo(Canvas, 0, 0);
-         Canvas.Pen.Width := 5;
+         page.PaintTo(Canvas, 0, 0);
+         Canvas.Pen.Width := PEN_WIDTH;
          Canvas.Pen.Color := clRed;
-         with MainForm.GetDisplayedRect do
+         with page.Form.GetDisplayedRect do
          begin
-            Canvas.Polyline([Point(Left+2, Top+2),
-                             Point(Right-3, Top+2),
-                             Point(Right-3, Bottom-3),
-                             Point(Left+2, Bottom-3),
-                             Point(Left+2, Top+2)]);
+            Canvas.Polyline([Point(Left+PEN_WIDTH, Top),
+                             Point(Right-PEN_WIDTH, Top),
+                             Point(Right-PEN_WIDTH, Bottom-PEN_WIDTH),
+                             Point(Left+PEN_WIDTH, Bottom-PEN_WIDTH),
+                             Point(Left+PEN_WIDTH, Top)]);
          end;
       finally
          RestoreDC(Canvas.Handle, lhdc);
@@ -99,13 +102,16 @@ begin
 end;
 
 procedure TNavigatorForm.FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+   page: TBlockTabSheet;
 begin
-   if Button = mbLeft then
+   if (Button = mbLeft) and (GProject <> nil) then
    begin
-      MainForm.HorzScrollBar.Position := MulDiv(X, MainForm.HorzScrollBar.Range, ClientWidth) - (MainForm.ClientWidth div 2);
-      MainForm.VertScrollBar.Position := MulDiv(Y, MainForm.VertScrollBar.Range, ClientHeight) - (MainForm.ClientHeight div 2);
+      page := GProject.GetActivePage;
+      page.Form.HorzScrollBar.Position := MulDiv(X, page.Form.HorzScrollBar.Range, ClientWidth) - (page.Form.ClientWidth div 2);
+      page.Form.VertScrollBar.Position := MulDiv(Y, page.Form.VertScrollBar.Range, ClientHeight) - (page.Form.ClientHeight div 2);
       Invalidate;
-      MainForm.Repaint;
+      page.Form.Repaint;
    end;
 end;
 
