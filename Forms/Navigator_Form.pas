@@ -79,7 +79,7 @@ begin
          SetMapMode(Canvas.Handle, MM_ANISOTROPIC);
          SetWindowExtEx(Canvas.Handle, xExt, yExt, nil);
          SetViewPortExtEx(Canvas.Handle, EXTENT_X, EXTENT_Y, nil);
-         GProject.PaintToCanvas(Canvas);
+         GProject.GetActivePage.PaintTo(Canvas, 0, 0);
          Canvas.Pen.Width := 5;
          Canvas.Pen.Color := clRed;
          with MainForm.GetDisplayedRect do

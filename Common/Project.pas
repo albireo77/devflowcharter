@@ -82,7 +82,6 @@ type
       procedure ExportToGraphic(const AGraphic: TGraphic);
       procedure ExportToXMLTag(const ATag: IXMLElement);
       function ExportToXMLFile(const AFile: string): TErrorType;
-      procedure PaintToCanvas(const ACanvas: TCanvas);
       function ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
       function ImportUserFunctionsFromXML(const ATag: IXMLElement): TErrorType;
       function ImportUserDataTypesFromXML(const ATag: IXMLElement): TErrorType;
@@ -783,27 +782,6 @@ begin
    end;
 end;
 
-procedure TProject.PaintToCanvas(const ACanvas: TCanvas);
-var
-   winControl: IWinControl;
-   hnd: THandle;
-begin
-   with ACanvas do
-   begin
-      Brush.Style := bsSolid;
-      Brush.Color := GetActivePage.Brush.Color;
-      PatBlt(Handle, ClipRect.Left, ClipRect.Top, ClipRect.Right, ClipRect.Bottom, PATCOPY);
-   end;
-   hnd := GetWindow(GetTopWindow(GetActivePage.Handle), GW_HWNDLAST);
-   while hnd <> 0 do
-   begin
-      winControl := GetIWinControlComponent(hnd);
-      if winControl <> nil then
-         winControl.PaintToCanvas(ACanvas);
-      hnd := GetNextWindow(hnd, GW_HWNDPREV);
-   end;
-end;
-
 procedure TProject.ExportToGraphic(const AGraphic: TGraphic);
 var
    pnt: TPoint;
@@ -816,7 +794,7 @@ begin
    pnt := GetBottomRight;
    bitmap.Width := pnt.X;
    bitmap.Height := pnt.Y;
-   PaintToCanvas(bitmap.Canvas);
+   GetActivePage.PaintTo(bitmap.Canvas, 0, 0);
    if AGraphic <> bitmap then
    begin
       AGraphic.Assign(bitmap);

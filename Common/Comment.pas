@@ -63,7 +63,6 @@ type
          procedure ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl);
          procedure ExportToXMLTag(const ATag: IXMLElement);
          procedure ExportToXMLTag2(const ATag: IXMLElement);
-         procedure PaintToCanvas(const ACanvas: TCanvas);
          function GetMaxBounds: TPoint;
          function GetHandle: THandle;
          procedure BringAllToFront;
@@ -224,24 +223,6 @@ begin
          ReleaseCapture;
          SendMessage(Handle, WM_SYSCOMMAND, $F012, 0);
          FPage.Form.SetScrollBars
-      end;
-   end;
-end;
-
-procedure TComment.PaintToCanvas(const ACanvas: TCanvas);
-var
-   borderStyle: TBorderStyle;
-begin
-   if Visible and (FPinControl = nil) then
-   begin
-      ACanvas.Lock;
-      try
-         borderStyle := BorderStyle;
-         ChangeBorderStyle(bsNone);
-         PaintTo(ACanvas, Left + Parent.Left, Top + Parent.Top);
-         ChangeBorderStyle(borderStyle);
-      finally
-         ACanvas.Unlock;
       end;
    end;
 end;

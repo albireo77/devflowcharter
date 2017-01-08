@@ -84,7 +84,6 @@ type
 
    IWinControl = interface
       ['{83E56064-8CD4-4E91-BB66-47EDBCF2C697}']
-      procedure PaintToCanvas(const ACanvas: TCanvas);
       function GetHandle: THandle;
       procedure BringAllToFront;
       procedure SetZOrder(const AValue: integer);

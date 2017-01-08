@@ -46,7 +46,6 @@ type
          function GetDescription: string; override;
          function GetFromXML(const ATag: IXMLElement): TErrorType; override;
          procedure SaveInXML(const ATag: IXMLElement); override;
-         procedure PaintToCanvas(const ACanvas: TCanvas);
          function GetMaxBounds: TPoint;
          procedure ExportToGraphic(const AGraphic: TGraphic); override;
          procedure SetWidth(const AMinX: integer); override;
@@ -190,40 +189,6 @@ begin
    if w > result then
       result := w;
    result := result + 40;
-end;
-
-procedure TMainBlock.PaintToCanvas(const ACanvas: TCanvas);
-var
-   iter: IIterator;
-   comment: TComment;
-   bStyle: TBorderStyle;
-   selStart: integer;
-begin
-   if Visible then
-   begin
-      ShowI := false;
-      ACanvas.Lock;
-      PaintTo(ACanvas, Left + Parent.Left, Top + Parent.Top);
-      if Expanded then
-      begin
-         iter := GetComments;
-         while iter.HasNext do
-         begin
-            comment := TComment(iter.Next);
-            if comment.Visible then
-            begin
-               bStyle := comment.BorderStyle;
-               selStart := comment.SelStart;
-               comment.BorderStyle := bsNone;
-               comment.PaintTo(ACanvas, comment.Left + comment.Parent.Left, comment.Top + comment.Parent.Top);
-               comment.BorderStyle := bStyle;
-               comment.SelStart := selStart;
-            end;
-         end;
-      end;
-      ACanvas.Unlock;
-      ShowI := true;
-   end;
 end;
 
 procedure TMainBlock.SetZOrder(const AValue: integer);

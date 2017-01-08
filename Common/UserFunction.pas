@@ -108,7 +108,6 @@ type
       function GetId: integer;
       function GetLibName: string;
       procedure RefreshSizeEdits;
-      procedure PaintToCanvas(const ACanvas: TCanvas);
       function GetMaxBounds: TPoint;
       function GetName: string;
       function GetSortValue(const ASortType: integer): integer;
@@ -594,12 +593,6 @@ begin
    chkReference.DoubleBuffered := true;
    chkReference.OnClick := OnChangeType;
 
-end;
-
-procedure TUserFunction.PaintToCanvas(const ACanvas: TCanvas);
-begin
-   if FBody <> nil then
-      FBody.PaintToCanvas(ACanvas);
 end;
 
 function TUserFunction.GetHandle: THandle;
