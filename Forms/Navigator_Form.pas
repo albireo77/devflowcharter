@@ -78,7 +78,7 @@ begin
       lhdc := SaveDC(Canvas.Handle);
       try
          page := GProject.GetActivePage;
-         R := page.Form.GetDisplayedRect;
+         R := TInfra.GetDisplayRect(page);
          xExt := MulDiv(EXTENT_X, page.ClientWidth, ClientWidth);
          yExt := MulDiv(EXTENT_Y, page.ClientHeight, ClientHeight);
          SetMapMode(Canvas.Handle, MM_ANISOTROPIC);

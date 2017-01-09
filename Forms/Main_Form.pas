@@ -228,7 +228,6 @@ type
     procedure ExportSettingsToXMLTag(const root: IXMLElement); override;
     procedure ImportSettingsFromXMLTag(const root: IXMLElement); override;
     function ConfirmSave: integer;
-    function GetDisplayedRect: TRect;
     function GetMainBlockNextTopLeft: TPoint;
     procedure AcceptFile(const AFilePath: string);
   end;
@@ -1191,31 +1190,6 @@ begin
       else
          VertScrollBar.Range := ClientHeight;
       NavigatorForm.Invalidate;
-   end;
-end;
-
-function TMainForm.GetDisplayedRect: TRect;
-var
-   dv, dh: integer;
-begin
-   dv := 0;
-   dh := 0;
-   with result do
-   begin
-      Top := VertScrollBar.Position - pgcPages.ActivePage.Top;
-      if Top < 0 then
-      begin
-         dv := Top;
-         Top := 0;
-      end;
-      Left := HorzScrollBar.Position - pgcPages.ActivePage.Left;
-      if Left < 0 then
-      begin
-         dh := Left;
-         Left := 0;
-      end;
-      Right := Left + ClientWidth + dh;
-      Bottom := Top + ClientHeight + dv;
    end;
 end;
 

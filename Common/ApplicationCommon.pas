@@ -28,7 +28,7 @@ uses
    StrUtils, Types, ComCtrls, LocalizationManager, Project, Settings, LangDefinition,
    CommonTypes, Base_Form, CommonInterfaces, Functions_Form, DataTypes_Form, Declarations_Form,
    Main_Form, Base_Block, SynEditTypes, Settings_Form, Editor_Form, Explorer_Form,
-   UserFunction;
+   UserFunction, BlockTabSheet;
 
 type
 
@@ -124,6 +124,7 @@ type
          class function ClientToParent(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
          class procedure UpdateCodeEditor(AObject: TObject = nil);
          class function ExportToFile(AExport: IExportable): TErrorType;
+         class function GetDisplayRect(const APage: TBlockTabSheet): TRect;
          function ValidateConstId(const AId: string): integer;
          function ValidateId(const AId: string): integer;
          constructor Create;
@@ -1265,6 +1266,28 @@ begin
    result := AControl.ClientToParent(APoint, AParent);
    if (AParent <> nil) and (AParent.Parent <> nil) then
       result := Point(result.X - AParent.Left, result.Y - AParent.Top);
+end;
+
+class function TInfra.GetDisplayRect(const APage: TBlockTabSheet): TRect;
+var
+   dv, dh: integer;
+begin
+   dv := 0;
+   dh := 0;
+   result.Top := APage.Form.VertScrollBar.Position - APage.Top;
+   if result.Top < 0 then
+   begin
+      dv := result.Top;
+      result.Top := 0;
+   end;
+   result.Left := APage.Form.HorzScrollBar.Position - APage.Left;
+   if result.Left < 0 then
+   begin
+      dh := result.Left;
+      result.Left := 0;
+   end;
+   result.Right := result.Left + APage.Form.ClientWidth + dh;
+   result.Bottom := result.Top + APage.Form.ClientHeight + dv;
 end;
 
 function TInfra.ValidateConstId(const AId: string): integer;
