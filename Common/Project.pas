@@ -797,10 +797,12 @@ begin
    bitmap.Height := pnt.Y;
    page := GetActivePage;
    page.DrawI := false;
+   bitmap.Canvas.Lock;
    try
       page.PaintTo(bitmap.Canvas, 0, 0);
    finally
       page.DrawI := true;
+      bitmap.Canvas.Unlock;
    end;
    if AGraphic <> bitmap then
    begin

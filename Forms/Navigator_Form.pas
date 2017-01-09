@@ -56,7 +56,6 @@ begin
    scbAlphaVal.OnKeyDown := TInfra.GetMainForm.OnKeyDown;
    chkAlphaVisible.Checked := GSettings.NavigatorAlphaVisible;
    OnMouseWheel := TInfra.GetMainForm.OnMouseWheel;
-   Color := GSettings.DesktopColor;
 end;
 
 procedure TNavigatorForm.FormPaint(Sender: TObject);
@@ -69,6 +68,7 @@ var
    edit: TCustomEdit;
    selStart, xExt, yExt: integer;
    page: TBlockTabSheet;
+   R: TRect;
 begin
    if GProject <> nil then
    begin
@@ -78,22 +78,20 @@ begin
       lhdc := SaveDC(Canvas.Handle);
       try
          page := GProject.GetActivePage;
-         xExt := MulDiv(EXTENT_X, page.Form.HorzScrollBar.Range, ClientWidth);
-         yExt := MulDiv(EXTENT_Y, page.Form.VertScrollBar.Range, ClientHeight);
+         R := page.Form.GetDisplayedRect;
+         xExt := MulDiv(EXTENT_X, page.ClientWidth, ClientWidth);
+         yExt := MulDiv(EXTENT_Y, page.ClientHeight, ClientHeight);
          SetMapMode(Canvas.Handle, MM_ANISOTROPIC);
          SetWindowExtEx(Canvas.Handle, xExt, yExt, nil);
          SetViewPortExtEx(Canvas.Handle, EXTENT_X, EXTENT_Y, nil);
          page.PaintTo(Canvas, 0, 0);
          Canvas.Pen.Width := PEN_WIDTH;
          Canvas.Pen.Color := clRed;
-         with page.Form.GetDisplayedRect do
-         begin
-            Canvas.Polyline([Point(Left+PEN_WIDTH, Top),
-                             Point(Right-PEN_WIDTH, Top),
-                             Point(Right-PEN_WIDTH, Bottom-PEN_WIDTH),
-                             Point(Left+PEN_WIDTH, Bottom-PEN_WIDTH),
-                             Point(Left+PEN_WIDTH, Top)]);
-         end;
+         Canvas.Polyline([Point(R.Left+PEN_WIDTH, R.Top),
+                          Point(R.Right-PEN_WIDTH, R.Top),
+                          Point(R.Right-PEN_WIDTH, R.Bottom-PEN_WIDTH),
+                          Point(R.Left+PEN_WIDTH, R.Bottom-PEN_WIDTH),
+                          Point(R.Left+PEN_WIDTH, R.Top)]);
       finally
          RestoreDC(Canvas.Handle, lhdc);
          if edit <> nil then
@@ -109,8 +107,8 @@ begin
    if (Button = mbLeft) and (GProject <> nil) then
    begin
       page := GProject.GetActivePage;
-      page.Form.HorzScrollBar.Position := MulDiv(X, page.Form.HorzScrollBar.Range, ClientWidth) - (page.Form.ClientWidth div 2);
-      page.Form.VertScrollBar.Position := MulDiv(Y, page.Form.VertScrollBar.Range, ClientHeight) - (page.Form.ClientHeight div 2);
+      page.Form.HorzScrollBar.Position := MulDiv(X, page.ClientWidth, ClientWidth) - (page.Form.ClientWidth div 2);
+      page.Form.VertScrollBar.Position := MulDiv(Y, page.ClientHeight, ClientHeight) - (page.Form.ClientHeight div 2);
       Invalidate;
       page.Form.Repaint;
    end;

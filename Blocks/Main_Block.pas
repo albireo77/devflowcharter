@@ -244,6 +244,7 @@ var
    comment: TComment;
    bStyle: TBorderStyle;
    selStart: integer;
+   pdi: boolean;
 begin
    ClearSelection;
    if AGraphic is TBitmap then
@@ -255,6 +256,7 @@ begin
    pnt.Y := pnt.Y - Top - MARGIN_Y + 1;
    bitmap.Width := pnt.X;
    bitmap.Height := pnt.Y;
+   pdi := FPage.DrawI;
    FPage.DrawI := false;
    bitmap.Canvas.Lock;
    PaintTo(bitmap.Canvas, 1, 1);
@@ -276,7 +278,7 @@ begin
       end;
    end;
    bitmap.Canvas.Unlock;
-   FPage.DrawI := true;
+   FPage.DrawI := pdi;
    if AGraphic <> bitmap then
    begin
       AGraphic.Assign(bitmap);
