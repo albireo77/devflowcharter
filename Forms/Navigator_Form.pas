@@ -62,7 +62,6 @@ procedure TNavigatorForm.FormPaint(Sender: TObject);
 const
    EXTENT_X = 1024;
    EXTENT_Y = 1024;
-   PEN_WIDTH = 2;
 var
    lhdc: HDC;
    edit: TCustomEdit;
@@ -78,20 +77,20 @@ begin
       lhdc := SaveDC(Canvas.Handle);
       try
          page := GProject.GetActivePage;
-         R := TInfra.GetDisplayRect(page);
          xExt := MulDiv(EXTENT_X, page.ClientWidth, ClientWidth);
          yExt := MulDiv(EXTENT_Y, page.ClientHeight, ClientHeight);
          SetMapMode(Canvas.Handle, MM_ANISOTROPIC);
          SetWindowExtEx(Canvas.Handle, xExt, yExt, nil);
          SetViewPortExtEx(Canvas.Handle, EXTENT_X, EXTENT_Y, nil);
          page.PaintTo(Canvas, 0, 0);
-         Canvas.Pen.Width := PEN_WIDTH;
+         Canvas.Pen.Width := 2;
          Canvas.Pen.Color := clRed;
-         Canvas.Polyline([Point(R.Left+PEN_WIDTH, R.Top),
-                          Point(R.Right-PEN_WIDTH, R.Top),
-                          Point(R.Right-PEN_WIDTH, R.Bottom-PEN_WIDTH),
-                          Point(R.Left+PEN_WIDTH, R.Bottom-PEN_WIDTH),
-                          Point(R.Left+PEN_WIDTH, R.Top)]);
+         R := TInfra.GetDisplayRect(page);
+         Canvas.Polyline([Point(R.Left, R.Top),
+                          Point(R.Right, R.Top),
+                          Point(R.Right, R.Bottom),
+                          Point(R.Left, R.Bottom),
+                          Point(R.Left, R.Top)]);
       finally
          RestoreDC(Canvas.Handle, lhdc);
          if edit <> nil then
