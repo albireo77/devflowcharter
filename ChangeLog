@@ -1,3 +1,6 @@
+3.6.4 [10.01.2017]
+- Flowchart Navigator: fixes and display optimizations
+
 3.6.3 [20.12.2016]
 - Editor's Find/Replace: highlight in yellow all findings in file
 - Code Generation: don't write instruction end ; when line does not contain anything else; just generate empty line
