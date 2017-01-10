@@ -86,11 +86,11 @@ begin
          Canvas.Pen.Width := 2;
          Canvas.Pen.Color := clRed;
          R := TInfra.GetDisplayRect(page);
-         Canvas.Polyline([Point(R.Left, R.Top),
+         Canvas.Polyline([R.TopLeft,
                           Point(R.Right, R.Top),
-                          Point(R.Right, R.Bottom),
+                          R.BottomRight,
                           Point(R.Left, R.Bottom),
-                          Point(R.Left, R.Top)]);
+                          R.TopLeft]);
       finally
          RestoreDC(Canvas.Handle, lhdc);
          if edit <> nil then

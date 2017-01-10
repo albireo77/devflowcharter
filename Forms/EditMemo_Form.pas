@@ -65,7 +65,7 @@ begin
       memo := SourceBlock.GetFrontMemo;
       if memo <> nil then
       begin
-         pnt := memo.ClientToScreen(Point(0, 0));
+         pnt := memo.ClientOrigin;
          SetBounds(pnt.X, pnt.Y, SourceBlock.memoWidth, SourceBlock.memoHeight);
          memEditor.Font.Assign(memo.Font);
          memEditor.Font.Color := clNavy;
