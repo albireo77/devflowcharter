@@ -72,12 +72,12 @@ end;
 
 procedure TAboutForm.FormClose(Sender: TObject; var Action: TCloseAction);
 var
-  i, cavb: 0..255;
+  i, abv: 0..255;
 begin
   if not TInfra.IsWin9x then
   begin
-     cavb := AlphaBlendValue;
-     for i := cavb downto 0 do
+     abv := AlphaBlendValue;
+     for i := abv downto 0 do
      begin
         AlphaBlendValue := i;
         Application.ProcessMessages;
@@ -125,7 +125,7 @@ begin
    lblXML.Hint := IcXML_LINK;
    lblProjectLink.Caption := PROJECT_LINK;
    lblProjectLink.Hint := PROJECT_LINK;
-   lblInfo.Caption := ' This program is freeware and released under the'#13#10'                GNU General Public License.'#13#10#13#10'    Copyright(C) 2006-2016 The devFlowcharter'#13#10'                             project';
+   lblInfo.Caption := ' This program is freeware and released under the'#13#10'                GNU General Public License.'#13#10#13#10'    Copyright(C) 2006-2017 The devFlowcharter'#13#10'                             project';
    lblInfo1.Caption := '                   ' + PROGRAM_NAME + CRLF +
                        'The easiest way from flowchart to program!' + CRLF +
                        '             ' + GetVersionInfo;
