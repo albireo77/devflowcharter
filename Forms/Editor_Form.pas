@@ -178,7 +178,7 @@ end;
 
 procedure TEditorHintWindow.ActivateHintData(ARect: TRect; const AHint: string; AData: Pointer);
 var
-   x, y, h: integer;
+   x, y: integer;
    pnt: TPoint;
 begin
    if (AData <> nil) and not InvalidPoint(TPoint(AData^)) then
@@ -191,9 +191,7 @@ begin
       ARect.Top := pnt.Y;
       Inc(ARect.Bottom, y);
    end;
-   h := ARect.Bottom - ARect.Top;
-   Dec(ARect.Top, h);
-   Dec(ARect.Bottom, h);
+   ARect := Rect(ARect.Left, 2*ARect.Top-ARect.Bottom, ARect.Right, ARect.Top);
    inherited ActivateHintData(ARect, AHint, AData);
 end;
 
