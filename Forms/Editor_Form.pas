@@ -181,14 +181,14 @@ var
    w, h: integer;
    pnt: TPoint;
 begin
+   w := ARect.Right - ARect.Left;
+   h := ARect.Bottom - ARect.Top;
    if (AData <> nil) and not InvalidPoint(TPoint(AData^)) then
    begin
-      w := ARect.Right - ARect.Left;
-      h := ARect.Bottom - ARect.Top;
       pnt := TPoint(AData^);
       ARect := Rect(pnt.X, pnt.Y, pnt.X+w, pnt.Y+h);
    end;
-   ARect := Rect(ARect.Left, 2*ARect.Top-ARect.Bottom, ARect.Right, ARect.Top);
+   OffsetRect(ARect, 0, -h);
    inherited ActivateHintData(ARect, AHint, AData);
 end;
 
