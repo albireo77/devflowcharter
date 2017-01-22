@@ -1048,7 +1048,7 @@ begin
       block := nil;
       gCheck := true;
       lCheck := true;
-      TParserHelper.InitIdentInfo(idInfo);
+      idInfo := TIdentInfo.Create;
       obj := memCodeEditor.Lines.Objects[p.Line-1];
       idInfo.Ident := w;
       if TInfra.IsValid(obj) and (obj is TBlock) then

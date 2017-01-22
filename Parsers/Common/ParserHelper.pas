@@ -30,6 +30,43 @@ uses
 
 type
 
+   TIdentInfo = class(TObject)
+   private
+      FType,
+      FTypeOriginal,
+      FTypePointer: integer;
+      FTypeAsString,
+      FTypeOriginalAsString: string;
+      FIsInteger,
+      FIsReal,
+      FIsNumeric,
+      FIsStruct,
+      FIsEnum,
+      FIsPointer: boolean;
+      procedure SetType(const AType: integer);
+   public
+      Ident,
+      SizeAsString,
+      SizeExpArrayAsString,
+      Value: string;
+      IdentType,
+      Size,
+      DimensCount,
+      Scope: integer;
+      property TType: integer read FType write SetType;
+      property TypeAsString: string read FTypeAsString;
+      property TypeOriginal: integer read FTypeOriginal;
+      property TypeOriginalAsString: string read FTypeOriginalAsString;
+      property TypePointer: integer read FTypePointer;
+      property IsInteger: boolean read FIsInteger;
+      property IsReal: boolean read FIsReal;
+      property IsNumeric: boolean read FIsNumeric;
+      property IsStruct: boolean read FIsStruct;
+      property IsEnum: boolean read FIsEnum;
+      property IsPointer: boolean read FIsPointer;
+      constructor Create;
+   end;
+
    TParserHelper = class(TObject)
    private
       //class function DecodeDimension(const AType: integer): integer;
@@ -50,8 +87,8 @@ type
       class function GetConstValue(const AConstName: string): string;
       class function GetIdentInfo(const AIdentName: string): TIdentInfo;
       class function FindUserFunctionVarList(const ABlock: TBlock): TVarDeclareList;
-      class procedure GetParameterInfo(const AHeader: TUserFunctionHeader; var AResult: TIdentInfo);
-      class procedure GetVariableInfo(const AVarList: TVarDeclareList; var AResult: TIdentInfo);
+      class procedure GetParameterInfo(const AHeader: TUserFunctionHeader; AResult: TIdentInfo);
+      class procedure GetVariableInfo(const AVarList: TVarDeclareList; AResult: TIdentInfo);
       class function IsStructType(const AType: integer): boolean;
       class function IsEnumType(const AType: integer): boolean;
       class function IsIntegerType(const AType: integer): boolean;
@@ -65,8 +102,6 @@ type
       class function GetOriginalType(const AType: integer): integer;
       class function GetForVarType: integer;
       class function GetCaseVarType: integer;
-      class procedure InitIdentInfo(var AIdentInfo: TIdentInfo);
-      class procedure SetIdentInfoType(var AIdentInfo: TIdentInfo; const AType: integer);
       class function GetVarInfo(const AVarName: string): TIdentInfo;
       class function IsArrayType(const AType: integer): boolean;
       class function AreTypesCompatible(const AType1, AType2: integer): boolean;
@@ -102,48 +137,33 @@ uses
    Controls, SysUtils, Forms, UserDataType, Statement, CommonTypes, Case_Block,
    Main_Block, Grids, Graphics, ForDo_Block, LangDefinition, CommonInterfaces;
 
-class procedure TParserHelper.InitIdentInfo(var AIdentInfo: TIdentInfo);
+constructor TIdentInfo.Create;
 begin
-   with AIdentInfo do
-   begin
-      Ident := '';
-      IdentType := UNKNOWN;
-      TType := NOT_DEFINED;
-      TypeOriginal := NOT_DEFINED;
-      TypePointer := NOT_DEFINED;
-      Value := '';
-      Size := INCORRECT_SIZE;
-      DimensCount := 0;
-      SizeAsString := IntToStr(INCORRECT_SIZE);
-      SizeExpArrayAsString := '';
-      TypeAsString := i18Manager.GetString('Unknown');
-      TypeOriginalAsString := TypeAsString;
-      IsInteger := false;
-      IsReal := false;
-      IsNumeric := false;
-      IsPointer := false;
-      IsStruct := false;
-      IsEnum := false;
-      Scope := GLOBAL;
-   end;
+   inherited Create;
+   FType := NOT_DEFINED;
+   FTypeAsString := i18Manager.GetString('Unknown');
+   FTypeOriginal := FType;
+   FTypeOriginalAsString := FTypeAsString;
+   FTypePointer := FType;
+   IdentType := UNKNOWN;
+   Size := INCORRECT_SIZE;
+   SizeAsString := IntToStr(INCORRECT_SIZE);
+   Scope := GLOBAL;
 end;
 
-class procedure TParserHelper.SetIdentInfoType(var AIdentInfo: TIdentInfo; const AType: integer);
+procedure TIdentInfo.SetType(const AType: integer);
 begin
-   with AIdentInfo do
-   begin
-      TType := AType;
-      TypeAsString := GetTypeAsString(TType);
-      TypeOriginal := GetOriginalType(TType);
-      TypeOriginalAsString := GetTypeAsString(TypeOriginal);
-      TypePointer := GetPointerType(TType);
-      IsInteger := IsIntegerType(TType);
-      IsReal := IsRealType(TType);
-      IsNumeric := IsInteger or IsReal;
-      IsStruct := IsStructType(TType);
-      IsEnum := IsEnumType(TType);
-      IsPointer := IsPointerType(TType);
-   end;
+   FType := AType;
+   FTypeAsString := TParserHelper.GetTypeAsString(FType);
+   FTypeOriginal := TParserHelper.GetOriginalType(FType);
+   FTypeOriginalAsString := TParserHelper.GetTypeAsString(FTypeOriginal);
+   FTypePointer := TParserHelper.GetPointerType(FType);
+   FIsInteger := TParserHelper.IsIntegerType(FType);
+   FIsReal := TParserHelper.IsRealType(FType);
+   FIsNumeric := IsInteger or IsReal;
+   FIsStruct := TParserHelper.IsStructType(FType);
+   FIsEnum := TParserHelper.IsEnumType(FType);
+   FIsPointer := TParserHelper.IsPointerType(FType);
 end;
 
 class function TParserHelper.GetForVarType: integer;
@@ -354,7 +374,7 @@ begin
    end;
 end;
 
-class procedure TParserHelper.GetParameterInfo(const AHeader: TUserFunctionHeader; var AResult: TIdentInfo);
+class procedure TParserHelper.GetParameterInfo(const AHeader: TUserFunctionHeader; AResult: TIdentInfo);
 var
    iter: IIterator;
    param: TParameter;
@@ -368,7 +388,7 @@ begin
          param := TParameter(iter.Next);
          if (param.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(AResult.Ident, Trim(param.edtName.Text)) then
          begin
-            SetIdentInfoType(AResult, GetType(param.cbType.Text));
+            AResult.TType := GetType(param.cbType.Text);
             with AResult do
             begin
                Scope := PARAMETER;
@@ -404,7 +424,7 @@ begin
    end;
 end;
 
-class procedure TParserHelper.GetVariableInfo(const AVarList: TVarDeclareList; var AResult: TIdentInfo);
+class procedure TParserHelper.GetVariableInfo(const AVarList: TVarDeclareList; AResult: TIdentInfo);
 var
    i: integer;
 begin
@@ -413,7 +433,7 @@ begin
       i := AVarList.sgList.Cols[VAR_NAME_COL].IndexOf(AResult.Ident);
       if i > 0 then
       begin
-         SetIdentInfoType(AResult, GetType(AVarList.sgList.Cells[VAR_TYPE_COL, i]));
+         AResult.TType := GetType(AVarList.sgList.Cells[VAR_TYPE_COL, i]);
          with AResult do
          begin
             SizeAsString := AVarList.sgList.Cells[VAR_SIZE_COL, i];
@@ -437,7 +457,7 @@ class function TParserHelper.GetVarInfo(const AVarName: string): TIdentInfo;
 var
    block: TBlock;
 begin
-   InitIdentInfo(result);
+   result := TIdentInfo.Create;
    result.Ident := AVarName;
    block := TInfra.GetParsedBlock;
    if block <> nil then
@@ -531,8 +551,6 @@ begin
                result.IdentType := ENUM_VALUE;
          end;
       end;
-      if result.IdentType <> UNKNOWN then
-         SetIdentInfoType(result, result.TType);
    end;
 end;
 
