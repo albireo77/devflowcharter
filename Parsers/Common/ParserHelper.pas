@@ -66,6 +66,7 @@ type
       class function GetForVarType: integer;
       class function GetCaseVarType: integer;
       class procedure InitIdentInfo(var AIdentInfo: TIdentInfo);
+      class procedure SetIdentInfoType(var AIdentInfo: TIdentInfo; const AType: integer);
       class function GetVarInfo(const AVarName: string): TIdentInfo;
       class function IsArrayType(const AType: integer): boolean;
       class function AreTypesCompatible(const AType1, AType2: integer): boolean;
@@ -124,6 +125,24 @@ begin
       IsStruct := false;
       IsEnum := false;
       Scope := GLOBAL;
+   end;
+end;
+
+class procedure TParserHelper.SetIdentInfoType(var AIdentInfo: TIdentInfo; const AType: integer);
+begin
+   with AIdentInfo do
+   begin
+      TType := AType;
+      TypeAsString := GetTypeAsString(TType);
+      TypeOriginal := GetOriginalType(TType);
+      TypeOriginalAsString := GetTypeAsString(TypeOriginal);
+      TypePointer := GetPointerType(TType);
+      IsInteger := IsIntegerType(TType);
+      IsReal := IsRealType(TType);
+      IsNumeric := IsInteger or IsReal;
+      IsStruct := IsStructType(TType);
+      IsEnum := IsEnumType(TType);
+      IsPointer := IsPointerType(TType);
    end;
 end;
 
@@ -349,19 +368,9 @@ begin
          param := TParameter(iter.Next);
          if (param.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(AResult.Ident, Trim(param.edtName.Text)) then
          begin
+            SetIdentInfoType(AResult, GetType(param.cbType.Text));
             with AResult do
             begin
-               TypeAsString := param.cbType.Text;
-               TType := GetType(TypeAsString);
-               TypeOriginal := GetOriginalType(TType);
-               TypeOriginalAsString := GetTypeAsString(TypeOriginal);
-               TypePointer := GetPointerType(TType);
-               IsInteger := IsIntegerType(TType);
-               IsReal := IsRealType(TType);
-               IsNumeric := IsInteger or IsReal;
-               IsStruct := IsStructType(TType);
-               IsEnum := IsEnumType(TType);
-               IsPointer := IsPointerType(TType);
                Scope := PARAMETER;
                if param.chkTable.Checked then
                begin
@@ -404,15 +413,12 @@ begin
       i := AVarList.sgList.Cols[VAR_NAME_COL].IndexOf(AResult.Ident);
       if i > 0 then
       begin
+         SetIdentInfoType(AResult, GetType(AVarList.sgList.Cells[VAR_TYPE_COL, i]));
          with AResult do
          begin
-            TypeAsString := AVarList.sgList.Cells[VAR_TYPE_COL, i];
             SizeAsString := AVarList.sgList.Cells[VAR_SIZE_COL, i];
             Size := StrToIntDef(SizeAsString, INCORRECT_SIZE);
-            TType := GetType(TypeAsString);
             DimensCount := AVarList.GetDimensionCount(Ident, true);
-            TypeOriginal := GetOriginalType(TType);
-            TypeOriginalAsString := GetTypeAsString(TypeOriginal);
             if DimensCount = 0 then
                IdentType := VARIABLE
             else
@@ -420,13 +426,6 @@ begin
                IdentType := VARRAY;
                SizeExpArrayAsString := GetSizeExpArrayAsString(TypeAsString, SizeAsString);
             end;
-            TypePointer := GetPointerType(TType);
-            IsInteger := IsIntegerType(TType);
-            IsReal := IsRealType(TType);
-            IsNumeric := IsInteger or IsReal;
-            IsStruct := IsStructType(TType);
-            IsEnum := IsEnumType(TType);
-            IsPointer := IsPointerType(TType);
             if (GProject <> nil) and (GProject.GlobalVars <> AVarList) then
                Scope := LOCAL;
          end;
@@ -533,21 +532,7 @@ begin
          end;
       end;
       if result.IdentType <> UNKNOWN then
-      begin
-         with result do
-         begin
-            TypeAsString := GetTypeAsString(TType);
-            IsStruct := IsStructType(TType);
-            IsEnum := IsEnumType(TType);
-            IsReal := IsRealType(TType);
-            IsInteger := IsIntegerType(TType);
-            IsNumeric := IsReal or IsInteger;
-            IsPointer := IsPointerType(TType);
-            TypeOriginal := GetOriginalType(TType);
-            TypeOriginalAsString := GetTypeAsString(TypeOriginal);
-            TypePointer := GetPointerType(TType);
-         end;
-      end;
+         SetIdentInfoType(result, result.TType);
    end;
 end;
 
