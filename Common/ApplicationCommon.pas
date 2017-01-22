@@ -37,6 +37,28 @@ type
       Instance: TControl;   // TBlock or TComment which actually is copied to clipboard
    end;
 
+   TIdentInfo = record
+      Ident: string;
+      IdentType,
+      TType,
+      TypeOriginal,
+      TypePointer,
+      Size: integer;
+      SizeAsString,
+      SizeExpArrayAsString,
+      TypeAsString,
+      TypeOriginalAsString,
+      Value: string;
+      DimensCount: integer;
+      IsInteger,
+      IsReal,
+      IsNumeric,
+      IsStruct,
+      IsEnum,
+      IsPointer: boolean;
+      Scope: integer;
+   end;
+
    TInfra = class(TObject)
       private
          FDummyLang,
