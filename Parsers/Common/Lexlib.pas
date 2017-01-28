@@ -72,42 +72,42 @@ type
     {			variable; this will be the empty string, unless	}
     {			yymore is called which sets yystext to the	}
     {			current yytext.					}
-    yystext	: String;
+    yystext: String;
     { - yysstate:	Start state of lexical analyzer (set to 0	}
     {			during initialization, and modified in calls to	}
     {			the start routine).				}
-    yysstate	: Integer;
+    yysstate: Integer;
     { - yylstate:	line state information (1 if at beginning of	}
     {			line, 0 otherwise).				}
-    yylstate	: Integer;
+    yylstate: Integer;
     { - yystack:	stack containing matched rules; yymatches	}
     {			contains the number of matches.			}
-    yymatches	: Integer;
-    yystack	: array [1..Lex_max_matches] of Integer;
+    yymatches: Integer;
+    yystack: array [1..Lex_max_matches] of Integer;
     { - yypos:		for each rule the last marked position (yymark);}
     {			zeroed when rule has already been considered.	}
-    yypos	: array [1..Lex_max_rules] of Integer;
+    yypos: array [1..Lex_max_rules] of Integer;
     { - yysleng:	copy of the original yyleng used to restore	}
     {			state information when reject is used.		}
-    yysleng	: Integer;
+    yysleng: Integer;
     { *****************************************************************	}
 
-    yystate	: Integer;	{ Current state of lexical analyzer.	}
-    yyactchar	: Char;		{ Current character.			}
-    yylastchar	: Char;		{ Last matched character (#0 if none).	}
-    yyrule	: Integer;	{ Matched rule.				}
-    yyreject	: Boolean;	{ Current match rejected?		}
-    yydone	: Boolean;	{ yylex return value set?		}
-    yyretval	: Integer;	{ yylex return value.			}
-    FText	: String;	{ Matched text.				}
-    FPrevChar	: Char;		{ Used to sort CR/LF.			}
+    yystate: Integer;	{ Current state of lexical analyzer.	}
+    yyactchar: Char;	{ Current character.			}
+    yylastchar: Char;	{ Last matched character (#0 if none).	}
+    yyrule: Integer;	{ Matched rule.				}
+    yyreject: Boolean;	{ Current match rejected?		}
+    yydone: Boolean;	{ yylex return value set?		}
+    yyretval: Integer;	{ yylex return value.			}
+    FText: String;		{ Matched text.				}
+    FPrevChar: Char;	{ Used to sort CR/LF.			}
 
     { Unget buffer...							}
-    Bufptr	: Integer;
-    Buf		: array [1..Lex_max_chars] of Char;
+    Bufptr: Integer;
+    Buf: array [1..Lex_max_chars] of Char;
 
     { Get current string length						}
-    function  GetYYLeng : Integer; virtual;
+    function GetYYLeng: Integer; virtual;
 
     { Start the next match; initialize state information of the lexical	}
     { analyzer.								}
@@ -118,43 +118,43 @@ type
     procedure yyscan;
 
     { Mark position for rule no. N					}
-    procedure yymark( N : Integer );
+    procedure yymark(N: Integer);
 
     { Declares a match for rule number N				}
-    procedure yymatch( N : Integer );
+    procedure yymatch(N: Integer);
 
     { Find the last match and the corresponding marked position and	}
     { adjust the matched string accordingly; return:			}
     { - true if a rule has been matched, false otherwise		}
     { - n: the number of the matched rule.				}
-    function  yyfind( var N : Integer ) : Boolean;
+    function yyfind(var N: Integer): Boolean;
 
     { Execute the default action (copy character); return true unless	}
     { at end-of-file.							}
-    function  yydefault : Boolean;
+    function yydefault: Boolean;
 
     { Re-initialize state information after lexical analysis has been	}
     { finished.								}
     procedure yyclear;
 
     { Write a fatal error message and halt program.			}
-    procedure Fatal( msg : String );
+    procedure Fatal(msg: String);
 
   public
-    yyinput	: TLexFile;	{ Input file				}
-    yyoutput	: TLexFile;	{ Output file				}
-    yyerrorfile	: TLexFile;	{ Destination for errors.		}
-    yyline	: String;	{ Current input line.			}
-    yylineno	: Integer;	{ Current input line.			}
-    yycolno	: Integer;	{ Current input column.			}
-    property yytext : String read FText;
-    property yyleng : Integer read GetYYLeng;
+    yyinput: TLexFile;	{ Input file				}
+    yyoutput: TLexFile;	{ Output file				}
+    yyerrorfile: TLexFile;	{ Destination for errors.		}
+    yyline: String;	{ Current input line.			}
+    yylineno: Integer;	{ Current input line.			}
+    yycolno: Integer;	{ Current input column.			}
+    property yytext: String read FText;
+    property yyleng: Integer read GetYYLeng;
 
     { *****************************************************************	}
     { Constructor & destructor.						}
     { *****************************************************************	}
     constructor Create; virtual;
-    destructor  Destroy; override;
+    destructor Destroy; override;
 
     { *****************************************************************	}
     { I/O routines:
@@ -187,14 +187,14 @@ type
 
     { Obtain one character from the input file (null character at	}
     { end-of-file)							}
-    function  Get_char : Char;
+    function Get_char: Char;
 
     { Return one character to the input file to be reread in subsequent	}
     { calls to Get_char.						}
-    procedure Unget_char( C : Char );
+    procedure Unget_char(C: Char);
 
     { Write one character to the output file.				}
-    procedure Put_char( C : Char );
+    procedure Put_char(C: Char);
 
     { *****************************************************************	}
     { Utility routines:							}
@@ -208,7 +208,7 @@ type
 
     { Truncate yytext to size n and return the remaining characters to	}
     { the input stream.							}
-    procedure yyless( N : Integer );
+    procedure yyless(N: Integer);
 
     { Reject the current match and execute the next one.		}
     { N.B. Reject does not actually cause the input to be rescanned; 	}
@@ -218,13 +218,13 @@ type
     procedure Reject;
 
     { Set the return value of yylex.					}
-    procedure Return( N : Integer );
-    procedure Returnc( C : Char );
+    procedure Return(N: Integer);
+    procedure Returnc(C: Char);
 
     { Put the lexical analyzer in the given start state.		}
     { state=0 denotes the default start state, other values are user	}
     { defined.								}
-    procedure Start( state : Integer );
+    procedure Start(state: Integer);
 
     { The yywrap function is called by yylex at end-of-file (unless you	}
     { have specified a rule matching end-of-file). You may redefine this}
@@ -234,57 +234,56 @@ type
     { analysis.								}
     { The default yywrap routine supplied here closes input and output	}
     { files and returns true (causing yylex to terminate).		}
-    function  yywrap : Boolean;
+    function  yywrap: Boolean;
 
     { reset the lexer for another run.					}
     procedure Reset;
 
-  end;	{ TCustomLexer	}
+  end;
 
 implementation
 
 { Get current string length						}
-function  TCustomLexer.GetYYLeng : Integer;
+function  TCustomLexer.GetYYLeng: Integer;
 begin
-  Result := Length( FText );
-end;	{ GetYYLeng	}
+  Result := Length(FText);
+end;
 
 { Write a fatal error message and halt program.				}
-procedure TCustomLexer.Fatal ( Msg : String );
+procedure TCustomLexer.Fatal(Msg: String);
 begin
 {$Ifdef HaltOnError}
-  yyerrorfile.Writeln( 'LexLib: ' +  Msg );
+  yyerrorfile.Writeln('LexLib: ' + Msg);
   Halt(1);
 {$Else  HaltOnError}
-  raise ELFException.Create( 'LexLib: ' + Msg );
+  raise ELFException.Create('LexLib: ' + Msg);
 {$Endif HaltOnError}
-end;	{ Fatal	}
+end;
 
 { Obtain one character from the input file (null character at EOF)	}
-function TCustomLexer.Get_char : Char;
+function TCustomLexer.Get_char: Char;
 var
-  C	: Char;
+  C: Char;
 label
   retry;
 begin
   { Is there anything in the undo buffer?				}
   if Bufptr > 0 then
   begin
-    Get_char := Buf[ Bufptr ];
-    Dec( Bufptr );
-    Inc( yycolno );
+    Get_char := Buf[Bufptr];
+    Dec(Bufptr);
+    Inc(yycolno);
     Exit;
   end;
 
   { Otherwise get a character from the input file.			}
 retry:
   C := yyinput.Get;
-  Inc( yycolno );
-  if C in [#10,#13] then
+  Inc(yycolno);
+  if C in [#10, #13] then
   begin
     { It's a newline, but may be part of a pair.			}
-    if ( (C = #13) and (FPrevChar = #10) )
-      or ( (C = #10) and (FPrevChar = #13) ) then
+    if ((C = #13) and (FPrevChar = #10)) or ((C = #10) and (FPrevChar = #13)) then
     begin
       { Clear the pair check & retry.					}
       FPrevChar := #0;
@@ -292,53 +291,60 @@ retry:
     end;
     FPrevChar := C;
     C := #10;		{ Always use newline not CR for the analysis.	}
-    Inc( yylineno );	{ We are now on next line.			}
+    Inc(yylineno);	{ We are now on next line.			}
     yycolno := 1;
-  end else FPrevChar := #0;
+  end 
+  else 
+    FPrevChar := #0;
   Get_char := C;
-end;	{ Get_char	}
+end;
 
 { Return one character to the input file to be reread in subsequent	}
 { calls to Get_char.							}
-procedure TCustomLexer.Unget_char( C : Char );
+procedure TCustomLexer.Unget_char(C: Char);
 begin
-  if Bufptr = Lex_max_chars then Fatal( 'input buffer overflow' );
+  if Bufptr = Lex_max_chars then
+    Fatal('input buffer overflow');
   Inc(Bufptr);
   Dec(yycolno);
   Buf[Bufptr] := C;
-end;	{ Unget_char	}
+end;
 
 { Write one character to the output file.				}
-procedure TCustomLexer.Put_char( C : Char );
+procedure TCustomLexer.Put_char(C: Char);
 begin
   if C = #0 then
-  else if c = #10 then yyoutput.Writeln( '' )
-  else yyoutput.Write( C )
-end;	{ Put_char	}
+  else if C = #10 then
+    yyoutput.Writeln('')
+  else
+    yyoutput.Write(C)
+end;
 
 { Echo the current match to the output stream.				}
 procedure TCustomLexer.Echo;
 var
-  I	: Integer;
+  i: Integer;
 begin
-  for I := 1 to Length(Ftext) do Put_char( Ftext[I] );
-end;	{ Echo	}
+  for i := 1 to Length(Ftext) do
+    Put_char(Ftext[i]);
+end;
 
 { Append the next match to the current one.				}
 procedure TCustomLexer.yymore;
 begin
   yystext := Ftext;
-end;	{ yymore	}
+end;
 
 { Truncate yytext to size n and return the remaining characters to	}
 { the input stream.							}
-procedure TCustomLexer.yyless( N : Integer );
+procedure TCustomLexer.yyless(N: Integer);
 var
-  I	: Integer;
+  i: Integer;
 begin
-  for I := Length(Ftext) downto N + 1 do unget_char( Ftext[I] );
-  SetLength( Ftext, N );
-end;	{ yyless	}
+  for i := Length(Ftext) downto N+1 do
+    unget_char(Ftext[i]);
+  SetLength(Ftext, N);
+end;
 
 { Reject the current match and execute the next one.			}
 { N.B. Reject does not actually cause the input to be rescanned; 	}
@@ -347,34 +353,35 @@ end;	{ yyless	}
 { variable when rejecting a match.					}
 procedure TCustomLexer.Reject;
 var
-  I	: Integer;
+  i: Integer;
 begin
   yyreject := True;
-  for I := Length( Ftext ) + 1 to yysleng do Ftext := Ftext + get_char;
-  Dec( yymatches );
-end;	{ Reject	}
+  for i := Length(Ftext)+1 to yysleng do
+    Ftext := Ftext + get_char;
+  Dec(yymatches);
+end;
 
 { Set the return value of yylex.					}
-procedure TCustomLexer.Return( N : Integer );
+procedure TCustomLexer.Return(N: Integer);
 begin
   yyretval := N;
-  yydone   := True;
-end;	{ Return	}
+  yydone := True;
+end;
 
 { Set the return value of yylex.					}
-procedure TCustomLexer.Returnc( C : Char );
+procedure TCustomLexer.Returnc(C: Char);
 begin
-    yyretval := Ord( C );
-    yydone   := True;
-end;	{ Returnc	}
+  yyretval := Ord(C);
+  yydone := True;
+end;
 
 { Put the lexical analyzer in the given start state.			}
 { state=0 denotes the default start state, other values are user	}
 { defined.								}
-procedure TCustomLexer.Start( State : Integer );
+procedure TCustomLexer.Start(State: Integer);
 begin
   yysstate := State;
-end;	{ Start	}
+end;
 
 { The yywrap function is called by yylex at end-of-file (unless you	}
 { have specified a rule matching end-of-file). You may redefine this	}
@@ -384,10 +391,10 @@ end;	{ Start	}
 { analysis.								}
 { The default yywrap routine supplied here just returns true.		}
 { (causing yylex to terminate).						}
-function TCustomLexer.yywrap : Boolean;
+function TCustomLexer.yywrap: Boolean;
 begin
   yywrap := True;
-end;	{ yywrap	}
+end;
 
 { *********************************************************************	}
 { Internal routines:							}
@@ -409,7 +416,7 @@ begin
   yystext	:= '';			{ no saved match now		}
   yymatches	:= 0;
   yydone	:= False;
-end;	{ yynew	}
+end;
 
 { Get next character from the input stream and update yytext and	}
 { yyactchar accordingly.						}
@@ -417,90 +424,95 @@ procedure TCustomLexer.yyscan;
 begin
   yyactchar	:= Get_char;
   Ftext		:= Ftext + yyactchar;
-end;	{ yyscan	}
+end;
 
 { Mark position for rule no. N						}
-procedure TCustomLexer.yymark( N : Integer );
+procedure TCustomLexer.yymark(N: Integer);
 begin
-  if N > Lex_max_rules then Fatal('too many rules');
+  if N > Lex_max_rules then
+    Fatal('too many rules');
   yypos[N] := Length(Ftext);
-end;	{ yymark	}
+end;
 
 { Declare a match for rule number N					}
-procedure TCustomLexer.yymatch( N : Integer );
+procedure TCustomLexer.yymatch(N: Integer);
 begin
-  Inc( yymatches );
-  if yymatches > Lex_max_matches then Fatal('match stack overflow');
-  yystack[ yymatches ] := N;
-end;	{ yymatch	}
+  Inc(yymatches);
+  if yymatches > Lex_max_matches then
+    Fatal('match stack overflow');
+  yystack[yymatches] := N;
+end;
 
 { Find the last match and the corresponding marked position and		}
 { adjust the matched string accordingly. Return:			}
 { - true if a rule has been matched, false otherwise			}
 { - n: the number of the matched rule.					}
-function TCustomLexer.yyfind( var N : Integer ) : Boolean;
+function TCustomLexer.yyfind(var N: Integer): Boolean;
 begin
   yyreject := False;
-  while ( yymatches > 0 ) and ( yypos[ yystack[ yymatches ] ] = 0 ) do
-    Dec( yymatches );
+  while (yymatches > 0) and (yypos[yystack[yymatches]] = 0) do
+    Dec(yymatches);
 
   if yymatches > 0 then
   begin
     yysleng	:= Length(Ftext);
-    N		:= yystack[ yymatches ];
-    yyless( yypos[N] );
-    yypos[N]	:= 0;
-    if Length( Ftext ) > 0 then yylastchar := Ftext[Length(Ftext)]
-      else yylastchar := #0;
-    yyfind	:= true;
-  end else
+    N := yystack[yymatches];
+    yyless(yypos[N]);
+    yypos[N] := 0;
+    if Length(Ftext) > 0 then 
+	   yylastchar := Ftext[Length(Ftext)]
+     else
+	   yylastchar := #0;
+    yyfind:= true;
+  end 
+  else
   begin
-    yyless( 0 );
-    yylastchar	:= #0;
-    yyfind	:= False;
+    yyless(0);
+    yylastchar:= #0;
+    yyfind := False;
   end
-end;	{ yyfind	}
+end;
 
 { Execute the default action (copy character). Return true unless	}
 { at end-of-file.							}
-function TCustomLexer.yydefault : Boolean;
+function TCustomLexer.yydefault: Boolean;
 begin
-  yyreject	:= False;
+  yyreject := False;
   yyactchar	:= Get_char;
   if yyactchar <> #0 then
   begin
     Put_char(yyactchar);
-    yydefault	:= True;
-  end else
+    yydefault := True;
+  end 
+  else
   begin
-    yylstate	:= 1;
-    yydefault	:= False;
+    yylstate := 1;
+    yydefault := False;
   end;
-  yylastchar	:= yyactchar;
-end;	{ yydefault	}
+  yylastchar := yyactchar;
+end;
 
 { Re-initialize state information after lexical analysis has been	}
 { finished.								}
 procedure TCustomLexer.yyclear;
 begin
-  Bufptr	:= 0;
-  yysstate	:= 0;
-  yylstate	:= 1;
-  yylastchar	:= #0;
-  Ftext		:= '';
-  yystext	:= '';
+  Bufptr := 0;
+  yysstate := 0;
+  yylstate := 1;
+  yylastchar := #0;
+  Ftext	:= '';
+  yystext := '';
   FPrevChar	:= #0;
-end;	{ yyclear	}
+end;
 
-{ Constructor...							}
 constructor TCustomLexer.Create;
 begin
   inherited create;
 
   { Create (closed) file objects.					}
-  yyinput	:= TLexFile.Create;
-  yyoutput	:= TLexFile.Create;
-  yyerrorfile	:= TLexFile.Create;
+  yyinput := TLexFile.Create;
+  yyoutput := TLexFile.Create;
+  yyerrorfile := TLexFile.Create;
 
   { The error file ismainly used for debug - allocate to bit bucket	}
   { for now & let user re-assign later if required.			}
@@ -508,9 +520,8 @@ begin
 
   { Reset to starting state.						}
   Reset;
-end;	{ Create	}
+end;
 
-{ Destructor...								}
 destructor TCustomLexer.Destroy;
 begin
   { Clean up file objects						}
@@ -518,14 +529,14 @@ begin
   yyoutput.Free;
   yyerrorfile.Free;
   inherited Destroy;
-end;	{ Destroy	}
+end;
 
 { Reset the Lexer for another go.					}
 procedure TCustomLexer.Reset;
 begin
-  yylineno	:= 1;
-  yycolno	:= 0;
+  yylineno := 1;
+  yycolno := 0;
   yyclear;
-end;	{ Reset	}
+end;
 
 end.
