@@ -25,7 +25,7 @@ unit FlashThread;
 interface
 
 uses
-   StdCtrls, Classes, Controls, CommonInterfaces;
+   Vcl.StdCtrls, System.Classes, CommonInterfaces;
 
 type
 
@@ -45,7 +45,7 @@ type
 implementation
 
 uses
-   Graphics, SysUtils;
+   Vcl.Graphics;
 
 const
    SLEEP_TIME = 400;

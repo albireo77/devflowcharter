@@ -27,10 +27,10 @@ uses
 {$IFDEF USE_CODEFOLDING}
    SynEditCodeFolding,
 {$ENDIF}
-   Windows, Controls, Forms, StdCtrls, ExtCtrls, Graphics, Dialogs, ComCtrls,
-   Menus, Clipbrd, SysUtils, SynExportRTF, SynEditPrint, CommonTypes, SynHighlighterPas,
-   SynHighlighterCpp, Classes, SynEdit, SynMemo, SynExportHTML, OmniXML, Base_Form,
-   CommonInterfaces;
+   WinApi.Windows, Vcl.Controls, Vcl.Forms, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Graphics,
+   Vcl.Dialogs, Vcl.ComCtrls, Vcl.Clipbrd, Vcl.Menus, System.SysUtils, System.Classes,
+   SynEdit, SynExportRTF, SynEditPrint, CommonTypes, SynHighlighterPas, SynHighlighterCpp,
+   SynMemo, SynExportHTML, OmniXML, Base_Form, CommonInterfaces, SynEditExport, SynEditHighlighter;
 
 type
 
@@ -161,9 +161,9 @@ var
 implementation
 
 uses
-   ApplicationCommon, Goto_Form, Settings, LangDefinition, Main_Block, Help_Form, Comment,
-   XMLProcessor, StrUtils, Main_Form, Base_Block, SynEditTypes, SynEditExport, SynEditHighlighter,
-   ParserHelper;
+   System.StrUtils, System.Contnrs, System.UITypes, System.Types, ApplicationCommon,
+   Goto_Form, Settings, LangDefinition, Main_Block, Help_Form, Comment, XMLProcessor,
+   Main_Form, Base_Block, SynEditTypes, ParserHelper;
 
 const
    InfoPanel2: array[boolean] of string = ('OverwriteMode', 'InsertMode');
@@ -354,7 +354,7 @@ begin
    try
       for i := 1 to len do
       begin
-         if not (AText[i] in [#13, #10]) then
+         if not CharInSet(AText[i], [#13, #10]) then
          begin
             line := line + AText[i];
             if i = len then
@@ -634,7 +634,6 @@ var
 begin
    dialog := TFindDialog(Sender);
    len := Length(dialog.FindText);
-   i := 0;
    memCodeEditor.Repaint;
    if frDown in dialog.Options then
       i := TInfra.FindText(dialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart + memCodeEditor.SelLength + 1, frMatchCase in dialog.Options)
@@ -667,7 +666,7 @@ end;
 procedure TEditorForm.miCompileClick(Sender: TObject);
 var
    command, commandNoMain, fileName, fileNameNoExt: string;
-   pos: integer;
+   lPos: integer;
    mainBlock: TMainBlock;
 begin
     SetSaveDialog(SaveDialog1);
@@ -678,22 +677,22 @@ begin
     begin
        if SaveDialog1.Execute then
        begin
-          GetAllLines.SaveToFile(SaveDialog1.FileName);
+          GetAllLines.SaveToFile(SaveDialog1.FileName, TEncoding.Unicode);
           fileName := ExtractFileName(SaveDialog1.FileName);
           fileNameNoExt := fileName;
-          pos := AnsiPos('.', fileNameNoExt);
-          if pos <> 0 then
-             SetLength(fileNameNoExt, pos-1);
+          lPos := Pos('.', fileNameNoExt);
+          if lPos <> 0 then
+             SetLength(fileNameNoExt, lPos-1);
 
           if mainBlock = nil then
           begin
              if commandNoMain = '' then
                 commandNoMain := '%s3';
-             command := AnsiReplaceText(commandNoMain, '%s3', command);
+             command := ReplaceText(commandNoMain, '%s3', command);
           end;
 
-          command := AnsiReplaceText(command, '%s1', fileName);
-          command := AnsiReplaceText(command, '%s2', fileNameNoExt);
+          command := ReplaceText(command, '%s1', fileName);
+          command := ReplaceText(command, '%s2', fileNameNoExt);
 
           if not TInfra.IsWin9x then
              command := 'cmd.exe /k ' + command;
@@ -750,7 +749,7 @@ begin
          end;
       end
       else
-         strings.SaveToFile(SaveDialog2.FileName);
+         strings.SaveToFile(SaveDialog2.FileName, TEncoding.Unicode);
    end;
 end;
 
@@ -817,11 +816,7 @@ begin
          end;
          if not found then
             i := MARK_FIRST_INDEX;
-{$IFDEF USE_CODEFOLDING}
          Mark := TSynEditMark.Create(memCodeEditor);
-{$ELSE}
-         Mark := TSynEditMark.Create;
-{$ENDIF}
          Mark.ImageIndex := i;
          memCodeEditor.Marks.Add(Mark);
          Mark.Line := Line;
@@ -952,7 +947,7 @@ begin
    if (i >= 0) and (i < Length(memCodeEditor.Text)) then
       c := memCodeEditor.Text[i+1];
    if (memCodeEditor.Highlighter = nil) or memCodeEditor.SelAvail or (GSettings.EditorBracketColor = memCodeEditor.Font.Color) or not
-      (c in Brackets) then exit;
+      CharInSet(c, Brackets) then exit;
    p := memCodeEditor.CaretXY;
    s := c;
    memCodeEditor.GetHighlighterAttriAtRowCol(p, s, highAttr);
@@ -1048,7 +1043,7 @@ begin
       block := nil;
       gCheck := true;
       lCheck := true;
-      TParserHelper.InitIdentInfo(idInfo);
+      idInfo.New;
       obj := memCodeEditor.Lines.Objects[p.Line-1];
       idInfo.Ident := w;
       if TInfra.IsValid(obj) and (obj is TBlock) then
@@ -1291,7 +1286,7 @@ end;
 procedure TEditorForm.ExportSettingsToXMLTag(const root: IXMLElement);
 var
    i: integer;
-   tag2, tag1: IXMLElement;
+   tag2: IXMLElement;
    idObject: IIdentifiable;
    lines: TStrings;
 {$IFDEF USE_CODEFOLDING}
@@ -1360,9 +1355,8 @@ procedure TEditorForm.ImportSettingsFromXMLTag(const root: IXMLElement);
 var
    rect: TRect;
    i: integer;
-   tag1, tag2: IXMLElement;
+   tag1: IXMLElement;
    mark: TSynEditMark;
-   foldLines: TStringList;
 {$IFDEF USE_CODEFOLDING}
    foldRange: TSynEditFoldRange;
 {$ENDIF}
@@ -1435,11 +1429,7 @@ begin
       tag1 := TXMLProcessor.FindChildTag(root, 'src_win_mark');
       while tag1 <> nil do
       begin
-{$IFDEF USE_CODEFOLDING}
          mark := TSynEditMark.Create(memCodeEditor);
-{$ELSE}
-         mark := TSynEditMark.Create;
-{$ENDIF}
          mark.ImageIndex := StrToInt(tag1.GetAttribute('index'));
          memCodeEditor.Marks.Add(mark);
          mark.Line := StrToInt(tag1.GetAttribute('line'));
@@ -1589,7 +1579,7 @@ begin
          if bufCoord.Line = dispCoord.Row then
          begin
             focusInfo.SelStart := bufCoord.Char - Length(memCodeEditor.Lines[dispCoord.Row-1]) + Length(focusInfo.LineText);
-            focusInfo.SelText := AnsiMidStr(focusInfo.LineText, focusInfo.SelStart, memCodeEditor.SelLength);
+            focusInfo.SelText := MidStr(focusInfo.LineText, focusInfo.SelStart, memCodeEditor.SelLength);
          end;
       end;
       FFocusControl.RetrieveFocus(focusInfo);

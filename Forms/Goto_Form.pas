@@ -24,7 +24,7 @@ unit Goto_Form;
 interface
 
 uses
-   Controls, Forms, StdCtrls, ExtCtrls, SysUtils, Classes, Base_Form;
+   Vcl.Controls, Vcl.StdCtrls, Vcl.ExtCtrls, System.Classes, Base_Form;
 
 type
 
@@ -51,7 +51,7 @@ implementation
 {$R *.dfm}
 
 uses
-   SynEdit, ApplicationCommon;
+   System.SysUtils, SynEdit, ApplicationCommon;
 
 procedure TGotoForm.FormShow(Sender: TObject);
 begin

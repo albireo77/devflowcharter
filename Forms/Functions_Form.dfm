@@ -1,7 +1,6 @@
 object FunctionsForm: TFunctionsForm
   Left = 555
   Top = 223
-  AutoScroll = False
   Caption = 'Functions'
   ClientHeight = 587
   ClientWidth = 397

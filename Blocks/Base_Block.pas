@@ -26,9 +26,10 @@ unit Base_Block;
 interface
 
 uses
-   Windows, Forms, StdCtrls, ExtCtrls, Controls, Graphics, Messages, SysUtils,
-   Classes, ComCtrls, Statement, OmniXML, BaseIterator, CommonInterfaces,
-   CommonTypes, Contnrs, BlockTabSheet;
+   WinApi.Windows, Vcl.Forms, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Controls, Vcl.Graphics,
+   WinApi.Messages, System.SysUtils, System.Classes, Vcl.ComCtrls, System.UITypes,
+   System.Contnrs, Statement, OmniXML, BaseIterator, CommonInterfaces, CommonTypes,
+   BlockTabSheet;
 
 const
    PRIMARY_BRANCH_IND = 1;
@@ -62,8 +63,11 @@ type
          FType: TBlockType;
          FStatement: TStatement;
          FTopParentBlock: TGroupBlock;
-         FRefreshMode: boolean;
-         FFrame: boolean;
+         FHResize,
+         FVResize,
+         FRefreshMode,
+         FFrame,
+         FMouseLeave: boolean;
          procedure MyOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MyOnMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); virtual;
@@ -80,7 +84,7 @@ type
          procedure ResetMemoScrollBars(const AScrollStyle: TScrollStyle; const AMemo: TMemo);
          procedure SetMemoWordWrap(AValue: boolean);
          function GetMemoWordWrap: boolean;
-         procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+         procedure WMMouseLeave(var Msg: TMessage); message WM_MOUSELEAVE;
          procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
          procedure NCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
          procedure WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo); message WM_GETMINMAXINFO;
@@ -117,8 +121,6 @@ type
          BottomHook: integer;
          TopHook: TPoint;
          Ired: Integer;           // indicates active arrow; -1: none, 0: bottom, 1: branch1, 2: branch2 and so on...
-         resHorz: boolean;
-         resVert: boolean;
          memoWidth,
          memoHeight: integer;
          property Frame: boolean read FFrame write SetFrame;
@@ -289,9 +291,8 @@ type
 implementation
 
 uses
-   Main_Block, ApplicationCommon, BlockFactory, StrUtils, UserFunction, Menus,
-   XMLProcessor, Navigator_Form, LangDefinition, FastcodeAnsiStringReplaceUnit,
-   FlashThread, Comment;
+   System.StrUtils, Vcl.Menus, System.Types, Main_Block, ApplicationCommon, BlockFactory,
+   UserFunction, XMLProcessor, Navigator_Form, LangDefinition, FlashThread, Comment;
 
 type
    THackControl = class(TControl);
@@ -328,11 +329,10 @@ begin
    SetBounds(ALeft, ATop, AWidth, AHeight);
 
    FId := GProject.Register(Self, AId);
-
    FStatement := TStatement.Create(Self);
-
-   Ired       := -1;
-   memoWidth  := 280;
+   FMouseLeave := true;
+   Ired := -1;
+   memoWidth := 280;
    memoHeight := 182;
 
    OnMouseDown := MyOnMouseDown;
@@ -638,6 +638,15 @@ begin
    end;
 end;
 
+procedure TBlock.WMMouseLeave(var Msg: TMessage);
+begin
+   inherited;
+   if FMouseLeave then
+      OnMouseLeave
+   else
+      FMouseLeave := true;
+end;
+
 procedure TBlock.OnMouseLeave;
 begin
    if Cursor <> crDefault then
@@ -646,7 +655,7 @@ begin
    if Ired = 0 then
       DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1));
    Ired := -1;
-   if resVert or resHorz then
+   if FVResize or FHResize then
       SendMessage(Handle, WM_NCHITTEST, 0, 0);
 end;
 
@@ -667,7 +676,7 @@ end;
 procedure TBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
 begin
    Resize := (NewWidth >= Constraints.MinWidth) and (NewHeight >= Constraints.MinHeight);
-   if resHorz and Resize then
+   if FHResize and Resize then
    begin
       BottomPoint.X := NewWidth div 2;
       TopHook.X := BottomPoint.X;
@@ -678,7 +687,7 @@ end;
 procedure TGroupBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
 begin
    Resize := (NewWidth >= Constraints.MinWidth) and (NewHeight >= Constraints.MinHeight);
-   if resHorz and Resize then
+   if FHResize and Resize then
    begin
       if Expanded then
          Inc(BottomPoint.X, NewWidth-Width)
@@ -689,7 +698,7 @@ begin
          IPoint.X := BottomPoint.X + 30;
       end;
    end;
-   if resVert and Resize then
+   if FVResize and Resize then
    begin
       if Expanded then
          Inc(Branch.Hook.Y, NewHeight-Height)
@@ -796,45 +805,46 @@ begin
    inherited;
    if GetAsyncKeyState(VK_LBUTTON) <> 0 then
    begin
+      FMouseLeave := false;
       case Cursor of
          crSizeWE:
          begin
             Msg.Result := HTRIGHT;
-            resHorz := true;
+            FHResize := true;
             BringToFront;
          end;
          crSizeNS:
          begin
             Msg.Result := HTBOTTOM;
-            resVert := true;
+            FVResize := true;
             BringToFront;
          end;
          crSizeNWSE:
          begin
             Msg.Result := HTBOTTOMRIGHT;
-            resHorz := true;
-            resVert := true;
+            FHResize := true;
+            FVResize := true;
             BringToFront;
          end;
       end;
    end
-   else if resHorz or resVert then
+   else if FHResize or FVResize then
    begin
       lock := LockDrawing;
       try
-         if resHorz then
+         if FHResize then
          begin
             if FParentBlock <> nil then
                FParentBlock.ResizeHorz(true);
-            resHorz := false;
+            FHResize := false;
          end;
-         if resVert then
+         if FVResize then
          begin
             if Self is TGroupBlock then
                TGroupBlock(Self).LinkBlocks;
             if FParentBlock <> nil then
                FParentBlock.ResizeVert(true);
-            resVert := false;
+            FVResize := false;
          end;
       finally
          if lock then
@@ -855,6 +865,7 @@ begin
    begin
       pnt := ClientToScreen(Point(X, Y));
       PopupMenu.PopupComponent := Self;
+      FMouseLeave := false;
       PopupMenu.Popup(pnt.X, pnt.Y);
    end;
 end;
@@ -1001,11 +1012,6 @@ begin
    FMemoFolder.Text := AText;
 end;
 
-procedure TBlock.CMMouseLeave(var Msg: TMessage);
-begin
-   OnMouseLeave;
-end;
-
 procedure TBlock.SetPage(APage: TBlockTabSheet);
 begin
 end;
@@ -1095,7 +1101,7 @@ begin
                isFront := IsInFront(comment)
             else
                isFront := true;
-            if isFront and (comment.PinControl = nil) and PtInRect(ClientRect, TInfra.ParentToClient(Self, comment.BoundsRect.TopLeft, lPage)) then
+            if isFront and (comment.PinControl = nil) and PtInRect(ClientRect, ParentToClient(comment.BoundsRect.TopLeft, lPage)) then
                objList.Add(comment);
          end
       end;
@@ -1162,7 +1168,7 @@ end;
 
 procedure TBlock.WMWindowPosChanged(var Msg: TWMWindowPosChanged);
 begin
-   OnWindowPosChanged(Msg.WindowPos^.x, Msg.WindowPos^.y);
+   OnWindowPosChanged(Msg.WindowPos.x, Msg.WindowPos.y);
    inherited;
 end;
 
@@ -1679,10 +1685,10 @@ var
 begin
    inherited;
    lPage := Page;
-   pnt := TInfra.ClientToParent(Self, Point(0, 0), lPage);
-   if resHorz then
+   pnt := ClientToParent(Point(0, 0), lPage);
+   if FHResize then
       Msg.MinMaxInfo.ptMaxTrackSize.X := lPage.ClientWidth - pnt.X;
-   if resVert then
+   if FVResize then
       Msg.MinMaxInfo.ptMaxTrackSize.Y := lPage.ClientHeight - pnt.Y;
 end;
 
@@ -1756,20 +1762,20 @@ begin
             ReleaseDC(memo.Handle, hnd);
          end;
          count := memo.Lines.Count;
-         if AnsiEndsText(CRLF, memo.Text) then
+         if EndsText(CRLF, memo.Text) then
             count := count + 1;
          if count > lineCount then
          begin
             if memo.ScrollBars = ssNone then
                memo.ScrollBars := ssVertical
-            else if memo.ScrollBars = ssHorizontal then
+            else if memo.ScrollBars = TScrollStyle.ssHorizontal then
                memo.ScrollBars := ssBoth;
          end
          else
-            ResetMemoScrollBars(ssHorizontal, memo);
+            ResetMemoScrollBars(TScrollStyle.ssHorizontal, memo);
       end
       else
-         ResetMemoScrollBars(ssHorizontal, memo);
+         ResetMemoScrollBars(TScrollStyle.ssHorizontal, memo);
       memo.SelStart := pos;
    end;
 end;
@@ -1813,7 +1819,7 @@ begin
             if w > (memo.ClientWidth - HiWord(mrgns) - LoWord(mrgns) - 3) then
             begin
                if memo.ScrollBars = ssNone then
-                  memo.ScrollBars := ssHorizontal
+                  memo.ScrollBars := System.UITypes.TScrollStyle.ssHorizontal
                else if memo.ScrollBars = ssVertical then
                   memo.ScrollBars := ssBoth;
             end
@@ -1835,7 +1841,7 @@ var
    scrollStyle: TScrollStyle;
 begin
    if AScrollStyle = ssVertical then
-      scrollStyle := ssHorizontal
+      scrollStyle := System.UITypes.TScrollStyle.ssHorizontal
    else
       scrollStyle := ssVertical;
    if AMemo.ScrollBars = ssBoth then
@@ -1944,12 +1950,12 @@ begin
       end
       else
          txt := AInfo.FocusEdit.Text;
-      idx := AnsiPos(txt, AInfo.LineText);
+      idx := Pos(txt, AInfo.LineText);
       if idx <> 0 then
          AInfo.SelStart := AInfo.SelStart - idx + idx2
       else
       begin
-         idx := AnsiPos(AInfo.SelText, txt);
+         idx := Pos(AInfo.SelText, txt);
          if idx <> 0 then
             AInfo.SelStart := idx - 1 + idx2;
       end;
@@ -2063,7 +2069,7 @@ var
    comment: TComment;
    pnt: TPoint;
 begin
-   pnt := TInfra.ClientToParent(Self, ClientRect.TopLeft, Page);
+   pnt := ClientToParent(ClientRect.TopLeft, Page);
    iter := GetComments;
    while iter.HasNext do
    begin
@@ -2081,7 +2087,7 @@ var
    comment: TComment;
    pnt: TPoint;
 begin
-   pnt := TInfra.ClientToParent(Self, ClientRect.TopLeft, Page);
+   pnt := ClientToParent(ClientRect.TopLeft, Page);
    iter := GetPinComments;
    while iter.HasNext do
    begin
@@ -2332,7 +2338,7 @@ begin
       txtControl := GetTextControl;
       if (txtControl <> nil) and (txtControl.Text <> '') then
       begin
-         txt := AnsiReplaceStr(txtControl.Text, CRLF, CRLF_PLACEHOLDER);
+         txt := ReplaceStr(txtControl.Text, CRLF, CRLF_PLACEHOLDER);
          tag := ATag.OwnerDocument.CreateElement(TEXT_TAG);
          TXMLProcessor.AddCDATA(tag, txt);
          ATag.AppendChild(tag);
@@ -2372,7 +2378,7 @@ begin
       if (tag <> nil) and (textControl <> nil) then
       begin
          FRefreshMode := true;
-         textControl.Text := AnsiReplaceStr(tag.Text, CRLF_PLACEHOLDER, CRLF);
+         textControl.Text := ReplaceStr(tag.Text, CRLF_PLACEHOLDER, CRLF);
          FRefreshMode := false;
       end;
 
@@ -2533,10 +2539,10 @@ begin
       chLine := TInfra.GetChangeLine(Self, AEdit);
       if chLine.Row <> ROW_NOT_FOUND then
       begin
-         chLine.Text := FastCodeAnsiStringReplace(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
+         chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
          instrEnd := GInfra.CurrentLang.InstrEnd;
          if (instrEnd <> '') and (Trim(chLine.Text) = instrEnd) then
-            chLine.Text := FastCodeAnsiStringReplace(chLine.Text, instrEnd, '');
+            chLine.Text := ReplaceStr(chLine.Text, instrEnd, '');
          if GSettings.UpdateEditor and not SkipUpdateEditor then
             TInfra.ChangeLine(chLine);
          TInfra.GetEditorForm.SetCaretPos(chLine);
@@ -2555,7 +2561,7 @@ var
 begin
    textControl := GetTextControl;
    if textControl <> nil then
-      result := FastCodeAnsiStringReplace(GInfra.CurrentLang.GetTemplateExpr(ClassType), PRIMARY_PLACEHOLDER, Trim(textControl.Text));
+      result := ReplaceStr(GInfra.CurrentLang.GetTemplateExpr(ClassType), PRIMARY_PLACEHOLDER, Trim(textControl.Text));
 end;
 
 procedure TBlock.ExportToGraphic(const AGraphic: TGraphic);
@@ -2582,7 +2588,7 @@ begin
       while iterc.HasNext do
       begin
          comment := TComment(iterc.Next);
-         pnt := TInfra.ParentToClient(Self, comment.BoundsRect.TopLeft, Page);
+         pnt := ParentToClient(comment.BoundsRect.TopLeft, Page);
          comment.PaintTo(bitmap.Canvas.Handle, pnt.X, pnt.Y);
       end;
    finally
@@ -2725,7 +2731,7 @@ begin
       else if textControl <> nil then
          txt := Trim(textControl.Text);
       template := langDef.GetTemplate(Self.ClassType);
-      template := FastCodeAnsiStringReplace(template, PRIMARY_PLACEHOLDER, txt);
+      template := ReplaceStr(template, PRIMARY_PLACEHOLDER, txt);
       GenerateTemplateSection(ALines, template, ALangId, ADeep);
    end;
 end;
@@ -2735,7 +2741,7 @@ var
    i, b: integer;
    val: string;
 begin
-   result := AnsiPos('%b', AStr);
+   result := Pos('%b', AStr);
    if result <> 0 then
    begin
       val := '';
@@ -2777,10 +2783,10 @@ begin
    for i := 0 to ATemplate.Count-1 do
    begin
       line := DupeString(GSettings.IndentString, ADeep) + ATemplate[i];
-      line := FastCodeAnsiStringReplace(line, INDENT_XML_CHAR, GSettings.IndentString);
+      line := ReplaceStr(line, INDENT_XML_CHAR, GSettings.IndentString);
       instrEnd := GInfra.CurrentLang.InstrEnd;
       if (instrEnd <> '') and (Trim(line) = instrEnd) then
-         line := FastCodeAnsiStringReplace(line, instrEnd, '');
+         line := ReplaceStr(line, instrEnd, '');
       obj := ATemplate.Objects[i];
       if obj = nil then
          obj := Self;
@@ -2821,7 +2827,7 @@ begin
       else
       begin
          line := DupeString(GSettings.IndentString, ADeep) + ATemplate[i];
-         line := FastCodeAnsiStringReplace(line, INDENT_XML_CHAR, GSettings.IndentString);
+         line := ReplaceStr(line, INDENT_XML_CHAR, GSettings.IndentString);
          obj := ATemplate.Objects[i];
          if obj = nil then
             obj := Self;

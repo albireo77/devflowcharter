@@ -1,11 +1,11 @@
 object NavigatorForm: TNavigatorForm
   Left = 211
   Top = 230
-  Width = 360
-  Height = 628
   AlphaBlend = True
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'NavigatorForm'
+  ClientHeight = 589
+  ClientWidth = 344
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -22,12 +22,12 @@ object NavigatorForm: TNavigatorForm
   OnResize = FormResize
   OnShow = FormShow
   DesignSize = (
-    352
-    597)
+    344
+    589)
   PixelsPerInch = 96
   TextHeight = 13
   object scbAlphaVal: TScrollBar
-    Left = 326
+    Left = 310
     Top = 9
     Width = 17
     Height = 121
@@ -49,7 +49,7 @@ object NavigatorForm: TNavigatorForm
   end
   object chkAlphaVisible: TCheckBox
     Tag = 8
-    Left = 328
+    Left = 312
     Top = 9
     Width = 12
     Height = 16

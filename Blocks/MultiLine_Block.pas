@@ -24,8 +24,8 @@ unit MultiLine_Block;
 interface
 
 uses
-   Controls, StdCtrls, Graphics, Classes, Base_Block, SysUtils, CommonInterfaces,
-   ExtCtrls, StatementMemo, ComCtrls;
+   Vcl.Controls, Vcl.StdCtrls, Vcl.Graphics, System.Classes, Vcl.ComCtrls, Base_Block,
+   CommonInterfaces, StatementMemo;
 
 type
 
@@ -53,7 +53,7 @@ uses
 {$IFDEF USE_CODEFOLDING}
    SynEditCodeFolding,
 {$ENDIF}
-   ApplicationCommon, StrUtils, CommonTypes, Forms, LangDefinition, Windows;
+   System.SysUtils, WinApi.Windows, System.Types, ApplicationCommon, CommonTypes, LangDefinition;
 
 constructor TMultiLineBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 begin
@@ -109,13 +109,13 @@ end;
 procedure TMultiLineBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
 begin
    Resize := (NewWidth >= Constraints.MinWidth) and (NewHeight >= Constraints.MinHeight);
-   if resHorz and Resize then
+   if FHResize and Resize then
    begin
       BottomPoint.X := Width div 2;
       IPoint.X := BottomPoint.X + 30;
       TopHook.X := BottomPoint.X;
    end;
-   if resVert and Resize then
+   if FVResize and Resize then
       IPoint.Y := FStatements.Height + 10;
 end;
 

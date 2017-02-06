@@ -24,7 +24,7 @@ unit InOut_Block;
 interface
 
 uses
-   Controls, Forms, StdCtrls, Graphics, Classes, SysUtils, Base_Block, CommonInterfaces;
+   Vcl.Graphics, Base_Block, CommonInterfaces;
 
 type
 
@@ -56,7 +56,8 @@ type
 implementation
 
 uses
-   ApplicationCommon, Windows, StrUtils, CommonTypes;
+   Vcl.Controls, System.Classes, WinApi.Windows, System.Types, System.UITypes, ApplicationCommon,
+   CommonTypes;
 
 constructor TInOutBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 begin

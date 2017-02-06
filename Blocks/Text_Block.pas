@@ -24,8 +24,7 @@ unit Text_Block;
 interface
 
 uses
-   Controls, StdCtrls, Graphics, Classes, Base_Block, SysUtils, CommonInterfaces,
-   ExtCtrls, MultiLine_Block;
+   Vcl.Graphics, Vcl.ExtCtrls, Base_Block, CommonInterfaces, MultiLine_Block;
 
 type
 
@@ -50,7 +49,7 @@ type
 implementation
 
 uses
-   ApplicationCommon, StrUtils, CommonTypes;
+   Vcl.Controls, System.Classes, System.Types, ApplicationCommon, CommonTypes;
 
 constructor TTextBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 begin
@@ -104,7 +103,7 @@ end;
 procedure TTextBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
 begin
    inherited MyOnCanResize(Sender, NewWidth, NewHeight, Resize);
-   if resHorz and Resize then
+   if FHResize and Resize then
       FCorner.Left := Width - 15;
 end;
 

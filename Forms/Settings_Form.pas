@@ -147,7 +147,7 @@ var
 implementation
 
 uses
-   ApplicationCommon, StrUtils;
+   System.Types, System.StrUtils, ApplicationCommon;
 
 {$R *.dfm}
 
@@ -174,9 +174,9 @@ begin
    pnlDesktop.Left := val;
    pnlFill.Left := val;
    pnlFont.Left := val;
-   edtCompiler.Hint := AnsiReplaceStr(AList.Values['edtCompilerHint'], '##', CRLF);
-   edtCompilerNoMain.Hint := AnsiReplaceStr(AList.Values['edtCompilerNoMainHint'], '##', CRLF);
-   chkEnableDBuffer.Hint := AnsiReplaceStr(AList.Values['chkEnableDBufferHint'], '##', CRLF);
+   edtCompiler.Hint := ReplaceStr(AList.Values['edtCompilerHint'], '##', CRLF);
+   edtCompilerNoMain.Hint := ReplaceStr(AList.Values['edtCompilerNoMainHint'], '##', CRLF);
+   chkEnableDBuffer.Hint := ReplaceStr(AList.Values['chkEnableDBufferHint'], '##', CRLF);
    inherited Localize(AList);
 end;
 
@@ -303,7 +303,7 @@ end;
 procedure TSettingsForm.edtMarginLeftKeyPress(Sender: TObject;
   var Key: Char);
 begin
-   if not (Key in [#8, '0'..'9']) then
+   if not CharInSet(Key, [#8, '0'..'9']) then
       Key := #0;
 end;
 

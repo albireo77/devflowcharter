@@ -173,7 +173,6 @@ object SettingsForm: TSettingsForm
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []
-      ItemHeight = 13
       ParentFont = False
       TabOrder = 0
       OnChange = cbLanguageChange
@@ -757,7 +756,6 @@ object SettingsForm: TSettingsForm
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []
-      ItemHeight = 13
       ItemIndex = 0
       ParentFont = False
       TabOrder = 4

@@ -24,7 +24,7 @@ unit Folder_Block;
 interface
 
 uses
-   Controls, Forms, StdCtrls, Graphics, Classes, SysUtils, Base_Block, CommonInterfaces, Types;
+   System.Types, Base_Block, CommonInterfaces;
 
 type
 
@@ -43,7 +43,7 @@ type
 implementation
 
 uses
-   StrUtils, CommonTypes, ApplicationCommon;
+   System.StrUtils, CommonTypes, ApplicationCommon;
 
 constructor TFolderBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
 begin
@@ -114,7 +114,7 @@ end;
 procedure TFolderBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
 begin
    Resize := (NewWidth >= Constraints.MinWidth) and (NewHeight >= Constraints.MinHeight);
-   if Resize and resVert then
+   if Resize and FVResize then
    begin
       if Expanded then
          Inc(Branch.Hook.Y, NewHeight-Height)
@@ -124,7 +124,7 @@ begin
          BottomPoint.Y := NewHeight - 30;
       end;
    end;
-   if Resize and resHorz and not Expanded then
+   if Resize and FHResize and not Expanded then
    begin
       BottomPoint.X := NewWidth div 2;
       TopHook.X := BottomPoint.X;

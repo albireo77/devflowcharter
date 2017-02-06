@@ -34,7 +34,7 @@ begin
   ylex.Destroy;
   inherited Destroy;
 end;
-function TYacc.yyparse: Integer;var yystate, yysp, yyn : Integer;
+function TYacc.yyparse: Integer;var yystate, yysp, yyn: Integer;
     yys: array [1..yymaxdepth] of Integer;
     yyv: array [1..yymaxdepth] of YYSType;
     yyval: YYSType;
@@ -56,8 +56,8 @@ var
   k: Integer;
 begin
   k := yyal[state];
-  while (k<=yyah[state]) and (yya[k].sym<>sym) do inc(k);
-  if k>yyah[state] then
+  while (k <= yyah[state]) and (yya[k].sym <> sym) do inc(k);
+  if k > yyah[state] then
     yyact := false
   else
   begin
@@ -87,7 +87,7 @@ begin	{ yyparse							}
 parse:
   { push state and value: 						}
   inc(yysp);
-  if yysp>yymaxdepth then
+  if yysp > yymaxdepth then
   begin
     yyerror('yyparse stack overflow');
     goto abort;
@@ -122,9 +122,9 @@ errlab:
 	begin
 	  if yydebug then
 	    if yysp > 1 then
-	      EWriteln(Format( 'error recovery pops state: %d, uncovers: %d', [yys[yysp], yys[yysp-1]]))
+	      EWriteln(Format('error recovery pops state: %d, uncovers: %d', [yys[yysp], yys[yysp-1]]))
 	    else
-	      EWriteln('error recovery fails ... abort');
+	      EWriteln('error recovery fails... abort');
 	  dec(yysp);
 	end;
     if yysp = 0 then	  goto abort;  { parser has fallen from stack; abort	}
@@ -144,7 +144,7 @@ shift:
   goto parse;
 reduce:
   { execute action, pop rule from stack, and go to next state: 		}
-  if yydebug then    Ewriteln(Format('reduce %d',[-yyn]));
+  if yydebug then    Ewriteln(Format('reduce %d', [-yyn]));
   yyflag := yyfnone;  yyaction(-yyn);
   dec(yysp, yyr[-yyn].len);
   if yygoto(yys[yysp], yyr[-yyn].sym, yyn) then    yystate := yyn;

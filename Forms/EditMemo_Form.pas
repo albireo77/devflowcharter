@@ -3,8 +3,7 @@ unit EditMemo_Form;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  StdCtrls, Base_Form, Base_Block;
+  System.Classes, Vcl.StdCtrls, Vcl.Controls, Base_Form, Base_Block;
 
 type
   TMemoEditorForm = class(TBaseForm)
@@ -28,7 +27,7 @@ var
 implementation
 
 uses
-   ApplicationCommon, Dialogs;
+   WinApi.Windows, Vcl.Graphics, Vcl.Forms, ApplicationCommon;
 
 {$R *.dfm}
 

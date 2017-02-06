@@ -23,8 +23,7 @@ unit If_Block;
 interface
 
 uses
-   Controls, Forms, StdCtrls, Graphics, Classes, SysUtils, Base_Block, ComCtrls,
-   CommonInterfaces, Types;
+   Vcl.Graphics, System.Types, Base_Block, CommonInterfaces;
 
 type
 
@@ -44,7 +43,7 @@ type
 implementation
 
 uses
-   ApplicationCommon, StrUtils, CommonTypes;
+   System.Classes, ApplicationCommon, CommonTypes;
 
 constructor TIfBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
 begin
@@ -122,7 +121,7 @@ end;
 procedure TIfBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
 begin
    Resize := (NewWidth >= Constraints.MinWidth) and (NewHeight >= Constraints.MinHeight);
-   if Resize and resVert then
+   if Resize and FVResize then
    begin
       if Expanded then
          Inc(Branch.Hook.Y, NewHeight-Height)
@@ -132,7 +131,7 @@ begin
          BottomPoint.Y := NewHeight - 30;
       end;
    end;
-   if Resize and resHorz and not Expanded then
+   if Resize and FHResize and not Expanded then
    begin
       BottomPoint.X := NewWidth div 2;
       TopHook.X := BottomPoint.X;

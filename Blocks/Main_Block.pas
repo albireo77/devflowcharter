@@ -24,8 +24,8 @@ unit Main_Block;
 interface
 
 uses
-   Windows, Controls, Forms, Graphics, Classes, Base_Block, ComCtrls, Messages,
-   OmniXML, CommonInterfaces, CommonTypes, BaseIterator, BlockTabSheet;
+   WinApi.Windows, Vcl.Graphics, System.Classes, Vcl.ComCtrls, WinApi.Messages,
+   Base_Block, OmniXML, CommonInterfaces, CommonTypes, BaseIterator, BlockTabSheet;
 
 type
 
@@ -79,8 +79,9 @@ const
 implementation
 
 uses
-   ApplicationCommon, SysUtils, XMLProcessor, StrUtils, DeclareList, FastcodeAnsiStringReplaceUnit,
-   Navigator_Form, Return_Block, LangDefinition, UserFunction, Comment, Menus;
+   Vcl.Forms, System.SysUtils, System.StrUtils, System.Types, System.UITypes, ApplicationCommon,
+   XMLProcessor, DeclareList, Navigator_Form, Return_Block, LangDefinition, UserFunction,
+   Comment;
 
 constructor TMainBlock.Create(const APage: TBlockTabSheet; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
 var
@@ -479,7 +480,7 @@ begin
             progList := TStringList.Create;
             tmpList := TStringList.Create;
             try
-               progList.Text := FastCodeAnsiStringReplace(template, PRIMARY_PLACEHOLDER, lName);
+               progList.Text := ReplaceStr(template, PRIMARY_PLACEHOLDER, lName);
                if isMain then
                begin
                   ending := '';
@@ -572,7 +573,7 @@ end;
 
 procedure TMainBlock.WMWindowPosChanging(var Msg: TWMWindowPosChanging);
 begin
-   MoveComments(Msg.WindowPos^.x, Msg.WindowPos^.y);
+   MoveComments(Msg.WindowPos.x, Msg.WindowPos.y);
    inherited;
 end;
 

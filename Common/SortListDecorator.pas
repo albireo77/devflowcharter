@@ -3,7 +3,7 @@ unit SortListDecorator;
 interface
 
 uses
-   Classes, Contnrs;
+   System.Contnrs;
 
 type
 
@@ -27,7 +27,7 @@ type
 implementation
 
 uses
-   CommonInterfaces, SysUtils;
+   System.SysUtils, System.Classes, CommonInterfaces;
 
 constructor TSortListDecorator.Create(AWrapList: TObjectList; ASortArg: integer);
 begin

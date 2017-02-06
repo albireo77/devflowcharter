@@ -24,7 +24,7 @@ unit BlockTabSheet;
 interface
 
 uses
-   Classes, ComCtrls, Forms, CommonInterfaces, Controls, Main_Form;
+   System.Classes, Vcl.ComCtrls, Vcl.Controls, CommonInterfaces, Main_Form;
 
 type
 
@@ -43,7 +43,7 @@ type
 implementation
 
 uses
-   Graphics, ApplicationCommon, Types, UserFunction;
+   System.Types, ApplicationCommon, UserFunction;
 
 constructor TBlockTabSheet.Create(AMainForm: TMainForm);
 begin

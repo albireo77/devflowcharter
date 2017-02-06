@@ -24,7 +24,7 @@ unit CommonInterfaces;
 interface
 
 uses
-   Classes, Controls, StdCtrls, OmniXML, Graphics, Types, ComCtrls, Forms, CommonTypes;
+   Vcl.Controls, Vcl.StdCtrls, OmniXML, Vcl.Graphics, System.Types, Vcl.Forms, CommonTypes;
 
 const
    ID_INVALID      = -1;

@@ -24,7 +24,8 @@ unit About_Form;
 interface
 
 uses
-   Controls, Forms, StdCtrls, ExtCtrls, Graphics, Classes, Base_Form, jpeg;
+   Vcl.Controls, Vcl.Forms, Vcl.StdCtrls, Vcl.Imaging.jpeg, System.Classes, Vcl.ExtCtrls,
+   Base_Form;
 
 type
 
@@ -53,7 +54,7 @@ var
 implementation
 
 uses
-   Windows, SysUtils, ApplicationCommon, ShellAPI;
+   WinApi.Windows, System.SysUtils, ApplicationCommon, ShellAPI;
 
 const
    DELPHI_LINK  = 'www.embarcadero.com/products/delphi';

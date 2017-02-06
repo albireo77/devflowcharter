@@ -24,39 +24,18 @@ unit ApplicationCommon;
 interface
 
 uses
-   Windows, Forms, StdCtrls, Grids, Controls, Graphics, Registry, SysUtils, Classes,
-   StrUtils, Types, ComCtrls, LocalizationManager, Project, Settings, LangDefinition,
-   CommonTypes, Base_Form, CommonInterfaces, Functions_Form, DataTypes_Form, Declarations_Form,
-   Main_Form, Base_Block, SynEditTypes, Settings_Form, Editor_Form, Explorer_Form,
-   UserFunction, BlockTabSheet;
+   WinApi.Windows, Vcl.Forms, Vcl.StdCtrls, Vcl.Grids, Vcl.Controls, Vcl.Graphics,
+   System.Win.Registry, System.SysUtils, System.Classes, System.StrUtils, Vcl.ComCtrls,
+   LocalizationManager, Project, Settings, LangDefinition, CommonTypes, Base_Form,
+   CommonInterfaces, Functions_Form, DataTypes_Form, Declarations_Form, Main_Form,
+   Base_Block, SynEditTypes, Settings_Form, Editor_Form, Explorer_Form, UserFunction,
+   BlockTabSheet;
 
 type
 
    TClipbrd = record
       UndoObject: TObject;  // last removed TBlock or TComment
       Instance: TControl;   // TBlock or TComment which actually is copied to clipboard
-   end;
-
-   TIdentInfo = record
-      Ident: string;
-      IdentType,
-      TType,
-      TypeOriginal,
-      TypePointer,
-      Size: integer;
-      SizeAsString,
-      SizeExpArrayAsString,
-      TypeAsString,
-      TypeOriginalAsString,
-      Value: string;
-      DimensCount: integer;
-      IsInteger,
-      IsReal,
-      IsNumeric,
-      IsStruct,
-      IsEnum,
-      IsPointer: boolean;
-      Scope: integer;
    end;
 
    TInfra = class(TObject)
@@ -69,7 +48,7 @@ type
          property CurrentLang: TLangDefinition read FCurrentLang;
          property DummyLang: TLangDefinition read FDummyLang;
          class function IsWin9x: boolean;
-         class function CreateDOSProcess(const ACmdLine: string; const ADir: string = ''): Boolean;
+         class function CreateDOSProcess(const ACommand: string; ADir: string = ''): Boolean;
          class procedure ShowErrorBox(const AErrMsg: string; const AErrType: TErrorType);
          class procedure ShowFormattedErrorBox(const AKey: string; Args: array of const; const AErrType: TErrorType);
          class function ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
@@ -120,8 +99,6 @@ type
          class function GetPageIndex(const APageControl: TPageControl; X, Y: integer): integer;
          class function FindDuplicatedPage(const APage: TTabSheet; const ACaption: TCaption): TTabSheet;
          class function GetComboMaxWidth(const ACombo: TComboBox): integer;
-         class function ParentToClient(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
-         class function ClientToParent(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
          class procedure UpdateCodeEditor(AObject: TObject = nil);
          class function ExportToFile(AExport: IExportable): TErrorType;
          class function GetDisplayRect(const APage: TBlockTabSheet): TRect;
@@ -254,8 +231,8 @@ var     // Global variables
 implementation
 
 uses
-   Printers, UserDataType, XMLProcessor, SynEditHighlighter, Main_Block, Messages, Menus,
-   FastcodeAnsiStringReplaceUnit, Dialogs, pngimage, jpeg;
+   Vcl.Printers, WinApi.Messages, Vcl.Menus, Vcl.Dialogs, Vcl.Imaging.jpeg, Vcl.Imaging.PngImage,
+   UserDataType, XMLProcessor, SynEditHighlighter, Main_Block;
 
 type
    THackCustomEdit = class(TCustomEdit);
@@ -378,7 +355,7 @@ begin
          case dialog.FilterIndex of
             1: result := AExport.ExportToXMLFile(dialog.Filename);
             2: graphic := TBitmap.Create;
-            3: graphic := TPNGObject.Create;
+            3: graphic := TPNGImage.Create;
             4: graphic := TJPEGImage.Create;
          end;
          if graphic <> nil then
@@ -450,10 +427,9 @@ begin
    result := GetVersionEx(verInfo) and (verInfo.dwPlatformId = VER_PLATFORM_WIN32_WINDOWS);   // check if Win 9x
 end;
 
-class function TInfra.CreateDOSProcess(const ACmdLine: string; const ADir: string = ''): Boolean;
+class function TInfra.CreateDOSProcess(const ACommand: string; ADir: string = ''): Boolean;
 var
    OldCursor: TCursor;
-   pCommandLine, pDirectory: array[0..MAX_PATH] of Char;
    StartupInfo: TStartupInfo;
    ProcessInfo: TProcessInformation;
    hAppProcess, hAppThread: THandle;
@@ -463,15 +439,10 @@ begin
   OldCursor     := Screen.Cursor;
   Screen.Cursor := crHourglass;
 
-  { copy the parameter Pascal strings to null terminated strings }
-  StrPCopy(pCommandLine, ACmdLine);
-  if DirectoryExists(ADir) then
-     StrPCopy(pDirectory, ADir)
-  else
-     StrPCopy(pDirectory, GetCurrentDir);
+  if not DirectoryExists(ADir) then
+     ADir := GetCurrentDir;
 
   try
-
     { prepare StartupInfo structure }
     FillChar(StartupInfo, SizeOf(StartupInfo), #0);
     StartupInfo.cb          := SizeOf(StartupInfo);
@@ -480,21 +451,21 @@ begin
 
     { create the app }
     Result := CreateProcess(nil,     { pointer to name of executable module }
-      pCommandLine,                  { pointer to command line string }
+      PChar(ACommand),                { pointer to command line string }
       nil,                           { pointer to process security attributes }
       nil,                           { pointer to thread security attributes }
       True,                          { handle inheritance flag }
       CREATE_NEW_CONSOLE or
       NORMAL_PRIORITY_CLASS,         { creation flags }
       nil,                           { pointer to new environment block }
-      pDirectory,                    { pointer to current directory name }
+      PChar(ADir),                   { pointer to current directory name }
       StartupInfo,                   { pointer to STARTUPINFO }
       ProcessInfo);                  { pointer to PROCESS_INF }
 
     { wait for the app to finish its job and take the handles to free them later }
     if Result then
     begin
-      WaitForSingleObject(ProcessInfo.hProcess, 200);
+      WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
       hAppProcess := ProcessInfo.hProcess;
       hAppThread  := ProcessInfo.hThread;
     end
@@ -561,9 +532,9 @@ end;
 class function TInfra.SameStrings(const AStr1: string; const AStr2: string): boolean;
 begin
    if GInfra.CurrentLang.CaseSensitiveSyntax then
-      result := AnsiSameStr(AStr1, AStr2)
+      result := SameStr(AStr1, AStr2)
    else
-      result := AnsiSameText(AStr1, AStr2);
+      result := SameText(AStr1, AStr2);
 end;
 
 class procedure TInfra.PrintBitmap(const ABitmap: TBitmap);
@@ -717,10 +688,10 @@ begin
    AText := Copy(AText, idx, MAXINT);
    if not ACaseSens then
    begin
-      AText := AnsiUpperCase(AText);
-      ASubstr := AnsiUpperCase(ASubstr);
+      AText := UpperCase(AText);
+      ASubstr := UpperCase(ASubstr);
    end;
-   result := AnsiPos(ASubstr, AText);
+   result := Pos(ASubstr, AText);
    if result > 0 then
       result :=  result + idx - 1;
 end;
@@ -736,26 +707,13 @@ begin
 end;
 
 class function TInfra.IsValid(const AObject: TObject): boolean;
-type
-  PPVmt = ^PVmt;
-  PVmt = ^TVmt;
-  TVmt = record
-     SelfPtr: TClass;
-     Other: array[0..17] of Pointer;
-  end;
-var
-  Vmt: PVmt;
 begin
   result := false;
   if Assigned(AObject) then
-  begin
-     try
-        Vmt := PVmt(AObject.ClassType);
-        Dec(Vmt);
-        if AObject.ClassType = Vmt.SelfPtr then
-           result := true;
-     except
-     end;
+  try
+     if Pointer(PPointer(AObject)^) = Pointer(Pointer(Cardinal(PPointer(AObject)^) + Cardinal(vmtSelfPtr))^) then
+        result := true;
+  except
   end;
 end;
 
@@ -852,7 +810,7 @@ begin
    result := nil;
    for i := 0 to FLangArrayCount-1 do
    begin
-      if AnsiSameText(FLangArray[i].Name, AName) then
+      if SameText(FLangArray[i].Name, AName) then
       begin
          result := FLangArray[i];
          break;
@@ -897,7 +855,7 @@ begin
    i := 0;
    while i < ADestList.Count do
    begin
-      p := AnsiPos(APlaceHolder, ADestList[i]);
+      p := Pos(APlaceHolder, ADestList[i]);
       if p <> 0 then
       begin
          lBegin := '';
@@ -926,7 +884,7 @@ begin
                ADestList.Delete(i)
             else
             begin
-               ADestList[i] := FastCodeAnsiStringReplace(ADestList[i], APlaceHolder, '');
+               ADestList[i] := ReplaceStr(ADestList[i], APlaceHolder, '');
                if AObject <> nil then
                   ADestList.Objects[i] := AObject;
             end;
@@ -1134,7 +1092,7 @@ begin
                templateLines.Text := GInfra.CurrentLang.GetTemplate(AObject.ClassType);
             for i := 0 to templateLines.Count-1 do
             begin
-               p := AnsiPos(PRIMARY_PLACEHOLDER, templateLines[i]);
+               p := Pos(PRIMARY_PLACEHOLDER, templateLines[i]);
                if p <> 0 then
                begin
                   if (i = templateLines.Count-1) and (i <> 0) then
@@ -1184,7 +1142,7 @@ begin
    result := AText;
    for i := 1 to Length(result) do
    begin
-      if not (result[i] in [#32, #9, INDENT_CHAR]) then
+      if not CharInSet(result[i], [#32, #9, INDENT_CHAR]) then
          break;
    end;
    SetLength(result, i-1);
@@ -1244,28 +1202,13 @@ begin
    begin
       for i := 0 to APage.PageControl.PageCount-1 do
       begin
-         if AnsiSameCaption(APage.PageControl.Pages[i].Caption, ACaption) and (APage.PageControl.Pages[i] <> APage) then
+         if SameCaption(APage.PageControl.Pages[i].Caption, ACaption) and (APage.PageControl.Pages[i] <> APage) then
          begin
             result := APage.PageControl.Pages[i];
             break;
          end;
       end;
    end;
-end;
-
-// functions below are to fix buggy VCL TControl.ParentToClient/ClientToParent when AParent.Parent is not nil
-class function TInfra.ParentToClient(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
-begin
-   result := AControl.ParentToClient(APoint, AParent);
-   if (AParent <> nil) and (AParent.Parent <> nil) then
-      result := Point(result.X + AParent.Left, result.Y + AParent.Top);
-end;
-
-class function TInfra.ClientToParent(const AControl: TControl; const APoint: TPoint; AParent: TWinControl = nil): TPoint;
-begin
-   result := AControl.ClientToParent(APoint, AParent);
-   if (AParent <> nil) and (AParent.Parent <> nil) then
-      result := Point(result.X - AParent.Left, result.Y - AParent.Top);
 end;
 
 class function TInfra.GetDisplayRect(const APage: TBlockTabSheet): TRect;
@@ -1300,7 +1243,7 @@ begin
       result := VALID_IDENT;
       for i := 1 to Length(AId) do
       begin
-         if (AnsiPos(AId[i], CurrentLang.ConstIDSpecChars) = 0) and not (AId[i] in ID_ALLOW_CHARS) then
+         if (Pos(AId[i], CurrentLang.ConstIDSpecChars) = 0) and not CharInSet(AId[i], ID_ALLOW_CHARS) then
          begin
             result := INCORRECT_IDENT;
             break;

@@ -24,8 +24,8 @@ unit Explorer_Form;
 interface
 
 uses
-   Graphics, Controls, Forms, StdCtrls, ExtCtrls, Menus, ComCtrls, SysUtils,
-   Classes, Types, OmniXML, Base_Form, CommonTypes, CommonInterfaces;
+   Vcl.Controls, Vcl.StdCtrls, Vcl.Menus, Vcl.ComCtrls, System.Classes, System.Types,
+   OmniXML, Base_Form, CommonTypes, CommonInterfaces;
 
 type
   TExplorerForm = class(TBaseForm)
@@ -75,7 +75,8 @@ implementation
 {$R *.dfm}
 
 uses
-   ApplicationCommon, Case_Block, Base_Block, Windows;
+   Vcl.Graphics, Vcl.Forms, System.SysUtils, System.UITypes, ApplicationCommon,
+   Case_Block, Base_Block;
 
 procedure TExplorerForm.FormShow(Sender: TObject);
 begin

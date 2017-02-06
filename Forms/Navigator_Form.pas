@@ -3,8 +3,7 @@ unit Navigator_Form;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Base_Form, OmniXML, ComCtrls, StdCtrls, ExtCtrls;
+  System.Classes, Vcl.Controls, Vcl.StdCtrls, Base_Form, OmniXML;
 
 type
   TNavigatorForm = class(TBaseForm)
@@ -38,7 +37,8 @@ var
 implementation
 
 uses
-   ApplicationCommon, BlockTabSheet;
+   WinApi.Windows, System.SysUtils, Vcl.Graphics, Vcl.Forms, System.Types, ApplicationCommon,
+   BlockTabSheet;
 
 {$R *.dfm}
 

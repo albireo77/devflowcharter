@@ -24,8 +24,8 @@ unit UserFunction;
 interface
 
 uses
-   Controls, Forms, StdCtrls, ComCtrls, Graphics, ExtCtrls, Classes, OmniXML, Types,
-   Main_Block, DeclareList, CommonInterfaces, TabComponent, Element, Functions_Form;
+   Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ExtCtrls, System.Classes, System.Types,
+   OmniXML, Main_Block, DeclareList, CommonInterfaces, TabComponent, Element, Functions_Form;
 
 type
 
@@ -121,8 +121,8 @@ type
 implementation
 
 uses
-   SysUtils, ApplicationCommon, Main_Form, XMLProcessor, Windows, Grids, StrUtils,
-   LangDefinition, Navigator_Form, BlockTabSheet;
+   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, Vcl.Grids, ApplicationCommon,
+   Main_Form, XMLProcessor, LangDefinition, Navigator_Form, BlockTabSheet;
 
 constructor TUserFunction.Create(const AFunctionHeader: TUserFunctionHeader; const AFunctionBody: TMainBlock);
 begin
@@ -249,7 +249,7 @@ begin
    begin
       for i := 0 to memDescription.Lines.Count-1 do
          ALines.Add(memDescription.Lines[i]);
-      if AnsiEndsText(CRLF, memDescription.Text) then
+      if EndsText(CRLF, memDescription.Text) then
          ALines.Add('');
    end;
 end;
@@ -491,7 +491,7 @@ begin
    edtLibrary.ShowHint := true;
    edtLibrary.DoubleBuffered := true;
    edtLibrary.OnChange := OnChangeLib;
-   edtLibrary.Hint := AnsiReplaceStr(i18Manager.GetFormattedString('edtLibraryHint', [GInfra.CurrentLang.LibraryExt]), '##', CRLF);
+   edtLibrary.Hint := ReplaceStr(i18Manager.GetFormattedString('edtLibraryHint', [GInfra.CurrentLang.LibraryExt]), '##', CRLF);
 
    gbParameters := TGroupBox.Create(Self);
    gbParameters.Parent := Self;
@@ -800,7 +800,7 @@ begin
    if memDescription.Text <> '' then
    begin
       tag3 := ATag.OwnerDocument.CreateElement('desc');
-      TXMLProcessor.AddCDATA(tag3, AnsiReplaceStr(memDescription.Text, CRLF, CRLF_PLACEHOLDER));
+      TXMLProcessor.AddCDATA(tag3, ReplaceStr(memDescription.Text, CRLF, CRLF_PLACEHOLDER));
       tag2.AppendChild(tag3);
    end;
    tag2.SetAttribute('show_body', BoolToStr(chkBodyVisible.Checked, true));
@@ -829,7 +829,7 @@ begin
    cbType.OnChange(cbType);
    tag2 := TXMLProcessor.FindChildTag(ATag, 'desc');
    if tag2 <> nil then
-      memDescription.Text := AnsiReplaceStr(tag2.Text, CRLF_PLACEHOLDER, CRLF);
+      memDescription.Text := ReplaceStr(tag2.Text, CRLF_PLACEHOLDER, CRLF);
    if ATag.GetAttribute('show_body') = 'False' then
       chkBodyVisible.Checked := false;
    chkInclDescCode.Checked := ATag.GetAttribute('desc_incl') = 'True';

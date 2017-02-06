@@ -24,9 +24,9 @@ unit Project;
 interface
 
 uses
-   Windows, Graphics, UserFunction, OmniXML, UserDataType, Classes, Main_Block,
-   ComCtrls, DeclareList, Controls, Forms, Contnrs, BaseIterator, CommonTypes,
-   StdCtrls, CommonInterfaces, BlockTabSheet;
+   WinApi.Windows, Vcl.Graphics, System.Classes, Vcl.ComCtrls, Vcl.Controls, System.Contnrs,
+   UserFunction, OmniXML, UserDataType, Main_Block, DeclareList, BaseIterator, CommonTypes,
+   CommonInterfaces, BlockTabSheet;
 
 type
 
@@ -50,6 +50,7 @@ type
       FObjectIds: TStringList;
       FObjectIdSeed: integer;
       FMainPage: TBlockTabSheet;
+      class var FInstance: TProject;
       procedure SetGlobals;
       function GetComponents(const ASortType: integer = NO_SORT; const AClassName: string = ''): IIterator;
       function GetComponentByName(const AClassName: string; const AName: string): TComponent;
@@ -116,11 +117,9 @@ type
 implementation
 
 uses
-   SysUtils, ApplicationCommon, XMLProcessor, Base_Form, LangDefinition, Messages, Navigator_Form,
-   SortListDecorator, Base_Block, Comment, TabComponent, ParserHelper, Menus, StrUtils;
-
-var
-   Instance: TProject;
+   System.SysUtils, Vcl.Menus, System.StrUtils, System.Types, ApplicationCommon,
+   XMLProcessor, Base_Form, LangDefinition, Navigator_Form, SortListDecorator, Base_Block,
+   Comment, TabComponent, ParserHelper;
 
 constructor TProject.Create;
 begin
@@ -154,19 +153,19 @@ begin
    FGlobalVars.Free;
    FGlobalConsts.Free;
    FObjectIds.Free;
-   Instance := nil;
+   FInstance := nil;
    inherited Destroy;
 end;
 
 class function TProject.GetInstance: TProject;
 begin
-   if Instance = nil then
+   if FInstance = nil then
    begin
-      Instance := TProject.Create;
-      Instance.SetGlobals;
-      Instance.PopulateDataTypes;
+      FInstance := TProject.Create;
+      FInstance.SetGlobals;
+      FInstance.PopulateDataTypes;
    end;
-   result := Instance;
+   result := FInstance;
 end;
 
 function TProject.GetPage(const ACaption: string; const ACreate: boolean = true): TBlockTabSheet;
@@ -182,7 +181,7 @@ begin
       pageControl := TInfra.GetMainForm.pgcPages;
       for i := 0 to pageControl.PageCount-1 do
       begin
-         if AnsiSameCaption(pageControl.Pages[i].Caption, caption) then
+         if SameCaption(pageControl.Pages[i].Caption, caption) then
          begin
             result := TBlockTabSheet(pageControl.Pages[i]);
             break;
@@ -190,7 +189,7 @@ begin
       end;
       if result = nil then
       begin
-         if AnsiSameCaption(caption, MAIN_PAGE_MARKER) then
+         if SameCaption(caption, MAIN_PAGE_MARKER) then
             result := GetMainPage
          else if ACreate then
          begin
@@ -468,7 +467,7 @@ begin
             if i = len then
                page := GetPage(pageName);
          end;
-         if (page <> nil) and (activePage = nil) and AnsiSameCaption(page.Caption, pageFront) then
+         if (page <> nil) and (activePage = nil) and SameCaption(page.Caption, pageFront) then
             activePage := page;
       end;
       if activePage <> nil then
@@ -491,11 +490,11 @@ begin
       exit;
    end;
 
-   if AnsiSameText(langName, GInfra.DummyLang.Name) then
+   if SameText(langName, GInfra.DummyLang.Name) then
       s := 'ChangeLngNone'
    else
       s := 'ChangeLngAsk';
-   if (not AnsiSameText(GInfra.CurrentLang.Name, langName)) and
+   if (not SameText(GInfra.CurrentLang.Name, langName)) and
       (TInfra.ShowFormattedQuestionBox(s, [Trim(langName), CRLF], MB_YESNO+MB_ICONQUESTION) = IDYES) then
    begin
       GInfra.SetCurrentLang(langName);
@@ -702,7 +701,7 @@ begin
          if comment.IsHeader then
          begin
             result := comment.Text;
-            if AnsiEndsText(CRLF, comment.Text) then
+            if EndsText(CRLF, comment.Text) then
                result := result + CRLF;
             break;
          end;
@@ -1121,10 +1120,6 @@ begin
       end;
    end;
 end;
-
-initialization
-
-   Instance := nil;
 
 end.
 

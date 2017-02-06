@@ -22,7 +22,7 @@ unit Return_Block;
 interface
 
 uses
-   Controls, Graphics, Classes, SysUtils, Base_Block, ComCtrls, CommonInterfaces, StdCtrls;
+   Vcl.Graphics, System.Classes, Vcl.StdCtrls, Base_Block, CommonInterfaces;
 
 type
 
@@ -45,8 +45,8 @@ type
 implementation
 
 uses
-   Types, Windows, ApplicationCommon, StrUtils, Forms, Project, UserFunction,
-   Main_Block, CommonTypes, FastcodeAnsiStringReplaceUnit;
+   Vcl.Controls, System.SysUtils, WinApi.Windows, System.StrUtils, System.Types,
+   System.UITypes, ApplicationCommon, Project, UserFunction, Main_Block, CommonTypes;
 
 constructor TReturnBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 var
@@ -189,7 +189,7 @@ end;
 function TReturnBlock.GetDescription: string;
 begin
    if GInfra.CurrentLang.ReturnDesc <> '' then
-      result := FastCodeAnsiStringReplace(GInfra.CurrentLang.ReturnDesc, PRIMARY_PLACEHOLDER, Trim(FStatement.Text))
+      result := ReplaceStr(GInfra.CurrentLang.ReturnDesc, PRIMARY_PLACEHOLDER, Trim(FStatement.Text))
    else
       result := inherited GetDescription;
 end;

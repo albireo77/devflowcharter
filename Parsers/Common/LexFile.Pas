@@ -10,10 +10,10 @@ unit LexFile;
 interface
 
 uses
-  Classes, SysUtils;
+  System.SysUtils;
 
 const
-  LexEOL: String = #13#10;	{ Allow user to change this!	}
+  LexEOL: AnsiString = #13#10;	{ Allow user to change this!	}
 
 type
   ELFException = class(Exception);
@@ -29,7 +29,7 @@ type
   TLexFile = class
 		protected
 		  //IO_File: Text;
-		  IO_String: String;
+		  IO_String: AnsiString;
 		  //IO_Stream: TStream;
 		  //IO_Function: TLexUsrFn;
 		  //IO_Method: TLexUsrMd;
@@ -45,7 +45,7 @@ type
 		  //function GetString: String; virtual;
 
 		  { Set string & force to string input type.		}
-		  procedure AssignString(const S: String); virtual;
+		  procedure AssignString(const S: AnsiString); virtual;
 
 		  { Set to string output type.				}
 		  //procedure AssignStringOut; virtual;
@@ -69,16 +69,16 @@ type
 		  procedure AssignBitBucket;
 
 		  { Send a character (if output!)			}
-		  procedure Put(C: Char); virtual;
+		  procedure Put(C: AnsiChar); virtual;
 
 		  { Send a lot of text.					}
-		  procedure Write(S: String); virtual;
+		  procedure Write(const S: AnsiString); virtual;
 
 		  { Send a lot of text & a new line.			}
-		  procedure Writeln(S: String); virtual;
+		  procedure Writeln(const S: AnsiString); virtual;
 
 		  { Get a character (if input!)				}
-		  function Get: Char; virtual;
+		  function Get: AnsiChar; virtual;
 
 		  { Read a whole line of text				}
 		  //function  Readln : String; virtual;
@@ -162,7 +162,7 @@ begin
 end;}
 
 { Set string & force to string input type.				}
-procedure TLexFile.AssignString(const S: String);
+procedure TLexFile.AssignString(const S: AnsiString);
 begin
   Close;
   IO_String	:= S;
@@ -228,9 +228,9 @@ begin
 end;
 
 { Get a character (if input!)						}
-function TLexFile.Get: Char;
+function TLexFile.Get: AnsiChar;
 //var
-//  C: Char;
+//  C: AnsiChar;
 begin
   if Ftype = ttClosed then
     raise ELFException.Create('File is closed');
@@ -270,7 +270,7 @@ begin
 end;}
 
 { Send a character (if output!)						}
-procedure TLexFile.Put(C: Char);
+procedure TLexFile.Put(C: AnsiChar);
 begin
   if Ftype = ttClosed then
     raise ELFException.Create('File is closed');
@@ -330,7 +330,7 @@ begin
 end;}
 
 { Send a lot of text.							}
-procedure TLexFile.Write(S: String);
+procedure TLexFile.Write(const S: AnsiString);
 var
   i: Integer;
 begin
@@ -357,7 +357,7 @@ begin
 end;
 
 { Send a lot of text & a new line.					}
-procedure TLexFile.Writeln(S: String);
+procedure TLexFile.Writeln(const S: AnsiString);
 begin
   if Ftype = ttClosed then
     raise ELFException.Create('File is closed');

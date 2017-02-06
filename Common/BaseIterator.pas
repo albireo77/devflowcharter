@@ -24,7 +24,7 @@ unit BaseIterator;
 interface
 
 uses
-   Classes, CommonInterfaces, Contnrs;
+   System.Contnrs, CommonInterfaces;
 
 type
 
@@ -45,6 +45,9 @@ type
    end;
 
 implementation
+
+uses
+   System.Classes;
 
 constructor TBaseIterator.Create(AList: TObjectList);
 begin

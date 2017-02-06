@@ -22,8 +22,7 @@ unit Statement;
 interface
 
 uses
-   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-   CommonInterfaces, ComCtrls, CommonTypes;
+   System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.StdCtrls, CommonInterfaces, CommonTypes;
 
 type
 
@@ -115,7 +114,7 @@ type
 implementation
 
 uses
-   ApplicationCommon, Base_Block, Navigator_Form;
+   WinApi.Windows, System.SysUtils, Vcl.Forms, ApplicationCommon, Base_Block, Navigator_Form;
 
 constructor TStatement.Create(AOwner: TComponent);
 const
@@ -208,7 +207,7 @@ begin
    Hint := i18Manager.GetFormattedString('ExpOk', [txt, CRLF]);
    TBlock(Parent).UpdateEditor(Self);
 
-   if FExecuteParse then
+    if FExecuteParse then
    begin
       if txt = '' then
       begin

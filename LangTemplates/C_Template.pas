@@ -42,8 +42,8 @@ var
 implementation
 
 uses
-   SysUtils, SynHighlighterCpp, StrUtils, Main_Block, ApplicationCommon, LangDefinition,
-   Classes, ParserHelper;
+   System.SysUtils, System.StrUtils, System.Classes, SynHighlighterCpp, Main_Block,
+   ApplicationCommon, LangDefinition, ParserHelper;
 
 var
    cLang: TLangDefinition;
@@ -75,11 +75,11 @@ begin
          for i := 0 to libList.Count-1 do
          begin
             lIncludeStr := '#include ';
-            isQuote := AnsiPos('"', libList[i]) <> 0;
+            isQuote := Pos('"', libList[i]) <> 0;
             if not isQuote then
                lIncludeStr := lIncludeStr + '<';
             lIncludeStr := lIncludeStr + libList[i];
-            if AnsiPos('.', libList[i]) = 0 then
+            if Pos('.', libList[i]) = 0 then
                lIncludeStr := lIncludeStr + cLang.LibraryExt;
             if not isQuote then
                lIncludeStr := lIncludeStr + '>';
@@ -352,7 +352,7 @@ begin
       begin
          if not TryStrToFloat(AValue, f) then
          begin
-            if (AValue[1] = C_STRING_DELIM) and (AnsiLastChar(AValue) = C_STRING_DELIM) then
+            if (AValue[1] = C_STRING_DELIM) and (AValue[len] = C_STRING_DELIM) then
                result := C_CHAR_PTR_TYPE
             else if (len = 3) and (AValue[1] = C_CHAR_DELIM) and (AValue[3] = C_CHAR_DELIM) then
                result := C_CHAR_TYPE
@@ -373,8 +373,11 @@ begin
 end;}
 
 function C_IsPointerType(const AType: string): boolean;
+var
+   len: integer;
 begin
-   result := (Length(AType) > 1) and (AnsiLastChar(AType) = '*');
+   len := Length(AType);
+   result := (len > 1) and (AType[len] = '*');
 end;
 
 function C_GetOriginalType(const AType: string): string;

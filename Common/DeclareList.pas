@@ -22,8 +22,8 @@ unit DeclareList;
 interface
 
 uses
-   Controls, Types, OmniXML, StdCtrls, Grids, Classes, Windows, SizeEdit, CommonInterfaces,
-   Base_Form, Messages, Graphics, CommonTypes;
+   Vcl.Controls, OmniXML, Vcl.StdCtrls, Vcl.Grids, System.Classes, WinApi.Windows,
+   WinApi.Messages, Vcl.Graphics, SizeEdit, CommonInterfaces, Base_Form, CommonTypes;
 
 type
 
@@ -159,8 +159,8 @@ const
 implementation
 
 uses
-   ApplicationCommon, SysUtils, XMLProcessor, Dialogs, Project, StrUtils, UserDataType,
-   LangDefinition, ParserHelper;
+   System.SysUtils, System.Types, ApplicationCommon, XMLProcessor, Project, UserDataType, LangDefinition,
+   ParserHelper;
 
 constructor TDeclareList.Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
 var
@@ -1037,7 +1037,7 @@ begin
    if result.Y = 0 then
       result.Y := ARow * sgList.DefaultRowHeight + ARow;
    result.X := result.X + sgList.Left + (sgList.ColWidths[ACol] div 2) - 4;
-   result.Y := result.Y + sgList.Top + 5;
+   result.Y := result.Y + sgList.Top + 4;
 end;
 
 function TDeclareList.CreateCheckBox(const ACol, ARow: integer): TCheckBox;
@@ -1048,7 +1048,7 @@ begin
    result := TCheckBox.Create(Self);
    result.Parent := Self;
    result.Visible := IsRowVisible(ARow) and (pnt.X <= GetRightMargin);
-   result.SetBounds(pnt.X, pnt.Y, 10, 10);
+   result.SetBounds(pnt.X, pnt.Y, 12, 12);
    result.OnClick := OnClickChBox;
    Repaint;
 end;

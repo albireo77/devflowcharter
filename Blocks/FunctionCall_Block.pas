@@ -24,7 +24,7 @@ unit FunctionCall_Block;
 interface
 
 uses
-   Controls, Forms, StdCtrls, Graphics, Classes, SysUtils, Base_Block, CommonInterfaces;
+   Vcl.Graphics, Base_Block, CommonInterfaces;
 
 type
 
@@ -42,7 +42,7 @@ type
 implementation
 
 uses
-   ApplicationCommon, StrUtils, CommonTypes;
+   Vcl.Controls, Vcl.Forms, System.Classes, System.Types, ApplicationCommon, CommonTypes;
 
 constructor TFunctionCallBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 begin

@@ -1,10 +1,10 @@
 object MemoEditorForm: TMemoEditorForm
   Left = 286
   Top = 218
-  Width = 280
-  Height = 182
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'MemoEditorForm'
+  ClientHeight = 143
+  ClientWidth = 264
   Color = clBtnFace
   Constraints.MinHeight = 182
   Constraints.MinWidth = 280
@@ -17,15 +17,15 @@ object MemoEditorForm: TMemoEditorForm
   OnCreate = FormCreate
   OnShow = FormShow
   DesignSize = (
-    272
-    151)
+    264
+    143)
   PixelsPerInch = 96
   TextHeight = 13
   object memEditor: TMemo
     Left = 0
     Top = 0
-    Width = 272
-    Height = 151
+    Width = 264
+    Height = 143
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNavy

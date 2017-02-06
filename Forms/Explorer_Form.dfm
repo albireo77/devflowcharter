@@ -1,10 +1,10 @@
 object ExplorerForm: TExplorerForm
   Left = 389
   Top = 133
-  Width = 300
-  Height = 586
   HorzScrollBar.Visible = False
   Caption = 'Project Explorer'
+  ClientHeight = 547
+  ClientWidth = 284
   Color = clBtnFace
   Constraints.MinWidth = 300
   ParentFont = True
@@ -15,8 +15,8 @@ object ExplorerForm: TExplorerForm
   OnMouseWheel = FormMouseWheel
   OnShow = FormShow
   DesignSize = (
-    292
-    555)
+    284
+    547)
   PixelsPerInch = 96
   TextHeight = 13
   object lblErrors: TLabel

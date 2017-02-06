@@ -25,9 +25,8 @@ uses
 {$IFDEF USE_CODEFOLDING}
     SynEditCodeFolding,
 {$ENDIF}
-    Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, SizeEdit,
-    SynEditHighlighter, YaccLib, DeclareList, UserFunction, CommonTypes, OmniXML,
-    UserDataType, Registry;
+    System.Classes, SizeEdit, SynEditHighlighter, YaccLib, DeclareList, UserFunction,
+    CommonTypes, OmniXML, UserDataType, System.Win.Registry;
 
 type
 
@@ -207,7 +206,7 @@ type
 implementation
 
 uses
-   ApplicationCommon, StrUtils, XMLProcessor, WhileDo_Block, RepeatUntil_Block,
+   System.SysUtils, Vcl.Forms, ApplicationCommon, XMLProcessor, WhileDo_Block, RepeatUntil_Block,
    ForDo_Block, Case_Block, If_Block, IfElse_Block, Main_Block, InOut_Block,
    Assign_Block, MulAssign_Block, Return_Block, Text_Block, FunctionCall_Block,
    Folder_Block;
@@ -258,7 +257,7 @@ end;
 
 function TLangDefinition.ImportLangDef(const ATag: IXMLElement): TErrorType;
 var
-   tag, tag1: IXMLElement;
+   tag: IXMLElement;
    lVal: string;
    i, a, count: integer;
 begin
@@ -768,7 +767,7 @@ begin
                   lVal := Trim(tag.GetAttribute('origtype'));
                   for i := 0 to a-1 do
                   begin
-                     if AnsiSameText(lVal, NativeDataTypes[i].Name) then
+                     if SameText(lVal, NativeDataTypes[i].Name) then
                      begin
                         OrigType := @NativeDataTypes[i];
                         break;
@@ -903,7 +902,7 @@ begin
       templateLines.Text := GetTemplate(AClass);
       for i := 0 to templateLines.Count-1 do
       begin
-         if AnsiPos(PRIMARY_PLACEHOLDER, templateLines[i]) <> 0 then
+         if Pos(PRIMARY_PLACEHOLDER, templateLines[i]) <> 0 then
          begin
             result := templateLines[i];
             break;

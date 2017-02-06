@@ -1,7 +1,6 @@
 object DeclarationsForm: TDeclarationsForm
   Left = 682
   Top = 359
-  AutoScroll = False
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Global Declarations'
   ClientHeight = 285

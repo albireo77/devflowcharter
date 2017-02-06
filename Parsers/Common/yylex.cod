@@ -27,12 +27,12 @@ scan:
   { Mark positions and matches: 					}
   for yyn := yykl[yystate] to yykh[yystate] do yymark(yyk[yyn]);
   for yyn := yymh[yystate] downto yyml[yystate] do yymatch(yym[yyn]);
-  if yytl[yystate]>yyth[yystate] then goto action;	{ dead state	}
+  if yytl[yystate] > yyth[yystate] then goto action;	{ dead state	}
   { Get next character:							}
   yyscan;
   { Determine action:							}
   yyn := yytl[yystate];
-  while (yyn<=yyth[yystate]) and not (yyactchar in yyt[yyn].cc) do inc(yyn);
+  while (yyn <= yyth[yystate]) and not CharInSet(yyactchar, yyt[yyn].cc) do inc(yyn);
   if yyn>yyth[yystate] then goto action;
 	{ No transition on yyactchar in this state.			}
   { Switch to new state:						}

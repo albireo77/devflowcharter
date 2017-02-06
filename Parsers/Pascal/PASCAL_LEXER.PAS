@@ -1,29 +1,17 @@
 { lexical analyzer template (TP Lex V3.0), V1.0 3-2-91 AG		}
-
 { 24.3.98: repacked into an class to make code thread-safe.		}
-
 { Modified September 2000 by C.P.Osborne for Delphi 4/5			}
-
 {	11/09/2000	CPO	Mods started.				}
-
 {				Converted for new LexLib, YaccLib.	}
-
-
 
 { global definitions: 							}
 
 
 const INITIAL = 0;
 
-
-
 function TLex.yylex(var yylval: YYSType): Integer;
 
-
-
-procedure yyaction ( yyruleno : Integer );
-
-
+procedure yyaction(yyruleno: Integer);
 
 { local definitions:							}
 
@@ -31,7 +19,6 @@ procedure yyaction ( yyruleno : Integer );
 begin
 
   { actions: 								}
-
   case yyruleno of
 
   1:
@@ -210,13 +197,11 @@ begin
 
 end;	{ yyaction	}
 
-
-
 { DFA table: 								}
 
 
 type YYTRec = record
-                cc : set of Char;
+                cc : set of AnsiChar;
                 s  : Integer;
               end;
 
@@ -2344,15 +2329,9 @@ yyth : array [0..yynstates-1] of Integer = (
 );
 
 
-
-
-var yyn : Integer;
-
-
+var yyn: Integer;
 
 label start, scan, action;
-
-
 
 begin
 
@@ -2360,101 +2339,55 @@ start:
 
   { initialize:								}
 
-
-
   yynew;
-
-
 
 scan:
 
-
-
   { Mark positions and matches: 					}
 
-
-
-  for yyn := yykl[yystate] to     yykh[yystate] do yymark(yyk[yyn]);
+  for yyn := yykl[yystate] to yykh[yystate] do yymark(yyk[yyn]);
 
   for yyn := yymh[yystate] downto yyml[yystate] do yymatch(yym[yyn]);
 
-
-
-  if yytl[yystate]>yyth[yystate] then goto action;	{ dead state	}
-
-
+  if yytl[yystate] > yyth[yystate] then goto action;	{ dead state	}
 
   { Get next character:							}
 
-
-
   yyscan;
-
-
 
   { Determine action:							}
 
-
-
   yyn := yytl[yystate];
 
-  while (yyn<=yyth[yystate]) and not (yyactchar in yyt[yyn].cc) do inc(yyn);
+  while (yyn <= yyth[yystate]) and not CharInSet(yyactchar, yyt[yyn].cc) do inc(yyn);
 
   if yyn>yyth[yystate] then goto action;
 
 	{ No transition on yyactchar in this state.			}
 
-
-
   { Switch to new state:						}
-
-
 
   yystate := yyt[yyn].s;
 
-
-
   goto scan;
-
-
 
 action:
 
-
-
   { Execute action: 							}
 
-
-
   if yyfind(yyrule) then
-
-    begin
-
-      yyaction(yyrule);
-
-      if yyreject then goto action;
-
-    end
-
+  begin
+    yyaction(yyrule);
+    if yyreject then goto action;
+  end
   else if not yydefault and yywrap then
-
-    begin
-
-      yyclear;
-
-      return(0);
-
-    end;
-
-
+  begin
+    yyclear;
+    return(0);
+  end;
 
   if not yydone then goto start;
 
-
-
   yylex := yyretval;
 
-end;	{ yylex	}
-
-
-
+end;

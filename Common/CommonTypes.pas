@@ -27,7 +27,7 @@ uses
 {$IFDEF USE_CODEFOLDING}
    SynEditCodeFolding,
 {$ENDIF}
-   Windows, SysUtils, Classes, Types, SynEditTypes;
+   System.Classes, SynEditTypes;
 
 type
 

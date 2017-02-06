@@ -23,7 +23,7 @@ unit Assign_Block;
 interface
 
 uses
-   Controls, Graphics, Classes, SysUtils, Base_Block, CommonInterfaces, Types;
+   Vcl.Graphics, System.SysUtils, Base_Block, CommonInterfaces;
 
 type
 
@@ -41,7 +41,8 @@ type
 implementation
 
 uses
-   ApplicationCommon, StrUtils, Forms, CommonTypes;
+   System.StrUtils, Vcl.Forms, Vcl.Controls, System.Types, System.Classes, CommonTypes,
+   ApplicationCommon;
 
 constructor TAssignBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 begin

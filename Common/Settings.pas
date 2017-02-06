@@ -22,7 +22,7 @@ unit Settings;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, LangDefinition;
+  WinApi.Windows, Vcl.Graphics, LangDefinition;
 
 type
 
@@ -244,7 +244,8 @@ const
 implementation
 
 uses
-   ApplicationCommon, Registry, Main_Form, Navigator_Form;
+   System.SysUtils, System.Classes, System.Types, Vcl.Forms, System.Win.Registry,
+   ApplicationCommon, Main_Form, Navigator_Form;
 
 constructor TSettings.Create;
 begin

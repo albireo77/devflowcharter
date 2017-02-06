@@ -24,8 +24,7 @@ unit RepeatUntil_Block;
 interface
 
 uses
-   Controls, Messages, Forms, StdCtrls, Graphics, Classes, SysUtils, Base_Block,
-   CommonInterfaces, Types;
+   Vcl.Graphics, System.Types, Base_Block, CommonInterfaces;
 
 type
 
@@ -47,7 +46,7 @@ type
 implementation
 
 uses
-   ApplicationCommon, Windows, StrUtils, CommonTypes, FastcodeAnsiStringReplaceUnit;
+   System.Classes, System.SysUtils, System.StrUtils, ApplicationCommon, CommonTypes;
 
 constructor TRepeatUntilBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
 begin
@@ -153,7 +152,7 @@ end;
 function TRepeatUntilBlock.GetDescription: string;
 begin
    if GInfra.CurrentLang.RepeatDesc <> '' then
-      result := FastCodeAnsiStringReplace(GInfra.CurrentLang.RepeatDesc, PRIMARY_PLACEHOLDER, Trim(FStatement.Text))
+      result := ReplaceStr(GInfra.CurrentLang.RepeatDesc, PRIMARY_PLACEHOLDER, Trim(FStatement.Text))
    else
       result := inherited GetDescription;
 end;

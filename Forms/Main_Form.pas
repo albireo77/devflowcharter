@@ -26,9 +26,9 @@ unit Main_Form;
 interface
 
 uses
-  Windows, Graphics, Controls, Forms, StdCtrls, ExtCtrls, Menus, Printers,
-  ImgList, Clipbrd, Types, OmniXML, SysUtils, Classes, ShellApi, StrUtils, Base_Form,
-  Messages, History, Dialogs, ComCtrls, CommonInterfaces;
+  WinApi.Windows, Vcl.Graphics, Vcl.Forms, Vcl.Controls, System.SysUtils, Vcl.Menus,
+  Vcl.ImgList, System.Classes, Vcl.Dialogs, WinApi.Messages, Vcl.ComCtrls, System.ImageList,
+  Base_Form, History, CommonInterfaces, OmniXML;
 
 type
 
@@ -239,7 +239,8 @@ var
 implementation
 
 uses
-   Toolbox_Form, ApplicationCommon, About_Form, Main_Block, ParseGlobals, LocalizationManager,
+   Vcl.StdCtrls, Vcl.Clipbrd, System.StrUtils, System.UITypes, System.Types, Toolbox_Form,
+   ApplicationCommon, About_Form, Main_Block, ParseGlobals, LocalizationManager,
    XMLProcessor, UserFunction, ForDo_Block, Return_Block, Project, Declarations_Form,
    Base_Block, Comment, Case_Block, Navigator_Form, CommonTypes, LangDefinition,
    EditMemo_Form, BlockFactory, BlockTabSheet;
@@ -263,7 +264,7 @@ begin
       Screen.Cursors[Ord(lCursor)] := LoadCursor(HInstance, CursorIdsArray[lCursor]);
    until lCursor = High(TCustomCursor);
    InitialiseVariables;
-   DecimalSeparator := '.';
+   //DecimalSeparator := '.';
    SystemParametersInfo(SPI_SETDRAGFULLWINDOWS, Ord(True), nil, 0);
    Application.HintHidePause := HINT_PAUSE;
    Application.OnException := OnException;
@@ -469,7 +470,7 @@ procedure TMainForm.miSaveClick(Sender: TObject);
 begin
     if Caption = PROGRAM_NAME then
        miSaveAs.Click
-    else if (GProject <> nil) and (GProject.ExportToXMLFile(AnsiReplaceText(Caption, MAIN_FORM_CAPTION, '')) = errNone) then
+    else if (GProject <> nil) and (GProject.ExportToXMLFile(ReplaceText(Caption, MAIN_FORM_CAPTION, '')) = errNone) then
        GChange := 0;
 end;
 
@@ -503,21 +504,10 @@ begin
 end;
 
 procedure TMainForm.OnException(Sender: TObject; E: Exception);
-var
-   msg: array[0..255] of char;
 begin
-   if (ExceptAddr = nil) or (ExceptionErrorMessage(E, ExceptAddr, msg, SizeOf(msg)) = 0) then
-      msg := '';
-   if msg <> '' then
-   begin
-      if GProject <> nil then
-      begin
-         TInfra.ShowFormattedErrorBox('OtherException', [msg], errGeneral);
-         miSaveAs.Click;
-      end
-      else
-         TInfra.ShowErrorBox(msg, errGeneral);
-   end;
+   Application.ShowException(E);
+   if GProject <> nil then
+      miSaveAs.Click;
    TInfra.SetInitialSettings;
 end;
 

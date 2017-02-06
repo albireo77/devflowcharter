@@ -91,8 +91,8 @@ var
 implementation
 
 uses
-   SysUtils, SynHighlighterPas, StrUtils, Pascal_Parser, Main_Block, ApplicationCommon,
-   DeclareList, Settings, LocalizationManager, LangDefinition, Classes, CommonTypes, ParserHelper;
+   System.SysUtils, System.StrUtils, System.Classes, SynHighlighterPas, Pascal_Parser, Main_Block, ApplicationCommon,
+   DeclareList, Settings, LocalizationManager, LangDefinition, CommonTypes, ParserHelper;
 
 var
    lLangDef: TLangDefinition;
@@ -116,7 +116,7 @@ begin
       progName := i18Manager.GetString('Unknown')
    else
       progName := GProject.Name;
-   progName := AnsiReplaceStr(progName, ' ', '_') + ';';
+   progName := ReplaceStr(progName, ' ', '_') + ';';
 
    if GProject.GetMainBlock <> nil then
       ALines.Add('program ' + progName)
@@ -392,7 +392,7 @@ begin
          begin
             if not TryStrToBool(AValue, b) then
             begin
-               if (AValue[1] = PASCAL_STRING_DELIM) and (AnsiLastChar(AValue) = PASCAL_STRING_DELIM) then
+               if (AValue[1] = PASCAL_STRING_DELIM) and (AValue[len] = PASCAL_STRING_DELIM) then
                begin
                   if len = 3 then
                      result := PASCAL_CHAR_TYPE

@@ -24,8 +24,8 @@ unit UserDataType;
 interface
 
 uses
-   Controls, Forms, StdCtrls, ComCtrls, Graphics, ExtCtrls, Classes, OmniXML,
-   SizeEdit, TabComponent, Element, DataTypes_Form, CommonInterfaces, Messages;
+   Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls, System.Classes, WinApi.Messages, OmniXML,
+   SizeEdit, TabComponent, Element, DataTypes_Form, CommonInterfaces;
 
 type
 
@@ -81,7 +81,8 @@ type
 implementation
 
 uses
-   SysUtils, ApplicationCommon, StrUtils, CommonTypes, LangDefinition, ParserHelper;
+   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, ApplicationCommon,
+   CommonTypes, LangDefinition, ParserHelper;
 
 constructor TUserDataType.Create(const AParentForm: TDataTypesForm);
 begin
@@ -138,7 +139,7 @@ begin
    sbxElements.BorderStyle := bsNone;
    sbxElements.Constraints.MaxHeight := AParentForm.Height - 233;
    sbxElements.Constraints.MinWidth := 302;
-   sbxElements.SetBounds(0, 149, 312, 0);
+   sbxElements.SetBounds(0, 149, 308, 0);
    sbxElements.VertScrollBar.Tracking := true;
    sbxElements.DoubleBuffered := true;
    sbxElements.Anchors := [akTop, akBottom, akLeft, akRight];
@@ -150,7 +151,7 @@ begin
    btnAddElement.Caption := i18Manager.GetString('btnAddField');
    btnAddElement.ShowHint := true;
    btnAddElement.DoubleBuffered := true;
-   btnAddElement.SetBounds(1, 102, 309, 25);
+   btnAddElement.SetBounds(1, 102, 306, 25);
    btnAddElement.OnClick := AddElement;
 
    lblLibrary := TLabel.Create(Self);
@@ -163,18 +164,18 @@ begin
 
    edtLibrary := TEdit.Create(Self);
    edtLibrary.Parent := Self;
-   edtLibrary.SetBounds(lblLibrary.Left+lblLibrary.Width+5, 5, 123-lblLibrary.Width, 21);
+   edtLibrary.SetBounds(lblLibrary.Left+lblLibrary.Width+5, 5, 119-lblLibrary.Width, 21);
    edtLibrary.ParentFont := false;
    edtLibrary.Font.Style := [];
    edtLibrary.Font.Color := clGreen;
    edtLibrary.ShowHint := true;
    edtLibrary.DoubleBuffered := true;
    edtLibrary.OnChange := OnChangeLib;
-   edtLibrary.Hint := AnsiReplaceStr(i18Manager.GetFormattedString('edtLibHintType', [GInfra.CurrentLang.LibraryExt]), '##', CRLF);
+   edtLibrary.Hint := ReplaceStr(i18Manager.GetFormattedString('edtLibHintType', [GInfra.CurrentLang.LibraryExt]), '##', CRLF);
 
    gbTypeBox := TGroupBox.Create(Self);
    gbTypeBox.Parent := Self;
-   gbTypeBox.SetBounds(1, 28, 310, 73);
+   gbTypeBox.SetBounds(1, 28, 305, 73);
    gbTypeBox.ParentFont := false;
    gbTypeBox.Font.Style := [];
    gbTypeBox.Font.Color := clWindowText;
@@ -183,7 +184,7 @@ begin
 
    chkAddPtrType := TCheckBox.Create(gbTypeBox);
    chkAddPtrType.Parent := gbTypeBox;
-   chkAddPtrType.SetBounds(170, 18, 138, 17);
+   chkAddPtrType.SetBounds(170, 18, 134, 17);
    chkAddPtrType.ParentFont := false;
    chkAddPtrType.Font.Style := [];
    chkAddPtrType.Font.Color := clWindowText;
@@ -384,7 +385,7 @@ begin
    cbType.Constraints.MaxWidth := 90;
    TInfra.PopulateDataTypeCombo(cbType, ParentTab.PageIndex);
 
-   btnRemove.SetBounds(241, 0, 53, 20);
+   btnRemove.SetBounds(239, 0, 52, 20);
 
    edtSize := TSizeEdit.Create(Self);
    edtSize.SetBounds(195, 2, 43, 17);

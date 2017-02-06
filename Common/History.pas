@@ -24,7 +24,7 @@ unit History;
 interface
 
 uses
-   Menus, Classes;
+   Vcl.Menus, System.Classes;
 
 const
    HISTORY_SIZE = 10;
@@ -45,7 +45,7 @@ type
 implementation
 
 uses
-   Registry, SysUtils, ApplicationCommon;
+   System.Win.Registry, System.SysUtils, ApplicationCommon;
 
 constructor THistoryMenu.Create(AParentMenu: TMenuItem; AOnClick: TNotifyEvent);
 begin

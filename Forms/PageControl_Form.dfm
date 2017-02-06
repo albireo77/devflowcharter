@@ -1,7 +1,6 @@
 object PageControlForm: TPageControlForm
   Left = 604
   Top = 348
-  AutoScroll = False
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'PageControl'
   ClientHeight = 517

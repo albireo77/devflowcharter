@@ -20,7 +20,6 @@
 program devFlowcharter;
 
 uses
-  FastMM4,
   Forms,
   ApplicationCommon in 'Common\ApplicationCommon.pas',
   Assign_Block in 'Blocks\Assign_Block.pas',
@@ -69,7 +68,6 @@ uses
   DeclareList in 'Common\DeclareList.pas',
   Comment in 'Common\Comment.pas',
   Settings in 'Common\Settings.pas',
-  VCLFixes in 'Common\VCLFixes.pas',
   SizeEdit in 'Common\SizeEdit.pas',
   CommonInterfaces in 'Common\CommonInterfaces.pas',
   PageControl_Form in 'Forms\PageControl_Form.pas' {PageControlForm},

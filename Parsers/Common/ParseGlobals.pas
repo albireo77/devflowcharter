@@ -8,7 +8,7 @@ type
   TVState = (tUndefined, tReal, tBoolean, tString);
   TVariable = record
 		State: TVState;
-		SVal: String;
+		SVal: AnsiString;
 		case Integer of
 		  0: (RVal: Real);
 		  1: (BVal: Boolean);
@@ -25,8 +25,6 @@ var
 				{ 1 = division by zero.			}
 				{ 2 = undefined variable.		}
 implementation
-uses
-  SysUtils, Dialogs;
 procedure InitialiseVariables;
 var
   i: Integer;

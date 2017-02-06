@@ -24,31 +24,30 @@ unit DataTypes_Form;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Menus,
-  ComCtrls, StdCtrls, OmniXML, PageControl_Form, CommonTypes;
+   OmniXML, PageControl_Form, CommonTypes;
 
 type
 
   TDataTypesForm = class(TPageControlForm)
-    procedure miAddClick(Sender: TObject); override;
-    procedure FormDeactivate(Sender: TObject); override;
-    procedure pgcTabsChanging(Sender: TObject; var AllowChange: Boolean);
+     procedure miAddClick(Sender: TObject); override;
+     procedure FormDeactivate(Sender: TObject); override;
+     procedure pgcTabsChanging(Sender: TObject; var AllowChange: Boolean);
   public
-    { Public declarations }
-    procedure ExportSettingsToXMLTag(const ATag: IXMLElement); override;
-    procedure ImportSettingsFromXMLTag(const ATag: IXMLElement); override;
-    function ImportTabsFromXMLTag(const ATag: IXMLElement): TErrorType; override;
-    procedure RefreshTabs; override;
-    procedure ResetForm; override;
+     { Public declarations }
+     procedure ExportSettingsToXMLTag(const ATag: IXMLElement); override;
+     procedure ImportSettingsFromXMLTag(const ATag: IXMLElement); override;
+     function ImportTabsFromXMLTag(const ATag: IXMLElement): TErrorType; override;
+     procedure RefreshTabs; override;
+     procedure ResetForm; override;
   end;
 
 var
-  DataTypesForm: TDataTypesForm;
+   DataTypesForm: TDataTypesForm;
 
 implementation
 
 uses
-   ApplicationCommon, XMLProcessor, UserDataType, CommonInterfaces;
+   System.SysUtils, Vcl.Forms, ApplicationCommon, XMLProcessor, UserDataType, CommonInterfaces;
 
 {$R *.dfm}
 

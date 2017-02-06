@@ -24,8 +24,8 @@ unit ForDo_Block;
 interface
 
 uses
-   Controls, Forms, StdCtrls, Graphics, Classes, Menus, SysUtils, Base_Block,
-   Statement, OmniXML, CommonInterfaces, CommonTypes, LangDefinition;
+   Vcl.StdCtrls, Vcl.Graphics, System.Classes, Base_Block, Statement, OmniXML,
+   CommonInterfaces, CommonTypes, LangDefinition;
 
 type
 
@@ -68,8 +68,8 @@ type
 implementation
 
 uses
-   ApplicationCommon, StrUtils, XMLProcessor, Main_Block, UserFunction, Return_Block,
-   FastcodeAnsiStringReplaceUnit;
+   Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Types, System.UITypes,
+   ApplicationCommon, XMLProcessor, Main_Block, UserFunction, Return_Block;
 
 constructor TForDoBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, px1, p1Y: integer; const AId: integer = ID_INVALID);
 begin
@@ -319,9 +319,9 @@ begin
       template := ALangDef.ForDoTemplate
    else
       template := ATemplate;
-   result := FastCodeAnsiStringReplace(template, PRIMARY_PLACEHOLDER, edtVariable.Text);
-   result := FastCodeAnsiStringReplace(result, '%s2', Trim(edtStartVal.Text));
-   result := FastCodeAnsiStringReplace(result, '%s3', Trim(edtStopVal.Text));
+   result := ReplaceStr(template, PRIMARY_PLACEHOLDER, edtVariable.Text);
+   result := ReplaceStr(result, '%s2', Trim(edtStartVal.Text));
+   result := ReplaceStr(result, '%s3', Trim(edtStopVal.Text));
    if FOrder = ordAsc then
    begin
       dir1 := ALangDef.ForAsc1;
@@ -332,8 +332,8 @@ begin
       dir1 := ALangDef.ForDesc1;
       dir2 := ALangDef.ForDesc2;
    end;
-   result := FastCodeAnsiStringReplace(result, '%s4', dir1);
-   result := FastCodeAnsiStringReplace(result, '%s5', dir2);
+   result := ReplaceStr(result, '%s4', dir1);
+   result := ReplaceStr(result, '%s5', dir2);
 end;
 
 function TForDoBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
@@ -451,7 +451,7 @@ begin
    if AInfo.SelText <> '' then
    begin
       expr := GInfra.CurrentLang.GetTemplateExpr(Self.ClassType);
-      i := AnsiPos(PRIMARY_PLACEHOLDER, expr);
+      i := Pos(PRIMARY_PLACEHOLDER, expr);
       if i <> 0 then
       begin
          i := i + Length(edtVariable.Text);
@@ -459,8 +459,8 @@ begin
             edit := edtVariable
          else
          begin
-            expr := FastCodeAnsiStringReplace(expr, PRIMARY_PLACEHOLDER, edtVariable.Text);
-            i := AnsiPos('%s2', expr);
+            expr := ReplaceStr(expr, PRIMARY_PLACEHOLDER, edtVariable.Text);
+            i := Pos('%s2', expr);
             if i <> 0 then
             begin
                i := i + Length(Trim(edtStartVal.Text));
@@ -499,9 +499,9 @@ begin
       chLine := TInfra.GetChangeLine(Self);
       if chLine.Row <> ROW_NOT_FOUND then
       begin
-         chLine.Text := FastCodeAnsiStringReplace(chLine.Text, PRIMARY_PLACEHOLDER, edtVariable.Text);
-         chLine.Text := FastCodeAnsiStringReplace(chLine.Text, '%s2', Trim(edtStartVal.Text));
-         chLine.Text := FastCodeAnsiStringReplace(chLine.Text, '%s3', Trim(edtStopVal.Text));
+         chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, edtVariable.Text);
+         chLine.Text := ReplaceStr(chLine.Text, '%s2', Trim(edtStartVal.Text));
+         chLine.Text := ReplaceStr(chLine.Text, '%s3', Trim(edtStopVal.Text));
          if FOrder = ordAsc then
          begin
             str1 := GInfra.CurrentLang.ForAsc1;
@@ -512,8 +512,8 @@ begin
             str1 := GInfra.CurrentLang.ForDesc1;
             str2 := GInfra.CurrentLang.ForDesc2;
          end;
-         chLine.Text := FastCodeAnsiStringReplace(chLine.Text, '%s4', str1);
-         chLine.Text := FastCodeAnsiStringReplace(chLine.Text, '%s5', str2);
+         chLine.Text := ReplaceStr(chLine.Text, '%s4', str1);
+         chLine.Text := ReplaceStr(chLine.Text, '%s5', str2);
          if GSettings.UpdateEditor and not SkipUpdateEditor then
             TInfra.ChangeLine(chLine);
          TInfra.GetEditorForm.SetCaretPos(chLine);
@@ -537,10 +537,10 @@ begin
       FRefreshMode := true;
       tag := TXMLProcessor.FindChildTag(ATag, 'init_val');
       if tag <> nil then
-         edtStartVal.Text := AnsiReplaceStr(tag.Text, '#', ' ');
+         edtStartVal.Text := ReplaceStr(tag.Text, '#', ' ');
       tag := TXMLProcessor.FindChildTag(ATag, 'end_val');
       if tag <> nil then
-         edtStopVal.Text := AnsiReplaceStr(tag.Text, '#' , ' ');
+         edtStopVal.Text := ReplaceStr(tag.Text, '#' , ' ');
       FRefreshMode := false;
       FOrder := TForOrder(StrToIntDef(ATag.GetAttribute('order'), 0));
    end
@@ -557,10 +557,10 @@ begin
       TXMLProcessor.AddText(tag, edtVariable.Text);
       ATag.AppendChild(tag);
       tag := ATag.OwnerDocument.CreateElement('init_val');
-      TXMLProcessor.AddText(tag, AnsiReplaceStr(edtStartVal.Text, ' ', '#'));
+      TXMLProcessor.AddText(tag, ReplaceStr(edtStartVal.Text, ' ', '#'));
       ATag.AppendChild(tag);
       tag := ATag.OwnerDocument.CreateElement('end_val');
-      TXMLProcessor.AddText(tag, AnsiReplaceStr(edtStopVal.Text, ' ', '#'));
+      TXMLProcessor.AddText(tag, ReplaceStr(edtStopVal.Text, ' ', '#'));
       ATag.AppendChild(tag);
       ATag.SetAttribute('order', IntToStr(Ord(FOrder)));
    end;

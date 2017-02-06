@@ -22,7 +22,7 @@ unit StatementMemo;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, StdCtrls, Graphics, CommonInterfaces;
+  System.Classes, Vcl.StdCtrls, Vcl.Graphics, CommonInterfaces;
 
 type
 
@@ -43,7 +43,7 @@ type
 implementation
 
 uses
-   ApplicationCommon, Base_Block, CommonTypes;
+   Vcl.Controls, ApplicationCommon, Base_Block, CommonTypes;
 
 constructor TStatementMemo.Create(AOwner: TComponent);
 begin

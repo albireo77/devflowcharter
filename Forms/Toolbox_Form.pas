@@ -24,7 +24,7 @@ unit Toolbox_Form;
 interface
 
 uses
-   Controls, Forms, Buttons, SysUtils, Classes, Base_Form;
+   Vcl.Forms, Vcl.Buttons, Vcl.Controls, System.Classes, Base_Form;
 
 type
 

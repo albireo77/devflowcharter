@@ -24,7 +24,7 @@ unit Element;
 interface
 
 uses
-   Classes, ExtCtrls, StdCtrls, BaseIterator, ComCtrls, OmniXml, Controls, Forms,
+   Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Forms, BaseIterator, OmniXml,
    PageControl_Form, CommonInterfaces;
 
 type
@@ -63,7 +63,7 @@ const
 implementation
 
 uses
-   ApplicationCommon, TabComponent, Graphics, SysUtils;
+   Vcl.Controls, Vcl.Graphics, System.SysUtils, ApplicationCommon, TabComponent;
 
 constructor TElement.Create(AParent: TScrollBox);
 begin

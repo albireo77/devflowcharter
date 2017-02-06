@@ -22,8 +22,7 @@ unit BlockFactory;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, StdCtrls, Base_Block, CommonTypes, OmniXML,
-  BlockTabSheet;
+   Base_Block, CommonTypes, OmniXML, BlockTabSheet;
 
 type
 
@@ -36,8 +35,10 @@ type
 implementation
 
 uses
-   Assign_Block, MulAssign_Block, InOut_Block, FunctionCall_Block, WhileDo_Block, RepeatUntil_Block, ApplicationCommon,
-   ForDo_Block, IfElse_Block, If_Block, Case_Block, Return_Block, Text_Block, Main_Block, CommonInterfaces, Folder_Block;
+   System.SysUtils, Assign_Block, MulAssign_Block, InOut_Block, FunctionCall_Block,
+   WhileDo_Block, RepeatUntil_Block, ApplicationCommon, ForDo_Block, IfElse_Block,
+   If_Block, Case_Block, Return_Block, Text_Block, Main_Block, CommonInterfaces,
+   Folder_Block;
 
 class function TBlockFactory.Create(const ABranch: TBranch; const ABlockType: TBlockType): TBlock;
 begin

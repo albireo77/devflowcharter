@@ -24,7 +24,7 @@ interface
 {$R ENGLISH_LOC.RES}
 
 uses
-   StdCtrls, Classes, IniFiles, Forms;
+   System.Classes, System.IniFiles;
 
 const
    BUTTON       = 1;
@@ -57,7 +57,8 @@ type
 implementation
 
 uses
-   SysUtils, Dialogs, Menus, Base_Form, Buttons, Windows, StrUtils, ApplicationCommon, Controls;
+   Vcl.StdCtrls, Vcl.Forms, System.SysUtils, Vcl.Dialogs, WinApi.Windows, Vcl.Menus,
+   Vcl.Buttons, System.StrUtils, Vcl.Controls, System.IOUtils, Base_Form, ApplicationCommon;
 
 type
    THackControl = class(TControl);
@@ -97,7 +98,7 @@ begin
             FRepository.Sorted := false;
             for i := 0 to sections.Count-1 do
             begin
-               if not AnsiEndsText('Form', sections[i]) then
+               if not EndsText('Form', sections[i]) then
                begin
                   iniFile.ReadSectionValues(sections[i], keys);
                   FRepository.AddStrings(keys);
@@ -148,7 +149,7 @@ begin
                   begin
                      field := '';
                      lName := keys.Names[a];
-                     pos := AnsiPos('.', lName);
+                     pos := System.Pos('.', lName);
                      if pos > 0 then
                      begin
                         field := Copy(lName, pos+1, MAXINT);
@@ -158,24 +159,24 @@ begin
                      if comp <> nil then
                      begin
                         value := keys.ValueFromIndex[a];
-                        if AnsiSameText(field, 'Caption') then
+                        if SameText(field, 'Caption') then
                         begin
                            if comp is TMenuItem then
                               TMenuItem(comp).Caption := value
                            else if comp is TControl then
                               THackControl(comp).Caption := value;
                         end
-                        else if AnsiSameText(field, 'Text') then
+                        else if SameText(field, 'Text') then
                         begin
                            if comp is TControl then
                               THackControl(comp).Text := value;
                         end
-                        else if AnsiSameText(field, 'Hint') then
+                        else if SameText(field, 'Hint') then
                         begin
                            if comp is TControl then
                               TControl(comp).Hint := value;
                         end
-                        else if AnsiSameText(field, 'Filter') then
+                        else if SameText(field, 'Filter') then
                         begin
                            if comp is TOpenDialog then
                               TOpenDialog(comp).Filter := value;
@@ -215,11 +216,9 @@ function Ti18Manager.LoadDefaultLabels: integer;
 var
    resStream: TResourceStream;
    langFile, errMsg: string;
-   tmpPath: array[0..MAX_PATH] of char;
 begin
    errMsg := '';
-   GetTempPath(SizeOf(tmpPath)-1, tmpPath);
-   langFile := tmpPath + 'english.lng';
+   langFile := TPath.GetTempPath + 'english.lng';
    resStream := TResourceStream.Create(Hinstance, 'DEFAULT_LOCALIZATION_FILE', 'LNG_FILE');
    try
       try
@@ -232,7 +231,7 @@ begin
          end;
       end;
    finally
-      SysUtils.DeleteFile(langFile);
+      System.SysUtils.DeleteFile(langFile);
       resStream.Free;
    end;
    if result = 0 then

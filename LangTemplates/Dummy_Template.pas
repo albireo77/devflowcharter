@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
     
@@ -24,8 +24,8 @@ interface
 implementation
 
 uses
-   Base_Block, LangDefinition, UserFunction, SysUtils, StrUtils, DeclareList, CommonInterfaces,
-   UserDataType, FastcodeAnsiStringReplaceUnit, Classes, ApplicationCommon, ParserHelper;
+   System.SysUtils, System.StrUtils, System.Classes, Base_Block, LangDefinition,
+   UserFunction, DeclareList, CommonInterfaces, UserDataType, ApplicationCommon, ParserHelper;
 
 procedure Dummy_UserDataTypesSectionGenerator(ALines: TStringList);
 var
@@ -55,7 +55,7 @@ begin
                begin
                   if lang.DataTypeIntMask <> '' then
                   begin
-                     typeStr := FastCodeAnsiStringReplace(lang.DataTypeIntMask, PRIMARY_PLACEHOLDER, name);
+                     typeStr := ReplaceStr(lang.DataTypeIntMask, PRIMARY_PLACEHOLDER, name);
                      typesList.AddObject(typeStr, dataType);
                   end;
                end
@@ -63,7 +63,7 @@ begin
                begin
                   if lang.DataTypeRealMask <> '' then
                   begin
-                     typeStr := FastCodeAnsiStringReplace(lang.DataTypeRealMask, PRIMARY_PLACEHOLDER, name);
+                     typeStr := ReplaceStr(lang.DataTypeRealMask, PRIMARY_PLACEHOLDER, name);
                      typesList.AddObject(typeStr, dataType);
                   end;
                end
@@ -71,11 +71,11 @@ begin
                begin
                   if lang.DataTypeOtherMask <> '' then
                   begin
-                     typeStr := FastCodeAnsiStringReplace(lang.DataTypeOtherMask, PRIMARY_PLACEHOLDER, name);
+                     typeStr := ReplaceStr(lang.DataTypeOtherMask, PRIMARY_PLACEHOLDER, name);
                      valStr := '';
                      if iterf.HasNext then
                         valStr := Trim(TField(iterf.Next).edtName.Text);
-                     typeStr := FastCodeAnsiStringReplace(typeStr, '%s2', valStr);
+                     typeStr := ReplaceStr(typeStr, '%s2', valStr);
                      typesList.AddObject(typeStr, dataType);
                   end;
                end
@@ -83,7 +83,7 @@ begin
                begin
                   if lang.DataTypeArrayMask <> '' then
                   begin
-                     typeStr := FastCodeAnsiStringReplace(lang.DataTypeArrayMask, PRIMARY_PLACEHOLDER, name);
+                     typeStr := ReplaceStr(lang.DataTypeArrayMask, PRIMARY_PLACEHOLDER, name);
                      valStr := '';
                      valStr2 := '';
                      if iterf.HasNext then
@@ -92,8 +92,8 @@ begin
                         valStr := field.cbType.Text;
                         valStr2 := lang.GetArraySizes(field.edtSize);
                      end;
-                     typeStr := FastCodeAnsiStringReplace(typeStr, '%s2', valStr);
-                     typeStr := FastCodeAnsiStringReplace(typeStr, '%s3', valStr2);
+                     typeStr := ReplaceStr(typeStr, '%s2', valStr);
+                     typeStr := ReplaceStr(typeStr, '%s3', valStr2);
                      typesList.AddObject(typeStr, dataType);
                   end;
                end
@@ -103,7 +103,7 @@ begin
                   begin
                      recTemplate := TStringList.Create;
                      try
-                        recTemplate.Text := FastCodeAnsiStringReplace(lang.DataTypeRecordTemplate, PRIMARY_PLACEHOLDER, name);
+                        recTemplate.Text := ReplaceStr(lang.DataTypeRecordTemplate, PRIMARY_PLACEHOLDER, name);
                         fieldList := TStringList.Create;
                         try
                            while iterf.HasNext do
@@ -114,10 +114,10 @@ begin
                                  fieldStr := lang.DataTypeRecordFieldArrayMask
                               else
                                  fieldStr := lang.DataTypeRecordFieldMask;
-                              fieldStr := FastCodeAnsiStringReplace(fieldStr, PRIMARY_PLACEHOLDER, Trim(field.edtName.Text));
-                              fieldStr := FastCodeAnsiStringReplace(fieldStr, '%s2', field.cbType.Text);
+                              fieldStr := ReplaceStr(fieldStr, PRIMARY_PLACEHOLDER, Trim(field.edtName.Text));
+                              fieldStr := ReplaceStr(fieldStr, '%s2', field.cbType.Text);
                               if sizeStr <> '' then
-                                 fieldStr := FastCodeAnsiStringReplace(fieldStr, '%s3', sizeStr);
+                                 fieldStr := ReplaceStr(fieldStr, '%s3', sizeStr);
                               lRecord := '';
                               enum := '';
                               lType := TParserHelper.GetType(field.cbType.Text);
@@ -125,8 +125,8 @@ begin
                                  lRecord := lang.FunctionHeaderArgsEntryRecord
                               else if TParserHelper.IsEnumType(lType) then
                                  enum := lang.FunctionHeaderArgsEntryEnum;
-                              fieldStr := FastCodeAnsiStringReplace(fieldStr, '%s4', lRecord);
-                              fieldStr := FastCodeAnsiStringReplace(fieldStr, '%s5', enum);
+                              fieldStr := ReplaceStr(fieldStr, '%s4', lRecord);
+                              fieldStr := ReplaceStr(fieldStr, '%s5', enum);
                               fieldList.Add(fieldStr);
                            end;
                            TInfra.InsertTemplateLines(recTemplate, '%s2', fieldList);
@@ -146,7 +146,7 @@ begin
                   begin
                      enumTemplate := TStringList.Create;
                      try
-                        enumTemplate.Text := FastCodeAnsiStringReplace(lang.DataTypeEnumTemplate, PRIMARY_PLACEHOLDER, name);
+                        enumTemplate.Text := ReplaceStr(lang.DataTypeEnumTemplate, PRIMARY_PLACEHOLDER, name);
                         valStr := '';
                         while iterf.HasNext do
                            valStr := valStr + Format(lang.DataTypeEnumEntryList, [Trim(TField(iterf.Next).edtName.Text)]);
@@ -226,7 +226,7 @@ begin
          libStr := '';
          libTemplate := TStringList.Create;
          try
-            isS1 := AnsiPos(PRIMARY_PLACEHOLDER, lang.LibTemplate) <> 0;
+            isS1 := Pos(PRIMARY_PLACEHOLDER, lang.LibTemplate) <> 0;
             libTemplate.Text := lang.LibTemplate;
             for i := 0 to libList.Count-1 do
             begin
@@ -280,8 +280,8 @@ begin
                   constEntry := lang.ConstEntryExtern
                else
                   constEntry := lang.ConstEntry;
-               constStr := FastCodeAnsiStringReplace(constEntry, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
-               constStr := FastCodeAnsiStringReplace(constStr, '%s2', AConstList.sgList.Cells[CONST_VALUE_COL, i]);
+               constStr := ReplaceStr(constEntry, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
+               constStr := ReplaceStr(constStr, '%s2', AConstList.sgList.Cells[CONST_VALUE_COL, i]);
                constList.AddObject(constStr, AConstList);
             end;
          end;
@@ -327,13 +327,13 @@ begin
                   varSize := varSize + Format(lang.VarEntryArraySize, [AVarList.GetDimension(name, b)]);
                if varSize <> '' then
                begin
-                  varStr := FastCodeAnsiStringReplace(lang.VarEntryArray, PRIMARY_PLACEHOLDER, name);
+                  varStr := ReplaceStr(lang.VarEntryArray, PRIMARY_PLACEHOLDER, name);
                   SetLength(varSize, Length(varSize)-lang.VarEntryArraySizeStripCount);
-                  varStr := FastCodeAnsiStringReplace(varStr, '%s3', varSize);
+                  varStr := ReplaceStr(varStr, '%s3', varSize);
                end
                else
-                  varStr := FastCodeAnsiStringReplace(lang.VarEntry, PRIMARY_PLACEHOLDER, name);
-               varStr := FastCodeAnsiStringReplace(varStr, '%s2', typeStr);
+                  varStr := ReplaceStr(lang.VarEntry, PRIMARY_PLACEHOLDER, name);
+               varStr := ReplaceStr(varStr, '%s2', typeStr);
                varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
                if varInit <> '' then
                begin
@@ -341,9 +341,9 @@ begin
                      initEntry := lang.VarEntryInitExtern
                   else
                      initEntry := lang.VarEntryInit;
-                  varInit := FastCodeAnsiStringReplace(initEntry, PRIMARY_PLACEHOLDER, varInit);
+                  varInit := ReplaceStr(initEntry, PRIMARY_PLACEHOLDER, varInit);
                end;
-               varStr := FastCodeAnsiStringReplace(varStr, '%s4', varInit);
+               varStr := ReplaceStr(varStr, '%s4', varInit);
                lType := TParserHelper.GetType(typeStr);
                lRecord := '';
                enum := '';
@@ -351,13 +351,13 @@ begin
                   lRecord := lang.FunctionHeaderArgsEntryRecord
                else if TParserHelper.IsEnumType(lType) then
                   enum := lang.FunctionHeaderArgsEntryEnum;
-               varStr := FastCodeAnsiStringReplace(varStr, '%s5', lRecord);
-               varStr := FastCodeAnsiStringReplace(varStr, '%s6', enum);
+               varStr := ReplaceStr(varStr, '%s5', lRecord);
+               varStr := ReplaceStr(varStr, '%s6', enum);
                if isExtern then
                   extern := lang.ExternEntry
                else
                   extern := '';
-               varStr := FastCodeAnsiStringReplace(varStr, '%s7', extern);
+               varStr := ReplaceStr(varStr, '%s7', extern);
                varList.AddObject(varStr, AVarList);
             end;
          end;
@@ -412,8 +412,8 @@ begin
                while iterp.HasNext do
                begin
                   param := TParameter(iterp.Next);
-                  paramStr := FastCodeAnsiStringReplace(lang.FunctionHeaderArgsEntryMask, PRIMARY_PLACEHOLDER, Trim(param.edtName.Text));
-                  paramStr := FastCodeAnsiStringReplace(paramStr, '%s2', param.cbType.Text);
+                  paramStr := ReplaceStr(lang.FunctionHeaderArgsEntryMask, PRIMARY_PLACEHOLDER, Trim(param.edtName.Text));
+                  paramStr := ReplaceStr(paramStr, '%s2', param.cbType.Text);
                   ref := '';
                   lArray := '';
                   lRecord := '';
@@ -427,10 +427,10 @@ begin
                      lRecord := lang.FunctionHeaderArgsEntryRecord
                   else if TParserHelper.IsEnumType(intType) then
                      enum := lang.FunctionHeaderArgsEntryEnum;
-                  paramStr := FastCodeAnsiStringReplace(paramStr, '%s3', ref);
-                  paramStr := FastCodeAnsiStringReplace(paramStr, '%s4', lArray);
-                  paramStr := FastCodeAnsiStringReplace(paramStr, '%s5', lRecord);
-                  paramStr := FastCodeAnsiStringReplace(paramStr, '%s6', enum);
+                  paramStr := ReplaceStr(paramStr, '%s3', ref);
+                  paramStr := ReplaceStr(paramStr, '%s4', lArray);
+                  paramStr := ReplaceStr(paramStr, '%s5', lRecord);
+                  paramStr := ReplaceStr(paramStr, '%s6', enum);
                   argList := argList + paramStr;
                end;
                SetLength(argList, Length(argList)-lang.FunctionHeaderArgsStripCount);
@@ -438,8 +438,8 @@ begin
                headerTemplate := TStringList.Create;
                try
                   // assemble function header line
-                  headerTemplate.Text := FastCodeAnsiStringReplace(lang.FunctionHeaderTemplate, PRIMARY_PLACEHOLDER, name);
-                  headerTemplate.Text := FastCodeAnsiStringReplace(headerTemplate.Text, '%s3', argList);
+                  headerTemplate.Text := ReplaceStr(lang.FunctionHeaderTemplate, PRIMARY_PLACEHOLDER, name);
+                  headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s3', argList);
                   if func.Header.cbType.ItemIndex <> 0 then
                   begin
                      noneType1 := lang.FunctionHeaderTypeNotNone1;
@@ -452,9 +452,9 @@ begin
                      noneType2 := lang.FunctionHeaderTypeNone2;
                      lType := '';
                   end;
-                  headerTemplate.Text := FastCodeAnsiStringReplace(headerTemplate.Text, '%s4', lType);
-                  headerTemplate.Text := FastCodeAnsiStringReplace(headerTemplate.Text, '%s5', noneType1);
-                  headerTemplate.Text := FastCodeAnsiStringReplace(headerTemplate.Text, '%s6', noneType2);
+                  headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s4', lType);
+                  headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s5', noneType1);
+                  headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s6', noneType2);
 
                   if ASkipBodyGen then
                   begin
@@ -465,7 +465,7 @@ begin
                   begin
                      // assemble entire function section
                      if func.Header.chkInclDescCode.Checked then
-                        headerTemplate.Text := FastCodeAnsiStringReplace(headerTemplate.Text, '%s2', func.Header.memDescription.Text)
+                        headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s2', func.Header.memDescription.Text)
                      else
                         TInfra.InsertTemplateLines(headerTemplate, '%s2', nil);
                      funcTemplate := TStringList.Create;
@@ -533,7 +533,7 @@ begin
    result := GInfra.CurrentLang.UserTypeDesc;
    if result <> '' then
    begin
-      result := FastCodeAnsiStringReplace(result, PRIMARY_PLACEHOLDER, ADataType.edtName.Text);
+      result := ReplaceStr(result, PRIMARY_PLACEHOLDER, ADataType.edtName.Text);
       if ADataType.rbReal.Checked then
          key := 'rbReal'
       else if ADataType.rbInt.Checked then
@@ -546,14 +546,14 @@ begin
          key := 'rbArray'
       else
          key := 'rbOther';
-      result := FastCodeAnsiStringReplace(result, '%s2', i18Manager.GetString(key));
+      result := ReplaceStr(result, '%s2', i18Manager.GetString(key));
    end;
 end;
 
 function Dummy_GetMainProgramDesc: string;
 begin
    result := i18Manager.GetString(GInfra.CurrentLang.ProgramLabelKey);
-   result := FastCodeAnsiStringReplace(result, PRIMARY_PLACEHOLDER, GProject.Name);
+   result := ReplaceStr(result, PRIMARY_PLACEHOLDER, GProject.Name);
 end;
 
 function Dummy_GetUserFuncDesc(AHeader: TUserFunctionHeader): string;
@@ -592,11 +592,11 @@ begin
    if key <> '' then
    begin
       result := i18Manager.GetString(key);
-      result := FastCodeAnsiStringReplace(result, '##', CRLF);
-      result := FastCodeAnsiStringReplace(result, PRIMARY_PLACEHOLDER, name);
-      result := FastCodeAnsiStringReplace(result, '%s2', params);
-      result := FastCodeAnsiStringReplace(result, '%s3', lType);
-      result := FastCodeAnsiStringReplace(result, '%s4', desc);
+      result := ReplaceStr(result, '##', CRLF);
+      result := ReplaceStr(result, PRIMARY_PLACEHOLDER, name);
+      result := ReplaceStr(result, '%s2', params);
+      result := ReplaceStr(result, '%s3', lType);
+      result := ReplaceStr(result, '%s4', desc);
    end;
 end;
 

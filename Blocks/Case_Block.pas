@@ -23,8 +23,8 @@ unit Case_Block;
 interface
 
 uses
-   Controls, Forms, StdCtrls, Graphics, Classes, SysUtils, Base_Block, ComCtrls,
-   Types, OmniXML, CommonInterfaces, CommonTypes;
+   Vcl.StdCtrls, Vcl.Graphics, System.Classes, System.SysUtils, Vcl.ComCtrls, System.Types,
+   Base_Block, OmniXML, CommonInterfaces, CommonTypes;
 
 type
 
@@ -64,8 +64,8 @@ const
 implementation
 
 uses
-   StrUtils, XMLProcessor, Return_Block, Navigator_Form, FastcodeAnsiStringReplaceUnit, Messages,
-   LangDefinition, Windows, Statement, ApplicationCommon;
+   System.StrUtils, System.UITypes, XMLProcessor, Return_Block, Navigator_Form,
+   LangDefinition, Statement, ApplicationCommon;
 
 constructor TCaseBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
 begin
@@ -390,13 +390,13 @@ begin
                for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
                begin
                   tmpList.Clear;
-                  tmpList.Text := FastCodeAnsiStringReplace(langDef.CaseOfValueTemplate, '%b1', '%b'+IntToStr(i));
+                  tmpList.Text := ReplaceStr(langDef.CaseOfValueTemplate, '%b1', '%b'+IntToStr(i));
                   caseLines.AddStrings(tmpList);
                   for a := 0 to caseLines.Count-1 do
                   begin
-                     if AnsiPos(PRIMARY_PLACEHOLDER, caseLines[a]) <> 0 then
+                     if Pos(PRIMARY_PLACEHOLDER, caseLines[a]) <> 0 then
                      begin
-                        caseLines[a] := FastCodeAnsiStringReplace(caseLines[a], PRIMARY_PLACEHOLDER, Trim(FBranchArray[i].Statement.Text));
+                        caseLines[a] := ReplaceStr(caseLines[a], PRIMARY_PLACEHOLDER, Trim(FBranchArray[i].Statement.Text));
                         caseLines.Objects[a] := FBranchArray[i].Statement;
                         break;
                      end;
@@ -404,7 +404,7 @@ begin
                end;
                lines := TStringList.Create;
                try
-                  lines.Text := FastCodeAnsiStringReplace(langDef.CaseOfTemplate, PRIMARY_PLACEHOLDER, line);
+                  lines.Text := ReplaceStr(langDef.CaseOfTemplate, PRIMARY_PLACEHOLDER, line);
                   TInfra.InsertTemplateLines(lines, '%s2', caseLines);
                   if FBranchArray[DEFAULT_BRANCH_IND].first <> nil then
                      defTemplate := langDef.CaseOfDefaultValueTemplate
@@ -437,7 +437,7 @@ begin
       chLine := TInfra.GetChangeLine(AEdit, AEdit, GInfra.CurrentLang.CaseOfValueTemplate);
       if chLine.Row <> ROW_NOT_FOUND then
       begin
-         chLine.Text := FastCodeAnsiStringReplace(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
+         chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
          if GSettings.UpdateEditor and not SkipUpdateEditor then
             TInfra.ChangeLine(chLine);
          TInfra.GetEditorForm.SetCaretPos(chLine);
@@ -471,7 +471,7 @@ var
    i: integer;
 begin
    Resize := (NewHeight >= Constraints.MinHeight) and (NewWidth >= Constraints.MinWidth);
-   if Resize and resVert then
+   if Resize and FVResize then
    begin
       if Expanded then
       begin
@@ -484,7 +484,7 @@ begin
          BottomPoint.Y := NewHeight - 30;
       end;
    end;
-   if Resize and resHorz and not Expanded then
+   if Resize and FHResize and not Expanded then
    begin
       BottomPoint.X := NewWidth div 2;
       TopHook.X := BottomPoint.X;

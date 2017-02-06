@@ -7,7 +7,7 @@ unit YaccLib;
 {				Dropped YaccUtilities.			}
 {				No longer based on component.		}
 interface
-uses Classes, LexLib;
+uses   LexLib;
 const yymaxdepth = 2048;	{ default stack size of parser.		}
 type
   { default value type, may be redefined in Yacc output file.		}
@@ -25,7 +25,7 @@ type
     yydebug: Boolean;	{ Set to true to enable debugging output from parser. }
     yydebuglex: Boolean;	{ Set to true to echo all lex tokens to	the debug channel. }
     { Display an error message.						}
-    procedure yyerror(const msg: String);
+    procedure yyerror(const msg: AnsiString);
     { Delete current lookahead token.					}
     procedure yyclearin;
     { Trigger accept action of parser (yyparse will return 0)		}
@@ -37,13 +37,13 @@ type
     { Reset parser to normal operation after an error.			}
     procedure yyerrok;
     { Write a text linne to the debug/error channel.			}
-    procedure EWriteln(const S: String);
+    procedure EWriteln(const S: AnsiString);
   end;
 implementation
 { We pass error calls to the yyerrorfile item in the lexer.		}
 { This requires the TLexFile item to have been opened at some stage,	}
 { as there is no longer a default error channel (programs are windowed)	}
-procedure TCustomParser.yyerror(const msg: String);
+procedure TCustomParser.yyerror(const msg: AnsiString);
 begin
   ylex.yyerrorfile.Writeln(msg);
 end;
@@ -73,7 +73,7 @@ begin
   yyerrflag := 0;
 end;
 { Write a text linne to the debug/error channel.			}
-procedure TCustomParser.EWriteln(const S: String);
+procedure TCustomParser.EWriteln(const S: AnsiString);
 begin
   ylex.yyerrorfile.Writeln(S);
 end;

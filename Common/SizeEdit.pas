@@ -22,7 +22,7 @@ unit SizeEdit;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls;
+  Vcl.Controls, Vcl.StdCtrls;
 
 type
 
@@ -41,7 +41,7 @@ type
 implementation
 
 uses
-   ApplicationCommon, StrUtils, LangDefinition, CommonTypes;
+   System.SysUtils, System.StrUtils, ApplicationCommon, LangDefinition, CommonTypes;
 
 constructor TSizeEdit.Create(const AParent: TWinControl);
 begin
@@ -50,7 +50,7 @@ begin
    Text := '1';
    ShowHint := true;
    CharCase := ecUpperCase;
-   Hint := AnsiReplaceStr(i18Manager.GetString('edtSizeHint'), '##', CRLF);
+   Hint := ReplaceStr(i18Manager.GetString('edtSizeHint'), '##', CRLF);
    ParentFont := false;
    Font.Style := [];
    Font.Color := BLACK_COLOR;
@@ -64,9 +64,9 @@ var
    i: integer;
    lang: TLangDefinition;
 begin
-   txt := AnsiReplaceStr(Text, ' ', '');
+   txt := ReplaceStr(Text, ' ', '');
    result := false;
-   if (txt <> '') and (AnsiPos(',-', txt) = 0) and (AnsiPos(',0', txt) = 0) and not (txt[1] in ['0', '-']) then
+   if (txt <> '') and (Pos(',-', txt) = 0) and (Pos(',0', txt) = 0) and not (CharInSet(txt[1], ['0', '-'])) then
    begin
       result := true;
       lang := GInfra.GetLangDefinition(PASCAL_LANG_ID);

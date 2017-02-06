@@ -92,19 +92,19 @@ type
     yysleng: Integer;
     { *****************************************************************	}
 
-    yystate: Integer;	{ Current state of lexical analyzer.	}
-    yyactchar: Char;	{ Current character.			}
-    yylastchar: Char;	{ Last matched character (#0 if none).	}
-    yyrule: Integer;	{ Matched rule.				}
-    yyreject: Boolean;	{ Current match rejected?		}
-    yydone: Boolean;	{ yylex return value set?		}
-    yyretval: Integer;	{ yylex return value.			}
-    FText: String;		{ Matched text.				}
-    FPrevChar: Char;	{ Used to sort CR/LF.			}
+    yystate: Integer;		{ Current state of lexical analyzer.	}
+    yyactchar: AnsiChar;	{ Current character.			}
+    yylastchar: AnsiChar;	{ Last matched character (#0 if none).	}
+    yyrule: Integer;		{ Matched rule.				}
+    yyreject: Boolean;		{ Current match rejected?		}
+    yydone: Boolean;		{ yylex return value set?		}
+    yyretval: Integer;		{ yylex return value.			}
+    FText: AnsiString;		{ Matched text.				}
+    FPrevChar: AnsiChar;	{ Used to sort CR/LF.			}
 
     { Unget buffer...							}
     Bufptr: Integer;
-    Buf: array [1..Lex_max_chars] of Char;
+    Buf: array [1..Lex_max_chars] of AnsiChar;
 
     { Get current string length						}
     function GetYYLeng: Integer; virtual;
@@ -138,16 +138,16 @@ type
     procedure yyclear;
 
     { Write a fatal error message and halt program.			}
-    procedure Fatal(msg: String);
+    procedure Fatal(const msg: AnsiString);
 
   public
     yyinput: TLexFile;	{ Input file				}
     yyoutput: TLexFile;	{ Output file				}
     yyerrorfile: TLexFile;	{ Destination for errors.		}
-    yyline: String;	{ Current input line.			}
+    yyline: AnsiString;	{ Current input line.			}
     yylineno: Integer;	{ Current input line.			}
     yycolno: Integer;	{ Current input column.			}
-    property yytext: String read FText;
+    property yytext: AnsiString read FText;
     property yyleng: Integer read GetYYLeng;
 
     { *****************************************************************	}
@@ -187,14 +187,14 @@ type
 
     { Obtain one character from the input file (null character at	}
     { end-of-file)							}
-    function Get_char: Char;
+    function Get_char: AnsiChar;
 
     { Return one character to the input file to be reread in subsequent	}
     { calls to Get_char.						}
-    procedure Unget_char(C: Char);
+    procedure Unget_char(C: AnsiChar);
 
     { Write one character to the output file.				}
-    procedure Put_char(C: Char);
+    procedure Put_char(C: AnsiChar);
 
     { *****************************************************************	}
     { Utility routines:							}
@@ -219,7 +219,7 @@ type
 
     { Set the return value of yylex.					}
     procedure Return(N: Integer);
-    procedure Returnc(C: Char);
+    procedure Returnc(C: AnsiChar);
 
     { Put the lexical analyzer in the given start state.		}
     { state=0 denotes the default start state, other values are user	}
@@ -250,7 +250,7 @@ begin
 end;
 
 { Write a fatal error message and halt program.				}
-procedure TCustomLexer.Fatal(Msg: String);
+procedure TCustomLexer.Fatal(const Msg: AnsiString);
 begin
 {$Ifdef HaltOnError}
   yyerrorfile.Writeln('LexLib: ' + Msg);
@@ -261,9 +261,9 @@ begin
 end;
 
 { Obtain one character from the input file (null character at EOF)	}
-function TCustomLexer.Get_char: Char;
+function TCustomLexer.Get_char: AnsiChar;
 var
-  C: Char;
+  C: AnsiChar;
 label
   retry;
 begin
@@ -301,7 +301,7 @@ end;
 
 { Return one character to the input file to be reread in subsequent	}
 { calls to Get_char.							}
-procedure TCustomLexer.Unget_char(C: Char);
+procedure TCustomLexer.Unget_char(C: AnsiChar);
 begin
   if Bufptr = Lex_max_chars then
     Fatal('input buffer overflow');
@@ -311,7 +311,7 @@ begin
 end;
 
 { Write one character to the output file.				}
-procedure TCustomLexer.Put_char(C: Char);
+procedure TCustomLexer.Put_char(C: AnsiChar);
 begin
   if C = #0 then
   else if C = #10 then
@@ -369,7 +369,7 @@ begin
 end;
 
 { Set the return value of yylex.					}
-procedure TCustomLexer.Returnc(C: Char);
+procedure TCustomLexer.Returnc(C: AnsiChar);
 begin
   yyretval := Ord(C);
   yydone := True;

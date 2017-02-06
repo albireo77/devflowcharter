@@ -24,9 +24,7 @@ unit Functions_Form;
 interface
 
 uses
-   Forms, StdCtrls, ExtCtrls, Graphics, Controls, Menus, ComCtrls, SysUtils,
-   Classes, Types, Windows, OmniXML, PageControl_Form,
-   CommonTypes;
+   WinApi.Windows, OmniXML, PageControl_Form, CommonTypes;
 
 type
 
@@ -51,8 +49,8 @@ implementation
 {$R *.dfm}
 
 uses
-   ApplicationCommon, Base_Block, Main_Block, Navigator_Form, UserFunction,
-   CommonInterfaces;
+   Vcl.Forms, System.SysUtils, ApplicationCommon, Base_Block, Main_Block, Navigator_Form,
+   UserFunction, CommonInterfaces;
 
 procedure TFunctionsForm.miAddClick(Sender: TObject);
 begin

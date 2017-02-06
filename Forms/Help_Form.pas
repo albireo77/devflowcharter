@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project
    The initial author of this file is Michal Domagala.
 
@@ -24,8 +24,7 @@ unit Help_Form;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Base_Form;
+  System.Classes, Vcl.Controls, Vcl.StdCtrls, Base_Form;
 
 type
 
@@ -44,7 +43,7 @@ var
 implementation
 
 uses
-   ApplicationCommon, StrUtils;
+   System.SysUtils, System.StrUtils, ApplicationCommon;
 
 {$R *.dfm}
 
@@ -56,7 +55,7 @@ begin
    txt := '';
    for i := 1 to 28 do
       txt := txt + ' ' + AList.Values['EditorHelp' + IntToStr(i)] + CRLF;
-   memHelp.Text := AnsiReplaceText(txt, ' ##', StringOfChar('-', 55));
+   memHelp.Text := ReplaceText(txt, ' ##', StringOfChar('-', 55));
    inherited Localize(AList);
 end;
 

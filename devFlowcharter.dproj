@@ -1,0 +1,232 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{046909BC-6CD9-4B5A-8582-8A82CFFD744E}</ProjectGuid>
+        <MainSource>devFlowcharter.dpr</MainSource>
+        <Base>True</Base>
+        <Config Condition="'$(Config)'==''">Debug</Config>
+        <TargetedPlatforms>1</TargetedPlatforms>
+        <AppType>Application</AppType>
+        <FrameworkType>VCL</FrameworkType>
+        <ProjectVersion>18.1</ProjectVersion>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Base)'=='true') or '$(Base_Win32)'!=''">
+        <Base_Win32>true</Base_Win32>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
+        <Cfg_1>true</Cfg_1>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win32)'!=''">
+        <Cfg_1_Win32>true</Cfg_1_Win32>
+        <CfgParent>Cfg_1</CfgParent>
+        <Cfg_1>true</Cfg_1>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
+        <Cfg_2>true</Cfg_2>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
+        <Cfg_2_Win32>true</Cfg_2_Win32>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base)'!=''">
+        <SanitizedProjectName>devFlowcharter</SanitizedProjectName>
+        <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+        <DCC_UNSAFE_CODE>true</DCC_UNSAFE_CODE>
+        <DCC_S>false</DCC_S>
+        <VerInfo_Build>86</VerInfo_Build>
+        <VerInfo_Release>6</VerInfo_Release>
+        <VerInfo_AutoGenVersion>true</VerInfo_AutoGenVersion>
+        <DCC_UNSAFE_CAST>true</DCC_UNSAFE_CAST>
+        <VerInfo_MajorVer>0</VerInfo_MajorVer>
+        <DCC_UsePackage>vcl;rtl;dbrtl;adortl;vcldb;vclx;bdertl;vcldbx;ibxpress;dsnap;cds;bdecds;qrpt;teeui;teedb;tee;dss;teeqr;visualclx;visualdbclx;dsnapcrba;dsnapcon;VclSmp;vclshlctrls;vclie;xmlrtl;inet;inetdbbde;inetdbxpress;inetdb;nmfast;webdsnap;websnap;dbexpress;dbxcds;indy;dclOffice2k;parsdpk;$(DCC_UsePackage)</DCC_UsePackage>
+        <VerInfo_MinorVer>9</VerInfo_MinorVer>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <DCC_E>false</DCC_E>
+        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=0.9.6.86;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=devFlowcharter.exe;ProductName=devFlowcharter;ProductVersion=0.9.0;Comments=</VerInfo_Keys>
+        <DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
+        <DCC_N>true</DCC_N>
+        <DCC_UNSAFE_TYPE>true</DCC_UNSAFE_TYPE>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <DCC_DebugInformation>1</DCC_DebugInformation>
+        <DCC_K>false</DCC_K>
+        <DCC_ImageBase>00400000</DCC_ImageBase>
+        <DCC_F>false</DCC_F>
+        <DCC_Namespace>Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;Winapi;System.Win;Xml.Internal;$(DCC_Namespace)</DCC_Namespace>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base_Win32)'!=''">
+        <VerInfo_MinorVer>0</VerInfo_MinorVer>
+        <VerInfo_Release>0</VerInfo_Release>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <VerInfo_MajorVer>1</VerInfo_MajorVer>
+        <VerInfo_Build>0</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <Icon_MainIcon>devFlowcharter_Icon.ico</Icon_MainIcon>
+        <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
+        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1)'!=''">
+        <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+        <DCC_DebugInformation>0</DCC_DebugInformation>
+        <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <VerInfo_MajorVer>1</VerInfo_MajorVer>
+        <AppEnableHighDPI>true</AppEnableHighDPI>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <VerInfo_MinorVer>0</VerInfo_MinorVer>
+        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Build>0</VerInfo_Build>
+        <VerInfo_Release>0</VerInfo_Release>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2)'!=''">
+        <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
+        <DCC_Optimize>false</DCC_Optimize>
+        <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
+        <VerInfo_MajorVer>1</VerInfo_MajorVer>
+        <AppEnableHighDPI>true</AppEnableHighDPI>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <VerInfo_MinorVer>0</VerInfo_MinorVer>
+        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Build>0</VerInfo_Build>
+        <VerInfo_Release>0</VerInfo_Release>
+    </PropertyGroup>
+    <ItemGroup>
+        <DelphiCompile Include="$(MainSource)">
+            <MainSource>MainSource</MainSource>
+        </DelphiCompile>
+        <DCCReference Include="Common\ApplicationCommon.pas"/>
+        <DCCReference Include="Blocks\Assign_Block.pas"/>
+        <DCCReference Include="Blocks\Base_Block.pas"/>
+        <DCCReference Include="Blocks\ForDo_Block.pas"/>
+        <DCCReference Include="Blocks\IfElse_Block.pas"/>
+        <DCCReference Include="Blocks\InOut_Block.pas"/>
+        <DCCReference Include="Blocks\Main_Block.pas"/>
+        <DCCReference Include="Blocks\MulAssign_Block.pas"/>
+        <DCCReference Include="Blocks\FunctionCall_Block.pas"/>
+        <DCCReference Include="Blocks\RepeatUntil_Block.pas"/>
+        <DCCReference Include="Blocks\WhileDo_Block.pas"/>
+        <DCCReference Include="Forms\About_Form.pas">
+            <Form>AboutForm</Form>
+        </DCCReference>
+        <DCCReference Include="Forms\Declarations_Form.pas">
+            <Form>DeclarationsForm</Form>
+        </DCCReference>
+        <DCCReference Include="Forms\Main_Form.pas">
+            <Form>MainForm</Form>
+        </DCCReference>
+        <DCCReference Include="Forms\Settings_Form.pas">
+            <Form>SettingsForm</Form>
+        </DCCReference>
+        <DCCReference Include="Forms\Editor_Form.pas">
+            <Form>EditorForm</Form>
+        </DCCReference>
+        <DCCReference Include="Forms\Toolbox_Form.pas">
+            <Form>ToolboxForm</Form>
+        </DCCReference>
+        <DCCReference Include="Forms\Explorer_Form.pas">
+            <Form>ExplorerForm</Form>
+        </DCCReference>
+        <DCCReference Include="Parsers\Pascal\Pascal_Parser.pas"/>
+        <DCCReference Include="Common\FlashThread.pas"/>
+        <DCCReference Include="Common\History.pas"/>
+        <DCCReference Include="Common\XMLProcessor.pas"/>
+        <DCCReference Include="Blocks\If_Block.pas"/>
+        <DCCReference Include="Forms\Functions_Form.pas">
+            <Form>FunctionsForm</Form>
+        </DCCReference>
+        <DCCReference Include="Common\UserFunction.pas"/>
+        <DCCReference Include="Forms\Goto_Form.pas">
+            <Form>GotoForm</Form>
+        </DCCReference>
+        <DCCReference Include="LangTemplates\Pascal_Template.pas"/>
+        <DCCReference Include="LangTemplates\C_Template.pas"/>
+        <DCCReference Include="Parsers\Common\LexFile.Pas"/>
+        <DCCReference Include="Parsers\Common\Lexlib.pas"/>
+        <DCCReference Include="Parsers\Common\ParseGlobals.pas"/>
+        <DCCReference Include="Parsers\Common\Yacclib.pas"/>
+        <DCCReference Include="Parsers\Common\ParserHelper.pas"/>
+        <DCCReference Include="Forms\DataTypes_Form.pas">
+            <Form>DataTypesForm</Form>
+        </DCCReference>
+        <DCCReference Include="Common\UserDataType.pas"/>
+        <DCCReference Include="Forms\Help_Form.pas">
+            <Form>HelpForm</Form>
+        </DCCReference>
+        <DCCReference Include="Common\LocalizationManager.pas"/>
+        <DCCReference Include="Blocks\Case_Block.pas"/>
+        <DCCReference Include="Common\Statement.pas"/>
+        <DCCReference Include="LangTemplates\TiBasic68k_Template.pas"/>
+        <DCCReference Include="Blocks\Return_Block.pas"/>
+        <DCCReference Include="Forms\Base_Form.pas"/>
+        <DCCReference Include="Common\BaseIterator.pas"/>
+        <DCCReference Include="Common\Project.pas"/>
+        <DCCReference Include="Common\DeclareList.pas"/>
+        <DCCReference Include="Common\Comment.pas"/>
+        <DCCReference Include="Common\Settings.pas"/>
+        <DCCReference Include="Common\SizeEdit.pas"/>
+        <DCCReference Include="Common\CommonInterfaces.pas"/>
+        <DCCReference Include="Forms\PageControl_Form.pas">
+            <Form>PageControlForm</Form>
+        </DCCReference>
+        <DCCReference Include="Common\TabComponent.pas"/>
+        <DCCReference Include="Common\Element.pas"/>
+        <DCCReference Include="Forms\Navigator_Form.pas">
+            <Form>NavigatorForm</Form>
+        </DCCReference>
+        <DCCReference Include="Common\CommonTypes.pas"/>
+        <DCCReference Include="Blocks\Text_Block.pas"/>
+        <DCCReference Include="Common\SortListDecorator.pas"/>
+        <DCCReference Include="Forms\EditMemo_Form.pas">
+            <Form>MemoEditorForm</Form>
+        </DCCReference>
+        <DCCReference Include="Common\LangDefinition.pas"/>
+        <DCCReference Include="LangTemplates\Dummy_Template.pas"/>
+        <DCCReference Include="Common\BlockFactory.pas"/>
+        <DCCReference Include="Common\StatementMemo.pas"/>
+        <DCCReference Include="Blocks\MultiLine_Block.pas"/>
+        <DCCReference Include="Blocks\Folder_Block.pas"/>
+        <DCCReference Include="Common\BlockTabSheet.pas"/>
+        <BuildConfiguration Include="Debug">
+            <Key>Cfg_2</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Base">
+            <Key>Base</Key>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Release">
+            <Key>Cfg_1</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Delphi.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Delphi.Personality>
+                <Source>
+                    <Source Name="MainSource">devFlowcharter.dpr</Source>
+                </Source>
+            </Delphi.Personality>
+            <Platforms>
+                <Platform value="Win32">True</Platform>
+            </Platforms>
+        </BorlandProject>
+        <ProjectFileVersion>12</ProjectFileVersion>
+    </ProjectExtensions>
+    <Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
+    <Import Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj" Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')"/>
+</Project>

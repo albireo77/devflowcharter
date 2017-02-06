@@ -24,8 +24,8 @@ unit PageControl_Form;
 interface
 
 uses
-   Forms, StdCtrls, ExtCtrls, Graphics, Controls, Menus, ComCtrls, SysUtils,
-   Classes, Types, Windows, OmniXML, Base_Form, CommonTypes;
+   Vcl.Controls, Vcl.Menus, Vcl.ComCtrls, System.Classes, WinApi.Windows, OmniXML,
+   Base_Form, CommonTypes;
 
 type
 
@@ -74,7 +74,7 @@ implementation
 {$R *.dfm}
 
 uses
-   ApplicationCommon, XMLProcessor, TabComponent, StrUtils, CommonInterfaces;
+   System.SysUtils, System.StrUtils, ApplicationCommon, XMLProcessor, TabComponent, CommonInterfaces;
 
 procedure TPageControlForm.miRemoveClick(Sender: TObject);
 var
@@ -162,7 +162,7 @@ procedure TPageControlForm.miExportAllClick(Sender: TObject);
 var
    fileName: string;
 begin
-   fileName := AnsiReplaceStr(GProject.Name + ' ' + Caption, ' ', '_');
+   fileName := ReplaceStr(GProject.Name + ' ' + Caption, ' ', '_');
    TXMLProcessor.ExportToXMLFile(ExportTabsToXMLTag, fileName);
 end;
 

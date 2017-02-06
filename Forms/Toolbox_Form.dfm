@@ -6,7 +6,7 @@ object ToolboxForm: TToolboxForm
   BorderStyle = bsToolWindow
   Caption = 'Tool Box'
   ClientHeight = 254
-  ClientWidth = 116
+  ClientWidth = 63
   Color = clBtnFace
   ParentFont = True
   FormStyle = fsStayOnTop

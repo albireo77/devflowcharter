@@ -1,9 +1,9 @@
 object EditorForm: TEditorForm
   Left = 544
   Top = 235
-  Width = 425
-  Height = 558
   Caption = 'Code Editor'
+  ClientHeight = 519
+  ClientWidth = 409
   Color = clBtnFace
   Constraints.MinHeight = 558
   Constraints.MinWidth = 225
@@ -17,7 +17,7 @@ object EditorForm: TEditorForm
   OnShow = FormShow
   DesignSize = (
     409
-    500)
+    519)
   PixelsPerInch = 96
   TextHeight = 13
   object memCodeEditor: TSynMemo
@@ -65,6 +65,7 @@ object EditorForm: TEditorForm
     OnGutterClick = memCodeEditorGutterClick
     OnStatusChange = memCodeEditorStatusChange
     OnPaintTransient = memCodeEditorPaintTransient
+    FontSmoothing = fsmNone
     RemovedKeystrokes = <
       item
         Command = ecContextHelp
@@ -78,7 +79,7 @@ object EditorForm: TEditorForm
   end
   object stbEditorBar: TStatusBar
     Left = 0
-    Top = 481
+    Top = 500
     Width = 409
     Height = 19
     Font.Charset = DEFAULT_CHARSET
@@ -164,25 +165,28 @@ object EditorForm: TEditorForm
   end
   object FindDialog: TFindDialog
     Tag = 3
+    OnClose = FindDialogClose
+    OnShow = FindDialogShow
     Options = [frDown, frHideWholeWord]
     OnFind = ReplaceDialogFind
-    OnShow = FindDialogShow
-    OnClose = FindDialogClose
     Left = 344
     Top = 280
   end
   object ReplaceDialog: TReplaceDialog
     Tag = 3
+    OnClose = FindDialogClose
+    OnShow = FindDialogShow
     Options = [frDown, frHideWholeWord, frDisableWholeWord]
     OnFind = ReplaceDialogFind
-    OnShow = FindDialogShow
-    OnClose = FindDialogClose
     OnReplace = ReplaceDialogReplace
     Left = 344
     Top = 240
   end
   object SynCppSyn1: TSynCppSyn
     DefaultFilter = 'C++ Files (*.c,*.cpp,*.h,*.hpp)|*.c;*.cpp;*.h;*.hpp'
+    Options.AutoDetectEnabled = False
+    Options.AutoDetectLineLimit = 0
+    Options.Visible = False
     CommentAttri.Background = clWindow
     CommentAttri.Foreground = clGrayText
     NumberAttri.Background = clWindow
@@ -197,6 +201,9 @@ object EditorForm: TEditorForm
     Top = 16
   end
   object SynPasSyn1: TSynPasSyn
+    Options.AutoDetectEnabled = False
+    Options.AutoDetectLineLimit = 0
+    Options.Visible = False
     CommentAttri.Background = clWindow
     CommentAttri.Foreground = clGrayText
     DirectiveAttri.Background = clWindow

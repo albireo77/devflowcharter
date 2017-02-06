@@ -24,7 +24,7 @@ unit Declarations_Form;
 interface
 
 uses
-   Controls, Forms, StdCtrls, Grids, SysUtils, Classes, Windows, OmniXML, Base_Form;
+   OmniXML, Base_Form;
 
 type
 
@@ -45,7 +45,7 @@ var
 implementation
 
 uses
-   ApplicationCommon, Dialogs;
+   Vcl.Forms, System.SysUtils, ApplicationCommon;
 
 {$R *.dfm}
 

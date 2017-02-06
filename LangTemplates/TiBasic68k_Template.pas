@@ -23,8 +23,8 @@ interface
 implementation
 
 uses
-   SysUtils, UserFunction, StrUtils, DeclareList, Main_Block, LangDefinition,
-   ApplicationCommon, Classes, CommonInterfaces;
+   System.SysUtils, System.Classes, UserFunction, DeclareList, Main_Block, LangDefinition,
+   ApplicationCommon, CommonInterfaces;
 
 var
    lLangDef: TLangDefinition;

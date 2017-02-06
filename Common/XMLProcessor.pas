@@ -26,8 +26,7 @@ unit XMLProcessor;
 interface
 
 uses
-   Windows, Controls, Forms, StdCtrls, SysUtils, Classes, StrUtils, OmniXML, Base_Block,
-   CommonTypes, Graphics, Dialogs;
+   Vcl.Controls, Vcl.Dialogs, OmniXML, Base_Block, CommonTypes;
 
 type
 
@@ -59,7 +58,7 @@ const
 implementation
 
 uses
-   ApplicationCommon, BlockFactory, BlockTabSheet;
+   System.SysUtils, ApplicationCommon, BlockFactory, BlockTabSheet;
 
 class function TXMLProcessor.FindChildTag(const ATag: IXMLElement; const AName: string): IXMLElement;
 var

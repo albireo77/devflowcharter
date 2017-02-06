@@ -24,8 +24,7 @@ unit IfElse_Block;
 interface
 
 uses
-   Messages, Windows, Controls, Forms, StdCtrls, Graphics, SysUtils, Classes,
-   Base_Block, ComCtrls, OmniXML, CommonInterfaces;
+   WinApi.Windows, Vcl.Graphics, Vcl.ComCtrls, Base_Block, OmniXML, CommonInterfaces;
 
 type
 
@@ -58,7 +57,7 @@ const
 implementation
 
 uses
-   StrUtils, Return_Block, CommonTypes, ApplicationCommon;
+   System.SysUtils, System.Classes, System.Types, Return_Block, CommonTypes, ApplicationCommon;
 
 constructor TIfElseBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, p1X, p3X, b_hook, t_hook, p1Y, p3Y, f_hook, tt_hook: integer; const AId: integer = ID_INVALID);
 begin
@@ -265,7 +264,7 @@ end;
 procedure TIfElseBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
 begin
    Resize := (NewWidth >= Constraints.MinWidth) and (NewHeight >= Constraints.MinHeight);
-   if Resize and resVert then
+   if Resize and FVResize then
    begin
       if Expanded then
       begin
@@ -278,7 +277,7 @@ begin
          BottomPoint.Y := NewHeight - 30;
       end;
    end;
-   if resHorz and Resize and not Expanded then
+   if FHResize and Resize and not Expanded then
    begin
       BottomPoint.X := NewWidth div 2;
       TopHook.X := BottomPoint.X;

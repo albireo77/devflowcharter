@@ -24,7 +24,7 @@ unit Base_Form;
 interface
 
 uses
-   Forms, Classes, OmniXML, BaseIterator, CommonInterfaces, Graphics;
+   Vcl.Forms, System.Classes, Vcl.Graphics, OmniXML, BaseIterator, CommonInterfaces;
 
 type
 
@@ -52,7 +52,7 @@ type
 implementation
 
 uses
-   Types, ApplicationCommon, Windows, Contnrs;
+   WinApi.Windows, System.Contnrs, ApplicationCommon;
 
 procedure TBaseForm.Localize(const AList: TStringList);
 begin

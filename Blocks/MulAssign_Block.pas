@@ -24,8 +24,7 @@ unit MulAssign_Block;
 interface
 
 uses
-   Controls, StdCtrls, Graphics, Classes, Base_Block, SysUtils, CommonInterfaces,
-   Messages, MultiLine_Block;
+   Vcl.Graphics, System.Classes, Base_Block, CommonInterfaces, MultiLine_Block;
 
 type
 
@@ -44,7 +43,7 @@ type
 implementation
 
 uses
-   ApplicationCommon, StrUtils, CommonTypes, Windows, LangDefinition, FastcodeAnsiStringReplaceUnit;
+   System.SysUtils, System.StrUtils, System.UITypes, ApplicationCommon, CommonTypes, LangDefinition;
 
 constructor TMultiAssignBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 begin
@@ -126,15 +125,15 @@ begin
             line := Trim(FStatements.Lines.Strings[i]);
             if line <> '' then
             begin
-               template := FastCodeAnsiStringReplace(lang.AssignTemplate, PRIMARY_PLACEHOLDER, line);
+               template := ReplaceStr(lang.AssignTemplate, PRIMARY_PLACEHOLDER, line);
                GenerateTemplateSection(tmpList, template, ALangId, ADeep);
             end
             else
                tmpList.AddObject('', Self);
          end;
          if tmpList.Text = '' then
-            GenerateTemplateSection(tmpList, FastCodeAnsiStringReplace(lang.AssignTemplate, PRIMARY_PLACEHOLDER, ''), ALangId, ADeep);
-         if AnsiEndsText(CRLF, FStatements.Text) then
+            GenerateTemplateSection(tmpList, ReplaceStr(lang.AssignTemplate, PRIMARY_PLACEHOLDER, ''), ALangId, ADeep);
+         if EndsText(CRLF, FStatements.Text) then
             tmpList.AddObject('', Self);
          TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
          result := tmpList.Count;

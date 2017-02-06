@@ -1,13 +1,13 @@
 object DataTypesForm: TDataTypesForm
   Left = 240
   Top = 229
-  Width = 336
+  Width = 330
   Height = 323
   Caption = 'Data Types'
   Color = clBtnFace
   AutoScroll = False
-  Constraints.MaxWidth = 326
-  Constraints.MinWidth = 326
+  Constraints.MaxWidth = 330
+  Constraints.MinWidth = 330
   Constraints.MinHeight = 323
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

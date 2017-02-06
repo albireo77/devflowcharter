@@ -24,8 +24,8 @@ unit TabComponent;
 interface
 
 uses
-   Classes, ComCtrls, Forms, CommonInterfaces, OmniXML, StdCtrls, Element, ExtCtrls,
-   Controls, PageControl_Form, Windows, Graphics, Menus, CommonTypes;
+   System.Classes, Vcl.ComCtrls, Vcl.Forms, Vcl.StdCtrls, Vcl.Controls, WinApi.Windows,
+   Vcl.Graphics, CommonInterfaces, OmniXML, Element, PageControl_Form, CommonTypes;
 
 type
 
@@ -96,7 +96,7 @@ type
 implementation
 
 uses
-   ApplicationCommon, SysUtils, XMLProcessor, Contnrs, SortListDecorator, Messages;
+   System.SysUtils, System.Contnrs, WinApi.Messages, ApplicationCommon, XMLProcessor, SortListDecorator;
 
 constructor TTabComponent.Create(const AParentForm: TPageControlForm);
 begin
@@ -140,7 +140,7 @@ begin
          while iter.HasNext do
          begin
             elem := TElement(iter.Next);
-            if AnsiSameText(Trim(elem.edtName.Text), AInfo.SelText) then
+            if SameText(Trim(elem.edtName.Text), AInfo.SelText) then
             begin
                if elem.edtName.CanFocus and (AInfo.ActiveControl = nil) then
                   elem.edtName.SetFocus;
