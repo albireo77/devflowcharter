@@ -24,9 +24,8 @@ unit Settings_Form;
 interface
 
 uses
-   Windows, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, SysUtils, Classes,
-   Graphics, Base_Form;
-   
+  Vcl.Controls, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, System.Classes, Base_Form;
+
 type
   TSettingsForm = class(TBaseForm)
     btnSaveSettings: TButton;
@@ -147,7 +146,7 @@ var
 implementation
 
 uses
-   System.Types, System.StrUtils, ApplicationCommon;
+   System.Types, System.StrUtils, System.SysUtils, Vcl.Graphics, ApplicationCommon;
 
 {$R *.dfm}
 

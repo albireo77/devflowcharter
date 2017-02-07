@@ -583,6 +583,7 @@ object SettingsForm: TSettingsForm
         BorderStyle = bsSingle
         Color = clWindow
         Ctl3D = False
+        ParentBackground = False
         ParentCtl3D = False
         TabOrder = 0
         OnClick = pnlFillClick
@@ -597,13 +598,14 @@ object SettingsForm: TSettingsForm
         BorderStyle = bsSingle
         Color = clWindow
         Ctl3D = False
+        ParentBackground = False
         ParentCtl3D = False
         TabOrder = 1
         OnClick = pnlFillClick
       end
       object pnlEditorFont: TPanel
-        Left = 64
-        Top = 16
+        Left = 65
+        Top = 14
         Width = 25
         Height = 20
         BevelOuter = bvNone
@@ -611,6 +613,7 @@ object SettingsForm: TSettingsForm
         BorderStyle = bsSingle
         Color = clWindow
         Ctl3D = False
+        ParentBackground = False
         ParentCtl3D = False
         TabOrder = 2
         OnClick = pnlFillClick
@@ -625,6 +628,7 @@ object SettingsForm: TSettingsForm
         BorderStyle = bsSingle
         Color = clWindow
         Ctl3D = False
+        ParentBackground = False
         ParentCtl3D = False
         TabOrder = 3
         OnClick = pnlFillClick
@@ -639,6 +643,7 @@ object SettingsForm: TSettingsForm
         BorderStyle = bsSingle
         Color = clWindow
         Ctl3D = False
+        ParentBackground = False
         ParentCtl3D = False
         TabOrder = 4
         OnClick = pnlFillClick
@@ -653,6 +658,7 @@ object SettingsForm: TSettingsForm
         BorderStyle = bsSingle
         Color = clWindow
         Ctl3D = False
+        ParentBackground = False
         ParentCtl3D = False
         TabOrder = 5
         OnClick = pnlFillClick
@@ -667,6 +673,7 @@ object SettingsForm: TSettingsForm
         BorderStyle = bsSingle
         Color = clWindow
         Ctl3D = False
+        ParentBackground = False
         ParentCtl3D = False
         TabOrder = 6
         OnClick = pnlFillClick
@@ -681,6 +688,7 @@ object SettingsForm: TSettingsForm
         BorderStyle = bsSingle
         Color = clWindow
         Ctl3D = False
+        ParentBackground = False
         ParentCtl3D = False
         TabOrder = 7
         OnClick = pnlFillClick
@@ -695,6 +703,7 @@ object SettingsForm: TSettingsForm
         BorderStyle = bsSingle
         Color = clWindow
         Ctl3D = False
+        ParentBackground = False
         ParentCtl3D = False
         TabOrder = 8
         OnClick = pnlFillClick
@@ -917,6 +926,7 @@ object SettingsForm: TSettingsForm
       BorderStyle = bsSingle
       Color = clWindow
       Ctl3D = False
+      ParentBackground = False
       ParentCtl3D = False
       TabOrder = 0
       OnClick = pnlFillClick
@@ -931,6 +941,7 @@ object SettingsForm: TSettingsForm
       BorderStyle = bsSingle
       Color = clWindow
       Ctl3D = False
+      ParentBackground = False
       ParentCtl3D = False
       TabOrder = 1
       OnClick = pnlFillClick
@@ -945,6 +956,7 @@ object SettingsForm: TSettingsForm
       BorderStyle = bsSingle
       Color = clWindow
       Ctl3D = False
+      ParentBackground = False
       ParentCtl3D = False
       ParentShowHint = False
       ShowHint = True
