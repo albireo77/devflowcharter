@@ -623,7 +623,7 @@ begin
    else if Assigned(GInfra.DummyLang.GetUserTypeDesc) then
       lang := GInfra.DummyLang;
    if lang <> nil then
-      desc := lang.GetUserTypeDesc(Self);
+      desc := Trim(lang.GetUserTypeDesc(Self));
    ANode.Owner.AddChildObject(ANode, desc, Self);
    if TInfra.IsNOkColor(Font.Color) then
    begin
