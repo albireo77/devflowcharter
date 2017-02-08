@@ -226,25 +226,32 @@ var
    nodeRect: TRect;
    focusable: IFocusable;
    lColor, lColor2: TColor;
+   x, y: integer;
+   lFont: TFont;
 begin
-   focusable := GetFocusable(Node);
-   with Sender.Canvas do
+   x := 0;
+   y := 0;
+   lFont := Sender.Canvas.Font;
+   lColor := OK_COLOR;
+   if cdsSelected in State then
    begin
-      lColor := OK_COLOR;
-      if cdsSelected in State then
-         lColor := TTreeView(Sender).Color
-      else if focusable <> nil then
-      begin
-         lColor2 := focusable.GetFocusColor;
-         if TInfra.IsNOkColor(lColor2) or (lColor2 = TEXT_COLOR) then
-            lColor := lColor2;
-      end;
-      Font.Color := lColor;
-      if (focusable <> nil) and focusable.IsBoldDesc then
-         Font.Style := Font.Style + [fsBold];
-      nodeRect := Node.DisplayRect(True);
-      TextOut(nodeRect.Left, nodeRect.Top, Node.Text);
+      Sender.Canvas.Brush.Style := bsClear;
+      x := 2;
+      y := 1;
    end;
+   focusable := GetFocusable(Node);
+   if focusable <> nil then
+   begin
+      lColor2 := focusable.GetFocusColor;
+      if TInfra.IsNOkColor(lColor2) or (lColor2 = TEXT_COLOR) then
+         lColor := lColor2;
+      if focusable.IsBoldDesc then
+         lFont.Style := lFont.Style + [fsBold];
+   end;
+   lFont.Color := lColor;
+   nodeRect := Node.DisplayRect(True);
+   Sender.Canvas.TextOut(nodeRect.Left+x, nodeRect.Top+y, Node.Text);
+   DefaultDraw := true;
 end;
 
 procedure TExplorerForm.miRemoveClick(Sender: TObject);

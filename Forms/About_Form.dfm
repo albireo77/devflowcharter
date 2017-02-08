@@ -356,6 +356,7 @@ object AboutForm: TAboutForm
     Width = 405
     Height = 81
     Color = clMoneyGreen
+    ParentBackground = False
     TabOrder = 1
     object lblInfo1: TLabel
       Left = 58

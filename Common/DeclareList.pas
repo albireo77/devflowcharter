@@ -190,6 +190,7 @@ begin
    sgList.FixedRows := 1;
    sgList.FixedCols := 0;
    sgList.RowCount := 2;
+   sgList.DrawingStyle := gdsClassic;
    sgList.FixedColor := clMoneyGreen;
    sgList.Options := sgList.Options + [goRowSelect, goColSizing, goThumbTracking, goRowMoving] - [goRangeSelect];
    sgList.ScrollBars := ssVertical;
