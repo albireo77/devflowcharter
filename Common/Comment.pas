@@ -39,6 +39,7 @@ type
          FIsHeader: boolean;
          FZOrder: integer;
       protected
+         FMouseLeave: boolean;
          procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
          procedure MyOnDblClick(Sender: TObject);
@@ -94,6 +95,7 @@ begin
    Ctl3D := false;
    FZOrder := -1;
    PopupMenu := APage.Form.pmPages;
+   FMouseLeave := true;
    SetBounds(ALeft, ATop, AWidth, AHeight);
    GProject.AddComponent(Self);
 
@@ -255,7 +257,10 @@ end;
 procedure TComment.CMMouseLeave(var Msg: TMessage);
 begin
    inherited;
-   ChangeBorderStyle(bsNone);
+   if FMouseLeave then
+      ChangeBorderStyle(bsNone)
+   else
+      FMouseLeave := true;
 end;
 
 procedure TComment.MyOnDblClick(Sender: TObject);
@@ -284,6 +289,7 @@ begin
    ChangeBorderStyle(bsSingle);
    if GetAsyncKeyState(VK_LBUTTON) <> 0 then
    begin
+      FMouseLeave := false;
       GChange := 1;
       case Cursor of
          crSizeWE:   Msg.Result := HTRIGHT;

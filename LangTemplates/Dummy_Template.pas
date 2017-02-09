@@ -556,9 +556,9 @@ begin
    result := ReplaceStr(result, PRIMARY_PLACEHOLDER, GProject.Name);
 end;
 
-function Dummy_GetUserFuncDesc(AHeader: TUserFunctionHeader): string;
+function Dummy_GetUserFuncDesc(AHeader: TUserFunctionHeader; ALongDesc: boolean = true): string;
 var
-   params, desc, name, lType, key: string;
+   params, desc, name, lType, key, lcrlf: string;
    lang: TLangDefinition;
    iterp: IIterator;
 begin
@@ -568,16 +568,11 @@ begin
    name := '';
    lType := '';
    key := '';
+   lcrlf := '';
    lang := GInfra.CurrentLang;
    if AHeader <> nil then
    begin
-      iterp := AHeader.GetParameterIterator;
-      while iterp.HasNext do
-      begin
-         if params <> '' then
-            params := params + ',';
-         params := params + TParameter(iterp.Next).cbType.Text;
-      end;
+      name := Trim(AHeader.edtName.Text);
       if AHeader.cbType.ItemIndex <> 0 then
       begin
          key := lang.FunctionLabelKey;
@@ -585,14 +580,24 @@ begin
       end
       else
          key := lang.ProcedureLabelKey;
-      name := Trim(AHeader.edtName.Text);
-      if AHeader.chkInclDescFlow.Checked then
-         desc := AHeader.memDescription.Text;
+      if ALongDesc then
+      begin
+         iterp := AHeader.GetParameterIterator;
+         while iterp.HasNext do
+         begin
+            if params <> '' then
+               params := params + ',';
+            params := params + TParameter(iterp.Next).cbType.Text;
+         end;
+         if AHeader.chkInclDescFlow.Checked then
+            desc := AHeader.memDescription.Text;
+         lcrlf := CRLF;
+      end;
    end;
    if key <> '' then
    begin
       result := i18Manager.GetString(key);
-      result := ReplaceStr(result, '##', CRLF);
+      result := ReplaceStr(result, '##', lcrlf);
       result := ReplaceStr(result, PRIMARY_PLACEHOLDER, name);
       result := ReplaceStr(result, '%s2', params);
       result := ReplaceStr(result, '%s3', lType);
