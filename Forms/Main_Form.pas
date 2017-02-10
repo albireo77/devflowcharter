@@ -252,7 +252,7 @@ type
 
 procedure TMainForm.FormCreate(Sender: TObject);
 const
-   CursorIdsArray: array[TCustomCursor] of PChar = (' ', 'IFELSE', 'FOR', 'REPEAT',
+   CursorIdsArray: array[TCustomCursor] of PWideChar = (' ', 'IFELSE', 'FOR', 'REPEAT',
                    'WHILE', 'ASSIGN', 'MULTIASSIGN', 'IF', 'SUBROUTINE', 'INPUT', 'OUTPUT',
                    'CASE', 'RETURN', 'TEXT', 'FOLDER');
 var
@@ -264,7 +264,6 @@ begin
       Screen.Cursors[Ord(lCursor)] := LoadCursor(HInstance, CursorIdsArray[lCursor]);
    until lCursor = High(TCustomCursor);
    InitialiseVariables;
-   //DecimalSeparator := '.';
    SystemParametersInfo(SPI_SETDRAGFULLWINDOWS, Ord(True), nil, 0);
    Application.HintHidePause := HINT_PAUSE;
    Application.OnException := OnException;
