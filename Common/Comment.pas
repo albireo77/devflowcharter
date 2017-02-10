@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
 
@@ -46,7 +46,7 @@ type
          procedure MyOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
          procedure MyOnContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
          procedure NCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
-         procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+         procedure WMMouseLeave(var Msg: TMessage); message WM_MOUSELEAVE;
          procedure SetActive(const AValue: boolean);
          function GetActive: boolean;
          procedure MyOnChange(Sender: TObject);
@@ -254,13 +254,11 @@ begin
    NavigatorForm.Invalidate;
 end;
 
-procedure TComment.CMMouseLeave(var Msg: TMessage);
+procedure TComment.WMMouseLeave(var Msg: TMessage);
 begin
    inherited;
    if FMouseLeave then
-      ChangeBorderStyle(bsNone)
-   else
-      FMouseLeave := true;
+      ChangeBorderStyle(bsNone);
 end;
 
 procedure TComment.MyOnDblClick(Sender: TObject);
@@ -287,6 +285,7 @@ procedure TComment.NCHitTest(var Msg: TWMNCHitTest);
 begin
    inherited;
    ChangeBorderStyle(bsSingle);
+   FMouseLeave := true;
    if GetAsyncKeyState(VK_LBUTTON) <> 0 then
    begin
       FMouseLeave := false;
