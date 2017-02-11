@@ -133,6 +133,7 @@ type
     FFocusControl: IFocusable;
     procedure PasteComment(const AText: string);
     function BuildBracketHint(startLine, endLine: integer): string;
+    function CharToPixels(P: TBufferCoord): TPoint;
   public
     { Public declarations }
     procedure SetFormAttributes;
@@ -916,7 +917,7 @@ var
    s, s1: string;
    pos: TPoint;
    fontStyle: TFontStyles;
-   brushColor: TColor;
+   brushColor, fontColor: TColor;
 begin
    if FDialog <> nil then
    begin
@@ -933,7 +934,7 @@ begin
             p := BufferCoord(f, i+1);
             memCodeEditor.GetHighlighterAttriAtRowCol(p, s1, highAttr);
             s1 := Copy(s, f, len);
-            pos := memCodeEditor.RowColumnToPixels(memCodeEditor.BufferToDisplayPos(p));
+            pos := CharToPixels(p);
             Canvas.Font.Style := highAttr.Style;
             Canvas.TextOut(pos.X, pos.Y, s1);
             f := TInfra.FindText(FDialog.FindText, s, f+len, frMatchCase in FDialog.Options);
@@ -956,34 +957,41 @@ begin
       Canvas.Brush.Style := bsSolid;
       Canvas.Font.Assign(memCodeEditor.Font);
       Canvas.Font.Style := highAttr.Style;
-      pos := memCodeEditor.RowColumnToPixels(memCodeEditor.BufferToDisplayPos(p));
+      pos := CharToPixels(p);
       if TransientType = ttAfter then
       begin
-         Canvas.Font.Color := GSettings.EditorBracketColor;
-         Canvas.Brush.Color := clNone;
+         fontColor := GSettings.EditorBracketColor;
+         brushColor := clNone;
       end
       else
       begin
-         Canvas.Font.Color := highAttr.Foreground;
-         Canvas.Brush.Color := highAttr.Background;
+         fontColor := highAttr.Foreground;
+         brushColor := highAttr.Background;
       end;
-      if Canvas.Font.Color = clNone then
-         Canvas.Font.Color := memCodeEditor.Font.Color;
-      if Canvas.Brush.Color = clNone then
-         Canvas.Brush.Color := memCodeEditor.ActiveLineColor;
+      if fontColor = clNone then
+         fontColor := memCodeEditor.Font.Color;
+      if brushColor = clNone then
+         brushColor := memCodeEditor.ActiveLineColor;
+      Canvas.Brush.Color := brushColor;
+      Canvas.Font.Color := fontColor;
       Canvas.TextOut(pos.X, pos.Y, s);
       P := memCodeEditor.GetMatchingBracketEx(p);
       if (p.Char > 0) and (p.Line > 0) then
       begin
          i := memCodeEditor.RowColToCharIndex(p);
          s := memCodeEditor.Text[i+1];
-         pos := memCodeEditor.RowColumnToPixels(memCodeEditor.BufferToDisplayPos(p));
+         pos := CharToPixels(p);
          if p.Line <> memCodeEditor.CaretY then
             Canvas.Brush.Color := memCodeEditor.Color;
+         Canvas.Font.Color := fontColor;
          Canvas.TextOut(pos.X, pos.Y, s);
       end;
-      Canvas.Brush.Style := bsSolid;
    end;
+end;
+
+function TEditorForm.CharToPixels(P: TBufferCoord): TPoint;
+begin
+   result := memCodeEditor.RowColumnToPixels(memCodeEditor.BufferToDisplayPos(P));
 end;
 
 procedure TEditorForm.memCodeEditorMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -1016,7 +1024,7 @@ begin
       begin
          with memCodeEditor do
          begin
-            pos := ClientToScreen(RowColumnToPixels(BufferToDisplayPos(p)));
+            pos := ClientToScreen(CharToPixels(p));
             Dec(pos.Y, LineHeight-Canvas.TextHeight('I')+1);
             Dec(pos.X, 3);
          end;
