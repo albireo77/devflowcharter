@@ -19,6 +19,8 @@
 
 program devFlowcharter;
 
+{$R *.dres}
+
 uses
   Forms,
   ApplicationCommon in 'Common\ApplicationCommon.pas',
@@ -50,9 +52,9 @@ uses
   Pascal_Template in 'LangTemplates\Pascal_Template.pas',
   C_Template in 'LangTemplates\C_Template.pas',
   LexFile in 'Parsers\Common\LexFile.Pas',
-  LexLib in 'Parsers\Common\Lexlib.pas',
+  Lexlib in 'Parsers\Common\Lexlib.pas',
   ParseGlobals in 'Parsers\Common\ParseGlobals.pas',
-  YaccLib in 'Parsers\Common\Yacclib.pas',
+  Yacclib in 'Parsers\Common\Yacclib.pas',
   ParserHelper in 'Parsers\Common\ParserHelper.pas',
   DataTypes_Form in 'Forms\DataTypes_Form.pas' {DataTypesForm},
   UserDataType in 'Common\UserDataType.pas',

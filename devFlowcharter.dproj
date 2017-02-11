@@ -200,6 +200,62 @@
         <DCCReference Include="Blocks\MultiLine_Block.pas"/>
         <DCCReference Include="Blocks\Folder_Block.pas"/>
         <DCCReference Include="Common\BlockTabSheet.pas"/>
+        <RcItem Include="resources\assign.cur">
+            <ResourceType>CURSOR</ResourceType>
+            <ResourceId>ASSIGN</ResourceId>
+        </RcItem>
+        <RcItem Include="resources\case.cur">
+            <ResourceType>CURSOR</ResourceType>
+            <ResourceId>CASE</ResourceId>
+        </RcItem>
+        <RcItem Include="resources\folder.cur">
+            <ResourceType>CURSOR</ResourceType>
+            <ResourceId>FOLDER</ResourceId>
+        </RcItem>
+        <RcItem Include="resources\for.cur">
+            <ResourceType>CURSOR</ResourceType>
+            <ResourceId>FOR</ResourceId>
+        </RcItem>
+        <RcItem Include="resources\if.cur">
+            <ResourceType>CURSOR</ResourceType>
+            <ResourceId>IF</ResourceId>
+        </RcItem>
+        <RcItem Include="resources\ifelse.cur">
+            <ResourceType>CURSOR</ResourceType>
+            <ResourceId>IFELSE</ResourceId>
+        </RcItem>
+        <RcItem Include="resources\input.cur">
+            <ResourceType>CURSOR</ResourceType>
+            <ResourceId>INPUT</ResourceId>
+        </RcItem>
+        <RcItem Include="resources\multiassign.cur">
+            <ResourceType>CURSOR</ResourceType>
+            <ResourceId>MULTIASSIGN</ResourceId>
+        </RcItem>
+        <RcItem Include="resources\output.cur">
+            <ResourceType>CURSOR</ResourceType>
+            <ResourceId>OUTPUT</ResourceId>
+        </RcItem>
+        <RcItem Include="resources\repeat.cur">
+            <ResourceType>CURSOR</ResourceType>
+            <ResourceId>REPEAT</ResourceId>
+        </RcItem>
+        <RcItem Include="resources\return.cur">
+            <ResourceType>CURSOR</ResourceType>
+            <ResourceId>RETURN</ResourceId>
+        </RcItem>
+        <RcItem Include="resources\subroutine.cur">
+            <ResourceType>CURSOR</ResourceType>
+            <ResourceId>SUBROUTINE</ResourceId>
+        </RcItem>
+        <RcItem Include="resources\text.cur">
+            <ResourceType>CURSOR</ResourceType>
+            <ResourceId>TEXT</ResourceId>
+        </RcItem>
+        <RcItem Include="resources\while.cur">
+            <ResourceType>CURSOR</ResourceType>
+            <ResourceId>WHILE</ResourceId>
+        </RcItem>
         <BuildConfiguration Include="Debug">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
