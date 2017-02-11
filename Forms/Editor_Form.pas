@@ -678,7 +678,7 @@ begin
     begin
        if SaveDialog1.Execute then
        begin
-          GetAllLines.SaveToFile(SaveDialog1.FileName, TEncoding.Unicode);
+          GetAllLines.SaveToFile(SaveDialog1.FileName, GInfra.CurrentLang.GetFileEncoding);
           fileName := ExtractFileName(SaveDialog1.FileName);
           fileNameNoExt := fileName;
           lPos := Pos('.', fileNameNoExt);
@@ -750,7 +750,7 @@ begin
          end;
       end
       else
-         strings.SaveToFile(SaveDialog2.FileName, TEncoding.Unicode);
+         strings.SaveToFile(SaveDialog2.FileName, GInfra.CurrentLang.GetFileEncoding);
    end;
 end;
 

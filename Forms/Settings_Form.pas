@@ -102,13 +102,14 @@ type
     edtFontName: TEdit;
     FontDialog: TFontDialog;
     chkAutoSelectCode: TCheckBox;
-    lblInterGen: TLabel;
     edtCompilerNoMain: TEdit;
     lblCompilerNoMain: TLabel;
     chkAutoUpdateCode: TCheckBox;
     lblFontSize: TLabel;
     cbFontSize: TComboBox;
     chkShowBlockLabels: TCheckBox;
+    cbFileEncoding: TComboBox;
+    lblFileEncoding: TLabel;
     procedure btnBrowseCCompClick(Sender: TObject);
     procedure CloseFormClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -124,6 +125,7 @@ type
     procedure ResetForm; override;
     procedure edtFontNameClick(Sender: TObject);
     procedure SetCbFontSize(const AFontSize: integer);
+    procedure SetCbFileEncoding(const AFileEncoding: string);
   private
     { Private declarations }
   public
@@ -155,7 +157,7 @@ procedure TSettingsForm.Localize(const AList: TStringList);
 var
    val: integer;
 begin
-   lblInterGen.Left := cbLanguage.Left + cbLanguage.Width + 10;
+   lblFileEncoding.Left := cbFileEncoding.Left - lblFileEncoding.Width - 5;
    lblCompiler.Left := 7;
    edtCompiler.Left := lblCompiler.Width + lblCompiler.Left + 5;
    edtCompiler.Width := 449 - edtCompiler.Left;
@@ -320,6 +322,16 @@ begin
    if i = -1 then
       i := 0;
    cbFontSize.ItemIndex := i;
+end;
+
+procedure TSettingsForm.SetCbFileEncoding(const AFileEncoding: string);
+var
+   i: integer;
+begin
+   i := cbFileEncoding.Items.IndexOf(AFileEncoding);
+   if i = -1 then
+      i := 0;
+   cbFileEncoding.ItemIndex := i;
 end;
 
 end.

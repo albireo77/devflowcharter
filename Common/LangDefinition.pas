@@ -25,7 +25,7 @@ uses
 {$IFDEF USE_CODEFOLDING}
     SynEditCodeFolding,
 {$ENDIF}
-    System.Classes, SizeEdit, SynEditHighlighter, YaccLib, DeclareList, UserFunction,
+    System.Classes, System.SysUtils, SizeEdit, SynEditHighlighter, YaccLib, DeclareList, UserFunction,
     CommonTypes, OmniXML, UserDataType, System.Win.Registry;
 
 type
@@ -45,7 +45,8 @@ type
    private
       FName,
       FCompilerRegKey,
-      FCompilerNoMainRegKey: string;
+      FCompilerNoMainRegKey,
+      FCompilerFileEncodingKey: string;
    public
       CommentBegin, CommentEnd,
       DefaultExt,
@@ -141,6 +142,7 @@ type
       DefFile,
       CompilerCommand,
       CompilerCommandNoMain,
+      CompilerFileEncoding,
       InstrEnd: string;
       LabelFontSize,
       FunctionHeaderArgsStripCount,
@@ -198,15 +200,16 @@ type
       function GetTemplate(const AClass: TClass): string;
       function GetTemplateExpr(const AClass: TClass): string;
       function GetArraySizes(const ASizeEdit: TSizeEdit): string;
-      procedure WriteCompilerCommands(ARegistry: TRegistry);
-      procedure ReadCompilerCommands(ARegistry: TRegistry);
+      procedure WriteCompilerData(ARegistry: TRegistry);
+      procedure ReadCompilerData(ARegistry: TRegistry);
+      function GetFileEncoding: TEncoding;
    end;
 
 
 implementation
 
 uses
-   System.SysUtils, Vcl.Forms, ApplicationCommon, XMLProcessor, WhileDo_Block, RepeatUntil_Block,
+   Vcl.Forms, ApplicationCommon, XMLProcessor, WhileDo_Block, RepeatUntil_Block,
    ForDo_Block, Case_Block, If_Block, IfElse_Block, Main_Block, InOut_Block,
    Assign_Block, MulAssign_Block, Return_Block, Text_Block, FunctionCall_Block,
    Folder_Block;
@@ -239,6 +242,7 @@ begin
    AreTypesCompatible := nil;
    GetOriginalType := nil;
    SkipFuncBodyGen := nil;
+   CompilerFileEncoding := 'ANSI';
    LabelFontName := FLOWCHART_DEFAULT_FONT_NAME;
    LabelFontSize := LABEL_DEFAULT_FONT_SIZE;
 end;
@@ -279,6 +283,7 @@ begin
 
    FCompilerRegKey := KEY_COMPILER_COMMAND + '_' + FName;
    FCompilerNoMainRegKey := KEY_COMPILER_COMMAND_NOMAIN + '_' + FName;
+   FCompilerFileEncodingKey := KEY_COMPILER_FILE_ENCODING + '_' + FName;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'CommentBegin');
    if tag <> nil then
@@ -842,18 +847,21 @@ begin
 {$ENDIF}
 end;
 
-procedure TLangDefinition.WriteCompilerCommands(ARegistry: TRegistry);
+procedure TLangDefinition.WriteCompilerData(ARegistry: TRegistry);
 begin
    ARegistry.WriteString(FCompilerRegKey, CompilerCommand);
    ARegistry.WriteString(FCompilerNoMainRegKey, CompilerCommandNoMain);
+   ARegistry.WriteString(FCompilerFileEncodingKey, CompilerFileEncoding);
 end;
 
-procedure TLangDefinition.ReadCompilerCommands(ARegistry: TRegistry);
+procedure TLangDefinition.ReadCompilerData(ARegistry: TRegistry);
 begin
    if ARegistry.ValueExists(FCompilerRegKey) then
       CompilerCommand := ARegistry.ReadString(FCompilerRegKey);
    if ARegistry.ValueExists(FCompilerNoMainRegKey) then
       CompilerCommandNoMain := ARegistry.ReadString(FCompilerNoMainRegKey);
+   if ARegistry.ValueExists(FCompilerFileEncodingKey) then
+      CompilerFileEncoding := ARegistry.ReadString(FCompilerFileEncodingKey);
 end;
 
 function TLangDefinition.GetTemplate(const AClass: TClass): string;
@@ -924,6 +932,22 @@ begin
          result := result + Format(VarEntryArraySize, [ASizeEdit.GetDimension(i)]);
       SetLength(result, Length(result)-VarEntryArraySizeStripCount);
    end;
+end;
+
+function TLangDefinition.GetFileEncoding: TEncoding;
+begin
+   if CompilerFileEncoding = 'ASCII' then
+      result := TEncoding.ASCII
+   else if CompilerFileEncoding = 'UTF-7' then
+      result := TEncoding.UTF7
+   else if CompilerFileEncoding = 'UTF-8' then
+      result := TEncoding.UTF8
+   else if CompilerFileEncoding = 'UTF-16 (Unicode)' then
+      result := TEncoding.Unicode
+   else if CompilerFileEncoding = 'BigEndian Unicode' then
+      result := TEncoding.BigEndianUnicode
+   else
+      result := TEncoding.ANSI;
 end;
 
 end.

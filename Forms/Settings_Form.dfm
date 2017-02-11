@@ -100,20 +100,6 @@ object SettingsForm: TSettingsForm
       Font.Style = []
       ParentFont = False
     end
-    object lblInterGen: TLabel
-      Tag = 6
-      Left = 96
-      Top = 24
-      Width = 186
-      Height = 13
-      Caption = 'with internal code generation supported'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = []
-      ParentFont = False
-    end
     object lblCompilerNoMain: TLabel
       Tag = 6
       Left = 7
@@ -122,6 +108,21 @@ object SettingsForm: TSettingsForm
       Height = 13
       Alignment = taRightJustify
       Caption = 'Compiler Command for no-main projects:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+    end
+    object lblFileEncoding: TLabel
+      Tag = 6
+      Left = 362
+      Top = 22
+      Width = 71
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'Files encoding:'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -192,6 +193,29 @@ object SettingsForm: TSettingsForm
       ParentShowHint = False
       ShowHint = True
       TabOrder = 3
+    end
+    object cbFileEncoding: TComboBox
+      Left = 439
+      Top = 19
+      Width = 103
+      Height = 21
+      AutoDropDown = True
+      Style = csDropDownList
+      DropDownCount = 6
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 4
+      Items.Strings = (
+        'ANSI'
+        'ASCII'
+        'UTF-7'
+        'UTF-8'
+        'UTF-16 (Unicode)'
+        'BigEndian Unicode')
     end
   end
   object btnDiscardSettings: TButton

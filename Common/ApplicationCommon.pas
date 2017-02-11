@@ -208,6 +208,7 @@ const   // Global constants
 
         KEY_COMPILER_COMMAND        = 'CompilerPath';
         KEY_COMPILER_COMMAND_NOMAIN = 'CompilerPathNoMain';
+        KEY_COMPILER_FILE_ENCODING  = 'CompilerFileEncoding';
         KEY_CURRENT_LANGUAGE        = 'CurrentLanguageName';
 
         PARSER_ERRORS_ARRAY: array[TParserMode] of string = ('BadGeneric', 'BadCondition', 'BadAssign', 'BadInput', 'BadOutput',
@@ -303,7 +304,7 @@ begin
       begin
          reg.WriteString(KEY_CURRENT_LANGUAGE, FCurrentLang.Name);
          for i := 0 to FLangArrayCount-2 do
-            FLangArray[i].WriteCompilerCommands(reg);
+            FLangArray[i].WriteCompilerData(reg);
       end;
    finally
       reg.Free;
@@ -327,7 +328,7 @@ begin
                FCurrentLang := lang
          end;
          for i := 0 to FLangArrayCount-2 do
-            FLangArray[i].ReadCompilerCommands(reg);
+            FLangArray[i].ReadCompilerData(reg);
       end;
    finally
       reg.Free;
@@ -465,7 +466,7 @@ begin
     { wait for the app to finish its job and take the handles to free them later }
     if Result then
     begin
-      WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+      WaitForSingleObject(ProcessInfo.hProcess, 200);
       hAppProcess := ProcessInfo.hProcess;
       hAppThread  := ProcessInfo.hThread;
     end

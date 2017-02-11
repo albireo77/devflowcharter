@@ -691,6 +691,7 @@ begin
       begin
          langDef.CompilerCommand := Trim(edtCompiler.Text);
          langDef.CompilerCommandNoMain := Trim(edtCompilerNoMain.Text);
+         langDef.CompilerFileEncoding := cbFileEncoding.Text;
       end;
 
       if FShowFuncLabels <> chkShowFuncLabels.Checked then
@@ -801,6 +802,7 @@ begin
       chkAutoUpdateCode.Checked := FEditorAutoUpdate;
       edtFontName.Text := FFlowchartFontName;
       SetCbFontSize(FEditorFontSize);
+      SetCbFileEncoding(GInfra.CurrentLang.CompilerFileEncoding);
       with imgColors.Canvas do
       begin
          Brush.Color := FEllipseColor;
@@ -864,7 +866,6 @@ begin
       edtCompiler.Enabled := compilerOn;
       edtCompilerNoMain.Enabled := compilerOn;
       btnBrowseCompilers.Enabled := compilerOn;
-      lblInterGen.Visible := (langDef <> nil) and Assigned(langDef.MainProgramSectionGenerator) and (langDef <> GInfra.DummyLang);
       if compilerOn then
       begin
          edtCompiler.Text := langDef.CompilerCommand;
@@ -875,9 +876,11 @@ begin
          edtCompiler.Text := '';
          edtCompilerNoMain.Text := '';
       end;
+      SetCbFileEncoding(langDef.CompilerFileEncoding);
       chkMultiPrintHorz.Enabled := chkMultiPrint.Checked;
       if not chkMultiPrint.Checked then
          chkMultiPrintHorz.Checked := false;
+
    end;
 end;
 
