@@ -291,8 +291,9 @@ type
 implementation
 
 uses
-   System.StrUtils, Vcl.Menus, System.Types, Main_Block, ApplicationCommon, BlockFactory,
-   UserFunction, XMLProcessor, Navigator_Form, LangDefinition, FlashThread, Comment;
+   System.StrUtils, Vcl.Menus, System.Types, Main_Block, Return_Block, ApplicationCommon,
+   BlockFactory, UserFunction, XMLProcessor, Navigator_Form, LangDefinition, FlashThread,
+   Comment;
 
 type
    THackControl = class(TControl);
@@ -614,7 +615,7 @@ begin
    else
       shiftState := [];
    MyOnMouseMove(Sender, shiftState, X, Y);
-   if (Ired < 0) or (not (Source is TBlock)) or (Source is TMainBlock) or ((not isShift) and ((Source = Self) or IsForeParent(Source))) then
+   if (Ired < 0) or (not (Source is TBlock)) or (Source is TMainBlock) or (Source is TReturnBlock) or ((not isShift) and ((Source = Self) or IsForeParent(Source))) then
       Accept := false;
 end;
 

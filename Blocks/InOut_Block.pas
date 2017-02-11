@@ -162,7 +162,13 @@ procedure TInOutBlock.PutTextControls;
 var
    t, l: integer;
 begin
-   l := Canvas.TextWidth(FLabel) + 31;
+   l := Canvas.TextWidth(FLabel);
+   case FStatement.Font.Size of
+      12: l := l + 37;
+      10: l := l + 33;
+   else
+      l := l + 30;
+   end;
    t := 17 - FStatement.Height div 2;
    if t + FStatement.Height > 29 then
       t := 30 - FStatement.Height;
