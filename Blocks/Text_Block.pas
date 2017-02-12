@@ -82,8 +82,6 @@ procedure TTextBlock.Paint;
 begin
    inherited;
    DrawBlockLabel(5, FStatements.BoundsRect.Bottom+1, GInfra.CurrentLang.LabelText);
-   if FCorner <> nil then
-      FCorner.Invalidate;
 end;
 
 procedure TCorner.Paint;
