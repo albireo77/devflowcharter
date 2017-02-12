@@ -74,7 +74,6 @@ type
       class function GetInstance: TProject;
       destructor Destroy; override;
       procedure AddComponent(const AComponent: TComponent);
-      procedure SetCommentsColor(const AColor: TColor);
       function GetComments: IIterator;
       function GetUserFunctions(const ASortType: integer = PAGE_INDEX_SORT): IIterator;
       function GetUserDataTypes: IIterator;
@@ -92,7 +91,7 @@ type
       function GetBottomRight: TPoint;
       procedure PopulateDataTypeCombos;
       procedure RefreshStatements;
-      procedure ChangeFlowchartsColor(const AColor: TColor);
+      procedure ChangeDesktopColor(const AColor: TColor);
       function CountErrWarn: TErrWarnCount;
       procedure GenerateTree(const ANode: TTreeNode);
       procedure RepaintFlowcharts;
@@ -810,17 +809,6 @@ begin
    end;
 end;
 
-procedure TProject.SetCommentsColor(const AColor: TColor);
-var
-   i: integer;
-begin
-   for i := 0 to FComponentList.Count-1 do
-   begin
-      if FComponentList[i] is TComment then
-         TComment(FComponentList[i]).Color := AColor;
-   end;
-end;
-
 function TProject.GetMainBlock: TMainBlock;
 var
    i: integer;
@@ -857,11 +845,18 @@ begin
    end;
 end;
 
-procedure TProject.ChangeFlowchartsColor(const AColor: TColor);
+procedure TProject.ChangeDesktopColor(const AColor: TColor);
 var
    i: integer;
    func: TUserFunction;
+   pgcPages: TPageControl;
 begin
+   pgcPages := TInfra.GetMainForm.pgcPages;
+   for i := 0 to pgcPages.PageCount-1 do
+   begin
+      pgcPages.Pages[i].Brush.Color := AColor;
+      pgcPages.Pages[i].Repaint;
+   end;
    for i := 0 to FComponentList.Count-1 do
    begin
       if FComponentList[i] is TUserFunction then
@@ -869,7 +864,9 @@ begin
          func := TUserFunction(FComponentList[i]);
          if func.Body <> nil then
             func.Body.ChangeColor(AColor);
-      end;
+      end
+      else if FComponentList[i] is TComment then
+         TComment(FComponentList[i]).Color := AColor;
    end;
 end;
 

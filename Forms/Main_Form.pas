@@ -348,7 +348,6 @@ end;
 procedure TMainForm.FormShow(Sender: TObject);
 begin
    SetMenu(false);
-   Color := GSettings.DesktopColor;
 end;
 
 procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);

@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
 
@@ -736,24 +736,17 @@ begin
       FPrintMargins.Right  := StrToIntDef(edtMarginRight.Text, 5);
       FPrintMargins.Top    := StrToIntDef(edtMarginTop.Text, 5);
       FPrintMargins.Bottom := StrToIntDef(edtMarginBottom.Text, 5);
-      
    end;
 
-   if colorChanged then
+   if GProject <> nil then
    begin
-      MainForm.Color := FDesktopColor;
-      if GProject <> nil then
-      begin
-         GProject.SetCommentsColor(FDesktopColor);
-         GProject.ChangeFlowchartsColor(FDesktopColor);
-         redrawFlow := true;
-      end;
-   end;
-
-   if redrawFlow and (GProject <> nil) then
-   begin
-      GProject.RepaintFlowcharts;
-      NavigatorForm.Invalidate;
+     if colorChanged then
+        GProject.ChangeDesktopColor(FDesktopColor);
+     if colorChanged or redrawFlow then
+     begin
+        GProject.RepaintFlowcharts;
+        NavigatorForm.Invalidate;
+     end;
    end;
 end;
 
