@@ -24,7 +24,8 @@ unit BlockTabSheet;
 interface
 
 uses
-   System.Classes, Vcl.ComCtrls, Vcl.Controls, CommonInterfaces, Main_Form;
+   System.Classes, Vcl.ComCtrls, Vcl.Controls, WinApi.Messages, CommonInterfaces,
+   Main_Form;
 
 type
 
@@ -38,12 +39,13 @@ type
       property Form: TMainForm read FForm;
    protected
       procedure PageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+      procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
    end;
 
 implementation
 
 uses
-   System.Types, ApplicationCommon, UserFunction;
+   System.Types, WinApi.Windows, ApplicationCommon, UserFunction;
 
 constructor TBlockTabSheet.Create(AMainForm: TMainForm);
 begin
@@ -73,6 +75,12 @@ begin
       end;
    end;
    inherited Destroy;
+end;
+
+procedure TBlockTabSheet.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+begin
+   FillRect(Msg.DC, ClientRect, Brush.Handle);
+   Msg.Result := 1;
 end;
 
 procedure TBlockTabSheet.PageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
