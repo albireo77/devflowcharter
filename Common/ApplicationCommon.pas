@@ -206,10 +206,7 @@ const   // Global constants
         C_LANG_ID       = 'ANSI C';
         TIBASIC_LANG_ID = 'TIBASIC';
 
-        KEY_COMPILER_COMMAND        = 'CompilerPath';
-        KEY_COMPILER_COMMAND_NOMAIN = 'CompilerPathNoMain';
-        KEY_COMPILER_FILE_ENCODING  = 'CompilerFileEncoding';
-        KEY_CURRENT_LANGUAGE        = 'CurrentLanguageName';
+        KEY_CURRENT_LANGUAGE = 'CurrentLanguageName';
 
         PARSER_ERRORS_ARRAY: array[TParserMode] of string = ('BadGeneric', 'BadCondition', 'BadAssign', 'BadInput', 'BadOutput',
                              'BadFor', 'BadFunction', 'BadCase', 'BadCase', 'BadReturnVal', '');

@@ -195,7 +195,7 @@ object SettingsForm: TSettingsForm
       TabOrder = 3
     end
     object cbFileEncoding: TComboBox
-      Left = 439
+      Left = 438
       Top = 19
       Width = 103
       Height = 21

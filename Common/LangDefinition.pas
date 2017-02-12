@@ -281,9 +281,9 @@ begin
    else
       FName := lVal;
 
-   FCompilerRegKey := KEY_COMPILER_COMMAND + '_' + FName;
-   FCompilerNoMainRegKey := KEY_COMPILER_COMMAND_NOMAIN + '_' + FName;
-   FCompilerFileEncodingKey := KEY_COMPILER_FILE_ENCODING + '_' + FName;
+   FCompilerRegKey := 'CompilerPath_' + FName;
+   FCompilerNoMainRegKey := 'CompilerPathNoMain_' + FName;
+   FCompilerFileEncodingKey := 'CompilerFileEncoding_' + FName;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'CommentBegin');
    if tag <> nil then
