@@ -942,9 +942,9 @@ begin
       result := TEncoding.UTF7
    else if CompilerFileEncoding = 'UTF-8' then
       result := TEncoding.UTF8
-   else if CompilerFileEncoding = 'UTF-16 (Unicode)' then
+   else if CompilerFileEncoding = 'Unicode' then
       result := TEncoding.Unicode
-   else if CompilerFileEncoding = 'BigEndian Unicode' then
+   else if CompilerFileEncoding = 'BE Unicode' then
       result := TEncoding.BigEndianUnicode
    else
       result := TEncoding.ANSI;

@@ -117,7 +117,7 @@ object SettingsForm: TSettingsForm
     end
     object lblFileEncoding: TLabel
       Tag = 6
-      Left = 362
+      Left = 378
       Top = 22
       Width = 71
       Height = 13
@@ -195,9 +195,9 @@ object SettingsForm: TSettingsForm
       TabOrder = 3
     end
     object cbFileEncoding: TComboBox
-      Left = 438
+      Left = 457
       Top = 19
-      Width = 103
+      Width = 84
       Height = 21
       AutoDropDown = True
       Style = csDropDownList
@@ -207,15 +207,17 @@ object SettingsForm: TSettingsForm
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []
+      ItemIndex = 0
       ParentFont = False
       TabOrder = 4
+      Text = 'ANSI'
       Items.Strings = (
         'ANSI'
         'ASCII'
         'UTF-7'
         'UTF-8'
-        'UTF-16 (Unicode)'
-        'BigEndian Unicode')
+        'Unicode'
+        'BE Unicode')
     end
   end
   object btnDiscardSettings: TButton

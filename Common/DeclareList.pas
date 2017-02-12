@@ -184,13 +184,14 @@ begin
    sgList.DefaultRowHeight := 16;
    sgList.SetBounds(5, 16, AWidth-9, (ADispRowCount+1)*(sgList.DefaultRowHeight+2));
    sgList.ColCount := AColCount;
-   colWidth := (sgList.Width div AColCount) - 2;
+   colWidth := sgList.Width div AColCount;
    for i := 0 to AColCount-1 do
       sgList.ColWidths[i] := colWidth;
    sgList.FixedRows := 1;
    sgList.FixedCols := 0;
    sgList.RowCount := 2;
    sgList.DrawingStyle := gdsClassic;
+   sgList.Ctl3D := false;
    sgList.FixedColor := clMoneyGreen;
    sgList.Options := sgList.Options + [goRowSelect, goColSizing, goThumbTracking, goRowMoving] - [goRangeSelect];
    sgList.ScrollBars := ssVertical;
