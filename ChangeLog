@@ -1,3 +1,9 @@
+4.0 [13.02.2017]
+- Compiled with Delphi 10.1 Berlin
+- Unicode support
+- attached FreePascal compiler upgraded to 3.0
+- Code Editor: code folding temporarily disabled
+
 3.6.4 [10.01.2017]
 - Flowchart Navigator: fixes and display optimizations
 
