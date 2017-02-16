@@ -65,7 +65,7 @@ const
 var
    lhdc: HDC;
    edit: TCustomEdit;
-   selStart, xExt, yExt: integer;
+   selStart, selLength, xExt, yExt: integer;
    page: TBlockTabSheet;
    R: TRect;
 begin
@@ -73,7 +73,10 @@ begin
    begin
       edit := TInfra.GetActiveEdit;
       if edit <> nil then
+      begin
          selStart := edit.SelStart;
+         selLength := edit.SelLength;
+      end;
       lhdc := SaveDC(Canvas.Handle);
       try
          page := GProject.GetActivePage;
@@ -94,7 +97,10 @@ begin
       finally
          RestoreDC(Canvas.Handle, lhdc);
          if edit <> nil then
+         begin
             edit.SelStart := selStart;
+            edit.SelLength := selLength;
+         end;
       end;
    end;
 end;
