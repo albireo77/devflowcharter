@@ -27,8 +27,6 @@ uses
 type
 
   TStatementMemo = class(TMemo, IFocusable)
-     protected
-        procedure MyOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
      public
      { Public declarations }
         constructor Create(AOwner: TComponent); override;
@@ -55,14 +53,8 @@ begin
    Font.Color := GSettings.FontColor;
    Font.Name := GSettings.FlowchartFontName;
    DoubleBuffered := true;
-   OnKeyDown := MyOnKeyDown;
+   OnKeyDown := TInfra.OnKeyDownSelectAll;
    Anchors := [akRight, akLeft, akBottom, akTop];
-end;
-
-procedure TStatementMemo.MyOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-   if (ssCtrl in Shift) and (Key = Ord('A')) then
-      SelectAll;
 end;
 
 function TStatementMemo.RetrieveFocus(AInfo: TFocusInfo): boolean;

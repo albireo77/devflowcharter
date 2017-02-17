@@ -255,8 +255,7 @@ end;
 procedure TStatement.KeyDown(var Key: Word; Shift: TShiftState);
 begin
    inherited KeyDown(Key, Shift);
-   if (ssCtrl in Shift) and (Key = Ord('A')) then
-      SelectAll;
+   TInfra.OnKeyDownSelectAll(Self, Key, Shift);
 end;
 
 procedure TStatement.MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer);

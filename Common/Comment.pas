@@ -43,7 +43,6 @@ type
          procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
          procedure MyOnDblClick(Sender: TObject);
-         procedure MyOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
          procedure MyOnContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
          procedure NCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
          procedure WMMouseLeave(var Msg: TMessage); message WM_MOUSELEAVE;
@@ -99,7 +98,7 @@ begin
    SetBounds(ALeft, ATop, AWidth, AHeight);
    GProject.AddComponent(Self);
 
-   OnKeyDown   := MyOnKeyDown;
+   OnKeyDown   := TInfra.OnKeyDownSelectAll;
    OnMouseDown := MouseDown;
    OnMouseMove := MouseMove;
    OnDblClick  := MyOnDblClick;
@@ -296,12 +295,6 @@ begin
          crSizeNWSE: Msg.Result := HTBOTTOMRIGHT;
       end;
    end;
-end;
-
-procedure TComment.MyOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-   if (ssCtrl in Shift) and (Key = Ord('A')) then
-      SelectAll;
 end;
 
 procedure TComment.MyOnContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);

@@ -102,6 +102,7 @@ type
          class procedure UpdateCodeEditor(AObject: TObject = nil);
          class function ExportToFile(AExport: IExportable): TErrorType;
          class function GetDisplayRect(const APage: TBlockTabSheet): TRect;
+         class procedure OnKeyDownSelectAll(Sender: TObject; var Key: Word; Shift: TShiftState);
          function ValidateConstId(const AId: string): integer;
          function ValidateId(const AId: string): integer;
          constructor Create;
@@ -423,6 +424,12 @@ begin
    FillChar(verInfo, SizeOf(verInfo), #0);
    verInfo.dwOSVersionInfoSize := SizeOf(verInfo);
    result := GetVersionEx(verInfo) and (verInfo.dwPlatformId = VER_PLATFORM_WIN32_WINDOWS);   // check if Win 9x
+end;
+
+class procedure TInfra.OnKeyDownSelectAll(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+   if (ssCtrl in Shift) and (Key = Ord('A')) and (Sender is TCustomEdit) then
+      TCustomEdit(Sender).SelectAll;
 end;
 
 class function TInfra.CreateDOSProcess(const ACommand: string; ADir: string = ''): Boolean;
