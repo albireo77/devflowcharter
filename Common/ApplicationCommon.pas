@@ -432,40 +432,40 @@ begin
       TCustomEdit(Sender).SelectAll;
 end;
 
-class function TInfra.CreateDOSProcess(const ACommand: string; ADir: string = ''): Boolean;
+class function TInfra.CreateDOSProcess(const ACommand: string; ADir: string = ''): boolean;
 var
    StartupInfo: TStartupInfo;
    ProcessInfo: TProcessInformation;
    hAppProcess, hAppThread: THandle;
 begin
-  if not DirectoryExists(ADir) then
-     ADir := GetCurrentDir;
-  try
-    FillChar(StartupInfo, SizeOf(StartupInfo), #0);
-    StartupInfo.cb          := SizeOf(StartupInfo);
-    StartupInfo.dwFlags     := STARTF_USESHOWWINDOW;
-    StartupInfo.wShowWindow := SW_SHOW;
-    result := CreateProcess(nil,
-      PChar(ACommand),
-      nil,
-      nil,
-      True,
-      CREATE_NEW_CONSOLE or
-      NORMAL_PRIORITY_CLASS,
-      nil,
-      PChar(ADir),
-      StartupInfo,
-      ProcessInfo);
-    if result then
-    begin
-      WaitForSingleObject(ProcessInfo.hProcess, 0);
-      hAppProcess := ProcessInfo.hProcess;
-      hAppThread  := ProcessInfo.hThread;
-    end
-  finally
-    if hAppThread <> 0 then CloseHandle(hAppThread);
-    if hAppProcess <> 0 then CloseHandle(hAppProcess);
-  end;
+   if not DirectoryExists(ADir) then
+      ADir := GetCurrentDir;
+   FillChar(StartupInfo, SizeOf(StartupInfo), #0);
+   StartupInfo.cb          := SizeOf(StartupInfo);
+   StartupInfo.dwFlags     := STARTF_USESHOWWINDOW;
+   StartupInfo.wShowWindow := SW_SHOW;
+   try
+      result := CreateProcess(nil,
+         PChar(ACommand),
+         nil,
+         nil,
+         True,
+         CREATE_NEW_CONSOLE or
+         NORMAL_PRIORITY_CLASS,
+         nil,
+         PChar(ADir),
+         StartupInfo,
+         ProcessInfo);
+      if result then
+      begin
+         WaitForSingleObject(ProcessInfo.hProcess, 0);
+         hAppProcess := ProcessInfo.hProcess;
+         hAppThread  := ProcessInfo.hThread;
+      end
+   finally
+      if hAppThread <> 0 then CloseHandle(hAppThread);
+      if hAppProcess <> 0 then CloseHandle(hAppProcess);
+   end;
 end;
 
 class procedure TInfra.ShowErrorBox(const AErrMsg: string; const AErrType: TErrorType);
