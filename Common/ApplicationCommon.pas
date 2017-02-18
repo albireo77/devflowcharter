@@ -434,57 +434,37 @@ end;
 
 class function TInfra.CreateDOSProcess(const ACommand: string; ADir: string = ''): Boolean;
 var
-   OldCursor: TCursor;
    StartupInfo: TStartupInfo;
    ProcessInfo: TProcessInformation;
    hAppProcess, hAppThread: THandle;
 begin
-
-  { save the cursor }
-  OldCursor     := Screen.Cursor;
-  Screen.Cursor := crHourglass;
-
   if not DirectoryExists(ADir) then
      ADir := GetCurrentDir;
-
   try
-    { prepare StartupInfo structure }
     FillChar(StartupInfo, SizeOf(StartupInfo), #0);
     StartupInfo.cb          := SizeOf(StartupInfo);
     StartupInfo.dwFlags     := STARTF_USESHOWWINDOW;
     StartupInfo.wShowWindow := SW_SHOW;
-
-    { create the app }
-    Result := CreateProcess(nil,     { pointer to name of executable module }
-      PChar(ACommand),                { pointer to command line string }
-      nil,                           { pointer to process security attributes }
-      nil,                           { pointer to thread security attributes }
-      True,                          { handle inheritance flag }
+    result := CreateProcess(nil,
+      PChar(ACommand),
+      nil,
+      nil,
+      True,
       CREATE_NEW_CONSOLE or
-      NORMAL_PRIORITY_CLASS,         { creation flags }
-      nil,                           { pointer to new environment block }
-      PChar(ADir),                   { pointer to current directory name }
-      StartupInfo,                   { pointer to STARTUPINFO }
-      ProcessInfo);                  { pointer to PROCESS_INF }
-
-    { wait for the app to finish its job and take the handles to free them later }
-    if Result then
+      NORMAL_PRIORITY_CLASS,
+      nil,
+      PChar(ADir),
+      StartupInfo,
+      ProcessInfo);
+    if result then
     begin
-      WaitForSingleObject(ProcessInfo.hProcess, 200);
+      WaitForSingleObject(ProcessInfo.hProcess, 0);
       hAppProcess := ProcessInfo.hProcess;
       hAppThread  := ProcessInfo.hThread;
     end
-
   finally
-    { close the handles
-      Kernel objects, like the process and the files we created in this case,
-      are maintained by a usage count.
-      So, for cleaning up purposes we have to close the handles
-      to inform the system that we don't need the objects anymore }
     if hAppThread <> 0 then CloseHandle(hAppThread);
     if hAppProcess <> 0 then CloseHandle(hAppProcess);
-    { restore the old cursor }
-    Screen.Cursor := OldCursor;
   end;
 end;
 
