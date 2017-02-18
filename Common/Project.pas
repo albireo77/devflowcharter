@@ -848,7 +848,7 @@ end;
 procedure TProject.ChangeDesktopColor(const AColor: TColor);
 var
    i: integer;
-   func: TUserFunction;
+   comp: TComponent;
    pgcPages: TPageControl;
 begin
    pgcPages := TInfra.GetMainForm.pgcPages;
@@ -859,14 +859,14 @@ begin
    end;
    for i := 0 to FComponentList.Count-1 do
    begin
-      if FComponentList[i] is TUserFunction then
+      comp := FComponentList[i];
+      if comp is TUserFunction then
       begin
-         func := TUserFunction(FComponentList[i]);
-         if func.Body <> nil then
-            func.Body.ChangeColor(AColor);
+         if TUserFunction(comp).Body <> nil then
+            TUserFunction(comp).Body.ChangeColor(AColor);
       end
-      else if FComponentList[i] is TComment then
-         TComment(FComponentList[i]).Color := AColor;
+      else if comp is TComment then
+         TComment(comp).Color := AColor;
    end;
 end;
 
