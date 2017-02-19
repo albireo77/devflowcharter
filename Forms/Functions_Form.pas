@@ -85,6 +85,7 @@ begin
    body := TUserFunctionHeader(pgcTabs.ActivePage).UserFunction.Body;
    if (body <> nil) and body.Visible then
    begin
+      body.Page.PageControl.ActivePage := body.Page;
       body.Page.Form.ScrollInView(body);
       body.BringAllToFront;
       NavigatorForm.Invalidate;
