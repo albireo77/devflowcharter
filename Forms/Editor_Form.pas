@@ -401,20 +401,13 @@ procedure TEditorForm.FormShow(Sender: TObject);
 var
    lang: TLangDefinition;
    skipFuncBody: boolean;
-   lines: TStringList;
+   newLines: TStringList;
 begin
-
-{$IFDEF USE_CODEFOLDING}
-   memCodeEditor.AllFoldRanges.ClearAll;
-{$ENDIF}
-   memCodeEditor.ClearAll;
-   memCodeEditor.Highlighter := nil;
-
 
    skipFuncBody := false;
    lang := nil;
 
-   lines := TStringList.Create;
+   newLines := TStringList.Create;
    try
 
       if Assigned(GInfra.CurrentLang.SkipFuncBodyGen) then
@@ -434,7 +427,7 @@ begin
       else if Assigned(GInfra.DummyLang.ProgramHeaderSectionGenerator) then
          lang := GInfra.DummyLang;
       if lang <> nil then
-         lang.ProgramHeaderSectionGenerator(lines);
+         lang.ProgramHeaderSectionGenerator(newLines);
 
       lang := nil;
       if Assigned(GInfra.CurrentLang.LibSectionGenerator) then
@@ -442,7 +435,7 @@ begin
       else if Assigned(GInfra.DummyLang.LibSectionGenerator) then
          lang := GInfra.DummyLang;
       if lang <> nil then
-         lang.LibSectionGenerator(lines);
+         lang.LibSectionGenerator(newLines);
 
       if GInfra.CurrentLang.EnabledConsts then
       begin
@@ -452,8 +445,8 @@ begin
          else if Assigned(GInfra.DummyLang.ConstSectionGenerator) then
             lang := GInfra.DummyLang;
          if lang <> nil then
-            lang.ConstSectionGenerator(lines, GProject.GlobalConsts);
-         lines.Add('');
+            lang.ConstSectionGenerator(newLines, GProject.GlobalConsts);
+         newLines.Add('');
       end;
 
       if GInfra.CurrentLang.EnabledUserDataTypes then
@@ -464,7 +457,7 @@ begin
          else if Assigned(GInfra.DummyLang.UserDataTypesSectionGenerator) then
             lang := GInfra.DummyLang;
          if lang <> nil then
-            lang.UserDataTypesSectionGenerator(lines);
+            lang.UserDataTypesSectionGenerator(newLines);
       end;
 
       if GInfra.CurrentLang.EnabledVars then
@@ -475,8 +468,8 @@ begin
          else if Assigned(GInfra.DummyLang.VarSectionGenerator) then
             lang := GInfra.DummyLang;
          if lang <> nil then
-            lang.VarSectionGenerator(lines, GProject.GlobalVars);
-         lines.Add('');
+            lang.VarSectionGenerator(newLines, GProject.GlobalVars);
+         newLines.Add('');
       end;
 
       if GInfra.CurrentLang.EnabledUserFunctionHeader then
@@ -487,7 +480,7 @@ begin
          else if Assigned(GInfra.DummyLang.UserFunctionsSectionGenerator) then
             lang := GInfra.DummyLang;
          if lang <> nil then
-            lang.UserFunctionsSectionGenerator(lines, skipFuncBody);
+            lang.UserFunctionsSectionGenerator(newLines, skipFuncBody);
       end;
 
       lang := nil;
@@ -496,24 +489,32 @@ begin
       else if Assigned(GInfra.DummyLang.MainProgramSectionGenerator) then
          lang := GInfra.DummyLang;
       if lang <> nil then
-         lang.MainProgramSectionGenerator(lines, 0);
+         lang.MainProgramSectionGenerator(newLines, 0);
 
-      memCodeEditor.Lines.Assign(lines);
-      if GSettings.EditorShowRichText then
-         memCodeEditor.Highlighter := GInfra.CurrentLang.HighLighter;
-      memCodeEditor.OnChange(memCodeEditor);
-      if FFocusEditor then
+      with memCodeEditor do
       begin
-         if memCodeEditor.CanFocus then
-            memCodeEditor.SetFocus;
-      end
-      else
-         FFocusEditor := true;
-      memCodeEditor.ClearUndo;
-      memCodeEditor.Modified := false;
+{$IFDEF USE_CODEFOLDING}
+         AllFoldRanges.ClearAll;
+{$ENDIF}
+         Marks.Clear;
+         Highlighter := nil;
+         Lines.Assign(newLines);
+         if GSettings.EditorShowRichText then
+            Highlighter := GInfra.CurrentLang.HighLighter;
+         OnChange(memCodeEditor);
+         if FFocusEditor then
+         begin
+            if CanFocus then
+               SetFocus;
+         end
+         else
+            FFocusEditor := true;
+         ClearUndo;
+         Modified := false;
+      end;
 
    finally
-      lines.Free;
+      newLines.Free;
    end;
 
 end;
@@ -1242,12 +1243,10 @@ procedure TEditorForm.RefreshEditorForObject(const AObject: TObject);
 var
    topLine, line: integer;
    codeRange: TCodeRange;
-   scrollStyle: TScrollStyle;
 begin
    FFocusEditor := false;
    topLine := memCodeEditor.TopLine;
-   scrollStyle := memCodeEditor.ScrollBars;
-   memCodeEditor.ScrollBars := ssNone;
+   memCodeEditor.BeginUpdate;
    try
       FormShow(Self);
       if AObject <> nil then
@@ -1265,7 +1264,7 @@ begin
       else
          memCodeEditor.TopLine := topLine;
    finally
-      memCodeEditor.ScrollBars := scrollStyle;
+      memCodeEditor.EndUpdate;
    end;
 end;
 
