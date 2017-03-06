@@ -39,7 +39,6 @@ type
     pnlInfo: TPanel;
     lblInfo1: TLabel;
     procedure btnOKClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure imDelphiClick(Sender: TObject);
   private
@@ -64,27 +63,9 @@ const
 
 {$R *.dfm}
 
-
-
 procedure TAboutForm.btnOKClick(Sender: TObject);
 begin
    Close;
-end;
-
-procedure TAboutForm.FormClose(Sender: TObject; var Action: TCloseAction);
-var
-  i, abv: 0..255;
-begin
-  if not TInfra.IsWin9x then
-  begin
-     abv := AlphaBlendValue;
-     for i := abv downto 0 do
-     begin
-        AlphaBlendValue := i;
-        Application.ProcessMessages;
-     end;
-     AlphaBlendValue := 230;
-  end;
 end;
 
 procedure TAboutForm.FormCreate(Sender: TObject);

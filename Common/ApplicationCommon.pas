@@ -47,7 +47,6 @@ type
       public
          property CurrentLang: TLangDefinition read FCurrentLang;
          property DummyLang: TLangDefinition read FDummyLang;
-         class function IsWin9x: boolean;
          class function CreateDOSProcess(const ACommand: string; ADir: string = ''): Boolean;
          class procedure ShowErrorBox(const AErrMsg: string; const AErrType: TErrorType);
          class procedure ShowFormattedErrorBox(const AKey: string; Args: array of const; const AErrType: TErrorType);
@@ -415,15 +414,6 @@ begin
       if comp is TSynCustomHighlighter then
          FLangArray[i].HighLighter := TSynCustomHighlighter(comp);
    end;
-end;
-
-class function TInfra.IsWin9x: boolean;
-var
-   verInfo: OSVERSIONINFO;
-begin
-   FillChar(verInfo, SizeOf(verInfo), #0);
-   verInfo.dwOSVersionInfoSize := SizeOf(verInfo);
-   result := GetVersionEx(verInfo) and (verInfo.dwPlatformId = VER_PLATFORM_WIN32_WINDOWS);   // check if Win 9x
 end;
 
 class procedure TInfra.OnKeyDownSelectAll(Sender: TObject; var Key: Word; Shift: TShiftState);

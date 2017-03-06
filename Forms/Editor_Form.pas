@@ -695,9 +695,7 @@ begin
 
           command := ReplaceText(command, '%s1', fileName);
           command := ReplaceText(command, '%s2', fileNameNoExt);
-
-          if not TInfra.IsWin9x then
-             command := 'cmd.exe /k ' + command;
+          command := 'cmd.exe /k ' + command;
 
           if not TInfra.CreateDOSProcess(command, ExtractFileDir(SaveDialog1.FileName)) then
              TInfra.ShowErrorBox(i18Manager.GetString('CompileFail'), errCompile);
