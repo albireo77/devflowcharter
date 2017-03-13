@@ -196,7 +196,7 @@ type
       property Name: string read FName;
       constructor Create;
       destructor Destroy; override;
-      function ImportLangDef(const ATag: IXMLElement): TErrorType;
+      function ImportFromXML(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
       function GetTemplate(const AClass: TClass): string;
       function GetTemplateExpr(const AClass: TClass): string;
       function GetArraySizes(const ASizeEdit: TSizeEdit): string;
@@ -259,7 +259,7 @@ begin
    inherited;
 end;
 
-function TLangDefinition.ImportLangDef(const ATag: IXMLElement): TErrorType;
+function TLangDefinition.ImportFromXML(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
 var
    tag: IXMLElement;
    lVal: string;

@@ -82,9 +82,9 @@ type
       procedure ExportToGraphic(const AGraphic: TGraphic);
       procedure ExportToXMLTag(const ATag: IXMLElement);
       function ExportToXMLFile(const AFile: string): TErrorType;
-      function ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
-      function ImportUserFunctionsFromXML(const ATag: IXMLElement): TErrorType;
-      function ImportUserDataTypesFromXML(const ATag: IXMLElement): TErrorType;
+      function ImportFromXMLTag(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
+      function ImportUserFunctionsFromXML(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
+      function ImportUserDataTypesFromXML(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
       function ImportCommentsFromXML(const ATag: IXMLElement): integer;
       procedure ImportPagesFromXML(const ATag: IXMLElement);
       function GetMainBlock: TMainBlock;
@@ -116,9 +116,9 @@ type
 implementation
 
 uses
-   System.SysUtils, Vcl.Menus, System.StrUtils, System.Types, ApplicationCommon,
+   System.SysUtils, Vcl.Menus, System.StrUtils, System.Types, System.UITypes, ApplicationCommon,
    XMLProcessor, Base_Form, LangDefinition, Navigator_Form, SortListDecorator, Base_Block,
-   Comment, TabComponent, ParserHelper;
+   Comment, TabComponent, ParserHelper, SelectImport_Form;
 
 constructor TProject.Create;
 begin
@@ -474,7 +474,7 @@ begin
    end;
 end;
 
-function TProject.ImportFromXMLTag(const ATag: IXMLElement): TErrorType;
+function TProject.ImportFromXMLTag(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
 var
    itr: IIterator;
    s, langName: string;
@@ -597,73 +597,153 @@ begin
    TInfra.GetMainForm.SetMenu(true);
 end;
 
-function TProject.ImportUserFunctionsFromXML(const ATag: IXMLElement): TErrorType;
+function TProject.ImportUserFunctionsFromXML(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
 var
    tag, tag1: IXMLElement;
    header: TUserFunctionHeader;
    body: TMainBlock;
    tmpBlock: TBlock;
    page: TTabSheet;
+   selectList: TStringList;
 begin
    result := errNone;
-   tag := TXMLProcessor.FindChildTag(ATag, FUNCTION_TAG);
-   while (tag <> nil) and (result = errNone) do
-   begin
-      header := nil;
-      body := nil;
-      tag1 := TXMLProcessor.FindChildTag(tag, HEADER_TAG);
-      if (tag1 <> nil) and GInfra.CurrentLang.EnabledUserFunctionHeader then
+   selectList := nil;
+   try
+      if ASelect then
       begin
-         header := TUserFunctionHeader.Create(TInfra.GetFunctionsForm);
-         header.ImportFromXMLTag(tag1);
-         header.RefreshTab;
+         selectList := TStringList.Create;
+         tag := TXMLProcessor.FindChildTag(ATag, FUNCTION_TAG);
+         while tag <> nil do
+         begin
+            tag1 := TXMLProcessor.FindChildTag(tag, HEADER_TAG);
+            if tag1 <> nil then
+               selectList.Add(tag1.GetAttribute(NAME_ATTR));
+            tag := TXMLProcessor.FindNextTag(tag);
+         end;
+         if selectList.Count = 0 then
+            exit
+         else if selectList.Count = 1 then
+         begin
+            selectList.Free;
+            selectList := nil;
+         end
+         else
+         begin
+            SelectImportForm.SetSelectList(selectList);
+            SelectImportForm.Caption := i18Manager.GetString('ImportFunc');
+            if IsAbortResult(SelectImportForm.ShowModal) or (selectList.Count = 0) then
+               exit;
+         end;
       end;
-      tag1 := TXMLProcessor.FindChildTag(tag, BLOCK_TAG);
-      if (tag1 <> nil) and GInfra.CurrentLang.EnabledUserFunctionBody then
+      tag := TXMLProcessor.FindChildTag(ATag, FUNCTION_TAG);
+      while (tag <> nil) and (result = errNone) do
       begin
-         page := GetPage(tag1.GetAttribute(PAGE_CAPTION_ATTR));
-         if page = nil then
-            page := GetMainPage;
-         tmpBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag1, page, nil, result);
-         if tmpBlock is TMainBlock then
-            body := TMainBlock(tmpBlock);
+         header := nil;
+         body := nil;
+         tag1 := TXMLProcessor.FindChildTag(tag, HEADER_TAG);
+         if tag1 <> nil then
+         begin
+            if (selectList <> nil) and (selectList.IndexOf(tag1.GetAttribute(NAME_ATTR)) = -1) then
+            begin
+               tag := TXMLProcessor.FindNextTag(tag);
+               continue;
+            end;
+            if GInfra.CurrentLang.EnabledUserFunctionHeader then
+            begin
+               header := TUserFunctionHeader.Create(TInfra.GetFunctionsForm);
+               header.ImportFromXMLTag(tag1);
+               header.RefreshTab;
+            end;
+         end
+         else if ASelect then
+         begin
+            tag := TXMLProcessor.FindNextTag(tag);
+            continue;
+         end;
+         tag1 := TXMLProcessor.FindChildTag(tag, BLOCK_TAG);
+         if (tag1 <> nil) and GInfra.CurrentLang.EnabledUserFunctionBody then
+         begin
+            page := GetPage(tag1.GetAttribute(PAGE_CAPTION_ATTR));
+            if page = nil then
+               page := GetMainPage;
+            tmpBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag1, page, nil, result);
+            if tmpBlock is TMainBlock then
+               body := TMainBlock(tmpBlock);
+         end;
+         if result = errNone then
+            TUserFunction.Create(header, body)
+         else
+            header.Free;
+         tag := TXMLProcessor.FindNextTag(tag);
       end;
-      if result = errNone then
-         TUserFunction.Create(header, body)
-      else
-         header.Free;
-      tag := TXMLProcessor.FindNextTag(tag);
+   finally
+      selectList.Free;
    end;
 end;
 
-function TProject.ImportUserDataTypesFromXML(const ATag: IXMLElement): TErrorType;
+function TProject.ImportUserDataTypesFromXML(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
 var
    dataType: TUserDataType;
    tag: IXMLElement;
    iter: IIterator;
+   selectList: TStringList;
 begin
    result := errNone;
    dataType := nil;
-   tag := TXMLProcessor.FindChildTag(ATag, DATATYPE_TAG);
-   while tag <> nil do
-   begin
-      dataType := TUserDataType.Create(TInfra.GetDataTypesForm);
-      dataType.ImportFromXMLTag(tag);
-      dataType.RefreshTab;
-      tag := TXMLProcessor.FindNextTag(tag);
-   end;
-   if FGlobalVars <> nil then
-      TInfra.PopulateDataTypeCombo(FGlobalVars.cbType);
-   if dataType <> nil then
-   begin
-      PopulateDataTypes;
-      iter := GetUserDataTypes;
-      while iter.HasNext do
+   selectList := nil;
+   try
+      if ASelect then
       begin
-         dataType := TUserDataType(iter.Next);
-         dataType.RefreshSizeEdits;
-         dataType.RefreshTab;
+         selectList := TStringList.Create;
+         tag := TXMLProcessor.FindChildTag(ATag, DATATYPE_TAG);
+         while tag <> nil do
+         begin
+            selectList.Add(tag.GetAttribute(NAME_ATTR));
+            tag := TXMLProcessor.FindNextTag(tag);
+         end;
+         if selectList.Count = 0 then
+            exit
+         else if selectList.Count = 1 then
+         begin
+            selectList.Free;
+            selectList := nil;
+         end
+         else
+         begin
+            SelectImportForm.SetSelectList(selectList);
+            SelectImportForm.Caption := i18Manager.GetString('ImportType');
+            if IsAbortResult(SelectImportForm.ShowModal) or (selectList.Count = 0) then
+               exit;
+         end;
       end;
+      tag := TXMLProcessor.FindChildTag(ATag, DATATYPE_TAG);
+      while tag <> nil do
+      begin
+         if (selectList <> nil) and (selectList.IndexOf(tag.GetAttribute(NAME_ATTR)) = -1) then
+         begin
+            tag := TXMLProcessor.FindNextTag(tag);
+            continue;
+         end;
+         dataType := TUserDataType.Create(TInfra.GetDataTypesForm);
+         dataType.ImportFromXMLTag(tag);
+         dataType.RefreshTab;
+         tag := TXMLProcessor.FindNextTag(tag);
+      end;
+      if FGlobalVars <> nil then
+         TInfra.PopulateDataTypeCombo(FGlobalVars.cbType);
+      if dataType <> nil then
+      begin
+         PopulateDataTypes;
+         iter := GetUserDataTypes;
+         while iter.HasNext do
+         begin
+            dataType := TUserDataType(iter.Next);
+            dataType.RefreshSizeEdits;
+            dataType.RefreshTab;
+         end;
+      end;
+   finally
+      selectList.Free;
    end;
 end;
 

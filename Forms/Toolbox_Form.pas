@@ -47,11 +47,10 @@ type
     procedure sbNormalClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure ResetForm; override;
   private
     { Private declarations }
   public
-    { Public declarations }
+    procedure ResetForm; override;
   end;
 
 var

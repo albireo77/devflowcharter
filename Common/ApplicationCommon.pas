@@ -253,7 +253,7 @@ begin
       repeat
          lFile := LANG_DEFS_PATH + searchRec.Name;
          lang := TLangDefinition.Create;
-         if TXMLProcessor.ImportFromXMLFile(lang.ImportLangDef, lFile, true) <> '' then
+         if TXMLProcessor.ImportFromXMLFile(lang.ImportFromXML, lFile, true) <> '' then
          begin
             lang.DefFile := lFile;
             SetLength(FLangArray, i+1);

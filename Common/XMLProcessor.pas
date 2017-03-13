@@ -30,15 +30,15 @@ uses
 
 type
 
-   TExportProc = procedure(const root: IXMLElement) of object;
-   TImportProc = function(const root: IXMLElement): TErrorType of object;
+   TXMLExportProc = procedure(const ATag: IXMLElement) of object;
+   TXMLImportProc = function(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType of object;
 
    TXMLProcessor = class(TObject)
    private
       class function DialogXMLFile(ADialog: TOpenDialog; const AFileName: string = ''): string;
    public
-      class function ExportToXMLFile(AExportProc: TExportProc; const AFilePath: string = ''): TErrorType;
-      class function ImportFromXMLFile(AImportProc: TImportProc; const AFileName: string = ''; const APreserveSpace: boolean = false): string;
+      class function ExportToXMLFile(AExportProc: TXMLExportProc; const AFilePath: string = ''): TErrorType;
+      class function ImportFromXMLFile(AImportProc: TXMLImportProc; const AFileName: string = ''; const APreserveSpace: boolean = false): string;
       class function FindChildTag(const ATag: IXMLElement; const AName: string): IXMLElement;
       class function FindNextTag(const ATag: IXMLElement): IXMLElement;
       class procedure AddText(const ATag: IXMLElement; const AText: string);
@@ -215,7 +215,7 @@ begin
       result := ADialog.FileName;
 end;
 
-class function TXMLProcessor.ImportFromXMLFile(AImportProc: TImportProc; const AFileName: string = ''; const APreserveSpace: boolean = false): string;
+class function TXMLProcessor.ImportFromXMLFile(AImportProc: TXMLImportProc; const AFileName: string = ''; const APreserveSpace: boolean = false): string;
 var
    docXML: IXMLDocument;
    errText: string;
@@ -255,7 +255,7 @@ begin
    end;
 end;
 
-class function TXMLProcessor.ExportToXMLFile(AExportProc: TExportProc; const AFilePath: string = ''): TErrorType;
+class function TXMLProcessor.ExportToXMLFile(AExportProc: TXMLExportProc; const AFilePath: string = ''): TErrorType;
 var
    docXML: IXMLDocument;
    xmlInstr: IXMLProcessingInstruction;

@@ -36,7 +36,7 @@ type
      { Public declarations }
      procedure ExportSettingsToXMLTag(const ATag: IXMLElement); override;
      procedure ImportSettingsFromXMLTag(const ATag: IXMLElement); override;
-     function ImportTabsFromXMLTag(const ATag: IXMLElement): TErrorType; override;
+     function ImportTabsFromXMLTag(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType; override;
      procedure RefreshTabs; override;
      procedure ResetForm; override;
   end;
@@ -96,9 +96,9 @@ begin
    RefreshTabs;
 end;
 
-function TDataTypesForm.ImportTabsFromXMLTag(const ATag: IXMLElement): TErrorType;
+function TDataTypesForm.ImportTabsFromXMLTag(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
 begin
-   result := GProject.ImportUserDataTypesFromXML(ATag);
+   result := GProject.ImportUserDataTypesFromXML(ATag, true);
 end;
 
 procedure TDataTypesForm.ExportSettingsToXMLTag(const ATag: IXMLElement);

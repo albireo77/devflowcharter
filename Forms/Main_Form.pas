@@ -989,7 +989,7 @@ var
    comp: TComponent;
    pnt: TPoint;
    func: TUserFunction;
-   impProc: TImportProc;
+   impProc: TXMLImportProc;
    impFunc: boolean;
 begin
    if GProject <> nil then

@@ -685,18 +685,14 @@ begin
           lPos := Pos('.', fileNameNoExt);
           if lPos <> 0 then
              SetLength(fileNameNoExt, lPos-1);
-
           if mainBlock = nil then
           begin
              if commandNoMain = '' then
                 commandNoMain := '%s3';
              command := ReplaceText(commandNoMain, '%s3', command);
           end;
-
           command := ReplaceText(command, '%s1', fileName);
           command := ReplaceText(command, '%s2', fileNameNoExt);
-          command := 'cmd.exe /k ' + command;
-
           if not TInfra.CreateDOSProcess(command, ExtractFileDir(SaveDialog1.FileName)) then
              TInfra.ShowErrorBox(i18Manager.GetString('CompileFail'), errCompile);
        end;

@@ -51,7 +51,7 @@ type
     procedure pgcTabsChange(Sender: TObject); virtual;
     procedure miExportAllClick(Sender: TObject);
     procedure ExportTabsToXMLTag(const ATag: IXMLElement);
-    function ImportTabsFromXMLTag(const ATag: IXMLElement): TErrorType; virtual; abstract;
+    function ImportTabsFromXMLTag(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType; virtual; abstract;
     procedure FormDeactivate(Sender: TObject); virtual;
     procedure RefreshTabs; virtual;
     procedure Localize(const list: TStringList); override;
