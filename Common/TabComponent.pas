@@ -25,7 +25,8 @@ interface
 
 uses
    System.Classes, Vcl.ComCtrls, Vcl.Forms, Vcl.StdCtrls, Vcl.Controls, WinApi.Windows,
-   Vcl.Graphics, CommonInterfaces, OmniXML, Element, PageControl_Form, CommonTypes;
+   Vcl.Graphics, WinApi.Messages, CommonInterfaces, OmniXML, Element, PageControl_Form,
+   CommonTypes;
 
 type
 
@@ -52,6 +53,7 @@ type
          procedure OnChangeLib(Sender: TObject);
          procedure OnChangeName(Sender: TObject); virtual;
          function GetElementIterator: IIterator;
+         procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
       public
          edtName: TEdit;
          chkExtDeclare: TCheckBox;
@@ -96,13 +98,15 @@ type
 implementation
 
 uses
-   System.SysUtils, System.Contnrs, WinApi.Messages, ApplicationCommon, XMLProcessor, SortListDecorator;
+   System.SysUtils, System.Contnrs, ApplicationCommon, XMLProcessor, SortListDecorator;
 
 constructor TTabComponent.Create(const AParentForm: TPageControlForm);
 begin
    inherited Create(AParentForm.pgcTabs);
    PageControl := AParentForm.pgcTabs;
    ParentFont := false;
+   ParentBackground := false;
+   Brush.Color := AParentForm.Color;
    Align := alClient;
    Font.Color := NOK_COLOR;
    Font.Style := [fsBold];
@@ -117,6 +121,12 @@ destructor TTabComponent.Destroy;
 begin
    GProject.UnRegister(Self);
    inherited Destroy;
+end;
+
+procedure TTabComponent.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+begin
+   FillRect(Msg.DC, ClientRect, Brush.Handle);
+   Msg.Result := 1;
 end;
 
 procedure TTabComponent.UpdateCodeEditor;

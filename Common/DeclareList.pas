@@ -171,6 +171,7 @@ begin
    Parent := AParent;
    FParentForm := TInfra.FindParentForm(Self);
    ParentFont := false;
+   ParentBackground := false;
    Font.Style := [fsBold];
    Font.Color := clBlack;
    FModifying := false;
@@ -234,6 +235,7 @@ begin
    gbBox.Parent := Self;
    gbBox.SetBounds(5, btnChange.Top+btnChange.Height+4, AGBoxWidth, 72);
    gbBox.ParentFont := false;
+   gbBox.ParentBackground := false;
    gbBox.Font.Style := [];
    gbBox.Anchors := [akBottom, akLeft];
 

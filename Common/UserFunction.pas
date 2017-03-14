@@ -325,6 +325,7 @@ begin
    gbDesc.Parent := Self;
    gbDesc.SetBounds(0, 0, 400, 77);
    gbDesc.ParentFont := false;
+   gbDesc.ParentBackground := false;
    gbDesc.Font.Color := clBlack;
    gbDesc.Align := alTop;
    gbDesc.Caption := i18Manager.GetString('gbDesc');
@@ -333,7 +334,6 @@ begin
 
    splDesc := TSplitter.Create(Self);
    splDesc.Parent := Self;
-   splDesc.Color := clWhite;
    splDesc.Align := gbDesc.Align;
 
    memDesc := TMemo.Create(gbDesc);
@@ -374,6 +374,7 @@ begin
    gbBody.Parent := Self;
    gbBody.SetBounds(0, 80, 400, 50);
    gbBody.ParentFont := false;
+   gbBody.ParentBackground := false;
    gbBody.Font.Color := clBlack;
    gbBody.Caption := i18Manager.GetString('Body');
    gbBody.DoubleBuffered := true;
@@ -419,6 +420,7 @@ begin
    gbHeader.Parent := Self;
    gbHeader.SetBounds(0, 130, 400, 83);
    gbHeader.ParentFont := false;
+   gbHeader.ParentBackground := false;
    gbHeader.Font.Color := clBlack;
    gbHeader.Caption := i18Manager.GetString('Header');
    gbHeader.DoubleBuffered := true;
@@ -498,6 +500,7 @@ begin
    gbParams.Parent := Self;
    gbParams.SetBounds(0, 215, 400, 110);
    gbParams.ParentFont := false;
+   gbParams.ParentBackground := false;
    gbParams.Font.Color := clBlack;
    gbParams.Caption := i18Manager.GetString('Params');
    gbParams.Constraints.MinHeight := gbParams.Height;
@@ -506,7 +509,6 @@ begin
 
    splParams := TSplitter.Create(Self);
    splParams.Parent := Self;
-   splParams.Color := clWhite;
    splParams.Align := gbParams.Align;
    splParams.OnMoved := OnMovedParams;
 
@@ -520,8 +522,6 @@ begin
 
    sbxElements := TScrollBox.Create(gbParams);
    sbxElements.Parent := gbParams;
-   sbxElements.ParentColor := false;
-   sbxElements.Color := clWhite;
    sbxElements.Ctl3D := false;
    sbxElements.BorderStyle := bsNone;
    sbxElements.Constraints.MaxHeight := 44;

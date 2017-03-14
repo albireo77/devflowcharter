@@ -135,8 +135,6 @@ begin
 
    sbxElements := TScrollBox.Create(Self);
    sbxElements.Parent := Self;
-   sbxElements.ParentColor := false;
-   sbxElements.Color := clWhite;
    sbxElements.Ctl3D := false;
    sbxElements.BorderStyle := bsNone;
    sbxElements.Constraints.MaxHeight := AParentForm.Height - 233;
@@ -179,6 +177,7 @@ begin
    gbTypeBox.Parent := Self;
    gbTypeBox.SetBounds(1, 28, 305, 73);
    gbTypeBox.ParentFont := false;
+   gbTypeBox.ParentBackground := false;
    gbTypeBox.Font.Style := [];
    gbTypeBox.Font.Color := clWindowText;
    gbTypeBox.DoubleBuffered := true;
@@ -392,9 +391,7 @@ begin
    edtSize := TSizeEdit.Create(Self);
    edtSize.SetBounds(195, 2, 43, 17);
    edtSize.BorderStyle := bsNone;
-   edtSize.Color := clWhite;
    edtSize.OnChange := OnChangeSize;
-
 end;
 
 function TUserDataType.CreateElement: TElement;
