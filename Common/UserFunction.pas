@@ -64,17 +64,17 @@ type
       cbBodyPage: TComboBox;
       lblType,
       lblBodyPage,
-      lblParameters: TLabel;
+      lblParams: TLabel;
       gbHeader,
       gbBody,
-      gbParameters,
-      gbDescription: TGroupBox;
-      memDescription: TMemo;
+      gbParams,
+      gbDesc: TGroupBox;
+      memDesc: TMemo;
       chkInclDescCode,
       chkInclDescFlow,
       chkBodyVisible: TCheckBox;
-      splDescription,
-      splParameters: TSplitter;
+      splDesc,
+      splParams: TSplitter;
       property UserFunction: TUserFunction read FUserFunction;
       property LocalVars: TVarDeclareList read FLocalVars;
       property ParameterCount: integer read GetElementCount;
@@ -245,11 +245,11 @@ procedure TUserFunctionHeader.GenerateDescription(const ALines: TStrings);
 var
    i: integer;
 begin
-   if chkInclDescCode.Checked and (memDescription.Text <> '') then
+   if chkInclDescCode.Checked and (memDesc.Text <> '') then
    begin
-      for i := 0 to memDescription.Lines.Count-1 do
-         ALines.Add(memDescription.Lines[i]);
-      if EndsText(CRLF, memDescription.Text) then
+      for i := 0 to memDesc.Lines.Count-1 do
+         ALines.Add(memDesc.Lines[i]);
+      if EndsText(CRLF, memDesc.Text) then
          ALines.Add('');
    end;
 end;
@@ -321,34 +321,35 @@ begin
    FLocalVars.sgList.Options := FLocalVars.sgList.Options - [goColSizing];
    FLocalVars.gbBox.DoubleBuffered := true;
 
-   gbDescription := TGroupBox.Create(Self);
-   gbDescription.Parent := Self;
-   gbDescription.SetBounds(0, 0, 400, 77);
-   gbDescription.ParentFont := false;
-   gbDescription.Font.Color := clBlack;
-   gbDescription.Align := alTop;
-   gbDescription.Caption := i18Manager.GetString('gbDesc');
-   gbDescription.DoubleBuffered := true;
-   gbDescription.Constraints.MinHeight := gbDescription.Height;
+   gbDesc := TGroupBox.Create(Self);
+   gbDesc.Parent := Self;
+   gbDesc.SetBounds(0, 0, 400, 77);
+   gbDesc.ParentFont := false;
+   gbDesc.Font.Color := clBlack;
+   gbDesc.Align := alTop;
+   gbDesc.Caption := i18Manager.GetString('gbDesc');
+   gbDesc.DoubleBuffered := true;
+   gbDesc.Constraints.MinHeight := gbDesc.Height;
 
-   splDescription := TSplitter.Create(Self);
-   splDescription.Parent := Self;
-   splDescription.Align := gbDescription.Align;
+   splDesc := TSplitter.Create(Self);
+   splDesc.Parent := Self;
+   splDesc.Color := clWhite;
+   splDesc.Align := gbDesc.Align;
 
-   memDescription := TMemo.Create(gbDescription);
-   memDescription.Parent := gbDescription;
-   memDescription.SetBounds(5, 17, 378, 35);
-   memDescription.ParentFont := false;
-   memDescription.Font.Style := [];
-   memDescription.Font.Color := clGreen;
-   memDescription.WordWrap := false;
-   memDescription.DoubleBuffered := true;
-   memDescription.ScrollBars := ssVertical;
-   memDescription.Anchors := [akTop, akBottom, akLeft, akRight];
-   memDescription.OnChange := OnChangeDesc;
+   memDesc := TMemo.Create(gbDesc);
+   memDesc.Parent := gbDesc;
+   memDesc.SetBounds(5, 17, 378, 35);
+   memDesc.ParentFont := false;
+   memDesc.Font.Style := [];
+   memDesc.Font.Color := clGreen;
+   memDesc.WordWrap := false;
+   memDesc.DoubleBuffered := true;
+   memDesc.ScrollBars := ssVertical;
+   memDesc.Anchors := [akTop, akBottom, akLeft, akRight];
+   memDesc.OnChange := OnChangeDesc;
 
-   chkInclDescCode := TCheckBox.Create(gbDescription);
-   chkInclDescCode.Parent := gbDescription;
+   chkInclDescCode := TCheckBox.Create(gbDesc);
+   chkInclDescCode.Parent := gbDesc;
    chkInclDescCode.ParentFont := false;
    chkInclDescCode.Font.Style := [];
    chkInclDescCode.Font.Color := clWindowText;
@@ -358,8 +359,8 @@ begin
    chkInclDescCode.Anchors := [akBottom, akLeft];
    chkInclDescCode.OnClick := OnClickInclDescCode;
 
-   chkInclDescFlow := TCheckBox.Create(gbDescription);
-   chkInclDescFlow.Parent := gbDescription;
+   chkInclDescFlow := TCheckBox.Create(gbDesc);
+   chkInclDescFlow.Parent := gbDesc;
    chkInclDescFlow.ParentFont := false;
    chkInclDescFlow.Font.Style := [];
    chkInclDescFlow.Font.Color := clWindowText;
@@ -493,31 +494,34 @@ begin
    edtLibrary.OnChange := OnChangeLib;
    edtLibrary.Hint := ReplaceStr(i18Manager.GetFormattedString('edtLibraryHint', [GInfra.CurrentLang.LibraryExt]), '##', CRLF);
 
-   gbParameters := TGroupBox.Create(Self);
-   gbParameters.Parent := Self;
-   gbParameters.SetBounds(0, 215, 400, 110);
-   gbParameters.ParentFont := false;
-   gbParameters.Font.Color := clBlack;
-   gbParameters.Caption := i18Manager.GetString('Params');
-   gbParameters.Constraints.MinHeight := gbParameters.Height;
-   gbParameters.DoubleBuffered := true;
-   gbParameters.Align := alTop;
+   gbParams := TGroupBox.Create(Self);
+   gbParams.Parent := Self;
+   gbParams.SetBounds(0, 215, 400, 110);
+   gbParams.ParentFont := false;
+   gbParams.Font.Color := clBlack;
+   gbParams.Caption := i18Manager.GetString('Params');
+   gbParams.Constraints.MinHeight := gbParams.Height;
+   gbParams.DoubleBuffered := true;
+   gbParams.Align := alTop;
 
-   splParameters := TSplitter.Create(Self);
-   splParameters.Parent := Self;
-   splParameters.Align := gbParameters.Align;
-   splParameters.OnMoved := OnMovedParams;
+   splParams := TSplitter.Create(Self);
+   splParams.Parent := Self;
+   splParams.Color := clWhite;
+   splParams.Align := gbParams.Align;
+   splParams.OnMoved := OnMovedParams;
 
-   lblParameters := TLabel.Create(gbParameters);
-   lblParameters.Parent := gbParameters;
-   lblParameters.Font.Style := [];
-   lblParameters.ParentFont := false;
-   lblParameters.Font.Color := clWindowText;
-   lblParameters.SetBounds(8, 18, 0, 13);
-   lblParameters.Caption := i18Manager.GetString('lblParameters');
+   lblParams := TLabel.Create(gbParams);
+   lblParams.Parent := gbParams;
+   lblParams.Font.Style := [];
+   lblParams.ParentFont := false;
+   lblParams.Font.Color := clWindowText;
+   lblParams.SetBounds(8, 18, 0, 13);
+   lblParams.Caption := i18Manager.GetString('lblParameters');
 
-   sbxElements := TScrollBox.Create(gbParameters);
-   sbxElements.Parent := gbParameters;
+   sbxElements := TScrollBox.Create(gbParams);
+   sbxElements.Parent := gbParams;
+   sbxElements.ParentColor := false;
+   sbxElements.Color := clWhite;
    sbxElements.Ctl3D := false;
    sbxElements.BorderStyle := bsNone;
    sbxElements.Constraints.MaxHeight := 44;
@@ -526,8 +530,8 @@ begin
    sbxElements.VertScrollBar.Tracking := true;
    sbxElements.Anchors := [akTop, akBottom, akLeft];
 
-   btnAddElement := TButton.Create(gbParameters);
-   btnAddElement.Parent := gbParameters;
+   btnAddElement := TButton.Create(gbParams);
+   btnAddElement.Parent := gbParams;
    btnAddElement.ParentFont := false;
    btnAddElement.Font.Style := [];
    btnAddElement.DoubleBuffered := true;
@@ -542,7 +546,7 @@ end;
 
 procedure TUserFunctionHeader.OnMovedParams(Sender: TObject);
 begin
-   sbxElements.Constraints.MaxHeight := gbParameters.Height - 66;
+   sbxElements.Constraints.MaxHeight := gbParams.Height - 66;
 end;
 
 function TUserFunctionHeader.CreateElement: TElement;
@@ -553,7 +557,7 @@ end;
 procedure TUserFunctionHeader.Localize(const AList: TStringList);
 begin
    lblType.Caption := AList.Values['lblType'];
-   lblParameters.Caption := AList.Values['lblParameters'];
+   lblParams.Caption := AList.Values['lblParameters'];
    btnAddElement.Caption := AList.Values['btnAddParm'];
    edtLibrary.Hint := Format(AList.Values['edtLibraryHint'], [GInfra.CurrentLang.LibraryExt]);
    if cbType.Items.Count > 0 then
@@ -797,19 +801,19 @@ begin
    else
       lType := cbType.Text;
    tag2.SetAttribute(TYPE_ATTR, lType);
-   if memDescription.Text <> '' then
+   if memDesc.Text <> '' then
    begin
       tag3 := ATag.OwnerDocument.CreateElement('desc');
-      TXMLProcessor.AddCDATA(tag3, ReplaceStr(memDescription.Text, CRLF, CRLF_PLACEHOLDER));
+      TXMLProcessor.AddCDATA(tag3, ReplaceStr(memDesc.Text, CRLF, CRLF_PLACEHOLDER));
       tag2.AppendChild(tag3);
    end;
    tag2.SetAttribute('show_body', BoolToStr(chkBodyVisible.Checked, true));
    tag2.SetAttribute('desc_incl', BoolToStr(chkInclDescCode.Checked, true));
    tag2.SetAttribute('desc_incl_flow', BoolToStr(chkInclDescFlow.Checked, true));
    FLocalVars.ExportToXMLTag(tag2);
-   tag2.SetAttribute('descrh', IntToStr(gbDescription.Height));
+   tag2.SetAttribute('descrh', IntToStr(gbDesc.Height));
    tag2.SetAttribute('headerh', IntToStr(gbHeader.Height));
-   tag2.SetAttribute('parmsh', IntToStr(gbParameters.Height));
+   tag2.SetAttribute('parmsh', IntToStr(gbParams.Height));
    tag2.SetAttribute('lvarsh', IntToStr(FLocalVars.Height));
    if (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
       FUserFunction.Body.ExportToXMLTag(tag);
@@ -829,7 +833,7 @@ begin
    cbType.OnChange(cbType);
    tag2 := TXMLProcessor.FindChildTag(ATag, 'desc');
    if tag2 <> nil then
-      memDescription.Text := ReplaceStr(tag2.Text, CRLF_PLACEHOLDER, CRLF);
+      memDesc.Text := ReplaceStr(tag2.Text, CRLF_PLACEHOLDER, CRLF);
    if ATag.GetAttribute('show_body') = 'False' then
       chkBodyVisible.Checked := false;
    chkInclDescCode.Checked := ATag.GetAttribute('desc_incl') = 'True';
@@ -837,15 +841,15 @@ begin
    FLocalVars.ImportFromXMLTag(ATag);
    idx := StrToIntDef(ATag.GetAttribute('descrh'), -1);
    if idx > -1 then
-      gbDescription.Height := idx;
+      gbDesc.Height := idx;
    idx := StrToIntDef(ATag.GetAttribute('headerh'), -1);
    if idx > -1 then
       gbHeader.Height := idx;
    idx := StrToIntDef(ATag.GetAttribute('parmsh'), -1);
    if idx > -1 then
    begin
-      gbParameters.Height := idx;
-      sbxElements.Constraints.MaxHeight := gbParameters.Height - 66;
+      gbParams.Height := idx;
+      sbxElements.Constraints.MaxHeight := gbParams.Height - 66;
    end;
    idx := StrToIntDef(ATag.GetAttribute('lvarsh'), -1);
    if idx > -1 then

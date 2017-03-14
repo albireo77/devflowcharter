@@ -21,12 +21,14 @@ object PageControlForm: TPageControlForm
     Width = 407
     Height = 517
     Align = alClient
+    DoubleBuffered = True
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
     OwnerDraw = True
+    ParentDoubleBuffered = False
     ParentFont = False
     TabOrder = 0
     TabWidth = 65

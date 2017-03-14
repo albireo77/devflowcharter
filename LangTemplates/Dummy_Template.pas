@@ -465,7 +465,7 @@ begin
                   begin
                      // assemble entire function section
                      if func.Header.chkInclDescCode.Checked then
-                        headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s2', func.Header.memDescription.Text)
+                        headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s2', func.Header.memDesc.Text)
                      else
                         TInfra.InsertTemplateLines(headerTemplate, '%s2', nil);
                      funcTemplate := TStringList.Create;
@@ -590,7 +590,7 @@ begin
             params := params + TParameter(iterp.Next).cbType.Text;
          end;
          if AHeader.chkInclDescFlow.Checked then
-            desc := AHeader.memDescription.Text;
+            desc := AHeader.memDesc.Text;
          lcrlf := CRLF;
       end;
    end;
