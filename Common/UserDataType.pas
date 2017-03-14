@@ -135,6 +135,8 @@ begin
 
    sbxElements := TScrollBox.Create(Self);
    sbxElements.Parent := Self;
+   sbxElements.ParentColor := false;
+   sbxElements.Color := clWhite;
    sbxElements.Ctl3D := false;
    sbxElements.BorderStyle := bsNone;
    sbxElements.Constraints.MaxHeight := AParentForm.Height - 233;
@@ -390,6 +392,7 @@ begin
    edtSize := TSizeEdit.Create(Self);
    edtSize.SetBounds(195, 2, 43, 17);
    edtSize.BorderStyle := bsNone;
+   edtSize.Color := clWhite;
    edtSize.OnChange := OnChangeSize;
 
 end;
