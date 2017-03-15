@@ -1,3 +1,16 @@
+4.2 [15.03.2017]
+- fix heavy flicker when changing tabs (function headers or data types)
+- selective import for functions and data types
+- Settings: make compiler command more flexible; now it is executed without implicit command to start Windows command prompt;
+            this command must be explicitly included in compiler command
+
+IMPORTANT NOTES:
+Command to start Windows command prompt (cmd.exe) must be explicitly added to compiler command. Example:
+Old command:
+D:\PascalCompiler\bin\fpc.bat "%s1"
+New command:
+cmd.exe /k D:\123\PascalCompiler\bin\fpc.bat "%s1"
+
 4.1 [22.02.2017]
 - fix select all operation not working for multiline components when Navigator window was visible
 - fix not changing flowchart tab when changing function header tab

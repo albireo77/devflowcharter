@@ -37,6 +37,7 @@ const
    CHECK_BOX    = 8;
    SPEED_BUTTON = 9;
    EDIT_TEXT    = 10;
+   STATIC_TEXT  = 11;
    
 type
 
@@ -184,16 +185,13 @@ begin
                         else
                         begin
                            case comp.Tag of
-                              BUTTON:       TButton(comp).Caption := value;
                               MENU_ITEM:    TMenuItem(comp).Caption := value;
                               DIALOG:       TOpenDialog(comp).Filter := value;
-                              GROUP_BOX:    TGroupBox(comp).Caption := value;
                               EDIT_HINT:    TEdit(comp).Hint := value;
                               EDIT_TEXT:    TEdit(comp).Text := value;
-                              LABELL:       TLabel(comp).Caption := value;
-                              RADIO_BUTTON: TRadioButton(comp).Caption := value;
-                              CHECK_BOX:    TCheckBox(comp).Caption := value;
                               SPEED_BUTTON: TSpeedButton(comp).Hint := value;
+                           else
+                              THackControl(comp).Caption := value;
                            end;
                         end;
                      end;

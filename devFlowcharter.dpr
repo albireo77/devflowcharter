@@ -79,6 +79,7 @@ uses
   CommonTypes in 'Common\CommonTypes.pas',
   Text_Block in 'Blocks\Text_Block.pas',
   SortListDecorator in 'Common\SortListDecorator.pas',
+  SelectImport_Form in 'Forms\SelectImport_Form.pas' {SelectImportForm},
   EditMemo_Form in 'Forms\EditMemo_Form.pas' {MemoEditorForm},
   LangDefinition in 'Common\LangDefinition.pas',
   Dummy_Template in 'LangTemplates\Dummy_Template.pas',
@@ -86,8 +87,7 @@ uses
   StatementMemo in 'Common\StatementMemo.pas',
   MultiLine_Block in 'Blocks\MultiLine_Block.pas',
   Folder_Block in 'Blocks\Folder_Block.pas',
-  BlockTabSheet in 'Common\BlockTabSheet.pas',
-  SelectImport_Form in 'Forms\SelectImport_Form.pas' {SelectImportForm};
+  BlockTabSheet in 'Common\BlockTabSheet.pas';
 
 {$R *.res}
 
@@ -105,7 +105,7 @@ begin
   Application.CreateForm(TGotoForm, GotoForm);
   Application.CreateForm(THelpForm, HelpForm);
   Application.CreateForm(TNavigatorForm, NavigatorForm);
-  Application.CreateForm(TMemoEditorForm, MemoEditorForm);
   Application.CreateForm(TSelectImportForm, SelectImportForm);
+  Application.CreateForm(TMemoEditorForm, MemoEditorForm);
   Application.Run;
 end.

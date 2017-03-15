@@ -87,10 +87,10 @@
         <VerInfo_MajorVer>4</VerInfo_MajorVer>
         <AppEnableHighDPI>true</AppEnableHighDPI>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
-        <VerInfo_MinorVer>0</VerInfo_MinorVer>
-        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=4.0.0.355;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_MinorVer>2</VerInfo_MinorVer>
+        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=4.2.56.355;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_Build>355</VerInfo_Build>
-        <VerInfo_Release>0</VerInfo_Release>
+        <VerInfo_Release>56</VerInfo_Release>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
@@ -101,8 +101,8 @@
         <VerInfo_MajorVer>4</VerInfo_MajorVer>
         <AppEnableHighDPI>true</AppEnableHighDPI>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
-        <VerInfo_MinorVer>1</VerInfo_MinorVer>
-        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=4.1.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_MinorVer>2</VerInfo_MinorVer>
+        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=4.2.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_Build>0</VerInfo_Build>
         <VerInfo_Release>0</VerInfo_Release>
     </PropertyGroup>
@@ -192,6 +192,9 @@
         <DCCReference Include="Common\CommonTypes.pas"/>
         <DCCReference Include="Blocks\Text_Block.pas"/>
         <DCCReference Include="Common\SortListDecorator.pas"/>
+        <DCCReference Include="Forms\SelectImport_Form.pas">
+            <Form>SelectImportForm</Form>
+        </DCCReference>
         <DCCReference Include="Forms\EditMemo_Form.pas">
             <Form>MemoEditorForm</Form>
         </DCCReference>
@@ -202,10 +205,6 @@
         <DCCReference Include="Blocks\MultiLine_Block.pas"/>
         <DCCReference Include="Blocks\Folder_Block.pas"/>
         <DCCReference Include="Common\BlockTabSheet.pas"/>
-        <DCCReference Include="Forms\SelectImport_Form.pas">
-            <Form>SelectImportForm</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <RcItem Include="resources\assign.cur">
             <ResourceType>CURSOR</ResourceType>
             <ResourceId>ASSIGN</ResourceId>

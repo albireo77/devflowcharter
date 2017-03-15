@@ -3,9 +3,9 @@ unit SelectImport_Form;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-  Base_Form, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Buttons;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Buttons,
+  Base_Form;
 
 type
   TSelectImportForm = class(TBaseForm)
