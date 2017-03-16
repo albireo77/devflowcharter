@@ -1,5 +1,9 @@
 *.dcu
 *.~*
 *.exe
+*.stat
+*.dres
+*.local
+*.identcache
 ThirdParty/*
 !ThirdParty/ThirdParty.zip
