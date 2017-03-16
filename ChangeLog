@@ -9,7 +9,7 @@ Command to start Windows command prompt (cmd.exe) must be explicitly added to co
 Old command:
 D:\PascalCompiler\bin\fpc.bat "%s1"
 New command:
-cmd.exe /k D:\123\PascalCompiler\bin\fpc.bat "%s1"
+cmd.exe /k D:\PascalCompiler\bin\fpc.bat "%s1"
 
 4.1 [22.02.2017]
 - fix select all operation not working for multiline components when Navigator window was visible

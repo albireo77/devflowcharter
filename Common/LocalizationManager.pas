@@ -187,9 +187,9 @@ begin
                            case comp.Tag of
                               MENU_ITEM:    TMenuItem(comp).Caption := value;
                               DIALOG:       TOpenDialog(comp).Filter := value;
-                              EDIT_HINT:    TEdit(comp).Hint := value;
                               EDIT_TEXT:    TEdit(comp).Text := value;
-                              SPEED_BUTTON: TSpeedButton(comp).Hint := value;
+                              EDIT_HINT,
+                              SPEED_BUTTON: THackControl(comp).Hint := value;
                            else
                               THackControl(comp).Caption := value;
                            end;
