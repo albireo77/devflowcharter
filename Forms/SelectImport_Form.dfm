@@ -1,11 +1,11 @@
 object SelectImportForm: TSelectImportForm
   Left = 0
   Top = 0
+  Width = 279
+  Height = 414
+  AutoScroll = True
   BorderIcons = [biSystemMenu]
-  BorderStyle = bsSingle
   Caption = 'Import'
-  ClientHeight = 368
-  ClientWidth = 266
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

@@ -59,6 +59,8 @@ end;
 procedure TSelectImportForm.FormCreate(Sender: TObject);
 begin
    Constraints.MaxHeight := (Screen.Height * 9) div 10;
+   Constraints.MaxWidth := 279;
+   Constraints.MinWidth := 279;
 end;
 
 procedure TSelectImportForm.FormShow(Sender: TObject);
@@ -108,7 +110,7 @@ begin
       chkSelectAll.Top := pnlImports.BoundsRect.Bottom + 5;
       btnOk.Top := chkSelectAll.Top;
       btnCancel.Top := chkSelectAll.Top;
-      Height := btnCancel.BoundsRect.Bottom + 35;
+      Height := btnCancel.BoundsRect.Bottom + 45;
    end;
 end;
 
