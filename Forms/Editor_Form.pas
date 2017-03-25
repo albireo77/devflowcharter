@@ -134,6 +134,7 @@ type
     procedure PasteComment(const AText: string);
     function BuildBracketHint(startLine, endLine: integer): string;
     function CharToPixels(P: TBufferCoord): TPoint;
+    procedure GenerateCode(const APreserveBookMarks: boolean = false);
   public
     { Public declarations }
     procedure SetFormAttributes;
@@ -397,7 +398,7 @@ begin
    end;
 end;
 
-procedure TEditorForm.FormShow(Sender: TObject);
+procedure TEditorForm.GenerateCode(const APreserveBookMarks: boolean = false);
 var
    lang: TLangDefinition;
    skipFuncBody: boolean;
@@ -496,7 +497,8 @@ begin
 {$IFDEF USE_CODEFOLDING}
          AllFoldRanges.ClearAll;
 {$ENDIF}
-         Marks.Clear;
+         if not APreserveBookMarks then
+            Marks.Clear;
          Highlighter := nil;
          Lines.Assign(newLines);
          if GSettings.EditorShowRichText then
@@ -516,7 +518,11 @@ begin
    finally
       newLines.Free;
    end;
+end;
 
+procedure TEditorForm.FormShow(Sender: TObject);
+begin
+   GenerateCode;
 end;
 
 procedure TEditorForm.pmPopMenuPopup(Sender: TObject);
@@ -1242,7 +1248,7 @@ begin
    topLine := memCodeEditor.TopLine;
    memCodeEditor.BeginUpdate;
    try
-      FormShow(Self);
+      GenerateCode(true);
       if AObject <> nil then
       begin
          codeRange := SelectCodeRange(AObject, false);
