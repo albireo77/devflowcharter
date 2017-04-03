@@ -1243,9 +1243,13 @@ procedure TEditorForm.RefreshEditorForObject(const AObject: TObject);
 var
    topLine, line: integer;
    codeRange: TCodeRange;
+   caretXY: TBufferCoord;
+   scroll: boolean;
 begin
    FFocusEditor := false;
+   scroll := false;
    topLine := memCodeEditor.TopLine;
+   caretXY := memCodeEditor.CaretXY;
    memCodeEditor.BeginUpdate;
    try
       GenerateCode(true);
@@ -1255,15 +1259,17 @@ begin
          line := codeRange.FirstRow + 1;
          if (line > 0) and not codeRange.IsFolded then
          begin
-            if (line < topLine) or (line > topLine + memCodeEditor.LinesInWindow) then
-               memCodeEditor.GotoLineAndCenter(line)
-            else
-               memCodeEditor.TopLine := topLine;
-         end
-      end
-      else
-         memCodeEditor.TopLine := topLine;
+            scroll := (line < topLine) or (line > topLine + memCodeEditor.LinesInWindow);
+            if scroll then
+               memCodeEditor.GotoLineAndCenter(line);
+         end;
+      end;
    finally
+      if not scroll then
+      begin
+         memCodeEditor.CaretXY := caretXY;
+         memCodeEditor.TopLine := topLine;
+      end;
       memCodeEditor.EndUpdate;
    end;
 end;
