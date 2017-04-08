@@ -855,10 +855,12 @@ begin
       end;
       compilerOn := (langDef <> nil) and langDef.EnabledCompiler;
       lblCompiler.Enabled := compilerOn;
+      lblFileEncoding.Enabled := compilerOn;
       lblCompilerNoMain.Enabled := compilerOn;
       edtCompiler.Enabled := compilerOn;
       edtCompilerNoMain.Enabled := compilerOn;
       btnBrowseCompilers.Enabled := compilerOn;
+      cbFileEncoding.Enabled := compilerOn;
       if compilerOn then
       begin
          edtCompiler.Text := langDef.CompilerCommand;

@@ -1,3 +1,8 @@
+4.3 [08.04.2017]
+- Code Editor: preserve bookmarks and caret position during auto-update
+- enable scrollbar in import form
+- update Chinese translation file
+
 4.2 [15.03.2017]
 - fix heavy flicker when changing tabs (function headers or data types)
 - selective import for functions and data types
