@@ -163,7 +163,7 @@ var
 implementation
 
 uses
-   System.StrUtils, System.Contnrs, System.UITypes, System.Types, ApplicationCommon,
+   System.StrUtils, System.Contnrs, System.UITypes, System.Types, WinApi.Messages, ApplicationCommon,
    Goto_Form, Settings, LangDefinition, Main_Block, Help_Form, Comment, XMLProcessor,
    Main_Form, Base_Block, SynEditTypes, ParserHelper;
 
@@ -1251,6 +1251,7 @@ begin
    topLine := memCodeEditor.TopLine;
    caretXY := memCodeEditor.CaretXY;
    memCodeEditor.BeginUpdate;
+   SendMessage(memCodeEditor.Handle, WM_SETREDRAW, WPARAM(False), 0);
    try
       GenerateCode(true);
       if AObject <> nil then
@@ -1270,6 +1271,8 @@ begin
          memCodeEditor.CaretXY := caretXY;
          memCodeEditor.TopLine := topLine;
       end;
+      SendMessage(memCodeEditor.Handle, WM_SETREDRAW, WPARAM(True), 0);
+      memCodeEditor.Repaint;
       memCodeEditor.EndUpdate;
    end;
 end;
