@@ -52,8 +52,8 @@ type
       FMainPage: TBlockTabSheet;
       class var FInstance: TProject;
       procedure SetGlobals;
-      function GetComponents(const ASortType: integer = NO_SORT; const AClassName: string = ''): IIterator;
-      function GetComponentByName(const AClassName: string; const AName: string): TComponent;
+      function GetComponents(ASortType: integer = NO_SORT; AClass: TClass = nil): IIterator;
+      function GetComponentByName(AClass: TClass; const AName: string): TComponent;
       function GetIWinControlComponent(const AHandle: THandle): IWinControl;
       procedure RefreshZOrder;
       constructor Create;
@@ -283,20 +283,20 @@ end;
 
 function TProject.GetComments: IIterator;
 begin
-   result := GetComponents(NO_SORT, TComment.ClassName);
+   result := GetComponents(NO_SORT, TComment);
 end;
 
 function TProject.GetUserFunctions(const ASortType: integer = PAGE_INDEX_SORT): IIterator;
 begin
-   result := GetComponents(ASortType, TUserFunction.ClassName);
+   result := GetComponents(ASortType, TUserFunction);
 end;
 
 function TProject.GetUserDataTypes: IIterator;
 begin
-   result := GetComponents(PAGE_INDEX_SORT, TUserDataType.ClassName);
+   result := GetComponents(PAGE_INDEX_SORT, TUserDataType);
 end;
 
-function TProject.GetComponents(const ASortType: integer = NO_SORT; const AClassName: string = ''): IIterator;
+function TProject.GetComponents(ASortType: integer = NO_SORT; AClass: TClass = nil): IIterator;
 var
    i: integer;
    list: TComponentList;
@@ -307,9 +307,9 @@ begin
       list.Capacity := FComponentList.Count;
    for i := 0 to FComponentList.Count-1 do
    begin
-       if AClassName <> '' then
+       if AClass <> nil then
        begin
-          if FComponentList[i].ClassNameIs(AClassName) then
+          if FComponentList[i].ClassType = AClass then
              list.Add(FComponentList[i]);
        end
        else
@@ -1168,15 +1168,15 @@ end;
 
 function TProject.GetUserDataType(const ATypeName: string): TUserDataType;
 begin
-   result := TUserDataType(GetComponentByName(TUserDataType.ClassName, ATypeName));
+   result := TUserDataType(GetComponentByName(TUserDataType, ATypeName));
 end;
 
 function TProject.GetUserFunction(const AFunctionName: string): TUserFunction;
 begin
-   result := TUserFunction(GetComponentByName(TUserFunction.ClassName, AFunctionName));
+   result := TUserFunction(GetComponentByName(TUserFunction, AFunctionName));
 end;
 
-function TProject.GetComponentByName(const AClassName: string; const AName: string): TComponent;
+function TProject.GetComponentByName(AClass: TClass; const AName: string): TComponent;
 var
    i: integer;
    tab: ITabbable;
@@ -1186,7 +1186,7 @@ begin
    begin
       for i := 0 to FComponentList.Count-1 do
       begin
-         if FComponentList[i].ClassNameIs(AClassName) and Supports(FComponentList[i], ITabbable, tab) then
+         if (FComponentList[i].ClassType = AClass) and Supports(FComponentList[i], ITabbable, tab) then
          begin
             if TInfra.SameStrings(tab.GetName, AName) then
             begin
