@@ -1272,7 +1272,7 @@ begin
          memCodeEditor.TopLine := topLine;
       end;
       SendMessage(memCodeEditor.Handle, WM_SETREDRAW, WPARAM(True), 0);
-      memCodeEditor.Repaint;
+      memCodeEditor.Invalidate;
       memCodeEditor.EndUpdate;
    end;
 end;
