@@ -1244,10 +1244,10 @@ var
    topLine, line: integer;
    codeRange: TCodeRange;
    caretXY: TBufferCoord;
-   scroll: boolean;
+   gotoLine: boolean;
 begin
    FFocusEditor := false;
-   scroll := false;
+   gotoLine := false;
    topLine := memCodeEditor.TopLine;
    caretXY := memCodeEditor.CaretXY;
    memCodeEditor.BeginUpdate;
@@ -1260,13 +1260,13 @@ begin
          line := codeRange.FirstRow + 1;
          if (line > 0) and not codeRange.IsFolded then
          begin
-            scroll := (line < topLine) or (line > topLine + memCodeEditor.LinesInWindow);
-            if scroll then
+            gotoLine := (line < topLine) or (line > topLine + memCodeEditor.LinesInWindow);
+            if gotoLine then
                memCodeEditor.GotoLineAndCenter(line);
          end;
       end;
    finally
-      if not scroll then
+      if not gotoLine then
       begin
          memCodeEditor.CaretXY := caretXY;
          memCodeEditor.TopLine := topLine;
