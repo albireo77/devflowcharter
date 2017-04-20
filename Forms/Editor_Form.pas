@@ -1245,12 +1245,15 @@ var
    codeRange: TCodeRange;
    caretXY: TBufferCoord;
    gotoLine: boolean;
+   scrollsEnabled: boolean;
 begin
    FFocusEditor := false;
    gotoLine := false;
    topLine := memCodeEditor.TopLine;
    caretXY := memCodeEditor.CaretXY;
-   memCodeEditor.BeginUpdate;
+   scrollsEnabled := memCodeEditor.ScrollBars = TScrollStyle.ssBoth;
+   if scrollsEnabled then
+      memCodeEditor.BeginUpdate;
    SendMessage(memCodeEditor.Handle, WM_SETREDRAW, WPARAM(False), 0);
    try
       GenerateCode(true);
@@ -1273,7 +1276,8 @@ begin
       end;
       SendMessage(memCodeEditor.Handle, WM_SETREDRAW, WPARAM(True), 0);
       memCodeEditor.Invalidate;
-      memCodeEditor.EndUpdate;
+      if scrollsEnabled then
+         memCodeEditor.EndUpdate;
    end;
 end;
 
