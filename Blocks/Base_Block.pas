@@ -81,7 +81,7 @@ type
          procedure UpdateMemoVScroll;
          procedure SetMemoHScroll(AValue: boolean);
          procedure UpdateMemoHScroll;
-         procedure ResetMemoScrollBars(const AScrollStyle: TScrollStyle; const AMemo: TMemo);
+         procedure ResetMemoScrollBars(const AStyle: TScrollStyle; const AMemo: TMemo);
          procedure SetMemoWordWrap(AValue: boolean);
          function GetMemoWordWrap: boolean;
          procedure WMMouseLeave(var Msg: TMessage); message WM_MOUSELEAVE;
@@ -1767,10 +1767,10 @@ begin
             count := count + 1;
          if count > lineCount then
          begin
-            if memo.ScrollBars = ssNone then
-               memo.ScrollBars := ssVertical
+            if memo.ScrollBars = TScrollStyle.ssNone then
+               memo.ScrollBars := TScrollStyle.ssVertical
             else if memo.ScrollBars = TScrollStyle.ssHorizontal then
-               memo.ScrollBars := ssBoth;
+               memo.ScrollBars := TScrollStyle.ssBoth;
          end
          else
             ResetMemoScrollBars(TScrollStyle.ssHorizontal, memo);
@@ -1797,7 +1797,7 @@ var
    pos, cnt, w, i: integer;
    memo: TMemo;
    lCanvas: TCanvas;
-   mrgns: longint;
+   margns: longint;
 begin
    memo := GetFrontMemo;
    if memo <> nil then
@@ -1816,39 +1816,39 @@ begin
                if cnt > w then
                   w := cnt;
             end;
-            mrgns := SendMessage(memo.Handle, EM_GETMARGINS, 0, 0);
-            if w > (memo.ClientWidth - HiWord(mrgns) - LoWord(mrgns) - 3) then
+            margns := SendMessage(memo.Handle, EM_GETMARGINS, 0, 0);
+            if w > (memo.ClientWidth - HiWord(margns) - LoWord(margns) - 3) then
             begin
-               if memo.ScrollBars = ssNone then
-                  memo.ScrollBars := System.UITypes.TScrollStyle.ssHorizontal
-               else if memo.ScrollBars = ssVertical then
-                  memo.ScrollBars := ssBoth;
+               if memo.ScrollBars = TScrollStyle.ssNone then
+                  memo.ScrollBars := TScrollStyle.ssHorizontal
+               else if memo.ScrollBars = TScrollStyle.ssVertical then
+                  memo.ScrollBars := TScrollStyle.ssBoth;
             end
             else
-               ResetMemoScrollBars(ssVertical, memo);
+               ResetMemoScrollBars(TScrollStyle.ssVertical, memo);
          finally
             ReleaseDC(memo.Handle, lCanvas.Handle);
             lCanvas.Free;
          end;
       end
       else
-         ResetMemoScrollBars(ssVertical, memo);
+         ResetMemoScrollBars(TScrollStyle.ssVertical, memo);
       memo.SelStart := pos;
    end;
 end;
 
-procedure TBlock.ResetMemoScrollBars(const AScrollStyle: TScrollStyle; const AMemo: TMemo);
+procedure TBlock.ResetMemoScrollBars(const AStyle: TScrollStyle; const AMemo: TMemo);
 var
-   scrollStyle: TScrollStyle;
+   sStyle: TScrollStyle;
 begin
-   if AScrollStyle = ssVertical then
-      scrollStyle := System.UITypes.TScrollStyle.ssHorizontal
+   if AStyle = TScrollStyle.ssVertical then
+      sStyle := TScrollStyle.ssHorizontal
    else
-      scrollStyle := ssVertical;
-   if AMemo.ScrollBars = ssBoth then
-      AMemo.ScrollBars := AScrollStyle
-   else if AMemo.ScrollBars = scrollStyle then
-      AMemo.ScrollBars := ssNone;
+      sStyle := TScrollStyle.ssVertical;
+   if AMemo.ScrollBars = TScrollStyle.ssBoth then
+      AMemo.ScrollBars := AStyle
+   else if AMemo.ScrollBars = sStyle then
+      AMemo.ScrollBars := TScrollStyle.ssNone;
 end;
 
 procedure TBlock.SetMemoWordWrap(AValue: boolean);
