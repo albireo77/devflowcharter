@@ -132,16 +132,6 @@ type
     { Public declarations }
   end;
 
-const
-  NONE_SELECTED    = 0;
-  ELLIPSE_SELECTED = 1;
-  INOUT_SELECTED   = 2;
-  DIAMOND_SELECTED = 3;
-  RECT_SELECTED    = 4;
-  ROUTINE_SELECTED = 5;
-  RSIGN_SELECTED   = 6;
-  FOLDER_SELECTED  = 7;
-
 var
   SettingsForm: TSettingsForm;
 
@@ -250,48 +240,35 @@ procedure TSettingsForm.imgColorsClick(Sender: TObject);
 var
    pnt: TPoint;
 begin
-   imgColors.Tag := NONE_SELECTED;
    pnt := imgColors.ScreenToClient(Mouse.CursorPos);
-
-   if PtInRect(Rect(10, 10, 60, 35), pnt) then
-      imgColors.Tag := ELLIPSE_SELECTED
-   else if PtInRect(Rect(10, 45, 60, 65), pnt) then
-      imgColors.Tag := INOUT_SELECTED
-   else if PtInRect(Rect(75, 13, 125, 63), pnt) then
-      imgColors.Tag := DIAMOND_SELECTED
-   else if PtInRect(Rect(140, 10, 190, 35), pnt) then
-      imgColors.Tag := RECT_SELECTED
-   else if PtInRect(Rect(140, 40, 190, 65), pnt) then
-      imgColors.Tag := ROUTINE_SELECTED
-   else if PtInRect(Rect(205, 10, 252, 34), pnt) then
-      imgColors.Tag := RSIGN_SELECTED
-   else if PtInRect(Rect(205, 40, 255, 65), pnt) then
-      imgColors.Tag := FOLDER_SELECTED;
-
-   if (imgColors.Tag <> NONE_SELECTED) and ColorDialog.Execute then
+   if PtInRect(Rect(10, 10, 60, 35), pnt) then          // ellipse
+      pnt := Point(35, 22)
+   else if PtInRect(Rect(10, 45, 60, 65), pnt) then     // in out
+      pnt := Point(35, 55)
+   else if PtInRect(Rect(75, 13, 125, 63), pnt) then    // diamond
+      pnt := Point(100, 38)
+   else if PtInRect(Rect(140, 10, 190, 35), pnt) then   // rectangle
+      pnt := Point(165, 22)
+   else if PtInRect(Rect(140, 40, 190, 65), pnt) then   // routine
+      pnt := Point(165, 52)
+   else if PtInRect(Rect(205, 10, 252, 34), pnt) then   // roadsign
+      pnt := Point(229, 22)
+   else if PtInRect(Rect(205, 40, 255, 65), pnt) then   // folder
+      pnt := Point(230, 52)
+   else
+      pnt := Point(-1, -1);
+   if (not InvalidPoint(pnt)) and ColorDialog.Execute then
    begin
       imgColors.Canvas.Brush.Color := ColorDialog.Color;
-      case imgColors.Tag of
-         ELLIPSE_SELECTED: pnt := Point(35, 22);
-         INOUT_SELECTED:   pnt := Point(35, 55);
-         DIAMOND_SELECTED: pnt := Point(100, 38);
-         RECT_SELECTED:    pnt := Point(165, 22);
-         RSIGN_SELECTED:   pnt := Point(229, 22);
-         ROUTINE_SELECTED:
-         begin
-            pnt := Point(165, 52);
-            imgColors.Canvas.FloodFill(143, 42, clBlack, fsBorder);
-            imgColors.Canvas.FloodFill(187, 42, clBlack, fsBorder);
-         end;
-         FOLDER_SELECTED:
-         begin
-            pnt := Point(230, 52);
-            imgColors.Canvas.FloodFill(206, 41, clBlack, fsBorder);
-         end;
-      end;
       imgColors.Canvas.FloodFill(pnt.X, pnt.Y, clBlack, fsBorder);
+      if pnt = Point(165, 52) then
+      begin
+         imgColors.Canvas.FloodFill(143, 42, clBlack, fsBorder);
+         imgColors.Canvas.FloodFill(187, 42, clBlack, fsBorder);
+      end
+      else if pnt = Point(230, 52) then
+         imgColors.Canvas.FloodFill(206, 41, clBlack, fsBorder);
    end;
-
 end;
 
 procedure TSettingsForm.chkMultiPrintClick(Sender: TObject);
