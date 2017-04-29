@@ -142,7 +142,6 @@ uses
 
 {$R *.dfm}
 
-
 procedure TSettingsForm.Localize(const AList: TStringList);
 var
    val: integer;
@@ -237,37 +236,46 @@ begin
 end;
 
 procedure TSettingsForm.imgColorsClick(Sender: TObject);
+const
+   colorPoints: array[0..6] of TPoint = ((X:35;  Y:22),    // ellipse
+                                         (X:35;  Y:55),    // in out
+                                         (X:100; Y:38),    // diamond
+                                         (X:165; Y:22),    // rectangle
+                                         (X:165; Y:52),    // routine
+                                         (X:229; Y:22),    // roadsign
+                                         (X:230; Y:52));   // folder
 var
    pnt: TPoint;
+   idx: integer;
 begin
+   idx := -1;
    pnt := imgColors.ScreenToClient(Mouse.CursorPos);
-   if PtInRect(Rect(10, 10, 60, 35), pnt) then          // ellipse
-      pnt := Point(35, 22)
-   else if PtInRect(Rect(10, 45, 60, 65), pnt) then     // in out
-      pnt := Point(35, 55)
-   else if PtInRect(Rect(75, 13, 125, 63), pnt) then    // diamond
-      pnt := Point(100, 38)
-   else if PtInRect(Rect(140, 10, 190, 35), pnt) then   // rectangle
-      pnt := Point(165, 22)
-   else if PtInRect(Rect(140, 40, 190, 65), pnt) then   // routine
-      pnt := Point(165, 52)
-   else if PtInRect(Rect(205, 10, 252, 34), pnt) then   // roadsign
-      pnt := Point(229, 22)
-   else if PtInRect(Rect(205, 40, 255, 65), pnt) then   // folder
-      pnt := Point(230, 52)
-   else
-      pnt := Point(-1, -1);
-   if (not InvalidPoint(pnt)) and ColorDialog.Execute then
+   if PtInRect(Rect(10, 10, 60, 35), pnt) then
+      idx := 0
+   else if PtInRect(Rect(10, 45, 60, 65), pnt) then
+      idx := 1
+   else if PtInRect(Rect(75, 13, 125, 63), pnt) then
+      idx := 2
+   else if PtInRect(Rect(140, 10, 190, 35), pnt) then
+      idx := 3
+   else if PtInRect(Rect(140, 40, 190, 65), pnt) then
+      idx := 4
+   else if PtInRect(Rect(205, 10, 252, 34), pnt) then
+      idx := 5
+   else if PtInRect(Rect(205, 40, 255, 65), pnt) then
+      idx := 6;
+   if (idx <> -1) and ColorDialog.Execute then
    begin
       imgColors.Canvas.Brush.Color := ColorDialog.Color;
+      pnt := colorPoints[idx];
       imgColors.Canvas.FloodFill(pnt.X, pnt.Y, clBlack, fsBorder);
-      if pnt = Point(165, 52) then
+      if idx = 6 then
+         imgColors.Canvas.FloodFill(206, 41, clBlack, fsBorder)
+      else if idx = 4 then
       begin
          imgColors.Canvas.FloodFill(143, 42, clBlack, fsBorder);
          imgColors.Canvas.FloodFill(187, 42, clBlack, fsBorder);
       end
-      else if pnt = Point(230, 52) then
-         imgColors.Canvas.FloodFill(206, 41, clBlack, fsBorder);
    end;
 end;
 
