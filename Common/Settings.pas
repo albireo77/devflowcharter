@@ -29,7 +29,7 @@ type
   TSettings = class(TObject)
   private
     { Private declarations }
-    
+
       FParseInput,
       FParseOutput,
       FParseAssign,
@@ -73,7 +73,7 @@ type
       FDiamondColor,
       FInOutColor,
       FRectColor,
-      FFoldColor,
+      FFolderColor,
       FRoadSignColor,
       FRoutineColor,
       FFontColor: TColor;
@@ -150,7 +150,7 @@ type
       property DiamondColor: TColor read FDiamondColor;
       property InOutColor: TColor read FInOutColor;
       property RectColor: TColor read FRectColor;
-      property FoldColor: TColor read FFoldColor;
+      property FolderColor: TColor read FFolderColor;
       property RoadSignColor: TColor read FRoadSignColor;
       property RoutineColor: TColor read FRoutineColor;
       property FontColor: TColor read FFontColor;
@@ -179,7 +179,7 @@ const
    KEY_DIAMOND_COLOR = 'DiamondColor';
    KEY_INOUT_COLOR = 'InOutColor';
    KEY_RECT_COLOR = 'RectColor';
-   KEY_FOLD_COLOR = 'FoldColor';
+   KEY_FOLDER_COLOR = 'FoldColor';
    KEY_ROADSIGN_COLOR = 'RoadSignColor';
    KEY_ROUTINE_COLOR = 'RoutineColor';
    KEY_FONT_COLOR = 'FontColor';
@@ -245,7 +245,7 @@ implementation
 
 uses
    System.SysUtils, System.Classes, System.Types, Vcl.Forms, System.Win.Registry,
-   ApplicationCommon, Main_Form, Navigator_Form, Settings_Form;
+   ApplicationCommon, Main_Form, Navigator_Form;
 
 constructor TSettings.Create;
 begin
@@ -295,7 +295,7 @@ begin
    FDiamondColor   := clWhite;
    FRoadSignColor  := clWhite;
    FRectColor      := clWhite;
-   FFoldColor      := clWhite;
+   FFolderColor    := clWhite;
    FFontColor      := OK_COLOR;
 
    FColumnV1Width  := 68;
@@ -341,8 +341,8 @@ begin
             FInOutColor := reg.ReadInteger(KEY_INOUT_COLOR);
          if reg.ValueExists(KEY_RECT_COLOR) then
             FRectColor := reg.ReadInteger(KEY_RECT_COLOR);
-         if reg.ValueExists(KEY_FOLD_COLOR) then
-            FFoldColor := reg.ReadInteger(KEY_FOLD_COLOR);
+         if reg.ValueExists(KEY_FOLDER_COLOR) then
+            FFolderColor := reg.ReadInteger(KEY_FOLDER_COLOR);
          if reg.ValueExists(KEY_ROADSIGN_COLOR) then
             FRoadSignColor := reg.ReadInteger(KEY_ROADSIGN_COLOR);
          if reg.ValueExists(KEY_ROUTINE_COLOR) then
@@ -528,7 +528,7 @@ begin
          reg.WriteInteger(KEY_DIAMOND_COLOR, FDiamondColor);
          reg.WriteInteger(KEY_INOUT_COLOR, FInOutColor);
          reg.WriteInteger(KEY_RECT_COLOR, FRectColor);
-         reg.WriteInteger(KEY_FOLD_COLOR, FFoldColor);
+         reg.WriteInteger(KEY_FOLDER_COLOR, FFolderColor);
          reg.WriteInteger(KEY_ROADSIGN_COLOR, FRoadSignColor);
          reg.WriteInteger(KEY_ROUTINE_COLOR, FRoutineColor);
          reg.WriteInteger(KEY_FONT_COLOR, FFontColor);
@@ -653,10 +653,10 @@ begin
             colorChanged := true;
             FRectColor := Pixels[165, 22];
          end;
-         if FFoldColor <> Pixels[230, 52] then
+         if FFolderColor <> Pixels[230, 52] then
          begin
             colorChanged := true;
-            FFoldColor := Pixels[230, 52];
+            FFolderColor := Pixels[230, 52];
          end;
       end;
       if (FFontColor <> pnlFont.Color) and not TInfra.IsNOkColor(pnlFont.Color) then
@@ -796,30 +796,7 @@ begin
       edtFontName.Text := FFlowchartFontName;
       SetCbFontSize(FEditorFontSize);
       SetCbFileEncoding(GInfra.CurrentLang.CompilerFileEncoding);
-      with imgShapes.Canvas do
-      begin
-         Pen.Color := SHAPE_BORDER_COLOR;
-         Brush.Color := FEllipseColor;
-         Ellipse(10, 10, 60, 35);
-         Brush.Color := FInOutColor;
-         Polygon([Point(20, 45), Point(60, 45), Point(50, 65), Point(10, 65), Point(20, 45)]);
-         Brush.Color := FDiamondColor;
-         Polygon([Point(75, 38), Point(100, 13), Point(125, 38), Point(100, 63), Point(75, 38)]);
-         Brush.Color := FRectColor;
-         Rectangle(140, 10, 190, 35);
-         Brush.Color := FRoutineColor;
-         Rectangle(140, 40, 190, 65);
-         Brush.Color := clBlack;
-         Rectangle(145, 40, 148, 65);
-         Rectangle(182, 40, 185, 65);
-         Brush.Color := FRoadSignColor;
-         Polygon([Point(205, 10), Point(240, 10), Point(252, 22), Point(240, 34), Point(205, 34), Point(205, 10)]);
-         Pen.Width := 2;
-         Brush.Color := FFoldColor;
-         Rectangle(205, 40, 255, 65);
-         Pen.Width := 1;
-         Polyline([Point(207, 42), Point(251, 42), Point(251, 61), Point(207, 61), Point(207, 42)]);
-      end;
+      DrawShapes(Self);
    end;
    ProtectFields;
 end;

@@ -25,7 +25,7 @@ interface
 
 uses
   Vcl.Controls, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Graphics, System.Classes, System.Types,
-  Base_Form;
+  Base_Form, Settings;
 
 type
   TSettingsForm = class(TBaseForm)
@@ -132,6 +132,7 @@ type
     { Private declarations }
   public
     procedure FillAllShapes(const AColor: TColor);
+    procedure DrawShapes(ASettings: TSettings);
   end;
 
 const
@@ -302,6 +303,34 @@ var
 begin
    for i := 0 to High(SHAPE_POINTS) do
       FillShape(i, AColor);
+end;
+
+procedure TSettingsForm.DrawShapes(ASettings: TSettings);
+begin
+   with imgShapes.Canvas do
+   begin
+      Pen.Color := SHAPE_BORDER_COLOR;
+      Brush.Color := ASettings.EllipseColor;
+      Ellipse(10, 10, 60, 35);
+      Brush.Color := ASettings.InOutColor;
+      Polygon([Point(20, 45), Point(60, 45), Point(50, 65), Point(10, 65), Point(20, 45)]);
+      Brush.Color := ASettings.DiamondColor;
+      Polygon([Point(75, 38), Point(100, 13), Point(125, 38), Point(100, 63), Point(75, 38)]);
+      Brush.Color := ASettings.RectColor;
+      Rectangle(140, 10, 190, 35);
+      Brush.Color := ASettings.RoutineColor;
+      Rectangle(140, 40, 190, 65);
+      Brush.Color := clBlack;
+      Rectangle(145, 40, 148, 65);
+      Rectangle(182, 40, 185, 65);
+      Brush.Color := ASettings.RoadSignColor;
+      Polygon([Point(205, 10), Point(240, 10), Point(252, 22), Point(240, 34), Point(205, 34), Point(205, 10)]);
+      Pen.Width := 2;
+      Brush.Color := ASettings.FolderColor;
+      Rectangle(205, 40, 255, 65);
+      Pen.Width := 1;
+      Polyline([Point(207, 42), Point(251, 42), Point(251, 61), Point(207, 61), Point(207, 42)]);
+   end;
 end;
 
 procedure TSettingsForm.chkMultiPrintClick(Sender: TObject);

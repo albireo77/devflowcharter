@@ -359,7 +359,7 @@ begin
       Visible := false;
       SetBounds(3, 3, 134, 55);
       Ctl3D := false;
-      Color := GSettings.FoldColor;
+      Color := GSettings.FolderColor;
       Font.Assign(FStatement.Font);
       OnMouseDown := Self.OnMouseDown;
       Font.Color := clNavy;
@@ -1289,10 +1289,10 @@ begin
          end;
       end;
    end;
-   if GSettings.FoldColor = GSettings.DesktopColor then
+   if GSettings.FolderColor = GSettings.DesktopColor then
       FMemoFolder.Color := AColor
    else
-      FMemoFolder.Color := GSettings.FoldColor;
+      FMemoFolder.Color := GSettings.FolderColor;
 end;
 
 procedure TBlock.SelectBlock(const APoint: TPoint);
@@ -1623,8 +1623,8 @@ begin
          DrawArrowLine(Point(BottomPoint.X, Height-31), Point(BottomPoint.X, Height-1));
       Canvas.Pen.Width := 2;
       Canvas.Brush.Style := bsClear;
-      if GSettings.FoldColor <> GSettings.DesktopColor then
-         Canvas.Brush.Color := GSettings.FoldColor;
+      if GSettings.FolderColor <> GSettings.DesktopColor then
+         Canvas.Brush.Color := GSettings.FolderColor;
       Canvas.Polygon([Point(1, 1),
                       Point(Width-1, 1),
                       Point(Width-1, FMemoFolder.Height+5),
