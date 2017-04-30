@@ -125,14 +125,16 @@ type
     procedure edtMarginLeftKeyPress(Sender: TObject; var Key: Char);
     procedure ResetForm; override;
     procedure edtFontNameClick(Sender: TObject);
+  private
     procedure SetCbFontSize(const AFontSize: integer);
     procedure SetCbFileEncoding(const AFileEncoding: string);
     procedure FillShape(const idx: integer; const AColor: TColor);
-  private
-    { Private declarations }
-  public
-    procedure FillAllShapes(const AColor: TColor);
     procedure DrawShapes(ASettings: TSettings);
+    procedure FillAllShapes(const AColor: TColor);
+  public
+    procedure SetDefault;
+    procedure ProtectFields;
+    procedure SetSettings(ASettings: TSettings);
   end;
 
 var
@@ -141,7 +143,7 @@ var
 implementation
 
 uses
-   System.StrUtils, System.SysUtils, ApplicationCommon;
+   System.StrUtils, System.SysUtils, ApplicationCommon, LangDefinition;
 
 const
    SHAPE_BORDER_COLOR = clBlack;
@@ -323,6 +325,163 @@ begin
       Pen.Width := 1;
       Polyline([Point(207, 42), Point(251, 42), Point(251, 61), Point(207, 61), Point(207, 42)]);
    end;
+end;
+
+procedure TSettingsForm.SetDefault;
+var
+   parserOn: boolean;
+   langDef: TLangDefinition;
+begin
+   pnlFill.Color := clAqua;
+   pnlDesktop.Color := clWhite;
+   langDef := GInfra.GetLangDefinition(cbLanguage.Text);
+   parserOn := (langDef <> nil) and (langDef.Parser <> nil);
+   chkParseInput.Enabled := parserOn;
+   chkParseInput.Checked := parserOn;
+   chkParseOutput.Enabled := parserOn;
+   chkParseOutput.Checked := parserOn;
+   chkParseAssign.Enabled := parserOn;
+   chkParseAssign.Checked := parserOn;
+   chkParseMAssign.Enabled := parserOn;
+   chkParseMAssign.Checked := parserOn;
+   chkParseCondition.Enabled := parserOn;
+   chkParseCondition.Checked := parserOn;
+   chkParseRoutine.Enabled := parserOn;
+   chkParseRoutine.Checked := parserOn;
+   chkParseFor.Enabled := parserOn;
+   chkParseFor.Checked := parserOn;
+   chkParseCase.Enabled := parserOn;
+   chkParseCase.Checked := parserOn;
+   chkParseReturn.Enabled := parserOn;
+   chkParseReturn.Checked := parserOn;
+   chkConfirmRemove.Checked := true;
+   chkMultiPrint.Checked := false;
+   chkMultiPrintHorz.Checked := false;
+   chkMultiPrintHorz.Enabled := false;
+   edtMarginLeft.Text := '5';
+   edtMarginRight.Text := '5';
+   edtMarginTop.Text := '5';
+   edtMarginBottom.Text := '5';
+   chkEnableDBuffer.Checked := false;
+   chkShowFuncLabels.Checked := true;
+   chkShowBlockLabels.Checked := false;
+   pnlEditorBkg.Color := clWindow;
+   pnlEditorFont.Color := clWindowText;
+   pnlEditorNumber.Color := clTeal;
+   pnlEditorString.Color := clTeal;
+   pnlEditorComment.Color := TEXT_COLOR;
+   pnlEditorActiveLine.Color := clCream;
+   pnlEditorSelect.Color := clHighlight;
+   pnlEditorGutter.Color := clBtnFace;
+   pnlEditorBracket.Color := clRed;
+   pnlFont.Color := OK_COLOR;
+   chkValidateConsts.Checked := true;
+   chkAutoSelectCode.Checked := false;
+   chkAutoUpdateCode.Checked := false;
+   edtEditorIndent.Text := IntToStr(EDITOR_DEFAULT_INDENT_LENGTH);
+   edtFontName.Text := FLOWCHART_DEFAULT_FONT_NAME;
+   SetCbFontSize(EDITOR_DEFAULT_FONT_SIZE);
+   FillAllShapes(clWhite);
+end;
+
+procedure TSettingsForm.ProtectFields;
+var
+   parserOn, compilerOn: boolean;
+   langDef: TLangDefinition;
+begin
+   langDef := GInfra.GetLangDefinition(cbLanguage.Text);
+   parserOn := (langDef <> nil) and (langDef.Parser <> nil);
+   chkParseInput.Enabled := parserOn;
+   chkParseOutput.Enabled := parserOn;
+   chkParseAssign.Enabled := parserOn;
+   chkParseMAssign.Enabled := parserOn;
+   chkParseCondition.Enabled := parserOn;
+   chkParseFor.Enabled := parserOn;
+   chkParseCase.Enabled := parserOn;
+   chkParseRoutine.Enabled := parserOn;
+   chkParseReturn.Enabled := parserOn;
+   if not parserOn then
+   begin
+      chkParseInput.Checked := false;
+      chkParseOutput.Checked := false;
+      chkParseAssign.Checked := false;
+      chkParseMAssign.Checked := false;
+      chkParseCondition.Checked := false;
+      chkParseFor.Checked := false;
+      chkParseCase.Checked := false;
+      chkParseRoutine.Checked := false;
+      chkParseReturn.Checked := false;
+   end;
+   compilerOn := (langDef <> nil) and langDef.EnabledCompiler;
+   lblCompiler.Enabled := compilerOn;
+   lblFileEncoding.Enabled := compilerOn;
+   lblCompilerNoMain.Enabled := compilerOn;
+   edtCompiler.Enabled := compilerOn;
+   edtCompilerNoMain.Enabled := compilerOn;
+   btnBrowseCompilers.Enabled := compilerOn;
+   cbFileEncoding.Enabled := compilerOn;
+   if compilerOn then
+   begin
+      edtCompiler.Text := langDef.CompilerCommand;
+      edtCompilerNoMain.Text := langDef.CompilerCommandNoMain;
+   end
+   else
+   begin
+      edtCompiler.Text := '';
+      edtCompilerNoMain.Text := '';
+   end;
+   SetCbFileEncoding(langDef.CompilerFileEncoding);
+   chkMultiPrintHorz.Enabled := chkMultiPrint.Checked;
+   if not chkMultiPrint.Checked then
+      chkMultiPrintHorz.Checked := false;
+end;
+
+procedure TSettingsForm.SetSettings(ASettings: TSettings);
+begin
+   chkConfirmRemove.Checked := ASettings.ConfirmRemove;
+   chkMultiPrint.Checked := ASettings.PrintMultPages;
+   chkEnableDBuffer.Checked := ASettings.EnableDBuffering;
+   chkShowFuncLabels.Checked := ASettings.ShowFuncLabels;
+   chkShowBlockLabels.Checked := ASettings.ShowBlockLabels;
+   chkMultiPrintHorz.Checked := ASettings.PrintMultPagesHorz;
+   edtMarginLeft.Text := IntToStr(ASettings.PrintMargins.Left);
+   edtMarginRight.Text := IntToStr(ASettings.PrintMargins.Right);
+   edtMarginTop.Text := IntToStr(ASettings.PrintMargins.Top);
+   edtMarginBottom.Text := IntToStr(ASettings.PrintMargins.Bottom);
+   pnlFill.Color := ASettings.HighlightColor;
+   pnlDesktop.Color := ASettings.DesktopColor;
+   pnlEditorFont.Color := ASettings.EditorFontColor;
+   pnlEditorBkg.Color := ASettings.EditorBkgColor;
+   pnlEditorString.Color := ASettings.EditorStringColor;
+   pnlEditorNumber.Color := ASettings.EditorNumberColor;
+   pnlEditorComment.Color := ASettings.EditorCommentColor;
+   pnlEditorActiveLine.Color := ASettings.EditorALineColor;
+   pnlEditorSelect.Color := ASettings.EditorSelectColor;
+   pnlEditorGutter.Color := ASettings.EditorGutterColor;
+   pnlEditorBracket.Color := ASettings.EditorBracketColor;
+   edtEditorIndent.Text := IntToStr(ASettings.IndentLength);
+   pnlFont.Color := ASettings.FontColor;
+   edtTranslateFile.Text := ASettings.TranslateFile;
+   cbLanguage.ItemIndex := cbLanguage.Items.IndexOf(GInfra.CurrentLang.Name);
+   edtCompiler.Text := GInfra.CurrentLang.CompilerCommand;
+   edtCompilerNoMain.Text := GInfra.CurrentLang.CompilerCommandNoMain;
+   chkParseAssign.Checked := ASettings.ParseAssign;
+   chkParseCondition.Checked := ASettings.ParseCondition;
+   chkParseFor.Checked := ASettings.ParseFor;
+   chkParseCase.Checked := ASettings.ParseCase;
+   chkParseInput.Checked := ASettings.ParseInput;
+   chkParseOutput.Checked := ASettings.ParseOutput;
+   chkParseMAssign.Checked := ASettings.ParseAssignMult;
+   chkParseRoutine.Checked := ASettings.ParseRoutineCall;
+   chkParseReturn.Checked := ASettings.ParseReturn;
+   chkValidateConsts.Checked := ASettings.ValidateDeclaration;
+   chkAutoSelectCode.Checked := ASettings.EditorAutoSelectBlock;
+   chkAutoUpdateCode.Checked := ASettings.EditorAutoUpdate;
+   edtFontName.Text := ASettings.FlowchartFontName;
+   SetCbFontSize(ASettings.EditorFontSize);
+   SetCbFileEncoding(GInfra.CurrentLang.CompilerFileEncoding);
+   DrawShapes(ASettings);
+   ProtectFields;
 end;
 
 procedure TSettingsForm.chkMultiPrintClick(Sender: TObject);

@@ -752,169 +752,17 @@ end;
 
 procedure TSettings.SetForm;
 begin
-   with TInfra.GetSettingsForm do
-   begin
-      chkConfirmRemove.Checked := FConfirmRemove;
-      chkMultiPrint.Checked := FPrintMultPages;
-      chkEnableDBuffer.Checked := FEnableDBuffering;
-      chkShowFuncLabels.Checked := FShowFuncLabels;
-      chkShowBlockLabels.Checked := FShowBlockLabels;
-      chkMultiPrintHorz.Checked := FPrintMultPagesHorz;
-      edtMarginLeft.Text := IntToStr(FPrintMargins.Left);
-      edtMarginRight.Text := IntToStr(FPrintMargins.Right);
-      edtMarginTop.Text := IntToStr(FPrintMargins.Top);
-      edtMarginBottom.Text := IntToStr(FPrintMargins.Bottom);
-      pnlFill.Color := FHighlightColor;
-      pnlDesktop.Color := FDesktopColor;
-      pnlEditorFont.Color := FEditorFontColor;
-      pnlEditorBkg.Color := FEditorBkgColor;
-      pnlEditorString.Color := FEditorStringColor;
-      pnlEditorNumber.Color := FEditorNumberColor;
-      pnlEditorComment.Color := FEditorCommentColor;
-      pnlEditorActiveLine.Color := FEditorALineColor;
-      pnlEditorSelect.Color := FEditorSelectColor;
-      pnlEditorGutter.Color := FEditorGutterColor;
-      pnlEditorBracket.Color := FEditorBracketColor;
-      edtEditorIndent.Text := IntToStr(FIndentLength);
-      pnlFont.Color := FFontColor;
-      edtTranslateFile.Text := FTranslateFile;
-      cbLanguage.ItemIndex := cbLanguage.Items.IndexOf(GInfra.CurrentLang.Name);
-      edtCompiler.Text := GInfra.CurrentLang.CompilerCommand;
-      edtCompilerNoMain.Text := GInfra.CurrentLang.CompilerCommandNoMain;
-      chkParseAssign.Checked := FParseAssign;
-      chkParseCondition.Checked := FParseCondition;
-      chkParseFor.Checked := FParseFor;
-      chkParseCase.Checked := FParseCase;
-      chkParseInput.Checked := FParseInput;
-      chkParseOutput.Checked := FParseOutput;
-      chkParseMAssign.Checked := FParseAssignMult;
-      chkParseRoutine.Checked := FParseRoutineCall;
-      chkParseReturn.Checked := FParseReturn;
-      chkValidateConsts.Checked := FValidateDeclaration;
-      chkAutoSelectCode.Checked := FEditorAutoSelectBlock;
-      chkAutoUpdateCode.Checked := FEditorAutoUpdate;
-      edtFontName.Text := FFlowchartFontName;
-      SetCbFontSize(FEditorFontSize);
-      SetCbFileEncoding(GInfra.CurrentLang.CompilerFileEncoding);
-      DrawShapes(Self);
-   end;
-   ProtectFields;
+   TInfra.GetSettingsForm.SetSettings(Self);
 end;
 
 procedure TSettings.ProtectFields;
-var
-   parserOn, compilerOn: boolean;
-   langDef: TLangDefinition;
 begin
-   with TInfra.GetSettingsForm do
-   begin
-      langDef := GInfra.GetLangDefinition(cbLanguage.Text);
-      parserOn := (langDef <> nil) and (langDef.Parser <> nil);
-      chkParseInput.Enabled := parserOn;
-      chkParseOutput.Enabled := parserOn;
-      chkParseAssign.Enabled := parserOn;
-      chkParseMAssign.Enabled := parserOn;
-      chkParseCondition.Enabled := parserOn;
-      chkParseFor.Enabled := parserOn;
-      chkParseCase.Enabled := parserOn;
-      chkParseRoutine.Enabled := parserOn;
-      chkParseReturn.Enabled := parserOn;
-      if not parserOn then
-      begin
-         chkParseInput.Checked := false;
-         chkParseOutput.Checked := false;
-         chkParseAssign.Checked := false;
-         chkParseMAssign.Checked := false;
-         chkParseCondition.Checked := false;
-         chkParseFor.Checked := false;
-         chkParseCase.Checked := false;
-         chkParseRoutine.Checked := false;
-         chkParseReturn.Checked := false;
-      end;
-      compilerOn := (langDef <> nil) and langDef.EnabledCompiler;
-      lblCompiler.Enabled := compilerOn;
-      lblFileEncoding.Enabled := compilerOn;
-      lblCompilerNoMain.Enabled := compilerOn;
-      edtCompiler.Enabled := compilerOn;
-      edtCompilerNoMain.Enabled := compilerOn;
-      btnBrowseCompilers.Enabled := compilerOn;
-      cbFileEncoding.Enabled := compilerOn;
-      if compilerOn then
-      begin
-         edtCompiler.Text := langDef.CompilerCommand;
-         edtCompilerNoMain.Text := langDef.CompilerCommandNoMain;
-      end
-      else
-      begin
-         edtCompiler.Text := '';
-         edtCompilerNoMain.Text := '';
-      end;
-      SetCbFileEncoding(langDef.CompilerFileEncoding);
-      chkMultiPrintHorz.Enabled := chkMultiPrint.Checked;
-      if not chkMultiPrint.Checked then
-         chkMultiPrintHorz.Checked := false;
-
-   end;
+   TInfra.GetSettingsForm.ProtectFields;
 end;
 
 procedure TSettings.SetDefaultForm;
-var
-   parserOn: boolean;
-   langDef: TLangDefinition;
 begin
-   with TInfra.GetSettingsForm do
-   begin
-      pnlFill.Color := clAqua;
-      pnlDesktop.Color := clWhite;
-      langDef := GInfra.GetLangDefinition(cbLanguage.Text);
-      parserOn := (langDef <> nil) and (langDef.Parser <> nil);
-      chkParseInput.Enabled := parserOn;
-      chkParseInput.Checked := parserOn;
-      chkParseOutput.Enabled := parserOn;
-      chkParseOutput.Checked := parserOn;
-      chkParseAssign.Enabled := parserOn;
-      chkParseAssign.Checked := parserOn;
-      chkParseMAssign.Enabled := parserOn;
-      chkParseMAssign.Checked := parserOn;
-      chkParseCondition.Enabled := parserOn;
-      chkParseCondition.Checked := parserOn;
-      chkParseRoutine.Enabled := parserOn;
-      chkParseRoutine.Checked := parserOn;
-      chkParseFor.Enabled := parserOn;
-      chkParseFor.Checked := parserOn;
-      chkParseCase.Enabled := parserOn;
-      chkParseCase.Checked := parserOn;
-      chkParseReturn.Enabled := parserOn;
-      chkParseReturn.Checked := parserOn;
-      chkConfirmRemove.Checked := true;
-      chkMultiPrint.Checked := false;
-      chkMultiPrintHorz.Checked := false;
-      chkMultiPrintHorz.Enabled := false;
-      edtMarginLeft.Text := '5';
-      edtMarginRight.Text := '5';
-      edtMarginTop.Text := '5';
-      edtMarginBottom.Text := '5';
-      chkEnableDBuffer.Checked := false;
-      chkShowFuncLabels.Checked := true;
-      chkShowBlockLabels.Checked := false;
-      pnlEditorBkg.Color := clWindow;
-      pnlEditorFont.Color := clWindowText;
-      pnlEditorNumber.Color := clTeal;
-      pnlEditorString.Color := clTeal;
-      pnlEditorComment.Color := TEXT_COLOR;
-      pnlEditorActiveLine.Color := clCream;
-      pnlEditorSelect.Color := clHighlight;
-      pnlEditorGutter.Color := clBtnFace;
-      pnlEditorBracket.Color := clRed;
-      pnlFont.Color := OK_COLOR;
-      chkValidateConsts.Checked := true;
-      chkAutoSelectCode.Checked := false;
-      chkAutoUpdateCode.Checked := false;
-      edtEditorIndent.Text := IntToStr(EDITOR_DEFAULT_INDENT_LENGTH);
-      edtFontName.Text := FLOWCHART_DEFAULT_FONT_NAME;
-      SetCbFontSize(EDITOR_DEFAULT_FONT_SIZE);
-      FillAllShapes(clWhite);
-   end;
+   TInfra.GetSettingsForm.SetDefault;
 end;
 
 function TSettings.UpdateEditor: boolean;
