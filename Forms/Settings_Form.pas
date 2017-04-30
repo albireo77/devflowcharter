@@ -277,7 +277,7 @@ end;
 
 procedure TSettingsForm.FillShape(const idx: integer; const AColor: TColor);
 begin
-   if idx <= High(SHAPE_POINTS) then
+   if (idx >= 0) and (idx <= High(SHAPE_POINTS)) then
    begin
       imgShapes.Canvas.Brush.Color := AColor;
       imgShapes.Canvas.FloodFill(SHAPE_POINTS[idx].X, SHAPE_POINTS[idx].Y, SHAPE_BORDER_COLOR, fsBorder);
@@ -314,7 +314,7 @@ begin
       Rectangle(140, 10, 190, 35);
       Brush.Color := ASettings.RoutineColor;
       Rectangle(140, 40, 190, 65);
-      Brush.Color := clBlack;
+      Brush.Color := SHAPE_BORDER_COLOR;
       Rectangle(145, 40, 148, 65);
       Rectangle(182, 40, 185, 65);
       Brush.Color := ASettings.RoadSignColor;
