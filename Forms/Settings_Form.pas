@@ -126,8 +126,7 @@ type
     procedure ResetForm; override;
     procedure edtFontNameClick(Sender: TObject);
   private
-    procedure SetCbFontSize(const AFontSize: integer);
-    procedure SetCbFileEncoding(const AFileEncoding: string);
+    procedure SetComboBoxItem(AComboBox: TComboBox; const AText: string);
     procedure FillShape(const idx: integer; const AColor: TColor);
     procedure DrawShapes(ASettings: TSettings);
     procedure FillAllShapes(const AColor: TColor);
@@ -380,7 +379,7 @@ begin
    chkAutoUpdateCode.Checked := false;
    edtEditorIndent.Text := IntToStr(EDITOR_DEFAULT_INDENT_LENGTH);
    edtFontName.Text := FLOWCHART_DEFAULT_FONT_NAME;
-   SetCbFontSize(EDITOR_DEFAULT_FONT_SIZE);
+   SetComboBoxItem(cbFontSize, IntToStr(EDITOR_DEFAULT_FONT_SIZE));
    FillAllShapes(clWhite);
 end;
 
@@ -430,7 +429,7 @@ begin
       edtCompiler.Text := '';
       edtCompilerNoMain.Text := '';
    end;
-   SetCbFileEncoding(langDef.CompilerFileEncoding);
+   SetComboBoxItem(cbFileEncoding, langDef.CompilerFileEncoding);
    chkMultiPrintHorz.Enabled := chkMultiPrint.Checked;
    if not chkMultiPrint.Checked then
       chkMultiPrintHorz.Checked := false;
@@ -478,8 +477,8 @@ begin
    chkAutoSelectCode.Checked := ASettings.EditorAutoSelectBlock;
    chkAutoUpdateCode.Checked := ASettings.EditorAutoUpdate;
    edtFontName.Text := ASettings.FlowchartFontName;
-   SetCbFontSize(ASettings.EditorFontSize);
-   SetCbFileEncoding(GInfra.CurrentLang.CompilerFileEncoding);
+   SetComboBoxItem(cbFontSize, IntToStr(ASettings.EditorFontSize));
+   SetComboBoxItem(cbFileEncoding, GInfra.CurrentLang.CompilerFileEncoding);
    DrawShapes(ASettings);
    ProtectFields;
 end;
@@ -504,24 +503,14 @@ begin
       edtFontName.Text := FontDialog.Font.Name;
 end;
 
-procedure TSettingsForm.SetCbFontSize(const AFontSize: integer);
+procedure TSettingsForm.SetComboBoxItem(AComboBox: TComboBox; const AText: string);
 var
    i: integer;
 begin
-   i := cbFontSize.Items.IndexOf(IntToStr(AFontSize));
+   i := AComboBox.Items.IndexOf(AText);
    if i = -1 then
       i := 0;
-   cbFontSize.ItemIndex := i;
-end;
-
-procedure TSettingsForm.SetCbFileEncoding(const AFileEncoding: string);
-var
-   i: integer;
-begin
-   i := cbFileEncoding.Items.IndexOf(AFileEncoding);
-   if i = -1 then
-      i := 0;
-   cbFileEncoding.ItemIndex := i;
+   AComboBox.ItemIndex := i;
 end;
 
 end.
