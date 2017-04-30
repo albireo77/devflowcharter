@@ -145,18 +145,13 @@ uses
 
 const
    SHAPE_BORDER_COLOR = clBlack;
-   ROUTINE_POINT_INDEX = 5;
-   FOLDER_POINT_INDEX = 8;
-   SHAPE_POINTS: array[0..9] of TPoint = ((X:35;  Y:22),    // ellipse
+   SHAPE_POINTS: array[0..6] of TPoint = ((X:35;  Y:22),    // ellipse
                                           (X:35;  Y:55),    // in out
                                           (X:100; Y:38),    // diamond
                                           (X:165; Y:22),    // rectangle
                                           (X:229; Y:22),    // roadsign
                                           (X:165; Y:52),    // routine
-                                          (X:143; Y:42),    // routine left
-                                          (X:187; Y:42),    // routine right
-                                          (X:230; Y:52),    // folder
-                                          (X:206; Y:41));   // folder bevel
+                                          (X:230; Y:52));   // folder
 
 {$R *.dfm}
 
@@ -257,7 +252,6 @@ procedure TSettingsForm.imgShapesClick(Sender: TObject);
 var
    idx: integer;
    pnt: TPoint;
-   lColor: TColor;
 begin
    idx := -1;
    pnt := imgShapes.ScreenToClient(Mouse.CursorPos);
@@ -272,21 +266,11 @@ begin
    else if PtInRect(Rect(205, 10, 252, 34), pnt) then
       idx := 4
    else if PtInRect(Rect(140, 40, 190, 65), pnt) then
-      idx := ROUTINE_POINT_INDEX
+      idx := 5
    else if PtInRect(Rect(205, 40, 255, 65), pnt) then
-      idx := FOLDER_POINT_INDEX;
+      idx := 6;
    if (idx <> -1) and ColorDialog.Execute then
-   begin
-      lColor := ColorDialog.Color;
-      FillShape(idx, lColor);
-      if idx = FOLDER_POINT_INDEX then
-         FillShape(FOLDER_POINT_INDEX+1, lColor)
-      else if idx = ROUTINE_POINT_INDEX then
-      begin
-         FillShape(ROUTINE_POINT_INDEX+1, lColor);
-         FillShape(ROUTINE_POINT_INDEX+2, lColor);
-      end
-   end;
+      FillShape(idx, ColorDialog.Color);
 end;
 
 procedure TSettingsForm.FillShape(const idx: integer; const AColor: TColor);
@@ -295,6 +279,13 @@ begin
    begin
       imgShapes.Canvas.Brush.Color := AColor;
       imgShapes.Canvas.FloodFill(SHAPE_POINTS[idx].X, SHAPE_POINTS[idx].Y, SHAPE_BORDER_COLOR, fsBorder);
+      if idx = 6 then
+         imgShapes.Canvas.FloodFill(206, 41, SHAPE_BORDER_COLOR, fsBorder)
+      else if idx = 5 then
+      begin
+         imgShapes.Canvas.FloodFill(143, 42, SHAPE_BORDER_COLOR, fsBorder);
+         imgShapes.Canvas.FloodFill(187, 42, SHAPE_BORDER_COLOR, fsBorder);
+      end;
    end;
 end;
 
