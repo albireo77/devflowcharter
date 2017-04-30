@@ -135,6 +135,14 @@ type
     procedure DrawShapes(ASettings: TSettings);
   end;
 
+var
+  SettingsForm: TSettingsForm;
+
+implementation
+
+uses
+   System.StrUtils, System.SysUtils, ApplicationCommon;
+
 const
    SHAPE_BORDER_COLOR = clBlack;
    ROUTINE_POINT_INDEX = 5;
@@ -149,13 +157,6 @@ const
                                           (X:187; Y:42),    // routine right
                                           (X:230; Y:52),    // folder
                                           (X:206; Y:41));   // folder bevel
-var
-  SettingsForm: TSettingsForm;
-
-implementation
-
-uses
-   System.StrUtils, System.SysUtils, ApplicationCommon;
 
 {$R *.dfm}
 
