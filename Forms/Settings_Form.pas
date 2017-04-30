@@ -24,7 +24,8 @@ unit Settings_Form;
 interface
 
 uses
-  Vcl.Controls, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, System.Classes, Base_Form;
+  Vcl.Controls, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Graphics, System.Classes, System.Types,
+  Base_Form;
 
 type
   TSettingsForm = class(TBaseForm)
@@ -79,7 +80,7 @@ type
     pnlDesktop: TPanel;
     lblBlockColor: TLabel;
     pnlFill: TPanel;
-    imgColors: TImage;
+    imgShapes: TImage;
     lblFontColor: TLabel;
     pnlFont: TPanel;
     gbPrintSettings: TGroupBox;
@@ -118,7 +119,7 @@ type
     procedure btnDefaultSettingsClick(Sender: TObject);
     procedure cbLanguageChange(Sender: TObject);
     procedure btnBrowseScriptsClick(Sender: TObject);
-    procedure imgColorsClick(Sender: TObject);
+    procedure imgShapesClick(Sender: TObject);
     procedure Localize(const AList: TStringList); override;
     procedure chkMultiPrintClick(Sender: TObject);
     procedure edtMarginLeftKeyPress(Sender: TObject; var Key: Char);
@@ -126,19 +127,34 @@ type
     procedure edtFontNameClick(Sender: TObject);
     procedure SetCbFontSize(const AFontSize: integer);
     procedure SetCbFileEncoding(const AFileEncoding: string);
+    procedure FillShape(const idx: integer; const AColor: TColor);
   private
     { Private declarations }
   public
-    { Public declarations }
+    procedure FillAllShapes(const AColor: TColor);
   end;
 
+const
+   SHAPE_BORDER_COLOR = clBlack;
+   ROUTINE_POINT_INDEX = 5;
+   FOLDER_POINT_INDEX = 8;
+   SHAPE_POINTS: array[0..9] of TPoint = ((X:35;  Y:22),    // ellipse
+                                          (X:35;  Y:55),    // in out
+                                          (X:100; Y:38),    // diamond
+                                          (X:165; Y:22),    // rectangle
+                                          (X:229; Y:22),    // roadsign
+                                          (X:165; Y:52),    // routine
+                                          (X:143; Y:42),    // routine left
+                                          (X:187; Y:42),    // routine right
+                                          (X:230; Y:52),    // folder
+                                          (X:206; Y:41));   // folder bevel
 var
   SettingsForm: TSettingsForm;
 
 implementation
 
 uses
-   System.Types, System.StrUtils, System.SysUtils, Vcl.Graphics, ApplicationCommon;
+   System.StrUtils, System.SysUtils, ApplicationCommon;
 
 {$R *.dfm}
 
@@ -201,8 +217,8 @@ end;
 
 procedure TSettingsForm.FormCreate(Sender: TObject);
 begin
-   imgColors.Canvas.Brush.Color := gbFlowchartSettings.Color;
-   imgColors.Canvas.FillRect(imgColors.Canvas.ClipRect);
+   imgShapes.Canvas.Brush.Color := gbFlowchartSettings.Color;
+   imgShapes.Canvas.FillRect(imgShapes.Canvas.ClipRect);
    GInfra.GetLangNames(cbLanguage.Items);
    cbLanguage.ItemIndex := cbLanguage.Items.IndexOf(GInfra.CurrentLang.Name);
 end;
@@ -235,21 +251,14 @@ begin
    end;
 end;
 
-procedure TSettingsForm.imgColorsClick(Sender: TObject);
-const
-   colorPoints: array[0..6] of TPoint = ((X:35;  Y:22),    // ellipse
-                                         (X:35;  Y:55),    // in out
-                                         (X:100; Y:38),    // diamond
-                                         (X:165; Y:22),    // rectangle
-                                         (X:165; Y:52),    // routine
-                                         (X:229; Y:22),    // roadsign
-                                         (X:230; Y:52));   // folder
+procedure TSettingsForm.imgShapesClick(Sender: TObject);
 var
-   pnt: TPoint;
    idx: integer;
+   pnt: TPoint;
+   lColor: TColor;
 begin
    idx := -1;
-   pnt := imgColors.ScreenToClient(Mouse.CursorPos);
+   pnt := imgShapes.ScreenToClient(Mouse.CursorPos);
    if PtInRect(Rect(10, 10, 60, 35), pnt) then
       idx := 0
    else if PtInRect(Rect(10, 45, 60, 65), pnt) then
@@ -258,25 +267,41 @@ begin
       idx := 2
    else if PtInRect(Rect(140, 10, 190, 35), pnt) then
       idx := 3
-   else if PtInRect(Rect(140, 40, 190, 65), pnt) then
-      idx := 4
    else if PtInRect(Rect(205, 10, 252, 34), pnt) then
-      idx := 5
+      idx := 4
+   else if PtInRect(Rect(140, 40, 190, 65), pnt) then
+      idx := ROUTINE_POINT_INDEX
    else if PtInRect(Rect(205, 40, 255, 65), pnt) then
-      idx := 6;
+      idx := FOLDER_POINT_INDEX;
    if (idx <> -1) and ColorDialog.Execute then
    begin
-      imgColors.Canvas.Brush.Color := ColorDialog.Color;
-      pnt := colorPoints[idx];
-      imgColors.Canvas.FloodFill(pnt.X, pnt.Y, clBlack, fsBorder);
-      if idx = 6 then
-         imgColors.Canvas.FloodFill(206, 41, clBlack, fsBorder)
-      else if idx = 4 then
+      lColor := ColorDialog.Color;
+      FillShape(idx, lColor);
+      if idx = FOLDER_POINT_INDEX then
+         FillShape(FOLDER_POINT_INDEX+1, lColor)
+      else if idx = ROUTINE_POINT_INDEX then
       begin
-         imgColors.Canvas.FloodFill(143, 42, clBlack, fsBorder);
-         imgColors.Canvas.FloodFill(187, 42, clBlack, fsBorder);
+         FillShape(ROUTINE_POINT_INDEX+1, lColor);
+         FillShape(ROUTINE_POINT_INDEX+2, lColor);
       end
    end;
+end;
+
+procedure TSettingsForm.FillShape(const idx: integer; const AColor: TColor);
+begin
+   if idx <= High(SHAPE_POINTS) then
+   begin
+      imgShapes.Canvas.Brush.Color := AColor;
+      imgShapes.Canvas.FloodFill(SHAPE_POINTS[idx].X, SHAPE_POINTS[idx].Y, SHAPE_BORDER_COLOR, fsBorder);
+   end;
+end;
+
+procedure TSettingsForm.FillAllShapes(const AColor: TColor);
+var
+   i: integer;
+begin
+   for i := 0 to High(SHAPE_POINTS) do
+      FillShape(i, AColor);
 end;
 
 procedure TSettingsForm.chkMultiPrintClick(Sender: TObject);

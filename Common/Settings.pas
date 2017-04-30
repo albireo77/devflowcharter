@@ -245,7 +245,7 @@ implementation
 
 uses
    System.SysUtils, System.Classes, System.Types, Vcl.Forms, System.Win.Registry,
-   ApplicationCommon, Main_Form, Navigator_Form;
+   ApplicationCommon, Main_Form, Navigator_Form, Settings_Form;
 
 constructor TSettings.Create;
 begin
@@ -621,7 +621,7 @@ begin
       FIndentLength          := StrToIntDef(edtEditorIndent.Text, EDITOR_DEFAULT_INDENT_LENGTH);
       FIndentString          := StringOfChar(INDENT_CHAR, FIndentLength);
 
-      with imgColors.Canvas do
+      with imgShapes.Canvas do
       begin
          if FEllipseColor <> Pixels[35, 22] then
          begin
@@ -796,8 +796,9 @@ begin
       edtFontName.Text := FFlowchartFontName;
       SetCbFontSize(FEditorFontSize);
       SetCbFileEncoding(GInfra.CurrentLang.CompilerFileEncoding);
-      with imgColors.Canvas do
+      with imgShapes.Canvas do
       begin
+         Pen.Color := SHAPE_BORDER_COLOR;
          Brush.Color := FEllipseColor;
          Ellipse(10, 10, 60, 35);
          Brush.Color := FInOutColor;
@@ -935,20 +936,7 @@ begin
       edtEditorIndent.Text := IntToStr(EDITOR_DEFAULT_INDENT_LENGTH);
       edtFontName.Text := FLOWCHART_DEFAULT_FONT_NAME;
       SetCbFontSize(EDITOR_DEFAULT_FONT_SIZE);
-      with imgColors.Canvas do
-      begin
-         Brush.Color := clWhite;
-         FloodFill(35, 22, clBlack, fsBorder);
-         FloodFill(35, 55, clBlack, fsBorder);
-         FloodFill(100, 38, clBlack, fsBorder);
-         FloodFill(165, 22, clBlack, fsBorder);
-         FloodFill(229, 22, clBlack, fsBorder);
-         FloodFill(165, 52, clBlack, fsBorder);
-         FloodFill(143, 42, clBlack, fsBorder);
-         FloodFill(187, 42, clBlack, fsBorder);
-         FloodFill(230, 52, clBlack, fsBorder);
-         FloodFill(206, 41, clBlack, fsBorder);
-      end;
+      FillAllShapes(clWhite);
    end;
 end;
 

@@ -893,12 +893,12 @@ object SettingsForm: TSettingsForm
     Font.Style = [fsBold]
     ParentFont = False
     TabOrder = 8
-    object imgColors: TImage
+    object imgShapes: TImage
       Left = 256
       Top = 20
       Width = 265
       Height = 67
-      OnClick = imgColorsClick
+      OnClick = imgShapesClick
     end
     object lblFontColor: TLabel
       Tag = 6
