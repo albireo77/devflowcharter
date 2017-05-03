@@ -33,7 +33,6 @@ type
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
          function Clone(const ABranch: TBranch): TBlock; override;
-         procedure ChangeColor(const AColor: TColor); override;
       protected
          procedure Paint; override;
    end;
@@ -51,7 +50,8 @@ begin
    FStatement.SetBounds(10, 0, AWidth-20, 19);
    FStatement.Anchors := [akRight, akLeft, akTop];
    FStatement.BorderStyle := bsSingle;
-   FStatement.Color := GSettings.RoutineColor;
+   FShapeColorIdx := ROUTINE_COLOR_IDX;
+   FStatement.Color := GSettings.GetShapeColor(FShapeColorIdx);
    BottomPoint.X := AWidth div 2;
    BottomPoint.Y := 19;
    IPoint.X := BottomPoint.X + 30;
@@ -76,6 +76,7 @@ end;
 procedure TFunctionCallBlock.Paint;
 var
    y: integer;
+   lColor: TColor;
 begin
    inherited;
    with Canvas do
@@ -94,8 +95,9 @@ begin
                   Point(Width-11, y),
                   Point(Width-11, 0)]);
          Brush.Style := bsClear;
-         if GSettings.RoutineColor <> GSettings.DesktopColor then
-            Brush.Color := GSettings.RoutineColor;
+         lColor := GSettings.GetShapeColor(FShapeColorIdx);
+         if lColor <> GSettings.DesktopColor then
+            Brush.Color := lColor;
          Polygon([Point(0, 0),
                   Point(7, 0),
                   Point(7, y),
@@ -110,15 +112,6 @@ begin
       DrawBlockLabel(5, 20, GInfra.CurrentLang.LabelFuncCall);
    end;
    DrawI;
-end;
-
-procedure TFunctionCallBlock.ChangeColor(const AColor: TColor);
-begin
-   inherited ChangeColor(AColor);
-   if GSettings.RoutineColor = GSettings.DesktopColor then
-      FStatement.Color := AColor
-   else
-      FStatement.Color := GSettings.RoutineColor;
 end;
 
 end.

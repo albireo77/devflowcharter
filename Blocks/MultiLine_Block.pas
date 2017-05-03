@@ -33,7 +33,6 @@ type
       public
          FStatements: TStatementMemo;
          function GetTextControl: TCustomEdit; override;
-         procedure ChangeColor(const AColor: TColor); override;
          function GetFrontMemo: TMemo; override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
          function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
@@ -117,15 +116,6 @@ begin
    end;
    if FVResize and Resize then
       IPoint.Y := FStatements.Height + 10;
-end;
-
-procedure TMultiLineBlock.ChangeColor(const AColor: TColor);
-begin
-   inherited ChangeColor(AColor);
-   if GSettings.RectColor = GSettings.DesktopColor then
-      FStatements.Color := AColor
-   else
-      FStatements.Color := GSettings.RectColor;
 end;
 
 procedure TMultiLineBlock.UpdateEditor(AEdit: TCustomEdit);

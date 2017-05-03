@@ -208,6 +208,21 @@ const   // Global constants
 
         KEY_CURRENT_LANGUAGE = 'CurrentLanguageName';
 
+        ELLIPSE_COLOR_IDX       = 0;
+        PARALLELOGRAM_COLOR_IDX = 1;
+        DIAMOND_COLOR_IDX       = 2;
+        RECTANGLE_COLOR_IDX     = 3;
+        ROADSIGN_COLOR_IDX      = 4;
+        ROUTINE_COLOR_IDX       = 5;
+        FOLDER_COLOR_IDX        = 6;
+        SHAPE_POINTS: array[0..6] of TPoint = ((X:35;  Y:22),    // ellipse
+                                               (X:35;  Y:55),    // parallelogram
+                                               (X:100; Y:38),    // diamond
+                                               (X:165; Y:22),    // rectangle
+                                               (X:229; Y:22),    // roadsign
+                                               (X:165; Y:52),    // routine
+                                               (X:230; Y:52));   // folder
+
         PARSER_ERRORS_ARRAY: array[TParserMode] of string = ('BadGeneric', 'BadCondition', 'BadAssign', 'BadInput', 'BadOutput',
                              'BadFor', 'BadFunction', 'BadCase', 'BadCase', 'BadReturnVal', '');
 

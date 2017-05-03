@@ -66,11 +66,13 @@ begin
    FStatement.SetBounds((Width div 2)-26, 31, 52, 19);
    FStatement.Anchors := [akRight, akLeft, akTop];
    FStatement.Alignment := taCenter;
+   FStatement.Color := GSettings.DesktopColor;
 
    BottomPoint.X := Width div 2;
    BottomPoint.Y := 19;
    IPoint.X := BottomPoint.X + 30;
    IPoint.Y := 30;
+   FShapeColorIdx := ELLIPSE_COLOR_IDX;
    BottomHook := BottomPoint.X;
    TopHook.X := BottomPoint.X;
 end;

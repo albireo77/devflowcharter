@@ -47,7 +47,6 @@ type
          procedure ExpandFold(const AResize: boolean); override;
          function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
          procedure SaveInXML(const ATag: IXMLElement); override;
-         procedure ChangeColor(const AColor: TColor); override;
    end;
 
 const
@@ -86,7 +85,6 @@ begin
    FalseHook := f_hook;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
-   FStatement.Color := GSettings.DiamondColor;
    FStatement.Alignment := taCenter;
    PutTextControls;
 
@@ -311,15 +309,6 @@ begin
    else
       FalseBranch.Hook.X := FFoldParms.P2X;
    inherited ExpandFold(AResize);
-end;
-
-procedure TIfElseBlock.ChangeColor(const AColor: TColor);
-begin
-   inherited ChangeColor(AColor);
-   if GSettings.DiamondColor = GSettings.DesktopColor then
-      FStatement.Color := AColor
-   else
-      FStatement.Color := GSettings.DiamondColor;
 end;
 
 function TIfElseBlock.GetDiamondPoint: TPoint;

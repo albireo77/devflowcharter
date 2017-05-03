@@ -86,13 +86,15 @@ begin
    FInitParms.P2X := 0;
    FInitParms.HeightAffix := 22;
 
+   FShapeColorIdx := ROADSIGN_COLOR_IDX;
+
    edtStartVal := TStatement.Create(Self);
-   edtStartVal.Color := GSettings.RoadSignColor;
+   edtStartVal.Color := GSettings.GetShapeColor(FShapeColorIdx);
    edtStartVal.Font.Size := FStatement.Font.Size;
    edtStartVal.DoubleBuffered := true;
 
    edtStopVal := TStatement.Create(Self);
-   edtStopVal.Color := GSettings.RoadSignColor;
+   edtStopVal.Color := edtStartVal.Color;
    edtStopVal.Font.Size := FStatement.Font.Size;
    edtStopVal.DoubleBuffered := true;
 
@@ -109,7 +111,7 @@ begin
    cbVariable.BevelOuter := bvNone;
    cbVariable.OnCloseUp := MyOnCloseUp;
    cbVariable.Style := csDropDownList;
-   cbVariable.Color := GSettings.RoadSignColor;
+   cbVariable.Color := edtStartVal.Color;
 
    edtVariable := TEdit.Create(Self);
    edtVariable.Parent := Self;
@@ -117,7 +119,7 @@ begin
    edtVariable.ReadOnly := GInfra.CurrentLang.EnabledVars;
    edtVariable.ShowHint := True;
    edtVariable.AutoSelect := False;
-   edtVariable.Color := GSettings.RoadSignColor;
+   edtVariable.Color := edtStartVal.Color;
    edtVariable.Font.Size := FStatement.Font.Size;
    edtVariable.Font.Name := GSettings.FlowchartFontName;
    edtVariable.DoubleBuffered := true;
@@ -203,6 +205,7 @@ const
    lForDirect: array[TForOrder] of char = ('»', '«');
 var
    y, bhx: integer;
+   lColor: TColor;
 begin
    inherited;
    if Expanded and (cbVariable <> nil) and (edtVariable <> nil) and (edtStartVal <> nil) and (edtStopVal <> nil) then
@@ -229,8 +232,9 @@ begin
          MoveTo(bhx+74, 19);
          LineTo(Width-11, 19);
          Brush.Style := bsClear;
-         if GSettings.RoadSignColor <> GSettings.DesktopColor then
-            Brush.Color := GSettings.RoadSignColor;
+         lColor := GSettings.GetShapeColor(FShapeColorIdx);
+         if lColor <> GSettings.DesktopColor then
+            Brush.Color := lColor;
          Polygon([Point(bhx-100, 0),
                   Point(bhx+35, 0),
                   Point(bhx+74, 19),
@@ -403,9 +407,12 @@ begin
 end;
 
 procedure TForDoBlock.ChangeColor(const AColor: TColor);
+var
+   lColor: TColor;
 begin
    inherited ChangeColor(AColor);
-   if GSettings.RoadSignColor = GSettings.DesktopColor then
+   lColor := GSettings.GetShapeColor(FShapeColorIdx);
+   if lColor = GSettings.DesktopColor then
    begin
       edtStartVal.Color := AColor;
       edtStopVal.Color := AColor;
@@ -413,11 +420,11 @@ begin
       edtVariable.Color := AColor;
    end
    else
-      begin
-      edtStartVal.Color := GSettings.RoadSignColor;
-      edtStopVal.Color := GSettings.RoadSignColor;
-      cbVariable.Color := GSettings.RoadSignColor;
-      edtVariable.Color := GSettings.RoadSignColor;
+   begin
+      edtStartVal.Color := lColor;
+      edtStopVal.Color := lColor;
+      cbVariable.Color := lColor;
+      edtVariable.Color := lColor;
    end;
 end;
 

@@ -134,6 +134,7 @@ type
     procedure SetDefault;
     procedure ProtectFields;
     procedure SetSettings(ASettings: TSettings);
+    function GetShapeColor(const idx: integer): TColor;
   end;
 
 var
@@ -146,13 +147,6 @@ uses
 
 const
    SHAPE_BORDER_COLOR = clBlack;
-   SHAPE_POINTS: array[0..6] of TPoint = ((X:35;  Y:22),    // ellipse
-                                          (X:35;  Y:55),    // in out
-                                          (X:100; Y:38),    // diamond
-                                          (X:165; Y:22),    // rectangle
-                                          (X:229; Y:22),    // roadsign
-                                          (X:165; Y:52),    // routine
-                                          (X:230; Y:52));   // folder
 
 {$R *.dfm}
 
@@ -280,14 +274,21 @@ begin
    begin
       imgShapes.Canvas.Brush.Color := AColor;
       imgShapes.Canvas.FloodFill(SHAPE_POINTS[idx].X, SHAPE_POINTS[idx].Y, SHAPE_BORDER_COLOR, fsBorder);
-      if idx = 6 then
+      if idx = FOLDER_COLOR_IDX then
          imgShapes.Canvas.FloodFill(206, 41, SHAPE_BORDER_COLOR, fsBorder)
-      else if idx = 5 then
+      else if idx = ROUTINE_COLOR_IDX then
       begin
          imgShapes.Canvas.FloodFill(143, 42, SHAPE_BORDER_COLOR, fsBorder);
          imgShapes.Canvas.FloodFill(187, 42, SHAPE_BORDER_COLOR, fsBorder);
       end;
    end;
+end;
+
+function TSettingsForm.GetShapeColor(const idx: integer): TColor;
+begin
+   result := clNone;
+   if (idx >= 0) and (idx <= High(SHAPE_POINTS)) then
+      result := imgShapes.Canvas.Pixels[SHAPE_POINTS[idx].X, SHAPE_POINTS[idx].Y];
 end;
 
 procedure TSettingsForm.FillAllShapes(const AColor: TColor);
@@ -303,23 +304,23 @@ begin
    with imgShapes.Canvas do
    begin
       Pen.Color := SHAPE_BORDER_COLOR;
-      Brush.Color := ASettings.EllipseColor;
+      Brush.Color := ASettings.GetShapeColor(ELLIPSE_COLOR_IDX);
       Ellipse(10, 10, 60, 35);
-      Brush.Color := ASettings.InOutColor;
+      Brush.Color := ASettings.GetShapeColor(PARALLELOGRAM_COLOR_IDX);
       Polygon([Point(20, 45), Point(60, 45), Point(50, 65), Point(10, 65), Point(20, 45)]);
-      Brush.Color := ASettings.DiamondColor;
+      Brush.Color := ASettings.GetShapeColor(DIAMOND_COLOR_IDX);
       Polygon([Point(75, 38), Point(100, 13), Point(125, 38), Point(100, 63), Point(75, 38)]);
-      Brush.Color := ASettings.RectColor;
+      Brush.Color := ASettings.GetShapeColor(RECTANGLE_COLOR_IDX);
       Rectangle(140, 10, 190, 35);
-      Brush.Color := ASettings.RoutineColor;
+      Brush.Color := ASettings.GetShapeColor(ROUTINE_COLOR_IDX);
       Rectangle(140, 40, 190, 65);
       Brush.Color := SHAPE_BORDER_COLOR;
       Rectangle(145, 40, 148, 65);
       Rectangle(182, 40, 185, 65);
-      Brush.Color := ASettings.RoadSignColor;
+      Brush.Color := ASettings.GetShapeColor(ROADSIGN_COLOR_IDX);
       Polygon([Point(205, 10), Point(240, 10), Point(252, 22), Point(240, 34), Point(205, 34), Point(205, 10)]);
       Pen.Width := 2;
-      Brush.Color := ASettings.FolderColor;
+      Brush.Color := ASettings.GetShapeColor(FOLDER_COLOR_IDX);
       Rectangle(205, 40, 255, 65);
       Pen.Width := 1;
       Polyline([Point(207, 42), Point(251, 42), Point(251, 61), Point(207, 61), Point(207, 42)]);

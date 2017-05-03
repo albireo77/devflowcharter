@@ -68,6 +68,7 @@ type
          FRefreshMode,
          FFrame,
          FMouseLeave: boolean;
+         FShapeColorIdx: integer;
          procedure MyOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MyOnMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); virtual;
@@ -332,6 +333,8 @@ begin
    FId := GProject.Register(Self, AId);
    FStatement := TStatement.Create(Self);
    FMouseLeave := true;
+   FShapeColorIdx := RECTANGLE_COLOR_IDX;
+   FStatement.Color := GSettings.GetShapeColor(FShapeColorIdx);
    Ired := -1;
    memoWidth := 280;
    memoHeight := 182;
@@ -359,7 +362,7 @@ begin
       Visible := false;
       SetBounds(3, 3, 134, 55);
       Ctl3D := false;
-      Color := GSettings.FolderColor;
+      Color := GSettings.GetShapeColor(FOLDER_COLOR_IDX);
       Font.Assign(FStatement.Font);
       OnMouseDown := Self.OnMouseDown;
       Font.Color := clNavy;
@@ -370,6 +373,9 @@ begin
 
    FFoldParms.Width := 140;
    FFoldParms.Height := 91;
+
+   FShapeColorIdx := DIAMOND_COLOR_IDX;
+   FStatement.Color := GSettings.GetShapeColor(FShapeColorIdx);
 
    FTrueLabel := i18Manager.GetString('CaptionTrue');
    FFalseLabel := i18Manager.GetString('CaptionFalse');
@@ -1250,6 +1256,8 @@ procedure TBlock.ChangeColor(const AColor: TColor);
 var
    iter: IIterator;
    comment: TComment;
+   lEdit: THackCustomEdit;
+   lColor: TColor;
 begin
    Color := AColor;
    iter := GetComments;
@@ -1258,6 +1266,15 @@ begin
       comment := TComment(iter.Next);
       if comment.Visible then
          comment.Color := AColor;
+   end;
+   lEdit := THackCustomEdit(GetTextControl);
+   if lEdit <> nil then
+   begin
+      lColor := GSettings.GetShapeColor(FShapeColorIdx);
+      if lColor = GSettings.DesktopColor then
+         lEdit.Color := AColor
+      else
+         lEdit.Color := lColor;
    end;
 end;
 
@@ -1275,6 +1292,7 @@ procedure TGroupBlock.ChangeColor(const AColor: TColor);
 var
    i: integer;
    block: TBlock;
+   lColor: TColor;
 begin
    inherited ChangeColor(AColor);
    if Expanded then
@@ -1289,10 +1307,11 @@ begin
          end;
       end;
    end;
-   if GSettings.FolderColor = GSettings.DesktopColor then
+   lColor := GSettings.GetShapeColor(FOLDER_COLOR_IDX);
+   if lColor = GSettings.DesktopColor then
       FMemoFolder.Color := AColor
    else
-      FMemoFolder.Color := GSettings.FolderColor;
+      FMemoFolder.Color := lColor;
 end;
 
 procedure TBlock.SelectBlock(const APoint: TPoint);
@@ -1535,14 +1554,17 @@ begin
 end;
 
 function TBlock.DrawEllipsedText(const APoint: TPoint; const AText: string): TRect;
+var
+   lColor: TColor;
 begin
    result := Rect(0, 0, 0, 0);
    if not InvalidPoint(APoint) then
    begin
       result := GetEllipseTextRect(APoint, AText);
       Canvas.Brush.Style := bsClear;
-      if GSettings.EllipseColor <> GSettings.DesktopColor then
-         Canvas.Brush.Color := GSettings.EllipseColor;
+      lColor := GSettings.GetShapeColor(ELLIPSE_COLOR_IDX);
+      if lColor <> GSettings.DesktopColor then
+         Canvas.Brush.Color := lColor;
       Canvas.Ellipse(result.Left, result.Top, result.Right, result.Bottom);
       DrawText(Canvas.Handle, PChar(AText), -1, result, DT_CENTER or DT_SINGLELINE or DT_VCENTER);
    end;
@@ -1595,7 +1617,7 @@ procedure TGroupBlock.Paint;
 var
    pnt: TPoint;
    brushStyle: TBrushStyle;
-   lColor: TColor;
+   lColor, lColor2: TColor;
    w: integer;
 begin
    inherited;
@@ -1608,8 +1630,9 @@ begin
       if not InvalidPoint(pnt) then
       begin
          Canvas.Brush.Style := bsClear;
-         if GSettings.DiamondColor <> GSettings.DesktopColor then
-            Canvas.Brush.Color := GSettings.DiamondColor;
+         lColor2 := GSettings.GetShapeColor(FShapeColorIdx);
+         if lColor2 <> GSettings.DesktopColor then
+            Canvas.Brush.Color := lColor2;
          Canvas.Polygon([Point(pnt.X-60, pnt.Y+30),
                          Point(pnt.X, pnt.Y+60),
                          Point(pnt.X+60, pnt.Y+30),
@@ -1623,8 +1646,9 @@ begin
          DrawArrowLine(Point(BottomPoint.X, Height-31), Point(BottomPoint.X, Height-1));
       Canvas.Pen.Width := 2;
       Canvas.Brush.Style := bsClear;
-      if GSettings.FolderColor <> GSettings.DesktopColor then
-         Canvas.Brush.Color := GSettings.FolderColor;
+      lColor2 := GSettings.GetShapeColor(FOLDER_COLOR_IDX);
+      if lColor2 <> GSettings.DesktopColor then
+         Canvas.Brush.Color := lColor2;
       Canvas.Polygon([Point(1, 1),
                       Point(Width-1, 1),
                       Point(Width-1, FMemoFolder.Height+5),

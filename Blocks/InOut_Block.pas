@@ -35,8 +35,6 @@ type
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; virtual;
          procedure Paint; override;
          procedure PutTextControls; override;
-      public
-         procedure ChangeColor(const AColor: TColor); override;
    end;
 
    TInputBlock = class(TInOutBlock)
@@ -64,7 +62,8 @@ begin
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
    
    FStatement.Anchors := [akRight, akLeft, akTop];
-   FStatement.Color := GSettings.InOutColor;
+   FShapeColorIdx := PARALLELOGRAM_COLOR_IDX;
+   FStatement.Color := GSettings.GetShapeColor(FShapeColorIdx);
    PutTextControls;
    BottomPoint.X := AWidth div 2;
    BottomPoint.Y := 30;
@@ -123,6 +122,7 @@ var
    R: TRect;
    w: integer;
    fontStyles: TFontStyles;
+   lColor: TColor;
 begin
    inherited;
    w := Canvas.TextWidth(FLabel);
@@ -130,8 +130,9 @@ begin
    with Canvas do
    begin
       Brush.Style := bsClear;
-      if GSettings.InOutColor <> GSettings.DesktopColor then
-         Brush.Color := GSettings.InOutColor;
+      lColor := GSettings.GetShapeColor(FShapeColorIdx);
+      if lColor <> GSettings.DesktopColor then
+         Brush.Color := lColor;
       Polygon([Point(20, 0),
                Point(Width-1, 0),
                Point(Width-21, 30),
@@ -147,15 +148,6 @@ begin
    end;
    DrawBlockLabel(5, 30, FLabelSegoe);
    DrawI;
-end;
-
-procedure TInOutBlock.ChangeColor(const AColor: TColor);
-begin
-   inherited ChangeColor(AColor);
-   if GSettings.InOutColor = GSettings.DesktopColor then
-      FStatement.Color := AColor
-   else
-      FStatement.Color := GSettings.InOutColor;
 end;
 
 procedure TInOutBlock.PutTextControls;

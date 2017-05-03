@@ -26,6 +26,8 @@ uses
 
 type
 
+  TShapeColors = array[0..6] of TColor;
+
   TSettings = class(TObject)
   private
     { Private declarations }
@@ -69,13 +71,6 @@ type
       FDesktopColor: TColor;
       FTranslateFile: string;
 
-      FEllipseColor,
-      FDiamondColor,
-      FInOutColor,
-      FRectColor,
-      FFolderColor,
-      FRoadSignColor,
-      FRoutineColor,
       FFontColor: TColor;
 
       FPrintMargins: TRect;
@@ -87,6 +82,8 @@ type
       FExplorerAutoNav: boolean;
       FNavigatorAlphaValue: integer;
       FFlowchartFontName: string;
+
+      FShapeColors: TShapeColors;
 
       FColumnV1Width,
       FColumnV2Width,
@@ -109,6 +106,7 @@ type
       procedure UpdateForLang(const ALang: TLangDefinition);
       procedure ProtectFields;
       procedure SetDefaultForm;
+      function GetShapeColor(const idx: integer): TColor;
       function UpdateEditor: boolean;
       property ParseInput: boolean read FParseInput;
       property ParseOutput: boolean read FParseOutput;
@@ -146,13 +144,6 @@ type
       property HighlightColor: TColor read FHighlightColor;
       property DesktopColor: TColor read FDesktopColor;
       property TranslateFile: string read FTranslateFile;
-      property EllipseColor: TColor read FEllipseColor;
-      property DiamondColor: TColor read FDiamondColor;
-      property InOutColor: TColor read FInOutColor;
-      property RectColor: TColor read FRectColor;
-      property FolderColor: TColor read FFolderColor;
-      property RoadSignColor: TColor read FRoadSignColor;
-      property RoutineColor: TColor read FRoutineColor;
       property FontColor: TColor read FFontColor;
       property PrintMargins: TRect read FPrintMargins;
       property EnableDBuffering: boolean read FEnableDBuffering;
@@ -177,8 +168,8 @@ const
    KEY_DESKTOP_COLOR = 'DesktopColor';
    KEY_ELLIPSE_COLOR = 'EllipseColor';
    KEY_DIAMOND_COLOR = 'DiamondColor';
-   KEY_INOUT_COLOR = 'InOutColor';
-   KEY_RECT_COLOR = 'RectColor';
+   KEY_PARALLELOGRAM_COLOR = 'InOutColor';
+   KEY_RECTANGLE_COLOR = 'RectColor';
    KEY_FOLDER_COLOR = 'FoldColor';
    KEY_ROADSIGN_COLOR = 'RoadSignColor';
    KEY_ROUTINE_COLOR = 'RoutineColor';
@@ -254,6 +245,8 @@ begin
 end;
 
 procedure TSettings.SetDefaultValues;
+var
+   i: integer;
 begin
 
    FParseInput       := false;
@@ -288,15 +281,11 @@ begin
    FIndentString          := StringOfChar(INDENT_CHAR, FIndentLength);
 
    FHighlightColor := clAqua;
-   FDesktopColor   := clWhite;
-   FEllipseColor   := clWhite;
-   FInOutColor     := clWhite;
-   FRoutineColor   := clWhite;
-   FDiamondColor   := clWhite;
-   FRoadSignColor  := clWhite;
-   FRectColor      := clWhite;
-   FFolderColor    := clWhite;
-   FFontColor      := OK_COLOR;
+   FDesktopColor := clWhite;
+   FFontColor := OK_COLOR;
+
+   for i := 0 to High(FShapeColors) do
+      FShapeColors[i] := clWhite;
 
    FColumnV1Width  := 68;
    FColumnV2Width  := 68;
@@ -334,19 +323,19 @@ begin
          if reg.ValueExists(KEY_HIGHLIGHT_COLOR) then
             FHighlightColor := reg.ReadInteger(KEY_HIGHLIGHT_COLOR);
          if reg.ValueExists(KEY_ELLIPSE_COLOR) then
-            FEllipseColor := reg.ReadInteger(KEY_ELLIPSE_COLOR);
+            FShapeColors[ELLIPSE_COLOR_IDX] := reg.ReadInteger(KEY_ELLIPSE_COLOR);
          if reg.ValueExists(KEY_DIAMOND_COLOR) then
-            FDiamondColor := reg.ReadInteger(KEY_DIAMOND_COLOR);
-         if reg.ValueExists(KEY_INOUT_COLOR) then
-            FInOutColor := reg.ReadInteger(KEY_INOUT_COLOR);
-         if reg.ValueExists(KEY_RECT_COLOR) then
-            FRectColor := reg.ReadInteger(KEY_RECT_COLOR);
+            FShapeColors[DIAMOND_COLOR_IDX] := reg.ReadInteger(KEY_DIAMOND_COLOR);
+         if reg.ValueExists(KEY_PARALLELOGRAM_COLOR) then
+            FShapeColors[PARALLELOGRAM_COLOR_IDX]:= reg.ReadInteger(KEY_PARALLELOGRAM_COLOR);
+         if reg.ValueExists(KEY_RECTANGLE_COLOR) then
+            FShapeColors[RECTANGLE_COLOR_IDX] := reg.ReadInteger(KEY_RECTANGLE_COLOR);
          if reg.ValueExists(KEY_FOLDER_COLOR) then
-            FFolderColor := reg.ReadInteger(KEY_FOLDER_COLOR);
+            FShapeColors[FOLDER_COLOR_IDX] := reg.ReadInteger(KEY_FOLDER_COLOR);
          if reg.ValueExists(KEY_ROADSIGN_COLOR) then
-            FRoadSignColor := reg.ReadInteger(KEY_ROADSIGN_COLOR);
+            FShapeColors[ROADSIGN_COLOR_IDX] := reg.ReadInteger(KEY_ROADSIGN_COLOR);
          if reg.ValueExists(KEY_ROUTINE_COLOR) then
-            FRoutineColor := reg.ReadInteger(KEY_ROUTINE_COLOR);
+            FShapeColors[ROUTINE_COLOR_IDX] := reg.ReadInteger(KEY_ROUTINE_COLOR);
          if reg.ValueExists(KEY_FONT_COLOR) then
          begin
             FFontColor := reg.ReadInteger(KEY_FONT_COLOR);
@@ -524,13 +513,13 @@ begin
          reg.WriteInteger(KEY_EDITOR_FONT_SIZE, FEditorFontSize);
          reg.WriteInteger(KEY_DESKTOP_COLOR, FDesktopColor);
          reg.WriteInteger(KEY_EDITOR_INDENT, FIndentLength);
-         reg.WriteInteger(KEY_ELLIPSE_COLOR, FEllipseColor);
-         reg.WriteInteger(KEY_DIAMOND_COLOR, FDiamondColor);
-         reg.WriteInteger(KEY_INOUT_COLOR, FInOutColor);
-         reg.WriteInteger(KEY_RECT_COLOR, FRectColor);
-         reg.WriteInteger(KEY_FOLDER_COLOR, FFolderColor);
-         reg.WriteInteger(KEY_ROADSIGN_COLOR, FRoadSignColor);
-         reg.WriteInteger(KEY_ROUTINE_COLOR, FRoutineColor);
+         reg.WriteInteger(KEY_ELLIPSE_COLOR, FShapeColors[ELLIPSE_COLOR_IDX]);
+         reg.WriteInteger(KEY_DIAMOND_COLOR, FShapeColors[DIAMOND_COLOR_IDX]);
+         reg.WriteInteger(KEY_PARALLELOGRAM_COLOR, FShapeColors[PARALLELOGRAM_COLOR_IDX]);
+         reg.WriteInteger(KEY_RECTANGLE_COLOR, FShapeColors[RECTANGLE_COLOR_IDX]);
+         reg.WriteInteger(KEY_FOLDER_COLOR, FShapeColors[FOLDER_COLOR_IDX]);
+         reg.WriteInteger(KEY_ROADSIGN_COLOR, FShapeColors[ROADSIGN_COLOR_IDX]);
+         reg.WriteInteger(KEY_ROUTINE_COLOR, FShapeColors[ROUTINE_COLOR_IDX]);
          reg.WriteInteger(KEY_FONT_COLOR, FFontColor);
          reg.WriteInteger(KEY_COLV1_WIDTH, FColumnV1Width);
          reg.WriteInteger(KEY_COLV2_WIDTH, FColumnV2Width);
@@ -583,10 +572,19 @@ begin
    end;
 end;
 
+function TSettings.GetShapeColor(const idx: integer): TColor;
+begin
+   result := clNone;
+   if (idx >= 0) and (idx <= High(FShapeColors)) then
+      result := FShapeColors[idx];
+end;
+
 procedure TSettings.LoadFromForm;
 var
    redrawFlow, colorChanged, applyAll: boolean;
    langDef: TLangDefinition;
+   lColor: TColor;
+   i: integer;
 begin
 
    redrawFlow := false;
@@ -621,44 +619,16 @@ begin
       FIndentLength          := StrToIntDef(edtEditorIndent.Text, EDITOR_DEFAULT_INDENT_LENGTH);
       FIndentString          := StringOfChar(INDENT_CHAR, FIndentLength);
 
-      with imgShapes.Canvas do
+      for i := 0 to High(FShapeColors) do
       begin
-         if FEllipseColor <> Pixels[35, 22] then
+         lColor := GetShapeColor(i);
+         if (lColor <> clNone) and (FShapeColors[i] <> lColor) then
          begin
-            colorChanged := true;
-            FEllipseColor := Pixels[35, 22];
-         end;
-         if FInOutColor <> Pixels[35, 55] then
-         begin
-            colorChanged := true;
-            FInOutColor := Pixels[35, 55];
-         end;
-         if FRoutineColor <> Pixels[165, 52] then
-         begin
-            colorChanged := true;
-            FRoutineColor := Pixels[165, 52];
-         end;
-         if FDiamondColor <> Pixels[100, 38] then
-         begin
-            colorChanged := true;
-            FDiamondColor := Pixels[100, 38];
-         end;
-         if FRoadSignColor <> Pixels[229, 22] then
-         begin
-            colorChanged := true;
-            FRoadSignColor := Pixels[229, 22];
-         end;
-         if FRectColor <> Pixels[165, 22] then
-         begin
-            colorChanged := true;
-            FRectColor := Pixels[165, 22];
-         end;
-         if FFolderColor <> Pixels[230, 52] then
-         begin
-            colorChanged := true;
-            FFolderColor := Pixels[230, 52];
+           FShapeColors[i] := lColor;
+           colorChanged := true;
          end;
       end;
+
       if (FFontColor <> pnlFont.Color) and not TInfra.IsNOkColor(pnlFont.Color) then
       begin
          colorChanged := true;

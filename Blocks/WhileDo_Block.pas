@@ -33,7 +33,6 @@ type
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
          function Clone(const ABranch: TBranch): TBlock; override;
-         procedure ChangeColor(const AColor: TColor); override;
       protected
          procedure Paint; override;
          procedure SetWidth(const AMinX: integer); override;
@@ -68,10 +67,8 @@ begin
    IPoint.Y := 74;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
-   FStatement.Color := GSettings.DiamondColor;
    FStatement.Alignment := taCenter;
    PutTextControls;
-
 end;
 
 function TWhileDoBlock.Clone(const ABranch: TBranch): TBlock;
@@ -129,15 +126,6 @@ begin
    else
       Width := AMinX + 30;
    BottomPoint.X := Width - 11;
-end;
-
-procedure TWhileDoBlock.ChangeColor(const AColor: TColor);
-begin
-   inherited ChangeColor(AColor);
-   if GSettings.DiamondColor = GSettings.DesktopColor then
-      FStatement.Color := AColor
-   else
-      FStatement.Color := GSettings.DiamondColor;
 end;
 
 end.

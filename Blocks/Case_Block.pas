@@ -93,7 +93,6 @@ begin
    FCaseLabel := i18Manager.GetString('CaptionCase');
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
-   FStatement.Color := GSettings.DiamondColor;
    FStatement.Alignment := taCenter;
    FStatement.OnChangeCallBack := OnFStatementChange;
    PutTextControls;
@@ -597,10 +596,6 @@ var
    i: integer;
 begin
    inherited ChangeColor(AColor);
-   if GSettings.DiamondColor = GSettings.DesktopColor then
-      FStatement.Color := AColor
-   else
-      FStatement.Color := GSettings.DiamondColor;
    for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
    begin
       if FBranchArray[i].Statement <> nil then

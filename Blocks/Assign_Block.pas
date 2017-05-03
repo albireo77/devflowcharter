@@ -32,7 +32,6 @@ type
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
          function Clone(const ABranch: TBranch): TBlock; override;
-         procedure ChangeColor(const AColor: TColor); override;
       protected
          procedure Paint; override;
    end;
@@ -54,7 +53,6 @@ begin
    FStatement.SetBounds(0, 0, AWidth, 19);
    FStatement.Anchors := [akRight, akLeft, akTop];
    FStatement.BorderStyle := bsSingle;
-   FStatement.Color := GSettings.RectColor;
 
    BottomPoint.X := AWidth div 2;
    BottomPoint.Y := 19;
@@ -83,15 +81,6 @@ begin
    DrawArrowLine(Point(BottomPoint.X, 19), Point(BottomPoint.X, Height-1));
    DrawBlockLabel(5, 20, GInfra.CurrentLang.LabelAssign);
    DrawI;
-end;
-
-procedure TAssignBlock.ChangeColor(const AColor: TColor);
-begin
-   inherited ChangeColor(AColor);
-   if GSettings.RectColor = GSettings.DesktopColor then
-      FStatement.Color := AColor
-   else
-      FStatement.Color := GSettings.RectColor;
 end;
 
 end.

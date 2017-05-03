@@ -66,6 +66,7 @@ begin
    BottomHook := b_hook;
    TopHook.X := p1X;
    IPoint.Y := 8;
+   FShapeColorIdx := FOLDER_COLOR_IDX;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    FStatement.Free;

@@ -59,7 +59,7 @@ begin
    Font.Color := TEXT_COLOR;
    FCorner := TCorner.Create(Self);
    FCorner.Parent := Self;
-   FCorner.Color := GSettings.RectColor;
+   FCorner.Color := GSettings.GetShapeColor(FShapeColorIdx);
    FCorner.BevelOuter := bvNone;
    FCorner.Ctl3D := false;
    FCorner.DoubleBuffered := true;
