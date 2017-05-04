@@ -86,10 +86,10 @@ begin
    FInitParms.P2X := 0;
    FInitParms.HeightAffix := 22;
 
-   FShapeColorIdx := ROADSIGN_COLOR_IDX;
+   FShapeId := ROADSIGN_SHAPE_ID;
 
    edtStartVal := TStatement.Create(Self);
-   edtStartVal.Color := GSettings.GetShapeColor(FShapeColorIdx);
+   edtStartVal.Color := GSettings.GetShapeColor(FShapeId);
    edtStartVal.Font.Size := FStatement.Font.Size;
    edtStartVal.DoubleBuffered := true;
 
@@ -232,7 +232,7 @@ begin
          MoveTo(bhx+74, 19);
          LineTo(Width-11, 19);
          Brush.Style := bsClear;
-         lColor := GSettings.GetShapeColor(FShapeColorIdx);
+         lColor := GSettings.GetShapeColor(FShapeId);
          if lColor <> GSettings.DesktopColor then
             Brush.Color := lColor;
          Polygon([Point(bhx-100, 0),
@@ -411,7 +411,7 @@ var
    lColor: TColor;
 begin
    inherited ChangeColor(AColor);
-   lColor := GSettings.GetShapeColor(FShapeColorIdx);
+   lColor := GSettings.GetShapeColor(FShapeId);
    if lColor = GSettings.DesktopColor then
    begin
       edtStartVal.Color := AColor;

@@ -208,13 +208,13 @@ const   // Global constants
 
         KEY_CURRENT_LANGUAGE = 'CurrentLanguageName';
 
-        ELLIPSE_COLOR_IDX       = 0;
-        PARALLELOGRAM_COLOR_IDX = 1;
-        DIAMOND_COLOR_IDX       = 2;
-        RECTANGLE_COLOR_IDX     = 3;
-        ROADSIGN_COLOR_IDX      = 4;
-        ROUTINE_COLOR_IDX       = 5;
-        FOLDER_COLOR_IDX        = 6;
+        ELLIPSE_SHAPE_ID       = 0;
+        PARALLELOGRAM_SHAPE_ID = 1;
+        DIAMOND_SHAPE_ID       = 2;
+        RECTANGLE_SHAPE_ID     = 3;
+        ROADSIGN_SHAPE_ID      = 4;
+        ROUTINE_SHAPE_ID       = 5;
+        FOLDER_SHAPE_ID        = 6;
         SHAPE_POINTS: array[0..6] of TPoint = ((X:35;  Y:22),    // ellipse
                                                (X:35;  Y:55),    // parallelogram
                                                (X:100; Y:38),    // diamond

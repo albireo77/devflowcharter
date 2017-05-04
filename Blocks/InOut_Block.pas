@@ -62,8 +62,8 @@ begin
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
    
    FStatement.Anchors := [akRight, akLeft, akTop];
-   FShapeColorIdx := PARALLELOGRAM_COLOR_IDX;
-   FStatement.Color := GSettings.GetShapeColor(FShapeColorIdx);
+   FShapeId := PARALLELOGRAM_SHAPE_ID;
+   FStatement.Color := GSettings.GetShapeColor(FShapeId);
    PutTextControls;
    BottomPoint.X := AWidth div 2;
    BottomPoint.Y := 30;
@@ -130,7 +130,7 @@ begin
    with Canvas do
    begin
       Brush.Style := bsClear;
-      lColor := GSettings.GetShapeColor(FShapeColorIdx);
+      lColor := GSettings.GetShapeColor(FShapeId);
       if lColor <> GSettings.DesktopColor then
          Brush.Color := lColor;
       Polygon([Point(20, 0),

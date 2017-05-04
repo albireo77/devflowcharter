@@ -122,7 +122,7 @@ begin
    BottomPoint.X := FInitParms.BottomPoint.X;
    TopHook.Y := 30;
    FZOrder := -1;
-   FShapeColorIdx := ELLIPSE_COLOR_IDX;
+   FShapeId := ELLIPSE_SHAPE_ID;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    OnResize := MyOnResize;

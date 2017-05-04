@@ -26,8 +26,6 @@ uses
 
 type
 
-  TShapeColors = array[0..6] of TColor;
-
   TSettings = class(TObject)
   private
     { Private declarations }
@@ -83,7 +81,7 @@ type
       FNavigatorAlphaValue: integer;
       FFlowchartFontName: string;
 
-      FShapeColors: TShapeColors;
+      FShapeColors: array[0..6] of TColor;
 
       FColumnV1Width,
       FColumnV2Width,
@@ -106,7 +104,7 @@ type
       procedure UpdateForLang(const ALang: TLangDefinition);
       procedure ProtectFields;
       procedure SetDefaultForm;
-      function GetShapeColor(const idx: integer): TColor;
+      function GetShapeColor(const id: integer): TColor;
       function UpdateEditor: boolean;
       property ParseInput: boolean read FParseInput;
       property ParseOutput: boolean read FParseOutput;
@@ -323,19 +321,19 @@ begin
          if reg.ValueExists(KEY_HIGHLIGHT_COLOR) then
             FHighlightColor := reg.ReadInteger(KEY_HIGHLIGHT_COLOR);
          if reg.ValueExists(KEY_ELLIPSE_COLOR) then
-            FShapeColors[ELLIPSE_COLOR_IDX] := reg.ReadInteger(KEY_ELLIPSE_COLOR);
+            FShapeColors[ELLIPSE_SHAPE_ID] := reg.ReadInteger(KEY_ELLIPSE_COLOR);
          if reg.ValueExists(KEY_DIAMOND_COLOR) then
-            FShapeColors[DIAMOND_COLOR_IDX] := reg.ReadInteger(KEY_DIAMOND_COLOR);
+            FShapeColors[DIAMOND_SHAPE_ID] := reg.ReadInteger(KEY_DIAMOND_COLOR);
          if reg.ValueExists(KEY_PARALLELOGRAM_COLOR) then
-            FShapeColors[PARALLELOGRAM_COLOR_IDX]:= reg.ReadInteger(KEY_PARALLELOGRAM_COLOR);
+            FShapeColors[PARALLELOGRAM_SHAPE_ID]:= reg.ReadInteger(KEY_PARALLELOGRAM_COLOR);
          if reg.ValueExists(KEY_RECTANGLE_COLOR) then
-            FShapeColors[RECTANGLE_COLOR_IDX] := reg.ReadInteger(KEY_RECTANGLE_COLOR);
+            FShapeColors[RECTANGLE_SHAPE_ID] := reg.ReadInteger(KEY_RECTANGLE_COLOR);
          if reg.ValueExists(KEY_FOLDER_COLOR) then
-            FShapeColors[FOLDER_COLOR_IDX] := reg.ReadInteger(KEY_FOLDER_COLOR);
+            FShapeColors[FOLDER_SHAPE_ID] := reg.ReadInteger(KEY_FOLDER_COLOR);
          if reg.ValueExists(KEY_ROADSIGN_COLOR) then
-            FShapeColors[ROADSIGN_COLOR_IDX] := reg.ReadInteger(KEY_ROADSIGN_COLOR);
+            FShapeColors[ROADSIGN_SHAPE_ID] := reg.ReadInteger(KEY_ROADSIGN_COLOR);
          if reg.ValueExists(KEY_ROUTINE_COLOR) then
-            FShapeColors[ROUTINE_COLOR_IDX] := reg.ReadInteger(KEY_ROUTINE_COLOR);
+            FShapeColors[ROUTINE_SHAPE_ID] := reg.ReadInteger(KEY_ROUTINE_COLOR);
          if reg.ValueExists(KEY_FONT_COLOR) then
          begin
             FFontColor := reg.ReadInteger(KEY_FONT_COLOR);
@@ -513,13 +511,13 @@ begin
          reg.WriteInteger(KEY_EDITOR_FONT_SIZE, FEditorFontSize);
          reg.WriteInteger(KEY_DESKTOP_COLOR, FDesktopColor);
          reg.WriteInteger(KEY_EDITOR_INDENT, FIndentLength);
-         reg.WriteInteger(KEY_ELLIPSE_COLOR, FShapeColors[ELLIPSE_COLOR_IDX]);
-         reg.WriteInteger(KEY_DIAMOND_COLOR, FShapeColors[DIAMOND_COLOR_IDX]);
-         reg.WriteInteger(KEY_PARALLELOGRAM_COLOR, FShapeColors[PARALLELOGRAM_COLOR_IDX]);
-         reg.WriteInteger(KEY_RECTANGLE_COLOR, FShapeColors[RECTANGLE_COLOR_IDX]);
-         reg.WriteInteger(KEY_FOLDER_COLOR, FShapeColors[FOLDER_COLOR_IDX]);
-         reg.WriteInteger(KEY_ROADSIGN_COLOR, FShapeColors[ROADSIGN_COLOR_IDX]);
-         reg.WriteInteger(KEY_ROUTINE_COLOR, FShapeColors[ROUTINE_COLOR_IDX]);
+         reg.WriteInteger(KEY_ELLIPSE_COLOR, FShapeColors[ELLIPSE_SHAPE_ID]);
+         reg.WriteInteger(KEY_DIAMOND_COLOR, FShapeColors[DIAMOND_SHAPE_ID]);
+         reg.WriteInteger(KEY_PARALLELOGRAM_COLOR, FShapeColors[PARALLELOGRAM_SHAPE_ID]);
+         reg.WriteInteger(KEY_RECTANGLE_COLOR, FShapeColors[RECTANGLE_SHAPE_ID]);
+         reg.WriteInteger(KEY_FOLDER_COLOR, FShapeColors[FOLDER_SHAPE_ID]);
+         reg.WriteInteger(KEY_ROADSIGN_COLOR, FShapeColors[ROADSIGN_SHAPE_ID]);
+         reg.WriteInteger(KEY_ROUTINE_COLOR, FShapeColors[ROUTINE_SHAPE_ID]);
          reg.WriteInteger(KEY_FONT_COLOR, FFontColor);
          reg.WriteInteger(KEY_COLV1_WIDTH, FColumnV1Width);
          reg.WriteInteger(KEY_COLV2_WIDTH, FColumnV2Width);
@@ -572,11 +570,11 @@ begin
    end;
 end;
 
-function TSettings.GetShapeColor(const idx: integer): TColor;
+function TSettings.GetShapeColor(const id: integer): TColor;
 begin
    result := clNone;
-   if (idx >= 0) and (idx <= High(FShapeColors)) then
-      result := FShapeColors[idx];
+   if (id >= 0) and (id <= High(FShapeColors)) then
+      result := FShapeColors[id];
 end;
 
 procedure TSettings.LoadFromForm;

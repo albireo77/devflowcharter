@@ -46,7 +46,7 @@ uses
 constructor TStatementMemo.Create(AOwner: TComponent);
 begin
    inherited Create(AOwner);
-   Color := GSettings.GetShapeColor(RECTANGLE_COLOR_IDX);
+   Color := GSettings.GetShapeColor(RECTANGLE_SHAPE_ID);
    BevelInner := bvNone;
    BevelOuter := bvNone;
    WordWrap := false;
