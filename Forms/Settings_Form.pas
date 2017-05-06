@@ -147,22 +147,22 @@ uses
 
 const
    SHAPE_BORDER_COLOR = clBlack;
-   SHAPE_POINTS: array[TColorShape] of TPoint = ((X:35;  Y:22),    // ellipse
+   SHAPE_POINTS: array[TColorShape] of TPoint = ((X:-1;  Y:-1),    // none
+                                                 (X:35;  Y:22),    // ellipse
                                                  (X:35;  Y:55),    // parallelogram
                                                  (X:100; Y:38),    // diamond
                                                  (X:165; Y:22),    // rectangle
                                                  (X:229; Y:22),    // roadsign
                                                  (X:165; Y:52),    // routine
-                                                 (X:230; Y:52),    // folder
-                                                 (X:-1;  Y:-1));   // none
-   SHAPE_RECTS: array[TColorShape] of TRect = ((Left:10;  Top:10; Right:60;  Bottom:35),
+                                                 (X:230; Y:52));   // folder
+   SHAPE_RECTS: array[TColorShape] of TRect = ((Left:-1;  Top:-1; Right:0;   Bottom:0),
+                                               (Left:10;  Top:10; Right:60;  Bottom:35),
                                                (Left:10;  Top:45; Right:60;  Bottom:65),
                                                (Left:75;  Top:13; Right:125; Bottom:63),
                                                (Left:140; Top:10; Right:190; Bottom:35),
                                                (Left:205; Top:10; Right:252; Bottom:34),
                                                (Left:140; Top:40; Right:190; Bottom:65),
-                                               (Left:205; Top:40; Right:255; Bottom:65),
-                                               (Left:-1;  Top:-1; Right:0;   Bottom:0));
+                                               (Left:205; Top:40; Right:255; Bottom:65));
 
 {$R *.dfm}
 
@@ -265,11 +265,11 @@ var
    pnt: TPoint;
 begin
    pnt := imgShapes.ScreenToClient(Mouse.CursorPos);
-   shape := Low(TColorShape);
+   shape := High(TColorShape);
    repeat
       if PtInRect(SHAPE_RECTS[shape], pnt) then
          break;
-      shape := Succ(shape);
+      shape := Pred(shape);
    until shape = shpNone;
    if (shape <> shpNone) and ColorDialog.Execute then
       FillShape(shape, ColorDialog.Color);
