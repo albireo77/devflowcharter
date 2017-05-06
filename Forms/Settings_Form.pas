@@ -270,18 +270,20 @@ end;
 procedure TSettingsForm.FillShape(const shape: TColorShape; const AColor: TColor);
 var
    pnt: TPoint;
+   rect: TRect;
 begin
    if shape <> shpNone then
    begin
       imgShapes.Canvas.Brush.Color := AColor;
-      pnt := SHAPE_RECTS[shape].CenterPoint;
+      rect := SHAPE_RECTS[shape];
+      pnt := rect.CenterPoint;
       imgShapes.Canvas.FloodFill(pnt.X, pnt.Y, SHAPE_BORDER_COLOR, fsBorder);
       if shape = shpFolder then
-         imgShapes.Canvas.FloodFill(206, 41, SHAPE_BORDER_COLOR, fsBorder)
+         imgShapes.Canvas.FloodFill(rect.Left+1, rect.Top+1, SHAPE_BORDER_COLOR, fsBorder)
       else if shape = shpRoutine then
       begin
-         imgShapes.Canvas.FloodFill(143, 42, SHAPE_BORDER_COLOR, fsBorder);
-         imgShapes.Canvas.FloodFill(187, 42, SHAPE_BORDER_COLOR, fsBorder);
+         imgShapes.Canvas.FloodFill(rect.Left+3, rect.Top+2, SHAPE_BORDER_COLOR, fsBorder);
+         imgShapes.Canvas.FloodFill(rect.Right-3, rect.Top+2, SHAPE_BORDER_COLOR, fsBorder);
       end;
    end;
 end;
