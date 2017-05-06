@@ -1091,7 +1091,7 @@ begin
       if FComponentList[i] is TUserFunction then
       begin
          func := TUserFunction(FComponentList[i]);
-         if func.Active and (func.Body <> nil) and (func.Body.Parent = AControl.Parent) and PtInRect(func.Body.BoundsRect, AControl.BoundsRect.TopLeft) then
+         if func.Active and (func.Body <> nil) and (func.Body.Parent = AControl.Parent) and func.Body.BoundsRect.Contains(AControl.BoundsRect.TopLeft) then
          begin
             result := func.Body;
             break;

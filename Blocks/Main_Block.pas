@@ -126,7 +126,7 @@ begin
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    OnResize := MyOnResize;
-   FLabelRect := Rect(0, 0, 0, 0);
+   FLabelRect := TRect.Empty;
    FHandle := Canvas.Handle;
    FStatement.Free;
    FStatement := nil;
@@ -316,7 +316,7 @@ begin
                FLabelRect := R;
          end
          else
-            FLabelRect := Rect(0, 0, 0, 0);
+            FLabelRect := TRect.Empty;
       end;
       DrawEllipsedText(Point(Branch.Hook.X, TopHook.Y), FStartLabel);
       if Branch.FindInstanceOf(TReturnBlock) = -1 then

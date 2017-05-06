@@ -270,11 +270,11 @@ var
    pnt: TPoint;
 begin
    pnt := Point(X, Y);
-   if PtInRect(Rect(Width-5, 0, Width, Height-5), pnt) then
+   if Rect(Width-5, 0, Width, Height-5).Contains(pnt) then
       Cursor := crSizeWE
-   else if PtInRect(Rect(0, Height-5, Width-5, Height), pnt) then
+   else if Rect(0, Height-5, Width-5, Height).Contains(pnt) then
       Cursor := crSizeNS
-   else if PtInRect(Rect(Width-5, Height-5, Width, Height), pnt) then
+   else if Rect(Width-5, Height-5, Width, Height).Contains(pnt) then
       Cursor := crSizeNWSE
    else if Cursor <> crDefault then
       Cursor := crDefault;

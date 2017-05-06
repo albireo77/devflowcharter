@@ -259,7 +259,7 @@ begin
    pnt := imgShapes.ScreenToClient(Mouse.CursorPos);
    shape := High(TColorShape);
    repeat
-      if PtInRect(SHAPE_RECTS[shape], pnt) then
+      if SHAPE_RECTS[shape].Contains(pnt) then
          break;
       shape := Pred(shape);
    until shape = shpNone;
@@ -274,7 +274,7 @@ begin
    if shape <> shpNone then
    begin
       imgShapes.Canvas.Brush.Color := AColor;
-      pnt := CenterPoint(SHAPE_RECTS[shape]);
+      pnt := SHAPE_RECTS[shape].CenterPoint;
       imgShapes.Canvas.FloodFill(pnt.X, pnt.Y, SHAPE_BORDER_COLOR, fsBorder);
       if shape = shpFolder then
          imgShapes.Canvas.FloodFill(206, 41, SHAPE_BORDER_COLOR, fsBorder)
@@ -293,7 +293,7 @@ begin
    result := clNone;
    if shape <> shpNone then
    begin
-      pnt := CenterPoint(SHAPE_RECTS[shape]);
+      pnt := SHAPE_RECTS[shape].CenterPoint;
       result := imgShapes.Canvas.Pixels[pnt.X, pnt.Y];
    end;
 end;
@@ -307,30 +307,72 @@ begin
 end;
 
 procedure TSettingsForm.DrawShapes(ASettings: TSettings);
+var
+   shape: TColorShape;
+   rect, rect2: TRect;
+   pw: integer;
+   p: TPoint;
 begin
    with imgShapes.Canvas do
    begin
       Pen.Color := SHAPE_BORDER_COLOR;
-      Brush.Color := ASettings.GetShapeColor(shpEllipse);
-      Ellipse(10, 10, 60, 35);
-      Brush.Color := ASettings.GetShapeColor(shpParallel);
-      Polygon([Point(20, 45), Point(60, 45), Point(50, 65), Point(10, 65), Point(20, 45)]);
-      Brush.Color := ASettings.GetShapeColor(shpDiamond);
-      Polygon([Point(75, 38), Point(100, 13), Point(125, 38), Point(100, 63), Point(75, 38)]);
-      Brush.Color := ASettings.GetShapeColor(shpRectangle);
-      Rectangle(140, 10, 190, 35);
-      Brush.Color := ASettings.GetShapeColor(shpRoutine);
-      Rectangle(140, 40, 190, 65);
-      Brush.Color := SHAPE_BORDER_COLOR;
-      Rectangle(145, 40, 148, 65);
-      Rectangle(182, 40, 185, 65);
-      Brush.Color := ASettings.GetShapeColor(shpRoadSign);
-      Polygon([Point(205, 10), Point(240, 10), Point(252, 22), Point(240, 34), Point(205, 34), Point(205, 10)]);
-      Pen.Width := 2;
-      Brush.Color := ASettings.GetShapeColor(shpFolder);
-      Rectangle(205, 40, 255, 65);
-      Pen.Width := 1;
-      Polyline([Point(207, 42), Point(251, 42), Point(251, 61), Point(207, 61), Point(207, 42)]);
+      for shape := Low(TColorShape) to High(TColorShape) do
+      begin
+         if shape <> shpNone then
+         begin
+            rect := SHAPE_RECTS[shape];
+            Brush.Color := ASettings.GetShapeColor(shape);
+            case shape of
+               shpEllipse:
+                  Ellipse(rect.Left, rect.Top, rect.Right, rect.Bottom);
+               shpRectangle:
+                  Rectangle(rect.Left, rect.Top, rect.Right, rect.Bottom);
+               shpParallel:
+               begin
+                  p := Point(rect.Left+10, rect.Top);
+                  Polygon([p,
+                           Point(rect.Right, rect.Top),
+                           Point(rect.Right-10, rect.Bottom),
+                           Point(rect.Left, rect.Bottom),
+                           p]);
+               end;
+               shpDiamond:
+               begin
+                  p := rect.CenterPoint;
+                  Polygon([Point(rect.Left, p.Y),
+                           Point(p.X, rect.Top),
+                           Point(rect.Right, p.Y),
+                           Point(p.X, rect.Bottom),
+                           Point(rect.Left, p.Y)]);
+               end;
+               shpRoadSign:
+                  Polygon([rect.TopLeft,
+                           Point(rect.Left+35, rect.Top),
+                           Point(rect.Right, rect.CenterPoint.Y),
+                           Point(rect.Left+35, rect.Bottom),
+                           Point(rect.Left, rect.Bottom),
+                           rect.TopLeft]);
+               shpRoutine:
+               begin
+                  Rectangle(rect.Left, rect.Top, rect.Right, rect.Bottom);
+                  Brush.Color := Pen.Color;
+                  rect2 := System.Types.Rect(rect.Left+5, rect.Top, rect.Right-42, rect.Bottom);
+                  Rectangle(rect2.Left, rect2.Top, rect2.Right, rect2.Bottom);
+                  rect2 := System.Types.Rect(rect.Left+42, rect.Top, rect.Right-5, rect.Bottom);
+                  Rectangle(rect2.Left, rect2.Top, rect2.Right, rect2.Bottom);
+               end;
+               shpFolder:
+               begin
+                  pw := 2;
+                  Pen.Width := pw;
+                  Rectangle(rect.Left, rect.Top, rect.Right, rect.Bottom);
+                  rect := System.Types.Rect(rect.Left+pw, rect.Top+pw, rect.Right-pw-1, rect.Bottom-pw-1);
+                  Pen.Width := 1;
+                  Rectangle(rect.Left, rect.Top, rect.Right, rect.Bottom);
+               end;
+            end;
+         end;
+      end;
    end;
 end;
 

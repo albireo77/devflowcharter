@@ -535,7 +535,7 @@ begin
    pnt := Point(X, Y);
    SelectBlock(pnt);
    SetCursor(pnt);
-   if PtInRect(Rect(BottomPoint.X-5, BottomPoint.Y, BottomPoint.X+5, Height), pnt) then
+   if Rect(BottomPoint.X-5, BottomPoint.Y, BottomPoint.X+5, Height).Contains(pnt) then
    begin
       DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1), arrEnd, clRed);
       Ired := 0;
@@ -559,7 +559,7 @@ begin
       for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
       begin
          pnt := FBranchArray[i].Hook;
-         if PtInRect(Rect(pnt.X-5, TopHook.Y, pnt.X+5, pnt.Y), Point(X, Y)) then
+         if Rect(pnt.X-5, TopHook.Y, pnt.X+5, pnt.Y).Contains(Point(X, Y)) then
          begin
             DrawArrowLine(Point(pnt.X, TopHook.Y), pnt, arrEnd, clRed);
             Ired := i;
@@ -580,11 +580,11 @@ end;
 
 procedure TBlock.SetCursor(const APoint: TPoint);
 begin
-   if FFrame and PtInRect(Rect(Width-5, 0, Width, Height-5), APoint) then
+   if FFrame and Rect(Width-5, 0, Width, Height-5).Contains(APoint) then
       Cursor := crSizeWE
-   else if FFrame and PtInRect(Rect(0, Height-5, Width-5, Height), APoint) then
+   else if FFrame and Rect(0, Height-5, Width-5, Height).Contains(APoint) then
       Cursor := crSizeNS
-   else if FFrame and PtInRect(Rect(Width-5, Height-5, Width, Height), APoint) then
+   else if FFrame and Rect(Width-5, Height-5, Width, Height).Contains(APoint) then
       Cursor := crSizeNWSE
    else if IsCursorResize then
       Cursor := crDefault;
@@ -758,7 +758,7 @@ var
 begin
    if Button = mbLeft then
    begin
-      if PtInRect(Rect(IPoint.X-5, IPoint.Y, IPoint.X+5, IPoint.Y+10), Point(X, Y)) then
+      if Rect(IPoint.X-5, IPoint.Y, IPoint.X+5, IPoint.Y+10).Contains(Point(X, Y)) then
          BeginDrag(false, 3)
       else if not IsCursorResize then
       begin          // drag entire flowchart
@@ -1108,7 +1108,7 @@ begin
                isFront := IsInFront(comment)
             else
                isFront := true;
-            if isFront and (comment.PinControl = nil) and PtInRect(ClientRect, ParentToClient(comment.BoundsRect.TopLeft, lPage)) then
+            if isFront and (comment.PinControl = nil) and ClientRect.Contains(ParentToClient(comment.BoundsRect.TopLeft, lPage)) then
                objList.Add(comment);
          end
       end;
@@ -1316,7 +1316,7 @@ end;
 
 procedure TBlock.SelectBlock(const APoint: TPoint);
 begin
-   if PtInRect(Rect(IPoint.X-5, IPoint.Y, IPoint.X+5, IPoint.Y+10), APoint) then
+   if Rect(IPoint.X-5, IPoint.Y, IPoint.X+5, IPoint.Y+10).Contains(APoint) then
    begin
       if Color <> GSettings.HighlightColor then
       begin
@@ -1528,7 +1528,7 @@ begin
    GetViewportExtEx(Canvas.Handle, viewPort);
    cx := viewPort.cx / wndExt.cx;
    cy := viewPort.cy / wndExt.cy;
-   R := Rect(0, 0, 0, 0);
+   R := TRect.Empty;
    DrawText(Canvas.Handle, PChar(AText), -1, R, DT_CALCRECT);
    ar := (R.Bottom - R.Top) * cy / Sqrt(2);
    br := (R.Right - R.Left) * cx / Sqrt(2);
@@ -1557,7 +1557,7 @@ function TBlock.DrawEllipsedText(const APoint: TPoint; const AText: string): TRe
 var
    lColor: TColor;
 begin
-   result := Rect(0, 0, 0, 0);
+   result := TRect.Empty;
    if not InvalidPoint(APoint) then
    begin
       result := GetEllipseTextRect(APoint, AText);
@@ -1719,7 +1719,7 @@ end;
 
 function TBlock.IsCursorSelect: boolean;
 begin
-   result := PtInRect(Rect(IPoint.X-5, IPoint.Y, IPoint.X+5, IPoint.Y+10), ScreenToClient(Mouse.CursorPos));
+   result := Rect(IPoint.X-5, IPoint.Y, IPoint.X+5, IPoint.Y+10).Contains(ScreenToClient(Mouse.CursorPos));
 end;
 
 function TBlock.IsCursorResize: boolean;
