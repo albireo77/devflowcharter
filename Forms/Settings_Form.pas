@@ -147,22 +147,14 @@ uses
 
 const
    SHAPE_BORDER_COLOR = clBlack;
-   SHAPE_POINTS: array[TColorShape] of TPoint = ((X:-1;  Y:-1),    // none
-                                                 (X:35;  Y:22),    // ellipse
-                                                 (X:35;  Y:55),    // parallelogram
-                                                 (X:100; Y:38),    // diamond
-                                                 (X:165; Y:22),    // rectangle
-                                                 (X:229; Y:22),    // roadsign
-                                                 (X:165; Y:52),    // routine
-                                                 (X:230; Y:52));   // folder
-   SHAPE_RECTS: array[TColorShape] of TRect = ((Left:-1;  Top:-1; Right:0;   Bottom:0),
-                                               (Left:10;  Top:10; Right:60;  Bottom:35),
-                                               (Left:10;  Top:45; Right:60;  Bottom:65),
-                                               (Left:75;  Top:13; Right:125; Bottom:63),
-                                               (Left:140; Top:10; Right:190; Bottom:35),
-                                               (Left:205; Top:10; Right:252; Bottom:34),
-                                               (Left:140; Top:40; Right:190; Bottom:65),
-                                               (Left:205; Top:40; Right:255; Bottom:65));
+   SHAPE_RECTS: array[TColorShape] of TRect = ((Left:-1;  Top:-1; Right:0;   Bottom:0),     // none
+                                               (Left:10;  Top:10; Right:60;  Bottom:35),    // ellipse
+                                               (Left:10;  Top:45; Right:60;  Bottom:65),    // parallelogram
+                                               (Left:75;  Top:13; Right:125; Bottom:63),    // diamond
+                                               (Left:140; Top:10; Right:190; Bottom:35),    // rectangle
+                                               (Left:205; Top:10; Right:252; Bottom:34),    // roadsign
+                                               (Left:140; Top:40; Right:190; Bottom:65),    // routine
+                                               (Left:205; Top:40; Right:255; Bottom:65));   // folder
 
 {$R *.dfm}
 
@@ -276,11 +268,14 @@ begin
 end;
 
 procedure TSettingsForm.FillShape(const shape: TColorShape; const AColor: TColor);
+var
+   pnt: TPoint;
 begin
    if shape <> shpNone then
    begin
       imgShapes.Canvas.Brush.Color := AColor;
-      imgShapes.Canvas.FloodFill(SHAPE_POINTS[shape].X, SHAPE_POINTS[shape].Y, SHAPE_BORDER_COLOR, fsBorder);
+      pnt := CenterPoint(SHAPE_RECTS[shape]);
+      imgShapes.Canvas.FloodFill(pnt.X, pnt.Y, SHAPE_BORDER_COLOR, fsBorder);
       if shape = shpFolder then
          imgShapes.Canvas.FloodFill(206, 41, SHAPE_BORDER_COLOR, fsBorder)
       else if shape = shpRoutine then
@@ -292,10 +287,15 @@ begin
 end;
 
 function TSettingsForm.GetShapeColor(const shape: TColorShape): TColor;
+var
+   pnt: TPoint;
 begin
    result := clNone;
    if shape <> shpNone then
-      result := imgShapes.Canvas.Pixels[SHAPE_POINTS[shape].X, SHAPE_POINTS[shape].Y];
+   begin
+      pnt := CenterPoint(SHAPE_RECTS[shape]);
+      result := imgShapes.Canvas.Pixels[pnt.X, pnt.Y];
+   end;
 end;
 
 procedure TSettingsForm.FillAllShapes(const AColor: TColor);
