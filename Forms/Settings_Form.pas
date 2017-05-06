@@ -25,7 +25,7 @@ interface
 
 uses
   Vcl.Controls, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Graphics, System.Classes, System.Types,
-  Base_Form, Settings;
+  Base_Form, Settings, CommonTypes;
 
 type
   TSettingsForm = class(TBaseForm)
@@ -127,14 +127,14 @@ type
     procedure edtFontNameClick(Sender: TObject);
   private
     procedure SetComboBoxItem(AComboBox: TComboBox; const AText: string);
-    procedure FillShape(const id: integer; const AColor: TColor);
+    procedure FillShape(const shape: TColorShape; const AColor: TColor);
     procedure DrawShapes(ASettings: TSettings);
     procedure FillAllShapes(const AColor: TColor);
   public
     procedure SetDefault;
     procedure ProtectFields;
     procedure SetSettings(ASettings: TSettings);
-    function GetShapeColor(const id: integer): TColor;
+    function GetShapeColor(const shape: TColorShape): TColor;
   end;
 
 var
@@ -147,6 +147,22 @@ uses
 
 const
    SHAPE_BORDER_COLOR = clBlack;
+   SHAPE_POINTS: array[TColorShape] of TPoint = ((X:35;  Y:22),    // ellipse
+                                                 (X:35;  Y:55),    // parallelogram
+                                                 (X:100; Y:38),    // diamond
+                                                 (X:165; Y:22),    // rectangle
+                                                 (X:229; Y:22),    // roadsign
+                                                 (X:165; Y:52),    // routine
+                                                 (X:230; Y:52),    // folder
+                                                 (X:-1;  Y:-1));   // none
+   SHAPE_RECTS: array[TColorShape] of TRect = ((Left:10;  Top:10; Right:60;  Bottom:35),
+                                               (Left:10;  Top:45; Right:60;  Bottom:65),
+                                               (Left:75;  Top:13; Right:125; Bottom:63),
+                                               (Left:140; Top:10; Right:190; Bottom:35),
+                                               (Left:205; Top:10; Right:252; Bottom:34),
+                                               (Left:140; Top:40; Right:190; Bottom:65),
+                                               (Left:205; Top:40; Right:255; Bottom:65),
+                                               (Left:-1;  Top:-1; Right:0;   Bottom:0));
 
 {$R *.dfm}
 
@@ -245,38 +261,29 @@ end;
 
 procedure TSettingsForm.imgShapesClick(Sender: TObject);
 var
-   idx: integer;
+   shape: TColorShape;
    pnt: TPoint;
 begin
-   idx := -1;
    pnt := imgShapes.ScreenToClient(Mouse.CursorPos);
-   if PtInRect(Rect(10, 10, 60, 35), pnt) then
-      idx := 0
-   else if PtInRect(Rect(10, 45, 60, 65), pnt) then
-      idx := 1
-   else if PtInRect(Rect(75, 13, 125, 63), pnt) then
-      idx := 2
-   else if PtInRect(Rect(140, 10, 190, 35), pnt) then
-      idx := 3
-   else if PtInRect(Rect(205, 10, 252, 34), pnt) then
-      idx := 4
-   else if PtInRect(Rect(140, 40, 190, 65), pnt) then
-      idx := 5
-   else if PtInRect(Rect(205, 40, 255, 65), pnt) then
-      idx := 6;
-   if (idx <> -1) and ColorDialog.Execute then
-      FillShape(idx, ColorDialog.Color);
+   shape := Low(TColorShape);
+   repeat
+      if PtInRect(SHAPE_RECTS[shape], pnt) then
+         break;
+      shape := Succ(shape);
+   until shape = shpNone;
+   if (shape <> shpNone) and ColorDialog.Execute then
+      FillShape(shape, ColorDialog.Color);
 end;
 
-procedure TSettingsForm.FillShape(const id: integer; const AColor: TColor);
+procedure TSettingsForm.FillShape(const shape: TColorShape; const AColor: TColor);
 begin
-   if (id >= 0) and (id <= High(SHAPE_POINTS)) then
+   if shape <> shpNone then
    begin
       imgShapes.Canvas.Brush.Color := AColor;
-      imgShapes.Canvas.FloodFill(SHAPE_POINTS[id].X, SHAPE_POINTS[id].Y, SHAPE_BORDER_COLOR, fsBorder);
-      if id = FOLDER_SHAPE_ID then
+      imgShapes.Canvas.FloodFill(SHAPE_POINTS[shape].X, SHAPE_POINTS[shape].Y, SHAPE_BORDER_COLOR, fsBorder);
+      if shape = shpFolder then
          imgShapes.Canvas.FloodFill(206, 41, SHAPE_BORDER_COLOR, fsBorder)
-      else if id = ROUTINE_SHAPE_ID then
+      else if shape = shpRoutine then
       begin
          imgShapes.Canvas.FloodFill(143, 42, SHAPE_BORDER_COLOR, fsBorder);
          imgShapes.Canvas.FloodFill(187, 42, SHAPE_BORDER_COLOR, fsBorder);
@@ -284,19 +291,19 @@ begin
    end;
 end;
 
-function TSettingsForm.GetShapeColor(const id: integer): TColor;
+function TSettingsForm.GetShapeColor(const shape: TColorShape): TColor;
 begin
    result := clNone;
-   if (id >= 0) and (id <= High(SHAPE_POINTS)) then
-      result := imgShapes.Canvas.Pixels[SHAPE_POINTS[id].X, SHAPE_POINTS[id].Y];
+   if shape <> shpNone then
+      result := imgShapes.Canvas.Pixels[SHAPE_POINTS[shape].X, SHAPE_POINTS[shape].Y];
 end;
 
 procedure TSettingsForm.FillAllShapes(const AColor: TColor);
 var
-   i: integer;
+   shape: TColorShape;
 begin
-   for i := 0 to High(SHAPE_POINTS) do
-      FillShape(i, AColor);
+   for shape := Low(TColorShape) to High(TColorShape) do
+      FillShape(shape, AColor);
 end;
 
 procedure TSettingsForm.DrawShapes(ASettings: TSettings);
@@ -304,23 +311,23 @@ begin
    with imgShapes.Canvas do
    begin
       Pen.Color := SHAPE_BORDER_COLOR;
-      Brush.Color := ASettings.GetShapeColor(ELLIPSE_SHAPE_ID);
+      Brush.Color := ASettings.GetShapeColor(shpEllipse);
       Ellipse(10, 10, 60, 35);
-      Brush.Color := ASettings.GetShapeColor(PARALLELOGRAM_SHAPE_ID);
+      Brush.Color := ASettings.GetShapeColor(shpParallel);
       Polygon([Point(20, 45), Point(60, 45), Point(50, 65), Point(10, 65), Point(20, 45)]);
-      Brush.Color := ASettings.GetShapeColor(DIAMOND_SHAPE_ID);
+      Brush.Color := ASettings.GetShapeColor(shpDiamond);
       Polygon([Point(75, 38), Point(100, 13), Point(125, 38), Point(100, 63), Point(75, 38)]);
-      Brush.Color := ASettings.GetShapeColor(RECTANGLE_SHAPE_ID);
+      Brush.Color := ASettings.GetShapeColor(shpRectangle);
       Rectangle(140, 10, 190, 35);
-      Brush.Color := ASettings.GetShapeColor(ROUTINE_SHAPE_ID);
+      Brush.Color := ASettings.GetShapeColor(shpRoutine);
       Rectangle(140, 40, 190, 65);
       Brush.Color := SHAPE_BORDER_COLOR;
       Rectangle(145, 40, 148, 65);
       Rectangle(182, 40, 185, 65);
-      Brush.Color := ASettings.GetShapeColor(ROADSIGN_SHAPE_ID);
+      Brush.Color := ASettings.GetShapeColor(shpRoadSign);
       Polygon([Point(205, 10), Point(240, 10), Point(252, 22), Point(240, 34), Point(205, 34), Point(205, 10)]);
       Pen.Width := 2;
-      Brush.Color := ASettings.GetShapeColor(FOLDER_SHAPE_ID);
+      Brush.Color := ASettings.GetShapeColor(shpFolder);
       Rectangle(205, 40, 255, 65);
       Pen.Width := 1;
       Polyline([Point(207, 42), Point(251, 42), Point(251, 61), Point(207, 61), Point(207, 42)]);

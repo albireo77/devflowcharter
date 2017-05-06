@@ -22,7 +22,7 @@ unit Settings;
 interface
 
 uses
-  WinApi.Windows, Vcl.Graphics, LangDefinition;
+  WinApi.Windows, Vcl.Graphics, LangDefinition, CommonTypes;
 
 type
 
@@ -68,9 +68,7 @@ type
       FHighlightColor: TColor;
       FDesktopColor: TColor;
       FTranslateFile: string;
-
       FFontColor: TColor;
-
       FPrintMargins: TRect;
       FEnableDBuffering,
       FShowFuncLabels,
@@ -81,7 +79,7 @@ type
       FNavigatorAlphaValue: integer;
       FFlowchartFontName: string;
 
-      FShapeColors: array[0..6] of TColor;
+      FShapeColors: array[TColorShape] of TColor;
 
       FColumnV1Width,
       FColumnV2Width,
@@ -104,7 +102,7 @@ type
       procedure UpdateForLang(const ALang: TLangDefinition);
       procedure ProtectFields;
       procedure SetDefaultForm;
-      function GetShapeColor(const id: integer): TColor;
+      function GetShapeColor(const shape: TColorShape): TColor;
       function UpdateEditor: boolean;
       property ParseInput: boolean read FParseInput;
       property ParseOutput: boolean read FParseOutput;
@@ -244,7 +242,8 @@ end;
 
 procedure TSettings.SetDefaultValues;
 var
-   i: integer;
+   shape: TColorShape;
+   lColor: TColor;
 begin
 
    FParseInput       := false;
@@ -282,8 +281,14 @@ begin
    FDesktopColor := clWhite;
    FFontColor := OK_COLOR;
 
-   for i := 0 to High(FShapeColors) do
-      FShapeColors[i] := clWhite;
+   for shape := Low(TColorShape) to High(TColorShape) do
+   begin
+      if shape = shpNone then
+         lColor := clNone
+      else
+         lColor := clWhite;
+      FShapeColors[shape] := lColor;
+   end;
 
    FColumnV1Width  := 68;
    FColumnV2Width  := 68;
@@ -321,19 +326,19 @@ begin
          if reg.ValueExists(KEY_HIGHLIGHT_COLOR) then
             FHighlightColor := reg.ReadInteger(KEY_HIGHLIGHT_COLOR);
          if reg.ValueExists(KEY_ELLIPSE_COLOR) then
-            FShapeColors[ELLIPSE_SHAPE_ID] := reg.ReadInteger(KEY_ELLIPSE_COLOR);
+            FShapeColors[shpEllipse] := reg.ReadInteger(KEY_ELLIPSE_COLOR);
          if reg.ValueExists(KEY_DIAMOND_COLOR) then
-            FShapeColors[DIAMOND_SHAPE_ID] := reg.ReadInteger(KEY_DIAMOND_COLOR);
+            FShapeColors[shpDiamond] := reg.ReadInteger(KEY_DIAMOND_COLOR);
          if reg.ValueExists(KEY_PARALLELOGRAM_COLOR) then
-            FShapeColors[PARALLELOGRAM_SHAPE_ID]:= reg.ReadInteger(KEY_PARALLELOGRAM_COLOR);
+            FShapeColors[shpParallel]:= reg.ReadInteger(KEY_PARALLELOGRAM_COLOR);
          if reg.ValueExists(KEY_RECTANGLE_COLOR) then
-            FShapeColors[RECTANGLE_SHAPE_ID] := reg.ReadInteger(KEY_RECTANGLE_COLOR);
+            FShapeColors[shpRectangle] := reg.ReadInteger(KEY_RECTANGLE_COLOR);
          if reg.ValueExists(KEY_FOLDER_COLOR) then
-            FShapeColors[FOLDER_SHAPE_ID] := reg.ReadInteger(KEY_FOLDER_COLOR);
+            FShapeColors[shpFolder] := reg.ReadInteger(KEY_FOLDER_COLOR);
          if reg.ValueExists(KEY_ROADSIGN_COLOR) then
-            FShapeColors[ROADSIGN_SHAPE_ID] := reg.ReadInteger(KEY_ROADSIGN_COLOR);
+            FShapeColors[shpRoadSign] := reg.ReadInteger(KEY_ROADSIGN_COLOR);
          if reg.ValueExists(KEY_ROUTINE_COLOR) then
-            FShapeColors[ROUTINE_SHAPE_ID] := reg.ReadInteger(KEY_ROUTINE_COLOR);
+            FShapeColors[shpRoutine] := reg.ReadInteger(KEY_ROUTINE_COLOR);
          if reg.ValueExists(KEY_FONT_COLOR) then
          begin
             FFontColor := reg.ReadInteger(KEY_FONT_COLOR);
@@ -511,13 +516,13 @@ begin
          reg.WriteInteger(KEY_EDITOR_FONT_SIZE, FEditorFontSize);
          reg.WriteInteger(KEY_DESKTOP_COLOR, FDesktopColor);
          reg.WriteInteger(KEY_EDITOR_INDENT, FIndentLength);
-         reg.WriteInteger(KEY_ELLIPSE_COLOR, FShapeColors[ELLIPSE_SHAPE_ID]);
-         reg.WriteInteger(KEY_DIAMOND_COLOR, FShapeColors[DIAMOND_SHAPE_ID]);
-         reg.WriteInteger(KEY_PARALLELOGRAM_COLOR, FShapeColors[PARALLELOGRAM_SHAPE_ID]);
-         reg.WriteInteger(KEY_RECTANGLE_COLOR, FShapeColors[RECTANGLE_SHAPE_ID]);
-         reg.WriteInteger(KEY_FOLDER_COLOR, FShapeColors[FOLDER_SHAPE_ID]);
-         reg.WriteInteger(KEY_ROADSIGN_COLOR, FShapeColors[ROADSIGN_SHAPE_ID]);
-         reg.WriteInteger(KEY_ROUTINE_COLOR, FShapeColors[ROUTINE_SHAPE_ID]);
+         reg.WriteInteger(KEY_ELLIPSE_COLOR, FShapeColors[shpEllipse]);
+         reg.WriteInteger(KEY_DIAMOND_COLOR, FShapeColors[shpDiamond]);
+         reg.WriteInteger(KEY_PARALLELOGRAM_COLOR, FShapeColors[shpParallel]);
+         reg.WriteInteger(KEY_RECTANGLE_COLOR, FShapeColors[shpRectangle]);
+         reg.WriteInteger(KEY_FOLDER_COLOR, FShapeColors[shpFolder]);
+         reg.WriteInteger(KEY_ROADSIGN_COLOR, FShapeColors[shpRoadSign]);
+         reg.WriteInteger(KEY_ROUTINE_COLOR, FShapeColors[shpRoutine]);
          reg.WriteInteger(KEY_FONT_COLOR, FFontColor);
          reg.WriteInteger(KEY_COLV1_WIDTH, FColumnV1Width);
          reg.WriteInteger(KEY_COLV2_WIDTH, FColumnV2Width);
@@ -570,11 +575,11 @@ begin
    end;
 end;
 
-function TSettings.GetShapeColor(const id: integer): TColor;
+function TSettings.GetShapeColor(const shape: TColorShape): TColor;
 begin
    result := clNone;
-   if (id >= 0) and (id <= High(FShapeColors)) then
-      result := FShapeColors[id];
+   if shape <> shpNone then
+      result := FShapeColors[shape];
 end;
 
 procedure TSettings.LoadFromForm;
@@ -582,7 +587,7 @@ var
    redrawFlow, colorChanged, applyAll: boolean;
    langDef: TLangDefinition;
    lColor: TColor;
-   i: integer;
+   shape: TColorShape;
 begin
 
    redrawFlow := false;
@@ -617,12 +622,12 @@ begin
       FIndentLength          := StrToIntDef(edtEditorIndent.Text, EDITOR_DEFAULT_INDENT_LENGTH);
       FIndentString          := StringOfChar(INDENT_CHAR, FIndentLength);
 
-      for i := 0 to High(FShapeColors) do
+      for shape := Low(TColorShape) to High(TColorShape) do
       begin
-         lColor := GetShapeColor(i);
-         if (lColor <> clNone) and (FShapeColors[i] <> lColor) then
+         lColor := GetShapeColor(shape);
+         if (lColor <> clNone) and (FShapeColors[shape] <> lColor) then
          begin
-           FShapeColors[i] := lColor;
+           FShapeColors[shape] := lColor;
            colorChanged := true;
          end;
       end;

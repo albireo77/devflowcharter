@@ -72,7 +72,7 @@ begin
    BottomPoint.Y := 19;
    IPoint.X := BottomPoint.X + 30;
    IPoint.Y := 30;
-   FShapeId := ELLIPSE_SHAPE_ID;
+   FShape := shpEllipse;
    BottomHook := BottomPoint.X;
    TopHook.X := BottomPoint.X;
 end;

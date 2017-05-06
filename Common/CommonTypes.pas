@@ -47,6 +47,8 @@ type
 
    TArrowPosition = (arrMiddle, arrEnd);
 
+   TColorShape = (shpEllipse, shpParallel, shpDiamond, shpRectangle, shpRoadSign, shpRoutine, shpFolder, shpNone);
+
    TCodeRange = record
       FirstRow,
       LastRow: integer;

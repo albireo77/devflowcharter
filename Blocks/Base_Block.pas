@@ -68,7 +68,7 @@ type
          FRefreshMode,
          FFrame,
          FMouseLeave: boolean;
-         FShapeId: integer;
+         FShape: TColorShape;
          procedure MyOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MyOnMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); virtual;
@@ -333,8 +333,8 @@ begin
    FId := GProject.Register(Self, AId);
    FStatement := TStatement.Create(Self);
    FMouseLeave := true;
-   FShapeId := RECTANGLE_SHAPE_ID;
-   FStatement.Color := GSettings.GetShapeColor(FShapeId);
+   FShape := shpRectangle;
+   FStatement.Color := GSettings.GetShapeColor(FShape);
    Ired := -1;
    memoWidth := 280;
    memoHeight := 182;
@@ -362,7 +362,7 @@ begin
       Visible := false;
       SetBounds(3, 3, 134, 55);
       Ctl3D := false;
-      Color := GSettings.GetShapeColor(FOLDER_SHAPE_ID);
+      Color := GSettings.GetShapeColor(shpFolder);
       Font.Assign(FStatement.Font);
       OnMouseDown := Self.OnMouseDown;
       Font.Color := clNavy;
@@ -374,8 +374,8 @@ begin
    FFoldParms.Width := 140;
    FFoldParms.Height := 91;
 
-   FShapeId := DIAMOND_SHAPE_ID;
-   FStatement.Color := GSettings.GetShapeColor(FShapeId);
+   FShape := shpDiamond;
+   FStatement.Color := GSettings.GetShapeColor(FShape);
 
    FTrueLabel := i18Manager.GetString('CaptionTrue');
    FFalseLabel := i18Manager.GetString('CaptionFalse');
@@ -1270,7 +1270,7 @@ begin
    lEdit := THackCustomEdit(GetTextControl);
    if lEdit <> nil then
    begin
-      lColor := GSettings.GetShapeColor(FShapeId);
+      lColor := GSettings.GetShapeColor(FShape);
       if lColor = GSettings.DesktopColor then
          lEdit.Color := AColor
       else
@@ -1307,7 +1307,7 @@ begin
          end;
       end;
    end;
-   lColor := GSettings.GetShapeColor(FOLDER_SHAPE_ID);
+   lColor := GSettings.GetShapeColor(shpFolder);
    if lColor = GSettings.DesktopColor then
       FMemoFolder.Color := AColor
    else
@@ -1562,7 +1562,7 @@ begin
    begin
       result := GetEllipseTextRect(APoint, AText);
       Canvas.Brush.Style := bsClear;
-      lColor := GSettings.GetShapeColor(ELLIPSE_SHAPE_ID);
+      lColor := GSettings.GetShapeColor(shpEllipse);
       if lColor <> GSettings.DesktopColor then
          Canvas.Brush.Color := lColor;
       Canvas.Ellipse(result.Left, result.Top, result.Right, result.Bottom);
@@ -1630,7 +1630,7 @@ begin
       if not InvalidPoint(pnt) then
       begin
          Canvas.Brush.Style := bsClear;
-         lColor2 := GSettings.GetShapeColor(FShapeId);
+         lColor2 := GSettings.GetShapeColor(FShape);
          if lColor2 <> GSettings.DesktopColor then
             Canvas.Brush.Color := lColor2;
          Canvas.Polygon([Point(pnt.X-60, pnt.Y+30),
@@ -1646,7 +1646,7 @@ begin
          DrawArrowLine(Point(BottomPoint.X, Height-31), Point(BottomPoint.X, Height-1));
       Canvas.Pen.Width := 2;
       Canvas.Brush.Style := bsClear;
-      lColor2 := GSettings.GetShapeColor(FOLDER_SHAPE_ID);
+      lColor2 := GSettings.GetShapeColor(shpFolder);
       if lColor2 <> GSettings.DesktopColor then
          Canvas.Brush.Color := lColor2;
       Canvas.Polygon([Point(1, 1),

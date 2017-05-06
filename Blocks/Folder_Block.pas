@@ -66,7 +66,7 @@ begin
    BottomHook := b_hook;
    TopHook.X := p1X;
    IPoint.Y := 8;
-   FShapeId := FOLDER_SHAPE_ID;
+   FShape := shpFolder;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    FStatement.Free;

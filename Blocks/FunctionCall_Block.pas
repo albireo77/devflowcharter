@@ -50,8 +50,8 @@ begin
    FStatement.SetBounds(10, 0, AWidth-20, 19);
    FStatement.Anchors := [akRight, akLeft, akTop];
    FStatement.BorderStyle := bsSingle;
-   FShapeId := ROUTINE_SHAPE_ID;
-   FStatement.Color := GSettings.GetShapeColor(FShapeId);
+   FShape := shpRoutine;
+   FStatement.Color := GSettings.GetShapeColor(FShape);
    BottomPoint.X := AWidth div 2;
    BottomPoint.Y := 19;
    IPoint.X := BottomPoint.X + 30;
@@ -95,7 +95,7 @@ begin
                   Point(Width-11, y),
                   Point(Width-11, 0)]);
          Brush.Style := bsClear;
-         lColor := GSettings.GetShapeColor(FShapeId);
+         lColor := GSettings.GetShapeColor(FShape);
          if lColor <> GSettings.DesktopColor then
             Brush.Color := lColor;
          Polygon([Point(0, 0),
