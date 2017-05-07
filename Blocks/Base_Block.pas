@@ -1530,8 +1530,8 @@ begin
    cy := viewPort.cy / wndExt.cy;
    R := TRect.Empty;
    DrawText(Canvas.Handle, PChar(AText), -1, R, DT_CALCRECT);
-   ar := (R.Bottom - R.Top) * cy / Sqrt(2);
-   br := (R.Right - R.Left) * cx / Sqrt(2);
+   ar := R.Height * cy / Sqrt(2);
+   br := R.Width * cx / Sqrt(2);
    if ar < MIN_HALF_HEIGHT then
    begin
       if ar = 0 then
@@ -1565,7 +1565,7 @@ begin
       lColor := GSettings.GetShapeColor(shpEllipse);
       if lColor <> GSettings.DesktopColor then
          Canvas.Brush.Color := lColor;
-      Canvas.Ellipse(result.Left, result.Top, result.Right, result.Bottom);
+      Canvas.Ellipse(result);
       DrawText(Canvas.Handle, PChar(AText), -1, result, DT_CENTER or DT_SINGLELINE or DT_VCENTER);
    end;
 end;

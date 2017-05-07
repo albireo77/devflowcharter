@@ -182,9 +182,9 @@ var
    R: TRect;
    w: integer;
 begin
-   R := GetEllipseTextRect(Point(0, 0), FStartLabel);
+   R := GetEllipseTextRect(TPoint.Zero, FStartLabel);
    result := R.Right - R.Left;
-   R := GetEllipseTextRect(Point(0, 0), FStopLabel);
+   R := GetEllipseTextRect(TPoint.Zero, FStopLabel);
    w := R.Right - R.Left;
    if w > result then
       result := w;
@@ -364,8 +364,7 @@ begin
       if (Branch.First <> nil) and (ARect.Bottom > Branch.First.Top-5) and (ARect.Left < Branch.First.BoundsRect.Right+5) then
       begin
          d := Branch.First.BoundsRect.Right + 5 - ARect.Left;
-         ARect.Left := ARect.Left + d;
-         ARect.Right := ARect.Right + d;
+         ARect.Offset(d, 0);
       end;
    end;
 end;
@@ -397,7 +396,7 @@ begin
    begin
       with Canvas do
       begin
-         if not IsRectEmpty(FLabelRect) then
+         if not FLabelRect.IsEmpty then
          begin
             Brush.Style := bsSolid;
             Brush.Color := Color;

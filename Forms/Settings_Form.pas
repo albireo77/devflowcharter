@@ -312,7 +312,6 @@ procedure TSettingsForm.DrawShapes(ASettings: TSettings);
 var
    shape: TColorShape;
    rect, rect2: TRect;
-   pw: integer;
    p: TPoint;
 begin
    with imgShapes.Canvas do
@@ -326,9 +325,9 @@ begin
             Brush.Color := ASettings.GetShapeColor(shape);
             case shape of
                shpEllipse:
-                  Ellipse(rect.Left, rect.Top, rect.Right, rect.Bottom);
+                  Ellipse(rect);
                shpRectangle:
-                  Rectangle(rect.Left, rect.Top, rect.Right, rect.Bottom);
+                  Rectangle(rect);
                shpParallel:
                begin
                   p := Point(rect.Left+10, rect.Top);
@@ -356,21 +355,20 @@ begin
                            rect.TopLeft]);
                shpRoutine:
                begin
-                  Rectangle(rect.Left, rect.Top, rect.Right, rect.Bottom);
+                  Rectangle(rect);
                   Brush.Color := Pen.Color;
                   rect2 := System.Types.Rect(rect.Left+5, rect.Top, rect.Right-42, rect.Bottom);
-                  Rectangle(rect2.Left, rect2.Top, rect2.Right, rect2.Bottom);
+                  Rectangle(rect2);
                   rect2 := System.Types.Rect(rect.Left+42, rect.Top, rect.Right-5, rect.Bottom);
-                  Rectangle(rect2.Left, rect2.Top, rect2.Right, rect2.Bottom);
+                  Rectangle(rect2);
                end;
                shpFolder:
                begin
-                  pw := 2;
-                  Pen.Width := pw;
-                  Rectangle(rect.Left, rect.Top, rect.Right, rect.Bottom);
-                  rect := System.Types.Rect(rect.Left+pw, rect.Top+pw, rect.Right-pw-1, rect.Bottom-pw-1);
+                  Pen.Width := 2;
+                  Rectangle(rect);
+                  rect.Inflate(-2, -2, -3, -3);
                   Pen.Width := 1;
-                  Rectangle(rect.Left, rect.Top, rect.Right, rect.Bottom);
+                  Rectangle(rect);
                end;
             end;
          end;

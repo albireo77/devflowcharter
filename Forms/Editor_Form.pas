@@ -14,7 +14,8 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1
+   301, USA.
 }
 
 
@@ -179,18 +180,10 @@ begin
 end;
 
 procedure TEditorHintWindow.ActivateHintData(ARect: TRect; const AHint: string; AData: Pointer);
-var
-   w, h: integer;
-   pnt: TPoint;
 begin
-   w := ARect.Right - ARect.Left;
-   h := ARect.Bottom - ARect.Top;
-   if (AData <> nil) and not InvalidPoint(TPoint(AData^)) then
-   begin
-      pnt := TPoint(AData^);
-      ARect := Rect(pnt.X, pnt.Y, pnt.X+w, pnt.Y+h);
-   end;
-   OffsetRect(ARect, 0, -h);
+   if AData <> nil then
+      ARect.SetLocation(TPoint(AData^));
+   ARect.Offset(0, -ARect.Height);
    inherited ActivateHintData(ARect, AHint, AData);
 end;
 

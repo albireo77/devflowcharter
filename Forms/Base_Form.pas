@@ -107,30 +107,25 @@ end;
 
 function TBaseForm.IsOverlapped: boolean;
 var
-   rect: TRect;
-   rgn, tmpRgn: HRGN;
-   rType: integer;
+   brect, wrect: TRect;
    wnd: HWND;
 begin
-   rect := BoundsRect;
-   rgn := CreateRectRgnIndirect(rect);
+   result := false;
+   brect := BoundsRect;
    wnd := GetWindow(TInfra.GetMainForm.Handle, GW_HWNDFIRST);
-   rType := NULLREGION;
    while (wnd <> 0) and (wnd <> Handle) do
    begin
       if IsWindowVisible(wnd) then
       begin
-         GetWindowRect(wnd, rect);
-         tmpRgn := CreateRectRgnIndirect(rect);
-         rType := CombineRgn(tmpRgn, rgn, tmpRgn, RGN_AND);
-         DeleteObject(tmpRgn);
+         GetWindowRect(wnd, wrect);
+         if brect.IntersectsWith(wrect) then
+         begin
+            result := true;
+            break;
+         end;
        end;
-       if rType <> NULLREGION then
-          break;
        wnd := GetNextWindow(wnd, GW_HWNDNEXT)
    end;
-   DeleteObject(rgn);
-   result := rType <> NULLREGION;
 end;
 
 procedure TBaseForm.Show;
