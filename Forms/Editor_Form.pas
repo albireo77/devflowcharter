@@ -181,7 +181,7 @@ end;
 
 procedure TEditorHintWindow.ActivateHintData(ARect: TRect; const AHint: string; AData: Pointer);
 begin
-   if AData <> nil then
+   if (AData <> nil) and not TPoint(AData^).IsZero then
       ARect.SetLocation(TPoint(AData^));
    ARect.Offset(0, -ARect.Height);
    inherited ActivateHintData(ARect, AHint, AData);
@@ -321,7 +321,7 @@ begin
    memCodeEditor.Highlighter := nil;
    FFocusEditor := true;
    FCloseBracketHint := false;
-   FCloseBracketPos := Point(-1, -1);
+   FCloseBracketPos := TPoint.Zero;
    FFocusControl := nil;
    Width := 425;
    Height := 558;
@@ -1002,7 +1002,7 @@ var
 begin
    h := '';
    FCloseBracketHint := false;
-   FCloseBracketPos := Point(-1, -1);
+   FCloseBracketPos := TPoint.Zero;
    memCodeEditor.ShowHint := false;
    memCodeEditor.Hint := '';
    show := false;

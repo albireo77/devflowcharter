@@ -1204,8 +1204,8 @@ begin
       dh := result.Left;
       result.Left := 0;
    end;
-   result.Right := result.Left + APage.Form.ClientWidth + dh;
-   result.Bottom := result.Top + APage.Form.ClientHeight + dv;
+   result.Width := APage.Form.ClientWidth + dh;
+   result.Height := APage.Form.ClientHeight + dv;
 end;
 
 function TInfra.ValidateConstId(const AId: string): integer;

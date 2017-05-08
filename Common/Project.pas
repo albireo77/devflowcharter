@@ -794,7 +794,7 @@ var
    i: integer;
    maxBounds: IMaxBoundable;
 begin
-   result := Point(0, 0);
+   result := TPoint.Zero;
    for i := 0 to FComponentList.Count-1 do
    begin
       if Supports(FComponentList[i], IMaxBoundable, maxBounds) then
