@@ -183,9 +183,9 @@ var
    w: integer;
 begin
    R := GetEllipseTextRect(TPoint.Zero, FStartLabel);
-   result := R.Right - R.Left;
+   result := R.Width;
    R := GetEllipseTextRect(TPoint.Zero, FStopLabel);
-   w := R.Right - R.Left;
+   w := R.Width;
    if w > result then
       result := w;
    result := result + 40;
@@ -207,7 +207,7 @@ var
    iter: IIterator;
    comment: TComment;
 begin
-   result := Point(0, 0);
+   result := TPoint.Zero;
    if Visible then
    begin
       result.X := BoundsRect.Right + MARGIN_X;
