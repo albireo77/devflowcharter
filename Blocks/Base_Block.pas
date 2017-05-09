@@ -1407,7 +1407,7 @@ begin
       if FFrame then
       begin
          Pen.Style := psDashDot;
-         PolyLine([Point(0, 0), Point(Width-1, 0), Point(Width-1, Height-1), Point(0, Height-1), Point(0, 0)]);
+         PolyLine([TPoint.Zero, Point(Width-1, 0), Point(Width-1, Height-1), Point(0, Height-1), TPoint.Zero]);
          Pen.Style := psSolid;
       end;
    end;
@@ -1710,7 +1710,7 @@ var
 begin
    inherited;
    lPage := Page;
-   pnt := ClientToParent(Point(0, 0), lPage);
+   pnt := ClientToParent(TPoint.Zero, lPage);
    if FHResize then
       Msg.MinMaxInfo.ptMaxTrackSize.X := lPage.ClientWidth - pnt.X;
    if FVResize then

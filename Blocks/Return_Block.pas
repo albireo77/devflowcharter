@@ -103,11 +103,8 @@ begin
 end;
 
 function TReturnBlock.GetDefaultWidth: integer;
-var
-   R: TRect;
 begin
-   R := GetEllipseTextRect(Point(0, 0), FReturnLabel);
-   result := R.Right - R.Left + 48;
+   result := GetEllipseTextRect(TPoint.Zero, FReturnLabel).Width + 48;
 end;
 
 function TReturnBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;

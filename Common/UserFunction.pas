@@ -182,7 +182,7 @@ end;
 
 function TUserFunction.GetMaxBounds: TPoint;
 begin
-   result := Point(0, 0);
+   result := TPoint.Zero;
    if FBody <> nil then
       result := FBody.GetMaxBounds;
 end;

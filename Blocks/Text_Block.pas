@@ -91,7 +91,7 @@ begin
    inherited;
    lParent := TTextBlock(Parent);
    Canvas.Pen.Color := clBlack;
-   Canvas.PolyLine([Point(0, 0), Point(Width-1, Height-1), Point(0, Height-1), Point(0, 0)]);
+   Canvas.PolyLine([TPoint.Zero, Point(Width-1, Height-1), Point(0, Height-1), TPoint.Zero]);
    Canvas.Brush.Color := lParent.FStatements.Color;
    Canvas.FloodFill(2, Height-2, clBlack, fsBorder);
    Canvas.Brush.Color := lParent.ParentBlock.Color;

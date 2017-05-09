@@ -238,7 +238,7 @@ end;
 
 function TComment.GetMaxBounds: TPoint;
 begin
-   result := Point(0, 0);
+   result := TPoint.Zero;
    if Visible then
    begin
       result.X := BoundsRect.Right + MARGIN_X;

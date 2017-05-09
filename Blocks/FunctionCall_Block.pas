@@ -98,11 +98,11 @@ begin
          lColor := GSettings.GetShapeColor(FShape);
          if lColor <> GSettings.DesktopColor then
             Brush.Color := lColor;
-         Polygon([Point(0, 0),
+         Polygon([TPoint.Zero,
                   Point(7, 0),
                   Point(7, y),
                   Point(0, y),
-                  Point(0, 0)]);
+                  TPoint.Zero]);
          Polygon([Point(Width-8, 0),
                   Point(Width-1, 0),
                   Point(Width-1, y),
