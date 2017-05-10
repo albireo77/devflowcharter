@@ -147,7 +147,7 @@ uses
 
 const
    SHAPE_BORDER_COLOR = clBlack;
-   SHAPE_RECTS: array[TColorShape] of TRect = ((Left:-1;  Top:-1; Right:0;   Bottom:0),     // none
+   SHAPE_RECTS: array[TColorShape] of TRect = ((Left:0;   Top:0;  Right:0;   Bottom:0),     // none
                                                (Left:10;  Top:10; Right:60;  Bottom:35),    // ellipse
                                                (Left:10;  Top:45; Right:60;  Bottom:65),    // parallelogram
                                                (Left:75;  Top:13; Right:125; Bottom:63),    // diamond
