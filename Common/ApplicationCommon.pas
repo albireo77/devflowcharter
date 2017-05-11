@@ -179,12 +179,12 @@ const   // Global constants
         MARGIN_X = 50;
         MARGIN_Y = 50;
 
-        OK_COLOR            = clGreen;
-        NOK_COLOR           = clRed;
-        WARN_COLOR          = clOlive;
-        TEXT_COLOR          = clGrayText;
-        BLACK_COLOR         = clWindowText;
-        DEFAULT_SHAPE_COLOR = clWhite;
+        OK_COLOR = clGreen;
+        NOK_COLOR = clRed;
+        WARN_COLOR = clOlive;
+        TEXT_COLOR = clGrayText;
+        BLACK_COLOR = clWindowText;
+        DEFAULT_DESKTOP_COLOR = clWhite;
 
         FLOWCHART_DEFAULT_FONT_NAME = 'Tahoma';
 

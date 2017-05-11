@@ -382,7 +382,7 @@ var
    langDef: TLangDefinition;
 begin
    pnlFill.Color := clAqua;
-   pnlDesktop.Color := clWhite;
+   pnlDesktop.Color := DEFAULT_DESKTOP_COLOR;
    langDef := GInfra.GetLangDefinition(cbLanguage.Text);
    parserOn := (langDef <> nil) and (langDef.Parser <> nil);
    chkParseInput.Enabled := parserOn;
@@ -430,7 +430,7 @@ begin
    edtEditorIndent.Text := IntToStr(EDITOR_DEFAULT_INDENT_LENGTH);
    edtFontName.Text := FLOWCHART_DEFAULT_FONT_NAME;
    SetComboBoxItem(cbFontSize, IntToStr(EDITOR_DEFAULT_FONT_SIZE));
-   FillAllShapes(DEFAULT_SHAPE_COLOR);
+   FillAllShapes(DEFAULT_DESKTOP_COLOR);
 end;
 
 procedure TSettingsForm.ProtectFields;

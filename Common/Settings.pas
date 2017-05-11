@@ -278,7 +278,7 @@ begin
    FIndentString          := StringOfChar(INDENT_CHAR, FIndentLength);
 
    FHighlightColor := clAqua;
-   FDesktopColor := clWhite;
+   FDesktopColor := DEFAULT_DESKTOP_COLOR;
    FFontColor := OK_COLOR;
 
    for shape := Low(TColorShape) to High(TColorShape) do
@@ -286,7 +286,7 @@ begin
       if shape = shpNone then
          lColor := clNone
       else
-         lColor := DEFAULT_SHAPE_COLOR;
+         lColor := DEFAULT_DESKTOP_COLOR;
       FShapeColors[shape] := lColor;
    end;
 
