@@ -159,6 +159,12 @@ type
       property ColumnC3Width: integer read FColumnC3Width write FColumnC3Width;
   end;
 
+implementation
+
+uses
+   System.SysUtils, System.Classes, System.Types, Vcl.Forms, System.Win.Registry,
+   ApplicationCommon, Main_Form, Navigator_Form;
+
 const
    KEY_HIGHLIGHT_COLOR = 'HighlightColor';
    KEY_DESKTOP_COLOR = 'DesktopColor';
@@ -218,7 +224,7 @@ const
    KEY_FLOWCHART_FONT_NAME = 'FlowchartFontName';
    KEY_AUTOSELECT_CODE_BLOCK = 'AutoSelectCodeBlock';
    KEY_AUTOUPDATE_CODE = 'AutoUpdateCode';
-   
+
    KEY_COLV1_WIDTH = 'ColumnVariable1Width';
    KEY_COLV2_WIDTH = 'ColumnVariable2Width';
    KEY_COLV3_WIDTH = 'ColumnVariable3Width';
@@ -227,12 +233,6 @@ const
    KEY_COLC1_WIDTH = 'ColumnConstant1Width';
    KEY_COLC2_WIDTH = 'ColumnConstant2Width';
    KEY_COLC3_WIDTH = 'ColumnConstant3Width';
-
-implementation
-
-uses
-   System.SysUtils, System.Classes, System.Types, Vcl.Forms, System.Win.Registry,
-   ApplicationCommon, Main_Form, Navigator_Form;
 
 constructor TSettings.Create;
 begin
@@ -286,7 +286,7 @@ begin
       if shape = shpNone then
          lColor := clNone
       else
-         lColor := clWhite;
+         lColor := DEFAULT_SHAPE_COLOR;
       FShapeColors[shape] := lColor;
    end;
 

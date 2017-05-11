@@ -430,7 +430,7 @@ begin
    edtEditorIndent.Text := IntToStr(EDITOR_DEFAULT_INDENT_LENGTH);
    edtFontName.Text := FLOWCHART_DEFAULT_FONT_NAME;
    SetComboBoxItem(cbFontSize, IntToStr(EDITOR_DEFAULT_FONT_SIZE));
-   FillAllShapes(clWhite);
+   FillAllShapes(DEFAULT_SHAPE_COLOR);
 end;
 
 procedure TSettingsForm.ProtectFields;
