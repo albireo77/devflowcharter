@@ -429,11 +429,13 @@ var
    ProcessInfo: TProcessInformation;
    hAppProcess, hAppThread: THandle;
 begin
+   hAppProcess := 0;
+   hAppThread := 0;
    if not DirectoryExists(ADir) then
       ADir := GetCurrentDir;
    FillChar(StartupInfo, SizeOf(StartupInfo), #0);
-   StartupInfo.cb          := SizeOf(StartupInfo);
-   StartupInfo.dwFlags     := STARTF_USESHOWWINDOW;
+   StartupInfo.cb := SizeOf(StartupInfo);
+   StartupInfo.dwFlags := STARTF_USESHOWWINDOW;
    StartupInfo.wShowWindow := SW_SHOW;
    try
       result := CreateProcess(nil,
@@ -452,10 +454,12 @@ begin
          WaitForSingleObject(ProcessInfo.hProcess, 0);
          hAppProcess := ProcessInfo.hProcess;
          hAppThread  := ProcessInfo.hThread;
-      end
+      end;
    finally
-      if hAppThread <> 0 then CloseHandle(hAppThread);
-      if hAppProcess <> 0 then CloseHandle(hAppProcess);
+      if hAppThread <> 0 then
+         CloseHandle(hAppThread);
+      if hAppProcess <> 0 then
+         CloseHandle(hAppProcess);
    end;
 end;
 
