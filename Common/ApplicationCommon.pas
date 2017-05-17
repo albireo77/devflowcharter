@@ -427,39 +427,29 @@ class function TInfra.CreateDOSProcess(const ACommand: string; ADir: string = ''
 var
    StartupInfo: TStartupInfo;
    ProcessInfo: TProcessInformation;
-   hAppProcess, hAppThread: THandle;
 begin
-   hAppProcess := 0;
-   hAppThread := 0;
    if not DirectoryExists(ADir) then
       ADir := GetCurrentDir;
    FillChar(StartupInfo, SizeOf(StartupInfo), #0);
    StartupInfo.cb := SizeOf(StartupInfo);
    StartupInfo.dwFlags := STARTF_USESHOWWINDOW;
    StartupInfo.wShowWindow := SW_SHOW;
-   try
-      result := CreateProcess(nil,
-         PChar(ACommand),
-         nil,
-         nil,
-         True,
-         CREATE_NEW_CONSOLE or
-         NORMAL_PRIORITY_CLASS,
-         nil,
-         PChar(ADir),
-         StartupInfo,
-         ProcessInfo);
-      if result then
-      begin
-         WaitForSingleObject(ProcessInfo.hProcess, 0);
-         hAppProcess := ProcessInfo.hProcess;
-         hAppThread  := ProcessInfo.hThread;
-      end;
-   finally
-      if hAppThread <> 0 then
-         CloseHandle(hAppThread);
-      if hAppProcess <> 0 then
-         CloseHandle(hAppProcess);
+   result := CreateProcess(nil,
+      PChar(ACommand),
+      nil,
+      nil,
+      True,
+      CREATE_NEW_CONSOLE or
+      NORMAL_PRIORITY_CLASS,
+      nil,
+      PChar(ADir),
+      StartupInfo,
+      ProcessInfo);
+   if result then
+   begin
+      WaitForSingleObject(ProcessInfo.hProcess, 0);
+      CloseHandle(ProcessInfo.hProcess);
+      CloseHandle(ProcessInfo.hThread);
    end;
 end;
 
