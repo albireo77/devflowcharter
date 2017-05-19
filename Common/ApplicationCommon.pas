@@ -202,6 +202,9 @@ const   // Global constants
 
         DEF_PAGE_CAPTION_KEY = 'mainPage';
 
+        PRINT_SCALE_BASE     = 100;   // 100 %
+        DEFAULT_PRINT_MARGIN = 5;     //   5 %
+
         // Language identifiers; must be identical to value in <Name> tag in XML language definition file
         PASCAL_LANG_ID  = 'Pascal';
         C_LANG_ID       = 'ANSI C';
@@ -509,14 +512,15 @@ end;
 
 class procedure TInfra.PrintBitmap(const ABitmap: TBitmap);
 var
-   i, maxValue, maxTmp, last_err, stepY, rowCount, lineHeight, regionWidth, regionHeight, stepX,
-   regionX, regionY, LogPixX1, LogPixY1, LogPixX2, LogPixY2, ScaleX, ScaleY, colCount, j: integer;
+   i, maxValue, maxTmp, last_err, stepY, rowCount, lineHeight, stepX, LogPixX1,
+   LogPixY1, LogPixX2, LogPixY2, ScaleX, ScaleY, colCount, j: integer;
    fPoint, pos: TPoint;
    fLine1, fLine2, fLine3: string;
    status: DWORD;
    HeaderSize, ImageSize: DWORD;
    BitmapHeader: pBitmapInfo;
    BitmapImage: POINTER;
+   printRect: TRect;
 begin
    if not IsPrinter then
      ShowErrorBox(i18Manager.GetString('NoPrinter'), errPrinter)
@@ -532,22 +536,23 @@ begin
      Printer.Canvas.Font.Height := MulDiv(GetDeviceCaps(Printer.Canvas.Handle, LOGPIXELSY), 12, 72);
      lineHeight := Printer.Canvas.TextHeight('X');
      Inc(lineHeight, MulDiv(lineHeight, 8, 100));
-     regionX := MulDiv(Printer.PageWidth, GSettings.PrintMargins.Left, 100);
-     regionY := MulDiv(Printer.PageHeight, GSettings.PrintMargins.Top, 100);
-     regionWidth := MulDiv(Printer.PageWidth, 100-(GSettings.PrintMargins.Left+GSettings.PrintMargins.Right), 100);
-     regionHeight := MulDiv(Printer.PageHeight, 100-(GSettings.PrintMargins.Top+GSettings.PrintMargins.Bottom), 100) - lineHeight;
-     fPoint.X := regionX + regionWidth;
-     fPoint.Y := regionY + regionHeight;
+     ScaleX := Printer.PageWidth div PRINT_SCALE_BASE;
+     ScaleY := Printer.PageHeight div PRINT_SCALE_BASE;
+     printRect.Left := ScaleX * GSettings.PrintRect.Left;
+     printRect.Top := ScaleY * GSettings.PrintRect.Top;
+     printRect.Width := ScaleX * GSettings.PrintRect.Width;
+     printRect.Height := ScaleY * GSettings.PrintRect.Height - lineHeight;
+     fPoint := printRect.BottomRight;
      stepX := ABitmap.Width;
      stepY := ABitmap.Height;
      rowCount := 1;
      colCount := 1;
      if GSettings.PrintMultPages then
      begin
-        Dec(regionHeight, lineHeight);
+        printRect.Height := printRect.Height - lineHeight;
         if GSettings.PrintMultPagesHorz then
         begin
-           Dec(regionHeight, 2*lineHeight);
+           printRect.Height := printRect.Height - 2*lineHeight;
            LogPixX1 := GetDeviceCaps(ABitmap.Canvas.Handle, LOGPIXELSX);
            LogPixY1 := GetDeviceCaps(ABitmap.Canvas.Handle, LOGPIXELSY);
            LogPixX2 := GetDeviceCaps(Printer.Canvas.Handle, LOGPIXELSX);
@@ -560,11 +565,11 @@ begin
               ScaleY := LogPixY1 div LogPixY2
            else
               ScaleY := LogPixY2 div LogPixY1;
-           stepX := regionWidth div ScaleX;
-           stepY := regionHeight div ScaleY;
+           stepX := printRect.Width div ScaleX;
+           stepY := printRect.Height div ScaleY;
         end
         else
-           stepY := MulDiv(regionHeight, ABitmap.Width, regionWidth);
+           stepY := MulDiv(printRect.Height, ABitmap.Width, printRect.Width);
         colCount := ABitmap.Width div stepX;
         if (ABitmap.Width mod stepX) <> 0 then
            Inc(colCount);
@@ -572,10 +577,10 @@ begin
         if (ABitmap.Height mod stepY) <> 0 then
            Inc(rowCount);
      end;
-     if (stepX / stepY) > (regionWidth / regionHeight) then
-        regionHeight := MulDiv(stepY, regionWidth, stepX)
+     if (stepX / stepY) > (printRect.Width / printRect.Height) then
+        printRect.Height := MulDiv(stepY, printRect.Width, stepX)
      else
-        regionWidth  := MulDiv(stepX, regionHeight, stepY);
+        printRect.Width := MulDiv(stepX, printRect.Height, stepY);
      for i := 1 to colCount do
      begin
         for j := 1 to rowCount do
@@ -586,10 +591,10 @@ begin
            try
               GetDIB(ABitmap.Handle, ABitmap.Palette, BitmapHeader^, BitmapImage^);
               status := StretchDIBits(Printer.Canvas.Handle,
-                                      regionX,
-                                      regionY,
-                                      regionWidth,
-                                      regionHeight,
+                                      printRect.Left,
+                                      printRect.Top,
+                                      printRect.Width,
+                                      printRect.Height,
                                       (i-1)*stepX,
                                       ABitmap.Height-j*stepY,
                                       stepX,

@@ -69,7 +69,7 @@ type
       FDesktopColor: TColor;
       FTranslateFile: string;
       FFontColor: TColor;
-      FPrintMargins: TRect;
+      FPrintRect: TRect;
       FEnableDBuffering,
       FShowFuncLabels,
       FShowBlockLabels,
@@ -141,7 +141,7 @@ type
       property DesktopColor: TColor read FDesktopColor;
       property TranslateFile: string read FTranslateFile;
       property FontColor: TColor read FFontColor;
-      property PrintMargins: TRect read FPrintMargins;
+      property PrintRect: TRect read FPrintRect;
       property EnableDBuffering: boolean read FEnableDBuffering;
       property ShowFuncLabels: boolean read FShowFuncLabels;
       property ShowBlockLabels: boolean read FShowBlockLabels;
@@ -306,7 +306,10 @@ begin
    FShowFuncLabels        := true;
    FShowBlockLabels       := false;
    FValidateDeclaration   := true;
-   FPrintMargins          := Rect(5, 5, 5, 5);
+   FPrintRect             := Rect(DEFAULT_PRINT_MARGIN,
+                                  DEFAULT_PRINT_MARGIN,
+                                  PRINT_SCALE_BASE - DEFAULT_PRINT_MARGIN,
+                                  PRINT_SCALE_BASE - DEFAULT_PRINT_MARGIN);
    FTranslateFile         := '';
    FNavigatorAlphaValue   := 255;
    FNavigatorAlphaVisible := true;
@@ -378,13 +381,13 @@ begin
          if reg.ValueExists(KEY_PRINT_MULTI_PAGES_HORZ) then
             FPrintMultPagesHorz := reg.ReadBool(KEY_PRINT_MULTI_PAGES_HORZ);
          if reg.ValueExists(KEY_PRINT_MARGIN_LEFT) then
-            FPrintMargins.Left := reg.ReadInteger(KEY_PRINT_MARGIN_LEFT);
-         if reg.ValueExists(KEY_PRINT_MARGIN_RIGHT) then
-            FPrintMargins.Right := reg.ReadInteger(KEY_PRINT_MARGIN_RIGHT);
+            FPrintRect.Left := reg.ReadInteger(KEY_PRINT_MARGIN_LEFT);
          if reg.ValueExists(KEY_PRINT_MARGIN_TOP) then
-            FPrintMargins.Top := reg.ReadInteger(KEY_PRINT_MARGIN_TOP);
+            FPrintRect.Top := reg.ReadInteger(KEY_PRINT_MARGIN_TOP);
+         if reg.ValueExists(KEY_PRINT_MARGIN_RIGHT) then
+            FPrintRect.Right := PRINT_SCALE_BASE - reg.ReadInteger(KEY_PRINT_MARGIN_RIGHT);
          if reg.ValueExists(KEY_PRINT_MARGIN_BOTTOM) then
-            FPrintMargins.Bottom := reg.ReadInteger(KEY_PRINT_MARGIN_BOTTOM);
+            FPrintRect.Bottom := PRINT_SCALE_BASE - reg.ReadInteger(KEY_PRINT_MARGIN_BOTTOM);
          if reg.ValueExists(KEY_EDITOR_SHOW_GUTTER) then
             FEditorShowGutter := reg.ReadBool(KEY_EDITOR_SHOW_GUTTER);
          if reg.ValueExists(KEY_EDITOR_INDENT_GUIDES) then
@@ -486,10 +489,10 @@ begin
          reg.WriteBool(KEY_PRINT_MULTI_PAGES_HORZ, FPrintMultPagesHorz);
          reg.WriteBool(KEY_AUTOSELECT_CODE_BLOCK, FEditorAutoSelectBlock);
          reg.WriteBool(KEY_AUTOUPDATE_CODE, FEditorAutoUpdate);
-         reg.WriteInteger(KEY_PRINT_MARGIN_LEFT, FPrintMargins.Left);
-         reg.WriteInteger(KEY_PRINT_MARGIN_RIGHT, FPrintMargins.Right);
-         reg.WriteInteger(KEY_PRINT_MARGIN_TOP, FPrintMargins.Top);
-         reg.WriteInteger(KEY_PRINT_MARGIN_BOTTOM, FPrintMargins.Bottom);
+         reg.WriteInteger(KEY_PRINT_MARGIN_LEFT, FPrintRect.Left);
+         reg.WriteInteger(KEY_PRINT_MARGIN_TOP, FPrintRect.Top);
+         reg.WriteInteger(KEY_PRINT_MARGIN_RIGHT, PRINT_SCALE_BASE - FPrintRect.Right);
+         reg.WriteInteger(KEY_PRINT_MARGIN_BOTTOM, PRINT_SCALE_BASE - FPrintRect.Bottom);
          reg.WriteBool(KEY_EDITOR_SHOW_GUTTER, FEditorShowGutter);
          reg.WriteBool(KEY_EDITOR_CODE_FOLDING, FEditorCodeFolding);
          reg.WriteBool(KEY_EDITOR_SHOW_RICHTEXT, FEditorShowRichText);
@@ -705,10 +708,10 @@ begin
 
       TInfra.GetEditorForm.SetFormAttributes;
 
-      FPrintMargins.Left   := StrToIntDef(edtMarginLeft.Text, 5);
-      FPrintMargins.Right  := StrToIntDef(edtMarginRight.Text, 5);
-      FPrintMargins.Top    := StrToIntDef(edtMarginTop.Text, 5);
-      FPrintMargins.Bottom := StrToIntDef(edtMarginBottom.Text, 5);
+      FPrintRect.Left   := StrToIntDef(edtMarginLeft.Text, DEFAULT_PRINT_MARGIN);
+      FPrintRect.Top    := StrToIntDef(edtMarginTop.Text, DEFAULT_PRINT_MARGIN);
+      FPrintRect.Right  := PRINT_SCALE_BASE - StrToIntDef(edtMarginRight.Text, DEFAULT_PRINT_MARGIN);
+      FPrintRect.Bottom := PRINT_SCALE_BASE - StrToIntDef(edtMarginBottom.Text, DEFAULT_PRINT_MARGIN);
    end;
 
    if GProject <> nil then
