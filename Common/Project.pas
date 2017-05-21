@@ -670,7 +670,7 @@ begin
             if tmpBlock is TMainBlock then
                body := TMainBlock(tmpBlock);
          end;
-         if result = errNone then
+         if (result = errNone) and (body <> nil) then
             TUserFunction.Create(header, body)
          else
             header.Free;

@@ -137,7 +137,7 @@ const   // Global constants
         EDITOR_DEFAULT_FONT_SIZE = 10;
         LABEL_DEFAULT_FONT_SIZE = 10;
         EDITOR_DEFAULT_GUTTER_FONT_SIZE = 8;
-        
+
         INDENT_CHAR     = #32;         // space
         INDENT_XML_CHAR = #9;          // tab
 
@@ -533,15 +533,16 @@ begin
      Printer.Copies := MainForm.PrintDialog.Copies;
      Printer.BeginDoc;
      Printer.Canvas.Font.Name := FLOWCHART_DEFAULT_FONT_NAME;
-     Printer.Canvas.Font.Height := MulDiv(GetDeviceCaps(Printer.Canvas.Handle, LOGPIXELSY), 12, 72);
+     Printer.Canvas.Font.Height := GetDeviceCaps(Printer.Canvas.Handle, LOGPIXELSY) * 12 div 72;
      lineHeight := Printer.Canvas.TextHeight('X');
-     Inc(lineHeight, MulDiv(lineHeight, 8, 100));
+     Inc(lineHeight, lineHeight * 8 div 100);
+     printRect := GSettings.PrintRect;
      ScaleX := Printer.PageWidth div PRINT_SCALE_BASE;
      ScaleY := Printer.PageHeight div PRINT_SCALE_BASE;
-     printRect.Left := ScaleX * GSettings.PrintRect.Left;
-     printRect.Top := ScaleY * GSettings.PrintRect.Top;
-     printRect.Width := ScaleX * GSettings.PrintRect.Width;
-     printRect.Height := ScaleY * GSettings.PrintRect.Height - lineHeight;
+     printRect.Width := ScaleX * printRect.Width;
+     printRect.Height := ScaleY * printRect.Height - lineHeight;
+     printRect.Left := ScaleX * printRect.Left;
+     printRect.Top := ScaleY * printRect.Top;
      fPoint := printRect.BottomRight;
      stepX := ABitmap.Width;
      stepY := ABitmap.Height;
@@ -569,7 +570,7 @@ begin
            stepY := printRect.Height div ScaleY;
         end
         else
-           stepY := MulDiv(printRect.Height, ABitmap.Width, printRect.Width);
+           stepY := printRect.Height * ABitmap.Width div printRect.Width;
         colCount := ABitmap.Width div stepX;
         if (ABitmap.Width mod stepX) <> 0 then
            Inc(colCount);
@@ -578,9 +579,9 @@ begin
            Inc(rowCount);
      end;
      if (stepX / stepY) > (printRect.Width / printRect.Height) then
-        printRect.Height := MulDiv(stepY, printRect.Width, stepX)
+        printRect.Height := stepY * printRect.Width div stepX
      else
-        printRect.Width := MulDiv(stepX, printRect.Height, stepY);
+        printRect.Width := stepX * printRect.Height div stepY;
      for i := 1 to colCount do
      begin
         for j := 1 to rowCount do
