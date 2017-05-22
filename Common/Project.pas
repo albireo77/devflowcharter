@@ -865,6 +865,8 @@ var
    pnt: TPoint;
    bitmap: TBitmap;
    page: TBlockTabSheet;
+   i: integer;
+   winControl: TWinControl;
 begin
    if AGraphic is TBitmap then
       bitmap := TBitmap(AGraphic)
@@ -875,9 +877,22 @@ begin
    bitmap.Height := pnt.Y;
    page := GetActivePage;
    page.DrawI := false;
-   bitmap.Canvas.Lock;
+   with bitmap.Canvas do
+   begin
+      Brush.Style := bsSolid;
+      Brush.Color := GSettings.DesktopColor;
+      PatBlt(Handle, ClipRect.Left, ClipRect.Top, ClipRect.Right, ClipRect.Bottom, PATCOPY);
+      Lock;
+   end;
    try
-      page.PaintTo(bitmap.Canvas, 0, 0);
+      for i := 0 to page.ControlCount-1 do
+      begin
+         if page.Controls[i] is TWinControl then
+         begin
+            winControl := TWinControl(page.Controls[i]);
+            winControl.PaintTo(bitmap.Canvas, winControl.Left, winControl.Top);       // single call to page.PaintTo will not work
+         end;                                                                         // for not displayed page child controls
+      end;
    finally
       page.DrawI := true;
       bitmap.Canvas.Unlock;

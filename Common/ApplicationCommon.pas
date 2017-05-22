@@ -433,7 +433,7 @@ var
 begin
    if not DirectoryExists(ADir) then
       ADir := GetCurrentDir;
-   FillChar(StartupInfo, SizeOf(StartupInfo), #0);
+   StartupInfo := Default(TStartupInfo);
    StartupInfo.cb := SizeOf(StartupInfo);
    StartupInfo.dwFlags := STARTF_USESHOWWINDOW;
    StartupInfo.wShowWindow := SW_SHOW;
