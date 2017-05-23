@@ -880,7 +880,7 @@ begin
    with bitmap.Canvas do
    begin
       Brush.Style := bsSolid;
-      Brush.Color := GSettings.DesktopColor;
+      Brush.Color := page.Brush.Color;
       PatBlt(Handle, ClipRect.Left, ClipRect.Top, ClipRect.Right, ClipRect.Bottom, PATCOPY);
       Lock;
    end;
@@ -890,8 +890,8 @@ begin
          if page.Controls[i] is TWinControl then
          begin
             winControl := TWinControl(page.Controls[i]);
-            winControl.PaintTo(bitmap.Canvas, winControl.Left, winControl.Top);       // single call to page.PaintTo will not work
-         end;                                                                         // for not displayed page child controls
+            winControl.PaintTo(bitmap.Canvas, winControl.Left, winControl.Top);       // single call to page.PaintTo will not work for
+         end;                                                                         // currently invisible page child controls
       end;
    finally
       page.DrawI := true;
