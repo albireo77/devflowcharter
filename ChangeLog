@@ -1,3 +1,8 @@
+4.4 [27.05.2017]
+- fix project sheet not entirely exported to graphic or printed
+- fix "Incorrect contstant value" info showed for constants of float type
+- add DecimalSeparator property to language definition; default value is .
+
 4.3.40 [09.04.2017]
 - Code Editor: fix regression in auto-update introduced in 4.3.23
 
