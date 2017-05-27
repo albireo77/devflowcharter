@@ -563,6 +563,7 @@ begin
    end;
    if ALang.HighLighter = nil then
       FEditorShowRichText := false;
+   FormatSettings.DecimalSeparator := ALang.DecimalSeparator;
 end;
 
 procedure TSettings.LoadFromEditor;

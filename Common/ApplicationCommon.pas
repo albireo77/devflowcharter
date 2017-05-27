@@ -314,7 +314,6 @@ end;
 
 procedure TInfra.ReadFromRegistry;
 var
-   lang: TLangDefinition;
    reg: TRegistry;
    i: integer;
 begin
@@ -323,11 +322,7 @@ begin
       if reg.OpenKeyReadOnly(REGISTRY_KEY) then
       begin
          if reg.ValueExists(KEY_CURRENT_LANGUAGE) then
-         begin
-            lang := GetLangDefinition(reg.ReadString(KEY_CURRENT_LANGUAGE));
-            if lang <> nil then
-               FCurrentLang := lang
-         end;
+            SetCurrentLang(reg.ReadString(KEY_CURRENT_LANGUAGE));
          for i := 0 to FLangArrayCount-2 do
             FLangArray[i].ReadCompilerData(reg);
       end;

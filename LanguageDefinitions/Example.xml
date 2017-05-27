@@ -33,6 +33,7 @@ Most of the tags are optional and may be removed if not needed.
     <AllowUserFunctionOverload>1</AllowUserFunctionOverload>
     <GenExternVarConst>0</GenExternVarConst>
     <FuncBrackets>()</FuncBrackets>
+    <DecimalSeparator>.</DecimalSeparator>
     <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>	<!-- counted from end -->
     <InstrEnd>;</InstrEnd>
     <FoldRegions>

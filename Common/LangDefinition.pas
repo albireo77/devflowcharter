@@ -144,6 +144,7 @@ type
       CompilerCommandNoMain,
       CompilerFileEncoding,
       InstrEnd: string;
+      DecimalSeparator: char;
       LabelFontSize,
       FunctionHeaderArgsStripCount,
       VarEntryArraySizeStripCount,
@@ -243,6 +244,7 @@ begin
    GetOriginalType := nil;
    SkipFuncBodyGen := nil;
    CompilerFileEncoding := 'ANSI';
+   DecimalSeparator := '.';
    LabelFontName := FLOWCHART_DEFAULT_FONT_NAME;
    LabelFontSize := LABEL_DEFAULT_FONT_SIZE;
 end;
@@ -336,6 +338,10 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'FuncBrackets');
    if tag <> nil then
       FuncBrackets := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'DecimalSeparator');
+   if (tag <> nil) and (tag.Text <> '') then
+      DecimalSeparator := tag.Text[1];
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ExternEntry');
    if tag <> nil then
