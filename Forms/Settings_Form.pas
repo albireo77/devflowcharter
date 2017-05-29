@@ -380,6 +380,7 @@ procedure TSettingsForm.SetDefault;
 var
    parserOn: boolean;
    langDef: TLangDefinition;
+   m: string;
 begin
    pnlFill.Color := clAqua;
    pnlDesktop.Color := DEFAULT_DESKTOP_COLOR;
@@ -407,10 +408,11 @@ begin
    chkMultiPrint.Checked := false;
    chkMultiPrintHorz.Checked := false;
    chkMultiPrintHorz.Enabled := false;
-   edtMarginLeft.Text := IntToStr(DEFAULT_PRINT_MARGIN);
-   edtMarginRight.Text := IntToStr(DEFAULT_PRINT_MARGIN);
-   edtMarginTop.Text := IntToStr(DEFAULT_PRINT_MARGIN);
-   edtMarginBottom.Text := IntToStr(DEFAULT_PRINT_MARGIN);
+   m := IntToStr(DEFAULT_PRINT_MARGIN);
+   edtMarginLeft.Text := m;
+   edtMarginRight.Text := m;
+   edtMarginTop.Text := m;
+   edtMarginBottom.Text := m;
    chkEnableDBuffer.Checked := false;
    chkShowFuncLabels.Checked := true;
    chkShowBlockLabels.Checked := false;

@@ -581,9 +581,7 @@ end;
 
 function TSettings.GetShapeColor(const shape: TColorShape): TColor;
 begin
-   result := clNone;
-   if shape <> shpNone then
-      result := FShapeColors[shape];
+   result := FShapeColors[shape];
 end;
 
 procedure TSettings.LoadFromForm;
@@ -629,7 +627,7 @@ begin
       for shape := Low(TColorShape) to High(TColorShape) do
       begin
          lColor := GetShapeColor(shape);
-         if (lColor <> clNone) and (FShapeColors[shape] <> lColor) then
+         if lColor <> FShapeColors[shape] then
          begin
            FShapeColors[shape] := lColor;
            colorChanged := true;
