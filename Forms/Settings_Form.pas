@@ -292,12 +292,11 @@ function TSettingsForm.GetShapeColor(const shape: TColorShape): TColor;
 var
    pnt: TPoint;
 begin
-   result := clNone;
-   if shape <> shpNone then
-   begin
-      pnt := SHAPE_RECTS[shape].CenterPoint;
+   pnt := SHAPE_RECTS[shape].CenterPoint;
+   if pnt.IsZero then
+      result := clNone
+   else
       result := imgShapes.Canvas.Pixels[pnt.X, pnt.Y];
-   end;
 end;
 
 procedure TSettingsForm.FillAllShapes(const AColor: TColor);
