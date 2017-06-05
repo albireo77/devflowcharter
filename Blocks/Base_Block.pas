@@ -629,19 +629,37 @@ procedure TBlock.MyOnDragDrop(Sender, Source: TObject; X, Y: Integer);
 var
    lPage, srcPage: TBlockTabSheet;
    menuItem: TMenuItem;
+   inst: TControl;
+   uobj: TObject;
+   lock: boolean;
 begin
    if Source is TBlock then
    begin
+      lock := false;
       srcPage := TBlock(Source).Page;
       srcPage.Form.pmPages.PopupComponent := TBlock(Source);
       if GetAsyncKeyState(VK_SHIFT) <> 0 then
          menuItem := srcPage.Form.miCopy
       else
+      begin
          menuItem := srcPage.Form.miCut;
-      menuItem.OnClick(menuItem);
+         lock := TBlock(Source).TopParentBlock.LockDrawing;
+      end;
+      inst := GClpbrd.Instance;
+      uobj := GClpbrd.UndoObject;
+      GClpbrd.Instance := nil;
+      GClpbrd.UndoObject := nil;
       lPage := Page;
-      lPage.Form.pmPages.PopupComponent := Self;
-      lPage.Form.miPaste.OnClick(lPage.Form.miPaste);
+      try
+         menuItem.OnClick(menuItem);
+         lPage.Form.pmPages.PopupComponent := Self;
+         lPage.Form.miPaste.OnClick(lPage.Form.miPaste);
+      finally
+         GClpbrd.Instance := inst;
+         GClpbrd.UndoObject := uobj;
+         if lock then
+            TBlock(Source).TopParentBlock.UnLockDrawing;
+      end;
    end;
 end;
 
