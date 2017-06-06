@@ -643,7 +643,7 @@ begin
       else
       begin
          menuItem := srcPage.Form.miCut;
-         lock := TBlock(Source).TopParentBlock.LockDrawing;
+         lock := TBlock(Source).LockDrawing;
       end;
       inst := GClpbrd.Instance;
       uobj := GClpbrd.UndoObject;
@@ -658,7 +658,7 @@ begin
          GClpbrd.Instance := inst;
          GClpbrd.UndoObject := uobj;
          if lock then
-            TBlock(Source).TopParentBlock.UnLockDrawing;
+            TBlock(Source).UnLockDrawing;
       end;
    end;
 end;
