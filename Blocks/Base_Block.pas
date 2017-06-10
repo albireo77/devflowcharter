@@ -2575,7 +2575,6 @@ end;
 procedure TBlock.UpdateEditor(AEdit: TCustomEdit);
 var
    chLine: TChangeLine;
-   instrEnd: string;
 begin
    if (AEdit <> nil) and PerformEditorUpdate then
    begin
@@ -2583,9 +2582,7 @@ begin
       if chLine.Row <> ROW_NOT_FOUND then
       begin
          chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
-         instrEnd := GInfra.CurrentLang.InstrEnd;
-         if (instrEnd <> '') and (Trim(chLine.Text) = instrEnd) then
-            chLine.Text := ReplaceStr(chLine.Text, instrEnd, '');
+         chLine.Text := TInfra.StripInstrEnd(chLine.Text, GInfra.CurrentLang.InstrEnd);
          if GSettings.UpdateEditor and not SkipUpdateEditor then
             TInfra.ChangeLine(chLine);
          TInfra.GetEditorForm.SetCaretPos(chLine);
@@ -2816,20 +2813,18 @@ end;
 
 procedure TBlock.GenerateTemplateSection(const ALines: TStringList; const ATemplate: TStringList; const ALangId: string; const ADeep: integer);
 var
-   line, instrEnd: string;
+   line: string;
    i: integer;
    obj: TObject;
 begin
    i := ALines.Count + ATemplate.Count;
    if ALines.Capacity < i then
       ALines.Capacity := i;
-   instrEnd := GInfra.CurrentLang.InstrEnd;
    for i := 0 to ATemplate.Count-1 do
    begin
       line := DupeString(GSettings.IndentString, ADeep) + ATemplate[i];
       line := ReplaceStr(line, INDENT_XML_CHAR, GSettings.IndentString);
-      if (instrEnd <> '') and (Trim(line) = instrEnd) then
-         line := ReplaceStr(line, instrEnd, '');
+      line := TInfra.StripInstrEnd(line, GInfra.CurrentLang.InstrEnd);
       obj := ATemplate.Objects[i];
       if obj = nil then
          obj := Self;

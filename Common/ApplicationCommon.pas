@@ -102,6 +102,7 @@ type
          class function ExportToFile(AExport: IExportable): TErrorType;
          class function GetDisplayRect(const APage: TBlockTabSheet): TRect;
          class procedure OnKeyDownSelectAll(Sender: TObject; var Key: Word; Shift: TShiftState);
+         class function StripInstrEnd(const ALine: string; const AInstrEnd: string): string;
          function ValidateConstId(const AId: string): integer;
          function ValidateId(const AId: string): integer;
          constructor Create;
@@ -797,6 +798,18 @@ begin
    begin
       if Assigned(FLangArray[i].SetHLighterAttrs) then
          FLangArray[i].SetHLighterAttrs;
+   end;
+end;
+
+class function TInfra.StripInstrEnd(const ALine: string; const AInstrEnd: string): string;
+begin
+   result := ALine;
+   if (result <> '') and (AInstrEnd <> '') then
+   begin
+      if Trim(result) = AInstrEnd then
+         result := ReplaceStr(result, AInstrEnd, '')
+      else if EndsText(DupeString(AInstrEnd, 2), result) then
+         SetLength(result, Length(result) - Length(AInstrEnd));
    end;
 end;
 
