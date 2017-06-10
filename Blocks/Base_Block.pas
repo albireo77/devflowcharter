@@ -2823,11 +2823,11 @@ begin
    i := ALines.Count + ATemplate.Count;
    if ALines.Capacity < i then
       ALines.Capacity := i;
+   instrEnd := GInfra.CurrentLang.InstrEnd;
    for i := 0 to ATemplate.Count-1 do
    begin
       line := DupeString(GSettings.IndentString, ADeep) + ATemplate[i];
       line := ReplaceStr(line, INDENT_XML_CHAR, GSettings.IndentString);
-      instrEnd := GInfra.CurrentLang.InstrEnd;
       if (instrEnd <> '') and (Trim(line) = instrEnd) then
          line := ReplaceStr(line, instrEnd, '');
       obj := ATemplate.Objects[i];
