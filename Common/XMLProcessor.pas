@@ -104,18 +104,23 @@ class function TXMLProcessor.GetBoolFromChildTag(ATag: IXMLElement; const ATagNa
 var
    ctag: IXMLElement;
    i: integer;
+   ctext: string;
 begin
    result := ADefault;
    ctag := FindChildTag(ATag, ATagName);
-   if (ctag <> nil) and (Trim(ctag.Text) <> '') then
+   if ctag <> nil then
    begin
-      i := StrToIntDef(ctag.Text, -5673);
-      if i = -5673 then
+      ctext := Trim(ctag.Text);
+      if ctext <> '' then
       begin
-         if SameText('true', ctag.Text) then
-            result := true
-         else if SameText('false', ctag.Text) then
-            result := false;
+         i := StrToIntDef(ctext, -5673);
+         if i = -5673 then
+         begin
+            if SameText('true', ctext) then
+               result := true
+            else if SameText('false', ctext) then
+               result := false;
+         end;
       end
       else
          result := i <> 0;
