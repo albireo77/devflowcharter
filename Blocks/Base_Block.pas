@@ -2582,7 +2582,7 @@ begin
       if chLine.Row <> ROW_NOT_FOUND then
       begin
          chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
-         chLine.Text := TInfra.StripInstrEnd(chLine.Text, GInfra.CurrentLang.InstrEnd);
+         chLine.Text := TInfra.StripInstrEnd(chLine.Text);
          if GSettings.UpdateEditor and not SkipUpdateEditor then
             TInfra.ChangeLine(chLine);
          TInfra.GetEditorForm.SetCaretPos(chLine);
@@ -2824,7 +2824,7 @@ begin
    begin
       line := DupeString(GSettings.IndentString, ADeep) + ATemplate[i];
       line := ReplaceStr(line, INDENT_XML_CHAR, GSettings.IndentString);
-      line := TInfra.StripInstrEnd(line, GInfra.CurrentLang.InstrEnd);
+      line := TInfra.StripInstrEnd(line);
       obj := ATemplate.Objects[i];
       if obj = nil then
          obj := Self;
