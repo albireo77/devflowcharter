@@ -22,6 +22,7 @@ Most of the tags are optional and may be removed if not needed.
     <InOutCursorPos>-1</InOutCursorPos>			<!-- counted from end -->
     <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>	<!-- counted from end -->
 
+    <EnabledConsts>1</EnabledConsts>			<!-- false or 0 is false, true or not 0 is true -->				
     <EnabledVars>1</EnabledVars>
     <EnabledCompiler>1</EnabledCompiler>
     <EnabledUserFunctionHeader>1</EnabledUserFunctionHeader>
