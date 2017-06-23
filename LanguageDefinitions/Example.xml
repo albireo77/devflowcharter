@@ -16,14 +16,18 @@ Most of the tags are optional and may be removed if not needed.
     <DefaultExt>txt</DefaultExt>
     <LibraryExt>.lib</LibraryExt>
     <AssignOperator>=</AssignOperator>
-    <InOutCursorPos>-1</InOutCursorPos>		<!-- counted from end -->
+    <FuncBrackets>()</FuncBrackets>
+    <DecimalSeparator>.</DecimalSeparator>
+    <InstrEnd>;</InstrEnd>
+    <InOutCursorPos>-1</InOutCursorPos>			<!-- counted from end -->
+    <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>	<!-- counted from end -->
 
-    <EnabledConsts>1</EnabledConsts>		<!-- 0 is false, 1 is true -->				
     <EnabledVars>1</EnabledVars>
     <EnabledCompiler>1</EnabledCompiler>
     <EnabledUserFunctionHeader>1</EnabledUserFunctionHeader>
     <EnabledUserFunctionBody>1</EnabledUserFunctionBody>
     <EnabledUserDataTypes>1</EnabledUserDataTypes>
+    <EnabledPointers>1</EnabledPointers>
     <EnabledExplorer>1</EnabledExplorer>
     <EnabledCodeGenerator>1</EnabledCodeGenerator>
     <EnabledMainProgram>1</EnabledMainProgram>
@@ -32,10 +36,7 @@ Most of the tags are optional and may be removed if not needed.
     <AllowEnumsInForLoop>1</AllowEnumsInForLoop>
     <AllowUserFunctionOverload>1</AllowUserFunctionOverload>
     <GenExternVarConst>0</GenExternVarConst>
-    <FuncBrackets>()</FuncBrackets>
-    <DecimalSeparator>.</DecimalSeparator>
-    <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>	<!-- counted from end -->
-    <InstrEnd>;</InstrEnd>
+
     <FoldRegions>
         <FoldRegion AddClose="0" NoSubFolds="0" Type="1" WholeWords="1">
             <Open Keyword="BEGIN"/>

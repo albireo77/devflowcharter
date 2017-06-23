@@ -33,9 +33,9 @@ type
     procedure pgcTabsChange(Sender: TObject); override;
   public
     { Public declarations }
-    function ImportTabsFromXMLTag(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType; override;
-    procedure ExportSettingsToXMLTag(const ATag: IXMLElement); override;
-    procedure ImportSettingsFromXMLTag(const ATag: IXMLElement); override;
+    function ImportTabsFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType; override;
+    procedure ExportSettingsToXMLTag(ATag: IXMLElement); override;
+    procedure ImportSettingsFromXMLTag(ATag: IXMLElement); override;
     procedure RefreshTabs; override;
     procedure ResetForm; override;
     procedure AddUserFunction(const ABodyTopLeft: TPoint);
@@ -92,7 +92,7 @@ begin
    end;
 end;
 
-procedure TFunctionsForm.ExportSettingsToXMLTag(const ATag: IXMLElement);
+procedure TFunctionsForm.ExportSettingsToXMLTag(ATag: IXMLElement);
 var
    header: TUserFunctionHeader;
    val: integer;
@@ -117,12 +117,12 @@ begin
    end;
 end;
 
-function TFunctionsForm.ImportTabsFromXMLTag(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
+function TFunctionsForm.ImportTabsFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
 begin
    result := GProject.ImportUserFunctionsFromXML(ATag, true);
 end;
 
-procedure TFunctionsForm.ImportSettingsFromXMLTag(const ATag: IXMLElement);
+procedure TFunctionsForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
 var
    header: TUserFunctionHeader;
    val: integer;

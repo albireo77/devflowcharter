@@ -50,8 +50,8 @@ type
     procedure miRemoveAllClick(Sender: TObject);
     procedure pgcTabsChange(Sender: TObject); virtual;
     procedure miExportAllClick(Sender: TObject);
-    procedure ExportTabsToXMLTag(const ATag: IXMLElement);
-    function ImportTabsFromXMLTag(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType; virtual; abstract;
+    procedure ExportTabsToXMLTag(ATag: IXMLElement);
+    function ImportTabsFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType; virtual; abstract;
     procedure FormDeactivate(Sender: TObject); virtual;
     procedure RefreshTabs; virtual;
     procedure Localize(const list: TStringList); override;
@@ -138,7 +138,7 @@ begin
    end;
 end;
 
-procedure TPageControlForm.ExportTabsToXMLTag(const ATag: IXMLElement);
+procedure TPageControlForm.ExportTabsToXMLTag(ATag: IXMLElement);
 var
    i: integer;
    xmlable: IXMLable;

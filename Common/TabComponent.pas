@@ -68,13 +68,13 @@ type
          property ParentForm: TPageControlForm read FParentForm;
          constructor Create(const AParentForm: TPageControlForm);
          destructor Destroy; override;
-         procedure ExportToXMLTag(const ATag: IXMLElement); virtual;
+         procedure ExportToXMLTag(ATag: IXMLElement); virtual;
          function ExportToXMLFile(const AFile: string): TErrorType;
          procedure ExportToGraphic(const AGraphic: TGraphic);
          function GetExportFileName: string;
          function IsDuplicated(ANameEdit: TEdit): boolean;
          procedure Localize(const AList: TStringList); virtual;
-         procedure ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil); virtual;
+         procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil); virtual;
          function GetLibName: string;
          procedure ScrollElements(const AValue: integer);
          property ScrollPos: integer read GetScrollPos write SetScrollPos;
@@ -420,7 +420,7 @@ begin
    FParentForm.UpdateCodeEditor := true;
 end;
 
-procedure TTabComponent.ExportToXMLTag(const ATag: IXMLElement);
+procedure TTabComponent.ExportToXMLTag(ATag: IXMLElement);
 var
    iter: IIterator;
 begin
@@ -433,7 +433,7 @@ begin
       TElement(iter.Next).ExportToXMLTag(ATag);
 end;
 
-procedure TTabComponent.ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
+procedure TTabComponent.ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
 var
    elem: TElement;
    tag: IXMLElement;

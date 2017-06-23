@@ -87,10 +87,10 @@ type
          property ParentForm: TBaseForm read FParentForm;
          constructor Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
          destructor Destroy; override;
-         function ImportFromXMLTag(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
+         function ImportFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
          function ImportItemFromXMLTag(const ATag: IXMLElement): TErrorType; virtual;
          procedure ExportItemToXMLTag(ATag: IXMLElement; idx: integer); virtual;
-         procedure ExportToXMLTag(const ATag: IXMLElement);
+         procedure ExportToXMLTag(ATag: IXMLElement);
          function GetImportTag(const ATag: IXMLElement): IXMLElement; virtual;
          function RetrieveFocus(AInfo: TFocusInfo): boolean;
          function CanBeFocused: boolean;
@@ -914,7 +914,7 @@ begin
    result := TXMLProcessor.FindChildTag(ATag, CONST_TAG);
 end;
 
-function TDeclareList.ImportFromXMLTag(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
+function TDeclareList.ImportFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
 var
    tag: IXMLElement;
 begin
@@ -984,7 +984,7 @@ begin
    end;
 end;
 
-procedure TDeclareList.ExportToXMLTag(const ATag: IXMLElement);
+procedure TDeclareList.ExportToXMLTag(ATag: IXMLElement);
 var
    i: integer;
 begin

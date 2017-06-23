@@ -225,8 +225,8 @@ type
     procedure DestroyFuncMenu;
   public
     { Public declarations }
-    procedure ExportSettingsToXMLTag(const root: IXMLElement); override;
-    procedure ImportSettingsFromXMLTag(const root: IXMLElement); override;
+    procedure ExportSettingsToXMLTag(ATag: IXMLElement); override;
+    procedure ImportSettingsFromXMLTag(ATag: IXMLElement); override;
     function ConfirmSave: integer;
     function GetMainBlockNextTopLeft: TPoint;
     procedure AcceptFile(const AFilePath: string);
@@ -1100,28 +1100,28 @@ begin
    GChange := 0;
 end;
 
-procedure TMainForm.ExportSettingsToXMLTag(const root: IXMLElement);
+procedure TMainForm.ExportSettingsToXMLTag(ATag: IXMLElement);
 begin
-   root.SetAttribute('scrollrange_h', IntToStr(HorzScrollBar.Range));
-   root.SetAttribute('scrollrange_v', IntToStr(VertScrollBar.Range));
-   root.SetAttribute('scroll_h', IntToStr(HorzScrollBar.Position));
-   root.SetAttribute('scroll_v', IntToStr(VertScrollBar.Position));
+   ATag.SetAttribute('scrollrange_h', IntToStr(HorzScrollBar.Range));
+   ATag.SetAttribute('scrollrange_v', IntToStr(VertScrollBar.Range));
+   ATag.SetAttribute('scroll_h', IntToStr(HorzScrollBar.Position));
+   ATag.SetAttribute('scroll_v', IntToStr(VertScrollBar.Position));
 end;
 
-procedure TMainForm.ImportSettingsFromXMLTag(const root: IXMLElement);
+procedure TMainForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
 var
    val: integer;
 begin
-   val := StrToIntDef(root.GetAttribute('scrollrange_h'), -1);
+   val := StrToIntDef(ATag.GetAttribute('scrollrange_h'), -1);
    if val > -1 then
       HorzScrollBar.Range := val;
-   val := StrToIntDef(root.GetAttribute('scroll_h'), -1);
+   val := StrToIntDef(ATag.GetAttribute('scroll_h'), -1);
    if val > -1 then
       HorzScrollBar.Position := val;
-   val := StrToIntDef(root.GetAttribute('scrollrange_v'), -1);
+   val := StrToIntDef(ATag.GetAttribute('scrollrange_v'), -1);
    if val > -1 then
       VertScrollBar.Range := val;
-   val := StrToIntDef(root.GetAttribute('scroll_v'), -1);
+   val := StrToIntDef(ATag.GetAttribute('scroll_v'), -1);
    if val > -1 then
       VertScrollBar.Position := val;
 end;

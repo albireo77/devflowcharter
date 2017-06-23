@@ -34,8 +34,8 @@ type
     { Private declarations }
   public
     { Public declarations }
-    procedure ExportSettingsToXMLTag(const root: IXMLElement); override;
-    procedure ImportSettingsFromXMLTag(const root: IXMLElement); override;
+    procedure ExportSettingsToXMLTag(ATag: IXMLElement); override;
+    procedure ImportSettingsFromXMLTag(ATag: IXMLElement); override;
     procedure ResetForm; override;
   end;
 
@@ -49,39 +49,39 @@ uses
 
 {$R *.dfm}
 
-procedure TDeclarationsForm.ExportSettingsToXMLTag(const root: IXMLElement);
+procedure TDeclarationsForm.ExportSettingsToXMLTag(ATag: IXMLElement);
 begin
-   root.SetAttribute('var_win_h', IntToStr(Height));
-   root.SetAttribute('var_win_w', IntToStr(Width));
+   ATag.SetAttribute('var_win_h', IntToStr(Height));
+   ATag.SetAttribute('var_win_w', IntToStr(Width));
    if Visible then
    begin
-      root.SetAttribute('var_win_show', '1');
-      root.SetAttribute('var_win_x', IntToStr(Left));
-      root.SetAttribute('var_win_y', IntToStr(Top));
+      ATag.SetAttribute('var_win_show', '1');
+      ATag.SetAttribute('var_win_x', IntToStr(Left));
+      ATag.SetAttribute('var_win_y', IntToStr(Top));
       if WindowState = wsMinimized then
-         root.SetAttribute('var_win_min', '1');
+         ATag.SetAttribute('var_win_min', '1');
    end;
 end;
 
-procedure TDeclarationsForm.ImportSettingsFromXMLTag(const root: IXMLElement);
+procedure TDeclarationsForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
 var
    val: integer;
 begin
-   val := StrToIntDef(root.GetAttribute('var_win_h'), -1);
+   val := StrToIntDef(ATag.GetAttribute('var_win_h'), -1);
    if val > -1 then
       Height := val;
-   val := StrToIntDef(root.GetAttribute('var_win_w'), -1);
+   val := StrToIntDef(ATag.GetAttribute('var_win_w'), -1);
    if val > -1 then
       Width := val;
-   if (root.GetAttribute('var_win_show') = '1') and (GInfra.CurrentLang.EnabledVars or GInfra.CurrentLang.EnabledConsts) then
+   if (ATag.GetAttribute('var_win_show') = '1') and (GInfra.CurrentLang.EnabledVars or GInfra.CurrentLang.EnabledConsts) then
    begin
       Position := poDesigned;
-      if root.GetAttribute('var_win_min') = '1' then
+      if ATag.GetAttribute('var_win_min') = '1' then
          WindowState := wsMinimized;
-      val := StrToIntDef(root.GetAttribute('var_win_x'), -1);
+      val := StrToIntDef(ATag.GetAttribute('var_win_x'), -1);
       if val > -1 then
          Left := val;
-      val := StrToIntDef(root.GetAttribute('var_win_y'), -1);
+      val := StrToIntDef(ATag.GetAttribute('var_win_y'), -1);
       if val > -1 then
          Top := val;
       Show;

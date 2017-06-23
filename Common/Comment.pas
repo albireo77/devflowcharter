@@ -60,9 +60,9 @@ type
          constructor CreateDefault(const APage: TBlockTabSheet);
          function Clone(const APage: TBlockTabSheet; ATopLeft: PPoint = nil): TComment;
          destructor Destroy; override;
-         procedure ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl);
-         procedure ExportToXMLTag(const ATag: IXMLElement);
-         procedure ExportToXMLTag2(const ATag: IXMLElement);
+         procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl);
+         procedure ExportToXMLTag(ATag: IXMLElement);
+         procedure ExportToXMLTag2(ATag: IXMLElement);
          function GetMaxBounds: TPoint;
          function GetHandle: THandle;
          procedure BringAllToFront;
@@ -307,7 +307,7 @@ begin
    PopupMenu.Popup(pnt.X, pnt.Y);
 end;
 
-procedure TComment.ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl);
+procedure TComment.ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl);
 var
    v: integer;
 begin
@@ -333,13 +333,13 @@ begin
    end;
 end;
 
-procedure TComment.ExportToXMLTag(const ATag: IXMLElement);
+procedure TComment.ExportToXMLTag(ATag: IXMLElement);
 begin
    if (FPinControl = nil) and (GProject.FindMainBlockForControl(Self) = nil) then
       ExportToXMLTag2(ATag);
 end;
 
-procedure TComment.ExportToXMLTag2(const ATag: IXMLElement);
+procedure TComment.ExportToXMLTag2(ATag: IXMLElement);
 var
    tag: IXMLElement;
 begin

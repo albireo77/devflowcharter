@@ -26,8 +26,8 @@ type
     { Public declarations }
     InvalidateInd: boolean;
     procedure ResetForm; override;
-    procedure ExportSettingsToXMLTag(const root: IXMLElement); override;
-    procedure ImportSettingsFromXMLTag(const root: IXMLElement); override;
+    procedure ExportSettingsToXMLTag(ATag: IXMLElement); override;
+    procedure ImportSettingsFromXMLTag(ATag: IXMLElement); override;
     procedure DoInvalidate;
   end;
 
@@ -139,33 +139,33 @@ begin
       FormMouseDown(Sender, mbLeft, Shift, X, Y);
 end;
 
-procedure TNavigatorForm.ExportSettingsToXMLTag(const root: IXMLElement);
+procedure TNavigatorForm.ExportSettingsToXMLTag(ATag: IXMLElement);
 begin
    if Visible then
    begin
-      root.SetAttribute('nav_win_show', '1');
-      root.SetAttribute('nav_win_x', IntToStr(Left));
-      root.SetAttribute('nav_win_y', IntToStr(Top));
-      root.SetAttribute('nav_win_width', IntToStr(Width));
-      root.SetAttribute('nav_win_height', IntToStr(Height));
+      ATag.SetAttribute('nav_win_show', '1');
+      ATag.SetAttribute('nav_win_x', IntToStr(Left));
+      ATag.SetAttribute('nav_win_y', IntToStr(Top));
+      ATag.SetAttribute('nav_win_width', IntToStr(Width));
+      ATag.SetAttribute('nav_win_height', IntToStr(Height));
       if WindowState = wsMinimized then
-         root.SetAttribute('nav_win_min', '1');
+         ATag.SetAttribute('nav_win_min', '1');
    end;
 end;
 
-procedure TNavigatorForm.ImportSettingsFromXMLTag(const root: IXMLElement);
+procedure TNavigatorForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
 var
    x, y, w, h: integer;
 begin
-   if root.GetAttribute('nav_win_show') = '1' then
+   if ATag.GetAttribute('nav_win_show') = '1' then
    begin
       Position := poDesigned;
-      if root.GetAttribute('nav_win_min') = '1' then
+      if ATag.GetAttribute('nav_win_min') = '1' then
          WindowState := wsMinimized;
-      x := StrToIntDef(root.GetAttribute('nav_win_x'), 50);
-      y := StrToIntDef(root.GetAttribute('nav_win_y'), 50);
-      w := StrToIntDef(root.GetAttribute('nav_win_width'), 426);
-      h := StrToIntDef(root.GetAttribute('nav_win_height'), 341);
+      x := StrToIntDef(ATag.GetAttribute('nav_win_x'), 50);
+      y := StrToIntDef(ATag.GetAttribute('nav_win_y'), 50);
+      w := StrToIntDef(ATag.GetAttribute('nav_win_width'), 426);
+      h := StrToIntDef(ATag.GetAttribute('nav_win_height'), 341);
       SetBounds(x, y, w, h);
       Show;
    end;

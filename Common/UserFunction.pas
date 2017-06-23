@@ -80,8 +80,8 @@ type
       property ParameterCount: integer read GetElementCount;
       constructor Create(const AParentForm: TFunctionsForm);
       destructor Destroy; override;
-      procedure ExportToXMLTag(const ATag: IXMLElement); override;
-      procedure ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
+      procedure ExportToXMLTag(ATag: IXMLElement); override;
+      procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
       function GetParameterIterator: IIterator;
       procedure Localize(const AList: TStringList); override;
       procedure RefreshSizeEdits; override;
@@ -102,8 +102,8 @@ type
       property Active: boolean read GetActive write SetActive;
       constructor Create(const AFunctionHeader: TUserFunctionHeader; const AFunctionBody: TMainBlock);
       destructor Destroy; override;
-      procedure ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
-      procedure ExportToXMLTag(const ATag: IXMLElement);
+      procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
+      procedure ExportToXMLTag(ATag: IXMLElement);
       procedure GenerateTree(const ANode: TTreeNode);
       function GetId: integer;
       function GetLibName: string;
@@ -288,7 +288,7 @@ begin
    result := FActive;
 end;
 
-procedure TUserFunction.ExportToXMLTag(const ATag: IXMLElement);
+procedure TUserFunction.ExportToXMLTag(ATag: IXMLElement);
 var
    tag: IXMLElement;
 begin
@@ -302,7 +302,7 @@ begin
    end;
 end;
 
-procedure TUserFunction.ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
+procedure TUserFunction.ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
 begin
 {}
 end;
@@ -786,7 +786,7 @@ begin
    end;
 end;
 
-procedure TUserFunctionHeader.ExportToXMLTag(const ATag: IXMLElement);
+procedure TUserFunctionHeader.ExportToXMLTag(ATag: IXMLElement);
 var
    tag, tag2, tag3: IXMLElement;
    lType: string;
@@ -819,7 +819,7 @@ begin
       FUserFunction.Body.ExportToXMLTag(tag);
 end;
 
-procedure TUserFunctionHeader.ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
+procedure TUserFunctionHeader.ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
 var
    idx: integer;
    tag2: IXMLElement;

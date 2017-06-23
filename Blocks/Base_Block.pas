@@ -153,8 +153,8 @@ type
          function IsCursorSelect: boolean;
          function IsCursorResize: boolean;
          function CanInsertReturnBlock: boolean; virtual;
-         procedure ExportToXMLTag(const ATag: IXMLElement);
-         function ImportFromXMLTag(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
+         procedure ExportToXMLTag(ATag: IXMLElement);
+         function ImportFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
          procedure ExportToGraphic(const AGraphic: TGraphic); virtual;
          procedure UpdateEditor(AEdit: TCustomEdit); virtual;
          function SkipUpdateEditor: boolean;
@@ -2486,7 +2486,7 @@ begin
    end;
 end;
 
-procedure TBlock.ExportToXMLTag(const ATag: IXMLElement);
+procedure TBlock.ExportToXMLTag(ATag: IXMLElement);
 var
    block: TBlock;
 begin
@@ -2514,7 +2514,7 @@ begin
    end;
 end;
 
-function TBlock.ImportFromXMLTag(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
+function TBlock.ImportFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
 var
    block, newBlock: TBlock;
    lParent: TGroupBlock;

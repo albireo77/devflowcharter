@@ -66,7 +66,7 @@ type
       lblSize: TLabel;
       property FieldCount: integer read GetElementCount default 0;
       constructor Create(const AParentForm: TDataTypesForm);
-      procedure ExportToXMLTag(const ATag: IXMLElement); override;
+      procedure ExportToXMLTag(ATag: IXMLElement); override;
       procedure ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
       function GetFieldIterator: IIterator;
       procedure Localize(const AList: TStringList); override;
@@ -191,6 +191,7 @@ begin
    chkAddPtrType.Font.Color := clWindowText;
    chkAddPtrType.DoubleBuffered := true;
    chkAddPtrType.Caption := i18Manager.GetString('chkAddPtrType');
+   chkAddPtrType.Enabled := GInfra.CurrentLang.EnabledPointers;
 
    chkExtDeclare := TCheckBox.Create(gbTypeBox);
    chkExtDeclare.Parent := gbTypeBox;
@@ -361,9 +362,12 @@ begin
       end;
    end;
    btnAddElement.Enabled := b;
-   if rbEnum.Checked then
-      chkAddPtrType.Checked := false;
-   chkAddPtrType.Enabled := not rbEnum.Checked;
+   if GInfra.CurrentLang.EnabledPointers then
+   begin
+      if rbEnum.Checked then
+         chkAddPtrType.Checked := false;
+      chkAddPtrType.Enabled := not rbEnum.Checked;
+   end;
    RefreshElements;
    if GProject <> nil then
       GProject.RefreshStatements;
@@ -428,7 +432,7 @@ begin
    inherited OnChangeName(Sender);
 end;
 
-procedure TUserDataType.ExportToXMLTag(const ATag: IXMLElement);
+procedure TUserDataType.ExportToXMLTag(ATag: IXMLElement);
 var
    tag: IXMLElement;
    typeId: string;

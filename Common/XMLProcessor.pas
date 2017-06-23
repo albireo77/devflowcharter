@@ -30,26 +30,27 @@ uses
 
 type
 
-   TXMLExportProc = procedure(const ATag: IXMLElement) of object;
-   TXMLImportProc = function(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType of object;
+   TXMLExportProc = procedure(ATag: IXMLElement) of object;
+   TXMLImportProc = function(ATag: IXMLElement; ASelect: boolean = false): TErrorType of object;
 
    TXMLProcessor = class(TObject)
    private
       class function DialogXMLFile(ADialog: TOpenDialog; const AFileName: string = ''): string;
    public
       class function ExportToXMLFile(AExportProc: TXMLExportProc; const AFilePath: string = ''): TErrorType;
-      class function ImportFromXMLFile(AImportProc: TXMLImportProc; const AFileName: string = ''; const APreserveSpace: boolean = false): string;
-      class function FindChildTag(const ATag: IXMLElement; const AName: string): IXMLElement;
-      class function FindNextTag(const ATag: IXMLElement): IXMLElement;
-      class procedure AddText(const ATag: IXMLElement; const AText: string);
-      class procedure AddCDATA(const ATag: IXMLElement; const AText: string);
-      class procedure ExportBlockToXML(const ABlock: TBlock; const ATag: IXMLElement);
-      class function CountChildTags(const ATag: IXMLElement; const AChildTagName: string; const AWithText: boolean = false): integer;
-      class function ImportFlowchartFromXMLTag(const ATag: IXMLElement;
-                                               const AParent: TWinControl;
+      class function ImportFromXMLFile(AImportProc: TXMLImportProc; const AFileName: string = ''; APreserveSpace: boolean = false): string;
+      class function FindChildTag(ATag: IXMLElement; const AName: string): IXMLElement;
+      class function FindNextTag(ATag: IXMLElement): IXMLElement;
+      class procedure AddText(ATag: IXMLElement; const AText: string);
+      class procedure AddCDATA(ATag: IXMLElement; const AText: string);
+      class procedure ExportBlockToXML(ABlock: TBlock; ATag: IXMLElement);
+      class function CountChildTags(ATag: IXMLElement; const AChildTagName: string; AWithText: boolean = false): integer;
+      class function GetBoolFromChildTag(ATag: IXMLElement; const ATagName: string; ADefault: boolean = false): boolean;
+      class function ImportFlowchartFromXMLTag(ATag: IXMLElement;
+                                               AParent: TWinControl;
                                                APrevBlock: TBlock;
                                                var AErrorType: TErrorType;
-                                               const ABranchInd: integer = PRIMARY_BRANCH_IND): TBlock;
+                                               ABranchInd: integer = PRIMARY_BRANCH_IND): TBlock;
    end;
 
 const
@@ -60,7 +61,7 @@ implementation
 uses
    System.SysUtils, ApplicationCommon, BlockFactory, BlockTabSheet;
 
-class function TXMLProcessor.FindChildTag(const ATag: IXMLElement; const AName: string): IXMLElement;
+class function TXMLProcessor.FindChildTag(ATag: IXMLElement; const AName: string): IXMLElement;
 var
    node: IXMLNode;
 begin
@@ -80,7 +81,7 @@ begin
     end;
 end;
 
-class function TXMLProcessor.FindNextTag(const ATag: IXMLElement): IXMLElement;
+class function TXMLProcessor.FindNextTag(ATag: IXMLElement): IXMLElement;
 var
    node: IXMLNode;
 begin
@@ -99,19 +100,41 @@ begin
     end;
 end;
 
-class procedure TXMLProcessor.AddText(const ATag: IXMLElement; const AText: string);
+class function TXMLProcessor.GetBoolFromChildTag(ATag: IXMLElement; const ATagName: string; ADefault: boolean = false): boolean;
+var
+   ctag: IXMLElement;
+   i: integer;
+begin
+   result := ADefault;
+   ctag := FindChildTag(ATag, ATagName);
+   if (ctag <> nil) and (Trim(ctag.Text) <> '') then
+   begin
+      i := StrToIntDef(ctag.Text, -5673);
+      if i = -5673 then
+      begin
+         if SameText('true', ctag.Text) then
+            result := true
+         else if SameText('false', ctag.Text) then
+            result := false;
+      end
+      else
+         result := i <> 0;
+   end;
+end;
+
+class procedure TXMLProcessor.AddText(ATag: IXMLElement; const AText: string);
 begin
    if (ATag <> nil) and (AText <> '') then
       ATag.AppendChild(ATag.OwnerDocument.CreateTextNode(AText));
 end;
 
-class procedure TXMLProcessor.AddCDATA(const ATag: IXMLElement; const AText: string);
+class procedure TXMLProcessor.AddCDATA(ATag: IXMLElement; const AText: string);
 begin
    if (ATag <> nil) and (AText <> '') then
       ATag.AppendChild(ATag.OwnerDocument.CreateCDATASection(AText));
 end;
 
-class function TXMLProcessor.CountChildTags(const ATag: IXMLElement; const AChildTagName: string; const AWithText: boolean = false): integer;
+class function TXMLProcessor.CountChildTags(ATag: IXMLElement; const AChildTagName: string; AWithText: boolean = false): integer;
 var
    tag: IXMLElement;
 begin
@@ -125,7 +148,7 @@ begin
    end;
 end;
 
-class procedure TXMLProcessor.ExportBlockToXML(const ABlock: TBlock; const ATag: IXMLElement);
+class procedure TXMLProcessor.ExportBlockToXML(ABlock: TBlock; ATag: IXMLElement);
 var
    tag: IXMLElement;
 begin
@@ -137,11 +160,11 @@ begin
    end;
 end;
 
-class function TXMLProcessor.ImportFlowchartFromXMLTag(const ATag: IXMLElement;      // root XML tag
-                                                       const AParent: TWinControl;       // Parent window for new block
+class function TXMLProcessor.ImportFlowchartFromXMLTag(ATag: IXMLElement;      // root XML tag
+                                                       AParent: TWinControl;       // Parent window for new block
                                                        APrevBlock: TBlock;
                                                        var AErrorType: TErrorType;
-                                                       const ABranchInd: integer = PRIMARY_BRANCH_IND): TBlock;
+                                                       ABranchInd: integer = PRIMARY_BRANCH_IND): TBlock;
 var
    tag: IXMLElement;
    newBlock: TBlock;
@@ -215,7 +238,7 @@ begin
       result := ADialog.FileName;
 end;
 
-class function TXMLProcessor.ImportFromXMLFile(AImportProc: TXMLImportProc; const AFileName: string = ''; const APreserveSpace: boolean = false): string;
+class function TXMLProcessor.ImportFromXMLFile(AImportProc: TXMLImportProc; const AFileName: string = ''; APreserveSpace: boolean = false): string;
 var
    docXML: IXMLDocument;
    errText: string;

@@ -80,11 +80,11 @@ type
       function GetUserDataType(const ATypeName: string): TUserDataType;
       function GetUserFunction(const AFunctionName: string): TUserFunction;
       procedure ExportToGraphic(const AGraphic: TGraphic);
-      procedure ExportToXMLTag(const ATag: IXMLElement);
+      procedure ExportToXMLTag(ATag: IXMLElement);
       function ExportToXMLFile(const AFile: string): TErrorType;
-      function ImportFromXMLTag(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
-      function ImportUserFunctionsFromXML(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
-      function ImportUserDataTypesFromXML(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
+      function ImportFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
+      function ImportUserFunctionsFromXML(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
+      function ImportUserDataTypesFromXML(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
       function ImportCommentsFromXML(const ATag: IXMLElement): integer;
       procedure ImportPagesFromXML(const ATag: IXMLElement);
       function GetMainBlock: TMainBlock;
@@ -402,7 +402,7 @@ begin
       TInfra.GetMainForm.AcceptFile(AFile);
 end;
 
-procedure TProject.ExportToXMLTag(const ATag: IXMLElement);
+procedure TProject.ExportToXMLTag(ATag: IXMLElement);
 var
    itr, iter: IIterator;
    xmlObj: IXMLable;
@@ -474,7 +474,7 @@ begin
    end;
 end;
 
-function TProject.ImportFromXMLTag(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
+function TProject.ImportFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
 var
    itr: IIterator;
    s, langName: string;
@@ -597,7 +597,7 @@ begin
    TInfra.GetMainForm.SetMenu(true);
 end;
 
-function TProject.ImportUserFunctionsFromXML(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
+function TProject.ImportUserFunctionsFromXML(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
 var
    tag, tag1: IXMLElement;
    header: TUserFunctionHeader;
@@ -681,7 +681,7 @@ begin
    end;
 end;
 
-function TProject.ImportUserDataTypesFromXML(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
+function TProject.ImportUserDataTypesFromXML(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
 var
    dataType: TUserDataType;
    tag: IXMLElement;

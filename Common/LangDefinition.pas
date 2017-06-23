@@ -164,6 +164,7 @@ type
       EnabledUserFunctionHeader,
       EnabledUserFunctionBody,
       EnabledUserDataTypes,
+      EnabledPointers,
       EnabledExplorer,
       EnabledCodeGenerator,
       EnabledMainProgram,
@@ -197,7 +198,7 @@ type
       property Name: string read FName;
       constructor Create;
       destructor Destroy; override;
-      function ImportFromXML(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
+      function ImportFromXML(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
       function GetTemplate(const AClass: TClass): string;
       function GetTemplateExpr(const AClass: TClass): string;
       function GetArraySizes(const ASizeEdit: TSizeEdit): string;
@@ -225,6 +226,7 @@ begin
    NativeFunctions := TStringList.Create;
    KeyWords := TStringList.Create;
    UpperCaseConstId := true;
+   EnabledPointers := true;
    PreGenerationActivities := nil;
    ProgramHeaderSectionGenerator := nil;
    LibSectionGenerator := nil;
@@ -261,7 +263,7 @@ begin
    inherited;
 end;
 
-function TLangDefinition.ImportFromXML(const ATag: IXMLElement; const ASelect: boolean = false): TErrorType;
+function TLangDefinition.ImportFromXML(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
 var
    tag: IXMLElement;
    lVal: string;
@@ -691,61 +693,21 @@ begin
    if tag <> nil then
       UserTypeDesc := tag.Text;
 
-   tag := TXMLProcessor.FindChildTag(ATag, 'EnabledConsts');
-   if tag <> nil then
-      EnabledConsts := Odd(StrToIntDef(tag.Text, 0));
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'EnabledVars');
-   if tag <> nil then
-      EnabledVars := Odd(StrToIntDef(tag.Text, 0));
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'EnabledCompiler');
-   if tag <> nil then
-      EnabledCompiler := Odd(StrToIntDef(tag.Text, 0));
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'EnabledUserFunctionHeader');
-   if tag <> nil then
-      EnabledUserFunctionHeader := Odd(StrToIntDef(tag.Text, 0));
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'EnabledUserFunctionBody');
-   if tag <> nil then
-      EnabledUserFunctionBody := Odd(StrToIntDef(tag.Text, 0));
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'EnabledUserDataTypes');
-   if tag <> nil then
-      EnabledUserDataTypes := Odd(StrToIntDef(tag.Text, 0));
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'EnabledExplorer');
-   if tag <> nil then
-      EnabledExplorer := Odd(StrToIntDef(tag.Text, 0));
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'EnabledCodeGenerator');
-   if tag <> nil then
-      EnabledCodeGenerator := Odd(StrToIntDef(tag.Text, 0));
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'EnabledMainProgram');
-   if tag <> nil then
-      EnabledMainProgram := Odd(StrToIntDef(tag.Text, 0));
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'GenExternVarConst');
-   if tag <> nil then
-      GenExternVarConst := Odd(StrToIntDef(tag.Text, 0));
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'CaseSensitiveSyntax');
-   if tag <> nil then
-      CaseSensitiveSyntax := Odd(StrToIntDef(tag.Text, 0));
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'UpperCaseConstId');
-   if tag <> nil then
-      UpperCaseConstId := Odd(StrToIntDef(tag.Text, 0));
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'AllowEnumsInForLoop');
-   if tag <> nil then
-      AllowEnumsInForLoop := Odd(StrToIntDef(tag.Text, 0));
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'AllowUserFunctionOverload');
-   if tag <> nil then
-      AllowUserFunctionOverload := Odd(StrToIntDef(tag.Text, 0));
+   EnabledPointers := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledPointers', EnabledPointers);
+   EnabledConsts := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledConsts', EnabledConsts);
+   EnabledVars := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledVars', EnabledVars);
+   EnabledCompiler := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledCompiler', EnabledCompiler);
+   EnabledUserFunctionHeader := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserFunctionHeader', EnabledUserFunctionHeader);
+   EnabledUserFunctionBody := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserFunctionBody', EnabledUserFunctionBody);
+   EnabledUserDataTypes := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserDataTypes', EnabledUserDataTypes);
+   EnabledExplorer := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledExplorer', EnabledExplorer);
+   EnabledCodeGenerator := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledCodeGenerator', EnabledCodeGenerator);
+   EnabledMainProgram := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledMainProgram', EnabledMainProgram);
+   GenExternVarConst := TXMLProcessor.GetBoolFromChildTag(ATag, 'GenExternVarConst', GenExternVarConst);
+   CaseSensitiveSyntax := TXMLProcessor.GetBoolFromChildTag(ATag, 'CaseSensitiveSyntax', CaseSensitiveSyntax);
+   UpperCaseConstId := TXMLProcessor.GetBoolFromChildTag(ATag, 'UpperCaseConstId', UpperCaseConstId);
+   AllowEnumsInForLoop := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowEnumsInForLoop', AllowEnumsInForLoop);
+   AllowUserFunctionOverload := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowUserFunctionOverload', AllowUserFunctionOverload);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'NativeDataTypes');
    if tag <> nil then

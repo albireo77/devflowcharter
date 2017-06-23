@@ -140,8 +140,8 @@ type
     { Public declarations }
     procedure SetFormAttributes;
     procedure ExecuteCopyToClipboard(const AIfRichText: boolean);
-    procedure ExportSettingsToXMLTag(const root: IXMLElement); override;
-    procedure ImportSettingsFromXMLTag(const root: IXMLElement); override;
+    procedure ExportSettingsToXMLTag(ATag: IXMLElement); override;
+    procedure ImportSettingsFromXMLTag(ATag: IXMLElement); override;
     function GetIndentLevel(const idx: integer; ALines: TStrings = nil): integer;
     procedure RefreshEditorForObject(const AObject: TObject);
     function GetAllLines: TStrings;
@@ -1296,7 +1296,7 @@ begin
    end;
 end;
 
-procedure TEditorForm.ExportSettingsToXMLTag(const root: IXMLElement);
+procedure TEditorForm.ExportSettingsToXMLTag(ATag: IXMLElement);
 var
    i: integer;
    tag2: IXMLElement;
@@ -1308,28 +1308,28 @@ var
 begin
    if Visible then
    begin
-      root.SetAttribute('src_win_show', '1');
-      root.SetAttribute('src_win_x', IntToStr(Left));
-      root.SetAttribute('src_win_y', IntToStr(Top));
-      root.SetAttribute('src_win_w', IntToStr(Width));
-      root.SetAttribute('src_win_h', IntToStr(Height));
-      root.SetAttribute('src_win_sel_start', IntToStr(memCodeEditor.SelStart));
+      ATag.SetAttribute('src_win_show', '1');
+      ATag.SetAttribute('src_win_x', IntToStr(Left));
+      ATag.SetAttribute('src_win_y', IntToStr(Top));
+      ATag.SetAttribute('src_win_w', IntToStr(Width));
+      ATag.SetAttribute('src_win_h', IntToStr(Height));
+      ATag.SetAttribute('src_win_sel_start', IntToStr(memCodeEditor.SelStart));
       if memCodeEditor.SelAvail then
-         root.SetAttribute('src_win_sel_length', IntToStr(memCodeEditor.SelLength));
+         ATag.SetAttribute('src_win_sel_length', IntToStr(memCodeEditor.SelLength));
       if memCodeEditor.Marks.Count > 0 then
       begin
          for i := 0 to memCodeEditor.Marks.Count-1 do
          begin
-            tag2 := root.OwnerDocument.CreateElement('src_win_mark');
+            tag2 := ATag.OwnerDocument.CreateElement('src_win_mark');
             tag2.SetAttribute('line', IntToStr(memCodeEditor.Marks[i].Line));
             tag2.SetAttribute('index', IntToStr(memCodeEditor.Marks[i].ImageIndex));
-            root.AppendChild(tag2);
+            ATag.AppendChild(tag2);
          end;
       end;
       if memCodeEditor.TopLine > 1 then
-         root.SetAttribute('src_top_line', IntToStr(memCodeEditor.TopLine));
+         ATag.SetAttribute('src_top_line', IntToStr(memCodeEditor.TopLine));
       if WindowState = wsMinimized then
-         root.SetAttribute('src_win_min', '1');
+         ATag.SetAttribute('src_win_min', '1');
 {$IFDEF USE_CODEFOLDING}
       if memCodeEditor.CodeFolding.Enabled then
       begin
@@ -1354,17 +1354,17 @@ begin
       lines := GetAllLines;
       for i := 0 to lines.Count-1 do
       begin
-         tag2 := root.OwnerDocument.CreateElement('text_line');
+         tag2 := ATag.OwnerDocument.CreateElement('text_line');
          TXMLProcessor.AddCDATA(tag2, lines[i]);
          if TInfra.IsValid(lines.Objects[i]) and Supports(lines.Objects[i], IIdentifiable, idObject) then
             tag2.SetAttribute(ID_ATTR, IntToStr(idObject.Id));
-         root.AppendChild(tag2);
+         ATag.AppendChild(tag2);
       end;
-      root.SetAttribute('modified', BoolToStr(memCodeEditor.Modified, true));
+      ATag.SetAttribute('modified', BoolToStr(memCodeEditor.Modified, true));
    end;
 end;
 
-procedure TEditorForm.ImportSettingsFromXMLTag(const root: IXMLElement);
+procedure TEditorForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
 var
    rect: TRect;
    i: integer;
@@ -1374,21 +1374,21 @@ var
    foldRange: TSynEditFoldRange;
 {$ENDIF}
 begin
-   if (root.GetAttribute('src_win_show') = '1') and GInfra.CurrentLang.EnabledCodeGenerator then
+   if (ATag.GetAttribute('src_win_show') = '1') and GInfra.CurrentLang.EnabledCodeGenerator then
    begin
-      rect.Left := StrToIntDef(root.GetAttribute('src_win_x'), 50);
-      rect.Top := StrToIntDef(root.GetAttribute('src_win_y'), 50);
-      rect.Right := StrToIntDef(root.GetAttribute('src_win_w'), 425);
-      rect.Bottom := StrToIntDef(root.GetAttribute('src_win_h'), 558);
+      rect.Left := StrToIntDef(ATag.GetAttribute('src_win_x'), 50);
+      rect.Top := StrToIntDef(ATag.GetAttribute('src_win_y'), 50);
+      rect.Right := StrToIntDef(ATag.GetAttribute('src_win_w'), 425);
+      rect.Bottom := StrToIntDef(ATag.GetAttribute('src_win_h'), 558);
       Position := poDesigned;
       SetBounds(rect.Left, rect.Top, rect.Right, rect.Bottom);
-      if root.GetAttribute('src_win_min') = '1' then
+      if ATag.GetAttribute('src_win_min') = '1' then
          WindowState := wsMinimized;
       OnShow := nil;
       Show;
       OnShow := FormShow;
-      root.OwnerDocument.PreserveWhiteSpace := true;
-      tag1 := TXMLProcessor.FindChildTag(root, 'text_line');
+      ATag.OwnerDocument.PreserveWhiteSpace := true;
+      tag1 := TXMLProcessor.FindChildTag(ATag, 'text_line');
       memCodeEditor.Lines.BeginUpdate;
       while tag1 <> nil do
       begin
@@ -1400,9 +1400,9 @@ begin
          memCodeEditor.Highlighter := GInfra.CurrentLang.HighLighter;
       memCodeEditor.ClearUndo;
       memCodeEditor.SetFocus;
-      memCodeEditor.Modified := root.GetAttribute('modified') = 'True';
-      memCodeEditor.SelStart := StrToIntDef(root.GetAttribute('src_win_sel_start'), 0);
-      memCodeEditor.SelLength := StrToIntDef(root.GetAttribute('src_win_sel_length'), 0);
+      memCodeEditor.Modified := ATag.GetAttribute('modified') = 'True';
+      memCodeEditor.SelStart := StrToIntDef(ATag.GetAttribute('src_win_sel_start'), 0);
+      memCodeEditor.SelLength := StrToIntDef(ATag.GetAttribute('src_win_sel_length'), 0);
 {$IFDEF USE_CODEFOLDING}
       if memCodeEditor.CodeFolding.Enabled then
       begin
@@ -1435,11 +1435,11 @@ begin
          end;
       end;
 {$ENDIF}
-      root.OwnerDocument.PreserveWhiteSpace := false;
-      i := StrToIntDef(root.GetAttribute('src_top_line'), 0);
+      ATag.OwnerDocument.PreserveWhiteSpace := false;
+      i := StrToIntDef(ATag.GetAttribute('src_top_line'), 0);
       if i > 0 then
          memCodeEditor.TopLine := i;
-      tag1 := TXMLProcessor.FindChildTag(root, 'src_win_mark');
+      tag1 := TXMLProcessor.FindChildTag(ATag, 'src_win_mark');
       while tag1 <> nil do
       begin
          mark := TSynEditMark.Create(memCodeEditor);

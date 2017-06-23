@@ -31,8 +31,8 @@ type
   TBaseForm = class(TForm, IFocusable)
     public
       procedure Localize(const AList: TStringList); virtual;
-      procedure ImportSettingsFromXMLTag(const ATag: IXMLElement); virtual;
-      procedure ExportSettingsToXMLTag(const ATag: IXMLElement); virtual;
+      procedure ImportSettingsFromXMLTag(ATag: IXMLElement); virtual;
+      procedure ExportSettingsToXMLTag(ATag: IXMLElement); virtual;
       procedure ResetForm; virtual;
       procedure Show;
       function RetrieveFocus(AInfo: TFocusInfo): boolean;
@@ -59,12 +59,12 @@ begin
    Caption := AList.Values['FormCaption'];
 end;
 
-procedure TBaseForm.ImportSettingsFromXMLTag(const ATag: IXMLElement);
+procedure TBaseForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
 begin
 {}
 end;
 
-procedure TBaseForm.ExportSettingsToXMLTag(const ATag: IXMLElement);
+procedure TBaseForm.ExportSettingsToXMLTag(ATag: IXMLElement);
 begin
 {}
 end;

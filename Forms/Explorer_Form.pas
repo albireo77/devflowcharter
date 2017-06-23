@@ -64,8 +64,8 @@ type
 
   public
     { Public declarations }
-    procedure ExportSettingsToXMLTag(const root: IXMLElement); override;
-    procedure ImportSettingsFromXMLTag(const root: IXMLElement); override;
+    procedure ExportSettingsToXMLTag(ATag: IXMLElement); override;
+    procedure ImportSettingsFromXMLTag(ATag: IXMLElement); override;
   end;
 
 var
@@ -308,38 +308,38 @@ begin
    end;
 end;
 
-procedure TExplorerForm.ExportSettingsToXMLTag(const root: IXMLElement);
+procedure TExplorerForm.ExportSettingsToXMLTag(ATag: IXMLElement);
 begin
    if Visible then
    begin
-      root.SetAttribute('tree_win_show', '1');
-      root.SetAttribute('tree_win_x', IntToStr(Left));
-      root.SetAttribute('tree_win_y', IntToStr(Top));
-      root.SetAttribute('tree_win_w', IntToStr(Width));
-      root.SetAttribute('tree_win_h', IntToStr(Height));
-      root.SetAttribute('tree_top_y', IntToStr(tvExplorer.TopItem.AbsoluteIndex));
+      ATag.SetAttribute('tree_win_show', '1');
+      ATag.SetAttribute('tree_win_x', IntToStr(Left));
+      ATag.SetAttribute('tree_win_y', IntToStr(Top));
+      ATag.SetAttribute('tree_win_w', IntToStr(Width));
+      ATag.SetAttribute('tree_win_h', IntToStr(Height));
+      ATag.SetAttribute('tree_top_y', IntToStr(tvExplorer.TopItem.AbsoluteIndex));
       if WindowState = wsMinimized then
-         root.SetAttribute('tree_win_min', '1');
+         ATag.SetAttribute('tree_win_min', '1');
    end;
 end;
 
-procedure TExplorerForm.ImportSettingsFromXMLTag(const root: IXMLElement);
+procedure TExplorerForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
 var
    rect: TRect;
    topY: integer;
 begin
-   if (root.GetAttribute('tree_win_show') = '1') and GInfra.CurrentLang.EnabledExplorer then
+   if (ATag.GetAttribute('tree_win_show') = '1') and GInfra.CurrentLang.EnabledExplorer then
    begin
-      rect.Left := StrToIntDef(root.GetAttribute('tree_win_x'), 50);
-      rect.Top := StrToIntDef(root.GetAttribute('tree_win_y'), 50);
-      rect.Right := StrToIntDef(root.GetAttribute('tree_win_w'), 498);
-      rect.Bottom := StrToIntDef(root.GetAttribute('tree_win_h'), 574);
+      rect.Left := StrToIntDef(ATag.GetAttribute('tree_win_x'), 50);
+      rect.Top := StrToIntDef(ATag.GetAttribute('tree_win_y'), 50);
+      rect.Right := StrToIntDef(ATag.GetAttribute('tree_win_w'), 498);
+      rect.Bottom := StrToIntDef(ATag.GetAttribute('tree_win_h'), 574);
       Position := poDesigned;
       SetBounds(rect.Left, rect.Top, rect.Right, rect.Bottom);
-      if root.GetAttribute('tree_win_min') = '1' then
+      if ATag.GetAttribute('tree_win_min') = '1' then
          WindowState := wsMinimized;
       Show;
-      topY := StrToIntDef(root.GetAttribute('tree_top_y'), -2);
+      topY := StrToIntDef(ATag.GetAttribute('tree_top_y'), -2);
       if (topY >= 0) and (topY < tvExplorer.Items.Count) then
          tvExplorer.TopItem := tvExplorer.Items[topY];
    end;

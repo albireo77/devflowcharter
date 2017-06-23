@@ -753,7 +753,7 @@ begin
          if (dataType.PageIndex < ASkipIndex) and (lName <> '') then
          begin
             AcbType.Items.Add(lName);
-            if dataType.chkAddPtrType.Checked then
+            if dataType.chkAddPtrType.Enabled and dataType.chkAddPtrType.Checked then
             begin
                lang := nil;
                if Assigned(GInfra.CurrentLang.GetPointerTypeName) then
