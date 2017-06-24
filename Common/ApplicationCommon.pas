@@ -413,6 +413,8 @@ begin
       comp := GetEditorForm.FindComponent(FLangArray[i].HighLighterVarName);
       if comp is TSynCustomHighlighter then
          FLangArray[i].HighLighter := TSynCustomHighlighter(comp);
+      if FLangArray[i] = GInfra.CurrentLang then
+         GSettings.UpdateForHLighter(FLangArray[i].HighLighter);
    end;
 end;
 

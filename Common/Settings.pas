@@ -22,7 +22,7 @@ unit Settings;
 interface
 
 uses
-  WinApi.Windows, Vcl.Graphics, LangDefinition, CommonTypes;
+  WinApi.Windows, Vcl.Graphics, LangDefinition, CommonTypes, SynEditHighlighter;
 
 type
 
@@ -100,6 +100,7 @@ type
       procedure LoadFromEditor;
       procedure SetForm;
       procedure UpdateForLang(const ALang: TLangDefinition);
+      procedure UpdateForHLighter(AHLighter: TSynCustomHighlighter);
       procedure ProtectFields;
       procedure SetDefaultForm;
       function GetShapeColor(const shape: TColorShape): TColor;
@@ -561,9 +562,12 @@ begin
       FParseRoutineCall := false;
       FParseReturn := false;
    end;
-   if ALang.HighLighter = nil then
-      FEditorShowRichText := false;
    FormatSettings.DecimalSeparator := ALang.DecimalSeparator;
+end;
+
+procedure TSettings.UpdateForHLighter(AHLighter: TSynCustomHighlighter);
+begin
+   FEditorShowRichText := FEditorShowRichText and (AHLighter <> nil);
 end;
 
 procedure TSettings.LoadFromEditor;
