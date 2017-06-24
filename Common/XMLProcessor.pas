@@ -111,16 +111,12 @@ begin
    if ctag <> nil then
    begin
       ctext := Trim(ctag.Text);
-      i := StrToIntDef(ctext, -5673);
-      if i = -5673 then
-      begin
-         if SameText('true', ctext) then
-            result := true
-         else if SameText('false', ctext) then
-            result := false;
-      end
-      else
-         result := i <> 0;
+      if TryStrToInt(ctext, i) then
+         result := i <> 0
+      else if SameText('true', ctext) then
+         result := true
+      else if SameText('false', ctext) then
+         result := false;
    end;
 end;
 
