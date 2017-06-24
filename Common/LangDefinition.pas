@@ -803,9 +803,9 @@ begin
                Open := tag1.GetAttribute('Keyword');
             tag1 := TXMLProcessor.FindChildTag(tag, 'Close');
                Close := tag1.GetAttribute('Keyword');
-            AddClose := Odd(StrToIntDef(tag.GetAttribute('AddClose'), 0));
-            NoSubFolds := Odd(StrToIntDef(tag.GetAttribute('NoSubFolds'), 1));
-            WholeWords := Odd(StrToIntDef(tag.GetAttribute('WholeWords'), 1));
+            AddClose := TXMLProcessor.GetBoolFromAttr(tag, 'AddClose', false);
+            NoSubFolds := TXMLProcessor.GetBoolFromAttr(tag, 'NoSubFolds', true);
+            WholeWords := TXMLProcessor.GetBoolFromAttr(tag, 'WholeWords', true);
             if tag.GetAttribute('Type') = '0' then
                RegionType := rtChar
             else

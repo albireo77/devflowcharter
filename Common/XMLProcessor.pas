@@ -46,6 +46,7 @@ type
       class procedure ExportBlockToXML(ABlock: TBlock; ATag: IXMLElement);
       class function CountChildTags(ATag: IXMLElement; const AChildTagName: string; AWithText: boolean = false): integer;
       class function GetBoolFromChildTag(ATag: IXMLElement; const ATagName: string; ADefault: boolean = false): boolean;
+      class function GetBoolFromAttr(ATag: IXMLElement; const AAttrName: string; ADefault: boolean = false): boolean;
       class function ImportFlowchartFromXMLTag(ATag: IXMLElement;
                                                AParent: TWinControl;
                                                APrevBlock: TBlock;
@@ -116,6 +117,25 @@ begin
       else if SameText('true', ctext) then
          result := true
       else if SameText('false', ctext) then
+         result := false;
+   end;
+end;
+
+class function TXMLProcessor.GetBoolFromAttr(ATag: IXMLElement; const AAttrName: string; ADefault: boolean = false): boolean;
+var
+   ctag: IXMLElement;
+   i: integer;
+   attr: string;
+begin
+   result := ADefault;
+   if ATag <> nil then
+   begin
+      attr := Trim(ATag.GetAttribute(AAttrName));
+      if TryStrToInt(attr, i) then
+         result := i <> 0
+      else if SameText('true', attr) then
+         result := true
+      else if SameText('false', attr) then
          result := false;
    end;
 end;
