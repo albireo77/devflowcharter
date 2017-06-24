@@ -1304,6 +1304,7 @@ var
    lines: TStrings;
 {$IFDEF USE_CODEFOLDING}
    foldRange: TSynEditFoldRange;
+   tag1: IXMLElement;
 {$ENDIF}
 begin
    if Visible then
@@ -1341,10 +1342,10 @@ begin
             begin
                if tag1 = nil then
                begin
-                  tag1 := root.OwnerDocument.CreateElement('fold_ranges');
-                  root.AppendChild(tag1);
+                  tag1 := ATag.OwnerDocument.CreateElement('fold_ranges');
+                  ATag.AppendChild(tag1);
                end;
-               tag2 := root.OwnerDocument.CreateElement('fold_range');
+               tag2 := ATag.OwnerDocument.CreateElement('fold_range');
                TXMLProcessor.AddText(tag2, IntToStr(memCodeEditor.GetRealLineNumber(foldRange.FromLine)));
                tag1.AppendChild(tag2);
             end;
@@ -1372,6 +1373,8 @@ var
    mark: TSynEditMark;
 {$IFDEF USE_CODEFOLDING}
    foldRange: TSynEditFoldRange;
+   foldLines: TStringList;
+   tag2: IXMLElement;
 {$ENDIF}
 begin
    if (ATag.GetAttribute('src_win_show') = '1') and GInfra.CurrentLang.EnabledCodeGenerator then
@@ -1407,7 +1410,7 @@ begin
       if memCodeEditor.CodeFolding.Enabled then
       begin
          memCodeEditor.ReScanForFoldRanges;
-         tag1 := TXMLProcessor.FindChildTag(root, 'fold_ranges');
+         tag1 := TXMLProcessor.FindChildTag(ATag, 'fold_ranges');
          if tag1 <> nil then
          begin
             foldLines := TStringList.Create;

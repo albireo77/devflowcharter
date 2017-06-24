@@ -268,6 +268,9 @@ var
    tag: IXMLElement;
    lVal: string;
    i, a, count: integer;
+{$IFDEF USE_CODEFOLDING}
+   tag1: IXMLElement;
+{$ENDIF}
 begin
 
    result := errNone;
