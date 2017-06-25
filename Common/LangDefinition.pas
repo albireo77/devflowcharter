@@ -806,7 +806,7 @@ begin
             AddClose := TXMLProcessor.GetBoolFromAttr(tag, 'AddClose', false);
             NoSubFolds := TXMLProcessor.GetBoolFromAttr(tag, 'NoSubFolds', true);
             WholeWords := TXMLProcessor.GetBoolFromAttr(tag, 'WholeWords', true);
-            if tag.GetAttribute('Type') = '0' then
+            if tag.GetAttribute('Type') = 'rtChar' then
                RegionType := rtChar
             else
                RegionType := rtKeyword;

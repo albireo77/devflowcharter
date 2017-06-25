@@ -7,6 +7,7 @@ For all supported tags refer to Example.xml file.
 -->
 
 <Language>
+
     <Name>ANSI C</Name>
     <CommentBegin>/*</CommentBegin>
     <CommentEnd>*/</CommentEnd>
@@ -16,30 +17,32 @@ For all supported tags refer to Example.xml file.
     <LibraryExt>.h</LibraryExt>
     <AssignOperator>=</AssignOperator>
     <InOutCursorPos>-1</InOutCursorPos>
-    <EnabledConsts>1</EnabledConsts>
-    <EnabledVars>1</EnabledVars>
-    <EnabledCompiler>1</EnabledCompiler>
-    <EnabledUserFunctionHeader>1</EnabledUserFunctionHeader>
-    <EnabledUserFunctionBody>1</EnabledUserFunctionBody>
-    <EnabledUserDataTypes>1</EnabledUserDataTypes>
-    <EnabledExplorer>1</EnabledExplorer>
-    <EnabledCodeGenerator>1</EnabledCodeGenerator>
-    <EnabledMainProgram>1</EnabledMainProgram>
-    <CaseSensitiveSyntax>1</CaseSensitiveSyntax>
-    <UpperCaseConstId>0</UpperCaseConstId>
-    <GenExternVarConst>1</GenExternVarConst>
     <FuncBrackets>()</FuncBrackets>
     <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>
     <InstrEnd>;</InstrEnd>
+
+    <EnabledConsts>true</EnabledConsts>
+    <EnabledVars>true</EnabledVars>
+    <EnabledCompiler>true</EnabledCompiler>
+    <EnabledUserFunctionHeader>true</EnabledUserFunctionHeader>
+    <EnabledUserFunctionBody>true</EnabledUserFunctionBody>
+    <EnabledUserDataTypes>true</EnabledUserDataTypes>
+    <EnabledExplorer>true</EnabledExplorer>
+    <EnabledCodeGenerator>true</EnabledCodeGenerator>
+    <EnabledMainProgram>true</EnabledMainProgram>
+    <CaseSensitiveSyntax>true</CaseSensitiveSyntax>
+    <UpperCaseConstId>false</UpperCaseConstId>
+    <GenExternVarConst>true</GenExternVarConst>
+
     <FoldRegions>
-		<FoldRegion AddClose="0" NoSubFolds="0" Type="0" WholeWords="0">
+		<FoldRegion AddClose="false" NoSubFolds="false" Type="rtChar" WholeWords="false">
 			<Open Keyword="{"/>
 			<Close Keyword="}"/>
 		</FoldRegion>
-		<FoldRegion AddClose="1" NoSubFolds="1" Type="1" WholeWords="1">
+		<FoldRegion AddClose="true" NoSubFolds="true" Type="rtKeyword" WholeWords="true">
 			<Open Keyword="/*"/>
 			<Close Keyword="*/"/>
-        </FoldRegion>
+        	</FoldRegion>
     </FoldRegions>
     <NativeDataTypes>
     	<DataType kind="int">int</DataType>

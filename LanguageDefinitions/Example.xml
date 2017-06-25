@@ -22,32 +22,32 @@ Most of the tags are optional and may be removed if not needed.
     <InOutCursorPos>-1</InOutCursorPos>			<!-- counted from end -->
     <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>	<!-- counted from end -->
 
-    <EnabledConsts>1</EnabledConsts>			<!-- false or 0 is false, true or not 0 is true -->				
-    <EnabledVars>1</EnabledVars>
-    <EnabledCompiler>1</EnabledCompiler>
-    <EnabledUserFunctionHeader>1</EnabledUserFunctionHeader>
-    <EnabledUserFunctionBody>1</EnabledUserFunctionBody>
-    <EnabledUserDataTypes>1</EnabledUserDataTypes>
-    <EnabledPointers>1</EnabledPointers>
-    <EnabledExplorer>1</EnabledExplorer>
-    <EnabledCodeGenerator>1</EnabledCodeGenerator>
-    <EnabledMainProgram>1</EnabledMainProgram>
-    <CaseSensitiveSyntax>0</CaseSensitiveSyntax>
-    <UpperCaseConstId>1</UpperCaseConstId>
-    <AllowEnumsInForLoop>1</AllowEnumsInForLoop>
-    <AllowUserFunctionOverload>1</AllowUserFunctionOverload>
-    <GenExternVarConst>0</GenExternVarConst>
+    <EnabledConsts>true</EnabledConsts>			<!-- false or 0 is false, true or not 0 is true -->				
+    <EnabledVars>true</EnabledVars>
+    <EnabledCompiler>true</EnabledCompiler>
+    <EnabledUserFunctionHeader>true</EnabledUserFunctionHeader>
+    <EnabledUserFunctionBody>true</EnabledUserFunctionBody>
+    <EnabledUserDataTypes>true</EnabledUserDataTypes>
+    <EnabledPointers>true</EnabledPointers>
+    <EnabledExplorer>true</EnabledExplorer>
+    <EnabledCodeGenerator>true</EnabledCodeGenerator>
+    <EnabledMainProgram>true</EnabledMainProgram>
+    <CaseSensitiveSyntax>false</CaseSensitiveSyntax>
+    <UpperCaseConstId>true</UpperCaseConstId>
+    <AllowEnumsInForLoop>true</AllowEnumsInForLoop>
+    <AllowUserFunctionOverload>true</AllowUserFunctionOverload>
+    <GenExternVarConst>false</GenExternVarConst>
 
     <FoldRegions>
-        <FoldRegion AddClose="0" NoSubFolds="0" Type="1" WholeWords="1">
+        <FoldRegion AddClose="false" NoSubFolds="false" Type="rtKeyword" WholeWords="true">
             <Open Keyword="BEGIN"/>
             <Close Keyword="END"/>
         </FoldRegion>
-        <FoldRegion AddClose="0" NoSubFolds="0" Type="1" WholeWords="1">
+        <FoldRegion AddClose="false" NoSubFolds="false" Type="rtKeyword" WholeWords="true">
             <Open Keyword="case"/>
             <Close Keyword="END"/>
         </FoldRegion>
-        <FoldRegion AddClose="1" NoSubFolds="1" Type="1" WholeWords="1">
+        <FoldRegion AddClose="true" NoSubFolds="true" Type="rtKeyword" WholeWords="true">
             <Open Keyword="/*"/>
             <Close Keyword="*/"/>
         </FoldRegion>

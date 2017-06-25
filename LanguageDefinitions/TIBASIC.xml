@@ -7,25 +7,30 @@ For all supported tags refer to Example.xml file.
 -->
 
 <Language>
+
     <Name>TIBASIC</Name>
     <InputFunction>Input </InputFunction>
     <OutputFunction>Pause </OutputFunction>
     <DefaultExt>89p</DefaultExt>
     <LibraryExt>.tpu</LibraryExt>
     <AssignOperator>-></AssignOperator>
-    <EnabledConsts>0</EnabledConsts>
-    <EnabledVars>1</EnabledVars>
-    <EnabledCompiler>1</EnabledCompiler>
-    <EnabledUserFunctionHeader>1</EnabledUserFunctionHeader>
-    <EnabledUserFunctionBody>1</EnabledUserFunctionBody>
-    <EnabledUserDataTypes>0</EnabledUserDataTypes>
-    <EnabledExplorer>1</EnabledExplorer>
-    <EnabledCodeGenerator>1</EnabledCodeGenerator>
-    <EnabledMainProgram>1</EnabledMainProgram>
-    <CaseSensitiveSyntax>0</CaseSensitiveSyntax>
+
+    <EnabledConsts>false</EnabledConsts>
+    <EnabledVars>true</EnabledVars>
+    <EnabledCompiler>true</EnabledCompiler>
+    <EnabledUserFunctionHeader>true</EnabledUserFunctionHeader>
+    <EnabledUserFunctionBody>true</EnabledUserFunctionBody>
+    <EnabledUserDataTypes>false</EnabledUserDataTypes>
+    <EnabledExplorer>true</EnabledExplorer>
+    <EnabledCodeGenerator>true</EnabledCodeGenerator>
+    <EnabledMainProgram>true</EnabledMainProgram>
+    <EnabledPointers>false</EnabledPointers>
+    <CaseSensitiveSyntax>false</CaseSensitiveSyntax>
+
     <NativeDataTypes>
     	<DataType kind="int">General</DataType>
-	</NativeDataTypes>
+    </NativeDataTypes>
+
     <KeyWords>
 		<KeyWord>and</KeyWord>
 		<KeyWord>Cycle</KeyWord>
@@ -61,6 +66,7 @@ For all supported tags refer to Example.xml file.
 		<KeyWord>EndPrgm</KeyWord>
 		<KeyWord>EndFunc</KeyWord>
     </KeyWords>
+
     <NativeFunctions>
 		<Function>abs</Function>
 		<Function>angle</Function>
@@ -131,7 +137,7 @@ For all supported tags refer to Example.xml file.
 		<Function>Hex</Function>
 		<Function>imag</Function>
 		<Function>inString</Function>
-        <Function>int</Function>
+        	<Function>int</Function>
 		<Function>intDiv</Function>
 		<Function>iPart</Function>
 		<Function>isClkOn</Function>
@@ -222,7 +228,7 @@ For all supported tags refer to Example.xml file.
 		<Function>switch</Function>
 		<Function>tan</Function>
 		<Function>tan´</Function>
-        <Function>tanh</Function>
+        	<Function>tanh</Function>
 		<Function>tanh´</Function>
 		<Function>taylor</Function>
 		<Function>tCollect</Function>
