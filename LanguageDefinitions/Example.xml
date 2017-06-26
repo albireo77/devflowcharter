@@ -9,8 +9,8 @@ Most of the tags are optional and may be removed if not needed.
 
 <Language>
     <Name>Example</Name>
-    <CommentBegin>/*</CommentBegin>
-    <CommentEnd>*/</CommentEnd>
+    <CommentBegin>/*</CommentBegin>			<!-- if language supports only single-line comments then -->
+    <CommentEnd>*/</CommentEnd>				<!-- CommentBegin tag should contain comment symbol and CommentEnd tag should be empty -->
     <InputFunction>in()</InputFunction>
     <OutputFunction>out()</OutputFunction>
     <DefaultExt>txt</DefaultExt>
@@ -142,9 +142,10 @@ Available placeholders:
 <!--
 Element HighLighterVarName
 Contains name of highlighter component
-Currently there are 2 highlighter components available:
+Currently there are 3 highlighter components available:
 SynCppSyn1 for ANSI C
 SynPasSyn1 for Pascal
+SynPythonSyn1 for Python
 -->
 <!--
 <HighLighterVarName></HighLighterVarName>

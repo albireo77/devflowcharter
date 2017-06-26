@@ -31,7 +31,8 @@ uses
    WinApi.Windows, Vcl.Controls, Vcl.Forms, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Graphics,
    Vcl.Dialogs, Vcl.ComCtrls, Vcl.Clipbrd, Vcl.Menus, System.SysUtils, System.Classes,
    SynEdit, SynExportRTF, SynEditPrint, CommonTypes, SynHighlighterPas, SynHighlighterCpp,
-   SynMemo, SynExportHTML, OmniXML, Base_Form, CommonInterfaces, SynEditExport, SynEditHighlighter;
+   SynMemo, SynExportHTML, OmniXML, Base_Form, CommonInterfaces, SynEditExport, SynEditHighlighter,
+  SynHighlighterPython;
 
 type
 
@@ -85,6 +86,7 @@ type
     N5: TMenuItem;
     miFindProj: TMenuItem;
     N6: TMenuItem;
+    SynPythonSyn1: TSynPythonSyn;
     procedure FormShow(Sender: TObject);
     procedure pmPopMenuPopup(Sender: TObject);
     procedure miUndoClick(Sender: TObject);
@@ -339,10 +341,11 @@ end;
 
 procedure TEditorForm.PasteComment(const AText: string);
 var
-   line: string;
-   bufCoord: TBufferCoord;
+   line, beginComment, endComment: string;
+   bc: TBufferCoord;
    strings: TStringList;
    i, len: integer;
+   afterLine: boolean;
 begin
    len := Length(AText);
    strings := TStringList.Create;
@@ -366,20 +369,43 @@ begin
          Clipboard.Open;
          if Clipboard.HasFormat(CF_TEXT) then
             line := Clipboard.AsText;
-         bufCoord := memCodeEditor.CaretXY;
-         for i := 0 to strings.Count-1 do
+         bc := memCodeEditor.CaretXY;
+         beginComment := GInfra.CurrentLang.CommentBegin;
+         endComment := GInfra.CurrentLang.CommentEnd;
+         len := strings.Count - 1;
+         afterLine := memCodeEditor.CaretX > Length(memCodeEditor.Lines[memCodeEditor.CaretY]);
+         for i := 0 to len do
          begin
-            Clipboard.AsText := GInfra.CurrentLang.CommentBegin + ' ' +
-                                Trim(strings[i]) + ' ' +
-                                GInfra.CurrentLang.CommentEnd;
-            with memCodeEditor do
+            line := ' ' + Trim(strings[i]);
+            memCodeEditor.CaretY := bc.Line + i;
+            memCodeEditor.CaretX := bc.Char;
+            if afterLine then
             begin
-               CaretY := bufCoord.Line + i;
-               CaretX := bufCoord.Char;
-               if CaretX <= Length(Lines[CaretY-1]) then
-                  Lines.Insert(CaretY-1, '');
-               PasteFromClipboard;
+               line := beginComment + line;
+               if endComment <> '' then
+                  line := line + ' ' + endComment;
+            end
+            else
+            begin
+               if i = 0 then
+               begin
+                  line := beginComment + line;
+                  if (len = i) and (endComment <> '') then
+                     line := line + ' ' + endComment;
+               end
+               else if i = len then
+               begin
+                  if endComment = '' then
+                     line := beginComment + line
+                  else
+                     line := line + ' ' + endComment;
+               end
+               else if endComment = '' then
+                  line := beginComment + line;
+               memCodeEditor.Lines.Insert(memCodeEditor.CaretY-1, '');
             end;
+            Clipboard.AsText := line;
+            memCodeEditor.PasteFromClipboard;
          end;
       except
       end;

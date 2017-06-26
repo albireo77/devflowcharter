@@ -420,4 +420,11 @@ object EditorForm: TEditorForm
     Left = 248
     Top = 16
   end
+  object SynPythonSyn1: TSynPythonSyn
+    Options.AutoDetectEnabled = False
+    Options.AutoDetectLineLimit = 0
+    Options.Visible = False
+    Left = 352
+    Top = 72
+  end
 end
