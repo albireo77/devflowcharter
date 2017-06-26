@@ -266,7 +266,9 @@ end;
 function TLangDefinition.ImportFromXML(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
 var
    tag: IXMLElement;
-   lVal: string;
+   lVal, lName, kinds: string;
+   lKind: TDataTypeKind;
+   lOrigType, lType: PNativeDataType;
    i, a, count: integer;
 {$IFDEF USE_CODEFOLDING}
    tag1: IXMLElement;
@@ -716,44 +718,53 @@ begin
    if tag <> nil then
    begin
       a := 0;
-      count := TXMLProcessor.CountChildTags(tag, 'DataType', true);
-      SetLength(NativeDataTypes, count);
       tag := TXMLProcessor.FindChildTag(tag, 'DataType');
-      while (tag <> nil) and (a < count) do
+      while tag <> nil do
       begin
-         lVal := Trim(tag.Text);
-         if lVal <> '' then
+         lOrigType := nil;
+         lName := Trim(tag.Text);
+         if lName <> '' then
          begin
-            with NativeDataTypes[a] do
+            kinds := tag.GetAttribute('kind');
+            if kinds = 'int' then
+               lKind := tpInt
+            else if kinds = 'real' then
+               lKind := tpReal
+            else if kinds = 'bool' then
+               lKind := tpBool
+            else if kinds = 'string' then
+               lKind := tpString
+            else if kinds = 'ptr' then
             begin
-               Name := lVal;
-               OrigType := @NativeDataTypes[a];
-               lVal := tag.GetAttribute('kind');
-               if lVal = 'int' then
-                  Kind := tpInt
-               else if lVal = 'real' then
-                  Kind := tpReal
-               else if lVal = 'bool' then
-                  Kind := tpBool
-               else if lVal = 'string' then
-                  Kind := tpString
-               else if lVal = 'ptr' then
+               if EnabledPointers then
                begin
-                  Kind := tpPtr;
+                  lKind := tpPtr;
                   lVal := Trim(tag.GetAttribute('origtype'));
                   for i := 0 to a-1 do
                   begin
                      if SameText(lVal, NativeDataTypes[i].Name) then
                      begin
-                        OrigType := @NativeDataTypes[i];
+                        lOrigType := @NativeDataTypes[i];
                         break;
                      end;
                   end;
                end
                else
-                  Kind := tpOther;
-            end;
+                  lName := '';
+            end
+            else
+               lKind := tpOther;
+         end;
+         if lName <> '' then
+         begin
             a := a + 1;
+            SetLength(NativeDataTypes, a);
+            lType := @NativeDataTypes[a-1];
+            lType.Name := lName;
+            lType.Kind := lKind;
+            if lOrigType = nil then
+               lOrigType := @lType;
+            lType.OrigType := lOrigType;
          end;
          tag := TXMLProcessor.FindNextTag(tag);
       end;

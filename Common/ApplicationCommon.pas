@@ -747,6 +747,14 @@ begin
 // next, populate with user data types defined in GUI
    if GInfra.CurrentLang.EnabledUserDataTypes and (GProject <> nil) then
    begin
+      lang := nil;
+      if GInfra.CurrentLang.EnabledPointers then
+      begin
+         if Assigned(GInfra.CurrentLang.GetPointerTypeName) then
+            lang := GInfra.CurrentLang
+         else if Assigned(GInfra.DummyLang.GetPointerTypeName) then
+            lang := GInfra.DummyLang;
+      end;
       iter := GProject.GetUserDataTypes;
       while iter.HasNext do
       begin
@@ -755,16 +763,8 @@ begin
          if (dataType.PageIndex < ASkipIndex) and (lName <> '') then
          begin
             AcbType.Items.Add(lName);
-            if dataType.chkAddPtrType.Enabled and dataType.chkAddPtrType.Checked then
-            begin
-               lang := nil;
-               if Assigned(GInfra.CurrentLang.GetPointerTypeName) then
-                  lang := GInfra.CurrentLang
-               else if Assigned(GInfra.DummyLang.GetPointerTypeName) then
-                  lang := GInfra.DummyLang;
-               if lang <> nil then
-                  AcbType.Items.Add(lang.GetPointerTypeName(lName));
-            end;
+            if dataType.chkAddPtrType.Checked and (lang <> nil) then
+               AcbType.Items.Add(lang.GetPointerTypeName(lName));
          end;
       end;
    end;
