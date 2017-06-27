@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
 
@@ -116,7 +116,7 @@ begin
    edtVariable := TEdit.Create(Self);
    edtVariable.Parent := Self;
    edtVariable.Color := Color;
-   edtVariable.ReadOnly := GInfra.CurrentLang.EnabledVars;
+   edtVariable.ReadOnly := GInfra.CurrentLang.ForDoVarList;
    edtVariable.ShowHint := True;
    edtVariable.AutoSelect := False;
    edtVariable.Color := edtStartVal.Color;
@@ -242,7 +242,7 @@ begin
                   Point(bhx-100, TopHook.Y),
                   Point(bhx-100, 0)]);
          y :=  edtStartVal.BoundsRect.Bottom - 6;
-         DrawTextLabel(bhx-42, y, GInfra.CurrentLang.AssignOperator, false, true);
+         DrawTextLabel(bhx-42, y, GInfra.CurrentLang.ForDoVarString, false, true);
          DrawTextLabel(bhx+1, y, lForDirect[FOrder], false, true);
          DrawTextLabel(bhx-97, y, FForLabel, false, true);
          DrawBlockLabel(bhx-100, 40, GInfra.CurrentLang.LabelFor);
@@ -255,7 +255,7 @@ end;
 procedure TForDoBlock.MyOnClick(Sender: TObject);
 begin
    GChange := 1;
-   edtVariable.Visible := not GInfra.CurrentLang.EnabledVars;
+   edtVariable.Visible := not GInfra.CurrentLang.ForDoVarList;
    cbVariable.Visible := not edtVariable.Visible;
    if not edtVariable.Visible then
       edtVariable.Clear;
@@ -342,24 +342,59 @@ end;
 
 function TForDoBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
 var
-   template: string;
+   template, startVal, stopVal, varVal, line, indnt: string;
    langDef: TLangDefinition;
    tmpList: TStringList;
+   i: integer;
 begin
    result := 0;
    if fsStrikeOut in Font.Style then
       exit;
-   langDef := GInfra.GetLangDefinition(ALangId);
-   if (langDef <> nil) and (langDef.ForDoTemplate <> '') then
+   if ALangId = PYTHON_LANG_ID then
    begin
+      indnt := DupeString(GSettings.IndentString, ADeep);
+      varVal := Trim(edtVariable.Text);
+      startVal := Trim(edtStartVal.Text);
+      stopVal := Trim(edtStopVal.Text);
       tmpList := TStringList.Create;
       try
-         template := GetTemplate(langDef);
-         GenerateTemplateSection(tmpList, template, ALangId, ADeep);
+         line := indnt + 'for ' + varVal + ' ' + GInfra.CurrentLang.ForDoVarString + ' ';
+         if stopVal.IsEmpty then
+         begin
+            if TryStrToInt(startVal, i) then
+               line := line + 'range(' + startVal + '):'
+            else
+               line := line + startVal + ':';
+         end
+         else
+         begin
+            if startVal.IsEmpty then
+               line := line + 'range(' + stopVal + '):'
+            else
+               line := line + 'range(' + startVal + ', ' + stopVal + '):'
+         end;
+         tmpList.AddObject(line, Self);
+         GenerateNestedCode(tmpList, PRIMARY_BRANCH_IND, ADeep+1, ALangId);
          TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
          result := tmpList.Count;
       finally
-         tmpList.Free;
+        tmpList.Free;
+      end;
+   end
+   else
+   begin
+      langDef := GInfra.GetLangDefinition(ALangId);
+      if (langDef <> nil) and (langDef.ForDoTemplate <> '') then
+      begin
+         tmpList := TStringList.Create;
+         try
+            template := GetTemplate(langDef);
+            GenerateTemplateSection(tmpList, template, ALangId, ADeep);
+            TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
+            result := tmpList.Count;
+         finally
+            tmpList.Free;
+         end;
       end;
    end;
 end;
@@ -433,7 +468,7 @@ var
    header: TUserFunctionHeader;
 begin
    inherited PopulateComboBoxes;
-   if GInfra.CurrentLang.EnabledVars then
+   if GInfra.CurrentLang.ForDoVarList then
    begin
       with cbVariable do
       begin

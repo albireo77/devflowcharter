@@ -143,7 +143,8 @@ type
       CompilerCommand,
       CompilerCommandNoMain,
       CompilerFileEncoding,
-      InstrEnd: string;
+      InstrEnd,
+      ForDoVarString: string;
       DecimalSeparator: char;
       LabelFontSize,
       FunctionHeaderArgsStripCount,
@@ -173,7 +174,8 @@ type
       AllowEnumsInForLoop,
       AllowUserFunctionOverload,
       RepeatUntilAsDoWhile,
-      GenExternVarConst: boolean;
+      GenExternVarConst,
+      ForDoVarList: boolean;
       InOutCursorPos,
       FuncBracketsCursorPos: integer;
       PreGenerationActivities: procedure;
@@ -223,6 +225,7 @@ begin
    DefaultExt := 'txt';
    LibraryExt := '.lib';
    AssignOperator := '=';
+   ForDoVarString := '=';
    NativeFunctions := TStringList.Create;
    KeyWords := TStringList.Create;
    UpperCaseConstId := true;
@@ -353,6 +356,10 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'ExternEntry');
    if tag <> nil then
       ExternEntry := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'ForDoVarString');
+   if tag <> nil then
+      ForDoVarString := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ConstIDSpecChars');
    if tag <> nil then
@@ -698,6 +705,7 @@ begin
    if tag <> nil then
       UserTypeDesc := tag.Text;
 
+   ForDoVarList := TXMLProcessor.GetBoolFromChildTag(ATag, 'ForDoVarList', ForDoVarList);
    EnabledPointers := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledPointers', EnabledPointers);
    EnabledConsts := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledConsts', EnabledConsts);
    EnabledVars := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledVars', EnabledVars);

@@ -160,6 +160,10 @@ else
 
 <ExternEntry>extern </ExternEntry>
 
+<ForDoVarList>true</ForDoVarList>
+
+<ForDoVarString>=</ForDoVarString>
+
 <ForDoTemplate>for (%s1 = %s2; %s1 %s4 %s3; %s1%s5)
 {
 	%b1

@@ -190,6 +190,10 @@ else:
 		break
 </RepeatUntilTemplate>
 
+<ForDoVarList>false</ForDoVarList>
+
+<ForDoVarString>in</ForDoVarString>
+
 <ReturnTemplate>exit %s1</ReturnTemplate>
 
 <FunctionCallTemplate>call %s1</FunctionCallTemplate>

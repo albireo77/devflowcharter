@@ -221,6 +221,10 @@ end;
 
 <ElseLabel>else</ElseLabel>
 
+<ForDoVarList>true</ForDoVarList>
+
+<ForDoVarString>:=</ForDoVarString>
+
 <ForDoTemplate>for %s1 := %s2 %s4 %s3 do
 begin
 	%b1
