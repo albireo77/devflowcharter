@@ -344,18 +344,17 @@ var
    line, beginComment, endComment: string;
    bc: TBufferCoord;
    strings: TStringList;
-   i, len: integer;
+   i, count: integer;
    afterLine: boolean;
 begin
-   len := Length(AText);
    strings := TStringList.Create;
    try
-      for i := 1 to len do
+      for i := 1 to AText.Length do
       begin
          if not CharInSet(AText[i], [#13, #10]) then
          begin
             line := line + AText[i];
-            if i = len then
+            if i = AText.Length then
                strings.Add(line);
          end
          else if AText[i] = #10 then
@@ -372,9 +371,17 @@ begin
          bc := memCodeEditor.CaretXY;
          beginComment := GInfra.CurrentLang.CommentBegin;
          endComment := GInfra.CurrentLang.CommentEnd;
-         len := strings.Count - 1;
-         afterLine := memCodeEditor.CaretX > Length(memCodeEditor.Lines[memCodeEditor.CaretY]);
-         for i := 0 to len do
+         count := strings.Count - 1;
+         afterLine := true;
+         for i := 0 to count do
+         begin
+            if memCodeEditor.CaretX <= memCodeEditor.Lines[memCodeEditor.CaretY-1+i].Length then
+            begin
+              afterLine := false;
+              break;
+            end;
+         end;
+         for i := 0 to count do
          begin
             line := ' ' + Trim(strings[i]);
             memCodeEditor.CaretY := bc.Line + i;
@@ -382,7 +389,7 @@ begin
             if afterLine then
             begin
                line := beginComment + line;
-               if endComment <> '' then
+               if not endComment.IsEmpty then
                   line := line + ' ' + endComment;
             end
             else
@@ -390,17 +397,17 @@ begin
                if i = 0 then
                begin
                   line := beginComment + line;
-                  if (len = i) and (endComment <> '') then
+                  if (count = i) and not endComment.IsEmpty then
                      line := line + ' ' + endComment;
                end
-               else if i = len then
+               else if i = count then
                begin
-                  if endComment = '' then
+                  if endComment.IsEmpty then
                      line := beginComment + line
                   else
                      line := line + ' ' + endComment;
                end
-               else if endComment = '' then
+               else if endComment.IsEmpty then
                   line := beginComment + line;
                memCodeEditor.Lines.Insert(memCodeEditor.CaretY-1, '');
             end;
@@ -411,7 +418,7 @@ begin
       end;
    finally
       strings.Free;
-      if line <> '' then
+      if not line.IsEmpty then
          Clipboard.AsText := line;
       Clipboard.Close;
    end;

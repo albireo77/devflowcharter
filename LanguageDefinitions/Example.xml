@@ -10,7 +10,7 @@ Most of the tags are optional and may be removed if not needed.
 <Language>
     <Name>Example</Name>
     <CommentBegin>/*</CommentBegin>			<!-- if language supports only single-line comments then -->
-    <CommentEnd>*/</CommentEnd>				<!-- CommentBegin tag should contain comment symbol and CommentEnd tag should be empty -->
+    <CommentEnd>*/</CommentEnd>				<!-- CommentBegin tag should contain comment symbol and CommentEnd tag should be empty or removed -->
     <InputFunction>in()</InputFunction>
     <OutputFunction>out()</OutputFunction>
     <DefaultExt>txt</DefaultExt>
