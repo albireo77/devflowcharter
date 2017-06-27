@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
 
@@ -371,6 +371,40 @@ begin
             end;
             if flag = 1 then
                tmpList.AddObject(indnt + 'EndIf', Self);
+            TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
+            result := tmpList.Count;
+         finally
+            tmpList.Free;
+         end;
+      end
+      else if ALangId = PYTHON_LANG_ID then
+      begin
+         bcnt := BranchCount;
+         tmpList := TStringList.Create;
+         try
+            if bcnt > 1 then
+            begin
+               tmpList.AddObject(indnt + 'if ' + line + ' == ' + Trim(FBranchArray[2].Statement.Text) + ':', Self);
+               GenerateNestedCode(tmpList, 2, ADeep+1, ALangId);
+               flag := 1;
+            end;
+            if bcnt > 2 then
+            begin
+               for i := 3 to High(FBranchArray) do
+               begin
+                  tmpList.AddObject(indnt + 'elif ' + line + ' == ' + Trim(FBranchArray[i].Statement.Text) + ':', FBranchArray[i].Statement);
+                  GenerateNestedCode(tmpList, i, ADeep+1, ALangId);
+               end;
+            end;
+            if FBranchArray[DEFAULT_BRANCH_IND].first <> nil then
+            begin
+               if bcnt = 1 then
+                  tmpList.AddObject(indnt + 'if ' + line + ' == ' + line + ':', Self)
+               else
+                  tmpList.Add(indnt + 'else:');
+               GenerateNestedCode(tmpList, DEFAULT_BRANCH_IND, ADeep+1, ALangId);
+               flag := 1;
+            end;
             TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
             result := tmpList.Count;
          finally

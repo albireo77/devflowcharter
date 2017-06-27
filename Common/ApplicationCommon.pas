@@ -210,6 +210,7 @@ const   // Global constants
         PASCAL_LANG_ID  = 'Pascal';
         C_LANG_ID       = 'ANSI C';
         TIBASIC_LANG_ID = 'TIBASIC';
+        PYTHON_LANG_ID  = 'Python';
 
         KEY_CURRENT_LANGUAGE = 'CurrentLanguageName';
 
