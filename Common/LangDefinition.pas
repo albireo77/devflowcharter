@@ -885,19 +885,21 @@ begin
       result := FolderTemplate
    else if AClass = TFunctionCallBlock then
       result := FunctionCallTemplate;
-   if result = '' then
-      result := PRIMARY_PLACEHOLDER;
 end;
 
 function TLangDefinition.GetTemplateExpr(const AClass: TClass): string;
 var
    templateLines: TStringList;
    i: integer;
+   template: string;
 begin
    result := '';
+   template := GetTemplate(AClass);
+   if template.IsEmpty then
+      template := PRIMARY_PLACEHOLDER;
    templateLines := TStringList.Create;
    try
-      templateLines.Text := GetTemplate(AClass);
+      templateLines.Text := template;
       for i := 0 to templateLines.Count-1 do
       begin
          if Pos(PRIMARY_PLACEHOLDER, templateLines[i]) <> 0 then

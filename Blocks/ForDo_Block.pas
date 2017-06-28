@@ -538,28 +538,33 @@ var
 begin
    if PerformEditorUpdate then
    begin
-      chLine := TInfra.GetChangeLine(Self);
-      if chLine.Row <> ROW_NOT_FOUND then
+      if not GInfra.CurrentLang.ForDoTemplate.IsEmpty then
       begin
-         chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, edtVariable.Text);
-         chLine.Text := ReplaceStr(chLine.Text, '%s2', Trim(edtStartVal.Text));
-         chLine.Text := ReplaceStr(chLine.Text, '%s3', Trim(edtStopVal.Text));
-         if FOrder = ordAsc then
+         chLine := TInfra.GetChangeLine(Self);
+         if chLine.Row <> ROW_NOT_FOUND then
          begin
-            str1 := GInfra.CurrentLang.ForAsc1;
-            str2 := GInfra.CurrentLang.ForAsc2;
-         end
-         else
-         begin
-            str1 := GInfra.CurrentLang.ForDesc1;
-            str2 := GInfra.CurrentLang.ForDesc2;
+            chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, edtVariable.Text);
+            chLine.Text := ReplaceStr(chLine.Text, '%s2', Trim(edtStartVal.Text));
+            chLine.Text := ReplaceStr(chLine.Text, '%s3', Trim(edtStopVal.Text));
+            if FOrder = ordAsc then
+            begin
+               str1 := GInfra.CurrentLang.ForAsc1;
+               str2 := GInfra.CurrentLang.ForAsc2;
+            end
+            else
+            begin
+               str1 := GInfra.CurrentLang.ForDesc1;
+               str2 := GInfra.CurrentLang.ForDesc2;
+            end;
+            chLine.Text := ReplaceStr(chLine.Text, '%s4', str1);
+            chLine.Text := ReplaceStr(chLine.Text, '%s5', str2);
+            if GSettings.UpdateEditor and not SkipUpdateEditor then
+               TInfra.ChangeLine(chLine);
+            TInfra.GetEditorForm.SetCaretPos(chLine);
          end;
-         chLine.Text := ReplaceStr(chLine.Text, '%s4', str1);
-         chLine.Text := ReplaceStr(chLine.Text, '%s5', str2);
-         if GSettings.UpdateEditor and not SkipUpdateEditor then
-            TInfra.ChangeLine(chLine);
-         TInfra.GetEditorForm.SetCaretPos(chLine);
-      end;
+      end
+      else
+         TInfra.UpdateCodeEditor(Self);
    end;
 end;
 

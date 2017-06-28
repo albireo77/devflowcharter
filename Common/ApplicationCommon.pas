@@ -1064,7 +1064,7 @@ class function TInfra.GetChangeLine(const AObject: TObject; const AEdit: TCustom
 var
    templateLines: TStringList;
    i, p: integer;
-   indent: string;
+   indent, template: string;
 begin
    p := 0;
    InitChangeLine(result);
@@ -1076,10 +1076,15 @@ begin
       begin
          templateLines := TStringList.Create;
          try
-            if ATemplate <> '' then
-               templateLines.Text := ATemplate
+            if ATemplate.IsEmpty then
+            begin
+               template := GInfra.CurrentLang.GetTemplate(AObject.ClassType);
+               if template.IsEmpty then
+                  template := PRIMARY_PLACEHOLDER;
+            end
             else
-               templateLines.Text := GInfra.CurrentLang.GetTemplate(AObject.ClassType);
+               template := ATemplate;
+            templateLines.Text := template;
             for i := 0 to templateLines.Count-1 do
             begin
                p := Pos(PRIMARY_PLACEHOLDER, templateLines[i]);

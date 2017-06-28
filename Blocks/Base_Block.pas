@@ -2578,15 +2578,20 @@ var
 begin
    if (AEdit <> nil) and PerformEditorUpdate then
    begin
-      chLine := TInfra.GetChangeLine(Self, AEdit);
-      if chLine.Row <> ROW_NOT_FOUND then
+      if not GInfra.CurrentLang.GetTemplate(ClassType).IsEmpty then
       begin
-         chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
-         chLine.Text := TInfra.StripInstrEnd(chLine.Text);
-         if GSettings.UpdateEditor and not SkipUpdateEditor then
-            TInfra.ChangeLine(chLine);
-         TInfra.GetEditorForm.SetCaretPos(chLine);
-      end;
+         chLine := TInfra.GetChangeLine(Self, AEdit);
+         if chLine.Row <> ROW_NOT_FOUND then
+         begin
+            chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
+            chLine.Text := TInfra.StripInstrEnd(chLine.Text);
+            if GSettings.UpdateEditor and not SkipUpdateEditor then
+               TInfra.ChangeLine(chLine);
+            TInfra.GetEditorForm.SetCaretPos(chLine);
+         end;
+      end
+      else
+         TInfra.UpdateCodeEditor(Self);
    end;
 end;
 
@@ -2771,6 +2776,8 @@ begin
       else if textControl <> nil then
          txt := Trim(textControl.Text);
       template := langDef.GetTemplate(Self.ClassType);
+      if template.IsEmpty then
+         template := PRIMARY_PLACEHOLDER;
       template := ReplaceStr(template, PRIMARY_PLACEHOLDER, txt);
       GenerateTemplateSection(ALines, template, ALangId, ADeep);
    end;

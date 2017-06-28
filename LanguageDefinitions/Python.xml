@@ -204,7 +204,9 @@ else:
 
 <OutputTemplate>%s1</OutputTemplate>
 
-<TextTemplate>/* %s1 */</TextTemplate>
+<TextTemplate>...
+%s1
+...</TextTemplate>
 
 <FolderTemplate>%b1</FolderTemplate>
 

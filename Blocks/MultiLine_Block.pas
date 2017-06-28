@@ -36,6 +36,7 @@ type
          function GetFrontMemo: TMemo; override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
          function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
+         function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
       protected
          FErrLine: integer;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; virtual;
@@ -118,6 +119,23 @@ begin
       IPoint.Y := FStatements.Height + 10;
 end;
 
+function TMultiLineBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
+var
+   tmpList: TStringList;
+begin
+   result := 0;
+   if (fsStrikeOut in Font.Style) or (FStatements.Text = '') then
+      exit;
+   tmpList := TStringList.Create;
+   try
+      GenerateDefaultTemplate(tmpList, ALangId, ADeep);
+      TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
+      result := tmpList.Count;
+   finally
+      tmpList.Free;
+   end;
+end;
+
 procedure TMultiLineBlock.UpdateEditor(AEdit: TCustomEdit);
 var
    chLine: TChangeLine;
@@ -187,7 +205,9 @@ begin
             end;
          end;
          TInfra.GetEditorForm.SetCaretPos(chLine);
-      end;
+      end
+      else
+         TInfra.UpdateCodeEditor(Self);
    end;
 end;
 

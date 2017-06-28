@@ -386,7 +386,6 @@ begin
             begin
                tmpList.AddObject(indnt + 'if ' + line + ' == ' + Trim(FBranchArray[2].Statement.Text) + ':', Self);
                GenerateNestedCode(tmpList, 2, ADeep+1, ALangId);
-               flag := 1;
             end;
             if bcnt > 2 then
             begin
@@ -403,7 +402,6 @@ begin
                else
                   tmpList.Add(indnt + 'else:');
                GenerateNestedCode(tmpList, DEFAULT_BRANCH_IND, ADeep+1, ALangId);
-               flag := 1;
             end;
             TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
             result := tmpList.Count;
@@ -467,14 +465,19 @@ begin
       inherited UpdateEditor(AEdit)
    else if (AEdit <> nil) and PerformEditorUpdate then
    begin
-      chLine := TInfra.GetChangeLine(AEdit, AEdit, GInfra.CurrentLang.CaseOfValueTemplate);
-      if chLine.Row <> ROW_NOT_FOUND then
+      if not GInfra.CurrentLang.CaseOfValueTemplate.IsEmpty then
       begin
-         chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
-         if GSettings.UpdateEditor and not SkipUpdateEditor then
-            TInfra.ChangeLine(chLine);
-         TInfra.GetEditorForm.SetCaretPos(chLine);
-      end;
+         chLine := TInfra.GetChangeLine(AEdit, AEdit, GInfra.CurrentLang.CaseOfValueTemplate);
+         if chLine.Row <> ROW_NOT_FOUND then
+         begin
+            chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
+            if GSettings.UpdateEditor and not SkipUpdateEditor then
+               TInfra.ChangeLine(chLine);
+            TInfra.GetEditorForm.SetCaretPos(chLine);
+         end;
+      end
+      else
+         TInfra.UpdateCodeEditor(Self);
    end;
 end;
 
