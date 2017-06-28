@@ -293,6 +293,8 @@ var
 begin
    edtVariable.Font.Color := GSettings.FontColor;
    edtVariable.Hint := i18Manager.GetFormattedString('ExpOk', [edtVariable.Text, CRLF]);
+   if not GInfra.CurrentLang.ForDoVarList then
+      UpdateEditor(edtVariable);
    if GSettings.ParseFor then
    begin
       if (GProject.GlobalVars <> nil) and GProject.GlobalVars.IsValidLoopVar(edtVariable.Text) then
@@ -319,7 +321,7 @@ function TForDoBlock.GetTemplate(ALangDef: TLangDefinition; const ATemplate: str
 var
    dir1, dir2, template: string;
 begin
-   if ATemplate = '' then
+   if ATemplate.IsEmpty then
       template := ALangDef.ForDoTemplate
    else
       template := ATemplate;
@@ -490,7 +492,7 @@ var
    i: integer;
 begin
    edit := edtStopVal;
-   if AInfo.SelText <> '' then
+   if not AInfo.SelText.IsEmpty then
    begin
       expr := GInfra.CurrentLang.GetTemplateExpr(Self.ClassType);
       i := Pos(PRIMARY_PLACEHOLDER, expr);

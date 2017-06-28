@@ -209,7 +209,7 @@ begin
 
     if FExecuteParse then
    begin
-      if txt = '' then
+      if txt.IsEmpty then
       begin
          case FParserMode of
             prsFor:
