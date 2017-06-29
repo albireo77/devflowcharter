@@ -47,18 +47,18 @@ object MainForm: TMainForm
     object miInsert: TMenuItem
       Tag = 2
       Caption = 'Insert'
-      object miInstr: TMenuItem
+      object miStatement: TMenuItem
         Tag = 2
         Caption = 'Statement'
-        object miAssign: TMenuItem
+        object miInstr: TMenuItem
           Tag = 2
-          Caption = 'Assignment'
-          OnClick = miAssignClick
+          Caption = 'Instruction'
+          OnClick = miInstrClick
         end
-        object miMultipleAssign: TMenuItem
+        object miMultiInstr: TMenuItem
           Tag = 2
-          Caption = 'Multiple Assignment'
-          OnClick = miAssignClick
+          Caption = 'Multiple Instructions'
+          OnClick = miInstrClick
         end
         object N7: TMenuItem
           Caption = '-'
@@ -66,12 +66,12 @@ object MainForm: TMainForm
         object miInput: TMenuItem
           Tag = 2
           Caption = 'Input'
-          OnClick = miAssignClick
+          OnClick = miInstrClick
         end
         object miOutput: TMenuItem
           Tag = 2
           Caption = 'Output'
-          OnClick = miAssignClick
+          OnClick = miInstrClick
         end
         object N8: TMenuItem
           Caption = '-'
@@ -79,17 +79,17 @@ object MainForm: TMainForm
         object miIf: TMenuItem
           Tag = 2
           Caption = 'If'
-          OnClick = miAssignClick
+          OnClick = miInstrClick
         end
         object miIfElse: TMenuItem
           Tag = 2
           Caption = 'If..Else'
-          OnClick = miAssignClick
+          OnClick = miInstrClick
         end
         object miCase: TMenuItem
           Tag = 2
           Caption = 'Case'
-          OnClick = miAssignClick
+          OnClick = miInstrClick
         end
         object N9: TMenuItem
           Caption = '-'
@@ -97,12 +97,12 @@ object MainForm: TMainForm
         object miRoutineCall: TMenuItem
           Tag = 2
           Caption = 'Function Call'
-          OnClick = miAssignClick
+          OnClick = miInstrClick
         end
         object miReturn: TMenuItem
           Tag = 2
           Caption = 'Return'
-          OnClick = miAssignClick
+          OnClick = miInstrClick
         end
       end
       object miLoop: TMenuItem
@@ -111,28 +111,28 @@ object MainForm: TMainForm
         object miFor: TMenuItem
           Tag = 2
           Caption = 'For'
-          OnClick = miAssignClick
+          OnClick = miInstrClick
         end
         object miWhile: TMenuItem
           Tag = 2
           Caption = 'While'
-          OnClick = miAssignClick
+          OnClick = miInstrClick
         end
         object miRepeat: TMenuItem
           Tag = 2
           Caption = 'Repeat'
-          OnClick = miAssignClick
+          OnClick = miInstrClick
         end
       end
       object miText: TMenuItem
         Tag = 2
         Caption = 'Text'
-        OnClick = miAssignClick
+        OnClick = miInstrClick
       end
       object miFolder: TMenuItem
         Tag = 2
         Caption = 'Folder'
-        OnClick = miAssignClick
+        OnClick = miInstrClick
       end
       object miNewFlowchart: TMenuItem
         Tag = 2
@@ -155,7 +155,7 @@ object MainForm: TMainForm
       object miPaste: TMenuItem
         Tag = 2
         Caption = 'Paste'
-        OnClick = miAssignClick
+        OnClick = miInstrClick
       end
       object miImport: TMenuItem
         Tag = 2
@@ -495,7 +495,7 @@ object MainForm: TMainForm
     Left = 240
     Top = 40
     Bitmap = {
-      494C0101050009001C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010105000900240010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

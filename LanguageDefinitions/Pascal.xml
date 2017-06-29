@@ -214,8 +214,8 @@ end;
 <LabelText>text</LabelText>
 <LabelIn>input</LabelIn>
 <LabelOut>output</LabelOut>
-<LabelAssign>assign</LabelAssign>
-<LabelMultiAssign>assign</LabelMultiAssign>
+<LabelInstr>instr</LabelInstr>
+<LabelMultiInstr>instr</LabelMultiInstr>
 <LabelFontName>Segoe Print</LabelFontName>
 <LabelFontSize>10</LabelFontSize>
 
@@ -257,7 +257,7 @@ end;
 
 <FunctionCallTemplate>%s1;</FunctionCallTemplate>
 
-<AssignTemplate>%s1;</AssignTemplate>
+<InstrTemplate>%s1;</InstrTemplate>
 
 <InputTemplate>%s1;</InputTemplate>
 

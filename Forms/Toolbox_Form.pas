@@ -34,8 +34,8 @@ type
     sbWhile: TSpeedButton;
     sbIfElse: TSpeedButton;
     sbFor: TSpeedButton;
-    sbAssign: TSpeedButton;
-    sbMultiAssign: TSpeedButton;
+    sbInstr: TSpeedButton;
+    sbMultiInstr: TSpeedButton;
     sbInput: TSpeedButton;
     sbOutput: TSpeedButton;
     sbFuncCall: TSpeedButton;
@@ -78,10 +78,10 @@ begin
        GCustomCursor := crIf
     else if Sender = sbFor then
        GCustomCursor := crFor
-    else if Sender = sbAssign then
-       GCustomCursor := crAssign
-    else if Sender = sbMultiAssign then
-       GCustomCursor := crMultiAssign
+    else if Sender = sbInstr then
+       GCustomCursor := crInstr
+    else if Sender = sbMultiInstr then
+       GCustomCursor := crMultiInstr
     else if Sender = sbInput then
        GCustomCursor := crInput
     else if Sender = sbOutput then

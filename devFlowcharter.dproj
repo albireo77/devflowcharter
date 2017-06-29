@@ -89,8 +89,8 @@
         <AppEnableHighDPI>true</AppEnableHighDPI>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <VerInfo_MinorVer>4</VerInfo_MinorVer>
-        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=4.4.32.397;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-        <VerInfo_Build>397</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=4.4.32.416;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Build>416</VerInfo_Build>
         <VerInfo_Release>32</VerInfo_Release>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -112,13 +112,13 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="Common\ApplicationCommon.pas"/>
-        <DCCReference Include="Blocks\Assign_Block.pas"/>
+        <DCCReference Include="Blocks\Instr_Block.pas"/>
         <DCCReference Include="Blocks\Base_Block.pas"/>
         <DCCReference Include="Blocks\ForDo_Block.pas"/>
         <DCCReference Include="Blocks\IfElse_Block.pas"/>
         <DCCReference Include="Blocks\InOut_Block.pas"/>
         <DCCReference Include="Blocks\Main_Block.pas"/>
-        <DCCReference Include="Blocks\MulAssign_Block.pas"/>
+        <DCCReference Include="Blocks\MultiInstr_Block.pas"/>
         <DCCReference Include="Blocks\FunctionCall_Block.pas"/>
         <DCCReference Include="Blocks\RepeatUntil_Block.pas"/>
         <DCCReference Include="Blocks\WhileDo_Block.pas"/>
@@ -206,6 +206,7 @@
         <DCCReference Include="Blocks\MultiLine_Block.pas"/>
         <DCCReference Include="Blocks\Folder_Block.pas"/>
         <DCCReference Include="Common\BlockTabSheet.pas"/>
+        <DCCReference Include="LangTemplates\Python_Template.pas"/>
         <RcItem Include="resources\assign.cur">
             <ResourceType>CURSOR</ResourceType>
             <ResourceId>ASSIGN</ResourceId>

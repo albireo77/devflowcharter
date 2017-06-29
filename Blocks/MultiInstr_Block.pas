@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
 
@@ -19,7 +19,7 @@
 
 
 
-unit MulAssign_Block;
+unit MultiInstr_Block;
 
 interface
 
@@ -28,7 +28,7 @@ uses
 
 type
 
-   TMultiAssignBlock = class(TMultiLineBlock)
+   TMultiInstrBlock = class(TMultiLineBlock)
       protected
          procedure OnChangeMemo(Sender: TObject); override;
          procedure Paint; override;
@@ -45,31 +45,31 @@ implementation
 uses
    System.SysUtils, System.StrUtils, System.UITypes, ApplicationCommon, CommonTypes, LangDefinition;
 
-constructor TMultiAssignBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
+constructor TMultiInstrBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 begin
-   FType := blMultAssign;
+   FType := blMultiInstr;
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
    FStatements.ShowHint := true;
 end;
 
-function TMultiAssignBlock.Clone(const ABranch: TBranch): TBlock;
+function TMultiInstrBlock.Clone(const ABranch: TBranch): TBlock;
 begin
-   result := TMultiAssignBlock.Create(ABranch, Left, Top, Width, Height);
+   result := TMultiInstrBlock.Create(ABranch, Left, Top, Width, Height);
    result.CloneFrom(Self);
 end;
 
-procedure TMultiAssignBlock.Paint;
+procedure TMultiInstrBlock.Paint;
 begin
    inherited;
-   DrawBlockLabel(5, FStatements.BoundsRect.Bottom+1, GInfra.CurrentLang.LabelMultiAssign);
+   DrawBlockLabel(5, FStatements.BoundsRect.Bottom+1, GInfra.CurrentLang.LabelMultiInstr);
 end;
 
-constructor TMultiAssignBlock.Create(const ABranch: TBranch);
+constructor TMultiInstrBlock.Create(const ABranch: TBranch);
 begin
    Create(ABranch, 0, 0, 140, 91);
 end;
 
-procedure TMultiAssignBlock.OnChangeMemo(Sender: TObject);
+procedure TMultiInstrBlock.OnChangeMemo(Sender: TObject);
 var
    txt, line: string;
    i: integer;
@@ -105,7 +105,7 @@ begin
    inherited;
 end;
 
-function TMultiAssignBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
+function TMultiInstrBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
 var
    i: integer;
    template, line: string;
@@ -116,7 +116,7 @@ begin
    if (fsStrikeOut in Font.Style) or (FStatements.Text = '') then
       exit;
    lang := GInfra.GetLangDefinition(ALangId);
-   if (lang <> nil) and not lang.AssignTemplate.IsEmpty then
+   if (lang <> nil) and not lang.InstrTemplate.IsEmpty then
    begin
       tmpList := TStringList.Create;
       try
@@ -125,14 +125,14 @@ begin
             line := Trim(FStatements.Lines.Strings[i]);
             if not line.IsEmpty then
             begin
-               template := ReplaceStr(lang.AssignTemplate, PRIMARY_PLACEHOLDER, line);
+               template := ReplaceStr(lang.InstrTemplate, PRIMARY_PLACEHOLDER, line);
                GenerateTemplateSection(tmpList, template, ALangId, ADeep);
             end
             else
                tmpList.AddObject('', Self);
          end;
          if tmpList.Text = '' then
-            GenerateTemplateSection(tmpList, ReplaceStr(lang.AssignTemplate, PRIMARY_PLACEHOLDER, ''), ALangId, ADeep);
+            GenerateTemplateSection(tmpList, ReplaceStr(lang.InstrTemplate, PRIMARY_PLACEHOLDER, ''), ALangId, ADeep);
          if EndsText(CRLF, FStatements.Text) then
             tmpList.AddObject('', Self);
          TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
@@ -143,7 +143,7 @@ begin
    end;
 end;
 
-procedure TMultiAssignBlock.ChangeColor(const AColor: TColor);
+procedure TMultiInstrBlock.ChangeColor(const AColor: TColor);
 var
    b: boolean;
 begin

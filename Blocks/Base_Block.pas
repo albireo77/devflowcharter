@@ -789,8 +789,8 @@ begin
             lPage := Page;
             menuItem := nil;
             case GCustomCursor of
-               crAssign:      menuItem := lPage.Form.miAssign;
-               crMultiAssign: menuItem := lPage.Form.miMultipleAssign;
+               crInstr:       menuItem := lPage.Form.miInstr;
+               crMultiInstr:  menuItem := lPage.Form.miMultiInstr;
                crIfElse:      menuItem := lPage.Form.miIfElse;
                crWhile:       menuItem := lPage.Form.miWhile;
                crFor:         menuItem := lPage.Form.miFor;

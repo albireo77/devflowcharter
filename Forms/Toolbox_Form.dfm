@@ -183,7 +183,7 @@ object ToolboxForm: TToolboxForm
     Transparent = False
     OnClick = sbNormalClick
   end
-  object sbAssign: TSpeedButton
+  object sbInstr: TSpeedButton
     Tag = 9
     Left = 0
     Top = 32
@@ -206,7 +206,7 @@ object ToolboxForm: TToolboxForm
     Transparent = False
     OnClick = sbNormalClick
   end
-  object sbMultiAssign: TSpeedButton
+  object sbMultiInstr: TSpeedButton
     Tag = 9
     Left = 33
     Top = 32

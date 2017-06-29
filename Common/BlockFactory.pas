@@ -35,7 +35,7 @@ type
 implementation
 
 uses
-   System.SysUtils, Assign_Block, MulAssign_Block, InOut_Block, FunctionCall_Block,
+   System.SysUtils, Instr_Block, MultiInstr_Block, InOut_Block, FunctionCall_Block,
    WhileDo_Block, RepeatUntil_Block, ApplicationCommon, ForDo_Block, IfElse_Block,
    If_Block, Case_Block, Return_Block, Text_Block, Main_Block, CommonInterfaces,
    Folder_Block;
@@ -46,8 +46,8 @@ begin
    if ABranch <> nil then
    begin
       case ABlockType of
-         blAssign:     result := TAssignBlock.Create(ABranch);
-         blMultAssign: result := TMultiAssignBlock.Create(ABranch);
+         blInstr:      result := TInstrBlock.Create(ABranch);
+         blMultiInstr: result := TMultiInstrBlock.Create(ABranch);
          blInput:      result := TInputBlock.Create(ABranch);
          blOutput:     result := TOutputBlock.Create(ABranch);
          blFuncCall:   result := TFunctionCallBlock.Create(ABranch);
@@ -88,8 +88,8 @@ begin
       else if ABranch <> nil then
       begin
          case TBlockType(bt) of
-            blAssign:     result := TAssignBlock.Create(ABranch, left, top, width, height, bid);
-            blMultAssign: result := TMultiAssignBlock.Create(ABranch, left, top, width, height, bid);
+            blInstr:      result := TInstrBlock.Create(ABranch, left, top, width, height, bid);
+            blMultiInstr: result := TMultiInstrBlock.Create(ABranch, left, top, width, height, bid);
             blInput:      result := TInputBlock.Create(ABranch, left, top, width, height, bid);
             blOutput:     result := TOutputBlock.Create(ABranch, left, top, width, height, bid);
             blFuncCall:   result := TFunctionCallBlock.Create(ABranch, left, top, width, height, bid);

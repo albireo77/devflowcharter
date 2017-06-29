@@ -77,8 +77,8 @@ type
       LabelOut,
       LabelFor,
       LabelFuncCall,
-      LabelAssign,
-      LabelMultiAssign,
+      LabelInstr,
+      LabelMultiInstr,
       LabelReturn,
       LabelCase,
       LabelText,
@@ -106,7 +106,7 @@ type
       VarTemplate,
       InputTemplate,
       OutputTemplate,
-      AssignTemplate,
+      InstrTemplate,
       TextTemplate,
       FolderTemplate,
       ReturnTemplate,
@@ -215,7 +215,7 @@ implementation
 uses
    Vcl.Forms, ApplicationCommon, XMLProcessor, WhileDo_Block, RepeatUntil_Block,
    ForDo_Block, Case_Block, If_Block, IfElse_Block, Main_Block, InOut_Block,
-   Assign_Block, MulAssign_Block, Return_Block, Text_Block, FunctionCall_Block,
+   Instr_Block, MultiInstr_Block, Return_Block, Text_Block, FunctionCall_Block,
    Folder_Block;
 
 constructor TLangDefinition.Create;
@@ -313,9 +313,9 @@ begin
    if tag <> nil then
       OutputFunction := tag.Text;
 
-   tag := TXMLProcessor.FindChildTag(ATag, 'AssignTemplate');
+   tag := TXMLProcessor.FindChildTag(ATag, 'InstrTemplate');
    if tag <> nil then
-      AssignTemplate := tag.Text;
+      InstrTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'InputTemplate');
    if tag <> nil then
@@ -485,13 +485,13 @@ begin
    if tag <> nil then
       LabelOut := tag.Text;
 
-   tag := TXMLProcessor.FindChildTag(ATag, 'LabelAssign');
+   tag := TXMLProcessor.FindChildTag(ATag, 'LabelInstr');
    if tag <> nil then
-      LabelAssign := tag.Text;
+      LabelInstr := tag.Text;
 
-   tag := TXMLProcessor.FindChildTag(ATag, 'LabelMultiAssign');
+   tag := TXMLProcessor.FindChildTag(ATag, 'LabelMultiInstr');
    if tag <> nil then
-      LabelMultiAssign := tag.Text;
+      LabelMultiInstr := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ReturnDesc');
    if tag <> nil then
@@ -875,8 +875,8 @@ begin
       result := InputTemplate
    else if AClass = TOutputBlock then
       result := OutputTemplate
-   else if (AClass = TAssignBlock) or (AClass = TMultiAssignBlock) then
-      result := AssignTemplate
+   else if (AClass = TInstrBlock) or (AClass = TMultiInstrBlock) then
+      result := InstrTemplate
    else if AClass = TReturnBlock then
       result := ReturnTemplate
    else if AClass = TTextBlock then

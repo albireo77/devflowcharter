@@ -412,7 +412,7 @@ EndFor
 
 <ReturnTemplate>Return %s1</ReturnTemplate>
 
-<AssignTemplate>%s1</AssignTemplate>
+<InstrTemplate>%s1</InstrTemplate>
 
 <FolderTemplate>%b1</FolderTemplate>
 

@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
 
@@ -18,7 +18,7 @@
 }
 
 
-unit Assign_Block;
+unit Instr_Block;
 
 interface
 
@@ -27,7 +27,7 @@ uses
 
 type
 
-   TAssignBlock = class(TBlock)
+   TInstrBlock = class(TBlock)
       public
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
@@ -43,10 +43,10 @@ uses
    System.StrUtils, Vcl.Forms, Vcl.Controls, System.Types, System.Classes, CommonTypes,
    ApplicationCommon;
 
-constructor TAssignBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
+constructor TInstrBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 begin
 
-   FType := blAssign;
+   FType := blInstr;
 
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
 
@@ -64,22 +64,22 @@ begin
    Constraints.MinHeight := 51;
 end;
 
-constructor TAssignBlock.Create(const ABranch: TBranch);
+constructor TInstrBlock.Create(const ABranch: TBranch);
 begin
    Create(ABranch, 0, 0, 140, 51);
 end;
 
-function TAssignBlock.Clone(const ABranch: TBranch): TBlock;
+function TInstrBlock.Clone(const ABranch: TBranch): TBlock;
 begin
-   result := TAssignBlock.Create(ABranch, Left, Top, Width, Height);
+   result := TInstrBlock.Create(ABranch, Left, Top, Width, Height);
    result.CloneFrom(Self);
 end;
 
-procedure TAssignBlock.Paint;
+procedure TInstrBlock.Paint;
 begin
    inherited;
    DrawArrowLine(Point(BottomPoint.X, 19), Point(BottomPoint.X, Height-1));
-   DrawBlockLabel(5, 20, GInfra.CurrentLang.LabelAssign);
+   DrawBlockLabel(5, 20, GInfra.CurrentLang.LabelInstr);
    DrawI;
 end;
 

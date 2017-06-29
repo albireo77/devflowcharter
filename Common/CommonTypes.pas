@@ -31,12 +31,12 @@ uses
 
 type
 
-   TCustomCursor = (crNormal, crIfElse, crFor, crRepeat, crWhile, crAssign, crMultiAssign,
+   TCustomCursor = (crNormal, crIfElse, crFor, crRepeat, crWhile, crInstr, crMultiInstr,
                     crIf, crFuncCall, crInput, crOutput, crCase, crReturn, crText, crFolder);
 
    TErrorType = (errNone, errDeclare, errIO, errValidate, errConvert, errSyntax, errPrinter, errCompile, errImport, errGeneral);
 
-   TBlockType = (blUnknown, blAssign, blMultAssign, blInput, blOutput, blFuncCall,
+   TBlockType = (blUnknown, blInstr, blMultiInstr, blInput, blOutput, blFuncCall,
                  blWhile, blRepeat, blIf, blIfElse, blFor, blCase, blMain, blComment,
                  blReturn, blText, blFolder);
 

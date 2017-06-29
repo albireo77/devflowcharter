@@ -38,8 +38,8 @@ type
     pmPages: TPopupMenu;
     ExportDialog: TSaveDialog;
     OpenDialog: TOpenDialog;
-    miAssign: TMenuItem;
-    miMultipleAssign: TMenuItem;
+    miInstr: TMenuItem;
+    miMultiInstr: TMenuItem;
     miIfElse: TMenuItem;
     miWhile: TMenuItem;
     miFor: TMenuItem;
@@ -79,7 +79,7 @@ type
     N4: TMenuItem;
     miComment: TMenuItem;
     miRoutineCall: TMenuItem;
-    miInstr: TMenuItem;
+    miStatement: TMenuItem;
     miLoop: TMenuItem;
     miUndoRemove: TMenuItem;
     miPaste: TMenuItem;
@@ -163,7 +163,7 @@ type
     procedure miUndoRemoveClick(Sender: TObject);
     procedure pmPagesPopup(Sender: TObject);
     procedure miCommentClick(Sender: TObject);
-    procedure miAssignClick(Sender: TObject);
+    procedure miInstrClick(Sender: TObject);
     procedure miStyleBoldClick(Sender: TObject);
     procedure miSize8Click(Sender: TObject);
     procedure miCopyClick(Sender: TObject);
@@ -698,7 +698,7 @@ begin
    end;
 end;
 
-procedure TMainForm.miAssignClick(Sender: TObject);
+procedure TMainForm.miInstrClick(Sender: TObject);
 var
    newBlock, currBlock, srcBlock: TBlock;
    branch: TBranch;
@@ -766,10 +766,10 @@ begin
          try
             newBlock := nil;
             blockType := blUnknown;
-            if Sender = miAssign then
-               blockType := blAssign
-            else if Sender = miMultipleAssign then
-               blockType := blMultAssign
+            if Sender = miInstr then
+               blockType := blInstr
+            else if Sender = miMultiInstr then
+               blockType := blMultiInstr
             else if Sender = miIfElse then
                blockType := blIfElse
             else if Sender = miWhile then

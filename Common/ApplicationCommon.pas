@@ -127,7 +127,7 @@ const   // Global constants
         INVALID_INIT_VAL = -9;
         VALID_IDENT      =  1;
 
-        FLOWCHART_BLOCKS = [blAssign, blMultAssign, blInput, blOutput, blFuncCall,
+        FLOWCHART_BLOCKS = [blInstr, blMultiInstr, blInput, blOutput, blFuncCall,
                             blWhile, blRepeat, blIf, blIfElse, blFor, blCase, blMain, blReturn];
 
         GROUP_BLOCKS = [blWhile, blRepeat, blIf, blIfElse, blFor, blCase, blMain];
