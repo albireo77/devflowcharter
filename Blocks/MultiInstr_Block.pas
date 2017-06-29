@@ -80,7 +80,7 @@ begin
    txt := Trim(FStatements.Text);
    FStatements.Hint := i18Manager.GetFormattedString('ExpOk', [txt, CRLF]);
    UpdateEditor(nil);
-   if GSettings.ParseAssignMult then
+   if GSettings.ParseMultiAssign then
    begin
       if txt.IsEmpty then
       begin

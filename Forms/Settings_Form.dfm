@@ -285,7 +285,7 @@ object SettingsForm: TSettingsForm
       Top = 17
       Width = 201
       Height = 17
-      Caption = 'Assignment'
+      Caption = 'Instruction (assign)'
       Checked = True
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -296,13 +296,13 @@ object SettingsForm: TSettingsForm
       State = cbChecked
       TabOrder = 0
     end
-    object chkParseMAssign: TCheckBox
+    object chkParseMultiAssign: TCheckBox
       Tag = 8
       Left = 8
       Top = 36
       Width = 201
       Height = 17
-      Caption = 'Multiple assignment'
+      Caption = 'Multiple Instructions (assign)'
       Checked = True
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText

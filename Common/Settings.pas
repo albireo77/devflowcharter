@@ -33,7 +33,7 @@ type
       FParseInput,
       FParseOutput,
       FParseAssign,
-      FParseAssignMult,
+      FParseMultiAssign,
       FParseCondition,
       FParseFor,
       FParseCase,
@@ -108,7 +108,7 @@ type
       property ParseInput: boolean read FParseInput;
       property ParseOutput: boolean read FParseOutput;
       property ParseAssign: boolean read FParseAssign;
-      property ParseAssignMult: boolean read FParseAssignMult;
+      property ParseMultiAssign: boolean read FParseMultiAssign;
       property ParseCondition: boolean read FParseCondition;
       property ParseFor: boolean read FParseFor;
       property ParseCase: boolean read FParseCase;
@@ -181,7 +181,7 @@ const
    KEY_PARSE_INPUT = 'ParseInput';
    KEY_PARSE_OUTPUT = 'ParseOutput';
    KEY_PARSE_ASSIGN = 'ParseAssign';
-   KEY_PARSE_MULT_ASSIGN = 'ParseMulAssign';
+   KEY_PARSE_MULTI_ASSIGN = 'ParseMulAssign';
    KEY_PARSE_CONDITION = 'ParseCondition';
    KEY_PARSE_SUBROUTINE = 'ParseRoutineCall';
    KEY_PARSE_CASE = 'ParseCase';
@@ -250,7 +250,7 @@ begin
    FParseInput       := false;
    FParseOutput      := false;
    FParseAssign      := false;
-   FParseAssignMult  := false;
+   FParseMultiAssign := false;
    FParseCondition   := false;
    FParseFor         := false;
    FParseCase        := false;
@@ -365,8 +365,8 @@ begin
             FParseReturn := reg.ReadBool(KEY_PARSE_RETURN);
          if reg.ValueExists(KEY_PARSE_ASSIGN) then
             FParseAssign := reg.ReadBool(KEY_PARSE_ASSIGN);
-         if reg.ValueExists(KEY_PARSE_MULT_ASSIGN) then
-            FParseAssignMult := reg.ReadBool(KEY_PARSE_MULT_ASSIGN);
+         if reg.ValueExists(KEY_PARSE_MULTI_ASSIGN) then
+            FParseMultiAssign := reg.ReadBool(KEY_PARSE_MULTI_ASSIGN);
          if reg.ValueExists(KEY_PARSE_CONDITION) then
             FParseCondition := reg.ReadBool(KEY_PARSE_CONDITION);
          if reg.ValueExists(KEY_PARSE_SUBROUTINE) then
@@ -479,7 +479,7 @@ begin
          reg.WriteBool(KEY_PARSE_INPUT, FParseInput);
          reg.WriteBool(KEY_PARSE_OUTPUT, FParseOutput);
          reg.WriteBool(KEY_PARSE_ASSIGN, FParseAssign);
-         reg.WriteBool(KEY_PARSE_MULT_ASSIGN, FParseAssignMult);
+         reg.WriteBool(KEY_PARSE_MULTI_ASSIGN, FParseMultiAssign);
          reg.WriteBool(KEY_PARSE_CONDITION, FParseCondition);
          reg.WriteBool(KEY_PARSE_FOR, FParseFor);
          reg.WriteBool(KEY_PARSE_CASE, FParseCase);
@@ -555,7 +555,7 @@ begin
       FParseInput := false;
       FParseOutput := false;
       FParseAssign := false;
-      FParseAssignMult := false;
+      FParseMultiAssign := false;
       FParseCondition := false;
       FParseFor := false;
       FParseCase := false;
@@ -605,7 +605,7 @@ begin
       FParseInput       := chkParseInput.Checked;
       FParseOutput      := chkParseOutput.Checked;
       FParseAssign      := chkParseAssign.Checked;
-      FParseAssignMult  := chkParseMAssign.Checked;
+      FParseMultiAssign := chkParseMultiAssign.Checked;
       FParseCondition   := chkParseCondition.Checked;
       FParseFor         := chkParseFor.Checked;
       FParseCase        := chkParseCase.Checked;

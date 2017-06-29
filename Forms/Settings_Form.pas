@@ -38,7 +38,7 @@ type
     chkParseInput: TCheckBox;
     chkParseOutput: TCheckBox;
     chkParseAssign: TCheckBox;
-    chkParseMAssign: TCheckBox;
+    chkParseMultiAssign: TCheckBox;
     chkParseCondition: TCheckBox;
     ColorDialog: TColorDialog;
     chkParseRoutine: TCheckBox;
@@ -391,8 +391,8 @@ begin
    chkParseOutput.Checked := parserOn;
    chkParseAssign.Enabled := parserOn;
    chkParseAssign.Checked := parserOn;
-   chkParseMAssign.Enabled := parserOn;
-   chkParseMAssign.Checked := parserOn;
+   chkParseMultiAssign.Enabled := parserOn;
+   chkParseMultiAssign.Checked := parserOn;
    chkParseCondition.Enabled := parserOn;
    chkParseCondition.Checked := parserOn;
    chkParseRoutine.Enabled := parserOn;
@@ -444,7 +444,7 @@ begin
    chkParseInput.Enabled := parserOn;
    chkParseOutput.Enabled := parserOn;
    chkParseAssign.Enabled := parserOn;
-   chkParseMAssign.Enabled := parserOn;
+   chkParseMultiAssign.Enabled := parserOn;
    chkParseCondition.Enabled := parserOn;
    chkParseFor.Enabled := parserOn;
    chkParseCase.Enabled := parserOn;
@@ -455,7 +455,7 @@ begin
       chkParseInput.Checked := false;
       chkParseOutput.Checked := false;
       chkParseAssign.Checked := false;
-      chkParseMAssign.Checked := false;
+      chkParseMultiAssign.Checked := false;
       chkParseCondition.Checked := false;
       chkParseFor.Checked := false;
       chkParseCase.Checked := false;
@@ -521,7 +521,7 @@ begin
    chkParseCase.Checked := ASettings.ParseCase;
    chkParseInput.Checked := ASettings.ParseInput;
    chkParseOutput.Checked := ASettings.ParseOutput;
-   chkParseMAssign.Checked := ASettings.ParseAssignMult;
+   chkParseMultiAssign.Checked := ASettings.ParseMultiAssign;
    chkParseRoutine.Checked := ASettings.ParseRoutineCall;
    chkParseReturn.Checked := ASettings.ParseReturn;
    chkValidateConsts.Checked := ASettings.ValidateDeclaration;
