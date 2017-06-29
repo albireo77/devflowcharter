@@ -123,7 +123,7 @@ begin
       indnt := DupeString(GSettings.IndentString, ADeep);
       expr := Trim(FStatement.Text);
       inFunc := false;
-      if expr <> '' then
+      if not expr.IsEmpty then
       begin
          iter := GProject.GetUserFunctions;
          while iter.HasNext do
@@ -192,7 +192,7 @@ end;
 
 function TReturnBlock.GetDescription: string;
 begin
-   if GInfra.CurrentLang.ReturnDesc <> '' then
+   if not GInfra.CurrentLang.ReturnDesc.IsEmpty then
       result := ReplaceStr(GInfra.CurrentLang.ReturnDesc, PRIMARY_PLACEHOLDER, Trim(FStatement.Text))
    else
       result := inherited GetDescription;

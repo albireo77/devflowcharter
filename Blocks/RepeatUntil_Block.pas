@@ -139,7 +139,7 @@ end;
 
 function TRepeatUntilBlock.GetDescription: string;
 begin
-   if GInfra.CurrentLang.RepeatDesc <> '' then
+   if not GInfra.CurrentLang.RepeatDesc.IsEmpty then
       result := ReplaceStr(GInfra.CurrentLang.RepeatDesc, PRIMARY_PLACEHOLDER, Trim(FStatement.Text))
    else
       result := inherited GetDescription;

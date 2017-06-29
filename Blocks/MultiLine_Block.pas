@@ -234,7 +234,7 @@ begin
    errMsg := GetErrorMsg(FStatements);
    for i := 0 to FStatements.Lines.Count-1 do
    begin
-      if Trim(FStatements.Lines[i]) <> '' then
+      if not Trim(FStatements.Lines[i]).IsEmpty then
       begin
          lLabel := FStatements.Lines[i];
          if i = FErrLine then
@@ -242,7 +242,7 @@ begin
          AParentNode.Owner.AddChildObject(AParentNode, lLabel, FStatements);
       end;
    end;
-   if errMsg <> '' then
+   if not errMsg.IsEmpty then
    begin
       AParentNode.MakeVisible;
       AParentNode.Expand(false);

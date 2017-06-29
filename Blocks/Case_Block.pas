@@ -412,7 +412,7 @@ begin
       else
       begin
          langDef := GInfra.GetLangDefinition(ALangId);
-         if (langDef <> nil) and (langDef.CaseOfTemplate <> '') then
+         if (langDef <> nil) and not langDef.CaseOfTemplate.IsEmpty then
          begin
             caseLines := TStringList.Create;
             tmpList := TStringList.Create;
@@ -542,7 +542,7 @@ begin
    exp2 := false;
 
    errMsg := GetErrorMsg(FStatement);
-   if errMsg <> '' then
+   if not errMsg.IsEmpty then
       exp1 := true;
 
    result := AParentNode.Owner.AddChildObject(AParentNode, GetDescription + errMsg, FStatement);
@@ -553,7 +553,7 @@ begin
       if lBranch.Statement <> nil then
       begin
          errMsg := GetErrorMsg(lBranch.Statement);
-         if errMsg <> '' then
+         if not errMsg.IsEmpty then
             exp2 := true;
          newNode := AParentNode.Owner.AddChildObject(result, lBranch.Statement.Text + ': ' + errMsg, lBranch.Statement);
       end;

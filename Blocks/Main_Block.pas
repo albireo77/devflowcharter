@@ -306,7 +306,7 @@ begin
          Font.Style := [];
          Brush.Style := bsClear;
          lLabel := GetFunctionLabel(R);
-         if lLabel <> '' then
+         if not lLabel.IsEmpty then
          begin
             lColor := Font.Color;
             Font.Color := clNavy;
@@ -358,7 +358,7 @@ begin
             result := lang.GetMainProgramDesc;
       end;
    end;
-   if result <> '' then
+   if not result.IsEmpty then
    begin
       DrawText(Canvas.Handle, PChar(result), -1, ARect, DT_CALCRECT);
       if (Branch.First <> nil) and (ARect.Bottom > Branch.First.Top-5) and (ARect.Left < Branch.First.BoundsRect.Right+5) then
@@ -392,7 +392,7 @@ var
    lColor: TColor;
 begin
    lLabel := GetFunctionLabel(R);
-   if lLabel <> '' then
+   if not lLabel.IsEmpty then
    begin
       with Canvas do
       begin
@@ -475,7 +475,7 @@ begin
             template := lang.MainProgramTemplate
          else
             template := lang.ProgramTemplate;
-         if template <> '' then
+         if not template.IsEmpty then
          begin
             progList := TStringList.Create;
             tmpList := TStringList.Create;
@@ -518,7 +518,7 @@ begin
    if Expanded then
    begin
       minVal := Branch.GetMostRight + 30;
-      if GetFunctionLabel(R) <> '' then
+      if not GetFunctionLabel(R).IsEmpty then
          val := R.Right + 10
       else
          val := minVal;

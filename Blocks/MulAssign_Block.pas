@@ -82,7 +82,7 @@ begin
    UpdateEditor(nil);
    if GSettings.ParseAssignMult then
    begin
-      if txt = '' then
+      if txt.IsEmpty then
       begin
          FStatements.Hint := i18Manager.GetFormattedString('NoInstr', [CRLF]);
          FStatements.Font.Color := WARN_COLOR
@@ -113,17 +113,17 @@ var
    tmpList: TStringList;
 begin
    result := 0;
-   if fsStrikeOut in Font.Style then
+   if (fsStrikeOut in Font.Style) or (FStatements.Text = '') then
       exit;
    lang := GInfra.GetLangDefinition(ALangId);
-   if (lang <> nil) and (lang.AssignTemplate <> '') then
+   if (lang <> nil) and not lang.AssignTemplate.IsEmpty then
    begin
       tmpList := TStringList.Create;
       try
          for i := 0 to FStatements.Lines.Count-1 do
          begin
             line := Trim(FStatements.Lines.Strings[i]);
-            if line <> '' then
+            if not line.IsEmpty then
             begin
                template := ReplaceStr(lang.AssignTemplate, PRIMARY_PLACEHOLDER, line);
                GenerateTemplateSection(tmpList, template, ALangId, ADeep);

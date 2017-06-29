@@ -1450,7 +1450,7 @@ var
    fontSize: integer;
    fontStyles: TFontStyles;
 begin
-   if GSettings.ShowBlockLabels and (AText <> '') then
+   if GSettings.ShowBlockLabels and not AText.IsEmpty then
    begin
       fontName := Canvas.Font.Name;
       fontStyles := Canvas.Font.Style;
@@ -1469,7 +1469,7 @@ procedure TBlock.DrawTextLabel(x, y: integer; const AText: string; rightJust: bo
 var
    fontStyles: TFontStyles;
 begin
-   if AText <> '' then
+   if not AText.IsEmpty then
    begin
       fontStyles := Canvas.Font.Style;
       Canvas.Font.Style := [];
@@ -2298,7 +2298,7 @@ begin
          ATag.SetAttribute(FOLDED_ATTR, BoolToStr(not Expanded, true));
 
          txt := GetFoldedText;
-         if txt <> '' then
+         if not txt.IsEmpty then
          begin
             tag1 := ATag.OwnerDocument.CreateElement(FOLD_TEXT_ATTR);
             TXMLProcessor.AddCDATA(tag1, txt);

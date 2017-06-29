@@ -321,31 +321,34 @@ function TForDoBlock.GetTemplate(ALangDef: TLangDefinition; const ATemplate: str
 var
    dir1, dir2, template: string;
 begin
-   if ATemplate.IsEmpty then
-      template := ALangDef.ForDoTemplate
-   else
-      template := ATemplate;
-   result := ReplaceStr(template, PRIMARY_PLACEHOLDER, edtVariable.Text);
-   result := ReplaceStr(result, '%s2', Trim(edtStartVal.Text));
-   result := ReplaceStr(result, '%s3', Trim(edtStopVal.Text));
-   if FOrder = ordAsc then
+   result := '';
+   if ALangDef <> nil then
    begin
-      dir1 := ALangDef.ForAsc1;
-      dir2 := ALangDef.ForAsc2;
-   end
-   else
-   begin
-      dir1 := ALangDef.ForDesc1;
-      dir2 := ALangDef.ForDesc2;
+      if ATemplate.IsEmpty then
+         template := ALangDef.ForDoTemplate
+      else
+         template := ATemplate;
+      result := ReplaceStr(template, PRIMARY_PLACEHOLDER, edtVariable.Text);
+      result := ReplaceStr(result, '%s2', Trim(edtStartVal.Text));
+      result := ReplaceStr(result, '%s3', Trim(edtStopVal.Text));
+      if FOrder = ordAsc then
+      begin
+         dir1 := ALangDef.ForAsc1;
+         dir2 := ALangDef.ForAsc2;
+      end
+      else
+      begin
+         dir1 := ALangDef.ForDesc1;
+         dir2 := ALangDef.ForDesc2;
+      end;
+      result := ReplaceStr(result, '%s4', dir1);
+      result := ReplaceStr(result, '%s5', dir2);
    end;
-   result := ReplaceStr(result, '%s4', dir1);
-   result := ReplaceStr(result, '%s5', dir2);
 end;
 
 function TForDoBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
 var
    template, startVal, stopVal, varVal, line, indnt: string;
-   langDef: TLangDefinition;
    tmpList: TStringList;
    i: integer;
 begin
@@ -385,12 +388,11 @@ begin
    end
    else
    begin
-      langDef := GInfra.GetLangDefinition(ALangId);
-      if (langDef <> nil) and (langDef.ForDoTemplate <> '') then
+      template := GetTemplate(GInfra.GetLangDefinition(ALangId));
+      if not template.IsEmpty then
       begin
          tmpList := TStringList.Create;
          try
-            template := GetTemplate(langDef);
             GenerateTemplateSection(tmpList, template, ALangId, ADeep);
             TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
             result := tmpList.Count;
