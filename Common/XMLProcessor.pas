@@ -142,13 +142,13 @@ end;
 
 class procedure TXMLProcessor.AddText(ATag: IXMLElement; const AText: string);
 begin
-   if (ATag <> nil) and (AText <> '') then
+   if (ATag <> nil) and not AText.IsEmpty then
       ATag.AppendChild(ATag.OwnerDocument.CreateTextNode(AText));
 end;
 
 class procedure TXMLProcessor.AddCDATA(ATag: IXMLElement; const AText: string);
 begin
-   if (ATag <> nil) and (AText <> '') then
+   if (ATag <> nil) and not AText.IsEmpty then
       ATag.AppendChild(ATag.OwnerDocument.CreateCDATASection(AText));
 end;
 
@@ -160,7 +160,7 @@ begin
    tag := FindChildTag(ATag, AChildTagName);
    while tag <> nil do
    begin
-      if not (AWithText and (Trim(tag.Text) = '')) then
+      if not (AWithText and Trim(tag.Text).IsEmpty) then
          result := result + 1;
       tag := FindNextTag(tag);
    end;
@@ -265,10 +265,11 @@ begin
    result := '';
    if Assigned(AImportProc) then
    begin
+      errText := '';
       result := AFileName;
-      if result = '' then
+      if result.IsEmpty then
          result := TXMLProcessor.DialogXMLFile(TInfra.GetMainForm.OpenDialog);
-      if result = '' then
+      if result.IsEmpty then
          exit;
       docXML := CreateXMLDoc;
       docXML.PreserveWhiteSpace := APreserveSpace;
@@ -289,6 +290,8 @@ begin
       end;
       if status <> errNone then
       begin
+         if errText.IsEmpty then
+            errText := GErr_text;
          errText := i18Manager.GetFormattedString('FileError', [result]) + CRLF + errText;
          TInfra.ShowFormattedErrorBox('ImportFailed', [CRLF, errText], errImport);
          result := '';
@@ -306,7 +309,7 @@ begin
    result := errNone;
    if Assigned(AExportProc) then
    begin
-      if ExtractFilePath(AFilePath) = '' then
+      if ExtractFilePath(AFilePath).IsEmpty then
          filePath := TXMLProcessor.DialogXMLFile(TInfra.GetMainForm.ExportDialog, AFilePath)
       else
          filePath := AFilePath;
@@ -315,7 +318,7 @@ begin
          TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [filePath], errIO);
          result := errIO;
       end
-      else if filePath <> '' then
+      else if not filePath.IsEmpty then
       begin
          docXML := CreateXMLDoc;
          xmlInstr := docXML.CreateProcessingInstruction('xml', XML_HEADER);
