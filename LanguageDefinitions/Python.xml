@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <Language>
-    <Name>Python</Name>
+    <Name>Python 3</Name>
     <CommentBegin>#</CommentBegin>
-    <InputFunction>in()</InputFunction>
+    <InputFunction>input()</InputFunction>
     <OutputFunction>print()</OutputFunction>
     <DefaultExt>py</DefaultExt>
     <LibraryExt>.py</LibraryExt>
@@ -23,7 +23,7 @@
     <EnabledExplorer>true</EnabledExplorer>
     <EnabledCodeGenerator>true</EnabledCodeGenerator>
     <EnabledMainProgram>true</EnabledMainProgram>
-    <CaseSensitiveSyntax>false</CaseSensitiveSyntax>
+    <CaseSensitiveSyntax>true</CaseSensitiveSyntax>
     <UpperCaseConstId>true</UpperCaseConstId>
     <AllowEnumsInForLoop>true</AllowEnumsInForLoop>
     <AllowUserFunctionOverload>true</AllowUserFunctionOverload>
@@ -109,7 +109,7 @@ Description: Label displayed close to flowchart for body of function that return
 
 <!--
 Element ProgramLabelKey
-Description: Label displayed close to flowchart for body of project's main program
+Description: Label displayed close to flowchart for body of the project's main program
 -->
 <ProgramLabelKey>ProgramLabelExample</ProgramLabelKey>
 
@@ -293,22 +293,9 @@ Available placeholders:
 -->
 <FunctionsTemplate>%s1</FunctionsTemplate>
 
-<!--
-Element MainProgramTemplate
-Description: Template for main program body
-Available placeholders:
-   %s1 - project name
-   %s2 - global variables (element VarsTemplate)
-   %s3 - return statement which is generated if last statement of program isn't return block (element ProgramReturnTemplate)
-   %b1 - body of main program  
--->
-<MainProgramTemplate>BEGIN
-	%b1
-	%s3
-END %s1;
+<MainProgramTemplate>
+%b1
 </MainProgramTemplate>
-
-<ProgramReturnTemplate>/* Program ends with no value returned. */</ProgramReturnTemplate>
 
 <!--
 Element ExternEntry
