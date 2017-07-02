@@ -453,18 +453,20 @@ var
    size: string;
 begin
    result := 0;
-   if GProject <> nil then
+   i := sgList.Cols[VAR_NAME_COL].IndexOf(AVarName);
+   if i > 0 then
    begin
-      i := sgList.Cols[VAR_NAME_COL].IndexOf(AVarName);
-      if i > 0 then
+      if AIncludeTypeDimens then
       begin
-         if AIncludeTypeDimens then
-         begin
-            dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
-            if dataType <> nil then
-               result := dataType.GetDimensionCount;
-         end;
-         size := sgList.Cells[VAR_SIZE_COL, i];
+         dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
+         if dataType <> nil then
+            result := dataType.GetDimensionCount;
+      end;
+      size := sgList.Cells[VAR_SIZE_COL, i];
+      if size.isEmpty then
+         result := MaxInt
+      else
+      begin
          for a := 1 to Length(size) do
          begin
             if size[a] = ',' then
@@ -488,15 +490,12 @@ begin
    begin
       cnt := 1;
       size := sgList.Cells[VAR_SIZE_COL, i];
-      if GProject <> nil then
+      dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
+      if dataType <> nil then
       begin
-         dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
-         if dataType <> nil then
-         begin
-            dims := dataType.GetDimensions;
-            if dims <> '' then
-               size := size + ',' + dims;
-         end;
+         dims := dataType.GetDimensions;
+         if not dims.IsEmpty then
+            size := size + ',' + dims;
       end;
       for a := 1 to Length(size) do
       begin
@@ -622,7 +621,7 @@ begin
       else if (edtSize.Text = '1') and not TParserHelper.IsStructType(lType) and Assigned(GInfra.CurrentLang.GetLiteralType) then
       begin
          initVal := Trim(edtInit.Text);
-         if initVal <> '' then
+         if not initVal.isEmpty then
          begin
             if TParserHelper.IsEnumType(lType) then
             begin

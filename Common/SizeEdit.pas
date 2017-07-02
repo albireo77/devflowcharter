@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
 
@@ -31,9 +31,9 @@ type
         function GetDimensionCount: integer;
      public
         property DimensionCount: integer read GetDimensionCount default 0;
-        constructor Create(const AParent: TWinControl);
+        constructor Create(AParent: TWinControl);
         function ParseSize: boolean;
-        function GetDimension(const ADimensIndex: integer): string;
+        function GetDimension(idx: integer): string;
         procedure OnChangeSize(Sender: TObject);
   end;
 
@@ -43,7 +43,7 @@ implementation
 uses
    System.SysUtils, System.StrUtils, ApplicationCommon, LangDefinition, CommonTypes;
 
-constructor TSizeEdit.Create(const AParent: TWinControl);
+constructor TSizeEdit.Create(AParent: TWinControl);
 begin
    inherited Create(AParent);
    Parent := AParent;
@@ -64,9 +64,14 @@ var
    i: integer;
    lang: TLangDefinition;
 begin
-   txt := ReplaceStr(Text, ' ', '');
    result := false;
-   if (txt <> '') and (Pos(',-', txt) = 0) and (Pos(',0', txt) = 0) and not (CharInSet(txt[1], ['0', '-'])) then
+   txt := ReplaceStr(Text, ' ', '');
+   if txt.isEmpty then
+   begin
+      if GInfra.CurrentLang.AllowUnboundedArrays then
+         result := true;
+   end
+   else if (Pos(',-', txt) = 0) and (Pos(',0', txt) = 0) and not (CharInSet(txt[1], ['0', '-'])) then
    begin
       result := true;
       lang := GInfra.GetLangDefinition(PASCAL_LANG_ID);
@@ -83,15 +88,16 @@ end;
 
 function TSizeEdit.GetDimensionCount: integer;
 var
-   i, len: integer;
+   i: integer;
    txt: string;
 begin
    result := 0;
    txt := Trim(Text);
-   len := Length(txt);
-   if len > 0 then
+   if txt.isEmpty then
+      result := MaxInt
+   else
    begin
-      for i := 1 to len do
+      for i := 1 to txt.length do
       begin
          if txt[i] = ',' then
             Inc(result);
@@ -101,7 +107,7 @@ begin
    end;
 end;
 
-function TSizeEdit.GetDimension(const ADimensIndex: integer): string;
+function TSizeEdit.GetDimension(idx: integer): string;
 var
    i, cnt: integer;
    txt: string;
@@ -109,14 +115,14 @@ begin
    result := '';
    cnt := 1;
    txt := Trim(Text);
-   for i := 1 to Length(txt) do
+   for i := 1 to txt.length do
    begin
       if txt[i] <> ',' then
          result := result + txt[i]
       else
       begin
          Inc(cnt);
-         if cnt > ADimensIndex then
+         if cnt > idx then
             break
          else
             result := '';

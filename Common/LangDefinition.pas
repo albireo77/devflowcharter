@@ -175,7 +175,8 @@ type
       AllowUserFunctionOverload,
       RepeatUntilAsDoWhile,
       GenExternVarConst,
-      ForDoVarList: boolean;
+      ForDoVarList,
+      AllowUnboundedArrays: boolean;
       InOutCursorPos,
       FuncBracketsCursorPos: integer;
       PreGenerationActivities: procedure;
@@ -721,6 +722,7 @@ begin
    UpperCaseConstId := TXMLProcessor.GetBoolFromChildTag(ATag, 'UpperCaseConstId', UpperCaseConstId);
    AllowEnumsInForLoop := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowEnumsInForLoop', AllowEnumsInForLoop);
    AllowUserFunctionOverload := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowUserFunctionOverload', AllowUserFunctionOverload);
+   AllowUnboundedArrays := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowUnboundedArrays', AllowUnboundedArrays);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'NativeDataTypes');
    if tag <> nil then
