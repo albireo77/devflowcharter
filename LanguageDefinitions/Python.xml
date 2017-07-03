@@ -169,9 +169,9 @@ else:
 
 <ForDoVarString>in</ForDoVarString>
 
-<ReturnTemplate>exit %s1</ReturnTemplate>
+<ReturnTemplate>return %s1</ReturnTemplate>
 
-<FunctionCallTemplate>call %s1</FunctionCallTemplate>
+<FunctionCallTemplate>%s1</FunctionCallTemplate>
 
 <InstrTemplate>%s1</InstrTemplate>
 
@@ -202,7 +202,7 @@ Available placeholders:
    %s5 - used if argument is a record (element FunctionHeaderArgsEntryRecord)
    %s6 - used if argument is an enumeration (element FunctionHeaderArgsEntryEnum)
 -->
-<FunctionHeaderArgsEntryMask>%s3%s1: %s4%s2, </FunctionHeaderArgsEntryMask>
+<FunctionHeaderArgsEntryMask>%s1, </FunctionHeaderArgsEntryMask>
 <FunctionHeaderArgsEntryRef>ref </FunctionHeaderArgsEntryRef>
 <FunctionHeaderArgsEntryArray>array of </FunctionHeaderArgsEntryArray>
 <FunctionHeaderArgsEntryRecord>record </FunctionHeaderArgsEntryRecord>
@@ -226,7 +226,7 @@ Available placeholders:
    %s6 - second string that depends on return type (none or specific) - FunctionHeaderTypeNone2 or FunctionHeaderTypeNotNone2 element
 -->
 <FunctionHeaderTemplate>%s2
-%s5 %s1(%s3)%s6 %s4;
+def %s1(%s3):
 </FunctionHeaderTemplate>
 <FunctionHeaderTypeNone1>procedure</FunctionHeaderTypeNone1>
 <FunctionHeaderTypeNotNone1>function</FunctionHeaderTypeNotNone1>
@@ -241,9 +241,7 @@ Available placeholders:
    %s2 - function local variables (element VarsTemplate)
    %b1 - body of function  
 -->
-<ProgramTemplate>BEGIN
-	%b1
-END %s1;
+<ProgramTemplate>	%b1
 </ProgramTemplate>
 
 <!--

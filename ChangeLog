@@ -3,10 +3,10 @@
 - Code Editor: fix not saving highlighter setting
 - Code Editor: improvements to pasting multiline comments
 - fix not displayed detailed info if something went wrong upon loading project
-- add support for Python
+- add Python support
 
 IMPORTANT NOTES:
-Due to some reorganizations done to language definition file structure (e.g. new tags to make it possible to support Python) it is strongly advised to use config files delivered with this release.
+Due to some reorganizations done to language definition file structure (e.g. new tags to support Python) it is strongly advised to use config files delivered with this release.
 Files from previous versions may not work properly with 4.5.
 
 4.4 [27.05.2017]

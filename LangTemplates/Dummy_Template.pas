@@ -267,7 +267,7 @@ var
    isExtern: boolean;
 begin
    lang := GInfra.CurrentLang;
-   if (AConstList <> nil) and (AConstList.sgList.RowCount > 2) and (lang.ConstTemplate <> '') then
+   if (AConstList <> nil) and (AConstList.sgList.RowCount > 2) and not lang.ConstTemplate.IsEmpty then
    begin
       constList := TStringList.Create;
       try
@@ -311,7 +311,7 @@ var
    isExtern: boolean;
 begin
    lang := GInfra.CurrentLang;
-   if (AVarList <> nil) and (AVarList.sgList.RowCount > 2) and (lang.VarTemplate <> '') then
+   if (AVarList <> nil) and (AVarList.sgList.RowCount > 2) and not lang.VarTemplate.IsEmpty then
    begin
       varList := TStringList.Create;
       try
@@ -330,16 +330,17 @@ begin
                   begin
                      for b := 1 to dcount do
                         varSize := varSize + Format(lang.VarEntryArraySize, [AVarList.GetDimension(name, b)]);
+                     if not varSize.IsEmpty then
+                        SetLength(varSize, varSize.Length - lang.VarEntryArraySizeStripCount);
                   end;
                   varStr := ReplaceStr(lang.VarEntryArray, PRIMARY_PLACEHOLDER, name);
-                  SetLength(varSize, Length(varSize)-lang.VarEntryArraySizeStripCount);
                   varStr := ReplaceStr(varStr, '%s3', varSize);
                end
                else
                   varStr := ReplaceStr(lang.VarEntry, PRIMARY_PLACEHOLDER, name);
                varStr := ReplaceStr(varStr, '%s2', typeStr);
                varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
-               if varInit <> '' then
+               if not varInit.IsEmpty then
                begin
                   if isExtern then
                      initEntry := lang.VarEntryInitExtern
