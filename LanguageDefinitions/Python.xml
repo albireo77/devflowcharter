@@ -12,8 +12,7 @@
     <DecimalSeparator>.</DecimalSeparator>
     <InOutCursorPos>-1</InOutCursorPos>
     <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>
-
-    <EnabledConsts>true</EnabledConsts>				
+			
     <EnabledVars>true</EnabledVars>
     <EnabledCompiler>true</EnabledCompiler>
     <EnabledUserFunctionHeader>true</EnabledUserFunctionHeader>
@@ -27,6 +26,7 @@
     <UpperCaseConstId>true</UpperCaseConstId>
     <AllowEnumsInForLoop>true</AllowEnumsInForLoop>
     <AllowUserFunctionOverload>true</AllowUserFunctionOverload>
+    <AllowUnboundedArrays>true</AllowUnboundedArrays>
     <GenExternVarConst>false</GenExternVarConst>
 
     <NativeDataTypes>
@@ -280,41 +280,10 @@ Description: Declaration modifier for external variables
 
 <VarEntry>%s1%s4</VarEntry>
 
-<!--
-Element VarEntryArray
-Description: Entry for single array variable declaration
-Available placeholders are the same as for VarEntry element and:
-   %s3 - list of array sizes (VarEntryArraySize element)
--->
-<VarEntryArray>%s7%s5%s6%s2 %s1%s3%s4;</VarEntryArray>
+<VarEntryArray>%s1%s4</VarEntryArray>
 
-<!--
-Element VarEntryArraySize
-Description: Entry for array's single dimension
-   %s - size of array dimension
--->
-<VarEntryArraySize>[%s]</VarEntryArraySize>
-
-<!--
-Element VarEntryArraySizeStripCount
-Description: Number of chars to strip from end of array size declaration (VarEntryArraySize) 
--->
-<VarEntryArraySizeStripCount>0</VarEntryArraySizeStripCount>
-
-<!--
-Element VarEntryInit
-Description: Mask for not external variable initial value
-Available placeholders:
-   %s1 - variable initial value
--->
 <VarEntryInit> = %s1</VarEntryInit>
 
-<!--
-Element VarEntryInitExtern
-Description: Mask for external variable initial value
-Available placeholders:
-   %s1 - variable initial value
--->
 <VarEntryInitExtern> = %s1</VarEntryInitExtern>
 
 <!--

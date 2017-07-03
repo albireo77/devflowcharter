@@ -36,6 +36,7 @@ Most of the tags are optional and may be removed if not needed.
     <UpperCaseConstId>true</UpperCaseConstId>
     <AllowEnumsInForLoop>true</AllowEnumsInForLoop>
     <AllowUserFunctionOverload>true</AllowUserFunctionOverload>
+    <AllowUnboundedArrays>false</AllowUnboundedArrays>
     <GenExternVarConst>false</GenExternVarConst>
 
     <FoldRegions>

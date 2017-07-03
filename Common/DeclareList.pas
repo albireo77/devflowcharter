@@ -467,7 +467,7 @@ begin
          result := MaxInt
       else
       begin
-         for a := 1 to Length(size) do
+         for a := 1 to size.Length do
          begin
             if size[a] = ',' then
                Inc(result);
@@ -497,7 +497,7 @@ begin
          if not dims.IsEmpty then
             size := size + ',' + dims;
       end;
-      for a := 1 to Length(size) do
+      for a := 1 to size.Length do
       begin
          if size[a] <> ',' then
             result := result + size[a]

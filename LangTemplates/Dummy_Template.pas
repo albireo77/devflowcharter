@@ -305,7 +305,7 @@ end;
 procedure Dummy_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
 var
    lang: TLangDefinition;
-   i, b, lType: integer;
+   i, b, lType, dcount: integer;
    varStr, varSize, varInit, initEntry, lRecord, enum, extern, name, typeStr: string;
    varTemplate, varList: TStringList;
    isExtern: boolean;
@@ -323,10 +323,14 @@ begin
             isExtern := AVarList.IsExternal(i);
             if (isExtern and lang.GenExternVarConst) or not isExtern then
             begin
-               for b := 1 to AVarList.GetDimensionCount(name) do
-                  varSize := varSize + Format(lang.VarEntryArraySize, [AVarList.GetDimension(name, b)]);
-               if varSize <> '' then
+               dcount := AVarList.GetDimensionCount(name);
+               if dcount > 0 then
                begin
+                  if dcount <> MaxInt then
+                  begin
+                     for b := 1 to dcount do
+                        varSize := varSize + Format(lang.VarEntryArraySize, [AVarList.GetDimension(name, b)]);
+                  end;
                   varStr := ReplaceStr(lang.VarEntryArray, PRIMARY_PLACEHOLDER, name);
                   SetLength(varSize, Length(varSize)-lang.VarEntryArraySizeStripCount);
                   varStr := ReplaceStr(varStr, '%s3', varSize);
@@ -341,7 +345,8 @@ begin
                      initEntry := lang.VarEntryInitExtern
                   else
                      initEntry := lang.VarEntryInit;
-                  varInit := ReplaceStr(initEntry, PRIMARY_PLACEHOLDER, varInit);
+                  if not initEntry.IsEmpty then
+                     varInit := ReplaceStr(initEntry, PRIMARY_PLACEHOLDER, varInit);
                end;
                varStr := ReplaceStr(varStr, '%s4', varInit);
                lType := TParserHelper.GetType(typeStr);

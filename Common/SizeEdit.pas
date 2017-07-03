@@ -67,10 +67,7 @@ begin
    result := false;
    txt := ReplaceStr(Text, ' ', '');
    if txt.isEmpty then
-   begin
-      if GInfra.CurrentLang.AllowUnboundedArrays then
-         result := true;
-   end
+      result := GInfra.CurrentLang.AllowUnboundedArrays
    else if (Pos(',-', txt) = 0) and (Pos(',0', txt) = 0) and not (CharInSet(txt[1], ['0', '-'])) then
    begin
       result := true;
@@ -80,7 +77,8 @@ begin
          for i := 1 to GetDimensionCount do
          begin
             result := lang.Parse(GetDimension(i), prsVarSize) = 0;
-            if not result then break;
+            if not result then
+               break;
          end;
       end;
    end;
@@ -97,7 +95,7 @@ begin
       result := MaxInt
    else
    begin
-      for i := 1 to txt.length do
+      for i := 1 to txt.Length do
       begin
          if txt[i] = ',' then
             Inc(result);
