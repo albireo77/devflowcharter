@@ -39,7 +39,7 @@ var
    typeStr, fieldStr, valStr, valStr2: string;
 begin
    lang := GInfra.CurrentLang;
-   if lang.DataTypesTemplate <> '' then
+   if not lang.DataTypesTemplate.IsEmpty then
    begin
       typesList := TStringList.Create;
       try
@@ -48,12 +48,12 @@ begin
          begin
             dataType := TUserDataType(iter.Next);
             name := dataType.GetName;
-            if (name <> '') and not dataType.chkExtDeclare.Checked then
+            if (not name.IsEmpty) and not dataType.chkExtDeclare.Checked then
             begin
                iterf := dataType.GetFieldIterator;
                if dataType.rbInt.Checked then
                begin
-                  if lang.DataTypeIntMask <> '' then
+                  if not lang.DataTypeIntMask.IsEmpty then
                   begin
                      typeStr := ReplaceStr(lang.DataTypeIntMask, PRIMARY_PLACEHOLDER, name);
                      typesList.AddObject(typeStr, dataType);
@@ -61,7 +61,7 @@ begin
                end
                else if dataType.rbReal.Checked then
                begin
-                  if lang.DataTypeRealMask <> '' then
+                  if not lang.DataTypeRealMask.IsEmpty then
                   begin
                      typeStr := ReplaceStr(lang.DataTypeRealMask, PRIMARY_PLACEHOLDER, name);
                      typesList.AddObject(typeStr, dataType);
@@ -69,7 +69,7 @@ begin
                end
                else if dataType.rbOther.Checked then
                begin
-                  if lang.DataTypeOtherMask <> '' then
+                  if not lang.DataTypeOtherMask.IsEmpty then
                   begin
                      typeStr := ReplaceStr(lang.DataTypeOtherMask, PRIMARY_PLACEHOLDER, name);
                      valStr := '';
@@ -81,7 +81,7 @@ begin
                end
                else if dataType.rbArray.Checked then
                begin
-                  if lang.DataTypeArrayMask <> '' then
+                  if not lang.DataTypeArrayMask.IsEmpty then
                   begin
                      typeStr := ReplaceStr(lang.DataTypeArrayMask, PRIMARY_PLACEHOLDER, name);
                      valStr := '';
@@ -99,7 +99,7 @@ begin
                end
                else if dataType.rbStruct.Checked then
                begin
-                  if lang.DataTypeRecordTemplate <> '' then
+                  if not lang.DataTypeRecordTemplate.IsEmpty then
                   begin
                      recTemplate := TStringList.Create;
                      try
@@ -110,14 +110,13 @@ begin
                            begin
                               field := TField(iterf.Next);
                               sizeStr := lang.GetArraySizes(field.edtSize);
-                              if sizeStr <> '' then
+                              if not sizeStr.IsEmpty then
                                  fieldStr := lang.DataTypeRecordFieldArrayMask
                               else
                                  fieldStr := lang.DataTypeRecordFieldMask;
                               fieldStr := ReplaceStr(fieldStr, PRIMARY_PLACEHOLDER, Trim(field.edtName.Text));
                               fieldStr := ReplaceStr(fieldStr, '%s2', field.cbType.Text);
-                              if sizeStr <> '' then
-                                 fieldStr := ReplaceStr(fieldStr, '%s3', sizeStr);
+                              fieldStr := ReplaceStr(fieldStr, '%s3', sizeStr);
                               lRecord := '';
                               enum := '';
                               lType := TParserHelper.GetType(field.cbType.Text);
@@ -142,7 +141,7 @@ begin
                end
                else if dataType.rbEnum.Checked then
                begin
-                  if lang.DataTypeEnumTemplate <> '' then
+                  if not lang.DataTypeEnumTemplate.IsEmpty then
                   begin
                      enumTemplate := TStringList.Create;
                      try
@@ -150,7 +149,8 @@ begin
                         valStr := '';
                         while iterf.HasNext do
                            valStr := valStr + Format(lang.DataTypeEnumEntryList, [Trim(TField(iterf.Next).edtName.Text)]);
-                        SetLength(valStr, Length(valStr)-lang.DataTypeEnumEntryListStripCount);
+                        if (lang.DataTypeEnumEntryListStripCount > 0) and not valStr.IsEmpty then
+                           SetLength(valStr, valStr.Length - lang.DataTypeEnumEntryListStripCount);
                         TInfra.InsertTemplateLines(enumTemplate, '%s2', valStr);
                         for b := 0 to enumTemplate.Count-1 do
                            typesList.AddObject(enumTemplate[b], dataType)
@@ -193,7 +193,7 @@ var
    lang: TLangDefinition;
 begin
     lang := GInfra.CurrentLang;
-    if lang.ProgramHeaderTemplate <> '' then
+    if not lang.ProgramHeaderTemplate.IsEmpty then
     begin
        hdrTemplate := TStringList.Create;
        try
@@ -221,7 +221,7 @@ begin
    lang := GInfra.CurrentLang;
    libList := GProject.GetLibraryList;
    try
-      if (libList.Count > 0) and (lang.LibTemplate <> '') and ((lang.LibEntry <> '') or (lang.LibEntryList <> '')) then
+      if (libList.Count > 0) and (not lang.LibTemplate.IsEmpty) and ((not lang.LibEntry.IsEmpty) or (not lang.LibEntryList.IsEmpty)) then
       begin
          libStr := '';
          libTemplate := TStringList.Create;
@@ -242,7 +242,8 @@ begin
             end
             else
             begin
-               SetLength(libStr, Length(libStr)-lang.LibEntryListStripCount);
+               if (lang.LibEntryListStripCount > 0) and not libStr.IsEmpty then
+                  SetLength(libStr, libStr.Length - lang.LibEntryListStripCount);
                p1 := '%s2';
                p2 := PRIMARY_PLACEHOLDER;
             end;
@@ -330,7 +331,7 @@ begin
                   begin
                      for b := 1 to dcount do
                         varSize := varSize + Format(lang.VarEntryArraySize, [AVarList.GetDimension(name, b)]);
-                     if not varSize.IsEmpty then
+                     if (lang.VarEntryArraySizeStripCount > 0) and not varSize.IsEmpty then
                         SetLength(varSize, varSize.Length - lang.VarEntryArraySizeStripCount);
                   end;
                   varStr := ReplaceStr(lang.VarEntryArray, PRIMARY_PLACEHOLDER, name);
@@ -401,7 +402,7 @@ var
    intType: integer;
 begin
    lang := GInfra.CurrentLang;
-   if lang.FunctionsTemplate <> '' then
+   if not lang.FunctionsTemplate.IsEmpty then
    begin
       funcList := TStringList.Create;
       try
@@ -410,7 +411,7 @@ begin
          begin
             func := TUserFunction(iter.Next);
             name := func.GetName;
-            if (name <> '') and not func.Header.chkExtDeclare.Checked and (lang.FunctionTemplate <> '') then
+            if (not name.IsEmpty) and not func.Header.chkExtDeclare.Checked and not lang.FunctionTemplate.IsEmpty then
             begin
                // assemble list of function parameters
                argList := '';
@@ -439,7 +440,9 @@ begin
                   paramStr := ReplaceStr(paramStr, '%s6', enum);
                   argList := argList + paramStr;
                end;
-               SetLength(argList, Length(argList)-lang.FunctionHeaderArgsStripCount);
+
+               if (lang.FunctionHeaderArgsStripCount > 0) and not argList.IsEmpty then
+                  SetLength(argList, argList.Length - lang.FunctionHeaderArgsStripCount);
 
                headerTemplate := TStringList.Create;
                try
@@ -591,7 +594,7 @@ begin
          iterp := AHeader.GetParameterIterator;
          while iterp.HasNext do
          begin
-            if params <> '' then
+            if not params.IsEmpty then
                params := params + ',';
             params := params + TParameter(iterp.Next).cbType.Text;
          end;
@@ -600,7 +603,7 @@ begin
          lcrlf := CRLF;
       end;
    end;
-   if key <> '' then
+   if not key.IsEmpty then
    begin
       result := i18Manager.GetString(key);
       result := ReplaceStr(result, '##', lcrlf);
