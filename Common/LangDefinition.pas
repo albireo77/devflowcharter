@@ -924,7 +924,8 @@ begin
    begin
       for i := 1 to ASizeEdit.DimensionCount do
          result := result + Format(VarEntryArraySize, [ASizeEdit.GetDimension(i)]);
-      SetLength(result, Length(result)-VarEntryArraySizeStripCount);
+      if (VarEntryArraySizeStripCount > 0) and not result.IsEmpty then
+         SetLength(result, result.Length - VarEntryArraySizeStripCount);
    end;
 end;
 

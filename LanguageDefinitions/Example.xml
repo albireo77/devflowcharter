@@ -354,7 +354,7 @@ Element ProgramTemplate
 Description: Template for function body
 Available placeholders:
    %s1 - function name
-   %s2 - function local variables (element VarsTemplate)
+   %s2 - function local variables (element VarTemplate)
    %b1 - body of function  
 -->
 <ProgramTemplate>BEGIN
@@ -367,7 +367,7 @@ Element FunctionTemplate
 Description: Template for function (header + body)
 Available placeholders:
    %s1 - function's header line (element FunctionHeaderTemplate)
-   %s2 - function's local variables (element VarsTemplate)
+   %s2 - function's local variables (element VarTemplate)
    %s3 - function's body (element ProgramTemplate)  
 -->
 <FunctionTemplate>%s1
@@ -389,7 +389,7 @@ Element MainProgramTemplate
 Description: Template for main program body
 Available placeholders:
    %s1 - project name
-   %s2 - global variables (element VarsTemplate)
+   %s2 - global variables (element VarTemplate)
    %s3 - return statement which is generated if last statement of program isn't return block (element ProgramReturnTemplate)
    %b1 - body of main program  
 -->

@@ -546,7 +546,7 @@ begin
    miInsert.Visible := False;
    miPaste.Enabled := False;
    miPasteText.Visible := False;
-   miInstr.Enabled := False;
+   miStatement.Enabled := False;
    miLoop.Enabled := False;
    miFrame.Visible := False;
    miFrame.Checked := False;
@@ -588,7 +588,7 @@ begin
        if block.Ired >= 0 then
        begin
           miInsert.Visible := True;
-          miInstr.Enabled := True;
+          miStatement.Enabled := True;
           miLoop.Enabled := True;
           miText.Enabled := True;
           miFolder.Enabled := True;

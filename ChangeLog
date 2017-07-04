@@ -7,7 +7,7 @@
 
 IMPORTANT NOTES:
 Due to some reorganizations done to language definition file structure (e.g. new tags to support Python) it is strongly advised to use config files delivered with this release.
-Files from previous versions may not work properly with 4.5.
+Files from previous versions may not work properly with 4.5. The same applies to translation files.
 
 4.4 [27.05.2017]
 - fix project sheet not entirely exported to graphic or printed
