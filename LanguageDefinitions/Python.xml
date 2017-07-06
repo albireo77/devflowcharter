@@ -85,8 +85,6 @@
 <LabelFontName>Segoe Print</LabelFontName>
 <LabelFontSize>10</LabelFontSize>
 
-<RepeatDesc>repeat until %s1</RepeatDesc>
-
 <ElseLabel>else</ElseLabel>
 
 <HighLighterVarName>SynPythonSyn1</HighLighterVarName>
@@ -159,6 +157,7 @@ def %s1(%s3):
 
 <MainProgramTemplate>
 %b1
+
 </MainProgramTemplate>
 
 <VarEntry>%s1%s4</VarEntry>

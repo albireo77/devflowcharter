@@ -42,7 +42,6 @@ type
          constructor Create(const APage: TBlockTabSheet; const ATopLeft: TPoint); overload;
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
          function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
-         function GetDescription: string; override;
          function GetFromXML(const ATag: IXMLElement): TErrorType; override;
          procedure SaveInXML(const ATag: IXMLElement); override;
          function GetMaxBounds: TPoint;
@@ -529,10 +528,6 @@ begin
       else
          Width := AMinX + 5;
    end;
-end;
-
-function TMainBlock.GetDescription: string;
-begin
 end;
 
 function TMainBlock.GenerateTree(const AParentNode: TTreeNode): TTreeNode;

@@ -106,6 +106,7 @@ begin
    Height := 574;
    FErrWarnCount.ErrorCount := 0;
    FErrWarnCount.WarningCount := 0;
+   tvExplorer.Items.Clear;
    inherited ResetForm;
 end;
 

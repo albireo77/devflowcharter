@@ -121,8 +121,6 @@ while (%s1);
 
 <RepeatUntilAsDoWhile>true</RepeatUntilAsDoWhile>
 
-<RepeatDesc>do while (%s1)</RepeatDesc>
-
 <IfTemplate>if (%s1)
 {
 	%b1

@@ -34,7 +34,7 @@ type
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
          procedure ChangeColor(const AColor: TColor); override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
-         function GetDescription: string; override;
+         function FillCodedTemplate(const ALangId: string): string; override;
       protected
          FReturnLabel: string;
          procedure Paint; override;
@@ -105,6 +105,13 @@ end;
 function TReturnBlock.GetDefaultWidth: integer;
 begin
    result := GetEllipseTextRect(TPoint.Zero, FReturnLabel).Width + 48;
+end;
+
+function TReturnBlock.FillCodedTemplate(const ALangId: string): string;
+begin
+   result := '';
+   if ALangId = PASCAL_LANG_ID then
+      result := 'exit ' + Trim(FStatement.Text) + ';';
 end;
 
 function TReturnBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
@@ -189,14 +196,5 @@ procedure TReturnBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: 
 begin
    SelectBlock(Point(X, Y));
 end;
-
-function TReturnBlock.GetDescription: string;
-begin
-   if not GInfra.CurrentLang.ReturnDesc.IsEmpty then
-      result := ReplaceStr(GInfra.CurrentLang.ReturnDesc, PRIMARY_PLACEHOLDER, Trim(FStatement.Text))
-   else
-      result := inherited GetDescription;
-end;
-
 
 end.

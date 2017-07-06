@@ -385,8 +385,6 @@ If (%s1)
 EndLoop
 </RepeatUntilTemplate>
 
-<RepeatDesc>Loop If Not (%s1)</RepeatDesc>
-
 <IfTemplate>If (%s1) Then
 	%b1
 EndIf

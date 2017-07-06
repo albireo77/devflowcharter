@@ -84,8 +84,6 @@ type
       LabelText,
       LabelFolder,
       LabelMain,
-      ReturnDesc,
-      RepeatDesc,
       ForAsc1,
       ForAsc2,
       ForDesc1,
@@ -493,14 +491,6 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'LabelMultiInstr');
    if tag <> nil then
       LabelMultiInstr := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'ReturnDesc');
-   if tag <> nil then
-      ReturnDesc := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'RepeatDesc');
-   if tag <> nil then
-      RepeatDesc := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'RepeatUntilTemplate');
    if tag <> nil then

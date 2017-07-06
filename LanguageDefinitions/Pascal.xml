@@ -184,8 +184,6 @@ end;
 until %s1;
 </RepeatUntilTemplate>
 
-<RepeatDesc>repeat until %s1</RepeatDesc>
-
 <IfTemplate>if %s1 then
 begin
 	%b1
@@ -248,8 +246,6 @@ end;
 %s3
 end;
 </CaseOfTemplate>
-
-<ReturnDesc>exit %s1</ReturnDesc>
 
 <TextTemplate>{ %s1 }</TextTemplate>
 

@@ -545,7 +545,7 @@ begin
    if not errMsg.IsEmpty then
       exp1 := true;
 
-   result := AParentNode.Owner.AddChildObject(AParentNode, GetDescription + errMsg, FStatement);
+   result := AParentNode.Owner.AddChildObject(AParentNode, FillTemplate(GInfra.CurrentLang.Name) + errMsg, FStatement);
 
    for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
    begin

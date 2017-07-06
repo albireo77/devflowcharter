@@ -35,7 +35,6 @@ type
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
          function Clone(const ABranch: TBranch): TBlock; override;
-         function GetDescription: string; override;
       protected
          procedure Paint; override;
          procedure SetWidth(const AMinX: integer); override;
@@ -135,14 +134,6 @@ end;
 function TRepeatUntilBlock.GetDiamondPoint: TPoint;
 begin
    result := Point(BottomHook, Height-81);
-end;
-
-function TRepeatUntilBlock.GetDescription: string;
-begin
-   if not GInfra.CurrentLang.RepeatDesc.IsEmpty then
-      result := ReplaceStr(GInfra.CurrentLang.RepeatDesc, PRIMARY_PLACEHOLDER, Trim(FStatement.Text))
-   else
-      result := inherited GetDescription;
 end;
 
 end.

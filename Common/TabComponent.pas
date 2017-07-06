@@ -478,7 +478,10 @@ end;
 
 function TTabComponent.GetFocusColor: TColor;
 begin
-   result := Font.Color;
+   if HasParent then
+      result := Font.Color
+   else
+      result := OK_COLOR;
 end;
 
 function TTabComponent.Remove: boolean;

@@ -80,7 +80,10 @@ end;
 
 function TStatementMemo.GetFocusColor: TColor;
 begin
-   result := Font.Color;
+   if HasParent then
+      result := Font.Color
+   else
+      result := OK_COLOR;
 end;
 
 function TStatementMemo.Remove: boolean;

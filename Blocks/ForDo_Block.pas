@@ -42,7 +42,6 @@ type
          procedure MyOnChange(Sender: TObject);
          procedure SetForOrder(const AValue: TForOrder);
          procedure PutTextControls; override;
-         function GetTemplate(ALangDef: TLangDefinition; const ATemplate: string = ''): string;
       public
          cbVariable: TComboBox;
          edtStartVal, edtStopVal: TStatement;
@@ -53,7 +52,6 @@ type
          function Clone(const ABranch: TBranch): TBlock; override;
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
          procedure ExpandFold(const AResize: boolean); override;
-         function GetDescription: string; override;
          function GetTextControl: TCustomEdit; override;
          function CountErrWarn: TErrWarnCount; override;
          function GetFromXML(const ATag: IXMLElement): TErrorType; override;
@@ -63,6 +61,8 @@ type
          procedure UpdateEditor(AEdit: TCustomEdit); override;
          function RetrieveFocus(AInfo: TFocusInfo): boolean; override;
          procedure CloneFrom(ABlock: TBlock); override;
+         function FillTemplate(const ALangId: string; const ATemplate: string = ''): string; override;
+         function FillCodedTemplate(const ALangId: string): string; override;
    end;
 
 implementation
@@ -281,11 +281,6 @@ begin
       UpdateEditor(nil);
 end;
 
-function TForDoBlock.GetDescription:string;
-begin
-   result := GetTemplate(GInfra.CurrentLang, GInfra.CurrentLang.GetTemplateExpr(ClassType));
-end;
-
 procedure TForDoBlock.MyOnChange(Sender: TObject);
 var
    header: TUserFunctionHeader;
@@ -317,67 +312,89 @@ begin
    end;
 end;
 
-function TForDoBlock.GetTemplate(ALangDef: TLangDefinition; const ATemplate: string = ''): string;
+function TForDoBlock.FillCodedTemplate(const ALangId: string): string;
 var
-   dir1, dir2, template: string;
+   varVal, startVal, stopVal: string;
+   lang: TLangDefinition;
+   i: integer;
 begin
    result := '';
-   if ALangDef <> nil then
+   if ALangId = PYTHON_LANG_ID then
    begin
-      if ATemplate.IsEmpty then
-         template := ALangDef.ForDoTemplate
+      varVal := Trim(edtVariable.Text);
+      startVal := Trim(edtStartVal.Text);
+      stopVal := Trim(edtStopVal.Text);
+      lang := GInfra.GetLangDefinition(ALangId);
+      result := 'for ' + varVal + ' ' + lang.ForDoVarString + ' ';
+      if stopVal.IsEmpty then
+      begin
+         if TryStrToInt(startVal, i) then
+            result := result + 'range(' + startVal + '):'
+         else
+            result := result + startVal + ':';
+      end
       else
-         template := ATemplate;
-      result := ReplaceStr(template, PRIMARY_PLACEHOLDER, edtVariable.Text);
+      begin
+         if startVal.IsEmpty then
+            result := result + 'range(' + stopVal + '):'
+         else
+            result := result + 'range(' + startVal + ', ' + stopVal + '):'
+      end;
+   end;
+end;
+
+function TForDoBlock.FillTemplate(const ALangId: string; const ATemplate: string = ''): string;
+var
+   dir1, dir2, template: string;
+   lang: TLangDefinition;
+begin
+   result := '';
+   template := '';
+   lang := GInfra.GetLangDefinition(ALangId);
+   if ATemplate.IsEmpty then
+   begin
+      if (lang <> nil) and not lang.ForDoTemplate.IsEmpty then
+         template := lang.GetTemplateExpr(TForDoBlock);
+   end
+   else
+      template := ATemplate;
+   if (lang <> nil) and not template.IsEmpty then
+   begin
+      result := ReplaceStr(template, PRIMARY_PLACEHOLDER, Trim(edtVariable.Text));
       result := ReplaceStr(result, '%s2', Trim(edtStartVal.Text));
       result := ReplaceStr(result, '%s3', Trim(edtStopVal.Text));
       if FOrder = ordAsc then
       begin
-         dir1 := ALangDef.ForAsc1;
-         dir2 := ALangDef.ForAsc2;
+         dir1 := lang.ForAsc1;
+         dir2 := lang.ForAsc2;
       end
       else
       begin
-         dir1 := ALangDef.ForDesc1;
-         dir2 := ALangDef.ForDesc2;
+         dir1 := lang.ForDesc1;
+         dir2 := lang.ForDesc2;
       end;
       result := ReplaceStr(result, '%s4', dir1);
       result := ReplaceStr(result, '%s5', dir2);
-   end;
+   end
+   else
+      result := FillCodedTemplate(ALangId);
 end;
 
 function TForDoBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
 var
-   template, startVal, stopVal, varVal, line, indnt: string;
+   template, line: string;
    tmpList: TStringList;
    i: integer;
+   lang: TLangDefinition;
 begin
    result := 0;
    if fsStrikeOut in Font.Style then
       exit;
-   if ALangId = PYTHON_LANG_ID then
+   if ALangId = PYTHON_LANG_ID then        // for Python it's impossible to create suitable for..do XML template so hardcoded template must be used
    begin
-      indnt := DupeString(GSettings.IndentString, ADeep);
-      varVal := Trim(edtVariable.Text);
-      startVal := Trim(edtStartVal.Text);
-      stopVal := Trim(edtStopVal.Text);
+      line := DupeString(GSettings.IndentString, ADeep) + FillCodedTemplate(ALangId);
       tmpList := TStringList.Create;
       try
-         line := indnt + 'for ' + varVal + ' ' + GInfra.CurrentLang.ForDoVarString + ' ';
-         if stopVal.IsEmpty then
-         begin
-            if TryStrToInt(startVal, i) then
-               line := line + 'range(' + startVal + '):'
-            else
-               line := line + startVal + ':';
-         end
-         else
-         begin
-            if startVal.IsEmpty then
-               line := line + 'range(' + stopVal + '):'
-            else
-               line := line + 'range(' + startVal + ', ' + stopVal + '):'
-         end;
          tmpList.AddObject(line, Self);
          GenerateNestedCode(tmpList, PRIMARY_BRANCH_IND, ADeep+1, ALangId);
          TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
@@ -388,7 +405,8 @@ begin
    end
    else
    begin
-      template := GetTemplate(GInfra.GetLangDefinition(ALangId));
+      lang := GInfra.GetLangDefinition(ALangId);
+      template := FillTemplate(ALangId, lang.ForDoTemplate);
       if not template.IsEmpty then
       begin
          tmpList := TStringList.Create;
@@ -496,7 +514,7 @@ begin
    edit := edtStopVal;
    if not AInfo.SelText.IsEmpty then
    begin
-      expr := GInfra.CurrentLang.GetTemplateExpr(Self.ClassType);
+      //expr := GInfra.CurrentLang.GetTemplateExpr(Self.ClassType);
       i := Pos(PRIMARY_PLACEHOLDER, expr);
       if i <> 0 then
       begin

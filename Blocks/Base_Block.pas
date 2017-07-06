@@ -147,7 +147,8 @@ type
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; virtual;
          function GetFromXML(const ATag: IXMLElement): TErrorType; virtual;
          procedure SaveInXML(const ATag: IXMLElement); virtual;
-         function GetDescription: string; virtual;
+         function FillTemplate(const ALangId: string; const ATemplate: string = ''): string; virtual;
+         function FillCodedTemplate(const ALangId: string): string; virtual;
          function GetTextControl: TCustomEdit; virtual;
          function GenerateTree(const AParentNode: TTreeNode): TTreeNode; virtual;
          function IsCursorSelect: boolean;
@@ -2037,7 +2038,7 @@ begin
    if textControl <> nil then
    begin
       errMsg := GetErrorMsg(textControl);
-      result := AParentNode.Owner.AddChildObject(AParentNode, GetDescription + errMsg, textControl);
+      result := AParentNode.Owner.AddChildObject(AParentNode, FillTemplate(GInfra.CurrentLang.Name) + errMsg, textControl);
       if errMsg <> '' then
       begin
          AParentNode.MakeVisible;
@@ -2600,13 +2601,72 @@ begin
    result := TInfra.GetEditorForm.Visible and (not FRefreshMode) and not (fsStrikeOut in Font.Style);
 end;
 
-function TBlock.GetDescription: string;
+{function TBlock.GetExprLine(const ALangId: string): string;
+var
+   textControl: TCustomEdit;
+   template: string;
+   lang: TLangDefinition;
+begin
+   result := '';
+   lang := GInfra.GetLangDefinition(ALangId);
+   if lang <> nil then
+   begin
+      template := lang.GetTemplate(ClassType);
+      if not template.IsEmpty then          // check if template from XML exists
+      begin
+         result := lang.GetTemplateExpr(ClassType);
+         textControl := GetTextControl;
+         if textControl <> nil then
+            s := Trim(textControl.Text)
+         else
+            s := '';
+         result := ReplaceStr(result, PRIMARY_PLACEHOLDER, s);
+      end
+      else                                  // if not, use hardcoded line
+         result := GetHardcodedExprLine(ALangId);
+   end;
+end;}
+
+function TBlock.FillTemplate(const ALangId: string; const ATemplate: string = ''): string;
+var
+   textControl: TCustomEdit;
+   s, template: string;
+   lang: TLangDefinition;
+begin
+   result := '';
+   template := '';
+   if ATemplate.IsEmpty then
+   begin
+      lang := GInfra.GetLangDefinition(ALangId);
+      if lang <> nil then
+      begin
+         if not lang.GetTemplate(ClassType).IsEmpty then
+            template := lang.GetTemplateExpr(ClassType);
+      end;
+   end
+   else
+      template := ATemplate;
+   if not template.IsEmpty then
+   begin
+      textControl := GetTextControl;
+      if textControl <> nil then
+         s := Trim(textControl.Text)
+      else
+         s := '';
+      result := ReplaceStr(template, PRIMARY_PLACEHOLDER, s);
+   end
+   else
+      result := FillCodedTemplate(ALangId);
+end;
+
+function TBlock.FillCodedTemplate(const ALangId: string): string;
 var
    textControl: TCustomEdit;
 begin
+   result := '';
    textControl := GetTextControl;
    if textControl <> nil then
-      result := ReplaceStr(GInfra.CurrentLang.GetTemplateExpr(ClassType), PRIMARY_PLACEHOLDER, Trim(textControl.Text));
+      result := Trim(textControl.Text);
 end;
 
 procedure TBlock.ExportToGraphic(const AGraphic: TGraphic);
