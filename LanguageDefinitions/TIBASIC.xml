@@ -401,7 +401,7 @@ EndIf
 
 <ElseLabel>Else</ElseLabel>
 
-<ForDoVarList>true</ForDoVarList>
+<ForDoVarList>false</ForDoVarList>
 
 <ForDoTemplate>For %s1,%s2,%s3
 	%b1
