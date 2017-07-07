@@ -373,6 +373,8 @@ For all supported tags refer to Example.xml file.
 <FunctionLabelKey>FunctionLabelTiBasic</FunctionLabelKey>
 <ProgramLabelKey>ProgramLabelTiBasic</ProgramLabelKey>
 
+<RepeatUntilDescTemplate>Loop If Not (%s1)</RepeatUntilDescTemplate>
+
 <WhileTemplate>While %s1
 	%b1
 EndWhile

@@ -124,6 +124,47 @@ Will be displayed in flowchart for given blocks.
 <ElseLabel>else</ElseLabel>
 
 <!--
+Element RepeatUntilDescTemplate
+DescTemplate elements are used in Explorer window to display description of some troublesome blocks when it's impossible to extract proper description from block template.
+Procedure for building description for flowchart elements in Explorer window is as follows:
+	1. Use value proper DescTemplate element if it exists and is not empty, otherwise
+	2. Use value from expression extracted from block template (e.g. from ForDoTemplate element); if such element does not exist or no expression placeholder (%s1) is found then
+	3. Use value returned by hardcoded Delphi procedure 
+Available placeholder:
+   %s1 - condition expression 
+-->
+<RepeatUntilDescTemplate>repeat until %s1</RepeatUntilDescTemplate>
+
+<!--
+Element ReturnDescTemplate
+Available placeholder:
+   %s1 - return expression
+-->
+<!-- 
+<ReturnDescTemplate>return %s1</ReturnDescTemplate>
+-->
+
+<!--
+Element ForDoDescTemplate
+Available placeholders:
+   %s1 - control variable
+   %s2 - begin value
+   %s3 - end value
+-->
+<!-- 
+<ForDoDescTemplate>for %s1 = %s2 to %s2</ForDoDescTemplate>
+-->
+
+<!--
+Element CaseOfDescTemplate
+Available placeholder:
+   %s1 - case expression
+-->
+<!-- 
+<CaseOfDescTemplate>case %s1 of</CaseOfDescTemplate>
+-->
+
+<!--
 Element HighLighterVarName
 Contains name of highlighter component
 Currently there are 3 highlighter components available:

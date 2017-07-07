@@ -149,6 +149,7 @@ type
          procedure SaveInXML(const ATag: IXMLElement); virtual;
          function FillTemplate(const ALangId: string; const ATemplate: string = ''): string; virtual;
          function FillCodedTemplate(const ALangId: string): string; virtual;
+         function GetDescTemplate(const ALangId: string): string; virtual;
          function GetTextControl: TCustomEdit; virtual;
          function GenerateTree(const AParentNode: TTreeNode): TTreeNode; virtual;
          function IsCursorSelect: boolean;
@@ -2030,7 +2031,7 @@ end;
 
 function TBlock.GenerateTree(const AParentNode: TTreeNode): TTreeNode;
 var
-   errMsg: string;
+   errMsg, descTemplate: string;
    textControl: TCustomEdit;
 begin
    result := AParentNode;
@@ -2038,8 +2039,9 @@ begin
    if textControl <> nil then
    begin
       errMsg := GetErrorMsg(textControl);
-      result := AParentNode.Owner.AddChildObject(AParentNode, FillTemplate(GInfra.CurrentLang.Name) + errMsg, textControl);
-      if errMsg <> '' then
+      descTemplate := GetDescTemplate(GInfra.CurrentLang.Name);
+      result := AParentNode.Owner.AddChildObject(AParentNode, FillTemplate(GInfra.CurrentLang.Name, descTemplate) + errMsg, textControl);
+      if not errMsg.IsEmpty then
       begin
          AParentNode.MakeVisible;
          AParentNode.Expand(false);
@@ -2599,6 +2601,11 @@ end;
 function TBlock.PerformEditorUpdate: boolean;
 begin
    result := TInfra.GetEditorForm.Visible and (not FRefreshMode) and not (fsStrikeOut in Font.Style);
+end;
+
+function TBlock.GetDescTemplate(const ALangId: string): string;
+begin
+   result := '';
 end;
 
 function TBlock.FillTemplate(const ALangId: string; const ATemplate: string = ''): string;

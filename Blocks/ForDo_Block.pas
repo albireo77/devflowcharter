@@ -63,6 +63,7 @@ type
          procedure CloneFrom(ABlock: TBlock); override;
          function FillTemplate(const ALangId: string; const ATemplate: string = ''): string; override;
          function FillCodedTemplate(const ALangId: string): string; override;
+         function GetDescTemplate(const ALangId: string): string; override;
    end;
 
 implementation
@@ -378,6 +379,16 @@ begin
    end
    else
       result := FillCodedTemplate(ALangId);
+end;
+
+function TForDoBlock.GetDescTemplate(const ALangId: string): string;
+var
+   lang: TLangDefinition;
+begin
+   result := '';
+   lang := GInfra.GetLangDefinition(ALangId);
+   if lang <> nil then
+      result := lang.ForDoDescTemplate;
 end;
 
 function TForDoBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;

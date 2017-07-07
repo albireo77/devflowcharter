@@ -56,6 +56,7 @@ type
          procedure UpdateEditor(AEdit: TCustomEdit); override;
          function IsDuplicatedCase(AEdit: TCustomEdit): boolean;
          procedure CloneFrom(ABlock: TBlock); override;
+         function GetDescTemplate(const ALangId: string): string; override;
    end;
 
 const
@@ -530,7 +531,7 @@ end;
 
 function TCaseBlock.GenerateTree(const AParentNode: TTreeNode): TTreeNode;
 var
-   errMsg: string;
+   errMsg, descTemplate: string;
    newNode: TTreeNode;
    lBranch: TBranch;
    exp1, exp2: boolean;
@@ -545,7 +546,8 @@ begin
    if not errMsg.IsEmpty then
       exp1 := true;
 
-   result := AParentNode.Owner.AddChildObject(AParentNode, FillTemplate(GInfra.CurrentLang.Name) + errMsg, FStatement);
+   descTemplate := GetDescTemplate(GInfra.CurrentLang.Name);
+   result := AParentNode.Owner.AddChildObject(AParentNode, FillTemplate(GInfra.CurrentLang.Name, descTemplate) + errMsg, FStatement);
 
    for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
    begin
@@ -586,6 +588,16 @@ begin
       result.Expand(false);
    end;
 
+end;
+
+function TCaseBlock.GetDescTemplate(const ALangId: string): string;
+var
+   lang: TLangDefinition;
+begin
+   result := '';
+   lang := GInfra.GetLangDefinition(ALangId);
+   if lang <> nil then
+      result := lang.CaseOfDescTemplate;
 end;
 
 procedure TCaseBlock.ExpandFold(const AResize: boolean);

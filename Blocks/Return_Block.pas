@@ -34,7 +34,7 @@ type
          function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
          procedure ChangeColor(const AColor: TColor); override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
-         function FillCodedTemplate(const ALangId: string): string; override;
+         function GetDescTemplate(const ALangId: string): string; override;
       protected
          FReturnLabel: string;
          procedure Paint; override;
@@ -46,7 +46,8 @@ implementation
 
 uses
    Vcl.Controls, System.SysUtils, WinApi.Windows, System.StrUtils, System.Types,
-   System.UITypes, ApplicationCommon, Project, UserFunction, Main_Block, CommonTypes;
+   System.UITypes, ApplicationCommon, Project, UserFunction, Main_Block,
+   CommonTypes, LangDefinition;
 
 constructor TReturnBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
 var
@@ -107,11 +108,14 @@ begin
    result := GetEllipseTextRect(TPoint.Zero, FReturnLabel).Width + 48;
 end;
 
-function TReturnBlock.FillCodedTemplate(const ALangId: string): string;
+function TReturnBlock.GetDescTemplate(const ALangId: string): string;
+var
+   lang: TLangDefinition;
 begin
    result := '';
-   if ALangId = PASCAL_LANG_ID then
-      result := 'exit ' + Trim(FStatement.Text) + ';';
+   lang := GInfra.GetLangDefinition(ALangId);
+   if lang <> nil then
+      result := lang.ReturnDescTemplate;
 end;
 
 function TReturnBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;

@@ -35,6 +35,7 @@ type
          constructor Create(const ABranch: TBranch); overload;
          constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
          function Clone(const ABranch: TBranch): TBlock; override;
+         function GetDescTemplate(const ALangId: string): string; override;
       protected
          procedure Paint; override;
          procedure SetWidth(const AMinX: integer); override;
@@ -44,7 +45,8 @@ type
 implementation
 
 uses
-   System.Classes, System.SysUtils, System.StrUtils, ApplicationCommon, CommonTypes;
+   System.Classes, System.SysUtils, System.StrUtils, ApplicationCommon,
+   CommonTypes, LangDefinition;
 
 constructor TRepeatUntilBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
 begin
@@ -120,6 +122,16 @@ begin
       end;
    end;
    DrawI;
+end;
+
+function TRepeatUntilBlock.GetDescTemplate(const ALangId: string): string;
+var
+   lang: TLangDefinition;
+begin
+   result := '';
+   lang := GInfra.GetLangDefinition(ALangId);
+   if lang <> nil then
+      result := lang.RepeatUntilDescTemplate;
 end;
 
 procedure TRepeatUntilBlock.SetWidth(const AMinX: integer);

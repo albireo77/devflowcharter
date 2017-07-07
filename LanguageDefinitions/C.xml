@@ -156,6 +156,8 @@ else
 
 <ElseLabel>else</ElseLabel>
 
+<RepeatUntilDescTemplate>do while (%s1)</RepeatUntilDescTemplate>
+
 <ExternEntry>extern </ExternEntry>
 
 <ForDoVarList>true</ForDoVarList>

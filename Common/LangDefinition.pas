@@ -142,7 +142,11 @@ type
       CompilerCommandNoMain,
       CompilerFileEncoding,
       InstrEnd,
-      ForDoVarString: string;
+      ForDoVarString,
+      RepeatUntilDescTemplate,
+      ForDoDescTemplate,
+      ReturnDescTemplate,
+      CaseOfDescTemplate: string;
       DecimalSeparator: char;
       LabelFontSize,
       FunctionHeaderArgsStripCount,
@@ -495,6 +499,22 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'RepeatUntilTemplate');
    if tag <> nil then
       RepeatUntilTemplate := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'RepeatUntilDescTemplate');
+   if tag <> nil then
+      RepeatUntilDescTemplate := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'ReturnDescTemplate');
+   if tag <> nil then
+      ReturnDescTemplate := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'ForDoDescTemplate');
+   if tag <> nil then
+      ForDoDescTemplate := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'CaseOfDescTemplate');
+   if tag <> nil then
+      CaseOfDescTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'RepeatUntilAsDoWhile');
    if tag <> nil then

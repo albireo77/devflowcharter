@@ -219,6 +219,10 @@ end;
 
 <ElseLabel>else</ElseLabel>
 
+<RepeatUntilDescTemplate>repeat until %s1</RepeatUntilDescTemplate>
+
+<ReturnDescTemplate>exit %s1;</ReturnDescTemplate>
+
 <ForDoVarList>true</ForDoVarList>
 
 <ForDoVarString>:=</ForDoVarString>
