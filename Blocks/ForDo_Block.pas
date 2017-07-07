@@ -384,7 +384,6 @@ function TForDoBlock.GenerateCode(const ALines: TStringList; const ALangId: stri
 var
    template, line: string;
    tmpList: TStringList;
-   i: integer;
    lang: TLangDefinition;
 begin
    result := 0;
@@ -514,7 +513,7 @@ begin
    edit := edtStopVal;
    if not AInfo.SelText.IsEmpty then
    begin
-      //expr := GInfra.CurrentLang.GetTemplateExpr(Self.ClassType);
+      expr := GInfra.CurrentLang.GetTemplateExpr(TForDoBlock);
       i := Pos(PRIMARY_PLACEHOLDER, expr);
       if i <> 0 then
       begin

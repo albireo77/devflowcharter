@@ -2567,7 +2567,7 @@ var
    edit: TCustomEdit;
 begin
    edit := GetTextControl;
-   if edit <> nil then
+   if (edit <> nil) and edit.HasParent then
       result := THackControl(edit).Font.Color
    else
       result := OK_COLOR;
@@ -2600,32 +2600,6 @@ function TBlock.PerformEditorUpdate: boolean;
 begin
    result := TInfra.GetEditorForm.Visible and (not FRefreshMode) and not (fsStrikeOut in Font.Style);
 end;
-
-{function TBlock.GetExprLine(const ALangId: string): string;
-var
-   textControl: TCustomEdit;
-   template: string;
-   lang: TLangDefinition;
-begin
-   result := '';
-   lang := GInfra.GetLangDefinition(ALangId);
-   if lang <> nil then
-   begin
-      template := lang.GetTemplate(ClassType);
-      if not template.IsEmpty then          // check if template from XML exists
-      begin
-         result := lang.GetTemplateExpr(ClassType);
-         textControl := GetTextControl;
-         if textControl <> nil then
-            s := Trim(textControl.Text)
-         else
-            s := '';
-         result := ReplaceStr(result, PRIMARY_PLACEHOLDER, s);
-      end
-      else                                  // if not, use hardcoded line
-         result := GetHardcodedExprLine(ALangId);
-   end;
-end;}
 
 function TBlock.FillTemplate(const ALangId: string; const ATemplate: string = ''): string;
 var
