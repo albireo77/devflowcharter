@@ -341,12 +341,16 @@ end;
 
 procedure TEditorForm.PasteComment(const AText: string);
 var
-   line, beginComment, endComment: string;
+   line, bline, beginComment, endComment: string;
    bc: TBufferCoord;
    strings: TStringList;
    i, count: integer;
    afterLine: boolean;
 begin
+   if AText.IsEmpty then
+      exit;
+   line := '';
+   bline := '';
    strings := TStringList.Create;
    try
       for i := 1 to AText.Length do
@@ -363,64 +367,60 @@ begin
             line := '';
          end;
       end;
-      line := '';
-      try        // this try..except block handles strange "Cannot open clipboard" error
-         Clipboard.Open;
-         if Clipboard.HasFormat(CF_TEXT) then
-            line := Clipboard.AsText;
-         bc := memCodeEditor.CaretXY;
-         beginComment := GInfra.CurrentLang.CommentBegin;
-         endComment := GInfra.CurrentLang.CommentEnd;
-         count := strings.Count - 1;
-         afterLine := true;
-         for i := 0 to count do
+      Clipboard.Open;
+      if Clipboard.HasFormat(CF_TEXT) then
+         bline := Clipboard.AsText;
+      bc := memCodeEditor.CaretXY;
+      beginComment := GInfra.CurrentLang.CommentBegin;
+      endComment := GInfra.CurrentLang.CommentEnd;
+      count := strings.Count - 1;
+      afterLine := true;
+      for i := 0 to count do
+      begin
+         if memCodeEditor.CaretX <= memCodeEditor.Lines[memCodeEditor.CaretY-1+i].Length then
          begin
-            if memCodeEditor.CaretX <= memCodeEditor.Lines[memCodeEditor.CaretY-1+i].Length then
-            begin
-              afterLine := false;
-              break;
-            end;
+            afterLine := false;
+            break;
          end;
-         for i := 0 to count do
+      end;
+      for i := 0 to count do
+      begin
+         line := ' ' + Trim(strings[i]);
+         memCodeEditor.CaretY := bc.Line + i;
+         memCodeEditor.CaretX := bc.Char;
+         if afterLine then
          begin
-            line := ' ' + Trim(strings[i]);
-            memCodeEditor.CaretY := bc.Line + i;
-            memCodeEditor.CaretX := bc.Char;
-            if afterLine then
+            line := beginComment + line;
+            if not endComment.IsEmpty then
+               line := line + ' ' + endComment;
+         end
+         else
+         begin
+            if i = 0 then
             begin
                line := beginComment + line;
-               if not endComment.IsEmpty then
+               if (count = i) and not endComment.IsEmpty then
                   line := line + ' ' + endComment;
             end
-            else
+            else if i = count then
             begin
-               if i = 0 then
-               begin
-                  line := beginComment + line;
-                  if (count = i) and not endComment.IsEmpty then
-                     line := line + ' ' + endComment;
-               end
-               else if i = count then
-               begin
-                  if endComment.IsEmpty then
-                     line := beginComment + line
-                  else
-                     line := line + ' ' + endComment;
-               end
-               else if endComment.IsEmpty then
-                  line := beginComment + line;
-               memCodeEditor.Lines.Insert(memCodeEditor.CaretY-1, '');
-            end;
-            Clipboard.AsText := line;
-            memCodeEditor.PasteFromClipboard;
+               if endComment.IsEmpty then
+                  line := beginComment + line
+               else
+                  line := line + ' ' + endComment;
+            end
+            else if endComment.IsEmpty then
+               line := beginComment + line;
+            memCodeEditor.Lines.Insert(memCodeEditor.CaretY-1, '');
          end;
-      except
+         Clipboard.AsText := line;
+         memCodeEditor.PasteFromClipboard;
       end;
    finally
-      strings.Free;
-      if not line.IsEmpty then
-         Clipboard.AsText := line;
+      if not bline.IsEmpty then
+         Clipboard.AsText := bline;
       Clipboard.Close;
+      strings.Free;
    end;
 end;
 
@@ -644,7 +644,7 @@ begin
          memCodeEditor.PasteFromClipboard;
       end;
    finally
-      if txt <> '' then
+      if not txt.IsEmpty then
          Clipboard.AsText := txt;
       Clipboard.Close;
    end;

@@ -17,11 +17,11 @@
     <EnabledCompiler>true</EnabledCompiler>
     <EnabledUserFunctionHeader>true</EnabledUserFunctionHeader>
     <EnabledUserFunctionBody>true</EnabledUserFunctionBody>
-    <EnabledUserDataTypes>true</EnabledUserDataTypes>
     <EnabledPointers>false</EnabledPointers>
     <EnabledExplorer>true</EnabledExplorer>
     <EnabledCodeGenerator>true</EnabledCodeGenerator>
     <EnabledMainProgram>true</EnabledMainProgram>
+    <EnabledUserDataTypes>false</EnabledUserDataTypes>
     <CaseSensitiveSyntax>true</CaseSensitiveSyntax>
     <AllowEnumsInForLoop>true</AllowEnumsInForLoop>
     <AllowUserFunctionOverload>true</AllowUserFunctionOverload>
@@ -178,120 +178,5 @@ def %s1(%s3):
 <LibEntryList>%s, </LibEntryList>
 
 <LibEntryListStripCount>2</LibEntryListStripCount>
-
-<!--
-Element DataTypesTemplate
-Description: Template for data types section
-Available placeholders:
-   %s1 - list of data type declarations  
--->
-<DataTypesTemplate>type
-	%s1
-
-</DataTypesTemplate>
-
-<!--
-Element DataTypeIntMask
-Description: Template for integer number types
-If there is no need to generate this kind of data types, it should be empty or removed.
-Available placeholders:
-   %s1 - data type name  
--->
-<DataTypeIntMask>%s1 = integer;</DataTypeIntMask>
-
-<!--
-Element DataTypeRealMask
-Description: Template for real number types
-If there is no need to generate this kind of data types, it should be empty or removed.
-Available placeholders:
-   %s1 - type name  
--->
-<DataTypeRealMask>%s1 = real;</DataTypeRealMask>
-
-<!--
-Element DataTypeOtherMask
-Description: Template for other types
-If there is no need to generate this kind of data types, it should be empty or removed.
-Available placeholders:
-   %s1 - type name
-   %s2 - base type
--->
-<DataTypeOtherMask>%s1 = %s2;</DataTypeOtherMask>
-
-<!--
-Element DataTypeArrayMask
-Description: Template for other types
-If there is no need to generate this kind of data types, it should be empty or removed.
-Available placeholders:
-   %s1 - array type name
-   %s2 - base array type
-   %s3 - array type size   
--->
-<DataTypeArrayMask>%s1 = %s2%s3;</DataTypeArrayMask>
-
-<!--
-Element DataTypeRecordTemplate
-Description: Template for record type
-Available placeholders:
-   %s1 - record name 
-   %s2 - list of fields (DataTypeRecordFieldMask or DataTypeRecordFieldArrayMask elements)
--->
-<DataTypeRecordTemplate>%s1 = record
-BEGIN
-	%s2
-END;
-
-</DataTypeRecordTemplate>
-
-<!--
-Element DataTypeRecordFieldMask
-Description: Entry for single field (non-array) of record
-Available placeholders:
-   %s1 - field name
-   %s2 - field type
-   %s4 - used if field is a record (element FunctionHeaderArgsEntryRecord)
-   %s5 - used if field is an enumeration (element FunctionHeaderArgsEntryEnum)
--->
-<DataTypeRecordFieldMask>%s4%s5%s2 %s1;</DataTypeRecordFieldMask>
-
-<!--
-Element DataTypeRecordFieldArrayMask
-Description: Entry for single field (array) of record
-Available placeholders are the same as for DataTypeRecordFieldMask element and:
-   %s3 - list of array sizes (VarEntryArraySize element)
--->
-<DataTypeRecordFieldArrayMask>%s4%s5%s2 %s1%s3;</DataTypeRecordFieldArrayMask>
-
-<!--
-Element DataTypeEnumTemplate
-Description: Template for enumeration type
-Available placeholders:
-   %s1 - enumeration name 
-   %s2 - list of values (list of DataTypeEnumEntryList elements)
--->
-<DataTypeEnumTemplate>%s1 = (%s2);</DataTypeEnumTemplate>
-
-<!--
-Element DataTypeEnumEntryList
-Description: Mask for list of enumerated values
-Available placeholders:
-   %s - enumerated value
--->
-<DataTypeEnumEntryList>%s, </DataTypeEnumEntryList>
-
-<!--
-Element DataTypeEnumEntryListStripCount
-Description: It contains number of chars to strip from end of enumeration values list (element DataTypeEnumEntryList); in given example ending to be stripped is ", " 
--->
-<DataTypeEnumEntryListStripCount>2</DataTypeEnumEntryListStripCount>
-
-<!--
-Element UserTypeDesc
-Description: Mask for user datatype description
-Available placeholders:
-   %s1 - type name
-   %s2 - type kind
--->
-<UserTypeDesc>%s2 %s1</UserTypeDesc>
 
 </Language>
