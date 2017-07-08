@@ -366,6 +366,8 @@ var
    size: string;
 begin
    result := ASizeAsString;
+   if result.IsEmpty then
+      exit;
    if GProject <> nil then
    begin
       dataType := GProject.GetUserDataType(ATypeAsString);
@@ -374,10 +376,10 @@ begin
          size := dataType.GetDimensions;
          if not size.IsEmpty then
          begin
-            if (result = '1') or result.IsEmpty then
-               result := size
+            if result <> '1' then
+               result := result + ',' + size
             else
-               result := result + ',' + size;
+               result := size;
          end;
       end;
    end;
