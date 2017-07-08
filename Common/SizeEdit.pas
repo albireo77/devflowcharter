@@ -61,20 +61,24 @@ end;
 function TSizeEdit.ParseSize: boolean;
 var
    txt: string;
-   i: integer;
+   i, dcount: integer;
    lang: TLangDefinition;
 begin
    result := false;
+   dcount := GetDimensionCount;
+   if dcount = MaxInt then
+   begin
+      result := GInfra.CurrentLang.AllowUnboundedArrays;
+      exit;
+   end;
    txt := ReplaceStr(Text, ' ', '');
-   if txt.isEmpty then
-      result := GInfra.CurrentLang.AllowUnboundedArrays
-   else if (Pos(',-', txt) = 0) and (Pos(',0', txt) = 0) and not (CharInSet(txt[1], ['0', '-'])) then
+   if (txt.Length > 0) and (Pos(',-', txt) = 0) and (Pos(',0', txt) = 0) and not (CharInSet(txt[1], ['0', '-'])) then
    begin
       result := true;
       lang := GInfra.GetLangDefinition(PASCAL_LANG_ID);
       if (lang <> nil) and Assigned(lang.Parse) then
       begin
-         for i := 1 to GetDimensionCount do
+         for i := 1 to dcount do
          begin
             result := lang.Parse(GetDimension(i), prsVarSize) = 0;
             if not result then

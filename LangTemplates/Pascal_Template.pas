@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
     
@@ -156,7 +156,7 @@ end;}
 procedure Pascal_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
 var
    bufor, varSize, varInit, line, name, lType, currType: string;
-   i, a, b, dimensCount, cnt: integer;
+   i, a, b, dCount, cnt: integer;
 begin
    if (AVarList <> nil) and (AVarList.sgList.RowCount > 2) and (GProject <> nil) and (GProject.GlobalVars <> nil) then
    begin
@@ -174,10 +174,10 @@ begin
             if lType = currType then
             begin
                varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
-               dimensCount := AVarList.GetDimensionCount(name);
-               if (dimensCount = 0) and (varInit = '') then
+               dCount := AVarList.GetDimensionCount(name);
+               if (dCount = 0) and varInit.IsEmpty then
                begin
-                  if bufor = '' then
+                  if bufor.IsEmpty then
                      bufor := name
                   else
                      bufor := bufor + ', ' + name;
@@ -185,19 +185,22 @@ begin
                else
                begin
                   line := GSettings.IndentString + name + ': ';
-                  if dimensCount > 0 then
+                  if dCount > 0 then
                   begin
                      varSize := '';
-                     for b := 1 to dimensCount do
+                     if dCount < MaxInt then
                      begin
-                        varSize := varSize + '1..' + AVarList.GetDimension(name, b);
-                        if b < dimensCount then
-                           varSize := varSize + ', ';
+                        for b := 1 to dCount do
+                        begin
+                           varSize := varSize + '1..' + AVarList.GetDimension(name, b);
+                           if b < dCount then
+                              varSize := varSize + ', ';
+                        end;
                      end;
                      line := line + 'array[' + varSize + '] of ';
                   end;
                   line := line + lType;
-                  if varInit <> '' then
+                  if not varInit.IsEmpty then
                      line := line + ' = ' + varInit;
                   if cnt = 0 then
                   begin

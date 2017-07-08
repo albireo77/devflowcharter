@@ -372,12 +372,12 @@ begin
       if dataType <> nil then
       begin
          size := dataType.GetDimensions;
-         if size <> '' then
+         if not size.IsEmpty then
          begin
-            if result <> '1' then
-               result := result + ',' + size
+            if (result = '1') or result.IsEmpty then
+               result := size
             else
-               result := size;
+               result := result + ',' + size;
          end;
       end;
    end;
