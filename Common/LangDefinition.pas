@@ -286,8 +286,8 @@ begin
    lVal := '';
    tag := TXMLProcessor.FindChildTag(ATag, 'Name');
    if tag <> nil then
-      lVal := Trim(tag.Text);
-   if lVal = '' then
+      lVal := tag.Text.Trim;
+   if lVal.IsEmpty then
    begin
       GErr_Text := i18Manager.GetString('NameTagNotFound');
       result := errValidate;
@@ -716,23 +716,23 @@ begin
    if tag <> nil then
       UserTypeDesc := tag.Text;
 
-   ForDoVarList := TXMLProcessor.GetBoolFromChildTag(ATag, 'ForDoVarList', ForDoVarList);
-   EnabledPointers := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledPointers', EnabledPointers);
-   EnabledConsts := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledConsts', EnabledConsts);
-   EnabledVars := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledVars', EnabledVars);
-   EnabledCompiler := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledCompiler', EnabledCompiler);
+   ForDoVarList              := TXMLProcessor.GetBoolFromChildTag(ATag, 'ForDoVarList', ForDoVarList);
+   EnabledPointers           := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledPointers', EnabledPointers);
+   EnabledConsts             := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledConsts', EnabledConsts);
+   EnabledVars               := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledVars', EnabledVars);
+   EnabledCompiler           := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledCompiler', EnabledCompiler);
    EnabledUserFunctionHeader := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserFunctionHeader', EnabledUserFunctionHeader);
-   EnabledUserFunctionBody := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserFunctionBody', EnabledUserFunctionBody);
-   EnabledUserDataTypes := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserDataTypes', EnabledUserDataTypes);
-   EnabledExplorer := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledExplorer', EnabledExplorer);
-   EnabledCodeGenerator := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledCodeGenerator', EnabledCodeGenerator);
-   EnabledMainProgram := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledMainProgram', EnabledMainProgram);
-   GenExternVarConst := TXMLProcessor.GetBoolFromChildTag(ATag, 'GenExternVarConst', GenExternVarConst);
-   CaseSensitiveSyntax := TXMLProcessor.GetBoolFromChildTag(ATag, 'CaseSensitiveSyntax', CaseSensitiveSyntax);
-   UpperCaseConstId := TXMLProcessor.GetBoolFromChildTag(ATag, 'UpperCaseConstId', UpperCaseConstId);
-   AllowEnumsInForLoop := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowEnumsInForLoop', AllowEnumsInForLoop);
+   EnabledUserFunctionBody   := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserFunctionBody', EnabledUserFunctionBody);
+   EnabledUserDataTypes      := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserDataTypes', EnabledUserDataTypes);
+   EnabledExplorer           := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledExplorer', EnabledExplorer);
+   EnabledCodeGenerator      := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledCodeGenerator', EnabledCodeGenerator);
+   EnabledMainProgram        := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledMainProgram', EnabledMainProgram);
+   GenExternVarConst         := TXMLProcessor.GetBoolFromChildTag(ATag, 'GenExternVarConst', GenExternVarConst);
+   CaseSensitiveSyntax       := TXMLProcessor.GetBoolFromChildTag(ATag, 'CaseSensitiveSyntax', CaseSensitiveSyntax);
+   UpperCaseConstId          := TXMLProcessor.GetBoolFromChildTag(ATag, 'UpperCaseConstId', UpperCaseConstId);
+   AllowEnumsInForLoop       := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowEnumsInForLoop', AllowEnumsInForLoop);
    AllowUserFunctionOverload := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowUserFunctionOverload', AllowUserFunctionOverload);
-   AllowUnboundedArrays := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowUnboundedArrays', AllowUnboundedArrays);
+   AllowUnboundedArrays      := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowUnboundedArrays', AllowUnboundedArrays);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'NativeDataTypes');
    if tag <> nil then
@@ -742,8 +742,8 @@ begin
       while tag <> nil do
       begin
          lOrigType := nil;
-         lName := Trim(tag.Text);
-         if lName <> '' then
+         lName := tag.Text.Trim;
+         if not lName.IsEmpty then
          begin
             kinds := tag.GetAttribute('kind');
             if kinds = 'int' then
@@ -759,7 +759,7 @@ begin
                if EnabledPointers then
                begin
                   lKind := tpPtr;
-                  lVal := Trim(tag.GetAttribute('origtype'));
+                  lVal := tag.GetAttribute('origtype').Trim;
                   for i := 0 to a-1 do
                   begin
                      if SameText(lVal, NativeDataTypes[i].Name) then
@@ -775,7 +775,7 @@ begin
             else
                lKind := tpOther;
          end;
-         if lName <> '' then
+         if not lName.IsEmpty then
          begin
             a := a + 1;
             SetLength(NativeDataTypes, a);
@@ -810,8 +810,8 @@ begin
       tag := TXMLProcessor.FindChildTag(tag, 'Function');
       while tag <> nil do
       begin
-         lVal := Trim(tag.Text);
-         if lVal <> '' then
+         lVal := tag.Text.Trim;
+         if not lVal.IsEmpty then
             NativeFunctions.Add(lVal);
          tag := TXMLProcessor.FindNextTag(tag);
       end;
