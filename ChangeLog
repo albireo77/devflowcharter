@@ -1,9 +1,10 @@
-4.5 [xx.07.2017]
+4.5 [08.07.2017]
 - Code Editor: code folding is back
 - Code Editor: fix not saving highlighter setting
 - Code Editor: improvements to pasting multiline comments
 - fix not displayed detailed info if something went wrong upon loading project
-- add Python support
+- initial support for Python
+- many fixes and improvements
 
 IMPORTANT NOTES:
 Due to some reorganizations done to language definition file structure (e.g. new tags to support Python) it is strongly advised to use config files delivered with this release.
