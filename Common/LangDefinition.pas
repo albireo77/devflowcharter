@@ -353,7 +353,7 @@ begin
       FuncBrackets := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'DecimalSeparator');
-   if (tag <> nil) and (tag.Text <> '') then
+   if (tag <> nil) and not tag.Text.IsEmpty then
       DecimalSeparator := tag.Text[1];
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ExternEntry');
@@ -515,10 +515,6 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'CaseOfDescTemplate');
    if tag <> nil then
       CaseOfDescTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'RepeatUntilAsDoWhile');
-   if tag <> nil then
-      RepeatUntilAsDoWhile := CompareText(tag.Text, 'True') = 0;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'MainProgramTemplate');
    if tag <> nil then
@@ -718,6 +714,7 @@ begin
 
    ForDoVarList              := TXMLProcessor.GetBoolFromChildTag(ATag, 'ForDoVarList', ForDoVarList);
    EnabledPointers           := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledPointers', EnabledPointers);
+   RepeatUntilAsDoWhile      := TXMLProcessor.GetBoolFromChildTag(ATag, 'RepeatUntilAsDoWhile', RepeatUntilAsDoWhile);
    EnabledConsts             := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledConsts', EnabledConsts);
    EnabledVars               := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledVars', EnabledVars);
    EnabledCompiler           := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledCompiler', EnabledCompiler);
