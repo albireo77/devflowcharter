@@ -388,8 +388,8 @@ var
 begin
    i := 0;
    lList := nil;
-   lName := Trim(AInfo.SelText);
-   if lName <> '' then
+   lName := AInfo.SelText.Trim;
+   if not lName.IsEmpty then
    begin
       i := sgList.Cols[NAME_COL].IndexOf(lName);
       if i > 0 then
@@ -665,7 +665,7 @@ end;
 
 procedure TDeclareList.OnClickImport(Sender: TObject);
 begin
-   if TXMLProcessor.ImportFromXMLFile(ImportFromXMLTag) <> '' then
+   if not TXMLProcessor.ImportFromXMLFile(ImportFromXMLTag).IsEmpty then
       TInfra.UpdateCodeEditor;
 end;
 
@@ -936,8 +936,8 @@ var
    idx: integer;
 begin
    result := errValidate;
-   lName := Trim(ATag.GetAttribute(NAME_ATTR));
-   if (lName <> '') and (sgList.Cols[NAME_COL].IndexOf(lName) < 1) then
+   lName := ATag.GetAttribute(NAME_ATTR).Trim;
+   if (not lName.IsEmpty) and (sgList.Cols[NAME_COL].IndexOf(lName) < 1) then
    begin
       idx := sgList.RowCount - 1;
       sgList.Cells[NAME_COL, idx] := lName;

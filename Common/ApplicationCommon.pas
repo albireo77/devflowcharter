@@ -815,7 +815,7 @@ begin
       if result.Trim = iend then
          result := ReplaceStr(result, iend, '')
       else if EndsText(iend + iend, result) then
-         SetLength(result, Length(result) - Length(iend));
+         SetLength(result, result.Length - iend.Length);
    end;
 end;
 
@@ -852,7 +852,7 @@ begin
          lEnd := '';
          if (ATemplate <> nil) and (ATemplate.Count > 0) then
          begin
-            for a := p+Length(APlaceHolder) to Length(ADestList[i]) do
+            for a := p+APlaceHolder.Length to ADestList[i].Length do
                lEnd := lEnd + ADestList[i][a];
             for a := 1 to p-1 do
                lBegin := lBegin + ADestList[i][a];
@@ -1099,7 +1099,7 @@ begin
                end;
             end;
             indent := TInfra.ExtractIndentString(result.CodeRange.Lines[result.Row]);
-            result.Col := Length(indent);
+            result.Col := indent.Length;
             if result.Row = ROW_NOT_FOUND then    // row with placeholder not found
             begin
                result.Row := result.CodeRange.FirstRow;
@@ -1135,7 +1135,7 @@ var
    i: integer;
 begin
    result := AText;
-   for i := 1 to Length(result) do
+   for i := 1 to result.Length do
    begin
       if not CharInSet(result[i], [#32, #9, INDENT_CHAR]) then
          break;
@@ -1236,7 +1236,7 @@ begin
    if (result = INCORRECT_IDENT) and (not CurrentLang.ConstIDSpecChars.IsEmpty) and not AId.Trim.IsEmpty then
    begin
       result := VALID_IDENT;
-      for i := 1 to Length(AId) do
+      for i := 1 to AId.Length do
       begin
          if (Pos(AId[i], CurrentLang.ConstIDSpecChars) = 0) and not CharInSet(AId[i], ID_ALLOW_CHARS) then
          begin
