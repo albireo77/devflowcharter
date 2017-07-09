@@ -174,8 +174,8 @@ var
    pageControl: TPageControl;
 begin
    result := nil;
-   caption := Trim(ACaption);
-   if caption <> '' then
+   caption := ACaption.Trim;
+   if not caption.IsEmpty then
    begin
       pageControl := TInfra.GetMainForm.pgcPages;
       for i := 0 to pageControl.PageCount-1 do
@@ -448,10 +448,10 @@ begin
       activePage := nil;
       pageName := '';
       pageFront := ATag.GetAttribute(PAGE_FRONT_ATTR);
-      if pageFront = '' then
+      if pageFront.IsEmpty then
          activePage := GetMainPage;
       pageList := ATag.GetAttribute(PAGE_ORDER_ATTR);
-      len := Length(pageList);
+      len := pageList.Length;
       for i := 1 to len do
       begin
          page := nil;
@@ -494,7 +494,7 @@ begin
    else
       s := 'ChangeLngAsk';
    if (not SameText(GInfra.CurrentLang.Name, langName)) and
-      (TInfra.ShowFormattedQuestionBox(s, [Trim(langName), CRLF], MB_YESNO+MB_ICONQUESTION) = IDYES) then
+      (TInfra.ShowFormattedQuestionBox(s, [langName.Trim, CRLF], MB_YESNO+MB_ICONQUESTION) = IDYES) then
    begin
       GInfra.SetCurrentLang(langName);
 {$IFDEF USE_CODEFOLDING}
@@ -1161,7 +1161,7 @@ begin
       if Supports(iter.Next, ITabbable, tab) then
       begin
          libName := tab.GetLibName;
-         if (libName <> '') and (result.IndexOf(libName) = -1) then
+         if (result.IndexOf(libName) = -1) and not libName.IsEmpty then
             result.Add(libName);
       end;
    end;
@@ -1197,7 +1197,7 @@ var
    tab: ITabbable;
 begin
    result := nil;
-   if Trim(AName) <> '' then
+   if not AName.Trim.IsEmpty then
    begin
       for i := 0 to FComponentList.Count-1 do
       begin

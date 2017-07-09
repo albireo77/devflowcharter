@@ -233,9 +233,9 @@ begin
       min := -1;
       for i := 0 to lines.Count-1 do
       begin
-         if Trim(lines[i]) = '' then
+         if lines[i].Trim.IsEmpty then
             continue;
-         len := Length(TInfra.ExtractIndentString(lines[i]));
+         len := TInfra.ExtractIndentString(lines[i]).Length;
          if (min = -1) or (len < min) then
             min := len;
       end;
@@ -707,7 +707,7 @@ begin
     mainBlock := GProject.GetMainBlock;
     command := GInfra.CurrentLang.CompilerCommand;
     commandNoMain := GInfra.CurrentLang.CompilerCommandNoMain;
-    if (command <> '') or ((mainBlock = nil) and (commandNoMain <> '')) then
+    if (not command.IsEmpty) or ((mainBlock = nil) and not commandNoMain.IsEmpty) then
     begin
        if SaveDialog1.Execute then
        begin
@@ -1044,10 +1044,10 @@ begin
    if (p1.Line > 0) and (p1.Line < p.Line) then
    begin
       i := p1.Line - 1;
-      if (Length(Trim(memCodeEditor.Lines[i])) < 2) and (i > 0) and (Trim(memCodeEditor.Lines[i-1]) <> '') then
+      if (memCodeEditor.Lines[i].Trim.Length < 2) and (i > 0) and not memCodeEditor.Lines[i-1].Trim.IsEmpty then
          Dec(i);
       h := BuildBracketHint(i, p.Line-2);
-      if h <> '' then
+      if not h.IsEmpty then
       begin
          with memCodeEditor do
          begin
@@ -1063,7 +1063,7 @@ begin
       end;
    end;
    w := memCodeEditor.GetWordAtRowCol(p);
-   if w <> '' then
+   if not w.IsEmpty then
    begin
       show := true;
       if memCodeEditor.Highlighter <> nil then
@@ -1318,7 +1318,7 @@ begin
    if (idx >= 0) and (idx < ALines.Count) then
    begin
       line := ALines[idx];
-      for i := 1 to Length(line) do
+      for i := 1 to line.Length do
       begin
          if line[i] = INDENT_CHAR then
             result := i
@@ -1500,7 +1500,7 @@ begin
                    i18Manager.GetString('RTFFilesFilter') + '|' +
                    i18Manager.GetString('HTMLFilesFilter');
       end;
-      if GProject.Name <> '' then
+      if not GProject.Name.IsEmpty then
          FileName := GProject.Name
       else
          FileName := i18Manager.GetString('Unknown');
@@ -1620,14 +1620,14 @@ begin
       if dispCoord.Row > 0 then
       begin
          focusInfo.Line := dispCoord.Row - 1;
-         focusInfo.LineText := TrimLeft(memCodeEditor.Lines[focusInfo.Line]);
+         focusInfo.LineText := memCodeEditor.Lines[focusInfo.Line].TrimLeft;
          codeRange := SelectCodeRange(memCodeEditor.Lines.Objects[focusInfo.Line], false);
          if codeRange.FirstRow <> ROW_NOT_FOUND then
             focusInfo.RelativeLine := focusInfo.Line - codeRange.FirstRow;
          bufCoord := memCodeEditor.CharIndexToRowCol(memCodeEditor.SelStart);
          if bufCoord.Line = dispCoord.Row then
          begin
-            focusInfo.SelStart := bufCoord.Char - Length(memCodeEditor.Lines[dispCoord.Row-1]) + Length(focusInfo.LineText);
+            focusInfo.SelStart := bufCoord.Char - memCodeEditor.Lines[dispCoord.Row-1].Length + focusInfo.LineText.Length;
             focusInfo.SelText := MidStr(focusInfo.LineText, focusInfo.SelStart, memCodeEditor.SelLength);
          end;
       end;
