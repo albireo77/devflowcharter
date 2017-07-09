@@ -259,7 +259,7 @@ begin
       repeat
          lFile := LANG_DEFS_PATH + searchRec.Name;
          lang := TLangDefinition.Create;
-         if TXMLProcessor.ImportFromXMLFile(lang.ImportFromXML, lFile, true) <> '' then
+         if not TXMLProcessor.ImportFromXMLFile(lang.ImportFromXML, lFile, true).IsEmpty then
          begin
             lang.DefFile := lFile;
             SetLength(FLangArray, i+1);
@@ -761,7 +761,7 @@ begin
       begin
          dataType := TUserDataType(iter.Next);
          lName := dataType.GetName;
-         if (dataType.PageIndex < ASkipIndex) and (lName <> '') then
+         if (dataType.PageIndex < ASkipIndex) and not lName.IsEmpty then
          begin
             AcbType.Items.Add(lName);
             if dataType.chkAddPtrType.Checked and (lang <> nil) then
@@ -810,9 +810,9 @@ var
 begin
    result := ALine;
    iend := GInfra.CurrentLang.InstrEnd;
-   if (result <> '') and (iend <> '') then
+   if (not result.IsEmpty) and not iend.IsEmpty then
    begin
-      if Trim(result) = iend then
+      if result.Trim = iend then
          result := ReplaceStr(result, iend, '')
       else if EndsText(iend + iend, result) then
          SetLength(result, Length(result) - Length(iend));
@@ -824,7 +824,7 @@ var
    template: TStringList;
 begin
    template := nil;
-   if ATemplateString <> '' then
+   if not ATemplateString.IsEmpty then
    begin
       template := TStringList.Create;
       template.Text := ATemplateString;
@@ -870,7 +870,7 @@ begin
          end
          else
          begin
-            if Trim(ADestList[i]) = APlaceHolder then
+            if ADestList[i].Trim = APlaceHolder then
                ADestList.Delete(i)
             else
             begin
@@ -1023,7 +1023,7 @@ begin
    errString := '';
    if Assigned(GInfra.CurrentLang.Parse) and (GInfra.CurrentLang.Parse(AText, AParserMode) = 1) then
    begin
-      if errString = '' then
+      if errString.IsEmpty then
          errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[AParserMode]);
       result := false;
    end;
@@ -1233,7 +1233,7 @@ var
    i: integer;
 begin
    result := ValidateId(AId);
-   if (result = INCORRECT_IDENT) and (CurrentLang.ConstIDSpecChars <> '') and (Trim(AId) <> '') then
+   if (result = INCORRECT_IDENT) and (not CurrentLang.ConstIDSpecChars.IsEmpty) and not AId.Trim.IsEmpty then
    begin
       result := VALID_IDENT;
       for i := 1 to Length(AId) do
