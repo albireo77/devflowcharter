@@ -109,7 +109,7 @@ begin
    ATag.SetAttribute('struct_win_h', IntToStr(Height));
    if Visible then
    begin
-      ATag.SetAttribute('struct_win_show', '1');
+      ATag.SetAttribute('struct_win_show', 'true');
       ATag.SetAttribute('struct_win_x', IntToStr(Left));
       ATag.SetAttribute('struct_win_y', IntToStr(Top));
       if pgcTabs.ActivePageIndex <> -1 then
@@ -121,7 +121,7 @@ begin
             ATag.SetAttribute('struct_scroll_v', IntToStr(val));
       end;
       if WindowState = wsMinimized then
-         ATag.SetAttribute('struct_win_min', '1');
+         ATag.SetAttribute('struct_win_min', 'true');
    end;
 end;
 
@@ -133,10 +133,10 @@ begin
    val := StrToIntDef(ATag.GetAttribute('struct_win_h'), -1);
    if val > -1 then
       Height := val;
-   if (ATag.GetAttribute('struct_win_show') = '1') and GInfra.CurrentLang.EnabledUserDataTypes then
+   if TXMLProcessor.GetBoolFromAttr(ATag, 'struct_win_show') and GInfra.CurrentLang.EnabledUserDataTypes then
    begin
       Position := poDesigned;
-      if ATag.GetAttribute('struct_win_min') = '1' then
+      if TXMLProcessor.GetBoolFromAttr(ATag, 'struct_win_min') then
          WindowState := wsMinimized;
       val := StrToIntDef(ATag.GetAttribute('struct_win_x'), -1);
       if val > -1 then

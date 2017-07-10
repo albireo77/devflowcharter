@@ -45,7 +45,7 @@ var
 implementation
 
 uses
-   Vcl.Forms, System.SysUtils, ApplicationCommon;
+   Vcl.Forms, System.SysUtils, ApplicationCommon, XMLProcessor;
 
 {$R *.dfm}
 
@@ -55,11 +55,11 @@ begin
    ATag.SetAttribute('var_win_w', IntToStr(Width));
    if Visible then
    begin
-      ATag.SetAttribute('var_win_show', '1');
+      ATag.SetAttribute('var_win_show', 'true');
       ATag.SetAttribute('var_win_x', IntToStr(Left));
       ATag.SetAttribute('var_win_y', IntToStr(Top));
       if WindowState = wsMinimized then
-         ATag.SetAttribute('var_win_min', '1');
+         ATag.SetAttribute('var_win_min', 'true');
    end;
 end;
 
@@ -73,10 +73,10 @@ begin
    val := StrToIntDef(ATag.GetAttribute('var_win_w'), -1);
    if val > -1 then
       Width := val;
-   if (ATag.GetAttribute('var_win_show') = '1') and (GInfra.CurrentLang.EnabledVars or GInfra.CurrentLang.EnabledConsts) then
+   if TXMLProcessor.GetBoolFromAttr(ATag, 'var_win_show') and (GInfra.CurrentLang.EnabledVars or GInfra.CurrentLang.EnabledConsts) then
    begin
       Position := poDesigned;
-      if ATag.GetAttribute('var_win_min') = '1' then
+      if TXMLProcessor.GetBoolFromAttr(ATag, 'var_win_min') then
          WindowState := wsMinimized;
       val := StrToIntDef(ATag.GetAttribute('var_win_x'), -1);
       if val > -1 then

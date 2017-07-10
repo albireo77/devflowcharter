@@ -76,7 +76,7 @@ implementation
 
 uses
    Vcl.Graphics, Vcl.Forms, System.SysUtils, System.UITypes, ApplicationCommon,
-   Case_Block, Base_Block;
+   Case_Block, Base_Block, XMLProcessor;
 
 procedure TExplorerForm.FormShow(Sender: TObject);
 begin
@@ -313,14 +313,14 @@ procedure TExplorerForm.ExportSettingsToXMLTag(ATag: IXMLElement);
 begin
    if Visible then
    begin
-      ATag.SetAttribute('tree_win_show', '1');
+      ATag.SetAttribute('tree_win_show', 'true');
       ATag.SetAttribute('tree_win_x', IntToStr(Left));
       ATag.SetAttribute('tree_win_y', IntToStr(Top));
       ATag.SetAttribute('tree_win_w', IntToStr(Width));
       ATag.SetAttribute('tree_win_h', IntToStr(Height));
       ATag.SetAttribute('tree_top_y', IntToStr(tvExplorer.TopItem.AbsoluteIndex));
       if WindowState = wsMinimized then
-         ATag.SetAttribute('tree_win_min', '1');
+         ATag.SetAttribute('tree_win_min', 'true');
    end;
 end;
 
@@ -329,7 +329,7 @@ var
    rect: TRect;
    topY: integer;
 begin
-   if (ATag.GetAttribute('tree_win_show') = '1') and GInfra.CurrentLang.EnabledExplorer then
+   if TXMLProcessor.GetBoolFromAttr(ATag, 'tree_win_show') and GInfra.CurrentLang.EnabledExplorer then
    begin
       rect.Left := StrToIntDef(ATag.GetAttribute('tree_win_x'), 50);
       rect.Top := StrToIntDef(ATag.GetAttribute('tree_win_y'), 50);
@@ -337,7 +337,7 @@ begin
       rect.Bottom := StrToIntDef(ATag.GetAttribute('tree_win_h'), 574);
       Position := poDesigned;
       SetBounds(rect.Left, rect.Top, rect.Right, rect.Bottom);
-      if ATag.GetAttribute('tree_win_min') = '1' then
+      if TXMLProcessor.GetBoolFromAttr(ATag, 'tree_win_min') then
          WindowState := wsMinimized;
       Show;
       topY := StrToIntDef(ATag.GetAttribute('tree_top_y'), -2);

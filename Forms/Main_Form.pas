@@ -1429,7 +1429,7 @@ begin
    begin
       edit := TCustomEdit(pmEdits.PopupComponent);
       miUndo.Enabled := edit.CanUndo;
-      miCut1.Enabled := edit.SelText <> '';
+      miCut1.Enabled := not edit.SelText.IsEmpty;
       miCopy1.Enabled := miCut1.Enabled;
       miRemove1.Enabled := miCut1.Enabled;
       miPaste1.Enabled := Clipboard.HasFormat(CF_TEXT);

@@ -38,7 +38,7 @@ implementation
 
 uses
    WinApi.Windows, System.SysUtils, Vcl.Graphics, Vcl.Forms, System.Types, ApplicationCommon,
-   BlockTabSheet;
+   BlockTabSheet, XMLProcessor;
 
 {$R *.dfm}
 
@@ -143,13 +143,13 @@ procedure TNavigatorForm.ExportSettingsToXMLTag(ATag: IXMLElement);
 begin
    if Visible then
    begin
-      ATag.SetAttribute('nav_win_show', '1');
+      ATag.SetAttribute('nav_win_show', 'true');
       ATag.SetAttribute('nav_win_x', IntToStr(Left));
       ATag.SetAttribute('nav_win_y', IntToStr(Top));
       ATag.SetAttribute('nav_win_width', IntToStr(Width));
       ATag.SetAttribute('nav_win_height', IntToStr(Height));
       if WindowState = wsMinimized then
-         ATag.SetAttribute('nav_win_min', '1');
+         ATag.SetAttribute('nav_win_min', 'true');
    end;
 end;
 
@@ -157,10 +157,10 @@ procedure TNavigatorForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
 var
    x, y, w, h: integer;
 begin
-   if ATag.GetAttribute('nav_win_show') = '1' then
+   if TXMLProcessor.GetBoolFromAttr(ATag, 'nav_win_show') then
    begin
       Position := poDesigned;
-      if ATag.GetAttribute('nav_win_min') = '1' then
+      if TXMLProcessor.GetBoolFromAttr(ATag, 'nav_win_min') then
          WindowState := wsMinimized;
       x := StrToIntDef(ATag.GetAttribute('nav_win_x'), 50);
       y := StrToIntDef(ATag.GetAttribute('nav_win_y'), 50);

@@ -112,7 +112,7 @@ begin
 
    GInfra.DummyLang.ProgramHeaderSectionGenerator(ALines);
 
-   if GProject.Name = '' then
+   if GProject.Name.IsEmpty then
       progName := i18Manager.GetString('Unknown')
    else
       progName := GProject.Name;
@@ -155,7 +155,7 @@ end;}
 
 procedure Pascal_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
 var
-   bufor, varSize, varInit, line, name, lType, currType: string;
+   buf, varSize, varInit, line, name, lType, currType: string;
    i, a, b, dCount, cnt: integer;
 begin
    if (AVarList <> nil) and (AVarList.sgList.RowCount > 2) and (GProject <> nil) and (GProject.GlobalVars <> nil) then
@@ -163,7 +163,7 @@ begin
       cnt := 0;
       for a := 0 to GProject.GlobalVars.cbType.Items.Count-1 do
       begin
-         bufor := '';
+         buf := '';
          currType := GProject.GlobalVars.cbType.Items[a];
          for i := 1 to AVarList.sgList.RowCount-2 do
          begin
@@ -177,10 +177,10 @@ begin
                dCount := AVarList.GetDimensionCount(name);
                if (dCount = 0) and varInit.IsEmpty then
                begin
-                  if bufor.IsEmpty then
-                     bufor := name
+                  if buf.IsEmpty then
+                     buf := name
                   else
-                     bufor := bufor + ', ' + name;
+                     buf := buf + ', ' + name;
                end
                else
                begin
@@ -211,14 +211,14 @@ begin
                end;
             end;
          end;
-         if bufor <> '' then
+         if not buf.IsEmpty then
          begin
             if cnt = 0 then
             begin
                ALines.Add('var');
                cnt := 1;
             end;
-            ALines.AddObject(GSettings.IndentString + bufor + ': ' + currType + ';', AVarList);
+            ALines.AddObject(GSettings.IndentString + buf + ': ' + currType + ';', AVarList);
          end;
       end;
    end;
@@ -381,13 +381,12 @@ end;
 
 function Pascal_GetLiteralType(const AValue: string): integer;
 var
-   i, len: integer;
+   i: integer;
    f: double;
    b: boolean;
 begin
    result := UNKNOWN_TYPE;
-   len := Length(AValue);
-   if len > 0 then
+   if not AValue.IsEmpty then
    begin
       if not TryStrToInt(AValue, i) then
       begin
@@ -395,9 +394,9 @@ begin
          begin
             if not TryStrToBool(AValue, b) then
             begin
-               if (AValue[1] = PASCAL_STRING_DELIM) and (AValue[len] = PASCAL_STRING_DELIM) then
+               if AValue.StartsWith(PASCAL_STRING_DELIM) and AValue.EndsWith(PASCAL_STRING_DELIM) then
                begin
-                  if len = 3 then
+                  if AValue.Length = 3 then
                      result := PASCAL_CHAR_TYPE
                   else
                      result := PASCAL_STRING_TYPE;
@@ -518,7 +517,7 @@ end;}
 
 function Pascal_IsPointerType(const AType: string): boolean;
 begin
-   result := (Length(AType) > 1) and (AType[1] = '^');
+   result := (AType.Length > 1) and (AType[1] = '^');
 end;
 
 function Pascal_GetOriginalType(const AType: string): string;

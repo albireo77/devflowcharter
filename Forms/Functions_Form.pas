@@ -50,7 +50,7 @@ implementation
 
 uses
    Vcl.Forms, System.SysUtils, ApplicationCommon, Base_Block, Main_Block, Navigator_Form,
-   UserFunction, CommonInterfaces;
+   UserFunction, CommonInterfaces, XMLProcessor;
 
 procedure TFunctionsForm.miAddClick(Sender: TObject);
 begin
@@ -101,7 +101,7 @@ begin
    ATag.SetAttribute('func_win_h', IntToStr(Height));
    if Visible then
    begin
-      ATag.SetAttribute('func_win_show', '1');
+      ATag.SetAttribute('func_win_show', 'true');
       ATag.SetAttribute('func_win_x', IntToStr(Left));
       ATag.SetAttribute('func_win_y', IntToStr(Top));
       if pgcTabs.ActivePageIndex <> -1 then
@@ -113,7 +113,7 @@ begin
             ATag.SetAttribute('func_scroll_v', IntToStr(val));
       end;
       if WindowState = wsMinimized then
-         ATag.SetAttribute('func_win_min', '1');
+         ATag.SetAttribute('func_win_min', 'true');
    end;
 end;
 
@@ -130,10 +130,10 @@ begin
    val := StrToIntDef(ATag.GetAttribute('func_win_h'), -1);
    if val > -1 then
       Height := val;
-   if (ATag.GetAttribute('func_win_show') = '1') and GInfra.CurrentLang.EnabledUserFunctionHeader then
+   if TXMLProcessor.GetBoolFromAttr(ATag, 'func_win_show') and GInfra.CurrentLang.EnabledUserFunctionHeader then
    begin
       Position := poDesigned;
-      if ATag.GetAttribute('func_win_min') = '1' then
+      if TXMLProcessor.GetBoolFromAttr(ATag, 'func_win_min') then
          WindowState := wsMinimized;
       val := StrToIntDef(ATag.GetAttribute('func_win_x'), -1);
       if val > -1 then

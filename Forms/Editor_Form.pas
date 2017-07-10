@@ -1342,7 +1342,7 @@ var
 begin
    if Visible then
    begin
-      ATag.SetAttribute('src_win_show', '1');
+      ATag.SetAttribute('src_win_show', 'true');
       ATag.SetAttribute('src_win_x', IntToStr(Left));
       ATag.SetAttribute('src_win_y', IntToStr(Top));
       ATag.SetAttribute('src_win_w', IntToStr(Width));
@@ -1363,7 +1363,7 @@ begin
       if memCodeEditor.TopLine > 1 then
          ATag.SetAttribute('src_top_line', IntToStr(memCodeEditor.TopLine));
       if WindowState = wsMinimized then
-         ATag.SetAttribute('src_win_min', '1');
+         ATag.SetAttribute('src_win_min', 'true');
 {$IFDEF USE_CODEFOLDING}
       if memCodeEditor.CodeFolding.Enabled then
       begin
@@ -1394,7 +1394,8 @@ begin
             tag2.SetAttribute(ID_ATTR, IntToStr(idObject.Id));
          ATag.AppendChild(tag2);
       end;
-      ATag.SetAttribute('modified', BoolToStr(memCodeEditor.Modified, true));
+      if memCodeEditor.Modified then
+         ATag.SetAttribute('modified', 'true');
    end;
 end;
 
@@ -1410,7 +1411,7 @@ var
    tag2: IXMLElement;
 {$ENDIF}
 begin
-   if (ATag.GetAttribute('src_win_show') = '1') and GInfra.CurrentLang.EnabledCodeGenerator then
+   if TXMLProcessor.GetBoolFromAttr(ATag, 'src_win_show') and GInfra.CurrentLang.EnabledCodeGenerator then
    begin
       rect.Left := StrToIntDef(ATag.GetAttribute('src_win_x'), 50);
       rect.Top := StrToIntDef(ATag.GetAttribute('src_win_y'), 50);
@@ -1418,7 +1419,7 @@ begin
       rect.Bottom := StrToIntDef(ATag.GetAttribute('src_win_h'), 558);
       Position := poDesigned;
       SetBounds(rect.Left, rect.Top, rect.Right, rect.Bottom);
-      if ATag.GetAttribute('src_win_min') = '1' then
+      if TXMLProcessor.GetBoolFromAttr(ATag, 'src_win_min') then
          WindowState := wsMinimized;
       OnShow := nil;
       Show;
@@ -1436,7 +1437,7 @@ begin
          memCodeEditor.Highlighter := GInfra.CurrentLang.HighLighter;
       memCodeEditor.ClearUndo;
       memCodeEditor.SetFocus;
-      memCodeEditor.Modified := ATag.GetAttribute('modified') = 'True';
+      memCodeEditor.Modified := TXMLProcessor.GetBoolFromAttr(ATag, 'modified');
       memCodeEditor.SelStart := StrToIntDef(ATag.GetAttribute('src_win_sel_start'), 0);
       memCodeEditor.SelLength := StrToIntDef(ATag.GetAttribute('src_win_sel_length'), 0);
 {$IFDEF USE_CODEFOLDING}

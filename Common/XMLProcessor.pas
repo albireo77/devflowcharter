@@ -111,7 +111,7 @@ begin
    ctag := FindChildTag(ATag, ATagName);
    if ctag <> nil then
    begin
-      ctext := Trim(ctag.Text);
+      ctext := ctag.Text.Trim;
       if TryStrToInt(ctext, i) then
          result := i <> 0
       else if SameText('true', ctext) then
@@ -130,7 +130,7 @@ begin
    result := ADefault;
    if ATag <> nil then
    begin
-      attr := Trim(ATag.GetAttribute(AAttrName));
+      attr := ATag.GetAttribute(AAttrName).Trim;
       if TryStrToInt(attr, i) then
          result := i <> 0
       else if SameText('true', attr) then
@@ -160,7 +160,7 @@ begin
    tag := FindChildTag(ATag, AChildTagName);
    while tag <> nil do
    begin
-      if not (AWithText and Trim(tag.Text).IsEmpty) then
+      if not (AWithText and tag.Text.Trim.IsEmpty) then
          result := result + 1;
       tag := FindNextTag(tag);
    end;
