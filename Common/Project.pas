@@ -506,10 +506,8 @@ begin
 
    if FGlobalConsts <> nil then
       FGlobalConsts.ImportFromXMLTag(ATag);
-         
-   if GInfra.CurrentLang.EnabledUserDataTypes then
-      ImportUserDataTypesFromXML(ATag);
 
+   ImportUserDataTypesFromXML(ATag);
    ImportPagesFromXML(ATag);
 
    result := ImportUserFunctionsFromXML(ATag);
@@ -691,6 +689,8 @@ begin
    result := errNone;
    dataType := nil;
    selectList := nil;
+
+   if GInfra.CurrentLang.EnabledUserDataTypes then
    try
       if ASelect then
       begin
@@ -729,22 +729,25 @@ begin
          dataType.RefreshTab;
          tag := TXMLProcessor.FindNextTag(tag);
       end;
-      if FGlobalVars <> nil then
-         TInfra.PopulateDataTypeCombo(FGlobalVars.cbType);
-      if dataType <> nil then
-      begin
-         PopulateDataTypes;
-         iter := GetUserDataTypes;
-         while iter.HasNext do
-         begin
-            dataType := TUserDataType(iter.Next);
-            dataType.RefreshSizeEdits;
-            dataType.RefreshTab;
-         end;
-      end;
    finally
       selectList.Free;
    end;
+
+   if FGlobalVars <> nil then
+      TInfra.PopulateDataTypeCombo(FGlobalVars.cbType);
+
+   if dataType <> nil then
+   begin
+      PopulateDataTypes;
+      iter := GetUserDataTypes;
+      while iter.HasNext do
+      begin
+         dataType := TUserDataType(iter.Next);
+         dataType.RefreshSizeEdits;
+         dataType.RefreshTab;
+      end;
+   end;
+
 end;
 
 function TProject.ImportCommentsFromXML(const ATag: IXMLElement): integer;

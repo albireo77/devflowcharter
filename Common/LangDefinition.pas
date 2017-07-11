@@ -204,9 +204,9 @@ type
       constructor Create;
       destructor Destroy; override;
       function ImportFromXML(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
-      function GetTemplate(const AClass: TClass): string;
-      function GetTemplateExpr(const AClass: TClass): string;
-      function GetArraySizes(const ASizeEdit: TSizeEdit): string;
+      function GetTemplate(AClass: TClass): string;
+      function GetTemplateExpr(AClass: TClass): string;
+      function GetArraySizes(ASizeEdit: TSizeEdit): string;
       procedure WriteCompilerData(ARegistry: TRegistry);
       procedure ReadCompilerData(ARegistry: TRegistry);
       function GetFileEncoding: TEncoding;
@@ -866,7 +866,7 @@ begin
       CompilerFileEncoding := ARegistry.ReadString(FCompilerFileEncodingKey);
 end;
 
-function TLangDefinition.GetTemplate(const AClass: TClass): string;
+function TLangDefinition.GetTemplate(AClass: TClass): string;
 begin
    result := '';
    if AClass = TWhileDoBlock then
@@ -899,7 +899,7 @@ begin
       result := FunctionCallTemplate;
 end;
 
-function TLangDefinition.GetTemplateExpr(const AClass: TClass): string;
+function TLangDefinition.GetTemplateExpr(AClass: TClass): string;
 var
    templateLines: TStringList;
    i: integer;
@@ -925,7 +925,7 @@ begin
    end;
 end;
 
-function TLangDefinition.GetArraySizes(const ASizeEdit: TSizeEdit): string;
+function TLangDefinition.GetArraySizes(ASizeEdit: TSizeEdit): string;
 var
    i: integer;
 begin

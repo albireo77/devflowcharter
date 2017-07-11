@@ -632,10 +632,10 @@ begin
             if i = 0 then
                exit;
             memCodeEditor.SelStart := i - 1;
-            memCodeEditor.SelLength := Length(ReplaceDialog.FindText);
+            memCodeEditor.SelLength := ReplaceDialog.FindText.Length;
             memCodeEditor.ClearSelection;
             memCodeEditor.PasteFromClipboard;
-            memCodeEditor.SelStart := memCodeEditor.SelStart + Length(ReplaceDialog.ReplaceText);
+            memCodeEditor.SelStart := memCodeEditor.SelStart + ReplaceDialog.ReplaceText.Length;
          end;
       end;
       if memCodeEditor.SelAvail then
@@ -667,7 +667,7 @@ var
    dialog: TFindDialog;
 begin
    dialog := TFindDialog(Sender);
-   len := Length(dialog.FindText);
+   len := dialog.FindText.Length;
    memCodeEditor.Repaint;
    if frDown in dialog.Options then
       i := TInfra.FindText(dialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart + memCodeEditor.SelLength + 1, frMatchCase in dialog.Options)
@@ -948,7 +948,7 @@ var
 begin
    if FDialog <> nil then
    begin
-      len := Length(FDialog.FindText);
+      len := FDialog.FindText.Length;
       brushColor := Canvas.Brush.Color;
       fontStyle := Canvas.Font.Style;
       Canvas.Brush.Color := clYellow;
@@ -972,7 +972,7 @@ begin
    end;
    i := memCodeEditor.SelStart;
    c := #0;
-   if (i >= 0) and (i < Length(memCodeEditor.Text)) then
+   if (i >= 0) and (i < memCodeEditor.Text.Length) then
       c := memCodeEditor.Text[i+1];
    if (memCodeEditor.Highlighter = nil) or memCodeEditor.SelAvail or (GSettings.EditorBracketColor = memCodeEditor.Font.Color) or not
       CharInSet(c, Brackets) then exit;
@@ -1108,7 +1108,7 @@ begin
          VARRAY:
          begin
             h := i18Manager.GetFormattedString('HintArray', [scope, idInfo.DimensCount, w, idInfo.SizeAsString, idInfo.TypeAsString]);
-            if (idInfo.SizeExpArrayAsString <> '') and (idInfo.SizeExpArrayAsString <> idInfo.SizeAsString) then
+            if (idInfo.SizeExpArrayAsString <> idInfo.SizeAsString) and not idInfo.SizeExpArrayAsString.IsEmpty then
                h := h + CRLF + i18Manager.GetFormattedString('HintArrayExp', [idInfo.TypeAsString, CRLF, scope, idInfo.DimensCount, w, idInfo.SizeExpArrayAsString, idInfo.TypeOriginalAsString]);
          end;
          VARIABLE:   h := i18Manager.GetFormattedString('HintVar', [scope, w, idInfo.TypeAsString]);
@@ -1179,7 +1179,7 @@ begin
          begin
             if ADoSelect and CanFocus then
             begin
-               SelStart := RowColToCharIndex(BufferCoord(Length(result.Lines[result.LastRow])+1, result.LastRow+1));
+               SelStart := RowColToCharIndex(BufferCoord(result.Lines[result.LastRow].Length+1, result.LastRow+1));
                SelEnd := RowColToCharIndex(BufferCoord(1, result.FirstRow+1));
             end;
 {$IFDEF USE_CODEFOLDING}

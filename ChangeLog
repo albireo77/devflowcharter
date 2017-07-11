@@ -1,6 +1,9 @@
+4.5.25 [11.07.2017]
+- fix memory access violation coming from Pascal parser 
+
 4.5 [08.07.2017]
 - Code Editor: code folding is back
-- Code Editor: fix not saving highlighter setting
+- Code Editor: fix not saving highlighter on/off setting
 - Code Editor: improvements to pasting multiline comments
 - fix not displayed detailed info if something went wrong upon loading project
 - initial support for Python
