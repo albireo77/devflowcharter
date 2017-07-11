@@ -735,6 +735,8 @@ begin
    if tag <> nil then
    begin
       a := 0;
+      count := TXMLProcessor.CountChildTags(tag, 'DataType', true);
+      SetLength(NativeDataTypes, count);
       tag := TXMLProcessor.FindChildTag(tag, 'DataType');
       while tag <> nil do
       begin
@@ -775,16 +777,17 @@ begin
          if not lName.IsEmpty then
          begin
             a := a + 1;
-            SetLength(NativeDataTypes, a);
             lType := @NativeDataTypes[a-1];
             lType.Name := lName;
             lType.Kind := lKind;
             if lOrigType = nil then
-               lOrigType := @lType;
+               lOrigType := lType;
             lType.OrigType := lOrigType;
          end;
          tag := TXMLProcessor.FindNextTag(tag);
       end;
+      if a < count then
+         SetLength(NativeDataTypes, a);
    end;
    tag := TXMLProcessor.FindChildTag(ATag, 'KeyWords');
    if tag <> nil then
