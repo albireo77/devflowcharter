@@ -79,7 +79,7 @@ type
     N4: TMenuItem;
     miComment: TMenuItem;
     miRoutineCall: TMenuItem;
-    miStatement: TMenuItem;
+    miInstrs: TMenuItem;
     miLoop: TMenuItem;
     miUndoRemove: TMenuItem;
     miPaste: TMenuItem;
@@ -546,7 +546,7 @@ begin
    miInsert.Visible := False;
    miPaste.Enabled := False;
    miPasteText.Visible := False;
-   miStatement.Enabled := False;
+   miInstrs.Enabled := False;
    miLoop.Enabled := False;
    miFrame.Visible := False;
    miFrame.Checked := False;
@@ -588,7 +588,7 @@ begin
        if block.Ired >= 0 then
        begin
           miInsert.Visible := True;
-          miStatement.Enabled := True;
+          miInstrs.Enabled := True;
           miLoop.Enabled := True;
           miText.Enabled := True;
           miFolder.Enabled := True;

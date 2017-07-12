@@ -82,7 +82,7 @@ implementation
 
 uses
    Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, ApplicationCommon,
-   CommonTypes, LangDefinition, ParserHelper;
+   CommonTypes, LangDefinition, ParserHelper, XMLProcessor;
 
 constructor TUserDataType.Create(const AParentForm: TDataTypesForm);
 begin
@@ -440,7 +440,8 @@ begin
    tag := ATag.OwnerDocument.CreateElement(DATATYPE_TAG);
    ATag.AppendChild(tag);
    inherited ExportToXMLTag(tag);
-   tag.SetAttribute('pointer', BoolToStr(chkAddPtrType.Checked, true));
+   if chkAddPtrType.Enabled and chkAddPtrType.Checked then
+      tag.SetAttribute('pointer', 'true');
    if rbStruct.Checked then
       typeId := 'struct_type'
    else if rbInt.Checked then
@@ -453,7 +454,7 @@ begin
       typeId := 'array_type'
    else
       typeId := 'other_type';
-   tag.SetAttribute(typeId, 'True');
+   tag.SetAttribute(typeId, 'true');
 end;
 
 procedure TUserDataType.Localize(const AList: TStringList);
@@ -476,16 +477,17 @@ end;
 procedure TUserDataType.ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
 begin
    inherited ImportFromXMLTag(ATag, APinControl);
-   chkAddPtrType.Checked := ATag.GetAttribute('pointer') = 'True';
-   if ATag.GetAttribute('struct_type') = 'True' then
+   if chkAddPtrType.Enabled then
+      chkAddPtrType.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'pointer');
+   if TXMLProcessor.GetBoolFromAttr(ATag, 'struct_type') then
       rbStruct.Checked := true
-   else if ATag.GetAttribute('int_type') = 'True' then
+   else if TXMLProcessor.GetBoolFromAttr(ATag, 'int_type') then
       rbInt.Checked := true
-   else if ATag.GetAttribute('real_type') = 'True' then
+   else if TXMLProcessor.GetBoolFromAttr(ATag, 'real_type') then
       rbReal.Checked := true
-   else if ATag.GetAttribute('enum_type') = 'True' then
+   else if TXMLProcessor.GetBoolFromAttr(ATag, 'enum_type') then
       rbEnum.Checked := true
-   else if ATag.GetAttribute('array_type') = 'True' then
+   else if TXMLProcessor.GetBoolFromAttr(ATag, 'array_type') then
       rbArray.Checked := true
    else
       rbOther.Checked := true;
