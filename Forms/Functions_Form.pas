@@ -98,19 +98,19 @@ var
    val: integer;
 begin
    RefreshTabs;
-   ATag.SetAttribute('func_win_h', IntToStr(Height));
+   ATag.SetAttribute('func_win_h', Height.ToString);
    if Visible then
    begin
       ATag.SetAttribute('func_win_show', 'true');
-      ATag.SetAttribute('func_win_x', IntToStr(Left));
-      ATag.SetAttribute('func_win_y', IntToStr(Top));
+      ATag.SetAttribute('func_win_x', Left.ToString);
+      ATag.SetAttribute('func_win_y', Top.ToString);
       if pgcTabs.ActivePageIndex <> -1 then
       begin
          header := TUserFunctionHeader(pgcTabs.Pages[pgcTabs.ActivePageIndex]);
-         ATag.SetAttribute('func_idx', IntToStr(header.PageIndex));
+         ATag.SetAttribute('func_idx', header.PageIndex.ToString);
          val := header.ScrollPos;
          if val > 0 then
-            ATag.SetAttribute('func_scroll_v', IntToStr(val));
+            ATag.SetAttribute('func_scroll_v', val.ToString);
       end;
       if WindowState = wsMinimized then
          ATag.SetAttribute('func_win_min', 'true');

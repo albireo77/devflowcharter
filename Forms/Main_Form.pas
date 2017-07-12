@@ -416,7 +416,7 @@ begin
     GProject := TProject.GetInstance;
     filePath := TXMLProcessor.ImportFromXMLFile(GProject.ImportFromXMLTag, filePath);
     Screen.Cursor := tmpCursor;
-    if filePath <> '' then
+    if not filePath.IsEmpty then
        AcceptFile(filePath)
     else
        TInfra.SetInitialSettings;
@@ -1003,7 +1003,7 @@ begin
          impProc := GProject.ImportUserFunctionsFromXML;
          impFunc := true;
       end;
-      if TXMLProcessor.ImportFromXMLFile(impProc) <> '' then
+      if not TXMLProcessor.ImportFromXMLFile(impProc).IsEmpty then
       begin
          if impFunc then
          begin
@@ -1102,10 +1102,10 @@ end;
 
 procedure TMainForm.ExportSettingsToXMLTag(ATag: IXMLElement);
 begin
-   ATag.SetAttribute('scrollrange_h', IntToStr(HorzScrollBar.Range));
-   ATag.SetAttribute('scrollrange_v', IntToStr(VertScrollBar.Range));
-   ATag.SetAttribute('scroll_h', IntToStr(HorzScrollBar.Position));
-   ATag.SetAttribute('scroll_v', IntToStr(VertScrollBar.Position));
+   ATag.SetAttribute('scrollrange_h', HorzScrollBar.Range.ToString);
+   ATag.SetAttribute('scrollrange_v', VertScrollBar.Range.ToString);
+   ATag.SetAttribute('scroll_h', HorzScrollBar.Position.ToString);
+   ATag.SetAttribute('scroll_v', VertScrollBar.Position.ToString);
 end;
 
 procedure TMainForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
@@ -1477,9 +1477,9 @@ begin
          backup := Clipboard.AsText;
       Clipboard.AsText := funcName;
       edit.PasteFromClipboard;
-      if GInfra.CurrentLang.FuncBrackets <> '' then
+      if not GInfra.CurrentLang.FuncBrackets.IsEmpty then
          edit.SelStart := edit.SelStart + GInfra.CurrentLang.FuncBracketsCursorPos;
-      if backup <> '' then
+      if not backup.IsEmpty then
          Clipboard.AsText := backup;
    end;
 end;
@@ -1513,7 +1513,7 @@ begin
          while it.HasNext do
          begin
             lName := TUserFunction(it.Next).GetName;
-            if lName <> '' then
+            if not lName.IsEmpty then
                funcList.Add(lName);
          end;
          SetLength(FFuncMenu, funcList.Count);

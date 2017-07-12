@@ -144,10 +144,10 @@ begin
    if Visible then
    begin
       ATag.SetAttribute('nav_win_show', 'true');
-      ATag.SetAttribute('nav_win_x', IntToStr(Left));
-      ATag.SetAttribute('nav_win_y', IntToStr(Top));
-      ATag.SetAttribute('nav_win_width', IntToStr(Width));
-      ATag.SetAttribute('nav_win_height', IntToStr(Height));
+      ATag.SetAttribute('nav_win_x', Left.ToString);
+      ATag.SetAttribute('nav_win_y', Top.ToString);
+      ATag.SetAttribute('nav_win_width', Width.ToString);
+      ATag.SetAttribute('nav_win_height', Height.ToString);
       if WindowState = wsMinimized then
          ATag.SetAttribute('nav_win_min', 'true');
    end;

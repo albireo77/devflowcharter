@@ -51,13 +51,13 @@ uses
 
 procedure TDeclarationsForm.ExportSettingsToXMLTag(ATag: IXMLElement);
 begin
-   ATag.SetAttribute('var_win_h', IntToStr(Height));
-   ATag.SetAttribute('var_win_w', IntToStr(Width));
+   ATag.SetAttribute('var_win_h', Height.ToString);
+   ATag.SetAttribute('var_win_w', Width.ToString);
    if Visible then
    begin
       ATag.SetAttribute('var_win_show', 'true');
-      ATag.SetAttribute('var_win_x', IntToStr(Left));
-      ATag.SetAttribute('var_win_y', IntToStr(Top));
+      ATag.SetAttribute('var_win_x', Left.ToString);
+      ATag.SetAttribute('var_win_y', Top.ToString);
       if WindowState = wsMinimized then
          ATag.SetAttribute('var_win_min', 'true');
    end;

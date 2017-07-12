@@ -110,15 +110,15 @@ begin
    if Visible then
    begin
       ATag.SetAttribute('struct_win_show', 'true');
-      ATag.SetAttribute('struct_win_x', IntToStr(Left));
-      ATag.SetAttribute('struct_win_y', IntToStr(Top));
+      ATag.SetAttribute('struct_win_x', Left.ToString);
+      ATag.SetAttribute('struct_win_y', Top.ToString);
       if pgcTabs.ActivePageIndex <> -1 then
       begin
          dataType := TUserDataType(pgcTabs.Pages[pgcTabs.ActivePageIndex]);
-         ATag.SetAttribute('struct_idx', IntToStr(dataType.PageIndex));
+         ATag.SetAttribute('struct_idx', dataType.PageIndex.ToString);
          val := dataType.ScrollPos;
          if val > 0 then
-            ATag.SetAttribute('struct_scroll_v', IntToStr(val));
+            ATag.SetAttribute('struct_scroll_v', val.ToString);
       end;
       if WindowState = wsMinimized then
          ATag.SetAttribute('struct_win_min', 'true');

@@ -314,11 +314,11 @@ begin
    if Visible then
    begin
       ATag.SetAttribute('tree_win_show', 'true');
-      ATag.SetAttribute('tree_win_x', IntToStr(Left));
-      ATag.SetAttribute('tree_win_y', IntToStr(Top));
-      ATag.SetAttribute('tree_win_w', IntToStr(Width));
-      ATag.SetAttribute('tree_win_h', IntToStr(Height));
-      ATag.SetAttribute('tree_top_y', IntToStr(tvExplorer.TopItem.AbsoluteIndex));
+      ATag.SetAttribute('tree_win_x', Left.ToString);
+      ATag.SetAttribute('tree_win_y', Top.ToString);
+      ATag.SetAttribute('tree_win_w', Width.ToString);
+      ATag.SetAttribute('tree_win_h', Height.ToString);
+      ATag.SetAttribute('tree_top_y', tvExplorer.TopItem.AbsoluteIndex.ToString);
       if WindowState = wsMinimized then
          ATag.SetAttribute('tree_win_min', 'true');
    end;

@@ -2288,17 +2288,17 @@ begin
          fw := Width;
          fh := Height;
          brx := FFoldParms.BranchPoint.X;
-         ATag.SetAttribute('h', IntToStr(FFoldParms.Height));
-         ATag.SetAttribute('w', IntToStr(FFoldParms.Width));
-         ATag.SetAttribute('bh', IntToStr(FFoldParms.BottomHook));
+         ATag.SetAttribute('h', FFoldParms.Height.ToString);
+         ATag.SetAttribute('w', FFoldParms.Width.ToString);
+         ATag.SetAttribute('bh', FFoldParms.BottomHook.ToString);
       end;
 
       try
-         ATag.SetAttribute('brx', IntToStr(brx));
-         ATag.SetAttribute('bry', IntToStr(Branch.Hook.Y));
-         ATag.SetAttribute('fw', IntToStr(fw));
-         ATag.SetAttribute('fh', IntToStr(fh));
-         ATag.SetAttribute(FOLDED_ATTR, BoolToStr(not Expanded, true));
+         ATag.SetAttribute('brx', brx.ToString);
+         ATag.SetAttribute('bry', Branch.Hook.Y.ToString);
+         ATag.SetAttribute('fw', fw.ToString);
+         ATag.SetAttribute('fh', fh.ToString);
+         ATag.SetAttribute(FOLDED_ATTR, (not Expanded).ToString(true));
 
          txt := GetFoldedText;
          if not txt.IsEmpty then
@@ -2319,17 +2319,17 @@ begin
             tag2 := ATag.OwnerDocument.CreateElement(BRANCH_TAG);
             ATag.AppendChild(tag2);
 
-            tag2.SetAttribute(ID_ATTR, IntToStr(lBranch.Id));
+            tag2.SetAttribute(ID_ATTR, lBranch.Id.ToString);
 
             if lBranch.Statement <> nil then
-               tag2.SetAttribute(BRANCH_STMNT_ATTR, IntToStr(lBranch.Statement.Id));
+               tag2.SetAttribute(BRANCH_STMNT_ATTR, lBranch.Statement.Id.ToString);
 
             tag1 := ATag.OwnerDocument.CreateElement('x');
-            TXMLProcessor.AddText(tag1, IntToStr(lBranch.hook.X));
+            TXMLProcessor.AddText(tag1, lBranch.hook.X.ToString);
             tag2.AppendChild(tag1);
 
             tag1 := ATag.OwnerDocument.CreateElement('y');
-            TXMLProcessor.AddText(tag1, IntToStr(lBranch.hook.Y));
+            TXMLProcessor.AddText(tag1, lBranch.hook.Y.ToString);
             tag2.AppendChild(tag1);
 
             it := GetBlocks(lBranch.Index);
@@ -2365,21 +2365,21 @@ var
 begin
    if ATag <> nil then
    begin
-      ATag.SetAttribute(BLOCK_TYPE_ATTR, IntToStr(Ord(BType)));
-      ATag.SetAttribute(FRAME_ATTR, BoolToStr(FFrame, true));
-      ATag.SetAttribute('x', IntToStr(Left));
-      ATag.SetAttribute('y', IntToStr(Top));
-      ATag.SetAttribute('h', IntToStr(Height));
-      ATag.SetAttribute('w', IntToStr(Width));
-      ATag.SetAttribute('bh', IntToStr(BottomHook));
-      ATag.SetAttribute('brx', IntToStr(BottomPoint.X));
-      ATag.SetAttribute(ID_ATTR, IntToStr(FId));
-      ATag.SetAttribute('memW', IntToStr(memoWidth));
-      ATag.SetAttribute('memH', IntToStr(memoHeight));
-      ATag.SetAttribute('mem_vscroll', BoolToStr(FMemoVScroll, true));
-      ATag.SetAttribute('mem_hscroll', BoolToStr(FMemoHScroll, true));
-      ATag.SetAttribute('mem_wordwrap', BoolToStr(MemoWordWrap, true));
-      ATag.SetAttribute(FONT_SIZE_ATTR, IntToStr(Font.Size));
+      ATag.SetAttribute(BLOCK_TYPE_ATTR, Ord(BType).ToString);
+      ATag.SetAttribute(FRAME_ATTR, FFrame.ToString(true));
+      ATag.SetAttribute('x', Left.ToString);
+      ATag.SetAttribute('y', Top.ToString);
+      ATag.SetAttribute('h', Height.ToString);
+      ATag.SetAttribute('w', Width.ToString);
+      ATag.SetAttribute('bh', BottomHook.ToString);
+      ATag.SetAttribute('brx', BottomPoint.X.ToString);
+      ATag.SetAttribute(ID_ATTR, FId.ToString);
+      ATag.SetAttribute('memW', memoWidth.ToString);
+      ATag.SetAttribute('memH', memoHeight.ToString);
+      ATag.SetAttribute('mem_vscroll', FMemoVScroll.ToString(true));
+      ATag.SetAttribute('mem_hscroll', FMemoHScroll.ToString(true));
+      ATag.SetAttribute('mem_wordwrap', MemoWordWrap.ToString(true));
+      ATag.SetAttribute(FONT_SIZE_ATTR, Font.Size.ToString);
       ATag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style));
       txtControl := GetTextControl;
       if (txtControl <> nil) and (txtControl.Text <> '') then
@@ -2435,12 +2435,12 @@ begin
       i := StrToIntDef(ATag.GetAttribute(FONT_STYLE_ATTR), 0);
       SetFontStyle(TInfra.DecodeFontStyle(i));
       
-      Frame := ATag.GetAttribute(FRAME_ATTR) = 'True';
+      Frame := TXMLProcessor.GetBoolFromAttr(ATag, FRAME_ATTR);
       memoWidth := StrToIntDef(ATag.GetAttribute('memW'), 280);
       memoHeight := StrToIntDef(ATag.GetAttribute('memH'), 182);
-      MemoVScroll := StrToBoolDef(ATag.GetAttribute('mem_vscroll'), false);
-      MemoHScroll := StrToBoolDef(ATag.GetAttribute('mem_hscroll'), false);
-      MemoWordWrap := StrToBoolDef(ATag.GetAttribute('mem_wordwrap'), false);
+      MemoVScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_vscroll');
+      MemoHScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_hscroll');
+      MemoWordWrap := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_wordwrap');
 
       ImportCommentsFromXML(ATag);
    end;
