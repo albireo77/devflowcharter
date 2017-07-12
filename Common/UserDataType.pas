@@ -586,12 +586,12 @@ var
    size: string;
 begin
    inherited ImportFromXMLTag(ATag);
-   if CompareText(ATag.GetAttribute('table'), 'true') = 0 then  // for backward compatibility
+   if TXMLProcessor.GetBoolFromAttr(ATag, 'table') then  // for backward compatibility
       edtSize.Text := '100'
    else
    begin
       size := ATag.GetAttribute(SIZE_ATTR);
-      if size = '' then
+      if size.IsEmpty then
          size := '1';
       edtSize.Text := size;
    end;

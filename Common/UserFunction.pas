@@ -622,7 +622,7 @@ begin
       else if IsDuplicated(edtName) then
          info := 'DupIdD';
    end;
-   if info = '' then
+   if info.IsEmpty then
    begin
       edtName.Font.Color := OK_COLOR;
       info := 'OkIdD';
@@ -807,14 +807,14 @@ begin
       TXMLProcessor.AddCDATA(tag3, ReplaceStr(memDesc.Text, CRLF, CRLF_PLACEHOLDER));
       tag2.AppendChild(tag3);
    end;
-   tag2.SetAttribute('show_body', BoolToStr(chkBodyVisible.Checked, true));
-   tag2.SetAttribute('desc_incl', BoolToStr(chkInclDescCode.Checked, true));
-   tag2.SetAttribute('desc_incl_flow', BoolToStr(chkInclDescFlow.Checked, true));
+   tag2.SetAttribute('show_body', chkBodyVisible.Checked.ToString);
+   tag2.SetAttribute('desc_incl', chkInclDescCode.Checked.ToString);
+   tag2.SetAttribute('desc_incl_flow', chkInclDescFlow.Checked.ToString);
    FLocalVars.ExportToXMLTag(tag2);
-   tag2.SetAttribute('descrh', IntToStr(gbDesc.Height));
-   tag2.SetAttribute('headerh', IntToStr(gbHeader.Height));
-   tag2.SetAttribute('parmsh', IntToStr(gbParams.Height));
-   tag2.SetAttribute('lvarsh', IntToStr(FLocalVars.Height));
+   tag2.SetAttribute('descrh', gbDesc.Height.ToString);
+   tag2.SetAttribute('headerh', gbHeader.Height.ToString);
+   tag2.SetAttribute('parmsh', gbParams.Height.ToString);
+   tag2.SetAttribute('lvarsh', FLocalVars.Height.ToString);
    if (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
       FUserFunction.Body.ExportToXMLTag(tag);
 end;
@@ -834,10 +834,9 @@ begin
    tag2 := TXMLProcessor.FindChildTag(ATag, 'desc');
    if tag2 <> nil then
       memDesc.Text := ReplaceStr(tag2.Text, CRLF_PLACEHOLDER, CRLF);
-   if ATag.GetAttribute('show_body') = 'False' then
-      chkBodyVisible.Checked := false;
-   chkInclDescCode.Checked := ATag.GetAttribute('desc_incl') = 'True';
-   chkInclDescFlow.Checked := ATag.GetAttribute('desc_incl_flow') = 'True';
+   chkBodyVisible.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'show_body');
+   chkInclDescCode.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'desc_incl');
+   chkInclDescFlow.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'desc_incl_flow');
    FLocalVars.ImportFromXMLTag(ATag);
    idx := StrToIntDef(ATag.GetAttribute('descrh'), -1);
    if idx > -1 then
@@ -859,8 +858,8 @@ end;
 procedure TParameter.ImportFromXMLTag(const ATag: IXMLElement);
 begin
    inherited ImportFromXMLTag(ATag);
-   chkTable.Checked := CompareText(ATag.GetAttribute('table'), 'true') = 0;
-   chkReference.Checked := CompareText(ATag.GetAttribute('reference'), 'true') = 0;
+   chkTable.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'table');
+   chkReference.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'reference');
 end;
 
 function TParameter.ExportToXMLTag(const ATag: IXMLElement): IXMLElement;
@@ -868,8 +867,8 @@ var
    tag: IXMLElement;
 begin
    tag := inherited ExportToXMLTag(ATag);
-   tag.SetAttribute('table', BoolToStr(chkTable.Checked, true));
-   tag.SetAttribute('reference', BoolToStr(chkReference.Checked, true));
+   tag.SetAttribute('table', chkTable.Checked.ToString);
+   tag.SetAttribute('reference', chkReference.Checked.ToString);
 end;
 
 function TUserFunctionHeader.GetParameterIterator: IIterator;

@@ -234,7 +234,7 @@ begin
    end;
    if result = 0 then
    begin
-      if errMsg = '' then
+      if errMsg.IsEmpty then
          errMsg := 'Failed to load translation labels.';
       Application.MessageBox(PChar(errMsg), 'IO Error', MB_ICONERROR);
    end;
@@ -243,7 +243,7 @@ end;
 function Ti18Manager.GetString(const AKey: string): string;
 begin
    result := FRepository.Values[AKey];
-   if result = '' then
+   if result.IsEmpty then
       result := AKey;
 end;
 

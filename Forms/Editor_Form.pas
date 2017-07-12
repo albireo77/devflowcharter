@@ -1343,25 +1343,25 @@ begin
    if Visible then
    begin
       ATag.SetAttribute('src_win_show', 'true');
-      ATag.SetAttribute('src_win_x', IntToStr(Left));
-      ATag.SetAttribute('src_win_y', IntToStr(Top));
-      ATag.SetAttribute('src_win_w', IntToStr(Width));
-      ATag.SetAttribute('src_win_h', IntToStr(Height));
-      ATag.SetAttribute('src_win_sel_start', IntToStr(memCodeEditor.SelStart));
+      ATag.SetAttribute('src_win_x', Left.ToString);
+      ATag.SetAttribute('src_win_y', Top.ToString);
+      ATag.SetAttribute('src_win_w', Width.ToString);
+      ATag.SetAttribute('src_win_h', Height.ToString);
+      ATag.SetAttribute('src_win_sel_start', memCodeEditor.SelStart.ToString);
       if memCodeEditor.SelAvail then
-         ATag.SetAttribute('src_win_sel_length', IntToStr(memCodeEditor.SelLength));
+         ATag.SetAttribute('src_win_sel_length', memCodeEditor.SelLength.ToString);
       if memCodeEditor.Marks.Count > 0 then
       begin
          for i := 0 to memCodeEditor.Marks.Count-1 do
          begin
             tag2 := ATag.OwnerDocument.CreateElement('src_win_mark');
-            tag2.SetAttribute('line', IntToStr(memCodeEditor.Marks[i].Line));
-            tag2.SetAttribute('index', IntToStr(memCodeEditor.Marks[i].ImageIndex));
+            tag2.SetAttribute('line', memCodeEditor.Marks[i].Line.ToString);
+            tag2.SetAttribute('index', memCodeEditor.Marks[i].ImageIndex.ToString);
             ATag.AppendChild(tag2);
          end;
       end;
       if memCodeEditor.TopLine > 1 then
-         ATag.SetAttribute('src_top_line', IntToStr(memCodeEditor.TopLine));
+         ATag.SetAttribute('src_top_line', memCodeEditor.TopLine.ToString);
       if WindowState = wsMinimized then
          ATag.SetAttribute('src_win_min', 'true');
 {$IFDEF USE_CODEFOLDING}
@@ -1379,7 +1379,7 @@ begin
                   ATag.AppendChild(tag1);
                end;
                tag2 := ATag.OwnerDocument.CreateElement('fold_range');
-               TXMLProcessor.AddText(tag2, IntToStr(memCodeEditor.GetRealLineNumber(foldRange.FromLine)));
+               TXMLProcessor.AddText(tag2, memCodeEditor.GetRealLineNumber(foldRange.FromLine).ToString);
                tag1.AppendChild(tag2);
             end;
          end;
@@ -1391,11 +1391,10 @@ begin
          tag2 := ATag.OwnerDocument.CreateElement('text_line');
          TXMLProcessor.AddCDATA(tag2, lines[i]);
          if TInfra.IsValid(lines.Objects[i]) and Supports(lines.Objects[i], IIdentifiable, idObject) then
-            tag2.SetAttribute(ID_ATTR, IntToStr(idObject.Id));
+            tag2.SetAttribute(ID_ATTR, idObject.Id.ToString);
          ATag.AppendChild(tag2);
       end;
-      if memCodeEditor.Modified then
-         ATag.SetAttribute('modified', 'true');
+      ATag.SetAttribute('modified', memCodeEditor.Modified.ToString);
    end;
 end;
 
