@@ -425,8 +425,8 @@ var
    iter: IIterator;
 begin
    ATag.SetAttribute(NAME_ATTR, Trim(edtName.Text));
-   ATag.SetAttribute(ID_ATTR, IntToStr(FId));
-   ATag.SetAttribute('ext_decl', BoolToStr(chkExtDeclare.Checked, true));
+   ATag.SetAttribute(ID_ATTR, FId.ToString);
+   ATag.SetAttribute('ext_decl', chkExtDeclare.Checked.ToString);
    ATag.SetAttribute('library', Trim(edtLibrary.Text));
    iter := GetElementIterator;
    while iter.HasNext do
@@ -440,7 +440,7 @@ var
 begin
    edtName.Text := ATag.GetAttribute(NAME_ATTR);
    edtName.OnChange(edtName);
-   chkExtDeclare.Checked := ATag.GetAttribute('ext_decl') = 'True';
+   chkExtDeclare.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'ext_decl');
    edtLibrary.Text := ATag.GetAttribute('library');
    tag := TXMLProcessor.FindChildTag(ATag, FElementMode);
    while tag <> nil do

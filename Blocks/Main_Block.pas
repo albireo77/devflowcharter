@@ -548,7 +548,7 @@ begin
    inherited SaveInXML(ATag);
    if ATag <> nil then
    begin
-      ATag.SetAttribute(Z_ORDER_ATTR, IntToStr(FZOrder));
+      ATag.SetAttribute(Z_ORDER_ATTR, FZOrder.ToString);
       if FPage <> GProject.GetMainPage then
          ATag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
    end;

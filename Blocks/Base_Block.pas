@@ -2298,7 +2298,7 @@ begin
          ATag.SetAttribute('bry', Branch.Hook.Y.ToString);
          ATag.SetAttribute('fw', fw.ToString);
          ATag.SetAttribute('fh', fh.ToString);
-         ATag.SetAttribute(FOLDED_ATTR, (not Expanded).ToString(true));
+         ATag.SetAttribute(FOLDED_ATTR, (not Expanded).ToString);
 
          txt := GetFoldedText;
          if not txt.IsEmpty then
@@ -2366,7 +2366,7 @@ begin
    if ATag <> nil then
    begin
       ATag.SetAttribute(BLOCK_TYPE_ATTR, Ord(BType).ToString);
-      ATag.SetAttribute(FRAME_ATTR, FFrame.ToString(true));
+      ATag.SetAttribute(FRAME_ATTR, FFrame.ToString);
       ATag.SetAttribute('x', Left.ToString);
       ATag.SetAttribute('y', Top.ToString);
       ATag.SetAttribute('h', Height.ToString);
@@ -2376,9 +2376,9 @@ begin
       ATag.SetAttribute(ID_ATTR, FId.ToString);
       ATag.SetAttribute('memW', memoWidth.ToString);
       ATag.SetAttribute('memH', memoHeight.ToString);
-      ATag.SetAttribute('mem_vscroll', FMemoVScroll.ToString(true));
-      ATag.SetAttribute('mem_hscroll', FMemoHScroll.ToString(true));
-      ATag.SetAttribute('mem_wordwrap', MemoWordWrap.ToString(true));
+      ATag.SetAttribute('mem_vscroll', FMemoVScroll.ToString);
+      ATag.SetAttribute('mem_hscroll', FMemoHScroll.ToString);
+      ATag.SetAttribute('mem_wordwrap', MemoWordWrap.ToString);
       ATag.SetAttribute(FONT_SIZE_ATTR, Font.Size.ToString);
       ATag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style));
       txtControl := GetTextControl;

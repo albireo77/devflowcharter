@@ -641,7 +641,7 @@ begin
       tag := ATag.OwnerDocument.CreateElement('end_val');
       TXMLProcessor.AddText(tag, ReplaceStr(edtStopVal.Text, ' ', '#'));
       ATag.AppendChild(tag);
-      ATag.SetAttribute('order', IntToStr(Ord(FOrder)));
+      ATag.SetAttribute('order', Ord(FOrder).ToString);
    end;
 end;
 

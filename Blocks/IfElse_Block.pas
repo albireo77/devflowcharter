@@ -333,11 +333,11 @@ begin
          fbrx := FFoldParms.P2X;
          th := FFoldParms.TopHook;
       end;
-      ATag.SetAttribute('fbrx', IntToStr(fbrx));
-      ATag.SetAttribute('th', IntToStr(th));
-      ATag.SetAttribute('fbry', IntToStr(FalseBranch.Hook.Y));
-      ATag.SetAttribute('flh', IntToStr(FalseHook));
-      ATag.SetAttribute('trh', IntToStr(TrueHook));
+      ATag.SetAttribute('fbrx', fbrx.ToString);
+      ATag.SetAttribute('th', th.ToString);
+      ATag.SetAttribute('fbry', FalseBranch.Hook.Y.ToString);
+      ATag.SetAttribute('flh', FalseHook.ToString);
+      ATag.SetAttribute('trh', TrueHook.ToString);
    end;
 end;
 

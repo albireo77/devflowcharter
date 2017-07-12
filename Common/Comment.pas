@@ -327,9 +327,9 @@ begin
       if v > 0 then
          Font.Style := TInfra.DecodeFontStyle(v);
       Text := ATag.Text;
-      Visible := ATag.GetAttribute('v') = IntToStr(Ord(true));
+      Visible := TXMLProcessor.GetBoolFromAttr(ATag, 'v');
       FPinControl := APinControl;
-      FIsHeader := ATag.GetAttribute('isHeader') = 'True';
+      FIsHeader := TXMlProcessor.GetBoolFromAttr(ATag, 'isHeader');
    end;
 end;
 
@@ -347,15 +347,14 @@ begin
    begin
       tag := ATag.OwnerDocument.CreateElement(COMMENT_ATTR);
       TXMLProcessor.AddCDATA(tag, Text);
-      tag.SetAttribute('x', IntToStr(Left));
-      tag.SetAttribute('y', IntToStr(Top));
-      tag.SetAttribute('w', IntToStr(Width));
-      tag.SetAttribute('h', IntToStr(Height));
-      tag.SetAttribute(FONT_SIZE_ATTR, IntToStr(Font.Size));
-      tag.SetAttribute('v', IntToStr(Ord(Visible)));
-      tag.SetAttribute(Z_ORDER_ATTR, IntToStr(FZOrder));
-      if FIsHeader then
-         tag.SetAttribute('isHeader', 'True');
+      tag.SetAttribute('x', Left.ToString);
+      tag.SetAttribute('y', Top.ToString);
+      tag.SetAttribute('w', Width.ToString);
+      tag.SetAttribute('h', Height.ToString);
+      tag.SetAttribute(FONT_SIZE_ATTR, Font.Size.ToString);
+      tag.SetAttribute('v', Visible.ToString);
+      tag.SetAttribute(Z_ORDER_ATTR, FZOrder.ToString);
+      tag.SetAttribute('isHeader', FIsHeader.ToString);
       if FPage <> GProject.GetMainPage then
          tag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
       if Font.Style <> [] then
