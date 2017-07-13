@@ -106,7 +106,7 @@ var
    dataType: TUserDataType;
    val: integer;
 begin
-   ATag.SetAttribute('struct_win_h', IntToStr(Height));
+   ATag.SetAttribute('struct_win_h', Height.ToString);
    if Visible then
    begin
       ATag.SetAttribute('struct_win_show', 'true');

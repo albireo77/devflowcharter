@@ -66,7 +66,7 @@ begin
       begin
          for i := HISTORY_SIZE-1 downto 0 do
          begin
-            fileKey := KEY_HISTORY + IntToStr(i);
+            fileKey := KEY_HISTORY + i.ToString;
             if reg.ValueExists(fileKey) then
                AddFile(reg.ReadString(fileKey));
          end;
@@ -107,7 +107,7 @@ begin
       if reg.OpenKey(REGISTRY_KEY, true) then
       begin
          for i := 0 to FParentMenu.Count-1 do
-            reg.WriteString(KEY_HISTORY + IntToStr(i), FParentMenu[i].Caption);
+            reg.WriteString(KEY_HISTORY + i.ToString, FParentMenu[i].Caption);
       end;
    finally
       reg.Free;

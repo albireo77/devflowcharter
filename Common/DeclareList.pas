@@ -293,7 +293,7 @@ begin
    inherited Create(AParent, ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth);
 
    for i := 0 to AColCount-1 do
-      sgList.Cells[i, 0] := i18Manager.GetString('sgConstListCol'+IntToStr(i));
+      sgList.Cells[i, 0] := i18Manager.GetString('sgConstListCol' + i.ToString);
 
    edtName.SetBounds(lblName.Width+10, 17, gbBox.Width-lblName.Width-18, 21);
    
@@ -326,7 +326,7 @@ begin
    inherited Create(AParent, ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth);
 
    for i := 0 to AColCount-1 do
-      sgList.Cells[i, 0] := i18Manager.GetString('sgVarListCol'+IntToStr(i));
+      sgList.Cells[i, 0] := i18Manager.GetString('sgVarListCol' + i.ToString);
 
    edtName.SetBounds(lblName.Width+10, 17, btnRemove.Left+btnRemove.Width-lblName.Width-12, 21);
    

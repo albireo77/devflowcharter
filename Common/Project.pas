@@ -330,7 +330,7 @@ var
    id: string;
    accepted: boolean;
 begin
-   id := IntToStr(AId);
+   id := AId.ToString;
    accepted := (AId <> ID_INVALID) and (FObjectIds.IndexOf(id) = -1);
    idx := FObjectIds.IndexOfObject(AObject);
    if idx <> -1 then
@@ -345,7 +345,7 @@ begin
          FObjectIds.AddObject(id, AObject)
       else
       begin
-         FObjectIds.AddObject(IntToStr(FObjectIdSeed), AObject);
+         FObjectIds.AddObject(FObjectIdSeed.ToString, AObject);
          result := FObjectIdSeed;
          FObjectIdSeed := FObjectIdSeed + 1;
       end;
@@ -372,7 +372,7 @@ var
    idx: integer;
 begin
    result := nil;
-   idx := FObjectIds.IndexOf(IntToStr(AId));
+   idx := FObjectIds.IndexOf(AId.ToString);
    if idx <> -1 then
       result := FObjectIds.Objects[idx];
 end;

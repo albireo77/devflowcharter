@@ -494,10 +494,10 @@ begin
    chkShowFuncLabels.Checked := ASettings.ShowFuncLabels;
    chkShowBlockLabels.Checked := ASettings.ShowBlockLabels;
    chkMultiPrintHorz.Checked := ASettings.PrintMultPagesHorz;
-   edtMarginLeft.Text := IntToStr(ASettings.PrintRect.Left);
-   edtMarginTop.Text := IntToStr(ASettings.PrintRect.Top);
-   edtMarginRight.Text := IntToStr(PRINT_SCALE_BASE - ASettings.PrintRect.Right);
-   edtMarginBottom.Text := IntToStr(PRINT_SCALE_BASE - ASettings.PrintRect.Bottom);
+   edtMarginLeft.Text := ASettings.PrintRect.Left.ToString;
+   edtMarginTop.Text := ASettings.PrintRect.Top.ToString;
+   edtMarginRight.Text := (PRINT_SCALE_BASE - ASettings.PrintRect.Right).ToString;
+   edtMarginBottom.Text := (PRINT_SCALE_BASE - ASettings.PrintRect.Bottom).ToString;
    pnlFill.Color := ASettings.HighlightColor;
    pnlDesktop.Color := ASettings.DesktopColor;
    pnlEditorFont.Color := ASettings.EditorFontColor;
@@ -509,7 +509,7 @@ begin
    pnlEditorSelect.Color := ASettings.EditorSelectColor;
    pnlEditorGutter.Color := ASettings.EditorGutterColor;
    pnlEditorBracket.Color := ASettings.EditorBracketColor;
-   edtEditorIndent.Text := IntToStr(ASettings.IndentLength);
+   edtEditorIndent.Text := ASettings.IndentLength.ToString;
    pnlFont.Color := ASettings.FontColor;
    edtTranslateFile.Text := ASettings.TranslateFile;
    cbLanguage.ItemIndex := cbLanguage.Items.IndexOf(GInfra.CurrentLang.Name);
@@ -528,7 +528,7 @@ begin
    chkAutoSelectCode.Checked := ASettings.EditorAutoSelectBlock;
    chkAutoUpdateCode.Checked := ASettings.EditorAutoUpdate;
    edtFontName.Text := ASettings.FlowchartFontName;
-   SetComboBoxItem(cbFontSize, IntToStr(ASettings.EditorFontSize));
+   SetComboBoxItem(cbFontSize, ASettings.EditorFontSize.ToString);
    SetComboBoxItem(cbFileEncoding, GInfra.CurrentLang.CompilerFileEncoding);
    DrawShapes(ASettings);
    ProtectFields;

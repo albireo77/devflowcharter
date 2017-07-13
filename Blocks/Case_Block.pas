@@ -422,7 +422,7 @@ begin
                for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
                begin
                   tmpList.Clear;
-                  tmpList.Text := ReplaceStr(langDef.CaseOfValueTemplate, '%b1', '%b'+IntToStr(i));
+                  tmpList.Text := ReplaceStr(langDef.CaseOfValueTemplate, '%b1', '%b' + i.ToString);
                   caseLines.AddStrings(tmpList);
                   for a := 0 to caseLines.Count-1 do
                   begin

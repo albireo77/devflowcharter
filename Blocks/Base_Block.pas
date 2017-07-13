@@ -2525,7 +2525,7 @@ var
 begin
    result := errValidate;
    tag := TXMLProcessor.FindChildTag(ATag, BLOCK_TAG);
-   if (tag = nil) or (tag.GetAttribute(BLOCK_TYPE_ATTR) = IntToStr(Ord(blMain))) then
+   if (tag = nil) or (tag.GetAttribute(BLOCK_TYPE_ATTR) = Ord(blMain).ToString) then
       Gerr_text := i18Manager.GetString('BadImportTag')
    else
    begin

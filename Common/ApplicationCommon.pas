@@ -929,7 +929,7 @@ begin
       val := val + 4;
    if fsStrikeOut in AStyle then
       val := val + 8;
-   result := IntToStr(val);
+   result := val.ToString;
 end;
 
 class procedure TInfra.InitFocusInfo(var AFocusInfo: TFocusInfo);
