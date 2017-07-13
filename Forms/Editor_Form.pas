@@ -385,7 +385,7 @@ begin
       end;
       for i := 0 to count do
       begin
-         line := ' ' + Trim(strings[i]);
+         line := ' ' + strings[i].Trim;
          memCodeEditor.CaretY := bc.Line + i;
          memCodeEditor.CaretX := bc.Char;
          if afterLine then
@@ -793,7 +793,7 @@ begin
       ReplaceDialog.ReplaceText := '';
    end;
    if memCodeEditor.SelAvail then
-      dialog.FindText := Trim(memCodeEditor.SelText);
+      dialog.FindText := memCodeEditor.SelText.Trim;
    dialog.Execute;
 end;
 

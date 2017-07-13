@@ -727,7 +727,7 @@ begin
       else if Assigned(GInfra.DummyLang.GetUserFuncDesc) then
          lang := GInfra.DummyLang;
       if lang <> nil then
-         desc := Trim(lang.GetUserFuncDesc(FHeader, false));
+         desc := lang.GetUserFuncDesc(FHeader, false).Trim;
    end;
    node := ANode.Owner.AddChildObject(ANode, desc, obj);
    if FBody <> nil then

@@ -234,7 +234,7 @@ begin
    errMsg := GetErrorMsg(FStatements);
    for i := 0 to FStatements.Lines.Count-1 do
    begin
-      if not Trim(FStatements.Lines[i]).IsEmpty then
+      if not FStatements.Lines[i].Trim.IsEmpty then
       begin
          lLabel := FStatements.Lines[i];
          if i = FErrLine then

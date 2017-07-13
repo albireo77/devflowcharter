@@ -1385,7 +1385,7 @@ begin
    if pmTabs.PopupComponent is TTabSheet then
    begin
       page := TTabSheet(pmTabs.PopupComponent);
-      lCaption := Trim(InputBox(i18Manager.GetString('Page'), i18Manager.GetString('EnterPage'), page.Caption));
+      lCaption := InputBox(i18Manager.GetString('Page'), i18Manager.GetString('EnterPage'), page.Caption).Trim;
       if (lCaption <> '') and (TInfra.FindDuplicatedPage(page, lCaption) = nil) then
       begin
          page.Caption := lCaption;
@@ -1400,7 +1400,7 @@ var
    lCaption: TCaption;
    page: TTabSheet;
 begin
-   lCaption := Trim(InputBox(i18Manager.GetString('Page'), i18Manager.GetString('EnterPage'), ''));
+   lCaption := InputBox(i18Manager.GetString('Page'), i18Manager.GetString('EnterPage'), '').Trim;
    if (lCaption <> '') and (GProject.GetPage(lCaption, false) = nil) then
    begin
       page := GProject.GetPage(lCaption);

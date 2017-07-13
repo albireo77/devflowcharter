@@ -91,7 +91,7 @@ begin
       begin
          for i := 0 to FStatements.Lines.Count-1 do
          begin
-            line := Trim(FStatements.Lines.Strings[i]);
+            line := FStatements.Lines.Strings[i].Trim;
             if not TInfra.Parse(line, prsAssign) then
             begin
                FStatements.Font.Color := NOK_COLOR;
@@ -122,7 +122,7 @@ begin
       try
          for i := 0 to FStatements.Lines.Count-1 do
          begin
-            line := Trim(FStatements.Lines.Strings[i]);
+            line := FStatements.Lines.Strings[i].Trim;
             if not line.IsEmpty then
             begin
                template := ReplaceStr(lang.InstrTemplate, PRIMARY_PLACEHOLDER, line);
