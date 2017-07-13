@@ -329,7 +329,7 @@ begin
       Text := ATag.Text;
       Visible := TXMLProcessor.GetBoolFromAttr(ATag, 'v');
       FPinControl := APinControl;
-      FIsHeader := TXMlProcessor.GetBoolFromAttr(ATag, 'isHeader');
+      FIsHeader := TXMlProcessor.GetBoolFromAttr(ATag, IS_HEADER_ATTR);
    end;
 end;
 
@@ -354,7 +354,7 @@ begin
       tag.SetAttribute(FONT_SIZE_ATTR, Font.Size.ToString);
       tag.SetAttribute('v', Visible.ToString);
       tag.SetAttribute(Z_ORDER_ATTR, FZOrder.ToString);
-      tag.SetAttribute('isHeader', FIsHeader.ToString);
+      tag.SetAttribute(IS_HEADER_ATTR, FIsHeader.ToString);
       if FPage <> GProject.GetMainPage then
          tag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
       if Font.Style <> [] then

@@ -162,6 +162,7 @@ const   // Global constants
         VALUE_ATTR        = 'value';
         NAME_ATTR         = 'name';
         TYPE_ATTR         = 'type';
+        IS_HEADER_ATTR    = 'isHeader';
         BLOCK_TAG         = 'block';
         BRANCH_TAG        = 'branch';
         TEXT_TAG          = 'text';
