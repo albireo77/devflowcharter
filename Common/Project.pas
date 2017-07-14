@@ -489,10 +489,8 @@ begin
       exit;
    end;
 
-   if SameText(langName, GInfra.DummyLang.Name) then
-      s := 'ChangeLngNone'
-   else
-      s := 'ChangeLngAsk';
+   s := IfThen(SameText(langName, GInfra.DummyLang.Name), 'ChangeLngNone', 'ChangeLngAsk');
+
    if (not SameText(GInfra.CurrentLang.Name, langName)) and
       (TInfra.ShowFormattedQuestionBox(s, [langName.Trim, CRLF], MB_YESNO+MB_ICONQUESTION) = IDYES) then
    begin

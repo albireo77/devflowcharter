@@ -341,20 +341,19 @@ end;
 
 function C_GetLiteralType(const AValue: string): integer;
 var
-   i, len: integer;
+   i: integer;
    f: double;
 begin
    result := UNKNOWN_TYPE;
-   len := Length(AValue);
-   if len > 0 then
+   if not AValue.IsEmpty then
    begin
       if not TryStrToInt(AValue, i) then
       begin
          if not TryStrToFloat(AValue, f) then
          begin
-            if (AValue[1] = C_STRING_DELIM) and (AValue[len] = C_STRING_DELIM) then
+            if AValue.StartsWith(C_STRING_DELIM) and AValue.EndsWith(C_STRING_DELIM) then
                result := C_CHAR_PTR_TYPE
-            else if (len = 3) and (AValue[1] = C_CHAR_DELIM) and (AValue[3] = C_CHAR_DELIM) then
+            else if (AValue.Length = 3) and (AValue[1] = C_CHAR_DELIM) and (AValue[3] = C_CHAR_DELIM) then
                result := C_CHAR_TYPE
             else if TInfra.SameStrings(AValue, 'NULL') then
                result := GENERIC_PTR_TYPE;
