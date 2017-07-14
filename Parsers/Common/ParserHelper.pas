@@ -258,7 +258,7 @@ var
    lang: TLangDefinition;
 begin
    result := UNKNOWN_TYPE;
-   if ALangName = '' then
+   if ALangName.IsEmpty then
       lang := GInfra.CurrentLang
    else
       lang := GInfra.GetLangDefinition(ALangName);
@@ -523,7 +523,7 @@ var
 begin
    result := NOT_DEFINED;
    value := GetConstValue(AConstName);
-   if value <> '' then
+   if not value.IsEmpty then
    begin
       if Assigned(GInfra.CurrentLang.GetLiteralType) then
          result := GInfra.CurrentLang.GetLiteralType(value)

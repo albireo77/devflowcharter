@@ -247,8 +247,6 @@ begin
       result := AKey;
 end;
 
-
-
 function Ti18Manager.LoadAllLabels(const AFilename: string): integer;
 begin
    FRepository.Clear;
