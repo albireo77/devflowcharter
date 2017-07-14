@@ -789,13 +789,18 @@ end;
 procedure TUserFunctionHeader.ExportToXMLTag(ATag: IXMLElement);
 var
    tag, tag2, tag3: IXMLElement;
+   lType: string;
 begin
    tag := ATag.OwnerDocument.CreateElement(FUNCTION_TAG);
    ATag.AppendChild(tag);
    tag2 := ATag.OwnerDocument.CreateElement(HEADER_TAG);
    tag.AppendChild(tag2);
    inherited ExportToXMLTag(tag2);
-   tag2.SetAttribute(TYPE_ATTR, IfThen(cbType.ItemIndex = 0, 'none', cbType.Text));
+   if cbType.ItemIndex = 0 then
+      lType := 'none'
+   else
+      lType := cbType.Text;
+   tag2.SetAttribute(TYPE_ATTR, lType);
    if memDesc.Text <> '' then
    begin
       tag3 := ATag.OwnerDocument.CreateElement('desc');

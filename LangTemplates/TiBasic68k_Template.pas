@@ -23,15 +23,15 @@ interface
 implementation
 
 uses
-   System.SysUtils, System.Classes, System.StrUtils, UserFunction, DeclareList,
-   Main_Block, LangDefinition, ApplicationCommon, CommonInterfaces;
+   System.SysUtils, System.Classes, UserFunction, DeclareList, Main_Block, LangDefinition,
+   ApplicationCommon, CommonInterfaces;
 
 var
    lLangDef: TLangDefinition;
 
 procedure TIBASIC_ProgramHeaderSectionGenerator(ALines: TStringList);
 begin
-   if not GProject.Name.IsEmpty then
+   if GProject.Name <> '' then
       ALines.Add(GProject.Name + '()');
    ALines.AddObject('Prgm', GProject.GetMainBlock);
 end;
@@ -50,7 +50,7 @@ begin
             buffer := buffer + ', ';
          buffer := buffer + AVarList.sgList.Cells[VAR_NAME_COL, i];
       end;
-      if not buffer.IsEmpty then
+      if buffer <> '' then
          ALines.AddObject('Local ' + buffer, AVarList);
    end;
 end;
@@ -70,12 +70,15 @@ begin
          funcName := func.GetName;
          if (funcName = '') or func.Header.chkExtDeclare.Checked then
             continue;
-         funcPrefix := IfThen(func.Header.cbType.ItemIndex <> 0, 'Func', 'Prgm');
+         if func.Header.cbType.ItemIndex <> 0 then
+            funcPrefix := 'Func'
+         else
+            funcPrefix := 'Prgm';
          funcParms := '';
          iterp := func.Header.GetParameterIterator;
          while iterp.HasNext do
          begin
-            if not funcParms.IsEmpty then
+            if funcParms <> '' then
                funcParms := funcParms + ',';
             funcParms := funcParms + Trim(TParameter(iterp.Next).edtName.Text);
          end;

@@ -70,7 +70,7 @@ implementation
 
 uses
    Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Types, System.UITypes,
-   System.Math, ApplicationCommon, XMLProcessor, Main_Block, UserFunction, Return_Block;
+   ApplicationCommon, XMLProcessor, Main_Block, UserFunction, Return_Block;
 
 constructor TForDoBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, px1, p1Y: integer; const AId: integer = ID_INVALID);
 begin
@@ -553,7 +553,10 @@ var
    t, w: integer;
 begin
    t := 22 - edtStartVal.Height div 2;
-   w := IfThen(t > 8, 33, 30);
+   if t > 8 then
+      w := 33
+   else
+      w := 30;
    edtStartVal.SetBounds(90, t, 30, edtStartVal.Height);
    edtStopVal.SetBounds(131, t, w, edtStopVal.Height);
    cbVariable.SetBounds(0, t-4, 38, cbVariable.Height);

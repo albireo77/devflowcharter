@@ -307,7 +307,7 @@ procedure Dummy_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareLi
 var
    lang: TLangDefinition;
    i, b, lType, dcount: integer;
-   varStr, varSize, varInit, initEntry, lRecord, enum, name, typeStr: string;
+   varStr, varSize, varInit, initEntry, lRecord, enum, extern, name, typeStr: string;
    varTemplate, varList: TStringList;
    isExtern: boolean;
 begin
@@ -343,7 +343,10 @@ begin
                varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
                if not varInit.IsEmpty then
                begin
-                  initEntry := IfThen(isExtern, lang.VarEntryInitExtern, lang.VarEntryInit);
+                  if isExtern then
+                     initEntry := lang.VarEntryInitExtern
+                  else
+                     initEntry := lang.VarEntryInit;
                   if not initEntry.IsEmpty then
                      varInit := ReplaceStr(initEntry, PRIMARY_PLACEHOLDER, varInit);
                end;
@@ -357,7 +360,11 @@ begin
                   enum := lang.FunctionHeaderArgsEntryEnum;
                varStr := ReplaceStr(varStr, '%s5', lRecord);
                varStr := ReplaceStr(varStr, '%s6', enum);
-               varStr := ReplaceStr(varStr, '%s7', IfThen(isExtern, lang.ExternEntry));
+               if isExtern then
+                  extern := lang.ExternEntry
+               else
+                  extern := '';
+               varStr := ReplaceStr(varStr, '%s7', extern);
                varList.AddObject(varStr, AVarList);
             end;
          end;
