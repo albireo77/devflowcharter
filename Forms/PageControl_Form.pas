@@ -180,7 +180,7 @@ end;
 
 procedure TPageControlForm.miImportClick(Sender: TObject);
 begin
-   if TXMLProcessor.ImportFromXMLFile(ImportTabsFromXMLTag) <> '' then
+   if not TXMLProcessor.ImportFromXMLFile(ImportTabsFromXMLTag).IsEmpty then
       TInfra.UpdateCodeEditor;
 end;
 

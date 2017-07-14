@@ -164,7 +164,7 @@ implementation
 
 uses
    System.SysUtils, System.Classes, System.Types, Vcl.Forms, System.Win.Registry,
-   ApplicationCommon, Main_Form, Navigator_Form;
+   System.Math, ApplicationCommon, Main_Form, Navigator_Form;
 
 const
    KEY_HIGHLIGHT_COLOR = 'HighlightColor';
@@ -244,7 +244,6 @@ end;
 procedure TSettings.SetDefaultValues;
 var
    shape: TColorShape;
-   lColor: TColor;
 begin
 
    FParseInput       := false;
@@ -283,13 +282,7 @@ begin
    FFontColor := OK_COLOR;
 
    for shape := Low(TColorShape) to High(TColorShape) do
-   begin
-      if shape = shpNone then
-         lColor := clNone
-      else
-         lColor := DEFAULT_DESKTOP_COLOR;
-      FShapeColors[shape] := lColor;
-   end;
+     FShapeColors[shape] := IfThen(shape = shpNone, clNone, DEFAULT_DESKTOP_COLOR);
 
    FColumnV1Width  := 68;
    FColumnV2Width  := 68;
