@@ -438,10 +438,7 @@ begin
                try
                   lines.Text := ReplaceStr(langDef.CaseOfTemplate, PRIMARY_PLACEHOLDER, line);
                   TInfra.InsertTemplateLines(lines, '%s2', caseLines);
-                  if FBranchArray[DEFAULT_BRANCH_IND].first <> nil then
-                     defTemplate := langDef.CaseOfDefaultValueTemplate
-                  else
-                     defTemplate := '';
+                  defTemplate := IfThen(FBranchArray[DEFAULT_BRANCH_IND].First <> nil, langDef.CaseOfDefaultValueTemplate);
                   TInfra.InsertTemplateLines(lines, '%s3', defTemplate);
                   GenerateTemplateSection(tmpList1, lines, ALangId, ADeep);
                finally

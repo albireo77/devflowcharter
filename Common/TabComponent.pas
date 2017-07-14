@@ -144,7 +144,7 @@ begin
    begin
       FParentForm.Show;
       Show;
-      if AInfo.SelText <> '' then
+      if not AInfo.SelText.IsEmpty then
       begin
          iter := GetElementIterator;
          while iter.HasNext do

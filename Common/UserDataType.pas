@@ -331,10 +331,7 @@ begin
    lblType.Enabled := lblSize.Enabled;
    if b then
    begin
-      if rbStruct.Checked then
-         str := 'field'
-      else
-         str := 'value';
+      str := IfThen(rbStruct.Checked, 'field', 'value');
       btnAddElement.Caption := i18Manager.GetString('btnAdd' + str);
       lblName2.Caption := i18Manager.GetString('lbl' + str);
    end;
