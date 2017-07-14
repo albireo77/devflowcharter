@@ -41,7 +41,8 @@ type
 implementation
 
 uses
-   System.SysUtils, System.StrUtils, ApplicationCommon, LangDefinition, CommonTypes;
+   System.SysUtils, System.StrUtils, System.Math, ApplicationCommon, LangDefinition,
+   CommonTypes;
 
 constructor TSizeEdit.Create(AParent: TWinControl);
 begin
@@ -134,10 +135,7 @@ end;
 
 procedure TSizeEdit.OnChangeSize(Sender: TObject);
 begin
-   if not ParseSize then
-      Font.Color := NOK_COLOR
-   else
-      Font.Color := BLACK_COLOR;
+   Font.Color := IfThen(ParseSize, BLACK_COLOR, NOK_COLOR);
 end;
 
 end.
