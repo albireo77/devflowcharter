@@ -166,9 +166,9 @@ var
 implementation
 
 uses
-   System.StrUtils, System.Contnrs, System.UITypes, System.Types, WinApi.Messages, ApplicationCommon,
-   Goto_Form, Settings, LangDefinition, Main_Block, Help_Form, Comment, XMLProcessor,
-   Main_Form, Base_Block, SynEditTypes, ParserHelper;
+   System.StrUtils, System.Contnrs, System.UITypes, System.Types, WinApi.Messages,
+   System.Math, ApplicationCommon, Goto_Form, Settings, LangDefinition, Main_Block,
+   Help_Form, Comment, XMLProcessor, Main_Form, Base_Block, SynEditTypes, ParserHelper;
 
 const
    InfoPanel2: array[boolean] of string = ('OverwriteMode', 'InsertMode');
@@ -807,12 +807,7 @@ begin
       stbEditorBar.Panels[0].Text := i18Manager.GetFormattedString('StatusBarInfo', [p.Line, p.Char]);
    end;
    if scModified in Changes then
-   begin
-      if memCodeEditor.Modified then
-         stbEditorBar.Panels[1].Text := i18Manager.GetString('Modified')
-      else
-         stbEditorBar.Panels[1].Text := '';
-   end;
+      stbEditorBar.Panels[1].Text := IfThen(memCodeEditor.Modified, i18Manager.GetString('Modified'));
    if scInsertMode in Changes then
       stbEditorBar.Panels[2].Text := i18Manager.GetString(InfoPanel2[memCodeEditor.InsertMode]);
 end;
@@ -1116,7 +1111,7 @@ begin
          ROUTINE_ID: h := i18Manager.GetFormattedString('HintRoutine', [w, idInfo.TypeAsString]);
          ENUM_VALUE: h := i18Manager.GetFormattedString('HintEnum', [w, idInfo.TypeAsString]);
       end;
-      if h <> '' then
+      if not h.IsEmpty then
       begin
          memCodeEditor.Hint := h;
          memCodeEditor.ShowHint := true;
@@ -1559,10 +1554,7 @@ begin
       if not miIndentGuides.Enabled then
          miIndentGuides.Checked := false;
       memCodeEditor.CodeFolding.IndentGuides := miIndentGuides.Checked;
-      if memCodeEditor.CodeFolding.Enabled then
-         memCodeEditor.Gutter.RightOffset := 21
-      else
-         memCodeEditor.Gutter.RightOffset := 0;
+      memCodeEditor.Gutter.RightOffset := IfThen(memCodeEditor.CodeFolding.Enabled, 21);
 {$ENDIF}
    end
    else if Sender = miStatusBar then

@@ -238,7 +238,7 @@ begin
                Font.Color := WARN_COLOR;
             end;
          end;
-         if txt <> '' then
+         if not txt.IsEmpty then
             Hint := i18Manager.GetFormattedString(txt, [CRLF]);
       end
       else if not TInfra.Parse(Self, FParserMode) then

@@ -108,20 +108,6 @@ begin
    end;
 end;
 
-{function TIBASIC_GetRoutineDescription(AHeader: TRoutineHeader): string;
-begin
-   if AHeader <> nil then
-   begin
-      if AHeader.cbType.ItemIndex <> 0 then
-         result := 'Func '
-      else
-         result := 'Prgm ';
-      result := result + Trim(AHeader.edtName.Text);
-   end
-   else
-      result := i18Manager.GetString('MainProgram');
-end;}
-
 initialization
 
    lLangDef := GInfra.GetLangDefinition(TIBASIC_LANG_ID);
@@ -130,7 +116,6 @@ initialization
       lLangDef.ProgramHeaderSectionGenerator := TIBASIC_ProgramHeaderSectionGenerator;
       lLangDef.VarSectionGenerator := TIBASIC_VarSectionGenerator;
       lLangDef.UserFunctionsSectionGenerator := TIBASIC_UserFunctionsSectionGenerator;
-      //lLangDef.GetRoutineDescription := TIBASIC_GetRoutineDescription;
       lLangDef.MainProgramSectionGenerator := TIBASIC_MainProgramSectionGenerator;
    end;
 
