@@ -1025,7 +1025,7 @@ begin
       for i := 0 to numsCurr.Count-1 do
       begin
          if (result <> 0) or (i = nums.Count) then
-            exit;
+            break;
          e1 := StrToIntDef(nums[i], -1);
          e2 := StrToIntDef(numsCurr[i], -1);
          if e1 > e2 then
