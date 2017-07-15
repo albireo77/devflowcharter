@@ -43,9 +43,9 @@ type
     procedure imDelphiClick(Sender: TObject);
   private
     FVersion: string;
-    function ExtractVersion: string;
+    function ExtractProgramVersion: string;
   public
-    function GetVersion: string;
+    function GetProgramVersion: string;
   end;
 
 var
@@ -69,10 +69,9 @@ begin
    Close;
 end;
 
-function TAboutForm.ExtractVersion: string;
+function TAboutForm.ExtractProgramVersion: string;
 var
    s: string;
-   vMajor, vMinor, vRelease, vBuild: integer;
    n, hnd: DWORD;
    buf: TBytes;
    value: PVSFixedFileInfo;
@@ -84,31 +83,22 @@ begin
    begin
       SetLength(buf, n);
       if GetFileVersionInfo(PWideChar(s), 0, n, buf) and VerQueryValue(buf, '\', Pointer(value), n) then
-      begin
-         vMajor := LongRec(value.dwFileVersionMS).Hi;
-         vMinor := LongRec(value.dwFileVersionMS).Lo;
-         vRelease := LongRec(value.dwFileVersionLS).Hi;
-         vBuild := LongRec(value.dwFileVersionLS).Lo;
-         result := Format('%d%s%d%s%d%s%d', [vMajor,
-                                             VER_NUMBER_DELIM,
-                                             vMinor,
-                                             VER_NUMBER_DELIM,
-                                             vRelease,
-                                             VER_NUMBER_DELIM,
-                                             vBuild]);
-      end;
+         result := Format('%d%s%d%s%d%s%d', [LongRec(value.dwFileVersionMS).Hi, VER_NUMBER_DELIM,
+                                             LongRec(value.dwFileVersionMS).Lo, VER_NUMBER_DELIM,
+                                             LongRec(value.dwFileVersionLS).Hi, VER_NUMBER_DELIM,
+                                             LongRec(value.dwFileVersionLS).Lo]);
       buf := nil;
    end;
 end;
 
-function TAboutForm.GetVersion: string;
+function TAboutForm.GetProgramVersion: string;
 begin
    result := FVersion;
 end;
 
 procedure TAboutForm.FormCreate(Sender: TObject);
 begin
-   FVersion := ExtractVersion;
+   FVersion := ExtractProgramVersion;
    imDelphi.Hint := DELPHI_LINK;
    imSynEdit.Hint := SYNEDIT_LINK;
    lblXML.Hint := IcXML_LINK;

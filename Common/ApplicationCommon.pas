@@ -106,7 +106,7 @@ type
          class function GetDisplayRect(const APage: TBlockTabSheet): TRect;
          class procedure OnKeyDownSelectAll(Sender: TObject; var Key: Word; Shift: TShiftState);
          class function StripInstrEnd(const ALine: string): string;
-         class function CompareVersion(const AVersion: string): integer;
+         class function CompareProgramVersion(const AVersion: string): integer;
          function ValidateConstId(const AId: string): integer;
          function ValidateId(const AId: string): integer;
          constructor Create;
@@ -1005,14 +1005,14 @@ begin
    result := ExplorerForm;
 end;
 
-class function TInfra.CompareVersion(const AVersion: string): integer;
+class function TInfra.CompareProgramVersion(const AVersion: string): integer;
 var
    currVersion: string;
    nums, numsCurr: TStringList;
    i, e1, e2: integer;
 begin
    result := 0;
-   currVersion := GetAboutForm.GetVersion;
+   currVersion := GetAboutForm.GetProgramVersion;
    if AVersion.IsEmpty or (AVersion = currVersion) then
       exit;
    nums := TStringList.Create;
