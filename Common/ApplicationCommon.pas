@@ -29,7 +29,7 @@ uses
    LocalizationManager, Project, Settings, LangDefinition, CommonTypes, Base_Form,
    CommonInterfaces, Functions_Form, DataTypes_Form, Declarations_Form, Main_Form,
    Base_Block, SynEditTypes, Settings_Form, Editor_Form, Explorer_Form, UserFunction,
-   BlockTabSheet;
+   BlockTabSheet, About_Form;
 
 type
 
@@ -48,6 +48,8 @@ type
          property CurrentLang: TLangDefinition read FCurrentLang;
          property DummyLang: TLangDefinition read FDummyLang;
          class function CreateDOSProcess(const ACommand: string; ADir: string = ''): Boolean;
+         class procedure ShowWarningBox(const AWarnMsg: string);
+         class procedure ShowFormattedWarningBox(const AKey: string; Args: array of const);
          class procedure ShowErrorBox(const AErrMsg: string; const AErrType: TErrorType);
          class procedure ShowFormattedErrorBox(const AKey: string; Args: array of const; const AErrType: TErrorType);
          class function ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
@@ -79,6 +81,7 @@ type
          class function GetDeclarationsForm: TDeclarationsForm;
          class function GetEditorForm: TEditorForm;
          class function GetSettingsForm: TSettingsForm;
+         class function GetAboutForm: TAboutForm;
          class function GetExplorerForm: TExplorerForm;
          class function GetMainForm: TMainForm;
          class function GetActiveEdit: TCustomEdit;
@@ -103,6 +106,7 @@ type
          class function GetDisplayRect(const APage: TBlockTabSheet): TRect;
          class procedure OnKeyDownSelectAll(Sender: TObject; var Key: Word; Shift: TShiftState);
          class function StripInstrEnd(const ALine: string): string;
+         class function CompareVersion(const AVersion: string): integer;
          function ValidateConstId(const AId: string): integer;
          function ValidateId(const AId: string): integer;
          constructor Create;
@@ -163,6 +167,7 @@ const   // Global constants
         NAME_ATTR         = 'name';
         TYPE_ATTR         = 'type';
         IS_HEADER_ATTR    = 'isHeader';
+        APP_VERSION_ATTR  = 'devFVersion';
         BLOCK_TAG         = 'block';
         BRANCH_TAG        = 'branch';
         TEXT_TAG          = 'text';
@@ -175,6 +180,7 @@ const   // Global constants
         CRLF_PLACEHOLDER  = '#!';
 
         PAGE_LIST_DELIM   = ',';
+        VER_NUMBER_DELIM  = '.';
 
         MAIN_PAGE_MARKER  = 'mainPage#!';
 
@@ -468,6 +474,16 @@ end;
 class procedure TInfra.ShowFormattedErrorBox(const AKey: string; Args: array of const; const AErrType: TErrorType);
 begin
    ShowErrorBox(i18Manager.GetFormattedString(AKey, Args), AErrType);
+end;
+
+class procedure TInfra.ShowFormattedWarningBox(const AKey: string; Args: array of const);
+begin
+   ShowWarningBox(i18Manager.GetFormattedString(AKey, Args));
+end;
+
+class procedure TInfra.ShowWarningBox(const AWarnMsg: string);
+begin
+   Application.MessageBox(PChar(AWarnMsg), PChar(i18Manager.GetString('Warning')), MB_ICONWARNING);
 end;
 
 class function TInfra.ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
@@ -979,9 +995,50 @@ begin
    result := SettingsForm;
 end;
 
+class function TInfra.GetAboutForm: TAboutForm;
+begin
+   result := AboutForm;
+end;
+
 class function TInfra.GetExplorerForm: TExplorerForm;
 begin
    result := ExplorerForm;
+end;
+
+class function TInfra.CompareVersion(const AVersion: string): integer;
+var
+   currVersion: string;
+   nums, numsCurr: TStringList;
+   i, e1, e2: integer;
+begin
+   result := 0;
+   currVersion := GetAboutForm.GetVersion;
+   if AVersion.IsEmpty or (AVersion = currVersion) then
+      exit;
+   nums := TStringList.Create;
+   numsCurr := TStringList.Create;
+   try
+      nums.Delimiter := VER_NUMBER_DELIM;
+      nums.DelimitedText := AVersion;
+      numsCurr.Delimiter := VER_NUMBER_DELIM;
+      numsCurr.DelimitedText := currVersion;
+      if nums.Count <> numsCurr.Count then
+         exit;
+      for i := 0 to nums.Count-1 do
+      begin
+         e1 := StrToIntDef(nums[i], -1);
+         e2 := StrToIntDef(numsCurr[i], -1);
+         if e1 > e2 then
+            result := 1
+         else if e1 < e2 then
+            result := -1;
+         if result <> 0 then
+            exit;
+      end;
+   finally
+      nums.Free;
+      numsCurr.Free;
+   end;
 end;
 
 class function TInfra.GetActiveEdit: TCustomEdit;

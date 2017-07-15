@@ -42,9 +42,10 @@ type
     procedure FormCreate(Sender: TObject);
     procedure imDelphiClick(Sender: TObject);
   private
-    { Private declarations }
+    FVersion: string;
+    function ExtractVersion: string;
   public
-    { Public declarations }
+    function GetVersion: string;
   end;
 
 var
@@ -68,34 +69,46 @@ begin
    Close;
 end;
 
-procedure TAboutForm.FormCreate(Sender: TObject);
-
-   function GetVersionInfo: string;
-   var
-      s: string;
-      vMajor, vMinor, vRelease, vBuild: integer;
-      n, hnd: DWORD;
-      buf: TBytes;
-      value: PVSFixedFileInfo;
-   begin
-      s := Application.ExeName;
-      n := GetFileVersionInfoSize(PChar(s), hnd);
-      if n > 0 then
-      begin
-         SetLength(buf, n);
-         if GetFileVersionInfo(PWideChar(s), 0, n, buf) and VerQueryValue(buf, '\', Pointer(value), n) then
-         begin
-            vMajor := LongRec(value.dwFileVersionMS).Hi;
-            vMinor := LongRec(value.dwFileVersionMS).Lo;
-            vRelease := LongRec(value.dwFileVersionLS).Hi;
-            vBuild := LongRec(value.dwFileVersionLS).Lo;
-            result := Format('Version: %d.%d.%d (Build %d)', [vMajor, vMinor, vRelease, vBuild]);
-         end;
-         buf := nil;
-      end;
-   end;
-
+function TAboutForm.ExtractVersion: string;
+var
+   s: string;
+   vMajor, vMinor, vRelease, vBuild: integer;
+   n, hnd: DWORD;
+   buf: TBytes;
+   value: PVSFixedFileInfo;
 begin
+   result := '';
+   s := Application.ExeName;
+   n := GetFileVersionInfoSize(PChar(s), hnd);
+   if n > 0 then
+   begin
+      SetLength(buf, n);
+      if GetFileVersionInfo(PWideChar(s), 0, n, buf) and VerQueryValue(buf, '\', Pointer(value), n) then
+      begin
+         vMajor := LongRec(value.dwFileVersionMS).Hi;
+         vMinor := LongRec(value.dwFileVersionMS).Lo;
+         vRelease := LongRec(value.dwFileVersionLS).Hi;
+         vBuild := LongRec(value.dwFileVersionLS).Lo;
+         result := Format('%d%s%d%s%d%s%d', [vMajor,
+                                             VER_NUMBER_DELIM,
+                                             vMinor,
+                                             VER_NUMBER_DELIM,
+                                             vRelease,
+                                             VER_NUMBER_DELIM,
+                                             vBuild]);
+      end;
+      buf := nil;
+   end;
+end;
+
+function TAboutForm.GetVersion: string;
+begin
+   result := FVersion;
+end;
+
+procedure TAboutForm.FormCreate(Sender: TObject);
+begin
+   FVersion := ExtractVersion;
    imDelphi.Hint := DELPHI_LINK;
    imSynEdit.Hint := SYNEDIT_LINK;
    lblXML.Hint := IcXML_LINK;
@@ -104,7 +117,7 @@ begin
    lblInfo.Caption := ' This program is freeware and released under the'#13#10'                GNU General Public License.'#13#10#13#10'    Copyright(C) 2006-2017 The devFlowcharter'#13#10'                             project';
    lblInfo1.Caption := '                   ' + PROGRAM_NAME + CRLF +
                        'The easiest way from flowchart to program!' + CRLF +
-                       '             ' + GetVersionInfo;
+                       '                Version: ' + FVersion;
 end;
 
 procedure TAboutForm.imDelphiClick(Sender: TObject);

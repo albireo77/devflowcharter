@@ -412,6 +412,7 @@ begin
 
    ATag.SetAttribute(LANG_ATTR, GInfra.CurrentLang.Name);
    ATag.SetAttribute(PAGE_ORDER_ATTR, GetPageOrder);
+   ATag.SetAttribute(APP_VERSION_ATTR, TInfra.GetAboutForm.GetVersion);
    if GetMainPage <> GetActivePage then
       ATag.SetAttribute(PAGE_FRONT_ATTR, GetActivePage.Caption);
 
@@ -477,7 +478,7 @@ end;
 function TProject.ImportFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
 var
    itr: IIterator;
-   s, langName: string;
+   s, langName, ver: string;
 begin
 
    result := errValidate;
@@ -488,6 +489,10 @@ begin
       Gerr_text := i18Manager.GetFormattedString('LngNoSprt', [langName]);
       exit;
    end;
+
+   ver := ATag.GetAttribute(APP_VERSION_ATTR);
+   if TInfra.CompareVersion(ver) > 0 then
+      TInfra.ShowFormattedWarningBox('OldVerMsg', [ver]);
 
    s := IfThen(SameText(langName, GInfra.DummyLang.Name), 'ChangeLngNone', 'ChangeLngAsk');
 
