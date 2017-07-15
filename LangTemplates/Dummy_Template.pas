@@ -272,7 +272,8 @@ begin
             isExtern := AConstList.IsExternal(i);
             if (isExtern and lang.GenExternVarConst) or not isExtern then
             begin
-               constStr := ReplaceStr(IfThen(isExtern, lang.ConstEntryExtern, lang.ConstEntry), PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
+               constStr := IfThen(isExtern, lang.ConstEntryExtern, lang.ConstEntry);
+               constStr := ReplaceStr(constStr, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
                constStr := ReplaceStr(constStr, '%s2', AConstList.sgList.Cells[CONST_VALUE_COL, i]);
                constList.AddObject(constStr, AConstList);
             end;
