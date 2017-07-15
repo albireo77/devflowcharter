@@ -1022,18 +1022,16 @@ begin
       nums.DelimitedText := AVersion;
       numsCurr.Delimiter := VER_NUMBER_DELIM;
       numsCurr.DelimitedText := currVersion;
-      if nums.Count <> numsCurr.Count then
-         exit;
-      for i := 0 to nums.Count-1 do
+      for i := 0 to numsCurr.Count-1 do
       begin
+         if (result <> 0) or (i = nums.Count) then
+            exit;
          e1 := StrToIntDef(nums[i], -1);
          e2 := StrToIntDef(numsCurr[i], -1);
          if e1 > e2 then
             result := 1
          else if e1 < e2 then
             result := -1;
-         if result <> 0 then
-            exit;
       end;
    finally
       nums.Free;
