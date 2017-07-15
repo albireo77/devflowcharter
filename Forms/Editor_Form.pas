@@ -278,7 +278,10 @@ begin
       miGutter.Checked := EditorShowGutter;
       miScrollbars.Checked := EditorShowScrollbars;
       miRichText.Enabled := GInfra.CurrentLang.Highlighter <> nil;
-      miRichText.Checked := EditorShowRichText;
+      if miRichText.Enabled then
+         miRichText.Checked := EditorShowRichText
+      else
+         miRichText.Checked := false;
       if EditorShowScrollbars then
          memCodeEditor.ScrollBars := ssBoth
       else

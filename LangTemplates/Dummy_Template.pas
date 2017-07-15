@@ -110,10 +110,10 @@ begin
                            begin
                               field := TField(iterf.Next);
                               sizeStr := lang.GetArraySizes(field.edtSize);
-                              if not sizeStr.IsEmpty then
-                                 fieldStr := lang.DataTypeRecordFieldArrayMask
+                              if sizeStr.IsEmpty then
+                                 fieldStr := lang.DataTypeRecordFieldMask
                               else
-                                 fieldStr := lang.DataTypeRecordFieldMask;
+                                 fieldStr := lang.DataTypeRecordFieldArrayMask;
                               fieldStr := ReplaceStr(fieldStr, PRIMARY_PLACEHOLDER, Trim(field.edtName.Text));
                               fieldStr := ReplaceStr(fieldStr, '%s2', field.cbType.Text);
                               fieldStr := ReplaceStr(fieldStr, '%s3', sizeStr);
@@ -262,7 +262,7 @@ end;
 procedure Dummy_ConstSectionGenerator(ALines: TStringList; AConstList: TConstDeclareList);
 var
    i: integer;
-   constStr, constEntry: string;
+   constStr: string;
    lang: TLangDefinition;
    constList, constTemplate: TStringList;
    isExtern: boolean;
@@ -277,11 +277,7 @@ begin
             isExtern := AConstList.IsExternal(i);
             if (isExtern and lang.GenExternVarConst) or not isExtern then
             begin
-               if isExtern then
-                  constEntry := lang.ConstEntryExtern
-               else
-                  constEntry := lang.ConstEntry;
-               constStr := ReplaceStr(constEntry, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
+               constStr := ReplaceStr(IfThen(isExtern, lang.ConstEntryExtern, lang.ConstEntry), PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
                constStr := ReplaceStr(constStr, '%s2', AConstList.sgList.Cells[CONST_VALUE_COL, i]);
                constList.AddObject(constStr, AConstList);
             end;
