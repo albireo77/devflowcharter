@@ -229,12 +229,7 @@ begin
             isS1 := Pos(PRIMARY_PLACEHOLDER, lang.LibTemplate) <> 0;
             libTemplate.Text := lang.LibTemplate;
             for i := 0 to libList.Count-1 do
-            begin
-               if isS1 then
-                  libStr := libStr + Format(lang.LibEntry, [libList[i]]) + CRLF
-               else
-                  libStr := libStr + Format(lang.LibEntryList, [libList[i]]);
-            end;
+               libStr := libStr + Format(IfThen(isS1, lang.LibEntry + CRLF, lang.LibEntryList), [libList[i]]);
             if isS1 then
             begin
                p1 := PRIMARY_PLACEHOLDER;
