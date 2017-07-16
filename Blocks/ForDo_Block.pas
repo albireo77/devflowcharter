@@ -131,12 +131,12 @@ begin
    if GSettings.ParseFor then
    begin
       edtVariable.Font.Color := NOK_COLOR;
-      edtVariable.Hint := i18Manager.GetFormattedString('NoCVar', [CRLF]);
+      edtVariable.Hint := i18Manager.GetFormattedString('NoCVar', [sLineBreak]);
    end
    else
    begin
       edtVariable.Font.Color := GSettings.FontColor;
-      edtVariable.Hint := i18Manager.GetFormattedString('ExpOk', ['', CRLF]);
+      edtVariable.Hint := i18Manager.GetFormattedString('ExpOk', ['', sLineBreak]);
    end;
 
    edtVariable.BorderStyle := bsNone;
@@ -270,12 +270,12 @@ begin
    edtVariable.Visible := True;
    if (edtVariable.Text <> '') or not GSettings.ParseFor then
    begin
-      edtVariable.Hint := i18Manager.GetFormattedString('ExpOk', [edtVariable.Text, CRLF]);
+      edtVariable.Hint := i18Manager.GetFormattedString('ExpOk', [edtVariable.Text, sLineBreak]);
       edtVariable.Font.Color := GSettings.FontColor;
    end
    else
    begin
-      edtVariable.Hint := i18Manager.GetFormattedString('NoCVar', [CRLF]);
+      edtVariable.Hint := i18Manager.GetFormattedString('NoCVar', [sLineBreak]);
       edtVariable.Font.Color := NOK_COLOR;
    end;
    if GSettings.UpdateEditor and not SkipUpdateEditor then
@@ -288,7 +288,7 @@ var
    isOk: boolean;
 begin
    edtVariable.Font.Color := GSettings.FontColor;
-   edtVariable.Hint := i18Manager.GetFormattedString('ExpOk', [edtVariable.Text, CRLF]);
+   edtVariable.Hint := i18Manager.GetFormattedString('ExpOk', [edtVariable.Text, sLineBreak]);
    if not GInfra.CurrentLang.ForDoVarList then
       UpdateEditor(edtVariable);
    if GSettings.ParseFor then
@@ -304,9 +304,9 @@ begin
       begin
          edtVariable.Font.Color := NOK_COLOR;
          if edtVariable.Text <> '' then
-            edtVariable.Hint := i18Manager.GetFormattedString('BadCVar', [edtVariable.Text, CRLF])
+            edtVariable.Hint := i18Manager.GetFormattedString('BadCVar', [edtVariable.Text, sLineBreak])
          else
-            edtVariable.Hint := i18Manager.GetFormattedString('NoCVar', [CRLF]);
+            edtVariable.Hint := i18Manager.GetFormattedString('NoCVar', [sLineBreak]);
       end;
       edtStartVal.Change;
       edtStopVal.Change;

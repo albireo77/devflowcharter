@@ -229,7 +229,7 @@ begin
             isS1 := Pos(PRIMARY_PLACEHOLDER, lang.LibTemplate) <> 0;
             libTemplate.Text := lang.LibTemplate;
             for i := 0 to libList.Count-1 do
-               libStr := libStr + Format(IfThen(isS1, lang.LibEntry + CRLF, lang.LibEntryList), [libList[i]]);
+               libStr := libStr + Format(IfThen(isS1, lang.LibEntry + sLineBreak, lang.LibEntryList), [libList[i]]);
             if isS1 then
             begin
                p1 := PRIMARY_PLACEHOLDER;
@@ -585,7 +585,7 @@ begin
          end;
          if AHeader.chkInclDescFlow.Checked then
             desc := AHeader.memDesc.Text;
-         lcrlf := CRLF;
+         lcrlf := sLineBreak;
       end;
    end;
    if not key.IsEmpty then

@@ -224,7 +224,7 @@ begin
          result := LoadAllLabels(langFile);
       except on E: EFCreateError do
          begin
-            errMsg := 'Could not create default translation file ' + langFile + ':' + CRLF + E.Message;
+            errMsg := 'Could not create default translation file ' + langFile + ':' + sLineBreak + E.Message;
             result := 0;
          end;
       end;

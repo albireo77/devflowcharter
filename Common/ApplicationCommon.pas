@@ -196,8 +196,6 @@ const   // Global constants
 
         FLOWCHART_DEFAULT_FONT_NAME = 'Tahoma';
 
-        CRLF = #13#10;
-
         ID_ALLOW_CHARS = ['a'..'z', 'A'..'Z', '0'..'9', '_'];
 
         ROW_NOT_FOUND = -1;
@@ -671,7 +669,7 @@ begin
      if status <> GDI_ERROR then
         Printer.EndDoc
      else
-        ShowErrorBox(i18Manager.GetFormattedString('PrintError', [CRLF, SysErrorMessage(last_err)]), errPrinter);
+        ShowErrorBox(i18Manager.GetFormattedString('PrintError', [sLineBreak, SysErrorMessage(last_err)]), errPrinter);
    end;
 end;
 

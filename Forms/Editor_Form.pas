@@ -246,7 +246,7 @@ begin
       for i := 0 to lines.Count-1 do
       begin
          if i <> 0 then
-            result := result + CRLF;
+            result := result + sLineBreak;
          result := result + lines[i];
       end;
    finally
@@ -1107,7 +1107,7 @@ begin
          begin
             h := i18Manager.GetFormattedString('HintArray', [scope, idInfo.DimensCount, w, idInfo.SizeAsString, idInfo.TypeAsString]);
             if (idInfo.SizeExpArrayAsString <> idInfo.SizeAsString) and not idInfo.SizeExpArrayAsString.IsEmpty then
-               h := h + CRLF + i18Manager.GetFormattedString('HintArrayExp', [idInfo.TypeAsString, CRLF, scope, idInfo.DimensCount, w, idInfo.SizeExpArrayAsString, idInfo.TypeOriginalAsString]);
+               h := h + sLineBreak + i18Manager.GetFormattedString('HintArrayExp', [idInfo.TypeAsString, sLineBreak, scope, idInfo.DimensCount, w, idInfo.SizeExpArrayAsString, idInfo.TypeOriginalAsString]);
          end;
          VARIABLE:   h := i18Manager.GetFormattedString('HintVar', [scope, w, idInfo.TypeAsString]);
          CONSTANT:   h := i18Manager.GetFormattedString('HintConst', [w, idInfo.Value]);

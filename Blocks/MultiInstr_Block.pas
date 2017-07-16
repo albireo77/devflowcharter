@@ -78,13 +78,13 @@ begin
    FErrLine := -1;
    FStatements.Font.Color := GSettings.FontColor;
    txt := Trim(FStatements.Text);
-   FStatements.Hint := i18Manager.GetFormattedString('ExpOk', [txt, CRLF]);
+   FStatements.Hint := i18Manager.GetFormattedString('ExpOk', [txt, sLineBreak]);
    UpdateEditor(nil);
    if GSettings.ParseMultiAssign then
    begin
       if txt.IsEmpty then
       begin
-         FStatements.Hint := i18Manager.GetFormattedString('NoInstr', [CRLF]);
+         FStatements.Hint := i18Manager.GetFormattedString('NoInstr', [sLineBreak]);
          FStatements.Font.Color := WARN_COLOR
       end
       else
@@ -95,7 +95,7 @@ begin
             if not TInfra.Parse(line, prsAssign) then
             begin
                FStatements.Font.Color := NOK_COLOR;
-               FStatements.Hint := i18Manager.GetFormattedString('ExpErrMult', [i+1, line, CRLF, errString]);
+               FStatements.Hint := i18Manager.GetFormattedString('ExpErrMult', [i+1, line, sLineBreak, errString]);
                FErrLine := i;
                break;
             end;
@@ -133,7 +133,7 @@ begin
          end;
          if tmpList.Text = '' then
             GenerateTemplateSection(tmpList, ReplaceStr(lang.InstrTemplate, PRIMARY_PLACEHOLDER, ''), ALangId, ADeep);
-         if EndsText(CRLF, FStatements.Text) then
+         if EndsText(sLineBreak, FStatements.Text) then
             tmpList.AddObject('', Self);
          TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
          result := tmpList.Count;

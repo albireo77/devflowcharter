@@ -180,9 +180,9 @@ begin
    pnlDesktop.Left := val;
    pnlFill.Left := val;
    pnlFont.Left := val;
-   edtCompiler.Hint := ReplaceStr(AList.Values['edtCompilerHint'], '##', CRLF);
-   edtCompilerNoMain.Hint := ReplaceStr(AList.Values['edtCompilerNoMainHint'], '##', CRLF);
-   chkEnableDBuffer.Hint := ReplaceStr(AList.Values['chkEnableDBufferHint'], '##', CRLF);
+   edtCompiler.Hint := ReplaceStr(AList.Values['edtCompilerHint'], '##', sLineBreak);
+   edtCompilerNoMain.Hint := ReplaceStr(AList.Values['edtCompilerNoMainHint'], '##', sLineBreak);
+   chkEnableDBuffer.Hint := ReplaceStr(AList.Values['chkEnableDBufferHint'], '##', sLineBreak);
    inherited Localize(AList);
 end;
 

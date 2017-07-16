@@ -1807,7 +1807,7 @@ begin
             ReleaseDC(memo.Handle, hnd);
          end;
          count := memo.Lines.Count;
-         if EndsText(CRLF, memo.Text) then
+         if EndsText(sLineBreak, memo.Text) then
             count := count + 1;
          if count > lineCount then
          begin
@@ -1987,7 +1987,7 @@ begin
             if AInfo.RelativeLine > 0 then
             begin
                for i := 0 to AInfo.RelativeLine-1 do
-                  idx2 := idx2 + Length(memo.Lines[i] + CRLF);
+                  idx2 := idx2 + (memo.Lines[i] + sLineBreak).Length;
             end;
          end
          else
@@ -2022,9 +2022,9 @@ begin
       if TInfra.IsNOkColor(lColor) then
       begin
          result := AEdit.Hint;
-         i := LastDelimiter(CRLF, result);
+         i := LastDelimiter(sLineBreak, result);
          if i > 0 then
-            result := ' - ' + Copy(result, i+1, MAXINT);
+            result := ' - ' + Copy(result, i+1, MaxInt);
       end;
    end;
 end;
@@ -2384,7 +2384,7 @@ begin
       txtControl := GetTextControl;
       if (txtControl <> nil) and (txtControl.Text <> '') then
       begin
-         txt := ReplaceStr(txtControl.Text, CRLF, CRLF_PLACEHOLDER);
+         txt := ReplaceStr(txtControl.Text, sLineBreak, CRLF_PLACEHOLDER);
          tag := ATag.OwnerDocument.CreateElement(TEXT_TAG);
          TXMLProcessor.AddCDATA(tag, txt);
          ATag.AppendChild(tag);
@@ -2424,7 +2424,7 @@ begin
       if (tag <> nil) and (textControl <> nil) then
       begin
          FRefreshMode := true;
-         textControl.Text := ReplaceStr(tag.Text, CRLF_PLACEHOLDER, CRLF);
+         textControl.Text := ReplaceStr(tag.Text, CRLF_PLACEHOLDER, sLineBreak);
          FRefreshMode := false;
       end;
 

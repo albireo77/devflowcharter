@@ -54,7 +54,7 @@ var
 begin
    txt := '';
    for i := 1 to 28 do
-      txt := txt + ' ' + AList.Values['EditorHelp' + i.ToString] + CRLF;
+      txt := txt + ' ' + AList.Values['EditorHelp' + i.ToString] + sLineBreak;
    memHelp.Text := ReplaceText(txt, ' ##', StringOfChar('-', 55));
    inherited Localize(AList);
 end;

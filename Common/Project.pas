@@ -497,7 +497,7 @@ begin
    s := IfThen(SameText(langName, GInfra.DummyLang.Name), 'ChangeLngNone', 'ChangeLngAsk');
 
    if (not SameText(GInfra.CurrentLang.Name, langName)) and
-      (TInfra.ShowFormattedQuestionBox(s, [langName.Trim, CRLF], MB_YESNO+MB_ICONQUESTION) = IDYES) then
+      (TInfra.ShowFormattedQuestionBox(s, [langName.Trim, sLineBreak], MB_YESNO+MB_ICONQUESTION) = IDYES) then
    begin
       GInfra.SetCurrentLang(langName);
 {$IFDEF USE_CODEFOLDING}
@@ -786,8 +786,8 @@ begin
          if comment.IsHeader then
          begin
             result := comment.Text;
-            if EndsText(CRLF, comment.Text) then
-               result := result + CRLF;
+            if EndsText(sLineBreak, comment.Text) then
+               result := result + sLineBreak;
             break;
          end;
       end;

@@ -204,7 +204,7 @@ begin
    txt := Trim(Text);
    Font.Color := GSettings.FontColor;
    GChange := 1;
-   Hint := i18Manager.GetFormattedString('ExpOk', [txt, CRLF]);
+   Hint := i18Manager.GetFormattedString('ExpOk', [txt, sLineBreak]);
    TBlock(Parent).UpdateEditor(Self);
 
     if FExecuteParse then
@@ -214,7 +214,7 @@ begin
          case FParserMode of
             prsFor:
             begin
-               Hint := i18Manager.GetFormattedString('ExpErr', ['', CRLF, i18Manager.GetString('IntReq')]);
+               Hint := i18Manager.GetFormattedString('ExpErr', ['', sLineBreak, i18Manager.GetString('IntReq')]);
                Font.Color := NOK_COLOR;
             end;
             prsCondition:
@@ -239,11 +239,11 @@ begin
             end;
          end;
          if not txt.IsEmpty then
-            Hint := i18Manager.GetFormattedString(txt, [CRLF]);
+            Hint := i18Manager.GetFormattedString(txt, [sLineBreak]);
       end
       else if not TInfra.Parse(Self, FParserMode) then
       begin
-         Hint := i18Manager.GetFormattedString('ExpErr', [txt, CRLF, errString]);
+         Hint := i18Manager.GetFormattedString('ExpErr', [txt, sLineBreak, errString]);
          Font.Color := NOK_COLOR;
       end;
       if Assigned(OnChangeCallBack) then

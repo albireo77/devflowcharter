@@ -292,8 +292,8 @@ begin
       begin
          if errText.IsEmpty then
             errText := GErr_text;
-         errText := i18Manager.GetFormattedString('FileError', [result]) + CRLF + errText;
-         TInfra.ShowFormattedErrorBox('ImportFailed', [CRLF, errText], errImport);
+         errText := i18Manager.GetFormattedString('FileError', [result]) + sLineBreak + errText;
+         TInfra.ShowFormattedErrorBox('ImportFailed', [sLineBreak, errText], errImport);
          result := '';
       end;
    end;
@@ -331,7 +331,7 @@ begin
          except on E: Exception do
             begin
                result := errIO;
-               TInfra.ShowFormattedErrorBox('SaveError', [filePath, CRLF, E.Message], result);
+               TInfra.ShowFormattedErrorBox('SaveError', [filePath, sLineBreak, E.Message], result);
             end;
          end;
       end;

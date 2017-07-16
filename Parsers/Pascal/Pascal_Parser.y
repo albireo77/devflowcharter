@@ -925,12 +925,12 @@ table_exp:
 							begin
 							   if arg1.IdentType <> VARRAY then
                                                            begin
-                                                              errString := i18Manager.GetFormattedString('BadArrExp', [CRLF, $1]);
+                                                              errString := i18Manager.GetFormattedString('BadArrExp', [sLineBreak, $1]);
                                                               yyabort;
                                                            end;
 							   if arg1.DimensCount <> pcount then
 							   begin
-							      errString := i18Manager.GetFormattedString('BadIndxNumber', [pcount, $1, CRLF, arg1.DimensCount]);
+							      errString := i18Manager.GetFormattedString('BadIndxNumber', [pcount, $1, sLineBreak, arg1.DimensCount]);
 							      yyabort;
 							   end;
 							end
@@ -940,7 +940,7 @@ table_exp:
 							   begin
 							      if pcount <> 1 then
 							      begin
-							         errString := i18Manager.GetFormattedString('BadIndxNumber', [pcount, $1, CRLF, 1]);	
+							         errString := i18Manager.GetFormattedString('BadIndxNumber', [pcount, $1, sLineBreak, 1]);	
 							         yyabort;
 							      end
 							      else
@@ -951,7 +951,7 @@ table_exp:
 							   end
 							   else if not (pcount in [arg1.DimensCount, arg1.DimensCount+1]) or ((pcount = arg1.DimensCount+1) and (PASCAL_CHAR_TYPE = UNKNOWN_TYPE)) then
 							   begin
-							      errString := i18Manager.GetFormattedString('BadIndxNumber', [pcount, $1, CRLF, arg1.DimensCount]);
+							      errString := i18Manager.GetFormattedString('BadIndxNumber', [pcount, $1, sLineBreak, arg1.DimensCount]);
 							      yyabort;
 							   end
 							   else

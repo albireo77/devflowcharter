@@ -76,7 +76,7 @@ var
    buf: TBytes;
    value: PVSFixedFileInfo;
 begin
-   result := '';
+   result := 'unknown';
    s := Application.ExeName;
    n := GetFileVersionInfoSize(PChar(s), hnd);
    if n > 0 then
@@ -104,10 +104,8 @@ begin
    lblXML.Hint := IcXML_LINK;
    lblProjectLink.Caption := PROJECT_LINK;
    lblProjectLink.Hint := PROJECT_LINK;
-   lblInfo.Caption := ' This program is freeware and released under the'#13#10'                GNU General Public License.'#13#10#13#10'    Copyright(C) 2006-2017 The devFlowcharter'#13#10'                             project';
-   lblInfo1.Caption := '                   ' + PROGRAM_NAME + CRLF +
-                       'The easiest way from flowchart to program!' + CRLF +
-                       '                Version: ' + FVersion;
+   lblInfo.Caption := Format(' This program is freeware and released under the%s                GNU General Public License.%s%s    Copyright(C) 2006-2017 The %s%s                             project', [sLineBreak, sLineBreak, sLineBreak, PROGRAM_NAME, sLineBreak]);
+   lblInfo1.Caption := Format('                   %s%sThe easiest way from flowchart to program!%s                Version: %s', [PROGRAM_NAME, sLineBreak, sLineBreak, FVersion]);
 end;
 
 procedure TAboutForm.imDelphiClick(Sender: TObject);

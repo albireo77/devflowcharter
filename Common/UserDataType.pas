@@ -171,7 +171,7 @@ begin
    edtLibrary.ShowHint := true;
    edtLibrary.DoubleBuffered := true;
    edtLibrary.OnChange := OnChangeLib;
-   edtLibrary.Hint := ReplaceStr(i18Manager.GetFormattedString('edtLibHintType', [GInfra.CurrentLang.LibraryExt]), '##', CRLF);
+   edtLibrary.Hint := ReplaceStr(i18Manager.GetFormattedString('edtLibHintType', [GInfra.CurrentLang.LibraryExt]), '##', sLineBreak);
 
    gbTypeBox := TGroupBox.Create(Self);
    gbTypeBox.Parent := Self;

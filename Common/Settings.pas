@@ -680,7 +680,7 @@ begin
 
       if (GProject <> nil) and ((FEnableDBuffering <> chkEnableDBuffer.Checked) or (FFlowchartFontName <> edtFontName.Text) or (GInfra.CurrentLang.Name <> cbLanguage.Text)) then
       begin
-         if TInfra.ShowFormattedQuestionBox('CloseProjectAsk', [CRLF]) = IDYES then
+         if TInfra.ShowFormattedQuestionBox('CloseProjectAsk', [sLineBreak]) = IDYES then
             TInfra.SetInitialSettings
          else
             applyAll := false;
