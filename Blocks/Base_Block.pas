@@ -294,9 +294,9 @@ type
 implementation
 
 uses
-   System.StrUtils, Vcl.Menus, System.Types, Main_Block, Return_Block, ApplicationCommon,
-   BlockFactory, UserFunction, XMLProcessor, Navigator_Form, LangDefinition, FlashThread,
-   Comment;
+   System.StrUtils, Vcl.Menus, System.Types, System.Math, Main_Block, Return_Block,
+   ApplicationCommon, BlockFactory, UserFunction, XMLProcessor, Navigator_Form,
+   LangDefinition, FlashThread, Comment;
 
 type
    THackControl = class(TControl);
@@ -1540,7 +1540,7 @@ const
    MIN_HALF_WIDTH = 30;
 var
    a, b: integer;
-   ar, br, cx, cy: real;
+   ar, br, cx, cy: single;
    R: TRect;
    wndExt, viewPort: TSize;
 begin
@@ -1554,7 +1554,7 @@ begin
    br := R.Width * cx / Sqrt(2);
    if ar < MIN_HALF_HEIGHT then
    begin
-      if ar = 0 then
+      if IsZero(ar) then
          br := MIN_HALF_WIDTH
       else
          br := MIN_HALF_HEIGHT * br / ar;

@@ -243,7 +243,7 @@ implementation
 
 uses
    Vcl.Printers, WinApi.Messages, Vcl.Menus, Vcl.Dialogs, Vcl.Imaging.jpeg, Vcl.Imaging.PngImage,
-   UserDataType, XMLProcessor, SynEditHighlighter, Main_Block;
+   System.Math, UserDataType, XMLProcessor, SynEditHighlighter, Main_Block;
 
 type
    THackCustomEdit = class(TCustomEdit);
@@ -588,10 +588,10 @@ begin
         else
            stepY := printRect.Height * ABitmap.Width div printRect.Width;
         colCount := ABitmap.Width div stepX;
-        if (ABitmap.Width mod stepX) <> 0 then
+        if not IsZero(ABitmap.Width mod stepX) then
            Inc(colCount);
         rowCount := ABitmap.Height div stepY;
-        if (ABitmap.Height mod stepY) <> 0 then
+        if not IsZero(ABitmap.Height mod stepY) then
            Inc(rowCount);
      end;
      if (stepX / stepY) > (printRect.Width / printRect.Height) then

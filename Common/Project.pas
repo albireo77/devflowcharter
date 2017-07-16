@@ -412,7 +412,7 @@ begin
 
    ATag.SetAttribute(LANG_ATTR, GInfra.CurrentLang.Name);
    ATag.SetAttribute(PAGE_ORDER_ATTR, GetPageOrder);
-   ATag.SetAttribute(APP_VERSION_ATTR, TInfra.GetAboutForm.GetVersion);
+   ATag.SetAttribute(APP_VERSION_ATTR, TInfra.GetAboutForm.GetProgramVersion);
    if GetMainPage <> GetActivePage then
       ATag.SetAttribute(PAGE_FRONT_ATTR, GetActivePage.Caption);
 
@@ -491,7 +491,7 @@ begin
    end;
 
    ver := ATag.GetAttribute(APP_VERSION_ATTR);
-   if TInfra.CompareVersion(ver) > 0 then
+   if TInfra.CompareProgramVersion(ver) > 0 then
       TInfra.ShowFormattedWarningBox('OldVerMsg', [ver]);
 
    s := IfThen(SameText(langName, GInfra.DummyLang.Name), 'ChangeLngNone', 'ChangeLngAsk');
