@@ -123,7 +123,6 @@ end;
 
 class function TXMLProcessor.GetBoolFromAttr(ATag: IXMLElement; const AAttrName: string; ADefault: boolean = false): boolean;
 var
-   ctag: IXMLElement;
    i: integer;
    attr: string;
 begin

@@ -552,7 +552,7 @@ end;
 
 function Dummy_GetUserFuncDesc(AHeader: TUserFunctionHeader; ALongDesc: boolean = true): string;
 var
-   params, desc, name, lType, key, lcrlf: string;
+   params, desc, name, lType, key, lb: string;
    lang: TLangDefinition;
    iterp: IIterator;
 begin
@@ -562,7 +562,7 @@ begin
    name := '';
    lType := '';
    key := '';
-   lcrlf := '';
+   lb := '';
    lang := GInfra.CurrentLang;
    if AHeader <> nil then
    begin
@@ -585,13 +585,13 @@ begin
          end;
          if AHeader.chkInclDescFlow.Checked then
             desc := AHeader.memDesc.Text;
-         lcrlf := sLineBreak;
+         lb := sLineBreak;
       end;
    end;
    if not key.IsEmpty then
    begin
       result := i18Manager.GetString(key);
-      result := ReplaceStr(result, '##', lcrlf);
+      result := ReplaceStr(result, LB_PHOLDER2, lb);
       result := ReplaceStr(result, PRIMARY_PLACEHOLDER, name);
       result := ReplaceStr(result, '%s2', params);
       result := ReplaceStr(result, '%s3', lType);

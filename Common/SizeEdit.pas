@@ -51,7 +51,7 @@ begin
    Text := '1';
    ShowHint := true;
    CharCase := ecUpperCase;
-   Hint := ReplaceStr(i18Manager.GetString('edtSizeHint'), '##', sLineBreak);
+   Hint := ReplaceStr(i18Manager.GetString('edtSizeHint'), LB_PHOLDER2, sLineBreak);
    ParentFont := false;
    Font.Style := [];
    Font.Color := BLACK_COLOR;

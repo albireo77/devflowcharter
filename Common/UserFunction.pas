@@ -494,7 +494,7 @@ begin
    edtLibrary.ShowHint := true;
    edtLibrary.DoubleBuffered := true;
    edtLibrary.OnChange := OnChangeLib;
-   edtLibrary.Hint := ReplaceStr(i18Manager.GetFormattedString('edtLibraryHint', [GInfra.CurrentLang.LibraryExt]), '##', sLineBreak);
+   edtLibrary.Hint := ReplaceStr(i18Manager.GetFormattedString('edtLibraryHint', [GInfra.CurrentLang.LibraryExt]), LB_PHOLDER2, sLineBreak);
 
    gbParams := TGroupBox.Create(Self);
    gbParams.Parent := Self;
@@ -799,7 +799,7 @@ begin
    if memDesc.Text <> '' then
    begin
       tag3 := ATag.OwnerDocument.CreateElement('desc');
-      TXMLProcessor.AddCDATA(tag3, ReplaceStr(memDesc.Text, sLineBreak, CRLF_PLACEHOLDER));
+      TXMLProcessor.AddCDATA(tag3, ReplaceStr(memDesc.Text, sLineBreak, LB_PHOLDER));
       tag2.AppendChild(tag3);
    end;
    tag2.SetAttribute('show_body', chkBodyVisible.Checked.ToString);
@@ -828,7 +828,7 @@ begin
    cbType.OnChange(cbType);
    tag2 := TXMLProcessor.FindChildTag(ATag, 'desc');
    if tag2 <> nil then
-      memDesc.Text := ReplaceStr(tag2.Text, CRLF_PLACEHOLDER, sLineBreak);
+      memDesc.Text := ReplaceStr(tag2.Text, LB_PHOLDER, sLineBreak);
    chkBodyVisible.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'show_body');
    chkInclDescCode.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'desc_incl');
    chkInclDescFlow.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'desc_incl_flow');

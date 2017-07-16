@@ -177,7 +177,8 @@ const   // Global constants
         FUNCTION_TAG      = 'routine';
         HEADER_TAG        = 'header';
 
-        CRLF_PLACEHOLDER  = '#!';
+        LB_PHOLDER  = '#!';
+        LB_PHOLDER2  = '##';
 
         PAGE_LIST_DELIM   = ',';
         VER_NUMBER_DELIM  = '.';

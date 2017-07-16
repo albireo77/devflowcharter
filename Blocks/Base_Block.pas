@@ -2384,7 +2384,7 @@ begin
       txtControl := GetTextControl;
       if (txtControl <> nil) and (txtControl.Text <> '') then
       begin
-         txt := ReplaceStr(txtControl.Text, sLineBreak, CRLF_PLACEHOLDER);
+         txt := ReplaceStr(txtControl.Text, sLineBreak, LB_PHOLDER);
          tag := ATag.OwnerDocument.CreateElement(TEXT_TAG);
          TXMLProcessor.AddCDATA(tag, txt);
          ATag.AppendChild(tag);
@@ -2424,7 +2424,7 @@ begin
       if (tag <> nil) and (textControl <> nil) then
       begin
          FRefreshMode := true;
-         textControl.Text := ReplaceStr(tag.Text, CRLF_PLACEHOLDER, sLineBreak);
+         textControl.Text := ReplaceStr(tag.Text, LB_PHOLDER, sLineBreak);
          FRefreshMode := false;
       end;
 
