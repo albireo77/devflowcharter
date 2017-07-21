@@ -56,12 +56,6 @@ implementation
 uses
    WinApi.Windows, System.SysUtils, ApplicationCommon, ShellAPI;
 
-const
-   DELPHI_LINK  = 'www.embarcadero.com/products/delphi';
-   SYNEDIT_LINK = 'synedit.sourceforge.net';
-   IcXML_LINK   = 'www.omnixml.com';
-   PROJECT_LINK = 'github.com/albireo77/devflowcharter';
-
 {$R *.dfm}
 
 procedure TAboutForm.btnOKClick(Sender: TObject);
@@ -101,11 +95,11 @@ var
    lb: string;
 begin
    FVersion := ExtractProgramVersion;
-   imDelphi.Hint := DELPHI_LINK;
-   imSynEdit.Hint := SYNEDIT_LINK;
-   lblXML.Hint := IcXML_LINK;
-   lblProjectLink.Caption := PROJECT_LINK;
-   lblProjectLink.Hint := PROJECT_LINK;
+   imDelphi.Hint := 'www.embarcadero.com/products/delphi';
+   imSynEdit.Hint := 'github.com/SynEdit/SynEdit';
+   lblXML.Hint := 'github.com/mremec/omnixml';
+   lblProjectLink.Caption := 'github.com/albireo77/devflowcharter';
+   lblProjectLink.Hint := lblProjectLink.Caption;
    lb := sLineBreak;
    lblInfo.Caption := Format(' This program is freeware and released under the%s                GNU General Public License.%s%s    Copyright(C) 2006-2017 The %s%s                             project', [lb, lb, lb, PROGRAM_NAME, lb]);
    lblInfo1.Caption := Format('                   %s%sThe easiest way from flowchart to program!%s                Version: %s', [PROGRAM_NAME, lb, lb, FVersion]);
@@ -113,7 +107,7 @@ end;
 
 procedure TAboutForm.imDelphiClick(Sender: TObject);
 begin
-   ShellExecute(0, 'open', PChar('http:\\' + TControl(Sender).Hint), nil, nil, SW_SHOWNORMAL);
+   ShellExecute(0, 'open', PChar('http://' + TControl(Sender).Hint), nil, nil, SW_SHOWNORMAL);
 end;
 
 end.

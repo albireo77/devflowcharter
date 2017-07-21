@@ -146,7 +146,7 @@ begin
    FTypePointer := FType;
    IdentType := UNKNOWN;
    Size := INCORRECT_SIZE;
-   SizeAsString := IntToStr(INCORRECT_SIZE);
+   SizeAsString := INCORRECT_SIZE.ToString;
    SizeExpArrayAsString := '';
    Value := '';
    Ident := '';
