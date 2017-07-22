@@ -303,31 +303,26 @@ begin
 end;
 
 procedure TMainForm.SetMenu(const AEnabled: boolean);
+var
+   clang: TLangDefinition;
+   mMenu: TMainMenu;
 begin
-   miSave.Enabled      := AEnabled;
-   miSaveAs.Enabled    := AEnabled;
-   miClose.Enabled     := AEnabled;
-   miPrint.Enabled     := AEnabled;
-   miToolbox.Enabled   := AEnabled;
+   mMenu := Menu;
+   Menu := nil;
+   clang := GInfra.CurrentLang;
+   miSave.Enabled := AEnabled;
+   miSaveAs.Enabled := AEnabled;
+   miClose.Enabled := AEnabled;
+   miPrint.Enabled := AEnabled;
+   miToolbox.Enabled := AEnabled;
    miNavigator.Enabled := AEnabled;
-   if AEnabled then
-   begin
-      miSubRoutines.Enabled := GInfra.CurrentLang.EnabledUserFunctionHeader;
-      miDataTypes.Enabled := GInfra.CurrentLang.EnabledUserDataTypes;
-      miDeclarations.Enabled := GInfra.CurrentLang.EnabledConsts or GInfra.CurrentLang.EnabledVars;
-      miExplorer.Enabled := GInfra.CurrentLang.EnabledExplorer;
-      miGenerate.Enabled := GInfra.CurrentLang.EnabledCodeGenerator;
-      miAddMain.Enabled := GInfra.CurrentLang.EnabledMainProgram;
-   end
-   else
-   begin
-      miDeclarations.Enabled := false;
-      miSubRoutines.Enabled := false;
-      miDataTypes.Enabled := false;
-      miGenerate.Enabled := false;
-      miExplorer.Enabled := false;
-      miAddMain.Enabled := false;
-   end;
+   miSubRoutines.Enabled := AEnabled and clang.EnabledUserFunctionHeader;
+   miDataTypes.Enabled := AEnabled and clang.EnabledUserDataTypes;
+   miDeclarations.Enabled := AEnabled and (clang.EnabledConsts or clang.EnabledVars);
+   miExplorer.Enabled := AEnabled and clang.EnabledExplorer;
+   miGenerate.Enabled := AEnabled and clang.EnabledCodeGenerator;
+   miAddMain.Enabled := AEnabled and clang.EnabledMainProgram;
+   Menu := mMenu;
 end;
 
 // don't remove this method
