@@ -95,11 +95,6 @@ const
    lb = sLineBreak;
 begin
    FVersion := ExtractProgramVersion;
-   imDelphi.Hint := 'www.embarcadero.com/products/delphi';
-   imSynEdit.Hint := 'github.com/SynEdit/SynEdit';
-   lblXML.Hint := 'github.com/mremec/omnixml';
-   lblProjectLink.Caption := 'github.com/albireo77/devflowcharter';
-   lblProjectLink.Hint := lblProjectLink.Caption;
    lblInfo.Caption := Format(' This program is freeware and released under the%s                GNU General Public License.%s%s    Copyright(C) 2006-2017 The %s%s                             project', [lb, lb, lb, PROGRAM_NAME, lb]);
    lblInfo1.Caption := Format('                   %s%sThe easiest way from flowchart to program!%s                Version: %s', [PROGRAM_NAME, lb, lb, FVersion]);
 end;

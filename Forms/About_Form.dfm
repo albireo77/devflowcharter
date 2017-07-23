@@ -21,6 +21,7 @@ object AboutForm: TAboutForm
     Width = 82
     Height = 52
     Cursor = crHandPoint
+    Hint = 'www.embarcadero.com/products/delphi'
     AutoSize = True
     ParentShowHint = False
     Picture.Data = {
@@ -159,6 +160,7 @@ object AboutForm: TAboutForm
     Width = 100
     Height = 80
     Cursor = crHandPoint
+    Hint = 'github.com/SynEdit/SynEdit'
     AutoSize = True
     ParentShowHint = False
     Picture.Data = {
@@ -294,6 +296,7 @@ object AboutForm: TAboutForm
     Width = 82
     Height = 18
     Cursor = crHandPoint
+    Hint = 'github.com/mremec/omnixml'
     Caption = 'OmniXML'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clMedGray
@@ -308,10 +311,11 @@ object AboutForm: TAboutForm
   object lblProjectLink: TLabel
     Left = 144
     Top = 158
-    Width = 77
+    Width = 210
     Height = 16
     Cursor = crHandPoint
-    Caption = 'lblProjectLink'
+    Hint = 'github.com/albireo77/devflowcharter'
+    Caption = 'github.com/albireo77/devflowcharter'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlue
     Font.Height = -12
