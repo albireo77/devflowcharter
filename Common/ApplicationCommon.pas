@@ -209,6 +209,8 @@ const   // Global constants
 
         DEF_PAGE_CAPTION_KEY = 'mainPage';
 
+        UNKNOWN_VERSION = 'unknown';
+
         PRINT_SCALE_BASE     = 100;   // 100 %
         DEFAULT_PRINT_MARGIN = 5;     //   5 %
 
@@ -1012,7 +1014,7 @@ var
 begin
    result := 0;
    currVersion := GetAboutForm.GetProgramVersion;
-   if AVersion.IsEmpty or (AVersion = currVersion) then
+   if AVersion.IsEmpty or (currVersion = UNKNOWN_VERSION) or (currVersion = AVersion) then
       exit;
    nums := TStringList.Create;
    numsCurr := TStringList.Create;

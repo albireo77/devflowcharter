@@ -70,7 +70,7 @@ var
    buf: TBytes;
    value: PVSFixedFileInfo;
 begin
-   result := 'unknown';
+   result := UNKNOWN_VERSION;
    s := Application.ExeName;
    n := GetFileVersionInfoSize(PChar(s), hnd);
    if n > 0 then
