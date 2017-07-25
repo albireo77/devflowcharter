@@ -681,8 +681,8 @@ begin
    AText := Copy(AText, idx, MAXINT);
    if not ACaseSens then
    begin
-      AText := UpperCase(AText);
-      ASubstr := UpperCase(ASubstr);
+      AText := AText.ToUpper;
+      ASubstr := ASubstr.ToUpper;
    end;
    result := Pos(ASubstr, AText);
    if result > 0 then
@@ -1315,7 +1315,7 @@ end;
 
 function CompareIntegers(AList: TStringList; idx1, idx2: integer): integer;
 begin
-   result := StrToInt(AList[idx1]) - StrToInt(AList[idx2]);
+   result := AList[idx1].ToInteger - AList[idx2].ToInteger;
 end;
 
 initialization
