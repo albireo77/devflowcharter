@@ -71,13 +71,13 @@ begin
    result := nil;
    if ATag <> nil then
    begin
-      bt := StrToInt(ATag.GetAttribute(BLOCK_TYPE_ATTR));
-      left := StrToInt(ATag.GetAttribute('x'));
-      top := StrToInt(ATag.GetAttribute('y'));
-      height := StrToInt(ATag.GetAttribute('h'));
-      width := StrToInt(ATag.GetAttribute('w'));
-      brx := StrToInt(ATag.GetAttribute('brx'));
-      bh := StrToInt(ATag.GetAttribute('bh'));
+      bt := ATag.GetAttribute(BLOCK_TYPE_ATTR).ToInteger;
+      left := ATag.GetAttribute('x').ToInteger;
+      top := ATag.GetAttribute('y').ToInteger;
+      height := ATag.GetAttribute('h').ToInteger;
+      width := ATag.GetAttribute('w').ToInteger;
+      brx := ATag.GetAttribute('brx').ToInteger;
+      bh := ATag.GetAttribute('bh').ToInteger;
       bry := StrToIntDef(ATag.GetAttribute('bry'), 0);
       bid := StrToIntDef(ATag.GetAttribute(ID_ATTR), ID_INVALID);
       if ATab <> nil then
@@ -103,11 +103,11 @@ begin
             blFolder:     result := TFolderBlock.Create(ABranch, left, top, width, height, bh, brx, bry, bid);
             blIfElse:
             begin
-               th := StrToInt(ATag.GetAttribute('th'));
-               fbrx := StrToInt(ATag.GetAttribute('fbrx'));
-               fbry := StrToInt(ATag.GetAttribute('fbry'));
-               trh := StrToInt(ATag.GetAttribute('trh'));
-               flh := StrToInt(ATag.GetAttribute('flh'));
+               th := ATag.GetAttribute('th').ToInteger;
+               fbrx := ATag.GetAttribute('fbrx').ToInteger;
+               fbry := ATag.GetAttribute('fbry').ToInteger;
+               trh := ATag.GetAttribute('trh').ToInteger;
+               flh := ATag.GetAttribute('flh').ToInteger;
                result := TIfElseBlock.Create(ABranch, left, top, width, height, brx, fbrx, bh, th, bry, fbry, flh, trh, bid);
             end;
          end;

@@ -315,10 +315,8 @@ begin
    begin
       FPage.Form.VertScrollBar.Position := 0;
       FPage.Form.HorzScrollBar.Position := 0;
-      SetBounds(StrToInt(ATag.GetAttribute('x')),
-                StrToInt(ATag.GetAttribute('y')),
-                StrToInt(ATag.GetAttribute('w')),
-                StrToInt(ATag.GetAttribute('h')));
+      SetBounds(ATag.GetAttribute('x').ToInteger, ATag.GetAttribute('y').ToInteger,
+                ATag.GetAttribute('w').ToInteger, ATag.GetAttribute('h').ToInteger);
       v := StrToIntDef(ATag.GetAttribute(FONT_SIZE_ATTR), 8);
       if v in [8, 10, 12] then
          Font.Size := v;

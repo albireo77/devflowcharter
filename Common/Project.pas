@@ -335,9 +335,9 @@ begin
    idx := FObjectIds.IndexOfObject(AObject);
    if idx <> -1 then
    begin
-      result := StrToInt(FObjectIds.Strings[idx]);
+      result := FObjectIds[idx].ToInteger;
       if accepted then
-         FObjectIds.Strings[idx] := id;
+         FObjectIds[idx] := id;
    end
    else
    begin

@@ -1456,7 +1456,7 @@ begin
                foldLines.CustomSort(@CompareIntegers);
                for i := foldLines.Count-1 downto 0 do
                begin
-                  foldRange := memCodeEditor.CollapsableFoldRangeForLine(StrToInt(foldLines[i]));
+                  foldRange := memCodeEditor.CollapsableFoldRangeForLine(foldLines[i].ToInteger());
                   if (foldRange <> nil) and not foldRange.Collapsed then
                   begin
                      memCodeEditor.Collapse(foldRange);
@@ -1477,9 +1477,9 @@ begin
       while tag1 <> nil do
       begin
          mark := TSynEditMark.Create(memCodeEditor);
-         mark.ImageIndex := StrToInt(tag1.GetAttribute('index'));
+         mark.ImageIndex := tag1.GetAttribute('index').ToInteger;
          memCodeEditor.Marks.Add(mark);
-         mark.Line := StrToInt(tag1.GetAttribute('line'));
+         mark.Line := tag1.GetAttribute('line').ToInteger;
          mark.Visible := true;
          tag1 := TXMLProcessor.FindNextTag(tag1);
       end;
