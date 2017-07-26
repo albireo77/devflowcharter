@@ -269,7 +269,7 @@ begin
    Application.OnException := OnException;
    Application.Title := PROGRAM_NAME;
    Caption := PROGRAM_NAME;
-   FHistoryMenu := THistoryMenu.Create(miReopen, Self, miOpen.OnClick);
+   FHistoryMenu := THistoryMenu.Create(miReopen, miOpen.OnClick);
    FHistoryMenu.Load;
    pgcPages.DoubleBuffered := true;
    FClockPos := Low(TClockPos);

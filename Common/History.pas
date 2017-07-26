@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
 
@@ -24,7 +24,7 @@ unit History;
 interface
 
 uses
-   Vcl.Menus, Vcl.Forms, System.Classes;
+   Vcl.Menus, System.Classes;
 
 const
    HISTORY_SIZE = 10;
@@ -34,10 +34,9 @@ type
    THistoryMenu = class(TObject)
       private
          FParentMenu: TMenuItem;
-         FParentForm: TForm;
          FOnClick: TNotifyEvent;
       public
-         constructor Create(AParentMenu: TMenuItem; AParentForm: TForm; AOnClick: TNotifyEvent);
+         constructor Create(AParentMenu: TMenuItem; AOnClick: TNotifyEvent);
          procedure AddFile(const AFilePath: string);
          procedure Save;
          procedure Load;
@@ -48,11 +47,10 @@ implementation
 uses
    System.Win.Registry, System.SysUtils, ApplicationCommon;
 
-constructor THistoryMenu.Create(AParentMenu: TMenuItem; AParentForm: TForm; AOnClick: TNotifyEvent);
+constructor THistoryMenu.Create(AParentMenu: TMenuItem; AOnClick: TNotifyEvent);
 begin
    inherited Create;
    FParentMenu := AParentMenu;
-   FParentForm := AParentForm;
    FOnClick := AOnClick;
 end;
 
@@ -81,15 +79,16 @@ end;
 procedure THistoryMenu.AddFile(const AFilePath: string);
 var
    menuItem: TMenuItem;
-   menu: TMainMenu;
 begin
    if FileExists(AFilePath) then
    begin
-      menu := FParentForm.Menu;
-      FParentForm.Menu := nil;
       menuItem := FParentMenu.Find(AFilePath);
       if menuItem <> nil then
-         FParentMenu.Remove(menuItem)
+      begin
+         if menuItem.MenuIndex = 0 then
+            exit;
+         FParentMenu.Remove(menuItem);
+      end
       else
       begin
          menuItem := TMenuItem.Create(FParentMenu);
@@ -99,7 +98,6 @@ begin
       FParentMenu.Insert(0, menuItem);
       if FParentMenu.Count > HISTORY_SIZE then
          FParentMenu[FParentMenu.Count-1].Free;
-      FParentForm.Menu := menu;
    end;
 end;
 
