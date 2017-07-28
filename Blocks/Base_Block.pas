@@ -877,7 +877,7 @@ begin
          if lock then
             UnLockDrawing;
       end;
-      GChange := 1;
+      GProject.SetChanged;
       if FParentBlock = nil then
          BringAllToFront;
       NavigatorForm.Invalidate;
@@ -902,7 +902,7 @@ begin
    if FFrame <> AValue then
    begin
       FFrame := AValue;
-      GChange := 1;
+      GProject.SetChanged;
       ClearSelection;
       Invalidate;
       if FFrame then
@@ -2189,7 +2189,7 @@ var
    block: TBlock;
    textControl: TCustomEdit;
 begin
-   GChange := 1;
+   GProject.SetChanged;
    Expanded := not Expanded;
    textControl := GetTextControl;
    if textControl <> nil then

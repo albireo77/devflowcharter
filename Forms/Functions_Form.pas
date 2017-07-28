@@ -74,7 +74,7 @@ begin
    header.edtName.OnChange(header.edtName);
    if header.Font.Color <> NOK_COLOR then
       TInfra.UpdateCodeEditor(header);
-   GChange := 1;
+   GProject.SetChanged;
 end;
 
 procedure TFunctionsForm.pgcTabsChange(Sender: TObject);

@@ -74,7 +74,7 @@ var
    txt, line: string;
    i: integer;
 begin
-   GChange := 1;
+   GProject.SetChanged;
    FErrLine := -1;
    FStatements.Font.Color := GSettings.FontColor;
    txt := Trim(FStatements.Text);
@@ -151,7 +151,9 @@ begin
    b := FRefreshMode;
    FRefreshMode := true;
    try
+      GProject.ChangingOn := false;
       FStatements.OnChange(FStatements);
+      GProject.ChangingOn := true;
    finally
       FRefreshMode := b;
    end;

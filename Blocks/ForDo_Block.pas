@@ -255,7 +255,7 @@ end;
 
 procedure TForDoBlock.MyOnClick(Sender: TObject);
 begin
-   GChange := 1;
+   GProject.SetChanged;
    edtVariable.Visible := not GInfra.CurrentLang.ForDoVarList;
    cbVariable.Visible := not edtVariable.Visible;
    if not edtVariable.Visible then

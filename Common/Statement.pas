@@ -203,7 +203,7 @@ begin
    
    txt := Trim(Text);
    Font.Color := GSettings.FontColor;
-   GChange := 1;
+   GProject.SetChanged;
    Hint := i18Manager.GetFormattedString('ExpOk', [txt, sLineBreak]);
    TBlock(Parent).UpdateEditor(Self);
 
@@ -266,8 +266,6 @@ begin
 end;
 
 procedure TStatement.DoEnter;
-var
-   chg: byte;
 begin
    inherited DoEnter;
    case FParserMode of
@@ -283,10 +281,9 @@ begin
    else
       FExecuteParse := false;
    end;
-   chg := GChange;
+   GProject.ChangingOn := false;
    Change;
-   if chg = 0 then
-      GChange := 0;
+   GProject.ChangingOn := true;
 end;
 
 function TStatement.GetId: integer;

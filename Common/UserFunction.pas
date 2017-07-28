@@ -690,7 +690,7 @@ procedure TUserFunctionHeader.OnChangeType(Sender: TObject);
 begin
    if Font.Color <> NOK_COLOR then
       UpdateCodeEditor;
-   GChange := 1;
+   GProject.SetChanged;
    DrawBodyLabel;
 end;
 
@@ -751,7 +751,7 @@ begin
       DrawBodyLabel;
       NavigatorForm.Invalidate;
    end;
-   GChange := 1;
+   GProject.SetChanged;
 end;
 
 procedure TUserFunctionHeader.OnClickExtDecl(Sender: TObject);
@@ -768,7 +768,7 @@ begin
       FUserFunction.Body.Page.Form.SetScrollBars;
    end;
    cbBodyPage.Enabled := chkBodyVisible.Checked;
-   GChange := 1;
+   GProject.SetChanged;
 end;
 
 procedure TUserFunctionHeader.OnClickInclDescCode(Sender: TObject);

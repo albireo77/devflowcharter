@@ -231,7 +231,6 @@ var     // Global variables
     GInfra:         TInfra;
     GProject:       TProject;
     GSettings:      TSettings;
-    GChange:        byte;
     GCustomCursor:  TCustomCursor;
     GErr_text:      string;
     GParser_Mode:   TParserMode;
@@ -301,7 +300,7 @@ class procedure TInfra.UpdateCodeEditor(AObject: TObject = nil);
 begin
    if GSettings.UpdateEditor then
       GetEditorForm.RefreshEditorForObject(AObject);
-   GChange := 1;
+   GProject.SetChanged;
 end;
 
 procedure TInfra.WriteToRegistry;
@@ -510,7 +509,6 @@ begin
    FParsedEdit := nil;
    GProject.Free;
    GProject := nil;
-   GChange := 0;
    GCustomCursor := crNormal;
    Screen.Cursor := crDefault;
    itr := TBaseFormIterator.Create;

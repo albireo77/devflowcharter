@@ -214,7 +214,7 @@ begin
    begin
       FActive := AValue;
       TabVisible := FActive;
-      GChange := 1;
+      GProject.SetChanged;
       FParentForm.UpdateCodeEditor := false;
       for i := 0 to PageControl.PageCount-1 do
       begin
@@ -347,7 +347,7 @@ begin
    PageControl.Refresh;
    if FParentForm.UpdateCodeEditor then
       UpdateCodeEditor;
-   GChange := 1;
+   GProject.SetChanged;
 end;
 
 function TTabComponent.HasInvalidElement: boolean;

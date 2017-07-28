@@ -220,7 +220,7 @@ begin
       end
       else
       begin
-         GChange := 1;
+         GProject.SetChanged;
          BringToFront;
          ReleaseCapture;
          SendMessage(Handle, WM_SYSCOMMAND, $F012, 0);
@@ -288,7 +288,7 @@ begin
    if GetAsyncKeyState(VK_LBUTTON) <> 0 then
    begin
       FMouseLeave := false;
-      GChange := 1;
+      GProject.SetChanged;
       case Cursor of
          crSizeWE:   Msg.Result := HTRIGHT;
          crSizeNS:   Msg.Result := HTBOTTOM;

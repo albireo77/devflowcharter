@@ -185,7 +185,7 @@ end;
 procedure TElement.UpdateMe;
 begin
    FParentTab.PageControl.Refresh;
-   GChange := 1;
+   GProject.SetChanged;
 end;
 
 function TElement.GetSortValue(const ASortType: integer): integer;

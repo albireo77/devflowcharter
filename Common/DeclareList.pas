@@ -768,7 +768,7 @@ begin
    sgList.Cells[NAME_COL, result] := edtName.Text;
    edtName.Clear;
    edtName.SetFocus;
-   GChange := 1;
+   GProject.SetChanged;
 end;
 
 procedure TDeclareList.OnClickRemove(Sender: TObject);
@@ -791,7 +791,7 @@ begin
       end;
    end;
    OnTopLeftChanged(sgList);
-   GChange := 1;
+   GProject.SetChanged;
    edtName.SetFocus;
    GProject.RefreshStatements;
    TInfra.UpdateCodeEditor;

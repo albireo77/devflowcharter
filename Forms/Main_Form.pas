@@ -375,7 +375,7 @@ procedure TMainForm.miNewClick(Sender: TObject);
 var
    lBlock: TMainBlock;
 begin
-   if GChange = 1 then
+   if (GProject <> nil) and GProject.IsChanged then
    begin
       case ConfirmSave of
          IDYES: miSave.Click;
@@ -388,6 +388,7 @@ begin
    lBlock.OnResize(lBlock);
    TUserFunction.Create(nil, lBlock);
    ExportDialog.FileName := '';
+   GProject.ChangingOn := true;
 end;
 
 procedure TMainForm.miOpenClick(Sender: TObject);
@@ -395,7 +396,7 @@ var
    tmpCursor: TCursor;
    filePath: string;
 begin
-    if (GChange = 1) and (GProject <> nil) then
+    if (GProject <> nil) and GProject.IsChanged then
     begin
        case ConfirmSave of
           IDYES: miSave.Click;
@@ -410,6 +411,8 @@ begin
     Screen.Cursor := crHourGlass;
     GProject := TProject.GetInstance;
     filePath := TXMLProcessor.ImportFromXMLFile(GProject.ImportFromXMLTag, filePath);
+    GProject.ChangingOn := true;
+    GProject.SetNotChanged;
     Screen.Cursor := tmpCursor;
     if not filePath.IsEmpty then
        AcceptFile(filePath)
@@ -449,7 +452,7 @@ end;
 
 procedure TMainForm.miCloseClick(Sender: TObject);
 begin
-   if GChange = 1 then
+   if GProject.IsChanged then
    begin
       case ConfirmSave of
          IDYES: miSave.Click;
@@ -460,11 +463,17 @@ begin
 end;
 
 procedure TMainForm.miSaveClick(Sender: TObject);
+var
+   filePath: string;
 begin
-    if Caption = PROGRAM_NAME then
+    if GProject.IsNew then
        miSaveAs.Click
-    else if (GProject <> nil) and (GProject.ExportToXMLFile(ReplaceText(Caption, MAIN_FORM_CAPTION, '')) = errNone) then
-       GChange := 0;
+    else
+    begin
+       filePath := ReplaceText(Caption, MAIN_FORM_CAPTION, '');
+       filePath := ReplaceText(filePath, '*', '');
+       GProject.ExportToXMLFile(filePath);
+    end;
 end;
 
 procedure TMainForm.miPrintClick(Sender: TObject);
@@ -487,7 +496,7 @@ end;
 
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-   if (GChange = 1) and (GProject <> nil) then
+   if (GProject <> nil) and GProject.IsChanged then
    begin
       case ConfirmSave of
          IDYES: miSave.Click;
@@ -689,7 +698,7 @@ begin
       page := GProject.GetActivePage;
       pnt := page.ScreenToClient(pmPages.PopupPoint);
       TComment.Create(page, pnt.X, pnt.Y, 150, 50);
-      GChange := 1;
+      GProject.SetChanged;
    end;
 end;
 
@@ -732,7 +741,7 @@ begin
       end
       else if comment <> nil then
          comment.Clone(page, @topLeft);
-      GChange := 1;
+      GProject.SetChanged;
       NavigatorForm.Invalidate;
       exit;
    end;
@@ -877,7 +886,7 @@ begin
       end
       else if comment <> nil then
          comment.Font.Style := fontStyles;
-      GChange := 1;
+      GProject.SetChanged;
    end;
 end;
 
@@ -899,7 +908,7 @@ begin
          TBlock(comp).SetFontSize(fontSize)
       else if comp is TComment then
          TComment(comp).Font.Size := fontSize;
-      GChange := 1;
+      GProject.SetChanged;
    end;
 end;
 
@@ -940,7 +949,7 @@ begin
       else
          comp.Free;
    end;
-   GChange := 1;
+   GProject.SetChanged;
 end;
 
 procedure TMainForm.FormMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -1092,7 +1101,6 @@ begin
    Caption := MAIN_FORM_CAPTION + AFilePath;
    GProject.Name := ChangeFileExt(ExtractFilename(AFilePath), '');
    FHistoryMenu.AddFile(AFilePath);
-   GChange := 0;
 end;
 
 procedure TMainForm.ExportSettingsToXMLTag(ATag: IXMLElement);
@@ -1187,7 +1195,7 @@ begin
       mainBlock := TMainBlock.Create(page, page.ScreenToClient(pmPages.PopupPoint));
       mainBlock.OnResize(mainBlock);
       TUserFunction.Create(nil, mainBlock);
-      GChange := 1;
+      GProject.SetChanged;
    end;
 end;
 
@@ -1368,7 +1376,7 @@ begin
    begin
       pgcPages.Pages[idx].PageIndex := TTabSheet(Source).PageIndex;
       TTabSheet(Source).PageIndex := idx;
-      GChange := 1;
+      GProject.SetChanged;
    end;
 end;
 
@@ -1385,7 +1393,7 @@ begin
       begin
          page.Caption := lCaption;
          GProject.UpdateHeadersBody(page);
-         GChange := 1;
+         GProject.SetChanged;
       end;
    end;
 end;
@@ -1401,7 +1409,7 @@ begin
       page := GProject.GetPage(lCaption);
       page.PageControl.ActivePage := page;
       NavigatorForm.Invalidate;
-      GChange := 1; 
+      GProject.SetChanged;
    end;
 end;
 

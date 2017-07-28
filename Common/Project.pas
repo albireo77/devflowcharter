@@ -50,6 +50,7 @@ type
       FObjectIds: TStringList;
       FObjectIdSeed: integer;
       FMainPage: TBlockTabSheet;
+      FChanged: boolean;
       class var FInstance: TProject;
       procedure SetGlobals;
       function GetComponents(ASortType: integer = NO_SORT; AClass: TClass = nil): IIterator;
@@ -60,6 +61,7 @@ type
    public
       Name: string;
       LastUserFunction: TUserFunction;
+      ChangingOn: boolean;
       property IntegerTypesSet: TIntegerTypesSet read FIntegerTypesSet;
       property BoolTypesSet: TBoolTypesSet read FBoolTypesSet;
       property OtherTypesSet: TOtherTypesSet read FOtherTypesSet;
@@ -111,12 +113,16 @@ type
       function FindMainBlockForControl(const AControl: TControl): TMainBlock;
       function GetProgramHeader: string;
       function GetExportFileName: string;
+      procedure SetChanged;
+      function IsChanged: boolean;
+      function IsNew: boolean;
+      procedure SetNotChanged;
    end;
 
 implementation
 
 uses
-   System.SysUtils, Vcl.Menus, System.StrUtils, System.Types, System.UITypes, ApplicationCommon,
+   System.SysUtils, Vcl.Menus, Vcl.Forms, System.StrUtils, System.Types, System.UITypes, ApplicationCommon,
    XMLProcessor, Base_Form, LangDefinition, Navigator_Form, SortListDecorator, Base_Block,
    Comment, TabComponent, ParserHelper, SelectImport_Form;
 
@@ -395,11 +401,46 @@ begin
    end;
 end;
 
+procedure TProject.SetChanged;
+begin
+   if ChangingOn then
+   begin
+      if not FChanged then
+      begin
+         FChanged := true;
+         TInfra.GetMainForm.Caption := TInfra.GetMainForm.Caption + '*';
+      end;
+   end;
+end;
+
+procedure TProject.SetNotChanged;
+begin
+   if ChangingOn then
+      FChanged := false;
+end;
+
+function TProject.IsChanged: boolean;
+begin
+   result := FChanged;
+end;
+
+function TProject.IsNew: boolean;
+var
+   mcap: string;
+begin
+   mcap := TInfra.GetMainForm.Caption;
+   result := (PROGRAM_NAME = mcap) or (PROGRAM_NAME + '*' = mcap);
+end;
+
 function TProject.ExportToXMLFile(const AFile: string): TErrorType;
 begin
    result := TXMLProcessor.ExportToXMLFile(ExportToXMLTag, AFile);
    if result = errNone then
+   begin
+      FChanged := false;
       TInfra.GetMainForm.AcceptFile(AFile);
+      TInfra.GetMainForm.Caption := MAIN_FORM_CAPTION + AFile;
+   end;
 end;
 
 procedure TProject.ExportToXMLTag(ATag: IXMLElement);
@@ -1083,10 +1124,9 @@ end;
 procedure TProject.RefreshStatements;
 var
    i: integer;
-   c: byte;
    func: TUserFunction;
 begin
-   c := GChange;
+   ChangingOn := false;
    for i := 0 to FComponentList.Count-1 do
    begin
       if FComponentList[i] is TUserFunction then
@@ -1097,8 +1137,7 @@ begin
       end;
    end;
    NavigatorForm.Invalidate;
-   if c = 0 then
-      GChange := 0;
+   ChangingOn := true;
 end;
 
 function TProject.FindMainBlockForControl(const AControl: TControl): TMainBlock;
