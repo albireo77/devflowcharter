@@ -36,7 +36,8 @@ type
          FPinControl: TControl;
          FPage: TBlockTabSheet;
          FActive,
-         FIsHeader: boolean;
+         FIsHeader,
+         FResize: boolean;
          FZOrder: integer;
       protected
          FMouseLeave: boolean;
@@ -220,7 +221,6 @@ begin
       end
       else
       begin
-         GProject.SetChanged;
          BringToFront;
          ReleaseCapture;
          SendMessage(Handle, WM_SYSCOMMAND, $F012, 0);
@@ -248,6 +248,7 @@ end;
 
 procedure TComment.MyOnChange(Sender: TObject);
 begin
+   GProject.SetChanged;
    if FIsHeader then
       TInfra.UpdateCodeEditor;
    NavigatorForm.Invalidate;
@@ -288,12 +289,28 @@ begin
    if GetAsyncKeyState(VK_LBUTTON) <> 0 then
    begin
       FMouseLeave := false;
-      GProject.SetChanged;
       case Cursor of
-         crSizeWE:   Msg.Result := HTRIGHT;
-         crSizeNS:   Msg.Result := HTBOTTOM;
-         crSizeNWSE: Msg.Result := HTBOTTOMRIGHT;
+         crSizeWE:
+         begin
+            Msg.Result := HTRIGHT;
+            FResize := true;
+         end;
+         crSizeNS:
+         begin
+            Msg.Result := HTBOTTOM;
+            FResize := true;
+         end;
+         crSizeNWSE:
+         begin
+            Msg.Result := HTBOTTOMRIGHT;
+            FResize := true;
+         end;
       end;
+   end
+   else if FResize then
+   begin
+      GProject.SetChanged;
+      FResize := false;
    end;
 end;
 
