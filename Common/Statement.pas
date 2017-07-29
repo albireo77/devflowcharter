@@ -266,6 +266,8 @@ begin
 end;
 
 procedure TStatement.DoEnter;
+var
+   chon: boolean;
 begin
    inherited DoEnter;
    case FParserMode of
@@ -281,9 +283,10 @@ begin
    else
       FExecuteParse := false;
    end;
+   chon := GProject.ChangingOn;
    GProject.ChangingOn := false;
    Change;
-   GProject.ChangingOn := true;
+   GProject.ChangingOn := chon;
 end;
 
 function TStatement.GetId: integer;

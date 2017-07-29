@@ -1125,7 +1125,9 @@ procedure TProject.RefreshStatements;
 var
    i: integer;
    func: TUserFunction;
+   chon: boolean;
 begin
+   chon := ChangingOn;
    ChangingOn := false;
    for i := 0 to FComponentList.Count-1 do
    begin
@@ -1136,8 +1138,8 @@ begin
             func.Body.RefreshStatements;
       end;
    end;
+   ChangingOn := chon;
    NavigatorForm.Invalidate;
-   ChangingOn := true;
 end;
 
 function TProject.FindMainBlockForControl(const AControl: TControl): TMainBlock;

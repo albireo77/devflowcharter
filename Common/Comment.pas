@@ -36,8 +36,7 @@ type
          FPinControl: TControl;
          FPage: TBlockTabSheet;
          FActive,
-         FIsHeader,
-         FResize: boolean;
+         FIsHeader: boolean;
          FZOrder: integer;
       protected
          FMouseLeave: boolean;
@@ -47,6 +46,7 @@ type
          procedure MyOnContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
          procedure NCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
          procedure WMMouseLeave(var Msg: TMessage); message WM_MOUSELEAVE;
+         procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
          procedure SetActive(const AValue: boolean);
          function GetActive: boolean;
          procedure MyOnChange(Sender: TObject);
@@ -162,6 +162,7 @@ procedure TComment.ChangeBorderStyle(AStyle: TBorderStyle);
 var
    lStart, lLength: integer;
 begin
+   GProject.ChangingOn := false;
    if BorderStyle <> AStyle then
    begin
       lStart := SelStart;
@@ -170,6 +171,7 @@ begin
       SelStart := lStart;
       SelLength := lLength;
    end;
+   GProject.ChangingOn := true;
 end;
 
 procedure TComment.SetZOrder(const AValue: integer);
@@ -185,6 +187,13 @@ end;
 function TComment.GetSortValue(const ASortType: integer): integer;
 begin
    result := FZOrder;
+end;
+
+procedure TComment.WMWindowPosChanging(var Msg: TWMWindowPosChanging);
+begin
+   inherited;
+   if (Msg.WindowPos.x <> 0) or (Msg.WindowPos.y <> 0) then
+      GProject.SetChanged;
 end;
 
 procedure TComment.SetIsHeader(AValue: boolean);
@@ -290,27 +299,10 @@ begin
    begin
       FMouseLeave := false;
       case Cursor of
-         crSizeWE:
-         begin
-            Msg.Result := HTRIGHT;
-            FResize := true;
-         end;
-         crSizeNS:
-         begin
-            Msg.Result := HTBOTTOM;
-            FResize := true;
-         end;
-         crSizeNWSE:
-         begin
-            Msg.Result := HTBOTTOMRIGHT;
-            FResize := true;
-         end;
+         crSizeWE:   Msg.Result := HTRIGHT;
+         crSizeNS:   Msg.Result := HTBOTTOM;
+         crSizeNWSE: Msg.Result := HTBOTTOMRIGHT;
       end;
-   end
-   else if FResize then
-   begin
-      GProject.SetChanged;
-      FResize := false;
    end;
 end;
 
@@ -318,7 +310,7 @@ procedure TComment.MyOnContextPopup(Sender: TObject; MousePos: TPoint; var Handl
 var
    pnt: TPoint;
 begin
-   Handled := true;   
+   Handled := true;
    pnt := ClientToScreen(MousePos);
    PopupMenu.PopupComponent := Self;
    PopupMenu.Popup(pnt.X, pnt.Y);
