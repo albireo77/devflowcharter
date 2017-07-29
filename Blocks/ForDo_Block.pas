@@ -36,10 +36,10 @@ type
          FOrder: TForOrder;
          FForLabel: string;
          procedure Paint; override;
-         procedure MyOnClick(Sender: TObject);
-         procedure MyOnCloseUp(Sender: TObject);
+         procedure VarOnClick(Sender: TObject);
+         procedure VarOnChange(Sender: TObject);
+         procedure VarListOnCloseUp(Sender: TObject);
          procedure SetWidth(const AMinX: integer); override;
-         procedure MyOnChange(Sender: TObject);
          procedure SetForOrder(const AValue: TForOrder);
          procedure PutTextControls; override;
       public
@@ -110,7 +110,7 @@ begin
    cbVariable.BevelInner := bvRaised;
    cbVariable.BevelKind := bkSoft;
    cbVariable.BevelOuter := bvNone;
-   cbVariable.OnCloseUp := MyOnCloseUp;
+   cbVariable.OnCloseUp := VarListOnCloseUp;
    cbVariable.Style := csDropDownList;
    cbVariable.Color := edtStartVal.Color;
 
@@ -142,8 +142,8 @@ begin
    edtVariable.BorderStyle := bsNone;
    edtVariable.BevelInner := bvNone;
    edtVariable.BevelOuter := bvNone;
-   edtVariable.OnClick := MyOnClick;
-   edtVariable.OnChange := MyOnChange;
+   edtVariable.OnClick := VarOnClick;
+   edtVariable.OnChange := VarOnChange;
 
    BottomPoint := Point(Width-11, 20);
    TopHook := Point(pX1, 39);
@@ -252,22 +252,20 @@ begin
    DrawI;
 end;
 
-
-procedure TForDoBlock.MyOnClick(Sender: TObject);
+procedure TForDoBlock.VarOnClick(Sender: TObject);
 begin
-   GProject.SetChanged;
    edtVariable.Visible := not GInfra.CurrentLang.ForDoVarList;
    cbVariable.Visible := not edtVariable.Visible;
-   if not edtVariable.Visible then
-      edtVariable.Clear;
 end;
 
-procedure TForDoBlock.MyOnCloseUp(Sender: TObject);
+procedure TForDoBlock.VarListOnCloseUp(Sender: TObject);
 begin
-   cbVariable.Visible := False;
-   if cbVariable.Text <> '' then
-      edtVariable.Text := cbVariable.Text;
-   edtVariable.Visible := True;
+   cbVariable.Hide;
+   edtVariable.Show;
+   if cbVariable.Text = edtVariable.Text then
+      exit;
+   GProject.SetChanged;
+   edtVariable.Text := cbVariable.Text;
    if (edtVariable.Text <> '') or not GSettings.ParseFor then
    begin
       edtVariable.Hint := i18Manager.GetFormattedString('ExpOk', [edtVariable.Text, sLineBreak]);
@@ -282,11 +280,12 @@ begin
       UpdateEditor(nil);
 end;
 
-procedure TForDoBlock.MyOnChange(Sender: TObject);
+procedure TForDoBlock.VarOnChange(Sender: TObject);
 var
    header: TUserFunctionHeader;
    isOk: boolean;
 begin
+   GProject.SetChanged;
    edtVariable.Font.Color := GSettings.FontColor;
    edtVariable.Hint := i18Manager.GetFormattedString('ExpOk', [edtVariable.Text, sLineBreak]);
    if not GInfra.CurrentLang.ForDoVarList then
