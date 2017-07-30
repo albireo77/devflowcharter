@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
 
@@ -285,8 +285,11 @@ begin
    end;
    chon := GProject.ChangingOn;
    GProject.ChangingOn := false;
-   Change;
-   GProject.ChangingOn := chon;
+   try
+      Change;
+   finally
+      GProject.ChangingOn := chon;
+   end;
 end;
 
 function TStatement.GetId: integer;

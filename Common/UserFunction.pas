@@ -634,6 +634,7 @@ end;
 
 procedure TUserFunctionHeader.OnChangeDesc(Sender: TObject);
 begin
+   GProject.SetChanged;
    if GSettings.ShowFuncLabels and chkInclDescFlow.Checked then
       DrawBodyLabel;
    if (Font.Color <> NOK_COLOR) and chkInclDescCode.Checked then

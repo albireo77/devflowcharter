@@ -1129,16 +1129,19 @@ var
 begin
    chon := ChangingOn;
    ChangingOn := false;
-   for i := 0 to FComponentList.Count-1 do
-   begin
-      if FComponentList[i] is TUserFunction then
+   try
+      for i := 0 to FComponentList.Count-1 do
       begin
-         func := TUserFunction(FComponentList[i]);
-         if func.Active and (func.Body <> nil) then
-            func.Body.RefreshStatements;
+         if FComponentList[i] is TUserFunction then
+         begin
+            func := TUserFunction(FComponentList[i]);
+            if func.Active and (func.Body <> nil) then
+               func.Body.RefreshStatements;
+         end;
       end;
+   finally
+      ChangingOn := chon;
    end;
-   ChangingOn := chon;
    NavigatorForm.Invalidate;
 end;
 

@@ -145,17 +145,18 @@ end;
 
 procedure TMultiInstrBlock.ChangeColor(const AColor: TColor);
 var
-   b: boolean;
+   b, chon: boolean;
 begin
    inherited ChangeColor(AColor);
+   chon := GProject.ChangingOn;
+   GProject.ChangingOn := false;
    b := FRefreshMode;
    FRefreshMode := true;
    try
-      GProject.ChangingOn := false;
       FStatements.OnChange(FStatements);
-      GProject.ChangingOn := true;
    finally
       FRefreshMode := b;
+      GProject.ChangingOn := chon;
    end;
 end;
 

@@ -51,6 +51,7 @@ type
          function GetScrollPos: integer;
          procedure SetScrollPos(AValue: integer);
          procedure OnChangeLib(Sender: TObject);
+         procedure ChangedOnClick(Sender: TObject);
          procedure OnChangeName(Sender: TObject); virtual;
          function GetElementIterator: IIterator;
          procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
@@ -203,6 +204,11 @@ begin
       AGraphic.Assign(bitmap);
       bitmap.Free;
    end;
+end;
+
+procedure TTabComponent.ChangedOnClick(Sender: TObject);
+begin
+   GProject.SetChanged;
 end;
 
 procedure TTabComponent.SetActive(const AValue: boolean);
