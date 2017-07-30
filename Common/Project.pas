@@ -434,12 +434,13 @@ end;
 
 function TProject.ExportToXMLFile(const AFile: string): TErrorType;
 begin
+   ChangingOn := false;
    result := TXMLProcessor.ExportToXMLFile(ExportToXMLTag, AFile);
+   ChangingOn := true;
    if result = errNone then
    begin
       FChanged := false;
       TInfra.GetMainForm.AcceptFile(AFile);
-      TInfra.GetMainForm.Caption := MAIN_FORM_CAPTION + AFile;
    end;
 end;
 
