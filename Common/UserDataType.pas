@@ -158,7 +158,7 @@ begin
    chkAddPtrType.DoubleBuffered := true;
    chkAddPtrType.Caption := i18Manager.GetString('chkAddPtrType');
    chkAddPtrType.Enabled := GInfra.CurrentLang.EnabledPointers;
-   chkAddPtrType.OnClick := ChangedOnClick;
+   chkAddPtrType.OnClick := OnClickCh;
 
    CreateExtDeclareChBox(gbTypeBox, 170, 35);
 

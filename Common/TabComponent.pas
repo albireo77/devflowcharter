@@ -51,14 +51,13 @@ type
          function GetScrollPos: integer;
          procedure SetScrollPos(AValue: integer);
          procedure OnChangeLib(Sender: TObject);
-         procedure ChangedOnClick(Sender: TObject);
-         procedure ExtDeclareOnClick(Sender: TObject);
+         procedure OnClickCh(Sender: TObject);
          procedure OnChangeName(Sender: TObject); virtual;
          function GetElementIterator: IIterator;
          procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
-         procedure CreateExtDeclareChBox(AParent: TWinControl; l, t: integer);
-         procedure CreateNameControls(AParent: TWinControl; l, t: integer);
-         procedure CreateLibControls(AParent: TWinControl; l, t: integer);
+         procedure CreateExtDeclareChBox(AParent: TWinControl; x, y: integer);
+         procedure CreateNameControls(AParent: TWinControl; x, y: integer);
+         procedure CreateLibControls(AParent: TWinControl; x, y: integer);
       public
          edtName: TEdit;
          chkExtDeclare: TCheckBox;
@@ -212,31 +211,26 @@ begin
    end;
 end;
 
-procedure TTabComponent.ChangedOnClick(Sender: TObject);
-begin
-   GProject.SetChanged;
-end;
-
-procedure TTabComponent.CreateExtDeclareChBox(AParent: TWinControl; l, t: integer);
+procedure TTabComponent.CreateExtDeclareChBox(AParent: TWinControl; x, y: integer);
 begin
    chkExtDeclare := TCheckBox.Create(AParent);
    chkExtDeclare.Parent := AParent;
    chkExtDeclare.Caption := i18Manager.GetString('chkExtDeclare');
-   chkExtDeclare.SetBounds(l, t, PageControl.Canvas.TextWidth(chkExtDeclare.Caption) + 25, 17);
+   chkExtDeclare.SetBounds(x, y, PageControl.Canvas.TextWidth(chkExtDeclare.Caption) + 25, 17);
    chkExtDeclare.ParentFont := false;
    chkExtDeclare.Font.Style := [];
    chkExtDeclare.Font.Color := clWindowText;
    chkExtDeclare.DoubleBuffered := true;
-   chkExtDeclare.OnClick := ExtDeclareOnClick;
+   chkExtDeclare.OnClick := OnClickCh;
    chkExtDeclare.ShowHint := true;
    chkExtDeclare.Hint := i18Manager.GetString('chkExtDeclare.Hint');
 end;
 
-procedure TTabComponent.CreateNameControls(AParent: TWinControl; l, t: integer);
+procedure TTabComponent.CreateNameControls(AParent: TWinControl; x, y: integer);
 begin
    lblName := TLabel.Create(AParent);
    lblName.Parent := AParent;
-   lblName.SetBounds(l, t, 0, 13);
+   lblName.SetBounds(x, y, 0, 13);
    lblName.Caption := i18Manager.GetString('lblName');
    lblName.ParentFont := false;
    lblName.Font.Style := [];
@@ -244,7 +238,7 @@ begin
 
    edtName := TEdit.Create(AParent);
    edtName.Parent := AParent;
-   edtName.SetBounds(lblName.Width+13, t-6, 84, 21);
+   edtName.SetBounds(lblName.BoundsRect.Right+5, y-6, 84, 21);
    edtName.ParentFont := false;
    edtName.Font.Style := [];
    edtName.ShowHint := true;
@@ -253,11 +247,11 @@ begin
    edtName.OnChange := OnChangeName;
 end;
 
-procedure TTabComponent.CreateLibControls(AParent: TWinControl; l, t: integer);
+procedure TTabComponent.CreateLibControls(AParent: TWinControl; x, y: integer);
 begin
    lblLibrary := TLabel.Create(AParent);
    lblLibrary.Parent := AParent;
-   lblLibrary.SetBounds(l, t, 0, 13);
+   lblLibrary.SetBounds(x, y, 0, 13);
    lblLibrary.Caption := i18Manager.GetString('lblLibrary');
    lblLibrary.ParentFont := false;
    lblLibrary.Font.Style := [];
@@ -265,7 +259,7 @@ begin
 
    edtLibrary := TEdit.Create(AParent);
    edtLibrary.Parent := AParent;
-   edtLibrary.SetBounds(lblLibrary.Left+lblLibrary.Width+5, t-6, 115-lblLibrary.Width, 21);
+   edtLibrary.SetBounds(lblLibrary.BoundsRect.Right+5, y-6, 115-lblLibrary.Width, 21);
    edtLibrary.ParentFont := false;
    edtLibrary.Font.Style := [];
    edtLibrary.Font.Color := clGreen;
@@ -275,7 +269,7 @@ begin
    edtLibrary.Hint := ReplaceStr(i18Manager.GetFormattedString('edtLibHintType', [GInfra.CurrentLang.LibraryExt]), LB_PHOLDER2, sLineBreak);
 end;
 
-procedure TTabComponent.ExtDeclareOnClick(Sender: TObject);
+procedure TTabComponent.OnClickCh(Sender: TObject);
 begin
    GProject.SetChanged;
    if Font.Color <> NOK_COLOR then
