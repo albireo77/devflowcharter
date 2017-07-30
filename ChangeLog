@@ -1,3 +1,7 @@
+4.7 [30.07.2017]
+- many fixes to detecting changes in project; add asterisk to title bar as project change indicator
+- reduce main menu flickering when saving project
+
 4.6 [22.07.2017]
 - include devF version to saved projects and compare it with current devF version upon loading project
 - reduce main menu flickering
