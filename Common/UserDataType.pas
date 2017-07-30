@@ -50,7 +50,6 @@ type
       procedure SetActive(const AValue: boolean); override;
       function CreateElement: TElement; override;
       procedure AddElement(Sender: TObject); override;
-      procedure ExtDeclareOnClick(Sender: TObject);
       procedure WMSize(var Msg: TMessage); message WM_SIZE;
    public
       chkAddPtrType: TCheckBox;
@@ -91,23 +90,7 @@ begin
 
    FElementMode := FIELD_IDENT;
 
-   lblName := TLabel.Create(Self);
-   lblName.Parent := Self;
-   lblName.SetBounds(9, 10, 0, 13);
-   lblName.Caption := i18Manager.GetString('lblName');
-   lblName.ParentFont := false;
-   lblName.Font.Style := [];
-   lblName.Font.Color := clWindowText;
-
-   edtName := TEdit.Create(Self);
-   edtName.Parent := Self;
-   edtName.SetBounds(lblName.Width+13, 5, 162-lblName.Width, 21);
-   edtName.ParentFont := false;
-   edtName.Font.Style := [];
-   edtName.ShowHint := true;
-   edtName.Hint := i18Manager.GetString('BadIdD');
-   edtName.DoubleBuffered := true;
-   edtName.OnChange := OnChangeName;
+   CreateNameControls(Self, 9, 10);
 
    lblName2 := TLabel.Create(Self);
    lblName2.Parent := Self;
@@ -154,24 +137,7 @@ begin
    btnAddElement.SetBounds(1, 102, 306, 25);
    btnAddElement.OnClick := AddElement;
 
-   lblLibrary := TLabel.Create(Self);
-   lblLibrary.Parent := Self;
-   lblLibrary.SetBounds(edtName.Left+edtName.Width+7, 10, 0, 13);
-   lblLibrary.Caption := i18Manager.GetString('lblLibrary');
-   lblLibrary.ParentFont := false;
-   lblLibrary.Font.Style := [];
-   lblLibrary.Font.Color := clWindowText;
-
-   edtLibrary := TEdit.Create(Self);
-   edtLibrary.Parent := Self;
-   edtLibrary.SetBounds(lblLibrary.Left+lblLibrary.Width+5, 5, 119-lblLibrary.Width, 21);
-   edtLibrary.ParentFont := false;
-   edtLibrary.Font.Style := [];
-   edtLibrary.Font.Color := clGreen;
-   edtLibrary.ShowHint := true;
-   edtLibrary.DoubleBuffered := true;
-   edtLibrary.OnChange := OnChangeLib;
-   edtLibrary.Hint := ReplaceStr(i18Manager.GetFormattedString('edtLibHintType', [GInfra.CurrentLang.LibraryExt]), LB_PHOLDER2, sLineBreak);
+   CreateLibControls(Self, edtName.Left+edtName.Width+7, 10);
 
    gbTypeBox := TGroupBox.Create(Self);
    gbTypeBox.Parent := Self;
@@ -194,17 +160,7 @@ begin
    chkAddPtrType.Enabled := GInfra.CurrentLang.EnabledPointers;
    chkAddPtrType.OnClick := ChangedOnClick;
 
-   chkExtDeclare := TCheckBox.Create(gbTypeBox);
-   chkExtDeclare.Parent := gbTypeBox;
-   chkExtDeclare.SetBounds(170, 35, 128, 17);
-   chkExtDeclare.ParentFont := false;
-   chkExtDeclare.Font.Style := [];
-   chkExtDeclare.Font.Color := clWindowText;
-   chkExtDeclare.DoubleBuffered := true;
-   chkExtDeclare.OnClick := ExtDeclareOnClick;
-   chkExtDeclare.Caption := i18Manager.GetString('chkExtDeclare');
-   chkExtDeclare.ShowHint := true;
-   chkExtDeclare.Hint := i18Manager.GetString('chkExtDeclare.Hint');
+   CreateExtDeclareChBox(gbTypeBox, 170, 35);
 
    rbInt := TRadioButton.Create(gbTypeBox);
    rbInt.Parent := gbTypeBox;
@@ -300,12 +256,6 @@ begin
          field.edtSize.OnChange(field.edtSize);
    end;
    ParentForm.UpdateCodeEditor := true;
-end;
-
-procedure TUserDataType.ExtDeclareOnClick(Sender: TObject);
-begin
-   if Font.Color <> NOK_COLOR then
-      TInfra.UpdateCodeEditor(Self);
 end;
 
 procedure TUserDataType.WMSize(var Msg: TMessage);

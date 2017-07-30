@@ -53,7 +53,6 @@ type
       procedure OnClickBodyVisible(Sender: TObject);
       procedure OnChangeType(Sender: TObject);
       procedure OnMovedParams(Sender: TObject);
-      procedure OnClickExtDecl(Sender: TObject);
       procedure SetActive(const AValue: boolean); override;
       function CreateElement: TElement; override;
       procedure OnChangeBodyPage(Sender: TObject);
@@ -426,23 +425,7 @@ begin
    gbHeader.DoubleBuffered := true;
    gbHeader.Align := alTop;
 
-   lblName := TLabel.Create(gbHeader);
-   lblName.Parent := gbHeader;
-   lblName.SetBounds(8, 25, 0, 13);
-   lblName.ParentFont := false;
-   lblName.Caption := i18Manager.GetString('lblName');
-   lblName.Font.Style := [];
-   lblName.Font.Color := clWindowText;
-
-   edtName := TEdit.Create(gbHeader);
-   edtName.Parent := gbHeader;
-   edtName.SetBounds(lblName.Width+14, 20, 119-lblName.Width, 21);
-   edtName.ParentFont := false;
-   edtName.Font.Style := [];
-   edtName.ShowHint := true;
-   edtName.Hint := i18Manager.GetString('BadIdD');
-   edtName.DoubleBuffered := true;
-   edtName.OnChange := OnChangeName;
+   CreateNameControls(gbHeader, 8, 25);
 
    lblType := TLabel.Create(gbHeader);
    lblTYpe.Parent := gbHeader;
@@ -464,37 +447,8 @@ begin
    TInfra.PopulateDataTypeCombo(cbType);
    cbType.OnChange := OnChangeType;
 
-   chkExtDeclare := TCheckBox.Create(gbHeader);
-   chkExtDeclare.Parent := gbHeader;
-   chkExtDeclare.Caption := i18Manager.GetString('chkExtDeclare');
-   chkExtDeclare.SetBounds(143, 52, PageControl.Canvas.TextWidth(chkExtDeclare.Caption) + 25, 17);
-   chkExtDeclare.ParentFont := false;
-   chkExtDeclare.Font.Style := [];
-   chkExtDeclare.Font.Color := clWindowText;
-   chkExtDeclare.Alignment := taLeftJustify;
-   chkExtDeclare.DoubleBuffered := true;
-   chkExtDeclare.ShowHint := true;
-   chkExtDeclare.Hint := i18Manager.GetString('chkExtDeclare.Hint');
-   chkExtDeclare.OnClick := OnClickExtDecl;
-
-   lblLibrary := TLabel.Create(gbHeader);
-   lblLibrary.Parent := gbHeader;
-   lblLibrary.SetBounds(8, 52, 0, 13);
-   lblLibrary.Caption := i18Manager.GetString('lblLibrary');
-   lblLibrary.ParentFont := false;
-   lblLibrary.Font.Style := [];
-   lblLibrary.Font.Color := clWindowText;
-
-   edtLibrary := TEdit.Create(gbHeader);
-   edtLibrary.Parent := gbHeader;
-   edtLibrary.SetBounds(lblLibrary.Width+14, 48, 119-lblLibrary.Width, 21);
-   edtLibrary.ParentFont := false;
-   edtLibrary.Font.Style := [];
-   edtLibrary.Font.Color := clGreen;
-   edtLibrary.ShowHint := true;
-   edtLibrary.DoubleBuffered := true;
-   edtLibrary.OnChange := OnChangeLib;
-   edtLibrary.Hint := ReplaceStr(i18Manager.GetFormattedString('edtLibraryHint', [GInfra.CurrentLang.LibraryExt]), LB_PHOLDER2, sLineBreak);
+   CreateExtDeclareChBox(gbHeader, 143, 52);
+   CreateLibControls(gbHeader, 8, 52);
 
    gbParams := TGroupBox.Create(Self);
    gbParams.Parent := Self;
@@ -753,12 +707,6 @@ begin
       NavigatorForm.Invalidate;
    end;
    GProject.SetChanged;
-end;
-
-procedure TUserFunctionHeader.OnClickExtDecl(Sender: TObject);
-begin
-   if Font.Color <> NOK_COLOR then
-      TInfra.UpdateCodeEditor(Self);
 end;
 
 procedure TUserFunctionHeader.OnClickBodyVisible(Sender: TObject);

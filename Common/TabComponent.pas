@@ -52,9 +52,13 @@ type
          procedure SetScrollPos(AValue: integer);
          procedure OnChangeLib(Sender: TObject);
          procedure ChangedOnClick(Sender: TObject);
+         procedure ExtDeclareOnClick(Sender: TObject);
          procedure OnChangeName(Sender: TObject); virtual;
          function GetElementIterator: IIterator;
          procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
+         procedure CreateExtDeclareChBox(AParent: TWinControl; l, t: integer);
+         procedure CreateNameControls(AParent: TWinControl; l, t: integer);
+         procedure CreateLibControls(AParent: TWinControl; l, t: integer);
       public
          edtName: TEdit;
          chkExtDeclare: TCheckBox;
@@ -99,7 +103,8 @@ type
 implementation
 
 uses
-   System.SysUtils, System.Contnrs, ApplicationCommon, XMLProcessor, SortListDecorator;
+   System.SysUtils, System.Contnrs, System.StrUtils, ApplicationCommon, XMLProcessor,
+   SortListDecorator;
 
 constructor TTabComponent.Create(const AParentForm: TPageControlForm);
 begin
@@ -172,6 +177,7 @@ end;
 
 procedure TTabComponent.OnChangeLib(Sender: TObject);
 begin
+   GProject.SetChanged;
    if (Font.Color <> NOK_COLOR) and chkExtDeclare.Checked then
       TInfra.UpdateCodeEditor(Self);
 end;
@@ -209,6 +215,71 @@ end;
 procedure TTabComponent.ChangedOnClick(Sender: TObject);
 begin
    GProject.SetChanged;
+end;
+
+procedure TTabComponent.CreateExtDeclareChBox(AParent: TWinControl; l, t: integer);
+begin
+   chkExtDeclare := TCheckBox.Create(AParent);
+   chkExtDeclare.Parent := AParent;
+   chkExtDeclare.Caption := i18Manager.GetString('chkExtDeclare');
+   chkExtDeclare.SetBounds(l, t, PageControl.Canvas.TextWidth(chkExtDeclare.Caption) + 25, 17);
+   chkExtDeclare.ParentFont := false;
+   chkExtDeclare.Font.Style := [];
+   chkExtDeclare.Font.Color := clWindowText;
+   chkExtDeclare.DoubleBuffered := true;
+   chkExtDeclare.OnClick := ExtDeclareOnClick;
+   chkExtDeclare.ShowHint := true;
+   chkExtDeclare.Hint := i18Manager.GetString('chkExtDeclare.Hint');
+end;
+
+procedure TTabComponent.CreateNameControls(AParent: TWinControl; l, t: integer);
+begin
+   lblName := TLabel.Create(AParent);
+   lblName.Parent := AParent;
+   lblName.SetBounds(l, t, 0, 13);
+   lblName.Caption := i18Manager.GetString('lblName');
+   lblName.ParentFont := false;
+   lblName.Font.Style := [];
+   lblName.Font.Color := clWindowText;
+
+   edtName := TEdit.Create(AParent);
+   edtName.Parent := AParent;
+   edtName.SetBounds(lblName.Width+13, t-6, 84, 21);
+   edtName.ParentFont := false;
+   edtName.Font.Style := [];
+   edtName.ShowHint := true;
+   edtName.Hint := i18Manager.GetString('BadIdD');
+   edtName.DoubleBuffered := true;
+   edtName.OnChange := OnChangeName;
+end;
+
+procedure TTabComponent.CreateLibControls(AParent: TWinControl; l, t: integer);
+begin
+   lblLibrary := TLabel.Create(AParent);
+   lblLibrary.Parent := AParent;
+   lblLibrary.SetBounds(l, t, 0, 13);
+   lblLibrary.Caption := i18Manager.GetString('lblLibrary');
+   lblLibrary.ParentFont := false;
+   lblLibrary.Font.Style := [];
+   lblLibrary.Font.Color := clWindowText;
+
+   edtLibrary := TEdit.Create(AParent);
+   edtLibrary.Parent := AParent;
+   edtLibrary.SetBounds(lblLibrary.Left+lblLibrary.Width+5, t-6, 115-lblLibrary.Width, 21);
+   edtLibrary.ParentFont := false;
+   edtLibrary.Font.Style := [];
+   edtLibrary.Font.Color := clGreen;
+   edtLibrary.ShowHint := true;
+   edtLibrary.DoubleBuffered := true;
+   edtLibrary.OnChange := OnChangeLib;
+   edtLibrary.Hint := ReplaceStr(i18Manager.GetFormattedString('edtLibHintType', [GInfra.CurrentLang.LibraryExt]), LB_PHOLDER2, sLineBreak);
+end;
+
+procedure TTabComponent.ExtDeclareOnClick(Sender: TObject);
+begin
+   GProject.SetChanged;
+   if Font.Color <> NOK_COLOR then
+      TInfra.UpdateCodeEditor(Self);
 end;
 
 procedure TTabComponent.SetActive(const AValue: boolean);
