@@ -877,6 +877,7 @@ begin
          if lock then
             UnLockDrawing;
       end;
+      GProject.SetChanged;
       if FParentBlock = nil then
          BringAllToFront;
       NavigatorForm.Invalidate;
