@@ -122,7 +122,6 @@ type
     procedure imgShapesClick(Sender: TObject);
     procedure Localize(const AList: TStringList); override;
     procedure chkMultiPrintClick(Sender: TObject);
-    procedure edtMarginLeftKeyPress(Sender: TObject; var Key: Char);
     procedure ResetForm; override;
     procedure edtFontNameClick(Sender: TObject);
   private
@@ -539,13 +538,6 @@ begin
    chkMultiPrintHorz.Enabled := chkMultiPrint.Checked;
    if not chkMultiPrint.Checked then
       chkMultiPrintHorz.Checked := false;
-end;
-
-procedure TSettingsForm.edtMarginLeftKeyPress(Sender: TObject;
-  var Key: Char);
-begin
-   if not CharInSet(Key, [#8, '0'..'9']) then
-      Key := #0;
 end;
 
 procedure TSettingsForm.edtFontNameClick(Sender: TObject);

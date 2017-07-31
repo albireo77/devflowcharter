@@ -746,9 +746,9 @@ object SettingsForm: TSettingsForm
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []
+      NumbersOnly = True
       ParentFont = False
       TabOrder = 0
-      OnKeyPress = edtMarginLeftKeyPress
     end
     object chkAutoSelectCode: TCheckBox
       Tag = 8
@@ -1181,9 +1181,9 @@ object SettingsForm: TSettingsForm
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = []
+        NumbersOnly = True
         ParentFont = False
         TabOrder = 0
-        OnKeyPress = edtMarginLeftKeyPress
       end
       object edtMarginRight: TEdit
         Tag = 5
@@ -1196,9 +1196,9 @@ object SettingsForm: TSettingsForm
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = []
+        NumbersOnly = True
         ParentFont = False
         TabOrder = 1
-        OnKeyPress = edtMarginLeftKeyPress
       end
       object edtMarginTop: TEdit
         Tag = 5
@@ -1211,9 +1211,9 @@ object SettingsForm: TSettingsForm
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = []
+        NumbersOnly = True
         ParentFont = False
         TabOrder = 2
-        OnKeyPress = edtMarginLeftKeyPress
       end
       object edtMarginBottom: TEdit
         Tag = 5
@@ -1226,9 +1226,9 @@ object SettingsForm: TSettingsForm
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = []
+        NumbersOnly = True
         ParentFont = False
         TabOrder = 3
-        OnKeyPress = edtMarginLeftKeyPress
       end
     end
   end
