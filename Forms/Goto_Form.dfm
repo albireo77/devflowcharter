@@ -48,6 +48,7 @@ object GotoForm: TGotoForm
       Top = 5
       Width = 41
       Height = 21
+      NumbersOnly = True
       TabOrder = 1
       Text = '0'
     end
