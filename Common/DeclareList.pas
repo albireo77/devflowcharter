@@ -637,6 +637,7 @@ begin
 
    if status <> VALID_IDENT then
    begin
+      edit := edtName;
       case status of
          INCORRECT_SIZE:
          begin
@@ -648,15 +649,11 @@ begin
             edit := edtInit;
             info := 'BadInitVal';
          end;
-      else
-         edit := edtName;
-         case status of
-            INCORRECT_IDENT:  info := 'BadId';
-            DUPLICATED_IDENT: info := 'DupId';
-            RESERVED_IDENT:   info := i18Manager.GetFormattedString('IncorrectIdKeyword', [edtName.Text, GInfra.CurrentLang.Name]);
-         end;
+         INCORRECT_IDENT:  info := 'BadId';
+         DUPLICATED_IDENT: info := 'DupId';
+         RESERVED_IDENT:   info := 'IncorrectIdKeyword';
       end;
-      TInfra.ShowErrorBox(i18Manager.GetString(info), errDeclare);
+      TInfra.ShowErrorBox(i18Manager.GetFormattedString(info, [edit.Text, GInfra.CurrentLang.Name]), errDeclare);
       edit.SetFocus;
    end
    else
@@ -714,21 +711,18 @@ begin
 
    if status <> VALID_IDENT then
    begin
-      if status = UNKNOWN_TYPE then
-      begin
-         info := 'BadCVal';
-         edit := edtValue;
-      end
-      else
-      begin
-         case status of
-            INCORRECT_IDENT:  info := 'BadId';
-            DUPLICATED_IDENT: info := 'DupId';
-            RESERVED_IDENT:   info := i18Manager.GetFormattedString('IncorrectIdKeyword', [edtName.Text, GInfra.CurrentLang.Name]);
+      edit := edtName;
+      case status of
+         INCORRECT_IDENT:  info := 'BadId';
+         DUPLICATED_IDENT: info := 'DupId';
+         RESERVED_IDENT:   info := 'IncorrectIdKeyword';
+         UNKNOWN_TYPE:
+         begin
+            info := 'BadCVal';
+            edit := edtValue;
          end;
-         edit := edtName;
       end;
-      TInfra.ShowErrorBox(i18Manager.GetString(info), errDeclare);
+      TInfra.ShowErrorBox(i18Manager.GetFormattedString(info, [edit.Text, GInfra.CurrentLang.Name]), errDeclare);
       edit.SetFocus;
    end
    else
