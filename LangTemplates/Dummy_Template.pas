@@ -525,7 +525,7 @@ var
    key: string;
 begin
    result := GInfra.CurrentLang.UserTypeDesc;
-   if result <> '' then
+   if not result.IsEmpty then
    begin
       result := ReplaceStr(result, PRIMARY_PLACEHOLDER, ADataType.edtName.Text);
       if ADataType.rbReal.Checked then
