@@ -522,25 +522,16 @@ end;
 
 function Dummy_GetUserTypeDesc(ADataType: TUserDataType): string;
 var
-   key: string;
+   kind: string;
 begin
    result := GInfra.CurrentLang.UserTypeDesc;
    if not result.IsEmpty then
    begin
       result := ReplaceStr(result, PRIMARY_PLACEHOLDER, ADataType.edtName.Text);
-      if ADataType.rbReal.Checked then
-         key := 'rbReal'
-      else if ADataType.rbInt.Checked then
-         key := 'rbInt'
-      else if ADataType.rbStruct.Checked then
-         key := 'rbStruct'
-      else if ADataType.rbEnum.Checked then
-         key := 'rbEnum'
-      else if ADataType.rbArray.Checked then
-         key := 'rbArray'
-      else
-         key := 'rbOther';
-      result := ReplaceStr(result, '%s2', i18Manager.GetString(key));
+      kind := '';
+      if ADataType.rgTypeBox.ItemIndex <> -1 then
+         kind := ADataType.rgTypeBox.Items[ADataType.rgTypeBox.ItemIndex];
+      result := ReplaceStr(result, '%s2', kind);
    end;
 end;
 

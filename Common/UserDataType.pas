@@ -24,7 +24,7 @@ unit UserDataType;
 interface
 
 uses
-   Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls, System.Classes, WinApi.Messages, OmniXML,
+   Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls, System.Classes, WinApi.Messages, Vcl.ExtCtrls, OmniXML,
    SizeEdit, TabComponent, Element, DataTypes_Form, CommonInterfaces;
 
 type
@@ -53,7 +53,7 @@ type
       procedure WMSize(var Msg: TMessage); message WM_SIZE;
    public
       chkAddPtrType: TCheckBox;
-      gbTypeBox: TGroupBox;
+      rgTypeBox: TRadioGroup;
       rbReal,
       rbInt,
       rbStruct,
@@ -139,19 +139,9 @@ begin
 
    CreateLibControls(Self, edtName.Left+edtName.Width+7, 10);
 
-   gbTypeBox := TGroupBox.Create(Self);
-   gbTypeBox.Parent := Self;
-   gbTypeBox.SetBounds(1, 28, 305, 73);
-   gbTypeBox.ParentFont := false;
-   gbTypeBox.ParentBackground := false;
-   gbTypeBox.Font.Style := [];
-   gbTypeBox.Font.Color := clWindowText;
-   gbTypeBox.DoubleBuffered := true;
-   gbTypeBox.Caption := i18Manager.GetString('rgTypeBox');
-
-   chkAddPtrType := TCheckBox.Create(gbTypeBox);
-   chkAddPtrType.Parent := gbTypeBox;
-   chkAddPtrType.SetBounds(170, 18, 134, 17);
+   chkAddPtrType := TCheckBox.Create(Self);
+   chkAddPtrType.Parent := Self;
+   chkAddPtrType.SetBounds(180, 42, 134, 17);
    chkAddPtrType.ParentFont := false;
    chkAddPtrType.Font.Style := [];
    chkAddPtrType.Font.Color := clWindowText;
@@ -160,68 +150,35 @@ begin
    chkAddPtrType.Enabled := GInfra.CurrentLang.EnabledPointers;
    chkAddPtrType.OnClick := OnClickCh;
 
-   CreateExtDeclareChBox(gbTypeBox, 170, 35);
+   CreateExtDeclareChBox(Self, 180, 60);
 
-   rbInt := TRadioButton.Create(gbTypeBox);
-   rbInt.Parent := gbTypeBox;
-   rbInt.SetBounds(8, 18, 78, 17);
-   rbInt.ParentFont := false;
-   rbInt.Font.Style := [];
-   rbInt.Font.Color := clWindowText;
-   rbInt.Caption := i18Manager.GetString('rbInt');
-   rbInt.DoubleBuffered := true;
-   rbInt.OnClick := OnClickType;
+   rgTypeBox := TRadioGroup.Create(Self);
+   rgTypeBox.Parent := Self;
+   rgTypeBox.SetBounds(1, 28, 173, 73);
+   rgTypeBox.ParentFont := false;
+   rgTypeBox.ParentBackground := false;
+   rgTypeBox.Font.Style := [];
+   rgTypeBox.Font.Color := clWindowText;
+   rgTypeBox.DoubleBuffered := true;
+   rgTypeBox.Columns := 2;
+   rgTypeBox.Caption := i18Manager.GetString('rgTypeBox');
 
-   rbReal := TRadioButton.Create(gbTypeBox);
-   rbReal.Parent := gbTypeBox;
-   rbReal.SetBounds(86, 18, 82, 17);
-   rbReal.ParentFont := false;
-   rbReal.Font.Style := [];
-   rbReal.Font.Color := clWindowText;
-   rbReal.Caption := i18Manager.GetString('rbReal');
-   rbReal.DoubleBuffered := true;
-   rbReal.OnClick := OnClickType;
+   rgTypeBox.Items.Add(i18Manager.GetString('rbInt'));
+   rgTypeBox.Items.Add(i18Manager.GetString('rbStruct'));
+   rgTypeBox.Items.Add(i18Manager.GetString('rbArray'));
+   rgTypeBox.Items.Add(i18Manager.GetString('rbReal'));
+   rgTypeBox.Items.Add(i18Manager.GetString('rbOther'));
+   rgTypeBox.Items.Add(i18Manager.GetString('rbEnum'));
 
-   rbStruct := TRadioButton.Create(gbTypeBox);
-   rbStruct.Parent := gbTypeBox;
-   rbStruct.SetBounds(8, 35, 78, 17);
-   rbStruct.ParentFont := false;
-   rbStruct.Font.Style := [];
-   rbStruct.Font.Color := clWindowText;
-   rbStruct.Caption := i18Manager.GetString('rbStruct');
-   rbStruct.Checked := true;
-   rbStruct.DoubleBuffered := true;
-   rbStruct.OnClick := OnClickType;
+   rgTypeBox.ItemIndex := 1;
+   rgTypeBox.OnClick := OnClickType;
 
-   rbEnum := TRadioButton.Create(gbTypeBox);
-   rbEnum.Parent := gbTypeBox;
-   rbEnum.SetBounds(86, 52, 84, 17);
-   rbEnum.ParentFont := false;
-   rbEnum.Font.Style := [];
-   rbEnum.Font.Color := clWindowText;
-   rbEnum.Caption := i18Manager.GetString('rbEnum');
-   rbEnum.DoubleBuffered := true;
-   rbEnum.OnClick := OnClickType;
-
-   rbArray := TRadioButton.Create(gbTypeBox);
-   rbArray.Parent := gbTypeBox;
-   rbArray.SetBounds(8, 52, 78, 17);
-   rbArray.ParentFont := false;
-   rbArray.Font.Style := [];
-   rbArray.Font.Color := clWindowText;
-   rbArray.Caption := i18Manager.GetString('rbArray');
-   rbArray.DoubleBuffered := true;
-   rbArray.OnClick := OnClickType;
-
-   rbOther := TRadioButton.Create(gbTypeBox);
-   rbOther.Parent := gbTypeBox;
-   rbOther.SetBounds(86, 35, 78, 17);
-   rbOther.ParentFont := false;
-   rbOther.Font.Style := [];
-   rbOther.Font.Color := clWindowText;
-   rbOther.Caption := i18Manager.GetString('rbOther');
-   rbOther.DoubleBuffered := true;
-   rbOther.OnClick := OnClickType;
+   rbInt    := rgTypeBox.Buttons[0];
+   rbStruct := rgTypeBox.Buttons[1];
+   rbArray  := rgTypeBox.Buttons[2];
+   rbReal   := rgTypeBox.Buttons[3];
+   rbOther  := rgTypeBox.Buttons[4];
+   rbEnum   := rgTypeBox.Buttons[5];
 
    GProject.AddComponent(Self);
 end;
@@ -417,7 +374,7 @@ begin
    rbArray.Caption := AList.Values['rbArray'];
    rbInt.Caption := AList.Values['rbInt'];
    rbReal.Caption := AList.Values['rbReal'];
-   gbTypeBox.Caption := AList.Values['rgTypeBox'];
+   rgTypeBox.Caption := AList.Values['rgTypeBox'];
    edtLibrary.Hint := Format(AList.Values['edtLibHintType'], [GInfra.CurrentLang.LibraryExt]);
    inherited Localize(AList);
 end;
