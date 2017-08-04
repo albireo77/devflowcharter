@@ -332,7 +332,7 @@ begin
       while iter.HasNext do
       begin
          dataType := TUserDataType(iter.Next);
-         if dataType.Active and (dataType.Font.Color <> NOK_COLOR) and dataType.rbEnum.Checked then
+         if dataType.Active and (dataType.Font.Color <> NOK_COLOR) and (dataType.rgTypeBox.ItemIndex = ENUM_TYPE) then
          begin
             iterf := dataType.GetFieldIterator;
             while iterf.HasNext do
@@ -500,7 +500,7 @@ begin
    if (typeString <> i18Manager.GetString('Unknown')) and (GProject <> nil) then
    begin
       dataType := GProject.GetUserDataType(typeString);
-      if (dataType <> nil) and dataType.rbStruct.Checked then
+      if (dataType <> nil) and (dataType.rgTypeBox.ItemIndex = STRUCT_TYPE) then
       begin
          iterf := dataType.GetFieldIterator;
          while iterf.HasNext do

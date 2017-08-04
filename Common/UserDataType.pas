@@ -54,12 +54,6 @@ type
    public
       chkAddPtrType: TCheckBox;
       rgTypeBox: TRadioGroup;
-      rbReal,
-      rbInt,
-      rbStruct,
-      rbEnum,
-      rbOther,
-      rbArray: TRadioButton;
       lblName2,
       lblType,
       lblSize: TLabel;
@@ -84,6 +78,8 @@ uses
    CommonTypes, LangDefinition, ParserHelper, XMLProcessor;
 
 constructor TUserDataType.Create(const AParentForm: TDataTypesForm);
+var
+   i: integer;
 begin
 
    inherited Create(AParentForm);
@@ -163,22 +159,11 @@ begin
    rgTypeBox.Columns := 2;
    rgTypeBox.Caption := i18Manager.GetString('rgTypeBox');
 
-   rgTypeBox.Items.Add(i18Manager.GetString('rbInt'));
-   rgTypeBox.Items.Add(i18Manager.GetString('rbStruct'));
-   rgTypeBox.Items.Add(i18Manager.GetString('rbArray'));
-   rgTypeBox.Items.Add(i18Manager.GetString('rbReal'));
-   rgTypeBox.Items.Add(i18Manager.GetString('rbOther'));
-   rgTypeBox.Items.Add(i18Manager.GetString('rbEnum'));
+   for i := 0 to High(DATATYPE_TYPES) do
+      rgTypeBox.Items.Add(i18Manager.GetString(DATATYPE_TYPES[i]));
 
-   rgTypeBox.ItemIndex := 1;
+   rgTypeBox.ItemIndex := STRUCT_TYPE;
    rgTypeBox.OnClick := OnClickType;
-
-   rbInt    := rgTypeBox.Buttons[0];
-   rbStruct := rgTypeBox.Buttons[1];
-   rbArray  := rgTypeBox.Buttons[2];
-   rbReal   := rgTypeBox.Buttons[3];
-   rbOther  := rgTypeBox.Buttons[4];
-   rbEnum   := rgTypeBox.Buttons[5];
 
    GProject.AddComponent(Self);
 end;
@@ -195,7 +180,7 @@ end;
 
 procedure TUserDataType.AddElement(Sender: TObject);
 begin
-   if (rbOther.Checked or rbArray.Checked) and (sbxElements.ControlCount = 0) then
+   if (rgTypeBox.ItemIndex in [OTHER_TYPE, ARRAY_TYPE]) and (sbxElements.ControlCount = 0) then
       btnAddElement.Enabled := false;
    inherited AddElement(Sender);
 end;
@@ -229,17 +214,18 @@ procedure TUserDataType.OnClickType(Sender: TObject);
 var
    b: boolean;
    field: TField;
-   i: integer;
+   i, t: integer;
    str: string;
 begin
-   b := rbStruct.Checked or rbEnum.Checked or rbOther.Checked or rbArray.Checked;
+   t := rgTypeBox.ItemIndex;
+   b := t in [STRUCT_TYPE, ENUM_TYPE, OTHER_TYPE, ARRAY_TYPE];
    sbxElements.Enabled := b;
-   lblName2.Enabled := b and not rbArray.Checked;
-   lblSize.Enabled := rbStruct.Checked or rbArray.Checked;
+   lblName2.Enabled := b and (t <> ARRAY_TYPE);
+   lblSize.Enabled := t in [STRUCT_TYPE, ARRAY_TYPE];
    lblType.Enabled := lblSize.Enabled;
    if b then
    begin
-      str := IfThen(rbStruct.Checked, 'field', 'value');
+      str := IfThen(t = STRUCT_TYPE, 'field', 'value');
       btnAddElement.Caption := i18Manager.GetString('btnAdd' + str);
       lblName2.Caption := i18Manager.GetString('lbl' + str);
    end;
@@ -249,14 +235,14 @@ begin
       with field do
       begin
          edtName.Enabled := b;
-         cbType.Enabled := rbStruct.Checked;
+         cbType.Enabled := t = STRUCT_TYPE;
          btnRemove.Enabled := b;
-         edtSize.Enabled := rbStruct.Checked;
+         edtSize.Enabled := cbType.Enabled;
          if i = 0 then
          begin
-            if rbOther.Checked then
-               b := false;
-            if rbArray.Checked then
+            if t = OTHER_TYPE then
+               b := false
+            else if t = ARRAY_TYPE then
             begin
                b := false;
                edtName.Enabled := false;
@@ -269,9 +255,9 @@ begin
    btnAddElement.Enabled := b;
    if GInfra.CurrentLang.EnabledPointers then
    begin
-      if rbEnum.Checked then
+      if t = ENUM_TYPE then
          chkAddPtrType.Checked := false;
-      chkAddPtrType.Enabled := not rbEnum.Checked;
+      chkAddPtrType.Enabled := t <> ENUM_TYPE;
    end;
    RefreshElements;
    if GProject <> nil then
@@ -308,9 +294,9 @@ var
    field: TField;
 begin
    field := TField.Create(Self);
-   field.cbType.Enabled := rbStruct.Checked or rbArray.Checked;
+   field.cbType.Enabled := rgTypeBox.ItemIndex in [STRUCT_TYPE, ARRAY_TYPE];
    field.edtSize.Enabled := field.cbType.Enabled;
-   field.edtName.Enabled := not rbArray.Checked;
+   field.edtName.Enabled := rgTypeBox.ItemIndex <> ARRAY_TYPE;
    result := field;
 end;
 
@@ -322,7 +308,7 @@ begin
    edtName.Font.Color := NOK_COLOR;
    typeName := Trim(edtName.Text);
    dataType := GInfra.GetNativeDataType(typeName);
-   if typeName = '' then
+   if typeName.IsEmpty then
       info := 'BadIdD'
    else if IsDuplicated(edtName) then
       info := 'DupType'
@@ -347,19 +333,7 @@ begin
    inherited ExportToXMLTag(tag);
    if chkAddPtrType.Enabled and chkAddPtrType.Checked then
       tag.SetAttribute('pointer', 'true');
-   if rbStruct.Checked then
-      typeId := 'struct_type'
-   else if rbInt.Checked then
-      typeId := 'int_type'
-   else if rbReal.Checked then
-      typeId := 'real_type'
-   else if rbEnum.Checked then
-      typeId := 'enum_type'
-   else if rbArray.Checked then
-      typeId := 'array_type'
-   else
-      typeId := 'other_type';
-   tag.SetAttribute(typeId, 'true');
+   tag.SetAttribute('kind', rgTypeBox.ItemIndex.ToString);
 end;
 
 procedure TUserDataType.Localize(const AList: TStringList);
@@ -368,12 +342,6 @@ begin
    btnAddElement.Caption := AList.Values['btnAddField'];
    btnAddElement.Hint := AList.Values['btnAddFieldHint'];
    chkAddPtrType.Caption := AList.Values['chkAddPtrType'];
-   rbStruct.Caption := AList.Values['rbStruct'];
-   rbEnum.Caption := AList.Values['rbEnum'];
-   rbOther.Caption := AList.Values['rbOther'];
-   rbArray.Caption := AList.Values['rbArray'];
-   rbInt.Caption := AList.Values['rbInt'];
-   rbReal.Caption := AList.Values['rbReal'];
    rgTypeBox.Caption := AList.Values['rgTypeBox'];
    edtLibrary.Hint := Format(AList.Values['edtLibHintType'], [GInfra.CurrentLang.LibraryExt]);
    inherited Localize(AList);
@@ -384,18 +352,7 @@ begin
    inherited ImportFromXMLTag(ATag, APinControl);
    if chkAddPtrType.Enabled then
       chkAddPtrType.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'pointer');
-   if TXMLProcessor.GetBoolFromAttr(ATag, 'struct_type') then
-      rbStruct.Checked := true
-   else if TXMLProcessor.GetBoolFromAttr(ATag, 'int_type') then
-      rbInt.Checked := true
-   else if TXMLProcessor.GetBoolFromAttr(ATag, 'real_type') then
-      rbReal.Checked := true
-   else if TXMLProcessor.GetBoolFromAttr(ATag, 'enum_type') then
-      rbEnum.Checked := true
-   else if TXMLProcessor.GetBoolFromAttr(ATag, 'array_type') then
-      rbArray.Checked := true
-   else
-      rbOther.Checked := true;
+   rgTypeBox.ItemIndex := StrToIntDef(ATag.GetAttribute('kind'), rgTypeBox.ItemIndex);
 end;
 
 function TUserDataType.GetDimensionCount: integer;
@@ -403,7 +360,7 @@ var
    field: TField;
 begin
    result := 0;
-   if rbArray.Checked and (sbxElements.ControlCount > 0) then
+   if (rgTypeBox.ItemIndex = ARRAY_TYPE) and (sbxElements.ControlCount > 0) then
    begin
       field := TField(sbxElements.Controls[0]);
       result := field.edtSize.DimensionCount;
@@ -415,7 +372,7 @@ var
    field: TField;
 begin
    result := '';
-   if rbArray.Checked and (sbxElements.ControlCount > 0) then
+   if (rgTypeBox.ItemIndex = ARRAY_TYPE) and (sbxElements.ControlCount > 0) then
    begin
       field := TField(sbxElements.Controls[0]);
       result := Trim(field.edtSize.Text);
@@ -427,7 +384,7 @@ var
    field: TField;
 begin
    result := TParserHelper.GetType(Trim(edtName.Text));
-   if rbArray.Checked and (sbxElements.ControlCount > 0) then
+   if (rgTypeBox.ItemIndex = ARRAY_TYPE) and (sbxElements.ControlCount > 0) then
    begin
       field := TField(sbxElements.Controls[0]);
       result := TParserHelper.GetType(field.cbType.Text);
@@ -440,7 +397,7 @@ var
    i: integer;
 begin
    result := false;
-   if rbEnum.Checked then
+   if rgTypeBox.ItemIndex = ENUM_TYPE then
    begin
       for i := 0 to sbxElements.ControlCount-1 do
       begin
@@ -461,7 +418,7 @@ var
    dataType: TUserDataType;
 begin
    dataType := TUserDataType(ParentTab);
-   if dataType.rbOther.Checked or dataType.rbArray.Checked then
+   if dataType.rgTypeBox.ItemIndex in [OTHER_TYPE, ARRAY_TYPE] then
    begin
       if Trim(edtName.Text) = '' then
       begin

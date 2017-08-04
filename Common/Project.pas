@@ -261,18 +261,15 @@ begin
          end
          else if userType <> nil then
          begin
-            if userType.rbInt.Checked then
-               Include(FIntegerTypesSet, i)
-            else if userType.rbReal.Checked then
-               Include(FRealTypesSet, i)
-            else if userType.rbStruct.Checked then
-               Include(FStructTypesSet, i)
-            else if userType.rbEnum.Checked then
-               Include(FEnumTypesSet, i)
-            else if userType.rbArray.Checked then
-               Include(FArrayTypesSet, i)
+            case userType.rgTypeBox.ItemIndex of
+               INT_TYPE:    Include(FIntegerTypesSet, i);
+               REAL_TYPE:   Include(FRealTypesSet, i);
+               STRUCT_TYPE: Include(FStructTypesSet, i);
+               ENUM_TYPE:   Include(FEnumTypesSet, i);
+               ARRAY_TYPE:  Include(FArrayTypesSet, i);
             else
                Include(FOtherTypesSet, i);
+            end;
          end
          else if Assigned(GInfra.CurrentLang.IsPointerType) and GInfra.CurrentLang.IsPointerType(name) then
             Include(FPointerTypesSet, i)
