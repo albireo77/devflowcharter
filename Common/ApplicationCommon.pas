@@ -173,7 +173,7 @@ const   // Global constants
         TEXT_TAG          = 'text';
         VAR_TAG           = 'var';
         CONST_TAG         = 'const';
-        DATATYPE_TAG      = 'structure';
+        DATATYPE_TAG      = 'datatype';
         FUNCTION_TAG      = 'routine';
         HEADER_TAG        = 'header';
 

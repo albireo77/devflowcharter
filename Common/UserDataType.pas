@@ -342,7 +342,7 @@ begin
    inherited ExportToXMLTag(tag);
    if chkAddPtrType.Enabled and chkAddPtrType.Checked then
       tag.SetAttribute('pointer', 'true');
-   tag.SetAttribute('kind', rgTypeBox.ItemIndex.ToString);
+   tag.SetAttribute('kind', GetEnumName(TypeInfo(TUserDataTypeKind), rgTypeBox.ItemIndex));
 end;
 
 procedure TUserDataType.Localize(const AList: TStringList);
@@ -358,14 +358,14 @@ end;
 
 procedure TUserDataType.ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
 var
-   t: integer;
+   i: integer;
 begin
    inherited ImportFromXMLTag(ATag, APinControl);
    if chkAddPtrType.Enabled then
       chkAddPtrType.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'pointer');
-   t := StrToIntDef(ATag.GetAttribute('kind'), -1);
-   if t >= 0 then
-      rgTypeBox.ItemIndex := t;
+   i := GetEnumValue(TypeInfo(TUserDataTypeKind), ATag.GetAttribute('kind'));
+   if i <> -1 then
+      rgTypeBox.ItemIndex := i;
 end;
 
 function TUserDataType.GetDimensionCount: integer;
