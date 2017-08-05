@@ -335,7 +335,6 @@ end;
 procedure TUserDataType.ExportToXMLTag(ATag: IXMLElement);
 var
    tag: IXMLElement;
-   typeId: string;
 begin
    tag := ATag.OwnerDocument.CreateElement(DATATYPE_TAG);
    ATag.AppendChild(tag);
