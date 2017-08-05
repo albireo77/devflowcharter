@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
 
@@ -38,7 +38,7 @@ uses
    System.SysUtils, Instr_Block, MultiInstr_Block, InOut_Block, FunctionCall_Block,
    WhileDo_Block, RepeatUntil_Block, ApplicationCommon, ForDo_Block, IfElse_Block,
    If_Block, Case_Block, Return_Block, Text_Block, Main_Block, CommonInterfaces,
-   Folder_Block;
+   Folder_Block, XMLProcessor;
 
 class function TBlockFactory.Create(const ABranch: TBranch; const ABlockType: TBlockType): TBlock;
 begin
@@ -66,12 +66,15 @@ end;
 
 class function TBlockFactory.Create(const ATag: IXMLElement; const ABranch: TBranch; const ATab: TBlockTabSheet = nil): TBlock;
 var
-   left,top,height,width,brx,bh,th,bry,fbry,fbrx,trh,flh,bid,bt: integer;
+   left,top,height,width,brx,bh,th,bry,fbry,fbrx,trh,flh,bid: integer;
+   bt: TBlockType;
 begin
    result := nil;
    if ATag <> nil then
    begin
-      bt := ATag.GetAttribute(BLOCK_TYPE_ATTR).ToInteger;
+      bt := TXMLProcessor.GetBlockType(ATag);
+      if bt = blUnknown then
+         exit;
       left := ATag.GetAttribute('x').ToInteger;
       top := ATag.GetAttribute('y').ToInteger;
       height := ATag.GetAttribute('h').ToInteger;
@@ -82,12 +85,12 @@ begin
       bid := StrToIntDef(ATag.GetAttribute(ID_ATTR), ID_INVALID);
       if ATab <> nil then
       begin
-         if TBlockType(bt) = blMain then
+         if bt = blMain then
             result := TMainBlock.Create(ATab, left, top, width, height, bh, brx, bry, bid);
       end
       else if ABranch <> nil then
       begin
-         case TBlockType(bt) of
+         case bt of
             blInstr:      result := TInstrBlock.Create(ABranch, left, top, width, height, bid);
             blMultiInstr: result := TMultiInstrBlock.Create(ABranch, left, top, width, height, bid);
             blInput:      result := TInputBlock.Create(ABranch, left, top, width, height, bid);

@@ -44,6 +44,7 @@ type
       class procedure AddText(ATag: IXMLElement; const AText: string);
       class procedure AddCDATA(ATag: IXMLElement; const AText: string);
       class procedure ExportBlockToXML(ABlock: TBlock; ATag: IXMLElement);
+      class function GetBlockType(ATag: IXMLElement): TBlockType;
       class function CountChildTags(ATag: IXMLElement; const AChildTagName: string; AWithText: boolean = false): integer;
       class function GetBoolFromChildTag(ATag: IXMLElement; const ATagName: string; ADefault: boolean = false): boolean;
       class function GetBoolFromAttr(ATag: IXMLElement; const AAttrName: string; ADefault: boolean = false): boolean;
@@ -60,7 +61,7 @@ const
 implementation
 
 uses
-   System.SysUtils, ApplicationCommon, BlockFactory, BlockTabSheet;
+   System.SysUtils, System.TypInfo, ApplicationCommon, BlockFactory, BlockTabSheet;
 
 class function TXMLProcessor.FindChildTag(ATag: IXMLElement; const AName: string): IXMLElement;
 var
@@ -334,6 +335,23 @@ begin
             end;
          end;
       end;
+   end;
+end;
+
+class function TXMLProcessor.GetBlockType(ATag: IXMLElement): TBlockType;
+var
+   t: string;
+   bt: integer;
+begin
+   result := blUnknown;
+   if ATag <> nil then
+   begin
+      t := ATag.GetAttribute(BLOCK_TYPE_ATTR);
+      bt := StrToIntDef(t, -1);
+      if bt < 0 then
+         bt := GetEnumValue(TypeInfo(TBlockType), t);
+      if bt >= 0 then
+         result := TBlockType(bt);
    end;
 end;
 
