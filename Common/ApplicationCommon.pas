@@ -168,6 +168,8 @@ const   // Global constants
         TYPE_ATTR         = 'type';
         IS_HEADER_ATTR    = 'isHeader';
         APP_VERSION_ATTR  = 'devFVersion';
+        KIND_ATTR         = 'kind';
+        POINTER_ATTR      = 'pointer';
         BLOCK_TAG         = 'block';
         BRANCH_TAG        = 'branch';
         TEXT_TAG          = 'text';

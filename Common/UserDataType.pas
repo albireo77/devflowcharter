@@ -340,8 +340,8 @@ begin
    ATag.AppendChild(tag);
    inherited ExportToXMLTag(tag);
    if chkAddPtrType.Enabled and chkAddPtrType.Checked then
-      tag.SetAttribute('pointer', 'true');
-   tag.SetAttribute('kind', GetEnumName(TypeInfo(TUserDataTypeKind), rgTypeBox.ItemIndex));
+      tag.SetAttribute(POINTER_ATTR, 'true');
+   tag.SetAttribute(KIND_ATTR, GetEnumName(TypeInfo(TUserDataTypeKind), rgTypeBox.ItemIndex));
 end;
 
 procedure TUserDataType.Localize(const AList: TStringList);
@@ -361,8 +361,8 @@ var
 begin
    inherited ImportFromXMLTag(ATag, APinControl);
    if chkAddPtrType.Enabled then
-      chkAddPtrType.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'pointer');
-   i := GetEnumValue(TypeInfo(TUserDataTypeKind), ATag.GetAttribute('kind'));
+      chkAddPtrType.Checked := TXMLProcessor.GetBoolFromAttr(ATag, POINTER_ATTR);
+   i := GetEnumValue(TypeInfo(TUserDataTypeKind), ATag.GetAttribute(KIND_ATTR));
    if i <> -1 then
       rgTypeBox.ItemIndex := i;
 end;
