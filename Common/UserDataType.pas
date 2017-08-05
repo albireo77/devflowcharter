@@ -75,15 +75,12 @@ type
 implementation
 
 uses
-   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, ApplicationCommon,
-   LangDefinition, ParserHelper, XMLProcessor;
-
-const
-   USER_DATATYPE_CAPS: array[TUserDataTypeKind] of string = ('rbInt', 'rbRecord', 'rbArray', 'rbReal', 'rbOther', 'rbEnum');
+   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, System.TypInfo,
+   ApplicationCommon, LangDefinition, ParserHelper, XMLProcessor;
 
 constructor TUserDataType.Create(const AParentForm: TDataTypesForm);
 var
-   i: TUserDataTypeKind;
+   i: integer;
 begin
 
    inherited Create(AParentForm);
@@ -163,8 +160,8 @@ begin
    rgTypeBox.Columns := 2;
    rgTypeBox.Caption := i18Manager.GetString('rgTypeBox');
 
-   for i := Low(USER_DATATYPE_CAPS) to High(USER_DATATYPE_CAPS) do
-      rgTypeBox.Items.Add(i18Manager.GetString(USER_DATATYPE_CAPS[i]));
+   for i := 0 to Ord(High(TUserDataTypeKind)) do
+      rgTypeBox.Items.Add(i18Manager.GetString(GetEnumName(TypeInfo(TUserDataTypeKind), i)));
 
    rgTypeBox.ItemIndex := Ord(dtRecord);
    rgTypeBox.OnClick := OnClickType;
