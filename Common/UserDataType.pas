@@ -79,7 +79,7 @@ uses
    LangDefinition, ParserHelper, XMLProcessor;
 
 const
-   USER_DATATYPE_KINDS: array[TUserDataTypeKind] of string = ('rbInt', 'rbStruct', 'rbArray', 'rbReal', 'rbOther', 'rbEnum');
+   USER_DATATYPE_CAPS: array[TUserDataTypeKind] of string = ('rbInt', 'rbStruct', 'rbArray', 'rbReal', 'rbOther', 'rbEnum');
 
 constructor TUserDataType.Create(const AParentForm: TDataTypesForm);
 var
@@ -163,8 +163,8 @@ begin
    rgTypeBox.Columns := 2;
    rgTypeBox.Caption := i18Manager.GetString('rgTypeBox');
 
-   for i := Low(USER_DATATYPE_KINDS) to High(USER_DATATYPE_KINDS) do
-      rgTypeBox.Items.Add(i18Manager.GetString(USER_DATATYPE_KINDS[i]));
+   for i := Low(USER_DATATYPE_CAPS) to High(USER_DATATYPE_CAPS) do
+      rgTypeBox.Items.Add(i18Manager.GetString(USER_DATATYPE_CAPS[i]));
 
    rgTypeBox.ItemIndex := Ord(dtRecord);
    rgTypeBox.OnClick := OnClickType;
