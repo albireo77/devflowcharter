@@ -253,7 +253,7 @@ list_read:		var_const		{
                                                            errString := i18Manager.GetFormattedString('BadConstOp', [$1]);
                                                            yyabort;
                                                         end
-							else if (arg1.TType = PASCAL_BOOL_TYPE) or arg1.IsPointer or arg1.IsStruct or (arg1.Size > 1) then
+							else if (arg1.TType = PASCAL_BOOL_TYPE) or arg1.IsPointer or arg1.isRecord or (arg1.Size > 1) then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadInOper', [$1]);
                                                            yyabort;
@@ -280,7 +280,7 @@ list_read:		var_const		{
 						}
 
 		|	table_exp		{
-							if ($1 = PASCAL_BOOL_TYPE) or TParserHelper.IsPointerType($1) or TParserHelper.IsStructType($1) then
+							if ($1 = PASCAL_BOOL_TYPE) or TParserHelper.IsPointerType($1) or TParserHelper.isRecordType($1) then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadInOper', ['']);
                                                            yyabort;
@@ -836,7 +836,7 @@ parameters_list:	statement		{
 
 struct_exp:		var_const '.' valid_identifier	{
                                                         arg1 := TParserHelper.GetIdentInfo($1);
-							if not arg1.IsStruct then
+							if not arg1.isRecord then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('NotStructType', [$1]);
                                                            yyabort;
@@ -857,7 +857,7 @@ struct_exp:		var_const '.' valid_identifier	{
                 |       var_const '^' '.' valid_identifier      {
                                                         arg1 := TParserHelper.GetIdentInfo($1);
                                                         lType := TParserHelper.GetFieldType($1, $4);
-							if not TParserHelper.IsStructType(arg1.TypeOriginal) then
+							if not TParserHelper.isRecordType(arg1.TypeOriginal) then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('NotStructType', [$1]);
                                                            yyabort;
@@ -881,7 +881,7 @@ struct_exp:		var_const '.' valid_identifier	{
                                                 }
 
 		|	table_exp '.' valid_identifier	{
-							if not TParserHelper.IsStructType($1) then
+							if not TParserHelper.isRecordType($1) then
                                                         begin
                                                            errString := i18Manager.GetFormattedString('BadVarOper', ['']);
                                                            yyabort;
@@ -975,7 +975,7 @@ table_exp:
 
 output_statement:	
 			statement		{
-							if TParserHelper.IsPointerType($1) or TParserHelper.IsStructType($1) or ($1 = UNKNOWN_TYPE) then
+							if TParserHelper.IsPointerType($1) or TParserHelper.isRecordType($1) or ($1 = UNKNOWN_TYPE) then
                                                         begin
                                                            errString := i18Manager.GetString('BadOutput');
                                                            yyabort;

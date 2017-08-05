@@ -618,7 +618,7 @@ begin
    begin
       if not edtSize.ParseSize then
          status := INCORRECT_SIZE
-      else if (edtSize.Text = '1') and not TParserHelper.IsStructType(lType) and Assigned(GInfra.CurrentLang.GetLiteralType) then
+      else if (edtSize.Text = '1') and not TParserHelper.IsRecordType(lType) and Assigned(GInfra.CurrentLang.GetLiteralType) then
       begin
          initVal := Trim(edtInit.Text);
          if not initVal.isEmpty then

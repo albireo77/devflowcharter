@@ -24,8 +24,8 @@ unit UserDataType;
 interface
 
 uses
-   Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls, System.Classes, WinApi.Messages, Vcl.ExtCtrls, OmniXML,
-   SizeEdit, TabComponent, Element, DataTypes_Form, CommonInterfaces;
+   Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls, System.Classes, WinApi.Messages, Vcl.ExtCtrls,
+   OmniXML, SizeEdit, TabComponent, Element, DataTypes_Form, CommonInterfaces, CommonTypes;
 
 type
 
@@ -69,17 +69,21 @@ type
       function GetDimensions: string;
       function GetOriginalType: integer;
       procedure GenerateTree(const ANode: TTreeNode);
+      function GetKind: TUserDataTypeKind;
    end;
 
 implementation
 
 uses
    Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, ApplicationCommon,
-   CommonTypes, LangDefinition, ParserHelper, XMLProcessor;
+   LangDefinition, ParserHelper, XMLProcessor;
+
+const
+   USER_DATATYPE_KINDS: array[TUserDataTypeKind] of string = ('rbInt', 'rbStruct', 'rbArray', 'rbReal', 'rbOther', 'rbEnum');
 
 constructor TUserDataType.Create(const AParentForm: TDataTypesForm);
 var
-   i: integer;
+   i: TUserDataTypeKind;
 begin
 
    inherited Create(AParentForm);
@@ -159,13 +163,18 @@ begin
    rgTypeBox.Columns := 2;
    rgTypeBox.Caption := i18Manager.GetString('rgTypeBox');
 
-   for i := 0 to High(DATATYPE_TYPES) do
-      rgTypeBox.Items.Add(i18Manager.GetString(DATATYPE_TYPES[i]));
+   for i := Low(USER_DATATYPE_KINDS) to High(USER_DATATYPE_KINDS) do
+      rgTypeBox.Items.Add(i18Manager.GetString(USER_DATATYPE_KINDS[i]));
 
-   rgTypeBox.ItemIndex := STRUCT_TYPE;
+   rgTypeBox.ItemIndex := Ord(dtRecord);
    rgTypeBox.OnClick := OnClickType;
 
    GProject.AddComponent(Self);
+end;
+
+function TUserDataType.GetKind: TUserDataTypeKind;
+begin
+   result := TUserDataTypeKind(rgTypeBox.ItemIndex);
 end;
 
 procedure TUserDataType.SetActive(const AValue: boolean);
@@ -180,7 +189,7 @@ end;
 
 procedure TUserDataType.AddElement(Sender: TObject);
 begin
-   if (rgTypeBox.ItemIndex in [OTHER_TYPE, ARRAY_TYPE]) and (sbxElements.ControlCount = 0) then
+   if (GetKind in [dtOther, dtArray]) and (sbxElements.ControlCount = 0) then
       btnAddElement.Enabled := false;
    inherited AddElement(Sender);
 end;
@@ -214,18 +223,19 @@ procedure TUserDataType.OnClickType(Sender: TObject);
 var
    b: boolean;
    field: TField;
-   i, t: integer;
+   i: integer;
+   t: TUserDataTypeKind;
    str: string;
 begin
-   t := rgTypeBox.ItemIndex;
-   b := t in [STRUCT_TYPE, ENUM_TYPE, OTHER_TYPE, ARRAY_TYPE];
+   t := GetKind;
+   b := t in [dtRecord, dtEnum, dtOther, dtArray];
    sbxElements.Enabled := b;
-   lblName2.Enabled := b and (t <> ARRAY_TYPE);
-   lblSize.Enabled := t in [STRUCT_TYPE, ARRAY_TYPE];
+   lblName2.Enabled := b and (t <> dtArray);
+   lblSize.Enabled := t in [dtRecord, dtArray];
    lblType.Enabled := lblSize.Enabled;
    if b then
    begin
-      str := IfThen(t = STRUCT_TYPE, 'field', 'value');
+      str := IfThen(t = dtRecord, 'field', 'value');
       btnAddElement.Caption := i18Manager.GetString('btnAdd' + str);
       lblName2.Caption := i18Manager.GetString('lbl' + str);
    end;
@@ -235,14 +245,14 @@ begin
       with field do
       begin
          edtName.Enabled := b;
-         cbType.Enabled := t = STRUCT_TYPE;
+         cbType.Enabled := t = dtRecord;
          btnRemove.Enabled := b;
          edtSize.Enabled := cbType.Enabled;
          if i = 0 then
          begin
-            if t = OTHER_TYPE then
+            if t = dtOther then
                b := false
-            else if t = ARRAY_TYPE then
+            else if t = dtArray then
             begin
                b := false;
                edtName.Enabled := false;
@@ -255,9 +265,9 @@ begin
    btnAddElement.Enabled := b;
    if GInfra.CurrentLang.EnabledPointers then
    begin
-      if t = ENUM_TYPE then
+      if t = dtEnum then
          chkAddPtrType.Checked := false;
-      chkAddPtrType.Enabled := t <> ENUM_TYPE;
+      chkAddPtrType.Enabled := t <> dtEnum;
    end;
    RefreshElements;
    if GProject <> nil then
@@ -292,11 +302,13 @@ end;
 function TUserDataType.CreateElement: TElement;
 var
    field: TField;
+   t: TUserDataTypeKind;
 begin
+   t := GetKind;
    field := TField.Create(Self);
-   field.cbType.Enabled := rgTypeBox.ItemIndex in [STRUCT_TYPE, ARRAY_TYPE];
+   field.cbType.Enabled := t in [dtRecord, dtArray];
    field.edtSize.Enabled := field.cbType.Enabled;
-   field.edtName.Enabled := rgTypeBox.ItemIndex <> ARRAY_TYPE;
+   field.edtName.Enabled := t <> dtArray;
    result := field;
 end;
 
@@ -348,11 +360,15 @@ begin
 end;
 
 procedure TUserDataType.ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
+var
+   t: integer;
 begin
    inherited ImportFromXMLTag(ATag, APinControl);
    if chkAddPtrType.Enabled then
       chkAddPtrType.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'pointer');
-   rgTypeBox.ItemIndex := StrToIntDef(ATag.GetAttribute('kind'), rgTypeBox.ItemIndex);
+   t := StrToIntDef(ATag.GetAttribute('kind'), -1);
+   if t >= 0 then
+      rgTypeBox.ItemIndex := t;
 end;
 
 function TUserDataType.GetDimensionCount: integer;
@@ -360,7 +376,7 @@ var
    field: TField;
 begin
    result := 0;
-   if (rgTypeBox.ItemIndex = ARRAY_TYPE) and (sbxElements.ControlCount > 0) then
+   if (GetKind = dtArray) and (sbxElements.ControlCount > 0) then
    begin
       field := TField(sbxElements.Controls[0]);
       result := field.edtSize.DimensionCount;
@@ -372,7 +388,7 @@ var
    field: TField;
 begin
    result := '';
-   if (rgTypeBox.ItemIndex = ARRAY_TYPE) and (sbxElements.ControlCount > 0) then
+   if (GetKind = dtArray) and (sbxElements.ControlCount > 0) then
    begin
       field := TField(sbxElements.Controls[0]);
       result := Trim(field.edtSize.Text);
@@ -384,7 +400,7 @@ var
    field: TField;
 begin
    result := TParserHelper.GetType(Trim(edtName.Text));
-   if (rgTypeBox.ItemIndex = ARRAY_TYPE) and (sbxElements.ControlCount > 0) then
+   if (GetKind = dtArray) and (sbxElements.ControlCount > 0) then
    begin
       field := TField(sbxElements.Controls[0]);
       result := TParserHelper.GetType(field.cbType.Text);
@@ -397,7 +413,7 @@ var
    i: integer;
 begin
    result := false;
-   if rgTypeBox.ItemIndex = ENUM_TYPE then
+   if GetKind = dtEnum then
    begin
       for i := 0 to sbxElements.ControlCount-1 do
       begin
@@ -418,7 +434,7 @@ var
    dataType: TUserDataType;
 begin
    dataType := TUserDataType(ParentTab);
-   if dataType.rgTypeBox.ItemIndex in [OTHER_TYPE, ARRAY_TYPE] then
+   if dataType.GetKind in [dtOther, dtArray] then
    begin
       if Trim(edtName.Text) = '' then
       begin

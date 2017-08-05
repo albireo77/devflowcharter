@@ -25,7 +25,8 @@ implementation
 
 uses
    System.SysUtils, System.StrUtils, System.Classes, Base_Block, LangDefinition,
-   UserFunction, DeclareList, CommonInterfaces, UserDataType, ApplicationCommon, ParserHelper;
+   UserFunction, DeclareList, CommonInterfaces, UserDataType, ApplicationCommon,
+   ParserHelper, CommonTypes;
 
 procedure Dummy_UserDataTypesSectionGenerator(ALines: TStringList);
 var
@@ -51,8 +52,8 @@ begin
             if (not name.IsEmpty) and not dataType.chkExtDeclare.Checked then
             begin
                iterf := dataType.GetFieldIterator;
-               case dataType.rgTypeBox.ItemIndex of
-                  INT_TYPE:
+               case dataType.GetKind of
+                  dtInt:
                   begin
                      if not lang.DataTypeIntMask.IsEmpty then
                      begin
@@ -60,7 +61,7 @@ begin
                         typesList.AddObject(typeStr, dataType);
                      end;
                   end;
-                  REAL_TYPE:
+                  dtReal:
                   begin
                      if not lang.DataTypeRealMask.IsEmpty then
                      begin
@@ -68,7 +69,7 @@ begin
                         typesList.AddObject(typeStr, dataType);
                      end;
                   end;
-                  OTHER_TYPE:
+                  dtOther:
                   begin
                      if not lang.DataTypeOtherMask.IsEmpty then
                      begin
@@ -80,7 +81,7 @@ begin
                         typesList.AddObject(typeStr, dataType);
                      end;
                   end;
-                  ARRAY_TYPE:
+                  dtArray:
                   begin
                      if not lang.DataTypeArrayMask.IsEmpty then
                      begin
@@ -98,7 +99,7 @@ begin
                         typesList.AddObject(typeStr, dataType);
                      end;
                   end;
-                  STRUCT_TYPE:
+                  dtRecord:
                   begin
                      if not lang.DataTypeRecordTemplate.IsEmpty then
                      begin
@@ -121,7 +122,7 @@ begin
                                  lRecord := '';
                                  enum := '';
                                  lType := TParserHelper.GetType(field.cbType.Text);
-                                 if TParserHelper.IsStructType(lType) then
+                                 if TParserHelper.IsRecordType(lType) then
                                     lRecord := lang.FunctionHeaderArgsEntryRecord
                                  else if TParserHelper.IsEnumType(lType) then
                                     enum := lang.FunctionHeaderArgsEntryEnum;
@@ -140,7 +141,7 @@ begin
                         end;
                      end;
                   end;
-                  ENUM_TYPE:
+                  dtEnum:
                   begin
                      if not lang.DataTypeEnumTemplate.IsEmpty then
                      begin
@@ -345,7 +346,7 @@ begin
                lType := TParserHelper.GetType(typeStr);
                lRecord := '';
                enum := '';
-               if TParserHelper.IsStructType(lType) then
+               if TParserHelper.IsRecordType(lType) then
                   lRecord := lang.FunctionHeaderArgsEntryRecord
                else if TParserHelper.IsEnumType(lType) then
                   enum := lang.FunctionHeaderArgsEntryEnum;
@@ -417,7 +418,7 @@ begin
                   if param.chkTable.Checked then
                      lArray := lang.FunctionHeaderArgsEntryArray;
                   intType := TParserHelper.GetType(param.cbType.Text);
-                  if TParserHelper.IsStructType(intType) then
+                  if TParserHelper.IsRecordType(intType) then
                      lRecord := lang.FunctionHeaderArgsEntryRecord
                   else if TParserHelper.IsEnumType(intType) then
                      enum := lang.FunctionHeaderArgsEntryEnum;

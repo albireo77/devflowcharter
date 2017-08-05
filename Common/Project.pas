@@ -42,7 +42,7 @@ type
       FBoolTypesSet: TBoolTypesSet;
       FOtherTypesSet: TOtherTypesSet;
       FPointerTypesSet: TPointerTypesSet;
-      FStructTypesSet: TStructTypesSet;
+      FRecordTypesSet: TRecordTypesSet;
       FEnumTypesSet: TEnumTypesSet;
       FArrayTypesSet: TArrayTypesSet;
       FStringTypesSet: TStringTypesSet;
@@ -67,7 +67,7 @@ type
       property OtherTypesSet: TOtherTypesSet read FOtherTypesSet;
       property RealTypesSet: TRealTypesSet read FRealTypesSet;
       property PointerTypesSet: TPointerTypesSet read FPointerTypesSet;
-      property StructTypesSet: TStructTypesSet read FStructTypesSet;
+      property RecordTypesSet: TRecordTypesSet read FRecordTypesSet;
       property EnumTypesSet: TEnumTypesSet read FEnumTypesSet;
       property ArrayTypesSet: TArrayTypesSet read FArrayTypesSet;
       property StringTypesSet: TStringTypesSet read FStringTypesSet;
@@ -234,7 +234,7 @@ begin
    FBoolTypesSet := [];
    FOtherTypesSet := [];
    FPointerTypesSet := [];
-   FStructTypesSet := [];
+   FRecordTypesSet := [];
    FEnumTypesSet := [];
    FArrayTypesSet := [];
    FStringTypesSet := [];
@@ -261,12 +261,12 @@ begin
          end
          else if userType <> nil then
          begin
-            case userType.rgTypeBox.ItemIndex of
-               INT_TYPE:    Include(FIntegerTypesSet, i);
-               REAL_TYPE:   Include(FRealTypesSet, i);
-               STRUCT_TYPE: Include(FStructTypesSet, i);
-               ENUM_TYPE:   Include(FEnumTypesSet, i);
-               ARRAY_TYPE:  Include(FArrayTypesSet, i);
+            case userType.GetKind of
+               dtInt:    Include(FIntegerTypesSet, i);
+               dtReal:   Include(FRealTypesSet, i);
+               dtRecord: Include(FRecordTypesSet, i);
+               dtEnum:   Include(FEnumTypesSet, i);
+               dtArray:  Include(FArrayTypesSet, i);
             else
                Include(FOtherTypesSet, i);
             end;

@@ -40,7 +40,9 @@ type
                  blWhile, blRepeat, blIf, blIfElse, blFor, blCase, blMain, blComment,
                  blReturn, blText, blFolder);
 
-   TDataTypeKind = (tpInt, tpReal, tpString, tpBool, tpStruct, tpEnum, tpArray, tpPtr, tpOther);
+   TDataTypeKind = (tpInt, tpReal, tpString, tpBool, tpRecord, tpEnum, tpArray, tpPtr, tpOther);
+
+   TUserDataTypeKind = (dtInt, dtRecord, dtArray, dtReal, dtOther, dtEnum);
 
    TParserMode = (prsNone, prsCondition, prsAssign, prsInput, prsOutput, prsFor, prsFuncCall,
                  prsCase, prsCaseValue, prsReturn, prsVarSize);
@@ -91,8 +93,8 @@ type
    TPointerTypes = 2..100;
    TPointerTypesSet = set of TPointerTypes;
 
-   TStructTypes = 2..100;
-   TStructTypesSet = set of TStructTypes;
+   TRecordTypes = 2..100;
+   TRecordTypesSet = set of TRecordTypes;
 
    TEnumTypes = 2..100;
    TEnumTypesSet = set of TEnumTypes;

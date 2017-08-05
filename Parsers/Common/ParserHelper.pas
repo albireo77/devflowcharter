@@ -40,7 +40,7 @@ type
       FIsInteger,
       FIsReal,
       FIsNumeric,
-      FIsStruct,
+      FIsRecord,
       FIsEnum,
       FIsPointer: boolean;
       procedure SetType(const AType: integer);
@@ -61,7 +61,7 @@ type
       property IsInteger: boolean read FIsInteger;
       property IsReal: boolean read FIsReal;
       property IsNumeric: boolean read FIsNumeric;
-      property IsStruct: boolean read FIsStruct;
+      property IsRecord: boolean read FIsRecord;
       property IsEnum: boolean read FIsEnum;
       property IsPointer: boolean read FIsPointer;
       procedure New;
@@ -89,7 +89,7 @@ type
       class function FindUserFunctionVarList(const ABlock: TBlock): TVarDeclareList;
       class procedure GetParameterInfo(const AHeader: TUserFunctionHeader; var AResult: TIdentInfo);
       class procedure GetVariableInfo(const AVarList: TVarDeclareList; var AResult: TIdentInfo);
-      class function IsStructType(const AType: integer): boolean;
+      class function IsRecordType(const AType: integer): boolean;
       class function IsEnumType(const AType: integer): boolean;
       class function IsIntegerType(const AType: integer): boolean;
       class function IsRealType(const AType: integer): boolean;
@@ -155,7 +155,7 @@ begin
    FIsInteger := false;
    FIsReal := false;
    FIsNumeric := false;
-   FIsStruct := false;
+   FIsRecord := false;
    FIsENum := false;
    FIsPointer := false;
 end;
@@ -170,7 +170,7 @@ begin
    FIsInteger := TParserHelper.IsIntegerType(FType);
    FIsReal := TParserHelper.IsRealType(FType);
    FIsNumeric := FIsInteger or FIsReal;
-   FIsStruct := TParserHelper.IsStructType(FType);
+   FIsRecord := TParserHelper.IsRecordType(FType);
    FIsEnum := TParserHelper.IsEnumType(FType);
    FIsPointer := TParserHelper.IsPointerType(FType);
 end;
@@ -332,7 +332,7 @@ begin
       while iter.HasNext do
       begin
          dataType := TUserDataType(iter.Next);
-         if dataType.Active and (dataType.Font.Color <> NOK_COLOR) and (dataType.rgTypeBox.ItemIndex = ENUM_TYPE) then
+         if dataType.Active and (dataType.Font.Color <> NOK_COLOR) and (dataType.GetKind = dtEnum) then
          begin
             iterf := dataType.GetFieldIterator;
             while iterf.HasNext do
@@ -500,7 +500,7 @@ begin
    if (typeString <> i18Manager.GetString('Unknown')) and (GProject <> nil) then
    begin
       dataType := GProject.GetUserDataType(typeString);
-      if (dataType <> nil) and (dataType.rgTypeBox.ItemIndex = STRUCT_TYPE) then
+      if (dataType <> nil) and (dataType.GetKind = dtRecord) then
       begin
          iterf := dataType.GetFieldIterator;
          while iterf.HasNext do
@@ -660,9 +660,9 @@ begin
    result := (GProject <> nil) and (AType in GProject.PointerTypesSet);
 end;
 
-class function TParserHelper.IsStructType(const AType: integer): boolean;
+class function TParserHelper.IsRecordType(const AType: integer): boolean;
 begin
-   result := (GProject <> nil) and (AType in GProject.StructTypesSet);
+   result := (GProject <> nil) and (AType in GProject.RecordTypesSet);
 end;
 
 class function TParserHelper.IsEnumType(const AType: integer): boolean;

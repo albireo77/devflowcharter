@@ -225,15 +225,6 @@ const   // Global constants
         PARSER_ERRORS_ARRAY: array[TParserMode] of string = ('BadGeneric', 'BadCondition', 'BadAssign', 'BadInput', 'BadOutput',
                              'BadFor', 'BadFunction', 'BadCase', 'BadCase', 'BadReturnVal', '');
 
-        DATATYPE_TYPES: array[0..5] of string = ('rbInt', 'rbStruct', 'rbArray', 'rbReal', 'rbOther', 'rbEnum');
-
-        INT_TYPE    = 0;
-        STRUCT_TYPE = 1;
-        ARRAY_TYPE  = 2;
-        REAL_TYPE   = 3;
-        OTHER_TYPE  = 4;
-        ENUM_TYPE   = 5;
-
 var     // Global variables
 
     GClpbrd:        TClipbrd;

@@ -336,7 +336,7 @@ begin
          errString := i18Manager.GetFormattedString('BadConstOp', [yyv[yysp-0].yyString]);
          yyabort;
          end
-         							else if (arg1.TType = PASCAL_BOOL_TYPE) or arg1.IsPointer or arg1.IsStruct or (arg1.Size > 1) then
+         							else if (arg1.TType = PASCAL_BOOL_TYPE) or arg1.IsPointer or arg1.IsRecord or (arg1.Size > 1) then
          begin
          errString := i18Manager.GetFormattedString('BadInOper', [yyv[yysp-0].yyString]);
          yyabort;
@@ -365,7 +365,7 @@ begin
        end;
   30 : begin
          
-         							if (yyv[yysp-0].yyInteger = PASCAL_BOOL_TYPE) or TParserHelper.IsPointerType(yyv[yysp-0].yyInteger) or TParserHelper.IsStructType(yyv[yysp-0].yyInteger) then
+         							if (yyv[yysp-0].yyInteger = PASCAL_BOOL_TYPE) or TParserHelper.IsPointerType(yyv[yysp-0].yyInteger) or TParserHelper.IsRecordType(yyv[yysp-0].yyInteger) then
          begin
          errString := i18Manager.GetFormattedString('BadInOper', ['']);
          yyabort;
@@ -981,7 +981,7 @@ begin
  102 : begin
          
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-2].yyString);
-         							if not arg1.IsStruct then
+         							if not arg1.IsRecord then
          begin
          errString := i18Manager.GetFormattedString('NotStructType', [yyv[yysp-2].yyString]);
          yyabort;
@@ -1003,7 +1003,7 @@ begin
          
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-3].yyString);
          lType := TParserHelper.GetFieldType(yyv[yysp-3].yyString, yyv[yysp-0].yyString);
-         							if not TParserHelper.IsStructType(arg1.TypeOriginal) then
+         							if not TParserHelper.IsRecordType(arg1.TypeOriginal) then
          begin
          errString := i18Manager.GetFormattedString('NotStructType', [yyv[yysp-3].yyString]);
          yyabort;
@@ -1028,7 +1028,7 @@ begin
        end;
  104 : begin
          
-         							if not TParserHelper.IsStructType(yyv[yysp-2].yyInteger) then
+         							if not TParserHelper.IsRecordType(yyv[yysp-2].yyInteger) then
          begin
          errString := i18Manager.GetFormattedString('BadVarOper', ['']);
          yyabort;
@@ -1121,7 +1121,7 @@ begin
        end;
  110 : begin
          
-         							if TParserHelper.IsPointerType(yyv[yysp-0].yyInteger) or TParserHelper.IsStructType(yyv[yysp-0].yyInteger) or (yyv[yysp-0].yyInteger = UNKNOWN_TYPE) then
+         							if TParserHelper.IsPointerType(yyv[yysp-0].yyInteger) or TParserHelper.IsRecordType(yyv[yysp-0].yyInteger) or (yyv[yysp-0].yyInteger = UNKNOWN_TYPE) then
          begin
          errString := i18Manager.GetString('BadOutput');
          yyabort;
