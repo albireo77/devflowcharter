@@ -79,7 +79,7 @@ uses
    LangDefinition, ParserHelper, XMLProcessor;
 
 const
-   USER_DATATYPE_CAPS: array[TUserDataTypeKind] of string = ('rbInt', 'rbStruct', 'rbArray', 'rbReal', 'rbOther', 'rbEnum');
+   USER_DATATYPE_CAPS: array[TUserDataTypeKind] of string = ('rbInt', 'rbRecord', 'rbArray', 'rbReal', 'rbOther', 'rbEnum');
 
 constructor TUserDataType.Create(const AParentForm: TDataTypesForm);
 var
