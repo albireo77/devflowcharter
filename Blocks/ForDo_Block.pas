@@ -617,7 +617,7 @@ begin
       if tag <> nil then
          edtStopVal.Text := ReplaceStr(tag.Text, '#' , ' ');
       FRefreshMode := false;
-      FOrder := TForOrder(StrToIntDef(ATag.GetAttribute('order'), 0));
+      FOrder := TInfra.StringToEnum<TForOrder>(ATag.GetAttribute('order'));
    end
 end;
 
@@ -637,7 +637,7 @@ begin
       tag := ATag.OwnerDocument.CreateElement('end_val');
       TXMLProcessor.AddText(tag, ReplaceStr(edtStopVal.Text, ' ', '#'));
       ATag.AppendChild(tag);
-      ATag.SetAttribute('order', Ord(FOrder).ToString);
+      ATag.SetAttribute('order', TInfra.EnumToString<TForOrder>(FOrder));
    end;
 end;
 
