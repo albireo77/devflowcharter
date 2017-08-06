@@ -109,6 +109,8 @@ type
          class function CompareProgramVersion(const AVersion: string): integer;
          function ValidateConstId(const AId: string): integer;
          function ValidateId(const AId: string): integer;
+         class function StringToEnum<T: record>(const S: string): T;
+         class function EnumToString<T: record>(enum: T): string;
          constructor Create;
          destructor Destroy; override;
    end;
@@ -245,7 +247,7 @@ implementation
 
 uses
    Vcl.Printers, WinApi.Messages, Vcl.Menus, Vcl.Dialogs, Vcl.Imaging.jpeg, Vcl.Imaging.PngImage,
-   System.Math, UserDataType, XMLProcessor, SynEditHighlighter, Main_Block;
+   System.Math, System.TypInfo, UserDataType, XMLProcessor, SynEditHighlighter, Main_Block;
 
 type
    THackCustomEdit = class(TCustomEdit);
@@ -1311,6 +1313,46 @@ begin
       result := INCORRECT_IDENT
    else if CurrentLang.Keywords.IndexOf(AId) <> -1 then
       result := RESERVED_IDENT;
+end;
+
+class function TInfra.StringToEnum<T>(const S: string): T;
+var
+   P: PTypeInfo;
+   dt: integer;
+begin
+   P := PTypeInfo(TypeInfo(T));
+   dt := StrToIntDef(S, -1);
+   if dt < 0 then
+   begin
+      if P^.Kind = tkEnumeration then
+         dt := GetEnumValue(P, S)
+      else
+         raise EArgumentException.CreateFmt('Type %s is not enumeration', [P^.Name]);
+   end;
+   case GetTypeData(P)^.OrdType of
+      otSByte, otUByte: PByte(@result)^ := dt;
+      otSWord, otUWord: PWord(@result)^ := dt;
+      otSLong, otULong: PCardinal(@result)^ := dt;
+   end;
+end;
+
+class function TInfra.EnumToString<T>(enum: T): string;
+var
+   P: PTypeInfo;
+   dt: integer;
+begin
+   P := PTypeInfo(TypeInfo(T));
+   if P^.Kind = tkEnumeration then
+   begin
+      case GetTypeData(P)^.OrdType of
+         otSByte, otUByte: dt := PByte(@enum)^;
+         otSWord, otUWord: dt := PWord(@enum)^;
+         otSLong, otULong: dt := PCardinal(@enum)^;
+      end;
+      result := GetEnumName(P, dt);
+   end
+   else
+      raise EArgumentException.CreateFmt('Type %s is not enumeration', [P^.Name]);
 end;
 
 function CompareIntegers(AList: TStringList; idx1, idx2: integer): integer;

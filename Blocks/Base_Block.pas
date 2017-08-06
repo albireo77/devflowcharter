@@ -294,8 +294,8 @@ type
 implementation
 
 uses
-   System.StrUtils, Vcl.Menus, System.Types, System.Math, System.TypInfo, Main_Block,
-   Return_Block, ApplicationCommon, BlockFactory, UserFunction, XMLProcessor, Navigator_Form,
+   System.StrUtils, Vcl.Menus, System.Types, System.Math, Main_Block, Return_Block,
+   ApplicationCommon, BlockFactory, UserFunction, XMLProcessor, Navigator_Form,
    LangDefinition, FlashThread, Comment;
 
 type
@@ -2365,7 +2365,7 @@ var
 begin
    if ATag <> nil then
    begin
-      ATag.SetAttribute(BLOCK_TYPE_ATTR, GetEnumName(TypeInfo(TBlockType), Ord(BType)));
+      ATag.SetAttribute(BLOCK_TYPE_ATTR, TInfra.EnumToString<TBlockType>(BType));
       ATag.SetAttribute(FRAME_ATTR, FFrame.ToString);
       ATag.SetAttribute('x', Left.ToString);
       ATag.SetAttribute('y', Top.ToString);
@@ -2526,7 +2526,8 @@ var
 begin
    result := errValidate;
    tag := TXMLProcessor.FindChildTag(ATag, BLOCK_TAG);
-   bt := TXMLProcessor.GetBlockType(tag);
+   if tag <> nil then
+      bt := TInfra.StringToEnum<TBlockType>(tag.GetAttribute(BLOCK_TYPE_ATTR));
    if (tag = nil) or (bt in [blMain, blUnknown]) then
       Gerr_text := i18Manager.GetString('BadImportTag')
    else

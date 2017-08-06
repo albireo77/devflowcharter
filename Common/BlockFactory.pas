@@ -72,7 +72,7 @@ begin
    result := nil;
    if ATag <> nil then
    begin
-      bt := TXMLProcessor.GetBlockType(ATag);
+      bt := TInfra.StringToEnum<TBlockType>(ATag.GetAttribute(BLOCK_TYPE_ATTR));
       if bt = blUnknown then
          exit;
       left := ATag.GetAttribute('x').ToInteger;

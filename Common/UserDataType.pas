@@ -75,12 +75,12 @@ type
 implementation
 
 uses
-   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, System.TypInfo,
-   ApplicationCommon, LangDefinition, ParserHelper, XMLProcessor;
+   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, ApplicationCommon, LangDefinition, ParserHelper, XMLProcessor;
 
 constructor TUserDataType.Create(const AParentForm: TDataTypesForm);
 var
-   i: integer;
+   dt: TUserDataTypeKind;
+   s: string;
 begin
 
    inherited Create(AParentForm);
@@ -160,8 +160,11 @@ begin
    rgTypeBox.Columns := 2;
    rgTypeBox.Caption := i18Manager.GetString('rgTypeBox');
 
-   for i := 0 to Ord(High(TUserDataTypeKind)) do
-      rgTypeBox.Items.Add(i18Manager.GetString(GetEnumName(TypeInfo(TUserDataTypeKind), i)));
+   for dt := Low(TUserDataTypeKind) to High(TUserDataTypeKind) do
+   begin
+      s := TInfra.EnumToString<TUserDataTypeKind>(dt);
+      rgTypeBox.Items.Add(i18Manager.GetString(s));
+   end;
 
    rgTypeBox.ItemIndex := Ord(dtRecord);
    rgTypeBox.OnClick := OnClickType;
@@ -341,7 +344,7 @@ begin
    inherited ExportToXMLTag(tag);
    if chkAddPtrType.Enabled and chkAddPtrType.Checked then
       tag.SetAttribute(POINTER_ATTR, 'true');
-   tag.SetAttribute(KIND_ATTR, GetEnumName(TypeInfo(TUserDataTypeKind), rgTypeBox.ItemIndex));
+   tag.SetAttribute(KIND_ATTR, TInfra.EnumToString<TUserDataTypeKind>(TUserDataTypeKind(rgTypeBox.ItemIndex)));
 end;
 
 procedure TUserDataType.Localize(const AList: TStringList);
@@ -356,15 +359,11 @@ begin
 end;
 
 procedure TUserDataType.ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
-var
-   i: integer;
 begin
    inherited ImportFromXMLTag(ATag, APinControl);
    if chkAddPtrType.Enabled then
       chkAddPtrType.Checked := TXMLProcessor.GetBoolFromAttr(ATag, POINTER_ATTR);
-   i := GetEnumValue(TypeInfo(TUserDataTypeKind), ATag.GetAttribute(KIND_ATTR));
-   if i <> -1 then
-      rgTypeBox.ItemIndex := i;
+   rgTypeBox.ItemIndex := Ord(TInfra.StringToEnum<TUserDataTypeKind>(ATag.GetAttribute(KIND_ATTR)));
 end;
 
 function TUserDataType.GetDimensionCount: integer;
