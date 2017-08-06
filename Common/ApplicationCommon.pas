@@ -110,7 +110,7 @@ type
          function ValidateConstId(const AId: string): integer;
          function ValidateId(const AId: string): integer;
          class function StringToEnum<T: record>(const S: string): T;
-         class function EnumToString<T: record>(enum: T): string;
+         class function EnumToString<T: record>(Enum: T): string;
          constructor Create;
          destructor Destroy; override;
    end;
@@ -1321,14 +1321,11 @@ var
    dt: integer;
 begin
    P := PTypeInfo(TypeInfo(T));
+   if P^.Kind <> tkEnumeration then
+      raise EArgumentException.CreateFmt('Type %s is not enumeration', [P^.Name]);
    dt := StrToIntDef(S, -1);
-   if dt < 0 then
-   begin
-      if P^.Kind = tkEnumeration then
-         dt := GetEnumValue(P, S)
-      else
-         raise EArgumentException.CreateFmt('Type %s is not enumeration', [P^.Name]);
-   end;
+   if dt = -1 then
+      dt := GetEnumValue(P, S);
    case GetTypeData(P)^.OrdType of
       otSByte, otUByte: PByte(@result)^ := dt;
       otSWord, otUWord: PWord(@result)^ := dt;
@@ -1336,23 +1333,20 @@ begin
    end;
 end;
 
-class function TInfra.EnumToString<T>(enum: T): string;
+class function TInfra.EnumToString<T>(Enum: T): string;
 var
    P: PTypeInfo;
    dt: integer;
 begin
    P := PTypeInfo(TypeInfo(T));
-   if P^.Kind = tkEnumeration then
-   begin
-      case GetTypeData(P)^.OrdType of
-         otSByte, otUByte: dt := PByte(@enum)^;
-         otSWord, otUWord: dt := PWord(@enum)^;
-         otSLong, otULong: dt := PCardinal(@enum)^;
-      end;
-      result := GetEnumName(P, dt);
-   end
-   else
+   if P^.Kind <> tkEnumeration then
       raise EArgumentException.CreateFmt('Type %s is not enumeration', [P^.Name]);
+   case GetTypeData(P)^.OrdType of
+      otSByte, otUByte: dt := PByte(@Enum)^;
+      otSWord, otUWord: dt := PWord(@Enum)^;
+      otSLong, otULong: dt := PCardinal(@Enum)^;
+   end;
+   result := GetEnumName(P, dt);
 end;
 
 function CompareIntegers(AList: TStringList; idx1, idx2: integer): integer;
