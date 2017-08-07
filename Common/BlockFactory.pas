@@ -73,8 +73,6 @@ begin
    if ATag <> nil then
    begin
       bt := TInfra.StringToEnum<TBlockType>(ATag.GetAttribute(BLOCK_TYPE_ATTR));
-      if bt = blUnknown then
-         exit;
       left := ATag.GetAttribute('x').ToInteger;
       top := ATag.GetAttribute('y').ToInteger;
       height := ATag.GetAttribute('h').ToInteger;

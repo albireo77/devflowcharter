@@ -344,7 +344,7 @@ begin
    inherited ExportToXMLTag(tag);
    if chkAddPtrType.Enabled and chkAddPtrType.Checked then
       tag.SetAttribute(POINTER_ATTR, 'true');
-   tag.SetAttribute(KIND_ATTR, TInfra.EnumToString<TUserDataTypeKind>(TUserDataTypeKind(rgTypeBox.ItemIndex)));
+   tag.SetAttribute(KIND_ATTR, TInfra.EnumToString<TUserDataTypeKind>(GetKind));
 end;
 
 procedure TUserDataType.Localize(const AList: TStringList);

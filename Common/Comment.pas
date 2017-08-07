@@ -42,14 +42,14 @@ type
          FMouseLeave: boolean;
          procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-         procedure MyOnDblClick(Sender: TObject);
-         procedure MyOnContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
+         procedure DblClick(Sender: TObject);
+         procedure ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
+         procedure MouseLeave(Sender: TObject);
          procedure NCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
-         procedure WMMouseLeave(var Msg: TMessage); message WM_MOUSELEAVE;
          procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
          procedure SetActive(const AValue: boolean);
          function GetActive: boolean;
-         procedure MyOnChange(Sender: TObject);
+         procedure Change(Sender: TObject);
          procedure SetPage(APage: TBlockTabSheet);
          procedure SetIsHeader(AValue: boolean);
          procedure ChangeBorderStyle(AStyle: TBorderStyle);
@@ -99,12 +99,13 @@ begin
    SetBounds(ALeft, ATop, AWidth, AHeight);
    GProject.AddComponent(Self);
 
-   OnKeyDown   := TInfra.OnKeyDownSelectAll;
-   OnMouseDown := MouseDown;
-   OnMouseMove := MouseMove;
-   OnDblClick  := MyOnDblClick;
-   OnChange    := MyOnChange;
-   OnContextPopup := MyOnContextPopup;
+   OnKeyDown      := TInfra.OnKeyDownSelectAll;
+   OnMouseDown    := MouseDown;
+   OnMouseMove    := MouseMove;
+   OnDblClick     := DblClick;
+   OnChange       := Change;
+   OnContextPopup := ContextPopup;
+   OnMouseLeave   := MouseLeave;
 end;
 
 function TComment.Clone(const APage: TBlockTabSheet; ATopLeft: PPoint = nil): TComment;
@@ -131,6 +132,12 @@ begin
    Hide;
    FPage.Form.SetScrollBars;
    inherited Destroy;
+end;
+
+procedure TComment.MouseLeave(Sender: TObject);
+begin
+   if FMouseLeave then
+      ChangeBorderStyle(bsNone);
 end;
 
 procedure TComment.SetPage(APage: TBlockTabSheet);
@@ -162,16 +169,16 @@ procedure TComment.ChangeBorderStyle(AStyle: TBorderStyle);
 var
    lStart, lLength: integer;
 begin
-   GProject.ChangingOn := false;
    if BorderStyle <> AStyle then
    begin
+      GProject.ChangingOn := false;
       lStart := SelStart;
       lLength := SelLength;
       BorderStyle := AStyle;
       SelStart := lStart;
       SelLength := lLength;
+      GProject.ChangingOn := true;
    end;
-   GProject.ChangingOn := true;
 end;
 
 procedure TComment.SetZOrder(const AValue: integer);
@@ -255,7 +262,7 @@ begin
    end;
 end;
 
-procedure TComment.MyOnChange(Sender: TObject);
+procedure TComment.Change(Sender: TObject);
 begin
    GProject.SetChanged;
    if FIsHeader then
@@ -263,14 +270,7 @@ begin
    NavigatorForm.Invalidate;
 end;
 
-procedure TComment.WMMouseLeave(var Msg: TMessage);
-begin
-   inherited;
-   if FMouseLeave then
-      ChangeBorderStyle(bsNone);
-end;
-
-procedure TComment.MyOnDblClick(Sender: TObject);
+procedure TComment.DblClick(Sender: TObject);
 begin
    SelectAll;
 end;
@@ -306,7 +306,7 @@ begin
    end;
 end;
 
-procedure TComment.MyOnContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
+procedure TComment.ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
 var
    pnt: TPoint;
 begin
