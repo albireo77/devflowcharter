@@ -261,7 +261,7 @@ begin
          end
          else if userType <> nil then
          begin
-            case userType.GetKind of
+            case userType.Kind of
                dtInt:    Include(FIntegerTypesSet, i);
                dtReal:   Include(FRealTypesSet, i);
                dtRecord: Include(FRecordTypesSet, i);

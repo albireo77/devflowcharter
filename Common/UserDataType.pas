@@ -69,7 +69,7 @@ type
       function GetDimensions: string;
       function GetOriginalType: integer;
       procedure GenerateTree(const ANode: TTreeNode);
-      function GetKind: TUserDataTypeKind;
+      function Kind: TUserDataTypeKind;
    end;
 
 implementation
@@ -172,7 +172,7 @@ begin
    GProject.AddComponent(Self);
 end;
 
-function TUserDataType.GetKind: TUserDataTypeKind;
+function TUserDataType.Kind: TUserDataTypeKind;
 begin
    result := TUserDataTypeKind(rgTypeBox.ItemIndex);
 end;
@@ -189,7 +189,7 @@ end;
 
 procedure TUserDataType.AddElement(Sender: TObject);
 begin
-   if (GetKind in [dtOther, dtArray]) and (sbxElements.ControlCount = 0) then
+   if (Kind in [dtOther, dtArray]) and (sbxElements.ControlCount = 0) then
       btnAddElement.Enabled := false;
    inherited AddElement(Sender);
 end;
@@ -227,7 +227,7 @@ var
    t: TUserDataTypeKind;
    str: string;
 begin
-   t := GetKind;
+   t := Kind;
    b := t in [dtRecord, dtEnum, dtOther, dtArray];
    sbxElements.Enabled := b;
    lblName2.Enabled := b and (t <> dtArray);
@@ -304,7 +304,7 @@ var
    field: TField;
    t: TUserDataTypeKind;
 begin
-   t := GetKind;
+   t := Kind;
    field := TField.Create(Self);
    field.cbType.Enabled := t in [dtRecord, dtArray];
    field.edtSize.Enabled := field.cbType.Enabled;
@@ -344,7 +344,7 @@ begin
    inherited ExportToXMLTag(tag);
    if chkAddPtrType.Enabled and chkAddPtrType.Checked then
       tag.SetAttribute(POINTER_ATTR, 'true');
-   tag.SetAttribute(KIND_ATTR, TInfra.EnumToString<TUserDataTypeKind>(GetKind));
+   tag.SetAttribute(KIND_ATTR, TInfra.EnumToString<TUserDataTypeKind>(Kind));
 end;
 
 procedure TUserDataType.Localize(const AList: TStringList);
@@ -371,7 +371,7 @@ var
    field: TField;
 begin
    result := 0;
-   if (GetKind = dtArray) and (sbxElements.ControlCount > 0) then
+   if (Kind = dtArray) and (sbxElements.ControlCount > 0) then
    begin
       field := TField(sbxElements.Controls[0]);
       result := field.edtSize.DimensionCount;
@@ -383,7 +383,7 @@ var
    field: TField;
 begin
    result := '';
-   if (GetKind = dtArray) and (sbxElements.ControlCount > 0) then
+   if (Kind = dtArray) and (sbxElements.ControlCount > 0) then
    begin
       field := TField(sbxElements.Controls[0]);
       result := Trim(field.edtSize.Text);
@@ -395,7 +395,7 @@ var
    field: TField;
 begin
    result := TParserHelper.GetType(Trim(edtName.Text));
-   if (GetKind = dtArray) and (sbxElements.ControlCount > 0) then
+   if (Kind = dtArray) and (sbxElements.ControlCount > 0) then
    begin
       field := TField(sbxElements.Controls[0]);
       result := TParserHelper.GetType(field.cbType.Text);
@@ -408,7 +408,7 @@ var
    i: integer;
 begin
    result := false;
-   if GetKind = dtEnum then
+   if Kind = dtEnum then
    begin
       for i := 0 to sbxElements.ControlCount-1 do
       begin
@@ -429,7 +429,7 @@ var
    dataType: TUserDataType;
 begin
    dataType := TUserDataType(ParentTab);
-   if dataType.GetKind in [dtOther, dtArray] then
+   if dataType.Kind in [dtOther, dtArray] then
    begin
       if Trim(edtName.Text) = '' then
       begin

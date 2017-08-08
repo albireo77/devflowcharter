@@ -52,7 +52,7 @@ begin
             if (not name.IsEmpty) and not dataType.chkExtDeclare.Checked then
             begin
                iterf := dataType.GetFieldIterator;
-               case dataType.GetKind of
+               case dataType.Kind of
                   dtInt:
                   begin
                      if not lang.DataTypeIntMask.IsEmpty then
