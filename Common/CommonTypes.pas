@@ -81,7 +81,9 @@ type
       CodeRange: TCodeRange;
    end;
 
+   PTypesSet = ^TTypesSet;
    TTypesSet = set of 0..255;
+
    TIntegerTypesSet = TTypesSet;
    TRealTypesSet    = TTypesSet;
    TBoolTypesSet    = TTypesSet;

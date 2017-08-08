@@ -228,6 +228,7 @@ var
    i: integer;
    name: string;
    nativeType: PNativeDataType;
+   typesSet: PTypesSet;
 begin
    FIntegerTypesSet := [];
    FRealTypesSet := [];
@@ -250,31 +251,32 @@ begin
          if nativeType <> nil then
          begin
             case nativeType.Kind of
-               tpInt:    Include(FIntegerTypesSet, i);
-               tpReal:   Include(FRealTypesSet, i);
-               tpString: Include(FStringTypesSet, i);
-               tpBool:   Include(FBoolTypesSet, i);
-               tpPtr:    Include(FPointerTypesSet, i);
+               tpInt:    typesSet := @FIntegerTypesSet;
+               tpReal:   typesSet := @FRealTypesSet;
+               tpString: typesSet := @FStringTypesSet;
+               tpBool:   typesSet := @FBoolTypesSet;
+               tpPtr:    typesSet := @FPointerTypesSet;
             else
-               Include(FOtherTypesSet, i);
+               typesSet := @FOtherTypesSet;
             end;
          end
          else if userType <> nil then
          begin
             case userType.Kind of
-               dtInt:    Include(FIntegerTypesSet, i);
-               dtReal:   Include(FRealTypesSet, i);
-               dtRecord: Include(FRecordTypesSet, i);
-               dtEnum:   Include(FEnumTypesSet, i);
-               dtArray:  Include(FArrayTypesSet, i);
+               dtInt:    typesSet := @FIntegerTypesSet;
+               dtReal:   typesSet := @FRealTypesSet;
+               dtRecord: typesSet := @FRecordTypesSet;
+               dtEnum:   typesSet := @FEnumTypesSet;
+               dtArray:  typesSet := @FArrayTypesSet;
             else
-               Include(FOtherTypesSet, i);
+               typesSet := @FOtherTypesSet;
             end;
          end
          else if Assigned(GInfra.CurrentLang.IsPointerType) and GInfra.CurrentLang.IsPointerType(name) then
-            Include(FPointerTypesSet, i)
+            typesSet := @FPointerTypesSet
          else
-            Include(FOtherTypesSet, i);
+            typesSet := @FOtherTypesSet;
+         Include(typesSet^, i)
       end;
    end;
 end;
