@@ -81,32 +81,16 @@ type
       CodeRange: TCodeRange;
    end;
 
-   TIntegerTypes = 0..100;
-   TIntegerTypesSet = set of TIntegerTypes;
-
-   TRealTypes = 1..100;
-   TRealTypesSet = set of TRealTypes;
-
-   TBoolTypes = 2..100;
-   TBoolTypesSet = set of TBoolTypes;
-
-   TPointerTypes = 2..100;
-   TPointerTypesSet = set of TPointerTypes;
-
-   TRecordTypes = 2..100;
-   TRecordTypesSet = set of TRecordTypes;
-
-   TEnumTypes = 2..100;
-   TEnumTypesSet = set of TEnumTypes;
-
-   TArrayTypes = 2..100;
-   TArrayTypesSet = set of TArrayTypes;
-
-   TStringTypes = 2..100;
-   TStringTypesSet = set of TStringTypes;
-
-   TOtherTypes = 2..100;
-   TOtherTypesSet = set of TOtherTypes;
+   TTypes = 0..255;
+   TIntegerTypesSet = set of TTypes;
+   TRealTypesSet    = set of TTypes;
+   TBoolTypesSet    = set of TTypes;
+   TPointerTypesSet = set of TTypes;
+   TRecordTypesSet  = set of TTypes;
+   TEnumTypesSet    = set of TTypes;
+   TArrayTypesSet   = set of TTypes;
+   TStringTypesSet  = set of TTypes;
+   TOtherTypesSet   = set of TTypes;
 
 implementation
 
