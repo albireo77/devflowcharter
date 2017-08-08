@@ -81,16 +81,16 @@ type
       CodeRange: TCodeRange;
    end;
 
-   TTypes = 0..255;
-   TIntegerTypesSet = set of TTypes;
-   TRealTypesSet    = set of TTypes;
-   TBoolTypesSet    = set of TTypes;
-   TPointerTypesSet = set of TTypes;
-   TRecordTypesSet  = set of TTypes;
-   TEnumTypesSet    = set of TTypes;
-   TArrayTypesSet   = set of TTypes;
-   TStringTypesSet  = set of TTypes;
-   TOtherTypesSet   = set of TTypes;
+   TTypesSet = set of 0..255;
+   TIntegerTypesSet = TTypesSet;
+   TRealTypesSet    = TTypesSet;
+   TBoolTypesSet    = TTypesSet;
+   TPointerTypesSet = TTypesSet;
+   TRecordTypesSet  = TTypesSet;
+   TEnumTypesSet    = TTypesSet;
+   TArrayTypesSet   = TTypesSet;
+   TStringTypesSet  = TTypesSet;
+   TOtherTypesSet   = TTypesSet;
 
 implementation
 
