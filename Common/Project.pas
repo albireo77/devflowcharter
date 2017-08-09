@@ -37,15 +37,15 @@ type
    private
       FGlobalVars: TVarDeclareList;
       FGlobalConsts: TConstDeclareList;
-      FIntegerTypesSet: TIntegerTypesSet;
-      FRealTypesSet: TRealTypesSet;
-      FBoolTypesSet: TBoolTypesSet;
-      FOtherTypesSet: TOtherTypesSet;
-      FPointerTypesSet: TPointerTypesSet;
-      FRecordTypesSet: TRecordTypesSet;
-      FEnumTypesSet: TEnumTypesSet;
-      FArrayTypesSet: TArrayTypesSet;
-      FStringTypesSet: TStringTypesSet;
+      FIntegerTypesSet,
+      FRealTypesSet,
+      FBoolTypesSet,
+      FOtherTypesSet,
+      FPointerTypesSet,
+      FRecordTypesSet,
+      FEnumTypesSet,
+      FArrayTypesSet,
+      FStringTypesSet: TTypesSet;
       FComponentList: TComponentList;
       FObjectIds: TStringList;
       FObjectIdSeed: integer;
@@ -62,15 +62,15 @@ type
       Name: string;
       LastUserFunction: TUserFunction;
       ChangingOn: boolean;
-      property IntegerTypesSet: TIntegerTypesSet read FIntegerTypesSet;
-      property BoolTypesSet: TBoolTypesSet read FBoolTypesSet;
-      property OtherTypesSet: TOtherTypesSet read FOtherTypesSet;
-      property RealTypesSet: TRealTypesSet read FRealTypesSet;
-      property PointerTypesSet: TPointerTypesSet read FPointerTypesSet;
-      property RecordTypesSet: TRecordTypesSet read FRecordTypesSet;
-      property EnumTypesSet: TEnumTypesSet read FEnumTypesSet;
-      property ArrayTypesSet: TArrayTypesSet read FArrayTypesSet;
-      property StringTypesSet: TStringTypesSet read FStringTypesSet;
+      property IntegerTypesSet: TTypesSet read FIntegerTypesSet;
+      property BoolTypesSet: TTypesSet read FBoolTypesSet;
+      property OtherTypesSet: TTypesSet read FOtherTypesSet;
+      property RealTypesSet: TTypesSet read FRealTypesSet;
+      property PointerTypesSet: TTypesSet read FPointerTypesSet;
+      property RecordTypesSet: TTypesSet read FRecordTypesSet;
+      property EnumTypesSet: TTypesSet read FEnumTypesSet;
+      property ArrayTypesSet: TTypesSet read FArrayTypesSet;
+      property StringTypesSet: TTypesSet read FStringTypesSet;
       property GlobalVars: TVarDeclareList read FGlobalVars default nil;
       property GlobalConsts: TConstDeclareList read FGlobalConsts default nil;
       class function GetInstance: TProject;

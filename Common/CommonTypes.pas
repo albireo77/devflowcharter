@@ -84,16 +84,6 @@ type
    PTypesSet = ^TTypesSet;
    TTypesSet = set of 0..255;
 
-   TIntegerTypesSet = TTypesSet;
-   TRealTypesSet    = TTypesSet;
-   TBoolTypesSet    = TTypesSet;
-   TPointerTypesSet = TTypesSet;
-   TRecordTypesSet  = TTypesSet;
-   TEnumTypesSet    = TTypesSet;
-   TArrayTypesSet   = TTypesSet;
-   TStringTypesSet  = TTypesSet;
-   TOtherTypesSet   = TTypesSet;
-
 implementation
 
 end.
