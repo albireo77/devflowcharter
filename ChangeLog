@@ -1,3 +1,33 @@
+5.0 [09.08.2017]
+- various modifications to XML project file structure to make project file more informative
+
+IMPORTANT NOTES:
+In devF 5.0 saving user datatypes to XML project files was modified. There are 2 changes:
+ 1. XML tag name was changed from "structure" to "datatype".
+ 2. The way how datatype kind information is stored in XML attribute was changed. Before 5.0 it was boolean attribute for given type (e.g. array_type="True"). Now datatype kind is stored in "kind" attribute:
+
+    XML attribute before 5.0:		XML attribute from 5.0:
+    struct_type="True"			kind="dtRecord"
+    array_type="True"			kind="dtArray"
+    int_type="True"			kind="dtInt"
+    real_type="True"			kind="dtReal"
+    enum_type="True"			kind="dtEnum"
+    other_type="True"			kind="dtOther"
+
+Full datatype tag example:
+
+Before 5.0:
+  <structure name="TResult" hash="5" ext_decl="False" library="" pointer="False" array_type="True">
+    <field name="" type="real" size="N" />
+  </structure>
+
+From 5.0:
+  <datatype name="TResult" hash="5" ext_decl="False" library="" pointer="False" kind="dtArray">
+    <field name="" type="real" size="N" />
+  </datatype>
+
+Due to various changes in XML project files it is not possible to properly open devF 5.0 projects in older versions of devF.
+
 4.7 [30.07.2017]
 - many fixes to detecting changes in project; add asterisk to title bar as project change indicator
 - reduce main menu flickering when saving project

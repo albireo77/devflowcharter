@@ -276,7 +276,7 @@ begin
             typesSet := @FPointerTypesSet
          else
             typesSet := @FOtherTypesSet;
-         Include(typesSet^, i)
+         Include(typesSet^, i);
       end;
    end;
 end;
