@@ -1498,10 +1498,10 @@ begin
                    i18Manager.GetString('RTFFilesFilter') + '|' +
                    i18Manager.GetString('HTMLFilesFilter');
       end;
-      if not GProject.Name.IsEmpty then
-         FileName := GProject.Name
+      if GProject.Name.IsEmpty then
+         FileName := i18Manager.GetString('Unknown')
       else
-         FileName := i18Manager.GetString('Unknown');
+         FileName := GProject.Name;
    end;
 end;
 
@@ -1547,7 +1547,7 @@ begin
    else if Sender = miCodeFoldingEnable then
    begin
 {$IFDEF USE_CODEFOLDING}
-      if (not miCodeFoldingEnable.Checked) and memCodeEditor.CodeFolding.Enabled then
+      if memCodeEditor.CodeFolding.Enabled and not miCodeFoldingEnable.Checked then
          memCodeEditor.UnCollapseAll;
       memCodeEditor.CodeFolding.Enabled := miCodeFoldingEnable.Checked;
       memCodeEditor.CodeFolding.HighlighterFoldRegions := false;
