@@ -1501,16 +1501,16 @@ const
    MY: array[boolean, boolean] of integer = ((5, 5), (10, -10));
    MD: array[boolean, boolean] of integer = ((0, -10), (10, 0));
 var
-   isVert, toBtmRigth: boolean;
+   isVert, toBottomRight: boolean;
    x, y: integer;
    pnt: TPoint;
 begin
    isVert := ABeginPoint.X = AEndPoint.X;
    pnt := AEndPoint;
    if isVert then
-      toBtmRigth := AEndPoint.Y > ABeginPoint.Y
+      toBottomRight := AEndPoint.Y > ABeginPoint.Y
    else
-      toBtmRigth := AEndPoint.X > ABeginPoint.X;
+      toBottomRight := AEndPoint.X > ABeginPoint.X;
    if AArrowPos = arrMiddle then
    begin
       if isVert then
@@ -1518,8 +1518,8 @@ begin
       else
          pnt.X := pnt.X + (ABeginPoint.X-AEndPoint.X) div 2;
    end;
-   x := MX[isVert, toBtmRigth];
-   y := MY[isVert, toBtmRigth];
+   x := MX[isVert, toBottomRight];
+   y := MY[isVert, toBottomRight];
    with Canvas do
    begin
       Brush.Style := bsSolid;
@@ -2836,7 +2836,7 @@ begin
    if result <> 0 then
    begin
       val := '';
-      for i := result+2 to Length(AStr) do
+      for i := result+2 to AStr.Length do
       begin
          if TryStrToInt(AStr[i], b) then
             val := val + AStr[i]
@@ -2890,7 +2890,7 @@ procedure TGroupBlock.GenerateTemplateSection(const ALines: TStringList; const A
       i: integer;
    begin
       result := 0;
-      for i := 1 to Length(AString) do
+      for i := 1 to AString.Length do
       begin
          if AString[i] = INDENT_XML_CHAR then
             result := result + 1
