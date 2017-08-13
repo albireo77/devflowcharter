@@ -54,111 +54,99 @@ begin
                iterf := dataType.GetFieldIterator;
                case dataType.Kind of
                   dtInt:
+                  if not lang.DataTypeIntMask.IsEmpty then
                   begin
-                     if not lang.DataTypeIntMask.IsEmpty then
-                     begin
-                        typeStr := ReplaceStr(lang.DataTypeIntMask, PRIMARY_PLACEHOLDER, name);
-                        typesList.AddObject(typeStr, dataType);
-                     end;
+                     typeStr := ReplaceStr(lang.DataTypeIntMask, PRIMARY_PLACEHOLDER, name);
+                     typesList.AddObject(typeStr, dataType);
                   end;
                   dtReal:
+                  if not lang.DataTypeRealMask.IsEmpty then
                   begin
-                     if not lang.DataTypeRealMask.IsEmpty then
-                     begin
-                        typeStr := ReplaceStr(lang.DataTypeRealMask, PRIMARY_PLACEHOLDER, name);
-                        typesList.AddObject(typeStr, dataType);
-                     end;
+                     typeStr := ReplaceStr(lang.DataTypeRealMask, PRIMARY_PLACEHOLDER, name);
+                     typesList.AddObject(typeStr, dataType);
                   end;
                   dtOther:
+                  if not lang.DataTypeOtherMask.IsEmpty then
                   begin
-                     if not lang.DataTypeOtherMask.IsEmpty then
-                     begin
-                        typeStr := ReplaceStr(lang.DataTypeOtherMask, PRIMARY_PLACEHOLDER, name);
-                        valStr := '';
-                        if iterf.HasNext then
-                           valStr := Trim(TField(iterf.Next).edtName.Text);
-                        typeStr := ReplaceStr(typeStr, '%s2', valStr);
-                        typesList.AddObject(typeStr, dataType);
-                     end;
+                     typeStr := ReplaceStr(lang.DataTypeOtherMask, PRIMARY_PLACEHOLDER, name);
+                     valStr := '';
+                     if iterf.HasNext then
+                        valStr := Trim(TField(iterf.Next).edtName.Text);
+                     typeStr := ReplaceStr(typeStr, '%s2', valStr);
+                     typesList.AddObject(typeStr, dataType);
                   end;
                   dtArray:
+                  if not lang.DataTypeArrayMask.IsEmpty then
                   begin
-                     if not lang.DataTypeArrayMask.IsEmpty then
+                     typeStr := ReplaceStr(lang.DataTypeArrayMask, PRIMARY_PLACEHOLDER, name);
+                     valStr := '';
+                     valStr2 := '';
+                     if iterf.HasNext then
                      begin
-                        typeStr := ReplaceStr(lang.DataTypeArrayMask, PRIMARY_PLACEHOLDER, name);
-                        valStr := '';
-                        valStr2 := '';
-                        if iterf.HasNext then
-                        begin
-                           field := TField(iterf.Next);
-                           valStr := field.cbType.Text;
-                           valStr2 := lang.GetArraySizes(field.edtSize);
-                        end;
-                        typeStr := ReplaceStr(typeStr, '%s2', valStr);
-                        typeStr := ReplaceStr(typeStr, '%s3', valStr2);
-                        typesList.AddObject(typeStr, dataType);
+                        field := TField(iterf.Next);
+                        valStr := field.cbType.Text;
+                        valStr2 := lang.GetArraySizes(field.edtSize);
                      end;
+                     typeStr := ReplaceStr(typeStr, '%s2', valStr);
+                     typeStr := ReplaceStr(typeStr, '%s3', valStr2);
+                     typesList.AddObject(typeStr, dataType);
                   end;
                   dtRecord:
+                  if not lang.DataTypeRecordTemplate.IsEmpty then
                   begin
-                     if not lang.DataTypeRecordTemplate.IsEmpty then
-                     begin
-                        recTemplate := TStringList.Create;
+                     recTemplate := TStringList.Create;
+                     try
+                        recTemplate.Text := ReplaceStr(lang.DataTypeRecordTemplate, PRIMARY_PLACEHOLDER, name);
+                        fieldList := TStringList.Create;
                         try
-                           recTemplate.Text := ReplaceStr(lang.DataTypeRecordTemplate, PRIMARY_PLACEHOLDER, name);
-                           fieldList := TStringList.Create;
-                           try
-                              while iterf.HasNext do
-                              begin
-                                 field := TField(iterf.Next);
-                                 sizeStr := lang.GetArraySizes(field.edtSize);
-                                 if sizeStr.IsEmpty then
-                                    fieldStr := lang.DataTypeRecordFieldMask
-                                 else
-                                    fieldStr := lang.DataTypeRecordFieldArrayMask;
-                                 fieldStr := ReplaceStr(fieldStr, PRIMARY_PLACEHOLDER, Trim(field.edtName.Text));
-                                 fieldStr := ReplaceStr(fieldStr, '%s2', field.cbType.Text);
-                                 fieldStr := ReplaceStr(fieldStr, '%s3', sizeStr);
-                                 lRecord := '';
-                                 enum := '';
-                                 lType := TParserHelper.GetType(field.cbType.Text);
-                                 if TParserHelper.IsRecordType(lType) then
-                                    lRecord := lang.FunctionHeaderArgsEntryRecord
-                                 else if TParserHelper.IsEnumType(lType) then
-                                    enum := lang.FunctionHeaderArgsEntryEnum;
-                                 fieldStr := ReplaceStr(fieldStr, '%s4', lRecord);
-                                 fieldStr := ReplaceStr(fieldStr, '%s5', enum);
-                                 fieldList.Add(fieldStr);
-                              end;
-                              TInfra.InsertTemplateLines(recTemplate, '%s2', fieldList);
-                           finally
-                              fieldList.Free;
+                           while iterf.HasNext do
+                           begin
+                              field := TField(iterf.Next);
+                              sizeStr := lang.GetArraySizes(field.edtSize);
+                              if sizeStr.IsEmpty then
+                                 fieldStr := lang.DataTypeRecordFieldMask
+                              else
+                                 fieldStr := lang.DataTypeRecordFieldArrayMask;
+                              fieldStr := ReplaceStr(fieldStr, PRIMARY_PLACEHOLDER, Trim(field.edtName.Text));
+                              fieldStr := ReplaceStr(fieldStr, '%s2', field.cbType.Text);
+                              fieldStr := ReplaceStr(fieldStr, '%s3', sizeStr);
+                              lRecord := '';
+                              enum := '';
+                              lType := TParserHelper.GetType(field.cbType.Text);
+                              if TParserHelper.IsRecordType(lType) then
+                                 lRecord := lang.FunctionHeaderArgsEntryRecord
+                              else if TParserHelper.IsEnumType(lType) then
+                                 enum := lang.FunctionHeaderArgsEntryEnum;
+                              fieldStr := ReplaceStr(fieldStr, '%s4', lRecord);
+                              fieldStr := ReplaceStr(fieldStr, '%s5', enum);
+                              fieldList.Add(fieldStr);
                            end;
-                           for b := 0 to recTemplate.Count-1 do
-                              typesList.AddObject(recTemplate[b], dataType)
+                           TInfra.InsertTemplateLines(recTemplate, '%s2', fieldList);
                         finally
-                           recTemplate.Free;
+                           fieldList.Free;
                         end;
+                        for b := 0 to recTemplate.Count-1 do
+                           typesList.AddObject(recTemplate[b], dataType)
+                     finally
+                        recTemplate.Free;
                      end;
                   end;
                   dtEnum:
+                  if not lang.DataTypeEnumTemplate.IsEmpty then
                   begin
-                     if not lang.DataTypeEnumTemplate.IsEmpty then
-                     begin
-                        enumTemplate := TStringList.Create;
-                        try
-                           enumTemplate.Text := ReplaceStr(lang.DataTypeEnumTemplate, PRIMARY_PLACEHOLDER, name);
-                           valStr := '';
-                           while iterf.HasNext do
-                              valStr := valStr + Format(lang.DataTypeEnumEntryList, [Trim(TField(iterf.Next).edtName.Text)]);
-                           if (lang.DataTypeEnumEntryListStripCount > 0) and not valStr.IsEmpty then
-                              SetLength(valStr, valStr.Length - lang.DataTypeEnumEntryListStripCount);
-                           TInfra.InsertTemplateLines(enumTemplate, '%s2', valStr);
-                           for b := 0 to enumTemplate.Count-1 do
-                              typesList.AddObject(enumTemplate[b], dataType)
-                        finally
-                           enumTemplate.Free;
-                        end;
+                     enumTemplate := TStringList.Create;
+                     try
+                        enumTemplate.Text := ReplaceStr(lang.DataTypeEnumTemplate, PRIMARY_PLACEHOLDER, name);
+                        valStr := '';
+                        while iterf.HasNext do
+                           valStr := valStr + Format(lang.DataTypeEnumEntryList, [Trim(TField(iterf.Next).edtName.Text)]);
+                        if (lang.DataTypeEnumEntryListStripCount > 0) and not valStr.IsEmpty then
+                           SetLength(valStr, valStr.Length - lang.DataTypeEnumEntryListStripCount);
+                        TInfra.InsertTemplateLines(enumTemplate, '%s2', valStr);
+                        for b := 0 to enumTemplate.Count-1 do
+                           typesList.AddObject(enumTemplate[b], dataType)
+                     finally
+                        enumTemplate.Free;
                      end;
                   end;
                end;
