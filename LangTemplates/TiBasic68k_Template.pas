@@ -68,7 +68,7 @@ begin
       begin
          func := TUserFunction(iter.Next);
          funcName := func.GetName;
-         if (funcName = '') or func.Header.chkExtDeclare.Checked then
+         if funcName.IsEmpty or func.Header.chkExtDeclare.Checked then
             continue;
          funcPrefix := IfThen(func.Header.cbType.ItemIndex <> 0, 'Func', 'Prgm');
          funcParms := '';

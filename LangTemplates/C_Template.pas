@@ -372,18 +372,15 @@ begin
 end;}
 
 function C_IsPointerType(const AType: string): boolean;
-var
-   len: integer;
 begin
-   len := Length(AType);
-   result := (len > 1) and (AType[len] = '*');
+   result := (AType.Length > 1) and AType.EndsWith('*');
 end;
 
 function C_GetOriginalType(const AType: string): string;
 begin
    result := AType;
    if C_IsPointerType(result) then
-      SetLength(result, Length(result)-1);
+      SetLength(result, result.Length - 1);
 end;
 
 function C_SkipFuncBodyGen: boolean;
