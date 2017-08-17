@@ -722,7 +722,7 @@ begin
              SetLength(fileNameNoExt, lPos-1);
           if mainBlock = nil then
           begin
-             if commandNoMain = '' then
+             if commandNoMain.IsEmpty then
                 commandNoMain := '%s3';
              command := ReplaceText(commandNoMain, '%s3', command);
           end;
