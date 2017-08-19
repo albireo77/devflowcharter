@@ -61,8 +61,7 @@ end;
 procedure C_LibSectionGenerator(ALines: TStringList);
 var
    libList: TStringList;
-   i: integer;
-   lIncludeStr: string;
+   libIncl, lib: string;
    isQuote: boolean;
 begin
    libList := GProject.GetLibraryList;
@@ -72,18 +71,18 @@ begin
       if io_flag = 1 then libList.Add('stdio');
       if libList.Count > 0 then
       begin
-         for i := 0 to libList.Count-1 do
+         for lib in libList do
          begin
-            lIncludeStr := '#include ';
-            isQuote := Pos('"', libList[i]) <> 0;
+            libIncl := '#include ';
+            isQuote := Pos('"', lib) <> 0;
             if not isQuote then
-               lIncludeStr := lIncludeStr + '<';
-            lIncludeStr := lIncludeStr + libList[i];
-            if Pos('.', libList[i]) = 0 then
-               lIncludeStr := lIncludeStr + cLang.LibraryExt;
+               libIncl := libIncl + '<';
+            libIncl := libIncl + lib;
+            if Pos('.', lib) = 0 then
+               libIncl := libIncl + cLang.LibraryExt;
             if not isQuote then
-               lIncludeStr := lIncludeStr + '>';
-            ALines.Add(lIncludeStr);
+               libIncl := libIncl + '>';
+            ALines.Add(libIncl);
          end;
          ALines.Add('');
       end;
