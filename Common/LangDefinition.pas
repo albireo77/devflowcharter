@@ -902,7 +902,6 @@ end;
 function TLangDefinition.GetTemplateExpr(AClass: TClass): string;
 var
    templateLines: TStringList;
-   i: integer;
    template: string;
 begin
    result := '';
@@ -912,11 +911,11 @@ begin
    templateLines := TStringList.Create;
    try
       templateLines.Text := template;
-      for i := 0 to templateLines.Count-1 do
+      for template in templateLines do
       begin
-         if Pos(PRIMARY_PLACEHOLDER, templateLines[i]) <> 0 then
+         if Pos(PRIMARY_PLACEHOLDER, template) <> 0 then
          begin
-            result := templateLines[i];
+            result := template;
             break;
          end;
       end;
