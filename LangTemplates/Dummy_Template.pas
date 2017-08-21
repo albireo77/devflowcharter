@@ -3,7 +3,7 @@
    The initial author of this file is Michal Domagala.
     
    This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
+   modify it under the terms of the GNU General Public License        (
    as published by the Free Software Foundation; either version 2
    of the License, or (at your option) any later version.
 
@@ -217,7 +217,7 @@ begin
          libStr := '';
          libTemplate := TStringList.Create;
          try
-            isS1 := Pos(PRIMARY_PLACEHOLDER, lang.LibTemplate) <> 0;
+            isS1 := lang.LibTemplate.Contains(PRIMARY_PLACEHOLDER);
             libTemplate.Text := lang.LibTemplate;
             for i := 0 to libList.Count-1 do
                libStr := libStr + Format(IfThen(isS1, lang.LibEntry + sLineBreak, lang.LibEntryList), [libList[i]]);

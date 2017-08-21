@@ -426,7 +426,7 @@ begin
                   caseLines.AddStrings(tmpList);
                   for a := 0 to caseLines.Count-1 do
                   begin
-                     if Pos(PRIMARY_PLACEHOLDER, caseLines[a]) <> 0 then
+                     if caseLines[a].Contains(PRIMARY_PLACEHOLDER) then
                      begin
                         caseLines[a] := ReplaceStr(caseLines[a], PRIMARY_PLACEHOLDER, Trim(FBranchArray[i].Statement.Text));
                         caseLines.Objects[a] := FBranchArray[i].Statement;

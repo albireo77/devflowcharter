@@ -913,7 +913,7 @@ begin
       templateLines.Text := template;
       for template in templateLines do
       begin
-         if Pos(PRIMARY_PLACEHOLDER, template) <> 0 then
+         if template.Contains(PRIMARY_PLACEHOLDER) then
          begin
             result := template;
             break;
