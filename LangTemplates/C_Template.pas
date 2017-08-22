@@ -62,7 +62,6 @@ procedure C_LibSectionGenerator(ALines: TStringList);
 var
    libList: TStringList;
    libIncl, lib: string;
-   isQuoted: boolean;
 begin
    libList := GProject.GetLibraryList;
    try
@@ -73,15 +72,12 @@ begin
       begin
          for lib in libList do
          begin
-            libIncl := '#include ';
-            isQuoted := lib.Contains('"');
-            if not isQuoted then
-               libIncl := libIncl + '<';
-            libIncl := libIncl + lib;
+            libIncl := lib;
             if not lib.Contains('.') then
                libIncl := libIncl + cLang.LibraryExt;
-            if not isQuoted then
-               libIncl := libIncl + '>';
+            if not lib.Contains('"') then
+               libIncl := '<' + libIncl + '>';
+            libIncl := '#include ' + libIncl;
             ALines.Add(libIncl);
          end;
          ALines.Add('');
