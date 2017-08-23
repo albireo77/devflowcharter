@@ -65,9 +65,9 @@ var
 begin
    libList := GProject.GetLibraryList;
    try
-      if math_flag = 1 then libList.Add('math');
-      if str_flag = 1 then libList.Add('string');
-      if io_flag = 1 then libList.Add('stdio');
+      if math_flag <> 0 then libList.Add('math');
+      if str_flag <> 0 then libList.Add('string');
+      if io_flag <> 0 then libList.Add('stdio');
       if libList.Count > 0 then
       begin
          for lib in libList do

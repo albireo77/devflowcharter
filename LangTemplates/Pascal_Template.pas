@@ -339,7 +339,7 @@ begin
       begin
          idx := ALines.Count;
          block.GenerateCode(ALines, lLangDef.Name, deep);
-         if rand_flag = 1 then
+         if rand_flag <> 0 then
             ALines.Insert(idx+1, DupeString(GSettings.IndentString, deep+1) + 'Randomize;');
       end
       else
