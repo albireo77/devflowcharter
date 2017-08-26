@@ -107,10 +107,11 @@ type
          class procedure OnKeyDownSelectAll(Sender: TObject; var Key: Word; Shift: TShiftState);
          class function StripInstrEnd(const ALine: string): string;
          class function CompareProgramVersion(const AVersion: string): integer;
-         function ValidateConstId(const AId: string): integer;
-         function ValidateId(const AId: string): integer;
+         class function GetBaseForms: IEnumerable<TBaseForm>;
          class function StringToEnum<T: record>(const S: string): T;
          class function EnumToString<T: record>(Enum: T): string;
+         function ValidateConstId(const AId: string): integer;
+         function ValidateId(const AId: string): integer;
          constructor Create;
          destructor Destroy; override;
    end;
@@ -247,7 +248,8 @@ implementation
 
 uses
    Vcl.Printers, WinApi.Messages, Vcl.Menus, Vcl.Dialogs, Vcl.Imaging.jpeg, Vcl.Imaging.PngImage,
-   System.Math, System.TypInfo, UserDataType, XMLProcessor, SynEditHighlighter, Main_Block;
+   System.Math, System.TypInfo, Generics.Collections, UserDataType, XMLProcessor, SynEditHighlighter,
+   Main_Block, BaseEnumerator;
 
 type
    THackCustomEdit = class(TCustomEdit);
@@ -502,7 +504,7 @@ end;
 
 class procedure TInfra.SetInitialSettings;
 var
-   itr: IIterator;
+   baseForm: TBaseForm;
 begin
    with GClpbrd do
    begin
@@ -515,9 +517,24 @@ begin
    GProject := nil;
    GCustomCursor := crNormal;
    Screen.Cursor := crDefault;
-   itr := TBaseFormIterator.Create;
-   while itr.HasNext do
-      TBaseForm(itr.Next).ResetForm;
+   for baseForm in GetBaseForms do
+      baseForm.ResetForm;
+end;
+
+class function TInfra.GetBaseForms: IEnumerable<TBaseForm>;
+var
+   list: TList<TBaseForm>;
+   i: integer;
+   comp: TComponent;
+begin
+   list := TList<TBaseForm>.Create;
+   for i := 0 to Application.ComponentCount-1 do
+   begin
+      comp := Application.Components[i];
+      if comp is TBaseForm then
+         list.Add(TBaseForm(comp));
+   end;
+   result := TEnumeratorFactory<TBaseForm>.Create(list);
 end;
 
 // compares two strings based on current case-sensitive context
@@ -749,9 +766,8 @@ end;
 class procedure TInfra.PopulateDataTypeCombo(const AcbType: TComboBox; const ASkipIndex: integer = 100);
 var
    i, idx: integer;
-   dataType: TUserDataType;
+   userType: TUserDataType;
    lType, lName: string;
-   iter: IIterator;
    lang: TLangDefinition;
 begin
    lType := AcbType.Text;
@@ -776,15 +792,13 @@ begin
          else if Assigned(GInfra.DummyLang.GetPointerTypeName) then
             lang := GInfra.DummyLang;
       end;
-      iter := GProject.GetUserDataTypes;
-      while iter.HasNext do
+      for userType in GProject.GetUserDataTypes do
       begin
-         dataType := TUserDataType(iter.Next);
-         lName := dataType.GetName;
-         if (dataType.PageIndex < ASkipIndex) and not lName.IsEmpty then
+         lName := userType.GetName;
+         if (userType.PageIndex < ASkipIndex) and not lName.IsEmpty then
          begin
             AcbType.Items.Add(lName);
-            if dataType.chkAddPtrType.Checked and (lang <> nil) then
+            if userType.chkAddPtrType.Checked and (lang <> nil) then
                AcbType.Items.Add(lang.GetPointerTypeName(lName));
          end;
       end;

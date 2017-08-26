@@ -287,7 +287,6 @@ var
    func: TUserFunction;
    isArray: boolean;
    param: TParameter;
-   iterp: IIterator;
 begin
    result := false;
    if GProject <> nil then
@@ -296,10 +295,8 @@ begin
       if (func <> nil) and (func.Header <> nil) and (Length(AParmList) = func.Header.ParameterCount) then
       begin
          i := 0;
-         iterp := func.Header.GetParameterIterator;
-         while iterp.HasNext do
+         for param in func.Header.GetElements<TParameter> do
          begin
-            param := TParameter(iterp.Next);
             paramType := GetType(param.cbType.Text);
             currType := AParmList[i];
             isArray := currType >= DIMENSION_LEVEL_STEP;
@@ -321,23 +318,18 @@ end;
 
 class function TParserHelper.GetEnumeratedType(const AValue: string): integer;
 var
-   iterf, iter: IIterator;
    dataType: TUserDataType;
    field: TField;
 begin
    result := NOT_DEFINED;
    if GProject <> nil then
    begin
-      iter := GProject.GetUserDataTypes;
-      while iter.HasNext do
+      for dataType in GProject.GetUserDataTypes do
       begin
-         dataType := TUserDataType(iter.Next);
          if dataType.Active and (dataType.Font.Color <> NOK_COLOR) and (dataType.Kind = dtEnum) then
          begin
-            iterf := dataType.GetFieldIterator;
-            while iterf.HasNext do
+            for field in dataType.GetElements<TField> do
             begin
-               field := TField(iterf.Next);
                if (field.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(AValue, Trim(field.edtName.Text)) then
                begin
                   result := GetType(dataType.edtName.Text);
@@ -387,16 +379,13 @@ end;
 
 class procedure TParserHelper.GetParameterInfo(const AHeader: TUserFunctionHeader; var AResult: TIdentInfo);
 var
-   iter: IIterator;
    param: TParameter;
    dataType: TUserDataType;
 begin
    if AHeader <> nil then
    begin
-      iter := AHeader.GetParameterIterator;
-      while iter.HasNext do
+      for param in AHeader.GetElements<TParameter> do
       begin
-         param := TParameter(iter.Next);
          if (param.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(AResult.Ident, Trim(param.edtName.Text)) then
          begin
             AResult.TType := GetType(param.cbType.Text);
@@ -493,7 +482,6 @@ var
    typeString: string;
    dataType: TUserDataType;
    field: TField;
-   iterf: IIterator;
 begin
    result := NOT_DEFINED;
    typeString := GetTypeAsString(AType);
@@ -502,10 +490,8 @@ begin
       dataType := GProject.GetUserDataType(typeString);
       if (dataType <> nil) and (dataType.Kind = dtRecord) then
       begin
-         iterf := dataType.GetFieldIterator;
-         while iterf.HasNext do
+         for field in dataType.GetElements<TField> do
          begin
-            field := TField(iterf.Next);
             if (field.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(Trim(field.edtName.Text), AField) then
             begin
                result := GetType(field.cbType.Text);
@@ -579,25 +565,18 @@ end;
 
 class function TParserHelper.IsDeclared(const AIdentName: string): boolean;
 var
-   iterf, iter: IIterator;
    dataType: TUserDataType;
    field: TField;
 begin
    result := true;
    if GProject <> nil then
    begin
-      iter := GProject.GetUserDataTypes;
-      while iter.HasNext do
+      for dataType in GProject.GetUserDataTypes do
       begin
-         dataType := TUserDataType(iter.Next);
          if dataType.Active and (dataType.Font.Color <> NOK_COLOR) then
          begin
-            iterf := dataType.GetFieldIterator;
-            while iterf.HasNext do
-            begin
-               field := TField(iterf.Next);
+            for field in dataType.GetElements<TField> do
                if (field.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(AIdentName, Trim(field.edtName.Text)) then exit;
-            end;
          end;
       end;
    end;
@@ -734,4 +713,5 @@ begin
 end;
 
 end.
+
 

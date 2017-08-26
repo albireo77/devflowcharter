@@ -3,25 +3,22 @@ unit SortListDecorator;
 interface
 
 uses
-   System.Contnrs;
+   Generics.Collections;
 
 type
-
-   TCompareMethod = function(AObject1, AObject2: TObject; ASortType: integer): integer of object;
 
    { TSortListDecorator is a decorator class for TObjectList and overrides its Sort method.
      It allows comparing function to be an object's method and pass additional argument of integer type. }
 
-   TSortListDecorator = class
+   TSortListDecorator<T: class> = class
    private
-      FWrapList: TObjectList;
+      FWrapList: TList<T>;
       FSortArg: integer;
-      procedure QuickSort(L, R: integer; ACompare: TCompareMethod);
-      function FDefaultCompareMethod(AObject1, AObject2: TObject; ASortType: integer): integer;
+      procedure QuickSort(L, R: integer);
+      function FCompare(T1, T2: T; ASortType: integer): integer;
    public
-      constructor Create(AWrapList: TObjectList; ASortArg: integer);
-      procedure Sort(ACompareMethod: TCompareMethod = nil);
-      property WrapList: TObjectList read FWrapList;
+      constructor Create(AWrapList: TList<T>; ASortArg: integer);
+      procedure Sort;
    end;
 
 implementation
@@ -29,58 +26,56 @@ implementation
 uses
    System.SysUtils, System.Classes, CommonInterfaces;
 
-constructor TSortListDecorator.Create(AWrapList: TObjectList; ASortArg: integer);
+constructor TSortListDecorator<T>.Create(AWrapList: TList<T>; ASortArg: integer);
 begin
   FWrapList := AWrapList;
   FSortArg := ASortArg;
 end;
 
-function TSortListDecorator.FDefaultCompareMethod(AObject1, AObject2: TObject; ASortType: integer): integer;
+function TSortListDecorator<T>.FCompare(T1, T2: T; ASortType: integer): integer;
 var
    sortObj: ISortable;
 begin
    result := 1;
-   if Supports(AObject1, ISortable, sortObj) then
+   if Supports(T1, ISortable, sortObj) then
       result := sortObj.GetSortValue(ASortType);
-   if Supports(AObject2, ISortable, sortObj) then
+   if Supports(T2, ISortable, sortObj) then
       result := result - sortObj.GetSortValue(ASortType);
 end;
 
-procedure TSortListDecorator.QuickSort(L, R: integer; ACompare: TCompareMethod);
+procedure TSortListDecorator<T>.QuickSort(L, R: integer);
 var
   I, J: integer;
-  P, T: TObject;
+  K, U: T;
 begin
   repeat
     I := L;
     J := R;
-    P := FWrapList.Items[(L+R) shr 1];
+    K := FWrapList.Items[(L+R) shr 1];
     repeat
-      while ACompare(FWrapList.Items[I], P, FSortArg) < 0 do
+      while FCompare(FWrapList.Items[I], K, FSortArg) < 0 do
         Inc(I);
-      while ACompare(FWrapList.Items[J], P, FSortArg) > 0 do
+      while FCompare(FWrapList.Items[J], K, FSortArg) > 0 do
         Dec(J);
       if I <= J then
       begin
-        T := FWrapList.Items[I];
+        U := FWrapList.Items[I];
         FWrapList.Items[I] := FWrapList.Items[J];
-        FWrapList.Items[J] := T;
+        FWrapList.Items[J] := U;
         Inc(I);
         Dec(J);
       end;
     until I > J;
     if L < J then
-      QuickSort(L, J, ACompare);
+      QuickSort(L, J);
     L := I;
   until I >= R;
 end;
 
-procedure TSortListDecorator.Sort(ACompareMethod: TCompareMethod = nil);
+procedure TSortListDecorator<T>.Sort;
 begin
-  if not Assigned(ACompareMethod) then
-     ACompareMethod := FDefaultCompareMethod;
   if (FWrapList <> nil) and (FWrapList.Count > 1) then
-    QuickSort(0, FWrapList.Count-1, ACompareMethod);
+    QuickSort(0, FWrapList.Count-1);
 end;
 
 end.

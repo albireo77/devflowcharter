@@ -33,25 +33,23 @@ var
    dataType: TUserDataType;
    field: TField;
    name, sizeStr, lRecord, enum: string;
-   iterf, iter: IIterator;
    b, lType: integer;
    lang: TLangDefinition;
    typesList, typesTemplate, recTemplate, fieldList, enumTemplate: TStringList;
    typeStr, fieldStr, valStr, valStr2: string;
+   fields: IEnumerable<TField>;
 begin
    lang := GInfra.CurrentLang;
    if not lang.DataTypesTemplate.IsEmpty then
    begin
       typesList := TStringList.Create;
       try
-         iter := GProject.GetUserDataTypes;
-         while iter.HasNext do
+         for dataType in GProject.GetUserDataTypes do
          begin
-            dataType := TUserDataType(iter.Next);
             name := dataType.GetName;
             if (not name.IsEmpty) and not dataType.chkExtDeclare.Checked then
             begin
-               iterf := dataType.GetFieldIterator;
+               fields := dataType.GetElements<TField>;
                case dataType.Kind of
                   dtInt:
                   if not lang.DataTypeIntMask.IsEmpty then
@@ -70,8 +68,8 @@ begin
                   begin
                      typeStr := ReplaceStr(lang.DataTypeOtherMask, PRIMARY_PLACEHOLDER, name);
                      valStr := '';
-                     if iterf.HasNext then
-                        valStr := Trim(TField(iterf.Next).edtName.Text);
+                     if fields.GetEnumerator.MoveNext then
+                        valStr := Trim(fields.GetEnumerator.Current.edtName.Text);
                      typeStr := ReplaceStr(typeStr, '%s2', valStr);
                      typesList.AddObject(typeStr, dataType);
                   end;
@@ -81,9 +79,9 @@ begin
                      typeStr := ReplaceStr(lang.DataTypeArrayMask, PRIMARY_PLACEHOLDER, name);
                      valStr := '';
                      valStr2 := '';
-                     if iterf.HasNext then
+                     if fields.GetEnumerator.MoveNext then
                      begin
-                        field := TField(iterf.Next);
+                        field := fields.GetEnumerator.Current;
                         valStr := field.cbType.Text;
                         valStr2 := lang.GetArraySizes(field.edtSize);
                      end;
@@ -99,9 +97,8 @@ begin
                         recTemplate.Text := ReplaceStr(lang.DataTypeRecordTemplate, PRIMARY_PLACEHOLDER, name);
                         fieldList := TStringList.Create;
                         try
-                           while iterf.HasNext do
+                           for field in fields do
                            begin
-                              field := TField(iterf.Next);
                               sizeStr := lang.GetArraySizes(field.edtSize);
                               if sizeStr.IsEmpty then
                                  fieldStr := lang.DataTypeRecordFieldMask
@@ -138,8 +135,8 @@ begin
                      try
                         enumTemplate.Text := ReplaceStr(lang.DataTypeEnumTemplate, PRIMARY_PLACEHOLDER, name);
                         valStr := '';
-                        while iterf.HasNext do
-                           valStr := valStr + Format(lang.DataTypeEnumEntryList, [Trim(TField(iterf.Next).edtName.Text)]);
+                        for field in fields do
+                           valStr := valStr + Format(lang.DataTypeEnumEntryList, [Trim(field.edtName.Text)]);
                         if (lang.DataTypeEnumEntryListStripCount > 0) and not valStr.IsEmpty then
                            SetLength(valStr, valStr.Length - lang.DataTypeEnumEntryListStripCount);
                         TInfra.InsertTemplateLines(enumTemplate, '%s2', valStr);
@@ -372,7 +369,6 @@ var
    func: TUserFunction;
    param: TParameter;
    name, argList, paramStr, noneType1, noneType2, lType, ref, lArray, lRecord, enum: string;
-   iterp, iter: IIterator;
    lang: TLangDefinition;
    headerTemplate, varList, funcTemplate, bodyTemplate, funcList, funcsTemplate: TStringList;
    intType: integer;
@@ -382,19 +378,15 @@ begin
    begin
       funcList := TStringList.Create;
       try
-         iter := GProject.GetUserFunctions;
-         while iter.HasNext do
+         for func in GProject.GetUserFunctions do
          begin
-            func := TUserFunction(iter.Next);
             name := func.GetName;
             if (not name.IsEmpty) and not func.Header.chkExtDeclare.Checked and not lang.FunctionTemplate.IsEmpty then
             begin
                // assemble list of function parameters
                argList := '';
-               iterp := func.Header.GetParameterIterator;
-               while iterp.HasNext do
+               for param in func.Header.GetElements<TParameter> do
                begin
-                  param := TParameter(iterp.Next);
                   paramStr := ReplaceStr(lang.FunctionHeaderArgsEntryMask, PRIMARY_PLACEHOLDER, Trim(param.edtName.Text));
                   paramStr := ReplaceStr(paramStr, '%s2', param.cbType.Text);
                   ref := '';
@@ -536,7 +528,7 @@ function Dummy_GetUserFuncDesc(AHeader: TUserFunctionHeader; ALongDesc: boolean 
 var
    params, desc, name, lType, key, lb: string;
    lang: TLangDefinition;
-   iterp: IIterator;
+   param: TParameter;
 begin
    result := '';
    desc := '';
@@ -558,12 +550,11 @@ begin
          key := lang.ProcedureLabelKey;
       if ALongDesc then
       begin
-         iterp := AHeader.GetParameterIterator;
-         while iterp.HasNext do
+         for param in AHeader.GetElements<TParameter> do
          begin
             if not params.IsEmpty then
                params := params + ',';
-            params := params + TParameter(iterp.Next).cbType.Text;
+            params := params + param.cbType.Text;
          end;
          if AHeader.chkInclDescFlow.Checked then
             desc := AHeader.memDesc.Text;

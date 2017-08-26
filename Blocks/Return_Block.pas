@@ -121,8 +121,7 @@ end;
 function TReturnBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
 var
    indnt, expr: string;
-   iter: IIterator;
-   func: TUserFunction;
+   userFunction: TUserFunction;
    inFunc: boolean;
    tmpList: TStringList;
 begin
@@ -136,11 +135,9 @@ begin
       inFunc := false;
       if not expr.IsEmpty then
       begin
-         iter := GProject.GetUserFunctions;
-         while iter.HasNext do
+         for userFunction in GProject.GetUserFunctions do
          begin
-            func := TUserFunction(iter.Next);
-            inFunc := func.Active and (func.Body = FTopParentBlock) and (func.Header <> nil) and (func.Header.cbType.ItemIndex > 0);
+            inFunc := userFunction.Active and (userFunction.Body = FTopParentBlock) and (userFunction.Header <> nil) and (userFunction.Header.cbType.ItemIndex > 0);
             if inFunc then
                break;
          end;
@@ -148,7 +145,7 @@ begin
       tmpList := TStringList.Create;
       try
          if inFunc then
-            tmpList.AddObject(indnt + func.Header.edtName.Text + ' ' + GInfra.GetLangDefinition(ALangId).AssignOperator + ' ' + expr + ';', Self);
+            tmpList.AddObject(indnt + userFunction.Header.edtName.Text + ' ' + GInfra.GetLangDefinition(ALangId).AssignOperator + ' ' + expr + ';', Self);
          if not ((TMainBlock(FTopParentBlock).GetBranch(PRIMARY_BRANCH_IND).Last = Self) and inFunc) then
             tmpList.AddObject(indnt + 'exit;', Self);
          TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);

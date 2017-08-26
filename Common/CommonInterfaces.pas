@@ -105,16 +105,6 @@ type
       function IsBoldDesc: boolean;
    end;
 
-   IIterator = interface
-      ['{7F35650E-FF9C-4D33-8A09-7DF81DC30474}']
-      function GetCount: integer;
-      function HasNext: boolean;
-      function Next: TObject;
-      function GetObjectIndex(const AObject: TObject): integer;
-      procedure Reverse;
-      property Count: integer read GetCount;
-   end;
-
    IExportable = interface
       ['{3AB6F6EE-5088-4791-8C11-620A1F768269}']
       function ExportToXMLFile(const AFile: string): TErrorType;

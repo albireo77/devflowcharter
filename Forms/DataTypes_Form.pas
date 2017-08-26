@@ -55,15 +55,14 @@ procedure TDataTypesForm.RefreshTabs;
 var
    i: integer;
    dataType: TUserDataType;
-   iter: IIterator;
+   field: TField;
 begin
    inherited;
    for i := 0 to pgcTabs.PageCount-1 do
    begin
       dataType := TUserDataType(pgcTabs.Pages[i]);
-      iter := dataType.GetFieldIterator;
-      while iter.HasNext do
-         TInfra.PopulateDataTypeCombo(TField(iter.Next).cbType, dataType.PageIndex);
+      for field in dataType.GetElements<TField> do
+         TInfra.PopulateDataTypeCombo(field.cbType, dataType.PageIndex);
    end;
 end;
 

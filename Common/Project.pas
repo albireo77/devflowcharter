@@ -25,13 +25,10 @@ interface
 
 uses
    WinApi.Windows, Vcl.Graphics, System.Classes, Vcl.ComCtrls, Vcl.Controls, System.Contnrs,
-   UserFunction, OmniXML, UserDataType, Main_Block, DeclareList, BaseIterator, CommonTypes,
-   CommonInterfaces, BlockTabSheet;
+   UserFunction, OmniXML, UserDataType, Main_Block, DeclareList, BaseEnumerator, CommonTypes,
+   CommonInterfaces, BlockTabSheet, Comment;
 
 type
-
-   TBaseIteratorFriend = class(TBaseIterator)
-   end;
 
    TProject = class(TInterfacedPersistent, IExportable)
    private
@@ -53,7 +50,7 @@ type
       FChanged: boolean;
       class var FInstance: TProject;
       procedure SetGlobals;
-      function GetComponents(ASortType: integer = NO_SORT; AClass: TClass = nil): IIterator;
+      function GetComponents<T: class>(ASortType: integer = NO_SORT): IEnumerable<T>;
       function GetComponentByName(AClass: TClass; const AName: string): TComponent;
       function GetIWinControlComponent(const AHandle: THandle): IWinControl;
       procedure RefreshZOrder;
@@ -76,9 +73,9 @@ type
       class function GetInstance: TProject;
       destructor Destroy; override;
       procedure AddComponent(const AComponent: TComponent);
-      function GetComments: IIterator;
-      function GetUserFunctions(const ASortType: integer = PAGE_INDEX_SORT): IIterator;
-      function GetUserDataTypes: IIterator;
+      function GetComments: IEnumerable<TComment>;
+      function GetUserFunctions(const ASortType: integer = PAGE_INDEX_SORT): IEnumerable<TUserFunction>;
+      function GetUserDataTypes: IEnumerable<TUserDataType>;
       function GetUserDataType(const ATypeName: string): TUserDataType;
       function GetUserFunction(const AFunctionName: string): TUserFunction;
       procedure ExportToGraphic(const AGraphic: TGraphic);
@@ -122,9 +119,9 @@ type
 implementation
 
 uses
-   System.SysUtils, Vcl.Menus, Vcl.Forms, System.StrUtils, System.Types, System.UITypes, ApplicationCommon,
-   XMLProcessor, Base_Form, LangDefinition, Navigator_Form, SortListDecorator, Base_Block,
-   Comment, TabComponent, ParserHelper, SelectImport_Form;
+   System.SysUtils, Vcl.Menus, Vcl.Forms, System.StrUtils, System.Types, System.UITypes,
+   Generics.Collections, ApplicationCommon, XMLProcessor, Base_Form, LangDefinition,
+   Navigator_Form, SortListDecorator, Base_Block, TabComponent, ParserHelper, SelectImport_Form;
 
 constructor TProject.Create;
 begin
@@ -286,35 +283,35 @@ begin
    FComponentList.Add(AComponent);
 end;
 
-function TProject.GetComments: IIterator;
+function TProject.GetComments: IEnumerable<TComment>;
 begin
-   result := GetComponents(NO_SORT, TComment);
+   result := GetComponents<TComment>(NO_SORT);
 end;
 
-function TProject.GetUserFunctions(const ASortType: integer = PAGE_INDEX_SORT): IIterator;
+function TProject.GetUserFunctions(const ASortType: integer = PAGE_INDEX_SORT): IEnumerable<TUserFunction>;
 begin
-   result := GetComponents(ASortType, TUserFunction);
+   result := GetComponents<TUserFunction>(ASortType);
 end;
 
-function TProject.GetUserDataTypes: IIterator;
+function TProject.GetUserDataTypes: IEnumerable<TUserDataType>;
 begin
-   result := GetComponents(PAGE_INDEX_SORT, TUserDataType);
+   result := GetComponents<TUserDataType>(PAGE_INDEX_SORT);
 end;
 
-function TProject.GetComponents(ASortType: integer = NO_SORT; AClass: TClass = nil): IIterator;
+function TProject.GetComponents<T>(ASortType: integer = NO_SORT): IEnumerable<T>;
 var
    i: integer;
-   list: TComponentList;
-   listDecor: TSortListDecorator;
+   list: TList<T>;
+   listDecor: TSortListDecorator<T>;
 begin
-   list := TComponentList.Create(false);
+   list := TList<T>.Create;
    if list.Capacity < FComponentList.Count then
       list.Capacity := FComponentList.Count;
    for i := 0 to FComponentList.Count-1 do
    begin
-       if AClass <> nil then
+       if T <> TComponent then
        begin
-          if FComponentList[i].ClassType = AClass then
+          if FComponentList[i].ClassType = T then
              list.Add(FComponentList[i]);
        end
        else
@@ -322,11 +319,11 @@ begin
    end;
    if (ASortType <> NO_SORT) and (list.Count > 1) then
    begin
-      listDecor := TSortListDecorator.Create(list, ASortType);
+      listDecor := TSortListDecorator<T>.Create(list, ASortType);
       listDecor.Sort;
       listDecor.Free;
    end;
-   result := TBaseIteratorFriend.Create(list);
+   result := TEnumeratorFactory<T>.Create(list);
 end;
 
 function TProject.Register(const AObject: TObject; const AId: integer = ID_INVALID): integer;
@@ -445,10 +442,11 @@ end;
 
 procedure TProject.ExportToXMLTag(ATag: IXMLElement);
 var
-   itr, iter: IIterator;
+   comp: TComponent;
    xmlObj: IXMLable;
    i: integer;
    pageControl: TPageControl;
+   baseForm: TBaseForm;
 begin
 
    ATag.SetAttribute(LANG_ATTR, GInfra.CurrentLang.Name);
@@ -466,17 +464,14 @@ begin
    for i := 0 to pageControl.PageCount-1 do
       UpdateZOrder(pageControl.Pages[i]);
 
-   iter := GetComponents(PAGE_INDEX_SORT);
-   while iter.HasNext do
+   for comp in GetComponents<TComponent>(PAGE_INDEX_SORT) do
    begin
-      if Supports(iter.Next, IXMLable, xmlObj) and xmlObj.Active then
+      if Supports(comp, IXMLable, xmlObj) and xmlObj.Active then
          xmlObj.ExportToXMLTag(ATag);
    end;
 
-   itr := TBaseFormIterator.Create;
-   while itr.HasNext do
-      TBaseForm(itr.Next).ExportSettingsToXMLTag(ATag);
-   
+   for baseForm in TInfra.GetBaseForms do
+      baseForm.ExportSettingsToXMLTag(ATag);
 end;
 
 procedure TProject.ImportPagesFromXML(const ATag: IXMLElement);
@@ -518,8 +513,8 @@ end;
 
 function TProject.ImportFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
 var
-   itr: IIterator;
    s, langName, ver: string;
+   baseForm: TBaseForm;
 begin
 
    result := errValidate;
@@ -564,9 +559,8 @@ begin
       RefreshStatements;
       ImportCommentsFromXML(ATag);
       RefreshZOrder;
-      itr := TBaseFormIterator.Create;
-      while itr.HasNext do
-         TBaseForm(itr.Next).ImportSettingsFromXMLTag(ATag);
+      for baseForm in TInfra.GetBaseForms do
+         baseForm.ImportSettingsFromXMLTag(ATag);
    end;
 end;
 
@@ -727,7 +721,6 @@ function TProject.ImportUserDataTypesFromXML(ATag: IXMLElement; ASelect: boolean
 var
    dataType: TUserDataType;
    tag: IXMLElement;
-   iter: IIterator;
    selectList: TStringList;
 begin
    result := errNone;
@@ -783,10 +776,8 @@ begin
    if dataType <> nil then
    begin
       PopulateDataTypes;
-      iter := GetUserDataTypes;
-      while iter.HasNext do
+      for dataType in GetUserDataTypes do
       begin
-         dataType := TUserDataType(iter.Next);
          dataType.RefreshSizeEdits;
          dataType.RefreshTab;
       end;
@@ -896,13 +887,12 @@ end;
 
 procedure TProject.RefreshZOrder;
 var
-   iter: IIterator;
+   comp: TComponent;
    winControl: IWinControl;
 begin
-   iter := GetComponents(Z_ORDER_SORT);
-   while iter.HasNext do
+   for comp in GetComponents<TComponent>(Z_ORDER_SORT) do
    begin
-      if Supports(iter.Next, IWinControl, winControl) then
+      if Supports(comp, IWinControl, winControl) then
          winControl.BringAllToFront;
    end;
 end;
@@ -1059,7 +1049,6 @@ end;
 
 procedure TProject.GenerateTree(const ANode: TTreeNode);
 var
-   it, iter: IIterator;
    dataType: TUserDataType;
    mainFunc, func: TUserFunction;
    node: TTreeNode;
@@ -1070,10 +1059,8 @@ begin
    if GInfra.CurrentLang.EnabledUserDataTypes then
    begin
       node := ANode.Owner.AddChildObject(ANode, i18Manager.GetString('Structures'), TInfra.GetDataTypesForm);
-      it := GetUserDataTypes;
-      while it.HasNext do
+      for dataType in GetUserDataTypes do
       begin
-         dataType := TUserDataType(it.Next);
          if dataType.Active then
             dataType.GenerateTree(node);
       end;
@@ -1087,10 +1074,8 @@ begin
    else
       node := ANode;
 
-   iter := GetUserFunctions;
-   while iter.HasNext do
+   for func in GetUserFunctions do
    begin
-      func := TUserFunction(iter.Next);
       if func.Active then
       begin
          if func.IsMain and (mainFunc = nil) then
@@ -1201,14 +1186,13 @@ function TProject.GetLibraryList: TStringList;
 var
    libName: string;
    tab: ITabbable;
-   iter: IIterator;
+   comp: TComponent;
 begin
    result := TStringList.Create;
    result.CaseSensitive := GInfra.CurrentLang.CaseSensitiveSyntax;
-   iter := GetComponents(PAGE_INDEX_SORT);
-   while iter.HasNext do
+   for comp in GetComponents<TComponent>(PAGE_INDEX_SORT) do
    begin
-      if Supports(iter.Next, ITabbable, tab) then
+      if Supports(comp, ITabbable, tab) then
       begin
          libName := tab.GetLibName;
          if (result.IndexOf(libName) = -1) and not libName.IsEmpty then

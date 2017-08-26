@@ -25,11 +25,9 @@ interface
 
 uses
    WinApi.Windows, Vcl.Graphics, System.Classes, Vcl.ComCtrls, WinApi.Messages,
-   Base_Block, OmniXML, CommonInterfaces, CommonTypes, BaseIterator, BlockTabSheet;
+   Base_Block, OmniXML, CommonInterfaces, CommonTypes, BaseEnumerator, BlockTabSheet;
 
 type
-
-   TCommentIterator = class(TBaseIterator);
 
    TMainBlock = class(TGroupBlock, IWinControl, IMaxBoundable)
       private
@@ -145,17 +143,16 @@ end;
 
 procedure TMainBlock.SetPage(APage: TBlockTabSheet);
 var
-   iter: IIterator;
    header: TUserFunctionHeader;
    unPin: boolean;
+   comment: TComment;
 begin
    if FPage <> APage then
    begin
       unPin := Expanded and (PinComments > 0);
       try
-         iter := GetPinComments;
-         while iter.HasNext do
-            TComment(iter.Next).Page := APage;
+         for comment in GetPinComments do
+            comment.Page := APage;
       finally
          if unPin then
             UnPinComments;
@@ -203,7 +200,6 @@ end;
 function TMainBlock.GetMaxBounds: TPoint;
 var
    pnt: TPoint;
-   iter: IIterator;
    comment: TComment;
 begin
    result := TPoint.Zero;
@@ -213,10 +209,8 @@ begin
       result.Y := BoundsRect.Bottom + MARGIN_Y;
       if Expanded then
       begin
-         iter := GetComments;
-         while iter.HasNext do
+         for comment in GetComments do
          begin
-            comment := TComment(iter.Next);
             if comment.Visible then
             begin
                pnt := comment.GetMaxBounds;
@@ -241,7 +235,6 @@ procedure TMainBlock.ExportToGraphic(const AGraphic: TGraphic);
 var
    bitmap: TBitmap;
    pnt: TPoint;
-   iter: IIterator;
    comment: TComment;
    bStyle: TBorderStyle;
    selStart: integer;
@@ -263,10 +256,8 @@ begin
    PaintTo(bitmap.Canvas, 1, 1);
    if Expanded then
    begin
-      iter := GetComments;
-      while iter.HasNext do
+      for comment in GetComments do
       begin
-         comment := TComment(iter.Next);
          if comment.Visible then
          begin
             bStyle := comment.BorderStyle;

@@ -82,6 +82,7 @@
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <DCC_DebugInfoInTds>true</DCC_DebugInfoInTds>
         <DCC_Define>USE_CODEFOLDING;$(DCC_Define)</DCC_Define>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
         <VerInfo_AutoGenVersion>false</VerInfo_AutoGenVersion>
@@ -89,8 +90,8 @@
         <AppEnableHighDPI>true</AppEnableHighDPI>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <VerInfo_MinorVer>4</VerInfo_MinorVer>
-        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=4.4.32.416;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-        <VerInfo_Build>416</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=4.4.32.420;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Build>420</VerInfo_Build>
         <VerInfo_Release>32</VerInfo_Release>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -175,7 +176,7 @@
         <DCCReference Include="LangTemplates\TiBasic68k_Template.pas"/>
         <DCCReference Include="Blocks\Return_Block.pas"/>
         <DCCReference Include="Forms\Base_Form.pas"/>
-        <DCCReference Include="Common\BaseIterator.pas"/>
+        <DCCReference Include="Common\BaseEnumerator.pas"/>
         <DCCReference Include="Common\Project.pas"/>
         <DCCReference Include="Common\DeclareList.pas"/>
         <DCCReference Include="Common\Comment.pas"/>

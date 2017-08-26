@@ -24,7 +24,7 @@ unit Element;
 interface
 
 uses
-   Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Forms, BaseIterator, OmniXml,
+   Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Forms, BaseEnumerator, OmniXml,
    PageControl_Form, CommonInterfaces;
 
 type
@@ -51,9 +51,6 @@ type
          procedure ImportFromXMLTag(const ATag: IXMLElement); virtual;
          function IsValid: boolean; virtual;
          function GetSortValue(const ASortType: integer): integer;
-   end;
-
-   TElementIterator = class(TBaseIterator)
    end;
 
 const

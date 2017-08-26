@@ -81,7 +81,6 @@ type
       destructor Destroy; override;
       procedure ExportToXMLTag(ATag: IXMLElement); override;
       procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
-      function GetParameterIterator: IIterator;
       procedure Localize(const AList: TStringList); override;
       procedure RefreshSizeEdits; override;
       procedure GenerateDescription(const ALines: TStrings);
@@ -813,11 +812,6 @@ begin
    tag := inherited ExportToXMLTag(ATag);
    tag.SetAttribute('table', chkTable.Checked.ToString);
    tag.SetAttribute('reference', chkReference.Checked.ToString);
-end;
-
-function TUserFunctionHeader.GetParameterIterator: IIterator;
-begin
-   result := GetElementIterator;
 end;
 
 end.

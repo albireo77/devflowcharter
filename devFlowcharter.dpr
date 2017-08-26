@@ -65,7 +65,7 @@ uses
   TiBasic68k_Template in 'LangTemplates\TiBasic68k_Template.pas',
   Return_Block in 'Blocks\Return_Block.pas',
   Base_Form in 'Forms\Base_Form.pas',
-  BaseIterator in 'Common\BaseIterator.pas',
+  BaseEnumerator in 'Common\BaseEnumerator.pas',
   Project in 'Common\Project.pas',
   DeclareList in 'Common\DeclareList.pas',
   Comment in 'Common\Comment.pas',

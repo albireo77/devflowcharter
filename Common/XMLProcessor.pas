@@ -238,7 +238,7 @@ begin
           if control is TBlock then
              branch := TBlock(control).ParentBranch;
           if branch <> nil then
-             branch.Remove(control);
+             branch.Remove(TBlock(control));
           control.Destroy;
        end;
        result := nil;

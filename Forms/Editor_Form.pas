@@ -166,9 +166,9 @@ var
 implementation
 
 uses
-   System.StrUtils, System.Contnrs, System.UITypes, System.Types, WinApi.Messages,
-   System.Math, ApplicationCommon, Goto_Form, Settings, LangDefinition, Main_Block,
-   Help_Form, Comment, XMLProcessor, Main_Form, Base_Block, SynEditTypes, ParserHelper;
+   System.StrUtils, System.UITypes, System.Types, WinApi.Messages, System.Math,
+   ApplicationCommon, Goto_Form, Settings, LangDefinition, Main_Block, Help_Form,
+   Comment, XMLProcessor, Main_Form, Base_Block, SynEditTypes, ParserHelper;
 
 const
    InfoPanel2: array[boolean] of string = ('OverwriteMode', 'InsertMode');

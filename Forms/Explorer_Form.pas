@@ -261,7 +261,6 @@ procedure TExplorerForm.miRemoveClick(Sender: TObject);
  var
     winControl: TWinControl;
     caseBlock: TCaseBlock;
-    iter: IIterator;
     branch: TBranch;
     focusable: IFocusable;
  begin
@@ -274,10 +273,8 @@ procedure TExplorerForm.miRemoveClick(Sender: TObject);
        if (winControl.Parent is TCaseBlock) and (winControl <> TCaseBlock(winControl.Parent).GetTextControl) then
        begin
           caseBlock := TCaseBlock(winControl.Parent);
-          iter := caseBlock.GetBranches(PRIMARY_BRANCH_IND+1);
-          while iter.HasNext do
+          for branch in caseBlock.GetBranches(PRIMARY_BRANCH_IND+1) do
           begin
-             branch := TBranch(iter.Next);
              if branch.Statement = winControl then
              begin
                 caseBlock.Ired := branch.Index;

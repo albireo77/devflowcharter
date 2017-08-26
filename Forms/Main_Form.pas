@@ -1499,9 +1499,9 @@ end;
 function TMainForm.BuildFuncMenu(AParent: TMenuItem): integer;
 var
    i: integer;
-   it: IIterator;
    funcList: TStringList;
    lName: string;
+   func: TUserFunction;
 begin
    result := 0;
    if AParent <> nil then
@@ -1512,10 +1512,9 @@ begin
          funcList.Sorted := true;
          funcList.Duplicates := dupIgnore;
          funcList.AddStrings(GInfra.CurrentLang.NativeFunctions);
-         it := GProject.GetUserFunctions;
-         while it.HasNext do
+         for func in GProject.GetUserFunctions do
          begin
-            lName := TUserFunction(it.Next).GetName;
+            lName := func.GetName;
             if not lName.IsEmpty then
                funcList.Add(lName);
          end;

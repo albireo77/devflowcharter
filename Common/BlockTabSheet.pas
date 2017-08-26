@@ -61,15 +61,12 @@ end;
 
 destructor TBlockTabSheet.Destroy;
 var
-   iter: IIterator;
    func: TUserFunction;
 begin
    if GProject <> nil then
    begin
-      iter := GProject.GetUserFunctions;
-      while iter.HasNext do
+      for func in GProject.GetUserFunctions do
       begin
-         func := TUserFunction(iter.Next);
          if func.Body.Page = Self then
             func.Free;
       end;

@@ -59,25 +59,22 @@ procedure TIBASIC_UserFunctionsSectionGenerator(ALines: TStringList; ASkipBodyGe
 var
    func: TUserFunction;
    funcHeader, funcParms, funcPrefix, funcName: string;
-   iterp, iter: IIterator;
+   param: TParameter;
 begin
    if GProject <> nil then
    begin
-      iter := GProject.GetUserFunctions;
-      while iter.HasNext do
+      for func in GProject.GetUserFunctions do
       begin
-         func := TUserFunction(iter.Next);
          funcName := func.GetName;
          if funcName.IsEmpty or func.Header.chkExtDeclare.Checked then
             continue;
          funcPrefix := IfThen(func.Header.cbType.ItemIndex <> 0, 'Func', 'Prgm');
          funcParms := '';
-         iterp := func.Header.GetParameterIterator;
-         while iterp.HasNext do
+         for param in func.Header.GetElements<TParameter> do
          begin
             if not funcParms.IsEmpty then
                funcParms := funcParms + ',';
-            funcParms := funcParms + Trim(TParameter(iterp.Next).edtName.Text);
+            funcParms := funcParms + Trim(param.edtName.Text);
          end;
          funcHeader := 'Define ' + funcName + '(' + funcParms + ')=' + funcPrefix;
          func.Header.GenerateDescription(ALines);

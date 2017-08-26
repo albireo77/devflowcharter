@@ -30,9 +30,6 @@ uses
 
 type
 
-   TElementIteratorFriend = class(TElementIterator)
-   end;
-
    TTabComponent = class(TTabSheet, IXMLable, IIdentifiable, ITabbable, ISizeEditable, ISortable, IFocusable, IExportable)
       private
          FParentForm: TPageControlForm;
@@ -53,7 +50,6 @@ type
          procedure OnChangeLib(Sender: TObject);
          procedure OnClickCh(Sender: TObject);
          procedure OnChangeName(Sender: TObject); virtual;
-         function GetElementIterator: IIterator;
          procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
          procedure CreateExtDeclareChBox(AParent: TWinControl; x, y: integer);
          procedure CreateNameControls(AParent: TWinControl; x, y: integer);
@@ -72,6 +68,7 @@ type
          property ParentForm: TPageControlForm read FParentForm;
          constructor Create(const AParentForm: TPageControlForm);
          destructor Destroy; override;
+         function GetElements<T: class>: IEnumerable<T>;
          procedure ExportToXMLTag(ATag: IXMLElement); virtual;
          function ExportToXMLFile(const AFile: string): TErrorType;
          procedure ExportToGraphic(const AGraphic: TGraphic);
@@ -102,8 +99,8 @@ type
 implementation
 
 uses
-   System.SysUtils, System.Contnrs, System.StrUtils, ApplicationCommon, XMLProcessor,
-   SortListDecorator;
+   System.SysUtils, Generics.Collections, System.StrUtils, ApplicationCommon, XMLProcessor,
+   SortListDecorator, BaseEnumerator;
 
 constructor TTabComponent.Create(const AParentForm: TPageControlForm);
 begin
@@ -142,7 +139,6 @@ end;
 
 function TTabComponent.RetrieveFocus(AInfo: TFocusInfo): boolean;
 var
-   iter: IIterator;
    elem: TElement;
 begin
    if FActive then
@@ -151,10 +147,8 @@ begin
       Show;
       if not AInfo.SelText.IsEmpty then
       begin
-         iter := GetElementIterator;
-         while iter.HasNext do
+         for elem in GetElements<TElement> do
          begin
-            elem := TElement(iter.Next);
             if SameText(Trim(elem.edtName.Text), AInfo.SelText) then
             begin
                if elem.edtName.CanFocus and (AInfo.ActiveControl = nil) then
@@ -351,24 +345,24 @@ begin
    Font.Color := lColor;
 end;
 
-function TTabComponent.GetElementIterator: IIterator;
+function TTabComponent.GetElements<T>: IEnumerable<T>;
 var
    i: integer;
-   objList: TObjectList;
-   decorList: TSortListDecorator;
+   list: TList<T>;
+   decorList: TSortListDecorator<T>;
 begin
-   objList := TObjectList.Create(false);
-   if objList.Capacity < sbxElements.ControlCount then
-      objList.Capacity := sbxElements.ControlCount;
+   list := TList<T>.Create;
+   if list.Capacity < sbxElements.ControlCount then
+      list.Capacity := sbxElements.ControlCount;
    for i := 0 to sbxElements.ControlCount-1 do
-      objList.Add(sbxElements.Controls[i]);
-   if objList.Count > 1 then
+      list.Add(sbxElements.Controls[i]);
+   if list.Count > 1 then
    begin
-      decorList := TSortListDecorator.Create(objList, 0);
+      decorList := TSortListDecorator<T>.Create(list, 0);
       decorList.Sort;
       decorList.Free;
    end;
-   result := TElementIteratorFriend.Create(objList);
+   result := TEnumeratorFactory<T>.Create(list);
 end;
 
 function TTabComponent.GetScrollPos: integer;
@@ -423,13 +417,12 @@ end;
 
 function TTabComponent.HasInvalidElement: boolean;
 var
-   iter: IIterator;
+   elem: TElement;
 begin
    result := false;
-   iter := GetElementIterator;
-   while iter.HasNext do
+   for elem in GetElements<TElement> do
    begin
-      if not TElement(iter.Next).IsValid then
+      if not elem.IsValid then
       begin
          result := true;
          break;
@@ -440,14 +433,13 @@ end;
 function TTabComponent.HasFocusedComboBox: boolean;
 var
    hnd: THandle;
-   iter: IIterator;
+   elem: TElement;
 begin
    result := false;
    hnd := GetFocus();
-   iter := GetElementIterator;
-   while iter.HasNext do
+   for elem in GetElements<TElement> do
    begin
-      if TElement(iter.Next).cbType.Handle = hnd then
+      if elem.cbType.Handle = hnd then
       begin
          result := true;
          break;
@@ -458,15 +450,12 @@ end;
 function TTabComponent.IsDuplicatedElement(const AElement: TElement): boolean;
 var
    elem: TElement;
-   iter: IIterator;
 begin
    result := false;
    if (AElement <> nil) and (AElement.ParentTab = Self) then
    begin
-      iter := GetElementIterator;
-      while iter.HasNext do
+      for elem in GetElements<TElement> do
       begin
-         elem := TElement(iter.Next);
          if (elem <> AElement) and TInfra.SameStrings(Trim(AElement.edtName.Text), Trim(elem.edtName.Text)) then
          begin
             result := true;
@@ -478,30 +467,24 @@ end;
 
 procedure TTabComponent.RefreshElements;
 var
-   iter: IIterator;
    elem: TElement;
 begin
    FParentForm.UpdateCodeEditor := false;
-   iter := GetElementIterator;
-   while iter.HasNext do
-   begin
-      elem := TElement(iter.Next);
+   for elem in GetElements<TElement> do
       elem.edtName.OnChange(elem.edtName);
-   end;
    FParentForm.UpdateCodeEditor := true;
 end;
 
 procedure TTabComponent.ExportToXMLTag(ATag: IXMLElement);
 var
-   iter: IIterator;
+   elem: TElement;
 begin
    ATag.SetAttribute(NAME_ATTR, Trim(edtName.Text));
    ATag.SetAttribute(ID_ATTR, FId.ToString);
    ATag.SetAttribute('ext_decl', chkExtDeclare.Checked.ToString);
    ATag.SetAttribute('library', Trim(edtLibrary.Text));
-   iter := GetElementIterator;
-   while iter.HasNext do
-      TElement(iter.Next).ExportToXMLTag(ATag);
+   for elem in GetElements<TElement> do
+      elem.ExportToXMLTag(ATag);
 end;
 
 procedure TTabComponent.ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);

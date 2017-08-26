@@ -158,7 +158,7 @@ procedure TFunctionsForm.RefreshTabs;
 var
    i: integer;
    header: TUserFunctionHeader;
-   iter: IIterator;
+   param: TParameter;
 begin
    inherited;
    for i := 0 to pgcTabs.PageCount-1 do
@@ -166,9 +166,8 @@ begin
       header := TUserFunctionHeader(pgcTabs.Pages[i]);
       TInfra.PopulateDataTypeCombo(header.LocalVars.cbType);
       TInfra.PopulateDataTypeCombo(header.cbType);
-      iter := header.GetParameterIterator;
-      while iter.HasNext do
-         TInfra.PopulateDataTypeCombo(TParameter(iter.Next).cbType);
+      for param in header.GetElements<TParameter> do
+         TInfra.PopulateDataTypeCombo(param.cbType);
    end;
 end;
 

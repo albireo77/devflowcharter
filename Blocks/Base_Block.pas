@@ -28,8 +28,8 @@ interface
 uses
    WinApi.Windows, Vcl.Forms, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Controls, Vcl.Graphics,
    WinApi.Messages, System.SysUtils, System.Classes, Vcl.ComCtrls, System.UITypes,
-   System.Contnrs, Statement, OmniXML, BaseIterator, CommonInterfaces, CommonTypes,
-   BlockTabSheet;
+   Generics.Collections, Statement, OmniXML, BaseEnumerator, CommonInterfaces, CommonTypes,
+   BlockTabSheet, Comment;
 
 const
    PRIMARY_BRANCH_IND = 1;
@@ -179,8 +179,8 @@ type
          function Remove: boolean; virtual;
          function CanBeRemoved: boolean;
          function IsBoldDesc: boolean; virtual;
-         function GetComments(const AInFront: boolean = false): IIterator;
-         function GetPinComments: IIterator;
+         function GetComments(const AInFront: boolean = false): IEnumerable<TComment>;
+         function GetPinComments: IEnumerable<TComment>;
          procedure SetVisible(const AVisible: boolean; const ASetComments: boolean = true); virtual;
          procedure BringAllToFront;
          function PinComments: integer;
@@ -239,8 +239,8 @@ type
          function GetFromXML(const ATag: IXMLElement): TErrorType; override;
          procedure SaveInXML(const ATag: IXMLElement); override;
          procedure GenerateTemplateSection(const ALines: TStringList; const ATemplate: TStringList; const ALangId: string; const ADeep: integer); override;
-         function GetBlocks(const AIndex: integer = PRIMARY_BRANCH_IND-1): IIterator;
-         function GetBranches(const AStart: integer = PRIMARY_BRANCH_IND-1): IIterator;
+         function GetBlocks(const AIndex: integer = PRIMARY_BRANCH_IND-1): IEnumerable<TBlock>;
+         function GetBranches(const AStart: integer = PRIMARY_BRANCH_IND-1): IEnumerable<TBranch>;
          procedure ResizeWithDrawLock;
          function GetFoldedText: string;
          procedure SetFoldedText(const AText: string);
@@ -251,15 +251,13 @@ type
          procedure CloneFrom(ABlock: TBlock); override;
    end;
 
-   TBranch = class(TObjectList, IIdentifiable)
+   TBranch = class(TList<TBlock>, IIdentifiable)
       private
          FParentBlock: TGroupBlock;
          FRmvBlockIdx: integer;
          FId: integer;
          function GetIndex: integer;
          function GetHeight: integer;
-         function GetItems(AIndex: integer): TBlock;
-         procedure SetItems(AIndex: integer; ABlock: TBlock);
          function GetFirst: TBlock;
          function GetLast: TBlock;
          function GetId: integer;
@@ -272,31 +270,24 @@ type
          property ParentBlock: TGroupBlock read FParentBlock;
          property Index: integer read GetIndex;
          property Height: integer read GetHeight;
-         property Items[Index: integer]: TBlock read GetItems write SetItems; default;
          property First: TBlock read GetFirst;
          property Last: TBlock read GetLast;
          property Id: integer read GetId;
          constructor Create(const AParent: TGroupBlock; const AHook: TPoint; const AId: integer = ID_INVALID);
          destructor Destroy; override;
-         procedure InsertAfter(ANewBlock, APosBlock: TBlock);
-         procedure Insert(AIndex: integer; ABlock: TBlock);
-         function IndexOf(ABlock: TBlock): integer;
-         function Add(ABlock: TBlock): integer;
-         function Remove(ABlock: TObject): integer;
+         procedure InsertAfter(ANewBlock, ABlock: TBlock);
+         function FindInstanceOf(AClass: TClass): integer;
+         function Remove(ABlock: TBlock): integer;
          procedure UndoRemove(ABlock: TBlock);
          function GetMostRight: integer;
    end;
-
-   TBranchIterator = class(TBaseIterator);
-   TBlockIterator = class(TBaseIterator);
-   TCommentIterator = class(TBaseIterator);
 
 implementation
 
 uses
    System.StrUtils, Vcl.Menus, System.Types, System.Math, Main_Block, Return_Block,
    ApplicationCommon, BlockFactory, UserFunction, XMLProcessor, Navigator_Form,
-   LangDefinition, FlashThread, Comment;
+   LangDefinition, FlashThread;
 
 type
    THackControl = class(TControl);
@@ -466,11 +457,10 @@ end;
 
 destructor TBlock.Destroy;
 var
-   iter: IIterator;
+   comment: TComment;
 begin
-   iter := GetPinComments;
-   while iter.HasNext do
-      iter.Next.Free;
+   for comment in GetPinComments do
+      comment.Free;
    if Self = GClpbrd.Instance then
       GClpbrd.Instance := nil;
    if Self = GClpbrd.UndoObject then
@@ -506,8 +496,7 @@ end;
 
 procedure TBlock.CloneComments(const ASource: TBlock);
 var
-   iter: IIterator;
-   newComment: TComment;
+   newComment, comment: TComment;
    unPin: boolean;
    lPage: TBlockTabSheet;
 begin
@@ -516,10 +505,9 @@ begin
       lPage := Page;
       unPin := ASource.PinComments > 0;
       try
-         iter := ASource.GetPinComments;
-         while iter.HasNext do
+         for comment in ASource.GetPinComments do
          begin
-            newComment := TComment(iter.Next).Clone(lPage);
+            newComment := comment.Clone(lPage);
             newComment.PinControl := Self;
          end;
          UnPinComments;
@@ -1106,22 +1094,19 @@ begin
    PutTextControls;
 end;
 
-function TBlock.GetComments(const AInFront: boolean = false): IIterator;
+function TBlock.GetComments(const AInFront: boolean = false): IEnumerable<TComment>;
 var
    comment: TComment;
-   iterc: IIterator;
    isFront: boolean;
    lPage: TTabSheet;
-   objList: TObjectList;
+   list: TList<TComment>;
 begin
-   objList := TObjectList.Create(false);
+   list := TList<TComment>.Create;
    if Visible then
    begin
       lPage := Page;
-      iterc := GProject.GetComments;
-      while iterc.HasNext do
+      for comment in GProject.GetComments do
       begin
-         comment := TComment(iterc.Next);
          if comment.Page = lPage then
          begin
             if AInFront then
@@ -1129,21 +1114,20 @@ begin
             else
                isFront := true;
             if isFront and (comment.PinControl = nil) and ClientRect.Contains(ParentToClient(comment.BoundsRect.TopLeft, lPage)) then
-               objList.Add(comment);
+               list.Add(comment);
          end
       end;
    end;
-   result := TCommentIterator.Create(objList);
+   result := TEnumeratorFactory<TComment>.Create(list);
 end;
 
 procedure TBlock.BringAllToFront;
 var
-   iter: IIterator;
+   comment: TComment;
 begin
    BringToFront;
-   iter := GetComments;
-   while iter.HasNext do
-      TComment(iter.Next).BringToFront;
+   for comment in GetComments do
+      comment.BringToFront;
 end;
 
 function TBlock.IsInFront(const AControl: TWinControl): boolean;
@@ -1170,15 +1154,12 @@ end;
 
 procedure TBlock.MoveComments(x, y: integer);
 var
-   iter: IIterator;
    comment: TComment;
 begin
    if (x <> 0) and (y <> 0) and (Left <> 0) and (Top <> 0) and ((x <> Left) or (y <> Top)) then
    begin
-      iter := GetComments(true);
-      while iter.HasNext do
+      for comment in GetComments(true) do
       begin
-         comment := TComment(iter.Next);
          if comment.Visible then
          begin
             comment.SetBounds(comment.Left+x-Left, comment.Top+y-Top, comment.Width, comment.Height);
@@ -1199,21 +1180,18 @@ begin
    inherited;
 end;
 
-function TBlock.GetPinComments: IIterator;
+function TBlock.GetPinComments: IEnumerable<TComment>;
 var
    comment: TComment;
-   iterc: IIterator;
-   objList: TObjectList;
+   list: TList<TComment>;
 begin
-   objList := TObjectList.Create(false);
-   iterc := GProject.GetComments;
-   while iterc.HasNext do
+   list := TList<TComment>.Create;
+   for comment in GProject.GetComments do
    begin
-      comment := TComment(iterc.Next);
       if comment.PinControl = Self then
-         objList.Add(comment);
+         list.Add(comment);
    end;
-   result := TCommentIterator.Create(objList);
+   result := TEnumeratorFactory<TComment>.Create(list);
 end;
 
 procedure TBlock.PutTextControls;
@@ -1274,16 +1252,13 @@ end;
 
 procedure TBlock.ChangeColor(const AColor: TColor);
 var
-   iter: IIterator;
    comment: TComment;
    lEdit: THackCustomEdit;
    lColor: TColor;
 begin
    Color := AColor;
-   iter := GetComments;
-   while iter.HasNext do
+   for comment in GetComments do
    begin
-      comment := TComment(iter.Next);
       if comment.Visible then
          comment.Color := AColor;
    end;
@@ -1620,14 +1595,13 @@ end;
 
 function TGroupBlock.CountErrWarn: TErrWarnCount;
 var
-   iter: IIterator;
    errWarnCount: TErrWarnCount;
+   block: TBlock;
 begin
    result := inherited CountErrWarn;
-   iter := GetBlocks;
-   while iter.HasNext do
+   for block in GetBlocks do
    begin
-      errWarnCount := TBlock(iter.Next).CountErrWarn;
+      errWarnCount := block.CountErrWarn;
       Inc(result.ErrorCount, errWarnCount.ErrorCount);
       Inc(result.WarningCount, errWarnCount.WarningCount);
    end;
@@ -2111,39 +2085,39 @@ end;
 
 function TBlock.PinComments: integer;
 var
-   iter: IIterator;
    comment: TComment;
    pnt: TPoint;
+   i: integer;
 begin
+   i := 0;
    pnt := ClientToParent(ClientRect.TopLeft, Page);
-   iter := GetComments;
-   while iter.HasNext do
+   for comment in GetComments do
    begin
-      comment := TComment(iter.Next);
+      Inc(i);
       comment.PinControl := Self;
       comment.Visible := false;
       comment.SetBounds(comment.Left - pnt.X, comment.Top - pnt.Y, comment.Width, comment.Height);
    end;
-   result := iter.Count;
+   result := i;
 end;
 
 function TBlock.UnPinComments: integer;
 var
-   iter: IIterator;
    comment: TComment;
    pnt: TPoint;
+   i: integer;
 begin
+   i := 0;
    pnt := ClientToParent(ClientRect.TopLeft, Page);
-   iter := GetPinComments;
-   while iter.HasNext do
+   for comment in GetPinComments do
    begin
-      comment := TComment(iter.Next);
+      Inc(i);
       comment.PinControl := nil;
       comment.SetBounds(comment.Left + pnt.X, comment.Top + pnt.Y, comment.Width, comment.Height);
       comment.Visible := true;
       comment.BringToFront;
    end;
-   result := iter.Count;
+   result := i;
 end;
 
 function TGroupBlock.UnPinComments: integer;
@@ -2269,8 +2243,9 @@ var
    txt: string;
    tag1, tag2: IXMLElement;
    lBranch: TBranch;
-   it: IIterator;
    unPin: boolean;
+   comment: TComment;
+   block: TBlock;
 begin
    SaveInXML2(ATag);
    if ATag <> nil then
@@ -2308,9 +2283,8 @@ begin
             ATag.AppendChild(tag1);
          end;
 
-         it := GetPinComments;
-         while it.HasNext do
-            TComment(it.Next).ExportToXMLTag2(ATag);
+         for comment in GetPinComments do
+            comment.ExportToXMLTag2(ATag);
 
          for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
          begin
@@ -2332,9 +2306,8 @@ begin
             TXMLProcessor.AddText(tag1, lBranch.hook.Y.ToString);
             tag2.AppendChild(tag1);
 
-            it := GetBlocks(lBranch.Index);
-            while it.HasNext do
-               TXMLProcessor.ExportBlockToXML(TBlock(it.Next), tag2);
+            for block in GetBlocks(lBranch.Index) do
+               TXMLProcessor.ExportBlockToXML(block, tag2);
          end;
       finally
          if unPin then
@@ -2345,14 +2318,13 @@ end;
 
 procedure TBlock.SaveInXML(const ATag: IXMLElement);
 var
-   it: IIterator;
+   comment: TComment;
 begin
    SaveInXML2(ATag);
    if (ATag <> nil) and (PinComments > 0) then
    begin
-      it := GetPinComments;
-      while it.HasNext do
-         TComment(it.Next).ExportToXMLTag2(ATag);
+      for comment in GetPinComments do
+         comment.ExportToXMLTag2(ATag);
       UnPinComments;
    end;
 end;
@@ -2656,7 +2628,6 @@ end;
 procedure TBlock.ExportToGraphic(const AGraphic: TGraphic);
 var
    bitmap: TBitmap;
-   iterc: IIterator;
    comment: TComment;
    pnt: TPoint;
    lPage: TBlockTabSheet;
@@ -2673,10 +2644,8 @@ begin
    bitmap.Canvas.Lock;
    try
       PaintTo(bitmap.Canvas.Handle, 1, 1);
-      iterc := GetComments;
-      while iterc.HasNext do
+      for comment in GetComments do
       begin
-         comment := TComment(iterc.Next);
          pnt := ParentToClient(comment.BoundsRect.TopLeft, Page);
          comment.PaintTo(bitmap.Canvas.Handle, pnt.X, pnt.Y);
       end;
@@ -2713,13 +2682,13 @@ begin
    result := Length(FBranchArray) - 1;
 end;
 
-function TGroupBlock.GetBlocks(const AIndex: integer = PRIMARY_BRANCH_IND-1): IIterator;
+function TGroupBlock.GetBlocks(const AIndex: integer = PRIMARY_BRANCH_IND-1): IEnumerable<TBlock>;
 var
    first, last, i, a: integer;
    block: TBlock;
-   objList: TObjectList;
+   list: TList<TBlock>;
 begin
-   objList := TObjectList.Create(false);
+   list := TList<TBlock>.Create;
    if GetBranch(AIndex) <> nil then
    begin
       first := AIndex;
@@ -2741,26 +2710,26 @@ begin
    a := 0;
    for i := first to last do
       a := a + FBranchArray[i].Count;
-   if objList.Capacity < a then
-      objList.Capacity := a;
+   if list.Capacity < a then
+      list.Capacity := a;
    for i := first to last do
    begin
       block := FBranchArray[i].First;
       while block <> nil do
       begin
-         objList.Add(block);
+         list.Add(block);
          block := block.Next;
       end;
    end;
-   result := TBlockIterator.Create(objList);
+   result := TEnumeratorFactory<TBlock>.Create(list);
 end;
 
-function TGroupBlock.GetBranches(const AStart: integer = PRIMARY_BRANCH_IND-1): IIterator;
+function TGroupBlock.GetBranches(const AStart: integer = PRIMARY_BRANCH_IND-1): IEnumerable<TBranch>;
 var
    i, first, last: integer;
-   objList: TObjectList;
+   list: TList<TBranch>;
 begin
-   objList := TObjectList.Create(false);
+   list := TList<TBranch>.Create;
    if GetBranch(AStart) <> nil then
       first := AStart
    else
@@ -2775,8 +2744,8 @@ begin
    else
       last := High(FBranchArray);
    for i := first to last do
-      objList.Add(FBranchArray[i]);
-   result := TBranchIterator.Create(objList);
+      list.Add(FBranchArray[i]);
+   result := TEnumeratorFactory<TBranch>.Create(list);
 end;
 
 function TBlock.SkipUpdateEditor: boolean;
@@ -2958,14 +2927,12 @@ begin
    Hook := AHook;
    FRmvBlockIdx := -1;
    Statement := nil;
-   OwnsObjects := false;
    FId := GProject.Register(Self, AId);
 end;
 
 destructor TBranch.Destroy;
 begin
    Statement.Free;
-   OwnsObjects := true;
    GProject.UnRegister(Self);
    inherited Destroy;
 end;
@@ -2982,9 +2949,9 @@ begin
    end;
 end;
 
-procedure TBranch.InsertAfter(ANewBlock, APosBlock: TBlock);
+procedure TBranch.InsertAfter(ANewBlock, ABlock: TBlock);
 begin
-   Insert(IndexOf(APosBlock)+1, ANewBlock);
+   Insert(IndexOf(ABlock)+1, ANewBlock);
 end;
 
 function TBranch.GetHeight: integer;
@@ -2998,26 +2965,23 @@ end;
 
 function TBranch.GetIndex: integer;
 var
-   iter: IIterator;
+   branch: TBranch;
+   i: integer;
 begin
    result := -1;
+   i := 0;
    if FParentBlock <> nil then
    begin
-      iter := FParentBlock.GetBranches;
-      result := iter.GetObjectIndex(Self);
-      if result <> -1 then
-         Inc(result);
+      for branch in FParentBlock.GetBranches do
+      begin
+         if branch = Self then
+         begin
+            result := i + 1;
+            break;
+         end;
+         i := i + 1;
+      end;
    end;
-end;
-
-function TBranch.GetItems(AIndex: integer): TBlock;
-begin
-  result := TBlock(inherited Items[AIndex]);
-end;
-
-procedure TBranch.SetItems(AIndex: integer; ABlock: TBlock);
-begin
-  inherited Items[AIndex] := ABlock;
 end;
 
 function TBranch.GetFirst: TBlock;
@@ -3034,32 +2998,31 @@ begin
       result := TBlock(inherited Last);
 end;
 
-function TBranch.Add(ABlock: TBlock): integer;
+function TBranch.FindInstanceOf(AClass: TClass): integer;
+var
+   i: integer;
 begin
-  result := inherited Add(ABlock);
-end;
-
-function TBranch.IndexOf(ABlock: TBlock): integer;
-begin
-  result := inherited IndexOf(ABlock);
-end;
-
-procedure TBranch.Insert(AIndex: integer; ABlock: TBlock);
-begin
-   if AIndex >= 0 then
-      inherited Insert(AIndex, ABlock);
+   result := -1;
+   for i := 0 to Count-1 do
+   begin
+      if Items[i].ClassType = AClass then
+      begin
+         result := i;
+         break;
+      end;
+   end;
 end;
 
 procedure TBranch.UndoRemove(ABlock: TBlock);
 begin
-   if (ABlock <> nil) and (Self = ABlock.ParentBranch) and (FRmvBlockIdx >= 0) then
+   if (ABlock <> nil) and (Self = ABlock.ParentBranch) and (FRmvBlockIdx > -1) then
    begin
       Insert(FRmvBlockIdx, ABlock);
       FRmvBlockIdx := -1;
    end;
 end;
 
-function TBranch.Remove(ABlock: TObject): integer;
+function TBranch.Remove(ABlock: TBlock): integer;
 begin
    result := inherited Remove(ABlock);
    FRmvBlockIdx := result;

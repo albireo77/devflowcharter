@@ -24,7 +24,7 @@ unit Base_Form;
 interface
 
 uses
-   Vcl.Forms, System.Classes, Vcl.Graphics, OmniXML, BaseIterator, CommonInterfaces;
+   Vcl.Forms, System.Classes, Vcl.Graphics, OmniXML, BaseEnumerator, CommonInterfaces;
 
 type
 
@@ -44,15 +44,10 @@ type
       function IsBoldDesc: boolean;
   end;
 
-  TBaseFormIterator = class(TBaseIterator)
-    public
-      constructor Create;
-  end;
-
 implementation
 
 uses
-   WinApi.Windows, System.Contnrs, ApplicationCommon;
+   WinApi.Windows, ApplicationCommon;
 
 procedure TBaseForm.Localize(const AList: TStringList);
 begin
@@ -74,22 +69,6 @@ begin
    Close;
    WindowState := wsNormal;
    Position := poMainFormCenter;
-end;
-
-constructor TBaseFormIterator.Create;
-var
-   i: integer;
-   comp: TComponent;
-   list: TObjectList;
-begin
-   list := TObjectList.Create(false);
-   inherited Create(list);
-   for i := 0 to Application.ComponentCount-1 do
-   begin
-      comp := Application.Components[i];
-      if comp is TBaseForm then
-         list.Add(comp);
-   end;
 end;
 
 function TBaseForm.RetrieveFocus(AInfo: TFocusInfo): boolean;

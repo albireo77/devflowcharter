@@ -61,7 +61,6 @@ type
       constructor Create(const AParentForm: TDataTypesForm);
       procedure ExportToXMLTag(ATag: IXMLElement); override;
       procedure ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
-      function GetFieldIterator: IIterator;
       procedure Localize(const AList: TStringList); override;
       procedure RefreshSizeEdits; override;
       function IsValidEnumValue(const AValue: string): boolean;
@@ -483,11 +482,6 @@ begin
    result := inherited IsValid;
    if result and edtSize.Enabled then
       result := edtSize.Font.Color = BLACK_COLOR;
-end;
-
-function TUserDataType.GetFieldIterator: IIterator;
-begin
-   result := GetElementIterator;
 end;
 
 procedure TUserDataType.GenerateTree(const ANode: TTreeNode);

@@ -205,17 +205,14 @@ end;
 
 procedure TComment.SetIsHeader(AValue: boolean);
 var
-   iter: IIterator;
    comment: TComment;
 begin
    if FIsHeader then
       FIsHeader := false
    else
    begin
-      iter := GProject.GetComments;
-      while iter.HasNext do
+      for comment in GProject.GetComments do
       begin
-         comment := TComment(iter.Next);
          if (comment <> Self) and comment.FIsHeader then
          begin
             comment.FIsHeader := false;
