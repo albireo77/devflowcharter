@@ -49,7 +49,7 @@ begin
             name := dataType.GetName;
             if (not name.IsEmpty) and not dataType.chkExtDeclare.Checked then
             begin
-               fields := dataType.GetElements<TField>;
+               fields := dataType.GetFields;
                case dataType.Kind of
                   dtInt:
                   if not lang.DataTypeIntMask.IsEmpty then
@@ -385,7 +385,7 @@ begin
             begin
                // assemble list of function parameters
                argList := '';
-               for param in func.Header.GetElements<TParameter> do
+               for param in func.Header.GetParameters do
                begin
                   paramStr := ReplaceStr(lang.FunctionHeaderArgsEntryMask, PRIMARY_PLACEHOLDER, Trim(param.edtName.Text));
                   paramStr := ReplaceStr(paramStr, '%s2', param.cbType.Text);
@@ -550,7 +550,7 @@ begin
          key := lang.ProcedureLabelKey;
       if ALongDesc then
       begin
-         for param in AHeader.GetElements<TParameter> do
+         for param in AHeader.GetParameters do
          begin
             if not params.IsEmpty then
                params := params + ',';

@@ -85,6 +85,7 @@ type
       procedure RefreshSizeEdits; override;
       procedure GenerateDescription(const ALines: TStrings);
       procedure SetPageCombo(const ACaption: TCaption = '');
+      function GetParameters: IEnumerable<TParameter>;
    end;
 
    TUserFunction = class(TComponent, IXMLable, ITabbable, IIdentifiable, ISizeEditable, IWinControl, IMaxBoundable, ISortable)
@@ -638,6 +639,11 @@ begin
       page.Form.ScrollInView(FUserFunction.Body);
       NavigatorForm.Invalidate;
    end;
+end;
+
+function TUserFunctionHeader.GetParameters: IEnumerable<TParameter>;
+begin
+   result := GetElements<TParameter>;
 end;
 
 procedure TUserFunctionHeader.OnChangeType(Sender: TObject);

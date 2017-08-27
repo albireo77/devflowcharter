@@ -152,7 +152,7 @@ begin
       unPin := Expanded and (PinComments > 0);
       try
          for comment in GetPinComments do
-            comment.Page := APage;
+             comment.Page := APage;
       finally
          if unPin then
             UnPinComments;
@@ -351,7 +351,7 @@ begin
    if not result.IsEmpty then
    begin
       DrawText(Canvas.Handle, PChar(result), -1, ARect, DT_CALCRECT);
-      if (Branch.First <> nil) and (ARect.Bottom > Branch.First.Top-5) and (ARect.Left < Branch.First.BoundsRect.Right+5) then
+      if (Branch.Count > 0) and (ARect.Bottom > Branch.First.Top-5) and (ARect.Left < Branch.First.BoundsRect.Right+5) then
       begin
          d := Branch.First.BoundsRect.Right + 5 - ARect.Left;
          ARect.Offset(d, 0);
@@ -471,7 +471,7 @@ begin
                if isMain then
                begin
                   ending := '';
-                  if not (GetBranch(PRIMARY_BRANCH_IND).Last is TReturnBlock) then
+                  if not ((Branch.Count > 0) and (Branch.Last is TReturnBlock)) then
                      ending := lang.ProgramReturnTemplate;
                   TInfra.InsertTemplateLines(progList, '%s3', ending);
                end;
@@ -523,12 +523,8 @@ var
    block: TBlock;
 begin
    result := AParentNode;
-   block := Branch.First;
-   while block <> nil do
-   begin
-      block.GenerateTree(AParentNode);
-      block := block.Next;
-   end;
+   for block in Branch do
+       block.GenerateTree(AParentNode);
 end;
 
 procedure TMainBlock.SaveInXML(const ATag: IXMLElement);

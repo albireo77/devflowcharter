@@ -61,7 +61,7 @@ begin
    for i := 0 to pgcTabs.PageCount-1 do
    begin
       dataType := TUserDataType(pgcTabs.Pages[i]);
-      for field in dataType.GetElements<TField> do
+      for field in dataType.GetFields do
          TInfra.PopulateDataTypeCombo(field.cbType, dataType.PageIndex);
    end;
 end;

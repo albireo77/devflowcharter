@@ -295,7 +295,7 @@ begin
       if (func <> nil) and (func.Header <> nil) and (Length(AParmList) = func.Header.ParameterCount) then
       begin
          i := 0;
-         for param in func.Header.GetElements<TParameter> do
+         for param in func.Header.GetParameters do
          begin
             paramType := GetType(param.cbType.Text);
             currType := AParmList[i];
@@ -328,7 +328,7 @@ begin
       begin
          if dataType.Active and (dataType.Font.Color <> NOK_COLOR) and (dataType.Kind = dtEnum) then
          begin
-            for field in dataType.GetElements<TField> do
+            for field in dataType.GetFields do
             begin
                if (field.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(AValue, Trim(field.edtName.Text)) then
                begin
@@ -384,7 +384,7 @@ var
 begin
    if AHeader <> nil then
    begin
-      for param in AHeader.GetElements<TParameter> do
+      for param in AHeader.GetParameters do
       begin
          if (param.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(AResult.Ident, Trim(param.edtName.Text)) then
          begin
@@ -490,7 +490,7 @@ begin
       dataType := GProject.GetUserDataType(typeString);
       if (dataType <> nil) and (dataType.Kind = dtRecord) then
       begin
-         for field in dataType.GetElements<TField> do
+         for field in dataType.GetFields do
          begin
             if (field.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(Trim(field.edtName.Text), AField) then
             begin
@@ -575,7 +575,7 @@ begin
       begin
          if dataType.Active and (dataType.Font.Color <> NOK_COLOR) then
          begin
-            for field in dataType.GetElements<TField> do
+            for field in dataType.GetFields do
                if (field.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(AIdentName, Trim(field.edtName.Text)) then exit;
          end;
       end;

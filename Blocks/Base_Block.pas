@@ -258,8 +258,6 @@ type
          FId: integer;
          function GetIndex: integer;
          function GetHeight: integer;
-         function GetFirst: TBlock;
-         function GetLast: TBlock;
          function GetId: integer;
          function _AddRef: Integer; stdcall;
          function _Release: Integer; stdcall;
@@ -270,8 +268,6 @@ type
          property ParentBlock: TGroupBlock read FParentBlock;
          property Index: integer read GetIndex;
          property Height: integer read GetHeight;
-         property First: TBlock read GetFirst;
-         property Last: TBlock read GetLast;
          property Id: integer read GetId;
          constructor Create(const AParent: TGroupBlock; const AHook: TPoint; const AId: integer = ID_INVALID);
          destructor Destroy; override;
@@ -442,14 +438,12 @@ begin
          lBranch2 := GetBranch(i);
          if lBranch2 = nil then
             lBranch2 := AddBranch(lBranch.Hook, false);
-         block := lBranch.First;
          prevBlock := nil;
-         while block <> nil do
+         for block in lBranch do
          begin
             newBlock := block.Clone(lBranch2);
             lBranch2.InsertAfter(newBlock, prevBlock);
             prevBlock := lBranch2.Last;
-            block := block.Next;
          end;
       end;
    end;
@@ -745,12 +739,8 @@ begin
    lBranch := GetBranch(ABranchInd);
    if lBranch <> nil then
    begin
-      block := lBranch.First;
-      while block <> nil do
-      begin
-         result := result + block.GenerateCode(ALines, ALangId, ADeep);
-         block := block.Next;
-      end;
+      for block in lBranch do
+          result := result + block.GenerateCode(ALines, ALangId, ADeep);
    end;
 end;
 
@@ -932,8 +922,7 @@ begin
    TopHook.X := Branch.Hook.X;
    LinkBlocks;
 
-   block := Branch.First;
-   if block = nil then   // case if primary branch is empty
+   if Branch.Count = 0 then   // case if primary branch is empty
    begin
       Width := FInitParms.Width;
       BottomHook := FInitParms.BottomHook;
@@ -943,26 +932,24 @@ begin
    begin
       // resize in left direction
       xLeft := 30;   // 30 - left margin
-      repeat
+      for block in Branch do
+      begin
          if block.Left < xLeft then
             xLeft := block.Left;
-         block := block.Next;
-      until block = nil;
+      end;
 
       Branch.Hook.X := Branch.Hook.X + 30 - xLeft;
       TopHook.X := Branch.Hook.X;
       LinkBlocks;
-      block := Branch.Last;
-      BottomHook := block.Left + block.BottomPoint.X;
+      BottomHook := Branch.Last.Left + Branch.Last.BottomPoint.X;
 
       // resize in right direction
       xRight := 0;
-      block := Branch.First;
-      repeat
+      for block in Branch do
+      begin
          if block.BoundsRect.Right > xRight then
             xRight := block.BoundsRect.Right;
-         block := block.Next;
-      until block = nil;
+      end;
 
       SetWidth(xRight);  // set final width
    end;
@@ -987,6 +974,7 @@ var
    block, blockPrev: TBlock;
    i, first, last: integer;
    topLeft: TPoint;
+   lBranch: TBranch;
 begin
    if GetBranch(idx) <> nil then
    begin
@@ -1000,18 +988,19 @@ begin
    end;
    for i := first to last do
    begin
-      block := FBranchArray[i].First;
-      if block <> nil then
+      lBranch := FBranchArray[i];
+      for block in lBranch do
       begin
-         topLeft := Point(FBranchArray[i].Hook.X-block.TopHook.X, FBranchArray[i].Hook.Y+1);
-         block.SetBounds(topLeft.X, topLeft.Y, block.Width, block.Height);
-         block := block.Next;
-         while block <> nil do
+         if block = lBranch.First then
+         begin
+            topLeft := Point(lBranch.Hook.X-block.TopHook.X, lBranch.Hook.Y+1);
+            block.SetBounds(topLeft.X, topLeft.Y, block.Width, block.Height);
+         end
+         else
          begin
             blockPrev := block.Prev;
             topLeft := Point(blockPrev.BottomPoint.X+blockPrev.Left-block.TopHook.X, blockPrev.BoundsRect.Bottom);
             block.SetBounds(topLeft.X, topLeft.Y, block.Width, block.Height);
-            block := block.Next;
          end;
       end;
    end;
@@ -1294,12 +1283,8 @@ begin
    begin
       for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
       begin
-         block := FBranchArray[i].First;
-         while block <> nil do
-         begin
-            block.ChangeColor(AColor);
-            block := block.Next;
-         end;
+         for block in FBranchArray[i] do
+             block.ChangeColor(AColor);
       end;
    end;
    lColor := GSettings.GetShapeColor(shpFolder);
@@ -1339,12 +1324,10 @@ begin
       ExpandFold(true);
    for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
    begin
-      block := FBranchArray[i].First;
-      while block <> nil do
+      for block in FBranchArray[i] do
       begin
          if block is TGroupBlock then
             TGroupBlock(block).ExpandAll;
-         block := block.Next;
       end;
    end;
 end;
@@ -1373,15 +1356,13 @@ begin
    begin
       for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
       begin
-         block := FBranchArray[i].First;
-         while block <> nil do
+         for block in FBranchArray[i] do
          begin
             if block is TGroupBlock then
             begin
                result := TGroupBlock(block).HasFoldedBlocks;
                if result then break;
             end;
-            block := block.Next;
          end;
          if result then break;
       end;
@@ -1681,7 +1662,7 @@ end;
 
 function TBlock.CanInsertReturnBlock: boolean;
 begin
-   result := (Ired = 0) and (FParentBranch <> nil) and (FParentBranch.Last = Self);
+   result := (Ired = 0) and (FParentBranch <> nil) and (FParentBranch.Count > 0) and (FParentBranch.Last = Self);
 end;
 
 function TGroupBlock.CanInsertReturnBlock: boolean;
@@ -1689,11 +1670,11 @@ var
    lBranch: TBranch;
 begin
    if Ired = 0 then
-      result := (FParentBranch <> nil) and (FParentBranch.Last = Self)
+      result := (FParentBranch <> nil) and (FParentBranch.Count > 0) and (FParentBranch.Last = Self)
    else
    begin
       lBranch := GetBranch(Ired);
-      result := (lBranch <> nil) and (lBranch.Last = nil);
+      result := (lBranch <> nil) and (lBranch.Count = 0);
    end;
 end;
 
@@ -2028,12 +2009,8 @@ var
    block: TBlock;
 begin
    result := inherited GenerateTree(AParentNode);
-   block := FBranchArray[PRIMARY_BRANCH_IND].First;
-   while block <> nil do
-   begin
-      block.GenerateTree(result);
-      block := block.Next;
-   end;
+   for block in FBranchArray[PRIMARY_BRANCH_IND] do
+       block.GenerateTree(result);
 end;
 
 function TGroupBlock.AddBranch(const AHook: TPoint; const AResizeInd: boolean; const ABranchId: integer = ID_INVALID; const ABranchStmntId: integer = ID_INVALID): TBranch;
@@ -2172,12 +2149,8 @@ begin
 
    for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
    begin
-      block := FBranchArray[i].First;
-      while block <> nil do
-      begin
-         block.Visible := Expanded;
-         block := block.Next;
-      end;
+      for block in FBranchArray[i] do
+          block.Visible := Expanded;
    end;
 
    if Expanded then
@@ -2307,7 +2280,7 @@ begin
             tag2.AppendChild(tag1);
 
             for block in GetBlocks(lBranch.Index) do
-               TXMLProcessor.ExportBlockToXML(block, tag2);
+                TXMLProcessor.ExportBlockToXML(block, tag2);
          end;
       finally
          if unPin then
@@ -2468,23 +2441,13 @@ begin
    TXMLProcessor.ExportBlockToXML(Self, ATag);
    if ParentBranch <> nil then
    begin
-      block := ParentBranch.First;
+      block := Next;
       while block <> nil do
       begin
-         if block = Self then
+         if not block.Frame then
             break;
+         TXMLProcessor.ExportBlockToXML(block, ATag);
          block := block.Next;
-      end;
-      if block <> nil then
-      begin
-         block := block.Next;
-         while block <> nil do
-         begin
-            if not block.Frame then
-               break;
-            TXMLProcessor.ExportBlockToXML(block, ATag);
-            block := block.Next;
-         end;
       end;
    end;
 end;
@@ -2668,12 +2631,8 @@ begin
    inherited PopulateComboBoxes;
    for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
    begin
-      block := FBranchArray[i].First;
-      while block <> nil do
-      begin
-         block.PopulateComboBoxes;
-         block := block.Next;
-      end;
+      for block in FBranchArray[i] do
+          block.PopulateComboBoxes;
    end;
 end;
 
@@ -2714,12 +2673,8 @@ begin
       list.Capacity := a;
    for i := first to last do
    begin
-      block := FBranchArray[i].First;
-      while block <> nil do
-      begin
-         list.Add(block);
-         block := block.Next;
-      end;
+      for block in FBranchArray[i] do
+          list.Add(block);
    end;
    result := TEnumeratorFactory<TBlock>.Create(list);
 end;
@@ -2982,20 +2937,6 @@ begin
          i := i + 1;
       end;
    end;
-end;
-
-function TBranch.GetFirst: TBlock;
-begin
-   result := nil;
-   if Count > 0 then
-      result := TBlock(inherited First);
-end;
-
-function TBranch.GetLast: TBlock;
-begin
-   result := nil;
-   if Count > 0 then
-      result := TBlock(inherited Last);
 end;
 
 function TBranch.FindInstanceOf(AClass: TClass): integer;

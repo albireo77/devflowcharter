@@ -146,7 +146,7 @@ begin
       try
          if inFunc then
             tmpList.AddObject(indnt + userFunction.Header.edtName.Text + ' ' + GInfra.GetLangDefinition(ALangId).AssignOperator + ' ' + expr + ';', Self);
-         if not ((TMainBlock(FTopParentBlock).GetBranch(PRIMARY_BRANCH_IND).Last = Self) and inFunc) then
+         if not (((TMainBlock(FTopParentBlock).Branch.Count > 0) and (TMainBlock(FTopParentBlock).Branch.Last = Self)) and inFunc) then
             tmpList.AddObject(indnt + 'exit;', Self);
          TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
          result := tmpList.Count;

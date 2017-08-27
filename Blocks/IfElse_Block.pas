@@ -140,7 +140,7 @@ var
    block: TBlock;
 begin
 
-   if (TrueBranch.First = nil) and (FalseBranch.First = nil) then  // no child blocks
+   if (TrueBranch.Count = 0) and (FalseBranch.Count = 0) then  // no child blocks
    begin
       Width := FInitParms.Width;
       TrueBranch.Hook.X := FInitParms.BranchPoint.X;
@@ -160,76 +160,65 @@ begin
 
    LinkBlocks;
 
-   if Ired <> FALSE_BRANCH_IND then           // TRUE branch
+   if (Ired <> FALSE_BRANCH_IND) and (TrueBranch.Count > 0) then           // TRUE branch
    begin
-      block := TrueBranch.First;
-      if block <> nil then
+      leftX := 10;
+      for block in TrueBranch do
       begin
-         leftX := 10;
-         repeat
-            if block.Left < leftX then
-               leftX := block.Left;
-            block := block.Next;
-         until block = nil;
-         TrueBranch.Hook.X := TrueBranch.Hook.X - leftX + 10;
-         LinkBlocks;
-
-         block := TrueBranch.First;
-         maxXTrue := BottomHook - 30;
-         repeat
-            if block.BoundsRect.Right > maxXTrue then
-               maxXTrue := block.BoundsRect.Right;
-            block := block.Next;
-         until block = nil;
-         dlt := maxXTrue - BottomHook + 30;
-         Inc(TopHook.X, dlt);
-         BottomHook := BottomHook + dlt;
-         BottomPoint.X := BottomHook;
-         Width := Width + dlt + 10;
-         Inc(FalseBranch.Hook.X, dlt);
-         LinkBlocks;
-         TrueHook := TrueBranch.Last.Left + TrueBranch.Last.BottomPoint.X;
-         if FalseBranch.Last <> nil then
-            FalseHook := FalseBranch.Last.Left + FalseBranch.Last.BottomPoint.X
-         else
-         begin
-            FalseHook := FalseBranch.Hook.X;
-            Width := FalseBranch.Hook.X + 11;
-         end;
+         if block.Left < leftX then
+            leftX := block.Left;
       end;
+      TrueBranch.Hook.X := TrueBranch.Hook.X - leftX + 10;
+      LinkBlocks;
 
+      maxXTrue := BottomHook - 30;
+      for block in TrueBranch do
+      begin
+         if block.BoundsRect.Right > maxXTrue then
+            maxXTrue := block.BoundsRect.Right;
+      end;
+      dlt := maxXTrue - BottomHook + 30;
+      Inc(TopHook.X, dlt);
+      BottomHook := BottomHook + dlt;
+      BottomPoint.X := BottomHook;
+      Width := Width + dlt + 10;
+      Inc(FalseBranch.Hook.X, dlt);
+      LinkBlocks;
+      TrueHook := TrueBranch.Last.Left + TrueBranch.Last.BottomPoint.X;
+      if FalseBranch.Count > 0 then
+         FalseHook := FalseBranch.Last.Left + FalseBranch.Last.BottomPoint.X
+      else
+      begin
+         FalseHook := FalseBranch.Hook.X;
+         Width := FalseBranch.Hook.X + 11;
+      end;
    end;
 
-   if Ired <> TRUE_BRANCH_IND then           // FALSE branch
+   if (Ired <> TRUE_BRANCH_IND) and (FalseBranch.Count > 0) then           // FALSE branch
    begin
-      block := FalseBranch.First;
-      if block <> nil then
+      minXFalse := BottomHook + 30;
+      for block in FalseBranch do
       begin
-         minXFalse := BottomHook + 30;
-         repeat
-            if block.Left < minXFalse then
-               minXFalse := block.Left;
-            block := block.Next;
-         until block = nil;
-         dlt := BottomHook + 30 - minXFalse;
-         FalseBranch.Hook.X := FalseBranch.Hook.X + dlt;
-         LinkBlocks;
-
-         rightX := 0;
-         block := FalseBranch.First;
-         repeat
-            if block.BoundsRect.Right > rightX then
-               rightX := block.BoundsRect.Right;
-            block := block.next;
-         until block = nil;
-         Width := rightX + 10;
-         LinkBlocks;
-         FalseHook := FalseBranch.Last.Left + FalseBranch.Last.BottomPoint.X;
-         if TrueBranch.Last <> nil then
-            TrueHook := TrueBranch.Last.Left + TrueBranch.Last.BottomPoint.X
-         else
-            TrueHook := TrueBranch.Hook.X;
+         if block.Left < minXFalse then
+            minXFalse := block.Left;
       end;
+      dlt := BottomHook + 30 - minXFalse;
+      FalseBranch.Hook.X := FalseBranch.Hook.X + dlt;
+      LinkBlocks;
+
+      rightX := 0;
+      for block in FalseBranch do
+      begin
+         if block.BoundsRect.Right > rightX then
+            rightX := block.BoundsRect.Right;
+      end;
+      Width := rightX + 10;
+      LinkBlocks;
+      FalseHook := FalseBranch.Last.Left + FalseBranch.Last.BottomPoint.X;
+      if TrueBranch.Count > 0 then
+         TrueHook := TrueBranch.Last.Left + TrueBranch.Last.BottomPoint.X
+      else
+         TrueHook := TrueBranch.Hook.X;
    end;
 
    if AContinue then
@@ -294,12 +283,8 @@ var
 begin
    result := inherited GenerateTree(AParentNode);
    newNode := AParentNode.Owner.AddChild(AParentNode, GInfra.CurrentLang.ElseLabel);
-   block := FalseBranch.First;
-   while block <> nil do
-   begin
-      block.GenerateTree(newNode);
-      block := block.Next;
-   end;
+   for block in FalseBranch do
+       block.GenerateTree(newNode);
 end;
 
 procedure TIfElseBlock.ExpandFold(const AResize: boolean);

@@ -70,7 +70,7 @@ begin
             continue;
          funcPrefix := IfThen(func.Header.cbType.ItemIndex <> 0, 'Func', 'Prgm');
          funcParms := '';
-         for param in func.Header.GetElements<TParameter> do
+         for param in func.Header.GetParameters do
          begin
             if not funcParms.IsEmpty then
                funcParms := funcParms + ',';

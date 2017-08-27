@@ -69,6 +69,7 @@ type
       function GetOriginalType: integer;
       procedure GenerateTree(const ANode: TTreeNode);
       function Kind: TUserDataTypeKind;
+      function GetFields: IEnumerable<TField>;
    end;
 
 implementation
@@ -419,6 +420,11 @@ begin
          end;
       end;
    end;
+end;
+
+function TUserDataType.GetFields: IEnumerable<TField>;
+begin
+   result := GetElements<TField>;
 end;
 
 procedure TField.OnChangeName(Sender: TObject);

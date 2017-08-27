@@ -256,12 +256,10 @@ begin
       x := leftX;
       LinkBlocks(i);
 
-      block := lBranch.First;
-      while block <> nil do
+      for block in lBranch do
       begin
          if block.Left < x then
             x := block.Left;
-         block := block.Next;
       end;
 
       Inc(lBranch.hook.X, leftX-x);
@@ -269,9 +267,8 @@ begin
       PlaceBranchStatement(lBranch);
       if lBranch.FindInstanceOf(TReturnBlock) = -1 then
       begin
-         block := lBranch.Last;
-         if block <> nil then
-            BottomHook := block.Left + block.BottomPoint.X
+         if lBranch.Count > 0 then
+            BottomHook := lBranch.Last.Left + lBranch.Last.BottomPoint.X
          else
             BottomHook := lBranch.Hook.X;
       end;
@@ -361,7 +358,7 @@ begin
                   GenerateNestedCode(tmpList, i, ADeep+1, ALangId);
                end;
             end;
-            if FBranchArray[DEFAULT_BRANCH_IND].first <> nil then
+            if FBranchArray[DEFAULT_BRANCH_IND].Count > 0 then
             begin
                if bcnt = 1 then
                   tmpList.AddObject(indnt + 'If (' + line + ' = ' + line + ') Then', Self)
@@ -396,7 +393,7 @@ begin
                   GenerateNestedCode(tmpList, i, ADeep+1, ALangId);
                end;
             end;
-            if FBranchArray[DEFAULT_BRANCH_IND].first <> nil then
+            if FBranchArray[DEFAULT_BRANCH_IND].Count > 0 then
             begin
                if bcnt = 1 then
                   tmpList.AddObject(indnt + 'if ' + line + ' == ' + line + ':', Self)
@@ -438,7 +435,7 @@ begin
                try
                   lines.Text := ReplaceStr(langDef.CaseOfTemplate, PRIMARY_PLACEHOLDER, line);
                   TInfra.InsertTemplateLines(lines, '%s2', caseLines);
-                  defTemplate := IfThen(FBranchArray[DEFAULT_BRANCH_IND].First <> nil, langDef.CaseOfDefaultValueTemplate);
+                  defTemplate := IfThen(FBranchArray[DEFAULT_BRANCH_IND].Count > 0, langDef.CaseOfDefaultValueTemplate);
                   TInfra.InsertTemplateLines(lines, '%s3', defTemplate);
                   GenerateTemplateSection(tmpList1, lines, ALangId, ADeep);
                finally
@@ -556,22 +553,14 @@ begin
             exp2 := true;
          newNode := AParentNode.Owner.AddChildObject(result, lBranch.Statement.Text + ': ' + errMsg, lBranch.Statement);
       end;
-      block := lBranch.First;
-      while block <> nil do
-      begin
-         block.GenerateTree(newNode);
-         block := block.Next;
-      end;
+      for block in lBranch do
+          block.GenerateTree(newNode);
    end;
 
    newNode := AParentNode.Owner.AddChild(result, i18Manager.GetString('DefValue'));
 
-   block := DefaultBranch.First;
-   while block <> nil do
-   begin
-      block.GenerateTree(newNode);
-      block := block.Next;
-   end;
+   for block in DefaultBranch do
+       block.GenerateTree(newNode);
 
    if exp1 then
    begin

@@ -54,6 +54,7 @@ type
          procedure CreateExtDeclareChBox(AParent: TWinControl; x, y: integer);
          procedure CreateNameControls(AParent: TWinControl; x, y: integer);
          procedure CreateLibControls(AParent: TWinControl; x, y: integer);
+         function GetElements<T: class>: IEnumerable<T>;
       public
          edtName: TEdit;
          chkExtDeclare: TCheckBox;
@@ -68,7 +69,6 @@ type
          property ParentForm: TPageControlForm read FParentForm;
          constructor Create(const AParentForm: TPageControlForm);
          destructor Destroy; override;
-         function GetElements<T: class>: IEnumerable<T>;
          procedure ExportToXMLTag(ATag: IXMLElement); virtual;
          function ExportToXMLFile(const AFile: string): TErrorType;
          procedure ExportToGraphic(const AGraphic: TGraphic);

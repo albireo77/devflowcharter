@@ -166,7 +166,7 @@ begin
       header := TUserFunctionHeader(pgcTabs.Pages[i]);
       TInfra.PopulateDataTypeCombo(header.LocalVars.cbType);
       TInfra.PopulateDataTypeCombo(header.cbType);
-      for param in header.GetElements<TParameter> do
+      for param in header.GetParameters do
          TInfra.PopulateDataTypeCombo(param.cbType);
    end;
 end;
