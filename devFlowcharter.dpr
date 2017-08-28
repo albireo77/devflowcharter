@@ -78,7 +78,6 @@ uses
   Navigator_Form in 'Forms\Navigator_Form.pas' {NavigatorForm},
   CommonTypes in 'Common\CommonTypes.pas',
   Text_Block in 'Blocks\Text_Block.pas',
-  SortListDecorator in 'Common\SortListDecorator.pas',
   SelectImport_Form in 'Forms\SelectImport_Form.pas' {SelectImportForm},
   EditMemo_Form in 'Forms\EditMemo_Form.pas' {MemoEditorForm},
   LangDefinition in 'Common\LangDefinition.pas',

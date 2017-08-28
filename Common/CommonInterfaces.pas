@@ -53,9 +53,9 @@ type
       property Id: integer read GetId;
    end;
 
-   ISortable = interface
+   IGenericComparable = interface
       ['{67CF9A42-5F40-4514-A352-E7FE29F8CF43}']
-      function GetSortValue(const ASortType: integer): integer;
+      function GetCompareValue(ACompareType: integer): integer;
    end;
 
    IActivable = interface
@@ -86,7 +86,7 @@ type
       ['{83E56064-8CD4-4E91-BB66-47EDBCF2C697}']
       function GetHandle: THandle;
       procedure BringAllToFront;
-      procedure SetZOrder(const AValue: integer);
+      procedure SetZOrder(AValue: integer);
       function GetZOrder: integer;
    end;
 

@@ -25,7 +25,7 @@ interface
 
 uses
    WinApi.Windows, Vcl.Graphics, System.Classes, Vcl.ComCtrls, Vcl.Controls, System.Contnrs,
-   UserFunction, OmniXML, UserDataType, Main_Block, DeclareList, BaseEnumerator, CommonTypes,
+   Generics.Defaults, UserFunction, OmniXML, UserDataType, Main_Block, DeclareList, BaseEnumerator, CommonTypes,
    CommonInterfaces, BlockTabSheet, Comment;
 
 type
@@ -50,7 +50,7 @@ type
       FChanged: boolean;
       class var FInstance: TProject;
       procedure SetGlobals;
-      function GetComponents<T: class>(ASortType: integer = NO_SORT): IEnumerable<T>;
+      function GetComponents<T: class>(Comparer: IComparer<T> = nil): IEnumerable<T>;
       function GetComponentByName(AClass: TClass; const AName: string): TComponent;
       function GetIWinControlComponent(const AHandle: THandle): IWinControl;
       procedure RefreshZOrder;
@@ -72,9 +72,9 @@ type
       property GlobalConsts: TConstDeclareList read FGlobalConsts default nil;
       class function GetInstance: TProject;
       destructor Destroy; override;
-      procedure AddComponent(const AComponent: TComponent);
+      procedure AddComponent(AComponent: TComponent);
       function GetComments: IEnumerable<TComment>;
-      function GetUserFunctions(const ASortType: integer = PAGE_INDEX_SORT): IEnumerable<TUserFunction>;
+      function GetUserFunctions(ASortType: integer = PAGE_INDEX_SORT): IEnumerable<TUserFunction>;
       function GetUserDataTypes: IEnumerable<TUserDataType>;
       function GetUserDataType(const ATypeName: string): TUserDataType;
       function GetUserFunction(const AFunctionName: string): TUserFunction;
@@ -121,7 +121,7 @@ implementation
 uses
    System.SysUtils, Vcl.Menus, Vcl.Forms, System.StrUtils, System.Types, System.UITypes,
    Generics.Collections, ApplicationCommon, XMLProcessor, Base_Form, LangDefinition,
-   Navigator_Form, SortListDecorator, Base_Block, TabComponent, ParserHelper, SelectImport_Form;
+   Navigator_Form, Base_Block, TabComponent, ParserHelper, SelectImport_Form;
 
 constructor TProject.Create;
 begin
@@ -278,31 +278,38 @@ begin
    end;
 end;
 
-procedure TProject.AddComponent(const AComponent: TComponent);
+procedure TProject.AddComponent(AComponent: TComponent);
 begin
    FComponentList.Add(AComponent);
 end;
 
 function TProject.GetComments: IEnumerable<TComment>;
 begin
-   result := GetComponents<TComment>(NO_SORT);
+   result := GetComponents<TComment>;
 end;
 
-function TProject.GetUserFunctions(const ASortType: integer = PAGE_INDEX_SORT): IEnumerable<TUserFunction>;
+function TProject.GetUserFunctions(ASortType: integer = PAGE_INDEX_SORT): IEnumerable<TUserFunction>;
 begin
-   result := GetComponents<TUserFunction>(ASortType);
+   result := GetComponents<TUserFunction>(TUserFunctionComparer.Create(ASortType));
 end;
 
 function TProject.GetUserDataTypes: IEnumerable<TUserDataType>;
+var
+   Comparer: IComparer<TUserDataType>;
 begin
-   result := GetComponents<TUserDataType>(PAGE_INDEX_SORT);
+   Comparer := TDelegatedComparer<TUserDataType>.Create(
+      function(const L, R: TUserDataType): integer
+      begin
+         result := L.PageIndex - R.PageIndex;
+      end
+   );
+   result := GetComponents<TUserDataType>(Comparer);
 end;
 
-function TProject.GetComponents<T>(ASortType: integer = NO_SORT): IEnumerable<T>;
+function TProject.GetComponents<T>(Comparer: IComparer<T> = nil): IEnumerable<T>;
 var
    i: integer;
    list: TList<T>;
-   listDecor: TSortListDecorator<T>;
 begin
    list := TList<T>.Create;
    if list.Capacity < FComponentList.Count then
@@ -317,12 +324,8 @@ begin
        else
           list.Add(FComponentList[i]);
    end;
-   if (ASortType <> NO_SORT) and (list.Count > 1) then
-   begin
-      listDecor := TSortListDecorator<T>.Create(list, ASortType);
-      listDecor.Sort;
-      listDecor.Free;
-   end;
+   if Comparer <> nil then
+      list.Sort(Comparer);
    result := TEnumeratorFactory<T>.Create(list);
 end;
 
@@ -443,6 +446,7 @@ end;
 procedure TProject.ExportToXMLTag(ATag: IXMLElement);
 var
    comp: TComponent;
+   components: IEnumerable<TComponent>;
    xmlObj: IXMLable;
    i: integer;
    pageControl: TPageControl;
@@ -464,7 +468,8 @@ begin
    for i := 0 to pageControl.PageCount-1 do
       UpdateZOrder(pageControl.Pages[i]);
 
-   for comp in GetComponents<TComponent>(PAGE_INDEX_SORT) do
+   components := GetComponents<TComponent>(TComponentComparer.Create(PAGE_INDEX_SORT));
+   for comp in components do
    begin
       if Supports(comp, IXMLable, xmlObj) and xmlObj.Active then
          xmlObj.ExportToXMLTag(ATag);
@@ -889,8 +894,10 @@ procedure TProject.RefreshZOrder;
 var
    comp: TComponent;
    winControl: IWinControl;
+   components: IEnumerable<TComponent>;
 begin
-   for comp in GetComponents<TComponent>(Z_ORDER_SORT) do
+   components := GetComponents<TComponent>(TComponentComparer.Create(Z_ORDER_SORT));
+   for comp in components do
    begin
       if Supports(comp, IWinControl, winControl) then
          winControl.BringAllToFront;
@@ -1187,10 +1194,12 @@ var
    libName: string;
    tab: ITabbable;
    comp: TComponent;
+   components: IEnumerable<TComponent>;
 begin
    result := TStringList.Create;
    result.CaseSensitive := GInfra.CurrentLang.CaseSensitiveSyntax;
-   for comp in GetComponents<TComponent>(PAGE_INDEX_SORT) do
+   components := GetComponents<TComponent>(TComponentComparer.Create(PAGE_INDEX_SORT));
+   for comp in components do
    begin
       if Supports(comp, ITabbable, tab) then
       begin

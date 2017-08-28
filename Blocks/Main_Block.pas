@@ -46,7 +46,7 @@ type
          procedure ExportToGraphic(const AGraphic: TGraphic); override;
          procedure SetWidth(const AMinX: integer); override;
          function GetHandle: THandle;
-         procedure SetZOrder(const AValue: integer);
+         procedure SetZOrder(AValue: integer);
          function GetZOrder: integer;
          function IsBoldDesc: boolean; override;
          function Remove: boolean; override;
@@ -187,7 +187,7 @@ begin
    result := result + 40;
 end;
 
-procedure TMainBlock.SetZOrder(const AValue: integer);
+procedure TMainBlock.SetZOrder(AValue: integer);
 begin
    FZOrder := FPage.PageIndex * 100 + AValue;
 end;

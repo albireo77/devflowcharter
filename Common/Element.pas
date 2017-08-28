@@ -25,13 +25,13 @@ interface
 
 uses
    Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Forms, BaseEnumerator, OmniXml,
-   PageControl_Form, CommonInterfaces;
+   PageControl_Form;
 
 type
    
-   TElement = class(TPanel, ISortable)
+   TElement = class(TPanel, IComparable<TElement>)
       private
-         FParentTab: TTabSheet;     // cannot declare as TTabComponent due to 'circular unit reference' error
+         FParentTab: TTabSheet;
          FParentForm: TPageControlForm;
          function GetParentTab: TTabSheet;
       protected
@@ -50,7 +50,8 @@ type
          function ExportToXMLTag(const ATag: IXMLElement): IXMLElement; virtual;
          procedure ImportFromXMLTag(const ATag: IXMLElement); virtual;
          function IsValid: boolean; virtual;
-         function GetSortValue(const ASortType: integer): integer;
+         function CompareTo(AValue: TElement): integer; overload;
+         function CompareTo(AValue: TObject): integer; overload;
    end;
 
 const
@@ -185,11 +186,6 @@ begin
    GProject.SetChanged;
 end;
 
-function TElement.GetSortValue(const ASortType: integer): integer;
-begin
-   result := Top;
-end;
-
 procedure TElement.ImportFromXMLTag(const ATag: IXMLElement);
 var
    idx: integer;
@@ -208,6 +204,16 @@ begin
    ATag.AppendChild(result);
    result.SetAttribute(NAME_ATTR, Trim(edtName.Text));
    result.SetAttribute(TYPE_ATTR, cbType.Text);
+end;
+
+function TElement.CompareTo(AValue: TObject): integer;
+begin
+   result := 1;
+end;
+
+function TElement.CompareTo(AValue: TElement): integer;
+begin
+   result := Top - AValue.Top;
 end;
 
 end.

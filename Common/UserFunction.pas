@@ -25,12 +25,19 @@ interface
 
 uses
    Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ExtCtrls, System.Classes, System.Types,
-   OmniXML, Main_Block, DeclareList, CommonInterfaces, TabComponent, Element, Functions_Form;
+   Generics.Defaults, OmniXML, Main_Block, DeclareList, CommonInterfaces, TabComponent,
+   Element, Functions_Form;
 
 type
 
    TUserFunction = class;
    TUserFunctionHeader = class;
+
+   TUserFunctionComparer = class(TComparer<TUserFunction>)
+      FCompareType: integer;
+      constructor Create(ACompareType: integer);
+      function Compare(const L, R: TUserFunction): integer; override;
+   end;
 
    TParameter = class(TElement)
       constructor Create(const AParentTab: TUserFunctionHeader);
@@ -88,7 +95,7 @@ type
       function GetParameters: IEnumerable<TParameter>;
    end;
 
-   TUserFunction = class(TComponent, IXMLable, ITabbable, IIdentifiable, ISizeEditable, IWinControl, IMaxBoundable, ISortable)
+   TUserFunction = class(TComponent, IXMLable, ITabbable, IIdentifiable, ISizeEditable, IWinControl, IMaxBoundable, IGenericComparable)
    private
       FHeader: TUserFunctionHeader;
       FBody: TMainBlock;
@@ -109,12 +116,12 @@ type
       procedure RefreshSizeEdits;
       function GetMaxBounds: TPoint;
       function GetName: string;
-      function GetSortValue(const ASortType: integer): integer;
       function GetHandle: THandle;
       procedure BringAllToFront;
-      procedure SetZOrder(const AValue: integer);
+      procedure SetZOrder(AValue: integer);
       function GetZOrder: integer;
       function IsMain: boolean;
+      function GetCompareValue(ACompareType: integer): integer;
    end;
 
 implementation
@@ -186,25 +193,13 @@ begin
       result := FBody.GetMaxBounds;
 end;
 
-function TUserFunction.GetSortValue(const ASortType: integer): integer;
-begin
-   result := -1;
-   if ASortType = Z_ORDER_SORT then
-   begin
-      if FBody <> nil then
-         result := FBody.GetZOrder;
-   end
-   else if FHeader <> nil then
-      result := FHeader.GetSortValue(ASortType);
-end;
-
 procedure TUserFunction.BringAllToFront;
 begin
    if FBody <> nil then
       FBody.BringAllToFront;
 end;
 
-procedure TUserFunction.SetZOrder(const AValue: integer);
+procedure TUserFunction.SetZOrder(AValue: integer);
 begin
    if FBody <> nil then
       FBody.SetZOrder(AValue);
@@ -818,6 +813,51 @@ begin
    tag := inherited ExportToXMLTag(ATag);
    tag.SetAttribute('table', chkTable.Checked.ToString);
    tag.SetAttribute('reference', chkReference.Checked.ToString);
+end;
+
+function TUserFunction.GetCompareValue(ACompareType: integer): integer;
+begin
+   result := -1;
+   if ACompareType = Z_ORDER_SORT then
+   begin
+      if FBody <> nil then
+         result := FBody.GetZOrder;
+   end
+   else if FHeader <> nil then
+      result := FHeader.GetCompareValue(ACompareType);
+end;
+
+constructor TUserFunctionComparer.Create(ACompareType: integer);
+begin
+   inherited Create;
+   FCompareType := ACompareType;
+end;
+
+function TUserFunctionComparer.Compare(const L, R: TUserFunction): integer;
+begin
+   result := -1;
+   if FCompareType = Z_ORDER_SORT then
+   begin
+      if (L.Body = nil) and (R.Body = nil) then
+         result := 0
+      else if L.Body = nil then
+         result := 1
+      else if R.Body = nil then
+         result := -1
+      else
+         result := L.Body.GetZOrder - R.Body.GetZOrder;
+   end
+   else if FCompareType = PAGE_INDEX_SORT then
+   begin
+      if (L.Header = nil) and (R.Header = nil) then
+         result := 0
+      else if L.Header = nil then
+         result := 1
+      else if R.Header = nil then
+         result := -1
+      else
+         result := L.Header.PageIndex - R.Header.PageIndex;
+   end;
 end;
 
 end.

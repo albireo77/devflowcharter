@@ -28,7 +28,7 @@ uses
 
 type
 
-   TEnumerator<T: class> = class(TInterfacedObject, IEnumerator<T>, IEnumerator)
+   TCustomEnumerator<T: class> = class(TInterfacedObject, IEnumerator<T>, IEnumerator)
       private
          FList: TList<T>;
          FIndex: integer;
@@ -36,10 +36,10 @@ type
       protected
          constructor Create(AList: TList<T>); overload;
          destructor Destroy; override;
-         function GetCurrent: TObject;
-         function GenericGetCurrent: T;
          function MoveNext: Boolean;
          procedure Reset;
+         function GenericGetCurrent: T;
+         function GetCurrent: TObject;
          function IEnumerator<T>.GetCurrent = GenericGetCurrent;
    end;
 
@@ -59,43 +59,43 @@ implementation
 uses
    System.Classes;
 
-constructor TEnumerator<T>.Create(AList: TList<T>);
+constructor TCustomEnumerator<T>.Create(AList: TList<T>);
 begin
    inherited Create;
    FList := AList;
    FIndex := -1;
 end;
 
-destructor TEnumerator<T>.Destroy;
+destructor TCustomEnumerator<T>.Destroy;
 begin
    FList.Free;
    inherited Destroy;
 end;
 
-function TEnumerator<T>.InListRange: boolean;
+function TCustomEnumerator<T>.InListRange: boolean;
 begin
    result := (FIndex >= 0) and (FList <> nil) and (FIndex < FList.Count);
 end;
 
-function TEnumerator<T>.MoveNext: boolean;
+function TCustomEnumerator<T>.MoveNext: boolean;
 begin
    Inc(FIndex);
    result := InListRange;
 end;
 
-function TEnumerator<T>.GetCurrent: TObject;
+function TCustomEnumerator<T>.GetCurrent: TObject;
 begin
    result := nil;
    if InListRange then
       result := FList[FIndex];
 end;
 
-procedure TEnumerator<T>.Reset;
+procedure TCustomEnumerator<T>.Reset;
 begin
    FIndex := -1;
 end;
 
-function TEnumerator<T>.GenericGetCurrent: T;
+function TCustomEnumerator<T>.GenericGetCurrent: T;
 begin
    result := T(GetCurrent);
 end;
@@ -114,7 +114,7 @@ end;
 function TEnumeratorFactory<T>.GenericGetEnumerator: IEnumerator<T>;
 begin
    if FInstance = nil then
-      FInstance := TEnumerator<T>.Create(FList);
+      FInstance := TCustomEnumerator<T>.Create(FList);
    result := FInstance;
 end;
 

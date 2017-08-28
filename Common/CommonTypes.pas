@@ -27,7 +27,7 @@ uses
 {$IFDEF USE_CODEFOLDING}
    SynEditCodeFolding,
 {$ENDIF}
-   System.Classes, SynEditTypes;
+   System.Classes, Generics.Defaults, SynEditTypes;
 
 type
 
@@ -84,7 +84,35 @@ type
    PTypesSet = ^TTypesSet;
    TTypesSet = set of 0..255;
 
+   TComponentComparer = class(TComparer<TComponent>)
+      FCompareType: integer;
+      constructor Create(ACompareType: integer);
+      function Compare(const L, R: TComponent): integer; override;
+   end;
+
+
+
 implementation
+
+uses
+   System.SysUtils, CommonInterfaces;
+
+constructor TComponentComparer.Create(ACompareType: integer);
+begin
+   inherited Create;
+   FCompareType := ACompareType;
+end;
+
+function TComponentComparer.Compare(const L, R: TComponent): integer;
+var
+   compareObj: IGenericComparable;
+begin
+   result := -1;
+   if Supports(L, IGenericComparable, compareObj) then
+      result := compareObj.GetCompareValue(FCompareType);
+   if Supports(R, IGenericComparable, compareObj) then
+      result := result - compareObj.GetCompareValue(FCompareType);
+end;
 
 end.
 

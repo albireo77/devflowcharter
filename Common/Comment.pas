@@ -31,7 +31,7 @@ type
 
    PPoint = ^TPoint;
 
-   TComment = class(TMemo, IXMLable, IWinControl, IMaxBoundable, ISortable)
+   TComment = class(TMemo, IXMLable, IWinControl, IMaxBoundable, IGenericComparable)
       private
          FPinControl: TControl;
          FPage: TBlockTabSheet;
@@ -67,9 +67,9 @@ type
          function GetMaxBounds: TPoint;
          function GetHandle: THandle;
          procedure BringAllToFront;
-         procedure SetZOrder(const AValue: integer);
+         procedure SetZOrder(AValue: integer);
          function GetZOrder: integer;
-         function GetSortValue(const ASortType: integer): integer;
+         function GetCompareValue(ACompareType: integer): integer;
    end;
 
 implementation
@@ -181,7 +181,7 @@ begin
    end;
 end;
 
-procedure TComment.SetZOrder(const AValue: integer);
+procedure TComment.SetZOrder(AValue: integer);
 begin
    FZOrder := FPage.PageIndex * 100 + AValue;
 end;
@@ -191,7 +191,7 @@ begin
    result := FZOrder;
 end;
 
-function TComment.GetSortValue(const ASortType: integer): integer;
+function TComment.GetCompareValue(ACompareType: integer): integer;
 begin
    result := FZOrder;
 end;

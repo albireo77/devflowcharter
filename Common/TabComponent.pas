@@ -30,7 +30,7 @@ uses
 
 type
 
-   TTabComponent = class(TTabSheet, IXMLable, IIdentifiable, ITabbable, ISizeEditable, ISortable, IFocusable, IExportable)
+   TTabComponent = class(TTabSheet, IXMLable, IIdentifiable, ITabbable, ISizeEditable, IFocusable, IExportable, IGenericComparable)
       private
          FParentForm: TPageControlForm;
          FId: integer;
@@ -81,7 +81,6 @@ type
          property ScrollPos: integer read GetScrollPos write SetScrollPos;
          function GetName: string;
          procedure RefreshSizeEdits; virtual; abstract;
-         function GetSortValue(const ASortType: integer): integer; virtual;
          function RetrieveFocus(AInfo: TFocusInfo): boolean;
          function CanBeFocused: boolean;
          function IsDuplicatedElement(const AElement: TElement): boolean;
@@ -94,13 +93,14 @@ type
          function IsBoldDesc: boolean;
          procedure RefreshTab;
          procedure UpdateCodeEditor;
+         function GetCompareValue(ACompareType: integer): integer;
    end;
 
 implementation
 
 uses
    System.SysUtils, Generics.Collections, System.StrUtils, ApplicationCommon, XMLProcessor,
-   SortListDecorator, BaseEnumerator;
+   BaseEnumerator;
 
 constructor TTabComponent.Create(const AParentForm: TPageControlForm);
 begin
@@ -308,13 +308,6 @@ begin
    result := sbxElements.ControlCount;
 end;
 
-function TTabComponent.GetSortValue(const ASortType: integer): integer;
-begin
-   result := -1;
-   if ASortType = PAGE_INDEX_SORT then
-      result := PageIndex;
-end;
-
 function TTabComponent.IsDuplicated(ANameEdit: TEdit): boolean;
 var
    tab: TTabComponent;
@@ -349,19 +342,13 @@ function TTabComponent.GetElements<T>: IEnumerable<T>;
 var
    i: integer;
    list: TList<T>;
-   decorList: TSortListDecorator<T>;
 begin
    list := TList<T>.Create;
    if list.Capacity < sbxElements.ControlCount then
       list.Capacity := sbxElements.ControlCount;
    for i := 0 to sbxElements.ControlCount-1 do
       list.Add(sbxElements.Controls[i]);
-   if list.Count > 1 then
-   begin
-      decorList := TSortListDecorator<T>.Create(list, 0);
-      decorList.Sort;
-      decorList.Free;
-   end;
+   list.Sort;
    result := TEnumeratorFactory<T>.Create(list);
 end;
 
@@ -556,6 +543,13 @@ end;
 function TTabComponent.IsBoldDesc: boolean;
 begin
    result := false;
+end;
+
+function TTabComponent.GetCompareValue(ACompareType: integer): integer;
+begin
+   result := -1;
+   if ACompareType = PAGE_INDEX_SORT then
+      result := PageIndex;
 end;
 
 end.

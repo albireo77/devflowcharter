@@ -90,8 +90,8 @@
         <AppEnableHighDPI>true</AppEnableHighDPI>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <VerInfo_MinorVer>4</VerInfo_MinorVer>
-        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=4.4.32.420;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-        <VerInfo_Build>420</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=4.4.32.430;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Build>430</VerInfo_Build>
         <VerInfo_Release>32</VerInfo_Release>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -193,7 +193,6 @@
         </DCCReference>
         <DCCReference Include="Common\CommonTypes.pas"/>
         <DCCReference Include="Blocks\Text_Block.pas"/>
-        <DCCReference Include="Common\SortListDecorator.pas"/>
         <DCCReference Include="Forms\SelectImport_Form.pas">
             <Form>SelectImportForm</Form>
         </DCCReference>
