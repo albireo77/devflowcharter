@@ -24,8 +24,7 @@ unit Element;
 interface
 
 uses
-   Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Forms, BaseEnumerator, OmniXml,
-   PageControl_Form;
+   Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Forms, OmniXml, PageControl_Form;
 
 type
    
