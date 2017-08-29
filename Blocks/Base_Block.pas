@@ -157,7 +157,7 @@ type
          function CanInsertReturnBlock: boolean; virtual;
          procedure ExportToXMLTag(ATag: IXMLElement);
          function ImportFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
-         procedure ExportToGraphic(const AGraphic: TGraphic); virtual;
+         procedure ExportToGraphic(AGraphic: TGraphic); virtual;
          procedure UpdateEditor(AEdit: TCustomEdit); virtual;
          function SkipUpdateEditor: boolean;
          function RetrieveFocus(AInfo: TFocusInfo): boolean; virtual;
@@ -2588,7 +2588,7 @@ begin
       result := Trim(textControl.Text);
 end;
 
-procedure TBlock.ExportToGraphic(const AGraphic: TGraphic);
+procedure TBlock.ExportToGraphic(AGraphic: TGraphic);
 var
    bitmap: TBitmap;
    comment: TComment;

@@ -50,9 +50,9 @@ type
       FChanged: boolean;
       class var FInstance: TProject;
       procedure SetGlobals;
-      function GetComponents<T: class>(Comparer: IComparer<T> = nil): IEnumerable<T>;
+      function GetComponents<T: class>(AComparer: IComparer<T> = nil): IEnumerable<T>;
       function GetComponentByName(AClass: TClass; const AName: string): TComponent;
-      function GetIWinControlComponent(const AHandle: THandle): IWinControl;
+      function GetIWinControlComponent(AHandle: THandle): IWinControl;
       procedure RefreshZOrder;
       constructor Create;
    public
@@ -74,38 +74,38 @@ type
       destructor Destroy; override;
       procedure AddComponent(AComponent: TComponent);
       function GetComments: IEnumerable<TComment>;
-      function GetUserFunctions(ASortType: integer = PAGE_INDEX_SORT): IEnumerable<TUserFunction>;
+      function GetUserFunctions(ACompareType: integer = PAGE_INDEX_COMPARE): IEnumerable<TUserFunction>;
       function GetUserDataTypes: IEnumerable<TUserDataType>;
       function GetUserDataType(const ATypeName: string): TUserDataType;
       function GetUserFunction(const AFunctionName: string): TUserFunction;
-      procedure ExportToGraphic(const AGraphic: TGraphic);
+      procedure ExportToGraphic(AGraphic: TGraphic);
       procedure ExportToXMLTag(ATag: IXMLElement);
       function ExportToXMLFile(const AFile: string): TErrorType;
       function ImportFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
       function ImportUserFunctionsFromXML(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
       function ImportUserDataTypesFromXML(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
-      function ImportCommentsFromXML(const ATag: IXMLElement): integer;
-      procedure ImportPagesFromXML(const ATag: IXMLElement);
+      function ImportCommentsFromXML(ATag: IXMLElement): integer;
+      procedure ImportPagesFromXML(ATag: IXMLElement);
       function GetMainBlock: TMainBlock;
       function GetBottomRight: TPoint;
       procedure PopulateDataTypeCombos;
       procedure RefreshStatements;
       procedure ChangeDesktopColor(const AColor: TColor);
       function CountErrWarn: TErrWarnCount;
-      procedure GenerateTree(const ANode: TTreeNode);
+      procedure GenerateTree(ANode: TTreeNode);
       procedure RepaintFlowcharts;
       procedure RepaintComments;
       function GetLibraryList: TStringList;
-      function FindObject(const AId: integer): TObject;
+      function FindObject(AId: integer): TObject;
       procedure RefreshSizeEdits;
       procedure PopulateDataTypes;
-      procedure UpdateZOrder(const AParent: TWinControl);
-      function Register(const AObject: TObject; const AId: integer = ID_INVALID): integer;
-      procedure UnRegister(const AObject: TObject);
-      function GetPage(const ACaption: string; const ACreate: boolean = true): TBlockTabSheet;
+      procedure UpdateZOrder(AParent: TWinControl);
+      function Register(AObject: TObject; AId: integer = ID_INVALID): integer;
+      procedure UnRegister(AObject: TObject);
+      function GetPage(const ACaption: string; ACreate: boolean = true): TBlockTabSheet;
       function GetMainPage: TBlockTabSheet;
       function GetActivePage: TBlockTabSheet;
-      procedure UpdateHeadersBody(const APage: TTabSheet);
+      procedure UpdateHeadersBody(APage: TTabSheet);
       function GetPageOrder: string;
       function FindMainBlockForControl(const AControl: TControl): TMainBlock;
       function GetProgramHeader: string;
@@ -170,7 +170,7 @@ begin
    result := FInstance;
 end;
 
-function TProject.GetPage(const ACaption: string; const ACreate: boolean = true): TBlockTabSheet;
+function TProject.GetPage(const ACaption: string; ACreate: boolean = true): TBlockTabSheet;
 var
    i: integer;
    caption: string;
@@ -288,9 +288,9 @@ begin
    result := GetComponents<TComment>;
 end;
 
-function TProject.GetUserFunctions(ASortType: integer = PAGE_INDEX_SORT): IEnumerable<TUserFunction>;
+function TProject.GetUserFunctions(ACompareType: integer = PAGE_INDEX_COMPARE): IEnumerable<TUserFunction>;
 begin
-   result := GetComponents<TUserFunction>(TUserFunctionComparer.Create(ASortType));
+   result := GetComponents<TUserFunction>(TUserFunctionComparer.Create(ACompareType));
 end;
 
 function TProject.GetUserDataTypes: IEnumerable<TUserDataType>;
@@ -306,7 +306,7 @@ begin
    result := GetComponents<TUserDataType>(Comparer);
 end;
 
-function TProject.GetComponents<T>(Comparer: IComparer<T> = nil): IEnumerable<T>;
+function TProject.GetComponents<T>(AComparer: IComparer<T> = nil): IEnumerable<T>;
 var
    i: integer;
    list: TList<T>;
@@ -324,12 +324,12 @@ begin
        else
           list.Add(FComponentList[i]);
    end;
-   if Comparer <> nil then
-      list.Sort(Comparer);
+   if AComparer <> nil then
+      list.Sort(AComparer);
    result := TEnumeratorFactory<T>.Create(list);
 end;
 
-function TProject.Register(const AObject: TObject; const AId: integer = ID_INVALID): integer;
+function TProject.Register(AObject: TObject; AId: integer = ID_INVALID): integer;
 var
    idx: integer;
    id: string;
@@ -363,7 +363,7 @@ begin
    end;
 end;
 
-procedure TProject.UnRegister(const AObject: TObject);
+procedure TProject.UnRegister(AObject: TObject);
 var
    idx: integer;
 begin
@@ -372,7 +372,7 @@ begin
       FObjectIds.Delete(idx);
 end;
 
-function TProject.FindObject(const AId: integer): TObject;
+function TProject.FindObject(AId: integer): TObject;
 var
    idx: integer;
 begin
@@ -468,7 +468,7 @@ begin
    for i := 0 to pageControl.PageCount-1 do
       UpdateZOrder(pageControl.Pages[i]);
 
-   components := GetComponents<TComponent>(TComponentComparer.Create(PAGE_INDEX_SORT));
+   components := GetComponents<TComponent>(TComponentComparer.Create(PAGE_INDEX_COMPARE));
    for comp in components do
    begin
       if Supports(comp, IXMLable, xmlObj) and xmlObj.Active then
@@ -479,7 +479,7 @@ begin
       baseForm.ExportSettingsToXMLTag(ATag);
 end;
 
-procedure TProject.ImportPagesFromXML(const ATag: IXMLElement);
+procedure TProject.ImportPagesFromXML(ATag: IXMLElement);
 var
    pageList, pageName, pageFront: string;
    i, len: integer;
@@ -790,7 +790,7 @@ begin
 
 end;
 
-function TProject.ImportCommentsFromXML(const ATag: IXMLElement): integer;
+function TProject.ImportCommentsFromXML(ATag: IXMLElement): integer;
 var
    comment: TComment;
    tag: IXMLElement;
@@ -851,7 +851,7 @@ begin
    end;
 end;
 
-function TProject.GetIWinControlComponent(const AHandle: THandle): IWinControl;
+function TProject.GetIWinControlComponent(AHandle: THandle): IWinControl;
 var
    i: integer;
    winControl: IWinControl;
@@ -867,7 +867,7 @@ begin
    end;
 end;
 
-procedure TProject.UpdateZOrder(const AParent: TWinControl);
+procedure TProject.UpdateZOrder(AParent: TWinControl);
 var
    winControl: IWinControl;
    hnd: THandle;
@@ -896,7 +896,7 @@ var
    winControl: IWinControl;
    components: IEnumerable<TComponent>;
 begin
-   components := GetComponents<TComponent>(TComponentComparer.Create(Z_ORDER_SORT));
+   components := GetComponents<TComponent>(TComponentComparer.Create(Z_ORDER_COMPARE));
    for comp in components do
    begin
       if Supports(comp, IWinControl, winControl) then
@@ -904,7 +904,7 @@ begin
    end;
 end;
 
-procedure TProject.ExportToGraphic(const AGraphic: TGraphic);
+procedure TProject.ExportToGraphic(AGraphic: TGraphic);
 var
    pnt: TPoint;
    bitmap: TBitmap;
@@ -1054,7 +1054,7 @@ begin
    end;
 end;
 
-procedure TProject.GenerateTree(const ANode: TTreeNode);
+procedure TProject.GenerateTree(ANode: TTreeNode);
 var
    dataType: TUserDataType;
    mainFunc, func: TUserFunction;
@@ -1097,7 +1097,7 @@ begin
 
 end;
 
-procedure TProject.UpdateHeadersBody(const APage: TTabSheet);
+procedure TProject.UpdateHeadersBody(APage: TTabSheet);
 var
    i: integer;
    func: TUserFunction;
@@ -1198,7 +1198,7 @@ var
 begin
    result := TStringList.Create;
    result.CaseSensitive := GInfra.CurrentLang.CaseSensitiveSyntax;
-   components := GetComponents<TComponent>(TComponentComparer.Create(PAGE_INDEX_SORT));
+   components := GetComponents<TComponent>(TComponentComparer.Create(PAGE_INDEX_COMPARE));
    for comp in components do
    begin
       if Supports(comp, ITabbable, tab) then

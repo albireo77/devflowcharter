@@ -25,7 +25,7 @@ interface
 
 uses
    WinApi.Windows, Vcl.Graphics, System.Classes, Vcl.ComCtrls, WinApi.Messages,
-   Base_Block, OmniXML, CommonInterfaces, CommonTypes, BaseEnumerator, BlockTabSheet;
+   Base_Block, OmniXML, CommonInterfaces, CommonTypes, BlockTabSheet;
 
 type
 
@@ -43,7 +43,7 @@ type
          function GetFromXML(const ATag: IXMLElement): TErrorType; override;
          procedure SaveInXML(const ATag: IXMLElement); override;
          function GetMaxBounds: TPoint;
-         procedure ExportToGraphic(const AGraphic: TGraphic); override;
+         procedure ExportToGraphic(AGraphic: TGraphic); override;
          procedure SetWidth(const AMinX: integer); override;
          function GetHandle: THandle;
          procedure SetZOrder(AValue: integer);
@@ -231,7 +231,7 @@ begin
       result := Handle;
 end;
 
-procedure TMainBlock.ExportToGraphic(const AGraphic: TGraphic);
+procedure TMainBlock.ExportToGraphic(AGraphic: TGraphic);
 var
    bitmap: TBitmap;
    pnt: TPoint;

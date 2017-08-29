@@ -818,7 +818,7 @@ end;
 function TUserFunction.GetCompareValue(ACompareType: integer): integer;
 begin
    result := -1;
-   if ACompareType = Z_ORDER_SORT then
+   if ACompareType = Z_ORDER_COMPARE then
    begin
       if FBody <> nil then
          result := FBody.GetZOrder;
@@ -836,7 +836,7 @@ end;
 function TUserFunctionComparer.Compare(const L, R: TUserFunction): integer;
 begin
    result := -1;
-   if FCompareType = Z_ORDER_SORT then
+   if FCompareType = Z_ORDER_COMPARE then
    begin
       if (L.Body = nil) and (R.Body = nil) then
          result := 0
@@ -847,7 +847,7 @@ begin
       else
          result := L.Body.GetZOrder - R.Body.GetZOrder;
    end
-   else if FCompareType = PAGE_INDEX_SORT then
+   else if FCompareType = PAGE_INDEX_COMPARE then
    begin
       if (L.Header = nil) and (R.Header = nil) then
          result := 0

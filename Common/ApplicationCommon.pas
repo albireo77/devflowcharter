@@ -50,28 +50,28 @@ type
          class function CreateDOSProcess(const ACommand: string; ADir: string = ''): Boolean;
          class procedure ShowWarningBox(const AWarnMsg: string);
          class procedure ShowFormattedWarningBox(const AKey: string; Args: array of const);
-         class procedure ShowErrorBox(const AErrMsg: string; const AErrType: TErrorType);
-         class procedure ShowFormattedErrorBox(const AKey: string; Args: array of const; const AErrType: TErrorType);
+         class procedure ShowErrorBox(const AErrMsg: string; AErrType: TErrorType);
+         class procedure ShowFormattedErrorBox(const AKey: string; Args: array of const; AErrType: TErrorType);
          class function ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
          class function ShowFormattedQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
          class procedure SetInitialSettings;
-         class function FindText(ASubstr, AText: string; const idx: integer; const ACaseSens: boolean): integer;
+         class function FindText(ASubstr, AText: string; idx: integer; ACaseSens: boolean): integer;
          class function IsPrinter: boolean;
-         class function IsValid(const AObject: TObject): boolean;
+         class function IsValid(AObject: TObject): boolean;
          class function SameStrings(const AStr1: string; const AStr2: string): boolean;
-         class procedure PopulateDataTypeCombo(const AcbType: TComboBox; const ASkipIndex: integer = 100);
-         class procedure PrintBitmap(const ABitmap: TBitmap);
-         class procedure InsertTemplateLines(const ADestList: TStringList; const APlaceHolder: string; const ATemplateString: string; const AObject: TObject = nil); overload;
-         class procedure InsertTemplateLines(const ADestList: TStringList; const APlaceHolder: string; const ATemplate: TStringList; const AObject: TObject = nil); overload;
+         class procedure PopulateDataTypeCombo(AcbType: TComboBox; ASkipIndex: integer = 100);
+         class procedure PrintBitmap(ABitmap: TBitmap);
+         class procedure InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; const ATemplateString: string; AObject: TObject = nil); overload;
+         class procedure InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; ATemplate: TStringList; AObject: TObject = nil); overload;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetLangDefinition(const AName: string): TLangDefinition;
          procedure SetLangHiglighterAttributes;
          function SetCurrentLang(const ALangName: string): TLangDefinition;
          class procedure InsertLinesIntoList(ADestList, ASourceList: TStringList; AFromLine: integer);
-         procedure GetLangNames(const AList: TStrings);
+         procedure GetLangNames(AList: TStrings);
          class function DecodeFontStyle(AValue: integer): TFontStyles;
          class function EncodeFontStyle(AStyle: TFontStyles): string;
-         class function FindParentForm(const AControl: TControl): TBaseForm;
+         class function FindParentForm(AControl: TControl): TBaseForm;
          procedure ReadFromRegistry;
          procedure WriteToRegistry;
          procedure SetHLighters;
@@ -87,23 +87,23 @@ type
          class function GetActiveEdit: TCustomEdit;
          class function GetParsedBlock: TBlock;
          class function GetParsedEdit: TCustomEdit;
-         class function Parse(const AEdit: TCustomEdit; const AParserMode: TParserMode): boolean; overload;
-         class function Parse(const AText: string; const AParserMode: TParserMode): boolean; overload;
-         class function IsNOkColor(const AColor: TColor): boolean;
-         class function GetChangeLine(const AObject: TObject; const AEdit: TCustomEdit = nil; const ATemplate: string = ''): TChangeLine;
-         class function GetCaretPos(const AEdit: TCustomEdit): TBufferCoord;
+         class function Parse(AEdit: TCustomEdit; AParserMode: TParserMode): boolean; overload;
+         class function Parse(const AText: string; AParserMode: TParserMode): boolean; overload;
+         class function IsNOkColor(AColor: TColor): boolean;
+         class function GetChangeLine(AObject: TObject; AEdit: TCustomEdit = nil; const ATemplate: string = ''): TChangeLine;
+         class function GetCaretPos(AEdit: TCustomEdit): TBufferCoord;
          class function ExtractIndentString(const AText: string): string;
          class procedure ChangeLine(const ALine: TChangeLine);
          class procedure InitChangeLine(var AChangeLine: TChangeLine);
          class procedure InitCodeRange(var ACodeRange: TCodeRange);
-         class procedure SetFontSize(const AControl: TControl; const ASize: integer);
+         class procedure SetFontSize(AControl: TControl; ASize: integer);
          class function GetFunctionHeader(ABlock: TBlock): TUserFunctionHeader;
-         class function GetPageIndex(const APageControl: TPageControl; X, Y: integer): integer;
-         class function FindDuplicatedPage(const APage: TTabSheet; const ACaption: TCaption): TTabSheet;
-         class function GetComboMaxWidth(const ACombo: TComboBox): integer;
+         class function GetPageIndex(APageControl: TPageControl; X, Y: integer): integer;
+         class function FindDuplicatedPage(APage: TTabSheet; const ACaption: TCaption): TTabSheet;
+         class function GetComboMaxWidth(ACombo: TComboBox): integer;
          class procedure UpdateCodeEditor(AObject: TObject = nil);
          class function ExportToFile(AExport: IExportable): TErrorType;
-         class function GetDisplayRect(const APage: TBlockTabSheet): TRect;
+         class function GetDisplayRect(APage: TBlockTabSheet): TRect;
          class procedure OnKeyDownSelectAll(Sender: TObject; var Key: Word; Shift: TShiftState);
          class function StripInstrEnd(const ALine: string): string;
          class function CompareProgramVersion(const AVersion: string): integer;
@@ -394,7 +394,7 @@ begin
    result := FCurrentLang;
 end;
 
-procedure TInfra.GetLangNames(const AList: TStrings);
+procedure TInfra.GetLangNames(AList: TStrings);
 var
    i: integer;
 begin
@@ -468,7 +468,7 @@ begin
    end;
 end;
 
-class procedure TInfra.ShowErrorBox(const AErrMsg: string; const AErrType: TErrorType);
+class procedure TInfra.ShowErrorBox(const AErrMsg: string; AErrType: TErrorType);
 const
    ErrorsTypeArray: array[TErrorType] of string = (' ', 'DeclareError', 'IOError', 'ValidationError', 'ConvertError', 'SyntaxError',
                     'PrintError', 'CompileError', 'ImportError', 'Error');
@@ -477,7 +477,7 @@ begin
       Application.MessageBox(PChar(AErrMsg), PChar(i18Manager.GetString(ErrorsTypeArray[AErrType])), MB_ICONERROR);
 end;
 
-class procedure TInfra.ShowFormattedErrorBox(const AKey: string; Args: array of const; const AErrType: TErrorType);
+class procedure TInfra.ShowFormattedErrorBox(const AKey: string; Args: array of const; AErrType: TErrorType);
 begin
    ShowErrorBox(i18Manager.GetFormattedString(AKey, Args), AErrType);
 end;
@@ -546,7 +546,7 @@ begin
       result := SameText(AStr1, AStr2);
 end;
 
-class procedure TInfra.PrintBitmap(const ABitmap: TBitmap);
+class procedure TInfra.PrintBitmap(ABitmap: TBitmap);
 var
    i, maxValue, maxTmp, last_err, stepY, rowCount, lineHeight, stepX, LogPixX1,
    LogPixY1, LogPixX2, LogPixY2, ScaleX, ScaleY, colCount, j: integer;
@@ -695,7 +695,7 @@ begin
    end;
 end;
 
-class function TInfra.FindText(ASubstr, AText: string; const idx: integer; const ACaseSens: boolean): integer;
+class function TInfra.FindText(ASubstr, AText: string; idx: integer; ACaseSens: boolean): integer;
 begin
    AText := Copy(AText, idx, MAXINT);
    if not ACaseSens then
@@ -718,7 +718,7 @@ begin
    end;
 end;
 
-class function TInfra.IsValid(const AObject: TObject): boolean;
+class function TInfra.IsValid(AObject: TObject): boolean;
 begin
   result := false;
   if Assigned(AObject) then
@@ -729,7 +729,7 @@ begin
   end;
 end;
 
-class function TInfra.FindParentForm(const AControl: TControl): TBaseForm;
+class function TInfra.FindParentForm(AControl: TControl): TBaseForm;
 var
    winControl: TWinControl;
 begin
@@ -746,7 +746,7 @@ begin
    end;
 end;
 
-class function TInfra.GetComboMaxWidth(const ACombo: TComboBox): integer;
+class function TInfra.GetComboMaxWidth(ACombo: TComboBox): integer;
 var
    i, len: integer;
 begin
@@ -763,7 +763,7 @@ begin
    end;
 end;
 
-class procedure TInfra.PopulateDataTypeCombo(const AcbType: TComboBox; const ASkipIndex: integer = 100);
+class procedure TInfra.PopulateDataTypeCombo(AcbType: TComboBox; ASkipIndex: integer = 100);
 var
    i, idx: integer;
    userType: TUserDataType;
@@ -853,7 +853,7 @@ begin
    end;
 end;
 
-class procedure TInfra.InsertTemplateLines(const ADestList: TStringList; const APlaceHolder: string; const ATemplateString: string; const AObject: TObject = nil);
+class procedure TInfra.InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; const ATemplateString: string; AObject: TObject = nil);
 var
    template: TStringList;
 begin
@@ -870,7 +870,7 @@ begin
    end;
 end;
 
-class procedure TInfra.InsertTemplateLines(const ADestList: TStringList; const APlaceHolder: string; const ATemplate: TStringList; const AObject: TObject = nil);
+class procedure TInfra.InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; ATemplate: TStringList; AObject: TObject = nil);
 var
    i, a, p: integer;
    lBegin, lEnd: string;
@@ -1083,14 +1083,14 @@ begin
    result := FParsedEdit;
 end;
 
-class function TInfra.Parse(const AEdit: TCustomEdit; const AParserMode: TParserMode): boolean;
+class function TInfra.Parse(AEdit: TCustomEdit; AParserMode: TParserMode): boolean;
 begin
    FParsedEdit := AEdit;
    result := Parse(Trim(AEdit.Text), AParserMode);
    FParsedEdit := nil;
 end;
 
-class function TInfra.Parse(const AText: string; const AParserMode: TParserMode): boolean;
+class function TInfra.Parse(const AText: string; AParserMode: TParserMode): boolean;
 begin
    result := true;
    errString := '';
@@ -1102,7 +1102,7 @@ begin
    end;
 end;
 
-class function TInfra.IsNOkColor(const AColor: TColor): boolean;
+class function TInfra.IsNOkColor(AColor: TColor): boolean;
 begin
    result := (AColor = NOK_COLOR) or (AColor = WARN_COLOR);
 end;
@@ -1133,7 +1133,7 @@ begin
    end;
 end;
 
-class function TInfra.GetChangeLine(const AObject: TObject; const AEdit: TCustomEdit = nil; const ATemplate: string = ''): TChangeLine;
+class function TInfra.GetChangeLine(AObject: TObject; AEdit: TCustomEdit = nil; const ATemplate: string = ''): TChangeLine;
 var
    templateLines: TStringList;
    i, p: integer;
@@ -1190,7 +1190,7 @@ begin
    end;
 end;
 
-class function TInfra.GetCaretPos(const AEdit: TCustomEdit): TBufferCoord;
+class function TInfra.GetCaretPos(AEdit: TCustomEdit): TBufferCoord;
 begin
    result.Line := 0;
    result.Char := 0;
@@ -1235,7 +1235,7 @@ begin
       ALine.CodeRange.Lines[ALine.Row] := ALine.Text;
 end;
 
-class procedure TInfra.SetFontSize(const AControl: TControl; const ASize: integer);
+class procedure TInfra.SetFontSize(AControl: TControl; ASize: integer);
 var
    flag: boolean;
 begin
@@ -1246,7 +1246,7 @@ begin
 end;
 
 // function to get correct page index iwhen some pages are not visible in PageControl
-class function TInfra.GetPageIndex(const APageControl: TPageControl; X, Y: integer): integer;
+class function TInfra.GetPageIndex(APageControl: TPageControl; X, Y: integer): integer;
 var
    i, c: integer;
 begin
@@ -1261,7 +1261,7 @@ begin
   result := c;
 end;
 
-class function TInfra.FindDuplicatedPage(const APage: TTabSheet; const ACaption: TCaption): TTabSheet;
+class function TInfra.FindDuplicatedPage(APage: TTabSheet; const ACaption: TCaption): TTabSheet;
 var
    i: integer;
 begin
@@ -1279,7 +1279,7 @@ begin
    end;
 end;
 
-class function TInfra.GetDisplayRect(const APage: TBlockTabSheet): TRect;
+class function TInfra.GetDisplayRect(APage: TBlockTabSheet): TRect;
 var
    dv, dh: integer;
 begin

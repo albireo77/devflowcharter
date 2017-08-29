@@ -71,7 +71,7 @@ type
          destructor Destroy; override;
          procedure ExportToXMLTag(ATag: IXMLElement); virtual;
          function ExportToXMLFile(const AFile: string): TErrorType;
-         procedure ExportToGraphic(const AGraphic: TGraphic);
+         procedure ExportToGraphic(AGraphic: TGraphic);
          function GetExportFileName: string;
          function IsDuplicated(ANameEdit: TEdit): boolean;
          procedure Localize(const AList: TStringList); virtual;
@@ -185,7 +185,7 @@ begin
    result := edtName.Text;
 end;
 
-procedure TTabComponent.ExportToGraphic(const AGraphic: TGraphic);
+procedure TTabComponent.ExportToGraphic(AGraphic: TGraphic);
 var
    bitmap: TBitmap;
 begin
@@ -548,7 +548,7 @@ end;
 function TTabComponent.GetCompareValue(ACompareType: integer): integer;
 begin
    result := -1;
-   if ACompareType = PAGE_INDEX_SORT then
+   if ACompareType = PAGE_INDEX_COMPARE then
       result := PageIndex;
 end;
 

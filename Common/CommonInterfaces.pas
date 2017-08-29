@@ -29,9 +29,8 @@ uses
 const
    ID_INVALID      = -1;
 
-   NO_SORT         = -1;
-   PAGE_INDEX_SORT = 0;
-   Z_ORDER_SORT    = 1;
+   PAGE_INDEX_COMPARE = 0;
+   Z_ORDER_COMPARE    = 1;
 
 type
 
@@ -108,7 +107,7 @@ type
    IExportable = interface
       ['{3AB6F6EE-5088-4791-8C11-620A1F768269}']
       function ExportToXMLFile(const AFile: string): TErrorType;
-      procedure ExportToGraphic(const AGraphic: TGraphic);
+      procedure ExportToGraphic(AGraphic: TGraphic);
       function GetExportFileName: string;
    end;
 
