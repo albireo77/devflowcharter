@@ -40,12 +40,12 @@ type
    end;
 
    TParameter = class(TElement)
-      constructor Create(const AParentTab: TUserFunctionHeader);
+      constructor Create(AParentTab: TUserFunctionHeader);
    public
       chkTable: TCheckBox;
       chkReference: TCheckBox;
-      function ExportToXMLTag(const ATag: IXMLElement): IXMLElement; override;
-      procedure ImportFromXMLTag(const ATag: IXMLElement); override;
+      function ExportToXMLTag(ATag: IXMLElement): IXMLElement; override;
+      procedure ImportFromXMLTag(ATag: IXMLElement); override;
    end;
 
    TUserFunctionHeader = class(TTabComponent)
@@ -60,7 +60,7 @@ type
       procedure OnClickBodyVisible(Sender: TObject);
       procedure OnChangeType(Sender: TObject);
       procedure OnMovedParams(Sender: TObject);
-      procedure SetActive(const AValue: boolean); override;
+      procedure SetActive(AValue: boolean); override;
       function CreateElement: TElement; override;
       procedure OnChangeBodyPage(Sender: TObject);
       procedure OnDropDownBodyPage(Sender: TObject);
@@ -84,13 +84,13 @@ type
       property UserFunction: TUserFunction read FUserFunction;
       property LocalVars: TVarDeclareList read FLocalVars;
       property ParameterCount: integer read GetElementCount;
-      constructor Create(const AParentForm: TFunctionsForm);
+      constructor Create(AParentForm: TFunctionsForm);
       destructor Destroy; override;
       procedure ExportToXMLTag(ATag: IXMLElement); override;
       procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
-      procedure Localize(const AList: TStringList); override;
+      procedure Localize(AList: TStringList); override;
       procedure RefreshSizeEdits; override;
-      procedure GenerateDescription(const ALines: TStrings);
+      procedure GenerateDescription(ALines: TStrings);
       procedure SetPageCombo(const ACaption: TCaption = '');
       function GetParameters: IEnumerable<TParameter>;
    end;
@@ -100,17 +100,17 @@ type
       FHeader: TUserFunctionHeader;
       FBody: TMainBlock;
       FActive: boolean;
-      procedure SetActive(const AValue: boolean);
+      procedure SetActive(AValue: boolean);
       function GetActive: boolean;
    public
       property Header: TUserFunctionHeader read FHeader;
       property Body: TMainBlock read FBody;
       property Active: boolean read GetActive write SetActive;
-      constructor Create(const AFunctionHeader: TUserFunctionHeader; const AFunctionBody: TMainBlock);
+      constructor Create(AFunctionHeader: TUserFunctionHeader; AFunctionBody: TMainBlock);
       destructor Destroy; override;
       procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
       procedure ExportToXMLTag(ATag: IXMLElement);
-      procedure GenerateTree(const ANode: TTreeNode);
+      procedure GenerateTree(ANode: TTreeNode);
       function GetId: integer;
       function GetLibName: string;
       procedure RefreshSizeEdits;
@@ -130,7 +130,7 @@ uses
    Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, Vcl.Grids, ApplicationCommon,
    Main_Form, XMLProcessor, LangDefinition, Navigator_Form, BlockTabSheet;
 
-constructor TUserFunction.Create(const AFunctionHeader: TUserFunctionHeader; const AFunctionBody: TMainBlock);
+constructor TUserFunction.Create(AFunctionHeader: TUserFunctionHeader; AFunctionBody: TMainBlock);
 begin
    inherited Create(Application);
    GProject.AddComponent(Self);
@@ -225,7 +225,7 @@ begin
    inherited Destroy;
 end;
 
-procedure TUserFunctionHeader.SetActive(const AValue: boolean);
+procedure TUserFunctionHeader.SetActive(AValue: boolean);
 begin
    if AValue <> FActive then
    begin
@@ -235,7 +235,7 @@ begin
    end;
 end;
 
-procedure TUserFunctionHeader.GenerateDescription(const ALines: TStrings);
+procedure TUserFunctionHeader.GenerateDescription(ALines: TStrings);
 var
    i: integer;
 begin
@@ -248,7 +248,7 @@ begin
    end;
 end;
 
-procedure TUserFunction.SetActive(const AValue: boolean);
+procedure TUserFunction.SetActive(AValue: boolean);
 var
    vis: boolean;
 begin
@@ -301,7 +301,7 @@ begin
 {}
 end;
 
-constructor TUserFunctionHeader.Create(const AParentForm: TFunctionsForm);
+constructor TUserFunctionHeader.Create(AParentForm: TFunctionsForm);
 var
    l: integer;
 begin
@@ -503,7 +503,7 @@ begin
    result := TParameter.Create(Self);
 end;
 
-procedure TUserFunctionHeader.Localize(const AList: TStringList);
+procedure TUserFunctionHeader.Localize(AList: TStringList);
 begin
    lblType.Caption := AList.Values['lblType'];
    lblParams.Caption := AList.Values['lblParameters'];
@@ -518,7 +518,7 @@ begin
    inherited Localize(AList);
 end;
 
-constructor TParameter.Create(const AParentTab: TUserFunctionHeader);
+constructor TParameter.Create(AParentTab: TUserFunctionHeader);
 begin
 
    inherited Create(AParentTab.sbxElements);
@@ -649,7 +649,7 @@ begin
    DrawBodyLabel;
 end;
 
-procedure TUserFunction.GenerateTree(const ANode: TTreeNode);
+procedure TUserFunction.GenerateTree(ANode: TTreeNode);
 var
    node: TTreeNode;
    desc: string;
@@ -799,14 +799,14 @@ begin
       FLocalVars.Height := idx;
 end;
 
-procedure TParameter.ImportFromXMLTag(const ATag: IXMLElement);
+procedure TParameter.ImportFromXMLTag(ATag: IXMLElement);
 begin
    inherited ImportFromXMLTag(ATag);
    chkTable.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'table');
    chkReference.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'reference');
 end;
 
-function TParameter.ExportToXMLTag(const ATag: IXMLElement): IXMLElement;
+function TParameter.ExportToXMLTag(ATag: IXMLElement): IXMLElement;
 var
    tag: IXMLElement;
 begin

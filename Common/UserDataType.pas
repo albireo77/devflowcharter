@@ -32,14 +32,14 @@ type
    TUserDataType = class;
 
    TField = class(TElement)
-      constructor Create(const AParentTab: TUserDataType);
+      constructor Create(AParentTab: TUserDataType);
    protected
       procedure OnChangeSize(Sender: TObject);
       procedure OnChangeName(Sender: TObject); override;
    public
       edtSize: TSizeEdit;
-      function ExportToXMLTag(const ATag: IXMLElement): IXMLElement; override;
-      procedure ImportFromXMLTag(const ATag: IXMLElement); override;
+      function ExportToXMLTag(ATag: IXMLElement): IXMLElement; override;
+      procedure ImportFromXMLTag(ATag: IXMLElement); override;
       function IsValid: boolean; override;
    end;
 
@@ -47,7 +47,7 @@ type
    protected
       procedure OnChangeName(Sender: TObject); override;
       procedure OnClickType(Sender: TObject);
-      procedure SetActive(const AValue: boolean); override;
+      procedure SetActive(AValue: boolean); override;
       function CreateElement: TElement; override;
       procedure AddElement(Sender: TObject); override;
       procedure WMSize(var Msg: TMessage); message WM_SIZE;
@@ -58,16 +58,16 @@ type
       lblType,
       lblSize: TLabel;
       property FieldCount: integer read GetElementCount default 0;
-      constructor Create(const AParentForm: TDataTypesForm);
+      constructor Create(AParentForm: TDataTypesForm);
       procedure ExportToXMLTag(ATag: IXMLElement); override;
-      procedure ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
-      procedure Localize(const AList: TStringList); override;
+      procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
+      procedure Localize(AList: TStringList); override;
       procedure RefreshSizeEdits; override;
       function IsValidEnumValue(const AValue: string): boolean;
       function GetDimensionCount: integer;
       function GetDimensions: string;
       function GetOriginalType: integer;
-      procedure GenerateTree(const ANode: TTreeNode);
+      procedure GenerateTree(ANode: TTreeNode);
       function Kind: TUserDataTypeKind;
       function GetFields: IEnumerable<TField>;
    end;
@@ -77,7 +77,7 @@ implementation
 uses
    Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, ApplicationCommon, LangDefinition, ParserHelper, XMLProcessor;
 
-constructor TUserDataType.Create(const AParentForm: TDataTypesForm);
+constructor TUserDataType.Create(AParentForm: TDataTypesForm);
 var
    dt: TUserDataTypeKind;
    s: string;
@@ -177,7 +177,7 @@ begin
    result := TUserDataTypeKind(rgTypeBox.ItemIndex);
 end;
 
-procedure TUserDataType.SetActive(const AValue: boolean);
+procedure TUserDataType.SetActive(AValue: boolean);
 begin
    if AValue <> FActive then
    begin
@@ -277,7 +277,7 @@ begin
 end;
 
 
-constructor TField.Create(const AParentTab: TUserDataType);
+constructor TField.Create(AParentTab: TUserDataType);
 begin
 
    inherited Create(AParentTab.sbxElements);
@@ -347,7 +347,7 @@ begin
    tag.SetAttribute(KIND_ATTR, TInfra.EnumToString<TUserDataTypeKind>(Kind));
 end;
 
-procedure TUserDataType.Localize(const AList: TStringList);
+procedure TUserDataType.Localize(AList: TStringList);
 begin
    lblName2.Caption := AList.Values['lblName'];
    btnAddElement.Caption := AList.Values['btnAddField'];
@@ -358,7 +358,7 @@ begin
    inherited Localize(AList);
 end;
 
-procedure TUserDataType.ImportFromXMLTag(const ATag: IXMLElement; const APinControl: TControl = nil);
+procedure TUserDataType.ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
 begin
    inherited ImportFromXMLTag(ATag, APinControl);
    if chkAddPtrType.Enabled then
@@ -454,12 +454,12 @@ begin
       inherited OnChangeName(Sender);
 end;
 
-function TField.ExportToXMLTag(const ATag: IXMLElement): IXMLElement;
+function TField.ExportToXMLTag(ATag: IXMLElement): IXMLElement;
 begin
    inherited ExportToXMLTag(ATag).SetAttribute(SIZE_ATTR, edtSize.Text);
 end;
 
-procedure TField.ImportFromXMLTag(const ATag: IXMLElement);
+procedure TField.ImportFromXMLTag(ATag: IXMLElement);
 var
    size: string;
 begin
@@ -490,7 +490,7 @@ begin
       result := edtSize.Font.Color = BLACK_COLOR;
 end;
 
-procedure TUserDataType.GenerateTree(const ANode: TTreeNode);
+procedure TUserDataType.GenerateTree(ANode: TTreeNode);
 var
    desc: string;
    lang: TLangDefinition;

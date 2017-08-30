@@ -46,8 +46,8 @@ type
          btnRemove: TButton;
          property ParentTab: TTabSheet read FParentTab;
          property ParentForm: TPageControlForm read FParentForm;
-         function ExportToXMLTag(const ATag: IXMLElement): IXMLElement; virtual;
-         procedure ImportFromXMLTag(const ATag: IXMLElement); virtual;
+         function ExportToXMLTag(ATag: IXMLElement): IXMLElement; virtual;
+         procedure ImportFromXMLTag(ATag: IXMLElement); virtual;
          function IsValid: boolean; virtual;
          function CompareTo(AValue: TElement): integer; overload;
          function CompareTo(AValue: TObject): integer; overload;
@@ -185,7 +185,7 @@ begin
    GProject.SetChanged;
 end;
 
-procedure TElement.ImportFromXMLTag(const ATag: IXMLElement);
+procedure TElement.ImportFromXMLTag(ATag: IXMLElement);
 var
    idx: integer;
 begin
@@ -197,7 +197,7 @@ begin
       cbType.ItemIndex := 0;
 end;
 
-function TElement.ExportToXMLTag(const ATag: IXMLElement): IXMLElement;
+function TElement.ExportToXMLTag(ATag: IXMLElement): IXMLElement;
 begin
    result := ATag.OwnerDocument.CreateElement(FElem_Id);
    ATag.AppendChild(result);

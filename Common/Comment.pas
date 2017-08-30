@@ -47,7 +47,7 @@ type
          procedure MouseLeave(Sender: TObject);
          procedure NCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
          procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
-         procedure SetActive(const AValue: boolean);
+         procedure SetActive(AValue: boolean);
          function GetActive: boolean;
          procedure Change(Sender: TObject);
          procedure SetPage(APage: TBlockTabSheet);
@@ -57,9 +57,9 @@ type
          property PinControl: TControl read FPinControl write FPinControl;
          property Page: TBlockTabSheet read FPage write SetPage;
          property IsHeader: boolean read FIsHeader write SetIsHeader;
-         constructor Create(const APage: TBlockTabSheet; const ALeft, ATop, AWidth, AHeight: Integer; const AUpdateZOrderComponents: boolean = true);
-         constructor CreateDefault(const APage: TBlockTabSheet);
-         function Clone(const APage: TBlockTabSheet; ATopLeft: PPoint = nil): TComment;
+         constructor Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight: Integer; AUpdateZOrderComponents: boolean = true);
+         constructor CreateDefault(APage: TBlockTabSheet);
+         function Clone(APage: TBlockTabSheet; ATopLeft: PPoint = nil): TComment;
          destructor Destroy; override;
          procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl);
          procedure ExportToXMLTag(ATag: IXMLElement);
@@ -78,7 +78,7 @@ uses
    Vcl.Graphics, System.SysUtils, System.UITypes, System.Types, ApplicationCommon,
    XMLProcessor, UserFunction, Main_Block, Navigator_Form;
 
-constructor TComment.Create(const APage: TBlockTabSheet; const ALeft, ATop, AWidth, AHeight: Integer; const AUpdateZOrderComponents: boolean = true);
+constructor TComment.Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight: Integer; AUpdateZOrderComponents: boolean = true);
 begin
    inherited Create(APage.Form);
    Parent := APage;
@@ -108,7 +108,7 @@ begin
    OnMouseLeave   := MouseLeave;
 end;
 
-function TComment.Clone(const APage: TBlockTabSheet; ATopLeft: PPoint = nil): TComment;
+function TComment.Clone(APage: TBlockTabSheet; ATopLeft: PPoint = nil): TComment;
 var
    lTopLeft: TPoint;
 begin
@@ -122,7 +122,7 @@ begin
    result.Visible := Visible;
 end;
 
-constructor TComment.CreateDefault(const APage: TBlockTabSheet);
+constructor TComment.CreateDefault(APage: TBlockTabSheet);
 begin
    Create(APage, 20, 20, 150, 50, false);
 end;
@@ -149,7 +149,7 @@ begin
    end;
 end;
 
-procedure TComment.SetActive(const AValue: boolean);
+procedure TComment.SetActive(AValue: boolean);
 begin
    if AValue <> FActive then
       FActive := AValue;

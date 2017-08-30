@@ -60,7 +60,7 @@ type
    IActivable = interface
       ['{FC98CF4A-67AE-4111-AE9A-38C3F5FE861E}']
       function GetActive: boolean;
-      procedure SetActive(const AValue: boolean);
+      procedure SetActive(AValue: boolean);
       property Active: boolean read GetActive write SetActive;
    end;
 

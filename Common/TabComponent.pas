@@ -39,7 +39,7 @@ type
          FActive: boolean;
          FElementMode: string;
          sbxElements: TScrollBox;
-         procedure SetActive(const AValue: boolean); virtual;
+         procedure SetActive(AValue: boolean); virtual;
          function GetActive: boolean; virtual;
          procedure AddElement(Sender: TObject); virtual;
          function GetId: integer;
@@ -67,23 +67,23 @@ type
          property Id: integer read GetId;
          property ElementMode: string read FElementMode;
          property ParentForm: TPageControlForm read FParentForm;
-         constructor Create(const AParentForm: TPageControlForm);
+         constructor Create(AParentForm: TPageControlForm);
          destructor Destroy; override;
          procedure ExportToXMLTag(ATag: IXMLElement); virtual;
          function ExportToXMLFile(const AFile: string): TErrorType;
          procedure ExportToGraphic(AGraphic: TGraphic);
          function GetExportFileName: string;
          function IsDuplicated(ANameEdit: TEdit): boolean;
-         procedure Localize(const AList: TStringList); virtual;
+         procedure Localize(AList: TStringList); virtual;
          procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil); virtual;
          function GetLibName: string;
-         procedure ScrollElements(const AValue: integer);
+         procedure ScrollElements(AValue: integer);
          property ScrollPos: integer read GetScrollPos write SetScrollPos;
          function GetName: string;
          procedure RefreshSizeEdits; virtual; abstract;
          function RetrieveFocus(AInfo: TFocusInfo): boolean;
          function CanBeFocused: boolean;
-         function IsDuplicatedElement(const AElement: TElement): boolean;
+         function IsDuplicatedElement(AElement: TElement): boolean;
          procedure RefreshElements;
          function HasInvalidElement: boolean;
          function HasFocusedComboBox: boolean;
@@ -102,7 +102,7 @@ uses
    System.SysUtils, Generics.Collections, System.StrUtils, ApplicationCommon, XMLProcessor,
    BaseEnumerator;
 
-constructor TTabComponent.Create(const AParentForm: TPageControlForm);
+constructor TTabComponent.Create(AParentForm: TPageControlForm);
 begin
    inherited Create(AParentForm.pgcTabs);
    PageControl := AParentForm.pgcTabs;
@@ -270,7 +270,7 @@ begin
       TInfra.UpdateCodeEditor(Self);
 end;
 
-procedure TTabComponent.SetActive(const AValue: boolean);
+procedure TTabComponent.SetActive(AValue: boolean);
 var
    i: integer;
    tab: TTabComponent;
@@ -434,7 +434,7 @@ begin
    end;
 end;
 
-function TTabComponent.IsDuplicatedElement(const AElement: TElement): boolean;
+function TTabComponent.IsDuplicatedElement(AElement: TElement): boolean;
 var
    elem: TElement;
 begin
@@ -495,7 +495,7 @@ begin
    FId := GProject.Register(Self, StrToIntDef(ATag.GetAttribute(ID_ATTR), ID_INVALID));
 end;
 
-procedure TTabComponent.Localize(const AList: TStringList);
+procedure TTabComponent.Localize(AList: TStringList);
 var
    a: integer;
    elem: TElement;
@@ -512,7 +512,7 @@ begin
    end;
 end;
 
-procedure TTabComponent.ScrollElements(const AValue: integer);
+procedure TTabComponent.ScrollElements(AValue: integer);
 begin
    sbxElements.VertScrollBar.Position := sbxElements.VertScrollBar.Position + AValue;
 end;
