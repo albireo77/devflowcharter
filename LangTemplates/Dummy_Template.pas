@@ -49,7 +49,6 @@ begin
             name := dataType.GetName;
             if (not name.IsEmpty) and not dataType.chkExtDeclare.Checked then
             begin
-               fields := dataType.GetFields;
                case dataType.Kind of
                   dtInt:
                   if not lang.DataTypeIntMask.IsEmpty then
@@ -68,6 +67,7 @@ begin
                   begin
                      typeStr := ReplaceStr(lang.DataTypeOtherMask, PRIMARY_PLACEHOLDER, name);
                      valStr := '';
+                     fields := dataType.GetFields;
                      if fields.GetEnumerator.MoveNext then
                         valStr := Trim(fields.GetEnumerator.Current.edtName.Text);
                      typeStr := ReplaceStr(typeStr, '%s2', valStr);
@@ -79,6 +79,7 @@ begin
                      typeStr := ReplaceStr(lang.DataTypeArrayMask, PRIMARY_PLACEHOLDER, name);
                      valStr := '';
                      valStr2 := '';
+                     fields := dataType.GetFields;
                      if fields.GetEnumerator.MoveNext then
                      begin
                         field := fields.GetEnumerator.Current;
@@ -97,7 +98,7 @@ begin
                         recTemplate.Text := ReplaceStr(lang.DataTypeRecordTemplate, PRIMARY_PLACEHOLDER, name);
                         fieldList := TStringList.Create;
                         try
-                           for field in fields do
+                           for field in dataType.GetFields do
                            begin
                               sizeStr := lang.GetArraySizes(field.edtSize);
                               if sizeStr.IsEmpty then
@@ -135,7 +136,7 @@ begin
                      try
                         enumTemplate.Text := ReplaceStr(lang.DataTypeEnumTemplate, PRIMARY_PLACEHOLDER, name);
                         valStr := '';
-                        for field in fields do
+                        for field in dataType.GetFields do
                            valStr := valStr + Format(lang.DataTypeEnumEntryList, [Trim(field.edtName.Text)]);
                         if (lang.DataTypeEnumEntryListStripCount > 0) and not valStr.IsEmpty then
                            SetLength(valStr, valStr.Length - lang.DataTypeEnumEntryListStripCount);
