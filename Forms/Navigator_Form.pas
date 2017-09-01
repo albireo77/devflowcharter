@@ -21,7 +21,7 @@ type
     procedure scbAlphaValChange(Sender: TObject);
   private
     { Private declarations }
-    procedure SetAlphaValVisible(const AValue: boolean);
+    procedure SetAlphaValVisible(AValue: boolean);
   public
     { Public declarations }
     InvalidateInd: boolean;
@@ -183,7 +183,7 @@ begin
    SetAlphaValVisible(chkAlphaVisible.Checked);
 end;
 
-procedure TNavigatorForm.SetAlphaValVisible(const AValue: boolean);
+procedure TNavigatorForm.SetAlphaValVisible(AValue: boolean);
 begin
    if AValue then
    begin
