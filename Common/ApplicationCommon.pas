@@ -47,6 +47,8 @@ type
       public
          property CurrentLang: TLangDefinition read FCurrentLang;
          property DummyLang: TLangDefinition read FDummyLang;
+         constructor Create;
+         destructor Destroy; override;
          class function CreateDOSProcess(const ACommand: string; ADir: string = ''): Boolean;
          class procedure ShowWarningBox(const AWarnMsg: string);
          class procedure ShowFormattedWarningBox(const AKey: string; Args: array of const);
@@ -63,18 +65,6 @@ type
          class procedure PrintBitmap(ABitmap: TBitmap);
          class procedure InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; const ATemplateString: string; AObject: TObject = nil); overload;
          class procedure InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; ATemplate: TStringList; AObject: TObject = nil); overload;
-         function GetNativeDataType(const AName: string): PNativeDataType;
-         function GetLangDefinition(const AName: string): TLangDefinition;
-         procedure SetLangHiglighterAttributes;
-         function SetCurrentLang(const ALangName: string): TLangDefinition;
-         class procedure InsertLinesIntoList(ADestList, ASourceList: TStringList; AFromLine: integer);
-         procedure GetLangNames(AList: TStrings);
-         class function DecodeFontStyle(AValue: integer): TFontStyles;
-         class function EncodeFontStyle(AStyle: TFontStyles): string;
-         class function FindParentForm(AControl: TControl): TBaseForm;
-         procedure ReadFromRegistry;
-         procedure WriteToRegistry;
-         procedure SetHLighters;
          class procedure InitFocusInfo(var AFocusInfo: TFocusInfo);
          class function GetDataTypesForm: TDataTypesForm;
          class function GetFunctionsForm: TFunctionsForm;
@@ -110,10 +100,20 @@ type
          class function GetBaseForms: IEnumerable<TBaseForm>;
          class function StringToEnum<T: record>(const S: string): T;
          class function EnumToString<T: record>(Enum: T): string;
+         function GetNativeDataType(const AName: string): PNativeDataType;
+         function GetLangDefinition(const AName: string): TLangDefinition;
+         procedure SetLangHiglighterAttributes;
+         function SetCurrentLang(const ALangName: string): TLangDefinition;
+         class procedure InsertLinesIntoList(ADestList, ASourceList: TStringList; AFromLine: integer);
+         procedure GetLangNames(AList: TStrings);
+         class function DecodeFontStyle(AValue: integer): TFontStyles;
+         class function EncodeFontStyle(AStyle: TFontStyles): string;
+         class function FindParentForm(AControl: TControl): TBaseForm;
+         procedure ReadFromRegistry;
+         procedure WriteToRegistry;
+         procedure SetHLighters;
          function ValidateConstId(const AId: string): integer;
          function ValidateId(const AId: string): integer;
-         constructor Create;
-         destructor Destroy; override;
    end;
 
 const   // Global constants

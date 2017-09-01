@@ -60,7 +60,7 @@ type
   private
     { Private declarations }
     FErrWarnCount: TErrWarnCount;
-    function GetFocusable(const ANode: TTreeNode): IFocusable;
+    function GetFocusable(ANode: TTreeNode): IFocusable;
 
   public
     { Public declarations }
@@ -110,7 +110,7 @@ begin
    inherited ResetForm;
 end;
 
-function TExplorerForm.GetFocusable(const ANode: TTreeNode): IFocusable;
+function TExplorerForm.GetFocusable(ANode: TTreeNode): IFocusable;
 var
    winControl: TWinControl;
 begin
