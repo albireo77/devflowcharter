@@ -32,13 +32,13 @@ type
       private
          FLeftLabel, FRightLabel: string;
       public
-         constructor Create(const ABranch: TBranch); overload;
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
-         function Clone(const ABranch: TBranch): TBlock; override;
+         constructor Create(ABranch: TBranch); overload;
+         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; AId: integer = ID_INVALID); overload;
+         function Clone(ABranch: TBranch): TBlock; override;
          function GetDescTemplate(const ALangId: string): string; override;
       protected
          procedure Paint; override;
-         procedure SetWidth(const AMinX: integer); override;
+         procedure SetWidth(AMinX: integer); override;
          function GetDiamondPoint: TPoint; override;
    end;
 
@@ -48,7 +48,7 @@ uses
    System.Classes, System.SysUtils, System.StrUtils, ApplicationCommon,
    CommonTypes, LangDefinition;
 
-constructor TRepeatUntilBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
+constructor TRepeatUntilBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; AId: integer = ID_INVALID);
 begin
 
    FType := blRepeat;
@@ -84,13 +84,13 @@ begin
    PutTextControls;
 end;
 
-function TRepeatUntilBlock.Clone(const ABranch: TBranch): TBlock;
+function TRepeatUntilBlock.Clone(ABranch: TBranch): TBlock;
 begin
    result := TRepeatUntilBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, Branch.Hook.X, Branch.Hook.Y);
    result.CloneFrom(Self);
 end;
 
-constructor TRepeatUntilBlock.Create(const ABranch: TBranch);
+constructor TRepeatUntilBlock.Create(ABranch: TBranch);
 begin
    Create(ABranch, 0, 0, 240, 111, 120, 120, 29);
 end;
@@ -134,7 +134,7 @@ begin
       result := lang.RepeatUntilDescTemplate;
 end;
 
-procedure TRepeatUntilBlock.SetWidth(const AMinX: integer);
+procedure TRepeatUntilBlock.SetWidth(AMinX: integer);
 begin
    if AMinX < BottomHook + 121 then
       Width := BottomHook + 121

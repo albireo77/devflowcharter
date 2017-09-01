@@ -100,8 +100,7 @@ type
     procedure miSaveClick(Sender: TObject);
     procedure miFindClick(Sender: TObject);
     procedure OnShowHint(var HintStr: string; var CanShow: Boolean; var HintInfo: THintInfo);
-    procedure memCodeEditorStatusChange(Sender: TObject;
-      Changes: TSynStatusChanges);
+    procedure memCodeEditorStatusChange(Sender: TObject; Changes: TSynStatusChanges);
     procedure memCodeEditorGutterClick(Sender: TObject;
       Button: TMouseButton; X, Y, Line: Integer; Mark: TSynEditMark);
     procedure miRegenerateClick(Sender: TObject);
@@ -109,16 +108,13 @@ type
     procedure memCodeEditorDblClick(Sender: TObject);
     procedure memCodeEditorDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
-    procedure memCodeEditorDragDrop(Sender, Source: TObject; X,
-      Y: Integer);
+    procedure memCodeEditorDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure miHelpClick(Sender: TObject);
-    procedure memCodeEditorPaintTransient(Sender: TObject; Canvas: TCanvas;
-      TransientType: TTransientType);
-    procedure memCodeEditorMouseMove(Sender: TObject; Shift: TShiftState;
-      X, Y: Integer);
-    function SelectCodeRange(const AObject: TObject; ADoSelect: boolean = true): TCodeRange;
-    procedure UnSelectCodeRange(const AObject: TObject);
-    procedure Localize(const AList: TStringList); override;
+    procedure memCodeEditorPaintTransient(Sender: TObject; Canvas: TCanvas; TransientType: TTransientType);
+    procedure memCodeEditorMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    function SelectCodeRange(AObject: TObject; ADoSelect: boolean = true): TCodeRange;
+    procedure UnSelectCodeRange(AObject: TObject);
+    procedure Localize(AList: TStringList); override;
     procedure ResetForm; override;
     procedure SetSaveDialog(Sender: TSaveDialog);
     procedure miGotoClick(Sender: TObject);
@@ -137,20 +133,21 @@ type
     procedure PasteComment(const AText: string);
     function BuildBracketHint(startLine, endLine: integer): string;
     function CharToPixels(P: TBufferCoord): TPoint;
-    procedure GenerateCode(const APreserveBookMarks: boolean = false);
+    procedure GenerateCode(APreserveBookMarks: boolean = false);
+    function GetAllLines: TStrings;
   public
     { Public declarations }
     procedure SetFormAttributes;
-    procedure ExecuteCopyToClipboard(const AIfRichText: boolean);
+    procedure ExecuteCopyToClipboard(AIfRichText: boolean);
     procedure ExportSettingsToXMLTag(ATag: IXMLElement); override;
     procedure ImportSettingsFromXMLTag(ATag: IXMLElement); override;
-    function GetIndentLevel(const idx: integer; ALines: TStrings = nil): integer;
-    procedure RefreshEditorForObject(const AObject: TObject);
-    function GetAllLines: TStrings;
+    function GetIndentLevel(idx: integer; ALines: TStrings): integer;
+    procedure RefreshEditorForObject(AObject: TObject);
     procedure SetCaretPos(const ALine: TChangeLine);
+    procedure SaveToFile(const APath: string);
 {$IFDEF USE_CODEFOLDING}
     procedure RemoveFoldRange(var AFoldRange: TSynEditFoldRange);
-    function FindFoldRangesInCodeRange(const ACodeRange: TCodeRange; const ACount: integer): TSynEditFoldRanges;
+    function FindFoldRangesInCodeRange(const ACodeRange: TCodeRange; ACount: integer): TSynEditFoldRanges;
     procedure ReloadFoldRegions;
 {$ENDIF}
   end;
@@ -334,7 +331,7 @@ begin
    inherited ResetForm;
 end;
 
-procedure TEditorForm.Localize(const AList: TStringList);
+procedure TEditorForm.Localize(AList: TStringList);
 begin
    if stbEditorBar.Panels[1].Text <> '' then
       stbEditorBar.Panels[1].Text := AList.Values['Modified'];
@@ -427,7 +424,7 @@ begin
    end;
 end;
 
-procedure TEditorForm.GenerateCode(const APreserveBookMarks: boolean = false);
+procedure TEditorForm.GenerateCode(APreserveBookMarks: boolean = false);
 var
    lang: TLangDefinition;
    skipFuncBody: boolean;
@@ -579,7 +576,7 @@ begin
    end;
 end;
 
-procedure TEditorForm.ExecuteCopyToClipboard(const AIfRichText: boolean);
+procedure TEditorForm.ExecuteCopyToClipboard(AIfRichText: boolean);
 begin
    if AIfRichText then
    begin
@@ -714,7 +711,7 @@ begin
     begin
        if SaveDialog1.Execute then
        begin
-          GetAllLines.SaveToFile(SaveDialog1.FileName, GInfra.CurrentLang.GetFileEncoding);
+          SaveToFile(SaveDialog1.FileName);
           fileName := ExtractFileName(SaveDialog1.FileName);
           fileNameNoExt := fileName;
           lPos := Pos('.', fileNameNoExt);
@@ -757,12 +754,11 @@ end;
 procedure TEditorForm.miSaveClick(Sender: TObject);
 var
    synExport: TSynCustomExporter;
-   strings: TStrings;
+   lines: TStrings;
 begin
    SetSaveDialog(SaveDialog2);
    if SaveDialog2.Execute then
    begin
-      strings := GetAllLines;
       if (SaveDialog2.FilterIndex > 1) and Assigned(memCodeEditor.Highlighter) then
       begin
          case SaveDialog2.FilterIndex of
@@ -774,13 +770,18 @@ begin
          if synExport <> nil then
          begin
             synExport.Highlighter := memCodeEditor.Highlighter;
-            synExport.ExportAll(strings);
-            synExport.SaveToFile(SaveDialog2.FileName);
-            synExport.Highlighter := nil;
+            lines := GetAllLines;
+            try
+               synExport.ExportAll(lines);
+               synExport.SaveToFile(SaveDialog2.FileName);
+            finally
+               synExport.Highlighter := nil;
+               lines.Free;
+            end;
          end;
       end
       else
-         strings.SaveToFile(SaveDialog2.FileName, GInfra.CurrentLang.GetFileEncoding);
+         SaveToFile(SaveDialog2.FileName);
    end;
 end;
 
@@ -1127,20 +1128,36 @@ begin
 {$IFDEF USE_CODEFOLDING}
    result := memCodeEditor.GetUncollapsedStrings;
 {$ELSE}
-   result := memCodeEditor.Lines;
+   result := TStringList.Create;
+   result.Assign(memCodeEditor.Lines);
 {$ENDIF}
 end;
 
-function TEditorForm.SelectCodeRange(const AObject: TObject; ADoSelect: boolean = true): TCodeRange;
+procedure TEditorForm.SaveToFile(const APath: string);
+var
+   lines: TStrings;
+begin
+{$IFDEF USE_CODEFOLDING}
+   lines := memCodeEditor.GetUncollapsedStrings;
+   lines.SaveToFile(APath, GInfra.CurrentLang.GetFileEncoding);
+   lines.Free;
+{$ELSE}
+   memCodeEditor.Lines.SaveToFile(APath, GInfra.CurrentLang.GetFileEncoding);
+{$ENDIF}
+end;
+
+function TEditorForm.SelectCodeRange(AObject: TObject; ADoSelect: boolean = true): TCodeRange;
 var
    i: integer;
+   lines: TStrings;
 {$IFDEF USE_CODEFOLDING}
    foldRange: TSynEditFoldRange;
 {$ENDIF}
 begin
    TInfra.InitCodeRange(result);
-   result.Lines := GetAllLines;
-   result.FirstRow := result.Lines.IndexOfObject(AObject);
+   lines := GetAllLines;
+   result.FirstRow := lines.IndexOfObject(AObject);
+   lines.Free;
    if result.FirstRow <> ROW_NOT_FOUND then
    begin
 {$IFDEF USE_CODEFOLDING}
@@ -1164,6 +1181,8 @@ begin
       end
       else
          result.Lines := memCodeEditor.Lines;
+{$ELSE}
+      result.Lines := memCodeEditor.Lines;
 {$ENDIF}
       if result.Lines <> nil then
       begin
@@ -1199,9 +1218,7 @@ begin
 {$ENDIF}
          end;
       end;
-   end
-   else
-      result.Lines := nil;
+   end;
 end;
 
 procedure TEditorForm.SetCaretPos(const ALine: TChangeLine);
@@ -1220,7 +1237,7 @@ begin
    end;
 end;
 
-procedure TEditorForm.UnSelectCodeRange(const AObject: TObject);
+procedure TEditorForm.UnSelectCodeRange(AObject: TObject);
 var
    codeRange: TCodeRange;
 begin
@@ -1245,7 +1262,7 @@ begin
    AFoldRange := nil;
 end;
 
-function TEditorForm.FindFoldRangesInCodeRange(const ACodeRange: TCodeRange; const ACount: integer): TSynEditFoldRanges;
+function TEditorForm.FindFoldRangesInCodeRange(const ACodeRange: TCodeRange; ACount: integer): TSynEditFoldRanges;
 var
    i: integer;
    foldRange: TSynEditFoldRange;
@@ -1263,7 +1280,7 @@ begin
 end;
 {$ENDIF}
 
-procedure TEditorForm.RefreshEditorForObject(const AObject: TObject);
+procedure TEditorForm.RefreshEditorForObject(AObject: TObject);
 var
    topLine, line: integer;
    codeRange: TCodeRange;
@@ -1305,14 +1322,12 @@ begin
    end;
 end;
 
-function TEditorForm.GetIndentLevel(const idx: integer; ALines: TStrings = nil): integer;
+function TEditorForm.GetIndentLevel(idx: integer; ALines: TStrings): integer;
 var
    line: string;
    i: integer;
 begin
    result := 0;
-   if ALines = nil then
-      ALines := GetAllLines;
    if (idx >= 0) and (idx < ALines.Count) then
    begin
       line := ALines[idx];
@@ -1384,13 +1399,17 @@ begin
       end;
 {$ENDIF}
       lines := GetAllLines;
-      for i := 0 to lines.Count-1 do
-      begin
-         tag2 := ATag.OwnerDocument.CreateElement('text_line');
-         TXMLProcessor.AddCDATA(tag2, lines[i]);
-         if TInfra.IsValid(lines.Objects[i]) and Supports(lines.Objects[i], IIdentifiable, idObject) then
-            tag2.SetAttribute(ID_ATTR, idObject.Id.ToString);
-         ATag.AppendChild(tag2);
+      try
+         for i := 0 to lines.Count-1 do
+         begin
+            tag2 := ATag.OwnerDocument.CreateElement('text_line');
+            TXMLProcessor.AddCDATA(tag2, lines[i]);
+            if TInfra.IsValid(lines.Objects[i]) and Supports(lines.Objects[i], IIdentifiable, idObject) then
+               tag2.SetAttribute(ID_ATTR, idObject.Id.ToString);
+            ATag.AppendChild(tag2);
+         end;
+      finally
+         lines.Free;
       end;
       ATag.SetAttribute('modified', memCodeEditor.Modified.ToString);
    end;

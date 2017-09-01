@@ -82,7 +82,7 @@ type
          procedure UpdateMemoVScroll;
          procedure SetMemoHScroll(AValue: boolean);
          procedure UpdateMemoHScroll;
-         procedure ResetMemoScrollBars(const AStyle: TScrollStyle; const AMemo: TMemo);
+         procedure ResetMemoScrollBars(const AStyle: TScrollStyle; AMemo: TMemo);
          procedure SetMemoWordWrap(AValue: boolean);
          function GetMemoWordWrap: boolean;
          procedure WMMouseLeave(var Msg: TMessage); message WM_MOUSELEAVE;
@@ -100,22 +100,22 @@ type
          function PerformEditorUpdate: boolean;
          procedure SelectBlock(const APoint: TPoint);
          procedure SetCursor(const APoint: TPoint);
-         procedure SetFrame(const AValue: boolean);
+         procedure SetFrame(AValue: boolean);
          procedure PutTextControls; virtual;
-         procedure DrawArrowLine(const ABeginPoint, AEndPoint: TPoint; const AArrowPos: TArrowPosition = arrEnd; const AColor: TColor = clBlack);
+         procedure DrawArrowLine(const ABeginPoint, AEndPoint: TPoint; const AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
          function GetEllipseTextRect(const APoint: TPoint; const AText: string): TRect;
          function DrawEllipsedText(const APoint: TPoint; const AText: string): TRect;
          procedure MoveComments(x, y: integer);
          function GetUndoObject: TObject; virtual;
-         function IsInFront(const AControl: TWinControl): boolean;
+         function IsInFront(AControl: TWinControl): boolean;
          procedure SetPage(APage: TBlockTabSheet); virtual;
          function GetPage: TBlockTabSheet; virtual;
          procedure CreateParams(var Params: TCreateParams); override;
          procedure OnWindowPosChanged(x, y: integer); virtual;
          function ProcessComments: boolean;
-         function IsForeParent(const AParent: TObject): boolean;
+         function IsForeParent(AParent: TObject): boolean;
          function GetErrorMsg(AEdit: TCustomEdit): string;
-         procedure SaveInXML2(const ATag: IXMLElement);
+         procedure SaveInXML2(ATag: IXMLElement);
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -134,24 +134,24 @@ type
          property BType: TBlockType read FType default blUnknown;
          property ParentBranch: TBranch read FParentBranch;
          property Id: integer read GetId;
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: Integer; const AId: integer = ID_INVALID);
+         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
          destructor Destroy; override;
-         function Clone(const ABranch: TBranch): TBlock; virtual;
-         procedure ChangeColor(const AColor: TColor); virtual;
+         function Clone(ABranch: TBranch): TBlock; virtual;
+         procedure ChangeColor(AColor: TColor); virtual;
          procedure SetFontStyle(const AStyle: TFontStyles);
-         procedure SetFontSize(const ASize: integer);
+         procedure SetFontSize(ASize: integer);
          function GetFont: TFont;
-         procedure SetFont(const AFont: TFont);
+         procedure SetFont(AFont: TFont);
          procedure RefreshStatements;
          procedure PopulateComboBoxes; virtual;
-         function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; virtual;
-         function GetFromXML(const ATag: IXMLElement): TErrorType; virtual;
-         procedure SaveInXML(const ATag: IXMLElement); virtual;
+         function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; virtual;
+         function GetFromXML(ATag: IXMLElement): TErrorType; virtual;
+         procedure SaveInXML(ATag: IXMLElement); virtual;
          function FillTemplate(const ALangId: string; const ATemplate: string = ''): string; virtual;
          function FillCodedTemplate(const ALangId: string): string; virtual;
          function GetDescTemplate(const ALangId: string): string; virtual;
          function GetTextControl: TCustomEdit; virtual;
-         function GenerateTree(const AParentNode: TTreeNode): TTreeNode; virtual;
+         function GenerateTree(AParentNode: TTreeNode): TTreeNode; virtual;
          function IsCursorSelect: boolean;
          function IsCursorResize: boolean;
          function CanInsertReturnBlock: boolean; virtual;
@@ -162,9 +162,9 @@ type
          function SkipUpdateEditor: boolean;
          function RetrieveFocus(AInfo: TFocusInfo): boolean; virtual;
          function CanBeFocused: boolean; virtual;
-         procedure GenerateDefaultTemplate(const ALines: TStringList; const ALangId: string; const ADeep: integer);
-         procedure GenerateTemplateSection(const ALines: TStringList; const ATemplate: TStringList; const ALangId: string; const ADeep: integer); overload; virtual;
-         procedure GenerateTemplateSection(const ALines: TStringList; const ATemplate: string; const ALangId: string; const ADeep: integer); overload;
+         procedure GenerateDefaultTemplate(ALines: TStringList; const ALangId: string; ADeep: integer);
+         procedure GenerateTemplateSection(ALines: TStringList; ATemplate: TStringList; const ALangId: string; ADeep: integer); overload; virtual;
+         procedure GenerateTemplateSection(ALines: TStringList; const ATemplate: string; const ALangId: string; ADeep: integer); overload;
          function GetFrontMemo: TMemo; virtual;
          function FocusOnTextControl(AInfo: TFocusInfo): boolean;
          procedure ClearSelection;
@@ -179,14 +179,14 @@ type
          function Remove: boolean; virtual;
          function CanBeRemoved: boolean;
          function IsBoldDesc: boolean; virtual;
-         function GetComments(const AInFront: boolean = false): IEnumerable<TComment>;
+         function GetComments(AInFront: boolean = false): IEnumerable<TComment>;
          function GetPinComments: IEnumerable<TComment>;
-         procedure SetVisible(const AVisible: boolean; const ASetComments: boolean = true); virtual;
+         procedure SetVisible(AVisible: boolean; ASetComments: boolean = true); virtual;
          procedure BringAllToFront;
          function PinComments: integer;
          function UnPinComments: integer; virtual;
-         procedure CloneComments(const ASource: TBlock);
-         procedure ImportCommentsFromXML(const ATag: IXMLElement);
+         procedure CloneComments(ASource: TBlock);
+         procedure ImportCommentsFromXML(ATag: IXMLElement);
          procedure CloneFrom(ABlock: TBlock); virtual;
          function GetExportFileName: string; virtual;
          function ExportToXMLFile(const AFile: string): TErrorType; virtual;
@@ -208,7 +208,7 @@ type
          FTrueLabel, FFalseLabel: string;
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
-         procedure SetWidth(const AMinX: integer); virtual;
+         procedure SetWidth(AMinX: integer); virtual;
          procedure OnMouseLeave; override;
          procedure LinkBlocks(const idx: integer = PRIMARY_BRANCH_IND-1);
          procedure Paint; override;
@@ -221,31 +221,31 @@ type
          FFoldParms: TInitParms;
          property BlockImportMode: boolean read FBlockImportMode write FBlockImportMode;
          property BranchCount: integer read GetBranchCount;
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: Integer; const AHook: TPoint; const AId: integer = ID_INVALID);
+         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; const AHook: TPoint; AId: integer = ID_INVALID);
          destructor Destroy; override;
-         procedure ResizeHorz(const AContinue: boolean); virtual;
-         procedure ResizeVert(const AContinue: boolean); virtual;
-         function GenerateNestedCode(const ALines: TStringList; const ABranchInd, ADeep: integer; const ALangId: string): integer;
-         procedure ExpandFold(const AResize: boolean); virtual;
-         function GetBranch(const idx: integer): TBranch;
-         procedure ChangeColor(const AColor: TColor); override;
-         function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
-         function AddBranch(const AHook: TPoint; const AResizeInd: boolean; const ABranchId: integer = ID_INVALID; const ABranchStmntId: integer = ID_INVALID): TBranch; virtual;
+         procedure ResizeHorz(AContinue: boolean); virtual;
+         procedure ResizeVert(AContinue: boolean); virtual;
+         function GenerateNestedCode(ALines: TStringList; ABranchInd, ADeep: integer; const ALangId: string): integer;
+         procedure ExpandFold(AResize: boolean); virtual;
+         function GetBranch(idx: integer): TBranch;
+         procedure ChangeColor(AColor: TColor); override;
+         function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
+         function AddBranch(const AHook: TPoint; AResizeInd: boolean; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch; virtual;
          procedure ExpandAll;
          function HasFoldedBlocks: boolean;
          procedure PopulateComboBoxes; override;
          function GetFrontMemo: TMemo; override;
          function CanInsertReturnBlock: boolean; override;
-         function GetFromXML(const ATag: IXMLElement): TErrorType; override;
-         procedure SaveInXML(const ATag: IXMLElement); override;
-         procedure GenerateTemplateSection(const ALines: TStringList; const ATemplate: TStringList; const ALangId: string; const ADeep: integer); override;
-         function GetBlocks(const AIndex: integer = PRIMARY_BRANCH_IND-1): IEnumerable<TBlock>;
-         function GetBranches(const AStart: integer = PRIMARY_BRANCH_IND-1): IEnumerable<TBranch>;
+         function GetFromXML(ATag: IXMLElement): TErrorType; override;
+         procedure SaveInXML(ATag: IXMLElement); override;
+         procedure GenerateTemplateSection(ALines: TStringList; ATemplate: TStringList; const ALangId: string; ADeep: integer); override;
+         function GetBlocks(AIndex: integer = PRIMARY_BRANCH_IND-1): IEnumerable<TBlock>;
+         function GetBranches(AStart: integer = PRIMARY_BRANCH_IND-1): IEnumerable<TBranch>;
          procedure ResizeWithDrawLock;
          function GetFoldedText: string;
          procedure SetFoldedText(const AText: string);
          function CountErrWarn: TErrWarnCount; override;
-         procedure SetVisible(const AVisible: boolean; const ASetComments: boolean = true); override;
+         procedure SetVisible(AVisible: boolean; ASetComments: boolean = true); override;
          function CanBeFocused: boolean; override;
          function UnPinComments: integer; override;
          procedure CloneFrom(ABlock: TBlock); override;
@@ -289,7 +289,7 @@ type
    THackControl = class(TControl);
    THackCustomEdit = class(TCustomEdit);
 
-constructor TBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: Integer; const AId: integer = ID_INVALID);
+constructor TBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
 begin
 
    if ABranch <> nil then
@@ -337,7 +337,7 @@ begin
    OnDragDrop  := MyOnDragDrop;
 end;
 
-constructor TGroupBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: Integer; const AHook: TPoint; const AId: integer = ID_INVALID);
+constructor TGroupBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: Integer; const AHook: TPoint; AId: integer = ID_INVALID);
 begin
 
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
@@ -488,7 +488,7 @@ begin
    UpdateMemoHScroll;
 end;
 
-procedure TBlock.CloneComments(const ASource: TBlock);
+procedure TBlock.CloneComments(ASource: TBlock);
 var
    newComment, comment: TComment;
    unPin: boolean;
@@ -574,7 +574,7 @@ begin
       Cursor := crDefault;
 end;
 
-function TBlock.IsForeParent(const AParent: TObject): boolean;
+function TBlock.IsForeParent(AParent: TObject): boolean;
 var
    lParent: TWinControl;
 begin
@@ -730,7 +730,7 @@ begin
    Frame := not Frame;
 end;
 
-function TGroupBlock.GenerateNestedCode(const ALines: TStringList; const ABranchInd, ADeep: integer; const ALangId: string): integer;
+function TGroupBlock.GenerateNestedCode(ALines: TStringList; ABranchInd, ADeep: integer; const ALangId: string): integer;
 var
    block: TBlock;
    lBranch: TBranch;
@@ -798,7 +798,7 @@ begin
    end;
 end;
 
-function TBlock.Clone(const ABranch: TBranch): TBlock;
+function TBlock.Clone(ABranch: TBranch): TBlock;
 begin
 {}
 end;
@@ -875,7 +875,7 @@ begin
    end;
 end;
 
-procedure TBlock.SetFrame(const AValue: boolean);
+procedure TBlock.SetFrame(AValue: boolean);
 begin
    if FFrame <> AValue then
    begin
@@ -904,7 +904,7 @@ begin
    end;
 end;
 
-procedure TGroupBlock.ResizeVert(const AContinue: boolean);
+procedure TGroupBlock.ResizeVert(AContinue: boolean);
 begin
    Height := Branch.Height + Branch.Hook.Y + FInitParms.HeightAffix;
    LinkBlocks;
@@ -912,7 +912,7 @@ begin
       FParentBlock.ResizeVert(AContinue);
 end;
 
-procedure TGroupBlock.ResizeHorz(const AContinue: boolean);
+procedure TGroupBlock.ResizeHorz(AContinue: boolean);
 var
    xLeft, xRight: integer;
    block: TBlock;
@@ -964,7 +964,7 @@ begin
 
 end;
 
-procedure TGroupBlock.SetWidth(const AMinX: integer);
+procedure TGroupBlock.SetWidth(AMinX: integer);
 begin
 {}
 end;
@@ -1040,7 +1040,7 @@ begin
    end;
 end;
 
-procedure TBlock.SetFontSize(const ASize: integer);
+procedure TBlock.SetFontSize(ASize: integer);
 var
    i: integer;
 begin
@@ -1061,7 +1061,7 @@ begin
    result := Font;
 end;
 
-procedure TBlock.SetFont(const AFont: TFont);
+procedure TBlock.SetFont(AFont: TFont);
 var
    i: integer;
 begin
@@ -1083,7 +1083,7 @@ begin
    PutTextControls;
 end;
 
-function TBlock.GetComments(const AInFront: boolean = false): IEnumerable<TComment>;
+function TBlock.GetComments(AInFront: boolean = false): IEnumerable<TComment>;
 var
    comment: TComment;
    isFront: boolean;
@@ -1119,7 +1119,7 @@ begin
       comment.BringToFront;
 end;
 
-function TBlock.IsInFront(const AControl: TWinControl): boolean;
+function TBlock.IsInFront(AControl: TWinControl): boolean;
 var
    hnd: THandle;
 begin
@@ -1239,7 +1239,7 @@ begin
    result := FId;
 end;
 
-procedure TBlock.ChangeColor(const AColor: TColor);
+procedure TBlock.ChangeColor(AColor: TColor);
 var
    comment: TComment;
    lEdit: THackCustomEdit;
@@ -1272,7 +1272,7 @@ begin
    NavigatorForm.Invalidate;
 end;
 
-procedure TGroupBlock.ChangeColor(const AColor: TColor);
+procedure TGroupBlock.ChangeColor(AColor: TColor);
 var
    i: integer;
    block: TBlock;
@@ -1451,7 +1451,7 @@ begin
    end;
 end;
 
-procedure TBlock.DrawArrowLine(const ABeginPoint, AEndPoint: TPoint; const AArrowPos: TArrowPosition = arrEnd; const AColor: TColor = clBlack);
+procedure TBlock.DrawArrowLine(const ABeginPoint, AEndPoint: TPoint; const AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
 const
    MX: array[boolean, boolean] of integer = ((10, -10), (-5, -5));
    MY: array[boolean, boolean] of integer = ((5, 5), (10, -10));
@@ -1707,7 +1707,7 @@ begin
    Msg.Result := 1;
 end;
 
-function TGroupBlock.GetBranch(const idx: integer): TBranch;
+function TGroupBlock.GetBranch(idx: integer): TBranch;
 begin
    result := nil;
    if (idx >= PRIMARY_BRANCH_IND) and (idx <= High(FBranchArray)) then
@@ -1836,7 +1836,7 @@ begin
    end;
 end;
 
-procedure TBlock.ResetMemoScrollBars(const AStyle: TScrollStyle; const AMemo: TMemo);
+procedure TBlock.ResetMemoScrollBars(const AStyle: TScrollStyle; AMemo: TMemo);
 var
    sStyle: TScrollStyle;
 begin
@@ -1984,7 +1984,7 @@ begin
    end;
 end;
 
-function TBlock.GenerateTree(const AParentNode: TTreeNode): TTreeNode;
+function TBlock.GenerateTree(AParentNode: TTreeNode): TTreeNode;
 var
    errMsg, descTemplate: string;
    textControl: TCustomEdit;
@@ -2004,7 +2004,7 @@ begin
    end;
 end;
 
-function TGroupBlock.GenerateTree(const AParentNode: TTreeNode): TTreeNode;
+function TGroupBlock.GenerateTree(AParentNode: TTreeNode): TTreeNode;
 var
    block: TBlock;
 begin
@@ -2013,7 +2013,7 @@ begin
        block.GenerateTree(result);
 end;
 
-function TGroupBlock.AddBranch(const AHook: TPoint; const AResizeInd: boolean; const ABranchId: integer = ID_INVALID; const ABranchStmntId: integer = ID_INVALID): TBranch;
+function TGroupBlock.AddBranch(const AHook: TPoint; AResizeInd: boolean; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch;
 var
    len: integer;
 begin
@@ -2104,7 +2104,7 @@ begin
       result := inherited UnPinComments;
 end;
 
-procedure TBlock.SetVisible(const AVisible: boolean; const ASetComments: boolean = true);
+procedure TBlock.SetVisible(AVisible: boolean; ASetComments: boolean = true);
 begin
    if Visible <> AVisible then
    begin
@@ -2124,7 +2124,7 @@ begin
    result := TXMLProcessor.ExportToXMLFile(ExportToXMLTag, AFile);
 end;
 
-procedure TGroupBlock.SetVisible(const AVisible: boolean; const ASetComments: boolean = true);
+procedure TGroupBlock.SetVisible(AVisible: boolean; ASetComments: boolean = true);
 begin
    inherited SetVisible(AVisible, Expanded);
 end;
@@ -2134,7 +2134,7 @@ begin
    result := (FParentBlock = nil) or not FParentBlock.BlockImportMode;
 end;
 
-procedure TGroupBlock.ExpandFold(const AResize: boolean);
+procedure TGroupBlock.ExpandFold(AResize: boolean);
 var
    tmpWidth, tmpHeight, i: integer;
    block: TBlock;
@@ -2210,7 +2210,7 @@ begin
    UnPinComments;
 end;
 
-procedure TGroupBlock.SaveInXML(const ATag: IXMLElement);
+procedure TGroupBlock.SaveInXML(ATag: IXMLElement);
 var
    brx, fw, fh, i: integer;
    txt: string;
@@ -2289,7 +2289,7 @@ begin
    end;
 end;
 
-procedure TBlock.SaveInXML(const ATag: IXMLElement);
+procedure TBlock.SaveInXML(ATag: IXMLElement);
 var
    comment: TComment;
 begin
@@ -2302,7 +2302,7 @@ begin
    end;
 end;
 
-procedure TBlock.SaveInXML2(const ATag: IXMLElement);
+procedure TBlock.SaveInXML2(ATag: IXMLElement);
 var
    txtControl: TCustomEdit;
    txt: string;
@@ -2337,7 +2337,7 @@ begin
    end;
 end;
 
-procedure TBlock.ImportCommentsFromXML(const ATag: IXMLElement);
+procedure TBlock.ImportCommentsFromXML(ATag: IXMLElement);
 var
    tag: IXMLElement;
    comment: TComment;
@@ -2355,7 +2355,7 @@ begin
    end;
 end;
 
-function TBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
+function TBlock.GetFromXML(ATag: IXMLElement): TErrorType;
 var
    tag: IXMLElement;
    textControl: TCustomEdit;
@@ -2391,7 +2391,7 @@ begin
    end;
 end;
 
-function TGroupBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
+function TGroupBlock.GetFromXML(ATag: IXMLElement): TErrorType;
 var
    tag1, tag2: IXMLElement;
    bId, idx, bStmntId, hx, hy: integer;
@@ -2641,7 +2641,7 @@ begin
    result := Length(FBranchArray) - 1;
 end;
 
-function TGroupBlock.GetBlocks(const AIndex: integer = PRIMARY_BRANCH_IND-1): IEnumerable<TBlock>;
+function TGroupBlock.GetBlocks(AIndex: integer = PRIMARY_BRANCH_IND-1): IEnumerable<TBlock>;
 var
    first, last, i, a: integer;
    block: TBlock;
@@ -2679,7 +2679,7 @@ begin
    result := TEnumeratorFactory<TBlock>.Create(list);
 end;
 
-function TGroupBlock.GetBranches(const AStart: integer = PRIMARY_BRANCH_IND-1): IEnumerable<TBranch>;
+function TGroupBlock.GetBranches(AStart: integer = PRIMARY_BRANCH_IND-1): IEnumerable<TBranch>;
 var
    i, first, last: integer;
    list: TList<TBranch>;
@@ -2711,7 +2711,7 @@ begin
    result := (funcHeader <> nil) and (TInfra.IsNOkColor(funcHeader.Font.Color) or funcHeader.chkExtDeclare.Checked);
 end;
 
-function TBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
+function TBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
 var
    tmpList: TStringList;
 begin
@@ -2728,7 +2728,7 @@ begin
    end;
 end;
 
-procedure TBlock.GenerateDefaultTemplate(const ALines: TStringList; const ALangId: string; const ADeep: integer);
+procedure TBlock.GenerateDefaultTemplate(ALines: TStringList; const ALangId: string; ADeep: integer);
 var
    langDef: TLangDefinition;
    template, txt: string;
@@ -2773,7 +2773,7 @@ begin
    end;
 end;
 
-procedure TBlock.GenerateTemplateSection(const ALines: TStringList; const ATemplate: string; const ALangId: string; const ADeep: integer);
+procedure TBlock.GenerateTemplateSection(ALines: TStringList; const ATemplate: string; const ALangId: string; ADeep: integer);
 var
    lines: TStringList;
 begin
@@ -2786,7 +2786,7 @@ begin
    end;
 end;
 
-procedure TBlock.GenerateTemplateSection(const ALines: TStringList; const ATemplate: TStringList; const ALangId: string; const ADeep: integer);
+procedure TBlock.GenerateTemplateSection(ALines: TStringList; ATemplate: TStringList; const ALangId: string; ADeep: integer);
 var
    line: string;
    i: integer;
@@ -2807,7 +2807,7 @@ begin
    end;
 end;
 
-procedure TGroupBlock.GenerateTemplateSection(const ALines: TStringList; const ATemplate: TStringList; const ALangId: string; const ADeep: integer);
+procedure TGroupBlock.GenerateTemplateSection(ALines: TStringList; ATemplate: TStringList; const ALangId: string; ADeep: integer);
 
    function CountLeadIndentChars(const AString: string): integer;
    var

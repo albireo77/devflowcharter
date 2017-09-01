@@ -38,21 +38,21 @@ type
          function GetDiamondPoint: TPoint; override;
          procedure PlaceBranchStatement(const ABranch: TBranch);
       public
-         constructor Create(const ABranch: TBranch); overload;
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
-         function Clone(const ABranch: TBranch): TBlock; override;
-         function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
-         function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
-         procedure ResizeHorz(const AContinue: boolean); override;
-         procedure ResizeVert(const AContinue: boolean); override;
-         procedure ExpandFold(const AResize: boolean); override;
+         constructor Create(ABranch: TBranch); overload;
+         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; AId: integer = ID_INVALID); overload;
+         function Clone(ABranch: TBranch): TBlock; override;
+         function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
+         function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
+         procedure ResizeHorz(AContinue: boolean); override;
+         procedure ResizeVert(AContinue: boolean); override;
+         procedure ExpandFold(AResize: boolean); override;
          procedure RemoveBranch;
-         function AddBranch(const AHook: TPoint; const AResizeInd: boolean; const ABranchId: integer = ID_INVALID; const ABranchStmntId: integer = ID_INVALID): TBranch; override;
+         function AddBranch(const AHook: TPoint; AResizeInd: boolean; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch; override;
          function CountErrWarn: TErrWarnCount; override;
-         function GetFromXML(const ATag: IXMLElement): TErrorType; override;
-         procedure SaveInXML(const ATag: IXMLElement); override;
+         function GetFromXML(ATag: IXMLElement): TErrorType; override;
+         procedure SaveInXML(ATag: IXMLElement); override;
          procedure RefreshCaseValues;
-         procedure ChangeColor(const AColor: TColor); override;
+         procedure ChangeColor(AColor: TColor); override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
          function IsDuplicatedCase(AEdit: TCustomEdit): boolean;
          procedure CloneFrom(ABlock: TBlock); override;
@@ -68,7 +68,7 @@ uses
    System.StrUtils, System.UITypes, XMLProcessor, Return_Block, Navigator_Form,
    LangDefinition, Statement, ApplicationCommon;
 
-constructor TCaseBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
+constructor TCaseBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; AId: integer = ID_INVALID);
 begin
 
    FType := blCase;
@@ -100,7 +100,7 @@ begin
 
 end;
 
-function TCaseBlock.Clone(const ABranch: TBranch): TBlock;
+function TCaseBlock.Clone(ABranch: TBranch): TBlock;
 begin
    result := TCaseBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, DefaultBranch.Hook.X, DefaultBranch.Hook.Y);
    result.CloneFrom(Self);
@@ -131,7 +131,7 @@ begin
    end;
 end;
 
-constructor TCaseBlock.Create(const ABranch: TBranch);
+constructor TCaseBlock.Create(ABranch: TBranch);
 begin
    Create(ABranch, 0, 0, 200, 131, 100, 100, 99);
 end;
@@ -201,7 +201,7 @@ begin
    end;
 end;
 
-function TCaseBlock.AddBranch(const AHook: TPoint; const AResizeInd: boolean; const ABranchId: integer = ID_INVALID; const ABranchStmntId: integer = ID_INVALID): TBranch;
+function TCaseBlock.AddBranch(const AHook: TPoint; AResizeInd: boolean; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch;
 var
    lock: boolean;
 begin
@@ -240,7 +240,7 @@ begin
    end;
 end;
 
-procedure TCaseBlock.ResizeHorz(const AContinue: boolean);
+procedure TCaseBlock.ResizeHorz(AContinue: boolean);
 var
    x, leftX, rightX, i: integer;
    lBranch: TBranch;
@@ -284,7 +284,7 @@ begin
 
 end;
 
-procedure TCaseBlock.ResizeVert(const AContinue: boolean);
+procedure TCaseBlock.ResizeVert(AContinue: boolean);
 var
    maxh, h, idx, i, lb: integer;
    lBranch: TBranch;
@@ -323,7 +323,7 @@ begin
       
 end;
 
-function TCaseBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
+function TCaseBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
 var
    indnt, line, defTemplate: string;
    i, bcnt, flag, a: integer;
@@ -523,7 +523,7 @@ begin
    end;
 end;
 
-function TCaseBlock.GenerateTree(const AParentNode: TTreeNode): TTreeNode;
+function TCaseBlock.GenerateTree(AParentNode: TTreeNode): TTreeNode;
 var
    errMsg, descTemplate: string;
    newNode: TTreeNode;
@@ -586,7 +586,7 @@ begin
       result := lang.CaseOfDescTemplate;
 end;
 
-procedure TCaseBlock.ExpandFold(const AResize: boolean);
+procedure TCaseBlock.ExpandFold(AResize: boolean);
 var
    i: integer;
 begin
@@ -626,7 +626,7 @@ begin
    end;
 end;
 
-procedure TCaseBlock.ChangeColor(const AColor: TColor);
+procedure TCaseBlock.ChangeColor(AColor: TColor);
 var
    i: integer;
 begin
@@ -638,7 +638,7 @@ begin
    end;
 end;
 
-function TCaseBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
+function TCaseBlock.GetFromXML(ATag: IXMLElement): TErrorType;
 var
    tag, tag2: IXMLElement;
    i: integer;
@@ -669,7 +669,7 @@ begin
    end;
 end;
 
-procedure TCaseBlock.SaveInXML(const ATag: IXMLElement);
+procedure TCaseBlock.SaveInXML(ATag: IXMLElement);
 var
    tag, tag2: IXMLElement;
    i: integer;

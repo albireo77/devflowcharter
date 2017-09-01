@@ -30,9 +30,9 @@ type
 
    TFunctionCallBlock = class(TBlock)
       public
-         constructor Create(const ABranch: TBranch); overload;
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
-         function Clone(const ABranch: TBranch): TBlock; override;
+         constructor Create(ABranch: TBranch); overload;
+         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID); overload;
+         function Clone(ABranch: TBranch): TBlock; override;
       protected
          procedure Paint; override;
    end;
@@ -43,7 +43,7 @@ implementation
 uses
    Vcl.Controls, Vcl.Forms, System.Classes, System.Types, ApplicationCommon, CommonTypes;
 
-constructor TFunctionCallBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
+constructor TFunctionCallBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
 begin
    FType := blFuncCall;
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
@@ -62,13 +62,13 @@ begin
    Constraints.MinHeight := 51;
 end;
 
-function TFunctionCallBlock.Clone(const ABranch: TBranch): TBlock;
+function TFunctionCallBlock.Clone(ABranch: TBranch): TBlock;
 begin
    result := TFunctionCallBlock.Create(ABranch, Left, Top, Width, Height);
    result.CloneFrom(Self);
 end;
 
-constructor TFunctionCallBlock.Create(const ABranch: TBranch);
+constructor TFunctionCallBlock.Create(ABranch: TBranch);
 begin
    Create(ABranch, 0, 0, 140, 51);
 end;

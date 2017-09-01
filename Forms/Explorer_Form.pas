@@ -51,7 +51,7 @@ type
     procedure tvExplorerCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure miRemoveClick(Sender: TObject);
-    procedure Localize(const AList: TStringList); override;
+    procedure Localize(AList: TStringList); override;
     procedure ResetForm; override;
     procedure FormCreate(Sender: TObject);
     procedure chkAutoNavClick(Sender: TObject);
@@ -123,7 +123,7 @@ begin
    end;
 end;
 
-procedure TExplorerForm.Localize(const AList: TStringList);
+procedure TExplorerForm.Localize(AList: TStringList);
 begin
    if tvExplorer.CanFocus then
       miRefresh.Click;

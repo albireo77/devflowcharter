@@ -29,9 +29,9 @@ type
 
    TInstrBlock = class(TBlock)
       public
-         constructor Create(const ABranch: TBranch); overload;
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
-         function Clone(const ABranch: TBranch): TBlock; override;
+         constructor Create(ABranch: TBranch); overload;
+         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID); overload;
+         function Clone(ABranch: TBranch): TBlock; override;
       protected
          procedure Paint; override;
    end;
@@ -43,7 +43,7 @@ uses
    System.StrUtils, Vcl.Forms, Vcl.Controls, System.Types, System.Classes, CommonTypes,
    ApplicationCommon;
 
-constructor TInstrBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
+constructor TInstrBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
 begin
 
    FType := blInstr;
@@ -64,12 +64,12 @@ begin
    Constraints.MinHeight := 51;
 end;
 
-constructor TInstrBlock.Create(const ABranch: TBranch);
+constructor TInstrBlock.Create(ABranch: TBranch);
 begin
    Create(ABranch, 0, 0, 140, 51);
 end;
 
-function TInstrBlock.Clone(const ABranch: TBranch): TBlock;
+function TInstrBlock.Clone(ABranch: TBranch): TBlock;
 begin
    result := TInstrBlock.Create(ABranch, Left, Top, Width, Height);
    result.CloneFrom(Self);

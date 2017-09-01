@@ -29,13 +29,13 @@ type
 
    TIfBlock = class(TGroupBlock)
       public
-         constructor Create(const ABranch: TBranch); overload;
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
-         function Clone(const ABranch: TBranch): TBlock; override;
+         constructor Create(ABranch: TBranch); overload;
+         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; AId: integer = ID_INVALID); overload;
+         function Clone(ABranch: TBranch): TBlock; override;
       protected
          procedure Paint; override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
-         procedure SetWidth(const AMinX: integer); override;
+         procedure SetWidth(AMinX: integer); override;
          function GetDiamondPoint: TPoint; override;
    end;
 
@@ -44,7 +44,7 @@ implementation
 uses
    System.Classes, ApplicationCommon, CommonTypes;
 
-constructor TIfBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
+constructor TIfBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; AId: integer = ID_INVALID);
 begin
 
    FType := blIf;
@@ -71,13 +71,13 @@ begin
    PutTextControls;
 end;
 
-function TIfBlock.Clone(const ABranch: TBranch): TBlock;
+function TIfBlock.Clone(ABranch: TBranch): TBlock;
 begin
    result := TIfBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, Branch.Hook.X, Branch.Hook.Y);
    result.CloneFrom(Self);
 end;
 
-constructor TIfBlock.Create(const ABranch: TBranch);
+constructor TIfBlock.Create(ABranch: TBranch);
 begin
    Create(ABranch, 0, 0, 200, 121, 100, 100, 89);
 end;
@@ -107,7 +107,7 @@ begin
    DrawI;
 end;
 
-procedure TIfBlock.SetWidth(const AMinX: integer);
+procedure TIfBlock.SetWidth(AMinX: integer);
 begin
    BottomPoint.X := BottomHook;
    if AMinX < FInitParms.Width - 30 then

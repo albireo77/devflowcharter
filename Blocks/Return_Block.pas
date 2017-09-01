@@ -28,11 +28,11 @@ type
 
    TReturnBlock = class(TBlock)
       public
-         constructor Create(const ABranch: TBranch); overload;
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload;
-         function Clone(const ABranch: TBranch): TBlock; override;
-         function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
-         procedure ChangeColor(const AColor: TColor); override;
+         constructor Create(ABranch: TBranch); overload;
+         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID); overload;
+         function Clone(ABranch: TBranch): TBlock; override;
+         function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
+         procedure ChangeColor(AColor: TColor); override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
          function GetDescTemplate(const ALangId: string): string; override;
       protected
@@ -49,7 +49,7 @@ uses
    System.UITypes, ApplicationCommon, Project, UserFunction, Main_Block,
    CommonTypes, LangDefinition;
 
-constructor TReturnBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
+constructor TReturnBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
 var
    defWidth: integer;
 begin
@@ -78,13 +78,13 @@ begin
    TopHook.X := BottomPoint.X;
 end;
 
-function TReturnBlock.Clone(const ABranch: TBranch): TBlock;
+function TReturnBlock.Clone(ABranch: TBranch): TBlock;
 begin
    result := TReturnBlock.Create(ABranch, Left, Top, Width, Height);
    result.CloneFrom(Self);
 end;
 
-constructor TReturnBlock.Create(const ABranch: TBranch);
+constructor TReturnBlock.Create(ABranch: TBranch);
 begin
    Create(ABranch, 0, 0, 140, 53);
 end;
@@ -118,7 +118,7 @@ begin
       result := lang.ReturnDescTemplate;
 end;
 
-function TReturnBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
+function TReturnBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
 var
    indnt, expr: string;
    userFunction: TUserFunction;
@@ -187,7 +187,7 @@ begin
    end;
 end;
 
-procedure TReturnBlock.ChangeColor(const AColor: TColor);
+procedure TReturnBlock.ChangeColor(AColor: TColor);
 begin
    inherited ChangeColor(AColor);
    FStatement.Color := AColor;

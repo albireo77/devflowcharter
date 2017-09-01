@@ -36,15 +36,15 @@ type
          FHandle: HDC;
       public
          UserFunction: TObject;
-         constructor Create(const APage: TBlockTabSheet; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
-         constructor Create(const APage: TBlockTabSheet; const ATopLeft: TPoint); overload;
-         function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
-         function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
-         function GetFromXML(const ATag: IXMLElement): TErrorType; override;
-         procedure SaveInXML(const ATag: IXMLElement); override;
+         constructor Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; AId: integer = ID_INVALID); overload;
+         constructor Create(APage: TBlockTabSheet; const ATopLeft: TPoint); overload;
+         function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
+         function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
+         function GetFromXML(ATag: IXMLElement): TErrorType; override;
+         procedure SaveInXML(ATag: IXMLElement); override;
          function GetMaxBounds: TPoint;
          procedure ExportToGraphic(AGraphic: TGraphic); override;
-         procedure SetWidth(const AMinX: integer); override;
+         procedure SetWidth(AMinX: integer); override;
          function GetHandle: THandle;
          procedure SetZOrder(AValue: integer);
          function GetZOrder: integer;
@@ -80,7 +80,7 @@ uses
    XMLProcessor, DeclareList, Navigator_Form, Return_Block, LangDefinition, UserFunction,
    Comment;
 
-constructor TMainBlock.Create(const APage: TBlockTabSheet; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
+constructor TMainBlock.Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; AId: integer = ID_INVALID);
 var
    defWidth, defWidthHalf: integer;
 begin
@@ -129,7 +129,7 @@ begin
    FStatement := nil;
 end;
 
-constructor TMainBlock.Create(const APage: TBlockTabSheet; const ATopLeft: TPoint);
+constructor TMainBlock.Create(APage: TBlockTabSheet; const ATopLeft: TPoint);
 begin
    Create(APage,
           ATopLeft.X,
@@ -422,7 +422,7 @@ begin
    BringAllToFront;
 end;
 
-function TMainBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
+function TMainBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
 var
    lName, template, ending: string;
    lang: TLangDefinition;
@@ -497,7 +497,7 @@ begin
    end;
 end;
 
-procedure TMainBlock.SetWidth(const AMinX: integer);
+procedure TMainBlock.SetWidth(AMinX: integer);
 var
    minVal, val: integer;
    R: TRect;
@@ -518,7 +518,7 @@ begin
    end;
 end;
 
-function TMainBlock.GenerateTree(const AParentNode: TTreeNode): TTreeNode;
+function TMainBlock.GenerateTree(AParentNode: TTreeNode): TTreeNode;
 var
    block: TBlock;
 begin
@@ -527,7 +527,7 @@ begin
        block.GenerateTree(AParentNode);
 end;
 
-procedure TMainBlock.SaveInXML(const ATag: IXMLElement);
+procedure TMainBlock.SaveInXML(ATag: IXMLElement);
 begin
    inherited SaveInXML(ATag);
    if ATag <> nil then
@@ -538,7 +538,7 @@ begin
    end;
 end;
 
-function TMainBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
+function TMainBlock.GetFromXML(ATag: IXMLElement): TErrorType;
 begin
    result := inherited GetFromXML(ATag);
    if ATag <> nil then

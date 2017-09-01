@@ -35,11 +35,11 @@ type
          function GetTextControl: TCustomEdit; override;
          function GetFrontMemo: TMemo; override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
-         function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
-         function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
+         function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
+         function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
       protected
          FErrLine: integer;
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; virtual;
+         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID); overload; virtual;
          procedure Paint; override;
          procedure OnDblClickMemo(Sender: TObject);
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
@@ -55,7 +55,7 @@ uses
 {$ENDIF}
    System.SysUtils, WinApi.Windows, System.Types, ApplicationCommon, CommonTypes, LangDefinition;
 
-constructor TMultiLineBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
+constructor TMultiLineBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
 begin
 
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
@@ -119,7 +119,7 @@ begin
       IPoint.Y := FStatements.Height + 10;
 end;
 
-function TMultiLineBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
+function TMultiLineBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
 var
    tmpList: TStringList;
 begin
@@ -225,7 +225,7 @@ begin
       OnMouseDownMemo(Sender, mbLeft, Shift, 0, 0);
 end;
 
-function TMultiLineBlock.GenerateTree(const AParentNode: TTreeNode): TTreeNode;
+function TMultiLineBlock.GenerateTree(AParentNode: TTreeNode): TTreeNode;
 var
    errMsg, lLabel: string;
    i: integer;

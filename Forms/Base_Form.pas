@@ -30,7 +30,7 @@ type
 
   TBaseForm = class(TForm, IFocusable)
     public
-      procedure Localize(const AList: TStringList); virtual;
+      procedure Localize(AList: TStringList); virtual;
       procedure ImportSettingsFromXMLTag(ATag: IXMLElement); virtual;
       procedure ExportSettingsToXMLTag(ATag: IXMLElement); virtual;
       procedure ResetForm; virtual;
@@ -49,7 +49,7 @@ implementation
 uses
    WinApi.Windows, ApplicationCommon;
 
-procedure TBaseForm.Localize(const AList: TStringList);
+procedure TBaseForm.Localize(AList: TStringList);
 begin
    Caption := AList.Values['FormCaption'];
 end;

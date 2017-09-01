@@ -120,7 +120,7 @@ type
     procedure cbLanguageChange(Sender: TObject);
     procedure btnBrowseScriptsClick(Sender: TObject);
     procedure imgShapesClick(Sender: TObject);
-    procedure Localize(const AList: TStringList); override;
+    procedure Localize(AList: TStringList); override;
     procedure chkMultiPrintClick(Sender: TObject);
     procedure ResetForm; override;
     procedure edtFontNameClick(Sender: TObject);
@@ -157,7 +157,7 @@ const
 
 {$R *.dfm}
 
-procedure TSettingsForm.Localize(const AList: TStringList);
+procedure TSettingsForm.Localize(AList: TStringList);
 var
    val: integer;
 begin

@@ -30,13 +30,13 @@ type
 
    TFolderBlock = class(TGroupBlock)
       public
-         constructor Create(const ABranch: TBranch); overload;
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
-         function Clone(const ABranch: TBranch): TBlock; override;
+         constructor Create(ABranch: TBranch); overload;
+         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; AId: integer = ID_INVALID); overload;
+         function Clone(ABranch: TBranch): TBlock; override;
       protected
          procedure Paint; override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
-         procedure SetWidth(const AMinX: integer); override;
+         procedure SetWidth(AMinX: integer); override;
          function GetDiamondPoint: TPoint; override;
    end;
 
@@ -45,7 +45,7 @@ implementation
 uses
    System.StrUtils, CommonTypes, ApplicationCommon;
 
-constructor TFolderBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
+constructor TFolderBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; AId: integer = ID_INVALID);
 begin
 
    FType := blFolder;
@@ -73,13 +73,13 @@ begin
    FStatement := nil;
 end;
 
-function TFolderBlock.Clone(const ABranch: TBranch): TBlock;
+function TFolderBlock.Clone(ABranch: TBranch): TBlock;
 begin
    result := TFolderBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, Branch.Hook.X, Branch.Hook.Y);
    result.CloneFrom(Self);
 end;
 
-constructor TFolderBlock.Create(const ABranch: TBranch);
+constructor TFolderBlock.Create(ABranch: TBranch);
 begin
    Create(ABranch, 0, 0, 140, 61, 70, 70, 30);
 end;
@@ -103,7 +103,7 @@ begin
    result := Point(-1, -1);
 end;
 
-procedure TFolderBlock.SetWidth(const AMinX: integer);
+procedure TFolderBlock.SetWidth(AMinX: integer);
 begin
    BottomPoint.X := BottomHook;
    if AMinX < FInitParms.Width - 30 then

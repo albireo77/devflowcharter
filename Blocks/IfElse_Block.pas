@@ -36,17 +36,17 @@ type
          FalseHook: integer;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
          procedure Paint; override;
-         procedure SetWidth(const AMinX: integer); override;
+         procedure SetWidth(AMinX: integer); override;
          function GetDiamondPoint: TPoint; override;
       public
-         constructor Create(const ABranch: TBranch); overload;
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, p1X, p3X, b_hook, t_hook, p1Y, p3Y, f_hook, tt_hook: integer; const AId: integer = ID_INVALID); overload;
-         function Clone(const ABranch: TBranch): TBlock; override;
-         procedure ResizeHorz(const AContinue: boolean); override;
-         procedure ResizeVert(const AContinue: boolean); override;
-         procedure ExpandFold(const AResize: boolean); override;
-         function GenerateTree(const AParentNode: TTreeNode): TTreeNode; override;
-         procedure SaveInXML(const ATag: IXMLElement); override;
+         constructor Create(ABranch: TBranch); overload;
+         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, p1X, p3X, b_hook, t_hook, p1Y, p3Y, f_hook, tt_hook: integer; AId: integer = ID_INVALID); overload;
+         function Clone(ABranch: TBranch): TBlock; override;
+         procedure ResizeHorz(AContinue: boolean); override;
+         procedure ResizeVert(AContinue: boolean); override;
+         procedure ExpandFold(AResize: boolean); override;
+         function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
+         procedure SaveInXML(ATag: IXMLElement); override;
    end;
 
 const
@@ -58,7 +58,7 @@ implementation
 uses
    System.SysUtils, System.Classes, System.Types, Return_Block, CommonTypes, ApplicationCommon;
 
-constructor TIfElseBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, p1X, p3X, b_hook, t_hook, p1Y, p3Y, f_hook, tt_hook: integer; const AId: integer = ID_INVALID);
+constructor TIfElseBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, p1X, p3X, b_hook, t_hook, p1Y, p3Y, f_hook, tt_hook: integer; AId: integer = ID_INVALID);
 begin
 
    FType := blIfElse;
@@ -90,14 +90,14 @@ begin
 
 end;
 
-function TIfElseBlock.Clone(const ABranch: TBranch): TBlock;
+function TIfElseBlock.Clone(ABranch: TBranch): TBlock;
 begin
    result := TIfElseBlock.Create(ABranch, Left, Top, Width, Height, TrueBranch.Hook.X, FalseBranch.Hook.X, BottomHook,
                                  TopHook.X, TrueBranch.Hook.Y, FalseBranch.Hook.Y, FalseHook, TrueHook);
    result.CloneFrom(Self);
 end;
 
-constructor TIfElseBlock.Create(const ABranch: TBranch);
+constructor TIfElseBlock.Create(ABranch: TBranch);
 begin
    Create(ABranch, 0, 0, 240, 101, 5, 229, 120, 120, 70, 70, 229, 5);
 end;
@@ -134,7 +134,7 @@ begin
    DrawI;
 end;
 
-procedure TIfElseBlock.ResizeHorz(const AContinue: boolean);
+procedure TIfElseBlock.ResizeHorz(AContinue: boolean);
 var
    leftX, maxXTrue, minXFalse, rightX, dlt: integer;
    block: TBlock;
@@ -226,7 +226,7 @@ begin
 
 end;
 
-procedure TIfElseBlock.ResizeVert(const AContinue: boolean);
+procedure TIfElseBlock.ResizeVert(AContinue: boolean);
 var
    b1, b2: TBranch;
 begin
@@ -272,11 +272,11 @@ begin
    end;
 end;
 
-procedure TIfElseBlock.SetWidth(const AMinX: integer);
+procedure TIfElseBlock.SetWidth(AMinX: integer);
 begin
 end;
 
-function TIfElseBlock.GenerateTree(const AParentNode: TTreeNode): TTreeNode;
+function TIfElseBlock.GenerateTree(AParentNode: TTreeNode): TTreeNode;
 var
    newNode: TTreeNode;
    block: TBlock;
@@ -287,7 +287,7 @@ begin
        block.GenerateTree(newNode);
 end;
 
-procedure TIfElseBlock.ExpandFold(const AResize: boolean);
+procedure TIfElseBlock.ExpandFold(AResize: boolean);
 begin
    if Expanded then
       FFoldParms.P2X := FalseBranch.Hook.X
@@ -301,7 +301,7 @@ begin
    result := Point(TopHook.X, 0);
 end;
 
-procedure TIfElseBlock.SaveInXML(const ATag: IXMLElement);
+procedure TIfElseBlock.SaveInXML(ATag: IXMLElement);
 var
    th, fbrx: integer;
 begin

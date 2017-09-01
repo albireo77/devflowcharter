@@ -30,12 +30,12 @@ type
 
    TWhileDoBlock = class(TGroupBlock)
       public
-         constructor Create(const ABranch: TBranch); overload;
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID); overload;
-         function Clone(const ABranch: TBranch): TBlock; override;
+         constructor Create(ABranch: TBranch); overload;
+         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; AId: integer = ID_INVALID); overload;
+         function Clone(ABranch: TBranch): TBlock; override;
       protected
          procedure Paint; override;
-         procedure SetWidth(const AMinX: integer); override;
+         procedure SetWidth(AMinX: integer); override;
          function GetDiamondPoint: TPoint; override;
    end;
 
@@ -44,7 +44,7 @@ implementation
 uses
    System.Classes, ApplicationCommon, CommonTypes, Return_Block;
 
-constructor TWhileDoBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; const AId: integer = ID_INVALID);
+constructor TWhileDoBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; AId: integer = ID_INVALID);
 begin
 
    FType := blWhile;
@@ -71,13 +71,13 @@ begin
    PutTextControls;
 end;
 
-function TWhileDoBlock.Clone(const ABranch: TBranch): TBlock;
+function TWhileDoBlock.Clone(ABranch: TBranch): TBlock;
 begin
    result := TWhileDoBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, Branch.Hook.X, Branch.Hook.Y);
    result.CloneFrom(Self);
 end;
 
-constructor TWhileDoBlock.Create(const ABranch: TBranch);
+constructor TWhileDoBlock.Create(ABranch: TBranch);
 begin
    Create(ABranch, 0, 0, 200, 131, 100, 100, 109);
 end;
@@ -119,7 +119,7 @@ begin
    result := Point(Branch.Hook.X, 19);
 end;
 
-procedure TWhileDoBlock.SetWidth(const AMinX: integer);
+procedure TWhileDoBlock.SetWidth(AMinX: integer);
 begin
    if AMinX < FInitParms.Width - 30 then
       Width := FInitParms.Width

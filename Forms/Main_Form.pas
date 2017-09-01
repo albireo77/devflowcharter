@@ -176,9 +176,9 @@ type
     procedure miAddBranchClick(Sender: TObject);
     procedure miRemoveBranchClick(Sender: TObject);
     procedure miExpandAllClick(Sender: TObject);
-    procedure Localize(const AList: TStringList); override;
+    procedure Localize(AList: TStringList); override;
     procedure ResetForm; override;
-    procedure SetMenu(const AEnabled: boolean);
+    procedure SetMenu(AEnabled: boolean);
     procedure miPrint2Click(Sender: TObject);
     procedure miProjectClick(Sender: TObject);
     procedure miAddMainClick(Sender: TObject);
@@ -302,7 +302,7 @@ begin
       pgcPages.Pages[0].Free;
 end;
 
-procedure TMainForm.SetMenu(const AEnabled: boolean);
+procedure TMainForm.SetMenu(AEnabled: boolean);
 var
    clang: TLangDefinition;
    mMenu: TMainMenu;
@@ -331,7 +331,7 @@ begin
    //inherited AutoScrollInView(AControl);
 end;
 
-procedure TMainForm.Localize(const AList: TStringList);
+procedure TMainForm.Localize(AList: TStringList);
 begin
    if GProject <> nil then
    begin

@@ -32,23 +32,23 @@ type
       protected
          FLabel,
          FLabelSegoe: string;
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; virtual;
+         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID); overload; virtual;
          procedure Paint; override;
          procedure PutTextControls; override;
    end;
 
    TInputBlock = class(TInOutBlock)
       public
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; override;
-         constructor Create(const ABranch: TBranch); overload;
-         function Clone(const ABranch: TBranch): TBlock; override;
+         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID); overload; override;
+         constructor Create(ABranch: TBranch); overload;
+         function Clone(ABranch: TBranch): TBlock; override;
    end;
 
    TOutputBlock = class(TInOutBlock)
       public
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; override;
-         constructor Create(const ABranch: TBranch); overload;
-         function Clone(const ABranch: TBranch): TBlock; override;
+         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID); overload; override;
+         constructor Create(ABranch: TBranch); overload;
+         function Clone(ABranch: TBranch): TBlock; override;
    end;
 
 implementation
@@ -57,7 +57,7 @@ uses
    Vcl.Controls, System.Classes, WinApi.Windows, System.Types, System.UITypes, ApplicationCommon,
    CommonTypes;
 
-constructor TInOutBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
+constructor TInOutBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
 begin
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
    
@@ -75,7 +75,7 @@ begin
    Constraints.MinHeight := 61;
 end;
 
-constructor TInputBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
+constructor TInputBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
 begin
    FType := blInput;
    FLabel := i18Manager.GetString('CaptionIn');
@@ -85,7 +85,7 @@ begin
    FStatement.SelStart := Length(FStatement.Text) + GInfra.CurrentLang.InOutCursorPos;
 end;
 
-constructor TOutputBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
+constructor TOutputBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
 begin
    FType := blOutput;
    FLabel := i18Manager.GetString('CaptionOut');
@@ -95,24 +95,24 @@ begin
    FStatement.SelStart := Length(FStatement.Text) + GInfra.CurrentLang.InOutCursorPos;
 end;
 
-function TInputBlock.Clone(const ABranch: TBranch): TBlock;
+function TInputBlock.Clone(ABranch: TBranch): TBlock;
 begin
    result := TInputBlock.Create(ABranch, Left, Top, Width, Height);
    result.CloneFrom(Self);
 end;
 
-function TOutputBlock.Clone(const ABranch: TBranch): TBlock;
+function TOutputBlock.Clone(ABranch: TBranch): TBlock;
 begin
    result := TOutputBlock.Create(ABranch, Left, Top, Width, Height);
    result.CloneFrom(Self);
 end;
 
-constructor TInputBlock.Create(const ABranch: TBranch);
+constructor TInputBlock.Create(ABranch: TBranch);
 begin
    Create(ABranch, 0, 0, 150, 61);
 end;
 
-constructor TOutputBlock.Create(const ABranch: TBranch);
+constructor TOutputBlock.Create(ABranch: TBranch);
 begin
    Create(ABranch, 0, 0, 150, 61);
 end;

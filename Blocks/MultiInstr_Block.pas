@@ -33,11 +33,11 @@ type
          procedure OnChangeMemo(Sender: TObject); override;
          procedure Paint; override;
       public
-         constructor Create(const ABranch: TBranch); overload;
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; override;
-         function Clone(const ABranch: TBranch): TBlock; override;
-         function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
-         procedure ChangeColor(const AColor: TColor); override;
+         constructor Create(ABranch: TBranch); overload;
+         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID); overload; override;
+         function Clone(ABranch: TBranch): TBlock; override;
+         function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
+         procedure ChangeColor(AColor: TColor); override;
    end;
 
 implementation
@@ -45,14 +45,14 @@ implementation
 uses
    System.SysUtils, System.StrUtils, System.UITypes, ApplicationCommon, CommonTypes, LangDefinition;
 
-constructor TMultiInstrBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
+constructor TMultiInstrBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
 begin
    FType := blMultiInstr;
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
    FStatements.ShowHint := true;
 end;
 
-function TMultiInstrBlock.Clone(const ABranch: TBranch): TBlock;
+function TMultiInstrBlock.Clone(ABranch: TBranch): TBlock;
 begin
    result := TMultiInstrBlock.Create(ABranch, Left, Top, Width, Height);
    result.CloneFrom(Self);
@@ -64,7 +64,7 @@ begin
    DrawBlockLabel(5, FStatements.BoundsRect.Bottom+1, GInfra.CurrentLang.LabelMultiInstr);
 end;
 
-constructor TMultiInstrBlock.Create(const ABranch: TBranch);
+constructor TMultiInstrBlock.Create(ABranch: TBranch);
 begin
    Create(ABranch, 0, 0, 140, 91);
 end;
@@ -105,7 +105,7 @@ begin
    inherited;
 end;
 
-function TMultiInstrBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
+function TMultiInstrBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
 var
    i: integer;
    template, line: string;
@@ -143,7 +143,7 @@ begin
    end;
 end;
 
-procedure TMultiInstrBlock.ChangeColor(const AColor: TColor);
+procedure TMultiInstrBlock.ChangeColor(AColor: TColor);
 var
    b, chon: boolean;
 begin

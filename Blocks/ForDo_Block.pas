@@ -39,7 +39,7 @@ type
          procedure VarOnClick(Sender: TObject);
          procedure VarOnChange(Sender: TObject);
          procedure VarListOnCloseUp(Sender: TObject);
-         procedure SetWidth(const AMinX: integer); override;
+         procedure SetWidth(AMinX: integer); override;
          procedure SetForOrder(const AValue: TForOrder);
          procedure PutTextControls; override;
       public
@@ -47,16 +47,16 @@ type
          edtStartVal, edtStopVal: TStatement;
          edtVariable: TEdit;
          property Order: TForOrder read FOrder write SetForOrder;
-         constructor Create(const ABranch: TBranch); overload;
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, px1, p1Y: integer; const AId: integer = ID_INVALID); overload;
-         function Clone(const ABranch: TBranch): TBlock; override;
-         function GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer; override;
-         procedure ExpandFold(const AResize: boolean); override;
+         constructor Create(ABranch: TBranch); overload;
+         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, b_hook, px1, p1Y: integer; AId: integer = ID_INVALID); overload;
+         function Clone(ABranch: TBranch): TBlock; override;
+         function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
+         procedure ExpandFold(AResize: boolean); override;
          function GetTextControl: TCustomEdit; override;
          function CountErrWarn: TErrWarnCount; override;
-         function GetFromXML(const ATag: IXMLElement): TErrorType; override;
-         procedure SaveInXML(const ATag: IXMLElement); override;
-         procedure ChangeColor(const AColor: TColor); override;
+         function GetFromXML(ATag: IXMLElement): TErrorType; override;
+         procedure SaveInXML(ATag: IXMLElement); override;
+         procedure ChangeColor(AColor: TColor); override;
          procedure PopulateComboBoxes; override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
          function RetrieveFocus(AInfo: TFocusInfo): boolean; override;
@@ -72,7 +72,7 @@ uses
    Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Types, System.UITypes,
    System.Math, ApplicationCommon, XMLProcessor, Main_Block, UserFunction, Return_Block;
 
-constructor TForDoBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight, b_hook, px1, p1Y: integer; const AId: integer = ID_INVALID);
+constructor TForDoBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, b_hook, px1, p1Y: integer; AId: integer = ID_INVALID);
 begin
 
    FType := blFor;
@@ -156,7 +156,7 @@ begin
    FStatement := nil;
 end;
 
-function TForDoBlock.Clone(const ABranch: TBranch): TBlock;
+function TForDoBlock.Clone(ABranch: TBranch): TBlock;
 begin
    result := TForDoBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, Branch.Hook.X, Branch.Hook.Y);
    result.CloneFrom(Self);
@@ -185,7 +185,7 @@ begin
    inherited CloneFrom(ABlock);
 end;
 
-constructor TForDoBlock.Create(const ABranch: TBranch);
+constructor TForDoBlock.Create(ABranch: TBranch);
 begin
    Create(ABranch, 0, 0, 240, 91, 120, 120, 69);
 end;
@@ -390,7 +390,7 @@ begin
       result := lang.ForDoDescTemplate;
 end;
 
-function TForDoBlock.GenerateCode(const ALines: TStringList; const ALangId: string; const ADeep: integer; const AFromLine: integer = LAST_LINE): integer;
+function TForDoBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
 var
    template, line: string;
    tmpList: TStringList;
@@ -430,7 +430,7 @@ begin
    end;
 end;
 
-procedure TForDoBlock.SetWidth(const AMinX: integer);
+procedure TForDoBlock.SetWidth(AMinX: integer);
 begin
    if AMinX < FInitParms.Width - 30 then
       Width := FInitParms.Width
@@ -439,7 +439,7 @@ begin
    BottomPoint.X := Width - 11;
 end;
 
-procedure TForDoBlock.ExpandFold(const AResize: boolean);
+procedure TForDoBlock.ExpandFold(AResize: boolean);
 begin
    edtStartVal.Visible := not Expanded;
    edtStopVal.Visible := not Expanded;
@@ -472,7 +472,7 @@ begin
       Inc(result.ErrorCount);
 end;
 
-procedure TForDoBlock.ChangeColor(const AColor: TColor);
+procedure TForDoBlock.ChangeColor(AColor: TColor);
 var
    lColor: TColor;
 begin
@@ -596,7 +596,7 @@ begin
    end;
 end;
 
-function TForDoBlock.GetFromXML(const ATag: IXMLElement): TErrorType;
+function TForDoBlock.GetFromXML(ATag: IXMLElement): TErrorType;
 var
    tag: IXMLElement;
 begin
@@ -621,7 +621,7 @@ begin
    end
 end;
 
-procedure TForDoBlock.SaveInXML(const ATag: IXMLElement);
+procedure TForDoBlock.SaveInXML(ATag: IXMLElement);
 var
    tag: IXMLElement;
 begin

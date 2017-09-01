@@ -30,7 +30,7 @@ type
 
   THelpForm = class(TBaseForm)
     memHelp: TMemo;
-    procedure Localize(const AList: TStringList); override;
+    procedure Localize(AList: TStringList); override;
   private
     { Private declarations }
   public
@@ -47,7 +47,7 @@ uses
 
 {$R *.dfm}
 
-procedure THelpForm.Localize(const AList: TStringList);
+procedure THelpForm.Localize(AList: TStringList);
 var
    i: integer;
    txt: string;

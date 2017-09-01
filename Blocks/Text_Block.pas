@@ -35,10 +35,10 @@ type
 
    TTextBlock = class(TMultiLineBlock)
       public
-         constructor Create(const ABranch: TBranch); overload;
-         constructor Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID); overload; override;
-         function Clone(const ABranch: TBranch): TBlock; override;
-         procedure ChangeColor(const AColor: TColor); override;
+         constructor Create(ABranch: TBranch); overload;
+         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID); overload; override;
+         function Clone(ABranch: TBranch): TBlock; override;
+         procedure ChangeColor(AColor: TColor); override;
       protected
          FCorner: TCorner;
          procedure Paint; override;
@@ -51,7 +51,7 @@ implementation
 uses
    Vcl.Controls, System.Classes, System.Types, ApplicationCommon, CommonTypes;
 
-constructor TTextBlock.Create(const ABranch: TBranch; const ALeft, ATop, AWidth, AHeight: integer; const AId: integer = ID_INVALID);
+constructor TTextBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
 begin
    FType := blText;
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
@@ -67,12 +67,12 @@ begin
    FCorner.SetBounds(Width-15, 0, 15, 15);
 end;
 
-constructor TTextBlock.Create(const ABranch: TBranch);
+constructor TTextBlock.Create(ABranch: TBranch);
 begin
    Create(ABranch, 0, 0, 140, 91);
 end;
 
-function TTextBlock.Clone(const ABranch: TBranch): TBlock;
+function TTextBlock.Clone(ABranch: TBranch): TBlock;
 begin
    result := TTextBlock.Create(ABranch, Left, Top, Width, Height);
    result.CloneFrom(Self);
@@ -111,7 +111,7 @@ begin
    UpdateEditor(nil);
 end;
 
-procedure TTextBlock.ChangeColor(const AColor: TColor);
+procedure TTextBlock.ChangeColor(AColor: TColor);
 begin
    inherited ChangeColor(AColor);
    FStatements.Font.Color := Font.Color;
