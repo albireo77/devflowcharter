@@ -43,7 +43,7 @@ type
       FIsRecord,
       FIsEnum,
       FIsPointer: boolean;
-      procedure SetType(const AType: integer);
+      procedure SetType(AType: integer);
    public
       Ident,
       SizeAsString,
@@ -70,7 +70,7 @@ type
    TParserHelper = class(TObject)
    private
       //class function DecodeDimension(const AType: integer): integer;
-      class function DecodeType(const AType: integer): integer;
+      class function DecodeType(AType: integer): integer;
    public
       class function IsInLoop: boolean;
       class function ValidateUserFunctionParms(const AFunctionName: string; AParmList: array of integer): boolean;
@@ -78,33 +78,33 @@ type
       class function GetUserFunctionType: integer; overload;
       class function GetConstType(const AConstName: string): integer;
       class function GetEnumeratedType(const AValue: string): integer;
-      class function GetTypeAsString(const AType: integer):string;
+      class function GetTypeAsString(AType: integer):string;
       class function GetType(const ATypeName: string; const ALangName: string = ''): integer;
       class function GetFieldType(const AVarName, AField: string): integer; overload;
-      class function GetFieldType(const AType: integer; const AField: string): integer; overload;
+      class function GetFieldType(AType: integer; const AField: string): integer; overload;
       class function IsDeclared(const AIdentName: string): boolean;
       class function IsDuplicatedCase: boolean;
       class function GetConstValue(const AConstName: string): string;
       class function GetIdentInfo(const AIdentName: string): TIdentInfo;
-      class function FindUserFunctionVarList(const ABlock: TBlock): TVarDeclareList;
-      class procedure GetParameterInfo(const AHeader: TUserFunctionHeader; var AResult: TIdentInfo);
-      class procedure GetVariableInfo(const AVarList: TVarDeclareList; var AResult: TIdentInfo);
-      class function IsRecordType(const AType: integer): boolean;
-      class function IsEnumType(const AType: integer): boolean;
-      class function IsIntegerType(const AType: integer): boolean;
-      class function IsRealType(const AType: integer): boolean;
-      class function IsNumericType(const AType: integer): boolean;
-      class function IsPointerType(const AType: integer): boolean;
-      class function IsBoolType(const AType: integer): boolean;
-      class function IsStringType(const AType: integer): boolean;
-      class function IsOtherType(const AType: integer): boolean;
-      class function GetPointerType(const AType: integer): integer;
-      class function GetOriginalType(const AType: integer): integer;
+      class function FindUserFunctionVarList(ABlock: TBlock): TVarDeclareList;
+      class procedure GetParameterInfo(AHeader: TUserFunctionHeader; var AResult: TIdentInfo);
+      class procedure GetVariableInfo(AVarList: TVarDeclareList; var AResult: TIdentInfo);
+      class function IsRecordType(AType: integer): boolean;
+      class function IsEnumType(AType: integer): boolean;
+      class function IsIntegerType(AType: integer): boolean;
+      class function IsRealType(AType: integer): boolean;
+      class function IsNumericType(AType: integer): boolean;
+      class function IsPointerType(AType: integer): boolean;
+      class function IsBoolType(AType: integer): boolean;
+      class function IsStringType(AType: integer): boolean;
+      class function IsOtherType(AType: integer): boolean;
+      class function GetPointerType(AType: integer): integer;
+      class function GetOriginalType(AType: integer): integer;
       class function GetForVarType: integer;
       class function GetCaseVarType: integer;
       class function GetVarInfo(const AVarName: string): TIdentInfo;
-      class function IsArrayType(const AType: integer): boolean;
-      class function AreTypesCompatible(const AType1, AType2: integer): boolean;
+      class function IsArrayType(AType: integer): boolean;
+      class function AreTypesCompatible(AType1, AType2: integer): boolean;
       class function GetSizeExpArrayAsString(const ATypeAsString: string; const ASizeAsString: string): string;
    end;
 
@@ -160,7 +160,7 @@ begin
    FIsPointer := false;
 end;
 
-procedure TIdentInfo.SetType(const AType: integer);
+procedure TIdentInfo.SetType(AType: integer);
 begin
    FType := AType;
    FTypeAsString := TParserHelper.GetTypeAsString(FType);
@@ -342,7 +342,7 @@ begin
    end;
 end;
 
-class function TParserHelper.FindUserFunctionVarList(const ABlock: TBlock): TVarDeclareList;
+class function TParserHelper.FindUserFunctionVarList(ABlock: TBlock): TVarDeclareList;
 var
    header: TUserFunctionHeader;
 begin
@@ -377,7 +377,7 @@ begin
    end;
 end;
 
-class procedure TParserHelper.GetParameterInfo(const AHeader: TUserFunctionHeader; var AResult: TIdentInfo);
+class procedure TParserHelper.GetParameterInfo(AHeader: TUserFunctionHeader; var AResult: TIdentInfo);
 var
    param: TParameter;
    dataType: TUserDataType;
@@ -424,7 +424,7 @@ begin
    end;
 end;
 
-class procedure TParserHelper.GetVariableInfo(const AVarList: TVarDeclareList; var AResult: TIdentInfo);
+class procedure TParserHelper.GetVariableInfo(AVarList: TVarDeclareList; var AResult: TIdentInfo);
 var
    i: integer;
 begin
@@ -477,7 +477,7 @@ begin
 end;
 
 // get field type for given structural type
-class function TParserHelper.GetFieldType(const AType: integer; const AField: string): integer;
+class function TParserHelper.GetFieldType(AType: integer; const AField: string): integer;
 var
    typeString: string;
    dataType: TUserDataType;
@@ -551,7 +551,7 @@ begin
    end;
 end;
 
-class function TParserHelper.GetTypeAsString(const AType: integer):string;
+class function TParserHelper.GetTypeAsString(AType: integer):string;
 begin
    if (GProject <> nil) and (GProject.GlobalVars <> nil) and (AType >= 0) and (AType < GProject.GlobalVars.cbType.Items.Count) then
       result := GProject.GlobalVars.cbType.Items[AType]
@@ -584,7 +584,7 @@ begin
       (GetUserFunctionType(AIdentName) = NOT_DEFINED) then result := false;
 end;
 
-class function TParserHelper.GetOriginalType(const AType: integer): integer;
+class function TParserHelper.GetOriginalType(AType: integer): integer;
 var
    userType: TUserDataType;
    pNativeType: PNativeDataType;
@@ -605,7 +605,7 @@ begin
    end;
 end;
 
-class function TParserHelper.GetPointerType(const AType: integer): integer;
+class function TParserHelper.GetPointerType(AType: integer): integer;
 var
    lang: TLangDefinition;
 begin
@@ -619,57 +619,57 @@ begin
       result := GetType(lang.GetPointerTypeName(GetTypeAsString(AType)))
 end;
 
-class function TParserHelper.IsIntegerType(const AType: integer): boolean;
+class function TParserHelper.IsIntegerType(AType: integer): boolean;
 begin
    result := (GProject <> nil) and (AType in GProject.IntegerTypesSet);
 end;
 
-class function TParserHelper.IsRealType(const AType: integer): boolean;
+class function TParserHelper.IsRealType(AType: integer): boolean;
 begin
    result := (GProject <> nil) and (AType in GProject.RealTypesSet);
 end;
 
-class function TParserHelper.IsNumericType(const AType: integer): boolean;
+class function TParserHelper.IsNumericType(AType: integer): boolean;
 begin
    result := IsIntegerType(AType) or IsRealType(AType);
 end;
 
-class function TParserHelper.IsPointerType(const AType: integer): boolean;
+class function TParserHelper.IsPointerType(AType: integer): boolean;
 begin
    result := (GProject <> nil) and (AType in GProject.PointerTypesSet);
 end;
 
-class function TParserHelper.IsRecordType(const AType: integer): boolean;
+class function TParserHelper.IsRecordType(AType: integer): boolean;
 begin
    result := (GProject <> nil) and (AType in GProject.RecordTypesSet);
 end;
 
-class function TParserHelper.IsEnumType(const AType: integer): boolean;
+class function TParserHelper.IsEnumType(AType: integer): boolean;
 begin
    result := (GProject <> nil) and (AType in GProject.EnumTypesSet);
 end;
 
-class function TParserHelper.IsArrayType(const AType: integer): boolean;
+class function TParserHelper.IsArrayType(AType: integer): boolean;
 begin
    result := (GProject <> nil) and (AType in GProject.ArrayTypesSet);
 end;
 
-class function TParserHelper.IsBoolType(const AType: integer): boolean;
+class function TParserHelper.IsBoolType(AType: integer): boolean;
 begin
    result := (GProject <> nil) and (AType in GProject.BoolTypesSet);
 end;
 
-class function TParserHelper.IsStringType(const AType: integer): boolean;
+class function TParserHelper.IsStringType(AType: integer): boolean;
 begin
    result := (GProject <> nil) and (AType in GProject.StringTypesSet);
 end;
 
-class function TParserHelper.IsOtherType(const AType: integer): boolean;
+class function TParserHelper.IsOtherType(AType: integer): boolean;
 begin
    result := (GProject <> nil) and (AType in GProject.OtherTypesSet);
 end;
 
-class function TParserHelper.AreTypesCompatible(const AType1, AType2: integer): boolean;
+class function TParserHelper.AreTypesCompatible(AType1, AType2: integer): boolean;
 var
    isReal, isInt: boolean;
 begin
@@ -707,7 +707,7 @@ begin
    result := AType div DIMENSION_LEVEL_STEP;
 end;}
 
-class function TParserHelper.DecodeType(const AType: integer): integer;
+class function TParserHelper.DecodeType(AType: integer): integer;
 begin
    result := AType mod DIMENSION_LEVEL_STEP;
 end;

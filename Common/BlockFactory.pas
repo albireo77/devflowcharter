@@ -28,8 +28,8 @@ type
 
    TBlockFactory = class(TObject)
    public
-      class function Create(const ABranch: TBranch; const ABlockType: TBlockType): TBlock; overload;
-      class function Create(const ATag: IXMLElement; const ABranch: TBranch; const ATab: TBlockTabSheet = nil): TBlock; overload;
+      class function Create(ABranch: TBranch; ABlockType: TBlockType): TBlock; overload;
+      class function Create(ATag: IXMLElement; ABranch: TBranch; ATab: TBlockTabSheet = nil): TBlock; overload;
    end;
 
 implementation
@@ -40,7 +40,7 @@ uses
    If_Block, Case_Block, Return_Block, Text_Block, Main_Block, CommonInterfaces,
    Folder_Block, XMLProcessor;
 
-class function TBlockFactory.Create(const ABranch: TBranch; const ABlockType: TBlockType): TBlock;
+class function TBlockFactory.Create(ABranch: TBranch; ABlockType: TBlockType): TBlock;
 begin
    result := nil;
    if ABranch <> nil then
@@ -64,7 +64,7 @@ begin
    end;
 end;
 
-class function TBlockFactory.Create(const ATag: IXMLElement; const ABranch: TBranch; const ATab: TBlockTabSheet = nil): TBlock;
+class function TBlockFactory.Create(ATag: IXMLElement; ABranch: TBranch; ATab: TBlockTabSheet = nil): TBlock;
 var
    left,top,height,width,brx,bh,th,bry,fbry,fbrx,trh,flh,bid: integer;
    bt: TBlockType;

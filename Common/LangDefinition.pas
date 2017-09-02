@@ -196,7 +196,7 @@ type
       GetLiteralType: function (const val: string): integer;
       IsPointerType: function (const AName: string): boolean;
       GetOriginalType: function (const APtrType: string): string;
-      AreTypesCompatible: function (const AType1, AType2: integer): boolean;
+      AreTypesCompatible: function (AType1, AType2: integer): boolean;
       Parse: function (const AText: string; const AParserMode: TParserMode): integer;
       SkipFuncBodyGen: function: boolean;
       GetMainProgramDesc: function: string;
@@ -833,6 +833,7 @@ begin
             if tag1 <> nil then
                Open := tag1.GetAttribute('Keyword');
             tag1 := TXMLProcessor.FindChildTag(tag, 'Close');
+            if tag1 <> nil then
                Close := tag1.GetAttribute('Keyword');
             AddClose := TXMLProcessor.GetBoolFromAttr(tag, 'AddClose', false);
             NoSubFolds := TXMLProcessor.GetBoolFromAttr(tag, 'NoSubFolds', true);

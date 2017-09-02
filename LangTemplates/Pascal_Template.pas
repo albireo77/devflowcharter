@@ -527,7 +527,7 @@ begin
       result := Copy(result, 2, MAXINT);
 end;
 
-function Pascal_AreTypesCompatible(const AType1, AType2: integer): boolean;
+function Pascal_AreTypesCompatible(AType1, AType2: integer): boolean;
 begin
    result := (AType1 = PASCAL_STRING_TYPE) and (AType2 = PASCAL_CHAR_TYPE);
 end;
