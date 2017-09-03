@@ -252,7 +252,7 @@ type
 
 procedure TMainForm.FormCreate(Sender: TObject);
 const
-   CursorIdsArray: array[TCustomCursor] of PWideChar = (' ', 'IFELSE', 'FOR', 'REPEAT',
+   CursorIdsArray: array[TCustomCursor] of PChar = (' ', 'IFELSE', 'FOR', 'REPEAT',
                    'WHILE', 'ASSIGN', 'MULTIASSIGN', 'IF', 'SUBROUTINE', 'INPUT', 'OUTPUT',
                    'CASE', 'RETURN', 'TEXT', 'FOLDER');
 var
