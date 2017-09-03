@@ -316,9 +316,6 @@ end;
 
 procedure TEditorForm.ResetForm;
 begin
-{$IFDEF USE_CODEFOLDING}
-   memCodeEditor.AllFoldRanges.DestroyAll;
-{$ENDIF}
    memCodeEditor.ClearAll;
    memCodeEditor.Highlighter := nil;
    FFocusEditor := true;
