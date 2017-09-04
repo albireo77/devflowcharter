@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
 
@@ -24,7 +24,7 @@ interface
 {$R ENGLISH_LOC.RES}
 
 uses
-   System.Classes, System.IniFiles;
+   System.Classes, System.IniFiles, System.Generics.Collections;
 
 const
    BUTTON       = 1;
@@ -43,7 +43,7 @@ type
 
    Ti18Manager = class(TObject)
       private
-         FRepository: TStringList;
+         FRepository: TDictionary<string, string>;
       public
          constructor Create;
          destructor Destroy; override;
@@ -67,7 +67,7 @@ type
 constructor Ti18Manager.Create;
 begin
    inherited Create;
-   FRepository := TStringList.Create;
+   FRepository := TDictionary<string, string>.Create;
 end;
 
 destructor Ti18Manager.Destroy;
@@ -80,15 +80,15 @@ end;
 // on incorrect action); in ini file section names with dynamic labels don't end with 'Form'
 function Ti18Manager.LoadDynamicLabels(const AFileName: string; const AClearRepository: boolean = false): integer;
 var
-   keys, sections: TStringList;
-   i: integer;
+   values, sections: TStringList;
+   i, a: integer;
    iniFile: TIniFile;
 begin
    result := 0;
    if FileExists(AFileName) then
    begin
       sections := TStringList.Create;
-      keys := TStringList.Create;
+      values := TStringList.Create;
       iniFile := TIniFile.Create(AFilename);
       try
          iniFile.ReadSections(sections);
@@ -96,25 +96,24 @@ begin
          begin
             if AClearRepository then
                FRepository.Clear;
-            FRepository.Sorted := false;
             for i := 0 to sections.Count-1 do
             begin
-               if not EndsText('Form', sections[i]) then
+               if not sections[i].EndsWith('Form') then
                begin
-                  iniFile.ReadSectionValues(sections[i], keys);
-                  FRepository.AddStrings(keys);
-                  result := result + keys.Count;
-                  keys.Clear;
+                  values.Clear;
+                  iniFile.ReadSectionValues(sections[i], values);
+                  for a := 0 to values.Count-1 do
+                     FRepository.AddOrSetValue(values.Names[a], values.ValueFromIndex[a]);
+                  result := result + values.Count;
                end
             end;
          end;
       finally
-         keys.Free;
+         values.Free;
          sections.Free;
          iniFile.Free;
       end;
    end;
-   FRepository.Sort;
 end;
 
 // this function load labels that are to be used only once (e.g. button caption); after labelling visual component,
@@ -242,8 +241,7 @@ end;
 
 function Ti18Manager.GetString(const AKey: string): string;
 begin
-   result := FRepository.Values[AKey];
-   if result.IsEmpty then
+   if not FRepository.TryGetValue(AKey, result) then
       result := AKey;
 end;
 
