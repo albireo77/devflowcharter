@@ -691,7 +691,7 @@ begin
      if status <> GDI_ERROR then
         Printer.EndDoc
      else
-        ShowErrorBox(i18Manager.GetFormattedString('PrintError', [sLineBreak, SysErrorMessage(last_err)]), errPrinter);
+        ShowErrorBox(i18Manager.GetFormattedString('PrinterError', [sLineBreak, SysErrorMessage(last_err)]), errPrinter);
    end;
 end;
 
