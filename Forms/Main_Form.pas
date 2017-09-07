@@ -1559,12 +1559,9 @@ begin
 end;
 
 procedure TMainForm.CM_MenuClosed(var msg: TMessage);
-var
-   comp: TComponent;
 begin
-   comp := pmPages.PopupComponent;
-   if comp is TBlock then
-      TBlock(comp).OnMouseLeave(false);
+   if pmPages.PopupComponent is TBlock then
+      TBlock(pmPages.PopupComponent).OnMouseLeave(false);
 end;
 
 procedure TPopupListEx.WndProc(var msg: TMessage);
