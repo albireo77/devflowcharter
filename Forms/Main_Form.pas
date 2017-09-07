@@ -30,6 +30,9 @@ uses
   Vcl.ImgList, System.Classes, Vcl.Dialogs, WinApi.Messages, Vcl.ComCtrls, System.ImageList,
   Base_Form, History, CommonInterfaces, OmniXML;
 
+const
+   CM_MENU_CLOSED = CM_BASE + 1001;
+
 type
 
   TClockPos = (cp12, cp3, cp6, cp9);
@@ -223,6 +226,7 @@ type
     FHistoryMenu: THistoryMenu;
     function BuildFuncMenu(AParent: TMenuItem): integer;
     procedure DestroyFuncMenu;
+    procedure CM_MenuClosed(var msg: TMessage); message CM_MENU_CLOSED;
   public
     { Public declarations }
     procedure ExportSettingsToXMLTag(ATag: IXMLElement); override;
@@ -230,6 +234,11 @@ type
     function ConfirmSave: integer;
     function GetMainBlockNextTopLeft: TPoint;
     procedure AcceptFile(const AFilePath: string);
+  end;
+
+  TPopupListEx = class(TPopupList)
+  protected
+     procedure WndProc(var msg: TMessage); override;
   end;
 
 var
@@ -757,7 +766,7 @@ begin
 
    if lParent <> nil then
    begin
-   
+
       branch := lParent.GetBranch(lParent.Ired);
       if branch <> nil then
          currBlock := nil
@@ -877,7 +886,7 @@ begin
          Exclude(fontStyles, fontStyle)
       else
          Include(fontStyles, fontStyle);
-         
+
       if block <> nil then
       begin
          block.SetFontStyle(fontStyles);
@@ -1549,5 +1558,32 @@ begin
       TCustomEdit(pmPages.PopupComponent).PasteFromClipboard;
 end;
 
+procedure TMainForm.CM_MenuClosed(var msg: TMessage);
+var
+   comp: TComponent;
+begin
+   comp := pmPages.PopupComponent;
+   if comp is TBlock then
+      TBlock(comp).OnMouseLeave(false);
+end;
+
+procedure TPopupListEx.WndProc(var msg: TMessage);
+var
+   mform: TMainForm;
+begin
+   if Screen.ActiveForm = MainForm then
+   begin
+      mform := TMainForm(Screen.ActiveForm);
+      if (msg.Msg = WM_UNINITMENUPOPUP) and (msg.WParam = mform.pmPages.Handle) then
+         PostMessage(mForm.Handle, CM_MENU_CLOSED, msg.WParam, msg.LParam);
+   end;
+   inherited;
+end;
+
+initialization
+   PopupList.Free;
+   PopupList := TPopupListEx.Create;
+
 end.
+
 

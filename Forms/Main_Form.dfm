@@ -43,7 +43,8 @@ object MainForm: TMainForm
   object pmPages: TPopupMenu
     AutoPopup = False
     OnPopup = pmPagesPopup
-    Left = 32
+    Left = 24
+    Top = 64
     object miInsert: TMenuItem
       Tag = 2
       Caption = 'Insert'
@@ -332,14 +333,14 @@ object MainForm: TMainForm
     Tag = 3
     DefaultExt = 'xml'
     Filter = 'Plik XML|*.xml'
-    Left = 56
+    Left = 80
   end
   object OpenDialog: TOpenDialog
     Tag = 3
     DefaultExt = 'xml'
     Filter = 'Pliki XML|*.xml'
     Options = [ofHideReadOnly, ofFileMustExist, ofEnableSizing]
-    Left = 88
+    Left = 224
   end
   object mmMainMenu: TMainMenu
     AutoHotkeys = maManual
@@ -493,9 +494,9 @@ object MainForm: TMainForm
   end
   object ImageList1: TImageList
     Left = 240
-    Top = 40
+    Top = 72
     Bitmap = {
-      494C010105000900340010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010105000900540010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

@@ -91,7 +91,6 @@ type
          procedure WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo); message WM_GETMINMAXINFO;
          procedure WMExitSizeMove(var Msg: TWMMove); message WM_EXITSIZEMOVE;
          procedure WMWindowPosChanged(var Msg: TWMWindowPosChanged); message WM_WINDOWPOSCHANGED;
-         procedure OnMouseLeave; virtual;
          procedure Paint; override;
          procedure DrawI;
          procedure DrawTextLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false);
@@ -190,6 +189,7 @@ type
          procedure CloneFrom(ABlock: TBlock); virtual;
          function GetExportFileName: string; virtual;
          function ExportToXMLFile(const AFile: string): TErrorType; virtual;
+         procedure OnMouseLeave(AClearRed: boolean = true); virtual;
       published
          property Color;
          property OnMouseDown;
@@ -209,7 +209,6 @@ type
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
          procedure SetWidth(AMinX: integer); virtual;
-         procedure OnMouseLeave; override;
          procedure LinkBlocks(const idx: integer = PRIMARY_BRANCH_IND-1);
          procedure Paint; override;
          function ExtractBranchIndex(const AStr: string): integer;
@@ -249,6 +248,7 @@ type
          function CanBeFocused: boolean; override;
          function UnPinComments: integer; override;
          procedure CloneFrom(ABlock: TBlock); override;
+         procedure OnMouseLeave(AClearRed: boolean = true); override;
    end;
 
    TBranch = class(TList<TBlock>, IIdentifiable)
@@ -656,19 +656,20 @@ begin
       FMouseLeave := true;
 end;
 
-procedure TBlock.OnMouseLeave;
+procedure TBlock.OnMouseLeave(AClearRed: boolean = true);
 begin
    if Cursor <> crDefault then
       Cursor := crDefault;
    ClearSelection;
    if Ired = 0 then
       DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1));
-   Ired := -1;
+   if AClearRed then
+      Ired := -1;
    if FVResize or FHResize then
       SendMessage(Handle, WM_NCHITTEST, 0, 0);
 end;
 
-procedure TGroupBlock.OnMouseLeave;
+procedure TGroupBlock.OnMouseLeave(AClearRed: boolean = true);
 var
    pnt: TPoint;
    lBranch: TBranch;
@@ -679,7 +680,7 @@ begin
       pnt := lBranch.Hook;
       DrawArrowLine(Point(pnt.X, TopHook.Y), pnt);
    end;
-   inherited OnMouseLeave;
+   inherited OnMouseLeave(AClearRed);
 end;
 
 procedure TBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
