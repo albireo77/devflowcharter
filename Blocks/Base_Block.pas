@@ -2440,16 +2440,11 @@ var
    block: TBlock;
 begin
    TXMLProcessor.ExportBlockToXML(Self, ATag);
-   if ParentBranch <> nil then
+   block := Next;
+   while (block <> nil) and block.Frame do
    begin
-      block := Next;
-      while block <> nil do
-      begin
-         if not block.Frame then
-            break;
-         TXMLProcessor.ExportBlockToXML(block, ATag);
-         block := block.Next;
-      end;
+      TXMLProcessor.ExportBlockToXML(block, ATag);
+      block := block.Next;
    end;
 end;
 

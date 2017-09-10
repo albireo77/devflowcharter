@@ -13,10 +13,10 @@ In devF 5.0 saving user datatypes to XML project files was modified. There are 2
  2. Change the way how datatype kind information is stored in XML attribute. Before 5.0 it was boolean attribute for given type (e.g. array_type="True").
     Now datatype kind is stored in "kind" attribute:
 
-    XML attribute before 5.0:	XML attribute from 5.0:
+    XML attribute before 5.0:		XML attribute from 5.0:
     struct_type="True"			kind="dtRecord"
     array_type="True"			kind="dtArray"
-    int_type="True"				kind="dtInt"
+    int_type="True"			kind="dtInt"
     real_type="True"			kind="dtReal"
     enum_type="True"			kind="dtEnum"
     other_type="True"			kind="dtOther"
