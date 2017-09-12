@@ -35,12 +35,13 @@ type
          function InListRange: boolean;
       protected
          constructor Create(AList: TList<T>); overload;
-         destructor Destroy; override;
          function MoveNext: Boolean;
          procedure Reset;
          function GenericGetCurrent: T;
          function GetCurrent: TObject;
          function IEnumerator<T>.GetCurrent = GenericGetCurrent;
+      public
+         destructor Destroy; override;
    end;
 
    TEnumeratorFactory<T: class> = class(TInterfacedObject, IEnumerable<T>, IEnumerable)
