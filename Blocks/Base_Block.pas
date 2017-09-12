@@ -2866,7 +2866,7 @@ begin
    if FParentBranch <> nil then
    begin
       idx := FParentBranch.IndexOf(Self);
-      if (idx <> -1) and (FParentBranch.First <> Self) then
+      if idx > 0 then
          result := FParentBranch.Items[idx-1];
    end;
 end;

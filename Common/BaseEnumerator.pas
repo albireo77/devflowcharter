@@ -28,7 +28,7 @@ uses
 
 type
 
-   TCustomEnumerator<T: class> = class(TInterfacedObject, IEnumerator<T>, IEnumerator)
+   TBaseEnumerator<T: class> = class(TInterfacedObject, IEnumerator<T>, IEnumerator)
       private
          FList: TList<T>;
          FIndex: integer;
@@ -59,43 +59,43 @@ implementation
 uses
    System.Classes;
 
-constructor TCustomEnumerator<T>.Create(AList: TList<T>);
+constructor TBaseEnumerator<T>.Create(AList: TList<T>);
 begin
    inherited Create;
    FList := AList;
    FIndex := -1;
 end;
 
-destructor TCustomEnumerator<T>.Destroy;
+destructor TBaseEnumerator<T>.Destroy;
 begin
    FList.Free;
    inherited Destroy;
 end;
 
-function TCustomEnumerator<T>.InListRange: boolean;
+function TBaseEnumerator<T>.InListRange: boolean;
 begin
    result := (FIndex >= 0) and (FList <> nil) and (FIndex < FList.Count);
 end;
 
-function TCustomEnumerator<T>.MoveNext: boolean;
+function TBaseEnumerator<T>.MoveNext: boolean;
 begin
    Inc(FIndex);
    result := InListRange;
 end;
 
-function TCustomEnumerator<T>.GetCurrent: TObject;
+function TBaseEnumerator<T>.GetCurrent: TObject;
 begin
    result := nil;
    if InListRange then
       result := FList[FIndex];
 end;
 
-procedure TCustomEnumerator<T>.Reset;
+procedure TBaseEnumerator<T>.Reset;
 begin
    FIndex := -1;
 end;
 
-function TCustomEnumerator<T>.GenericGetCurrent: T;
+function TBaseEnumerator<T>.GenericGetCurrent: T;
 begin
    result := T(GetCurrent);
 end;
@@ -114,7 +114,7 @@ end;
 function TEnumeratorFactory<T>.GenericGetEnumerator: IEnumerator<T>;
 begin
    if FInstance = nil then
-      FInstance := TCustomEnumerator<T>.Create(FList);
+      FInstance := TBaseEnumerator<T>.Create(FList);
    result := FInstance;
 end;
 
