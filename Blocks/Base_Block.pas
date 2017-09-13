@@ -993,16 +993,13 @@ begin
       for block in lBranch do
       begin
          if block = lBranch.First then
-         begin
-            topLeft := Point(lBranch.Hook.X-block.TopHook.X, lBranch.Hook.Y+1);
-            block.SetBounds(topLeft.X, topLeft.Y, block.Width, block.Height);
-         end
+            topLeft := Point(lBranch.Hook.X-block.TopHook.X, lBranch.Hook.Y+1)
          else
          begin
             blockPrev := block.Prev;
             topLeft := Point(blockPrev.BottomPoint.X+blockPrev.Left-block.TopHook.X, blockPrev.BoundsRect.Bottom);
-            block.SetBounds(topLeft.X, topLeft.Y, block.Width, block.Height);
          end;
+         block.SetBounds(topLeft.X, topLeft.Y, block.Width, block.Height);
       end;
    end;
 end;
