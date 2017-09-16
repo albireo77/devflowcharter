@@ -989,15 +989,16 @@ begin
    end;
    for i := first to last do
    begin
+      blockPrev := nil;
       lBranch := FBranchArray[i];
       for block in lBranch do
       begin
-         blockPrev := block.Prev;
          if blockPrev <> nil then
             topLeft := Point(blockPrev.BottomPoint.X+blockPrev.Left-block.TopHook.X, blockPrev.BoundsRect.Bottom)
          else
             topLeft := Point(lBranch.Hook.X-block.TopHook.X, lBranch.Hook.Y+1);
          block.SetBounds(topLeft.X, topLeft.Y, block.Width, block.Height);
+         blockPrev := block;
       end;
    end;
 end;
