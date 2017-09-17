@@ -242,28 +242,26 @@ end;
 
 procedure TCaseBlock.ResizeHorz(AContinue: boolean);
 var
-   x, leftX, rightX, i: integer;
+   x, leftX, rightX, idx: integer;
    lBranch: TBranch;
    block: TBlock;
 begin
    BottomHook := Branch.Hook.X;
    rightX := 100;
-   for i := DEFAULT_BRANCH_IND to High(FBranchArray) do
+   for lBranch in GetBranches do
    begin
+      idx := lBranch.Index;
       leftX := rightX;
-      lBranch := FBranchArray[i];
       lBranch.Hook.X := leftX;
       x := leftX;
-      LinkBlocks(i);
-
+      LinkBlocks(idx);
       for block in lBranch do
       begin
          if block.Left < x then
             x := block.Left;
       end;
-
       Inc(lBranch.hook.X, leftX-x);
-      LinkBlocks(i);
+      LinkBlocks(idx);
       PlaceBranchStatement(lBranch);
       if lBranch.FindInstanceOf(TReturnBlock) = -1 then
       begin
@@ -274,53 +272,39 @@ begin
       end;
       rightX := lBranch.GetMostRight + 60;
    end;
-
    TopHook.X := DefaultBranch.Hook.X;
    BottomPoint.X := DefaultBranch.Hook.X;
    Width := rightX - 30;
-
    if AContinue then
       ParentBlock.ResizeHorz(AContinue);
-
 end;
 
 procedure TCaseBlock.ResizeVert(AContinue: boolean);
 var
-   maxh, h, idx, i, lb: integer;
-   lBranch: TBranch;
+   maxh, h: integer;
+   lBranch, hBranch: TBranch;
 begin
-
    maxh := 0;
-   idx := DEFAULT_BRANCH_IND;
-   lb := High(FBranchArray);
-
-   for i := DEFAULT_BRANCH_IND to lb do
+   hBranch := DefaultBranch;
+   for lBranch in GetBranches do
    begin
-      h := FBranchArray[i].Height;
+      h := lBranch.Height;
       if h > maxh then
       begin
          maxh := h;
-         idx := i;
+         hBranch := lBranch;
       end;
    end;
-
-   for i := DEFAULT_BRANCH_IND to lb do
+   hBranch.Hook.Y := 99;
+   Height := maxh + 131;
+   for lBranch in GetBranches do
    begin
-      lBranch := FBranchArray[i];
-      if i = idx then
-      begin
-         lBranch.Hook.Y := 99;
-         Height := maxh + 131;
-      end
-      else
+      if lBranch <> hBranch then
          lBranch.Hook.Y := maxh - lBranch.Height + 99;
    end;
-
    LinkBlocks;
-
    if AContinue then
       ParentBlock.ResizeVert(AContinue);
-      
 end;
 
 function TCaseBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
