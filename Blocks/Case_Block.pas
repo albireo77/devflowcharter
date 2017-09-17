@@ -283,10 +283,12 @@ procedure TCaseBlock.ResizeVert(AContinue: boolean);
 var
    maxh, h: integer;
    lBranch, hBranch: TBranch;
+   branches: IEnumerable<TBranch>;
 begin
    maxh := 0;
    hBranch := DefaultBranch;
-   for lBranch in GetBranches do
+   branches := GetBranches;
+   for lBranch in branches do
    begin
       h := lBranch.Height;
       if h > maxh then
@@ -297,7 +299,8 @@ begin
    end;
    hBranch.Hook.Y := 99;
    Height := maxh + 131;
-   for lBranch in GetBranches do
+   branches.GetEnumerator.Reset;
+   for lBranch in branches do
    begin
       if lBranch <> hBranch then
          lBranch.Hook.Y := maxh - lBranch.Height + 99;
