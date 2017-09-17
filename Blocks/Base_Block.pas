@@ -2878,8 +2878,12 @@ begin
 end;
 
 destructor TBranch.Destroy;
+var
+   i: integer;
 begin
    Statement.Free;
+   for i := 0 to Count-1 do
+      Items[i].Free;
    GProject.UnRegister(Self);
    inherited Destroy;
 end;
