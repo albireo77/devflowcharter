@@ -111,6 +111,17 @@ type
       function GetExportFileName: string;
    end;
 
+   IMemo = interface
+      ['{F410876A-85D4-40FA-B6B5-669EA3941031}']
+      function GetMemo: TMemo;
+      function HasVScroll: boolean;
+      function HasHScroll: boolean;
+      function HasWordWrap: boolean;
+      procedure SetMemoVScroll(AValue: boolean);
+      procedure SetMemoHScroll(AValue: boolean);
+      procedure SetMemoWordWrap(AValue: boolean);
+   end;
+
 implementation
 
 end.

@@ -613,7 +613,7 @@ begin
        begin
           miRemove.Visible := True;
           miFont.Visible := True;
-          miMemoEdit.Visible := block.GetFrontMemo <> nil;
+          miMemoEdit.Visible := block.GetMemo <> nil;
           if not (block is TReturnBlock) then
              miExport.Visible := True;
           miPrint2.Visible := True;
@@ -641,12 +641,12 @@ begin
              miForAsc.Checked := TForDoBlock(block).Order = ordAsc;
              miForDesc.Checked := not miForAsc.Checked;
           end;
-          miMemo.Visible := block.GetFrontMemo <> nil;
+          miMemo.Visible := block.GetMemo <> nil;
           if miMemo.Visible then
           begin
-             miMemoVScroll.Checked := block.MemoVScroll;
-             miMemoHScroll.Checked := block.MemoHScroll;
-             miMemoWordWrap.Checked := block.MemoWordWrap;
+             miMemoVScroll.Checked := block.HasVScroll;
+             miMemoHScroll.Checked := block.HasHScroll;
+             miMemoWordWrap.Checked := block.HasWordWrap;
           end;
        end
        else
@@ -1264,33 +1264,27 @@ end;
 
 procedure TMainForm.miMemoEditClick(Sender: TObject);
 var
-   block: TBlock;
+   memo: IMemo;
 begin
-   if pmPages.PopupComponent is TBlock then
+   if Supports(pmPages.PopupComponent, IMemo, memo) then
    begin
-      block := TBlock(pmPages.PopupComponent);
-      if block.GetFrontMemo <> nil then
-      begin
-         MemoEditorForm.SourceBlock := block;
-         MemoEditorForm.ShowModal;
-      end;
+      MemoEditorForm.Source := memo;
+      MemoEditorForm.ShowModal;
    end;
-
 end;
 
 procedure TMainForm.miMemoVScrollClick(Sender: TObject);
 var
-   block: TBlock;
+   memo: IMemo;
 begin
-   if pmPages.PopupComponent is TBlock then
+   if Supports(pmPages.PopupComponent, IMemo, memo) then
    begin
-      block := TBlock(pmPages.PopupComponent);
       if Sender = miMemoVScroll then
-         block.MemoVScroll := miMemoVScroll.Checked
+         memo.SetMemoVScroll(miMemoVScroll.Checked)
       else if Sender = miMemoHScroll then
-         block.MemoHScroll := miMemoHScroll.Checked
+         memo.SetMemoHScroll(miMemoHScroll.Checked)
       else if Sender = miMemoWordWrap then
-         block.MemoWordWrap := miMemoWordWrap.Checked;
+         memo.SetMemoWordWrap(miMemoWordWrap.Checked);
    end;
 end;
 

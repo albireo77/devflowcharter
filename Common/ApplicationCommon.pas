@@ -66,6 +66,9 @@ type
          class procedure UpdateCodeEditor(AObject: TObject = nil);
          class procedure OnKeyDownSelectAll(Sender: TObject; var Key: Word; Shift: TShiftState);
          class procedure InsertLinesIntoList(ADestList, ASourceList: TStringList; AFromLine: integer);
+         class procedure ResetMemoScrollBars(const AStyle: TScrollStyle; AMemo: TMemo);
+         class procedure UpdateMemoVScroll(AMemo: IMemo);
+         class procedure UpdateMemoHScroll(AMemo: IMemo);
          class function CreateDOSProcess(const ACommand: string; ADir: string = ''): boolean;
          class function ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
          class function ShowFormattedQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
@@ -1362,6 +1365,111 @@ begin
    end;
    result := GetEnumName(P, dt);
 end;
+
+class procedure TInfra.ResetMemoScrollBars(const AStyle: TScrollStyle; AMemo: TMemo);
+var
+   sStyle: TScrollStyle;
+begin
+   if AStyle = TScrollStyle.ssVertical then
+      sStyle := TScrollStyle.ssHorizontal
+   else
+      sStyle := TScrollStyle.ssVertical;
+   if AMemo.ScrollBars = TScrollStyle.ssBoth then
+      AMemo.ScrollBars := AStyle
+   else if AMemo.ScrollBars = sStyle then
+      AMemo.ScrollBars := TScrollStyle.ssNone;
+end;
+
+class procedure TInfra.UpdateMemoVScroll(AMemo: IMemo);
+var
+   pos, count, lineCount: integer;
+   memo: TMemo;
+   oldFont: HFont;
+   hnd: THandle;
+   txtMetric: TTextMetric;
+begin
+   memo := AMemo.GetMemo;
+   if memo <> nil then
+   begin
+      pos := memo.SelStart;
+      if AMemo.HasVScroll then
+      begin
+         hnd := GetDC(memo.Handle);
+         try
+            oldFont := SelectObject(hnd, memo.Font.Handle);
+            try
+               GetTextMetrics(hnd, txtMetric);
+               lineCount := (memo.ClientHeight - 4)  div (txtMetric.tmHeight + txtMetric.tmExternalLeading)
+            finally
+               SelectObject(hnd, oldFont);
+            end;
+         finally
+            ReleaseDC(memo.Handle, hnd);
+         end;
+         count := memo.Lines.Count;
+         if EndsText(sLineBreak, memo.Text) then
+            count := count + 1;
+         if count > lineCount then
+         begin
+            if memo.ScrollBars = TScrollStyle.ssNone then
+               memo.ScrollBars := TScrollStyle.ssVertical
+            else if memo.ScrollBars = TScrollStyle.ssHorizontal then
+               memo.ScrollBars := TScrollStyle.ssBoth;
+         end
+         else
+            ResetMemoScrollBars(TScrollStyle.ssHorizontal, memo);
+      end
+      else
+         ResetMemoScrollBars(TScrollStyle.ssHorizontal, memo);
+      memo.SelStart := pos;
+   end;
+end;
+
+class procedure TInfra.UpdateMemoHScroll(AMemo: IMemo);
+var
+   pos, cnt, w, i: integer;
+   memo: TMemo;
+   lCanvas: TCanvas;
+   margns: longint;
+begin
+   memo := AMemo.GetMemo;
+   if memo <> nil then
+   begin
+      pos := memo.SelStart;
+      if AMemo.HasHScroll and not memo.WordWrap then
+      begin
+         w := 0;
+         lCanvas := TCanvas.Create;
+         try
+            lCanvas.Font.Assign(memo.Font);
+            lCanvas.Handle := GetDC(memo.Handle);
+            for i := 0 to memo.Lines.Count-1 do
+            begin
+               cnt := lCanvas.TextWidth(memo.Lines[i]);
+               if cnt > w then
+                  w := cnt;
+            end;
+            margns := SendMessage(memo.Handle, EM_GETMARGINS, 0, 0);
+            if w > (memo.ClientWidth - HiWord(margns) - LoWord(margns) - 3) then
+            begin
+               if memo.ScrollBars = TScrollStyle.ssNone then
+                  memo.ScrollBars := TScrollStyle.ssHorizontal
+               else if memo.ScrollBars = TScrollStyle.ssVertical then
+                  memo.ScrollBars := TScrollStyle.ssBoth;
+            end
+            else
+               ResetMemoScrollBars(TScrollStyle.ssVertical, memo);
+         finally
+            ReleaseDC(memo.Handle, lCanvas.Handle);
+            lCanvas.Free;
+         end;
+      end
+      else
+         ResetMemoScrollBars(TScrollStyle.ssVertical, memo);
+      memo.SelStart := pos;
+   end;
+end;
+
 
 function CompareIntegers(AList: TStringList; idx1, idx2: integer): integer;
 begin

@@ -52,7 +52,7 @@ type
    TGroupBlock = class;
    TBranch = class;
 
-   TBlock = class(TCustomControl, IIdentifiable, IFocusable, IExportable)
+   TBlock = class(TCustomControl, IIdentifiable, IFocusable, IExportable, IMemo)
       private
          FParentBlock: TGroupBlock;
          FParentBranch: TBranch;
@@ -78,13 +78,6 @@ type
          procedure MyOnChange(Sender: TObject);
          procedure MyOnDblClick(Sender: TObject);
          procedure OnChangeMemo(Sender: TObject); virtual;
-         procedure SetMemoVScroll(AValue: boolean);
-         procedure UpdateMemoVScroll;
-         procedure SetMemoHScroll(AValue: boolean);
-         procedure UpdateMemoHScroll;
-         procedure ResetMemoScrollBars(const AStyle: TScrollStyle; AMemo: TMemo);
-         procedure SetMemoWordWrap(AValue: boolean);
-         function GetMemoWordWrap: boolean;
          procedure WMMouseLeave(var Msg: TMessage); message WM_MOUSELEAVE;
          procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
          procedure NCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
@@ -124,9 +117,6 @@ type
          memoWidth,
          memoHeight: integer;
          property Frame: boolean read FFrame write SetFrame;
-         property MemoVScroll: boolean read FMemoVScroll write SetMemoVScroll;
-         property MemoHScroll: boolean read FMemoHScroll write SetMemoHScroll;
-         property MemoWordWrap: boolean read GetMemoWordWrap write SetMemoWordWrap;
          property TopParentBlock: TGroupBlock read FTopParentBlock;
          property Page: TBlockTabSheet read GetPage write SetPage;
          property ParentBlock: TGroupBlock read FParentBlock;
@@ -164,7 +154,7 @@ type
          procedure GenerateDefaultTemplate(ALines: TStringList; const ALangId: string; ADeep: integer);
          procedure GenerateTemplateSection(ALines: TStringList; ATemplate: TStringList; const ALangId: string; ADeep: integer); overload; virtual;
          procedure GenerateTemplateSection(ALines: TStringList; const ATemplate: string; const ALangId: string; ADeep: integer); overload;
-         function GetFrontMemo: TMemo; virtual;
+         function GetMemo: TMemo; virtual;
          function FocusOnTextControl(AInfo: TFocusInfo): boolean;
          procedure ClearSelection;
          procedure ChangeFrame;
@@ -190,6 +180,12 @@ type
          function GetExportFileName: string; virtual;
          function ExportToXMLFile(const AFile: string): TErrorType; virtual;
          procedure OnMouseLeave(AClearRed: boolean = true); virtual;
+         function HasVScroll: boolean;
+         function HasHScroll: boolean;
+         function HasWordWrap: boolean;
+         procedure SetMemoVScroll(AValue: boolean);
+         procedure SetMemoHScroll(AValue: boolean);
+         procedure SetMemoWordWrap(AValue: boolean);
       published
          property Color;
          property OnMouseDown;
@@ -233,7 +229,7 @@ type
          procedure ExpandAll;
          function HasFoldedBlocks: boolean;
          procedure PopulateComboBoxes; override;
-         function GetFrontMemo: TMemo; override;
+         function GetMemo: TMemo; override;
          function CanInsertReturnBlock: boolean; override;
          function GetFromXML(ATag: IXMLElement): TErrorType; override;
          procedure SaveInXML(ATag: IXMLElement); override;
@@ -484,8 +480,8 @@ end;
 procedure TBlock.WMExitSizeMove(var Msg: TWMMove);
 begin
    inherited;
-   UpdateMemoVScroll;
-   UpdateMemoHScroll;
+   TInfra.UpdateMemoVScroll(Self);
+   TInfra.UpdateMemoHScroll(Self);
 end;
 
 procedure TBlock.CloneComments(ASource: TBlock);
@@ -1543,12 +1539,12 @@ begin
    end;
 end;
 
-function TBlock.GetFrontMemo: TMemo;
+function TBlock.GetMemo: TMemo;
 begin
    result := nil;
 end;
 
-function TGroupBlock.GetFrontMemo: TMemo;
+function TGroupBlock.GetMemo: TMemo;
 begin
    result := nil;
    if not Expanded then
@@ -1718,8 +1714,8 @@ end;
 
 procedure TBlock.OnChangeMemo(Sender: TObject);
 begin
-   UpdateMemoVScroll;
-   UpdateMemoHScroll;
+   TInfra.UpdateMemoVScroll(Self);
+   TInfra.UpdateMemoHScroll(Self);
    NavigatorForm.DoInvalidate;
 end;
 
@@ -1728,52 +1724,7 @@ begin
    if AValue <> FMemoVScroll then
    begin
       FMemoVScroll := AValue;
-      UpdateMemoVScroll;
-   end;
-end;
-
-procedure TBlock.UpdateMemoVScroll;
-var
-   pos, count, lineCount: integer;
-   memo: TMemo;
-   oldFont: HFont;
-   hnd: THandle;
-   txtMetric: TTextMetric;
-begin
-   memo := GetFrontMemo;
-   if memo <> nil then
-   begin
-      pos := memo.SelStart;
-      if FMemoVScroll then
-      begin
-         hnd := GetDC(memo.Handle);
-         try
-            oldFont := SelectObject(hnd, memo.Font.Handle);
-            try
-               GetTextMetrics(hnd, txtMetric);
-               lineCount := (memo.ClientHeight - 4)  div (txtMetric.tmHeight + txtMetric.tmExternalLeading)
-            finally
-               SelectObject(hnd, oldFont);
-            end;
-         finally
-            ReleaseDC(memo.Handle, hnd);
-         end;
-         count := memo.Lines.Count;
-         if EndsText(sLineBreak, memo.Text) then
-            count := count + 1;
-         if count > lineCount then
-         begin
-            if memo.ScrollBars = TScrollStyle.ssNone then
-               memo.ScrollBars := TScrollStyle.ssVertical
-            else if memo.ScrollBars = TScrollStyle.ssHorizontal then
-               memo.ScrollBars := TScrollStyle.ssBoth;
-         end
-         else
-            ResetMemoScrollBars(TScrollStyle.ssHorizontal, memo);
-      end
-      else
-         ResetMemoScrollBars(TScrollStyle.ssHorizontal, memo);
-      memo.SelStart := pos;
+      TInfra.UpdateMemoVScroll(Self);
    end;
 end;
 
@@ -1783,88 +1734,39 @@ begin
    begin
       FMemoHScroll := AValue;
       if FMemoHScroll then
-         MemoWordWrap := false;
-      UpdateMemoHScroll;
+         SetMemoWordWrap(false);
+      TInfra.UpdateMemoHScroll(Self);
    end;
-end;
-
-procedure TBlock.UpdateMemoHScroll;
-var
-   pos, cnt, w, i: integer;
-   memo: TMemo;
-   lCanvas: TCanvas;
-   margns: longint;
-begin
-   memo := GetFrontMemo;
-   if memo <> nil then
-   begin
-      pos := memo.SelStart;
-      if FMemoHScroll and not memo.WordWrap then
-      begin
-         w := 0;
-         lCanvas := TCanvas.Create;
-         try
-            lCanvas.Font.Assign(memo.Font);
-            lCanvas.Handle := GetDC(memo.Handle);
-            for i := 0 to memo.Lines.Count-1 do
-            begin
-               cnt := lCanvas.TextWidth(memo.Lines[i]);
-               if cnt > w then
-                  w := cnt;
-            end;
-            margns := SendMessage(memo.Handle, EM_GETMARGINS, 0, 0);
-            if w > (memo.ClientWidth - HiWord(margns) - LoWord(margns) - 3) then
-            begin
-               if memo.ScrollBars = TScrollStyle.ssNone then
-                  memo.ScrollBars := TScrollStyle.ssHorizontal
-               else if memo.ScrollBars = TScrollStyle.ssVertical then
-                  memo.ScrollBars := TScrollStyle.ssBoth;
-            end
-            else
-               ResetMemoScrollBars(TScrollStyle.ssVertical, memo);
-         finally
-            ReleaseDC(memo.Handle, lCanvas.Handle);
-            lCanvas.Free;
-         end;
-      end
-      else
-         ResetMemoScrollBars(TScrollStyle.ssVertical, memo);
-      memo.SelStart := pos;
-   end;
-end;
-
-procedure TBlock.ResetMemoScrollBars(const AStyle: TScrollStyle; AMemo: TMemo);
-var
-   sStyle: TScrollStyle;
-begin
-   if AStyle = TScrollStyle.ssVertical then
-      sStyle := TScrollStyle.ssHorizontal
-   else
-      sStyle := TScrollStyle.ssVertical;
-   if AMemo.ScrollBars = TScrollStyle.ssBoth then
-      AMemo.ScrollBars := AStyle
-   else if AMemo.ScrollBars = sStyle then
-      AMemo.ScrollBars := TScrollStyle.ssNone;
 end;
 
 procedure TBlock.SetMemoWordWrap(AValue: boolean);
 var
    memo: TMemo;
 begin
-   memo := GetFrontMemo;
+   memo := GetMemo;
    if (memo <> nil) and (AValue <> memo.WordWrap) then
    begin
       memo.WordWrap := AValue;
       if memo.WordWrap then
-         MemoHScroll := false;
+         SetMemoHScroll(false);
    end;
 end;
 
-function TBlock.GetMemoWordWrap: boolean;
+function TBlock.HasVScroll: boolean;
+begin
+   result := FMemoVScroll;
+end;
+
+function TBlock.HasHScroll: boolean;
+begin
+   result := FMemoHScroll;
+end;
+
+function TBlock.HasWordWrap: boolean;
 var
    memo: TMemo;
 begin
-   memo := GetFrontMemo;
+   memo := GetMemo;
    result := (memo <> nil) and memo.WordWrap;
 end;
 
@@ -2318,9 +2220,9 @@ begin
       ATag.SetAttribute(ID_ATTR, FId.ToString);
       ATag.SetAttribute('memW', memoWidth.ToString);
       ATag.SetAttribute('memH', memoHeight.ToString);
-      ATag.SetAttribute('mem_vscroll', FMemoVScroll.ToString);
-      ATag.SetAttribute('mem_hscroll', FMemoHScroll.ToString);
-      ATag.SetAttribute('mem_wordwrap', MemoWordWrap.ToString);
+      ATag.SetAttribute('mem_vscroll', HasVScroll.ToString);
+      ATag.SetAttribute('mem_hscroll', HasHScroll.ToString);
+      ATag.SetAttribute('mem_wordwrap', HasWordWrap.ToString);
       ATag.SetAttribute(FONT_SIZE_ATTR, Font.Size.ToString);
       ATag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style));
       txtControl := GetTextControl;
@@ -2380,9 +2282,9 @@ begin
       Frame := TXMLProcessor.GetBoolFromAttr(ATag, FRAME_ATTR);
       memoWidth := StrToIntDef(ATag.GetAttribute('memW'), 280);
       memoHeight := StrToIntDef(ATag.GetAttribute('memH'), 182);
-      MemoVScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_vscroll');
-      MemoHScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_hscroll');
-      MemoWordWrap := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_wordwrap');
+      SetMemoVScroll(TXMLProcessor.GetBoolFromAttr(ATag, 'mem_vscroll'));
+      SetMemoHScroll(TXMLProcessor.GetBoolFromAttr(ATag, 'mem_hscroll'));
+      SetMemoWordWrap(TXMLProcessor.GetBoolFromAttr(ATag, 'mem_wordwrap'));
 
       ImportCommentsFromXML(ATag);
    end;

@@ -3,9 +3,10 @@ unit EditMemo_Form;
 interface
 
 uses
-  System.Classes, Vcl.StdCtrls, Vcl.Controls, Base_Form, Base_Block;
+  System.Classes, Vcl.StdCtrls, Vcl.Controls, Base_Form, Base_Block, CommonInterfaces;
 
 type
+
   TMemoEditorForm = class(TBaseForm)
     memEditor: TMemo;
     btnOK: TButton;
@@ -18,7 +19,7 @@ type
     { Private declarations }
   public
     { Public declarations }
-    SourceBlock: TBlock;
+    Source: IMemo;
   end;
 
 var
@@ -33,23 +34,23 @@ uses
 
 procedure TMemoEditorForm.ResetForm;
 begin
-   SourceBlock := nil;
+   Source := nil;
 end;
 
 procedure TMemoEditorForm.btnOKClick(Sender: TObject);
 var
    memo: TMemo;
 begin
-   if (Sender = btnOK) and (SourceBlock <> nil) then
+   if (Sender = btnOK) and (Source <> nil) then
    begin
-      memo := SourceBlock.GetFrontMemo;
+      memo := Source.GetMemo;
       if memo <> nil then
       begin
          memo.Text := memEditor.Text;
-         SourceBlock.memoWidth := Width;
-         SourceBlock.memoHeight := Height;
+         //memo.Width := Width;
+         //memo.Height := Height;
       end;
-      SourceBlock := nil;
+      Source := nil;
    end;
    Close;
 end;
@@ -59,13 +60,13 @@ var
    memo: TMemo;
    pnt: TPoint;
 begin
-   if SourceBlock <> nil then
+   if Source <> nil then
    begin
-      memo := SourceBlock.GetFrontMemo;
+      memo := Source.GetMemo;
       if memo <> nil then
       begin
          pnt := memo.ClientOrigin;
-         SetBounds(pnt.X, pnt.Y, SourceBlock.memoWidth, SourceBlock.memoHeight);
+         SetBounds(pnt.X, pnt.Y, memo.Width, memo.Height);
          memEditor.Font.Assign(memo.Font);
          memEditor.Font.Color := clNavy;
          memEditor.Text := memo.Text;

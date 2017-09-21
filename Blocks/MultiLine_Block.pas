@@ -33,7 +33,7 @@ type
       public
          FStatements: TStatementMemo;
          function GetTextControl: TCustomEdit; override;
-         function GetFrontMemo: TMemo; override;
+         function GetMemo: TMemo; override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
@@ -101,7 +101,7 @@ begin
    result := FStatements;
 end;
 
-function TMultiLineBlock.GetFrontMemo: TMemo;
+function TMultiLineBlock.GetMemo: TMemo;
 begin
    result := FStatements;
 end;
