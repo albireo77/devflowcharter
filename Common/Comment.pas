@@ -341,6 +341,7 @@ begin
       Visible := TXMLProcessor.GetBoolFromAttr(ATag, 'v');
       FPinControl := APinControl;
       FIsHeader := TXMlProcessor.GetBoolFromAttr(ATag, IS_HEADER_ATTR);
+      GetFromXML(ATag);
    end;
 end;
 
@@ -370,6 +371,7 @@ begin
          tag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
       if Font.Style <> [] then
          tag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style));
+      SaveInXML(tag);
       ATag.AppendChild(tag);
    end;
 end;
