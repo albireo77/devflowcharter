@@ -49,7 +49,6 @@ begin
    Color := GSettings.GetShapeColor(shpRectangle);
    BevelInner := bvNone;
    BevelOuter := bvNone;
-   WordWrap := false;
    Font.Color := GSettings.FontColor;
    Font.Name := GSettings.FlowchartFontName;
    DoubleBuffered := true;

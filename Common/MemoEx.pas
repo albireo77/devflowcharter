@@ -62,6 +62,7 @@ begin
    inherited Create(AOwner);
    EditFormWidth := 280;
    EditFormHeight := 182;
+   FHasWordWrap := true;
 end;
 
 procedure TMemoEx.SetHasVScroll(AValue: boolean);
