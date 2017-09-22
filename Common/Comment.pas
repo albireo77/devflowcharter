@@ -31,7 +31,7 @@ type
 
    PPoint = ^TPoint;
 
-   TComment = class(TMemoEx, IXMLable, IWinControl, IMaxBoundable, IGenericComparable)
+   TComment = class(TMemoEx, IXMLable, IWinControl, IMaxBoundable, IGenericComparable, IMemoEx)
       private
          FPinControl: TControl;
          FPage: TBlockTabSheet;
@@ -70,6 +70,7 @@ type
          procedure SetZOrder(AValue: integer);
          function GetZOrder: integer;
          function GetCompareValue(ACompareType: integer): integer;
+         function GetMemoEx: TMemoEx;
    end;
 
 implementation
@@ -132,6 +133,11 @@ begin
    Hide;
    FPage.Form.SetScrollBars;
    inherited Destroy;
+end;
+
+function TComment.GetMemoEx: TMemoEx;
+begin
+   result := Self;
 end;
 
 procedure TComment.MouseLeave(Sender: TObject);
@@ -264,6 +270,7 @@ begin
    GProject.SetChanged;
    if FIsHeader then
       TInfra.UpdateCodeEditor;
+   UpdateScrolls;
    NavigatorForm.Invalidate;
 end;
 

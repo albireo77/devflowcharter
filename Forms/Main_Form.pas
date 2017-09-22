@@ -147,6 +147,7 @@ type
     miInsertFunc: TMenuItem;
     miIsHeader: TMenuItem;
     miPasteText: TMenuItem;
+    N18: TMenuItem;
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -591,6 +592,9 @@ begin
    miSize10.Checked := False;
    miSize12.Checked := False;
    miIsHeader.Visible := False;
+   miMemoVScroll.Checked := false;
+   miMemoHScroll.Checked := false;
+   miMemoWordWrap.Checked := false;
 
    comp := pmPages.PopupComponent;
    isFunction := TInfra.IsValid(GClpbrd.UndoObject) and (GClpbrd.UndoObject is TUserFunction);
