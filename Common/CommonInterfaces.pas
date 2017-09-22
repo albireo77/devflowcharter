@@ -24,7 +24,8 @@ unit CommonInterfaces;
 interface
 
 uses
-   Vcl.Controls, Vcl.StdCtrls, OmniXML, Vcl.Graphics, System.Types, Vcl.Forms, CommonTypes;
+   Vcl.Controls, Vcl.StdCtrls, OmniXML, Vcl.Graphics, System.Types, Vcl.Forms,
+   CommonTypes, MemoEx;
 
 const
    ID_INVALID      = -1;
@@ -111,15 +112,9 @@ type
       function GetExportFileName: string;
    end;
 
-   IMemo = interface
+   IMemoEx = interface
       ['{F410876A-85D4-40FA-B6B5-669EA3941031}']
-      function GetMemo: TMemo;
-      function HasVScroll: boolean;
-      function HasHScroll: boolean;
-      function HasWordWrap: boolean;
-      procedure SetMemoVScroll(AValue: boolean);
-      procedure SetMemoHScroll(AValue: boolean);
-      procedure SetMemoWordWrap(AValue: boolean);
+      function GetMemoEx: TMemoEx;
    end;
 
 implementation

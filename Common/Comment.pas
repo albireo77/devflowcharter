@@ -25,13 +25,13 @@ interface
 
 uses
    WinApi.Windows, WinApi.Messages, Vcl.Controls, Vcl.Forms, Vcl.StdCtrls, System.Classes,
-   OmniXML, CommonInterfaces, BlockTabSheet;
+   OmniXML, CommonInterfaces, BlockTabSheet, MemoEx;
 
 type
 
    PPoint = ^TPoint;
 
-   TComment = class(TMemo, IXMLable, IWinControl, IMaxBoundable, IGenericComparable)
+   TComment = class(TMemoEx, IXMLable, IWinControl, IMaxBoundable, IGenericComparable)
       private
          FPinControl: TControl;
          FPage: TBlockTabSheet;

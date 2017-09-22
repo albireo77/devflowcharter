@@ -252,7 +252,7 @@ uses
    ApplicationCommon, About_Form, Main_Block, ParseGlobals, LocalizationManager,
    XMLProcessor, UserFunction, ForDo_Block, Return_Block, Project, Declarations_Form,
    Base_Block, Comment, Case_Block, Navigator_Form, CommonTypes, LangDefinition,
-   EditMemo_Form, BlockFactory, BlockTabSheet;
+   EditMemo_Form, BlockFactory, BlockTabSheet, MemoEx;
 
 type
    TDerivedControl = class(TControl);
@@ -550,8 +550,11 @@ var
    block: TBlock;
    lFont: TFont;
    isFunction: boolean;
+   memo: TMemoEx;
+   memoEx: IMemoEx;
 begin
    lFont := nil;
+   memo := nil;
    miFont.Visible := False;
    miCopy.Visible := False;
    miCut.Visible := False;
@@ -591,8 +594,9 @@ begin
 
    comp := pmPages.PopupComponent;
    isFunction := TInfra.IsValid(GClpbrd.UndoObject) and (GClpbrd.UndoObject is TUserFunction);
-
    miPaste.Enabled := TInfra.IsValid(GClpbrd.Instance) or isFunction;
+   if Supports(comp, IMemoEx, memoEx) then
+      memo := memoEx.GetMemoEx;
 
    if comp is TBlock then
    begin
@@ -613,7 +617,7 @@ begin
        begin
           miRemove.Visible := True;
           miFont.Visible := True;
-          miMemoEdit.Visible := block.GetMemo <> nil;
+          miMemoEdit.Visible := memo <> nil;
           if not (block is TReturnBlock) then
              miExport.Visible := True;
           miPrint2.Visible := True;
@@ -641,12 +645,12 @@ begin
              miForAsc.Checked := TForDoBlock(block).Order = ordAsc;
              miForDesc.Checked := not miForAsc.Checked;
           end;
-          miMemo.Visible := block.GetMemo <> nil;
+          miMemo.Visible := memo <> nil;
           if miMemo.Visible then
           begin
-             miMemoVScroll.Checked := block.HasVScroll;
-             miMemoHScroll.Checked := block.HasHScroll;
-             miMemoWordWrap.Checked := block.HasWordWrap;
+             miMemoVScroll.Checked := memo.HasVScroll;
+             miMemoHScroll.Checked := memo.HasHScroll;
+             miMemoWordWrap.Checked := memo.WordWrap;
           end;
        end
        else
@@ -1264,27 +1268,37 @@ end;
 
 procedure TMainForm.miMemoEditClick(Sender: TObject);
 var
-   memo: IMemo;
+   memoEx: IMemoEx;
+   memo: TMemoEx;
 begin
-   if Supports(pmPages.PopupComponent, IMemo, memo) then
+   if Supports(pmPages.PopupComponent, IMemoEx, memoEx) then
    begin
-      MemoEditorForm.Source := memo;
-      MemoEditorForm.ShowModal;
+      memo := memoEx.GetMemoEx;
+      if memo <> nil then
+      begin
+         MemoEditorForm.Source := memo;
+         MemoEditorForm.ShowModal;
+      end;
    end;
 end;
 
 procedure TMainForm.miMemoVScrollClick(Sender: TObject);
 var
-   memo: IMemo;
+   memoEx: IMemoEx;
+   memo: TMemoEx;
 begin
-   if Supports(pmPages.PopupComponent, IMemo, memo) then
+   if Supports(pmPages.PopupComponent, IMemoEx, memoEx) then
    begin
-      if Sender = miMemoVScroll then
-         memo.SetMemoVScroll(miMemoVScroll.Checked)
-      else if Sender = miMemoHScroll then
-         memo.SetMemoHScroll(miMemoHScroll.Checked)
-      else if Sender = miMemoWordWrap then
-         memo.SetMemoWordWrap(miMemoWordWrap.Checked);
+      memo := memoEx.GetMemoEx;
+      if memo <> nil then
+      begin
+         if Sender = miMemoVScroll then
+            memo.HasVScroll := miMemoVScroll.Checked
+         else if Sender = miMemoHScroll then
+            memo.HasHScroll := miMemoHScroll.Checked
+         else if Sender = miMemoWordWrap then
+            memo.HasWordWrap := miMemoWordWrap.Checked;
+      end;
    end;
 end;
 

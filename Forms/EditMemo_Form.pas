@@ -19,7 +19,7 @@ type
     { Private declarations }
   public
     { Public declarations }
-    Source: IMemo;
+    Source: TMemo;
   end;
 
 var
@@ -38,39 +38,28 @@ begin
 end;
 
 procedure TMemoEditorForm.btnOKClick(Sender: TObject);
-var
-   memo: TMemo;
 begin
    if (Sender = btnOK) and (Source <> nil) then
    begin
-      memo := Source.GetMemo;
-      if memo <> nil then
-      begin
-         memo.Text := memEditor.Text;
-         //memo.Width := Width;
-         //memo.Height := Height;
-      end;
-      Source := nil;
+      Source.Text := memEditor.Text;
+      Source.Width := Width;
+      Source.Height := Height;
    end;
+   Source := nil;
    Close;
 end;
 
 procedure TMemoEditorForm.FormShow(Sender: TObject);
 var
-   memo: TMemo;
    pnt: TPoint;
 begin
    if Source <> nil then
    begin
-      memo := Source.GetMemo;
-      if memo <> nil then
-      begin
-         pnt := memo.ClientOrigin;
-         SetBounds(pnt.X, pnt.Y, memo.Width, memo.Height);
-         memEditor.Font.Assign(memo.Font);
-         memEditor.Font.Color := clNavy;
-         memEditor.Text := memo.Text;
-      end;
+      pnt := Source.ClientOrigin;
+      SetBounds(pnt.X, pnt.Y, Source.Width, Source.Height);
+      memEditor.Font.Assign(Source.Font);
+      memEditor.Font.Color := clNavy;
+      memEditor.Text := Source.Text;
    end;
 end;
 

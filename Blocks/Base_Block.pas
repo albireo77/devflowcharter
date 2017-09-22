@@ -29,7 +29,7 @@ uses
    WinApi.Windows, Vcl.Forms, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Controls, Vcl.Graphics,
    WinApi.Messages, System.SysUtils, System.Classes, Vcl.ComCtrls, System.UITypes,
    Generics.Collections, Statement, OmniXML, BaseEnumerator, CommonInterfaces, CommonTypes,
-   BlockTabSheet, Comment;
+   BlockTabSheet, Comment, MemoEx;
 
 const
    PRIMARY_BRANCH_IND = 1;
@@ -52,13 +52,11 @@ type
    TGroupBlock = class;
    TBranch = class;
 
-   TBlock = class(TCustomControl, IIdentifiable, IFocusable, IExportable, IMemo)
+   TBlock = class(TCustomControl, IIdentifiable, IFocusable, IExportable, IMemoEx)
       private
          FParentBlock: TGroupBlock;
          FParentBranch: TBranch;
          FId: integer;
-         FMemoVScroll,
-         FMemoHScroll: boolean;
       protected
          FType: TBlockType;
          FStatement: TStatement;
@@ -154,7 +152,7 @@ type
          procedure GenerateDefaultTemplate(ALines: TStringList; const ALangId: string; ADeep: integer);
          procedure GenerateTemplateSection(ALines: TStringList; ATemplate: TStringList; const ALangId: string; ADeep: integer); overload; virtual;
          procedure GenerateTemplateSection(ALines: TStringList; const ATemplate: string; const ALangId: string; ADeep: integer); overload;
-         function GetMemo: TMemo; virtual;
+         function GetMemoEx: TMemoEx; virtual;
          function FocusOnTextControl(AInfo: TFocusInfo): boolean;
          procedure ClearSelection;
          procedure ChangeFrame;
@@ -180,12 +178,6 @@ type
          function GetExportFileName: string; virtual;
          function ExportToXMLFile(const AFile: string): TErrorType; virtual;
          procedure OnMouseLeave(AClearRed: boolean = true); virtual;
-         function HasVScroll: boolean;
-         function HasHScroll: boolean;
-         function HasWordWrap: boolean;
-         procedure SetMemoVScroll(AValue: boolean);
-         procedure SetMemoHScroll(AValue: boolean);
-         procedure SetMemoWordWrap(AValue: boolean);
       published
          property Color;
          property OnMouseDown;
@@ -197,7 +189,7 @@ type
          function GetBranchCount: integer;
       protected
          FBlockImportMode: boolean;
-         FMemoFolder: TMemo;
+         FMemoFolder: TMemoEx;
          FInitParms: TInitParms;
          FDrawingFlag: boolean;
          FBranchArray: array of TBranch;
@@ -229,7 +221,7 @@ type
          procedure ExpandAll;
          function HasFoldedBlocks: boolean;
          procedure PopulateComboBoxes; override;
-         function GetMemo: TMemo; override;
+         function GetMemoEx: TMemoEx; override;
          function CanInsertReturnBlock: boolean; override;
          function GetFromXML(ATag: IXMLElement): TErrorType; override;
          procedure SaveInXML(ATag: IXMLElement); override;
@@ -340,7 +332,7 @@ begin
 
    FStatement.Width := 65;
 
-   FMemoFolder := TMemo.Create(Self);
+   FMemoFolder := TMemoEx.Create(Self);
    with FMemoFolder do
    begin
       Parent := Self;
@@ -478,10 +470,13 @@ begin
 end;
 
 procedure TBlock.WMExitSizeMove(var Msg: TWMMove);
+var
+   memo: TMemoEx;
 begin
    inherited;
-   TInfra.UpdateMemoVScroll(Self);
-   TInfra.UpdateMemoHScroll(Self);
+   memo := GetMemoEx;
+   if memo <> nil then
+      memo.UpdateScrolls;
 end;
 
 procedure TBlock.CloneComments(ASource: TBlock);
@@ -1539,12 +1534,12 @@ begin
    end;
 end;
 
-function TBlock.GetMemo: TMemo;
+function TBlock.GetMemoEx: TMemoEx;
 begin
    result := nil;
 end;
 
-function TGroupBlock.GetMemo: TMemo;
+function TGroupBlock.GetMemoEx: TMemoEx;
 begin
    result := nil;
    if not Expanded then
@@ -1713,61 +1708,13 @@ begin
 end;
 
 procedure TBlock.OnChangeMemo(Sender: TObject);
+var
+   memo: TMemoEx;
 begin
-   TInfra.UpdateMemoVScroll(Self);
-   TInfra.UpdateMemoHScroll(Self);
+   memo := GetMemoEx;
+   if memo <> nil then
+      memo.UpdateScrolls;
    NavigatorForm.DoInvalidate;
-end;
-
-procedure TBlock.SetMemoVScroll(AValue: boolean);
-begin
-   if AValue <> FMemoVScroll then
-   begin
-      FMemoVScroll := AValue;
-      TInfra.UpdateMemoVScroll(Self);
-   end;
-end;
-
-procedure TBlock.SetMemoHScroll(AValue: boolean);
-begin
-   if AValue <> FMemoHScroll then
-   begin
-      FMemoHScroll := AValue;
-      if FMemoHScroll then
-         SetMemoWordWrap(false);
-      TInfra.UpdateMemoHScroll(Self);
-   end;
-end;
-
-procedure TBlock.SetMemoWordWrap(AValue: boolean);
-var
-   memo: TMemo;
-begin
-   memo := GetMemo;
-   if (memo <> nil) and (AValue <> memo.WordWrap) then
-   begin
-      memo.WordWrap := AValue;
-      if memo.WordWrap then
-         SetMemoHScroll(false);
-   end;
-end;
-
-function TBlock.HasVScroll: boolean;
-begin
-   result := FMemoVScroll;
-end;
-
-function TBlock.HasHScroll: boolean;
-begin
-   result := FMemoHScroll;
-end;
-
-function TBlock.HasWordWrap: boolean;
-var
-   memo: TMemo;
-begin
-   memo := GetMemo;
-   result := (memo <> nil) and memo.WordWrap;
 end;
 
 function TBlock.CanBeFocused: boolean;
@@ -2206,6 +2153,7 @@ var
    txtControl: TCustomEdit;
    txt: string;
    tag: IXMLElement;
+   memo: TMemoEx;
 begin
    if ATag <> nil then
    begin
@@ -2220,9 +2168,13 @@ begin
       ATag.SetAttribute(ID_ATTR, FId.ToString);
       ATag.SetAttribute('memW', memoWidth.ToString);
       ATag.SetAttribute('memH', memoHeight.ToString);
-      ATag.SetAttribute('mem_vscroll', HasVScroll.ToString);
-      ATag.SetAttribute('mem_hscroll', HasHScroll.ToString);
-      ATag.SetAttribute('mem_wordwrap', HasWordWrap.ToString);
+      memo := GetMemoEx;
+      if memo <> nil then
+      begin
+         ATag.SetAttribute('mem_vscroll', memo.HasVScroll.ToString);
+         ATag.SetAttribute('mem_hscroll', memo.HasHScroll.ToString);
+         ATag.SetAttribute('mem_wordwrap', memo.HasWordWrap.ToString);
+      end;
       ATag.SetAttribute(FONT_SIZE_ATTR, Font.Size.ToString);
       ATag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style));
       txtControl := GetTextControl;
@@ -2259,6 +2211,7 @@ var
    tag: IXMLElement;
    textControl: TCustomEdit;
    i: integer;
+   memo: TMemoEx;
 begin
    result := errNone;
    if ATag <> nil then
@@ -2282,9 +2235,13 @@ begin
       Frame := TXMLProcessor.GetBoolFromAttr(ATag, FRAME_ATTR);
       memoWidth := StrToIntDef(ATag.GetAttribute('memW'), 280);
       memoHeight := StrToIntDef(ATag.GetAttribute('memH'), 182);
-      SetMemoVScroll(TXMLProcessor.GetBoolFromAttr(ATag, 'mem_vscroll'));
-      SetMemoHScroll(TXMLProcessor.GetBoolFromAttr(ATag, 'mem_hscroll'));
-      SetMemoWordWrap(TXMLProcessor.GetBoolFromAttr(ATag, 'mem_wordwrap'));
+      memo := GetMemoEx;
+      if memo <> nil then
+      begin
+         memo.HasVScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_vscroll', memo.HasVScroll);
+         memo.HasHScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_hscroll', memo.HasHScroll);
+         memo.HasWordWrap := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_wordwrap', memo.HasWordWrap);
+      end;
 
       ImportCommentsFromXML(ATag);
    end;

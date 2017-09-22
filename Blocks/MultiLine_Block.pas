@@ -25,7 +25,7 @@ interface
 
 uses
    Vcl.Controls, Vcl.StdCtrls, Vcl.Graphics, System.Classes, Vcl.ComCtrls, Base_Block,
-   CommonInterfaces, StatementMemo;
+   CommonInterfaces, StatementMemo, MemoEx;
 
 type
 
@@ -33,7 +33,7 @@ type
       public
          FStatements: TStatementMemo;
          function GetTextControl: TCustomEdit; override;
-         function GetMemo: TMemo; override;
+         function GetMemoEx: TMemoEx; override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
@@ -101,7 +101,7 @@ begin
    result := FStatements;
 end;
 
-function TMultiLineBlock.GetMemo: TMemo;
+function TMultiLineBlock.GetMemoEx: TMemoEx;
 begin
    result := FStatements;
 end;

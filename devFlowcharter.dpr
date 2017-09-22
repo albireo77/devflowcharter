@@ -87,7 +87,8 @@ uses
   MultiLine_Block in 'Blocks\MultiLine_Block.pas',
   Folder_Block in 'Blocks\Folder_Block.pas',
   BlockTabSheet in 'Common\BlockTabSheet.pas',
-  Python_Template in 'LangTemplates\Python_Template.pas';
+  Python_Template in 'LangTemplates\Python_Template.pas',
+  MemoEx in 'Common\MemoEx.pas';
 
 {$R *.res}
 

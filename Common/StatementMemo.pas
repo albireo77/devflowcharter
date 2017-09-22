@@ -22,11 +22,11 @@ unit StatementMemo;
 interface
 
 uses
-  System.Classes, Vcl.StdCtrls, Vcl.Graphics, CommonInterfaces;
+  System.Classes, Vcl.StdCtrls, Vcl.Graphics, CommonInterfaces, MemoEx;
 
 type
 
-  TStatementMemo = class(TMemo, IFocusable)
+  TStatementMemo = class(TMemoEx, IFocusable)
      public
      { Public declarations }
         constructor Create(AOwner: TComponent); override;
