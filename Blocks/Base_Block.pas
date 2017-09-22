@@ -1537,9 +1537,7 @@ end;
 
 function TGroupBlock.GetMemoEx: TMemoEx;
 begin
-   result := nil;
-   if not Expanded then
-      result := FMemoFolder;
+   result := FMemoFolder;
 end;
 
 function TBlock.CountErrWarn: TErrWarnCount;
