@@ -112,8 +112,6 @@ type
          BottomHook: integer;
          TopHook: TPoint;
          Ired: Integer;           // indicates active arrow; -1: none, 0: bottom, 1: branch1, 2: branch2 and so on...
-         memoWidth,
-         memoHeight: integer;
          property Frame: boolean read FFrame write SetFrame;
          property TopParentBlock: TGroupBlock read FTopParentBlock;
          property Page: TBlockTabSheet read GetPage write SetPage;
@@ -313,8 +311,6 @@ begin
    FShape := shpRectangle;
    FStatement.Color := GSettings.GetShapeColor(FShape);
    Ired := -1;
-   memoWidth := 280;
-   memoHeight := 182;
 
    OnMouseDown := MyOnMouseDown;
    OnMouseUp   := MyOnMouseUp;
@@ -2166,15 +2162,9 @@ begin
       ATag.SetAttribute('bh', BottomHook.ToString);
       ATag.SetAttribute('brx', BottomPoint.X.ToString);
       ATag.SetAttribute(ID_ATTR, FId.ToString);
-      ATag.SetAttribute('memW', memoWidth.ToString);
-      ATag.SetAttribute('memH', memoHeight.ToString);
       memo := GetMemoEx;
       if memo <> nil then
-      begin
-         ATag.SetAttribute('mem_vscroll', memo.HasVScroll.ToString);
-         ATag.SetAttribute('mem_hscroll', memo.HasHScroll.ToString);
-         ATag.SetAttribute('mem_wordwrap', memo.HasWordWrap.ToString);
-      end;
+         memo.SaveInXML(ATag);
       ATag.SetAttribute(FONT_SIZE_ATTR, Font.Size.ToString);
       ATag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style));
       txtControl := GetTextControl;
@@ -2233,15 +2223,10 @@ begin
       SetFontStyle(TInfra.DecodeFontStyle(i));
       
       Frame := TXMLProcessor.GetBoolFromAttr(ATag, FRAME_ATTR);
-      memoWidth := StrToIntDef(ATag.GetAttribute('memW'), 280);
-      memoHeight := StrToIntDef(ATag.GetAttribute('memH'), 182);
+
       memo := GetMemoEx;
       if memo <> nil then
-      begin
-         memo.HasVScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_vscroll', memo.HasVScroll);
-         memo.HasHScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_hscroll', memo.HasHScroll);
-         memo.HasWordWrap := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_wordwrap', memo.HasWordWrap);
-      end;
+         memo.GetFromXML(ATag);
 
       ImportCommentsFromXML(ATag);
    end;

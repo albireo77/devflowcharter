@@ -3,7 +3,8 @@ unit EditMemo_Form;
 interface
 
 uses
-  System.Classes, Vcl.StdCtrls, Vcl.Controls, Base_Form, Base_Block, CommonInterfaces;
+  System.Classes, Vcl.StdCtrls, Vcl.Controls, Base_Form, Base_Block,
+  CommonInterfaces, MemoEx;
 
 type
 
@@ -19,7 +20,7 @@ type
     { Private declarations }
   public
     { Public declarations }
-    Source: TMemo;
+    Source: TMemoEx;
   end;
 
 var
@@ -42,8 +43,8 @@ begin
    if (Sender = btnOK) and (Source <> nil) then
    begin
       Source.Text := memEditor.Text;
-      Source.Width := Width;
-      Source.Height := Height;
+      Source.EditFormWidth := Width;
+      Source.EditFormHeight := Height;
    end;
    Source := nil;
    Close;
@@ -56,7 +57,7 @@ begin
    if Source <> nil then
    begin
       pnt := Source.ClientOrigin;
-      SetBounds(pnt.X, pnt.Y, Source.Width, Source.Height);
+      SetBounds(pnt.X, pnt.Y, Source.EditFormWidth, Source.EditFormHeight);
       memEditor.Font.Assign(Source.Font);
       memEditor.Font.Color := clNavy;
       memEditor.Text := Source.Text;

@@ -596,7 +596,10 @@ begin
    isFunction := TInfra.IsValid(GClpbrd.UndoObject) and (GClpbrd.UndoObject is TUserFunction);
    miPaste.Enabled := TInfra.IsValid(GClpbrd.Instance) or isFunction;
    if Supports(comp, IMemoEx, memoEx) then
+   begin
       memo := memoEx.GetMemoEx;
+      miMemo.Visible := (memo <> nil) and memo.Visible;
+   end;
 
    if comp is TBlock then
    begin
@@ -604,6 +607,7 @@ begin
        lFont := block.GetFont;
        if block.Ired >= 0 then
        begin
+          miMemo.Visible := False;
           miInsert.Visible := True;
           miInstrs.Enabled := True;
           miLoop.Enabled := True;
@@ -617,7 +621,6 @@ begin
        begin
           miRemove.Visible := True;
           miFont.Visible := True;
-          miMemoEdit.Visible := memo <> nil;
           if not (block is TReturnBlock) then
              miExport.Visible := True;
           miPrint2.Visible := True;
@@ -645,16 +648,10 @@ begin
              miForAsc.Checked := TForDoBlock(block).Order = ordAsc;
              miForDesc.Checked := not miForAsc.Checked;
           end;
-          miMemo.Visible := memo <> nil;
-          if miMemo.Visible then
-          begin
-             miMemoVScroll.Checked := memo.HasVScroll;
-             miMemoHScroll.Checked := memo.HasHScroll;
-             miMemoWordWrap.Checked := memo.WordWrap;
-          end;
        end
        else
        begin
+          miMemo.Visible := False;
           miInsert.Visible := True;
           miComment.Enabled := True;
           if (GClpbrd.Instance is TBlock) and not isFunction then
@@ -698,6 +695,12 @@ begin
          10:  miSize10.Checked := true;
          12:  miSize12.Checked := true;
       end;
+   end;
+   if miMemo.Visible then
+   begin
+      miMemoVScroll.Checked := memo.HasVScroll;
+      miMemoHScroll.Checked := memo.HasHScroll;
+      miMemoWordWrap.Checked := memo.WordWrap;
    end;
 end;
 
