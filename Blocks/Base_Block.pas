@@ -1206,8 +1206,8 @@ begin
        begin
           if Controls[i] is TStatement then
              TStatement(Controls[i]).DoEnter
-          else if (Controls[i] is TCustomMemo) and Assigned(TMemo(Controls[i]).OnChange) then
-             TMemo(Controls[i]).OnChange(Controls[i])
+          else if (Controls[i] is TMemoEx) and Assigned(TMemoEx(Controls[i]).OnChange) then
+             TMemoEx(Controls[i]).OnChange(Controls[i])
           else if (Controls[i] is TEdit) and Assigned(TEdit(Controls[i]).OnChange) then
              TEdit(Controls[i]).OnChange(Controls[i])
           else if (Controls[i] is TBlock) and (Controls[i] <> GClpbrd.UndoObject) then
@@ -1765,7 +1765,7 @@ function TBlock.FocusOnTextControl(AInfo: TFocusInfo): boolean;
 var
    idx, idx2, i: integer;
    txt: string;
-   memo: TMemo;
+   memo: TMemoEx;
 begin
    result := false;
    if ContainsControl(AInfo.FocusEdit) and AInfo.FocusEdit.CanFocus then
@@ -1774,9 +1774,9 @@ begin
       FTopParentBlock.BringAllToFront;
       Page.Form.ScrollInView(AInfo.FocusEdit);
       idx2 := 0;
-      if AInfo.FocusEdit is TCustomMemo then
+      if AInfo.FocusEdit is TMemoEx then
       begin
-         memo := TMemo(AInfo.FocusEdit);
+         memo := TMemoEx(AInfo.FocusEdit);
          if AInfo.RelativeLine < memo.Lines.Count then
          begin
             txt := memo.Lines[AInfo.RelativeLine];
