@@ -317,6 +317,12 @@ object MainForm: TMainForm
         Caption = 'Word Wrap'
         OnClick = miMemoVScrollClick
       end
+      object miMemoAlignRight: TMenuItem
+        Tag = 2
+        AutoCheck = True
+        Caption = 'Align Right'
+        OnClick = miMemoVScrollClick
+      end
       object miMemoEdit: TMenuItem
         Tag = 2
         Caption = 'Edit Text'
@@ -499,7 +505,7 @@ object MainForm: TMainForm
     Left = 240
     Top = 72
     Bitmap = {
-      494C010105000900680010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010105000900700010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

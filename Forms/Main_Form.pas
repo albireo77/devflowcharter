@@ -148,6 +148,7 @@ type
     miIsHeader: TMenuItem;
     miPasteText: TMenuItem;
     N18: TMenuItem;
+    miMemoAlignRight: TMenuItem;
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -595,6 +596,7 @@ begin
    miMemoVScroll.Checked := False;
    miMemoHScroll.Checked := False;
    miMemoWordWrap.Checked := False;
+   miMemoAlignRight.Checked := False;
 
    isFunction := TInfra.IsValid(GClpbrd.UndoObject) and (GClpbrd.UndoObject is TUserFunction);
    miPaste.Enabled := TInfra.IsValid(GClpbrd.Instance) or isFunction;
@@ -707,6 +709,7 @@ begin
       miMemoVScroll.Checked := memo.HasVScroll;
       miMemoHScroll.Checked := memo.HasHScroll;
       miMemoWordWrap.Checked := memo.WordWrap;
+      miMemoAlignRight.Checked := memo.Alignment = taRightJustify;
    end;
 end;
 
@@ -1306,7 +1309,14 @@ begin
          else if Sender = miMemoHScroll then
             memo.HasHScroll := miMemoHScroll.Checked
          else if Sender = miMemoWordWrap then
-            memo.WordWrap := miMemoWordWrap.Checked;
+            memo.WordWrap := miMemoWordWrap.Checked
+         else if Sender = miMemoAlignRight then
+         begin
+            if miMemoAlignRight.Checked then
+               memo.Alignment := taRightJustify
+            else
+               memo.Alignment := taLeftJustify;
+         end;
       end;
    end;
 end;

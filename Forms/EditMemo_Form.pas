@@ -60,6 +60,8 @@ begin
       SetBounds(pnt.X, pnt.Y, Source.EditFormWidth, Source.EditFormHeight);
       memEditor.Font.Assign(Source.Font);
       memEditor.Font.Color := clNavy;
+      memEditor.Alignment := Source.Alignment;
+      memEditor.WordWrap := Source.WordWrap;
       memEditor.Text := Source.Text;
    end;
 end;
