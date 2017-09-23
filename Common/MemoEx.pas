@@ -64,7 +64,7 @@ implementation
 
 uses
    System.StrUtils, WinApi.Windows, Vcl.Graphics, WinApi.Messages, System.SysUtils,
-   XMLProcessor, ApplicationCommon;
+   XMLProcessor;
 
 constructor TMemoEx.Create(AOwner: TComponent);
 begin
@@ -201,24 +201,14 @@ begin
 end;
 
 procedure TMemoEx.GetFromXML(ATag: IXMLElement);
-var
-   val: string;
-   scrollStyle: TScrollStyle;
 begin
    if ATag <> nil then
    begin
       EditFormWidth := StrToIntDef(ATag.GetAttribute('memW'), EditFormWidth);
       EditFormHeight := StrToIntDef(ATag.GetAttribute('memH'), EditFormHeight);
+      HasVScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_vscroll', FHasVScroll);
+      HasHScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_hscroll', FHasHScroll);
       WordWrap := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_wordwrap', WordWrap);
-      val := ATag.GetAttribute('mem_scrolls');
-      if not val.IsEmpty then
-      begin
-         scrollStyle := TInfra.StringToEnum<TScrollStyle>(val);
-         if scrollStyle in [TScrollStyle.ssBoth, TScrollStyle.ssHorizontal] then
-            HasHScroll := true;
-         if scrollStyle in [TScrollStyle.ssBoth, TScrollStyle.ssVertical] then
-            HasVScroll := true;
-      end;
    end;
 end;
 
@@ -228,10 +218,10 @@ begin
    begin
       ATag.SetAttribute('memW', EditFormWidth.ToString);
       ATag.SetAttribute('memH', EditFormHeight.ToString);
+      ATag.SetAttribute('mem_vscroll', HasVScroll.ToString);
+      ATag.SetAttribute('mem_hscroll', HasHScroll.ToString);
       ATag.SetAttribute('mem_wordwrap', WordWrap.ToString);
-      ATag.SetAttribute('mem_scrolls', TInfra.EnumToString<TScrollStyle>(ScrollBars));
    end;
 end;
-
 
 end.
