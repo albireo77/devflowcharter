@@ -57,14 +57,14 @@ type
          property Font;
          property Color;
          property BorderStyle;
-         property WordWrap;
+         property WordWrap write SetWordWrap;
    end;
 
 implementation
 
 uses
    System.StrUtils, WinApi.Windows, Vcl.Graphics, WinApi.Messages, System.SysUtils,
-   XMLProcessor;
+   XMLProcessor, System.UITypes;
 
 constructor TMemoEx.Create(AOwner: TComponent);
 begin
@@ -97,7 +97,7 @@ procedure TMemoEx.SetWordWrap(AValue: boolean);
 begin
    if (AValue <> WordWrap) and AValue then
       SetHasHScroll(false);
-   inherited;
+   inherited SetWordWrap(AValue);
 end;
 
 procedure TMemoEx.ResetScrollBars(const AStyle: TScrollStyle);

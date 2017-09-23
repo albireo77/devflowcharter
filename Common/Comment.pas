@@ -143,7 +143,10 @@ end;
 procedure TComment.MouseLeave(Sender: TObject);
 begin
    if FMouseLeave then
+   begin
       ChangeBorderStyle(bsNone);
+      UpdateScrolls;
+   end;
 end;
 
 procedure TComment.SetPage(APage: TBlockTabSheet);
