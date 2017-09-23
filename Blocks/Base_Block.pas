@@ -335,6 +335,7 @@ begin
       Visible := false;
       SetBounds(3, 3, 134, 55);
       Ctl3D := false;
+      DoubleBuffered := true;
       Color := GSettings.GetShapeColor(shpFolder);
       Font.Assign(FStatement.Font);
       OnMouseDown := Self.OnMouseDown;
