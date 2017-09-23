@@ -24,7 +24,7 @@ unit MemoEx;
 interface
 
 uses
-   Vcl.StdCtrls, System.Classes, OmniXML;
+   Vcl.StdCtrls, System.Classes, System.UITypes, OmniXML;
 
 type
 
@@ -64,7 +64,7 @@ implementation
 
 uses
    System.StrUtils, WinApi.Windows, Vcl.Graphics, WinApi.Messages, System.SysUtils,
-   XMLProcessor, System.UITypes, ApplicationCommon;
+   XMLProcessor, ApplicationCommon;
 
 constructor TMemoEx.Create(AOwner: TComponent);
 begin
