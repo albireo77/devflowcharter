@@ -1206,7 +1206,7 @@ begin
        begin
           if Controls[i] is TStatement then
              TStatement(Controls[i]).DoEnter
-          else if (Controls[i] is TMemo) and Assigned(TMemo(Controls[i]).OnChange) then
+          else if (Controls[i] is TCustomMemo) and Assigned(TMemo(Controls[i]).OnChange) then
              TMemo(Controls[i]).OnChange(Controls[i])
           else if (Controls[i] is TEdit) and Assigned(TEdit(Controls[i]).OnChange) then
              TEdit(Controls[i]).OnChange(Controls[i])
@@ -1774,7 +1774,7 @@ begin
       FTopParentBlock.BringAllToFront;
       Page.Form.ScrollInView(AInfo.FocusEdit);
       idx2 := 0;
-      if AInfo.FocusEdit is TMemo then
+      if AInfo.FocusEdit is TCustomMemo then
       begin
          memo := TMemo(AInfo.FocusEdit);
          if AInfo.RelativeLine < memo.Lines.Count then
@@ -2574,7 +2574,7 @@ begin
    begin
       txt := '';
       textControl := GetTextControl;
-      if textControl is TMemo then
+      if textControl is TCustomMemo then
          txt := textControl.Text
       else if textControl <> nil then
          txt := Trim(textControl.Text);
