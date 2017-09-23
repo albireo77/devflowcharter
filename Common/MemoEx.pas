@@ -28,27 +28,36 @@ uses
 
 type
 
-   TMemoEx = class(TMemo)
+   TMemoEx = class(TCustomMemo)
       private
          FHasVScroll,
-         FHasHScroll,
-         FHasWordWrap: boolean;
+         FHasHScroll: boolean;
          procedure ResetScrollBars(const AStyle: TScrollStyle);
          procedure UpdateVScroll;
          procedure UpdateHScroll;
          procedure SetHasVScroll(AValue: boolean);
          procedure SetHasHScroll(AValue: boolean);
-         procedure SetHasWordWrap(AValue: boolean);
+      protected
+         procedure SetWordWrap(AValue: boolean);
       public
          EditFormWidth,
          EditFormHeight: integer;
          property HasVScroll: boolean read FHasVScroll write SetHasVScroll;
          property HasHScroll: boolean read FHasHScroll write SetHasHScroll;
-         property HasWordWrap: boolean read FHasWordWrap write SetHasWordWrap;
          constructor Create(AOwner: TComponent); override;
          procedure UpdateScrolls;
          procedure GetFromXML(ATag: IXMLElement);
          procedure SaveInXML(ATag: IXMLElement);
+      published
+         property OnDblClick;
+         property OnMouseDown;
+         property OnKeyUp;
+         property OnChange;
+         property PopupMenu;
+         property Font;
+         property Color;
+         property BorderStyle;
+         property WordWrap;
    end;
 
 implementation
@@ -62,7 +71,6 @@ begin
    inherited Create(AOwner);
    EditFormWidth := 280;
    EditFormHeight := 182;
-   FHasWordWrap := true;
 end;
 
 procedure TMemoEx.SetHasVScroll(AValue: boolean);
@@ -80,20 +88,16 @@ begin
    begin
       FHasHScroll := AValue;
       if FHasHScroll then
-         SetHasWordWrap(false);
+         WordWrap := false;
       UpdateHScroll;
    end;
 end;
 
-procedure TMemoEx.SetHasWordWrap(AValue: boolean);
+procedure TMemoEx.SetWordWrap(AValue: boolean);
 begin
-   if AValue <> FHasWordWrap then
-   begin
-      WordWrap := AValue;
-      FHasWordWrap := AValue;
-      if FHasWordWrap then
-         SetHasHScroll(false);
-   end;
+   if (AValue <> WordWrap) and AValue then
+      SetHasHScroll(false);
+   inherited;
 end;
 
 procedure TMemoEx.ResetScrollBars(const AStyle: TScrollStyle);
@@ -157,7 +161,7 @@ var
    margns: longint;
 begin
    pos := SelStart;
-   if FHasHScroll and not FHasWordWrap then
+   if FHasHScroll and not WordWrap then
    begin
       w := 0;
       lCanvas := TCanvas.Create;
@@ -204,7 +208,7 @@ begin
       EditFormHeight := StrToIntDef(ATag.GetAttribute('memH'), EditFormHeight);
       HasVScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_vscroll', FHasVScroll);
       HasHScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_hscroll', FHasHScroll);
-      HasWordWrap := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_wordwrap', FHasWordWrap);
+      WordWrap := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_wordwrap', WordWrap);
    end;
 end;
 
@@ -216,7 +220,7 @@ begin
       ATag.SetAttribute('memH', EditFormHeight.ToString);
       ATag.SetAttribute('mem_vscroll', HasVScroll.ToString);
       ATag.SetAttribute('mem_hscroll', HasHScroll.ToString);
-      ATag.SetAttribute('mem_wordwrap', HasWordWrap.ToString);
+      ATag.SetAttribute('mem_wordwrap', WordWrap.ToString);
    end;
 end;
 

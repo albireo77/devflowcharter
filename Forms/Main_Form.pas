@@ -592,13 +592,15 @@ begin
    miSize10.Checked := False;
    miSize12.Checked := False;
    miIsHeader.Visible := False;
-   miMemoVScroll.Checked := false;
-   miMemoHScroll.Checked := false;
-   miMemoWordWrap.Checked := false;
+   miMemoVScroll.Checked := False;
+   miMemoHScroll.Checked := False;
+   miMemoWordWrap.Checked := False;
 
-   comp := pmPages.PopupComponent;
    isFunction := TInfra.IsValid(GClpbrd.UndoObject) and (GClpbrd.UndoObject is TUserFunction);
    miPaste.Enabled := TInfra.IsValid(GClpbrd.Instance) or isFunction;
+
+   comp := pmPages.PopupComponent;
+
    if Supports(comp, IMemoEx, memoEx) then
    begin
       memo := memoEx.GetMemoEx;
@@ -628,12 +630,12 @@ begin
           if not (block is TReturnBlock) then
              miExport.Visible := True;
           miPrint2.Visible := True;
-          miCut.Visible := true;
+          miCut.Visible := True;
           if not (block is TMainBlock) then
              miCopy.Visible := True;
           if block is TGroupBlock then
           begin
-             miExpFold.Visible := true;
+             miExpFold.Visible := True;
              if TGroupBlock(block).Expanded then
              begin
                 miExpFold.Caption := i18Manager.GetString('miFoldBlock');
@@ -644,11 +646,11 @@ begin
                 miExpFold.Caption := i18Manager.GetString('miExpandBlock');
           end;
           if (block is TGroupBlock) and TGroupBlock(block).Expanded and TGroupBlock(block).HasFoldedBlocks then
-             miExpandAll.Visible := true;
+             miExpandAll.Visible := True;
           if block is TForDoBlock then
           begin
-             miForAsc.Visible := true;
-             miForDesc.Visible := true;
+             miForAsc.Visible := True;
+             miForDesc.Visible := True;
              miForAsc.Checked := TForDoBlock(block).Order = ordAsc;
              miForDesc.Checked := not miForAsc.Checked;
           end;
@@ -674,18 +676,18 @@ begin
       miFont.Visible := True;
       miCopy.Visible := True;
       miCut.Visible := TComment(comp).SelLength > 0;
-      miIsHeader.Visible := true;
+      miIsHeader.Visible := True;
       miIsHeader.Checked := TComment(comp).IsHeader;
       if GClpbrd.Instance is TBlock then
-         miPaste.Enabled := false;
+         miPaste.Enabled := False;
    end
    else
    begin
       miInsert.Visible := True;
       if GClpbrd.Instance is TMainBlock then
-         miPaste.Enabled := true
+         miPaste.Enabled := True
       else if GClpbrd.Instance is TBlock then
-         miPaste.Enabled := false;
+         miPaste.Enabled := False;
    end;
    if lFont <> nil then
    begin
@@ -695,9 +697,9 @@ begin
       miStyleStrikeOut.Checked := fsStrikeOut in lFont.Style;
       miStyleNormal.Checked := lFont.Style = [];
       case lFont.Size of
-         8:   miSize8.Checked := true;
-         10:  miSize10.Checked := true;
-         12:  miSize12.Checked := true;
+         8:   miSize8.Checked := True;
+         10:  miSize10.Checked := True;
+         12:  miSize12.Checked := True;
       end;
    end;
    if miMemo.Visible then
@@ -1304,7 +1306,7 @@ begin
          else if Sender = miMemoHScroll then
             memo.HasHScroll := miMemoHScroll.Checked
          else if Sender = miMemoWordWrap then
-            memo.HasWordWrap := miMemoWordWrap.Checked;
+            memo.WordWrap := miMemoWordWrap.Checked;
       end;
    end;
 end;
