@@ -1765,7 +1765,7 @@ function TBlock.FocusOnTextControl(AInfo: TFocusInfo): boolean;
 var
    idx, idx2, i: integer;
    txt: string;
-   memo: TMemoEx;
+   memo: TCustomMemo;
 begin
    result := false;
    if ContainsControl(AInfo.FocusEdit) and AInfo.FocusEdit.CanFocus then
@@ -1774,9 +1774,9 @@ begin
       FTopParentBlock.BringAllToFront;
       Page.Form.ScrollInView(AInfo.FocusEdit);
       idx2 := 0;
-      if AInfo.FocusEdit is TMemoEx then
+      if AInfo.FocusEdit is TCustomMemo then
       begin
-         memo := TMemoEx(AInfo.FocusEdit);
+         memo := TCustomMemo(AInfo.FocusEdit);
          if AInfo.RelativeLine < memo.Lines.Count then
          begin
             txt := memo.Lines[AInfo.RelativeLine];
