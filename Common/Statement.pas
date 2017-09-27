@@ -31,7 +31,6 @@ type
   TStatement = class(TCustomEdit, IIdentifiable, IFocusable)
   private
     { Private declarations }
-    FAlignment: TAlignment;
     FExecuteParse: boolean;
     FParserMode: TParserMode;
     FId: integer;
@@ -48,11 +47,8 @@ type
     constructor Create(AOwner: TComponent); overload; override;
     constructor Create(AOwner: TComponent; const AId: integer); overload;
     destructor Destroy; override;
-    procedure CreateParams(var Params: TCreateParams); override;
-    procedure SetAlignment(AValue: TAlignment);
     function RetrieveFocus(AInfo: TFocusInfo): boolean;
     function CanBeFocused: boolean;
-    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     function GetFocusColor: TColor;
     function Remove: boolean;
     function CanBeRemoved: boolean;
@@ -166,14 +162,6 @@ begin
    inherited Destroy;
 end;
 
-procedure TStatement.CreateParams(var Params: TCreateParams);
-const
-   Alignments: array[boolean, TAlignment] of longint = ((ES_LEFT, ES_RIGHT, ES_CENTER), (ES_RIGHT, ES_LEFT, ES_CENTER));
-begin
-   inherited CreateParams(Params);
-   Params.Style := Params.Style {or ES_MULTILINE} or Alignments[UseRightToLeftAlignment, FAlignment];
-end;
-
 function TStatement.RetrieveFocus(AInfo: TFocusInfo): boolean;
 begin
    AInfo.FocusEdit := Self;
@@ -183,15 +171,6 @@ end;
 function TStatement.CanBeFocused: boolean;
 begin
    result := TBlock(Parent).CanBeFocused;
-end;
-
-procedure TStatement.SetAlignment(AValue: TAlignment);
-begin
-   if FAlignment <> AValue then
-   begin
-      FAlignment := AValue;
-      RecreateWnd;
-   end;
 end;
 
 procedure TStatement.Change;

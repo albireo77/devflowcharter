@@ -40,16 +40,16 @@ type
          FZOrder: integer;
       protected
          FMouseLeave: boolean;
-         procedure MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-         procedure MouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-         procedure DblClick(Sender: TObject);
+         procedure OnMouseDownComment(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+         procedure OnMouseMoveComment(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+         procedure OnDblClickComment(Sender: TObject);
          procedure ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
          procedure MouseLeave(Sender: TObject);
          procedure NCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
          procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
          procedure SetActive(AValue: boolean);
          function GetActive: boolean;
-         procedure Change(Sender: TObject);
+         procedure OnChangeComment(Sender: TObject);
          procedure SetPage(APage: TBlockTabSheet);
          procedure SetIsHeader(AValue: boolean);
          procedure ChangeBorderStyle(AStyle: TBorderStyle);
@@ -101,10 +101,10 @@ begin
    GProject.AddComponent(Self);
 
    OnKeyDown      := TInfra.OnKeyDownSelectAll;
-   OnMouseDown    := MouseDown;
-   OnMouseMove    := MouseMove;
-   OnDblClick     := DblClick;
-   OnChange       := Change;
+   OnMouseDown    := OnMouseDownComment;
+   OnMouseMove    := OnMouseMoveComment;
+   OnDblClick     := OnDblClickComment;
+   OnChange       := OnChangeComment;
    OnContextPopup := ContextPopup;
    OnMouseLeave   := MouseLeave;
 end;
@@ -232,7 +232,7 @@ begin
    end;
 end;
 
-procedure TComment.MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TComment.OnMouseDownComment(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
    if Button = mbLeft then
    begin
@@ -268,7 +268,7 @@ begin
    end;
 end;
 
-procedure TComment.Change(Sender: TObject);
+procedure TComment.OnChangeComment(Sender: TObject);
 begin
    GProject.SetChanged;
    if FIsHeader then
@@ -277,12 +277,12 @@ begin
    NavigatorForm.Invalidate;
 end;
 
-procedure TComment.DblClick(Sender: TObject);
+procedure TComment.OnDblClickComment(Sender: TObject);
 begin
    SelectAll;
 end;
 
-procedure TComment.MouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+procedure TComment.OnMouseMoveComment(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 var
    pnt: TPoint;
 begin
