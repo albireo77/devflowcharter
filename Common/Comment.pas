@@ -100,7 +100,6 @@ begin
    SetBounds(ALeft, ATop, AWidth, AHeight);
    GProject.AddComponent(Self);
 
-   OnKeyDown      := TInfra.OnKeyDownSelectAll;
    OnMouseDown    := OnMouseDownComment;
    OnMouseMove    := OnMouseMoveComment;
    OnDblClick     := OnDblClickComment;

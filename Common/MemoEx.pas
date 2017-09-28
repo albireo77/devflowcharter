@@ -71,6 +71,7 @@ begin
    inherited Create(AOwner);
    EditFormWidth := 280;
    EditFormHeight := 182;
+   OnKeyDown := TInfra.OnKeyDownSelectAll;
 end;
 
 procedure TMemoEx.SetHasVScroll(AValue: boolean);

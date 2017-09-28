@@ -52,7 +52,6 @@ begin
    Font.Color := GSettings.FontColor;
    Font.Name := GSettings.FlowchartFontName;
    DoubleBuffered := true;
-   OnKeyDown := TInfra.OnKeyDownSelectAll;
    Anchors := [akRight, akLeft, akBottom, akTop];
 end;
 
