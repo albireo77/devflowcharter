@@ -218,7 +218,6 @@ begin
                ScrollBars := TScrollStyle.ssHorizontal
             else if ScrollBars = TScrollStyle.ssVertical then
                ScrollBars := TScrollStyle.ssBoth;
-            Repaint;
          end
          else
             ResetScrollBars(TScrollStyle.ssVertical);
@@ -233,12 +232,15 @@ end;
 
 procedure TMemoEx.UpdateScrolls;
 var
-   pos: integer;
+   pos, i: integer;
 begin
    pos := SelStart;
+   i := Perform(EM_GETFIRSTVISIBLELINE, 0, 0);
    UpdateVScroll;
    UpdateHScroll;
    SelStart := pos;
+   Perform(EM_LINESCROLL, 0, i);
+   Repaint;
 end;
 
 procedure TMemoEx.CM_UpdateScrolls(var msg: TMessage);
@@ -247,8 +249,17 @@ begin
 end;
 
 procedure TMemoEx.CM_HideScrolls(var msg: TMessage);
+var
+   pos, i: integer;
 begin
-   ScrollBars := ssNone;
+   if ScrollBars <> TScrollStyle.ssNone then
+   begin
+      pos := SelStart;
+      i := Perform(EM_GETFIRSTVISIBLELINE, 0, 0);
+      ScrollBars := ssNone;
+      SelStart := pos;
+      Perform(EM_LINESCROLL, 0, i);
+   end;
 end;
 
 procedure TMemoEx.GetFromXML(ATag: IXMLElement);
