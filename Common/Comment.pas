@@ -44,7 +44,7 @@ type
          procedure OnMouseMoveComment(Sender: TObject; Shift: TShiftState; X, Y: Integer);
          procedure OnDblClickComment(Sender: TObject);
          procedure ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
-         procedure MouseLeave(Sender: TObject);
+         procedure MyOnMouseLeave(Sender: TObject); override;
          procedure NCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
          procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
          procedure SetActive(AValue: boolean);
@@ -105,7 +105,7 @@ begin
    OnDblClick     := OnDblClickComment;
    OnChange       := OnChangeComment;
    OnContextPopup := ContextPopup;
-   OnMouseLeave   := MouseLeave;
+   OnMouseLeave   := MyOnMouseLeave;
 end;
 
 function TComment.Clone(APage: TBlockTabSheet; ATopLeft: PPoint = nil): TComment;
@@ -139,13 +139,11 @@ begin
    result := Self;
 end;
 
-procedure TComment.MouseLeave(Sender: TObject);
+procedure TComment.MyOnMouseLeave(Sender: TObject);
 begin
    if FMouseLeave then
-   begin
       ChangeBorderStyle(bsNone);
-      UpdateScrolls;
-   end;
+   inherited MyOnMouseLeave(Sender);
 end;
 
 procedure TComment.SetPage(APage: TBlockTabSheet);

@@ -23,8 +23,7 @@ interface
 
 uses
    Vcl.Controls, OmniXML, Vcl.StdCtrls, Vcl.Grids, System.Classes, WinApi.Windows,
-   WinApi.Messages, Vcl.Graphics, Vcl.Forms, SizeEdit, CommonInterfaces, Base_Form,
-   CommonTypes;
+   WinApi.Messages, Vcl.Graphics, Vcl.Forms, SizeEdit, CommonInterfaces, CommonTypes;
 
 type
 

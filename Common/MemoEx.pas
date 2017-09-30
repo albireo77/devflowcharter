@@ -24,10 +24,14 @@ unit MemoEx;
 interface
 
 uses
-   Vcl.StdCtrls, System.Classes, System.UITypes, OmniXML;
+   Vcl.StdCtrls, System.Classes, System.UITypes, WinApi.Messages, Vcl.Controls,
+   OmniXML;
+
+const
+   CM_UPDATE_SCROLLS = CM_BASE + 1002;
+   CM_HIDE_SCROLLS = CM_BASE + 1003;
 
 type
-
    TMemoEx = class(TCustomMemo)
       private
          FHasVScroll,
@@ -37,8 +41,14 @@ type
          procedure UpdateHScroll;
          procedure SetHasVScroll(AValue: boolean);
          procedure SetHasHScroll(AValue: boolean);
+         procedure CM_UpdateScrolls(var msg: TMessage); message CM_UPDATE_SCROLLS;
+         procedure CM_HideScrolls(var msg: TMessage); message CM_HIDE_SCROLLS;
       protected
          procedure SetWordWrap(AValue: boolean);
+         procedure MyOnMouseLeave(Sender: TObject); virtual;
+         procedure MyOnMouseEnter(Sender: TObject);
+         procedure MyOnExit(Sender: TObject);
+         procedure MyOnEnter(Sender: TObject);
       public
          EditFormWidth,
          EditFormHeight: integer;
@@ -63,15 +73,20 @@ type
 implementation
 
 uses
-   System.StrUtils, WinApi.Windows, Vcl.Graphics, WinApi.Messages, System.SysUtils,
-   XMLProcessor, ApplicationCommon;
+   System.StrUtils, WinApi.Windows, Vcl.Graphics, System.SysUtils, XMLProcessor,
+   ApplicationCommon;
 
 constructor TMemoEx.Create(AOwner: TComponent);
 begin
    inherited Create(AOwner);
    EditFormWidth := 280;
    EditFormHeight := 182;
+   FHasVScroll := true;
    OnKeyDown := TInfra.OnKeyDownSelectAll;
+   OnMouseLeave := MyOnMouseLeave;
+   OnMouseEnter := MyOnMouseEnter;
+   OnExit := MyOnExit;
+   OnEnter := MyOnEnter;
 end;
 
 procedure TMemoEx.SetHasVScroll(AValue: boolean);
@@ -82,6 +97,7 @@ begin
       UpdateVScroll;
    end;
 end;
+
 
 procedure TMemoEx.SetHasHScroll(AValue: boolean);
 begin
@@ -101,6 +117,27 @@ begin
    inherited SetWordWrap(AValue);
 end;
 
+procedure TMemoEx.MyOnMouseLeave(Sender: TObject);
+begin
+   if not Focused then
+      PostMessage(Handle, CM_HIDE_SCROLLS, 0, 0);
+end;
+
+procedure TMemoEx.MyOnMouseEnter(Sender: TObject);
+begin
+   PostMessage(Handle, CM_UPDATE_SCROLLS, 0, 0);
+end;
+
+procedure TMemoEx.MyOnExit(Sender: TObject);
+begin
+   PostMessage(Handle, CM_HIDE_SCROLLS, 0, 0);
+end;
+
+procedure TMemoEx.MyOnEnter(Sender: TObject);
+begin
+   PostMessage(Handle, CM_UPDATE_SCROLLS, 0, 0);
+end;
+
 procedure TMemoEx.ResetScrollBars(const AStyle: TScrollStyle);
 var
    sStyle: TScrollStyle;
@@ -117,12 +154,11 @@ end;
 
 procedure TMemoEx.UpdateVScroll;
 var
-   pos, count, lineCount: integer;
+   count, lineCount: integer;
    oldFont: HFont;
    hnd: THandle;
    txtMetric: TTextMetric;
 begin
-   pos := SelStart;
    if FHasVScroll then
    begin
       hnd := GetDC(Handle);
@@ -152,16 +188,14 @@ begin
    end
    else
       ResetScrollBars(TScrollStyle.ssHorizontal);
-   SelStart := pos;
 end;
 
 procedure TMemoEx.UpdateHScroll;
 var
-   pos, cnt, w, i: integer;
+   cnt, w, i: integer;
    lCanvas: TCanvas;
    margns: longint;
 begin
-   pos := SelStart;
    if FHasHScroll and not WordWrap then
    begin
       w := 0;
@@ -192,13 +226,26 @@ begin
    end
    else
       ResetScrollBars(TScrollStyle.ssVertical);
-   SelStart := pos;
 end;
 
 procedure TMemoEx.UpdateScrolls;
+var
+   pos: integer;
 begin
+   pos := SelStart;
    UpdateVScroll;
    UpdateHScroll;
+   SelStart := pos;
+end;
+
+procedure TMemoEx.CM_UpdateScrolls(var msg: TMessage);
+begin
+   UpdateScrolls;
+end;
+
+procedure TMemoEx.CM_HideScrolls(var msg: TMessage);
+begin
+   ScrollBars := ssNone;
 end;
 
 procedure TMemoEx.GetFromXML(ATag: IXMLElement);
