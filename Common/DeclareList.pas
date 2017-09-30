@@ -23,7 +23,8 @@ interface
 
 uses
    Vcl.Controls, OmniXML, Vcl.StdCtrls, Vcl.Grids, System.Classes, WinApi.Windows,
-   WinApi.Messages, Vcl.Graphics, SizeEdit, CommonInterfaces, Base_Form, CommonTypes;
+   WinApi.Messages, Vcl.Graphics, Vcl.Forms, SizeEdit, CommonInterfaces, Base_Form,
+   CommonTypes;
 
 type
 
@@ -42,7 +43,6 @@ type
    TDeclareList = class(TGroupBox, IFocusable, IIdentifiable)
       protected
          FModifying: boolean;
-         FParentForm: TBaseForm;
          FId,
          FDragRow,
          FCheckBoxCol: integer;
@@ -84,7 +84,6 @@ type
          edtName: TEdit;
          AssociatedList: TDeclareList;
          property Id: integer read GetId;
-         property ParentForm: TBaseForm read FParentForm;
          constructor Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
          destructor Destroy; override;
          function ImportFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
@@ -169,7 +168,6 @@ begin
    FCheckBoxCol := -1;
    inherited Create(AParent);
    Parent := AParent;
-   FParentForm := TInfra.FindParentForm(Self);
    ParentFont := false;
    ParentBackground := false;
    Font.Style := [fsBold];
@@ -382,25 +380,24 @@ function TDeclareList.RetrieveFocus(AInfo: TFocusInfo): boolean;
 var
    i: integer;
    lName: string;
-   lList: TDeclareList;
-   baseForm: TBaseForm;
+   list: TDeclareList;
    dataType: TUserDataType;
 begin
    i := 0;
-   lList := nil;
+   list := nil;
    lName := AInfo.SelText.Trim;
    if not lName.IsEmpty then
    begin
       i := sgList.Cols[NAME_COL].IndexOf(lName);
       if i > 0 then
-         lList := Self
+         list := Self
       else if AssociatedList <> nil then
       begin
          i := AssociatedList.sgList.Cols[NAME_COL].IndexOf(lName);
          if i > 0 then
-            lList := AssociatedList;
+            list := AssociatedList;
       end;
-      if lList = nil then
+      if list = nil then
       begin
          dataType := GProject.GetUserDataType(lName);
          if dataType <> nil then
@@ -410,16 +407,14 @@ begin
          end;
       end;
    end;
-   if lList <> nil then
+   if list <> nil then
    begin
-      baseForm := lList.ParentForm;
-      lList.sgList.Row := i;
-      lList.Show;
+      list.sgList.Row := i;
+      list.Show;
    end
    else
-      baseForm := FParentForm;
-   if baseForm <> nil then
-      baseForm.Show;
+      list := Self;
+   GetParentForm(list, False).Show;
    result := i > 0;
 end;
 
@@ -442,7 +437,7 @@ end;
 
 procedure TDeclareList.SetDefaultFocus;
 begin
-   if edtName.CanFocus and not (FParentForm.ActiveControl is TCustomEdit) then
+   if edtName.CanFocus and not (GetParentForm(Self, False).ActiveControl is TCustomEdit) then
       edtName.SetFocus;
 end;
 

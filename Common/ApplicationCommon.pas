@@ -103,7 +103,6 @@ type
          class function EnumToString<T: record>(Enum: T): string;
          class function DecodeFontStyle(AValue: integer): TFontStyles;
          class function EncodeFontStyle(AStyle: TFontStyles): string;
-         class function FindParentForm(AControl: TControl): TBaseForm;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetLangDefinition(const AName: string): TLangDefinition;
          function SetCurrentLang(const ALangName: string): TLangDefinition;
@@ -727,23 +726,6 @@ begin
         result := true;
   except
   end;
-end;
-
-class function TInfra.FindParentForm(AControl: TControl): TBaseForm;
-var
-   winControl: TWinControl;
-begin
-   result := nil;
-   if AControl is TBaseForm then
-      result := TBaseForm(AControl)
-   else if AControl <> nil then
-   begin
-      winControl := AControl.Parent;
-      while (winControl <> nil) and not (winControl is TBaseForm) do
-         winControl := winControl.Parent;
-      if winControl is TBaseForm then
-         result := TBaseForm(winControl);
-   end;
 end;
 
 class function TInfra.GetComboMaxWidth(ACombo: TComboBox): integer;
