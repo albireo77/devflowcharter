@@ -158,6 +158,7 @@ var
    oldFont: HFont;
    hnd: THandle;
    txtMetric: TTextMetric;
+   editRect: TRect;
 begin
    if FHasVScroll then
    begin
@@ -165,8 +166,9 @@ begin
       try
          oldFont := SelectObject(hnd, Font.Handle);
          try
+            Perform(EM_GETRECT, 0, LPARAM(@editRect));
             GetTextMetrics(hnd, txtMetric);
-            lineCount := (ClientHeight - 4)  div (txtMetric.tmHeight + txtMetric.tmExternalLeading)
+            lineCount := editRect.Height div txtMetric.tmHeight;
          finally
             SelectObject(hnd, oldFont);
          end;
@@ -194,7 +196,7 @@ procedure TMemoEx.UpdateHScroll;
 var
    cnt, w, i: integer;
    lCanvas: TCanvas;
-   margns: longint;
+   editRect: TRect;
 begin
    if FHasHScroll and not WordWrap then
    begin
@@ -209,13 +211,14 @@ begin
             if cnt > w then
                w := cnt;
          end;
-         margns := SendMessage(Handle, EM_GETMARGINS, 0, 0);
-         if w > (ClientWidth - HiWord(margns) - LoWord(margns) - 3) then
+         Perform(EM_GETRECT, 0, LPARAM(@editRect));
+         if w > editRect.Width then
          begin
             if ScrollBars = TScrollStyle.ssNone then
                ScrollBars := TScrollStyle.ssHorizontal
             else if ScrollBars = TScrollStyle.ssVertical then
                ScrollBars := TScrollStyle.ssBoth;
+            Repaint;
          end
          else
             ResetScrollBars(TScrollStyle.ssVertical);
