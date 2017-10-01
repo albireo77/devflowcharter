@@ -66,6 +66,7 @@ type
          class procedure UpdateCodeEditor(AObject: TObject = nil);
          class procedure OnKeyDownSelectAll(Sender: TObject; var Key: Word; Shift: TShiftState);
          class procedure InsertLinesIntoList(ADestList, ASourceList: TStringList; AFromLine: integer);
+         class function GetMemoCoord(memo: TCustomMemo; x, y: integer): TBufferCoord;
          class function CreateDOSProcess(const ACommand: string; ADir: string = ''): boolean;
          class function ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
          class function ShowFormattedQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
@@ -1170,6 +1171,18 @@ begin
          end;
       end;
    end;
+end;
+
+class function TInfra.GetMemoCoord(memo: TCustomMemo; x, y: integer): TBufferCoord;
+var
+   r: cardinal;
+   charIndex: integer;
+begin
+   r := memo.Perform(EM_CHARFROMPOS, 0, MakeLong(x, y));
+   charIndex := LOWORD(r);
+   result.Line := HIWORD(r);
+   result.Char := charIndex - memo.Perform(EM_LINEINDEX, result.Line, 0);
+   result.Line := memo.Perform(EM_GETFIRSTVISIBLELINE, 0, 0);
 end;
 
 class function TInfra.GetCaretPos(AEdit: TCustomEdit): TBufferCoord;

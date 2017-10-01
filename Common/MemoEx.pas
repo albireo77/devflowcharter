@@ -25,11 +25,12 @@ interface
 
 uses
    Vcl.StdCtrls, System.Classes, System.UITypes, WinApi.Messages, Vcl.Controls,
-   OmniXML;
+   Vcl.Forms, OmniXML;
 
 const
    CM_UPDATE_SCROLLS = CM_BASE + 1002;
    CM_HIDE_SCROLLS = CM_BASE + 1003;
+   CM_HIDE_ALL = CM_BASE + 1004;
 
 type
    TMemoEx = class(TCustomMemo)
@@ -43,6 +44,7 @@ type
          procedure SetHasHScroll(AValue: boolean);
          procedure CM_UpdateScrolls(var msg: TMessage); message CM_UPDATE_SCROLLS;
          procedure CM_HideScrolls(var msg: TMessage); message CM_HIDE_SCROLLS;
+         procedure CM_HideAll(var msg: TMessage); message CM_HIDE_ALL;
       protected
          procedure SetWordWrap(AValue: boolean);
          procedure SetScrollBars(AValue: TScrollStyle);
@@ -50,6 +52,7 @@ type
          procedure MyOnMouseEnter(Sender: TObject);
          procedure MyOnExit(Sender: TObject);
          procedure MyOnEnter(Sender: TObject);
+         procedure ChangeBorderStyle(AStyle: TBorderStyle);
       public
          EditFormWidth,
          EditFormHeight: integer;
@@ -76,14 +79,13 @@ implementation
 
 uses
    System.StrUtils, WinApi.Windows, Vcl.Graphics, System.SysUtils, XMLProcessor,
-   ApplicationCommon;
+   ApplicationCommon, SynEdit;
 
 constructor TMemoEx.Create(AOwner: TComponent);
 begin
    inherited Create(AOwner);
    EditFormWidth := 280;
    EditFormHeight := 182;
-   FHasVScroll := true;
    OnKeyDown := TInfra.OnKeyDownSelectAll;
    OnMouseLeave := MyOnMouseLeave;
    OnMouseEnter := MyOnMouseEnter;
@@ -121,15 +123,18 @@ end;
 
 procedure TMemoEx.SetScrollBars(AValue: TScrollStyle);
 var
-   p, i: integer;
+   s, l: integer;
+   b: TBufferCoord;
 begin
    if AValue <> ScrollBars then
    begin
-      p := SelStart;
-      i := Perform(EM_GETFIRSTVISIBLELINE, 0, 0);
+      s := SelStart;
+      l := SelLength;
+      b := TInfra.GetMemoCoord(Self, 0, 0);
       inherited SetScrollBars(AValue);
-      SelStart := p;
-      Perform(EM_LINESCROLL, 0, i);
+      SelStart := s;
+      SelLength := l;
+      Perform(EM_LINESCROLL, b.Char, b.Line);
    end;
 end;
 
@@ -152,6 +157,25 @@ end;
 procedure TMemoEx.MyOnEnter(Sender: TObject);
 begin
    PostMessage(Handle, CM_UPDATE_SCROLLS, 0, 0);
+end;
+
+procedure TMemoEx.ChangeBorderStyle(AStyle: TBorderStyle);
+var
+   s, l: integer;
+   b: TBufferCoord;
+begin
+   if AStyle <> BorderStyle then
+   begin
+      GProject.ChangingOn := false;
+      b := TInfra.GetMemoCoord(Self, 0, 0);
+      s := SelStart;
+      l := SelLength;
+      BorderStyle := AStyle;
+      SelStart := s;
+      SelLength := l;
+      Perform(EM_LINESCROLL, b.Char, b.Line);
+      GProject.ChangingOn := true;
+   end;
 end;
 
 procedure TMemoEx.ResetScrollBars(const AStyle: TScrollStyle);
@@ -263,10 +287,16 @@ begin
    ScrollBars := ssNone;
 end;
 
+procedure TMemoEx.CM_HideAll(var msg: TMessage);
+begin
+   ChangeBorderStyle(bsNone);
+   ScrollBars := ssNone;
+end;
+
 procedure TMemoEx.GetFromXML(ATag: IXMLElement);
 var
    val: string;
-   p: integer;
+   h, v: integer;
 begin
    if ATag <> nil then
    begin
@@ -275,9 +305,9 @@ begin
       HasVScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_vscroll', FHasVScroll);
       HasHScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_hscroll', FHasHScroll);
       WordWrap := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_wordwrap', WordWrap);
-      p := StrToIntDef(ATag.GetAttribute('mem_vscroll_pos'), -1);
-      if p >= 0 then
-         Perform(EM_LINESCROLL, 0, p);
+      v := StrToIntDef(ATag.GetAttribute('mem_vscroll_pos'), 0);
+      h := StrToIntDef(ATag.GetAttribute('mem_hscroll_pos'), 0);
+      Perform(EM_LINESCROLL, h, v);
       val := ATag.GetAttribute('mem_align');
       if not val.IsEmpty then
          Alignment := TInfra.StringToEnum<TAlignment>(val);
@@ -285,6 +315,8 @@ begin
 end;
 
 procedure TMemoEx.SaveInXML(ATag: IXMLElement);
+var
+   b: TBufferCoord;
 begin
    if ATag <> nil then
    begin
@@ -294,7 +326,9 @@ begin
       ATag.SetAttribute('mem_hscroll', HasHScroll.ToString);
       ATag.SetAttribute('mem_wordwrap', WordWrap.ToString);
       ATag.SetAttribute('mem_align', TInfra.EnumToString<TAlignment>(Alignment));
-      ATag.SetAttribute('mem_vscroll_pos', Perform(EM_GETFIRSTVISIBLELINE, 0, 0).ToString);
+      b := TInfra.GetMemoCoord(Self, 0, 0);
+      ATag.SetAttribute('mem_vscroll_pos', b.Line.ToString);
+      ATag.SetAttribute('mem_hscroll_pos', b.Char.ToString);
    end;
 end;
 

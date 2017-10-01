@@ -52,7 +52,6 @@ type
          procedure OnChangeComment(Sender: TObject);
          procedure SetPage(APage: TBlockTabSheet);
          procedure SetIsHeader(AValue: boolean);
-         procedure ChangeBorderStyle(AStyle: TBorderStyle);
       public
          property PinControl: TControl read FPinControl write FPinControl;
          property Page: TBlockTabSheet read FPage write SetPage;
@@ -142,8 +141,7 @@ end;
 procedure TComment.MyOnMouseLeave(Sender: TObject);
 begin
    if FMouseLeave then
-      ChangeBorderStyle(bsNone);
-   inherited MyOnMouseLeave(Sender);
+      PostMessage(Handle, CM_HIDE_ALL, 0, 0);
 end;
 
 procedure TComment.SetPage(APage: TBlockTabSheet);
@@ -169,22 +167,6 @@ end;
 procedure TComment.BringAllToFront;
 begin
    BringToFront;
-end;
-
-procedure TComment.ChangeBorderStyle(AStyle: TBorderStyle);
-var
-   lStart, lLength: integer;
-begin
-   if BorderStyle <> AStyle then
-   begin
-      GProject.ChangingOn := false;
-      lStart := SelStart;
-      lLength := SelLength;
-      BorderStyle := AStyle;
-      SelStart := lStart;
-      SelLength := lLength;
-      GProject.ChangingOn := true;
-   end;
 end;
 
 procedure TComment.SetZOrder(AValue: integer);
@@ -337,8 +319,10 @@ begin
       v := StrToIntDef(ATag.GetAttribute(FONT_STYLE_ATTR), 0);
       if v > 0 then
          Font.Style := TInfra.DecodeFontStyle(v);
+      OnChange := nil;
       Text := ATag.Text;
       Visible := TXMLProcessor.GetBoolFromAttr(ATag, 'v');
+      OnChange := OnChangeComment;
       FPinControl := APinControl;
       FIsHeader := TXMlProcessor.GetBoolFromAttr(ATag, IS_HEADER_ATTR);
       GetFromXML(ATag);
