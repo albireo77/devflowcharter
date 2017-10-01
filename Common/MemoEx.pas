@@ -45,6 +45,7 @@ type
          procedure CM_HideScrolls(var msg: TMessage); message CM_HIDE_SCROLLS;
       protected
          procedure SetWordWrap(AValue: boolean);
+         procedure SetScrollBars(AValue: TScrollStyle);
          procedure MyOnMouseLeave(Sender: TObject); virtual;
          procedure MyOnMouseEnter(Sender: TObject);
          procedure MyOnExit(Sender: TObject);
@@ -68,6 +69,7 @@ type
          property Color;
          property BorderStyle;
          property WordWrap write SetWordWrap;
+         property ScrollBars write SetScrollBars;
    end;
 
 implementation
@@ -115,6 +117,20 @@ begin
    if (AValue <> WordWrap) and AValue then
       SetHasHScroll(false);
    inherited SetWordWrap(AValue);
+end;
+
+procedure TMemoEx.SetScrollBars(AValue: TScrollStyle);
+var
+   p, i: integer;
+begin
+   if AValue <> ScrollBars then
+   begin
+      p := SelStart;
+      i := Perform(EM_GETFIRSTVISIBLELINE, 0, 0);
+      inherited SetScrollBars(AValue);
+      SelStart := p;
+      Perform(EM_LINESCROLL, 0, i);
+   end;
 end;
 
 procedure TMemoEx.MyOnMouseLeave(Sender: TObject);
@@ -231,15 +247,9 @@ begin
 end;
 
 procedure TMemoEx.UpdateScrolls;
-var
-   pos, i: integer;
 begin
-   pos := SelStart;
-   i := Perform(EM_GETFIRSTVISIBLELINE, 0, 0);
    UpdateVScroll;
    UpdateHScroll;
-   SelStart := pos;
-   Perform(EM_LINESCROLL, 0, i);
    Repaint;
 end;
 
@@ -249,22 +259,14 @@ begin
 end;
 
 procedure TMemoEx.CM_HideScrolls(var msg: TMessage);
-var
-   pos, i: integer;
 begin
-   if ScrollBars <> TScrollStyle.ssNone then
-   begin
-      pos := SelStart;
-      i := Perform(EM_GETFIRSTVISIBLELINE, 0, 0);
-      ScrollBars := ssNone;
-      SelStart := pos;
-      Perform(EM_LINESCROLL, 0, i);
-   end;
+   ScrollBars := ssNone;
 end;
 
 procedure TMemoEx.GetFromXML(ATag: IXMLElement);
 var
    val: string;
+   p: integer;
 begin
    if ATag <> nil then
    begin
@@ -273,6 +275,9 @@ begin
       HasVScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_vscroll', FHasVScroll);
       HasHScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_hscroll', FHasHScroll);
       WordWrap := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_wordwrap', WordWrap);
+      p := StrToIntDef(ATag.GetAttribute('mem_vscroll_pos'), -1);
+      if p >= 0 then
+         Perform(EM_LINESCROLL, 0, p);
       val := ATag.GetAttribute('mem_align');
       if not val.IsEmpty then
          Alignment := TInfra.StringToEnum<TAlignment>(val);
@@ -289,6 +294,7 @@ begin
       ATag.SetAttribute('mem_hscroll', HasHScroll.ToString);
       ATag.SetAttribute('mem_wordwrap', WordWrap.ToString);
       ATag.SetAttribute('mem_align', TInfra.EnumToString<TAlignment>(Alignment));
+      ATag.SetAttribute('mem_vscroll_pos', Perform(EM_GETFIRSTVISIBLELINE, 0, 0).ToString);
    end;
 end;
 
