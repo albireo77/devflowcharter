@@ -44,7 +44,7 @@ type
          procedure OnMouseMoveComment(Sender: TObject; Shift: TShiftState; X, Y: Integer);
          procedure OnDblClickComment(Sender: TObject);
          procedure ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
-         procedure MyOnMouseLeave(Sender: TObject); override;
+         procedure MyOnMouseLeave(Sender: TObject);
          procedure NCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
          procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
          procedure SetActive(AValue: boolean);
@@ -141,7 +141,10 @@ end;
 procedure TComment.MyOnMouseLeave(Sender: TObject);
 begin
    if FMouseLeave then
-      PostMessage(Handle, CM_HIDE_ALL, 0, 0);
+   begin
+      ChangeBorderStyle(bsNone);
+      UpdateScrolls;
+   end;
 end;
 
 procedure TComment.SetPage(APage: TBlockTabSheet);
@@ -319,10 +322,8 @@ begin
       v := StrToIntDef(ATag.GetAttribute(FONT_STYLE_ATTR), 0);
       if v > 0 then
          Font.Style := TInfra.DecodeFontStyle(v);
-      OnChange := nil;
       Text := ATag.Text;
       Visible := TXMLProcessor.GetBoolFromAttr(ATag, 'v');
-      OnChange := OnChangeComment;
       FPinControl := APinControl;
       FIsHeader := TXMlProcessor.GetBoolFromAttr(ATag, IS_HEADER_ATTR);
       GetFromXML(ATag);
