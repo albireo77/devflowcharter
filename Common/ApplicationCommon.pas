@@ -66,7 +66,7 @@ type
          class procedure UpdateCodeEditor(AObject: TObject = nil);
          class procedure OnKeyDownSelectAll(Sender: TObject; var Key: Word; Shift: TShiftState);
          class procedure InsertLinesIntoList(ADestList, ASourceList: TStringList; AFromLine: integer);
-         class function GetTextPoint(AMemo: TCustomMemo): TPoint;
+         class function GetScrolledPoint(AMemo: TCustomMemo): TPoint;
          class function CreateDOSProcess(const ACommand: string; ADir: string = ''): boolean;
          class function ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
          class function ShowFormattedQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
@@ -1173,7 +1173,7 @@ begin
    end;
 end;
 
-class function TInfra.GetTextPoint(AMemo: TCustomMemo): TPoint;
+class function TInfra.GetScrolledPoint(AMemo: TCustomMemo): TPoint;
 var
    c: cardinal;
    charIndex: integer;

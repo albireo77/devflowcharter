@@ -114,7 +114,7 @@ begin
    begin
       s := SelStart;
       l := SelLength;
-      pnt := TInfra.GetTextPoint(Self);
+      pnt := TInfra.GetScrolledPoint(Self);
       inherited SetScrollBars(AValue);
       SelStart := s;
       SelLength := l;
@@ -130,7 +130,7 @@ begin
    if AStyle <> BorderStyle then
    begin
       GProject.ChangingOn := false;
-      pnt := TInfra.GetTextPoint(Self);
+      pnt := TInfra.GetScrolledPoint(Self);
       s := SelStart;
       l := SelLength;
       BorderStyle := AStyle;
@@ -273,7 +273,7 @@ begin
       ATag.SetAttribute('mem_hscroll', HasHScroll.ToString);
       ATag.SetAttribute('mem_wordwrap', WordWrap.ToString);
       ATag.SetAttribute('mem_align', TInfra.EnumToString<TAlignment>(Alignment));
-      pnt := TInfra.GetTextPoint(Self);
+      pnt := TInfra.GetScrolledPoint(Self);
       ATag.SetAttribute('mem_hscroll_pos', pnt.X.ToString);
       ATag.SetAttribute('mem_vscroll_pos', pnt.Y.ToString);
    end;
