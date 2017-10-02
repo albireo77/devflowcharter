@@ -63,6 +63,7 @@ begin
    FStatements := TStatementMemo.Create(Self);
    FStatements.Parent := Self;
    FStatements.SetBounds(0, 0, AWidth, Height-31);
+   FStatements.Font.Assign(Font);
    FStatements.OnDblClick := OnDblClickMemo;
    FStatements.OnMouseDown := OnMouseDownMemo;
    FStatements.OnKeyUp := OnKeyUpMemo;
