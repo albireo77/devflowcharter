@@ -1,3 +1,7 @@
+5.4 [02.10.2017]
+- more work on on saving multiline components to XML
+- fix wrong font properties for multiline blocks
+
 5.3 [23.09.2017]
 - Flowchart context menu: display Memo submenu for comments
 - add "Align Right" item to Memo submenu
