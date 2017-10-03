@@ -116,9 +116,9 @@ begin
       l := SelLength;
       pnt := TInfra.GetScrolledPoint(Self);
       inherited SetScrollBars(AValue);
+      Perform(EM_LINESCROLL, pnt.X, pnt.Y);
       SelStart := s;
       SelLength := l;
-      Perform(EM_LINESCROLL, pnt.X, pnt.Y);
    end;
 end;
 
@@ -130,13 +130,13 @@ begin
    if AStyle <> BorderStyle then
    begin
       GProject.ChangingOn := false;
-      pnt := TInfra.GetScrolledPoint(Self);
       s := SelStart;
       l := SelLength;
+      pnt := TInfra.GetScrolledPoint(Self);
       BorderStyle := AStyle;
+      Perform(EM_LINESCROLL, pnt.X, pnt.Y);
       SelStart := s;
       SelLength := l;
-      Perform(EM_LINESCROLL, pnt.X, pnt.Y);
       GProject.ChangingOn := true;
    end;
 end;
