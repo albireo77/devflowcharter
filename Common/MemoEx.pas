@@ -39,6 +39,7 @@ type
       protected
          procedure SetWordWrap(AValue: boolean);
          procedure SetScrollBars(AValue: TScrollStyle);
+         procedure SetAlignment(AValue: TAlignment);
          procedure ChangeBorderStyle(AStyle: TBorderStyle);
       public
          EditFormWidth,
@@ -60,6 +61,7 @@ type
          property BorderStyle;
          property WordWrap write SetWordWrap;
          property ScrollBars write SetScrollBars;
+         property Alignment write SetAlignment;
    end;
 
 implementation
@@ -105,38 +107,40 @@ begin
    inherited SetWordWrap(AValue);
 end;
 
+procedure TMemoEx.SetAlignment(AValue: TAlignment);
+var
+   pnt: TPoint;
+begin
+   if AValue <> Alignment then
+   begin
+      pnt := TInfra.GetScrolledPoint(Self);
+      inherited SetAlignment(AValue);
+      Perform(EM_LINESCROLL, pnt.X, pnt.Y);
+   end;
+end;
+
 procedure TMemoEx.SetScrollBars(AValue: TScrollStyle);
 var
-   s, l: integer;
    pnt: TPoint;
 begin
    if AValue <> ScrollBars then
    begin
-      s := SelStart;
-      l := SelLength;
       pnt := TInfra.GetScrolledPoint(Self);
       inherited SetScrollBars(AValue);
       Perform(EM_LINESCROLL, pnt.X, pnt.Y);
-      SelStart := s;
-      SelLength := l;
    end;
 end;
 
 procedure TMemoEx.ChangeBorderStyle(AStyle: TBorderStyle);
 var
-   s, l: integer;
    pnt: TPoint;
 begin
    if AStyle <> BorderStyle then
    begin
       GProject.ChangingOn := false;
-      s := SelStart;
-      l := SelLength;
       pnt := TInfra.GetScrolledPoint(Self);
       BorderStyle := AStyle;
       Perform(EM_LINESCROLL, pnt.X, pnt.Y);
-      SelStart := s;
-      SelLength := l;
       GProject.ChangingOn := true;
    end;
 end;
