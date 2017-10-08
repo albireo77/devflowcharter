@@ -29,8 +29,6 @@ uses
 
 type
 
-   PPoint = ^TPoint;
-
    TComment = class(TMemoEx, IXMLable, IWinControl, IMaxBoundable, IGenericComparable, IMemoEx)
       private
          FPinControl: TControl;
@@ -56,7 +54,7 @@ type
          property PinControl: TControl read FPinControl write FPinControl;
          property Page: TBlockTabSheet read FPage write SetPage;
          property IsHeader: boolean read FIsHeader write SetIsHeader;
-         constructor Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight: Integer; AUpdateZOrderComponents: boolean = true);
+         constructor Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight: Integer);
          constructor CreateDefault(APage: TBlockTabSheet);
          function Clone(APage: TBlockTabSheet; ATopLeft: PPoint = nil): TComment;
          destructor Destroy; override;
@@ -78,7 +76,7 @@ uses
    Vcl.Graphics, System.SysUtils, System.UITypes, System.Types, ApplicationCommon,
    XMLProcessor, UserFunction, Main_Block, Navigator_Form;
 
-constructor TComment.Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight: Integer; AUpdateZOrderComponents: boolean = true);
+constructor TComment.Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight: Integer);
 begin
    inherited Create(APage.Form);
    Parent := APage;
@@ -108,22 +106,14 @@ begin
 end;
 
 function TComment.Clone(APage: TBlockTabSheet; ATopLeft: PPoint = nil): TComment;
-var
-   lTopLeft: TPoint;
 begin
-   if ATopLeft = nil then
-      lTopLeft := BoundsRect.TopLeft
-   else
-      lTopLeft := ATopLeft^;
-   result := TComment.Create(APage, lTopLeft.X, lTopLeft.Y, Width, Height);
-   result.Font.Assign(Font);
-   result.Text := Text;
-   result.Visible := Visible;
+   result := TComment.CreateDefault(APage);
+   result.CloneFrom(Self, ATopLeft);
 end;
 
 constructor TComment.CreateDefault(APage: TBlockTabSheet);
 begin
-   Create(APage, 20, 20, 150, 50, false);
+   Create(APage, 20, 20, 150, 50);
 end;
 
 destructor TComment.Destroy;
