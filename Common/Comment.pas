@@ -106,9 +106,16 @@ begin
 end;
 
 function TComment.Clone(APage: TBlockTabSheet; ATopLeft: PPoint = nil): TComment;
+var
+   pnt: TPoint;
 begin
-   result := TComment.CreateDefault(APage);
-   result.CloneFrom(Self, ATopLeft);
+   if ATopLeft = nil then
+   begin
+      pnt := BoundsRect.TopLeft;
+      ATopLeft := @pnt;
+   end;
+   result := TComment.Create(APage, ATopLeft^.X, ATopLeft^.Y, Width, Height);
+   result.CloneFrom(Self);
 end;
 
 constructor TComment.CreateDefault(APage: TBlockTabSheet);

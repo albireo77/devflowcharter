@@ -24,8 +24,8 @@ unit MemoEx;
 interface
 
 uses
-   Vcl.StdCtrls, System.Classes, System.UITypes, Vcl.Controls, Vcl.Forms, System.Types,
-   OmniXML, CommonTypes;
+   Vcl.StdCtrls, System.Classes, System.UITypes, Vcl.Controls, Vcl.Forms, OmniXML,
+   CommonTypes;
 
 type
    TMemoEx = class(TCustomMemo)
@@ -52,7 +52,7 @@ type
          procedure GetFromXML(ATag: IXMLElement);
          procedure SaveInXML(ATag: IXMLElement);
          function Clone(AOwner: TComponent): TMemoEx;
-         procedure CloneFrom(AMemo: TMemoEx; ATopLeft: PPoint = nil);
+         procedure CloneFrom(AMemo: TMemoEx);
       published
          property OnDblClick;
          property OnMouseDown;
@@ -97,16 +97,12 @@ begin
    result.CloneFrom(Self);
 end;
 
-procedure TMemoEx.CloneFrom(AMemo: TMemoEx; ATopLeft: PPoint = nil);
+procedure TMemoEx.CloneFrom(AMemo: TMemoEx);
 var
    pnt: TPoint;
 begin
-   if ATopLeft = nil then
-      pnt := BoundsRect.TopLeft
-   else
-      pnt := ATopLeft^;
    Visible := AMemo.Visible;
-   SetBounds(pnt.X, pnt.Y, AMemo.Width, AMemo.Height);
+   SetBounds(Left, Top, AMemo.Width, AMemo.Height);
    Font.Assign(AMemo.Font);
    Text := AMemo.Text;
    WordWrap := AMemo.WordWrap;
