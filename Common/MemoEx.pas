@@ -50,6 +50,8 @@ type
          procedure UpdateScrolls;
          procedure GetFromXML(ATag: IXMLElement);
          procedure SaveInXML(ATag: IXMLElement);
+         function Clone(AOwner: TComponent): TMemoEx;
+         procedure CloneFrom(AMemo: TMemoEx);
       published
          property OnDblClick;
          property OnMouseDown;
@@ -86,6 +88,28 @@ begin
       FHasVScroll := AValue;
       UpdateVScroll;
    end;
+end;
+
+function TMemoEx.Clone(AOwner: TComponent): TMemoEx;
+begin
+   result := TMemoEx.Create(AOwner);
+   result.CloneFrom(Self);
+end;
+
+procedure TMemoEx.CloneFrom(AMemo: TMemoEx);
+var
+   pnt: TPoint;
+begin
+   Font.Assign(AMemo.Font);
+   Text := AMemo.Text;
+   WordWrap := AMemo.WordWrap;
+   Alignment := AMemo.Alignment;
+   EditFormWidth := AMemo.EditFormWidth;
+   EditFormHeight := AMemo.EditFormHeight;
+   HasVScroll := AMemo.HasVScroll;
+   HasHScroll := AMemo.HasHScroll;
+   pnt := TInfra.GetScrolledPoint(AMemo);
+   Perform(EM_LINESCROLL, pnt.X, pnt.Y);
 end;
 
 

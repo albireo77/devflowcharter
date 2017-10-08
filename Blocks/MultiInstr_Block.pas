@@ -53,9 +53,13 @@ begin
 end;
 
 function TMultiInstrBlock.Clone(ABranch: TBranch): TBlock;
+var
+   block: TMultiInstrBlock;
 begin
-   result := TMultiInstrBlock.Create(ABranch, Left, Top, Width, Height);
-   result.CloneFrom(Self);
+   block := TMultiInstrBlock.Create(ABranch, Left, Top, Width, Height);
+   block.FStatements.CloneFrom(FStatements);
+   block.CloneFrom(Self);
+   result := block;
 end;
 
 procedure TMultiInstrBlock.Paint;

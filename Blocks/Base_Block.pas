@@ -393,7 +393,7 @@ begin
    if ABlock is TGroupBlock then
    begin
       grpBlock := TGroupBlock(ABlock);
-      FMemoFolder.Text := grpBlock.FMemoFolder.Text;
+      FMemoFolder.CloneFrom(grpBlock.FMemoFolder);
       if not grpBlock.Expanded then
       begin
          Expanded := false;
