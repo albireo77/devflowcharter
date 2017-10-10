@@ -164,11 +164,9 @@ var
 begin
    if AStyle <> BorderStyle then
    begin
-      GProject.ChangingOn := false;
       pnt := TInfra.GetScrolledPoint(Self);
       BorderStyle := AStyle;
       Perform(EM_LINESCROLL, pnt.X, pnt.Y);
-      GProject.ChangingOn := true;
    end;
 end;
 
