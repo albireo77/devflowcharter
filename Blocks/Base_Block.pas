@@ -1196,6 +1196,7 @@ procedure TBlock.RefreshStatements;
 var
    i: integer;
    b, b1: boolean;
+   control: TControl;
 begin
     b := NavigatorForm.InvalidateInd;
     NavigatorForm.InvalidateInd := false;
@@ -1204,14 +1205,15 @@ begin
     try
        for i := 0 to ControlCount-1 do
        begin
-          if Controls[i] is TStatement then
-             TStatement(Controls[i]).DoEnter
-          else if (Controls[i] is TMemoEx) and Assigned(TMemoEx(Controls[i]).OnChange) then
-             TMemoEx(Controls[i]).OnChange(Controls[i])
-          else if (Controls[i] is TEdit) and Assigned(TEdit(Controls[i]).OnChange) then
-             TEdit(Controls[i]).OnChange(Controls[i])
-          else if (Controls[i] is TBlock) and (Controls[i] <> GClpbrd.UndoObject) then
-             TBlock(Controls[i]).RefreshStatements;
+          control := Controls[i];
+          if control is TStatement then
+             TStatement(control).DoEnter
+          else if (control is TMemoEx) and Assigned(TMemoEx(control).OnChange) then
+             TMemoEx(control).OnChange(control)
+          else if (control is TEdit) and Assigned(TEdit(control).OnChange) then
+             TEdit(control).OnChange(control)
+          else if (control is TBlock) and (control <> GClpbrd.UndoObject) then
+             TBlock(control).RefreshStatements;
        end;
     finally
        FRefreshMode := b1;
