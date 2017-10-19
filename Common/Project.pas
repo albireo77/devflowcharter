@@ -54,6 +54,7 @@ type
       function GetComponentByName(AClass: TClass; const AName: string): TComponent;
       function GetIWinControlComponent(AHandle: THandle): IWinControl;
       procedure RefreshZOrder;
+      function GetSelectList(ATag: IXMLElement; const ALabel: string; const ATagName: string; const ATagName2: string = ''): TStringList;
       constructor Create;
    public
       Name: string;
@@ -638,6 +639,33 @@ begin
    TInfra.GetMainForm.SetMenu(true);
 end;
 
+function TProject.GetSelectList(ATag: IXMLElement; const ALabel: string; const ATagName: string; const ATagName2: string = ''): TStringList;
+var
+   tag, tag1: IXMLElement;
+begin
+   result := TStringList.Create;
+   tag := TXMLProcessor.FindChildTag(ATag, ATagName);
+   while tag <> nil do
+   begin
+      if not ATagName2.IsEmpty then
+         tag1 := TXMLProcessor.FindChildTag(tag, ATagName2)
+      else
+         tag1 := tag;
+      if tag1 <> nil then
+         result.Add(tag1.GetAttribute(NAME_ATTR));
+      tag := TXMLProcessor.FindNextTag(tag);
+   end;
+   case result.Count of
+      0: exit;
+      1: FreeAndNil(result);
+   else
+      SelectImportForm.SetSelectList(result);
+      SelectImportForm.Caption := i18Manager.GetString(ALabel);
+      if IsAbortResult(SelectImportForm.ShowModal) then
+         result.Clear;
+   end;
+end;
+
 function TProject.ImportUserFunctionsFromXML(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
 var
    tag, tag1: IXMLElement;
@@ -652,24 +680,9 @@ begin
    try
       if ASelect then
       begin
-         selectList := TStringList.Create;
-         tag := TXMLProcessor.FindChildTag(ATag, FUNCTION_TAG);
-         while tag <> nil do
-         begin
-            tag1 := TXMLProcessor.FindChildTag(tag, HEADER_TAG);
-            if tag1 <> nil then
-               selectList.Add(tag1.GetAttribute(NAME_ATTR));
-            tag := TXMLProcessor.FindNextTag(tag);
-         end;
-         case selectList.Count of
-            0: exit;
-            1: FreeAndNil(selectList);
-         else
-            SelectImportForm.SetSelectList(selectList);
-            SelectImportForm.Caption := i18Manager.GetString('ImportFunc');
-            if IsAbortResult(SelectImportForm.ShowModal) or (selectList.Count = 0) then
-               exit;
-         end;
+         selectList := GetSelectList(ATag, 'ImportFunc', FUNCTION_TAG, HEADER_TAG);
+         if (selectList <> nil) and (selectList.Count = 0) then
+            exit;
       end;
       tag := TXMLProcessor.FindChildTag(ATag, FUNCTION_TAG);
       while (tag <> nil) and (result = errNone) do
@@ -726,27 +739,13 @@ begin
    result := errNone;
    dataType := nil;
    selectList := nil;
-
    if GInfra.CurrentLang.EnabledUserDataTypes then
    try
       if ASelect then
       begin
-         selectList := TStringList.Create;
-         tag := TXMLProcessor.FindChildTag(ATag, DATATYPE_TAG);
-         while tag <> nil do
-         begin
-            selectList.Add(tag.GetAttribute(NAME_ATTR));
-            tag := TXMLProcessor.FindNextTag(tag);
-         end;
-         case selectList.Count of
-            0: exit;
-            1: FreeAndNil(selectList);
-         else
-            SelectImportForm.SetSelectList(selectList);
-            SelectImportForm.Caption := i18Manager.GetString('ImportType');
-            if IsAbortResult(SelectImportForm.ShowModal) or (selectList.Count = 0) then
-               exit;
-         end;
+         selectList := GetSelectList(ATag, 'ImportType', DATATYPE_TAG);
+         if (selectList <> nil) and (selectList.Count = 0) then
+            exit;
       end;
       tag := TXMLProcessor.FindChildTag(ATag, DATATYPE_TAG);
       while tag <> nil do
