@@ -738,15 +738,10 @@ begin
             selectList.Add(tag.GetAttribute(NAME_ATTR));
             tag := TXMLProcessor.FindNextTag(tag);
          end;
-         if selectList.Count = 0 then
-            exit
-         else if selectList.Count = 1 then
-         begin
-            selectList.Free;
-            selectList := nil;
-         end
+         case selectList.Count of
+            0: exit;
+            1: FreeAndNil(selectList);
          else
-         begin
             SelectImportForm.SetSelectList(selectList);
             SelectImportForm.Caption := i18Manager.GetString('ImportType');
             if IsAbortResult(SelectImportForm.ShowModal) or (selectList.Count = 0) then
