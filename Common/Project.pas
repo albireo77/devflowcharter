@@ -642,12 +642,14 @@ end;
 function TProject.GetSelectList(ATag: IXMLElement; const ALabel: string; const ATagName: string; const ATagName2: string = ''): TStringList;
 var
    tag, tag1: IXMLElement;
+   isTag2Empty: boolean;
 begin
+   isTag2Empty := ATagName2.IsEmpty;
    result := TStringList.Create;
    tag := TXMLProcessor.FindChildTag(ATag, ATagName);
    while tag <> nil do
    begin
-      if not ATagName2.IsEmpty then
+      if not isTag2Empty then
          tag1 := TXMLProcessor.FindChildTag(tag, ATagName2)
       else
          tag1 := tag;
@@ -655,10 +657,10 @@ begin
          result.Add(tag1.GetAttribute(NAME_ATTR));
       tag := TXMLProcessor.FindNextTag(tag);
    end;
-   case result.Count of
-      0: exit;
-      1: FreeAndNil(result);
-   else
+   if result.Count = 1 then
+      FreeAndNil(result)
+   else if result.Count > 1 then
+   begin
       SelectImportForm.SetSelectList(result);
       SelectImportForm.Caption := i18Manager.GetString(ALabel);
       if IsAbortResult(SelectImportForm.ShowModal) then
