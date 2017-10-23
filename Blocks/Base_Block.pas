@@ -2446,7 +2446,7 @@ begin
       PaintTo(bitmap.Canvas.Handle, 1, 1);
       for comment in GetComments do
       begin
-         pnt := ParentToClient(comment.BoundsRect.TopLeft, Page);
+         pnt := ParentToClient(comment.BoundsRect.TopLeft, lPage);
          comment.PaintTo(bitmap.Canvas.Handle, pnt.X, pnt.Y);
       end;
    finally
