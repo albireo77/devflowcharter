@@ -1908,14 +1908,17 @@ function TBlock.PUComments(AComments: IEnumerable<TComment>; AParam: integer = 1
 var
    comment: TComment;
    pnt: TPoint;
-   i: integer;
+   i, sign: integer;
 begin
    i := 0;
    pnt := ClientToParent(ClientRect.TopLeft, Page);
+   sign := System.Math.Sign(AParam);
+   pnt.X := pnt.X * sign;
+   pnt.Y := pnt.Y * sign;
    for comment in AComments do
    begin
       Inc(i);
-      comment.SetBounds(comment.Left + (AParam * pnt.X), comment.Top + (AParam * pnt.Y), comment.Width, comment.Height);
+      comment.SetBounds(comment.Left + pnt.X, comment.Top + pnt.Y, comment.Width, comment.Height);
       comment.Visible := AParam > 0;
       if comment.Visible then
       begin
