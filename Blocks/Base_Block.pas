@@ -57,6 +57,7 @@ type
          FParentBlock: TGroupBlock;
          FParentBranch: TBranch;
          FId: integer;
+         function PUComments(AComments: IEnumerable<TComment>; AParam: integer = 1): integer;
       protected
          FType: TBlockType;
          FStatement: TStatement;
@@ -1903,7 +1904,7 @@ begin
    result := false;
 end;
 
-function TBlock.PinComments: integer;
+function TBlock.PUComments(AComments: IEnumerable<TComment>; AParam: integer = 1): integer;
 var
    comment: TComment;
    pnt: TPoint;
@@ -1911,33 +1912,30 @@ var
 begin
    i := 0;
    pnt := ClientToParent(ClientRect.TopLeft, Page);
-   for comment in GetComments do
+   for comment in AComments do
    begin
       Inc(i);
-      comment.PinControl := Self;
-      comment.Visible := false;
-      comment.SetBounds(comment.Left - pnt.X, comment.Top - pnt.Y, comment.Width, comment.Height);
+      comment.SetBounds(comment.Left + (AParam * pnt.X), comment.Top + (AParam * pnt.Y), comment.Width, comment.Height);
+      comment.Visible := AParam > 0;
+      if comment.Visible then
+      begin
+         comment.PinControl := nil;
+         comment.BringToFront;
+      end
+      else
+         comment.PinControl := Self;
    end;
    result := i;
 end;
 
-function TBlock.UnPinComments: integer;
-var
-   comment: TComment;
-   pnt: TPoint;
-   i: integer;
+function TBlock.PinComments: integer;
 begin
-   i := 0;
-   pnt := ClientToParent(ClientRect.TopLeft, Page);
-   for comment in GetPinComments do
-   begin
-      Inc(i);
-      comment.PinControl := nil;
-      comment.SetBounds(comment.Left + pnt.X, comment.Top + pnt.Y, comment.Width, comment.Height);
-      comment.Visible := true;
-      comment.BringToFront;
-   end;
-   result := i;
+   result := PUComments(GetComments, -1);
+end;
+
+function TBlock.UnPinComments: integer;
+begin
+   result := PUComments(GetPinComments);
 end;
 
 function TGroupBlock.UnPinComments: integer;
