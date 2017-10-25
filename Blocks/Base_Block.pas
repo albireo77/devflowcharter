@@ -1908,16 +1908,16 @@ function TBlock.PUComments(AComments: IEnumerable<TComment>; ASign: integer = 1)
 var
    comment: TComment;
    pnt: TPoint;
-   i, sign: integer;
+   sign: integer;
 begin
-   i := 0;
+   result := 0;
    pnt := ClientToParent(ClientRect.TopLeft, Page);
    sign := System.Math.Sign(ASign);
    pnt.X := pnt.X * sign;
    pnt.Y := pnt.Y * sign;
    for comment in AComments do
    begin
-      Inc(i);
+      Inc(result);
       comment.SetBounds(comment.Left + pnt.X, comment.Top + pnt.Y, comment.Width, comment.Height);
       comment.Visible := ASign > 0;
       if comment.Visible then
@@ -1928,7 +1928,6 @@ begin
       else
          comment.PinControl := Self;
    end;
-   result := i;
 end;
 
 function TBlock.PinComments: integer;
