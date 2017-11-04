@@ -1621,28 +1621,61 @@ end;
 procedure TEditorForm.miFindProjClick(Sender: TObject);
 var
    point: TPoint;
-   dispCoord: TDisplayCoord;
-   bufCoord: TBufferCoord;
+   displ: TDisplayCoord;
+   selStart, selEnd: TBufferCoord;
    focusInfo: TFocusInfo;
    codeRange: TCodeRange;
+   i: integer;
+   line, sline: string;
 begin
    if (FFocusControl <> nil) and FFocusControl.CanBeFocused then
    begin
       TInfra.InitFocusInfo(focusInfo);
       point := memCodeEditor.ScreenToClient(pmPopMenu.PopupPoint);
-      dispCoord := memCodeEditor.PixelsToRowColumn(point.X, point.Y);
-      if dispCoord.Row > 0 then
+      displ := memCodeEditor.PixelsToRowColumn(point.X, point.Y);
+      if displ.Row > 0 then
       begin
-         focusInfo.Line := dispCoord.Row - 1;
+         if memCodeEditor.SelAvail then
+            focusInfo.Line := memCodeEditor.CharIndexToRowCol(memCodeEditor.SelStart).Line - 1
+         else
+            focusInfo.Line := displ.Row - 1;
          focusInfo.LineText := memCodeEditor.Lines[focusInfo.Line].TrimLeft;
          codeRange := SelectCodeRange(memCodeEditor.Lines.Objects[focusInfo.Line], false);
          if codeRange.FirstRow <> ROW_NOT_FOUND then
             focusInfo.RelativeLine := focusInfo.Line - codeRange.FirstRow;
-         bufCoord := memCodeEditor.CharIndexToRowCol(memCodeEditor.SelStart);
-         if bufCoord.Line = dispCoord.Row then
+         if memCodeEditor.SelAvail then
          begin
-            focusInfo.SelStart := bufCoord.Char - memCodeEditor.Lines[dispCoord.Row-1].Length + focusInfo.LineText.Length;
-            focusInfo.SelText := MidStr(focusInfo.LineText, focusInfo.SelStart, memCodeEditor.SelLength);
+            selStart := memCodeEditor.CharIndexToRowCol(memCodeEditor.SelStart);
+            selStart.Line := selStart.Line - 1;
+            selEnd := memCodeEditor.CharIndexToRowCol(memCodeEditor.SelStart + memCodeEditor.SelLength);
+            selEnd.Line := selEnd.Line - 1;
+            if selStart.Line <> selEnd.Line then
+            begin
+               line := '';
+               sline := '';
+               for i := selStart.Line to selEnd.Line do
+               begin
+                  sline := memCodeEditor.Lines[i];
+                  if i = selStart.Line then
+                  begin
+                     focusInfo.SelStart := selStart.Char - sLine.Length + sLine.TrimLeft.Length;
+                     line := RightStr(sline, sline.Length - selStart.Char + 1) + sLineBreak;
+                  end
+                  else if i = selEnd.Line then
+                  begin
+                     sline := LeftStr(sline, selEnd.Char-1);
+                     line := line + sline.TrimLeft;
+                  end
+                  else
+                     line := line + sline.TrimLeft + sLineBreak;
+               end;
+               focusInfo.SelText := line;
+            end
+            else
+            begin
+               focusInfo.SelStart := selStart.Char - memCodeEditor.Lines[displ.Row-1].Length + focusInfo.LineText.Length;
+               focusInfo.SelText := MidStr(focusInfo.LineText, focusInfo.SelStart, memCodeEditor.SelLength);
+            end;
          end;
       end;
       FFocusControl.RetrieveFocus(focusInfo);
