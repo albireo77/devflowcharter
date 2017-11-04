@@ -543,7 +543,7 @@ begin
 
    chkTable := TCheckBox.Create(Self);
    chkTable.Parent := Self;
-   chkTable.SetBounds(238, 0, 20, 17);
+   chkTable.SetBounds(240, 0, 20, 17);
    chkTable.DoubleBuffered := true;
    chkTable.OnClick := OnChangeType;
 

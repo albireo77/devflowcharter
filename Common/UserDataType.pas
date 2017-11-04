@@ -102,7 +102,7 @@ begin
    lblSize.ParentFont := false;
    lblSize.Font.Style := [fsBold];
    lblSize.Font.Color := clWindowText;
-   lblSize.SetBounds(195, 131, 0, 13);
+   lblSize.SetBounds(176, 131, 0, 13);
    lblSize.Caption := i18Manager.GetString('lblSize');
 
    lblType := TLabel.Create(Self);
