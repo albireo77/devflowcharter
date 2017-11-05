@@ -280,9 +280,10 @@ end;
 <FunctionHeaderTypeNotNone1>function</FunctionHeaderTypeNotNone1>
 <FunctionHeaderTypeNone2></FunctionHeaderTypeNone2>
 <FunctionHeaderTypeNotNone2>:</FunctionHeaderTypeNotNone2>
-<FunctionHeaderArgsEntryMask>%s3%s1: %s4%s2; </FunctionHeaderArgsEntryMask>
+<FunctionHeaderArgsEntryMask>%s3%s1: %s4%s2%s7; </FunctionHeaderArgsEntryMask>
 <FunctionHeaderArgsEntryRef>var </FunctionHeaderArgsEntryRef>
 <FunctionHeaderArgsEntryArray>array of </FunctionHeaderArgsEntryArray>
+<FunctionHeaderArgsEntryDefault> = %s</FunctionHeaderArgsEntryDefault>
 <FunctionHeaderArgsStripCount>2</FunctionHeaderArgsStripCount>
 
 <VarEntryArraySize>1..%s, </VarEntryArraySize>

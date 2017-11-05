@@ -136,7 +136,9 @@ else:
 
 </ProgramHeaderTemplate>
 
-<FunctionHeaderArgsEntryMask>%s1, </FunctionHeaderArgsEntryMask>
+<FunctionHeaderArgsEntryMask>%s1%s7, </FunctionHeaderArgsEntryMask>
+
+<FunctionHeaderArgsEntryDefault> = %s</FunctionHeaderArgsEntryDefault>
 
 <FunctionHeaderArgsStripCount>2</FunctionHeaderArgsStripCount>
 

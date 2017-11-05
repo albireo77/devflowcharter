@@ -99,8 +99,8 @@ type
 implementation
 
 uses
-   System.SysUtils, Generics.Collections, System.StrUtils, ApplicationCommon, XMLProcessor,
-   BaseEnumerator;
+   System.SysUtils, Generics.Collections, System.StrUtils, ApplicationCommon,
+   XMLProcessor, BaseEnumerator;
 
 constructor TTabComponent.Create(AParentForm: TPageControlForm);
 begin
@@ -348,7 +348,6 @@ begin
       list.Capacity := sbxElements.ControlCount;
    for i := 0 to sbxElements.ControlCount-1 do
       list.Add(sbxElements.Controls[i]);
-   list.Sort;
    result := TEnumeratorFactory<T>.Create(list);
 end;
 

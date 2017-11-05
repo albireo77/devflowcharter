@@ -113,6 +113,7 @@ type
       FunctionHeaderArgsEntryMask,
       FunctionHeaderArgsEntryRef,
       FunctionHeaderArgsEntryArray,
+      FunctionHeaderArgsEntryDefault,
       FunctionHeaderArgsEntryRecord,
       FunctionHeaderArgsEntryEnum,
       UserTypeDesc,
@@ -663,6 +664,10 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderArgsEntryArray');
    if tag <> nil then
       FunctionHeaderArgsEntryArray := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderArgsEntryDefault');
+   if tag <> nil then
+      FunctionHeaderArgsEntryDefault := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderArgsEntryRef');
    if tag <> nil then

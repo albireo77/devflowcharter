@@ -536,8 +536,10 @@ begin
    edtDefault.SetBounds(174, 0, 50, 21);
    edtDefault.ParentFont := false;
    edtDefault.Font.Style := [];
+   edtDefault.Font.Color := clGreen;
    edtDefault.ParentCtl3D := false;
    edtDefault.Ctl3D := true;
+   edtDefault.OnChange := OnChangeType;
 
    btnRemove.SetBounds(307, 0, 54, 20);
 
@@ -811,6 +813,7 @@ begin
    inherited ImportFromXMLTag(ATag);
    chkTable.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'table');
    chkReference.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'reference');
+   edtDefault.Text := ATag.GetAttribute('default');
 end;
 
 function TParameter.ExportToXMLTag(ATag: IXMLElement): IXMLElement;
@@ -820,6 +823,8 @@ begin
    tag := inherited ExportToXMLTag(ATag);
    tag.SetAttribute('table', chkTable.Checked.ToString);
    tag.SetAttribute('reference', chkReference.Checked.ToString);
+   if edtDefault.Text <> '' then
+      tag.SetAttribute('default', edtDefault.Text);
 end;
 
 function TUserFunction.GetCompareValue(ACompareType: integer): integer;

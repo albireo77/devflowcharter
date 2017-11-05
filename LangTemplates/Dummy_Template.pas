@@ -369,7 +369,7 @@ procedure Dummy_UserFunctionsSectionGenerator(ALines: TStringList; ASkipBodyGen:
 var
    func: TUserFunction;
    param: TParameter;
-   name, argList, paramStr, noneType1, noneType2, lType, ref, lArray, lRecord, enum: string;
+   name, argList, paramStr, noneType1, noneType2, lType, ref, lArray, lRecord, enum, defValue: string;
    lang: TLangDefinition;
    headerTemplate, varList, funcTemplate, bodyTemplate, funcList, funcsTemplate: TStringList;
    intType: integer;
@@ -394,6 +394,7 @@ begin
                   lArray := '';
                   lRecord := '';
                   enum := '';
+                  defValue := '';
                   if param.chkReference.Checked then
                      ref := lang.FunctionHeaderArgsEntryRef;
                   if param.chkTable.Checked then
@@ -403,10 +404,13 @@ begin
                      lRecord := lang.FunctionHeaderArgsEntryRecord
                   else if TParserHelper.IsEnumType(intType) then
                      enum := lang.FunctionHeaderArgsEntryEnum;
+                  if param.edtDefault.Text <> '' then
+                     defValue := ReplaceStr(lang.FunctionHeaderArgsEntryDefault, '%s', Trim(param.edtDefault.Text));
                   paramStr := ReplaceStr(paramStr, '%s3', ref);
                   paramStr := ReplaceStr(paramStr, '%s4', lArray);
                   paramStr := ReplaceStr(paramStr, '%s5', lRecord);
                   paramStr := ReplaceStr(paramStr, '%s6', enum);
+                  paramStr := ReplaceStr(paramStr, '%s7', defValue);
                   argList := argList + paramStr;
                end;
 

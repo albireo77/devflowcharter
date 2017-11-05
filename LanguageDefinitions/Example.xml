@@ -339,12 +339,21 @@ Available placeholders:
    %s4 - used if argument is an array (element FunctionHeaderArgsEntryArray)
    %s5 - used if argument is a record (element FunctionHeaderArgsEntryRecord)
    %s6 - used if argument is an enumeration (element FunctionHeaderArgsEntryEnum)
+   %s7 - expression for argument default value (element FunctionHeaderArgsEntryDefault)
 -->
-<FunctionHeaderArgsEntryMask>%s3%s1: %s4%s2, </FunctionHeaderArgsEntryMask>
+<FunctionHeaderArgsEntryMask>%s3%s1: %s4%s2%s7, </FunctionHeaderArgsEntryMask>
 <FunctionHeaderArgsEntryRef>ref </FunctionHeaderArgsEntryRef>
 <FunctionHeaderArgsEntryArray>array of </FunctionHeaderArgsEntryArray>
 <FunctionHeaderArgsEntryRecord>record </FunctionHeaderArgsEntryRecord>
 <FunctionHeaderArgsEntryEnum>enum </FunctionHeaderArgsEntryEnum>
+
+<!--
+Element FunctionHeaderArgsEntryDefault
+Description: Template for function parameter default value
+Available placeholders:
+   %s - default value
+-->
+<FunctionHeaderArgsEntryDefault> = %s</FunctionHeaderArgsEntryDefault>
 
 <!--
 Element FunctionHeaderArgsStripCount

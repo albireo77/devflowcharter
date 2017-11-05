@@ -28,7 +28,7 @@ uses
 
 type
    
-   TElement = class(TPanel, IComparable<TElement>)
+   TElement = class(TPanel)
       private
          FParentTab: TTabSheet;
          FParentForm: TPageControlForm;
@@ -49,8 +49,6 @@ type
          function ExportToXMLTag(ATag: IXMLElement): IXMLElement; virtual;
          procedure ImportFromXMLTag(ATag: IXMLElement); virtual;
          function IsValid: boolean; virtual;
-         function CompareTo(AValue: TElement): integer; overload;
-         function CompareTo(AValue: TObject): integer; overload;
    end;
 
 const
@@ -205,16 +203,6 @@ begin
    ATag.AppendChild(result);
    result.SetAttribute(NAME_ATTR, Trim(edtName.Text));
    result.SetAttribute(TYPE_ATTR, cbType.Text);
-end;
-
-function TElement.CompareTo(AValue: TObject): integer;
-begin
-   result := 1;
-end;
-
-function TElement.CompareTo(AValue: TElement): integer;
-begin
-   result := Top - AValue.Top;
 end;
 
 end.
