@@ -394,7 +394,6 @@ begin
                   lArray := '';
                   lRecord := '';
                   enum := '';
-                  defValue := '';
                   if param.chkReference.Checked then
                      ref := lang.FunctionHeaderArgsEntryRef;
                   if param.chkTable.Checked then
@@ -404,8 +403,9 @@ begin
                      lRecord := lang.FunctionHeaderArgsEntryRecord
                   else if TParserHelper.IsEnumType(intType) then
                      enum := lang.FunctionHeaderArgsEntryEnum;
-                  if Trim(param.edtDefault.Text) <> '' then
-                     defValue := ReplaceStr(lang.FunctionHeaderArgsEntryDefault, '%s', Trim(param.edtDefault.Text));
+                  defValue := Trim(param.edtDefault.Text);
+                  if not defValue.IsEmpty then
+                     defValue := ReplaceStr(lang.FunctionHeaderArgsEntryDefault, '%s', defValue);
                   paramStr := ReplaceStr(paramStr, '%s3', ref);
                   paramStr := ReplaceStr(paramStr, '%s4', lArray);
                   paramStr := ReplaceStr(paramStr, '%s5', lRecord);
