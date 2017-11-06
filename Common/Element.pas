@@ -147,7 +147,7 @@ begin
    result := true;
    if edtName.Enabled then
    begin
-      if (edtName.Font.Color = NOK_COLOR) or (Trim(edtName.Text) = '') then
+      if (edtName.Font.Color = NOK_COLOR) or Trim(edtName.Text).isEmpty then
          result := false;
    end;
 end;

@@ -434,7 +434,7 @@ begin
    dataType := TUserDataType(ParentTab);
    if dataType.Kind in [dtOther, dtArray] then
    begin
-      if Trim(edtName.Text) = '' then
+      if Trim(edtName.Text).IsEmpty then
       begin
          lColor := NOK_COLOR;
          lHint := 'BadIdD';
