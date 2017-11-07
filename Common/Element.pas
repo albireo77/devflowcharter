@@ -145,11 +145,8 @@ end;
 function TElement.IsValid: boolean;
 begin
    result := true;
-   if edtName.Enabled then
-   begin
-      if (edtName.Font.Color = NOK_COLOR) or Trim(edtName.Text).isEmpty then
-         result := false;
-   end;
+   if edtName.Enabled and ((edtName.Font.Color = NOK_COLOR) or Trim(edtName.Text).isEmpty) then
+      result := false;
 end;
 
 procedure TElement.OnChangeName(Sender: TObject);
