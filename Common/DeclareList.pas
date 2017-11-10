@@ -47,9 +47,9 @@ type
          FCheckBoxCol: integer;
          FPlural: string;
          function GetId: integer;
-         function IsDeclared(const AName: string; const AssociatedListCheck: boolean): boolean;
+         function IsDeclared(const AName: string; AssociatedListCheck: boolean): boolean;
          function AddUpdateRow: integer; virtual;
-         function IsRowVisible(const ARow: integer): boolean;
+         function IsRowVisible(ARow: integer): boolean;
          function FindValidRowByPoint(const APoint: TPoint): integer;
          procedure OnRowMovedList(Sender: TObject; FromIndex, ToIndex: Longint);
          procedure OnClickAdd(Sender: TObject); virtual; abstract;
@@ -63,11 +63,11 @@ type
          procedure OnDragDropList(Sender, Source: TObject; X, Y: Integer);
          procedure OnDragOverList(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
          procedure OnKeyDownCommon(Sender: TObject; var Key: Word; Shift: TShiftState);
-         function GetCheckBoxPoint(const ACol, ARow: integer): TPoint;
+         function GetCheckBoxPoint(ACol, ARow: integer): TPoint;
          procedure OnTopLeftChanged(Sender: TObject);
-         function CreateCheckBox(const ACol, ARow: integer): TCheckBox;
+         function CreateCheckBox(ACol, ARow: integer): TCheckBox;
          procedure RefreshChBoxes;
-         function GetRightMargin(const AControl: TControl = nil): integer;
+         function GetRightMargin(AControl: TControl = nil): integer;
          procedure OnClickChBox(Sender: TObject);
          procedure OnColWidthsChanged(Sender: TObject);
          procedure WMSize(var Msg: TMessage); message WM_SIZE;
@@ -83,13 +83,13 @@ type
          edtName: TEdit;
          AssociatedList: TDeclareList;
          property Id: integer read GetId;
-         constructor Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
+         constructor Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
          destructor Destroy; override;
          function ImportFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
-         function ImportItemFromXMLTag(const ATag: IXMLElement): TErrorType; virtual;
+         function ImportItemFromXMLTag(ATag: IXMLElement): TErrorType; virtual;
          procedure ExportItemToXMLTag(ATag: IXMLElement; idx: integer); virtual;
          procedure ExportToXMLTag(ATag: IXMLElement);
-         function GetImportTag(const ATag: IXMLElement): IXMLElement; virtual;
+         function GetImportTag(ATag: IXMLElement): IXMLElement; virtual;
          function RetrieveFocus(AInfo: TFocusInfo): boolean;
          function CanBeFocused: boolean;
          function GetFocusColor: TColor;
@@ -97,7 +97,7 @@ type
          function CanBeRemoved: boolean;
          function IsBoldDesc: boolean;
          procedure SetDefaultFocus;
-         function IsExternal(const ARow: integer): boolean;
+         function IsExternal(ARow: integer): boolean;
          procedure SetCheckBoxCol(ACheckBoxCol: integer);
    end;
 
@@ -114,14 +114,14 @@ type
          lblType,
          lblSize,
          lblInit: TLabel;
-         constructor Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
-         function ImportItemFromXMLTag(const ATag: IXMLElement): TErrorType; override;
+         constructor Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
+         function ImportItemFromXMLTag(ATag: IXMLElement): TErrorType; override;
          procedure ExportItemToXMLTag(ATag: IXMLElement; idx: integer); override;
-         function GetImportTag(const ATag: IXMLElement): IXMLElement; override;
-         procedure FillForList(const AList: TStrings);
+         function GetImportTag(ATag: IXMLElement): IXMLElement; override;
+         procedure FillForList(AList: TStrings);
          function IsValidLoopVar(const AName: string): boolean;
-         function GetDimensionCount(const AVarName: string; const AIncludeTypeDimens: boolean = false): integer;
-         function GetDimension(const AVarName: string; const ADimensIndex: integer): string;
+         function GetDimensionCount(const AVarName: string; AIncludeTypeDimens: boolean = false): integer;
+         function GetDimension(const AVarName: string; ADimensIndex: integer): string;
    end;
 
    TConstDeclareList = class(TDeclareList)
@@ -133,10 +133,10 @@ type
       public
          edtValue: TEdit;
          lblValue: TLabel;
-         constructor Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
-         function ImportItemFromXMLTag(const ATag: IXMLElement): TErrorType; override;
+         constructor Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
+         function ImportItemFromXMLTag(ATag: IXMLElement): TErrorType; override;
          procedure ExportItemToXMLTag(ATag: IXMLElement; idx: integer); override;
-         function GetImportTag(const ATag: IXMLElement): IXMLElement; override;
+         function GetImportTag(ATag: IXMLElement): IXMLElement; override;
          function GetValue(const AIdent: string): string;
    end;
 
@@ -160,7 +160,7 @@ uses
    System.SysUtils, System.Types, ApplicationCommon, XMLProcessor, Project, UserDataType, LangDefinition,
    ParserHelper;
 
-constructor TDeclareList.Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
+constructor TDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
 var
    i, colWidth: integer;
 begin
@@ -282,7 +282,7 @@ begin
    inherited Destroy;
 end;
 
-constructor TConstDeclareList.Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
+constructor TConstDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
 var
    i: integer;
 begin
@@ -315,7 +315,7 @@ begin
 
 end;
 
-constructor TVarDeclareList.Create(const AParent: TWinControl; const ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
+constructor TVarDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
 var
    i: integer;
 begin
@@ -440,7 +440,7 @@ begin
       edtName.SetFocus;
 end;
 
-function TVarDeclareList.GetDimensionCount(const AVarName: string; const AIncludeTypeDimens: boolean = false): integer;
+function TVarDeclareList.GetDimensionCount(const AVarName: string; AIncludeTypeDimens: boolean = false): integer;
 var
    i, a: integer;
    dataType: TUserDataType;
@@ -472,7 +472,7 @@ begin
    end;
 end;
 
-function TVarDeclareList.GetDimension(const AVarName: string; const ADimensIndex: integer): string;
+function TVarDeclareList.GetDimension(const AVarName: string; ADimensIndex: integer): string;
 var
    i, a, cnt: integer;
    size, dims: string;
@@ -831,13 +831,13 @@ begin
       result := sgList.Cells[CONST_VALUE_COL, i];
 end;
 
-function TDeclareList.IsDeclared(const AName: string; const AssociatedListCheck: boolean): boolean;
+function TDeclareList.IsDeclared(const AName: string; AssociatedListCheck: boolean): boolean;
 var
    i: integer;
 begin
    i := sgList.Cols[NAME_COL].IndexOf(AName);
    result := (i > 0) and not (FModifying and (i = sgList.Row));
-   if not result and (AssociatedList <> nil) and AssociatedListCheck then
+   if (AssociatedList <> nil) and AssociatedListCheck and not result then
       result := AssociatedList.IsDeclared(AName, false);
 end;
 
@@ -847,7 +847,7 @@ begin
       btnAdd.Click;
 end;
 
-procedure TVarDeclareList.FillForList(const AList: TStrings);
+procedure TVarDeclareList.FillForList(AList: TStrings);
 var
    i, lType: integer;
 begin
@@ -874,12 +874,12 @@ begin
    end;
 end;
 
-function TDeclareList.GetImportTag(const ATag: IXMLElement): IXMLElement;
+function TDeclareList.GetImportTag(ATag: IXMLElement): IXMLElement;
 begin
    result := ATag;
 end;
 
-function TVarDeclareList.GetImportTag(const ATag: IXMLElement): IXMLElement;
+function TVarDeclareList.GetImportTag(ATag: IXMLElement): IXMLElement;
 begin
    result := TXMLProcessor.FindChildTag(ATag, VAR_TAG);
    if result = nil then
@@ -896,7 +896,7 @@ begin
       TInfra.PopulateDataTypeCombo(cbType);
 end;
 
-function TConstDeclareList.GetImportTag(const ATag: IXMLElement): IXMLElement;
+function TConstDeclareList.GetImportTag(ATag: IXMLElement): IXMLElement;
 begin
    result := TXMLProcessor.FindChildTag(ATag, CONST_TAG);
 end;
@@ -917,7 +917,7 @@ begin
    result := errNone;
 end;
 
-function TDeclareList.ImportItemFromXMLTag(const ATag: IXMLElement): TErrorType;
+function TDeclareList.ImportItemFromXMLTag(ATag: IXMLElement): TErrorType;
 var
    lName: string;
    lchkExtern: TCheckBox;
@@ -939,7 +939,7 @@ begin
    end;
 end;
 
-function TConstDeclareList.ImportItemFromXMLTag(const ATag: IXMLElement): TErrorType;
+function TConstDeclareList.ImportItemFromXMLTag(ATag: IXMLElement): TErrorType;
 var
    idx: integer;
 begin
@@ -952,7 +952,7 @@ begin
    end;
 end;
 
-function TVarDeclareList.ImportItemFromXMLTag(const ATag: IXMLElement): TErrorType;
+function TVarDeclareList.ImportItemFromXMLTag(ATag: IXMLElement): TErrorType;
 var
    lType: string;
    idx: integer;
@@ -1008,7 +1008,7 @@ begin
    inherited ExportItemToXMLTag(tag, idx);
 end;
 
-function TDeclareList.IsExternal(const ARow: integer): boolean;
+function TDeclareList.IsExternal(ARow: integer): boolean;
 begin
    result := false;
    if (ARow > 0) and (ARow < sgList.RowCount-1) and (FCheckBoxCol <> -1) then
@@ -1020,7 +1020,7 @@ begin
    TInfra.UpdateCodeEditor;
 end;
 
-function TDeclareList.GetCheckBoxPoint(const ACol, ARow: integer): TPoint;
+function TDeclareList.GetCheckBoxPoint(ACol, ARow: integer): TPoint;
 begin
    result := sgList.CellRect(ACol, ARow).TopLeft;
    if result.X = 0 then
@@ -1031,7 +1031,7 @@ begin
    result.Y := result.Y + sgList.Top + 4;
 end;
 
-function TDeclareList.CreateCheckBox(const ACol, ARow: integer): TCheckBox;
+function TDeclareList.CreateCheckBox(ACol, ARow: integer): TCheckBox;
 var
    pnt: TPoint;
 begin
@@ -1117,7 +1117,7 @@ begin
    end;
 end;
 
-function TDeclareList.GetRightMargin(const AControl: TControl = nil): integer;
+function TDeclareList.GetRightMargin(AControl: TControl = nil): integer;
 begin
    result := Width - 6;
    if AControl <> nil then
@@ -1128,7 +1128,7 @@ begin
       result := result - 17;
 end;
 
-function TDeclareList.IsRowVisible(const ARow: integer): boolean;
+function TDeclareList.IsRowVisible(ARow: integer): boolean;
 begin
    result := (ARow >= sgList.TopRow) and (ARow < sgList.TopRow+sgList.VisibleRowCount);
 end;
