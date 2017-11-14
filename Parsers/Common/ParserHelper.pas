@@ -307,7 +307,7 @@ begin
                if (currType <> paramType) or (not param.chkTable.Checked and not IsArrayType(paramType)) then
                   exit;
             end
-            else if (not AreTypesCompatible(paramType, currType)) or param.chkTable.Checked then
+            else if param.chkTable.Checked or not AreTypesCompatible(paramType, currType) then
                exit;
             i := i + 1;
          end;
