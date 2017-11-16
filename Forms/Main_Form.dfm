@@ -505,7 +505,7 @@ object MainForm: TMainForm
     Left = 240
     Top = 72
     Bitmap = {
-      494C010105000900700010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010105000900740010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -804,7 +804,7 @@ object MainForm: TMainForm
     object miUndo: TMenuItem
       Tag = 2
       Caption = 'Undo'
-      OnClick = miUndoClick
+      OnClick = pmEditsMenuClick
     end
     object N16: TMenuItem
       Caption = '-'
@@ -812,22 +812,22 @@ object MainForm: TMainForm
     object miCut1: TMenuItem
       Tag = 2
       Caption = 'Cut'
-      OnClick = miCut1Click
+      OnClick = pmEditsMenuClick
     end
     object miCopy1: TMenuItem
       Tag = 2
       Caption = 'Copy'
-      OnClick = miCopy1Click
+      OnClick = pmEditsMenuClick
     end
     object miPaste1: TMenuItem
       Tag = 2
       Caption = 'Paste'
-      OnClick = miPaste1Click
+      OnClick = pmEditsMenuClick
     end
     object miRemove1: TMenuItem
       Tag = 2
       Caption = 'Remove'
-      OnClick = miRemove1Click
+      OnClick = pmEditsMenuClick
     end
     object N17: TMenuItem
       Caption = '-'

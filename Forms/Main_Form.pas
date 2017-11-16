@@ -212,12 +212,8 @@ type
     procedure miAddPageClick(Sender: TObject);
     procedure pgcPagesChange(Sender: TObject);
     procedure pmEditsPopup(Sender: TObject);
-    procedure miUndoClick(Sender: TObject);
-    procedure miCut1Click(Sender: TObject);
-    procedure miCopy1Click(Sender: TObject);
-    procedure miPaste1Click(Sender: TObject);
+    procedure pmEditsMenuClick(Sender: TObject);
     procedure FuncMenuClick(Sender: TObject);
-    procedure miRemove1Click(Sender: TObject);
     procedure miIsHeaderClick(Sender: TObject);
     procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -1476,29 +1472,24 @@ begin
    end;
 end;
 
-procedure TMainForm.miUndoClick(Sender: TObject);
+procedure TMainForm.pmEditsMenuClick(Sender: TObject);
+var
+   edit: TCustomEdit;
 begin
-   TCustomEdit(pmEdits.PopupComponent).Undo;
-end;
-
-procedure TMainForm.miCut1Click(Sender: TObject);
-begin
-   TCustomEdit(pmEdits.PopupComponent).CutToClipboard;
-end;
-
-procedure TMainForm.miCopy1Click(Sender: TObject);
-begin
-   TCustomEdit(pmEdits.PopupComponent).CopyToClipboard;
-end;
-
-procedure TMainForm.miPaste1Click(Sender: TObject);
-begin
-   TCustomEdit(pmEdits.PopupComponent).PasteFromClipboard;
-end;
-
-procedure TMainForm.miRemove1Click(Sender: TObject);
-begin
-   TCustomEdit(pmEdits.PopupComponent).SelText := '';
+   if pmEdits.PopupComponent is TCustomEdit then
+   begin
+      edit := TCustomEdit(pmEdits.PopupComponent);
+      if Sender = miUndo then
+         edit.Undo
+      else if Sender = miCut1 then
+         edit.CutToClipboard
+      else if Sender = miCopy1 then
+         edit.CopyToClipboard
+      else if Sender = miPaste1 then
+         edit.PasteFromClipboard
+      else if Sender = miRemove1 then
+         edit.SelText := '';
+   end;
 end;
 
 procedure TMainForm.FuncMenuClick(Sender: TObject);
