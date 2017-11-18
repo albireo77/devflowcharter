@@ -243,7 +243,6 @@ type
          FParentBlock: TGroupBlock;
          FRmvBlockIdx: integer;
          FId: integer;
-         function GetIndex: integer;
          function GetHeight: integer;
          function GetId: integer;
          function _AddRef: Integer; stdcall;
@@ -253,7 +252,6 @@ type
          Hook: TPoint;           // hook determines position of blocks within a branch in parent window coordinates
          Statement: TStatement;
          property ParentBlock: TGroupBlock read FParentBlock;
-         property Index: integer read GetIndex;
          property Height: integer read GetHeight;
          property Id: integer read GetId;
          constructor Create(const AParent: TGroupBlock; const AHook: TPoint; const AId: integer = ID_INVALID);
@@ -2115,7 +2113,7 @@ begin
             TXMLProcessor.AddText(tag1, lBranch.hook.Y.ToString);
             tag2.AppendChild(tag1);
 
-            for block in GetBlocks(lBranch.Index) do
+            for block in GetBlocks(i) do
                 TXMLProcessor.ExportBlockToXML(block, tag2);
          end;
       finally
@@ -2750,13 +2748,6 @@ begin
    result := 0;
    for i := 0 to Count-1 do
       Inc(result, Items[i].Height);
-end;
-
-function TBranch.GetIndex: integer;
-begin
-   result := -1;
-   if FParentBlock <> nil then
-      result := FParentBlock.FBranchList.IndexOf(Self);
 end;
 
 function TBranch.FindInstanceOf(AClass: TClass): integer;

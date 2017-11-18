@@ -46,7 +46,7 @@ type
          procedure ResizeHorz(AContinue: boolean); override;
          procedure ResizeVert(AContinue: boolean); override;
          procedure ExpandFold(AResize: boolean); override;
-         procedure RemoveBranch;
+         procedure RemoveBranch(ABranch: TBranch);
          function AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch; override;
          function InsertNewBranch(AIndex: integer): TBranch;
          function CountErrWarn: TErrWarnCount; override;
@@ -205,7 +205,7 @@ end;
 function TCaseBlock.AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch;
 begin
    result := inherited AddBranch(AHook, ABranchId);
-   if result.Index > DEFAULT_BRANCH_IND then       // don't execute when default branch is being added in constructor
+   if FBranchList.IndexOf(result) > DEFAULT_BRANCH_IND then       // don't execute when default branch is being added in constructor
    begin
       result.Statement := TStatement.Create(Self, ABranchStmntId);
       result.Statement.Alignment := taRightJustify;
@@ -253,26 +253,26 @@ end;
 
 procedure TCaseBlock.ResizeHorz(AContinue: boolean);
 var
-   x, leftX, rightX, idx: integer;
+   x, leftX, rightX, i: integer;
    lBranch: TBranch;
    block: TBlock;
 begin
    BottomHook := Branch.Hook.X;
    rightX := 100;
-   for lBranch in GetBranches do
+   for i := DEFAULT_BRANCH_IND to FBranchList.Count-1 do
    begin
-      idx := lBranch.Index;
+      lBranch := FBranchList[i];
       leftX := rightX;
       lBranch.Hook.X := leftX;
       x := leftX;
-      LinkBlocks(idx);
+      LinkBlocks(i);
       for block in lBranch do
       begin
          if block.Left < x then
             x := block.Left;
       end;
       Inc(lBranch.hook.X, leftX-x);
-      LinkBlocks(idx);
+      LinkBlocks(i);
       PlaceBranchStatement(lBranch);
       if lBranch.FindInstanceOf(TReturnBlock) = -1 then
       begin
@@ -474,13 +474,12 @@ begin
    end;
 end;
 
-procedure TCaseBlock.RemoveBranch;
+procedure TCaseBlock.RemoveBranch(ABranch: TBranch);
 begin
-   if Ired > DEFAULT_BRANCH_IND then
+   if (GClpbrd.UndoObject is TBlock) and (TBlock(GClpbrd.UndoObject).ParentBranch = ABranch) then
+      GClpbrd.UndoObject.Free;
+   if FBranchList.Remove(ABranch) <> -1 then
    begin
-      if (GClpbrd.UndoObject is TBlock) and (TBlock(GClpbrd.UndoObject).ParentBranch = FBranchList[Ired]) then
-         GClpbrd.UndoObject.Free;
-      FBranchList.Delete(Ired);
       ResizeWithDrawLock;
       RefreshCaseValues;
       NavigatorForm.Invalidate;
