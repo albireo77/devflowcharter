@@ -2753,24 +2753,10 @@ begin
 end;
 
 function TBranch.GetIndex: integer;
-var
-   branch: TBranch;
-   i: integer;
 begin
    result := -1;
-   i := 0;
    if FParentBlock <> nil then
-   begin
-      for branch in FParentBlock.GetBranches do
-      begin
-         if branch = Self then
-         begin
-            result := i + 1;
-            break;
-         end;
-         i := i + 1;
-      end;
-   end;
+      result := FParentBlock.FBranchList.IndexOf(Self);
 end;
 
 function TBranch.FindInstanceOf(AClass: TClass): integer;

@@ -240,10 +240,12 @@ end;
 procedure TCaseBlock.PlaceBranchStatement(const ABranch: TBranch);
 var
    prevBranch: TBranch;
+   idx: integer;
 begin
-   if ABranch <> nil then
+   idx := FBranchList.IndexOf(ABranch);
+   if idx > 0 then
    begin
-      prevBranch := ABranch.ParentBlock.GetBranch(ABranch.Index-1);
+      prevBranch := FBranchList[idx-1];
       if (prevBranch <> nil) and (ABranch.Statement <> nil) then
          ABranch.Statement.SetBounds(prevBranch.Hook.X+5, 71, ABranch.Hook.X-prevBranch.Hook.X-10, ABranch.Statement.Height);
    end;
