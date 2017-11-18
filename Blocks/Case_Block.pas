@@ -221,7 +221,7 @@ begin
    result := nil;
    if AIndex > DEFAULT_BRANCH_IND then
    begin
-      pnt := Point(GetBranch(AIndex-1).GetMostRight+60, Height-32);
+      pnt := Point(FBranchList[AIndex-1].GetMostRight+60, Height-32);
       result := TBranch.Create(Self, pnt);
       FBranchList.Insert(AIndex, result);
       lock := LockDrawing;
