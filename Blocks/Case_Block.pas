@@ -218,6 +218,7 @@ var
    lock: boolean;
    pnt: TPoint;
 begin
+   result := nil;
    if AIndex > DEFAULT_BRANCH_IND then
    begin
       pnt := Point(GetBranch(AIndex-1).GetMostRight+60, Height-32);

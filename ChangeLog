@@ -1,3 +1,6 @@
+5.6 [18.11.2017]
+- case block: add possibility to insert branch before current branch
+
 5.5 [05.11.2017]
 - add default values for function parameters
 - Code Editor: fix multiline select for "Find in Project" feature
