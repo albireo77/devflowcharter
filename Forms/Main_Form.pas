@@ -149,6 +149,7 @@ type
     miPasteText: TMenuItem;
     N18: TMenuItem;
     miMemoAlignRight: TMenuItem;
+    miInsertBranch: TMenuItem;
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -569,6 +570,7 @@ begin
    miExpFold.Visible := False;
    miAddBranch.Visible := False;
    miRemoveBranch.Visible := False;
+   miInsertBranch.Visible := False;
    miText.Enabled := False;
    miFolder.Enabled := False;
    miExpFold.Caption := i18Manager.GetString('miFoldBlock');
@@ -664,7 +666,10 @@ begin
        miFrame.Visible := True;
        miFrame.Checked := block.Frame;
        if (block is TCaseBlock) and (block.Ired > PRIMARY_BRANCH_IND) then
+       begin
           miRemoveBranch.Visible := True;
+          miInsertBranch.Visible := True;
+       end;
    end
    else if comp is TComment then
    begin
@@ -1066,15 +1071,18 @@ end;
 
 procedure TMainForm.miAddBranchClick(Sender: TObject);
 var
-   pnt: TPoint;
    caseBlock: TCaseBlock;
    branch: TBranch;
+   i: integer;
 begin
    if pmPages.PopupComponent is TCaseBlock then
    begin
       caseBlock := TCaseBlock(pmPages.PopupComponent);
-      pnt := Point(caseBlock.GetBranch(caseBlock.BranchCount).GetMostRight+60, caseBlock.Height-32);
-      branch := caseBlock.AddBranch(pnt, true);
+      if Sender = miInsertBranch then
+         i := caseBlock.Ired
+      else
+         i := caseBlock.BranchCount + 1;
+      branch := caseBlock.InsertNewBranch(i);
       TInfra.UpdateCodeEditor(branch);
    end;
 end;

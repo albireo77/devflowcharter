@@ -239,6 +239,11 @@ object MainForm: TMainForm
       Caption = 'Add Branch'
       OnClick = miAddBranchClick
     end
+    object miInsertBranch: TMenuItem
+      Tag = 2
+      Caption = 'Insert Branch'
+      OnClick = miAddBranchClick
+    end
     object miRemoveBranch: TMenuItem
       Tag = 2
       Caption = 'Remove Branch'
@@ -505,7 +510,7 @@ object MainForm: TMainForm
     Left = 240
     Top = 72
     Bitmap = {
-      494C010105000900740010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101050009007C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

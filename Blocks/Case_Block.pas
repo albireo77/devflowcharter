@@ -47,7 +47,8 @@ type
          procedure ResizeVert(AContinue: boolean); override;
          procedure ExpandFold(AResize: boolean); override;
          procedure RemoveBranch;
-         function AddBranch(const AHook: TPoint; AResizeInd: boolean; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch; override;
+         function AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch; override;
+         function InsertNewBranch(AIndex: integer): TBranch;
          function CountErrWarn: TErrWarnCount; override;
          function GetFromXML(ATag: IXMLElement): TErrorType; override;
          procedure SaveInXML(ATag: IXMLElement); override;
@@ -116,7 +117,7 @@ begin
    if ABlock is TCaseBlock then
    begin
       caseBlock := TCaseBlock(ABlock);
-      for i := DEFAULT_BRANCH_IND+1 to High(caseBlock.FBranchArray) do
+      for i := DEFAULT_BRANCH_IND+1 to caseBlock.FBranchList.Count-1 do
       begin
          lBranch2 := GetBranch(i);
          if lBranch2 = nil then
@@ -149,9 +150,9 @@ begin
       PutTextControls;
       BottomPoint.Y := Height - 31;
       DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1));
-      for i := DEFAULT_BRANCH_IND to High(FBranchArray) do
+      for i := DEFAULT_BRANCH_IND to FBranchList.Count-1 do
       begin
-         pnt := FBranchArray[i].Hook;
+         pnt := FBranchList[i].Hook;
          DrawArrowLine(Point(pnt.X, TopHook.Y), pnt);
       end;
       DrawTextLabel(DefaultBranch.Hook.X+40, 48, FCaseLabel);
@@ -173,9 +174,9 @@ var
    i: integer;
    lBranch: TBranch;
 begin
-   for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
+   for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
    begin
-      lBranch := FBranchArray[i];
+      lBranch := FBranchList[i];
       if (lBranch.Statement <> nil) and (lBranch.Statement <> AEdit) then
          lBranch.Statement.Change;
    end;
@@ -189,9 +190,9 @@ begin
    result := false;
    if (AEdit <> nil) and (AEdit.Parent = Self) then
    begin
-      for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
+      for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
       begin
-         edit := FBranchArray[i].Statement;
+         edit := FBranchList[i].Statement;
          if (edit <> AEdit) and (edit <> nil) and (Trim(edit.Text) = Trim(AEdit.Text)) then
          begin
             result := true;
@@ -201,26 +202,33 @@ begin
    end;
 end;
 
-function TCaseBlock.AddBranch(const AHook: TPoint; AResizeInd: boolean; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch;
-var
-   lock: boolean;
+function TCaseBlock.AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch;
 begin
-   result := inherited AddBranch(AHook, AResizeInd, ABranchId);
+   result := inherited AddBranch(AHook, ABranchId);
    if result.Index > DEFAULT_BRANCH_IND then       // don't execute when default branch is being added in constructor
    begin
-      lock := false;                    // statement edit box must not exist for default (primary) branch
-      if AResizeInd then
-         lock := LockDrawing;
+      result.Statement := TStatement.Create(Self, ABranchStmntId);
+      result.Statement.Alignment := taRightJustify;
+      PlaceBranchStatement(result);
+   end;
+end;
+
+function TCaseBlock.InsertNewBranch(AIndex: integer): TBranch;
+var
+   lock: boolean;
+   pnt: TPoint;
+begin
+   if AIndex > DEFAULT_BRANCH_IND then
+   begin
+      pnt := Point(GetBranch(AIndex-1).GetMostRight+60, Height-32);
+      result := TBranch.Create(Self, pnt);
+      FBranchList.Insert(AIndex, result);
+      lock := LockDrawing;
       try
-         result.Statement := TStatement.Create(Self, ABranchStmntId);
+         result.Statement := TStatement.Create(Self);
          result.Statement.Alignment := taRightJustify;
          PlaceBranchStatement(result);
-         if AResizeInd then
-         begin
-            Width := result.Hook.X + 30;
-            BottomHook := result.Hook.X;
-            ParentBlock.ResizeHorz(true);
-         end;
+         ResizeWithDrawLock;
       finally
          if lock then
             UnLockDrawing;
@@ -333,19 +341,19 @@ begin
          try
             if bcnt > 1 then
             begin
-               tmpList.AddObject(indnt + 'If (' + line + ' = ' + Trim(FBranchArray[2].Statement.Text) + ') Then', Self);
+               tmpList.AddObject(indnt + 'If (' + line + ' = ' + Trim(FBranchList[2].Statement.Text) + ') Then', Self);
                GenerateNestedCode(tmpList, 2, ADeep+1, ALangId);
                flag := 1;
             end;
             if bcnt > 2 then
             begin
-               for i := 3 to High(FBranchArray) do
+               for i := 3 to FBranchList.Count-1 do
                begin
-                  tmpList.AddObject(indnt + 'Else If (' + line + ' = ' + Trim(FBranchArray[i].Statement.Text) + ') Then', FBranchArray[i].Statement);
+                  tmpList.AddObject(indnt + 'Else If (' + line + ' = ' + Trim(FBranchList[i].Statement.Text) + ') Then', FBranchList[i].Statement);
                   GenerateNestedCode(tmpList, i, ADeep+1, ALangId);
                end;
             end;
-            if FBranchArray[DEFAULT_BRANCH_IND].Count > 0 then
+            if FBranchList[DEFAULT_BRANCH_IND].Count > 0 then
             begin
                if bcnt = 1 then
                   tmpList.AddObject(indnt + 'If (' + line + ' = ' + line + ') Then', Self)
@@ -369,18 +377,18 @@ begin
          try
             if bcnt > 1 then
             begin
-               tmpList.AddObject(indnt + 'if ' + line + ' == ' + Trim(FBranchArray[2].Statement.Text) + ':', Self);
+               tmpList.AddObject(indnt + 'if ' + line + ' == ' + Trim(FBranchList[2].Statement.Text) + ':', Self);
                GenerateNestedCode(tmpList, 2, ADeep+1, ALangId);
             end;
             if bcnt > 2 then
             begin
-               for i := 3 to High(FBranchArray) do
+               for i := 3 to FBranchList.Count-1 do
                begin
-                  tmpList.AddObject(indnt + 'elif ' + line + ' == ' + Trim(FBranchArray[i].Statement.Text) + ':', FBranchArray[i].Statement);
+                  tmpList.AddObject(indnt + 'elif ' + line + ' == ' + Trim(FBranchList[i].Statement.Text) + ':', FBranchList[i].Statement);
                   GenerateNestedCode(tmpList, i, ADeep+1, ALangId);
                end;
             end;
-            if FBranchArray[DEFAULT_BRANCH_IND].Count > 0 then
+            if FBranchList[DEFAULT_BRANCH_IND].Count > 0 then
             begin
                if bcnt = 1 then
                   tmpList.AddObject(indnt + 'if ' + line + ' == ' + line + ':', Self)
@@ -403,7 +411,7 @@ begin
             tmpList := TStringList.Create;
             tmpList1 := TStringList.Create;
             try
-               for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
+               for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
                begin
                   tmpList.Clear;
                   tmpList.Text := ReplaceStr(langDef.CaseOfValueTemplate, '%b1', '%b' + i.ToString);
@@ -412,8 +420,8 @@ begin
                   begin
                      if caseLines[a].Contains(PRIMARY_PLACEHOLDER) then
                      begin
-                        caseLines[a] := ReplaceStr(caseLines[a], PRIMARY_PLACEHOLDER, Trim(FBranchArray[i].Statement.Text));
-                        caseLines.Objects[a] := FBranchArray[i].Statement;
+                        caseLines[a] := ReplaceStr(caseLines[a], PRIMARY_PLACEHOLDER, Trim(FBranchList[i].Statement.Text));
+                        caseLines.Objects[a] := FBranchList[i].Statement;
                         break;
                      end;
                   end;
@@ -422,7 +430,7 @@ begin
                try
                   lines.Text := ReplaceStr(langDef.CaseOfTemplate, PRIMARY_PLACEHOLDER, line);
                   TInfra.InsertTemplateLines(lines, '%s2', caseLines);
-                  defTemplate := IfThen(FBranchArray[DEFAULT_BRANCH_IND].Count > 0, langDef.CaseOfDefaultValueTemplate);
+                  defTemplate := IfThen(FBranchList[DEFAULT_BRANCH_IND].Count > 0, langDef.CaseOfDefaultValueTemplate);
                   TInfra.InsertTemplateLines(lines, '%s3', defTemplate);
                   GenerateTemplateSection(tmpList1, lines, ALangId, ADeep);
                finally
@@ -464,23 +472,15 @@ begin
 end;
 
 procedure TCaseBlock.RemoveBranch;
-var
-   i, last: integer;
-   lBranch: TBranch;
 begin
-   lBranch := GetBranch(Ired);
-   if (Ired > DEFAULT_BRANCH_IND) and (lBranch <> nil) then
+   if Ired > DEFAULT_BRANCH_IND then
    begin
-       if (GClpbrd.UndoObject is TBlock) and (TBlock(GClpbrd.UndoObject).ParentBranch = lBranch) then
-          GClpbrd.UndoObject.Free;
-       lBranch.Free;
-       last := High(FBranchArray);
-       for i := Ired to last-1 do
-          FBranchArray[i] := FBranchArray[i+1];
-       SetLength(FBranchArray, last);
-       ResizeWithDrawLock;
-       RefreshCaseValues;
-       NavigatorForm.Invalidate;
+      if (GClpbrd.UndoObject is TBlock) and (TBlock(GClpbrd.UndoObject).ParentBranch = FBranchList[Ired]) then
+         GClpbrd.UndoObject.Free;
+      FBranchList.Delete(Ired);
+      ResizeWithDrawLock;
+      RefreshCaseValues;
+      NavigatorForm.Invalidate;
    end;
 end;
 
@@ -493,8 +493,8 @@ begin
    begin
       if Expanded then
       begin
-         for i := DEFAULT_BRANCH_IND to High(FBranchArray) do
-            Inc(FBranchArray[i].Hook.Y, NewHeight-Height);
+         for i := DEFAULT_BRANCH_IND to FBranchList.Count-1 do
+            Inc(FBranchList[i].Hook.Y, NewHeight-Height);
       end
       else
       begin
@@ -530,9 +530,9 @@ begin
    descTemplate := GetDescTemplate(GInfra.CurrentLang.Name);
    result := AParentNode.Owner.AddChildObject(AParentNode, FillTemplate(GInfra.CurrentLang.Name, descTemplate) + errMsg, FStatement);
 
-   for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
+   for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
    begin
-      lBranch := FBranchArray[i];
+      lBranch := FBranchList[i];
       if lBranch.Statement <> nil then
       begin
          errMsg := GetErrorMsg(lBranch.Statement);
@@ -576,23 +576,27 @@ end;
 procedure TCaseBlock.ExpandFold(AResize: boolean);
 var
    i: integer;
+   lBranch: TBranch;
 begin
    inherited ExpandFold(AResize);
-   for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
+   for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
    begin
-      if FBranchArray[i].Statement <> nil then
-         FBranchArray[i].Statement.Visible := Expanded;
+      lBranch := FBranchList[i];
+      if lBranch.Statement <> nil then
+         lBranch.Statement.Visible := Expanded;
    end;
 end;
 
 function TCaseBlock.CountErrWarn: TErrWarnCount;
 var
    i: integer;
+   lBranch: TBranch;
 begin
    result := inherited CountErrWarn;
-   for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
+   for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
    begin
-      if (FBranchArray[i].Statement <> nil) and (FBranchArray[i].Statement.GetFocusColor = NOK_COLOR) then
+      lBranch := FBranchList[i];
+      if (lBranch.Statement <> nil) and (lBranch.Statement.GetFocusColor = NOK_COLOR) then
          Inc(result.ErrorCount);
    end;
 end;
@@ -605,23 +609,27 @@ end;
 procedure TCaseBlock.RefreshCaseValues;
 var
    i: integer;
+   lBranch: TBranch;
 begin
-   for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
+   for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
    begin
-      if FBranchArray[i].Statement <> nil then
-         FBranchArray[i].Statement.DoEnter;
+      lBranch := FBranchList[i];
+      if lBranch.Statement <> nil then
+         lBranch.Statement.DoEnter;
    end;
 end;
 
 procedure TCaseBlock.ChangeColor(AColor: TColor);
 var
    i: integer;
+   lBranch: TBranch;
 begin
    inherited ChangeColor(AColor);
-   for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
+   for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
    begin
-      if FBranchArray[i].Statement <> nil then
-         FBranchArray[i].Statement.Color := AColor;
+      lBranch := FBranchList[i];
+      if lBranch.Statement <> nil then
+         lBranch.Statement.Color := AColor;
    end;
 end;
 
@@ -639,9 +647,9 @@ begin
       begin
          tag := TXMLProcessor.FindNextTag(tag);   // skip default branch stored in first tag
          FRefreshMode := true;
-         for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
+         for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
          begin
-            stmnt := FBranchArray[i].Statement;
+            stmnt := FBranchList[i].Statement;
             if (tag <> nil) and (stmnt <> nil) then
             begin
                tag2 := TXMLProcessor.FindChildTag(tag, 'value');
@@ -669,9 +677,9 @@ begin
       if tag <> nil then
       begin
          tag := TXMLProcessor.FindNextTag(tag);   // skip default branch stored in first tag
-         for i := DEFAULT_BRANCH_IND+1 to High(FBranchArray) do
+         for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
          begin
-            stmnt := FBranchArray[i].Statement;
+            stmnt := FBranchList[i].Statement;
             if (tag <> nil) and (stmnt <> nil) then
             begin
                tag2 := ATag.OwnerDocument.CreateElement('value');

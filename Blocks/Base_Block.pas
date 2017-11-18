@@ -191,7 +191,7 @@ type
          FMemoFolder: TMemoEx;
          FInitParms: TInitParms;
          FDrawingFlag: boolean;
-         FBranchArray: array of TBranch;
+         FBranchList: TObjectList<TBranch>;
          FTrueLabel, FFalseLabel: string;
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
@@ -216,7 +216,7 @@ type
          function GetBranch(idx: integer): TBranch;
          procedure ChangeColor(AColor: TColor); override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
-         function AddBranch(const AHook: TPoint; AResizeInd: boolean; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch; virtual;
+         function AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch; virtual;
          procedure ExpandAll;
          function HasFoldedBlocks: boolean;
          procedure PopulateComboBoxes; override;
@@ -355,7 +355,10 @@ begin
    FTrueLabel := i18Manager.GetString('CaptionTrue');
    FFalseLabel := i18Manager.GetString('CaptionFalse');
 
-   Branch := AddBranch(AHook, false);
+   FBranchList := TObjectList<TBranch>.Create;
+   FBranchList.Add(nil);
+
+   Branch := AddBranch(AHook);
 end;
 
 procedure TBlock.CloneFrom(ABlock: TBlock);
@@ -418,12 +421,12 @@ begin
          FFoldParms.Width := grpBlock.FFoldParms.Width;
          FFoldParms.Height := grpBlock.FFoldParms.Height;
       end;
-      for i := PRIMARY_BRANCH_IND to High(grpBlock.FBranchArray) do
+      for i := PRIMARY_BRANCH_IND to grpBlock.FBranchList.Count-1 do
       begin
-         lBranch := grpBlock.FBranchArray[i];
+         lBranch := grpBlock.FBranchList[i];
          lBranch2 := GetBranch(i);
          if lBranch2 = nil then
-            lBranch2 := AddBranch(lBranch.Hook, false);
+            lBranch2 := AddBranch(lBranch.Hook);
          prevBlock := nil;
          for block in lBranch do
          begin
@@ -450,14 +453,10 @@ begin
 end;
 
 destructor TGroupBlock.Destroy;
-var
-   i: integer;
 begin
    Hide;
    Page.Form.SetScrollBars;
-   for i := 0 to High(FBranchArray) do
-      FBranchArray[i].Free;
-   FBranchArray := nil;
+   FBranchList.Free;
    inherited Destroy;
 end;
 
@@ -529,9 +528,9 @@ var
 begin
    if Expanded then
    begin
-      for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
+      for i := PRIMARY_BRANCH_IND to FBranchList.Count-1 do
       begin
-         pnt := FBranchArray[i].Hook;
+         pnt := FBranchList[i].Hook;
          if Rect(pnt.X-5, TopHook.Y, pnt.X+5, pnt.Y).Contains(Point(X, Y)) then
          begin
             DrawArrowLine(Point(pnt.X, TopHook.Y), pnt, arrEnd, clRed);
@@ -974,12 +973,12 @@ begin
    else
    begin
       first := PRIMARY_BRANCH_IND;
-      last := High(FBranchArray);
+      last := FBranchList.Count - 1;
    end;
    for i := first to last do
    begin
       blockPrev := nil;
-      lBranch := FBranchArray[i];
+      lBranch := FBranchList[i];
       for block in lBranch do
       begin
          if blockPrev <> nil then
@@ -1269,9 +1268,9 @@ begin
    inherited ChangeColor(AColor);
    if Expanded then
    begin
-      for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
+      for i := PRIMARY_BRANCH_IND to FBranchList.Count-1 do
       begin
-         for block in FBranchArray[i] do
+         for block in FBranchList[i] do
              block.ChangeColor(AColor);
       end;
    end;
@@ -1310,9 +1309,9 @@ var
 begin
    if not Expanded then
       ExpandFold(true);
-   for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
+   for i := PRIMARY_BRANCH_IND to FBranchList.Count-1 do
    begin
-      for block in FBranchArray[i] do
+      for block in FBranchList[i] do
       begin
          if block is TGroupBlock then
             TGroupBlock(block).ExpandAll;
@@ -1342,9 +1341,9 @@ begin
    result := not Expanded;
    if Expanded then
    begin
-      for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
+      for i := PRIMARY_BRANCH_IND to FBranchList.Count-1 do
       begin
-         for block in FBranchArray[i] do
+         for block in FBranchList[i] do
          begin
             if block is TGroupBlock then
             begin
@@ -1696,8 +1695,8 @@ end;
 function TGroupBlock.GetBranch(idx: integer): TBranch;
 begin
    result := nil;
-   if (idx >= PRIMARY_BRANCH_IND) and (idx <= High(FBranchArray)) then
-      result := FBranchArray[idx];
+   if (idx >= PRIMARY_BRANCH_IND) and (idx < FBranchList.Count) then
+      result := FBranchList[idx];
 end;
 
 procedure TBlock.MyOnChange(Sender: TObject);
@@ -1853,20 +1852,14 @@ var
    block: TBlock;
 begin
    result := inherited GenerateTree(AParentNode);
-   for block in FBranchArray[PRIMARY_BRANCH_IND] do
+   for block in FBranchList[PRIMARY_BRANCH_IND] do
        block.GenerateTree(result);
 end;
 
-function TGroupBlock.AddBranch(const AHook: TPoint; AResizeInd: boolean; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch;
-var
-   len: integer;
+function TGroupBlock.AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch;
 begin
    result := TBranch.Create(Self, AHook, ABranchId);
-   len := Length(FBranchArray);
-   if len = 0 then
-      len := 1;
-   SetLength(FBranchArray, len+1);
-   FBranchArray[len] := result;
+   FBranchList.Add(result);
 end;
 
 function TBlock.CanBeRemoved: boolean;
@@ -1990,9 +1983,9 @@ begin
       textControl.Visible := Expanded;
    FMemoFolder.Visible := not Expanded;
 
-   for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
+   for i := PRIMARY_BRANCH_IND to FBranchList.Count-1 do
    begin
-      for block in FBranchArray[i] do
+      for block in FBranchList[i] do
           block.Visible := Expanded;
    end;
 
@@ -2102,9 +2095,9 @@ begin
          for comment in GetPinComments do
             comment.ExportToXMLTag2(ATag);
 
-         for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
+         for i := PRIMARY_BRANCH_IND to FBranchList.Count-1 do
          begin
-            lBranch := FBranchArray[i];
+            lBranch := FBranchList[i];
 
             tag2 := ATag.OwnerDocument.CreateElement(BRANCH_TAG);
             ATag.AppendChild(tag2);
@@ -2255,7 +2248,7 @@ begin
             bId := StrToIntDef(tag1.GetAttribute(ID_ATTR), ID_INVALID);
             bStmntId := StrToIntDef(tag1.GetAttribute(BRANCH_STMNT_ATTR), ID_INVALID);
             if GetBranch(idx) = nil then
-               AddBranch(Point(hx, hy), false, bId, bStmntId);
+               AddBranch(Point(hx, hy), bId, bStmntId);
             tag2 := TXMLProcessor.FindChildTag(tag1, BLOCK_TAG);
             if tag2 <> nil then
             begin
@@ -2466,16 +2459,16 @@ var
    block: TBlock;
 begin
    inherited PopulateComboBoxes;
-   for i := PRIMARY_BRANCH_IND to High(FBranchArray) do
+   for i := PRIMARY_BRANCH_IND to FBranchList.Count-1 do
    begin
-      for block in FBranchArray[i] do
+      for block in FBranchList[i] do
           block.PopulateComboBoxes;
    end;
 end;
 
 function TGroupBlock.GetBranchCount: integer;
 begin
-   result := Length(FBranchArray) - 1;
+   result := FBranchList.Count - 1;
 end;
 
 function TGroupBlock.GetBlocks(AIndex: integer = PRIMARY_BRANCH_IND-1): IEnumerable<TBlock>;
@@ -2495,7 +2488,7 @@ begin
       if AIndex < PRIMARY_BRANCH_IND then
       begin
          first := PRIMARY_BRANCH_IND;
-         last := High(FBranchArray);
+         last := FBranchList.Count - 1;
       end
       else
       begin
@@ -2505,12 +2498,12 @@ begin
    end;
    a := 0;
    for i := first to last do
-      a := a + FBranchArray[i].Count;
+      a := a + FBranchList[i].Count;
    if list.Capacity < a then
       list.Capacity := a;
    for i := first to last do
    begin
-      for block in FBranchArray[i] do
+      for block in FBranchList[i] do
           list.Add(block);
    end;
    result := TEnumeratorFactory<TBlock>.Create(list);
@@ -2534,9 +2527,9 @@ begin
    if first = 0 then
       last := -1
    else
-      last := High(FBranchArray);
+      last := FBranchList.Count - 1;
    for i := first to last do
-      list.Add(FBranchArray[i]);
+      list.Add(FBranchList[i]);
    result := TEnumeratorFactory<TBranch>.Create(list);
 end;
 
@@ -2605,7 +2598,7 @@ begin
             break;
       end;
       result := StrToIntDef(val, 0);
-      if result > High(FBranchArray) then
+      if result >= FBranchList.Count then
          result := 0;
    end;
 end;
@@ -2671,7 +2664,7 @@ begin
       if b > 0 then
       begin
          if (ALines.Count > 0) and (ALines.Objects[ALines.Count-1] = nil) then
-            ALines.Objects[ALines.Count-1] := FBranchArray[b];
+            ALines.Objects[ALines.Count-1] := FBranchList[b];
          GenerateNestedCode(ALines, b, ADeep+CountLeadIndentChars(ATemplate[i]), ALangId);
       end
       else

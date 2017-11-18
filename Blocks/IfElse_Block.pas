@@ -73,7 +73,7 @@ begin
    FInitParms.P2X := 229;
 
    TrueBranch := Branch;
-   FalseBranch := AddBranch(Point(p3X, p3Y), false);
+   FalseBranch := AddBranch(Point(p3X, p3Y));
 
    BottomHook := b_hook;
    TopHook.X := t_hook;
