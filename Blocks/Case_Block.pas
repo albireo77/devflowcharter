@@ -476,6 +476,8 @@ end;
 
 procedure TCaseBlock.RemoveBranch(ABranch: TBranch);
 begin
+   if ABranch = nil then
+      exit;
    if (GClpbrd.UndoObject is TBlock) and (TBlock(GClpbrd.UndoObject).ParentBranch = ABranch) then
       GClpbrd.UndoObject.Free;
    if FBranchList.Remove(ABranch) <> -1 then
