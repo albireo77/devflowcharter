@@ -184,8 +184,6 @@ type
    end;
 
    TGroupBlock = class(TBlock)    // block which can aggregate child blocks
-      private
-         function GetBranchCount: integer;
       protected
          FBlockImportMode: boolean;
          FMemoFolder: TMemoEx;
@@ -206,7 +204,6 @@ type
          Expanded: boolean;
          FFoldParms: TInitParms;
          property BlockImportMode: boolean read FBlockImportMode write FBlockImportMode;
-         property BranchCount: integer read GetBranchCount;
          constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; const AHook: TPoint; AId: integer = ID_INVALID);
          destructor Destroy; override;
          procedure ResizeHorz(AContinue: boolean); virtual;
@@ -2462,11 +2459,6 @@ begin
       for block in FBranchList[i] do
           block.PopulateComboBoxes;
    end;
-end;
-
-function TGroupBlock.GetBranchCount: integer;
-begin
-   result := FBranchList.Count - 1;
 end;
 
 function TGroupBlock.GetBlocks(AIndex: integer = PRIMARY_BRANCH_IND-1): IEnumerable<TBlock>;

@@ -1081,7 +1081,7 @@ begin
       if Sender = miInsertBranch then
          i := caseBlock.Ired
       else
-         i := caseBlock.BranchCount + 1;
+         i := -1;
       branch := caseBlock.InsertNewBranch(i);
       TInfra.UpdateCodeEditor(branch);
    end;

@@ -219,6 +219,8 @@ var
    pnt: TPoint;
 begin
    result := nil;
+   if AIndex < 0 then
+      AIndex := FBranchList.Count;
    if AIndex > DEFAULT_BRANCH_IND then
    begin
       pnt := Point(FBranchList[AIndex-1].GetMostRight+60, Height-32);
@@ -335,10 +337,10 @@ begin
 
    indnt := DupeString(GSettings.IndentString, ADeep);
    line := Trim(FStatement.Text);
+   bcnt := FBranchList.Count - 1;
 
       if ALangId = TIBASIC_LANG_ID then
       begin
-         bcnt := FBranchList.Count - 1;
          flag := 0;
          tmpList := TStringList.Create;
          try
@@ -375,7 +377,6 @@ begin
       end
       else if ALangId = PYTHON_LANG_ID then
       begin
-         bcnt := BranchCount;
          tmpList := TStringList.Create;
          try
             if bcnt > 1 then
