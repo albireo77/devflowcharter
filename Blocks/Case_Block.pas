@@ -122,7 +122,7 @@ begin
          lBranch2 := GetBranch(i);
          if lBranch2 = nil then
             continue;
-         lBranch := caseBlock.GetBranch(i);
+         lBranch := caseBlock.FBranchList[i];
          if (lBranch2.Statement <> nil) and (lBranch.Statement <> nil) then
          begin
             lBranch2.Statement.Text := lBranch.Statement.Text;
@@ -338,7 +338,7 @@ begin
 
       if ALangId = TIBASIC_LANG_ID then
       begin
-         bcnt := BranchCount;
+         bcnt := FBranchList.Count - 1;
          flag := 0;
          tmpList := TStringList.Create;
          try
