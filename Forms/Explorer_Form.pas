@@ -273,14 +273,11 @@ procedure TExplorerForm.miRemoveClick(Sender: TObject);
        if (winControl.Parent is TCaseBlock) and (winControl <> TCaseBlock(winControl.Parent).GetTextControl) then
        begin
           caseBlock := TCaseBlock(winControl.Parent);
-          for branch in caseBlock.GetBranches(PRIMARY_BRANCH_IND+1) do
+          branch := caseBlock.GetBranchByControl(winControl);
+          if branch <> nil then
           begin
-             if branch.Statement = winControl then
-             begin
-                caseBlock.RemoveBranch(branch);
-                result := true;
-                break;
-             end;
+             caseBlock.RemoveBranch(branch);
+             result := true;
           end;
        end
        else

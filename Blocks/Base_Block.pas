@@ -223,7 +223,6 @@ type
          procedure SaveInXML(ATag: IXMLElement); override;
          procedure GenerateTemplateSection(ALines: TStringList; ATemplate: TStringList; const ALangId: string; ADeep: integer); override;
          function GetBlocks(AIndex: integer = PRIMARY_BRANCH_IND-1): IEnumerable<TBlock>;
-         function GetBranches(AStart: integer = PRIMARY_BRANCH_IND-1): IEnumerable<TBranch>;
          procedure ResizeWithDrawLock;
          function GetFoldedText: string;
          procedure SetFoldedText(const AText: string);
@@ -2473,18 +2472,15 @@ begin
       first := AIndex;
       last := AIndex;
    end
+   else if AIndex < PRIMARY_BRANCH_IND then
+   begin
+      first := PRIMARY_BRANCH_IND;
+      last := FBranchList.Count - 1;
+   end
    else
    begin
-      if AIndex < PRIMARY_BRANCH_IND then
-      begin
-         first := PRIMARY_BRANCH_IND;
-         last := FBranchList.Count - 1;
-      end
-      else
-      begin
-         first := 0;
-         last := -1;
-      end;
+      first := 0;
+      last := -1;
    end;
    a := 0;
    for i := first to last do
@@ -2497,30 +2493,6 @@ begin
           list.Add(block);
    end;
    result := TEnumeratorFactory<TBlock>.Create(list);
-end;
-
-function TGroupBlock.GetBranches(AStart: integer = PRIMARY_BRANCH_IND-1): IEnumerable<TBranch>;
-var
-   i, first, last: integer;
-   list: TList<TBranch>;
-begin
-   list := TList<TBranch>.Create;
-   if GetBranch(AStart) <> nil then
-      first := AStart
-   else
-   begin
-      if AStart < PRIMARY_BRANCH_IND then
-         first := PRIMARY_BRANCH_IND
-      else
-         first := 0;           // case if lower index is greater than upper bound of branch_collection
-   end;
-   if first = 0 then
-      last := -1
-   else
-      last := FBranchList.Count - 1;
-   for i := first to last do
-      list.Add(FBranchList[i]);
-   result := TEnumeratorFactory<TBranch>.Create(list);
 end;
 
 function TBlock.SkipUpdateEditor: boolean;

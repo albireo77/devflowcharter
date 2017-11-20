@@ -24,7 +24,7 @@ interface
 
 uses
    Vcl.StdCtrls, Vcl.Graphics, System.Classes, System.SysUtils, Vcl.ComCtrls, System.Types,
-   Base_Block, OmniXML, CommonInterfaces, CommonTypes;
+   Vcl.Controls, Base_Block, OmniXML, CommonInterfaces, CommonTypes;
 
 type
 
@@ -58,6 +58,7 @@ type
          function IsDuplicatedCase(AEdit: TCustomEdit): boolean;
          procedure CloneFrom(ABlock: TBlock); override;
          function GetDescTemplate(const ALangId: string): string; override;
+         function GetBranchByControl(AControl: TControl): TBranch;
    end;
 
 const
@@ -292,17 +293,33 @@ begin
       ParentBlock.ResizeHorz(AContinue);
 end;
 
+function TCaseBlock.GetBranchByControl(AControl: TControl): TBranch;
+var
+   i: integer;
+   lBranch: TBranch;
+begin
+   result := nil;
+   for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
+   begin
+      lBranch := FBranchList[i];
+      if lBranch.Statement = AControl then
+      begin
+         result := lBranch;
+         break;
+      end;
+   end;
+end;
+
 procedure TCaseBlock.ResizeVert(AContinue: boolean);
 var
-   maxh, h: integer;
+   maxh, h, i: integer;
    lBranch, hBranch: TBranch;
-   branches: IEnumerable<TBranch>;
 begin
    maxh := 0;
    hBranch := DefaultBranch;
-   branches := GetBranches;
-   for lBranch in branches do
+   for i := DEFAULT_BRANCH_IND to FBranchList.Count-1 do
    begin
+      lBranch := FBranchList[i];
       h := lBranch.Height;
       if h > maxh then
       begin
@@ -312,9 +329,9 @@ begin
    end;
    hBranch.Hook.Y := 99;
    Height := maxh + 131;
-   branches.GetEnumerator.Reset;
-   for lBranch in branches do
+   for i := DEFAULT_BRANCH_IND to FBranchList.Count-1 do
    begin
+      lBranch := FBranchList[i];
       if lBranch <> hBranch then
          lBranch.Hook.Y := maxh - lBranch.Height + 99;
    end;
