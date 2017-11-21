@@ -102,7 +102,6 @@ begin
    cbVariable := TComboBox.Create(Self);
    cbVariable.Parent := Self;
    cbVariable.Visible := False;
-   cbVariable.Color := Color;
    cbVariable.Font.Color := GSettings.FontColor;
    cbVariable.Font.Size := FStatement.Font.Size;
    cbVariable.Font.Name := GSettings.FlowchartFontName;
@@ -116,7 +115,6 @@ begin
 
    edtVariable := TEdit.Create(Self);
    edtVariable.Parent := Self;
-   edtVariable.Color := Color;
    edtVariable.ReadOnly := GInfra.CurrentLang.ForDoVarList;
    edtVariable.ShowHint := True;
    edtVariable.AutoSelect := False;
