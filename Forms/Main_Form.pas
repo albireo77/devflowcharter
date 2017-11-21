@@ -1229,33 +1229,20 @@ begin
 end;
 
 procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-const
-   STEP = 15;
-   MULTP = 20;
 var
    y: integer;
 begin
    y := 0;
-   if Sender = Self then
-   begin
-      if ssCtrl in Shift then
-      begin
-         case Key of
-            VK_DOWN, VK_RIGHT: y := STEP;
-            VK_UP, VK_LEFT:    y := -STEP;
-         end;
-      end;
-   end
-   else
+   if (Sender <> Self) or (ssCtrl in Shift) then
    begin
       case Key of
-         VK_DOWN, VK_RIGHT: y := STEP;
-         VK_UP, VK_LEFT:    y := -STEP;
+         VK_DOWN, VK_RIGHT: y := 15;
+         VK_UP, VK_LEFT:    y := -15;
       end;
    end;
    case Key of
-      VK_NEXT:  y := STEP * MULTP;
-      VK_PRIOR: y := -STEP * MULTP;
+      VK_NEXT:  y := 15 * 20;
+      VK_PRIOR: y := -15 * 20;
    end;
    if y <> 0 then
    begin
