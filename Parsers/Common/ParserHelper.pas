@@ -285,7 +285,6 @@ class function TParserHelper.ValidateUserFunctionParms(const AFunctionName: stri
 var
    i, paramType, currType: integer;
    func: TUserFunction;
-   isArray: boolean;
    param: TParameter;
 begin
    result := false;
@@ -299,11 +298,9 @@ begin
          begin
             paramType := GetType(param.cbType.Text);
             currType := AParmList[i];
-            isArray := currType >= DIMENSION_LEVEL_STEP;
-            if isArray then
-               currType := DecodeType(currType);
-            if isArray then
+            if currType >= DIMENSION_LEVEL_STEP then
             begin
+               currType := DecodeType(currType);
                if (currType <> paramType) or (not param.chkTable.Checked and not IsArrayType(paramType)) then
                   exit;
             end
