@@ -1233,16 +1233,16 @@ var
    y: integer;
 begin
    y := 0;
-   if (Sender <> Self) or (ssCtrl in Shift) then
+   if Key = VK_NEXT then
+      y := 15 * 20
+   else if Key = VK_PRIOR then
+      y := -15 * 20
+   else if (Sender <> Self) or (ssCtrl in Shift) then
    begin
       case Key of
          VK_DOWN, VK_RIGHT: y := 15;
          VK_UP, VK_LEFT:    y := -15;
       end;
-   end;
-   case Key of
-      VK_NEXT:  y := 15 * 20;
-      VK_PRIOR: y := -15 * 20;
    end;
    if y <> 0 then
    begin
