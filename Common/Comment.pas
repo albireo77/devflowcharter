@@ -195,9 +195,8 @@ procedure TComment.SetIsHeader(AValue: boolean);
 var
    comment: TComment;
 begin
+   FIsHeader := not FIsHeader;
    if FIsHeader then
-      FIsHeader := false
-   else
    begin
       for comment in GProject.GetComments do
       begin
@@ -207,7 +206,6 @@ begin
             break;
          end;
       end;
-      FIsHeader := true;
    end;
 end;
 
