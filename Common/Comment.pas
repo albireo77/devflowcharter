@@ -342,8 +342,7 @@ begin
       tag.SetAttribute(FONT_SIZE_ATTR, Font.Size.ToString);
       tag.SetAttribute('v', Visible.ToString);
       tag.SetAttribute(Z_ORDER_ATTR, FZOrder.ToString);
-      if IsHeader then
-         tag.SetAttribute(IS_HEADER_ATTR, 'true');
+      tag.SetAttribute(IS_HEADER_ATTR, IsHeader.ToString);
       if FPage <> GProject.GetMainPage then
          tag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
       if Font.Style <> [] then
