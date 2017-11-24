@@ -60,6 +60,7 @@ type
       Name: string;
       LastUserFunction: TUserFunction;
       ChangingOn: boolean;
+      HeaderComment: TComment;
       property IntegerTypesSet: TTypesSet read FIntegerTypesSet;
       property BoolTypesSet: TTypesSet read FBoolTypesSet;
       property OtherTypesSet: TTypesSet read FOtherTypesSet;
@@ -801,24 +802,13 @@ begin
 end;
 
 function TProject.GetProgramHeader: string;
-var
-   i: integer;
-   comment: TComment;
 begin
    result := '';
-   for i := 0 to FComponentList.Count-1 do
+   if HeaderComment <> nil then
    begin
-      if FComponentList[i] is TComment then
-      begin
-         comment := TComment(FComponentList[i]);
-         if comment.IsHeader then
-         begin
-            result := comment.Text;
-            if EndsText(sLineBreak, comment.Text) then
-               result := result + sLineBreak;
-            break;
-         end;
-      end;
+      result := HeaderComment.Text;
+      if EndsText(sLineBreak, HeaderComment.Text) then
+         result := result + sLineBreak;
    end;
 end;
 

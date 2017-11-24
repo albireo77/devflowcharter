@@ -33,8 +33,7 @@ type
       private
          FPinControl: TControl;
          FPage: TBlockTabSheet;
-         FActive,
-         FIsHeader: boolean;
+         FActive: boolean;
          FZOrder: integer;
       protected
          FMouseLeave: boolean;
@@ -50,10 +49,11 @@ type
          procedure OnChangeComment(Sender: TObject);
          procedure SetPage(APage: TBlockTabSheet);
          procedure SetIsHeader(AValue: boolean);
+         function GetIsHeader: boolean;
       public
          property PinControl: TControl read FPinControl write FPinControl;
          property Page: TBlockTabSheet read FPage write SetPage;
-         property IsHeader: boolean read FIsHeader write SetIsHeader;
+         property IsHeader: boolean read GetIsHeader write SetIsHeader;
          constructor Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight: Integer);
          constructor CreateDefault(APage: TBlockTabSheet);
          function Clone(APage: TBlockTabSheet; ATopLeft: PPoint = nil): TComment;
@@ -127,6 +127,7 @@ destructor TComment.Destroy;
 begin
    Hide;
    FPage.Form.SetScrollBars;
+   IsHeader := false;
    inherited Destroy;
 end;
 
@@ -191,22 +192,17 @@ begin
       GProject.SetChanged;
 end;
 
-procedure TComment.SetIsHeader(AValue: boolean);
-var
-   comment: TComment;
+function TComment.GetIsHeader: boolean;
 begin
-   FIsHeader := not FIsHeader;
-   if FIsHeader then
-   begin
-      for comment in GProject.GetComments do
-      begin
-         if (comment <> Self) and comment.FIsHeader then
-         begin
-            comment.FIsHeader := false;
-            break;
-         end;
-      end;
-   end;
+   result := GProject.HeaderComment = Self;
+end;
+
+procedure TComment.SetIsHeader(AValue: boolean);
+begin
+   if AValue then
+      GProject.HeaderComment := Self
+   else if GProject.HeaderComment = Self then
+      GProject.HeaderComment := nil;
 end;
 
 procedure TComment.OnMouseDownComment(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -248,7 +244,7 @@ end;
 procedure TComment.OnChangeComment(Sender: TObject);
 begin
    GProject.SetChanged;
-   if FIsHeader then
+   if IsHeader then
       TInfra.UpdateCodeEditor;
    UpdateScrolls;
    NavigatorForm.Invalidate;
@@ -320,7 +316,7 @@ begin
       Text := ATag.Text;
       Visible := TXMLProcessor.GetBoolFromAttr(ATag, 'v');
       FPinControl := APinControl;
-      FIsHeader := TXMlProcessor.GetBoolFromAttr(ATag, IS_HEADER_ATTR);
+      IsHeader := TXMlProcessor.GetBoolFromAttr(ATag, IS_HEADER_ATTR);
       GetFromXML(ATag);
    end;
 end;
@@ -346,7 +342,8 @@ begin
       tag.SetAttribute(FONT_SIZE_ATTR, Font.Size.ToString);
       tag.SetAttribute('v', Visible.ToString);
       tag.SetAttribute(Z_ORDER_ATTR, FZOrder.ToString);
-      tag.SetAttribute(IS_HEADER_ATTR, FIsHeader.ToString);
+      if IsHeader then
+         tag.SetAttribute(IS_HEADER_ATTR, 'true');
       if FPage <> GProject.GetMainPage then
          tag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
       if Font.Style <> [] then
