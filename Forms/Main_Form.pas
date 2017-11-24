@@ -1560,8 +1560,7 @@ procedure TMainForm.miIsHeaderClick(Sender: TObject);
 begin
    if pmPages.PopupComponent is TComment then
    begin
-      miIsHeader.Checked := not miIsHeader.Checked;
-      TComment(pmPages.PopupComponent).IsHeader := miIsHeader.Checked;
+      TComment(pmPages.PopupComponent).IsHeader := not miIsHeader.Checked;
       TInfra.UpdateCodeEditor;
    end;
 end;
