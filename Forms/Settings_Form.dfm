@@ -1011,7 +1011,7 @@ object SettingsForm: TSettingsForm
     end
     object chkShowFuncLabels: TCheckBox
       Tag = 8
-      Left = 101
+      Left = 104
       Top = 48
       Width = 148
       Height = 17
