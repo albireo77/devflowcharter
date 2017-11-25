@@ -1,3 +1,6 @@
+5.7 [25.11.2017]
+- Settings: allow to predefine font size for newly created flowcharts
+
 5.6 [18.11.2017]
 - case block: add possibility to insert branch before current branch
 
