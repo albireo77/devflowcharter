@@ -597,8 +597,9 @@ var
    langDef: TLangDefinition;
    lColor: TColor;
    shape: TColorShape;
-   flowFontSize, i: integer;
+   flowFontSize: integer;
    flowFontName: string;
+   tokens: TArray<string>;
 begin
 
    redrawFlow := false;
@@ -690,14 +691,10 @@ begin
          redrawFlow := true;
       end;
 
-      flowFontSize := FFlowchartFontSize;
       flowFontName := edtFontNameSize.Text;
-      i := Pos(FLOWCHART_FONT_NAMESIZE_SEP, flowFontName);
-      if i > 0 then
-      begin
-         flowFontSize := StrToIntDef(Copy(flowFontName, i + FLOWCHART_FONT_NAMESIZE_SEP.Length, MAXINT), FFlowchartFontSize);
-         SetLength(flowFontName, i-1);
-      end;
+      tokens := flowFontName.Split([FLOWCHART_FONT_NAMESIZE_SEP], 2);
+      flowFontName := tokens[0];
+      flowFontSize := StrToIntDef(tokens[1], FFlowchartFontSize);
 
       if (GProject <> nil) and ((FEnableDBuffering <> chkEnableDBuffer.Checked)
                                 or (GInfra.CurrentLang.Name <> cbLanguage.Text)

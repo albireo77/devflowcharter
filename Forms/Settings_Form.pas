@@ -541,9 +541,14 @@ begin
 end;
 
 procedure TSettingsForm.edtFontNameSizeClick(Sender: TObject);
+var
+   fontNameSize: string;
+   tokens: TArray<string>;
 begin
-   FontDialog.Font.Name := GSettings.FlowchartFontName;
-   FontDialog.Font.Size := GSettings.FlowchartFontSize;
+   fontNameSize := edtFontNameSize.Text;
+   tokens := fontNameSize.Split([FLOWCHART_FONT_NAMESIZE_SEP], 2);
+   FontDialog.Font.Name := tokens[0];
+   FontDialog.Font.Size := StrToIntDef(tokens[1], GSettings.FlowchartFontSize);
    FontDialog.MinFontSize := FLOWCHART_MIN_FONT_SIZE;
    FontDialog.MaxFontSize := FLOWCHART_MIN_FONT_SIZE + 4;
    if FontDialog.Execute then
