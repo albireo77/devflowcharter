@@ -929,6 +929,8 @@ begin
          fontSize := 10
       else if Sender = miSize12 then
          fontSize := 12
+      else if Sender = miSize8 then
+         fontSize := 8
       else
          fontSize := DEFAULT_FONT_SIZE;
       if comp is TBlock then
