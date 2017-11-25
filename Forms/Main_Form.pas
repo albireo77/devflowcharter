@@ -150,6 +150,8 @@ type
     N18: TMenuItem;
     miMemoAlignRight: TMenuItem;
     miInsertBranch: TMenuItem;
+    miSize9: TMenuItem;
+    miSize11: TMenuItem;
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -588,7 +590,9 @@ begin
    miStyleStrikeOut.Checked := False;
    miStyleNormal.Checked := False;
    miSize8.Checked := False;
+   miSize9.Checked := False;
    miSize10.Checked := False;
+   miSize11.Checked := False;
    miSize12.Checked := False;
    miIsHeader.Visible := False;
    miMemoVScroll.Checked := False;
@@ -701,7 +705,9 @@ begin
       miStyleNormal.Checked := lFont.Style = [];
       case lFont.Size of
          8:   miSize8.Checked := True;
+         9:   miSize9.Checked := True;
          10:  miSize10.Checked := True;
+         11:  miSize11.Checked := True;
          12:  miSize12.Checked := True;
       end;
    end;
@@ -925,12 +931,16 @@ begin
    if (comp is TBlock) or (comp is TComment) then
    begin
       fontSize := 0;
-      if Sender = miSize10 then
+      if Sender = miSize8 then
+         fontSize := 8
+      else if Sender = miSize9 then
+         fontSize := 9
+      else if Sender = miSize10 then
          fontSize := 10
+      else if Sender = miSize11 then
+         fontSize := 11
       else if Sender = miSize12 then
-         fontSize := 12
-      else if Sender = miSize8 then
-         fontSize := 8;
+         fontSize := 12;
       if fontSize <> 0 then
       begin
          if comp is TBlock then
