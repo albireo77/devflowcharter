@@ -1377,7 +1377,7 @@ begin
    if Page.DrawI then
    begin
       fontSize := Canvas.Font.Size;
-      Canvas.Font.Size := 8;
+      Canvas.Font.Size := DEFAULT_FONT_SIZE;
       DrawTextLabel(IPoint.X, IPoint.Y, '|');
       Canvas.Font.Size := fontSize;
    end;
@@ -2203,8 +2203,8 @@ begin
          FRefreshMode := false;
       end;
 
-      i := StrToIntDef(ATag.GetAttribute(FONT_SIZE_ATTR), 8);
-      if i in [8, 10, 12] then
+      i := StrToIntDef(ATag.GetAttribute(FONT_SIZE_ATTR), DEFAULT_FONT_SIZE);
+      if i in VALID_FONT_SIZES then
          SetFontSize(i);
 
       i := StrToIntDef(ATag.GetAttribute(FONT_STYLE_ATTR), 0);

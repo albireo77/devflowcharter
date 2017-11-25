@@ -929,7 +929,7 @@ begin
       else if Sender = miSize12 then
          fontSize := 12
       else
-         fontSize := 8;
+         fontSize := DEFAULT_FONT_SIZE;
       if comp is TBlock then
          TBlock(comp).SetFontSize(fontSize)
       else if comp is TComment then

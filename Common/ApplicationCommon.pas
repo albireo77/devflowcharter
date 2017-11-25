@@ -204,6 +204,9 @@ const   // Global constants
 
         ID_ALLOW_CHARS = ['a'..'z', 'A'..'Z', '0'..'9', '_'];
 
+        DEFAULT_FONT_SIZE = 8;
+        VALID_FONT_SIZES = [DEFAULT_FONT_SIZE, 10, 12];
+
         ROW_NOT_FOUND = -1;
 
         FUNCTION_TYPE_IND = -5;
