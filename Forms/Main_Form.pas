@@ -281,6 +281,7 @@ begin
    FHistoryMenu.Load;
    pgcPages.DoubleBuffered := true;
    FClockPos := Low(TClockPos);
+   Font.Size := DEFAULT_FONT_SIZE;
 end;
 
 procedure TMainForm.ScrollV(var Msg: TWMVScroll);
