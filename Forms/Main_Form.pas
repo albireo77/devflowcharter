@@ -281,7 +281,6 @@ begin
    FHistoryMenu.Load;
    pgcPages.DoubleBuffered := true;
    FClockPos := Low(TClockPos);
-   Font.Size := DEFAULT_FONT_SIZE;
 end;
 
 procedure TMainForm.ScrollV(var Msg: TWMVScroll);
@@ -925,19 +924,21 @@ begin
    comp := pmPages.PopupComponent;
    if (comp is TBlock) or (comp is TComment) then
    begin
+      fontSize := 0;
       if Sender = miSize10 then
          fontSize := 10
       else if Sender = miSize12 then
          fontSize := 12
       else if Sender = miSize8 then
-         fontSize := 8
-      else
-         fontSize := DEFAULT_FONT_SIZE;
-      if comp is TBlock then
-         TBlock(comp).SetFontSize(fontSize)
-      else if comp is TComment then
-         TComment(comp).Font.Size := fontSize;
-      GProject.SetChanged;
+         fontSize := 8;
+      if fontSize <> 0 then
+      begin
+         if comp is TBlock then
+            TBlock(comp).SetFontSize(fontSize)
+         else if comp is TComment then
+            TComment(comp).Font.Size := fontSize;
+         GProject.SetChanged;
+      end;
    end;
 end;
 
