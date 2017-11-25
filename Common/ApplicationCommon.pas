@@ -200,12 +200,12 @@ const   // Global constants
         BLACK_COLOR = clWindowText;
         DEFAULT_DESKTOP_COLOR = clWhite;
 
-        FLOWCHART_DEFAULT_FONT_NAME = 'Tahoma';
-
         ID_ALLOW_CHARS = ['a'..'z', 'A'..'Z', '0'..'9', '_'];
 
-        DEFAULT_FONT_SIZE = 8;
-        VALID_FONT_SIZES = [DEFAULT_FONT_SIZE, 10, 12];
+        FLOWCHART_DEFAULT_FONT_NAME = 'Tahoma';
+        FLOWCHART_MIN_FONT_SIZE = 8;
+        FLOWCHART_VALID_FONT_SIZES = [FLOWCHART_MIN_FONT_SIZE..FLOWCHART_MIN_FONT_SIZE + 4];
+        FLOWCHART_FONT_NAMESIZE_SEP = ' : ';
 
         ROW_NOT_FOUND = -1;
 

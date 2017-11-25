@@ -48,7 +48,8 @@ type
       FEditorIndentGuides,
       FEditorAutoSelectBlock,
       FEditorAutoUpdate: boolean;
-      FEditorFontSize: integer;
+      FEditorFontSize,
+      FFlowchartFontSize: integer;
       FEditorBkgColor,
       FEditorFontColor,
       FEditorNumberColor,
@@ -135,6 +136,7 @@ type
       property IndentLength: integer read FIndentLength;
       property IndentString: string read FIndentString;
       property FlowchartFontName: string read FFlowchartFontName;
+      property FlowchartFontSize: integer read FFlowchartFontSize;
       property ConfirmRemove: boolean read FConfirmRemove;
       property PrintMultPages: boolean read FPrintMultPages;
       property PrintMultPagesHorz: boolean read FPrintMultPagesHorz;
@@ -223,6 +225,7 @@ const
    KEY_NAVIGATOR_ALPHA_VISIBLE = 'NavigatorAlphaVisible';
    KEY_EXPLORER_AUTO_NAV = 'ExplorerAutoNav';
    KEY_FLOWCHART_FONT_NAME = 'FlowchartFontName';
+   KEY_FLOWCHART_FONT_SIZE = 'FlowchartFontSize';
    KEY_AUTOSELECT_CODE_BLOCK = 'AutoSelectCodeBlock';
    KEY_AUTOUPDATE_CODE = 'AutoUpdateCode';
 
@@ -300,8 +303,7 @@ begin
    FShowFuncLabels        := true;
    FShowBlockLabels       := false;
    FValidateDeclaration   := true;
-   FPrintRect             := Rect(DEFAULT_PRINT_MARGIN,
-                                  DEFAULT_PRINT_MARGIN,
+   FPrintRect             := Rect(DEFAULT_PRINT_MARGIN, DEFAULT_PRINT_MARGIN,
                                   PRINT_SCALE_BASE - DEFAULT_PRINT_MARGIN,
                                   PRINT_SCALE_BASE - DEFAULT_PRINT_MARGIN);
    FTranslateFile         := '';
@@ -309,12 +311,13 @@ begin
    FNavigatorAlphaVisible := true;
    FExplorerAutoNav       := true;
    FFlowchartFontName     := FLOWCHART_DEFAULT_FONT_NAME;
-
+   FFlowchartFontSize     := FLOWCHART_MIN_FONT_SIZE;
 end;
 
 procedure TSettings.ReadFromRegistry;
 var
    reg: TRegistry;
+   i : integer;
 begin
    reg := TRegistry.Create;
    try
@@ -429,6 +432,12 @@ begin
             FValidateDeclaration := reg.ReadBool(KEY_VALIDATE_DECLARATION);
          if reg.ValueExists(KEY_FLOWCHART_FONT_NAME) then
             FFlowchartFontName := reg.ReadString(KEY_FLOWCHART_FONT_NAME);
+         if reg.ValueExists(KEY_FLOWCHART_FONT_SIZE) then
+         begin
+            i := reg.ReadInteger(KEY_FLOWCHART_FONT_SIZE);
+            if i in FLOWCHART_VALID_FONT_SIZES then
+               FFlowchartFontSize := i;
+         end;
          if reg.ValueExists(KEY_LOCALIZATION_FILE) then
          begin
             FTranslateFile := reg.ReadString(KEY_LOCALIZATION_FILE);
@@ -531,6 +540,7 @@ begin
          reg.WriteInteger(KEY_COLC3_WIDTH, FColumnC3Width);
          reg.WriteString(KEY_LOCALIZATION_FILE, FTranslateFile);
          reg.WriteString(KEY_FLOWCHART_FONT_NAME, FFlowchartFontName);
+         reg.WriteInteger(KEY_FLOWCHART_FONT_SIZE, FFlowchartFontSize);
        end
        else
           Application.MessageBox(PChar(i18Manager.GetString('RegErr')),
@@ -587,6 +597,8 @@ var
    langDef: TLangDefinition;
    lColor: TColor;
    shape: TColorShape;
+   flowFontSize, i: integer;
+   flowFontName: string;
 begin
 
    redrawFlow := false;
@@ -678,7 +690,19 @@ begin
          redrawFlow := true;
       end;
 
-      if (GProject <> nil) and ((FEnableDBuffering <> chkEnableDBuffer.Checked) or (FFlowchartFontName <> edtFontName.Text) or (GInfra.CurrentLang.Name <> cbLanguage.Text)) then
+      flowFontSize := FFlowchartFontSize;
+      flowFontName := edtFontNameSize.Text;
+      i := Pos(FLOWCHART_FONT_NAMESIZE_SEP, flowFontName);
+      if i > 0 then
+      begin
+         flowFontSize := StrToIntDef(Copy(flowFontName, i + FLOWCHART_FONT_NAMESIZE_SEP.Length, MAXINT), FFlowchartFontSize);
+         SetLength(flowFontName, i-1);
+      end;
+
+      if (GProject <> nil) and ((FEnableDBuffering <> chkEnableDBuffer.Checked)
+                                or (GInfra.CurrentLang.Name <> cbLanguage.Text)
+                                or (FFlowchartFontName <> flowFontName)
+                                or (FFlowchartFontSize <> flowFontSize)) then
       begin
          if TInfra.ShowFormattedQuestionBox('CloseProjectAsk', [sLineBreak]) = IDYES then
             TInfra.SetInitialSettings
@@ -689,7 +713,8 @@ begin
       if applyAll then
       begin
          FEnableDBuffering := chkEnableDBuffer.Checked;
-         FFlowchartFontName := edtFontName.Text;
+         FFlowchartFontName := flowFontName;
+         FFlowchartFontSize := flowFontSize;
          if GInfra.CurrentLang.Name <> cbLanguage.Text then
          begin
             GInfra.SetCurrentLang(cbLanguage.Text);

@@ -53,7 +53,7 @@ begin
    PageControl := AMainForm.pgcPages;
    FForm := AMainForm;
    ParentFont := false;
-   Font.Size := DEFAULT_FONT_SIZE;
+   Font.Size := GSettings.FlowchartFontSize;
    Brush.Color := GSettings.DesktopColor;
    Align := alClient;
    OnMouseUp := PageMouseUp;

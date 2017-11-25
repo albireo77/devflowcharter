@@ -2203,8 +2203,8 @@ begin
          FRefreshMode := false;
       end;
 
-      i := StrToIntDef(ATag.GetAttribute(FONT_SIZE_ATTR), DEFAULT_FONT_SIZE);
-      if i in VALID_FONT_SIZES then
+      i := StrToIntDef(ATag.GetAttribute(FONT_SIZE_ATTR), GSettings.FlowchartFontSize);
+      if i in FLOWCHART_VALID_FONT_SIZES then
          SetFontSize(i);
 
       i := StrToIntDef(ATag.GetAttribute(FONT_STYLE_ATTR), 0);

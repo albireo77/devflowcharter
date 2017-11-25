@@ -100,7 +100,7 @@ type
     chkParseReturn: TCheckBox;
     chkConfirmRemove: TCheckBox;
     chkValidateConsts: TCheckBox;
-    edtFontName: TEdit;
+    edtFontNameSize: TEdit;
     FontDialog: TFontDialog;
     chkAutoSelectCode: TCheckBox;
     edtCompilerNoMain: TEdit;
@@ -123,7 +123,7 @@ type
     procedure Localize(AList: TStringList); override;
     procedure chkMultiPrintClick(Sender: TObject);
     procedure ResetForm; override;
-    procedure edtFontNameClick(Sender: TObject);
+    procedure edtFontNameSizeClick(Sender: TObject);
   private
     procedure SetComboBoxItem(AComboBox: TComboBox; const AText: string);
     procedure FillShape(const shape: TColorShape; const AColor: TColor);
@@ -428,8 +428,8 @@ begin
    chkAutoSelectCode.Checked := false;
    chkAutoUpdateCode.Checked := false;
    edtEditorIndent.Text := IntToStr(EDITOR_DEFAULT_INDENT_LENGTH);
-   edtFontName.Text := FLOWCHART_DEFAULT_FONT_NAME;
    SetComboBoxItem(cbFontSize, IntToStr(EDITOR_DEFAULT_FONT_SIZE));
+   edtFontNameSize.Text := FLOWCHART_DEFAULT_FONT_NAME + FLOWCHART_FONT_NAMESIZE_SEP + IntToStr(FLOWCHART_MIN_FONT_SIZE);
    FillAllShapes(DEFAULT_DESKTOP_COLOR);
 end;
 
@@ -526,7 +526,7 @@ begin
    chkValidateConsts.Checked := ASettings.ValidateDeclaration;
    chkAutoSelectCode.Checked := ASettings.EditorAutoSelectBlock;
    chkAutoUpdateCode.Checked := ASettings.EditorAutoUpdate;
-   edtFontName.Text := ASettings.FlowchartFontName;
+   edtFontNameSize.Text := ASettings.FlowchartFontName + FLOWCHART_FONT_NAMESIZE_SEP + IntToStr(ASettings.FlowchartFontSize);
    SetComboBoxItem(cbFontSize, ASettings.EditorFontSize.ToString);
    SetComboBoxItem(cbFileEncoding, GInfra.CurrentLang.CompilerFileEncoding);
    DrawShapes(ASettings);
@@ -540,10 +540,14 @@ begin
       chkMultiPrintHorz.Checked := false;
 end;
 
-procedure TSettingsForm.edtFontNameClick(Sender: TObject);
+procedure TSettingsForm.edtFontNameSizeClick(Sender: TObject);
 begin
+   FontDialog.Font.Name := GSettings.FlowchartFontName;
+   FontDialog.Font.Size := GSettings.FlowchartFontSize;
+   FontDialog.MinFontSize := FLOWCHART_MIN_FONT_SIZE;
+   FontDialog.MaxFontSize := FLOWCHART_MIN_FONT_SIZE + 4;
    if FontDialog.Execute then
-      edtFontName.Text := FontDialog.Font.Name;
+      edtFontNameSize.Text := FontDialog.Font.Name + FLOWCHART_FONT_NAMESIZE_SEP + IntToStr(FontDialog.Font.Size);
 end;
 
 procedure TSettingsForm.SetComboBoxItem(AComboBox: TComboBox; const AText: string);

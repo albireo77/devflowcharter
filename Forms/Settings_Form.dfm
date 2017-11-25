@@ -894,8 +894,8 @@ object SettingsForm: TSettingsForm
     ParentFont = False
     TabOrder = 8
     object imgShapes: TImage
-      Left = 256
-      Top = 20
+      Left = 266
+      Top = 13
       Width = 265
       Height = 67
       OnClick = imgShapesClick
@@ -989,11 +989,11 @@ object SettingsForm: TSettingsForm
       TabOrder = 2
       OnClick = pnlFillClick
     end
-    object edtFontName: TEdit
+    object edtFontNameSize: TEdit
       Tag = 5
       Left = 104
-      Top = 22
-      Width = 137
+      Top = 21
+      Width = 145
       Height = 21
       TabStop = False
       Font.Charset = DEFAULT_CHARSET
@@ -1002,16 +1002,18 @@ object SettingsForm: TSettingsForm
       Font.Name = 'MS Sans Serif'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
       ReadOnly = True
+      ShowHint = True
       TabOrder = 3
       Text = 'Tahoma'
-      OnClick = edtFontNameClick
+      OnClick = edtFontNameSizeClick
     end
     object chkShowFuncLabels: TCheckBox
       Tag = 8
-      Left = 104
+      Left = 101
       Top = 48
-      Width = 145
+      Width = 148
       Height = 17
       Caption = 'Show function labels'
       Font.Charset = DEFAULT_CHARSET
@@ -1253,7 +1255,7 @@ object SettingsForm: TSettingsForm
     Font.Style = []
     MinFontSize = 8
     MaxFontSize = 8
-    Options = [fdEffects, fdScalableOnly]
+    Options = [fdNoStyleSel, fdLimitSize, fdScalableOnly]
     Left = 264
     Top = 656
   end

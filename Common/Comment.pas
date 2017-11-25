@@ -82,7 +82,7 @@ begin
    Parent := APage;
    FPage := APage;
    Color := APage.Brush.Color;
-   Font.Size := DEFAULT_FONT_SIZE;
+   Font.Size := GSettings.FlowchartFontSize;
    Font.Color := clNavy;
    Font.Name := GSettings.FlowchartFontName;
    FActive := true;
@@ -306,8 +306,8 @@ begin
       FPage.Form.HorzScrollBar.Position := 0;
       SetBounds(ATag.GetAttribute('x').ToInteger, ATag.GetAttribute('y').ToInteger,
                 ATag.GetAttribute('w').ToInteger, ATag.GetAttribute('h').ToInteger);
-      v := StrToIntDef(ATag.GetAttribute(FONT_SIZE_ATTR), DEFAULT_FONT_SIZE);
-      if v in VALID_FONT_SIZES then
+      v := StrToIntDef(ATag.GetAttribute(FONT_SIZE_ATTR), GSettings.FlowchartFontSize);
+      if v in FLOWCHART_VALID_FONT_SIZES then
          Font.Size := v;
       FZOrder := StrToIntDef(ATag.GetAttribute(Z_ORDER_ATTR), -1);
       v := StrToIntDef(ATag.GetAttribute(FONT_STYLE_ATTR), 0);
