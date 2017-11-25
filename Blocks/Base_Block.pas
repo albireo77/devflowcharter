@@ -1377,7 +1377,7 @@ begin
    if Page.DrawI then
    begin
       fontSize := Canvas.Font.Size;
-      Canvas.Font.Size := DEFAULT_FONT_SIZE;
+      Canvas.Font.Size := 8;
       DrawTextLabel(IPoint.X, IPoint.Y, '|');
       Canvas.Font.Size := fontSize;
    end;
