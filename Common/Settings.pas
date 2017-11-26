@@ -694,7 +694,7 @@ begin
       flowFontName := edtFontNameSize.Text;
       tokens := flowFontName.Split([FLOWCHART_FONT_NAMESIZE_SEP], 2);
       flowFontName := tokens[0];
-      flowFontSize := StrToIntDef(tokens[1], FFlowchartFontSize);
+      flowFontSize := tokens[1].ToInteger;
 
       if (GProject <> nil) and ((FEnableDBuffering <> chkEnableDBuffer.Checked)
                                 or (GInfra.CurrentLang.Name <> cbLanguage.Text)

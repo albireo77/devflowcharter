@@ -548,7 +548,7 @@ begin
    fontNameSize := edtFontNameSize.Text;
    tokens := fontNameSize.Split([FLOWCHART_FONT_NAMESIZE_SEP], 2);
    FontDialog.Font.Name := tokens[0];
-   FontDialog.Font.Size := StrToIntDef(tokens[1], GSettings.FlowchartFontSize);
+   FontDialog.Font.Size := tokens[1].ToInteger;
    FontDialog.MinFontSize := FLOWCHART_MIN_FONT_SIZE;
    FontDialog.MaxFontSize := FLOWCHART_MIN_FONT_SIZE + 4;
    if FontDialog.Execute then

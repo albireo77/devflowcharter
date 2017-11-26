@@ -1011,34 +1011,25 @@ end;
 class function TInfra.CompareProgramVersion(const AVersion: string): integer;
 var
    currVersion: string;
-   nums, numsCurr: TStringList;
+   nums, numsCurr: TArray<string>;
    i, e1, e2: integer;
 begin
    result := 0;
    currVersion := GetAboutForm.GetProgramVersion;
    if AVersion.IsEmpty or (currVersion = UNKNOWN_VERSION) or (currVersion = AVersion) then
       exit;
-   nums := TStringList.Create;
-   numsCurr := TStringList.Create;
-   try
-      nums.Delimiter := VER_NUMBER_DELIM;
-      nums.DelimitedText := AVersion;
-      numsCurr.Delimiter := VER_NUMBER_DELIM;
-      numsCurr.DelimitedText := currVersion;
-      for i := 0 to numsCurr.Count-1 do
-      begin
-         if (result <> 0) or (i = nums.Count) then
-            break;
-         e1 := StrToIntDef(nums[i], -1);
-         e2 := StrToIntDef(numsCurr[i], -1);
-         if e1 > e2 then
-            result := 1
-         else if e1 < e2 then
-            result := -1;
-      end;
-   finally
-      nums.Free;
-      numsCurr.Free;
+   nums := AVersion.Split([VER_NUMBER_DELIM], 4);
+   numsCurr := currVersion.Split([VER_NUMBER_DELIM], 4);
+   for i := 0 to High(numsCurr) do
+   begin
+      if (result <> 0) or (i > High(nums)) then
+         break;
+      e1 := StrToIntDef(nums[i], -1);
+      e2 := StrToIntDef(numsCurr[i], -1);
+      if e1 > e2 then
+         result := 1
+      else if e1 < e2 then
+         result := -1;
    end;
 end;
 
