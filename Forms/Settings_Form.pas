@@ -550,7 +550,7 @@ begin
    FontDialog.Font.Name := tokens[0];
    FontDialog.Font.Size := tokens[1].ToInteger;
    FontDialog.MinFontSize := FLOWCHART_MIN_FONT_SIZE;
-   FontDialog.MaxFontSize := FLOWCHART_MIN_FONT_SIZE + 4;
+   FontDialog.MaxFontSize := FLOWCHART_MAX_FONT_SIZE;
    if FontDialog.Execute then
       edtFontNameSize.Text := FontDialog.Font.Name + FLOWCHART_FONT_NAMESIZE_SEP + IntToStr(FontDialog.Font.Size);
 end;

@@ -53,9 +53,6 @@ type
     miStyleItalic: TMenuItem;
     miStyleUnderline: TMenuItem;
     miStyleNormal: TMenuItem;
-    miSize8: TMenuItem;
-    miSize10: TMenuItem;
-    miSize12: TMenuItem;
     miInsert: TMenuItem;
     miFont: TMenuItem;
     miRemove: TMenuItem;
@@ -150,8 +147,6 @@ type
     N18: TMenuItem;
     miMemoAlignRight: TMenuItem;
     miInsertBranch: TMenuItem;
-    miSize9: TMenuItem;
-    miSize11: TMenuItem;
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -173,7 +168,7 @@ type
     procedure miCommentClick(Sender: TObject);
     procedure miInstrClick(Sender: TObject);
     procedure miStyleBoldClick(Sender: TObject);
-    procedure miSize8Click(Sender: TObject);
+    procedure miFontSizeClick(Sender: TObject);
     procedure miCopyClick(Sender: TObject);
     procedure miRemoveClick(Sender: TObject);
     procedure miSubRoutinesClick(Sender: TObject);
@@ -267,6 +262,8 @@ const
                    'CASE', 'RETURN', 'TEXT', 'FOLDER');
 var
    lCursor: TCustomCursor;
+   i: integer;
+   menuItem: TMenuItem;
 begin
    lCursor := crNormal;
    repeat
@@ -283,6 +280,13 @@ begin
    FHistoryMenu.Load;
    pgcPages.DoubleBuffered := true;
    FClockPos := Low(TClockPos);
+   for i := FLOWCHART_MIN_FONT_SIZE to FLOWCHART_MAX_FONT_SIZE do
+   begin
+      menuItem := TMenuItem.Create(miFontSize);
+      menuItem.Caption := IntToStr(i);
+      menuItem.OnClick := miFontSizeClick;
+      miFontSize.Add(menuItem);
+   end;
 end;
 
 procedure TMainForm.ScrollV(var Msg: TWMVScroll);
@@ -553,6 +557,8 @@ var
    isFunction: boolean;
    memo: TMemoEx;
    memoEx: IMemoEx;
+   i: integer;
+   menuItem: TMenuItem;
 begin
    lFont := nil;
    memo := nil;
@@ -589,11 +595,8 @@ begin
    miStyleUnderline.Checked := False;
    miStyleStrikeOut.Checked := False;
    miStyleNormal.Checked := False;
-   miSize8.Checked := False;
-   miSize9.Checked := False;
-   miSize10.Checked := False;
-   miSize11.Checked := False;
-   miSize12.Checked := False;
+   for i := 0 to miFontSize.Count-1 do
+      miFontSize.Items[i].Checked := False;
    miIsHeader.Visible := False;
    miMemoVScroll.Checked := False;
    miMemoHScroll.Checked := False;
@@ -703,13 +706,9 @@ begin
       miStyleUnderline.Checked := fsUnderline in lFont.Style;
       miStyleStrikeOut.Checked := fsStrikeOut in lFont.Style;
       miStyleNormal.Checked := lFont.Style = [];
-      case lFont.Size of
-         8:   miSize8.Checked := True;
-         9:   miSize9.Checked := True;
-         10:  miSize10.Checked := True;
-         11:  miSize11.Checked := True;
-         12:  miSize12.Checked := True;
-      end;
+      menuItem := miFontSize.Find(IntToStr(lFont.Size));
+      if menuItem <> nil then
+         menuItem.Checked := True;
    end;
    if miMemo.Visible then
    begin
@@ -922,7 +921,7 @@ begin
    end;
 end;
 
-procedure TMainForm.miSize8Click(Sender: TObject);
+procedure TMainForm.miFontSizeClick(Sender: TObject);
 var
    comp: TComponent;
    fontSize: integer;
@@ -930,25 +929,12 @@ begin
    comp := pmPages.PopupComponent;
    if (comp is TBlock) or (comp is TComment) then
    begin
-      fontSize := 0;
-      if Sender = miSize8 then
-         fontSize := 8
-      else if Sender = miSize9 then
-         fontSize := 9
-      else if Sender = miSize10 then
-         fontSize := 10
-      else if Sender = miSize11 then
-         fontSize := 11
-      else if Sender = miSize12 then
-         fontSize := 12;
-      if fontSize <> 0 then
-      begin
-         if comp is TBlock then
-            TBlock(comp).SetFontSize(fontSize)
-         else if comp is TComment then
-            TComment(comp).Font.Size := fontSize;
-         GProject.SetChanged;
-      end;
+      fontSize := StripHotKey(TMenuItem(Sender).Caption).ToInteger;
+      if comp is TBlock then
+         TBlock(comp).SetFontSize(fontSize)
+      else if comp is TComment then
+         TComment(comp).Font.Size := fontSize;
+      GProject.SetChanged;
    end;
 end;
 

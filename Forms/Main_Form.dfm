@@ -199,31 +199,6 @@ object MainForm: TMainForm
       object miFontSize: TMenuItem
         Tag = 2
         Caption = 'Size'
-        object miSize8: TMenuItem
-          Tag = 2
-          Caption = '8'
-          OnClick = miSize8Click
-        end
-        object miSize9: TMenuItem
-          Tag = 2
-          Caption = '9'
-          OnClick = miSize8Click
-        end
-        object miSize10: TMenuItem
-          Tag = 2
-          Caption = '10'
-          OnClick = miSize8Click
-        end
-        object miSize11: TMenuItem
-          Tag = 2
-          Caption = '11'
-          OnClick = miSize8Click
-        end
-        object miSize12: TMenuItem
-          Tag = 2
-          Caption = '12'
-          OnClick = miSize8Click
-        end
       end
     end
     object miFrame: TMenuItem
@@ -520,7 +495,7 @@ object MainForm: TMainForm
     Left = 240
     Top = 72
     Bitmap = {
-      494C0101050009008C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010105000900900010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
