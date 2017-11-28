@@ -283,7 +283,7 @@ begin
    for i := FLOWCHART_MIN_FONT_SIZE to FLOWCHART_MAX_FONT_SIZE do
    begin
       menuItem := TMenuItem.Create(miFontSize);
-      menuItem.Caption := IntToStr(i);
+      menuItem.Caption := i.ToString;
       menuItem.OnClick := miFontSizeClick;
       miFontSize.Add(menuItem);
    end;
@@ -706,7 +706,7 @@ begin
       miStyleUnderline.Checked := fsUnderline in lFont.Style;
       miStyleStrikeOut.Checked := fsStrikeOut in lFont.Style;
       miStyleNormal.Checked := lFont.Style = [];
-      menuItem := miFontSize.Find(IntToStr(lFont.Size));
+      menuItem := miFontSize.Find(lFont.Size.ToString);
       if menuItem <> nil then
          menuItem.Checked := True;
    end;

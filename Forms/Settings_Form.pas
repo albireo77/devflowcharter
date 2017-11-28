@@ -526,7 +526,7 @@ begin
    chkValidateConsts.Checked := ASettings.ValidateDeclaration;
    chkAutoSelectCode.Checked := ASettings.EditorAutoSelectBlock;
    chkAutoUpdateCode.Checked := ASettings.EditorAutoUpdate;
-   edtFontNameSize.Text := ASettings.FlowchartFontName + FLOWCHART_FONT_NAMESIZE_SEP + IntToStr(ASettings.FlowchartFontSize);
+   edtFontNameSize.Text := ASettings.FlowchartFontName + FLOWCHART_FONT_NAMESIZE_SEP + ASettings.FlowchartFontSize.ToString;
    SetComboBoxItem(cbFontSize, ASettings.EditorFontSize.ToString);
    SetComboBoxItem(cbFileEncoding, GInfra.CurrentLang.CompilerFileEncoding);
    DrawShapes(ASettings);
@@ -552,7 +552,7 @@ begin
    FontDialog.MinFontSize := FLOWCHART_MIN_FONT_SIZE;
    FontDialog.MaxFontSize := FLOWCHART_MAX_FONT_SIZE;
    if FontDialog.Execute then
-      edtFontNameSize.Text := FontDialog.Font.Name + FLOWCHART_FONT_NAMESIZE_SEP + IntToStr(FontDialog.Font.Size);
+      edtFontNameSize.Text := FontDialog.Font.Name + FLOWCHART_FONT_NAMESIZE_SEP + FontDialog.Font.Size.ToString;
 end;
 
 procedure TSettingsForm.SetComboBoxItem(AComboBox: TComboBox; const AText: string);

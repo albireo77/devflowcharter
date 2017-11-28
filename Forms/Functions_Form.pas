@@ -142,7 +142,7 @@ begin
       if val > -1 then
          Top := val;
       val := StrToIntDef(ATag.GetAttribute('func_idx'), -2);
-      if (pgcTabs.PageCount > 0) and (val in [0..pgcTabs.PageCount-1]) then
+      if (val >= 0) and (val < pgcTabs.PageCount) then
       begin
          pgcTabs.ActivePageIndex := val;
          header := TUserFunctionHeader(pgcTabs.Pages[val]);
