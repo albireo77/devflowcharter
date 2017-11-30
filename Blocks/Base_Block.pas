@@ -897,7 +897,7 @@ end;
 
 procedure TGroupBlock.ResizeHorz(AContinue: boolean);
 var
-   xLeft, xRight: integer;
+   xLeft, xRight, br: integer;
    block: TBlock;
 begin
 
@@ -930,8 +930,9 @@ begin
       xRight := 0;
       for block in Branch do
       begin
-         if block.BoundsRect.Right > xRight then
-            xRight := block.BoundsRect.Right;
+         br := block.BoundsRect.Right;
+         if br > xRight then
+            xRight := br;
       end;
 
       SetWidth(xRight);  // set final width
@@ -2690,13 +2691,14 @@ end;
 
 function TBranch.GetMostRight: integer;
 var
-   i: integer;
+   i, br: integer;
 begin
    result := Hook.X;
    for i := 0 to Count-1 do
    begin
-      if Items[i].BoundsRect.Right > result then
-         result := Items[i].BoundsRect.Right;
+      br := Items[i].BoundsRect.Right;
+      if br > result then
+         result := br;
    end;
 end;
 
