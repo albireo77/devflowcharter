@@ -73,7 +73,7 @@ begin
       exit;
    end;
    txt := ReplaceStr(Text, ' ', '');
-   if (txt.Length > 0) and (Pos(',-', txt) = 0) and (Pos(',0', txt) = 0) and not (CharInSet(txt[1], ['0', '-'])) then
+   if (txt.Length > 0) and (Pos(',-', txt) = 0) and (Pos(',0', txt) = 0) and not CharInSet(txt[1], ['0', '-']) then
    begin
       result := true;
       lang := GInfra.GetLangDefinition(PASCAL_LANG_ID);
