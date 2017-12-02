@@ -98,7 +98,7 @@ begin
                FRepository.Clear;
             for i := 0 to sections.Count-1 do
             begin
-               if not sections[i].EndsWith('Form') then
+               if not sections[i].EndsWith('Form', true) then
                begin
                   values.Clear;
                   iniFile.ReadSectionValues(sections[i], values);
