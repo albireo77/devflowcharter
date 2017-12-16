@@ -1019,7 +1019,6 @@ var
    i: integer;
 begin
    Font.Style := AStyle;
-   Refresh;
    for i := 0 to ControlCount-1 do
    begin
       if Controls[i] is TBlock then
@@ -1027,6 +1026,7 @@ begin
       else
          THackControl(Controls[i]).Font.Style := AStyle;
    end;
+   Refresh;
 end;
 
 procedure TBlock.SetFontSize(ASize: integer);
@@ -1034,7 +1034,6 @@ var
    i: integer;
 begin
    Font.Size := ASize;
-   Refresh;
    for i := 0 to ControlCount-1 do
    begin
       if Controls[i] is TBlock then
@@ -1042,6 +1041,7 @@ begin
       else
          TInfra.SetFontSize(Controls[i], ASize);
    end;
+   Refresh;
    PutTextControls;
 end;
 
