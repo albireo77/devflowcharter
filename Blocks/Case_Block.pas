@@ -161,7 +161,7 @@ begin
       x := dBottom.X + (dRight.X - dBottom.X) div 2;
       y := dBottom.Y - (dBottom.Y - dRight.Y) div 2 + 3;
       DrawTextLabel(x, y, FCaseLabel);
-      DrawBlockLabel(DefaultBranch.Hook.X+60, 1, GInfra.CurrentLang.LabelCase);
+      DrawBlockLabel(dRight.X+5, 1, GInfra.CurrentLang.LabelCase, false, true);
       Canvas.MoveTo(pnt.X, TopHook.Y);
       Canvas.LineTo(DefaultBranch.Hook.X, TopHook.Y);
       Canvas.LineTo(DefaultBranch.Hook.X, TopHook.Y-10);
