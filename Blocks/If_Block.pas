@@ -83,26 +83,29 @@ begin
 end;
 
 procedure TIfBlock.Paint;
+var
+   dRight, dBottom, dLeft: PPoint;
 begin
    inherited;
    if Expanded then
    begin
+      dRight := @FDiamond[D_RIGHT];
+      dBottom := @FDiamond[D_BOTTOM];
+      dLeft := @FDiamond[D_LEFT];
       IPoint.X := Branch.Hook.X + 40;
-      PutTextControls;
+      TopHook := dBottom^;
       BottomPoint.Y := Height - 31;
-      DrawArrowLine(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
-      DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1));
-      DrawArrowLine(Point(Width-11, 30), Point(Width-11, Height-31), arrMiddle);
-      DrawTextLabel(Branch.Hook.X-10, 60, FTrueLabel, true);
-      DrawTextLabel(Branch.Hook.X+60, 9, FFalseLabel);
-      DrawBlockLabel(Branch.Hook.X-60, 2, GInfra.CurrentLang.LabelIf, true);
-      with Canvas do
-      begin
-         MoveTo(BottomPoint.X, Height-31);
-         LineTo(Width-11, Height-31);
-         MoveTo(Width-11, 30);
-         LineTo(Branch.Hook.X+60, 30);
-      end;
+
+      DrawArrowLine(TopHook, Branch.Hook);
+      DrawTextLabel(dBottom.X-10, dBottom.Y, FTrueLabel, true);
+      DrawTextLabel(dRight.X, dRight.Y-5, FFalseLabel, false, true);
+      DrawBlockLabel(dLeft.X-5, dLeft.Y-5, GInfra.CurrentLang.LabelIf, true, true);
+
+      Canvas.PenPos := dRight^;
+      Canvas.LineTo(Width-11, dRight.Y);
+      DrawArrowLine(Canvas.PenPos, Width-11, Height-31, arrMiddle);
+      Canvas.LineTo(BottomPoint.X, Height-31);
+      DrawArrowLine(BottomPoint, BottomPoint.X, Height-1);
    end;
    DrawI;
 end;

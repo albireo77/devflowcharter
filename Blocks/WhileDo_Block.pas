@@ -83,33 +83,36 @@ begin
 end;
 
 procedure TWhileDoBlock.Paint;
+var
+   dRight, dBottom, dTop, dLeft: PPoint;
 begin
    inherited;
    if Expanded then
    begin
       IPoint.X := Branch.Hook.X + 40;
-      PutTextControls;
-      
-      DrawArrowLine(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
-      DrawArrowLine(Point(BottomPoint.X, 49), Point(BottomPoint.X, Height-1));
+      dBottom := @FDiamond[D_BOTTOM];
+      dRight := @FDiamond[D_RIGHT];
+      dTop := @FDiamond[D_TOP];
+      dLeft := @FDiamond[D_LEFT];
+      BottomPoint.Y := dRight.Y;
+      TopHook := dBottom^;
+
+      DrawArrowLine(Branch.Hook.X, TopHook.Y, Branch.Hook);
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
       begin
-         DrawArrowLine(Point(5, Height-21), Point(5, 0), arrMiddle);
-         Canvas.Polyline([Point(BottomHook, Height-21),
-                          Point(5, Height-21),
-                          Point(5, 0),
-                          Point(Branch.Hook.X, 0)]);
+         Canvas.PenPos := Point(BottomHook, Height-21);
+         Canvas.LineTo(5, Height-21);
+         DrawArrowLine(Canvas.PenPos, Point(5, 0), arrMiddle);
+         Canvas.LineTo(TopHook.X, 0);
       end;
-      DrawTextLabel(Branch.Hook.X-10, 80, FTrueLabel, true);
-      DrawTextLabel(Branch.Hook.X+60, 28, FFalseLabel);
-      DrawBlockLabel(Branch.Hook.X-40, 10, GInfra.CurrentLang.LabelWhile, true);
-      with Canvas do
-      begin
-         MoveTo(Branch.Hook.X, 0);
-         LineTo(Branch.Hook.X, 19);
-         MoveTo(Branch.Hook.X+60, 49);
-         LineTo(BottomPoint.X, 49);
-      end;
+      DrawTextLabel(dBottom.X-10, dBottom.Y, FTrueLabel, true);
+      DrawTextLabel(dRight.X, dRight.Y-5, FFalseLabel, false, true);
+      DrawBlockLabel(dLeft.X+5, dLeft.Y-5, GInfra.CurrentLang.LabelWhile, true, true);
+      Canvas.MoveTo(TopHook.X, 0);
+      Canvas.LineTo(dTop.X, dTop.Y);
+      Canvas.PenPos := dRight^;
+      Canvas.LineTo(BottomPoint.X, BottomPoint.Y);
+      DrawArrowLine(Canvas.PenPos, BottomPoint.X, Height-1);
    end;
    DrawI;
 end;

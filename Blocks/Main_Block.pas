@@ -290,29 +290,26 @@ begin
    begin
       IPoint.X := Branch.Hook.X + 30;
       IPoint.Y := 35;
-      with Canvas do
+      fontStyles := Canvas.Font.Style;
+      Canvas.Font.Style := [];
+      Canvas.Brush.Style := bsClear;
+      lLabel := GetFunctionLabel(R);
+      if not lLabel.IsEmpty then
       begin
-         fontStyles := Font.Style;
-         Font.Style := [];
-         Brush.Style := bsClear;
-         lLabel := GetFunctionLabel(R);
-         if not lLabel.IsEmpty then
-         begin
-            lColor := Font.Color;
-            Font.Color := clNavy;
-            DrawText(Handle, PChar(lLabel), -1, R, 0);
-            Font.Color := lColor;
-            if Handle = FHandle then
-               FLabelRect := R;
-         end
-         else
-            FLabelRect := TRect.Empty;
-      end;
+         lColor := Canvas.Font.Color;
+         Canvas.Font.Color := clNavy;
+         DrawText(Canvas.Handle, PChar(lLabel), -1, R, 0);
+         Canvas.Font.Color := lColor;
+         if Canvas.Handle = FHandle then
+            FLabelRect := R;
+      end
+      else
+         FLabelRect := TRect.Empty;
       DrawEllipsedText(Point(Branch.Hook.X, TopHook.Y), FStartLabel);
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
          DrawEllipsedText(Point(BottomHook, Height-11), FStopLabel);
       Font.Style := fontStyles;
-      DrawArrowLine(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
+      DrawArrowLine(Branch.Hook.X, TopHook.Y, Branch.Hook);
    end;
    DrawI;
 end;
@@ -384,20 +381,17 @@ begin
    lLabel := GetFunctionLabel(R);
    if not lLabel.IsEmpty then
    begin
-      with Canvas do
+      if not FLabelRect.IsEmpty then
       begin
-         if not FLabelRect.IsEmpty then
-         begin
-            Brush.Style := bsSolid;
-            Brush.Color := Color;
-            PatBlt(Handle, FLabelRect.Left, FLabelRect.Top, FLabelRect.Right, FLabelRect.Bottom, PATCOPY);
-         end;
-         lColor := Font.Color;
-         Font.Color := clNavy;
-         DrawText(Handle, PChar(lLabel), -1, R, 0);
-         Font.Color := lColor;
-         FLabelRect := R;
+         Canvas.Brush.Style := bsSolid;
+         Canvas.Brush.Color := Color;
+         PatBlt(Canvas.Handle, FLabelRect.Left, FLabelRect.Top, FLabelRect.Right, FLabelRect.Bottom, PATCOPY);
       end;
+      lColor := Canvas.Font.Color;
+      Canvas.Font.Color := clNavy;
+      DrawText(Canvas.Handle, PChar(lLabel), -1, R, 0);
+      Canvas.Font.Color := lColor;
+      FLabelRect := R;
    end;
 end;
 

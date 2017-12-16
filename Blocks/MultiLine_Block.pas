@@ -93,7 +93,7 @@ end;
 procedure TMultiLineBlock.Paint;
 begin
    inherited;
-   DrawArrowLine(Point(BottomPoint.X, Height-31), Point(BottomPoint.X, Height-1));
+   DrawArrowLine(BottomPoint.X, Height-31, BottomPoint.X, Height-1);
    DrawI;
 end;
 

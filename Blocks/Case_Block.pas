@@ -140,32 +140,28 @@ end;
 
 procedure TCaseBlock.Paint;
 var
-   pnt: TPoint;
+   pnt: PPoint;
    i: integer;
 begin
    inherited;
    if Expanded then
    begin
-      pnt := DefaultBranch.Hook;
-      IPoint.X := pnt.X - 40;
-      PutTextControls;
+      IPoint.X := DefaultBranch.Hook.X - 40;
+      TopHook.Y := FDiamond[D_BOTTOM].Y + 10;
       BottomPoint.Y := Height - 31;
-      DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1));
+      DrawArrowLine(BottomPoint, BottomPoint.X, Height-1);
       for i := DEFAULT_BRANCH_IND to FBranchList.Count-1 do
       begin
-         pnt := FBranchList[i].Hook;
-         DrawArrowLine(Point(pnt.X, TopHook.Y), pnt);
+         pnt := @FBranchList[i].Hook;
+         DrawArrowLine(pnt.X, TopHook.Y, pnt^);
       end;
       DrawTextLabel(DefaultBranch.Hook.X+40, 48, FCaseLabel);
       DrawBlockLabel(DefaultBranch.Hook.X+60, 1, GInfra.CurrentLang.LabelCase);
-      with Canvas do
-      begin
-         MoveTo(pnt.X, TopHook.Y);
-         LineTo(DefaultBranch.Hook.X, TopHook.Y);
-         LineTo(DefaultBranch.Hook.X, TopHook.Y-10);
-         MoveTo(BottomHook, BottomPoint.Y);
-         LineTo(BottomPoint.X, BottomPoint.Y);
-      end;
+      Canvas.MoveTo(pnt.X, TopHook.Y);
+      Canvas.LineTo(DefaultBranch.Hook.X, TopHook.Y);
+      Canvas.LineTo(DefaultBranch.Hook.X, TopHook.Y-10);
+      Canvas.MoveTo(BottomHook, BottomPoint.Y);
+      Canvas.LineTo(BottomPoint.X, BottomPoint.Y);
    end;
    DrawI;
 end;
@@ -250,7 +246,7 @@ begin
    begin
       prevBranch := FBranchList[idx-1];
       if (prevBranch <> nil) and (ABranch.Statement <> nil) then
-         ABranch.Statement.SetBounds(prevBranch.Hook.X+5, 71, ABranch.Hook.X-prevBranch.Hook.X-10, ABranch.Statement.Height);
+         ABranch.Statement.SetBounds(prevBranch.Hook.X+5, TopHook.Y+1, ABranch.Hook.X-prevBranch.Hook.X-10, ABranch.Statement.Height);
    end;
 end;
 

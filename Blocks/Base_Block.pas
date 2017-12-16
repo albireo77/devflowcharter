@@ -34,6 +34,11 @@ uses
 const
    PRIMARY_BRANCH_IND = 1;
    LAST_LINE = -1;
+   D_LEFT = 0;
+   D_BOTTOM = 1;
+   D_RIGHT = 2;
+   D_TOP = 3;
+   D_LEFT_CLOSE = 4;
    
 type
 
@@ -93,7 +98,10 @@ type
          procedure SetCursor(const APoint: TPoint);
          procedure SetFrame(AValue: boolean);
          procedure PutTextControls; virtual;
-         procedure DrawArrowLine(const ABeginPoint, AEndPoint: TPoint; const AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
+         procedure DrawArrowLine(const aFrom, aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
+         procedure DrawArrowLine(fromX, fromY, toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
+         procedure DrawArrowLine(fromX, fromY: integer; const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
+         procedure DrawArrowLine(const aFrom: TPoint; toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
          function GetEllipseTextRect(const APoint: TPoint; const AText: string): TRect;
          function DrawEllipsedText(const APoint: TPoint; const AText: string): TRect;
          procedure MoveComments(x, y: integer);
@@ -190,14 +198,15 @@ type
          FInitParms: TInitParms;
          FDrawingFlag: boolean;
          FBranchList: TObjectList<TBranch>;
-         FTrueLabel, FFalseLabel: string;
+         FTrueLabel,
+         FFalseLabel: string;
+         FDiamond: array[D_LEFT..D_LEFT_CLOSE] of TPoint;
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
          procedure SetWidth(AMinX: integer); virtual;
          procedure LinkBlocks(const idx: integer = PRIMARY_BRANCH_IND-1);
          procedure Paint; override;
          function ExtractBranchIndex(const AStr: string): integer;
-         procedure PutTextControls; override;
          function GetDiamondPoint: TPoint; virtual;
       public
          Branch: TBranch;     // primary branch to order child blocks
@@ -503,13 +512,13 @@ begin
    SetCursor(pnt);
    if Rect(BottomPoint.X-5, BottomPoint.Y, BottomPoint.X+5, Height).Contains(pnt) then
    begin
-      DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1), arrEnd, clRed);
+      DrawArrowLine(BottomPoint, BottomPoint.X, Height-1, arrEnd, clRed);
       Ired := 0;
       Cursor := TCursor(GCustomCursor);
    end
    else if Ired = 0 then
    begin
-      DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1));
+      DrawArrowLine(BottomPoint, BottomPoint.X, Height-1);
       Ired := -1;
       Cursor := crDefault;
    end;
@@ -518,23 +527,23 @@ end;
 procedure TGroupBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 var
    i: integer;
-   pnt: TPoint;
+   pnt: PPoint;
 begin
    if Expanded then
    begin
       for i := PRIMARY_BRANCH_IND to FBranchList.Count-1 do
       begin
-         pnt := FBranchList[i].Hook;
+         pnt := @FBranchList[i].Hook;
          if Rect(pnt.X-5, TopHook.Y, pnt.X+5, pnt.Y).Contains(Point(X, Y)) then
          begin
-            DrawArrowLine(Point(pnt.X, TopHook.Y), pnt, arrEnd, clRed);
+            DrawArrowLine(pnt.X, TopHook.Y, pnt^, arrEnd, clRed);
             Ired := i;
             Cursor := TCursor(GCustomCursor);
             break;
          end
          else if Ired = i then
          begin
-            DrawArrowLine(Point(pnt.X, TopHook.Y), pnt);
+            DrawArrowLine(pnt.X, TopHook.Y, pnt^);
             Ired := -1;
             Cursor := crDefault;
             break;
@@ -644,7 +653,7 @@ begin
       Cursor := crDefault;
    ClearSelection;
    if Ired = 0 then
-      DrawArrowLine(BottomPoint, Point(BottomPoint.X, Height-1));
+      DrawArrowLine(BottomPoint, BottomPoint.X, Height-1);
    if AClearRed then
       Ired := -1;
    if FVResize or FHResize then
@@ -653,14 +662,14 @@ end;
 
 procedure TGroupBlock.OnMouseLeave(AClearRed: boolean = true);
 var
-   pnt: TPoint;
+   pnt: PPoint;
    lBranch: TBranch;
 begin
    lBranch := GetBranch(Ired);
    if lBranch <> nil then
    begin
-      pnt := lBranch.Hook;
-      DrawArrowLine(Point(pnt.X, TopHook.Y), pnt);
+      pnt := @lBranch.Hook;
+      DrawArrowLine(pnt.X, TopHook.Y, pnt^);
    end;
    inherited OnMouseLeave(AClearRed);
 end;
@@ -1172,21 +1181,6 @@ begin
    result := Point(-1, -1);
 end;
 
-procedure TGroupBlock.PutTextControls;
-var
-   topLeft, pnt: TPoint;
-   textControl: TCustomEdit;
-begin
-   textControl := GetTextControl;
-   pnt := GetDiamondPoint;
-   if (textControl <> nil) and not InvalidPoint(pnt) then
-   begin
-      topLeft.X := textControl.Height + pnt.X - 60 + 4;
-      topLeft.Y := Trunc((60-textControl.Height)/2) + pnt.Y + 2;
-      textControl.SetBounds(topLeft.X, topLeft.Y, 120-2*textControl.Height-7, textControl.Height);
-   end
-end;
-
 procedure TBlock.RefreshStatements;
 var
    i: integer;
@@ -1433,43 +1427,55 @@ begin
    end;
 end;
 
-procedure TBlock.DrawArrowLine(const ABeginPoint, AEndPoint: TPoint; const AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
+procedure TBlock.DrawArrowLine(const aFrom, aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
+begin
+   DrawArrowLine(aFrom.X, aFrom.Y, aTo.X, aTo.Y, AArrowPos, AColor);
+end;
+
+procedure TBlock.DrawArrowLine(fromX, fromY: integer; const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
+begin
+   DrawArrowLine(fromX, fromY, aTo.X, aTo.Y, AArrowPos, AColor);
+end;
+
+procedure TBlock.DrawArrowLine(const aFrom: TPoint; toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
+begin
+   DrawArrowLine(aFrom.X, aFrom.Y, toX, toY, AArrowPos, AColor);
+end;
+
+procedure TBlock.DrawArrowLine(fromX, fromY, toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
 const
    MX: array[boolean, boolean] of integer = ((10, -10), (-5, -5));
    MY: array[boolean, boolean] of integer = ((5, 5), (10, -10));
    MD: array[boolean, boolean] of integer = ((0, -10), (10, 0));
 var
    isVert, toBottomRight: boolean;
-   x, y: integer;
+   aX, aY: integer;
    pnt: TPoint;
 begin
-   isVert := ABeginPoint.X = AEndPoint.X;
-   pnt := AEndPoint;
-   if isVert then
-      toBottomRight := AEndPoint.Y > ABeginPoint.Y
-   else
-      toBottomRight := AEndPoint.X > ABeginPoint.X;
+   aX := toX;
+   aY := toY;
+   isVert := fromX = toX;
    if AArrowPos = arrMiddle then
    begin
       if isVert then
-         pnt.Y := pnt.Y + (ABeginPoint.Y-AEndPoint.Y) div 2
+         Inc(aY, (fromY-toY) div 2)
       else
-         pnt.X := pnt.X + (ABeginPoint.X-AEndPoint.X) div 2;
+         Inc(aX, (fromX-toX) div 2);
    end;
-   x := MX[isVert, toBottomRight];
-   y := MY[isVert, toBottomRight];
-   with Canvas do
-   begin
-      Brush.Style := bsSolid;
-      Pen.Color := AColor;
-      Brush.Color := AColor;
-      MoveTo(ABeginPoint.X, ABeginPoint.Y);
-      LineTo(AEndPoint.X, AEndPoint.Y);
-      Polygon([Point(pnt.X+x, pnt.Y+y),
-               Point(pnt.X+x+MD[isVert, false], pnt.Y+y+MD[isVert, true]),
-               pnt,
-               Point(pnt.X+x, pnt.Y+y)]);
-   end;
+   if isVert then
+      toBottomRight := toY > fromY
+   else
+      toBottomRight := toX > fromX;
+   pnt := Point(aX+MX[isVert, toBottomRight], aY+MY[isVert, toBottomRight]);
+   Canvas.Brush.Style := bsSolid;
+   Canvas.Pen.Color := AColor;
+   Canvas.Brush.Color := AColor;
+   Canvas.Polygon([pnt,
+                   Point(pnt.X+MD[isVert, false], pnt.Y+MD[isVert, true]),
+                   Point(aX, aY),
+                   pnt]);
+   Canvas.MoveTo(fromX, fromY);
+   Canvas.LineTo(toX, toY);
 end;
 
 function TBlock.GetEllipseTextRect(const APoint: TPoint; const AText: string): TRect;
@@ -1573,7 +1579,8 @@ var
    pnt: TPoint;
    brushStyle: TBrushStyle;
    lColor, lColor2: TColor;
-   w: integer;
+   w, a: integer;
+   edit: TCustomEdit;
 begin
    inherited;
    brushStyle := Canvas.Brush.Style;
@@ -1582,23 +1589,27 @@ begin
    if Expanded then
    begin
       pnt := GetDiamondPoint;
-      if not InvalidPoint(pnt) then
+      edit := GetTextControl;
+      if (edit <> nil) and not InvalidPoint(pnt) then
       begin
+         a := (edit.Height + edit.Width div 2) div 2 + 1;
+         FDiamond[D_LEFT] := Point(pnt.X-2*a, pnt.Y+a);
+         FDiamond[D_BOTTOM] := Point(pnt.X, pnt.Y+2*a);
+         FDiamond[D_RIGHT] := Point(pnt.X+2*a, pnt.Y+a);
+         FDiamond[D_TOP] := pnt;
+         FDiamond[D_LEFT_CLOSE] := FDiamond[D_LEFT];
+         edit.SetBounds(pnt.X-edit.Width div 2, pnt.Y+a-edit.Height div 2, edit.Width, edit.Height);
          Canvas.Brush.Style := bsClear;
          lColor2 := GSettings.GetShapeColor(FShape);
          if lColor2 <> GSettings.DesktopColor then
             Canvas.Brush.Color := lColor2;
-         Canvas.Polygon([Point(pnt.X-60, pnt.Y+30),
-                         Point(pnt.X, pnt.Y+60),
-                         Point(pnt.X+60, pnt.Y+30),
-                         pnt,
-                         Point(pnt.X-60, pnt.Y+30)]);
-         end;
+         Canvas.Polygon(FDiamond);
+      end;
    end
    else if FMemoFolder <> nil then
    begin
       if FTopParentBlock <> Self then
-         DrawArrowLine(Point(BottomPoint.X, Height-31), Point(BottomPoint.X, Height-1));
+         DrawArrowLine(BottomPoint.X, Height-31, BottomPoint.X, Height-1);
       Canvas.Pen.Width := 2;
       Canvas.Brush.Style := bsClear;
       lColor2 := GSettings.GetShapeColor(shpFolder);

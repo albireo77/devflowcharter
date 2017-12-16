@@ -84,7 +84,7 @@ begin
       if FStatement <> nil then
       begin
          y := FStatement.Height - 1;
-         DrawArrowLine(Point(BottomPoint.X, y), Point(BottomPoint.X, Height-1));
+         DrawArrowLine(BottomPoint.X, y, BottomPoint.X, Height-1);
          Polygon([Point(8, 0), Point(10, 0),
                   Point(10, y),
                   Point(8, y),

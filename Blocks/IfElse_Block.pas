@@ -103,33 +103,36 @@ begin
 end;
 
 procedure TIfElseBlock.Paint;
+var
+   dRight, dLeft: PPoint;
 begin
    inherited;
    if Expanded then
    begin
+      dRight := @FDiamond[D_RIGHT];
+      dLeft := @FDiamond[D_LEFT];
       IPoint.X := TopHook.X + 40;
       BottomPoint.X := BottomHook;
       BottomPoint.Y := Height - 25;
-      PutTextControls;
-      
-      DrawArrowLine(Point(BottomHook, Height-30), Point(BottomHook, Height-1));
-      DrawArrowLine(Point(TrueBranch.Hook.X, 30), TrueBranch.Hook);
-      DrawArrowLine(Point(FalseBranch.Hook.X, 30), FalseBranch.Hook);
+      TopHook.Y := dLeft.Y;
+
+      DrawArrowLine(BottomHook, Height-30, BottomHook, Height-1);
+      DrawArrowLine(TrueBranch.Hook.X, TopHook.Y, TrueBranch.Hook);
+      DrawArrowLine(FalseBranch.Hook.X, TopHook.Y, FalseBranch.Hook);
       if TrueBranch.FindInstanceOf(TReturnBlock) = -1 then
-         DrawArrowLine(Point(TrueHook, Height-30), Point(BottomHook-5, Height-30));
+         DrawArrowLine(TrueHook, Height-30, BottomHook-5, Height-30);
       if FalseBranch.FindInstanceOf(TReturnBlock) = -1 then
-         DrawArrowLine(Point(FalseHook, Height-30), Point(BottomHook+4, Height-30));
-      with Canvas do
-      begin
-         Ellipse(BottomHook-5, Height-34, BottomHook+5, Height-24);
-         MoveTo(TrueBranch.Hook.X, 30);
-         LineTo(TopHook.X-60, 30);
-         MoveTo(FalseBranch.Hook.X, 30);
-         LineTo(TopHook.X+60, 30);
-      end;
-      DrawTextLabel(TopHook.X-60, 9, FTrueLabel, true);
-      DrawTextLabel(TopHook.X+60, 9, FFalseLabel);
-      DrawBlockLabel(TopHook.X-52, 35, GInfra.CurrentLang.LabelIfElse, true);
+         DrawArrowLine(FalseHook, Height-30, BottomHook+4, Height-30);
+
+      Canvas.Ellipse(BottomHook-5, Height-34, BottomHook+5, Height-24);
+      Canvas.MoveTo(FalseBranch.Hook.X, dRight.Y);
+      Canvas.LineTo(dRight.X, dRight.Y);
+      Canvas.MoveTo(TrueBranch.Hook.X, dLeft.Y);
+      Canvas.LineTo(dLeft.X, dLeft.Y);
+
+      DrawTextLabel(dLeft.X, dLeft.Y-5, FTrueLabel, true, true);
+      DrawTextLabel(dRight.X, dRight.Y-5, FFalseLabel, false, true);
+      DrawBlockLabel(dLeft.X+5, dLeft.Y+5, GInfra.CurrentLang.LabelIfElse, true);
    end;
    DrawI;
 end;

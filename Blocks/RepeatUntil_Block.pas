@@ -96,30 +96,31 @@ begin
 end;
 
 procedure TRepeatUntilBlock.Paint;
+var
+   dLeft, dRight, dBottom: PPoint;
 begin
    inherited;
    if Expanded then
    begin
       IPoint.X := BottomHook + 40;
       IPoint.Y := Height - 25;
-      BottomPoint.Y := Height - 50;
-      PutTextControls;
+      dLeft := @FDiamond[D_LEFT];
+      dRight := @FDiamond[D_RIGHT];
+      dBottom := @FDiamond[D_BOTTOM];
+      BottomPoint.Y := dRight.Y;
 
-      DrawArrowLine(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
-      DrawArrowLine(Point(5, Height-51), Point(5, 0), arrMiddle);
-      DrawArrowLine(Point(BottomPoint.X, Height-51), Point(BottomPoint.X, Height-1));
-      DrawTextLabel(BottomHook-60, Height-72, FLeftLabel, true);
-      DrawTextLabel(BottomHook+60, Height-72, FRightLabel);
-      DrawBlockLabel(BottomHook-20, Height-32, GInfra.CurrentLang.LabelRepeat, true);
-      with Canvas do
-      begin
-         MoveTo(BottomPoint.X, Height-51);
-         LineTo(BottomHook+60, Height-51);
-         MoveTo(BottomHook-60, Height-51);
-         LineTo(5, Height-51);
-         MoveTo(5, 0);
-         LineTo(Branch.Hook.X, TopHook.Y);
-      end;
+      Canvas.PenPos := dLeft^;
+      Canvas.LineTo(5, dLeft.Y);
+      DrawArrowLine(Canvas.PenPos, 5, 0, arrMiddle);
+      Canvas.LineTo(Branch.Hook.X, TopHook.Y);
+      DrawArrowLine(Canvas.PenPos, Branch.Hook);
+
+      DrawTextLabel(dLeft.X, dLeft.Y-5, FLeftLabel, true, true);
+      DrawTextLabel(dRight.X, dRight.Y-5, FRightLabel, false, true);
+      DrawBlockLabel(dBottom.X-30, dBottom.Y-10, GInfra.CurrentLang.LabelRepeat, true);
+      Canvas.PenPos := dRight^;
+      Canvas.LineTo(BottomPoint.X, Canvas.PenPos.Y);
+      DrawArrowLine(Canvas.PenPos, BottomPoint.X, Height-1);
    end;
    DrawI;
 end;
