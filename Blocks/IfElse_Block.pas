@@ -155,7 +155,6 @@ begin
       TopHook.X := FInitParms.Width div 2;
       TrueHook := TrueBranch.Hook.X;
       FalseHook := FalseBranch.Hook.X;
-      Ired := -1;
       if AContinue then
          ParentBlock.ResizeHorz(AContinue);
       exit;
