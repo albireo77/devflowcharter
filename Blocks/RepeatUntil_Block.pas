@@ -119,7 +119,7 @@ begin
       DrawTextLabel(dRight.X, dRight.Y-5, FRightLabel, false, true);
       DrawBlockLabel(dBottom.X-30, dBottom.Y-10, GInfra.CurrentLang.LabelRepeat, true);
       Canvas.PenPos := dRight^;
-      Canvas.LineTo(BottomPoint.X, Canvas.PenPos.Y);
+      Canvas.LineTo(BottomPoint.X, dRight.Y);
       DrawArrowLine(Canvas.PenPos, BottomPoint.X, Height-1);
    end;
    DrawI;

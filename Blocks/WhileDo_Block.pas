@@ -100,9 +100,9 @@ begin
       DrawArrowLine(Branch.Hook.X, TopHook.Y, Branch.Hook);
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
       begin
-         Canvas.PenPos := Point(BottomHook, Height-21);
+         Canvas.MoveTo(BottomHook, Height-21);
          Canvas.LineTo(5, Height-21);
-         DrawArrowLine(Canvas.PenPos, Point(5, 0), arrMiddle);
+         DrawArrowLine(Canvas.PenPos, 5, 0, arrMiddle);
          Canvas.LineTo(TopHook.X, 0);
       end;
       DrawTextLabel(dBottom.X-10, dBottom.Y, FTrueLabel, true);
