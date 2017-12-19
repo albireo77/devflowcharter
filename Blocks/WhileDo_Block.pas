@@ -36,7 +36,7 @@ type
       protected
          procedure Paint; override;
          procedure SetWidth(AMinX: integer); override;
-         function GetDiamondPoint: TPoint; override;
+         function GetDiamondTop: TPoint; override;
    end;
 
 implementation
@@ -102,7 +102,7 @@ begin
       begin
          Canvas.MoveTo(BottomHook, Height-21);
          Canvas.LineTo(5, Height-21);
-         DrawArrowLine(Canvas.PenPos, 5, 0, arrMiddle);
+         DrawArrowLine(5, 0, arrMiddle);
          Canvas.LineTo(TopHook.X, 0);
       end;
       DrawTextLabel(dBottom.X-10, dBottom.Y, FTrueLabel, true);
@@ -112,12 +112,12 @@ begin
       Canvas.LineTo(dTop.X, dTop.Y);
       Canvas.PenPos := dRight^;
       Canvas.LineTo(BottomPoint.X, BottomPoint.Y);
-      DrawArrowLine(Canvas.PenPos, BottomPoint.X, Height-1);
+      DrawArrowLine(BottomPoint.X, Height-1);
    end;
    DrawI;
 end;
 
-function TWhileDoBlock.GetDiamondPoint: TPoint;
+function TWhileDoBlock.GetDiamondTop: TPoint;
 begin
    result := Point(Branch.Hook.X, 19);
 end;

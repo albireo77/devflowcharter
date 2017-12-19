@@ -37,7 +37,7 @@ type
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
          procedure Paint; override;
          procedure SetWidth(AMinX: integer); override;
-         function GetDiamondPoint: TPoint; override;
+         function GetDiamondTop: TPoint; override;
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, p1X, p3X, b_hook, t_hook, p1Y, p3Y, f_hook, tt_hook: integer; AId: integer = ID_INVALID); overload;
@@ -298,7 +298,7 @@ begin
    inherited ExpandFold(AResize);
 end;
 
-function TIfElseBlock.GetDiamondPoint: TPoint;
+function TIfElseBlock.GetDiamondTop: TPoint;
 begin
    result := Point(TopHook.X, 0);
 end;

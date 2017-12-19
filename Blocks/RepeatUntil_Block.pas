@@ -39,7 +39,7 @@ type
       protected
          procedure Paint; override;
          procedure SetWidth(AMinX: integer); override;
-         function GetDiamondPoint: TPoint; override;
+         function GetDiamondTop: TPoint; override;
    end;
 
 implementation
@@ -113,14 +113,14 @@ begin
       Canvas.LineTo(5, dLeft.Y);
       DrawArrowLine(Canvas.PenPos, 5, 0, arrMiddle);
       Canvas.LineTo(Branch.Hook.X, TopHook.Y);
-      DrawArrowLine(Canvas.PenPos, Branch.Hook);
+      DrawArrowLine(Branch.Hook);
 
       DrawTextLabel(dLeft.X, dLeft.Y-5, FLeftLabel, true, true);
       DrawTextLabel(dRight.X, dRight.Y-5, FRightLabel, false, true);
       DrawBlockLabel(dBottom.X-30, dBottom.Y-10, GInfra.CurrentLang.LabelRepeat, true);
       Canvas.PenPos := dRight^;
       Canvas.LineTo(BottomPoint.X, dRight.Y);
-      DrawArrowLine(Canvas.PenPos, BottomPoint.X, Height-1);
+      DrawArrowLine(BottomPoint.X, Height-1);
    end;
    DrawI;
 end;
@@ -144,7 +144,7 @@ begin
    BottomPoint.X := Width - 11;
 end;
 
-function TRepeatUntilBlock.GetDiamondPoint: TPoint;
+function TRepeatUntilBlock.GetDiamondTop: TPoint;
 begin
    result := Point(BottomHook, Height-81);
 end;

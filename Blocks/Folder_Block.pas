@@ -37,7 +37,7 @@ type
          procedure Paint; override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
          procedure SetWidth(AMinX: integer); override;
-         function GetDiamondPoint: TPoint; override;
+         function GetDiamondTop: TPoint; override;
    end;
 
 implementation
@@ -98,7 +98,7 @@ begin
    DrawI;
 end;
 
-function TFolderBlock.GetDiamondPoint: TPoint;
+function TFolderBlock.GetDiamondTop: TPoint;
 begin
    result := Point(-1, -1);
 end;

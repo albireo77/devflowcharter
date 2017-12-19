@@ -35,7 +35,7 @@ type
          procedure Paint; override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
          procedure OnFStatementChange(AEdit: TCustomEdit);
-         function GetDiamondPoint: TPoint; override;
+         function GetDiamondTop: TPoint; override;
          procedure PlaceBranchStatement(const ABranch: TBranch);
       public
          constructor Create(ABranch: TBranch); overload;
@@ -624,7 +624,7 @@ begin
    end;
 end;
 
-function TCaseBlock.GetDiamondPoint: TPoint;
+function TCaseBlock.GetDiamondTop: TPoint;
 begin
    result := Point(DefaultBranch.Hook.X, 0);
 end;

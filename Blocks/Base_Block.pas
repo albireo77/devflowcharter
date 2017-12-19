@@ -98,6 +98,8 @@ type
          procedure SetCursor(const APoint: TPoint);
          procedure SetFrame(AValue: boolean);
          procedure PutTextControls; virtual;
+         procedure DrawArrowLine(const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
+         procedure DrawArrowLine(toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
          procedure DrawArrowLine(const aFrom, aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
          procedure DrawArrowLine(fromX, fromY, toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
          procedure DrawArrowLine(fromX, fromY: integer; const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
@@ -207,7 +209,7 @@ type
          procedure LinkBlocks(const idx: integer = PRIMARY_BRANCH_IND-1);
          procedure Paint; override;
          function ExtractBranchIndex(const AStr: string): integer;
-         function GetDiamondPoint: TPoint; virtual;
+         function GetDiamondTop: TPoint; virtual;
       public
          Branch: TBranch;     // primary branch to order child blocks
          Expanded: boolean;
@@ -1176,7 +1178,7 @@ procedure TBlock.PutTextControls;
 begin
 end;
 
-function TGroupBlock.GetDiamondPoint: TPoint;
+function TGroupBlock.GetDiamondTop: TPoint;
 begin
    result := Point(-1, -1);
 end;
@@ -1442,6 +1444,18 @@ begin
    DrawArrowLine(aFrom.X, aFrom.Y, toX, toY, AArrowPos, AColor);
 end;
 
+// this method draw arrow line from current pen position
+procedure TBlock.DrawArrowLine(toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
+begin
+   DrawArrowLine(Canvas.PenPos, toX, toY, AArrowPos, AColor);
+end;
+
+// this method draw arrow line from current pen position
+procedure TBlock.DrawArrowLine(const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
+begin
+   DrawArrowLine(Canvas.PenPos, aTo, AArrowPos, AColor);
+end;
+
 procedure TBlock.DrawArrowLine(fromX, fromY, toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
 const
    MX: array[boolean, boolean] of integer = ((10, -10), (-5, -5));
@@ -1588,7 +1602,7 @@ begin
    w := Canvas.Pen.Width;
    if Expanded then
    begin
-      pnt := GetDiamondPoint;
+      pnt := GetDiamondTop;
       edit := GetTextControl;
       if (edit <> nil) and not InvalidPoint(pnt) then
       begin
