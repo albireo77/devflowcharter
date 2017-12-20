@@ -216,11 +216,11 @@ begin
       edtVariable.Left := bhx - 75;
       edtStartVal.Left := bhx - 30;
       edtStopVal.Left := bhx + 11;
-      DrawArrowLine(bhx, TopHook.Y, Branch.Hook);
-      DrawArrowLine(Width-11, 19, Width-11, Height-1);
+      DrawArrow(bhx, TopHook.Y, Branch.Hook);
+      DrawArrow(Width-11, 19, Width-11, Height-1);
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
       begin
-         DrawArrowLine(5, Height-21, 5, 19, arrMiddle);
+         DrawArrow(5, Height-21, 5, 19, arrMiddle);
          Canvas.Polyline([Point(BottomHook, Height-21),
                           Point(5, Height-21),
                           Point(5, 19),

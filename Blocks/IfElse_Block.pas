@@ -116,13 +116,13 @@ begin
       BottomPoint.Y := Height - 25;
       TopHook.Y := dLeft.Y;
 
-      DrawArrowLine(BottomHook, Height-30, BottomHook, Height-1);
-      DrawArrowLine(TrueBranch.Hook.X, TopHook.Y, TrueBranch.Hook);
-      DrawArrowLine(FalseBranch.Hook.X, TopHook.Y, FalseBranch.Hook);
+      DrawArrow(BottomHook, Height-30, BottomHook, Height-1);
+      DrawArrow(TrueBranch.Hook.X, TopHook.Y, TrueBranch.Hook);
+      DrawArrow(FalseBranch.Hook.X, TopHook.Y, FalseBranch.Hook);
       if TrueBranch.FindInstanceOf(TReturnBlock) = -1 then
-         DrawArrowLine(TrueHook, Height-30, BottomHook-5, Height-30);
+         DrawArrow(TrueHook, Height-30, BottomHook-5, Height-30);
       if FalseBranch.FindInstanceOf(TReturnBlock) = -1 then
-         DrawArrowLine(FalseHook, Height-30, BottomHook+4, Height-30);
+         DrawArrow(FalseHook, Height-30, BottomHook+4, Height-30);
 
       Canvas.Ellipse(BottomHook-5, Height-34, BottomHook+5, Height-24);
       Canvas.MoveTo(FalseBranch.Hook.X, dRight.Y);

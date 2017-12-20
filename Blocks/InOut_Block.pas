@@ -126,7 +126,7 @@ var
 begin
    inherited;
    w := Canvas.TextWidth(FLabel);
-   DrawArrowLine(BottomPoint.X, 30, BottomPoint.X, Height-1);
+   DrawArrow(BottomPoint.X, 30, BottomPoint.X, Height-1);
    with Canvas do
    begin
       Brush.Style := bsClear;

@@ -178,9 +178,9 @@ var
    R: TRect;
    w: integer;
 begin
-   R := GetEllipseTextRect(TPoint.Zero, FStartLabel);
+   R := GetEllipseTextRect(0, 0, FStartLabel);
    result := R.Width;
-   R := GetEllipseTextRect(TPoint.Zero, FStopLabel);
+   R := GetEllipseTextRect(0, 0, FStopLabel);
    w := R.Width;
    if w > result then
       result := w;
@@ -305,11 +305,11 @@ begin
       end
       else
          FLabelRect := TRect.Empty;
-      DrawEllipsedText(Point(Branch.Hook.X, TopHook.Y), FStartLabel);
+      DrawEllipsedText(Branch.Hook.X, TopHook.Y, FStartLabel);
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
-         DrawEllipsedText(Point(BottomHook, Height-11), FStopLabel);
+         DrawEllipsedText(BottomHook, Height-11, FStopLabel);
       Font.Style := fontStyles;
-      DrawArrowLine(Branch.Hook.X, TopHook.Y, Branch.Hook);
+      DrawArrow(Branch.Hook.X, TopHook.Y, Branch.Hook);
    end;
    DrawI;
 end;

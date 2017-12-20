@@ -97,7 +97,7 @@ begin
    inherited;
    fontStyles := Canvas.Font.Style;
    Canvas.Font.Style := [];
-   R := DrawEllipsedText(Point(Width div 2, 30), FReturnLabel);
+   R := DrawEllipsedText(Width div 2, 30, FReturnLabel);
    DrawBlockLabel(R.Left, R.Bottom, GInfra.CurrentLang.LabelReturn, true);
    Canvas.Font.Style := fontStyles;
    DrawI;
@@ -105,7 +105,7 @@ end;
 
 function TReturnBlock.GetDefaultWidth: integer;
 begin
-   result := GetEllipseTextRect(TPoint.Zero, FReturnLabel).Width + 48;
+   result := GetEllipseTextRect(0, 0, FReturnLabel).Width + 48;
 end;
 
 function TReturnBlock.GetDescTemplate(const ALangId: string): string;

@@ -97,12 +97,12 @@ begin
       BottomPoint.Y := dRight.Y;
       TopHook := dBottom^;
 
-      DrawArrowLine(Branch.Hook.X, TopHook.Y, Branch.Hook);
+      DrawArrow(Branch.Hook.X, TopHook.Y, Branch.Hook);
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
       begin
          Canvas.MoveTo(BottomHook, Height-21);
          Canvas.LineTo(5, Height-21);
-         DrawArrowLine(5, 0, arrMiddle);
+         DrawArrowTo(5, 0, arrMiddle);
          Canvas.LineTo(TopHook.X, 0);
       end;
       DrawTextLabel(dBottom.X-10, dBottom.Y, FTrueLabel, true);
@@ -112,7 +112,7 @@ begin
       Canvas.LineTo(dTop.X, dTop.Y);
       Canvas.PenPos := dRight^;
       Canvas.LineTo(BottomPoint.X, BottomPoint.Y);
-      DrawArrowLine(BottomPoint.X, Height-1);
+      DrawArrowTo(BottomPoint.X, Height-1);
    end;
    DrawI;
 end;

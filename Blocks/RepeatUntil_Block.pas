@@ -111,16 +111,16 @@ begin
 
       Canvas.PenPos := dLeft^;
       Canvas.LineTo(5, dLeft.Y);
-      DrawArrowLine(Canvas.PenPos, 5, 0, arrMiddle);
+      DrawArrowTo(5, 0, arrMiddle);
       Canvas.LineTo(Branch.Hook.X, TopHook.Y);
-      DrawArrowLine(Branch.Hook);
+      DrawArrowTo(Branch.Hook);
 
       DrawTextLabel(dLeft.X, dLeft.Y-5, FLeftLabel, true, true);
       DrawTextLabel(dRight.X, dRight.Y-5, FRightLabel, false, true);
       DrawBlockLabel(dBottom.X-30, dBottom.Y-10, GInfra.CurrentLang.LabelRepeat, true);
       Canvas.PenPos := dRight^;
       Canvas.LineTo(BottomPoint.X, dRight.Y);
-      DrawArrowLine(BottomPoint.X, Height-1);
+      DrawArrowTo(BottomPoint.X, Height-1);
    end;
    DrawI;
 end;

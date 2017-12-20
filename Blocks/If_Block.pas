@@ -96,16 +96,16 @@ begin
       TopHook := dBottom^;
       BottomPoint.Y := Height - 31;
 
-      DrawArrowLine(TopHook, Branch.Hook);
+      DrawArrow(TopHook, Branch.Hook);
       DrawTextLabel(dBottom.X-10, dBottom.Y, FTrueLabel, true);
       DrawTextLabel(dRight.X, dRight.Y-5, FFalseLabel, false, true);
       DrawBlockLabel(dLeft.X-5, dLeft.Y-5, GInfra.CurrentLang.LabelIf, true, true);
 
       Canvas.PenPos := dRight^;
       Canvas.LineTo(Width-11, dRight.Y);
-      DrawArrowLine(Canvas.PenPos, Width-11, Height-31, arrMiddle);
+      DrawArrowTo(Width-11, Height-31, arrMiddle);
       Canvas.LineTo(BottomPoint.X, Height-31);
-      DrawArrowLine(BottomPoint, BottomPoint.X, Height-1);
+      DrawArrow(BottomPoint, BottomPoint.X, Height-1);
    end;
    DrawI;
 end;

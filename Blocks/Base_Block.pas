@@ -98,14 +98,14 @@ type
          procedure SetCursor(const APoint: TPoint);
          procedure SetFrame(AValue: boolean);
          procedure PutTextControls; virtual;
-         procedure DrawArrowLine(const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
-         procedure DrawArrowLine(toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
-         procedure DrawArrowLine(const aFrom, aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
-         procedure DrawArrowLine(fromX, fromY, toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
-         procedure DrawArrowLine(fromX, fromY: integer; const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
-         procedure DrawArrowLine(const aFrom: TPoint; toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
-         function GetEllipseTextRect(const APoint: TPoint; const AText: string): TRect;
-         function DrawEllipsedText(const APoint: TPoint; const AText: string): TRect;
+         procedure DrawArrowTo(const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
+         procedure DrawArrowTo(toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
+         procedure DrawArrow(const aFrom, aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
+         procedure DrawArrow(fromX, fromY, toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
+         procedure DrawArrow(fromX, fromY: integer; const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
+         procedure DrawArrow(const aFrom: TPoint; toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
+         function GetEllipseTextRect(ax, ay: integer; const AText: string): TRect;
+         function DrawEllipsedText(ax, ay: integer; const AText: string): TRect;
          procedure MoveComments(x, y: integer);
          function GetUndoObject: TObject; virtual;
          function IsInFront(AControl: TWinControl): boolean;
@@ -514,13 +514,13 @@ begin
    SetCursor(pnt);
    if Rect(BottomPoint.X-5, BottomPoint.Y, BottomPoint.X+5, Height).Contains(pnt) then
    begin
-      DrawArrowLine(BottomPoint, BottomPoint.X, Height-1, arrEnd, clRed);
+      DrawArrow(BottomPoint, BottomPoint.X, Height-1, arrEnd, clRed);
       Ired := 0;
       Cursor := TCursor(GCustomCursor);
    end
    else if Ired = 0 then
    begin
-      DrawArrowLine(BottomPoint, BottomPoint.X, Height-1);
+      DrawArrow(BottomPoint, BottomPoint.X, Height-1);
       Ired := -1;
       Cursor := crDefault;
    end;
@@ -538,14 +538,14 @@ begin
          pnt := @FBranchList[i].Hook;
          if Rect(pnt.X-5, TopHook.Y, pnt.X+5, pnt.Y).Contains(Point(X, Y)) then
          begin
-            DrawArrowLine(pnt.X, TopHook.Y, pnt^, arrEnd, clRed);
+            DrawArrow(pnt.X, TopHook.Y, pnt^, arrEnd, clRed);
             Ired := i;
             Cursor := TCursor(GCustomCursor);
             break;
          end
          else if Ired = i then
          begin
-            DrawArrowLine(pnt.X, TopHook.Y, pnt^);
+            DrawArrow(pnt.X, TopHook.Y, pnt^);
             Ired := -1;
             Cursor := crDefault;
             break;
@@ -655,7 +655,7 @@ begin
       Cursor := crDefault;
    ClearSelection;
    if Ired = 0 then
-      DrawArrowLine(BottomPoint, BottomPoint.X, Height-1);
+      DrawArrow(BottomPoint, BottomPoint.X, Height-1);
    if AClearRed then
       Ired := -1;
    if FVResize or FHResize then
@@ -671,7 +671,7 @@ begin
    if lBranch <> nil then
    begin
       pnt := @lBranch.Hook;
-      DrawArrowLine(pnt.X, TopHook.Y, pnt^);
+      DrawArrow(pnt.X, TopHook.Y, pnt^);
    end;
    inherited OnMouseLeave(AClearRed);
 end;
@@ -1429,34 +1429,34 @@ begin
    end;
 end;
 
-procedure TBlock.DrawArrowLine(const aFrom, aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
+procedure TBlock.DrawArrow(const aFrom, aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
 begin
-   DrawArrowLine(aFrom.X, aFrom.Y, aTo.X, aTo.Y, AArrowPos, AColor);
+   DrawArrow(aFrom.X, aFrom.Y, aTo.X, aTo.Y, AArrowPos, AColor);
 end;
 
-procedure TBlock.DrawArrowLine(fromX, fromY: integer; const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
+procedure TBlock.DrawArrow(fromX, fromY: integer; const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
 begin
-   DrawArrowLine(fromX, fromY, aTo.X, aTo.Y, AArrowPos, AColor);
+   DrawArrow(fromX, fromY, aTo.X, aTo.Y, AArrowPos, AColor);
 end;
 
-procedure TBlock.DrawArrowLine(const aFrom: TPoint; toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
+procedure TBlock.DrawArrow(const aFrom: TPoint; toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
 begin
-   DrawArrowLine(aFrom.X, aFrom.Y, toX, toY, AArrowPos, AColor);
-end;
-
-// this method draw arrow line from current pen position
-procedure TBlock.DrawArrowLine(toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
-begin
-   DrawArrowLine(Canvas.PenPos, toX, toY, AArrowPos, AColor);
+   DrawArrow(aFrom.X, aFrom.Y, toX, toY, AArrowPos, AColor);
 end;
 
 // this method draw arrow line from current pen position
-procedure TBlock.DrawArrowLine(const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
+procedure TBlock.DrawArrowTo(toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
 begin
-   DrawArrowLine(Canvas.PenPos, aTo, AArrowPos, AColor);
+   DrawArrow(Canvas.PenPos, toX, toY, AArrowPos, AColor);
 end;
 
-procedure TBlock.DrawArrowLine(fromX, fromY, toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
+// this method draw arrow line from current pen position
+procedure TBlock.DrawArrowTo(const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
+begin
+   DrawArrow(Canvas.PenPos, aTo, AArrowPos, AColor);
+end;
+
+procedure TBlock.DrawArrow(fromX, fromY, toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
 const
    MX: array[boolean, boolean] of integer = ((10, -10), (-5, -5));
    MY: array[boolean, boolean] of integer = ((5, 5), (10, -10));
@@ -1492,7 +1492,7 @@ begin
    Canvas.LineTo(toX, toY);
 end;
 
-function TBlock.GetEllipseTextRect(const APoint: TPoint; const AText: string): TRect;
+function TBlock.GetEllipseTextRect(ax, ay: integer; const AText: string): TRect;
 const
    MIN_HALF_HEIGHT = 15;
    MIN_HALF_WIDTH = 30;
@@ -1528,24 +1528,20 @@ begin
    end;}
    a := Round(ar);
    b := Round(br);
-   result := Rect(APoint.X-b, APoint.Y-2*a, APoint.X+b, APoint.Y);
+   result := Rect(ax-b, ay-2*a, ax+b, ay);
 end;
 
-function TBlock.DrawEllipsedText(const APoint: TPoint; const AText: string): TRect;
+function TBlock.DrawEllipsedText(ax, ay: integer; const AText: string): TRect;
 var
    lColor: TColor;
 begin
-   result := TRect.Empty;
-   if not InvalidPoint(APoint) then
-   begin
-      result := GetEllipseTextRect(APoint, AText);
-      Canvas.Brush.Style := bsClear;
-      lColor := GSettings.GetShapeColor(shpEllipse);
-      if lColor <> GSettings.DesktopColor then
-         Canvas.Brush.Color := lColor;
-      Canvas.Ellipse(result);
-      DrawText(Canvas.Handle, PChar(AText), -1, result, DT_CENTER or DT_SINGLELINE or DT_VCENTER);
-   end;
+   result := GetEllipseTextRect(ax, ay, AText);
+   Canvas.Brush.Style := bsClear;
+   lColor := GSettings.GetShapeColor(shpEllipse);
+   if lColor <> GSettings.DesktopColor then
+      Canvas.Brush.Color := lColor;
+   Canvas.Ellipse(result);
+   DrawText(Canvas.Handle, PChar(AText), -1, result, DT_CENTER or DT_SINGLELINE or DT_VCENTER);
 end;
 
 function TBlock.GetMemoEx: TMemoEx;
@@ -1623,7 +1619,7 @@ begin
    else if FMemoFolder <> nil then
    begin
       if FTopParentBlock <> Self then
-         DrawArrowLine(BottomPoint.X, Height-31, BottomPoint.X, Height-1);
+         DrawArrow(BottomPoint.X, Height-31, BottomPoint.X, Height-1);
       Canvas.Pen.Width := 2;
       Canvas.Brush.Style := bsClear;
       lColor2 := GSettings.GetShapeColor(shpFolder);

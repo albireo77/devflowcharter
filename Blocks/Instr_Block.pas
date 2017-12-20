@@ -78,7 +78,7 @@ end;
 procedure TInstrBlock.Paint;
 begin
    inherited;
-   DrawArrowLine(BottomPoint.X, 19, BottomPoint.X, Height-1);
+   DrawArrow(BottomPoint.X, 19, BottomPoint.X, Height-1);
    DrawBlockLabel(5, 20, GInfra.CurrentLang.LabelInstr);
    DrawI;
 end;

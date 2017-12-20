@@ -151,11 +151,11 @@ begin
       dRight := @FDiamond[D_RIGHT];
       TopHook.Y := dBottom.Y + 10;
       BottomPoint.Y := Height - 31;
-      DrawArrowLine(BottomPoint, BottomPoint.X, Height-1);
+      DrawArrow(BottomPoint, BottomPoint.X, Height-1);
       for i := DEFAULT_BRANCH_IND to FBranchList.Count-1 do
       begin
          pnt := @FBranchList[i].Hook;
-         DrawArrowLine(pnt.X, TopHook.Y, pnt^);
+         DrawArrow(pnt.X, TopHook.Y, pnt^);
          PlaceBranchStatement(FBranchList[i]);
       end;
       x := dBottom.X + (dRight.X - dBottom.X) div 2;
