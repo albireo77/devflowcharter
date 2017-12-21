@@ -2403,11 +2403,8 @@ begin
    if ATemplate.IsEmpty then
    begin
       lang := GInfra.GetLangDefinition(ALangId);
-      if lang <> nil then
-      begin
-         if not lang.GetTemplate(ClassType).IsEmpty then
-            template := lang.GetTemplateExpr(ClassType);
-      end;
+      if (lang <> nil) and not lang.GetTemplate(ClassType).IsEmpty then
+         template := lang.GetTemplateExpr(ClassType);
    end
    else
       template := ATemplate;
