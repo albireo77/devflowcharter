@@ -281,20 +281,20 @@ begin
    FIndentString          := StringOfChar(INDENT_CHAR, FIndentLength);
 
    FHighlightColor := clAqua;
-   FDesktopColor := DEFAULT_DESKTOP_COLOR;
-   FFontColor := OK_COLOR;
+   FDesktopColor   := DEFAULT_DESKTOP_COLOR;
+   FFontColor      := OK_COLOR;
 
    for shape := Low(TColorShape) to High(TColorShape) do
      FShapeColors[shape] := IfThen(shape = shpNone, clNone, DEFAULT_DESKTOP_COLOR);
 
-   FColumnV1Width  := 68;
-   FColumnV2Width  := 68;
-   FColumnV3Width  := 68;
-   FColumnV4Width  := 68;
-   FColumnV5Width  := 68;
-   FColumnC1Width  := 73;
-   FColumnC2Width  := 73;
-   FColumnC3Width  := 73;
+   FColumnV1Width := 68;
+   FColumnV2Width := 68;
+   FColumnV3Width := 68;
+   FColumnV4Width := 68;
+   FColumnV5Width := 68;
+   FColumnC1Width := 73;
+   FColumnC2Width := 73;
+   FColumnC3Width := 73;
 
    FConfirmRemove         := true;
    FPrintMultPages        := false;
@@ -303,15 +303,15 @@ begin
    FShowFuncLabels        := true;
    FShowBlockLabels       := false;
    FValidateDeclaration   := true;
-   FPrintRect             := Rect(DEFAULT_PRINT_MARGIN, DEFAULT_PRINT_MARGIN,
-                                  PRINT_SCALE_BASE - DEFAULT_PRINT_MARGIN,
-                                  PRINT_SCALE_BASE - DEFAULT_PRINT_MARGIN);
    FTranslateFile         := '';
    FNavigatorAlphaValue   := 255;
    FNavigatorAlphaVisible := true;
    FExplorerAutoNav       := true;
    FFlowchartFontName     := FLOWCHART_DEFAULT_FONT_NAME;
    FFlowchartFontSize     := FLOWCHART_MIN_FONT_SIZE;
+   FPrintRect             := Rect(DEFAULT_PRINT_MARGIN, DEFAULT_PRINT_MARGIN,
+                                  PRINT_SCALE_BASE - DEFAULT_PRINT_MARGIN,
+                                  PRINT_SCALE_BASE - DEFAULT_PRINT_MARGIN);
 end;
 
 procedure TSettings.ReadFromRegistry;
