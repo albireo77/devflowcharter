@@ -1918,9 +1918,11 @@ var
    comment: TComment;
    pnt: TPoint;
    sign: integer;
+   box: TScrollBoxEx;
 begin
    result := 0;
-   pnt := ClientToParent(ClientRect.TopLeft, Page.Box);
+   box := Page.Box;
+   pnt := ClientToParent(ClientRect.TopLeft, box) + Point(box.HorzScrollBar.Position, box.VertScrollBar.Position);
    sign := System.Math.Sign(ASign);
    pnt.X := pnt.X * sign;
    pnt.Y := pnt.Y * sign;
