@@ -29,11 +29,12 @@ uses
 
 type
 
-   TMainBlock = class(TGroupBlock, IWinControl, IMaxBoundable)
+   TMainBlock = class(TGroupBlock, IWinControl)
       private
          FPage: TBlockTabSheet;
          FLabelRect: TRect;
          FHandle: HDC;
+         function GetMaxBounds: TPoint;
       public
          UserFunction: TObject;
          constructor Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; AId: integer = ID_INVALID); overload;
@@ -42,7 +43,6 @@ type
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
          function GetFromXML(ATag: IXMLElement): TErrorType; override;
          procedure SaveInXML(ATag: IXMLElement); override;
-         function GetMaxBounds: TPoint;
          procedure ExportToGraphic(AGraphic: TGraphic); override;
          procedure SetWidth(AMinX: integer); override;
          function GetHandle: THandle;
@@ -158,7 +158,7 @@ begin
             UnPinComments;
       end;
       FPage := APage;
-      Parent := APage;
+      Parent := APage.Box;
       if UserFunction <> nil then
       begin
          header := TUserFunction(UserFunction).Header;
@@ -197,6 +197,13 @@ begin
    result := FZOrder;
 end;
 
+function TMainBlock.GetHandle: THandle;
+begin
+   result := 0;
+   if Visible then
+      result := Handle;
+end;
+
 function TMainBlock.GetMaxBounds: TPoint;
 var
    pnt: TPoint;
@@ -205,15 +212,14 @@ begin
    result := TPoint.Zero;
    if Visible then
    begin
-      result.X := BoundsRect.Right + MARGIN_X;
-      result.Y := BoundsRect.Bottom + MARGIN_Y;
+      result := BoundsRect.BottomRight;
       if Expanded then
       begin
          for comment in GetComments do
          begin
             if comment.Visible then
             begin
-               pnt := comment.GetMaxBounds;
+               pnt := comment.BoundsRect.BottomRight;
                if pnt.X > result.X then
                   result.X := pnt.X;
                if pnt.Y > result.Y then
@@ -221,14 +227,8 @@ begin
             end;
          end;
       end;
+      result := result + Point(MARGIN_X, MARGIN_Y);
    end;
-end;
-
-function TMainBlock.GetHandle: THandle;
-begin
-   result := 0;
-   if Visible then
-      result := Handle;
 end;
 
 procedure TMainBlock.ExportToGraphic(AGraphic: TGraphic);
@@ -408,10 +408,10 @@ end;
 
 procedure TMainBlock.MyOnResize(Sender: TObject);
 begin
-   FPage.Form.SetScrollbars;
-   if FPage.Form.HorzScrollBar.Position + BoundsRect.Right < MARGIN_X then
+   FPage.Box.SetScrollbars;
+   if FPage.Box.HorzScrollBar.Position + BoundsRect.Right < MARGIN_X then
       Left := 0;
-   if FPage.Form.VertScrollBar.Position + BoundsRect.Bottom < MARGIN_Y then
+   if FPage.Box.VertScrollBar.Position + BoundsRect.Bottom < MARGIN_Y then
       Top := 0;
    BringAllToFront;
 end;

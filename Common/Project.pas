@@ -49,13 +49,14 @@ type
       FMainPage: TBlockTabSheet;
       FChanged: boolean;
       class var FInstance: TProject;
+      constructor Create;
       procedure SetGlobals;
       function GetComponents<T: class>(AComparer: IComparer<T> = nil): IEnumerable<T>;
       function GetComponentByName(AClass: TClass; const AName: string): TComponent;
       function GetIWinControlComponent(AHandle: THandle): IWinControl;
       procedure RefreshZOrder;
+      procedure ExportPagesToXMLTag(ATag: IXMLElement);
       function GetSelectList(ATag: IXMLElement; const ALabel: string; const ATagName: string; const ATagName2: string = ''): TStringList;
-      constructor Create;
    public
       Name: string;
       LastUserFunction: TUserFunction;
@@ -89,7 +90,6 @@ type
       function ImportCommentsFromXML(ATag: IXMLElement): integer;
       procedure ImportPagesFromXML(ATag: IXMLElement);
       function GetMainBlock: TMainBlock;
-      function GetBottomRight: TPoint;
       procedure PopulateDataTypeCombos;
       procedure RefreshStatements;
       procedure ChangeDesktopColor(const AColor: TColor);
@@ -108,7 +108,6 @@ type
       function GetMainPage: TBlockTabSheet;
       function GetActivePage: TBlockTabSheet;
       procedure UpdateHeadersBody(APage: TTabSheet);
-      function GetPageOrder: string;
       function FindMainBlockForControl(const AControl: TControl): TMainBlock;
       function GetProgramHeader: string;
       function GetExportFileName: string;
@@ -123,7 +122,7 @@ implementation
 uses
    System.SysUtils, Vcl.Menus, Vcl.Forms, System.StrUtils, System.Types, System.UITypes,
    Generics.Collections, ApplicationCommon, XMLProcessor, Base_Form, LangDefinition,
-   Navigator_Form, Base_Block, TabComponent, ParserHelper, SelectImport_Form;
+   Navigator_Form, Base_Block, TabComponent, ParserHelper, SelectImport_Form, WinApi.Messages;
 
 constructor TProject.Create;
 begin
@@ -384,22 +383,17 @@ begin
       result := FObjectIds.Objects[idx];
 end;
 
-function TProject.GetPageOrder: string;
+procedure TProject.ExportPagesToXMLTag(ATag: IXMLElement);
 var
    i: integer;
    pageControl: TPageControl;
+   tag: IXMLElement;
 begin
-   result := '';
+   tag := ATag.OwnerDocument.CreateElement('pages');
+   ATag.AppendChild(tag);
    pageControl := TInfra.GetMainForm.pgcPages;
    for i := 0 to pageControl.PageCount-1 do
-   begin
-      if i <> 0 then
-         result := result + PAGE_LIST_DELIM;
-      if GetMainPage = pageControl.Pages[i] then
-         result := result + MAIN_PAGE_MARKER
-      else
-         result := result + pageControl.Pages[i].Caption;
-   end;
+      TBlockTabSheet(pageControl.Pages[i]).ExportToXMLTag(tag);
 end;
 
 procedure TProject.SetChanged;
@@ -456,8 +450,10 @@ var
 begin
 
    ATag.SetAttribute(LANG_ATTR, GInfra.CurrentLang.Name);
-   ATag.SetAttribute(PAGE_ORDER_ATTR, GetPageOrder);
    ATag.SetAttribute(APP_VERSION_ATTR, TInfra.GetAboutForm.GetProgramVersion);
+
+   ExportPagesToXMLTag(ATag);
+
    if GetMainPage <> GetActivePage then
       ATag.SetAttribute(PAGE_FRONT_ATTR, GetActivePage.Caption);
 
@@ -483,38 +479,30 @@ end;
 
 procedure TProject.ImportPagesFromXML(ATag: IXMLElement);
 var
-   pageList, pageName, pageFront: string;
-   i, len: integer;
-   page, activePage: TTabSheet;
+   pageFront: string;
+   page, activePage: TBlockTabSheet;
+   tag: IXMLElement;
 begin
    if ATag <> nil then
    begin
       activePage := nil;
-      pageName := '';
       pageFront := ATag.GetAttribute(PAGE_FRONT_ATTR);
-      if pageFront.IsEmpty then
-         activePage := GetMainPage;
-      pageList := ATag.GetAttribute(PAGE_ORDER_ATTR);
-      len := pageList.Length;
-      for i := 1 to len do
+      tag := TXMLProcessor.FindChildTag(ATag, 'pages');
+      tag := TXMLProcessor.FindChildTag(tag, 'page');
+      while tag <> nil do
       begin
-         page := nil;
-         if pageList[i] = PAGE_LIST_DELIM then
+         page := GetPage(tag.GetAttribute('name'));
+         if page <> nil then
          begin
-            page := GetPage(pageName);
-            pageName := '';
-         end
-         else
-         begin
-            pageName := pageName + pageList[i];
-            if i = len then
-               page := GetPage(pageName);
+            page.ImportFromXMLTag(tag);
+            if (activePage = nil) and SameCaption(page.Caption, pageFront) then
+               activePage := page;
          end;
-         if (page <> nil) and (activePage = nil) and SameCaption(page.Caption, pageFront) then
-            activePage := page;
+         tag := TXMLProcessor.FindNextTag(tag);
       end;
-      if activePage <> nil then
-         activePage.PageControl.ActivePage := activePage;
+      if activePage = nil then
+         activePage := GetMainPage;
+      activePage.PageControl.ActivePage := activePage;
    end;
 end;
 
@@ -812,26 +800,6 @@ begin
    end;
 end;
 
-function TProject.GetBottomRight: TPoint;
-var
-   pnt: TPoint;
-   i: integer;
-   maxBounds: IMaxBoundable;
-begin
-   result := TPoint.Zero;
-   for i := 0 to FComponentList.Count-1 do
-   begin
-      if Supports(FComponentList[i], IMaxBoundable, maxBounds) then
-      begin
-         pnt := maxBounds.GetMaxBounds;
-         if pnt.X > result.X then
-            result.X := pnt.X;
-         if pnt.Y > result.Y then
-            result.Y := pnt.Y;
-      end;
-   end;
-end;
-
 function TProject.GetIWinControlComponent(AHandle: THandle): IWinControl;
 var
    i: integer;
@@ -887,45 +855,25 @@ end;
 
 procedure TProject.ExportToGraphic(AGraphic: TGraphic);
 var
-   pnt: TPoint;
-   bitmap: TBitmap;
+   lBitmap: TBitmap;
    page: TBlockTabSheet;
-   i: integer;
-   winControl: TWinControl;
+   pnt: TPoint;
 begin
    if AGraphic is TBitmap then
-      bitmap := TBitmap(AGraphic)
+      lBitmap := TBitmap(AGraphic)
    else
-      bitmap := TBitmap.Create;
-   pnt := GetBottomRight;
-   bitmap.Width := pnt.X;
-   bitmap.Height := pnt.Y;
+      lBitmap := TBitmap.Create;
    page := GetActivePage;
+   pnt := page.Box.GetBottomRight;
+   lBitmap.Width := pnt.X;
+   lBitmap.Height := pnt.Y;
    page.DrawI := false;
-   with bitmap.Canvas do
+   page.Box.PaintToCanvas(lBitmap.Canvas);
+   page.DrawI := true;
+   if AGraphic <> lBitmap then
    begin
-      Brush.Style := bsSolid;
-      Brush.Color := page.Brush.Color;
-      PatBlt(Handle, ClipRect.Left, ClipRect.Top, ClipRect.Right, ClipRect.Bottom, PATCOPY);
-      Lock;
-   end;
-   try
-      for i := 0 to page.ControlCount-1 do
-      begin
-         if page.Controls[i] is TWinControl then
-         begin
-            winControl := TWinControl(page.Controls[i]);
-            winControl.PaintTo(bitmap.Canvas, winControl.Left, winControl.Top);       // single call to page.PaintTo will not work for
-         end;                                                                         // currently invisible page child controls
-      end;
-   finally
-      page.DrawI := true;
-      bitmap.Canvas.Unlock;
-   end;
-   if AGraphic <> bitmap then
-   begin
-      AGraphic.Assign(bitmap);
-      bitmap.Free;
+      AGraphic.Assign(lBitmap);
+      lBitmap.Free;
    end;
 end;
 
@@ -973,10 +921,7 @@ var
 begin
    pgcPages := TInfra.GetMainForm.pgcPages;
    for i := 0 to pgcPages.PageCount-1 do
-   begin
-      pgcPages.Pages[i].Brush.Color := AColor;
-      pgcPages.Pages[i].Repaint;
-   end;
+      TBlockTabSheet(pgcPages.Pages[i]).Box.Color := AColor;
    for i := 0 to FComponentList.Count-1 do
    begin
       comp := FComponentList[i];

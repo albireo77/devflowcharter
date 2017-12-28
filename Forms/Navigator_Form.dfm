@@ -18,6 +18,7 @@ object NavigatorForm: TNavigatorForm
   OnCreate = FormCreate
   OnMouseDown = FormMouseDown
   OnMouseMove = FormMouseMove
+  OnMouseWheel = FormMouseWheel
   OnPaint = FormPaint
   OnResize = FormResize
   OnShow = FormShow

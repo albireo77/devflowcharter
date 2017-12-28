@@ -96,7 +96,6 @@ type
          class function FindDuplicatedPage(APage: TTabSheet; const ACaption: TCaption): TTabSheet;
          class function GetComboMaxWidth(ACombo: TComboBox): integer;
          class function ExportToFile(AExport: IExportable): TErrorType;
-         class function GetDisplayRect(APage: TBlockTabSheet): TRect;
          class function StripInstrEnd(const ALine: string): string;
          class function CompareProgramVersion(const AVersion: string): integer;
          class function GetBaseForms: IEnumerable<TBaseForm>;
@@ -185,7 +184,6 @@ const   // Global constants
         LB_PHOLDER  = '#!';
         LB_PHOLDER2  = '##';
 
-        PAGE_LIST_DELIM   = ',';
         VER_NUMBER_DELIM  = '.';
 
         MAIN_PAGE_MARKER  = 'mainPage#!';
@@ -1268,28 +1266,6 @@ begin
          end;
       end;
    end;
-end;
-
-class function TInfra.GetDisplayRect(APage: TBlockTabSheet): TRect;
-var
-   dv, dh: integer;
-begin
-   dv := 0;
-   dh := 0;
-   result.Top := APage.Form.VertScrollBar.Position - APage.Top;
-   if result.Top < 0 then
-   begin
-      dv := result.Top;
-      result.Top := 0;
-   end;
-   result.Left := APage.Form.HorzScrollBar.Position - APage.Left;
-   if result.Left < 0 then
-   begin
-      dh := result.Left;
-      result.Left := 0;
-   end;
-   result.Width := APage.Form.ClientWidth + dh;
-   result.Height := APage.Form.ClientHeight + dv;
 end;
 
 function TInfra.ValidateConstId(const AId: string): integer;

@@ -96,7 +96,7 @@ type
       function GetParameters: IEnumerable<TParameter>;
    end;
 
-   TUserFunction = class(TComponent, IXMLable, ITabbable, IIdentifiable, ISizeEditable, IWinControl, IMaxBoundable, IGenericComparable)
+   TUserFunction = class(TComponent, IXMLable, ITabbable, IIdentifiable, ISizeEditable, IWinControl, IGenericComparable)
    private
       FHeader: TUserFunctionHeader;
       FBody: TMainBlock;
@@ -115,7 +115,6 @@ type
       function GetId: integer;
       function GetLibName: string;
       procedure RefreshSizeEdits;
-      function GetMaxBounds: TPoint;
       function GetName: string;
       function GetHandle: THandle;
       procedure BringAllToFront;
@@ -153,7 +152,7 @@ begin
    begin
       FBody.UserFunction := Self;
       FBody.SetWidth(FBody.Width);
-      FBody.Page.Form.SetScrollBars;
+      FBody.Page.Box.SetScrollBars;
    end;
 end;
 
@@ -185,13 +184,6 @@ begin
    result := ID_INVALID;
    if FHeader <> nil then
       result := FHeader.Id;
-end;
-
-function TUserFunction.GetMaxBounds: TPoint;
-begin
-   result := TPoint.Zero;
-   if FBody <> nil then
-      result := FBody.GetMaxBounds;
 end;
 
 procedure TUserFunction.BringAllToFront;
@@ -264,7 +256,7 @@ begin
          FBody.SetVisible(vis);
          if FBody.Visible then
             FBody.RefreshStatements;
-         FBody.Page.Form.SetScrollBars;
+         FBody.Page.Box.SetScrollBars;
       end;
       if (FHeader <> nil) and (AValue <> FHeader.Active) then
          FHeader.Active := AValue;
@@ -723,7 +715,7 @@ begin
    if (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
    begin
       FUserFunction.Body.SetVisible(chkBodyVisible.Checked);
-      FUserFunction.Body.Page.Form.SetScrollBars;
+      FUserFunction.Body.Page.Box.SetScrollBars;
    end;
    cbBodyPage.Enabled := chkBodyVisible.Checked;
    GProject.SetChanged;

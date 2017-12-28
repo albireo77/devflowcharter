@@ -29,7 +29,7 @@ uses
 
 type
 
-   TComment = class(TMemoEx, IXMLable, IWinControl, IMaxBoundable, IGenericComparable, IMemoEx)
+   TComment = class(TMemoEx, IXMLable, IWinControl, IGenericComparable, IMemoEx)
       private
          FPinControl: TControl;
          FPage: TBlockTabSheet;
@@ -61,7 +61,6 @@ type
          procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl);
          procedure ExportToXMLTag(ATag: IXMLElement);
          procedure ExportToXMLTag2(ATag: IXMLElement);
-         function GetMaxBounds: TPoint;
          function GetHandle: THandle;
          procedure BringAllToFront;
          procedure SetZOrder(AValue: integer);
@@ -79,9 +78,9 @@ uses
 constructor TComment.Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight: Integer);
 begin
    inherited Create(APage.Form);
-   Parent := APage;
+   Parent := APage.Box;
    FPage := APage;
-   Color := APage.Brush.Color;
+   Color := APage.Box.Color;
    Font.Size := GSettings.FlowchartFontSize;
    Font.Color := clNavy;
    Font.Name := GSettings.FlowchartFontName;
@@ -92,7 +91,7 @@ begin
    BorderStyle := bsNone;
    Ctl3D := false;
    FZOrder := -1;
-   PopupMenu := APage.Form.pmPages;
+   PopupMenu := APage.Box.PopupMenu;
    FMouseLeave := true;
    SetBounds(ALeft, ATop, AWidth, AHeight);
    GProject.AddComponent(Self);
@@ -126,7 +125,7 @@ end;
 destructor TComment.Destroy;
 begin
    Hide;
-   FPage.Form.SetScrollBars;
+   FPage.Box.SetScrollBars;
    IsHeader := false;
    inherited Destroy;
 end;
@@ -150,7 +149,7 @@ begin
    if FPage <> APage then
    begin
       FPage := APage;
-      Parent := APage;
+      Parent := APage.Box;
    end;
 end;
 
@@ -219,7 +218,7 @@ begin
          BringToFront;
          ReleaseCapture;
          SendMessage(Handle, WM_SYSCOMMAND, $F012, 0);
-         FPage.Form.SetScrollBars
+         FPage.Box.SetScrollBars
       end;
    end;
 end;
@@ -229,16 +228,6 @@ begin
    result := 0;
    if Visible then
       result := Handle;
-end;
-
-function TComment.GetMaxBounds: TPoint;
-begin
-   result := TPoint.Zero;
-   if Visible then
-   begin
-      result.X := BoundsRect.Right + MARGIN_X;
-      result.Y := BoundsRect.Bottom + MARGIN_Y;
-   end;
 end;
 
 procedure TComment.OnChangeComment(Sender: TObject);
@@ -302,8 +291,8 @@ var
 begin
    if ATag <> nil then
    begin
-      FPage.Form.VertScrollBar.Position := 0;
-      FPage.Form.HorzScrollBar.Position := 0;
+      FPage.Box.VertScrollBar.Position := 0;
+      FPage.Box.HorzScrollBar.Position := 0;
       SetBounds(ATag.GetAttribute('x').ToInteger, ATag.GetAttribute('y').ToInteger,
                 ATag.GetAttribute('w').ToInteger, ATag.GetAttribute('h').ToInteger);
       v := StrToIntDef(ATag.GetAttribute(FONT_SIZE_ATTR), GSettings.FlowchartFontSize);

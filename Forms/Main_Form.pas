@@ -185,26 +185,16 @@ type
     procedure miPrint2Click(Sender: TObject);
     procedure miProjectClick(Sender: TObject);
     procedure miAddMainClick(Sender: TObject);
-    procedure SetScrollBars;
     procedure miNewFlowchartClick(Sender: TObject);
-    procedure ScrollV(var Msg: TWMVScroll); message WM_VSCROLL;
-    procedure ScrollH(var Msg: TWMHScroll); message WM_HSCROLL;
-    procedure FormKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure miForAscClick(Sender: TObject);
     procedure miMemoEditClick(Sender: TObject);
     procedure miMemoVScrollClick(Sender: TObject);
-    procedure PerformFormsRepaint;
     procedure miNewFunctionClick(Sender: TObject);
-    procedure AutoScrollInView(AControl: TControl); override;
-    procedure pgcPagesContextPopup(Sender: TObject; MousePos: TPoint;
-      var Handled: Boolean);
+    procedure pgcPagesContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
     procedure pmTabsPopup(Sender: TObject);
     procedure miRemovePageClick(Sender: TObject);
-    procedure pgcPagesMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure pgcPagesDragOver(Sender, Source: TObject; X, Y: Integer;
-      State: TDragState; var Accept: Boolean);
+    procedure pgcPagesMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure pgcPagesDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
     procedure pgcPagesDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure miRenamePageClick(Sender: TObject);
     procedure miAddPageClick(Sender: TObject);
@@ -213,9 +203,8 @@ type
     procedure pmEditsMenuClick(Sender: TObject);
     procedure FuncMenuClick(Sender: TObject);
     procedure miIsHeaderClick(Sender: TObject);
-    procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
-      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure miPasteTextClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
     FClockPos: TClockPos;
@@ -225,8 +214,6 @@ type
     procedure CM_MenuClosed(var msg: TMessage); message CM_MENU_CLOSED;
   public
     { Public declarations }
-    procedure ExportSettingsToXMLTag(ATag: IXMLElement); override;
-    procedure ImportSettingsFromXMLTag(ATag: IXMLElement); override;
     function ConfirmSave: integer;
     function GetMainBlockNextTopLeft: TPoint;
     procedure AcceptFile(const AFilePath: string);
@@ -289,25 +276,15 @@ begin
    end;
 end;
 
-procedure TMainForm.ScrollV(var Msg: TWMVScroll);
+procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-   inherited;
-   PerformFormsRepaint;
-end;
-
-procedure TMainForm.ScrollH(var Msg: TWMHScroll);
-begin
-   inherited;
-   PerformFormsRepaint;
+   if GProject <> nil then
+      GProject.GetActivePage.Box.BoxKeyDown(Sender, Key, Shift);
 end;
 
 procedure TMainForm.ResetForm;
 begin
    miUndoRemove.Enabled := false;
-   VertScrollBar.Range := ClientHeight;
-   HorzScrollBar.Range := ClientWidth;
-   VertScrollbar.Position := 0;
-   HorzScrollBar.Position := 0;
    Caption := PROGRAM_NAME;
    FClockPos := Low(TClockPos);
    SetMenu(false);
@@ -337,12 +314,6 @@ begin
    miGenerate.Enabled := AEnabled and clang.EnabledCodeGenerator;
    miAddMain.Enabled := AEnabled and clang.EnabledMainProgram;
    Menu := mMenu;
-end;
-
-// don't remove this method
-procedure TMainForm.AutoScrollInView(AControl: TControl);
-begin
-   //inherited AutoScrollInView(AControl);
 end;
 
 procedure TMainForm.Localize(AList: TStringList);
@@ -727,7 +698,7 @@ begin
    if GProject <> nil then
    begin
       page := GProject.GetActivePage;
-      pnt := page.ScreenToClient(pmPages.PopupPoint);
+      pnt := page.Box.ScreenToClient(page.Box.PopupMenu.PopupPoint);
       TComment.Create(page, pnt.X, pnt.Y, 150, 50);
       GProject.SetChanged;
    end;
@@ -760,7 +731,7 @@ begin
    if (Sender = miPaste) and ((func <> nil) or (comment <> nil)) then
    begin
       page := GProject.GetActivePage;
-      topLeft := page.ScreenToClient(pmPages.PopupPoint);
+      topLeft := page.Box.ScreenToClient(page.Box.PopupMenu.PopupPoint);
       if func <> nil then
       begin
          if func.Body <> nil then
@@ -978,18 +949,6 @@ begin
    GProject.SetChanged;
 end;
 
-procedure TMainForm.FormMouseWheel(Sender: TObject; Shift: TShiftState;
-   WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
-var
-   w: Word;
-begin
-   if WheelDelta < 0 then
-      w := VK_DOWN
-   else
-      w := VK_UP;
-   FormKeyDown(Self, w, [ssCtrl]);
-end;
-
 procedure TMainForm.miSubRoutinesClick(Sender: TObject);
 begin
    if Sender = miSubRoutines then
@@ -1021,6 +980,7 @@ var
    func: TUserFunction;
    impProc: TXMLImportProc;
    impFunc: boolean;
+   box: TScrollBoxEx;
 begin
    if GProject <> nil then
    begin
@@ -1040,10 +1000,11 @@ begin
             func := GProject.LastUserFunction;
             if (func <> nil) and func.Active and (func.Body <> nil) and func.Body.Visible then
             begin
-               pnt := GProject.GetActivePage.ScreenToClient(pmPages.PopupPoint);
+               box := func.Body.Page.Box;
+               pnt := box.ScreenToClient(box.PopupMenu.PopupPoint);
                func.Body.Left := pnt.X;
                func.Body.Top := pnt.Y;
-               func.Body.Page.Form.SetScrollBars;
+               box.SetScrollBars;
             end;
          end;
          TInfra.UpdateCodeEditor;
@@ -1132,32 +1093,6 @@ begin
    FHistoryMenu.AddFile(AFilePath);
 end;
 
-procedure TMainForm.ExportSettingsToXMLTag(ATag: IXMLElement);
-begin
-   ATag.SetAttribute('scrollrange_h', HorzScrollBar.Range.ToString);
-   ATag.SetAttribute('scrollrange_v', VertScrollBar.Range.ToString);
-   ATag.SetAttribute('scroll_h', HorzScrollBar.Position.ToString);
-   ATag.SetAttribute('scroll_v', VertScrollBar.Position.ToString);
-end;
-
-procedure TMainForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
-var
-   val: integer;
-begin
-   val := StrToIntDef(ATag.GetAttribute('scrollrange_h'), -1);
-   if val > -1 then
-      HorzScrollBar.Range := val;
-   val := StrToIntDef(ATag.GetAttribute('scroll_h'), -1);
-   if val > -1 then
-      HorzScrollBar.Position := val;
-   val := StrToIntDef(ATag.GetAttribute('scrollrange_v'), -1);
-   if val > -1 then
-      VertScrollBar.Range := val;
-   val := StrToIntDef(ATag.GetAttribute('scroll_v'), -1);
-   if val > -1 then
-      VertScrollBar.Position := val;
-end;
-
 procedure TMainForm.miPrint2Click(Sender: TObject);
 var
    bitmap: TBitmap;
@@ -1194,25 +1129,6 @@ begin
    end;
 end;
 
-procedure TMainForm.SetScrollBars;
-var
-   pnt: TPoint;
-begin
-   if GProject <> nil then
-   begin
-      pnt := GProject.GetBottomRight;
-      if pnt.X > ClientWidth then
-         HorzScrollBar.Range := pnt.X
-      else
-         HorzScrollBar.Range := ClientWidth;
-      if pnt.Y > ClientHeight then
-         VertScrollBar.Range := pnt.Y
-      else
-         VertScrollBar.Range := ClientHeight;
-      NavigatorForm.Invalidate;
-   end;
-end;
-
 procedure TMainForm.miNewFlowchartClick(Sender: TObject);
 var
    mainBlock: TMainBlock;
@@ -1221,37 +1137,10 @@ begin
    if GProject <> nil then
    begin
       page := GProject.GetActivePage;
-      mainBlock := TMainBlock.Create(page, page.ScreenToClient(pmPages.PopupPoint));
+      mainBlock := TMainBlock.Create(page, page.Box.ScreenToClient(page.Box.PopupMenu.PopupPoint));
       mainBlock.OnResize(mainBlock);
       TUserFunction.Create(nil, mainBlock);
       GProject.SetChanged;
-   end;
-end;
-
-procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-var
-   y: integer;
-begin
-   y := 0;
-   if Key = VK_NEXT then
-      y := 15 * 20
-   else if Key = VK_PRIOR then
-      y := -15 * 20
-   else if (Sender <> Self) or (ssCtrl in Shift) then
-   begin
-      case Key of
-         VK_DOWN, VK_RIGHT: y := 15;
-         VK_UP, VK_LEFT:    y := -15;
-      end;
-   end;
-   if y <> 0 then
-   begin
-      if Key in [VK_LEFT, VK_RIGHT] then
-         HorzScrollBar.Position := HorzScrollBar.Position + y
-      else
-         VertScrollBar.Position := VertScrollBar.Position + y;
-      Key := 0;
-      PerformFormsRepaint;
    end;
 end;
 
@@ -1312,17 +1201,15 @@ begin
    end;
 end;
 
-procedure TMainForm.PerformFormsRepaint;
-begin
-   if GSettings.EnableDBuffering or NavigatorForm.Visible then
-      Repaint;
-   NavigatorForm.Invalidate;
-end;
-
 procedure TMainForm.miNewFunctionClick(Sender: TObject);
+var
+   box: TScrollBoxEx;
 begin
    if GProject <> nil then
-      TInfra.GetFunctionsForm.AddUserFunction(GProject.GetActivePage.ScreenToClient(pmPages.PopupPoint));
+   begin
+      box := GProject.GetActivePage.Box;
+      TInfra.GetFunctionsForm.AddUserFunction(box.ScreenToClient(box.PopupMenu.PopupPoint));
+   end;
 end;
 
 procedure TMainForm.pgcPagesContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);

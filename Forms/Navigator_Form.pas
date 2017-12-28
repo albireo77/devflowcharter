@@ -3,7 +3,7 @@ unit Navigator_Form;
 interface
 
 uses
-  System.Classes, Vcl.Controls, Vcl.StdCtrls, Base_Form, OmniXML;
+  System.Classes, Vcl.Controls, Vcl.StdCtrls, System.Types, Base_Form, OmniXML;
 
 type
   TNavigatorForm = class(TBaseForm)
@@ -19,6 +19,8 @@ type
     procedure chkAlphaVisibleClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure scbAlphaValChange(Sender: TObject);
+    procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
   private
     { Private declarations }
     procedure SetAlphaValVisible(AValue: boolean);
@@ -37,7 +39,7 @@ var
 implementation
 
 uses
-   WinApi.Windows, System.SysUtils, Vcl.Graphics, Vcl.Forms, System.Types, ApplicationCommon,
+   WinApi.Windows, System.SysUtils, Vcl.Graphics, Vcl.Forms, ApplicationCommon,
    BlockTabSheet, XMLProcessor;
 
 {$R *.dfm}
@@ -55,7 +57,6 @@ begin
    scbAlphaVal.Position := GSettings.NavigatorAlphaValue;
    scbAlphaVal.OnKeyDown := TInfra.GetMainForm.OnKeyDown;
    chkAlphaVisible.Checked := GSettings.NavigatorAlphaVisible;
-   OnMouseWheel := TInfra.GetMainForm.OnMouseWheel;
 end;
 
 procedure TNavigatorForm.FormPaint(Sender: TObject);
@@ -66,8 +67,8 @@ var
    lhdc: HDC;
    edit: TCustomEdit;
    selStart, selLength, xExt, yExt: integer;
-   page: TBlockTabSheet;
-   R: TRect;
+   box: TScrollBoxEx;
+   r: TRect;
 begin
    if GProject <> nil then
    begin
@@ -79,21 +80,21 @@ begin
       end;
       lhdc := SaveDC(Canvas.Handle);
       try
-         page := GProject.GetActivePage;
-         xExt := MulDiv(EXTENT_X, page.ClientWidth, ClientWidth);
-         yExt := MulDiv(EXTENT_Y, page.ClientHeight, ClientHeight);
+         box := GProject.GetActivePage.Box;
+         xExt := MulDiv(EXTENT_X, box.HorzScrollBar.Range, ClientWidth);
+         yExt := MulDiv(EXTENT_Y, box.VertScrollBar.Range, ClientHeight);
          SetMapMode(Canvas.Handle, MM_ANISOTROPIC);
          SetWindowExtEx(Canvas.Handle, xExt, yExt, nil);
          SetViewPortExtEx(Canvas.Handle, EXTENT_X, EXTENT_Y, nil);
-         page.PaintTo(Canvas, 0, 0);
+         box.PaintToCanvas(Canvas);
          Canvas.Pen.Width := 2;
          Canvas.Pen.Color := clRed;
-         R := TInfra.GetDisplayRect(page);
-         Canvas.Polyline([R.TopLeft,
-                          Point(R.Right, R.Top),
-                          R.BottomRight,
-                          Point(R.Left, R.Bottom),
-                          R.TopLeft]);
+         r := box.GetDisplayRect;
+         Canvas.Polyline([r.TopLeft,
+                          Point(r.Right, r.Top),
+                          r.BottomRight,
+                          Point(r.Left, r.Bottom),
+                          r.TopLeft]);
       finally
          RestoreDC(Canvas.Handle, lhdc);
          if edit <> nil then
@@ -107,15 +108,15 @@ end;
 
 procedure TNavigatorForm.FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-   page: TBlockTabSheet;
+   box: TScrollBox;
 begin
    if (Button = mbLeft) and (GProject <> nil) then
    begin
-      page := GProject.GetActivePage;
-      page.Form.HorzScrollBar.Position := MulDiv(X, page.ClientWidth, ClientWidth) - (page.Form.ClientWidth div 2);
-      page.Form.VertScrollBar.Position := MulDiv(Y, page.ClientHeight, ClientHeight) - (page.Form.ClientHeight div 2);
+      box := GProject.GetActivePage.Box;
+      box.HorzScrollBar.Position := MulDiv(X, box.HorzScrollBar.Range, ClientWidth) - (box.ClientWidth div 2);
+      box.VertScrollBar.Position := MulDiv(Y, box.VertScrollBar.Range, ClientHeight) - (box.ClientHeight div 2);
       Invalidate;
-      page.Form.Repaint;
+      box.Repaint;
    end;
 end;
 
@@ -137,6 +138,13 @@ procedure TNavigatorForm.FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y
 begin
    if ssLeft in Shift then
       FormMouseDown(Sender, mbLeft, Shift, X, Y);
+end;
+
+procedure TNavigatorForm.FormMouseWheel(Sender: TObject; Shift: TShiftState;
+  WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+begin
+   if GProject <> nil then
+      GProject.GetActivePage.Box.BoxMouseWheel(Sender, Shift, WheelDelta, MousePos, Handled);
 end;
 
 procedure TNavigatorForm.ExportSettingsToXMLTag(ATag: IXMLElement);

@@ -2,7 +2,9 @@ object MainForm: TMainForm
   Left = 303
   Top = 207
   HorzScrollBar.Tracking = True
+  HorzScrollBar.Visible = False
   VertScrollBar.Tracking = True
+  VertScrollBar.Visible = False
   Align = alCustom
   Caption = 'devFlowcharter'
   ClientHeight = 800
@@ -23,7 +25,6 @@ object MainForm: TMainForm
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
-  OnMouseWheel = FormMouseWheel
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -495,7 +496,7 @@ object MainForm: TMainForm
     Left = 240
     Top = 72
     Bitmap = {
-      494C010105000900900010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010105000900B00010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

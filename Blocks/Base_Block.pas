@@ -296,13 +296,13 @@ begin
    begin
       FTopParentBlock := TGroupBlock(Self);
       inherited Create(Page.Form);
-      Parent := Page;
+      Parent := Page.Box;
    end;
 
    ParentFont  := true;
    ParentColor := true;
    Ctl3D       := false;
-   Color       := Page.Brush.Color;
+   Color       := Page.Box.Color;
    Font.Name   := GSettings.FlowchartFontName;
    PopupMenu   := Page.Form.pmPages;
    DoubleBuffered := GSettings.EnableDBuffering;
@@ -460,7 +460,7 @@ end;
 destructor TGroupBlock.Destroy;
 begin
    Hide;
-   Page.Form.SetScrollBars;
+   Page.Box.SetScrollBars;
    FBranchList.Free;
    inherited Destroy;
 end;
@@ -1078,7 +1078,7 @@ function TBlock.GetComments(AInFront: boolean = false): IEnumerable<TComment>;
 var
    comment: TComment;
    isFront: boolean;
-   lPage: TTabSheet;
+   lPage: TBlockTabSheet;
    list: TList<TComment>;
 begin
    list := TList<TComment>.Create;
@@ -1093,7 +1093,7 @@ begin
                isFront := IsInFront(comment)
             else
                isFront := true;
-            if isFront and (comment.PinControl = nil) and ClientRect.Contains(ParentToClient(comment.BoundsRect.TopLeft, lPage)) then
+            if isFront and (comment.PinControl = nil) and ClientRect.Contains(ParentToClient(comment.BoundsRect.TopLeft, lPage.Box)) then
                list.Add(comment);
          end
       end;
@@ -1244,7 +1244,7 @@ procedure TBlock.ClearSelection;
 var
    lColor: TColor;
 begin
-   lColor := Page.Brush.Color;
+   lColor := Page.Box.Color;
    if Color <> lColor then
       ChangeColor(lColor);
    NavigatorForm.Invalidate;
@@ -1284,9 +1284,9 @@ begin
          NavigatorForm.Invalidate;
       end;
    end
-   else if Color <> Page.Brush.Color then
+   else if Color <> Page.Box.Color then
    begin
-      ChangeColor(Page.Brush.Color);
+      ChangeColor(Page.Box.Color);
       if GSettings.EditorAutoSelectBlock and not FFrame then
          TInfra.GetEditorForm.UnSelectCodeRange(Self);
       NavigatorForm.Invalidate;
@@ -1682,11 +1682,11 @@ end;
 procedure TBlock.WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo);
 var
    pnt: TPoint;
-   lPage: TTabSheet;
+   lPage: TBlockTabSheet;
 begin
    inherited;
    lPage := Page;
-   pnt := ClientToParent(TPoint.Zero, lPage);
+   pnt := ClientToParent(TPoint.Zero, lPage.Box);
    if FHResize then
       Msg.MinMaxInfo.ptMaxTrackSize.X := lPage.ClientWidth - pnt.X;
    if FVResize then
@@ -1920,7 +1920,7 @@ var
    sign: integer;
 begin
    result := 0;
-   pnt := ClientToParent(ClientRect.TopLeft, Page);
+   pnt := ClientToParent(ClientRect.TopLeft, Page.Box);
    sign := System.Math.Sign(ASign);
    pnt.X := pnt.X * sign;
    pnt.Y := pnt.Y * sign;
@@ -2452,7 +2452,7 @@ begin
       PaintTo(bitmap.Canvas.Handle, 1, 1);
       for comment in GetComments do
       begin
-         pnt := ParentToClient(comment.BoundsRect.TopLeft, lPage);
+         pnt := ParentToClient(comment.BoundsRect.TopLeft, lPage.Box);
          comment.PaintTo(bitmap.Canvas.Handle, pnt.X, pnt.Y);
       end;
    finally

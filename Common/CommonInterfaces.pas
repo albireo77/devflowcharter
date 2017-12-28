@@ -90,11 +90,6 @@ type
       function GetZOrder: integer;
    end;
 
-   IMaxBoundable = interface
-      ['{4C655B74-7C42-47BD-B443-B1A15B237912}']
-      function GetMaxBounds: TPoint;
-   end;
-
    IFocusable = interface
       ['{35418E64-5114-4412-9913-B58489A8E499}']
       function RetrieveFocus(AInfo: TFocusInfo): boolean;
