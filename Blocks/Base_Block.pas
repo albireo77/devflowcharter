@@ -1918,11 +1918,11 @@ var
    comment: TComment;
    pnt: TPoint;
    sign: integer;
-   box: TScrollBoxEx;
+   lPage: TBlockTabSheet;
 begin
    result := 0;
-   box := Page.Box;
-   pnt := ClientToParent(ClientRect.TopLeft, box) + Point(box.HorzScrollBar.Position, box.VertScrollBar.Position);
+   lPage := Page;
+   pnt := ClientToParent(TPoint.Zero, lPage.Box);
    sign := System.Math.Sign(ASign);
    pnt.X := pnt.X * sign;
    pnt.Y := pnt.Y * sign;
@@ -1933,11 +1933,15 @@ begin
       comment.Visible := ASign > 0;
       if comment.Visible then
       begin
+         comment.Parent := lPage.Box;
          comment.PinControl := nil;
          comment.BringToFront;
       end
       else
+      begin
          comment.PinControl := Self;
+         comment.Parent := lPage;
+      end;
    end;
 end;
 
