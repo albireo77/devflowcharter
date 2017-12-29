@@ -464,7 +464,7 @@ begin
 
    pageControl := TInfra.GetMainForm.pgcPages;
    for i := 0 to pageControl.PageCount-1 do
-      UpdateZOrder(pageControl.Pages[i]);
+      UpdateZOrder(TBlockTabSheet(pageControl.Pages[i]).Box);
 
    components := GetComponents<TComponent>(TComponentComparer.Create(PAGE_INDEX_COMPARE));
    for comp in components do
