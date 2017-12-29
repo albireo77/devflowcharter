@@ -414,6 +414,7 @@ begin
    if FPage.Box.VertScrollBar.Position + BoundsRect.Bottom < MARGIN_Y then
       Top := 0;
    BringAllToFront;
+   FPage.Box.Invalidate;
 end;
 
 function TMainBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
