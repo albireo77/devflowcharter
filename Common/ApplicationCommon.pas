@@ -150,7 +150,6 @@ const   // Global constants
 
         PAGE_CAPTION_ATTR = 'tab';
         COMMENT_ATTR      = 'comment';
-        PAGE_ORDER_ATTR   = 'pageOrder';
         PAGE_FRONT_ATTR   = 'pageFront';
         LANG_ATTR         = 'language';
         FOLDED_ATTR       = 'folded';
