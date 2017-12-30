@@ -1784,13 +1784,15 @@ var
    idx, idx2, i: integer;
    txt: string;
    memo: TCustomMemo;
+   box: TScrollBoxEx;
 begin
    result := false;
    if ContainsControl(AInfo.FocusEdit) and AInfo.FocusEdit.CanFocus then
    begin
-      Page.Show;
+      box := Page.Box;
+      box.Show;
       FTopParentBlock.BringAllToFront;
-      Page.Form.ScrollInView(AInfo.FocusEdit);
+      box.ScrollInView(AInfo.FocusEdit);
       idx2 := 0;
       if AInfo.FocusEdit is TCustomMemo then
       begin

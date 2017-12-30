@@ -50,7 +50,7 @@ implementation
 
 uses
    Vcl.Forms, System.SysUtils, ApplicationCommon, Base_Block, Main_Block, Navigator_Form,
-   UserFunction, CommonInterfaces, XMLProcessor;
+   UserFunction, CommonInterfaces, XMLProcessor, BlockTabSheet;
 
 procedure TFunctionsForm.miAddClick(Sender: TObject);
 begin
@@ -80,13 +80,15 @@ end;
 procedure TFunctionsForm.pgcTabsChange(Sender: TObject);
 var
    body: TMainBlock;
+   bpage: TBlockTabSheet;
 begin
    inherited pgcTabsChange(Sender);
    body := TUserFunctionHeader(pgcTabs.ActivePage).UserFunction.Body;
    if (body <> nil) and body.Visible then
    begin
-      body.Page.PageControl.ActivePage := body.Page;
-      body.Page.Form.ScrollInView(body);
+      bpage := body.Page;
+      bpage.PageControl.ActivePage := bpage;
+      bpage.Box.ScrollInView(body);
       body.BringAllToFront;
       NavigatorForm.Invalidate;
    end;
