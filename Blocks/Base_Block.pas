@@ -1683,15 +1683,15 @@ end;
 procedure TBlock.WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo);
 var
    pnt: TPoint;
-   lPage: TBlockTabSheet;
+   box: TScrollBoxEx;
 begin
    inherited;
-   lPage := Page;
-   pnt := ClientToParent(TPoint.Zero, lPage.Box);
+   box := Page.Box;
+   pnt := ClientToParent(TPoint.Zero, box);
    if FHResize then
-      Msg.MinMaxInfo.ptMaxTrackSize.X := lPage.ClientWidth - pnt.X;
+      Msg.MinMaxInfo.ptMaxTrackSize.X := box.ClientWidth - pnt.X;
    if FVResize then
-      Msg.MinMaxInfo.ptMaxTrackSize.Y := lPage.ClientHeight - pnt.Y;
+      Msg.MinMaxInfo.ptMaxTrackSize.Y := box.ClientHeight - pnt.Y;
 end;
 
 function TBlock.IsCursorSelect: boolean;
