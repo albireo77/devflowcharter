@@ -1,3 +1,6 @@
+5.9 [31.12.2017]
+- fix several not-scrolled-in-view regressions from previous version
+
 5.8 [29.12.2017]
 - compiled with Delphi 10.2
 - add scrollbars for each flowchart sheet
@@ -45,7 +48,7 @@ In devF 5.0 saving user datatypes to XML project files was modified. There are 2
     XML attribute before 5.0:	XML attribute from 5.0:
     struct_type="True"			kind="dtRecord"
     array_type="True"			kind="dtArray"
-    int_type="True"				kind="dtInt"
+    int_type="True"			kind="dtInt"
     real_type="True"			kind="dtReal"
     enum_type="True"			kind="dtEnum"
     other_type="True"			kind="dtOther"

@@ -275,7 +275,7 @@ implementation
 uses
    System.StrUtils, Vcl.Menus, System.Types, System.Math, Main_Block, Return_Block,
    ApplicationCommon, BlockFactory, UserFunction, XMLProcessor, Navigator_Form,
-   LangDefinition, FlashThread;
+   LangDefinition, FlashThread, Main_Form;
 
 type
    THackControl = class(TControl);
@@ -396,7 +396,7 @@ var
    grpBlock: TGroupBlock;
    newBlock, prevBlock, block: TBlock;
    lBranch, lBranch2: TBranch;
-   i: integer;
+   i, w2: integer;
 begin
    inherited CloneFrom(ABlock);
    if ABlock is TGroupBlock then
@@ -413,12 +413,13 @@ begin
          Height := grpBlock.Height;
          FMemoFolder.SetBounds(3, 3, Width-6, Height-36);
          FMemoFolder.Anchors := [akRight, akLeft, akBottom, akTop];
-         BottomPoint.X := Width div 2;
+         w2 := Width div 2;
+         BottomPoint.X := w2;
          BottomPoint.Y := Height - 30;
-         IPoint.X := (Width div 2) + 30;
+         IPoint.X := w2 + 30;
          IPoint.Y := FMemoFolder.Height + 15;
-         TopHook.X := Width div 2;
-         BottomHook := Width div 2;
+         TopHook.X := w2;
+         BottomHook := w2;
          FMemoFolder.Visible := true;
       end
       else
@@ -746,7 +747,7 @@ end;
 procedure TBlock.MyOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
    menuItem: TMenuItem;
-   lPage: TBlockTabSheet;
+   mForm: TMainForm;
 begin
    if Button = mbLeft then
    begin
@@ -760,26 +761,26 @@ begin
          FTopParentBlock.OnResize(FTopParentBlock);
          if Ired >= 0 then
          begin
-            lPage := Page;
+            mForm := Page.Form;
             menuItem := nil;
             case GCustomCursor of
-               crInstr:       menuItem := lPage.Form.miInstr;
-               crMultiInstr:  menuItem := lPage.Form.miMultiInstr;
-               crIfElse:      menuItem := lPage.Form.miIfElse;
-               crWhile:       menuItem := lPage.Form.miWhile;
-               crFor:         menuItem := lPage.Form.miFor;
-               crRepeat:      menuItem := lPage.Form.miRepeat;
-               crInput:       menuItem := lPage.Form.miInput;
-               crOutput:      menuItem := lPage.Form.miOutput;
-               crFuncCall:    menuItem := lPage.Form.miRoutineCall;
-               crIf:          menuItem := lPage.Form.miIf;
-               crCase:        menuItem := lPage.Form.miCase;
-               crFolder:      menuItem := lPage.Form.miFolder;
-               crText:        menuItem := lPage.Form.miText;
+               crInstr:       menuItem := mForm.miInstr;
+               crMultiInstr:  menuItem := mForm.miMultiInstr;
+               crIfElse:      menuItem := mForm.miIfElse;
+               crWhile:       menuItem := mForm.miWhile;
+               crFor:         menuItem := mForm.miFor;
+               crRepeat:      menuItem := mForm.miRepeat;
+               crInput:       menuItem := mForm.miInput;
+               crOutput:      menuItem := mForm.miOutput;
+               crFuncCall:    menuItem := mForm.miRoutineCall;
+               crIf:          menuItem := mForm.miIf;
+               crCase:        menuItem := mForm.miCase;
+               crFolder:      menuItem := mForm.miFolder;
+               crText:        menuItem := mForm.miText;
                crReturn:
                begin
                   if CanInsertReturnBlock then
-                     menuItem := lPage.Form.miReturn;
+                     menuItem := mForm.miReturn;
                end;
             end;
             if menuItem <> nil then
