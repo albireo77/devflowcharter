@@ -1997,7 +1997,7 @@ end;
 
 procedure TGroupBlock.ExpandFold(AResize: boolean);
 var
-   tmpWidth, tmpHeight, i: integer;
+   tmpWidth, tmpHeight, i, w2: integer;
    block: TBlock;
    textControl: TCustomEdit;
 begin
@@ -2054,12 +2054,13 @@ begin
       Height := tmpHeight;
       FMemoFolder.SetBounds(3, 3, Width-6, Height-36);
       FMemoFolder.Anchors := [akRight, akLeft, akBottom, akTop];
-      BottomPoint.X := Width div 2;
+      w2 := Width div 2;
+      BottomPoint.X := w2;
       BottomPoint.Y := Height - 30;
-      IPoint.X := (Width div 2) + 30;
+      IPoint.X := w2 + 30;
       IPoint.Y := FMemoFolder.Height + 15;
-      TopHook.X := Width div 2;
-      BottomHook := Width div 2;
+      TopHook.X := w2;
+      BottomHook := w2;
    end;
 
    if AResize and (FParentBlock <> nil) then
