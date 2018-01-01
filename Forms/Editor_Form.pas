@@ -938,7 +938,7 @@ const
 var
    i, f, len: integer;
    c: char;
-   highAttr: TSynHighlighterAttributes;
+   hAttr: TSynHighlighterAttributes;
    p: TBufferCoord;
    s, s1: string;
    pos: TPoint;
@@ -958,10 +958,11 @@ begin
          while f > 0 do
          begin
             p := BufferCoord(f, i+1);
-            memCodeEditor.GetHighlighterAttriAtRowCol(p, s1, highAttr);
+            memCodeEditor.GetHighlighterAttriAtRowCol(p, s1, hAttr);
             s1 := Copy(s, f, len);
             pos := CharToPixels(p);
-            Canvas.Font.Style := highAttr.Style;
+            if hAttr <> nil then
+               Canvas.Font.Style := hAttr.Style;
             Canvas.TextOut(pos.X, pos.Y, s1);
             f := TInfra.FindText(FDialog.FindText, s, f+len, frMatchCase in FDialog.Options);
          end;
@@ -977,12 +978,11 @@ begin
       CharInSet(c, Brackets) then exit;
    p := memCodeEditor.CaretXY;
    s := c;
-   memCodeEditor.GetHighlighterAttriAtRowCol(p, s, highAttr);
-   if memCodeEditor.Highlighter.SymbolAttribute = highAttr then
+   if memCodeEditor.GetHighlighterAttriAtRowCol(p, s, hAttr) and (memCodeEditor.Highlighter.SymbolAttribute = hAttr) then
    begin
       Canvas.Brush.Style := bsSolid;
       Canvas.Font.Assign(memCodeEditor.Font);
-      Canvas.Font.Style := highAttr.Style;
+      Canvas.Font.Style := hAttr.Style;
       pos := CharToPixels(p);
       if TransientType = ttAfter then
       begin
@@ -991,8 +991,8 @@ begin
       end
       else
       begin
-         fontColor := highAttr.Foreground;
-         brushColor := highAttr.Background;
+         fontColor := hAttr.Foreground;
+         brushColor := hAttr.Background;
       end;
       if fontColor = clNone then
          fontColor := memCodeEditor.Font.Color;
@@ -1024,7 +1024,7 @@ procedure TEditorForm.memCodeEditorMouseMove(Sender: TObject; Shift: TShiftState
 var
    p, p1: TBufferCoord;
    w, h, scope: string;
-   highAttr: TSynHighlighterAttributes;
+   hAttr: TSynHighlighterAttributes;
    show, gCheck, lCheck: boolean;
    idInfo: TIdentInfo;
    obj: TObject;
@@ -1067,8 +1067,8 @@ begin
       show := true;
       if memCodeEditor.Highlighter <> nil then
       begin
-         memCodeEditor.GetHighlighterAttriAtRowCol(p, w, highAttr);
-         if memCodeEditor.Highlighter.StringAttribute = highAttr then
+         memCodeEditor.GetHighlighterAttriAtRowCol(p, w, hAttr);
+         if memCodeEditor.Highlighter.StringAttribute = hAttr then
             show := false;
       end;
    end;
