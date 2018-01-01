@@ -1,3 +1,6 @@
+5.10 [01.01.2018]
+- Code Editor: fix memory access violation when no highlighter available
+
 5.9 [31.12.2017]
 - fix several not-scrolled-in-view regressions from previous version
 
