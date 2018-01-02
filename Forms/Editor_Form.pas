@@ -974,8 +974,8 @@ begin
    c := #0;
    if (i >= 0) and (i < memCodeEditor.Text.Length) then
       c := memCodeEditor.Text[i+1];
-   if (memCodeEditor.Highlighter = nil) or memCodeEditor.SelAvail or (GSettings.EditorBracketColor = memCodeEditor.Font.Color) or not
-      CharInSet(c, Brackets) then exit;
+   if memCodeEditor.SelAvail or (GSettings.EditorBracketColor = memCodeEditor.Font.Color) or not CharInSet(c, Brackets) then
+      exit;
    p := memCodeEditor.CaretXY;
    s := c;
    if memCodeEditor.GetHighlighterAttriAtRowCol(p, s, hAttr) and (memCodeEditor.Highlighter.SymbolAttribute = hAttr) then
@@ -1023,9 +1023,9 @@ end;
 procedure TEditorForm.memCodeEditorMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 var
    p, p1: TBufferCoord;
-   w, h, scope: string;
+   w, w1, h, scope: string;
    hAttr: TSynHighlighterAttributes;
-   show, gCheck, lCheck: boolean;
+   gCheck, lCheck: boolean;
    idInfo: TIdentInfo;
    obj: TObject;
    block: TBlock;
@@ -1037,7 +1037,6 @@ begin
    FCloseBracketPos := TPoint.Zero;
    memCodeEditor.ShowHint := false;
    memCodeEditor.Hint := '';
-   show := false;
    p := memCodeEditor.DisplayToBufferPos(memCodeEditor.PixelsToRowColumn(X, Y));
    p1 := memCodeEditor.GetMatchingBracketEx(p);
    if (p1.Line > 0) and (p1.Line < p.Line) then
@@ -1062,64 +1061,54 @@ begin
       end;
    end;
    w := memCodeEditor.GetWordAtRowCol(p);
-   if not w.IsEmpty then
+   w1 := w;
+   if w1.IsEmpty or (memCodeEditor.GetHighlighterAttriAtRowCol(p, w1, hAttr) and (memCodeEditor.Highlighter.StringAttribute = hAttr)) then
+      exit;
+   block := nil;
+   gCheck := true;
+   lCheck := true;
+   idInfo.New;
+   obj := memCodeEditor.Lines.Objects[p.Line-1];
+   idInfo.Ident := w;
+   if TInfra.IsValid(obj) and (obj is TBlock) then
+      block := TBlock(obj);
+   TParserHelper.GetParameterInfo(TInfra.GetFunctionHeader(block), idInfo);
+   if idInfo.TType <> NOT_DEFINED then
    begin
-      show := true;
-      if memCodeEditor.Highlighter <> nil then
-      begin
-         memCodeEditor.GetHighlighterAttriAtRowCol(p, w, hAttr);
-         if memCodeEditor.Highlighter.StringAttribute = hAttr then
-            show := false;
-      end;
+      lCheck := false;
+      gCheck := false;
    end;
-   if show then
+   if lCheck then
    begin
-      block := nil;
-      gCheck := true;
-      lCheck := true;
-      idInfo.New;
-      obj := memCodeEditor.Lines.Objects[p.Line-1];
-      idInfo.Ident := w;
-      if TInfra.IsValid(obj) and (obj is TBlock) then
-         block := TBlock(obj);
-      TParserHelper.GetParameterInfo(TInfra.GetFunctionHeader(block), idInfo);
+      TParserHelper.GetVariableInfo(TParserHelper.FindUserFunctionVarList(block), idInfo);
       if idInfo.TType <> NOT_DEFINED then
-      begin
-         lCheck := false;
          gCheck := false;
-      end;
-      if lCheck then
+   end;
+   if gCheck then
+      idInfo := TParserHelper.GetIdentInfo(w);
+   case idInfo.Scope of
+      LOCAL: scope := 'VarLocal';
+      PARAMETER: scope := 'VarParm';
+   else
+      scope := 'VarGlobal';
+   end;
+   scope := i18Manager.GetString(scope);
+   case idInfo.IdentType of
+      VARRAY:
       begin
-         TParserHelper.GetVariableInfo(TParserHelper.FindUserFunctionVarList(block), idInfo);
-         if idInfo.TType <> NOT_DEFINED then
-            gCheck := false;
+         h := i18Manager.GetFormattedString('HintArray', [scope, idInfo.DimensCount, w, idInfo.SizeAsString, idInfo.TypeAsString]);
+         if (idInfo.SizeExpArrayAsString <> idInfo.SizeAsString) and not idInfo.SizeExpArrayAsString.IsEmpty then
+            h := h + sLineBreak + i18Manager.GetFormattedString('HintArrayExp', [idInfo.TypeAsString, sLineBreak, scope, idInfo.DimensCount, w, idInfo.SizeExpArrayAsString, idInfo.TypeOriginalAsString]);
       end;
-      if gCheck then
-         idInfo := TParserHelper.GetIdentInfo(w);
-      case idInfo.Scope of
-         LOCAL: scope := 'VarLocal';
-         PARAMETER: scope := 'VarParm';
-      else
-         scope := 'VarGlobal';
-      end;
-      scope := i18Manager.GetString(scope);
-      case idInfo.IdentType of
-         VARRAY:
-         begin
-            h := i18Manager.GetFormattedString('HintArray', [scope, idInfo.DimensCount, w, idInfo.SizeAsString, idInfo.TypeAsString]);
-            if (idInfo.SizeExpArrayAsString <> idInfo.SizeAsString) and not idInfo.SizeExpArrayAsString.IsEmpty then
-               h := h + sLineBreak + i18Manager.GetFormattedString('HintArrayExp', [idInfo.TypeAsString, sLineBreak, scope, idInfo.DimensCount, w, idInfo.SizeExpArrayAsString, idInfo.TypeOriginalAsString]);
-         end;
-         VARIABLE:   h := i18Manager.GetFormattedString('HintVar', [scope, w, idInfo.TypeAsString]);
-         CONSTANT:   h := i18Manager.GetFormattedString('HintConst', [w, idInfo.Value]);
-         ROUTINE_ID: h := i18Manager.GetFormattedString('HintRoutine', [w, idInfo.TypeAsString]);
-         ENUM_VALUE: h := i18Manager.GetFormattedString('HintEnum', [w, idInfo.TypeAsString]);
-      end;
-      if not h.IsEmpty then
-      begin
-         memCodeEditor.Hint := h;
-         memCodeEditor.ShowHint := true;
-      end;
+      VARIABLE:   h := i18Manager.GetFormattedString('HintVar', [scope, w, idInfo.TypeAsString]);
+      CONSTANT:   h := i18Manager.GetFormattedString('HintConst', [w, idInfo.Value]);
+      ROUTINE_ID: h := i18Manager.GetFormattedString('HintRoutine', [w, idInfo.TypeAsString]);
+      ENUM_VALUE: h := i18Manager.GetFormattedString('HintEnum', [w, idInfo.TypeAsString]);
+   end;
+   if not h.IsEmpty then
+   begin
+      memCodeEditor.Hint := h;
+      memCodeEditor.ShowHint := true;
    end;
 end;
 
