@@ -478,7 +478,7 @@ begin
    btnAddElement.Font.Style := [];
    btnAddElement.DoubleBuffered := true;
    btnAddElement.Caption := i18Manager.GetString('btnAddParm');
-   btnAddElement.SetBounds(4, 81, 381, 25);
+   btnAddElement.SetBounds(8, 81, 377, 25);
    btnAddElement.Anchors := [akBottom];
    btnAddElement.OnClick := AddElement;
    btnAddElement.Anchors := [akLeft, akRight, akBottom];
