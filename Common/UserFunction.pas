@@ -439,6 +439,8 @@ begin
    chkExtDeclare.Alignment := taLeftJustify;
 
    CreateLibControls(gbHeader, 8, 52);
+   l := lblLibrary.BoundsRect.Right + 5;
+   edtLibrary.SetBounds(l, edtLibrary.Top, edtName.BoundsRect.Right-l, edtLibrary.Height);
 
    gbParams := TGroupBox.Create(Self);
    gbParams.Parent := Self;
