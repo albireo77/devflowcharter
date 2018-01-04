@@ -325,7 +325,7 @@ begin
    for i := 0 to AColCount-1 do
       sgList.Cells[i, 0] := i18Manager.GetString('sgVarListCol' + i.ToString);
 
-   edtName.SetBounds(lblName.Width+10, 17, btnRemove.Left+btnRemove.Width-lblName.Width-12, 21);
+   edtName.SetBounds(lblName.Width+10, 17, btnRemove.BoundsRect.Right-lblName.Width-12, 21);
    
    lblType := TLabel.Create(gbBox);
    lblType.Parent := gbBox;
@@ -341,27 +341,29 @@ begin
 
    edtSize := TSizeEdit.Create(gbBox);
    edtSize.Parent := gbBox;
-   edtSize.SetBounds(lblSize.Width+10, 42, edtName.Left+edtName.Width-lblSize.Width-9, 21);
+   edtSize.SetBounds(lblSize.Width+10, 42, edtName.BoundsRect.Right-lblSize.Width-9, 21);
    edtSize.OnKeyDown := OnKeyDownCommon;
-
-   cbType := TComboBox.Create(gbBox);
-   cbType.Parent := gbBox;
-   cbType.Style := csDropDownList;
-   cbType.SetBounds(lblName.Width+edtName.Width+lblType.Width+25, 17, 73, 21);
-   cbType.Constraints.MaxWidth := gbBox.Width - cbType.Left - 7;
-   cbType.OnKeyDown := OnKeyDownCommon;
-   TInfra.PopulateDataTypeCombo(cbType);
 
    lblInit := TLabel.Create(gbBox);
    lblInit.Parent := gbBox;
-   lblInit.Left := edtSize.Left + edtSize.Width + 10;
+   lblInit.Left := edtSize.BoundsRect.Right + 10;
    lblInit.Top := 47;
    lblInit.Caption := i18Manager.GetString('sgVarListCol3');
 
    edtInit := TEdit.Create(gbBox);
    edtInit.Parent := gbBox;
-   edtInit.SetBounds(lblInit.Left+lblInit.Width+5, 42, gbBox.Width-lblInit.Width-lblInit.Left-13, 21);
+   edtInit.SetBounds(lblInit.BoundsRect.Right+5, 42, gbBox.Width-lblInit.BoundsRect.Right-13, 21);
    edtInit.OnKeyDown := OnKeyDownCommon;
+
+   cbType := TComboBox.Create(gbBox);
+   cbType.Parent := gbBox;
+   cbType.Style := csDropDownList;
+   i := lblType.BoundsRect.Right + 5;
+   cbType.Constraints.MaxWidth := edtInit.BoundsRect.Right - i;
+   cbType.Constraints.MinWidth := cbType.Constraints.MaxWidth;
+   cbType.SetBounds(i, 17, 0, 21);
+   cbType.OnKeyDown := OnKeyDownCommon;
+   TInfra.PopulateDataTypeCombo(cbType);
 
    gbBox.Caption := i18Manager.GetString('gbVariable');
    Anchors := Anchors + [akBottom];

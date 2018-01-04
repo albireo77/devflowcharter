@@ -242,6 +242,8 @@ begin
 end;
 
 procedure TTabComponent.CreateLibControls(AParent: TWinControl; x, y: integer);
+var
+   i: integer;
 begin
    lblLibrary := TLabel.Create(AParent);
    lblLibrary.Parent := AParent;
@@ -253,7 +255,8 @@ begin
 
    edtLibrary := TEdit.Create(AParent);
    edtLibrary.Parent := AParent;
-   edtLibrary.SetBounds(lblLibrary.BoundsRect.Right+5, y-6, 115-lblLibrary.Width, 21);
+   i := lblLibrary.BoundsRect.Right + 5;
+   edtLibrary.SetBounds(i, y-6, edtName.BoundsRect.Right-i, 21);
    edtLibrary.ParentFont := false;
    edtLibrary.Font.Style := [];
    edtLibrary.Font.Color := clGreen;
