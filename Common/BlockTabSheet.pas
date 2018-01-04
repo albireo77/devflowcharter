@@ -100,15 +100,15 @@ end;
 procedure TBlockTabSheet.ExportToXMLTag(ATag: IXMLElement);
 var
    tag: IXMLElement;
-   name: string;
+   lName: string;
 begin
    tag := ATag.OwnerDocument.CreateElement('page');
    ATag.AppendChild(tag);
    if GProject.GetMainPage = Self then
-      name := MAIN_PAGE_MARKER
+      lName := MAIN_PAGE_MARKER
    else
-      name := Caption;
-   tag.SetAttribute('name', name);
+      lName := Caption;
+   tag.SetAttribute('name', lName);
    tag.SetAttribute('hScrollRange', Box.HorzScrollBar.Range.ToString);
    tag.SetAttribute('vScrollRange', Box.VertScrollBar.Range.ToString);
    tag.SetAttribute('hScrollPos', Box.HorzScrollBar.Position.ToString);

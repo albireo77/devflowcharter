@@ -210,7 +210,7 @@ begin
    chkExtDeclare := TCheckBox.Create(AParent);
    chkExtDeclare.Parent := AParent;
    chkExtDeclare.Caption := i18Manager.GetString('chkExtDeclare');
-   chkExtDeclare.SetBounds(x, y, PageControl.Canvas.TextWidth(chkExtDeclare.Caption) + 25, 17);
+   chkExtDeclare.SetBounds(x, y, PageControl.Canvas.TextWidth(chkExtDeclare.Caption) + 20, 17);
    chkExtDeclare.ParentFont := false;
    chkExtDeclare.Font.Style := [];
    chkExtDeclare.Font.Color := clWindowText;

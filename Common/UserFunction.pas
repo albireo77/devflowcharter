@@ -435,7 +435,9 @@ begin
    TInfra.PopulateDataTypeCombo(cbType);
    cbType.OnChange := OnChangeType;
 
-   CreateExtDeclareChBox(gbHeader, 143, 52);
+   CreateExtDeclareChBox(gbHeader, 145, 52);
+   chkExtDeclare.Alignment := taLeftJustify;
+
    CreateLibControls(gbHeader, 8, 52);
 
    gbParams := TGroupBox.Create(Self);
