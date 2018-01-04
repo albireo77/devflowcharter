@@ -396,7 +396,7 @@ begin
    chkBodyVisible.ParentFont := false;
    chkBodyVisible.Font.Style := [];
    chkBodyVisible.Font.Color := clWindowText;
-   chkBodyVisible.SetBounds(l, 20, 150, 17);
+   chkBodyVisible.SetBounds(l, 23, 150, 17);
    chkBodyVisible.Caption := i18Manager.GetString('Visible');
    chkBodyVisible.DoubleBuffered := true;
    chkBodyVisible.Anchors := [akBottom, akLeft];
