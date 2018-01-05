@@ -210,7 +210,7 @@ begin
 
    btnRemove := TButton.Create(Self);
    btnRemove.Parent := Self;
-   btnRemove.SetBounds(5, sgList.Top+sgList.Height+8, (Width div 2)-5, 25);
+   btnRemove.SetBounds(5, sgList.BoundsRect.Bottom+8, (Width div 2)-5, 25);
    btnRemove.OnClick := OnClickRemove;
    btnRemove.Caption := i18Manager.GetString('btnRemove');
    btnRemove.ParentFont := false;
@@ -230,7 +230,7 @@ begin
 
    gbBox := TGroupBox.Create(Self);
    gbBox.Parent := Self;
-   gbBox.SetBounds(5, btnChange.Top+btnChange.Height+4, AGBoxWidth, 72);
+   gbBox.SetBounds(5, btnChange.BoundsRect.Bottom+4, AGBoxWidth, 72);
    gbBox.ParentFont := false;
    gbBox.ParentBackground := false;
    gbBox.Font.Style := [];
@@ -249,7 +249,7 @@ begin
 
    btnAdd := TButton.Create(Self);
    btnAdd.Parent := Self;
-   btnAdd.SetBounds(5, gbBox.Top+gbBox.Height+3, (Width-11) div 3, 25);
+   btnAdd.SetBounds(5, gbBox.BoundsRect.Bottom+3, (Width-11) div 3, 25);
    btnAdd.OnClick := OnClickAdd;
    btnAdd.ParentFont := false;
    btnAdd.Font.Style := [];

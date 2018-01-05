@@ -417,7 +417,7 @@ begin
 
    lblType := TLabel.Create(gbHeader);
    lblTYpe.Parent := gbHeader;
-   lblType.SetBounds(145, 25, 0, 13);
+   lblType.SetBounds(165, 25, 0, 13);
    lblType.ParentFont := false;
    lblType.Caption := i18Manager.GetString('lblRetType');
    lblType.Font.Style := [];
@@ -435,7 +435,7 @@ begin
    TInfra.PopulateDataTypeCombo(cbType);
    cbType.OnChange := OnChangeType;
 
-   CreateExtDeclareChBox(gbHeader, 145, 52);
+   CreateExtDeclareChBox(gbHeader, 165, 52);
    chkExtDeclare.Alignment := taLeftJustify;
 
    CreateLibControls(gbHeader, 8, 52);

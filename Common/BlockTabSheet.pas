@@ -68,7 +68,8 @@ type
 implementation
 
 uses
-   WinApi.Windows, System.SysUtils, ApplicationCommon, UserFunction, Navigator_Form;
+   WinApi.Windows, System.SysUtils, System.StrUtils, ApplicationCommon, UserFunction,
+   Navigator_Form;
 
 constructor TBlockTabSheet.Create(AMainForm: TMainForm);
 begin
@@ -100,15 +101,10 @@ end;
 procedure TBlockTabSheet.ExportToXMLTag(ATag: IXMLElement);
 var
    tag: IXMLElement;
-   lName: string;
 begin
    tag := ATag.OwnerDocument.CreateElement('page');
    ATag.AppendChild(tag);
-   if GProject.GetMainPage = Self then
-      lName := MAIN_PAGE_MARKER
-   else
-      lName := Caption;
-   tag.SetAttribute('name', lName);
+   tag.SetAttribute('name', IfThen(GProject.GetMainPage = Self, MAIN_PAGE_MARKER, Caption));
    tag.SetAttribute('hScrollRange', Box.HorzScrollBar.Range.ToString);
    tag.SetAttribute('vScrollRange', Box.VertScrollBar.Range.ToString);
    tag.SetAttribute('hScrollPos', Box.HorzScrollBar.Position.ToString);

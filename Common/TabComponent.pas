@@ -232,7 +232,7 @@ begin
 
    edtName := TEdit.Create(AParent);
    edtName.Parent := AParent;
-   edtName.SetBounds(lblName.BoundsRect.Right+5, y-6, 84, 21);
+   edtName.SetBounds(lblName.BoundsRect.Right+5, y-6, 104, 21);
    edtName.ParentFont := false;
    edtName.Font.Style := [];
    edtName.ShowHint := true;
@@ -253,7 +253,7 @@ begin
 
    edtLibrary := TEdit.Create(AParent);
    edtLibrary.Parent := AParent;
-   edtLibrary.SetBounds(lblLibrary.BoundsRect.Right+5, y-6, 115-lblLibrary.Width, 21);
+   edtLibrary.SetBounds(lblLibrary.BoundsRect.Right+5, y-6, 135-lblLibrary.Width, 21);
    edtLibrary.ParentFont := false;
    edtLibrary.Font.Style := [];
    edtLibrary.Font.Color := clGreen;
