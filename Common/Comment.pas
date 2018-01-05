@@ -291,8 +291,6 @@ var
 begin
    if ATag <> nil then
    begin
-      FPage.Box.VertScrollBar.Position := 0;
-      FPage.Box.HorzScrollBar.Position := 0;
       SetBounds(ATag.GetAttribute('x').ToInteger, ATag.GetAttribute('y').ToInteger,
                 ATag.GetAttribute('w').ToInteger, ATag.GetAttribute('h').ToInteger);
       v := StrToIntDef(ATag.GetAttribute(FONT_SIZE_ATTR), GSettings.FlowchartFontSize);
