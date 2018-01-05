@@ -45,7 +45,7 @@ type
          FId,
          FDragRow,
          FCheckBoxCol: integer;
-         FPlural: string;
+         FIdPlural: string;
          function GetId: integer;
          function IsDeclared(const AName: string; AssociatedListCheck: boolean): boolean;
          function AddUpdateRow: integer; virtual;
@@ -311,7 +311,7 @@ begin
 
    gbBox.Caption := i18Manager.GetString('gbConstant');
    Anchors := Anchors + [akBottom];
-   FPlural := i18Manager.GetString('consts');
+   FIdPlural := i18Manager.GetString('consts');
 
 end;
 
@@ -367,7 +367,7 @@ begin
 
    gbBox.Caption := i18Manager.GetString('gbVariable');
    Anchors := Anchors + [akBottom];
-   FPlural := i18Manager.GetString('vars');
+   FIdPlural := i18Manager.GetString('vars');
    
 end;
 
@@ -668,7 +668,7 @@ var
 begin
    if sgList.RowCount > 2 then
    begin
-      fileName := GProject.Name + '_' + FPlural;
+      fileName := GProject.Name + '_' + FIdPlural;
       TXMLProcessor.ExportToXMLFile(ExportToXMLTag, fileName);
    end;
 end;

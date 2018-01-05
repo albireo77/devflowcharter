@@ -1,3 +1,7 @@
+5.11 [05.01.2018]
+- fix issues with comments (disappearing after loading project or blinking upon saving)
+- minor GUI improvements
+
 5.10 [01.01.2018]
 - Code Editor: fix memory access violation when no highlighter available
 

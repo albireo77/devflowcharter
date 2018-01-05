@@ -1932,8 +1932,8 @@ begin
    for comment in AComments do
    begin
       Inc(result);
-      comment.SetBounds(comment.Left + pnt.X, comment.Top + pnt.Y, comment.Width, comment.Height);
       comment.Visible := ASign > 0;
+      comment.SetBounds(comment.Left + pnt.X, comment.Top + pnt.Y, comment.Width, comment.Height);
       if comment.Visible then
       begin
          comment.Parent := lPage.Box;
