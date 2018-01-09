@@ -47,13 +47,11 @@ constructor TFunctionCallBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHe
 begin
    FType := blFuncCall;
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
-   FStatement.SetBounds(10, 0, AWidth-20, 19);
+   FStatement.SetBounds(10, 1, AWidth-20, 19);
    FStatement.Anchors := [akRight, akLeft, akTop];
-   FStatement.BorderStyle := bsSingle;
    FShape := shpRoutine;
    FStatement.Color := GSettings.GetShapeColor(FShape);
    BottomPoint.X := AWidth div 2;
-   BottomPoint.Y := 19;
    IPoint.X := BottomPoint.X + 30;
    IPoint.Y := 30;
    BottomHook := BottomPoint.X;
@@ -75,41 +73,33 @@ end;
 
 procedure TFunctionCallBlock.Paint;
 var
-   y: integer;
+   bo, ri: integer;
    lColor: TColor;
+   r: TRect;
 begin
    inherited;
    with Canvas do
    begin
       if FStatement <> nil then
       begin
-         y := FStatement.Height - 1;
-         DrawArrow(BottomPoint.X, y, BottomPoint.X, Height-1);
-         Polygon([Point(8, 0), Point(10, 0),
-                  Point(10, y),
-                  Point(8, y),
-                  Point(8, 0)]);
-         Polygon([Point(Width-11, 0),
-                  Point(Width-9, 0),
-                  Point(Width-9, y),
-                  Point(Width-11, y),
-                  Point(Width-11, 0)]);
          Brush.Style := bsClear;
          lColor := GSettings.GetShapeColor(FShape);
          if lColor <> GSettings.DesktopColor then
             Brush.Color := lColor;
-         Polygon([TPoint.Zero,
-                  Point(7, 0),
-                  Point(7, y),
-                  Point(0, y),
-                  TPoint.Zero]);
-         Polygon([Point(Width-8, 0),
-                  Point(Width-1, 0),
-                  Point(Width-1, y),
-                  Point(Width-8, y),
-                  Point(Width-8, 0)]);
+         bo := FStatement.BoundsRect.Bottom + 1;
+         ri := FStatement.BoundsRect.Right + 1;
+         BottomPoint.Y := bo;
+         r := Rect(0, FStatement.Top-1, Width, bo);
+         Rectangle(r);
+         DrawBlockLabel(5, bo, GInfra.CurrentLang.LabelFuncCall);
+         Brush.Style := bsSolid;
+         Brush.Color := clBlack;
+         DrawArrow(BottomPoint, BottomPoint.X, Height-1);
+         r := Rect(FStatement.Left-4, FStatement.Top-1, FStatement.Left-1, bo);
+         Rectangle(r);
+         r := Rect(ri, FStatement.Top-1, ri+3, bo);
+         Rectangle(r);
       end;
-      DrawBlockLabel(5, 20, GInfra.CurrentLang.LabelFuncCall);
    end;
    DrawI;
 end;
