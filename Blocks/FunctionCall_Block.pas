@@ -93,8 +93,6 @@ begin
          r := Rect(0, FStatement.Top-1, Width, bo);
          Rectangle(r);
          DrawBlockLabel(5, bo, GInfra.CurrentLang.LabelFuncCall);
-         Brush.Style := bsSolid;
-         Brush.Color := clBlack;
          DrawArrow(BottomPoint, BottomPoint.X, Height-1);
          r := Rect(FStatement.Left-4, FStatement.Top-1, FStatement.Left-1, bo);
          Rectangle(r);
