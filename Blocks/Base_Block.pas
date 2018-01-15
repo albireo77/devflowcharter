@@ -63,6 +63,7 @@ type
          FParentBranch: TBranch;
          FId: integer;
          function PUComments(AComments: IEnumerable<TComment>; ASign: integer = 1): integer;
+         function IsOverI(const APoint: TPoint): boolean;
       protected
          FType: TBlockType;
          FStatement: TStatement;
@@ -743,6 +744,11 @@ begin
    result := FStatement;
 end;
 
+function TBlock.IsOverI(const APoint: TPoint): boolean;
+begin
+   result := Bounds(IPoint.X-5, IPoint.Y, 10, 10).Contains(APoint);
+end;
+
 procedure TBlock.MyOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
    menuItem: TMenuItem;
@@ -750,7 +756,7 @@ var
 begin
    if Button = mbLeft then
    begin
-      if Bounds(IPoint.X-5, IPoint.Y, 10, 10).Contains(Point(X, Y)) then
+      if IsOverI(Point(X, Y)) then
          BeginDrag(false, 3)
       else if not IsCursorResize then
       begin          // drag entire flowchart
@@ -1274,7 +1280,7 @@ end;
 
 procedure TBlock.SelectBlock(const APoint: TPoint);
 begin
-   if Bounds(IPoint.X-5, IPoint.Y, 10, 10).Contains(APoint) then
+   if IsOverI(APoint) then
    begin
       if Color <> GSettings.HighlightColor then
       begin
@@ -1693,7 +1699,7 @@ end;
 
 function TBlock.IsCursorSelect: boolean;
 begin
-   result := Bounds(IPoint.X-5, IPoint.Y, 10, 10).Contains(ScreenToClient(Mouse.CursorPos));
+   result := IsOverI(ScreenToClient(Mouse.CursorPos));
 end;
 
 function TBlock.IsCursorResize: boolean;
