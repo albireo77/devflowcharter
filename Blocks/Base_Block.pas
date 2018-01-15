@@ -396,7 +396,7 @@ var
    grpBlock: TGroupBlock;
    newBlock, prevBlock, block: TBlock;
    lBranch, lBranch2: TBranch;
-   i, w2: integer;
+   i: integer;
 begin
    inherited CloneFrom(ABlock);
    if ABlock is TGroupBlock then
@@ -413,13 +413,12 @@ begin
          Height := grpBlock.Height;
          FMemoFolder.SetBounds(3, 3, Width-6, Height-36);
          FMemoFolder.Anchors := [akRight, akLeft, akBottom, akTop];
-         w2 := Width div 2;
-         BottomPoint.X := w2;
+         BottomHook := Width div 2;
+         BottomPoint.X := BottomHook;
          BottomPoint.Y := Height - 30;
-         IPoint.X := w2 + 30;
+         IPoint.X := BottomHook + 30;
          IPoint.Y := FMemoFolder.Height + 15;
-         TopHook.X := w2;
-         BottomHook := w2;
+         TopHook.X := BottomHook;
          FMemoFolder.Visible := true;
       end
       else
@@ -751,7 +750,7 @@ var
 begin
    if Button = mbLeft then
    begin
-      if Rect(IPoint.X-5, IPoint.Y, IPoint.X+5, IPoint.Y+10).Contains(Point(X, Y)) then
+      if Bounds(IPoint.X-5, IPoint.Y, 10, 10).Contains(Point(X, Y)) then
          BeginDrag(false, 3)
       else if not IsCursorResize then
       begin          // drag entire flowchart
@@ -1275,7 +1274,7 @@ end;
 
 procedure TBlock.SelectBlock(const APoint: TPoint);
 begin
-   if Rect(IPoint.X-5, IPoint.Y, IPoint.X+5, IPoint.Y+10).Contains(APoint) then
+   if Bounds(IPoint.X-5, IPoint.Y, 10, 10).Contains(APoint) then
    begin
       if Color <> GSettings.HighlightColor then
       begin
@@ -1351,20 +1350,18 @@ end;
 procedure TBlock.Paint;
 begin
    inherited;
+   Canvas.Font.Assign(Font);
+   Canvas.Brush.Style := bsSolid;
+   Canvas.Brush.Color := Color;
    with Canvas do
-   begin
-      Font.Assign(Self.Font);
-      Brush.Style := bsSolid;
-      Brush.Color := Color;
       PatBlt(Handle, ClipRect.Left, ClipRect.Top, ClipRect.Right, ClipRect.Bottom, PATCOPY);
-      Pen.Color := clBlack;
-      Pen.Width := 1;
-      if FFrame then
-      begin
-         Pen.Style := psDashDot;
-         PolyLine([TPoint.Zero, Point(Width-1, 0), Point(Width-1, Height-1), Point(0, Height-1), TPoint.Zero]);
-         Pen.Style := psSolid;
-      end;
+   Canvas.Pen.Color := clBlack;
+   Canvas.Pen.Width := 1;
+   if FFrame then
+   begin
+      Canvas.Pen.Style := psDashDot;
+      Canvas.PolyLine([TPoint.Zero, Point(Width-1, 0), Point(Width-1, Height-1), Point(0, Height-1), TPoint.Zero]);
+      Canvas.Pen.Style := psSolid;
    end;
 end;
 
@@ -1696,7 +1693,7 @@ end;
 
 function TBlock.IsCursorSelect: boolean;
 begin
-   result := Rect(IPoint.X-5, IPoint.Y, IPoint.X+5, IPoint.Y+10).Contains(ScreenToClient(Mouse.CursorPos));
+   result := Bounds(IPoint.X-5, IPoint.Y, 10, 10).Contains(ScreenToClient(Mouse.CursorPos));
 end;
 
 function TBlock.IsCursorResize: boolean;
@@ -1997,7 +1994,7 @@ end;
 
 procedure TGroupBlock.ExpandFold(AResize: boolean);
 var
-   tmpWidth, tmpHeight, i, w2: integer;
+   tmpWidth, tmpHeight, i: integer;
    block: TBlock;
    textControl: TCustomEdit;
 begin
@@ -2054,13 +2051,12 @@ begin
       Height := tmpHeight;
       FMemoFolder.SetBounds(3, 3, Width-6, Height-36);
       FMemoFolder.Anchors := [akRight, akLeft, akBottom, akTop];
-      w2 := Width div 2;
-      BottomPoint.X := w2;
+      BottomHook := Width div 2;
+      BottomPoint.X := BottomHook;
       BottomPoint.Y := Height - 30;
-      IPoint.X := w2 + 30;
+      IPoint.X := BottomHook + 30;
       IPoint.Y := FMemoFolder.Height + 15;
-      TopHook.X := w2;
-      BottomHook := w2;
+      TopHook.X := BottomHook;
    end;
 
    if AResize and (FParentBlock <> nil) then

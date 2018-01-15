@@ -52,6 +52,7 @@ begin
    FShape := shpRoutine;
    FStatement.Color := GSettings.GetShapeColor(FShape);
    BottomPoint.X := AWidth div 2;
+   BottomPoint.Y := FStatement.BoundsRect.Bottom + 1;
    IPoint.X := BottomPoint.X + 30;
    IPoint.Y := 30;
    BottomHook := BottomPoint.X;

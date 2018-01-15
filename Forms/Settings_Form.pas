@@ -309,7 +309,7 @@ end;
 procedure TSettingsForm.DrawShapes(ASettings: TSettings);
 var
    shape: TColorShape;
-   rect, rect2: TRect;
+   rect: TRect;
    p: TPoint;
 begin
    with imgShapes.Canvas do
@@ -355,10 +355,10 @@ begin
                begin
                   Rectangle(rect);
                   Brush.Color := Pen.Color;
-                  rect2 := System.Types.Rect(rect.Left+5, rect.Top, rect.Right-42, rect.Bottom);
-                  Rectangle(rect2);
-                  rect2 := System.Types.Rect(rect.Left+42, rect.Top, rect.Right-5, rect.Bottom);
-                  Rectangle(rect2);
+                  rect := System.Types.Rect(rect.Left+5, rect.Top, rect.Right-42, rect.Bottom);
+                  Rectangle(rect);
+                  rect.Offset(37, 0);
+                  Rectangle(rect);
                end;
                shpFolder:
                begin
