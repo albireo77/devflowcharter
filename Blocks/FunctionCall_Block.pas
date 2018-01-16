@@ -86,6 +86,7 @@ begin
       if lColor <> GSettings.DesktopColor then
          Canvas.Brush.Color := lColor;
       br := FStatement.BoundsRect.BottomRight;
+      Inc(br.X);
       Inc(br.Y);
       BottomPoint.Y := br.Y;
       IPoint.Y := br.Y + 10;
@@ -95,7 +96,7 @@ begin
       DrawArrow(BottomPoint, BottomPoint.X, Height-1);
       r := Rect(FStatement.Left-4, FStatement.Top-1, FStatement.Left-1, br.Y);
       Canvas.Rectangle(r);
-      r := Rect(br.X+1, FStatement.Top-1, br.X+4, br.Y);
+      r := Rect(br.X, FStatement.Top-1, br.X+3, br.Y);
       Canvas.Rectangle(r);
    end;
    DrawI;
