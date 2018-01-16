@@ -51,12 +51,12 @@ begin
    FStatement.Anchors := [akRight, akLeft, akTop];
    FShape := shpRoutine;
    FStatement.Color := GSettings.GetShapeColor(FShape);
-   BottomPoint.X := AWidth div 2;
+   BottomHook := AWidth div 2;
+   BottomPoint.X := BottomHook;
    BottomPoint.Y := FStatement.BoundsRect.Bottom + 1;
-   IPoint.X := BottomPoint.X + 30;
+   IPoint.X := BottomHook + 30;
    IPoint.Y := 30;
-   BottomHook := BottomPoint.X;
-   TopHook.X := BottomPoint.X;
+   TopHook.X := BottomHook;
    Constraints.MinWidth := 140;
    Constraints.MinHeight := 51;
 end;
@@ -74,31 +74,29 @@ end;
 
 procedure TFunctionCallBlock.Paint;
 var
-   bo, ri: integer;
+   br: TPoint;
    lColor: TColor;
    r: TRect;
 begin
    inherited;
-   with Canvas do
+   if FStatement <> nil then
    begin
-      if FStatement <> nil then
-      begin
-         Brush.Style := bsClear;
-         lColor := GSettings.GetShapeColor(FShape);
-         if lColor <> GSettings.DesktopColor then
-            Brush.Color := lColor;
-         bo := FStatement.BoundsRect.Bottom + 1;
-         ri := FStatement.BoundsRect.Right + 1;
-         BottomPoint.Y := bo;
-         r := Rect(0, FStatement.Top-1, Width, bo);
-         Rectangle(r);
-         DrawBlockLabel(5, bo, GInfra.CurrentLang.LabelFuncCall);
-         DrawArrow(BottomPoint, BottomPoint.X, Height-1);
-         r := Rect(FStatement.Left-4, FStatement.Top-1, FStatement.Left-1, bo);
-         Rectangle(r);
-         r := Rect(ri, FStatement.Top-1, ri+3, bo);
-         Rectangle(r);
-      end;
+      Canvas.Brush.Style := bsClear;
+      lColor := GSettings.GetShapeColor(FShape);
+      if lColor <> GSettings.DesktopColor then
+         Canvas.Brush.Color := lColor;
+      br := FStatement.BoundsRect.BottomRight;
+      Inc(br.Y);
+      BottomPoint.Y := br.Y;
+      IPoint.Y := br.Y + 10;
+      r := Rect(0, FStatement.Top-1, Width, br.Y);
+      Canvas.Rectangle(r);
+      DrawBlockLabel(5, br.Y, GInfra.CurrentLang.LabelFuncCall);
+      DrawArrow(BottomPoint, BottomPoint.X, Height-1);
+      r := Rect(FStatement.Left-4, FStatement.Top-1, FStatement.Left-1, br.Y);
+      Canvas.Rectangle(r);
+      r := Rect(br.X+1, FStatement.Top-1, br.X+4, br.Y);
+      Canvas.Rectangle(r);
    end;
    DrawI;
 end;

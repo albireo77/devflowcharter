@@ -50,16 +50,15 @@ begin
 
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
 
-   FStatement.SetBounds(0, 0, AWidth, 19);
+   FStatement.SetBounds(1, 1, AWidth-2, 19);
    FStatement.Anchors := [akRight, akLeft, akTop];
-   FStatement.BorderStyle := bsSingle;
 
-   BottomPoint.X := AWidth div 2;
-   BottomPoint.Y := 19;
-   IPoint.X := BottomPoint.X + 30;
+   BottomHook := AWidth div 2;
+   BottomPoint.X := BottomHook;
+   BottomPoint.Y := FStatement.BoundsRect.Bottom + 1;
+   IPoint.X := BottomHook + 30;
    IPoint.Y := 30;
-   BottomHook := BottomPoint.X;
-   TopHook.X := BottomPoint.X;
+   TopHook.X := BottomHook;
    Constraints.MinWidth := 140;
    Constraints.MinHeight := 51;
 end;
@@ -76,10 +75,17 @@ begin
 end;
 
 procedure TInstrBlock.Paint;
+var
+   r: TRect;
 begin
    inherited;
-   DrawArrow(BottomPoint.X, 19, BottomPoint.X, Height-1);
-   DrawBlockLabel(5, 20, GInfra.CurrentLang.LabelInstr);
+   r := FStatement.BoundsRect;
+   r.Inflate(1, 1);
+   BottomPoint.Y := r.Bottom;
+   IPoint.Y := r.Bottom + 10;
+   DrawArrow(BottomPoint, BottomPoint.X, Height-1);
+   Canvas.FrameRect(r);
+   DrawBlockLabel(5, r.Bottom, GInfra.CurrentLang.LabelInstr);
    DrawI;
 end;
 

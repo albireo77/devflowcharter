@@ -63,7 +63,7 @@ type
          FParentBranch: TBranch;
          FId: integer;
          function PUComments(AComments: IEnumerable<TComment>; ASign: integer = 1): integer;
-         function PointInSelect(const APoint: TPoint): boolean;
+         function IsInSelect(const APoint: TPoint): boolean;
       protected
          FType: TBlockType;
          FStatement: TStatement;
@@ -744,7 +744,7 @@ begin
    result := FStatement;
 end;
 
-function TBlock.PointInSelect(const APoint: TPoint): boolean;
+function TBlock.IsInSelect(const APoint: TPoint): boolean;
 begin
    result := Bounds(IPoint.X-5, IPoint.Y, 10, 10).Contains(APoint);
 end;
@@ -756,7 +756,7 @@ var
 begin
    if Button = mbLeft then
    begin
-      if PointInSelect(Point(X, Y)) then
+      if IsInSelect(Point(X, Y)) then
          BeginDrag(false, 3)
       else if not IsCursorResize then
       begin          // drag entire flowchart
@@ -1280,7 +1280,7 @@ end;
 
 procedure TBlock.SelectBlock(const APoint: TPoint);
 begin
-   if PointInSelect(APoint) then
+   if IsInSelect(APoint) then
    begin
       if Color <> GSettings.HighlightColor then
       begin
@@ -1699,7 +1699,7 @@ end;
 
 function TBlock.IsCursorSelect: boolean;
 begin
-   result := PointInSelect(ScreenToClient(Mouse.CursorPos));
+   result := IsInSelect(ScreenToClient(Mouse.CursorPos));
 end;
 
 function TBlock.IsCursorResize: boolean;
