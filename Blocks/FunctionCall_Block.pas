@@ -89,7 +89,7 @@ begin
       Inc(br.X);
       Inc(br.Y);
       BottomPoint.Y := br.Y;
-      IPoint.Y := br.Y + 10;
+      IPoint.Y := br.Y + 8;
       r := Rect(0, FStatement.Top-1, Width, br.Y);
       Canvas.Rectangle(r);
       DrawBlockLabel(5, br.Y, GInfra.CurrentLang.LabelFuncCall);

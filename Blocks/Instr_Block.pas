@@ -82,7 +82,7 @@ begin
    r := FStatement.BoundsRect;
    r.Inflate(1, 1);
    BottomPoint.Y := r.Bottom;
-   IPoint.Y := r.Bottom + 10;
+   IPoint.Y := r.Bottom + 8;
    DrawArrow(BottomPoint, BottomPoint.X, Height-1);
    Canvas.FrameRect(r);
    DrawBlockLabel(5, r.Bottom, GInfra.CurrentLang.LabelInstr);
