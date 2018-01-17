@@ -52,12 +52,13 @@ begin
 
    FStatement.SetBounds(1, 1, AWidth-2, 19);
    FStatement.Anchors := [akRight, akLeft, akTop];
+   FStatement.SetLRMargins(2, 2);
 
    BottomHook := AWidth div 2;
    BottomPoint.X := BottomHook;
    BottomPoint.Y := FStatement.BoundsRect.Bottom + 1;
    IPoint.X := BottomHook + 30;
-   IPoint.Y := 30;
+   IPoint.Y := BottomPoint.Y + 8;
    TopHook.X := BottomHook;
    Constraints.MinWidth := 140;
    Constraints.MinHeight := 51;

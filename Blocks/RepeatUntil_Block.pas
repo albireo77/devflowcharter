@@ -103,7 +103,7 @@ begin
    if Expanded then
    begin
       IPoint.X := BottomHook + 40;
-      IPoint.Y := Height - 25;
+      IPoint.Y := Height - 30;
       dLeft := @FDiamond[D_LEFT];
       dRight := @FDiamond[D_RIGHT];
       dBottom := @FDiamond[D_BOTTOM];

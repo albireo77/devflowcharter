@@ -22,7 +22,8 @@ unit Statement;
 interface
 
 uses
-   System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.StdCtrls, CommonInterfaces, CommonTypes;
+   System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.StdCtrls, WinApi.Messages, CommonInterfaces,
+   CommonTypes;
 
 type
 
@@ -33,8 +34,14 @@ type
     { Private declarations }
     FExecuteParse: boolean;
     FParserMode: TParserMode;
-    FId: integer;
+    FId,
+    FLeftMargin,
+    FRightMargin: integer;
     function GetId: integer;
+    procedure ApplyMargins;
+  protected
+    procedure WndProc(var msg: TMessage); override;
+    procedure CreateHandle; override;
   public
     { Public declarations }
     OnChangeCallBack: TOnEditChange;
@@ -53,6 +60,7 @@ type
     function Remove: boolean;
     function CanBeRemoved: boolean;
     function IsBoldDesc: boolean;
+    procedure SetLRMargins(ALeftMargin, ARightMargin: integer);
   published
     //property Anchors;
     //property AutoSelect;
@@ -161,6 +169,33 @@ destructor TStatement.Destroy;
 begin
    GProject.UnRegister(Self);
    inherited Destroy;
+end;
+
+procedure TStatement.SetLRMargins(ALeftMargin, ARightMargin: integer);
+begin
+   if ALeftMargin >= 0 then
+      FLeftMargin := ALeftMargin;
+   if ARightMargin >= 0 then
+      FRightMargin := ARightMargin;
+   ApplyMargins;
+end;
+
+procedure TStatement.ApplyMargins;
+begin
+   Perform(EM_SETMARGINS, EC_LEFTMARGIN or EC_RIGHTMARGIN, MakeLong(FLeftMargin, FRightMargin));
+end;
+
+procedure TStatement.WndProc(var msg: TMessage);
+begin
+   inherited;
+   if (msg.Msg = CM_FONTCHANGED) and not (csLoading in ComponentState) then
+      ApplyMargins;
+end;
+
+procedure TStatement.CreateHandle;
+begin
+   inherited;
+   ApplyMargins;
 end;
 
 function TStatement.RetrieveFocus(AInfo: TFocusInfo): boolean;

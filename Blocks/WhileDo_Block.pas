@@ -64,7 +64,7 @@ begin
    BottomPoint.Y := 50;
    BottomHook := b_hook;
    TopHook.X := p1X;
-   IPoint.Y := 74;
+   IPoint.Y := 69;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    FStatement.Alignment := taCenter;
