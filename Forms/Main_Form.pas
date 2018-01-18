@@ -244,9 +244,8 @@ type
 
 procedure TMainForm.FormCreate(Sender: TObject);
 const
-   CursorIdsArray: array[TCustomCursor] of PChar = (' ', 'IFELSE', 'FOR', 'REPEAT',
-                   'WHILE', 'ASSIGN', 'MULTIASSIGN', 'IF', 'SUBROUTINE', 'INPUT', 'OUTPUT',
-                   'CASE', 'RETURN', 'TEXT', 'FOLDER');
+   CursorIDs: array[TCustomCursor] of PChar = (' ', 'IFELSE', 'FOR', 'REPEAT', 'WHILE', 'ASSIGN',
+              'MULTIASSIGN', 'IF', 'SUBROUTINE', 'INPUT', 'OUTPUT', 'CASE', 'RETURN', 'TEXT', 'FOLDER');
 var
    lCursor: TCustomCursor;
    i: integer;
@@ -255,7 +254,7 @@ begin
    lCursor := crNormal;
    repeat
       Inc(lCursor);
-      Screen.Cursors[Ord(lCursor)] := LoadCursor(HInstance, CursorIdsArray[lCursor]);
+      Screen.Cursors[Ord(lCursor)] := LoadCursor(HInstance, CursorIDs[lCursor]);
    until lCursor = High(TCustomCursor);
    InitialiseVariables;
    SystemParametersInfo(SPI_SETDRAGFULLWINDOWS, Ord(True), nil, 0);
@@ -1468,10 +1467,10 @@ procedure TPopupListEx.WndProc(var msg: TMessage);
 var
    mform: TMainForm;
 begin
-   if Screen.ActiveForm = MainForm then
+   if (msg.Msg = WM_UNINITMENUPOPUP) and (Screen.ActiveForm = MainForm) then
    begin
       mform := TMainForm(Screen.ActiveForm);
-      if (msg.Msg = WM_UNINITMENUPOPUP) and (msg.WParam = mform.pmPages.Handle) then
+      if msg.WParam = mform.pmPages.Handle then
          PostMessage(mForm.Handle, CM_MENU_CLOSED, msg.WParam, msg.LParam);
    end;
    inherited;

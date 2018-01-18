@@ -80,7 +80,6 @@ begin
    Align := alClient;
    DrawI := true;
    Box := TScrollBoxEx.Create(Self);
-   Box.Parent := Self;
 end;
 
 destructor TBlockTabSheet.Destroy;
@@ -132,12 +131,15 @@ end;
 constructor TScrollBoxEx.Create(APage: TBlockTabSheet);
 begin
    inherited Create(APage);
+   Parent := APage;
    FPage := APage;
    Align := alClient;
    ParentFont := false;
    Font.Size := GSettings.FlowchartFontSize;
    BorderStyle := bsNone;
    Color := GSettings.DesktopColor;
+   HorzScrollBar.Range := ClientWidth;
+   VertScrollBar.Range := ClientHeight;
    VertScrollBar.Tracking := true;
    HorzScrollBar.Tracking := true;
    PopupMenu := APage.Form.pmPages;
@@ -254,10 +256,7 @@ end;
 
 function TScrollBoxEx.GetDisplayRect: TRect;
 begin
-   result.Top := VertScrollBar.Position;
-   result.Left := HorzScrollBar.Position;
-   result.Bottom := result.Top + ClientHeight;
-   result.Right := result.Left + ClientWidth;
+   result := Bounds(HorzScrollBar.Position, VertScrollBar.Position, ClientWidth, ClientHeight);
 end;
 
 // don't remove this method
@@ -274,7 +273,8 @@ var
 begin
    ACanvas.Brush.Style := bsSolid;
    ACanvas.Brush.Color := Color;
-   PatBlt(ACanvas.Handle, ACanvas.ClipRect.Left, ACanvas.ClipRect.Top, ACanvas.ClipRect.Right, ACanvas.ClipRect.Bottom, PATCOPY);
+   with ACanvas do
+      PatBlt(Handle, ClipRect.Left, ClipRect.Top, ClipRect.Right, ClipRect.Bottom, PATCOPY);
    lWnd := GetWindow(GetTopWindow(Handle), GW_HWNDLAST);
    while lWnd <> 0 do
    begin

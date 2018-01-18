@@ -146,9 +146,7 @@ begin
    end;
    Font.Assign(block.GetFont);
    BorderStyle := bsNone;
-   BorderWidth := 0;
    ShowHint := True;
-   BevelKind := bkNone;
    AutoSelect := False;
    DoubleBuffered := true;
    FId := GProject.Register(Self);
