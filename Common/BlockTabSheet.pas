@@ -140,8 +140,8 @@ begin
    Color := GSettings.DesktopColor;
    HorzScrollBar.Range := ClientWidth;
    VertScrollBar.Range := ClientHeight;
-   VertScrollBar.Tracking := true;
    HorzScrollBar.Tracking := true;
+   VertScrollBar.Tracking := true;
    PopupMenu := APage.Form.pmPages;
    OnMouseUp := BoxMouseUp;
    OnMouseWheel := BoxMouseWheel;
@@ -267,30 +267,22 @@ end;
 
 procedure TScrollBoxEx.PaintToCanvas(ACanvas: TCanvas);
 var
-   lWnd: THandle;
-   i: integer;
-   wCtrl: TWinControl;
+   hnd: THandle;
+   winCtrl: TWinControl;
 begin
-   ACanvas.Brush.Style := bsSolid;
-   ACanvas.Brush.Color := Color;
    with ACanvas do
-      PatBlt(Handle, ClipRect.Left, ClipRect.Top, ClipRect.Right, ClipRect.Bottom, PATCOPY);
-   lWnd := GetWindow(GetTopWindow(Handle), GW_HWNDLAST);
-   while lWnd <> 0 do
    begin
-      for i := 0 to ControlCount-1 do
-      begin
-         if Controls[i].Visible and (Controls[i] is TWinControl) then
-         begin
-            wCtrl := TWinControl(Controls[i]);
-            if wCtrl.Handle = lWnd then
-            begin
-               wCtrl.PaintTo(ACanvas, wCtrl.Left + HorzScrollBar.Position, wCtrl.Top + VertScrollBar.Position);
-               break;
-            end;
-         end;
-      end;
-      lWnd := GetNextWindow(lWnd, GW_HWNDPREV);
+      Brush.Style := bsSolid;
+      Brush.Color := Self.Color;
+      FillRect(ClipRect);
+   end;
+   hnd := GetWindow(GetTopWindow(Handle), GW_HWNDLAST);
+   while hnd <> 0 do
+   begin
+      winCtrl := FindControl(hnd);
+      if (winCtrl <> nil) and winCtrl.Visible then
+         winCtrl.PaintTo(ACanvas, winCtrl.Left + HorzScrollBar.Position, winCtrl.Top + VertScrollBar.Position);
+      hnd := GetNextWindow(hnd, GW_HWNDPREV);
    end;
 end;
 

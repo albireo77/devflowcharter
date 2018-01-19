@@ -385,7 +385,7 @@ begin
       begin
          Canvas.Brush.Style := bsSolid;
          Canvas.Brush.Color := Color;
-         PatBlt(Canvas.Handle, FLabelRect.Left, FLabelRect.Top, FLabelRect.Right, FLabelRect.Bottom, PATCOPY);
+         Canvas.FillRect(FLabelRect);
       end;
       lColor := Canvas.Font.Color;
       Canvas.Font.Color := clNavy;

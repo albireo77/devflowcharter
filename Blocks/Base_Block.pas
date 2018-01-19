@@ -1356,18 +1356,20 @@ end;
 procedure TBlock.Paint;
 begin
    inherited;
-   Canvas.Font.Assign(Font);
-   Canvas.Brush.Style := bsSolid;
-   Canvas.Brush.Color := Color;
    with Canvas do
-      PatBlt(Handle, ClipRect.Left, ClipRect.Top, ClipRect.Right, ClipRect.Bottom, PATCOPY);
-   Canvas.Pen.Color := clBlack;
-   Canvas.Pen.Width := 1;
-   if FFrame then
    begin
-      Canvas.Pen.Style := psDashDot;
-      Canvas.PolyLine([TPoint.Zero, Point(Width-1, 0), Point(Width-1, Height-1), Point(0, Height-1), TPoint.Zero]);
-      Canvas.Pen.Style := psSolid;
+      Brush.Style := bsSolid;
+      Brush.Color := Self.Color;
+      FillRect(ClipRect);
+      Pen.Color := clBlack;
+      Pen.Width := 1;
+      if FFrame then
+      begin
+         Pen.Style := psDashDot;
+         PolyLine([TPoint.Zero, Point(Width-1, 0), Point(Width-1, Height-1), Point(0, Height-1), TPoint.Zero]);
+         Pen.Style := psSolid;
+      end;
+      Font.Assign(Self.Font);
    end;
 end;
 

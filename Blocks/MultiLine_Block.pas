@@ -72,12 +72,12 @@ begin
    if FStatements.CanFocus then
       FStatements.SetFocus;
 
-   BottomPoint.X := AWidth div 2;
-   BottomPoint.Y := Height - 31;
-   IPoint.X := BottomPoint.X + 30;
-   IPoint.Y := FStatements.Height + 10;
-   BottomHook := BottomPoint.X;
-   TopHook.X := BottomPoint.X;
+   BottomHook := AWidth div 2;
+   BottomPoint.X := BottomHook;
+   BottomPoint.Y := FStatement.BoundsRect.Bottom + 1;
+   IPoint.X := BottomHook + 30;
+   IPoint.Y := BottomPoint.Y + 8;
+   TopHook.X := BottomHook;
    Constraints.MinWidth := 140;
    Constraints.MinHeight := 48;
    FStatement.Free;
