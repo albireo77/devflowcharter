@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
 
@@ -62,7 +62,7 @@ begin
 
    FStatements := TStatementMemo.Create(Self);
    FStatements.Parent := Self;
-   FStatements.SetBounds(0, 0, AWidth, Height-31);
+   FStatements.SetBounds(1, 1, AWidth-2, Height-31);
    FStatements.Font.Assign(Font);
    FStatements.OnDblClick := OnDblClickMemo;
    FStatements.OnMouseDown := OnMouseDownMemo;
@@ -74,7 +74,7 @@ begin
 
    BottomHook := AWidth div 2;
    BottomPoint.X := BottomHook;
-   BottomPoint.Y := FStatement.BoundsRect.Bottom + 1;
+   BottomPoint.Y := FStatements.BoundsRect.Bottom + 1;
    IPoint.X := BottomHook + 30;
    IPoint.Y := BottomPoint.Y + 8;
    TopHook.X := BottomHook;
@@ -91,9 +91,16 @@ begin
 end;
 
 procedure TMultiLineBlock.Paint;
+var
+   r: TRect;
 begin
    inherited;
-   DrawArrow(BottomPoint.X, Height-31, BottomPoint.X, Height-1);
+   r := FStatements.BoundsRect;
+   r.Inflate(1, 1);
+   BottomPoint.Y := r.Bottom;
+   IPoint.Y := r.Bottom + 8;
+   DrawArrow(BottomPoint, BottomPoint.X, Height-1);
+   Canvas.FrameRect(r);
    DrawI;
 end;
 
@@ -117,7 +124,10 @@ begin
       TopHook.X := BottomPoint.X;
    end;
    if FVResize and Resize then
-      IPoint.Y := FStatements.Height + 10;
+   begin
+      BottomPoint.Y := FStatements.BoundsRect.Bottom + 1;
+      IPoint.Y := BottomPoint.Y + 8;
+   end;
 end;
 
 function TMultiLineBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;

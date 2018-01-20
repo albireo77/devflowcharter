@@ -41,7 +41,7 @@ type
 implementation
 
 uses
-   Vcl.Controls, ApplicationCommon, Base_Block, CommonTypes;
+   Vcl.Controls, Vcl.Forms, ApplicationCommon, Base_Block, CommonTypes;
 
 constructor TStatementMemo.Create(AOwner: TComponent);
 begin
@@ -49,6 +49,7 @@ begin
    Color := GSettings.GetShapeColor(shpRectangle);
    BevelInner := bvNone;
    BevelOuter := bvNone;
+   BorderStyle := bsNone;
    Font.Color := GSettings.FontColor;
    Font.Name := GSettings.FlowchartFontName;
    DoubleBuffered := true;

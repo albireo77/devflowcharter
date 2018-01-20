@@ -83,9 +83,16 @@ begin
 end;
 
 procedure TTextBlock.Paint;
+var
+   r: TRect;
 begin
    inherited;
    DrawBlockLabel(5, FStatements.BoundsRect.Bottom+1, GInfra.CurrentLang.LabelText);
+   Canvas.Pen.Color := Color;
+   r := FCorner.BoundsRect;
+   Canvas.PenPos := r.TopLeft;
+   Canvas.LineTo(r.Right-1, r.Top);
+   Canvas.LineTo(r.Right-1, r.Bottom);
 end;
 
 procedure TCorner.Paint;

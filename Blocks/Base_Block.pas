@@ -1374,15 +1374,11 @@ begin
 end;
 
 procedure TBlock.DrawI;
-var
-   fontSize: integer;
 begin
    if Page.DrawI then
    begin
-      fontSize := Canvas.Font.Size;
-      Canvas.Font.Size := 8;
-      DrawTextLabel(IPoint.X, IPoint.Y, '|');
-      Canvas.Font.Size := fontSize;
+      Canvas.PenPos := IPoint;
+      Canvas.LineTo(IPoint.X, IPoint.Y+10);
    end;
 end;
 
