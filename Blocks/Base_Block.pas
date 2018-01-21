@@ -1049,8 +1049,8 @@ begin
       else
          TInfra.SetFontSize(Controls[i], ASize);
    end;
-   Refresh;
    PutTextControls;
+   Refresh;
 end;
 
 function TBlock.GetFont: TFont;
