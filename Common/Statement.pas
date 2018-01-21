@@ -35,8 +35,8 @@ type
     FExecuteParse: boolean;
     FParserMode: TParserMode;
     FId,
-    FLeftMargin,
-    FRightMargin: integer;
+    FLMargin,
+    FRMargin: integer;
     function GetId: integer;
     procedure ApplyMargins;
   protected
@@ -60,7 +60,7 @@ type
     function Remove: boolean;
     function CanBeRemoved: boolean;
     function IsBoldDesc: boolean;
-    procedure SetLRMargins(ALeftMargin, ARightMargin: integer);
+    procedure SetLRMargins(ALMargin, ARMargin: integer);
   published
     //property Anchors;
     //property AutoSelect;
@@ -169,18 +169,18 @@ begin
    inherited Destroy;
 end;
 
-procedure TStatement.SetLRMargins(ALeftMargin, ARightMargin: integer);
+procedure TStatement.SetLRMargins(ALMargin, ARMargin: integer);
 begin
-   if ALeftMargin >= 0 then
-      FLeftMargin := ALeftMargin;
-   if ARightMargin >= 0 then
-      FRightMargin := ARightMargin;
+   if ALMargin >= 0 then
+      FLMargin := ALMargin;
+   if ARMargin >= 0 then
+      FRMargin := ARMargin;
    ApplyMargins;
 end;
 
 procedure TStatement.ApplyMargins;
 begin
-   Perform(EM_SETMARGINS, EC_LEFTMARGIN or EC_RIGHTMARGIN, MakeLong(FLeftMargin, FRightMargin));
+   Perform(EM_SETMARGINS, EC_LEFTMARGIN or EC_RIGHTMARGIN, MakeLong(FLMargin, FRMargin));
 end;
 
 procedure TStatement.WndProc(var msg: TMessage);

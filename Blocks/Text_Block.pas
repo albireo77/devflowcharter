@@ -28,11 +28,6 @@ uses
 
 type
 
-  TCorner = class(TPanel)
-     protected
-        procedure Paint; override;
-  end;
-
    TTextBlock = class(TMultiLineBlock)
       public
          constructor Create(ABranch: TBranch); overload;
@@ -40,7 +35,7 @@ type
          function Clone(ABranch: TBranch): TBlock; override;
          procedure ChangeColor(AColor: TColor); override;
       protected
-         FCorner: TCorner;
+         FCorner: TPanel;
          procedure Paint; override;
          procedure OnChangeMemo(Sender: TObject); override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
@@ -57,7 +52,7 @@ begin
    inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
    FStatements.Font.Color := TEXT_COLOR;
    Font.Color := TEXT_COLOR;
-   FCorner := TCorner.Create(Self);
+   FCorner := TPanel.Create(Self);
    FCorner.Parent := Self;
    FCorner.Color := GSettings.GetShapeColor(FShape);
    FCorner.BevelOuter := bvNone;
@@ -88,25 +83,18 @@ var
 begin
    inherited;
    DrawBlockLabel(5, FStatements.BoundsRect.Bottom+1, GInfra.CurrentLang.LabelText);
-   Canvas.Pen.Color := Color;
    r := FCorner.BoundsRect;
+   r.Inflate(0, 0, -1, -1);
+   Canvas.Pen.Color := Color;
    Canvas.PenPos := r.TopLeft;
-   Canvas.LineTo(r.Right-1, r.Top);
-   Canvas.LineTo(r.Right-1, r.Bottom);
-end;
-
-procedure TCorner.Paint;
-var
-   lParent: TTextBlock;
-begin
-   inherited;
-   lParent := TTextBlock(Parent);
+   Canvas.LineTo(r.Right, r.Top);
+   Canvas.LineTo(r.Right, r.Bottom);
    Canvas.Pen.Color := clBlack;
-   Canvas.PolyLine([TPoint.Zero, Point(Width-1, Height-1), Point(0, Height-1), TPoint.Zero]);
-   Canvas.Brush.Color := lParent.FStatements.Color;
-   Canvas.FloodFill(2, Height-2, clBlack, fsBorder);
-   Canvas.Brush.Color := lParent.ParentBlock.Color;
-   Canvas.FloodFill(Width-1, 0, clBlack, fsBorder);
+   Canvas.LineTo(r.Left, r.Top);
+   Canvas.LineTo(r.Left, r.Bottom);
+   Canvas.LineTo(r.Right, r.Bottom);
+   Canvas.Brush.Color := FStatements.Color;
+   Canvas.FloodFill(r.Left+2, r.Top+4, clBlack, fsBorder);
 end;
 
 procedure TTextBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
