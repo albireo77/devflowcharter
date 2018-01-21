@@ -1,3 +1,8 @@
+5.12 [21.01.2018]
+- Navigator: fix red screen for newly created flowchart tab
+- Flowchart: replace gray component edges with black color
+- Flowchart: fixes to display correctly upon changing font size
+
 5.11 [05.01.2018]
 - fix issues with comments (disappearing after loading project or blinking upon saving)
 - minor GUI improvements
