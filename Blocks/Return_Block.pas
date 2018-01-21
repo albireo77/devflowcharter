@@ -64,18 +64,18 @@ begin
    if defWidth > Width then
       Width := defWidth;
 
-   FStatement.SetBounds((Width div 2)-26, 31, 52, 19);
+   FShape := shpEllipse;
+   BottomHook := Width div 2;
+   BottomPoint.X := BottomHook;
+   BottomPoint.Y := 19;
+   IPoint.X := BottomHook + 30;
+   IPoint.Y := 30;
+   TopHook.X := BottomHook;
+
+   FStatement.SetBounds(BottomHook-26, 31, 52, 19);
    FStatement.Anchors := [akRight, akLeft, akTop];
    FStatement.Alignment := taCenter;
    FStatement.Color := GSettings.DesktopColor;
-
-   BottomPoint.X := Width div 2;
-   BottomPoint.Y := 19;
-   IPoint.X := BottomPoint.X + 30;
-   IPoint.Y := 30;
-   FShape := shpEllipse;
-   BottomHook := BottomPoint.X;
-   TopHook.X := BottomPoint.X;
 end;
 
 function TReturnBlock.Clone(ABranch: TBranch): TBlock;
@@ -97,7 +97,7 @@ begin
    inherited;
    fontStyles := Canvas.Font.Style;
    Canvas.Font.Style := [];
-   R := DrawEllipsedText(Width div 2, 30, FReturnLabel);
+   R := DrawEllipsedText(BottomHook, 30, FReturnLabel);
    DrawBlockLabel(R.Left, R.Bottom, GInfra.CurrentLang.LabelReturn, true);
    Canvas.Font.Style := fontStyles;
    DrawI;
