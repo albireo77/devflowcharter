@@ -207,7 +207,7 @@ var
    lColor: TColor;
 begin
    inherited;
-   if Expanded and (cbVariable <> nil) and (edtVariable <> nil) and (edtStartVal <> nil) and (edtStopVal <> nil) then
+   if Expanded then
    begin
       bhx := Branch.Hook.X;
       IPoint.X := bhx + 60;
@@ -226,26 +226,23 @@ begin
                           Point(5, 19),
                           Point(bhx-100, 19)]);
       end;
-      with Canvas do
-      begin
-         MoveTo(bhx+74, 19);
-         LineTo(Width-11, 19);
-         Brush.Style := bsClear;
-         lColor := GSettings.GetShapeColor(FShape);
-         if lColor <> GSettings.DesktopColor then
-            Brush.Color := lColor;
-         Polygon([Point(bhx-100, 0),
-                  Point(bhx+35, 0),
-                  Point(bhx+74, 19),
-                  Point(bhx+35, TopHook.Y),
-                  Point(bhx-100, TopHook.Y),
-                  Point(bhx-100, 0)]);
-         y :=  edtStartVal.BoundsRect.Bottom - 6;
-         DrawTextLabel(bhx-42, y, GInfra.CurrentLang.ForDoVarString, false, true);
-         DrawTextLabel(bhx+1, y, lForDirect[FOrder], false, true);
-         DrawTextLabel(bhx-97, y, FForLabel, false, true);
-         DrawBlockLabel(bhx-100, 40, GInfra.CurrentLang.LabelFor);
-      end;      
+      Canvas.MoveTo(bhx+74, 19);
+      Canvas.LineTo(Width-11, 19);
+      Canvas.Brush.Style := bsClear;
+      lColor := GSettings.GetShapeColor(FShape);
+      if lColor <> GSettings.DesktopColor then
+         Canvas.Brush.Color := lColor;
+      Canvas.Polygon([Point(bhx-100, 0),
+                      Point(bhx+35, 0),
+                      Point(bhx+74, 19),
+                      Point(bhx+35, TopHook.Y),
+                      Point(bhx-100, TopHook.Y),
+                      Point(bhx-100, 0)]);
+      y :=  edtStartVal.BoundsRect.Bottom - 6;
+      DrawTextLabel(bhx-42, y, GInfra.CurrentLang.ForDoVarString, false, true);
+      DrawTextLabel(bhx+1, y, lForDirect[FOrder], false, true);
+      DrawTextLabel(bhx-97, y, FForLabel, false, true);
+      DrawBlockLabel(bhx-100, 40, GInfra.CurrentLang.LabelFor);
    end;
    DrawI;
 end;

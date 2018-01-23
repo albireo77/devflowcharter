@@ -65,12 +65,12 @@ begin
    FShape := shpParallel;
    FStatement.Color := GSettings.GetShapeColor(FShape);
    PutTextControls;
-   BottomPoint.X := AWidth div 2;
+   BottomHook := AWidth div 2;
+   BottomPoint.X := BottomHook;
    BottomPoint.Y := 30;
-   IPoint.X := BottomPoint.X + 30;
+   IPoint.X := BottomHook + 30;
    IPoint.Y := 40;
-   BottomHook := BottomPoint.X;
-   TopHook.X := BottomPoint.X;
+   TopHook.X := BottomHook;
    Constraints.MinWidth := 150;
    Constraints.MinHeight := 61;
 end;
@@ -126,26 +126,23 @@ var
 begin
    inherited;
    w := Canvas.TextWidth(FLabel);
-   DrawArrow(BottomPoint.X, 30, BottomPoint.X, Height-1);
-   with Canvas do
-   begin
-      Brush.Style := bsClear;
-      lColor := GSettings.GetShapeColor(FShape);
-      if lColor <> GSettings.DesktopColor then
-         Brush.Color := lColor;
-      Polygon([Point(20, 0),
-               Point(Width-1, 0),
-               Point(Width-21, 30),
-               Point(0, 30),
-               Point(20, 0)]);
-      MoveTo(w+32, 0);
-      LineTo(w+12, 30);
-      fontStyles := Font.Style;
-      Font.Style := [];
-      R := Rect(17, 15-(TextHeight('X') div 2), w+17, 23);
-      DrawText(Handle, PChar(FLabel), -1, R, DT_CENTER);
-      Font.Style := fontStyles;
-   end;
+   DrawArrow(BottomPoint, BottomPoint.X, Height-1);
+   Canvas.Brush.Style := bsClear;
+   lColor := GSettings.GetShapeColor(FShape);
+   if lColor <> GSettings.DesktopColor then
+      Canvas.Brush.Color := lColor;
+   Canvas.Polygon([Point(20, 0),
+                   Point(Width-1, 0),
+                   Point(Width-21, 30),
+                   Point(0, 30),
+                   Point(20, 0)]);
+   Canvas.MoveTo(w+32, 0);
+   Canvas.LineTo(w+12, 30);
+   fontStyles := Canvas.Font.Style;
+   Canvas.Font.Style := [];
+   R := Rect(17, 15-(Canvas.TextHeight('X') div 2), w+17, 23);
+   DrawText(Canvas.Handle, PChar(FLabel), -1, R, DT_CENTER);
+   Canvas.Font.Style := fontStyles;
    DrawBlockLabel(5, 30, FLabelSegoe);
    DrawI;
 end;
