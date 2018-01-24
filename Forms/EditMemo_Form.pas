@@ -63,6 +63,8 @@ begin
       memEditor.Alignment := Source.Alignment;
       memEditor.WordWrap := Source.WordWrap;
       memEditor.Text := Source.Text;
+      memEditor.SelStart := Source.SelStart;
+      memEditor.SetFocus;
    end;
 end;
 
