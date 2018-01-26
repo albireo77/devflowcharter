@@ -1627,20 +1627,18 @@ begin
    end
    else
    begin
+      lColor2 := GSettings.GetShapeColor(shpFolder);
+      if lColor2 <> GSettings.DesktopColor then
+         Canvas.Brush.Color := lColor2;
+      Canvas.Pen.Width := 2;
       r := FMemoFolder.BoundsRect;
+      r.Inflate(3, 3, 4, 4);
+      Canvas.Rectangle(r);
+      Canvas.Pen.Width := 1;
+      r.Inflate(-2, -2, -3, -3);
+      Canvas.Rectangle(r);
       if FTopParentBlock <> Self then
          DrawArrow(BottomPoint.X, r.Bottom+2, BottomPoint.X, Height-1);
-      r.Inflate(1, 1);
-      Canvas.FrameRect(r);
-      //Canvas.Brush.Style := bsClear;
-      //lColor2 := GSettings.GetShapeColor(shpFolder);
-      //if lColor2 <> GSettings.DesktopColor then
-      //   Canvas.Brush.Color := lColor2;
-      //Canvas.Pen.Width := 2;
-      r.Inflate(2, 2);
-      Canvas.FrameRect(r);
-      r.Inflate(1, 1);
-      Canvas.FrameRect(r);
    end;
    Canvas.Brush.Style := brushStyle;
    Canvas.Brush.Color := lColor;
