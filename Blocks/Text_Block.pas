@@ -89,12 +89,12 @@ begin
    Canvas.PenPos := r.TopLeft;
    Canvas.LineTo(r.Right, r.Top);
    Canvas.LineTo(r.Right, r.Bottom);
-   Canvas.Pen.Color := clBlack;
+   Canvas.Pen.Color := GSettings.PenColor;
    Canvas.LineTo(r.Left, r.Top);
    Canvas.LineTo(r.Left, r.Bottom);
    Canvas.LineTo(r.Right, r.Bottom);
    Canvas.Brush.Color := FStatements.Color;
-   Canvas.FloodFill(r.Left+2, r.Top+4, clBlack, fsBorder);
+   Canvas.FloodFill(r.Left+2, r.Top+4, GSettings.PenColor, fsBorder);
 end;
 
 procedure TTextBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);

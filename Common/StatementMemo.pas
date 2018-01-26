@@ -47,9 +47,6 @@ constructor TStatementMemo.Create(AOwner: TComponent);
 begin
    inherited Create(AOwner);
    Color := GSettings.GetShapeColor(shpRectangle);
-   BevelInner := bvNone;
-   BevelOuter := bvNone;
-   BorderStyle := bsNone;
    Font.Color := GSettings.FontColor;
    Font.Name := GSettings.FlowchartFontName;
    DoubleBuffered := true;

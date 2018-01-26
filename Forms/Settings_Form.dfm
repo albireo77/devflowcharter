@@ -4,7 +4,7 @@ object SettingsForm: TSettingsForm
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Settings'
-  ClientHeight = 685
+  ClientHeight = 702
   ClientWidth = 557
   Color = clBtnFace
   ParentFont = True
@@ -17,7 +17,7 @@ object SettingsForm: TSettingsForm
   object btnSaveSettings: TButton
     Tag = 1
     Left = 398
-    Top = 658
+    Top = 674
     Width = 75
     Height = 25
     Caption = 'OK'
@@ -28,7 +28,7 @@ object SettingsForm: TSettingsForm
   object gbMiscSettings: TGroupBox
     Tag = 4
     Left = 5
-    Top = 608
+    Top = 620
     Width = 550
     Height = 49
     Caption = 'Others'
@@ -223,7 +223,7 @@ object SettingsForm: TSettingsForm
   object btnDiscardSettings: TButton
     Tag = 1
     Left = 479
-    Top = 658
+    Top = 674
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -615,7 +615,7 @@ object SettingsForm: TSettingsForm
         OnClick = pnlFillClick
       end
       object pnlEditorGutter: TPanel
-        Left = 64
+        Left = 65
         Top = 40
         Width = 25
         Height = 20
@@ -631,7 +631,7 @@ object SettingsForm: TSettingsForm
       end
       object pnlEditorFont: TPanel
         Left = 65
-        Top = 14
+        Top = 16
         Width = 25
         Height = 20
         BevelOuter = bvNone
@@ -808,8 +808,8 @@ object SettingsForm: TSettingsForm
   end
   object btnDefaultSettings: TButton
     Tag = 1
-    Left = 5
-    Top = 658
+    Left = 8
+    Top = 674
     Width = 124
     Height = 25
     Caption = 'Default Settings'
@@ -884,7 +884,7 @@ object SettingsForm: TSettingsForm
     Left = 5
     Top = 396
     Width = 548
-    Height = 109
+    Height = 125
     Caption = 'Flowchart Settings'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -895,7 +895,7 @@ object SettingsForm: TSettingsForm
     TabOrder = 8
     object imgShapes: TImage
       Left = 266
-      Top = 13
+      Top = 32
       Width = 265
       Height = 67
       OnClick = imgShapesClick
@@ -917,7 +917,7 @@ object SettingsForm: TSettingsForm
     object lblDesktop: TLabel
       Tag = 6
       Left = 8
-      Top = 55
+      Top = 51
       Width = 43
       Height = 13
       Caption = 'Desktop:'
@@ -931,7 +931,7 @@ object SettingsForm: TSettingsForm
     object lblBlockColor: TLabel
       Tag = 6
       Left = 8
-      Top = 84
+      Top = 75
       Width = 47
       Height = 13
       Caption = 'Selection:'
@@ -942,9 +942,23 @@ object SettingsForm: TSettingsForm
       Font.Style = []
       ParentFont = False
     end
+    object lblPenColor: TLabel
+      Tag = 6
+      Left = 8
+      Top = 100
+      Width = 22
+      Height = 13
+      Caption = 'Pen:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+    end
     object pnlFill: TPanel
       Left = 70
-      Top = 80
+      Top = 71
       Width = 25
       Height = 20
       BevelOuter = bvNone
@@ -959,7 +973,7 @@ object SettingsForm: TSettingsForm
     end
     object pnlDesktop: TPanel
       Left = 70
-      Top = 50
+      Top = 46
       Width = 25
       Height = 20
       BevelOuter = bvNone
@@ -1012,7 +1026,7 @@ object SettingsForm: TSettingsForm
     object chkShowFuncLabels: TCheckBox
       Tag = 8
       Left = 104
-      Top = 48
+      Top = 51
       Width = 148
       Height = 17
       Caption = 'Show function labels'
@@ -1027,7 +1041,7 @@ object SettingsForm: TSettingsForm
     object chkShowBlockLabels: TCheckBox
       Tag = 8
       Left = 104
-      Top = 67
+      Top = 76
       Width = 145
       Height = 17
       Caption = 'Show block labels'
@@ -1044,7 +1058,7 @@ object SettingsForm: TSettingsForm
     object chkEnableDBuffer: TCheckBox
       Tag = 8
       Left = 104
-      Top = 86
+      Top = 101
       Width = 145
       Height = 17
       Caption = 'Enable double buffering'
@@ -1058,11 +1072,26 @@ object SettingsForm: TSettingsForm
       ShowHint = True
       TabOrder = 6
     end
+    object pnlPen: TPanel
+      Left = 70
+      Top = 96
+      Width = 25
+      Height = 20
+      BevelOuter = bvNone
+      BorderWidth = 1
+      BorderStyle = bsSingle
+      Color = clWindow
+      Ctl3D = False
+      ParentBackground = False
+      ParentCtl3D = False
+      TabOrder = 7
+      OnClick = pnlFillClick
+    end
   end
   object gbPrintSettings: TGroupBox
     Tag = 4
     Left = 5
-    Top = 508
+    Top = 520
     Width = 550
     Height = 98
     Caption = 'Printing'
@@ -1239,13 +1268,13 @@ object SettingsForm: TSettingsForm
     DefaultExt = '*.exe'
     Filter = 'Executable files|*.exe; *.bat; *.cmd;'
     Options = [ofReadOnly, ofHideReadOnly, ofFileMustExist, ofEnableSizing]
-    Left = 232
-    Top = 656
+    Left = 224
+    Top = 672
   end
   object ColorDialog: TColorDialog
     Tag = 3
-    Left = 192
-    Top = 656
+    Left = 184
+    Top = 672
   end
   object FontDialog: TFontDialog
     Font.Charset = DEFAULT_CHARSET
@@ -1257,6 +1286,6 @@ object SettingsForm: TSettingsForm
     MaxFontSize = 8
     Options = [fdNoStyleSel, fdLimitSize, fdScalableOnly]
     Left = 264
-    Top = 656
+    Top = 672
   end
 end

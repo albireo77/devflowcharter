@@ -70,6 +70,7 @@ type
       FDesktopColor: TColor;
       FTranslateFile: string;
       FFontColor: TColor;
+      FPenColor: TColor;
       FPrintRect: TRect;
       FEnableDBuffering,
       FShowFuncLabels,
@@ -141,6 +142,7 @@ type
       property PrintMultPages: boolean read FPrintMultPages;
       property PrintMultPagesHorz: boolean read FPrintMultPagesHorz;
       property HighlightColor: TColor read FHighlightColor;
+      property PenColor: TColor read FPenColor;
       property DesktopColor: TColor read FDesktopColor;
       property TranslateFile: string read FTranslateFile;
       property FontColor: TColor read FFontColor;
@@ -179,6 +181,7 @@ const
    KEY_ROADSIGN_COLOR = 'RoadSignColor';
    KEY_ROUTINE_COLOR = 'RoutineColor';
    KEY_FONT_COLOR = 'FontColor';
+   KEY_PEN_COLOR = 'PenColor';
 
    KEY_PARSE_INPUT = 'ParseInput';
    KEY_PARSE_OUTPUT = 'ParseOutput';
@@ -281,6 +284,7 @@ begin
    FIndentString          := StringOfChar(INDENT_CHAR, FIndentLength);
 
    FHighlightColor := clAqua;
+   FPenColor       := clBlack;
    FDesktopColor   := DEFAULT_DESKTOP_COLOR;
    FFontColor      := OK_COLOR;
 
@@ -325,6 +329,8 @@ begin
       begin
          if reg.ValueExists(KEY_HIGHLIGHT_COLOR) then
             FHighlightColor := reg.ReadInteger(KEY_HIGHLIGHT_COLOR);
+         if reg.ValueExists(KEY_PEN_COLOR) then
+            FPenColor := reg.ReadInteger(KEY_PEN_COLOR);
          if reg.ValueExists(KEY_ELLIPSE_COLOR) then
             FShapeColors[shpEllipse] := reg.ReadInteger(KEY_ELLIPSE_COLOR);
          if reg.ValueExists(KEY_DIAMOND_COLOR) then
@@ -510,6 +516,7 @@ begin
          reg.WriteBool(KEY_NAVIGATOR_ALPHA_VISIBLE, FNavigatorAlphaVisible);
          reg.WriteBool(KEY_EXPLORER_AUTO_NAV, FExplorerAutoNav);
          reg.WriteInteger(KEY_HIGHLIGHT_COLOR, FHighlightColor);
+         reg.WriteInteger(KEY_PEN_COLOR, FPenColor);
          reg.WriteInteger(KEY_EDITOR_FONT_COLOR, FEditorFontColor);
          reg.WriteInteger(KEY_EDITOR_BKG_COLOR, FEditorBkgColor);
          reg.WriteInteger(KEY_EDITOR_STRING_COLOR, FEditorStringColor);
@@ -653,6 +660,11 @@ begin
       begin
          colorChanged := true;
          FDesktopColor := pnlDesktop.Color;
+      end;
+      if FPenColor <> pnlPen.Color then
+      begin
+         colorChanged := true;
+         FPenColor := pnlPen.Color;
       end;
       FHighlightColor := pnlFill.Color;
       FConfirmRemove := chkConfirmRemove.Checked;

@@ -88,8 +88,6 @@ begin
    DoubleBuffered := true;
    Constraints.MinWidth := 25;
    Constraints.MinHeight := 25;
-   BorderStyle := bsNone;
-   Ctl3D := false;
    FZOrder := -1;
    PopupMenu := APage.Box.PopupMenu;
    FMouseLeave := true;

@@ -280,7 +280,7 @@ end;
 
 procedure TMainBlock.Paint;
 var
-   lColor: TColor;
+   fontColor: TColor;
    lLabel: string;
    R: TRect;
    fontStyles: TFontStyles;
@@ -296,10 +296,10 @@ begin
       lLabel := GetFunctionLabel(R);
       if not lLabel.IsEmpty then
       begin
-         lColor := Canvas.Font.Color;
+         fontColor := Canvas.Font.Color;
          Canvas.Font.Color := clNavy;
          DrawText(Canvas.Handle, PChar(lLabel), -1, R, 0);
-         Canvas.Font.Color := lColor;
+         Canvas.Font.Color := fontColor;
          if Canvas.Handle = FHandle then
             FLabelRect := R;
       end
@@ -308,7 +308,7 @@ begin
       DrawEllipsedText(Branch.Hook.X, TopHook.Y, FStartLabel);
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
          DrawEllipsedText(BottomHook, Height-11, FStopLabel);
-      Font.Style := fontStyles;
+      Canvas.Font.Style := fontStyles;
       DrawArrow(Branch.Hook.X, TopHook.Y, Branch.Hook);
    end;
    DrawI;

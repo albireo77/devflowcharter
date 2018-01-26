@@ -99,12 +99,12 @@ type
          procedure SetCursor(const APoint: TPoint);
          procedure SetFrame(AValue: boolean);
          procedure PutTextControls; virtual;
-         procedure DrawArrowTo(const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
-         procedure DrawArrowTo(toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
-         procedure DrawArrow(const aFrom, aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
-         procedure DrawArrow(fromX, fromY, toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
-         procedure DrawArrow(fromX, fromY: integer; const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
-         procedure DrawArrow(const aFrom: TPoint; toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack); overload;
+         procedure DrawArrowTo(const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone); overload;
+         procedure DrawArrowTo(toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone); overload;
+         procedure DrawArrow(const aFrom, aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone); overload;
+         procedure DrawArrow(fromX, fromY, toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone); overload;
+         procedure DrawArrow(fromX, fromY: integer; const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone); overload;
+         procedure DrawArrow(const aFrom: TPoint; toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone); overload;
          function GetEllipseTextRect(ax, ay: integer; const AText: string): TRect;
          function DrawEllipsedText(ax, ay: integer; const AText: string): TRect;
          procedure MoveComments(x, y: integer);
@@ -340,8 +340,7 @@ begin
    begin
       Parent := Self;
       Visible := false;
-      SetBounds(3, 3, 134, 55);
-      Ctl3D := false;
+      SetBounds(4, 4, 132, 55);
       DoubleBuffered := true;
       Color := GSettings.GetShapeColor(shpFolder);
       Font.Assign(FStatement.Font);
@@ -412,7 +411,7 @@ begin
          Constraints.MinHeight := 54;
          Width := grpBlock.Width;
          Height := grpBlock.Height;
-         FMemoFolder.SetBounds(3, 3, Width-6, Height-36);
+         FMemoFolder.SetBounds(4, 4, Width-8, Height-36);
          FMemoFolder.Anchors := [akRight, akLeft, akBottom, akTop];
          BottomHook := Width div 2;
          BottomPoint.X := BottomHook;
@@ -1361,7 +1360,7 @@ begin
       Brush.Style := bsSolid;
       Brush.Color := Self.Color;
       FillRect(ClipRect);
-      Pen.Color := clBlack;
+      Pen.Color := GSettings.PenColor;
       Pen.Width := 1;
       if FFrame then
       begin
@@ -1370,6 +1369,7 @@ begin
          Pen.Style := psSolid;
       end;
       Font.Assign(Self.Font);
+      Font.Color := GSettings.PenColor;
    end;
 end;
 
@@ -1406,11 +1406,14 @@ end;
 procedure TBlock.DrawTextLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false);
 var
    fontStyles: TFontStyles;
+   fontColor: TColor;
 begin
    if not AText.IsEmpty then
    begin
       fontStyles := Canvas.Font.Style;
+      fontColor := Canvas.Font.Color;
       Canvas.Font.Style := [];
+      Canvas.Font.Color := GSettings.PenColor;
       if fsBold in fontStyles then
          Canvas.Font.Style := Canvas.Font.Style + [fsBold];
       Canvas.Brush.Style := bsClear;
@@ -1428,37 +1431,38 @@ begin
       end;
       Canvas.TextOut(x, y, AText);
       Canvas.Font.Style := fontStyles;
+      Canvas.Font.Color := fontColor;
    end;
 end;
 
-procedure TBlock.DrawArrow(const aFrom, aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
+procedure TBlock.DrawArrow(const aFrom, aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
 begin
    DrawArrow(aFrom.X, aFrom.Y, aTo.X, aTo.Y, AArrowPos, AColor);
 end;
 
-procedure TBlock.DrawArrow(fromX, fromY: integer; const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
+procedure TBlock.DrawArrow(fromX, fromY: integer; const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
 begin
    DrawArrow(fromX, fromY, aTo.X, aTo.Y, AArrowPos, AColor);
 end;
 
-procedure TBlock.DrawArrow(const aFrom: TPoint; toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
+procedure TBlock.DrawArrow(const aFrom: TPoint; toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
 begin
    DrawArrow(aFrom.X, aFrom.Y, toX, toY, AArrowPos, AColor);
 end;
 
 // this method draw arrow line from current pen position
-procedure TBlock.DrawArrowTo(toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
+procedure TBlock.DrawArrowTo(toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
 begin
    DrawArrow(Canvas.PenPos, toX, toY, AArrowPos, AColor);
 end;
 
 // this method draw arrow line from current pen position
-procedure TBlock.DrawArrowTo(const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
+procedure TBlock.DrawArrowTo(const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
 begin
    DrawArrow(Canvas.PenPos, aTo, AArrowPos, AColor);
 end;
 
-procedure TBlock.DrawArrow(fromX, fromY, toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clBlack);
+procedure TBlock.DrawArrow(fromX, fromY, toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
 const
    MX: array[boolean, boolean] of integer = ((10, -10), (-5, -5));
    MY: array[boolean, boolean] of integer = ((5, 5), (10, -10));
@@ -1468,6 +1472,8 @@ var
    aX, aY: integer;
    pnt: TPoint;
 begin
+   if AColor = clNone then
+      AColor := GSettings.PenColor;
    aX := toX;
    aY := toY;
    isVert := fromX = toX;
@@ -1593,6 +1599,7 @@ var
    lColor, lColor2: TColor;
    w, a: integer;
    edit: TCustomEdit;
+   r: TRect;
 begin
    inherited;
    brushStyle := Canvas.Brush.Style;
@@ -1618,20 +1625,22 @@ begin
          Canvas.Polygon(FDiamond);
       end;
    end
-   else if FMemoFolder <> nil then
+   else
    begin
+      r := FMemoFolder.BoundsRect;
       if FTopParentBlock <> Self then
-         DrawArrow(BottomPoint.X, Height-31, BottomPoint.X, Height-1);
-      Canvas.Pen.Width := 2;
-      Canvas.Brush.Style := bsClear;
-      lColor2 := GSettings.GetShapeColor(shpFolder);
-      if lColor2 <> GSettings.DesktopColor then
-         Canvas.Brush.Color := lColor2;
-      Canvas.Polygon([Point(1, 1),
-                      Point(Width-1, 1),
-                      Point(Width-1, FMemoFolder.Height+5),
-                      Point(1, FMemoFolder.Height+5),
-                      Point(1, 0)]);
+         DrawArrow(BottomPoint.X, r.Bottom+2, BottomPoint.X, Height-1);
+      r.Inflate(1, 1);
+      Canvas.FrameRect(r);
+      //Canvas.Brush.Style := bsClear;
+      //lColor2 := GSettings.GetShapeColor(shpFolder);
+      //if lColor2 <> GSettings.DesktopColor then
+      //   Canvas.Brush.Color := lColor2;
+      //Canvas.Pen.Width := 2;
+      r.Inflate(2, 2);
+      Canvas.FrameRect(r);
+      r.Inflate(1, 1);
+      Canvas.FrameRect(r);
    end;
    Canvas.Brush.Style := brushStyle;
    Canvas.Brush.Color := lColor;
@@ -1933,16 +1942,18 @@ begin
    for comment in AComments do
    begin
       Inc(result);
-      comment.Visible := ASign > 0;
-      comment.SetBounds(comment.Left + pnt.X, comment.Top + pnt.Y, comment.Width, comment.Height);
-      if comment.Visible then
+      if ASign > 0 then
       begin
+         comment.SetBounds(comment.Left + pnt.X, comment.Top + pnt.Y, comment.Width, comment.Height);
          comment.Parent := lPage.Box;
+         comment.Visible := true;
          comment.PinControl := nil;
          comment.BringToFront;
       end
       else
       begin
+         comment.Visible := false;
+         comment.SetBounds(comment.Left + pnt.X, comment.Top + pnt.Y, comment.Width, comment.Height);
          comment.PinControl := Self;
          comment.Parent := lPage;
       end;
@@ -2053,7 +2064,7 @@ begin
       Constraints.MinHeight := 54;
       Width := tmpWidth;
       Height := tmpHeight;
-      FMemoFolder.SetBounds(3, 3, Width-6, Height-36);
+      FMemoFolder.SetBounds(4, 4, Width-8, Height-36);
       FMemoFolder.Anchors := [akRight, akLeft, akBottom, akTop];
       BottomHook := Width div 2;
       BottomPoint.X := BottomHook;

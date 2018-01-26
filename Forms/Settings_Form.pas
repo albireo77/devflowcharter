@@ -111,6 +111,8 @@ type
     chkShowBlockLabels: TCheckBox;
     cbFileEncoding: TComboBox;
     lblFileEncoding: TLabel;
+    pnlPen: TPanel;
+    lblPenColor: TLabel;
     procedure btnBrowseCCompClick(Sender: TObject);
     procedure CloseFormClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -179,6 +181,7 @@ begin
    pnlDesktop.Left := val;
    pnlFill.Left := val;
    pnlFont.Left := val;
+   pnlPen.Left := val;
    edtCompiler.Hint := ReplaceStr(AList.Values['edtCompilerHint'], LB_PHOLDER2, sLineBreak);
    edtCompilerNoMain.Hint := ReplaceStr(AList.Values['edtCompilerNoMainHint'], LB_PHOLDER2, sLineBreak);
    chkEnableDBuffer.Hint := ReplaceStr(AList.Values['chkEnableDBufferHint'], LB_PHOLDER2, sLineBreak);
@@ -381,6 +384,7 @@ var
    m: string;
 begin
    pnlFill.Color := clAqua;
+   pnlPen.Color := clBlack;
    pnlDesktop.Color := DEFAULT_DESKTOP_COLOR;
    langDef := GInfra.GetLangDefinition(cbLanguage.Text);
    parserOn := (langDef <> nil) and (langDef.Parser <> nil);
@@ -498,6 +502,7 @@ begin
    edtMarginRight.Text := (PRINT_SCALE_BASE - ASettings.PrintRect.Right).ToString;
    edtMarginBottom.Text := (PRINT_SCALE_BASE - ASettings.PrintRect.Bottom).ToString;
    pnlFill.Color := ASettings.HighlightColor;
+   pnlPen.Color := ASettings.PenColor;
    pnlDesktop.Color := ASettings.DesktopColor;
    pnlEditorFont.Color := ASettings.EditorFontColor;
    pnlEditorBkg.Color := ASettings.EditorBkgColor;
