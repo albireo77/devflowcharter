@@ -415,7 +415,7 @@ begin
          FMemoFolder.Anchors := [akRight, akLeft, akBottom, akTop];
          BottomHook := Width div 2;
          BottomPoint.X := BottomHook;
-         BottomPoint.Y := Height - 30;
+         BottomPoint.Y := Height - 28;
          IPoint.X := BottomHook + 30;
          IPoint.Y := FMemoFolder.Height + 15;
          TopHook.X := BottomHook;
@@ -708,7 +708,7 @@ begin
       else
       begin
          IPoint.Y := NewHeight - 21;
-         BottomPoint.Y := NewHeight - 30;
+         BottomPoint.Y := NewHeight - 28;
       end;
    end;
 end;
@@ -1635,10 +1635,10 @@ begin
       r.Inflate(3, 3, 4, 4);
       Canvas.Rectangle(r);
       Canvas.Pen.Width := 1;
+      if FTopParentBlock <> Self then
+         DrawArrow(BottomPoint, BottomPoint.X, Height-1);
       r.Inflate(-2, -2, -3, -3);
       Canvas.Rectangle(r);
-      if FTopParentBlock <> Self then
-         DrawArrow(BottomPoint.X, r.Bottom+2, BottomPoint.X, Height-1);
    end;
    Canvas.Brush.Style := brushStyle;
    Canvas.Brush.Color := lColor;
@@ -2066,7 +2066,7 @@ begin
       FMemoFolder.Anchors := [akRight, akLeft, akBottom, akTop];
       BottomHook := Width div 2;
       BottomPoint.X := BottomHook;
-      BottomPoint.Y := Height - 30;
+      BottomPoint.Y := Height - 28;
       IPoint.X := BottomHook + 30;
       IPoint.Y := FMemoFolder.Height + 15;
       TopHook.X := BottomHook;
