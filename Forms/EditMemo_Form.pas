@@ -64,6 +64,7 @@ begin
       memEditor.WordWrap := Source.WordWrap;
       memEditor.Text := Source.Text;
       memEditor.SelStart := Source.SelStart;
+      memEditor.SelLength := Source.SelLength;
       memEditor.SetFocus;
    end;
 end;

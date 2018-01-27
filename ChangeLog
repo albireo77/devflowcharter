@@ -1,3 +1,7 @@
+5.13 [27.01.2018]
+- Flowchart Settings: add pen color
+- Navigator: improve frame drawing performance
+
 5.12 [21.01.2018]
 - Navigator: fix red screen for newly created flowchart tab
 - Flowchart: replace gray component edges with black color
