@@ -115,7 +115,7 @@ begin
       box := GProject.GetActivePage.Box;
       box.HorzScrollBar.Position := MulDiv(X, box.HorzScrollBar.Range, ClientWidth) - (box.ClientWidth div 2);
       box.VertScrollBar.Position := MulDiv(Y, box.VertScrollBar.Range, ClientHeight) - (box.ClientHeight div 2);
-      Invalidate;
+      Repaint;
       box.Repaint;
    end;
 end;

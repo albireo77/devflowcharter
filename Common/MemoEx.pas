@@ -79,6 +79,7 @@ begin
    EditFormWidth := 280;
    EditFormHeight := 182;
    FHasVScroll := true;
+   ParentCtl3D := false;
    BorderStyle := bsNone;
    Ctl3D := false;
    OnKeyDown := TInfra.OnKeyDownSelectAll;
