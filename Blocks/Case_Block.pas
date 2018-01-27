@@ -522,7 +522,7 @@ begin
       else
       begin
          IPoint.Y := NewHeight - 21;
-         BottomPoint.Y := NewHeight - 30;
+         BottomPoint.Y := NewHeight - 28;
       end;
    end;
    if Resize and FHResize and not Expanded then
