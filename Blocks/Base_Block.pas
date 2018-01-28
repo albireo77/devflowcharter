@@ -1928,7 +1928,6 @@ function TBlock.PUComments(AComments: IEnumerable<TComment>; AUnPin: boolean = t
 var
    comment: TComment;
    pnt: TPoint;
-   sign: integer;
    lPage: TBlockTabSheet;
 begin
    result := 0;
