@@ -62,7 +62,7 @@ type
          FParentBlock: TGroupBlock;
          FParentBranch: TBranch;
          FId: integer;
-         function PUComments(AComments: IEnumerable<TComment>; ASign: integer = 1): integer;
+         function PUComments(AComments: IEnumerable<TComment>; AUnPin: boolean = true): integer;
          function IsInSelect(const APoint: TPoint): boolean;
       protected
          FType: TBlockType;
@@ -1924,7 +1924,7 @@ begin
    result := false;
 end;
 
-function TBlock.PUComments(AComments: IEnumerable<TComment>; ASign: integer = 1): integer;
+function TBlock.PUComments(AComments: IEnumerable<TComment>; AUnPin: boolean = true): integer;
 var
    comment: TComment;
    pnt: TPoint;
@@ -1934,13 +1934,10 @@ begin
    result := 0;
    lPage := Page;
    pnt := ClientToParent(TPoint.Zero, lPage.Box);
-   sign := System.Math.Sign(ASign);
-   pnt.X := pnt.X * sign;
-   pnt.Y := pnt.Y * sign;
    for comment in AComments do
    begin
       Inc(result);
-      if ASign > 0 then
+      if AUnPin then
       begin
          comment.SetBounds(comment.Left + pnt.X, comment.Top + pnt.Y, comment.Width, comment.Height);
          comment.Parent := lPage.Box;
@@ -1951,7 +1948,7 @@ begin
       else
       begin
          comment.Visible := false;
-         comment.SetBounds(comment.Left + pnt.X, comment.Top + pnt.Y, comment.Width, comment.Height);
+         comment.SetBounds(comment.Left - pnt.X, comment.Top - pnt.Y, comment.Width, comment.Height);
          comment.PinControl := Self;
          comment.Parent := lPage;
       end;
@@ -1960,7 +1957,7 @@ end;
 
 function TBlock.PinComments: integer;
 begin
-   result := PUComments(GetComments, -1);
+   result := PUComments(GetComments, false);
 end;
 
 function TBlock.UnPinComments: integer;
