@@ -183,7 +183,7 @@ const   // Global constants
         LB_PHOLDER  = '#!';
         LB_PHOLDER2  = '##';
 
-        VER_NUMBER_DELIM  = '.';
+        VERSION_NUMBER_SEP  = '.';
 
         MAIN_PAGE_MARKER  = 'mainPage#!';
 
@@ -1016,8 +1016,8 @@ begin
    currVersion := GetAboutForm.GetProgramVersion;
    if AVersion.IsEmpty or (currVersion = UNKNOWN_VERSION) or (currVersion = AVersion) then
       exit;
-   nums := AVersion.Split([VER_NUMBER_DELIM], 4);
-   numsCurr := currVersion.Split([VER_NUMBER_DELIM], 4);
+   nums := AVersion.Split([VERSION_NUMBER_SEP], 4);
+   numsCurr := currVersion.Split([VERSION_NUMBER_SEP], 4);
    for i := 0 to High(numsCurr) do
    begin
       if (result <> 0) or (i > High(nums)) then

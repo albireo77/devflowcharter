@@ -77,9 +77,9 @@ begin
    begin
       SetLength(buf, n);
       if GetFileVersionInfo(PWideChar(s), 0, n, buf) and VerQueryValue(buf, '\', Pointer(value), n) then
-         result := Format('%d%s%d%s%d%s%d', [LongRec(value.dwFileVersionMS).Hi, VER_NUMBER_DELIM,
-                                             LongRec(value.dwFileVersionMS).Lo, VER_NUMBER_DELIM,
-                                             LongRec(value.dwFileVersionLS).Hi, VER_NUMBER_DELIM,
+         result := Format('%d%s%d%s%d%s%d', [LongRec(value.dwFileVersionMS).Hi, VERSION_NUMBER_SEP,
+                                             LongRec(value.dwFileVersionMS).Lo, VERSION_NUMBER_SEP,
+                                             LongRec(value.dwFileVersionLS).Hi, VERSION_NUMBER_SEP,
                                              LongRec(value.dwFileVersionLS).Lo]);
       buf := nil;
    end;
