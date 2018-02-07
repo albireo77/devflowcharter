@@ -50,7 +50,7 @@ type
          function IsDeclared(const AName: string; AssociatedListCheck: boolean): boolean;
          function AddUpdateRow: integer; virtual;
          function IsRowVisible(ARow: integer): boolean;
-         function FindValidRowByPoint(const APoint: TPoint): integer;
+         function FindValidRowByPoint(x, y: integer): integer;
          procedure OnRowMovedList(Sender: TObject; FromIndex, ToIndex: Longint);
          procedure OnClickAdd(Sender: TObject); virtual; abstract;
          procedure OnClickImport(Sender: TObject);
@@ -511,10 +511,10 @@ end;
 
 procedure TDeclareList.OnDblClickList(Sender: TObject);
 var
-   pnt: TPoint;
+   p: TPoint;
 begin
-   pnt := sgList.ScreenToClient(Mouse.CursorPos);
-   if FindValidRowByPoint(pnt) <> -1 then
+   p := sgList.ScreenToClient(Mouse.CursorPos);
+   if FindValidRowByPoint(p.X, p.Y) <> -1 then
       btnChange.Click;
 end;
 
@@ -553,11 +553,11 @@ begin
    OnTopLeftChanged(sgList);
 end;
 
-function TDeclareList.FindValidRowByPoint(const APoint: TPoint): integer;
+function TDeclareList.FindValidRowByPoint(x, y: integer): integer;
 var
    lCol, lRow: integer;
 begin
-   sgList.MouseToCell(APoint.X, APoint.Y, lCol, lRow);
+   sgList.MouseToCell(x, y, lCol, lRow);
    if (lRow > 0) and (lRow < sgList.RowCount-1) then
       result := lRow
    else
@@ -566,7 +566,7 @@ end;
 
 procedure TDeclareList.OnDragOverList(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-   Accept := (Source = sgList) and (FindValidRowByPoint(Point(X, Y)) <> -1);
+   Accept := (Source = sgList) and (FindValidRowByPoint(X, Y) <> -1);
 end;
 
 procedure TDeclareList.OnDragDropList(Sender, Source: TObject; X, Y: Integer);
@@ -575,7 +575,7 @@ var
 begin
    if (Source = sgList) and (FDragRow <> -1) then
    begin
-      lRow := FindValidRowByPoint(Point(X, Y));
+      lRow := FindValidRowByPoint(X, Y);
       if lRow <> -1 then
          sgList.MoveRow(FDragRow, lRow);
    end;
@@ -589,7 +589,7 @@ begin
    edtName.SetFocus;
    if (Button = mbLeft) and (ssShift in Shift) then
    begin
-      lRow := FindValidRowByPoint(Point(X, Y));
+      lRow := FindValidRowByPoint(X, Y);
       if lRow <> -1 then
       begin
          FDragRow := lRow;

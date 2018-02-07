@@ -65,13 +65,10 @@ var
    i, dcount: integer;
    lang: TLangDefinition;
 begin
-   result := false;
    dcount := GetDimensionCount;
    if dcount = MaxInt then
-   begin
-      result := GInfra.CurrentLang.AllowUnboundedArrays;
-      exit;
-   end;
+      Exit(GInfra.CurrentLang.AllowUnboundedArrays);
+   result := false;
    txt := ReplaceStr(Text, ' ', '');
    if (txt.Length > 0) and (Pos(',-', txt) = 0) and (Pos(',0', txt) = 0) and not CharInSet(txt[1], ['0', '-']) then
    begin
