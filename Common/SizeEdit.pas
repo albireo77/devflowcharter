@@ -91,20 +91,17 @@ var
    i: integer;
    txt: string;
 begin
-   result := 0;
    txt := Trim(Text);
    if txt.isEmpty then
-      result := MaxInt
-   else
+      Exit(MaxInt);
+   result := 0;
+   for i := 1 to txt.Length do
    begin
-      for i := 1 to txt.Length do
-      begin
-         if txt[i] = ',' then
-            Inc(result);
-      end;
-      if txt <> '1' then
+      if txt[i] = ',' then
          Inc(result);
    end;
+   if txt <> '1' then
+      Inc(result);
 end;
 
 function TSizeEdit.GetDimension(idx: integer): string;
