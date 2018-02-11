@@ -444,67 +444,62 @@ end;
 
 function TVarDeclareList.GetDimensionCount(const AVarName: string; AIncludeTypeDimens: boolean = false): integer;
 var
-   i, a: integer;
+   i: integer;
    dataType: TUserDataType;
    size: string;
 begin
    result := 0;
    i := sgList.Cols[VAR_NAME_COL].IndexOf(AVarName);
-   if i > 0 then
+   if i < 1 then
+      Exit;
+   if AIncludeTypeDimens then
    begin
-      if AIncludeTypeDimens then
-      begin
-         dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
-         if dataType <> nil then
-            result := dataType.GetDimensionCount;
-      end;
-      size := sgList.Cells[VAR_SIZE_COL, i];
-      if size.isEmpty then
-         result := MaxInt
-      else
-      begin
-         for a := 1 to size.Length do
-         begin
-            if size[a] = ',' then
-               Inc(result);
-         end;
-         if size <> '1' then
-            Inc(result);
-      end;
+      dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
+      if dataType <> nil then
+         result := dataType.GetDimensionCount;
    end;
+   size := sgList.Cells[VAR_SIZE_COL, i];
+   if size.isEmpty then
+      Exit(MaxInt);
+   for i := 1 to size.Length do
+   begin
+      if size[i] = ',' then
+         Inc(result);
+   end;
+   if size <> '1' then
+      Inc(result);
 end;
 
 function TVarDeclareList.GetDimension(const AVarName: string; ADimensIndex: integer): string;
 var
-   i, a, cnt: integer;
+   i, a: integer;
    size, dims: string;
    dataType: TUserDataType;
 begin
    result := '';
    i := sgList.Cols[VAR_NAME_COL].IndexOf(AVarName);
-   if i > 0 then
+   if i < 1 then
+      Exit;
+   size := sgList.Cells[VAR_SIZE_COL, i];
+   dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
+   if dataType <> nil then
    begin
-      cnt := 1;
-      size := sgList.Cells[VAR_SIZE_COL, i];
-      dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
-      if dataType <> nil then
+      dims := dataType.GetDimensions;
+      if not dims.IsEmpty then
+         size := size + ',' + dims;
+   end;
+   i := 1;
+   for a := 1 to size.Length do
+   begin
+      if size[a] <> ',' then
+         result := result + size[a]
+      else
       begin
-         dims := dataType.GetDimensions;
-         if not dims.IsEmpty then
-            size := size + ',' + dims;
-      end;
-      for a := 1 to size.Length do
-      begin
-         if size[a] <> ',' then
-            result := result + size[a]
+         Inc(i);
+         if i > ADimensIndex then
+            break
          else
-         begin
-            Inc(cnt);
-            if cnt > ADimensIndex then
-               break
-            else
-               result := '';
-         end;
+            result := '';
       end;
    end;
 end;
