@@ -131,7 +131,7 @@ uses
    Main_Form, XMLProcessor, LangDefinition, Navigator_Form, BlockTabSheet;
 
 const
-   PARAMETER_IDENT = 'arg';
+   PARAMETER_TYPE_ID = 'arg';
 
 constructor TUserFunction.Create(AFunctionHeader: TUserFunctionHeader; AFunctionBody: TMainBlock);
 begin
@@ -304,7 +304,7 @@ begin
 
    inherited Create(AParentForm);
 
-   FElementMode := PARAMETER_IDENT;
+   FElementTypeID := PARAMETER_TYPE_ID;
 
    FLocalVars := TVarDeclareList.Create(Self, 0, 350, 389, 3, 4, 380);
    FLocalVars.Caption := i18Manager.GetString('LocalDeclare');
@@ -523,7 +523,7 @@ begin
 
    inherited Create(AParentTab.sbxElements);
 
-   FElem_Id := PARAMETER_IDENT;
+   FElementTypeID := PARAMETER_TYPE_ID;
 
    Constraints.MaxWidth := 362;
    SetBounds(0, Parent.Height, 362, 22);

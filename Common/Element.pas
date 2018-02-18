@@ -34,7 +34,7 @@ type
          FParentForm: TPageControlForm;
          function GetParentTab: TTabSheet;
       protected
-         FElem_Id: string;
+         FElementTypeID: string;
          constructor Create(AParent: TScrollBox);
          procedure OnClickRemove(Sender: TObject);
          procedure OnChangeType(Sender: TObject);
@@ -192,7 +192,7 @@ end;
 
 function TElement.ExportToXMLTag(ATag: IXMLElement): IXMLElement;
 begin
-   result := ATag.OwnerDocument.CreateElement(FElem_Id);
+   result := ATag.OwnerDocument.CreateElement(FElementTypeID);
    ATag.AppendChild(result);
    result.SetAttribute(NAME_ATTR, Trim(edtName.Text));
    result.SetAttribute(TYPE_ATTR, cbType.Text);

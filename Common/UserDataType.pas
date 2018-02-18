@@ -78,7 +78,7 @@ uses
    Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, ApplicationCommon, LangDefinition, ParserHelper, XMLProcessor;
 
 const
-   FIELD_IDENT = 'field';
+   FIELD_TYPE_ID = 'field';
 
 constructor TUserDataType.Create(AParentForm: TDataTypesForm);
 var
@@ -88,7 +88,7 @@ begin
 
    inherited Create(AParentForm);
 
-   FElementMode := FIELD_IDENT;
+   FElementTypeID := FIELD_TYPE_ID;
 
    CreateNameControls(Self, 9, 10);
 
@@ -285,7 +285,7 @@ begin
 
    inherited Create(AParentTab.sbxElements);
    
-   FElem_Id := FIELD_IDENT;
+   FElementTypeID := FIELD_TYPE_ID;
    Constraints.MaxWidth := 302;
    SetBounds(0, Parent.Height, 302, 22);
    Align := alTop;

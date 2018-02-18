@@ -37,7 +37,7 @@ type
       protected
          FOverlayObject: TComponent;
          FActive: boolean;
-         FElementMode: string;
+         FElementTypeID: string;
          sbxElements: TScrollBox;
          procedure SetActive(AValue: boolean); virtual;
          function GetActive: boolean; virtual;
@@ -65,7 +65,6 @@ type
          property Active: boolean read FActive write SetActive;
          property OverlayObject: TComponent read FOverlayObject write FOverlayObject;
          property Id: integer read GetId;
-         property ElementMode: string read FElementMode;
          property ParentForm: TPageControlForm read FParentForm;
          constructor Create(AParentForm: TPageControlForm);
          destructor Destroy; override;
@@ -482,7 +481,7 @@ begin
    edtName.OnChange(edtName);
    chkExtDeclare.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'ext_decl');
    edtLibrary.Text := ATag.GetAttribute('library');
-   tag := TXMLProcessor.FindChildTag(ATag, FElementMode);
+   tag := TXMLProcessor.FindChildTag(ATag, FElementTypeID);
    while tag <> nil do
    begin
       elem := CreateElement;
