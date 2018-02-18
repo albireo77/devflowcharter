@@ -130,9 +130,6 @@ uses
    Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, Vcl.Grids, ApplicationCommon,
    Main_Form, XMLProcessor, LangDefinition, Navigator_Form, BlockTabSheet;
 
-const
-   PARAMETER_TYPE_ID = 'arg';
-
 constructor TUserFunction.Create(AFunctionHeader: TUserFunctionHeader; AFunctionBody: TMainBlock);
 begin
    inherited Create(Application);
@@ -304,7 +301,7 @@ begin
 
    inherited Create(AParentForm);
 
-   FElementTypeID := PARAMETER_TYPE_ID;
+   FElementTypeID := 'arg';
 
    FLocalVars := TVarDeclareList.Create(Self, 0, 350, 389, 3, 4, 380);
    FLocalVars.Caption := i18Manager.GetString('LocalDeclare');
@@ -523,7 +520,7 @@ begin
 
    inherited Create(AParentTab.sbxElements);
 
-   FElementTypeID := PARAMETER_TYPE_ID;
+   FElementTypeID := AParentTab.FElementTypeID;
 
    Constraints.MaxWidth := 362;
    SetBounds(0, Parent.Height, 362, 22);
