@@ -130,6 +130,9 @@ uses
    Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, Vcl.Grids, ApplicationCommon,
    Main_Form, XMLProcessor, LangDefinition, Navigator_Form, BlockTabSheet;
 
+const
+   PARAMETER_IDENT = 'arg';
+
 constructor TUserFunction.Create(AFunctionHeader: TUserFunctionHeader; AFunctionBody: TMainBlock);
 begin
    inherited Create(Application);

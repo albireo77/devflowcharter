@@ -51,10 +51,6 @@ type
          function IsValid: boolean; virtual;
    end;
 
-const
-   FIELD_IDENT = 'field';
-   PARAMETER_IDENT = 'arg';
-
 implementation
 
 uses

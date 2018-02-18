@@ -77,6 +77,9 @@ implementation
 uses
    Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, ApplicationCommon, LangDefinition, ParserHelper, XMLProcessor;
 
+const
+   FIELD_IDENT = 'field';
+
 constructor TUserDataType.Create(AParentForm: TDataTypesForm);
 var
    dt: TUserDataTypeKind;
