@@ -35,10 +35,10 @@ type
 implementation
 
 uses
-   System.SysUtils, Instr_Block, MultiInstr_Block, InOut_Block, FunctionCall_Block,
-   WhileDo_Block, RepeatUntil_Block, ApplicationCommon, ForDo_Block, IfElse_Block,
-   If_Block, Case_Block, Return_Block, Text_Block, Main_Block, CommonInterfaces,
-   Folder_Block, XMLProcessor;
+   System.SysUtils, System.Rtti, Instr_Block, MultiInstr_Block, InOut_Block,
+   FunctionCall_Block, WhileDo_Block, RepeatUntil_Block, ApplicationCommon, ForDo_Block,
+   IfElse_Block, If_Block, Case_Block, Return_Block, Text_Block, Main_Block,
+   CommonInterfaces, Folder_Block, XMLProcessor;
 
 class function TBlockFactory.Create(ABranch: TBranch; ABlockType: TBlockType): TBlock;
 begin
@@ -72,7 +72,7 @@ begin
    result := nil;
    if ATag <> nil then
    begin
-      bt := TInfra.StringToEnum<TBlockType>(ATag.GetAttribute(BLOCK_TYPE_ATTR));
+      bt := TRttiEnumerationType.GetValue<TBlockType>(ATag.GetAttribute(BLOCK_TYPE_ATTR));
       left := ATag.GetAttribute('x').ToInteger;
       top := ATag.GetAttribute('y').ToInteger;
       height := ATag.GetAttribute('h').ToInteger;

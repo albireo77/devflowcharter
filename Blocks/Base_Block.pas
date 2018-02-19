@@ -274,9 +274,9 @@ type
 implementation
 
 uses
-   System.StrUtils, Vcl.Menus, System.Types, System.Math, Main_Block, Return_Block,
-   ApplicationCommon, BlockFactory, UserFunction, XMLProcessor, Navigator_Form,
-   LangDefinition, FlashThread, Main_Form;
+   System.StrUtils, Vcl.Menus, System.Types, System.Math, System.Rtti, Main_Block,
+   Return_Block, ApplicationCommon, BlockFactory, UserFunction, XMLProcessor,
+   Navigator_Form, LangDefinition, FlashThread, Main_Form;
 
 type
    THackControl = class(TControl);
@@ -2178,7 +2178,7 @@ var
 begin
    if ATag <> nil then
    begin
-      ATag.SetAttribute(BLOCK_TYPE_ATTR, TInfra.EnumToString<TBlockType>(BType));
+      ATag.SetAttribute(BLOCK_TYPE_ATTR, TRttiEnumerationType.GetName(BType));
       ATag.SetAttribute(FRAME_ATTR, FFrame.ToString);
       ATag.SetAttribute('x', Left.ToString);
       ATag.SetAttribute('y', Top.ToString);
@@ -2323,7 +2323,7 @@ begin
    result := errValidate;
    tag := TXMLProcessor.FindChildTag(ATag, BLOCK_TAG);
    if tag <> nil then
-      bt := TInfra.StringToEnum<TBlockType>(tag.GetAttribute(BLOCK_TYPE_ATTR));
+      bt := TRttiEnumerationType.GetValue<TBlockType>(tag.GetAttribute(BLOCK_TYPE_ATTR));
    if (tag = nil) or (bt in [blMain, blUnknown]) then
       Gerr_text := i18Manager.GetString('BadImportTag')
    else

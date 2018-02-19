@@ -75,7 +75,8 @@ type
 implementation
 
 uses
-   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, ApplicationCommon, LangDefinition, ParserHelper, XMLProcessor;
+   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, System.Rtti,
+   ApplicationCommon, LangDefinition, ParserHelper, XMLProcessor;
 
 constructor TUserDataType.Create(AParentForm: TDataTypesForm);
 var
@@ -162,7 +163,7 @@ begin
 
    for dt := Low(TUserDataTypeKind) to High(TUserDataTypeKind) do
    begin
-      s := TInfra.EnumToString<TUserDataTypeKind>(dt);
+      s := TRttiEnumerationType.GetName(dt);
       rgTypeBox.Items.Add(i18Manager.GetString(s));
    end;
 
@@ -342,7 +343,7 @@ begin
    inherited ExportToXMLTag(tag);
    if chkAddPtrType.Enabled and chkAddPtrType.Checked then
       tag.SetAttribute(POINTER_ATTR, 'true');
-   tag.SetAttribute(KIND_ATTR, TInfra.EnumToString<TUserDataTypeKind>(Kind));
+   tag.SetAttribute(KIND_ATTR, TRttiEnumerationType.GetName(Kind));
 end;
 
 procedure TUserDataType.Localize(AList: TStringList);
@@ -361,7 +362,7 @@ begin
    inherited ImportFromXMLTag(ATag, APinControl);
    if chkAddPtrType.Enabled then
       chkAddPtrType.Checked := TXMLProcessor.GetBoolFromAttr(ATag, POINTER_ATTR);
-   rgTypeBox.ItemIndex := Ord(TInfra.StringToEnum<TUserDataTypeKind>(ATag.GetAttribute(KIND_ATTR)));
+   rgTypeBox.ItemIndex := Ord(TRttiEnumerationType.GetValue<TUserDataTypeKind>(ATag.GetAttribute(KIND_ATTR)));
 end;
 
 function TUserDataType.GetDimensionCount: integer;

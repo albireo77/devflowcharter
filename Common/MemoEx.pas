@@ -70,8 +70,8 @@ type
 implementation
 
 uses
-   System.StrUtils, WinApi.Windows, Vcl.Graphics, System.SysUtils, XMLProcessor,
-   WinApi.Messages, ApplicationCommon;
+   System.StrUtils, WinApi.Windows, Vcl.Graphics, System.SysUtils, System.Rtti,
+   WinApi.Messages, XMLProcessor, ApplicationCommon;
 
 constructor TMemoEx.Create(AOwner: TComponent);
 begin
@@ -289,7 +289,7 @@ begin
       Perform(EM_LINESCROLL, h, v);
       val := ATag.GetAttribute('mem_align');
       if not val.IsEmpty then
-         Alignment := TInfra.StringToEnum<TAlignment>(val);
+         Alignment := TRttiEnumerationType.GetValue<TAlignment>(val);
    end;
 end;
 
@@ -304,7 +304,7 @@ begin
       ATag.SetAttribute('mem_vscroll', HasVScroll.ToString);
       ATag.SetAttribute('mem_hscroll', HasHScroll.ToString);
       ATag.SetAttribute('mem_wordwrap', WordWrap.ToString);
-      ATag.SetAttribute('mem_align', TInfra.EnumToString<TAlignment>(Alignment));
+      ATag.SetAttribute('mem_align', TRttiEnumerationType.GetName(Alignment));
       pnt := TInfra.GetScrolledPoint(Self);
       ATag.SetAttribute('mem_hscroll_pos', pnt.X.ToString);
       ATag.SetAttribute('mem_vscroll_pos', pnt.Y.ToString);

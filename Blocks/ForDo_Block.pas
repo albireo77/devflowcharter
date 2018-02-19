@@ -70,7 +70,7 @@ implementation
 
 uses
    Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Types, System.UITypes,
-   System.Math, ApplicationCommon, XMLProcessor, Main_Block, UserFunction, Return_Block;
+   System.Math, System.Rtti, ApplicationCommon, XMLProcessor, Main_Block, UserFunction, Return_Block;
 
 constructor TForDoBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, b_hook, px1, p1Y: integer; AId: integer = ID_INVALID);
 begin
@@ -612,7 +612,7 @@ begin
       if tag <> nil then
          edtStopVal.Text := ReplaceStr(tag.Text, '#' , ' ');
       FRefreshMode := false;
-      FOrder := TInfra.StringToEnum<TForOrder>(ATag.GetAttribute('order'));
+      FOrder := TRttiEnumerationType.GetValue<TForOrder>(ATag.GetAttribute('order'));
    end
 end;
 
@@ -632,7 +632,7 @@ begin
       tag := ATag.OwnerDocument.CreateElement('end_val');
       TXMLProcessor.AddText(tag, ReplaceStr(edtStopVal.Text, ' ', '#'));
       ATag.AppendChild(tag);
-      ATag.SetAttribute('order', TInfra.EnumToString<TForOrder>(FOrder));
+      ATag.SetAttribute('order', TRttiEnumerationType.GetName(FOrder));
    end;
 end;
 

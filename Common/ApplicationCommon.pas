@@ -99,8 +99,6 @@ type
          class function StripInstrEnd(const ALine: string): string;
          class function CompareProgramVersion(const AVersion: string): integer;
          class function GetBaseForms: IEnumerable<TBaseForm>;
-         class function StringToEnum<T: record>(const S: string): T;
-         class function EnumToString<T: record>(Enum: T): string;
          class function DecodeFontStyle(AValue: integer): TFontStyles;
          class function EncodeFontStyle(AStyle: TFontStyles): string;
          function GetNativeDataType(const AName: string): PNativeDataType;
@@ -1293,40 +1291,6 @@ begin
       result := INCORRECT_IDENT
    else if CurrentLang.Keywords.IndexOf(AId) <> -1 then
       result := RESERVED_IDENT;
-end;
-
-class function TInfra.StringToEnum<T>(const S: string): T;
-var
-   P: PTypeInfo;
-   dt: integer;
-begin
-   P := PTypeInfo(TypeInfo(T));
-   if P^.Kind <> tkEnumeration then
-      raise EArgumentException.CreateFmt('Type %s is not enumeration', [P^.Name]);
-   dt := StrToIntDef(S, -1);
-   if dt = -1 then
-      dt := GetEnumValue(P, S);
-   case GetTypeData(P)^.OrdType of
-      otSByte, otUByte: PByte(@result)^ := dt;
-      otSWord, otUWord: PWord(@result)^ := dt;
-      otSLong, otULong: PCardinal(@result)^ := dt;
-   end;
-end;
-
-class function TInfra.EnumToString<T>(Enum: T): string;
-var
-   P: PTypeInfo;
-   dt: integer;
-begin
-   P := PTypeInfo(TypeInfo(T));
-   if P^.Kind <> tkEnumeration then
-      raise EArgumentException.CreateFmt('Type %s is not enumeration', [P^.Name]);
-   case GetTypeData(P)^.OrdType of
-      otSByte, otUByte: dt := PByte(@Enum)^;
-      otSWord, otUWord: dt := PWord(@Enum)^;
-      otSLong, otULong: dt := PCardinal(@Enum)^;
-   end;
-   result := GetEnumName(P, dt);
 end;
 
 function CompareIntegers(AList: TStringList; idx1, idx2: integer): integer;
