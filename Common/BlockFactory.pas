@@ -68,11 +68,17 @@ class function TBlockFactory.Create(ATag: IXMLElement; ABranch: TBranch; ATab: T
 var
    left,top,height,width,brx,bh,th,bry,fbry,fbrx,trh,flh,bid: integer;
    bt: TBlockType;
+   attr: string;
 begin
    result := nil;
    if ATag <> nil then
    begin
-      bt := TRttiEnumerationType.GetValue<TBlockType>(ATag.GetAttribute(BLOCK_TYPE_ATTR));
+      attr := ATag.GetAttribute(BLOCK_TYPE_ATTR);
+      th := StrToIntDef(attr, -1);
+      if th = -1 then
+         bt := TRttiEnumerationType.GetValue<TBlockType>(attr)
+      else
+         bt := TBlockType(th);
       left := ATag.GetAttribute('x').ToInteger;
       top := ATag.GetAttribute('y').ToInteger;
       height := ATag.GetAttribute('h').ToInteger;
