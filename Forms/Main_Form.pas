@@ -357,7 +357,7 @@ end;
 
 procedure TMainForm.miNewClick(Sender: TObject);
 var
-   lBlock: TMainBlock;
+   mBlock: TMainBlock;
 begin
    if (GProject <> nil) and GProject.IsChanged then
    begin
@@ -368,9 +368,9 @@ begin
    end;
    TInfra.SetInitialSettings;
    GProject := TProject.GetInstance;
-   lBlock := TMainBlock.Create(GProject.GetMainPage, GetMainBlockNextTopLeft);
-   lBlock.OnResize(lBlock);
-   TUserFunction.Create(nil, lBlock);
+   mBlock := TMainBlock.Create(GProject.GetMainPage, GetMainBlockNextTopLeft);
+   mBlock.OnResize(mBlock);
+   TUserFunction.Create(nil, mBlock);
    ExportDialog.FileName := '';
    GProject.ChangingOn := true;
 end;
@@ -691,14 +691,14 @@ end;
 
 procedure TMainForm.miCommentClick(Sender: TObject);
 var
-   pnt: TPoint;
+   p: TPoint;
    page: TBlockTabSheet;
 begin
    if GProject <> nil then
    begin
       page := GProject.GetActivePage;
-      pnt := page.Box.ScreenToClient(page.Box.PopupMenu.PopupPoint);
-      TComment.Create(page, pnt.X, pnt.Y, 150, 50);
+      p := page.Box.ScreenToClient(page.Box.PopupMenu.PopupPoint);
+      TComment.Create(page, p.X, p.Y, 150, 50);
       GProject.SetChanged;
    end;
 end;
@@ -975,7 +975,7 @@ end;
 procedure TMainForm.miImportClick(Sender: TObject);
 var
    comp: TComponent;
-   pnt: TPoint;
+   p: TPoint;
    func: TUserFunction;
    impProc: TXMLImportProc;
    impFunc: boolean;
@@ -1000,9 +1000,9 @@ begin
             if (func <> nil) and func.Active and (func.Body <> nil) and func.Body.Visible then
             begin
                box := func.Body.Page.Box;
-               pnt := box.ScreenToClient(box.PopupMenu.PopupPoint);
-               func.Body.Left := pnt.X;
-               func.Body.Top := pnt.Y;
+               p := box.ScreenToClient(box.PopupMenu.PopupPoint);
+               func.Body.Left := p.X;
+               func.Body.Top := p.Y;
                box.SetScrollBars;
             end;
          end;
@@ -1213,19 +1213,20 @@ end;
 
 procedure TMainForm.pgcPagesContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
 var
-   pnt: TPoint;
+   p: TPoint;
    idx: integer;
 begin
-   if (GProject <> nil) and (htOnItem in pgcPages.GetHitTestInfoAt(MousePos.X, MousePos.Y)) then
+   p := MousePos;
+   if (GProject <> nil) and (htOnItem in pgcPages.GetHitTestInfoAt(p.X, p.Y)) then
    begin
-      idx := TInfra.GetPageIndex(pgcPages, MousePos.X, MousePos.Y);
+      idx := TInfra.GetPageIndex(pgcPages, p.X, p.Y);
       if idx <> -1 then
       begin
          pmTabs.PopupComponent := pgcPages.Pages[idx];
          pgcPages.ActivePageIndex := idx;
       end;
-      pnt := pgcPages.ClientToScreen(MousePos);
-      pmTabs.Popup(pnt.X, pnt.Y);
+      p := pgcPages.ClientToScreen(p);
+      pmTabs.Popup(p.X, p.Y);
    end
 end;
 
