@@ -1216,16 +1216,15 @@ var
    p: TPoint;
    idx: integer;
 begin
-   p := MousePos;
-   if (GProject <> nil) and (htOnItem in pgcPages.GetHitTestInfoAt(p.X, p.Y)) then
+   if (GProject <> nil) and (htOnItem in pgcPages.GetHitTestInfoAt(MousePos.X, MousePos.Y)) then
    begin
-      idx := TInfra.GetPageIndex(pgcPages, p.X, p.Y);
+      idx := TInfra.GetPageIndex(pgcPages, MousePos.X, MousePos.Y);
       if idx <> -1 then
       begin
          pmTabs.PopupComponent := pgcPages.Pages[idx];
          pgcPages.ActivePageIndex := idx;
       end;
-      p := pgcPages.ClientToScreen(p);
+      p := pgcPages.ClientToScreen(MousePos);
       pmTabs.Popup(p.X, p.Y);
    end
 end;
