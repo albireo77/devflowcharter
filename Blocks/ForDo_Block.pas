@@ -29,24 +29,22 @@ uses
 
 type
 
-  TForOrder = (ordAsc, ordDesc);
-
    TForDoBlock = class(TGroupBlock)
       protected
-         FOrder: TForOrder;
+         FDescOrder: boolean;
          FForLabel: string;
          procedure Paint; override;
          procedure VarOnClick(Sender: TObject);
          procedure VarOnChange(Sender: TObject);
          procedure VarListOnCloseUp(Sender: TObject);
          procedure SetWidth(AMinX: integer); override;
-         procedure SetForOrder(const AValue: TForOrder);
+         procedure SetDescOrder(AValue: boolean);
          procedure PutTextControls; override;
       public
          cbVariable: TComboBox;
          edtStartVal, edtStopVal: TStatement;
          edtVariable: TEdit;
-         property Order: TForOrder read FOrder write SetForOrder;
+         property DescOrder: boolean read FDescOrder write SetDescOrder;
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, b_hook, px1, p1Y: integer; AId: integer = ID_INVALID); overload;
          function Clone(ABranch: TBranch): TBlock; override;
@@ -70,7 +68,7 @@ implementation
 
 uses
    Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Types, System.UITypes,
-   System.Math, System.Rtti, ApplicationCommon, XMLProcessor, Main_Block, UserFunction, Return_Block;
+   System.Math, ApplicationCommon, XMLProcessor, Main_Block, UserFunction, Return_Block;
 
 constructor TForDoBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, b_hook, px1, p1Y: integer; AId: integer = ID_INVALID);
 begin
@@ -148,7 +146,6 @@ begin
    BottomHook := b_hook;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
-   FOrder := ordAsc;
    FForLabel := i18Manager.GetString('CaptionFor');
    FStatement.Free;
    FStatement := nil;
@@ -172,7 +169,7 @@ begin
       edtVariable.Text := forBlock.edtVariable.Text;
       MyOnChange(edtVariable);
       cbVariable.ItemIndex := forBlock.cbVariable.ItemIndex;
-      FOrder := forBlock.FOrder;
+      FDescOrder := forBlock.FDescOrder;
       if not forBlock.Expanded then
       begin
          edtStartVal.Visible := false;
@@ -188,11 +185,11 @@ begin
    Create(ABranch, 0, 0, 240, 91, 120, 120, 69);
 end;
 
-procedure TForDoBlock.SetForOrder(const AValue: TForOrder);
+procedure TForDoBlock.SetDescOrder(AValue: boolean);
 begin
-   if AValue <> FOrder then
+   if AValue <> FDescOrder then
    begin
-      FOrder := AValue;
+      FDescOrder := AValue;
       Repaint;
       if GSettings.UpdateEditor and not SkipUpdateEditor then
          UpdateEditor(nil);
@@ -201,7 +198,7 @@ end;
 
 procedure TForDoBlock.Paint;
 const
-   lForDirect: array[TForOrder] of char = ('»', '«');
+   forDirect: array[boolean] of char = ('»', '«');
 var
    y, bhx: integer;
    lColor: TColor;
@@ -240,7 +237,7 @@ begin
                       Point(bhx-100, 0)]);
       y :=  edtStartVal.BoundsRect.Bottom - 6;
       DrawTextLabel(bhx-42, y, GInfra.CurrentLang.ForDoVarString, false, true);
-      DrawTextLabel(bhx+1, y, lForDirect[FOrder], false, true);
+      DrawTextLabel(bhx+1, y, forDirect[FDescOrder], false, true);
       DrawTextLabel(bhx-97, y, FForLabel, false, true);
       DrawBlockLabel(bhx-100, 40, GInfra.CurrentLang.LabelFor);
    end;
@@ -342,7 +339,6 @@ function TForDoBlock.FillTemplate(const ALangId: string; const ATemplate: string
 var
    template: string;
    lang: TLangDefinition;
-   isAsc: boolean;
 begin
    result := '';
    template := '';
@@ -356,12 +352,11 @@ begin
       template := ATemplate;
    if (lang <> nil) and not template.IsEmpty then
    begin
-      isAsc := FOrder = ordAsc;
       result := ReplaceStr(template, PRIMARY_PLACEHOLDER, Trim(edtVariable.Text));
       result := ReplaceStr(result, '%s2', Trim(edtStartVal.Text));
       result := ReplaceStr(result, '%s3', Trim(edtStopVal.Text));
-      result := ReplaceStr(result, '%s4', IfThen(isAsc, lang.ForAsc1, lang.ForDesc1));
-      result := ReplaceStr(result, '%s5', IfThen(isAsc, lang.ForAsc2, lang.ForDesc2));
+      result := ReplaceStr(result, '%s4', IfThen(FDescOrder, lang.ForDesc1, lang.ForAsc1));
+      result := ReplaceStr(result, '%s5', IfThen(FDescOrder, lang.ForDesc2, lang.ForAsc2));
    end
    else
       result := FillCodedTemplate(ALangId);
@@ -549,7 +544,6 @@ end;
 procedure TForDoBlock.UpdateEditor(AEdit: TCustomEdit);
 var
    chLine: TChangeLine;
-   isAsc: boolean;
 begin
    if PerformEditorUpdate then
    begin
@@ -558,12 +552,11 @@ begin
          chLine := TInfra.GetChangeLine(Self);
          if chLine.Row <> ROW_NOT_FOUND then
          begin
-            isAsc := FOrder = ordAsc;
             chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, edtVariable.Text);
             chLine.Text := ReplaceStr(chLine.Text, '%s2', Trim(edtStartVal.Text));
             chLine.Text := ReplaceStr(chLine.Text, '%s3', Trim(edtStopVal.Text));
-            chLine.Text := ReplaceStr(chLine.Text, '%s4', IfThen(isAsc, GInfra.CurrentLang.ForAsc1, GInfra.CurrentLang.ForDesc1));
-            chLine.Text := ReplaceStr(chLine.Text, '%s5', IfThen(isAsc, GInfra.CurrentLang.ForAsc2, GInfra.CurrentLang.ForDesc2));
+            chLine.Text := ReplaceStr(chLine.Text, '%s4', IfThen(FDescOrder, GInfra.CurrentLang.ForDesc1, GInfra.CurrentLang.ForAsc1));
+            chLine.Text := ReplaceStr(chLine.Text, '%s5', IfThen(FDescOrder, GInfra.CurrentLang.ForDesc2, GInfra.CurrentLang.ForAsc2));
             if GSettings.UpdateEditor and not SkipUpdateEditor then
                TInfra.ChangeLine(chLine);
             TInfra.GetEditorForm.SetCaretPos(chLine);
@@ -595,7 +588,7 @@ begin
       if tag <> nil then
          edtStopVal.Text := ReplaceStr(tag.Text, '#' , ' ');
       FRefreshMode := false;
-      FOrder := TRttiEnumerationType.GetValue<TForOrder>(ATag.GetAttribute('order'));
+      FDescOrder := ATag.GetAttribute('order') = 'ordDesc';
    end
 end;
 
@@ -615,7 +608,7 @@ begin
       tag := ATag.OwnerDocument.CreateElement('end_val');
       TXMLProcessor.AddText(tag, ReplaceStr(edtStopVal.Text, ' ', '#'));
       ATag.AppendChild(tag);
-      ATag.SetAttribute('order', TRttiEnumerationType.GetName(FOrder));
+      ATag.SetAttribute('order', IfThen(FDescOrder, 'ordDesc', 'ordAsc'));
    end;
 end;
 

@@ -628,8 +628,8 @@ begin
           begin
              miForAsc.Visible := True;
              miForDesc.Visible := True;
-             miForAsc.Checked := TForDoBlock(block).Order = ordAsc;
-             miForDesc.Checked := not miForAsc.Checked;
+             miForDesc.Checked := TForDoBlock(block).DescOrder;
+             miForAsc.Checked := not miForDesc.Checked;
           end;
        end
        else
@@ -1144,17 +1144,9 @@ begin
 end;
 
 procedure TMainForm.miForAscClick(Sender: TObject);
-var
-   block: TForDoBlock;
 begin
    if pmPages.PopupComponent is TForDoBlock then
-   begin
-      block := TForDoBlock(pmPages.PopupComponent);
-      if Sender = miForAsc then
-         block.Order := ordAsc
-      else
-         block.Order := ordDesc;
-   end;
+      TForDoBlock(pmPages.PopupComponent).DescOrder := Sender = miForDesc;
 end;
 
 procedure TMainForm.miMemoEditClick(Sender: TObject);
