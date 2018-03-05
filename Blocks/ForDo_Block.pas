@@ -340,8 +340,9 @@ end;
 
 function TForDoBlock.FillTemplate(const ALangId: string; const ATemplate: string = ''): string;
 var
-   dir1, dir2, template: string;
+   template: string;
    lang: TLangDefinition;
+   isAsc: boolean;
 begin
    result := '';
    template := '';
@@ -355,21 +356,12 @@ begin
       template := ATemplate;
    if (lang <> nil) and not template.IsEmpty then
    begin
+      isAsc := FOrder = ordAsc;
       result := ReplaceStr(template, PRIMARY_PLACEHOLDER, Trim(edtVariable.Text));
       result := ReplaceStr(result, '%s2', Trim(edtStartVal.Text));
       result := ReplaceStr(result, '%s3', Trim(edtStopVal.Text));
-      if FOrder = ordAsc then
-      begin
-         dir1 := lang.ForAsc1;
-         dir2 := lang.ForAsc2;
-      end
-      else
-      begin
-         dir1 := lang.ForDesc1;
-         dir2 := lang.ForDesc2;
-      end;
-      result := ReplaceStr(result, '%s4', dir1);
-      result := ReplaceStr(result, '%s5', dir2);
+      result := ReplaceStr(result, '%s4', IfThen(isAsc, lang.ForAsc1, lang.ForDesc1));
+      result := ReplaceStr(result, '%s5', IfThen(isAsc, lang.ForAsc2, lang.ForDesc2));
    end
    else
       result := FillCodedTemplate(ALangId);
@@ -556,8 +548,8 @@ end;
 
 procedure TForDoBlock.UpdateEditor(AEdit: TCustomEdit);
 var
-   str1, str2: string;
    chLine: TChangeLine;
+   isAsc: boolean;
 begin
    if PerformEditorUpdate then
    begin
@@ -566,21 +558,12 @@ begin
          chLine := TInfra.GetChangeLine(Self);
          if chLine.Row <> ROW_NOT_FOUND then
          begin
+            isAsc := FOrder = ordAsc;
             chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, edtVariable.Text);
             chLine.Text := ReplaceStr(chLine.Text, '%s2', Trim(edtStartVal.Text));
             chLine.Text := ReplaceStr(chLine.Text, '%s3', Trim(edtStopVal.Text));
-            if FOrder = ordAsc then
-            begin
-               str1 := GInfra.CurrentLang.ForAsc1;
-               str2 := GInfra.CurrentLang.ForAsc2;
-            end
-            else
-            begin
-               str1 := GInfra.CurrentLang.ForDesc1;
-               str2 := GInfra.CurrentLang.ForDesc2;
-            end;
-            chLine.Text := ReplaceStr(chLine.Text, '%s4', str1);
-            chLine.Text := ReplaceStr(chLine.Text, '%s5', str2);
+            chLine.Text := ReplaceStr(chLine.Text, '%s4', IfThen(isAsc, GInfra.CurrentLang.ForAsc1, GInfra.CurrentLang.ForDesc1));
+            chLine.Text := ReplaceStr(chLine.Text, '%s5', IfThen(isAsc, GInfra.CurrentLang.ForAsc2, GInfra.CurrentLang.ForDesc2));
             if GSettings.UpdateEditor and not SkipUpdateEditor then
                TInfra.ChangeLine(chLine);
             TInfra.GetEditorForm.SetCaretPos(chLine);
