@@ -197,8 +197,6 @@ begin
 end;
 
 procedure TForDoBlock.Paint;
-const
-   forDirect: array[boolean] of char = ('»', '«');
 var
    y, bhx: integer;
    lColor: TColor;
@@ -237,7 +235,7 @@ begin
                       Point(bhx-100, 0)]);
       y :=  edtStartVal.BoundsRect.Bottom - 6;
       DrawTextLabel(bhx-42, y, GInfra.CurrentLang.ForDoVarString, false, true);
-      DrawTextLabel(bhx+1, y, forDirect[FDescOrder], false, true);
+      DrawTextLabel(bhx+1, y, IfThen(FDescOrder, '«', '»'), false, true);
       DrawTextLabel(bhx-97, y, FForLabel, false, true);
       DrawBlockLabel(bhx-100, 40, GInfra.CurrentLang.LabelFor);
    end;
