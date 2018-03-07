@@ -62,7 +62,6 @@ type
          FParentBlock: TGroupBlock;
          FParentBranch: TBranch;
          FId: integer;
-         function PUComments(AComments: IEnumerable<TComment>; AUnPin: boolean = true): integer;
          function IsInSelect(const APoint: TPoint): boolean;
       protected
          FType: TBlockType;
@@ -507,12 +506,12 @@ end;
 
 procedure TBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 var
-   pnt: TPoint;
+   p: TPoint;
 begin
-   pnt := Point(X, Y);
-   SelectBlock(pnt);
-   SetCursor(pnt);
-   if Rect(BottomPoint.X-5, BottomPoint.Y, BottomPoint.X+5, Height).Contains(pnt) then
+   p := Point(X, Y);
+   SelectBlock(p);
+   SetCursor(p);
+   if Rect(BottomPoint.X-5, BottomPoint.Y, BottomPoint.X+5, Height).Contains(p) then
    begin
       DrawArrow(BottomPoint, BottomPoint.X, Height-1, arrEnd, clRed);
       Ired := 0;
@@ -529,23 +528,23 @@ end;
 procedure TGroupBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 var
    i: integer;
-   pnt: PPoint;
+   p: PPoint;
 begin
    if Expanded then
    begin
       for i := PRIMARY_BRANCH_IND to FBranchList.Count-1 do
       begin
-         pnt := @FBranchList[i].Hook;
-         if Rect(pnt.X-5, TopHook.Y, pnt.X+5, pnt.Y).Contains(Point(X, Y)) then
+         p := @FBranchList[i].Hook;
+         if Rect(p.X-5, TopHook.Y, p.X+5, p.Y).Contains(Point(X, Y)) then
          begin
-            DrawArrow(pnt.X, TopHook.Y, pnt^, arrEnd, clRed);
+            DrawArrow(p.X, TopHook.Y, p^, arrEnd, clRed);
             Ired := i;
             Cursor := TCursor(GCustomCursor);
             break;
          end
          else if Ired = i then
          begin
-            DrawArrow(pnt.X, TopHook.Y, pnt^);
+            DrawArrow(p.X, TopHook.Y, p^);
             Ired := -1;
             Cursor := crDefault;
             break;
@@ -664,14 +663,14 @@ end;
 
 procedure TGroupBlock.OnMouseLeave(AClearRed: boolean = true);
 var
-   pnt: PPoint;
+   p: PPoint;
    lBranch: TBranch;
 begin
    lBranch := GetBranch(Ired);
    if lBranch <> nil then
    begin
-      pnt := @lBranch.Hook;
-      DrawArrow(pnt.X, TopHook.Y, pnt^);
+      p := @lBranch.Hook;
+      DrawArrow(p.X, TopHook.Y, p^);
    end;
    inherited OnMouseLeave(AClearRed);
 end;
@@ -863,14 +862,14 @@ end;
 
 procedure TBlock.MyOnMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-   pnt: TPoint;
+   p: TPoint;
 begin
    if Button = mbRight then
    begin
-      pnt := ClientToScreen(Point(X, Y));
+      p := ClientToScreen(Point(X, Y));
       PopupMenu.PopupComponent := Self;
       FMouseLeave := false;
-      PopupMenu.Popup(pnt.X, pnt.Y);
+      PopupMenu.Popup(p.X, p.Y);
    end;
 end;
 
@@ -1470,7 +1469,7 @@ const
 var
    isVert, toBottomRight: boolean;
    aX, aY: integer;
-   pnt: TPoint;
+   p: TPoint;
 begin
    if AColor = clNone then
       AColor := GSettings.PenColor;
@@ -1488,14 +1487,14 @@ begin
       toBottomRight := toY > fromY
    else
       toBottomRight := toX > fromX;
-   pnt := Point(aX+MX[isVert, toBottomRight], aY+MY[isVert, toBottomRight]);
+   p := Point(aX+MX[isVert, toBottomRight], aY+MY[isVert, toBottomRight]);
    Canvas.Brush.Style := bsSolid;
    Canvas.Pen.Color := AColor;
    Canvas.Brush.Color := AColor;
-   Canvas.Polygon([pnt,
-                   Point(pnt.X+MD[isVert, false], pnt.Y+MD[isVert, true]),
+   Canvas.Polygon([p,
+                   Point(p.X+MD[isVert, false], p.Y+MD[isVert, true]),
                    Point(aX, aY),
-                   pnt]);
+                   p]);
    Canvas.MoveTo(fromX, fromY);
    Canvas.LineTo(toX, toY);
 end;
@@ -1594,7 +1593,7 @@ end;
 
 procedure TGroupBlock.Paint;
 var
-   pnt: TPoint;
+   p: TPoint;
    brushStyle: TBrushStyle;
    lColor, lColor2: TColor;
    w, a: integer;
@@ -1607,17 +1606,17 @@ begin
    w := Canvas.Pen.Width;
    if Expanded then
    begin
-      pnt := GetDiamondTop;
+      p := GetDiamondTop;
       edit := GetTextControl;
-      if (edit <> nil) and not InvalidPoint(pnt) then
+      if (edit <> nil) and not InvalidPoint(p) then
       begin
          a := (edit.Height + edit.Width div 2) div 2 + 1;
-         FDiamond[D_LEFT] := Point(pnt.X-2*a, pnt.Y+a);
-         FDiamond[D_BOTTOM] := Point(pnt.X, pnt.Y+2*a);
-         FDiamond[D_RIGHT] := Point(pnt.X+2*a, pnt.Y+a);
-         FDiamond[D_TOP] := pnt;
+         FDiamond[D_LEFT] := Point(p.X-2*a, p.Y+a);
+         FDiamond[D_BOTTOM] := Point(p.X, p.Y+2*a);
+         FDiamond[D_RIGHT] := Point(p.X+2*a, p.Y+a);
+         FDiamond[D_TOP] := p;
          FDiamond[D_LEFT_CLOSE] := FDiamond[D_LEFT];
-         edit.SetBounds(pnt.X-edit.Width div 2, pnt.Y+a-edit.Height div 2, edit.Width, edit.Height);
+         edit.SetBounds(p.X-edit.Width div 2, p.Y+a-edit.Height div 2, edit.Width, edit.Height);
          Canvas.Brush.Style := bsClear;
          lColor2 := GSettings.GetShapeColor(FShape);
          if lColor2 <> GSettings.DesktopColor then
@@ -1690,16 +1689,16 @@ end;
 
 procedure TBlock.WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo);
 var
-   pnt: TPoint;
+   p: TPoint;
    box: TScrollBoxEx;
 begin
    inherited;
    box := Page.Box;
-   pnt := ClientToParent(TPoint.Zero, box);
+   p := ClientToParent(TPoint.Zero, box);
    if FHResize then
-      Msg.MinMaxInfo.ptMaxTrackSize.X := box.ClientWidth - pnt.X;
+      Msg.MinMaxInfo.ptMaxTrackSize.X := box.ClientWidth - p.X;
    if FVResize then
-      Msg.MinMaxInfo.ptMaxTrackSize.Y := box.ClientHeight - pnt.Y;
+      Msg.MinMaxInfo.ptMaxTrackSize.Y := box.ClientHeight - p.Y;
 end;
 
 function TBlock.IsCursorSelect: boolean;
@@ -1924,44 +1923,42 @@ begin
    result := false;
 end;
 
-function TBlock.PUComments(AComments: IEnumerable<TComment>; AUnPin: boolean = true): integer;
+function TBlock.PinComments: integer;
 var
    comment: TComment;
-   pnt: TPoint;
+   p: TPoint;
    lPage: TBlockTabSheet;
 begin
    result := 0;
    lPage := Page;
-   pnt := ClientToParent(TPoint.Zero, lPage.Box);
-   for comment in AComments do
+   p := ClientToParent(TPoint.Zero, lPage.Box);
+   for comment in GetComments do
    begin
-      Inc(result);
-      if AUnPin then
-      begin
-         comment.SetBounds(comment.Left + pnt.X, comment.Top + pnt.Y, comment.Width, comment.Height);
-         comment.Parent := lPage.Box;
-         comment.Visible := true;
-         comment.PinControl := nil;
-         comment.BringToFront;
-      end
-      else
-      begin
-         comment.Visible := false;
-         comment.SetBounds(comment.Left - pnt.X, comment.Top - pnt.Y, comment.Width, comment.Height);
-         comment.PinControl := Self;
-         comment.Parent := lPage;
-      end;
+      comment.Visible := false;
+      comment.SetBounds(comment.Left - p.X, comment.Top - p.Y, comment.Width, comment.Height);
+      comment.PinControl := Self;
+      comment.Parent := lPage;
    end;
 end;
 
-function TBlock.PinComments: integer;
-begin
-   result := PUComments(GetComments, false);
-end;
-
 function TBlock.UnPinComments: integer;
+var
+   comment: TComment;
+   p: TPoint;
+   box: TScrollBoxEx;
 begin
-   result := PUComments(GetPinComments);
+   result := 0;
+   box := Page.Box;
+   p := ClientToParent(TPoint.Zero, box);
+   for comment in GetPinComments do
+   begin
+      comment.SetBounds(comment.Left + p.X, comment.Top + p.Y, comment.Width, comment.Height);
+      comment.Parent := box;
+      comment.Visible := true;
+      comment.PinControl := nil;
+      comment.BringToFront;
+      Inc(result);
+   end;
 end;
 
 function TGroupBlock.UnPinComments: integer;
