@@ -1938,6 +1938,7 @@ begin
       comment.SetBounds(comment.Left - p.X, comment.Top - p.Y, comment.Width, comment.Height);
       comment.PinControl := Self;
       comment.Parent := lPage;
+      Inc(result);
    end;
 end;
 
