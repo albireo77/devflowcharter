@@ -369,7 +369,7 @@ procedure Dummy_UserFunctionsSectionGenerator(ALines: TStringList; ASkipBodyGen:
 var
    func: TUserFunction;
    param: TParameter;
-   name, argList, paramStr, ref, lArray, lRecord, enum, defValue: string;
+   name, argList, paramStr, ref, lArray, lRecord, enum, defValue, hText: string;
    lang: TLangDefinition;
    headerTemplate, varList, funcTemplate, bodyTemplate, funcList, funcsTemplate: TStringList;
    intType: integer;
@@ -418,16 +418,17 @@ begin
                if (lang.FunctionHeaderArgsStripCount > 0) and not argList.IsEmpty then
                   SetLength(argList, argList.Length - lang.FunctionHeaderArgsStripCount);
 
+               // assemble function header line
+               isTypeNotNone := func.Header.cbType.ItemIndex <> 0;
+               hText := ReplaceStr(lang.FunctionHeaderTemplate, PRIMARY_PLACEHOLDER, name);
+               hText := ReplaceStr(hText, '%s3', argList);
+               hText := ReplaceStr(hText, '%s4', IfThen(isTypeNotNone, func.Header.cbType.Text));
+               hText := ReplaceStr(hText, '%s5', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone1, lang.FunctionHeaderTypeNone1));
+               hText := ReplaceStr(hText, '%s6', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone2, lang.FunctionHeaderTypeNone2));
+
                headerTemplate := TStringList.Create;
                try
-                  // assemble function header line
-                  isTypeNotNone := func.Header.cbType.ItemIndex <> 0;
-                  headerTemplate.Text := ReplaceStr(lang.FunctionHeaderTemplate, PRIMARY_PLACEHOLDER, name);
-                  headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s3', argList);
-                  headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s4', IfThen(isTypeNotNone, func.Header.cbType.Text));
-                  headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s5', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone1, lang.FunctionHeaderTypeNone1));
-                  headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s6', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone2, lang.FunctionHeaderTypeNone2));
-
+                  headerTemplate.Text := hText;
                   if ASkipBodyGen then
                   begin
                      TInfra.InsertTemplateLines(headerTemplate, '%s2', nil);
