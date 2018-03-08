@@ -369,10 +369,11 @@ procedure Dummy_UserFunctionsSectionGenerator(ALines: TStringList; ASkipBodyGen:
 var
    func: TUserFunction;
    param: TParameter;
-   name, argList, paramStr, noneType1, noneType2, lType, ref, lArray, lRecord, enum, defValue: string;
+   name, argList, paramStr, ref, lArray, lRecord, enum, defValue: string;
    lang: TLangDefinition;
    headerTemplate, varList, funcTemplate, bodyTemplate, funcList, funcsTemplate: TStringList;
    intType: integer;
+   isTypeNotNone: boolean;
 begin
    lang := GInfra.CurrentLang;
    if not lang.FunctionsTemplate.IsEmpty then
@@ -420,23 +421,12 @@ begin
                headerTemplate := TStringList.Create;
                try
                   // assemble function header line
+                  isTypeNotNone := func.Header.cbType.ItemIndex <> 0;
                   headerTemplate.Text := ReplaceStr(lang.FunctionHeaderTemplate, PRIMARY_PLACEHOLDER, name);
                   headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s3', argList);
-                  if func.Header.cbType.ItemIndex <> 0 then
-                  begin
-                     noneType1 := lang.FunctionHeaderTypeNotNone1;
-                     noneType2 := lang.FunctionHeaderTypeNotNone2;
-                     lType := func.Header.cbType.Text;
-                  end
-                  else
-                  begin
-                     noneType1 := lang.FunctionHeaderTypeNone1;
-                     noneType2 := lang.FunctionHeaderTypeNone2;
-                     lType := '';
-                  end;
-                  headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s4', lType);
-                  headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s5', noneType1);
-                  headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s6', noneType2);
+                  headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s4', IfThen(isTypeNotNone, func.Header.cbType.Text));
+                  headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s5', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone1, lang.FunctionHeaderTypeNone1));
+                  headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s6', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone2, lang.FunctionHeaderTypeNone2));
 
                   if ASkipBodyGen then
                   begin
