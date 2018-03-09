@@ -204,7 +204,7 @@ var
    i: integer;
    libList, libTemplate: TStringList;
    lang: TLangDefinition;
-   libStr, p1, p2: string;
+   libStr: string;
    isS1: boolean;
 begin
    lang := GInfra.CurrentLang;
@@ -219,20 +219,10 @@ begin
             libTemplate.Text := lang.LibTemplate;
             for i := 0 to libList.Count-1 do
                libStr := libStr + Format(IfThen(isS1, lang.LibEntry + sLineBreak, lang.LibEntryList), [libList[i]]);
-            if isS1 then
-            begin
-               p1 := PRIMARY_PLACEHOLDER;
-               p2 := '%s2';
-            end
-            else
-            begin
-               if (lang.LibEntryListStripCount > 0) and not libStr.IsEmpty then
-                  SetLength(libStr, libStr.Length - lang.LibEntryListStripCount);
-               p1 := '%s2';
-               p2 := PRIMARY_PLACEHOLDER;
-            end;
-            TInfra.InsertTemplateLines(libTemplate, p1, libStr);
-            TInfra.InsertTemplateLines(libTemplate, p2, '');
+            if (not isS1) and (lang.LibEntryListStripCount > 0) and not libStr.IsEmpty then
+               SetLength(libStr, libStr.Length - lang.LibEntryListStripCount);
+            TInfra.InsertTemplateLines(libTemplate, IfThen(isS1, PRIMARY_PLACEHOLDER, '%s2'), libStr);
+            TInfra.InsertTemplateLines(libTemplate, IfThen(isS1, '%s2', PRIMARY_PLACEHOLDER), '');
             ALines.AddStrings(libTemplate);
          finally
             libTemplate.Free;
