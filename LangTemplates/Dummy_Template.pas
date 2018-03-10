@@ -35,13 +35,14 @@ var
    name, sizeStr, lRecord, enum: string;
    b, lType: integer;
    lang: TLangDefinition;
-   typesList, typesTemplate, recTemplate, fieldList, enumTemplate: TStringList;
+   typesList, typesTemplate, fieldList, template: TStringList;
    typeStr, fieldStr, valStr, valStr2: string;
    fields: IEnumerable<TField>;
 begin
    lang := GInfra.CurrentLang;
    if not lang.DataTypesTemplate.IsEmpty then
    begin
+      template := TStringList.Create;
       typesList := TStringList.Create;
       try
          for dataType in GProject.GetUserDataTypes do
@@ -49,19 +50,18 @@ begin
             name := dataType.GetName;
             if (not name.IsEmpty) and not dataType.chkExtDeclare.Checked then
             begin
+               typeStr := '';
+               template.Clear;
                case dataType.Kind of
+
                   dtInt:
                   if not lang.DataTypeIntMask.IsEmpty then
-                  begin
                      typeStr := ReplaceStr(lang.DataTypeIntMask, PRIMARY_PLACEHOLDER, name);
-                     typesList.AddObject(typeStr, dataType);
-                  end;
+
                   dtReal:
                   if not lang.DataTypeRealMask.IsEmpty then
-                  begin
                      typeStr := ReplaceStr(lang.DataTypeRealMask, PRIMARY_PLACEHOLDER, name);
-                     typesList.AddObject(typeStr, dataType);
-                  end;
+
                   dtOther:
                   if not lang.DataTypeOtherMask.IsEmpty then
                   begin
@@ -71,8 +71,8 @@ begin
                      if fields.GetEnumerator.MoveNext then
                         valStr := Trim(fields.GetEnumerator.Current.edtName.Text);
                      typeStr := ReplaceStr(typeStr, '%s2', valStr);
-                     typesList.AddObject(typeStr, dataType);
                   end;
+
                   dtArray:
                   if not lang.DataTypeArrayMask.IsEmpty then
                   begin
@@ -88,66 +88,62 @@ begin
                      end;
                      typeStr := ReplaceStr(typeStr, '%s2', valStr);
                      typeStr := ReplaceStr(typeStr, '%s3', valStr2);
-                     typesList.AddObject(typeStr, dataType);
                   end;
+
                   dtRecord:
                   if not lang.DataTypeRecordTemplate.IsEmpty then
                   begin
-                     recTemplate := TStringList.Create;
+                     template.Text := ReplaceStr(lang.DataTypeRecordTemplate, PRIMARY_PLACEHOLDER, name);
+                     fieldList := TStringList.Create;
                      try
-                        recTemplate.Text := ReplaceStr(lang.DataTypeRecordTemplate, PRIMARY_PLACEHOLDER, name);
-                        fieldList := TStringList.Create;
-                        try
-                           for field in dataType.GetFields do
-                           begin
-                              sizeStr := lang.GetArraySizes(field.edtSize);
-                              if sizeStr.IsEmpty then
-                                 fieldStr := lang.DataTypeRecordFieldMask
-                              else
-                                 fieldStr := lang.DataTypeRecordFieldArrayMask;
-                              fieldStr := ReplaceStr(fieldStr, PRIMARY_PLACEHOLDER, Trim(field.edtName.Text));
-                              fieldStr := ReplaceStr(fieldStr, '%s2', field.cbType.Text);
-                              fieldStr := ReplaceStr(fieldStr, '%s3', sizeStr);
-                              lRecord := '';
-                              enum := '';
-                              lType := TParserHelper.GetType(field.cbType.Text);
-                              if TParserHelper.IsRecordType(lType) then
-                                 lRecord := lang.FunctionHeaderArgsEntryRecord
-                              else if TParserHelper.IsEnumType(lType) then
-                                 enum := lang.FunctionHeaderArgsEntryEnum;
-                              fieldStr := ReplaceStr(fieldStr, '%s4', lRecord);
-                              fieldStr := ReplaceStr(fieldStr, '%s5', enum);
-                              fieldList.Add(fieldStr);
-                           end;
-                           TInfra.InsertTemplateLines(recTemplate, '%s2', fieldList);
-                        finally
-                           fieldList.Free;
+                        for field in dataType.GetFields do
+                        begin
+                           sizeStr := lang.GetArraySizes(field.edtSize);
+                           if sizeStr.IsEmpty then
+                              fieldStr := lang.DataTypeRecordFieldMask
+                           else
+                              fieldStr := lang.DataTypeRecordFieldArrayMask;
+                           fieldStr := ReplaceStr(fieldStr, PRIMARY_PLACEHOLDER, Trim(field.edtName.Text));
+                           fieldStr := ReplaceStr(fieldStr, '%s2', field.cbType.Text);
+                           fieldStr := ReplaceStr(fieldStr, '%s3', sizeStr);
+                           lRecord := '';
+                           enum := '';
+                           lType := TParserHelper.GetType(field.cbType.Text);
+                           if TParserHelper.IsRecordType(lType) then
+                              lRecord := lang.FunctionHeaderArgsEntryRecord
+                           else if TParserHelper.IsEnumType(lType) then
+                              enum := lang.FunctionHeaderArgsEntryEnum;
+                           fieldStr := ReplaceStr(fieldStr, '%s4', lRecord);
+                           fieldStr := ReplaceStr(fieldStr, '%s5', enum);
+                           fieldList.Add(fieldStr);
                         end;
-                        for b := 0 to recTemplate.Count-1 do
-                           typesList.AddObject(recTemplate[b], dataType)
+                        TInfra.InsertTemplateLines(template, '%s2', fieldList);
                      finally
-                        recTemplate.Free;
+                        fieldList.Free;
                      end;
                   end;
+
                   dtEnum:
                   if not lang.DataTypeEnumTemplate.IsEmpty then
                   begin
-                     enumTemplate := TStringList.Create;
-                     try
-                        enumTemplate.Text := ReplaceStr(lang.DataTypeEnumTemplate, PRIMARY_PLACEHOLDER, name);
-                        valStr := '';
-                        for field in dataType.GetFields do
-                           valStr := valStr + Format(lang.DataTypeEnumEntryList, [Trim(field.edtName.Text)]);
-                        if lang.DataTypeEnumEntryListStripCount > 0 then
-                           SetLength(valStr, valStr.Length - lang.DataTypeEnumEntryListStripCount);
-                        TInfra.InsertTemplateLines(enumTemplate, '%s2', valStr);
-                        for b := 0 to enumTemplate.Count-1 do
-                           typesList.AddObject(enumTemplate[b], dataType)
-                     finally
-                        enumTemplate.Free;
-                     end;
+                     template.Text := ReplaceStr(lang.DataTypeEnumTemplate, PRIMARY_PLACEHOLDER, name);
+                     valStr := '';
+                     for field in dataType.GetFields do
+                        valStr := valStr + Format(lang.DataTypeEnumEntryList, [Trim(field.edtName.Text)]);
+                     if lang.DataTypeEnumEntryListStripCount > 0 then
+                        SetLength(valStr, valStr.Length - lang.DataTypeEnumEntryListStripCount);
+                     TInfra.InsertTemplateLines(template, '%s2', valStr);
                   end;
+
                end;
+               if not typeStr.IsEmpty then
+                  typesList.AddObject(typeStr, dataType)
+               else
+               begin
+                  for b := 0 to template.Count-1 do
+                     typesList.AddObject(template[b], dataType)
+               end;
+
             end;
          end;
          if typesList.Count > 0 then
@@ -162,6 +158,7 @@ begin
             end;
          end;
       finally
+         template.Free;
          typesList.Free;
       end;
    end;
