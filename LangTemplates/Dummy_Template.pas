@@ -50,17 +50,16 @@ begin
             name := dataType.GetName;
             if (not name.IsEmpty) and not dataType.chkExtDeclare.Checked then
             begin
-               typeStr := '';
                template.Clear;
                case dataType.Kind of
 
                   dtInt:
                   if not lang.DataTypeIntMask.IsEmpty then
-                     typeStr := ReplaceStr(lang.DataTypeIntMask, PRIMARY_PLACEHOLDER, name);
+                     template.Text := ReplaceStr(lang.DataTypeIntMask, PRIMARY_PLACEHOLDER, name);
 
                   dtReal:
                   if not lang.DataTypeRealMask.IsEmpty then
-                     typeStr := ReplaceStr(lang.DataTypeRealMask, PRIMARY_PLACEHOLDER, name);
+                     template.Text := ReplaceStr(lang.DataTypeRealMask, PRIMARY_PLACEHOLDER, name);
 
                   dtOther:
                   if not lang.DataTypeOtherMask.IsEmpty then
@@ -70,7 +69,7 @@ begin
                      fields := dataType.GetFields;
                      if fields.GetEnumerator.MoveNext then
                         valStr := Trim(fields.GetEnumerator.Current.edtName.Text);
-                     typeStr := ReplaceStr(typeStr, '%s2', valStr);
+                     template.Text := ReplaceStr(typeStr, '%s2', valStr);
                   end;
 
                   dtArray:
@@ -87,7 +86,7 @@ begin
                         valStr2 := lang.GetArraySizes(field.edtSize);
                      end;
                      typeStr := ReplaceStr(typeStr, '%s2', valStr);
-                     typeStr := ReplaceStr(typeStr, '%s3', valStr2);
+                     template.Text := ReplaceStr(typeStr, '%s3', valStr2);
                   end;
 
                   dtRecord:
@@ -136,14 +135,8 @@ begin
                   end;
 
                end;
-               if not typeStr.IsEmpty then
-                  typesList.AddObject(typeStr, dataType)
-               else
-               begin
-                  for b := 0 to template.Count-1 do
-                     typesList.AddObject(template[b], dataType)
-               end;
-
+               for b := 0 to template.Count-1 do
+                  typesList.AddObject(template[b], dataType)
             end;
          end;
          if typesList.Count > 0 then
