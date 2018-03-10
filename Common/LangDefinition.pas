@@ -939,7 +939,7 @@ begin
    begin
       for i := 1 to ASizeEdit.DimensionCount do
          result := result + Format(VarEntryArraySize, [ASizeEdit.GetDimension(i)]);
-      if (VarEntryArraySizeStripCount > 0) and not result.IsEmpty then
+      if VarEntryArraySizeStripCount > 0 then
          SetLength(result, result.Length - VarEntryArraySizeStripCount);
    end;
 end;

@@ -3,7 +3,7 @@
    The initial author of this file is Michal Domagala.
     
    This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License        (
+   modify it under the terms of the GNU General Public License
    as published by the Free Software Foundation; either version 2
    of the License, or (at your option) any later version.
 
@@ -138,7 +138,7 @@ begin
                         valStr := '';
                         for field in dataType.GetFields do
                            valStr := valStr + Format(lang.DataTypeEnumEntryList, [Trim(field.edtName.Text)]);
-                        if (lang.DataTypeEnumEntryListStripCount > 0) and not valStr.IsEmpty then
+                        if lang.DataTypeEnumEntryListStripCount > 0 then
                            SetLength(valStr, valStr.Length - lang.DataTypeEnumEntryListStripCount);
                         TInfra.InsertTemplateLines(enumTemplate, '%s2', valStr);
                         for b := 0 to enumTemplate.Count-1 do
@@ -219,7 +219,7 @@ begin
             libTemplate.Text := lang.LibTemplate;
             for i := 0 to libList.Count-1 do
                libStr := libStr + Format(IfThen(isS1, lang.LibEntry + sLineBreak, lang.LibEntryList), [libList[i]]);
-            if (not isS1) and (lang.LibEntryListStripCount > 0) and not libStr.IsEmpty then
+            if (lang.LibEntryListStripCount > 0) and not isS1 then
                SetLength(libStr, libStr.Length - lang.LibEntryListStripCount);
             TInfra.InsertTemplateLines(libTemplate, IfThen(isS1, PRIMARY_PLACEHOLDER, '%s2'), libStr);
             TInfra.InsertTemplateLines(libTemplate, IfThen(isS1, '%s2', PRIMARY_PLACEHOLDER), '');
@@ -302,7 +302,7 @@ begin
                   begin
                      for b := 1 to dcount do
                         varSize := varSize + Format(lang.VarEntryArraySize, [AVarList.GetDimension(name, b)]);
-                     if (lang.VarEntryArraySizeStripCount > 0) and not varSize.IsEmpty then
+                     if lang.VarEntryArraySizeStripCount > 0 then
                         SetLength(varSize, varSize.Length - lang.VarEntryArraySizeStripCount);
                   end;
                   varStr := ReplaceStr(lang.VarEntryArray, PRIMARY_PLACEHOLDER, name);
@@ -405,7 +405,7 @@ begin
                   argList := argList + paramStr;
                end;
 
-               if (lang.FunctionHeaderArgsStripCount > 0) and not argList.IsEmpty then
+               if lang.FunctionHeaderArgsStripCount > 0 then
                   SetLength(argList, argList.Length - lang.FunctionHeaderArgsStripCount);
 
                // assemble function header line
