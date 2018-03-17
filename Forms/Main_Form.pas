@@ -949,19 +949,24 @@ begin
 end;
 
 procedure TMainForm.miSubRoutinesClick(Sender: TObject);
+var
+   form: TForm;
 begin
+   form := nil;
    if Sender = miSubRoutines then
-      TInfra.GetFunctionsForm.Visible := not TInfra.GetFunctionsForm.Visible
+      form := TInfra.GetFunctionsForm
    else if Sender = miToolbox then
-      ToolboxForm.Visible := not ToolboxForm.Visible
+      form := ToolboxForm
    else if Sender = miDeclarations then
-      DeclarationsForm.Visible := not DeclarationsForm.Visible
+      form := DeclarationsForm
    else if Sender = miExplorer then
-      TInfra.GetExplorerForm.Visible := not TInfra.GetExplorerForm.Visible
+      form := TInfra.GetExplorerForm
    else if Sender = miDataTypes then
-      TInfra.GetDataTypesForm.Visible := not TInfra.GetDataTypesForm.Visible
+      form := TInfra.GetDataTypesForm
    else if Sender = miNavigator then
-      NavigatorForm.Visible := not NavigatorForm.Visible
+      form := NavigatorForm;
+   if form <> nil then
+      form.Visible := not form.Visible
 end;
 
 procedure TMainForm.miExportClick(Sender: TObject);
