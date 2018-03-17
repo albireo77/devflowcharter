@@ -7,10 +7,9 @@ object PageControlForm: TPageControlForm
   ClientWidth = 407
   Color = clBtnFace
   ParentFont = True
-  FormStyle = fsStayOnTop
+  PopupMode = pmAuto
   Menu = MainMenu1
   OldCreateOrder = False
-  Position = poMainFormCenter
   OnDeactivate = FormDeactivate
   OnMouseWheel = FormMouseWheel
   PixelsPerInch = 96

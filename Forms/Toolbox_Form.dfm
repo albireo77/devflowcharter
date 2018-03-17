@@ -9,9 +9,9 @@ object ToolboxForm: TToolboxForm
   ClientWidth = 63
   Color = clBtnFace
   ParentFont = True
-  FormStyle = fsStayOnTop
   KeyPreview = True
   OldCreateOrder = False
+  PopupMode = pmExplicit
   OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 96

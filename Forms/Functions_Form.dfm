@@ -14,7 +14,6 @@ object FunctionsForm: TFunctionsForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Position = poMainFormCenter
   OnDeactivate = FormDeactivate
   OnMouseWheel = FormMouseWheel
   PixelsPerInch = 96

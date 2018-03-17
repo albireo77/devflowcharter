@@ -8,8 +8,8 @@ object ExplorerForm: TExplorerForm
   Color = clBtnFace
   Constraints.MinWidth = 300
   ParentFont = True
-  FormStyle = fsStayOnTop
   OldCreateOrder = False
+  PopupMode = pmAuto
   Position = poScreenCenter
   OnCreate = FormCreate
   OnMouseWheel = FormMouseWheel

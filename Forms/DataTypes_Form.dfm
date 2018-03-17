@@ -15,7 +15,6 @@ object DataTypesForm: TDataTypesForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
-  Position = poMainFormCenter
   OnDeactivate = FormDeactivate
   OnMouseWheel = FormMouseWheel
   PixelsPerInch = 96

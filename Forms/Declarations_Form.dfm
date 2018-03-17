@@ -10,9 +10,9 @@ object DeclarationsForm: TDeclarationsForm
   Constraints.MinHeight = 323
   Constraints.MinWidth = 468
   ParentFont = True
-  FormStyle = fsStayOnTop
   OldCreateOrder = False
-  Position = poMainFormCenter
+  PopupMode = pmAuto
+  Position = poDefault
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13

@@ -8,7 +8,7 @@ object EditorForm: TEditorForm
   Constraints.MinHeight = 558
   Constraints.MinWidth = 225
   ParentFont = True
-  FormStyle = fsStayOnTop
+  PopupMode = pmAuto
   Menu = MainMenu1
   OldCreateOrder = False
   Position = poScreenCenter
