@@ -19,37 +19,31 @@
 
 
  
-{ This unit contains stuff to support Python language }
+{ This unit contains stuff to support Java language }
 
-unit Python_Template;
+unit Java_Template;
 
 interface
 
 implementation
 
 uses
-   SynHighlighterPython, ApplicationCommon, LangDefinition;
+   SynHighlighterJava, ApplicationCommon, LangDefinition;
 
 var
-   pythonLang: TLangDefinition;
+   javaLang: TLangDefinition;
 
-procedure Python_SetHLighterAttrs;
+procedure Java_SetHLighterAttrs;
 var
-   hlighter: TSynPythonSyn;
+   hlighter: TSynJavaSyn;
 begin
-   if (pythonLang <> nil) and (pythonLang.HighLighter is TSynPythonSyn) then
+   if (javaLang <> nil) and (javaLang.HighLighter is TSynJavaSyn) then
    begin
-      hlighter := TSynPythonSyn(pythonLang.HighLighter);
+      hlighter := TSynJavaSyn(javaLang.HighLighter);
       hlighter.StringAttri.Foreground     := GSettings.EditorStringColor;
       hlighter.StringAttri.Background     := GSettings.EditorBkgColor;
       hlighter.NumberAttri.Foreground     := GSettings.EditorNumberColor;
       hlighter.NumberAttri.Background     := GSettings.EditorBkgColor;
-      hlighter.FloatAttri.Foreground      := GSettings.EditorNumberColor;
-      hlighter.FloatAttri.Background      := GSettings.EditorBkgColor;
-      hlighter.HexAttri.Foreground        := GSettings.EditorNumberColor;
-      hlighter.HexAttri.Background        := GSettings.EditorBkgColor;
-      hlighter.OctalAttri.Foreground      := GSettings.EditorNumberColor;
-      hlighter.OctalAttri.Background      := GSettings.EditorBkgColor;
       hlighter.CommentAttri.Foreground    := GSettings.EditorCommentColor;
       hlighter.CommentAttri.Background    := GSettings.EditorBkgColor;
       hlighter.KeyAttri.Foreground        := GSettings.EditorKeywordColor;
@@ -63,8 +57,8 @@ end;
 
 initialization
 
-   pythonLang := GInfra.GetLangDefinition(PYTHON_LANG_ID);
-   if pythonLang <> nil then
-      pythonLang.SetHLighterAttrs := Python_SetHLighterAttrs;
+   javaLang := GInfra.GetLangDefinition(JAVA_LANG_ID);
+   if javaLang <> nil then
+      javaLang.SetHLighterAttrs := Java_SetHLighterAttrs;
        
 end.

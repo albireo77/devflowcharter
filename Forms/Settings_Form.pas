@@ -68,8 +68,8 @@ type
     lblCompiler: TLabel;
     btnBrowseCompilers: TButton;
     cbLanguage: TComboBox;
-    lblEditorBracket: TLabel;
-    pnlEditorBracket: TPanel;
+    lblEditorIdent: TLabel;
+    pnlEditorIdent: TPanel;
     gbTranslation: TGroupBox;
     lblFile: TLabel;
     edtTranslateFile: TEdit;
@@ -113,6 +113,8 @@ type
     lblFileEncoding: TLabel;
     pnlPen: TPanel;
     lblPenColor: TLabel;
+    pnlEditorKeyword: TPanel;
+    lblEditorKeyword: TLabel;
     procedure btnBrowseCCompClick(Sender: TObject);
     procedure CloseFormClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -422,11 +424,12 @@ begin
    pnlEditorFont.Color := clWindowText;
    pnlEditorNumber.Color := clTeal;
    pnlEditorString.Color := clTeal;
+   pnlEditorKeyword.Color := clWindowText;
    pnlEditorComment.Color := TEXT_COLOR;
    pnlEditorActiveLine.Color := clCream;
    pnlEditorSelect.Color := clHighlight;
    pnlEditorGutter.Color := clBtnFace;
-   pnlEditorBracket.Color := clRed;
+   pnlEditorIdent.Color := clWindowText;
    pnlFont.Color := OK_COLOR;
    chkValidateConsts.Checked := true;
    chkAutoSelectCode.Checked := false;
@@ -507,12 +510,13 @@ begin
    pnlEditorFont.Color := ASettings.EditorFontColor;
    pnlEditorBkg.Color := ASettings.EditorBkgColor;
    pnlEditorString.Color := ASettings.EditorStringColor;
+   pnlEditorKeyword.Color := ASettings.EditorKeywordColor;
    pnlEditorNumber.Color := ASettings.EditorNumberColor;
    pnlEditorComment.Color := ASettings.EditorCommentColor;
    pnlEditorActiveLine.Color := ASettings.EditorALineColor;
    pnlEditorSelect.Color := ASettings.EditorSelectColor;
    pnlEditorGutter.Color := ASettings.EditorGutterColor;
-   pnlEditorBracket.Color := ASettings.EditorBracketColor;
+   pnlEditorIdent.Color := ASettings.EditorIdentColor;
    edtEditorIndent.Text := ASettings.IndentLength.ToString;
    pnlFont.Color := ASettings.FontColor;
    edtTranslateFile.Text := ASettings.TranslateFile;

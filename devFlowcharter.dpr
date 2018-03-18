@@ -88,7 +88,8 @@ uses
   Folder_Block in 'Blocks\Folder_Block.pas',
   BlockTabSheet in 'Common\BlockTabSheet.pas',
   Python_Template in 'LangTemplates\Python_Template.pas',
-  MemoEx in 'Common\MemoEx.pas';
+  MemoEx in 'Common\MemoEx.pas',
+  Java_Template in 'LangTemplates\Java_Template.pas';
 
 {$R *.res}
 

@@ -223,6 +223,7 @@ const   // Global constants
         C_LANG_ID       = 'ANSI C';
         TIBASIC_LANG_ID = 'TIBASIC';
         PYTHON_LANG_ID  = 'Python 3';
+        JAVA_LANG_ID    = 'Java';
 
         KEY_CURRENT_LANGUAGE = 'CurrentLanguageName';
 

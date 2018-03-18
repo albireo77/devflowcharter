@@ -54,11 +54,12 @@ type
       FEditorFontColor,
       FEditorNumberColor,
       FEditorStringColor,
+      FEditorKeywordColor,
       FEditorCommentColor,
       FEditorALineColor,
       FEditorSelectColor,
       FEditorGutterColor,
-      FEditorBracketColor: TColor;
+      FEditorIdentColor: TColor;
 
       FIndentLength: integer;
       FIndentString: string;
@@ -126,11 +127,12 @@ type
       property EditorFontColor: TColor read FEditorFontColor;
       property EditorNumberColor: TColor read FEditorNumberColor;
       property EditorStringColor: TColor read FEditorStringColor;
+      property EditorKeywordColor: TColor read FEditorKeywordColor;
       property EditorCommentColor: TColor read FEditorCommentColor;
       property EditorALineColor: TColor read FEditorALineColor;
       property EditorSelectColor: TColor read FEditorSelectColor;
       property EditorGutterColor: TColor read FEditorGutterColor;
-      property EditorBracketColor: TColor read FEditorBracketColor;
+      property EditorIdentColor: TColor read FEditorIdentColor;
       property EditorIndentGuides: boolean read FEditorIndentGuides write FEditorIndentGuides;
       property EditorAutoSelectBlock: boolean read FEditorAutoSelectBlock;
       property EditorAutoUpdate: boolean read FEditorAutoUpdate write FEditorAutoUpdate;
@@ -203,14 +205,15 @@ const
    KEY_EDITOR_FONT_COLOR = 'EditorFontColor';
    KEY_EDITOR_BKG_COLOR = 'EditorBkgColor';
    KEY_EDITOR_STRING_COLOR = 'EditorStringColor';
+   KEY_EDITOR_KEYWORD_COLOR = 'EditorKeywordColor';
    KEY_EDITOR_NUMBER_COLOR = 'EditorNumberColor';
    KEY_EDITOR_COMMENT_COLOR = 'EditorCommentColor';
    KEY_EDITOR_ALINE_COLOR = 'EditorActiveLineColor';
    KEY_EDITOR_SELECT_COLOR = 'EditorSelectColor';
    KEY_EDITOR_GUTTER_COLOR = 'EditorGutterColor';
+   KEY_EDITOR_IDENT_COLOR = 'EditorIdentColor';
    KEY_EDITOR_INDENT = 'IndentLength';
    KEY_EDITOR_SHOW_SCROLLBARS = 'EditorScrollbars';
-   KEY_EDITOR_BRACKET_COLOR = 'EditorBracketColor';
    KEY_EDITOR_FONT_SIZE = 'EditorFontSize';
 
    KEY_LOCALIZATION_FILE = 'LocalizationScript';
@@ -272,11 +275,12 @@ begin
    FEditorFontColor       := clWindowText;
    FEditorNumberColor     := clTeal;
    FEditorStringColor     := clTeal;
+   FEditorKeywordColor    := clWindowText;
    FEditorCommentColor    := TEXT_COLOR;
    FEditorALineColor      := clCream;
    FEditorSelectColor     := clHighlight;
    FEditorGutterColor     := clBtnFace;
-   FEditorBracketColor    := clRed;
+   FEditorIdentColor      := clWindowText;
    FEditorAutoUpdate      := false;
    FEditorAutoSelectBlock := false;
    FEditorFontSize        := EDITOR_DEFAULT_FONT_SIZE;
@@ -409,6 +413,8 @@ begin
             FEditorFontColor := reg.ReadInteger(KEY_EDITOR_FONT_COLOR);
          if reg.ValueExists(KEY_EDITOR_STRING_COLOR) then
             FEditorStringColor := reg.ReadInteger(KEY_EDITOR_STRING_COLOR);
+         if reg.ValueExists(KEY_EDITOR_KEYWORD_COLOR) then
+            FEditorKeywordColor := reg.ReadInteger(KEY_EDITOR_KEYWORD_COLOR);
          if reg.ValueExists(KEY_EDITOR_NUMBER_COLOR) then
             FEditorNumberColor := reg.ReadInteger(KEY_EDITOR_NUMBER_COLOR);
          if reg.ValueExists(KEY_EDITOR_COMMENT_COLOR) then
@@ -421,8 +427,8 @@ begin
             FEditorGutterColor := reg.ReadInteger(KEY_EDITOR_GUTTER_COLOR);
          if reg.ValueExists(KEY_DESKTOP_COLOR) then
             FDesktopColor := reg.ReadInteger(KEY_DESKTOP_COLOR);
-         if reg.ValueExists(KEY_EDITOR_BRACKET_COLOR) then
-            FEditorBracketColor := reg.ReadInteger(KEY_EDITOR_BRACKET_COLOR);
+         if reg.ValueExists(KEY_EDITOR_IDENT_COLOR) then
+            FEditorIdentColor := reg.ReadInteger(KEY_EDITOR_IDENT_COLOR);
          if reg.ValueExists(KEY_EDITOR_INDENT) then
          begin
             FIndentLength := reg.ReadInteger(KEY_EDITOR_INDENT);
@@ -520,12 +526,13 @@ begin
          reg.WriteInteger(KEY_EDITOR_FONT_COLOR, FEditorFontColor);
          reg.WriteInteger(KEY_EDITOR_BKG_COLOR, FEditorBkgColor);
          reg.WriteInteger(KEY_EDITOR_STRING_COLOR, FEditorStringColor);
+         reg.WriteInteger(KEY_EDITOR_KEYWORD_COLOR, FEditorKeywordColor);
          reg.WriteInteger(KEY_EDITOR_NUMBER_COLOR, FEditorNumberColor);
          reg.WriteInteger(KEY_EDITOR_COMMENT_COLOR, FEditorCommentColor);
          reg.WriteInteger(KEY_EDITOR_ALINE_COLOR, FEditorALineColor);
          reg.WriteInteger(KEY_EDITOR_SELECT_COLOR, FEditorSelectColor);
          reg.WriteInteger(KEY_EDITOR_GUTTER_COLOR, FEditorGutterColor);
-         reg.WriteInteger(KEY_EDITOR_BRACKET_COLOR, FEditorBracketColor);
+         reg.WriteInteger(KEY_EDITOR_IDENT_COLOR, FEditorIdentColor);
          reg.WriteInteger(KEY_EDITOR_FONT_SIZE, FEditorFontSize);
          reg.WriteInteger(KEY_DESKTOP_COLOR, FDesktopColor);
          reg.WriteInteger(KEY_EDITOR_INDENT, FIndentLength);
@@ -629,11 +636,12 @@ begin
       FEditorFontColor       := pnlEditorFont.Color;
       FEditorNumberColor     := pnlEditorNumber.Color;
       FEditorStringColor     := pnlEditorString.Color;
+      FEditorKeywordColor    := pnlEditorKeyword.Color;
       FEditorCommentColor    := pnlEditorComment.Color;
       FEditorALineColor      := pnlEditorActiveLine.Color;
       FEditorSelectColor     := pnlEditorSelect.Color;
       FEditorGutterColor     := pnlEditorGutter.Color;
-      FEditorBracketColor    := pnlEditorBracket.Color;
+      FEditorIdentColor      := pnlEditorIdent.Color;
       FEditorAutoSelectBlock := chkAutoSelectCode.Checked;
       FEditorAutoUpdate      := chkAutoUpdateCode.Checked;
       FValidateDeclaration   := chkValidateConsts.Checked;

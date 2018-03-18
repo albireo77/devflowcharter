@@ -32,7 +32,7 @@ uses
    Vcl.Dialogs, Vcl.ComCtrls, Vcl.Clipbrd, Vcl.Menus, System.SysUtils, System.Classes,
    SynEdit, SynExportRTF, SynEditPrint, CommonTypes, SynHighlighterPas, SynHighlighterCpp,
    SynMemo, SynExportHTML, OmniXML, Base_Form, CommonInterfaces, SynEditExport, SynEditHighlighter,
-  SynHighlighterPython;
+   SynHighlighterPython, SynHighlighterJava;
 
 type
 
@@ -87,6 +87,7 @@ type
     miFindProj: TMenuItem;
     N6: TMenuItem;
     SynPythonSyn1: TSynPythonSyn;
+    SynJavaSyn1: TSynJavaSyn;
     procedure FormShow(Sender: TObject);
     procedure pmPopMenuPopup(Sender: TObject);
     procedure miUndoClick(Sender: TObject);
@@ -974,7 +975,7 @@ begin
    c := #0;
    if (i >= 0) and (i < memCodeEditor.Text.Length) then
       c := memCodeEditor.Text[i+1];
-   if memCodeEditor.SelAvail or (GSettings.EditorBracketColor = memCodeEditor.Font.Color) or not CharInSet(c, Brackets) then
+   if memCodeEditor.SelAvail or (memCodeEditor.Font.Color = clRed) or not CharInSet(c, Brackets) then
       exit;
    p := memCodeEditor.CaretXY;
    s := c;
@@ -986,7 +987,7 @@ begin
       pos := CharToPixels(p);
       if TransientType = ttAfter then
       begin
-         fontColor := GSettings.EditorBracketColor;
+         fontColor := clRed;
          brushColor := clNone;
       end
       else

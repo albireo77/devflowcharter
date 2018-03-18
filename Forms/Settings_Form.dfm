@@ -539,7 +539,7 @@ object SettingsForm: TSettingsForm
         Tag = 6
         Left = 432
         Top = 22
-        Width = 57
+        Width = 62
         Height = 13
         Alignment = taRightJustify
         AutoSize = False
@@ -583,7 +583,7 @@ object SettingsForm: TSettingsForm
         Font.Style = []
         ParentFont = False
       end
-      object lblEditorBracket: TLabel
+      object lblEditorIdent: TLabel
         Tag = 6
         Left = 320
         Top = 46
@@ -591,7 +591,23 @@ object SettingsForm: TSettingsForm
         Height = 13
         Alignment = taRightJustify
         AutoSize = False
-        Caption = 'Brackets:'
+        Caption = 'Identifier:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentFont = False
+      end
+      object lblEditorKeyword: TLabel
+        Tag = 6
+        Left = 433
+        Top = 46
+        Width = 61
+        Height = 13
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = 'Keyword:'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -675,7 +691,7 @@ object SettingsForm: TSettingsForm
         OnClick = pnlFillClick
       end
       object pnlEditorString: TPanel
-        Left = 496
+        Left = 500
         Top = 16
         Width = 25
         Height = 20
@@ -719,7 +735,7 @@ object SettingsForm: TSettingsForm
         TabOrder = 7
         OnClick = pnlFillClick
       end
-      object pnlEditorBracket: TPanel
+      object pnlEditorIdent: TPanel
         Left = 400
         Top = 40
         Width = 25
@@ -732,6 +748,21 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 8
+        OnClick = pnlFillClick
+      end
+      object pnlEditorKeyword: TPanel
+        Left = 500
+        Top = 40
+        Width = 25
+        Height = 20
+        BevelOuter = bvNone
+        BorderWidth = 1
+        BorderStyle = bsSingle
+        Color = clWindow
+        Ctl3D = False
+        ParentBackground = False
+        ParentCtl3D = False
+        TabOrder = 9
         OnClick = pnlFillClick
       end
     end

@@ -187,16 +187,6 @@ object EditorForm: TEditorForm
     Options.AutoDetectEnabled = False
     Options.AutoDetectLineLimit = 0
     Options.Visible = False
-    CommentAttri.Background = clWindow
-    CommentAttri.Foreground = clGrayText
-    NumberAttri.Background = clWindow
-    NumberAttri.Foreground = clBackground
-    FloatAttri.Background = clWindow
-    FloatAttri.Foreground = clBackground
-    StringAttri.Background = clWindow
-    StringAttri.Foreground = clBackground
-    CharAttri.Background = clWindow
-    CharAttri.Foreground = clBackground
     Left = 320
     Top = 16
   end
@@ -204,22 +194,15 @@ object EditorForm: TEditorForm
     Options.AutoDetectEnabled = False
     Options.AutoDetectLineLimit = 0
     Options.Visible = False
-    CommentAttri.Background = clWindow
-    CommentAttri.Foreground = clGrayText
-    DirectiveAttri.Background = clWindow
-    DirectiveAttri.Foreground = clGrayText
-    NumberAttri.Background = clWindow
-    NumberAttri.Foreground = clBackground
-    FloatAttri.Background = clWindow
-    FloatAttri.Foreground = clBackground
-    HexAttri.Background = clWindow
-    HexAttri.Foreground = clBackground
-    StringAttri.Background = clWindow
-    StringAttri.Foreground = clBackground
-    CharAttri.Background = clWindow
-    CharAttri.Foreground = clBackground
     DelphiVersion = dvDelphi6
     Left = 352
+    Top = 16
+  end
+  object SynJavaSyn1: TSynJavaSyn
+    Options.AutoDetectEnabled = False
+    Options.AutoDetectLineLimit = 0
+    Options.Visible = False
+    Left = 382
     Top = 16
   end
   object SynEditPrint1: TSynEditPrint
