@@ -33,46 +33,91 @@
     <GenExternVarConst>false</GenExternVarConst>
 
     <FoldRegions>
-        <FoldRegion AddClose="false" NoSubFolds="false" Type="rtKeyword" WholeWords="true">
-            <Open Keyword="BEGIN"/>
-            <Close Keyword="END"/>
-        </FoldRegion>
-        <FoldRegion AddClose="false" NoSubFolds="false" Type="rtKeyword" WholeWords="true">
-            <Open Keyword="case"/>
-            <Close Keyword="END"/>
+        <FoldRegion AddClose="false" NoSubFolds="false" Type="rtChar" WholeWords="true">
+            <Open Keyword="{"/>
+            <Close Keyword="}"/>
         </FoldRegion>
         <FoldRegion AddClose="true" NoSubFolds="true" Type="rtKeyword" WholeWords="true">
             <Open Keyword="/*"/>
             <Close Keyword="*/"/>
         </FoldRegion>
     </FoldRegions>
-<!--
-Native data type declarations will follow.
-Valid values for "kind" attribute are: int real string bool ptr other
-If attribute "kind" is not present, data type is qualified as of "other" kind.
-"ptr" value determines pointer type.
-origtype attribute determines original type for pointer type.
-Pointer types must be declared AFTER their original ones.
--->
+
     <NativeDataTypes>
-        <DataType kind="int">bigInt</DataType>
-        <DataType kind="int">smallInt</DataType>
-        <DataType kind="int">character</DataType>
-        <DataType kind="bool">bool</DataType>
-        <DataType kind="ptr" origtype="bigInt">bigInt*</DataType>
+        <DataType kind="int">int</DataType>
+        <DataType kind="int">char</DataType>
+        <DataType kind="int">byte</DataType>
+	<DataType kind="int">short</DataType>
+        <DataType kind="int">long</DataType>
+	<DataType kind="real">float</DataType>
+	<DataType kind="real">double</DataType>
+	<DataType kind="bool">boolean</DataType>
+	<DataType kind="string">String</DataType>
+	<DataType kind="other">Date</DataType>
+	<DataType kind="other">Character</DataType>
+	<DataType kind="other">Byte</DataType>
+	<DataType kind="other">Short</DataType>
+	<DataType kind="other">Integer</DataType>
+	<DataType kind="other">Long</DataType>
+	<DataType kind="other">Float</DataType>
+	<DataType kind="other">Double</DataType>
+	<DataType kind="other">Boolean</DataType>
+	<DataType kind="other">BigInteger</DataType>
+	<DataType kind="other">BigDecimal</DataType>
     </NativeDataTypes>
+
     <KeyWords>
-        <KeyWord>BEGIN</KeyWord>
-        <KeyWord>END</KeyWord>
-        <KeyWord>while</KeyWord>
-        <KeyWord>for</KeyWord>
-        <KeyWord>if</KeyWord>
+        <KeyWord>abstract</KeyWord>
+        <KeyWord>assert</KeyWord>
+        <KeyWord>boolean</KeyWord>
+        <KeyWord>break</KeyWord>
+        <KeyWord>byte</KeyWord>
+        <KeyWord>case</KeyWord>
+        <KeyWord>catch</KeyWord>
+        <KeyWord>char</KeyWord>
+        <KeyWord>class</KeyWord>
+        <KeyWord>const</KeyWord>
+        <KeyWord>continue</KeyWord>
+        <KeyWord>default</KeyWord>
+        <KeyWord>do</KeyWord>
+        <KeyWord>double</KeyWord>
         <KeyWord>else</KeyWord>
+        <KeyWord>enum</KeyWord>
+        <KeyWord>extends</KeyWord>
+        <KeyWord>final</KeyWord>
+        <KeyWord>finally</KeyWord>
+        <KeyWord>float</KeyWord>
+        <KeyWord>for</KeyWord>
+        <KeyWord>goto</KeyWord>
+        <KeyWord>if</KeyWord>
+        <KeyWord>implements</KeyWord>
+        <KeyWord>import</KeyWord>
+        <KeyWord>instanceof</KeyWord>
+        <KeyWord>int</KeyWord>
+        <KeyWord>interface</KeyWord>
+        <KeyWord>long</KeyWord>
+        <KeyWord>native</KeyWord>
+        <KeyWord>new</KeyWord>
+        <KeyWord>package</KeyWord>
+        <KeyWord>private</KeyWord>
+        <KeyWord>protected</KeyWord>
+        <KeyWord>public</KeyWord>
+        <KeyWord>return</KeyWord>
+        <KeyWord>short</KeyWord>
+        <KeyWord>static</KeyWord>
+        <KeyWord>strictfp</KeyWord>
+        <KeyWord>super</KeyWord>
+        <KeyWord>switch</KeyWord>
+        <KeyWord>synchronized</KeyWord>
+        <KeyWord>this</KeyWord>
+        <KeyWord>throw</KeyWord>
+        <KeyWord>throws</KeyWord>
+        <KeyWord>transient</KeyWord>
+        <KeyWord>try</KeyWord>
+        <KeyWord>void</KeyWord>
+        <KeyWord>volatile</KeyWord>
+        <KeyWord>while</KeyWord>
     </KeyWords>
-    <NativeFunctions>
-        <Function>sin</Function>
-        <Function>cos</Function>
-    </NativeFunctions>
 
 <!--
 Element ProcedureLabelKey
