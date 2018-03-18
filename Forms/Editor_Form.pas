@@ -975,7 +975,7 @@ begin
    c := #0;
    if (i >= 0) and (i < memCodeEditor.Text.Length) then
       c := memCodeEditor.Text[i+1];
-   if memCodeEditor.SelAvail or (memCodeEditor.Font.Color = clRed) or not CharInSet(c, Brackets) then
+   if memCodeEditor.SelAvail or (memCodeEditor.Font.Color = MATCH_BRACKET_COLOR) or not CharInSet(c, Brackets) then
       exit;
    p := memCodeEditor.CaretXY;
    s := c;
@@ -987,7 +987,7 @@ begin
       pos := CharToPixels(p);
       if TransientType = ttAfter then
       begin
-         fontColor := clRed;
+         fontColor := MATCH_BRACKET_COLOR;
          brushColor := clNone;
       end
       else

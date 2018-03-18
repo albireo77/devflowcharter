@@ -788,6 +788,7 @@ begin
             if lOrigType = nil then
                lOrigType := lType;
             lType.OrigType := lOrigType;
+            lType.IsGeneric := TXMLProcessor.GetBoolFromAttr(tag, 'generic');
          end;
          tag := TXMLProcessor.FindNextTag(tag);
       end;

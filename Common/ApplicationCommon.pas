@@ -194,6 +194,7 @@ const   // Global constants
         TEXT_COLOR = clGrayText;
         BLACK_COLOR = clWindowText;
         DEFAULT_DESKTOP_COLOR = clWhite;
+        MATCH_BRACKET_COLOR = clRed;
 
         ID_ALLOW_CHARS = ['a'..'z', 'A'..'Z', '0'..'9', '_'];
 
