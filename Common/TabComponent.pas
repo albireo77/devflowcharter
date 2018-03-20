@@ -79,6 +79,7 @@ type
          procedure ScrollElements(AValue: integer);
          property ScrollPos: integer read GetScrollPos write SetScrollPos;
          function GetName: string;
+         function GetNameEdit: TCustomEdit;
          procedure RefreshSizeEdits; virtual; abstract;
          function RetrieveFocus(AInfo: TFocusInfo): boolean;
          function CanBeFocused: boolean;
@@ -385,6 +386,12 @@ begin
       result := Trim(edtName.Text);
 end;
 
+function TTabComponent.GetNameEdit: TCustomEdit;
+begin
+   result := nil;
+   if FActive and (Font.Color <> NOK_COLOR) then
+      result := edtName;
+end;
 
 function TTabComponent.GetId: integer;
 begin

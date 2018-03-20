@@ -18,7 +18,7 @@
 }
 
 
- 
+
 { This unit contains stuff to support Java language }
 
 unit Java_Template;
@@ -28,15 +28,16 @@ interface
 implementation
 
 uses
-   System.Classes, System.SysUtils, SynHighlighterJava, DeclareList, ApplicationCommon,
-   UserDataType, UserFunction, LangDefinition;
+   System.Classes, System.SysUtils, Vcl.Graphics, Vcl.StdCtrls, SynHighlighterJava, DeclareList,
+   ApplicationCommon, UserDataType, UserFunction, LangDefinition, ParserHelper,
+   CommonTypes;
 
 const
-   IMPORT_MASK = 'import %s;';
+   IMPORT_MASK = 'import %s.%s;';
 
 var
    javaLang: TLangDefinition;
-   importLibs: TStringList;
+   ImportLibs: TStringList;
 
 function CheckForDataType(const AType: string): boolean;
 var
@@ -105,82 +106,114 @@ end;
 procedure Java_LibSectionGenerator(ALines: TStringList);
 var
    i: integer;
+   libList: TStringList;
+   typeName, libImport: string;
+   pNativeType: PNativeDataType;
 begin
 
-   importLibs.Clear;
+   ImportLibs.Clear;
 
-   if CheckForDataType('BigDecimal') then
-      importLibs.Add('java.math.BigDecimal');
+   for i := 0 to High(javaLang.NativeDataTypes) do
+   begin
+      pNativeType := @javaLang.NativeDataTypes[i];
+      if (pNativeType.Lib <> '') and CheckForDataType(pNativeType.Name) then
+         ImportLibs.Add(Format(IMPORT_MASK, [pNativeType.Lib, pNativeType.Name]));
+   end;
 
-   if CheckForDataType('Date') then
-      importLibs.Add('java.util.Date');
+   libList := GProject.GetLibraryList;
+   try
+      for i := 0 to libList.Count-1 do
+      begin
+         typeName := '';
+         if libList.Objects[i] is TCustomEdit then
+            typeName := Trim(TCustomEdit(libList.Objects[i]).Text);
+         if not typeName.IsEmpty then
+         begin
+            libImport := Format(IMPORT_MASK, [libList.Strings[i], typeName]);
+            if ImportLibs.IndexOf(libImport) = -1 then
+               ImportLibs.Add(libImport);
+         end;
+      end;
+   finally
+      libList.Free;
+   end;
 
-   if CheckForDataType('Calendar') then
-      importLibs.Add('java.util.Calendar');
+   for i := 0 to ImportLibs.Count-1 do
+      ALines.Add(ImportLibs[i]);
+end;
 
-   if CheckForDataType('LocalDate') then
-      importLibs.Add('java.time.LocalDate');
+function ExtractImplementer(const ATypeName: string; const AContents: string): string;
+const
+   LIST_IMPLEMENTERS: array[1..5] of string = ('CopyOnWriteArrayList', 'ArrayList', 'LinkedList', 'Stack', 'Vector');
+   LIST_IMPLEMENTERS_PACKAGE: array[1..5] of string = ('java.util.concurrent.CopyOnWriteArrayList', 'java.util.ArrayList', 'java.util.LinkedList', 'java.util.Stack', 'java.util.Vector');
+var
+   i: integer;
+begin
+   result := '';
+   if ATypeName = 'List' then
+   begin
+      for i := 1 to Length(LIST_IMPLEMENTERS) do
+      begin
+         if AContents.Contains(LIST_IMPLEMENTERS[i]) then
+            Exit(LIST_IMPLEMENTERS_PACKAGE[i]);
+      end;
+   end;
+end;
 
-   if CheckForDataType('LocalDateTime') then
-      importLibs.Add('java.time.LocalDateTime');
-
-   if CheckForDataType('LocalTime') then
-      importLibs.Add('java.time.LocalTime');
-
-   if CheckForDataType('List') then
-      importLibs.Add('java.util.List');
-
-   if CheckForDataType('Map') then
-      importLibs.Add('java.util.Map');
-
-   if CheckForDataType('Set') then
-      importLibs.Add('java.util.Set');
-
-   if CheckForDataType('Queue') then
-      importLibs.Add('java.util.Queue');
-
-   if CheckForDataType('Random') then
-      importLibs.Add('java.util.Random');
-
-   if CheckForDataType('DateFormat') then
-      importLibs.Add('java.text.DateFormat');
-
-   if CheckForDataType('Reader') then
-      importLibs.Add('java.io.Reader');
-
-   if CheckForDataType('Writer') then
-      importLibs.Add('java.io.Writer');
-
-   if CheckForDataType('InputStream') then
-      importLibs.Add('java.io.InputStream');
-
-   if CheckForDataType('OutputStream') then
-      importLibs.Add('java.io.OutputStream');
-
-   if CheckForDataType('File') then
-      importLibs.Add('java.io.File');
-
-   for i := 0 to importLibs.Count-1 do
-      ALines.Add(Format(IMPORT_MASK, [importLibs[i]]));
+procedure Java_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
+var
+   i, p1, p2: integer;
+   varType, varInit, varVal, generic, varImpl: string;
+begin
+   if (AVarList <> nil) and (AVarList.sgList.RowCount > 2) then
+   begin
+      for i := 1 to AVarList.sgList.RowCount-2 do
+      begin
+         varType :=  AVarList.sgList.Cells[VAR_TYPE_COL, i];
+         varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
+         generic := '';
+         if TParserHelper.IsGenericType(varType) and not varInit.IsEmpty then
+         begin
+            p1 := Pos('<', varInit);
+            p2 := LastDelimiter('>', varInit);
+            if (p1 > 0) and (p2 > p1) then
+               generic := Copy(varInit, p1, p2-p1+1);
+            varImpl := ExtractImplementer(varType, varInit);
+            if not varImpl.IsEmpty then
+            begin
+               if ImportLibs.IndexOf(varImpl) = -1 then
+               begin
+                  ImportLibs.Add(varImpl);
+               end;
+            end;
+            varInit := ' = ' + varInit
+         end;
+         varVal := varType + generic + ' ' + AVarList.sgList.Cells[VAR_NAME_COL, i];
+         varVal := varVal + varInit + ';';
+         ALines.Add(varVal);
+      end;
+   end;
 end;
 
 procedure Java_SetHLighterAttrs;
 var
    hlighter: TSynJavaSyn;
+   bkgColor: TColor;
 begin
    if (javaLang <> nil) and (javaLang.HighLighter is TSynJavaSyn) then
    begin
+      bkgColor := GSettings.EditorBkgColor;
       hlighter := TSynJavaSyn(javaLang.HighLighter);
       hlighter.StringAttri.Foreground     := GSettings.EditorStringColor;
-      hlighter.StringAttri.Background     := GSettings.EditorBkgColor;
+      hlighter.StringAttri.Background     := bkgColor;
       hlighter.NumberAttri.Foreground     := GSettings.EditorNumberColor;
-      hlighter.NumberAttri.Background     := GSettings.EditorBkgColor;
+      hlighter.NumberAttri.Background     := bkgColor;
       hlighter.CommentAttri.Foreground    := GSettings.EditorCommentColor;
-      hlighter.CommentAttri.Background    := GSettings.EditorBkgColor;
+      hlighter.CommentAttri.Background    := bkgColor;
       hlighter.KeyAttri.Foreground        := GSettings.EditorKeywordColor;
-      hlighter.KeyAttri.Background        := GSettings.EditorBkgColor;
+      hlighter.KeyAttri.Background        := bkgColor;
       hlighter.IdentifierAttri.Foreground := GSettings.EditorIdentColor;
-      hlighter.IdentifierAttri.Background := GSettings.EditorBkgColor;
+      hlighter.IdentifierAttri.Background := bkgColor;
    end;
 end;
 
@@ -188,17 +221,18 @@ end;
 
 initialization
 
-   importLibs := TStringList.Create;
+   ImportLibs := TStringList.Create;
 
    javaLang := GInfra.GetLangDefinition(JAVA_LANG_ID);
    if javaLang <> nil then
    begin
       javaLang.LibSectionGenerator := Java_LibSectionGenerator;
+      javaLang.VarSectionGenerator := Java_VarSectionGenerator;
       javaLang.SetHLighterAttrs := Java_SetHLighterAttrs;
    end;
 
 finalization
 
-   importLibs.Free;
+   ImportLibs.Free;
        
 end.

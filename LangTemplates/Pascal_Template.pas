@@ -91,8 +91,9 @@ var
 implementation
 
 uses
-   System.SysUtils, System.StrUtils, System.Classes, SynHighlighterPas, Pascal_Parser, Main_Block, ApplicationCommon,
-   DeclareList, Settings, LocalizationManager, LangDefinition, CommonTypes, ParserHelper;
+   System.SysUtils, System.StrUtils, System.Classes, Vcl.Graphics, SynHighlighterPas,
+   Pascal_Parser, Main_Block, ApplicationCommon, DeclareList, Settings, LocalizationManager,
+   LangDefinition, CommonTypes, ParserHelper;
 
 var
    lLangDef: TLangDefinition;
@@ -358,28 +359,30 @@ end;
 procedure Pascal_SetHLighterAttrs;
 var
    pascalHighlighter: TSynPasSyn;
+   bkgColor: TColor;
 begin
    if (lLangDef <> nil) and (lLangDef.HighLighter is TSynPasSyn) then
    begin
+      bkgColor := GSettings.EditorBkgColor;
       pascalHighlighter := TSynPasSyn(lLangDef.HighLighter);
       pascalHighlighter.StringAttri.Foreground     := GSettings.EditorStringColor;
-      pascalHighlighter.StringAttri.Background     := GSettings.EditorBkgColor;
+      pascalHighlighter.StringAttri.Background     := bkgColor;
       pascalHighlighter.NumberAttri.Foreground     := GSettings.EditorNumberColor;
-      pascalHighlighter.NumberAttri.Background     := GSettings.EditorBkgColor;
+      pascalHighlighter.NumberAttri.Background     := bkgColor;
       pascalHighlighter.FloatAttri.Foreground      := GSettings.EditorNumberColor;
-      pascalHighlighter.FloatAttri.Background      := GSettings.EditorBkgColor;
+      pascalHighlighter.FloatAttri.Background      := bkgColor;
       pascalHighlighter.HexAttri.Foreground        := GSettings.EditorNumberColor;
-      pascalHighlighter.HexAttri.Background        := GSettings.EditorBkgColor;
+      pascalHighlighter.HexAttri.Background        := bkgColor;
       pascalHighlighter.CommentAttri.Foreground    := GSettings.EditorCommentColor;
-      pascalHighlighter.CommentAttri.Background    := GSettings.EditorBkgColor;
+      pascalHighlighter.CommentAttri.Background    := bkgColor;
       pascalHighlighter.DirectiveAttri.Foreground  := GSettings.EditorCommentColor;
-      pascalHighlighter.DirectiveAttri.Background  := GSettings.EditorBkgColor;
+      pascalHighlighter.DirectiveAttri.Background  := bkgColor;
       pascalHighlighter.CharAttri.Foreground       := GSettings.EditorStringColor;
-      pascalHighlighter.CharAttri.Background       := GSettings.EditorBkgColor;
+      pascalHighlighter.CharAttri.Background       := bkgColor;
       pascalHighlighter.KeyAttri.Foreground        := GSettings.EditorKeywordColor;
-      pascalHighlighter.KeyAttri.Background        := GSettings.EditorBkgColor;
+      pascalHighlighter.KeyAttri.Background        := bkgColor;
       pascalHighlighter.IdentifierAttri.Foreground := GSettings.EditorIdentColor;
-      pascalHighlighter.IdentifierAttri.Background := GSettings.EditorBkgColor;
+      pascalHighlighter.IdentifierAttri.Background := bkgColor;
    end;
 end;
 

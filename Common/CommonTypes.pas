@@ -67,6 +67,7 @@ type
       Kind: TDataTypeKind;
       OrigType: PNativeDataType;
       IsGeneric: boolean;
+      Lib: string;
    end;
 
    TErrWarnCount = record

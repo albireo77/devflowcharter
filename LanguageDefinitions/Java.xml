@@ -54,10 +54,10 @@
 	<DataType kind="bool">boolean</DataType>
 	<DataType kind="string">String</DataType>
 	<DataType kind="other">StringBuilder</DataType>
-	<DataType kind="other" generic="true">List</DataType>
-	<DataType kind="other" generic="true">Map</DataType>
-	<DataType kind="other" generic="true">Set</DataType>
-	<DataType kind="other" generic="true">Queue</DataType>
+	<DataType kind="other" generic="true" library="java.util">List</DataType>
+	<DataType kind="other" generic="true" library="java.util">Map</DataType>
+	<DataType kind="other" generic="true" library="java.util">Set</DataType>
+	<DataType kind="other" generic="true" library="java.util">Queue</DataType>
 	<DataType kind="other">Character</DataType>
 	<DataType kind="other">Byte</DataType>
 	<DataType kind="other">Short</DataType>
@@ -66,19 +66,19 @@
 	<DataType kind="other">Float</DataType>
 	<DataType kind="other">Double</DataType>
 	<DataType kind="other">Boolean</DataType>
-	<DataType kind="other">BigDecimal</DataType>
-	<DataType kind="other">DateFormat</DataType>
-	<DataType kind="other">Date</DataType>
-	<DataType kind="other">Calendar</DataType>
-	<DataType kind="other">LocalDate</DataType>
-	<DataType kind="other">LocalDateTime</DataType>
-	<DataType kind="other">LocalTime</DataType>
-	<DataType kind="other">Random</DataType>
-	<DataType kind="other">File</DataType>
-	<DataType kind="other">Writer</DataType>
-	<DataType kind="other">Reader</DataType>
-	<DataType kind="other">InputStream</DataType>
-	<DataType kind="other">OutputStream</DataType>
+	<DataType kind="other" library="java.math">BigDecimal</DataType>
+	<DataType kind="other" library="java.text">DateFormat</DataType>
+	<DataType kind="other" library="java.util">Date</DataType>
+	<DataType kind="other" library="java.util">Calendar</DataType>
+	<DataType kind="other" library="java.time">LocalDate</DataType>
+	<DataType kind="other" library="java.time">LocalDateTime</DataType>
+	<DataType kind="other" library="java.time">LocalTime</DataType>
+	<DataType kind="other" library="java.util">Random</DataType>
+	<DataType kind="other" library="java.io">File</DataType>
+	<DataType kind="other" library="java.io">Writer</DataType>
+	<DataType kind="other" library="java.io">Reader</DataType>
+	<DataType kind="other" library="java.io">InputStream</DataType>
+	<DataType kind="other" library="java.io">OutputStream</DataType>
     </NativeDataTypes>
 
     <KeyWords>

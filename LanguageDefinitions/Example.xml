@@ -60,7 +60,8 @@ If attribute "kind" is not present, data type is qualified as of "other" kind.
 "ptr" value determines pointer type.
 origtype attribute determines original type for pointer type.
 Pointer types must be declared AFTER their original ones.
-generic attribute (valid values: true false) determines if type is generic; designed for Java
+generic attribute (valid values: true false) determines if type is generic; mainly designed for Java
+library attribute contains library name 
 -->
     <NativeDataTypes>
         <DataType kind="int">bigInt</DataType>
@@ -68,7 +69,7 @@ generic attribute (valid values: true false) determines if type is generic; desi
         <DataType kind="int">character</DataType>
         <DataType kind="bool">bool</DataType>
         <DataType kind="ptr" origtype="bigInt">bigInt*</DataType>
-        <DataType kind="other" generic="true">List</DataType>
+        <DataType kind="other" generic="true" library="somelibrary">List</DataType>
     </NativeDataTypes>
     <KeyWords>
         <KeyWord>BEGIN</KeyWord>

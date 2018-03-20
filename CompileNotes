@@ -1,6 +1,6 @@
 To compile devFlowcharter you will need:
-- Delphi 10.1 Starter Edition or better
+- Delphi 10 (Starter Edition is enough)
 - SynEdit (https://github.com/SynEdit/SynEdit)
-  File ThirdParty/ThirdParty.zip contains Unicode SynEdit with code folding
+  Package ThirdParty/ThirdParty.zip contains Unicode SynEdit with code folding
 - OmniXML (https://github.com/mremec/omnixml)
 

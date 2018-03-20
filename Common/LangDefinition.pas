@@ -789,6 +789,7 @@ begin
                lOrigType := lType;
             lType.OrigType := lOrigType;
             lType.IsGeneric := TXMLProcessor.GetBoolFromAttr(tag, 'generic');
+            lType.Lib := tag.getAttribute('library');
          end;
          tag := TXMLProcessor.FindNextTag(tag);
       end;

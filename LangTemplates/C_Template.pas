@@ -42,8 +42,8 @@ var
 implementation
 
 uses
-   System.SysUtils, System.StrUtils, System.Classes, SynHighlighterCpp, Main_Block,
-   ApplicationCommon, LangDefinition, ParserHelper;
+   System.SysUtils, System.StrUtils, System.Classes, SynHighlighterCpp, Vcl.Graphics,
+   Main_Block, ApplicationCommon, LangDefinition, ParserHelper;
 
 var
    cLang: TLangDefinition;
@@ -313,28 +313,32 @@ end;
 procedure C_SetHLighterAttrs;
 var
    hlighter: TSynCppSyn;
+   bkgColor: TColor;
 begin
    if (cLang <> nil) and (cLang.HighLighter is TSynCppSyn) then
    begin
+      bkgColor := GSettings.EditorBkgColor;
       hlighter := TSynCppSyn(cLang.HighLighter);
       hlighter.StringAttri.Foreground     := GSettings.EditorStringColor;
-      hlighter.StringAttri.Background     := GSettings.EditorBkgColor;
+      hlighter.StringAttri.Background     := bkgColor;
       hlighter.CharAttri.Foreground       := GSettings.EditorStringColor;
-      hlighter.CharAttri.Background       := GSettings.EditorBkgColor;
+      hlighter.CharAttri.Background       := bkgColor;
       hlighter.NumberAttri.Foreground     := GSettings.EditorNumberColor;
-      hlighter.NumberAttri.Background     := GSettings.EditorBkgColor;
+      hlighter.NumberAttri.Background     := bkgColor;
       hlighter.FloatAttri.Foreground      := GSettings.EditorNumberColor;
-      hlighter.FloatAttri.Background      := GSettings.EditorBkgColor;
+      hlighter.FloatAttri.Background      := bkgColor;
       hlighter.HexAttri.Foreground        := GSettings.EditorNumberColor;
-      hlighter.HexAttri.Background        := GSettings.EditorBkgColor;
+      hlighter.HexAttri.Background        := bkgColor;
       hlighter.OctalAttri.Foreground      := GSettings.EditorNumberColor;
-      hlighter.OctalAttri.Background      := GSettings.EditorBkgColor;
+      hlighter.OctalAttri.Background      := bkgColor;
       hlighter.CommentAttri.Foreground    := GSettings.EditorCommentColor;
-      hlighter.CommentAttri.Background    := GSettings.EditorBkgColor;
+      hlighter.CommentAttri.Background    := bkgColor;
+      hlighter.DirecAttri.Foreground      := GSettings.EditorCommentColor;
+      hlighter.DirecAttri.Background      := bkgColor;
       hlighter.KeyAttri.Foreground        := GSettings.EditorKeywordColor;
-      hlighter.KeyAttri.Background        := GSettings.EditorBkgColor;
+      hlighter.KeyAttri.Background        := bkgColor;
       hlighter.IdentifierAttri.Foreground := GSettings.EditorIdentColor;
-      hlighter.IdentifierAttri.Background := GSettings.EditorBkgColor;
+      hlighter.IdentifierAttri.Background := bkgColor;
    end;
 end;
 

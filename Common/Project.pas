@@ -1130,8 +1130,8 @@ begin
       if Supports(comp, ITabbable, tab) then
       begin
          libName := tab.GetLibName;
-         if (result.IndexOf(libName) = -1) and not libName.IsEmpty then
-            result.Add(libName);
+         if (libName <> '') and (result.IndexOf(libName) = -1) then
+            result.AddObject(libName, tab.GetNameEdit);
       end;
    end;
 end;

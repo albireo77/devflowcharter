@@ -106,6 +106,7 @@ type
       class function IsArrayType(AType: integer): boolean;
       class function AreTypesCompatible(AType1, AType2: integer): boolean;
       class function GetSizeExpArrayAsString(const ATypeAsString: string; const ASizeAsString: string): string;
+      class function IsGenericType(const ATypeName: string): boolean;
    end;
 
 const
@@ -614,6 +615,14 @@ begin
       lang := GInfra.DummyLang;
    if lang <> nil then
       result := GetType(lang.GetPointerTypeName(GetTypeAsString(AType)))
+end;
+
+class function TParserHelper.IsGenericType(const ATypeName: string): boolean;
+var
+   pType: PNativeDataType;
+begin
+   pType := GInfra.GetNativeDataType(ATypeName);
+   result := (pType <> nil) and pType.IsGeneric;
 end;
 
 class function TParserHelper.IsIntegerType(AType: integer): boolean;
