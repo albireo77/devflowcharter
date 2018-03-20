@@ -116,7 +116,7 @@ type
       function GetLibName: string;
       procedure RefreshSizeEdits;
       function GetName: string;
-      function GetNameEdit: TCustomEdit;
+      function GetTab: TTabSheet;
       function GetHandle: THandle;
       procedure BringAllToFront;
       procedure SetZOrder(AValue: integer);
@@ -271,11 +271,9 @@ begin
       result := FHeader.GetName;
 end;
 
-function TUserFunction.GetNameEdit: TCustomEdit;
+function TUserFunction.GetTab: TTabSheet;
 begin
-   result := nil;
-   if FHeader <> nil then
-      result := FHeader.edtName;
+   result := FHeader;
 end;
 
 function TUserFunction.GetActive: boolean;

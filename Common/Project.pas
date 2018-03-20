@@ -1118,7 +1118,7 @@ end;
 function TProject.GetLibraryList: TStringList;
 var
    libName: string;
-   tab: ITabbable;
+   tabObj: ITabbable;
    comp: TComponent;
    components: IEnumerable<TComponent>;
 begin
@@ -1127,11 +1127,11 @@ begin
    components := GetComponents<TComponent>(TComponentComparer.Create(PAGE_INDEX_COMPARE));
    for comp in components do
    begin
-      if Supports(comp, ITabbable, tab) then
+      if Supports(comp, ITabbable, tabObj) then
       begin
-         libName := tab.GetLibName;
+         libName := tabObj.GetLibName;
          if (libName <> '') and (result.IndexOf(libName) = -1) then
-            result.AddObject(libName, tab.GetNameEdit);
+            result.AddObject(libName, tabObj.GetTab);
       end;
    end;
 end;

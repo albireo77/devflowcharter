@@ -28,7 +28,7 @@ interface
 implementation
 
 uses
-   System.Classes, System.SysUtils, Vcl.Graphics, Vcl.StdCtrls, SynHighlighterJava, DeclareList,
+   System.Classes, System.SysUtils, Vcl.Graphics, Vcl.ComCtrls, SynHighlighterJava, DeclareList,
    ApplicationCommon, UserDataType, UserFunction, LangDefinition, ParserHelper,
    CommonTypes;
 
@@ -37,7 +37,12 @@ const
 
 var
    javaLang: TLangDefinition;
-   ImportLibs: TStringList;
+   FImportLinesPos: integer;
+   FImportLines: TStringList;
+   FListImpl,
+   FMapImpl,
+   FSetImpl,
+   FDateFormatImpl: TStringList;
 
 function CheckForDataType(const AType: string): boolean;
 var
@@ -111,13 +116,11 @@ var
    pNativeType: PNativeDataType;
 begin
 
-   ImportLibs.Clear;
-
    for i := 0 to High(javaLang.NativeDataTypes) do
    begin
       pNativeType := @javaLang.NativeDataTypes[i];
       if (pNativeType.Lib <> '') and CheckForDataType(pNativeType.Name) then
-         ImportLibs.Add(Format(IMPORT_MASK, [pNativeType.Lib, pNativeType.Name]));
+         ALines.Add(Format(IMPORT_MASK, [pNativeType.Lib, pNativeType.Name]));
    end;
 
    libList := GProject.GetLibraryList;
@@ -125,37 +128,46 @@ begin
       for i := 0 to libList.Count-1 do
       begin
          typeName := '';
-         if libList.Objects[i] is TCustomEdit then
-            typeName := Trim(TCustomEdit(libList.Objects[i]).Text);
+         if libList.Objects[i] is TTabSheet then
+            typeName := TTabSheet(libList.Objects[i]).Caption;
          if not typeName.IsEmpty then
          begin
             libImport := Format(IMPORT_MASK, [libList.Strings[i], typeName]);
-            if ImportLibs.IndexOf(libImport) = -1 then
-               ImportLibs.Add(libImport);
+            if ALines.IndexOf(libImport) = -1 then
+               ALines.Add(libImport);
          end;
       end;
    finally
       libList.Free;
    end;
 
-   for i := 0 to ImportLibs.Count-1 do
-      ALines.Add(ImportLibs[i]);
+   FImportLinesPos := ALines.Count;
+   FImportLines := ALines;
 end;
 
 function ExtractImplementer(const ATypeName: string; const AContents: string): string;
-const
-   LIST_IMPLEMENTERS: array[1..5] of string = ('CopyOnWriteArrayList', 'ArrayList', 'LinkedList', 'Stack', 'Vector');
-   LIST_IMPLEMENTERS_PACKAGE: array[1..5] of string = ('java.util.concurrent.CopyOnWriteArrayList', 'java.util.ArrayList', 'java.util.LinkedList', 'java.util.Stack', 'java.util.Vector');
 var
    i: integer;
+   implList: TStringList;
+   name: string;
 begin
    result := '';
+   implList := nil;
    if ATypeName = 'List' then
+      implList := FListImpl
+   else if ATypeName = 'Map' then
+      implList := FMapImpl
+   else if ATypeName = 'Set' then
+      implList := FSetImpl
+   else if ATypeName = 'DateFormat' then
+      implList := FDateFormatImpl;
+   if implList <> nil then
    begin
-      for i := 1 to Length(LIST_IMPLEMENTERS) do
+      for i := 0 to implList.Count-1 do
       begin
-         if AContents.Contains(LIST_IMPLEMENTERS[i]) then
-            Exit(LIST_IMPLEMENTERS_PACKAGE[i]);
+         name := implList.Names[i];
+         if AContents.Contains(name) then
+            Exit(Format(IMPORT_MASK, [implList.Values[name], name]));
       end;
    end;
 end;
@@ -163,32 +175,30 @@ end;
 procedure Java_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
 var
    i, p1, p2: integer;
-   varType, varInit, varVal, generic, varImpl: string;
+   varType, varInit, varVal, gener, libImport: string;
 begin
-   if (AVarList <> nil) and (AVarList.sgList.RowCount > 2) then
+   if AVarList <> nil then
    begin
       for i := 1 to AVarList.sgList.RowCount-2 do
       begin
          varType :=  AVarList.sgList.Cells[VAR_TYPE_COL, i];
          varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
-         generic := '';
-         if TParserHelper.IsGenericType(varType) and not varInit.IsEmpty then
+         gener := '';
+         if not varInit.IsEmpty then
          begin
-            p1 := Pos('<', varInit);
-            p2 := LastDelimiter('>', varInit);
-            if (p1 > 0) and (p2 > p1) then
-               generic := Copy(varInit, p1, p2-p1+1);
-            varImpl := ExtractImplementer(varType, varInit);
-            if not varImpl.IsEmpty then
+            if TParserHelper.IsGenericType(varType) then
             begin
-               if ImportLibs.IndexOf(varImpl) = -1 then
-               begin
-                  ImportLibs.Add(varImpl);
-               end;
+               p1 := Pos('<', varInit);
+               p2 := LastDelimiter('>', varInit);
+               if (p1 > 0) and (p2 > p1) then
+                  gener := Copy(varInit, p1, p2-p1+1);
             end;
+            libImport := ExtractImplementer(varType, varInit);
+            if (not libImport.IsEmpty) and (FImportLines.IndexOf(libImport) = -1) then
+               FImportLines.Insert(FImportLinesPos, libImport);
             varInit := ' = ' + varInit
          end;
-         varVal := varType + generic + ' ' + AVarList.sgList.Cells[VAR_NAME_COL, i];
+         varVal := varType + gener + ' ' + AVarList.sgList.Cells[VAR_NAME_COL, i];
          varVal := varVal + varInit + ';';
          ALines.Add(varVal);
       end;
@@ -218,10 +228,7 @@ begin
 end;
 
 
-
 initialization
-
-   ImportLibs := TStringList.Create;
 
    javaLang := GInfra.GetLangDefinition(JAVA_LANG_ID);
    if javaLang <> nil then
@@ -231,8 +238,40 @@ initialization
       javaLang.SetHLighterAttrs := Java_SetHLighterAttrs;
    end;
 
+   FListImpl := TStringList.Create;
+   FListImpl.AddPair('CopyOnWriteArrayList', 'java.util.concurrent');
+   FListImpl.AddPair('ArrayList', 'java.util');
+   FListImpl.AddPair('LinkedList', 'java.util');
+   FListImpl.AddPair('Stack', 'java.util');
+   FListImpl.AddPair('Vector', 'java.util');
+
+   FMapImpl := TStringList.Create;
+   FMapImpl.AddPair('ConcurrentHashMap', 'java.util.concurrent');
+   FMapImpl.AddPair('ConcurrentSkipListMap', 'java.util.concurrent');
+   FMapImpl.AddPair('EnumMap', 'java.util');
+   FMapImpl.AddPair('WeakHashMap', 'java.util');
+   FMapImpl.AddPair('LinkedHashMap', 'java.util');
+   FMapImpl.AddPair('HashMap', 'java.util');
+   FMapImpl.AddPair('Hashtable', 'java.util');
+   FMapImpl.AddPair('Properties', 'java.util');
+   FMapImpl.AddPair('TreeMap', 'java.util');
+
+   FSetImpl := TStringList.Create;
+   FSetImpl.AddPair('ConcurrentSkipListSet', 'java.util.concurrent');
+   FSetImpl.AddPair('CopyOnWriteArraySet', 'java.util.concurrent');
+   FSetImpl.AddPair('EnumSet', 'java.util');
+   FSetImpl.AddPair('LinkedHashSet', 'java.util');
+   FSetImpl.AddPair('HashSet', 'java.util');
+   FSetImpl.AddPair('TreeSet', 'java.util');
+
+   FDateFormatImpl := TStringList.Create;
+   FDateFormatImpl.AddPair('SimpleDateFormat', 'java.text');
+
 finalization
 
-   ImportLibs.Free;
-       
+   FListImpl.Free;
+   FMapImpl.Free;
+   FSetImpl.Free;
+   FDateFormatImpl.Free;
+
 end.

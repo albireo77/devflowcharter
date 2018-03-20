@@ -24,7 +24,7 @@ unit CommonInterfaces;
 interface
 
 uses
-   Vcl.Controls, Vcl.StdCtrls, OmniXML, Vcl.Graphics, System.Types, Vcl.Forms,
+   Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls, OmniXML, Vcl.Graphics, System.Types, Vcl.Forms,
    CommonTypes, MemoEx;
 
 const
@@ -74,7 +74,7 @@ type
    ITabbable = interface(IActivable)
       ['{1E316044-89E6-4FFB-AC4D-FA773D4774D8}']
       function GetName: string;
-      function GetNameEdit: TCustomEdit;
+      function GetTab: TTabSheet;
       function GetLibName: string;
    end;
 
