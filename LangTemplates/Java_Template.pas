@@ -28,7 +28,7 @@ interface
 implementation
 
 uses
-   System.Classes, System.SysUtils, Vcl.Graphics, Vcl.ComCtrls, SynHighlighterJava, DeclareList,
+   System.Classes, System.SysUtils, System.StrUtils, Vcl.Graphics, Vcl.ComCtrls, SynHighlighterJava, DeclareList,
    ApplicationCommon, UserDataType, UserFunction, LangDefinition, ParserHelper,
    CommonTypes;
 
@@ -46,7 +46,9 @@ var
    FQueueImpl,
    FDequeImpl,
    FReaderImpl,
-   FWriterImpl: TStringList;
+   FWriterImpl,
+   FInStreamImpl,
+   FOutStreamImpl: TStringList;
 
 function CheckForDataType(const AType: string): boolean;
 var
@@ -157,22 +159,26 @@ var
 begin
    result := '';
    implList := nil;
-   if ATypeName = 'List' then
+   if ATypeName.EndsWith('List') then
       implList := FListImpl
-   else if ATypeName = 'Map' then
+   else if ATypeName.EndsWith('Map') then
       implList := FMapImpl
-   else if ATypeName = 'Set' then
+   else if ATypeName.EndsWith('Set') then
       implList := FSetImpl
-   else if ATypeName = 'DateFormat' then
+   else if ATypeName.EndsWith('DateFormat') then
       implList := FDateFormatImpl
-   else if ATypeName = 'Queue' then
+   else if ATypeName.EndsWith('Queue') then
       implList := FQueueImpl
-   else if ATypeName = 'Deque' then
+   else if ATypeName.EndsWith('Deque') then
       implList := FDequeImpl
-   else if ATypeName = 'Reader' then
+   else if ATypeName.EndsWith('Reader') then
       implList := FReaderImpl
-   else if ATypeName = 'Writer' then
-      implList := FWriterImpl;
+   else if ATypeName.EndsWith('Writer') then
+      implList := FWriterImpl
+   else if ATypeName.EndsWith('InputStream') then
+      implList := FInStreamImpl
+   else if ATypeName.EndsWith('OutputStream') then
+      implList := FOutStreamImpl;
    if implList <> nil then
    begin
       for i := 0 to implList.Count-1 do
@@ -187,7 +193,7 @@ end;
 procedure Java_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
 var
    i, p1, p2: integer;
-   varType, varInit, varVal, gener, libImport: string;
+   varType, varInit, varVal, gener, libImport, varAccess: string;
 begin
    if AVarList <> nil then
    begin
@@ -213,7 +219,10 @@ begin
                FImportLines.Insert(FImportLinesPos, libImport);
             varInit := ' = ' + varInit
          end;
-         varVal := varType + gener + ' ' + AVarList.sgList.Cells[VAR_NAME_COL, i] + varInit + ';';
+         varAccess := '';
+         if AVarList = GProject.GlobalVars then
+            varAccess := IfThen(AVarList.IsExternal(i), 'public ', 'private ');
+         varVal := varAccess + varType + gener + ' ' + AVarList.sgList.Cells[VAR_NAME_COL, i] + varInit + ';';
          ALines.Add(varVal);
       end;
    end;
@@ -316,6 +325,37 @@ initialization
    FWriterImpl.AddPair('PrintWriter', 'java.io');
    FWriterImpl.AddPair('StringWriter', 'java.io');
 
+   FInStreamImpl := TStringList.Create;
+   FInStreamImpl.AddPair('AudioInputStream', 'javax.sound.sampled');
+   FInStreamImpl.AddPair('ByteArrayInputStream', 'java.io');
+   FInStreamImpl.AddPair('FileInputStream', 'java.io');
+   FInStreamImpl.AddPair('FilterInputStream', 'java.io');
+   FInStreamImpl.AddPair('ObjectInputStream', 'java.io');
+   FInStreamImpl.AddPair('PipedInputStream', 'java.io');
+   FInStreamImpl.AddPair('SequenceInputStream', 'java.io');
+   FInStreamImpl.AddPair('BufferedInputStream', 'java.io');
+   FInStreamImpl.AddPair('CheckedInputStream', 'java.util.zip');
+   FInStreamImpl.AddPair('CipherInputStream', 'javax.crypto');
+   FInStreamImpl.AddPair('DataInputStream', 'java.io');
+   FInStreamImpl.AddPair('DeflaterInputStream', 'java.util.zip');
+   FInStreamImpl.AddPair('InflaterInputStream', 'java.util.zip');
+   FInStreamImpl.AddPair('DigestInputStream', 'java.security');
+   FInStreamImpl.AddPair('PushbackInputStream', 'java.io');
+
+   FOutStreamImpl := TStringList.Create;
+   FOutStreamImpl.AddPair('ByteArrayOutputStream', 'java.io');
+   FOutStreamImpl.AddPair('FileOutputStream', 'java.io');
+   FOutStreamImpl.AddPair('FilterOutputStream', 'java.io');
+   FOutStreamImpl.AddPair('ObjectOutputStream', 'java.io');
+   FOutStreamImpl.AddPair('PipedOutputStream', 'java.io');
+   FOutStreamImpl.AddPair('BufferedOutputStream', 'java.io');
+   FOutStreamImpl.AddPair('CipherOutputStream', 'javax.crypto');
+   FOutStreamImpl.AddPair('DataOutputStream', 'java.io');
+   FOutStreamImpl.AddPair('InflaterOutputStream', 'java.util.zip');
+   FOutStreamImpl.AddPair('DeflaterOutputStream', 'java.util.zip');
+   FOutStreamImpl.AddPair('DigestOutputStream', 'java.security');
+   FOutStreamImpl.AddPair('PrintStream', 'java.io');
+
 finalization
 
    FListImpl.Free;
@@ -326,5 +366,7 @@ finalization
    FDequeImpl.Free;
    FReaderImpl.Free;
    FWriterImpl.Free;
+   FInStreamImpl.Free;
+   FOutStreamImpl.Free;
 
 end.

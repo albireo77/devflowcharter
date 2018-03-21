@@ -21,11 +21,11 @@
     <EnabledUserFunctionHeader>true</EnabledUserFunctionHeader>
     <EnabledUserFunctionBody>true</EnabledUserFunctionBody>
     <EnabledUserDataTypes>true</EnabledUserDataTypes>
-    <EnabledPointers>true</EnabledPointers>
+    <EnabledPointers>false</EnabledPointers>
     <EnabledExplorer>true</EnabledExplorer>
     <EnabledCodeGenerator>true</EnabledCodeGenerator>
     <EnabledMainProgram>true</EnabledMainProgram>
-    <CaseSensitiveSyntax>false</CaseSensitiveSyntax>
+    <CaseSensitiveSyntax>true</CaseSensitiveSyntax>
     <UpperCaseConstId>true</UpperCaseConstId>
     <AllowEnumsInForLoop>true</AllowEnumsInForLoop>
     <AllowUserFunctionOverload>true</AllowUserFunctionOverload>
@@ -54,11 +54,6 @@
 	<DataType kind="bool">boolean</DataType>
 	<DataType kind="string">String</DataType>
 	<DataType kind="other">StringBuilder</DataType>
-	<DataType kind="other" generic="true" library="java.util">List</DataType>
-	<DataType kind="other" generic="true" library="java.util">Map</DataType>
-	<DataType kind="other" generic="true" library="java.util">Set</DataType>
-	<DataType kind="other" generic="true" library="java.util">Queue</DataType>
-	<DataType kind="other" generic="true" library="java.util">Deque</DataType>
 	<DataType kind="other">Character</DataType>
 	<DataType kind="other">Byte</DataType>
 	<DataType kind="other">Short</DataType>
@@ -67,6 +62,11 @@
 	<DataType kind="other">Float</DataType>
 	<DataType kind="other">Double</DataType>
 	<DataType kind="other">Boolean</DataType>
+	<DataType kind="other" generic="true" library="java.util">List</DataType>
+	<DataType kind="other" generic="true" library="java.util">Map</DataType>
+	<DataType kind="other" generic="true" library="java.util">Set</DataType>
+	<DataType kind="other" generic="true" library="java.util">Queue</DataType>
+	<DataType kind="other" generic="true" library="java.util">Deque</DataType>
 	<DataType kind="other" library="java.math">BigDecimal</DataType>
 	<DataType kind="other" library="java.text">DateFormat</DataType>
 	<DataType kind="other" library="java.util">Date</DataType>
