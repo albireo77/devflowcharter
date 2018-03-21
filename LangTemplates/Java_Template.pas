@@ -42,7 +42,11 @@ var
    FListImpl,
    FMapImpl,
    FSetImpl,
-   FDateFormatImpl: TStringList;
+   FDateFormatImpl,
+   FQueueImpl,
+   FDequeImpl,
+   FReaderImpl,
+   FWriterImpl: TStringList;
 
 function CheckForDataType(const AType: string): boolean;
 var
@@ -160,7 +164,15 @@ begin
    else if ATypeName = 'Set' then
       implList := FSetImpl
    else if ATypeName = 'DateFormat' then
-      implList := FDateFormatImpl;
+      implList := FDateFormatImpl
+   else if ATypeName = 'Queue' then
+      implList := FQueueImpl
+   else if ATypeName = 'Deque' then
+      implList := FDequeImpl
+   else if ATypeName = 'Reader' then
+      implList := FReaderImpl
+   else if ATypeName = 'Writer' then
+      implList := FWriterImpl;
    if implList <> nil then
    begin
       for i := 0 to implList.Count-1 do
@@ -189,17 +201,19 @@ begin
             if TParserHelper.IsGenericType(varType) then
             begin
                p1 := Pos('<', varInit);
-               p2 := LastDelimiter('>', varInit);
-               if (p1 > 0) and (p2 > p1) then
-                  gener := Copy(varInit, p1, p2-p1+1);
+               if p1 > 0 then
+               begin
+                  p2 := LastDelimiter('>', varInit);
+                  if p2 > p1 then
+                     gener := Copy(varInit, p1, p2-p1+1);
+               end;
             end;
             libImport := ExtractImplementer(varType, varInit);
-            if (not libImport.IsEmpty) and (FImportLines.IndexOf(libImport) = -1) then
+            if (libImport <> '') and (FImportLines.IndexOf(libImport) = -1) then
                FImportLines.Insert(FImportLinesPos, libImport);
             varInit := ' = ' + varInit
          end;
-         varVal := varType + gener + ' ' + AVarList.sgList.Cells[VAR_NAME_COL, i];
-         varVal := varVal + varInit + ';';
+         varVal := varType + gener + ' ' + AVarList.sgList.Cells[VAR_NAME_COL, i] + varInit + ';';
          ALines.Add(varVal);
       end;
    end;
@@ -267,11 +281,50 @@ initialization
    FDateFormatImpl := TStringList.Create;
    FDateFormatImpl.AddPair('SimpleDateFormat', 'java.text');
 
+   FQueueImpl := TStringList.Create;
+   FQueueImpl.AddPair('ArrayBlockingQueue', 'java.util.concurrent');
+   FQueueImpl.AddPair('ArrayDeque', 'java.util');
+   FQueueImpl.AddPair('ConcurrentLinkedDeque', 'java.util.concurrent');
+   FQueueImpl.AddPair('ConcurrentLinkedQueue', 'java.util.concurrent');
+   FQueueImpl.AddPair('DelayQueue', 'java.util.concurrent');
+   FQueueImpl.AddPair('LinkedBlockingDeque', 'java.util.concurrent');
+   FQueueImpl.AddPair('LinkedBlockingQueue', 'java.util.concurrent');
+   FQueueImpl.AddPair('LinkedList', 'java.util');
+   FQueueImpl.AddPair('LinkedTransferQueue', 'java.util.concurrent');
+   FQueueImpl.AddPair('PriorityBlockingQueue', 'java.util.concurrent');
+   FQueueImpl.AddPair('PriorityQueue', 'java.util');
+   FQueueImpl.AddPair('SynchronousQueue', 'java.util.concurrent');
+
+   FDequeImpl := TStringList.Create;
+   FDequeImpl.AddPair('ArrayDeque', 'java.util');
+   FDequeImpl.AddPair('ConcurrentLinkedDeque', 'java.util.concurrent');
+   FDequeImpl.AddPair('LinkedBlockingDeque', 'java.util.concurrent');
+   FDequeImpl.AddPair('LinkedList', 'java.util');
+
+   FReaderImpl := TStringList.Create;
+   FReaderImpl.AddPair('BufferedReader', 'java.io');
+   FReaderImpl.AddPair('CharArrayReader', 'java.io');
+   FReaderImpl.AddPair('InputStreamReader', 'java.io');
+   FReaderImpl.AddPair('PipedReader', 'java.io');
+   FReaderImpl.AddPair('StringReader', 'java.io');
+
+   FWriterImpl := TStringList.Create;
+   FWriterImpl.AddPair('BufferedWriter', 'java.io');
+   FWriterImpl.AddPair('CharArrayWriter', 'java.io');
+   FWriterImpl.AddPair('OutputStreamWriter', 'java.io');
+   FWriterImpl.AddPair('PipedWriter', 'java.io');
+   FWriterImpl.AddPair('PrintWriter', 'java.io');
+   FWriterImpl.AddPair('StringWriter', 'java.io');
+
 finalization
 
    FListImpl.Free;
    FMapImpl.Free;
    FSetImpl.Free;
    FDateFormatImpl.Free;
+   FQueueImpl.Free;
+   FDequeImpl.Free;
+   FReaderImpl.Free;
+   FWriterImpl.Free;
 
 end.

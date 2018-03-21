@@ -58,6 +58,7 @@
 	<DataType kind="other" generic="true" library="java.util">Map</DataType>
 	<DataType kind="other" generic="true" library="java.util">Set</DataType>
 	<DataType kind="other" generic="true" library="java.util">Queue</DataType>
+	<DataType kind="other" generic="true" library="java.util">Deque</DataType>
 	<DataType kind="other">Character</DataType>
 	<DataType kind="other">Byte</DataType>
 	<DataType kind="other">Short</DataType>

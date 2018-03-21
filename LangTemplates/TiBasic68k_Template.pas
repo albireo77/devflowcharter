@@ -41,7 +41,7 @@ var
    buffer: string;
    i: integer;
 begin
-   if (AVarList <> nil) and (AVarList.sgList.RowCount > 2) then
+   if AVarList <> nil then
    begin
       buffer := '';
       for i := 1 to AVarList.sgList.RowCount-2 do
