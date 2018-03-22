@@ -9,7 +9,7 @@ object ExplorerForm: TExplorerForm
   Constraints.MinWidth = 300
   ParentFont = True
   OldCreateOrder = False
-  PopupMode = pmAuto
+  PopupMode = pmExplicit
   Position = poScreenCenter
   OnCreate = FormCreate
   OnMouseWheel = FormMouseWheel

@@ -159,12 +159,12 @@ Block label elements will follow.
 Will be displayed in flowchart for given blocks.
 -->
 <LabelWhile>while</LabelWhile>
-<LabelRepeat>repeat until</LabelRepeat>
+<LabelRepeat>do while</LabelRepeat>
 <LabelFor>for</LabelFor>
-<LabelCase>Case</LabelCase>
+<LabelCase>switch</LabelCase>
 <LabelIf>if</LabelIf>
 <LabelIfElse>if else</LabelIfElse>
-<LabelFuncCall>func call</LabelFuncCall>
+<LabelFuncCall>method call</LabelFuncCall>
 <LabelReturn>return</LabelReturn>
 <LabelFolder>folder</LabelFolder>
 <LabelText>text</LabelText>
@@ -187,7 +187,7 @@ Procedure for building description for flowchart elements in Explorer window is 
 Available placeholder:
    %s1 - condition expression 
 -->
-<RepeatUntilDescTemplate>repeat until %s1</RepeatUntilDescTemplate>
+<RepeatUntilDescTemplate>do while %s1</RepeatUntilDescTemplate>
 
 <!--
 Element ReturnDescTemplate
@@ -215,7 +215,7 @@ Available placeholder:
    %s1 - case expression
 -->
 <!-- 
-<CaseOfDescTemplate>case %s1 of</CaseOfDescTemplate>
+<CaseOfDescTemplate>switch %s1 of</CaseOfDescTemplate>
 -->
 
 <HighLighterVarName>SynJavaSyn1</HighLighterVarName>
@@ -234,33 +234,26 @@ In lines containing branch indicators (e.g. %b1) all characters except for leadi
 Template elements are intended to have many lines.
 -->
 
-<WhileTemplate>while %s1 execute
-BEGIN
+<WhileTemplate>while (%s1) {
 	%b1
-END;
+}
 </WhileTemplate>
 
-<IfTemplate>if %s1 execute
-BEGIN
+<IfTemplate>if (%s1) { 
 	%b1
-END;
+}
 </IfTemplate>
 
-<IfElseTemplate>if %s1 execute
-BEGIN
+<IfElseTemplate>if (%s1) {
 	%b1
-END;
-else
-BEGIN
+} else {
 	%b2
-END;
+}
 </IfElseTemplate>
 
-<RepeatUntilTemplate>repeat execute
-BEGIN
+<RepeatUntilTemplate>do {
 	%b1
-END;
-until %s1;
+} while (%s1);
 </RepeatUntilTemplate>
 
 <!--
@@ -269,7 +262,7 @@ False - break loop when condition is true (default, Pascal like)
 True - continue loop when condition is true (C like)
 Used to switch default repeat..until loop behaviour to work as do..while in C
 -->
-<RepeatUntilAsDoWhile>false</RepeatUntilAsDoWhile>
+<RepeatUntilAsDoWhile>true</RepeatUntilAsDoWhile>
 
 <!--
 Element ForDoVarList
@@ -293,10 +286,9 @@ Available placeholders:
    %s4 - first direction (ascending/descending) dependent string (ForAsc1 or ForDesc1 element)
    %s5 - second direction (ascending/descending) dependent string (ForAsc2 or ForDesc2 element)  
 -->
-<ForDoTemplate>for (%s1 = %s2; %s1 %s4 %s3; %s1%s5)
-BEGIN
+<ForDoTemplate>for (%s1 = %s2; %s1 %s4 %s3; %s1%s5) {
 	%b1
-END;
+}
 </ForDoTemplate>
 <ForAsc1>&lt;=</ForAsc1>
 <ForAsc2>++</ForAsc2>
@@ -310,11 +302,9 @@ Available placeholders:
    %b1 - body for given value section
 Used in elements: CaseOfTemplate   
 -->
-<CaseOfValueTemplate>%s1:
-BEGIN
+<CaseOfValueTemplate>case %s1:
 	%b1
 	break;
-END;
 </CaseOfValueTemplate>
 
 <!--
@@ -323,10 +313,9 @@ Available placeholders:
    %b1 - body for case default section
 Used in elements: CaseOfTemplate   
 -->
-<CaseOfDefaultValueTemplate>	else
-	BEGIN
-		%b1
-	END;
+<CaseOfDefaultValueTemplate>default:
+	%b1
+	break;
 </CaseOfDefaultValueTemplate>
 
 <!--
@@ -336,15 +325,15 @@ Available placeholders:
    %s2 - list of sections for specific values (list of CaseOfValueTemplate elements)
    %s3 - section for default value (CaseOfDefaultValueTemplate element)  
 -->
-<CaseOfTemplate>case %s1 of
+<CaseOfTemplate>switch (%s1) {
 	%s2
-%s3
-END;
+	%s3
+}
 </CaseOfTemplate>
 
-<ReturnTemplate>exit %s1;</ReturnTemplate>
+<ReturnTemplate>return %s1;</ReturnTemplate>
 
-<FunctionCallTemplate>call %s1;</FunctionCallTemplate>
+<FunctionCallTemplate>%s1;</FunctionCallTemplate>
 
 <InstrTemplate>%s1;</InstrTemplate>
 
@@ -468,10 +457,14 @@ Available placeholders:
    %s3 - return statement which is generated if last statement of program isn't return block (element ProgramReturnTemplate)
    %b1 - body of main program  
 -->
-<MainProgramTemplate>BEGIN
-	%b1
-	%s3
-END %s1;
+<MainProgramTemplate>public class %s1 {
+
+	%s2
+
+	public static void main(String[] args) {
+		%b1
+	}
+}
 </MainProgramTemplate>
 
 <ProgramReturnTemplate>/* Program ends with no value returned. */</ProgramReturnTemplate>

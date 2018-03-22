@@ -11,7 +11,7 @@ object DeclarationsForm: TDeclarationsForm
   Constraints.MinWidth = 468
   ParentFont = True
   OldCreateOrder = False
-  PopupMode = pmAuto
+  PopupMode = pmExplicit
   Position = poDefault
   OnShow = FormShow
   PixelsPerInch = 96
