@@ -61,7 +61,6 @@ type
       constructor Create(AParentForm: TDataTypesForm);
       procedure ExportToXMLTag(ATag: IXMLElement); override;
       procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
-      procedure Localize(AList: TStringList); override;
       procedure RefreshSizeEdits; override;
       function IsValidEnumValue(const AValue: string): boolean;
       function GetDimensionCount: integer;
@@ -84,10 +83,10 @@ var
    s: string;
 begin
 
-   inherited Create(AParentForm);
-
    FElementTypeID := 'field';
    FCodeIncludeExtern := GInfra.CurrentLang.CodeGenInclExternUserDataType;
+
+   inherited Create(AParentForm);
 
    CreateNameControls(Self, 9, 10);
 
@@ -343,17 +342,6 @@ begin
    if chkAddPtrType.Enabled and chkAddPtrType.Checked then
       tag.SetAttribute(POINTER_ATTR, 'true');
    tag.SetAttribute(KIND_ATTR, TRttiEnumerationType.GetName(Kind));
-end;
-
-procedure TUserDataType.Localize(AList: TStringList);
-begin
-   lblName2.Caption := AList.Values['lblName'];
-   btnAddElement.Caption := AList.Values['btnAddField'];
-   btnAddElement.Hint := AList.Values['btnAddFieldHint'];
-   chkAddPtrType.Caption := AList.Values['chkAddPtrType'];
-   rgTypeBox.Caption := AList.Values['rgTypeBox'];
-   edtLibrary.Hint := Format(AList.Values['edtLibHintType'], [GInfra.CurrentLang.LibraryExt]);
-   inherited Localize(AList);
 end;
 
 procedure TUserDataType.ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);

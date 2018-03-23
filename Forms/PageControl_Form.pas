@@ -54,7 +54,6 @@ type
     function ImportTabsFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType; virtual; abstract;
     procedure FormDeactivate(Sender: TObject); virtual;
     procedure RefreshTabs; virtual;
-    procedure Localize(AList: TStringList); override;
     procedure pgcTabsDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure pgcTabsDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
@@ -104,15 +103,6 @@ begin
    miRemoveAll.Enabled := GetVisiblePageCount > 0;
    miExport.Enabled := miRemove.Enabled;
    miExportAll.Enabled := miRemoveAll.Enabled;
-end;
-
-procedure TPageControlForm.Localize(AList: TStringList);
-var
-   i: integer;
-begin
-   inherited Localize(AList);
-   for i := 0 to pgcTabs.PageCount-1 do
-      TTabComponent(pgcTabs.Pages[i]).Localize(AList);
 end;
 
 procedure TPageControlForm.RefreshTabs;

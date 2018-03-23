@@ -89,7 +89,6 @@ type
       destructor Destroy; override;
       procedure ExportToXMLTag(ATag: IXMLElement); override;
       procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
-      procedure Localize(AList: TStringList); override;
       procedure RefreshSizeEdits; override;
       procedure GenerateDescription(ALines: TStrings);
       procedure SetPageCombo(const ACaption: TCaption = '');
@@ -305,10 +304,10 @@ var
    l: integer;
 begin
 
-   inherited Create(AParentForm);
-
    FElementTypeID := 'arg';
    FCodeIncludeExtern := GInfra.CurrentLang.CodeGenInclExternUserFunction;
+
+   inherited Create(AParentForm);
 
    FLocalVars := TVarDeclareList.Create(Self, 0, 350, 389, 3, 4, 380);
    FLocalVars.Caption := i18Manager.GetString('LocalDeclare');
@@ -505,21 +504,6 @@ end;
 function TUserFunctionHeader.CreateElement: TElement;
 begin
    result := TParameter.Create(Self);
-end;
-
-procedure TUserFunctionHeader.Localize(AList: TStringList);
-begin
-   lblType.Caption := AList.Values['lblType'];
-   lblParams.Caption := AList.Values['lblParameters'];
-   btnAddElement.Caption := AList.Values['btnAddParm'];
-   edtLibrary.Hint := i18Manager.GetFormattedString('edtLibraryHint', [GInfra.CurrentLang.LibraryExt]);
-   if cbType.Items.Count > 0 then
-   begin
-      cbType.Items[0] := AList.Values['NoType'];
-      if cbType.ItemIndex = -1 then
-         cbType.ItemIndex := 0;
-   end;
-   inherited Localize(AList);
 end;
 
 constructor TParameter.Create(AParentTab: TUserFunctionHeader);

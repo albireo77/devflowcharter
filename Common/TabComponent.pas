@@ -75,7 +75,6 @@ type
          procedure ExportToGraphic(AGraphic: TGraphic);
          function GetExportFileName: string;
          function IsDuplicated(ANameEdit: TEdit): boolean;
-         procedure Localize(AList: TStringList); virtual;
          procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil); virtual;
          function GetLibName: string;
          procedure ScrollElements(AValue: integer);
@@ -502,23 +501,6 @@ begin
       tag := TXMLProcessor.FindNextTag(tag);
    end;
    FId := GProject.Register(Self, StrToIntDef(ATag.GetAttribute(ID_ATTR), ID_INVALID));
-end;
-
-procedure TTabComponent.Localize(AList: TStringList);
-var
-   a: integer;
-   elem: TElement;
-begin
-   lblName.Caption := AList.Values['lblName'];
-   chkExtDeclare.Caption := AList.Values['chkExtDeclare'];
-   lblLibrary.Caption := AList.Values['lblLibrary'];
-   edtName.OnChange(edtName);
-   for a := 0 to sbxElements.ControlCount-1 do
-   begin
-      elem := TElement(sbxElements.Controls[a]);
-      elem.btnRemove.Caption := AList.Values['btnRemove'];
-      elem.edtName.OnChange(elem.edtName);
-   end;
 end;
 
 procedure TTabComponent.ScrollElements(AValue: integer);
