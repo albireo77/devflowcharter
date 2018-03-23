@@ -675,4 +675,36 @@ Available placeholders:
 -->
 <UserTypeDesc>%s2 %s1</UserTypeDesc>
 
+<!--
+Element CodeGenInclExternUserDataType
+Determines if external user data type will be included to code generation
+-->
+<CodeGenInclExternUserDataType>false</CodeGenInclExternUserDataType>
+
+<!--
+Element CodeGenInclExternUserFunction
+Determines if external user function will be included to code generation
+-->
+<CodeGenInclExternUserFunction>false</CodeGenInclExternUserFunction>
+
+<!--
+Element ExternalLabel
+Used to change default label displayed for external variables/consts or user functions/datatypes; it's non-localized
+-->
+<ExternalLabel></ExternalLabel>
+
+<!--
+Element GlobalVarsLabelKey
+Description: Label displayed for global variables.
+It should contain name of key present in translation file (.lng) in Others section.
+-->
+<GlobalVarsLabelKey>GlobalVars</GlobalVarsLabelKey>
+
+<!--
+Element GlobalConstsLabelKey
+Description: Label displayed for global constants.
+It should contain name of key present in translation file (.lng) in Others section.
+-->
+<GlobalConstsLabelKey>GlobalConsts</GlobalConstsLabelKey>
+
 </Language>

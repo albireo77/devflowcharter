@@ -87,6 +87,7 @@ begin
    inherited Create(AParentForm);
 
    FElementTypeID := 'field';
+   FCodeIncludeExtern := GInfra.CurrentLang.CodeGenInclExternUserDataType;
 
    CreateNameControls(Self, 9, 10);
 
@@ -160,13 +161,11 @@ begin
    rgTypeBox.DoubleBuffered := true;
    rgTypeBox.Columns := 2;
    rgTypeBox.Caption := i18Manager.GetString('rgTypeBox');
-
    for dt := Low(TUserDataTypeKind) to High(TUserDataTypeKind) do
    begin
       s := TRttiEnumerationType.GetName(dt);
       rgTypeBox.Items.Add(i18Manager.GetString(s));
    end;
-
    rgTypeBox.ItemIndex := Ord(dtRecord);
    rgTypeBox.OnClick := OnClickType;
 

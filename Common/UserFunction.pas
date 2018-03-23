@@ -308,6 +308,7 @@ begin
    inherited Create(AParentForm);
 
    FElementTypeID := 'arg';
+   FCodeIncludeExtern := GInfra.CurrentLang.CodeGenInclExternUserFunction;
 
    FLocalVars := TVarDeclareList.Create(Self, 0, 350, 389, 3, 4, 380);
    FLocalVars.Caption := i18Manager.GetString('LocalDeclare');

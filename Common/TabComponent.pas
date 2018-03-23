@@ -36,7 +36,8 @@ type
          FId: integer;
       protected
          FOverlayObject: TComponent;
-         FActive: boolean;
+         FActive,
+         FCodeIncludeExtern: boolean;
          FElementTypeID: string;
          sbxElements: TScrollBox;
          procedure SetActive(AValue: boolean); virtual;
@@ -66,6 +67,7 @@ type
          property OverlayObject: TComponent read FOverlayObject write FOverlayObject;
          property Id: integer read GetId;
          property ParentForm: TPageControlForm read FParentForm;
+         property CodeIncludeExtern: boolean read FCodeIncludeExtern;
          constructor Create(AParentForm: TPageControlForm);
          destructor Destroy; override;
          procedure ExportToXMLTag(ATag: IXMLElement); virtual;
@@ -133,7 +135,7 @@ end;
 
 procedure TTabComponent.UpdateCodeEditor;
 begin
-   if not chkExtDeclare.Checked then
+   if FCodeIncludeExtern or not chkExtDeclare.Checked then
       TInfra.UpdateCodeEditor(Self);
 end;
 
@@ -209,7 +211,13 @@ procedure TTabComponent.CreateExtDeclareChBox(AParent: TWinControl; x, y: intege
 begin
    chkExtDeclare := TCheckBox.Create(AParent);
    chkExtDeclare.Parent := AParent;
-   chkExtDeclare.Caption := i18Manager.GetString('chkExtDeclare');
+   if GInfra.CurrentLang.ExternalLabel.IsEmpty then
+   begin
+      chkExtDeclare.Caption := i18Manager.GetString('chkExtDeclare');
+      chkExtDeclare.Hint := i18Manager.GetString('chkExtDeclare.Hint');
+   end
+   else
+      chkExtDeclare.Caption := GInfra.CurrentLang.ExternalLabel;
    chkExtDeclare.SetBounds(x, y, PageControl.Canvas.TextWidth(chkExtDeclare.Caption) + 20, 17);
    chkExtDeclare.ParentFont := false;
    chkExtDeclare.Font.Style := [];
@@ -217,7 +225,6 @@ begin
    chkExtDeclare.DoubleBuffered := true;
    chkExtDeclare.OnClick := OnClickCh;
    chkExtDeclare.ShowHint := true;
-   chkExtDeclare.Hint := i18Manager.GetString('chkExtDeclare.Hint');
 end;
 
 procedure TTabComponent.CreateNameControls(AParent: TWinControl; x, y: integer);
@@ -294,7 +301,7 @@ end;
 function TTabComponent.GetLibName: string;
 begin
    result := '';
-   if FActive and chkExtDeclare.Checked and (Font.Color <> NOK_COLOR) then
+   if FActive and (Font.Color <> NOK_COLOR) then
       result := Trim(edtLibrary.Text);
 end;
 

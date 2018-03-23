@@ -567,11 +567,7 @@ begin
    if GInfra.CurrentLang.EnabledVars then
    begin
       if FGlobalVars = nil then
-      begin
          FGlobalVars := TVarDeclareList.Create(TInfra.GetDeclarationsForm, 2, 1, DEF_VARLIST_WIDTH, 6, 5, DEF_VARLIST_WIDTH-10);
-         FGlobalVars.Caption := i18Manager.GetString('GlobalVars');
-         FGlobalVars.SetCheckBoxCol(4);
-      end;
    end
    else
    begin
@@ -587,8 +583,6 @@ begin
          else
             l := 2;
          FGlobalConsts := TConstDeclareList.Create(TInfra.GetDeclarationsForm, l, 1, DEF_CONSTLIST_WIDTH, 6, 3, DEF_CONSTLIST_WIDTH-10);
-         FGlobalConsts.Caption := i18Manager.GetString('GlobalConsts');
-         FGlobalConsts.SetCheckBoxCol(2);
       end;
    end
    else
@@ -598,6 +592,8 @@ begin
    end;
    if FGlobalVars <> nil then
    begin
+      FGlobalVars.Caption := i18Manager.GetString(GInfra.CurrentLang.GlobalVarsLabelKey);
+      FGlobalVars.SetExternalCol(4);
       FGlobalVars.AssociatedList := FGlobalConsts;
       w := FGlobalVars.BoundsRect.Right + 16;
       if GSettings <> nil then
@@ -611,6 +607,8 @@ begin
    end;
    if FGlobalConsts <> nil then
    begin
+      FGlobalConsts.Caption := i18Manager.GetString(GInfra.CurrentLang.GlobalConstsLabelKey);
+      FGlobalConsts.SetExternalCol(2);
       FGlobalConsts.AssociatedList := FGlobalVars;
       w := FGlobalConsts.BoundsRect.Right + 16;
       if GSettings <> nil then

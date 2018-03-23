@@ -14,8 +14,7 @@
     <InstrEnd>;</InstrEnd>
     <InOutCursorPos>-1</InOutCursorPos>			<!-- counted from end -->
     <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>	<!-- counted from end -->
-
-    <EnabledConsts>true</EnabledConsts>			<!-- false or 0 is false, true or not 0 is true -->				
+				
     <EnabledVars>true</EnabledVars>
     <EnabledCompiler>true</EnabledCompiler>
     <EnabledUserFunctionHeader>true</EnabledUserFunctionHeader>
@@ -362,6 +361,14 @@ Available placeholders:
 
 </ProgramHeaderTemplate>
 
+<CodeGenInclExternUserDataType>true</CodeGenInclExternUserDataType>
+
+<CodeGenInclExternUserFunction>true</CodeGenInclExternUserFunction>
+
+<ExternalLabel>public</ExternalLabel>
+
+<GlobalVarsLabelKey>InstanceVars</GlobalVarsLabelKey>
+
 <!--
 Element FunctionHeaderArgsEntryMask
 Available placeholders:
@@ -707,5 +714,7 @@ Available placeholders:
    %s2 - type kind
 -->
 <UserTypeDesc>%s2 %s1</UserTypeDesc>
+
+<GlobalVarsLabelKey>InstanceVars</GlobalVarsLabelKey>
 
 </Language>

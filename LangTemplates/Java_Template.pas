@@ -193,7 +193,7 @@ end;
 procedure Java_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
 var
    i, p1, p2: integer;
-   varType, varInit, varVal, gener, libImport, varAccess: string;
+   varType, varInit, varVal, varGeneric, libImport, varAccess: string;
 begin
    if AVarList <> nil then
    begin
@@ -201,7 +201,7 @@ begin
       begin
          varType :=  AVarList.sgList.Cells[VAR_TYPE_COL, i];
          varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
-         gener := '';
+         varGeneric := '';
          if not varInit.IsEmpty then
          begin
             if TParserHelper.IsGenericType(varType) then
@@ -211,7 +211,7 @@ begin
                begin
                   p2 := LastDelimiter('>', varInit);
                   if p2 > p1 then
-                     gener := Copy(varInit, p1, p2-p1+1);
+                     varGeneric := Copy(varInit, p1, p2-p1+1);
                end;
             end;
             libImport := ExtractImplementer(varType, varInit);
@@ -222,7 +222,7 @@ begin
          varAccess := '';
          if AVarList = GProject.GlobalVars then
             varAccess := IfThen(AVarList.IsExternal(i), 'public ', 'private ');
-         varVal := varAccess + varType + gener + ' ' + AVarList.sgList.Cells[VAR_NAME_COL, i] + varInit + ';';
+         varVal := varAccess + varType + varGeneric + ' ' + AVarList.sgList.Cells[VAR_NAME_COL, i] + varInit + ';';
          ALines.Add(varVal);
       end;
    end;

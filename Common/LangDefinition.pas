@@ -134,6 +134,8 @@ type
       ProcedureLabelKey,
       FunctionLabelKey,
       ProgramLabelKey,
+      GlobalVarsLabelKey,
+      GlobalConstsLabelKey,
       HighLighterVarName,
       FuncBrackets,
       ExternEntry,
@@ -147,7 +149,8 @@ type
       RepeatUntilDescTemplate,
       ForDoDescTemplate,
       ReturnDescTemplate,
-      CaseOfDescTemplate: string;
+      CaseOfDescTemplate,
+      ExternalLabel: string;
       DecimalSeparator: char;
       LabelFontSize,
       FunctionHeaderArgsStripCount,
@@ -179,6 +182,8 @@ type
       RepeatUntilAsDoWhile,
       GenExternVarConst,
       ForDoVarList,
+      CodeGenInclExternUserDataType,
+      CodeGenInclExternUserFunction,
       AllowUnboundedArrays: boolean;
       InOutCursorPos,
       FuncBracketsCursorPos: integer;
@@ -254,6 +259,8 @@ begin
    SkipFuncBodyGen := nil;
    CompilerFileEncoding := 'ANSI';
    DecimalSeparator := '.';
+   GlobalVarsLabelKey := 'GlobalVars';
+   GlobalConstsLabelKey := 'GlobalConsts';
    LabelFontName := FLOWCHART_DEFAULT_FONT_NAME;
    LabelFontSize := LABEL_DEFAULT_FONT_SIZE;
 end;
@@ -340,6 +347,14 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'ProgramLabelKey');
    if tag <> nil then
       ProgramLabelKey := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'GlobalVarsLabelKey');
+   if tag <> nil then
+      GlobalVarsLabelKey := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'GlobalConstsLabelKey');
+   if tag <> nil then
+      GlobalConstsLabelKey := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'HighLighterVarName');
    if tag <> nil then
@@ -717,24 +732,30 @@ begin
    if tag <> nil then
       UserTypeDesc := tag.Text;
 
-   ForDoVarList              := TXMLProcessor.GetBoolFromChildTag(ATag, 'ForDoVarList', ForDoVarList);
-   EnabledPointers           := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledPointers', EnabledPointers);
-   RepeatUntilAsDoWhile      := TXMLProcessor.GetBoolFromChildTag(ATag, 'RepeatUntilAsDoWhile', RepeatUntilAsDoWhile);
-   EnabledConsts             := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledConsts', EnabledConsts);
-   EnabledVars               := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledVars', EnabledVars);
-   EnabledCompiler           := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledCompiler', EnabledCompiler);
-   EnabledUserFunctionHeader := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserFunctionHeader', EnabledUserFunctionHeader);
-   EnabledUserFunctionBody   := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserFunctionBody', EnabledUserFunctionBody);
-   EnabledUserDataTypes      := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserDataTypes', EnabledUserDataTypes);
-   EnabledExplorer           := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledExplorer', EnabledExplorer);
-   EnabledCodeGenerator      := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledCodeGenerator', EnabledCodeGenerator);
-   EnabledMainProgram        := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledMainProgram', EnabledMainProgram);
-   GenExternVarConst         := TXMLProcessor.GetBoolFromChildTag(ATag, 'GenExternVarConst', GenExternVarConst);
-   CaseSensitiveSyntax       := TXMLProcessor.GetBoolFromChildTag(ATag, 'CaseSensitiveSyntax', CaseSensitiveSyntax);
-   UpperCaseConstId          := TXMLProcessor.GetBoolFromChildTag(ATag, 'UpperCaseConstId', UpperCaseConstId);
-   AllowEnumsInForLoop       := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowEnumsInForLoop', AllowEnumsInForLoop);
-   AllowUserFunctionOverload := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowUserFunctionOverload', AllowUserFunctionOverload);
-   AllowUnboundedArrays      := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowUnboundedArrays', AllowUnboundedArrays);
+   tag := TXMLProcessor.FindChildTag(ATag, 'ExternalLabel');
+   if tag <> nil then
+      ExternalLabel := tag.Text;
+
+   ForDoVarList                  := TXMLProcessor.GetBoolFromChildTag(ATag, 'ForDoVarList', ForDoVarList);
+   EnabledPointers               := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledPointers', EnabledPointers);
+   RepeatUntilAsDoWhile          := TXMLProcessor.GetBoolFromChildTag(ATag, 'RepeatUntilAsDoWhile', RepeatUntilAsDoWhile);
+   EnabledConsts                 := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledConsts', EnabledConsts);
+   EnabledVars                   := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledVars', EnabledVars);
+   EnabledCompiler               := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledCompiler', EnabledCompiler);
+   EnabledUserFunctionHeader     := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserFunctionHeader', EnabledUserFunctionHeader);
+   EnabledUserFunctionBody       := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserFunctionBody', EnabledUserFunctionBody);
+   EnabledUserDataTypes          := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserDataTypes', EnabledUserDataTypes);
+   EnabledExplorer               := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledExplorer', EnabledExplorer);
+   EnabledCodeGenerator          := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledCodeGenerator', EnabledCodeGenerator);
+   EnabledMainProgram            := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledMainProgram', EnabledMainProgram);
+   GenExternVarConst             := TXMLProcessor.GetBoolFromChildTag(ATag, 'GenExternVarConst', GenExternVarConst);
+   CaseSensitiveSyntax           := TXMLProcessor.GetBoolFromChildTag(ATag, 'CaseSensitiveSyntax', CaseSensitiveSyntax);
+   UpperCaseConstId              := TXMLProcessor.GetBoolFromChildTag(ATag, 'UpperCaseConstId', UpperCaseConstId);
+   AllowEnumsInForLoop           := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowEnumsInForLoop', AllowEnumsInForLoop);
+   AllowUserFunctionOverload     := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowUserFunctionOverload', AllowUserFunctionOverload);
+   AllowUnboundedArrays          := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowUnboundedArrays', AllowUnboundedArrays);
+   CodeGenInclExternUserDataType := TXMLProcessor.GetBoolFromChildTag(ATag, 'CodeGenInclExternUserDataType', CodeGenInclExternUserDataType);
+   CodeGenInclExternUserFunction := TXMLProcessor.GetBoolFromChildTag(ATag, 'CodeGenInclExternUserFunction', CodeGenInclExternUserFunction);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'NativeDataTypes');
    if tag <> nil then

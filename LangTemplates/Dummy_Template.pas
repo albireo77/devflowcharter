@@ -48,7 +48,7 @@ begin
          for dataType in GProject.GetUserDataTypes do
          begin
             name := dataType.GetName;
-            if (not name.IsEmpty) and not dataType.chkExtDeclare.Checked then
+            if (name <> '') and (dataType.CodeIncludeExtern or not dataType.chkExtDeclare.Checked) then
             begin
                template.Clear;
                case dataType.Kind of
@@ -363,7 +363,7 @@ begin
          for func in GProject.GetUserFunctions do
          begin
             name := func.GetName;
-            if (not name.IsEmpty) and not func.Header.chkExtDeclare.Checked and not lang.FunctionTemplate.IsEmpty then
+            if (name <> '') and (func.Header.CodeIncludeExtern or not func.Header.chkExtDeclare.Checked) and not lang.FunctionTemplate.IsEmpty then
             begin
                // assemble list of function parameters
                argList := '';
