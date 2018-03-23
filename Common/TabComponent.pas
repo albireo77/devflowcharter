@@ -266,7 +266,7 @@ begin
    edtLibrary.ShowHint := true;
    edtLibrary.DoubleBuffered := true;
    edtLibrary.OnChange := OnChangeLib;
-   edtLibrary.Hint := ReplaceStr(i18Manager.GetFormattedString('edtLibHintType', [GInfra.CurrentLang.LibraryExt]), LB_PHOLDER2, sLineBreak);
+   edtLibrary.Hint := i18Manager.GetFormattedString('edtLibraryHint', [GInfra.CurrentLang.LibraryExt]);
 end;
 
 procedure TTabComponent.OnClickCh(Sender: TObject);

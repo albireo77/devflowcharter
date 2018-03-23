@@ -512,7 +512,7 @@ begin
    lblType.Caption := AList.Values['lblType'];
    lblParams.Caption := AList.Values['lblParameters'];
    btnAddElement.Caption := AList.Values['btnAddParm'];
-   edtLibrary.Hint := Format(AList.Values['edtLibraryHint'], [GInfra.CurrentLang.LibraryExt]);
+   edtLibrary.Hint := i18Manager.GetFormattedString('edtLibraryHint', [GInfra.CurrentLang.LibraryExt]);
    if cbType.Items.Count > 0 then
    begin
       cbType.Items[0] := AList.Values['NoType'];
