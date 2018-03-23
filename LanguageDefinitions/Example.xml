@@ -379,6 +379,7 @@ Available placeholders:
 <FunctionHeaderTemplate>%s2
 %s5 %s1(%s3)%s6 %s4;
 </FunctionHeaderTemplate>
+
 <FunctionHeaderTypeNone1>procedure</FunctionHeaderTypeNone1>
 <FunctionHeaderTypeNotNone1>function</FunctionHeaderTypeNotNone1>
 <FunctionHeaderTypeNone2></FunctionHeaderTypeNone2>

@@ -211,11 +211,10 @@ procedure TTabComponent.CreateExtDeclareChBox(AParent: TWinControl; x, y: intege
 begin
    chkExtDeclare := TCheckBox.Create(AParent);
    chkExtDeclare.Parent := AParent;
-   if GInfra.CurrentLang.ExternalLabel.IsEmpty then
-   begin
-      chkExtDeclare.Caption := i18Manager.GetString('chkExtDeclare');
+   if not FCodeIncludeExtern then
       chkExtDeclare.Hint := i18Manager.GetString('chkExtDeclare.Hint');
-   end
+   if GInfra.CurrentLang.ExternalLabel.IsEmpty then
+      chkExtDeclare.Caption := i18Manager.GetString('chkExtDeclare')
    else
       chkExtDeclare.Caption := GInfra.CurrentLang.ExternalLabel;
    chkExtDeclare.SetBounds(x, y, PageControl.Canvas.TextWidth(chkExtDeclare.Caption) + 20, 17);

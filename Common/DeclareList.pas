@@ -373,7 +373,6 @@ begin
       else
          sgList.Cells[FExternalCol, 0] := GInfra.CurrentLang.ExternalLabel + ':';
    end;
-
 end;
 
 function TDeclareList.RetrieveFocus(AInfo: TFocusInfo): boolean;
