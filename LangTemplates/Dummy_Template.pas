@@ -469,16 +469,19 @@ begin
    end;
 end;
 
-procedure Dummy_FileContentsGenerator(ALines: TStringList);
+function Dummy_FileContentsGenerator(ALines: TStringList; ASkipBodyGenerate: boolean): boolean;
 var
    fileTemplate, headerTemplate, mainFuncTemplate, libTemplate, constTemplate,
    varTemplate, funcTemplate, dataTypeTemplate: TStringList;
    currLang, lang: TLangDefinition;
 begin
-   currLang := GInfra.CurrentLang;
-   if not currLang.FileContentsTemplate.isEmpty then
-   try
 
+   currLang := GInfra.CurrentLang;
+
+   if currLang.FileContentsTemplate.isEmpty then
+      Exit(false);
+
+   try
       // generate program header section
       lang := nil;
       headerTemplate := TStringList.Create;
@@ -548,7 +551,7 @@ begin
         else if Assigned(GInfra.DummyLang.UserFunctionsSectionGenerator) then
            lang := GInfra.DummyLang;
         if lang <> nil then
-           lang.UserFunctionsSectionGenerator(funcTemplate, false);
+           lang.UserFunctionsSectionGenerator(funcTemplate, ASkipBodyGenerate);
      end;
 
       // generate main function section
@@ -572,7 +575,6 @@ begin
       TInfra.InsertTemplateLines(fileTemplate, '%s7', funcTemplate);
       TInfra.InsertTemplateLines(fileTemplate, '%s8', mainFuncTemplate);
       ALines.AddStrings(fileTemplate);
-
    finally
       fileTemplate.Free;
       headerTemplate.Free;
@@ -583,6 +585,8 @@ begin
       funcTemplate.Free;
       dataTypeTemplate.Free;
    end;
+
+   result := true;
 end;
 
 function Dummy_GetPointerTypeName(const AValue: string): string;

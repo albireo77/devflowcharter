@@ -445,9 +445,14 @@ begin
       if lang <> nil then
          skipFuncBody := lang.SkipFuncBodyGen;
 
-      // execute code generation routines for current language
-      if Assigned(GInfra.CurrentLang.PreGenerationActivities) then
-         GInfra.CurrentLang.PreGenerationActivities;
+
+      lang := nil;
+      if Assigned(GInfra.CurrentLang.ExecuteBeforeGeneration) then
+         lang := GInfra.CurrentLang
+      else if Assigned(GInfra.DummyLang.ExecuteBeforeGeneration) then
+         lang := GInfra.DummyLang;
+      if lang <> nil then
+         lang.ExecuteBeforeGeneration;
 
       lang := nil;
       if Assigned(GInfra.CurrentLang.FileContentsGenerator) then
@@ -455,7 +460,13 @@ begin
       else if Assigned(GInfra.DummyLang.FileContentsGenerator) then
          lang := GInfra.DummyLang;
       if lang <> nil then
-         lang.FileContentsGenerator(newLines);
+      begin
+         if not lang.FileContentsGenerator(newLines, skipFuncBody) then
+         begin
+            TInfra.ShowFormattedErrorBox('NoProgTempl', [sLineBreak, GInfra.CurrentLang.Name, GInfra.CurrentLang.DefFile, FILE_CONTENTS_TAG], errValidate);
+            exit;
+         end;
+      end;
 
       with memCodeEditor do
       begin

@@ -98,7 +98,7 @@ uses
 var
    lLangDef: TLangDefinition;
 
-procedure Pascal_PreGenerationActivities;
+procedure Pascal_ExecuteBeforeGeneration;
 begin
    // execute parse to set _flag variables
    rand_flag := 0;
@@ -572,7 +572,7 @@ initialization
    if lLangDef <> nil then
    begin
       lLangDef.Parser := TPascalParser.Create;
-      lLangDef.PreGenerationActivities :=  Pascal_PreGenerationActivities;
+      lLangDef.ExecuteBeforeGeneration :=  Pascal_ExecuteBeforeGeneration;
       lLangDef.ProgramHeaderSectionGenerator := Pascal_ProgramHeaderSectionGenerator;
       //lLangDef.LibSectionGenerator := Pascal_LibSectionGenerator;
       //lLangDef.TypeSectionGenerator := Pascal_TypeSectionGenerator;

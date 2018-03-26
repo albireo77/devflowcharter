@@ -56,8 +56,8 @@ type
          class procedure SetInitialSettings;
          class procedure PopulateDataTypeCombo(AcbType: TComboBox; ASkipIndex: integer = 100);
          class procedure PrintBitmap(ABitmap: TBitmap);
-         class procedure InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; const ATemplateString: string; AObject: TObject = nil); overload;
-         class procedure InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; ATemplate: TStringList; AObject: TObject = nil); overload;
+         class function InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; const ATemplateString: string; AObject: TObject = nil): integer; overload;
+         class function InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; ATemplate: TStringList; AObject: TObject = nil): integer; overload;
          class procedure InitFocusInfo(var AFocusInfo: TFocusInfo);
          class procedure ChangeLine(const ALine: TChangeLine);
          class procedure InitChangeLine(var AChangeLine: TChangeLine);
@@ -177,6 +177,7 @@ const   // Global constants
         DATATYPE_TAG      = 'datatype';
         FUNCTION_TAG      = 'routine';
         HEADER_TAG        = 'header';
+        FILE_CONTENTS_TAG = 'FileContentsTemplate';
 
         LB_PHOLDER  = '#!';
         LB_PHOLDER2  = '##';
@@ -837,7 +838,7 @@ begin
    end;
 end;
 
-class procedure TInfra.InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; const ATemplateString: string; AObject: TObject = nil);
+class function TInfra.InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; const ATemplateString: string; AObject: TObject = nil): integer;
 var
    template: TStringList;
 begin
@@ -848,18 +849,19 @@ begin
       template.Text := ATemplateString;
    end;
    try
-      InsertTemplateLines(ADestList, APlaceHolder, template, AObject);
+      result := InsertTemplateLines(ADestList, APlaceHolder, template, AObject);
    finally
       template.Free;
    end;
 end;
 
-class procedure TInfra.InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; ATemplate: TStringList; AObject: TObject = nil);
+class function TInfra.InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; ATemplate: TStringList; AObject: TObject = nil): integer;
 var
    i, a, p: integer;
    lBegin, lEnd: string;
    obj: TObject;
 begin
+   result := -1;
    i := 0;
    while i < ADestList.Count do
    begin
@@ -897,6 +899,7 @@ begin
                   ADestList.Objects[i] := AObject;
             end;
          end;
+         result := i;
          break;
       end;
       i := i + 1;

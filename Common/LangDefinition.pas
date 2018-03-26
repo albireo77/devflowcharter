@@ -188,7 +188,7 @@ type
       AllowUnboundedArrays: boolean;
       InOutCursorPos,
       FuncBracketsCursorPos: integer;
-      PreGenerationActivities: procedure;
+      ExecuteBeforeGeneration: procedure;
       ProgramHeaderSectionGenerator: procedure (ALines: TStringList);
       LibSectionGenerator: procedure (ALines: TStringList);
       UserDataTypesSectionGenerator: procedure (ALines: TStringList);
@@ -196,7 +196,7 @@ type
       ConstSectionGenerator: procedure (ALines: TStringList; AConstList: TConstDeclareList);
       UserFunctionsSectionGenerator: procedure (ALines: TStringList; ASkipBodyGenerate: boolean);
       MainProgramSectionGenerator: procedure (ALines: TStringList; ADeep: integer);
-      FileContentsGenerator: procedure (ALines: TStringList);
+      FileContentsGenerator: function (ALines: TStringList; ASkipBodyGenerate: boolean): boolean;
       GetUserFuncDesc: function (AHeader: TUserFunctionHeader; ALongDesc: boolean = true): string;
       GetUserTypeDesc: function (ADataType: TUserDataType): string;
       SetHLighterAttrs: procedure;
@@ -241,7 +241,7 @@ begin
    KeyWords := TStringList.Create;
    UpperCaseConstId := true;
    EnabledPointers := true;
-   PreGenerationActivities := nil;
+   ExecuteBeforeGeneration := nil;
    ProgramHeaderSectionGenerator := nil;
    LibSectionGenerator := nil;
    UserDataTypesSectionGenerator := nil;
@@ -584,7 +584,7 @@ begin
    if tag <> nil then
       FunctionsTemplate := tag.Text;
 
-   tag := TXMLProcessor.FindChildTag(ATag, 'FileContentsTemplate');
+   tag := TXMLProcessor.FindChildTag(ATag, FILE_CONTENTS_TAG);
    if tag <> nil then
       FileContentsTemplate := tag.Text;
 

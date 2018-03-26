@@ -48,7 +48,7 @@ uses
 var
    cLang: TLangDefinition;
 
-procedure C_PreGenerationActivities;
+procedure C_ExecuteBeforeGeneration;
 begin
    // execute parse to set _flag variables
    io_flag   := 0;
@@ -401,7 +401,7 @@ initialization
    cLang := GInfra.GetLangDefinition(C_LANG_ID);
    if cLang <> nil then
    begin
-      cLang.PreGenerationActivities :=  C_PreGenerationActivities;
+      cLang.ExecuteBeforeGeneration :=  C_ExecuteBeforeGeneration;
       cLang.LibSectionGenerator := C_LibSectionGenerator;
       //cLang.TypeSectionGenerator := C_TypeSectionGenerator;
       //cLang.VarSectionGenerator := C_VarSectionGenerator;

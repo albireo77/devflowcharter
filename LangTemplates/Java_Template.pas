@@ -113,7 +113,7 @@ begin
    end;
 end;
 
-procedure Java_PreGenerationActivities;
+procedure Java_ExecuteBeforeGeneration;
 begin
    FImportLines := nil;
 end;
@@ -259,7 +259,7 @@ initialization
    javaLang := GInfra.GetLangDefinition(JAVA_LANG_ID);
    if javaLang <> nil then
    begin
-      javaLang.PreGenerationActivities :=  Java_PreGenerationActivities;
+      javaLang.ExecuteBeforeGeneration :=  Java_ExecuteBeforeGeneration;
       javaLang.LibSectionGenerator := Java_LibSectionGenerator;
       javaLang.VarSectionGenerator := Java_VarSectionGenerator;
       javaLang.SetHLighterAttrs := Java_SetHLighterAttrs;
