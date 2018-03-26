@@ -450,74 +450,12 @@ begin
          GInfra.CurrentLang.PreGenerationActivities;
 
       lang := nil;
-      if Assigned(GInfra.CurrentLang.ProgramHeaderSectionGenerator) then
+      if Assigned(GInfra.CurrentLang.FileContentsGenerator) then
          lang := GInfra.CurrentLang
-      else if Assigned(GInfra.DummyLang.ProgramHeaderSectionGenerator) then
+      else if Assigned(GInfra.DummyLang.FileContentsGenerator) then
          lang := GInfra.DummyLang;
       if lang <> nil then
-         lang.ProgramHeaderSectionGenerator(newLines);
-
-      lang := nil;
-      if Assigned(GInfra.CurrentLang.LibSectionGenerator) then
-         lang := GInfra.CurrentLang
-      else if Assigned(GInfra.DummyLang.LibSectionGenerator) then
-         lang := GInfra.DummyLang;
-      if lang <> nil then
-         lang.LibSectionGenerator(newLines);
-
-      if GInfra.CurrentLang.EnabledConsts then
-      begin
-         lang := nil;
-         if Assigned(GInfra.CurrentLang.ConstSectionGenerator) then
-            lang := GInfra.CurrentLang
-         else if Assigned(GInfra.DummyLang.ConstSectionGenerator) then
-            lang := GInfra.DummyLang;
-         if lang <> nil then
-            lang.ConstSectionGenerator(newLines, GProject.GlobalConsts);
-         newLines.Add('');
-      end;
-
-      if GInfra.CurrentLang.EnabledUserDataTypes then
-      begin
-         lang := nil;
-         if Assigned(GInfra.CurrentLang.UserDataTypesSectionGenerator) then
-            lang := GInfra.CurrentLang
-         else if Assigned(GInfra.DummyLang.UserDataTypesSectionGenerator) then
-            lang := GInfra.DummyLang;
-         if lang <> nil then
-            lang.UserDataTypesSectionGenerator(newLines);
-      end;
-
-      if GInfra.CurrentLang.EnabledVars then
-      begin
-         lang := nil;
-         if Assigned(GInfra.CurrentLang.VarSectionGenerator) then
-            lang := GInfra.CurrentLang
-         else if Assigned(GInfra.DummyLang.VarSectionGenerator) then
-            lang := GInfra.DummyLang;
-         if lang <> nil then
-            lang.VarSectionGenerator(newLines, GProject.GlobalVars);
-         newLines.Add('');
-      end;
-
-      if GInfra.CurrentLang.EnabledUserFunctionHeader then
-      begin
-         lang := nil;
-         if Assigned(GInfra.CurrentLang.UserFunctionsSectionGenerator) then
-            lang := GInfra.CurrentLang
-         else if Assigned(GInfra.DummyLang.UserFunctionsSectionGenerator) then
-            lang := GInfra.DummyLang;
-         if lang <> nil then
-            lang.UserFunctionsSectionGenerator(newLines, skipFuncBody);
-      end;
-
-      lang := nil;
-      if Assigned(GInfra.CurrentLang.MainProgramSectionGenerator) then
-         lang := GInfra.CurrentLang
-      else if Assigned(GInfra.DummyLang.MainProgramSectionGenerator) then
-         lang := GInfra.DummyLang;
-      if lang <> nil then
-         lang.MainProgramSectionGenerator(newLines, 0);
+         lang.FileContentsGenerator(newLines);
 
       with memCodeEditor do
       begin

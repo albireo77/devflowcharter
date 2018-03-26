@@ -134,9 +134,8 @@ function TMultiLineBlock.GenerateCode(ALines: TStringList; const ALangId: string
 var
    tmpList: TStringList;
 begin
-   result := 0;
    if (fsStrikeOut in Font.Style) or (FStatements.Text = '') then
-      exit;
+      Exit(0);
    tmpList := TStringList.Create;
    try
       GenerateDefaultTemplate(tmpList, ALangId, ADeep);

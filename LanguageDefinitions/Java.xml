@@ -345,6 +345,34 @@ Available placeholders:
 <FolderTemplate>%b1</FolderTemplate>
 
 <!--
+Element FileContentsTemplate
+Description: Template to define source file layout
+Available placeholders:
+   %s1 - project name
+   %s2 - program header section (element ProgramHeaderTemplate)
+   %s3 - libraries section (element LibTemplate)
+   %s4 - global constants section (element ConstTemplate)
+   %s5 - global variables section (element VarTemplate)
+   %s6 - user datatypes section (element DataTypesTemplate)
+   %s7 - user functions section (element FunctionsTemplate)
+   %s8 - main function (element MainProgramTemplate)
+-->
+<FileContentsTemplate>%s2
+
+%s3
+
+public class %s1 {
+
+	%s5
+	
+	%s7
+	
+	%s8	
+}
+
+</FileContentsTemplate>
+
+<!--
 Element ProgramHeaderTemplate
 Available placeholders:
    %s1 - project name
@@ -358,7 +386,6 @@ Available placeholders:
 	for %s1 project	
 */
 %s3
-
 </ProgramHeaderTemplate>
 
 <CodeGenInclExternUserDataType>true</CodeGenInclExternUserDataType>
@@ -465,14 +492,9 @@ Available placeholders:
    %s3 - return statement which is generated if last statement of program isn't return block (element ProgramReturnTemplate)
    %b1 - body of main program  
 -->
-<MainProgramTemplate>public class %s1 {
+<MainProgramTemplate>public static void main(String[] args) {
 
-	%s2
-
-	public static void main(String[] args) {
-	
-		%b1
-	}
+	%b1
 }
 </MainProgramTemplate>
 

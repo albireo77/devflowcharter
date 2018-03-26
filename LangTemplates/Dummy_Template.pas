@@ -469,6 +469,122 @@ begin
    end;
 end;
 
+procedure Dummy_FileContentsGenerator(ALines: TStringList);
+var
+   fileTemplate, headerTemplate, mainFuncTemplate, libTemplate, constTemplate,
+   varTemplate, funcTemplate, dataTypeTemplate: TStringList;
+   currLang, lang: TLangDefinition;
+begin
+   currLang := GInfra.CurrentLang;
+   if not currLang.FileContentsTemplate.isEmpty then
+   try
+
+      // generate program header section
+      lang := nil;
+      headerTemplate := TStringList.Create;
+      if Assigned(currLang.ProgramHeaderSectionGenerator) then
+         lang := currLang
+      else if Assigned(GInfra.DummyLang.ProgramHeaderSectionGenerator) then
+         lang := GInfra.DummyLang;
+      if lang <> nil then
+         lang.ProgramHeaderSectionGenerator(headerTemplate);
+
+      // generate libraries section
+      lang := nil;
+      libTemplate := TStringList.Create;
+      if Assigned(currLang.LibSectionGenerator) then
+         lang := currLang
+      else if Assigned(GInfra.DummyLang.LibSectionGenerator) then
+         lang := GInfra.DummyLang;
+      if lang <> nil then
+         lang.LibSectionGenerator(libTemplate);
+
+     // generate global constants section
+     lang := nil;
+     constTemplate := TStringList.Create;
+     if currLang.EnabledConsts then
+     begin
+        if Assigned(currLang.ConstSectionGenerator) then
+           lang := currLang
+        else if Assigned(GInfra.DummyLang.ConstSectionGenerator) then
+           lang := GInfra.DummyLang;
+        if lang <> nil then
+           lang.ConstSectionGenerator(constTemplate, GProject.GlobalConsts);
+     end;
+
+     // generate global variables section
+     lang := nil;
+     varTemplate := TStringList.Create;
+     if currLang.EnabledVars then
+     begin
+        if Assigned(currLang.VarSectionGenerator) then
+           lang := currLang
+        else if Assigned(GInfra.DummyLang.VarSectionGenerator) then
+           lang := GInfra.DummyLang;
+        if lang <> nil then
+           lang.VarSectionGenerator(varTemplate, GProject.GlobalVars);
+      end;
+
+     // generate user data types section
+     lang := nil;
+     dataTypeTemplate := TStringList.Create;
+     if currLang.EnabledUserDataTypes then
+     begin
+        if Assigned(currLang.UserDataTypesSectionGenerator) then
+           lang := currLang
+        else if Assigned(GInfra.DummyLang.UserDataTypesSectionGenerator) then
+           lang := GInfra.DummyLang;
+        if lang <> nil then
+           lang.UserDataTypesSectionGenerator(dataTypeTemplate);
+     end;
+
+     // generate user functions section
+     lang := nil;
+     funcTemplate := TStringList.Create;
+     if currLang.EnabledUserFunctionHeader then
+     begin
+        if Assigned(currLang.UserFunctionsSectionGenerator) then
+           lang := currLang
+        else if Assigned(GInfra.DummyLang.UserFunctionsSectionGenerator) then
+           lang := GInfra.DummyLang;
+        if lang <> nil then
+           lang.UserFunctionsSectionGenerator(funcTemplate, false);
+     end;
+
+      // generate main function section
+      lang := nil;
+      mainFuncTemplate := TStringList.Create;
+      if Assigned(currLang.MainProgramSectionGenerator) then
+         lang := currLang
+      else if Assigned(GInfra.DummyLang.MainProgramSectionGenerator) then
+         lang := GInfra.DummyLang;
+      if lang <> nil then
+         lang.MainProgramSectionGenerator(mainFuncTemplate, 0);
+
+      fileTemplate := TStringList.Create;
+      fileTemplate.Text := currLang.FileContentsTemplate;
+      TInfra.InsertTemplateLines(fileTemplate, PRIMARY_PLACEHOLDER, GProject.Name);
+      TInfra.InsertTemplateLines(fileTemplate, '%s2', headerTemplate);
+      TInfra.InsertTemplateLines(fileTemplate, '%s3', libTemplate);
+      TInfra.InsertTemplateLines(fileTemplate, '%s4', constTemplate);
+      TInfra.InsertTemplateLines(fileTemplate, '%s5', varTemplate);
+      TInfra.InsertTemplateLines(fileTemplate, '%s6', dataTypeTemplate);
+      TInfra.InsertTemplateLines(fileTemplate, '%s7', funcTemplate);
+      TInfra.InsertTemplateLines(fileTemplate, '%s8', mainFuncTemplate);
+      ALines.AddStrings(fileTemplate);
+
+   finally
+      fileTemplate.Free;
+      headerTemplate.Free;
+      mainFuncTemplate.Free;
+      libTemplate.Free;
+      constTemplate.Free;
+      varTemplate.Free;
+      funcTemplate.Free;
+      dataTypeTemplate.Free;
+   end;
+end;
+
 function Dummy_GetPointerTypeName(const AValue: string): string;
 begin
    result := Format(GInfra.CurrentLang.PointerTypeMask, [AValue]);
@@ -561,6 +677,7 @@ initialization
       LibSectionGenerator := Dummy_LibSectionGenerator;
       ConstSectionGenerator := Dummy_ConstSectionGenerator;
       UserDataTypesSectionGenerator  := Dummy_UserDataTypesSectionGenerator;
+      FileContentsGenerator := Dummy_FileContentsGenerator;
       GetLiteralType := Dummy_GetLiteralType;
       GetPointerTypeName := Dummy_GetPointerTypeName;
       GetUserFuncDesc := Dummy_GetUserFuncDesc;

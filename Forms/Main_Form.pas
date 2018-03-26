@@ -1464,7 +1464,7 @@ procedure TPopupListEx.WndProc(var msg: TMessage);
 var
    mform: TMainForm;
 begin
-   if (msg.Msg = WM_UNINITMENUPOPUP) and (Screen.ActiveForm = MainForm) then
+   if (msg.Msg = WM_UNINITMENUPOPUP) and (Screen.ActiveForm is TMainForm) then
    begin
       mform := TMainForm(Screen.ActiveForm);
       if msg.WParam = mform.pmPages.Handle then

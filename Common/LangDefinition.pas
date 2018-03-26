@@ -122,6 +122,7 @@ type
       LibEntryList,
       DataTypesTemplate,
       FunctionsTemplate,
+      FileContentsTemplate,
       DataTypeIntMask,
       DataTypeRealMask,
       DataTypeOtherMask,
@@ -195,6 +196,7 @@ type
       ConstSectionGenerator: procedure (ALines: TStringList; AConstList: TConstDeclareList);
       UserFunctionsSectionGenerator: procedure (ALines: TStringList; ASkipBodyGenerate: boolean);
       MainProgramSectionGenerator: procedure (ALines: TStringList; ADeep: integer);
+      FileContentsGenerator: procedure (ALines: TStringList);
       GetUserFuncDesc: function (AHeader: TUserFunctionHeader; ALongDesc: boolean = true): string;
       GetUserTypeDesc: function (ADataType: TUserDataType): string;
       SetHLighterAttrs: procedure;
@@ -246,6 +248,7 @@ begin
    ConstSectionGenerator := nil;
    UserFunctionsSectionGenerator := nil;
    MainProgramSectionGenerator := nil;
+   FileContentsGenerator := nil;
    GetUserFuncDesc := nil;
    GetUserTypeDesc := nil;
    GetMainProgramDesc := nil;
@@ -288,9 +291,7 @@ var
    tag1: IXMLElement;
 {$ENDIF}
 begin
-
    result := errNone;
-
    lVal := '';
    tag := TXMLProcessor.FindChildTag(ATag, 'Name');
    if tag <> nil then
@@ -298,8 +299,7 @@ begin
    if lVal.IsEmpty then
    begin
       GErr_Text := i18Manager.GetString('NameTagNotFound');
-      result := errValidate;
-      exit;
+      Exit(errValidate);
    end
    else
       FName := lVal;
@@ -583,6 +583,10 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionsTemplate');
    if tag <> nil then
       FunctionsTemplate := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'FileContentsTemplate');
+   if tag <> nil then
+      FileContentsTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeIntMask');
    if tag <> nil then

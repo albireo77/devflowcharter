@@ -37,7 +37,6 @@ const
 
 var
    javaLang: TLangDefinition;
-   FImportLinesPos: integer;
    FImportLines: TStringList;
    FListImpl,
    FMapImpl,
@@ -114,6 +113,11 @@ begin
    end;
 end;
 
+procedure Java_PreGenerationActivities;
+begin
+   FImportLines := nil;
+end;
+
 procedure Java_LibSectionGenerator(ALines: TStringList);
 var
    i: integer;
@@ -147,7 +151,6 @@ begin
       libList.Free;
    end;
 
-   FImportLinesPos := ALines.Count;
    FImportLines := ALines;
 end;
 
@@ -215,8 +218,8 @@ begin
                end;
             end;
             libImport := ExtractImplementer(varType, varInit);
-            if (libImport <> '') and (FImportLines.IndexOf(libImport) = -1) then
-               FImportLines.Insert(FImportLinesPos, libImport);
+            if (libImport <> '') and (FImportLines <> nil) and (FImportLines.IndexOf(libImport) = -1) then
+               FImportLines.Add(libImport);
             varInit := ' = ' + varInit
          end;
          varAccess := '';
@@ -256,6 +259,7 @@ initialization
    javaLang := GInfra.GetLangDefinition(JAVA_LANG_ID);
    if javaLang <> nil then
    begin
+      javaLang.PreGenerationActivities :=  Java_PreGenerationActivities;
       javaLang.LibSectionGenerator := Java_LibSectionGenerator;
       javaLang.VarSectionGenerator := Java_VarSectionGenerator;
       javaLang.SetHLighterAttrs := Java_SetHLighterAttrs;

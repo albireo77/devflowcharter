@@ -162,7 +162,7 @@ uses
 
 constructor TDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
 var
-   i, colWidth: integer;
+   i: integer;
 begin
    FExternalCol := -1;
    inherited Create(AParent);
@@ -181,13 +181,13 @@ begin
    sgList.Parent := Self;
    sgList.DefaultRowHeight := 16;
    sgList.SetBounds(5, 16, AWidth-9, (ADispRowCount+1)*(sgList.DefaultRowHeight+2));
+   sgList.RowCount := 2;
    sgList.ColCount := AColCount;
-   colWidth := sgList.Width div AColCount;
-   for i := 0 to AColCount-1 do
-      sgList.ColWidths[i] := colWidth;
    sgList.FixedRows := 1;
    sgList.FixedCols := 0;
-   sgList.RowCount := 2;
+   sgList.DefaultColWidth := sgList.Width div AColCount;
+   for i := 0 to AColCount-1 do
+      sgList.Cells[i, 0] := i18Manager.GetString('sg' + FKind + 'ListCol' + i.ToString);
    sgList.DrawingStyle := gdsClassic;
    sgList.Ctl3D := false;
    sgList.FixedColor := clMoneyGreen;
@@ -207,9 +207,6 @@ begin
 
    SetBounds(ALeft, ATop, AWidth, (ADispRowCount+1)*(sgList.DefaultRowHeight+2)+157);
    sgList.Anchors := [akTop, akBottom, akLeft, akRight];
-
-   for i := 0 to AColCount-1 do
-      sgList.Cells[i, 0] := i18Manager.GetString('sg' + FKind + 'ListCol' + i.ToString);
 
    btnRemove := TButton.Create(Self);
    btnRemove.Parent := Self;
