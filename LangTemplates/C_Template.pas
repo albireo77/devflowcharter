@@ -298,7 +298,7 @@ begin
       result := i18Manager.GetString('MainProgram');
 end;}
 
-procedure C_MainProgramSectionGenerator(ALines: TStringList; ADeep: integer);
+procedure C_MainFunctionSectionGenerator(ALines: TStringList; ADeep: integer);
 var
    lBlock: TMainBlock;
 begin
@@ -408,7 +408,7 @@ initialization
       //cLang.ConstSectionGenerator := C_ConstSectionGenerator;
       //cLang.RoutineSectionGenerator := C_RoutineSectionGenerator;
       //cLang.GetRoutineDescription := C_GetRoutineDescription;
-      cLang.MainProgramSectionGenerator := C_MainProgramSectionGenerator;
+      cLang.MainFunctionSectionGenerator := C_MainFunctionSectionGenerator;
       cLang.SetHLighterAttrs := C_SetHLighterAttrs;
       cLang.GetLiteralType := C_GetLiteralType;
       //cLang.GetPointerTypeName := C_GetPointerTypeName;

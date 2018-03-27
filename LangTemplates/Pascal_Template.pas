@@ -127,7 +127,6 @@ begin
       ALines.Add('');
       ALines.Add('interface');
    end;
-   ALines.Add('');
 end;
 
 {procedure Pascal_LibSectionGenerator(ALines: TStringList);
@@ -328,7 +327,7 @@ begin
       result := i18Manager.GetString('MainProgram');
 end;}
 
-procedure Pascal_MainProgramSectionGenerator(ALines: TStringList; deep: integer);
+procedure Pascal_MainFunctionSectionGenerator(ALines: TStringList; deep: integer);
 var
    block: TMainBlock;
    idx: integer;
@@ -345,7 +344,6 @@ begin
       end
       else
       begin
-         ALines.Add('');
          ALines.Add('implementation');
          ALines.Add('');
          if Assigned(GInfra.DummyLang.UserFunctionsSectionGenerator) then
@@ -580,7 +578,7 @@ initialization
       //lLangDef.ConstSectionGenerator := Pascal_ConstSectionGenerator;
       //lLangDef.RoutineSectionGenerator := Pascal_RoutineSectionGenerator;
       //lLangDef.GetRoutineDescription := Pascal_GetRoutineDescription;
-      lLangDef.MainProgramSectionGenerator := Pascal_MainProgramSectionGenerator;
+      lLangDef.MainFunctionSectionGenerator := Pascal_MainFunctionSectionGenerator;
       lLangDef.SetHLighterAttrs := Pascal_SetHLighterAttrs;
       lLangDef.GetLiteralType := Pascal_GetLiteralType;
       //lLangDef.GetPointerTypeName := Pascal_GetPointerTypeName;

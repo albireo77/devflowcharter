@@ -336,7 +336,7 @@ begin
    end;
 end;
 
-procedure Dummy_MainProgramSectionGenerator(ALines: TStringList; ADeep: integer);
+procedure Dummy_MainFunctionSectionGenerator(ALines: TStringList; ADeep: integer);
 var
    block: TBlock;
 begin
@@ -557,12 +557,12 @@ begin
       // generate main function section
       lang := nil;
       mainFuncTemplate := TStringList.Create;
-      if Assigned(currLang.MainProgramSectionGenerator) then
+      if Assigned(currLang.MainFunctionSectionGenerator) then
          lang := currLang
-      else if Assigned(GInfra.DummyLang.MainProgramSectionGenerator) then
+      else if Assigned(GInfra.DummyLang.MainFunctionSectionGenerator) then
          lang := GInfra.DummyLang;
       if lang <> nil then
-         lang.MainProgramSectionGenerator(mainFuncTemplate, 0);
+         lang.MainFunctionSectionGenerator(mainFuncTemplate, 0);
 
       fileTemplate := TStringList.Create;
       fileTemplate.Text := currLang.FileContentsTemplate;
@@ -674,7 +674,7 @@ initialization
    begin
       EnabledUserFunctionBody := true;
       EnabledExplorer := true;
-      MainProgramSectionGenerator := Dummy_MainProgramSectionGenerator;
+      MainFunctionSectionGenerator := Dummy_MainFunctionSectionGenerator;
       UserFunctionsSectionGenerator := Dummy_UserFunctionsSectionGenerator;
       VarSectionGenerator := Dummy_VarSectionGenerator;
       ProgramHeaderSectionGenerator := Dummy_ProgramHeaderSectionGenerator;

@@ -205,36 +205,37 @@ else
 <OutputTemplate>%s1;</OutputTemplate>
 
 <!--
-Element MainProgramTemplate
+Element MainFunctionTemplate
 Description: Template for main program body
 Available placeholders:
    %s1 - project name
    %s2 - global variables (element VarsTemplate)
    %s3 - return statement which is generated if last statement of program isn't return block (element ProgramReturnTemplate)
-   %b1 - body of main program  
+   %b1 - main function body  
 -->
-<MainProgramTemplate>int main(int argc, char* argv[])
+<MainFunctionTemplate>int main(int argc, char* argv[])
 {
 	%b1
 	%s3
 }
-</MainProgramTemplate>
+</MainFunctionTemplate>
+
 <ProgramReturnTemplate>return 0;</ProgramReturnTemplate>
 
 <!--
-Element ProgramTemplate
+Element FunctionBodyTemplate
 Description: Template for function body
 Available placeholders:
    %s1 - function name
    %s2 - function local variables (element VarsTemplate)
    %b1 - body of function  
 -->
-<ProgramTemplate>{
+<FunctionBodyTemplate>{
 	%s2
 
 	%b1
 }
-</ProgramTemplate>
+</FunctionBodyTemplate>
 
 <!--
 Element FunctionHeaderTemplate
@@ -266,7 +267,7 @@ Description: Template for function (header + body)
 Available placeholders:
    %s1 - function's header line (element FunctionHeaderTemplate)
    %s2 - function's local variables (element VarsTemplate)
-   %s3 - function's body (element ProgramTemplate)  
+   %s3 - function's body (element FunctionBodyTemplate)  
 -->
 <FunctionTemplate>%s1
 %s3

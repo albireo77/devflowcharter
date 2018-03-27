@@ -456,7 +456,7 @@ begin
       lang := GInfra.GetLangDefinition(ALangId);
       if lang <> nil then
       begin
-         template := IfThen(isMain, lang.MainProgramTemplate, lang.ProgramTemplate);
+         template := IfThen(isMain, lang.MainFunctionTemplate, lang.FunctionBodyTemplate);
          if not template.IsEmpty then
          begin
             progList := TStringList.Create;

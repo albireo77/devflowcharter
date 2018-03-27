@@ -90,7 +90,7 @@ begin
    end;
 end;
 
-procedure TIBASIC_MainProgramSectionGenerator(ALines: TStringList; deep: integer);
+procedure TIBASIC_MainFunctionSectionGenerator(ALines: TStringList; deep: integer);
 var
    block: TMainBlock;
 begin
@@ -113,7 +113,7 @@ initialization
       lLangDef.ProgramHeaderSectionGenerator := TIBASIC_ProgramHeaderSectionGenerator;
       lLangDef.VarSectionGenerator := TIBASIC_VarSectionGenerator;
       lLangDef.UserFunctionsSectionGenerator := TIBASIC_UserFunctionsSectionGenerator;
-      lLangDef.MainProgramSectionGenerator := TIBASIC_MainProgramSectionGenerator;
+      lLangDef.MainFunctionSectionGenerator := TIBASIC_MainFunctionSectionGenerator;
    end;
 
 end.

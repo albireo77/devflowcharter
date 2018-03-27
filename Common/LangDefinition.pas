@@ -92,8 +92,8 @@ type
       CaseOfValueTemplate,
       CaseOfDefaultValueTemplate,
       PointerTypeMask,
-      ProgramTemplate,
-      MainProgramTemplate,
+      FunctionBodyTemplate,
+      MainFunctionTemplate,
       ProgramReturnTemplate,
       FunctionTemplate,
       FunctionHeaderTemplate,
@@ -195,7 +195,7 @@ type
       VarSectionGenerator: procedure (ALines: TStringList; AVarList: TVarDeclareList);
       ConstSectionGenerator: procedure (ALines: TStringList; AConstList: TConstDeclareList);
       UserFunctionsSectionGenerator: procedure (ALines: TStringList; ASkipBodyGenerate: boolean);
-      MainProgramSectionGenerator: procedure (ALines: TStringList; ADeep: integer);
+      MainFunctionSectionGenerator: procedure (ALines: TStringList; ADeep: integer);
       FileContentsGenerator: function (ALines: TStringList; ASkipBodyGenerate: boolean): boolean;
       GetUserFuncDesc: function (AHeader: TUserFunctionHeader; ALongDesc: boolean = true): string;
       GetUserTypeDesc: function (ADataType: TUserDataType): string;
@@ -247,7 +247,7 @@ begin
    UserDataTypesSectionGenerator := nil;
    ConstSectionGenerator := nil;
    UserFunctionsSectionGenerator := nil;
-   MainProgramSectionGenerator := nil;
+   MainFunctionSectionGenerator := nil;
    FileContentsGenerator := nil;
    GetUserFuncDesc := nil;
    GetUserTypeDesc := nil;
@@ -532,17 +532,17 @@ begin
    if tag <> nil then
       CaseOfDescTemplate := tag.Text;
 
-   tag := TXMLProcessor.FindChildTag(ATag, 'MainProgramTemplate');
+   tag := TXMLProcessor.FindChildTag(ATag, 'MainFunctionTemplate');
    if tag <> nil then
-      MainProgramTemplate := tag.Text;
+      MainFunctionTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ProgramReturnTemplate');
    if tag <> nil then
       ProgramReturnTemplate := tag.Text;
 
-   tag := TXMLProcessor.FindChildTag(ATag, 'ProgramTemplate');
+   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionBodyTemplate');
    if tag <> nil then
-      ProgramTemplate := tag.Text;
+      FunctionBodyTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ForDoTemplate');
    if tag <> nil then
@@ -915,7 +915,7 @@ begin
    else if AClass = TIfElseBlock then
       result := IfElseTemplate
    else if AClass = TMainBlock then
-      result := ProgramTemplate
+      result := FunctionBodyTemplate
    else if AClass = TInputBlock then
       result := InputTemplate
    else if AClass = TOutputBlock then

@@ -168,7 +168,6 @@ For all supported tags refer to Example.xml file.
 
 <LibTemplate>uses
 	%s2;
-
 </LibTemplate>
 <LibEntryList>%s, </LibEntryList>
 <LibEntryListStripCount>2</LibEntryListStripCount>
@@ -219,6 +218,34 @@ end;
 
 <ElseLabel>else</ElseLabel>
 
+<!--
+Element FileContentsTemplate
+Description: Template to define source file layout
+Available placeholders:
+   %s1 - project name
+   %s2 - program header section (element ProgramHeaderTemplate)
+   %s3 - libraries section (element LibTemplate)
+   %s4 - global constants section (element ConstTemplate)
+   %s5 - global variables section (element VarTemplate)
+   %s6 - user datatypes section (element DataTypesTemplate)
+   %s7 - user functions section (element FunctionsTemplate)
+   %s8 - main function (element MainFunctionTemplate)
+-->
+<FileContentsTemplate>%s2
+
+%s3
+
+%s4
+
+%s6
+
+%s5
+
+%s7
+
+%s8
+</FileContentsTemplate>
+
 <RepeatUntilDescTemplate>repeat until %s1</RepeatUntilDescTemplate>
 
 <ReturnDescTemplate>exit %s1;</ReturnDescTemplate>
@@ -263,15 +290,15 @@ end;
 
 <OutputTemplate>%s1;</OutputTemplate>
 
-<MainProgramTemplate>begin
+<MainFunctionTemplate>begin
 	%b1
 end.
-</MainProgramTemplate>
+</MainFunctionTemplate>
 
-<ProgramTemplate>begin
+<FunctionBodyTemplate>begin
 	%b1
 end;
-</ProgramTemplate>
+</FunctionBodyTemplate>
 
 <FunctionHeaderTemplate>%s2
 %s5 %s1(%s3)%s6 %s4;
@@ -324,7 +351,6 @@ Description: Mask to create pointer type based on given type
 
 <DataTypesTemplate>type
 	%s1
-
 </DataTypesTemplate>
 
 <DataTypeOtherMask>%s1 = %s2;</DataTypeOtherMask>
