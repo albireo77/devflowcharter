@@ -432,12 +432,11 @@ var
    newLines: TStringList;
 begin
 
-   skipFuncBody := false;
-   lang := nil;
-
    newLines := TStringList.Create;
    try
 
+      lang := nil;
+      skipFuncBody := false;
       if Assigned(GInfra.CurrentLang.SkipFuncBodyGen) then
          lang := GInfra.CurrentLang
       else if Assigned(GInfra.DummyLang.SkipFuncBodyGen) then

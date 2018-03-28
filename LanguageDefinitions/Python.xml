@@ -32,12 +32,12 @@
     </NativeDataTypes>
 
     <KeyWords>
-        <KeyWord>and</KeyWord>
-        <KeyWord>assert</KeyWord>
-        <KeyWord>break</KeyWord>
-        <KeyWord>class</KeyWord>
-        <KeyWord>continue</KeyWord>
-        <KeyWord>def</KeyWord>
+	<KeyWord>and</KeyWord>
+	<KeyWord>assert</KeyWord>
+	<KeyWord>break</KeyWord>
+	<KeyWord>class</KeyWord>
+	<KeyWord>continue</KeyWord>
+	<KeyWord>def</KeyWord>
 	<KeyWord>del</KeyWord>
 	<KeyWord>elif</KeyWord>
 	<KeyWord>else</KeyWord>
@@ -146,9 +146,9 @@ else:
 def %s1(%s3):
 </FunctionHeaderTemplate>
 
-<ProgramTemplate>	%s2	
+<FunctionBodyTemplate>	%s2	
 	%b1
-</ProgramTemplate>
+</FunctionBodyTemplate>
 
 <FunctionTemplate>%s1
 	%s3
@@ -157,10 +157,10 @@ def %s1(%s3):
 
 <FunctionsTemplate>%s1</FunctionsTemplate>
 
-<MainProgramTemplate>
+<MainFunctionTemplate>
 %b1
 
-</MainProgramTemplate>
+</MainFunctionTemplate>
 
 <VarEntry>%s1%s4</VarEntry>
 

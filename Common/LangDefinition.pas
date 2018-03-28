@@ -151,7 +151,10 @@ type
       ForDoDescTemplate,
       ReturnDescTemplate,
       CaseOfDescTemplate,
-      ExternalLabel: string;
+      ExternalLabel,
+      FunctionHeaderExternalModifier,
+      FunctionHeaderExternal,
+      FunctionHeaderNonExternal: string;
       DecimalSeparator: char;
       LabelFontSize,
       FunctionHeaderArgsStripCount,
@@ -283,7 +286,7 @@ end;
 function TLangDefinition.ImportFromXML(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
 var
    tag: IXMLElement;
-   lVal, lName, kinds: string;
+   val, lName, kinds: string;
    lKind: TDataTypeKind;
    lOrigType, lType: PNativeDataType;
    i, a, count: integer;
@@ -292,17 +295,17 @@ var
 {$ENDIF}
 begin
    result := errNone;
-   lVal := '';
+   val := '';
    tag := TXMLProcessor.FindChildTag(ATag, 'Name');
    if tag <> nil then
-      lVal := tag.Text.Trim;
-   if lVal.IsEmpty then
+      val := tag.Text.Trim;
+   if val.IsEmpty then
    begin
       GErr_Text := i18Manager.GetString('NameTagNotFound');
       Exit(errValidate);
    end
    else
-      FName := lVal;
+      FName := val;
 
    FCompilerRegKey := 'CompilerPath_' + FName;
    FCompilerNoMainRegKey := 'CompilerPathNoMain_' + FName;
@@ -392,21 +395,26 @@ begin
    if tag <> nil then
       VarTemplate := tag.Text;
 
-   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTypeNotNone1');
+   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTypeModifier1');
    if tag <> nil then
-      FunctionHeaderTypeNotNone1 := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTypeNone1');
-   if tag <> nil then
+   begin
       FunctionHeaderTypeNone1 := tag.Text;
+      TInfra.ExtractPipedValues(FunctionHeaderTypeNone1, FunctionHeaderTypeNotNone1);
+   end;
 
-   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTypeNotNone2');
+   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTypeModifier2');
    if tag <> nil then
-      FunctionHeaderTypeNotNone2 := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTypeNone2');
-   if tag <> nil then
+   begin
       FunctionHeaderTypeNone2 := tag.Text;
+      TInfra.ExtractPipedValues(FunctionHeaderTypeNone2, FunctionHeaderTypeNotNone2);
+   end;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderExternalModifier');
+   if tag <> nil then
+   begin
+      FunctionHeaderExternal := tag.Text;
+      TInfra.ExtractPipedValues(FunctionHeaderExternal, FunctionHeaderNonExternal);
+   end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionTemplate');
    if tag <> nil then
@@ -788,10 +796,10 @@ begin
                if EnabledPointers then
                begin
                   lKind := tpPtr;
-                  lVal := tag.GetAttribute('origtype').Trim;
+                  val := tag.GetAttribute('origtype').Trim;
                   for i := 0 to a-1 do
                   begin
-                     if SameText(lVal, NativeDataTypes[i].Name) then
+                     if SameText(val, NativeDataTypes[i].Name) then
                      begin
                         lOrigType := @NativeDataTypes[i];
                         break;
@@ -842,9 +850,9 @@ begin
       tag := TXMLProcessor.FindChildTag(tag, 'Function');
       while tag <> nil do
       begin
-         lVal := tag.Text.Trim;
-         if not lVal.IsEmpty then
-            NativeFunctions.Add(lVal);
+         val := tag.Text.Trim;
+         if not val.IsEmpty then
+            NativeFunctions.Add(val);
          tag := TXMLProcessor.FindNextTag(tag);
       end;
       NativeFunctions.Sort;

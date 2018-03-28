@@ -396,17 +396,28 @@ Available placeholders:
    %s2 - description/prefix of the function
    %s3 - list of function parameters (list of FunctionHeaderArgsEntryMask elements)
    %s4 - return type
-   %s5 - first string that depends on return type (none or specific) - FunctionHeaderTypeNone1 or FunctionHeaderTypeNotNone1 element 
-   %s6 - second string that depends on return type (none or specific) - FunctionHeaderTypeNone2 or FunctionHeaderTypeNotNone2 element
+   %s5 - first string that depends if return type is none or specific (element FunctionHeaderTypeModifier1) 
+   %s6 - second string that depends if return type is none or specific (element FunctionHeaderTypeModifier2)
+   %s7 - string that depends if function is external or not (element FunctionHeaderExternalModifier); applicable only if element CodeGenInclExternUserFunction = true 
 -->
 <FunctionHeaderTemplate>%s2
-%s5 %s1(%s3)%s6 %s4;
+%s7%s5 %s1(%s3)%s6 %s4;
 </FunctionHeaderTemplate>
 
-<FunctionHeaderTypeNone1>procedure</FunctionHeaderTypeNone1>
-<FunctionHeaderTypeNotNone1>function</FunctionHeaderTypeNotNone1>
-<FunctionHeaderTypeNone2></FunctionHeaderTypeNone2>
-<FunctionHeaderTypeNotNone2>:</FunctionHeaderTypeNotNone2>
+<!--
+Element FunctionHeaderTypeModifier1
+Description: It returns value based on whether or not function returns specific type
+In given example, it returns value "procedure" if function type is none or "function" if type is other than none
+-->
+<FunctionHeaderTypeModifier1>procedure|function</FunctionHeaderTypeModifier1>
+<FunctionHeaderTypeModifier2>|:</FunctionHeaderTypeModifier2>
+
+<!--
+Element FunctionHeaderExternalModifier
+Description: It returns value based on whether or not function is declared as external
+In given example, it returns value "public " if function is external or "private " if not
+-->
+<FunctionHeaderExternalModifier>external |internal </FunctionHeaderExternalModifier>
 
 <!--
 Element FunctionBodyTemplate

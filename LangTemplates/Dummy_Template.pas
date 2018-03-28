@@ -349,7 +349,7 @@ procedure Dummy_UserFunctionsSectionGenerator(ALines: TStringList; ASkipBodyGen:
 var
    func: TUserFunction;
    param: TParameter;
-   name, argList, paramStr, ref, lArray, lRecord, enum, defValue, hText: string;
+   name, argList, paramStr, ref, lArray, lRecord, enum, defValue, hText, extModifier: string;
    lang: TLangDefinition;
    headerTemplate, varList, funcTemplate, bodyTemplate, funcList, funcsTemplate: TStringList;
    intType: integer;
@@ -375,6 +375,7 @@ begin
                   lArray := '';
                   lRecord := '';
                   enum := '';
+                  extModifier := '';
                   if param.chkReference.Checked then
                      ref := lang.FunctionHeaderArgsEntryRef;
                   if param.chkTable.Checked then
@@ -398,6 +399,9 @@ begin
                if lang.FunctionHeaderArgsStripCount > 0 then
                   SetLength(argList, argList.Length - lang.FunctionHeaderArgsStripCount);
 
+               if lang.CodeGenInclExternUserFunction then
+                  extModifier := IfThen(func.Header.chkExtDeclare.Checked, lang.FunctionHeaderExternal, lang.FunctionHeaderNonExternal);
+
                // assemble function header line
                isTypeNotNone := func.Header.cbType.ItemIndex <> 0;
                hText := ReplaceStr(lang.FunctionHeaderTemplate, PRIMARY_PLACEHOLDER, name);
@@ -405,6 +409,7 @@ begin
                hText := ReplaceStr(hText, '%s4', IfThen(isTypeNotNone, func.Header.cbType.Text));
                hText := ReplaceStr(hText, '%s5', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone1, lang.FunctionHeaderTypeNone1));
                hText := ReplaceStr(hText, '%s6', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone2, lang.FunctionHeaderTypeNone2));
+               hText := ReplaceStr(hText, '%s7', extModifier);
 
                headerTemplate := TStringList.Create;
                try

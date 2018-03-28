@@ -253,7 +253,6 @@ Available placeholders:
 </FunctionHeaderTemplate>
 
 <FunctionHeaderTypeNone1>void</FunctionHeaderTypeNone1>
-<FunctionHeaderTypeNotNone1></FunctionHeaderTypeNotNone1>
 <FunctionHeaderArgsEntryMask>%s5%s6%s2%s3 %s1%s4, </FunctionHeaderArgsEntryMask>
 <FunctionHeaderArgsEntryRef>*</FunctionHeaderArgsEntryRef>
 <FunctionHeaderArgsEntryArray>[]</FunctionHeaderArgsEntryArray>
