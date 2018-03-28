@@ -405,7 +405,7 @@ Available placeholders:
 </FunctionHeaderTemplate>
 
 <!--
-Element FunctionHeaderTypeModifier1
+Element FunctionHeaderTypeModifier1 and FunctionHeaderTypeModifier2
 Description: It returns value based on whether or not function returns specific type
 In given example, it returns value "procedure" if function type is none or "function" if type is other than none
 -->
