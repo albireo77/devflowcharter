@@ -249,18 +249,28 @@ Available placeholders:
    %s1 - control variable
    %s2 - start value
    %s3 - stop value
-   %s4 - first direction (ascending/descending) dependent string (ForAsc1 or ForDesc1 element)
-   %s5 - second direction (ascending/descending) dependent string (ForAsc2 or ForDesc2 element)  
+   %s4 - first increasing or decreasing string (element ForDoTemplateModifier1)
+   %s5 - second increasing or decreasing string (element ForDoTemplateModifier2)  
 -->
 <ForDoTemplate>for (%s1 = %s2; %s1 %s4 %s3; %s1%s5)
 BEGIN
 	%b1
 END;
 </ForDoTemplate>
-<ForAsc1>&lt;=</ForAsc1>
-<ForAsc2>++</ForAsc2>
-<ForDesc1>&gt;=</ForDesc1>
-<ForDesc2>--</ForDesc2>
+
+<!--
+Element ForDoTemplateModifier1
+Description: It returns value based on whether for..do block is increasing or decreasing
+It returns value "<=" if block is increasing or ">=" if decreasing 
+-->
+<ForDoTemplateModifier1>&lt;=|&gt;=</ForDoTemplateModifier1>
+
+<!--
+Element ForDoTemplateModifier2
+Description: It returns value based on whether for..do block is increasing or decreasing
+It returns value "++" if block is increasing or "--" if decreasing
+-->
+<ForDoTemplateModifier2>++|--</ForDoTemplateModifier2>
 
 <!--
 Element CaseOfValueTemplate
@@ -415,7 +425,7 @@ In given example, it returns value "procedure" if function type is none or "func
 <!--
 Element FunctionHeaderExternalModifier
 Description: It returns value based on whether or not function is declared as external
-In given example, it returns value "public " if function is external or "private " if not
+In given example, it returns value "external " if function is external or "internal " if not
 -->
 <FunctionHeaderExternalModifier>external |internal </FunctionHeaderExternalModifier>
 

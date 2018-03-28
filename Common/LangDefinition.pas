@@ -84,10 +84,10 @@ type
       LabelText,
       LabelFolder,
       LabelMain,
-      ForAsc1,
-      ForAsc2,
-      ForDesc1,
-      ForDesc2,
+      ForDoAsc1,
+      ForDoAsc2,
+      ForDoDesc1,
+      ForDoDesc2,
       CaseOfTemplate,
       CaseOfValueTemplate,
       CaseOfDefaultValueTemplate,
@@ -152,7 +152,6 @@ type
       ReturnDescTemplate,
       CaseOfDescTemplate,
       ExternalLabel,
-      FunctionHeaderExternalModifier,
       FunctionHeaderExternal,
       FunctionHeaderNonExternal: string;
       DecimalSeparator: char;
@@ -556,21 +555,19 @@ begin
    if tag <> nil then
       ForDoTemplate := tag.Text;
 
-   tag := TXMLProcessor.FindChildTag(ATag, 'ForAsc1');
+   tag := TXMLProcessor.FindChildTag(ATag, 'ForDoTemplateModifier1');
    if tag <> nil then
-      ForAsc1 := tag.Text;
+   begin
+      ForDoAsc1 := tag.Text;
+      TInfra.ExtractPipedValues(ForDoAsc1, ForDoDesc1);
+   end;
 
-   tag := TXMLProcessor.FindChildTag(ATag, 'ForAsc2');
+   tag := TXMLProcessor.FindChildTag(ATag, 'ForDoTemplateModifier2');
    if tag <> nil then
-      ForAsc2 := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'ForDesc1');
-   if tag <> nil then
-      ForDesc1 := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'ForDesc2');
-   if tag <> nil then
-      ForDesc2 := tag.Text;
+   begin
+      ForDoAsc2 := tag.Text;
+      TInfra.ExtractPipedValues(ForDoAsc2, ForDoDesc2);
+   end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'TextTemplate');
    if tag <> nil then

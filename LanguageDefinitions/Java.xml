@@ -261,31 +261,13 @@ Element ForDoVarList
 Determines whether control variable in ForDo block should be selected from dropdown list (true) 
 or user is free to enter anything (false)
 -->
-<ForDoVarList>true</ForDoVarList>
+<ForDoVarList>false</ForDoVarList>
 
 <!--
 Element ForDoVarString
 String that will be displayed between control variable and initial value
 -->
 <ForDoVarString>=</ForDoVarString>
-
-<!--
-Element ForDoTemplate
-Available placeholders:
-   %s1 - control variable
-   %s2 - start value
-   %s3 - stop value
-   %s4 - first direction (ascending/descending) dependent string (ForAsc1 or ForDesc1 element)
-   %s5 - second direction (ascending/descending) dependent string (ForAsc2 or ForDesc2 element)  
--->
-<ForDoTemplate>for (%s1 = %s2; %s1 %s4 %s3; %s1%s5) {
-	%b1
-}
-</ForDoTemplate>
-<ForAsc1>&lt;=</ForAsc1>
-<ForAsc2>++</ForAsc2>
-<ForDesc1>&gt;=</ForDesc1>
-<ForDesc2>--</ForDesc2>
 
 <!--
 Element CaseOfValueTemplate
@@ -441,7 +423,7 @@ Available placeholders:
 <!--
 Element FunctionHeaderExternalModifier
 Description: It returns value based on whether or not function is declared as external
-In given example, it returns value "public " if function is external or "private " if not
+It returns value "public " if function is external or "private " if not
 -->
 <FunctionHeaderExternalModifier>public |private </FunctionHeaderExternalModifier>
 

@@ -304,17 +304,17 @@ end;
 
 function TForDoBlock.FillCodedTemplate(const ALangId: string): string;
 var
-   varVal, startVal, stopVal: string;
+   varVal, startVal, stopVal, varName: string;
    lang: TLangDefinition;
    i: integer;
 begin
    result := '';
+   varVal := Trim(edtVariable.Text);
+   startVal := Trim(edtStartVal.Text);
+   stopVal := Trim(edtStopVal.Text);
+   lang := GInfra.GetLangDefinition(ALangId);
    if ALangId = PYTHON_LANG_ID then
    begin
-      varVal := Trim(edtVariable.Text);
-      startVal := Trim(edtStartVal.Text);
-      stopVal := Trim(edtStopVal.Text);
-      lang := GInfra.GetLangDefinition(ALangId);
       result := 'for ' + varVal + ' ' + lang.ForDoVarString + ' ';
       if stopVal.IsEmpty then
       begin
@@ -329,6 +329,19 @@ begin
             result := result + 'range(' + stopVal + '):'
          else
             result := result + 'range(' + startVal + ', ' + stopVal + '):'
+      end;
+   end
+   else if ALangId = JAVA_LANG_ID then
+   begin
+      if stopVal.IsEmpty then
+         result := 'for (' + varVal + ' : ' + startVal + ') {'
+      else
+      begin
+         varName := varVal;
+         i := LastDelimiter(' ', varName);
+         if i > 0 then
+            varName := Copy(varName, i+1, MaxInt);
+         result := Format('for (%s = %s; %s %s %s; %s%s) {', [varVal, startVal, varName, IfThen(FDescOrder, '>=', '<='), stopVal, varName, IfThen(FDescOrder, '--', '++')]);
       end;
    end;
 end;
@@ -353,8 +366,8 @@ begin
       result := ReplaceStr(template, PRIMARY_PLACEHOLDER, Trim(edtVariable.Text));
       result := ReplaceStr(result, '%s2', Trim(edtStartVal.Text));
       result := ReplaceStr(result, '%s3', Trim(edtStopVal.Text));
-      result := ReplaceStr(result, '%s4', IfThen(FDescOrder, lang.ForDesc1, lang.ForAsc1));
-      result := ReplaceStr(result, '%s5', IfThen(FDescOrder, lang.ForDesc2, lang.ForAsc2));
+      result := ReplaceStr(result, '%s4', IfThen(FDescOrder, lang.ForDoDesc1, lang.ForDoAsc1));
+      result := ReplaceStr(result, '%s5', IfThen(FDescOrder, lang.ForDoDesc2, lang.ForDoAsc2));
    end
    else
       result := FillCodedTemplate(ALangId);
@@ -372,20 +385,23 @@ end;
 
 function TForDoBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
 var
-   template, line: string;
+   template, line, indent: string;
    tmpList: TStringList;
    lang: TLangDefinition;
 begin
    result := 0;
    if fsStrikeOut in Font.Style then
       exit;
-   if ALangId = PYTHON_LANG_ID then        // for Python it's impossible to create suitable for..do XML template so hardcoded template must be used
+   indent := DupeString(GSettings.IndentString, ADeep);
+   if (ALangId = PYTHON_LANG_ID) or (ALangId = JAVA_LANG_ID) then   // for Java and Python it's impossible to create suitable for..do XML template so hardcoded template must be used
    begin
-      line := DupeString(GSettings.IndentString, ADeep) + FillCodedTemplate(ALangId);
+      line := indent + FillCodedTemplate(ALangId);
       tmpList := TStringList.Create;
       try
          tmpList.AddObject(line, Self);
          GenerateNestedCode(tmpList, PRIMARY_BRANCH_IND, ADeep+1, ALangId);
+         if ALangId = JAVA_LANG_ID then
+            tmpList.AddObject(indent + '}', Self);
          TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
          result := tmpList.Count;
       finally
@@ -553,8 +569,8 @@ begin
             chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, edtVariable.Text);
             chLine.Text := ReplaceStr(chLine.Text, '%s2', Trim(edtStartVal.Text));
             chLine.Text := ReplaceStr(chLine.Text, '%s3', Trim(edtStopVal.Text));
-            chLine.Text := ReplaceStr(chLine.Text, '%s4', IfThen(FDescOrder, GInfra.CurrentLang.ForDesc1, GInfra.CurrentLang.ForAsc1));
-            chLine.Text := ReplaceStr(chLine.Text, '%s5', IfThen(FDescOrder, GInfra.CurrentLang.ForDesc2, GInfra.CurrentLang.ForAsc2));
+            chLine.Text := ReplaceStr(chLine.Text, '%s4', IfThen(FDescOrder, GInfra.CurrentLang.ForDoDesc1, GInfra.CurrentLang.ForDoAsc1));
+            chLine.Text := ReplaceStr(chLine.Text, '%s5', IfThen(FDescOrder, GInfra.CurrentLang.ForDoDesc2, GInfra.CurrentLang.ForDoAsc2));
             if GSettings.UpdateEditor and not SkipUpdateEditor then
                TInfra.ChangeLine(chLine);
             TInfra.GetEditorForm.SetCaretPos(chLine);
