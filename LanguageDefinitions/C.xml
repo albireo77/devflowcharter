@@ -32,7 +32,7 @@ For all supported tags refer to Example.xml file.
     <EnabledMainProgram>true</EnabledMainProgram>
     <CaseSensitiveSyntax>true</CaseSensitiveSyntax>
     <UpperCaseConstId>false</UpperCaseConstId>
-    <CodeGenInclExternVarConst>true</CodeGenInclExternVarConst>
+    <CodeIncludeExternVarConst>true</CodeIncludeExternVarConst>
 
     <FoldRegions>
 		<FoldRegion AddClose="false" NoSubFolds="false" Type="rtChar" WholeWords="false">
@@ -185,8 +185,6 @@ Available placeholders:
 
 <RepeatUntilDescTemplate>do while (%s1)</RepeatUntilDescTemplate>
 
-<ExternEntry>extern </ExternEntry>
-
 <ForDoVarList>true</ForDoVarList>
 
 <ForDoVarString>=</ForDoVarString>
@@ -313,6 +311,13 @@ Available placeholders:
 <FunctionsTemplate>%s1</FunctionsTemplate>
 
 <!--
+Element ExternVarModifier
+Description: Variable declaration modifier depending if variable is external
+It returns "extern " if variable is external or empty string if not
+-->
+<ExternVarModifier>extern |</ExternVarModifier>
+
+<!--
 Element VarEntry
 Description: Entry for single variable (non-array) declaration
 Available placeholders:
@@ -321,7 +326,7 @@ Available placeholders:
    %s4 - variable initial value 
    %s5 - used if variable is a record (element FunctionHeaderArgsEntryRecord)
    %s6 - used if variable is an enumeration (element FunctionHeaderArgsEntryEnum)
-   %s7 - used if variable is marked as external and GenExternVarConst element is true (element ExternEntry)
+   %s7 - string depending if variable is external (element ExternVarModifier)
 -->
 <VarEntry>%s7%s5%s6%s2 %s1%s4;</VarEntry>
 
@@ -373,6 +378,7 @@ Description: Entry for single declaration of constant
 Available placeholders:
    %s1 - constant name
    %s2 - constant value
+   %s3 - string depending if constant is external (element ExternConstModifier)
 -->
 <ConstEntry>#define %s1 %s2</ConstEntry>
 

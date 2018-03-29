@@ -84,7 +84,7 @@ var
 begin
 
    FElementTypeID := 'field';
-   FCodeIncludeExtern := GInfra.CurrentLang.CodeGenInclExternUserDataType;
+   FCodeIncludeExtern := GInfra.CurrentLang.CodeIncludeExternDataType;
 
    inherited Create(AParentForm);
 

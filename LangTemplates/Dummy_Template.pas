@@ -50,9 +50,7 @@ begin
             name := dataType.GetName;
             if (name <> '') and (dataType.CodeIncludeExtern or not dataType.chkExtDeclare.Checked) then
             begin
-               extModifier := '';
-               if dataType.CodeIncludeExtern then
-                  extModifier := IfThen(dataType.chkExtDeclare.Checked, lang.DataTypeExternal, lang.DataTypeNonExternal);
+               extModifier := IfThen(dataType.chkExtDeclare.Checked, lang.DataTypeExternal, lang.DataTypeNonExternal);
                template.Clear;
                case dataType.Kind of
 
@@ -252,11 +250,11 @@ begin
          for i := 1 to AConstList.sgList.RowCount-2 do
          begin
             isExtern := AConstList.IsExternal(i);
-            if (isExtern and lang.CodeGenInclExternVarConst) or not isExtern then
+            if (isExtern and lang.CodeIncludeExternVarConst) or not isExtern then
             begin
-               constStr := IfThen(isExtern, lang.ConstEntryExtern, lang.ConstEntry);
-               constStr := ReplaceStr(constStr, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
+               constStr := ReplaceStr(lang.ConstEntry, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
                constStr := ReplaceStr(constStr, '%s2', AConstList.sgList.Cells[CONST_VALUE_COL, i]);
+               constStr := ReplaceStr(constStr, '%s3', IfThen(isExtern, lang.ExternConst, lang.NonExternConst));
                constList.AddObject(constStr, AConstList);
             end;
          end;
@@ -296,7 +294,7 @@ begin
             name := AVarList.sgList.Cells[VAR_NAME_COL, i];
             typeStr := AVarList.sgList.Cells[VAR_TYPE_COL, i];
             isExtern := AVarList.IsExternal(i);
-            if (isExtern and lang.CodeGenInclExternVarConst) or not isExtern then
+            if (isExtern and lang.CodeIncludeExternVarConst) or not isExtern then
             begin
                dcount := AVarList.GetDimensionCount(name);
                if dcount > 0 then
@@ -331,7 +329,7 @@ begin
                   enum := lang.FunctionHeaderArgsEntryEnum;
                varStr := ReplaceStr(varStr, '%s5', lRecord);
                varStr := ReplaceStr(varStr, '%s6', enum);
-               varStr := ReplaceStr(varStr, '%s7', IfThen(isExtern, lang.ExternEntry));
+               varStr := ReplaceStr(varStr, '%s7', IfThen(isExtern, lang.ExternVar, lang.NonExternVar));
                varList.AddObject(varStr, AVarList);
             end;
          end;
@@ -362,7 +360,7 @@ procedure Dummy_UserFunctionsSectionGenerator(ALines: TStringList; ASkipBodyGen:
 var
    func: TUserFunction;
    param: TParameter;
-   name, argList, paramStr, ref, lArray, lRecord, enum, defValue, hText, extModifier: string;
+   name, argList, paramStr, ref, lArray, lRecord, enum, defValue, hText: string;
    lang: TLangDefinition;
    headerTemplate, varList, funcTemplate, bodyTemplate, funcList, funcsTemplate: TStringList;
    intType: integer;
@@ -388,7 +386,6 @@ begin
                   lArray := '';
                   lRecord := '';
                   enum := '';
-                  extModifier := '';
                   if param.chkReference.Checked then
                      ref := lang.FunctionHeaderArgsEntryRef;
                   if param.chkTable.Checked then
@@ -412,9 +409,6 @@ begin
                if lang.FunctionHeaderArgsStripCount > 0 then
                   SetLength(argList, argList.Length - lang.FunctionHeaderArgsStripCount);
 
-               if lang.CodeGenInclExternUserFunction then
-                  extModifier := IfThen(func.Header.chkExtDeclare.Checked, lang.FunctionHeaderExternal, lang.FunctionHeaderNonExternal);
-
                // assemble function header line
                isTypeNotNone := func.Header.cbType.ItemIndex <> 0;
                hText := ReplaceStr(lang.FunctionHeaderTemplate, PRIMARY_PLACEHOLDER, name);
@@ -422,7 +416,7 @@ begin
                hText := ReplaceStr(hText, '%s4', IfThen(isTypeNotNone, func.Header.cbType.Text));
                hText := ReplaceStr(hText, '%s5', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone1, lang.FunctionHeaderTypeNone1));
                hText := ReplaceStr(hText, '%s6', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone2, lang.FunctionHeaderTypeNone2));
-               hText := ReplaceStr(hText, '%s7', extModifier);
+               hText := ReplaceStr(hText, '%s7', IfThen(func.Header.chkExtDeclare.Checked, lang.FunctionHeaderExternal, lang.FunctionHeaderNonExternal));
 
                headerTemplate := TStringList.Create;
                try

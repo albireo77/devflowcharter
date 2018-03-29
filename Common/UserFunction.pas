@@ -305,7 +305,7 @@ var
 begin
 
    FElementTypeID := 'arg';
-   FCodeIncludeExtern := GInfra.CurrentLang.CodeGenInclExternUserFunction;
+   FCodeIncludeExtern := GInfra.CurrentLang.CodeIncludeExternFunction;
 
    inherited Create(AParentForm);
 

@@ -28,7 +28,9 @@
     <UpperCaseConstId>true</UpperCaseConstId>
     <AllowEnumsInForLoop>true</AllowEnumsInForLoop>
     <AllowUserFunctionOverload>true</AllowUserFunctionOverload>
-    <AllowUnboundedArrays>false</AllowUnboundedArrays>
+    <AllowUnboundedArrays>true</AllowUnboundedArrays>
+	<CodeIncludeExternDataType>true</CodeIncludeExternDataType>
+    <CodeIncludeExternFunction>true</CodeIncludeExternFunction>
 
     <FoldRegions>
         <FoldRegion AddClose="false" NoSubFolds="false" Type="rtChar" WholeWords="true">
@@ -363,10 +365,6 @@ Available placeholders:
 %s3
 </ProgramHeaderTemplate>
 
-<CodeGenInclExternUserDataType>true</CodeGenInclExternUserDataType>
-
-<CodeGenInclExternUserFunction>true</CodeGenInclExternUserFunction>
-
 <ExternalLabel>public</ExternalLabel>
 
 <GlobalVarsLabelKey>InstanceVars</GlobalVarsLabelKey>
@@ -413,7 +411,7 @@ Available placeholders:
    %s4 - return type
    %s5 - first string that depends if return type is none or specific (element FunctionHeaderTypeModifier1) 
    %s6 - second string that depends if return type is none or specific (element FunctionHeaderTypeModifier2)
-   %s7 - string that depends if function is external or not (element FunctionHeaderExternalModifier); applicable only if element CodeGenInclExternUserFunction = true 
+   %s7 - string that depends if function is external or not (element FunctionHeaderExternalModifier) 
 -->
 <FunctionHeaderTemplate>%s2
 %s7%s4%s5 %s1(%s3) {
