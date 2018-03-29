@@ -259,8 +259,13 @@ begin
 	%b1
 end;
 </ForDoTemplate>
-<ForAsc1>to</ForAsc1>
-<ForDesc1>downto</ForDesc1>
+
+<!--
+Element ForDoTemplateModifier1
+Description: It returns value based on whether for..do block is increasing or decreasing
+It returns value "<=" if block is increasing or ">=" if decreasing 
+-->
+<ForDoTemplateModifier1>to|downto</ForDoTemplateModifier1>
 
 <CaseOfValueTemplate>%s1:
 begin

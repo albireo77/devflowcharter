@@ -123,6 +123,8 @@ type
       DataTypesTemplate,
       FunctionsTemplate,
       FileContentsTemplate,
+      DataTypeExternal,
+      DataTypeNonExternal,
       DataTypeIntMask,
       DataTypeRealMask,
       DataTypeOtherMask,
@@ -183,8 +185,8 @@ type
       AllowEnumsInForLoop,
       AllowUserFunctionOverload,
       RepeatUntilAsDoWhile,
-      GenExternVarConst,
       ForDoVarList,
+      CodeGenInclExternVarConst,
       CodeGenInclExternUserDataType,
       CodeGenInclExternUserFunction,
       AllowUnboundedArrays: boolean;
@@ -593,6 +595,13 @@ begin
    if tag <> nil then
       FileContentsTemplate := tag.Text;
 
+   tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeExternalModifier');
+   if tag <> nil then
+   begin
+      DataTypeExternal := tag.Text;
+      TInfra.ExtractPipedValues(DataTypeExternal, DataTypeNonExternal);
+   end;
+
    tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeIntMask');
    if tag <> nil then
       DataTypeIntMask := tag.Text;
@@ -757,12 +766,12 @@ begin
    EnabledExplorer               := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledExplorer', EnabledExplorer);
    EnabledCodeGenerator          := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledCodeGenerator', EnabledCodeGenerator);
    EnabledMainProgram            := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledMainProgram', EnabledMainProgram);
-   GenExternVarConst             := TXMLProcessor.GetBoolFromChildTag(ATag, 'GenExternVarConst', GenExternVarConst);
    CaseSensitiveSyntax           := TXMLProcessor.GetBoolFromChildTag(ATag, 'CaseSensitiveSyntax', CaseSensitiveSyntax);
    UpperCaseConstId              := TXMLProcessor.GetBoolFromChildTag(ATag, 'UpperCaseConstId', UpperCaseConstId);
    AllowEnumsInForLoop           := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowEnumsInForLoop', AllowEnumsInForLoop);
    AllowUserFunctionOverload     := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowUserFunctionOverload', AllowUserFunctionOverload);
    AllowUnboundedArrays          := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowUnboundedArrays', AllowUnboundedArrays);
+   CodeGenInclExternVarConst     := TXMLProcessor.GetBoolFromChildTag(ATag, 'CodeGenInclExternVarConst', CodeGenInclExternVarConst);
    CodeGenInclExternUserDataType := TXMLProcessor.GetBoolFromChildTag(ATag, 'CodeGenInclExternUserDataType', CodeGenInclExternUserDataType);
    CodeGenInclExternUserFunction := TXMLProcessor.GetBoolFromChildTag(ATag, 'CodeGenInclExternUserFunction', CodeGenInclExternUserFunction);
 

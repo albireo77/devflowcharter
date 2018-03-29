@@ -32,7 +32,7 @@ procedure Dummy_UserDataTypesSectionGenerator(ALines: TStringList);
 var
    dataType: TUserDataType;
    field: TField;
-   name, sizeStr, lRecord, enum: string;
+   name, sizeStr, lRecord, enum, extModifier: string;
    b, lType: integer;
    lang: TLangDefinition;
    typesList, typesTemplate, fieldList, template: TStringList;
@@ -50,21 +50,31 @@ begin
             name := dataType.GetName;
             if (name <> '') and (dataType.CodeIncludeExtern or not dataType.chkExtDeclare.Checked) then
             begin
+               extModifier := '';
+               if dataType.CodeIncludeExtern then
+                  extModifier := IfThen(dataType.chkExtDeclare.Checked, lang.DataTypeExternal, lang.DataTypeNonExternal);
                template.Clear;
                case dataType.Kind of
 
                   dtInt:
                   if not lang.DataTypeIntMask.IsEmpty then
-                     template.Text := ReplaceStr(lang.DataTypeIntMask, PRIMARY_PLACEHOLDER, name);
+                  begin
+                     typeStr := ReplaceStr(lang.DataTypeIntMask, PRIMARY_PLACEHOLDER, name);
+                     template.Text := ReplaceStr(typeStr, '%s9', extModifier);
+                  end;
 
                   dtReal:
                   if not lang.DataTypeRealMask.IsEmpty then
-                     template.Text := ReplaceStr(lang.DataTypeRealMask, PRIMARY_PLACEHOLDER, name);
+                  begin
+                     typeStr := ReplaceStr(lang.DataTypeRealMask, PRIMARY_PLACEHOLDER, name);
+                     template.Text := ReplaceStr(typeStr, '%s9', extModifier);
+                  end;
 
                   dtOther:
                   if not lang.DataTypeOtherMask.IsEmpty then
                   begin
                      typeStr := ReplaceStr(lang.DataTypeOtherMask, PRIMARY_PLACEHOLDER, name);
+                     typeStr := ReplaceStr(typeStr, '%s9', extModifier);
                      valStr := '';
                      fields := dataType.GetFields;
                      if fields.GetEnumerator.MoveNext then
@@ -76,6 +86,7 @@ begin
                   if not lang.DataTypeArrayMask.IsEmpty then
                   begin
                      typeStr := ReplaceStr(lang.DataTypeArrayMask, PRIMARY_PLACEHOLDER, name);
+                     typeStr := ReplaceStr(typeStr, '%s9', extModifier);
                      valStr := '';
                      valStr2 := '';
                      fields := dataType.GetFields;
@@ -92,7 +103,8 @@ begin
                   dtRecord:
                   if not lang.DataTypeRecordTemplate.IsEmpty then
                   begin
-                     template.Text := ReplaceStr(lang.DataTypeRecordTemplate, PRIMARY_PLACEHOLDER, name);
+                     typeStr := ReplaceStr(lang.DataTypeRecordTemplate, PRIMARY_PLACEHOLDER, name);
+                     template.Text := ReplaceStr(typeStr, '%s9', extModifier);
                      fieldList := TStringList.Create;
                      try
                         for field in dataType.GetFields do
@@ -125,7 +137,8 @@ begin
                   dtEnum:
                   if not lang.DataTypeEnumTemplate.IsEmpty then
                   begin
-                     template.Text := ReplaceStr(lang.DataTypeEnumTemplate, PRIMARY_PLACEHOLDER, name);
+                     typeStr := ReplaceStr(lang.DataTypeEnumTemplate, PRIMARY_PLACEHOLDER, name);
+                     template.Text := ReplaceStr(typeStr, '%s9', extModifier);
                      valStr := '';
                      for field in dataType.GetFields do
                         valStr := valStr + Format(lang.DataTypeEnumEntryList, [Trim(field.edtName.Text)]);
@@ -239,7 +252,7 @@ begin
          for i := 1 to AConstList.sgList.RowCount-2 do
          begin
             isExtern := AConstList.IsExternal(i);
-            if (isExtern and lang.GenExternVarConst) or not isExtern then
+            if (isExtern and lang.CodeGenInclExternVarConst) or not isExtern then
             begin
                constStr := IfThen(isExtern, lang.ConstEntryExtern, lang.ConstEntry);
                constStr := ReplaceStr(constStr, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
@@ -283,7 +296,7 @@ begin
             name := AVarList.sgList.Cells[VAR_NAME_COL, i];
             typeStr := AVarList.sgList.Cells[VAR_TYPE_COL, i];
             isExtern := AVarList.IsExternal(i);
-            if (isExtern and lang.GenExternVarConst) or not isExtern then
+            if (isExtern and lang.CodeGenInclExternVarConst) or not isExtern then
             begin
                dcount := AVarList.GetDimensionCount(name);
                if dcount > 0 then

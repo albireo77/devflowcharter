@@ -29,7 +29,6 @@
     <AllowEnumsInForLoop>true</AllowEnumsInForLoop>
     <AllowUserFunctionOverload>true</AllowUserFunctionOverload>
     <AllowUnboundedArrays>false</AllowUnboundedArrays>
-    <GenExternVarConst>false</GenExternVarConst>
 
     <FoldRegions>
         <FoldRegion AddClose="false" NoSubFolds="false" Type="rtChar" WholeWords="true">
@@ -268,6 +267,8 @@ Element ForDoVarString
 String that will be displayed between control variable and initial value
 -->
 <ForDoVarString>=</ForDoVarString>
+
+<!-- ForDoTemplate is not existing here since code generation of this block is hardcoded for Java -->
 
 <!--
 Element CaseOfValueTemplate

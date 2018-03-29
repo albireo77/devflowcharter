@@ -113,6 +113,8 @@ else:
 
 <ForDoVarString>in</ForDoVarString>
 
+<!-- ForDoTemplate is not existing here since code generation of this block is hardcoded for Python -->
+
 <ReturnTemplate>return %s1</ReturnTemplate>
 
 <FunctionCallTemplate>%s1</FunctionCallTemplate>

@@ -32,7 +32,7 @@ For all supported tags refer to Example.xml file.
     <EnabledMainProgram>true</EnabledMainProgram>
     <CaseSensitiveSyntax>true</CaseSensitiveSyntax>
     <UpperCaseConstId>false</UpperCaseConstId>
-    <GenExternVarConst>true</GenExternVarConst>
+    <CodeGenInclExternVarConst>true</CodeGenInclExternVarConst>
 
     <FoldRegions>
 		<FoldRegion AddClose="false" NoSubFolds="false" Type="rtChar" WholeWords="false">
@@ -103,7 +103,6 @@ For all supported tags refer to Example.xml file.
 	for %s1 project
 	%s3
 */
-
 </ProgramHeaderTemplate>
 
 <WhileTemplate>while (%s1)
@@ -156,6 +155,34 @@ else
 
 <ElseLabel>else</ElseLabel>
 
+<!--
+Element FileContentsTemplate
+Description: Template to define source file layout
+Available placeholders:
+   %s1 - project name
+   %s2 - program header section (element ProgramHeaderTemplate)
+   %s3 - libraries section (element LibTemplate)
+   %s4 - global constants section (element ConstTemplate)
+   %s5 - global variables section (element VarTemplate)
+   %s6 - user datatypes section (element DataTypesTemplate)
+   %s7 - user functions section (element FunctionsTemplate)
+   %s8 - main function (element MainFunctionTemplate)
+-->
+<FileContentsTemplate>%s2
+
+%s3
+
+%s4
+
+%s6
+
+%s5
+
+%s7
+
+%s8
+</FileContentsTemplate>
+
 <RepeatUntilDescTemplate>do while (%s1)</RepeatUntilDescTemplate>
 
 <ExternEntry>extern </ExternEntry>
@@ -169,10 +196,20 @@ else
 	%b1
 }
 </ForDoTemplate>
-<ForAsc1>&lt;=</ForAsc1>
-<ForAsc2>++</ForAsc2>
-<ForDesc1>&gt;=</ForDesc1>
-<ForDesc2>--</ForDesc2>
+
+<!--
+Element ForDoTemplateModifier1
+Description: It returns value based on whether for..do block is increasing or decreasing
+It returns value "<=" if block is increasing or ">=" if decreasing 
+-->
+<ForDoTemplateModifier1>&lt;=|&gt;=</ForDoTemplateModifier1>
+
+<!--
+Element ForDoTemplateModifier2
+Description: It returns value based on whether for..do block is increasing or decreasing
+It returns value "++" if block is increasing or "--" if decreasing
+-->
+<ForDoTemplateModifier2>++|--</ForDoTemplateModifier2>
 
 <CaseOfValueTemplate>case %s1:
 	%b1
