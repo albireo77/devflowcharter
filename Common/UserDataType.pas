@@ -165,6 +165,13 @@ begin
       s := TRttiEnumerationType.GetName(dt);
       rgTypeBox.Items.Add(i18Manager.GetString(s));
    end;
+   rgTypeBox.Buttons[Ord(dtInt)].Enabled := GInfra.CurrentLang.EnabledUserDataTypeInt;
+   rgTypeBox.Buttons[Ord(dtReal)].Enabled := GInfra.CurrentLang.EnabledUserDataTypeReal;
+   rgTypeBox.Buttons[Ord(dtOther)].Enabled := GInfra.CurrentLang.EnabledUserDataTypeOther;
+   rgTypeBox.Buttons[Ord(dtArray)].Enabled := GInfra.CurrentLang.EnabledUserDataTypeArray;
+   rgTypeBox.Buttons[Ord(dtEnum)].Enabled := GInfra.CurrentLang.EnabledUserDataTypeEnum;
+   if not GInfra.CurrentLang.RecordLabel.IsEmpty then
+      rgTypeBox.Items[Ord(dtRecord)] := GInfra.CurrentLang.RecordLabel;
    rgTypeBox.ItemIndex := Ord(dtRecord);
    rgTypeBox.OnClick := OnClickType;
 
