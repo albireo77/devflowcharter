@@ -67,7 +67,6 @@ type
          property OverlayObject: TComponent read FOverlayObject write FOverlayObject;
          property Id: integer read GetId;
          property ParentForm: TPageControlForm read FParentForm;
-         property CodeIncludeExtern: boolean read FCodeIncludeExtern;
          constructor Create(AParentForm: TPageControlForm);
          destructor Destroy; override;
          procedure ExportToXMLTag(ATag: IXMLElement); virtual;

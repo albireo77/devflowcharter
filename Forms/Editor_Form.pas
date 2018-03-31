@@ -1036,10 +1036,10 @@ begin
    if gCheck then
       idInfo := TParserHelper.GetIdentInfo(w);
    case idInfo.Scope of
-      LOCAL: scope := 'VarLocal';
-      PARAMETER: scope := 'VarParm';
+      LOCAL: scope := i18Manager.GetString('VarLocal');
+      PARAMETER: scope := i18Manager.GetString('VarParm');
    else
-      scope := 'VarGlobal';
+      scope := '';
    end;
    scope := i18Manager.GetString(scope);
    case idInfo.IdentType of

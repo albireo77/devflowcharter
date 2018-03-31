@@ -28,6 +28,11 @@ Most of the tags are optional and may be removed if not needed. The most crucial
     <EnabledUserFunctionHeader>true</EnabledUserFunctionHeader>
     <EnabledUserFunctionBody>true</EnabledUserFunctionBody>
     <EnabledUserDataTypes>true</EnabledUserDataTypes>
+	<EnabledUserDataTypeInt>true</EnabledUserDataTypeInt>
+	<EnabledUserDataTypeReal>true</EnabledUserDataTypeReal>
+	<EnabledUserDataTypeOther>true</EnabledUserDataTypeOther>
+	<EnabledUserDataTypeEnum>true</EnabledUserDataTypeEnum>
+	<EnabledUserDataTypeArray>true</EnabledUserDataTypeArray>
     <EnabledPointers>true</EnabledPointers>
     <EnabledExplorer>true</EnabledExplorer>
     <EnabledCodeGenerator>true</EnabledCodeGenerator>
@@ -736,9 +741,15 @@ Available placeholders:
 
 <!--
 Element ExternalLabel
-Used to change default label displayed for external variables/consts or user functions/datatypes; it's non-localized
+Used to change default label displayed for external variable/constant or function/datatype; it's non-localized
 -->
 <ExternalLabel></ExternalLabel>
+
+<!--
+Element RecordLabel
+Used to change default label displayed for record data type; it's non-localized
+-->
+<RecordLabel></RecordLabel>
 
 <!--
 Element GlobalVarsLabelKey

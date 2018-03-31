@@ -375,6 +375,32 @@ For all supported tags refer to Example.xml file.
 
 <RepeatUntilDescTemplate>Loop If Not (%s1)</RepeatUntilDescTemplate>
 
+<!--
+Element FileContentsTemplate
+Description: Template to define source file layout
+Available placeholders:
+   %s1 - project name
+   %s2 - program header section (element ProgramHeaderTemplate)
+   %s3 - libraries section (element LibTemplate)
+   %s4 - global constants section (element ConstTemplate)
+   %s5 - global variables section (element VarTemplate)
+   %s6 - user datatypes section (element DataTypesTemplate)
+   %s7 - user functions section (element FunctionsTemplate)
+   %s8 - main function (element MainFunctionTemplate)
+-->
+<FileContentsTemplate>%s2
+
+%s3
+
+%s4
+
+%s5
+
+%s7
+
+%s8
+</FileContentsTemplate>
+
 <WhileTemplate>While %s1
 	%b1
 EndWhile

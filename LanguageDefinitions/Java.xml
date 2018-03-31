@@ -20,6 +20,11 @@
     <EnabledUserFunctionHeader>true</EnabledUserFunctionHeader>
     <EnabledUserFunctionBody>true</EnabledUserFunctionBody>
     <EnabledUserDataTypes>true</EnabledUserDataTypes>
+	<EnabledUserDataTypeInt>false</EnabledUserDataTypeInt>
+	<EnabledUserDataTypeReal>false</EnabledUserDataTypeReal>
+	<EnabledUserDataTypeOther>true</EnabledUserDataTypeOther>
+	<EnabledUserDataTypeEnum>true</EnabledUserDataTypeEnum>
+	<EnabledUserDataTypeArray>false</EnabledUserDataTypeArray>
     <EnabledPointers>false</EnabledPointers>
     <EnabledExplorer>true</EnabledExplorer>
     <EnabledCodeGenerator>true</EnabledCodeGenerator>
@@ -29,7 +34,7 @@
     <AllowEnumsInForLoop>true</AllowEnumsInForLoop>
     <AllowUserFunctionOverload>true</AllowUserFunctionOverload>
     <AllowUnboundedArrays>true</AllowUnboundedArrays>
-	<CodeIncludeExternDataType>true</CodeIncludeExternDataType>
+    <CodeIncludeExternDataType>true</CodeIncludeExternDataType>
     <CodeIncludeExternFunction>true</CodeIncludeExternFunction>
 
     <FoldRegions>
@@ -339,6 +344,8 @@ Available placeholders:
 
 %s3
 
+%s6
+
 public class %s1 {
 
 	%s5
@@ -365,7 +372,17 @@ Available placeholders:
 %s3
 </ProgramHeaderTemplate>
 
+<!--
+Element ExternalLabel
+Used to change default label displayed for external variable/constant or function/datatype; it's non-localized
+-->
 <ExternalLabel>public</ExternalLabel>
+
+<!--
+Element RecordLabel
+Used to change default label displayed for record data type; it's non-localized
+-->
+<RecordLabel>Bean</RecordLabel>
 
 <GlobalVarsLabelKey>InstanceVars</GlobalVarsLabelKey>
 
@@ -380,19 +397,8 @@ Available placeholders:
    %s6 - used if argument is an enumeration (element FunctionHeaderArgsEntryEnum)
    %s7 - expression for argument default value (element FunctionHeaderArgsEntryDefault)
 -->
-<FunctionHeaderArgsEntryMask>%s3%s1: %s4%s2%s7, </FunctionHeaderArgsEntryMask>
-<FunctionHeaderArgsEntryRef>ref </FunctionHeaderArgsEntryRef>
-<FunctionHeaderArgsEntryArray>array of </FunctionHeaderArgsEntryArray>
-<FunctionHeaderArgsEntryRecord>record </FunctionHeaderArgsEntryRecord>
-<FunctionHeaderArgsEntryEnum>enum </FunctionHeaderArgsEntryEnum>
-
-<!--
-Element FunctionHeaderArgsEntryDefault
-Description: Template for function parameter default value
-Available placeholders:
-   %s - default value
--->
-<FunctionHeaderArgsEntryDefault> = %s</FunctionHeaderArgsEntryDefault>
+<FunctionHeaderArgsEntryMask>%s2%s4 %s1, </FunctionHeaderArgsEntryMask>
+<FunctionHeaderArgsEntryArray>[]</FunctionHeaderArgsEntryArray>
 
 <!--
 Element FunctionHeaderArgsStripCount
@@ -477,12 +483,6 @@ Available placeholders:
 <ProgramReturnTemplate>/* Program ends with no value returned. */</ProgramReturnTemplate>
 
 <!--
-Element ExternEntry
-Description: Declaration modifier for external variables
--->
-<ExternEntry>extern </ExternEntry>
-
-<!--
 Element VarEntry
 Description: Entry for single variable (non-array) declaration
 Available placeholders:
@@ -543,34 +543,6 @@ Available placeholders:
 </VarTemplate>
 
 <!--
-Element ConstTemplate
-Description: Template for section to declare constants
-Available placeholders:
-   %s1 - list of constants (ConstEntry or ConstEntryExtern elements) 
--->
-<ConstTemplate>consts
-	%s1
-</ConstTemplate>
-
-<!--
-Element ConstEntry
-Description: Entry for single declaration of not external constant
-Available placeholders:
-   %s1 - constant name
-   %s2 - constant value
--->
-<ConstEntry>define %s1 = %s2;</ConstEntry>
-
-<!--
-Element ConstEntryExtern
-Description: Entry for single declaration of external constant. Applicable if GenExternVarConst is true.
-Available placeholders:
-   %s1 - constant name
-   %s2 - constant value
--->
-<ConstEntryExtern>define %s1 = %s2;</ConstEntryExtern>
-
-<!--
 Element LibTemplate
 Description: Template for section containing libraries
 Available placeholders:
@@ -609,6 +581,13 @@ Available placeholders:
 	%s1
 
 </DataTypesTemplate>
+
+<!--
+Element DataTypeExternalModifier
+Description: It returns value based on whether or not datatype is declared as external
+In given example, it returns value "public " if datatype is external or empty string if not
+-->
+<DataTypeExternalModifier>public |</DataTypeExternalModifier>
 
 <!--
 Element DataTypeIntMask

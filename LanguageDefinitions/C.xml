@@ -411,5 +411,7 @@ Description: Mask to create pointer type based on given type
 
 <UserTypeDesc>%s2 %s1</UserTypeDesc>
 
+<RecordLabel>Structure</RecordLabel>
+
 
 </Language>

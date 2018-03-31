@@ -48,7 +48,7 @@ begin
          for dataType in GProject.GetUserDataTypes do
          begin
             name := dataType.GetName;
-            if (name <> '') and (dataType.CodeIncludeExtern or not dataType.chkExtDeclare.Checked) then
+            if (name <> '') and (lang.CodeIncludeExternDataType or not dataType.chkExtDeclare.Checked) then
             begin
                extModifier := IfThen(dataType.chkExtDeclare.Checked, lang.DataTypeExternal, lang.DataTypeNonExternal);
                template.Clear;
@@ -374,7 +374,7 @@ begin
          for func in GProject.GetUserFunctions do
          begin
             name := func.GetName;
-            if (name <> '') and (func.Header.CodeIncludeExtern or not func.Header.chkExtDeclare.Checked) and not lang.FunctionTemplate.IsEmpty then
+            if (name <> '') and (lang.CodeIncludeExternFunction or not func.Header.chkExtDeclare.Checked) and not lang.FunctionTemplate.IsEmpty then
             begin
                // assemble list of function parameters
                argList := '';
@@ -692,7 +692,7 @@ initialization
       ProgramHeaderSectionGenerator := Dummy_ProgramHeaderSectionGenerator;
       LibSectionGenerator := Dummy_LibSectionGenerator;
       ConstSectionGenerator := Dummy_ConstSectionGenerator;
-      UserDataTypesSectionGenerator  := Dummy_UserDataTypesSectionGenerator;
+      UserDataTypesSectionGenerator := Dummy_UserDataTypesSectionGenerator;
       FileContentsGenerator := Dummy_FileContentsGenerator;
       GetLiteralType := Dummy_GetLiteralType;
       GetPointerTypeName := Dummy_GetPointerTypeName;

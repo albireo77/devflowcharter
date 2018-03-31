@@ -156,6 +156,7 @@ type
       ReturnDescTemplate,
       CaseOfDescTemplate,
       ExternalLabel,
+      RecordLabel,
       FunctionHeaderExternal,
       FunctionHeaderNonExternal: string;
       DecimalSeparator: char;
@@ -178,6 +179,11 @@ type
       EnabledUserFunctionHeader,
       EnabledUserFunctionBody,
       EnabledUserDataTypes,
+      EnabledUserDataTypeInt,
+      EnabledUserDataTypeReal,
+      EnabledUserDataTypeOther,
+      EnabledUserDataTypeEnum,
+      EnabledUserDataTypeArray,
       EnabledPointers,
       EnabledExplorer,
       EnabledCodeGenerator,
@@ -270,6 +276,11 @@ begin
    DecimalSeparator := '.';
    GlobalVarsLabelKey := 'GlobalVars';
    GlobalConstsLabelKey := 'GlobalConsts';
+   EnabledUserDataTypeInt := true;
+   EnabledUserDataTypeReal := true;
+   EnabledUserDataTypeOther := true;
+   EnabledUserDataTypeEnum := true;
+   EnabledUserDataTypeArray := true;
    LabelFontName := FLOWCHART_DEFAULT_FONT_NAME;
    LabelFontSize := LABEL_DEFAULT_FONT_SIZE;
 end;
@@ -762,6 +773,10 @@ begin
    if tag <> nil then
       ExternalLabel := tag.Text;
 
+   tag := TXMLProcessor.FindChildTag(ATag, 'RecordLabel');
+   if tag <> nil then
+      RecordLabel := tag.Text;
+
    ForDoVarList              := TXMLProcessor.GetBoolFromChildTag(ATag, 'ForDoVarList', ForDoVarList);
    EnabledPointers           := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledPointers', EnabledPointers);
    RepeatUntilAsDoWhile      := TXMLProcessor.GetBoolFromChildTag(ATag, 'RepeatUntilAsDoWhile', RepeatUntilAsDoWhile);
@@ -771,6 +786,11 @@ begin
    EnabledUserFunctionHeader := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserFunctionHeader', EnabledUserFunctionHeader);
    EnabledUserFunctionBody   := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserFunctionBody', EnabledUserFunctionBody);
    EnabledUserDataTypes      := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserDataTypes', EnabledUserDataTypes);
+   EnabledUserDataTypeInt    := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserDataTypeInt', EnabledUserDataTypeInt);
+   EnabledUserDataTypeReal   := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserDataTypeReal', EnabledUserDataTypeReal);
+   EnabledUserDataTypeOther  := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserDataTypeOther', EnabledUserDataTypeOther);
+   EnabledUserDataTypeArray  := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserDataTypeArray', EnabledUserDataTypeArray);
+   EnabledUserDataTypeEnum   := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledUserDataTypeEnum', EnabledUserDataTypeEnum);
    EnabledExplorer           := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledExplorer', EnabledExplorer);
    EnabledCodeGenerator      := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledCodeGenerator', EnabledCodeGenerator);
    EnabledMainProgram        := TXMLProcessor.GetBoolFromChildTag(ATag, 'EnabledMainProgram', EnabledMainProgram);
@@ -981,12 +1001,15 @@ end;
 
 function TLangDefinition.GetArraySizes(ASizeEdit: TSizeEdit): string;
 var
-   i: integer;
+   i, dcount: integer;
 begin
    result := '';
    if ASizeEdit <> nil then
    begin
-      for i := 1 to ASizeEdit.DimensionCount do
+      dcount := ASizeEdit.DimensionCount;
+      if dcount = MaxInt then
+         dcount := 1;
+      for i := 1 to dcount do
          result := result + Format(VarEntryArraySize, [ASizeEdit.GetDimension(i)]);
       if VarEntryArraySizeStripCount > 0 then
          SetLength(result, result.Length - VarEntryArraySizeStripCount);

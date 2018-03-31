@@ -89,6 +89,32 @@
 
 <HighLighterVarName>SynPythonSyn1</HighLighterVarName>
 
+<!--
+Element FileContentsTemplate
+Description: Template to define source file layout
+Available placeholders:
+   %s1 - project name
+   %s2 - program header section (element ProgramHeaderTemplate)
+   %s3 - libraries section (element LibTemplate)
+   %s4 - global constants section (element ConstTemplate)
+   %s5 - global variables section (element VarTemplate)
+   %s6 - user datatypes section (element DataTypesTemplate)
+   %s7 - user functions section (element FunctionsTemplate)
+   %s8 - main function (element MainFunctionTemplate)
+-->
+<FileContentsTemplate>%s2
+
+%s3
+
+%s4
+
+%s5
+
+%s7
+
+%s8
+</FileContentsTemplate>
+
 <WhileTemplate>while %s1:
 	%b1
 </WhileTemplate>
