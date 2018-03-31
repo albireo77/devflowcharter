@@ -236,7 +236,9 @@ var
    name, line, fieldSize, fieldName, fieldType, funcStr, typeAccess, indent: string;
    dataType: TUserDataType;
    field: TField;
+   i: integer;
 begin
+   i := 0;
    for dataType in GProject.GetUserDataTypes do
    begin
       name := dataType.GetName;
@@ -246,52 +248,64 @@ begin
          typeAccess := IfThen(dataType.chkExtDeclare.Checked, javaLang.DataTypeExternal, javaLang.DataTypeNonExternal);
          if dataType.Kind = dtRecord then
          begin
+            if i > 0 then
+               ALines.AddObject('', dataType);
             line := typeAccess + 'class ' + name + ' {';
             ALines.AddObject(line, dataType);
-            ALines.AddObject('', dataType);
-            for field in dataType.GetFields do
+            if dataType.FieldCount > 0 then
             begin
-               fieldSize := javaLang.GetArraySizes(field.edtSize);
-               line := indent + 'private ' + field.cbType.Text + fieldSize + ' ' + Trim(field.edtName.Text) + ';';
-               ALines.AddObject(line, dataType);
-            end;
-            ALines.AddObject('', dataType);
-            for field in dataType.GetFields do
-            begin
-               fieldSize := IfThen(field.edtSize.DimensionCount > 0, '[]');
-               fieldName := Trim(field.edtName.Text);
-               fieldType := field.cbType.Text;
-               funcStr := fieldName;
-               funcStr[1] := funcStr[1].ToUpper;
-               funcStr := 'get' + funcStr + '()';
-               line := indent + 'public ' + fieldType + fieldSize + ' ' + funcStr + ' {';
-               ALines.AddObject(line, dataType);
-               line := indent + indent + 'return ' + fieldName + ';';
-               ALines.AddObject(line, dataType);
-               line := indent + '}';
-               ALines.AddObject(line, dataType);
-               funcStr := fieldName;
-               funcStr[1] := funcStr[1].ToUpper;
-               funcStr := 'set' + funcStr + '(' + fieldType + fieldSize + ' ' + fieldName + ')';
-               line := indent + 'public void ' + funcStr + ' {';
-               ALines.AddObject(line, dataType);
-               line := indent + indent + 'this.' + fieldName + ' = ' + fieldName + ';';
-               ALines.AddObject(line, dataType);
-               line := indent + '}';
-               ALines.AddObject(line, dataType);
+               ALines.AddObject('', dataType);
+               for field in dataType.GetFields do
+               begin
+                  fieldSize := javaLang.GetArraySizes(field.edtSize);
+                  line := indent + 'private ' + field.cbType.Text + fieldSize + ' ' + Trim(field.edtName.Text) + ';';
+                  ALines.AddObject(line, dataType);
+               end;
+               ALines.AddObject('', dataType);
+               for field in dataType.GetFields do
+               begin
+                  fieldSize := IfThen(field.edtSize.DimensionCount > 0, '[]');
+                  fieldName := Trim(field.edtName.Text);
+                  fieldType := field.cbType.Text;
+                  funcStr := fieldName;
+                  funcStr[1] := funcStr[1].ToUpper;
+                  funcStr := 'get' + funcStr + '()';
+                  line := indent + 'public ' + fieldType + fieldSize + ' ' + funcStr + ' {';
+                  ALines.AddObject(line, dataType);
+                  line := indent + indent + 'return ' + fieldName + ';';
+                  ALines.AddObject(line, dataType);
+                  line := indent + '}';
+                  ALines.AddObject(line, dataType);
+                  funcStr := fieldName;
+                  funcStr[1] := funcStr[1].ToUpper;
+                  funcStr := 'set' + funcStr + '(' + fieldType + fieldSize + ' ' + fieldName + ')';
+                  line := indent + 'public void ' + funcStr + ' {';
+                  ALines.AddObject(line, dataType);
+                  line := indent + indent + 'this.' + fieldName + ' = ' + fieldName + ';';
+                  ALines.AddObject(line, dataType);
+                  line := indent + '}';
+                  ALines.AddObject(line, dataType);
+               end;
             end;
             ALines.AddObject('}', dataType);
+            i := 1;
          end
          else if dataType.Kind = dtEnum then
          begin
+            if i > 0 then
+               ALines.AddObject('', dataType);
             line := typeAccess + 'enum ' + name + ' {';
             ALines.AddObject(line, dataType);
-            line := indent;
-            for field in dataType.GetFields do
-               line := line + Trim(field.edtName.Text).ToUpper + ', ';
-            SetLength(line, Length(line)-2);
-            ALines.AddObject(line, dataType);
+            if dataType.FieldCount > 0 then
+            begin
+               line := indent;
+               for field in dataType.GetFields do
+                  line := line + Trim(field.edtName.Text).ToUpper + ', ';
+               SetLength(line, Length(line)-2);
+               ALines.AddObject(line, dataType);
+            end;
             ALines.AddObject('}', dataType);
+            i := 1;
          end;
       end;
    end;
