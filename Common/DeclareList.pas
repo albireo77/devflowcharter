@@ -157,8 +157,8 @@ const
 implementation
 
 uses
-   System.SysUtils, System.Types, ApplicationCommon, XMLProcessor, Project, UserDataType, LangDefinition,
-   ParserHelper;
+   System.SysUtils, System.Types, System.StrUtils, ApplicationCommon, XMLProcessor,
+   Project, UserDataType, LangDefinition, ParserHelper;
 
 constructor TDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
 var
@@ -443,7 +443,7 @@ var
    dataType: TUserDataType;
    size: string;
 begin
-   result := 0;
+   result := -1;
    i := sgList.Cols[VAR_NAME_COL].IndexOf(AVarName);
    if i < 1 then
       Exit;
@@ -453,16 +453,20 @@ begin
       if dataType <> nil then
          result := dataType.GetDimensionCount;
    end;
-   size := sgList.Cells[VAR_SIZE_COL, i];
-   if size.isEmpty then
-      Exit(MaxInt);
-   for i := 1 to size.Length do
+   size := ReplaceStr(sgList.Cells[VAR_SIZE_COL, i], ' ', '');
+   if size = UNBOUNDED_ARRAY_SIZE then
+      result := MaxInt
+   else if not size.IsEmpty then
    begin
-      if size[i] = ',' then
+      result := 0;
+      for i := 1 to size.Length do
+      begin
+         if size[i] = ',' then
+            Inc(result);
+      end;
+      if size <> '1' then
          Inc(result);
    end;
-   if size <> '1' then
-      Inc(result);
 end;
 
 function TVarDeclareList.GetDimension(const AVarName: string; ADimensIndex: integer): string;

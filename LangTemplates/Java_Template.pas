@@ -196,12 +196,13 @@ end;
 procedure Java_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
 var
    i, p1, p2: integer;
-   varType, varInit, varVal, varGeneric, libImport, varAccess: string;
+   varType, varInit, varVal, varGeneric, libImport, varAccess, varSize, varName: string;
 begin
    if AVarList <> nil then
    begin
       for i := 1 to AVarList.sgList.RowCount-2 do
       begin
+         varName := AVarList.sgList.Cells[VAR_NAME_COL, i];
          varType :=  AVarList.sgList.Cells[VAR_TYPE_COL, i];
          varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
          varGeneric := '';
@@ -222,10 +223,24 @@ begin
                FImportLines.Add(libImport);
             varInit := ' = ' + varInit
          end;
+         varSize := '';
          varAccess := '';
+         p1 := AVarList.GetDimensionCount(varName);
+         if p1 > 0 then
+         begin
+            if p1 <> MaxInt then
+            begin
+               for p2 := 1 to p1 do
+                  varSize := varSize + Format(javaLang.VarEntryArraySize, [AVarList.GetDimension(varName, p2)]);
+            end
+            else
+               varSize := Format(javaLang.VarEntryArraySize, ['']);
+            if javaLang.VarEntryArraySizeStripCount > 0 then
+               SetLength(varSize, varSize.Length - javaLang.VarEntryArraySizeStripCount);
+         end;
          if AVarList = GProject.GlobalVars then
             varAccess := IfThen(AVarList.IsExternal(i), 'public ', 'private ');
-         varVal := varAccess + varType + varGeneric + ' ' + AVarList.sgList.Cells[VAR_NAME_COL, i] + varInit + ';';
+         varVal := varAccess + varType + varSize + varGeneric + ' ' + varName + varInit + ';';
          ALines.Add(varVal);
       end;
    end;

@@ -66,21 +66,26 @@ var
    lang: TLangDefinition;
 begin
    dcount := GetDimensionCount;
-   if dcount = MaxInt then
-      Exit(GInfra.CurrentLang.AllowUnboundedArrays);
-   result := false;
-   txt := ReplaceStr(Text, ' ', '');
-   if (txt.Length > 0) and (Pos(',-', txt) = 0) and (Pos(',0', txt) = 0) and not CharInSet(txt[1], ['0', '-']) then
+   if dcount < 0 then
+      result := false
+   else if dcount = MaxInt then
+      result := GInfra.CurrentLang.AllowUnboundedArrays
+   else
    begin
-      result := true;
-      lang := GInfra.GetLangDefinition(PASCAL_LANG_ID);
-      if (lang <> nil) and Assigned(lang.Parse) then
+      result := false;
+      txt := ReplaceStr(Text, ' ', '');
+      if (txt.Length > 0) and (Pos(',-', txt) = 0) and (Pos(',0', txt) = 0) and not CharInSet(txt[1], ['0', '-']) then
       begin
-         for i := 1 to dcount do
+         result := true;
+         lang := GInfra.GetLangDefinition(PASCAL_LANG_ID);
+         if (lang <> nil) and Assigned(lang.Parse) then
          begin
-            result := lang.Parse(GetDimension(i), prsVarSize) = 0;
-            if not result then
-               break;
+            for i := 1 to dcount do
+            begin
+               result := lang.Parse(GetDimension(i), prsVarSize) = 0;
+               if not result then
+                  break;
+            end;
          end;
       end;
    end;
@@ -91,17 +96,22 @@ var
    i: integer;
    txt: string;
 begin
-   txt := Trim(Text);
-   if txt.isEmpty then
-      Exit(MaxInt);
-   result := 0;
-   for i := 1 to txt.Length do
+   txt := ReplaceStr(Text, ' ', '');
+   if txt.IsEmpty then
+      result := -1
+   else if txt = UNBOUNDED_ARRAY_SIZE then
+      result := MaxInt
+   else
    begin
-      if txt[i] = ',' then
+      result := 0;
+      for i := 1 to txt.Length do
+      begin
+         if txt[i] = ',' then
+            Inc(result);
+      end;
+      if txt <> '1' then
          Inc(result);
    end;
-   if txt <> '1' then
-      Inc(result);
 end;
 
 function TSizeEdit.GetDimension(idx: integer): string;
@@ -111,7 +121,7 @@ var
 begin
    result := '';
    cnt := 1;
-   txt := Trim(Text);
+   txt := ReplaceStr(Text, ' ', '');
    for i := 1 to txt.length do
    begin
       if txt[i] <> ',' then

@@ -1008,9 +1008,12 @@ begin
    begin
       dcount := ASizeEdit.DimensionCount;
       if dcount = MaxInt then
-         dcount := 1;
-      for i := 1 to dcount do
-         result := result + Format(VarEntryArraySize, [ASizeEdit.GetDimension(i)]);
+         result := Format(VarEntryArraySize, [''])
+      else
+      begin
+         for i := 1 to dcount do
+            result := result + Format(VarEntryArraySize, [ASizeEdit.GetDimension(i)]);
+      end;
       if VarEntryArraySizeStripCount > 0 then
          SetLength(result, result.Length - VarEntryArraySizeStripCount);
    end;

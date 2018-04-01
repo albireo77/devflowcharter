@@ -187,6 +187,8 @@ const   // Global constants
 
         MAIN_PAGE_MARKER  = 'mainPage#!';
 
+        UNBOUNDED_ARRAY_SIZE = '[]';
+
         MARGIN_X = 50;
         MARGIN_Y = 50;
 
