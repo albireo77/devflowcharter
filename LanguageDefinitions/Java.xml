@@ -1,10 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 
+<!-- 
+Java language definition file for devFlowcharter.
+It may not contain all supported tags. For all supported tags and their descriptions go to file Example.xml
+-->
+
 <Language>
     <Name>Java</Name>
     <CommentBegin>/*</CommentBegin>			<!-- if language supports only single-line comments then CommentBegin tag -->
     <CommentEnd>*/</CommentEnd>				<!-- should contain comment symbol and CommentEnd tag should be empty or removed -->
-    <InputFunction>in()</InputFunction>
+    <InputFunction></InputFunction>
     <OutputFunction>System.out.println()</OutputFunction>
     <DefaultExt>java</DefaultExt>
     <LibraryExt>.jar</LibraryExt>
@@ -508,7 +513,7 @@ Element VarEntryArraySize
 Description: Entry for array's single dimension
    %s - size of array dimension
 -->
-<VarEntryArraySize>[%s]</VarEntryArraySize>
+<VarEntryArraySize>[]</VarEntryArraySize>
 
 <!--
 Element VarEntryArraySizeStripCount

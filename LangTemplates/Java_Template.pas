@@ -221,7 +221,7 @@ begin
             libImport := ExtractImplementer(varType, varInit);
             if (libImport <> '') and (FImportLines <> nil) and (FImportLines.IndexOf(libImport) = -1) then
                FImportLines.Add(libImport);
-            varInit := ' = ' + varInit
+            varInit := ' = ' + varInit;
          end;
          varSize := '';
          varAccess := '';
@@ -232,6 +232,12 @@ begin
             begin
                for p2 := 1 to p1 do
                   varSize := varSize + Format(javaLang.VarEntryArraySize, [AVarList.GetDimension(varName, p2)]);
+               if varInit.IsEmpty then
+               begin
+                  for p2 := 1 to p1 do
+                     varInit := varInit + '[' + AVarList.GetDimension(varName, p2) + ']';
+                  varInit := ' = new ' + varType + varInit;
+               end;
             end
             else
                varSize := Format(javaLang.VarEntryArraySize, ['']);

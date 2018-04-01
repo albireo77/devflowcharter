@@ -1,9 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 
-<!--
-TIBASIC definition file for devFlowcharter
-This file may not contain all supported tags.
-For all supported tags refer to Example.xml file.
+<!-- 
+TiBasic language definition file for devFlowcharter.
+It may not contain all supported tags. For all supported tags and their descriptions go to file Example.xml
 -->
 
 <Language>
@@ -369,10 +368,35 @@ For all supported tags refer to Example.xml file.
 		<Function>ZoomTrig</Function>
     </NativeFunctions>
 
+<!--
+Element ProcedureLabelKey
+Description: Label displayed for flowchart of function that returns nothing (type = none).
+It should contain name of key (free to be added) present in translation file (.lng) in Others section
+-->
 <ProcedureLabelKey>ProcedureLabelTiBasic</ProcedureLabelKey>
+
+<!--
+Element FunctionLabelKey
+Description: Label displayed for flowchart of function that returns some data
+-->
 <FunctionLabelKey>FunctionLabelTiBasic</FunctionLabelKey>
+
+<!--
+Element ProgramLabelKey
+Description: Label displayed for flowchart of project's main program
+-->
 <ProgramLabelKey>ProgramLabelTiBasic</ProgramLabelKey>
 
+<!--
+Element RepeatUntilDescTemplate
+DescTemplate elements are used in Explorer window to display description of some troublesome blocks when it's impossible to extract proper description from block template.
+Procedure for building description for flowchart elements in Explorer window is as follows:
+	1. Use value proper DescTemplate element if it exists and is not empty, otherwise
+	2. Use value from expression extracted from block template (e.g. from ForDoTemplate element); if such element does not exist or no expression placeholder (%s1) is found then
+	3. Use value returned by hardcoded Delphi procedure 
+Available placeholder:
+   %s1 - condition expression 
+-->
 <RepeatUntilDescTemplate>Loop If Not (%s1)</RepeatUntilDescTemplate>
 
 <!--
@@ -427,12 +451,16 @@ EndIf
 
 <ElseLabel>Else</ElseLabel>
 
-<ForDoVarList>false</ForDoVarList>
-
 <ForDoTemplate>For %s1,%s2,%s3
 	%b1
 EndFor
 </ForDoTemplate>
+
+<!--
+Element ForDoVarList
+Determines whether control variable in for..do block should be selected from dropdown list (true) or user is free to enter anything (false)
+-->
+<ForDoVarList>false</ForDoVarList>
 
 <FunctionCallTemplate>%s1</FunctionCallTemplate>
 

@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <!-- 
-This is reference language definition file for devFlowcharter.
+Reference language definition file for devFlowcharter.
 It contains all supported tags.
 To create file for new language just Save As this file and modify new file according to your needs. 
-Most of the tags are optional and may be removed if not needed. The most crucial (and mandatory) is tag FileContentsTemplate that defines layout of source file.
+Most of the tags are optional and may be removed if not needed. The most crucial and mandatory tag is FileContentsTemplate that defines source file layout.
 -->
 
 <Language>
@@ -93,20 +93,20 @@ library attribute contains library name
 
 <!--
 Element ProcedureLabelKey
-Description: Label displayed close to flowchart for body of function that does not return specific data type.
+Description: Label displayed for flowchart of function that returns nothing (type = none).
 It should contain name of key (free to be added) present in translation file (.lng) in Others section
 -->
 <ProcedureLabelKey>ProcedureLabelExample</ProcedureLabelKey>
 
 <!--
 Element FunctionLabelKey
-Description: Label displayed close to flowchart for body of function that returns specific data type
+Description: Label displayed for flowchart of function that returns some data
 -->
 <FunctionLabelKey>FunctionLabelExample</FunctionLabelKey>
 
 <!--
 Element ProgramLabelKey
-Description: Label displayed close to flowchart for body of project's main program
+Description: Label displayed for flowchart of project's main program
 -->
 <ProgramLabelKey>ProgramLabelExample</ProgramLabelKey>
 
@@ -239,8 +239,7 @@ Used to switch default repeat..until loop behaviour to work as do..while in C
 
 <!--
 Element ForDoVarList
-Determines whether control variable in ForDo block should be selected from dropdown list (true) 
-or user is free to enter anything (false)
+Determines whether control variable in for..do block should be selected from dropdown list (true) or user is free to enter anything (false)
 -->
 <ForDoVarList>true</ForDoVarList>
 

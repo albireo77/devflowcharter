@@ -1,9 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <!-- 
-Pascal definition file for devFlowcharter
-This file may not contain all supported tags.
-For all supported tags refer to Example.xml file. 
+Pascal language definition file for devFlowcharter.
+It may not contain all supported tags. For all supported tags and their descriptions go to file Example.xml
 -->
 
 <Language>

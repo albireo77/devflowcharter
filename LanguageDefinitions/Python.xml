@@ -1,5 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 
+<!-- 
+Python language definition file for devFlowcharter.
+It may not contain all supported tags. For all supported tags and their descriptions go to file Example.xml
+-->
+
 <Language>
     <Name>Python 3</Name>
     <CommentBegin>#</CommentBegin>
