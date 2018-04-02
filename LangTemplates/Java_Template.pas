@@ -196,7 +196,7 @@ end;
 procedure Java_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
 var
    i, p1, p2: integer;
-   varType, varInit, varVal, varGeneric, libImport, varAccess, varSize, varName: string;
+   varType, varInit, varInit2, varVal, varGeneric, libImport, varAccess, varSize, varName, dim: string;
 begin
    if AVarList <> nil then
    begin
@@ -230,14 +230,15 @@ begin
          begin
             if p1 <> MaxInt then
             begin
+               varInit2 := '';
                for p2 := 1 to p1 do
-                  varSize := varSize + Format(javaLang.VarEntryArraySize, [AVarList.GetDimension(varName, p2)]);
-               if varInit.IsEmpty then
                begin
-                  for p2 := 1 to p1 do
-                     varInit := varInit + '[' + AVarList.GetDimension(varName, p2) + ']';
-                  varInit := ' = new ' + varType + varInit;
+                  dim := AVarList.GetDimension(varName, p2);
+                  varSize := varSize + Format(javaLang.VarEntryArraySize, [dim]);
+                  varInit2 := varInit2 + '[' + dim + ']';
                end;
+               if varInit.IsEmpty then
+                  varInit := ' = new ' + varType + varInit2;
             end
             else
                varSize := Format(javaLang.VarEntryArraySize, ['']);
@@ -246,15 +247,15 @@ begin
          end;
          if AVarList = GProject.GlobalVars then
             varAccess := IfThen(AVarList.IsExternal(i), 'public ', 'private ');
-         varVal := varAccess + varType + varSize + varGeneric + ' ' + varName + varInit + ';';
-         ALines.Add(varVal);
+         varVal := varAccess + varType + varGeneric + varSize + ' ' + varName + varInit + ';';
+         ALines.AddObject(varVal, AVarList);
       end;
    end;
 end;
 
 procedure Java_UserDataTypesSectionGenerator(ALines: TStringList);
 var
-   name, line, fieldSize, fieldName, fieldType, funcStr, typeAccess, indent: string;
+   name, line, fieldSize, fieldName, fieldType, funcStrU, typeAccess, indent: string;
    dataType: TUserDataType;
    field: TField;
    i: integer;
@@ -285,27 +286,21 @@ begin
                ALines.AddObject('', dataType);
                for field in dataType.GetFields do
                begin
-                  fieldSize := IfThen(field.edtSize.DimensionCount > 0, '[]');
+                  fieldSize := javaLang.GetArraySizes(field.edtSize);
                   fieldName := Trim(field.edtName.Text);
                   fieldType := field.cbType.Text;
-                  funcStr := fieldName;
-                  funcStr[1] := funcStr[1].ToUpper;
-                  funcStr := 'get' + funcStr + '()';
-                  line := indent + 'public ' + fieldType + fieldSize + ' ' + funcStr + ' {';
+                  funcStrU := fieldName;
+                  funcStrU[1] := funcStrU[1].ToUpper;
+                  line := indent + 'public ' + fieldType + fieldSize + ' get' + funcStrU + '() {';
                   ALines.AddObject(line, dataType);
                   line := indent + indent + 'return ' + fieldName + ';';
                   ALines.AddObject(line, dataType);
-                  line := indent + '}';
-                  ALines.AddObject(line, dataType);
-                  funcStr := fieldName;
-                  funcStr[1] := funcStr[1].ToUpper;
-                  funcStr := 'set' + funcStr + '(' + fieldType + fieldSize + ' ' + fieldName + ')';
-                  line := indent + 'public void ' + funcStr + ' {';
+                  ALines.AddObject(indent + '}', dataType);
+                  line := indent + 'public void set' + funcStrU + '(' + fieldType + fieldSize + ' ' + fieldName + ') {';
                   ALines.AddObject(line, dataType);
                   line := indent + indent + 'this.' + fieldName + ' = ' + fieldName + ';';
                   ALines.AddObject(line, dataType);
-                  line := indent + '}';
-                  ALines.AddObject(line, dataType);
+                  ALines.AddObject(indent + '}', dataType);
                end;
             end;
             ALines.AddObject('}', dataType);
