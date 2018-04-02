@@ -277,18 +277,15 @@ begin
             if dataType.FieldCount > 0 then
             begin
                ALines.AddObject('', dataType);
-               for field in dataType.GetFields do
-               begin
-                  fieldSize := javaLang.GetArraySizes(field.edtSize);
-                  line := indent + 'private ' + field.cbType.Text + fieldSize + ' ' + Trim(field.edtName.Text) + ';';
-                  ALines.AddObject(line, dataType);
-               end;
+               i := ALines.Count;
                ALines.AddObject('', dataType);
                for field in dataType.GetFields do
                begin
                   fieldSize := javaLang.GetArraySizes(field.edtSize);
                   fieldName := Trim(field.edtName.Text);
                   fieldType := field.cbType.Text;
+                  line := indent + 'private ' + fieldType + fieldSize + ' ' + fieldName + ';';
+                  ALines.InsertObject(i, line, dataType);
                   funcStrU := fieldName;
                   funcStrU[1] := funcStrU[1].ToUpper;
                   line := indent + 'public ' + fieldType + fieldSize + ' get' + funcStrU + '() {';
@@ -301,6 +298,7 @@ begin
                   line := indent + indent + 'this.' + fieldName + ' = ' + fieldName + ';';
                   ALines.AddObject(line, dataType);
                   ALines.AddObject(indent + '}', dataType);
+                  i := i + 1;
                end;
             end;
             ALines.AddObject('}', dataType);
