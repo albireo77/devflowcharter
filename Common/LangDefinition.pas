@@ -1001,21 +1001,20 @@ end;
 
 function TLangDefinition.GetArraySizes(ASizeEdit: TSizeEdit): string;
 var
-   i, dcount: integer;
+   i: integer;
+   dims: TArray<string>;
 begin
    result := '';
    if ASizeEdit <> nil then
    begin
-      dcount := ASizeEdit.DimensionCount;
-      if dcount = MaxInt then
-         result := Format(VarEntryArraySize, [''])
-      else
+      dims := ASizeEdit.GetDimensions;
+      if dims <> nil then
       begin
-         for i := 1 to dcount do
-            result := result + Format(VarEntryArraySize, [ASizeEdit.GetDimension(i)]);
+         for i := 0 to High(dims) do
+            result := result + Format(VarEntryArraySize, [dims[i]]);
+         if VarEntryArraySizeStripCount > 0 then
+            SetLength(result, result.Length - VarEntryArraySizeStripCount);
       end;
-      if VarEntryArraySizeStripCount > 0 then
-         SetLength(result, result.Length - VarEntryArraySizeStripCount);
    end;
 end;
 

@@ -121,7 +121,7 @@ type
          procedure FillForList(AList: TStrings);
          function IsValidLoopVar(const AName: string): boolean;
          function GetDimensionCount(const AVarName: string; AIncludeTypeDimens: boolean = false): integer;
-         function GetDimension(const AVarName: string; ADimensIndex: integer): string;
+         function GetDimensions(const AVarName: string): TArray<string>;
    end;
 
    TConstDeclareList = class(TDeclareList)
@@ -439,68 +439,39 @@ end;
 
 function TVarDeclareList.GetDimensionCount(const AVarName: string; AIncludeTypeDimens: boolean = false): integer;
 var
-   i: integer;
+   i, d: integer;
    dataType: TUserDataType;
-   size: string;
 begin
-   result := -1;
    i := sgList.Cols[VAR_NAME_COL].IndexOf(AVarName);
    if i < 1 then
-      Exit;
+      Exit(-1);
+   result := 0;
    if AIncludeTypeDimens then
    begin
       dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
       if dataType <> nil then
          result := dataType.GetDimensionCount;
    end;
-   size := ReplaceStr(sgList.Cells[VAR_SIZE_COL, i], ' ', '');
-   if size = UNBOUNDED_ARRAY_SIZE then
-      result := MaxInt
-   else if not size.IsEmpty then
-   begin
-      result := 0;
-      for i := 1 to size.Length do
-      begin
-         if size[i] = ',' then
-            Inc(result);
-      end;
-      if size <> '1' then
-         Inc(result);
-   end;
+   d := TInfra.GetDimensionCount(sgList.Cells[VAR_SIZE_COL, i]);
+   if d > 0 then
+      result := result + d;
 end;
 
-function TVarDeclareList.GetDimension(const AVarName: string; ADimensIndex: integer): string;
+function TVarDeclareList.GetDimensions(const AVarName: string): TArray<string>;
 var
-   i, a: integer;
+   i: integer;
    size, dims: string;
    dataType: TUserDataType;
 begin
-   result := '';
+   result := nil;
    i := sgList.Cols[VAR_NAME_COL].IndexOf(AVarName);
    if i < 1 then
       Exit;
    size := sgList.Cells[VAR_SIZE_COL, i];
    dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
    if dataType <> nil then
-   begin
-      dims := dataType.GetDimensions;
-      if not dims.IsEmpty then
-         size := size + ',' + dims;
-   end;
-   i := 1;
-   for a := 1 to size.Length do
-   begin
-      if size[a] <> ',' then
-         result := result + size[a]
-      else
-      begin
-         Inc(i);
-         if i > ADimensIndex then
-            break
-         else
-            result := '';
-      end;
-   end;
+      size := size + dataType.GetDimensions;
+   result := TInfra.GetDimensions(size);
 end;
 
 procedure TDeclareList.OnDblClickList(Sender: TObject);

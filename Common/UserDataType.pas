@@ -367,7 +367,8 @@ begin
    if (Kind = dtArray) and (sbxElements.ControlCount > 0) then
    begin
       field := TField(sbxElements.Controls[0]);
-      result := field.edtSize.DimensionCount;
+      if field.edtSize.Font.Color <> NOK_COLOR then
+         result := field.edtSize.DimensionCount;
    end;
 end;
 
@@ -379,7 +380,8 @@ begin
    if (Kind = dtArray) and (sbxElements.ControlCount > 0) then
    begin
       field := TField(sbxElements.Controls[0]);
-      result := Trim(field.edtSize.Text);
+      if field.edtSize.Font.Color <> NOK_COLOR then
+         result := Trim(field.edtSize.Text);
    end;
 end;
 

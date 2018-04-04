@@ -157,6 +157,7 @@ procedure Pascal_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareL
 var
    buf, varSize, varInit, line, name, lType, currType: string;
    i, a, b, dCount, cnt: integer;
+   dims: TArray<string>;
 begin
    if (AVarList <> nil) and (AVarList.sgList.RowCount > 2) and (GProject <> nil) and (GProject.GlobalVars <> nil) then
    begin
@@ -188,14 +189,12 @@ begin
                   if dCount > 0 then
                   begin
                      varSize := '';
-                     if dCount < MaxInt then
+                     dims := AVarList.GetDimensions(name);
+                     if dims <> nil then
                      begin
-                        for b := 1 to dCount do
-                        begin
-                           varSize := varSize + '1..' + AVarList.GetDimension(name, b);
-                           if b < dCount then
-                              varSize := varSize + ', ';
-                        end;
+                        for b := 0 to High(dims) do
+                           varSize := varSize + '1..' + dims[b] + ', ';
+                        SetLength(varSize, Length(varSize)-2);
                      end;
                      line := line + 'array[' + varSize + '] of ';
                   end;

@@ -282,6 +282,7 @@ var
    varStr, varSize, varInit, initEntry, lRecord, enum, name, typeStr: string;
    varTemplate, varList: TStringList;
    isExtern: boolean;
+   dims: TArray<string>;
 begin
    lang := GInfra.CurrentLang;
    if (AVarList <> nil) and (AVarList.sgList.RowCount > 2) and not lang.VarTemplate.IsEmpty then
@@ -299,10 +300,11 @@ begin
                dcount := AVarList.GetDimensionCount(name);
                if dcount > 0 then
                begin
-                  if dcount <> MaxInt then
+                  dims := AVarList.GetDimensions(name);
+                  if dims <> nil then
                   begin
-                     for b := 1 to dcount do
-                        varSize := varSize + Format(lang.VarEntryArraySize, [AVarList.GetDimension(name, b)]);
+                     for b := 0 to High(dims) do
+                        varSize := varSize + Format(lang.VarEntryArraySize, [dims[b]]);
                      if lang.VarEntryArraySizeStripCount > 0 then
                         SetLength(varSize, varSize.Length - lang.VarEntryArraySizeStripCount);
                   end;

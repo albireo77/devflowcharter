@@ -196,7 +196,8 @@ end;
 procedure Java_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
 var
    i, p1, p2: integer;
-   varType, varInit, varInit2, varVal, varGeneric, libImport, varAccess, varSize, varName, dim: string;
+   varType, varInit, varInit2, varVal, varGeneric, libImport, varAccess, varSize, varName: string;
+   dims: TArray<string>;
 begin
    if AVarList <> nil then
    begin
@@ -206,6 +207,8 @@ begin
          varType :=  AVarList.sgList.Cells[VAR_TYPE_COL, i];
          varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
          varGeneric := '';
+         varSize := '';
+         varAccess := '';
          if not varInit.IsEmpty then
          begin
             if TParserHelper.IsGenericType(varType) then
@@ -223,27 +226,23 @@ begin
                FImportLines.Add(libImport);
             varInit := ' = ' + varInit;
          end;
-         varSize := '';
-         varAccess := '';
          p1 := AVarList.GetDimensionCount(varName);
          if p1 > 0 then
          begin
-            if p1 <> MaxInt then
+            varInit2 := '';
+            dims := AVarList.GetDimensions(varName);
+            if dims <> nil then
             begin
-               varInit2 := '';
-               for p2 := 1 to p1 do
+               for p2 := 0 to High(dims) do
                begin
-                  dim := AVarList.GetDimension(varName, p2);
-                  varSize := varSize + Format(javaLang.VarEntryArraySize, [dim]);
-                  varInit2 := varInit2 + '[' + dim + ']';
+                  varSize := varSize + Format(javaLang.VarEntryArraySize, [dims[p2]]);
+                  varInit2 := varInit2 + '[' + dims[p2] + ']';
                end;
                if varInit.IsEmpty then
                   varInit := ' = new ' + varType + varInit2;
-            end
-            else
-               varSize := Format(javaLang.VarEntryArraySize, ['']);
-            if javaLang.VarEntryArraySizeStripCount > 0 then
-               SetLength(varSize, varSize.Length - javaLang.VarEntryArraySizeStripCount);
+               if javaLang.VarEntryArraySizeStripCount > 0 then
+                  SetLength(varSize, varSize.Length - javaLang.VarEntryArraySizeStripCount);
+            end;
          end;
          if AVarList = GProject.GlobalVars then
             varAccess := IfThen(AVarList.IsExternal(i), 'public ', 'private ');

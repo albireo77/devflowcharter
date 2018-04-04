@@ -33,7 +33,7 @@ type
         property DimensionCount: integer read GetDimensionCount default 0;
         constructor Create(AParent: TWinControl);
         function ParseSize: boolean;
-        function GetDimension(idx: integer): string;
+        function GetDimensions: TArray<string>;
         procedure OnChangeSize(Sender: TObject);
   end;
 
@@ -61,30 +61,39 @@ end;
 
 function TSizeEdit.ParseSize: boolean;
 var
-   txt: string;
+   dim: string;
    i, dcount: integer;
    lang: TLangDefinition;
+   dims: TArray<string>;
 begin
+   result := true;
    dcount := GetDimensionCount;
    if dcount < 0 then
       result := false
-   else if dcount = MaxInt then
-      result := GInfra.CurrentLang.AllowUnboundedArrays
-   else
+   else if dcount > 0 then
    begin
-      result := false;
-      txt := ReplaceStr(Text, ' ', '');
-      if (txt.Length > 0) and (Pos(',-', txt) = 0) and (Pos(',0', txt) = 0) and not CharInSet(txt[1], ['0', '-']) then
+      dims := GetDimensions;
+      if dims = nil then
+         result := false
+      else
       begin
-         result := true;
-         lang := GInfra.GetLangDefinition(PASCAL_LANG_ID);
-         if (lang <> nil) and Assigned(lang.Parse) then
+         for i := 0 to High(dims) do
          begin
-            for i := 1 to dcount do
+            dim := dims[i];
+            if not dim.IsEmpty then
             begin
-               result := lang.Parse(GetDimension(i), prsVarSize) = 0;
-               if not result then
+               if (dim[1] = '0') or (dim[1] = '-') then
+               begin
+                  result := false;
                   break;
+               end;
+               lang := GInfra.GetLangDefinition(PASCAL_LANG_ID);
+               if (lang <> nil) and Assigned(lang.Parse) then
+               begin
+                  result := lang.Parse(dim, prsVarSize) = 0;
+                  if not result then
+                     break;
+               end;
             end;
          end;
       end;
@@ -92,49 +101,13 @@ begin
 end;
 
 function TSizeEdit.GetDimensionCount: integer;
-var
-   i: integer;
-   txt: string;
 begin
-   txt := ReplaceStr(Text, ' ', '');
-   if txt.IsEmpty then
-      result := -1
-   else if txt = UNBOUNDED_ARRAY_SIZE then
-      result := MaxInt
-   else
-   begin
-      result := 0;
-      for i := 1 to txt.Length do
-      begin
-         if txt[i] = ',' then
-            Inc(result);
-      end;
-      if txt <> '1' then
-         Inc(result);
-   end;
+   result := TInfra.GetDimensionCount(Text);
 end;
 
-function TSizeEdit.GetDimension(idx: integer): string;
-var
-   i, cnt: integer;
-   txt: string;
+function TSizeEdit.GetDimensions: TArray<string>;
 begin
-   result := '';
-   cnt := 1;
-   txt := ReplaceStr(Text, ' ', '');
-   for i := 1 to txt.length do
-   begin
-      if txt[i] <> ',' then
-         result := result + txt[i]
-      else
-      begin
-         Inc(cnt);
-         if cnt > idx then
-            break
-         else
-            result := '';
-      end;
-   end;
+   result := TInfra.GetDimensions(Text);
 end;
 
 procedure TSizeEdit.OnChangeSize(Sender: TObject);

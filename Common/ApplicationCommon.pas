@@ -102,6 +102,8 @@ type
          class function GetBaseForms: IEnumerable<TBaseForm>;
          class function DecodeFontStyle(AValue: integer): TFontStyles;
          class function EncodeFontStyle(AStyle: TFontStyles): string;
+         class function GetDimensionCount(const AText: string): integer;
+         class function GetDimensions(const AText: string): TArray<string>;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetLangDefinition(const AName: string): TLangDefinition;
          function SetCurrentLang(const ALangName: string): TLangDefinition;
@@ -186,8 +188,6 @@ const   // Global constants
         VERSION_NUMBER_SEP  = '.';
 
         MAIN_PAGE_MARKER  = 'mainPage#!';
-
-        UNBOUNDED_ARRAY_SIZE = '[]';
 
         MARGIN_X = 50;
         MARGIN_Y = 50;
@@ -1283,6 +1283,82 @@ begin
       ADest := Copy(ASource, i+1, MaxInt);
       SetLength(ASource, i-1);
    end;
+end;
+
+class function TInfra.GetDimensions(const AText: string): TArray<string>;
+var
+   txt, s: string;
+   d, i: integer;
+begin
+   txt := ReplaceStr(AText, ' ', '');
+   d := GetDimensionCount(txt);
+   if d < 1 then
+      Exit(nil);
+   SetLength(result, d);
+   s := '';
+   d := 0;
+   for i := 1 to txt.Length do
+   begin
+      if txt[i] = ']' then
+      begin
+         result[d] := s;
+         s := '';
+         d := d + 1;
+      end
+      else if txt[i] <> '[' then
+         s := s + txt[i];
+   end;
+end;
+
+class function TInfra.GetDimensionCount(const AText: string): integer;
+var
+   i: integer;
+   txt: string;
+   nextOpen: boolean;
+begin
+   txt := ReplaceStr(AText, ' ', '');
+   if txt.StartsWith('[') then
+   begin
+      if not txt.EndsWith(']') then
+         Exit(-1);
+      result := 0;
+      nextOpen := true;
+      for i := 1 to txt.Length do
+      begin
+         if txt[i] = '[' then
+         begin
+            if nextOpen then
+               nextOpen := false
+            else
+            begin
+               result := -1;
+               break;
+            end;
+         end
+         else if txt[i] = ']' then
+         begin
+            if not nextOpen then
+            begin
+               if (txt[i-1] = '[') and not GInfra.CurrentLang.AllowUnboundedArrays then
+               begin
+                  result := -1;
+                  break;
+               end;
+               nextOpen := true;
+            end
+            else
+            begin
+               result := -1;
+               break;
+            end;
+            result := result + 1;
+         end;
+      end;
+   end
+   else if txt <> '1' then
+      result := -1
+   else
+      result := 0;
 end;
 
 function TInfra.ValidateConstId(const AId: string): integer;
