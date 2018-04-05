@@ -64,7 +64,7 @@ type
       property IsRecord: boolean read FIsRecord;
       property IsEnum: boolean read FIsEnum;
       property IsPointer: boolean read FIsPointer;
-      procedure New;
+      class function New: TIdentInfo; static;
    end;
 
    TParserHelper = class(TObject)
@@ -138,27 +138,27 @@ uses
    Vcl.StdCtrls, System.SysUtils, UserDataType, Statement, CommonTypes, Case_Block,
    Main_Block, ForDo_Block, LangDefinition, CommonInterfaces;
 
-procedure TIdentInfo.New;
+class function TIdentInfo.New: TIdentInfo;
 begin
-   FType := NOT_DEFINED;
-   FTypeAsString := i18Manager.GetString('Unknown');
-   FTypeOriginal := FType;
-   FTypeOriginalAsString := FTypeAsString;
-   FTypePointer := FType;
-   IdentType := UNKNOWN;
-   Size := INCORRECT_SIZE;
-   SizeAsString := INCORRECT_SIZE.ToString;
-   SizeExpArrayAsString := '';
-   Value := '';
-   Ident := '';
-   Scope := GLOBAL;
-   DimensCount := 0;
-   FIsInteger := false;
-   FIsReal := false;
-   FIsNumeric := false;
-   FIsRecord := false;
-   FIsENum := false;
-   FIsPointer := false;
+   result.FType := NOT_DEFINED;
+   result.FTypeAsString := i18Manager.GetString('Unknown');
+   result.FTypeOriginal := result.FType;
+   result.FTypeOriginalAsString := result.FTypeAsString;
+   result.FTypePointer := result.FType;
+   result.IdentType := UNKNOWN;
+   result.Size := INCORRECT_SIZE;
+   result.SizeAsString := INCORRECT_SIZE.ToString;
+   result.SizeExpArrayAsString := '';
+   result.Value := '';
+   result.Ident := '';
+   result.Scope := GLOBAL;
+   result.DimensCount := 0;
+   result.FIsInteger := false;
+   result.FIsReal := false;
+   result.FIsNumeric := false;
+   result.FIsRecord := false;
+   result.FIsENum := false;
+   result.FIsPointer := false;
 end;
 
 procedure TIdentInfo.SetType(AType: integer);
@@ -367,7 +367,7 @@ begin
          if not size.IsEmpty then
          begin
             if result <> '1' then
-               result := result + ',' + size
+               result := result + size
             else
                result := size;
          end;
@@ -439,7 +439,7 @@ begin
             DimensCount := AVarList.GetDimensionCount(Ident, true);
             if DimensCount = 0 then
                IdentType := VARIABLE
-            else
+            else if DimensCount > 0 then
             begin
                IdentType := VARRAY;
                SizeExpArrayAsString := GetSizeExpArrayAsString(TypeAsString, SizeAsString);
@@ -455,7 +455,7 @@ class function TParserHelper.GetVarInfo(const AVarName: string): TIdentInfo;
 var
    block: TBlock;
 begin
-   result.New;
+   result := TIdentInfo.New;
    result.Ident := AVarName;
    block := TInfra.GetParsedBlock;
    if block <> nil then

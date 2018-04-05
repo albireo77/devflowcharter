@@ -120,8 +120,8 @@ type
          function GetImportTag(ATag: IXMLElement): IXMLElement; override;
          procedure FillForList(AList: TStrings);
          function IsValidLoopVar(const AName: string): boolean;
-         function GetDimensionCount(const AVarName: string; AIncludeTypeDimens: boolean = false): integer;
-         function GetDimensions(const AVarName: string): TArray<string>;
+         function GetDimensionCount(const AVarName: string; AIncludeType: boolean = false): integer;
+         function GetDimensions(const AVarName: string; AIncludeType: boolean = false): TArray<string>;
    end;
 
    TConstDeclareList = class(TDeclareList)
@@ -437,7 +437,7 @@ begin
       edtName.SetFocus;
 end;
 
-function TVarDeclareList.GetDimensionCount(const AVarName: string; AIncludeTypeDimens: boolean = false): integer;
+function TVarDeclareList.GetDimensionCount(const AVarName: string; AIncludeType: boolean = false): integer;
 var
    i, d: integer;
    dataType: TUserDataType;
@@ -446,7 +446,7 @@ begin
    if i < 1 then
       Exit(-1);
    result := 0;
-   if AIncludeTypeDimens then
+   if AIncludeType then
    begin
       dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
       if dataType <> nil then
@@ -457,7 +457,7 @@ begin
       result := result + d;
 end;
 
-function TVarDeclareList.GetDimensions(const AVarName: string): TArray<string>;
+function TVarDeclareList.GetDimensions(const AVarName: string; AIncludeType: boolean = false): TArray<string>;
 var
    i: integer;
    size, dims: string;
@@ -467,9 +467,12 @@ begin
    if i < 1 then
       Exit(nil);
    size := sgList.Cells[VAR_SIZE_COL, i];
-   dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
-   if dataType <> nil then
-      size := size + dataType.GetDimensions;
+   if AIncludeType then
+   begin
+      dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
+      if dataType <> nil then
+         size := size + dataType.GetDimensions;
+   end;
    result := TInfra.GetDimensions(size);
 end;
 
