@@ -129,30 +129,6 @@ begin
    end;
 end;
 
-{procedure Pascal_LibSectionGenerator(ALines: TStringList);
-var
-   i: integer;
-   libList: TStringList;
-   unitsString: string;
-begin
-   libList := GProject.GetLibraryList;
-   try
-      if libList.Count > 0 then
-      begin
-         unitsString := '';
-         for i := 0 to libList.Count-2 do
-            unitsString := unitsString + libList[i] + ',';
-         unitsString := unitsString + libList[libList.Count-1] + ';';
-         unitsString := AnsiReplaceStr(unitsString, ',', ', ');
-         ALines.Add('uses');
-         ALines.Add(GSettings.IndentString + unitsString);
-         ALines.Add('');
-      end;
-   finally
-      libList.Free;
-   end;
-end;}
-
 procedure Pascal_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
 var
    buf, varSize, varInit, line, name, lType, currType: string;
@@ -223,108 +199,6 @@ begin
    end;
 
 end;
-
-{procedure Pascal_ConstSectionGenerator(ALines: TStrings; AConstList: TConstDeclareList);
-var
-   i, linesCount: integer;
-begin
-   if (AConstList <> nil) and (AConstList.sgList.RowCount > 2) then
-   begin
-      linesCount := ALines.Count;
-      for i := 1 to AConstList.sgList.RowCount-2 do
-      begin
-         if not AConstList.IsExternal(i) then
-            ALines.Add(GSettings.IndentString + AConstList.sgList.Cells[0, i] + ' = ' + AConstList.sgList.Cells[1, i] + ';');
-      end;
-      if ALines.Count > linesCount then
-         ALines.Insert(linesCount, 'const');
-   end;
-end;
-
-procedure Pascal_RoutineSectionGenerator(ALines: TStrings; ASkipBodyGen: boolean);
-var
-   lRoutine: TRoutine;
-   lParm: TParameter;
-   lHeaderStr, lName: string;
-   iter: TRoutineIterator;
-   iterp: TParameterIterator;
-   lObject: TObject;
-   lIterCnt, lCnt: integer;
-begin
-   iter := GProject.GetRoutineIterator;
-   try
-      while iter.HasNext do
-      begin
-         lRoutine := iter.Next;
-         lName := lRoutine.GetName;
-         if (lName = '') or lRoutine.Header.chkExtDeclare.Checked then continue;
-         if not ASkipBodyGen then
-            lRoutine.Header.GenerateDescription(ALines);
-         if lRoutine.Header.cbType.ItemIndex <> 0 then
-            lHeaderStr := 'function '
-         else
-            lHeaderStr := 'procedure ';
-         lHeaderStr := lHeaderStr + lName;
-         lIterCnt := lRoutine.Header.ParameterCount;
-         if lIterCnt > 0 then
-         begin
-            iterp := lRoutine.Header.GetParameterIterator;
-            try
-               lHeaderStr := lHeaderStr + '(';
-               lCnt := 0;
-               while iterp.HasNext do
-               begin
-                  lCnt := lCnt + 1;
-                  lParm := iterp.Next;
-                  if lParm.chkReference.Checked then
-                     lHeaderStr := lHeaderStr + 'var ';
-                  lHeaderStr := lHeaderStr + Trim(lParm.edtName.Text) + ': ';
-                  if lParm.chkTable.Checked then
-                     lHeaderStr := lHeaderStr + 'array of ';
-                  lHeaderStr := lHeaderStr + lParm.cbType.Text;
-                  if lIterCnt <> lCnt then
-                     lHeaderStr := lHeaderStr + '; ';
-               end;
-               lHeaderStr := lHeaderStr + ')';
-            finally
-               iterp.Free;
-            end;
-         end;
-         if lRoutine.Header.cbType.ItemIndex <> 0 then
-            lHeaderStr := lHeaderStr + ': ' + lRoutine.Header.cbType.Text;
-         if ASkipBodyGen then
-            lObject := nil
-         else
-            lObject := lRoutine.Header;
-         ALines.AddObject(lHeaderStr + ';', lObject);
-         if not ASkipBodyGen and (lRoutine.Body <> nil) then
-         begin
-            Pascal_VarSectionGenerator(ALines, lRoutine.Header.LocalVars);
-            lRoutine.Body.GenerateCode(ALines, lLangDef.Name, 0);
-         end;
-      end;
-      if ASkipBodyGen then
-         ALines.Add('');
-   finally
-      iter.Free;
-   end;
-end;
-
-function Pascal_GetRoutineDescription(AHeader: TRoutineHeader): string;
-var
-   lname: string;
-begin
-   if AHeader <> nil then
-   begin
-      lname := Trim(AHeader.edtName.Text);
-      if AHeader.cbType.ItemIndex <> 0 then
-         result := i18Manager.GetString('Function') + ' ' + lname + ': ' + AHeader.cbType.Text
-      else
-         result := i18Manager.GetString('Procedure') + ' ' + lname;
-   end
-   else
-      result := i18Manager.GetString('MainProgram');
-end;}
 
 procedure Pascal_MainFunctionSectionGenerator(ALines: TStringList; deep: integer);
 var
@@ -419,106 +293,6 @@ begin
    end;
 end;
 
-{procedure Pascal_TypeSectionGenerator(lines: TStrings);
-var
-   lDataType: TDataType;
-   currentField: TField;
-   buffer, sizeString, lName: string;
-   iter: TDataTypeIterator;
-   iterf: TFieldIterator;
-   linesCount, dimensCount, lCnt, b: integer;
-begin
-   linesCount := lines.Count;
-   iter := GProject.GetDataTypeIterator;
-   try
-      while iter.HasNext do
-      begin
-         lDataType := iter.Next;
-         lName := lDataType.GetName;
-         if (lName <> '') and not lDataType.rbInt.Checked and not lDataType.rbReal.Checked and not lDataType.chkExtDeclare.Checked then
-         begin
-            buffer := '';
-            b := 0;
-            if lDataType.rbStruct.Checked then
-               lines.AddObject(GSettings.IndentString + lName + ' = record', lDataType)
-            else
-            begin
-               buffer := GSettings.IndentString + lName + ' = ';
-               if lDataType.rbEnum.Checked then
-                  buffer := buffer + '(';
-            end;
-            iterf := lDataType.GetFieldIterator;
-            lCnt := iterf.Count;
-            try
-               while iterf.HasNext do
-               begin
-                  currentField := iterf.Next;
-                  dimensCount := currentField.edtSize.DimensionCount;
-                  if lDataType.rbStruct.Checked then
-                  begin
-                     buffer := DupeString(GSettings.IndentString, 2) + currentField.edtName.Text + ': ';
-                     if dimensCount > 0 then
-                     begin
-                        sizeString := '';
-                        for b := 1 to dimensCount do
-                        begin
-                           sizeString := sizeString + '1..' + currentField.edtSize.GetDimension(b);
-                           if b < dimensCount then
-                              sizeString := sizeString + ', ';
-                        end;
-                        buffer := buffer + 'array[' + sizeString + '] of ';
-                     end;
-                     buffer := buffer + currentField.cbType.Text + ';';
-                     lines.Add(buffer);
-                  end
-                  else if lDataType.rbEnum.Checked then
-                  begin
-                     b := b + 1;
-                     buffer := buffer + currentField.edtName.Text;
-                     if b <> lCnt then
-                        buffer := buffer + ', ';
-                  end
-                  else if lDatatype.rbArray.Checked then
-                  begin
-                     buffer := buffer + 'array[';
-                     for b := 1 to dimensCount do
-                     begin
-                        buffer := buffer + '1..' + currentField.edtSize.GetDimension(b);
-                        if b < dimensCount then
-                           buffer := buffer + ', ';
-                     end;
-                     buffer := buffer + '] of ' + currentField.cbType.Text;
-                     break;
-                  end
-                  else
-                  begin
-                     buffer := buffer + currentField.edtName.Text;
-                     break;
-                  end;
-               end;
-            finally
-               iterf.Free;
-            end;
-            if lDataType.rbStruct.Checked then
-               buffer := GSettings.IndentString + 'end'
-            else if lDataType.rbEnum.Checked then
-               buffer := buffer + ')';
-            lines.AddObject(buffer + ';', lDataType);
-            lines.Add('');
-         end;
-      end;
-   finally
-      iter.Free;
-   end;
-   if lines.Count > linesCount then
-      lines.Insert(linesCount, 'type');
-end;
-
-function Pascal_GetPointerTypeName(const AName: string): string;
-begin
-   result := '^' + AName;
-end;}
-
 function Pascal_IsPointerType(const AType: string): boolean;
 begin
    result := (AType.Length > 1) and (AType[1] = '^');
@@ -571,16 +345,10 @@ initialization
       lLangDef.Parser := TPascalParser.Create;
       lLangDef.ExecuteBeforeGeneration :=  Pascal_ExecuteBeforeGeneration;
       lLangDef.ProgramHeaderSectionGenerator := Pascal_ProgramHeaderSectionGenerator;
-      //lLangDef.LibSectionGenerator := Pascal_LibSectionGenerator;
-      //lLangDef.TypeSectionGenerator := Pascal_TypeSectionGenerator;
       lLangDef.VarSectionGenerator := Pascal_VarSectionGenerator;
-      //lLangDef.ConstSectionGenerator := Pascal_ConstSectionGenerator;
-      //lLangDef.RoutineSectionGenerator := Pascal_RoutineSectionGenerator;
-      //lLangDef.GetRoutineDescription := Pascal_GetRoutineDescription;
       lLangDef.MainFunctionSectionGenerator := Pascal_MainFunctionSectionGenerator;
       lLangDef.SetHLighterAttrs := Pascal_SetHLighterAttrs;
       lLangDef.GetLiteralType := Pascal_GetLiteralType;
-      //lLangDef.GetPointerTypeName := Pascal_GetPointerTypeName;
       lLangDef.IsPointerType := Pascal_IsPointerType;
       lLangDef.AreTypesCompatible := Pascal_AreTypesCompatible;
       lLangDef.GetOriginalType := Pascal_GetOriginalType;

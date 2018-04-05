@@ -463,10 +463,9 @@ var
    size, dims: string;
    dataType: TUserDataType;
 begin
-   result := nil;
    i := sgList.Cols[VAR_NAME_COL].IndexOf(AVarName);
    if i < 1 then
-      Exit;
+      Exit(nil);
    size := sgList.Cells[VAR_SIZE_COL, i];
    dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
    if dataType <> nil then

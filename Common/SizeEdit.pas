@@ -30,7 +30,7 @@ type
      private
         function GetDimensionCount: integer;
      public
-        property DimensionCount: integer read GetDimensionCount default 0;
+        property DimensionCount: integer read GetDimensionCount;
         constructor Create(AParent: TWinControl);
         function ParseSize: boolean;
         function GetDimensions: TArray<string>;
