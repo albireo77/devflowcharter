@@ -49,8 +49,8 @@ uses
   Functions_Form in 'Forms\Functions_Form.pas' {FunctionsForm},
   UserFunction in 'Common\UserFunction.pas',
   Goto_Form in 'Forms\Goto_Form.pas' {GotoForm},
-  Pascal_Generator in 'LangGenerators\Pascal_Generator.pas',
-  C_Generator in 'LangGenerators\C_Generator.pas',
+  Pascal_Generator in 'CodeGenerators\Pascal_Generator.pas',
+  C_Generator in 'CodeGenerators\C_Generator.pas',
   LexFile in 'Parsers\Common\LexFile.Pas',
   Lexlib in 'Parsers\Common\Lexlib.pas',
   ParseGlobals in 'Parsers\Common\ParseGlobals.pas',
@@ -62,7 +62,7 @@ uses
   LocalizationManager in 'Common\LocalizationManager.pas',
   Case_Block in 'Blocks\Case_Block.pas',
   Statement in 'Common\Statement.pas',
-  TiBasic68k_Generator in 'LangGenerators\TiBasic68k_Generator.pas',
+  TiBasic68k_Generator in 'CodeGenerators\TiBasic68k_Generator.pas',
   Return_Block in 'Blocks\Return_Block.pas',
   Base_Form in 'Forms\Base_Form.pas',
   BaseEnumerator in 'Common\BaseEnumerator.pas',
@@ -81,15 +81,15 @@ uses
   SelectImport_Form in 'Forms\SelectImport_Form.pas' {SelectImportForm},
   EditMemo_Form in 'Forms\EditMemo_Form.pas' {MemoEditorForm},
   LangDefinition in 'Common\LangDefinition.pas',
-  Dummy_Generator in 'LangGenerators\Dummy_Generator.pas',
+  Dummy_Generator in 'CodeGenerators\Dummy_Generator.pas',
   BlockFactory in 'Common\BlockFactory.pas',
   StatementMemo in 'Common\StatementMemo.pas',
   MultiLine_Block in 'Blocks\MultiLine_Block.pas',
   Folder_Block in 'Blocks\Folder_Block.pas',
   BlockTabSheet in 'Common\BlockTabSheet.pas',
-  Python_Generator in 'LangGenerators\Python_Generator.pas',
+  Python_Generator in 'CodeGenerators\Python_Generator.pas',
   MemoEx in 'Common\MemoEx.pas',
-  Java_Generator in 'LangGenerators\Java_Generator.pas';
+  Java_Generator in 'CodeGenerators\Java_Generator.pas';
 
 {$R *.res}
 
