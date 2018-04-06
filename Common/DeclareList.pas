@@ -450,6 +450,7 @@ begin
    begin
       dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
       if dataType <> nil then
+         result := dataType.GetDimensionCount + result;
    end;
 end;
 
