@@ -439,22 +439,18 @@ end;
 
 function TVarDeclareList.GetDimensionCount(const AVarName: string; AIncludeType: boolean = false): integer;
 var
-   i, d: integer;
+   i: integer;
    dataType: TUserDataType;
 begin
    i := sgList.Cols[VAR_NAME_COL].IndexOf(AVarName);
    if i < 1 then
       Exit(-1);
-   result := 0;
-   if AIncludeType then
+   result := TInfra.GetDimensionCount(sgList.Cells[VAR_SIZE_COL, i]);
+   if AIncludeType and (result <> -1) then
    begin
       dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
       if dataType <> nil then
-         result := dataType.GetDimensionCount;
    end;
-   d := TInfra.GetDimensionCount(sgList.Cells[VAR_SIZE_COL, i]);
-   if d > 0 then
-      result := result + d;
 end;
 
 function TVarDeclareList.GetDimensions(const AVarName: string; AIncludeType: boolean = false): TArray<string>;

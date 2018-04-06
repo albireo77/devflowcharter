@@ -7,7 +7,7 @@
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
-        <ProjectVersion>18.1</ProjectVersion>
+        <ProjectVersion>18.3</ProjectVersion>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
@@ -71,10 +71,12 @@
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <VerInfo_MajorVer>1</VerInfo_MajorVer>
         <VerInfo_Build>0</VerInfo_Build>
-        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
         <Icon_MainIcon>devFlowcharter_Icon.ico</Icon_MainIcon>
         <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
+        <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
+        <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -90,8 +92,8 @@
         <AppEnableHighDPI>true</AppEnableHighDPI>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <VerInfo_MinorVer>4</VerInfo_MinorVer>
-        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=4.4.32.430;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-        <VerInfo_Build>430</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileVersion=4.4.32.477;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_Build>477</VerInfo_Build>
         <VerInfo_Release>32</VerInfo_Release>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -104,7 +106,7 @@
         <AppEnableHighDPI>true</AppEnableHighDPI>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <VerInfo_MinorVer>2</VerInfo_MinorVer>
-        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=4.2.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileVersion=4.2.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
         <VerInfo_Build>0</VerInfo_Build>
         <VerInfo_Release>0</VerInfo_Release>
     </PropertyGroup>
@@ -156,8 +158,8 @@
         <DCCReference Include="Forms\Goto_Form.pas">
             <Form>GotoForm</Form>
         </DCCReference>
-        <DCCReference Include="LangTemplates\Pascal_Template.pas"/>
-        <DCCReference Include="LangTemplates\C_Template.pas"/>
+        <DCCReference Include="LangGenerators\Pascal_Generator.pas"/>
+        <DCCReference Include="LangGenerators\C_Generator.pas"/>
         <DCCReference Include="Parsers\Common\LexFile.Pas"/>
         <DCCReference Include="Parsers\Common\Lexlib.pas"/>
         <DCCReference Include="Parsers\Common\ParseGlobals.pas"/>
@@ -173,7 +175,7 @@
         <DCCReference Include="Common\LocalizationManager.pas"/>
         <DCCReference Include="Blocks\Case_Block.pas"/>
         <DCCReference Include="Common\Statement.pas"/>
-        <DCCReference Include="LangTemplates\TiBasic68k_Template.pas"/>
+        <DCCReference Include="LangGenerators\TiBasic68k_Generator.pas"/>
         <DCCReference Include="Blocks\Return_Block.pas"/>
         <DCCReference Include="Forms\Base_Form.pas"/>
         <DCCReference Include="Common\BaseEnumerator.pas"/>
@@ -200,13 +202,15 @@
             <Form>MemoEditorForm</Form>
         </DCCReference>
         <DCCReference Include="Common\LangDefinition.pas"/>
-        <DCCReference Include="LangTemplates\Dummy_Template.pas"/>
+        <DCCReference Include="LangGenerators\Dummy_Generator.pas"/>
         <DCCReference Include="Common\BlockFactory.pas"/>
         <DCCReference Include="Common\StatementMemo.pas"/>
         <DCCReference Include="Blocks\MultiLine_Block.pas"/>
         <DCCReference Include="Blocks\Folder_Block.pas"/>
         <DCCReference Include="Common\BlockTabSheet.pas"/>
-        <DCCReference Include="LangTemplates\Python_Template.pas"/>
+        <DCCReference Include="LangGenerators\Python_Generator.pas"/>
+        <DCCReference Include="Common\MemoEx.pas"/>
+        <DCCReference Include="LangGenerators\Java_Generator.pas"/>
         <RcItem Include="resources\assign.cur">
             <ResourceType>CURSOR</ResourceType>
             <ResourceId>ASSIGN</ResourceId>

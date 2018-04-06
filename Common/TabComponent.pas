@@ -49,7 +49,7 @@ type
          function GetScrollPos: integer;
          procedure SetScrollPos(AValue: integer);
          procedure OnChangeLib(Sender: TObject);
-         procedure OnClickCh(Sender: TObject);
+         procedure OnClickCh(Sender: TObject); virtual;
          procedure OnChangeName(Sender: TObject); virtual;
          procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
          procedure CreateExtDeclareChBox(AParent: TWinControl; x, y: integer);

@@ -66,6 +66,7 @@ type
       procedure OnChangeBodyPage(Sender: TObject);
       procedure OnDropDownBodyPage(Sender: TObject);
       procedure DrawBodyLabel;
+      procedure OnClickCh(Sender: TObject); override;
    public
       cbType,
       cbBodyPage: TComboBox;
@@ -298,6 +299,12 @@ end;
 procedure TUserFunction.ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
 begin
 {}
+end;
+
+procedure TUserFunctionHeader.OnClickCh(Sender: TObject);
+begin
+   inherited;
+   DrawBodyLabel;
 end;
 
 constructor TUserFunctionHeader.Create(AParentForm: TFunctionsForm);
