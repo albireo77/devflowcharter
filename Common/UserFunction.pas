@@ -79,7 +79,8 @@ type
       memDesc: TMemo;
       chkInclDescCode,
       chkInclDescFlow,
-      chkBodyVisible: TCheckBox;
+      chkBodyVisible,
+      chkArrayType: TCheckBox;
       splDesc,
       splParams: TSplitter;
       property UserFunction: TUserFunction read FUserFunction;
@@ -301,7 +302,7 @@ end;
 
 constructor TUserFunctionHeader.Create(AParentForm: TFunctionsForm);
 var
-   l: integer;
+   x: integer;
 begin
 
    FElementTypeID := 'arg';
@@ -394,15 +395,15 @@ begin
    SetPageCombo;
 
    if cbBodyPage.BoundsRect.Right > 170 then
-      l := cbBodyPage.BoundsRect.Right + 10
+      x := cbBodyPage.BoundsRect.Right + 10
    else
-      l := 180;
+      x := 180;
    chkBodyVisible := TCheckBox.Create(gbBody);
    chkBodyVisible.Parent := gbBody;
    chkBodyVisible.ParentFont := false;
    chkBodyVisible.Font.Style := [];
    chkBodyVisible.Font.Color := clWindowText;
-   chkBodyVisible.SetBounds(l, 23, 150, 17);
+   chkBodyVisible.SetBounds(x, 23, 150, 17);
    chkBodyVisible.Caption := i18Manager.GetString('Visible');
    chkBodyVisible.DoubleBuffered := true;
    chkBodyVisible.Anchors := [akBottom, akLeft];
@@ -438,15 +439,29 @@ begin
    cbType.Font.Color := clWindowText;
    cbType.DropDownCount := 9;
    cbType.Tag := FUNCTION_TYPE_IND;
+   cbType.Constraints.MaxWidth := 97;
    TInfra.PopulateDataTypeCombo(cbType);
    cbType.OnChange := OnChangeType;
+
+   chkArrayType := TCheckBox.Create(gbHeader);
+   chkArrayType.Parent := gbHeader;
+   chkArrayType.ParentFont := false;
+   chkArrayType.Font.Style := [];
+   chkArrayType.Font.Color := clWindowText;
+   x := cbType.BoundsRect.Right + 10;
+   chkArrayType.SetBounds(x, 23, gbHeader.Width-x-3, 17);
+   chkArrayType.Caption := i18Manager.GetString('chkArrayType');
+   chkArrayType.DoubleBuffered := true;
+   chkArrayType.Anchors := [akBottom, akLeft];
+   chkArrayType.Enabled := false;
+   chkArrayType.OnClick := OnChangeType;
 
    CreateExtDeclareChBox(gbHeader, 165, 52);
    chkExtDeclare.Alignment := taLeftJustify;
 
    CreateLibControls(gbHeader, 8, 52);
-   l := lblLibrary.BoundsRect.Right + 5;
-   edtLibrary.SetBounds(l, edtLibrary.Top, edtName.BoundsRect.Right-l, edtLibrary.Height);
+   x := lblLibrary.BoundsRect.Right + 5;
+   edtLibrary.SetBounds(x, edtLibrary.Top, edtName.BoundsRect.Right-x, edtLibrary.Height);
 
    gbParams := TGroupBox.Create(Self);
    gbParams.Parent := Self;
@@ -639,6 +654,8 @@ end;
 
 procedure TUserFunctionHeader.OnChangeType(Sender: TObject);
 begin
+   if Sender = cbType then
+      chkArrayType.Enabled := cbType.ItemIndex > 0;
    if Font.Color <> NOK_COLOR then
       UpdateCodeEditor;
    GProject.SetChanged;
@@ -755,6 +772,7 @@ begin
    tag2.SetAttribute('headerh', gbHeader.Height.ToString);
    tag2.SetAttribute('parmsh', gbParams.Height.ToString);
    tag2.SetAttribute('lvarsh', FLocalVars.Height.ToString);
+   tag2.SetAttribute('arrayType', chkArrayType.Checked.ToString);
    if (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
       FUserFunction.Body.ExportToXMLTag(tag);
 end;
@@ -777,6 +795,7 @@ begin
    chkBodyVisible.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'show_body');
    chkInclDescCode.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'desc_incl');
    chkInclDescFlow.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'desc_incl_flow');
+   chkArrayType.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'arrayType');
    FLocalVars.ImportFromXMLTag(ATag);
    idx := StrToIntDef(ATag.GetAttribute('descrh'), -1);
    if idx > -1 then

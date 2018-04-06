@@ -279,20 +279,35 @@ Available placeholders:
    %s2 - description/prefix of the function
    %s3 - list of function parameters (list of FunctionHeaderArgsEntryMask elements)
    %s4 - return type
-   %s5 - first return type dependent string (FunctionHeaderTypeNone1 or FunctionHeaderTypeNotNone1 element) 
-   %s6 - second return type dependent string (FunctionHeaderTypeNone2 or FunctionHeaderTypeNotNone2 element)
+   %s5 - first string that depends if return type is none or specific (element FunctionHeaderTypeModifier1) 
+   %s6 - second string that depends if return type is none or specific (element FunctionHeaderTypeModifier2)
+   %s7 - string that depends if function is external or not (element FunctionHeaderExternalModifier) 
+   %s8 - string that depends if function return type is array or not (element FunctionHeaderTypeArrayModifier) 
 -->
 <FunctionHeaderTemplate>%s2
-%s4%s5 %s1(%s3)
+%s4%s5%s8 %s1(%s3)
 </FunctionHeaderTemplate>
 
-<FunctionHeaderTypeNone1>void</FunctionHeaderTypeNone1>
+<!--
+Element FunctionHeaderTypeModifier1
+Description: It returns value based on whether or not function returns specific type
+It returns value "void" if function type is none or an empty string if not
+-->
+<FunctionHeaderTypeModifier1>void|</FunctionHeaderTypeModifier1>
+
 <FunctionHeaderArgsEntryMask>%s5%s6%s2%s3 %s1%s4, </FunctionHeaderArgsEntryMask>
 <FunctionHeaderArgsEntryRef>*</FunctionHeaderArgsEntryRef>
 <FunctionHeaderArgsEntryArray>[]</FunctionHeaderArgsEntryArray>
 <FunctionHeaderArgsEntryRecord>struct </FunctionHeaderArgsEntryRecord>
 <FunctionHeaderArgsEntryEnum>enum </FunctionHeaderArgsEntryEnum>
 <FunctionHeaderArgsStripCount>2</FunctionHeaderArgsStripCount>
+
+<!--
+Element FunctionHeaderTypeArrayModifier
+Description: It returns value based on whether or not function return type is an array
+In given example, it returns value "[]" if function return type is array or empty string if not
+-->
+<FunctionHeaderTypeArrayModifier>[]|</FunctionHeaderTypeArrayModifier>
 
 <!--
 Element FunctionTemplate

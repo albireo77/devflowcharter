@@ -158,7 +158,9 @@ type
       ExternalLabel,
       RecordLabel,
       FunctionHeaderExternal,
-      FunctionHeaderNonExternal: string;
+      FunctionHeaderNotExternal,
+      FunctionHeaderTypeArray,
+      FunctionHeaderTypeNotArray: string;
       DecimalSeparator: char;
       LabelFontSize,
       FunctionHeaderArgsStripCount,
@@ -423,7 +425,14 @@ begin
    if tag <> nil then
    begin
       FunctionHeaderExternal := tag.Text;
-      TInfra.ExtractPipedValues(FunctionHeaderExternal, FunctionHeaderNonExternal);
+      TInfra.ExtractPipedValues(FunctionHeaderExternal, FunctionHeaderNotExternal);
+   end;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTypeArrayModifier');
+   if tag <> nil then
+   begin
+      FunctionHeaderTypeArray := tag.Text;
+      TInfra.ExtractPipedValues(FunctionHeaderTypeArray, FunctionHeaderTypeNotArray);
    end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ExternVarModifier');

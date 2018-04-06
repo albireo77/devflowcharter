@@ -362,7 +362,7 @@ procedure Dummy_UserFunctionsSectionGenerator(ALines: TStringList; ASkipBodyGen:
 var
    func: TUserFunction;
    param: TParameter;
-   name, argList, paramStr, ref, lArray, lRecord, enum, defValue, hText: string;
+   name, argList, paramStr, ref, lArray, lRecord, enum, defValue, hText, varTypeArray: string;
    lang: TLangDefinition;
    headerTemplate, varList, funcTemplate, bodyTemplate, funcList, funcsTemplate: TStringList;
    intType: integer;
@@ -412,13 +412,18 @@ begin
                   SetLength(argList, argList.Length - lang.FunctionHeaderArgsStripCount);
 
                // assemble function header line
-               isTypeNotNone := func.Header.cbType.ItemIndex <> 0;
+               isTypeNotNone := func.Header.cbType.ItemIndex > 0;
+               varTypeArray := '';
+               if isTypeNotNone then
+                  varTypeArray := IfThen(func.Header.chkArrayType.Checked, lang.FunctionHeaderTypeArray, lang.FunctionHeaderTypeNotArray);
+
                hText := ReplaceStr(lang.FunctionHeaderTemplate, PRIMARY_PLACEHOLDER, name);
                hText := ReplaceStr(hText, '%s3', argList);
                hText := ReplaceStr(hText, '%s4', IfThen(isTypeNotNone, func.Header.cbType.Text));
                hText := ReplaceStr(hText, '%s5', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone1, lang.FunctionHeaderTypeNone1));
                hText := ReplaceStr(hText, '%s6', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone2, lang.FunctionHeaderTypeNone2));
-               hText := ReplaceStr(hText, '%s7', IfThen(func.Header.chkExtDeclare.Checked, lang.FunctionHeaderExternal, lang.FunctionHeaderNonExternal));
+               hText := ReplaceStr(hText, '%s7', IfThen(func.Header.chkExtDeclare.Checked, lang.FunctionHeaderExternal, lang.FunctionHeaderNotExternal));
+               hText := ReplaceStr(hText, '%s8', varTypeArray);
 
                headerTemplate := TStringList.Create;
                try
@@ -651,7 +656,7 @@ begin
    if AHeader <> nil then
    begin
       name := Trim(AHeader.edtName.Text);
-      if AHeader.cbType.ItemIndex <> 0 then
+      if AHeader.cbType.ItemIndex > 0 then
       begin
          key := lang.FunctionLabelKey;
          lType := AHeader.cbType.Text;
