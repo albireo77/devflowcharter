@@ -1017,13 +1017,10 @@ begin
    if ASizeEdit <> nil then
    begin
       dims := ASizeEdit.GetDimensions;
-      if dims <> nil then
-      begin
-         for i := 0 to High(dims) do
-            result := result + Format(VarEntryArraySize, [dims[i]]);
-         if VarEntryArraySizeStripCount > 0 then
-            SetLength(result, result.Length - VarEntryArraySizeStripCount);
-      end;
+      for i := 0 to High(dims) do
+         result := result + Format(VarEntryArraySize, [dims[i]]);
+      if VarEntryArraySizeStripCount > 0 then
+         SetLength(result, result.Length - VarEntryArraySizeStripCount);
    end;
 end;
 

@@ -1,3 +1,17 @@
+6.0 [09.04.2018]
+- add Java support
+- add FileContentsTemplate tag to language definition files
+- fix disappearing forms when showing dialog window
+- fix code generation issues when DataTypeMask elements contained multiple lines
+- Function Header: add checkbox to mark that function returns array
+- Settings/Code Editor: add setting for keywords and identifiers color
+
+IMPORTANT NOTES:
+1. Language definition files and translation files from previous versions of devF will not work correctly with this version.
+2. With FileContentsTemplate tag user can define layout of entire source file.
+3. The way to declare array variables was changed. Now, array size must be enclosed in square brackets.
+   Example: for 2-dimensional array it was "100,100", now should be "[100][100]"
+
 5.13 [27.01.2018]
 - Flowchart Settings: add pen color
 - Navigator: improve frame drawing performance

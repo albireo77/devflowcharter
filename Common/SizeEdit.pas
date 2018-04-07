@@ -72,28 +72,22 @@ begin
       result := false
    else if dcount > 0 then
    begin
-      dims := GetDimensions;
-      if dims = nil then
-         result := false
-      else
+      for i := 0 to High(dims) do
       begin
-         for i := 0 to High(dims) do
+         dim := dims[i];
+         if not dim.IsEmpty then
          begin
-            dim := dims[i];
-            if not dim.IsEmpty then
+            if (dim[1] = '0') or (dim[1] = '-') then
             begin
-               if (dim[1] = '0') or (dim[1] = '-') then
-               begin
-                  result := false;
+               result := false;
+               break;
+            end;
+            lang := GInfra.GetLangDefinition(PASCAL_LANG_ID);
+            if (lang <> nil) and Assigned(lang.Parse) then
+            begin
+               result := lang.Parse(dim, prsVarSize) = 0;
+               if not result then
                   break;
-               end;
-               lang := GInfra.GetLangDefinition(PASCAL_LANG_ID);
-               if (lang <> nil) and Assigned(lang.Parse) then
-               begin
-                  result := lang.Parse(dim, prsVarSize) = 0;
-                  if not result then
-                     break;
-               end;
             end;
          end;
       end;
