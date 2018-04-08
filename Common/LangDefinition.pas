@@ -142,8 +142,8 @@ type
       FuncBrackets,
       ExternVar,
       NonExternVar,
-      ExternConst,
-      NonExternConst,
+      ConstExtern,
+      ConstNotExtern,
       ConstIDSpecChars,
       DefFile,
       CompilerCommand,
@@ -156,9 +156,12 @@ type
       ReturnDescTemplate,
       CaseOfDescTemplate,
       ExternalLabel,
+      StaticLabel,
       RecordLabel,
       FunctionHeaderExternal,
       FunctionHeaderNotExternal,
+      FunctionHeaderStatic,
+      FunctionHeaderNotStatic,
       FunctionHeaderTypeArray,
       FunctionHeaderTypeNotArray: string;
       DecimalSeparator: char;
@@ -199,7 +202,8 @@ type
       CodeIncludeExternVarConst,
       CodeIncludeExternDataType,
       CodeIncludeExternFunction,
-      AllowUnboundedArrays: boolean;
+      AllowUnboundedArrays,
+      AllowDuplicatedLibs: boolean;
       InOutCursorPos,
       FuncBracketsCursorPos: integer;
       ExecuteBeforeGeneration: procedure;
@@ -238,10 +242,9 @@ type
 implementation
 
 uses
-   Vcl.Forms, ApplicationCommon, XMLProcessor, WhileDo_Block, RepeatUntil_Block,
-   ForDo_Block, Case_Block, If_Block, IfElse_Block, Main_Block, InOut_Block,
-   Instr_Block, MultiInstr_Block, Return_Block, Text_Block, FunctionCall_Block,
-   Folder_Block;
+   Vcl.Forms, System.StrUtils, ApplicationCommon, XMLProcessor, WhileDo_Block, RepeatUntil_Block,
+   ForDo_Block, Case_Block, If_Block, IfElse_Block, Main_Block, InOut_Block, Instr_Block,
+   MultiInstr_Block, Return_Block, Text_Block, FunctionCall_Block, Folder_Block;
 
 constructor TLangDefinition.Create;
 begin
@@ -405,7 +408,7 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'VarTemplate');
    if tag <> nil then
-      VarTemplate := tag.Text;
+      VarTemplate := ReplaceStr(tag.Text, INDENT_XML_CHAR, GSettings.IndentString);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTypeModifier1');
    if tag <> nil then
@@ -428,6 +431,13 @@ begin
       TInfra.ExtractPipedValues(FunctionHeaderExternal, FunctionHeaderNotExternal);
    end;
 
+   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderStaticModifier');
+   if tag <> nil then
+   begin
+      FunctionHeaderStatic := tag.Text;
+      TInfra.ExtractPipedValues(FunctionHeaderStatic, FunctionHeaderNotStatic);
+   end;
+
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTypeArrayModifier');
    if tag <> nil then
    begin
@@ -442,11 +452,11 @@ begin
       TInfra.ExtractPipedValues(ExternVar, NonExternVar);
    end;
 
-   tag := TXMLProcessor.FindChildTag(ATag, 'ExternConstModifier');
+   tag := TXMLProcessor.FindChildTag(ATag, 'ConstExternModifier');
    if tag <> nil then
    begin
-      ExternConst := tag.Text;
-      TInfra.ExtractPipedValues(ExternConst, NonExternConst);
+      ConstExtern := tag.Text;
+      TInfra.ExtractPipedValues(ConstExtern, ConstNotExtern);
    end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionTemplate');
@@ -617,15 +627,15 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'DataTypesTemplate');
    if tag <> nil then
-      DataTypesTemplate := tag.Text;
+      DataTypesTemplate := ReplaceStr(tag.Text, INDENT_XML_CHAR, GSettings.IndentString);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionsTemplate');
    if tag <> nil then
-      FunctionsTemplate := tag.Text;
+      FunctionsTemplate := ReplaceStr(tag.Text, INDENT_XML_CHAR, GSettings.IndentString);
 
    tag := TXMLProcessor.FindChildTag(ATag, FILE_CONTENTS_TAG);
    if tag <> nil then
-      FileContentsTemplate := tag.Text;
+      FileContentsTemplate := ReplaceStr(tag.Text, INDENT_XML_CHAR, GSettings.IndentString);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeExternalModifier');
    if tag <> nil then
@@ -676,7 +686,7 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ConstTemplate');
    if tag <> nil then
-      ConstTemplate := tag.Text;
+      ConstTemplate := ReplaceStr(tag.Text, INDENT_XML_CHAR, GSettings.IndentString);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ConstEntry');
    if tag <> nil then
@@ -712,7 +722,7 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'LibTemplate');
    if tag <> nil then
-      LibTemplate := tag.Text;
+      LibTemplate := ReplaceStr(tag.Text, INDENT_XML_CHAR, GSettings.IndentString);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'LibEntry');
    if tag <> nil then
@@ -752,7 +762,7 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ProgramHeaderTemplate');
    if tag <> nil then
-      ProgramHeaderTemplate := tag.Text;
+      ProgramHeaderTemplate := ReplaceStr(tag.Text, INDENT_XML_CHAR, GSettings.IndentString);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ReturnTemplate');
    if tag <> nil then
@@ -782,6 +792,10 @@ begin
    if tag <> nil then
       ExternalLabel := tag.Text;
 
+   tag := TXMLProcessor.FindChildTag(ATag, 'StaticLabel');
+   if tag <> nil then
+      StaticLabel := tag.Text;
+
    tag := TXMLProcessor.FindChildTag(ATag, 'RecordLabel');
    if tag <> nil then
       RecordLabel := tag.Text;
@@ -808,6 +822,7 @@ begin
    AllowEnumsInForLoop       := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowEnumsInForLoop', AllowEnumsInForLoop);
    AllowUserFunctionOverload := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowUserFunctionOverload', AllowUserFunctionOverload);
    AllowUnboundedArrays      := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowUnboundedArrays', AllowUnboundedArrays);
+   AllowDuplicatedLibs       := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowDuplicatedLibs', AllowDuplicatedLibs);
    CodeIncludeExternVarConst := TXMLProcessor.GetBoolFromChildTag(ATag, 'CodeIncludeExternVarConst', CodeIncludeExternVarConst);
    CodeIncludeExternDataType := TXMLProcessor.GetBoolFromChildTag(ATag, 'CodeIncludeExternDataType', CodeIncludeExternDataType);
    CodeIncludeExternFunction := TXMLProcessor.GetBoolFromChildTag(ATag, 'CodeIncludeExternFunction', CodeIncludeExternFunction);

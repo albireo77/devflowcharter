@@ -549,7 +549,7 @@ begin
    end;
 end;
 
-class function TParserHelper.GetTypeAsString(AType: integer):string;
+class function TParserHelper.GetTypeAsString(AType: integer): string;
 begin
    if (GProject <> nil) and (GProject.GlobalVars <> nil) and (AType >= 0) and (AType < GProject.GlobalVars.cbType.Items.Count) then
       result := GProject.GlobalVars.cbType.Items[AType]

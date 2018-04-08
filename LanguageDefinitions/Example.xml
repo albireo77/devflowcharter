@@ -42,6 +42,7 @@ Most of the tags are optional and may be removed if not needed. The most crucial
     <AllowEnumsInForLoop>true</AllowEnumsInForLoop>
     <AllowUserFunctionOverload>true</AllowUserFunctionOverload>
     <AllowUnboundedArrays>false</AllowUnboundedArrays>
+	<AllowDuplicatedLibs>false</AllowDuplicatedLibs>
     <CodeIncludeExternVarConst>false</CodeIncludeExternVarConst>
     <CodeIncludeExternDataType>false</CodeIncludeExternDataType>
     <CodeIncludeExternFunction>false</CodeIncludeExternFunction>
@@ -415,7 +416,8 @@ Available placeholders:
    %s5 - first string that depends if return type is none or specific (element FunctionHeaderTypeModifier1) 
    %s6 - second string that depends if return type is none or specific (element FunctionHeaderTypeModifier2)
    %s7 - string that depends if function is external or not (element FunctionHeaderExternalModifier) 
-   %s8 - string that depends if function return type is array or not (element FunctionHeaderTypeArrayModifier) 
+   %s8 - string that depends if function return type is array or not (element FunctionHeaderTypeArrayModifier)
+   %s9 - string that depends if function is of static context (element FunctionHeaderStaticModifier)    
 -->
 <FunctionHeaderTemplate>%s2
 %s7%s5 %s1(%s3)%s6 %s4%s8;
@@ -428,6 +430,13 @@ In given example, it returns value "procedure" if function type is none or "func
 -->
 <FunctionHeaderTypeModifier1>procedure|function</FunctionHeaderTypeModifier1>
 <FunctionHeaderTypeModifier2>|:</FunctionHeaderTypeModifier2>
+
+<!--
+Element FunctionHeaderStaticModifier
+Description: It returns value based on whether or not function is static
+In given example, it returns value "static" if function is static or empty string if not
+-->
+<FunctionHeaderStaticModifier>static|</FunctionHeaderStaticModifier>
 
 <!--
 Element FunctionHeaderExternalModifier
@@ -566,18 +575,18 @@ Available placeholders:
 Element ConstTemplate
 Description: Template for section to declare constants
 Available placeholders:
-   %s1 - list of constants (ConstEntry or ConstEntryExtern elements) 
+   %s1 - list of constants (list of ConstEntry elements) 
 -->
 <ConstTemplate>consts
 	%s1
 </ConstTemplate>
 
 <!--
-Element ExternConstModifier
+Element ConstExternModifier
 Description: Constant declaration modifier depending if constant is external
 In given example it returns "extern " if constant is external or empty string if not
 -->
-<ExternConstModifier>extern |</ExternConstModifier>
+<ConstExternModifier>extern |</ConstExternModifier>
 
 <!--
 Element ConstEntry
@@ -585,7 +594,8 @@ Description: Entry for single declaration of constant
 Available placeholders:
    %s1 - constant name
    %s2 - constant value
-   %s3 - string depending if constant is external (element ExternConstModifier)
+   %s3 - string depending if constant is external (element ConstExternModifier)
+   %s4 - evaluated type of constant
 -->
 <ConstEntry>%s3define %s1 = %s2;</ConstEntry>
 
@@ -748,13 +758,19 @@ Available placeholders:
 
 <!--
 Element ExternalLabel
-Used to change default label displayed for external variable/constant or function/datatype; it's non-localized
+Used to change default label displayed for external variable/constant or function/datatype; it's not translated
 -->
 <ExternalLabel></ExternalLabel>
 
 <!--
+Element StaticLabel
+Used to change default label displayed for static functions; it's not translated
+-->
+<StaticLabel></StaticLabel>
+
+<!--
 Element RecordLabel
-Used to change default label displayed for record data type; it's non-localized
+Used to change default label displayed for record data type; it's not translated
 -->
 <RecordLabel></RecordLabel>
 

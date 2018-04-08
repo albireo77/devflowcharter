@@ -236,8 +236,8 @@ end;
 
 procedure Dummy_ConstSectionGenerator(ALines: TStringList; AConstList: TConstDeclareList);
 var
-   i: integer;
-   constStr: string;
+   i, t: integer;
+   constStr, constType, constValue: string;
    lang: TLangDefinition;
    constList, constTemplate: TStringList;
    isExtern: boolean;
@@ -252,9 +252,19 @@ begin
             isExtern := AConstList.IsExternal(i);
             if (isExtern and lang.CodeIncludeExternVarConst) or not isExtern then
             begin
+               constValue := AConstList.sgList.Cells[CONST_VALUE_COL, i];
+               constType := '';
+               t := UNKNOWN_TYPE;
+               if Assigned(GInfra.CurrentLang.GetLiteralType) then
+                  t := GInfra.CurrentLang.GetLiteralType(constValue)
+               else
+                  t := Dummy_GetLiteralType(constValue);
+               if t <> UNKNOWN_TYPE then
+                  constType := TParserHelper.GetTypeAsString(t);
                constStr := ReplaceStr(lang.ConstEntry, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
-               constStr := ReplaceStr(constStr, '%s2', AConstList.sgList.Cells[CONST_VALUE_COL, i]);
-               constStr := ReplaceStr(constStr, '%s3', IfThen(isExtern, lang.ExternConst, lang.NonExternConst));
+               constStr := ReplaceStr(constStr, '%s2', constValue);
+               constStr := ReplaceStr(constStr, '%s3', IfThen(isExtern, lang.ConstExtern, lang.ConstNotExtern));
+               constStr := ReplaceStr(constStr, '%s4', constType);
                constList.AddObject(constStr, AConstList);
             end;
          end;
@@ -424,6 +434,7 @@ begin
                hText := ReplaceStr(hText, '%s6', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone2, lang.FunctionHeaderTypeNone2));
                hText := ReplaceStr(hText, '%s7', IfThen(func.Header.chkExtDeclare.Checked, lang.FunctionHeaderExternal, lang.FunctionHeaderNotExternal));
                hText := ReplaceStr(hText, '%s8', varTypeArray);
+               hText := ReplaceStr(hText, '%s9', IfThen(func.Header.chkIsStatic.Checked, lang.FunctionHeaderStatic, lang.FunctionHeaderNotStatic));
 
                headerTemplate := TStringList.Create;
                try

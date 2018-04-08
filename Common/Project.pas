@@ -1128,8 +1128,11 @@ begin
       if Supports(comp, ITabbable, tabObj) then
       begin
          libName := tabObj.GetLibName;
-         if (libName <> '') and (result.IndexOf(libName) = -1) then
-            result.AddObject(libName, tabObj.GetTab);
+         if not libName.IsEmpty then
+         begin
+            if GInfra.CurrentLang.AllowDuplicatedLibs or (result.IndexOf(libName) = -1) then
+               result.AddObject(libName, tabObj.GetTab);
+         end;
       end;
    end;
 end;

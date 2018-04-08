@@ -34,6 +34,8 @@ uses
 
 const
    IMPORT_MASK = 'import %s.%s;';
+   JAVA_STRING_DELIM = #34;
+   JAVA_CHAR_DELIM   = #39;
 
 var
    javaLang: TLangDefinition;
@@ -48,12 +50,19 @@ var
    FWriterImpl,
    FInStreamImpl,
    FOutStreamImpl: TStringList;
+   JAVA_INT_TYPE,
+   JAVA_DOUBLE_TYPE,
+   JAVA_CHAR_TYPE,
+   JAVA_STRING_TYPE,
+   JAVA_BOOLEAN_TYPE,
+   JAVA_BIGDECIMAL_TYPE: integer;
 
 function CheckForDataType(const AType: string): boolean;
 var
    varList: TVarDeclareList;
+   constList: TConstDeclareList;
    i: integer;
-   varType: string;
+   typeStr: string;
    dataType: TUserDataType;
    field: TField;
    func: TUserFunction;
@@ -62,14 +71,26 @@ begin
 
    result := false;
 
-   // search in global variables
+   // search in instance variables
    varList := GProject.GlobalVars;
    if varList <> nil then
    begin
       for i := 1 to varList.sgList.RowCount-2 do
       begin
-         varType := varList.sgList.Cells[VAR_TYPE_COL, i];
-         if varType = AType then
+         typeStr := varList.sgList.Cells[VAR_TYPE_COL, i];
+         if typeStr = AType then
+            Exit(true);
+      end;
+   end;
+
+   // search in instance constants
+   constList := GProject.GlobalConsts;
+   if constList <> nil then
+   begin
+      for i := 1 to constList.sgList.RowCount-2 do
+      begin
+         typeStr := TParserHelper.GetTypeAsString(TParserHelper.GetConstType(constList.sgList.Cells[CONST_NAME_COL, i]));
+         if typeStr = AType then
             Exit(true);
       end;
    end;
@@ -99,8 +120,8 @@ begin
          begin
             for i := 1 to varList.sgList.RowCount-2 do
             begin
-               varType := varList.sgList.Cells[VAR_TYPE_COL, i];
-               if varType = AType then
+               typeStr := varList.sgList.Cells[VAR_TYPE_COL, i];
+               if typeStr = AType then
                   Exit(true);
             end;
          end;
@@ -324,6 +345,37 @@ begin
    end;
 end;
 
+function Java_GetLiteralType(const AValue: string): integer;
+var
+   i: integer;
+   f: double;
+begin
+   result := UNKNOWN_TYPE;
+   if not AValue.IsEmpty then
+   begin
+      if not TryStrToInt(AValue, i) then
+      begin
+         if not TryStrToFloat(AValue, f) then
+         begin
+            if AValue.StartsWith(JAVA_STRING_DELIM) and AValue.EndsWith(JAVA_STRING_DELIM) then
+               result := JAVA_STRING_TYPE
+            else if (AValue.Length = 3) and (AValue[1] = JAVA_CHAR_DELIM) and (AValue[3] = JAVA_CHAR_DELIM) then
+               result := JAVA_CHAR_TYPE
+            else if TInfra.SameStrings(AValue, 'null') then
+               result := GENERIC_PTR_TYPE
+            else if TInfra.SameStrings(AValue, 'true') or TInfra.SameStrings(AValue, 'false') then
+               result := JAVA_BOOLEAN_TYPE
+            else if AValue.Contains('BigDecimal') then
+               result := JAVA_BIGDECIMAL_TYPE;
+         end
+         else
+            result := JAVA_DOUBLE_TYPE;
+      end
+      else
+         result := JAVA_INT_TYPE;
+   end;
+end;
+
 procedure Java_SetHLighterAttrs;
 var
    hlighter: TSynJavaSyn;
@@ -349,6 +401,13 @@ end;
 
 initialization
 
+   JAVA_INT_TYPE        := TParserHelper.GetType('int', JAVA_LANG_ID);
+   JAVA_DOUBLE_TYPE     := TParserHelper.GetType('double', JAVA_LANG_ID);
+   JAVA_CHAR_TYPE       := TParserHelper.GetType('char', JAVA_LANG_ID);
+   JAVA_STRING_TYPE     := TParserHelper.GetType('String', JAVA_LANG_ID);
+   JAVA_BOOLEAN_TYPE    := TParserHelper.GetType('boolean', JAVA_LANG_ID);
+   JAVA_BIGDECIMAL_TYPE := TParserHelper.GetType('BigDecimal', JAVA_LANG_ID);
+
    javaLang := GInfra.GetLangDefinition(JAVA_LANG_ID);
    if javaLang <> nil then
    begin
@@ -356,6 +415,7 @@ initialization
       javaLang.LibSectionGenerator := Java_LibSectionGenerator;
       javaLang.VarSectionGenerator := Java_VarSectionGenerator;
       javaLang.UserDataTypesSectionGenerator := Java_UserDataTypesSectionGenerator;
+      javaLang.GetLiteralType := Java_GetLiteralType;
       javaLang.SetHLighterAttrs := Java_SetHLighterAttrs;
    end;
 

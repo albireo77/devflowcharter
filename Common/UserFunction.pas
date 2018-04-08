@@ -81,7 +81,8 @@ type
       chkInclDescCode,
       chkInclDescFlow,
       chkBodyVisible,
-      chkArrayType: TCheckBox;
+      chkArrayType,
+      chkIsStatic: TCheckBox;
       splDesc,
       splParams: TSplitter;
       property UserFunction: TUserFunction read FUserFunction;
@@ -466,6 +467,23 @@ begin
    CreateExtDeclareChBox(gbHeader, 165, 52);
    chkExtDeclare.Alignment := taLeftJustify;
 
+   chkIsStatic := TCheckBox.Create(gbHeader);
+   chkIsStatic.Parent := gbHeader;
+   chkIsStatic.ParentFont := false;
+   chkIsStatic.Font.Style := [];
+   chkIsStatic.Font.Color := clWindowText;
+   chkIsStatic.Enabled := not GInfra.CurrentLang.StaticLabel.IsEmpty;
+   if chkIsStatic.Enabled then
+      chkIsStatic.Caption := GInfra.CurrentLang.StaticLabel
+   else
+      chkIsStatic.Caption := i18Manager.GetString('NotUsed');
+   x := chkExtDeclare.BoundsRect.Right + 15;
+   chkIsStatic.SetBounds(x, 52, PageControl.Canvas.TextWidth(chkIsStatic.Caption) + 20, 17);
+   chkIsStatic.DoubleBuffered := true;
+   chkIsStatic.Anchors := [akBottom, akLeft];
+   chkIsStatic.Alignment := taLeftJustify;
+   chkIsStatic.OnClick := OnClickCh;
+
    CreateLibControls(gbHeader, 8, 52);
    x := lblLibrary.BoundsRect.Right + 5;
    edtLibrary.SetBounds(x, edtLibrary.Top, edtName.BoundsRect.Right-x, edtLibrary.Height);
@@ -780,6 +798,8 @@ begin
    tag2.SetAttribute('parmsh', gbParams.Height.ToString);
    tag2.SetAttribute('lvarsh', FLocalVars.Height.ToString);
    tag2.SetAttribute('arrayType', chkArrayType.Checked.ToString);
+   if chkIsStatic.Enabled then
+      tag2.SetAttribute('static', chkIsStatic.Checked.ToString);
    if (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
       FUserFunction.Body.ExportToXMLTag(tag);
 end;
@@ -803,6 +823,8 @@ begin
    chkInclDescCode.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'desc_incl');
    chkInclDescFlow.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'desc_incl_flow');
    chkArrayType.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'arrayType');
+   if chkIsStatic.Enabled then
+      chkIsStatic.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'static');
    FLocalVars.ImportFromXMLTag(ATag);
    idx := StrToIntDef(ATag.GetAttribute('descrh'), -1);
    if idx > -1 then
