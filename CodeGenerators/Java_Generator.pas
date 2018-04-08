@@ -153,11 +153,17 @@ var
    pNativeType: PNativeDataType;
 begin
 
+   FImportLines := ALines;
+
    for i := 0 to High(javaLang.NativeDataTypes) do
    begin
       pNativeType := @javaLang.NativeDataTypes[i];
       if (pNativeType.Lib <> '') and CheckForDataType(pNativeType.Name) then
-         ALines.Add(Format(IMPORT_MASK, [pNativeType.Lib, pNativeType.Name]));
+      begin
+         libImport := Format(IMPORT_MASK, [pNativeType.Lib, pNativeType.Name]);
+         if ALines.IndexOf(libImport) = -1 then
+            ALines.Add(libImport);
+      end;
    end;
 
    libList := GProject.GetLibraryList;
@@ -177,8 +183,6 @@ begin
    finally
       libList.Free;
    end;
-
-   FImportLines := ALines;
 end;
 
 function ExtractImplementer(const ATypeName: string; const AContents: string): string;
@@ -356,7 +360,7 @@ var
    i, len, a: integer;
    i64: Int64;
    f: double;
-   cValue: string;
+   cValue, importLib: string;
 begin
    result := UNKNOWN_TYPE;
    len := AValue.Length;
@@ -434,6 +438,12 @@ begin
                   result := JAVA_FLOAT_TYPE
                else
                   result := JAVA_BIGDECIMAL_TYPE;
+               if (result <> JAVA_BIGDECIMAL_TYPE) and (FImportLines <> nil) then
+               begin
+                  importLib := Format(IMPORT_MASK, ['java.math', 'BigDecimal']);
+                  if FImportLines.IndexOf(importLib) = -1 then
+                     FImportLines.Add(importLib);
+               end;
             end
             else if AValue.Contains('BigInteger') then
             begin
@@ -447,6 +457,12 @@ begin
                   result := JAVA_FLOAT_TYPE
                else
                   result := JAVA_BIGINTEGER_TYPE;
+               if (result <> JAVA_BIGINTEGER_TYPE) and (FImportLines <> nil) then
+               begin
+                  importLib := Format(IMPORT_MASK, ['java.math', 'BigInteger']);
+                  if FImportLines.IndexOf(importLib) = -1 then
+                     FImportLines.Add(importLib);
+               end;
             end
             else if TryStrToInt64(AValue, i64) then
                result := JAVA_LONG_TYPE;
