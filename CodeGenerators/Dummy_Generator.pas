@@ -500,96 +500,75 @@ function Dummy_FileContentsGenerator(ALines: TStringList; ASkipBodyGenerate: boo
 var
    fileTemplate, headerTemplate, mainFuncTemplate, libTemplate, constTemplate,
    varTemplate, funcTemplate, dataTypeTemplate: TStringList;
-   currLang, lang: TLangDefinition;
+   currLang: TLangDefinition;
 begin
 
    currLang := GInfra.CurrentLang;
 
-   if currLang.FileContentsTemplate.isEmpty then
+   if currLang.FileContentsTemplate.IsEmpty then
       Exit(false);
 
    try
       // generate program header section
-      lang := nil;
       headerTemplate := TStringList.Create;
       if Assigned(currLang.ProgramHeaderSectionGenerator) then
-         lang := currLang
-      else if Assigned(GInfra.DummyLang.ProgramHeaderSectionGenerator) then
-         lang := GInfra.DummyLang;
-      if lang <> nil then
-         lang.ProgramHeaderSectionGenerator(headerTemplate);
+         currLang.ProgramHeaderSectionGenerator(headerTemplate)
+      else
+         Dummy_ProgramHeaderSectionGenerator(headerTemplate);
 
       // generate libraries section
-      lang := nil;
       libTemplate := TStringList.Create;
       if Assigned(currLang.LibSectionGenerator) then
-         lang := currLang
-      else if Assigned(GInfra.DummyLang.LibSectionGenerator) then
-         lang := GInfra.DummyLang;
-      if lang <> nil then
-         lang.LibSectionGenerator(libTemplate);
+         currLang.LibSectionGenerator(libTemplate)
+      else
+         Dummy_LibSectionGenerator(libTemplate);
 
      // generate global constants section
-     lang := nil;
      constTemplate := TStringList.Create;
      if currLang.EnabledConsts then
      begin
         if Assigned(currLang.ConstSectionGenerator) then
-           lang := currLang
-        else if Assigned(GInfra.DummyLang.ConstSectionGenerator) then
-           lang := GInfra.DummyLang;
-        if lang <> nil then
-           lang.ConstSectionGenerator(constTemplate, GProject.GlobalConsts);
+           currLang.ConstSectionGenerator(constTemplate, GProject.GlobalConsts)
+        else
+           Dummy_ConstSectionGenerator(constTemplate, GProject.GlobalConsts);
      end;
 
      // generate global variables section
-     lang := nil;
      varTemplate := TStringList.Create;
      if currLang.EnabledVars then
      begin
         if Assigned(currLang.VarSectionGenerator) then
-           lang := currLang
-        else if Assigned(GInfra.DummyLang.VarSectionGenerator) then
-           lang := GInfra.DummyLang;
-        if lang <> nil then
-           lang.VarSectionGenerator(varTemplate, GProject.GlobalVars);
+           currLang.VarSectionGenerator(varTemplate, GProject.GlobalVars)
+        else
+           Dummy_VarSectionGenerator(varTemplate, GProject.GlobalVars);
       end;
 
      // generate user data types section
-     lang := nil;
      dataTypeTemplate := TStringList.Create;
      if currLang.EnabledUserDataTypes then
      begin
         if Assigned(currLang.UserDataTypesSectionGenerator) then
-           lang := currLang
-        else if Assigned(GInfra.DummyLang.UserDataTypesSectionGenerator) then
-           lang := GInfra.DummyLang;
-        if lang <> nil then
-           lang.UserDataTypesSectionGenerator(dataTypeTemplate);
+           currLang.UserDataTypesSectionGenerator(dataTypeTemplate)
+        else
+           Dummy_UserDataTypesSectionGenerator(dataTypeTemplate);
      end;
 
      // generate user functions section
-     lang := nil;
      funcTemplate := TStringList.Create;
      if currLang.EnabledUserFunctionHeader then
      begin
         if Assigned(currLang.UserFunctionsSectionGenerator) then
-           lang := currLang
-        else if Assigned(GInfra.DummyLang.UserFunctionsSectionGenerator) then
-           lang := GInfra.DummyLang;
-        if lang <> nil then
-           lang.UserFunctionsSectionGenerator(funcTemplate, ASkipBodyGenerate);
+           currLang.UserFunctionsSectionGenerator(funcTemplate, ASkipBodyGenerate)
+        else
+           Dummy_UserFunctionsSectionGenerator(funcTemplate, ASkipBodyGenerate);
      end;
 
       // generate main function section
-      lang := nil;
       mainFuncTemplate := TStringList.Create;
       if Assigned(currLang.MainFunctionSectionGenerator) then
-         lang := currLang
-      else if Assigned(GInfra.DummyLang.MainFunctionSectionGenerator) then
-         lang := GInfra.DummyLang;
-      if lang <> nil then
-         lang.MainFunctionSectionGenerator(mainFuncTemplate, 0);
+         currLang.MainFunctionSectionGenerator(mainFuncTemplate, 0)
+      else
+         Dummy_MainFunctionSectionGenerator(mainFuncTemplate, 0);
 
       fileTemplate := TStringList.Create;
       fileTemplate.Text := currLang.FileContentsTemplate;

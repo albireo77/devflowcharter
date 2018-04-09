@@ -382,11 +382,12 @@ begin
             else if (len > 2) and AValue.StartsWith(JAVA_CHAR_DELIM) and AValue.EndsWith(JAVA_CHAR_DELIM) then
             begin
                cValue := Copy(AValue, 2, len-2);
+               i := cValue.Length;
                if cValue[1] = '\' then
                begin
-                  if (cValue.Length = 2) and (LastDelimiter('0btnfr"\'#39, cValue) = 2) then
+                  if (i = 2) and (LastDelimiter('0btnfr"\'#39, cValue) = 2) then
                      result := JAVA_CHAR_TYPE
-                  else if (cValue.Length = 6) and ((cValue[2] = 'u') or (cValue[2] = 'U')) then
+                  else if (i = 6) and ((cValue[2] = 'u') or (cValue[2] = 'U')) then
                   begin
                      for a := 3 to 6 do
                      begin
@@ -396,7 +397,7 @@ begin
                      result := JAVA_CHAR_TYPE;
                   end;
                end
-               else if cValue.Length = 1 then
+               else if i = 1 then
                   result := JAVA_CHAR_TYPE;
             end
             else if AValue.EndsWith('l', true) then

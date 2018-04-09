@@ -60,8 +60,6 @@ type
          class function InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; ATemplate: TStringList; AObject: TObject = nil): integer; overload;
          class procedure InitFocusInfo(var AFocusInfo: TFocusInfo);
          class procedure ChangeLine(const ALine: TChangeLine);
-         class procedure InitChangeLine(var AChangeLine: TChangeLine);
-         class procedure InitCodeRange(var ACodeRange: TCodeRange);
          class procedure SetFontSize(AControl: TControl; ASize: integer);
          class procedure UpdateCodeEditor(AObject: TObject = nil);
          class procedure OnKeyDownSelectAll(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -1088,32 +1086,6 @@ begin
    result := (AColor = NOK_COLOR) or (AColor = WARN_COLOR);
 end;
 
-class procedure TInfra.InitCodeRange(var ACodeRange: TCodeRange);
-begin
-   with ACodeRange do
-   begin
-      IsFolded := false;
-      FirstRow := ROW_NOT_FOUND;
-      LastRow := ROW_NOT_FOUND;
-      Lines := nil;
-{$IFDEF USE_CODEFOLDING}
-      FoldRange := nil;
-{$ENDIF}
-   end;
-end;
-
-class procedure TInfra.InitChangeLine(var AChangeLine: TChangeLine);
-begin
-   with AChangeLine do
-   begin
-      Text := '';
-      Row := ROW_NOT_FOUND;
-      Col := 0;
-      EditCaretXY := BufferCoord(0, 0);
-      InitCodeRange(CodeRange);
-   end;
-end;
-
 class function TInfra.GetChangeLine(AObject: TObject; AEdit: TCustomEdit = nil; const ATemplate: string = ''): TChangeLine;
 var
    templateLines: TStringList;
@@ -1121,7 +1093,7 @@ var
    indent, template: string;
 begin
    p := 0;
-   InitChangeLine(result);
+   result := TChangeLine.New;
    result.EditCaretXY := TInfra.GetCaretPos(AEdit);
    if AObject <> nil then
    begin
@@ -1277,7 +1249,7 @@ class procedure TInfra.ExtractPipedValues(var ASource: string; var ADest: string
 var
    i: integer;
 begin
-   i := Pos('|', ASource);
+   i := LastDelimiter('|', ASource);
    if i > 0 then
    begin
       ADest := Copy(ASource, i+1, MaxInt);

@@ -1102,7 +1102,7 @@ var
    foldRange: TSynEditFoldRange;
 {$ENDIF}
 begin
-   TInfra.InitCodeRange(result);
+   result := TCodeRange.New;
    lines := GetAllLines;
    result.FirstRow := lines.IndexOfObject(AObject);
    lines.Free;

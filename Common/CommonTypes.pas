@@ -59,6 +59,7 @@ type
 {$IFDEF USE_CODEFOLDING}
       FoldRange: TSynEditFoldRange;
 {$ENDIF}
+      class function New: TCodeRange; static;
    end;
 
    PNativeDataType = ^TNativeDataType;
@@ -81,6 +82,7 @@ type
       Col: integer;
       EditCaretXY: TBufferCoord;
       CodeRange: TCodeRange;
+      class function New: TChangeLine; static;
    end;
 
    PTypesSet = ^TTypesSet;
@@ -97,7 +99,7 @@ type
 implementation
 
 uses
-   System.SysUtils, CommonInterfaces;
+   System.SysUtils, CommonInterfaces, ApplicationCommon;
 
 constructor TComponentComparer.Create(ACompareType: integer);
 begin
@@ -114,6 +116,26 @@ begin
       result := compareObj.GetCompareValue(FCompareType);
    if Supports(R, IGenericComparable, compareObj) then
       result := result - compareObj.GetCompareValue(FCompareType);
+end;
+
+class function TCodeRange.New: TCodeRange;
+begin
+   result.IsFolded := false;
+   result.FirstRow := ROW_NOT_FOUND;
+   result.LastRow := ROW_NOT_FOUND;
+   result.Lines := nil;
+{$IFDEF USE_CODEFOLDING}
+   result.FoldRange := nil;
+{$ENDIF}
+end;
+
+class function TChangeLine.New: TChangeLine;
+begin
+   result.Text := '';
+   result.Row := ROW_NOT_FOUND;
+   result.Col := 0;
+   result.EditCaretXY := BufferCoord(0, 0);
+   result.CodeRange := TCodeRange.New;
 end;
 
 end.

@@ -27,7 +27,7 @@ uses
    Main_Block, LangDefinition, ApplicationCommon, CommonInterfaces;
 
 var
-   lLangDef: TLangDefinition;
+   tiBasicLang: TLangDefinition;
 
 procedure TIBASIC_ProgramHeaderSectionGenerator(ALines: TStringList);
 begin
@@ -66,7 +66,7 @@ begin
       for func in GProject.GetUserFunctions do
       begin
          funcName := func.GetName;
-         if funcName.IsEmpty or func.Header.chkExternal.Checked then
+         if funcName.IsEmpty or (func.Header.chkExternal.Checked and not tiBasicLang.CodeIncludeExternFunction) then
             continue;
          funcPrefix := IfThen(func.Header.cbType.ItemIndex <> 0, 'Func', 'Prgm');
          funcParms := '';
@@ -82,7 +82,7 @@ begin
          if func.Body <> nil then
          begin
             TIBASIC_VarSectionGenerator(ALines, func.Header.LocalVars);
-            func.Body.GenerateCode(ALines, lLangDef.Name, 0);
+            func.Body.GenerateCode(ALines, tiBasicLang.Name, 0);
          end;
          ALines.AddObject('End' + funcPrefix, func.Header);
          ALines.Add('');
@@ -99,7 +99,7 @@ begin
       block := GProject.GetMainBlock;
       if block <> nil then
       begin
-         block.GenerateCode(ALines, lLangDef.Name, deep);
+         block.GenerateCode(ALines, tiBasicLang.Name, deep);
          ALines.AddObject('EndPrgm', block);
       end;
    end;
@@ -107,13 +107,13 @@ end;
 
 initialization
 
-   lLangDef := GInfra.GetLangDefinition(TIBASIC_LANG_ID);
-   if lLangDef <> nil then
+   tiBasicLang := GInfra.GetLangDefinition(TIBASIC_LANG_ID);
+   if tiBasicLang <> nil then
    begin
-      lLangDef.ProgramHeaderSectionGenerator := TIBASIC_ProgramHeaderSectionGenerator;
-      lLangDef.VarSectionGenerator := TIBASIC_VarSectionGenerator;
-      lLangDef.UserFunctionsSectionGenerator := TIBASIC_UserFunctionsSectionGenerator;
-      lLangDef.MainFunctionSectionGenerator := TIBASIC_MainFunctionSectionGenerator;
+      tiBasicLang.ProgramHeaderSectionGenerator := TIBASIC_ProgramHeaderSectionGenerator;
+      tiBasicLang.VarSectionGenerator := TIBASIC_VarSectionGenerator;
+      tiBasicLang.UserFunctionsSectionGenerator := TIBASIC_UserFunctionsSectionGenerator;
+      tiBasicLang.MainFunctionSectionGenerator := TIBASIC_MainFunctionSectionGenerator;
    end;
 
 end.
