@@ -452,6 +452,8 @@ begin
                      FImportLines.Add(importLib);
                end;
             end
+            else if TryStrToInt64(AValue, i64) then
+               result := JAVA_LONG_TYPE
             else if AValue.EndsWith('l', true) then
             begin
                cValue := Copy(AValue, 1, len-1);
@@ -469,9 +471,7 @@ begin
                cValue := Copy(AValue, 1, len-1);
                if TryStrToFloat(cValue, f) then
                   result := JAVA_FLOAT_TYPE;
-            end
-            else if TryStrToInt64(AValue, i64) then
-               result := JAVA_LONG_TYPE;
+            end;
          end
          else
             result := JAVA_DOUBLE_TYPE;
