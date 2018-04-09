@@ -82,7 +82,7 @@ type
       chkInclDescFlow,
       chkBodyVisible,
       chkArrayType,
-      chkIsStatic: TCheckBox;
+      chkStatic: TCheckBox;
       splDesc,
       splParams: TSplitter;
       property UserFunction: TUserFunction read FUserFunction;
@@ -465,24 +465,24 @@ begin
    chkArrayType.OnClick := OnChangeType;
 
    CreateExtDeclareChBox(gbHeader, 165, 52);
-   chkExtDeclare.Alignment := taLeftJustify;
+   chkExternal.Alignment := taLeftJustify;
 
-   chkIsStatic := TCheckBox.Create(gbHeader);
-   chkIsStatic.Parent := gbHeader;
-   chkIsStatic.ParentFont := false;
-   chkIsStatic.Font.Style := [];
-   chkIsStatic.Font.Color := clWindowText;
-   chkIsStatic.Enabled := not GInfra.CurrentLang.StaticLabel.IsEmpty;
-   if chkIsStatic.Enabled then
-      chkIsStatic.Caption := GInfra.CurrentLang.StaticLabel
+   chkStatic := TCheckBox.Create(gbHeader);
+   chkStatic.Parent := gbHeader;
+   chkStatic.ParentFont := false;
+   chkStatic.Font.Style := [];
+   chkStatic.Font.Color := clWindowText;
+   chkStatic.Enabled := not GInfra.CurrentLang.StaticLabel.IsEmpty;
+   if chkStatic.Enabled then
+      chkStatic.Caption := GInfra.CurrentLang.StaticLabel
    else
-      chkIsStatic.Caption := i18Manager.GetString('NotUsed');
-   x := chkExtDeclare.BoundsRect.Right + 15;
-   chkIsStatic.SetBounds(x, 52, PageControl.Canvas.TextWidth(chkIsStatic.Caption) + 20, 17);
-   chkIsStatic.DoubleBuffered := true;
-   chkIsStatic.Anchors := [akBottom, akLeft];
-   chkIsStatic.Alignment := taLeftJustify;
-   chkIsStatic.OnClick := OnClickCh;
+      chkStatic.Caption := i18Manager.GetString('NotUsed');
+   x := chkExternal.BoundsRect.Right + 15;
+   chkStatic.SetBounds(x, 52, PageControl.Canvas.TextWidth(chkStatic.Caption) + 20, 17);
+   chkStatic.DoubleBuffered := true;
+   chkStatic.Anchors := [akBottom, akLeft];
+   chkStatic.Alignment := taLeftJustify;
+   chkStatic.OnClick := OnClickCh;
 
    CreateLibControls(gbHeader, 8, 52);
    x := lblLibrary.BoundsRect.Right + 5;
@@ -798,8 +798,8 @@ begin
    tag2.SetAttribute('parmsh', gbParams.Height.ToString);
    tag2.SetAttribute('lvarsh', FLocalVars.Height.ToString);
    tag2.SetAttribute('arrayType', chkArrayType.Checked.ToString);
-   if chkIsStatic.Enabled then
-      tag2.SetAttribute('static', chkIsStatic.Checked.ToString);
+   if chkStatic.Enabled then
+      tag2.SetAttribute('static', chkStatic.Checked.ToString);
    if (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
       FUserFunction.Body.ExportToXMLTag(tag);
 end;
@@ -823,8 +823,8 @@ begin
    chkInclDescCode.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'desc_incl');
    chkInclDescFlow.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'desc_incl_flow');
    chkArrayType.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'arrayType');
-   if chkIsStatic.Enabled then
-      chkIsStatic.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'static');
+   if chkStatic.Enabled then
+      chkStatic.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'static');
    FLocalVars.ImportFromXMLTag(ATag);
    idx := StrToIntDef(ATag.GetAttribute('descrh'), -1);
    if idx > -1 then

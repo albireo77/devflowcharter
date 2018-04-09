@@ -48,9 +48,9 @@ begin
          for dataType in GProject.GetUserDataTypes do
          begin
             name := dataType.GetName;
-            if (name <> '') and (lang.CodeIncludeExternDataType or not dataType.chkExtDeclare.Checked) then
+            if (name <> '') and (lang.CodeIncludeExternDataType or not dataType.chkExternal.Checked) then
             begin
-               extModifier := IfThen(dataType.chkExtDeclare.Checked, lang.DataTypeExternal, lang.DataTypeNonExternal);
+               extModifier := IfThen(dataType.chkExternal.Checked, lang.DataTypeExternal, lang.DataTypeNonExternal);
                template.Clear;
                case dataType.Kind of
 
@@ -311,13 +311,10 @@ begin
                if dcount > 0 then
                begin
                   dims := AVarList.GetDimensions(name);
-                  if dims <> nil then
-                  begin
-                     for b := 0 to High(dims) do
-                        varSize := varSize + Format(lang.VarEntryArraySize, [dims[b]]);
-                     if lang.VarEntryArraySizeStripCount > 0 then
-                        SetLength(varSize, varSize.Length - lang.VarEntryArraySizeStripCount);
-                  end;
+                  for b := 0 to High(dims) do
+                     varSize := varSize + Format(lang.VarEntryArraySize, [dims[b]]);
+                  if lang.VarEntryArraySizeStripCount > 0 then
+                     SetLength(varSize, varSize.Length - lang.VarEntryArraySizeStripCount);
                   varStr := ReplaceStr(lang.VarEntryArray, PRIMARY_PLACEHOLDER, name);
                   varStr := ReplaceStr(varStr, '%s3', varSize);
                end
@@ -386,7 +383,7 @@ begin
          for func in GProject.GetUserFunctions do
          begin
             name := func.GetName;
-            if (name <> '') and (lang.CodeIncludeExternFunction or not func.Header.chkExtDeclare.Checked) and not lang.FunctionTemplate.IsEmpty then
+            if (name <> '') and (lang.CodeIncludeExternFunction or not func.Header.chkExternal.Checked) and not lang.FunctionTemplate.IsEmpty then
             begin
                // assemble list of function parameters
                argList := '';
@@ -432,9 +429,9 @@ begin
                hText := ReplaceStr(hText, '%s4', IfThen(isTypeNotNone, func.Header.cbType.Text));
                hText := ReplaceStr(hText, '%s5', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone1, lang.FunctionHeaderTypeNone1));
                hText := ReplaceStr(hText, '%s6', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone2, lang.FunctionHeaderTypeNone2));
-               hText := ReplaceStr(hText, '%s7', IfThen(func.Header.chkExtDeclare.Checked, lang.FunctionHeaderExternal, lang.FunctionHeaderNotExternal));
+               hText := ReplaceStr(hText, '%s7', IfThen(func.Header.chkExternal.Checked, lang.FunctionHeaderExternal, lang.FunctionHeaderNotExternal));
                hText := ReplaceStr(hText, '%s8', varTypeArray);
-               hText := ReplaceStr(hText, '%s9', IfThen(func.Header.chkIsStatic.Checked, lang.FunctionHeaderStatic, lang.FunctionHeaderNotStatic));
+               hText := ReplaceStr(hText, '%s9', IfThen(func.Header.chkStatic.Checked, lang.FunctionHeaderStatic, lang.FunctionHeaderNotStatic));
 
                headerTemplate := TStringList.Create;
                try
@@ -677,7 +674,7 @@ begin
       end
       else
          key := lang.ProcedureLabelKey;
-      isExternal := IfThen(AHeader.chkExtDeclare.Checked, lang.FunctionHeaderExternal, lang.FunctionHeaderNotExternal);
+      isExternal := IfThen(AHeader.chkExternal.Checked, lang.FunctionHeaderExternal, lang.FunctionHeaderNotExternal);
       if ALongDesc then
       begin
          for param in AHeader.GetParameters do

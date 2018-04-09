@@ -145,6 +145,11 @@ begin
    FImportLines := nil;
 end;
 
+procedure Java_ExecuteAfterGeneration;
+begin
+   FImportLines := nil;
+end;
+
 procedure Java_LibSectionGenerator(ALines: TStringList);
 var
    i: integer;
@@ -297,7 +302,7 @@ begin
       if not name.IsEmpty then
       begin
          indent := GSettings.IndentString;
-         typeAccess := IfThen(dataType.chkExtDeclare.Checked, javaLang.DataTypeExternal, javaLang.DataTypeNonExternal);
+         typeAccess := IfThen(dataType.chkExternal.Checked, javaLang.DataTypeExternal, javaLang.DataTypeNonExternal);
          if dataType.Kind = dtRecord then
          begin
             if i > 0 then
@@ -423,7 +428,7 @@ begin
             else if AValue.Contains('Math.E') or AValue.Contains('Math.PI') then
                result := JAVA_DOUBLE_TYPE
             else if AValue = 'null' then
-               result := GENERIC_PTR_TYPE
+               result := JAVA_STRING_TYPE
             else if (AValue = 'true') or (AValue = 'false') then
                result := JAVA_BOOLEAN_TYPE
             else if AValue.Contains('BigDecimal') then
@@ -517,6 +522,7 @@ initialization
    if javaLang <> nil then
    begin
       javaLang.ExecuteBeforeGeneration :=  Java_ExecuteBeforeGeneration;
+      javaLang.ExecuteAfterGeneration :=  Java_ExecuteAfterGeneration;
       javaLang.LibSectionGenerator := Java_LibSectionGenerator;
       javaLang.VarSectionGenerator := Java_VarSectionGenerator;
       javaLang.UserDataTypesSectionGenerator := Java_UserDataTypesSectionGenerator;

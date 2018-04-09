@@ -453,18 +453,28 @@ begin
       if lang <> nil then
          lang.ExecuteBeforeGeneration;
 
-      lang := nil;
-      if Assigned(GInfra.CurrentLang.FileContentsGenerator) then
-         lang := GInfra.CurrentLang
-      else if Assigned(GInfra.DummyLang.FileContentsGenerator) then
-         lang := GInfra.DummyLang;
-      if lang <> nil then
-      begin
-         if not lang.FileContentsGenerator(newLines, skipFuncBody) then
+      try
+         lang := nil;
+         if Assigned(GInfra.CurrentLang.FileContentsGenerator) then
+            lang := GInfra.CurrentLang
+         else if Assigned(GInfra.DummyLang.FileContentsGenerator) then
+            lang := GInfra.DummyLang;
+         if lang <> nil then
          begin
-            TInfra.ShowFormattedErrorBox('NoProgTempl', [sLineBreak, GInfra.CurrentLang.Name, GInfra.CurrentLang.DefFile, FILE_CONTENTS_TAG], errValidate);
-            exit;
+            if not lang.FileContentsGenerator(newLines, skipFuncBody) then
+            begin
+               TInfra.ShowFormattedErrorBox('NoProgTempl', [sLineBreak, GInfra.CurrentLang.Name, GInfra.CurrentLang.DefFile, FILE_CONTENTS_TAG], errValidate);
+               exit;
+            end;
          end;
+      finally
+         lang := nil;
+         if Assigned(GInfra.CurrentLang.ExecuteAfterGeneration) then
+            lang := GInfra.CurrentLang
+         else if Assigned(GInfra.DummyLang.ExecuteAfterGeneration) then
+            lang := GInfra.DummyLang;
+         if lang <> nil then
+            lang.ExecuteAfterGeneration;
       end;
 
       with memCodeEditor do

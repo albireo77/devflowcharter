@@ -58,7 +58,7 @@ type
          function GetElements<T: class>: IEnumerable<T>;
       public
          edtName: TEdit;
-         chkExtDeclare: TCheckBox;
+         chkExternal: TCheckBox;
          edtLibrary: TEdit;
          lblName: TLabel;
          lblLibrary: TLabel;
@@ -133,7 +133,7 @@ end;
 
 procedure TTabComponent.UpdateCodeEditor;
 begin
-   if FCodeIncludeExtern or not chkExtDeclare.Checked then
+   if FCodeIncludeExtern or not chkExternal.Checked then
       TInfra.UpdateCodeEditor(Self);
 end;
 
@@ -207,21 +207,21 @@ end;
 
 procedure TTabComponent.CreateExtDeclareChBox(AParent: TWinControl; x, y: integer);
 begin
-   chkExtDeclare := TCheckBox.Create(AParent);
-   chkExtDeclare.Parent := AParent;
+   chkExternal := TCheckBox.Create(AParent);
+   chkExternal.Parent := AParent;
    if not FCodeIncludeExtern then
-      chkExtDeclare.Hint := i18Manager.GetString('chkExtDeclare.Hint');
+      chkExternal.Hint := i18Manager.GetString('chkExternal.Hint');
    if GInfra.CurrentLang.ExternalLabel.IsEmpty then
-      chkExtDeclare.Caption := i18Manager.GetString('chkExtDeclare')
+      chkExternal.Caption := i18Manager.GetString('chkExternal')
    else
-      chkExtDeclare.Caption := GInfra.CurrentLang.ExternalLabel;
-   chkExtDeclare.SetBounds(x, y, PageControl.Canvas.TextWidth(chkExtDeclare.Caption) + 20, 17);
-   chkExtDeclare.ParentFont := false;
-   chkExtDeclare.Font.Style := [];
-   chkExtDeclare.Font.Color := clWindowText;
-   chkExtDeclare.DoubleBuffered := true;
-   chkExtDeclare.OnClick := OnClickCh;
-   chkExtDeclare.ShowHint := true;
+      chkExternal.Caption := GInfra.CurrentLang.ExternalLabel;
+   chkExternal.SetBounds(x, y, PageControl.Canvas.TextWidth(chkExternal.Caption) + 20, 17);
+   chkExternal.ParentFont := false;
+   chkExternal.Font.Style := [];
+   chkExternal.Font.Color := clWindowText;
+   chkExternal.DoubleBuffered := true;
+   chkExternal.OnClick := OnClickCh;
+   chkExternal.ShowHint := true;
 end;
 
 procedure TTabComponent.CreateNameControls(AParent: TWinControl; x, y: integer);
@@ -475,7 +475,7 @@ var
 begin
    ATag.SetAttribute(NAME_ATTR, Trim(edtName.Text));
    ATag.SetAttribute(ID_ATTR, FId.ToString);
-   ATag.SetAttribute('ext_decl', chkExtDeclare.Checked.ToString);
+   ATag.SetAttribute('ext_decl', chkExternal.Checked.ToString);
    ATag.SetAttribute('library', Trim(edtLibrary.Text));
    for elem in GetElements<TElement> do
       elem.ExportToXMLTag(ATag);
@@ -488,7 +488,7 @@ var
 begin
    edtName.Text := ATag.GetAttribute(NAME_ATTR);
    edtName.OnChange(edtName);
-   chkExtDeclare.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'ext_decl');
+   chkExternal.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'ext_decl');
    edtLibrary.Text := ATag.GetAttribute('library');
    tag := TXMLProcessor.FindChildTag(ATag, FElementTypeID);
    while tag <> nil do

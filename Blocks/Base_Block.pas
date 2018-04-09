@@ -2532,7 +2532,7 @@ var
    funcHeader: TUserFunctionHeader;
 begin
    funcHeader := TInfra.GetFunctionHeader(Self);
-   result := (funcHeader <> nil) and (TInfra.IsNOkColor(funcHeader.Font.Color) or funcHeader.chkExtDeclare.Checked);
+   result := (funcHeader <> nil) and (TInfra.IsNOkColor(funcHeader.Font.Color) or funcHeader.chkExternal.Checked);
 end;
 
 function TBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;

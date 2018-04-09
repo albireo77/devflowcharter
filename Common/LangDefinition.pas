@@ -207,6 +207,7 @@ type
       InOutCursorPos,
       FuncBracketsCursorPos: integer;
       ExecuteBeforeGeneration: procedure;
+      ExecuteAfterGeneration: procedure;
       ProgramHeaderSectionGenerator: procedure (ALines: TStringList);
       LibSectionGenerator: procedure (ALines: TStringList);
       UserDataTypesSectionGenerator: procedure (ALines: TStringList);
@@ -259,6 +260,7 @@ begin
    UpperCaseConstId := true;
    EnabledPointers := true;
    ExecuteBeforeGeneration := nil;
+   ExecuteAfterGeneration := nil;
    ProgramHeaderSectionGenerator := nil;
    LibSectionGenerator := nil;
    UserDataTypesSectionGenerator := nil;

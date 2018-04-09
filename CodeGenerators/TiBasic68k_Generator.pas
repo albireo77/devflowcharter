@@ -66,7 +66,7 @@ begin
       for func in GProject.GetUserFunctions do
       begin
          funcName := func.GetName;
-         if funcName.IsEmpty or func.Header.chkExtDeclare.Checked then
+         if funcName.IsEmpty or func.Header.chkExternal.Checked then
             continue;
          funcPrefix := IfThen(func.Header.cbType.ItemIndex <> 0, 'Func', 'Prgm');
          funcParms := '';

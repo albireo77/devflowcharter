@@ -415,9 +415,9 @@ Available placeholders:
    %s4 - return type
    %s5 - first string that depends if return type is none or specific (element FunctionHeaderTypeModifier1) 
    %s6 - second string that depends if return type is none or specific (element FunctionHeaderTypeModifier2)
-   %s7 - string that depends if function is external or not (element FunctionHeaderExternalModifier) 
+   %s7 - string that depends if function is external or not (element FunctionHeaderExternalModifier); see also description for element ExternalLabel 
    %s8 - string that depends if function return type is array or not (element FunctionHeaderTypeArrayModifier)
-   %s9 - string that depends if function is of static context (element FunctionHeaderStaticModifier)    
+   %s9 - string that depends if function is of static context (element FunctionHeaderStaticModifier); see also description for element StaticLabel     
 -->
 <FunctionHeaderTemplate>%s2
 %s7%s5 %s1(%s3)%s6 %s4%s8;
@@ -691,7 +691,7 @@ Available placeholders:
 
 <!--
 Element DataTypeRecordTemplate
-Description: Template for record type
+Description: Template for record type; see also description for RecordLabel element
 Available placeholders:
    %s1 - record name 
    %s2 - list of fields (DataTypeRecordFieldMask or DataTypeRecordFieldArrayMask elements)
