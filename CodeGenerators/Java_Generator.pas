@@ -400,24 +400,6 @@ begin
                else if i = 1 then
                   result := JAVA_CHAR_TYPE;
             end
-            else if AValue.EndsWith('l', true) then
-            begin
-               cValue := Copy(AValue, 1, len-1);
-               if TryStrToInt(cValue, i) then
-                  result := JAVA_LONG_TYPE;
-            end
-            else if AValue.EndsWith('d', true) then
-            begin
-               cValue := Copy(AValue, 1, len-1);
-               if TryStrToFloat(cValue, f) then
-                  result := JAVA_DOUBLE_TYPE;
-            end
-            else if AValue.EndsWith('f', true) then
-            begin
-               cValue := Copy(AValue, 1, len-1);
-               if TryStrToFloat(cValue, f) then
-                  result := JAVA_FLOAT_TYPE;
-            end
             else if AValue = 'new Date()' then
                result := JAVA_DATE_TYPE
             else if AValue = 'Calendar.getInstance()' then
@@ -469,6 +451,24 @@ begin
                   if FImportLines.IndexOf(importLib) = -1 then
                      FImportLines.Add(importLib);
                end;
+            end
+            else if AValue.EndsWith('l', true) then
+            begin
+               cValue := Copy(AValue, 1, len-1);
+               if TryStrToInt(cValue, i) then
+                  result := JAVA_LONG_TYPE;
+            end
+            else if AValue.EndsWith('d', true) then
+            begin
+               cValue := Copy(AValue, 1, len-1);
+               if TryStrToFloat(cValue, f) then
+                  result := JAVA_DOUBLE_TYPE;
+            end
+            else if AValue.EndsWith('f', true) then
+            begin
+               cValue := Copy(AValue, 1, len-1);
+               if TryStrToFloat(cValue, f) then
+                  result := JAVA_FLOAT_TYPE;
             end
             else if TryStrToInt64(AValue, i64) then
                result := JAVA_LONG_TYPE;
