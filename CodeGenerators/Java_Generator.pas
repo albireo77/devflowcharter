@@ -454,23 +454,20 @@ begin
             end
             else if TryStrToInt64(AValue, i64) then
                result := JAVA_LONG_TYPE
-            else if AValue.EndsWith('l', true) then
+            else
             begin
                cValue := Copy(AValue, 1, len-1);
-               if TryStrToInt(cValue, i) then
-                  result := JAVA_LONG_TYPE;
-            end
-            else if AValue.EndsWith('d', true) then
-            begin
-               cValue := Copy(AValue, 1, len-1);
-               if TryStrToFloat(cValue, f) then
-                  result := JAVA_DOUBLE_TYPE;
-            end
-            else if AValue.EndsWith('f', true) then
-            begin
-               cValue := Copy(AValue, 1, len-1);
-               if TryStrToFloat(cValue, f) then
-                  result := JAVA_FLOAT_TYPE;
+               case AValue[len] of
+                  'l', 'L':
+                  if TryStrToInt(cValue, i) then
+                     result := JAVA_LONG_TYPE;
+                  'd', 'D':
+                  if TryStrToFloat(cValue, f) then
+                     result := JAVA_DOUBLE_TYPE;
+                  'f', 'F':
+                  if TryStrToFloat(cValue, f) then
+                     result := JAVA_FLOAT_TYPE;
+               end;
             end;
          end
          else
