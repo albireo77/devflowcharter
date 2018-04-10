@@ -273,7 +273,7 @@ begin
          begin
             if not TryStrToBool(AValue, b) then
             begin
-               if AValue.StartsWith(PASCAL_STRING_DELIM) and AValue.EndsWith(PASCAL_STRING_DELIM) then
+               if (AValue[1] = PASCAL_STRING_DELIM) and (AValue[len] = PASCAL_STRING_DELIM) then
                begin
                   if len = 3 then
                      result := PASCAL_CHAR_TYPE

@@ -371,15 +371,17 @@ begin
    len := AValue.Length;
    if len > 0 then
    begin
+      if AValue[1] = '$' then
+         Exit;
       if not TryStrToInt(AValue, i) then
       begin
          if len = 1 then
-            Exit(UNKNOWN_TYPE);
+            Exit;
          if not TryStrToFloat(AValue, f) then
          begin
-            if AValue.StartsWith(JAVA_STRING_DELIM) and AValue.EndsWith(JAVA_STRING_DELIM) then
+            if (AValue[1] = JAVA_STRING_DELIM) and (AValue[len] = JAVA_STRING_DELIM) then
                result := JAVA_STRING_TYPE
-            else if (len > 2) and AValue.StartsWith(JAVA_CHAR_DELIM) and AValue.EndsWith(JAVA_CHAR_DELIM) then
+            else if (len > 2) and (AValue[1] = JAVA_CHAR_DELIM) and (AValue[len] = JAVA_CHAR_DELIM) then
             begin
                cValue := Copy(AValue, 2, len-2);
                i := cValue.Length;
@@ -424,6 +426,8 @@ begin
                   result := JAVA_DOUBLE_TYPE
                else if AValue.Contains('floatValue()') then
                   result := JAVA_FLOAT_TYPE
+               else if AValue.EndsWith('toString()') or AValue.EndsWith('toPlainString()') then
+                  result := JAVA_STRING_TYPE
                else
                   result := JAVA_BIGDECIMAL_TYPE;
                if (result <> JAVA_BIGDECIMAL_TYPE) and (FImportLines <> nil) then
@@ -443,6 +447,8 @@ begin
                   result := JAVA_DOUBLE_TYPE
                else if AValue.Contains('floatValue()') then
                   result := JAVA_FLOAT_TYPE
+               else if AValue.Contains('toString(') then
+                  result := JAVA_STRING_TYPE
                else
                   result := JAVA_BIGINTEGER_TYPE;
                if (result <> JAVA_BIGINTEGER_TYPE) and (FImportLines <> nil) then
