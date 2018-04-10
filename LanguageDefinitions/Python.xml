@@ -179,7 +179,7 @@ else:
 def %s1(%s3):
 </FunctionHeaderTemplate>
 
-<FunctionBodyTemplate>	%s2	
+<FunctionBodyTemplate>	%s2
 	%b1
 </FunctionBodyTemplate>
 

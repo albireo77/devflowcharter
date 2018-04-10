@@ -330,10 +330,10 @@ public class %s1 {
 	%s4
 
 	%s5
-	
+
 	%s7
-	
-	%s8	
+
+	%s8
 }
 </FileContentsTemplate>
 
@@ -472,7 +472,7 @@ Available placeholders:
 -->
 <FunctionTemplate>%s1
 
-	%s2	
+	%s2
 	%s3
 }
 </FunctionTemplate>

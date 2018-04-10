@@ -394,7 +394,7 @@ begin
                      for a := 3 to 6 do
                      begin
                         if not CharInSet(cValue[a], ['0'..'9', 'a'..'f', 'A'..'F']) then
-                           Exit(UNKNOWN_TYPE);
+                           Exit;
                      end;
                      result := JAVA_CHAR_TYPE;
                   end;
@@ -418,15 +418,15 @@ begin
                result := JAVA_BOOLEAN_TYPE
             else if AValue.Contains('BigDecimal') then
             begin
-               if AValue.Contains('longValue()') then
+               if AValue.Contains('.longValue()') then
                   result := JAVA_LONG_TYPE
-               else if AValue.Contains('intValue()') then
+               else if AValue.Contains('.intValue()') then
                   result := JAVA_INT_TYPE
-               else if AValue.Contains('doubleValue()') then
+               else if AValue.Contains('.doubleValue()') then
                   result := JAVA_DOUBLE_TYPE
-               else if AValue.Contains('floatValue()') then
+               else if AValue.Contains('.floatValue()') then
                   result := JAVA_FLOAT_TYPE
-               else if AValue.EndsWith('toString()') or AValue.EndsWith('toPlainString()') then
+               else if AValue.EndsWith('.toString()') or AValue.EndsWith('.toPlainString()') then
                   result := JAVA_STRING_TYPE
                else
                   result := JAVA_BIGDECIMAL_TYPE;
@@ -439,15 +439,15 @@ begin
             end
             else if AValue.Contains('BigInteger') then
             begin
-               if AValue.Contains('longValue()') then
+               if AValue.Contains('.longValue()') then
                   result := JAVA_LONG_TYPE
-               else if AValue.Contains('intValue()') then
+               else if AValue.Contains('.intValue()') then
                   result := JAVA_INT_TYPE
-               else if AValue.Contains('doubleValue()') then
+               else if AValue.Contains('.doubleValue()') then
                   result := JAVA_DOUBLE_TYPE
-               else if AValue.Contains('floatValue()') then
+               else if AValue.Contains('.floatValue()') then
                   result := JAVA_FLOAT_TYPE
-               else if AValue.Contains('toString(') then
+               else if AValue.Contains('.toString(') then
                   result := JAVA_STRING_TYPE
                else
                   result := JAVA_BIGINTEGER_TYPE;
