@@ -72,6 +72,7 @@ begin
       result := false
    else if dcount > 0 then
    begin
+      dims := GetDimensions;
       for i := 0 to High(dims) do
       begin
          dim := dims[i];
