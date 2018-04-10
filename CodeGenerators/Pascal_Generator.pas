@@ -259,12 +259,13 @@ end;
 
 function Pascal_GetLiteralType(const AValue: string): integer;
 var
-   i: integer;
+   i, len: integer;
    f: double;
    b: boolean;
 begin
    result := UNKNOWN_TYPE;
-   if not AValue.IsEmpty then
+   len := AValue.Length;
+   if len > 0 then
    begin
       if not TryStrToInt(AValue, i) then
       begin
@@ -274,9 +275,9 @@ begin
             begin
                if AValue.StartsWith(PASCAL_STRING_DELIM) and AValue.EndsWith(PASCAL_STRING_DELIM) then
                begin
-                  if AValue.Length = 3 then
+                  if len = 3 then
                      result := PASCAL_CHAR_TYPE
-                  else
+                  else if len <> 1 then
                      result := PASCAL_STRING_TYPE;
                end
                else if TInfra.SameStrings(AValue, 'nil') then
