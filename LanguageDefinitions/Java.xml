@@ -162,6 +162,12 @@ Description: Label displayed close to flowchart for body of function that return
 <FunctionLabelKey>FunctionLabelJava</FunctionLabelKey>
 
 <!--
+Element ConstructorLabelKey
+Description: Label displayed for constructor flowchart
+-->
+<ConstructorLabelKey>ConstructorLabelJava</ConstructorLabelKey>
+
+<!--
 Element ProgramLabelKey
 Description: Label displayed close to flowchart for body of project's main program
 -->

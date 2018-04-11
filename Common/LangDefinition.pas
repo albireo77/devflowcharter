@@ -137,6 +137,7 @@ type
       ProcedureLabelKey,
       FunctionLabelKey,
       ProgramLabelKey,
+      ConstructorLabelKey,
       GlobalVarsLabelKey,
       GlobalConstsLabelKey,
       HighLighterVarName,
@@ -368,6 +369,10 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionLabelKey');
    if tag <> nil then
       FunctionLabelKey := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'ConstructorLabelKey');
+   if tag <> nil then
+      ConstructorLabelKey := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ProgramLabelKey');
    if tag <> nil then

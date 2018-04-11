@@ -369,7 +369,7 @@ procedure Dummy_UserFunctionsSectionGenerator(ALines: TStringList; ASkipBodyGen:
 var
    func: TUserFunction;
    param: TParameter;
-   name, argList, paramStr, ref, lArray, lRecord, enum, defValue, hText, varTypeArray: string;
+   name, argList, paramStr, ref, lArray, lRecord, enum, defValue, hText, typeArray, isStatic: string;
    lang: TLangDefinition;
    headerTemplate, varList, funcTemplate, bodyTemplate, funcList, funcsTemplate: TStringList;
    intType: integer;
@@ -420,9 +420,14 @@ begin
 
                // assemble function header line
                isTypeNotNone := func.Header.cbType.ItemIndex > 0;
-               varTypeArray := '';
+               typeArray := '';
                if isTypeNotNone then
-                  varTypeArray := IfThen(func.Header.chkArrayType.Checked, lang.FunctionHeaderTypeArray, lang.FunctionHeaderTypeNotArray);
+                  typeArray := IfThen(func.Header.chkArrayType.Checked, lang.FunctionHeaderTypeArray, lang.FunctionHeaderTypeNotArray);
+
+               if func.Header.chkStatic.Visible then
+                  isStatic := IfThen(func.Header.chkStatic.Checked, lang.FunctionHeaderStatic, lang.FunctionHeaderNotStatic)
+               else
+                  isStatic := '';
 
                hText := IfThen(func.Header.chkConstructor.Checked, lang.ConstructorHeaderTemplate, lang.FunctionHeaderTemplate);
                hText := ReplaceStr(hText, PRIMARY_PLACEHOLDER, name);
@@ -431,8 +436,8 @@ begin
                hText := ReplaceStr(hText, '%s5', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone1, lang.FunctionHeaderTypeNone1));
                hText := ReplaceStr(hText, '%s6', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone2, lang.FunctionHeaderTypeNone2));
                hText := ReplaceStr(hText, '%s7', IfThen(func.Header.chkExternal.Checked, lang.FunctionHeaderExternal, lang.FunctionHeaderNotExternal));
-               hText := ReplaceStr(hText, '%s8', varTypeArray);
-               hText := ReplaceStr(hText, '%s9', IfThen(func.Header.chkStatic.Checked, lang.FunctionHeaderStatic, lang.FunctionHeaderNotStatic));
+               hText := ReplaceStr(hText, '%s8', typeArray);
+               hText := ReplaceStr(hText, '%s9', isStatic);
 
                headerTemplate := TStringList.Create;
                try
@@ -629,24 +634,23 @@ end;
 
 function Dummy_GetUserFuncDesc(AHeader: TUserFunctionHeader; ALongDesc: boolean = true): string;
 var
-   params, desc, name, lType, key, lb, arrayType, isExternal: string;
+   params, desc, lType, key, lb, arrayType: string;
    lang: TLangDefinition;
    param: TParameter;
 begin
    result := '';
-   desc := '';
-   params := '';
-   name := '';
-   lType := '';
-   key := '';
-   lb := '';
-   arrayType := '';
-   isExternal := '';
-   lang := GInfra.CurrentLang;
    if AHeader <> nil then
    begin
-      name := Trim(AHeader.edtName.Text);
-      if AHeader.cbType.ItemIndex > 0 then
+      desc := '';
+      params := '';
+      lType := '';
+      key := '';
+      lb := '';
+      arrayType := '';
+      lang := GInfra.CurrentLang;
+      if AHeader.chkConstructor.Checked then
+         key := lang.ConstructorLabelKey
+      else if AHeader.cbType.ItemIndex > 0 then
       begin
          key := lang.FunctionLabelKey;
          lType := AHeader.cbType.Text;
@@ -654,7 +658,6 @@ begin
       end
       else
          key := lang.ProcedureLabelKey;
-      isExternal := IfThen(AHeader.chkExternal.Checked, lang.FunctionHeaderExternal, lang.FunctionHeaderNotExternal);
       if ALongDesc then
       begin
          for param in AHeader.GetParameters do
@@ -667,17 +670,17 @@ begin
             desc := AHeader.memDesc.Text;
          lb := sLineBreak;
       end;
-   end;
-   if not key.IsEmpty then
-   begin
-      result := i18Manager.GetString(key);
-      result := ReplaceStr(result, LB_PHOLDER2, lb);
-      result := ReplaceStr(result, PRIMARY_PLACEHOLDER, name);
-      result := ReplaceStr(result, '%s2', params);
-      result := ReplaceStr(result, '%s3', lType);
-      result := ReplaceStr(result, '%s4', desc);
-      result := ReplaceStr(result, '%s5', arrayType);
-      result := ReplaceStr(result, '%s6', isExternal);
+      if not key.IsEmpty then
+      begin
+         result := i18Manager.GetString(key);
+         result := ReplaceStr(result, LB_PHOLDER2, lb);
+         result := ReplaceStr(result, PRIMARY_PLACEHOLDER, Trim(AHeader.edtName.Text));
+         result := ReplaceStr(result, '%s2', params);
+         result := ReplaceStr(result, '%s3', lType);
+         result := ReplaceStr(result, '%s4', desc);
+         result := ReplaceStr(result, '%s5', arrayType);
+         result := ReplaceStr(result, '%s6', IfThen(AHeader.chkExternal.Checked, lang.FunctionHeaderExternal, lang.FunctionHeaderNotExternal));
+      end;
    end;
 end;
 

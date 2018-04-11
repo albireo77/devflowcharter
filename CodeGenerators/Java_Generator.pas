@@ -365,13 +365,16 @@ var
    i, len, a: integer;
    i64: Int64;
    f: double;
+   firstChar, lastChar: char;
    cValue, importLib: string;
 begin
    result := UNKNOWN_TYPE;
    len := AValue.Length;
    if len > 0 then
    begin
-      if AValue[1] = '$' then
+      firstChar := AValue[1];
+      lastChar := AValue[len];
+      if firstChar = '$' then
          Exit;
       if not TryStrToInt(AValue, i) then
       begin
@@ -379,9 +382,9 @@ begin
             Exit;
          if not TryStrToFloat(AValue, f) then
          begin
-            if (AValue[1] = JAVA_STRING_DELIM) and (AValue[len] = JAVA_STRING_DELIM) then
+            if (firstChar = JAVA_STRING_DELIM) and (lastChar = JAVA_STRING_DELIM) then
                result := JAVA_STRING_TYPE
-            else if (len > 2) and (AValue[1] = JAVA_CHAR_DELIM) and (AValue[len] = JAVA_CHAR_DELIM) then
+            else if (len > 2) and (firstChar = JAVA_CHAR_DELIM) and (lastChar = JAVA_CHAR_DELIM) then
             begin
                cValue := Copy(AValue, 2, len-2);
                i := cValue.Length;
@@ -463,9 +466,9 @@ begin
             else
             begin
                cValue := Copy(AValue, 1, len-1);
-               case AValue[len] of
+               case lastChar of
                   'l', 'L':
-                  if TryStrToInt(cValue, i) then
+                  if TryStrToInt64(cValue, i64) then
                      result := JAVA_LONG_TYPE;
                   'd', 'D':
                   if TryStrToFloat(cValue, f) then

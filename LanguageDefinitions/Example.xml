@@ -106,6 +106,12 @@ Description: Label displayed for flowchart of function that returns some data
 <FunctionLabelKey>FunctionLabelExample</FunctionLabelKey>
 
 <!--
+Element ConstructorLabelKey
+Description: Label displayed for constructor flowchart
+-->
+<ConstructorLabelKey>ConstructorLabelExample</ConstructorLabelKey>
+
+<!--
 Element ProgramLabelKey
 Description: Label displayed for flowchart of project's main program
 -->
