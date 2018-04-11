@@ -96,6 +96,7 @@ type
       ProgramReturnTemplate,
       FunctionTemplate,
       FunctionHeaderTemplate,
+      ConstructorHeaderTemplate,
       FunctionHeaderTypeNone1,
       FunctionHeaderTypeNotNone1,
       FunctionHeaderTypeNone2,
@@ -468,6 +469,10 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTemplate');
    if tag <> nil then
       FunctionHeaderTemplate := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'ConstructorHeaderTemplate');
+   if tag <> nil then
+      ConstructorHeaderTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'PointerTypeMask');
    if tag <> nil then

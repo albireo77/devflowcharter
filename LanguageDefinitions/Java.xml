@@ -425,6 +425,15 @@ Available placeholders:
 </FunctionHeaderTemplate>
 
 <!--
+Element ConstructorHeaderTemplate
+Description: Template for constructor header; it is used when constructor checkbox is checked
+Available placeholders are the same as for element FunctionHeaderTemplate.    
+-->
+<ConstructorHeaderTemplate>%s2
+%s7%s1(%s3) {
+</ConstructorHeaderTemplate>
+
+<!--
 Element FunctionHeaderTypeModifier1
 Description: It returns value based on whether or not function returns specific type
 It returns value "void" if function type is none or an empty string if not
@@ -466,7 +475,7 @@ Available placeholders:
 Element FunctionTemplate
 Description: Template for function (header + body)
 Available placeholders:
-   %s1 - function's header line (element FunctionHeaderTemplate)
+   %s1 - function's header line (element FunctionHeaderTemplate or ConstructorHeaderTemplate)
    %s2 - function's local variables (element VarTemplate)
    %s3 - function's body (element FunctionBodyTemplate)  
 -->
