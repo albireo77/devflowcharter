@@ -150,26 +150,26 @@ It may not contain all supported tags. For all supported tags and their descript
 
 <!--
 Element ProcedureLabelKey
-Description: Label displayed close to flowchart for body of function that does not return specific data type.
+Description: Key for label displayed close to flowchart for body of function that does not return specific data type.
 It should contain name of key (free to be added) present in translation file (.lng) in Others section
 -->
 <ProcedureLabelKey>ProcedureLabelJava</ProcedureLabelKey>
 
 <!--
 Element FunctionLabelKey
-Description: Label displayed close to flowchart for body of function that returns specific data type
+Description: Key for label displayed close to flowchart for body of function that returns specific data type
 -->
 <FunctionLabelKey>FunctionLabelJava</FunctionLabelKey>
 
 <!--
 Element ConstructorLabelKey
-Description: Label displayed for constructor flowchart
+Description: Key for label displayed for constructor flowchart
 -->
 <ConstructorLabelKey>ConstructorLabelJava</ConstructorLabelKey>
 
 <!--
 Element ProgramLabelKey
-Description: Label displayed close to flowchart for body of project's main program
+Description: Key for label displayed close to flowchart for body of project's main program
 -->
 <ProgramLabelKey>ProgramLabelJava</ProgramLabelKey>
 

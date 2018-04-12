@@ -70,7 +70,13 @@ It may not contain all supported tags. For all supported tags and their descript
     </KeyWords>
 	
 <ProcedureLabelKey>ProcedureLabelPython</ProcedureLabelKey>
+<ConstructorLabelKey>ConstructorLabelPython</ConstructorLabelKey>
 <FunctionLabelKey>FunctionLabelPython</FunctionLabelKey>
+
+<!--
+Element ProgramLabelKey
+Description: Key for label displayed for flowchart of project's main program
+-->
 <ProgramLabelKey>ProgramLabelPython</ProgramLabelKey>
 
 <LabelWhile>while</LabelWhile>

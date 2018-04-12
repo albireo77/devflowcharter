@@ -94,26 +94,26 @@ library attribute contains library name
 
 <!--
 Element ProcedureLabelKey
-Description: Label displayed for flowchart of function that returns nothing (type = none).
+Description: Key for label displayed for flowchart of function that returns nothing (type = none).
 It should contain name of key (free to be added) present in translation file (.lng) in Others section
 -->
 <ProcedureLabelKey>ProcedureLabelExample</ProcedureLabelKey>
 
 <!--
 Element FunctionLabelKey
-Description: Label displayed for flowchart of function that returns some data
+Description: Key for label displayed for flowchart of function that returns some data
 -->
 <FunctionLabelKey>FunctionLabelExample</FunctionLabelKey>
 
 <!--
 Element ConstructorLabelKey
-Description: Label displayed for constructor flowchart
+Description: Key for label displayed for constructor flowchart
 -->
 <ConstructorLabelKey>ConstructorLabelExample</ConstructorLabelKey>
 
 <!--
 Element ProgramLabelKey
-Description: Label displayed for flowchart of project's main program
+Description: Key for label displayed for flowchart of project's main program
 -->
 <ProgramLabelKey>ProgramLabelExample</ProgramLabelKey>
 
@@ -447,7 +447,7 @@ constructor %s7%s5 %s1(%s3)%s6 %s4%s8;
 <!--
 Element FunctionHeaderTypeModifier1 and FunctionHeaderTypeModifier2
 Description: It returns value based on whether or not function returns specific type
-In given example, it returns value "procedure" if function type is none or "function" if not
+In given example, it returns value "procedure" if function type is none or "function" otherwise
 -->
 <FunctionHeaderTypeModifier1>procedure|function</FunctionHeaderTypeModifier1>
 <FunctionHeaderTypeModifier2>|:</FunctionHeaderTypeModifier2>
@@ -455,21 +455,21 @@ In given example, it returns value "procedure" if function type is none or "func
 <!--
 Element FunctionHeaderStaticModifier
 Description: It returns value based on whether or not function is static
-In given example, it returns value "static" if function is static or empty string if not
+In given example, it returns value "static" if function is static or an empty string otherwise
 -->
 <FunctionHeaderStaticModifier>static|</FunctionHeaderStaticModifier>
 
 <!--
 Element FunctionHeaderExternalModifier
 Description: It returns value based on whether or not function is declared as external
-In given example, it returns value "external " if function is external or "internal " if not
+In given example, it returns value "external " if function is external or "internal " otherwise
 -->
 <FunctionHeaderExternalModifier>external |internal </FunctionHeaderExternalModifier>
 
 <!--
 Element FunctionHeaderTypeArrayModifier
 Description: It returns value based on whether or not function return type is an array
-In given example, it returns value "[]" if function return type is array or an empty string if not
+In given example, it returns value "[]" if function return type is array or an empty string otherwise
 -->
 <FunctionHeaderTypeArrayModifier>[]|</FunctionHeaderTypeArrayModifier>
 
@@ -528,7 +528,7 @@ END %s1;
 <!--
 Element ExternVarModifier
 Description: Variable declaration modifier depending if variable is external
-In given example, it returns "extern " if variable is external or empty string if not
+In given example, it returns "extern " if variable is external or an empty string otherwise
 -->
 <ExternVarModifier>extern |</ExternVarModifier>
 

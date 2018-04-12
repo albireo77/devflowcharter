@@ -370,20 +370,26 @@ It may not contain all supported tags. For all supported tags and their descript
 
 <!--
 Element ProcedureLabelKey
-Description: Label displayed for flowchart of function that returns nothing (type = none).
+Description: Key for label displayed for flowchart of function that returns nothing (type = none).
 It should contain name of key (free to be added) present in translation file (.lng) in Others section
 -->
 <ProcedureLabelKey>ProcedureLabelTiBasic</ProcedureLabelKey>
 
 <!--
+Element ConstructorLabelKey
+Description: Key for label displayed for constructor flowchart
+-->
+<ConstructorLabelKey>ConstructorLabelTiBasic</ConstructorLabelKey>
+
+<!--
 Element FunctionLabelKey
-Description: Label displayed for flowchart of function that returns some data
+Description: Key for label displayed for flowchart of function that returns some data
 -->
 <FunctionLabelKey>FunctionLabelTiBasic</FunctionLabelKey>
 
 <!--
 Element ProgramLabelKey
-Description: Label displayed for flowchart of project's main program
+Description: Key for label displayed for flowchart of project's main program
 -->
 <ProgramLabelKey>ProgramLabelTiBasic</ProgramLabelKey>
 

@@ -420,9 +420,10 @@ begin
 
                // assemble function header line
                isTypeNotNone := func.Header.cbType.ItemIndex > 0;
-               typeArray := '';
                if isTypeNotNone then
-                  typeArray := IfThen(func.Header.chkArrayType.Checked, lang.FunctionHeaderTypeArray, lang.FunctionHeaderTypeNotArray);
+                  typeArray := IfThen(func.Header.chkArrayType.Checked, lang.FunctionHeaderTypeArray, lang.FunctionHeaderTypeNotArray)
+               else
+                  typeArray := '';
 
                if func.Header.chkStatic.Visible then
                   isStatic := IfThen(func.Header.chkStatic.Checked, lang.FunctionHeaderStatic, lang.FunctionHeaderNotStatic)
