@@ -442,14 +442,14 @@ Available placeholders are the same as for element FunctionHeaderTemplate.
 <!--
 Element FunctionHeaderTypeModifier1
 Description: It returns value based on whether or not function returns specific type
-It returns value "void" if function type is none or an empty string if not
+It returns value "void" if function type is none or an empty string otherwise
 -->
 <FunctionHeaderTypeModifier1>void|</FunctionHeaderTypeModifier1>
 
 <!--
 Element FunctionHeaderStaticModifier
 Description: It returns value based on whether or not function is static
-In given example, it returns value "static " if function is static or empty string if not
+In given example, it returns value "static " if function is static or an empty string otherwise
 -->
 <FunctionHeaderStaticModifier>static |</FunctionHeaderStaticModifier>
 
@@ -463,7 +463,7 @@ It returns value "public " if function is external or "private " if not
 <!--
 Element FunctionHeaderTypeArrayModifier
 Description: It returns value based on whether or not function return type is an array
-In given example, it returns value "[]" if function return type is array or an empty string if not
+In given example, it returns value "[]" if function return type is array or an empty string otherwise
 -->
 <FunctionHeaderTypeArrayModifier>[]|</FunctionHeaderTypeArrayModifier>
 

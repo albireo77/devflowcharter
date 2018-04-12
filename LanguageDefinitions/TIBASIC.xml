@@ -457,6 +457,15 @@ EndIf
 
 <ElseLabel>Else</ElseLabel>
 
+<!--
+Element ForDoTemplate
+Available placeholders:
+   %s1 - control variable
+   %s2 - start value
+   %s3 - stop value
+   %s4 - first "increasing or decreasing" modifier string (element ForDoTemplateModifier1)
+   %s5 - second "increasing or decreasing" modifier string (element ForDoTemplateModifier2)  
+-->
 <ForDoTemplate>For %s1,%s2,%s3
 	%b1
 EndFor
@@ -476,6 +485,13 @@ Determines whether control variable in for..do block should be selected from dro
 
 <FolderTemplate>%b1</FolderTemplate>
 
+<!--
+Element UserTypeDesc
+Description: Mask for user datatype description
+Available placeholders:
+   %s1 - type name
+   %s2 - type kind
+-->
 <UserTypeDesc>%s2 %s1</UserTypeDesc>
 
 </Language>

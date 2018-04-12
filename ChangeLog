@@ -1,4 +1,4 @@
-6.0 [09.04.2018]
+6.0 [12.04.2018]
 - add Java support
 - add FileContentsTemplate tag to language definition files
 - fix disappearing forms when showing dialog window

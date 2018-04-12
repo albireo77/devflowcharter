@@ -1284,18 +1284,21 @@ end;
 
 class function TInfra.GetDimensionCount(const AText: string): integer;
 var
-   i: integer;
+   i, len: integer;
    txt: string;
    nextOpen: boolean;
 begin
    txt := ReplaceStr(AText, ' ', '');
-   if txt.StartsWith('[') then
+   len := txt.Length;
+   if len = 0 then
+      Exit(-1);
+   if txt[1] = '[' then
    begin
-      if not txt.EndsWith(']') then
+      if txt[len] <> ']' then
          Exit(-1);
       result := 0;
       nextOpen := true;
-      for i := 1 to txt.Length do
+      for i := 1 to len do
       begin
          if txt[i] = '[' then
          begin

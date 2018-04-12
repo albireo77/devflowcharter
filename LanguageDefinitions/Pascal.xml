@@ -310,7 +310,7 @@ end;
 <!--
 Element ForDoTemplateModifier1
 Description: It returns value based on whether for..do block is increasing or decreasing
-It returns value "<=" if block is increasing or ">=" if decreasing 
+It returns value "to" if block is increasing or "downto" if decreasing 
 -->
 <ForDoTemplateModifier1>to|downto</ForDoTemplateModifier1>
 
