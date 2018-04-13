@@ -600,4 +600,13 @@ In given example, it returns value "public " if datatype is external or empty st
 -->
 <DataTypeExternalModifier>public |</DataTypeExternalModifier>
 
+<!--
+Element UserTypeDesc
+Description: Mask for user datatype description
+Available placeholders:
+   %s1 - type name
+   %s2 - type kind
+-->
+<UserTypeDesc>%s2 %s1</UserTypeDesc>
+
 </Language>
