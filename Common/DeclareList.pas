@@ -304,6 +304,8 @@ begin
    edtValue.Parent := gbBox;
    edtValue.SetBounds(lblValue.Width+10, 42, gbBox.Width-lblValue.Width-18, 21);
    edtValue.Anchors := edtValue.Anchors + [akRight];
+   edtValue.ShowHint := true;
+   edtValue.Hint := i18Manager.GetString('DisableFieldValid');
    edtValue.OnKeyDown := OnKeyDownCommon;
 
    gbBox.Caption := i18Manager.GetString('gbConstant');
@@ -345,6 +347,8 @@ begin
    edtInit := TEdit.Create(gbBox);
    edtInit.Parent := gbBox;
    edtInit.SetBounds(lblInit.BoundsRect.Right+5, 42, gbBox.Width-lblInit.BoundsRect.Right-13, 21);
+   edtInit.ShowHint := true;
+   edtInit.Hint := i18Manager.GetString('DisableFieldValid');
    edtInit.OnKeyDown := OnKeyDownCommon;
 
    cbType := TComboBox.Create(gbBox);
@@ -574,24 +578,20 @@ begin
    if status <> VALID_IDENT then
    else if IsDeclared(edtName.Text, true) then
       status := DUPLICATED_IDENT
-   else if GSettings.ValidateDeclaration then
+   else if not edtSize.ParseSize then
+      status := INCORRECT_SIZE
    begin
-      if not edtSize.ParseSize then
-         status := INCORRECT_SIZE
-      else if (edtSize.Text = '1') and not TParserHelper.IsRecordType(lType) and Assigned(GInfra.CurrentLang.GetLiteralType) then
+      initVal := Trim(edtInit.Text);
+      if not initVal.isEmpty then
       begin
-         initVal := Trim(edtInit.Text);
-         if not initVal.isEmpty then
+         if TParserHelper.IsEnumType(lType) then
          begin
-            if TParserHelper.IsEnumType(lType) then
-            begin
-               dataType := GProject.GetUserDataType(cbType.Text);
-               if (dataType <> nil) and not dataType.IsValidEnumValue(initVal) then
-                  status := INVALID_INIT_VAL;
-            end
-            else if not TParserHelper.AreTypesCompatible(lType, GInfra.CurrentLang.GetLiteralType(initVal)) and
-                    not TParserHelper.AreTypesCompatible(lType, TParserHelper.GetConstType(initVal)) then status := INVALID_INIT_VAL;
-         end;
+            dataType := GProject.GetUserDataType(cbType.Text);
+            if (dataType <> nil) and not dataType.IsValidEnumValue(initVal) then
+               status := INVALID_INIT_VAL;
+         end
+         else if not TParserHelper.AreTypesCompatible(lType, GInfra.CurrentLang.GetLiteralType(initVal)) and
+            not TParserHelper.AreTypesCompatible(lType, TParserHelper.GetConstType(initVal)) then status := INVALID_INIT_VAL;
       end;
    end;
 

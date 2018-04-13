@@ -51,7 +51,7 @@ begin
    Text := '1';
    ShowHint := true;
    CharCase := ecUpperCase;
-   Hint := ReplaceStr(i18Manager.GetString('edtSizeHint'), LB_PHOLDER2, sLineBreak);
+   Hint := i18Manager.GetString('DisableFieldValid') + sLineBreak + ReplaceStr(i18Manager.GetString('edtSizeHint'), LB_PHOLDER2, sLineBreak);
    ParentFont := false;
    Font.Style := [];
    Font.Color := BLACK_COLOR;
@@ -67,28 +67,31 @@ var
    dims: TArray<string>;
 begin
    result := true;
-   dcount := GetDimensionCount;
-   if dcount < 0 then
-      result := false
-   else if dcount > 0 then
+   if GSettings.ValidateDeclaration then
    begin
-      dims := GetDimensions;
-      for i := 0 to High(dims) do
+      dcount := GetDimensionCount;
+      if dcount < 0 then
+         result := false
+      else if dcount > 0 then
       begin
-         dim := dims[i];
-         if not dim.IsEmpty then
+         dims := GetDimensions;
+         for i := 0 to High(dims) do
          begin
-            if (dim[1] = '0') or (dim[1] = '-') then
+            dim := dims[i];
+            if not dim.IsEmpty then
             begin
-               result := false;
-               break;
-            end;
-            lang := GInfra.GetLangDefinition(PASCAL_LANG_ID);
-            if (lang <> nil) and Assigned(lang.Parse) then
-            begin
-               result := lang.Parse(dim, prsVarSize) = 0;
-               if not result then
+               if (dim[1] = '0') or (dim[1] = '-') then
+               begin
+                  result := false;
                   break;
+               end;
+               lang := GInfra.GetLangDefinition(PASCAL_LANG_ID);
+               if (lang <> nil) and Assigned(lang.Parse) then
+               begin
+                  result := lang.Parse(dim, prsVarSize) = 0;
+                  if not result then
+                     break;
+               end;
             end;
          end;
       end;
