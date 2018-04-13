@@ -1,3 +1,7 @@
+6.1 [13.04.2018]
+- add hints that validation of some fields (e.g. variable size) can be disabled in Settings
+- Explorer: fix missing data types description for Java
+
 6.0 [12.04.2018]
 - add Java support
 - add FileContentsTemplate tag to language definition files
