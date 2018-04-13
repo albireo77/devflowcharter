@@ -580,6 +580,7 @@ begin
       status := DUPLICATED_IDENT
    else if not edtSize.ParseSize then
       status := INCORRECT_SIZE
+   else if GSettings.ValidateDeclaration and (edtSize.Text = '1') and not TParserHelper.IsRecordType(lType) and Assigned(GInfra.CurrentLang.GetLiteralType) then
    begin
       initVal := Trim(edtInit.Text);
       if not initVal.isEmpty then
