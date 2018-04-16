@@ -27,7 +27,7 @@ uses
 {$IFDEF USE_CODEFOLDING}
    SynEditCodeFolding,
 {$ENDIF}
-   System.Classes, Generics.Defaults, SynEditTypes;
+   System.Classes, Vcl.StdCtrls, Vcl.Forms, Vcl.Controls, Generics.Defaults, SynEditTypes;
 
 type
 
@@ -85,6 +85,19 @@ type
       class function New: TChangeLine; static;
    end;
 
+   TFocusInfo = record
+      LineText,
+      SelText: string;
+      Line,
+      RelativeLine,
+      SelStart: integer;
+      FocusEdit: TCustomEdit;
+      FocusEditForm: TForm;
+      FocusEditCallBack: procedure(AEdit: TCustomEdit) of object;
+      ActiveControl: TWinControl;
+      class function New: TFocusInfo; static;
+   end;
+
    PTypesSet = ^TTypesSet;
    TTypesSet = set of 0..255;
 
@@ -93,8 +106,6 @@ type
       constructor Create(ACompareType: integer);
       function Compare(const L, R: TComponent): integer; override;
    end;
-
-
 
 implementation
 
@@ -136,6 +147,19 @@ begin
    result.Col := 0;
    result.EditCaretXY := BufferCoord(0, 0);
    result.CodeRange := TCodeRange.New;
+end;
+
+class function TFocusInfo.New: TFocusInfo;
+begin
+   result.Line := -1;
+   result.RelativeLine := 0;
+   result.SelStart := -1;
+   result.SelText := '';
+   result.LineText := '';
+   result.FocusEdit := nil;
+   result.FocusEditForm := nil;
+   result.FocusEditCallBack := nil;
+   result.ActiveControl := nil;
 end;
 
 end.

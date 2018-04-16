@@ -25,7 +25,7 @@ unit FlashThread;
 interface
 
 uses
-   Vcl.StdCtrls, System.Classes, CommonInterfaces;
+   Vcl.StdCtrls, System.Classes, CommonTypes;
 
 type
 

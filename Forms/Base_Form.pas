@@ -24,7 +24,8 @@ unit Base_Form;
 interface
 
 uses
-   Vcl.Forms, System.Classes, Vcl.Graphics, OmniXML, BaseEnumerator, CommonInterfaces;
+   Vcl.Forms, System.Classes, Vcl.Graphics, OmniXML, BaseEnumerator, CommonTypes,
+   CommonInterfaces;
 
 type
 

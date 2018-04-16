@@ -22,7 +22,7 @@ unit StatementMemo;
 interface
 
 uses
-  System.Classes, Vcl.StdCtrls, Vcl.Graphics, CommonInterfaces, MemoEx;
+  System.Classes, Vcl.StdCtrls, Vcl.Graphics, CommonInterfaces, MemoEx, CommonTypes;
 
 type
 
@@ -41,7 +41,7 @@ type
 implementation
 
 uses
-   Vcl.Controls, Vcl.Forms, ApplicationCommon, Base_Block, CommonTypes;
+   Vcl.Controls, Vcl.Forms, ApplicationCommon, Base_Block;
 
 constructor TStatementMemo.Create(AOwner: TComponent);
 begin

@@ -24,7 +24,7 @@ unit CommonInterfaces;
 interface
 
 uses
-   Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls, OmniXML, Vcl.Graphics, System.Types, Vcl.Forms,
+   Vcl.Controls, Vcl.ComCtrls, OmniXML, Vcl.Graphics, System.Types,
    CommonTypes, MemoEx;
 
 const
@@ -34,19 +34,6 @@ const
    Z_ORDER_COMPARE    = 1;
 
 type
-
-   TFocusInfo = record
-      LineText,
-      SelText: string;
-      Line,
-      RelativeLine,
-      SelStart: integer;
-      FocusEdit: TCustomEdit;
-      FocusEditForm: TForm;
-      FocusEditCallBack: procedure(AEdit: TCustomEdit) of object;
-      ActiveControl: TWinControl;
-      class function New: TFocusInfo; static;
-   end;
 
    IIdentifiable = interface
       ['{A7ED5085-D43B-49B3-879E-272A64A766B7}']
@@ -115,18 +102,5 @@ type
    end;
 
 implementation
-
-class function TFocusInfo.New: TFocusInfo;
-begin
-   result.Line := -1;
-   result.RelativeLine := 0;
-   result.SelStart := -1;
-   result.SelText := '';
-   result.LineText := '';
-   result.FocusEdit := nil;
-   result.FocusEditForm := nil;
-   result.FocusEditCallBack := nil;
-   result.ActiveControl := nil;
-end;
 
 end.
