@@ -58,7 +58,6 @@ type
          class procedure PrintBitmap(ABitmap: TBitmap);
          class function InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; const ATemplateString: string; AObject: TObject = nil): integer; overload;
          class function InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; ATemplate: TStringList; AObject: TObject = nil): integer; overload;
-         class procedure InitFocusInfo(var AFocusInfo: TFocusInfo);
          class procedure ChangeLine(const ALine: TChangeLine);
          class procedure SetFontSize(AControl: TControl; ASize: integer);
          class procedure UpdateCodeEditor(AObject: TObject = nil);
@@ -952,22 +951,6 @@ begin
    if fsStrikeOut in AStyle then
       val := val + 8;
    result := val.ToString;
-end;
-
-class procedure TInfra.InitFocusInfo(var AFocusInfo: TFocusInfo);
-begin
-   with AFocusInfo do
-   begin
-      Line := -1;
-      RelativeLine := 0;
-      SelStart := -1;
-      SelText := '';
-      LineText := '';
-      FocusEdit := nil;
-      FocusEditForm := nil;
-      FocusEditCallBack := nil;
-      ActiveControl := nil;
-   end;
 end;
 
 class function TInfra.GetDataTypesForm: TDataTypesForm;

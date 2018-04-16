@@ -140,7 +140,7 @@ begin
       focusable := GetFocusable(Node);
       if (focusable <> nil) and focusable.CanBeFocused then
       begin
-         TInfra.InitFocusInfo(focusInfo);
+         focusInfo := TFocusInfo.New;
          focusInfo.ActiveControl := tvExplorer;
          focusable.RetrieveFocus(focusInfo);
          GProject.RepaintFlowcharts;

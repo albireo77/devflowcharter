@@ -45,6 +45,7 @@ type
       FocusEditForm: TForm;
       FocusEditCallBack: procedure(AEdit: TCustomEdit) of object;
       ActiveControl: TWinControl;
+      class function New: TFocusInfo; static;
    end;
 
    IIdentifiable = interface
@@ -114,5 +115,18 @@ type
    end;
 
 implementation
+
+class function TFocusInfo.New: TFocusInfo;
+begin
+   result.Line := -1;
+   result.RelativeLine := 0;
+   result.SelStart := -1;
+   result.SelText := '';
+   result.LineText := '';
+   result.FocusEdit := nil;
+   result.FocusEditForm := nil;
+   result.FocusEditCallBack := nil;
+   result.ActiveControl := nil;
+end;
 
 end.

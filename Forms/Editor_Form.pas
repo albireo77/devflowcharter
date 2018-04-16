@@ -1578,7 +1578,7 @@ var
 begin
    if (FFocusControl <> nil) and FFocusControl.CanBeFocused then
    begin
-      TInfra.InitFocusInfo(focusInfo);
+      focusInfo := TFocusInfo.New;
       point := memCodeEditor.ScreenToClient(pmPopMenu.PopupPoint);
       displ := memCodeEditor.PixelsToRowColumn(point.X, point.Y);
       if displ.Row > 0 then
