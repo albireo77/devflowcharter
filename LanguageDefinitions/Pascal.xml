@@ -32,6 +32,7 @@ It may not contain all supported tags. For all supported tags and their descript
     <CaseSensitiveSyntax>false</CaseSensitiveSyntax>
     <UpperCaseConstId>true</UpperCaseConstId>
     <AllowEnumsInForLoop>true</AllowEnumsInForLoop>
+	<AllowUnboundedArrays>true</AllowUnboundedArrays>
 
     <FoldRegions>
         <FoldRegion AddClose="false" NoSubFolds="false" Type="rtKeyword" WholeWords="true">

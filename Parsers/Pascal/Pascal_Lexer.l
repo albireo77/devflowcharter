@@ -70,6 +70,8 @@ D				[0-9]
 
 [Ee][Oo][Ll][Nn]	return(T_EOLN);
 
+[Ss][Ee][Tt][Ll][Ee][Nn][Gg][Tt][Hh]	return(T_SETLEN);
+
 [Pp][Ii]		begin
 				yylval.yyString := yytext;
 				return(T_PI);
