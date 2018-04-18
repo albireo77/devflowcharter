@@ -26,11 +26,11 @@ It may not contain all supported tags. For all supported tags and their descript
     <EnabledUserFunctionHeader>true</EnabledUserFunctionHeader>
     <EnabledUserFunctionBody>true</EnabledUserFunctionBody>
     <EnabledUserDataTypes>true</EnabledUserDataTypes>
-	<EnabledUserDataTypeInt>false</EnabledUserDataTypeInt>
-	<EnabledUserDataTypeReal>false</EnabledUserDataTypeReal>
-	<EnabledUserDataTypeOther>true</EnabledUserDataTypeOther>
-	<EnabledUserDataTypeEnum>true</EnabledUserDataTypeEnum>
-	<EnabledUserDataTypeArray>false</EnabledUserDataTypeArray>
+    <EnabledUserDataTypeInt>false</EnabledUserDataTypeInt>
+    <EnabledUserDataTypeReal>false</EnabledUserDataTypeReal>
+    <EnabledUserDataTypeOther>true</EnabledUserDataTypeOther>
+    <EnabledUserDataTypeEnum>true</EnabledUserDataTypeEnum>
+    <EnabledUserDataTypeArray>false</EnabledUserDataTypeArray>
     <EnabledPointers>false</EnabledPointers>
     <EnabledExplorer>true</EnabledExplorer>
     <EnabledCodeGenerator>true</EnabledCodeGenerator>
@@ -39,10 +39,10 @@ It may not contain all supported tags. For all supported tags and their descript
     <AllowEnumsInForLoop>false</AllowEnumsInForLoop>
     <AllowUserFunctionOverload>true</AllowUserFunctionOverload>
     <AllowUnboundedArrays>true</AllowUnboundedArrays>
-	<AllowDuplicatedLibs>true</AllowDuplicatedLibs>
+    <AllowDuplicatedLibs>true</AllowDuplicatedLibs>
     <CodeIncludeExternDataType>true</CodeIncludeExternDataType>
     <CodeIncludeExternFunction>true</CodeIncludeExternFunction>
-	<CodeIncludeExternVarConst>true</CodeIncludeExternVarConst>
+    <CodeIncludeExternVarConst>true</CodeIncludeExternVarConst>
 
     <FoldRegions>
         <FoldRegion AddClose="false" NoSubFolds="false" Type="rtChar" WholeWords="true">

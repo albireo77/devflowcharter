@@ -32,7 +32,7 @@ It may not contain all supported tags. For all supported tags and their descript
     <CaseSensitiveSyntax>false</CaseSensitiveSyntax>
     <UpperCaseConstId>true</UpperCaseConstId>
     <AllowEnumsInForLoop>true</AllowEnumsInForLoop>
-	<AllowUnboundedArrays>true</AllowUnboundedArrays>
+    <AllowUnboundedArrays>true</AllowUnboundedArrays>
 
     <FoldRegions>
         <FoldRegion AddClose="false" NoSubFolds="false" Type="rtKeyword" WholeWords="true">
@@ -55,101 +55,101 @@ It may not contain all supported tags. For all supported tags and their descript
 <!-- It is strongly suggested not to modify (remove any or change order) first 8 data types -->
 <!-- These are used in fixed order by internal Pascal parser -->
     <NativeDataTypes>
-    	<DataType kind="int">integer</DataType>
-   		<DataType kind="real">real</DataType>
-   		<DataType kind="string">string</DataType>
-   		<DataType kind="bool">boolean</DataType>
-   		<DataType kind="ptr" origtype="integer">^integer</DataType>
-   		<DataType kind="ptr" origtype="real">^real</DataType>
-   		<DataType kind="ptr" origtype="string">^string</DataType>
-   		<DataType>text</DataType>
-   		<DataType kind="int">char</DataType>
+        <DataType kind="int">integer</DataType>
+        <DataType kind="real">real</DataType>
+        <DataType kind="string">string</DataType>
+        <DataType kind="bool">boolean</DataType>
+        <DataType kind="ptr" origtype="integer">^integer</DataType>
+        <DataType kind="ptr" origtype="real">^real</DataType>
+        <DataType kind="ptr" origtype="string">^string</DataType>
+        <DataType>text</DataType>
+        <DataType kind="int">char</DataType>
 	</NativeDataTypes>
     <KeyWords>
-		<KeyWord>asm</KeyWord>
-   		<KeyWord>array</KeyWord>
-   		<KeyWord>begin</KeyWord>
-   		<KeyWord>case</KeyWord>
+        <KeyWord>asm</KeyWord>
+        <KeyWord>array</KeyWord>
+        <KeyWord>begin</KeyWord>
+        <KeyWord>case</KeyWord>
         <KeyWord>const</KeyWord>
-   		<KeyWord>constructor</KeyWord>
+        <KeyWord>constructor</KeyWord>
         <KeyWord>destructor</KeyWord>
-   		<KeyWord>div</KeyWord>
-   		<KeyWord>do</KeyWord>
-   		<KeyWord>downto</KeyWord>
-   		<KeyWord>else</KeyWord>
-   		<KeyWord>end</KeyWord>
-   		<KeyWord>exports</KeyWord>
-   		<KeyWord>file</KeyWord>
+        <KeyWord>div</KeyWord>
+        <KeyWord>do</KeyWord>
+        <KeyWord>downto</KeyWord>
+        <KeyWord>else</KeyWord>
+        <KeyWord>end</KeyWord>
+        <KeyWord>exports</KeyWord>
+        <KeyWord>file</KeyWord>
         <KeyWord>for</KeyWord>
-   		<KeyWord>function</KeyWord>
-   		<KeyWord>goto</KeyWord>
-   		<KeyWord>if</KeyWord>
-   		<KeyWord>implementation</KeyWord>
+        <KeyWord>function</KeyWord>
+        <KeyWord>goto</KeyWord>
+        <KeyWord>if</KeyWord>
+        <KeyWord>implementation</KeyWord>
         <KeyWord>in</KeyWord>
-   		<KeyWord>inherited</KeyWord>
-   		<KeyWord>inline</KeyWord>
-   		<KeyWord>interface</KeyWord>
-   		<KeyWord>label</KeyWord>
-   		<KeyWord>library</KeyWord>
-   		<KeyWord>mod</KeyWord>
-   		<KeyWord>nil</KeyWord>
-   		<KeyWord>not</KeyWord>
-   		<KeyWord>object</KeyWord>
-   		<KeyWord>of</KeyWord>
-   		<KeyWord>or</KeyWord>
-   		<KeyWord>packed</KeyWord>
-   		<KeyWord>procedure</KeyWord>
-   		<KeyWord>program</KeyWord>
-   		<KeyWord>record</KeyWord>
-   		<KeyWord>repeat</KeyWord>
-   		<KeyWord>set</KeyWord>
-   		<KeyWord>shl</KeyWord>
-   		<KeyWord>shr</KeyWord>
-   		<KeyWord>string</KeyWord>
-   		<KeyWord>then</KeyWord>
-   		<KeyWord>to</KeyWord>
-   		<KeyWord>type</KeyWord>
-   		<KeyWord>unit</KeyWord>
-   		<KeyWord>until</KeyWord>
-   		<KeyWord>uses</KeyWord>
-   		<KeyWord>var</KeyWord>
-   		<KeyWord>while</KeyWord>
-   		<KeyWord>with</KeyWord>
-   		<KeyWord>xor</KeyWord>
+        <KeyWord>inherited</KeyWord>
+        <KeyWord>inline</KeyWord>
+        <KeyWord>interface</KeyWord>
+        <KeyWord>label</KeyWord>
+        <KeyWord>library</KeyWord>
+        <KeyWord>mod</KeyWord>
+        <KeyWord>nil</KeyWord>
+        <KeyWord>not</KeyWord>
+        <KeyWord>object</KeyWord>
+        <KeyWord>of</KeyWord>
+        <KeyWord>or</KeyWord>
+        <KeyWord>packed</KeyWord>
+        <KeyWord>procedure</KeyWord>
+        <KeyWord>program</KeyWord>
+        <KeyWord>record</KeyWord>
+        <KeyWord>repeat</KeyWord>
+        <KeyWord>set</KeyWord>
+        <KeyWord>shl</KeyWord>
+        <KeyWord>shr</KeyWord>
+        <KeyWord>string</KeyWord>
+        <KeyWord>then</KeyWord>
+        <KeyWord>to</KeyWord>
+        <KeyWord>type</KeyWord>
+        <KeyWord>unit</KeyWord>
+        <KeyWord>until</KeyWord>
+        <KeyWord>uses</KeyWord>
+        <KeyWord>var</KeyWord>
+        <KeyWord>while</KeyWord>
+        <KeyWord>with</KeyWord>
+        <KeyWord>xor</KeyWord>
     </KeyWords>
     <NativeFunctions>
-		<Function>sin</Function>
-   		<Function>cos</Function>
-   		<Function>tan</Function>
-   		<Function>cotan</Function>
-   		<Function>ln</Function>
-   		<Function>exp</Function>
-   		<Function>sqr</Function>
-   		<Function>random</Function>
-   		<Function>trunc</Function>
-   		<Function>abs</Function>
-   		<Function>length</Function>
-		<Function>sqrt</Function>
-   		<Function>randomize</Function>
-   		<Function>new</Function>
-   		<Function>dispose</Function>
-   		<Function>write</Function>
-   		<Function>read</Function>
+        <Function>sin</Function>
+        <Function>cos</Function>
+        <Function>tan</Function>
+        <Function>cotan</Function>
+        <Function>ln</Function>
+        <Function>exp</Function>
+        <Function>sqr</Function>
+        <Function>random</Function>
+        <Function>trunc</Function>
+        <Function>abs</Function>
+        <Function>length</Function>
+        <Function>sqrt</Function>
+        <Function>randomize</Function>
+        <Function>new</Function>
+        <Function>dispose</Function>
+        <Function>write</Function>
+        <Function>read</Function>
         <Function>writeln</Function>
-   		<Function>readln</Function>
-   		<Function>pi</Function>
-   		<Function>break</Function>
-   		<Function>continue</Function>
-   		<Function>exit</Function>
-   		<Function>reset</Function>
-   		<Function>rewrite</Function>
-   		<Function>assign</Function>
-		<Function>close</Function>
-   		<Function>append</Function>
-   		<Function>eof</Function>
-   		<Function>eoln</Function>
-   		<Function>ord</Function>
-   		<Function>chr</Function>
+        <Function>readln</Function>
+        <Function>pi</Function>
+        <Function>break</Function>
+        <Function>continue</Function>
+        <Function>exit</Function>
+        <Function>reset</Function>
+        <Function>rewrite</Function>
+        <Function>assign</Function>
+        <Function>close</Function>
+        <Function>append</Function>
+        <Function>eof</Function>
+        <Function>eoln</Function>
+        <Function>ord</Function>
+        <Function>chr</Function>
     </NativeFunctions>
 
 <!--

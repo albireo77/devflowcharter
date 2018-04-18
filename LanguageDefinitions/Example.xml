@@ -28,11 +28,11 @@ Most of the tags are optional and may be removed if not needed. The most crucial
     <EnabledUserFunctionHeader>true</EnabledUserFunctionHeader>
     <EnabledUserFunctionBody>true</EnabledUserFunctionBody>
     <EnabledUserDataTypes>true</EnabledUserDataTypes>
-	<EnabledUserDataTypeInt>true</EnabledUserDataTypeInt>
-	<EnabledUserDataTypeReal>true</EnabledUserDataTypeReal>
-	<EnabledUserDataTypeOther>true</EnabledUserDataTypeOther>
-	<EnabledUserDataTypeEnum>true</EnabledUserDataTypeEnum>
-	<EnabledUserDataTypeArray>true</EnabledUserDataTypeArray>
+    <EnabledUserDataTypeInt>true</EnabledUserDataTypeInt>
+    <EnabledUserDataTypeReal>true</EnabledUserDataTypeReal>
+    <EnabledUserDataTypeOther>true</EnabledUserDataTypeOther>
+    <EnabledUserDataTypeEnum>true</EnabledUserDataTypeEnum>
+    <EnabledUserDataTypeArray>true</EnabledUserDataTypeArray>
     <EnabledPointers>true</EnabledPointers>
     <EnabledExplorer>true</EnabledExplorer>
     <EnabledCodeGenerator>true</EnabledCodeGenerator>
@@ -42,7 +42,7 @@ Most of the tags are optional and may be removed if not needed. The most crucial
     <AllowEnumsInForLoop>true</AllowEnumsInForLoop>
     <AllowUserFunctionOverload>true</AllowUserFunctionOverload>
     <AllowUnboundedArrays>false</AllowUnboundedArrays>
-	<AllowDuplicatedLibs>false</AllowDuplicatedLibs>
+    <AllowDuplicatedLibs>false</AllowDuplicatedLibs>
     <CodeIncludeExternVarConst>false</CodeIncludeExternVarConst>
     <CodeIncludeExternDataType>false</CodeIncludeExternDataType>
     <CodeIncludeExternFunction>false</CodeIncludeExternFunction>
