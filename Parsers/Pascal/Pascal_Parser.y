@@ -804,12 +804,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 						
 		|	T_SETLEN '(' var_const ',' statement ')'	{
                                                         arg1 := TParserHelper.GetIdentInfo($3);
-							if (arg1.DimensCount = 0) and (arg1.TType <> PASCAL_STRING_TYPE)  then
-                                                        begin
-                                                           errString := i18Manager.GetFormattedString('BadFuncParmU', ['SetLength']);
-                                                           yyabort;
-                                                        end;
-							if not ReplaceStr(arg1.SizeAsString, ' ', '').StartsWith('[]') then
+							if ((arg1.DimensCount = 0) and (arg1.TType <> PASCAL_STRING_TYPE)) or ((arg1.DimensCount > 0) and not ReplaceStr(arg1.SizeAsString, ' ', '').StartsWith('[]')) then
                                                         begin
                                                            errString := i18Manager.GetString('SetLenDynArr');
                                                            yyabort;

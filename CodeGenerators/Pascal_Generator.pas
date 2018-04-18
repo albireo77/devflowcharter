@@ -131,7 +131,7 @@ end;
 
 procedure Pascal_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
 var
-   buf, varSize, varInit, line, varName, varType, currType, dim: string;
+   buf, varSize, varInit, line, varName, varType, currType: string;
    i, a, b, dCount, cnt: integer;
    dims: TArray<string>;
 begin
@@ -146,12 +146,12 @@ begin
          begin
             varName := AVarList.sgList.Cells[VAR_NAME_COL, i];
             varType := AVarList.sgList.Cells[VAR_TYPE_COL, i];
+            varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
             dCount := AVarList.GetDimensionCount(varName);
             if (dCount < 0) or AVarList.IsExternal(i) then
                continue;
             if varType = currType then
             begin
-               varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
                if (dCount = 0) and varInit.IsEmpty then
                begin
                   if buf.IsEmpty then
@@ -170,15 +170,14 @@ begin
                      begin
                         for b := 0 to High(dims) do
                         begin
-                           dim := dims[b];
-                           if dim.IsEmpty then
+                           if dims[b].IsEmpty then
                               varSize := varSize + 'array of '
                            else
-                              varSize := varSize + '1..' + dim + ', ';
+                              varSize := varSize + '1..' + dims[b] + ', ';
                         end;
                         if varSize.EndsWith(', ') then
                         begin
-                           SetLength(varSize, Length(varSize)-2);
+                           SetLength(varSize, varSize.Length-2);
                            varSize := 'array[' + varSize + '] of ';
                         end;
                      end;
