@@ -1,3 +1,9 @@
+6.2 [19.04.2018]
+- Pascal: add support for dynamic (unbounded) arrays
+- Pascal Parser: add support for SetLength procedure
+- C: add support for unbounded arrays
+- Code Generation: skip generating entire sections (e.g. variables or functions) if no item was qualified for generation
+
 6.1 [13.04.2018]
 - add hints that validation of some fields (e.g. variable size) can be disabled in Settings
 - Explorer: fix missing data types description for Java

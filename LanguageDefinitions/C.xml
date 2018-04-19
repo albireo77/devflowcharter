@@ -32,6 +32,7 @@ It may not contain all supported tags. For all supported tags and their descript
     <CaseSensitiveSyntax>true</CaseSensitiveSyntax>
     <UpperCaseConstId>false</UpperCaseConstId>
     <CodeIncludeExternVarConst>true</CodeIncludeExternVarConst>
+    <AllowUnboundedArrays>true</AllowUnboundedArrays>
 
     <FoldRegions>
         <FoldRegion AddClose="false" NoSubFolds="false" Type="rtChar" WholeWords="false">
