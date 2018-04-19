@@ -40,12 +40,12 @@ It may not contain all supported tags. For all supported tags and their descript
             <Close Keyword="end"/>
         </FoldRegion>
         <FoldRegion AddClose="false" NoSubFolds="false" Type="rtKeyword" WholeWords="true">
-		    <Open Keyword="try"/>
-		    <Close Keyword="end"/>
+            <Open Keyword="try"/>
+            <Close Keyword="end"/>
         </FoldRegion>
         <FoldRegion AddClose="false" NoSubFolds="false" Type="rtKeyword" WholeWords="true">
             <Open Keyword="case"/>
-		    <Close Keyword="end"/>
+            <Close Keyword="end"/>
 	    </FoldRegion>		
         <FoldRegion AddClose="true" NoSubFolds="true" Type="rtChar" WholeWords="true">
             <Open Keyword="{"/>
