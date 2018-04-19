@@ -45,7 +45,7 @@ It may not contain all supported tags. For all supported tags and their descript
     </FoldRegions>
     <NativeDataTypes>
         <DataType kind="int">int</DataType>
-   	    <DataType kind="real">float</DataType>
+        <DataType kind="real">float</DataType>
         <DataType kind="int">char</DataType>
         <DataType>void</DataType>
         <DataType kind="ptr" origtype="int">int*</DataType>
