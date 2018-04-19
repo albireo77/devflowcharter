@@ -34,59 +34,59 @@ It may not contain all supported tags. For all supported tags and their descript
     <CodeIncludeExternVarConst>true</CodeIncludeExternVarConst>
 
     <FoldRegions>
-		<FoldRegion AddClose="false" NoSubFolds="false" Type="rtChar" WholeWords="false">
-			<Open Keyword="{"/>
-			<Close Keyword="}"/>
-		</FoldRegion>
-		<FoldRegion AddClose="true" NoSubFolds="true" Type="rtKeyword" WholeWords="true">
-			<Open Keyword="/*"/>
-			<Close Keyword="*/"/>
-        	</FoldRegion>
+        <FoldRegion AddClose="false" NoSubFolds="false" Type="rtChar" WholeWords="false">
+            <Open Keyword="{"/>
+            <Close Keyword="}"/>
+        </FoldRegion>
+        <FoldRegion AddClose="true" NoSubFolds="true" Type="rtKeyword" WholeWords="true">
+            <Open Keyword="/*"/>
+            <Close Keyword="*/"/>
+        </FoldRegion>
     </FoldRegions>
     <NativeDataTypes>
-    	<DataType kind="int">int</DataType>
-   		<DataType kind="real">float</DataType>
-   		<DataType kind="int">char</DataType>
-   		<DataType>void</DataType>
-   		<DataType kind="ptr" origtype="int">int*</DataType>
-   		<DataType kind="ptr" origtype="float">float*</DataType>
-   		<DataType kind="ptr" origtype="char">char*</DataType>
-   		<DataType>FILE</DataType>
-   		<DataType kind="ptr" origtype="FILE">FILE*</DataType>
-	</NativeDataTypes>
+        <DataType kind="int">int</DataType>
+   	    <DataType kind="real">float</DataType>
+        <DataType kind="int">char</DataType>
+        <DataType>void</DataType>
+        <DataType kind="ptr" origtype="int">int*</DataType>
+        <DataType kind="ptr" origtype="float">float*</DataType>
+        <DataType kind="ptr" origtype="char">char*</DataType>
+        <DataType>FILE</DataType>
+        <DataType kind="ptr" origtype="FILE">FILE*</DataType>
+    </NativeDataTypes>
     <KeyWords>
-		<KeyWord>auto</KeyWord>
-		<KeyWord>break</KeyWord>
-		<KeyWord>char</KeyWord>
-		<KeyWord>continue</KeyWord>
-		<KeyWord>default</KeyWord>
-		<KeyWord>double</KeyWord>
-		<KeyWord>enum</KeyWord>
-		<KeyWord>extern</KeyWord>
-		<KeyWord>float</KeyWord>
-		<KeyWord>int</KeyWord>
-		<KeyWord>long</KeyWord>
-		<KeyWord>register</KeyWord>
-		<KeyWord>return</KeyWord>
-		<KeyWord>short</KeyWord>
-		<KeyWord>signed</KeyWord>
-		<KeyWord>sizeof</KeyWord>
-		<KeyWord>static</KeyWord>
-		<KeyWord>struct</KeyWord>
-		<KeyWord>switch</KeyWord>
-		<KeyWord>typedef</KeyWord>
-		<KeyWord>union</KeyWord>
-		<KeyWord>unsigned</KeyWord>
-		<KeyWord>void</KeyWord>
-		<KeyWord>volatile</KeyWord>
-		<KeyWord>if</KeyWord>
-		<KeyWord>do</KeyWord>
-		<KeyWord>while</KeyWord>
-		<KeyWord>else</KeyWord>
-		<KeyWord>case</KeyWord>
-		<KeyWord>for</KeyWord>
-		<KeyWord>goto</KeyWord>
-		<KeyWord>const</KeyWord>
+        <KeyWord>auto</KeyWord>
+        <KeyWord>break</KeyWord>
+        <KeyWord>char</KeyWord>
+        <KeyWord>continue</KeyWord>
+        <KeyWord>default</KeyWord>
+        <KeyWord>double</KeyWord>
+        <KeyWord>enum</KeyWord>
+        <KeyWord>extern</KeyWord>
+        <KeyWord>float</KeyWord>
+        <KeyWord>int</KeyWord>
+        <KeyWord>long</KeyWord>
+        <KeyWord>register</KeyWord>
+        <KeyWord>return</KeyWord>
+        <KeyWord>short</KeyWord>
+        <KeyWord>signed</KeyWord>
+        <KeyWord>sizeof</KeyWord>
+        <KeyWord>static</KeyWord>
+        <KeyWord>struct</KeyWord>
+        <KeyWord>switch</KeyWord>
+        <KeyWord>typedef</KeyWord>
+        <KeyWord>union</KeyWord>
+        <KeyWord>unsigned</KeyWord>
+        <KeyWord>void</KeyWord>
+        <KeyWord>volatile</KeyWord>
+        <KeyWord>if</KeyWord>
+        <KeyWord>do</KeyWord>
+        <KeyWord>while</KeyWord>
+        <KeyWord>else</KeyWord>
+        <KeyWord>case</KeyWord>
+        <KeyWord>for</KeyWord>
+        <KeyWord>goto</KeyWord>
+        <KeyWord>const</KeyWord>
     </KeyWords>
 
 <!--

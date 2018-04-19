@@ -342,13 +342,16 @@ begin
                varList.AddObject(varStr, AVarList);
             end;
          end;
-         varTemplate := TStringList.Create;
-         try
-            varTemplate.Text := lang.VarTemplate;
-            TInfra.InsertTemplateLines(varTemplate, PRIMARY_PLACEHOLDER, varList);
-            ALines.AddStrings(varTemplate);
-         finally
-            varTemplate.Free;
+         if varList.Count > 0 then
+         begin
+            varTemplate := TStringList.Create;
+            try
+               varTemplate.Text := lang.VarTemplate;
+               TInfra.InsertTemplateLines(varTemplate, PRIMARY_PLACEHOLDER, varList);
+               ALines.AddStrings(varTemplate);
+            finally
+               varTemplate.Free;
+            end;
          end;
       finally
          varList.Free;
@@ -489,13 +492,16 @@ begin
                end;
             end;
          end;
-         funcsTemplate := TStringList.Create;
-         try
-            funcsTemplate.Text := lang.FunctionsTemplate;
-            TInfra.InsertTemplateLines(funcsTemplate, PRIMARY_PLACEHOLDER, funcList);
-            ALines.AddStrings(funcsTemplate);
-         finally
-            funcsTemplate.Free;
+         if funcList.Count > 0 then
+         begin
+            funcsTemplate := TStringList.Create;
+            try
+               funcsTemplate.Text := lang.FunctionsTemplate;
+               TInfra.InsertTemplateLines(funcsTemplate, PRIMARY_PLACEHOLDER, funcList);
+               ALines.AddStrings(funcsTemplate);
+            finally
+               funcsTemplate.Free;
+            end;
          end;
       finally
          funcList.Free;
