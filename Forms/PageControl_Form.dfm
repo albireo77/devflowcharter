@@ -29,6 +29,8 @@ object PageControlForm: TPageControlForm
     OwnerDraw = True
     ParentDoubleBuffered = False
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 0
     TabWidth = 65
     OnChange = pgcTabsChange
@@ -36,6 +38,7 @@ object PageControlForm: TPageControlForm
     OnDragOver = pgcTabsDragOver
     OnDrawTab = pgcTabsDrawTab
     OnMouseDown = pgcTabsMouseDown
+    OnMouseMove = pgcTabsMouseMove
   end
   object MainMenu1: TMainMenu
     Left = 280

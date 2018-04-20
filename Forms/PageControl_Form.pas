@@ -43,8 +43,7 @@ type
     procedure miAddClick(Sender: TObject); virtual; abstract;
     procedure miRemoveClick(Sender: TObject);
     procedure miActionClick(Sender: TObject);
-    procedure pgcTabsDrawTab(Control: TCustomTabControl;
-      TabIndex: Integer; const Rect: TRect; Active: Boolean);
+    procedure pgcTabsDrawTab(Control: TCustomTabControl; TabIndex: Integer; const Rect: TRect; Active: Boolean);
     procedure miExportClick(Sender: TObject);
     procedure miImportClick(Sender: TObject);
     procedure miRemoveAllClick(Sender: TObject);
@@ -57,8 +56,8 @@ type
     procedure pgcTabsDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure pgcTabsDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
-    procedure pgcTabsMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure pgcTabsMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure pgcTabsMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure ResetForm; override;
     procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -66,6 +65,8 @@ type
     UpdateCodeEditor: boolean;
     { Public declarations }
     function GetVisiblePageCount: integer;
+  private
+    FLastHintTabIndex: integer;
   end;
 
 implementation
@@ -73,7 +74,8 @@ implementation
 {$R *.dfm}
 
 uses
-   System.SysUtils, System.StrUtils, ApplicationCommon, XMLProcessor, TabComponent, CommonInterfaces;
+   System.SysUtils, System.StrUtils, Vcl.Forms, ApplicationCommon, XMLProcessor,
+   TabComponent, CommonInterfaces;
 
 procedure TPageControlForm.miRemoveClick(Sender: TObject);
 var
@@ -93,6 +95,7 @@ end;
 
 procedure TPageControlForm.ResetForm;
 begin
+   FLastHintTabIndex := -1;
    UpdateCodeEditor := true;
    inherited ResetForm;
 end;
@@ -254,6 +257,18 @@ begin
       if idx <> -1 then
          pgcTabs.Pages[idx].BeginDrag(false, 3);
    end;
+end;
+
+procedure TPageControlForm.pgcTabsMouseMove(Sender: TObject; Shift: TShiftState; X, Y: integer);
+var
+   TabIndex: integer;
+begin
+   TabIndex := pgcTabs.IndexOfTabAt(X, Y);
+   if FLastHintTabIndex <> TabIndex then
+      Application.CancelHint;
+   if TabIndex <> -1 then
+      pgcTabs.Hint := pgcTabs.Pages[TabIndex].Caption;
+   FLastHintTabIndex := TabIndex;
 end;
 
 end.
