@@ -1194,7 +1194,7 @@ begin
    if flag then THackCustomEdit(AControl).BorderStyle := bsNone;
 end;
 
-// function to get correct page index iwhen some pages are not visible in PageControl
+// function to get correct page index when some pages are not visible
 class function TInfra.GetPageIndex(APageControl: TPageControl; X, Y: integer): integer;
 var
    i, c: integer;

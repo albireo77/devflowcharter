@@ -261,14 +261,14 @@ end;
 
 procedure TPageControlForm.pgcTabsMouseMove(Sender: TObject; Shift: TShiftState; X, Y: integer);
 var
-   TabIndex: integer;
+   idx: integer;
 begin
-   TabIndex := pgcTabs.IndexOfTabAt(X, Y);
-   if FLastHintTabIndex <> TabIndex then
+   idx := TInfra.GetPageIndex(pgcTabs, X, Y);
+   if FLastHintTabIndex <> idx then
       Application.CancelHint;
-   if TabIndex <> -1 then
-      pgcTabs.Hint := pgcTabs.Pages[TabIndex].Caption;
-   FLastHintTabIndex := TabIndex;
+   if idx <> -1 then
+      pgcTabs.Hint := pgcTabs.Pages[idx].Caption;
+   FLastHintTabIndex := idx;
 end;
 
 end.
