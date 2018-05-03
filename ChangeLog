@@ -1,3 +1,8 @@
+6.3 [03.05.2018]
+- add hint for function header/datatype tabs
+- auto-resize to accommodate entire text for newly created input/output blocks
+- minor tweaks
+
 6.2 [19.04.2018]
 - Pascal: add support for dynamic (unbounded) arrays
 - Pascal Parser: add support for SetLength procedure

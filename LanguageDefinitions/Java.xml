@@ -9,7 +9,7 @@ It may not contain all supported tags. For all supported tags and their descript
     <Name>Java</Name>
     <CommentBegin>/*</CommentBegin>			<!-- if language supports only single-line comments then CommentBegin tag -->
     <CommentEnd>*/</CommentEnd>				<!-- should contain comment symbol and CommentEnd tag should be empty or removed -->
-    <InputFunction></InputFunction>
+    <InputFunction>System.in.read()</InputFunction>
     <OutputFunction>System.out.println()</OutputFunction>
     <DefaultExt>java</DefaultExt>
     <LibraryExt>.jar</LibraryExt>

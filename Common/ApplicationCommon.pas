@@ -101,6 +101,7 @@ type
          class function EncodeFontStyle(AStyle: TFontStyles): string;
          class function GetDimensionCount(const AText: string): integer;
          class function GetDimensions(const AText: string): TArray<string>;
+         class function GetTextWidth(AText: string; AControl: TControl): integer;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetLangDefinition(const AName: string): TLangDefinition;
          function SetCurrentLang(const ALangName: string): TLangDefinition;
@@ -1237,6 +1238,30 @@ begin
    begin
       ADest := Copy(ASource, i+1, MaxInt);
       SetLength(ASource, i-1);
+   end;
+end;
+
+class function TInfra.GetTextWidth(AText: string; AControl: TControl): integer;
+var
+   propInfo: PPropInfo;
+   thisFont: TFont;
+begin
+   result := 0;
+   propInfo := GetPropInfo(AControl.ClassInfo, 'Font');
+   if propInfo <> nil then
+   begin
+      thisFont := TFont(GetObjectProp(AControl, 'Font'));
+      if Assigned(thisFont) then
+      begin
+         with TControlCanvas.Create do
+         try
+            Control := AControl;
+            Font.Assign(thisFont);
+            result := TextWidth(AText);
+         finally
+            Free;
+         end;
+      end;
    end;
 end;
 
