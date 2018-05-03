@@ -101,7 +101,7 @@ type
          class function EncodeFontStyle(AStyle: TFontStyles): string;
          class function GetDimensionCount(const AText: string): integer;
          class function GetDimensions(const AText: string): TArray<string>;
-         class function GetTextWidth(AText: string; AControl: TControl): integer;
+         class function GetTextWidth(const AText: string; AControl: TControl): integer;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetLangDefinition(const AName: string): TLangDefinition;
          function SetCurrentLang(const ALangName: string): TLangDefinition;
@@ -1241,7 +1241,7 @@ begin
    end;
 end;
 
-class function TInfra.GetTextWidth(AText: string; AControl: TControl): integer;
+class function TInfra.GetTextWidth(const AText: string; AControl: TControl): integer;
 var
    propInfo: PPropInfo;
    thisFont: TFont;
