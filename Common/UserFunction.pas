@@ -466,23 +466,22 @@ begin
    chkArrayType.Enabled := false;
    chkArrayType.OnClick := OnChangeType;
 
-   CreateExtDeclareChBox(gbHeader, 165, 52);
-   chkExternal.Alignment := taLeftJustify;
+   CreateExtDeclareChBox(gbHeader, 165, 52, taLeftJustify);
 
    chkStatic := TCheckBox.Create(gbHeader);
    chkStatic.Parent := gbHeader;
    chkStatic.ParentFont := false;
    chkStatic.Font.Style := [];
    chkStatic.Font.Color := clWindowText;
+   chkStatic.Alignment := taLeftJustify;
    chkStatic.Visible := not GInfra.CurrentLang.StaticLabel.IsEmpty;
    if chkStatic.Visible then
    begin
       chkStatic.Caption := GInfra.CurrentLang.StaticLabel;
-      chkStatic.SetBounds(chkExternal.BoundsRect.Right + 15, 52, PageControl.Canvas.TextWidth(chkStatic.Caption) + 20, 17);
+      chkStatic.SetBounds(chkExternal.BoundsRect.Right + 15, 52, TInfra.GetTextWidth(chkStatic.Caption, chkStatic) + 18, 17);
    end;
    chkStatic.DoubleBuffered := true;
    chkStatic.Anchors := [akBottom, akLeft];
-   chkStatic.Alignment := taLeftJustify;
    chkStatic.OnClick := OnClickCh;
 
    chkConstructor := TCheckBox.Create(gbHeader);
@@ -490,15 +489,15 @@ begin
    chkConstructor.ParentFont := false;
    chkConstructor.Font.Style := [];
    chkConstructor.Font.Color := clWindowText;
+   chkConstructor.Alignment := taLeftJustify;
    chkConstructor.Caption := i18Manager.GetString('constructor');
    if chkStatic.Visible then
       ctrl := chkStatic
    else
       ctrl := chkExternal;
-   chkConstructor.SetBounds(ctrl.BoundsRect.Right + 15, 52, PageControl.Canvas.TextWidth(chkConstructor.Caption) + 20, 17);
+   chkConstructor.SetBounds(ctrl.BoundsRect.Right + 15, 52, TInfra.GetTextWidth(chkConstructor.Caption, chkConstructor) + 18, 17);
    chkConstructor.DoubleBuffered := true;
    chkConstructor.Anchors := [akBottom, akLeft];
-   chkConstructor.Alignment := taLeftJustify;
    chkConstructor.OnClick := OnClickCh;
 
    CreateLibControls(gbHeader, 8, 52);

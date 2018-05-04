@@ -52,7 +52,7 @@ type
          procedure OnClickCh(Sender: TObject); virtual;
          procedure OnChangeName(Sender: TObject); virtual;
          procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
-         procedure CreateExtDeclareChBox(AParent: TWinControl; x, y: integer);
+         procedure CreateExtDeclareChBox(AParent: TWinControl; x, y: integer; AAlignment: TLeftRight = taRightJustify);
          procedure CreateNameControls(AParent: TWinControl; x, y: integer);
          procedure CreateLibControls(AParent: TWinControl; x, y: integer);
          function GetElements<T: class>: IEnumerable<T>;
@@ -205,20 +205,21 @@ begin
    end;
 end;
 
-procedure TTabComponent.CreateExtDeclareChBox(AParent: TWinControl; x, y: integer);
+procedure TTabComponent.CreateExtDeclareChBox(AParent: TWinControl; x, y: integer; AAlignment: TLeftRight = taRightJustify);
 begin
    chkExternal := TCheckBox.Create(AParent);
    chkExternal.Parent := AParent;
+   chkExternal.Alignment := AAlignment;
    if not FCodeIncludeExtern then
       chkExternal.Hint := i18Manager.GetString('chkExternal.Hint');
    if GInfra.CurrentLang.ExternalLabel.IsEmpty then
       chkExternal.Caption := i18Manager.GetString('chkExternal')
    else
       chkExternal.Caption := GInfra.CurrentLang.ExternalLabel;
-   chkExternal.SetBounds(x, y, PageControl.Canvas.TextWidth(chkExternal.Caption) + 20, 17);
    chkExternal.ParentFont := false;
    chkExternal.Font.Style := [];
    chkExternal.Font.Color := clWindowText;
+   chkExternal.SetBounds(x, y, TInfra.GetTextWidth(chkExternal.Caption, chkExternal) + 18, 17);
    chkExternal.DoubleBuffered := true;
    chkExternal.OnClick := OnClickCh;
    chkExternal.ShowHint := true;

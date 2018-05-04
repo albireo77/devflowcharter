@@ -230,36 +230,27 @@ end;
 procedure TMemoEx.UpdateHScroll;
 var
    cnt, w, i: integer;
-   lCanvas: TCanvas;
    r: TRect;
 begin
    if FHasHScroll and not WordWrap then
    begin
       w := 0;
-      lCanvas := TCanvas.Create;
-      try
-         lCanvas.Font.Assign(Font);
-         lCanvas.Handle := GetDC(Handle);
-         for i := 0 to Lines.Count-1 do
-         begin
-            cnt := lCanvas.TextWidth(Lines[i]);
-            if cnt > w then
-               w := cnt;
-         end;
-         Perform(EM_GETRECT, 0, LPARAM(@r));
-         if w > r.Width then
-         begin
-            if ScrollBars = TScrollStyle.ssNone then
-               ScrollBars := TScrollStyle.ssHorizontal
-            else if ScrollBars = TScrollStyle.ssVertical then
-               ScrollBars := TScrollStyle.ssBoth;
-         end
-         else
-            ResetScrollBars(TScrollStyle.ssVertical);
-      finally
-         ReleaseDC(Handle, lCanvas.Handle);
-         lCanvas.Free;
+      for i := 0 to Lines.Count-1 do
+      begin
+         cnt := TInfra.GetTextWidth(Lines[i], Self);
+         if cnt > w then
+            w := cnt;
       end;
+      Perform(EM_GETRECT, 0, LPARAM(@r));
+      if w > r.Width then
+      begin
+         if ScrollBars = TScrollStyle.ssNone then
+            ScrollBars := TScrollStyle.ssHorizontal
+         else if ScrollBars = TScrollStyle.ssVertical then
+            ScrollBars := TScrollStyle.ssBoth;
+      end
+      else
+         ResetScrollBars(TScrollStyle.ssVertical);
    end
    else
       ResetScrollBars(TScrollStyle.ssVertical);
