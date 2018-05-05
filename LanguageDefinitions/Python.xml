@@ -10,13 +10,13 @@ It may not contain all supported tags. For all supported tags and their descript
     <CommentBegin>#</CommentBegin>
     <InputFunction>input()</InputFunction>
     <OutputFunction>print()</OutputFunction>
+    <InOutCursorPos>-1</InOutCursorPos>
     <DefaultExt>py</DefaultExt>
     <LibraryExt>.py</LibraryExt>
     <AssignOperator>=</AssignOperator>
     <FuncBrackets>()</FuncBrackets>
-    <DecimalSeparator>.</DecimalSeparator>
-    <InOutCursorPos>-1</InOutCursorPos>
     <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>
+    <DecimalSeparator>.</DecimalSeparator>
 			
     <EnabledVars>true</EnabledVars>
     <EnabledCompiler>true</EnabledCompiler>

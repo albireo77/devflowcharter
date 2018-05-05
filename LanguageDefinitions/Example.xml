@@ -13,14 +13,14 @@ Most of the tags are optional and may be removed if not needed. The most crucial
     <CommentEnd>*/</CommentEnd>				<!-- should contain comment symbol and CommentEnd tag should be empty or removed -->
     <InputFunction>in()</InputFunction>
     <OutputFunction>out()</OutputFunction>
+    <InOutCursorPos>-1</InOutCursorPos>			<!-- cursor position for Input/OutputFunction; negative or zero: counted from end; positive: counted from beginning -->
     <DefaultExt>txt</DefaultExt>
     <LibraryExt>.lib</LibraryExt>
     <AssignOperator>=</AssignOperator>
-    <FuncBrackets>()</FuncBrackets>
+    <FuncBrackets>()</FuncBrackets>						<!-- brackets added to NativeFunctions -->
+    <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>	<!-- cursor position for FuncBrackets; counted from end -->
     <DecimalSeparator>.</DecimalSeparator>
     <InstrEnd>;</InstrEnd>
-    <InOutCursorPos>-1</InOutCursorPos>			<!-- negative or zero: count from end; positive: count from beginning -->
-    <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>	<!-- counted from end -->
 
     <EnabledConsts>true</EnabledConsts>			<!-- false or 0 is false, true or not 0 is true -->				
     <EnabledVars>true</EnabledVars>

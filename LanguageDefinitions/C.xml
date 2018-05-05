@@ -12,10 +12,10 @@ It may not contain all supported tags. For all supported tags and their descript
     <CommentEnd>*/</CommentEnd>
     <InputFunction>scanf()</InputFunction>
     <OutputFunction>printf()</OutputFunction>
+    <InOutCursorPos>-1</InOutCursorPos>
     <DefaultExt>c</DefaultExt>
     <LibraryExt>.h</LibraryExt>
     <AssignOperator>=</AssignOperator>
-    <InOutCursorPos>-1</InOutCursorPos>
     <FuncBrackets>()</FuncBrackets>
     <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>
     <InstrEnd>;</InstrEnd>

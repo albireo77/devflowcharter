@@ -12,10 +12,10 @@ It may not contain all supported tags. For all supported tags and their descript
     <CommentEnd>}</CommentEnd>
     <InputFunction>readln()</InputFunction>
     <OutputFunction>writeln()</OutputFunction>
+    <InOutCursorPos>-1</InOutCursorPos>
     <DefaultExt>pas</DefaultExt>
     <LibraryExt>.tpu</LibraryExt>
     <AssignOperator>:=</AssignOperator>
-    <InOutCursorPos>-1</InOutCursorPos>
     <FuncBrackets>()</FuncBrackets>
     <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>
     <InstrEnd>;</InstrEnd>
