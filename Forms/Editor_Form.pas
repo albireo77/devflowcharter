@@ -459,13 +459,10 @@ begin
             lang := GInfra.CurrentLang
          else if Assigned(GInfra.DummyLang.FileContentsGenerator) then
             lang := GInfra.DummyLang;
-         if lang <> nil then
+         if (lang <> nil) and not lang.FileContentsGenerator(newLines, skipFuncBody) then
          begin
-            if not lang.FileContentsGenerator(newLines, skipFuncBody) then
-            begin
-               TInfra.ShowFormattedErrorBox('NoProgTempl', [sLineBreak, GInfra.CurrentLang.Name, GInfra.CurrentLang.DefFile, FILE_CONTENTS_TAG], errValidate);
-               exit;
-            end;
+            TInfra.ShowFormattedErrorBox('NoProgTempl', [sLineBreak, GInfra.CurrentLang.Name, GInfra.CurrentLang.DefFile, FILE_CONTENTS_TAG], errValidate);
+            exit;
          end;
       finally
          lang := nil;

@@ -19,7 +19,7 @@ Most of the tags are optional and may be removed if not needed. The most crucial
     <FuncBrackets>()</FuncBrackets>
     <DecimalSeparator>.</DecimalSeparator>
     <InstrEnd>;</InstrEnd>
-    <InOutCursorPos>-1</InOutCursorPos>			<!-- counted from end -->
+    <InOutCursorPos>-1</InOutCursorPos>			<!-- negative or zero: count from end; positive: count from beginning -->
     <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>	<!-- counted from end -->
 
     <EnabledConsts>true</EnabledConsts>			<!-- false or 0 is false, true or not 0 is true -->				

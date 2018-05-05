@@ -54,8 +54,8 @@ type
 implementation
 
 uses
-   Vcl.Controls, System.Classes, WinApi.Windows, System.Types, System.UITypes, ApplicationCommon,
-   CommonTypes;
+   Vcl.Controls, System.Classes, WinApi.Windows, System.Types, System.UITypes, System.Math,
+   ApplicationCommon, CommonTypes;
 
 constructor TInOutBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; const AText: string; AId: integer = ID_INVALID; AdjustWidth: boolean = false);
 var
@@ -75,7 +75,8 @@ begin
       if Width < w then
          Width := w;
    end;
-   FStatement.SelStart := Length(FStatement.Text) + GInfra.CurrentLang.InOutCursorPos;
+   w := GInfra.CurrentLang.InOutCursorPos;
+   FStatement.SelStart := IfThen(w <= 0, Length(FStatement.Text) + w, w);
    BottomHook := Width div 2;
    BottomPoint.X := BottomHook;
    BottomPoint.Y := 30;
