@@ -76,7 +76,7 @@ begin
          Width := w;
    end;
    w := GInfra.CurrentLang.InOutCursorPos;
-   FStatement.SelStart := IfThen(w <= 0, Length(FStatement.Text) + w, w);
+   FStatement.SelStart := IfThen(w <= 0, Length(FStatement.Text) + w, w - 1);
    BottomHook := Width div 2;
    BottomPoint.X := BottomHook;
    BottomPoint.Y := 30;
