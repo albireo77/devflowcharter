@@ -102,6 +102,7 @@ type
          class function GetDimensionCount(const AText: string): integer;
          class function GetDimensions(const AText: string): TArray<string>;
          class function GetTextWidth(const AText: string; AControl: TControl): integer;
+         class function GetAutoWidth(ACheckBox: TCheckBox): integer;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetLangDefinition(const AName: string): TLangDefinition;
          function SetCurrentLang(const ALangName: string): TLangDefinition;
@@ -1263,6 +1264,11 @@ begin
          end;
       end;
    end;
+end;
+
+class function TInfra.GetAutoWidth(ACheckBox: TCheckBox): integer;
+begin
+   result := GetTextWidth(ACheckBox.Caption, ACheckBox) + GetSystemMetrics(SM_CXMENUCHECK) + 3;
 end;
 
 class function TInfra.GetDimensions(const AText: string): TArray<string>;

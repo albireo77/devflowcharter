@@ -139,12 +139,12 @@ begin
 
    chkAddPtrType := TCheckBox.Create(Self);
    chkAddPtrType.Parent := Self;
-   chkAddPtrType.SetBounds(180, 42, 134, 17);
+   chkAddPtrType.Caption := i18Manager.GetString('chkAddPtrType');
    chkAddPtrType.ParentFont := false;
    chkAddPtrType.Font.Style := [];
    chkAddPtrType.Font.Color := clWindowText;
+   chkAddPtrType.SetBounds(180, 42, TInfra.GetAutoWidth(chkAddPtrType), 17);
    chkAddPtrType.DoubleBuffered := true;
-   chkAddPtrType.Caption := i18Manager.GetString('chkAddPtrType');
    chkAddPtrType.Enabled := GInfra.CurrentLang.EnabledPointers;
    chkAddPtrType.OnClick := OnClickCh;
 

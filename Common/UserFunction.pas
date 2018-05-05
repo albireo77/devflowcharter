@@ -357,8 +357,8 @@ begin
    chkInclDescCode.ParentFont := false;
    chkInclDescCode.Font.Style := [];
    chkInclDescCode.Font.Color := clWindowText;
-   chkInclDescCode.SetBounds(5, 55, 150, 17);
    chkInclDescCode.Caption := i18Manager.GetString('chkInclDescCode');
+   chkInclDescCode.SetBounds(5, 55, TInfra.GetAutoWidth(chkInclDescCode), 17);
    chkInclDescCode.DoubleBuffered := true;
    chkInclDescCode.Anchors := [akBottom, akLeft];
    chkInclDescCode.OnClick := OnClickInclDescCode;
@@ -368,8 +368,8 @@ begin
    chkInclDescFlow.ParentFont := false;
    chkInclDescFlow.Font.Style := [];
    chkInclDescFlow.Font.Color := clWindowText;
-   chkInclDescFlow.SetBounds(180, 55, 150, 17);
    chkInclDescFlow.Caption := i18Manager.GetString('chkInclDescFlow');
+   chkInclDescFlow.SetBounds(180, 55, TInfra.GetAutoWidth(chkInclDescFlow), 17);
    chkInclDescFlow.DoubleBuffered := true;
    chkInclDescFlow.Anchors := [akBottom, akLeft];
    chkInclDescFlow.OnClick := OnClickInclDescFlow;
@@ -413,8 +413,8 @@ begin
    chkBodyVisible.ParentFont := false;
    chkBodyVisible.Font.Style := [];
    chkBodyVisible.Font.Color := clWindowText;
-   chkBodyVisible.SetBounds(x, 23, 150, 17);
    chkBodyVisible.Caption := i18Manager.GetString('Visible');
+   chkBodyVisible.SetBounds(x, 23, TInfra.GetAutoWidth(chkBodyVisible), 17);
    chkBodyVisible.DoubleBuffered := true;
    chkBodyVisible.Anchors := [akBottom, akLeft];
    chkBodyVisible.OnClick := OnClickBodyVisible;
@@ -459,8 +459,8 @@ begin
    chkArrayType.Font.Style := [];
    chkArrayType.Font.Color := clWindowText;
    x := cbType.BoundsRect.Right + 10;
-   chkArrayType.SetBounds(x, 23, gbHeader.Width-x-3, 17);
    chkArrayType.Caption := i18Manager.GetString('chkArrayType');
+   chkArrayType.SetBounds(x, 23, gbHeader.Width-x-3, 17);
    chkArrayType.DoubleBuffered := true;
    chkArrayType.Anchors := [akBottom, akLeft];
    chkArrayType.Enabled := false;
@@ -478,7 +478,7 @@ begin
    if chkStatic.Visible then
    begin
       chkStatic.Caption := GInfra.CurrentLang.StaticLabel;
-      chkStatic.SetBounds(chkExternal.BoundsRect.Right + 15, 52, TInfra.GetTextWidth(chkStatic.Caption, chkStatic) + 18, 17);
+      chkStatic.SetBounds(chkExternal.BoundsRect.Right + 15, 52, TInfra.GetAutoWidth(chkStatic), 17);
    end;
    chkStatic.DoubleBuffered := true;
    chkStatic.Anchors := [akBottom, akLeft];
@@ -495,7 +495,7 @@ begin
       ctrl := chkStatic
    else
       ctrl := chkExternal;
-   chkConstructor.SetBounds(ctrl.BoundsRect.Right + 15, 52, TInfra.GetTextWidth(chkConstructor.Caption, chkConstructor) + 18, 17);
+   chkConstructor.SetBounds(ctrl.BoundsRect.Right + 15, 52, TInfra.GetAutoWidth(chkConstructor), 17);
    chkConstructor.DoubleBuffered := true;
    chkConstructor.Anchors := [akBottom, akLeft];
    chkConstructor.OnClick := OnClickCh;

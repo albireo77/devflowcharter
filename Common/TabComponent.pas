@@ -219,7 +219,7 @@ begin
    chkExternal.ParentFont := false;
    chkExternal.Font.Style := [];
    chkExternal.Font.Color := clWindowText;
-   chkExternal.SetBounds(x, y, TInfra.GetTextWidth(chkExternal.Caption, chkExternal) + 18, 17);
+   chkExternal.SetBounds(x, y, TInfra.GetAutoWidth(chkExternal), 17);
    chkExternal.DoubleBuffered := true;
    chkExternal.OnClick := OnClickCh;
    chkExternal.ShowHint := true;
