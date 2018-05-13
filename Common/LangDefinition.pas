@@ -178,8 +178,8 @@ type
 {$ENDIF}
       Parser: TCustomParser;
       NativeDataTypes: array of TNativeDataType;
+      NativeFunctions: array of TNativeFunction;
       KeyWords: TStringList;
-      NativeFunctions: TStringList;
       EnabledConsts,
       EnabledVars,
       EnabledCompiler,
@@ -257,7 +257,6 @@ begin
    LibraryExt := '.lib';
    AssignOperator := '=';
    ForDoVarString := '=';
-   NativeFunctions := TStringList.Create;
    KeyWords := TStringList.Create;
    UpperCaseConstId := true;
    EnabledPointers := true;
@@ -296,9 +295,9 @@ end;
 
 destructor TLangDefinition.Destroy;
 begin
-   NativeFunctions.Free;
    KeyWords.Free;
    NativeDataTypes := nil;
+   NativeFunctions := nil;
    Parser.Free;
 {$IFDEF USE_CODEFOLDING}
    FoldRegions := nil;
@@ -892,7 +891,7 @@ begin
                lOrigType := lType;
             lType.OrigType := lOrigType;
             lType.IsGeneric := TXMLProcessor.GetBoolFromAttr(tag, 'generic');
-            lType.Lib := tag.getAttribute('library');
+            lType.Lib := tag.GetAttribute('library');
          end;
          tag := TXMLProcessor.FindNextTag(tag);
       end;
@@ -915,17 +914,27 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'NativeFunctions');
    if tag <> nil then
    begin
-      NativeFunctions.Sorted := false;
-      NativeFunctions.CaseSensitive := CaseSensitiveSyntax;
+      count := TXMLProcessor.CountChildTags(tag, 'Function', true);
+      SetLength(NativeFunctions, count);
       tag := TXMLProcessor.FindChildTag(tag, 'Function');
+      i := 0;
       while tag <> nil do
       begin
          val := tag.Text.Trim;
          if not val.IsEmpty then
-            NativeFunctions.Add(val);
+         begin
+            with NativeFunctions[i] do
+            begin
+               Name := val;
+               Brackets := tag.GetAttribute('brackets');
+               BracketsCursorPos := StrToIntDef(tag.GetAttribute('bracketsCursorPos'), 0);
+               Caption := tag.GetAttribute('caption').Trim;
+               Hint := tag.GetAttribute('hint');
+            end;
+            i := i + 1;
+         end;
          tag := TXMLProcessor.FindNextTag(tag);
       end;
-      NativeFunctions.Sort;
    end;
 {$IFDEF USE_CODEFOLDING}
    tag := TXMLProcessor.FindChildTag(ATag, 'FoldRegions');

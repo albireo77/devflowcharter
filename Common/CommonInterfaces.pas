@@ -32,6 +32,7 @@ const
 
    PAGE_INDEX_COMPARE = 0;
    Z_ORDER_COMPARE    = 1;
+   NAME_COMPARE       = 2;
 
 type
 

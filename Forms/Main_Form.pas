@@ -147,6 +147,7 @@ type
     N18: TMenuItem;
     miMemoAlignRight: TMenuItem;
     miInsertBranch: TMenuItem;
+    stbMainBar: TStatusBar;
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -231,11 +232,11 @@ var
 implementation
 
 uses
-   Vcl.StdCtrls, Vcl.Clipbrd, System.StrUtils, System.UITypes, System.Types, Toolbox_Form,
-   ApplicationCommon, About_Form, Main_Block, ParseGlobals, LocalizationManager,
-   XMLProcessor, UserFunction, ForDo_Block, Return_Block, Project, Declarations_Form,
-   Base_Block, Comment, Case_Block, Navigator_Form, CommonTypes, LangDefinition,
-   EditMemo_Form, BlockFactory, BlockTabSheet, MemoEx;
+   Vcl.StdCtrls, Vcl.Clipbrd, System.StrUtils, System.UITypes, System.Types, System.Generics.Defaults,
+   System.Generics.Collections, System.Math, Toolbox_Form, ApplicationCommon, About_Form,
+   Main_Block, ParseGlobals, LocalizationManager, XMLProcessor, UserFunction, ForDo_Block,
+   Return_Block, Project, Declarations_Form, Base_Block, Comment, Case_Block, Navigator_Form,
+   CommonTypes, LangDefinition, EditMemo_Form, BlockFactory, BlockTabSheet, MemoEx;
 
 type
    TDerivedControl = class(TControl);
@@ -1372,21 +1373,39 @@ end;
 
 procedure TMainForm.FuncMenuClick(Sender: TObject);
 var
-   funcName, backup: string;
+   funcName, lBrackets, backup: string;
    edit: TCustomEdit;
+   menuItem: TMenuItem;
+   cursorPos, selPos: integer;
 begin
    if (Sender is TMenuItem) and (pmEdits.PopupComponent is TCustomEdit) then
    begin
       edit := TCustomEdit(pmEdits.PopupComponent);
-      funcName := StripHotKey(TMenuItem(Sender).Caption);
-      funcName := funcName + GInfra.CurrentLang.FuncBrackets;
+      menuItem := TMenuItem(Sender);
+      funcName := StripHotKey(menuItem.Caption);
       backup := '';
+      selPos := edit.SelStart;
+      if menuItem.Tag <> 0 then
+      begin
+         with PNativeFunction(menuItem.Tag)^ do
+         begin
+            if not Caption.IsEmpty then
+               funcName := Name;
+            cursorPos := BracketsCursorPos;
+            lBrackets := Brackets;
+         end;
+      end
+      else
+      begin
+         cursorPos := GInfra.CurrentLang.FuncBracketsCursorPos;
+         lBrackets := GInfra.CurrentLang.FuncBrackets;
+      end;
       if Clipboard.HasFormat(CF_TEXT) then
          backup := Clipboard.AsText;
-      Clipboard.AsText := funcName;
+      Clipboard.AsText := funcName + lBrackets;
       edit.PasteFromClipboard;
-      if not GInfra.CurrentLang.FuncBrackets.IsEmpty then
-         edit.SelStart := edit.SelStart + GInfra.CurrentLang.FuncBracketsCursorPos;
+      if cursorPos <> 0 then
+         edit.SelStart := cursorPos + Length(funcName) + selPos;
       if not backup.IsEmpty then
          Clipboard.AsText := backup;
    end;
@@ -1403,39 +1422,64 @@ end;
 
 function TMainForm.BuildFuncMenu(AParent: TMenuItem): integer;
 var
-   i: integer;
-   funcList: TStringList;
+   i, a, c, d: integer;
    lName: string;
    func: TUserFunction;
+   Comparer: IComparer<TMenuItem>;
+   nativeFunc: PNativeFunction;
 begin
    result := 0;
    if AParent <> nil then
    begin
       DestroyFuncMenu;
-      funcList := TStringList.Create;
-      try
-         funcList.Sorted := true;
-         funcList.Duplicates := dupIgnore;
-         funcList.AddStrings(GInfra.CurrentLang.NativeFunctions);
-         for func in GProject.GetUserFunctions do
+      i := 0;
+      for func in GProject.GetUserFunctions do
+      begin
+         lName := func.GetName;
+         if not lName.IsEmpty then
          begin
-            lName := func.GetName;
-            if not lName.IsEmpty then
-               funcList.Add(lName);
+            i := i + 1;
+            SetLength(FFuncMenu, i);
+            FFuncMenu[i-1] := TMenuItem.Create(AParent);
+            with FFuncMenu[i-1] do
+            begin
+               Caption := lName;
+               if Assigned(GInfra.CurrentLang.GetUserFuncDesc) then
+                  Hint := GInfra.CurrentLang.GetUserFuncDesc(func.Header)
+               else
+                  Hint := GInfra.DummyLang.GetUserFuncDesc(func.Header);
+               OnClick := FuncMenuClick;
+            end;
          end;
-         SetLength(FFuncMenu, funcList.Count);
-         for i := 0 to funcList.Count-1 do
-         begin
-            FFuncMenu[i] := TMenuItem.Create(AParent);
-            FFuncMenu[i].Caption := funcList[i];
-            FFuncMenu[i].OnClick := FuncMenuClick;
-         end;
-         result := funcList.Count;
-      finally
-         funcList.Free;
       end;
+      a := Length(GInfra.CurrentLang.NativeFunctions) + i;
+      SetLength(FFuncMenu, a);
+      d := 0;
+      for c := i to a-1 do
+      begin
+         nativeFunc := @GInfra.CurrentLang.NativeFunctions[d];
+         FFuncMenu[c] := TMenuItem.Create(AParent);
+         with FFuncMenu[c] do
+         begin
+            Caption := IfThen(nativeFunc.Caption.IsEmpty, nativeFunc.Name, nativeFunc.Caption);
+            Hint := nativeFunc.Hint;
+            Tag := Integer(nativeFunc);
+            OnClick := FuncMenuClick;
+         end;
+         d := d + 1;
+      end;
+      result := a;
       if result > 0 then
+      begin
+         Comparer := TDelegatedComparer<TMenuItem>.Create(
+            function(const L, R: TMenuItem): integer
+            begin
+               result := TComparer<string>.Default.Compare(StripHotKey(L.Caption), StripHotKey(R.Caption));
+            end
+         );
+         TArray.Sort<TMenuItem>(FFuncMenu, Comparer);
          AParent.Add(FFuncMenu);
+      end;
    end;
 end;
 

@@ -102,8 +102,9 @@ type
          class function GetDimensionCount(const AText: string): integer;
          class function GetDimensions(const AText: string): TArray<string>;
          class function GetTextWidth(const AText: string; AControl: TControl): integer;
-         class function GetAutoWidth(ACheckBox: TCheckBox): integer;
+         class function GetAutoWidth(AControl: TControl): integer;
          function GetNativeDataType(const AName: string): PNativeDataType;
+         function GetNativeFunction(const AName: string): PNativeFunction;
          function GetLangDefinition(const AName: string): TLangDefinition;
          function SetCurrentLang(const ALangName: string): TLangDefinition;
          function ValidateConstId(const AId: string): integer;
@@ -416,6 +417,21 @@ begin
       if SameStrings(AName, FCurrentLang.NativeDataTypes[i].Name) then
       begin
          result := @FCurrentLang.NativeDataTypes[i];
+         break;
+      end;
+   end;
+end;
+
+function TInfra.GetNativeFunction(const AName: string): PNativeFunction;
+var
+   i: integer;
+begin
+   result := nil;
+   for i := 0 to High(FCurrentLang.NativeFunctions) do
+   begin
+      if SameStrings(AName, FCurrentLang.NativeFunctions[i].Name) then
+      begin
+         result := @FCurrentLang.NativeFunctions[i];
          break;
       end;
    end;
@@ -1266,9 +1282,10 @@ begin
    end;
 end;
 
-class function TInfra.GetAutoWidth(ACheckBox: TCheckBox): integer;
+class function TInfra.GetAutoWidth(AControl: TControl): integer;
 begin
-   result := GetTextWidth(ACheckBox.Caption, ACheckBox) + GetSystemMetrics(SM_CXMENUCHECK) + 3;
+   if AControl is TCheckBox then
+      result := GetTextWidth(TCheckBox(AControl).Caption, AControl) + GetSystemMetrics(SM_CXMENUCHECK) + 3;
 end;
 
 class function TInfra.GetDimensions(const AText: string): TArray<string>;

@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2011 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
 
@@ -69,6 +69,15 @@ type
       OrigType: PNativeDataType;
       IsGeneric: boolean;
       Lib: string;
+   end;
+
+   PNativeFunction = ^TNativeFunction;
+   TNativeFunction = record
+      Name,
+      Brackets,
+      Hint,
+      Caption: string;
+      BracketsCursorPos: integer;
    end;
 
    TErrWarnCount = record

@@ -618,7 +618,7 @@ begin
       info := 'BadIdD'
    else if not GInfra.CurrentLang.AllowUserFunctionOverload then
    begin
-      if GInfra.CurrentLang.NativeFunctions.IndexOf(funcName) <> -1 then
+      if GInfra.GetNativeFunction(funcName) <> nil then
          info := 'DefNtvFunc'
       else if IsDuplicated(edtName) then
          info := 'DupIdD';
@@ -922,7 +922,9 @@ begin
          result := -1
       else
          result := L.Header.PageIndex - R.Header.PageIndex;
-   end;
+   end
+   else if FCompareType = NAME_COMPARE then
+      result := TComparer<string>.Default.Compare(L.GetName, R.GetName);
 end;
 
 end.

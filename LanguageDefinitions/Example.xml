@@ -18,7 +18,7 @@ Most of the tags are optional and may be removed if not needed. The most crucial
     <LibraryExt>.lib</LibraryExt>
     <AssignOperator>=</AssignOperator>
     <FuncBrackets>()</FuncBrackets>						<!-- brackets added to NativeFunctions -->
-    <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>	<!-- cursor position for FuncBrackets; counted from end -->
+    <FuncBracketsCursorPos>1</FuncBracketsCursorPos>	<!-- cursor position for FuncBrackets; counted from brackets beginning -->
     <DecimalSeparator>.</DecimalSeparator>
     <InstrEnd>;</InstrEnd>
 

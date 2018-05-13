@@ -17,7 +17,7 @@ It may not contain all supported tags. For all supported tags and their descript
     <LibraryExt>.tpu</LibraryExt>
     <AssignOperator>:=</AssignOperator>
     <FuncBrackets>()</FuncBrackets>
-    <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>
+    <FuncBracketsCursorPos>1</FuncBracketsCursorPos>
     <InstrEnd>;</InstrEnd>
 
     <EnabledConsts>true</EnabledConsts>
@@ -118,38 +118,44 @@ It may not contain all supported tags. For all supported tags and their descript
         <KeyWord>xor</KeyWord>
     </KeyWords>
     <NativeFunctions>
-        <Function>sin</Function>
-        <Function>cos</Function>
-        <Function>tan</Function>
-        <Function>cotan</Function>
-        <Function>ln</Function>
-        <Function>exp</Function>
-        <Function>sqr</Function>
-        <Function>random</Function>
-        <Function>trunc</Function>
-        <Function>abs</Function>
-        <Function>length</Function>
-        <Function>sqrt</Function>
-        <Function>randomize</Function>
-        <Function>new</Function>
-        <Function>dispose</Function>
-        <Function>write</Function>
-        <Function>read</Function>
-        <Function>writeln</Function>
-        <Function>readln</Function>
-        <Function>pi</Function>
-        <Function>break</Function>
-        <Function>continue</Function>
-        <Function>exit</Function>
-        <Function>reset</Function>
-        <Function>rewrite</Function>
-        <Function>assign</Function>
-        <Function>close</Function>
-        <Function>append</Function>
-        <Function>eof</Function>
-        <Function>eoln</Function>
-        <Function>ord</Function>
-        <Function>chr</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="function Sin(X: Extended): Extended - return sine of argument X, where X is angle in radians.">Sin</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="function Cos(X: Extended): Extended - return cosine of argument X, where X is angle in radians.">Cos</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="function Tan(X: Float): Float - return tangent of argument X, where X is angle (other than pi/2 or 3*pi/2) in radians.">Tan</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="function Cotan(X: Float): Float - return cotangent of argument X, where X is angle (other than zero) in radians.">Cotan</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="function Ln(X: Extended): Extended - return natural logarithm of argument X, which must be positive.">Ln</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="function Exp(X: Extended): Extended - return exponent of X (number e to the power X).">Exp</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="function Sqr(X: Extended): Extended - return square of argument X.">Sqr</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="function Random(L: LongInt): LongInt - return random number larger or equal to 0 and less than L.">Random</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="function Trunc(X: Extended): Int64 - return integer part of argument X, which is always smaller than (or equal to) X in absolute value.">Trunc</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="function Abs(X: Extended): Extended - return absolute value of argument X, which can be any numerical type.">Abs</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="function Length(S: String): Integer - return length of string S." caption="Length(String)">Length</Function>
+		<Function brackets="()" bracketsCursorPos="1" hint="function Length(A: DynArrayType): Integer - return length of dynamic array A." caption="Length(dynamic array)">Length</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="function Sqrt(X: Extended): Extended - return square root of argument X, which must be positive.">Sqrt</Function>
+        <Function hint="procedure Randomize - initialize random number generator.">Randomize</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="procedure New(var P: Pointer) - allocate new instance of the type pointed by P, and put the address in P.">New</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="procedure Dispose(P: Pointer) - release memory allocated by call to New. Released memory is returned to the heap.">Dispose</Function>
+		<Function brackets="()" bracketsCursorPos="1" hint="procedure Write(Args: Arguments) - write contents of variables given in arguments to standard output." caption="Write(stdout)">Write</Function>
+        <Function brackets="(,)" bracketsCursorPos="1" hint="procedure Write(var F: Text; Args: Arguments) - write contents of variables given in arguments to the file F." caption="Write(file)">Write</Function>
+		<Function brackets="()" bracketsCursorPos="1" hint="procedure Writeln(Args: Arguments) - write contents of variables given in arguments to standard output and go the next line." caption="Writeln(stdout)">Writeln</Function>
+        <Function brackets="(,)" bracketsCursorPos="1" hint="procedure Writeln(var F: Text; Args: Arguments) - write contents of variables given in arguments to the file F and go the next line." caption="Writeln(file)">Writeln</Function>
+		<Function brackets="()" bracketsCursorPos="1" hint="procedure Read(Args: Arguments) - read one or more values from standard input, and store result in arguments V1, V2, etc." caption="Read(stdin)">Read</Function>
+        <Function brackets="(,)" bracketsCursorPos="1" hint="procedure Read(var F: Text; Args: Arguments) - read one or more values from file F, and store result in arguments V1, V2, etc." caption="Read(file)">Read</Function>
+		<Function brackets="()" bracketsCursorPos="1" hint="procedure Readln(Args: Arguments) - read one or more values from standard input, store result in arguments V1, V2, etc and go to the next line." caption="Readln(stdin)">Readln</Function>
+        <Function brackets="(,)" bracketsCursorPos="1" hint="procedure Readln(var F: Text; Args: Arguments) - read one or more values from file F, store result in arguments V1, V2, etc. and go to the next line." caption="Readln(file)">Readln</Function>
+        <Function hint="function Pi: Extended - return value of Pi (3.1415926535897932385).">Pi</Function>
+        <Function hint="procedure Break - jump to the statement following the end of current repetitive statement. Code between Break and the end of repetitive statement is skipped.">Break</Function>
+        <Function hint="procedure Continue - jump to the end of current repetitive statement. Code between Continue and the end of repetitive statement is skipped.">Continue</Function>
+        <Function hint="procedure Exit - exit current subroutine. If invoked in the main program routine, Exit stops the program.">Exit</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="procedure Exit(X: TAnyType) - exit current subroutine and return value X. If invoked in the main program routine, Exit stops the program." caption="Exit(value)">Exit</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="procedure Reset(F: File) - open a file F for reading. F can be any file type.">Reset</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="procedure Rewrite(F: File) - open a file F for writing. F can be any file type.">Rewrite</Function>
+        <Function brackets="(,)" bracketsCursorPos="1" hint="procedure Assign(F: File; FileName: String) - assign a name to F, which can be any file type.">Assign</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="procedure Close(F: File) - flush the buffer of the file F and close F.">Close</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="procedure Append(F: Text) - open an existing file in append mode. Any data written to F will be appended to the file.">Append</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="function Eof(F: File): Boolean - return True if the file-pointer has reached the end of the file, or if the file is empty.">Eof</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="function Eoln(F: File): Boolean - return True if the file pointer has reached the end of a line, or if the end of the file is reached.">Eoln</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="function Ord(X: TOrdinal): LongInt - return the Ordinal value of a ordinal-type variable X.">Ord</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="function Chr(X: Byte): Char - return the character which has ASCII value X.">Chr</Function>
     </NativeFunctions>
 
 <!--

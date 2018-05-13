@@ -649,12 +649,12 @@ begin
    if AHeader <> nil then
    begin
       desc := '';
-      params := '';
       lType := '';
       key := '';
       lb := '';
       arrayType := '';
       lang := GInfra.CurrentLang;
+      params := IfThen(AHeader.ParameterCount > 0, '...');
       if AHeader.chkConstructor.Checked then
          key := lang.ConstructorLabelKey
       else if AHeader.cbType.ItemIndex > 0 then
@@ -667,11 +667,12 @@ begin
          key := lang.ProcedureLabelKey;
       if ALongDesc then
       begin
+         params := '';
          for param in AHeader.GetParameters do
          begin
             if not params.IsEmpty then
-               params := params + ',';
-            params := params + param.cbType.Text;
+               params := params + ', ';
+            params := params + param.cbType.Text + IfThen(param.chkTable.Checked, '[] ', ' ') + Trim(param.edtName.Text);
          end;
          if AHeader.chkInclDescFlow.Checked then
             desc := AHeader.memDesc.Text;
