@@ -84,7 +84,7 @@ type
          function RetrieveFocus(AInfo: TFocusInfo): boolean;
          function CanBeFocused: boolean;
          function IsDuplicatedElement(AElement: TElement): boolean;
-         procedure RefreshElements;
+         procedure RefreshElements; virtual;
          function HasInvalidElement: boolean;
          function HasFocusedComboBox: boolean;
          function GetFocusColor: TColor;

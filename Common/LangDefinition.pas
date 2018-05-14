@@ -218,7 +218,7 @@ type
       UserFunctionsSectionGenerator: procedure (ALines: TStringList; ASkipBodyGenerate: boolean);
       MainFunctionSectionGenerator: procedure (ALines: TStringList; ADeep: integer);
       FileContentsGenerator: function (ALines: TStringList; ASkipBodyGenerate: boolean): boolean;
-      GetUserFuncDesc: function (AHeader: TUserFunctionHeader; ALongDesc: boolean = true): string;
+      GetUserFuncDesc: function (AHeader: TUserFunctionHeader; AIncludeParams: boolean = true; AIncludeDesc: boolean = true): string;
       GetUserTypeDesc: function (ADataType: TUserDataType): string;
       SetHLighterAttrs: procedure;
       GetPointerTypeName: function (const val: string): string;
@@ -929,7 +929,7 @@ begin
                Brackets := tag.GetAttribute('brackets');
                BracketsCursorPos := StrToIntDef(tag.GetAttribute('bracketsCursorPos'), 0);
                Caption := tag.GetAttribute('caption').Trim;
-               Hint := tag.GetAttribute('hint');
+               Hint := tag.GetAttribute('hint').Trim;
             end;
             i := i + 1;
          end;

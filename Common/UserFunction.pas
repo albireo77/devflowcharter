@@ -67,6 +67,7 @@ type
       procedure OnDropDownBodyPage(Sender: TObject);
       procedure DrawBodyLabel;
       procedure OnClickCh(Sender: TObject); override;
+      procedure AddElement(Sender: TObject); override;
    public
       cbType,
       cbBodyPage: TComboBox;
@@ -97,6 +98,7 @@ type
       procedure GenerateDescription(ALines: TStrings);
       procedure SetPageCombo(const ACaption: TCaption = '');
       function GetParameters: IEnumerable<TParameter>;
+      procedure RefreshElements; override;
    end;
 
    TUserFunction = class(TComponent, IXMLable, ITabbable, IIdentifiable, ISizeEditable, IWinControl, IGenericComparable)
@@ -633,6 +635,18 @@ begin
    inherited OnChangeName(Sender);
 end;
 
+procedure TUserFunctionHeader.AddElement(Sender: TObject);
+begin
+   inherited AddElement(Sender);
+   OnClickInclDescFlow(chkInclDescFlow);
+end;
+
+procedure TUserFunctionHeader.RefreshElements;
+begin
+   inherited RefreshElements;
+   OnClickInclDescFlow(chkInclDescFlow);
+end;
+
 procedure TUserFunctionHeader.OnChangeDesc(Sender: TObject);
 begin
    GProject.SetChanged;
@@ -736,7 +750,7 @@ begin
       else if Assigned(GInfra.DummyLang.GetUserFuncDesc) then
          lang := GInfra.DummyLang;
       if lang <> nil then
-         desc := lang.GetUserFuncDesc(FHeader, false).Trim;
+         desc := lang.GetUserFuncDesc(FHeader, false, false).Trim;
    end;
    node := ANode.Owner.AddChildObject(ANode, desc, obj);
    if FBody <> nil then

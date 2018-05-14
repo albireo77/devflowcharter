@@ -333,7 +333,7 @@ begin
          else if Assigned(GInfra.DummyLang.GetUserFuncDesc) then
             lang := GInfra.DummyLang;
          if lang <> nil then
-            result := lang.GetUserFuncDesc(header);
+            result := lang.GetUserFuncDesc(header, false, header.chkInclDescFlow.Checked);
       end
       else
       begin

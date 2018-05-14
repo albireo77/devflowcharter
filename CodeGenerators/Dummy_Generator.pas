@@ -639,7 +639,7 @@ begin
    result := ReplaceStr(result, PRIMARY_PLACEHOLDER, GProject.Name);
 end;
 
-function Dummy_GetUserFuncDesc(AHeader: TUserFunctionHeader; ALongDesc: boolean = true): string;
+function Dummy_GetUserFuncDesc(AHeader: TUserFunctionHeader; AIncludeParams: boolean = true; AIncludeDesc: boolean = true): string;
 var
    params, desc, lType, key, lb, arrayType: string;
    lang: TLangDefinition;
@@ -665,7 +665,7 @@ begin
       end
       else
          key := lang.ProcedureLabelKey;
-      if ALongDesc then
+      if AIncludeParams then
       begin
          params := '';
          for param in AHeader.GetParameters do
@@ -674,8 +674,10 @@ begin
                params := params + ', ';
             params := params + param.cbType.Text + IfThen(param.chkTable.Checked, '[] ', ' ') + Trim(param.edtName.Text);
          end;
-         if AHeader.chkInclDescFlow.Checked then
-            desc := AHeader.memDesc.Text;
+      end;
+      if AIncludeDesc then
+      begin
+         desc := AHeader.memDesc.Text;
          lb := sLineBreak;
       end;
       if not key.IsEmpty then
