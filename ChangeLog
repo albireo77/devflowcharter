@@ -1,3 +1,6 @@
+6.4 [16.05.2018]
+- enhance native functions settings defined in language definition files (tag NativeFunctions); the most important is hint that will be displayed in status bar 
+
 6.3 [03.05.2018]
 - add hint for function header/datatype tabs
 - auto-resize to accommodate entire text for newly created input/output blocks
