@@ -117,6 +117,15 @@ It may not contain all supported tags. For all supported tags and their descript
         <KeyWord>with</KeyWord>
         <KeyWord>xor</KeyWord>
     </KeyWords>
+	
+<!--
+Native function declarations will follow.
+Attributes details:
+- brackets: will be appended after function name
+- bracketsCursorPos: cursor position that will be set inside brackets
+- hint: will be displayed in status bar
+- caption: will be displayed in menu instead of function name; useful for overloaded functions to describe possible parameters
+-->
     <NativeFunctions>
         <Function brackets="()" bracketsCursorPos="1" hint="function Sin(X: Extended): Extended - return sine of argument X, where X is angle in radians.">Sin</Function>
         <Function brackets="()" bracketsCursorPos="1" hint="function Cos(X: Extended): Extended - return cosine of argument X, where X is angle in radians.">Cos</Function>
@@ -132,7 +141,8 @@ It may not contain all supported tags. For all supported tags and their descript
         <Function brackets="()" bracketsCursorPos="1" hint="function Length(A: DynArrayType): Integer - return length of dynamic array A." caption="Length(dynamic array)">Length</Function>
         <Function brackets="()" bracketsCursorPos="1" hint="function Sqrt(X: Extended): Extended - return square root of argument X, which must be positive.">Sqrt</Function>
         <Function hint="procedure Randomize - initialize random number generator.">Randomize</Function>
-		<Function brackets="(,)" bracketsCursorPos="1" hint="procedure SetLength(var S: String; Len: Integer) - set length of string S (or dynamic array) to Len.">SetLength</Function>
+        <Function brackets="(,)" bracketsCursorPos="1" hint="procedure SetLength(var S: String; Len: Integer) - set length of string S to Len." caption="SetLength(String)">SetLength</Function>
+        <Function brackets="(,)" bracketsCursorPos="1" hint="procedure SetLength(var A: DynArrayType; Len: Integer) - set length of dynamic array A to Len." caption="SetLength(dynamic array)">SetLength</Function>
         <Function brackets="()" bracketsCursorPos="1" hint="procedure New(var P: Pointer) - allocate new instance of the type pointed by P, and put the address in P.">New</Function>
         <Function brackets="()" bracketsCursorPos="1" hint="procedure Dispose(P: Pointer) - release memory allocated by call to New. Released memory is returned to the heap.">Dispose</Function>
         <Function brackets="()" bracketsCursorPos="1" hint="procedure Write(Args: Arguments) - write contents of variables given in arguments to standard output." caption="Write(stdout)">Write</Function>

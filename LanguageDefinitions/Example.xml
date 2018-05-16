@@ -18,7 +18,7 @@ Most of the tags are optional and may be removed if not needed. The most crucial
     <LibraryExt>.lib</LibraryExt>
     <AssignOperator>=</AssignOperator>
     <FuncBrackets>()</FuncBrackets>						<!-- brackets added to NativeFunctions -->
-    <FuncBracketsCursorPos>1</FuncBracketsCursorPos>	<!-- cursor position for FuncBrackets; counted from brackets beginning -->
+    <FuncBracketsCursorPos>1</FuncBracketsCursorPos>	<!-- cursor position for FuncBrackets; counted from beginning -->
     <DecimalSeparator>.</DecimalSeparator>
     <InstrEnd>;</InstrEnd>
 
@@ -63,19 +63,21 @@ Most of the tags are optional and may be removed if not needed. The most crucial
     </FoldRegions>
 <!--
 Native data type declarations will follow.
-Valid values for "kind" attribute: int real string bool ptr other
-If attribute "kind" is not present, data type is qualified as of "other" kind.
-"ptr" value determines pointer type.
-origtype attribute determines original type for pointer type.
-Pointer types must be declared AFTER their original ones.
-generic attribute (valid values: true false) determines if type is generic; mainly designed for Java
-library attribute contains library name 
+Attributes details:
+- kind: valid values are int real string bool ptr other;
+  if attribute "kind" is missing, data type is qualified as "other" kind;
+  "ptr" value determines pointer type;
+  origtype attribute determines original type for pointer type;
+  pointer types must be declared AFTER their original ones.
+- generic: valid values are true false; determines if type is generic; mainly designed for Java
+- library: library name containing data type 
 -->
     <NativeDataTypes>
         <DataType kind="int">bigInt</DataType>
         <DataType kind="int">smallInt</DataType>
         <DataType kind="int">character</DataType>
         <DataType kind="bool">bool</DataType>
+		<DataType kind="real">float</DataType>
         <DataType kind="ptr" origtype="bigInt">bigInt*</DataType>
         <DataType kind="other" generic="true" library="somelibrary">List</DataType>
     </NativeDataTypes>
@@ -87,9 +89,17 @@ library attribute contains library name
         <KeyWord>if</KeyWord>
         <KeyWord>else</KeyWord>
     </KeyWords>
+<!--
+Native function declarations will follow.
+Attributes details:
+- brackets: will be appended after function name
+- bracketsCursorPos: cursor position that will be set inside brackets
+- hint: will be displayed in status bar
+- caption: will be displayed in menu instead of function name; useful for overloaded functions to describe possible parameters
+-->
     <NativeFunctions>
-        <Function>sin</Function>
-        <Function>cos</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="function sin(X: float): float - return sine of argument X, where X is angle in radians.">sin</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="function cos(X: float): float - return cosine of argument X, where X is angle in radians.">cos</Function>
     </NativeFunctions>
 
 <!--

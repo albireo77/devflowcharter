@@ -16,7 +16,7 @@ It may not contain all supported tags. For all supported tags and their descript
     <LibraryExt>.jar</LibraryExt>
     <AssignOperator>=</AssignOperator>
     <FuncBrackets>()</FuncBrackets>						<!-- brackets added to NativeFunctions -->
-    <FuncBracketsCursorPos>-1</FuncBracketsCursorPos>	<!-- cursor position for FuncBrackets; counted from end -->
+    <FuncBracketsCursorPos>1</FuncBracketsCursorPos>	<!-- cursor position for FuncBrackets; counted from beginning -->
     <DecimalSeparator>.</DecimalSeparator>
     <InstrEnd>;</InstrEnd>
 	
@@ -147,6 +147,19 @@ It may not contain all supported tags. For all supported tags and their descript
         <KeyWord>volatile</KeyWord>
         <KeyWord>while</KeyWord>
     </KeyWords>
+
+<!--
+Native function declarations will follow.
+Attributes details:
+- brackets: will be appended after function name
+- bracketsCursorPos: cursor position that will be set inside brackets
+- hint: will be displayed in status bar
+- caption: will be displayed in menu instead of function name; useful for overloaded functions to describe possible parameters
+-->	
+    <NativeFunctions>
+        <Function brackets="()" bracketsCursorPos="1" hint="public static &lt;T&gt; List&lt;T&gt; asList(T... a) - return a fixed-size list backed by the specified array.">Arrays.asList</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="public static void reverse(List&lt;?&gt; list) - reverse the order of the elements in the specified list.">Collections.reverse</Function>
+    </NativeFunctions>
 
 <!--
 Element ProcedureLabelKey
