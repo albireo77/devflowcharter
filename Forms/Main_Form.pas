@@ -147,7 +147,7 @@ type
     N18: TMenuItem;
     miMemoAlignRight: TMenuItem;
     miInsertBranch: TMenuItem;
-    stbMainBar: TStatusBar;
+    stbStatusBar: TStatusBar;
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);

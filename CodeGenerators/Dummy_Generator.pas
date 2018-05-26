@@ -639,7 +639,7 @@ begin
    result := ReplaceStr(result, PRIMARY_PLACEHOLDER, GProject.Name);
 end;
 
-function Dummy_GetUserFuncDesc(AHeader: TUserFunctionHeader; AIncludeParams: boolean = true; AIncludeDesc: boolean = true): string;
+function Dummy_GetUserFuncDesc(AHeader: TUserFunctionHeader; AFullParams: boolean = true; AIncludeDesc: boolean = true): string;
 var
    params, desc, lType, key, lb, arrayType: string;
    lang: TLangDefinition;
@@ -654,7 +654,6 @@ begin
       lb := '';
       arrayType := '';
       lang := GInfra.CurrentLang;
-      params := IfThen(AHeader.ParameterCount > 0, '...');
       if AHeader.chkConstructor.Checked then
          key := lang.ConstructorLabelKey
       else if AHeader.cbType.ItemIndex > 0 then
@@ -665,7 +664,9 @@ begin
       end
       else
          key := lang.ProcedureLabelKey;
-      if AIncludeParams then
+      if (AHeader.ParameterCount > 1) and not AFullParams then
+         params := '...'
+      else
       begin
          params := '';
          for param in AHeader.GetParameters do

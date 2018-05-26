@@ -218,7 +218,7 @@ type
       UserFunctionsSectionGenerator: procedure (ALines: TStringList; ASkipBodyGenerate: boolean);
       MainFunctionSectionGenerator: procedure (ALines: TStringList; ADeep: integer);
       FileContentsGenerator: function (ALines: TStringList; ASkipBodyGenerate: boolean): boolean;
-      GetUserFuncDesc: function (AHeader: TUserFunctionHeader; AIncludeParams: boolean = true; AIncludeDesc: boolean = true): string;
+      GetUserFuncDesc: function (AHeader: TUserFunctionHeader; AFullParams: boolean = true; AIncludeDesc: boolean = true): string;
       GetUserTypeDesc: function (ADataType: TUserDataType): string;
       SetHLighterAttrs: procedure;
       GetPointerTypeName: function (const val: string): string;

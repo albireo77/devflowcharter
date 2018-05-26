@@ -32,7 +32,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 1078
-    Height = 800
+    Height = 781
     Align = alClient
     TabOrder = 0
     OnChange = pgcPagesChange
@@ -40,6 +40,19 @@ object MainForm: TMainForm
     OnDragDrop = pgcPagesDragDrop
     OnDragOver = pgcPagesDragOver
     OnMouseDown = pgcPagesMouseDown
+    ExplicitHeight = 800
+  end
+  object stbStatusBar: TStatusBar
+    Left = 0
+    Top = 781
+    Width = 1078
+    Height = 19
+    AutoHint = True
+    Panels = <>
+    SimplePanel = True
+    ExplicitLeft = 520
+    ExplicitTop = 456
+    ExplicitWidth = 0
   end
   object pmPages: TPopupMenu
     AutoPopup = False
@@ -496,7 +509,7 @@ object MainForm: TMainForm
     Left = 240
     Top = 72
     Bitmap = {
-      494C010105000900B00010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010105000900B40010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

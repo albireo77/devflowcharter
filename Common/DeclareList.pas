@@ -890,12 +890,6 @@ var
 begin
    if ATag <> nil then
       FId := GProject.Register(Self, StrToIntDef(ATag.GetAttribute(ID_ATTR), ID_INVALID));
-   tag := GetImportTag(ATag);
-   while tag <> nil do
-   begin
-      ImportItemFromXMLTag(tag);
-      tag := TXMLProcessor.FindNextTag(tag);
-   end;
    if goColSizing in sgList.Options then
    begin
       i := 0;
@@ -910,6 +904,12 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, FKind + 'width');
    if tag <> nil then
       Width := StrToIntDef(tag.Text, Width);
+   tag := GetImportTag(ATag);
+   while tag <> nil do
+   begin
+      ImportItemFromXMLTag(tag);
+      tag := TXMLProcessor.FindNextTag(tag);
+   end;
    RefreshChBoxes;
    result := errNone;
 end;
