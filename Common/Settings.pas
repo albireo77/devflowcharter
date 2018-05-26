@@ -81,18 +81,7 @@ type
       FExplorerAutoNav: boolean;
       FNavigatorAlphaValue: integer;
       FFlowchartFontName: string;
-
       FShapeColors: array[TColorShape] of TColor;
-
-      FColumnV1Width,
-      FColumnV2Width,
-      FColumnV3Width,
-      FColumnV4Width,
-      FColumnV5Width,
-      FColumnC1Width,
-      FColumnC2Width,
-      FColumnC3Width: integer;
-
       procedure SetDefaultValues;
   public
     { Public declarations }
@@ -156,14 +145,6 @@ type
       property NavigatorAlphaValue: integer read FNavigatorAlphaValue write FNavigatorAlphaValue;
       property NavigatorAlphaVisible: boolean read FNavigatorAlphaVisible write FNavigatorAlphaVisible;
       property ExplorerAutoNav: boolean read FExplorerAutoNav write FExplorerAutoNav;
-      property ColumnV1Width: integer read FColumnV1Width write FColumnV1Width;
-      property ColumnV2Width: integer read FColumnV2Width write FColumnV2Width;
-      property ColumnV3Width: integer read FColumnV3Width write FColumnV3Width;
-      property ColumnV4Width: integer read FColumnV4Width write FColumnV4Width;
-      property ColumnV5Width: integer read FColumnV5Width write FColumnV5Width;
-      property ColumnC1Width: integer read FColumnC1Width write FColumnC1Width;
-      property ColumnC2Width: integer read FColumnC2Width write FColumnC2Width;
-      property ColumnC3Width: integer read FColumnC3Width write FColumnC3Width;
   end;
 
 implementation
@@ -235,15 +216,6 @@ const
    KEY_AUTOSELECT_CODE_BLOCK = 'AutoSelectCodeBlock';
    KEY_AUTOUPDATE_CODE = 'AutoUpdateCode';
 
-   KEY_COLV1_WIDTH = 'ColumnVariable1Width';
-   KEY_COLV2_WIDTH = 'ColumnVariable2Width';
-   KEY_COLV3_WIDTH = 'ColumnVariable3Width';
-   KEY_COLV4_WIDTH = 'ColumnVariable4Width';
-   KEY_COLV5_WIDTH = 'ColumnVariable5Width';
-   KEY_COLC1_WIDTH = 'ColumnConstant1Width';
-   KEY_COLC2_WIDTH = 'ColumnConstant2Width';
-   KEY_COLC3_WIDTH = 'ColumnConstant3Width';
-
 constructor TSettings.Create;
 begin
    inherited Create;
@@ -294,15 +266,6 @@ begin
 
    for shape := Low(TColorShape) to High(TColorShape) do
      FShapeColors[shape] := IfThen(shape = shpNone, clNone, DEFAULT_DESKTOP_COLOR);
-
-   FColumnV1Width := 68;
-   FColumnV2Width := 68;
-   FColumnV3Width := 68;
-   FColumnV4Width := 68;
-   FColumnV5Width := 68;
-   FColumnC1Width := 73;
-   FColumnC2Width := 73;
-   FColumnC3Width := 73;
 
    FConfirmRemove         := true;
    FPrintMultPages        := false;
@@ -460,22 +423,6 @@ begin
             FEditorAutoSelectBlock := reg.ReadBool(KEY_AUTOSELECT_CODE_BLOCK);
          if reg.ValueExists(KEY_AUTOUPDATE_CODE) then
             FEditorAutoUpdate := reg.ReadBool(KEY_AUTOUPDATE_CODE);
-         if reg.ValueExists(KEY_COLV1_WIDTH) then
-            FColumnV1Width := reg.ReadInteger(KEY_COLV1_WIDTH);
-         if reg.ValueExists(KEY_COLV2_WIDTH) then
-            FColumnV2Width := reg.ReadInteger(KEY_COLV2_WIDTH);
-         if reg.ValueExists(KEY_COLV3_WIDTH) then
-            FColumnV3Width := reg.ReadInteger(KEY_COLV3_WIDTH);
-         if reg.ValueExists(KEY_COLV4_WIDTH) then
-            FColumnV4Width := reg.ReadInteger(KEY_COLV4_WIDTH);
-         if reg.ValueExists(KEY_COLV5_WIDTH) then
-            FColumnV5Width := reg.ReadInteger(KEY_COLV5_WIDTH);
-         if reg.ValueExists(KEY_COLC1_WIDTH) then
-            FColumnC1Width := reg.ReadInteger(KEY_COLC1_WIDTH);
-         if reg.ValueExists(KEY_COLC2_WIDTH) then
-            FColumnC2Width := reg.ReadInteger(KEY_COLC2_WIDTH);
-         if reg.ValueExists(KEY_COLC3_WIDTH) then
-            FColumnC3Width := reg.ReadInteger(KEY_COLC3_WIDTH);
       end;
    finally
       reg.Free;
@@ -544,14 +491,6 @@ begin
          reg.WriteInteger(KEY_ROADSIGN_COLOR, FShapeColors[shpRoadSign]);
          reg.WriteInteger(KEY_ROUTINE_COLOR, FShapeColors[shpRoutine]);
          reg.WriteInteger(KEY_FONT_COLOR, FFontColor);
-         reg.WriteInteger(KEY_COLV1_WIDTH, FColumnV1Width);
-         reg.WriteInteger(KEY_COLV2_WIDTH, FColumnV2Width);
-         reg.WriteInteger(KEY_COLV3_WIDTH, FColumnV3Width);
-         reg.WriteInteger(KEY_COLV4_WIDTH, FColumnV4Width);
-         reg.WriteInteger(KEY_COLV5_WIDTH, FColumnV5Width);
-         reg.WriteInteger(KEY_COLC1_WIDTH, FColumnC1Width);
-         reg.WriteInteger(KEY_COLC2_WIDTH, FColumnC2Width);
-         reg.WriteInteger(KEY_COLC3_WIDTH, FColumnC3Width);
          reg.WriteString(KEY_LOCALIZATION_FILE, FTranslateFile);
          reg.WriteString(KEY_FLOWCHART_FONT_NAME, FFlowchartFontName);
          reg.WriteInteger(KEY_FLOWCHART_FONT_SIZE, FFlowchartFontSize);

@@ -24,8 +24,8 @@ unit UserDataType;
 interface
 
 uses
-   Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls, System.Classes, WinApi.Messages, Vcl.ExtCtrls,
-   OmniXML, SizeEdit, TabComponent, Element, DataTypes_Form, CommonInterfaces, CommonTypes;
+   Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls, System.Classes, Vcl.ExtCtrls, OmniXML,
+   SizeEdit, TabComponent, Element, DataTypes_Form, CommonInterfaces, CommonTypes;
 
 type
 
@@ -50,7 +50,7 @@ type
       procedure SetActive(AValue: boolean); override;
       function CreateElement: TElement; override;
       procedure AddElement(Sender: TObject); override;
-      procedure WMSize(var Msg: TMessage); message WM_SIZE;
+      procedure Resize; override;
    public
       chkAddPtrType: TCheckBox;
       rgTypeBox: TRadioGroup;
@@ -215,7 +215,7 @@ begin
    ParentForm.UpdateCodeEditor := true;
 end;
 
-procedure TUserDataType.WMSize(var Msg: TMessage);
+procedure TUserDataType.Resize;
 begin
    inherited;
    if sbxElements <> nil then
@@ -507,3 +507,4 @@ begin
 end;
 
 end.
+

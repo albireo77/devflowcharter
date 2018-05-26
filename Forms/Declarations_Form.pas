@@ -92,6 +92,7 @@ procedure TDeclarationsForm.ResetForm;
 begin
    inherited ResetForm;
    Height := 323;
+   Width := 610;
 end;
 
 procedure TDeclarationsForm.FormShow(Sender: TObject);

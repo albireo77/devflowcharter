@@ -23,7 +23,7 @@ interface
 
 uses
    Vcl.Controls, OmniXML, Vcl.StdCtrls, Vcl.Grids, System.Classes, WinApi.Windows,
-   WinApi.Messages, Vcl.Graphics, Vcl.Forms, SizeEdit, CommonInterfaces, CommonTypes;
+   WinApi.Messages, Vcl.Graphics, Vcl.Forms, Vcl.ExtCtrls, SizeEdit, CommonInterfaces, CommonTypes;
 
 type
 
@@ -46,6 +46,7 @@ type
          FDragRow,
          FExternalCol: integer;
          FKind: string;
+         FSplitter: TSplitter;
          function GetId: integer;
          function IsDeclared(const AName: string; AssociatedListCheck: boolean): boolean;
          function AddUpdateRow: integer; virtual;
@@ -70,7 +71,7 @@ type
          function GetRightMargin(AControl: TControl = nil): integer;
          procedure OnClickChBox(Sender: TObject);
          procedure OnColWidthsChanged(Sender: TObject);
-         procedure WMSize(var Msg: TMessage); message WM_SIZE;
+         procedure Resize; override;
       public
          sgList: TStringGridEx;
          btnRemove,
@@ -96,6 +97,7 @@ type
          function Remove: boolean;
          function CanBeRemoved: boolean;
          function IsBoldDesc: boolean;
+         procedure SetSplitter(ASplitter: TSplitter);
          procedure SetDefaultFocus;
          function IsExternal(ARow: integer): boolean;
          procedure SetExternalCol(AExternalCol: integer);
@@ -210,7 +212,7 @@ begin
 
    btnRemove := TButton.Create(Self);
    btnRemove.Parent := Self;
-   btnRemove.SetBounds(5, sgList.BoundsRect.Bottom+8, (Width div 2)-5, 25);
+   btnRemove.SetBounds(4, sgList.BoundsRect.Bottom+8, (Width div 2)-5, 25);
    btnRemove.OnClick := OnClickRemove;
    btnRemove.Caption := i18Manager.GetString('btnRemove');
    btnRemove.ParentFont := false;
@@ -234,7 +236,7 @@ begin
    gbBox.ParentFont := false;
    gbBox.ParentBackground := false;
    gbBox.Font.Style := [];
-   gbBox.Anchors := [akBottom, akLeft];
+   gbBox.Anchors := [akBottom, akLeft, akRight];
 
    lblName := TLabel.Create(gbBox);
    lblName.Parent := gbBox;
@@ -245,11 +247,10 @@ begin
    edtName := TEdit.Create(gbBox);
    edtName.Parent := gbBox;
    edtName.OnKeyDown := OnKeyDownCommon;
-   edtName.Anchors := edtName.Anchors + [akRight];
 
    btnAdd := TButton.Create(Self);
    btnAdd.Parent := Self;
-   btnAdd.SetBounds(5, gbBox.BoundsRect.Bottom+3, (Width-11) div 3, 25);
+   btnAdd.SetBounds(4, gbBox.BoundsRect.Bottom+3, (Width-11) div 3, 25);
    btnAdd.OnClick := OnClickAdd;
    btnAdd.ParentFont := false;
    btnAdd.Font.Style := [];
@@ -279,6 +280,7 @@ end;
 destructor TDeclareList.Destroy;
 begin
    TProject.GetInstance.UnRegister(Self);
+   FSplitter.Free;
    inherited Destroy;
 end;
 
@@ -290,6 +292,7 @@ begin
    inherited Create(AParent, ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth);
 
    edtName.SetBounds(lblName.Width+10, 17, gbBox.Width-lblName.Width-18, 21);
+   edtName.Anchors := edtName.Anchors + [akRight];
    
    lblValue := TLabel.Create(gbBox);
    lblValue.Parent := gbBox;
@@ -319,46 +322,48 @@ begin
 
    inherited Create(AParent, ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth);
 
-   edtName.SetBounds(lblName.Width+10, 17, btnRemove.BoundsRect.Right-lblName.Width-12, 21);
+   edtName.SetBounds(lblName.Width+10, 17, 100, 21);
    
    lblType := TLabel.Create(gbBox);
    lblType.Parent := gbBox;
-   lblType.Left := lblName.Width + edtName.Width + 20;
-   lblType.Top := 22;
+   lblType.Left := 5;
+   lblType.Top := 47;
    lblType.Caption := i18Manager.GetString('sgVarListCol1');
 
    lblSize := TLabel.Create(gbBox);
    lblSize.Parent := gbBox;
-   lblSize.Top := 47;
+   lblSize.Top := 22;
    lblSize.Caption := i18Manager.GetString('sgVarListCol2');
-   lblSize.Left := 5;
+   lblSize.Left := lblName.Width + edtName.Width + 20;
 
    edtSize := TSizeEdit.Create(gbBox);
    edtSize.Parent := gbBox;
-   edtSize.SetBounds(lblSize.Width+10, 42, edtName.BoundsRect.Right-lblSize.Width-9, 21);
+   edtSize.SetBounds(lblSize.BoundsRect.Right+5, 17, gbBox.Width - lblSize.BoundsRect.Right-13, 21);
+   edtSize.Anchors := edtSize.Anchors + [akRight];
    edtSize.OnKeyDown := OnKeyDownCommon;
+
+   cbType := TComboBox.Create(gbBox);
+   cbType.Parent := gbBox;
+   cbType.Style := csDropDownList;
+   cbType.SetBounds(lblType.BoundsRect.Right + 5, 42, 0, 21);
+   cbType.Constraints.MaxWidth := edtName.BoundsRect.Right - lblType.BoundsRect.Right - 5;
+   cbType.Constraints.MinWidth := cbType.Constraints.MaxWidth;
+   cbType.OnKeyDown := OnKeyDownCommon;
+   TInfra.PopulateDataTypeCombo(cbType);
 
    lblInit := TLabel.Create(gbBox);
    lblInit.Parent := gbBox;
-   lblInit.Left := edtSize.BoundsRect.Right + 10;
+   lblInit.Left := cbType.BoundsRect.Right + 10;
    lblInit.Top := 47;
    lblInit.Caption := i18Manager.GetString('sgVarListCol3');
 
    edtInit := TEdit.Create(gbBox);
    edtInit.Parent := gbBox;
    edtInit.SetBounds(lblInit.BoundsRect.Right+5, 42, gbBox.Width-lblInit.BoundsRect.Right-13, 21);
+   edtInit.Anchors := edtInit.Anchors + [akRight];
    edtInit.ShowHint := true;
    edtInit.Hint := i18Manager.GetString('DisableFieldValid');
    edtInit.OnKeyDown := OnKeyDownCommon;
-
-   cbType := TComboBox.Create(gbBox);
-   cbType.Parent := gbBox;
-   cbType.Style := csDropDownList;
-   cbType.SetBounds(lblType.BoundsRect.Right + 5, 17, 0, 21);
-   cbType.Constraints.MaxWidth := edtInit.BoundsRect.Right - cbType.Left;
-   cbType.Constraints.MinWidth := cbType.Constraints.MaxWidth;
-   cbType.OnKeyDown := OnKeyDownCommon;
-   TInfra.PopulateDataTypeCombo(cbType);
 
    gbBox.Caption := i18Manager.GetString('gbVariable');
    Anchors := Anchors + [akBottom];
@@ -374,6 +379,11 @@ begin
       else
          sgList.Cells[FExternalCol, 0] := GInfra.CurrentLang.ExternalLabel + ':';
    end;
+end;
+
+procedure TDeclareList.SetSplitter(ASplitter: TSplitter);
+begin
+   FSplitter := ASplitter;
 end;
 
 function TDeclareList.RetrieveFocus(AInfo: TFocusInfo): boolean;
@@ -428,13 +438,6 @@ begin
    result := FId;
 end;
 
-procedure TDeclareList.WMSize(var Msg: TMessage);
-begin
-   inherited;
-   if FExternalCol <> -1 then
-      RefreshChBoxes;
-end;
-
 procedure TDeclareList.SetDefaultFocus;
 begin
    if edtName.CanFocus and not (GetParentForm(Self, False).ActiveControl is TCustomEdit) then
@@ -461,7 +464,7 @@ end;
 function TVarDeclareList.GetDimensions(const AVarName: string; AIncludeType: boolean = false): TArray<string>;
 var
    i: integer;
-   size, dims: string;
+   size: string;
    dataType: TUserDataType;
 begin
    i := sgList.Cols[VAR_NAME_COL].IndexOf(AVarName);
@@ -814,6 +817,18 @@ begin
       btnAdd.Click;
 end;
 
+procedure TDeclareList.Resize;
+begin
+   inherited;
+   if FExternalCol <> -1 then
+      RefreshChBoxes;
+   btnAdd.Width := gbBox.Width div 3;
+   btnImport.SetBounds(btnAdd.BoundsRect.Right+1, btnImport.Top, btnAdd.Width, btnImport.Height);
+   btnExport.SetBounds(btnImport.BoundsRect.Right+1, btnExport.Top, btnAdd.Width, btnExport.Height);
+   btnRemove.Width := sgList.Width div 2;
+   btnChange.SetBounds(btnRemove.BoundsRect.Right+1, btnChange.Top, btnRemove.Width, btnChange.Height);
+end;
+
 procedure TVarDeclareList.FillForList(AList: TStrings);
 var
    i, lType: integer;
@@ -871,6 +886,7 @@ end;
 function TDeclareList.ImportFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
 var
    tag: IXMLElement;
+   i: integer;
 begin
    if ATag <> nil then
       FId := GProject.Register(Self, StrToIntDef(ATag.GetAttribute(ID_ATTR), ID_INVALID));
@@ -880,6 +896,20 @@ begin
       ImportItemFromXMLTag(tag);
       tag := TXMLProcessor.FindNextTag(tag);
    end;
+   if goColSizing in sgList.Options then
+   begin
+      i := 0;
+      tag := TXMLProcessor.FindChildTag(ATag, FKind + 'colwidth');
+      while (tag <> nil) and (i < sgList.ColCount) do
+      begin
+         sgList.ColWidths[i] := StrToIntDef(tag.Text, sgList.ColWidths[i]);
+         tag := TXMLProcessor.FindNextTag(tag);
+         i := i + 1;
+      end;
+   end;
+   tag := TXMLProcessor.FindChildTag(ATag, FKind + 'width');
+   if tag <> nil then
+      Width := StrToIntDef(tag.Text, Width);
    RefreshChBoxes;
    result := errNone;
 end;
@@ -941,9 +971,22 @@ end;
 procedure TDeclareList.ExportToXMLTag(ATag: IXMLElement);
 var
    i: integer;
+   tag: IXMLElement;
 begin
    for i := 1 to sgList.RowCount-2 do
       ExportItemToXMLTag(ATag, i);
+   if goColSizing in sgList.Options then
+   begin
+      for i := 0 to sgList.ColCount-1 do
+      begin
+         tag := ATag.OwnerDocument.CreateElement(FKind + 'colwidth');
+         tag.Text := sgList.ColWidths[i].ToString;
+         ATag.AppendChild(tag);
+      end;
+   end;
+   tag := ATag.OwnerDocument.CreateElement(FKind + 'width');
+   tag.Text := Width.ToString;
+   ATag.AppendChild(tag);
    ATag.SetAttribute(ID_ATTR, FId.ToString);
 end;
 

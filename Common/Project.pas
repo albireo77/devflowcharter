@@ -122,7 +122,8 @@ implementation
 uses
    System.SysUtils, Vcl.Menus, Vcl.Forms, System.StrUtils, System.Types, System.UITypes,
    Generics.Collections, ApplicationCommon, XMLProcessor, Base_Form, LangDefinition,
-   Navigator_Form, Base_Block, TabComponent, ParserHelper, SelectImport_Form, WinApi.Messages;
+   Navigator_Form, Base_Block, TabComponent, ParserHelper, SelectImport_Form,
+   WinApi.Messages, Vcl.ExtCtrls;
 
 constructor TProject.Create;
 begin
@@ -133,23 +134,6 @@ end;
 
 destructor TProject.Destroy;
 begin
-   if GSettings <> nil then
-   begin
-      if FGlobalVars <> nil then
-      begin
-         GSettings.ColumnV1Width := FGlobalVars.sgList.ColWidths[0];
-         GSettings.ColumnV2Width := FGlobalVars.sgList.ColWidths[1];
-         GSettings.ColumnV3Width := FGlobalVars.sgList.ColWidths[2];
-         GSettings.ColumnV4Width := FGlobalVars.sgList.ColWidths[3];
-         GSettings.ColumnV5Width := FGlobalVars.sgList.ColWidths[4];
-      end;
-      if FGlobalConsts <> nil then
-      begin
-         GSettings.ColumnC1Width := FGlobalConsts.sgList.ColWidths[0];
-         GSettings.ColumnC2Width := FGlobalConsts.sgList.ColWidths[1];
-         GSettings.ColumnC3Width := FGlobalConsts.sgList.ColWidths[2];
-      end;
-   end;
    while FComponentList.Count > 0 do             // automatic disposing objects that are stored in list by calling list's destructor
       FComponentList[0].Free;                    // will generate EListError exception for pinned comments
    FComponentList.Free;                          // so to destroy FComponentList, objects must be freed in while loop first
@@ -561,13 +545,15 @@ end;
 
 procedure TProject.SetGlobals;
 var
-   l, w: integer;
+   x: integer;
+   splitter: TSplitter;
+   form: TForm;
 begin
-   w := 0;
+   form := TInfra.GetDeclarationsForm;
    if GInfra.CurrentLang.EnabledVars then
    begin
       if FGlobalVars = nil then
-         FGlobalVars := TVarDeclareList.Create(TInfra.GetDeclarationsForm, 2, 1, DEF_VARLIST_WIDTH, 6, 5, DEF_VARLIST_WIDTH-10);
+         FGlobalVars := TVarDeclareList.Create(form, 2, 1, DEF_VARLIST_WIDTH, 6, 5, DEF_VARLIST_WIDTH-10);
    end
    else
    begin
@@ -578,11 +564,22 @@ begin
    begin
       if FGlobalConsts = nil then
       begin
+         splitter := nil;
          if FGlobalVars <> nil then
-            l := FGlobalVars.BoundsRect.Right
+         begin
+            FGlobalVars.Align := alLeft;
+            x := FGlobalVars.BoundsRect.Right + 5;
+            splitter := TSplitter.Create(form);
+            splitter.Parent := form;
+            splitter.Left := x - 4;
+            splitter.Align := FGlobalVars.Align;
+            FGlobalVars.SetSplitter(splitter);
+         end
          else
-            l := 2;
-         FGlobalConsts := TConstDeclareList.Create(TInfra.GetDeclarationsForm, l, 1, DEF_CONSTLIST_WIDTH, 6, 3, DEF_CONSTLIST_WIDTH-10);
+            x := 2;
+         FGlobalConsts := TConstDeclareList.Create(form, x, 1, DEF_CONSTLIST_WIDTH-5, 6, 3, DEF_CONSTLIST_WIDTH-15);
+         if splitter <> nil then
+            FGlobalConsts.Align := alClient;
       end;
    end
    else
@@ -595,33 +592,16 @@ begin
       FGlobalVars.Caption := i18Manager.GetString(GInfra.CurrentLang.GlobalVarsLabelKey);
       FGlobalVars.SetExternalCol(4);
       FGlobalVars.AssociatedList := FGlobalConsts;
-      w := FGlobalVars.BoundsRect.Right + 16;
-      if GSettings <> nil then
-      begin
-         FGlobalVars.sgList.ColWidths[0] := GSettings.ColumnV1Width;
-         FGlobalVars.sgList.ColWidths[1] := GSettings.ColumnV2Width;
-         FGlobalVars.sgList.ColWidths[2] := GSettings.ColumnV3Width;
-         FGlobalVars.sgList.ColWidths[3] := GSettings.ColumnV4Width;
-         FGlobalVars.sgList.ColWidths[4] := GSettings.ColumnV5Width;
-      end;
+      form.Width := FGlobalVars.BoundsRect.Right + 16;
+      if FGlobalConsts = nil then
+         FGlobalVars.Align := alClient;
    end;
    if FGlobalConsts <> nil then
    begin
       FGlobalConsts.Caption := i18Manager.GetString(GInfra.CurrentLang.GlobalConstsLabelKey);
       FGlobalConsts.SetExternalCol(2);
       FGlobalConsts.AssociatedList := FGlobalVars;
-      w := FGlobalConsts.BoundsRect.Right + 16;
-      if GSettings <> nil then
-      begin
-         FGlobalConsts.sgList.ColWidths[0] := GSettings.ColumnC1Width;
-         FGlobalConsts.sgList.ColWidths[1] := GSettings.ColumnC2Width;
-         FGlobalConsts.sgList.ColWidths[2] := GSettings.ColumnC3Width;
-      end;
-   end;
-   if w > 0 then
-   begin
-      TInfra.GetDeclarationsForm.Constraints.MaxWidth := w;
-      TInfra.GetDeclarationsForm.Constraints.MinWidth := w;
+      form.Width := FGlobalConsts.BoundsRect.Right + 16;
    end;
    TInfra.GetMainForm.SetMenu(true);
 end;
