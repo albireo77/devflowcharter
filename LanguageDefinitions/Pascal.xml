@@ -141,18 +141,18 @@ Attributes details:
         <Function brackets="()" bracketsCursorPos="1" hint="function Length(A: DynArrayType): Integer - return length of dynamic array A." caption="Length(dynamic array)">Length</Function>
         <Function brackets="()" bracketsCursorPos="1" hint="function Sqrt(X: Extended): Extended - return square root of argument X, which must be positive.">Sqrt</Function>
         <Function hint="procedure Randomize - initialize random number generator.">Randomize</Function>
-        <Function brackets="(,)" bracketsCursorPos="1" hint="procedure SetLength(var S: String; Len: Integer) - set length of string S to Len." caption="SetLength(String)">SetLength</Function>
-        <Function brackets="(,)" bracketsCursorPos="1" hint="procedure SetLength(var A: DynArrayType; Len: Integer) - set length of dynamic array A to Len." caption="SetLength(dynamic array)">SetLength</Function>
+        <Function brackets="(,)" bracketsCursorPos="1" hint="procedure SetLength(var S: String; Len: Integer) - set length of string S to Len." caption="SetLength(String, len)">SetLength</Function>
+        <Function brackets="(,)" bracketsCursorPos="1" hint="procedure SetLength(var A: DynArrayType; Len: Integer) - set length of dynamic array A to Len." caption="SetLength(dynamic array, len)">SetLength</Function>
         <Function brackets="()" bracketsCursorPos="1" hint="procedure New(var P: Pointer) - allocate new instance of the type pointed by P, and put the address in P.">New</Function>
         <Function brackets="()" bracketsCursorPos="1" hint="procedure Dispose(P: Pointer) - release memory allocated by call to New. Released memory is returned to the heap.">Dispose</Function>
-        <Function brackets="()" bracketsCursorPos="1" hint="procedure Write(Args: Arguments) - write contents of variables given in arguments to standard output." caption="Write(stdout)">Write</Function>
-        <Function brackets="(,)" bracketsCursorPos="1" hint="procedure Write(var F: Text; Args: Arguments) - write contents of variables given in arguments to the file F." caption="Write(file)">Write</Function>
-        <Function brackets="()" bracketsCursorPos="1" hint="procedure Writeln(Args: Arguments) - write contents of variables given in arguments to standard output and go the next line." caption="Writeln(stdout)">Writeln</Function>
-        <Function brackets="(,)" bracketsCursorPos="1" hint="procedure Writeln(var F: Text; Args: Arguments) - write contents of variables given in arguments to the file F and go the next line." caption="Writeln(file)">Writeln</Function>
-        <Function brackets="()" bracketsCursorPos="1" hint="procedure Read(Args: Arguments) - read one or more values from standard input, and store result in arguments V1, V2, etc." caption="Read(stdin)">Read</Function>
-        <Function brackets="(,)" bracketsCursorPos="1" hint="procedure Read(var F: Text; Args: Arguments) - read one or more values from file F, and store result in arguments V1, V2, etc." caption="Read(file)">Read</Function>
-        <Function brackets="()" bracketsCursorPos="1" hint="procedure Readln(Args: Arguments) - read one or more values from standard input, store result in arguments V1, V2, etc and go to the next line." caption="Readln(stdin)">Readln</Function>
-        <Function brackets="(,)" bracketsCursorPos="1" hint="procedure Readln(var F: Text; Args: Arguments) - read one or more values from file F, store result in arguments V1, V2, etc. and go to the next line." caption="Readln(file)">Readln</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="procedure Write(Args: Arguments) - write contents of variables given in arguments to standard output." caption="Write(args)">Write</Function>
+        <Function brackets="(,)" bracketsCursorPos="1" hint="procedure Write(var F: Text; Args: Arguments) - write contents of variables given in arguments to the file F." caption="Write(file, args)">Write</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="procedure Writeln(Args: Arguments) - write contents of variables given in arguments to standard output and go the next line." caption="Writeln(args)">Writeln</Function>
+        <Function brackets="(,)" bracketsCursorPos="1" hint="procedure Writeln(var F: Text; Args: Arguments) - write contents of variables given in arguments to the file F and go the next line." caption="Writeln(file, args)">Writeln</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="procedure Read(Args: Arguments) - read one or more values from standard input, and store result in arguments V1, V2, etc." caption="Read(args)">Read</Function>
+        <Function brackets="(,)" bracketsCursorPos="1" hint="procedure Read(var F: Text; Args: Arguments) - read one or more values from file F, and store result in arguments V1, V2, etc." caption="Read(file, args)">Read</Function>
+        <Function brackets="()" bracketsCursorPos="1" hint="procedure Readln(Args: Arguments) - read one or more values from standard input, store result in arguments V1, V2, etc and go to the next line." caption="Readln(args)">Readln</Function>
+        <Function brackets="(,)" bracketsCursorPos="1" hint="procedure Readln(var F: Text; Args: Arguments) - read one or more values from file F, store result in arguments V1, V2, etc. and go to the next line." caption="Readln(file, args)">Readln</Function>
         <Function hint="function Pi: Extended - return value of Pi (3.1415926535897932385).">Pi</Function>
         <Function hint="procedure Break - jump to the statement following the end of current repetitive statement. Code between Break and the end of repetitive statement is skipped.">Break</Function>
         <Function hint="procedure Continue - jump to the end of current repetitive statement. Code between Continue and the end of repetitive statement is skipped.">Continue</Function>
@@ -404,6 +404,15 @@ Available placeholders:
 <FunctionHeaderTemplate>%s2
 %s5 %s1(%s3)%s6 %s4;
 </FunctionHeaderTemplate>
+
+<!--
+Element ConstructorHeaderTemplate
+Description: Template for constructor header; it is used when constructor checkbox is checked
+Available placeholders are the same as for element FunctionHeaderTemplate.    
+-->
+<ConstructorHeaderTemplate>%s2
+constructor %s1(%s3);
+</ConstructorHeaderTemplate>
 
 <!--
 Element FunctionHeaderTypeModifier1 and FunctionHeaderTypeModifier2

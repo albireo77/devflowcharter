@@ -648,20 +648,16 @@ begin
    result := '';
    if AHeader <> nil then
    begin
+      lang := GInfra.CurrentLang;
       desc := '';
-      lType := '';
+      lType := AHeader.cbType.Text;
       key := '';
       lb := '';
-      arrayType := '';
-      lang := GInfra.CurrentLang;
+      arrayType := IfThen(AHeader.chkArrayType.Checked, lang.FunctionHeaderTypeArray, lang.FunctionHeaderTypeNotArray);
       if AHeader.chkConstructor.Checked then
          key := lang.ConstructorLabelKey
       else if AHeader.cbType.ItemIndex > 0 then
-      begin
-         key := lang.FunctionLabelKey;
-         lType := AHeader.cbType.Text;
-         arrayType := IfThen(AHeader.chkArrayType.Checked, lang.FunctionHeaderTypeArray, lang.FunctionHeaderTypeNotArray);
-      end
+         key := lang.FunctionLabelKey
       else
          key := lang.ProcedureLabelKey;
       if (AHeader.ParameterCount > 1) and not AFullParams then

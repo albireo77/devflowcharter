@@ -1,5 +1,10 @@
+6.5 [27.05.2018]
+- Global Declarations: make fully resizable with splitter (variables and constants panels as well as every column);
+  widths are now stored per project not per application setting as before
+
 6.4 [16.05.2018]
-- enhance native functions settings defined in language definition files (tag NativeFunctions); the most important is hint that will be displayed in status bar 
+- enhance native functions settings in language definition files (tag NativeFunctions);
+  the most important is hint that will be displayed in status bar 
 
 6.3 [03.05.2018]
 - add hint for function header/datatype tabs
