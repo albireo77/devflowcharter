@@ -77,7 +77,7 @@ Attributes details:
         <DataType kind="int">smallInt</DataType>
         <DataType kind="int">character</DataType>
         <DataType kind="bool">bool</DataType>
-		<DataType kind="real">float</DataType>
+        <DataType kind="real">float</DataType>
         <DataType kind="ptr" origtype="bigInt">bigInt*</DataType>
         <DataType kind="other" generic="true" library="somelibrary">List</DataType>
     </NativeDataTypes>
@@ -194,10 +194,11 @@ Available placeholder:
 <!--
 Element HighLighterVarName
 Contains name of highlighter component
-Currently there are 3 highlighter components available:
+Currently there are 4 highlighter components available:
 SynCppSyn1 for C and C++
 SynPasSyn1 for Pascal
 SynPythonSyn1 for Python
+SynJavaSyn1 for Java
 -->
 <!--
 <HighLighterVarName></HighLighterVarName>
