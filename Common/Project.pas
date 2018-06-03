@@ -45,7 +45,8 @@ type
       FStringTypesSet: TTypesSet;
       FComponentList: TComponentList;
       FObjectIds: TStringList;
-      FObjectIdSeed: integer;
+      FObjectIdSeed,
+      FLibSectionOffset: integer;
       FMainPage: TBlockTabSheet;
       FChanged: boolean;
       class var FInstance: TProject;
@@ -115,6 +116,8 @@ type
       function IsChanged: boolean;
       function IsNew: boolean;
       procedure SetNotChanged;
+      procedure SetLibSectionOffset(ALibSectionOffset: integer);
+      function GetLibSectionOffset: integer;
    end;
 
 implementation
@@ -130,6 +133,7 @@ begin
    inherited Create;
    FObjectIds := TStringList.Create;
    FComponentList := TComponentList.Create;
+   FLibSectionOffset := -1;
 end;
 
 destructor TProject.Destroy;
@@ -142,6 +146,16 @@ begin
    FObjectIds.Free;
    FInstance := nil;
    inherited Destroy;
+end;
+
+procedure TProject.SetLibSectionOffset(ALibSectionOffset: integer);
+begin
+   FLibSectionOffset := ALibSectionOffset;
+end;
+
+function TProject.GetLibSectionOffset: integer;
+begin
+   result := FLibSectionOffset;
 end;
 
 class function TProject.GetInstance: TProject;

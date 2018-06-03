@@ -71,18 +71,15 @@ begin
          libList.Add('string');
       if io_flag <> 0 then
          libList.Add('stdio');
-      if libList.Count > 0 then
+      for lib in libList do
       begin
-         for lib in libList do
-         begin
-            libIncl := lib;
-            if not lib.Contains('.') then
-               libIncl := libIncl + cLang.LibraryExt;
-            if not lib.Contains('"') then
-               libIncl := '<' + libIncl + '>';
-            libIncl := '#include ' + libIncl;
-            ALines.Add(libIncl);
-         end;
+         libIncl := lib;
+         if not lib.Contains('.') then
+            libIncl := libIncl + cLang.LibraryExt;
+         if not lib.Contains('"') then
+            libIncl := '<' + libIncl + '>';
+         libIncl := '#include ' + libIncl;
+         ALines.AddObject(libIncl, TInfra.GetLibObject);
       end;
    finally
       libList.Free;

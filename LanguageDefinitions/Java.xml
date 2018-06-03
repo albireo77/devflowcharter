@@ -154,11 +154,12 @@ Attributes details:
 - brackets: will be appended after function name
 - bracketsCursorPos: cursor position that will be set inside brackets
 - hint: will be displayed in status bar
-- caption: will be displayed in menu instead of function name; useful for overloaded functions to describe possible parameters
+- caption: if present, it will be displayed in menu instead of function name; useful for overloaded functions to describe possible parameters
+- library: library containing function
 -->	
     <NativeFunctions>
-        <Function brackets="()" bracketsCursorPos="1" hint="public static &lt;T&gt; List&lt;T&gt; asList(T... a) - return a fixed-size list backed by the specified array.">Arrays.asList</Function>
-        <Function brackets="()" bracketsCursorPos="1" hint="public static void reverse(List&lt;?&gt; list) - reverse the order of the elements in the specified list.">Collections.reverse</Function>
+        <Function brackets="()" bracketsCursorPos="1" library="java.util.Arrays" hint="public static &lt;T&gt; List&lt;T&gt; asList(T... a) - return a fixed-size list backed by the specified array.">Arrays.asList</Function>
+        <Function brackets="()" bracketsCursorPos="1" library="java.util.Collections" hint="public static void reverse(List&lt;?&gt; list) - reverse the order of the elements in the specified list.">Collections.reverse</Function>
     </NativeFunctions>
 
 <!--
@@ -605,6 +606,8 @@ Available placeholders:
    %s4 - evaluated type of constant
 -->
 <ConstEntry>%s3 static final %s4 %s1 = %s2;</ConstEntry>
+
+<LibEntry>import %s;</LibEntry>
 
 <!--
 Element DataTypeExternalModifier

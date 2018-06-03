@@ -76,7 +76,8 @@ type
       Name,
       Brackets,
       Hint,
-      Caption: string;
+      Caption,
+      Lib: string;
       BracketsCursorPos: integer;
    end;
 

@@ -124,7 +124,8 @@ Attributes details:
 - brackets: will be appended after function name
 - bracketsCursorPos: cursor position that will be set inside brackets
 - hint: will be displayed in status bar
-- caption: will be displayed in menu instead of function name; useful for overloaded functions to describe possible parameters
+- caption: if present, it will be displayed in menu instead of function name; useful for overloaded functions to describe possible parameters
+- library: library containing function
 -->
     <NativeFunctions>
         <Function brackets="()" bracketsCursorPos="1" hint="function Sin(X: Extended): Extended - return sine of argument X, where X is angle in radians.">Sin</Function>

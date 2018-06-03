@@ -33,7 +33,6 @@ uses
    UserFunction, LangDefinition, ParserHelper, CommonTypes;
 
 const
-   IMPORT_MASK = 'import %s.%s;';
    JAVA_STRING_DELIM = #34;
    JAVA_CHAR_DELIM   = #39;
 
@@ -165,9 +164,10 @@ begin
       pNativeType := @javaLang.NativeDataTypes[i];
       if (pNativeType.Lib <> '') and CheckForDataType(pNativeType.Name) then
       begin
-         libImport := Format(IMPORT_MASK, [pNativeType.Lib, pNativeType.Name]);
+         libImport := pNativeType.Lib + '.' + pNativeType.Name;
+         libImport := Format(GInfra.CurrentLang.LibEntry, [libImport]);
          if ALines.IndexOf(libImport) = -1 then
-            ALines.Add(libImport);
+            ALines.AddObject(libImport, TInfra.GetLibObject);
       end;
    end;
 
@@ -180,9 +180,10 @@ begin
             typeName := TTabSheet(libList.Objects[i]).Caption;
          if not typeName.IsEmpty then
          begin
-            libImport := Format(IMPORT_MASK, [libList.Strings[i], typeName]);
+            libImport := libList.Strings[i] + '.' + typeName;
+            libImport := Format(GInfra.CurrentLang.LibEntry, [libImport]);
             if ALines.IndexOf(libImport) = -1 then
-               ALines.Add(libImport);
+               ALines.AddObject(libImport, TInfra.GetLibObject);
          end;
       end;
    finally
@@ -224,7 +225,10 @@ begin
       begin
          name := implList.Names[i];
          if AContents.Contains(name) then
-            Exit(Format(IMPORT_MASK, [implList.Values[name], name]));
+         begin
+            name := implList.Values[name] + '.' + name;
+            Exit(Format(GInfra.CurrentLang.LibEntry, [name]));
+         end;
       end;
    end;
 end;
@@ -259,7 +263,7 @@ begin
             end;
             libImport := ExtractImplementer(varType, varInit);
             if (libImport <> '') and (FImportLines <> nil) and (FImportLines.IndexOf(libImport) = -1) then
-               FImportLines.Add(libImport);
+               FImportLines.AddObject(libImport, TInfra.GetLibObject);
             varInit := ' = ' + varInit;
          end;
          p1 := AVarList.GetDimensionCount(varName);
@@ -435,9 +439,9 @@ begin
                   result := JAVA_BIGDECIMAL_TYPE;
                if (result <> JAVA_BIGDECIMAL_TYPE) and (FImportLines <> nil) then
                begin
-                  importLib := Format(IMPORT_MASK, ['java.math', 'BigDecimal']);
+                  importLib := Format(GInfra.CurrentLang.LibEntry, ['java.math.BigDecimal']);
                   if FImportLines.IndexOf(importLib) = -1 then
-                     FImportLines.Add(importLib);
+                     FImportLines.AddObject(importLib, TInfra.GetLibObject);
                end;
             end
             else if AValue.Contains('BigInteger') then
@@ -456,9 +460,9 @@ begin
                   result := JAVA_BIGINTEGER_TYPE;
                if (result <> JAVA_BIGINTEGER_TYPE) and (FImportLines <> nil) then
                begin
-                  importLib := Format(IMPORT_MASK, ['java.math', 'BigInteger']);
+                  importLib := Format(GInfra.CurrentLang.LibEntry, ['java.math.BigInteger']);
                   if FImportLines.IndexOf(importLib) = -1 then
-                     FImportLines.Add(importLib);
+                     FImportLines.AddObject(importLib, TInfra.GetLibObject);
                end;
             end
             else if TryStrToInt64(AValue, i64) then

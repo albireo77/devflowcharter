@@ -103,6 +103,7 @@ type
          class function GetDimensions(const AText: string): TArray<string>;
          class function GetTextWidth(const AText: string; AControl: TControl): integer;
          class function GetAutoWidth(AControl: TControl): integer;
+         class function GetLibObject: TObject;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetNativeFunction(const AName: string): PNativeFunction;
          function GetLangDefinition(const AName: string): TLangDefinition;
@@ -1256,6 +1257,11 @@ begin
       ADest := Copy(ASource, i+1, MaxInt);
       SetLength(ASource, i-1);
    end;
+end;
+
+class function TInfra.GetLibObject: TObject;
+begin
+   result := GetEditorForm.memCodeEditor;
 end;
 
 class function TInfra.GetTextWidth(const AText: string; AControl: TControl): integer;

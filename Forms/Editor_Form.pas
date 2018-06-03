@@ -146,6 +146,7 @@ type
     procedure RefreshEditorForObject(AObject: TObject);
     procedure SetCaretPos(const ALine: TChangeLine);
     procedure SaveToFile(const APath: string);
+    procedure InsertLibraryEntry(const ALibrary: string);
 {$IFDEF USE_CODEFOLDING}
     procedure RemoveFoldRange(var AFoldRange: TSynEditFoldRange);
     function FindFoldRangesInCodeRange(const ACodeRange: TCodeRange; ACount: integer): TSynEditFoldRanges;
@@ -650,6 +651,58 @@ begin
       memCodeEditor.SetFocus;
       memCodeEditor.SelStart := i - 1;
       memCodeEditor.SelLength := len;
+   end;
+end;
+
+procedure TEditorForm.InsertLibraryEntry(const ALibrary: string);
+var
+   libEntry, indent: string;
+   i, a: integer;
+   found: boolean;
+   lines: TStringList;
+begin
+   if not GInfra.CurrentLang.LibEntry.IsEmpty then
+      libEntry := Format(GInfra.CurrentLang.LibEntry, [ALibrary])
+   else
+      libEntry := ALibrary;
+   found := false;
+   for i := 0 to memCodeEditor.Lines.Count-1 do
+   begin
+      if memCodeEditor.Lines[i].TrimLeft.StartsWith(libEntry) then
+      begin
+         found := true;
+         break;
+      end;
+   end;
+   if not found then
+   begin
+      i := memCodeEditor.Lines.IndexOfObject(TInfra.GetLibObject);
+      if i <> -1 then
+      begin
+         indent := TInfra.ExtractIndentString(memCodeEditor.Lines[i]);
+         memCodeEditor.Lines.InsertObject(i, indent + libEntry, TInfra.GetLibObject);
+      end
+      else
+      begin
+         i := GProject.GetLibSectionOffset;
+         if i >= 0 then
+         begin
+            if not GInfra.CurrentLang.LibTemplate.IsEmpty then
+            begin
+               lines := TStringList.Create;
+               try
+                  lines.Text := GInfra.CurrentLang.LibTemplate;
+                  TInfra.InsertTemplateLines(lines, PRIMARY_PLACEHOLDER, libEntry, TInfra.GetLibObject);
+                  for a := lines.Count-1 downto 0 do
+                     memCodeEditor.Lines.InsertObject(i, lines.Strings[a], lines.Objects[a]);
+               finally
+                  lines.Free;
+               end;
+            end
+            else
+               memCodeEditor.Lines.InsertObject(i, libEntry, TInfra.GetLibObject);
+         end;
+      end;
    end;
 end;
 

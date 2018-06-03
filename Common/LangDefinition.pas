@@ -930,6 +930,7 @@ begin
                BracketsCursorPos := StrToIntDef(tag.GetAttribute('bracketsCursorPos'), 0);
                Caption := tag.GetAttribute('caption').Trim;
                Hint := tag.GetAttribute('hint').Trim;
+               Lib := tag.GetAttribute('library').Trim;
             end;
             i := i + 1;
          end;

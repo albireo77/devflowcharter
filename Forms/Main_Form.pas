@@ -1373,7 +1373,7 @@ end;
 
 procedure TMainForm.FuncMenuClick(Sender: TObject);
 var
-   funcName, lBrackets, backup: string;
+   funcName, lBrackets, backup, lLibrary: string;
    edit: TCustomEdit;
    menuItem: TMenuItem;
    cursorPos, selPos: integer;
@@ -1393,12 +1393,14 @@ begin
                funcName := Name;
             cursorPos := BracketsCursorPos;
             lBrackets := Brackets;
+            lLibrary := Lib;
          end;
       end
       else
       begin
          cursorPos := GInfra.CurrentLang.FuncBracketsCursorPos;
          lBrackets := GInfra.CurrentLang.FuncBrackets;
+         lLibrary := menuItem.Name;
       end;
       if Clipboard.HasFormat(CF_TEXT) then
          backup := Clipboard.AsText;
@@ -1408,6 +1410,8 @@ begin
          edit.SelStart := cursorPos + Length(funcName) + selPos;
       if not backup.IsEmpty then
          Clipboard.AsText := backup;
+      if GSettings.UpdateEditor and not lLibrary.IsEmpty then
+         TInfra.GetEditorForm.InsertLibraryEntry(lLibrary);
    end;
 end;
 
@@ -1448,6 +1452,8 @@ begin
                   Hint := GInfra.CurrentLang.GetUserFuncDesc(func.Header)
                else
                   Hint := GInfra.DummyLang.GetUserFuncDesc(func.Header);
+               if func.Header <> nil then
+                  Name := Trim(func.Header.edtLibrary.Text);
                OnClick := FuncMenuClick;
             end;
          end;

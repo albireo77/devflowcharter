@@ -222,7 +222,7 @@ begin
                libStr := libStr + Format(IfThen(isS1, lang.LibEntry + sLineBreak, lang.LibEntryList), [libList[i]]);
             if (lang.LibEntryListStripCount > 0) and not isS1 then
                SetLength(libStr, libStr.Length - lang.LibEntryListStripCount);
-            TInfra.InsertTemplateLines(libTemplate, IfThen(isS1, PRIMARY_PLACEHOLDER, '%s2'), libStr);
+            TInfra.InsertTemplateLines(libTemplate, IfThen(isS1, PRIMARY_PLACEHOLDER, '%s2'), libStr, TInfra.GetLibObject);
             TInfra.InsertTemplateLines(libTemplate, IfThen(isS1, '%s2', PRIMARY_PLACEHOLDER), '');
             ALines.AddStrings(libTemplate);
          finally
@@ -514,6 +514,7 @@ var
    fileTemplate, headerTemplate, mainFuncTemplate, libTemplate, constTemplate,
    varTemplate, funcTemplate, dataTypeTemplate: TStringList;
    currLang: TLangDefinition;
+   i: integer;
 begin
 
    currLang := GInfra.CurrentLang;
@@ -587,7 +588,8 @@ begin
       fileTemplate.Text := currLang.FileContentsTemplate;
       TInfra.InsertTemplateLines(fileTemplate, PRIMARY_PLACEHOLDER, GProject.Name);
       TInfra.InsertTemplateLines(fileTemplate, '%s2', headerTemplate);
-      TInfra.InsertTemplateLines(fileTemplate, '%s3', libTemplate);
+      i := TInfra.InsertTemplateLines(fileTemplate, '%s3', libTemplate);
+      GProject.SetLibSectionOffset(i);
       TInfra.InsertTemplateLines(fileTemplate, '%s4', constTemplate);
       TInfra.InsertTemplateLines(fileTemplate, '%s5', varTemplate);
       TInfra.InsertTemplateLines(fileTemplate, '%s6', dataTypeTemplate);
