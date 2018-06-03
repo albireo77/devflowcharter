@@ -663,6 +663,8 @@ var
 begin
    if not GInfra.CurrentLang.LibEntry.IsEmpty then
       libEntry := Format(GInfra.CurrentLang.LibEntry, [ALibrary])
+   else if not GInfra.CurrentLang.LibEntryList.IsEmpty then       // this functionality is disabled for libs in LibEntryList
+      Exit
    else
       libEntry := ALibrary;
    found := false;
