@@ -670,7 +670,7 @@ begin
    found := false;
    for i := 0 to memCodeEditor.Lines.Count-1 do
    begin
-      if memCodeEditor.Lines[i].TrimLeft.StartsWith(libEntry) then
+      if memCodeEditor.Lines[i].TrimLeft.StartsWith(libEntry, not GInfra.CurrentLang.CaseSensitiveSyntax) then
       begin
          found := true;
          break;
