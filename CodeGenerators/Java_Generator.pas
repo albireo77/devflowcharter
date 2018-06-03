@@ -165,7 +165,7 @@ begin
       if (pNativeType.Lib <> '') and CheckForDataType(pNativeType.Name) then
       begin
          libImport := pNativeType.Lib + '.' + pNativeType.Name;
-         libImport := Format(GInfra.CurrentLang.LibEntry, [libImport]);
+         libImport := Format(javaLang.LibEntry, [libImport]);
          if ALines.IndexOf(libImport) = -1 then
             ALines.AddObject(libImport, TInfra.GetLibObject);
       end;
@@ -181,7 +181,7 @@ begin
          if not typeName.IsEmpty then
          begin
             libImport := libList.Strings[i] + '.' + typeName;
-            libImport := Format(GInfra.CurrentLang.LibEntry, [libImport]);
+            libImport := Format(javaLang.LibEntry, [libImport]);
             if ALines.IndexOf(libImport) = -1 then
                ALines.AddObject(libImport, TInfra.GetLibObject);
          end;
@@ -227,7 +227,7 @@ begin
          if AContents.Contains(name) then
          begin
             name := implList.Values[name] + '.' + name;
-            Exit(Format(GInfra.CurrentLang.LibEntry, [name]));
+            Exit(Format(javaLang.LibEntry, [name]));
          end;
       end;
    end;
@@ -439,7 +439,7 @@ begin
                   result := JAVA_BIGDECIMAL_TYPE;
                if (result <> JAVA_BIGDECIMAL_TYPE) and (FImportLines <> nil) then
                begin
-                  importLib := Format(GInfra.CurrentLang.LibEntry, ['java.math.BigDecimal']);
+                  importLib := Format(javaLang.LibEntry, ['java.math.BigDecimal']);
                   if FImportLines.IndexOf(importLib) = -1 then
                      FImportLines.AddObject(importLib, TInfra.GetLibObject);
                end;
@@ -460,7 +460,7 @@ begin
                   result := JAVA_BIGINTEGER_TYPE;
                if (result <> JAVA_BIGINTEGER_TYPE) and (FImportLines <> nil) then
                begin
-                  importLib := Format(GInfra.CurrentLang.LibEntry, ['java.math.BigInteger']);
+                  importLib := Format(javaLang.LibEntry, ['java.math.BigInteger']);
                   if FImportLines.IndexOf(importLib) = -1 then
                      FImportLines.AddObject(importLib, TInfra.GetLibObject);
                end;
