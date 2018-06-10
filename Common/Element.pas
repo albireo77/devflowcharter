@@ -141,7 +141,7 @@ end;
 function TElement.IsValid: boolean;
 begin
    result := true;
-   if edtName.Enabled and ((edtName.Font.Color = NOK_COLOR) or Trim(edtName.Text).isEmpty) then
+   if edtName.Enabled and ((edtName.Font.Color = NOK_COLOR) or Trim(edtName.Text).IsEmpty) then
       result := false;
 end;
 
