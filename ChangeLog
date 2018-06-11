@@ -1,14 +1,13 @@
 6.6 [03.06.2018]
-- language definition file: add "library" attribute for native functions; import for such library will be generated after pasting function call from popup menu (editor must be visible);
-                            currently it works only for one-per-line imports (non-list) defined in LibEntry tag
+- language definition file: add "library" attribute for native functions; library import statement will be generated after pasting function call from popup menu (editor must be visible);
+                            works only for one-per-line imports (not csv list) defined in LibEntry tag
 
 6.5 [27.05.2018]
-- Global Declarations: make fully resizable with splitter (variables and constants panels as well as every column);
-                       widths are now stored per project not per application setting as before
+- Project->Declarations: now fully resizable with splitter (variables and constants panels as well as every column);
+                         widths saved not as application setting but in every project
 
 6.4 [16.05.2018]
-- enhance native functions settings in language definition files (tag NativeFunctions);
-  the most important is hint that will be displayed in status bar 
+- language definition file: enhance native functions (tag NativeFunctions); for example add hint displayed in status bar 
 
 6.3 [03.05.2018]
 - add hint for function header/datatype tabs
