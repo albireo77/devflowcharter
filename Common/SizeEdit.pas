@@ -74,6 +74,7 @@ begin
          result := false
       else if dcount > 0 then
       begin
+         lang := GInfra.GetLangDefinition(PASCAL_LANG_ID);
          dims := GetDimensions;
          for i := 0 to High(dims) do
          begin
@@ -85,7 +86,6 @@ begin
                   result := false;
                   break;
                end;
-               lang := GInfra.GetLangDefinition(PASCAL_LANG_ID);
                if (lang <> nil) and Assigned(lang.Parse) then
                begin
                   result := lang.Parse(dim, prsVarSize) = 0;
