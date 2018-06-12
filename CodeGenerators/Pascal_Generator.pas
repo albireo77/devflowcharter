@@ -320,15 +320,15 @@ begin
    result := (AType1 = PASCAL_STRING_TYPE) and (AType2 = PASCAL_CHAR_TYPE);
 end;
 
-function Pascal_Parse(const AText: string; const AParserMode: TParserMode): integer;
+function Pascal_Parse(const AText: string; const AParserMode: TParserMode): boolean;
 begin
-   result := 0;
+   result := true;
    if (lLangDef <> nil) and (lLangDef.Parser is TPascalParser) then
    begin
       lLangDef.Parser.ylex.Reset;
       lLangDef.Parser.ylex.yyinput.AssignString(AText);
       GParser_Mode := AParserMode;
-      result := TPascalParser(lLangDef.Parser).yyparse;
+      result := TPascalParser(lLangDef.Parser).yyparse = 0;
    end;
 end;
 

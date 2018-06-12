@@ -65,6 +65,7 @@ var
    i, dcount: integer;
    lang: TLangDefinition;
    dims: TArray<string>;
+   goParse: boolean;
 begin
    result := true;
    if GSettings.ValidateDeclaration then
@@ -75,23 +76,15 @@ begin
       else if dcount > 0 then
       begin
          lang := GInfra.GetLangDefinition(PASCAL_LANG_ID);
+         goParse := (lang <> nil) and Assigned(lang.Parse);
          dims := GetDimensions;
          for i := 0 to High(dims) do
          begin
             dim := dims[i];
-            if not dim.IsEmpty then
+            if (dim <> '') and ((dim[1] = '0') or (dim[1] = '-') or (goParse and not lang.Parse(dim, prsVarSize))) then
             begin
-               if (dim[1] = '0') or (dim[1] = '-') then
-               begin
-                  result := false;
-                  break;
-               end;
-               if (lang <> nil) and Assigned(lang.Parse) then
-               begin
-                  result := lang.Parse(dim, prsVarSize) = 0;
-                  if not result then
-                     break;
-               end;
+               result := false;
+               break;
             end;
          end;
       end;

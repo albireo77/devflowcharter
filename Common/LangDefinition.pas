@@ -226,7 +226,7 @@ type
       IsPointerType: function (const AName: string): boolean;
       GetOriginalType: function (const APtrType: string): string;
       AreTypesCompatible: function (AType1, AType2: integer): boolean;
-      Parse: function (const AText: string; const AParserMode: TParserMode): integer;
+      Parse: function (const AText: string; const AParserMode: TParserMode): boolean;
       SkipFuncBodyGen: function: boolean;
       GetMainProgramDesc: function: string;
       property Name: string read FName;

@@ -1075,7 +1075,7 @@ class function TInfra.Parse(const AText: string; AParserMode: TParserMode): bool
 begin
    result := true;
    errString := '';
-   if Assigned(GInfra.CurrentLang.Parse) and (GInfra.CurrentLang.Parse(AText, AParserMode) = 1) then
+   if Assigned(GInfra.CurrentLang.Parse) and not GInfra.CurrentLang.Parse(AText, AParserMode) then
    begin
       if errString.IsEmpty then
          errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[AParserMode]);
