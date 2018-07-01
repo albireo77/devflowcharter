@@ -96,7 +96,7 @@ uses
    LangDefinition, CommonTypes, ParserHelper;
 
 var
-   lLangDef: TLangDefinition;
+   pascalLang: TLangDefinition;
 
 procedure Pascal_ExecuteBeforeGeneration;
 begin
@@ -220,7 +220,7 @@ begin
       if block <> nil then
       begin
          idx := ALines.Count;
-         block.GenerateCode(ALines, lLangDef.Name, deep);
+         block.GenerateCode(ALines, pascalLang.Name, deep);
          if rand_flag <> 0 then
             ALines.Insert(idx+1, DupeString(GSettings.IndentString, deep+1) + 'Randomize;');
       end
@@ -241,10 +241,10 @@ var
    pascalHighlighter: TSynPasSyn;
    bkgColor: TColor;
 begin
-   if (lLangDef <> nil) and (lLangDef.HighLighter is TSynPasSyn) then
+   if (pascalLang <> nil) and (pascalLang.HighLighter is TSynPasSyn) then
    begin
       bkgColor := GSettings.EditorBkgColor;
-      pascalHighlighter := TSynPasSyn(lLangDef.HighLighter);
+      pascalHighlighter := TSynPasSyn(pascalLang.HighLighter);
       pascalHighlighter.StringAttri.Foreground     := GSettings.EditorStringColor;
       pascalHighlighter.StringAttri.Background     := bkgColor;
       pascalHighlighter.NumberAttri.Foreground     := GSettings.EditorNumberColor;
@@ -323,12 +323,12 @@ end;
 function Pascal_Parse(const AText: string; const AParserMode: TParserMode): boolean;
 begin
    result := true;
-   if (lLangDef <> nil) and (lLangDef.Parser is TPascalParser) then
+   if (pascalLang <> nil) and (pascalLang.Parser is TPascalParser) then
    begin
-      lLangDef.Parser.ylex.Reset;
-      lLangDef.Parser.ylex.yyinput.AssignString(AText);
+      pascalLang.Parser.ylex.Reset;
+      pascalLang.Parser.ylex.yyinput.AssignString(AText);
       GParser_Mode := AParserMode;
-      result := TPascalParser(lLangDef.Parser).yyparse = 0;
+      result := TPascalParser(pascalLang.Parser).yyparse = 0;
    end;
 end;
 
@@ -349,21 +349,21 @@ initialization
    PASCAL_STRING_PTR_TYPE := TParserHelper.GetType('^string', PASCAL_LANG_ID);
    PASCAL_TEXT_FILE_TYPE  := TParserHelper.GetType('text', PASCAL_LANG_ID);
 
-   lLangDef := GInfra.GetLangDefinition(PASCAL_LANG_ID);
-   if lLangDef <> nil then
+   pascalLang := GInfra.GetLangDefinition(PASCAL_LANG_ID);
+   if pascalLang <> nil then
    begin
-      lLangDef.Parser := TPascalParser.Create;
-      lLangDef.ExecuteBeforeGeneration :=  Pascal_ExecuteBeforeGeneration;
-      lLangDef.ProgramHeaderSectionGenerator := Pascal_ProgramHeaderSectionGenerator;
-      lLangDef.VarSectionGenerator := Pascal_VarSectionGenerator;
-      lLangDef.MainFunctionSectionGenerator := Pascal_MainFunctionSectionGenerator;
-      lLangDef.SetHLighterAttrs := Pascal_SetHLighterAttrs;
-      lLangDef.GetLiteralType := Pascal_GetLiteralType;
-      lLangDef.IsPointerType := Pascal_IsPointerType;
-      lLangDef.AreTypesCompatible := Pascal_AreTypesCompatible;
-      lLangDef.GetOriginalType := Pascal_GetOriginalType;
-      lLangDef.Parse := Pascal_Parse;
-      lLangDef.SkipFuncBodyGen := Pascal_SkipFuncBodyGen;
+      pascalLang.Parser := TPascalParser.Create;
+      pascalLang.ExecuteBeforeGeneration :=  Pascal_ExecuteBeforeGeneration;
+      pascalLang.ProgramHeaderSectionGenerator := Pascal_ProgramHeaderSectionGenerator;
+      pascalLang.VarSectionGenerator := Pascal_VarSectionGenerator;
+      pascalLang.MainFunctionSectionGenerator := Pascal_MainFunctionSectionGenerator;
+      pascalLang.SetHLighterAttrs := Pascal_SetHLighterAttrs;
+      pascalLang.GetLiteralType := Pascal_GetLiteralType;
+      pascalLang.IsPointerType := Pascal_IsPointerType;
+      pascalLang.AreTypesCompatible := Pascal_AreTypesCompatible;
+      pascalLang.GetOriginalType := Pascal_GetOriginalType;
+      pascalLang.Parse := Pascal_Parse;
+      pascalLang.SkipFuncBodyGen := Pascal_SkipFuncBodyGen;
    end;
 
 end.
