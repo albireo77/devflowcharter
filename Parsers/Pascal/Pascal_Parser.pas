@@ -106,7 +106,7 @@ constructor TPascalParser.Create;
 begin
   inherited Create;
   ylex := TLex.Create;
-  yymode := yymUndefined;
+  Reset;
 end;
 
 destructor TPascalParser.Destroy;

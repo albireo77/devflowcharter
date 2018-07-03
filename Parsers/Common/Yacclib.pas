@@ -33,7 +33,7 @@ type
     yynerrs: Integer; 	{ Current number of syntax errors as reported by the parser.	}
     yydebug: Boolean;	{ Set to true to enable debugging output from parser. }
     yydebuglex: Boolean;	{ Set to true to echo all lex tokens to	the debug channel. }
-	yymode: TYYMode;
+    yymode: TYYMode;
     { Display an error message.						}
     procedure yyerror(const msg: AnsiString);
     { Delete current lookahead token.					}
@@ -49,7 +49,7 @@ type
     { Write a text linne to the debug/error channel.			}
     procedure EWriteln(const S: AnsiString);
 	{ reset the parser for another run.					}
-	procedure Reset;
+    procedure Reset;
   end;
 
 implementation

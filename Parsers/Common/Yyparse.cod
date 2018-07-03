@@ -27,7 +27,7 @@ uses
 constructor TYacc.Create;
 begin
   inherited Create;
-  ylex := TLex.Create;  yymode := yymUndefined;
+  ylex := TLex.Create;  Reset;
 end;
 destructor TYacc.Destroy;
 begin
