@@ -48,7 +48,7 @@ type
     procedure yyerrok;
     { Write a text linne to the debug/error channel.			}
     procedure EWriteln(const S: AnsiString);
-	{ reset the parser for another run.					}
+    { reset the parser for another run.					}
     procedure Reset;
   end;
 
