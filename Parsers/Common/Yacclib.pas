@@ -1,18 +1,27 @@
-
-unit YaccLib;
+
+
+unit YaccLib;
+
 { Yacc Library Unit for TP Yacc Version 3.0, 6-17-91 AG 		}
 { adapted to Delphi 3, 20/9/97 						}
 { Modified September 2000 by C.P.Osborne for Delphi 4/5			}
 {	11/09/2000	CPO	Mods started.				}
 {				Dropped YaccUtilities.			}
-{				No longer based on component.		}
-interface
-uses   LexLib;
-const yymaxdepth = 2048;	{ default stack size of parser.		}
+{				No longer based on component.		}
+
+interface
+
+uses
+   LexLib;
+
+const yymaxdepth = 2048;	{ default stack size of parser.		}
+
 type
   { default value type, may be redefined in Yacc output file.		}
   YYSType = Integer;
-  TYYFlag = (yyfnone, yyfaccept, yyfabort, yyferror);  TYYMode = (yymUndefined, yymCondition, yymAssign, yymInput, yymOutput, yymFor, yymFuncCall, yymCase, yymCaseValue, yymReturn, yymVarSize);
+  TYYFlag = (yyfnone, yyfaccept, yyfabort, yyferror);
+  TYYMode = (yymUndefined, yymCondition, yymAssign, yymInput, yymOutput, yymFor, yymFuncCall, yymCase, yymCaseValue, yymReturn, yymVarSize);
+
   TCustomParser = Class
   protected
     { Flags used internally by parse routine.				}
@@ -23,7 +32,8 @@ type
     yychar: Integer; 	{ Current lookahead character.		}
     yynerrs: Integer; 	{ Current number of syntax errors as reported by the parser.	}
     yydebug: Boolean;	{ Set to true to enable debugging output from parser. }
-    yydebuglex: Boolean;	{ Set to true to echo all lex tokens to	the debug channel. }	yymode: TYYMode;
+    yydebuglex: Boolean;	{ Set to true to echo all lex tokens to	the debug channel. }
+	yymode: TYYMode;
     { Display an error message.						}
     procedure yyerror(const msg: AnsiString);
     { Delete current lookahead token.					}
@@ -37,44 +47,61 @@ type
     { Reset parser to normal operation after an error.			}
     procedure yyerrok;
     { Write a text linne to the debug/error channel.			}
-    procedure EWriteln(const S: AnsiString);	{ reset the parser for another run.					}	procedure Reset;
-  end;
-implementation
+    procedure EWriteln(const S: AnsiString);
+	{ reset the parser for another run.					}
+	procedure Reset;
+  end;
+
+implementation
+
 { We pass error calls to the yyerrorfile item in the lexer.		}
 { This requires the TLexFile item to have been opened at some stage,	}
-{ as there is no longer a default error channel (programs are windowed)	}
+{ as there is no longer a default error channel (programs are windowed)	}
+
 procedure TCustomParser.yyerror(const msg: AnsiString);
 begin
   ylex.yyerrorfile.Writeln(msg);
-end;
+end;
+
 { Delete current lookahead token.					}
 procedure TCustomParser.yyclearin;
 begin
   yychar := -1;
-end;
+end;
+
 { Trigger accept action of parser (yyparse will return 0)		}
 procedure TCustomParser.yyaccept;
 begin
   yyflag := yyfaccept;
-end;
+end;
+
 { Trigger abort action (yyparse will return 1)				}
 procedure TCustomParser.yyabort;
 begin
   yyflag := yyfabort;
-end;
+end;
+
 { Force error recovery as if syntax error had been located.		}
 procedure TCustomParser.yyerrlab;
 begin
   yyflag := yyferror;
-end;
+end;
+
 { Reset parser to normal operation after an error.			}
 procedure TCustomParser.yyerrok;
 begin
   yyerrflag := 0;
-end;
+end;
+
 { Write a text linne to the debug/error channel.			}
 procedure TCustomParser.EWriteln(const S: AnsiString);
 begin
   ylex.yyerrorfile.Writeln(S);
-end;procedure TCustomParser.Reset;begin  yymode := yymUndefined;end;
-end.
+end;
+
+procedure TCustomParser.Reset;
+begin
+  yymode := yymUndefined;
+end;
+
+end.
