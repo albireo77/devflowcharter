@@ -41,8 +41,7 @@ type
 implementation
 
 uses
-   System.SysUtils, System.StrUtils, System.Math, ApplicationCommon, LangDefinition,
-   CommonTypes;
+   System.SysUtils, System.StrUtils, System.Math, ApplicationCommon, LangDefinition, YaccLib;
 
 constructor TSizeEdit.Create(AParent: TWinControl);
 begin
@@ -81,7 +80,7 @@ begin
          for i := 0 to High(dims) do
          begin
             dim := dims[i];
-            if (dim <> '') and ((dim[1] = '0') or (dim[1] = '-') or (goParse and not lang.Parse(dim, prsVarSize))) then
+            if (dim <> '') and ((dim[1] = '0') or (dim[1] = '-') or (goParse and not lang.Parse(dim, yymVarSize))) then
             begin
                result := false;
                break;

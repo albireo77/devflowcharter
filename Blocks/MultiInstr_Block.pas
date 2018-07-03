@@ -43,7 +43,7 @@ type
 implementation
 
 uses
-   System.SysUtils, System.StrUtils, System.UITypes, ApplicationCommon, CommonTypes, LangDefinition;
+   System.SysUtils, System.StrUtils, System.UITypes, ApplicationCommon, CommonTypes, LangDefinition, YaccLib;
 
 constructor TMultiInstrBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
 begin
@@ -96,7 +96,7 @@ begin
          for i := 0 to FStatements.Lines.Count-1 do
          begin
             line := FStatements.Lines.Strings[i].Trim;
-            if not TInfra.Parse(line, prsAssign) then
+            if not TInfra.Parse(line, yymAssign) then
             begin
                FStatements.Font.Color := NOK_COLOR;
                FStatements.Hint := i18Manager.GetFormattedString('ExpErrMult', [i+1, line, sLineBreak, errString]);

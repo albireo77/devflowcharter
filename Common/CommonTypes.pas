@@ -44,9 +44,6 @@ type
 
    TUserDataTypeKind = (dtInt, dtRecord, dtArray, dtReal, dtOther, dtEnum);
 
-   TParserMode = (prsNone, prsCondition, prsAssign, prsInput, prsOutput, prsFor, prsFuncCall,
-                 prsCase, prsCaseValue, prsReturn, prsVarSize);
-
    TArrowPosition = (arrMiddle, arrEnd);
 
    TColorShape = (shpNone, shpEllipse, shpParallel, shpDiamond, shpRectangle, shpRoadSign, shpRoutine, shpFolder);

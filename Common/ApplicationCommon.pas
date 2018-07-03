@@ -29,7 +29,7 @@ uses
    LocalizationManager, Project, Settings, LangDefinition, CommonTypes, Base_Form,
    CommonInterfaces, Functions_Form, DataTypes_Form, Declarations_Form, Main_Form,
    Base_Block, SynEditTypes, Settings_Form, Editor_Form, Explorer_Form, UserFunction,
-   BlockTabSheet, About_Form;
+   BlockTabSheet, About_Form, YaccLib;
 
 type
 
@@ -83,8 +83,8 @@ type
          class function GetActiveEdit: TCustomEdit;
          class function GetParsedBlock: TBlock;
          class function GetParsedEdit: TCustomEdit;
-         class function Parse(AEdit: TCustomEdit; AParserMode: TParserMode): boolean; overload;
-         class function Parse(const AText: string; AParserMode: TParserMode): boolean; overload;
+         class function Parse(AEdit: TCustomEdit; AParserMode: TYYMode): boolean; overload;
+         class function Parse(const AText: string; AParserMode: TYYMode): boolean; overload;
          class function IsNOkColor(AColor: TColor): boolean;
          class function GetChangeLine(AObject: TObject; AEdit: TCustomEdit = nil; const ATemplate: string = ''): TChangeLine;
          class function GetCaretPos(AEdit: TCustomEdit): TBufferCoord;
@@ -233,7 +233,7 @@ const   // Global constants
 
         KEY_CURRENT_LANGUAGE = 'CurrentLanguageName';
 
-        PARSER_ERRORS_ARRAY: array[TParserMode] of string = ('BadGeneric', 'BadCondition', 'BadAssign', 'BadInput', 'BadOutput',
+        PARSER_ERRORS_ARRAY: array[TYYMode] of string = ('BadGeneric', 'BadCondition', 'BadAssign', 'BadInput', 'BadOutput',
                              'BadFor', 'BadFunction', 'BadCase', 'BadCase', 'BadReturnVal', '');
 
 var     // Global variables
@@ -244,7 +244,6 @@ var     // Global variables
     GSettings:      TSettings;
     GCustomCursor:  TCustomCursor;
     GErr_text:      string;
-    GParser_Mode:   TParserMode;
     i18Manager:     Ti18Manager;
     errString:      string;       // error string returned from parser
 
@@ -1064,14 +1063,14 @@ begin
    result := FParsedEdit;
 end;
 
-class function TInfra.Parse(AEdit: TCustomEdit; AParserMode: TParserMode): boolean;
+class function TInfra.Parse(AEdit: TCustomEdit; AParserMode: TYYMode): boolean;
 begin
    FParsedEdit := AEdit;
    result := Parse(Trim(AEdit.Text), AParserMode);
    FParsedEdit := nil;
 end;
 
-class function TInfra.Parse(const AText: string; AParserMode: TParserMode): boolean;
+class function TInfra.Parse(const AText: string; AParserMode: TYYMode): boolean;
 begin
    result := true;
    errString := '';

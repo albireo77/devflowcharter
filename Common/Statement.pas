@@ -23,7 +23,7 @@ interface
 
 uses
    System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.StdCtrls, WinApi.Messages, CommonInterfaces,
-   CommonTypes;
+   CommonTypes, YaccLib;
 
 type
 
@@ -33,7 +33,7 @@ type
   private
     { Private declarations }
     FExecuteParse: boolean;
-    FParserMode: TParserMode;
+    FParserMode: TYYMode;
     FId,
     FLMargin,
     FRMargin: integer;
@@ -45,7 +45,7 @@ type
   public
     { Public declarations }
     OnChangeCallBack: TOnEditChange;
-    property ParserMode: TParserMode read FParserMode default prsNone;
+    property ParserMode: TYYMode read FParserMode default yymUndefined;
     property Id: integer read GetId;
     procedure Change; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
@@ -122,9 +122,9 @@ uses
 
 constructor TStatement.Create(AOwner: TComponent);
 const
-   BlockToParserMapping: array[TBlockType] of TParserMode = (prsNone, prsAssign, prsAssign,
-                         prsInput, prsOutput, prsFuncCall, prsCondition, prsCondition, prsCondition,
-                         prsCondition, prsFor, prsCase, prsNone, prsNone, prsReturn, prsNone, prsNone);
+   BlockToParserMapping: array[TBlockType] of TYYMode = (yymUndefined, yymAssign, yymAssign,
+                         yymInput, yymOutput, yymFuncCall, yymCondition, yymCondition, yymCondition,
+                         yymCondition, yymFor, yymCase, yymUndefined, yymUndefined, yymReturn, yymUndefined, yymUndefined);
 var
    block: TBlock;
 begin
@@ -141,8 +141,8 @@ begin
          if Parent.Parent is TBlock then
             block := TBlock(Parent.Parent);
       end
-      else if FParserMode = prsCase then
-         FParserMode := prsCaseValue;
+      else if FParserMode = yymCase then
+         FParserMode := yymCaseValue;
    end;
    Font.Assign(block.GetFont);
    BorderStyle := bsNone;
@@ -225,27 +225,27 @@ begin
       if txt.IsEmpty then
       begin
          case FParserMode of
-            prsFor:
+            yymFor:
             begin
                Hint := i18Manager.GetFormattedString('ExpErr', ['', sLineBreak, i18Manager.GetString('IntReq')]);
                Font.Color := NOK_COLOR;
             end;
-            prsCondition:
+            yymCondition:
             begin
                txt := 'NoCExp';
                Font.Color := NOK_COLOR;
             end;
-            prsCase:
+            yymCase:
             begin
                txt := 'NoCaseExp';
                Font.Color := NOK_COLOR;
             end;
-            prsAssign:
+            yymAssign:
             begin
                txt := 'NoInstr';
                Font.Color := WARN_COLOR;
             end;
-            prsFuncCall:
+            yymFuncCall:
             begin
                txt := 'NoFCall';
                Font.Color := WARN_COLOR;
@@ -284,15 +284,15 @@ var
 begin
    inherited DoEnter;
    case FParserMode of
-      prsInput:     FExecuteParse := GSettings.ParseInput;
-      prsOutput:    FExecuteParse := GSettings.ParseOutput;
-      prsAssign:    FExecuteParse := GSettings.ParseAssign;
-      prsFuncCall:  FExecuteParse := GSettings.ParseRoutineCall;
-      prsFor:       FExecuteParse := GSettings.ParseFor;
-      prsReturn:    FExecuteParse := GSettings.ParseReturn;
-      prsCondition: FExecuteParse := GSettings.ParseCondition;
-      prsCase,
-      prsCaseValue: FExecuteParse := GSettings.ParseCase;
+      yymInput:     FExecuteParse := GSettings.ParseInput;
+      yymOutput:    FExecuteParse := GSettings.ParseOutput;
+      yymAssign:    FExecuteParse := GSettings.ParseAssign;
+      yymFuncCall:  FExecuteParse := GSettings.ParseRoutineCall;
+      yymFor:       FExecuteParse := GSettings.ParseFor;
+      yymReturn:    FExecuteParse := GSettings.ParseReturn;
+      yymCondition: FExecuteParse := GSettings.ParseCondition;
+      yymCase,
+      yymCaseValue: FExecuteParse := GSettings.ParseCase;
    else
       FExecuteParse := false;
    end;

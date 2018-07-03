@@ -71,57 +71,57 @@ var
 %%
 
 input_line:		assignment		{
-							if GParser_Mode <> prsAssign then
+							if yymode <> yymAssign then
                                                         begin
-                                                           errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
+                                                           errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
                                                            yyabort;
                                                         end;
 						}
 
 		|	condition		{
-							if GParser_Mode <> prsCondition then
+							if yymode <> yymCondition then
                                                         begin
-                                                           errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
+                                                           errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
                                                            yyabort;
                                                         end;
 						}
 
 		|	input			{
-							if GParser_Mode <> prsInput then
+							if yymode <> yymInput then
                                                         begin
-                                                           errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
+                                                           errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
                                                            yyabort;
                                                         end;
 						}
 
 		|	output			{
-							if GParser_Mode <> prsOutput then
+							if yymode <> yymOutput then
                                                         begin
-                                                           errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
+                                                           errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
                                                            yyabort;
                                                         end;
 						}
 
 		|	case			{
-							if GParser_Mode <> prsCaseValue then
+							if yymode <> yymCaseValue then
                                                         begin
-                                                           errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
+                                                           errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
                                                            yyabort;
                                                         end;
 						}
 
 		|	range			{
-							if not (GParser_Mode in [prsFor, prsCase, prsCaseValue, prsReturn, prsVarSize]) then
+							if not (yymode in [yymFor, yymCase, yymCaseValue, yymReturn, yymVarSize]) then
                                                         begin
-                                                           errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
+                                                           errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
                                                            yyabort;
                                                         end;
 						}
 
 		|	routine_call		{
-							if not (GParser_Mode in [prsFuncCall, prsReturn]) then
+							if not (yymode in [yymFuncCall, yymReturn]) then
                                                         begin
-                                                           errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
+                                                           errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
                                                            yyabort;
                                                         end;
 						}
@@ -1023,21 +1023,21 @@ range:			statement		{
 							rval := TParserHelper.GetUserFunctionType;
 							lIsEnum := TParserHelper.IsEnumType($1);
 							lIsInteger := TParserHelper.IsIntegerType($1);
-							if not is_constant and (GParser_Mode = prsVarSize) then
+							if not is_constant and (yymode = yymVarSize) then
 							begin
 							   errString := i18Manager.GetString('NotConst');
 							   yyabort;
 							end
-							else if  (GParser_Mode = prsReturn) and (($1 <> rval) and not (TParserHelper.IsPointerType(rval) and ($1 = GENERIC_PTR_TYPE)) and not ((TParserHelper.IsNumericType(rval) and TParserHelper.IsNumericType($1)) and not (TParserHelper.IsIntegerType(rval) and TParserHelper.IsRealType($1)))) then
+							else if  (yymode = yymReturn) and (($1 <> rval) and not (TParserHelper.IsPointerType(rval) and ($1 = GENERIC_PTR_TYPE)) and not ((TParserHelper.IsNumericType(rval) and TParserHelper.IsNumericType($1)) and not (TParserHelper.IsIntegerType(rval) and TParserHelper.IsRealType($1)))) then
 							begin
 							   errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString(rval)]);
 							   yyabort;	
 							end
-							else if GParser_Mode in [prsFor, prsCase, prsCaseValue, prsVarSize] then
+							else if yymode in [yymFor, yymCase, yymCaseValue, yymVarSize] then
 							begin	
-							   if not (GParser_Mode in [prsFor, prsVarSize]) then
+							   if not (yymode in [yymFor, yymVarSize]) then
 							   begin
-							      if (GParser_Mode = prsCaseValue) and TParserHelper.IsDuplicatedCase then
+							      if (yymode = yymCaseValue) and TParserHelper.IsDuplicatedCase then
                                                               begin
                                                                  errString := i18Manager.GetString('DupCaseVal');
                                                                  yyabort;
@@ -1047,7 +1047,7 @@ range:			statement		{
                                                                  errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), 'integer']);
                                                                  yyabort;
                                                               end
-							      else if GParser_Mode = prsCaseValue then
+							      else if yymode = yymCaseValue then
 							      begin
 							         lType := TParserHelper.GetCaseVarType;
 								 if (lType <> $1) and not (TParserHelper.IsIntegerType(lType) and lIsInteger) then
@@ -1057,7 +1057,7 @@ range:			statement		{
 								 end;
 							      end;
 							   end
-							   else if GParser_Mode = prsFor then
+							   else if yymode = yymFor then
 							   begin
   							      lType := TParserHelper.GetForVarType;
 							      if (lType <> $1) and not (TParserHelper.IsIntegerType(lType) and lIsInteger) then
@@ -1066,12 +1066,12 @@ range:			statement		{
                                                                  yyabort;
                                                               end;
 							   end
-                                                           else if not lIsInteger and (GParser_Mode = prsVarSize) then
+                                                           else if not lIsInteger and (yymode = yymVarSize) then
 							      yyabort;
 							end;
 						}
 
-		|	range ',' statement	{	if GParser_Mode <> prsVarSize then yyabort;	}
+		|	range ',' statement	{	if yymode <> yymVarSize then yyabort;	}
 ;
 
 case:		

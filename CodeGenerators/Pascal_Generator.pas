@@ -93,7 +93,7 @@ implementation
 uses
    System.SysUtils, System.StrUtils, System.Classes, Vcl.Graphics, SynHighlighterPas,
    Pascal_Parser, Main_Block, ApplicationCommon, DeclareList, Settings, LocalizationManager,
-   LangDefinition, CommonTypes, ParserHelper;
+   LangDefinition, CommonTypes, ParserHelper, YaccLib;
 
 var
    pascalLang: TLangDefinition;
@@ -320,14 +320,15 @@ begin
    result := (AType1 = PASCAL_STRING_TYPE) and (AType2 = PASCAL_CHAR_TYPE);
 end;
 
-function Pascal_Parse(const AText: string; const AParserMode: TParserMode): boolean;
+function Pascal_Parse(const AText: string; AParserMode: TYYMode): boolean;
 begin
    result := true;
    if (pascalLang <> nil) and (pascalLang.Parser is TPascalParser) then
    begin
+      pascalLang.Parser.Reset;
       pascalLang.Parser.ylex.Reset;
       pascalLang.Parser.ylex.yyinput.AssignString(AText);
-      GParser_Mode := AParserMode;
+      pascalLang.Parser.yymode := AParserMode;
       result := TPascalParser(pascalLang.Parser).yyparse = 0;
    end;
 end;

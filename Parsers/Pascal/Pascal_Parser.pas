@@ -106,6 +106,7 @@ constructor TPascalParser.Create;
 begin
   inherited Create;
   ylex := TLex.Create;
+  yymode := yymUndefined;
 end;
 
 destructor TPascalParser.Destroy;
@@ -133,63 +134,63 @@ begin
 
    1 : begin
          
-         							if GParser_Mode <> prsAssign then
+         							if yymode <> yymAssign then
          begin
-         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
+         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
          yyabort;
          end;
          						
        end;
    2 : begin
          
-         							if GParser_Mode <> prsCondition then
+         							if yymode <> yymCondition then
          begin
-         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
+         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
          yyabort;
          end;
          						
        end;
    3 : begin
          
-         							if GParser_Mode <> prsInput then
+         							if yymode <> yymInput then
          begin
-         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
+         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
          yyabort;
          end;
          						
        end;
    4 : begin
          
-         							if GParser_Mode <> prsOutput then
+         							if yymode <> yymOutput then
          begin
-         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
+         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
          yyabort;
          end;
          						
        end;
    5 : begin
          
-         							if GParser_Mode <> prsCaseValue then
+         							if yymode <> yymCaseValue then
          begin
-         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
+         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
          yyabort;
          end;
          						
        end;
    6 : begin
          
-         							if not (GParser_Mode in [prsFor, prsCase, prsCaseValue, prsReturn, prsVarSize]) then
+         							if not (yymode in [yymFor, yymCase, yymCaseValue, yymReturn, yymVarSize]) then
          begin
-         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
+         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
          yyabort;
          end;
          						
        end;
    7 : begin
          
-         							if not (GParser_Mode in [prsFuncCall, prsReturn]) then
+         							if not (yymode in [yymFuncCall, yymReturn]) then
          begin
-         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[GParser_Mode]);
+         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
          yyabort;
          end;
          						
@@ -1171,21 +1172,21 @@ begin
          							rval := TParserHelper.GetUserFunctionType;
          							lIsEnum := TParserHelper.IsEnumType(yyv[yysp-0].yyInteger);
          							lIsInteger := TParserHelper.IsIntegerType(yyv[yysp-0].yyInteger);
-         							if not is_constant and (GParser_Mode = prsVarSize) then
+         							if not is_constant and (yymode = yymVarSize) then
          							begin
          							   errString := i18Manager.GetString('NotConst');
          							   yyabort;
          							end
-         							else if  (GParser_Mode = prsReturn) and ((yyv[yysp-0].yyInteger <> rval) and not (TParserHelper.IsPointerType(rval) and (yyv[yysp-0].yyInteger = GENERIC_PTR_TYPE)) and not ((TParserHelper.IsNumericType(rval) and TParserHelper.IsNumericType(yyv[yysp-0].yyInteger)) and not (TParserHelper.IsIntegerType(rval) and TParserHelper.IsRealType(yyv[yysp-0].yyInteger)))) then
+         							else if  (yymode = yymReturn) and ((yyv[yysp-0].yyInteger <> rval) and not (TParserHelper.IsPointerType(rval) and (yyv[yysp-0].yyInteger = GENERIC_PTR_TYPE)) and not ((TParserHelper.IsNumericType(rval) and TParserHelper.IsNumericType(yyv[yysp-0].yyInteger)) and not (TParserHelper.IsIntegerType(rval) and TParserHelper.IsRealType(yyv[yysp-0].yyInteger)))) then
          							begin
          							   errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger), TParserHelper.GetTypeAsString(rval)]);
          							   yyabort;	
          							end
-         							else if GParser_Mode in [prsFor, prsCase, prsCaseValue, prsVarSize] then
+         							else if yymode in [yymFor, yymCase, yymCaseValue, yymVarSize] then
          							begin	
-         							   if not (GParser_Mode in [prsFor, prsVarSize]) then
+         							   if not (yymode in [yymFor, yymVarSize]) then
          							   begin
-         							      if (GParser_Mode = prsCaseValue) and TParserHelper.IsDuplicatedCase then
+         							      if (yymode = yymCaseValue) and TParserHelper.IsDuplicatedCase then
          begin
          errString := i18Manager.GetString('DupCaseVal');
          yyabort;
@@ -1195,7 +1196,7 @@ begin
          errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger), 'integer']);
          yyabort;
          end
-         							      else if GParser_Mode = prsCaseValue then
+         							      else if yymode = yymCaseValue then
          							      begin
          							         lType := TParserHelper.GetCaseVarType;
          								 if (lType <> yyv[yysp-0].yyInteger) and not (TParserHelper.IsIntegerType(lType) and lIsInteger) then
@@ -1205,7 +1206,7 @@ begin
          								 end;
          							      end;
          							   end
-         							   else if GParser_Mode = prsFor then
+         							   else if yymode = yymFor then
          							   begin
          							      lType := TParserHelper.GetForVarType;
          							      if (lType <> yyv[yysp-0].yyInteger) and not (TParserHelper.IsIntegerType(lType) and lIsInteger) then
@@ -1214,13 +1215,13 @@ begin
          yyabort;
          end;
          							   end
-         else if not lIsInteger and (GParser_Mode = prsVarSize) then
+         else if not lIsInteger and (yymode = yymVarSize) then
          							      yyabort;
          							end;
          						
        end;
  115 : begin
-         	if GParser_Mode <> prsVarSize then yyabort;	
+         	if yymode <> yymVarSize then yyabort;	
        end;
  116 : begin
          yyval := yyv[yysp-0];
