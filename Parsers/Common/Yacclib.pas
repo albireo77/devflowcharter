@@ -35,7 +35,7 @@ type
     yydebug: Boolean;	{ Set to true to enable debugging output from parser. }
     yydebuglex: Boolean;	{ Set to true to echo all lex tokens to	the debug channel. }
     yymode: TYYMode;
-	yyerrmsg: String;
+    yyerrmsg: String;
     { Display an error message.						}
     procedure yyerror(const msg: AnsiString);
     { Delete current lookahead token.					}
