@@ -99,7 +99,7 @@ begin
             if not TInfra.Parse(line, yymAssign) then
             begin
                FStatements.Font.Color := NOK_COLOR;
-               FStatements.Hint := i18Manager.GetFormattedString('ExpErrMult', [i+1, line, sLineBreak, errString]);
+               FStatements.Hint := i18Manager.GetFormattedString('ExpErrMult', [i+1, line, sLineBreak, TInfra.GetParserErrMsg]);
                FErrLine := i;
                break;
             end;
@@ -135,7 +135,7 @@ begin
             else
                tmpList.AddObject('', Self);
          end;
-         if tmpList.Text = '' then
+         if tmpList.Text.IsEmpty then
             GenerateTemplateSection(tmpList, ReplaceStr(lang.InstrTemplate, PRIMARY_PLACEHOLDER, ''), ALangId, ADeep);
          if EndsText(sLineBreak, FStatements.Text) then
             tmpList.AddObject('', Self);

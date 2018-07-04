@@ -13,8 +13,9 @@ interface
 
 uses
    LexLib;
-
-const yymaxdepth = 2048;	{ default stack size of parser.		}
+   
+const
+   yymaxdepth = 2048;	{ default stack size of parser.		}
 
 type
   { default value type, may be redefined in Yacc output file.		}
@@ -34,6 +35,7 @@ type
     yydebug: Boolean;	{ Set to true to enable debugging output from parser. }
     yydebuglex: Boolean;	{ Set to true to echo all lex tokens to	the debug channel. }
     yymode: TYYMode;
+	yyerrmsg: String;
     { Display an error message.						}
     procedure yyerror(const msg: AnsiString);
     { Delete current lookahead token.					}
@@ -48,8 +50,10 @@ type
     procedure yyerrok;
     { Write a text linne to the debug/error channel.			}
     procedure EWriteln(const S: AnsiString);
-    { reset the parser for another run.					}
+    { Reset the parser for another run.					}
     procedure Reset;
+    { Return parser status.					}
+    function GetStatus: Boolean; 
   end;
 
 implementation
@@ -102,6 +106,12 @@ end;
 procedure TCustomParser.Reset;
 begin
   yymode := yymUndefined;
+  yyerrmsg := '';
+end;
+
+function TCustomParser.GetStatus: Boolean;
+begin
+  result := yyflag = yyfaccept;
 end;
 
 end.

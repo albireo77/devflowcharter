@@ -136,7 +136,7 @@ begin
          
          							if yymode <> yymAssign then
          begin
-         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
+         yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
          yyabort;
          end;
          						
@@ -145,7 +145,7 @@ begin
          
          							if yymode <> yymCondition then
          begin
-         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
+         yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
          yyabort;
          end;
          						
@@ -154,7 +154,7 @@ begin
          
          							if yymode <> yymInput then
          begin
-         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
+         yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
          yyabort;
          end;
          						
@@ -163,7 +163,7 @@ begin
          
          							if yymode <> yymOutput then
          begin
-         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
+         yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
          yyabort;
          end;
          						
@@ -172,7 +172,7 @@ begin
          
          							if yymode <> yymCaseValue then
          begin
-         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
+         yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
          yyabort;
          end;
          						
@@ -181,7 +181,7 @@ begin
          
          							if not (yymode in [yymFor, yymCase, yymCaseValue, yymReturn, yymVarSize]) then
          begin
-         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
+         yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
          yyabort;
          end;
          						
@@ -190,7 +190,7 @@ begin
          
          							if not (yymode in [yymFuncCall, yymReturn]) then
          begin
-         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[yymode]);
+         yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
          yyabort;
          end;
          						
@@ -199,7 +199,7 @@ begin
          
          							if not TParserHelper.IsInLoop then
          begin
-         errString := i18Manager.GetString('BreakErr');
+         yyerrmsg := i18Manager.GetString('BreakErr');
          yyabort;
          end;
          						
@@ -211,7 +211,7 @@ begin
          
          							if not TParserHelper.IsInLoop then
          begin
-         errString := i18Manager.GetString('ContErr');
+         yyerrmsg := i18Manager.GetString('ContErr');
          yyabort;
          end;
          
@@ -228,22 +228,22 @@ begin
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-2].yyString);
          if arg1.IdentType = CONSTANT then
          begin
-         errString := i18Manager.GetFormattedString('BadConstOp', [yyv[yysp-2].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('BadConstOp', [yyv[yysp-2].yyString]);
          yyabort;
          end
          							else if arg1.TType = PASCAL_TEXT_FILE_TYPE then
          begin
-         errString := i18Manager.GetFormattedString('BadVarOper', [yyv[yysp-2].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('BadVarOper', [yyv[yysp-2].yyString]);
          yyabort;
          end
          else if arg1.IdentType = ENUM_VALUE then
          begin
-         errString := i18Manager.GetFormattedString('BadEnumOper', [yyv[yysp-2].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('BadEnumOper', [yyv[yysp-2].yyString]);
          yyabort;
          end
          							else if not TParserHelper.AreTypesCompatible(arg1.TType, yyv[yysp-0].yyInteger) then
          							begin
-         errString := i18Manager.GetFormattedString('IncTypes', [arg1.TypeAsString, TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
+         yyerrmsg := i18Manager.GetFormattedString('IncTypes', [arg1.TypeAsString, TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
          yyabort;
          end;
          						
@@ -253,17 +253,17 @@ begin
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-3].yyString);
          							if arg1.IdentType = CONSTANT then
          begin
-         errString := i18Manager.GetFormattedString('BadConstOp', [yyv[yysp-3].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('BadConstOp', [yyv[yysp-3].yyString]);
          yyabort;
          end
          else if not arg1.IsPointer then
          begin
-         errString := i18Manager.GetFormattedString('NotPtrType', [yyv[yysp-3].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('NotPtrType', [yyv[yysp-3].yyString]);
          yyabort;
          end
          							else if not TParserHelper.AreTypesCompatible(arg1.TypeOriginal, yyv[yysp-0].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('IncTypes', [arg1.TypeAsString, TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
+         yyerrmsg := i18Manager.GetFormattedString('IncTypes', [arg1.TypeAsString, TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
          yyabort;
          end;
          						
@@ -272,7 +272,7 @@ begin
          
          							if not TParserHelper.AreTypesCompatible(yyv[yysp-2].yyInteger, yyv[yysp-0].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
+         yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
          yyabort;
          end;
          						
@@ -281,7 +281,7 @@ begin
          
          							if not TParserHelper.AreTypesCompatible(yyv[yysp-2].yyInteger, yyv[yysp-0].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
+         yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
          yyabort;
          end;
          						
@@ -291,12 +291,12 @@ begin
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-2].yyString);
          							if arg1.IdentType = CONSTANT then
          begin
-         errString := i18Manager.GetFormattedString('BadConstOp', [yyv[yysp-2].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('BadConstOp', [yyv[yysp-2].yyString]);
          yyabort;
          end
          							else if arg1.TType <> PASCAL_BOOL_TYPE then
          begin
-         errString := i18Manager.GetFormattedString('IncTypes', [arg1.TypeAsString, 'boolean']);
+         yyerrmsg := i18Manager.GetFormattedString('IncTypes', [arg1.TypeAsString, 'boolean']);
          yyabort;
          end;
          						
@@ -335,12 +335,12 @@ begin
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-0].yyString);
          							if arg1.IdentType = CONSTANT then
          begin
-         errString := i18Manager.GetFormattedString('BadConstOp', [yyv[yysp-0].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('BadConstOp', [yyv[yysp-0].yyString]);
          yyabort;
          end
          							else if (arg1.TType = PASCAL_BOOL_TYPE) or arg1.IsPointer or arg1.isRecord or (arg1.Size > 1) then
          begin
-         errString := i18Manager.GetFormattedString('BadInOper', [yyv[yysp-0].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('BadInOper', [yyv[yysp-0].yyString]);
          yyabort;
          end;
          						
@@ -350,17 +350,17 @@ begin
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-1].yyString);
          							if arg1.IdentType = CONSTANT then
          begin
-         errString := i18Manager.GetFormattedString('BadConstOp', [yyv[yysp-1].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('BadConstOp', [yyv[yysp-1].yyString]);
          yyabort;
          end
          							else if not arg1.IsPointer then
          begin
-         errString := i18Manager.GetFormattedString('NotPtrType', [yyv[yysp-1].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('NotPtrType', [yyv[yysp-1].yyString]);
          yyabort;
          end
          							else if arg1.Size > 1 then
          begin
-         errString := i18Manager.GetFormattedString('BadInOper', [yyv[yysp-1].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('BadInOper', [yyv[yysp-1].yyString]);
          yyabort;
          end;
          						
@@ -369,7 +369,7 @@ begin
          
          							if (yyv[yysp-0].yyInteger = PASCAL_BOOL_TYPE) or TParserHelper.IsPointerType(yyv[yysp-0].yyInteger) or TParserHelper.isRecordType(yyv[yysp-0].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadInOper', ['']);
+         yyerrmsg := i18Manager.GetFormattedString('BadInOper', ['']);
          yyabort;
          end;
          						
@@ -448,17 +448,17 @@ begin
          							is_constant := false;
          							if arg1.IdentType = CONSTANT then
          begin
-         errString := i18Manager.GetFormattedString('BadConstOp', [yyv[yysp-1].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('BadConstOp', [yyv[yysp-1].yyString]);
          yyabort;
          end
          							else if not arg1.IsPointer then
          begin
-         errString := i18Manager.GetFormattedString('NotPtrType', [yyv[yysp-1].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('NotPtrType', [yyv[yysp-1].yyString]);
          yyabort;
          end
          else if arg1.DimensCount > 0 then
          begin
-         errString := i18Manager.GetFormattedString('BadPtrArray', [yyv[yysp-1].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('BadPtrArray', [yyv[yysp-1].yyString]);
          yyabort;
          end
          else
@@ -471,7 +471,7 @@ begin
          							is_constant := false;
          							if arg1.IdentType = CONSTANT then
          begin
-         errString := i18Manager.GetFormattedString('BadConstOp', [yyv[yysp-0].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('BadConstOp', [yyv[yysp-0].yyString]);
          yyabort;
          end
          							else
@@ -488,7 +488,7 @@ begin
          
          							if not TParserHelper.IsNumericType(yyv[yysp-0].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger), '-']);
+         yyerrmsg := i18Manager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger), '-']);
          yyabort;
          end;
          							yyval.yyInteger := yyv[yysp-0].yyInteger;
@@ -503,7 +503,7 @@ begin
          yyval.yyInteger := PASCAL_STRING_TYPE;
          exit;
          end;
-         errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
+         yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
          yyabort;
          end;
          							if TParserHelper.IsRealType(yyv[yysp-2].yyInteger) or TParserHelper.IsRealType(yyv[yysp-0].yyInteger) then
@@ -516,7 +516,7 @@ begin
          
          							if not TParserHelper.IsNumericType(yyv[yysp-2].yyInteger) or not TParserHelper.IsNumericType(yyv[yysp-0].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
+         yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
          yyabort;
          end;
          							if TParserHelper.IsRealType(yyv[yysp-2].yyInteger) or TParserHelper.IsRealType(yyv[yysp-0].yyInteger) then
@@ -529,7 +529,7 @@ begin
          
          							if not TParserHelper.IsNumericType(yyv[yysp-2].yyInteger) or not TParserHelper.IsNumericType(yyv[yysp-0].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
+         yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
          yyabort;
          end;
          							if TParserHelper.IsRealType(yyv[yysp-2].yyInteger) or TParserHelper.IsRealType(yyv[yysp-0].yyInteger) then
@@ -542,7 +542,7 @@ begin
          
          							if not TParserHelper.IsNumericType(yyv[yysp-2].yyInteger) or not TParserHelper.IsNumericType(yyv[yysp-0].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
+         yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
          yyabort;
          end;
          							yyval.yyInteger := PASCAL_REAL_TYPE;
@@ -555,12 +555,12 @@ begin
          
          							if not TParserHelper.IsIntegerType(yyv[yysp-2].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), 'div']);
+         yyerrmsg := i18Manager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), 'div']);
          yyabort;
          end
          							else if not TParserHelper.IsIntegerType(yyv[yysp-0].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger), 'div']);
+         yyerrmsg := i18Manager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger), 'div']);
          yyabort;
          end;
          							yyval.yyInteger := PASCAL_INT_TYPE;
@@ -570,12 +570,12 @@ begin
          
          							if not TParserHelper.IsIntegerType(yyv[yysp-2].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), 'mod']);
+         yyerrmsg := i18Manager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), 'mod']);
          yyabort;
          end
          							else if not TParserHelper.IsIntegerType(yyv[yysp-0].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger), 'mod']);
+         yyerrmsg := i18Manager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger), 'mod']);
          yyabort;
          end;
          							yyval.yyInteger := PASCAL_INT_TYPE;
@@ -594,7 +594,7 @@ begin
          
          							if PASCAL_TEXT_FILE_TYPE in [yyv[yysp-2].yyInteger, yyv[yysp-0].yyInteger] then
          begin
-         errString := i18Manager.GetString('BadCmpr');
+         yyerrmsg := i18Manager.GetString('BadCmpr');
          yyabort;
          end
          							else if yyv[yysp-2].yyInteger <> yyv[yysp-0].yyInteger then
@@ -604,7 +604,7 @@ begin
          (TParserHelper.IsPointerType(yyv[yysp-0].yyInteger) and (yyv[yysp-2].yyInteger = GENERIC_PTR_TYPE)) or
          							      ((yyv[yysp-2].yyInteger = PASCAL_CHAR_TYPE) and ((yyv[yysp-0].yyInteger = PASCAL_STRING_TYPE) and (slength = 1))) or
          							      ((yyv[yysp-0].yyInteger = PASCAL_CHAR_TYPE) and ((yyv[yysp-2].yyInteger = PASCAL_STRING_TYPE) and (slength = 1))) then exit;
-         errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
+         yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
          yyabort;
          end;
          						
@@ -613,7 +613,7 @@ begin
          
          							if not TParserHelper.IsNumericType(yyv[yysp-2].yyInteger) or not TParserHelper.IsNumericType(yyv[yysp-0].yyInteger) then
          begin
-         errString := i18Manager.GetString('BadCmpr');
+         yyerrmsg := i18Manager.GetString('BadCmpr');
          yyabort;
          end;
          						
@@ -622,7 +622,7 @@ begin
          
          							if not TParserHelper.IsNumericType(yyv[yysp-2].yyInteger) or not TParserHelper.IsNumericType(yyv[yysp-0].yyInteger) then
          begin
-         errString := i18Manager.GetString('BadCmpr');
+         yyerrmsg := i18Manager.GetString('BadCmpr');
          yyabort;
          end;
          						
@@ -631,7 +631,7 @@ begin
          
          							if not TParserHelper.IsNumericType(yyv[yysp-2].yyInteger) or not TParserHelper.IsNumericType(yyv[yysp-0].yyInteger) then
          begin
-         errString := i18Manager.GetString('BadCmpr');
+         yyerrmsg := i18Manager.GetString('BadCmpr');
          yyabort;
          end;
          						
@@ -640,7 +640,7 @@ begin
          
          							if PASCAL_TEXT_FILE_TYPE in [yyv[yysp-2].yyInteger, yyv[yysp-0].yyInteger] then
          begin
-         errString := i18Manager.GetString('BadCmpr');
+         yyerrmsg := i18Manager.GetString('BadCmpr');
          yyabort;
          end
          							else if yyv[yysp-2].yyInteger <> yyv[yysp-0].yyInteger then
@@ -650,7 +650,7 @@ begin
          (TParserHelper.IsPointerType(yyv[yysp-0].yyInteger) and (yyv[yysp-2].yyInteger = GENERIC_PTR_TYPE)) or
          							      ((yyv[yysp-2].yyInteger = PASCAL_CHAR_TYPE) and ((yyv[yysp-0].yyInteger = PASCAL_STRING_TYPE) and (slength = 1))) or
          							      ((yyv[yysp-0].yyInteger = PASCAL_CHAR_TYPE) and ((yyv[yysp-2].yyInteger = PASCAL_STRING_TYPE) and (slength = 1))) then exit;
-         errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
+         yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
          yyabort;
          end;
          						
@@ -662,7 +662,7 @@ begin
          
          							if not TParserHelper.IsDeclared(yyv[yysp-0].yyString) then
          begin
-         errString := i18Manager.GetFormattedString('UnknId', [yyv[yysp-0].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('UnknId', [yyv[yysp-0].yyString]);
          yyabort;
          end;
          						    	yyval.yyString := yyv[yysp-0].yyString;
@@ -673,7 +673,7 @@ begin
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-0].yyString);
          							if not (arg1.IdentType in [VARIABLE, VARRAY, CONSTANT, ENUM_VALUE]) then
          begin
-         errString := i18Manager.GetFormattedString('UnknId', [yyv[yysp-0].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('UnknId', [yyv[yysp-0].yyString]);
          yyabort;
          end;
          							yyval.yyString := yyv[yysp-0].yyString;
@@ -684,12 +684,12 @@ begin
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-3].yyString);
          							if arg1.IdentType <> ROUTINE_ID then
          begin
-         errString := i18Manager.GetFormattedString('UnknId', [yyv[yysp-3].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('UnknId', [yyv[yysp-3].yyString]);
          yyabort;
          end
          							else if not TParserHelper.ValidateUserFunctionParms(yyv[yysp-3].yyString, paramList) then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParms', [yyv[yysp-3].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParms', [yyv[yysp-3].yyString]);
          yyabort;
          end;
          paramList := nil;
@@ -700,7 +700,7 @@ begin
          
          							if not TParserHelper.IsPointerType(yyv[yysp-1].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParmU', ['New']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParmU', ['New']);
          yyabort;
          end;
          							yyval.yyInteger := UNKNOWN_TYPE;
@@ -710,7 +710,7 @@ begin
          
          							if not TParserHelper.IsPointerType(yyv[yysp-1].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParmU', ['Dispose']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParmU', ['Dispose']);
          yyabort;
          end;
          							yyval.yyInteger := UNKNOWN_TYPE;
@@ -720,7 +720,7 @@ begin
          
          							if not TParserHelper.IsNumericType(yyv[yysp-1].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Sin']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Sin']);
          yyabort;
          end;
          		yyval.yyInteger := PASCAL_REAL_TYPE;
@@ -730,7 +730,7 @@ begin
          
          							if not TParserHelper.IsNumericType(yyv[yysp-1].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Cos']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Cos']);
          yyabort;
          end;
          		yyval.yyInteger := PASCAL_REAL_TYPE;
@@ -740,7 +740,7 @@ begin
          
          							if not TParserHelper.IsNumericType(yyv[yysp-1].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Tan']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Tan']);
          yyabort;
          end;
          		yyval.yyInteger := PASCAL_REAL_TYPE;
@@ -750,7 +750,7 @@ begin
          
          							if not TParserHelper.IsNumericType(yyv[yysp-1].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Cotan']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Cotan']);
          yyabort;
          end;
          		yyval.yyInteger := PASCAL_REAL_TYPE;
@@ -760,7 +760,7 @@ begin
          
          							if not TParserHelper.IsNumericType(yyv[yysp-1].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Abs']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Abs']);
          yyabort;
          end;
          							if TParserHelper.IsRealType(yyv[yysp-1].yyInteger) then
@@ -773,7 +773,7 @@ begin
          
          							if not TParserHelper.IsNumericType(yyv[yysp-1].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Sqrt']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Sqrt']);
          yyabort;
          end;
          		yyval.yyInteger := PASCAL_REAL_TYPE;
@@ -783,7 +783,7 @@ begin
          
          							if not TParserHelper.IsNumericType(yyv[yysp-1].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Ln']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Ln']);
          yyabort;
          end;
          							yyval.yyInteger := PASCAL_REAL_TYPE;
@@ -793,7 +793,7 @@ begin
          
          							if not TParserHelper.IsNumericType(yyv[yysp-1].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Exp']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Exp']);
          yyabort;
          end;
          							yyval.yyInteger := PASCAL_REAL_TYPE;
@@ -803,7 +803,7 @@ begin
          
          							if yyv[yysp-1].yyInteger <> PASCAL_STRING_TYPE then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Length']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Length']);
          yyabort;
          end;
          							yyval.yyInteger := PASCAL_INT_TYPE;
@@ -814,7 +814,7 @@ begin
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-1].yyString);
          							if (arg1.DimensCount = 0) and (arg1.TType <> PASCAL_STRING_TYPE) then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParmU', ['Length']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParmU', ['Length']);
          yyabort;
          end;
          							yyval.yyInteger := PASCAL_INT_TYPE;
@@ -823,7 +823,7 @@ begin
   86 : begin
          
          							rand_flag := 1;
-         							errString := i18Manager.GetFormattedString('BadFuncParmU', ['random']);
+         							yyerrmsg := i18Manager.GetFormattedString('BadFuncParmU', ['random']);
          							yyabort;
          						
        end;
@@ -832,7 +832,7 @@ begin
          							rand_flag := 1;
          							if not TParserHelper.IsIntegerType(yyv[yysp-1].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Random']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Random']);
          yyabort;
          end;
          							yyval.yyInteger := PASCAL_INT_TYPE;
@@ -843,7 +843,7 @@ begin
          lIsInteger := TParserHelper.IsIntegerType(yyv[yysp-1].yyInteger);
          							if not lIsInteger and not TParserHelper.IsRealType(yyv[yysp-1].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Sqr']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Sqr']);
          yyabort;
          end;
          							if lIsInteger then
@@ -856,7 +856,7 @@ begin
          
          							if not TParserHelper.IsRealType(yyv[yysp-1].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Trunc']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Trunc']);
          yyabort;
          end;
          							yyval.yyInteger := PASCAL_INT_TYPE;
@@ -867,12 +867,12 @@ begin
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-3].yyString);
          							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'assign']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'assign']);
          yyabort;
          end
          							else if yyv[yysp-1].yyInteger <> PASCAL_STRING_TYPE then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Assign']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Assign']);
          yyabort;
          end;
          							yyval.yyInteger := UNKNOWN_TYPE;
@@ -883,7 +883,7 @@ begin
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-1].yyString);
          							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Close']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Close']);
          yyabort;
          end;
          							yyval.yyInteger := UNKNOWN_TYPE;
@@ -894,7 +894,7 @@ begin
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-1].yyString);
          							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Reset']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Reset']);
          yyabort;
          end;
          							yyval.yyInteger := UNKNOWN_TYPE;
@@ -905,7 +905,7 @@ begin
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-1].yyString);
          							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Rewrite']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Rewrite']);
          yyabort;
          end;
          							yyval.yyInteger := UNKNOWN_TYPE;
@@ -916,7 +916,7 @@ begin
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-1].yyString);
          							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Append']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Append']);
          yyabort;
          end;
          							yyval.yyInteger := UNKNOWN_TYPE;
@@ -927,7 +927,7 @@ begin
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-1].yyString);
          							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Eof']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Eof']);
          yyabort;
          end;
          							yyval.yyInteger := PASCAL_BOOL_TYPE;
@@ -938,7 +938,7 @@ begin
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-1].yyString);
          							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Eoln']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Eoln']);
          yyabort;
          end;
          							yyval.yyInteger := PASCAL_BOOL_TYPE;
@@ -949,12 +949,12 @@ begin
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-3].yyString);
          							if ((arg1.DimensCount = 0) and (arg1.TType <> PASCAL_STRING_TYPE)) or ((arg1.DimensCount > 0) and not ReplaceStr(arg1.SizeAsString, ' ', '').StartsWith('[]')) then
          begin
-         errString := i18Manager.GetString('SetLenDynArr');
+         yyerrmsg := i18Manager.GetString('SetLenDynArr');
          yyabort;
          end;
          							if not TParserHelper.IsIntegerType(yyv[yysp-1].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'SetLength']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'SetLength']);
          yyabort;
          end;
          							yyval.yyInteger := UNKNOWN_TYPE;
@@ -964,7 +964,7 @@ begin
          
          							if (yyv[yysp-1].yyInteger <> PASCAL_CHAR_TYPE) and not TParserHelper.IsEnumType(yyv[yysp-1].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Ord']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Ord']);
          yyabort;
          end;
          							yyval.yyInteger := PASCAL_INT_TYPE;
@@ -974,7 +974,7 @@ begin
          
          							if yyv[yysp-1].yyInteger <> PASCAL_INT_TYPE then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Chr']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'Chr']);
          yyabort;
          end;
          							yyval.yyInteger := PASCAL_CHAR_TYPE;
@@ -1001,17 +1001,17 @@ begin
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-2].yyString);
          							if not arg1.isRecord then
          begin
-         errString := i18Manager.GetFormattedString('NotStructType', [yyv[yysp-2].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('NotStructType', [yyv[yysp-2].yyString]);
          yyabort;
          end
          							else if arg1.Size > 1 then
          begin
-         errString := i18Manager.GetFormattedString('BadVarOper', [yyv[yysp-2].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('BadVarOper', [yyv[yysp-2].yyString]);
          yyabort;
          end
          							else if TParserHelper.GetFieldType(yyv[yysp-2].yyString, yyv[yysp-0].yyString) = NOT_DEFINED then
          begin
-         errString := i18Manager.GetFormattedString('NoFieldStruct', [arg1.TypeAsString, yyv[yysp-0].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('NoFieldStruct', [arg1.TypeAsString, yyv[yysp-0].yyString]);
          yyabort;
          end;
          							yyval.yyInteger := TParserHelper.GetFieldType(yyv[yysp-2].yyString, yyv[yysp-0].yyString);
@@ -1023,22 +1023,22 @@ begin
          lType := TParserHelper.GetFieldType(yyv[yysp-3].yyString, yyv[yysp-0].yyString);
          							if not TParserHelper.isRecordType(arg1.TypeOriginal) then
          begin
-         errString := i18Manager.GetFormattedString('NotStructType', [yyv[yysp-3].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('NotStructType', [yyv[yysp-3].yyString]);
          yyabort;
          end
          else if not arg1.IsPointer then
          begin
-         errString := i18Manager.GetFormattedString('NotPtrType', [yyv[yysp-3].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('NotPtrType', [yyv[yysp-3].yyString]);
          yyabort;
          end
          							else if arg1.DimensCount > 0 then
          begin
-         errString := i18Manager.GetFormattedString('BadVarOper', [yyv[yysp-3].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('BadVarOper', [yyv[yysp-3].yyString]);
          yyabort;
          end
          							else if lType = NOT_DEFINED then
          begin
-         errString := i18Manager.GetFormattedString('NoFieldStruct', [TParserHelper.GetTypeAsString(arg1.TypeOriginal), yyv[yysp-0].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('NoFieldStruct', [TParserHelper.GetTypeAsString(arg1.TypeOriginal), yyv[yysp-0].yyString]);
          yyabort;
          end;
          							yyval.yyInteger := lType;
@@ -1048,12 +1048,12 @@ begin
          
          							if not TParserHelper.isRecordType(yyv[yysp-2].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadVarOper', ['']);
+         yyerrmsg := i18Manager.GetFormattedString('BadVarOper', ['']);
          yyabort;
          end
          							else if TParserHelper.GetFieldType(yyv[yysp-2].yyInteger, yyv[yysp-0].yyString) = NOT_DEFINED then
          begin
-         errString := i18Manager.GetFormattedString('NoFieldStruct', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), yyv[yysp-0].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('NoFieldStruct', [TParserHelper.GetTypeAsString(yyv[yysp-2].yyInteger), yyv[yysp-0].yyString]);
          yyabort;
          end;
          							yyval.yyInteger := TParserHelper.GetFieldType(yyv[yysp-2].yyInteger, yyv[yysp-0].yyString);
@@ -1063,7 +1063,7 @@ begin
          
          if not TParserHelper.IsPointerType(yyv[yysp-1].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'pointer']);
+         yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'pointer']);
          yyabort;
          end;
          yyval.yyInteger := TParserHelper.GetOriginalType(yyv[yysp-1].yyInteger);
@@ -1073,7 +1073,7 @@ begin
          
          if not TParserHelper.IsIntegerType(yyv[yysp-0].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadIndx', [TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
+         yyerrmsg := i18Manager.GetFormattedString('BadIndx', [TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
          yyabort;
          end;
          							pcount := 1;
@@ -1089,12 +1089,12 @@ begin
          							begin
          							   if arg1.IdentType <> VARRAY then
          begin
-         errString := i18Manager.GetFormattedString('BadArrExp', [sLineBreak, yyv[yysp-3].yyString]);
+         yyerrmsg := i18Manager.GetFormattedString('BadArrExp', [sLineBreak, yyv[yysp-3].yyString]);
          yyabort;
          end;
          							   if arg1.DimensCount <> pcount then
          							   begin
-         							      errString := i18Manager.GetFormattedString('BadIndxNumber', [pcount, yyv[yysp-3].yyString, sLineBreak, arg1.DimensCount]);
+         							      yyerrmsg := i18Manager.GetFormattedString('BadIndxNumber', [pcount, yyv[yysp-3].yyString, sLineBreak, arg1.DimensCount]);
          							      yyabort;
          							   end;
          							end
@@ -1104,7 +1104,7 @@ begin
          							   begin
          							      if pcount <> 1 then
          							      begin
-         							         errString := i18Manager.GetFormattedString('BadIndxNumber', [pcount, yyv[yysp-3].yyString, sLineBreak, 1]);	
+         							         yyerrmsg := i18Manager.GetFormattedString('BadIndxNumber', [pcount, yyv[yysp-3].yyString, sLineBreak, 1]);	
          							         yyabort;
          							      end
          							      else
@@ -1115,7 +1115,7 @@ begin
          							   end
          							   else if not (pcount in [arg1.DimensCount, arg1.DimensCount+1]) or ((pcount = arg1.DimensCount+1) and (PASCAL_CHAR_TYPE = UNKNOWN_TYPE)) then
          							   begin
-         							      errString := i18Manager.GetFormattedString('BadIndxNumber', [pcount, yyv[yysp-3].yyString, sLineBreak, arg1.DimensCount]);
+         							      yyerrmsg := i18Manager.GetFormattedString('BadIndxNumber', [pcount, yyv[yysp-3].yyString, sLineBreak, arg1.DimensCount]);
          							      yyabort;
          							   end
          							   else
@@ -1131,7 +1131,7 @@ begin
          
          if not TParserHelper.IsPointerType(yyv[yysp-1].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'pointer']);
+         yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-1].yyInteger), 'pointer']);
          yyabort;
          end;
          yyval.yyInteger := TParserHelper.GetOriginalType(yyv[yysp-1].yyInteger);
@@ -1141,7 +1141,7 @@ begin
          
          							if TParserHelper.IsPointerType(yyv[yysp-0].yyInteger) or TParserHelper.isRecordType(yyv[yysp-0].yyInteger) or (yyv[yysp-0].yyInteger = UNKNOWN_TYPE) then
          begin
-         errString := i18Manager.GetString('BadOutput');
+         yyerrmsg := i18Manager.GetString('BadOutput');
          yyabort;
          end;
          							yyval.yyInteger := yyv[yysp-0].yyInteger;
@@ -1151,7 +1151,7 @@ begin
          
          							if not TParserHelper.IsIntegerType(yyv[yysp-0].yyInteger) then
          begin
-         errString := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger), 'Writeln']);
+         yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger), 'Writeln']);
          yyabort;
          end;
          							yyval.yyInteger := yyv[yysp-2].yyInteger;
@@ -1161,7 +1161,7 @@ begin
          
          							if yyv[yysp-0].yyInteger = PASCAL_TEXT_FILE_TYPE then
          begin
-         errString := i18Manager.GetString('BadOutput');
+         yyerrmsg := i18Manager.GetString('BadOutput');
          yyabort;
          end;
          							yyval.yyInteger := yyv[yysp-2].yyInteger;
@@ -1174,12 +1174,12 @@ begin
          							lIsInteger := TParserHelper.IsIntegerType(yyv[yysp-0].yyInteger);
          							if not is_constant and (yymode = yymVarSize) then
          							begin
-         							   errString := i18Manager.GetString('NotConst');
+         							   yyerrmsg := i18Manager.GetString('NotConst');
          							   yyabort;
          							end
          							else if  (yymode = yymReturn) and ((yyv[yysp-0].yyInteger <> rval) and not (TParserHelper.IsPointerType(rval) and (yyv[yysp-0].yyInteger = GENERIC_PTR_TYPE)) and not ((TParserHelper.IsNumericType(rval) and TParserHelper.IsNumericType(yyv[yysp-0].yyInteger)) and not (TParserHelper.IsIntegerType(rval) and TParserHelper.IsRealType(yyv[yysp-0].yyInteger)))) then
          							begin
-         							   errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger), TParserHelper.GetTypeAsString(rval)]);
+         							   yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger), TParserHelper.GetTypeAsString(rval)]);
          							   yyabort;	
          							end
          							else if yymode in [yymFor, yymCase, yymCaseValue, yymVarSize] then
@@ -1188,12 +1188,12 @@ begin
          							   begin
          							      if (yymode = yymCaseValue) and TParserHelper.IsDuplicatedCase then
          begin
-         errString := i18Manager.GetString('DupCaseVal');
+         yyerrmsg := i18Manager.GetString('DupCaseVal');
          yyabort;
          end
          							      else if (yyv[yysp-0].yyInteger <> PASCAL_CHAR_TYPE) and not lIsInteger and not lIsEnum then
          begin
-         errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger), 'integer']);
+         yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger), 'integer']);
          yyabort;
          end
          							      else if yymode = yymCaseValue then
@@ -1201,7 +1201,7 @@ begin
          							         lType := TParserHelper.GetCaseVarType;
          								 if (lType <> yyv[yysp-0].yyInteger) and not (TParserHelper.IsIntegerType(lType) and lIsInteger) then
          							         begin
-         errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(lType), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
+         yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(lType), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
          yyabort;
          								 end;
          							      end;
@@ -1211,7 +1211,7 @@ begin
          							      lType := TParserHelper.GetForVarType;
          							      if (lType <> yyv[yysp-0].yyInteger) and not (TParserHelper.IsIntegerType(lType) and lIsInteger) then
          begin
-         errString := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(lType), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
+         yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(lType), TParserHelper.GetTypeAsString(yyv[yysp-0].yyInteger)]);
          yyabort;
          end;
          							   end

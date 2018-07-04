@@ -104,6 +104,7 @@ type
          class function GetTextWidth(const AText: string; AControl: TControl): integer;
          class function GetAutoWidth(AControl: TControl): integer;
          class function GetLibObject: TObject;
+         class function GetParserErrMsg: string;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetNativeFunction(const AName: string): PNativeFunction;
          function GetLangDefinition(const AName: string): TLangDefinition;
@@ -233,8 +234,8 @@ const   // Global constants
 
         KEY_CURRENT_LANGUAGE = 'CurrentLanguageName';
 
-        PARSER_ERRORS_ARRAY: array[TYYMode] of string = ('BadGeneric', 'BadCondition', 'BadAssign', 'BadInput', 'BadOutput',
-                             'BadFor', 'BadFunction', 'BadCase', 'BadCase', 'BadReturnVal', '');
+        PARSER_ERROR_KEYS: array[TYYMode] of string = ('BadGeneric', 'BadCondition', 'BadAssign', 'BadInput', 'BadOutput',
+                                                       'BadFor', 'BadFunction', 'BadCase', 'BadCase', 'BadReturnVal', '');
 
 var     // Global variables
 
@@ -245,7 +246,6 @@ var     // Global variables
     GCustomCursor:  TCustomCursor;
     GErr_text:      string;
     i18Manager:     Ti18Manager;
-    errString:      string;       // error string returned from parser
 
     function CompareIntegers(AList: TStringList; idx1, idx2: integer): integer;
 
@@ -1073,12 +1073,21 @@ end;
 class function TInfra.Parse(const AText: string; AParserMode: TYYMode): boolean;
 begin
    result := true;
-   errString := '';
    if Assigned(GInfra.CurrentLang.Parse) and not GInfra.CurrentLang.Parse(AText, AParserMode) then
-   begin
-      if errString.IsEmpty then
-         errString := i18Manager.GetString(PARSER_ERRORS_ARRAY[AParserMode]);
       result := false;
+end;
+
+class function TInfra.GetParserErrMsg: string;
+var
+   parser: TCustomParser;
+begin
+   result := '';
+   parser := GInfra.CurrentLang.Parser;
+   if parser <> nil then
+   begin
+      result := parser.yyerrmsg;
+      if result.IsEmpty and not parser.GetStatus then
+         result := i18Manager.GetString(PARSER_ERROR_KEYS[parser.yymode]);
    end;
 end;
 

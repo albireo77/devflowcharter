@@ -256,7 +256,7 @@ begin
       end
       else if not TInfra.Parse(Self, FParserMode) then
       begin
-         Hint := i18Manager.GetFormattedString('ExpErr', [txt, sLineBreak, errString]);
+         Hint := i18Manager.GetFormattedString('ExpErr', [txt, sLineBreak, TInfra.GetParserErrMsg]);
          Font.Color := NOK_COLOR;
       end;
       if Assigned(OnChangeCallBack) then
