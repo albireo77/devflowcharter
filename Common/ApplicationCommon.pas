@@ -1073,8 +1073,8 @@ end;
 class function TInfra.Parse(const AText: string; AParserMode: TYYMode): boolean;
 begin
    result := true;
-   if Assigned(GInfra.CurrentLang.Parse) and not GInfra.CurrentLang.Parse(AText, AParserMode) then
-      result := false;
+   if Assigned(GInfra.CurrentLang.Parse) then
+      result := GInfra.CurrentLang.Parse(AText, AParserMode);
 end;
 
 class function TInfra.GetParserErrMsg: string;
