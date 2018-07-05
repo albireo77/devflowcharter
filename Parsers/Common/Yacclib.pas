@@ -19,6 +19,7 @@ type
   YYSType = Integer;
   TYYFlag = (yyfnone, yyfaccept, yyfabort, yyferror);
   TYYMode = (yymUndefined, yymCondition, yymAssign, yymInput, yymOutput, yymFor, yymFuncCall, yymCase, yymCaseValue, yymReturn, yymVarSize);
+  TYYModeSet = set of TYYMode;
 
   TCustomParser = Class
   protected
@@ -26,6 +27,7 @@ type
     yyerrflag: Integer;
     yyflag: TYYFlag;
     yyerrmsg: String;
+    procedure CheckMode(AValidModes: TYYModeSet);
   public
     ylex: TCustomLexer;	{ Our lexical analyser.			}
     yychar: Integer; 	{ Current lookahead character.		}
@@ -114,11 +116,20 @@ begin
   yyerrmsg := '';
 end;
 
+procedure TCustomParser.CheckMode(AValidModes: TYYModeSet);
+begin
+  if not (yymode in AValidModes) then
+  begin
+    yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
+    yyabort;
+  end;  
+end;
+
 function TCustomParser.GetErrMsg: String;
 begin
   if yyerrmsg <> '' then
     result := yyerrmsg
-  else if yyflag = yyfabort then
+  else if yyflag <> yyfaccept then
     result := i18Manager.GetString(PARSER_ERROR_KEYS[yymode])
   else
     result := '';  

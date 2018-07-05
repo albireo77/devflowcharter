@@ -133,67 +133,25 @@ begin
   case yyruleno of
 
    1 : begin
-         
-         							if yymode <> yymAssign then
-         begin
-         yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
-         yyabort;
-         end;
-         						
+         CheckMode([yymAssign]); 
        end;
    2 : begin
-         
-         							if yymode <> yymCondition then
-         begin
-         yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
-         yyabort;
-         end;
-         						
+         CheckMode([yymCondition]); 
        end;
    3 : begin
-         
-         							if yymode <> yymInput then
-         begin
-         yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
-         yyabort;
-         end;
-         						
+         CheckMode([yymInput]); 
        end;
    4 : begin
-         
-         							if yymode <> yymOutput then
-         begin
-         yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
-         yyabort;
-         end;
-         						
+         CheckMode([yymOutput]); 
        end;
    5 : begin
-         
-         							if yymode <> yymCaseValue then
-         begin
-         yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
-         yyabort;
-         end;
-         						
+         CheckMode([yymCaseValue]); 
        end;
    6 : begin
-         
-         							if not (yymode in [yymFor, yymCase, yymCaseValue, yymReturn, yymVarSize]) then
-         begin
-         yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
-         yyabort;
-         end;
-         						
+         CheckMode([yymFor, yymCase, yymCaseValue, yymReturn, yymVarSize]); 
        end;
    7 : begin
-         
-         							if not (yymode in [yymFuncCall, yymReturn]) then
-         begin
-         yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
-         yyabort;
-         end;
-         						
+         CheckMode([yymFuncCall, yymReturn]); 
        end;
    8 : begin
          

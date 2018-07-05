@@ -70,62 +70,13 @@ var
 
 %%
 
-input_line:		assignment		{
-							if yymode <> yymAssign then
-                                                        begin
-                                                           yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
-                                                           yyabort;
-                                                        end;
-						}
-
-		|	condition		{
-							if yymode <> yymCondition then
-                                                        begin
-                                                           yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
-                                                           yyabort;
-                                                        end;
-						}
-
-		|	input			{
-							if yymode <> yymInput then
-                                                        begin
-                                                           yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
-                                                           yyabort;
-                                                        end;
-						}
-
-		|	output			{
-							if yymode <> yymOutput then
-                                                        begin
-                                                           yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
-                                                           yyabort;
-                                                        end;
-						}
-
-		|	case			{
-							if yymode <> yymCaseValue then
-                                                        begin
-                                                           yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
-                                                           yyabort;
-                                                        end;
-						}
-
-		|	range			{
-							if not (yymode in [yymFor, yymCase, yymCaseValue, yymReturn, yymVarSize]) then
-                                                        begin
-                                                           yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
-                                                           yyabort;
-                                                        end;
-						}
-
-		|	routine_call		{
-							if not (yymode in [yymFuncCall, yymReturn]) then
-                                                        begin
-                                                           yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
-                                                           yyabort;
-                                                        end;
-						}
-
+input_line:		assignment		{ CheckMode([yymAssign]); }
+			|	condition		{ CheckMode([yymCondition]); }
+			|	input			{ CheckMode([yymInput]); }
+			|	output			{ CheckMode([yymOutput]); }
+			|	case			{ CheckMode([yymCaseValue]); }
+			|	range			{ CheckMode([yymFor, yymCase, yymCaseValue, yymReturn, yymVarSize]); }
+			|	routine_call	{ CheckMode([yymFuncCall, yymReturn]); }
 ;
 
 routine_call:		T_BREAK			{
