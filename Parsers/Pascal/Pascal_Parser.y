@@ -70,7 +70,7 @@ var
 
 %%
 
-input_line:		assignment		{ CheckMode([yymAssign]); }
+input_line:			assignment	{ CheckMode([yymAssign]); }
 			|	condition       { CheckMode([yymCondition]); }
 			|	input           { CheckMode([yymInput]); }
 			|	output          { CheckMode([yymOutput]); }
