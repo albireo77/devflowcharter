@@ -118,7 +118,7 @@ function TCustomParser.GetErrMsg: String;
 begin
   if yyerrmsg <> '' then
     result := yyerrmsg
-  else if yyflag <> yyfaccept then
+  else if yyflag = yyfabort then
     result := i18Manager.GetString(PARSER_ERROR_KEYS[yymode])
   else
     result := '';  
