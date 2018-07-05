@@ -13,9 +13,6 @@ interface
 
 uses
    LexLib;
-   
-const
-   yymaxdepth = 2048;	{ default stack size of parser.		}
 
 type
   { default value type, may be redefined in Yacc output file.		}
@@ -28,6 +25,7 @@ type
     { Flags used internally by parse routine.				}
     yyerrflag: Integer;
     yyflag: TYYFlag;
+    yyerrmsg: String;
   public
     ylex: TCustomLexer;	{ Our lexical analyser.			}
     yychar: Integer; 	{ Current lookahead character.		}
@@ -35,7 +33,6 @@ type
     yydebug: Boolean;	{ Set to true to enable debugging output from parser. }
     yydebuglex: Boolean;	{ Set to true to echo all lex tokens to	the debug channel. }
     yymode: TYYMode;
-    yyerrmsg: String;
     { Display an error message.						}
     procedure yyerror(const msg: AnsiString);
     { Delete current lookahead token.					}
@@ -52,11 +49,19 @@ type
     procedure EWriteln(const S: AnsiString);
     { Reset the parser for another run.					}
     procedure Reset;
-    { Return parser status.					}
-    function GetStatus: Boolean; 
+    { Return error message.					}
+    function GetErrMsg: String; 
   end;
+  
+const
+   yymaxdepth = 2048;	{ default stack size of parser.		}
+   PARSER_ERROR_KEYS: array[TYYMode] of string = ('BadGeneric', 'BadCondition', 'BadAssign', 'BadInput', 'BadOutput',
+                                                  'BadFor', 'BadFunction', 'BadCase', 'BadCase', 'BadReturnVal', '');
 
 implementation
+
+uses
+   ApplicationCommon;
 
 { We pass error calls to the yyerrorfile item in the lexer.		}
 { This requires the TLexFile item to have been opened at some stage,	}
@@ -109,9 +114,14 @@ begin
   yyerrmsg := '';
 end;
 
-function TCustomParser.GetStatus: Boolean;
+function TCustomParser.GetErrMsg: String;
 begin
-  result := yyflag = yyfaccept;
+  if yyerrmsg <> '' then
+    result := yyerrmsg
+  else if yyflag <> yyfaccept then
+    result := i18Manager.GetString(PARSER_ERROR_KEYS[yymode])
+  else
+    result := '';  
 end;
 
 end.

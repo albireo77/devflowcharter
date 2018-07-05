@@ -234,9 +234,6 @@ const   // Global constants
 
         KEY_CURRENT_LANGUAGE = 'CurrentLanguageName';
 
-        PARSER_ERROR_KEYS: array[TYYMode] of string = ('BadGeneric', 'BadCondition', 'BadAssign', 'BadInput', 'BadOutput',
-                                                       'BadFor', 'BadFunction', 'BadCase', 'BadCase', 'BadReturnVal', '');
-
 var     // Global variables
 
     GClpbrd:        TClipbrd;
@@ -1078,17 +1075,10 @@ begin
 end;
 
 class function TInfra.GetParserErrMsg: string;
-var
-   parser: TCustomParser;
 begin
    result := '';
-   parser := GInfra.CurrentLang.Parser;
-   if parser <> nil then
-   begin
-      result := parser.yyerrmsg;
-      if result.IsEmpty and not parser.GetStatus then
-         result := i18Manager.GetString(PARSER_ERROR_KEYS[parser.yymode]);
-   end;
+   if GInfra.CurrentLang.Parser <> nil then
+      result := GInfra.CurrentLang.Parser.GetErrMsg;
 end;
 
 class function TInfra.IsNOkColor(AColor: TColor): boolean;
