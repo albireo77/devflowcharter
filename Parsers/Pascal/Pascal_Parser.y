@@ -70,13 +70,13 @@ var
 
 %%
 
-input_line:		assignment		{ CheckMode([yymAssign]); }
-			|	condition		{ CheckMode([yymCondition]); }
-			|	input			{ CheckMode([yymInput]); }
-			|	output			{ CheckMode([yymOutput]); }
-			|	case			{ CheckMode([yymCaseValue]); }
-			|	range			{ CheckMode([yymFor, yymCase, yymCaseValue, yymReturn, yymVarSize]); }
-			|	routine_call	{ CheckMode([yymFuncCall, yymReturn]); }
+input_line:		assignment      { CheckMode([yymAssign]); }
+			|	condition       { CheckMode([yymCondition]); }
+			|	input           { CheckMode([yymInput]); }
+			|	output          { CheckMode([yymOutput]); }
+			|	case            { CheckMode([yymCaseValue]); }
+			|	range           { CheckMode([yymFor, yymCase, yymCaseValue, yymReturn, yymVarSize]); }
+			|	routine_call    { CheckMode([yymFuncCall, yymReturn]); }
 ;
 
 routine_call:		T_BREAK			{
