@@ -393,36 +393,27 @@ begin
    if fsStrikeOut in Font.Style then
       exit;
    indent := DupeString(GSettings.IndentString, ADeep);
-   if (ALangId = PYTHON_LANG_ID) or (ALangId = JAVA_LANG_ID) then   // for Java and Python it's impossible to create suitable for..do XML template so hardcoded template must be used
-   begin
-      line := indent + FillCodedTemplate(ALangId);
-      tmpList := TStringList.Create;
-      try
+   tmpList := TStringList.Create;
+   try
+      if (ALangId = PYTHON_LANG_ID) or (ALangId = JAVA_LANG_ID) then   // for Java and Python it's impossible to create suitable for..do XML template so hardcoded template must be used
+      begin
+         line := indent + FillCodedTemplate(ALangId);
          tmpList.AddObject(line, Self);
          GenerateNestedCode(tmpList, PRIMARY_BRANCH_IND, ADeep+1, ALangId);
          if ALangId = JAVA_LANG_ID then
             tmpList.AddObject(indent + '}', Self);
-         TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
-         result := tmpList.Count;
-      finally
-        tmpList.Free;
-      end;
-   end
-   else
-   begin
-      lang := GInfra.GetLangDefinition(ALangId);
-      template := FillTemplate(ALangId, lang.ForDoTemplate);
-      if not template.IsEmpty then
+      end
+      else
       begin
-         tmpList := TStringList.Create;
-         try
+         lang := GInfra.GetLangDefinition(ALangId);
+         template := FillTemplate(ALangId, lang.ForDoTemplate);
+         if not template.IsEmpty then
             GenerateTemplateSection(tmpList, template, ALangId, ADeep);
-            TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
-            result := tmpList.Count;
-         finally
-            tmpList.Free;
-         end;
       end;
+      TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
+      result := tmpList.Count;
+   finally
+      tmpList.Free;
    end;
 end;
 
