@@ -6325,11 +6325,15 @@ next:
     yychar := TLex(ylex).yylex(yylval);
 	if yychar < 0 then
 	  yychar := 0;
+{$IFDEF DEBUG}
       if yydebuglex then
 	    EWriteln(ylex.yytext);
+{$ENDIF}
   end;
+{$IFDEF DEBUG}
   if yydebug then 
     EWriteln(Format('state: %d, char: %d', [yystate, yychar]));
+{$ENDIF}
   { determine parse action: 						}
   yyn := yyd[yystate];
   if yyn <> 0 then 
@@ -6361,11 +6365,13 @@ errlab:
     { uncover a state with shift action on error token 		}
     while (yysp > 0) and not (yyact(yys[yysp], _error, yyn) and (yyn > 0)) do
 	begin
+{$IFDEF DEBUG}
 	  if yydebug then
 	    if yysp > 1 then
 	      EWriteln(Format('error recovery pops state: %d, uncovers: %d', [yys[yysp], yys[yysp-1]]))
 	    else
 	      EWriteln('error recovery fails... abort');
+{$ENDIF}
 	  dec(yysp);
 	end;
     if yysp = 0 then
@@ -6375,8 +6381,10 @@ errlab:
   end
   else				{ no shift yet; discard symbol 		}
   begin
+{$IFDEF DEBUG}
       if yydebug then 
 	    Ewriteln(Format('error recovery discards char %d', [yychar]));
+{$ENDIF}
       if yychar = 0 then
 	    goto abort; { end of input; abort		}
       yychar := -1;
@@ -6397,9 +6405,10 @@ shift:
 reduce:
 
   { execute action, pop rule from stack, and go to next state: 		}
-
+{$IFDEF DEBUG}
   if yydebug then
     Ewriteln(Format('reduce %d', [-yyn]));
+{$ENDIF}
 
   yyflag := yyfnone;
   yyaction(-yyn);

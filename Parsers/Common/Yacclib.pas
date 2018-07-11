@@ -32,8 +32,10 @@ type
     ylex: TCustomLexer;	{ Our lexical analyser.			}
     yychar: Integer; 	{ Current lookahead character.		}
     yynerrs: Integer; 	{ Current number of syntax errors as reported by the parser.	}
+{$IFDEF DEBUG}
     yydebug: Boolean;	{ Set to true to enable debugging output from parser. }
     yydebuglex: Boolean;	{ Set to true to echo all lex tokens to	the debug channel. }
+{$ENDIF}
     yymode: TYYMode;
     { Display an error message.						}
     procedure yyerror(const msg: AnsiString);
@@ -47,8 +49,10 @@ type
     procedure yyerrlab;
     { Reset parser to normal operation after an error.			}
     procedure yyerrok;
+{$IFDEF DEBUG}
     { Write a text linne to the debug/error channel.			}
     procedure EWriteln(const S: AnsiString);
+{$ENDIF}
     { Reset the parser for another run.					}
     procedure Reset;
     { Return error message.					}
@@ -104,11 +108,13 @@ begin
   yyerrflag := 0;
 end;
 
+{$IFDEF DEBUG}
 { Write a text linne to the debug/error channel.			}
 procedure TCustomParser.EWriteln(const S: AnsiString);
 begin
   ylex.yyerrorfile.Writeln(S);
 end;
+{$ENDIF}
 
 procedure TCustomParser.Reset;
 begin
