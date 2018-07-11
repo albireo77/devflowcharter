@@ -1469,7 +1469,7 @@ begin
          begin
             Caption := IfThen(nativeFunc.Caption.IsEmpty, nativeFunc.Name, nativeFunc.Caption);
             Hint := nativeFunc.Hint;
-            Tag := Integer(nativeFunc);
+            Tag := NativeInt(nativeFunc);
             OnClick := FuncMenuClick;
          end;
          d := d + 1;
