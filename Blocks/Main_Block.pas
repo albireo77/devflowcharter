@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
 
@@ -440,55 +440,46 @@ begin
       lName := GProject.Name;
       isMain := true;
    end;
-   if ALangId = TIBASIC_LANG_ID then
-   begin
-      tmpList := TStringList.Create;
-      try
-         GenerateNestedCode(tmpList, PRIMARY_BRANCH_IND, ADeep+1, ALangId);
-         TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
-         result := tmpList.Count;
-      finally
-         tmpList.Free;
-      end;
-   end
-   else
-   begin
-      lang := GInfra.GetLangDefinition(ALangId);
-      if lang <> nil then
+   tmpList := TStringList.Create;
+   try
+      if ALangId = TIBASIC_LANG_ID then
+         GenerateNestedCode(tmpList, PRIMARY_BRANCH_IND, ADeep+1, ALangId)
+      else
       begin
-         template := IfThen(isMain, lang.MainFunctionTemplate, lang.FunctionBodyTemplate);
-         if not template.IsEmpty then
+         lang := GInfra.GetLangDefinition(ALangId);
+         if lang <> nil then
          begin
-            progList := TStringList.Create;
-            tmpList := TStringList.Create;
-            try
-               progList.Text := ReplaceStr(template, PRIMARY_PLACEHOLDER, lName);
-               if isMain then
-               begin
-                  ending := '';
-                  if not ((Branch.Count > 0) and (Branch.Last is TReturnBlock)) then
-                     ending := lang.ProgramReturnTemplate;
-                  TInfra.InsertTemplateLines(progList, '%s3', ending);
-               end;
+            template := IfThen(isMain, lang.MainFunctionTemplate, lang.FunctionBodyTemplate);
+            if not template.IsEmpty then
+            begin
+               progList := TStringList.Create;
                varList := TStringList.Create;
                try
+                  progList.Text := ReplaceStr(template, PRIMARY_PLACEHOLDER, lName);
+                  if isMain then
+                  begin
+                     ending := '';
+                     if not ((Branch.Count > 0) and (Branch.Last is TReturnBlock)) then
+                        ending := lang.ProgramReturnTemplate;
+                     TInfra.InsertTemplateLines(progList, '%s3', ending);
+                  end;
                   if Assigned(GInfra.CurrentLang.VarSectionGenerator) then
                      GInfra.CurrentLang.VarSectionGenerator(varList, vars)
                   else if Assigned(GInfra.DummyLang.VarSectionGenerator) then
                      GInfra.DummyLang.VarSectionGenerator(varList, vars);
                   TInfra.InsertTemplateLines(progList, '%s2', varList);
+                  GenerateTemplateSection(tmpList, progList, ALangId, ADeep);
                finally
                   varList.Free;
+                  progList.Free;
                end;
-               GenerateTemplateSection(tmpList, progList, ALangId, ADeep);
-               TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
-               result := tmpList.Count;
-            finally
-               progList.Free;
-               tmpList.Free;
             end;
          end;
       end;
+      TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
+      result := tmpList.Count;
+   finally
+      tmpList.Free;
    end;
 end;
 
