@@ -54,8 +54,7 @@ type
     procedure FormDeactivate(Sender: TObject); virtual;
     procedure RefreshTabs; virtual;
     procedure pgcTabsDragDrop(Sender, Source: TObject; X, Y: Integer);
-    procedure pgcTabsDragOver(Sender, Source: TObject; X, Y: Integer;
-      State: TDragState; var Accept: Boolean);
+    procedure pgcTabsDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
     procedure pgcTabsMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure pgcTabsMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure pgcTabsMouseLeave(Sender: TObject);
@@ -66,8 +65,6 @@ type
     UpdateCodeEditor: boolean;
     { Public declarations }
     function GetVisiblePageCount: integer;
-  private
-    FLastHintTabIndex: integer;
   end;
 
 implementation
@@ -96,7 +93,6 @@ end;
 
 procedure TPageControlForm.ResetForm;
 begin
-   FLastHintTabIndex := -1;
    UpdateCodeEditor := true;
    inherited ResetForm;
 end;
@@ -270,12 +266,10 @@ procedure TPageControlForm.pgcTabsMouseMove(Sender: TObject; Shift: TShiftState;
 var
    idx: integer;
 begin
+   pgcTabs.Hint := '';
    idx := TInfra.GetPageIndex(pgcTabs, X, Y);
-   if FLastHintTabIndex <> idx then
-      Application.CancelHint;
-   if idx <> -1 then
+   if (idx <> -1) and (idx <> pgcTabs.ActivePageIndex) then
       pgcTabs.Hint := pgcTabs.Pages[idx].Caption;
-   FLastHintTabIndex := idx;
    pgcTabs.ShowHint := pgcTabs.Hint <> '';
 end;
 
