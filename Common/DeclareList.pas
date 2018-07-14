@@ -820,13 +820,16 @@ end;
 procedure TDeclareList.Resize;
 begin
    inherited;
-   if FExternalCol <> -1 then
-      RefreshChBoxes;
-   btnAdd.Width := gbBox.Width div 3;
-   btnImport.SetBounds(btnAdd.BoundsRect.Right+1, btnImport.Top, btnAdd.Width, btnImport.Height);
-   btnExport.SetBounds(btnImport.BoundsRect.Right+1, btnExport.Top, btnAdd.Width, btnExport.Height);
-   btnRemove.Width := sgList.Width div 2;
-   btnChange.SetBounds(btnRemove.BoundsRect.Right+1, btnChange.Top, btnRemove.Width, btnChange.Height);
+   if btnAdd <> nil then
+   begin
+      if FExternalCol <> -1 then
+         RefreshChBoxes;
+      btnAdd.Width := gbBox.Width div 3;
+      btnImport.SetBounds(btnAdd.BoundsRect.Right+1, btnImport.Top, btnAdd.Width, btnImport.Height);
+      btnExport.SetBounds(btnImport.BoundsRect.Right+1, btnExport.Top, btnAdd.Width, btnExport.Height);
+      btnRemove.Width := sgList.Width div 2;
+      btnChange.SetBounds(btnRemove.BoundsRect.Right+1, btnChange.Top, btnRemove.Width, btnChange.Height);
+   end;
 end;
 
 procedure TVarDeclareList.FillForList(AList: TStrings);

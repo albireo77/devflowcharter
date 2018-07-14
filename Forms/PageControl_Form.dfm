@@ -38,6 +38,7 @@ object PageControlForm: TPageControlForm
     OnDragOver = pgcTabsDragOver
     OnDrawTab = pgcTabsDrawTab
     OnMouseDown = pgcTabsMouseDown
+    OnMouseLeave = pgcTabsMouseLeave
     OnMouseMove = pgcTabsMouseMove
   end
   object MainMenu1: TMainMenu

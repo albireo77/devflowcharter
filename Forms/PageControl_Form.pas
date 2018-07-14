@@ -58,6 +58,7 @@ type
       State: TDragState; var Accept: Boolean);
     procedure pgcTabsMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure pgcTabsMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure pgcTabsMouseLeave(Sender: TObject);
     procedure ResetForm; override;
     procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -259,6 +260,12 @@ begin
    end;
 end;
 
+procedure TPageControlForm.pgcTabsMouseLeave(Sender: TObject);
+begin
+   pgcTabs.Hint := '';
+   pgcTabs.ShowHint := false;
+end;
+
 procedure TPageControlForm.pgcTabsMouseMove(Sender: TObject; Shift: TShiftState; X, Y: integer);
 var
    idx: integer;
@@ -269,6 +276,7 @@ begin
    if idx <> -1 then
       pgcTabs.Hint := pgcTabs.Pages[idx].Caption;
    FLastHintTabIndex := idx;
+   pgcTabs.ShowHint := pgcTabs.Hint <> '';
 end;
 
 end.
