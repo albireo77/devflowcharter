@@ -1,3 +1,8 @@
+6.7 [14.07.2018]
+- fix access violation when creating user function
+- fix hint appearing everywhere inside datatype/function header
+- minor tweaks
+
 6.6 [03.06.2018]
 - language definition file: add "library" attribute for native functions; library import statement will be generated after pasting function call from popup menu (editor must be visible);
                             works only for one-per-line imports (not csv list) defined in LibEntry tag

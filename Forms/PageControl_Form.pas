@@ -65,6 +65,8 @@ type
     UpdateCodeEditor: boolean;
     { Public declarations }
     function GetVisiblePageCount: integer;
+  private
+    FLastHintTabIndex: integer;
   end;
 
 implementation
@@ -94,6 +96,7 @@ end;
 procedure TPageControlForm.ResetForm;
 begin
    UpdateCodeEditor := true;
+   FLastHintTabIndex := -1;
    inherited ResetForm;
 end;
 
@@ -259,18 +262,20 @@ end;
 procedure TPageControlForm.pgcTabsMouseLeave(Sender: TObject);
 begin
    pgcTabs.Hint := '';
-   pgcTabs.ShowHint := false;
+   FLastHintTabIndex := -1;
 end;
 
 procedure TPageControlForm.pgcTabsMouseMove(Sender: TObject; Shift: TShiftState; X, Y: integer);
 var
    idx: integer;
 begin
-   pgcTabs.Hint := '';
    idx := TInfra.GetPageIndex(pgcTabs, X, Y);
-   if (idx <> -1) and (idx <> pgcTabs.ActivePageIndex) then
+   if (idx <> -1) and (idx <> FLastHintTabIndex) then
+   begin
+      Application.CancelHint;
       pgcTabs.Hint := pgcTabs.Pages[idx].Caption;
-   pgcTabs.ShowHint := pgcTabs.Hint <> '';
+      FLastHintTabIndex := idx;
+   end;
 end;
 
 end.
