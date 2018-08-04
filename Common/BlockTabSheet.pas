@@ -184,15 +184,18 @@ procedure TScrollBoxEx.SetScrollBars;
 var
    pnt: TPoint;
 begin
-   pnt := GetBottomRight;
-   if pnt.X > ClientWidth then
-      HorzScrollBar.Range := pnt.X
-   else
-      HorzScrollBar.Range := ClientWidth;
-   if pnt.Y > ClientHeight then
-      VertScrollBar.Range := pnt.Y
-   else
-      VertScrollBar.Range := ClientHeight;
+   if Parent <> nil then
+   begin
+      pnt := GetBottomRight;
+      if pnt.X > ClientWidth then
+         HorzScrollBar.Range := pnt.X
+      else
+         HorzScrollBar.Range := ClientWidth;
+      if pnt.Y > ClientHeight then
+         VertScrollBar.Range := pnt.Y
+      else
+         VertScrollBar.Range := ClientHeight;
+   end;
    NavigatorForm.Invalidate;
 end;
 
