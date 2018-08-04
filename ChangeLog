@@ -1,3 +1,6 @@
+6.8 [04.08.2018]
+- fix access violation when removing tab containing comment
+
 6.7 [14.07.2018]
 - fix access violation when creating user function
 - fix hint appearing everywhere inside datatype/function header
