@@ -519,7 +519,7 @@ begin
    if ATag <> nil then
    begin
       ATag.SetAttribute(Z_ORDER_ATTR, FZOrder.ToString);
-      if FPage <> GProject.GetMainPage then
+      if not FPage.IsMain then
          ATag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
    end;
 end;

@@ -41,6 +41,7 @@ type
       destructor Destroy; override;
       procedure ExportToXMLTag(ATag: IXMLElement);
       procedure ImportFromXMLTag(ATag: IXMLElement);
+      function IsMain: boolean;
       property Form: TMainForm read FForm;
    end;
 
@@ -97,13 +98,18 @@ begin
    inherited Destroy;
 end;
 
+function TBlockTabSheet.IsMain: boolean;
+begin
+   result := (GProject <> nil) and (GProject.GetMainPage = Self);
+end;
+
 procedure TBlockTabSheet.ExportToXMLTag(ATag: IXMLElement);
 var
    tag: IXMLElement;
 begin
    tag := ATag.OwnerDocument.CreateElement('page');
    ATag.AppendChild(tag);
-   tag.SetAttribute('name', IfThen(GProject.GetMainPage = Self, MAIN_PAGE_MARKER, Caption));
+   tag.SetAttribute('name', IfThen(IsMain, MAIN_PAGE_MARKER, Caption));
    tag.SetAttribute('hScrollRange', Box.HorzScrollBar.Range.ToString);
    tag.SetAttribute('vScrollRange', Box.VertScrollBar.Range.ToString);
    tag.SetAttribute('hScrollPos', Box.HorzScrollBar.Position.ToString);

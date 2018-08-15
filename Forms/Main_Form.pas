@@ -1228,16 +1228,13 @@ begin
 end;
 
 procedure TMainForm.pmTabsPopup(Sender: TObject);
-var
-   page: TTabSheet;
 begin
    miRemovePage.Enabled := false;
    miRenamePage.Enabled := false;
    miAddPage.Enabled := false;
-   if pmTabs.PopupComponent is TTabSheet then
+   if pmTabs.PopupComponent is TBlockTabSheet then
    begin
-      page := TTabSheet(pmTabs.PopupComponent);
-      miRemovePage.Enabled := page <> GProject.GetMainPage;
+      miRemovePage.Enabled := not TBlockTabSheet(pmTabs.PopupComponent).IsMain;
       miRenamePage.Enabled := miRemovePage.Enabled;
       miAddPage.Enabled := true;
    end;

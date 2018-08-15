@@ -328,7 +328,7 @@ begin
       tag.SetAttribute('v', Visible.ToString);
       tag.SetAttribute(Z_ORDER_ATTR, FZOrder.ToString);
       tag.SetAttribute(IS_HEADER_ATTR, IsHeader.ToString);
-      if FPage <> GProject.GetMainPage then
+      if not FPage.IsMain then
          tag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
       if Font.Style <> [] then
          tag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style));
