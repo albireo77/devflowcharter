@@ -134,8 +134,9 @@ end;
 
 procedure TElement.OnChangeType(Sender: TObject);
 begin
+   cbType.Hint := cbType.Text;
    if FParentTab.Font.Color <> NOK_COLOR then
-       TTabComponent(FParentTab).UpdateCodeEditor;
+      TTabComponent(FParentTab).UpdateCodeEditor;
 end;
 
 function TElement.IsValid: boolean;
@@ -188,6 +189,7 @@ begin
       cbType.ItemIndex := idx
    else if cbType.Items.Count > 0 then 
       cbType.ItemIndex := 0;
+   cbType.Hint := cbType.Text;
 end;
 
 function TElement.ExportToXMLTag(ATag: IXMLElement): IXMLElement;

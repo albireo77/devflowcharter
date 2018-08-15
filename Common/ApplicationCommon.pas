@@ -810,6 +810,7 @@ begin
    AcbType.Items.EndUpdate;
    AcbType.Width := GetComboMaxWidth(AcbType);
    AcbType.DropDownCount := AcbType.Items.Count;
+   AcbType.Hint := AcbType.Text;
 end;
 
 function TInfra.GetLangDefinition(const AName: string): TLangDefinition;
