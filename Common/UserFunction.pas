@@ -710,7 +710,10 @@ end;
 procedure TUserFunctionHeader.OnChangeType(Sender: TObject);
 begin
    if Sender = cbType then
+   begin
       chkArrayType.Enabled := cbType.ItemIndex > 0;
+      cbType.Hint := cbType.Text;
+   end;
    if Font.Color <> NOK_COLOR then
       UpdateCodeEditor;
    GProject.SetChanged;
