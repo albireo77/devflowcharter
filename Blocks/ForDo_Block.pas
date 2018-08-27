@@ -108,7 +108,7 @@ begin
    cbVariable.BevelKind := bkSoft;
    cbVariable.BevelOuter := bvNone;
    cbVariable.OnCloseUp := VarListOnCloseUp;
-   cbVariable.Style := csDropDownList;
+   cbVariable.Style := csOwnerDrawFixed;
    cbVariable.Color := edtStartVal.Color;
 
    edtVariable := TEdit.Create(Self);
