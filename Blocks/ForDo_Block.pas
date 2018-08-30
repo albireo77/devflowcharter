@@ -238,7 +238,7 @@ begin
       DrawTextLabel(bhx+1, y, IfThen(FDescOrder, '«', '»'), false, true);
       r := DrawTextLabel(bhx-97, y, FForLabel, false, true);
       if GInfra.CurrentLang.ForDoVarList then
-         edtVariable.Left := bhx - 77
+         edtVariable.Left := cbVariable.Left + 4
       else
       begin
          w := bhx - r.Right - 46;
