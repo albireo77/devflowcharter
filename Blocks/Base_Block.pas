@@ -1419,7 +1419,7 @@ begin
          Canvas.Font.Style := Canvas.Font.Style + [fsBold];
       Canvas.Brush.Style := bsClear;
       tw := Canvas.TextWidth(AText);
-      th := Canvas.TextHeight('X');
+      th := Canvas.TextHeight(AText);
       if rightJust then
       begin
          x := x - tw;
