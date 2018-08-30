@@ -90,7 +90,7 @@ type
          procedure WMWindowPosChanged(var Msg: TWMWindowPosChanged); message WM_WINDOWPOSCHANGED;
          procedure Paint; override;
          procedure DrawI;
-         procedure DrawTextLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false);
+         function DrawTextLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false): TRect;
          procedure DrawBlockLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false);
          function GetId: integer;
          function PerformEditorUpdate: boolean;
@@ -1402,11 +1402,13 @@ begin
    end;
 end;
 
-procedure TBlock.DrawTextLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false);
+function TBlock.DrawTextLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false): TRect;
 var
    fontStyles: TFontStyles;
    fontColor: TColor;
+   tw, th: integer;
 begin
+   result := TRect.Create(Point(x, y), 0, 0);
    if not AText.IsEmpty then
    begin
       fontStyles := Canvas.Font.Style;
@@ -1416,21 +1418,24 @@ begin
       if fsBold in fontStyles then
          Canvas.Font.Style := Canvas.Font.Style + [fsBold];
       Canvas.Brush.Style := bsClear;
+      tw := Canvas.TextWidth(AText);
+      th := Canvas.TextHeight('X');
       if rightJust then
       begin
-         x := x - Canvas.TextWidth(AText);
+         x := x - tw;
          if x < 0 then
             x := 0;
       end;
       if downJust then
       begin
-         y := y - Canvas.TextHeight('X');
+         y := y - th;
          if y < 0 then
             y := 0;
       end;
       Canvas.TextOut(x, y, AText);
       Canvas.Font.Style := fontStyles;
       Canvas.Font.Color := fontColor;
+      result := TRect.Create(Point(x, y), tw, th);
    end;
 end;
 

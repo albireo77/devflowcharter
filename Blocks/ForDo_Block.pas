@@ -198,8 +198,9 @@ end;
 
 procedure TForDoBlock.Paint;
 var
-   y, bhx: integer;
+   y, bhx, w: integer;
    lColor: TColor;
+   r: TRect;
 begin
    inherited;
    if Expanded then
@@ -208,7 +209,6 @@ begin
       IPoint.X := bhx + 60;
       IPoint.Y := 35;
       cbVariable.Left := bhx - 81;
-      edtVariable.Left := bhx - 77;
       edtStartVal.Left := bhx - 30;
       edtStopVal.Left := bhx + 11;
       DrawArrow(bhx, TopHook.Y, Branch.Hook);
@@ -236,7 +236,16 @@ begin
       y :=  edtStartVal.BoundsRect.Bottom - 6;
       DrawTextLabel(bhx-42, y, GInfra.CurrentLang.ForDoVarString, false, true);
       DrawTextLabel(bhx+1, y, IfThen(FDescOrder, '«', '»'), false, true);
-      DrawTextLabel(bhx-97, y, FForLabel, false, true);
+      r := DrawTextLabel(bhx-97, y, FForLabel, false, true);
+      if GInfra.CurrentLang.ForDoVarList then
+         edtVariable.Left := bhx - 77
+      else
+      begin
+         w := bhx - r.Right - 46;
+         if w < 12 then
+            w := 12;
+         edtVariable.SetBounds(bhx-w-44, edtVariable.Top, w, edtVariable.Height);
+      end;
       DrawBlockLabel(bhx-100, 40, GInfra.CurrentLang.LabelFor);
    end;
    DrawI;

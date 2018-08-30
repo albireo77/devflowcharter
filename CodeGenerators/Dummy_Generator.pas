@@ -254,7 +254,6 @@ begin
             begin
                constValue := AConstList.sgList.Cells[CONST_VALUE_COL, i];
                constType := '';
-               t := UNKNOWN_TYPE;
                if Assigned(GInfra.CurrentLang.GetLiteralType) then
                   t := GInfra.CurrentLang.GetLiteralType(constValue)
                else
