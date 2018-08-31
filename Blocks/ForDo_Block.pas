@@ -241,9 +241,7 @@ begin
          edtVariable.Left := cbVariable.Left + 4
       else
       begin
-         w := bhx - r.Right - 46;
-         if w < 12 then
-            w := 12;
+         w := Max(bhx-r.Right-46, 12);
          edtVariable.SetBounds(bhx-w-44, edtVariable.Top, w, edtVariable.Height);
       end;
       DrawBlockLabel(bhx-100, 40, GInfra.CurrentLang.LabelFor);

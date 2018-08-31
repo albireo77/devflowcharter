@@ -1421,17 +1421,9 @@ begin
       tw := Canvas.TextWidth(AText);
       th := Canvas.TextHeight(AText);
       if rightJust then
-      begin
-         x := x - tw;
-         if x < 0 then
-            x := 0;
-      end;
+         x := Max(x-tw, 0);
       if downJust then
-      begin
-         y := y - th;
-         if y < 0 then
-            y := 0;
-      end;
+         y := Max(y-th, 0);
       Canvas.TextOut(x, y, AText);
       Canvas.Font.Style := fontStyles;
       Canvas.Font.Color := fontColor;
