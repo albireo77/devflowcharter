@@ -1408,7 +1408,8 @@ var
    fontColor: TColor;
    tw, th: integer;
 begin
-   result := TRect.Create(Point(x, y), 0, 0);
+   tw := 0;
+   th := 0;
    if not AText.IsEmpty then
    begin
       fontStyles := Canvas.Font.Style;
@@ -1427,8 +1428,8 @@ begin
       Canvas.TextOut(x, y, AText);
       Canvas.Font.Style := fontStyles;
       Canvas.Font.Color := fontColor;
-      result := TRect.Create(Point(x, y), tw, th);
    end;
+   result := TRect.Create(Point(x, y), tw, th);
 end;
 
 procedure TBlock.DrawArrow(const aFrom, aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
