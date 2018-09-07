@@ -69,8 +69,8 @@ type
 implementation
 
 uses
-   WinApi.Windows, System.SysUtils, System.StrUtils, ApplicationCommon, UserFunction,
-   Navigator_Form;
+   WinApi.Windows, System.SysUtils, System.StrUtils, System.Math, ApplicationCommon,
+   UserFunction, Navigator_Form;
 
 constructor TBlockTabSheet.Create(AMainForm: TMainForm);
 begin
@@ -193,14 +193,8 @@ begin
    if Parent <> nil then
    begin
       pnt := GetBottomRight;
-      if pnt.X > ClientWidth then
-         HorzScrollBar.Range := pnt.X
-      else
-         HorzScrollBar.Range := ClientWidth;
-      if pnt.Y > ClientHeight then
-         VertScrollBar.Range := pnt.Y
-      else
-         VertScrollBar.Range := ClientHeight;
+      HorzScrollBar.Range := Max(pnt.X, ClientWidth);
+      VertScrollBar.Range := Max(pnt.Y, ClientHeight);
    end;
    NavigatorForm.Invalidate;
 end;
