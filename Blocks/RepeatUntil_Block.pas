@@ -45,7 +45,7 @@ type
 implementation
 
 uses
-   System.Classes, System.SysUtils, System.StrUtils, ApplicationCommon,
+   System.Classes, System.SysUtils, System.StrUtils, System.Math, ApplicationCommon,
    CommonTypes, LangDefinition;
 
 constructor TRepeatUntilBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; AId: integer = ID_INVALID);
@@ -137,10 +137,7 @@ end;
 
 procedure TRepeatUntilBlock.SetWidth(AMinX: integer);
 begin
-   if AMinX < BottomHook + 121 then
-      Width := BottomHook + 121
-   else
-      Width := AMinX;
+   Width := Max(BottomHook + 121, AMinX);
    BottomPoint.X := Width - 11;
 end;
 
