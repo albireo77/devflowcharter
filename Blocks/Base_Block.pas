@@ -603,7 +603,8 @@ end;
 
 procedure TBlock.MyOnDragDrop(Sender, Source: TObject; X, Y: Integer);
 var
-   lPage, srcPage: TBlockTabSheet;
+   srcPage: TBlockTabSheet;
+   mForm: TMainForm;
    menuItem: TMenuItem;
    inst: TControl;
    uobj: TObject;
@@ -625,11 +626,11 @@ begin
       uobj := GClpbrd.UndoObject;
       GClpbrd.Instance := nil;
       GClpbrd.UndoObject := nil;
-      lPage := Page;
+      mForm := Page.Form;
       try
          menuItem.OnClick(menuItem);
-         lPage.Form.pmPages.PopupComponent := Self;
-         lPage.Form.miPaste.OnClick(lPage.Form.miPaste);
+         mForm.pmPages.PopupComponent := Self;
+         mForm.miPaste.OnClick(mForm.miPaste);
       finally
          GClpbrd.Instance := inst;
          GClpbrd.UndoObject := uobj;

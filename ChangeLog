@@ -1,8 +1,12 @@
+6.9 [10.09.2018]
+- cosmetic modifications to for..do block
+- add hint to "type" dropdowns
+
 6.8 [04.08.2018]
-- fix access violation when removing tab containing comment
+- fix crash when removing tab containing comment
 
 6.7 [14.07.2018]
-- fix access violation when creating user function
+- fix crash when creating user function
 - fix hint appearing everywhere inside datatype/function header
 - minor tweaks
 
@@ -60,7 +64,7 @@ IMPORTANT NOTES:
 - minor GUI improvements
 
 5.10 [01.01.2018]
-- Code Editor: fix memory access violation when no highlighter available
+- Code Editor: fix crash when no highlighter available
 
 5.9 [31.12.2017]
 - fix several not-scrolled-in-view regressions from previous version
