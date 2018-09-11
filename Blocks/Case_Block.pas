@@ -67,7 +67,7 @@ const
 implementation
 
 uses
-   System.StrUtils, System.UITypes, XMLProcessor, Return_Block, Navigator_Form,
+   System.StrUtils, System.UITypes, System.Math, XMLProcessor, Return_Block, Navigator_Form,
    LangDefinition, Statement, ApplicationCommon;
 
 constructor TCaseBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; AId: integer = ID_INVALID);
@@ -244,14 +244,17 @@ end;
 procedure TCaseBlock.PlaceBranchStatement(const ABranch: TBranch);
 var
    prevBranch: TBranch;
-   idx: integer;
+   idx, w: integer;
 begin
    idx := FBranchList.IndexOf(ABranch);
    if idx > DEFAULT_BRANCH_IND then
    begin
       prevBranch := FBranchList[idx-1];
       if (prevBranch <> nil) and (ABranch.Statement <> nil) then
-         ABranch.Statement.SetBounds(prevBranch.Hook.X+5, TopHook.Y+1, ABranch.Hook.X-prevBranch.Hook.X-10, ABranch.Statement.Height);
+      begin
+         w := Min(ABranch.Hook.X-prevBranch.Hook.X-10, 300);
+         ABranch.Statement.SetBounds(ABranch.Hook.X-w-5, TopHook.Y+1, w, ABranch.Statement.Height);
+      end;
    end;
 end;
 
