@@ -208,7 +208,7 @@ begin
       bhx := Branch.Hook.X;
       IPoint.X := bhx + 60;
       IPoint.Y := 35;
-      cbVariable.Left := bhx - 81;
+      cbVariable.Left := bhx - 79;
       edtStartVal.Left := bhx - 30;
       edtStopVal.Left := bhx + 11;
       DrawArrow(bhx, TopHook.Y, Branch.Hook);
