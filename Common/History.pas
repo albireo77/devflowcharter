@@ -86,7 +86,7 @@ begin
       if menuItem <> nil then
       begin
          if menuItem.MenuIndex = 0 then
-            exit;
+            Exit;
          FParentMenu.Remove(menuItem);
       end
       else

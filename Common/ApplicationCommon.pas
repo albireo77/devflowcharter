@@ -1018,7 +1018,7 @@ begin
    result := 0;
    currVersion := GetAboutForm.GetProgramVersion;
    if AVersion.IsEmpty or (currVersion = UNKNOWN_VERSION) or (currVersion = AVersion) then
-      exit;
+      Exit;
    nums := AVersion.Split([VERSION_NUMBER_SEP], 4);
    numsCurr := currVersion.Split([VERSION_NUMBER_SEP], 4);
    for i := 0 to High(numsCurr) do

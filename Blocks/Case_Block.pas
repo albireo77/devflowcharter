@@ -36,7 +36,7 @@ type
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
          procedure OnFStatementChange(AEdit: TCustomEdit);
          function GetDiamondTop: TPoint; override;
-         procedure PlaceBranchStatement(const ABranch: TBranch);
+         procedure PlaceBranchStatement(ABranch: TBranch);
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; AId: integer = ID_INVALID); overload;
@@ -241,7 +241,7 @@ begin
    end;
 end;
 
-procedure TCaseBlock.PlaceBranchStatement(const ABranch: TBranch);
+procedure TCaseBlock.PlaceBranchStatement(ABranch: TBranch);
 var
    prevBranch: TBranch;
    idx, w: integer;
