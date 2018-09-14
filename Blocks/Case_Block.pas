@@ -274,10 +274,7 @@ begin
       x := leftX;
       LinkBlocks(i);
       for block in lBranch do
-      begin
-         if block.Left < x then
-            x := block.Left;
-      end;
+          x := Min(block.Left, x);
       Inc(lBranch.hook.X, leftX-x);
       LinkBlocks(i);
       PlaceBranchStatement(lBranch);
@@ -354,7 +351,7 @@ begin
 
    result := 0;
    if fsStrikeOut in Font.Style then
-      exit;
+      Exit;
 
    indnt := DupeString(GSettings.IndentString, ADeep);
    line := Trim(FStatement.Text);
