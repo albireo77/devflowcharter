@@ -56,7 +56,8 @@ const
 implementation
 
 uses
-   System.SysUtils, System.Classes, System.Types, Return_Block, CommonTypes, ApplicationCommon;
+   System.SysUtils, System.Classes, System.Types, System.Math, Return_Block, CommonTypes,
+   ApplicationCommon;
 
 constructor TIfElseBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, p1X, p3X, b_hook, t_hook, p1Y, p3Y, f_hook, tt_hook: integer; AId: integer = ID_INVALID);
 begin
@@ -166,19 +167,13 @@ begin
    begin
       leftX := 10;
       for block in TrueBranch do
-      begin
-         if block.Left < leftX then
-            leftX := block.Left;
-      end;
+          leftX := Min(block.Left, leftX);
       TrueBranch.Hook.X := TrueBranch.Hook.X - leftX + 10;
       LinkBlocks;
 
       maxXTrue := BottomHook - 30;
       for block in TrueBranch do
-      begin
-         if block.BoundsRect.Right > maxXTrue then
-            maxXTrue := block.BoundsRect.Right;
-      end;
+          maxXTrue := Max(block.BoundsRect.Right, maxXTrue);
       dlt := maxXTrue - BottomHook + 30;
       Inc(TopHook.X, dlt);
       BottomHook := BottomHook + dlt;
@@ -200,20 +195,14 @@ begin
    begin
       minXFalse := BottomHook + 30;
       for block in FalseBranch do
-      begin
-         if block.Left < minXFalse then
-            minXFalse := block.Left;
-      end;
+          minXFalse := Min(block.Left, minXFalse);
       dlt := BottomHook + 30 - minXFalse;
       FalseBranch.Hook.X := FalseBranch.Hook.X + dlt;
       LinkBlocks;
 
       rightX := 0;
       for block in FalseBranch do
-      begin
-         if block.BoundsRect.Right > rightX then
-            rightX := block.BoundsRect.Right;
-      end;
+          rightX := Max(block.BoundsRect.Right, rightX);
       Width := rightX + 10;
       LinkBlocks;
       FalseHook := FalseBranch.Last.Left + FalseBranch.Last.BottomPoint.X;
