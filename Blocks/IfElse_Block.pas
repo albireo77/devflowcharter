@@ -157,7 +157,7 @@ begin
       FalseHook := FalseBranch.Hook.X;
       if AContinue then
          ParentBlock.ResizeHorz(AContinue);
-      exit;
+      Exit;
    end;
 
    LinkBlocks;
@@ -192,7 +192,7 @@ begin
       else
       begin
          FalseHook := FalseBranch.Hook.X;
-         Width := FalseBranch.Hook.X + 11;
+         Width := FalseHook + 11;
       end;
    end;
 
