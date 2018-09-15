@@ -913,7 +913,7 @@ end;
 
 procedure TGroupBlock.ResizeHorz(AContinue: boolean);
 var
-   xLeft, xRight, br: integer;
+   xLeft, xRight: integer;
    block: TBlock;
 begin
 
@@ -932,10 +932,7 @@ begin
       // resize in left direction
       xLeft := 30;   // 30 - left margin
       for block in Branch do
-      begin
-         if block.Left < xLeft then
-            xLeft := block.Left;
-      end;
+          xLeft := Min(xLeft, block.Left);
 
       Branch.Hook.X := Branch.Hook.X + 30 - xLeft;
       TopHook.X := Branch.Hook.X;
@@ -945,11 +942,7 @@ begin
       // resize in right direction
       xRight := 0;
       for block in Branch do
-      begin
-         br := block.BoundsRect.Right;
-         if br > xRight then
-            xRight := br;
-      end;
+          xRight := Max(xRight, block.BoundsRect.Right);
 
       SetWidth(xRight);  // set final width
    end;
