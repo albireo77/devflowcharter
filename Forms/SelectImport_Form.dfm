@@ -25,7 +25,12 @@ object SelectImportForm: TSelectImportForm
     Top = 24
     Width = 217
     Height = 305
+    BevelOuter = bvNone
     BorderStyle = bsSingle
+    Color = clMoneyGreen
+    Ctl3D = False
+    ParentBackground = False
+    ParentCtl3D = False
     TabOrder = 0
   end
   object btnOk: TButton
