@@ -107,7 +107,7 @@ begin
             chkBox.Top := pnlImports.Controls[i-1].BoundsRect.Bottom + 10;
       end;
       pnlImports.Height := pnlImports.Controls[pnlImports.ControlCount-1].BoundsRect.Bottom + 15;
-      chkSelectAll.Top := pnlImports.BoundsRect.Bottom + 9;
+      chkSelectAll.Top := pnlImports.BoundsRect.Bottom + 11;
       btnOk.Top := chkSelectAll.Top - 4;
       btnCancel.Top := chkSelectAll.Top - 4;
       Height := btnCancel.BoundsRect.Bottom + 45;

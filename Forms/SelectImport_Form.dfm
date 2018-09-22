@@ -22,7 +22,7 @@ object SelectImportForm: TSelectImportForm
   TextHeight = 13
   object pnlImports: TPanel
     Left = 24
-    Top = 24
+    Top = 22
     Width = 217
     Height = 305
     BevelOuter = bvNone
