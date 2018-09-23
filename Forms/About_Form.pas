@@ -93,10 +93,25 @@ end;
 procedure TAboutForm.FormCreate(Sender: TObject);
 const
    lb = sLineBreak;
+{$IFDEF WIN32}
+   plat = '(Windows 32bit)';
+{$ELSEIF WIN64}
+   plat = '(Windows 64bit)';
+{$ELSEIF MACOS32}
+   plat = '(Mac OS 32bit)';
+{$ELSEIF MACOS64}
+   plat = '(Mac OS 64bit)';
+{$ELSEIF IOS32}
+   plat = '(iOS 32bit)';
+{$ELSEIF IOS64}
+   plat = '(iOS 64bit)';
+{$ELSE}
+   plat = '';
+{$ENDIF}
 begin
    FVersion := ExtractProgramVersion;
    lblInfo.Caption := Format(' This program is freeware and released under the%s                GNU General Public License.%s%s    Copyright(C) 2006-2018 The %s%s                             project', [lb, lb, lb, PROGRAM_NAME, lb]);
-   lblInfo1.Caption := Format('                   %s%sThe easiest way from flowchart to program!%s                Version: %s', [PROGRAM_NAME, lb, lb, FVersion]);
+   lblInfo1.Caption := Format('                   %s%sThe easiest way from flowchart to program!%s      Version: %s %s', [PROGRAM_NAME, lb, lb, FVersion, plat]);
 end;
 
 procedure TAboutForm.imDelphiClick(Sender: TObject);
