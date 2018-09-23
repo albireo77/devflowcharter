@@ -1150,7 +1150,7 @@ var
    charIndex: integer;
    r: TRect;
 begin
-   AMemo.Perform(EM_GETRECT, 0, Longint(@r));
+   AMemo.Perform(EM_GETRECT, 0, LPARAM(@r));
    c := AMemo.Perform(EM_CHARFROMPOS, 0, MakeLong(r.Left, r.Top+2));
    charIndex := LOWORD(c);
    result.Y := HIWORD(c);

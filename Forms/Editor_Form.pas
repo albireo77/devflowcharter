@@ -1477,7 +1477,7 @@ begin
                foldLines.CustomSort(@CompareIntegers);
                for i := foldLines.Count-1 downto 0 do
                begin
-                  foldRange := memCodeEditor.CollapsableFoldRangeForLine(foldLines[i].ToInteger());
+                  foldRange := memCodeEditor.CollapsableFoldRangeForLine(foldLines[i].ToInteger);
                   if (foldRange <> nil) and not foldRange.Collapsed then
                   begin
                      memCodeEditor.Collapse(foldRange);
