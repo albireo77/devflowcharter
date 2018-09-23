@@ -102,10 +102,7 @@ begin
          chkBox.Caption := FList[i];
          chkBox.Checked := true;
          chkBox.Left := 10;
-         if i = 0 then
-            chkBox.Top := 10
-         else
-            chkBox.Top := pnlImports.Controls[i-1].BoundsRect.Bottom + 10;
+         chkBox.Top := i * (chkBox.Height + 10) + 10;
       end;
       if chkBox = nil then
          pnlImports.Height := 15
