@@ -94,6 +94,7 @@ var
 begin
    if FList <> nil then
    begin
+      chkBox := nil;
       for i := 0 to FList.Count-1 do
       begin
          chkBox := TCheckBox.Create(pnlImports);
@@ -106,7 +107,10 @@ begin
          else
             chkBox.Top := pnlImports.Controls[i-1].BoundsRect.Bottom + 10;
       end;
-      pnlImports.Height := pnlImports.Controls[pnlImports.ControlCount-1].BoundsRect.Bottom + 15;
+      if chkBox = nil then
+         pnlImports.Height := 15
+      else
+         pnlImports.Height := chkBox.BoundsRect.Bottom + 15;
       chkSelectAll.Top := pnlImports.BoundsRect.Bottom + 11;
       btnOk.Top := chkSelectAll.Top - 4;
       btnCancel.Top := chkSelectAll.Top - 4;
