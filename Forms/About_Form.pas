@@ -95,18 +95,21 @@ const
    lb = sLineBreak;
 {$IFDEF WIN32}
    plat = '(Windows 32-bit)';
-{$ELSEIF WIN64}
+{$ENDIF}
+{$IFDEF WIN64}
    plat = '(Windows 64-bit)';
-{$ELSEIF MACOS32}
+{$ENDIF}
+{$IFDEF MACOS32}
    plat = '(Mac OS 32-bit)';
-{$ELSEIF MACOS64}
+{$ENDIF}
+{$IFDEF MACOS64}
    plat = '(Mac OS 64-bit)';
-{$ELSEIF IOS32}
+{$ENDIF}
+{$IFDEF IOS32}
    plat = '(iOS 32-bit)';
-{$ELSEIF IOS64}
+{$ENDIF}
+{$IFDEF IOS64}
    plat = '(iOS 64-bit)';
-{$ELSE}
-   plat = '';
 {$ENDIF}
 begin
    FVersion := ExtractProgramVersion;
