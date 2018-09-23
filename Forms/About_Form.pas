@@ -94,17 +94,17 @@ procedure TAboutForm.FormCreate(Sender: TObject);
 const
    lb = sLineBreak;
 {$IFDEF WIN32}
-   plat = '(Windows 32bit)';
+   plat = '(Windows 32-bit)';
 {$ELSEIF WIN64}
-   plat = '(Windows 64bit)';
+   plat = '(Windows 64-bit)';
 {$ELSEIF MACOS32}
-   plat = '(Mac OS 32bit)';
+   plat = '(Mac OS 32-bit)';
 {$ELSEIF MACOS64}
-   plat = '(Mac OS 64bit)';
+   plat = '(Mac OS 64-bit)';
 {$ELSEIF IOS32}
-   plat = '(iOS 32bit)';
+   plat = '(iOS 32-bit)';
 {$ELSEIF IOS64}
-   plat = '(iOS 64bit)';
+   plat = '(iOS 64-bit)';
 {$ELSE}
    plat = '';
 {$ENDIF}
