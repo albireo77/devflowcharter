@@ -89,10 +89,10 @@ end;
 
 procedure TSelectImportForm.CreateCheckBoxList;
 var
-   i: integer;
+   i, t: integer;
    chkBox: TCheckBox;
 begin
-   chkBox := nil;
+   t := 10;
    if FList <> nil then
    begin
       for i := 0 to FList.Count-1 do
@@ -102,14 +102,12 @@ begin
          chkBox.Caption := FList[i];
          chkBox.Checked := true;
          chkBox.Left := 10;
-         chkBox.Top := i * (chkBox.Height + 10) + 10;
+         chkBox.Top := t;
+         t := t + chkBox.Height + 10;
       end;
    end;
-   if chkBox = nil then
-      pnlImports.Height := 15
-   else
-      pnlImports.Height := chkBox.BoundsRect.Bottom + 15;
-   chkSelectAll.Top := pnlImports.BoundsRect.Bottom + 11;
+   pnlImports.Height := t + 5;
+   chkSelectAll.Top := pnlImports.Top + pnlImports.Height + 11;
    btnOk.Top := chkSelectAll.Top - 4;
    btnCancel.Top := chkSelectAll.Top - 4;
    Height := btnCancel.BoundsRect.Bottom + 45;
