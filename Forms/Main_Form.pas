@@ -337,7 +337,7 @@ begin
    GProject.Free;
    GProject := nil;
    if GSettings <> nil then
-      GSettings.WriteToRegistry;
+      GSettings.Write;
    GSettings.Free;
    GSettings := nil;
    FHistoryMenu.Free;

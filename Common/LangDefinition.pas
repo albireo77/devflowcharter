@@ -44,8 +44,8 @@ type
    TLangDefinition = class
    private
       FName,
-      FCompilerRegKey,
-      FCompilerNoMainRegKey,
+      FCompilerKey,
+      FCompilerNoMainKey,
       FCompilerFileEncodingKey: string;
    public
       CommentBegin, CommentEnd,
@@ -329,8 +329,8 @@ begin
    else
       FName := val;
 
-   FCompilerRegKey := 'CompilerPath_' + FName;
-   FCompilerNoMainRegKey := 'CompilerPathNoMain_' + FName;
+   FCompilerKey := 'CompilerPath_' + FName;
+   FCompilerNoMainKey := 'CompilerPathNoMain_' + FName;
    FCompilerFileEncodingKey := 'CompilerFileEncoding_' + FName;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'CommentBegin');
@@ -972,17 +972,17 @@ end;
 
 procedure TLangDefinition.WriteCompilerData(ARegistry: TRegistry);
 begin
-   ARegistry.WriteString(FCompilerRegKey, CompilerCommand);
-   ARegistry.WriteString(FCompilerNoMainRegKey, CompilerCommandNoMain);
+   ARegistry.WriteString(FCompilerKey, CompilerCommand);
+   ARegistry.WriteString(FCompilerNoMainKey, CompilerCommandNoMain);
    ARegistry.WriteString(FCompilerFileEncodingKey, CompilerFileEncoding);
 end;
 
 procedure TLangDefinition.ReadCompilerData(ARegistry: TRegistry);
 begin
-   if ARegistry.ValueExists(FCompilerRegKey) then
-      CompilerCommand := ARegistry.ReadString(FCompilerRegKey);
-   if ARegistry.ValueExists(FCompilerNoMainRegKey) then
-      CompilerCommandNoMain := ARegistry.ReadString(FCompilerNoMainRegKey);
+   if ARegistry.ValueExists(FCompilerKey) then
+      CompilerCommand := ARegistry.ReadString(FCompilerKey);
+   if ARegistry.ValueExists(FCompilerNoMainKey) then
+      CompilerCommandNoMain := ARegistry.ReadString(FCompilerNoMainKey);
    if ARegistry.ValueExists(FCompilerFileEncodingKey) then
       CompilerFileEncoding := ARegistry.ReadString(FCompilerFileEncodingKey);
 end;

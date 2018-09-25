@@ -86,8 +86,8 @@ type
   public
     { Public declarations }
       constructor Create;
-      procedure ReadFromRegistry;
-      procedure WriteToRegistry;
+      procedure Read;
+      procedure Write;
       procedure LoadFromForm;
       procedure LoadFromEditor;
       procedure SetForm;
@@ -285,7 +285,7 @@ begin
                                   PRINT_SCALE_BASE - DEFAULT_PRINT_MARGIN);
 end;
 
-procedure TSettings.ReadFromRegistry;
+procedure TSettings.Read;
 var
    reg: TRegistry;
    i : integer;
@@ -429,7 +429,7 @@ begin
    end;
 end;
 
-procedure TSettings.WriteToRegistry;
+procedure TSettings.Write;
 var
    reg: TRegistry;
 begin

@@ -1409,7 +1409,7 @@ end;
 initialization
 
    GSettings := TSettings.Create;
-   GSettings.ReadFromRegistry;
+   GSettings.Read;
 
    i18Manager := Ti18Manager.Create;
    if i18Manager.LoadDynamicLabels(GSettings.TranslateFile) = 0 then
