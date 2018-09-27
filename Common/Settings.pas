@@ -520,10 +520,10 @@ var
 begin
    if FCurrentLangName <> ACurrentLangName then
    begin
-      FCurrentLangName := ACurrentLangName;
-      lang := GInfra.SetCurrentLang(FCurrentLangName);
+      lang := GInfra.SetCurrentLang(ACurrentLangName);
       if lang <> nil then
       begin
+         FCurrentLangName := lang.Name;
          if lang.Parser = nil then
          begin
             FParseInput := false;
