@@ -26,7 +26,7 @@ uses
     SynEditCodeFolding,
 {$ENDIF}
     System.Classes, System.SysUtils, SizeEdit, SynEditHighlighter, YaccLib, DeclareList, UserFunction,
-    CommonTypes, OmniXML, UserDataType, System.Win.Registry;
+    CommonTypes, OmniXML, UserDataType;
 
 type
 
@@ -236,8 +236,8 @@ type
       function GetTemplate(AClass: TClass): string;
       function GetTemplateExpr(AClass: TClass): string;
       function GetArraySizes(ASizeEdit: TSizeEdit): string;
-      procedure WriteCompilerData(ARegistry: TRegistry);
-      procedure ReadCompilerData(ARegistry: TRegistry);
+      procedure SaveCompilerData;
+      procedure LoadCompilerData;
       function GetFileEncoding: TEncoding;
    end;
 
@@ -245,14 +245,15 @@ type
 implementation
 
 uses
-   Vcl.Forms, System.StrUtils, ApplicationCommon, XMLProcessor, WhileDo_Block, RepeatUntil_Block,
-   ForDo_Block, Case_Block, If_Block, IfElse_Block, Main_Block, InOut_Block, Instr_Block,
-   MultiInstr_Block, Return_Block, Text_Block, FunctionCall_Block, Folder_Block;
+   Vcl.Forms, System.StrUtils, System.Win.Registry, ApplicationCommon, XMLProcessor,
+   WhileDo_Block, RepeatUntil_Block, ForDo_Block, Case_Block, If_Block, IfElse_Block,
+   Main_Block, InOut_Block, Instr_Block, MultiInstr_Block, Return_Block, Text_Block,
+   FunctionCall_Block, Folder_Block;
 
 constructor TLangDefinition.Create;
 begin
    inherited;
-   FName := '   ';
+   FName := EMPTY_LANG_ID;
    DefaultExt := 'txt';
    LibraryExt := '.lib';
    AssignOperator := '=';
@@ -299,6 +300,7 @@ begin
    NativeDataTypes := nil;
    NativeFunctions := nil;
    Parser.Free;
+   SaveCompilerData;
 {$IFDEF USE_CODEFOLDING}
    FoldRegions := nil;
 {$ENDIF}
@@ -970,21 +972,47 @@ begin
 {$ENDIF}
 end;
 
-procedure TLangDefinition.WriteCompilerData(ARegistry: TRegistry);
+procedure TLangDefinition.LoadCompilerData;
+var
+   reg: TRegistry;
 begin
-   ARegistry.WriteString(FCompilerKey, CompilerCommand);
-   ARegistry.WriteString(FCompilerNoMainKey, CompilerCommandNoMain);
-   ARegistry.WriteString(FCompilerFileEncodingKey, CompilerFileEncoding);
+   if not FName.Trim.IsEmpty then
+   begin
+      reg := TRegistry.Create;
+      try
+         if reg.OpenKeyReadOnly(REGISTRY_KEY) then
+         begin
+            if reg.ValueExists(FCompilerKey) then
+               CompilerCommand := reg.ReadString(FCompilerKey);
+            if reg.ValueExists(FCompilerNoMainKey) then
+               CompilerCommandNoMain := reg.ReadString(FCompilerNoMainKey);
+            if reg.ValueExists(FCompilerFileEncodingKey) then
+               CompilerFileEncoding := reg.ReadString(FCompilerFileEncodingKey);
+         end;
+      finally
+         reg.Free;
+      end;
+   end;
 end;
 
-procedure TLangDefinition.ReadCompilerData(ARegistry: TRegistry);
+procedure TLangDefinition.SaveCompilerData;
+var
+   reg: TRegistry;
 begin
-   if ARegistry.ValueExists(FCompilerKey) then
-      CompilerCommand := ARegistry.ReadString(FCompilerKey);
-   if ARegistry.ValueExists(FCompilerNoMainKey) then
-      CompilerCommandNoMain := ARegistry.ReadString(FCompilerNoMainKey);
-   if ARegistry.ValueExists(FCompilerFileEncodingKey) then
-      CompilerFileEncoding := ARegistry.ReadString(FCompilerFileEncodingKey);
+   if not FName.Trim.IsEmpty then
+   begin
+      reg := TRegistry.Create;
+      try
+         if reg.OpenKey(REGISTRY_KEY, true) then
+         begin
+            reg.WriteString(FCompilerKey, CompilerCommand);
+            reg.WriteString(FCompilerNoMainKey, CompilerCommandNoMain);
+            reg.WriteString(FCompilerFileEncodingKey, CompilerFileEncoding);
+         end;
+      finally
+         reg.Free;
+      end;
+   end;
 end;
 
 function TLangDefinition.GetTemplate(AClass: TClass): string;

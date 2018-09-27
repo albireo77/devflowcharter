@@ -715,6 +715,6 @@ initialization
    end;
 
    // it really sucks but this must be executed here due to initialization order
-   GInfra.ReadFromRegistry;
+   GSettings.CurrentLangName := GSettings.InitialLangName;
 
 end.

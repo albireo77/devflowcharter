@@ -25,11 +25,10 @@ interface
 
 uses
    WinApi.Windows, Vcl.Forms, Vcl.StdCtrls, Vcl.Grids, Vcl.Controls, Vcl.Graphics,
-   System.Win.Registry, System.SysUtils, System.Classes, System.StrUtils, Vcl.ComCtrls,
-   LocalizationManager, Project, Settings, LangDefinition, CommonTypes, Base_Form,
-   CommonInterfaces, Functions_Form, DataTypes_Form, Declarations_Form, Main_Form,
-   Base_Block, SynEditTypes, Settings_Form, Editor_Form, Explorer_Form, UserFunction,
-   BlockTabSheet, About_Form, YaccLib;
+   System.SysUtils, System.Classes, System.StrUtils, Vcl.ComCtrls, LocalizationManager,
+   Project, Settings, LangDefinition, CommonTypes, Base_Form, CommonInterfaces,
+   Functions_Form, DataTypes_Form, Declarations_Form, Main_Form, Base_Block, SynEditTypes,
+   Settings_Form, Editor_Form, Explorer_Form, UserFunction, BlockTabSheet, About_Form, YaccLib;
 
 type
 
@@ -113,8 +112,6 @@ type
          function ValidateId(const AId: string): integer;
          procedure SetLangHiglighterAttributes;
          procedure GetLangNames(AList: TStrings);
-         procedure ReadFromRegistry;
-         procedure WriteToRegistry;
          procedure SetHLighters;
    end;
 
@@ -231,8 +228,7 @@ const   // Global constants
         TIBASIC_LANG_ID = 'TIBASIC';
         PYTHON_LANG_ID  = 'Python 3';
         JAVA_LANG_ID    = 'Java';
-
-        KEY_CURRENT_LANGUAGE = 'CurrentLanguageName';
+        EMPTY_LANG_ID   = '   ';
 
 var     // Global variables
 
@@ -277,6 +273,7 @@ begin
          if not TXMLProcessor.ImportFromXMLFile(lang.ImportFromXML, lFile, true).IsEmpty then
          begin
             lang.DefFile := lFile;
+            lang.LoadCompilerData;
             SetLength(FLangArray, i+1);
             FLangArray[i] := lang;
             i := i + 1;
@@ -309,43 +306,6 @@ begin
    if GSettings.UpdateEditor then
       GetEditorForm.RefreshEditorForObject(AObject);
    GProject.SetChanged;
-end;
-
-procedure TInfra.WriteToRegistry;
-var
-   i: integer;
-   reg: TRegistry;
-begin
-   reg := TRegistry.Create;
-   try
-      if reg.OpenKey(REGISTRY_KEY, true) then
-      begin
-         reg.WriteString(KEY_CURRENT_LANGUAGE, FCurrentLang.Name);
-         for i := 0 to FLangArrayCount-2 do
-            FLangArray[i].WriteCompilerData(reg);
-      end;
-   finally
-      reg.Free;
-   end;
-end;
-
-procedure TInfra.ReadFromRegistry;
-var
-   reg: TRegistry;
-   i: integer;
-begin
-   reg := TRegistry.Create;
-   try
-      if reg.OpenKeyReadOnly(REGISTRY_KEY) then
-      begin
-         if reg.ValueExists(KEY_CURRENT_LANGUAGE) then
-            SetCurrentLang(reg.ReadString(KEY_CURRENT_LANGUAGE));
-         for i := 0 to FLangArrayCount-2 do
-            FLangArray[i].ReadCompilerData(reg);
-      end;
-   finally
-      reg.Free;
-   end;
 end;
 
 class function TInfra.ExportToFile(AExport: IExportable): TErrorType;
@@ -389,10 +349,7 @@ var
 begin
    lang := GetLangDefinition(ALangName);
    if (lang <> nil) and (lang <> FCurrentLang) then
-   begin
       FCurrentLang := lang;
-      GSettings.UpdateForLang(FCurrentLang);
-   end;
    result := FCurrentLang;
 end;
 
@@ -1409,7 +1366,7 @@ end;
 initialization
 
    GSettings := TSettings.Create;
-   GSettings.Read;
+   GSettings.Load;
 
    i18Manager := Ti18Manager.Create;
    if i18Manager.LoadDynamicLabels(GSettings.TranslateFile) = 0 then
@@ -1419,8 +1376,6 @@ initialization
 
 finalization
 
-   if GInfra <> nil then
-      GInfra.WriteToRegistry;
    GInfra.Free;
    GInfra := nil;
 

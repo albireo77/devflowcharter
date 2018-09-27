@@ -80,18 +80,21 @@ type
       FNavigatorAlphaVisible,
       FExplorerAutoNav: boolean;
       FNavigatorAlphaValue: integer;
-      FFlowchartFontName: string;
+      FFlowchartFontName,
+      FCurrentLangName,
+      FInitialLangName: string;
+
       FShapeColors: array[TColorShape] of TColor;
       procedure SetDefaultValues;
+      procedure SetCurrentLangName(const ACurrentLangName: string);
   public
     { Public declarations }
       constructor Create;
-      procedure Read;
-      procedure Write;
+      procedure Load;
+      procedure Save;
       procedure LoadFromForm;
       procedure LoadFromEditor;
       procedure SetForm;
-      procedure UpdateForLang(const ALang: TLangDefinition);
       procedure UpdateForHLighter(AHLighter: TSynCustomHighlighter);
       procedure ProtectFields;
       procedure SetDefaultForm;
@@ -145,6 +148,8 @@ type
       property NavigatorAlphaValue: integer read FNavigatorAlphaValue write FNavigatorAlphaValue;
       property NavigatorAlphaVisible: boolean read FNavigatorAlphaVisible write FNavigatorAlphaVisible;
       property ExplorerAutoNav: boolean read FExplorerAutoNav write FExplorerAutoNav;
+      property CurrentLangName: string read FCurrentLangName write SetCurrentLangName;
+      property InitialLangName: string read FInitialLangName;
   end;
 
 implementation
@@ -178,6 +183,7 @@ const
    KEY_SHOW_EXPLORER = 'ShowExplorerOnError';
    KEY_SHOW_STATUSBAR = 'ShowStatusBar';
    KEY_CONFIRM_REMOVE = 'ConfirmRemove';
+   KEY_CURRENT_LANGUAGE = 'CurrentLanguageName';
 
    KEY_EDITOR_SHOW_GUTTER = 'EditorShowGutter';
    KEY_EDITOR_SHOW_RICHTEXT = 'EditorShowRichtext';
@@ -267,6 +273,7 @@ begin
    for shape := Low(TColorShape) to High(TColorShape) do
      FShapeColors[shape] := IfThen(shape = shpNone, clNone, DEFAULT_DESKTOP_COLOR);
 
+   FInitialLangName       := EMPTY_LANG_ID;
    FConfirmRemove         := true;
    FPrintMultPages        := false;
    FPrintMultPagesHorz    := false;
@@ -285,7 +292,7 @@ begin
                                   PRINT_SCALE_BASE - DEFAULT_PRINT_MARGIN);
 end;
 
-procedure TSettings.Read;
+procedure TSettings.Load;
 var
    reg: TRegistry;
    i : integer;
@@ -423,13 +430,15 @@ begin
             FEditorAutoSelectBlock := reg.ReadBool(KEY_AUTOSELECT_CODE_BLOCK);
          if reg.ValueExists(KEY_AUTOUPDATE_CODE) then
             FEditorAutoUpdate := reg.ReadBool(KEY_AUTOUPDATE_CODE);
+         if reg.ValueExists(KEY_CURRENT_LANGUAGE) then
+            FInitialLangName := reg.ReadString(KEY_CURRENT_LANGUAGE);
       end;
    finally
       reg.Free;
    end;
 end;
 
-procedure TSettings.Write;
+procedure TSettings.Save;
 var
    reg: TRegistry;
 begin
@@ -493,6 +502,7 @@ begin
          reg.WriteInteger(KEY_FONT_COLOR, FFontColor);
          reg.WriteString(KEY_LOCALIZATION_FILE, FTranslateFile);
          reg.WriteString(KEY_FLOWCHART_FONT_NAME, FFlowchartFontName);
+         reg.WriteString(KEY_CURRENT_LANGUAGE, FCurrentLangName);
          reg.WriteInteger(KEY_FLOWCHART_FONT_SIZE, FFlowchartFontSize);
        end
        else
@@ -504,21 +514,31 @@ begin
    end;
 end;
 
-procedure TSettings.UpdateForLang(const ALang: TLangDefinition);
+procedure TSettings.SetCurrentLangName(const ACurrentLangName: string);
+var
+   lang: TLangDefinition;
 begin
-   if ALang.Parser = nil then
+   if FCurrentLangName <> ACurrentLangName then
    begin
-      FParseInput := false;
-      FParseOutput := false;
-      FParseAssign := false;
-      FParseMultiAssign := false;
-      FParseCondition := false;
-      FParseFor := false;
-      FParseCase := false;
-      FParseRoutineCall := false;
-      FParseReturn := false;
+      FCurrentLangName := ACurrentLangName;
+      lang := GInfra.SetCurrentLang(FCurrentLangName);
+      if lang <> nil then
+      begin
+         if lang.Parser = nil then
+         begin
+            FParseInput := false;
+            FParseOutput := false;
+            FParseAssign := false;
+            FParseMultiAssign := false;
+            FParseCondition := false;
+            FParseFor := false;
+            FParseCase := false;
+            FParseRoutineCall := false;
+            FParseReturn := false;
+         end;
+         FormatSettings.DecimalSeparator := lang.DecimalSeparator;
+      end;
    end;
-   FormatSettings.DecimalSeparator := ALang.DecimalSeparator;
 end;
 
 procedure TSettings.UpdateForHLighter(AHLighter: TSynCustomHighlighter);
@@ -671,9 +691,9 @@ begin
          FEnableDBuffering := chkEnableDBuffer.Checked;
          FFlowchartFontName := flowFontName;
          FFlowchartFontSize := flowFontSize;
-         if GInfra.CurrentLang.Name <> cbLanguage.Text then
+         if CurrentLangName <> cbLanguage.Text then
          begin
-            GInfra.SetCurrentLang(cbLanguage.Text);
+            CurrentLangName := cbLanguage.Text;
 {$IFDEF USE_CODEFOLDING}
             TInfra.GetEditorForm.ReloadFoldRegions;
 {$ENDIF}

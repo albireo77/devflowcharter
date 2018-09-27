@@ -528,7 +528,7 @@ begin
    if (not SameText(GInfra.CurrentLang.Name, langName)) and
       (TInfra.ShowFormattedQuestionBox(s, [langName.Trim, sLineBreak], MB_YESNO+MB_ICONQUESTION) = IDYES) then
    begin
-      GInfra.SetCurrentLang(langName);
+      GSettings.CurrentLangName := langName;
 {$IFDEF USE_CODEFOLDING}
       TInfra.GetEditorForm.ReloadFoldRegions;
 {$ENDIF}
