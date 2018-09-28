@@ -54,28 +54,6 @@ begin
    FOnClick := AOnClick;
 end;
 
-procedure THistoryMenu.Load;
-var
-   reg: TRegistry;
-   i: integer;
-   fileKey: string;
-begin
-   reg := TRegistry.Create;
-   try
-      if reg.OpenKeyReadOnly(REGISTRY_KEY) then
-      begin
-         for i := HISTORY_SIZE-1 downto 0 do
-         begin
-            fileKey := KEY_HISTORY + i.ToString;
-            if reg.ValueExists(fileKey) then
-               AddFile(reg.ReadString(fileKey));
-         end;
-      end;
-   finally
-      reg.Free;
-   end;
-end;
-
 procedure THistoryMenu.AddFile(const AFilePath: string);
 var
    menuItem: TMenuItem;
@@ -112,6 +90,28 @@ begin
       begin
          for i := 0 to FParentMenu.Count-1 do
             reg.WriteString(KEY_HISTORY + i.ToString, FParentMenu[i].Caption);
+      end;
+   finally
+      reg.Free;
+   end;
+end;
+
+procedure THistoryMenu.Load;
+var
+   reg: TRegistry;
+   i: integer;
+   fileKey: string;
+begin
+   reg := TRegistry.Create;
+   try
+      if reg.OpenKeyReadOnly(REGISTRY_KEY) then
+      begin
+         for i := HISTORY_SIZE-1 downto 0 do
+         begin
+            fileKey := KEY_HISTORY + i.ToString;
+            if reg.ValueExists(fileKey) then
+               AddFile(reg.ReadString(fileKey));
+         end;
       end;
    finally
       reg.Free;

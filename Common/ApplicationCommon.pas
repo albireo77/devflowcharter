@@ -347,7 +347,7 @@ var
    lang: TLangDefinition;
 begin
    lang := GetLangDefinition(ALangName);
-   if (lang <> nil) and (lang <> FCurrentLang) then
+   if lang <> nil then
       FCurrentLang := lang;
    result := FCurrentLang;
 end;
