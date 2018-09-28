@@ -253,7 +253,7 @@ uses
 constructor TLangDefinition.Create;
 begin
    inherited;
-   FName := EMPTY_LANG_ID;
+   FName := '   ';
    DefaultExt := 'txt';
    LibraryExt := '.lib';
    AssignOperator := '=';

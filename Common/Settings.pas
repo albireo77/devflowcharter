@@ -81,8 +81,7 @@ type
       FExplorerAutoNav: boolean;
       FNavigatorAlphaValue: integer;
       FFlowchartFontName,
-      FCurrentLangName,
-      FInitialLangName: string;
+      FCurrentLangName: string;
 
       FShapeColors: array[TColorShape] of TColor;
       procedure SetDefaultValues;
@@ -98,6 +97,7 @@ type
       procedure UpdateForHLighter(AHLighter: TSynCustomHighlighter);
       procedure ProtectFields;
       procedure SetDefaultForm;
+      procedure ResetCurrentLangName;
       function GetShapeColor(const shape: TColorShape): TColor;
       function UpdateEditor: boolean;
       property ParseInput: boolean read FParseInput;
@@ -149,7 +149,6 @@ type
       property NavigatorAlphaVisible: boolean read FNavigatorAlphaVisible write FNavigatorAlphaVisible;
       property ExplorerAutoNav: boolean read FExplorerAutoNav write FExplorerAutoNav;
       property CurrentLangName: string read FCurrentLangName write SetCurrentLangName;
-      property InitialLangName: string read FInitialLangName;
   end;
 
 implementation
@@ -273,7 +272,6 @@ begin
    for shape := Low(TColorShape) to High(TColorShape) do
      FShapeColors[shape] := IfThen(shape = shpNone, clNone, DEFAULT_DESKTOP_COLOR);
 
-   FInitialLangName       := EMPTY_LANG_ID;
    FConfirmRemove         := true;
    FPrintMultPages        := false;
    FPrintMultPagesHorz    := false;
@@ -431,7 +429,7 @@ begin
          if reg.ValueExists(KEY_AUTOUPDATE_CODE) then
             FEditorAutoUpdate := reg.ReadBool(KEY_AUTOUPDATE_CODE);
          if reg.ValueExists(KEY_CURRENT_LANGUAGE) then
-            FInitialLangName := reg.ReadString(KEY_CURRENT_LANGUAGE);
+            FCurrentLangName := reg.ReadString(KEY_CURRENT_LANGUAGE);
       end;
    finally
       reg.Free;
@@ -512,6 +510,15 @@ begin
    finally
       reg.Free;
    end;
+end;
+
+procedure TSettings.ResetCurrentLangName;
+var
+   lName: string;
+begin
+   lName := FCurrentLangName;
+   FCurrentLangName := '';
+   SetCurrentLangName(lName);
 end;
 
 procedure TSettings.SetCurrentLangName(const ACurrentLangName: string);
