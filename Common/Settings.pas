@@ -311,6 +311,7 @@ begin
    if TInfra.IsNOkColor(FFontColor) then
       FFontColor := OK_COLOR;
    FIndentString := StringOfChar(INDENT_CHAR, FIndentLength);
+   FShapeColors[shpNone] := clNone;
 end;
 
 procedure TSettings.Save;
