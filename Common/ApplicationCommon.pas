@@ -119,9 +119,6 @@ const   // Global constants
 
         PROGRAM_NAME      = 'devFlowcharter';
 
-        // registry key with application settings
-        REGISTRY_KEY      = 'Software\' + PROGRAM_NAME;
-
         MAIN_FORM_CAPTION = PROGRAM_NAME + ' - ';
 
         // hint duration in milliseconds
@@ -218,6 +215,8 @@ const   // Global constants
         DEF_PAGE_CAPTION_KEY = 'mainPage';
 
         UNKNOWN_VERSION = 'unknown';
+
+        SETTINGS_SECTION = 'Settings';
 
         PRINT_SCALE_BASE     = 100;   // 100 %
         DEFAULT_PRINT_MARGIN = 5;     //   5 %
@@ -346,9 +345,14 @@ function TInfra.SetCurrentLang(const ALangName: string): TLangDefinition;
 var
    lang: TLangDefinition;
 begin
-   lang := GetLangDefinition(ALangName);
-   if lang <> nil then
-      FCurrentLang := lang;
+   if ALangName.IsEmpty then
+      FCurrentLang := FLangArray[0]
+   else
+   begin
+      lang := GetLangDefinition(ALangName);
+      if lang <> nil then
+         FCurrentLang := lang;
+   end;
    result := FCurrentLang;
 end;
 
@@ -1365,7 +1369,6 @@ end;
 initialization
 
    GSettings := TSettings.Create;
-   GSettings.Load;
 
    i18Manager := Ti18Manager.Create;
    if i18Manager.LoadDynamicLabels(GSettings.TranslateFile) = 0 then
@@ -1377,6 +1380,10 @@ finalization
 
    GInfra.Free;
    GInfra := nil;
+
+   GSettings.Save;
+   GSettings.Free;
+   GSettings := nil;
 
 end.
 

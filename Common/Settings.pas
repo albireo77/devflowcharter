@@ -22,7 +22,8 @@ unit Settings;
 interface
 
 uses
-  WinApi.Windows, Vcl.Graphics, LangDefinition, CommonTypes, SynEditHighlighter;
+  WinApi.Windows, Vcl.Graphics, System.IniFiles, LangDefinition, CommonTypes,
+  SynEditHighlighter;
 
 type
 
@@ -82,14 +83,15 @@ type
       FNavigatorAlphaValue: integer;
       FFlowchartFontName,
       FCurrentLangName: string;
+      FSettingsFile: TCustomIniFile;
 
       FShapeColors: array[TColorShape] of TColor;
-      procedure SetDefaultValues;
       procedure SetCurrentLangName(const ACurrentLangName: string);
+      procedure Load;
   public
     { Public declarations }
       constructor Create;
-      procedure Load;
+      destructor Destroy; override;
       procedure Save;
       procedure LoadFromForm;
       procedure LoadFromEditor;
@@ -149,13 +151,17 @@ type
       property NavigatorAlphaVisible: boolean read FNavigatorAlphaVisible write FNavigatorAlphaVisible;
       property ExplorerAutoNav: boolean read FExplorerAutoNav write FExplorerAutoNav;
       property CurrentLangName: string read FCurrentLangName write SetCurrentLangName;
+      property SettingsFile: TCustomIniFile read FSettingsFile;
   end;
 
 implementation
 
 uses
-   System.SysUtils, System.Classes, System.Types, Vcl.Forms, System.Win.Registry,
-   System.Math, ApplicationCommon, Main_Form, Navigator_Form;
+{$IFDEF MSWINDOWS}
+   System.Win.Registry,
+{$ENDIF}
+   System.SysUtils, System.Types, Vcl.Forms, System.Math, System.Classes, ApplicationCommon,
+   Main_Form, Navigator_Form;
 
 const
    KEY_HIGHLIGHT_COLOR = 'HighlightColor';
@@ -224,292 +230,149 @@ const
 constructor TSettings.Create;
 begin
    inherited Create;
-   SetDefaultValues;
+{$IFDEF MSWINDOWS}
+   FSettingsFile := TRegistryIniFile.Create('Software\' + PROGRAM_NAME);
+{$ELSE}
+   FSettingsFile := TIniFile.Create(ExtractFilePath(Application.ExeName) + PROGRAM_NAME + '.ini');
+{$ENDIF}
+   Load;
 end;
 
-procedure TSettings.SetDefaultValues;
-var
-   shape: TColorShape;
+destructor TSettings.Destroy;
 begin
-
-   FParseInput       := false;
-   FParseOutput      := false;
-   FParseAssign      := false;
-   FParseMultiAssign := false;
-   FParseCondition   := false;
-   FParseFor         := false;
-   FParseCase        := false;
-   FParseRoutineCall := false;
-   FParseReturn      := false;
-
-   FEditorShowGutter      := true;
-   FEditorShowScrollbars  := true;
-   FEditorShowRichText    := false;
-   FEditorShowStatusBar   := true;
-   FEditorCodeFolding     := false;
-   FEditorIndentGuides    := false;
-   FEditorBkgColor        := clWindow;
-   FEditorFontColor       := clWindowText;
-   FEditorNumberColor     := clTeal;
-   FEditorStringColor     := clTeal;
-   FEditorKeywordColor    := clWindowText;
-   FEditorCommentColor    := TEXT_COLOR;
-   FEditorALineColor      := clCream;
-   FEditorSelectColor     := clHighlight;
-   FEditorGutterColor     := clBtnFace;
-   FEditorIdentColor      := clWindowText;
-   FEditorAutoUpdate      := false;
-   FEditorAutoSelectBlock := false;
-   FEditorFontSize        := EDITOR_DEFAULT_FONT_SIZE;
-   FIndentLength          := EDITOR_DEFAULT_INDENT_LENGTH;
-   FIndentString          := StringOfChar(INDENT_CHAR, FIndentLength);
-
-   FHighlightColor := clAqua;
-   FPenColor       := clBlack;
-   FDesktopColor   := DEFAULT_DESKTOP_COLOR;
-   FFontColor      := OK_COLOR;
-
-   for shape := Low(TColorShape) to High(TColorShape) do
-     FShapeColors[shape] := IfThen(shape = shpNone, clNone, DEFAULT_DESKTOP_COLOR);
-
-   FConfirmRemove         := true;
-   FPrintMultPages        := false;
-   FPrintMultPagesHorz    := false;
-   FEnableDBuffering      := false;
-   FShowFuncLabels        := true;
-   FShowBlockLabels       := false;
-   FValidateDeclaration   := true;
-   FTranslateFile         := '';
-   FNavigatorAlphaValue   := 255;
-   FNavigatorAlphaVisible := true;
-   FExplorerAutoNav       := true;
-   FFlowchartFontName     := FLOWCHART_DEFAULT_FONT_NAME;
-   FFlowchartFontSize     := FLOWCHART_MIN_FONT_SIZE;
-   FPrintRect             := Rect(DEFAULT_PRINT_MARGIN, DEFAULT_PRINT_MARGIN,
-                                  PRINT_SCALE_BASE - DEFAULT_PRINT_MARGIN,
-                                  PRINT_SCALE_BASE - DEFAULT_PRINT_MARGIN);
+   FSettingsFile.Free;
+   inherited Destroy;
 end;
 
 procedure TSettings.Load;
-var
-   reg: TRegistry;
-   i : integer;
 begin
-   reg := TRegistry.Create;
-   try
-      if reg.OpenKeyReadOnly(REGISTRY_KEY) then
-      begin
-         if reg.ValueExists(KEY_HIGHLIGHT_COLOR) then
-            FHighlightColor := reg.ReadInteger(KEY_HIGHLIGHT_COLOR);
-         if reg.ValueExists(KEY_PEN_COLOR) then
-            FPenColor := reg.ReadInteger(KEY_PEN_COLOR);
-         if reg.ValueExists(KEY_ELLIPSE_COLOR) then
-            FShapeColors[shpEllipse] := reg.ReadInteger(KEY_ELLIPSE_COLOR);
-         if reg.ValueExists(KEY_DIAMOND_COLOR) then
-            FShapeColors[shpDiamond] := reg.ReadInteger(KEY_DIAMOND_COLOR);
-         if reg.ValueExists(KEY_PARALLELOGRAM_COLOR) then
-            FShapeColors[shpParallel]:= reg.ReadInteger(KEY_PARALLELOGRAM_COLOR);
-         if reg.ValueExists(KEY_RECTANGLE_COLOR) then
-            FShapeColors[shpRectangle] := reg.ReadInteger(KEY_RECTANGLE_COLOR);
-         if reg.ValueExists(KEY_FOLDER_COLOR) then
-            FShapeColors[shpFolder] := reg.ReadInteger(KEY_FOLDER_COLOR);
-         if reg.ValueExists(KEY_ROADSIGN_COLOR) then
-            FShapeColors[shpRoadSign] := reg.ReadInteger(KEY_ROADSIGN_COLOR);
-         if reg.ValueExists(KEY_ROUTINE_COLOR) then
-            FShapeColors[shpRoutine] := reg.ReadInteger(KEY_ROUTINE_COLOR);
-         if reg.ValueExists(KEY_FONT_COLOR) then
-         begin
-            FFontColor := reg.ReadInteger(KEY_FONT_COLOR);
-            if TInfra.IsNOkColor(FFontColor) then
-               FFontColor := OK_COLOR;
-         end;
-         if reg.ValueExists(KEY_NAVIGATOR_ALPHA_VALUE) then
-            FNavigatorAlphaValue := reg.ReadInteger(KEY_NAVIGATOR_ALPHA_VALUE);
-         if reg.ValueExists(KEY_NAVIGATOR_ALPHA_VISIBLE) then
-            FNavigatorAlphaVisible := reg.ReadBool(KEY_NAVIGATOR_ALPHA_VISIBLE);
-         if reg.ValueExists(KEY_EXPLORER_AUTO_NAV) then
-            FExplorerAutoNav := reg.ReadBool(KEY_EXPLORER_AUTO_NAV);
-         if reg.ValueExists(KEY_ENABLE_DBUFFERING) then
-            FEnableDBuffering := reg.ReadBool(KEY_ENABLE_DBUFFERING);
-         if reg.ValueExists(KEY_PARSE_INPUT) then
-            FParseInput := reg.ReadBool(KEY_PARSE_INPUT);
-         if reg.ValueExists(KEY_PARSE_OUTPUT) then
-            FParseOutput := reg.ReadBool(KEY_PARSE_OUTPUT);
-         if reg.ValueExists(KEY_PARSE_RETURN) then
-            FParseReturn := reg.ReadBool(KEY_PARSE_RETURN);
-         if reg.ValueExists(KEY_PARSE_ASSIGN) then
-            FParseAssign := reg.ReadBool(KEY_PARSE_ASSIGN);
-         if reg.ValueExists(KEY_PARSE_MULTI_ASSIGN) then
-            FParseMultiAssign := reg.ReadBool(KEY_PARSE_MULTI_ASSIGN);
-         if reg.ValueExists(KEY_PARSE_CONDITION) then
-            FParseCondition := reg.ReadBool(KEY_PARSE_CONDITION);
-         if reg.ValueExists(KEY_PARSE_SUBROUTINE) then
-            FParseRoutineCall := reg.ReadBool(KEY_PARSE_SUBROUTINE);
-         if reg.ValueExists(KEY_PARSE_FOR) then
-            FParseFor := reg.ReadBool(KEY_PARSE_FOR);
-         if reg.ValueExists(KEY_PARSE_CASE) then
-            FParseCase := reg.ReadBool(KEY_PARSE_CASE);
-         if reg.ValueExists(KEY_CONFIRM_REMOVE) then
-            FConfirmRemove := reg.ReadBool(KEY_CONFIRM_REMOVE);
-         if reg.ValueExists(KEY_PRINT_MULTI_PAGES) then
-            FPrintMultPages := reg.ReadBool(KEY_PRINT_MULTI_PAGES);
-         if reg.ValueExists(KEY_PRINT_MULTI_PAGES_HORZ) then
-            FPrintMultPagesHorz := reg.ReadBool(KEY_PRINT_MULTI_PAGES_HORZ);
-         if reg.ValueExists(KEY_PRINT_MARGIN_LEFT) then
-            FPrintRect.Left := reg.ReadInteger(KEY_PRINT_MARGIN_LEFT);
-         if reg.ValueExists(KEY_PRINT_MARGIN_TOP) then
-            FPrintRect.Top := reg.ReadInteger(KEY_PRINT_MARGIN_TOP);
-         if reg.ValueExists(KEY_PRINT_MARGIN_RIGHT) then
-            FPrintRect.Right := PRINT_SCALE_BASE - reg.ReadInteger(KEY_PRINT_MARGIN_RIGHT);
-         if reg.ValueExists(KEY_PRINT_MARGIN_BOTTOM) then
-            FPrintRect.Bottom := PRINT_SCALE_BASE - reg.ReadInteger(KEY_PRINT_MARGIN_BOTTOM);
-         if reg.ValueExists(KEY_EDITOR_SHOW_GUTTER) then
-            FEditorShowGutter := reg.ReadBool(KEY_EDITOR_SHOW_GUTTER);
-         if reg.ValueExists(KEY_EDITOR_INDENT_GUIDES) then
-            FEditorIndentGuides := reg.ReadBool(KEY_EDITOR_INDENT_GUIDES);
-         if reg.ValueExists(KEY_EDITOR_SHOW_RICHTEXT) then
-            FEditorShowRichText := reg.ReadBool(KEY_EDITOR_SHOW_RICHTEXT);
-         if reg.ValueExists(KEY_EDITOR_CODE_FOLDING) then
-            FEditorCodeFolding := reg.ReadBool(KEY_EDITOR_CODE_FOLDING);
-         if reg.ValueExists(KEY_EDITOR_SHOW_SCROLLBARS) then
-            FEditorShowScrollbars := reg.ReadBool(KEY_EDITOR_SHOW_SCROLLBARS);
-         if reg.ValueExists(KEY_SHOW_STATUSBAR) then
-            FEditorShowStatusBar := reg.ReadBool(KEY_SHOW_STATUSBAR);
-         if reg.ValueExists(KEY_EDITOR_BKG_COLOR) then
-            FEditorBkgColor := reg.ReadInteger(KEY_EDITOR_BKG_COLOR);
-         if reg.ValueExists(KEY_EDITOR_FONT_COLOR) then
-            FEditorFontColor := reg.ReadInteger(KEY_EDITOR_FONT_COLOR);
-         if reg.ValueExists(KEY_EDITOR_STRING_COLOR) then
-            FEditorStringColor := reg.ReadInteger(KEY_EDITOR_STRING_COLOR);
-         if reg.ValueExists(KEY_EDITOR_KEYWORD_COLOR) then
-            FEditorKeywordColor := reg.ReadInteger(KEY_EDITOR_KEYWORD_COLOR);
-         if reg.ValueExists(KEY_EDITOR_NUMBER_COLOR) then
-            FEditorNumberColor := reg.ReadInteger(KEY_EDITOR_NUMBER_COLOR);
-         if reg.ValueExists(KEY_EDITOR_COMMENT_COLOR) then
-            FEditorCommentColor := reg.ReadInteger(KEY_EDITOR_COMMENT_COLOR);
-         if reg.ValueExists(KEY_EDITOR_ALINE_COLOR) then
-            FEditorALineColor := reg.ReadInteger(KEY_EDITOR_ALINE_COLOR);
-         if reg.ValueExists(KEY_EDITOR_SELECT_COLOR) then
-            FEditorSelectColor := reg.ReadInteger(KEY_EDITOR_SELECT_COLOR);
-         if reg.ValueExists(KEY_EDITOR_GUTTER_COLOR) then
-            FEditorGutterColor := reg.ReadInteger(KEY_EDITOR_GUTTER_COLOR);
-         if reg.ValueExists(KEY_DESKTOP_COLOR) then
-            FDesktopColor := reg.ReadInteger(KEY_DESKTOP_COLOR);
-         if reg.ValueExists(KEY_EDITOR_IDENT_COLOR) then
-            FEditorIdentColor := reg.ReadInteger(KEY_EDITOR_IDENT_COLOR);
-         if reg.ValueExists(KEY_EDITOR_INDENT) then
-         begin
-            FIndentLength := reg.ReadInteger(KEY_EDITOR_INDENT);
-            FIndentString := StringOfChar(INDENT_CHAR, FIndentLength);
-         end;
-         if reg.ValueExists(KEY_EDITOR_FONT_SIZE) then
-            FEditorFontSize := reg.ReadInteger(KEY_EDITOR_FONT_SIZE);
-         if reg.ValueExists(KEY_SHOW_FUNC_LABELS) then
-            FShowFuncLabels := reg.ReadBool(KEY_SHOW_FUNC_LABELS);
-         if reg.ValueExists(KEY_SHOW_BLOCK_LABELS) then
-            FShowBlockLabels := reg.ReadBool(KEY_SHOW_BLOCK_LABELS);
-         if reg.ValueExists(KEY_VALIDATE_DECLARATION) then
-            FValidateDeclaration := reg.ReadBool(KEY_VALIDATE_DECLARATION);
-         if reg.ValueExists(KEY_FLOWCHART_FONT_NAME) then
-            FFlowchartFontName := reg.ReadString(KEY_FLOWCHART_FONT_NAME);
-         if reg.ValueExists(KEY_FLOWCHART_FONT_SIZE) then
-         begin
-            i := reg.ReadInteger(KEY_FLOWCHART_FONT_SIZE);
-            if i in FLOWCHART_VALID_FONT_SIZES then
-               FFlowchartFontSize := i;
-         end;
-         if reg.ValueExists(KEY_LOCALIZATION_FILE) then
-         begin
-            FTranslateFile := reg.ReadString(KEY_LOCALIZATION_FILE);
-            if not FileExists(FTranslateFile) then
-               FTranslateFile := '';
-         end;
-         if reg.ValueExists(KEY_AUTOSELECT_CODE_BLOCK) then
-            FEditorAutoSelectBlock := reg.ReadBool(KEY_AUTOSELECT_CODE_BLOCK);
-         if reg.ValueExists(KEY_AUTOUPDATE_CODE) then
-            FEditorAutoUpdate := reg.ReadBool(KEY_AUTOUPDATE_CODE);
-         if reg.ValueExists(KEY_CURRENT_LANGUAGE) then
-            FCurrentLangName := reg.ReadString(KEY_CURRENT_LANGUAGE);
-      end;
-   finally
-      reg.Free;
-   end;
+   FFontColor                 := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_FONT_COLOR, NOK_COLOR);
+   FHighlightColor            := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_HIGHLIGHT_COLOR, clAqua);
+   FPenColor                  := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PEN_COLOR, clBlack);
+   FShapeColors[shpEllipse]   := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_ELLIPSE_COLOR, DEFAULT_DESKTOP_COLOR);
+   FShapeColors[shpDiamond]   := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_DIAMOND_COLOR, DEFAULT_DESKTOP_COLOR);
+   FShapeColors[shpParallel]  := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PARALLELOGRAM_COLOR, DEFAULT_DESKTOP_COLOR);
+   FShapeColors[shpRectangle] := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_RECTANGLE_COLOR, DEFAULT_DESKTOP_COLOR);
+   FShapeColors[shpFolder]    := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_FOLDER_COLOR, DEFAULT_DESKTOP_COLOR);
+   FShapeColors[shpRoadSign]  := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_ROADSIGN_COLOR, DEFAULT_DESKTOP_COLOR);
+   FShapeColors[shpRoutine]   := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_ROUTINE_COLOR, DEFAULT_DESKTOP_COLOR);
+   FNavigatorAlphaValue       := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_NAVIGATOR_ALPHA_VALUE, 255);
+   FNavigatorAlphaVisible     := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_NAVIGATOR_ALPHA_VISIBLE, true);
+   FExplorerAutoNav           := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EXPLORER_AUTO_NAV, true);
+   FEnableDBuffering          := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_ENABLE_DBUFFERING, false);
+   FParseInput                := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_INPUT, false);
+   FParseOutput               := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_OUTPUT, false);
+   FParseReturn               := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_RETURN, false);
+   FParseAssign               := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_ASSIGN, false);
+   FParseMultiAssign          := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_MULTI_ASSIGN, false);
+   FParseCondition            := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_CONDITION, false);
+   FParseRoutineCall          := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_SUBROUTINE, false);
+   FParseFor                  := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_FOR, false);
+   FParseCase                 := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_CASE, false);
+   FConfirmRemove             := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_CONFIRM_REMOVE, true);
+   FPrintMultPages            := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PRINT_MULTI_PAGES, false);
+   FPrintMultPagesHorz        := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PRINT_MULTI_PAGES_HORZ, false);
+   FPrintRect.Left            := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_LEFT, DEFAULT_PRINT_MARGIN);
+   FPrintRect.Top             := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_TOP, DEFAULT_PRINT_MARGIN);
+   FPrintRect.Right           := PRINT_SCALE_BASE - FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_RIGHT, DEFAULT_PRINT_MARGIN);
+   FPrintRect.Bottom          := PRINT_SCALE_BASE - FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_BOTTOM, DEFAULT_PRINT_MARGIN);
+   FEditorShowGutter          := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EDITOR_SHOW_GUTTER, true);
+   FEditorIndentGuides        := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EDITOR_INDENT_GUIDES, false);
+   FEditorShowRichText        := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EDITOR_SHOW_RICHTEXT, false);
+   FEditorCodeFolding         := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EDITOR_CODE_FOLDING, false);
+   FEditorShowScrollbars      := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EDITOR_SHOW_SCROLLBARS, true);
+   FEditorShowStatusBar       := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_SHOW_STATUSBAR, true);
+   FEditorAutoSelectBlock     := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_AUTOSELECT_CODE_BLOCK, false);
+   FEditorAutoUpdate          := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_AUTOUPDATE_CODE, false);
+   FEditorBkgColor            := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_BKG_COLOR, clWindow);
+   FEditorFontColor           := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_FONT_COLOR, clWindowText);
+   FEditorStringColor         := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_STRING_COLOR, clTeal);
+   FEditorKeywordColor        := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_KEYWORD_COLOR, clWindowText);
+   FEditorNumberColor         := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_NUMBER_COLOR, clTeal);
+   FEditorCommentColor        := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_COMMENT_COLOR, TEXT_COLOR);
+   FEditorALineColor          := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_ALINE_COLOR, clCream);
+   FEditorSelectColor         := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_SELECT_COLOR, clHighlight);
+   FEditorGutterColor         := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_GUTTER_COLOR, clBtnFace);
+   FEditorIdentColor          := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_IDENT_COLOR, clWindowText);
+   FDesktopColor              := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_DESKTOP_COLOR, DEFAULT_DESKTOP_COLOR);
+   FIndentLength              := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_INDENT, EDITOR_DEFAULT_INDENT_LENGTH);
+   FEditorFontSize            := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_FONT_SIZE, EDITOR_DEFAULT_FONT_SIZE);
+   FShowFuncLabels            := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_SHOW_FUNC_LABELS, true);
+   FShowBlockLabels           := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_SHOW_BLOCK_LABELS, false);
+   FValidateDeclaration       := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_VALIDATE_DECLARATION, true);
+   FFlowchartFontName         := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_FLOWCHART_FONT_NAME, FLOWCHART_DEFAULT_FONT_NAME);
+   FTranslateFile             := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_LOCALIZATION_FILE, '');
+   FCurrentLangName           := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_CURRENT_LANGUAGE, '');
+   FFlowchartFontSize         := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_FLOWCHART_FONT_SIZE, FLOWCHART_MIN_FONT_SIZE);
+   if not (FFlowchartFontSize in FLOWCHART_VALID_FONT_SIZES) then
+      FFlowchartFontSize := FLOWCHART_MIN_FONT_SIZE;
+   if not FileExists(FTranslateFile) then
+      FTranslateFile := '';
+   if TInfra.IsNOkColor(FFontColor) then
+      FFontColor := OK_COLOR;
+   FIndentString := StringOfChar(INDENT_CHAR, FIndentLength);
 end;
 
 procedure TSettings.Save;
-var
-   reg: TRegistry;
 begin
-   reg := TRegistry.Create;
-   try
-      if reg.OpenKey(REGISTRY_KEY, true) then
-      begin
-         reg.WriteBool(KEY_PARSE_INPUT, FParseInput);
-         reg.WriteBool(KEY_PARSE_OUTPUT, FParseOutput);
-         reg.WriteBool(KEY_PARSE_ASSIGN, FParseAssign);
-         reg.WriteBool(KEY_PARSE_MULTI_ASSIGN, FParseMultiAssign);
-         reg.WriteBool(KEY_PARSE_CONDITION, FParseCondition);
-         reg.WriteBool(KEY_PARSE_FOR, FParseFor);
-         reg.WriteBool(KEY_PARSE_CASE, FParseCase);
-         reg.WriteBool(KEY_PARSE_SUBROUTINE, FParseRoutineCall);
-         reg.WriteBool(KEY_PARSE_RETURN, FParseReturn);
-         reg.WriteBool(KEY_CONFIRM_REMOVE, FConfirmRemove);
-         reg.WriteBool(KEY_PRINT_MULTI_PAGES, FPrintMultPages);
-         reg.WriteBool(KEY_PRINT_MULTI_PAGES_HORZ, FPrintMultPagesHorz);
-         reg.WriteBool(KEY_AUTOSELECT_CODE_BLOCK, FEditorAutoSelectBlock);
-         reg.WriteBool(KEY_AUTOUPDATE_CODE, FEditorAutoUpdate);
-         reg.WriteInteger(KEY_PRINT_MARGIN_LEFT, FPrintRect.Left);
-         reg.WriteInteger(KEY_PRINT_MARGIN_TOP, FPrintRect.Top);
-         reg.WriteInteger(KEY_PRINT_MARGIN_RIGHT, PRINT_SCALE_BASE - FPrintRect.Right);
-         reg.WriteInteger(KEY_PRINT_MARGIN_BOTTOM, PRINT_SCALE_BASE - FPrintRect.Bottom);
-         reg.WriteBool(KEY_EDITOR_SHOW_GUTTER, FEditorShowGutter);
-         reg.WriteBool(KEY_EDITOR_CODE_FOLDING, FEditorCodeFolding);
-         reg.WriteBool(KEY_EDITOR_SHOW_RICHTEXT, FEditorShowRichText);
-         reg.WriteBool(KEY_EDITOR_SHOW_SCROLLBARS, FEditorShowScrollbars);
-         reg.WriteBool(KEY_EDITOR_INDENT_GUIDES, FEditorIndentGuides);
-         reg.WriteBool(KEY_SHOW_STATUSBAR, FEditorShowStatusBar);
-         reg.WriteBool(KEY_ENABLE_DBUFFERING, FEnableDBuffering);
-         reg.WriteBool(KEY_SHOW_FUNC_LABELS, FShowFuncLabels);
-         reg.WriteBool(KEY_SHOW_BLOCK_LABELS, FShowBlockLabels);
-         reg.WriteBool(KEY_VALIDATE_DECLARATION, FValidateDeclaration);
-         reg.WriteInteger(KEY_NAVIGATOR_ALPHA_VALUE, FNavigatorAlphaValue);
-         reg.WriteBool(KEY_NAVIGATOR_ALPHA_VISIBLE, FNavigatorAlphaVisible);
-         reg.WriteBool(KEY_EXPLORER_AUTO_NAV, FExplorerAutoNav);
-         reg.WriteInteger(KEY_HIGHLIGHT_COLOR, FHighlightColor);
-         reg.WriteInteger(KEY_PEN_COLOR, FPenColor);
-         reg.WriteInteger(KEY_EDITOR_FONT_COLOR, FEditorFontColor);
-         reg.WriteInteger(KEY_EDITOR_BKG_COLOR, FEditorBkgColor);
-         reg.WriteInteger(KEY_EDITOR_STRING_COLOR, FEditorStringColor);
-         reg.WriteInteger(KEY_EDITOR_KEYWORD_COLOR, FEditorKeywordColor);
-         reg.WriteInteger(KEY_EDITOR_NUMBER_COLOR, FEditorNumberColor);
-         reg.WriteInteger(KEY_EDITOR_COMMENT_COLOR, FEditorCommentColor);
-         reg.WriteInteger(KEY_EDITOR_ALINE_COLOR, FEditorALineColor);
-         reg.WriteInteger(KEY_EDITOR_SELECT_COLOR, FEditorSelectColor);
-         reg.WriteInteger(KEY_EDITOR_GUTTER_COLOR, FEditorGutterColor);
-         reg.WriteInteger(KEY_EDITOR_IDENT_COLOR, FEditorIdentColor);
-         reg.WriteInteger(KEY_EDITOR_FONT_SIZE, FEditorFontSize);
-         reg.WriteInteger(KEY_DESKTOP_COLOR, FDesktopColor);
-         reg.WriteInteger(KEY_EDITOR_INDENT, FIndentLength);
-         reg.WriteInteger(KEY_ELLIPSE_COLOR, FShapeColors[shpEllipse]);
-         reg.WriteInteger(KEY_DIAMOND_COLOR, FShapeColors[shpDiamond]);
-         reg.WriteInteger(KEY_PARALLELOGRAM_COLOR, FShapeColors[shpParallel]);
-         reg.WriteInteger(KEY_RECTANGLE_COLOR, FShapeColors[shpRectangle]);
-         reg.WriteInteger(KEY_FOLDER_COLOR, FShapeColors[shpFolder]);
-         reg.WriteInteger(KEY_ROADSIGN_COLOR, FShapeColors[shpRoadSign]);
-         reg.WriteInteger(KEY_ROUTINE_COLOR, FShapeColors[shpRoutine]);
-         reg.WriteInteger(KEY_FONT_COLOR, FFontColor);
-         reg.WriteString(KEY_LOCALIZATION_FILE, FTranslateFile);
-         reg.WriteString(KEY_FLOWCHART_FONT_NAME, FFlowchartFontName);
-         reg.WriteString(KEY_CURRENT_LANGUAGE, FCurrentLangName);
-         reg.WriteInteger(KEY_FLOWCHART_FONT_SIZE, FFlowchartFontSize);
-       end
-       else
-          Application.MessageBox(PChar(i18Manager.GetString('RegErr')),
-                                 PChar(i18Manager.GetString('Warning')),
-                                 MB_OK+MB_ICONEXCLAMATION);
-   finally
-      reg.Free;
-   end;
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_PARSE_INPUT, FParseInput);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_PARSE_OUTPUT, FParseOutput);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_PARSE_ASSIGN, FParseAssign);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_PARSE_MULTI_ASSIGN, FParseMultiAssign);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_PARSE_CONDITION, FParseCondition);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_PARSE_FOR, FParseFor);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_PARSE_CASE, FParseCase);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_PARSE_SUBROUTINE, FParseRoutineCall);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_PARSE_RETURN, FParseReturn);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_CONFIRM_REMOVE, FConfirmRemove);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_PRINT_MULTI_PAGES, FPrintMultPages);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_PRINT_MULTI_PAGES_HORZ, FPrintMultPagesHorz);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_AUTOSELECT_CODE_BLOCK, FEditorAutoSelectBlock);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_AUTOUPDATE_CODE, FEditorAutoUpdate);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_LEFT, FPrintRect.Left);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_TOP, FPrintRect.Top);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_RIGHT, PRINT_SCALE_BASE - FPrintRect.Right);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_BOTTOM, PRINT_SCALE_BASE - FPrintRect.Bottom);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_EDITOR_SHOW_GUTTER, FEditorShowGutter);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_EDITOR_CODE_FOLDING, FEditorCodeFolding);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_EDITOR_SHOW_RICHTEXT, FEditorShowRichText);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_EDITOR_SHOW_SCROLLBARS, FEditorShowScrollbars);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_EDITOR_INDENT_GUIDES, FEditorIndentGuides);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_SHOW_STATUSBAR, FEditorShowStatusBar);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_ENABLE_DBUFFERING, FEnableDBuffering);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_SHOW_FUNC_LABELS, FShowFuncLabels);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_SHOW_BLOCK_LABELS, FShowBlockLabels);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_VALIDATE_DECLARATION, FValidateDeclaration);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_NAVIGATOR_ALPHA_VALUE, FNavigatorAlphaValue);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_NAVIGATOR_ALPHA_VISIBLE, FNavigatorAlphaVisible);
+   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_EXPLORER_AUTO_NAV, FExplorerAutoNav);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_HIGHLIGHT_COLOR, FHighlightColor);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_PEN_COLOR, FPenColor);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_FONT_COLOR, FEditorFontColor);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_BKG_COLOR, FEditorBkgColor);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_STRING_COLOR, FEditorStringColor);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_KEYWORD_COLOR, FEditorKeywordColor);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_NUMBER_COLOR, FEditorNumberColor);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_COMMENT_COLOR, FEditorCommentColor);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_ALINE_COLOR, FEditorALineColor);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_SELECT_COLOR, FEditorSelectColor);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_GUTTER_COLOR, FEditorGutterColor);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_IDENT_COLOR, FEditorIdentColor);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_FONT_SIZE, FEditorFontSize);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_DESKTOP_COLOR, FDesktopColor);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_INDENT, FIndentLength);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_ELLIPSE_COLOR, FShapeColors[shpEllipse]);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_DIAMOND_COLOR, FShapeColors[shpDiamond]);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_PARALLELOGRAM_COLOR, FShapeColors[shpParallel]);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_RECTANGLE_COLOR, FShapeColors[shpRectangle]);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_FOLDER_COLOR, FShapeColors[shpFolder]);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_ROADSIGN_COLOR, FShapeColors[shpRoadSign]);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_ROUTINE_COLOR, FShapeColors[shpRoutine]);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_FONT_COLOR, FFontColor);
+   FSettingsFile.WriteString(SETTINGS_SECTION, KEY_LOCALIZATION_FILE, FTranslateFile);
+   FSettingsFile.WriteString(SETTINGS_SECTION, KEY_FLOWCHART_FONT_NAME, FFlowchartFontName);
+   FSettingsFile.WriteString(SETTINGS_SECTION, KEY_CURRENT_LANGUAGE, FCurrentLangName);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_FLOWCHART_FONT_SIZE, FFlowchartFontSize);
 end;
 
 procedure TSettings.ResetCurrentLangName;
@@ -517,7 +380,7 @@ var
    lName: string;
 begin
    lName := FCurrentLangName;
-   FCurrentLangName := '';
+   FCurrentLangName := 'a2s%WE';
    SetCurrentLangName(lName);
 end;
 

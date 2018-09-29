@@ -245,7 +245,7 @@ type
 implementation
 
 uses
-   Vcl.Forms, System.StrUtils, System.Win.Registry, ApplicationCommon, XMLProcessor,
+   Vcl.Forms, System.StrUtils, System.IniFiles, ApplicationCommon, XMLProcessor,
    WhileDo_Block, RepeatUntil_Block, ForDo_Block, Case_Block, If_Block, IfElse_Block,
    Main_Block, InOut_Block, Instr_Block, MultiInstr_Block, Return_Block, Text_Block,
    FunctionCall_Block, Folder_Block;
@@ -974,44 +974,27 @@ end;
 
 procedure TLangDefinition.LoadCompilerData;
 var
-   reg: TRegistry;
+   sFile: TCustomIniFile;
 begin
    if not FName.Trim.IsEmpty then
    begin
-      reg := TRegistry.Create;
-      try
-         if reg.OpenKeyReadOnly(REGISTRY_KEY) then
-         begin
-            if reg.ValueExists(FCompilerKey) then
-               CompilerCommand := reg.ReadString(FCompilerKey);
-            if reg.ValueExists(FCompilerNoMainKey) then
-               CompilerCommandNoMain := reg.ReadString(FCompilerNoMainKey);
-            if reg.ValueExists(FCompilerFileEncodingKey) then
-               CompilerFileEncoding := reg.ReadString(FCompilerFileEncodingKey);
-         end;
-      finally
-         reg.Free;
-      end;
+      sFile := GSettings.SettingsFile;
+      CompilerCommand := sFile.ReadString(SETTINGS_SECTION, FCompilerKey, '');
+      CompilerCommandNoMain := sFile.ReadString(SETTINGS_SECTION, FCompilerNoMainKey, '');
+      CompilerFileEncoding := sFile.ReadString(SETTINGS_SECTION, FCompilerFileEncodingKey, '');
    end;
 end;
 
 procedure TLangDefinition.SaveCompilerData;
 var
-   reg: TRegistry;
+   sFile: TCustomIniFile;
 begin
    if not FName.Trim.IsEmpty then
    begin
-      reg := TRegistry.Create;
-      try
-         if reg.OpenKey(REGISTRY_KEY, true) then
-         begin
-            reg.WriteString(FCompilerKey, CompilerCommand);
-            reg.WriteString(FCompilerNoMainKey, CompilerCommandNoMain);
-            reg.WriteString(FCompilerFileEncodingKey, CompilerFileEncoding);
-         end;
-      finally
-         reg.Free;
-      end;
+      sFile := GSettings.SettingsFile;
+      sFile.WriteString(SETTINGS_SECTION, FCompilerKey, CompilerCommand);
+      sFile.WriteString(SETTINGS_SECTION, FCompilerNoMainKey, CompilerCommandNoMain);
+      sFile.WriteString(SETTINGS_SECTION, FCompilerFileEncodingKey, CompilerFileEncoding);
    end;
 end;
 

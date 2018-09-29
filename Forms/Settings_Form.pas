@@ -520,7 +520,7 @@ begin
    edtEditorIndent.Text := ASettings.IndentLength.ToString;
    pnlFont.Color := ASettings.FontColor;
    edtTranslateFile.Text := ASettings.TranslateFile;
-   cbLanguage.ItemIndex := cbLanguage.Items.IndexOf(GInfra.CurrentLang.Name);
+   cbLanguage.ItemIndex := cbLanguage.Items.IndexOf(ASettings.CurrentLangName);
    edtCompiler.Text := GInfra.CurrentLang.CompilerCommand;
    edtCompilerNoMain.Text := GInfra.CurrentLang.CompilerCommandNoMain;
    chkParseAssign.Checked := ASettings.ParseAssign;

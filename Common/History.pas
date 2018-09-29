@@ -28,7 +28,7 @@ uses
 
 const
    HISTORY_SIZE = 10;
-   KEY_HISTORY = 'HistoryEntry';
+   HISTORY_SECTION = 'History';
 
 type
    THistoryMenu = class(TObject)
@@ -45,7 +45,7 @@ type
 implementation
 
 uses
-   System.Win.Registry, System.SysUtils, ApplicationCommon;
+   System.IniFiles, System.SysUtils, ApplicationCommon;
 
 constructor THistoryMenu.Create(AParentMenu: TMenuItem; AOnClick: TNotifyEvent);
 begin
@@ -81,41 +81,22 @@ end;
 
 procedure THistoryMenu.Save;
 var
-   reg: TRegistry;
    i: integer;
+   sFile: TCustomIniFile;
 begin
-   reg := TRegistry.Create;
-   try
-      if reg.OpenKey(REGISTRY_KEY, true) then
-      begin
-         for i := 0 to FParentMenu.Count-1 do
-            reg.WriteString(KEY_HISTORY + i.ToString, FParentMenu[i].Caption);
-      end;
-   finally
-      reg.Free;
-   end;
+   sFile := GSettings.SettingsFile;
+   for i := 0 to FParentMenu.Count-1 do
+       sFile.WriteString(HISTORY_SECTION, i.ToString, FParentMenu[i].Caption);
 end;
 
 procedure THistoryMenu.Load;
 var
-   reg: TRegistry;
    i: integer;
-   fileKey: string;
+   sFile: TCustomIniFile;
 begin
-   reg := TRegistry.Create;
-   try
-      if reg.OpenKeyReadOnly(REGISTRY_KEY) then
-      begin
-         for i := HISTORY_SIZE-1 downto 0 do
-         begin
-            fileKey := KEY_HISTORY + i.ToString;
-            if reg.ValueExists(fileKey) then
-               AddFile(reg.ReadString(fileKey));
-         end;
-      end;
-   finally
-      reg.Free;
-   end;
+   sFile := GSettings.SettingsFile;
+   for i := HISTORY_SIZE-1 downto 0 do
+       AddFile(sFile.ReadString(HISTORY_SECTION, i.ToString, ''));
 end;
 
 end.

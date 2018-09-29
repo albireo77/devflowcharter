@@ -336,10 +336,6 @@ begin
    GClpbrd.UndoObject.Free;
    GProject.Free;
    GProject := nil;
-   if GSettings <> nil then
-      GSettings.Save;
-   GSettings.Free;
-   GSettings := nil;
    FHistoryMenu.Free;
    i18Manager.Free;
    i18Manager := nil;
