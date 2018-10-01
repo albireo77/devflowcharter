@@ -99,18 +99,6 @@ const
 {$IFDEF WIN64}
    plat = '(Windows 64-bit)';
 {$ENDIF}
-{$IFDEF MACOS32}
-   plat = '(Mac OS 32-bit)';
-{$ENDIF}
-{$IFDEF MACOS64}
-   plat = '(Mac OS 64-bit)';
-{$ENDIF}
-{$IFDEF IOS32}
-   plat = '(iOS 32-bit)';
-{$ENDIF}
-{$IFDEF IOS64}
-   plat = '(iOS 64-bit)';
-{$ENDIF}
 begin
    FVersion := ExtractProgramVersion;
    lblInfo.Caption := Format(' This program is freeware and released under the%s                GNU General Public License.%s%s    Copyright(C) 2006-2018 The %s%s                             project', [lb, lb, lb, PROGRAM_NAME, lb]);

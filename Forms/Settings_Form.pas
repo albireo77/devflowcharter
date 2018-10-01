@@ -385,11 +385,13 @@ var
    langDef: TLangDefinition;
    m: string;
 begin
+   langDef := GInfra.GetLangDefinition(cbLanguage.Text);
+   if langDef = nil then
+      raise Exception.Create('Unsupported language: ' + cbLanguage.Text);
    pnlFill.Color := clAqua;
    pnlPen.Color := clBlack;
    pnlDesktop.Color := DEFAULT_DESKTOP_COLOR;
-   langDef := GInfra.GetLangDefinition(cbLanguage.Text);
-   parserOn := (langDef <> nil) and (langDef.Parser <> nil);
+   parserOn := langDef.Parser <> nil;
    chkParseInput.Enabled := parserOn;
    chkParseInput.Checked := parserOn;
    chkParseOutput.Enabled := parserOn;
@@ -442,11 +444,13 @@ end;
 
 procedure TSettingsForm.ProtectFields;
 var
-   parserOn, compilerOn: boolean;
+   parserOn: boolean;
    langDef: TLangDefinition;
 begin
    langDef := GInfra.GetLangDefinition(cbLanguage.Text);
-   parserOn := (langDef <> nil) and (langDef.Parser <> nil);
+   if langDef = nil then
+      raise Exception.Create('Unsupported language: ' + cbLanguage.Text);
+   parserOn := langDef.Parser <> nil;
    chkParseInput.Enabled := parserOn;
    chkParseOutput.Enabled := parserOn;
    chkParseAssign.Enabled := parserOn;
@@ -468,15 +472,14 @@ begin
       chkParseRoutine.Checked := false;
       chkParseReturn.Checked := false;
    end;
-   compilerOn := (langDef <> nil) and langDef.EnabledCompiler;
-   lblCompiler.Enabled := compilerOn;
-   lblFileEncoding.Enabled := compilerOn;
-   lblCompilerNoMain.Enabled := compilerOn;
-   edtCompiler.Enabled := compilerOn;
-   edtCompilerNoMain.Enabled := compilerOn;
-   btnBrowseCompilers.Enabled := compilerOn;
-   cbFileEncoding.Enabled := compilerOn;
-   if compilerOn then
+   lblCompiler.Enabled := langDef.EnabledCompiler;
+   lblFileEncoding.Enabled := langDef.EnabledCompiler;
+   lblCompilerNoMain.Enabled := langDef.EnabledCompiler;
+   edtCompiler.Enabled := langDef.EnabledCompiler;
+   edtCompilerNoMain.Enabled := langDef.EnabledCompiler;
+   btnBrowseCompilers.Enabled := langDef.EnabledCompiler;
+   cbFileEncoding.Enabled := langDef.EnabledCompiler;
+   if langDef.EnabledCompiler then
    begin
       edtCompiler.Text := langDef.CompilerCommand;
       edtCompilerNoMain.Text := langDef.CompilerCommandNoMain;
