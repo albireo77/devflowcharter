@@ -1385,6 +1385,9 @@ finalization
    GSettings.Free;
    GSettings := nil;
 
+   i18Manager.Free;
+   i18Manager := nil;
+
 end.
 
 

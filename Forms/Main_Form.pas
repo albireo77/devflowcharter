@@ -337,8 +337,6 @@ begin
    GProject.Free;
    GProject := nil;
    FHistoryMenu.Free;
-   i18Manager.Free;
-   i18Manager := nil;
 end;
 
 function TMainForm.GetMainBlockNextTopLeft: TPoint;
