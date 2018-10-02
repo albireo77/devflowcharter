@@ -160,8 +160,8 @@ uses
 {$IFDEF MSWINDOWS}
    System.Win.Registry,
 {$ENDIF}
-   System.SysUtils, System.Types, Vcl.Forms, System.Math, System.Classes, ApplicationCommon,
-   Main_Form, Navigator_Form;
+   System.SysUtils, System.Types, Vcl.Forms, System.Math, System.Classes, System.IOUtils,
+   ApplicationCommon, Main_Form, Navigator_Form;
 
 const
    KEY_HIGHLIGHT_COLOR = 'HighlightColor';
@@ -228,12 +228,38 @@ const
    KEY_AUTOUPDATE_CODE = 'AutoUpdateCode';
 
 constructor TSettings.Create;
+const
+   SETTINGS_FILE_PARAM = '-settingsFile=';
+var
+   i: integer;
+   param, sFile: string;
 begin
    inherited Create;
 {$IFDEF MSWINDOWS}
-   FSettingsFile := TRegistryIniFile.Create('Software\' + PROGRAM_NAME);
+   sFile := '';
+   if ParamCount > 0 then
+   begin
+      for i := 1 to ParamCount do
+      begin
+         param := ParamStr(i);
+         if param.StartsWith(SETTINGS_FILE_PARAM, true) then
+         begin
+            sFile := Copy(param, Length(SETTINGS_FILE_PARAM)+1, MaxInt);
+            if not sFile.IsEmpty then
+            begin
+               if not TPath.IsPathRooted(sFile) then
+                  sFile := IncludeTrailingPathDelimiter(GetCurrentDir) + sFile;
+            end;
+            break;
+         end;
+      end;
+   end;
+   if sFile.IsEmpty then
+      FSettingsFile := TRegistryIniFile.Create('Software\' + PROGRAM_NAME)
+   else
+      FSettingsFile := TIniFile.Create(sFile);
 {$ELSE}
-   FSettingsFile := TIniFile.Create(ExtractFilePath(Application.ExeName) + PROGRAM_NAME + '.ini');
+   FSettingsFile := TIniFile.Create(IncludeTrailingPathDelimiter(GetCurrentDir) + PROGRAM_NAME + '.ini');
 {$ENDIF}
    Load;
 end;
