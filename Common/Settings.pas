@@ -237,21 +237,18 @@ begin
    inherited Create;
 {$IFDEF MSWINDOWS}
    sFile := '';
-   if ParamCount > 0 then
+   for i := 1 to ParamCount do
    begin
-      for i := 1 to ParamCount do
+      param := ParamStr(i);
+      if param.StartsWith(SETTINGS_FILE_PARAM, true) then
       begin
-         param := ParamStr(i);
-         if param.StartsWith(SETTINGS_FILE_PARAM, true) then
+         sFile := Copy(param, Length(SETTINGS_FILE_PARAM)+1, MaxInt);
+         if not sFile.IsEmpty then
          begin
-            sFile := Copy(param, Length(SETTINGS_FILE_PARAM)+1, MaxInt);
-            if not sFile.IsEmpty then
-            begin
-               if not TPath.IsPathRooted(sFile) then
-                  sFile := IncludeTrailingPathDelimiter(GetCurrentDir) + sFile;
-            end;
-            break;
+            if not TPath.IsPathRooted(sFile) then
+               sFile := IncludeTrailingPathDelimiter(GetCurrentDir) + sFile;
          end;
+         break;
       end;
    end;
    if sFile.IsEmpty then
