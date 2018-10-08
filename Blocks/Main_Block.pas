@@ -423,23 +423,8 @@ var
    lang: TLangDefinition;
    progList, varList, tmpList: TStringList;
    vars: TVarDeclareList;
-   isMain: boolean;
    header: TUserFunctionHeader;
 begin
-   result := 0;
-   header := TInfra.GetFunctionHeader(Self);
-   if header <> nil then
-   begin
-      vars := header.LocalVars;
-      lName := header.GetName;
-      isMain := false;
-   end
-   else
-   begin
-      vars := GProject.GlobalVars;
-      lName := GProject.Name;
-      isMain := true;
-   end;
    tmpList := TStringList.Create;
    try
       if ALangId = TIBASIC_LANG_ID then
@@ -449,14 +434,26 @@ begin
          lang := GInfra.GetLangDefinition(ALangId);
          if lang <> nil then
          begin
-            template := IfThen(isMain, lang.MainFunctionTemplate, lang.FunctionBodyTemplate);
+            header := TInfra.GetFunctionHeader(Self);
+            if header <> nil then
+            begin
+               vars := header.LocalVars;
+               lName := header.GetName;
+               template := lang.FunctionBodyTemplate;
+            end
+            else
+            begin
+               vars := GProject.GlobalVars;
+               lName := GProject.Name;
+               template := lang.MainFunctionTemplate;
+            end;
             if not template.IsEmpty then
             begin
                progList := TStringList.Create;
                varList := TStringList.Create;
                try
                   progList.Text := ReplaceStr(template, PRIMARY_PLACEHOLDER, lName);
-                  if isMain then
+                  if header = nil then
                   begin
                      ending := '';
                      if not ((Branch.Count > 0) and (Branch.Last is TReturnBlock)) then
