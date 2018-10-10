@@ -45,9 +45,8 @@ type
 implementation
 
 uses
-   Vcl.Controls, System.SysUtils, WinApi.Windows, System.StrUtils, System.Types,
-   System.UITypes, ApplicationCommon, Project, UserFunction, Main_Block,
-   CommonTypes, LangDefinition;
+   Vcl.Controls, System.SysUtils, System.StrUtils, System.Types, System.UITypes,
+   ApplicationCommon, Project, UserFunction, Main_Block, CommonTypes, LangDefinition;
 
 constructor TReturnBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
 var

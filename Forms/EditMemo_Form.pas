@@ -29,7 +29,7 @@ var
 implementation
 
 uses
-   WinApi.Windows, Vcl.Graphics, Vcl.Forms, ApplicationCommon;
+   Vcl.Graphics, Vcl.Forms, System.Types, ApplicationCommon;
 
 {$R *.dfm}
 

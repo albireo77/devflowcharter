@@ -24,7 +24,7 @@ unit Functions_Form;
 interface
 
 uses
-   WinApi.Windows, OmniXML, PageControl_Form, CommonTypes;
+   System.Types, OmniXML, PageControl_Form, CommonTypes;
 
 type
 
