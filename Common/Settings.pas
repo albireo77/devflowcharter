@@ -22,7 +22,7 @@ unit Settings;
 interface
 
 uses
-  WinApi.Windows, Vcl.Graphics, System.IniFiles, LangDefinition, CommonTypes,
+  Vcl.Graphics, System.IniFiles, System.Types, LangDefinition, CommonTypes,
   SynEditHighlighter;
 
 type
@@ -160,7 +160,7 @@ uses
 {$IFDEF MSWINDOWS}
    System.Win.Registry,
 {$ENDIF}
-   System.SysUtils, System.Types, Vcl.Forms, System.Math, System.Classes, System.IOUtils,
+   System.SysUtils, Vcl.Forms, Vcl.Controls, System.Math, System.Classes, System.IOUtils,
    ApplicationCommon, Main_Form, Navigator_Form;
 
 const
@@ -574,7 +574,7 @@ begin
                                 or (FFlowchartFontName <> flowFontName)
                                 or (FFlowchartFontSize <> flowFontSize)) then
       begin
-         if TInfra.ShowFormattedQuestionBox('CloseProjectAsk', [sLineBreak]) = IDYES then
+         if TInfra.ShowFormattedQuestionBox('CloseProjectAsk', [sLineBreak]) = mrYes then
             TInfra.SetInitialSettings
          else
             applyAll := false;

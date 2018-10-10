@@ -24,7 +24,7 @@ unit PageControl_Form;
 interface
 
 uses
-   Vcl.Controls, Vcl.Menus, Vcl.ComCtrls, System.Classes, WinApi.Windows, OmniXML,
+   Vcl.Controls, Vcl.Menus, Vcl.ComCtrls, System.Classes, System.Types, OmniXML,
    Base_Form, CommonTypes;
 
 type
@@ -181,10 +181,10 @@ procedure TPageControlForm.miRemoveAllClick(Sender: TObject);
 var
    i, res: integer;
 begin
-   res := IDYES;
+   res := mrYes;
    if GSettings.ConfirmRemove then
       res := TInfra.ShowQuestionBox(i18Manager.GetString('ConfirmRemove'));
-   if res = IDYES then
+   if res = mrYes then
    begin
       while GetVisiblePageCount > 0 do
       begin

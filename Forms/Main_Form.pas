@@ -829,7 +829,7 @@ end;
 
 function TMainForm.ConfirmSave: integer;
 begin
-   result := IDCANCEL;
+   result := mrCancel;
    if GProject <> nil then
       result := TInfra.ShowFormattedQuestionBox('ConfirmClose', [GProject.Name]);
 end;

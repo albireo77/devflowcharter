@@ -25,8 +25,8 @@ interface
 
 uses
    WinApi.Windows, Vcl.Graphics, System.Classes, Vcl.ComCtrls, Vcl.Controls, System.Contnrs,
-   Generics.Defaults, UserFunction, OmniXML, UserDataType, Main_Block, DeclareList, BaseEnumerator, CommonTypes,
-   CommonInterfaces, BlockTabSheet, Comment;
+   Generics.Defaults, UserFunction, OmniXML, UserDataType, Main_Block, DeclareList,
+   BaseEnumerator, CommonTypes, CommonInterfaces, BlockTabSheet, Comment;
 
 type
 
@@ -526,7 +526,7 @@ begin
    s := IfThen(SameText(langName, GInfra.DummyLang.Name), 'ChangeLngNone', 'ChangeLngAsk');
 
    if (not SameText(GInfra.CurrentLang.Name, langName)) and
-      (TInfra.ShowFormattedQuestionBox(s, [langName.Trim, sLineBreak], MB_YESNO+MB_ICONQUESTION) = IDYES) then
+      (TInfra.ShowFormattedQuestionBox(s, [langName.Trim, sLineBreak], MB_YESNO+MB_ICONQUESTION) = mrYes) then
    begin
       GSettings.CurrentLangName := langName;
 {$IFDEF USE_CODEFOLDING}
