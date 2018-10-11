@@ -398,14 +398,16 @@ procedure TInfra.SetHLighters;
 var
    i: integer;
    comp: TComponent;
+   lang: TLangDefinition;
 begin
    for i := 0 to FLangArrayCount-2 do
    begin
-      comp := GetEditorForm.FindComponent(FLangArray[i].HighLighterVarName);
+      lang := FLangArray[i];
+      comp := GetEditorForm.FindComponent(lang.HighLighterVarName);
       if comp is TSynCustomHighlighter then
-         FLangArray[i].HighLighter := TSynCustomHighlighter(comp);
-      if FLangArray[i] = GInfra.CurrentLang then
-         GSettings.UpdateForHLighter(FLangArray[i].HighLighter);
+         lang.HighLighter := TSynCustomHighlighter(comp);
+      if lang = GInfra.CurrentLang then
+         GSettings.UpdateForHLighter(lang.HighLighter);
    end;
 end;
 
