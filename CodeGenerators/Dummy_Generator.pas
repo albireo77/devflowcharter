@@ -193,6 +193,7 @@ begin
           TInfra.InsertTemplateLines(hdrTemplate, '%s3', GProject.GetProgramHeader);
           TInfra.InsertTemplateLines(hdrTemplate, '%s4', DateTimeToStr(Now));
           TInfra.InsertTemplateLines(hdrTemplate, '%s5', ExtractFileName(lang.DefFile));
+          TInfra.InsertTemplateLines(hdrTemplate, '%s6', lang.DefFile);
           ALines.AddStrings(hdrTemplate);
        finally
           hdrTemplate.Free;
