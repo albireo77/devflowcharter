@@ -235,7 +235,6 @@ var
    param, sFile: string;
 begin
    inherited Create;
-{$IFDEF MSWINDOWS}
    sFile := '';
    for i := 1 to ParamCount do
    begin
@@ -252,12 +251,13 @@ begin
       end;
    end;
    if sFile.IsEmpty then
+{$IFDEF MSWINDOWS}
       FSettingsFile := TRegistryIniFile.Create('Software\' + PROGRAM_NAME)
+{$ELSE}
+      FSettingsFile := TIniFile.Create(IncludeTrailingPathDelimiter(GetCurrentDir) + PROGRAM_NAME + '.ini')
+{$ENDIF}
    else
       FSettingsFile := TIniFile.Create(sFile);
-{$ELSE}
-   FSettingsFile := TIniFile.Create(IncludeTrailingPathDelimiter(GetCurrentDir) + PROGRAM_NAME + '.ini');
-{$ENDIF}
    Load;
 end;
 
