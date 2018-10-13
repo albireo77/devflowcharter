@@ -245,10 +245,7 @@ begin
       begin
          sFile := Copy(param, Length(SETTINGS_FILE_PARAM)+1, MaxInt);
          if not sFile.IsEmpty then
-         begin
-            if not TPath.IsPathRooted(sFile) then
-               sFile := TPath.GetFullPath(sFile);
-         end;
+            sFile := TPath.GetFullPath(sFile);
       end
       else if param.StartsWith(LANG_DEFS_DIR_PARAM, true) then
          FLanguageDefinitionsDir := Copy(param, Length(LANG_DEFS_DIR_PARAM)+1, MaxInt);
