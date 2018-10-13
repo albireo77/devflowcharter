@@ -175,6 +175,8 @@ object SettingsForm: TSettingsForm
       Font.Name = 'MS Sans Serif'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
       OnChange = cbLanguageChange
     end

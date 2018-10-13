@@ -210,8 +210,6 @@ const   // Global constants
 
         PRIMARY_PLACEHOLDER = '%s1';
 
-        LANG_DEFS_PATH = 'LanguageDefinitions\';
-
         DEF_PAGE_CAPTION_KEY = 'mainPage';
 
         UNKNOWN_VERSION = 'unknown';
@@ -244,8 +242,8 @@ implementation
 
 uses
    Vcl.Printers, WinApi.Messages, Vcl.Menus, Vcl.Dialogs, Vcl.Imaging.jpeg, Vcl.Imaging.PngImage,
-   System.Math, System.TypInfo, Generics.Collections, UserDataType, XMLProcessor, SynEditHighlighter,
-   Main_Block, BaseEnumerator;
+   System.Math, System.TypInfo, Generics.Collections, System.IOUtils, UserDataType,
+   XMLProcessor, SynEditHighlighter, Main_Block, BaseEnumerator;
 
 type
    THackCustomEdit = class(TCustomEdit);
@@ -259,14 +257,15 @@ var
    i: integer;
    searchRec: TSearchRec;
    lang: TLangDefinition;
-   lFile: string;
+   lFile, langDir: string;
 begin
    inherited Create;
    i := 0;
-   if FindFirst(LANG_DEFS_PATH + '*.xml', faAnyFile, searchRec) = 0 then
+   langDir := GSettings.LanguageDefinitionsDir;
+   if FindFirst(langDir + '*.xml', faAnyFile, searchRec) = 0 then
    try
       repeat
-         lFile := LANG_DEFS_PATH + searchRec.Name;
+         lFile := TPath.GetFullPath(langDir + searchRec.Name);
          lang := TLangDefinition.Create;
          if not TXMLProcessor.ImportFromXMLFile(lang.ImportFromXML, lFile, true).IsEmpty then
          begin

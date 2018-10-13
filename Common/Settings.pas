@@ -82,7 +82,8 @@ type
       FExplorerAutoNav: boolean;
       FNavigatorAlphaValue: integer;
       FFlowchartFontName,
-      FCurrentLangName: string;
+      FCurrentLangName,
+      FLanguageDefinitionsDir: string;
       FSettingsFile: TCustomIniFile;
 
       FShapeColors: array[TColorShape] of TColor;
@@ -97,7 +98,6 @@ type
       procedure LoadFromEditor;
       procedure SetForm;
       procedure UpdateForHLighter(AHLighter: TSynCustomHighlighter);
-      procedure ProtectFields;
       procedure SetDefaultForm;
       procedure ResetCurrentLangName;
       function GetShapeColor(const shape: TColorShape): TColor;
@@ -152,6 +152,7 @@ type
       property ExplorerAutoNav: boolean read FExplorerAutoNav write FExplorerAutoNav;
       property CurrentLangName: string read FCurrentLangName write SetCurrentLangName;
       property SettingsFile: TCustomIniFile read FSettingsFile;
+      property LanguageDefinitionsDir: string read FLanguageDefinitionsDir;
   end;
 
 implementation
@@ -230,6 +231,7 @@ const
 constructor TSettings.Create;
 const
    SETTINGS_FILE_PARAM = '-settingsFile=';
+   LANG_DEFS_DIR_PARAM = '-langDefinitionsDir=';
 var
    i: integer;
    param, sFile: string;
@@ -245,19 +247,23 @@ begin
          if not sFile.IsEmpty then
          begin
             if not TPath.IsPathRooted(sFile) then
-               sFile := IncludeTrailingPathDelimiter(GetCurrentDir) + sFile;
+               sFile := TPath.GetFullPath(sFile);
          end;
-         break;
-      end;
+      end
+      else if param.StartsWith(LANG_DEFS_DIR_PARAM, true) then
+         FLanguageDefinitionsDir := Copy(param, Length(LANG_DEFS_DIR_PARAM)+1, MaxInt);
    end;
    if sFile.IsEmpty then
 {$IFDEF MSWINDOWS}
       FSettingsFile := TRegistryIniFile.Create('Software\' + PROGRAM_NAME)
 {$ELSE}
-      FSettingsFile := TIniFile.Create(IncludeTrailingPathDelimiter(GetCurrentDir) + PROGRAM_NAME + '.ini')
+      FSettingsFile := TIniFile.Create(TPath.GetFullPath(PROGRAM_NAME + '.ini'))
 {$ENDIF}
    else
       FSettingsFile := TIniFile.Create(sFile);
+   if not DirectoryExists(FLanguageDefinitionsDir) then
+      FLanguageDefinitionsDir := 'LanguageDefinitions';
+   FLanguageDefinitionsDir := IncludeTrailingPathDelimiter(FLanguageDefinitionsDir);
    Load;
 end;
 
@@ -620,11 +626,6 @@ end;
 procedure TSettings.SetForm;
 begin
    TInfra.GetSettingsForm.SetSettings(Self);
-end;
-
-procedure TSettings.ProtectFields;
-begin
-   TInfra.GetSettingsForm.ProtectFields;
 end;
 
 procedure TSettings.SetDefaultForm;

@@ -240,7 +240,7 @@ end;
 
 procedure TSettingsForm.cbLanguageChange(Sender: TObject);
 begin
-   GSettings.ProtectFields;
+   ProtectFields;
 end;
 
 procedure TSettingsForm.btnBrowseScriptsClick(Sender: TObject);
@@ -445,12 +445,13 @@ end;
 procedure TSettingsForm.ProtectFields;
 var
    parserOn: boolean;
-   langDef: TLangDefinition;
+   lang: TLangDefinition;
 begin
-   langDef := GInfra.GetLangDefinition(cbLanguage.Text);
-   if langDef = nil then
+   lang := GInfra.GetLangDefinition(cbLanguage.Text);
+   if lang = nil then
       raise Exception.Create('Unsupported language: ' + cbLanguage.Text);
-   parserOn := langDef.Parser <> nil;
+   cbLanguage.Hint := lang.DefFile;
+   parserOn := lang.Parser <> nil;
    chkParseInput.Enabled := parserOn;
    chkParseOutput.Enabled := parserOn;
    chkParseAssign.Enabled := parserOn;
@@ -472,24 +473,24 @@ begin
       chkParseRoutine.Checked := false;
       chkParseReturn.Checked := false;
    end;
-   lblCompiler.Enabled := langDef.EnabledCompiler;
-   lblFileEncoding.Enabled := langDef.EnabledCompiler;
-   lblCompilerNoMain.Enabled := langDef.EnabledCompiler;
-   edtCompiler.Enabled := langDef.EnabledCompiler;
-   edtCompilerNoMain.Enabled := langDef.EnabledCompiler;
-   btnBrowseCompilers.Enabled := langDef.EnabledCompiler;
-   cbFileEncoding.Enabled := langDef.EnabledCompiler;
-   if langDef.EnabledCompiler then
+   lblCompiler.Enabled := lang.EnabledCompiler;
+   lblFileEncoding.Enabled := lang.EnabledCompiler;
+   lblCompilerNoMain.Enabled := lang.EnabledCompiler;
+   edtCompiler.Enabled := lang.EnabledCompiler;
+   edtCompilerNoMain.Enabled := lang.EnabledCompiler;
+   btnBrowseCompilers.Enabled := lang.EnabledCompiler;
+   cbFileEncoding.Enabled := lang.EnabledCompiler;
+   if lang.EnabledCompiler then
    begin
-      edtCompiler.Text := langDef.CompilerCommand;
-      edtCompilerNoMain.Text := langDef.CompilerCommandNoMain;
+      edtCompiler.Text := lang.CompilerCommand;
+      edtCompilerNoMain.Text := lang.CompilerCommandNoMain;
    end
    else
    begin
       edtCompiler.Text := '';
       edtCompilerNoMain.Text := '';
    end;
-   SetComboBoxItem(cbFileEncoding, langDef.CompilerFileEncoding);
+   SetComboBoxItem(cbFileEncoding, lang.CompilerFileEncoding);
    chkMultiPrintHorz.Enabled := chkMultiPrint.Checked;
    if not chkMultiPrint.Checked then
       chkMultiPrintHorz.Checked := false;
