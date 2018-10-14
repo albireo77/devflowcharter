@@ -235,7 +235,7 @@ end;
 
 procedure TSettingsForm.btnDefaultSettingsClick(Sender: TObject);
 begin
-   GSettings.SetDefaultForm;
+   SetDefault;
 end;
 
 procedure TSettingsForm.cbLanguageChange(Sender: TObject);

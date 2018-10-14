@@ -98,7 +98,6 @@ type
       procedure LoadFromEditor;
       procedure SetForm;
       procedure UpdateForHLighter(AHLighter: TSynCustomHighlighter);
-      procedure SetDefaultForm;
       procedure ResetCurrentLangName;
       function GetShapeColor(const shape: TColorShape): TColor;
       function UpdateEditor: boolean;
@@ -623,11 +622,6 @@ end;
 procedure TSettings.SetForm;
 begin
    TInfra.GetSettingsForm.SetSettings(Self);
-end;
-
-procedure TSettings.SetDefaultForm;
-begin
-   TInfra.GetSettingsForm.SetDefault;
 end;
 
 function TSettings.UpdateEditor: boolean;
