@@ -1105,7 +1105,6 @@ begin
    else
       scope := '';
    end;
-   scope := i18Manager.GetString(scope);
    case idInfo.IdentType of
       VARRAY:
       begin
