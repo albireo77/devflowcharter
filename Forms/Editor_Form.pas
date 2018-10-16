@@ -169,9 +169,6 @@ uses
    ApplicationCommon, Goto_Form, Settings, LangDefinition, Main_Block, Help_Form,
    Comment, XMLProcessor, Main_Form, Base_Block, SynEditTypes, ParserHelper;
 
-const
-   InfoPanel2: array[boolean] of string = ('OverwriteMode', 'InsertMode');
-
 {$R *.dfm}
 
 constructor TEditorHintWindow.Create(AOwner: TComponent);
@@ -254,8 +251,6 @@ begin
 end;
 
 procedure TEditorForm.SetFormAttributes;
-var
-   fontSize: integer;
 begin
    with GSettings do
    begin
@@ -268,10 +263,7 @@ begin
       memCodeEditor.Gutter.Visible := EditorShowGutter;
       memCodeEditor.TabWidth := IndentLength;
       memCodeEditor.Font.Size := EditorFontSize;
-      fontSize := memCodeEditor.Font.Size - 2;
-      if fontSize < EDITOR_DEFAULT_GUTTER_FONT_SIZE then
-         fontSize := EDITOR_DEFAULT_GUTTER_FONT_SIZE;
-      memCodeEditor.Gutter.Font.Size := fontSize;
+      memCodeEditor.Gutter.Font.Size := Max(EDITOR_DEFAULT_GUTTER_FONT_SIZE, EditorFontSize - 2);
       stbEditorBar.Visible := EditorShowStatusBar;
       miStatusBar.Checked := EditorShowStatusBar;
       miGutter.Checked := EditorShowGutter;
@@ -337,7 +329,7 @@ procedure TEditorForm.Localize(AList: TStringList);
 begin
    if stbEditorBar.Panels[1].Text <> '' then
       stbEditorBar.Panels[1].Text := AList.Values['Modified'];
-   stbEditorBar.Panels[2].Text := AList.Values[InfoPanel2[memCodeEditor.InsertMode]];
+   stbEditorBar.Panels[2].Text := AList.Values[IfThen(memCodeEditor.InsertMode, 'InsertMode', 'OverwriteMode')];
    inherited Localize(AList);
 end;
 
@@ -826,7 +818,7 @@ begin
    if scModified in Changes then
       stbEditorBar.Panels[1].Text := IfThen(memCodeEditor.Modified, i18Manager.GetString('Modified'));
    if scInsertMode in Changes then
-      stbEditorBar.Panels[2].Text := i18Manager.GetString(InfoPanel2[memCodeEditor.InsertMode]);
+      stbEditorBar.Panels[2].Text := i18Manager.GetString(IfThen(memCodeEditor.InsertMode, 'InsertMode', 'OverwriteMode'));
 end;
 
 procedure TEditorForm.memCodeEditorGutterClick(Sender: TObject;
