@@ -218,6 +218,7 @@ type
     function ConfirmSave: integer;
     function GetMainBlockNextTopLeft: TPoint;
     procedure AcceptFile(const AFilePath: string);
+    procedure SetChanged;
   end;
 
   TPopupListEx = class(TPopupList)
@@ -832,6 +833,12 @@ begin
    result := mrCancel;
    if GProject <> nil then
       result := TInfra.ShowFormattedQuestionBox('ConfirmClose', [GProject.Name]);
+end;
+
+procedure TMainForm.SetChanged;
+begin
+   if not EndsText('*', Caption) then
+      Caption := Caption + '*';
 end;
 
 procedure TMainForm.miStyleBoldClick(Sender: TObject);

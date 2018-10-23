@@ -396,13 +396,10 @@ end;
 
 procedure TProject.SetChanged;
 begin
-   if ChangingOn then
+   if ChangingOn and not FChanged then
    begin
-      if not FChanged then
-      begin
-         FChanged := true;
-         TInfra.GetMainForm.Caption := TInfra.GetMainForm.Caption + '*';
-      end;
+      FChanged := true;
+      TInfra.GetMainForm.SetChanged;
    end;
 end;
 

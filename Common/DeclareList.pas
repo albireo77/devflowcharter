@@ -413,7 +413,7 @@ begin
          if dataType <> nil then
          begin
             result := dataType.RetrieveFocus(AInfo);
-            if result then exit;
+            if result then Exit;
          end;
       end;
    end;
@@ -1137,7 +1137,7 @@ begin
       result := result - AControl.Width
    else
       result := result - 10;
-   if (GetWindowlong(sgList.Handle, GWL_STYLE) and WS_VSCROLL) <> 0 then
+   if (GetWindowLong(sgList.Handle, GWL_STYLE) and WS_VSCROLL) <> 0 then
       result := result - 17;
 end;
 
