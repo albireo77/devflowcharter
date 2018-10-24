@@ -837,7 +837,7 @@ end;
 
 procedure TMainForm.SetChanged;
 begin
-   if not EndsText('*', Caption) then
+   if (GProject <> nil) and not EndsText('*', Caption) then
       Caption := Caption + '*';
 end;
 
