@@ -173,8 +173,10 @@ begin
                         end
                         else if SameText(field, 'Hint') then
                         begin
-                           if comp is TControl then
-                              TControl(comp).Hint := value;
+                           if comp is TMenuItem then
+                              TMenuItem(comp).Hint := value
+                           else if comp is TControl then
+                              THackControl(comp).Hint := value;
                         end
                         else if SameText(field, 'Filter') then
                         begin
