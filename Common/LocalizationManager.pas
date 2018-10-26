@@ -176,7 +176,7 @@ begin
                            if comp is TMenuItem then
                               TMenuItem(comp).Hint := value
                            else if comp is TControl then
-                              THackControl(comp).Hint := value;
+                              TControl(comp).Hint := value;
                         end
                         else if SameText(field, 'Filter') then
                         begin
