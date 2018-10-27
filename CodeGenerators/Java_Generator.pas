@@ -421,7 +421,7 @@ begin
                result := JAVA_DOUBLE_TYPE
             else if AValue = 'null' then
                result := JAVA_STRING_TYPE
-            else if (AValue = 'true') or (AValue = 'false') then
+            else if MatchStr(AValue, ['true', 'false']) then
                result := JAVA_BOOLEAN_TYPE
             else if AValue.Contains('BigDecimal') then
             begin
