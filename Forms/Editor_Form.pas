@@ -1141,7 +1141,7 @@ end;
 
 function TEditorForm.SelectCodeRange(AObject: TObject; ADoSelect: boolean = true): TCodeRange;
 var
-   i, maxRow: integer;
+   i: integer;
    lines: TStrings;
 {$IFDEF USE_CODEFOLDING}
    foldRange: TSynEditFoldRange;

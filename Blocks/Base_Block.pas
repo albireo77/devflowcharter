@@ -1731,7 +1731,7 @@ end;
 
 function TGroupBlock.FindLastRow(AStart: integer; ALines: TStrings): integer;
 var
-   i, a, u: integer;
+   i, a, row: integer;
 begin
    result := inherited FindLastRow(AStart, ALines);
    for i := PRIMARY_BRANCH_IND to FBranchList.Count-1 do
@@ -1740,17 +1740,17 @@ begin
       if branch.Count > 0 then
       begin
          if branch.Last is TGroupBlock then
-            u := TGroupBlock(branch.Last).FindLastRow(AStart, ALines)
+            row := TGroupBlock(branch.Last).FindLastRow(AStart, ALines)
          else
          begin
-            u := 0;
+            row := 0;
             for a := AStart+1 to ALines.Count-1 do
             begin
                if ALines.Objects[a] = branch.Last then
-                  u := a;
+                  row := a;
             end;
          end;
-         result := Max(u, result);
+         result := Max(row, result);
       end;
    end;
 end;
