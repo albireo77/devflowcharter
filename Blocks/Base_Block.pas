@@ -158,6 +158,7 @@ type
          function SkipUpdateEditor: boolean;
          function RetrieveFocus(AInfo: TFocusInfo): boolean; virtual;
          function CanBeFocused: boolean; virtual;
+         function FindMaxRow(AStart: integer; ALines: TStrings): integer; virtual;
          procedure GenerateDefaultTemplate(ALines: TStringList; const ALangId: string; ADeep: integer);
          procedure GenerateTemplateSection(ALines: TStringList; ATemplate: TStringList; const ALangId: string; ADeep: integer); overload; virtual;
          procedure GenerateTemplateSection(ALines: TStringList; const ATemplate: string; const ALangId: string; ADeep: integer); overload;
@@ -203,7 +204,7 @@ type
          FTrueLabel,
          FFalseLabel: string;
          FDiamond: array[D_LEFT..D_LEFT_CLOSE] of TPoint;
-         procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);override;
+         procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
          procedure SetWidth(AMinX: integer); virtual;
          procedure LinkBlocks(const idx: integer = PRIMARY_BRANCH_IND-1);
@@ -222,6 +223,7 @@ type
          function GenerateNestedCode(ALines: TStringList; ABranchInd, ADeep: integer; const ALangId: string): integer;
          procedure ExpandFold(AResize: boolean); virtual;
          function GetBranch(idx: integer): TBranch;
+         function FindMaxRow(AStart: integer; ALines: TStrings): integer; override;
          procedure ChangeColor(AColor: TColor); override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
          function AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch; virtual;
@@ -1713,6 +1715,44 @@ begin
    result := nil;
    if (idx >= PRIMARY_BRANCH_IND) and (idx < FBranchList.Count) then
       result := FBranchList[idx];
+end;
+
+function TBlock.FindMaxRow(AStart: integer; ALines: TStrings): integer;
+var
+   i: integer;
+begin
+   result := AStart;
+   for i := result+1 to ALines.Count-1 do
+   begin
+      if ALines.Objects[i] = Self then
+         result := i;
+   end;
+end;
+
+function TGroupBlock.FindMaxRow(AStart: integer; ALines: TStrings): integer;
+var
+   i, a, u: integer;
+begin
+   result := inherited FindMaxRow(AStart, ALines);
+   for i := PRIMARY_BRANCH_IND to FBranchList.Count-1 do
+   begin
+      branch := FBranchList[i];
+      if branch.Count > 0 then
+      begin
+         if branch.Last is TGroupBlock then
+            u := TGroupBlock(branch.Last).FindMaxRow(AStart, ALines)
+         else
+         begin
+            u := 0;
+            for a := AStart+1 to ALines.Count-1 do
+            begin
+               if ALines.Objects[a] = branch.Last then
+                  u := a;
+            end;
+         end;
+         result := Max(u, result);
+      end;
+   end;
 end;
 
 procedure TBlock.MyOnChange(Sender: TObject);

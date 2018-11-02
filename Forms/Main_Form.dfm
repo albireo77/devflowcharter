@@ -40,7 +40,6 @@ object MainForm: TMainForm
     OnDragDrop = pgcPagesDragDrop
     OnDragOver = pgcPagesDragOver
     OnMouseDown = pgcPagesMouseDown
-    ExplicitHeight = 800
   end
   object stbStatusBar: TStatusBar
     Left = 0
@@ -50,9 +49,6 @@ object MainForm: TMainForm
     AutoHint = True
     Panels = <>
     SimplePanel = True
-    ExplicitLeft = 520
-    ExplicitTop = 456
-    ExplicitWidth = 0
   end
   object pmPages: TPopupMenu
     AutoPopup = False
@@ -220,15 +216,15 @@ object MainForm: TMainForm
       Caption = 'Frame'
       OnClick = miFrameClick
     end
-    object miExpFold: TMenuItem
+    object miFoldUnfold: TMenuItem
       Tag = 2
       Caption = 'Expand'
-      OnClick = miExpFoldClick
+      OnClick = miFoldUnfoldClick
     end
-    object miExpandAll: TMenuItem
+    object miUnfoldAll: TMenuItem
       Tag = 2
       Caption = 'Expand All'
-      OnClick = miExpandAllClick
+      OnClick = miUnfoldAllClick
     end
     object N1: TMenuItem
       Caption = '-'
@@ -509,7 +505,7 @@ object MainForm: TMainForm
     Left = 240
     Top = 72
     Bitmap = {
-      494C010105000900B40010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010105000900CC0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

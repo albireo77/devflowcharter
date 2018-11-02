@@ -98,7 +98,7 @@ type
     miFrame: TMenuItem;
     miExport: TMenuItem;
     miImport: TMenuItem;
-    miExpFold: TMenuItem;
+    miFoldUnfold: TMenuItem;
     miAddBranch: TMenuItem;
     miCase: TMenuItem;
     N7: TMenuItem;
@@ -107,7 +107,7 @@ type
     miRemoveBranch: TMenuItem;
     miStyleStrikeOut: TMenuItem;
     miReturn: TMenuItem;
-    miExpandAll: TMenuItem;
+    miUnfoldAll: TMenuItem;
     miPrint2: TMenuItem;
     N10: TMenuItem;
     N11: TMenuItem;
@@ -176,10 +176,10 @@ type
     procedure miExportClick(Sender: TObject);
     procedure miImportClick(Sender: TObject);
     procedure miFrameClick(Sender: TObject);
-    procedure miExpFoldClick(Sender: TObject);
+    procedure miFoldUnfoldClick(Sender: TObject);
     procedure miAddBranchClick(Sender: TObject);
     procedure miRemoveBranchClick(Sender: TObject);
-    procedure miExpandAllClick(Sender: TObject);
+    procedure miUnfoldAllClick(Sender: TObject);
     procedure Localize(AList: TStringList); override;
     procedure ResetForm; override;
     procedure SetMenu(AEnabled: boolean);
@@ -520,7 +520,7 @@ var
    comp: TComponent;
    block: TBlock;
    lFont: TFont;
-   isFunction: boolean;
+   isFunction, expanded: boolean;
    memo: TMemoEx;
    memoEx: IMemoEx;
    i: integer;
@@ -541,15 +541,15 @@ begin
    miFrame.Checked := False;
    miExport.Visible := False;
    miImport.Visible := True;
-   miExpFold.Visible := False;
+   miFoldUnfold.Visible := False;
    miAddBranch.Visible := False;
    miRemoveBranch.Visible := False;
    miInsertBranch.Visible := False;
    miText.Enabled := False;
    miFolder.Enabled := False;
-   miExpFold.Caption := i18Manager.GetString('miFoldBlock');
+   miFoldUnfold.Caption := i18Manager.GetString('miFoldTrue');
    miReturn.Enabled := False;
-   miExpandAll.Visible := False;
+   miUnfoldAll.Visible := False;
    miPrint2.Visible := False;
    miNewFlowchart.Visible := GInfra.CurrentLang = GInfra.DummyLang;
    miNewFunction.Visible := GInfra.CurrentLang.EnabledUserFunctionHeader and GInfra.CurrentLang.EnabledUserFunctionBody;
@@ -608,18 +608,14 @@ begin
              miCopy.Visible := True;
           if block is TGroupBlock then
           begin
-             miExpFold.Visible := True;
-             if TGroupBlock(block).Expanded then
-             begin
-                miExpFold.Caption := i18Manager.GetString('miFoldBlock');
-                if block is TCaseBlock then
-                   miAddBranch.Visible := True;
-             end
-             else
-                miExpFold.Caption := i18Manager.GetString('miExpandBlock');
+             miFoldUnfold.Visible := True;
+             expanded := TGroupBlock(block).Expanded;
+             if expanded and (block is TCaseBlock) then
+                miAddBranch.Visible := True;
+             miFoldUnfold.Caption := i18Manager.GetString('miFold' + BoolToStr(expanded, true));
           end;
           if (block is TGroupBlock) and TGroupBlock(block).Expanded and TGroupBlock(block).HasFoldedBlocks then
-             miExpandAll.Visible := True;
+             miUnfoldAll.Visible := True;
           if block is TForDoBlock then
           begin
              miForAsc.Visible := True;
@@ -1024,7 +1020,7 @@ begin
       TBlock(pmPages.PopupComponent).ChangeFrame;
 end;
 
-procedure TMainForm.miExpFoldClick(Sender: TObject);
+procedure TMainForm.miFoldUnfoldClick(Sender: TObject);
 var
    block: TGroupBlock;
 begin
@@ -1073,7 +1069,7 @@ begin
    end;
 end;
 
-procedure TMainForm.miExpandAllClick(Sender: TObject);
+procedure TMainForm.miUnfoldAllClick(Sender: TObject);
 var
    block: TGroupBlock;
    lock: boolean;

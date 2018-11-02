@@ -1,7 +1,7 @@
 {
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
-    
+
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
    as published by the Free Software Foundation; either version 2
@@ -306,7 +306,7 @@ begin
 {$ENDIF}
    end;
    GInfra.SetLangHiglighterAttributes;
-end; 
+end;
 
 procedure TEditorForm.ResetForm;
 begin
@@ -1141,7 +1141,7 @@ end;
 
 function TEditorForm.SelectCodeRange(AObject: TObject; ADoSelect: boolean = true): TCodeRange;
 var
-   i: integer;
+   i, maxRow: integer;
    lines: TStrings;
 {$IFDEF USE_CODEFOLDING}
    foldRange: TSynEditFoldRange;
@@ -1179,11 +1179,16 @@ begin
 {$ENDIF}
       if result.Lines <> nil then
       begin
-         result.LastRow := result.FirstRow;
-         for i := result.FirstRow+1 to result.Lines.Count-1 do
+         if AObject is TBlock then
+             result.LastRow := TBlock(AObject).FindMaxRow(result.FirstRow, result.Lines)
+         else
          begin
-            if result.Lines.Objects[i] = AObject then
-               result.LastRow := i;
+            result.LastRow := result.FirstRow;
+            for i := result.LastRow+1 to result.Lines.Count-1 do
+            begin
+               if result.Lines.Objects[i] = AObject then
+                  result.LastRow := i;
+            end;
          end;
          with memCodeEditor do
          begin
@@ -1596,7 +1601,7 @@ begin
 {$ENDIF}
    end;
    GSettings.LoadFromEditor;
-end; 
+end;
 
 procedure TEditorForm.memCodeEditorChange(Sender: TObject);
 begin
@@ -1671,4 +1676,5 @@ begin
 end;
 
 end.
+
 
