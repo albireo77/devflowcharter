@@ -157,8 +157,7 @@ else:
 
 <RepeatUntilTemplate>while True:
 	%b1
-	if %s1:
-		break
+	if %s1: break
 </RepeatUntilTemplate>
 
 <!--
