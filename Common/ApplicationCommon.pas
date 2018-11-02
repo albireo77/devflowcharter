@@ -1095,7 +1095,7 @@ begin
             end
             else
             begin
-               result.Text := indent + result.Text;
+               result.Text := indent + result.Text.TrimLeft;
                result.Col := p + result.Col;
             end;
          finally
