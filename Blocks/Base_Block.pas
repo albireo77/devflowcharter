@@ -158,7 +158,7 @@ type
          function SkipUpdateEditor: boolean;
          function RetrieveFocus(AInfo: TFocusInfo): boolean; virtual;
          function CanBeFocused: boolean; virtual;
-         function FindMaxRow(AStart: integer; ALines: TStrings): integer; virtual;
+         function FindLastRow(AStart: integer; ALines: TStrings): integer; virtual;
          procedure GenerateDefaultTemplate(ALines: TStringList; const ALangId: string; ADeep: integer);
          procedure GenerateTemplateSection(ALines: TStringList; ATemplate: TStringList; const ALangId: string; ADeep: integer); overload; virtual;
          procedure GenerateTemplateSection(ALines: TStringList; const ATemplate: string; const ALangId: string; ADeep: integer); overload;
@@ -223,7 +223,7 @@ type
          function GenerateNestedCode(ALines: TStringList; ABranchInd, ADeep: integer; const ALangId: string): integer;
          procedure ExpandFold(AResize: boolean); virtual;
          function GetBranch(idx: integer): TBranch;
-         function FindMaxRow(AStart: integer; ALines: TStrings): integer; override;
+         function FindLastRow(AStart: integer; ALines: TStrings): integer; override;
          procedure ChangeColor(AColor: TColor); override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
          function AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch; virtual;
@@ -1717,7 +1717,7 @@ begin
       result := FBranchList[idx];
 end;
 
-function TBlock.FindMaxRow(AStart: integer; ALines: TStrings): integer;
+function TBlock.FindLastRow(AStart: integer; ALines: TStrings): integer;
 var
    i: integer;
 begin
@@ -1729,18 +1729,18 @@ begin
    end;
 end;
 
-function TGroupBlock.FindMaxRow(AStart: integer; ALines: TStrings): integer;
+function TGroupBlock.FindLastRow(AStart: integer; ALines: TStrings): integer;
 var
    i, a, u: integer;
 begin
-   result := inherited FindMaxRow(AStart, ALines);
+   result := inherited FindLastRow(AStart, ALines);
    for i := PRIMARY_BRANCH_IND to FBranchList.Count-1 do
    begin
       branch := FBranchList[i];
       if branch.Count > 0 then
       begin
          if branch.Last is TGroupBlock then
-            u := TGroupBlock(branch.Last).FindMaxRow(AStart, ALines)
+            u := TGroupBlock(branch.Last).FindLastRow(AStart, ALines)
          else
          begin
             u := 0;

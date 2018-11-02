@@ -1180,7 +1180,7 @@ begin
       if result.Lines <> nil then
       begin
          if AObject is TBlock then
-             result.LastRow := TBlock(AObject).FindMaxRow(result.FirstRow, result.Lines)
+             result.LastRow := TBlock(AObject).FindLastRow(result.FirstRow, result.Lines)
          else
          begin
             result.LastRow := result.FirstRow;
