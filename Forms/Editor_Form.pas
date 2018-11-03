@@ -1182,14 +1182,7 @@ begin
          if AObject is TBlock then
             result.LastRow := TBlock(AObject).FindLastRow(result.FirstRow, result.Lines)
          else
-         begin
-            result.LastRow := result.FirstRow;
-            for i := result.LastRow+1 to result.Lines.Count-1 do
-            begin
-               if result.Lines.Objects[i] = AObject then
-                  result.LastRow := i;
-            end;
-         end;
+            result.LastRow := TInfra.FindLastRow(AObject, result.FirstRow, result.Lines);
          with memCodeEditor do
          begin
             if ADoSelect and CanFocus then

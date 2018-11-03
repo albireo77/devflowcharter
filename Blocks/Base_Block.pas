@@ -1718,15 +1718,8 @@ begin
 end;
 
 function TBlock.FindLastRow(AStart: integer; ALines: TStrings): integer;
-var
-   i: integer;
 begin
-   result := AStart;
-   for i := result+1 to ALines.Count-1 do
-   begin
-      if ALines.Objects[i] = Self then
-         result := i;
-   end;
+   result := TInfra.FindLastRow(Self, AStart, ALines);
 end;
 
 function TGroupBlock.FindLastRow(AStart: integer; ALines: TStrings): integer;

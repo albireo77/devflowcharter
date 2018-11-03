@@ -104,6 +104,7 @@ type
          class function GetAutoWidth(AControl: TControl): integer;
          class function GetLibObject: TObject;
          class function GetParserErrMsg: string;
+         class function FindLastRow(AObject: TObject; AStart: integer; ALines: TStrings): integer;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetNativeFunction(const AName: string): PNativeFunction;
          function GetLangDefinition(const AName: string): TLangDefinition;
@@ -812,6 +813,18 @@ begin
          result := ReplaceStr(result, iend, '')
       else if EndsText(iend + iend, result) then
          SetLength(result, result.Length - iend.Length);
+   end;
+end;
+
+class function TInfra.FindLastRow(AObject: TObject; AStart: integer; ALines: TStrings): integer;
+var
+   i: integer;
+begin
+   result := AStart;
+   for i := result+1 to ALines.Count-1 do
+   begin
+      if ALines.Objects[i] = AObject then
+         result := i;
    end;
 end;
 
