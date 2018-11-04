@@ -559,23 +559,23 @@ var
 begin
    if PerformEditorUpdate then
    begin
-      if not GInfra.CurrentLang.ForDoTemplate.IsEmpty then
+      chLine := TInfra.GetChangeLine(Self);
+      if chLine.Row <> ROW_NOT_FOUND then
       begin
-         chLine := TInfra.GetChangeLine(Self);
-         if chLine.Row <> ROW_NOT_FOUND then
+         if GInfra.CurrentLang.ForDoTemplate.IsEmpty then
+            chLine.Text := TInfra.ExtractIndentString(chLine.Text) + FillCodedTemplate(GInfra.CurrentLang.Name)
+         else
          begin
             chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, edtVariable.Text);
             chLine.Text := ReplaceStr(chLine.Text, '%s2', Trim(edtStartVal.Text));
             chLine.Text := ReplaceStr(chLine.Text, '%s3', Trim(edtStopVal.Text));
             chLine.Text := ReplaceStr(chLine.Text, '%s4', IfThen(FDescOrder, GInfra.CurrentLang.ForDoDesc1, GInfra.CurrentLang.ForDoAsc1));
             chLine.Text := ReplaceStr(chLine.Text, '%s5', IfThen(FDescOrder, GInfra.CurrentLang.ForDoDesc2, GInfra.CurrentLang.ForDoAsc2));
-            if GSettings.UpdateEditor and not SkipUpdateEditor then
-               TInfra.ChangeLine(chLine);
-            TInfra.GetEditorForm.SetCaretPos(chLine);
          end;
-      end
-      else
-         TInfra.UpdateCodeEditor(Self);
+         if GSettings.UpdateEditor and not SkipUpdateEditor then
+            TInfra.ChangeLine(chLine);
+         TInfra.GetEditorForm.SetCaretPos(chLine);
+      end;
    end;
 end;
 
