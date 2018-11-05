@@ -215,9 +215,7 @@ begin
             end;
          end;
          TInfra.GetEditorForm.SetCaretPos(chLine);
-      end
-      else
-         TInfra.UpdateCodeEditor(Self);
+      end;
    end;
 end;
 
