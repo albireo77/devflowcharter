@@ -477,19 +477,14 @@ begin
       inherited UpdateEditor(AEdit)
    else if (AEdit <> nil) and PerformEditorUpdate then
    begin
-      if not GInfra.CurrentLang.CaseOfValueTemplate.IsEmpty then
+      chLine := TInfra.GetChangeLine(AEdit, AEdit, GInfra.CurrentLang.CaseOfValueTemplate);
+      if chLine.Row <> ROW_NOT_FOUND then
       begin
-         chLine := TInfra.GetChangeLine(AEdit, AEdit, GInfra.CurrentLang.CaseOfValueTemplate);
-         if chLine.Row <> ROW_NOT_FOUND then
-         begin
-            chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
-            if GSettings.UpdateEditor and not SkipUpdateEditor then
-               TInfra.ChangeLine(chLine);
-            TInfra.GetEditorForm.SetCaretPos(chLine);
-         end;
-      end
-      else
-         TInfra.UpdateCodeEditor(Self);
+         chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
+         if GSettings.UpdateEditor and not SkipUpdateEditor then
+            TInfra.ChangeLine(chLine);
+         TInfra.GetEditorForm.SetCaretPos(chLine);
+      end;
    end;
 end;
 

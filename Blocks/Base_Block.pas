@@ -2391,20 +2391,15 @@ var
 begin
    if (AEdit <> nil) and PerformEditorUpdate then
    begin
-      if not GInfra.CurrentLang.GetTemplate(ClassType).IsEmpty then
+      chLine := TInfra.GetChangeLine(Self, AEdit);
+      if chLine.Row <> ROW_NOT_FOUND then
       begin
-         chLine := TInfra.GetChangeLine(Self, AEdit);
-         if chLine.Row <> ROW_NOT_FOUND then
-         begin
-            chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
-            chLine.Text := TInfra.StripInstrEnd(chLine.Text);
-            if GSettings.UpdateEditor and not SkipUpdateEditor then
-               TInfra.ChangeLine(chLine);
-            TInfra.GetEditorForm.SetCaretPos(chLine);
-         end;
-      end
-      else
-         TInfra.UpdateCodeEditor(Self);
+         chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
+         chLine.Text := TInfra.StripInstrEnd(chLine.Text);
+         if GSettings.UpdateEditor and not SkipUpdateEditor then
+            TInfra.ChangeLine(chLine);
+         TInfra.GetEditorForm.SetCaretPos(chLine);
+      end;
    end;
 end;
 

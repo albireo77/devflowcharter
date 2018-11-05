@@ -164,25 +164,20 @@ var
 begin
    if PerformEditorUpdate then
    begin
-      if not GInfra.CurrentLang.ReturnTemplate.IsEmpty then
+      chLine := TInfra.GetChangeLine(Self, FStatement);
+      if chLine.Row <> ROW_NOT_FOUND then
       begin
-         chLine := TInfra.GetChangeLine(Self, FStatement);
-         if chLine.Row <> ROW_NOT_FOUND then
-         begin
-            list := TStringList.Create;
-            try
-               GenerateCode(list, GInfra.CurrentLang.Name, 0);
-               chLine.Text := TInfra.ExtractIndentString(chLine.Text) + list.Text;
-            finally
-               list.Free;
-            end;
-            if GSettings.UpdateEditor and not SkipUpdateEditor then
-               TInfra.ChangeLine(chLine);
-            TInfra.GetEditorForm.SetCaretPos(chLine);
+         list := TStringList.Create;
+         try
+            GenerateCode(list, GInfra.CurrentLang.Name, 0);
+            chLine.Text := TInfra.ExtractIndentString(chLine.Text) + list.Text;
+         finally
+            list.Free;
          end;
-      end
-      else
-         TInfra.UpdateCodeEditor(Self);
+         if GSettings.UpdateEditor and not SkipUpdateEditor then
+            TInfra.ChangeLine(chLine);
+         TInfra.GetEditorForm.SetCaretPos(chLine);
+      end;
    end;
 end;
 
