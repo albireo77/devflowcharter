@@ -37,6 +37,8 @@ type
          procedure OnFStatementChange(AEdit: TCustomEdit);
          function GetDiamondTop: TPoint; override;
          procedure PlaceBranchStatement(ABranch: TBranch);
+         function GetCaseValueExpr(const ALangId: string; AIndex: integer): string;
+         function GetBranchIndexByEdit(AEdit: TCustomEdit): integer;
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; AId: integer = ID_INVALID); overload;
@@ -469,18 +471,88 @@ begin
       end;
 end;
 
+function TCaseBlock.GetCaseValueExpr(const ALangId: string; AIndex: integer): string;
+var
+   v, s, line: string;
+begin
+   result := '';
+   v := Trim(FStatement.Text);
+   s := Trim(FBranchList[AIndex].Statement.Text);
+   if ALangId = TIBASIC_LANG_ID then
+   begin
+      line := 'If (' + v + ' = ' + s + ') Then';
+      if AIndex = 2 then
+         result := line
+      else if AIndex > 2 then
+         result := 'Else ' + line;
+   end
+   else if ALangId = PYTHON_LANG_ID then
+   begin
+      line := 'if ' + v + ' == ' + s + ':';
+      if AIndex = 2 then
+         result := line
+      else if AIndex > 2 then
+         result := 'el' + line;
+   end;
+end;
+
+function TCaseBlock.GetBranchIndexByEdit(AEdit: TCustomEdit): integer;
+var
+   i: integer;
+begin
+   result := -1;
+   if FBranchList = nil then
+      Exit;
+   for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
+   begin
+      if FBranchList[i].Statement = AEdit then
+      begin
+         result := i;
+         break;
+      end;
+   end;
+end;
+
 procedure TCaseBlock.UpdateEditor(AEdit: TCustomEdit);
 var
    chLine: TChangeLine;
+   i: integer;
+   obj: TObject;
 begin
-   if AEdit = FStatement then
-      inherited UpdateEditor(AEdit)
-   else if (AEdit <> nil) and PerformEditorUpdate then
+   if (AEdit <> nil) and PerformEditorUpdate then
    begin
-      chLine := TInfra.GetChangeLine(AEdit, AEdit, GInfra.CurrentLang.CaseOfValueTemplate);
+      i := -1;
+      if GInfra.CurrentLang.CaseOfValueTemplate.IsEmpty then
+      begin
+         if AEdit = FStatement then
+         begin
+            TInfra.UpdateCodeEditor(Self);
+            Exit;
+         end;
+         i := GetBranchIndexByEdit(AEdit);
+         if i < DEFAULT_BRANCH_IND then
+            Exit
+         else if i = DEFAULT_BRANCH_IND+1 then
+            obj := Self
+         else
+            obj := AEdit;
+         chLine := TInfra.GetChangeLine(obj, AEdit);
+      end
+      else
+      begin
+         if AEdit = FStatement then
+         begin
+            inherited UpdateEditor(AEdit);
+            Exit;
+         end;
+         chLine := TInfra.GetChangeLine(AEdit, AEdit, GInfra.CurrentLang.CaseOfValueTemplate);
+      end;
       if chLine.Row <> ROW_NOT_FOUND then
       begin
-         chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
+         if i <> -1 then
+            chLine.Text := TInfra.ExtractIndentString(chLine.Text) + GetCaseValueExpr(GInfra.CurrentLang.Name, i)
+         else
+            chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
          if GSettings.UpdateEditor and not SkipUpdateEditor then
             TInfra.ChangeLine(chLine);
          TInfra.GetEditorForm.SetCaretPos(chLine);
