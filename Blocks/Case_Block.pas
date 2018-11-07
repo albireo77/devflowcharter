@@ -38,7 +38,6 @@ type
          function GetDiamondTop: TPoint; override;
          procedure PlaceBranchStatement(ABranch: TBranch);
          function GetCaseValueExpr(const ALangId: string; AIndex: integer): string;
-         function GetBranchIndexByEdit(AEdit: TCustomEdit): integer;
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; AId: integer = ID_INVALID); overload;
@@ -60,7 +59,7 @@ type
          function IsDuplicatedCase(AEdit: TCustomEdit): boolean;
          procedure CloneFrom(ABlock: TBlock); override;
          function GetDescTemplate(const ALangId: string): string; override;
-         function GetBranchByControl(AControl: TControl): TBranch;
+         function GetBranchIndexByControl(AControl: TControl): integer;
    end;
 
 const
@@ -296,23 +295,6 @@ begin
       ParentBlock.ResizeHorz(AContinue);
 end;
 
-function TCaseBlock.GetBranchByControl(AControl: TControl): TBranch;
-var
-   i: integer;
-   lBranch: TBranch;
-begin
-   result := nil;
-   for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
-   begin
-      lBranch := FBranchList[i];
-      if lBranch.Statement = AControl then
-      begin
-         result := lBranch;
-         break;
-      end;
-   end;
-end;
-
 procedure TCaseBlock.ResizeVert(AContinue: boolean);
 var
    maxh, h, i: integer;
@@ -349,6 +331,7 @@ var
    i, bcnt, flag, a: integer;
    langDef: TLangDefinition;
    lines, caseLines, tmpList, tmpList1: TStringList;
+   isPython: boolean;
 begin
 
    result := 0;
@@ -359,67 +342,39 @@ begin
    line := Trim(FStatement.Text);
    bcnt := FBranchList.Count - 1;
 
-      if ALangId = TIBASIC_LANG_ID then
+      isPython := ALangId = PYTHON_LANG_ID;
+      if (ALangId = TIBASIC_LANG_ID) or isPython then
       begin
          flag := 0;
          tmpList := TStringList.Create;
          try
             if bcnt > 1 then
             begin
-               tmpList.AddObject(indnt + 'If (' + line + ' = ' + Trim(FBranchList[2].Statement.Text) + ') Then', Self);
+               tmpList.AddObject(indnt + GetCaseValueExpr(ALangId, 2), Self);
                GenerateNestedCode(tmpList, 2, ADeep+1, ALangId);
-               flag := 1;
+               if not isPython then
+                  flag := 1;
             end;
             if bcnt > 2 then
             begin
                for i := 3 to FBranchList.Count-1 do
                begin
-                  tmpList.AddObject(indnt + 'Else If (' + line + ' = ' + Trim(FBranchList[i].Statement.Text) + ') Then', FBranchList[i].Statement);
+                  tmpList.AddObject(indnt + GetCaseValueExpr(ALangId, i), FBranchList[i].Statement);
                   GenerateNestedCode(tmpList, i, ADeep+1, ALangId);
                end;
             end;
             if FBranchList[DEFAULT_BRANCH_IND].Count > 0 then
             begin
                if bcnt = 1 then
-                  tmpList.AddObject(indnt + 'If (' + line + ' = ' + line + ') Then', Self)
+                  tmpList.AddObject(indnt + Format(IfThen(isPython, 'if %s == %s:', 'If (%s = %s) Then'), [line, line]), Self)
                else
-                  tmpList.Add(indnt + 'Else');
+                  tmpList.Add(indnt + IfThen(isPython, 'else:', 'Else'));
                GenerateNestedCode(tmpList, DEFAULT_BRANCH_IND, ADeep+1, ALangId);
-               flag := 1;
+               if not isPython then
+                  flag := 1;
             end;
             if flag = 1 then
                tmpList.AddObject(indnt + 'EndIf', Self);
-            TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
-            result := tmpList.Count;
-         finally
-            tmpList.Free;
-         end;
-      end
-      else if ALangId = PYTHON_LANG_ID then
-      begin
-         tmpList := TStringList.Create;
-         try
-            if bcnt > 1 then
-            begin
-               tmpList.AddObject(indnt + 'if ' + line + ' == ' + Trim(FBranchList[2].Statement.Text) + ':', Self);
-               GenerateNestedCode(tmpList, 2, ADeep+1, ALangId);
-            end;
-            if bcnt > 2 then
-            begin
-               for i := 3 to FBranchList.Count-1 do
-               begin
-                  tmpList.AddObject(indnt + 'elif ' + line + ' == ' + Trim(FBranchList[i].Statement.Text) + ':', FBranchList[i].Statement);
-                  GenerateNestedCode(tmpList, i, ADeep+1, ALangId);
-               end;
-            end;
-            if FBranchList[DEFAULT_BRANCH_IND].Count > 0 then
-            begin
-               if bcnt = 1 then
-                  tmpList.AddObject(indnt + 'if ' + line + ' == ' + line + ':', Self)
-               else
-                  tmpList.Add(indnt + 'else:');
-               GenerateNestedCode(tmpList, DEFAULT_BRANCH_IND, ADeep+1, ALangId);
-            end;
             TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
             result := tmpList.Count;
          finally
@@ -473,30 +428,22 @@ end;
 
 function TCaseBlock.GetCaseValueExpr(const ALangId: string; AIndex: integer): string;
 var
-   v, s, line: string;
+   expr: string;
+   isPython: boolean;
 begin
    result := '';
-   v := Trim(FStatement.Text);
-   s := Trim(FBranchList[AIndex].Statement.Text);
-   if ALangId = TIBASIC_LANG_ID then
+   isPython := ALangId = PYTHON_LANG_ID;
+   if (ALangId = TIBASIC_LANG_ID) or isPython then
    begin
-      line := 'If (' + v + ' = ' + s + ') Then';
+      expr := Format(IfThen(isPython, 'if %s == %s:', 'If (%s = %s) Then'), [Trim(FStatement.Text), Trim(FBranchList[AIndex].Statement.Text)]);
       if AIndex = 2 then
-         result := line
+         result := expr
       else if AIndex > 2 then
-         result := 'Else ' + line;
-   end
-   else if ALangId = PYTHON_LANG_ID then
-   begin
-      line := 'if ' + v + ' == ' + s + ':';
-      if AIndex = 2 then
-         result := line
-      else if AIndex > 2 then
-         result := 'el' + line;
+         result := IfThen(isPython, 'el', 'Else ') + expr;
    end;
 end;
 
-function TCaseBlock.GetBranchIndexByEdit(AEdit: TCustomEdit): integer;
+function TCaseBlock.GetBranchIndexByControl(AControl: TControl): integer;
 var
    i: integer;
 begin
@@ -505,7 +452,7 @@ begin
       Exit;
    for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
    begin
-      if FBranchList[i].Statement = AEdit then
+      if FBranchList[i].Statement = AControl then
       begin
          result := i;
          break;
@@ -529,7 +476,7 @@ begin
             TInfra.UpdateCodeEditor(Self);
             Exit;
          end;
-         i := GetBranchIndexByEdit(AEdit);
+         i := GetBranchIndexByControl(AEdit);
          if i < DEFAULT_BRANCH_IND then
             Exit
          else if i = DEFAULT_BRANCH_IND+1 then
