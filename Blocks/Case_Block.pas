@@ -408,7 +408,7 @@ begin
                try
                   lines.Text := ReplaceStr(langDef.CaseOfTemplate, PRIMARY_PLACEHOLDER, Trim(FStatement.Text));
                   TInfra.InsertTemplateLines(lines, '%s2', caseLines);
-                  defTemplate := IfThen(FBranchList[DEFAULT_BRANCH_IND].Count > 0, langDef.CaseOfDefaultValueTemplate);
+                  defTemplate := IfThen(DefaultBranch.Count > 0, langDef.CaseOfDefaultValueTemplate);
                   TInfra.InsertTemplateLines(lines, '%s3', defTemplate);
                   GenerateTemplateSection(tmpList1, lines, ALangId, ADeep);
                finally
@@ -483,35 +483,30 @@ var
    chLine: TChangeLine;
    i: integer;
    obj: TObject;
+   template: string;
 begin
    if (AEdit <> nil) and PerformEditorUpdate then
    begin
       i := -1;
-      if GInfra.CurrentLang.CaseOfValueTemplate.IsEmpty then
+      template := GInfra.CurrentLang.CaseOfValueTemplate;
+      if AEdit = FStatement then
       begin
-         if AEdit = FStatement then
-         begin
-            TInfra.UpdateCodeEditor(Self);
-            Exit;
-         end;
+         if template.IsEmpty then
+            TInfra.UpdateCodeEditor(Self)
+         else
+            inherited UpdateEditor(AEdit);
+         Exit;
+      end;
+      obj := AEdit;
+      if template.IsEmpty then
+      begin
          i := GetBranchIndexByControl(AEdit);
-         if i < DEFAULT_BRANCH_IND then
+         if i = -1 then
             Exit
          else if i = DEFAULT_BRANCH_IND+1 then
-            obj := Self
-         else
-            obj := AEdit;
-         chLine := TInfra.GetChangeLine(obj, AEdit);
-      end
-      else
-      begin
-         if AEdit = FStatement then
-         begin
-            inherited UpdateEditor(AEdit);
-            Exit;
-         end;
-         chLine := TInfra.GetChangeLine(AEdit, AEdit, GInfra.CurrentLang.CaseOfValueTemplate);
+            obj := Self;
       end;
+      chLine := TInfra.GetChangeLine(obj, AEdit, template);
       if chLine.Row <> ROW_NOT_FOUND then
       begin
          if i <> -1 then
