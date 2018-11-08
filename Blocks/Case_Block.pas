@@ -430,11 +430,18 @@ var
    expr, parm1, parm2: string;
    isPython: boolean;
    lang: TLangDefinition;
+   lBranch: TBranch;
 begin
    result := '';
    parm1 := Trim(FStatement.Text);
    if AIndex2 = 0 then
-      parm2 := Trim(FBranchList[AIndex].Statement.Text)
+   begin
+      lBranch := GetBranch(AIndex);
+      if (lBranch <> nil) and (lBranch.Statement <> nil) then
+         parm2 := Trim(lBranch.Statement.Text)
+      else
+         parm2 := '';
+   end
    else
       parm2 := parm1;
    isPython := ALangId = PYTHON_LANG_ID;
