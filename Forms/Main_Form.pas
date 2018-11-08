@@ -1063,7 +1063,7 @@ begin
       if res = IDYES then
       begin
          caseBlock := TCaseBlock(pmPages.PopupComponent);
-         caseBlock.RemoveBranch(caseBlock.GetBranch(caseBlock.Ired));
+         caseBlock.RemoveBranch(caseBlock.Ired);
          TInfra.UpdateCodeEditor(caseBlock.Branch);
       end;
    end;

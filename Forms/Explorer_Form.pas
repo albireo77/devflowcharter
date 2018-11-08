@@ -276,7 +276,7 @@ procedure TExplorerForm.miRemoveClick(Sender: TObject);
           i := caseBlock.GetBranchIndexByControl(winControl);
           if i <> -1 then
           begin
-             caseBlock.RemoveBranch(caseBlock.GetBranch(i));
+             caseBlock.RemoveBranch(i);
              result := true;
           end;
        end

@@ -37,7 +37,7 @@ type
          procedure OnFStatementChange(AEdit: TCustomEdit);
          function GetDiamondTop: TPoint; override;
          procedure PlaceBranchStatement(ABranch: TBranch);
-         function GetCaseValueExpr(const ALangId: string; AIndex: integer): string;
+         function GetCaseValueExpr(const ALangId: string; AIndex: integer; AIndex2: integer = 0): string;
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; AId: integer = ID_INVALID); overload;
@@ -47,7 +47,7 @@ type
          procedure ResizeHorz(AContinue: boolean); override;
          procedure ResizeVert(AContinue: boolean); override;
          procedure ExpandFold(AResize: boolean); override;
-         procedure RemoveBranch(ABranch: TBranch);
+         procedure RemoveBranch(AIndex: integer);
          function AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch; override;
          function InsertNewBranch(AIndex: integer): TBranch;
          function CountErrWarn: TErrWarnCount; override;
@@ -327,7 +327,7 @@ end;
 
 function TCaseBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
 var
-   indnt, line, defTemplate: string;
+   indnt, defTemplate: string;
    i, bcnt, flag, a: integer;
    langDef: TLangDefinition;
    lines, caseLines, tmpList, tmpList1: TStringList;
@@ -339,7 +339,6 @@ begin
       Exit;
 
    indnt := DupeString(GSettings.IndentString, ADeep);
-   line := Trim(FStatement.Text);
    bcnt := FBranchList.Count - 1;
 
       isPython := ALangId = PYTHON_LANG_ID;
@@ -366,7 +365,7 @@ begin
             if FBranchList[DEFAULT_BRANCH_IND].Count > 0 then
             begin
                if bcnt = 1 then
-                  tmpList.AddObject(indnt + Format(IfThen(isPython, 'if %s == %s:', 'If (%s = %s) Then'), [line, line]), Self)
+                  tmpList.AddObject(indnt + GetCaseValueExpr(ALangId, 2, 2), Self)
                else
                   tmpList.Add(indnt + IfThen(isPython, 'else:', 'Else'));
                GenerateNestedCode(tmpList, DEFAULT_BRANCH_IND, ADeep+1, ALangId);
@@ -407,7 +406,7 @@ begin
                end;
                lines := TStringList.Create;
                try
-                  lines.Text := ReplaceStr(langDef.CaseOfTemplate, PRIMARY_PLACEHOLDER, line);
+                  lines.Text := ReplaceStr(langDef.CaseOfTemplate, PRIMARY_PLACEHOLDER, Trim(FStatement.Text));
                   TInfra.InsertTemplateLines(lines, '%s2', caseLines);
                   defTemplate := IfThen(FBranchList[DEFAULT_BRANCH_IND].Count > 0, langDef.CaseOfDefaultValueTemplate);
                   TInfra.InsertTemplateLines(lines, '%s3', defTemplate);
@@ -426,16 +425,21 @@ begin
       end;
 end;
 
-function TCaseBlock.GetCaseValueExpr(const ALangId: string; AIndex: integer): string;
+function TCaseBlock.GetCaseValueExpr(const ALangId: string; AIndex: integer; AIndex2: integer = 0): string;
 var
-   expr: string;
+   expr, parm1, parm2: string;
    isPython: boolean;
 begin
    result := '';
    isPython := ALangId = PYTHON_LANG_ID;
    if (ALangId = TIBASIC_LANG_ID) or isPython then
    begin
-      expr := Format(IfThen(isPython, 'if %s == %s:', 'If (%s = %s) Then'), [Trim(FStatement.Text), Trim(FBranchList[AIndex].Statement.Text)]);
+      parm1 := Trim(FStatement.Text);
+      if AIndex2 = 0 then
+         parm2 := Trim(FBranchList[AIndex].Statement.Text)
+      else
+         parm2 := parm1;
+      expr := Format(IfThen(isPython, 'if %s == %s:', 'If (%s = %s) Then'), [parm1, parm2]);
       if AIndex = 2 then
          result := expr
       else if AIndex > 2 then
@@ -507,13 +511,16 @@ begin
    end;
 end;
 
-procedure TCaseBlock.RemoveBranch(ABranch: TBranch);
+procedure TCaseBlock.RemoveBranch(AIndex: integer);
+var
+   lBranch: TBranch;
 begin
-   if ABranch = nil then
-      exit;
-   if (GClpbrd.UndoObject is TBlock) and (TBlock(GClpbrd.UndoObject).ParentBranch = ABranch) then
+   lBranch := GetBranch(AIndex);
+   if lBranch = nil then
+      Exit;
+   if (GClpbrd.UndoObject is TBlock) and (TBlock(GClpbrd.UndoObject).ParentBranch = lBranch) then
       GClpbrd.UndoObject.Free;
-   if FBranchList.Remove(ABranch) <> -1 then
+   if FBranchList.Remove(lBranch) <> -1 then
    begin
       ResizeWithDrawLock;
       RefreshCaseValues;
