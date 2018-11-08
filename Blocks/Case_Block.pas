@@ -37,7 +37,7 @@ type
          procedure OnFStatementChange(AEdit: TCustomEdit);
          function GetDiamondTop: TPoint; override;
          procedure PlaceBranchStatement(ABranch: TBranch);
-         function GetCaseValueExpr(const ALangId: string; AIndex: integer; AIndex2: integer = 0): string;
+         function GetCaseOfExpr(const ALangId: string; AIndex: integer; AIndex2: integer = 0): string;
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; AId: integer = ID_INVALID); overload;
@@ -349,7 +349,7 @@ begin
          try
             if bcnt > 1 then
             begin
-               tmpList.AddObject(indnt + GetCaseValueExpr(ALangId, 2), Self);
+               tmpList.AddObject(indnt + GetCaseOfExpr(ALangId, 2), Self);
                GenerateNestedCode(tmpList, 2, ADeep+1, ALangId);
                if not isPython then
                   flag := 1;
@@ -358,14 +358,14 @@ begin
             begin
                for i := 3 to FBranchList.Count-1 do
                begin
-                  tmpList.AddObject(indnt + GetCaseValueExpr(ALangId, i), FBranchList[i].Statement);
+                  tmpList.AddObject(indnt + GetCaseOfExpr(ALangId, i), FBranchList[i].Statement);
                   GenerateNestedCode(tmpList, i, ADeep+1, ALangId);
                end;
             end;
-            if FBranchList[DEFAULT_BRANCH_IND].Count > 0 then
+            if DefaultBranch.Count > 0 then
             begin
                if bcnt = 1 then
-                  tmpList.AddObject(indnt + GetCaseValueExpr(ALangId, 2, 2), Self)
+                  tmpList.AddObject(indnt + GetCaseOfExpr(ALangId, 2, 2), Self)
                else
                   tmpList.Add(indnt + IfThen(isPython, 'else:', 'Else'));
                GenerateNestedCode(tmpList, DEFAULT_BRANCH_IND, ADeep+1, ALangId);
@@ -425,25 +425,32 @@ begin
       end;
 end;
 
-function TCaseBlock.GetCaseValueExpr(const ALangId: string; AIndex: integer; AIndex2: integer = 0): string;
+function TCaseBlock.GetCaseOfExpr(const ALangId: string; AIndex: integer; AIndex2: integer = 0): string;
 var
    expr, parm1, parm2: string;
    isPython: boolean;
+   lang: TLangDefinition;
 begin
    result := '';
+   parm1 := Trim(FStatement.Text);
+   if AIndex2 = 0 then
+      parm2 := Trim(FBranchList[AIndex].Statement.Text)
+   else
+      parm2 := parm1;
    isPython := ALangId = PYTHON_LANG_ID;
    if (ALangId = TIBASIC_LANG_ID) or isPython then
    begin
-      parm1 := Trim(FStatement.Text);
-      if AIndex2 = 0 then
-         parm2 := Trim(FBranchList[AIndex].Statement.Text)
-      else
-         parm2 := parm1;
       expr := Format(IfThen(isPython, 'if %s == %s:', 'If (%s = %s) Then'), [parm1, parm2]);
       if AIndex = 2 then
          result := expr
       else if AIndex > 2 then
          result := IfThen(isPython, 'el', 'Else ') + expr;
+   end
+   else
+   begin
+      lang := GInfra.GetLangDefinition(ALangId);
+      if lang <> nil then
+         result := ReplaceStr(lang.CaseOfValueTemplate, PRIMARY_PLACEHOLDER, parm2);
    end;
 end;
 
@@ -501,7 +508,7 @@ begin
       if chLine.Row <> ROW_NOT_FOUND then
       begin
          if i <> -1 then
-            chLine.Text := TInfra.ExtractIndentString(chLine.Text) + GetCaseValueExpr(GInfra.CurrentLang.Name, i)
+            chLine.Text := TInfra.ExtractIndentString(chLine.Text) + GetCaseOfExpr(GInfra.CurrentLang.Name, i)
          else
             chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
          if GSettings.UpdateEditor and not SkipUpdateEditor then
