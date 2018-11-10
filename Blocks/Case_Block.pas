@@ -329,7 +329,7 @@ var
    defTemplate, template, statement: string;
    i, a: integer;
    langDef: TLangDefinition;
-   lines, caseLines, tmpList, tmpList1: TStringList;
+   lines, caseLines, tmpList: TStringList;
    obj: TObject;
 begin
 
@@ -343,7 +343,6 @@ begin
       statement := Trim(FStatement.Text);
       caseLines := TStringList.Create;
       tmpList := TStringList.Create;
-      tmpList1 := TStringList.Create;
       try
          for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
          begin
@@ -373,22 +372,22 @@ begin
                end;
             end;
          end;
+         tmpList.Clear;
          lines := TStringList.Create;
          try
             lines.Text := ReplaceStr(langDef.CaseOfTemplate, PRIMARY_PLACEHOLDER, statement);
             TInfra.InsertTemplateLines(lines, '%s2', caseLines);
             defTemplate := IfThen(DefaultBranch.Count > 0, langDef.CaseOfDefaultValueTemplate);
             TInfra.InsertTemplateLines(lines, '%s3', defTemplate);
-            GenerateTemplateSection(tmpList1, lines, ALangId, ADeep);
+            GenerateTemplateSection(tmpList, lines, ALangId, ADeep);
          finally
             lines.Free;
          end;
-         TInfra.InsertLinesIntoList(ALines, tmpList1, AFromLine);
-         result := tmpList1.Count;
+         TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
+         result := tmpList.Count;
       finally
          caseLines.Free;
          tmpList.Free;
-         tmpList1.Free;
       end;
    end;
 end;
