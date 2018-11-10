@@ -160,6 +160,22 @@ else:
 	if %s1: break
 </RepeatUntilTemplate>
 
+<CaseOfFirstValueTemplate>if %s2 == %s1:
+	%b1
+</CaseOfFirstValueTemplate>
+
+<CaseOfValueTemplate>elif %s2 == %s1:
+	%b1
+</CaseOfValueTemplate>
+
+<CaseOfDefaultValueTemplate>else:
+	%b1
+</CaseOfDefaultValueTemplate>
+
+<CaseOfTemplate>%s2
+%s3
+</CaseOfTemplate>
+
 <!--
 Element ForDoVarList
 Determines whether control variable in for..do block should be selected from dropdown list (true) or user is free to enter anything (false)

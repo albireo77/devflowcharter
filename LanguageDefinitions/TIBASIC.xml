@@ -457,6 +457,23 @@ EndIf
 
 <ElseLabel>Else</ElseLabel>
 
+<CaseOfFirstValueTemplate>If (%s2 = %s1) Then
+	%b1
+</CaseOfFirstValueTemplate>
+
+<CaseOfValueTemplate>Else If (%s2 = %s1) Then
+	%b1
+</CaseOfValueTemplate>
+
+<CaseOfDefaultValueTemplate>Else
+	%b1
+</CaseOfDefaultValueTemplate>
+
+<CaseOfTemplate>%s2
+%s3
+EndIf
+</CaseOfTemplate>
+
 <!--
 Element ForDoTemplate
 Available placeholders:

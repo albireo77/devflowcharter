@@ -300,7 +300,8 @@ It returns value "++" if block is increasing or "--" if decreasing
 <!--
 Element CaseOfValueTemplate
 Available placeholders:
-   %s1 - given value
+   %s1 - value
+   %s2 - variable
    %b1 - body for given value section
 Used in elements: CaseOfTemplate   
 -->
@@ -310,6 +311,14 @@ BEGIN
 	break;
 END;
 </CaseOfValueTemplate>
+
+<!--
+Element CaseOfFirstValueTemplate
+This element should ONLY be used when language does not support switch/case statement
+and you want to replace it by sequence of "if..else if" statements. Otherwise this tag should be empty or not present.
+Available placeholders are the same as for CaseOfValueTemplate element.   
+-->
+<CaseOfFirstValueTemplate></CaseOfFirstValueTemplate>
 
 <!--
 Element CaseOfDefaultValueTemplate

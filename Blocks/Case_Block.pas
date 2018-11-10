@@ -37,7 +37,6 @@ type
          procedure OnFStatementChange(AEdit: TCustomEdit);
          function GetDiamondTop: TPoint; override;
          procedure PlaceBranchStatement(ABranch: TBranch);
-         function GetCaseOfExpr(const ALangId: string; AIndex: integer; AIndex2: integer = 0): string;
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; AId: integer = ID_INVALID); overload;
@@ -327,137 +326,70 @@ end;
 
 function TCaseBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
 var
-   indnt, defTemplate: string;
-   i, bcnt, flag, a: integer;
+   defTemplate, template, statement: string;
+   i, a: integer;
    langDef: TLangDefinition;
    lines, caseLines, tmpList, tmpList1: TStringList;
-   isPython: boolean;
+   obj: TObject;
 begin
 
    result := 0;
    if fsStrikeOut in Font.Style then
       Exit;
 
-   indnt := DupeString(GSettings.IndentString, ADeep);
-   bcnt := FBranchList.Count - 1;
-
-      isPython := ALangId = PYTHON_LANG_ID;
-      if (ALangId = TIBASIC_LANG_ID) or isPython then
-      begin
-         flag := 0;
-         tmpList := TStringList.Create;
-         try
-            if bcnt > 1 then
-            begin
-               tmpList.AddObject(indnt + GetCaseOfExpr(ALangId, 2), Self);
-               GenerateNestedCode(tmpList, 2, ADeep+1, ALangId);
-               if not isPython then
-                  flag := 1;
-            end;
-            if bcnt > 2 then
-            begin
-               for i := 3 to FBranchList.Count-1 do
-               begin
-                  tmpList.AddObject(indnt + GetCaseOfExpr(ALangId, i), FBranchList[i].Statement);
-                  GenerateNestedCode(tmpList, i, ADeep+1, ALangId);
-               end;
-            end;
-            if DefaultBranch.Count > 0 then
-            begin
-               if bcnt = 1 then
-                  tmpList.AddObject(indnt + GetCaseOfExpr(ALangId, 2, 2), Self)
-               else
-                  tmpList.Add(indnt + IfThen(isPython, 'else:', 'Else'));
-               GenerateNestedCode(tmpList, DEFAULT_BRANCH_IND, ADeep+1, ALangId);
-               if not isPython then
-                  flag := 1;
-            end;
-            if flag = 1 then
-               tmpList.AddObject(indnt + 'EndIf', Self);
-            TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
-            result := tmpList.Count;
-         finally
-            tmpList.Free;
-         end;
-      end
-      else
-      begin
-         langDef := GInfra.GetLangDefinition(ALangId);
-         if (langDef <> nil) and not langDef.CaseOfTemplate.IsEmpty then
+   langDef := GInfra.GetLangDefinition(ALangId);
+   if (langDef <> nil) and not langDef.CaseOfTemplate.IsEmpty then
+   begin
+      statement := Trim(FStatement.Text);
+      caseLines := TStringList.Create;
+      tmpList := TStringList.Create;
+      tmpList1 := TStringList.Create;
+      try
+         for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
          begin
-            caseLines := TStringList.Create;
-            tmpList := TStringList.Create;
-            tmpList1 := TStringList.Create;
-            try
-               for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
+            tmpList.Clear;
+            template := '';
+            obj := FBranchList[i].Statement;
+            if i = DEFAULT_BRANCH_IND+1 then
+            begin
+               template := langDef.CaseOfFirstValueTemplate;
+               if template.IsEmpty then
+                  template := langDef.CaseOfValueTemplate
+               else
+                  obj := Self;
+            end
+            else
+               template := langDef.CaseOfValueTemplate;
+            tmpList.Text := ReplaceStr(template, '%b1', '%b' + i.ToString);
+            caseLines.AddStrings(tmpList);
+            for a := 0 to caseLines.Count-1 do
+            begin
+               if caseLines[a].Contains(PRIMARY_PLACEHOLDER) then
                begin
-                  tmpList.Clear;
-                  tmpList.Text := ReplaceStr(langDef.CaseOfValueTemplate, '%b1', '%b' + i.ToString);
-                  caseLines.AddStrings(tmpList);
-                  for a := 0 to caseLines.Count-1 do
-                  begin
-                     if caseLines[a].Contains(PRIMARY_PLACEHOLDER) then
-                     begin
-                        caseLines[a] := ReplaceStr(caseLines[a], PRIMARY_PLACEHOLDER, Trim(FBranchList[i].Statement.Text));
-                        caseLines.Objects[a] := FBranchList[i].Statement;
-                        break;
-                     end;
-                  end;
+                  caseLines[a] := ReplaceStr(caseLines[a], PRIMARY_PLACEHOLDER, Trim(FBranchList[i].Statement.Text));
+                  caseLines[a] := ReplaceStr(caseLines[a], '%s2', statement);
+                  caseLines.Objects[a] := obj;
+                  break;
                end;
-               lines := TStringList.Create;
-               try
-                  lines.Text := ReplaceStr(langDef.CaseOfTemplate, PRIMARY_PLACEHOLDER, Trim(FStatement.Text));
-                  TInfra.InsertTemplateLines(lines, '%s2', caseLines);
-                  defTemplate := IfThen(DefaultBranch.Count > 0, langDef.CaseOfDefaultValueTemplate);
-                  TInfra.InsertTemplateLines(lines, '%s3', defTemplate);
-                  GenerateTemplateSection(tmpList1, lines, ALangId, ADeep);
-               finally
-                  lines.Free;
-               end;
-               TInfra.InsertLinesIntoList(ALines, tmpList1, AFromLine);
-               result := tmpList1.Count;
-            finally
-               caseLines.Free;
-               tmpList.Free;
-               tmpList1.Free;
             end;
          end;
+         lines := TStringList.Create;
+         try
+            lines.Text := ReplaceStr(langDef.CaseOfTemplate, PRIMARY_PLACEHOLDER, statement);
+            TInfra.InsertTemplateLines(lines, '%s2', caseLines);
+            defTemplate := IfThen(DefaultBranch.Count > 0, langDef.CaseOfDefaultValueTemplate);
+            TInfra.InsertTemplateLines(lines, '%s3', defTemplate);
+            GenerateTemplateSection(tmpList1, lines, ALangId, ADeep);
+         finally
+            lines.Free;
+         end;
+         TInfra.InsertLinesIntoList(ALines, tmpList1, AFromLine);
+         result := tmpList1.Count;
+      finally
+         caseLines.Free;
+         tmpList.Free;
+         tmpList1.Free;
       end;
-end;
-
-function TCaseBlock.GetCaseOfExpr(const ALangId: string; AIndex: integer; AIndex2: integer = 0): string;
-var
-   expr, parm1, parm2: string;
-   isPython: boolean;
-   lang: TLangDefinition;
-   lBranch: TBranch;
-begin
-   result := '';
-   parm1 := Trim(FStatement.Text);
-   if AIndex2 = 0 then
-   begin
-      lBranch := GetBranch(AIndex);
-      if (lBranch <> nil) and (lBranch.Statement <> nil) then
-         parm2 := Trim(lBranch.Statement.Text)
-      else
-         parm2 := '';
-   end
-   else
-      parm2 := parm1;
-   isPython := ALangId = PYTHON_LANG_ID;
-   if (ALangId = TIBASIC_LANG_ID) or isPython then
-   begin
-      expr := Format(IfThen(isPython, 'if %s == %s:', 'If (%s = %s) Then'), [parm1, parm2]);
-      if AIndex = 2 then
-         result := expr
-      else if AIndex > 2 then
-         result := IfThen(isPython, 'el', 'Else ') + expr;
-   end
-   else
-   begin
-      lang := GInfra.GetLangDefinition(ALangId);
-      if lang <> nil then
-         result := ReplaceStr(lang.CaseOfValueTemplate, PRIMARY_PLACEHOLDER, parm2);
    end;
 end;
 
@@ -481,38 +413,39 @@ end;
 procedure TCaseBlock.UpdateEditor(AEdit: TCustomEdit);
 var
    chLine: TChangeLine;
+   template: string;
    i: integer;
    obj: TObject;
-   template: string;
 begin
-   if (AEdit <> nil) and PerformEditorUpdate then
+   if AEdit = FStatement then
    begin
-      i := -1;
-      template := GInfra.CurrentLang.CaseOfValueTemplate;
-      if AEdit = FStatement then
+      if GInfra.CurrentLang.CaseOfFirstValueTemplate.IsEmpty then
+         inherited UpdateEditor(AEdit)
+      else
       begin
-         if template.IsEmpty then
-            TInfra.UpdateCodeEditor(Self)
-         else
-            inherited UpdateEditor(AEdit);
-         Exit;
+         for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
+            FBranchList[i].Statement.Change;
       end;
+   end
+   else if (AEdit <> nil) and PerformEditorUpdate then
+   begin
+      template := '';
       obj := AEdit;
-      if template.IsEmpty then
+      if GetBranchIndexByControl(AEdit) = DEFAULT_BRANCH_IND+1 then
       begin
-         i := GetBranchIndexByControl(AEdit);
-         if i = -1 then
-            Exit
-         else if i = DEFAULT_BRANCH_IND+1 then
+         template := GInfra.CurrentLang.CaseOfFirstValueTemplate;
+         if template.IsEmpty then
+            template := GInfra.CurrentLang.CaseOfValueTemplate
+         else
             obj := Self;
-      end;
+      end
+      else
+         template := GInfra.CurrentLang.CaseOfValueTemplate;
       chLine := TInfra.GetChangeLine(obj, AEdit, template);
       if chLine.Row <> ROW_NOT_FOUND then
       begin
-         if i <> -1 then
-            chLine.Text := TInfra.ExtractIndentString(chLine.Text) + GetCaseOfExpr(GInfra.CurrentLang.Name, i)
-         else
-            chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, AEdit.Text);
+         chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
+         chLine.Text := ReplaceStr(chLine.Text, '%s2', Trim(FStatement.Text));
          if GSettings.UpdateEditor and not SkipUpdateEditor then
             TInfra.ChangeLine(chLine);
          TInfra.GetEditorForm.SetCaretPos(chLine);
@@ -525,15 +458,16 @@ var
    lBranch: TBranch;
 begin
    lBranch := GetBranch(AIndex);
-   if lBranch = nil then
-      Exit;
-   if (GClpbrd.UndoObject is TBlock) and (TBlock(GClpbrd.UndoObject).ParentBranch = lBranch) then
-      GClpbrd.UndoObject.Free;
-   if FBranchList.Remove(lBranch) <> -1 then
+   if lBranch <> nil then
    begin
-      ResizeWithDrawLock;
-      RefreshCaseValues;
-      NavigatorForm.Invalidate;
+      if (GClpbrd.UndoObject is TBlock) and (TBlock(GClpbrd.UndoObject).ParentBranch = lBranch) then
+         GClpbrd.UndoObject.Free;
+      if FBranchList.Remove(lBranch) <> -1 then
+      begin
+         ResizeWithDrawLock;
+         RefreshCaseValues;
+         NavigatorForm.Invalidate;
+      end;
    end;
 end;
 

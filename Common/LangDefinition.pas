@@ -88,6 +88,7 @@ type
       ForDoDesc1,
       ForDoDesc2,
       CaseOfTemplate,
+      CaseOfFirstValueTemplate,
       CaseOfValueTemplate,
       CaseOfDefaultValueTemplate,
       PointerTypeMask,
@@ -491,6 +492,10 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'CaseOfValueTemplate');
    if tag <> nil then
       CaseOfValueTemplate := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'CaseOfFirstValueTemplate');
+   if tag <> nil then
+      CaseOfFirstValueTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'CaseOfDefaultValueTemplate');
    if tag <> nil then
