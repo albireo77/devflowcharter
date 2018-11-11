@@ -366,10 +366,10 @@ begin
                if caseLines[a].Contains(PRIMARY_PLACEHOLDER) then
                begin
                   caseLines[a] := ReplaceStr(caseLines[a], PRIMARY_PLACEHOLDER, Trim(FBranchList[i].Statement.Text));
-                  caseLines[a] := ReplaceStr(caseLines[a], '%s2', statement);
                   caseLines.Objects[a] := obj;
-                  break;
                end;
+               if caseLines[a].Contains('%s2') then
+                  caseLines[a] := ReplaceStr(caseLines[a], '%s2', statement);
             end;
          end;
          tmpList.Clear;
