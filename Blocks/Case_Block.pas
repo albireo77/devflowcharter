@@ -37,6 +37,7 @@ type
          procedure OnFStatementChange(AEdit: TCustomEdit);
          function GetDiamondTop: TPoint; override;
          procedure PlaceBranchStatement(ABranch: TBranch);
+         function  GetTemplateByControl(AControl: TControl; var AObject: TObject): string;
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; AId: integer = ID_INVALID); overload;
@@ -331,6 +332,7 @@ var
    langDef: TLangDefinition;
    lines, caseLines, tmpList: TStringList;
    obj: TObject;
+   edit: TCustomEdit;
 begin
 
    result := 0;
@@ -347,25 +349,16 @@ begin
          for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
          begin
             tmpList.Clear;
-            template := '';
-            obj := FBranchList[i].Statement;
-            if i = DEFAULT_BRANCH_IND+1 then
-            begin
-               template := langDef.CaseOfFirstValueTemplate;
-               if template.IsEmpty then
-                  template := langDef.CaseOfValueTemplate
-               else
-                  obj := Self;
-            end
-            else
-               template := langDef.CaseOfValueTemplate;
+            edit := FBranchList[i].Statement;
+            obj := edit;
+            template := GetTemplateByControl(edit, obj);
             tmpList.Text := ReplaceStr(template, '%b1', '%b' + i.ToString);
             caseLines.AddStrings(tmpList);
             for a := 0 to caseLines.Count-1 do
             begin
                if caseLines[a].Contains(PRIMARY_PLACEHOLDER) then
                begin
-                  caseLines[a] := ReplaceStr(caseLines[a], PRIMARY_PLACEHOLDER, Trim(FBranchList[i].Statement.Text));
+                  caseLines[a] := ReplaceStr(caseLines[a], PRIMARY_PLACEHOLDER, Trim(edit.Text));
                   caseLines.Objects[a] := obj;
                end;
                if caseLines[a].Contains('%s2') then
@@ -409,6 +402,23 @@ begin
    end;
 end;
 
+function  TCaseBlock.GetTemplateByControl(AControl: TControl; var AObject: TObject): string;
+begin
+   case GetBranchIndexByControl(AControl) of
+      DEFAULT_BRANCH_IND+1:
+      begin
+         result := GInfra.CurrentLang.CaseOfFirstValueTemplate;
+         if result.IsEmpty then
+            result := GInfra.CurrentLang.CaseOfValueTemplate
+         else
+            AObject := Self;
+      end;
+      -1: result := '';
+   else
+      result := GInfra.CurrentLang.CaseOfValueTemplate;
+   end;
+end;
+
 procedure TCaseBlock.UpdateEditor(AEdit: TCustomEdit);
 var
    chLine: TChangeLine;
@@ -428,18 +438,8 @@ begin
    end
    else if (AEdit <> nil) and PerformEditorUpdate then
    begin
-      template := '';
       obj := AEdit;
-      if GetBranchIndexByControl(AEdit) = DEFAULT_BRANCH_IND+1 then
-      begin
-         template := GInfra.CurrentLang.CaseOfFirstValueTemplate;
-         if template.IsEmpty then
-            template := GInfra.CurrentLang.CaseOfValueTemplate
-         else
-            obj := Self;
-      end
-      else
-         template := GInfra.CurrentLang.CaseOfValueTemplate;
+      template := GetTemplateByControl(AEdit, obj);
       chLine := TInfra.GetChangeLine(obj, AEdit, template);
       if chLine.Row <> ROW_NOT_FOUND then
       begin
