@@ -127,13 +127,14 @@ end;
 
 function TComponentComparer.Compare(const L, R: TComponent): integer;
 var
-   compareObj: IGenericComparable;
+   c1, c2: IGenericComparable;
 begin
-   result := -1;
-   if Supports(L, IGenericComparable, compareObj) then
-      result := compareObj.GetCompareValue(FCompareType);
-   if Supports(R, IGenericComparable, compareObj) then
-      result := result - compareObj.GetCompareValue(FCompareType);
+   if (L = nil) and (R = nil) then
+      result := 0
+   else if (not Supports(L, IGenericComparable, c1)) or not Supports(R, IGenericComparable, c2) then
+      result := -1
+   else
+      result := c1.GetCompareValue(FCompareType) - c2.GetCompareValue(FCompareType);
 end;
 
 class function TCodeRange.New: TCodeRange;
