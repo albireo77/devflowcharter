@@ -76,7 +76,7 @@ implementation
 
 uses
    Vcl.Graphics, Vcl.Forms, System.SysUtils, System.UITypes, ApplicationCommon,
-   Case_Block, Base_Block, XMLProcessor;
+   Base_Block, XMLProcessor;
 
 procedure TExplorerForm.FormShow(Sender: TObject);
 begin
@@ -260,7 +260,7 @@ procedure TExplorerForm.miRemoveClick(Sender: TObject);
  function RemoveData(ANode: TTreeNode): boolean;
  var
     winControl: TWinControl;
-    caseBlock: TCaseBlock;
+    groupBlock: TGroupBlock;
     i: integer;
     focusable: IFocusable;
  begin
@@ -270,11 +270,11 @@ procedure TExplorerForm.miRemoveClick(Sender: TObject);
        winControl := ANode.Data;
        if not (TInfra.IsValid(winControl) or (TObject(winControl) is TWinControl)) then
           Exit;
-       if winControl.Parent is TCaseBlock then
+       if winControl.Parent is TGroupBlock then
        begin
-          caseBlock := TCaseBlock(winControl.Parent);
-          i := caseBlock.GetBranchIndexByControl(winControl);
-          result := caseBlock.RemoveBranch(i);
+          groupBlock := TGroupBlock(winControl.Parent);
+          i := groupBlock.GetBranchIndexByControl(winControl);
+          result := groupBlock.RemoveBranch(i);
        end;
        if not result then
        begin
