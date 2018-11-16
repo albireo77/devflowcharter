@@ -265,25 +265,22 @@ procedure TExplorerForm.miRemoveClick(Sender: TObject);
     focusable: IFocusable;
  begin
     result := false;
-    if ANode <> nil then
+    if (ANode = nil) or not (TInfra.IsValid(ANode.Data) or (TObject(ANode.Data) is TWinControl)) then
+       Exit;
+    winControl := ANode.Data;
+    if winControl.Parent is TGroupBlock then
     begin
-       winControl := ANode.Data;
-       if not (TInfra.IsValid(winControl) or (TObject(winControl) is TWinControl)) then
-          Exit;
-       if winControl.Parent is TGroupBlock then
+       groupBlock := TGroupBlock(winControl.Parent);
+       i := groupBlock.GetBranchIndexByControl(winControl);
+       result := groupBlock.RemoveBranch(i);
+    end;
+    if not result then
+    begin
+       focusable := GetFocusable(ANode);
+       if (focusable <> nil) and focusable.CanBeRemoved then
        begin
-          groupBlock := TGroupBlock(winControl.Parent);
-          i := groupBlock.GetBranchIndexByControl(winControl);
-          result := groupBlock.RemoveBranch(i);
-       end;
-       if not result then
-       begin
-          focusable := GetFocusable(ANode);
-          if (focusable <> nil) and focusable.CanBeRemoved then
-          begin
-             focusable.Remove;
-             result := true;
-          end;
+          focusable.Remove;
+          result := true;
        end;
     end;
  end;
