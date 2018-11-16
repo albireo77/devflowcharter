@@ -50,8 +50,8 @@ type
    end;
 
 const
-   TRUE_BRANCH_IND = PRIMARY_BRANCH_IND;
-   FALSE_BRANCH_IND = TRUE_BRANCH_IND + 1;
+   TRUE_BRANCH_IDX = PRIMARY_BRANCH_IDX;
+   FALSE_BRANCH_IDX = TRUE_BRANCH_IDX + 1;
 
 implementation
 
@@ -76,6 +76,7 @@ begin
    TrueBranch := Branch;
    FalseBranch := AddBranch(Point(p3X, p3Y));
 
+   FFixedBranches := 2;
    BottomHook := b_hook;
    TopHook.X := t_hook;
    BottomPoint.X := BottomHook;
@@ -163,7 +164,7 @@ begin
 
    LinkBlocks;
 
-   if (Ired <> FALSE_BRANCH_IND) and (TrueBranch.Count > 0) then           // TRUE branch
+   if (Ired <> FALSE_BRANCH_IDX) and (TrueBranch.Count > 0) then           // TRUE branch
    begin
       leftX := 10;
       for block in TrueBranch do
@@ -191,7 +192,7 @@ begin
       end;
    end;
 
-   if (Ired <> TRUE_BRANCH_IND) and (FalseBranch.Count > 0) then           // FALSE branch
+   if (Ired <> TRUE_BRANCH_IDX) and (FalseBranch.Count > 0) then           // FALSE branch
    begin
       minXFalse := BottomHook + 30;
       for block in FalseBranch do

@@ -257,7 +257,7 @@ end;
 
 procedure TExplorerForm.miRemoveClick(Sender: TObject);
 
- function RemoveData(const ANode: TTreeNode): boolean;
+ function RemoveData(ANode: TTreeNode): boolean;
  var
     winControl: TWinControl;
     caseBlock: TCaseBlock;
@@ -269,18 +269,14 @@ procedure TExplorerForm.miRemoveClick(Sender: TObject);
     begin
        winControl := ANode.Data;
        if not (TInfra.IsValid(winControl) or (TObject(winControl) is TWinControl)) then
-          exit;
-       if (winControl.Parent is TCaseBlock) and (winControl <> TCaseBlock(winControl.Parent).GetTextControl) then
+          Exit;
+       if winControl.Parent is TCaseBlock then
        begin
           caseBlock := TCaseBlock(winControl.Parent);
           i := caseBlock.GetBranchIndexByControl(winControl);
-          if i <> -1 then
-          begin
-             caseBlock.RemoveBranch(i);
-             result := true;
-          end;
-       end
-       else
+          result := caseBlock.RemoveBranch(i);
+       end;
+       if not result then
        begin
           focusable := GetFocusable(ANode);
           if (focusable <> nil) and focusable.CanBeRemoved then

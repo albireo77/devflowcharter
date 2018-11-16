@@ -51,7 +51,7 @@ type
                                                AParent: TWinControl;
                                                APrevBlock: TBlock;
                                                var AErrorType: TErrorType;
-                                               ABranchInd: integer = PRIMARY_BRANCH_IND): TBlock;
+                                               ABranchInd: integer = PRIMARY_BRANCH_IDX): TBlock;
    end;
 
 const
@@ -181,7 +181,7 @@ class function TXMLProcessor.ImportFlowchartFromXMLTag(ATag: IXMLElement;      /
                                                        AParent: TWinControl;       // Parent window for new block
                                                        APrevBlock: TBlock;
                                                        var AErrorType: TErrorType;
-                                                       ABranchInd: integer = PRIMARY_BRANCH_IND): TBlock;
+                                                       ABranchInd: integer = PRIMARY_BRANCH_IDX): TBlock;
 var
    tag: IXMLElement;
    newBlock: TBlock;

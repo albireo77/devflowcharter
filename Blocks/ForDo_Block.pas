@@ -406,7 +406,7 @@ begin
       begin
          line := indent + FillCodedTemplate(ALangId);
          tmpList.AddObject(line, Self);
-         GenerateNestedCode(tmpList, PRIMARY_BRANCH_IND, ADeep+1, ALangId);
+         GenerateNestedCode(tmpList, PRIMARY_BRANCH_IDX, ADeep+1, ALangId);
          if ALangId = JAVA_LANG_ID then
             tmpList.AddObject(indent + '}', Self);
       end

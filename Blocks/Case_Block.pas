@@ -38,6 +38,7 @@ type
          function GetDiamondTop: TPoint; override;
          procedure PlaceBranchStatement(ABranch: TBranch);
          function  GetTemplateByControl(AControl: TControl; var AObject: TObject): string;
+         procedure AfterRemovingBranch; override;
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; AId: integer = ID_INVALID); overload;
@@ -47,23 +48,20 @@ type
          procedure ResizeHorz(AContinue: boolean); override;
          procedure ResizeVert(AContinue: boolean); override;
          procedure ExpandFold(AResize: boolean); override;
-         procedure RemoveBranch(AIndex: integer);
          function AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch; override;
          function InsertNewBranch(AIndex: integer): TBranch;
          function CountErrWarn: TErrWarnCount; override;
          function GetFromXML(ATag: IXMLElement): TErrorType; override;
          procedure SaveInXML(ATag: IXMLElement); override;
-         procedure RefreshCaseValues;
          procedure ChangeColor(AColor: TColor); override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
          function IsDuplicatedCase(AEdit: TCustomEdit): boolean;
          procedure CloneFrom(ABlock: TBlock); override;
          function GetDescTemplate(const ALangId: string): string; override;
-         function GetBranchIndexByControl(AControl: TControl): integer;
    end;
 
 const
-   DEFAULT_BRANCH_IND = PRIMARY_BRANCH_IND;
+   DEFAULT_BRANCH_IDX = PRIMARY_BRANCH_IDX;
 
 implementation
 
@@ -119,7 +117,7 @@ begin
    if ABlock is TCaseBlock then
    begin
       caseBlock := TCaseBlock(ABlock);
-      for i := DEFAULT_BRANCH_IND+1 to caseBlock.FBranchList.Count-1 do
+      for i := DEFAULT_BRANCH_IDX+1 to caseBlock.FBranchList.Count-1 do
       begin
          lBranch2 := GetBranch(i);
          if lBranch2 = nil then
@@ -153,7 +151,7 @@ begin
       TopHook.Y := dBottom.Y + 10;
       BottomPoint.Y := Height - 31;
       DrawArrow(BottomPoint, BottomPoint.X, Height-1);
-      for i := DEFAULT_BRANCH_IND to FBranchList.Count-1 do
+      for i := DEFAULT_BRANCH_IDX to FBranchList.Count-1 do
       begin
          pnt := @FBranchList[i].Hook;
          DrawArrow(pnt.X, TopHook.Y, pnt^);
@@ -177,7 +175,7 @@ var
    i: integer;
    lBranch: TBranch;
 begin
-   for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
+   for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
    begin
       lBranch := FBranchList[i];
       if (lBranch.Statement <> nil) and (lBranch.Statement <> AEdit) then
@@ -193,7 +191,7 @@ begin
    result := false;
    if (AEdit <> nil) and (AEdit.Parent = Self) then
    begin
-      for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
+      for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
       begin
          edit := FBranchList[i].Statement;
          if (edit <> AEdit) and (edit <> nil) and (Trim(edit.Text) = Trim(AEdit.Text)) then
@@ -208,7 +206,7 @@ end;
 function TCaseBlock.AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch;
 begin
    result := inherited AddBranch(AHook, ABranchId);
-   if FBranchList.IndexOf(result) > DEFAULT_BRANCH_IND then       // don't execute when default branch is being added in constructor
+   if FBranchList.IndexOf(result) > DEFAULT_BRANCH_IDX then       // don't execute when default branch is being added in constructor
    begin
       result.Statement := TStatement.Create(Self, ABranchStmntId);
       result.Statement.Alignment := taRightJustify;
@@ -224,7 +222,7 @@ begin
    result := nil;
    if AIndex < 0 then
       AIndex := FBranchList.Count;
-   if AIndex > DEFAULT_BRANCH_IND then
+   if AIndex > DEFAULT_BRANCH_IDX then
    begin
       pnt := Point(FBranchList[AIndex-1].GetMostRight+60, Height-32);
       result := TBranch.Create(Self, pnt);
@@ -248,7 +246,7 @@ var
    idx, w: integer;
 begin
    idx := FBranchList.IndexOf(ABranch);
-   if idx > DEFAULT_BRANCH_IND then
+   if idx > DEFAULT_BRANCH_IDX then
    begin
       prevBranch := FBranchList[idx-1];
       if (prevBranch <> nil) and (ABranch.Statement <> nil) then
@@ -267,7 +265,7 @@ var
 begin
    BottomHook := Branch.Hook.X;
    rightX := 100;
-   for i := DEFAULT_BRANCH_IND to FBranchList.Count-1 do
+   for i := DEFAULT_BRANCH_IDX to FBranchList.Count-1 do
    begin
       lBranch := FBranchList[i];
       leftX := rightX;
@@ -302,7 +300,7 @@ var
 begin
    maxh := 0;
    hBranch := DefaultBranch;
-   for i := DEFAULT_BRANCH_IND to FBranchList.Count-1 do
+   for i := DEFAULT_BRANCH_IDX to FBranchList.Count-1 do
    begin
       lBranch := FBranchList[i];
       h := lBranch.Height;
@@ -314,7 +312,7 @@ begin
    end;
    hBranch.Hook.Y := 99;
    Height := maxh + 131;
-   for i := DEFAULT_BRANCH_IND to FBranchList.Count-1 do
+   for i := DEFAULT_BRANCH_IDX to FBranchList.Count-1 do
    begin
       lBranch := FBranchList[i];
       if lBranch <> hBranch then
@@ -346,7 +344,7 @@ begin
       caseLines := TStringList.Create;
       tmpList := TStringList.Create;
       try
-         for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
+         for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
          begin
             tmpList.Clear;
             edit := FBranchList[i].Statement;
@@ -385,27 +383,10 @@ begin
    end;
 end;
 
-function TCaseBlock.GetBranchIndexByControl(AControl: TControl): integer;
-var
-   i: integer;
-begin
-   result := -1;
-   if FBranchList = nil then
-      Exit;
-   for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
-   begin
-      if FBranchList[i].Statement = AControl then
-      begin
-         result := i;
-         break;
-      end;
-   end;
-end;
-
 function  TCaseBlock.GetTemplateByControl(AControl: TControl; var AObject: TObject): string;
 begin
    case GetBranchIndexByControl(AControl) of
-      DEFAULT_BRANCH_IND+1:
+      DEFAULT_BRANCH_IDX+1:
       begin
          result := GInfra.CurrentLang.CaseOfFirstValueTemplate;
          if result.IsEmpty then
@@ -413,7 +394,7 @@ begin
          else
             AObject := Self;
       end;
-      -1: result := '';
+      BRANCH_IDX_NOT_FOUND: result := '';
    else
       result := GInfra.CurrentLang.CaseOfValueTemplate;
    end;
@@ -432,8 +413,8 @@ begin
          inherited UpdateEditor(AEdit)
       else
       begin
-         for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
-            FBranchList[i].Statement.Change;
+         for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
+            FBranchList[i].Statement.DoEnter;
       end;
    end
    else if (AEdit <> nil) and PerformEditorUpdate then
@@ -452,24 +433,6 @@ begin
    end;
 end;
 
-procedure TCaseBlock.RemoveBranch(AIndex: integer);
-var
-   lBranch: TBranch;
-begin
-   lBranch := GetBranch(AIndex);
-   if lBranch <> nil then
-   begin
-      if (GClpbrd.UndoObject is TBlock) and (TBlock(GClpbrd.UndoObject).ParentBranch = lBranch) then
-         GClpbrd.UndoObject.Free;
-      if FBranchList.Remove(lBranch) <> -1 then
-      begin
-         ResizeWithDrawLock;
-         RefreshCaseValues;
-         NavigatorForm.Invalidate;
-      end;
-   end;
-end;
-
 procedure TCaseBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
 var
    i: integer;
@@ -479,7 +442,7 @@ begin
    begin
       if Expanded then
       begin
-         for i := DEFAULT_BRANCH_IND to FBranchList.Count-1 do
+         for i := DEFAULT_BRANCH_IDX to FBranchList.Count-1 do
             Inc(FBranchList[i].Hook.Y, NewHeight-Height);
       end
       else
@@ -516,7 +479,7 @@ begin
    descTemplate := GetDescTemplate(GInfra.CurrentLang.Name);
    result := AParentNode.Owner.AddChildObject(AParentNode, FillTemplate(GInfra.CurrentLang.Name, descTemplate) + errMsg, FStatement);
 
-   for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
+   for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
    begin
       lBranch := FBranchList[i];
       if lBranch.Statement <> nil then
@@ -565,7 +528,7 @@ var
    lBranch: TBranch;
 begin
    inherited ExpandFold(AResize);
-   for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
+   for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
    begin
       lBranch := FBranchList[i];
       if lBranch.Statement <> nil then
@@ -579,7 +542,7 @@ var
    lBranch: TBranch;
 begin
    result := inherited CountErrWarn;
-   for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
+   for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
    begin
       lBranch := FBranchList[i];
       if (lBranch.Statement <> nil) and (lBranch.Statement.GetFocusColor = NOK_COLOR) then
@@ -592,17 +555,18 @@ begin
    result := Point(DefaultBranch.Hook.X, 0);
 end;
 
-procedure TCaseBlock.RefreshCaseValues;
+procedure TCaseBlock.AfterRemovingBranch;
 var
    i: integer;
    lBranch: TBranch;
 begin
-   for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
+   for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
    begin
       lBranch := FBranchList[i];
       if lBranch.Statement <> nil then
          lBranch.Statement.DoEnter;
    end;
+   inherited;
 end;
 
 procedure TCaseBlock.ChangeColor(AColor: TColor);
@@ -611,7 +575,7 @@ var
    lBranch: TBranch;
 begin
    inherited ChangeColor(AColor);
-   for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
+   for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
    begin
       lBranch := FBranchList[i];
       if lBranch.Statement <> nil then
@@ -633,7 +597,7 @@ begin
       begin
          tag := TXMLProcessor.FindNextTag(tag);   // skip default branch stored in first tag
          FRefreshMode := true;
-         for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
+         for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
          begin
             stmnt := FBranchList[i].Statement;
             if (tag <> nil) and (stmnt <> nil) then
@@ -663,7 +627,7 @@ begin
       if tag <> nil then
       begin
          tag := TXMLProcessor.FindNextTag(tag);   // skip default branch stored in first tag
-         for i := DEFAULT_BRANCH_IND+1 to FBranchList.Count-1 do
+         for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
          begin
             stmnt := FBranchList[i].Statement;
             if (tag <> nil) and (stmnt <> nil) then

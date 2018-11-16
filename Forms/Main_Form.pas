@@ -634,7 +634,7 @@ begin
        end;
        miFrame.Visible := True;
        miFrame.Checked := block.Frame;
-       if (block is TCaseBlock) and (block.Ired > PRIMARY_BRANCH_IND) then
+       if (block is TCaseBlock) and (block.Ired > PRIMARY_BRANCH_IDX) then
        begin
           miRemoveBranch.Visible := True;
           miInsertBranch.Visible := True;

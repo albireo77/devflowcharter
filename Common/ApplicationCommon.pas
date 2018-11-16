@@ -206,6 +206,7 @@ const   // Global constants
         FLOWCHART_FONT_NAMESIZE_SEP = ' : ';
 
         ROW_NOT_FOUND = -1;
+        BRANCH_IDX_NOT_FOUND = -1;
 
         FUNCTION_TYPE_IND = -5;
 

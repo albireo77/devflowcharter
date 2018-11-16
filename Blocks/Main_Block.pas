@@ -428,7 +428,7 @@ begin
    tmpList := TStringList.Create;
    try
       if ALangId = TIBASIC_LANG_ID then
-         GenerateNestedCode(tmpList, PRIMARY_BRANCH_IND, ADeep+1, ALangId)
+         GenerateNestedCode(tmpList, PRIMARY_BRANCH_IDX, ADeep+1, ALangId)
       else
       begin
          lang := GInfra.GetLangDefinition(ALangId);
