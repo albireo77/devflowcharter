@@ -254,9 +254,8 @@ var
    focusable: IFocusable;
 begin
    focusable := GetFocusable(tvExplorer.Selected);
-   if (focusable <> nil) and focusable.CanBeRemoved then
+   if (focusable <> nil) and focusable.Remove(tvExplorer.Selected.Data) then
    begin
-      focusable.Remove(tvExplorer.Selected.Data);
       tvExplorer.Items.BeginUpdate;
       tvExplorer.Selected.Delete;
       tvExplorer.Items.EndUpdate;
