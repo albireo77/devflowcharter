@@ -270,13 +270,14 @@ end;
 
 function TIfElseBlock.GenerateTree(AParentNode: TTreeNode): TTreeNode;
 var
-   newNode: TTreeNode;
+   elseNode: TTreeNodeWithFriend;
    block: TBlock;
 begin
    result := inherited GenerateTree(AParentNode);
-   newNode := AParentNode.Owner.AddChild(AParentNode, GInfra.CurrentLang.ElseLabel);
+   elseNode := TTreeNodeWithFriend(AParentNode.Owner.AddChild(AParentNode, GInfra.CurrentLang.ElseLabel));
+   TTreeNodeWithFriend(result).Friend := elseNode;
    for block in FalseBranch do
-       block.GenerateTree(newNode);
+       block.GenerateTree(elseNode);
 end;
 
 procedure TIfElseBlock.ExpandFold(AResize: boolean);

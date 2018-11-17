@@ -27,7 +27,8 @@ uses
 {$IFDEF USE_CODEFOLDING}
    SynEditCodeFolding,
 {$ENDIF}
-   System.Classes, Vcl.StdCtrls, Vcl.Forms, Vcl.Controls, Generics.Defaults, SynEditTypes;
+   System.Classes, Vcl.StdCtrls, Vcl.Forms, Vcl.Controls, Generics.Defaults,
+   Vcl.ComCtrls, SynEditTypes;
 
 type
 
@@ -112,6 +113,11 @@ type
       FCompareType: integer;
       constructor Create(ACompareType: integer);
       function Compare(const L, R: TComponent): integer; override;
+   end;
+
+   TTreeNodeWithFriend = class(TTreeNode)
+   public
+      Friend: TTreeNodeWithFriend;
    end;
 
 implementation

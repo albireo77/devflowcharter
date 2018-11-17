@@ -73,6 +73,7 @@ object ExplorerForm: TExplorerForm
     ReadOnly = True
     TabOrder = 0
     OnChange = tvExplorerChange
+    OnCreateNodeClass = tvExplorerCreateNodeClass
     OnCustomDrawItem = tvExplorerCustomDrawItem
   end
   object chkAutoNav: TCheckBox

@@ -57,6 +57,8 @@ type
     procedure chkAutoNavClick(Sender: TObject);
     procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure tvExplorerCreateNodeClass(Sender: TCustomTreeView;
+      var NodeClass: TTreeNodeClass);
   private
     { Private declarations }
     FErrWarnCount: TErrWarnCount;
@@ -140,6 +142,11 @@ begin
          GProject.RepaintFlowcharts;
       end;
    end;
+end;
+
+procedure TExplorerForm.tvExplorerCreateNodeClass(Sender: TCustomTreeView; var NodeClass: TTreeNodeClass);
+begin
+   NodeClass := TTreeNodeWithFriend;
 end;
 
 procedure TExplorerForm.miExpandClick(Sender: TObject);
@@ -258,6 +265,8 @@ begin
    begin
       focusable.Remove(tvExplorer.Selected.Data);
       tvExplorer.Items.BeginUpdate;
+      if TTreeNodeWithFriend(tvExplorer.Selected).Friend <> nil then
+         TTreeNodeWithFriend(tvExplorer.Selected).Friend.Delete;
       tvExplorer.Selected.Delete;
       tvExplorer.Items.EndUpdate;
    end;
