@@ -487,7 +487,7 @@ begin
          errMsg := GetErrorMsg(lBranch.Statement);
          if not errMsg.IsEmpty then
             exp2 := true;
-         newNode := AParentNode.Owner.AddChildObject(result, lBranch.Statement.Text + ': ' + errMsg, lBranch.Statement);
+         newNode := AParentNode.Owner.AddChildObject(result, lBranch.Statement.Text + ': ' + errMsg, lBranch);
       end;
       for block in lBranch do
           block.GenerateTree(newNode);

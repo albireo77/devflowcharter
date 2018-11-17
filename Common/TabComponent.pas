@@ -88,7 +88,7 @@ type
          function HasInvalidElement: boolean;
          function HasFocusedComboBox: boolean;
          function GetFocusColor: TColor;
-         function Remove: boolean;
+         function Remove(AControl: TControl = nil): boolean;
          function CanBeRemoved: boolean;
          function IsBoldDesc: boolean;
          procedure RefreshTab;
@@ -516,7 +516,7 @@ begin
       result := OK_COLOR;
 end;
 
-function TTabComponent.Remove: boolean;
+function TTabComponent.Remove(AControl: TControl = nil): boolean;
 begin
    result := CanBeRemoved;
    if result then

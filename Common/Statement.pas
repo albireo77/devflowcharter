@@ -57,7 +57,7 @@ type
     function RetrieveFocus(AInfo: TFocusInfo): boolean;
     function CanBeFocused: boolean;
     function GetFocusColor: TColor;
-    function Remove: boolean;
+    function Remove(AControl: TControl = nil): boolean;
     function CanBeRemoved: boolean;
     function IsBoldDesc: boolean;
     procedure SetLRMargins(ALMargin, ARMargin: integer);
@@ -318,11 +318,16 @@ begin
       result := OK_COLOR;
 end;
 
-function TStatement.Remove: boolean;
+function TStatement.Remove(AControl: TControl = nil): boolean;
 begin
    result := CanBeRemoved;
    if result then
-      result := TBlock(Parent).Remove;
+   begin
+      if FParserMode = yymCaseValue then
+         result := TBlock(Parent).Remove(Self)
+      else
+         result := TBlock(Parent).Remove;
+   end;
 end;
 
 function TStatement.CanBeRemoved: boolean;

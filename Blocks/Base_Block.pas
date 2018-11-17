@@ -172,7 +172,7 @@ type
          function LockDrawing: boolean;
          procedure UnLockDrawing;
          function GetFocusColor: TColor;
-         function Remove: boolean; virtual;
+         function Remove(AControl: TControl = nil): boolean; virtual;
          function CanBeRemoved: boolean;
          function IsBoldDesc: boolean; virtual;
          function GetComments(AInFront: boolean = false): IEnumerable<TComment>;
@@ -248,13 +248,15 @@ type
          procedure OnMouseLeave(AClearRed: boolean = true); override;
          function GetBranchIndexByControl(AControl: TControl): integer;
          function RemoveBranch(AIndex: integer): boolean;
+         function Remove(AControl: TControl = nil): boolean; override;
    end;
 
-   TBranch = class(TList<TBlock>, IIdentifiable)
+   TBranch = class(TList<TBlock>, IIdentifiable, IFocusable)
       private
          FParentBlock: TGroupBlock;
          FRmvBlockIdx: integer;
          FId: integer;
+         FStatement: TStatement;
          function GetHeight: integer;
          function GetId: integer;
          function _AddRef: Integer; stdcall;
@@ -262,7 +264,7 @@ type
          function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
       public
          Hook: TPoint;           // hook determines position of blocks within a branch in parent window coordinates
-         Statement: TStatement;
+         property Statement: TStatement read FStatement write FStatement implements IFocusable;
          property ParentBlock: TGroupBlock read FParentBlock;
          property Height: integer read GetHeight;
          property Id: integer read GetId;
@@ -1933,7 +1935,7 @@ begin
    result := Self;
 end;
 
-function TBlock.Remove: boolean;
+function TBlock.Remove(AControl: TControl = nil): boolean;
 begin
    result := CanBeRemoved;
    if result then
@@ -1950,6 +1952,23 @@ begin
       GClpbrd.UndoObject := GetUndoObject;
       TInfra.UpdateCodeEditor;
       NavigatorForm.Repaint;
+   end;
+end;
+
+function TGroupBlock.Remove(AControl: TControl = nil): boolean;
+var
+   i: integer;
+begin
+   result := CanBeRemoved;
+   if result then
+   begin
+      if AControl <> nil then
+      begin
+         i := GetBranchIndexByControl(AControl);
+         result := RemoveBranch(i);
+      end
+      else
+         inherited Remove(AControl);
    end;
 end;
 

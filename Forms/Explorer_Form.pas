@@ -111,16 +111,10 @@ begin
 end;
 
 function TExplorerForm.GetFocusable(ANode: TTreeNode): IFocusable;
-var
-   winControl: TWinControl;
 begin
    result := nil;
    if (ANode <> nil) and TInfra.IsValid(ANode.Data) then
-   begin
-      winControl := ANode.Data;
-      if TObject(winControl) is TWinControl then
-         Supports(winControl, IFocusable, result);
-   end;
+      Supports(ANode.Data, IFocusable, result);
 end;
 
 procedure TExplorerForm.Localize(AList: TStringList);
@@ -256,38 +250,13 @@ begin
 end;
 
 procedure TExplorerForm.miRemoveClick(Sender: TObject);
-
- function RemoveData(ANode: TTreeNode): boolean;
- var
-    winControl: TWinControl;
-    groupBlock: TGroupBlock;
-    i: integer;
-    focusable: IFocusable;
- begin
-    result := false;
-    if (ANode = nil) or not (TInfra.IsValid(ANode.Data) or (TObject(ANode.Data) is TWinControl)) then
-       Exit;
-    winControl := ANode.Data;
-    if winControl.Parent is TGroupBlock then
-    begin
-       groupBlock := TGroupBlock(winControl.Parent);
-       i := groupBlock.GetBranchIndexByControl(winControl);
-       result := groupBlock.RemoveBranch(i);
-    end;
-    if not result then
-    begin
-       focusable := GetFocusable(ANode);
-       if (focusable <> nil) and focusable.CanBeRemoved then
-       begin
-          focusable.Remove;
-          result := true;
-       end;
-    end;
- end;
- 
+var
+   focusable: IFocusable;
 begin
-   if RemoveData(tvExplorer.Selected) then
+   focusable := GetFocusable(tvExplorer.Selected);
+   if (focusable <> nil) and focusable.CanBeRemoved then
    begin
+      focusable.Remove;
       tvExplorer.Items.BeginUpdate;
       tvExplorer.Selected.Delete;
       tvExplorer.Items.EndUpdate;

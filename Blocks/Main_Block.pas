@@ -25,7 +25,7 @@ interface
 
 uses
    WinApi.Windows, Vcl.Graphics, System.Classes, Vcl.ComCtrls, WinApi.Messages,
-   Base_Block, OmniXML, CommonInterfaces, CommonTypes, BlockTabSheet;
+   Vcl.Controls, Base_Block, OmniXML, CommonInterfaces, CommonTypes, BlockTabSheet;
 
 type
 
@@ -49,7 +49,7 @@ type
          procedure SetZOrder(AValue: integer);
          function GetZOrder: integer;
          function IsBoldDesc: boolean; override;
-         function Remove: boolean; override;
+         function Remove(AControl: TControl = nil): boolean; override;
          procedure DrawLabel;
          function ExportToXMLFile(const AFile: string): TErrorType; override;
          function GetExportFileName: string; override;
@@ -549,9 +549,9 @@ begin
    result := UserFunction;
 end;
 
-function TMainBlock.Remove: boolean;
+function TMainBlock.Remove(AControl: TControl = nil): boolean;
 begin
-   result := inherited Remove;
+   result := inherited Remove(AControl);
    if result and (UserFunction <> nil) then
       TUserFunction(UserFunction).Active := false;
 end;

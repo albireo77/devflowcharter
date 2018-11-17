@@ -22,7 +22,8 @@ unit StatementMemo;
 interface
 
 uses
-  System.Classes, Vcl.StdCtrls, Vcl.Graphics, CommonInterfaces, MemoEx, CommonTypes;
+  System.Classes, Vcl.StdCtrls, Vcl.Graphics, Vcl.Controls, CommonInterfaces, MemoEx,
+  CommonTypes;
 
 type
 
@@ -33,7 +34,7 @@ type
         function RetrieveFocus(AInfo: TFocusInfo): boolean;
         function CanBeFocused: boolean;
         function GetFocusColor: TColor;
-        function Remove: boolean;
+        function Remove(AControl: TControl = nil): boolean;
         function CanBeRemoved: boolean;
         function IsBoldDesc: boolean;
   end;
@@ -41,7 +42,7 @@ type
 implementation
 
 uses
-   Vcl.Controls, Vcl.Forms, ApplicationCommon, Base_Block;
+   Vcl.Forms, ApplicationCommon, Base_Block;
 
 constructor TStatementMemo.Create(AOwner: TComponent);
 begin
@@ -82,11 +83,11 @@ begin
       result := OK_COLOR;
 end;
 
-function TStatementMemo.Remove: boolean;
+function TStatementMemo.Remove(AControl: TControl = nil): boolean;
 begin
    result := CanBeRemoved;
    if result and (Parent is TBlock) then
-      result := TBlock(Parent).Remove;
+      result := TBlock(Parent).Remove(AControl);
 end;
 
 function TStatementMemo.CanBeRemoved: boolean;
