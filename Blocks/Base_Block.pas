@@ -251,12 +251,11 @@ type
          function Remove(AControl: TControl = nil): boolean; override;
    end;
 
-   TBranch = class(TList<TBlock>, IIdentifiable, IFocusable)
+   TBranch = class(TList<TBlock>, IIdentifiable)
       private
          FParentBlock: TGroupBlock;
          FRmvBlockIdx: integer;
          FId: integer;
-         FStatement: TStatement;
          function GetHeight: integer;
          function GetId: integer;
          function _AddRef: Integer; stdcall;
@@ -264,7 +263,7 @@ type
          function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
       public
          Hook: TPoint;           // hook determines position of blocks within a branch in parent window coordinates
-         property Statement: TStatement read FStatement write FStatement implements IFocusable;
+         Statement: TStatement;
          property ParentBlock: TGroupBlock read FParentBlock;
          property Height: integer read GetHeight;
          property Id: integer read GetId;
@@ -1956,18 +1955,12 @@ begin
 end;
 
 function TGroupBlock.Remove(AControl: TControl = nil): boolean;
-var
-   i: integer;
 begin
    result := CanBeRemoved;
    if result then
    begin
-      if AControl <> nil then
-      begin
-         i := GetBranchIndexByControl(AControl);
-         result := RemoveBranch(i);
-      end
-      else
+      result := RemoveBranch(GetBranchIndexByControl(AControl));
+      if not result then
          inherited Remove(AControl);
    end;
 end;

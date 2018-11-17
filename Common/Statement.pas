@@ -322,12 +322,7 @@ function TStatement.Remove(AControl: TControl = nil): boolean;
 begin
    result := CanBeRemoved;
    if result then
-   begin
-      if FParserMode = yymCaseValue then
-         result := TBlock(Parent).Remove(Self)
-      else
-         result := TBlock(Parent).Remove;
-   end;
+      result := TBlock(Parent).Remove(AControl);
 end;
 
 function TStatement.CanBeRemoved: boolean;
