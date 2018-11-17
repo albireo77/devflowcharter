@@ -94,7 +94,7 @@ type
          function RetrieveFocus(AInfo: TFocusInfo): boolean;
          function CanBeFocused: boolean;
          function GetFocusColor: TColor;
-         function Remove(AControl: TControl = nil): boolean;
+         function Remove(AControl: TControl): boolean;
          function CanBeRemoved: boolean;
          function IsBoldDesc: boolean;
          procedure SetSplitter(ASplitter: TSplitter);
@@ -1151,7 +1151,7 @@ begin
    result := OK_COLOR;
 end;
 
-function TDeclareList.Remove(AControl: TControl = nil): boolean;
+function TDeclareList.Remove(AControl: TControl): boolean;
 begin
    result := CanBeRemoved;
 end;

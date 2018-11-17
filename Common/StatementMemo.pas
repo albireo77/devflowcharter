@@ -34,7 +34,7 @@ type
         function RetrieveFocus(AInfo: TFocusInfo): boolean;
         function CanBeFocused: boolean;
         function GetFocusColor: TColor;
-        function Remove(AControl: TControl = nil): boolean;
+        function Remove(AControl: TControl): boolean;
         function CanBeRemoved: boolean;
         function IsBoldDesc: boolean;
   end;
@@ -83,7 +83,7 @@ begin
       result := OK_COLOR;
 end;
 
-function TStatementMemo.Remove(AControl: TControl = nil): boolean;
+function TStatementMemo.Remove(AControl: TControl): boolean;
 begin
    result := CanBeRemoved;
    if result and (Parent is TBlock) then

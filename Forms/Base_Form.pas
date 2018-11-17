@@ -40,7 +40,7 @@ type
       function CanBeFocused: boolean;
       function IsOverlapped: boolean;
       function GetFocusColor: TColor;
-      function Remove(AControl: TControl = nil): boolean;
+      function Remove(AControl: TControl): boolean;
       function CanBeRemoved: boolean;
       function IsBoldDesc: boolean;
   end;
@@ -123,7 +123,7 @@ begin
    result := OK_COLOR;
 end;
 
-function TBaseForm.Remove(AControl: TControl = nil): boolean;
+function TBaseForm.Remove(AControl: TControl): boolean;
 begin
    result := CanBeRemoved;
 end;
