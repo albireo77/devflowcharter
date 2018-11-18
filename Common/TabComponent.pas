@@ -522,7 +522,7 @@ begin
    if result then
    begin
       FParentForm.pgcTabs.ActivePage := Self;
-      FParentForm.miRemove.Click;
+      FParentForm.miRemove.OnClick(FParentForm.miRemove);
    end;
 end;
 
