@@ -261,9 +261,8 @@ var
    focusable: IFocusable;
 begin
    focusable := GetFocusable(tvExplorer.Selected);
-   if (focusable <> nil) and focusable.CanBeRemoved then
+   if (focusable <> nil) and focusable.Remove(tvExplorer.Selected.Data) then
    begin
-      focusable.Remove(tvExplorer.Selected.Data);
       tvExplorer.Items.BeginUpdate;
       if TTreeNodeWithFriend(tvExplorer.Selected).Friend <> nil then
          TTreeNodeWithFriend(tvExplorer.Selected).Friend.Delete;

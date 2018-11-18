@@ -1961,7 +1961,7 @@ begin
    begin
       result := RemoveBranch(GetBranchIndexByControl(AControl));
       if not result then
-         inherited Remove(AControl);
+         result := inherited Remove(AControl);
    end;
 end;
 
