@@ -123,11 +123,8 @@ begin
          if lBranch2 = nil then
             continue;
          lBranch := caseBlock.FBranchList[i];
-         if (lBranch2.Statement <> nil) and (lBranch.Statement <> nil) then
-         begin
-            lBranch2.Statement.Text := lBranch.Statement.Text;
-            lBranch2.Statement.Visible := lBranch.Statement.Visible;
-         end;
+         lBranch2.Statement.Text := lBranch.Statement.Text;
+         lBranch2.Statement.Visible := lBranch.Statement.Visible;
       end;
    end;
 end;
@@ -178,7 +175,7 @@ begin
    for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
    begin
       lBranch := FBranchList[i];
-      if (lBranch.Statement <> nil) and (lBranch.Statement <> AEdit) then
+      if lBranch.Statement <> AEdit then
          lBranch.Statement.Change;
    end;
 end;
@@ -194,7 +191,7 @@ begin
       for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
       begin
          edit := FBranchList[i].Statement;
-         if (edit <> AEdit) and (edit <> nil) and (Trim(edit.Text) = Trim(AEdit.Text)) then
+         if (edit <> AEdit) and (Trim(edit.Text) = Trim(AEdit.Text)) then
          begin
             result := true;
             break;
@@ -249,7 +246,7 @@ begin
    if idx > DEFAULT_BRANCH_IDX then
    begin
       prevBranch := FBranchList[idx-1];
-      if (prevBranch <> nil) and (ABranch.Statement <> nil) then
+      if prevBranch <> nil then
       begin
          w := Min(ABranch.Hook.X-prevBranch.Hook.X-10, 300);
          ABranch.Statement.SetBounds(ABranch.Hook.X-w-5, TopHook.Y+1, w, ABranch.Statement.Height);
@@ -273,7 +270,7 @@ begin
       x := leftX;
       LinkBlocks(i);
       for block in lBranch do
-          x := Min(block.Left, x);
+         x := Min(block.Left, x);
       Inc(lBranch.hook.X, leftX-x);
       LinkBlocks(i);
       PlaceBranchStatement(lBranch);
@@ -482,21 +479,18 @@ begin
    for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
    begin
       lBranch := FBranchList[i];
-      if lBranch.Statement <> nil then
-      begin
-         errMsg := GetErrorMsg(lBranch.Statement);
-         if not errMsg.IsEmpty then
-            exp2 := true;
-         newNode := AParentNode.Owner.AddChildObject(result, lBranch.Statement.Text + ': ' + errMsg, lBranch.Statement);
-      end;
+      errMsg := GetErrorMsg(lBranch.Statement);
+      if not errMsg.IsEmpty then
+         exp2 := true;
+      newNode := AParentNode.Owner.AddChildObject(result, lBranch.Statement.Text + ': ' + errMsg, lBranch.Statement);
       for block in lBranch do
-          block.GenerateTree(newNode);
+         block.GenerateTree(newNode);
    end;
 
    newNode := AParentNode.Owner.AddChild(result, i18Manager.GetString('DefValue'));
 
    for block in DefaultBranch do
-       block.GenerateTree(newNode);
+      block.GenerateTree(newNode);
 
    if exp1 then
    begin
@@ -525,27 +519,20 @@ end;
 procedure TCaseBlock.ExpandFold(AResize: boolean);
 var
    i: integer;
-   lBranch: TBranch;
 begin
    inherited ExpandFold(AResize);
    for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
-   begin
-      lBranch := FBranchList[i];
-      if lBranch.Statement <> nil then
-         lBranch.Statement.Visible := Expanded;
-   end;
+      FBranchList[i].Statement.Visible := Expanded;
 end;
 
 function TCaseBlock.CountErrWarn: TErrWarnCount;
 var
    i: integer;
-   lBranch: TBranch;
 begin
    result := inherited CountErrWarn;
    for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
    begin
-      lBranch := FBranchList[i];
-      if (lBranch.Statement <> nil) and (lBranch.Statement.GetFocusColor = NOK_COLOR) then
+      if FBranchList[i].Statement.GetFocusColor = NOK_COLOR then
          Inc(result.ErrorCount);
    end;
 end;
@@ -558,36 +545,25 @@ end;
 procedure TCaseBlock.AfterRemovingBranch;
 var
    i: integer;
-   lBranch: TBranch;
 begin
    for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
-   begin
-      lBranch := FBranchList[i];
-      if lBranch.Statement <> nil then
-         lBranch.Statement.DoEnter;
-   end;
+      FBranchList[i].Statement.DoEnter;
    inherited;
 end;
 
 procedure TCaseBlock.ChangeColor(AColor: TColor);
 var
    i: integer;
-   lBranch: TBranch;
 begin
    inherited ChangeColor(AColor);
    for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
-   begin
-      lBranch := FBranchList[i];
-      if lBranch.Statement <> nil then
-         lBranch.Statement.Color := AColor;
-   end;
+      FBranchList[i].Statement.Color := AColor;
 end;
 
 function TCaseBlock.GetFromXML(ATag: IXMLElement): TErrorType;
 var
    tag, tag2: IXMLElement;
    i: integer;
-   stmnt: TStatement;
 begin
    result := inherited GetFromXML(ATag);
    if ATag <> nil then
@@ -599,12 +575,11 @@ begin
          FRefreshMode := true;
          for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
          begin
-            stmnt := FBranchList[i].Statement;
-            if (tag <> nil) and (stmnt <> nil) then
+            if tag <> nil then
             begin
                tag2 := TXMLProcessor.FindChildTag(tag, 'value');
                if tag2 <> nil then
-                  stmnt.Text := tag2.Text;
+                  FBranchList[i].Statement.Text := tag2.Text;
             end;
             tag := TXMLProcessor.FindNextTag(tag);
          end;
@@ -618,7 +593,6 @@ procedure TCaseBlock.SaveInXML(ATag: IXMLElement);
 var
    tag, tag2: IXMLElement;
    i: integer;
-   stmnt: TStatement;
 begin
    inherited SaveInXML(ATag);
    if ATag <> nil then
@@ -629,11 +603,10 @@ begin
          tag := TXMLProcessor.FindNextTag(tag);   // skip default branch stored in first tag
          for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
          begin
-            stmnt := FBranchList[i].Statement;
-            if (tag <> nil) and (stmnt <> nil) then
+            if tag <> nil then
             begin
                tag2 := ATag.OwnerDocument.CreateElement('value');
-               TXMLProcessor.AddCDATA(tag2, stmnt.Text);
+               TXMLProcessor.AddCDATA(tag2, FBranchList[i].Statement.Text);
                tag.AppendChild(tag2);
             end;
             tag := TXMLProcessor.FindNextTag(tag);
