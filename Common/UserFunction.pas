@@ -590,13 +590,13 @@ begin
 
    chkTable := TCheckBox.Create(Self);
    chkTable.Parent := Self;
-   chkTable.SetBounds(240, 1, 20, 17);
+   chkTable.SetBounds(240, 1, 17, 17);
    chkTable.DoubleBuffered := true;
    chkTable.OnClick := OnChangeType;
 
    chkReference := TCheckBox.Create(Self);
    chkReference.Parent := Self;
-   chkReference.SetBounds(278, 1, 20, 17);
+   chkReference.SetBounds(278, 1, 17, 17);
    chkReference.DoubleBuffered := true;
    chkReference.OnClick := OnChangeType;
 
