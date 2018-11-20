@@ -400,8 +400,6 @@ end;
 procedure TCaseBlock.UpdateEditor(AEdit: TCustomEdit);
 var
    chLine: TChangeLine;
-   template: string;
-   i: integer;
    obj: TObject;
 begin
    if AEdit = FStatement then
@@ -409,16 +407,12 @@ begin
       if GInfra.CurrentLang.CaseOfFirstValueTemplate.IsEmpty then
          inherited UpdateEditor(AEdit)
       else
-      begin
-         for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
-            FBranchList[i].Statement.DoEnter;
-      end;
+         OnFStatementChange(nil);
    end
    else if (AEdit <> nil) and PerformEditorUpdate then
    begin
       obj := AEdit;
-      template := GetTemplateByControl(AEdit, obj);
-      chLine := TInfra.GetChangeLine(obj, AEdit, template);
+      chLine := TInfra.GetChangeLine(obj, AEdit, GetTemplateByControl(AEdit, obj));
       if chLine.Row <> ROW_NOT_FOUND then
       begin
          chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
