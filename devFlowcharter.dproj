@@ -3,7 +3,7 @@
         <ProjectGuid>{6C53ED06-EF79-4228-9F51-D2EC64DA6D24}</ProjectGuid>
         <MainSource>devFlowcharter.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
