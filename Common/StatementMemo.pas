@@ -42,7 +42,7 @@ type
 implementation
 
 uses
-   Vcl.Forms, ApplicationCommon, Base_Block;
+   Vcl.Forms, System.SysUtils, ApplicationCommon, Base_Block;
 
 constructor TStatementMemo.Create(AOwner: TComponent);
 begin
@@ -88,8 +88,10 @@ begin
    result := CanBeRemoved;
    if result then
    begin
-      if ANode.Index < Lines.Count then
-         Lines.Delete(ANode.Index);
+      if (ANode.Index < Lines.Count) and ANode.Text.StartsWith(Lines[ANode.Index]) then
+         Lines.Delete(ANode.Index)
+      else
+         result := false;
       if (Lines.Count = 0) and (Parent is TBlock) then
          result := TBlock(Parent).Remove(ANode);
    end;
