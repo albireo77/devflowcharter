@@ -178,7 +178,7 @@ begin
       miExpand.Enabled := tvExplorer.Selected.HasChildren;
       miCollapse.Enabled := miExpand.Enabled;
       focusable := GetFocusable(tvExplorer.Selected);
-      miRemove.Enabled := (focusable <> nil) and focusable.CanBeRemoved;
+      miRemove.Enabled := (focusable <> nil) and focusable.CanRemove;
    end;
 end;
 

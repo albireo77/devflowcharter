@@ -58,7 +58,7 @@ type
     function CanBeFocused: boolean;
     function GetFocusColor: TColor;
     function Remove(ANode: TTreeNode): boolean;
-    function CanBeRemoved: boolean;
+    function CanRemove: boolean;
     function IsBoldDesc: boolean;
     procedure SetLRMargins(ALMargin, ARMargin: integer);
   published
@@ -320,14 +320,14 @@ end;
 
 function TStatement.Remove(ANode: TTreeNode): boolean;
 begin
-   result := CanBeRemoved;
+   result := CanRemove;
    if result then
       result := TBlock(Parent).Remove(ANode);
 end;
 
-function TStatement.CanBeRemoved: boolean;
+function TStatement.CanRemove: boolean;
 begin
-   result := HasParent and TBlock(Parent).CanBeRemoved;
+   result := HasParent and TBlock(Parent).CanRemove;
 end;
 
 function TStatement.IsBoldDesc: boolean;

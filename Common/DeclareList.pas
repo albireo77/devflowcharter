@@ -96,7 +96,7 @@ type
          function CanBeFocused: boolean;
          function GetFocusColor: TColor;
          function Remove(ANode: TTreeNode): boolean;
-         function CanBeRemoved: boolean;
+         function CanRemove: boolean;
          function IsBoldDesc: boolean;
          procedure SetSplitter(ASplitter: TSplitter);
          procedure SetDefaultFocus;
@@ -1154,10 +1154,10 @@ end;
 
 function TDeclareList.Remove(ANode: TTreeNode): boolean;
 begin
-   result := CanBeRemoved;
+   result := CanRemove;
 end;
 
-function TDeclareLIst.CanBeRemoved: boolean;
+function TDeclareLIst.CanRemove: boolean;
 begin
    result := false;
 end;

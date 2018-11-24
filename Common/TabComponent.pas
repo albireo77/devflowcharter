@@ -89,7 +89,7 @@ type
          function HasFocusedComboBox: boolean;
          function GetFocusColor: TColor;
          function Remove(ANode: TTreeNode): boolean;
-         function CanBeRemoved: boolean;
+         function CanRemove: boolean;
          function IsBoldDesc: boolean;
          procedure RefreshTab;
          procedure UpdateCodeEditor;
@@ -518,7 +518,7 @@ end;
 
 function TTabComponent.Remove(ANode: TTreeNode): boolean;
 begin
-   result := CanBeRemoved;
+   result := CanRemove;
    if result then
    begin
       FParentForm.pgcTabs.ActivePage := Self;
@@ -526,7 +526,7 @@ begin
    end;
 end;
 
-function TTabComponent.CanBeRemoved: boolean;
+function TTabComponent.CanRemove: boolean;
 begin
    result := FActive;
 end;

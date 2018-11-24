@@ -86,7 +86,7 @@ type
       function CanBeFocused: boolean;
       function GetFocusColor: TColor;
       function Remove(ANode: TTreeNode): boolean;
-      function CanBeRemoved: boolean;
+      function CanRemove: boolean;
       function IsBoldDesc: boolean;
    end;
 

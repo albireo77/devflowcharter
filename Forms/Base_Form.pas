@@ -41,7 +41,7 @@ type
       function IsOverlapped: boolean;
       function GetFocusColor: TColor;
       function Remove(ANode: TTreeNode): boolean;
-      function CanBeRemoved: boolean;
+      function CanRemove: boolean;
       function IsBoldDesc: boolean;
   end;
 
@@ -125,10 +125,10 @@ end;
 
 function TBaseForm.Remove(ANode: TTreeNode): boolean;
 begin
-   result := CanBeRemoved;
+   result := CanRemove;
 end;
 
-function TBaseForm.CanBeRemoved: boolean;
+function TBaseForm.CanRemove: boolean;
 begin
    result := false;
 end;

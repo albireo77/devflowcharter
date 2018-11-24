@@ -35,7 +35,7 @@ type
         function CanBeFocused: boolean;
         function GetFocusColor: TColor;
         function Remove(ANode: TTreeNode): boolean;
-        function CanBeRemoved: boolean;
+        function CanRemove: boolean;
         function IsBoldDesc: boolean;
   end;
 
@@ -85,7 +85,7 @@ end;
 
 function TStatementMemo.Remove(ANode: TTreeNode): boolean;
 begin
-   result := CanBeRemoved;
+   result := CanRemove;
    if result then
    begin
       if (ANode.Index < Lines.Count) and ANode.Text.StartsWith(Lines[ANode.Index]) then
@@ -97,7 +97,7 @@ begin
    end;
 end;
 
-function TStatementMemo.CanBeRemoved: boolean;
+function TStatementMemo.CanRemove: boolean;
 begin
    result := HasParent;
 end;

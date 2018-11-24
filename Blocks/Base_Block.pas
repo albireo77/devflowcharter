@@ -173,7 +173,7 @@ type
          procedure UnLockDrawing;
          function GetFocusColor: TColor;
          function Remove(ANode: TTreeNode): boolean; virtual;
-         function CanBeRemoved: boolean;
+         function CanRemove: boolean;
          function IsBoldDesc: boolean; virtual;
          function GetComments(AInFront: boolean = false): IEnumerable<TComment>;
          function GetPinComments: IEnumerable<TComment>;
@@ -1924,7 +1924,7 @@ begin
    FBranchList.Add(result);
 end;
 
-function TBlock.CanBeRemoved: boolean;
+function TBlock.CanRemove: boolean;
 begin
    result := Visible;
 end;
@@ -1936,7 +1936,7 @@ end;
 
 function TBlock.Remove(ANode: TTreeNode): boolean;
 begin
-   result := CanBeRemoved;
+   result := CanRemove;
    if result then
    begin
       GClpbrd.UndoObject.Free;
@@ -1956,7 +1956,7 @@ end;
 
 function TGroupBlock.Remove(ANode: TTreeNode): boolean;
 begin
-   result := CanBeRemoved;
+   result := CanRemove;
    if result then
    begin
       result := RemoveBranch(GetBranchIndexByControl(ANode.Data));
