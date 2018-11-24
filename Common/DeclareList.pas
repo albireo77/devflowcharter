@@ -23,7 +23,8 @@ interface
 
 uses
    Vcl.Controls, OmniXML, Vcl.StdCtrls, Vcl.Grids, System.Classes, WinApi.Windows,
-   Vcl.Graphics, Vcl.Forms, Vcl.ExtCtrls, SizeEdit, CommonInterfaces, CommonTypes;
+   Vcl.Graphics, Vcl.ComCtrls, Vcl.Forms, Vcl.ExtCtrls, SizeEdit, CommonInterfaces,
+   CommonTypes;
 
 type
 
@@ -94,7 +95,7 @@ type
          function RetrieveFocus(AInfo: TFocusInfo): boolean;
          function CanBeFocused: boolean;
          function GetFocusColor: TColor;
-         function Remove(AControl: TControl): boolean;
+         function Remove(ANode: TTreeNode): boolean;
          function CanBeRemoved: boolean;
          function IsBoldDesc: boolean;
          procedure SetSplitter(ASplitter: TSplitter);
@@ -1151,7 +1152,7 @@ begin
    result := OK_COLOR;
 end;
 
-function TDeclareList.Remove(AControl: TControl): boolean;
+function TDeclareList.Remove(ANode: TTreeNode): boolean;
 begin
    result := CanBeRemoved;
 end;

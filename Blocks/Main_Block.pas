@@ -49,7 +49,7 @@ type
          procedure SetZOrder(AValue: integer);
          function GetZOrder: integer;
          function IsBoldDesc: boolean; override;
-         function Remove(AControl: TControl): boolean; override;
+         function Remove(ANode: TTreeNode): boolean; override;
          procedure DrawLabel;
          function ExportToXMLFile(const AFile: string): TErrorType; override;
          function GetExportFileName: string; override;
@@ -549,9 +549,9 @@ begin
    result := UserFunction;
 end;
 
-function TMainBlock.Remove(AControl: TControl): boolean;
+function TMainBlock.Remove(ANode: TTreeNode): boolean;
 begin
-   result := inherited Remove(AControl);
+   result := inherited Remove(ANode);
    if result and (UserFunction <> nil) then
       TUserFunction(UserFunction).Active := false;
 end;

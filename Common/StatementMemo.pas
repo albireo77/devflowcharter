@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
 
@@ -22,8 +22,8 @@ unit StatementMemo;
 interface
 
 uses
-  System.Classes, Vcl.StdCtrls, Vcl.Graphics, Vcl.Controls, CommonInterfaces, MemoEx,
-  CommonTypes;
+  System.Classes, Vcl.StdCtrls, Vcl.Graphics, Vcl.Controls, Vcl.ComCtrls, CommonInterfaces,
+  MemoEx, CommonTypes;
 
 type
 
@@ -34,7 +34,7 @@ type
         function RetrieveFocus(AInfo: TFocusInfo): boolean;
         function CanBeFocused: boolean;
         function GetFocusColor: TColor;
-        function Remove(AControl: TControl): boolean;
+        function Remove(ANode: TTreeNode): boolean;
         function CanBeRemoved: boolean;
         function IsBoldDesc: boolean;
   end;
@@ -83,18 +83,21 @@ begin
       result := OK_COLOR;
 end;
 
-function TStatementMemo.Remove(AControl: TControl): boolean;
+function TStatementMemo.Remove(ANode: TTreeNode): boolean;
 begin
    result := CanBeRemoved;
-   if result and (Parent is TBlock) then
-      result := TBlock(Parent).Remove(AControl);
+   if result then
+   begin
+      if ANode.Index < Lines.Count then
+         Lines.Delete(ANode.Index);
+      if (Lines.Count = 0) and (Parent is TBlock) then
+         result := TBlock(Parent).Remove(ANode);
+   end;
 end;
 
 function TStatementMemo.CanBeRemoved: boolean;
 begin
-   result := HasParent;
-   if result and (Parent is TBlock) then
-      result := TBlock(Parent).CanBeRemoved;
+   result := true;
 end;
 
 function TStatementMemo.IsBoldDesc: boolean;

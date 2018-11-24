@@ -22,8 +22,8 @@ unit Statement;
 interface
 
 uses
-   System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.StdCtrls, WinApi.Messages, CommonInterfaces,
-   CommonTypes, YaccLib;
+   System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.StdCtrls, WinApi.Messages, Vcl.ComCtrls,
+   CommonInterfaces, CommonTypes, YaccLib;
 
 type
 
@@ -57,7 +57,7 @@ type
     function RetrieveFocus(AInfo: TFocusInfo): boolean;
     function CanBeFocused: boolean;
     function GetFocusColor: TColor;
-    function Remove(AControl: TControl): boolean;
+    function Remove(ANode: TTreeNode): boolean;
     function CanBeRemoved: boolean;
     function IsBoldDesc: boolean;
     procedure SetLRMargins(ALMargin, ARMargin: integer);
@@ -318,11 +318,11 @@ begin
       result := OK_COLOR;
 end;
 
-function TStatement.Remove(AControl: TControl): boolean;
+function TStatement.Remove(ANode: TTreeNode): boolean;
 begin
    result := CanBeRemoved;
    if result then
-      result := TBlock(Parent).Remove(AControl);
+      result := TBlock(Parent).Remove(ANode);
 end;
 
 function TStatement.CanBeRemoved: boolean;

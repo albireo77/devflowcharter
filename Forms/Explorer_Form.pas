@@ -263,7 +263,7 @@ var
 begin
    selectedNode := tvExplorer.Selected;
    focusable := GetFocusable(selectedNode);
-   if (focusable <> nil) and focusable.Remove(selectedNode.Data) then
+   if (focusable <> nil) and focusable.Remove(selectedNode) then
    begin
       tvExplorer.Items.BeginUpdate;
       friendNode := TTreeNodeWithFriend(selectedNode).Friend;

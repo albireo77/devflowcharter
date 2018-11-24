@@ -85,7 +85,7 @@ type
       function RetrieveFocus(AInfo: TFocusInfo): boolean;
       function CanBeFocused: boolean;
       function GetFocusColor: TColor;
-      function Remove(AControl: TControl): boolean;
+      function Remove(ANode: TTreeNode): boolean;
       function CanBeRemoved: boolean;
       function IsBoldDesc: boolean;
    end;
