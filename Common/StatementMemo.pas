@@ -99,7 +99,7 @@ end;
 
 function TStatementMemo.CanBeRemoved: boolean;
 begin
-   result := true;
+   result := HasParent;
 end;
 
 function TStatementMemo.IsBoldDesc: boolean;
