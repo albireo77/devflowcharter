@@ -259,14 +259,28 @@ end;
 procedure TExplorerForm.miRemoveClick(Sender: TObject);
 var
    focusable: IFocusable;
+   friendNode, selectedNode: TTreeNode;
 begin
-   focusable := GetFocusable(tvExplorer.Selected);
-   if (focusable <> nil) and focusable.Remove(tvExplorer.Selected.Data) then
+   selectedNode := tvExplorer.Selected;
+   focusable := GetFocusable(selectedNode);
+   if (focusable <> nil) and focusable.Remove(selectedNode.Data) then
    begin
       tvExplorer.Items.BeginUpdate;
-      if TTreeNodeWithFriend(tvExplorer.Selected).Friend <> nil then
-         TTreeNodeWithFriend(tvExplorer.Selected).Friend.Delete;
-      tvExplorer.Selected.Delete;
+      friendNode := TTreeNodeWithFriend(selectedNode).Friend;
+      if friendNode <> nil then
+      begin
+         if friendNode.HasAsParent(selectedNode) then
+            selectedNode.Delete
+         else if selectedNode.HasAsParent(friendNode) then
+            friendNode.Delete
+         else
+         begin
+            friendNode.Delete;
+            selectedNode.Delete;
+         end;
+      end
+      else
+         selectedNode.Delete;
       tvExplorer.Items.EndUpdate;
    end;
 end;
