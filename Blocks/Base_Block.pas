@@ -1959,7 +1959,10 @@ begin
    result := CanRemove;
    if result then
    begin
-      result := RemoveBranch(GetBranchIndexByControl(ANode.Data));
+      if ANode <> nil then
+         result := RemoveBranch(GetBranchIndexByControl(ANode.Data))
+      else
+         result := false;
       if not result then
          result := inherited Remove(ANode);
    end;
