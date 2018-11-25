@@ -102,7 +102,7 @@ const
 begin
    FVersion := ExtractProgramVersion;
    lblInfo.Caption := Format(' This program is freeware and released under the%s                GNU General Public License.%s%s    Copyright(C) 2006-2018 The %s%s                             project', [lb, lb, lb, PROGRAM_NAME, lb]);
-   lblInfo1.Caption := Format('                   %s%sThe easiest way from flowchart to program!%s      Version: %s (win-%d-bit)', [PROGRAM_NAME, lb, lb, FVersion, winPlat]);
+   lblInfo1.Caption := Format('                   %s%sThe easiest way from flowchart to program!%s             Version: %s (x%d)', [PROGRAM_NAME, lb, lb, FVersion, winPlat]);
 end;
 
 procedure TAboutForm.imDelphiClick(Sender: TObject);
