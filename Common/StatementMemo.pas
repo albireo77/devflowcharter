@@ -88,7 +88,7 @@ begin
    result := CanRemove;
    if result then
    begin
-      if (ANode.Index < Lines.Count) and ANode.Text.StartsWith(Lines[ANode.Index]) then
+      if (ANode <> nil) and (ANode.Index < Lines.Count) and ANode.Text.StartsWith(Lines[ANode.Index]) then
          Lines.Delete(ANode.Index)
       else
          result := false;
