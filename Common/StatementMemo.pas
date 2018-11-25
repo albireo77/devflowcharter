@@ -34,7 +34,7 @@ type
         function RetrieveFocus(AInfo: TFocusInfo): boolean;
         function CanBeFocused: boolean;
         function GetFocusColor: TColor;
-        function Remove(ANode: TTreeNode): boolean;
+        function Remove(ANode: TTreeNode = nil): boolean;
         function CanRemove: boolean;
         function IsBoldDesc: boolean;
   end;
@@ -83,7 +83,7 @@ begin
       result := OK_COLOR;
 end;
 
-function TStatementMemo.Remove(ANode: TTreeNode): boolean;
+function TStatementMemo.Remove(ANode: TTreeNode = nil): boolean;
 begin
    result := CanRemove;
    if result then

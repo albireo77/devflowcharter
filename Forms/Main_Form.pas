@@ -935,7 +935,7 @@ begin
    if (comp = GClpbrd.Instance) or (GClpbrd.UndoObject = GClpbrd.Instance) then
       GClpbrd.Instance := nil;
    if comp is TBlock then
-      TBlock(comp).Remove(nil)
+      TBlock(comp).Remove
    else if comp is TComment then
    begin
       if TComment(comp).SelLength > 0 then
