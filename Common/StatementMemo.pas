@@ -22,7 +22,7 @@ unit StatementMemo;
 interface
 
 uses
-  System.Classes, Vcl.StdCtrls, Vcl.Graphics, Vcl.Controls, Vcl.ComCtrls, CommonInterfaces,
+  System.Classes, Vcl.StdCtrls, Vcl.Graphics, Vcl.Controls, CommonInterfaces,
   MemoEx, CommonTypes;
 
 type
@@ -34,7 +34,7 @@ type
         function RetrieveFocus(AInfo: TFocusInfo): boolean;
         function CanBeFocused: boolean;
         function GetFocusColor: TColor;
-        function Remove(ANode: TTreeNode = nil): boolean;
+        function Remove(ANode: TTreeNodeWithFriend = nil): boolean;
         function CanRemove: boolean;
         function IsBoldDesc: boolean;
   end;
@@ -83,13 +83,13 @@ begin
       result := OK_COLOR;
 end;
 
-function TStatementMemo.Remove(ANode: TTreeNode = nil): boolean;
+function TStatementMemo.Remove(ANode: TTreeNodeWithFriend = nil): boolean;
 begin
    result := CanRemove;
    if result then
    begin
-      if (ANode <> nil) and (ANode.Index < Lines.Count) and ANode.Text.StartsWith(Lines[ANode.Index]) then
-         Lines.Delete(ANode.Index)
+      if (ANode <> nil) and (ANode.Offset < Lines.Count) and ANode.Text.StartsWith(Lines[ANode.Offset]) then
+         Lines.Delete(ANode.Offset)
       else
          result := false;
       if (Lines.Count = 0) and (Parent is TBlock) then

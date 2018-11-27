@@ -22,7 +22,7 @@ unit Statement;
 interface
 
 uses
-   System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.StdCtrls, WinApi.Messages, Vcl.ComCtrls,
+   System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.StdCtrls, WinApi.Messages,
    CommonInterfaces, CommonTypes, YaccLib;
 
 type
@@ -57,7 +57,7 @@ type
     function RetrieveFocus(AInfo: TFocusInfo): boolean;
     function CanBeFocused: boolean;
     function GetFocusColor: TColor;
-    function Remove(ANode: TTreeNode = nil): boolean;
+    function Remove(ANode: TTreeNodeWithFriend = nil): boolean;
     function CanRemove: boolean;
     function IsBoldDesc: boolean;
     procedure SetLRMargins(ALMargin, ARMargin: integer);
@@ -318,7 +318,7 @@ begin
       result := OK_COLOR;
 end;
 
-function TStatement.Remove(ANode: TTreeNode = nil): boolean;
+function TStatement.Remove(ANode: TTreeNodeWithFriend = nil): boolean;
 begin
    result := CanRemove;
    if result then

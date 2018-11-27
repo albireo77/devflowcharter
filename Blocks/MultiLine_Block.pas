@@ -237,18 +237,17 @@ function TMultiLineBlock.GenerateTree(AParentNode: TTreeNode): TTreeNode;
 var
    errMsg, line: string;
    i: integer;
+   lineNode: TTreeNodeWithFriend;
 begin
    result := AParentNode;
    errMsg := GetErrorMsg(FStatements);
    for i := 0 to FStatements.Lines.Count-1 do
    begin
       line := FStatements.Lines[i];
-      if not line.Trim.IsEmpty then
-      begin
-         if i = FErrLine then
-            line := line + errMsg;
-         AParentNode.Owner.AddChildObject(AParentNode, line, FStatements);
-      end;
+      if i = FErrLine then
+         line := line + errMsg;
+      lineNode := TTreeNodeWithFriend(AParentNode.Owner.AddChildObject(AParentNode, line, FStatements));
+      lineNode.Offset := i;
    end;
    if not errMsg.IsEmpty then
    begin

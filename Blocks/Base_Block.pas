@@ -172,7 +172,7 @@ type
          function LockDrawing: boolean;
          procedure UnLockDrawing;
          function GetFocusColor: TColor;
-         function Remove(ANode: TTreeNode = nil): boolean; virtual;
+         function Remove(ANode: TTreeNodeWithFriend = nil): boolean; virtual;
          function CanRemove: boolean;
          function IsBoldDesc: boolean; virtual;
          function GetComments(AInFront: boolean = false): IEnumerable<TComment>;
@@ -248,7 +248,7 @@ type
          procedure OnMouseLeave(AClearRed: boolean = true); override;
          function GetBranchIndexByControl(AControl: TControl): integer;
          function RemoveBranch(AIndex: integer): boolean;
-         function Remove(ANode: TTreeNode = nil): boolean; override;
+         function Remove(ANode: TTreeNodeWithFriend = nil): boolean; override;
    end;
 
    TBranch = class(TList<TBlock>, IIdentifiable)
@@ -1934,7 +1934,7 @@ begin
    result := Self;
 end;
 
-function TBlock.Remove(ANode: TTreeNode = nil): boolean;
+function TBlock.Remove(ANode: TTreeNodeWithFriend = nil): boolean;
 begin
    result := CanRemove;
    if result then
@@ -1954,7 +1954,7 @@ begin
    end;
 end;
 
-function TGroupBlock.Remove(ANode: TTreeNode = nil): boolean;
+function TGroupBlock.Remove(ANode: TTreeNodeWithFriend = nil): boolean;
 begin
    result := CanRemove;
    if result then

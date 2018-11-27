@@ -24,8 +24,8 @@ unit Base_Form;
 interface
 
 uses
-   Vcl.Forms, System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.ComCtrls, OmniXML,
-   BaseEnumerator, CommonTypes, CommonInterfaces;
+   Vcl.Forms, System.Classes, Vcl.Graphics, Vcl.Controls, OmniXML, BaseEnumerator,
+   CommonTypes, CommonInterfaces;
 
 type
 
@@ -40,7 +40,7 @@ type
       function CanBeFocused: boolean;
       function IsOverlapped: boolean;
       function GetFocusColor: TColor;
-      function Remove(ANode: TTreeNode = nil): boolean;
+      function Remove(ANode: TTreeNodeWithFriend = nil): boolean;
       function CanRemove: boolean;
       function IsBoldDesc: boolean;
   end;
@@ -123,7 +123,7 @@ begin
    result := OK_COLOR;
 end;
 
-function TBaseForm.Remove(ANode: TTreeNode = nil): boolean;
+function TBaseForm.Remove(ANode: TTreeNodeWithFriend = nil): boolean;
 begin
    result := CanRemove;
 end;

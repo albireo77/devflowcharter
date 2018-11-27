@@ -118,6 +118,7 @@ type
    TTreeNodeWithFriend = class(TTreeNode)
    public
       Friend: TTreeNodeWithFriend;
+      Offset: integer;
    end;
 
 implementation
