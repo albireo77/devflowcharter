@@ -75,6 +75,7 @@ object ExplorerForm: TExplorerForm
     OnChange = tvExplorerChange
     OnCreateNodeClass = tvExplorerCreateNodeClass
     OnCustomDrawItem = tvExplorerCustomDrawItem
+    OnDeletion = tvExplorerDeletion
   end
   object chkAutoNav: TCheckBox
     Tag = 8

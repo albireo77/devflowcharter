@@ -59,6 +59,7 @@ type
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure tvExplorerCreateNodeClass(Sender: TCustomTreeView;
       var NodeClass: TTreeNodeClass);
+    procedure tvExplorerDeletion(Sender: TObject; Node: TTreeNode);
   private
     { Private declarations }
     FErrWarnCount: TErrWarnCount;
@@ -256,6 +257,11 @@ begin
    DefaultDraw := true;
 end;
 
+procedure TExplorerForm.tvExplorerDeletion(Sender: TObject; Node: TTreeNode);
+begin
+   TInfra.DecrementNodeSiblingOffsets(Node);
+end;
+
 procedure TExplorerForm.miRemoveClick(Sender: TObject);
 var
    focusable: IFocusable;
@@ -275,14 +281,12 @@ begin
             toDelete := friendNode
          else
          begin
-            TInfra.DecrementNodeSiblingOffsets(friendNode);
             friendNode.Delete;
             toDelete := selectedNode;
          end;
       end
       else
          toDelete := selectedNode;
-      TInfra.DecrementNodeSiblingOffsets(toDelete);
       toDelete.Delete;
       tvExplorer.Items.EndUpdate;
    end;

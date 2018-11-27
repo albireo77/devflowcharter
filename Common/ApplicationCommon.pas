@@ -63,7 +63,7 @@ type
          class procedure OnKeyDownSelectAll(Sender: TObject; var Key: Word; Shift: TShiftState);
          class procedure InsertLinesIntoList(ADestList, ASourceList: TStringList; AFromLine: integer);
          class procedure ExtractPipedValues(var ASource: string; var ADest: string);
-         class procedure DecrementNodeSiblingOffsets(ANode: TTreeNodeWithFriend);
+         class procedure DecrementNodeSiblingOffsets(ANode: TTreeNode);
          class function GetScrolledPoint(AMemo: TCustomMemo): TPoint;
          class function CreateDOSProcess(const ACommand: string; ADir: string = ''): boolean;
          class function ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
@@ -943,16 +943,19 @@ begin
    result := val.ToString;
 end;
 
-class procedure TInfra.DecrementNodeSiblingOffsets(ANode: TTreeNodeWithFriend);
+class procedure TInfra.DecrementNodeSiblingOffsets(ANode: TTreeNode);
 var
    i: integer;
    node: TTreeNodeWithFriend;
 begin
-   for i := ANode.Index+1 to ANode.Parent.Count-1 do
+   if ANode.Parent <> nil then
    begin
-      node := TTreeNodeWithFriend(ANode.Parent.Item[i]);
-      if (node.Data <> nil) and (node.Data = ANode.Data) and (node.Offset > 0) then
-         node.Offset := node.Offset - 1;
+      for i := ANode.Index+1 to ANode.Parent.Count-1 do
+      begin
+         node := TTreeNodeWithFriend(ANode.Parent.Item[i]);
+         if (node.Data <> nil) and (node.Data = ANode.Data) and (node.Offset > 0) then
+            node.Offset := node.Offset - 1;
+      end;
    end;
 end;
 
