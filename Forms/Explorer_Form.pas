@@ -64,7 +64,7 @@ type
     { Private declarations }
     FErrWarnCount: TErrWarnCount;
     function GetFocusable(ANode: TTreeNode): IFocusable;
-
+    procedure ClearTreeViewItems;
   public
     { Public declarations }
     procedure ExportSettingsToXMLTag(ATag: IXMLElement); override;
@@ -92,10 +92,10 @@ begin
           lblErrors.Font.Color := OK_COLOR;
        lblErrors.Caption := i18Manager.GetFormattedString('lblErrors', [FErrWarnCount.ErrorCount]);
        lblWarnings.Caption := i18Manager.GetFormattedString('lblWarnings', [FErrWarnCount.WarningCount]);
+       ClearTreeViewItems;
        with tvExplorer do
        begin
           Items.BeginUpdate;
-          Items.Clear;
           Selected := Items.AddChild(nil, i18Manager.GetFormattedString('RootNodeText', [GProject.Name]));
           GProject.GenerateTree(Selected);
           Items.EndUpdate;
@@ -109,8 +109,15 @@ begin
    Height := 574;
    FErrWarnCount.ErrorCount := 0;
    FErrWarnCount.WarningCount := 0;
-   tvExplorer.Items.Clear;
+   ClearTreeViewItems;
    inherited ResetForm;
+end;
+
+procedure TExplorerForm.ClearTreeViewItems;
+begin
+   tvExplorer.OnDeletion := nil;
+   tvExplorer.Items.Clear;
+   tvExplorer.OnDeletion := tvExplorerDeletion;
 end;
 
 function TExplorerForm.GetFocusable(ANode: TTreeNode): IFocusable;
