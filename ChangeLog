@@ -1,17 +1,20 @@
+7.1 [29.11.2018]
+- Explorer: fix not removing tree nodes for multi line blocks
+
 7.0 [25.11.2018]
 - compiled with Delphi 10.3
-- add possibility to save/load settings from ini file (check devFlowcharter.bat script)
+- add possibility to save/load settings and history of opened files to/from ini file (check devFlowcharter.bat script)
 - add possibility to set alternate directory to load language definition files (check devFlowcharter.bat script)
 - Settings: add hint to language dropdown showing location of loaded language definition file
-- translation: add possibility to translate hint of menu item
-- Explorer: fix various issues when removing items from project tree
-- Editor: fix selecting code block for selecting flowchart block (e.g. in Python)
+- translation: add possibility to translate hint of menu items
+- Explorer: fix various issues when removing nodes from project tree
+- Editor: fix selecting code block for selecting flowchart block in Python
 - Editor: fix not setting/updating current line in various situations
-- language definition file: add CaseOfFirstValueTemplate entry used in turning switch/case statement into sequence of if..else if statements
+- language definition file: add CaseOfFirstValueTemplate element used in turning switch/case statement into sequence of if..else if statements
 
 IMPORTANT NOTES:
 1. Windows registry key containing devF settings was changed from HKEY_CURRENT_USER\Software\devFlowcharter to HKEY_CURRENT_USER\Software\devFlowcharter\Settings
-2. Windows registry key containing opened files history was changed from HKEY_CURRENT_USER\Software\devFlowcharter to HKEY_CURRENT_USER\Software\devFlowcharter\History
+2. Windows registry key containing history of opened files was changed from HKEY_CURRENT_USER\Software\devFlowcharter to HKEY_CURRENT_USER\Software\devFlowcharter\History;
    Windows registry key names for opened files history were changed from History0..9 to 0..9
 
 6.9 [10.09.2018]
