@@ -561,42 +561,30 @@ var
    form: TForm;
 begin
    form := TInfra.GetDeclarationsForm;
+   FGlobalVars.Free;
+   FGlobalVars := nil;
+   FGlobalConsts.Free;
+   FGlobalConsts := nil;
    if GInfra.CurrentLang.EnabledVars then
-   begin
-      if FGlobalVars = nil then
-         FGlobalVars := TVarDeclareList.Create(form, 2, 1, DEF_VARLIST_WIDTH, 6, 5, DEF_VARLIST_WIDTH-10);
-   end
-   else
-   begin
-      FGlobalVars.Free;
-      FGlobalVars := nil;
-   end;
+      FGlobalVars := TVarDeclareList.Create(form, 2, 1, DEF_VARLIST_WIDTH, 6, 5, DEF_VARLIST_WIDTH-10);
    if GInfra.CurrentLang.EnabledConsts then
    begin
-      if FGlobalConsts = nil then
+      splitter := nil;
+      if FGlobalVars <> nil then
       begin
-         splitter := nil;
-         if FGlobalVars <> nil then
-         begin
-            FGlobalVars.Align := alLeft;
-            x := FGlobalVars.BoundsRect.Right + 5;
-            splitter := TSplitter.Create(form);
-            splitter.Parent := form;
-            splitter.Left := x - 4;
-            splitter.Align := FGlobalVars.Align;
-            FGlobalVars.SetSplitter(splitter);
-         end
-         else
-            x := 2;
-         FGlobalConsts := TConstDeclareList.Create(form, x, 1, DEF_CONSTLIST_WIDTH-5, 6, 3, DEF_CONSTLIST_WIDTH-15);
-         if splitter <> nil then
-            FGlobalConsts.Align := alClient;
-      end;
-   end
-   else
-   begin
-      FGlobalConsts.Free;
-      FGlobalConsts := nil;
+         FGlobalVars.Align := alLeft;
+         x := FGlobalVars.BoundsRect.Right + 5;
+         splitter := TSplitter.Create(form);
+         splitter.Parent := form;
+         splitter.Left := x - 4;
+         splitter.Align := FGlobalVars.Align;
+         FGlobalVars.SetSplitter(splitter);
+      end
+      else
+         x := 2;
+      FGlobalConsts := TConstDeclareList.Create(form, x, 1, DEF_CONSTLIST_WIDTH-5, 6, 3, DEF_CONSTLIST_WIDTH-15);
+      if splitter <> nil then
+         FGlobalConsts.Align := alClient;
    end;
    if FGlobalVars <> nil then
    begin
@@ -747,14 +735,11 @@ begin
    if FGlobalVars <> nil then
       TInfra.PopulateDataTypeCombo(FGlobalVars.cbType);
 
-   if dataType <> nil then
+   PopulateDataTypes;
+   for dataType in GetUserDataTypes do
    begin
-      PopulateDataTypes;
-      for dataType in GetUserDataTypes do
-      begin
-         dataType.RefreshSizeEdits;
-         dataType.RefreshTab;
-      end;
+      dataType.RefreshSizeEdits;
+      dataType.RefreshTab;
    end;
 
 end;
