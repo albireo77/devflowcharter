@@ -301,7 +301,8 @@ begin
    NativeDataTypes := nil;
    NativeFunctions := nil;
    Parser.Free;
-   SaveCompilerData;
+   if not FName.Trim.IsEmpty then
+      SaveCompilerData;
 {$IFDEF USE_CODEFOLDING}
    FoldRegions := nil;
 {$ENDIF}
@@ -981,26 +982,20 @@ procedure TLangDefinition.LoadCompilerData;
 var
    sFile: TCustomIniFile;
 begin
-   if not FName.Trim.IsEmpty then
-   begin
-      sFile := GSettings.SettingsFile;
-      CompilerCommand := sFile.ReadString(SETTINGS_SECTION, FCompilerKey, '');
-      CompilerCommandNoMain := sFile.ReadString(SETTINGS_SECTION, FCompilerNoMainKey, '');
-      CompilerFileEncoding := sFile.ReadString(SETTINGS_SECTION, FCompilerFileEncodingKey, '');
-   end;
+   sFile := GSettings.SettingsFile;
+   CompilerCommand := sFile.ReadString(SETTINGS_SECTION, FCompilerKey, '');
+   CompilerCommandNoMain := sFile.ReadString(SETTINGS_SECTION, FCompilerNoMainKey, '');
+   CompilerFileEncoding := sFile.ReadString(SETTINGS_SECTION, FCompilerFileEncodingKey, '');
 end;
 
 procedure TLangDefinition.SaveCompilerData;
 var
    sFile: TCustomIniFile;
 begin
-   if not FName.Trim.IsEmpty then
-   begin
-      sFile := GSettings.SettingsFile;
-      sFile.WriteString(SETTINGS_SECTION, FCompilerKey, CompilerCommand);
-      sFile.WriteString(SETTINGS_SECTION, FCompilerNoMainKey, CompilerCommandNoMain);
-      sFile.WriteString(SETTINGS_SECTION, FCompilerFileEncodingKey, CompilerFileEncoding);
-   end;
+   sFile := GSettings.SettingsFile;
+   sFile.WriteString(SETTINGS_SECTION, FCompilerKey, CompilerCommand);
+   sFile.WriteString(SETTINGS_SECTION, FCompilerNoMainKey, CompilerCommandNoMain);
+   sFile.WriteString(SETTINGS_SECTION, FCompilerFileEncodingKey, CompilerFileEncoding);
 end;
 
 function TLangDefinition.GetTemplate(AClass: TClass): string;
