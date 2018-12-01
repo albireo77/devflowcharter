@@ -1,3 +1,6 @@
+7.2 [01.12.2018]
+- fix not populated dropdown boxes for for..do block when language was changed upon opening project
+
 7.1 [29.11.2018]
 - Explorer: fix not removing tree nodes for multi line blocks
 
