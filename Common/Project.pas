@@ -51,7 +51,7 @@ type
       FChanged: boolean;
       class var FInstance: TProject;
       constructor Create;
-      procedure SetGlobals;
+      procedure SetGlobalDeclarations(AParent: TWinControl);
       function GetComponents<T: class>(AComparer: IComparer<T> = nil): IEnumerable<T>;
       function GetComponentByName(AClass: TClass; const AName: string): TComponent;
       function GetIWinControlComponent(AHandle: THandle): IWinControl;
@@ -101,7 +101,7 @@ type
       function GetLibraryList: TStringList;
       function FindObject(AId: integer): TObject;
       procedure RefreshSizeEdits;
-      procedure PopulateDataTypes;
+      procedure PopulateDataTypeSets;
       procedure UpdateZOrder(AParent: TWinControl);
       function Register(AObject: TObject; AId: integer = ID_INVALID): integer;
       procedure UnRegister(AObject: TObject);
@@ -134,6 +134,7 @@ begin
    FObjectIds := TStringList.Create;
    FComponentList := TComponentList.Create;
    FLibSectionOffset := -1;
+   TInfra.GetMainForm.SetProjectMenu(true);
 end;
 
 destructor TProject.Destroy;
@@ -163,8 +164,8 @@ begin
    if FInstance = nil then
    begin
       FInstance := TProject.Create;
-      FInstance.SetGlobals;
-      FInstance.PopulateDataTypes;
+      FInstance.SetGlobalDeclarations(TInfra.GetDeclarationsForm);
+      FInstance.PopulateDataTypeSets;
    end;
    result := FInstance;
 end;
@@ -218,7 +219,7 @@ begin
    result := Name;
 end;
 
-procedure TProject.PopulateDataTypes;
+procedure TProject.PopulateDataTypeSets;
 var
    userType: TUserDataType;
    i: integer;
@@ -530,7 +531,8 @@ begin
       TInfra.GetEditorForm.ReloadFoldRegions;
 {$ENDIF}
       TInfra.GetEditorForm.SetFormAttributes;
-      SetGlobals;
+      SetGlobalDeclarations(TInfra.GetDeclarationsForm);
+      TInfra.GetMainForm.SetProjectMenu(true);
    end;
 
    if FGlobalConsts <> nil then
@@ -554,19 +556,17 @@ begin
    end;
 end;
 
-procedure TProject.SetGlobals;
+procedure TProject.SetGlobalDeclarations(AParent: TWinControl);
 var
    x: integer;
    splitter: TSplitter;
-   form: TForm;
 begin
-   form := TInfra.GetDeclarationsForm;
    FGlobalVars.Free;
    FGlobalVars := nil;
    FGlobalConsts.Free;
    FGlobalConsts := nil;
    if GInfra.CurrentLang.EnabledVars then
-      FGlobalVars := TVarDeclareList.Create(form, 2, 1, DEF_VARLIST_WIDTH, 6, 5, DEF_VARLIST_WIDTH-10);
+      FGlobalVars := TVarDeclareList.Create(AParent, 2, 1, DEF_VARLIST_WIDTH, 6, 5, DEF_VARLIST_WIDTH-10);
    if GInfra.CurrentLang.EnabledConsts then
    begin
       splitter := nil;
@@ -574,15 +574,15 @@ begin
       begin
          FGlobalVars.Align := alLeft;
          x := FGlobalVars.BoundsRect.Right + 5;
-         splitter := TSplitter.Create(form);
-         splitter.Parent := form;
+         splitter := TSplitter.Create(AParent);
+         splitter.Parent := AParent;
          splitter.Left := x - 4;
          splitter.Align := FGlobalVars.Align;
          FGlobalVars.SetSplitter(splitter);
       end
       else
          x := 2;
-      FGlobalConsts := TConstDeclareList.Create(form, x, 1, DEF_CONSTLIST_WIDTH-5, 6, 3, DEF_CONSTLIST_WIDTH-15);
+      FGlobalConsts := TConstDeclareList.Create(AParent, x, 1, DEF_CONSTLIST_WIDTH-5, 6, 3, DEF_CONSTLIST_WIDTH-15);
       if splitter <> nil then
          FGlobalConsts.Align := alClient;
    end;
@@ -591,7 +591,7 @@ begin
       FGlobalVars.Caption := i18Manager.GetString(GInfra.CurrentLang.GlobalVarsLabelKey);
       FGlobalVars.SetExternalCol(4);
       FGlobalVars.AssociatedList := FGlobalConsts;
-      form.Width := FGlobalVars.BoundsRect.Right + 16;
+      AParent.Width := FGlobalVars.BoundsRect.Right + 16;
       if FGlobalConsts = nil then
          FGlobalVars.Align := alClient;
    end;
@@ -600,9 +600,8 @@ begin
       FGlobalConsts.Caption := i18Manager.GetString(GInfra.CurrentLang.GlobalConstsLabelKey);
       FGlobalConsts.SetExternalCol(2);
       FGlobalConsts.AssociatedList := FGlobalVars;
-      form.Width := FGlobalConsts.BoundsRect.Right + 16;
+      AParent.Width := FGlobalConsts.BoundsRect.Right + 16;
    end;
-   TInfra.GetMainForm.SetMenu(true);
 end;
 
 function TProject.GetSelectList(ATag: IXMLElement; const ALabel: string; const ATagName: string; const ATagName2: string = ''): TStringList;
@@ -735,7 +734,7 @@ begin
    if FGlobalVars <> nil then
       TInfra.PopulateDataTypeCombo(FGlobalVars.cbType);
 
-   PopulateDataTypes;
+   PopulateDataTypeSets;
    for dataType in GetUserDataTypes do
    begin
       dataType.RefreshSizeEdits;

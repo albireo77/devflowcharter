@@ -182,7 +182,7 @@ type
     procedure miUnfoldAllClick(Sender: TObject);
     procedure Localize(AList: TStringList); override;
     procedure ResetForm; override;
-    procedure SetMenu(AEnabled: boolean);
+    procedure SetProjectMenu(AEnabled: boolean);
     procedure miPrint2Click(Sender: TObject);
     procedure miProjectClick(Sender: TObject);
     procedure miAddMainClick(Sender: TObject);
@@ -288,13 +288,13 @@ begin
    miUndoRemove.Enabled := false;
    Caption := PROGRAM_NAME;
    FClockPos := Low(TClockPos);
-   SetMenu(false);
+   SetProjectMenu(false);
    DestroyFuncMenu;
    while pgcPages.PageCount > 0 do
       pgcPages.Pages[0].Free;
 end;
 
-procedure TMainForm.SetMenu(AEnabled: boolean);
+procedure TMainForm.SetProjectMenu(AEnabled: boolean);
 var
    clang: TLangDefinition;
    mMenu: TMainMenu;
@@ -328,7 +328,7 @@ end;
 
 procedure TMainForm.FormShow(Sender: TObject);
 begin
-   SetMenu(false);
+   SetProjectMenu(false);
 end;
 
 procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);

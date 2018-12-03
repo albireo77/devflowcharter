@@ -83,7 +83,7 @@ begin
    begin
       if GProject.GlobalVars <> nil then
          TInfra.PopulateDataTypeCombo(GProject.GlobalVars.cbType);
-      GProject.PopulateDataTypes;
+      GProject.PopulateDataTypeSets;
       GProject.PopulateDataTypeCombos;
    end;
    TInfra.GetFunctionsForm.RefreshTabs;
