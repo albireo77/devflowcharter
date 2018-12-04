@@ -26,7 +26,7 @@ interface
 uses
    WinApi.Windows, Vcl.Graphics, System.Classes, Vcl.ComCtrls, Vcl.Controls, System.Contnrs,
    Generics.Defaults, UserFunction, OmniXML, UserDataType, Main_Block, DeclareList,
-   BaseEnumerator, CommonTypes, CommonInterfaces, BlockTabSheet, Comment;
+   BaseEnumerator, CommonTypes, CommonInterfaces, BlockTabSheet, Comment, Declarations_Form;
 
 type
 
@@ -51,7 +51,7 @@ type
       FChanged: boolean;
       class var FInstance: TProject;
       constructor Create;
-      procedure SetGlobalDeclarations(AParent: TWinControl);
+      procedure SetGlobalDeclarations(AForm: TDeclarationsForm);
       function GetComponents<T: class>(AComparer: IComparer<T> = nil): IEnumerable<T>;
       function GetComponentByName(AClass: TClass; const AName: string): TComponent;
       function GetIWinControlComponent(AHandle: THandle): IWinControl;
@@ -556,7 +556,7 @@ begin
    end;
 end;
 
-procedure TProject.SetGlobalDeclarations(AParent: TWinControl);
+procedure TProject.SetGlobalDeclarations(AForm: TDeclarationsForm);
 var
    x: integer;
    splitter: TSplitter;
@@ -566,7 +566,7 @@ begin
    FGlobalConsts.Free;
    FGlobalConsts := nil;
    if GInfra.CurrentLang.EnabledVars then
-      FGlobalVars := TVarDeclareList.Create(AParent, 2, 1, DEF_VARLIST_WIDTH, 6, 5, DEF_VARLIST_WIDTH-10);
+      FGlobalVars := TVarDeclareList.Create(AForm, 2, 1, DEF_VARLIST_WIDTH, 6, 5, DEF_VARLIST_WIDTH-10);
    if GInfra.CurrentLang.EnabledConsts then
    begin
       splitter := nil;
@@ -574,15 +574,15 @@ begin
       begin
          FGlobalVars.Align := alLeft;
          x := FGlobalVars.BoundsRect.Right + 5;
-         splitter := TSplitter.Create(AParent);
-         splitter.Parent := AParent;
+         splitter := TSplitter.Create(AForm);
+         splitter.Parent := AForm;
          splitter.Left := x - 4;
          splitter.Align := FGlobalVars.Align;
          FGlobalVars.SetSplitter(splitter);
       end
       else
          x := 2;
-      FGlobalConsts := TConstDeclareList.Create(AParent, x, 1, DEF_CONSTLIST_WIDTH-5, 6, 3, DEF_CONSTLIST_WIDTH-15);
+      FGlobalConsts := TConstDeclareList.Create(AForm, x, 1, DEF_CONSTLIST_WIDTH-5, 6, 3, DEF_CONSTLIST_WIDTH-15);
       if splitter <> nil then
          FGlobalConsts.Align := alClient;
    end;
@@ -591,7 +591,7 @@ begin
       FGlobalVars.Caption := i18Manager.GetString(GInfra.CurrentLang.GlobalVarsLabelKey);
       FGlobalVars.SetExternalCol(4);
       FGlobalVars.AssociatedList := FGlobalConsts;
-      AParent.Width := FGlobalVars.BoundsRect.Right + 16;
+      AForm.Width := FGlobalVars.BoundsRect.Right + 16;
       if FGlobalConsts = nil then
          FGlobalVars.Align := alClient;
    end;
@@ -600,7 +600,7 @@ begin
       FGlobalConsts.Caption := i18Manager.GetString(GInfra.CurrentLang.GlobalConstsLabelKey);
       FGlobalConsts.SetExternalCol(2);
       FGlobalConsts.AssociatedList := FGlobalVars;
-      AParent.Width := FGlobalConsts.BoundsRect.Right + 16;
+      AForm.Width := FGlobalConsts.BoundsRect.Right + 16;
    end;
 end;
 
