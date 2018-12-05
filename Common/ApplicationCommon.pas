@@ -119,9 +119,10 @@ type
 
 const   // Global constants
 
-        PROGRAM_NAME      = 'devFlowcharter';
+        PROGRAM_NAME        = 'devFlowcharter';
 
-        MAIN_FORM_CAPTION = PROGRAM_NAME + ' - ';
+        NEW_PROJECT_CAPTION = PROGRAM_NAME;
+        PROJECT_CAPTION     = NEW_PROJECT_CAPTION + ' - ';
 
         // hint duration in milliseconds
         HINT_PAUSE       = 5000;

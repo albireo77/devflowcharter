@@ -416,11 +416,8 @@ begin
 end;
 
 function TProject.IsNew: boolean;
-var
-   mcap: string;
 begin
-   mcap := TInfra.GetMainForm.Caption;
-   result := (PROGRAM_NAME = mcap) or (PROGRAM_NAME + '*' = mcap);
+   result := MatchText(TInfra.GetMainForm.Caption, [NEW_PROJECT_CAPTION, NEW_PROJECT_CAPTION + '*']);
 end;
 
 function TProject.ExportToXMLFile(const AFile: string): TErrorType;
@@ -704,7 +701,6 @@ var
    selectList: TStringList;
 begin
    result := errNone;
-   dataType := nil;
    selectList := nil;
    if GInfra.CurrentLang.EnabledUserDataTypes then
    try

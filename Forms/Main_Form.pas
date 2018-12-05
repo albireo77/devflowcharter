@@ -450,7 +450,7 @@ begin
        miSaveAs.Click
     else
     begin
-       filePath := ReplaceText(Caption, MAIN_FORM_CAPTION, '');
+       filePath := ReplaceText(Caption, PROJECT_CAPTION, '');
        filePath := ReplaceText(filePath, '*', '');
        GProject.ExportToXMLFile(filePath);
     end;
@@ -1090,7 +1090,7 @@ end;
 
 procedure TMainForm.AcceptFile(const AFilePath: string);
 begin
-   Caption := MAIN_FORM_CAPTION + AFilePath;
+   Caption := PROJECT_CAPTION + AFilePath;
    GProject.Name := ChangeFileExt(ExtractFilename(AFilePath), '');
    FHistoryMenu.AddFile(AFilePath);
 end;
