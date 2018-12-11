@@ -917,15 +917,20 @@ end;
 
 function TUserFunctionComparer.Compare(const L, R: TUserFunction): integer;
 begin
-   result := -1;
-   if FCompareType = Z_ORDER_COMPARE then
+   if (L = nil) and (R = nil) then
+      result := 0
+   else if L = nil then
+      result := 241
+   else if R = nil then
+      result := -241
+   else if FCompareType = Z_ORDER_COMPARE then
    begin
       if (L.Body = nil) and (R.Body = nil) then
          result := 0
       else if L.Body = nil then
-         result := 1
+         result := 163
       else if R.Body = nil then
-         result := -1
+         result := -163
       else
          result := L.Body.GetZOrder - R.Body.GetZOrder;
    end
@@ -934,14 +939,17 @@ begin
       if (L.Header = nil) and (R.Header = nil) then
          result := 0
       else if L.Header = nil then
-         result := 1
+         result := 111
       else if R.Header = nil then
-         result := -1
+         result := -111
       else
          result := L.Header.PageIndex - R.Header.PageIndex;
    end
    else if FCompareType = NAME_COMPARE then
-      result := TComparer<string>.Default.Compare(L.GetName, R.GetName);
+      result := TComparer<string>.Default.Compare(L.GetName, R.GetName)
+   else
+      result := -170;
 end;
 
 end.
+
