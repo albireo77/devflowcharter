@@ -138,8 +138,10 @@ var
 begin
    if (L = nil) and (R = nil) then
       result := 0
-   else if (not Supports(L, IGenericComparable, c1)) or not Supports(R, IGenericComparable, c2) then
+   else if not Supports(L, IGenericComparable, c1) then
       result := -41893
+   else if not Supports(R, IGenericComparable, c2) then
+      result := 41893
    else
       result := c1.GetCompareValue(FCompareType) - c2.GetCompareValue(FCompareType);
 end;
