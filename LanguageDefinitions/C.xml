@@ -569,7 +569,7 @@ Available placeholders:
 Element RecordLabel
 Used to change default label displayed for record data type; it's not translated
 -->
-<RecordLabel>Structure</RecordLabel>
+<RecordLabel>struct</RecordLabel>
 
 
 </Language>
