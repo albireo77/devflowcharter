@@ -111,10 +111,16 @@ begin
 end;
 
 procedure TExplorerForm.ClearTreeViewItems;
+var
+   deletionEvent:  TTVExpandedEvent;
 begin
+   deletionEvent := tvExplorer.OnDeletion;
    tvExplorer.OnDeletion := nil;
-   tvExplorer.Items.Clear;
-   tvExplorer.OnDeletion := tvExplorerDeletion;
+   try
+      tvExplorer.Items.Clear;
+   finally
+      tvExplorer.OnDeletion := deletionEvent;
+   end;
 end;
 
 function TExplorerForm.GetFocusable(ANode: TTreeNode): IFocusable;
