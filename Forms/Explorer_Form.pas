@@ -78,7 +78,7 @@ implementation
 {$R *.dfm}
 
 uses
-   Vcl.Graphics, Vcl.Forms, System.SysUtils, System.UITypes, ApplicationCommon,
+   Vcl.Graphics, Vcl.Forms, System.SysUtils, System.UITypes, System.Math, ApplicationCommon,
    Base_Block, XMLProcessor;
 
 procedure TExplorerForm.FormShow(Sender: TObject);
@@ -86,10 +86,7 @@ begin
     if GProject <> nil then
     begin
        FErrWarnCount := GProject.CountErrWarn;
-       if FErrWarnCount.ErrorCount > 0 then
-          lblErrors.Font.Color := NOK_COLOR
-       else
-          lblErrors.Font.Color := OK_COLOR;
+       lblErrors.Font.Color := IfThen(FErrWarnCount.ErrorCount = 0, OK_COLOR, NOK_COLOR);
        lblErrors.Caption := i18Manager.GetFormattedString('lblErrors', [FErrWarnCount.ErrorCount]);
        lblWarnings.Caption := i18Manager.GetFormattedString('lblWarnings', [FErrWarnCount.WarningCount]);
        ClearTreeViewItems;
