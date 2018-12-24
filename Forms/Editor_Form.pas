@@ -1412,6 +1412,7 @@ var
    i: integer;
    tag1: IXMLElement;
    mark: TSynEditMark;
+   showEvent: TNotifyEvent;
 {$IFDEF USE_CODEFOLDING}
    foldRange: TSynEditFoldRange;
    foldLines: TStringList;
@@ -1428,9 +1429,13 @@ begin
       SetBounds(rect.Left, rect.Top, rect.Right, rect.Bottom);
       if TXMLProcessor.GetBoolFromAttr(ATag, 'src_win_min') then
          WindowState := wsMinimized;
+      showEvent := OnShow;
       OnShow := nil;
-      Show;
-      OnShow := FormShow;
+      try
+         Show;
+      finally
+         OnShow := showEvent;
+      end;
       ATag.OwnerDocument.PreserveWhiteSpace := true;
       tag1 := TXMLProcessor.FindChildTag(ATag, 'text_line');
       memCodeEditor.Lines.BeginUpdate;
