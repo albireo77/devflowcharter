@@ -196,8 +196,11 @@ end;
 procedure TExplorerForm.miRefreshClick(Sender: TObject);
 begin
    tvExplorer.Enabled := false;
-   FormShow(Self);
-   tvExplorer.Enabled := true;
+   try
+      FormShow(Self);
+   finally
+      tvExplorer.Enabled := true;
+   end;
 end;
 
 procedure TExplorerForm.miNextErrorClick(Sender: TObject);
