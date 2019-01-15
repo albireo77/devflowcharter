@@ -57,6 +57,7 @@ type
       procedure OnChangeName(Sender: TObject); override;
       procedure OnChangeDesc(Sender: TObject);
       procedure OnClickInclDescFlow(Sender: TObject);
+      procedure OnClickGenDesc(Sender: TObject);
       procedure OnClickInclDescCode(Sender: TObject);
       procedure OnClickBodyVisible(Sender: TObject);
       procedure OnChangeType(Sender: TObject);
@@ -87,6 +88,7 @@ type
       chkConstructor: TCheckBox;
       splDesc,
       splParams: TSplitter;
+      btnGenDesc: TButton;
       property UserFunction: TUserFunction read FUserFunction;
       property LocalVars: TVarDeclareList read FLocalVars;
       property ParameterCount: integer read GetElementCount;
@@ -371,10 +373,21 @@ begin
    chkInclDescFlow.Font.Style := [];
    chkInclDescFlow.Font.Color := clWindowText;
    chkInclDescFlow.Caption := i18Manager.GetString('chkInclDescFlow');
-   chkInclDescFlow.SetBounds(180, 55, TInfra.GetAutoWidth(chkInclDescFlow), 17);
+   chkInclDescFlow.SetBounds(chkInclDescCode.BoundsRect.Right+20, 55, TInfra.GetAutoWidth(chkInclDescFlow), 17);
    chkInclDescFlow.DoubleBuffered := true;
    chkInclDescFlow.Anchors := [akBottom, akLeft];
    chkInclDescFlow.OnClick := OnClickInclDescFlow;
+
+   btnGenDesc := TButton.Create(gbDesc);
+   btnGenDesc.Parent := gbDesc;
+   btnGenDesc.ParentFont := false;
+   btnGenDesc.Font.Style := [];
+   btnGenDesc.DoubleBuffered := true;
+   btnGenDesc.Caption := i18Manager.GetString('btnGenDesc');
+   btnGenDesc.SetBounds(304, 54, 80, 20);
+   btnGenDesc.Anchors := [akBottom];
+   btnGenDesc.OnClick := OnClickGenDesc;
+   btnGenDesc.Anchors := [akLeft, akRight, akBottom];
 
    gbBody := TGroupBox.Create(Self);
    gbBody.Parent := Self;
@@ -778,6 +791,29 @@ begin
       NavigatorForm.Invalidate;
    end;
    GProject.SetChanged;
+end;
+
+procedure TUserFunctionHeader.OnClickGenDesc(Sender: TObject);
+var
+   lang: TLangDefinition;
+   description: string;
+begin
+   lang := nil;
+   if Assigned(GInfra.CurrentLang.GetUserFuncHeaderDesc) then
+      lang := GInfra.CurrentLang
+   else if Assigned(GInfra.DummyLang.GetUserFuncHeaderDesc) then
+      lang := GInfra.DummyLang;
+   if lang <> nil then
+   begin
+      description := lang.GetUserFuncHeaderDesc(Self);
+      if EndsText(sLineBreak, description) then
+         SetLength(description, Length(description) - Length(sLineBreak));
+      if not description.IsEmpty then
+      begin
+         memDesc.Text := description;
+         GProject.SetChanged;
+      end;
+   end;
 end;
 
 procedure TUserFunctionHeader.OnClickBodyVisible(Sender: TObject);

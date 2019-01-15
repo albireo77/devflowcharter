@@ -693,6 +693,42 @@ begin
    end;
 end;
 
+function Dummy_GetUserFuncHeaderDesc(AHeader: TUserFunctionHeader): string;
+var
+   lang: TLangDefinition;
+   template, parms: TStringList;
+   parmString, returnString: string;
+   parm: TParameter;
+begin
+   result := '';
+   lang := GInfra.CurrentLang;
+   if (AHeader <> nil) and not lang.FunctionHeaderDescTemplate.IsEmpty then
+   begin
+       template := TStringList.Create;
+       parms := TStringList.Create;
+       try
+          template.Text := ReplaceStr(lang.FunctionHeaderDescTemplate, PRIMARY_PLACEHOLDER, Trim(AHeader.edtName.Text));
+          template.Text := ReplaceStr(template.Text, '%s2', IfThen(AHeader.cbType.ItemIndex > 0, AHeader.cbType.Text));
+
+          for parm in AHeader.GetParameters do
+          begin
+             parmString := ReplaceStr(lang.FunctionHeaderDescParmMask, PRIMARY_PLACEHOLDER, Trim(parm.edtName.Text));
+             parmString := ReplaceStr(parmString, '%s2', parm.cbType.Text);
+             parms.Add(parmString);
+          end;
+          TInfra.InsertTemplateLines(template, '%s3', parms);
+
+          returnString := ReplaceStr(lang.FunctionHeaderDescReturnMask, PRIMARY_PLACEHOLDER, AHeader.cbType.Text);
+          template.Text := ReplaceStr(template.Text, '%s4', returnString);
+
+          result := template.Text;
+       finally
+          parms.Free;
+          template.Free;
+       end;
+   end;
+end;
+
 initialization
 
    with GInfra.DummyLang do
@@ -710,6 +746,7 @@ initialization
       GetLiteralType := Dummy_GetLiteralType;
       GetPointerTypeName := Dummy_GetPointerTypeName;
       GetUserFuncDesc := Dummy_GetUserFuncDesc;
+      GetUserFuncHeaderDesc := Dummy_GetUserFuncHeaderDesc;
       GetUserTypeDesc := Dummy_GetUserTypeDesc;
       GetMainProgramDesc := Dummy_GetMainProgramDesc;
       SkipFuncBodyGen := Dummy_SkipFuncBodyGen;

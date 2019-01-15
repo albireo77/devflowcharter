@@ -97,11 +97,14 @@ type
       ProgramReturnTemplate,
       FunctionTemplate,
       FunctionHeaderTemplate,
+      FunctionHeaderDescTemplate,
       ConstructorHeaderTemplate,
       FunctionHeaderTypeNone1,
       FunctionHeaderTypeNotNone1,
       FunctionHeaderTypeNone2,
       FunctionHeaderTypeNotNone2,
+      FunctionHeaderDescParmMask,
+      FunctionHeaderDescReturnMask,
       VarTemplate,
       InputTemplate,
       OutputTemplate,
@@ -220,6 +223,7 @@ type
       MainFunctionSectionGenerator: procedure (ALines: TStringList; ADeep: integer);
       FileContentsGenerator: function (ALines: TStringList; ASkipBodyGenerate: boolean): boolean;
       GetUserFuncDesc: function (AHeader: TUserFunctionHeader; AFullParams: boolean = true; AIncludeDesc: boolean = true): string;
+      GetUserFuncHeaderDesc: function (AHeader: TUserFunctionHeader): string;
       GetUserTypeDesc: function (ADataType: TUserDataType): string;
       SetHLighterAttrs: procedure;
       GetPointerTypeName: function (const val: string): string;
@@ -272,6 +276,7 @@ begin
    MainFunctionSectionGenerator := nil;
    FileContentsGenerator := nil;
    GetUserFuncDesc := nil;
+   GetUserFuncHeaderDesc := nil;
    GetUserTypeDesc := nil;
    GetMainProgramDesc := nil;
    SetHLighterAttrs := nil;
@@ -477,6 +482,18 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTemplate');
    if tag <> nil then
       FunctionHeaderTemplate := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderDescTemplate');
+   if tag <> nil then
+      FunctionHeaderDescTemplate := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderDescParmMask');
+   if tag <> nil then
+      FunctionHeaderDescParmMask := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderDescReturnMask');
+   if tag <> nil then
+      FunctionHeaderDescReturnMask := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ConstructorHeaderTemplate');
    if tag <> nil then

@@ -495,6 +495,8 @@ In given example, it returns value "[]" if function return type is array or an e
 -->
 <FunctionHeaderTypeArrayModifier>[]|</FunctionHeaderTypeArrayModifier>
 
+<FunctionHeaderDescTemplate></FunctionHeaderDescTemplate>
+
 <!--
 Element FunctionBodyTemplate
 Description: Template for function body
