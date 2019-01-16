@@ -468,7 +468,7 @@ constructor %s7%s5 %s1(%s3)%s6 %s4%s8;
 
 <!--
 Element FunctionHeaderTypeModifier1 and FunctionHeaderTypeModifier2
-Description: It returns value based on whether or not function returns specific type
+Description: Returns value based on whether or not function returns specific type
 In given example, it returns value "procedure" if function type is none or "function" otherwise
 -->
 <FunctionHeaderTypeModifier1>procedure|function</FunctionHeaderTypeModifier1>
@@ -476,26 +476,52 @@ In given example, it returns value "procedure" if function type is none or "func
 
 <!--
 Element FunctionHeaderStaticModifier
-Description: It returns value based on whether or not function is static
+Description: Returns value based on whether or not function is static
 In given example, it returns value "static" if function is static or an empty string otherwise
 -->
 <FunctionHeaderStaticModifier>static|</FunctionHeaderStaticModifier>
 
 <!--
 Element FunctionHeaderExternalModifier
-Description: It returns value based on whether or not function is declared as external
+Description: Returns value based on whether or not function is declared as external
 In given example, it returns value "external " if function is external or "internal " otherwise
 -->
 <FunctionHeaderExternalModifier>external |internal </FunctionHeaderExternalModifier>
 
 <!--
 Element FunctionHeaderTypeArrayModifier
-Description: It returns value based on whether or not function return type is an array
+Description: Returns value based on whether or not function return type is an array
 In given example, it returns value "[]" if function return type is array or an empty string otherwise
 -->
 <FunctionHeaderTypeArrayModifier>[]|</FunctionHeaderTypeArrayModifier>
 
+<!--
+Element FunctionHeaderDescTemplate
+Description: Template for generated description/prefix of function header
+Available placeholders:
+   %s1 - name of the function
+   %s2 - return type of the function
+   %s3 - list of function parameters (list of FunctionHeaderDescParmMask elements); line containing this placeholder will be deleted if there are no parameters
+   %s4 - expression for return type of the function (element FunctionHeaderDescReturnMask); line containing this placeholder will be deleted if function returns nothing
+-->
 <FunctionHeaderDescTemplate></FunctionHeaderDescTemplate>
+
+<!--
+Element FunctionHeaderDescParmMask
+Description: Mask for function parameter (used in FunctionHeaderDescTemplate element)  
+Available placeholders:
+   %s1 - name of the parameter
+   %s2 - type of the parameter
+-->
+<FunctionHeaderDescParmMask></FunctionHeaderDescParmMask>
+
+<!--
+Element FunctionHeaderDescReturnMask
+Description: Mask for function return type (used in FunctionHeaderDescTemplate element)  
+Available placeholders:
+   %s1 - return type of the function
+-->
+<FunctionHeaderDescReturnMask></FunctionHeaderDescReturnMask>
 
 <!--
 Element FunctionBodyTemplate
