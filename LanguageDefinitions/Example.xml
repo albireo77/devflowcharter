@@ -501,8 +501,8 @@ Description: Template for generated description/prefix of function header
 Available placeholders:
    %s1 - name of the function
    %s2 - return type of the function
-   %s3 - list of function parameters (list of FunctionHeaderDescParmMask elements); line containing this placeholder will be deleted if there are no parameters
-   %s4 - expression for return type of the function (element FunctionHeaderDescReturnMask); line containing this placeholder will be deleted if function returns nothing or is constructor
+   %s3 - list of function parameters (list of FunctionHeaderDescParmMask elements); lines containing this placeholder will be deleted if there are no parameters
+   %s4 - expression for return type of the function (element FunctionHeaderDescReturnMask); lines containing this placeholder will be deleted if function returns nothing or is constructor
 -->
 <FunctionHeaderDescTemplate></FunctionHeaderDescTemplate>
 

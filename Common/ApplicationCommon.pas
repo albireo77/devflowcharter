@@ -64,6 +64,7 @@ type
          class procedure InsertLinesIntoList(ADestList, ASourceList: TStringList; AFromLine: integer);
          class procedure ExtractPipedValues(var ASource: string; var ADest: string);
          class procedure DecrementNodeSiblingOffsets(ANode: TTreeNode);
+         class procedure DeleteLinesContaining(ALines: TStrings; const AText: string);
          class function GetScrolledPoint(AMemo: TCustomMemo): TPoint;
          class function CreateDOSProcess(const ACommand: string; ADir: string = ''): boolean;
          class function ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
@@ -106,7 +107,6 @@ type
          class function GetLibObject: TObject;
          class function GetParserErrMsg: string;
          class function FindLastRow(AObject: TObject; AStart: integer; ALines: TStrings): integer;
-         class function DeleteLineContaining(ALines: TStrings; const AText: string): integer;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetNativeFunction(const AName: string): PNativeFunction;
          function GetLangDefinition(const AName: string): TLangDefinition;
@@ -1365,19 +1365,14 @@ begin
       result := 0;
 end;
 
-class function TInfra.DeleteLineContaining(ALines: TStrings; const AText: string): integer;
+class procedure TInfra.DeleteLinesContaining(ALines: TStrings; const AText: string);
 var
    i: integer;
 begin
-   result := -1;
-   for i := 0 to ALines.Count-1 do
+   for i := ALines.Count-1 downto 0 do
    begin
       if ALines.Strings[i].Contains(AText) then
-      begin
          ALines.Delete(i);
-         result := i;
-         break;
-      end;
    end;
 end;
 

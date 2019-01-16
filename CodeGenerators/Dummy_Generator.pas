@@ -722,10 +722,10 @@ begin
           if parms.Count > 0 then
              TInfra.InsertTemplateLines(template, '%s3', parms)
           else
-             TInfra.DeleteLineContaining(template, '%s3');
+             TInfra.DeleteLinesContaining(template, '%s3');
 
           if AHeader.chkConstructor.Checked or (AHeader.cbType.ItemIndex = 0) then
-             TInfra.DeleteLineContaining(template, '%s4')
+             TInfra.DeleteLinesContaining(template, '%s4')
           else
           begin
              returnString := ReplaceStr(lang.FunctionHeaderDescReturnMask, PRIMARY_PLACEHOLDER, AHeader.cbType.Text);
