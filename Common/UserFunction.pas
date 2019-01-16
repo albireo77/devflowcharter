@@ -805,9 +805,7 @@ begin
       lang := GInfra.DummyLang;
    if lang <> nil then
    begin
-      description := lang.GetUserFuncHeaderDesc(Self);
-      if EndsText(sLineBreak, description) then
-         SetLength(description, Length(description) - Length(sLineBreak));
+      description := lang.GetUserFuncHeaderDesc(Self).TrimRight;
       if not description.IsEmpty then
       begin
          memDesc.Text := description;

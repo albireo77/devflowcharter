@@ -106,6 +106,7 @@ type
          class function GetLibObject: TObject;
          class function GetParserErrMsg: string;
          class function FindLastRow(AObject: TObject; AStart: integer; ALines: TStrings): integer;
+         class function DeleteLineContaining(ALines: TStrings; const AText: string): integer;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetNativeFunction(const AName: string): PNativeFunction;
          function GetLangDefinition(const AName: string): TLangDefinition;
@@ -1362,6 +1363,22 @@ begin
       result := -1
    else
       result := 0;
+end;
+
+class function TInfra.DeleteLineContaining(ALines: TStrings; const AText: string): integer;
+var
+   i: integer;
+begin
+   result := -1;
+   for i := 0 to ALines.Count-1 do
+   begin
+      if ALines.Strings[i].Contains(AText) then
+      begin
+         ALines.Delete(i);
+         result := i;
+         break;
+      end;
+   end;
 end;
 
 function TInfra.ValidateConstId(const AId: string): integer;

@@ -372,7 +372,7 @@ procedure Dummy_UserFunctionsSectionGenerator(ALines: TStringList; ASkipBodyGen:
 var
    func: TUserFunction;
    param: TParameter;
-   name, argList, paramStr, ref, lArray, lRecord, enum, defValue, hText, typeArray, isStatic: string;
+   name, argList, paramStr, ref, lArray, lRecord, enum, defValue, hText, typeArray, isStatic, memDesc: string;
    lang: TLangDefinition;
    headerTemplate, varList, funcTemplate, bodyTemplate, funcList, funcsTemplate: TStringList;
    intType: integer;
@@ -453,11 +453,14 @@ begin
                   end
                   else
                   begin
-                     // assemble entire function section
+                     memDesc := '';
                      if func.Header.chkInclDescCode.Checked then
-                        headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s2', func.Header.memDesc.Text)
+                        memDesc := TrimRight(func.Header.memDesc.Text);
+                     if memDesc.IsEmpty then
+                        TInfra.InsertTemplateLines(headerTemplate, '%s2', nil)
                      else
-                        TInfra.InsertTemplateLines(headerTemplate, '%s2', nil);
+                        headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s2', memDesc);
+
                      funcTemplate := TStringList.Create;
                      try
                         funcTemplate.Text := lang.FunctionTemplate;
@@ -708,7 +711,7 @@ begin
        parms := TStringList.Create;
        try
           template.Text := ReplaceStr(lang.FunctionHeaderDescTemplate, PRIMARY_PLACEHOLDER, Trim(AHeader.edtName.Text));
-          template.Text := ReplaceStr(template.Text, '%s2', IfThen(AHeader.cbType.ItemIndex > 0, AHeader.cbType.Text));
+          template.Text := ReplaceStr(template.Text, '%s2', AHeader.cbType.Text);
 
           for parm in AHeader.GetParameters do
           begin
@@ -716,10 +719,18 @@ begin
              parmString := ReplaceStr(parmString, '%s2', parm.cbType.Text);
              parms.Add(parmString);
           end;
-          TInfra.InsertTemplateLines(template, '%s3', parms);
+          if parms.Count > 0 then
+             TInfra.InsertTemplateLines(template, '%s3', parms)
+          else
+             TInfra.DeleteLineContaining(template, '%s3');
 
-          returnString := ReplaceStr(lang.FunctionHeaderDescReturnMask, PRIMARY_PLACEHOLDER, AHeader.cbType.Text);
-          template.Text := ReplaceStr(template.Text, '%s4', returnString);
+          if AHeader.chkConstructor.Checked or (AHeader.cbType.ItemIndex = 0) then
+             TInfra.DeleteLineContaining(template, '%s4')
+          else
+          begin
+             returnString := ReplaceStr(lang.FunctionHeaderDescReturnMask, PRIMARY_PLACEHOLDER, AHeader.cbType.Text);
+             template.Text := ReplaceStr(template.Text, '%s4', returnString);
+          end;
 
           result := template.Text;
        finally
