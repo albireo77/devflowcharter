@@ -717,6 +717,8 @@ begin
           begin
              parmString := ReplaceStr(lang.FunctionHeaderDescParmMask, PRIMARY_PLACEHOLDER, Trim(parm.edtName.Text));
              parmString := ReplaceStr(parmString, '%s2', parm.cbType.Text);
+             parmString := ReplaceStr(parmString, '%s3', Trim(parm.edtDefault.Text));
+             parmString := ReplaceStr(parmString, '%s4', IntToStr(parm.ComponentIndex+1));
              parms.Add(parmString);
           end;
           if parms.Count > 0 then

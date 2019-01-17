@@ -503,6 +503,8 @@ Description: Mask for function parameter (used in FunctionHeaderDescTemplate ele
 Available placeholders:
    %s1 - name of the parameter
    %s2 - type of the parameter
+   %s3 - default value of the parameter
+   %s4 - index of the parameter (1-based)
 -->
 <FunctionHeaderDescParmMask>@param  %s1 </FunctionHeaderDescParmMask>
 
