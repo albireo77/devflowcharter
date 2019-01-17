@@ -713,13 +713,16 @@ begin
           template.Text := ReplaceStr(lang.FunctionHeaderDescTemplate, PRIMARY_PLACEHOLDER, Trim(AHeader.edtName.Text));
           template.Text := ReplaceStr(template.Text, '%s2', AHeader.cbType.Text);
 
-          for parm in AHeader.GetParameters do
+          if not lang.FunctionHeaderDescParmMask.IsEmpty then
           begin
-             parmString := ReplaceStr(lang.FunctionHeaderDescParmMask, PRIMARY_PLACEHOLDER, Trim(parm.edtName.Text));
-             parmString := ReplaceStr(parmString, '%s2', parm.cbType.Text);
-             parmString := ReplaceStr(parmString, '%s3', Trim(parm.edtDefault.Text));
-             parmString := ReplaceStr(parmString, '%s4', IntToStr(parm.ComponentIndex+1));
-             parms.Add(parmString);
+             for parm in AHeader.GetParameters do
+             begin
+                parmString := ReplaceStr(lang.FunctionHeaderDescParmMask, PRIMARY_PLACEHOLDER, Trim(parm.edtName.Text));
+                parmString := ReplaceStr(parmString, '%s2', parm.cbType.Text);
+                parmString := ReplaceStr(parmString, '%s3', Trim(parm.edtDefault.Text));
+                parmString := ReplaceStr(parmString, '%s4', IntToStr(parm.ComponentIndex+1));
+                parms.Add(parmString);
+             end;
           end;
           if parms.Count > 0 then
              TInfra.InsertTemplateLines(template, '%s3', parms)
