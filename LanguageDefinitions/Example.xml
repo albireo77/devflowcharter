@@ -505,7 +505,7 @@ Available placeholders:
    %s4 - expression for return type of the function (element FunctionHeaderDescReturnMask); lines containing this placeholder will be deleted if function returns nothing or is constructor
 -->
 <FunctionHeaderDescTemplate>/*
-Function %s1 returning type %s2
+Function %s1 returning %s2
 %s3 
 */</FunctionHeaderDescTemplate>
 
@@ -518,7 +518,7 @@ Available placeholders:
    %s3 - default value of the parameter
    %s4 - index of the parameter (1-based)
 -->
-<FunctionHeaderDescParmMask>Parameter %s4: %s1:%s2 </FunctionHeaderDescParmMask>
+<FunctionHeaderDescParmMask>Parameter %s4: %s1: %s2 </FunctionHeaderDescParmMask>
 
 <!--
 Element FunctionHeaderDescReturnMask
