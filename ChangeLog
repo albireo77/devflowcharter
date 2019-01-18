@@ -1,3 +1,9 @@
+7.3 [18.01.2019]
+- language definition file: add FunctionHeaderDescTemplate template to generate description/prefix for function headers
+- Functions: add Generate button to Description/Prefix section
+- Editor: enable blue color for Javadoc in Java highlighter
+- minor optimizations
+
 7.2 [01.12.2018]
 - fix not populated dropdown boxes for for..do block when language was changed upon opening project
 
