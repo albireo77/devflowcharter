@@ -48,7 +48,8 @@ var
    FReaderImpl,
    FWriterImpl,
    FInStreamImpl,
-   FOutStreamImpl: TStringList;
+   FOutStreamImpl,
+   FTemporalImpl: TStringList;
    JAVA_INT_TYPE,
    JAVA_LONG_TYPE,
    JAVA_FLOAT_TYPE,
@@ -59,6 +60,11 @@ var
    JAVA_DATE_TYPE,
    JAVA_CALENDAR_TYPE,
    JAVA_LOCAL_DATETIME_TYPE,
+   JAVA_LOCAL_DATE_TYPE,
+   JAVA_LOCAL_TIME_TYPE,
+   JAVA_INSTANT_TYPE,
+   JAVA_DURATION_TYPE,
+   JAVA_PERIOD_TYPE,
    JAVA_BIGDECIMAL_TYPE,
    JAVA_BIGINTEGER_TYPE: integer;
 
@@ -218,7 +224,9 @@ begin
    else if ATypeName.EndsWith('InputStream') then
       implList := FInStreamImpl
    else if ATypeName.EndsWith('OutputStream') then
-      implList := FOutStreamImpl;
+      implList := FOutStreamImpl
+   else if ATypeName.EndsWith('Temporal') then
+      implList := FTemporalImpl;
    if implList <> nil then
    begin
       for i := 0 to implList.Count-1 do
@@ -429,8 +437,45 @@ begin
                result := JAVA_DATE_TYPE
             else if AValue = 'Calendar.getInstance()' then
                result := JAVA_CALENDAR_TYPE
-            else if AValue = 'LocalDateTime.now()' then
+            else if (AValue = 'LocalDateTime.now()') or AValue.StartsWith('LocalDateTime.of(') then
                result := JAVA_LOCAL_DATETIME_TYPE
+            else if (AValue = 'LocalDate.now()') or AValue.StartsWith('LocalDate.of(') then
+               result := JAVA_LOCAL_DATE_TYPE
+            else if (AValue = 'LocalTime.now()') or AValue.StartsWith('LocalTime.of(') then
+               result := JAVA_LOCAL_TIME_TYPE
+            else if AValue.StartsWith('Duration.') then
+            begin
+               if AValue.EndsWith('.toDays()') or AValue.EndsWith('.toHours()') or (AValue.EndsWith('.toMillis()')) or
+                  AValue.EndsWith('.toMinutes()') or AValue.EndsWith('.toNanos()') then
+                  result := JAVA_LONG_TYPE
+               else if AValue.EndsWith('.toString()') then
+                  result := JAVA_STRING_TYPE
+               else
+                  result := JAVA_DURATION_TYPE;
+               if (result <> JAVA_DURATION_TYPE) and (FImportLines <> nil) then
+               begin
+                  importLib := Format(javaLang.LibEntry, ['java.time.Duration']);
+                  if FImportLines.IndexOf(importLib) = -1 then
+                     FImportLines.AddObject(importLib, TInfra.GetLibObject);
+               end;
+            end
+            else if AValue.StartsWith('Period.') then
+            begin
+               if AValue.EndsWith('.getDays()') or AValue.EndsWith('.getMonths()') or (AValue.EndsWith('.getYears()')) then
+                  result := JAVA_INT_TYPE
+               else if AValue.EndsWith('.toString()') then
+                  result := JAVA_STRING_TYPE
+               else
+                  result := JAVA_PERIOD_TYPE;
+               if (result <> JAVA_PERIOD_TYPE) and (FImportLines <> nil) then
+               begin
+                  importLib := Format(javaLang.LibEntry, ['java.time.Period']);
+                  if FImportLines.IndexOf(importLib) = -1 then
+                     FImportLines.AddObject(importLib, TInfra.GetLibObject);
+               end;
+            end
+            else if AValue = 'Instant.now()' then
+               result := JAVA_INSTANT_TYPE
             else if AValue.Contains('System.currentTimeMillis()') then
                result := JAVA_LONG_TYPE
             else if AValue.Contains('Math.E') or AValue.Contains('Math.PI') then
@@ -544,6 +589,11 @@ initialization
    JAVA_DATE_TYPE           := TParserHelper.GetType('Date', JAVA_LANG_ID);
    JAVA_CALENDAR_TYPE       := TParserHelper.GetType('Calendar', JAVA_LANG_ID);
    JAVA_LOCAL_DATETIME_TYPE := TParserHelper.GetType('LocalDateTime', JAVA_LANG_ID);
+   JAVA_LOCAL_DATE_TYPE     := TParserHelper.GetType('LocalDate', JAVA_LANG_ID);
+   JAVA_LOCAL_TIME_TYPE     := TParserHelper.GetType('LocalTime', JAVA_LANG_ID);
+   JAVA_INSTANT_TYPE        := TParserHelper.GetType('Instant', JAVA_LANG_ID);
+   JAVA_DURATION_TYPE       := TParserHelper.GetType('Duration', JAVA_LANG_ID);
+   JAVA_PERIOD_TYPE         := TParserHelper.GetType('Period', JAVA_LANG_ID);
    JAVA_BIGDECIMAL_TYPE     := TParserHelper.GetType('BigDecimal', JAVA_LANG_ID);
    JAVA_BIGINTEGER_TYPE     := TParserHelper.GetType('BigInteger', JAVA_LANG_ID);
 
@@ -654,6 +704,15 @@ initialization
    FOutStreamImpl.AddPair('DigestOutputStream', 'java.security');
    FOutStreamImpl.AddPair('PrintStream', 'java.io');
 
+   FTemporalImpl := TStringList.Create;
+   FTemporalImpl.AddPair('Instant', 'java.time');
+   FTemporalImpl.AddPair('LocalDateTime', 'java.time');
+   FTemporalImpl.AddPair('LocalDate', 'java.time');
+   FTemporalImpl.AddPair('LocalTime', 'java.time');
+   FTemporalImpl.AddPair('OffsetDateTime', 'java.time');
+   FTemporalImpl.AddPair('OffsetTime', 'java.time');
+   FTemporalImpl.AddPair('ZonedDateTime', 'java.time');
+
 finalization
 
    FListImpl.Free;
@@ -666,5 +725,6 @@ finalization
    FWriterImpl.Free;
    FInStreamImpl.Free;
    FOutStreamImpl.Free;
+   FTemporalImpl.Free;
 
 end.

@@ -56,43 +56,47 @@ It may not contain all supported tags. For all supported tags and their descript
     </FoldRegions>
 
     <NativeDataTypes>
-        <DataType kind="int">int</DataType>
-        <DataType kind="int">char</DataType>
-        <DataType kind="int">byte</DataType>
-	<DataType kind="int">short</DataType>
-        <DataType kind="int">long</DataType>
-	<DataType kind="real">float</DataType>
-	<DataType kind="real">double</DataType>
-	<DataType kind="bool">boolean</DataType>
-	<DataType kind="string">String</DataType>
-	<DataType kind="other">StringBuilder</DataType>
-	<DataType kind="other">Character</DataType>
-	<DataType kind="other">Byte</DataType>
-	<DataType kind="other">Short</DataType>
-	<DataType kind="other">Integer</DataType>
-	<DataType kind="other">Long</DataType>
-	<DataType kind="other">Float</DataType>
-	<DataType kind="other">Double</DataType>
-	<DataType kind="other">Boolean</DataType>
-	<DataType kind="other" generic="true" library="java.util">List</DataType>
-	<DataType kind="other" generic="true" library="java.util">Map</DataType>
-	<DataType kind="other" generic="true" library="java.util">Set</DataType>
-	<DataType kind="other" generic="true" library="java.util">Queue</DataType>
-	<DataType kind="other" generic="true" library="java.util">Deque</DataType>
-	<DataType kind="other" library="java.math">BigDecimal</DataType>
-	<DataType kind="other" library="java.math">BigInteger</DataType>
-	<DataType kind="other" library="java.text">DateFormat</DataType>
-	<DataType kind="other" library="java.util">Date</DataType>
-	<DataType kind="other" library="java.util">Calendar</DataType>
-	<DataType kind="other" library="java.time">LocalDate</DataType>
-	<DataType kind="other" library="java.time">LocalDateTime</DataType>
-	<DataType kind="other" library="java.time">LocalTime</DataType>
-	<DataType kind="other" library="java.util">Random</DataType>
-	<DataType kind="other" library="java.io">File</DataType>
-	<DataType kind="other" library="java.io">Writer</DataType>
-	<DataType kind="other" library="java.io">Reader</DataType>
-	<DataType kind="other" library="java.io">InputStream</DataType>
-	<DataType kind="other" library="java.io">OutputStream</DataType>
+		<DataType kind="int">int</DataType>
+		<DataType kind="int">char</DataType>
+		<DataType kind="int">byte</DataType>
+		<DataType kind="int">short</DataType>
+		<DataType kind="int">long</DataType>
+		<DataType kind="real">float</DataType>
+		<DataType kind="real">double</DataType>
+		<DataType kind="bool">boolean</DataType>
+		<DataType kind="string">String</DataType>
+		<DataType kind="other">StringBuilder</DataType>
+		<DataType kind="other">Character</DataType>
+		<DataType kind="other">Byte</DataType>
+		<DataType kind="other">Short</DataType>
+		<DataType kind="other">Integer</DataType>
+		<DataType kind="other">Long</DataType>
+		<DataType kind="other">Float</DataType>
+		<DataType kind="other">Double</DataType>
+		<DataType kind="other">Boolean</DataType>
+		<DataType kind="other" generic="true" library="java.util">List</DataType>
+		<DataType kind="other" generic="true" library="java.util">Map</DataType>
+		<DataType kind="other" generic="true" library="java.util">Set</DataType>
+		<DataType kind="other" generic="true" library="java.util">Queue</DataType>
+		<DataType kind="other" generic="true" library="java.util">Deque</DataType>
+		<DataType kind="other" library="java.math">BigDecimal</DataType>
+		<DataType kind="other" library="java.math">BigInteger</DataType>
+		<DataType kind="other" library="java.text">DateFormat</DataType>
+		<DataType kind="other" library="java.util">Date</DataType>
+		<DataType kind="other" library="java.util">Calendar</DataType>
+		<DataType kind="other" library="java.time">LocalDate</DataType>
+		<DataType kind="other" library="java.time">LocalDateTime</DataType>
+		<DataType kind="other" library="java.time">LocalTime</DataType>
+		<DataType kind="other" library="java.time">Duration</DataType>
+		<DataType kind="other" library="java.time">Period</DataType>
+		<DataType kind="other" library="java.time">Instant</DataType>
+		<DataType kind="other" library="java.time">Temporal</DataType>
+		<DataType kind="other" library="java.util">Random</DataType>
+		<DataType kind="other" library="java.io">File</DataType>
+		<DataType kind="other" library="java.io">Writer</DataType>
+		<DataType kind="other" library="java.io">Reader</DataType>
+		<DataType kind="other" library="java.io">InputStream</DataType>
+		<DataType kind="other" library="java.io">OutputStream</DataType>
     </NativeDataTypes>
 
     <KeyWords>
