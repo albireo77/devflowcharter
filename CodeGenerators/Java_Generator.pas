@@ -235,9 +235,10 @@ end;
 
 procedure Java_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
 var
-   i, p1, p2: integer;
-   varType, varInit, varInit2, varVal, varGeneric, libImport, varAccess, varSize, varName: string;
+   i, p1, p2, a: integer;
+   varType, varInit, varInit2, varVal, varGeneric, varGenericType, libImport, varAccess, varSize, varName: string;
    dims: TArray<string>;
+   pNativeType: PNativeDataType;
 begin
    if AVarList <> nil then
    begin
@@ -258,7 +259,22 @@ begin
                begin
                   p2 := LastDelimiter('>', varInit);
                   if p2 > p1 then
+                  begin
                      varGeneric := Copy(varInit, p1, p2-p1+1);
+                     varGenericType := Copy(varInit, p1+1, p2-p1-1);
+                     for a := 0 to High(javaLang.NativeDataTypes) do
+                     begin
+                        pNativeType := @javaLang.NativeDataTypes[a];
+                        if (pNativeType.Lib <> '') and (pNativeType.Name = varGenericType) then
+                        begin
+                           libImport := pNativeType.Lib + '.' + pNativeType.Name;
+                           libImport := Format(javaLang.LibEntry, [libImport]);
+                           if (FImportLines <> nil) and (FImportLines.IndexOf(libImport) = -1) then
+                              FImportLines.AddObject(libImport, TInfra.GetLibObject);
+                           break;
+                        end;
+                     end;
+                  end;
                end;
             end;
             libImport := ExtractImplementer(varType, varInit);
