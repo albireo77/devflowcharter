@@ -395,7 +395,7 @@ var
 begin
    w := 8;
    for i := 0 to sgList.ColCount-1 do
-      w := w + sgList.ColWidths[i] + 1;
+      w := w + sgList.ColWidths[i] + sgList.GridLineWidth;
    if NewSize < w then
       Accept := false;
 end;
