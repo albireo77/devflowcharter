@@ -73,6 +73,7 @@ type
          procedure OnClickChBox(Sender: TObject);
          procedure OnColWidthsChanged(Sender: TObject);
          procedure Resize; override;
+         procedure OnCanResizeSplitter(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
       public
          sgList: TStringGridEx;
          btnRemove,
@@ -385,6 +386,18 @@ end;
 procedure TDeclareList.SetSplitter(ASplitter: TSplitter);
 begin
    FSplitter := ASplitter;
+   FSplitter.OnCanResize := OnCanResizeSplitter;
+end;
+
+procedure TDeclareList.OnCanResizeSplitter(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
+var
+   i, w: integer;
+begin
+   w := 8;
+   for i := 0 to sgList.ColCount-1 do
+      w := w + sgList.ColWidths[i] + 1;
+   if NewSize < w then
+      Accept := false;
 end;
 
 function TDeclareList.RetrieveFocus(AInfo: TFocusInfo): boolean;
