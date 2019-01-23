@@ -49,7 +49,8 @@ var
    FWriterImpl,
    FInStreamImpl,
    FOutStreamImpl,
-   FTemporalImpl: TStringList;
+   FTemporalImpl,
+   FNumberImpl: TStringList;
    JAVA_INT_TYPE,
    JAVA_LONG_TYPE,
    JAVA_FLOAT_TYPE,
@@ -226,7 +227,9 @@ begin
    else if ATypeName.EndsWith('OutputStream') then
       implList := FOutStreamImpl
    else if ATypeName.EndsWith('Temporal') then
-      implList := FTemporalImpl;
+      implList := FTemporalImpl
+   else if ATypeName.EndsWith('Number') then
+      implList := FNumberImpl;
    if implList <> nil then
    begin
       for i := 0 to implList.Count-1 do
@@ -723,6 +726,16 @@ initialization
    FTemporalImpl.AddPair('OffsetTime', 'java.time');
    FTemporalImpl.AddPair('ZonedDateTime', 'java.time');
 
+   FNumberImpl := TStringList.Create;
+   FNumberImpl.AddPair('AtomicInteger', 'java.util.concurrent.atomic');
+   FNumberImpl.AddPair('AtomicLong', 'java.util.concurrent.atomic');
+   FNumberImpl.AddPair('BigDecimal', 'java.math');
+   FNumberImpl.AddPair('BigInteger', 'java.math');
+   FNumberImpl.AddPair('DoubleAccumulator', 'java.util.concurrent.atomic');
+   FNumberImpl.AddPair('DoubleAdder', 'java.util.concurrent.atomic');
+   FNumberImpl.AddPair('LongAccumulator', 'java.util.concurrent.atomic');
+   FNumberImpl.AddPair('LongAdder', 'java.util.concurrent.atomic');
+
 finalization
 
    FListImpl.Free;
@@ -736,5 +749,6 @@ finalization
    FInStreamImpl.Free;
    FOutStreamImpl.Free;
    FTemporalImpl.Free;
+   FNumberImpl.Free;
 
 end.
