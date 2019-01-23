@@ -243,10 +243,11 @@ end;
 
 procedure Java_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
 var
-   i, p1, p2, a: integer;
+   i, p1, p2, a, b: integer;
    varType, varInit, varInit2, varVal, varGeneric, varGenericType, libImport, varAccess, varSize, varName: string;
    dims: TArray<string>;
    pNativeType: PNativeDataType;
+   tokens: TArray<string>;
 begin
    if AVarList <> nil then
    begin
@@ -258,6 +259,8 @@ begin
          varGeneric := '';
          varSize := '';
          varAccess := '';
+         p1 := 0;
+         p2 := 0;
          if not varInit.IsEmpty then
          begin
             if TParserHelper.IsGenericType(varType) then
@@ -270,17 +273,22 @@ begin
                   begin
                      varGeneric := Copy(varInit, p1, p2-p1+1);
                      varGenericType := Copy(varInit, p1+1, p2-p1-1);
-                     for a := 0 to High(javaLang.NativeDataTypes) do
+                     varGenericType := ReplaceStr(varGenericType, ' ', '');
+                     tokens := varGenericType.Split([',']);
+                     for b := 0 to High(tokens) do
                      begin
-                        pNativeType := @javaLang.NativeDataTypes[a];
-                        if (pNativeType.Lib <> '') and (pNativeType.Name = varGenericType) then
-                        begin
-                           libImport := pNativeType.Lib + '.' + pNativeType.Name;
-                           libImport := Format(javaLang.LibEntry, [libImport]);
-                           if (FImportLines <> nil) and (FImportLines.IndexOf(libImport) = -1) then
-                              FImportLines.AddObject(libImport, TInfra.GetLibObject);
-                           break;
-                        end;
+                       for a := 0 to High(javaLang.NativeDataTypes) do
+                       begin
+                          pNativeType := @javaLang.NativeDataTypes[a];
+                          if (pNativeType.Lib <> '') and (pNativeType.Name = tokens[b]) then
+                          begin
+                             libImport := pNativeType.Lib + '.' + pNativeType.Name;
+                             libImport := Format(javaLang.LibEntry, [libImport]);
+                             if (FImportLines <> nil) and (FImportLines.IndexOf(libImport) = -1) then
+                                FImportLines.AddObject(libImport, TInfra.GetLibObject);
+                             break;
+                          end;
+                       end;
                      end;
                   end;
                end;
@@ -288,6 +296,8 @@ begin
             libImport := ExtractImplementer(varType, varInit);
             if (libImport <> '') and (FImportLines <> nil) and (FImportLines.IndexOf(libImport) = -1) then
                FImportLines.AddObject(libImport, TInfra.GetLibObject);
+            if p2 > p1 then
+               Delete(varInit, p1+1, p2-p1-1);      // make diamond operator
             varInit := ' = ' + varInit;
          end;
          p1 := AVarList.GetDimensionCount(varName);
