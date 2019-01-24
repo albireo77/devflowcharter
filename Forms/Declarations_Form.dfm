@@ -12,6 +12,7 @@ object DeclarationsForm: TDeclarationsForm
   OldCreateOrder = False
   PopupMode = pmExplicit
   Position = poDesigned
+  OnCanResize = FormCanResize
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13

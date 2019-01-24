@@ -103,6 +103,7 @@ type
          procedure SetDefaultFocus;
          function IsExternal(ARow: integer): boolean;
          procedure SetExternalCol(AExternalCol: integer);
+         function GetMinWidth: integer;
    end;
 
    TVarDeclareList = class(TDeclareList)
@@ -389,14 +390,18 @@ begin
    FSplitter.OnCanResize := OnCanResizeSplitter;
 end;
 
-procedure TDeclareList.OnCanResizeSplitter(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
+function TDeclareList.GetMinWidth: integer;
 var
-   i, w: integer;
+   i: integer;
 begin
-   w := 8;
+   result := sgList.Left + 3;
    for i := 0 to sgList.ColCount-1 do
-      w := w + sgList.ColWidths[i] + sgList.GridLineWidth;
-   if NewSize < w then
+      result := result + sgList.ColWidths[i] + sgList.GridLineWidth;
+end;
+
+procedure TDeclareList.OnCanResizeSplitter(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
+begin
+   if NewSize < GetMinWidth then
       Accept := false;
 end;
 

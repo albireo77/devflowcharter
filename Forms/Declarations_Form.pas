@@ -30,6 +30,8 @@ type
 
   TDeclarationsForm = class(TBaseForm)
     procedure FormShow(Sender: TObject);
+    procedure FormCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
+      var Resize: Boolean);
   private
     { Private declarations }
   public
@@ -45,7 +47,7 @@ var
 implementation
 
 uses
-   Vcl.Forms, System.SysUtils, ApplicationCommon, XMLProcessor;
+   Vcl.Forms, System.SysUtils, ApplicationCommon, XMLProcessor, DeclareList;
 
 {$R *.dfm}
 
@@ -93,6 +95,21 @@ begin
    inherited ResetForm;
    Height := 323;
    Width := 610;
+end;
+
+procedure TDeclarationsForm.FormCanResize(Sender: TObject; var NewWidth,
+  NewHeight: Integer; var Resize: Boolean);
+var
+   i: integer;
+   list: TDeclareList;
+begin
+   i := ControlCount;
+   if (i > 0) and  (Controls[i-1] is TDeclareList) then
+   begin
+      list := TDeclareList(Controls[i-1]);
+      if NewWidth < (list.GetMinWidth + list.Left + DECLARATIONS_FORM_RIGHT_MARGIN)  then
+         Resize := false;
+   end;
 end;
 
 procedure TDeclarationsForm.FormShow(Sender: TObject);

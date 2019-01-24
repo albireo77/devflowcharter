@@ -224,6 +224,8 @@ const   // Global constants
         PRINT_SCALE_BASE     = 100;   // 100 %
         DEFAULT_PRINT_MARGIN = 5;     //   5 %
 
+        DECLARATIONS_FORM_RIGHT_MARGIN = 16;
+
         // Language identifiers; must be identical to value in <Name> tag in XML language definition file
         PASCAL_LANG_ID  = 'Pascal';
         C_LANG_ID       = 'ANSI C';
