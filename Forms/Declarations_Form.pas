@@ -103,12 +103,15 @@ var
    i: integer;
    list: TDeclareList;
 begin
-   i := ControlCount;
-   if (i > 0) and  (Controls[i-1] is TDeclareList) then
+   if NewWidth < Width then
    begin
-      list := TDeclareList(Controls[i-1]);
-      if NewWidth < (list.GetMinWidth + list.Left + DECLARATIONS_FORM_RIGHT_MARGIN)  then
-         Resize := false;
+      i := ControlCount;
+      if (i > 0) and  (Controls[i-1] is TDeclareList) then
+      begin
+         list := TDeclareList(Controls[i-1]);
+         if NewWidth < (list.GetMinWidth + list.Left + DECLARATIONS_FORM_RIGHT_MARGIN)  then
+            Resize := false;
+      end;
    end;
 end;
 
