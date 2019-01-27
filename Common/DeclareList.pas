@@ -392,7 +392,7 @@ end;
 
 procedure TDeclareList.OnCanResizeSplitter(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
 begin
-   if NewSize < sgList.GetMinWidth then
+   if (NewSize < sgList.BoundsRect.Right + 4) and (NewSize < sgList.GetMinWidth) then
       Accept := false;
 end;
 
