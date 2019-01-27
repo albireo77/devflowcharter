@@ -24,7 +24,7 @@ unit Comment;
 interface
 
 uses
-   WinApi.Windows, WinApi.Messages, Vcl.Controls, Vcl.Forms, Vcl.StdCtrls, System.Classes,
+   WinApi.Messages, System.Types, Vcl.Controls, Vcl.Forms, Vcl.StdCtrls, System.Classes,
    OmniXML, CommonInterfaces, BlockTabSheet, MemoEx;
 
 type
@@ -72,7 +72,7 @@ type
 implementation
 
 uses
-   Vcl.Graphics, System.SysUtils, System.UITypes, System.Types, ApplicationCommon,
+   Vcl.Graphics, System.SysUtils, System.UITypes, WinApi.Windows, ApplicationCommon,
    XMLProcessor, UserFunction, Main_Block, Navigator_Form;
 
 constructor TComment.Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight: Integer);
@@ -262,7 +262,7 @@ begin
    inherited;
    ChangeBorderStyle(bsSingle);
    FMouseLeave := true;
-   if GetAsyncKeyState(VK_LBUTTON) <> 0 then
+   if GetAsyncKeyState(vkLButton) <> 0 then
    begin
       FMouseLeave := false;
       case Cursor of

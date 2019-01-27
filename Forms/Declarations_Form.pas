@@ -101,28 +101,39 @@ procedure TDeclarationsForm.FormCanResize(Sender: TObject; var NewWidth,
   NewHeight: Integer; var Resize: Boolean);
 var
    i: integer;
-   list: TDeclareList;
+   declareList: TDeclareList;
 begin
    if NewWidth < Width then
    begin
       i := ControlCount;
       if (i > 0) and  (Controls[i-1] is TDeclareList) then
       begin
-         list := TDeclareList(Controls[i-1]);
-         if NewWidth < (list.GetMinWidth + list.Left + DECLARATIONS_FORM_RIGHT_MARGIN)  then
+         declareList := TDeclareList(Controls[i-1]);
+         if NewWidth < (declareList.sgList.GetMinWidth + declareList.Left + DECLARATIONS_FORM_RIGHT_MARGIN) then
             Resize := false;
       end;
    end;
 end;
 
 procedure TDeclarationsForm.FormShow(Sender: TObject);
+var
+   i: integer;
+   f: boolean;
+   declareList: TDeclareList;
 begin
-   if GProject <> nil then
+   f := true;
+   for i := 0 to ControlCount-1 do
    begin
-      if GProject.GlobalVars <> nil then
-         GProject.GlobalVars.SetDefaultFocus
-      else if GProject.GlobalConsts <> nil then
-         GProject.GlobalConsts.SetDefaultFocus;
+      if Controls[i] is TDeclareList then
+      begin
+         declareList := TDeclareList(Controls[i]);
+         if f then
+         begin
+             f := false;
+             declareList.SetDefaultFocus;
+         end;
+         declareList.RefreshChBoxes;
+      end;
    end;
 end;
 

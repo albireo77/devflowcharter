@@ -599,7 +599,7 @@ var
    isShift: boolean;
    shiftState: TShiftState;
 begin
-   isShift := GetAsyncKeyState(VK_SHIFT) <> 0;
+   isShift := GetAsyncKeyState(vkShift) <> 0;
    if isShift then
       shiftState := [ssShift]
    else
@@ -623,7 +623,7 @@ begin
       lock := false;
       srcPage := TBlock(Source).Page;
       srcPage.Form.pmPages.PopupComponent := TBlock(Source);
-      if GetAsyncKeyState(VK_SHIFT) <> 0 then
+      if GetAsyncKeyState(vkShift) <> 0 then
          menuItem := srcPage.Form.miCopy
       else
       begin
@@ -815,7 +815,7 @@ var
    lock: boolean;
 begin
    inherited;
-   if GetAsyncKeyState(VK_LBUTTON) <> 0 then
+   if GetAsyncKeyState(vkLButton) <> 0 then
    begin
       FMouseLeave := false;
       case Cursor of

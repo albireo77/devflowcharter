@@ -22,7 +22,7 @@ unit DeclareList;
 interface
 
 uses
-   Vcl.Controls, OmniXML, Vcl.StdCtrls, Vcl.Grids, System.Classes, WinApi.Windows,
+   Vcl.Controls, OmniXML, Vcl.StdCtrls, Vcl.Grids, System.Classes, System.Types,
    Vcl.Graphics, Vcl.Forms, Vcl.ExtCtrls, SizeEdit, CommonInterfaces,
    CommonTypes;
 
@@ -35,6 +35,8 @@ type
        protected
           procedure ColWidthsChanged; override;
           procedure TopLeftChanged; override;
+       public
+          function GetMinWidth: integer;
        published
           property OnColWidthsChanged: TNotifyEvent read FColWidthsChanged write FColWidthsChanged;
           property OnTopLeftChanged: TNotifyEvent read FTopLeftChanged write FTopLeftChanged;
@@ -68,8 +70,6 @@ type
          function GetCheckBoxPoint(ACol, ARow: integer): TPoint;
          procedure OnTopLeftChanged(Sender: TObject);
          function CreateCheckBox(ACol, ARow: integer): TCheckBox;
-         procedure RefreshChBoxes;
-         function GetRightMargin(AControl: TControl = nil): integer;
          procedure OnClickChBox(Sender: TObject);
          procedure OnColWidthsChanged(Sender: TObject);
          procedure Resize; override;
@@ -103,7 +103,7 @@ type
          procedure SetDefaultFocus;
          function IsExternal(ARow: integer): boolean;
          procedure SetExternalCol(AExternalCol: integer);
-         function GetMinWidth: integer;
+         procedure RefreshChBoxes;
    end;
 
    TVarDeclareList = class(TDeclareList)
@@ -162,8 +162,8 @@ const
 implementation
 
 uses
-   System.SysUtils, System.Types, System.StrUtils, ApplicationCommon, XMLProcessor,
-   Project, UserDataType, LangDefinition, ParserHelper;
+   System.SysUtils, System.StrUtils, System.UITypes, ApplicationCommon,
+   XMLProcessor, Project, UserDataType, LangDefinition, ParserHelper;
 
 constructor TDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
 var
@@ -390,18 +390,9 @@ begin
    FSplitter.OnCanResize := OnCanResizeSplitter;
 end;
 
-function TDeclareList.GetMinWidth: integer;
-var
-   i: integer;
-begin
-   result := sgList.Left + 3;
-   for i := 0 to sgList.ColCount-1 do
-      result := result + sgList.ColWidths[i] + sgList.GridLineWidth;
-end;
-
 procedure TDeclareList.OnCanResizeSplitter(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
 begin
-   if NewSize < GetMinWidth then
+   if NewSize < sgList.GetMinWidth then
       Accept := false;
 end;
 
@@ -832,7 +823,7 @@ end;
 
 procedure TDeclareList.OnKeyDownCommon(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-   if Key = VK_RETURN then
+   if Key = vkReturn then
       btnAdd.Click;
 end;
 
@@ -1056,10 +1047,10 @@ function TDeclareList.GetCheckBoxPoint(ACol, ARow: integer): TPoint;
 begin
    result := sgList.CellRect(ACol, ARow).TopLeft;
    if result.X = 0 then
-      result.X := sgList.Width;
+      result.X := sgList.ClientWidth;
    if result.Y = 0 then
-      result.Y := ARow * sgList.DefaultRowHeight + ARow;
-   result.X := result.X + sgList.Left + (sgList.ColWidths[ACol] div 2) - 4;
+      result.Y := ARow * (sgList.DefaultRowHeight + sgList.GridLineWidth);
+   result.X := result.X + sgList.Left + (sgList.ColWidths[ACol] div 2) - 5;
    result.Y := result.Y + sgList.Top + 4;
 end;
 
@@ -1068,12 +1059,12 @@ var
    pnt: TPoint;
 begin
    pnt := GetCheckBoxPoint(ACol, ARow);
-   result := TCheckBox.Create(Self);
-   result.Parent := Self;
-   result.Visible := IsRowVisible(ARow) and (pnt.X <= GetRightMargin);
+   result := TCheckBox.Create(sgList.Parent);
+   result.Parent := sgList.Parent;
    result.SetBounds(pnt.X, pnt.Y, 12, 12);
+   result.Visible := IsRowVisible(ARow) and (result.BoundsRect.Right < sgList.ClientWidth + sgList.Left + 2);
    result.OnClick := OnClickChBox;
-   Repaint;
+   result.Repaint;
 end;
 
 procedure TStringGridEx.ColWidthsChanged;
@@ -1090,6 +1081,15 @@ begin
       OnTopLeftChanged(Self);
 end;
 
+function TStringGridEx.GetMinWidth: integer;
+var
+   i: integer;
+begin
+   result := Left + 3;
+   for i := 0 to ColCount-1 do
+      result := result + ColWidths[i] + GridLineWidth;
+end;
+
 procedure TDeclareList.OnColWidthsChanged(Sender: TObject);
 var
    i, xPos: integer;
@@ -1104,7 +1104,7 @@ begin
          begin
             control := TControl(sgList.Objects[FExternalCol, i]);
             control.Left := xPos;
-            control.Visible := IsRowVisible(i) and (control.Left <= GetRightMargin(control));
+            control.Visible := IsRowVisible(i) and (control.BoundsRect.Right < sgList.ClientWidth + sgList.Left + 2);
          end;
       end;
    end;
@@ -1143,21 +1143,10 @@ begin
          if sgList.Objects[FExternalCol, i] is TControl then
          begin
             control := TControl(sgList.Objects[FExternalCol, i]);
-            control.Visible := IsRowVisible(i) and (control.Left <= GetRightMargin(control));
+            control.Visible := IsRowVisible(i) and (control.BoundsRect.Right < sgList.ClientWidth + sgList.Left + 2);
          end;
       end;
    end;
-end;
-
-function TDeclareList.GetRightMargin(AControl: TControl = nil): integer;
-begin
-   result := Width - 6;
-   if AControl <> nil then
-      result := result - AControl.Width
-   else
-      result := result - 10;
-   if (GetWindowLong(sgList.Handle, GWL_STYLE) and WS_VSCROLL) <> 0 then
-      result := result - 17;
 end;
 
 function TDeclareList.IsRowVisible(ARow: integer): boolean;

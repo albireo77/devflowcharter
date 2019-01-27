@@ -69,8 +69,8 @@ type
 implementation
 
 uses
-   WinApi.Windows, System.SysUtils, System.StrUtils, System.Math, ApplicationCommon,
-   UserFunction, Navigator_Form;
+   System.SysUtils, System.StrUtils, System.Math, System.UITypes, WinApi.Windows,
+   ApplicationCommon, UserFunction, Navigator_Form;
 
 constructor TBlockTabSheet.Create(AMainForm: TMainForm);
 begin
@@ -223,20 +223,20 @@ var
    y: integer;
 begin
    y := 0;
-   if Key = VK_NEXT then
+   if Key = vkNext then
       y := 15 * 20
-   else if Key = VK_PRIOR then
+   else if Key = vkPrior then
       y := -15 * 20
    else if (Sender <> FPage.Form) or (ssCtrl in Shift) then
    begin
       case Key of
-         VK_DOWN, VK_RIGHT: y := 15;
-         VK_UP, VK_LEFT:    y := -15;
+         vkDown, vkRight: y := 15;
+         vkUp, vkLeft:    y := -15;
       end;
    end;
    if y <> 0 then
    begin
-      if Key in [VK_LEFT, VK_RIGHT] then
+      if Key in [vkLeft, vkRight] then
          HorzScrollBar.Position := HorzScrollBar.Position + y
       else
          VertScrollBar.Position := VertScrollBar.Position + y;
@@ -251,9 +251,9 @@ var
    w: Word;
 begin
    if WheelDelta < 0 then
-      w := VK_DOWN
+      w := vkDown
    else
-      w := VK_UP;
+      w := vkUp;
    BoxKeyDown(Self, w, [ssCtrl]);
 end;
 

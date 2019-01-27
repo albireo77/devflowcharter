@@ -53,7 +53,7 @@ uses
 {$IFDEF USE_CODEFOLDING}
    SynEditCodeFolding,
 {$ENDIF}
-   System.SysUtils, WinApi.Windows, System.Types, ApplicationCommon, CommonTypes, LangDefinition;
+   System.SysUtils, System.Types, System.UITypes, ApplicationCommon, CommonTypes, LangDefinition;
 
 constructor TMultiLineBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
 begin
@@ -229,7 +229,7 @@ end;
 
 procedure TMultiLineBlock.OnKeyUpMemo(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-   if Key in [VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT] then
+   if Key in [vkUp, vkDown, vkLeft, vkRight] then
       OnMouseDownMemo(Sender, mbLeft, Shift, 0, 0);
 end;
 
