@@ -33,10 +33,10 @@ type
           FColWidthsChanged: TNotifyEvent;
           FTopLeftChanged: TNotifyEvent;
        protected
-          procedure ColWidthsChanged; override;
           procedure TopLeftChanged; override;
        public
           function GetMinWidth: integer;
+          procedure ColWidthsChanged; override;
        published
           property OnColWidthsChanged: TNotifyEvent read FColWidthsChanged write FColWidthsChanged;
           property OnTopLeftChanged: TNotifyEvent read FTopLeftChanged write FTopLeftChanged;
@@ -71,6 +71,7 @@ type
          procedure OnTopLeftChanged(Sender: TObject);
          function CreateCheckBox(ACol, ARow: integer): TCheckBox;
          procedure OnClickChBox(Sender: TObject);
+         procedure RefreshChBoxes;
          procedure OnColWidthsChanged(Sender: TObject);
          procedure Resize; override;
          procedure OnCanResizeSplitter(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
@@ -103,7 +104,6 @@ type
          procedure SetDefaultFocus;
          function IsExternal(ARow: integer): boolean;
          procedure SetExternalCol(AExternalCol: integer);
-         procedure RefreshChBoxes;
    end;
 
    TVarDeclareList = class(TDeclareList)

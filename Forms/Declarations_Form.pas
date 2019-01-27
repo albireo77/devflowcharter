@@ -132,7 +132,7 @@ begin
              f := false;
              declareList.SetDefaultFocus;
          end;
-         declareList.RefreshChBoxes;
+         declareList.sgList.ColWidthsChanged;
       end;
    end;
 end;
