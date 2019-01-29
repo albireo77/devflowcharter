@@ -69,6 +69,18 @@ var
    JAVA_BIGDECIMAL_TYPE,
    JAVA_BIGINTEGER_TYPE: integer;
 
+procedure AddLibImport(const ALib: string);
+var
+   importLib: string;
+begin
+   if (FImportLines <> nil) and not ALib.IsEmpty then
+   begin
+      importLib := Format(javaLang.LibEntry, [ALib]);
+      if FImportLines.IndexOf(importLib) = -1 then
+         FImportLines.AddObject(importLib, TInfra.GetLibObject);
+   end;
+end;
+
 function CheckForDataType(const AType: string): boolean;
 var
    varList: TVarDeclareList;
@@ -172,9 +184,7 @@ begin
       if (pNativeType.Lib <> '') and CheckForDataType(pNativeType.Name) then
       begin
          libImport := pNativeType.Lib + '.' + pNativeType.Name;
-         libImport := Format(javaLang.LibEntry, [libImport]);
-         if ALines.IndexOf(libImport) = -1 then
-            ALines.AddObject(libImport, TInfra.GetLibObject);
+         AddLibImport(libImport);
       end;
    end;
 
@@ -188,9 +198,7 @@ begin
          if not typeName.IsEmpty then
          begin
             libImport := libList.Strings[i] + '.' + typeName;
-            libImport := Format(javaLang.LibEntry, [libImport]);
-            if ALines.IndexOf(libImport) = -1 then
-               ALines.AddObject(libImport, TInfra.GetLibObject);
+            AddLibImport(libImport);
          end;
       end;
    finally
@@ -236,10 +244,7 @@ begin
       begin
          name := implList.Names[i];
          if AContents.Contains(name) then
-         begin
-            name := implList.Values[name] + '.' + name;
-            Exit(Format(javaLang.LibEntry, [name]));
-         end;
+            Exit(implList.Values[name] + '.' + name);
       end;
    end;
 end;
@@ -286,9 +291,7 @@ begin
                           if (pNativeType.Lib <> '') and (pNativeType.Name = tokens[b]) then
                           begin
                              libImport := pNativeType.Lib + '.' + pNativeType.Name;
-                             libImport := Format(javaLang.LibEntry, [libImport]);
-                             if (FImportLines <> nil) and (FImportLines.IndexOf(libImport) = -1) then
-                                FImportLines.AddObject(libImport, TInfra.GetLibObject);
+                             AddLibImport(libImport);
                              break;
                           end;
                        end;
@@ -297,8 +300,7 @@ begin
                end;
             end;
             libImport := ExtractImplementer(varType, varInit);
-            if (libImport <> '') and (FImportLines <> nil) and (FImportLines.IndexOf(libImport) = -1) then
-               FImportLines.AddObject(libImport, TInfra.GetLibObject);
+            AddLibImport(libImport);
             if p2 > p1 then
                Delete(varInit, p1+1, p2-p1-1);      // make diamond operator
             varInit := ' = ' + varInit;
@@ -407,7 +409,7 @@ var
    i64: Int64;
    f: double;
    firstChar, lastChar: char;
-   cValue, importLib: string;
+   cValue: string;
 begin
    result := UNKNOWN_TYPE;
    len := AValue.Length;
@@ -465,12 +467,8 @@ begin
                   result := JAVA_STRING_TYPE
                else
                   result := JAVA_DURATION_TYPE;
-               if (result <> JAVA_DURATION_TYPE) and (FImportLines <> nil) then
-               begin
-                  importLib := Format(javaLang.LibEntry, ['java.time.Duration']);
-                  if FImportLines.IndexOf(importLib) = -1 then
-                     FImportLines.AddObject(importLib, TInfra.GetLibObject);
-               end;
+               if result <> JAVA_DURATION_TYPE then
+                  AddLibImport('java.time.Duration');
             end
             else if AValue.StartsWith('Period.') then
             begin
@@ -480,15 +478,22 @@ begin
                   result := JAVA_STRING_TYPE
                else
                   result := JAVA_PERIOD_TYPE;
-               if (result <> JAVA_PERIOD_TYPE) and (FImportLines <> nil) then
-               begin
-                  importLib := Format(javaLang.LibEntry, ['java.time.Period']);
-                  if FImportLines.IndexOf(importLib) = -1 then
-                     FImportLines.AddObject(importLib, TInfra.GetLibObject);
-               end;
+               if result <> JAVA_PERIOD_TYPE then
+                  AddLibImport('java.time.Period');
             end
-            else if AValue = 'Instant.now()' then
-               result := JAVA_INSTANT_TYPE
+            else if AValue.StartsWith('Instant.') then
+            begin
+               if AValue.EndsWith('.getNano()') then
+                  result := JAVA_INT_TYPE
+               else if AValue.EndsWith('.toEpochMilli()') then
+                  result := JAVA_LONG_TYPE
+               else if AValue.EndsWith('.toString()') then
+                  result := JAVA_STRING_TYPE
+               else
+                  result := JAVA_INSTANT_TYPE;
+               if result <> JAVA_INSTANT_TYPE then
+                  AddLibImport('java.time.Instant');
+            end
             else if AValue.Contains('System.currentTimeMillis()') then
                result := JAVA_LONG_TYPE
             else if AValue.Contains('Math.E') or AValue.Contains('Math.PI') then
@@ -511,12 +516,8 @@ begin
                   result := JAVA_STRING_TYPE
                else
                   result := JAVA_BIGDECIMAL_TYPE;
-               if (result <> JAVA_BIGDECIMAL_TYPE) and (FImportLines <> nil) then
-               begin
-                  importLib := Format(javaLang.LibEntry, ['java.math.BigDecimal']);
-                  if FImportLines.IndexOf(importLib) = -1 then
-                     FImportLines.AddObject(importLib, TInfra.GetLibObject);
-               end;
+               if result <> JAVA_BIGDECIMAL_TYPE then
+                  AddLibImport('java.math.BigDecimal');
             end
             else if AValue.Contains('BigInteger') then
             begin
@@ -532,12 +533,8 @@ begin
                   result := JAVA_STRING_TYPE
                else
                   result := JAVA_BIGINTEGER_TYPE;
-               if (result <> JAVA_BIGINTEGER_TYPE) and (FImportLines <> nil) then
-               begin
-                  importLib := Format(javaLang.LibEntry, ['java.math.BigInteger']);
-                  if FImportLines.IndexOf(importLib) = -1 then
-                     FImportLines.AddObject(importLib, TInfra.GetLibObject);
-               end;
+               if result <> JAVA_BIGINTEGER_TYPE then
+                  AddLibImport('java.math.BigInteger');
             end
             else if TryStrToInt64(AValue, i64) then
                result := JAVA_LONG_TYPE
