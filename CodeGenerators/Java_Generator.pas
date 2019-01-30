@@ -76,7 +76,7 @@ begin
    if (FImportLines <> nil) and not ALib.IsEmpty then
    begin
       importLib := Format(javaLang.LibEntry, [ALib]);
-      if FImportLines.IndexOf(importLib) = -1 then
+      if (importLib <> '') and (FImportLines.IndexOf(importLib) = -1) then
          FImportLines.AddObject(importLib, TInfra.GetLibObject);
    end;
 end;
