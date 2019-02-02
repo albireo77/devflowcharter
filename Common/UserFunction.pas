@@ -101,6 +101,7 @@ type
       procedure SetPageCombo(const ACaption: TCaption = '');
       function GetParameters: IEnumerable<TParameter>;
       procedure RefreshElements; override;
+      function GetExternModifier: string; override;
    end;
 
    TUserFunction = class(TComponent, IXMLable, ITabbable, IIdentifiable, ISizeEditable, IWinControl, IGenericComparable)
@@ -482,6 +483,7 @@ begin
    chkArrayType.OnClick := OnChangeType;
 
    CreateExtDeclareChBox(gbHeader, 165, 52, taLeftJustify);
+   chkExternal.AllowGrayed := GInfra.CurrentLang.AllowTransExternFunction;
 
    chkStatic := TCheckBox.Create(gbHeader);
    chkStatic.Parent := gbHeader;
@@ -718,6 +720,18 @@ end;
 function TUserFunctionHeader.GetParameters: IEnumerable<TParameter>;
 begin
    result := GetElements<TParameter>;
+end;
+
+function TUserFunctionHeader.GetExternModifier: string;
+var
+   lang: TLangDefinition;
+begin
+   lang := GInfra.CurrentLang;
+   case chkExternal.State of
+      cbChecked:   result := lang.FunctionHeaderExternal;
+      cbUnchecked: result := lang.FunctionHeaderNotExternal;
+      cbGrayed:    result := lang.FunctionHeaderTransExternal;
+   end;
 end;
 
 procedure TUserFunctionHeader.OnChangeType(Sender: TObject);

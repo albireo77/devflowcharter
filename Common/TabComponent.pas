@@ -94,12 +94,13 @@ type
          procedure RefreshTab;
          procedure UpdateCodeEditor;
          function GetCompareValue(ACompareType: integer): integer;
+         function GetExternModifier: string; virtual; abstract;
    end;
 
 implementation
 
 uses
-   System.SysUtils, Generics.Collections, System.StrUtils, ApplicationCommon,
+   System.SysUtils, Generics.Collections, System.StrUtils, System.Rtti, ApplicationCommon,
    XMLProcessor, BaseEnumerator;
 
 constructor TTabComponent.Create(AParentForm: TPageControlForm);
@@ -476,7 +477,7 @@ var
 begin
    ATag.SetAttribute(NAME_ATTR, Trim(edtName.Text));
    ATag.SetAttribute(ID_ATTR, FId.ToString);
-   ATag.SetAttribute('ext_decl', chkExternal.Checked.ToString);
+   ATag.SetAttribute('ext_decl', TRttiEnumerationType.GetName(chkExternal.State));
    ATag.SetAttribute('library', Trim(edtLibrary.Text));
    for elem in GetElements<TElement> do
       elem.ExportToXMLTag(ATag);
@@ -489,7 +490,7 @@ var
 begin
    edtName.Text := ATag.GetAttribute(NAME_ATTR);
    edtName.OnChange(edtName);
-   chkExternal.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'ext_decl');
+   chkExternal.State := TInfra.DecodeCheckBoxState(ATag.GetAttribute('ext_decl'));
    edtLibrary.Text := ATag.GetAttribute('library');
    tag := TXMLProcessor.FindChildTag(ATag, FElementTypeID);
    while tag <> nil do

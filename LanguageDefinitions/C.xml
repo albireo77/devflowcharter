@@ -390,11 +390,11 @@ Available placeholders:
 
 <!--
 Element VarExternModifier
-Description: Variable declaration modifier depending if variable is external, trans-external or not external.
+Description: Returns value based on whether or not function is declared as external, non-external or trans-external
 Trans-external state is enabled only if AllowTransExternVarConst is set to true.
 In given example, it returns "extern " if variable is external or empty strings in 2 other cases.
 -->
-<VarExternModifier>extern ||</VarExternModifier>
+<VarExternModifier>extern </VarExternModifier>
 
 <!--
 Element VarEntry

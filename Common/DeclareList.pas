@@ -931,10 +931,9 @@ end;
 
 function TDeclareList.ImportItemFromXMLTag(ATag: IXMLElement): TErrorType;
 var
-   lName, ex: string;
+   lName: string;
    lchkExtern: TCheckBox;
    idx: integer;
-   chkState: TCheckBoxState;
 begin
    result := errValidate;
    lName := ATag.GetAttribute(NAME_ATTR).Trim;
@@ -945,14 +944,7 @@ begin
       if FExternalCol <> -1 then
       begin
          lchkExtern := CreateCheckBox(FExternalCol, idx);
-         ex := ATag.GetAttribute(EXTERN_ATTR);
-         if MatchText(ex, ['0', 'false']) then
-            chkState := cbUnchecked
-         else if MatchText(ex, ['-1', 'true']) then
-            chkState := cbChecked
-         else
-            chkState := TRttiEnumerationType.GetValue<TCheckBoxState>(ex);
-         lchkExtern.State := chkState;
+         lchkExtern.State := TInfra.DecodeCheckBoxState(ATag.GetAttribute(EXTERN_ATTR));
          sgList.Objects[FExternalCol, idx] := lchkExtern;
       end;
       result := errNone;

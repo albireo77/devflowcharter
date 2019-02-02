@@ -41,6 +41,8 @@ It may not contain all supported tags. For all supported tags and their descript
     <AllowUnboundedArrays>true</AllowUnboundedArrays>
     <AllowDuplicatedLibs>true</AllowDuplicatedLibs>
     <AllowTransExternVarConst>true</AllowTransExternVarConst>
+    <AllowTransExternFunction>true</AllowTransExternFunction>
+    <AllowTransExternDataType>false</AllowTransExternDataType>
     <CodeIncludeExternDataType>true</CodeIncludeExternDataType>
     <CodeIncludeExternFunction>true</CodeIncludeExternFunction>
     <CodeIncludeExternVarConst>true</CodeIncludeExternVarConst>
@@ -475,10 +477,11 @@ In given example, it returns value "static " if function is static or an empty s
 
 <!--
 Element FunctionHeaderExternalModifier
-Description: Returns value based on whether or not function is declared as external
-It returns value "public " if function is external or "private " if not
+Description: Returns value based on whether or not function is declared as external, non-external or trans-external
+In given example, it returns value "public " if function is external, "private " if is not external or "protected " if is trans-external
+Note that trans-external state is available only if AllowTransExternFunction is set to true
 -->
-<FunctionHeaderExternalModifier>public |private </FunctionHeaderExternalModifier>
+<FunctionHeaderExternalModifier>public |private |protected </FunctionHeaderExternalModifier>
 
 <!--
 Element FunctionHeaderTypeArrayModifier
@@ -632,19 +635,19 @@ Available placeholders:
 
 <!--
 Element VarExternModifier
-Description: Variable declaration modifier depending if variable is external, trans-external or not external.
+Description: Variable declaration modifier depending if variable is external, not external or trans-external.
 Trans-external state is enabled only if AllowTransExternVarConst is set to true.
-In given example, it returns "public " if variable is external, "protected " (trans-external) or "private " (not external)
+In given example, it returns "public " if variable is external, "private " if not external and "protected " if trans-external
 -->
-<VarExternModifier>public |protected |private </VarExternModifier>
+<VarExternModifier>public |private |protected </VarExternModifier>
 
 <!--
 Element ConstExternModifier
-Description: Constant declaration modifier depending if constant is external, trans-external or not external.
+Description: Constant declaration modifier depending if constant is external, not external or trans-external.
 Trans-external state is enabled only if AllowTransExternVarConst is set to true.
-In given example, it returns "public " if constant is external, "protected " (trans-external) or "private " (not external)
+In given example, it returns "public " if constant is external, "private " if not external and "protected " if trans-external
 -->
-<ConstExternModifier>public |protected |private </ConstExternModifier>
+<ConstExternModifier>public |private |protected </ConstExternModifier>
 
 <!--
 Element ConstEntry
@@ -661,10 +664,11 @@ Available placeholders:
 
 <!--
 Element DataTypeExternalModifier
-Description: It returns value based on whether or not datatype is declared as external
-In given example, it returns value "public " if datatype is external or empty string if not
+Description: It returns value based on whether datatype is declared as external, not external or trans-external
+Trans-external state is enabled only if AllowTransExternDataType is set to true.
+In given example, it returns value "public " if datatype is external or empty string otherwise
 -->
-<DataTypeExternalModifier>public |</DataTypeExternalModifier>
+<DataTypeExternalModifier>public </DataTypeExternalModifier>
 
 <!--
 Element UserTypeDesc

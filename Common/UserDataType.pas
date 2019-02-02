@@ -69,6 +69,7 @@ type
       procedure GenerateTree(ANode: TTreeNode);
       function Kind: TUserDataTypeKind;
       function GetFields: IEnumerable<TField>;
+      function GetExternModifier: string; override;
    end;
 
 implementation
@@ -149,6 +150,7 @@ begin
    chkAddPtrType.OnClick := OnClickCh;
 
    CreateExtDeclareChBox(Self, 180, 60);
+   chkExternal.AllowGrayed := GInfra.CurrentLang.AllowTransExternDataType;
 
    rgTypeBox := TRadioGroup.Create(Self);
    rgTypeBox.Parent := Self;
@@ -213,6 +215,18 @@ begin
          field.edtSize.OnChange(field.edtSize);
    end;
    ParentForm.UpdateCodeEditor := true;
+end;
+
+function TUserDataType.GetExternModifier: string;
+var
+   lang: TLangDefinition;
+begin
+   lang := GInfra.CurrentLang;
+   case chkExternal.State of
+      cbChecked:   result := lang.DataTypeExternal;
+      cbUnchecked: result := lang.DataTypeNotExternal;
+      cbGrayed:    result := lang.DataTypeTransExternal;
+   end;
 end;
 
 procedure TUserDataType.Resize;

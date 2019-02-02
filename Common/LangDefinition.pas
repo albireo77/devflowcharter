@@ -128,7 +128,8 @@ type
       FunctionsTemplate,
       FileContentsTemplate,
       DataTypeExternal,
-      DataTypeNonExternal,
+      DataTypeTransExternal,
+      DataTypeNotExternal,
       DataTypeIntMask,
       DataTypeRealMask,
       DataTypeOtherMask,
@@ -167,6 +168,7 @@ type
       StaticLabel,
       RecordLabel,
       FunctionHeaderExternal,
+      FunctionHeaderTransExternal,
       FunctionHeaderNotExternal,
       FunctionHeaderStatic,
       FunctionHeaderNotStatic,
@@ -212,7 +214,9 @@ type
       CodeIncludeExternFunction,
       AllowUnboundedArrays,
       AllowDuplicatedLibs,
-      AllowTransExternVarConst: boolean;
+      AllowTransExternVarConst,
+      AllowTransExternFunction,
+      AllowTransExternDataType: boolean;
       InOutCursorPos,
       FuncBracketsCursorPos: integer;
       ExecuteBeforeGeneration: procedure;
@@ -431,31 +435,31 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTypeModifier1');
    if tag <> nil then
-      TInfra.ExtractTwoPipedValues(tag.Text, FunctionHeaderTypeNone1, FunctionHeaderTypeNotNone1);
+      TInfra.ExtractThreePipedValues(tag.Text, FunctionHeaderTypeNone1, FunctionHeaderTypeNotNone1, val);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTypeModifier2');
    if tag <> nil then
-      TInfra.ExtractTwoPipedValues(tag.Text, FunctionHeaderTypeNone2, FunctionHeaderTypeNotNone2);
+      TInfra.ExtractThreePipedValues(tag.Text, FunctionHeaderTypeNone2, FunctionHeaderTypeNotNone2, val);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderExternalModifier');
    if tag <> nil then
-      TInfra.ExtractTwoPipedValues(tag.Text, FunctionHeaderExternal, FunctionHeaderNotExternal);
+      TInfra.ExtractThreePipedValues(tag.Text, FunctionHeaderExternal, FunctionHeaderNotExternal, FunctionHeaderTransExternal);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderStaticModifier');
    if tag <> nil then
-      TInfra.ExtractTwoPipedValues(tag.Text, FunctionHeaderStatic, FunctionHeaderNotStatic);
+      TInfra.ExtractThreePipedValues(tag.Text, FunctionHeaderStatic, FunctionHeaderNotStatic, val);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTypeArrayModifier');
    if tag <> nil then
-      TInfra.ExtractTwoPipedValues(tag.Text, FunctionHeaderTypeArray, FunctionHeaderTypeNotArray);
+      TInfra.ExtractThreePipedValues(tag.Text, FunctionHeaderTypeArray, FunctionHeaderTypeNotArray, val);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'VarExternModifier');
    if tag <> nil then
-      TInfra.ExtractThreePipedValues(tag.Text, VarExtern, VarTransExtern, VarNotExtern);
+      TInfra.ExtractThreePipedValues(tag.Text, VarExtern, VarNotExtern, VarTransExtern);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ConstExternModifier');
    if tag <> nil then
-      TInfra.ExtractThreePipedValues(tag.Text, ConstExtern, ConstTransExtern, ConstNotExtern);
+      TInfra.ExtractThreePipedValues(tag.Text, ConstExtern, ConstNotExtern, ConstTransExtern);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionTemplate');
    if tag <> nil then
@@ -619,11 +623,11 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ForDoTemplateModifier1');
    if tag <> nil then
-      TInfra.ExtractTwoPipedValues(tag.Text, ForDoAsc1, ForDoDesc1);
+      TInfra.ExtractThreePipedValues(tag.Text, ForDoAsc1, ForDoDesc1, val);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ForDoTemplateModifier2');
    if tag <> nil then
-      TInfra.ExtractTwoPipedValues(tag.Text, ForDoAsc2, ForDoDesc2);
+      TInfra.ExtractThreePipedValues(tag.Text, ForDoAsc2, ForDoDesc2, val);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'TextTemplate');
    if tag <> nil then
@@ -651,7 +655,7 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeExternalModifier');
    if tag <> nil then
-      TInfra.ExtractTwoPipedValues(tag.Text, DataTypeExternal, DataTypeNonExternal);
+      TInfra.ExtractThreePipedValues(tag.Text, DataTypeExternal, DataTypeNotExternal, DataTypeTransExternal);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeIntMask');
    if tag <> nil then
@@ -833,6 +837,8 @@ begin
    AllowUnboundedArrays      := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowUnboundedArrays', AllowUnboundedArrays);
    AllowDuplicatedLibs       := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowDuplicatedLibs', AllowDuplicatedLibs);
    AllowTransExternVarConst  := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowTransExternVarConst', AllowTransExternVarConst);
+   AllowTransExternFunction  := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowTransExternFunction', AllowTransExternFunction);
+   AllowTransExternDataType  := TXMLProcessor.GetBoolFromChildTag(ATag, 'AllowTransExternDataType', AllowTransExternDataType);
    CodeIncludeExternVarConst := TXMLProcessor.GetBoolFromChildTag(ATag, 'CodeIncludeExternVarConst', CodeIncludeExternVarConst);
    CodeIncludeExternDataType := TXMLProcessor.GetBoolFromChildTag(ATag, 'CodeIncludeExternDataType', CodeIncludeExternDataType);
    CodeIncludeExternFunction := TXMLProcessor.GetBoolFromChildTag(ATag, 'CodeIncludeExternFunction', CodeIncludeExternFunction);

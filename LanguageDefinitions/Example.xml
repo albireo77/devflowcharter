@@ -44,6 +44,8 @@ Most of the tags are optional and may be removed if not needed. The most crucial
     <AllowUnboundedArrays>false</AllowUnboundedArrays>
     <AllowDuplicatedLibs>false</AllowDuplicatedLibs>
     <AllowTransExternVarConst>false</AllowTransExternVarConst>
+    <AllowTransExternFunction>false</AllowTransExternFunction>
+    <AllowTransExternDataType>false</AllowTransExternDataType>
     <CodeIncludeExternVarConst>false</CodeIncludeExternVarConst>
     <CodeIncludeExternDataType>false</CodeIncludeExternDataType>
     <CodeIncludeExternFunction>false</CodeIncludeExternFunction>
@@ -484,8 +486,9 @@ In given example, it returns value "static" if function is static or an empty st
 
 <!--
 Element FunctionHeaderExternalModifier
-Description: Returns value based on whether or not function is declared as external
-In given example, it returns value "external " if function is external or "internal " otherwise
+Description: Returns value based on whether or not function is declared as external, non-external or trans-external
+In given example, it returns value "external " if function is external or "internal " if is not external; trans-external state is omitted
+Note that trans-external state is available only if AllowTransExternFunction is set to true
 -->
 <FunctionHeaderExternalModifier>external |internal </FunctionHeaderExternalModifier>
 
@@ -583,11 +586,11 @@ END %s1;
 
 <!--
 Element VarExternModifier
-Description: Variable declaration modifier depending if variable is external, trans-external or not external.
+Description: Variable declaration modifier depending if variable is external, not external or trans-external.
 Trans-external state is enabled only if AllowTransExternVarConst is set to true.
-In given example, it returns "extern " if variable is external or empty strings in 2 other cases.
+In given example, it returns "extern " if variable is external, empty string if not external and "trans extern " if trans-external.
 -->
-<VarExternModifier>extern ||</VarExternModifier>
+<VarExternModifier>extern ||trans extern </VarExternModifier>
 
 <!--
 Element VarEntry
@@ -661,11 +664,11 @@ Available placeholders:
 
 <!--
 Element ConstExternModifier
-Description: Constant declaration modifier depending if constant is external, trans-external or not external.
+Description: Constant declaration modifier depending if constant is external, not external or trans-external.
 Trans-external state is enabled only if AllowTransExternVarConst is set to true.
-In given example, it returns "extern " if constant is external or empty strings in 2 other cases.
+In given example, it returns "extern " if constant is external, empty string if not external and "trans " if trans-external.
 -->
-<ConstExternModifier>extern ||</ConstExternModifier>
+<ConstExternModifier>extern ||trans </ConstExternModifier>
 
 <!--
 Element ConstEntry
@@ -720,8 +723,9 @@ Available placeholders:
 
 <!--
 Element DataTypeExternalModifier
-Description: It returns value based on whether or not datatype is declared as external
-In given example, it returns value "external " if datatype is external or "internal " if not
+Description: It returns value based on whether datatype is declared as external, not external or trans-external.
+Trans-external state is enabled only if AllowTransExternDataType is set to true.
+In given example, it returns value "external " if datatype is external or "internal " if not; tran-external state is omitted
 -->
 <DataTypeExternalModifier>external |internal </DataTypeExternalModifier>
 

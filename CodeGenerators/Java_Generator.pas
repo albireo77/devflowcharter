@@ -345,7 +345,7 @@ begin
       if not name.IsEmpty then
       begin
          indent := GSettings.IndentString;
-         typeAccess := IfThen(dataType.chkExternal.Checked, javaLang.DataTypeExternal, javaLang.DataTypeNonExternal);
+         typeAccess := dataType.GetExternModifier;
          if dataType.Kind = dtRecord then
          begin
             if i > 0 then

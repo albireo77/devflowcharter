@@ -50,7 +50,7 @@ begin
             name := dataType.GetName;
             if (name <> '') and (lang.CodeIncludeExternDataType or not dataType.chkExternal.Checked) then
             begin
-               extModifier := IfThen(dataType.chkExternal.Checked, lang.DataTypeExternal, lang.DataTypeNonExternal);
+               extModifier := dataType.GetExternModifier;
                template.Clear;
                case dataType.Kind of
 
@@ -439,7 +439,7 @@ begin
                hText := ReplaceStr(hText, '%s4', IfThen(isTypeNotNone, func.Header.cbType.Text));
                hText := ReplaceStr(hText, '%s5', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone1, lang.FunctionHeaderTypeNone1));
                hText := ReplaceStr(hText, '%s6', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone2, lang.FunctionHeaderTypeNone2));
-               hText := ReplaceStr(hText, '%s7', IfThen(func.Header.chkExternal.Checked, lang.FunctionHeaderExternal, lang.FunctionHeaderNotExternal));
+               hText := ReplaceStr(hText, '%s7', func.Header.GetExternModifier);
                hText := ReplaceStr(hText, '%s8', typeArray);
                hText := ReplaceStr(hText, '%s9', isStatic);
 
@@ -691,7 +691,7 @@ begin
          result := ReplaceStr(result, '%s3', lType);
          result := ReplaceStr(result, '%s4', desc);
          result := ReplaceStr(result, '%s5', arrayType);
-         result := ReplaceStr(result, '%s6', IfThen(AHeader.chkExternal.Checked, lang.FunctionHeaderExternal, lang.FunctionHeaderNotExternal));
+         result := ReplaceStr(result, '%s6', AHeader.GetExternModifier);
       end;
    end;
 end;
