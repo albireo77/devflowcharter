@@ -1,3 +1,18 @@
+7.5 [02.02.2019]
+- add third state (called transitive) to external checkbox for variables, constants, functions and data types;
+  this change was to enable setting protected access for project items in Java
+
+IMPORTANT NOTES:
+New elements added to language definition files to enable/disable transitive state in external checkboxes:
+- AllowTransExternVarConst
+- AllowTransExternFunction
+- AllowTransExternDataType
+Now up to three states instead of two can be set in the following elements in language definition files:
+- VarExternModifier (example for Java: <VarExternModifier>public |private |protected </VarExternModifier>)
+- ConstExternModifier
+- FunctionHeaderExternalModifier
+- DataTypeExternalModifier
+
 7.4 [27.01.2019]
 - Declarations: add resize contraints
 - Declarations: fix situations where checkboxes were not displayed after opening project
