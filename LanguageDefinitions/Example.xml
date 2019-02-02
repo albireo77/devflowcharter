@@ -43,6 +43,7 @@ Most of the tags are optional and may be removed if not needed. The most crucial
     <AllowUserFunctionOverload>true</AllowUserFunctionOverload>
     <AllowUnboundedArrays>false</AllowUnboundedArrays>
     <AllowDuplicatedLibs>false</AllowDuplicatedLibs>
+    <AllowTransExternVarConst>false</AllowTransExternVarConst>
     <CodeIncludeExternVarConst>false</CodeIncludeExternVarConst>
     <CodeIncludeExternDataType>false</CodeIncludeExternDataType>
     <CodeIncludeExternFunction>false</CodeIncludeExternFunction>
@@ -581,11 +582,12 @@ END %s1;
 <ProgramReturnTemplate>/* Program ends with no value returned. */</ProgramReturnTemplate>
 
 <!--
-Element ExternVarModifier
-Description: Variable declaration modifier depending if variable is external
-In given example, it returns "extern " if variable is external or an empty string otherwise
+Element VarExternModifier
+Description: Variable declaration modifier depending if variable is external, trans-external or not external.
+Trans-external state is enabled only if AllowTransExternVarConst is set to true.
+In given example, it returns "extern " if variable is external or empty strings in 2 other cases.
 -->
-<ExternVarModifier>extern |</ExternVarModifier>
+<VarExternModifier>extern ||</VarExternModifier>
 
 <!--
 Element VarEntry
@@ -596,7 +598,7 @@ Available placeholders:
    %s4 - variable initial value (element VarEntryInit or VarEntryInitExtern) 
    %s5 - used if variable is a record (element FunctionHeaderArgsEntryRecord)
    %s6 - used if variable is an enumeration (element FunctionHeaderArgsEntryEnum)
-   %s7 - string depending if variable is external (element ExternVarModifier)
+   %s7 - string depending if variable is external (element VarExternModifier)
 -->
 <VarEntry>%s7%s5%s6%s2 %s1%s4;</VarEntry>
 
@@ -659,10 +661,11 @@ Available placeholders:
 
 <!--
 Element ConstExternModifier
-Description: Constant declaration modifier depending if constant is external
-In given example it returns "extern " if constant is external or empty string if not
+Description: Constant declaration modifier depending if constant is external, trans-external or not external.
+Trans-external state is enabled only if AllowTransExternVarConst is set to true.
+In given example, it returns "extern " if constant is external or empty strings in 2 other cases.
 -->
-<ConstExternModifier>extern |</ConstExternModifier>
+<ConstExternModifier>extern ||</ConstExternModifier>
 
 <!--
 Element ConstEntry

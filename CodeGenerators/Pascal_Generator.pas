@@ -91,7 +91,7 @@ var
 implementation
 
 uses
-   System.SysUtils, System.StrUtils, System.Classes, Vcl.Graphics, SynHighlighterPas,
+   System.SysUtils, System.StrUtils, System.Classes, Vcl.Graphics, Vcl.StdCtrls, SynHighlighterPas,
    Pascal_Parser, Main_Block, ApplicationCommon, DeclareList, Settings, LocalizationManager,
    LangDefinition, CommonTypes, ParserHelper, YaccLib;
 
@@ -148,7 +148,7 @@ begin
             varType := AVarList.sgList.Cells[VAR_TYPE_COL, i];
             varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
             dCount := AVarList.GetDimensionCount(varName);
-            if (dCount < 0) or AVarList.IsExternal(i) then
+            if (dCount < 0) or (AVarList.GetExternalState(i) = cbChecked) then
                continue;
             if varType = currType then
             begin

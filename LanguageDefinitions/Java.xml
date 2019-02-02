@@ -40,6 +40,7 @@ It may not contain all supported tags. For all supported tags and their descript
     <AllowUserFunctionOverload>true</AllowUserFunctionOverload>
     <AllowUnboundedArrays>true</AllowUnboundedArrays>
     <AllowDuplicatedLibs>true</AllowDuplicatedLibs>
+    <AllowTransExternVarConst>true</AllowTransExternVarConst>
     <CodeIncludeExternDataType>true</CodeIncludeExternDataType>
     <CodeIncludeExternFunction>true</CodeIncludeExternFunction>
     <CodeIncludeExternVarConst>true</CodeIncludeExternVarConst>
@@ -630,11 +631,20 @@ Available placeholders:
 <ConstTemplate>%s1</ConstTemplate>
 
 <!--
-Element ConstExternModifier
-Description: Constant declaration modifier depending if constant is external
-It returns "public" if constant is external or "private" if not
+Element VarExternModifier
+Description: Variable declaration modifier depending if variable is external, trans-external or not external.
+Trans-external state is enabled only if AllowTransExternVarConst is set to true.
+In given example, it returns "public " if variable is external, empty string (trans-external) or "private " (not external)
 -->
-<ConstExternModifier>public|private</ConstExternModifier>
+<VarExternModifier>public ||private </VarExternModifier>
+
+<!--
+Element ConstExternModifier
+Description: Constant declaration modifier depending if constant is external, trans-external or not external.
+Trans-external state is enabled only if AllowTransExternVarConst is set to true.
+In given example, it returns "public " if constant is external, empty string (trans-external) or "private " (not external)
+-->
+<ConstExternModifier>public ||private </ConstExternModifier>
 
 <!--
 Element ConstEntry
@@ -645,7 +655,7 @@ Available placeholders:
    %s3 - string depending if constant is external (element ConstExternModifier)
    %s4 - evaluated type of constant
 -->
-<ConstEntry>%s3 static final %s4 %s1 = %s2;</ConstEntry>
+<ConstEntry>%s3static final %s4 %s1 = %s2;</ConstEntry>
 
 <LibEntry>import %s;</LibEntry>
 

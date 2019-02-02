@@ -324,7 +324,7 @@ begin
             end;
          end;
          if AVarList = GProject.GlobalVars then
-            varAccess := IfThen(AVarList.IsExternal(i), 'public ', 'private ');
+            varAccess := AVarList.GetExternModifier(i);
          varVal := varAccess + varType + varGeneric + varSize + ' ' + varName + varInit + ';';
          ALines.AddObject(varVal, AVarList);
       end;

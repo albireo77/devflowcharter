@@ -24,7 +24,7 @@ interface
 implementation
 
 uses
-   System.SysUtils, System.StrUtils, System.Classes, Base_Block, LangDefinition,
+   System.SysUtils, System.StrUtils, System.Classes, Vcl.StdCtrls, Base_Block, LangDefinition,
    UserFunction, DeclareList, CommonInterfaces, UserDataType, ApplicationCommon,
    ParserHelper, CommonTypes;
 
@@ -250,7 +250,7 @@ begin
       try
          for i := 1 to AConstList.sgList.RowCount-2 do
          begin
-            isExtern := AConstList.IsExternal(i);
+            isExtern := AConstList.GetExternalState(i) = cbChecked;
             if (isExtern and lang.CodeIncludeExternVarConst) or not isExtern then
             begin
                constValue := AConstList.sgList.Cells[CONST_VALUE_COL, i];
@@ -263,7 +263,7 @@ begin
                   constType := TParserHelper.GetTypeAsString(t);
                constStr := ReplaceStr(lang.ConstEntry, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
                constStr := ReplaceStr(constStr, '%s2', constValue);
-               constStr := ReplaceStr(constStr, '%s3', IfThen(isExtern, lang.ConstExtern, lang.ConstNotExtern));
+               constStr := ReplaceStr(constStr, '%s3', AConstList.GetExternModifier(i));
                constStr := ReplaceStr(constStr, '%s4', constType);
                constList.AddObject(constStr, AConstList);
             end;
@@ -304,7 +304,7 @@ begin
             varSize := '';
             name := AVarList.sgList.Cells[VAR_NAME_COL, i];
             typeStr := AVarList.sgList.Cells[VAR_TYPE_COL, i];
-            isExtern := AVarList.IsExternal(i);
+            isExtern := AVarList.GetExternalState(i) = cbChecked;
             if (isExtern and lang.CodeIncludeExternVarConst) or not isExtern then
             begin
                dcount := AVarList.GetDimensionCount(name);
@@ -338,7 +338,7 @@ begin
                   enum := lang.FunctionHeaderArgsEntryEnum;
                varStr := ReplaceStr(varStr, '%s5', lRecord);
                varStr := ReplaceStr(varStr, '%s6', enum);
-               varStr := ReplaceStr(varStr, '%s7', IfThen(isExtern, lang.ExternVar, lang.NonExternVar));
+               varStr := ReplaceStr(varStr, '%s7', AVarList.GetExternModifier(i));
                varList.AddObject(varStr, AVarList);
             end;
          end;

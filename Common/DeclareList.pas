@@ -23,8 +23,7 @@ interface
 
 uses
    Vcl.Controls, OmniXML, Vcl.StdCtrls, Vcl.Grids, System.Classes, System.Types,
-   Vcl.Graphics, Vcl.Forms, Vcl.ExtCtrls, SizeEdit, CommonInterfaces,
-   CommonTypes;
+   Vcl.Graphics, Vcl.Forms, Vcl.ExtCtrls, SizeEdit, CommonInterfaces, CommonTypes;
 
 type
 
@@ -102,8 +101,9 @@ type
          function IsBoldDesc: boolean;
          procedure SetSplitter(ASplitter: TSplitter);
          procedure SetDefaultFocus;
-         function IsExternal(ARow: integer): boolean;
+         function GetExternalState(ARow: integer): TCheckBoxState;
          procedure SetExternalCol(AExternalCol: integer);
+         function GetExternModifier(idx: integer): string; virtual; abstract;
    end;
 
    TVarDeclareList = class(TDeclareList)
@@ -127,6 +127,7 @@ type
          function IsValidLoopVar(const AName: string): boolean;
          function GetDimensionCount(const AVarName: string; AIncludeType: boolean = false): integer;
          function GetDimensions(const AVarName: string; AIncludeType: boolean = false): TArray<string>;
+         function GetExternModifier(idx: integer): string; override;
    end;
 
    TConstDeclareList = class(TDeclareList)
@@ -143,6 +144,7 @@ type
          procedure ExportItemToXMLTag(ATag: IXMLElement; idx: integer); override;
          function GetImportTag(ATag: IXMLElement): IXMLElement; override;
          function GetValue(const AIdent: string): string;
+         function GetExternModifier(idx: integer): string; override;
    end;
 
 const
@@ -162,7 +164,7 @@ const
 implementation
 
 uses
-   System.SysUtils, System.StrUtils, System.UITypes, ApplicationCommon,
+   System.SysUtils, System.StrUtils, System.UITypes, System.Rtti, ApplicationCommon,
    XMLProcessor, Project, UserDataType, LangDefinition, ParserHelper;
 
 constructor TDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
@@ -929,9 +931,10 @@ end;
 
 function TDeclareList.ImportItemFromXMLTag(ATag: IXMLElement): TErrorType;
 var
-   lName: string;
+   lName, ex: string;
    lchkExtern: TCheckBox;
    idx: integer;
+   chkState: TCheckBoxState;
 begin
    result := errValidate;
    lName := ATag.GetAttribute(NAME_ATTR).Trim;
@@ -942,7 +945,14 @@ begin
       if FExternalCol <> -1 then
       begin
          lchkExtern := CreateCheckBox(FExternalCol, idx);
-         lchkExtern.Checked := TXMLProcessor.GetBoolFromAttr(ATag, EXTERN_ATTR);
+         ex := ATag.GetAttribute(EXTERN_ATTR);
+         if MatchText(ex, ['0', 'false']) then
+            chkState := cbUnchecked
+         else if MatchText(ex, ['-1', 'true']) then
+            chkState := cbChecked
+         else
+            chkState := TRttiEnumerationType.GetValue<TCheckBoxState>(ex);
+         lchkExtern.State := chkState;
          sgList.Objects[FExternalCol, idx] := lchkExtern;
       end;
       result := errNone;
@@ -1006,7 +1016,7 @@ end;
 procedure TDeclareList.ExportItemToXMLTag(ATag: IXMLElement; idx: integer);
 begin
    ATag.SetAttribute(NAME_ATTR, sgList.Cells[NAME_COL, idx]);
-   ATag.SetAttribute(EXTERN_ATTR, IsExternal(idx).ToString);
+   ATag.SetAttribute(EXTERN_ATTR, TRttiEnumerationType.GetName(GetExternalState(idx)));
 end;
 
 procedure TVarDeclareList.ExportItemToXMLTag(ATag: IXMLElement; idx: integer);
@@ -1031,11 +1041,35 @@ begin
    inherited ExportItemToXMLTag(tag, idx);
 end;
 
-function TDeclareList.IsExternal(ARow: integer): boolean;
+function TDeclareList.GetExternalState(ARow: integer): TCheckBoxState;
 begin
-   result := false;
-   if (ARow > 0) and (ARow < sgList.RowCount-1) and (FExternalCol <> -1) then
-      result := (sgList.Objects[FExternalCol, ARow] is TCheckBox) and TCheckBox(sgList.Objects[FExternalCol, ARow]).Checked;
+   result := cbUnchecked;
+   if (ARow > 0) and (ARow < sgList.RowCount-1) and (FExternalCol <> -1) and (sgList.Objects[FExternalCol, ARow] is TCheckBox) then
+      result := TCheckBox(sgList.Objects[FExternalCol, ARow]).State;
+end;
+
+function TVarDeclareList.GetExternModifier(idx: integer): string;
+var
+   lang: TLangDefinition;
+begin
+   lang := GInfra.CurrentLang;
+   case GetExternalState(idx) of
+      cbChecked:   result := lang.VarExtern;
+      cbUnchecked: result := lang.VarNotExtern;
+      cbGrayed:    result := lang.VarTransExtern;
+   end;
+end;
+
+function TConstDeclareList.GetExternModifier(idx: integer): string;
+var
+   lang: TLangDefinition;
+begin
+   lang := GInfra.CurrentLang;
+   case GetExternalState(idx) of
+      cbChecked:   result := lang.ConstExtern;
+      cbUnchecked: result := lang.ConstNotExtern;
+      cbGrayed:    result := lang.ConstTransExtern;
+   end;
 end;
 
 procedure TDeclareList.OnClickChBox(Sender: TObject);
@@ -1061,6 +1095,7 @@ begin
    pnt := GetCheckBoxPoint(ACol, ARow);
    result := TCheckBox.Create(sgList.Parent);
    result.Parent := sgList.Parent;
+   result.AllowGrayed := GInfra.CurrentLang.AllowTransExternVarConst;
    result.SetBounds(pnt.X, pnt.Y, 12, 12);
    result.Visible := IsRowVisible(ARow) and (result.BoundsRect.Right < sgList.ClientWidth + sgList.Left + 2);
    result.OnClick := OnClickChBox;

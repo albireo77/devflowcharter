@@ -62,7 +62,8 @@ type
          class procedure UpdateCodeEditor(AObject: TObject = nil);
          class procedure OnKeyDownSelectAll(Sender: TObject; var Key: Word; Shift: TShiftState);
          class procedure InsertLinesIntoList(ADestList, ASourceList: TStringList; AFromLine: integer);
-         class procedure ExtractPipedValues(var ASource: string; var ADest: string);
+         class procedure ExtractTwoPipedValues(const ASource: string; var ADest1, ADest2: string);
+         class procedure ExtractThreePipedValues(const ASource: string; var ADest1, ADest2, ADest3: string);
          class procedure DecrementNodeSiblingOffsets(ANode: TTreeNode);
          class procedure DeleteLinesContaining(ALines: TStrings; const AText: string);
          class function GetScrolledPoint(AMemo: TCustomMemo): TPoint;
@@ -1240,16 +1241,32 @@ begin
    end;
 end;
 
-class procedure TInfra.ExtractPipedValues(var ASource: string; var ADest: string);
+class procedure TInfra.ExtractTwoPipedValues(const ASource: string; var ADest1, ADest2: string);
 var
    i: integer;
+   tokens: TArray<string>;
 begin
-   i := LastDelimiter('|', ASource);
+   tokens := ASource.Split(['|'], 2);
+   i := Length(tokens);
    if i > 0 then
-   begin
-      ADest := Copy(ASource, i+1, MaxInt);
-      SetLength(ASource, i-1);
-   end;
+      ADest1 := tokens[0];
+   if i > 1 then
+      ADest2 := tokens[1];
+end;
+
+class procedure TInfra.ExtractThreePipedValues(const ASource: string; var ADest1, ADest2, ADest3: string);
+var
+   i: integer;
+   tokens: TArray<string>;
+begin
+   tokens := ASource.Split(['|'], 3);
+   i := Length(tokens);
+   if i > 0 then
+      ADest1 := tokens[0];
+   if i > 1 then
+      ADest2 := tokens[1];
+   if i > 2 then
+      ADest3 := tokens[2];
 end;
 
 class function TInfra.GetLibObject: TObject;
