@@ -634,17 +634,17 @@ Available placeholders:
 Element VarExternModifier
 Description: Variable declaration modifier depending if variable is external, trans-external or not external.
 Trans-external state is enabled only if AllowTransExternVarConst is set to true.
-In given example, it returns "public " if variable is external, empty string (trans-external) or "private " (not external)
+In given example, it returns "public " if variable is external, "protected " (trans-external) or "private " (not external)
 -->
-<VarExternModifier>public ||private </VarExternModifier>
+<VarExternModifier>public |protected |private </VarExternModifier>
 
 <!--
 Element ConstExternModifier
 Description: Constant declaration modifier depending if constant is external, trans-external or not external.
 Trans-external state is enabled only if AllowTransExternVarConst is set to true.
-In given example, it returns "public " if constant is external, empty string (trans-external) or "private " (not external)
+In given example, it returns "public " if constant is external, "protected " (trans-external) or "private " (not external)
 -->
-<ConstExternModifier>public ||private </ConstExternModifier>
+<ConstExternModifier>public |protected |private </ConstExternModifier>
 
 <!--
 Element ConstEntry
