@@ -65,6 +65,8 @@ type
          class procedure ExtractThreePipedValues(const ASource: string; var ADest1, ADest2, ADest3: string);
          class procedure DecrementNodeSiblingOffsets(ANode: TTreeNode);
          class procedure DeleteLinesContaining(ALines: TStrings; const AText: string);
+         class procedure MoveWin(AWinControl: TWinControl; x, y: integer);
+         class procedure MoveWinTopZ(AWinControl: TWinControl; x, y: integer);
          class function GetScrolledPoint(AMemo: TCustomMemo): TPoint;
          class function CreateDOSProcess(const ACommand: string; ADir: string = ''): boolean;
          class function ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
@@ -1392,6 +1394,16 @@ begin
       if ALines.Strings[i].Contains(AText) then
          ALines.Delete(i);
    end;
+end;
+
+class procedure TInfra.MoveWin(AWinControl: TWinControl; x, y: integer);
+begin
+   SetWindowPos(AWinControl.Handle, 0, x, y, 0, 0, SWP_NOSIZE or SWP_NOZORDER);
+end;
+
+class procedure TInfra.MoveWinTopZ(AWinControl: TWinControl; x, y: integer);
+begin
+   SetWindowPos(AWinControl.Handle, HWND_TOP, x, y, 0, 0, SWP_NOSIZE);
 end;
 
 function TInfra.ValidateConstId(const AId: string): integer;

@@ -66,7 +66,7 @@ end;
 
 class function TBlockFactory.Create(ATag: IXMLElement; ABranch: TBranch; ATab: TBlockTabSheet = nil): TBlock;
 var
-   left,top,height,width,brx,bh,th,bry,fbry,fbrx,trh,flh,bid: integer;
+   x,y,height,width,brx,bh,th,bry,fbry,fbrx,trh,flh,bid: integer;
    bt: TBlockType;
    attr: string;
 begin
@@ -79,8 +79,8 @@ begin
          bt := TRttiEnumerationType.GetValue<TBlockType>(attr)
       else
          bt := TBlockType(th);
-      left := ATag.GetAttribute('x').ToInteger;
-      top := ATag.GetAttribute('y').ToInteger;
+      x := ATag.GetAttribute('x').ToInteger;
+      y := ATag.GetAttribute('y').ToInteger;
       height := ATag.GetAttribute('h').ToInteger;
       width := ATag.GetAttribute('w').ToInteger;
       brx := ATag.GetAttribute('brx').ToInteger;
@@ -90,24 +90,24 @@ begin
       if ATab <> nil then
       begin
          if bt = blMain then
-            result := TMainBlock.Create(ATab, left, top, width, height, bh, brx, bry, bid);
+            result := TMainBlock.Create(ATab, x, y, width, height, bh, brx, bry, bid);
       end
       else if ABranch <> nil then
       begin
          case bt of
-            blInstr:      result := TInstrBlock.Create(ABranch, left, top, width, height, bid);
-            blMultiInstr: result := TMultiInstrBlock.Create(ABranch, left, top, width, height, bid);
-            blInput:      result := TInputBlock.Create(ABranch, left, top, width, height, bid);
-            blOutput:     result := TOutputBlock.Create(ABranch, left, top, width, height, bid);
-            blFuncCall:   result := TFunctionCallBlock.Create(ABranch, left, top, width, height, bid);
-            blWhile:      result := TWhileDoBlock.Create(ABranch, left, top, width, height, bh, brx, bry, bid);
-            blRepeat:     result := TRepeatUntilBlock.Create(ABranch, left, top, width, height, bh, brx, bry, bid);
-            blIf:         result := TIfBlock.Create(ABranch, left, top, width, height, bh, brx, bry, bid);
-            blFor:        result := TForDoBlock.Create(ABranch, left, top, width, height, bh, brx, bry, bid);
-            blCase:       result := TCaseBlock.Create(ABranch, left, top, width, height, bh, brx, bry, bid);
-            blReturn:     result := TReturnBlock.Create(ABranch, left, top, width, height, bid);
-            blText:       result := TTextBlock.Create(ABranch, left, top, width, height, bid);
-            blFolder:     result := TFolderBlock.Create(ABranch, left, top, width, height, bh, brx, bry, bid);
+            blInstr:      result := TInstrBlock.Create(ABranch, x, y, width, height, bid);
+            blMultiInstr: result := TMultiInstrBlock.Create(ABranch, x, y, width, height, bid);
+            blInput:      result := TInputBlock.Create(ABranch, x, y, width, height, bid);
+            blOutput:     result := TOutputBlock.Create(ABranch, x, y, width, height, bid);
+            blFuncCall:   result := TFunctionCallBlock.Create(ABranch, x, y, width, height, bid);
+            blWhile:      result := TWhileDoBlock.Create(ABranch, x, y, width, height, bh, brx, bry, bid);
+            blRepeat:     result := TRepeatUntilBlock.Create(ABranch, x, y, width, height, bh, brx, bry, bid);
+            blIf:         result := TIfBlock.Create(ABranch, x, y, width, height, bh, brx, bry, bid);
+            blFor:        result := TForDoBlock.Create(ABranch, x, y, width, height, bh, brx, bry, bid);
+            blCase:       result := TCaseBlock.Create(ABranch, x, y, width, height, bh, brx, bry, bid);
+            blReturn:     result := TReturnBlock.Create(ABranch, x, y, width, height, bid);
+            blText:       result := TTextBlock.Create(ABranch, x, y, width, height, bid);
+            blFolder:     result := TFolderBlock.Create(ABranch, x, y, width, height, bh, brx, bry, bid);
             blIfElse:
             begin
                th := ATag.GetAttribute('th').ToInteger;
@@ -115,7 +115,7 @@ begin
                fbry := ATag.GetAttribute('fbry').ToInteger;
                trh := ATag.GetAttribute('trh').ToInteger;
                flh := ATag.GetAttribute('flh').ToInteger;
-               result := TIfElseBlock.Create(ABranch, left, top, width, height, brx, fbrx, bh, th, bry, fbry, flh, trh, bid);
+               result := TIfElseBlock.Create(ABranch, x, y, width, height, brx, fbrx, bh, th, bry, fbry, flh, trh, bid);
             end;
          end;
       end;

@@ -974,7 +974,7 @@ procedure TGroupBlock.LinkBlocks(const idx: integer = PRIMARY_BRANCH_IDX-1);
 var
    block, blockPrev: TBlock;
    i, first, last: integer;
-   topLeft: TPoint;
+   p: TPoint;
    lBranch: TBranch;
 begin
    if GetBranch(idx) <> nil then
@@ -994,10 +994,10 @@ begin
       for block in lBranch do
       begin
          if blockPrev <> nil then
-            topLeft := Point(blockPrev.BottomPoint.X+blockPrev.Left-block.TopHook.X, blockPrev.BoundsRect.Bottom)
+            p := Point(blockPrev.BottomPoint.X+blockPrev.Left-block.TopHook.X, blockPrev.BoundsRect.Bottom)
          else
-            topLeft := Point(lBranch.Hook.X-block.TopHook.X, lBranch.Hook.Y+1);
-         block.SetBounds(topLeft.X, topLeft.Y, block.Width, block.Height);
+            p := Point(lBranch.Hook.X-block.TopHook.X, lBranch.Hook.Y+1);
+         TInfra.MoveWin(block, p.X, p.Y);
          blockPrev := block;
       end;
    end;
@@ -1147,10 +1147,7 @@ begin
       for comment in GetComments(true) do
       begin
          if comment.Visible then
-         begin
-            comment.SetBounds(comment.Left+x-Left, comment.Top+y-Top, comment.Width, comment.Height);
-            comment.BringToFront;
-         end;
+            TInfra.MoveWinTopZ(comment, comment.Left+x-Left, comment.Top+y-Top);
       end;
    end;
 end;
@@ -1616,7 +1613,7 @@ begin
          FDiamond[D_RIGHT] := Point(p.X+2*a, p.Y+a);
          FDiamond[D_TOP] := p;
          FDiamond[D_LEFT_CLOSE] := FDiamond[D_LEFT];
-         edit.SetBounds(p.X-edit.Width div 2, p.Y+a-edit.Height div 2, edit.Width, edit.Height);
+         TInfra.MoveWin(edit, p.X-edit.Width div 2, p.Y+a-edit.Height div 2);
          Canvas.Brush.Style := bsClear;
          lColor2 := GSettings.GetShapeColor(FShape);
          if lColor2 <> GSettings.DesktopColor then
@@ -1985,7 +1982,7 @@ begin
    for comment in GetComments do
    begin
       comment.Visible := false;
-      comment.SetBounds(comment.Left - p.X, comment.Top - p.Y, comment.Width, comment.Height);
+      TInfra.MoveWin(comment, comment.Left - p.X, comment.Top - p.Y);
       comment.PinControl := Self;
       comment.Parent := lPage;
       Inc(result);
@@ -2003,7 +2000,7 @@ begin
    p := ClientToParent(TPoint.Zero, box);
    for comment in GetPinComments do
    begin
-      comment.SetBounds(comment.Left + p.X, comment.Top + p.Y, comment.Width, comment.Height);
+      TInfra.MoveWin(comment, comment.Left + p.X, comment.Top + p.Y);
       comment.Parent := box;
       comment.Visible := true;
       comment.PinControl := nil;

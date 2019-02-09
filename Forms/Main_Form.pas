@@ -359,7 +359,7 @@ begin
    begin
       case ConfirmSave of
          IDYES: miSave.Click;
-         IDCANCEL: exit;
+         IDCANCEL: Exit;
       end;
    end;
    TInfra.SetInitialSettings;
@@ -380,7 +380,7 @@ begin
     begin
        case ConfirmSave of
           IDYES: miSave.Click;
-          IDCANCEL: exit;
+          IDCANCEL: Exit;
        end;
     end;
     filePath := '';
@@ -436,7 +436,7 @@ begin
    begin
       case ConfirmSave of
          IDYES: miSave.Click;
-         IDCANCEL: exit;
+         IDCANCEL: Exit;
       end;
    end;
    TInfra.SetInitialSettings;
@@ -502,7 +502,7 @@ begin
    begin
       block := TBlock(GClpbrd.UndoObject);
       if not block.ParentBlock.CanFocus or
-         not block.ParentBlock.Expanded or ((block is TReturnBlock) and (block.ParentBranch.FindInstanceOf(TReturnBlock) <> -1)) then exit;
+         not block.ParentBlock.Expanded or ((block is TReturnBlock) and (block.ParentBranch.FindInstanceOf(TReturnBlock) <> -1)) then Exit;
       block.ParentBranch.UndoRemove(block);
       block.ParentBlock.ResizeWithDrawLock;
       block.SetVisible(true);
@@ -702,7 +702,7 @@ var
    lParent: TGroupBlock;
    tmpCursor: TCursor;
    comment: TComment;
-   topLeft: TPoint;
+   p: TPoint;
    blockType: TBlockType;
    lock: boolean;
    page: TBlockTabSheet;
@@ -722,21 +722,21 @@ begin
    if (Sender = miPaste) and ((func <> nil) or (comment <> nil)) then
    begin
       page := GProject.GetActivePage;
-      topLeft := page.Box.ScreenToClient(page.Box.PopupMenu.PopupPoint);
+      p := page.Box.ScreenToClient(page.Box.PopupMenu.PopupPoint);
       if func <> nil then
       begin
          if func.Body <> nil then
          begin
             func.Body.Page := page;
-            func.Body.SetBounds(topLeft.X, topLeft.Y, func.Body.Width, func.Body.Height);
+            TInfra.MoveWin(func.Body, p.X, p.Y);
          end;
          miUndoRemoveClick(miUndoRemove);
       end
       else if comment <> nil then
-         comment.Clone(page, @topLeft);
+         comment.Clone(page, @p);
       GProject.SetChanged;
       NavigatorForm.Invalidate;
-      exit;
+      Exit;
    end;
 
    if pmPages.PopupComponent is TBlock then

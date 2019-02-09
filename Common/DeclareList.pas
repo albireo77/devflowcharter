@@ -514,23 +514,23 @@ end;
 
 procedure TDeclareList.OnRowMovedList(Sender: TObject; FromIndex, ToIndex: Longint);
 var
-   control: TControl;
    pnt: TPoint;
+   obj: TObject;
 begin
    TInfra.UpdateCodeEditor;
    if FExternalCol <> -1 then
    begin
-      if sgList.Objects[FExternalCol, FromIndex] is TControl then
+      obj := sgList.Objects[FExternalCol, FromIndex];
+      if obj is TWinControl then
       begin
-         control := TControl(sgList.Objects[FExternalCol, FromIndex]);
          pnt := GetCheckBoxPoint(FExternalCol, ToIndex);
-         control.SetBounds(pnt.X, pnt.Y, control.Width, control.Height);
+         TInfra.MoveWin(TWinControl(obj), pnt.X, pnt.Y);
       end;
-      if sgList.Objects[FExternalCol, ToIndex] is TControl then
+      obj := sgList.Objects[FExternalCol, ToIndex];
+      if obj is TWinControl then
       begin
-         control := TControl(sgList.Objects[FExternalCol, ToIndex]);
          pnt := GetCheckBoxPoint(FExternalCol, FromIndex);
-         control.SetBounds(pnt.X, pnt.Y, control.Width, control.Height);
+         TInfra.MoveWin(TWinControl(obj), pnt.X, pnt.Y);
       end;
    end;
    OnTopLeftChanged(sgList);
@@ -1120,18 +1120,18 @@ end;
 procedure TDeclareList.OnColWidthsChanged(Sender: TObject);
 var
    i, xPos: integer;
-   control: TControl;
+   winControl: TWinControl;
 begin
    if FExternalCol <> -1 then
    begin
       xPos := GetCheckBoxPoint(FExternalCol, 0).X;
       for i := 1 to sgList.RowCount-2 do
       begin
-         if sgList.Objects[FExternalCol, i] is TControl then
+         if sgList.Objects[FExternalCol, i] is TWinControl then
          begin
-            control := TControl(sgList.Objects[FExternalCol, i]);
-            control.Left := xPos;
-            control.Visible := IsRowVisible(i) and (control.BoundsRect.Right < sgList.ClientWidth + sgList.Left + 2);
+            winControl := TWinControl(sgList.Objects[FExternalCol, i]);
+            winControl.Left := xPos;
+            winControl.Visible := IsRowVisible(i) and (winControl.BoundsRect.Right < sgList.ClientWidth + sgList.Left + 2);
          end;
       end;
    end;
@@ -1140,18 +1140,18 @@ end;
 procedure TDeclareList.OnTopLeftChanged(Sender: TObject);
 var
    i: integer;
-   control: TControl;
    pnt: TPoint;
+   obj: TObject;
 begin
    if FExternalCol <> -1 then
    begin
       for i := 1 to sgList.RowCount-2 do
       begin
-         if sgList.Objects[FExternalCol, i] is TControl then
+         obj := sgList.Objects[FExternalCol, i];
+         if obj is TWinControl then
          begin
             pnt := GetCheckBoxPoint(FExternalCol, i);
-            control := TControl(sgList.Objects[FExternalCol, i]);
-            control.SetBounds(pnt.X, pnt.Y, control.Width, control.Height);
+            TInfra.MoveWin(TWinControl(obj), pnt.X, pnt.Y);
          end;
       end;
       RefreshChBoxes;
@@ -1161,16 +1161,16 @@ end;
 procedure TDeclareList.RefreshChBoxes;
 var
    i: integer;
-   control: TControl;
+   winControl: TWinControl;
 begin
    if FExternalCol <> -1 then
    begin
       for i := 1 to sgList.RowCount-2 do
       begin
-         if sgList.Objects[FExternalCol, i] is TControl then
+         if sgList.Objects[FExternalCol, i] is TWinControl then
          begin
-            control := TControl(sgList.Objects[FExternalCol, i]);
-            control.Visible := IsRowVisible(i) and (control.BoundsRect.Right < sgList.ClientWidth + sgList.Left + 2);
+            winControl := TWinControl(sgList.Objects[FExternalCol, i]);
+            winControl.Visible := IsRowVisible(i) and (winControl.BoundsRect.Right < sgList.ClientWidth + sgList.Left + 2);
          end;
       end;
    end;
