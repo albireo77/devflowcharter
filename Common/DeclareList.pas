@@ -513,20 +513,9 @@ begin
 end;
 
 procedure TDeclareList.OnRowMovedList(Sender: TObject; FromIndex, ToIndex: Longint);
-var
-   obj: TObject;
 begin
    TInfra.UpdateCodeEditor;
-   if FExternalCol <> -1 then
-   begin
-      obj := sgList.Objects[FExternalCol, FromIndex];
-      if obj is TWinControl then
-         TInfra.MoveWin(TWinControl(obj), GetCheckBoxPoint(FExternalCol, ToIndex));
-      obj := sgList.Objects[FExternalCol, ToIndex];
-      if obj is TWinControl then
-         TInfra.MoveWin(TWinControl(obj), GetCheckBoxPoint(FExternalCol, FromIndex));
-   end;
-   OnTopLeftChanged(sgList);
+   RefreshCheckBoxes;
 end;
 
 function TDeclareList.FindValidRowByPoint(x, y: integer): integer;
