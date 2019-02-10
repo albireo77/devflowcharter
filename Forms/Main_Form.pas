@@ -728,7 +728,7 @@ begin
          if func.Body <> nil then
          begin
             func.Body.Page := page;
-            TInfra.MoveWin(func.Body, p.X, p.Y);
+            TInfra.MoveWin(func.Body, p);
          end;
          miUndoRemoveClick(miUndoRemove);
       end

@@ -65,7 +65,8 @@ type
          class procedure ExtractThreePipedValues(const ASource: string; var ADest1, ADest2, ADest3: string);
          class procedure DecrementNodeSiblingOffsets(ANode: TTreeNode);
          class procedure DeleteLinesContaining(ALines: TStrings; const AText: string);
-         class procedure MoveWin(AWinControl: TWinControl; x, y: integer);
+         class procedure MoveWin(AWinControl: TWinControl; x, y: integer); overload;
+         class procedure MoveWin(AWinControl: TWinControl; const APoint: TPoint); overload;
          class procedure MoveWinTopZ(AWinControl: TWinControl; x, y: integer);
          class function GetScrolledPoint(AMemo: TCustomMemo): TPoint;
          class function CreateDOSProcess(const ACommand: string; ADir: string = ''): boolean;
@@ -1394,6 +1395,11 @@ begin
       if ALines.Strings[i].Contains(AText) then
          ALines.Delete(i);
    end;
+end;
+
+class procedure TInfra.MoveWin(AWinControl: TWinControl; const APoint: TPoint);
+begin
+   MoveWin(AWinControl, APoint.X, APoint.Y);
 end;
 
 class procedure TInfra.MoveWin(AWinControl: TWinControl; x, y: integer);

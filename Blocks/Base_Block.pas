@@ -997,7 +997,7 @@ begin
             p := Point(blockPrev.BottomPoint.X+blockPrev.Left-block.TopHook.X, blockPrev.BoundsRect.Bottom)
          else
             p := Point(lBranch.Hook.X-block.TopHook.X, lBranch.Hook.Y+1);
-         TInfra.MoveWin(block, p.X, p.Y);
+         TInfra.MoveWin(block, p);
          blockPrev := block;
       end;
    end;

@@ -70,7 +70,7 @@ type
          procedure OnTopLeftChanged(Sender: TObject);
          function CreateCheckBox(ACol, ARow: integer): TCheckBox;
          procedure OnClickChBox(Sender: TObject);
-         procedure RefreshChBoxes;
+         procedure RefreshCheckBoxes;
          procedure OnColWidthsChanged(Sender: TObject);
          procedure Resize; override;
          procedure OnCanResizeSplitter(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
@@ -514,7 +514,6 @@ end;
 
 procedure TDeclareList.OnRowMovedList(Sender: TObject; FromIndex, ToIndex: Longint);
 var
-   pnt: TPoint;
    obj: TObject;
 begin
    TInfra.UpdateCodeEditor;
@@ -522,16 +521,10 @@ begin
    begin
       obj := sgList.Objects[FExternalCol, FromIndex];
       if obj is TWinControl then
-      begin
-         pnt := GetCheckBoxPoint(FExternalCol, ToIndex);
-         TInfra.MoveWin(TWinControl(obj), pnt.X, pnt.Y);
-      end;
+         TInfra.MoveWin(TWinControl(obj), GetCheckBoxPoint(FExternalCol, ToIndex));
       obj := sgList.Objects[FExternalCol, ToIndex];
       if obj is TWinControl then
-      begin
-         pnt := GetCheckBoxPoint(FExternalCol, FromIndex);
-         TInfra.MoveWin(TWinControl(obj), pnt.X, pnt.Y);
-      end;
+         TInfra.MoveWin(TWinControl(obj), GetCheckBoxPoint(FExternalCol, FromIndex));
    end;
    OnTopLeftChanged(sgList);
 end;
@@ -732,7 +725,7 @@ begin
       if FExternalCol <> -1 then
       begin
          sgList.Objects[FExternalCol, result] := CreateCheckBox(FExternalCol, result);
-         RefreshChBoxes;
+         RefreshCheckBoxes;
       end;
    end;
    sgList.Cells[NAME_COL, result] := edtName.Text;
@@ -835,7 +828,7 @@ begin
    if btnAdd <> nil then
    begin
       if FExternalCol <> -1 then
-         RefreshChBoxes;
+         RefreshCheckBoxes;
       btnAdd.Width := gbBox.Width div 3;
       btnImport.SetBounds(btnAdd.BoundsRect.Right+1, btnImport.Top, btnAdd.Width, btnImport.Height);
       btnExport.SetBounds(btnImport.BoundsRect.Right+1, btnExport.Top, btnAdd.Width, btnExport.Height);
@@ -925,7 +918,7 @@ begin
       ImportItemFromXMLTag(tag);
       tag := TXMLProcessor.FindNextTag(tag);
    end;
-   RefreshChBoxes;
+   RefreshCheckBoxes;
    result := errNone;
 end;
 
@@ -1117,30 +1110,10 @@ begin
       result := result + ColWidths[i] + GridLineWidth;
 end;
 
-procedure TDeclareList.OnColWidthsChanged(Sender: TObject);
-var
-   i, xPos: integer;
-   winControl: TWinControl;
-begin
-   if FExternalCol <> -1 then
-   begin
-      xPos := GetCheckBoxPoint(FExternalCol, 0).X;
-      for i := 1 to sgList.RowCount-2 do
-      begin
-         if sgList.Objects[FExternalCol, i] is TWinControl then
-         begin
-            winControl := TWinControl(sgList.Objects[FExternalCol, i]);
-            winControl.Left := xPos;
-            winControl.Visible := IsRowVisible(i) and (winControl.BoundsRect.Right < sgList.ClientWidth + sgList.Left + 2);
-         end;
-      end;
-   end;
-end;
-
-procedure TDeclareList.OnTopLeftChanged(Sender: TObject);
+procedure TDeclareList.RefreshCheckBoxes;
 var
    i: integer;
-   pnt: TPoint;
+   winControl: TWinControl;
    obj: TObject;
 begin
    if FExternalCol <> -1 then
@@ -1150,30 +1123,22 @@ begin
          obj := sgList.Objects[FExternalCol, i];
          if obj is TWinControl then
          begin
-            pnt := GetCheckBoxPoint(FExternalCol, i);
-            TInfra.MoveWin(TWinControl(obj), pnt.X, pnt.Y);
-         end;
-      end;
-      RefreshChBoxes;
-   end;
-end;
-
-procedure TDeclareList.RefreshChBoxes;
-var
-   i: integer;
-   winControl: TWinControl;
-begin
-   if FExternalCol <> -1 then
-   begin
-      for i := 1 to sgList.RowCount-2 do
-      begin
-         if sgList.Objects[FExternalCol, i] is TWinControl then
-         begin
-            winControl := TWinControl(sgList.Objects[FExternalCol, i]);
+            winControl := TWinControl(obj);
+            TInfra.MoveWin(winControl, GetCheckBoxPoint(FExternalCol, i));
             winControl.Visible := IsRowVisible(i) and (winControl.BoundsRect.Right < sgList.ClientWidth + sgList.Left + 2);
          end;
       end;
    end;
+end;
+
+procedure TDeclareList.OnColWidthsChanged(Sender: TObject);
+begin
+   RefreshCheckBoxes;
+end;
+
+procedure TDeclareList.OnTopLeftChanged(Sender: TObject);
+begin
+   RefreshCheckBoxes;
 end;
 
 function TDeclareList.IsRowVisible(ARow: integer): boolean;
