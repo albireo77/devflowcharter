@@ -116,6 +116,7 @@ type
          function IsForeParent(AParent: TObject): boolean;
          function GetErrorMsg(AEdit: TCustomEdit): string;
          procedure SaveInXML2(ATag: IXMLElement);
+         procedure FinishResize;
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -483,9 +484,43 @@ var
    memo: TMemoEx;
 begin
    inherited;
+   FinishResize;
    memo := GetMemoEx;
    if memo <> nil then
       memo.UpdateScrolls;
+end;
+
+procedure TBlock.FinishResize;
+var
+   lock: boolean;
+begin
+   if FHResize or FVResize then
+   begin
+      lock := LockDrawing;
+      try
+         if FHResize then
+         begin
+            if FParentBlock <> nil then
+               FParentBlock.ResizeHorz(true);
+            FHResize := false;
+         end;
+         if FVResize then
+         begin
+            if Self is TGroupBlock then
+               TGroupBlock(Self).LinkBlocks;
+            if FParentBlock <> nil then
+               FParentBlock.ResizeVert(true);
+            FVResize := false;
+         end;
+      finally
+         if lock then
+            UnLockDrawing;
+      end;
+      GProject.SetChanged;
+      if FParentBlock = nil then
+         BringAllToFront;
+      NavigatorForm.Invalidate;
+   end;
 end;
 
 procedure TBlock.CloneComments(ASource: TBlock);
@@ -811,8 +846,6 @@ begin
 end;
 
 procedure TBlock.NCHitTest(var Msg: TWMNCHitTest);
-var
-   lock: boolean;
 begin
    inherited;
    if GetAsyncKeyState(vkLButton) <> 0 then
@@ -839,33 +872,6 @@ begin
             BringToFront;
          end;
       end;
-   end
-   else if FHResize or FVResize then
-   begin
-      lock := LockDrawing;
-      try
-         if FHResize then
-         begin
-            if FParentBlock <> nil then
-               FParentBlock.ResizeHorz(true);
-            FHResize := false;
-         end;
-         if FVResize then
-         begin
-            if Self is TGroupBlock then
-               TGroupBlock(Self).LinkBlocks;
-            if FParentBlock <> nil then
-               FParentBlock.ResizeVert(true);
-            FVResize := false;
-         end;
-      finally
-         if lock then
-            UnLockDrawing;
-      end;
-      GProject.SetChanged;
-      if FParentBlock = nil then
-         BringAllToFront;
-      NavigatorForm.Invalidate;
    end;
 end;
 
