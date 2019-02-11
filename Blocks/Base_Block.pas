@@ -116,7 +116,7 @@ type
          function IsForeParent(AParent: TObject): boolean;
          function GetErrorMsg(AEdit: TCustomEdit): string;
          procedure SaveInXML2(ATag: IXMLElement);
-         procedure FinishResize;
+         procedure ExitSizeMove;
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -484,13 +484,13 @@ var
    memo: TMemoEx;
 begin
    inherited;
-   FinishResize;
+   ExitSizeMove;
    memo := GetMemoEx;
    if memo <> nil then
       memo.UpdateScrolls;
 end;
 
-procedure TBlock.FinishResize;
+procedure TBlock.ExitSizeMove;
 var
    lock: boolean;
 begin
