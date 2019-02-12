@@ -1,3 +1,6 @@
+7.6 [12.02.2019]
+- fix flowchart sometimes not refreshed after resizing block with the mouse 
+
 7.5 [02.02.2019]
 - add third state (called transitive) to external checkbox for variables, constants, functions and data types;
   this change was to enable setting protected access for project items in Java
