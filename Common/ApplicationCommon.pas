@@ -265,13 +265,11 @@ var
 
 constructor TInfra.Create;
 var
-   i: integer;
    searchRec: TSearchRec;
    lang: TLangDefinition;
    lFile, langDir: string;
 begin
    inherited Create;
-   i := 0;
    langDir := GSettings.LanguageDefinitionsDir;
    if FindFirst(langDir + '*.xml', faAnyFile, searchRec) = 0 then
    try
@@ -282,9 +280,7 @@ begin
          begin
             lang.DefFile := lFile;
             lang.LoadCompilerData;
-            SetLength(FLangArray, i+1);
-            FLangArray[i] := lang;
-            i := i + 1;
+            FLangArray := FLangArray + [lang];
          end
          else
             lang.Free;
@@ -292,11 +288,10 @@ begin
    finally
       FindClose(searchRec);
    end;
-   FLangArrayCount := i + 1;
-   SetLength(FLangArray, FLangArrayCount);
-   FLangArray[i] := TLangDefinition.Create;
-   FDummyLang := FLangArray[i];
+   FDummyLang := TLangDefinition.Create;
+   FLangArray := FLangArray + [FDummyLang];
    FCurrentLang := FLangArray[0];
+   FLangArrayCount := Length(FLangArray);
 end;
 
 destructor TInfra.Destroy;
