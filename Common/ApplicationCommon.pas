@@ -276,14 +276,14 @@ begin
       repeat
          lFile := TPath.GetFullPath(langDir + searchRec.Name);
          lang := TLangDefinition.Create;
-         if not TXMLProcessor.ImportFromXMLFile(lang.ImportFromXML, lFile, true).IsEmpty then
+         if TXMLProcessor.ImportFromXMLFile(lang.ImportFromXML, lFile, true).IsEmpty then
+            lang.Free
+         else
          begin
             lang.DefFile := lFile;
             lang.LoadCompilerData;
             FLangArray := FLangArray + [lang];
-         end
-         else
-            lang.Free;
+         end;
       until FindNext(searchRec) <> 0;
    finally
       FindClose(searchRec);

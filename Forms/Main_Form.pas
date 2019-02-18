@@ -1420,55 +1420,45 @@ end;
 
 function TMainForm.BuildFuncMenu(AParent: TMenuItem): integer;
 var
-   i, a, c, d: integer;
+   i: integer;
    lName: string;
    func: TUserFunction;
    Comparer: IComparer<TMenuItem>;
    nativeFunc: PNativeFunction;
+   mItem: TMenuItem;
 begin
    result := 0;
    if AParent <> nil then
    begin
       DestroyFuncMenu;
-      i := 0;
       for func in GProject.GetUserFunctions do
       begin
          lName := func.GetName;
          if not lName.IsEmpty then
          begin
-            i := i + 1;
-            SetLength(FFuncMenu, i);
-            FFuncMenu[i-1] := TMenuItem.Create(AParent);
-            with FFuncMenu[i-1] do
-            begin
-               Caption := lName;
-               if Assigned(GInfra.CurrentLang.GetUserFuncDesc) then
-                  Hint := GInfra.CurrentLang.GetUserFuncDesc(func.Header)
-               else
-                  Hint := GInfra.DummyLang.GetUserFuncDesc(func.Header);
-               if func.Header <> nil then
-                  Name := Trim(func.Header.edtLibrary.Text);
-               OnClick := FuncMenuClick;
-            end;
+            mItem := TMenuItem.Create(AParent);
+            FFuncMenu := FFuncMenu + [mItem];
+            mItem.Caption := lName;
+            if Assigned(GInfra.CurrentLang.GetUserFuncDesc) then
+               mItem.Hint := GInfra.CurrentLang.GetUserFuncDesc(func.Header)
+            else
+               mItem.Hint := GInfra.DummyLang.GetUserFuncDesc(func.Header);
+            if func.Header <> nil then
+               mItem.Name := Trim(func.Header.edtLibrary.Text);
+            mItem.OnClick := FuncMenuClick;
          end;
       end;
-      a := Length(GInfra.CurrentLang.NativeFunctions) + i;
-      SetLength(FFuncMenu, a);
-      d := 0;
-      for c := i to a-1 do
+      for i := 0 to High(GInfra.CurrentLang.NativeFunctions) do
       begin
-         nativeFunc := @GInfra.CurrentLang.NativeFunctions[d];
-         FFuncMenu[c] := TMenuItem.Create(AParent);
-         with FFuncMenu[c] do
-         begin
-            Caption := IfThen(nativeFunc.Caption.IsEmpty, nativeFunc.Name, nativeFunc.Caption);
-            Hint := nativeFunc.Hint;
-            Tag := NativeInt(nativeFunc);
-            OnClick := FuncMenuClick;
-         end;
-         d := d + 1;
+         mItem := TMenuItem.Create(AParent);
+         FFuncMenu := FFuncMenu + [mItem];
+         nativeFunc := @GInfra.CurrentLang.NativeFunctions[i];
+         mItem.Caption := IfThen(nativeFunc.Caption.IsEmpty, nativeFunc.Name, nativeFunc.Caption);
+         mItem.Hint := nativeFunc.Hint;
+         mItem.Tag := NativeInt(nativeFunc);
+         mItem.OnClick := FuncMenuClick;
       end;
-      result := a;
+      result := Length(FFuncMenu);
       if result > 0 then
       begin
          Comparer := TDelegatedComparer<TMenuItem>.Create(
