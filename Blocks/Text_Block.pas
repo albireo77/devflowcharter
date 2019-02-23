@@ -24,9 +24,11 @@ unit Text_Block;
 interface
 
 uses
-   Vcl.Graphics, Vcl.ExtCtrls, Base_Block, CommonInterfaces, MultiLine_Block;
+   Vcl.Graphics, Vcl.ExtCtrls, Vcl.Controls, Base_Block, CommonInterfaces, MultiLine_Block;
 
 type
+
+  THackWinControl = class(TWinControl);
 
   TCorner = class(TPanel)
      protected
@@ -49,7 +51,7 @@ type
 implementation
 
 uses
-   Vcl.Controls, System.Classes, System.Types, ApplicationCommon, CommonTypes;
+   System.Classes, System.Types, ApplicationCommon, CommonTypes;
 
 constructor TTextBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
 begin
@@ -59,7 +61,7 @@ begin
    Font.Color := TEXT_COLOR;
    FCorner := TCorner.Create(Self);
    FCorner.Parent := Self;
-   FCorner.Color := GSettings.GetShapeColor(FShape);
+   FCorner.Color := FStatements.Color;
    FCorner.BevelOuter := bvNone;
    FCorner.Ctl3D := false;
    FCorner.DoubleBuffered := true;
@@ -105,24 +107,23 @@ procedure TTextBlock.ChangeColor(AColor: TColor);
 begin
    inherited ChangeColor(AColor);
    FStatements.Font.Color := Font.Color;
+   FCorner.Color := FStatements.Color;
 end;
 
 procedure TCorner.Paint;
 var
-   lParent: TTextBlock;
    r: TRect;
 begin
    inherited;
-   lParent := TTextBlock(Parent);
    r := ClientRect;
    r.Inflate(0, 0, -1, -1);
 
-   Canvas.Pen.Color := lParent.Color;
+   Canvas.Pen.Color := THackWinControl(Parent).Color;
    Canvas.Brush.Color := Canvas.Pen.Color;
    Canvas.Polygon([r.TopLeft, Point(r.Right, r.Top), r.BottomRight, r.TopLeft]);
 
    Canvas.Pen.Color := GSettings.PenColor;
-   Canvas.Brush.Color := lParent.FStatements.Color;
+   Canvas.Brush.Color := Color;
    Canvas.Polygon([r.TopLeft, r.BottomRight, Point(r.Left, r.Bottom), r.TopLeft]);
 end;
 
