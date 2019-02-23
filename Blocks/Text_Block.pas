@@ -88,29 +88,6 @@ begin
    DrawBlockLabel(5, FStatements.BoundsRect.Bottom+1, GInfra.CurrentLang.LabelText);
 end;
 
-procedure TCorner.Paint;
-var
-   lParent: TTextBlock;
-   r: TRect;
-begin
-   inherited;
-   lParent := TTextBlock(Parent);
-   r := ClientRect;
-   r.Inflate(0, 0, -1, -1);
-   Canvas.Pen.Color := lParent.Color;
-   Canvas.PenPos := r.TopLeft;
-   Canvas.LineTo(r.Right, r.Top);
-   Canvas.LineTo(r.Right, r.Bottom);
-   Canvas.Pen.Color := GSettings.PenColor;
-   Canvas.LineTo(r.Left, r.Top);
-   Canvas.LineTo(r.Left, r.Bottom);
-   Canvas.LineTo(r.Right, r.Bottom);
-   Canvas.Brush.Color := lParent.FStatements.Color;
-   Canvas.FloodFill(r.Left+2, r.Top+4, GSettings.PenColor, fsBorder);
-   Canvas.Brush.Color := lParent.Color;
-   Canvas.FloodFill(r.Left+2, 0, GSettings.PenColor, fsBorder);
-end;
-
 procedure TTextBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
 begin
    inherited MyOnCanResize(Sender, NewWidth, NewHeight, Resize);
@@ -128,6 +105,25 @@ procedure TTextBlock.ChangeColor(AColor: TColor);
 begin
    inherited ChangeColor(AColor);
    FStatements.Font.Color := Font.Color;
+end;
+
+procedure TCorner.Paint;
+var
+   lParent: TTextBlock;
+   r: TRect;
+begin
+   inherited;
+   lParent := TTextBlock(Parent);
+   r := ClientRect;
+   r.Inflate(0, 0, -1, -1);
+
+   Canvas.Pen.Color := lParent.Color;
+   Canvas.Brush.Color := Canvas.Pen.Color;
+   Canvas.Polygon([r.TopLeft, Point(r.Right, r.Top), r.BottomRight, r.TopLeft]);
+
+   Canvas.Pen.Color := GSettings.PenColor;
+   Canvas.Brush.Color := lParent.FStatements.Color;
+   Canvas.Polygon([r.TopLeft, r.BottomRight, Point(r.Left, r.Bottom), r.TopLeft]);
 end;
 
 end.
