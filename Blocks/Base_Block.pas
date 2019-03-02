@@ -382,6 +382,7 @@ begin
    begin
       Visible := ABlock.Visible;
       SetFont(ABlock.Font);
+      FFrame :=  ABlock.FFrame;
       editSrc := ABlock.GetTextControl;
       edit := GetTextControl;
       if edit <> nil then
