@@ -1375,7 +1375,7 @@ begin
       Rectangle(r);
       Pen.Style := psSolid;
       Font.Assign(Self.Font);
-      Font.Color := GSettings.PenColor;
+      Font.Color := Pen.Color;
    end;
 end;
 
