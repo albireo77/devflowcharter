@@ -1357,21 +1357,23 @@ begin
 end;
 
 procedure TBlock.Paint;
+var
+   r: TRect;
 begin
    inherited;
+   r := ClientRect;
    with Canvas do
    begin
       Brush.Style := bsSolid;
       Brush.Color := Self.Color;
-      FillRect(ClipRect);
+      Pen.Style := psClear;
       Pen.Color := GSettings.PenColor;
-      Pen.Width := 1;
       if FFrame then
-      begin
-         Pen.Style := psDashDot;
-         PolyLine([TPoint.Zero, Point(Width-1, 0), Point(Width-1, Height-1), Point(0, Height-1), TPoint.Zero]);
-         Pen.Style := psSolid;
-      end;
+         Pen.Style := psDashDot
+      else
+         r.Inflate(0, 0, 1, 1);
+      Rectangle(r);
+      Pen.Style := psSolid;
       Font.Assign(Self.Font);
       Font.Color := GSettings.PenColor;
    end;
