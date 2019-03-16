@@ -678,7 +678,7 @@ begin
          begin
             page := GetPage(tag1.GetAttribute(PAGE_CAPTION_ATTR));
             if page = nil then
-               page := GetMainPage;
+               page := GetActivePage;
             tmpBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag1, page, nil, result);
             if tmpBlock is TMainBlock then
                body := TMainBlock(tmpBlock);

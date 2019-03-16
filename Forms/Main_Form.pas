@@ -978,7 +978,6 @@ end;
 procedure TMainForm.miImportClick(Sender: TObject);
 var
    comp: TComponent;
-   p: TPoint;
    func: TUserFunction;
    impProc: TXMLImportProc;
    impFunc: boolean;
@@ -1003,9 +1002,7 @@ begin
             if (func <> nil) and func.Active and (func.Body <> nil) and func.Body.Visible then
             begin
                box := func.Body.Page.Box;
-               p := box.ScreenToClient(box.PopupMenu.PopupPoint);
-               func.Body.Left := p.X;
-               func.Body.Top := p.Y;
+               TInfra.MoveWin(func.Body, box.ScreenToClient(box.PopupMenu.PopupPoint));
                box.SetScrollBars;
             end;
          end;
