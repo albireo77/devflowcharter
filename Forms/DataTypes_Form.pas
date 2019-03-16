@@ -132,10 +132,10 @@ begin
    val := StrToIntDef(ATag.GetAttribute('struct_win_h'), -1);
    if val > -1 then
       Height := val;
-   if TXMLProcessor.GetBoolFromAttr(ATag, 'struct_win_show') and GInfra.CurrentLang.EnabledUserDataTypes then
+   if TXMLProcessor.GetBoolFromXMLNode(ATag, 'struct_win_show') and GInfra.CurrentLang.EnabledUserDataTypes then
    begin
       Position := poDesigned;
-      if TXMLProcessor.GetBoolFromAttr(ATag, 'struct_win_min') then
+      if TXMLProcessor.GetBoolFromXMLNode(ATag, 'struct_win_min') then
          WindowState := wsMinimized;
       val := StrToIntDef(ATag.GetAttribute('struct_win_x'), -1);
       if val > -1 then

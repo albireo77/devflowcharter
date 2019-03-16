@@ -1419,7 +1419,7 @@ var
    tag2: IXMLElement;
 {$ENDIF}
 begin
-   if TXMLProcessor.GetBoolFromAttr(ATag, 'src_win_show') and GInfra.CurrentLang.EnabledCodeGenerator then
+   if TXMLProcessor.GetBoolFromXMLNode(ATag, 'src_win_show') and GInfra.CurrentLang.EnabledCodeGenerator then
    begin
       rect.Left := StrToIntDef(ATag.GetAttribute('src_win_x'), 50);
       rect.Top := StrToIntDef(ATag.GetAttribute('src_win_y'), 50);
@@ -1427,7 +1427,7 @@ begin
       rect.Bottom := StrToIntDef(ATag.GetAttribute('src_win_h'), 558);
       Position := poDesigned;
       SetBounds(rect.Left, rect.Top, rect.Right, rect.Bottom);
-      if TXMLProcessor.GetBoolFromAttr(ATag, 'src_win_min') then
+      if TXMLProcessor.GetBoolFromXMLNode(ATag, 'src_win_min') then
          WindowState := wsMinimized;
       showEvent := OnShow;
       OnShow := nil;
@@ -1449,7 +1449,7 @@ begin
          memCodeEditor.Highlighter := GInfra.CurrentLang.HighLighter;
       memCodeEditor.ClearUndo;
       memCodeEditor.SetFocus;
-      memCodeEditor.Modified := TXMLProcessor.GetBoolFromAttr(ATag, 'modified');
+      memCodeEditor.Modified := TXMLProcessor.GetBoolFromXMLNode(ATag, 'modified');
       memCodeEditor.SelStart := StrToIntDef(ATag.GetAttribute('src_win_sel_start'), 0);
       memCodeEditor.SelLength := StrToIntDef(ATag.GetAttribute('src_win_sel_length'), 0);
 {$IFDEF USE_CODEFOLDING}

@@ -325,7 +325,7 @@ var
    rect: TRect;
    topY: integer;
 begin
-   if TXMLProcessor.GetBoolFromAttr(ATag, 'tree_win_show') and GInfra.CurrentLang.EnabledExplorer then
+   if TXMLProcessor.GetBoolFromXMLNode(ATag, 'tree_win_show') and GInfra.CurrentLang.EnabledExplorer then
    begin
       rect.Left := StrToIntDef(ATag.GetAttribute('tree_win_x'), 50);
       rect.Top := StrToIntDef(ATag.GetAttribute('tree_win_y'), 50);
@@ -333,7 +333,7 @@ begin
       rect.Bottom := StrToIntDef(ATag.GetAttribute('tree_win_h'), 574);
       Position := poDesigned;
       SetBounds(rect.Left, rect.Top, rect.Right, rect.Bottom);
-      if TXMLProcessor.GetBoolFromAttr(ATag, 'tree_win_min') then
+      if TXMLProcessor.GetBoolFromXMLNode(ATag, 'tree_win_min') then
          WindowState := wsMinimized;
       Show;
       topY := StrToIntDef(ATag.GetAttribute('tree_top_y'), -2);

@@ -75,10 +75,10 @@ begin
    val := StrToIntDef(ATag.GetAttribute('var_win_w'), -1);
    if val > -1 then
       Width := val;
-   if TXMLProcessor.GetBoolFromAttr(ATag, 'var_win_show') and (GInfra.CurrentLang.EnabledVars or GInfra.CurrentLang.EnabledConsts) then
+   if TXMLProcessor.GetBoolFromXMLNode(ATag, 'var_win_show') and (GInfra.CurrentLang.EnabledVars or GInfra.CurrentLang.EnabledConsts) then
    begin
       Position := poDesigned;
-      if TXMLProcessor.GetBoolFromAttr(ATag, 'var_win_min') then
+      if TXMLProcessor.GetBoolFromXMLNode(ATag, 'var_win_min') then
          WindowState := wsMinimized;
       val := StrToIntDef(ATag.GetAttribute('var_win_x'), -1);
       if val > -1 then

@@ -165,10 +165,10 @@ procedure TNavigatorForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
 var
    x, y, w, h: integer;
 begin
-   if TXMLProcessor.GetBoolFromAttr(ATag, 'nav_win_show') then
+   if TXMLProcessor.GetBoolFromXMLNode(ATag, 'nav_win_show') then
    begin
       Position := poDesigned;
-      if TXMLProcessor.GetBoolFromAttr(ATag, 'nav_win_min') then
+      if TXMLProcessor.GetBoolFromXMLNode(ATag, 'nav_win_min') then
          WindowState := wsMinimized;
       x := StrToIntDef(ATag.GetAttribute('nav_win_x'), 50);
       y := StrToIntDef(ATag.GetAttribute('nav_win_y'), 50);

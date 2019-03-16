@@ -901,13 +901,13 @@ begin
    tag2 := TXMLProcessor.FindChildTag(ATag, 'desc');
    if tag2 <> nil then
       memDesc.Text := ReplaceStr(tag2.Text, LB_PHOLDER, sLineBreak);
-   chkBodyVisible.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'show_body');
-   chkInclDescCode.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'desc_incl');
-   chkInclDescFlow.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'desc_incl_flow');
-   chkArrayType.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'arrayType');
-   chkConstructor.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'constructor');
+   chkBodyVisible.Checked := TXMLProcessor.GetBoolFromXMLNode(ATag, 'show_body');
+   chkInclDescCode.Checked := TXMLProcessor.GetBoolFromXMLNode(ATag, 'desc_incl');
+   chkInclDescFlow.Checked := TXMLProcessor.GetBoolFromXMLNode(ATag, 'desc_incl_flow');
+   chkArrayType.Checked := TXMLProcessor.GetBoolFromXMLNode(ATag, 'arrayType');
+   chkConstructor.Checked := TXMLProcessor.GetBoolFromXMLNode(ATag, 'constructor');
    if chkStatic.Visible then
-      chkStatic.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'static');
+      chkStatic.Checked := TXMLProcessor.GetBoolFromXMLNode(ATag, 'static');
    FLocalVars.ImportFromXMLTag(ATag);
    idx := StrToIntDef(ATag.GetAttribute('descrh'), -1);
    if idx > -1 then
@@ -929,8 +929,8 @@ end;
 procedure TParameter.ImportFromXMLTag(ATag: IXMLElement);
 begin
    inherited ImportFromXMLTag(ATag);
-   chkTable.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'table');
-   chkReference.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'reference');
+   chkTable.Checked := TXMLProcessor.GetBoolFromXMLNode(ATag, 'table');
+   chkReference.Checked := TXMLProcessor.GetBoolFromXMLNode(ATag, 'reference');
    edtDefault.Text := ATag.GetAttribute('default');
 end;
 

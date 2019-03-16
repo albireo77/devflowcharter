@@ -895,7 +895,7 @@ begin
             if lOrigType = nil then
                lOrigType := lType;
             lType.OrigType := lOrigType;
-            lType.IsGeneric := TXMLProcessor.GetBoolFromAttr(tag, 'generic');
+            lType.IsGeneric := TXMLProcessor.GetBoolFromXMLNode(tag, 'generic');
             lType.Lib := tag.GetAttribute('library');
          end;
          tag := TXMLProcessor.FindNextTag(tag);
@@ -960,9 +960,9 @@ begin
             tag1 := TXMLProcessor.FindChildTag(tag, 'Close');
             if tag1 <> nil then
                Close := tag1.GetAttribute('Keyword');
-            AddClose := TXMLProcessor.GetBoolFromAttr(tag, 'AddClose', false);
-            NoSubFolds := TXMLProcessor.GetBoolFromAttr(tag, 'NoSubFolds', true);
-            WholeWords := TXMLProcessor.GetBoolFromAttr(tag, 'WholeWords', true);
+            AddClose := TXMLProcessor.GetBoolFromXMLNode(tag, 'AddClose', false);
+            NoSubFolds := TXMLProcessor.GetBoolFromXMLNode(tag, 'NoSubFolds', true);
+            WholeWords := TXMLProcessor.GetBoolFromXMLNode(tag, 'WholeWords', true);
             if tag.GetAttribute('Type') = 'rtChar' then
                RegionType := rtChar
             else

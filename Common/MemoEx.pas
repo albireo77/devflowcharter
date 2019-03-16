@@ -272,9 +272,9 @@ begin
    begin
       EditFormWidth := StrToIntDef(ATag.GetAttribute('memW'), EditFormWidth);
       EditFormHeight := StrToIntDef(ATag.GetAttribute('memH'), EditFormHeight);
-      HasVScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_vscroll', FHasVScroll);
-      HasHScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_hscroll', FHasHScroll);
-      WordWrap := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_wordwrap', WordWrap);
+      HasVScroll := TXMLProcessor.GetBoolFromXMLNode(ATag, 'mem_vscroll', FHasVScroll);
+      HasHScroll := TXMLProcessor.GetBoolFromXMLNode(ATag, 'mem_hscroll', FHasHScroll);
+      WordWrap := TXMLProcessor.GetBoolFromXMLNode(ATag, 'mem_wordwrap', WordWrap);
       h := StrToIntDef(ATag.GetAttribute('mem_hscroll_pos'), 0);
       v := StrToIntDef(ATag.GetAttribute('mem_vscroll_pos'), 0);
       Perform(EM_LINESCROLL, h, v);

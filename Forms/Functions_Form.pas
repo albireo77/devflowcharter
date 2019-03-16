@@ -132,10 +132,10 @@ begin
    val := StrToIntDef(ATag.GetAttribute('func_win_h'), -1);
    if val > -1 then
       Height := val;
-   if TXMLProcessor.GetBoolFromAttr(ATag, 'func_win_show') and GInfra.CurrentLang.EnabledUserFunctionHeader then
+   if TXMLProcessor.GetBoolFromXMLNode(ATag, 'func_win_show') and GInfra.CurrentLang.EnabledUserFunctionHeader then
    begin
       Position := poDesigned;
-      if TXMLProcessor.GetBoolFromAttr(ATag, 'func_win_min') then
+      if TXMLProcessor.GetBoolFromXMLNode(ATag, 'func_win_min') then
          WindowState := wsMinimized;
       val := StrToIntDef(ATag.GetAttribute('func_win_x'), -1);
       if val > -1 then

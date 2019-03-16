@@ -2328,7 +2328,7 @@ begin
       i := StrToIntDef(ATag.GetAttribute(FONT_STYLE_ATTR), 0);
       SetFontStyle(TInfra.DecodeFontStyle(i));
       
-      Frame := TXMLProcessor.GetBoolFromAttr(ATag, FRAME_ATTR);
+      Frame := TXMLProcessor.GetBoolFromXMLNode(ATag, FRAME_ATTR);
 
       memo := GetMemoEx;
       if memo <> nil then
@@ -2376,7 +2376,7 @@ begin
          SetFoldedText(tag2.Text);
       FFoldParms.Width := StrToIntDef(ATag.GetAttribute('fw'), 140);
       FFoldParms.Height := StrToIntDef(ATag.GetAttribute('fh'), 91);
-      if TXMLProcessor.GetBoolFromAttr(ATag, FOLDED_ATTR) then
+      if TXMLProcessor.GetBoolFromXMLNode(ATag, FOLDED_ATTR) then
          ExpandFold(false);
    end;
 end;

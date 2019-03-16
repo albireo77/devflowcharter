@@ -299,9 +299,9 @@ begin
       if v > 0 then
          Font.Style := TInfra.DecodeFontStyle(v);
       Text := ATag.Text;
-      Visible := TXMLProcessor.GetBoolFromAttr(ATag, 'v');
+      Visible := TXMLProcessor.GetBoolFromXMLNode(ATag, 'v');
       FPinControl := APinControl;
-      IsHeader := TXMlProcessor.GetBoolFromAttr(ATag, IS_HEADER_ATTR);
+      IsHeader := TXMlProcessor.GetBoolFromXMLNode(ATag, IS_HEADER_ATTR);
       GetFromXML(ATag);
    end;
 end;
