@@ -276,7 +276,7 @@ begin
       repeat
          lFile := TPath.GetFullPath(langDir + searchRec.Name);
          lang := TLangDefinition.Create;
-         if TXMLProcessor.ImportFromXMLFile(lang.ImportFromXML, lFile, true).IsEmpty then
+         if TXMLProcessor.ImportFromXMLFile(lang.ImportFromXML, impAll, lFile, true).IsEmpty then
             lang.Free
          else
          begin

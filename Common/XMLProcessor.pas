@@ -31,14 +31,17 @@ uses
 type
 
    TXMLExportProc = procedure(ATag: IXMLElement) of object;
-   TXMLImportProc = function(ATag: IXMLElement; ASelect: boolean = false): TErrorType of object;
+   TXMLImportProc = function(ATag: IXMLElement; AImportMode: TImportMode): TErrorType of object;
 
    TXMLProcessor = class(TObject)
    private
       class function DialogXMLFile(ADialog: TOpenDialog; const AFileName: string = ''): string;
    public
       class function ExportToXMLFile(AExportProc: TXMLExportProc; const AFilePath: string = ''): TErrorType;
-      class function ImportFromXMLFile(AImportProc: TXMLImportProc; const AFileName: string = ''; APreserveSpace: boolean = false): string;
+      class function ImportFromXMLFile(AImportProc: TXMLImportProc;
+                                       AImportMode: TImportMode;
+                                       const AFileName: string = '';
+                                       APreserveSpace: boolean = false): string;
       class function FindChildTag(ATag: IXMLElement; const AName: string): IXMLElement;
       class function FindNextTag(ATag: IXMLElement): IXMLElement;
       class procedure AddText(ATag: IXMLElement; const AText: string);
@@ -243,7 +246,10 @@ begin
       result := ADialog.FileName;
 end;
 
-class function TXMLProcessor.ImportFromXMLFile(AImportProc: TXMLImportProc; const AFileName: string = ''; APreserveSpace: boolean = false): string;
+class function TXMLProcessor.ImportFromXMLFile(AImportProc: TXMLImportProc;
+                                               AImportMode: TImportMode;
+                                               const AFileName: string = '';
+                                               APreserveSpace: boolean = false): string;
 var
    docXML: IXMLDocument;
    errText: string;
@@ -257,12 +263,12 @@ begin
       if result.IsEmpty then
          result := TXMLProcessor.DialogXMLFile(TInfra.GetMainForm.OpenDialog);
       if result.IsEmpty then
-         exit;
+         Exit;
       docXML := CreateXMLDoc;
       docXML.PreserveWhiteSpace := APreserveSpace;
       try
          if docXML.Load(result) then
-            status := AImportProc(docXML.DocumentElement)
+            status := AImportProc(docXML.DocumentElement, AImportMode)
          else
          begin
             status := errSyntax;

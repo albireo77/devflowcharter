@@ -49,6 +49,8 @@ type
 
    TColorShape = (shpNone, shpEllipse, shpParallel, shpDiamond, shpRectangle, shpRoadSign, shpRoutine, shpFolder);
 
+   TImportMode = (impSelect, impAll);
+
    TCodeRange = record
       FirstRow,
       LastRow: integer;

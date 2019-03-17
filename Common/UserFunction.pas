@@ -137,7 +137,7 @@ implementation
 
 uses
    Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, Vcl.Grids, ApplicationCommon,
-   Main_Form, XMLProcessor, LangDefinition, Navigator_Form, BlockTabSheet;
+   Main_Form, XMLProcessor, LangDefinition, Navigator_Form, BlockTabSheet, CommonTypes;
 
 constructor TUserFunction.Create(AFunctionHeader: TUserFunctionHeader; AFunctionBody: TMainBlock);
 begin
@@ -908,7 +908,7 @@ begin
    chkConstructor.Checked := TXMLProcessor.GetBoolFromXMLNode(ATag, 'constructor');
    if chkStatic.Visible then
       chkStatic.Checked := TXMLProcessor.GetBoolFromXMLNode(ATag, 'static');
-   FLocalVars.ImportFromXMLTag(ATag);
+   FLocalVars.ImportFromXMLTag(ATag, impAll);
    idx := StrToIntDef(ATag.GetAttribute('descrh'), -1);
    if idx > -1 then
       gbDesc.Height := idx;

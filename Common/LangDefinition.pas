@@ -244,7 +244,7 @@ type
       property Name: string read FName;
       constructor Create;
       destructor Destroy; override;
-      function ImportFromXML(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
+      function ImportFromXML(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
       function GetTemplate(AClass: TClass): string;
       function GetTemplateExpr(AClass: TClass): string;
       function GetArraySizes(ASizeEdit: TSizeEdit): string;
@@ -321,7 +321,7 @@ begin
    inherited;
 end;
 
-function TLangDefinition.ImportFromXML(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
+function TLangDefinition.ImportFromXML(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
 var
    tag: IXMLElement;
    val, lName, kinds: string;

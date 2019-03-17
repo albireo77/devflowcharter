@@ -390,7 +390,7 @@ begin
     tmpCursor := Screen.Cursor;
     Screen.Cursor := crHourGlass;
     GProject := TProject.GetInstance;
-    filePath := TXMLProcessor.ImportFromXMLFile(GProject.ImportFromXMLTag, filePath);
+    filePath := TXMLProcessor.ImportFromXMLFile(GProject.ImportFromXMLTag, impAll, filePath);
     GProject.ChangingOn := true;
     GProject.SetNotChanged;
     Screen.Cursor := tmpCursor;
@@ -994,7 +994,7 @@ begin
          impProc := GProject.ImportUserFunctionsFromXML;
          impFunc := true;
       end;
-      if not TXMLProcessor.ImportFromXMLFile(impProc).IsEmpty then
+      if not TXMLProcessor.ImportFromXMLFile(impProc, impSelect).IsEmpty then
       begin
          if impFunc then
          begin

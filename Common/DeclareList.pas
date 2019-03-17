@@ -88,7 +88,7 @@ type
          property Id: integer read GetId;
          constructor Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
          destructor Destroy; override;
-         function ImportFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
+         function ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
          function ImportItemFromXMLTag(ATag: IXMLElement): TErrorType; virtual;
          procedure ExportItemToXMLTag(ATag: IXMLElement; idx: integer); virtual;
          procedure ExportToXMLTag(ATag: IXMLElement);
@@ -620,7 +620,7 @@ end;
 
 procedure TDeclareList.OnClickImport(Sender: TObject);
 begin
-   if not TXMLProcessor.ImportFromXMLFile(ImportFromXMLTag).IsEmpty then
+   if not TXMLProcessor.ImportFromXMLFile(ImportFromXMLTag, impAll).IsEmpty then
       TInfra.UpdateCodeEditor;
 end;
 
@@ -880,7 +880,7 @@ begin
    result := TXMLProcessor.FindChildTag(ATag, CONST_TAG);
 end;
 
-function TDeclareList.ImportFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
+function TDeclareList.ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
 var
    tag: IXMLElement;
    i: integer;

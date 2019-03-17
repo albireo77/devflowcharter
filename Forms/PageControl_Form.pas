@@ -50,7 +50,7 @@ type
     procedure pgcTabsChange(Sender: TObject); virtual;
     procedure miExportAllClick(Sender: TObject);
     procedure ExportTabsToXMLTag(ATag: IXMLElement);
-    function ImportTabsFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType; virtual; abstract;
+    function ImportTabsFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TErrorType; virtual; abstract;
     procedure FormDeactivate(Sender: TObject); virtual;
     procedure RefreshTabs; virtual;
     procedure pgcTabsDragDrop(Sender, Source: TObject; X, Y: Integer);
@@ -173,7 +173,7 @@ end;
 
 procedure TPageControlForm.miImportClick(Sender: TObject);
 begin
-   if not TXMLProcessor.ImportFromXMLFile(ImportTabsFromXMLTag).IsEmpty then
+   if not TXMLProcessor.ImportFromXMLFile(ImportTabsFromXMLTag, impSelect).IsEmpty then
       TInfra.UpdateCodeEditor;
 end;
 

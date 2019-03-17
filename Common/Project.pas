@@ -85,9 +85,9 @@ type
       procedure ExportToGraphic(AGraphic: TGraphic);
       procedure ExportToXMLTag(ATag: IXMLElement);
       function ExportToXMLFile(const AFile: string): TErrorType;
-      function ImportFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
-      function ImportUserFunctionsFromXML(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
-      function ImportUserDataTypesFromXML(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
+      function ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
+      function ImportUserFunctionsFromXML(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
+      function ImportUserDataTypesFromXML(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
       function ImportCommentsFromXML(ATag: IXMLElement): integer;
       procedure ImportPagesFromXML(ATag: IXMLElement);
       function GetMainBlock: TMainBlock;
@@ -499,7 +499,7 @@ begin
    end;
 end;
 
-function TProject.ImportFromXMLTag(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
+function TProject.ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
 var
    s, langName, ver: string;
    baseForm: TBaseForm;
@@ -533,16 +533,16 @@ begin
    end;
 
    if FGlobalConsts <> nil then
-      FGlobalConsts.ImportFromXMLTag(ATag);
+      FGlobalConsts.ImportFromXMLTag(ATag, impAll);
 
-   ImportUserDataTypesFromXML(ATag);
+   ImportUserDataTypesFromXML(ATag, impAll);
    ImportPagesFromXML(ATag);
 
-   result := ImportUserFunctionsFromXML(ATag);
+   result := ImportUserFunctionsFromXML(ATag, impAll);
    if result = errNone then
    begin
       if FGlobalVars <> nil then
-         FGlobalVars.ImportFromXMLTag(ATag);
+         FGlobalVars.ImportFromXMLTag(ATag, impAll);
       PopulateDataTypeCombos;
       RefreshSizeEdits;
       RefreshStatements;
@@ -630,7 +630,7 @@ begin
    end;
 end;
 
-function TProject.ImportUserFunctionsFromXML(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
+function TProject.ImportUserFunctionsFromXML(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
 var
    tag, tag1: IXMLElement;
    header: TUserFunctionHeader;
@@ -638,12 +638,11 @@ var
    tmpBlock: TBlock;
    page: TTabSheet;
    selectList: TStringList;
-   pageName: string;
 begin
    result := errNone;
    selectList := nil;
    try
-      if ASelect then
+      if AImportMode = impSelect then
       begin
          selectList := GetSelectList(ATag, 'ImportFunc', FUNCTION_TAG, HEADER_TAG);
          if (selectList <> nil) and (selectList.Count = 0) then
@@ -669,7 +668,7 @@ begin
                header.RefreshTab;
             end;
          end
-         else if ASelect then
+         else if AImportMode = impSelect then
          begin
             tag := TXMLProcessor.FindNextTag(tag);
             continue;
@@ -677,15 +676,14 @@ begin
          tag1 := TXMLProcessor.FindChildTag(tag, BLOCK_TAG);
          if (tag1 <> nil) and GInfra.CurrentLang.EnabledUserFunctionBody then
          begin
-            pageName := tag1.GetAttribute(PAGE_CAPTION_ATTR);
-            if pageName.IsEmpty then
-               page := GetMainPage
-            else
+            if AImportMode = impAll then
             begin
-               page := GetPage(pageName);
+               page := GetPage(tag1.GetAttribute(PAGE_CAPTION_ATTR));
                if page = nil then
-                  page := GetActivePage;
-            end;
+                  page := GetMainPage;
+            end
+            else
+               page := GetActivePage;
             tmpBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag1, page, nil, result);
             if tmpBlock is TMainBlock then
                body := TMainBlock(tmpBlock);
@@ -701,7 +699,7 @@ begin
    end;
 end;
 
-function TProject.ImportUserDataTypesFromXML(ATag: IXMLElement; ASelect: boolean = false): TErrorType;
+function TProject.ImportUserDataTypesFromXML(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
 var
    dataType: TUserDataType;
    tag: IXMLElement;
@@ -711,11 +709,11 @@ begin
    selectList := nil;
    if GInfra.CurrentLang.EnabledUserDataTypes then
    try
-      if ASelect then
+      if AImportMode = impSelect then
       begin
          selectList := GetSelectList(ATag, 'ImportType', DATATYPE_TAG);
          if (selectList <> nil) and (selectList.Count = 0) then
-            exit;
+            Exit;
       end;
       tag := TXMLProcessor.FindChildTag(ATag, DATATYPE_TAG);
       while tag <> nil do
