@@ -638,6 +638,7 @@ var
    tmpBlock: TBlock;
    page: TTabSheet;
    selectList: TStringList;
+   pageName: string;
 begin
    result := errNone;
    selectList := nil;
@@ -646,7 +647,7 @@ begin
       begin
          selectList := GetSelectList(ATag, 'ImportFunc', FUNCTION_TAG, HEADER_TAG);
          if (selectList <> nil) and (selectList.Count = 0) then
-            exit;
+            Exit;
       end;
       tag := TXMLProcessor.FindChildTag(ATag, FUNCTION_TAG);
       while (tag <> nil) and (result = errNone) do
@@ -676,9 +677,15 @@ begin
          tag1 := TXMLProcessor.FindChildTag(tag, BLOCK_TAG);
          if (tag1 <> nil) and GInfra.CurrentLang.EnabledUserFunctionBody then
          begin
-            page := GetPage(tag1.GetAttribute(PAGE_CAPTION_ATTR));
-            if page = nil then
-               page := GetActivePage;
+            pageName := tag1.GetAttribute(PAGE_CAPTION_ATTR);
+            if pageName.IsEmpty then
+               page := GetMainPage
+            else
+            begin
+               page := GetPage(pageName);
+               if page = nil then
+                  page := GetActivePage;
+            end;
             tmpBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag1, page, nil, result);
             if tmpBlock is TMainBlock then
                body := TMainBlock(tmpBlock);
