@@ -999,11 +999,12 @@ begin
          if impFunc then
          begin
             func := GProject.LastUserFunction;
-            if (func <> nil) and func.Active and (func.Body <> nil) and func.Body.Visible then
+            if (func <> nil) and func.Active and (func.Body <> nil) then
             begin
                box := func.Body.Page.Box;
                TInfra.MoveWin(func.Body, box.ScreenToClient(box.PopupMenu.PopupPoint));
-               box.SetScrollBars;
+               if func.Body.Visible then
+                  box.SetScrollBars;
             end;
          end;
          TInfra.UpdateCodeEditor;
