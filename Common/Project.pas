@@ -60,7 +60,6 @@ type
       function GetSelectList(ATag: IXMLElement; const ALabel: string; const ATagName: string; const ATagName2: string = ''): TStringList;
    public
       Name: string;
-      LastUserFunction: TUserFunction;
       ChangingOn: boolean;
       HeaderComment: TComment;
       property IntegerTypesSet: TTypesSet read FIntegerTypesSet;
@@ -634,21 +633,24 @@ function TProject.ImportUserFunctionsFromXML(ATag: IXMLElement; AImportMode: TIm
 var
    tag, tag1: IXMLElement;
    header: TUserFunctionHeader;
-   body: TMainBlock;
+   body, lastBody: TMainBlock;
    tmpBlock: TBlock;
    page: TTabSheet;
    selectList: TStringList;
+   box: TScrollBoxEx;
+   p: TPoint;
 begin
    result := errNone;
    selectList := nil;
    try
-      if AImportMode = impSelect then
+      if AImportMode <> impAll then
       begin
          selectList := GetSelectList(ATag, 'ImportFunc', FUNCTION_TAG, HEADER_TAG);
          if (selectList <> nil) and (selectList.Count = 0) then
             Exit;
       end;
       tag := TXMLProcessor.FindChildTag(ATag, FUNCTION_TAG);
+      lastBody := nil;
       while (tag <> nil) and (result = errNone) do
       begin
          header := nil;
@@ -668,7 +670,7 @@ begin
                header.RefreshTab;
             end;
          end
-         else if AImportMode = impSelect then
+         else if AImportMode <> impAll then
          begin
             tag := TXMLProcessor.FindNextTag(tag);
             continue;
@@ -689,10 +691,22 @@ begin
                body := TMainBlock(tmpBlock);
          end;
          if result = errNone then
-            TUserFunction.Create(header, body)
+         begin
+            TUserFunction.Create(header, body);
+            lastBody := body;
+         end
          else
             header.Free;
          tag := TXMLProcessor.FindNextTag(tag);
+      end;
+      if (AImportMode = impSelectPopup) and (lastBody <> nil) then
+      begin
+         box := lastBody.Page.Box;
+         p := box.PopupMenu.PopupPoint;
+         if not InvalidPoint(p) then
+            TInfra.MoveWin(lastBody, box.ScreenToClient(p));
+         if lastBody.Visible then
+            box.SetScrollBars;
       end;
    finally
       selectList.Free;
@@ -709,7 +723,7 @@ begin
    selectList := nil;
    if GInfra.CurrentLang.EnabledUserDataTypes then
    try
-      if AImportMode = impSelect then
+      if AImportMode <> impAll then
       begin
          selectList := GetSelectList(ATag, 'ImportType', DATATYPE_TAG);
          if (selectList <> nil) and (selectList.Count = 0) then

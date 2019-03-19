@@ -173,7 +173,7 @@ end;
 
 procedure TPageControlForm.miImportClick(Sender: TObject);
 begin
-   if not TXMLProcessor.ImportFromXMLFile(ImportTabsFromXMLTag, impSelect).IsEmpty then
+   if not TXMLProcessor.ImportFromXMLFile(ImportTabsFromXMLTag, impSelectTab).IsEmpty then
       TInfra.UpdateCodeEditor;
 end;
 

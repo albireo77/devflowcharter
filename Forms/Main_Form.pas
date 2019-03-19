@@ -978,37 +978,17 @@ end;
 procedure TMainForm.miImportClick(Sender: TObject);
 var
    comp: TComponent;
-   func: TUserFunction;
    impProc: TXMLImportProc;
-   impFunc: boolean;
-   box: TScrollBoxEx;
 begin
    if GProject <> nil then
    begin
-      impFunc := false;
       comp := pmPages.PopupComponent;
       if (comp is TBlock) and (TBlock(comp).Ired >= 0) then
          impProc := TBlock(comp).ImportFromXMLTag
       else
-      begin
          impProc := GProject.ImportUserFunctionsFromXML;
-         impFunc := true;
-      end;
-      if not TXMLProcessor.ImportFromXMLFile(impProc, impSelect).IsEmpty then
-      begin
-         if impFunc then
-         begin
-            func := GProject.LastUserFunction;
-            if (func <> nil) and func.Active and (func.Body <> nil) then
-            begin
-               box := func.Body.Page.Box;
-               TInfra.MoveWin(func.Body, box.ScreenToClient(box.PopupMenu.PopupPoint));
-               if func.Body.Visible then
-                  box.SetScrollBars;
-            end;
-         end;
+      if not TXMLProcessor.ImportFromXMLFile(impProc, impSelectPopup).IsEmpty then
          TInfra.UpdateCodeEditor;
-      end;
    end;
 end;
 

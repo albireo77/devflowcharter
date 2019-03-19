@@ -49,7 +49,7 @@ type
 
    TColorShape = (shpNone, shpEllipse, shpParallel, shpDiamond, shpRectangle, shpRoadSign, shpRoutine, shpFolder);
 
-   TImportMode = (impSelect, impAll);
+   TImportMode = (impSelectTab, impSelectPopup, impAll);
 
    TCodeRange = record
       FirstRow,

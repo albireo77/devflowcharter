@@ -146,7 +146,6 @@ begin
    FBody := AFunctionBody;
    FHeader := AFunctionHeader;
    FActive := true;
-   GProject.LastUserFunction := Self;
    if FHeader <> nil then
    begin
       FHeader.FUserFunction := Self;
@@ -167,8 +166,6 @@ end;
 
 destructor TUserFunction.Destroy;
 begin
-   if GProject.LastUserFunction = Self then
-      GProject.LastUserFunction := nil;
    FBody.Free;
    FBody := nil;
    FHeader.Free;
