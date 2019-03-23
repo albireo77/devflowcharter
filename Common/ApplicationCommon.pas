@@ -704,7 +704,11 @@ end;
 
 class function TInfra.IsValidControl(AObject: TObject): boolean;
 begin
-  result := (AObject is TControl) and (TControl(AObject).Parent <> nil);
+   try
+      result := (AObject is TControl) and (TControl(AObject).Parent <> nil);
+   except
+      result := false;
+   end;
 end;
 
 class function TInfra.GetComboMaxWidth(ACombo: TComboBox): integer;
