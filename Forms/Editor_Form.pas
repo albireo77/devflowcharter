@@ -521,7 +521,7 @@ begin
    if dispCoord.Row > 0 then
    begin
       obj := memCodeEditor.Lines.Objects[dispCoord.Row-1];
-      miFindProj.Enabled := TInfra.IsValid(obj) and Supports(obj, IFocusable, FFocusControl) and FFocusControl.CanBeFocused;
+      miFindProj.Enabled := TInfra.IsValidControl(obj) and Supports(obj, IFocusable, FFocusControl) and FFocusControl.CanBeFocused;
    end;
 end;
 
@@ -1075,7 +1075,7 @@ begin
    idInfo := TIdentInfo.New;
    obj := memCodeEditor.Lines.Objects[p.Line-1];
    idInfo.Ident := w;
-   if TInfra.IsValid(obj) and (obj is TBlock) then
+   if TInfra.IsValidControl(obj) and (obj is TBlock) then
       block := TBlock(obj);
    TParserHelper.GetParameterInfo(TInfra.GetFunctionHeader(block), idInfo);
    if idInfo.TType <> NOT_DEFINED then
@@ -1395,7 +1395,7 @@ begin
          begin
             tag2 := ATag.OwnerDocument.CreateElement('text_line');
             TXMLProcessor.AddCDATA(tag2, lines[i]);
-            if TInfra.IsValid(lines.Objects[i]) and Supports(lines.Objects[i], IIdentifiable, idObject) then
+            if TInfra.IsValidControl(lines.Objects[i]) and Supports(lines.Objects[i], IIdentifiable, idObject) then
                tag2.SetAttribute(ID_ATTR, idObject.Id.ToString);
             ATag.AppendChild(tag2);
          end;

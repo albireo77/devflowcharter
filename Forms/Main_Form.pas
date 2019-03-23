@@ -569,8 +569,8 @@ begin
    miMemoWordWrap.Checked := False;
    miMemoAlignRight.Checked := False;
 
-   isFunction := TInfra.IsValid(GClpbrd.UndoObject) and (GClpbrd.UndoObject is TUserFunction);
-   miPaste.Enabled := TInfra.IsValid(GClpbrd.Instance) or isFunction;
+   isFunction := GClpbrd.UndoObject is TUserFunction;
+   miPaste.Enabled := TInfra.IsValidControl(GClpbrd.Instance) or isFunction;
 
    comp := pmPages.PopupComponent;
 
@@ -714,7 +714,7 @@ begin
    func := nil;
    comment := nil;
 
-   if TInfra.IsValid(GClpbrd.UndoObject) and (GClpbrd.UndoObject is TUserFunction) then
+   if GClpbrd.UndoObject is TUserFunction then
       func := TUserFunction(GClpbrd.UndoObject)
    else if GClpbrd.Instance is TComment then
       comment := TComment(GClpbrd.Instance);
@@ -791,7 +791,7 @@ begin
                blockType := blText
             else if Sender = miFolder then
                blockType := blFolder
-            else if (Sender = miPaste) and TInfra.IsValid(GClpbrd.Instance) and (GClpbrd.Instance is TBlock) then
+            else if (Sender = miPaste) and TInfra.IsValidControl(GClpbrd.Instance) and (GClpbrd.Instance is TBlock) then
             begin
                srcBlock := TBlock(GClpbrd.Instance);
                tmpCursor := Screen.Cursor;

@@ -74,7 +74,7 @@ type
          class function ShowFormattedQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
          class function FindText(ASubstr, AText: string; idx: integer; ACaseSens: boolean): integer;
          class function IsPrinter: boolean;
-         class function IsValid(AObject: TObject): boolean;
+         class function IsValidControl(AObject: TObject): boolean;
          class function SameStrings(const AStr1: string; const AStr2: string): boolean;
          class function GetDataTypesForm: TDataTypesForm;
          class function GetFunctionsForm: TFunctionsForm;
@@ -702,15 +702,9 @@ begin
    end;
 end;
 
-class function TInfra.IsValid(AObject: TObject): boolean;
+class function TInfra.IsValidControl(AObject: TObject): boolean;
 begin
-  result := false;
-  if Assigned(AObject) then
-  try
-     if Pointer(PPointer(AObject)^) = Pointer(Pointer(Cardinal(PPointer(AObject)^) + Cardinal(vmtSelfPtr))^) then
-        result := true;
-  except
-  end;
+  result := (AObject is TControl) and (TControl(AObject).Parent <> nil);
 end;
 
 class function TInfra.GetComboMaxWidth(ACombo: TComboBox): integer;
