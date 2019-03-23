@@ -511,6 +511,8 @@ begin
    else if Supports(GClpbrd.UndoObject, IXMLable, xmlObj) then
       xmlObj.Active := true;
    TInfra.UpdateCodeEditor(GClpbrd.UndoObject);
+   if (GClpbrd.UndoObject is TUserFunction) and (GClpbrd.Instance = TUserFunction(GClpbrd.UndoObject).Body) then
+      GClpbrd.Instance := nil;
    GClpbrd.UndoObject := nil;
    miUndoRemove.Enabled := false;
 end;
