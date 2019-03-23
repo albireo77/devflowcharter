@@ -126,7 +126,7 @@ end;
 function TExplorerForm.GetFocusable(ANode: TTreeNode): IFocusable;
 begin
    result := nil;
-   if (ANode <> nil) and TInfra.IsValid(ANode.Data) then
+   if (ANode <> nil) and TInfra.IsValid(ANode.Data) and (TWinControl(ANode.Data).Parent <> nil) then
       Supports(ANode.Data, IFocusable, result);
 end;
 
