@@ -50,9 +50,12 @@ type
     procedure pgcTabsChange(Sender: TObject); virtual;
     procedure miExportAllClick(Sender: TObject);
     procedure ExportTabsToXMLTag(ATag: IXMLElement);
+    function IsEnabled: boolean; virtual; abstract;
     function ImportTabsFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TErrorType; virtual; abstract;
     procedure FormDeactivate(Sender: TObject); virtual;
     procedure RefreshTabs; virtual;
+    procedure ExportSettingsToXMLTag(ATag: IXMLElement); override;
+    procedure ImportSettingsFromXMLTag(ATag: IXMLElement); override;
     procedure pgcTabsDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure pgcTabsDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
     procedure pgcTabsMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -61,6 +64,8 @@ type
     procedure ResetForm; override;
     procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+  protected
+    FPrefix: string;
   public
     UpdateCodeEditor: boolean;
     { Public declarations }
@@ -275,6 +280,60 @@ begin
       Application.CancelHint;
       pgcTabs.Hint := pgcTabs.Pages[idx].Caption;
       FLastHintTabIndex := idx;
+   end;
+end;
+
+procedure TPageControlForm.ExportSettingsToXMLTag(ATag: IXMLElement);
+var
+   i, a: integer;
+begin
+   RefreshTabs;
+   ATag.SetAttribute(FPrefix + 'win_h', Height.ToString);
+   if Visible then
+   begin
+      ATag.SetAttribute(FPrefix + 'win_show', 'true');
+      ATag.SetAttribute(FPrefix + 'win_x', Left.ToString);
+      ATag.SetAttribute(FPrefix + 'win_y', Top.ToString);
+      i := pgcTabs.ActivePageIndex;
+      if i <> -1 then
+      begin
+         ATag.SetAttribute(FPrefix + 'idx', i.ToString);
+         a := TTabComponent(pgcTabs.ActivePage).ScrollPos;
+         if a > 0 then
+            ATag.SetAttribute(FPrefix + 'scroll_v', a.ToString);
+      end;
+      if WindowState = wsMinimized then
+         ATag.SetAttribute(FPrefix + 'win_min', 'true');
+   end;
+end;
+
+procedure TPageControlForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
+var
+   i, a: integer;
+begin
+   i := StrToIntDef(ATag.GetAttribute(FPrefix + 'win_h'), -1);
+   if i > -1 then
+      Height := i;
+   if IsEnabled and TXMLProcessor.GetBoolFromXMLNode(ATag, FPrefix + 'win_show') then
+   begin
+      Position := poDesigned;
+      if TXMLProcessor.GetBoolFromXMLNode(ATag, FPrefix + 'win_min') then
+         WindowState := wsMinimized;
+      i := StrToIntDef(ATag.GetAttribute(FPrefix + 'win_x'), -1);
+      if i > -1 then
+         Left := i;
+      i := StrToIntDef(ATag.GetAttribute(FPrefix + 'win_y'), -1);
+      if i > -1 then
+         Top := i;
+      i := StrToIntDef(ATag.GetAttribute(FPrefix + 'idx'), -2);
+      if (i >= 0) and (i < pgcTabs.PageCount) then
+      begin
+         pgcTabs.ActivePageIndex := i;
+         a := StrToIntDef(ATag.GetAttribute(FPrefix + 'scroll_v'), 0);
+         if a > 0 then
+            TTabComponent(pgcTabs.ActivePage).ScrollPos := a;
+      end;
+      Show;
    end;
 end;
 

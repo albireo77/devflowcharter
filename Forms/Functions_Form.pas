@@ -31,11 +31,10 @@ type
   TFunctionsForm = class(TPageControlForm)
     procedure miAddClick(Sender: TObject); override;
     procedure pgcTabsChange(Sender: TObject); override;
+    function IsEnabled: boolean; override;
   public
     { Public declarations }
     function ImportTabsFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TErrorType; override;
-    procedure ExportSettingsToXMLTag(ATag: IXMLElement); override;
-    procedure ImportSettingsFromXMLTag(ATag: IXMLElement); override;
     procedure RefreshTabs; override;
     procedure ResetForm; override;
     procedure AddUserFunction(const ABodyTopLeft: TPoint);
@@ -94,66 +93,9 @@ begin
    end;
 end;
 
-procedure TFunctionsForm.ExportSettingsToXMLTag(ATag: IXMLElement);
-var
-   header: TUserFunctionHeader;
-   val: integer;
-begin
-   RefreshTabs;
-   ATag.SetAttribute('func_win_h', Height.ToString);
-   if Visible then
-   begin
-      ATag.SetAttribute('func_win_show', 'true');
-      ATag.SetAttribute('func_win_x', Left.ToString);
-      ATag.SetAttribute('func_win_y', Top.ToString);
-      if pgcTabs.ActivePageIndex <> -1 then
-      begin
-         header := TUserFunctionHeader(pgcTabs.Pages[pgcTabs.ActivePageIndex]);
-         ATag.SetAttribute('func_idx', header.PageIndex.ToString);
-         val := header.ScrollPos;
-         if val > 0 then
-            ATag.SetAttribute('func_scroll_v', val.ToString);
-      end;
-      if WindowState = wsMinimized then
-         ATag.SetAttribute('func_win_min', 'true');
-   end;
-end;
-
 function TFunctionsForm.ImportTabsFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
 begin
    result := GProject.ImportUserFunctionsFromXML(ATag, AImportMode);
-end;
-
-procedure TFunctionsForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
-var
-   header: TUserFunctionHeader;
-   val: integer;
-begin
-   val := StrToIntDef(ATag.GetAttribute('func_win_h'), -1);
-   if val > -1 then
-      Height := val;
-   if TXMLProcessor.GetBoolFromXMLNode(ATag, 'func_win_show') and GInfra.CurrentLang.EnabledUserFunctionHeader then
-   begin
-      Position := poDesigned;
-      if TXMLProcessor.GetBoolFromXMLNode(ATag, 'func_win_min') then
-         WindowState := wsMinimized;
-      val := StrToIntDef(ATag.GetAttribute('func_win_x'), -1);
-      if val > -1 then
-         Left := val;
-      val := StrToIntDef(ATag.GetAttribute('func_win_y'), -1);
-      if val > -1 then
-         Top := val;
-      val := StrToIntDef(ATag.GetAttribute('func_idx'), -2);
-      if (val >= 0) and (val < pgcTabs.PageCount) then
-      begin
-         pgcTabs.ActivePageIndex := val;
-         header := TUserFunctionHeader(pgcTabs.Pages[val]);
-         val := StrToIntDef(ATag.GetAttribute('func_scroll_v'), 0);
-         if val > 0 then
-            header.ScrollPos := val;
-      end;
-      Show;
-   end;
 end;
 
 procedure TFunctionsForm.RefreshTabs;
@@ -177,6 +119,12 @@ procedure TFunctionsForm.ResetForm;
 begin
    inherited ResetForm;
    Height := 625;
+   FPrefix := 'func_';
+end;
+
+function TFunctionsForm.IsEnabled: boolean;
+begin
+   result := GInfra.CurrentLang.EnabledUserFunctionHeader;
 end;
 
 end.

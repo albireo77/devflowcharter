@@ -32,10 +32,9 @@ type
      procedure miAddClick(Sender: TObject); override;
      procedure FormDeactivate(Sender: TObject); override;
      procedure pgcTabsChanging(Sender: TObject; var AllowChange: Boolean);
+     function IsEnabled: boolean; override;
   public
      { Public declarations }
-     procedure ExportSettingsToXMLTag(ATag: IXMLElement); override;
-     procedure ImportSettingsFromXMLTag(ATag: IXMLElement); override;
      function ImportTabsFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TErrorType; override;
      procedure RefreshTabs; override;
      procedure ResetForm; override;
@@ -100,66 +99,16 @@ begin
    result := GProject.ImportUserDataTypesFromXML(ATag, AImportMode);
 end;
 
-procedure TDataTypesForm.ExportSettingsToXMLTag(ATag: IXMLElement);
-var
-   dataType: TUserDataType;
-   val: integer;
-begin
-   ATag.SetAttribute('struct_win_h', Height.ToString);
-   if Visible then
-   begin
-      ATag.SetAttribute('struct_win_show', 'true');
-      ATag.SetAttribute('struct_win_x', Left.ToString);
-      ATag.SetAttribute('struct_win_y', Top.ToString);
-      if pgcTabs.ActivePageIndex <> -1 then
-      begin
-         dataType := TUserDataType(pgcTabs.Pages[pgcTabs.ActivePageIndex]);
-         ATag.SetAttribute('struct_idx', dataType.PageIndex.ToString);
-         val := dataType.ScrollPos;
-         if val > 0 then
-            ATag.SetAttribute('struct_scroll_v', val.ToString);
-      end;
-      if WindowState = wsMinimized then
-         ATag.SetAttribute('struct_win_min', 'true');
-   end;
-end;
-
-procedure TDataTypesForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
-var
-   dataType: TUserDataType;
-   val: integer;
-begin
-   val := StrToIntDef(ATag.GetAttribute('struct_win_h'), -1);
-   if val > -1 then
-      Height := val;
-   if TXMLProcessor.GetBoolFromXMLNode(ATag, 'struct_win_show') and GInfra.CurrentLang.EnabledUserDataTypes then
-   begin
-      Position := poDesigned;
-      if TXMLProcessor.GetBoolFromXMLNode(ATag, 'struct_win_min') then
-         WindowState := wsMinimized;
-      val := StrToIntDef(ATag.GetAttribute('struct_win_x'), -1);
-      if val > -1 then
-         Left := val;
-      val := StrToIntDef(ATag.GetAttribute('struct_win_y'), -1);
-      if val > -1 then
-         Top := val;
-      val := StrToIntDef(ATag.GetAttribute('struct_idx'), -2);
-      if (val >= 0) and (val < pgcTabs.PageCount) then
-      begin
-         pgcTabs.ActivePageIndex := val;
-         dataType := TUserDataType(pgcTabs.Pages[val]);
-         val := StrToIntDef(ATag.GetAttribute('struct_scroll_v'), 0);
-         if val > 0 then
-            dataType.ScrollPos := val;
-      end;
-      Show;
-   end;
-end;
-
 procedure TDataTypesForm.ResetForm;
 begin
    inherited ResetForm;
    Height := 323;
+   FPrefix := 'struct_';
+end;
+
+function TDataTypesForm.IsEnabled: boolean;
+begin
+   result := GInfra.CurrentLang.EnabledUserDataTypes;
 end;
 
 end.
