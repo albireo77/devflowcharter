@@ -52,9 +52,13 @@ var
    FTemporalImpl,
    FNumberImpl: TStringList;
    JAVA_INT_TYPE,
+   JAVA_INT_OBJECT_TYPE,
    JAVA_LONG_TYPE,
+   JAVA_LONG_OBJECT_TYPE,
    JAVA_FLOAT_TYPE,
+   JAVA_FLOAT_OBJECT_TYPE,
    JAVA_DOUBLE_TYPE,
+   JAVA_DOUBLE_OBJECT_TYPE,
    JAVA_CHAR_TYPE,
    JAVA_STRING_TYPE,
    JAVA_BOOLEAN_TYPE,
@@ -403,6 +407,13 @@ begin
    end;
 end;
 
+function GetTypeForString(AType: integer; const AValue: string): integer;
+begin
+   result := AType;
+   if AValue.Contains('.toString(') or AValue.Contains('.toBinaryString(') or AValue.Contains('.toHexString(')
+      or AValue.Contains('.toOctalString(') or AValue.Contains('.toUnsignedString(') then result := JAVA_STRING_TYPE;
+end;
+
 function Java_GetLiteralType(const AValue: string): integer;
 var
    i, len, a: integer;
@@ -536,6 +547,58 @@ begin
                if result <> JAVA_BIGINTEGER_TYPE then
                   AddLibImport('java.math.BigInteger');
             end
+            else if AValue.StartsWith('new Integer(') or AValue.StartsWith('Integer.') then
+            begin
+               if AValue.EndsWith('.intValue()') or AValue.Contains('.parseInt(') then
+                  result := JAVA_INT_TYPE
+               else if AValue.EndsWith('.longValue()') then
+                  result := JAVA_LONG_TYPE
+               else if AValue.EndsWith('.doubleValue()') then
+                  result := JAVA_DOUBLE_TYPE
+               else if AValue.EndsWith('.floatValue()') then
+                  result := JAVA_FLOAT_TYPE
+               else
+                  result := GetTypeForString(JAVA_INT_OBJECT_TYPE, AValue);
+            end
+            else if AValue.StartsWith('new Long(') or AValue.StartsWith('Long.') then
+            begin
+               if AValue.EndsWith('.longValue()') or AValue.Contains('.parseLong(') then
+                  result := JAVA_LONG_TYPE
+               else if AValue.EndsWith('.intValue()') then
+                  result := JAVA_INT_TYPE
+               else if AValue.EndsWith('.doubleValue()') then
+                  result := JAVA_DOUBLE_TYPE
+               else if AValue.EndsWith('.floatValue()') then
+                  result := JAVA_FLOAT_TYPE
+               else
+                  result := GetTypeForString(JAVA_LONG_OBJECT_TYPE, AValue);
+            end
+            else if AValue.StartsWith('new Double(') or AValue.StartsWith('Double.') then
+            begin
+               if AValue.EndsWith('.doubleValue()') or AValue.Contains('.parseDouble(') then
+                  result := JAVA_DOUBLE_TYPE
+               else if AValue.EndsWith('.intValue()') then
+                  result := JAVA_INT_TYPE
+               else if AValue.EndsWith('.longValue()') then
+                  result := JAVA_LONG_TYPE
+               else if AValue.EndsWith('.floatValue()') then
+                  result := JAVA_FLOAT_TYPE
+               else
+                  result := GetTypeForString(JAVA_DOUBLE_OBJECT_TYPE, AValue);
+            end
+            else if AValue.StartsWith('new Float(') or AValue.StartsWith('Float.') then
+            begin
+               if AValue.EndsWith('.floatValue()') or AValue.Contains('.parseFloat(') then
+                  result := JAVA_FLOAT_TYPE
+               else if AValue.EndsWith('.doubleValue()') then
+                  result := JAVA_DOUBLE_TYPE
+               else if AValue.EndsWith('.intValue()') then
+                  result := JAVA_INT_TYPE
+               else if AValue.EndsWith('.longValue()') then
+                  result := JAVA_LONG_TYPE
+               else
+                  result := GetTypeForString(JAVA_FLOAT_OBJECT_TYPE, AValue);
+            end
             else if TryStrToInt64(AValue, i64) then
                result := JAVA_LONG_TYPE
             else
@@ -590,9 +653,13 @@ end;
 initialization
 
    JAVA_INT_TYPE            := TParserHelper.GetType('int', JAVA_LANG_ID);
+   JAVA_INT_OBJECT_TYPE     := TParserHelper.GetType('Integer', JAVA_LANG_ID);
    JAVA_LONG_TYPE           := TParserHelper.GetType('long', JAVA_LANG_ID);
+   JAVA_LONG_OBJECT_TYPE    := TParserHelper.GetType('Long', JAVA_LANG_ID);
    JAVA_FLOAT_TYPE          := TParserHelper.GetType('float', JAVA_LANG_ID);
+   JAVA_FLOAT_OBJECT_TYPE   := TParserHelper.GetType('Float', JAVA_LANG_ID);
    JAVA_DOUBLE_TYPE         := TParserHelper.GetType('double', JAVA_LANG_ID);
+   JAVA_DOUBLE_OBJECT_TYPE  := TParserHelper.GetType('Double', JAVA_LANG_ID);
    JAVA_CHAR_TYPE           := TParserHelper.GetType('char', JAVA_LANG_ID);
    JAVA_STRING_TYPE         := TParserHelper.GetType('String', JAVA_LANG_ID);
    JAVA_BOOLEAN_TYPE        := TParserHelper.GetType('boolean', JAVA_LANG_ID);
