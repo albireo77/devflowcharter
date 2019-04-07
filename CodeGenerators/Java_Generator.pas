@@ -549,52 +549,52 @@ begin
             end
             else if AValue.StartsWith('new Integer(') or AValue.StartsWith('Integer.') then
             begin
-               if AValue.EndsWith('.intValue()') or AValue.Contains('.parseInt(') then
+               if AValue.Contains('.intValue()') or AValue.Contains('.parseInt(') then
                   result := JAVA_INT_TYPE
-               else if AValue.EndsWith('.longValue()') then
+               else if AValue.Contains('.longValue()') then
                   result := JAVA_LONG_TYPE
-               else if AValue.EndsWith('.doubleValue()') then
+               else if AValue.Contains('.doubleValue()') then
                   result := JAVA_DOUBLE_TYPE
-               else if AValue.EndsWith('.floatValue()') then
+               else if AValue.Contains('.floatValue()') then
                   result := JAVA_FLOAT_TYPE
                else
                   result := GetTypeForString(JAVA_INT_OBJECT_TYPE, AValue);
             end
             else if AValue.StartsWith('new Long(') or AValue.StartsWith('Long.') then
             begin
-               if AValue.EndsWith('.longValue()') or AValue.Contains('.parseLong(') then
+               if AValue.Contains('.longValue()') or AValue.Contains('.parseLong(') then
                   result := JAVA_LONG_TYPE
-               else if AValue.EndsWith('.intValue()') then
+               else if AValue.Contains('.intValue()') then
                   result := JAVA_INT_TYPE
-               else if AValue.EndsWith('.doubleValue()') then
+               else if AValue.Contains('.doubleValue()') then
                   result := JAVA_DOUBLE_TYPE
-               else if AValue.EndsWith('.floatValue()') then
+               else if AValue.Contains('.floatValue()') then
                   result := JAVA_FLOAT_TYPE
                else
                   result := GetTypeForString(JAVA_LONG_OBJECT_TYPE, AValue);
             end
             else if AValue.StartsWith('new Double(') or AValue.StartsWith('Double.') then
             begin
-               if AValue.EndsWith('.doubleValue()') or AValue.Contains('.parseDouble(') then
+               if AValue.Contains('.doubleValue()') or AValue.Contains('.parseDouble(') then
                   result := JAVA_DOUBLE_TYPE
-               else if AValue.EndsWith('.intValue()') then
+               else if AValue.Contains('.intValue()') then
                   result := JAVA_INT_TYPE
-               else if AValue.EndsWith('.longValue()') then
+               else if AValue.Contains('.longValue()') then
                   result := JAVA_LONG_TYPE
-               else if AValue.EndsWith('.floatValue()') then
+               else if AValue.Contains('.floatValue()') then
                   result := JAVA_FLOAT_TYPE
                else
                   result := GetTypeForString(JAVA_DOUBLE_OBJECT_TYPE, AValue);
             end
             else if AValue.StartsWith('new Float(') or AValue.StartsWith('Float.') then
             begin
-               if AValue.EndsWith('.floatValue()') or AValue.Contains('.parseFloat(') then
+               if AValue.Contains('.floatValue()') or AValue.Contains('.parseFloat(') then
                   result := JAVA_FLOAT_TYPE
-               else if AValue.EndsWith('.doubleValue()') then
+               else if AValue.Contains('.doubleValue()') then
                   result := JAVA_DOUBLE_TYPE
-               else if AValue.EndsWith('.intValue()') then
+               else if AValue.Contains('.intValue()') then
                   result := JAVA_INT_TYPE
-               else if AValue.EndsWith('.longValue()') then
+               else if AValue.Contains('.longValue()') then
                   result := JAVA_LONG_TYPE
                else
                   result := GetTypeForString(JAVA_FLOAT_OBJECT_TYPE, AValue);
