@@ -444,7 +444,7 @@ begin
                IdentType := VARRAY;
                SizeExpArrayAsString := GetSizeExpArrayAsString(TypeAsString, SizeAsString);
             end;
-            if (GProject <> nil) and (GProject.GlobalVars <> AVarList) then
+            if not AVarList.IsGlobal then
                Scope := LOCAL;
          end;
       end;

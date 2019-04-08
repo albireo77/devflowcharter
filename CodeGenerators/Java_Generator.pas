@@ -327,7 +327,7 @@ begin
                   SetLength(varSize, varSize.Length - javaLang.VarEntryArraySizeStripCount);
             end;
          end;
-         if AVarList = GProject.GlobalVars then
+         if AVarList.IsGlobal then
             varAccess := AVarList.GetExternModifier(i);
          varVal := varAccess + varType + varGeneric + varSize + ' ' + varName + varInit + ';';
          ALines.AddObject(varVal, AVarList);

@@ -99,6 +99,7 @@ type
          function Remove(ANode: TTreeNodeWithFriend = nil): boolean;
          function CanRemove: boolean;
          function IsBoldDesc: boolean;
+         function IsGlobal: boolean; virtual; abstract;
          procedure SetSplitter(ASplitter: TSplitter);
          procedure SetDefaultFocus;
          function GetExternalState(ARow: integer): TCheckBoxState;
@@ -125,6 +126,7 @@ type
          function GetImportTag(ATag: IXMLElement): IXMLElement; override;
          procedure FillForList(AList: TStrings);
          function IsValidLoopVar(const AName: string): boolean;
+         function IsGlobal: boolean; override;
          function GetDimensionCount(const AVarName: string; AIncludeType: boolean = false): integer;
          function GetDimensions(const AVarName: string; AIncludeType: boolean = false): TArray<string>;
          function GetExternModifier(idx: integer): string; override;
@@ -144,6 +146,7 @@ type
          procedure ExportItemToXMLTag(ATag: IXMLElement; idx: integer); override;
          function GetImportTag(ATag: IXMLElement): IXMLElement; override;
          function GetValue(const AIdent: string): string;
+         function IsGlobal: boolean; override;
          function GetExternModifier(idx: integer): string; override;
    end;
 
@@ -1013,6 +1016,16 @@ begin
    ATag.AppendChild(tag);
    tag.SetAttribute(VALUE_ATTR, sgList.Cells[CONST_VALUE_COL, idx]);
    inherited ExportItemToXMLTag(tag, idx);
+end;
+
+function TVarDeclareList.IsGlobal: boolean;
+begin
+   result := (GProject <> nil) and (GProject.GlobalVars = Self);
+end;
+
+function TConstDeclareList.IsGlobal: boolean;
+begin
+   result := (GProject <> nil) and (GProject.GlobalConsts = Self);
 end;
 
 function TDeclareList.GetExternalState(ARow: integer): TCheckBoxState;

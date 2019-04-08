@@ -324,7 +324,6 @@ begin
 
    FLocalVars := TVarDeclareList.Create(Self, 0, 350, 389, 3, 4, 380);
    FLocalVars.Caption := i18Manager.GetString('LocalDeclare');
-   FLocalVars.sgList.Options := FLocalVars.sgList.Options - [goColSizing];
    FLocalVars.gbBox.DoubleBuffered := true;
 
    gbDesc := TGroupBox.Create(Self);
