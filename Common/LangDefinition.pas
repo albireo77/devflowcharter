@@ -61,6 +61,8 @@ type
       VarEntryInitExtern,
       ConstTemplate,
       ConstEntry,
+      ConstTypeGeneric,
+      ConstTypeNotGeneric,
       WhileTemplate,
       IfTemplate,
       IfElseTemplate,
@@ -234,7 +236,7 @@ type
       GetUserTypeDesc: function (ADataType: TUserDataType): string;
       SetHLighterAttrs: procedure;
       GetPointerTypeName: function (const val: string): string;
-      GetLiteralType: function (const val: string): integer;
+      GetLiteralType: function (const val: string; var ASecType: integer): integer;
       IsPointerType: function (const AName: string): boolean;
       GetOriginalType: function (const APtrType: string): string;
       AreTypesCompatible: function (AType1, AType2: integer): boolean;
@@ -704,6 +706,10 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'ConstEntry');
    if tag <> nil then
       ConstEntry := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'ConstTypeModifier');
+   if tag <> nil then
+      TInfra.ExtractThreePipedValues(tag.Text, ConstTypeGeneric, ConstTypeNotGeneric, val);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'VarEntryInit');
    if tag <> nil then

@@ -130,12 +130,13 @@ begin
    end;
 end;
 
-function C_GetLiteralType(const AValue: string): integer;
+function C_GetLiteralType(const AValue: string; var ASecType: integer): integer;
 var
    i, len: integer;
    f: double;
 begin
    result := UNKNOWN_TYPE;
+   ASecType := UNKNOWN_TYPE;
    len := AValue.Length;
    if len > 0 then
    begin

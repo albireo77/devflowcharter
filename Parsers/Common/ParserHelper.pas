@@ -504,15 +504,16 @@ end;
 class function TParserHelper.GetConstType(const AConstName: string): integer;
 var
    value: string;
+   secType: integer;
 begin
    result := NOT_DEFINED;
    value := GetConstValue(AConstName);
    if not value.IsEmpty then
    begin
       if Assigned(GInfra.CurrentLang.GetLiteralType) then
-         result := GInfra.CurrentLang.GetLiteralType(value)
+         result := GInfra.CurrentLang.GetLiteralType(value, secType)
       else if Assigned(GInfra.DummyLang.GetLiteralType) then
-         result := GInfra.DummyLang.GetLiteralType(value)
+         result := GInfra.DummyLang.GetLiteralType(value, secType)
    end;
 end;
 

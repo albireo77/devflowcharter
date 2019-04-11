@@ -266,13 +266,14 @@ begin
    end;
 end;
 
-function Pascal_GetLiteralType(const AValue: string): integer;
+function Pascal_GetLiteralType(const AValue: string; var ASecType: integer): integer;
 var
    i, len: integer;
    f: double;
    b: boolean;
 begin
    result := UNKNOWN_TYPE;
+   ASecType := UNKNOWN_TYPE;
    len := AValue.Length;
    if len > 0 then
    begin

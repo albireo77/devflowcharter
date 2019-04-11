@@ -168,11 +168,12 @@ begin
    end;
 end;
 
-function Dummy_GetLiteralType(const AValue: string): integer;
+function Dummy_GetLiteralType(const AValue: string; var ASecType: integer): integer;
 var
    i: integer;
 begin
    result := UNKNOWN_TYPE;
+   ASecType := UNKNOWN_TYPE;
    if TryStrToInt(AValue, i) then
       result := GENERIC_INT_TYPE;
 end;
@@ -237,7 +238,7 @@ end;
 
 procedure Dummy_ConstSectionGenerator(ALines: TStringList; AConstList: TConstDeclareList);
 var
-   i, t: integer;
+   i, primType, secType: integer;
    constStr, constType, constValue: string;
    lang: TLangDefinition;
    constList, constTemplate: TStringList;
@@ -256,11 +257,23 @@ begin
                constValue := AConstList.sgList.Cells[CONST_VALUE_COL, i];
                constType := '';
                if Assigned(GInfra.CurrentLang.GetLiteralType) then
-                  t := GInfra.CurrentLang.GetLiteralType(constValue)
+                  primType := GInfra.CurrentLang.GetLiteralType(constValue, secType)
                else
-                  t := Dummy_GetLiteralType(constValue);
-               if t <> UNKNOWN_TYPE then
-                  constType := TParserHelper.GetTypeAsString(t);
+                  primType := Dummy_GetLiteralType(constValue, secType);
+               if primType <> UNKNOWN_TYPE then
+               begin
+                  constType := TParserHelper.GetTypeAsString(primType);
+                  if TParserHelper.IsGenericType(constType) and (secType <> UNKNOWN_TYPE) and not GInfra.CurrentLang.ConstTypeGeneric.IsEmpty then
+                  begin
+                     constType := ReplaceStr(GInfra.CurrentLang.ConstTypeGeneric, PRIMARY_PLACEHOLDER, constType);
+                     constType := ReplaceStr(constType, '%s2', TParserHelper.GetTypeAsString(secType));
+                  end
+                  else if not GInfra.CurrentLang.ConstTypeNotGeneric.IsEmpty then
+                  begin
+                     constType := ReplaceStr(GInfra.CurrentLang.ConstTypeNotGeneric, PRIMARY_PLACEHOLDER, constType);
+                     constType := ReplaceStr(constType, '%s2', '');
+                  end;
+               end;
                constStr := ReplaceStr(lang.ConstEntry, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
                constStr := ReplaceStr(constStr, '%s2', constValue);
                constStr := ReplaceStr(constStr, '%s3', AConstList.GetExternModifier(i));
