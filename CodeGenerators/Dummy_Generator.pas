@@ -266,7 +266,7 @@ begin
                   if TParserHelper.IsGenericType(constType) and not GInfra.CurrentLang.ConstTypeGeneric.IsEmpty then
                   begin
                      constType := ReplaceStr(GInfra.CurrentLang.ConstTypeGeneric, PRIMARY_PLACEHOLDER, constType);
-                     constType := ReplaceStr(constType, '%s2', IfThen(secType <> UNKNOWN_TYPE, TParserHelper.GetTypeAsString(secType)));
+                     constType := ReplaceStr(constType, '%s2', TParserHelper.GetTypeAsString(secType));
                   end
                   else if not GInfra.CurrentLang.ConstTypeNotGeneric.IsEmpty then
                   begin
