@@ -236,7 +236,7 @@ type
       GetUserTypeDesc: function (ADataType: TUserDataType): string;
       SetHLighterAttrs: procedure;
       GetPointerTypeName: function (const val: string): string;
-      GetLiteralType: function (const val: string; var ASecType: integer): integer;
+      GetConstantType: function (const val: string; var ASecType: integer): integer;
       IsPointerType: function (const AName: string): boolean;
       GetOriginalType: function (const APtrType: string): string;
       AreTypesCompatible: function (AType1, AType2: integer): boolean;
@@ -289,7 +289,7 @@ begin
    GetUserTypeDesc := nil;
    GetMainProgramDesc := nil;
    SetHLighterAttrs := nil;
-   GetLiteralType := nil;
+   GetConstantType := nil;
    GetPointerTypeName := nil;
    IsPointerType := nil;
    Parse := nil;
@@ -709,7 +709,7 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ConstTypeModifier');
    if tag <> nil then
-      TInfra.ExtractThreePipedValues(tag.Text, ConstTypeGeneric, ConstTypeNotGeneric, val);
+      TInfra.ExtractThreePipedValues(tag.Text, ConstTypeNotGeneric, ConstTypeGeneric, val);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'VarEntryInit');
    if tag <> nil then

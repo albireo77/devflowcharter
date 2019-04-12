@@ -416,7 +416,7 @@ begin
       or AValue.Contains('.toOctalString(') or AValue.Contains('.toUnsignedString(') then result := JAVA_STRING_TYPE;
 end;
 
-function Java_GetLiteralType(const AValue: string; var ASecType: integer): integer;
+function Java_GetConstantType(const AValue: string; var ASecType: integer): integer;
 var
    i, len, a, ap, t: integer;
    i64: Int64;
@@ -627,7 +627,7 @@ begin
                a := result;
                for i := 0 to High(tokens) do
                begin
-                  a := Java_GetLiteralType(tokens[i], t);
+                  a := Java_GetConstantType(tokens[i], t);
                   if (i > 0) and (a <> ap) then
                      Exit;
                   ap := a;
@@ -742,7 +742,7 @@ initialization
       javaLang.LibSectionGenerator := Java_LibSectionGenerator;
       javaLang.VarSectionGenerator := Java_VarSectionGenerator;
       javaLang.UserDataTypesSectionGenerator := Java_UserDataTypesSectionGenerator;
-      javaLang.GetLiteralType := Java_GetLiteralType;
+      javaLang.GetConstantType := Java_GetConstantType;
       javaLang.SetHLighterAttrs := Java_SetHLighterAttrs;
    end;
 

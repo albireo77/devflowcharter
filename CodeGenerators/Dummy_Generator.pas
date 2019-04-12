@@ -168,7 +168,7 @@ begin
    end;
 end;
 
-function Dummy_GetLiteralType(const AValue: string; var ASecType: integer): integer;
+function Dummy_GetConstantType(const AValue: string; var ASecType: integer): integer;
 var
    i: integer;
 begin
@@ -256,17 +256,17 @@ begin
             begin
                constValue := AConstList.sgList.Cells[CONST_VALUE_COL, i];
                constType := '';
-               if Assigned(GInfra.CurrentLang.GetLiteralType) then
-                  primType := GInfra.CurrentLang.GetLiteralType(constValue, secType)
+               if Assigned(GInfra.CurrentLang.GetConstantType) then
+                  primType := GInfra.CurrentLang.GetConstantType(constValue, secType)
                else
-                  primType := Dummy_GetLiteralType(constValue, secType);
+                  primType := Dummy_GetConstantType(constValue, secType);
                if primType <> UNKNOWN_TYPE then
                begin
                   constType := TParserHelper.GetTypeAsString(primType);
-                  if TParserHelper.IsGenericType(constType) and (secType <> UNKNOWN_TYPE) and not GInfra.CurrentLang.ConstTypeGeneric.IsEmpty then
+                  if TParserHelper.IsGenericType(constType) and not GInfra.CurrentLang.ConstTypeGeneric.IsEmpty then
                   begin
                      constType := ReplaceStr(GInfra.CurrentLang.ConstTypeGeneric, PRIMARY_PLACEHOLDER, constType);
-                     constType := ReplaceStr(constType, '%s2', TParserHelper.GetTypeAsString(secType));
+                     constType := ReplaceStr(constType, '%s2', IfThen(secType <> UNKNOWN_TYPE, TParserHelper.GetTypeAsString(secType)));
                   end
                   else if not GInfra.CurrentLang.ConstTypeNotGeneric.IsEmpty then
                   begin
@@ -775,7 +775,7 @@ initialization
       ConstSectionGenerator := Dummy_ConstSectionGenerator;
       UserDataTypesSectionGenerator := Dummy_UserDataTypesSectionGenerator;
       FileContentsGenerator := Dummy_FileContentsGenerator;
-      GetLiteralType := Dummy_GetLiteralType;
+      GetConstantType := Dummy_GetConstantType;
       GetPointerTypeName := Dummy_GetPointerTypeName;
       GetUserFuncDesc := Dummy_GetUserFuncDesc;
       GetUserFuncHeaderDesc := Dummy_GetUserFuncHeaderDesc;

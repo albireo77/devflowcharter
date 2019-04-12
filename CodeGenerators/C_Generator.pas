@@ -130,7 +130,7 @@ begin
    end;
 end;
 
-function C_GetLiteralType(const AValue: string; var ASecType: integer): integer;
+function C_GetConstantType(const AValue: string; var ASecType: integer): integer;
 var
    i, len: integer;
    f: double;
@@ -190,7 +190,7 @@ initialization
       cLang.LibSectionGenerator := C_LibSectionGenerator;
       cLang.MainFunctionSectionGenerator := C_MainFunctionSectionGenerator;
       cLang.SetHLighterAttrs := C_SetHLighterAttrs;
-      cLang.GetLiteralType := C_GetLiteralType;
+      cLang.GetConstantType := C_GetConstantType;
       cLang.IsPointerType := C_IsPointerType;
       cLang.GetOriginalType := C_GetOriginalType;
       cLang.SkipFuncBodyGen := C_SkipFuncBodyGen;

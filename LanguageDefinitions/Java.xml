@@ -463,21 +463,21 @@ Available placeholders are the same as for element FunctionHeaderTemplate.
 
 <!--
 Element FunctionHeaderTypeModifier1
-Description: Returns value based on whether or not function returns specific type
+Description: Returns value based on if function returns nothing|specific type
 It returns value "void" if function type is none or an empty string otherwise
 -->
 <FunctionHeaderTypeModifier1>void|</FunctionHeaderTypeModifier1>
 
 <!--
 Element FunctionHeaderStaticModifier
-Description: Returns value based on whether or not function is static
+Description: Returns value based on if function is static|not static
 In given example, it returns value "static " if function is static or an empty string otherwise
 -->
 <FunctionHeaderStaticModifier>static |</FunctionHeaderStaticModifier>
 
 <!--
 Element FunctionHeaderExternalModifier
-Description: Returns value based on whether or not function is declared as external, non-external or trans-external
+Description: Returns value based on if function is declared as public|private|protected
 In given example, it returns value "public " if function is external, "private " if is not external or "protected " if is trans-external
 Note that trans-external state is available only if AllowTransExternFunction is set to true
 -->
@@ -485,7 +485,7 @@ Note that trans-external state is available only if AllowTransExternFunction is 
 
 <!--
 Element FunctionHeaderTypeArrayModifier
-Description: Returns value based on whether or not function return type is an array
+Description: Returns value based on if function return type array|not array
 In given example, it returns value "[]" if function return type is array or an empty string otherwise
 -->
 <FunctionHeaderTypeArrayModifier>[]|</FunctionHeaderTypeArrayModifier>
@@ -635,7 +635,7 @@ Available placeholders:
 
 <!--
 Element VarExternModifier
-Description: Variable declaration modifier depending if variable is external, not external or trans-external.
+Description: Variable declaration modifier depending if variable is public|private|protected
 Trans-external state is enabled only if AllowTransExternVarConst is set to true.
 In given example, it returns "public " if variable is external, "private " if not external and "protected " if trans-external
 -->
@@ -643,7 +643,7 @@ In given example, it returns "public " if variable is external, "private " if no
 
 <!--
 Element ConstExternModifier
-Description: Constant declaration modifier depending if constant is external, not external or trans-external.
+Description: Constant declaration modifier depending if constant is public|private|protected
 Trans-external state is enabled only if AllowTransExternVarConst is set to true.
 In given example, it returns "public " if constant is external, "private " if not external and "protected " if trans-external
 -->
@@ -656,9 +656,19 @@ Available placeholders:
    %s1 - constant name
    %s2 - constant value
    %s3 - string depending if constant is external (element ConstExternModifier)
-   %s4 - evaluated type of constant
+   %s4 - constant type expression (element ConstTypeModifier)
 -->
 <ConstEntry>%s3static final %s4 %s1 = %s2;</ConstEntry>
+
+<!--
+Element ConstTypeModifier
+Description:
+Constant type expression depending if evaluated contstant type is not generic|generic
+Available placeholders:
+   %s1 - primary type
+   %s2 - secondary type (used when primary type is a generic type)   
+-->
+<ConstTypeModifier>%s1|%s1&lt;%s2&gt;</ConstTypeModifier>
 
 <LibEntry>import %s;</LibEntry>
 

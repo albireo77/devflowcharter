@@ -288,14 +288,14 @@ END;
 
 <!--
 Element ForDoTemplateModifier1
-Description: It returns value based on whether for..do block is increasing or decreasing
+Description: It returns value based on whether for..do block is increasing|decreasing
 It returns value "<=" if block is increasing or ">=" if decreasing 
 -->
 <ForDoTemplateModifier1>&lt;=|&gt;=</ForDoTemplateModifier1>
 
 <!--
 Element ForDoTemplateModifier2
-Description: It returns value based on whether for..do block is increasing or decreasing
+Description: It returns value based on whether for..do block is increasing|decreasing
 It returns value "++" if block is increasing or "--" if decreasing
 -->
 <ForDoTemplateModifier2>++|--</ForDoTemplateModifier2>
@@ -471,7 +471,7 @@ constructor %s7%s5 %s1(%s3)%s6 %s4%s8;
 
 <!--
 Element FunctionHeaderTypeModifier1 and FunctionHeaderTypeModifier2
-Description: Returns value based on whether or not function returns specific type
+Description: Returns value based on whether function returns nothing|specific type
 In given example, it returns value "procedure" if function type is none or "function" otherwise
 -->
 <FunctionHeaderTypeModifier1>procedure|function</FunctionHeaderTypeModifier1>
@@ -479,14 +479,14 @@ In given example, it returns value "procedure" if function type is none or "func
 
 <!--
 Element FunctionHeaderStaticModifier
-Description: Returns value based on whether or not function is static
+Description: Returns value based on whether function is static|not static
 In given example, it returns value "static" if function is static or an empty string otherwise
 -->
 <FunctionHeaderStaticModifier>static|</FunctionHeaderStaticModifier>
 
 <!--
 Element FunctionHeaderExternalModifier
-Description: Returns value based on whether or not function is declared as external, non-external or trans-external
+Description: Returns value based on whether or not function is declared as external|non-external|trans-external
 In given example, it returns value "external " if function is external or "internal " if is not external; trans-external state is omitted
 Note that trans-external state is available only if AllowTransExternFunction is set to true
 -->
@@ -494,7 +494,7 @@ Note that trans-external state is available only if AllowTransExternFunction is 
 
 <!--
 Element FunctionHeaderTypeArrayModifier
-Description: Returns value based on whether or not function return type is an array
+Description: Returns value based on whether function return type is array|not array
 In given example, it returns value "[]" if function return type is array or an empty string otherwise
 -->
 <FunctionHeaderTypeArrayModifier>[]|</FunctionHeaderTypeArrayModifier>
@@ -586,7 +586,7 @@ END %s1;
 
 <!--
 Element VarExternModifier
-Description: Variable declaration modifier depending if variable is external, not external or trans-external.
+Description: Variable declaration modifier depending if variable is external|not external|trans-external.
 Trans-external state is enabled only if AllowTransExternVarConst is set to true.
 In given example, it returns "extern " if variable is external, empty string if not external and "trans extern " if trans-external.
 -->
@@ -664,7 +664,7 @@ Available placeholders:
 
 <!--
 Element ConstExternModifier
-Description: Constant declaration modifier depending if constant is external, not external or trans-external.
+Description: Constant declaration modifier depending if constant is external|not external|trans-external
 Trans-external state is enabled only if AllowTransExternVarConst is set to true.
 In given example, it returns "extern " if constant is external, empty string if not external and "trans " if trans-external.
 -->
@@ -677,9 +677,19 @@ Available placeholders:
    %s1 - constant name
    %s2 - constant value
    %s3 - string depending if constant is external (element ConstExternModifier)
-   %s4 - evaluated type of constant
+   %s4 - constant type expression (element ConstTypeModifier)
 -->
 <ConstEntry>%s3define %s1 = %s2;</ConstEntry>
+
+<!--
+Element ConstTypeModifier
+Description:
+Constant type expression depending if evaluated contstant type is not generic|generic
+Available placeholders:
+   %s1 - primary type
+   %s2 - secondary type (used when primary type is a generic type)   
+-->
+<ConstTypeModifier>%s1|%s1&lt;%s2&gt;</ConstTypeModifier>
 
 <!--
 Element LibTemplate
@@ -723,7 +733,7 @@ Available placeholders:
 
 <!--
 Element DataTypeExternalModifier
-Description: It returns value based on whether datatype is declared as external, not external or trans-external.
+Description: It returns value based on whether datatype is declared as external|not external|trans-external.
 Trans-external state is enabled only if AllowTransExternDataType is set to true.
 In given example, it returns value "external " if datatype is external or "internal " if not; tran-external state is omitted
 -->

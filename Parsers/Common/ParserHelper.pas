@@ -510,10 +510,10 @@ begin
    value := GetConstValue(AConstName);
    if not value.IsEmpty then
    begin
-      if Assigned(GInfra.CurrentLang.GetLiteralType) then
-         result := GInfra.CurrentLang.GetLiteralType(value, secType)
-      else if Assigned(GInfra.DummyLang.GetLiteralType) then
-         result := GInfra.DummyLang.GetLiteralType(value, secType)
+      if Assigned(GInfra.CurrentLang.GetConstantType) then
+         result := GInfra.CurrentLang.GetConstantType(value, secType)
+      else if Assigned(GInfra.DummyLang.GetConstantType) then
+         result := GInfra.DummyLang.GetConstantType(value, secType)
    end;
 end;
 

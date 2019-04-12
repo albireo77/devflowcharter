@@ -266,7 +266,7 @@ begin
    end;
 end;
 
-function Pascal_GetLiteralType(const AValue: string; var ASecType: integer): integer;
+function Pascal_GetConstantType(const AValue: string; var ASecType: integer): integer;
 var
    i, len: integer;
    f: double;
@@ -360,7 +360,7 @@ initialization
       pascalLang.VarSectionGenerator := Pascal_VarSectionGenerator;
       pascalLang.MainFunctionSectionGenerator := Pascal_MainFunctionSectionGenerator;
       pascalLang.SetHLighterAttrs := Pascal_SetHLighterAttrs;
-      pascalLang.GetLiteralType := Pascal_GetLiteralType;
+      pascalLang.GetConstantType := Pascal_GetConstantType;
       pascalLang.IsPointerType := Pascal_IsPointerType;
       pascalLang.AreTypesCompatible := Pascal_AreTypesCompatible;
       pascalLang.GetOriginalType := Pascal_GetOriginalType;

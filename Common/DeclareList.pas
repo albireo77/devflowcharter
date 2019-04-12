@@ -580,7 +580,7 @@ begin
       status := DUPLICATED_IDENT
    else if not edtSize.ParseSize then
       status := INCORRECT_SIZE
-   else if GSettings.ValidateDeclaration and (edtSize.Text = '1') and not TParserHelper.IsRecordType(lType) and Assigned(GInfra.CurrentLang.GetLiteralType) then
+   else if GSettings.ValidateDeclaration and (edtSize.Text = '1') and not TParserHelper.IsRecordType(lType) and Assigned(GInfra.CurrentLang.GetConstantType) then
    begin
       initVal := Trim(edtInit.Text);
       if not initVal.isEmpty then
@@ -591,7 +591,7 @@ begin
             if (dataType <> nil) and not dataType.IsValidEnumValue(initVal) then
                status := INVALID_INIT_VAL;
          end
-         else if not TParserHelper.AreTypesCompatible(lType, GInfra.CurrentLang.GetLiteralType(initVal, secType)) and
+         else if not TParserHelper.AreTypesCompatible(lType, GInfra.CurrentLang.GetConstantType(initVal, secType)) and
             not TParserHelper.AreTypesCompatible(lType, TParserHelper.GetConstType(initVal)) then status := INVALID_INIT_VAL;
       end;
    end;
@@ -664,8 +664,8 @@ begin
       status := DUPLICATED_IDENT
    else
    begin
-      if GSettings.ValidateDeclaration and Assigned(GInfra.CurrentLang.GetLiteralType) then
-         constType := GInfra.CurrentLang.GetLiteralType(edtValue.Text, secType);
+      if GSettings.ValidateDeclaration and Assigned(GInfra.CurrentLang.GetConstantType) then
+         constType := GInfra.CurrentLang.GetConstantType(edtValue.Text, secType);
       if constType = UNKNOWN_TYPE then
          status := UNKNOWN_TYPE;
    end;

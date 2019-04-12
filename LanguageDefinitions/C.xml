@@ -457,7 +457,8 @@ Description: Entry for single declaration of constant
 Available placeholders:
    %s1 - constant name
    %s2 - constant value
-   %s3 - string depending if constant is external (element ExternConstModifier)
+   %s3 - string depending if constant is external (element ConstExternModifier)
+   %s4 - constant type expression (element ConstTypeModifier)
 -->
 <ConstEntry>#define %s1 %s2</ConstEntry>
 
