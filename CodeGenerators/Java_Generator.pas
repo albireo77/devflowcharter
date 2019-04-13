@@ -441,8 +441,15 @@ begin
             Exit;
          if not TryStrToFloat(AValue, f) then
          begin
-            if (firstChar = JAVA_STRING_DELIM) and (lastChar = JAVA_STRING_DELIM) then
-               result := JAVA_STRING_TYPE
+            if (firstChar = JAVA_STRING_DELIM) or AValue.StartsWith('new String(') or AValue.StartsWith('String.format(') then
+            begin
+               if AValue.EndsWith('.length()') then
+                  result := JAVA_INT_TYPE
+               else if AValue.EndsWith('.isEmpty()') then
+                  result := JAVA_BOOLEAN_TYPE
+               else
+                  result := JAVA_STRING_TYPE
+            end
             else if (len > 2) and (firstChar = JAVA_CHAR_DELIM) and (lastChar = JAVA_CHAR_DELIM) then
             begin
                cValue := Copy(AValue, 2, len-2);
@@ -612,7 +619,7 @@ begin
                else
                   result := JAVA_CHARACTER_TYPE;
             end
-            else if AValue.StartsWith('Arrays.asList(') and AValue.EndsWith(')') then
+            else if AValue.StartsWith('Arrays.asList(') and (lastChar = ')') then
             begin
                cValue := Copy(AValue, 15, AValue.Length-15);
                cValue := ReplaceStr(cValue, ' ', '');
