@@ -1,3 +1,7 @@
+7.10 [13.04.2019]
+- Functions: column widths in local variables are now resizable
+- Java support: improve evaluation of constant types (e.g. add type evaluation of value returned from Arrays.asList() method)
+
 7.9 [23.03.2019]
 - fix various memory access violation errors
 - fix issues around cut/undo remove functions

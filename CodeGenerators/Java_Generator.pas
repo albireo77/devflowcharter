@@ -441,7 +441,7 @@ begin
             Exit;
          if not TryStrToFloat(AValue, f) then
          begin
-            if (firstChar = JAVA_STRING_DELIM) or AValue.StartsWith('new String(') or AValue.StartsWith('String.format(') then
+            if (firstChar = JAVA_STRING_DELIM) or AValue.StartsWith('new String(') or AValue.StartsWith('String.') then
             begin
                if AValue.EndsWith('.length()') then
                   result := JAVA_INT_TYPE
