@@ -629,12 +629,11 @@ begin
                      Exit;
                   cValue := Copy(cValue, i+1, cValue.Length-i-1);
                end;
-               cValue := ReplaceStr(cValue, ', ', ',');
                tokens := cValue.Split([',']);
                a := result;
                for i := 0 to High(tokens) do
                begin
-                  a := Java_GetConstantType(tokens[i], t);
+                  a := Java_GetConstantType(tokens[i].Trim, t);
                   if (i > 0) and (a <> ap) then
                      Exit;
                   ap := a;
