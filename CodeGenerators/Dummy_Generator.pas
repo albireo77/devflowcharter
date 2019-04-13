@@ -242,7 +242,7 @@ var
    constStr, constType, constValue, template: string;
    lang: TLangDefinition;
    constList, constTemplate: TStringList;
-   isExtern, isGeneric: boolean;
+   isExtern: boolean;
 begin
    lang := GInfra.CurrentLang;
    if (AConstList <> nil) and (AConstList.sgList.RowCount > 2) and not lang.ConstTemplate.IsEmpty then
@@ -263,14 +263,13 @@ begin
                if primType <> UNKNOWN_TYPE then
                begin
                   constType := TParserHelper.GetTypeAsString(primType);
-                  isGeneric := TParserHelper.IsGenericType(constType);
                   template := GInfra.CurrentLang.ConstTypeGeneric;
-                  if template.IsEmpty or not isGeneric then
+                  if template.IsEmpty or not TParserHelper.IsGenericType(constType) then
                      template := GInfra.CurrentLang.ConstTypeNotGeneric;
                   if not template.IsEmpty then
                   begin
                      constType := ReplaceStr(template, PRIMARY_PLACEHOLDER, constType);
-                     constType := ReplaceStr(constType, '%s2', IfThen(isGeneric, TParserHelper.GetTypeAsString(secType)));
+                     constType := ReplaceStr(constType, '%s2', TParserHelper.GetTypeAsString(secType));
                   end;
                end;
                constStr := ReplaceStr(lang.ConstEntry, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
