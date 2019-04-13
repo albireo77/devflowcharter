@@ -1,3 +1,6 @@
+7.11 [13.04.2019]
+- Java support: fix unable to evaluate constant expression in Arrays.asList() when contain new constructor
+
 7.10 [13.04.2019]
 - Functions: column widths in local variables are now resizable
 - Java support: improve evaluation of constant types (e.g. add type evaluation of value returned from Arrays.asList() method)
