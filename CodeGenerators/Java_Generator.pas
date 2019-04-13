@@ -622,14 +622,14 @@ begin
             else if AValue.StartsWith('Arrays.asList(') and (lastChar = ')') then
             begin
                cValue := Copy(AValue, 15, len-15);
-               cValue := ReplaceStr(cValue, ' ', '');
-               if cValue.StartsWith('new') and cValue.EndsWith('}') then
+               if cValue.StartsWith('new ') and cValue.EndsWith('}') then
                begin
                   i := Pos('{', cValue);
                   if i = 0 then
                      Exit;
                   cValue := Copy(cValue, i+1, cValue.Length-i-1);
                end;
+               cValue := ReplaceStr(cValue, ', ', ',');
                tokens := cValue.Split([',']);
                a := result;
                for i := 0 to High(tokens) do
