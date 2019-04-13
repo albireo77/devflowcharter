@@ -239,10 +239,10 @@ end;
 procedure Dummy_ConstSectionGenerator(ALines: TStringList; AConstList: TConstDeclareList);
 var
    i, primType, secType: integer;
-   constStr, constType, constValue: string;
+   constStr, constType, constValue, template: string;
    lang: TLangDefinition;
    constList, constTemplate: TStringList;
-   isExtern: boolean;
+   isExtern, isGeneric: boolean;
 begin
    lang := GInfra.CurrentLang;
    if (AConstList <> nil) and (AConstList.sgList.RowCount > 2) and not lang.ConstTemplate.IsEmpty then
@@ -263,15 +263,14 @@ begin
                if primType <> UNKNOWN_TYPE then
                begin
                   constType := TParserHelper.GetTypeAsString(primType);
-                  if TParserHelper.IsGenericType(constType) and not GInfra.CurrentLang.ConstTypeGeneric.IsEmpty then
+                  isGeneric := TParserHelper.IsGenericType(constType);
+                  template := GInfra.CurrentLang.ConstTypeGeneric;
+                  if template.IsEmpty or not isGeneric then
+                     template := GInfra.CurrentLang.ConstTypeNotGeneric;
+                  if not template.IsEmpty then
                   begin
-                     constType := ReplaceStr(GInfra.CurrentLang.ConstTypeGeneric, PRIMARY_PLACEHOLDER, constType);
-                     constType := ReplaceStr(constType, '%s2', TParserHelper.GetTypeAsString(secType));
-                  end
-                  else if not GInfra.CurrentLang.ConstTypeNotGeneric.IsEmpty then
-                  begin
-                     constType := ReplaceStr(GInfra.CurrentLang.ConstTypeNotGeneric, PRIMARY_PLACEHOLDER, constType);
-                     constType := ReplaceStr(constType, '%s2', '');
+                     constType := ReplaceStr(template, PRIMARY_PLACEHOLDER, constType);
+                     constType := ReplaceStr(constType, '%s2', IfThen(isGeneric, TParserHelper.GetTypeAsString(secType)));
                   end;
                end;
                constStr := ReplaceStr(lang.ConstEntry, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);

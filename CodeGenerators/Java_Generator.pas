@@ -621,7 +621,7 @@ begin
             end
             else if AValue.StartsWith('Arrays.asList(') and (lastChar = ')') then
             begin
-               cValue := Copy(AValue, 15, AValue.Length-15);
+               cValue := Copy(AValue, 15, len-15);
                cValue := ReplaceStr(cValue, ' ', '');
                if cValue.StartsWith('new') and cValue.EndsWith('}') then
                begin
