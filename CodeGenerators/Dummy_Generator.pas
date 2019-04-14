@@ -264,7 +264,7 @@ begin
                begin
                   constType := TParserHelper.GetTypeAsString(primType);
                   template := GInfra.CurrentLang.ConstTypeGeneric;
-                  if template.IsEmpty or not TParserHelper.IsGenericType(constType) then
+                  if template.IsEmpty or (secType = UNKNOWN_TYPE) or not TParserHelper.IsGenericType(constType) then
                      template := GInfra.CurrentLang.ConstTypeNotGeneric;
                   if not template.IsEmpty then
                   begin

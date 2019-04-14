@@ -63,6 +63,8 @@ var
    JAVA_CHARACTER_TYPE,
    JAVA_STRING_TYPE,
    JAVA_LIST_TYPE,
+   JAVA_SET_TYPE,
+   JAVA_MAP_TYPE,
    JAVA_BOOLEAN_TYPE,
    JAVA_DATE_TYPE,
    JAVA_CALENDAR_TYPE,
@@ -619,6 +621,20 @@ begin
                else
                   result := JAVA_CHARACTER_TYPE;
             end
+            else if AValue.StartsWith('Collections.') then
+            begin
+              AddLibImport('java.util.Collections');
+              cValue := Copy(AValue, 13, MaxInt);
+              if MatchStr(cValue, ['EMPTY_LIST', 'emptyList()']) or ((cValue.StartsWith('unmodifiableList(') or cValue.StartsWith('nCopies(')
+                 or cValue.StartsWith('singletonList(') or cValue.StartsWith('synchronizedList(')) and (lastChar = ')')) then
+                 result := JAVA_LIST_TYPE
+              else if MatchStr(cValue, ['EMPTY_SET', 'emptySet()']) or ((cValue.StartsWith('unmodifiableSet(')
+                   or cValue.StartsWith('synchronizedSet(') or cValue.StartsWith('singleton(')) and (lastChar = ')')) then
+                 result := JAVA_SET_TYPE
+              else if MatchStr(cValue, ['EMPTY_MAP', 'emptyMap()']) or ((cValue.StartsWith('unmodifiableMap(') or cValue.StartsWith('synchronizedMap(')
+                   or cValue.StartsWith('singletonMap(')) and (lastChar = ')')) then
+                 result := JAVA_MAP_TYPE;
+            end
             else if AValue.StartsWith('Arrays.asList(') and (lastChar = ')') then
             begin
                cValue := Copy(AValue, 15, len-15);
@@ -728,6 +744,8 @@ initialization
    JAVA_CHARACTER_TYPE      := TParserHelper.GetType('Character', JAVA_LANG_ID);
    JAVA_STRING_TYPE         := TParserHelper.GetType('String', JAVA_LANG_ID);
    JAVA_LIST_TYPE           := TParserHelper.GetType('List', JAVA_LANG_ID);
+   JAVA_SET_TYPE            := TParserHelper.GetType('Set', JAVA_LANG_ID);
+   JAVA_MAP_TYPE            := TParserHelper.GetType('Map', JAVA_LANG_ID);
    JAVA_BOOLEAN_TYPE        := TParserHelper.GetType('boolean', JAVA_LANG_ID);
    JAVA_DATE_TYPE           := TParserHelper.GetType('Date', JAVA_LANG_ID);
    JAVA_CALENDAR_TYPE       := TParserHelper.GetType('Calendar', JAVA_LANG_ID);
