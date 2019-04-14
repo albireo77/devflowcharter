@@ -424,9 +424,10 @@ var
    i64: Int64;
    f: double;
    firstChar, lastChar: char;
-   cValue: string;
+   cValue, libName: string;
    tokens: TArray<string>;
    pNativeType: PNativeDataType;
+   userDataType: TUserDataType;
 begin
    result := UNKNOWN_TYPE;
    ASecType := UNKNOWN_TYPE;
@@ -673,6 +674,26 @@ begin
                      AddLibImport(pNativeType.Lib + '.' + pNativeType.Name);
                   ASecType := result;
                   result := JAVA_LIST_TYPE;
+               end;
+            end
+            else if AValue.StartsWith('new ') and (lastChar = ')') then
+            begin
+               i := Pos('(', AValue);
+               if i = 0 then
+                  Exit;
+               cValue := Copy(AValue, 5, i-5);
+               result := TParserHelper.GetType(cValue);
+               if result <> UNKNOWN_TYPE then
+               begin
+                  libName := '';
+                  pNativeType := GInfra.GetNativeDataType(cValue);
+                  userDataType := GProject.GetUserDataType(cValue);
+                  if pNativeType <> nil then
+                     libName := pNativeType.Lib
+                  else if userDataType <> nil then
+                     libName := userDataType.GetLibName;
+                  if not libName.IsEmpty then
+                     AddLibImport(libName + '.' + cValue);
                end;
             end
             else if AValue.Contains('System.currentTimeMillis()') then
