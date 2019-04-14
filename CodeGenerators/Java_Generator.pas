@@ -627,13 +627,13 @@ begin
               cValue := Copy(AValue, 13, MaxInt);
               if MatchStr(cValue, ['EMPTY_LIST', 'emptyList()']) or ((cValue.StartsWith('unmodifiableList(') or cValue.StartsWith('nCopies(')
                  or cValue.StartsWith('singletonList(') or cValue.StartsWith('synchronizedList(')) and (lastChar = ')')) then
-                 result := JAVA_LIST_TYPE
+                    result := JAVA_LIST_TYPE
               else if MatchStr(cValue, ['EMPTY_SET', 'emptySet()']) or ((cValue.StartsWith('unmodifiableSet(')
-                   or cValue.StartsWith('synchronizedSet(') or cValue.StartsWith('singleton(')) and (lastChar = ')')) then
-                 result := JAVA_SET_TYPE
+                 or cValue.StartsWith('synchronizedSet(') or cValue.StartsWith('singleton(')) and (lastChar = ')')) then
+                    result := JAVA_SET_TYPE
               else if MatchStr(cValue, ['EMPTY_MAP', 'emptyMap()']) or ((cValue.StartsWith('unmodifiableMap(') or cValue.StartsWith('synchronizedMap(')
-                   or cValue.StartsWith('singletonMap(')) and (lastChar = ')')) then
-                 result := JAVA_MAP_TYPE;
+                 or cValue.StartsWith('singletonMap(')) and (lastChar = ')')) then
+                    result := JAVA_MAP_TYPE;
             end
             else if AValue.StartsWith('Arrays.asList(') and (lastChar = ')') then
             begin
