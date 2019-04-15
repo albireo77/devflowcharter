@@ -426,8 +426,6 @@ var
    firstChar, lastChar: char;
    cValue, libName: string;
    tokens: TArray<string>;
-   pNativeType: PNativeDataType;
-   userDataType: TUserDataType;
 begin
    result := UNKNOWN_TYPE;
    ASecType := UNKNOWN_TYPE;
@@ -626,15 +624,51 @@ begin
             begin
               AddLibImport('java.util.Collections');
               cValue := Copy(AValue, 13, MaxInt);
-              if MatchStr(cValue, ['EMPTY_LIST', 'emptyList()']) or ((cValue.StartsWith('unmodifiableList(') or cValue.StartsWith('nCopies(')
-                 or cValue.StartsWith('singletonList(') or cValue.StartsWith('synchronizedList(')) and (lastChar = ')')) then
+              if MatchStr(cValue, ['EMPTY_LIST', 'emptyList()']) then
+                 result := JAVA_LIST_TYPE
+              else if MatchStr(cValue, ['EMPTY_SET', 'emptySet()']) then
+                 result := JAVA_SET_TYPE
+              else if MatchStr(cValue, ['EMPTY_MAP', 'emptyMap()']) then
+                 result := JAVA_MAP_TYPE
+              else if lastChar = ')' then
+              begin
+                 if cValue.StartsWith('unmodifiableList(') or cValue.StartsWith('synchronizedList(') then
                     result := JAVA_LIST_TYPE
-              else if MatchStr(cValue, ['EMPTY_SET', 'emptySet()']) or ((cValue.StartsWith('unmodifiableSet(')
-                 or cValue.StartsWith('synchronizedSet(') or cValue.StartsWith('singleton(')) and (lastChar = ')')) then
+                 else if cValue.StartsWith('singletonList(') then
+                 begin
+                    cValue := Copy(cValue, 15, cValue.Length-15);
+                    ASecType := Java_GetConstantType(cValue.Trim, t);
+                    libName := TParserHelper.GetLibForType(ASecType);
+                    if not libName.IsEmpty then
+                       AddLibImport(libName + '.' + TParserHelper.GetTypeAsString(ASecType));
+                    result := JAVA_LIST_TYPE
+                 end
+                 else if cValue.StartsWith('nCopies(') then
+                 begin
+                    cValue := Copy(cValue, 9, cValue.Length-9);
+                    tokens := cValue.Split([',']);
+                    if (Length(tokens) <> 2) or not TryStrToInt(tokens[0].Trim, t) then
+                       Exit;
+                    ASecType := Java_GetConstantType(tokens[1].Trim, t);
+                    libName := TParserHelper.GetLibForType(ASecType);
+                    if not libName.IsEmpty then
+                       AddLibImport(libName + '.' + TParserHelper.GetTypeAsString(ASecType));
+                    result := JAVA_LIST_TYPE
+                 end
+                 else if cValue.StartsWith('unmodifiableSet(') or cValue.StartsWith('synchronizedSet(') then
                     result := JAVA_SET_TYPE
-              else if MatchStr(cValue, ['EMPTY_MAP', 'emptyMap()']) or ((cValue.StartsWith('unmodifiableMap(') or cValue.StartsWith('synchronizedMap(')
-                 or cValue.StartsWith('singletonMap(')) and (lastChar = ')')) then
+                 else if cValue.StartsWith('singleton(') then
+                 begin
+                    cValue := Copy(cValue, 11, cValue.Length-11);
+                    ASecType := Java_GetConstantType(cValue.Trim, t);
+                    libName := TParserHelper.GetLibForType(ASecType);
+                    if not libName.IsEmpty then
+                       AddLibImport(libName + '.' + TParserHelper.GetTypeAsString(ASecType));
+                    result := JAVA_SET_TYPE
+                 end
+                 else if cValue.StartsWith('unmodifiableMap(') or cValue.StartsWith('synchronizedMap(') or cValue.StartsWith('singletonMap(') then
                     result := JAVA_MAP_TYPE;
+              end;
             end
             else if AValue.StartsWith('Arrays.asList(') and (lastChar = ')') then
             begin
@@ -666,35 +700,23 @@ begin
                   result := JAVA_FLOAT_OBJECT_TYPE
                else if result = JAVA_CHAR_TYPE then
                   result := JAVA_CHARACTER_TYPE;
-               if result <> UNKNOWN_TYPE then
-               begin
-                  AddLibImport('java.util.Arrays');
-                  pNativeType := GInfra.GetNativeDataType(TParserHelper.GetTypeAsString(result));
-                  if (pNativeType <> nil) and not pNativeType.Lib.IsEmpty then
-                     AddLibImport(pNativeType.Lib + '.' + pNativeType.Name);
-                  ASecType := result;
-                  result := JAVA_LIST_TYPE;
-               end;
+               libName := TParserHelper.GetLibForType(result);
+               if not libName.IsEmpty then
+                  AddLibImport(libName + '.' + TParserHelper.GetTypeAsString(result));
+               AddLibImport('java.util.Arrays');
+               ASecType := result;
+               result := JAVA_LIST_TYPE;
             end
             else if AValue.StartsWith('new ') and (lastChar = ')') then
             begin
                i := Pos('(', AValue);
                if i = 0 then
                   Exit;
-               cValue := Copy(AValue, 5, i-5);
+               cValue := Trim(Copy(AValue, 5, i-5));
                result := TParserHelper.GetType(cValue);
-               if result <> UNKNOWN_TYPE then
-               begin
-                  libName := '';
-                  pNativeType := GInfra.GetNativeDataType(cValue);
-                  userDataType := GProject.GetUserDataType(cValue);
-                  if pNativeType <> nil then
-                     libName := pNativeType.Lib
-                  else if userDataType <> nil then
-                     libName := userDataType.GetLibName;
-                  if not libName.IsEmpty then
-                     AddLibImport(libName + '.' + cValue);
-               end;
+               libName := TParserHelper.GetLibForType(result);
+               if not libName.IsEmpty then
+                  AddLibImport(libName + '.' + cValue);
             end
             else if AValue.Contains('System.currentTimeMillis()') then
                result := JAVA_LONG_TYPE

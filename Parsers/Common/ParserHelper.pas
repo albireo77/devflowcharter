@@ -107,6 +107,7 @@ type
       class function AreTypesCompatible(AType1, AType2: integer): boolean;
       class function GetSizeExpArrayAsString(const ATypeAsString: string; const ASizeAsString: string): string;
       class function IsGenericType(const ATypeName: string): boolean;
+      class function GetLibForType(AType: integer): string;
    end;
 
 const
@@ -601,6 +602,25 @@ begin
          result := userType.GetOriginalType
       else if Assigned(GInfra.CurrentLang.GetOriginalType) then
          result := GetType(GInfra.CurrentLang.GetOriginalType(typeName));
+   end;
+end;
+
+class function TParserHelper.GetLibForType(AType: integer): string;
+var
+   userDataType: TUserDataType;
+   pNativeType: PNativeDataType;
+   typeName: string;
+begin
+   result := '';
+   if (GProject <> nil) and (AType <> UNKNOWN_TYPE) then
+   begin
+      typeName := GetTypeAsString(AType);
+      pNativeType := GInfra.GetNativeDataType(typeName);
+      userDataType := GProject.GetUserDataType(typeName);
+      if pNativeType <> nil then
+         result := pNativeType.Lib
+      else if userDataType <> nil then
+         result := userDataType.GetLibName;
    end;
 end;
 
