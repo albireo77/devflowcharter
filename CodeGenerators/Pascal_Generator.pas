@@ -266,14 +266,14 @@ begin
    end;
 end;
 
-function Pascal_GetConstantType(const AValue: string; var ASecType: integer): integer;
+function Pascal_GetConstantType(const AValue: string; var AGenericType: string): integer;
 var
    i, len: integer;
    f: double;
    b: boolean;
 begin
    result := UNKNOWN_TYPE;
-   ASecType := UNKNOWN_TYPE;
+   AGenericType := '';
    len := AValue.Length;
    if len > 0 then
    begin

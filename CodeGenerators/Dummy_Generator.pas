@@ -168,12 +168,12 @@ begin
    end;
 end;
 
-function Dummy_GetConstantType(const AValue: string; var ASecType: integer): integer;
+function Dummy_GetConstantType(const AValue: string; var AGenericType: string): integer;
 var
    i: integer;
 begin
    result := UNKNOWN_TYPE;
-   ASecType := UNKNOWN_TYPE;
+   AGenericType := '';
    if TryStrToInt(AValue, i) then
       result := GENERIC_INT_TYPE;
 end;
@@ -238,8 +238,8 @@ end;
 
 procedure Dummy_ConstSectionGenerator(ALines: TStringList; AConstList: TConstDeclareList);
 var
-   i, primType, secType: integer;
-   constStr, constType, constValue, template: string;
+   i, primType: integer;
+   constStr, constType, constValue, template, secType: string;
    lang: TLangDefinition;
    constList, constTemplate: TStringList;
    isExtern: boolean;
@@ -264,12 +264,12 @@ begin
                begin
                   constType := TParserHelper.GetTypeAsString(primType);
                   template := GInfra.CurrentLang.ConstTypeGeneric;
-                  if template.IsEmpty or (secType = UNKNOWN_TYPE) or not TParserHelper.IsGenericType(constType) then
+                  if template.IsEmpty or secType.IsEmpty or not TParserHelper.IsGenericType(constType) then
                      template := GInfra.CurrentLang.ConstTypeNotGeneric;
                   if not template.IsEmpty then
                   begin
                      constType := ReplaceStr(template, PRIMARY_PLACEHOLDER, constType);
-                     constType := ReplaceStr(constType, '%s2', TParserHelper.GetTypeAsString(secType));
+                     constType := ReplaceStr(constType, '%s2', secType);
                   end;
                end;
                constStr := ReplaceStr(lang.ConstEntry, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);

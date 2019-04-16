@@ -236,7 +236,7 @@ type
       GetUserTypeDesc: function (ADataType: TUserDataType): string;
       SetHLighterAttrs: procedure;
       GetPointerTypeName: function (const val: string): string;
-      GetConstantType: function (const val: string; var ASecType: integer): integer;
+      GetConstantType: function (const val: string; var AGenericType: string): integer;
       IsPointerType: function (const AName: string): boolean;
       GetOriginalType: function (const APtrType: string): string;
       AreTypesCompatible: function (AType1, AType2: integer): boolean;

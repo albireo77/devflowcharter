@@ -568,8 +568,8 @@ end;
 
 procedure TVarDeclareList.OnClickAdd(Sender: TObject);
 var
-   status, lType, secType: integer;
-   info, initVal: string;
+   status, lType: integer;
+   info, initVal, secType: string;
    edit: TCustomEdit;
    dataType: TUserDataType;
 begin
@@ -653,8 +653,8 @@ end;
 
 procedure TConstDeclareList.OnClickAdd(Sender: TObject);
 var
-   status, constType, secType: integer;
-   info: string;
+   status, constType: integer;
+   info, secType: string;
    edit: TCustomEdit;
 begin
    constType := GENERIC_INT_TYPE;
