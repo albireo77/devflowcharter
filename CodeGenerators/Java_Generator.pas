@@ -437,13 +437,31 @@ begin
       or AValue.Contains('.toOctalString(') or AValue.Contains('.toUnsignedString(') then result := JAVA_STRING_TYPE;
 end;
 
+function ProcessGenericType(AType: integer): string;
+var
+   t: integer;
+   libName: string;
+begin
+   result := '';
+   if AType <> UNKNOWN_TYPE then
+   begin
+      t := GetObjectTypeForPrimitive(AType);
+      if t <> UNKNOWN_TYPE then
+         AType := t;
+      result := TParserHelper.GetTypeAsString(AType);
+      libName := TParserHelper.GetLibForType(result);
+      if not libName.IsEmpty then
+         AddLibImport(libName + '.' + result);
+   end;
+end;
+
 function Java_GetConstantType(const AValue: string; var AGenericType: string): integer;
 var
-   i, len, a, ap, t, t1, t2: integer;
+   i, len, a, ap, t1, t2: integer;
    i64: Int64;
    f: double;
    firstChar, lastChar: char;
-   cValue, libName, s, s1, s2: string;
+   cValue, s, s1, s2: string;
    tokens: TArray<string>;
 begin
    result := UNKNOWN_TYPE;
@@ -541,6 +559,15 @@ begin
                result := JAVA_STRING_TYPE
             else if MatchStr(AValue, ['true', 'false']) then
                result := JAVA_BOOLEAN_TYPE
+            else if AValue.StartsWith('new Boolean(') or AValue.StartsWith('Boolean.') then
+            begin
+               if AValue.Contains('.booleanValue()') or AValue.Contains('.parseBoolean(') then
+                  result := JAVA_BOOLEAN_TYPE
+               else if AValue.Contains('.toString(') then
+                  result := JAVA_STRING_TYPE
+               else
+                  result := JAVA_BOOLEAN_OBJECT_TYPE;
+            end
             else if AValue.StartsWith('new BigDecimal(') or AValue.StartsWith('BigDecimal.') then
             begin
                if AValue.Contains('.longValue()') then
@@ -657,35 +684,17 @@ begin
                  begin
                     cValue := Copy(cValue, 15, cValue.Length-15);
                     result := Java_GetConstantType(cValue.Trim, s);
-                    if result <> UNKNOWN_TYPE then
-                    begin
-                       t := GetObjectTypeForPrimitive(result);
-                       if t <> UNKNOWN_TYPE then
-                          result := t;
-                       AGenericType := TParserHelper.GetTypeAsString(result);
-                       libName := TParserHelper.GetLibForType(AGenericType);
-                       if not libName.IsEmpty then
-                          AddLibImport(libName + '.' + AGenericType);
-                    end;
+                    AGenericType := ProcessGenericType(result);
                     result := JAVA_LIST_TYPE
                  end
                  else if cValue.StartsWith('nCopies(') then
                  begin
                     cValue := Copy(cValue, 9, cValue.Length-9);
                     tokens := cValue.Split([',']);
-                    if (Length(tokens) <> 2) or not TryStrToInt(tokens[0].Trim, t) then
+                    if (Length(tokens) <> 2) or not TryStrToInt(tokens[0].Trim, t1) then
                        Exit;
                     result := Java_GetConstantType(tokens[1].Trim, s);
-                    if result <> UNKNOWN_TYPE then
-                    begin
-                       t := GetObjectTypeForPrimitive(result);
-                       if t <> UNKNOWN_TYPE then
-                          result := t;
-                       AGenericType := TParserHelper.GetTypeAsString(result);
-                       libName := TParserHelper.GetLibForType(AGenericType);
-                       if not libName.IsEmpty then
-                          AddLibImport(libName + '.' + AGenericType);
-                    end;
+                    AGenericType := ProcessGenericType(result);
                     result := JAVA_LIST_TYPE
                  end
                  else if cValue.StartsWith('unmodifiableSet(') or cValue.StartsWith('synchronizedSet(') then
@@ -694,16 +703,7 @@ begin
                  begin
                     cValue := Copy(cValue, 11, cValue.Length-11);
                     result := Java_GetConstantType(cValue.Trim, s);
-                    if result <> UNKNOWN_TYPE then
-                    begin
-                       t := GetObjectTypeForPrimitive(result);
-                       if t <> UNKNOWN_TYPE then
-                          result := t;
-                       AGenericType := TParserHelper.GetTypeAsString(result);
-                       libName := TParserHelper.GetLibForType(AGenericType);
-                       if not libName.IsEmpty then
-                          AddLibImport(libName + '.' + AGenericType);
-                    end;
+                    AGenericType := ProcessGenericType(result);
                     result := JAVA_SET_TYPE
                  end
                  else if cValue.StartsWith('unmodifiableMap(') or cValue.StartsWith('synchronizedMap(') then
@@ -716,24 +716,10 @@ begin
                        Exit;
                     t1 := Java_GetConstantType(tokens[0].Trim, s);
                     t2 := Java_GetConstantType(tokens[1].Trim, s);
-                    if (t1 <> UNKNOWN_TYPE) and (t2 <> UNKNOWN_TYPE) then
-                    begin
-                       t := GetObjectTypeForPrimitive(t1);
-                       if t <> UNKNOWN_TYPE then
-                          t1 := t;
-                       t := GetObjectTypeForPrimitive(t2);
-                       if t <> UNKNOWN_TYPE then
-                          t2 := t;
-                       s1 := TParserHelper.GetTypeAsString(t1);
-                       s2 := TParserHelper.GetTypeAsString(t2);
-                       libName := TParserHelper.GetLibForType(s1);
-                       if not libName.IsEmpty then
-                          AddLibImport(libName + '.' + s1);
-                       libName := TParserHelper.GetLibForType(s2);
-                       if not libName.IsEmpty then
-                          AddLibImport(libName + '.' + s2);
+                    s1 := ProcessGenericType(t1);
+                    s2 := ProcessGenericType(t2);
+                    if (s1 <> '') and (s2 <> '') then
                        AGenericType := s1 + ', ' + s2;
-                    end;
                     result := JAVA_MAP_TYPE;
                  end;
               end;
@@ -758,13 +744,7 @@ begin
                   ap := a;
                end;
                result := a;
-               t := GetObjectTypeForPrimitive(result);
-               if t <> UNKNOWN_TYPE then
-                  result := t;
-               AGenericType := TParserHelper.GetTypeAsString(result);
-               libName := TParserHelper.GetLibForType(AGenericType);
-               if not libName.IsEmpty then
-                  AddLibImport(libName + '.' + AGenericType);
+               AGenericType := ProcessGenericType(result);
                AddLibImport('java.util.Arrays');
                result := JAVA_LIST_TYPE;
             end
@@ -774,10 +754,8 @@ begin
                if i = 0 then
                   Exit;
                cValue := Trim(Copy(AValue, 5, i-5));
-               libName := TParserHelper.GetLibForType(cValue);
-               if not libName.IsEmpty then
-                  AddLibImport(libName + '.' + cValue);
                result := TParserHelper.GetType(cValue);
+               ProcessGenericType(result);
             end
             else if AValue.Contains('System.currentTimeMillis()') then
                result := JAVA_LONG_TYPE
