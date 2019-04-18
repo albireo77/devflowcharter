@@ -686,8 +686,8 @@ Element ConstTypeModifier
 Description:
 Constant type expression depending if evaluated contstant type is not generic|generic
 Available placeholders:
-   %s1 - primary type
-   %s2 - secondary type (used when primary type is a generic type)   
+   %s1 - main type
+   %s2 - generic types string (used when main type is a generic type)   
 -->
 <ConstTypeModifier>%s1|%s1&lt;%s2&gt;</ConstTypeModifier>
 
