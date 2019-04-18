@@ -233,7 +233,7 @@ begin
    end;
 end;
 
-function ExtractImplementer(const ATypeName: string; const AContents: string): string;
+function GetImplementerLibImport(const ATypeName: string; const AContents: string): string;
 var
    i: integer;
    implList: TStringList;
@@ -326,7 +326,7 @@ begin
                   end;
                end;
             end;
-            libImport := ExtractImplementer(varType, varInit);
+            libImport := GetImplementerLibImport(varType, varInit);
             AddLibImport(libImport);
             if p2 > p1 then
                Delete(varInit, p1+1, p2-p1-1);      // make diamond operator

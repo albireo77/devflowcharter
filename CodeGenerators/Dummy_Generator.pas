@@ -238,8 +238,8 @@ end;
 
 procedure Dummy_ConstSectionGenerator(ALines: TStringList; AConstList: TConstDeclareList);
 var
-   i, primType: integer;
-   constStr, constType, constValue, template, secType: string;
+   i, t: integer;
+   constStr, constType, constValue, template, genericTypes: string;
    lang: TLangDefinition;
    constList, constTemplate: TStringList;
    isExtern: boolean;
@@ -257,19 +257,19 @@ begin
                constValue := AConstList.sgList.Cells[CONST_VALUE_COL, i];
                constType := '';
                if Assigned(GInfra.CurrentLang.GetConstantType) then
-                  primType := GInfra.CurrentLang.GetConstantType(constValue, secType)
+                  t := GInfra.CurrentLang.GetConstantType(constValue, genericTypes)
                else
-                  primType := Dummy_GetConstantType(constValue, secType);
-               if primType <> UNKNOWN_TYPE then
+                  t := Dummy_GetConstantType(constValue, genericTypes);
+               if t <> UNKNOWN_TYPE then
                begin
-                  constType := TParserHelper.GetTypeAsString(primType);
+                  constType := TParserHelper.GetTypeAsString(t);
                   template := GInfra.CurrentLang.ConstTypeGeneric;
-                  if template.IsEmpty or secType.IsEmpty or not TParserHelper.IsGenericType(constType) then
+                  if template.IsEmpty or genericTypes.IsEmpty or not TParserHelper.IsGenericType(constType) then
                      template := GInfra.CurrentLang.ConstTypeNotGeneric;
                   if not template.IsEmpty then
                   begin
                      constType := ReplaceStr(template, PRIMARY_PLACEHOLDER, constType);
-                     constType := ReplaceStr(constType, '%s2', secType);
+                     constType := ReplaceStr(constType, '%s2', genericTypes);
                   end;
                end;
                constStr := ReplaceStr(lang.ConstEntry, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
