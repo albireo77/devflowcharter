@@ -726,20 +726,28 @@ begin
             end
             else if AValue.StartsWith('Arrays.asList(') and (lastChar = ')') then
             begin
+               t1 := UNKNOWN_TYPE;
                cValue := Copy(AValue, 15, len-15);
                if cValue.StartsWith('new ') and cValue.EndsWith('}') then
                begin
-                  i := Pos('{', cValue);
-                  if i = 0 then
+                  s := Copy(cValue, 5, MaxInt);
+                  s := ReplaceStr(s, ' ', '');
+                  i := Pos('[', s);
+                  if (i = 0) or (s[i+1] <> ']') or (s[i+2] <> '{') then
                      Exit;
+                  s := Copy(s, 1, i-1);
+                  t1 := TParserHelper.GetType(s);
+                  if t1 = UNKNOWN_TYPE then
+                     Exit;
+                  i := Pos('{', cValue);
                   cValue := Copy(cValue, i+1, cValue.Length-i-1);
                end;
                tokens := cValue.Split([',']);
-               a := result;
+               a := t1;
                for i := 0 to High(tokens) do
                begin
                   a := Java_GetConstantType(tokens[i].Trim, s);
-                  if (i > 0) and (a <> ap) then
+                  if ((t1 <> UNKNOWN_TYPE) and (a <> t1)) or ((i > 0) and (a <> ap)) then
                      Exit;
                   ap := a;
                end;
