@@ -779,8 +779,8 @@ begin
                   if i = 0 then
                      Exit;
                   s := Copy(cValue, 1, i-1);
-                  result := TParserHelper.GetType(s);
-                  if result = UNKNOWN_TYPE then
+                  t1 := TParserHelper.GetType(s);
+                  if t1 = UNKNOWN_TYPE then
                      Exit;
                   t2 := 0;
                   cValue := Copy(cValue, i, MaxInt);
@@ -793,8 +793,8 @@ begin
                   end;
                   if cValue[1] <> '{' then
                      Exit;
-                  ProcessGenericType(result);
-                  result := TParserHelper.EncodeArrayType(result, t2);
+                  ProcessGenericType(t1);
+                  result := TParserHelper.EncodeArrayType(t1, t2);
                end
                else if lastChar = ')' then
                begin
