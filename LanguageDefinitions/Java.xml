@@ -661,6 +661,14 @@ Available placeholders:
 <ConstEntry>%s3static final %s4 %s1 = %s2;</ConstEntry>
 
 <!--
+Element ConstEntryArray
+Description: Entry for single constant array declaration
+Available placeholders are the same as for ConstEntry element and:
+   %s5 - list of array sizes (VarEntryArraySize element)
+-->
+<ConstEntryArray>%s3static final %s4%s5 %s1 = %s2;</ConstEntryArray>
+
+<!--
 Element ConstTypeModifier
 Description:
 Constant type expression depending if evaluated contstant type is not generic|generic

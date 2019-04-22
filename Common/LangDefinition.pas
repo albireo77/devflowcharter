@@ -61,6 +61,7 @@ type
       VarEntryInitExtern,
       ConstTemplate,
       ConstEntry,
+      ConstEntryArray,
       ConstTypeGeneric,
       ConstTypeNotGeneric,
       WhileTemplate,
@@ -706,6 +707,10 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'ConstEntry');
    if tag <> nil then
       ConstEntry := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'ConstEntryArray');
+   if tag <> nil then
+      ConstEntryArray := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ConstTypeModifier');
    if tag <> nil then

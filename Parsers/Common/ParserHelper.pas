@@ -68,9 +68,6 @@ type
    end;
 
    TParserHelper = class(TObject)
-   private
-      //class function DecodeDimension(const AType: integer): integer;
-      class function DecodeType(AType: integer): integer;
    public
       class function IsInLoop: boolean;
       class function ValidateUserFunctionParms(const AFunctionName: string; AParmList: array of integer): boolean;
@@ -108,6 +105,9 @@ type
       class function GetSizeExpArrayAsString(const ATypeAsString: string; const ASizeAsString: string): string;
       class function IsGenericType(const ATypeName: string): boolean;
       class function GetLibForType(ATypeName: string): string;
+      class function DecodeDimension(const AType: integer): integer;
+      class function DecodeType(AType: integer): integer;
+      class function EncodeType(AType, ADimensionCount: integer): integer;
    end;
 
 const
@@ -727,14 +727,19 @@ begin
    end;
 end;
 
-{class function TParserHelper.DecodeDimension(const AType: integer): integer;
+class function TParserHelper.DecodeDimension(const AType: integer): integer;
 begin
    result := AType div DIMENSION_LEVEL_STEP;
-end;}
+end;
 
 class function TParserHelper.DecodeType(AType: integer): integer;
 begin
    result := AType mod DIMENSION_LEVEL_STEP;
+end;
+
+class function TParserHelper.EncodeType(AType, ADimensionCount: integer): integer;
+begin
+   result := DIMENSION_LEVEL_STEP * ADimensionCount + AType;
 end;
 
 end.

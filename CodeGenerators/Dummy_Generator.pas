@@ -238,7 +238,7 @@ end;
 
 procedure Dummy_ConstSectionGenerator(ALines: TStringList; AConstList: TConstDeclareList);
 var
-   i, t: integer;
+   i, t, d: integer;
    constStr, constType, constValue, template, genericTypes: string;
    lang: TLangDefinition;
    constList, constTemplate: TStringList;
@@ -256,12 +256,16 @@ begin
             begin
                constValue := AConstList.sgList.Cells[CONST_VALUE_COL, i];
                constType := '';
+               d := 0;
                if Assigned(GInfra.CurrentLang.GetConstantType) then
                   t := GInfra.CurrentLang.GetConstantType(constValue, genericTypes)
                else
                   t := Dummy_GetConstantType(constValue, genericTypes);
                if t <> UNKNOWN_TYPE then
                begin
+                  d := TParserHelper.DecodeDimension(t);
+                  if d > 0 then
+                     t := TParserHelper.DecodeType(t);
                   constType := TParserHelper.GetTypeAsString(t);
                   template := GInfra.CurrentLang.ConstTypeGeneric;
                   if template.IsEmpty or genericTypes.IsEmpty or not TParserHelper.IsGenericType(constType) then
@@ -272,10 +276,12 @@ begin
                      constType := ReplaceStr(constType, '%s2', genericTypes);
                   end;
                end;
-               constStr := ReplaceStr(lang.ConstEntry, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
+               constStr := ReplaceStr(IfThen(d > 0, lang.ConstEntryArray, lang.ConstEntry), PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
                constStr := ReplaceStr(constStr, '%s2', constValue);
                constStr := ReplaceStr(constStr, '%s3', AConstList.GetExternModifier(i));
                constStr := ReplaceStr(constStr, '%s4', constType);
+               if d > 0 then
+                  constStr := ReplaceStr(constStr, '%s5', DupeString(ReplaceStr(lang.VarEntryArraySize, '%s', ''), d));
                constList.AddObject(constStr, AConstList);
             end;
          end;

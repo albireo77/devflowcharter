@@ -77,6 +77,7 @@ var
    JAVA_PERIOD_TYPE,
    JAVA_BIGDECIMAL_TYPE,
    JAVA_BIGINTEGER_TYPE: integer;
+   JAVA_PRIMITIVE_TYPES: array of integer;
 
 function GetObjectTypeForPrimitive(APrimitiveType: integer): integer;
 begin
@@ -94,6 +95,18 @@ begin
       result := JAVA_BOOLEAN_OBJECT_TYPE
    else
       result := UNKNOWN_TYPE;
+end;
+
+function IsPrimitiveType(AType: integer): boolean;
+var
+   i: integer;
+begin
+   for i := 0 to High(JAVA_PRIMITIVE_TYPES) do
+   begin
+      if JAVA_PRIMITIVE_TYPES[i] = AType then
+         Exit(true);
+   end;
+   result := false;
 end;
 
 procedure AddLibImport(const ALib: string);
@@ -756,13 +769,40 @@ begin
                AddLibImport('java.util.Arrays');
                result := JAVA_LIST_TYPE;
             end
-            else if AValue.StartsWith('new ') and (lastChar = ')') then
+            else if AValue.StartsWith('new ') then
             begin
-               i := Pos('(', AValue);
-               if i = 0 then
-                  Exit;
-               cValue := Trim(Copy(AValue, 5, i-5));
-               result := TParserHelper.GetType(cValue);
+               if lastChar = '}' then
+               begin
+                  cValue := Copy(AValue, 5, MaxInt);
+                  cValue := ReplaceStr(cValue, ' ', '');
+                  i := Pos('[', cValue);
+                  if i = 0 then
+                     Exit;
+                  s := Copy(cValue, 1, i-1);
+                  result := TParserHelper.GetType(s);
+                  if result = UNKNOWN_TYPE then
+                     Exit;
+                  t2 := 0;
+                  cValue := Copy(cValue, i, MaxInt);
+                  while cValue.StartsWith('[]') do
+                  begin
+                     t2 := t2 + 1;
+                     cValue := Copy(cValue, 3, MaxInt);
+                  end;
+                  if cValue[1] <> '{' then
+                     Exit;
+                  result := TParserHelper.EncodeType(result, t2);
+               end
+               else if lastChar = ')' then
+               begin
+                  i := Pos('(', AValue);
+                  if i = 0 then
+                     Exit;
+                  cValue := Trim(Copy(AValue, 5, i-5));
+                  result := TParserHelper.GetType(cValue);
+                  if IsPrimitiveType(result) then
+                     result := UNKNOWN_TYPE;
+               end;
                ProcessGenericType(result);
             end
             else if AValue.Contains('System.currentTimeMillis()') then
@@ -848,6 +888,8 @@ initialization
    JAVA_PERIOD_TYPE         := TParserHelper.GetType('Period', JAVA_LANG_ID);
    JAVA_BIGDECIMAL_TYPE     := TParserHelper.GetType('BigDecimal', JAVA_LANG_ID);
    JAVA_BIGINTEGER_TYPE     := TParserHelper.GetType('BigInteger', JAVA_LANG_ID);
+
+   JAVA_PRIMITIVE_TYPES := [JAVA_INT_TYPE, JAVA_LONG_TYPE, JAVA_FLOAT_TYPE, JAVA_DOUBLE_TYPE, JAVA_CHAR_TYPE, JAVA_BOOLEAN_TYPE];
 
    javaLang := GInfra.GetLangDefinition(JAVA_LANG_ID);
    if javaLang <> nil then
@@ -989,5 +1031,6 @@ finalization
    FOutStreamImpl.Free;
    FTemporalImpl.Free;
    FNumberImpl.Free;
+   JAVA_PRIMITIVE_TYPES := nil;
 
 end.
