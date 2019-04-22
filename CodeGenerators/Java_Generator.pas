@@ -802,9 +802,10 @@ begin
                   if i = 0 then
                      Exit;
                   cValue := Trim(Copy(AValue, 5, i-5));
-                  result := TParserHelper.GetType(cValue);
-                  if IsPrimitiveType(result) then
-                     result := UNKNOWN_TYPE;
+                  t1 := TParserHelper.GetType(cValue);
+                  if IsPrimitiveType(t1) then
+                     Exit;
+                  result := t1;
                   ProcessType(result);
                end;
             end
