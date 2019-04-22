@@ -784,14 +784,17 @@ begin
                      Exit;
                   t2 := 0;
                   cValue := Copy(cValue, i, MaxInt);
-                  while cValue.StartsWith('[]') do
+                  while cValue[1] = '[' do
                   begin
+                     if cValue[2] <> ']' then
+                        Exit;
                      t2 := t2 + 1;
                      cValue := Copy(cValue, 3, MaxInt);
                   end;
                   if cValue[1] <> '{' then
                      Exit;
-                  result := TParserHelper.EncodeType(result, t2);
+                  ProcessGenericType(result);
+                  result := TParserHelper.EncodeArrayType(result, t2);
                end
                else if lastChar = ')' then
                begin
@@ -802,8 +805,8 @@ begin
                   result := TParserHelper.GetType(cValue);
                   if IsPrimitiveType(result) then
                      result := UNKNOWN_TYPE;
+                  ProcessGenericType(result);
                end;
-               ProcessGenericType(result);
             end
             else if AValue.Contains('System.currentTimeMillis()') then
                result := JAVA_LONG_TYPE

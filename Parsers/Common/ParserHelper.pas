@@ -105,9 +105,9 @@ type
       class function GetSizeExpArrayAsString(const ATypeAsString: string; const ASizeAsString: string): string;
       class function IsGenericType(const ATypeName: string): boolean;
       class function GetLibForType(ATypeName: string): string;
-      class function DecodeDimension(const AType: integer): integer;
-      class function DecodeType(AType: integer): integer;
-      class function EncodeType(AType, ADimensionCount: integer): integer;
+      class function DecodeArrayDimension(const AType: integer): integer;
+      class function DecodeArrayType(AType: integer): integer;
+      class function EncodeArrayType(AType, ADimensionCount: integer): integer;
    end;
 
 const
@@ -300,14 +300,14 @@ begin
          begin
             paramType := GetType(param.cbType.Text);
             currType := AParmList[i];
-            if currType >= DIMENSION_LEVEL_STEP then
+            if DecodeArrayDimension(currType) > 0 then
             begin
-               currType := DecodeType(currType);
+               currType := DecodeArrayType(currType);
                if (currType <> paramType) or (not param.chkTable.Checked and not IsArrayType(paramType)) then
-                  exit;
+                  Exit;
             end
             else if param.chkTable.Checked or not AreTypesCompatible(paramType, currType) then
-               exit;
+               Exit;
             i := i + 1;
          end;
          result := true;
@@ -727,17 +727,17 @@ begin
    end;
 end;
 
-class function TParserHelper.DecodeDimension(const AType: integer): integer;
+class function TParserHelper.DecodeArrayDimension(const AType: integer): integer;
 begin
    result := AType div DIMENSION_LEVEL_STEP;
 end;
 
-class function TParserHelper.DecodeType(AType: integer): integer;
+class function TParserHelper.DecodeArrayType(AType: integer): integer;
 begin
    result := AType mod DIMENSION_LEVEL_STEP;
 end;
 
-class function TParserHelper.EncodeType(AType, ADimensionCount: integer): integer;
+class function TParserHelper.EncodeArrayType(AType, ADimensionCount: integer): integer;
 begin
    result := DIMENSION_LEVEL_STEP * ADimensionCount + AType;
 end;

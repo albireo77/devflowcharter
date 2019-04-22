@@ -263,9 +263,9 @@ begin
                   t := Dummy_GetConstantType(constValue, genericTypes);
                if t <> UNKNOWN_TYPE then
                begin
-                  d := TParserHelper.DecodeDimension(t);
+                  d := TParserHelper.DecodeArrayDimension(t);
                   if d > 0 then
-                     t := TParserHelper.DecodeType(t);
+                     t := TParserHelper.DecodeArrayType(t);
                   constType := TParserHelper.GetTypeAsString(t);
                   template := GInfra.CurrentLang.ConstTypeGeneric;
                   if template.IsEmpty or genericTypes.IsEmpty or not TParserHelper.IsGenericType(constType) then
