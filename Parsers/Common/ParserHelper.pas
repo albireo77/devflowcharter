@@ -739,7 +739,10 @@ end;
 
 class function TParserHelper.EncodeArrayType(AType, ADimensionCount: integer): integer;
 begin
-   result := AType + DIMENSION_LEVEL_STEP * ADimensionCount;
+   if AType = UNKNOWN_TYPE then
+      result := UNKNOWN_TYPE
+   else
+      result := AType + DIMENSION_LEVEL_STEP * ADimensionCount;
 end;
 
 end.
