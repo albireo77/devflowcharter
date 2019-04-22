@@ -557,7 +557,7 @@ begin
       result := GProject.GlobalVars.cbType.Items[AType]
    else if AType = GENERIC_PTR_TYPE then
       result := 'pointer'
-   else if AType >= DIMENSION_LEVEL_STEP then
+   else if DecodeArrayDimension(AType) > 0 then
       result := 'array'
    else
       result := i18Manager.GetString('Unknown');
@@ -739,7 +739,7 @@ end;
 
 class function TParserHelper.EncodeArrayType(AType, ADimensionCount: integer): integer;
 begin
-   result := DIMENSION_LEVEL_STEP * ADimensionCount + AType;
+   result := AType + DIMENSION_LEVEL_STEP * ADimensionCount;
 end;
 
 end.

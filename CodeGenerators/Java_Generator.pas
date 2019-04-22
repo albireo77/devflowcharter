@@ -450,7 +450,7 @@ begin
       or AValue.Contains('.toOctalString(') or AValue.Contains('.toUnsignedString(') then result := JAVA_STRING_TYPE;
 end;
 
-function ProcessGenericType(AType: integer): string;
+function ProcessType(AType: integer): string;
 var
    t: integer;
    libName: string;
@@ -697,7 +697,7 @@ begin
                  begin
                     cValue := Copy(cValue, 15, cValue.Length-15);
                     result := Java_GetConstantType(cValue.Trim, s);
-                    AGenericType := ProcessGenericType(result);
+                    AGenericType := ProcessType(result);
                     result := JAVA_LIST_TYPE
                  end
                  else if cValue.StartsWith('nCopies(') then
@@ -707,7 +707,7 @@ begin
                     if (Length(tokens) <> 2) or not TryStrToInt(tokens[0].Trim, t1) then
                        Exit;
                     result := Java_GetConstantType(tokens[1].Trim, s);
-                    AGenericType := ProcessGenericType(result);
+                    AGenericType := ProcessType(result);
                     result := JAVA_LIST_TYPE
                  end
                  else if cValue.StartsWith('unmodifiableSet(') or cValue.StartsWith('synchronizedSet(') then
@@ -716,7 +716,7 @@ begin
                  begin
                     cValue := Copy(cValue, 11, cValue.Length-11);
                     result := Java_GetConstantType(cValue.Trim, s);
-                    AGenericType := ProcessGenericType(result);
+                    AGenericType := ProcessType(result);
                     result := JAVA_SET_TYPE
                  end
                  else if cValue.StartsWith('unmodifiableMap(') or cValue.StartsWith('synchronizedMap(') then
@@ -729,8 +729,8 @@ begin
                        Exit;
                     t1 := Java_GetConstantType(tokens[0].Trim, s);
                     t2 := Java_GetConstantType(tokens[1].Trim, s);
-                    s1 := ProcessGenericType(t1);
-                    s2 := ProcessGenericType(t2);
+                    s1 := ProcessType(t1);
+                    s2 := ProcessType(t2);
                     if (s1 <> '') and (s2 <> '') then
                        AGenericType := s1 + ', ' + s2;
                     result := JAVA_MAP_TYPE;
@@ -765,7 +765,7 @@ begin
                   ap := a;
                end;
                result := a;
-               AGenericType := ProcessGenericType(result);
+               AGenericType := ProcessType(result);
                AddLibImport('java.util.Arrays');
                result := JAVA_LIST_TYPE;
             end
@@ -793,7 +793,7 @@ begin
                   end;
                   if cValue[1] <> '{' then
                      Exit;
-                  ProcessGenericType(t1);
+                  ProcessType(t1);
                   result := TParserHelper.EncodeArrayType(t1, t2);
                end
                else if lastChar = ')' then
@@ -805,7 +805,7 @@ begin
                   result := TParserHelper.GetType(cValue);
                   if IsPrimitiveType(result) then
                      result := UNKNOWN_TYPE;
-                  ProcessGenericType(result);
+                  ProcessType(result);
                end;
             end
             else if AValue.Contains('System.currentTimeMillis()') then

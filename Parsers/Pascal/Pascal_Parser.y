@@ -268,7 +268,7 @@ statement:		L_INT			{       $$ := PASCAL_INT_TYPE; is_constant := true;	}
 		|	var_const		{
                                                         arg1 := TParserHelper.GetIdentInfo($1);
 							is_constant := arg1.IdentType = CONSTANT;
-                                                        $$ := (arg1.DimensCount * DIMENSION_LEVEL_STEP) + arg1.TType
+                                                        $$ := TParserHelper.EncodeArrayType(arg1.TType, arg1.DimensCount);
 						}
 
 		|	routine			{      	$$ := $1; is_constant := false;	}
