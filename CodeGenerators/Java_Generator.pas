@@ -470,7 +470,7 @@ end;
 
 function Java_GetConstantType(const AValue: string; var AGenericType: string): integer;
 var
-   i, len, a, ap, t1, t2: integer;
+   i, len, a, ap, t1, t2, d: integer;
    i64: Int64;
    f: double;
    firstChar, lastChar: char;
@@ -808,6 +808,43 @@ begin
                   result := t1;
                   ProcessType(result);
                end;
+            end
+            else if (AValue[1] = '{') and (lastChar = '}') then
+            begin
+               t1 := 0;
+               t2 := 0;
+               for i := 1 to AValue.Length do
+               begin
+                  if AValue[i] = '{' then
+                     t1 := t1 + 1
+                  else if AValue[i] = '}' then
+                     t2 := t2 + 1;
+               end;
+               if t1 <> t2 then
+                  Exit;
+               cValue := ReplaceStr(AValue, ' ', '');
+               d := 1;
+               for i := 1 to cValue.Length do
+               begin
+                  a := 1;
+                  while cValue[i+a] = '{' do
+                     a := a + 1;
+                  if a > d then
+                     d := a;
+               end;
+               cValue := ReplaceStr(AValue, '{', '');
+               cValue := ReplaceStr(cValue, '}', '');
+               a := result;
+               tokens := cValue.Split([',']);
+               for i := 0 to High(tokens) do
+               begin
+                  a := Java_GetConstantType(tokens[i].Trim, s);
+                  if ((i > 0) and (a <> ap)) or (a = UNKNOWN_TYPE) then
+                     Exit;
+                  ap := a;
+               end;
+               ProcessType(a);
+               result := TParserHelper.EncodeArrayType(a, d);
             end
             else if AValue.Contains('System.currentTimeMillis()') then
                result := JAVA_LONG_TYPE
