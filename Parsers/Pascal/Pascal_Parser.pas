@@ -372,7 +372,7 @@ begin
          
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-0].yyString);
          							is_constant := arg1.IdentType = CONSTANT;
-         yyval.yyInteger := (arg1.DimensCount * DIMENSION_LEVEL_STEP) + arg1.TType
+         yyval.yyInteger := TParserHelper.EncodeArrayType(arg1.TType, arg1.DimensCount);
          						
        end;
   44 : begin
