@@ -760,7 +760,7 @@ begin
                for i := 0 to High(tokens) do
                begin
                   a := Java_GetConstantType(tokens[i].Trim, s);
-                  if ((t1 <> UNKNOWN_TYPE) and (a <> t1)) or ((i > 0) and (a <> ap)) then
+                  if ((t1 <> UNKNOWN_TYPE) and (a <> t1)) or ((i > 0) and (a <> ap)) or (a = UNKNOWN_TYPE) then
                      Exit;
                   ap := a;
                end;
