@@ -1,5 +1,8 @@
+7.13 [24.04.2019]
+- Java support: add arrays to evaluation of constant values
+
 7.12 [18.04.2019]
-- Java support: more work on improving evaluation of constant types (e.g. support of java.util.Collections class: Collections.emptyList(), singletonMap() etc.)
+- Java support: more work on improving evaluation of constant values (e.g. support of java.util.Collections class: Collections.emptyList(), singletonMap() etc.)
 
 7.11 [13.04.2019]
 - Java support: fix unable to evaluate constant expression in Arrays.asList() when contain new constructor
