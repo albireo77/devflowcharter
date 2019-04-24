@@ -782,19 +782,24 @@ begin
                   t1 := TParserHelper.GetType(s);
                   if t1 = UNKNOWN_TYPE then
                      Exit;
-                  t2 := 0;
+                  d := 0;
                   cValue := Copy(cValue, i, MaxInt);
                   while cValue[1] = '[' do
                   begin
                      if cValue[2] <> ']' then
                         Exit;
-                     t2 := t2 + 1;
+                     d := d + 1;
                      cValue := Copy(cValue, 3, MaxInt);
                   end;
                   if cValue[1] <> '{' then
                      Exit;
                   ProcessType(t1);
-                  result := TParserHelper.EncodeArrayType(t1, t2);
+                  t1 := TParserHelper.EncodeArrayType(t1, d);
+                  cValue := Copy(AValue, Pos('{', AValue), MaxInt);
+                  t2 := Java_GetConstantType(cValue, s);
+                  if t1 <> t2 then
+                     Exit;
+                  result := t1;
                end
                else if lastChar = ')' then
                begin
@@ -823,15 +828,9 @@ begin
                if t1 <> t2 then
                   Exit;
                cValue := ReplaceStr(AValue, ' ', '');
-               d := 1;
-               for i := 1 to cValue.Length do
-               begin
-                  a := 1;
-                  while cValue[i+a] = '{' do
-                     a := a + 1;
-                  if a > d then
-                     d := a;
-               end;
+               d := 0;
+               while cValue[d+1] = '{' do
+                  d := d + 1;
                cValue := ReplaceStr(AValue, '{', '');
                cValue := ReplaceStr(cValue, '}', '');
                a := result;
