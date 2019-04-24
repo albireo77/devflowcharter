@@ -810,8 +810,8 @@ begin
                   t1 := TParserHelper.GetType(cValue);
                   if IsPrimitiveType(t1) then
                      Exit;
+                  ProcessType(t1);
                   result := t1;
-                  ProcessType(result);
                end;
             end
             else if (AValue[1] = '{') and (lastChar = '}') then
