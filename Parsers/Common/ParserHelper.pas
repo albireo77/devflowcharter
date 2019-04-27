@@ -105,7 +105,7 @@ type
       class function GetSizeExpArrayAsString(const ATypeAsString: string; const ASizeAsString: string): string;
       class function IsGenericType(const ATypeName: string): boolean;
       class function GetLibForType(ATypeName: string): string;
-      class function DecodeArrayDimension(const AType: integer): integer;
+      class function DecodeArrayDimension(AType: integer): integer;
       class function DecodeArrayType(AType: integer): integer;
       class function EncodeArrayType(AType, ADimensionCount: integer): integer;
    end;
@@ -727,7 +727,7 @@ begin
    end;
 end;
 
-class function TParserHelper.DecodeArrayDimension(const AType: integer): integer;
+class function TParserHelper.DecodeArrayDimension(AType: integer): integer;
 begin
    result := AType div DIMENSION_LEVEL_STEP;
 end;

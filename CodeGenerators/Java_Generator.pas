@@ -465,7 +465,7 @@ begin
    end;
 end;
 
-function ContainsOneOf(const AString: string; ASubStrings: array of string): boolean;
+function ContainsOneOf(const AString: string; const ASubStrings: array of string): boolean;
 var
    i: integer;
 begin
@@ -477,7 +477,7 @@ begin
    result := false;
 end;
 
-function StartsWithOneOf(const AString: string; AStartings: array of string): boolean;
+function StartsWithOneOf(const AString: string; const AStartings: array of string): boolean;
 var
    i: integer;
 begin
@@ -489,7 +489,7 @@ begin
    result := false;
 end;
 
-function EndsWithOneOf(const AString: string; AEndings: array of string): boolean;
+function EndsWithOneOf(const AString: string; const AEndings: array of string): boolean;
 var
    i: integer;
 begin
