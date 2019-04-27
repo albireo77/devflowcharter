@@ -61,6 +61,8 @@ var
    JAVA_DOUBLE_OBJECT_TYPE,
    JAVA_CHAR_TYPE,
    JAVA_CHARACTER_TYPE,
+   JAVA_BYTE_TYPE,
+   JAVA_BYTE_OBJECT_TYPE,
    JAVA_STRING_TYPE,
    JAVA_LIST_TYPE,
    JAVA_SET_TYPE,
@@ -93,6 +95,8 @@ begin
       result := JAVA_CHARACTER_TYPE
    else if APrimitiveType = JAVA_BOOLEAN_TYPE then
       result := JAVA_BOOLEAN_OBJECT_TYPE
+   else if APrimitiveType = JAVA_BYTE_TYPE then
+      result := JAVA_BYTE_OBJECT_TYPE
    else
       result := UNKNOWN_TYPE;
 end;
@@ -443,13 +447,6 @@ begin
    end;
 end;
 
-function GetTypeForString(AType: integer; const AValue: string): integer;
-begin
-   result := AType;
-   if AValue.Contains('.toString(') or AValue.Contains('.toBinaryString(') or AValue.Contains('.toHexString(')
-      or AValue.Contains('.toOctalString(') or AValue.Contains('.toUnsignedString(') then result := JAVA_STRING_TYPE;
-end;
-
 function ProcessType(AType: integer): string;
 var
    t: integer;
@@ -466,6 +463,49 @@ begin
       if not libName.IsEmpty then
          AddLibImport(libName + '.' + result);
    end;
+end;
+
+function ContainsOneOf(const AString: string; ASubStrings: array of string): boolean;
+var
+   i: integer;
+begin
+   for i := 0 to High(ASubStrings) do
+   begin
+      if AString.Contains(ASubStrings[i]) then
+         Exit(true);
+   end;
+   result := false;
+end;
+
+function StartsWithOneOf(const AString: string; AStartings: array of string): boolean;
+var
+   i: integer;
+begin
+   for i := 0 to High(AStartings) do
+   begin
+      if AString.StartsWith(AStartings[i]) then
+         Exit(true);
+   end;
+   result := false;
+end;
+
+function EndsWithOneOf(const AString: string; AEndings: array of string): boolean;
+var
+   i: integer;
+begin
+   for i := 0 to High(AEndings) do
+   begin
+      if AString.EndsWith(AEndings[i]) then
+         Exit(true);
+   end;
+   result := false;
+end;
+
+function GetTypeForString(AType: integer; const AValue: string): integer;
+begin
+   result := AType;
+   if ContainsOneOf(AValue, ['.toString(', '.toBinaryString(', '.toHexString(', '.toOctalString(', '.toUnsignedString(']) then
+      result := JAVA_STRING_TYPE;
 end;
 
 function Java_GetConstantType(const AValue: string; var AGenericType: string): integer;
@@ -492,7 +532,7 @@ begin
             Exit;
          if not TryStrToFloat(AValue, f) then
          begin
-            if (firstChar = JAVA_STRING_DELIM) or AValue.StartsWith('new String(') or AValue.StartsWith('String.') then
+            if (firstChar = JAVA_STRING_DELIM) or StartsWithOneOf(AValue, ['new String(', 'String.']) then
             begin
                if AValue.EndsWith('.length()') then
                   result := JAVA_INT_TYPE
@@ -534,8 +574,7 @@ begin
                result := JAVA_LOCAL_TIME_TYPE
             else if AValue.StartsWith('Duration.') then
             begin
-               if AValue.EndsWith('.toDays()') or AValue.EndsWith('.toHours()') or (AValue.EndsWith('.toMillis()')) or
-                  AValue.EndsWith('.toMinutes()') or AValue.EndsWith('.toNanos()') then
+               if EndsWithOneOf(AValue, ['.toDays()', '.toHours()', '.toMillis()', '.toMinutes()', '.toNanos()']) then
                   result := JAVA_LONG_TYPE
                else if AValue.EndsWith('.toString()') then
                   result := JAVA_STRING_TYPE
@@ -546,7 +585,7 @@ begin
             end
             else if AValue.StartsWith('Period.') then
             begin
-               if AValue.EndsWith('.getDays()') or AValue.EndsWith('.getMonths()') or (AValue.EndsWith('.getYears()')) then
+               if EndsWithOneOf(AValue, ['.getDays()', '.getMonths()', '.getYears()']) then
                   result := JAVA_INT_TYPE
                else if AValue.EndsWith('.toString()') then
                   result := JAVA_STRING_TYPE
@@ -572,16 +611,16 @@ begin
                result := JAVA_STRING_TYPE
             else if MatchStr(AValue, ['true', 'false']) then
                result := JAVA_BOOLEAN_TYPE
-            else if AValue.StartsWith('new Boolean(') or AValue.StartsWith('Boolean.') then
+            else if StartsWithOneOf(AValue, ['new Boolean(', 'Boolean.']) then
             begin
-               if AValue.Contains('.booleanValue()') or AValue.Contains('.parseBoolean(') then
+               if ContainsOneOf(AValue, ['.booleanValue()', '.parseBoolean(']) then
                   result := JAVA_BOOLEAN_TYPE
                else if AValue.Contains('.toString(') then
                   result := JAVA_STRING_TYPE
                else
                   result := JAVA_BOOLEAN_OBJECT_TYPE;
             end
-            else if AValue.StartsWith('new BigDecimal(') or AValue.StartsWith('BigDecimal.') then
+            else if StartsWithOneOf(AValue, ['new BigDecimal(', 'BigDecimal.']) then
             begin
                if AValue.Contains('.longValue()') then
                   result := JAVA_LONG_TYPE
@@ -591,14 +630,14 @@ begin
                   result := JAVA_DOUBLE_TYPE
                else if AValue.Contains('.floatValue()') then
                   result := JAVA_FLOAT_TYPE
-               else if AValue.EndsWith('.toString()') or AValue.EndsWith('.toPlainString()') then
+               else if EndsWithOneOf(AValue, ['.toString()', '.toPlainString()']) then
                   result := JAVA_STRING_TYPE
                else
                   result := JAVA_BIGDECIMAL_TYPE;
                if result <> JAVA_BIGDECIMAL_TYPE then
                   AddLibImport('java.math.BigDecimal');
             end
-            else if AValue.StartsWith('new BigInteger(') or AValue.StartsWith('BigInteger.') then
+            else if StartsWithOneOf(AValue, ['new BigInteger(', 'BigInteger.']) then
             begin
                if AValue.Contains('.longValue()') then
                   result := JAVA_LONG_TYPE
@@ -615,9 +654,9 @@ begin
                if result <> JAVA_BIGINTEGER_TYPE then
                   AddLibImport('java.math.BigInteger');
             end
-            else if AValue.StartsWith('new Integer(') or AValue.StartsWith('Integer.') then
+            else if StartsWithOneOf(AValue, ['new Integer(', 'Integer.']) then
             begin
-               if AValue.Contains('.intValue()') or AValue.Contains('.parseInt(') then
+               if ContainsOneOf(AValue, ['.intValue()', '.parseInt(', '.SIZE', '.BYTES', '.MAX_VALUE', '.MIN_VALUE']) then
                   result := JAVA_INT_TYPE
                else if AValue.Contains('.longValue()') then
                   result := JAVA_LONG_TYPE
@@ -628,11 +667,28 @@ begin
                else
                   result := GetTypeForString(JAVA_INTEGER_TYPE, AValue);
             end
-            else if AValue.StartsWith('new Long(') or AValue.StartsWith('Long.') then
+            else if StartsWithOneOf(AValue, ['new Byte(', 'Byte.']) then
             begin
-               if AValue.Contains('.longValue()') or AValue.Contains('.parseLong(') then
-                  result := JAVA_LONG_TYPE
+               if ContainsOneOf(AValue, ['.byteValue()', '.parseByte(']) then
+                  result := JAVA_BYTE_TYPE
                else if AValue.Contains('.intValue()') then
+                  result := JAVA_INT_TYPE
+               else if AValue.Contains('.longValue()') then
+                  result := JAVA_LONG_TYPE
+               else if AValue.Contains('.doubleValue()') then
+                  result := JAVA_DOUBLE_TYPE
+               else if AValue.Contains('.floatValue()') then
+                  result := JAVA_FLOAT_TYPE
+               else if AValue.Contains('.toString(') then
+                  result := JAVA_STRING_TYPE
+               else
+                  result := JAVA_BYTE_OBJECT_TYPE;
+            end
+            else if StartsWithOneOf(AValue, ['new Long(', 'Long.']) then
+            begin
+               if ContainsOneOf(AValue, ['.longValue()', '.parseLong(', '.MAX_VALUE', '.MIN_VALUE']) then
+                  result := JAVA_LONG_TYPE
+               else if ContainsOneOf(AValue, ['.intValue()', '.SIZE', '.BYTES']) then
                   result := JAVA_INT_TYPE
                else if AValue.Contains('.doubleValue()') then
                   result := JAVA_DOUBLE_TYPE
@@ -641,11 +697,11 @@ begin
                else
                   result := GetTypeForString(JAVA_LONG_OBJECT_TYPE, AValue);
             end
-            else if AValue.StartsWith('new Double(') or AValue.StartsWith('Double.') then
+            else if StartsWithOneOf(AValue, ['new Double(', 'Double.']) then
             begin
-               if AValue.Contains('.doubleValue()') or AValue.Contains('.parseDouble(') then
+               if ContainsOneOf(AValue, ['.doubleValue()', '.parseDouble(', '.MIN_VALUE', '.MAX_VALUE', '.NaN', '.NEGATIVE_INFINITY', '.POSITIVE_INFINITY']) then
                   result := JAVA_DOUBLE_TYPE
-               else if AValue.Contains('.intValue()') then
+               else if ContainsOneOf(AValue, ['.intValue()', '.SIZE', '.BYTES', '.MIN_EXPONENT', '.MAX_EXPONENT']) then
                   result := JAVA_INT_TYPE
                else if AValue.Contains('.longValue()') then
                   result := JAVA_LONG_TYPE
@@ -654,25 +710,24 @@ begin
                else
                   result := GetTypeForString(JAVA_DOUBLE_OBJECT_TYPE, AValue);
             end
-            else if AValue.StartsWith('new Float(') or AValue.StartsWith('Float.') then
+            else if StartsWithOneOf(AValue, ['new Float(', 'Float.']) then
             begin
-               if AValue.Contains('.floatValue()') or AValue.Contains('.parseFloat(') then
+               if ContainsOneOf(AValue, ['.floatValue()', '.parseFloat(', '.MIN_VALUE', '.MAX_VALUE', '.NaN', '.NEGATIVE_INFINITY', '.POSITIVE_INFINITY']) then
                   result := JAVA_FLOAT_TYPE
                else if AValue.Contains('.doubleValue()') then
                   result := JAVA_DOUBLE_TYPE
-               else if AValue.Contains('.intValue()') then
+               else if ContainsOneOf(AValue, ['.intValue()', '.SIZE', '.BYTES', '.MIN_EXPONENT', '.MAX_EXPONENT']) then
                   result := JAVA_INT_TYPE
                else if AValue.Contains('.longValue()') then
                   result := JAVA_LONG_TYPE
                else
                   result := GetTypeForString(JAVA_FLOAT_OBJECT_TYPE, AValue);
             end
-            else if AValue.StartsWith('new Character(') or AValue.StartsWith('Character.') then
+            else if StartsWithOneOf(AValue, ['new Character(', 'Character.']) then
             begin
-               if AValue.Contains('.charValue()') or AValue.Contains('.toLowerCase(') or AValue.Contains('.toUpperCase(')
-                  or AValue.Contains('.reverseBytes(') or AValue.Contains('.toTitleCase(') then
+               if ContainsOneOf(AValue, ['.charValue()', '.toLowerCase(', '.toUpperCase(', '.reverseBytes(', '.toTitleCase(']) then
                   result := JAVA_CHAR_TYPE
-               else if AValue.Contains('.digit(') or AValue.Contains('.codePoint') then
+               else if ContainsOneOf( AValue, ['.digit(', '.codePoint']) then
                   result := JAVA_INT_TYPE
                else if AValue.Contains('.toString(') then
                   result := JAVA_STRING_TYPE
@@ -691,7 +746,7 @@ begin
                  result := JAVA_MAP_TYPE
               else if lastChar = ')' then
               begin
-                 if cValue.StartsWith('unmodifiableList(') or cValue.StartsWith('synchronizedList(') then
+                 if StartsWithOneOf(cValue, ['unmodifiableList(', 'synchronizedList(']) then
                     result := JAVA_LIST_TYPE
                  else if cValue.StartsWith('singletonList(') then
                  begin
@@ -710,7 +765,7 @@ begin
                     AGenericType := ProcessType(result);
                     result := JAVA_LIST_TYPE
                  end
-                 else if cValue.StartsWith('unmodifiableSet(') or cValue.StartsWith('synchronizedSet(') then
+                 else if StartsWithOneOf(cValue, ['unmodifiableSet(', 'synchronizedSet(']) then
                     result := JAVA_SET_TYPE
                  else if cValue.StartsWith('singleton(') then
                  begin
@@ -719,7 +774,7 @@ begin
                     AGenericType := ProcessType(result);
                     result := JAVA_SET_TYPE
                  end
-                 else if cValue.StartsWith('unmodifiableMap(') or cValue.StartsWith('synchronizedMap(') then
+                 else if StartsWithOneOf(cValue, ['unmodifiableMap(', 'synchronizedMap(']) then
                     result := JAVA_MAP_TYPE
                  else if cValue.StartsWith('singletonMap(') then
                  begin
@@ -847,7 +902,7 @@ begin
             end
             else if AValue.Contains('System.currentTimeMillis()') then
                result := JAVA_LONG_TYPE
-            else if AValue.Contains('Math.E') or AValue.Contains('Math.PI') then
+            else if ContainsOneOf(AValue, ['Math.E', 'Math.PI']) then
                result := JAVA_DOUBLE_TYPE
             else if TryStrToInt64(AValue, i64) then
                result := JAVA_LONG_TYPE
@@ -908,6 +963,8 @@ initialization
    JAVA_LONG_OBJECT_TYPE    := TParserHelper.GetType('Long', JAVA_LANG_ID);
    JAVA_FLOAT_TYPE          := TParserHelper.GetType('float', JAVA_LANG_ID);
    JAVA_FLOAT_OBJECT_TYPE   := TParserHelper.GetType('Float', JAVA_LANG_ID);
+   JAVA_BYTE_TYPE           := TParserHelper.GetType('byte', JAVA_LANG_ID);
+   JAVA_BYTE_OBJECT_TYPE    := TParserHelper.GetType('Byte', JAVA_LANG_ID);
    JAVA_DOUBLE_TYPE         := TParserHelper.GetType('double', JAVA_LANG_ID);
    JAVA_DOUBLE_OBJECT_TYPE  := TParserHelper.GetType('Double', JAVA_LANG_ID);
    JAVA_CHAR_TYPE           := TParserHelper.GetType('char', JAVA_LANG_ID);
@@ -929,7 +986,8 @@ initialization
    JAVA_BIGDECIMAL_TYPE     := TParserHelper.GetType('BigDecimal', JAVA_LANG_ID);
    JAVA_BIGINTEGER_TYPE     := TParserHelper.GetType('BigInteger', JAVA_LANG_ID);
 
-   JAVA_PRIMITIVE_TYPES := [JAVA_INT_TYPE, JAVA_LONG_TYPE, JAVA_FLOAT_TYPE, JAVA_DOUBLE_TYPE, JAVA_CHAR_TYPE, JAVA_BOOLEAN_TYPE];
+   JAVA_PRIMITIVE_TYPES := [JAVA_INT_TYPE, JAVA_LONG_TYPE, JAVA_FLOAT_TYPE, JAVA_DOUBLE_TYPE,
+                            JAVA_CHAR_TYPE, JAVA_BOOLEAN_TYPE, JAVA_BYTE_TYPE];
 
    javaLang := GInfra.GetLangDefinition(JAVA_LANG_ID);
    if javaLang <> nil then
