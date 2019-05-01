@@ -151,6 +151,8 @@ var
    info: string;
    lColor: TColor;
 begin
+   lColor := OK_COLOR;
+   info := 'OkIdD';
    if GInfra.ValidateId(edtName.Text) <> VALID_IDENT then
    begin
       lColor := NOK_COLOR;
@@ -160,11 +162,6 @@ begin
    begin
       lColor := NOK_COLOR;
       info := 'DupIdD';
-   end
-   else
-   begin
-      lColor := OK_COLOR;
-      info := 'OkIdD';
    end;
    edtName.Font.Color := lColor;
    edtName.Hint := i18Manager.GetString(info);
