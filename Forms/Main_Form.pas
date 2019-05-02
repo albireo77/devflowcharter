@@ -210,8 +210,7 @@ type
     { Private declarations }
     FClockPos: TClockPos;
     FHistoryMenu: THistoryMenu;
-    function BuildFuncMenu(AParent: TMenuItem): integer;
-    procedure DestroyFuncMenu;
+    function BuildFuncMenu: integer;
     procedure CM_MenuClosed(var msg: TMessage); message CM_MENU_CLOSED;
   public
     { Public declarations }
@@ -228,7 +227,6 @@ type
 
 var
   MainForm: TMainForm;
-  FFuncMenu: array of TMenuItem;
 
 implementation
 
@@ -289,7 +287,7 @@ begin
    Caption := PROGRAM_NAME;
    FClockPos := Low(TClockPos);
    SetProjectMenu(false);
-   DestroyFuncMenu;
+   miInsertFunc.Clear;
    while pgcPages.PageCount > 0 do
       pgcPages.Pages[0].Free;
 end;
@@ -1321,7 +1319,7 @@ begin
       miCopy1.Enabled := miCut1.Enabled;
       miRemove1.Enabled := miCut1.Enabled;
       miPaste1.Enabled := Clipboard.HasFormat(CF_TEXT);
-      miInsertFunc.Visible := BuildFuncMenu(miInsertFunc) > 0;
+      miInsertFunc.Visible := BuildFuncMenu > 0;
    end;
 end;
 
@@ -1389,16 +1387,7 @@ begin
    end;
 end;
 
-procedure TMainForm.DestroyFuncMenu;
-var
-   i: integer;
-begin
-   for i := 0 to Length(FFuncMenu)-1 do
-      FFuncMenu[i].Free;
-   FFuncMenu := nil;
-end;
-
-function TMainForm.BuildFuncMenu(AParent: TMenuItem): integer;
+function TMainForm.BuildFuncMenu: integer;
 var
    i: integer;
    lName: string;
@@ -1407,15 +1396,15 @@ var
    nativeFunc: PNativeFunction;
    lang: TLangDefinition;
    mItem: TMenuItem;
+   mItems: array of TMenuItem;
 begin
-   DestroyFuncMenu;
+   miInsertFunc.Clear;
    for func in GProject.GetUserFunctions do
    begin
       lName := func.GetName;
       if not lName.IsEmpty then
       begin
-         mItem := TMenuItem.Create(AParent);
-         FFuncMenu := FFuncMenu + [mItem];
+         mItem := TMenuItem.Create(miInsertFunc);
          mItem.Caption := lName;
          if Assigned(GInfra.CurrentLang.GetUserFuncDesc) then
             lang := GInfra.CurrentLang
@@ -1425,19 +1414,20 @@ begin
          if func.Header <> nil then
             mItem.Name := Trim(func.Header.edtLibrary.Text);
          mItem.OnClick := FuncMenuClick;
+         mItems := mItems + [mItem];
       end;
    end;
    for i := 0 to High(GInfra.CurrentLang.NativeFunctions) do
    begin
-      mItem := TMenuItem.Create(AParent);
-      FFuncMenu := FFuncMenu + [mItem];
+      mItem := TMenuItem.Create(miInsertFunc);
       nativeFunc := @GInfra.CurrentLang.NativeFunctions[i];
       mItem.Caption := IfThen(nativeFunc.Caption.IsEmpty, nativeFunc.Name, nativeFunc.Caption);
       mItem.Hint := nativeFunc.Hint;
       mItem.Tag := NativeInt(nativeFunc);
       mItem.OnClick := FuncMenuClick;
+      mItems := mItems + [mItem];
    end;
-   result := Length(FFuncMenu);
+   result := Length(mItems);
    if result > 0 then
    begin
       Comparer := TDelegatedComparer<TMenuItem>.Create(
@@ -1446,8 +1436,8 @@ begin
             result := TComparer<string>.Default.Compare(StripHotKey(L.Caption), StripHotKey(R.Caption));
          end
       );
-      TArray.Sort<TMenuItem>(FFuncMenu, Comparer);
-      AParent.Add(FFuncMenu);
+      TArray.Sort<TMenuItem>(mItems, Comparer);
+      miInsertFunc.Add(mItems);
    end;
 end;
 
