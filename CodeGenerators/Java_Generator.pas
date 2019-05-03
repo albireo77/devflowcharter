@@ -81,36 +81,41 @@ var
    JAVA_BIGINTEGER_TYPE: integer;
    JAVA_PRIMITIVE_TYPES: array of integer;
 
-function GetObjectTypeForPrimitive(APrimitiveType: integer): integer;
+function GetObjectType(AType: integer): integer;
 begin
-   if APrimitiveType = JAVA_INT_TYPE then
-      result := JAVA_INTEGER_TYPE
-   else if APrimitiveType = JAVA_DOUBLE_TYPE then
-      result := JAVA_DOUBLE_OBJECT_TYPE
-   else if APrimitiveType = JAVA_LONG_TYPE then
-      result := JAVA_LONG_OBJECT_TYPE
-   else if APrimitiveType = JAVA_FLOAT_TYPE then
-      result := JAVA_FLOAT_OBJECT_TYPE
-   else if APrimitiveType = JAVA_CHAR_TYPE then
-      result := JAVA_CHARACTER_TYPE
-   else if APrimitiveType = JAVA_BOOLEAN_TYPE then
-      result := JAVA_BOOLEAN_OBJECT_TYPE
-   else if APrimitiveType = JAVA_BYTE_TYPE then
-      result := JAVA_BYTE_OBJECT_TYPE
-   else
-      result := UNKNOWN_TYPE;
+   result := UNKNOWN_TYPE;
+   if AType <> UNKNOWN_TYPE then
+   begin
+      if AType = JAVA_INT_TYPE then
+         result := JAVA_INTEGER_TYPE
+      else if AType = JAVA_DOUBLE_TYPE then
+         result := JAVA_DOUBLE_OBJECT_TYPE
+      else if AType = JAVA_LONG_TYPE then
+         result := JAVA_LONG_OBJECT_TYPE
+      else if AType = JAVA_FLOAT_TYPE then
+         result := JAVA_FLOAT_OBJECT_TYPE
+      else if AType = JAVA_CHAR_TYPE then
+         result := JAVA_CHARACTER_TYPE
+      else if AType = JAVA_BOOLEAN_TYPE then
+         result := JAVA_BOOLEAN_OBJECT_TYPE
+      else if AType = JAVA_BYTE_TYPE then
+         result := JAVA_BYTE_OBJECT_TYPE;
+   end;
 end;
 
 function IsPrimitiveType(AType: integer): boolean;
 var
    i: integer;
 begin
-   for i := 0 to High(JAVA_PRIMITIVE_TYPES) do
-   begin
-      if JAVA_PRIMITIVE_TYPES[i] = AType then
-         Exit(true);
-   end;
    result := false;
+   if AType <> UNKNOWN_TYPE then
+   begin
+      for i := 0 to High(JAVA_PRIMITIVE_TYPES) do
+      begin
+         if JAVA_PRIMITIVE_TYPES[i] = AType then
+            Exit(true);
+      end;
+   end;
 end;
 
 procedure AddLibImport(const ALib: string);
@@ -455,7 +460,7 @@ begin
    result := '';
    if AType <> UNKNOWN_TYPE then
    begin
-      t := GetObjectTypeForPrimitive(AType);
+      t := GetObjectType(AType);
       if t <> UNKNOWN_TYPE then
          AType := t;
       result := TParserHelper.GetTypeAsString(AType);
