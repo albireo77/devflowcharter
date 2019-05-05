@@ -136,5 +136,10 @@ object ExplorerForm: TExplorerForm
       ShortCut = 16466
       OnClick = miRefreshClick
     end
+    object miRebuild: TMenuItem
+      Tag = 2
+      Caption = 'Rebuild'
+      OnClick = miRebuildClick
+    end
   end
 end

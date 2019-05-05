@@ -42,6 +42,7 @@ type
     N2: TMenuItem;
     miRemove: TMenuItem;
     chkAutoNav: TCheckBox;
+    miRebuild: TMenuItem;
     procedure FormShow(Sender: TObject);
     procedure tvExplorerChange(Sender: TObject; Node: TTreeNode);
     procedure miExpandClick(Sender: TObject);
@@ -60,6 +61,7 @@ type
     procedure tvExplorerCreateNodeClass(Sender: TCustomTreeView;
       var NodeClass: TTreeNodeClass);
     procedure tvExplorerDeletion(Sender: TObject; Node: TTreeNode);
+    procedure miRebuildClick(Sender: TObject);
   private
     { Private declarations }
     FErrWarnCount: TErrWarnCount;
@@ -193,7 +195,7 @@ begin
    end;
 end;
 
-procedure TExplorerForm.miRefreshClick(Sender: TObject);
+procedure TExplorerForm.miRebuildClick(Sender: TObject);
 begin
    tvExplorer.Enabled := false;
    try
@@ -201,6 +203,11 @@ begin
    finally
       tvExplorer.Enabled := true;
    end;
+end;
+
+procedure TExplorerForm.miRefreshClick(Sender: TObject);
+begin
+   tvExplorer.Invalidate;
 end;
 
 procedure TExplorerForm.miNextErrorClick(Sender: TObject);
