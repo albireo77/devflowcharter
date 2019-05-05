@@ -130,6 +130,9 @@ object ExplorerForm: TExplorerForm
       ShortCut = 16452
       OnClick = miRemoveClick
     end
+    object N3: TMenuItem
+      Caption = '-'
+    end
     object miRefresh: TMenuItem
       Tag = 2
       Caption = 'Refresh'
@@ -139,6 +142,7 @@ object ExplorerForm: TExplorerForm
     object miRebuild: TMenuItem
       Tag = 2
       Caption = 'Rebuild'
+      ShortCut = 16450
       OnClick = miRebuildClick
     end
   end

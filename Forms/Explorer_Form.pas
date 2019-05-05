@@ -43,6 +43,7 @@ type
     miRemove: TMenuItem;
     chkAutoNav: TCheckBox;
     miRebuild: TMenuItem;
+    N3: TMenuItem;
     procedure FormShow(Sender: TObject);
     procedure tvExplorerChange(Sender: TObject; Node: TTreeNode);
     procedure miExpandClick(Sender: TObject);
