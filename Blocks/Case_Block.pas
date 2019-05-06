@@ -466,8 +466,7 @@ begin
    if TInfra.IsNOkColor(FStatement.Font.Color) then
       exp1 := true;
 
-   result := AParentNode.Owner.AddChildObject(AParentNode, GetTreeNodeText(DEFAULT_BRANCH_IDX), FStatement);
-   TTreeNodeWithFriend(result).Offset := DEFAULT_BRANCH_IDX;
+   result := AParentNode.Owner.AddChildObject(AParentNode, GetTreeNodeText, FStatement);
 
    for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
    begin
@@ -505,7 +504,7 @@ var
    bStatement: TStatement;
 begin
    result := '';
-   if ANodeOffset = DEFAULT_BRANCH_IDX then
+   if ANodeOffset = 0 then
       result := inherited GetTreeNodeText(ANodeOffset)
    else if ANodeOffset < FBranchList.Count then
    begin
