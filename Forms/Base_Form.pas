@@ -43,6 +43,7 @@ type
       function Remove(ANode: TTreeNodeWithFriend = nil): boolean;
       function CanRemove: boolean;
       function IsBoldDesc: boolean;
+      function GetTreeNodeText(ANodeOffset: integer = 0): string;
   end;
 
 implementation
@@ -136,6 +137,11 @@ end;
 function TBaseForm.IsBoldDesc: boolean;
 begin
    result := true;
+end;
+
+function TBaseForm.GetTreeNodeText(ANodeOffset: integer = 0): string;
+begin
+   result := Caption;
 end;
 
 end.

@@ -88,6 +88,7 @@ type
       function Remove(ANode: TTreeNodeWithFriend = nil): boolean;
       function CanRemove: boolean;
       function IsBoldDesc: boolean;
+      function GetTreeNodeText(ANodeOffset: integer = 0): string;
    end;
 
    IExportable = interface

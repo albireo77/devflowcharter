@@ -102,6 +102,7 @@ type
       function GetParameters: IEnumerable<TParameter>;
       procedure RefreshElements; override;
       function GetExternModifier: string; override;
+      function GetTreeNodeText(ANodeOffset: integer = 0): string; override;
    end;
 
    TUserFunction = class(TComponent, IXMLable, ITabbable, IIdentifiable, ISizeEditable, IWinControl, IGenericComparable)
@@ -131,6 +132,7 @@ type
       function GetZOrder: integer;
       function IsMain: boolean;
       function GetCompareValue(ACompareType: integer): integer;
+      function GetTreeNodeText(ANodeOffset: integer = 0): string;
    end;
 
 implementation
@@ -746,14 +748,29 @@ end;
 procedure TUserFunction.GenerateTree(ANode: TTreeNode);
 var
    node: TTreeNode;
-   desc: string;
-   lang: TLangDefinition;
    obj: TObject;
 begin
-   desc := '';
+   if IsMain then
+      obj := FBody
+   else
+      obj := FHeader;
+   node := ANode.Owner.AddChildObject(ANode, GetTreeNodeText, obj);
+   if FBody <> nil then
+      FBody.GenerateTree(node);
+   if (FHeader <> nil) and TInfra.IsNOkColor(FHeader.Font.Color) then
+   begin
+      ANode.MakeVisible;
+      ANode.Expand(false);
+   end;
+end;
+
+function TUserFunction.GetTreeNodeText(ANodeOffset: integer = 0): string;
+var
+   lang: TLangDefinition;
+begin
+   result := '';
    if IsMain then
    begin
-      obj := FBody;
       if GInfra.CurrentLang.EnabledUserFunctionHeader then
       begin
          lang := nil;
@@ -762,30 +779,26 @@ begin
          else if Assigned(GInfra.DummyLang.GetMainProgramDesc) then
             lang := GInfra.DummyLang;
          if lang <> nil then
-            desc := lang.GetMainProgramDesc;
+            result := lang.GetMainProgramDesc;
       end
       else
-         desc := i18Manager.GetString('Flowchart');
+         result := i18Manager.GetString('Flowchart');
    end
    else
    begin
-      obj := FHeader;
       lang := nil;
       if Assigned(GInfra.CurrentLang.GetUserFuncDesc) then
          lang := GInfra.CurrentLang
       else if Assigned(GInfra.DummyLang.GetUserFuncDesc) then
          lang := GInfra.DummyLang;
       if lang <> nil then
-         desc := lang.GetUserFuncDesc(FHeader, false, false).Trim;
+         result := lang.GetUserFuncDesc(FHeader, false, false).Trim;
    end;
-   node := ANode.Owner.AddChildObject(ANode, desc, obj);
-   if FBody <> nil then
-      FBody.GenerateTree(node);
-   if (FHeader <> nil) and TInfra.IsNOkColor(FHeader.Font.Color) then
-   begin
-      ANode.MakeVisible;
-      ANode.Expand(false);
-   end;
+end;
+
+function TUserFunctionHeader.GetTreeNodeText(ANodeOffset: integer = 0): string;
+begin
+   result := FUserFunction.GetTreeNodeText(ANodeOffset);
 end;
 
 function TUserFunction.IsMain: boolean;

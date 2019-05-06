@@ -37,6 +37,7 @@ type
          procedure UpdateEditor(AEdit: TCustomEdit); override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
+         function GetTreeNodeText(ANodeOffset: integer = 0): string; override;
       protected
          FErrLine: integer;
          constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID); overload; virtual;
@@ -235,24 +236,26 @@ end;
 
 function TMultiLineBlock.GenerateTree(AParentNode: TTreeNode): TTreeNode;
 var
-   errMsg, line: string;
    i: integer;
-   lineNode: TTreeNodeWithFriend;
 begin
    result := AParentNode;
-   errMsg := GetErrorMsg(FStatements);
    for i := 0 to FStatements.Lines.Count-1 do
-   begin
-      line := FStatements.Lines[i];
-      if i = FErrLine then
-         line := line + errMsg;
-      lineNode := TTreeNodeWithFriend(AParentNode.Owner.AddChildObject(AParentNode, line, FStatements));
-      lineNode.Offset := i;
-   end;
-   if not errMsg.IsEmpty then
+      TTreeNodeWithFriend(AParentNode.Owner.AddChildObject(AParentNode, GetTreeNodeText(i), FStatements)).Offset := i;
+   if TInfra.IsNOkColor(FStatements.Font.Color) then
    begin
       AParentNode.MakeVisible;
       AParentNode.Expand(false);
+   end;
+end;
+
+function TMultiLineBlock.GetTreeNodeText(ANodeOffset: integer = 0): string;
+begin
+   result := '';
+   if ANodeOffset < FStatements.Lines.Count then
+   begin
+      result := FStatements.Lines[ANodeOffset];
+      if ANodeOffset = FErrLine then
+         result := result + GetErrorMsg(FStatements);
    end;
 end;
 

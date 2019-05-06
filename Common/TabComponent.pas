@@ -83,6 +83,7 @@ type
          procedure RefreshSizeEdits; virtual; abstract;
          function RetrieveFocus(AInfo: TFocusInfo): boolean;
          function CanBeFocused: boolean;
+         function GetTreeNodeText(ANodeOffset: integer = 0): string; virtual;
          function IsDuplicatedElement(AElement: TElement): boolean;
          procedure RefreshElements; virtual;
          function HasInvalidElement: boolean;
@@ -535,6 +536,11 @@ end;
 function TTabComponent.IsBoldDesc: boolean;
 begin
    result := false;
+end;
+
+function TTabComponent.GetTreeNodeText(ANodeOffset: integer = 0): string;
+begin
+   result := Caption;
 end;
 
 function TTabComponent.GetCompareValue(ACompareType: integer): integer;

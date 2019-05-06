@@ -70,6 +70,7 @@ type
       function Kind: TUserDataTypeKind;
       function GetFields: IEnumerable<TField>;
       function GetExternModifier: string; override;
+      function GetTreeNodeText(ANodeOffset: integer = 0): string; override;
    end;
 
 implementation
@@ -500,24 +501,28 @@ begin
 end;
 
 procedure TUserDataType.GenerateTree(ANode: TTreeNode);
+begin
+   ANode.Owner.AddChildObject(ANode, GetTreeNodeText, Self);
+   if TInfra.IsNOkColor(Font.Color) then
+   begin
+      ANode.MakeVisible;
+      ANode.Expand(false);
+   end;
+end;
+
+function TUserDataType.GetTreeNodeText(ANodeOffset: integer = 0): string;
 var
-   desc: string;
    lang: TLangDefinition;
 begin
-   desc := '';
    lang := nil;
    if Assigned(GInfra.CurrentLang.GetUserTypeDesc) then
       lang := GInfra.CurrentLang
    else if Assigned(GInfra.DummyLang.GetUserTypeDesc) then
       lang := GInfra.DummyLang;
    if lang <> nil then
-      desc := lang.GetUserTypeDesc(Self).Trim;
-   ANode.Owner.AddChildObject(ANode, desc, Self);
-   if TInfra.IsNOkColor(Font.Color) then
-   begin
-      ANode.MakeVisible;
-      ANode.Expand(false);
-   end;
+      result := lang.GetUserTypeDesc(Self).Trim
+   else
+      result := inherited GetTreeNodeText(ANodeOffset);
 end;
 
 end.

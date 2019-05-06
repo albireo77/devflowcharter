@@ -158,6 +158,7 @@ type
          function SkipUpdateEditor: boolean;
          function RetrieveFocus(AInfo: TFocusInfo): boolean; virtual;
          function CanBeFocused: boolean; virtual;
+         function GetTreeNodeText(ANodeOffset: integer = 0): string; virtual;
          function FindLastRow(AStart: integer; ALines: TStrings): integer; virtual;
          procedure GenerateDefaultTemplate(ALines: TStringList; const ALangId: string; ADeep: integer);
          procedure GenerateTemplateSection(ALines: TStringList; ATemplate: TStringList; const ALangId: string; ADeep: integer); overload; virtual;
@@ -1880,17 +1881,16 @@ end;
 
 function TBlock.GenerateTree(AParentNode: TTreeNode): TTreeNode;
 var
-   errMsg, descTemplate: string;
+   nodeText: string;
    textControl: TCustomEdit;
 begin
    result := AParentNode;
    textControl := GetTextControl;
    if textControl <> nil then
    begin
-      errMsg := GetErrorMsg(textControl);
-      descTemplate := GetDescTemplate(GInfra.CurrentLang.Name);
-      result := AParentNode.Owner.AddChildObject(AParentNode, FillTemplate(GInfra.CurrentLang.Name, descTemplate) + errMsg, textControl);
-      if not errMsg.IsEmpty then
+      nodeText := GetTreeNodeText;
+      result := AParentNode.Owner.AddChildObject(AParentNode, nodeText, textControl);
+      if TInfra.IsNOkColor(THackControl(textControl).Font.Color) then
       begin
          AParentNode.MakeVisible;
          AParentNode.Expand(false);
@@ -1905,6 +1905,21 @@ begin
    result := inherited GenerateTree(AParentNode);
    for block in FBranchList[PRIMARY_BRANCH_IDX] do
        block.GenerateTree(result);
+end;
+
+function TBlock.GetTreeNodeText(ANodeOffset: integer = 0): string;
+var
+   descTemplate, errMsg: string;
+   textControl: TCustomEdit;
+begin
+   result := '';
+   textControl := GetTextControl;
+   if textControl <> nil then
+   begin
+      errMsg := GetErrorMsg(textControl);
+      descTemplate := GetDescTemplate(GInfra.CurrentLang.Name);
+      result := FillTemplate(GInfra.CurrentLang.Name, descTemplate) + errMsg;
+   end;
 end;
 
 function TGroupBlock.GetBranchIndexByControl(AControl: TControl): integer;

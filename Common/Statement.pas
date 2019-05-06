@@ -60,6 +60,7 @@ type
     function Remove(ANode: TTreeNodeWithFriend = nil): boolean;
     function CanRemove: boolean;
     function IsBoldDesc: boolean;
+    function GetTreeNodeText(ANodeOffset: integer = 0): string;
     procedure SetLRMargins(ALMargin, ARMargin: integer);
   published
     //property Anchors;
@@ -333,6 +334,13 @@ end;
 function TStatement.IsBoldDesc: boolean;
 begin
    result := false;
+end;
+
+function TStatement.GetTreeNodeText(ANodeOffset: integer = 0): string;
+begin
+   result := '';
+   if HasParent then
+      result := TBlock(Parent).GetTreeNodeText(ANodeOffset);
 end;
 
 end.

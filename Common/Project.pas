@@ -973,13 +973,15 @@ var
    dataType: TUserDataType;
    mainFunc, func: TUserFunction;
    node: TTreeNode;
+   mForm: TBaseForm;
 begin
 
    mainFunc := nil;
 
    if GInfra.CurrentLang.EnabledUserDataTypes then
    begin
-      node := ANode.Owner.AddChildObject(ANode, i18Manager.GetString('Structures'), TInfra.GetDataTypesForm);
+      mForm := TInfra.GetDataTypesForm;
+      node := ANode.Owner.AddChildObject(ANode, mForm.GetTreeNodeText, mForm);
       for dataType in GetUserDataTypes do
       begin
          if dataType.Active then
@@ -988,10 +990,16 @@ begin
    end;
 
    if GInfra.CurrentLang.EnabledVars or GInfra.CurrentLang.EnabledConsts then
-      ANode.Owner.AddChildObject(ANode, i18Manager.GetString('GlobalDeclares'), TInfra.GetDeclarationsForm);
+   begin
+      mForm := TInfra.GetDeclarationsForm;
+      ANode.Owner.AddChildObject(ANode, mForm.GetTreeNodeText, mForm);
+   end;
 
    if GInfra.CurrentLang.EnabledUserFunctionHeader then
-      node := ANode.Owner.AddChildObject(ANode, i18Manager.GetString('Functions'), TInfra.GetFunctionsForm)
+   begin
+      mForm := TInfra.GetFunctionsForm;
+      node := ANode.Owner.AddChildObject(ANode, mForm.GetTreeNodeText, mForm);
+   end
    else
       node := ANode;
 

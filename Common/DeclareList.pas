@@ -94,6 +94,7 @@ type
          procedure ExportToXMLTag(ATag: IXMLElement);
          function GetImportTag(ATag: IXMLElement): IXMLElement; virtual;
          function RetrieveFocus(AInfo: TFocusInfo): boolean;
+         function GetTreeNodeText(ANodeOffset: integer = 0): string;
          function CanBeFocused: boolean;
          function GetFocusColor: TColor;
          function Remove(ANode: TTreeNodeWithFriend = nil): boolean;
@@ -441,6 +442,11 @@ begin
       list := Self;
    GetParentForm(list, False).Show;
    result := i > 0;
+end;
+
+function TDeclareList.GetTreeNodeText(ANodeOffset: integer = 0): string;
+begin
+   result := Caption;
 end;
 
 function TDeclareList.CanBeFocused: boolean;

@@ -58,6 +58,7 @@ type
          function IsDuplicatedCase(AEdit: TCustomEdit): boolean;
          procedure CloneFrom(ABlock: TBlock); override;
          function GetDescTemplate(const ALangId: string): string; override;
+         function GetTreeNodeText(ANodeOffset: integer = 0): string; override;
    end;
 
 const
@@ -452,8 +453,7 @@ end;
 
 function TCaseBlock.GenerateTree(AParentNode: TTreeNode): TTreeNode;
 var
-   errMsg, descTemplate: string;
-   newNode: TTreeNode;
+   newNode: TTreeNodeWithFriend;
    lBranch: TBranch;
    exp1, exp2: boolean;
    i: integer;
@@ -463,25 +463,25 @@ begin
    exp1 := false;
    exp2 := false;
 
-   errMsg := GetErrorMsg(FStatement);
-   if not errMsg.IsEmpty then
+   if TInfra.IsNOkColor(FStatement.Font.Color) then
       exp1 := true;
 
-   descTemplate := GetDescTemplate(GInfra.CurrentLang.Name);
-   result := AParentNode.Owner.AddChildObject(AParentNode, FillTemplate(GInfra.CurrentLang.Name, descTemplate) + errMsg, FStatement);
+   result := AParentNode.Owner.AddChildObject(AParentNode, GetTreeNodeText(DEFAULT_BRANCH_IDX), FStatement);
+   TTreeNodeWithFriend(result).Offset := DEFAULT_BRANCH_IDX;
 
    for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
    begin
       lBranch := FBranchList[i];
-      errMsg := GetErrorMsg(lBranch.Statement);
-      if not errMsg.IsEmpty then
+      if TInfra.IsNOkColor(lBranch.Statement.Font.Color) then
          exp2 := true;
-      newNode := AParentNode.Owner.AddChildObject(result, lBranch.Statement.Text + ': ' + errMsg, lBranch.Statement);
+      newNode := TTreeNodeWithFriend(AParentNode.Owner.AddChildObject(result, GetTreeNodeText(i), lBranch.Statement));
+      newNode.Offset := i;
       for block in lBranch do
          block.GenerateTree(newNode);
    end;
 
-   newNode := AParentNode.Owner.AddChild(result, i18Manager.GetString('DefValue'));
+   newNode := TTreeNodeWithFriend(AParentNode.Owner.AddChild(result, i18Manager.GetString('DefValue')));
+   newNode.Offset := i + 1;
 
    for block in DefaultBranch do
       block.GenerateTree(newNode);
@@ -498,6 +498,20 @@ begin
       result.Expand(false);
    end;
 
+end;
+
+function TCaseBlock.GetTreeNodeText(ANodeOffset: integer = 0): string;
+var
+   bStatement: TStatement;
+begin
+   result := '';
+   if ANodeOffset = DEFAULT_BRANCH_IDX then
+      result := inherited GetTreeNodeText(ANodeOffset)
+   else if ANodeOffset < FBranchList.Count then
+   begin
+      bStatement := FBranchList[ANodeOffset].Statement;
+      result := bStatement.Text + ': ' + GetErrorMsg(bStatement);
+   end;
 end;
 
 function TCaseBlock.GetDescTemplate(const ALangId: string): string;

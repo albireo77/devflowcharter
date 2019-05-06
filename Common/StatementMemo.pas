@@ -37,6 +37,7 @@ type
         function Remove(ANode: TTreeNodeWithFriend = nil): boolean;
         function CanRemove: boolean;
         function IsBoldDesc: boolean;
+        function GetTreeNodeText(ANodeOffset: integer = 0): string;
   end;
 
 implementation
@@ -105,6 +106,13 @@ end;
 function TStatementMemo.IsBoldDesc: boolean;
 begin
    result := false;
+end;
+
+function TStatementMemo.GetTreeNodeText(ANodeOffset: integer = 0): string;
+begin
+   result := '';
+   if HasParent then
+      result := TBlock(Parent).GetTreeNodeText(ANodeOffset);
 end;
 
 end.

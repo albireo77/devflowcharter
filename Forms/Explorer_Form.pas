@@ -81,8 +81,8 @@ implementation
 {$R *.dfm}
 
 uses
-   Vcl.Graphics, Vcl.Forms, System.SysUtils, System.UITypes, System.Math, ApplicationCommon,
-   Base_Block, XMLProcessor;
+   Vcl.Graphics, Vcl.Forms, System.SysUtils, System.UITypes, System.Math, WinApi.Windows,
+   ApplicationCommon, Base_Block, XMLProcessor;
 
 procedure TExplorerForm.FormShow(Sender: TObject);
 begin
@@ -207,8 +207,28 @@ begin
 end;
 
 procedure TExplorerForm.miRefreshClick(Sender: TObject);
+var
+   i: integer;
+   focusable: IFocusable;
+   origText: string;
+   node: TTreeNodeWithFriend;
 begin
-   tvExplorer.Invalidate;
+   tvExplorer.Items.BeginUpdate;
+   try
+      for i := 0 to tvExplorer.Items.Count-1 do
+      begin
+         node := TTreeNodeWithFriend(tvExplorer.Items[i]);
+         focusable := GetFocusable(node);
+         if focusable <> nil then
+         begin
+            origText := focusable.GetTreeNodeText(node.Offset);
+            if (origText <> '') and (origText <> node.Text) then
+               node.Text := origText;
+         end;
+      end;
+   finally
+      tvExplorer.Items.EndUpdate;
+   end;
 end;
 
 procedure TExplorerForm.miNextErrorClick(Sender: TObject);
@@ -252,6 +272,7 @@ var
    lColor, lColor2: TColor;
    x, y: integer;
    lFont: TFont;
+   focusInfo: TFocusInfo;
 begin
    x := 0;
    y := 0;
