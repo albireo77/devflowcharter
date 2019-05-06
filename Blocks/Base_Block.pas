@@ -1862,20 +1862,15 @@ end;
 
 function TBlock.GetErrorMsg(AEdit: TCustomEdit): string;
 var
-   lColor: TColor;
    i: integer;
 begin
    result := '';
-   if AEdit <>  nil then
+   if (AEdit <> nil) and TInfra.IsNOkColor(THackControl(AEdit).Font.Color) then
    begin
-      lColor := THackControl(AEdit).Font.Color;
-      if TInfra.IsNOkColor(lColor) then
-      begin
-         result := AEdit.Hint;
-         i := LastDelimiter(sLineBreak, result);
-         if i > 0 then
-            result := ' - ' + Copy(result, i+1, MaxInt);
-      end;
+      result := AEdit.Hint;
+      i := LastDelimiter(sLineBreak, result);
+      if i > 0 then
+         result := ' - ' + Copy(result, i+1, MaxInt);
    end;
 end;
 
