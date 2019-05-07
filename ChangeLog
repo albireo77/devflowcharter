@@ -1,3 +1,8 @@
+7.14 [08.05.2019]
+- Java support: add support for "byte" type in evaluating of constant value
+- Project Explorer: add "Rebuild" to popup menu
+- Project Explorer: "Refresh" in popup menu is now a real refresh (does not rebuild project tree)
+
 7.13 [24.04.2019]
 - Java support: add arrays to evaluation of constant values
 

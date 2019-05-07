@@ -96,9 +96,12 @@ begin
        with tvExplorer do
        begin
           Items.BeginUpdate;
-          Selected := Items.AddChild(nil, i18Manager.GetFormattedString('RootNodeText', [GProject.Name]));
-          GProject.GenerateTree(Selected);
-          Items.EndUpdate;
+          try
+             Selected := Items.AddChild(nil, i18Manager.GetFormattedString('RootNodeText', [GProject.Name]));
+             GProject.GenerateTree(Selected);
+          finally
+             Items.EndUpdate;
+          end;
        end;
     end;
 end;
