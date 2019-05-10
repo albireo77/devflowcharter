@@ -28,7 +28,7 @@ uses
 {$IFDEF USE_CODEFOLDING}
    SynEditCodeFolding,
 {$ENDIF}
-   WinApi.Windows, Vcl.Forms, Vcl.Controls, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Graphics,
+   Vcl.Forms, Vcl.Controls, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Graphics, System.Types,
    Vcl.Dialogs, Vcl.ComCtrls, Vcl.Clipbrd, Vcl.Menus, System.SysUtils, System.Classes,
    SynEdit, SynExportRTF, SynEditPrint, CommonTypes, SynHighlighterPas, SynHighlighterCpp,
    SynMemo, SynExportHTML, OmniXML, Base_Form, CommonInterfaces, SynEditExport, SynEditHighlighter,
@@ -165,7 +165,7 @@ var
 implementation
 
 uses
-   System.StrUtils, System.UITypes, System.Types, WinApi.Messages, System.Math,
+   System.StrUtils, System.UITypes, WinApi.Messages, System.Math, WinApi.Windows,
    ApplicationCommon, Goto_Form, Settings, LangDefinition, Main_Block, Help_Form,
    Comment, XMLProcessor, Main_Form, Base_Block, SynEditTypes, ParserHelper;
 
