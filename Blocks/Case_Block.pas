@@ -480,7 +480,7 @@ begin
    end;
 
    newNode := TTreeNodeWithFriend(AParentNode.Owner.AddChild(result, i18Manager.GetString('DefValue')));
-   newNode.Offset := i + 1;
+   newNode.Offset := FBranchList.Count;
 
    for block in DefaultBranch do
       block.GenerateTree(newNode);

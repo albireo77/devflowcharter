@@ -275,7 +275,6 @@ var
    lColor, lColor2: TColor;
    x, y: integer;
    lFont: TFont;
-   focusInfo: TFocusInfo;
 begin
    x := 0;
    y := 0;
