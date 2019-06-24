@@ -330,8 +330,8 @@ begin
       begin
          if Assigned(GInfra.CurrentLang.GetUserFuncDesc) then
             lang := GInfra.CurrentLang
-         else if Assigned(GInfra.DummyLang.GetUserFuncDesc) then
-            lang := GInfra.DummyLang;
+         else if Assigned(GInfra.TemplateLang.GetUserFuncDesc) then
+            lang := GInfra.TemplateLang;
          if lang <> nil then
             result := lang.GetUserFuncDesc(header, false, header.chkInclDescFlow.Checked);
       end
@@ -339,8 +339,8 @@ begin
       begin
          if Assigned(GInfra.CurrentLang.GetMainProgramDesc) then
             lang := GInfra.CurrentLang
-         else if Assigned(GInfra.DummyLang.GetMainProgramDesc) then
-            lang := GInfra.DummyLang;
+         else if Assigned(GInfra.TemplateLang.GetMainProgramDesc) then
+            lang := GInfra.TemplateLang;
          if lang <> nil then
             result := lang.GetMainProgramDesc;
       end;
@@ -462,8 +462,8 @@ begin
                   end;
                   if Assigned(GInfra.CurrentLang.VarSectionGenerator) then
                      GInfra.CurrentLang.VarSectionGenerator(varList, vars)
-                  else if Assigned(GInfra.DummyLang.VarSectionGenerator) then
-                     GInfra.DummyLang.VarSectionGenerator(varList, vars);
+                  else if Assigned(GInfra.TemplateLang.VarSectionGenerator) then
+                     GInfra.TemplateLang.VarSectionGenerator(varList, vars);
                   TInfra.InsertTemplateLines(progList, '%s2', varList);
                   GenerateTemplateSection(tmpList, progList, ALangId, ADeep);
                finally

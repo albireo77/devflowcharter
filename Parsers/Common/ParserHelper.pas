@@ -513,8 +513,8 @@ begin
    begin
       if Assigned(GInfra.CurrentLang.GetConstantType) then
          result := GInfra.CurrentLang.GetConstantType(value, secType)
-      else if Assigned(GInfra.DummyLang.GetConstantType) then
-         result := GInfra.DummyLang.GetConstantType(value, secType)
+      else if Assigned(GInfra.TemplateLang.GetConstantType) then
+         result := GInfra.TemplateLang.GetConstantType(value, secType)
    end;
 end;
 
@@ -630,8 +630,8 @@ begin
    lang := nil;
    if Assigned(GInfra.CurrentLang.GetPointerTypeName) then
       lang := GInfra.CurrentLang
-   else if Assigned(GInfra.DummyLang.GetPointerTypeName) then
-      lang := GInfra.DummyLang;
+   else if Assigned(GInfra.TemplateLang.GetPointerTypeName) then
+      lang := GInfra.TemplateLang;
    if lang <> nil then
       result := GetType(lang.GetPointerTypeName(GetTypeAsString(AType)))
 end;

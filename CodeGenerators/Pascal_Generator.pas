@@ -111,7 +111,7 @@ var
    progName: string;
 begin
 
-   GInfra.DummyLang.ProgramHeaderSectionGenerator(ALines);
+   GInfra.TemplateLang.ProgramHeaderSectionGenerator(ALines);
 
    if GProject.Name.IsEmpty then
       progName := i18Manager.GetString('Unknown')
@@ -228,8 +228,8 @@ begin
       begin
          ALines.Add('implementation');
          ALines.Add('');
-         if Assigned(GInfra.DummyLang.UserFunctionsSectionGenerator) then
-            GInfra.DummyLang.UserFunctionsSectionGenerator(ALines, false);
+         if Assigned(GInfra.TemplateLang.UserFunctionsSectionGenerator) then
+            GInfra.TemplateLang.UserFunctionsSectionGenerator(ALines, false);
          ALines.Add('end.');
          ALines.Add('');
       end;

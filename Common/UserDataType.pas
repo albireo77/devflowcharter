@@ -517,8 +517,8 @@ begin
    lang := nil;
    if Assigned(GInfra.CurrentLang.GetUserTypeDesc) then
       lang := GInfra.CurrentLang
-   else if Assigned(GInfra.DummyLang.GetUserTypeDesc) then
-      lang := GInfra.DummyLang;
+   else if Assigned(GInfra.TemplateLang.GetUserTypeDesc) then
+      lang := GInfra.TemplateLang;
    if lang <> nil then
       result := lang.GetUserTypeDesc(Self).Trim
    else

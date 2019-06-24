@@ -81,7 +81,7 @@ uses
   SelectImport_Form in 'Forms\SelectImport_Form.pas' {SelectImportForm},
   EditMemo_Form in 'Forms\EditMemo_Form.pas' {MemoEditorForm},
   LangDefinition in 'Common\LangDefinition.pas',
-  Dummy_Generator in 'CodeGenerators\Dummy_Generator.pas',
+  Template_Generator in 'CodeGenerators\Template_Generator.pas',
   BlockFactory in 'Common\BlockFactory.pas',
   StatementMemo in 'Common\StatementMemo.pas',
   MultiLine_Block in 'Blocks\MultiLine_Block.pas',

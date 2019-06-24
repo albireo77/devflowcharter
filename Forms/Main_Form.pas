@@ -551,7 +551,7 @@ begin
    miReturn.Enabled := False;
    miUnfoldAll.Visible := False;
    miPrint2.Visible := False;
-   miNewFlowchart.Visible := GInfra.CurrentLang = GInfra.DummyLang;
+   miNewFlowchart.Visible := GInfra.CurrentLang = GInfra.TemplateLang;
    miNewFunction.Visible := GInfra.CurrentLang.EnabledUserFunctionHeader and GInfra.CurrentLang.EnabledUserFunctionBody;
    miForAsc.Visible := False;
    miForDesc.Visible := False;
@@ -1409,7 +1409,7 @@ begin
          if Assigned(GInfra.CurrentLang.GetUserFuncDesc) then
             lang := GInfra.CurrentLang
          else
-            lang := GInfra.DummyLang;
+            lang := GInfra.TemplateLang;
          mItem.Hint := lang.GetUserFuncDesc(func.Header);
          if func.Header <> nil then
             mItem.Name := Trim(func.Header.edtLibrary.Text);

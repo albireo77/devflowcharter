@@ -432,8 +432,8 @@ begin
       skipFuncBody := false;
       if Assigned(GInfra.CurrentLang.SkipFuncBodyGen) then
          lang := GInfra.CurrentLang
-      else if Assigned(GInfra.DummyLang.SkipFuncBodyGen) then
-         lang := GInfra.DummyLang;
+      else if Assigned(GInfra.TemplateLang.SkipFuncBodyGen) then
+         lang := GInfra.TemplateLang;
       if lang <> nil then
          skipFuncBody := lang.SkipFuncBodyGen;
 
@@ -441,8 +441,8 @@ begin
       lang := nil;
       if Assigned(GInfra.CurrentLang.ExecuteBeforeGeneration) then
          lang := GInfra.CurrentLang
-      else if Assigned(GInfra.DummyLang.ExecuteBeforeGeneration) then
-         lang := GInfra.DummyLang;
+      else if Assigned(GInfra.TemplateLang.ExecuteBeforeGeneration) then
+         lang := GInfra.TemplateLang;
       if lang <> nil then
          lang.ExecuteBeforeGeneration;
 
@@ -450,8 +450,8 @@ begin
          lang := nil;
          if Assigned(GInfra.CurrentLang.FileContentsGenerator) then
             lang := GInfra.CurrentLang
-         else if Assigned(GInfra.DummyLang.FileContentsGenerator) then
-            lang := GInfra.DummyLang;
+         else if Assigned(GInfra.TemplateLang.FileContentsGenerator) then
+            lang := GInfra.TemplateLang;
          if (lang <> nil) and not lang.FileContentsGenerator(newLines, skipFuncBody) then
          begin
             TInfra.ShowFormattedErrorBox('NoProgTempl', [sLineBreak, GInfra.CurrentLang.Name, GInfra.CurrentLang.DefFile, FILE_CONTENTS_TAG], errValidate);
@@ -461,8 +461,8 @@ begin
          lang := nil;
          if Assigned(GInfra.CurrentLang.ExecuteAfterGeneration) then
             lang := GInfra.CurrentLang
-         else if Assigned(GInfra.DummyLang.ExecuteAfterGeneration) then
-            lang := GInfra.DummyLang;
+         else if Assigned(GInfra.TemplateLang.ExecuteAfterGeneration) then
+            lang := GInfra.TemplateLang;
          if lang <> nil then
             lang.ExecuteAfterGeneration;
       end;

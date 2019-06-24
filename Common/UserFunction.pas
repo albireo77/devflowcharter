@@ -776,8 +776,8 @@ begin
          lang := nil;
          if Assigned(GInfra.CurrentLang.GetMainProgramDesc) then
             lang := GInfra.CurrentLang
-         else if Assigned(GInfra.DummyLang.GetMainProgramDesc) then
-            lang := GInfra.DummyLang;
+         else if Assigned(GInfra.TemplateLang.GetMainProgramDesc) then
+            lang := GInfra.TemplateLang;
          if lang <> nil then
             result := lang.GetMainProgramDesc;
       end
@@ -789,8 +789,8 @@ begin
       lang := nil;
       if Assigned(GInfra.CurrentLang.GetUserFuncDesc) then
          lang := GInfra.CurrentLang
-      else if Assigned(GInfra.DummyLang.GetUserFuncDesc) then
-         lang := GInfra.DummyLang;
+      else if Assigned(GInfra.TemplateLang.GetUserFuncDesc) then
+         lang := GInfra.TemplateLang;
       if lang <> nil then
          result := lang.GetUserFuncDesc(FHeader, false, false).Trim;
    end;
@@ -824,8 +824,8 @@ begin
    lang := nil;
    if Assigned(GInfra.CurrentLang.GetUserFuncHeaderDesc) then
       lang := GInfra.CurrentLang
-   else if Assigned(GInfra.DummyLang.GetUserFuncHeaderDesc) then
-      lang := GInfra.DummyLang;
+   else if Assigned(GInfra.TemplateLang.GetUserFuncHeaderDesc) then
+      lang := GInfra.TemplateLang;
    if lang <> nil then
    begin
       description := lang.GetUserFuncHeaderDesc(Self).TrimRight;

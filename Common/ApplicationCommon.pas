@@ -39,13 +39,13 @@ type
 
    TInfra = class(TObject)
       private
-         FDummyLang,
+         FTemplateLang,
          FCurrentLang: TLangDefinition;
          FLangArray: array of TLangDefinition;
          FLangArrayCount: integer;
       public
          property CurrentLang: TLangDefinition read FCurrentLang;
-         property DummyLang: TLangDefinition read FDummyLang;
+         property TemplateLang: TLangDefinition read FTemplateLang;
          constructor Create;
          destructor Destroy; override;
          class procedure ShowWarningBox(const AWarnMsg: string);
@@ -288,8 +288,8 @@ begin
    finally
       FindClose(searchRec);
    end;
-   FDummyLang := TLangDefinition.Create;
-   FLangArray := FLangArray + [FDummyLang];
+   FTemplateLang := TLangDefinition.Create;
+   FLangArray := FLangArray + [FTemplateLang];
    FCurrentLang := FLangArray[0];
    FLangArrayCount := Length(FLangArray);
 end;
@@ -754,8 +754,8 @@ begin
       begin
          if Assigned(GInfra.CurrentLang.GetPointerTypeName) then
             lang := GInfra.CurrentLang
-         else if Assigned(GInfra.DummyLang.GetPointerTypeName) then
-            lang := GInfra.DummyLang;
+         else if Assigned(GInfra.TemplateLang.GetPointerTypeName) then
+            lang := GInfra.TemplateLang;
       end;
       for userType in GProject.GetUserDataTypes do
       begin

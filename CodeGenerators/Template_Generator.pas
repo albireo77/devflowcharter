@@ -17,7 +17,7 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 }
 
-unit Dummy_Generator;
+unit Template_Generator;
 
 interface
 
@@ -28,7 +28,7 @@ uses
    UserFunction, DeclareList, CommonInterfaces, UserDataType, ApplicationCommon,
    ParserHelper, CommonTypes;
 
-procedure Dummy_UserDataTypesSectionGenerator(ALines: TStringList);
+procedure Template_UserDataTypesSectionGenerator(ALines: TStringList);
 var
    dataType: TUserDataType;
    field: TField;
@@ -168,7 +168,7 @@ begin
    end;
 end;
 
-function Dummy_GetConstantType(const AValue: string; var AGenericType: string): integer;
+function Template_GetConstantType(const AValue: string; var AGenericType: string): integer;
 var
    i: integer;
 begin
@@ -178,7 +178,7 @@ begin
       result := GENERIC_INT_TYPE;
 end;
 
-procedure Dummy_ProgramHeaderSectionGenerator(ALines: TStringList);
+procedure Template_ProgramHeaderSectionGenerator(ALines: TStringList);
 var
    hdrTemplate: TStringList;
    lang: TLangDefinition;
@@ -202,12 +202,12 @@ begin
     end;
 end;
 
-procedure Dummy_LibSectionGenerator(ALines: TStringList);
+procedure Template_LibSectionGenerator(ALines: TStringList);
 var
    i: integer;
    libList, libTemplate: TStringList;
    lang: TLangDefinition;
-   libStr, libFormat: string;
+   libStr, libFormat, p1, p2: string;
    isS1: boolean;
 begin
    lang := GInfra.CurrentLang;
@@ -216,17 +216,28 @@ begin
       if (libList.Count > 0) and (not lang.LibTemplate.IsEmpty) and ((not lang.LibEntry.IsEmpty) or (not lang.LibEntryList.IsEmpty)) then
       begin
          libStr := '';
+         isS1 := lang.LibTemplate.Contains(PRIMARY_PLACEHOLDER);
+         if isS1 then
+         begin
+            libFormat := lang.LibEntry + sLineBreak;
+            p1 := PRIMARY_PLACEHOLDER;
+            p2 := '%s2';
+         end
+         else
+         begin
+            libFormat := lang.LibEntryList;
+            p1 := '%s2';
+            p2 := PRIMARY_PLACEHOLDER;
+         end;
+         for i := 0 to libList.Count-1 do
+            libStr := libStr + Format(libFormat, [libList[i]]);
+         if (lang.LibEntryListStripCount > 0) and not isS1 then
+            SetLength(libStr, libStr.Length - lang.LibEntryListStripCount);
          libTemplate := TStringList.Create;
          try
-            isS1 := lang.LibTemplate.Contains(PRIMARY_PLACEHOLDER);
-            libFormat := IfThen(isS1, lang.LibEntry + sLineBreak, lang.LibEntryList);
-            for i := 0 to libList.Count-1 do
-               libStr := libStr + Format(libFormat, [libList[i]]);
-            if (lang.LibEntryListStripCount > 0) and not isS1 then
-               SetLength(libStr, libStr.Length - lang.LibEntryListStripCount);
             libTemplate.Text := lang.LibTemplate;
-            TInfra.InsertTemplateLines(libTemplate, IfThen(isS1, PRIMARY_PLACEHOLDER, '%s2'), libStr, TInfra.GetLibObject);
-            TInfra.InsertTemplateLines(libTemplate, IfThen(isS1, '%s2', PRIMARY_PLACEHOLDER), '');
+            TInfra.InsertTemplateLines(libTemplate, p1, libStr, TInfra.GetLibObject);
+            TInfra.InsertTemplateLines(libTemplate, p2, '');
             ALines.AddStrings(libTemplate);
          finally
             libTemplate.Free;
@@ -237,7 +248,7 @@ begin
    end;
 end;
 
-procedure Dummy_ConstSectionGenerator(ALines: TStringList; AConstList: TConstDeclareList);
+procedure Template_ConstSectionGenerator(ALines: TStringList; AConstList: TConstDeclareList);
 var
    i, t, d: integer;
    constStr, constType, constValue, template, genericTypes: string;
@@ -261,7 +272,7 @@ begin
                if Assigned(GInfra.CurrentLang.GetConstantType) then
                   t := GInfra.CurrentLang.GetConstantType(constValue, genericTypes)
                else
-                  t := Dummy_GetConstantType(constValue, genericTypes);
+                  t := Template_GetConstantType(constValue, genericTypes);
                if t <> UNKNOWN_TYPE then
                begin
                   d := TParserHelper.DecodeArrayDimension(t);
@@ -303,7 +314,7 @@ begin
    end;
 end;
 
-procedure Dummy_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
+procedure Template_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
 var
    lang: TLangDefinition;
    i, b, lType, dcount: integer;
@@ -377,7 +388,7 @@ begin
    end;
 end;
 
-procedure Dummy_MainFunctionSectionGenerator(ALines: TStringList; ADeep: integer);
+procedure Template_MainFunctionSectionGenerator(ALines: TStringList; ADeep: integer);
 var
    block: TBlock;
 begin
@@ -386,7 +397,7 @@ begin
       block.GenerateCode(ALines, GInfra.CurrentLang.Name, ADeep);
 end;
 
-procedure Dummy_UserFunctionsSectionGenerator(ALines: TStringList; ASkipBodyGen: boolean);
+procedure Template_UserFunctionsSectionGenerator(ALines: TStringList; ASkipBodyGen: boolean);
 var
    func: TUserFunction;
    param: TParameter;
@@ -488,7 +499,7 @@ begin
                            if Assigned(lang.VarSectionGenerator) then
                               lang.VarSectionGenerator(varList, func.Header.LocalVars)
                            else
-                              Dummy_VarSectionGenerator(varList, func.Header.LocalVars);
+                              Template_VarSectionGenerator(varList, func.Header.LocalVars);
                            TInfra.InsertTemplateLines(funcTemplate, '%s2', varList);
                         finally
                            varList.Free;
@@ -530,7 +541,7 @@ begin
    end;
 end;
 
-function Dummy_FileContentsGenerator(ALines: TStringList; ASkipBodyGenerate: boolean): boolean;
+function Template_FileContentsGenerator(ALines: TStringList; ASkipBodyGenerate: boolean): boolean;
 var
    fileTemplate, headerTemplate, mainFuncTemplate, libTemplate, constTemplate,
    varTemplate, funcTemplate, dataTypeTemplate: TStringList;
@@ -549,14 +560,14 @@ begin
       if Assigned(currLang.ProgramHeaderSectionGenerator) then
          currLang.ProgramHeaderSectionGenerator(headerTemplate)
       else
-         Dummy_ProgramHeaderSectionGenerator(headerTemplate);
+         Template_ProgramHeaderSectionGenerator(headerTemplate);
 
       // generate libraries section
       libTemplate := TStringList.Create;
       if Assigned(currLang.LibSectionGenerator) then
          currLang.LibSectionGenerator(libTemplate)
       else
-         Dummy_LibSectionGenerator(libTemplate);
+         Template_LibSectionGenerator(libTemplate);
 
      // generate global constants section
      constTemplate := TStringList.Create;
@@ -565,7 +576,7 @@ begin
         if Assigned(currLang.ConstSectionGenerator) then
            currLang.ConstSectionGenerator(constTemplate, GProject.GlobalConsts)
         else
-           Dummy_ConstSectionGenerator(constTemplate, GProject.GlobalConsts);
+           Template_ConstSectionGenerator(constTemplate, GProject.GlobalConsts);
      end;
 
      // generate global variables section
@@ -575,7 +586,7 @@ begin
         if Assigned(currLang.VarSectionGenerator) then
            currLang.VarSectionGenerator(varTemplate, GProject.GlobalVars)
         else
-           Dummy_VarSectionGenerator(varTemplate, GProject.GlobalVars);
+           Template_VarSectionGenerator(varTemplate, GProject.GlobalVars);
       end;
 
      // generate user data types section
@@ -585,7 +596,7 @@ begin
         if Assigned(currLang.UserDataTypesSectionGenerator) then
            currLang.UserDataTypesSectionGenerator(dataTypeTemplate)
         else
-           Dummy_UserDataTypesSectionGenerator(dataTypeTemplate);
+           Template_UserDataTypesSectionGenerator(dataTypeTemplate);
      end;
 
      // generate user functions section
@@ -595,7 +606,7 @@ begin
         if Assigned(currLang.UserFunctionsSectionGenerator) then
            currLang.UserFunctionsSectionGenerator(funcTemplate, ASkipBodyGenerate)
         else
-           Dummy_UserFunctionsSectionGenerator(funcTemplate, ASkipBodyGenerate);
+           Template_UserFunctionsSectionGenerator(funcTemplate, ASkipBodyGenerate);
      end;
 
       // generate main function section
@@ -603,7 +614,7 @@ begin
       if Assigned(currLang.MainFunctionSectionGenerator) then
          currLang.MainFunctionSectionGenerator(mainFuncTemplate, 0)
       else
-         Dummy_MainFunctionSectionGenerator(mainFuncTemplate, 0);
+         Template_MainFunctionSectionGenerator(mainFuncTemplate, 0);
 
       fileTemplate := TStringList.Create;
       fileTemplate.Text := currLang.FileContentsTemplate;
@@ -631,17 +642,17 @@ begin
    result := true;
 end;
 
-function Dummy_GetPointerTypeName(const AValue: string): string;
+function Template_GetPointerTypeName(const AValue: string): string;
 begin
    result := Format(GInfra.CurrentLang.PointerTypeMask, [AValue]);
 end;
 
-function Dummy_SkipFuncBodyGen: boolean;
+function Template_SkipFuncBodyGen: boolean;
 begin
    result := false;
 end;
 
-function Dummy_GetUserTypeDesc(ADataType: TUserDataType): string;
+function Template_GetUserTypeDesc(ADataType: TUserDataType): string;
 var
    kind: string;
 begin
@@ -656,13 +667,13 @@ begin
    end;
 end;
 
-function Dummy_GetMainProgramDesc: string;
+function Template_GetMainProgramDesc: string;
 begin
    result := i18Manager.GetString(GInfra.CurrentLang.ProgramLabelKey);
    result := ReplaceStr(result, PRIMARY_PLACEHOLDER, GProject.Name);
 end;
 
-function Dummy_GetUserFuncDesc(AHeader: TUserFunctionHeader; AFullParams: boolean = true; AIncludeDesc: boolean = true): string;
+function Template_GetUserFuncDesc(AHeader: TUserFunctionHeader; AFullParams: boolean = true; AIncludeDesc: boolean = true): string;
 var
    params, desc, lType, key, lb, arrayType: string;
    lang: TLangDefinition;
@@ -714,7 +725,7 @@ begin
    end;
 end;
 
-function Dummy_GetUserFuncHeaderDesc(AHeader: TUserFunctionHeader): string;
+function Template_GetUserFuncHeaderDesc(AHeader: TUserFunctionHeader): string;
 var
    lang: TLangDefinition;
    template, parms: TStringList;
@@ -768,25 +779,25 @@ end;
 
 initialization
 
-   with GInfra.DummyLang do
+   with GInfra.TemplateLang do
    begin
       EnabledUserFunctionBody := true;
       EnabledExplorer := true;
-      MainFunctionSectionGenerator := Dummy_MainFunctionSectionGenerator;
-      UserFunctionsSectionGenerator := Dummy_UserFunctionsSectionGenerator;
-      VarSectionGenerator := Dummy_VarSectionGenerator;
-      ProgramHeaderSectionGenerator := Dummy_ProgramHeaderSectionGenerator;
-      LibSectionGenerator := Dummy_LibSectionGenerator;
-      ConstSectionGenerator := Dummy_ConstSectionGenerator;
-      UserDataTypesSectionGenerator := Dummy_UserDataTypesSectionGenerator;
-      FileContentsGenerator := Dummy_FileContentsGenerator;
-      GetConstantType := Dummy_GetConstantType;
-      GetPointerTypeName := Dummy_GetPointerTypeName;
-      GetUserFuncDesc := Dummy_GetUserFuncDesc;
-      GetUserFuncHeaderDesc := Dummy_GetUserFuncHeaderDesc;
-      GetUserTypeDesc := Dummy_GetUserTypeDesc;
-      GetMainProgramDesc := Dummy_GetMainProgramDesc;
-      SkipFuncBodyGen := Dummy_SkipFuncBodyGen;
+      MainFunctionSectionGenerator := Template_MainFunctionSectionGenerator;
+      UserFunctionsSectionGenerator := Template_UserFunctionsSectionGenerator;
+      VarSectionGenerator := Template_VarSectionGenerator;
+      ProgramHeaderSectionGenerator := Template_ProgramHeaderSectionGenerator;
+      LibSectionGenerator := Template_LibSectionGenerator;
+      ConstSectionGenerator := Template_ConstSectionGenerator;
+      UserDataTypesSectionGenerator := Template_UserDataTypesSectionGenerator;
+      FileContentsGenerator := Template_FileContentsGenerator;
+      GetConstantType := Template_GetConstantType;
+      GetPointerTypeName := Template_GetPointerTypeName;
+      GetUserFuncDesc := Template_GetUserFuncDesc;
+      GetUserFuncHeaderDesc := Template_GetUserFuncHeaderDesc;
+      GetUserTypeDesc := Template_GetUserTypeDesc;
+      GetMainProgramDesc := Template_GetMainProgramDesc;
+      SkipFuncBodyGen := Template_SkipFuncBodyGen;
    end;
 
    // it really sucks but this must be executed here due to initialization order
