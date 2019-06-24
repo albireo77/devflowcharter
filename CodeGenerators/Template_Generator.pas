@@ -204,11 +204,10 @@ end;
 
 procedure Template_LibSectionGenerator(ALines: TStringList);
 var
-   i: integer;
+   i, stripCount: integer;
    libList, libTemplate: TStringList;
    lang: TLangDefinition;
    libStr, libFormat, p1, p2: string;
-   isS1: boolean;
 begin
    lang := GInfra.CurrentLang;
    libList := GProject.GetLibraryList;
@@ -216,23 +215,24 @@ begin
       if (libList.Count > 0) and (not lang.LibTemplate.IsEmpty) and ((not lang.LibEntry.IsEmpty) or (not lang.LibEntryList.IsEmpty)) then
       begin
          libStr := '';
-         isS1 := lang.LibTemplate.Contains(PRIMARY_PLACEHOLDER);
-         if isS1 then
+         if lang.LibTemplate.Contains(PRIMARY_PLACEHOLDER) then
          begin
             libFormat := lang.LibEntry + sLineBreak;
             p1 := PRIMARY_PLACEHOLDER;
             p2 := '%s2';
+            stripCount := 0;
          end
          else
          begin
             libFormat := lang.LibEntryList;
             p1 := '%s2';
             p2 := PRIMARY_PLACEHOLDER;
+            stripCount := lang.LibEntryListStripCount;
          end;
          for i := 0 to libList.Count-1 do
             libStr := libStr + Format(libFormat, [libList[i]]);
-         if (lang.LibEntryListStripCount > 0) and not isS1 then
-            SetLength(libStr, libStr.Length - lang.LibEntryListStripCount);
+         if stripCount > 0 then
+            SetLength(libStr, libStr.Length - stripCount);
          libTemplate := TStringList.Create;
          try
             libTemplate.Text := lang.LibTemplate;
