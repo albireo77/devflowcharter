@@ -44,6 +44,7 @@ type
          procedure MyOnMouseLeave(Sender: TObject);
          procedure NCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
          procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
+         procedure WMExitSizeMove(var Msg: TWMMove); message WM_EXITSIZEMOVE;
          procedure SetActive(AValue: boolean);
          function GetActive: boolean;
          procedure OnChangeComment(Sender: TObject);
@@ -271,6 +272,13 @@ begin
          crSizeNWSE: Msg.Result := HTBOTTOMRIGHT;
       end;
    end;
+end;
+
+procedure TComment.WMExitSizeMove(var Msg: TWMMove);
+begin
+   inherited;
+   ChangeBorderStyle(bsNone);
+   UpdateScrolls;
 end;
 
 procedure TComment.ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
