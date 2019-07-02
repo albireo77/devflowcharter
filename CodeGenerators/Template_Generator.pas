@@ -401,11 +401,10 @@ procedure Template_UserFunctionsSectionGenerator(ALines: TStringList; ASkipBodyG
 var
    func: TUserFunction;
    param: TParameter;
-   name, argList, paramStr, ref, lArray, lRecord, enum, defValue, hText, typeArray, isStatic, memDesc: string;
+   name, argList, paramStr, ref, lArray, lRecord, enum, defValue, hText, typeArray, isStatic, memDesc, h0, h1, h2: string;
    lang: TLangDefinition;
    headerTemplate, varList, funcTemplate, bodyTemplate, funcList, funcsTemplate: TStringList;
    intType: integer;
-   isTypeNotNone: boolean;
 begin
    lang := GInfra.CurrentLang;
    if not lang.FunctionsTemplate.IsEmpty then
@@ -450,12 +449,20 @@ begin
                if lang.FunctionHeaderArgsStripCount > 0 then
                   SetLength(argList, argList.Length - lang.FunctionHeaderArgsStripCount);
 
-               // assemble function header line
-               isTypeNotNone := func.Header.cbType.ItemIndex > 0;
-               if isTypeNotNone then
-                  typeArray := IfThen(func.Header.chkArrayType.Checked, lang.FunctionHeaderTypeArray, lang.FunctionHeaderTypeNotArray)
+               if func.Header.cbType.ItemIndex > 0 then
+               begin
+                  typeArray := IfThen(func.Header.chkArrayType.Checked, lang.FunctionHeaderTypeArray, lang.FunctionHeaderTypeNotArray);
+                  h0 := func.Header.cbType.Text;
+                  h1 := lang.FunctionHeaderTypeNotNone1;
+                  h2 := lang.FunctionHeaderTypeNotNone2;
+               end
                else
+               begin
                   typeArray := '';
+                  h0 := '';
+                  h1 := lang.FunctionHeaderTypeNone1;
+                  h2 := lang.FunctionHeaderTypeNone2;
+               end;
 
                if func.Header.chkStatic.Visible then
                   isStatic := IfThen(func.Header.chkStatic.Checked, lang.FunctionHeaderStatic, lang.FunctionHeaderNotStatic)
@@ -465,9 +472,9 @@ begin
                hText := IfThen(func.Header.chkConstructor.Checked, lang.ConstructorHeaderTemplate, lang.FunctionHeaderTemplate);
                hText := ReplaceStr(hText, PRIMARY_PLACEHOLDER, name);
                hText := ReplaceStr(hText, '%s3', argList);
-               hText := ReplaceStr(hText, '%s4', IfThen(isTypeNotNone, func.Header.cbType.Text));
-               hText := ReplaceStr(hText, '%s5', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone1, lang.FunctionHeaderTypeNone1));
-               hText := ReplaceStr(hText, '%s6', IfThen(isTypeNotNone, lang.FunctionHeaderTypeNotNone2, lang.FunctionHeaderTypeNone2));
+               hText := ReplaceStr(hText, '%s4', h0);
+               hText := ReplaceStr(hText, '%s5', h1);
+               hText := ReplaceStr(hText, '%s6', h2);
                hText := ReplaceStr(hText, '%s7', func.Header.GetExternModifier);
                hText := ReplaceStr(hText, '%s8', typeArray);
                hText := ReplaceStr(hText, '%s9', isStatic);
