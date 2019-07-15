@@ -393,7 +393,7 @@ Element FunctionHeaderTemplate
 Description: Template for function header
 Available placeholders:
    %s1 - name of the function
-   %s2 - description/prefix of the function
+   %s2 - description/prefix of the function (element FunctionHeaderDescTemplate)
    %s3 - list of function parameters (list of FunctionHeaderArgsEntryMask elements)
    %s4 - return type
    %s5 - first string that depends if return type is none or specific (element FunctionHeaderTypeModifier1) 
