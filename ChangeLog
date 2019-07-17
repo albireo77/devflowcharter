@@ -1,3 +1,7 @@
+7.15 [17.07.2019]
+- Flowchart Context Menu: add hints to Cut/Copy items with info that these operations can also be executed by drag and drop
+- Comments: fix remaining border frame in some situations
+
 7.14 [08.05.2019]
 - Java support: add support for "byte" type in evaluating of constant value
 - Project Explorer: add "Rebuild" to popup menu
