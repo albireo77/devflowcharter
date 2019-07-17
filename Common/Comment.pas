@@ -51,6 +51,7 @@ type
          procedure SetPage(APage: TBlockTabSheet);
          procedure SetIsHeader(AValue: boolean);
          function GetIsHeader: boolean;
+         procedure OnEndDragComment(Sender, Target: TObject; X, Y: Integer);
       public
          property PinControl: TControl read FPinControl write FPinControl;
          property Page: TBlockTabSheet read FPage write SetPage;
@@ -95,6 +96,7 @@ begin
    SetBounds(ALeft, ATop, AWidth, AHeight);
    GProject.AddComponent(Self);
 
+   OnEndDrag      := OnEndDragComment;
    OnMouseDown    := OnMouseDownComment;
    OnMouseMove    := OnMouseMoveComment;
    OnDblClick     := OnDblClickComment;
@@ -343,6 +345,12 @@ begin
       SaveInXML(tag);
       ATag.AppendChild(tag);
    end;
+end;
+
+procedure TComment.OnEndDragComment(Sender, Target: TObject; X, Y: Integer);
+begin
+   ChangeBorderStyle(bsNone);
+   inherited;
 end;
 
 end.
