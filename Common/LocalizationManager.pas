@@ -38,6 +38,7 @@ const
    SPEED_BUTTON = 9;
    EDIT_TEXT    = 10;
    STATIC_TEXT  = 11;
+   COMBO_BOX    = 12;
    
 type
 
@@ -191,6 +192,12 @@ begin
                               EDIT_TEXT:    TEdit(comp).Text := value;
                               EDIT_HINT,
                               SPEED_BUTTON: THackControl(comp).Hint := value;
+                              COMBO_BOX:
+                              begin
+                                 pos := StrToIntDef(field, -1);
+                                 if (pos >= 0) and (pos < TComboBox(comp).Items.Count) then
+                                    TComboBox(comp).Items[pos] := value;
+                              end
                            else
                               THackControl(comp).Caption := value;
                            end;
