@@ -167,7 +167,8 @@ implementation
 uses
    System.StrUtils, System.UITypes, WinApi.Messages, System.Math, WinApi.Windows,
    ApplicationCommon, Goto_Form, Settings, LangDefinition, Main_Block, Help_Form,
-   Comment, XMLProcessor, Main_Form, Base_Block, SynEditTypes, ParserHelper;
+   Comment, XMLProcessor, Main_Form, Base_Block, SynEditTypes, ParserHelper,
+   System.Character;
 
 {$R *.dfm}
 
@@ -263,12 +264,12 @@ begin
       memCodeEditor.Gutter.Visible := EditorShowGutter;
       if IndentChar = TAB_CHAR then
       begin
-         //memCodeEditor.Options := memCodeEditor.Options - [eoTabsToSpaces];
+         memCodeEditor.Options := memCodeEditor.Options - [eoTabsToSpaces];
          memCodeEditor.TabWidth := 3;
       end
       else
       begin
-         //memCodeEditor.Options := memCodeEditor.Options + [eoTabsToSpaces];
+         memCodeEditor.Options := memCodeEditor.Options + [eoTabsToSpaces];
          memCodeEditor.TabWidth := IndentLength;
       end;
       memCodeEditor.Font.Size := EditorFontSize;
@@ -358,7 +359,7 @@ begin
    try
       for i := 1 to AText.Length do
       begin
-         if not CharInSet(AText[i], [#13, #10]) then
+         if not AText[i].IsControl then
          begin
             line := line + AText[i];
             if i = AText.Length then
