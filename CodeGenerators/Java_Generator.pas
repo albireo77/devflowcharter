@@ -558,7 +558,7 @@ begin
                   begin
                      for a := 3 to 6 do
                      begin
-                        if not cValue[a].IsLetterOrDigit then
+                        if not CharInSet(cValue[a], ['0'..'9', 'a'..'f', 'A'..'F']) then
                            Exit;
                      end;
                      result := JAVA_CHAR_TYPE;
