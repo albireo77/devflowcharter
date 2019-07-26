@@ -438,7 +438,7 @@ object SettingsForm: TSettingsForm
     object lblFontSize: TLabel
       Tag = 6
       Left = 450
-      Top = 46
+      Top = 44
       Width = 47
       Height = 13
       Alignment = taRightJustify
