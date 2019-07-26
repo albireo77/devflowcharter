@@ -161,7 +161,7 @@ begin
                end
                else
                begin
-                  line := GSettings.IndentString + varName + ': ';
+                  line := GSettings.IndentSpaces + varName + ': ';
                   if dCount > 0 then
                   begin
                      varSize := '';
@@ -202,7 +202,7 @@ begin
                ALines.Add('var');
                cnt := 1;
             end;
-            ALines.AddObject(GSettings.IndentString + buf + ': ' + currType + ';', AVarList);
+            ALines.AddObject(GSettings.IndentSpaces + buf + ': ' + currType + ';', AVarList);
          end;
       end;
    end;
@@ -222,7 +222,7 @@ begin
          idx := ALines.Count;
          block.GenerateCode(ALines, pascalLang.Name, deep);
          if rand_flag <> 0 then
-            ALines.Insert(idx+1, DupeString(GSettings.IndentString, deep+1) + 'Randomize;');
+            ALines.Insert(idx+1, DupeString(GSettings.IndentSpaces, deep+1) + 'Randomize;');
       end
       else
       begin

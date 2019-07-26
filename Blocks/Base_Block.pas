@@ -2708,8 +2708,8 @@ begin
       ALines.Capacity := i;
    for i := 0 to ATemplate.Count-1 do
    begin
-      line := DupeString(GSettings.IndentString, ADeep) + ATemplate[i];
-      line := ReplaceStr(line, INDENT_XML_CHAR, GSettings.IndentString);
+      line := DupeString(GSettings.IndentSpaces, ADeep) + ATemplate[i];
+      line := ReplaceStr(line, INDENT_XML_CHAR, GSettings.IndentSpaces);
       line := TInfra.StripInstrEnd(line);
       obj := ATemplate.Objects[i];
       if obj = nil then
@@ -2746,12 +2746,12 @@ begin
       begin
          if (ALines.Count > 0) and (ALines.Objects[ALines.Count-1] = nil) then
             ALines.Objects[ALines.Count-1] := FBranchList[b];
-         GenerateNestedCode(ALines, b, ADeep+CountLeadIndentChars(ATemplate[i]), ALangId);
+         GenerateNestedCode(ALines, b, ADeep + CountLeadIndentChars(ATemplate[i]), ALangId);
       end
       else
       begin
-         line := DupeString(GSettings.IndentString, ADeep) + ATemplate[i];
-         line := ReplaceStr(line, INDENT_XML_CHAR, GSettings.IndentString);
+         line := DupeString(GSettings.IndentSpaces, ADeep) + ATemplate[i];
+         line := ReplaceStr(line, INDENT_XML_CHAR, GSettings.IndentSpaces);
          obj := ATemplate.Objects[i];
          if obj = nil then
             obj := Self;

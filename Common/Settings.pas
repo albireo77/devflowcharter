@@ -63,7 +63,8 @@ type
       FEditorIdentColor: TColor;
 
       FIndentLength: integer;
-      FIndentString: string;
+      FIndentSpaces: string;
+      FIndentChar: char;
 
       FConfirmRemove: boolean;
       FPrintMultPages: boolean;
@@ -130,7 +131,8 @@ type
       property EditorAutoSelectBlock: boolean read FEditorAutoSelectBlock;
       property EditorAutoUpdate: boolean read FEditorAutoUpdate write FEditorAutoUpdate;
       property IndentLength: integer read FIndentLength;
-      property IndentString: string read FIndentString;
+      property IndentSpaces: string read FIndentSpaces;
+      property IndentChar: char read FIndentChar;
       property FlowchartFontName: string read FFlowchartFontName;
       property FlowchartFontSize: integer read FFlowchartFontSize;
       property ConfirmRemove: boolean read FConfirmRemove;
@@ -205,6 +207,7 @@ const
    KEY_EDITOR_GUTTER_COLOR = 'EditorGutterColor';
    KEY_EDITOR_IDENT_COLOR = 'EditorIdentColor';
    KEY_EDITOR_INDENT = 'IndentLength';
+   KEY_EDITOR_INDENT_CHAR = 'IndentChar';
    KEY_EDITOR_SHOW_SCROLLBARS = 'EditorScrollbars';
    KEY_EDITOR_FONT_SIZE = 'EditorFontSize';
 
@@ -329,13 +332,14 @@ begin
    FTranslateFile             := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_LOCALIZATION_FILE, '');
    FCurrentLangName           := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_CURRENT_LANGUAGE, '');
    FFlowchartFontSize         := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_FLOWCHART_FONT_SIZE, FLOWCHART_MIN_FONT_SIZE);
+   FIndentChar                := Char(FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_INDENT_CHAR, Integer(SPACE_CHAR)));
    if not (FFlowchartFontSize in FLOWCHART_VALID_FONT_SIZES) then
       FFlowchartFontSize := FLOWCHART_MIN_FONT_SIZE;
    if not FileExists(FTranslateFile) then
       FTranslateFile := '';
    if TInfra.IsNOkColor(FFontColor) then
       FFontColor := OK_COLOR;
-   FIndentString := StringOfChar(INDENT_CHAR, FIndentLength);
+   FIndentSpaces := StringOfChar(SPACE_CHAR, FIndentLength);
    FShapeColors[shpNone] := clNone;
 end;
 
@@ -387,6 +391,7 @@ begin
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_FONT_SIZE, FEditorFontSize);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_DESKTOP_COLOR, FDesktopColor);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_INDENT, FIndentLength);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_INDENT_CHAR, Integer(FIndentChar));
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_ELLIPSE_COLOR, FShapeColors[shpEllipse]);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_DIAMOND_COLOR, FShapeColors[shpDiamond]);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_PARALLELOGRAM_COLOR, FShapeColors[shpParallel]);
@@ -502,7 +507,11 @@ begin
       FValidateDeclaration   := chkValidateConsts.Checked;
       FEditorFontSize        := StrToIntDef(cbFontSize.Text, EDITOR_DEFAULT_FONT_SIZE);
       FIndentLength          := StrToIntDef(edtEditorIndent.Text, EDITOR_DEFAULT_INDENT_LENGTH);
-      FIndentString          := StringOfChar(INDENT_CHAR, FIndentLength);
+      if cbIndentChar.ItemIndex = 0 then
+         FIndentChar := SPACE_CHAR
+      else
+         FIndentChar := TAB_CHAR;
+      FIndentSpaces := StringOfChar(SPACE_CHAR, FIndentLength);
 
       for shape := Low(TColorShape) to High(TColorShape) do
       begin

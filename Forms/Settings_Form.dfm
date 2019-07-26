@@ -421,8 +421,8 @@ object SettingsForm: TSettingsForm
       143)
     object lblIndent: TLabel
       Tag = 6
-      Left = 431
-      Top = 17
+      Left = 382
+      Top = 18
       Width = 56
       Height = 13
       Alignment = taRightJustify
@@ -437,7 +437,7 @@ object SettingsForm: TSettingsForm
     end
     object lblFontSize: TLabel
       Tag = 6
-      Left = 440
+      Left = 450
       Top = 46
       Width = 47
       Height = 13
@@ -770,9 +770,9 @@ object SettingsForm: TSettingsForm
     end
     object edtEditorIndent: TEdit
       Tag = 5
-      Left = 491
-      Top = 11
-      Width = 50
+      Left = 503
+      Top = 13
+      Width = 38
       Height = 21
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -814,9 +814,10 @@ object SettingsForm: TSettingsForm
       TabOrder = 3
     end
     object cbFontSize: TComboBox
-      Left = 492
+      Tag = 12
+      Left = 503
       Top = 40
-      Width = 50
+      Width = 38
       Height = 21
       Style = csDropDownList
       Font.Charset = DEFAULT_CHARSET
@@ -837,6 +838,24 @@ object SettingsForm: TSettingsForm
         '18'
         '20'
         '22')
+    end
+    object cbIndentChar: TComboBox
+      Tag = 12
+      Left = 444
+      Top = 13
+      Width = 55
+      Height = 21
+      Style = csDropDownList
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 5
+      Items.Strings = (
+        'space'
+        'tab')
     end
   end
   object btnDefaultSettings: TButton

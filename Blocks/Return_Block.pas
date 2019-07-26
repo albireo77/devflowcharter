@@ -129,7 +129,7 @@ begin
       exit;
    if ALangId = PASCAL_LANG_ID then
    begin
-      indnt := DupeString(GSettings.IndentString, ADeep);
+      indnt := DupeString(GSettings.IndentSpaces, ADeep);
       expr := Trim(FStatement.Text);
       inFunc := false;
       if not expr.IsEmpty then

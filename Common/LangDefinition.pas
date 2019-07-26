@@ -46,7 +46,21 @@ type
       FName,
       FCompilerKey,
       FCompilerNoMainKey,
-      FCompilerFileEncodingKey: string;
+      FCompilerFileEncodingKey,
+      FVarTemplate,
+      FConstTemplate,
+      FDataTypesTemplate,
+      FFunctionsTemplate,
+      FFileContentsTemplate,
+      FLibTemplate,
+      FProgramHeaderTemplate: string;
+      function GetVarTemplate: string;
+      function GetConstTemplate: string;
+      function GetDataTypesTemplate: string;
+      function GetFunctionsTemplate: string;
+      function GetFileContentsTemplate: string;
+      function GetLibTemplate: string;
+      function GetProgramHeaderTemplate: string;
    public
       CommentBegin, CommentEnd,
       DefaultExt,
@@ -59,7 +73,6 @@ type
       VarEntryArraySize,
       VarEntryInit,
       VarEntryInitExtern,
-      ConstTemplate,
       ConstEntry,
       ConstEntryArray,
       ConstTypeGeneric,
@@ -108,7 +121,6 @@ type
       FunctionHeaderTypeNotNone2,
       FunctionHeaderDescParmMask,
       FunctionHeaderDescReturnMask,
-      VarTemplate,
       InputTemplate,
       OutputTemplate,
       InstrTemplate,
@@ -116,7 +128,6 @@ type
       FolderTemplate,
       ReturnTemplate,
       FunctionCallTemplate,
-      ProgramHeaderTemplate,
       FunctionHeaderArgsEntryMask,
       FunctionHeaderArgsEntryRef,
       FunctionHeaderArgsEntryArray,
@@ -124,12 +135,8 @@ type
       FunctionHeaderArgsEntryRecord,
       FunctionHeaderArgsEntryEnum,
       UserTypeDesc,
-      LibTemplate,
       LibEntry,
       LibEntryList,
-      DataTypesTemplate,
-      FunctionsTemplate,
-      FileContentsTemplate,
       DataTypeExternal,
       DataTypeTransExternal,
       DataTypeNotExternal,
@@ -254,6 +261,13 @@ type
       procedure SaveCompilerData;
       procedure LoadCompilerData;
       function GetFileEncoding: TEncoding;
+      property VarTemplate: string read GetVarTemplate;
+      property ConstTemplate: string read GetConstTemplate;
+      property DataTypesTemplate: string read GetDataTypesTemplate;
+      property FunctionsTemplate: string read GetFunctionsTemplate;
+      property FileContentsTemplate: string read GetFileContentsTemplate;
+      property LibTemplate: string read GetLibTemplate;
+      property ProgramHeaderTemplate: string read GetProgramHeaderTemplate;
    end;
 
 
@@ -434,7 +448,7 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'VarTemplate');
    if tag <> nil then
-      VarTemplate := ReplaceStr(tag.Text, INDENT_XML_CHAR, GSettings.IndentString);
+      FVarTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTypeModifier1');
    if tag <> nil then
@@ -646,15 +660,15 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'DataTypesTemplate');
    if tag <> nil then
-      DataTypesTemplate := ReplaceStr(tag.Text, INDENT_XML_CHAR, GSettings.IndentString);
+      FDataTypesTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionsTemplate');
    if tag <> nil then
-      FunctionsTemplate := ReplaceStr(tag.Text, INDENT_XML_CHAR, GSettings.IndentString);
+      FFunctionsTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, FILE_CONTENTS_TAG);
    if tag <> nil then
-      FileContentsTemplate := ReplaceStr(tag.Text, INDENT_XML_CHAR, GSettings.IndentString);
+      FFileContentsTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeExternalModifier');
    if tag <> nil then
@@ -702,7 +716,7 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ConstTemplate');
    if tag <> nil then
-      ConstTemplate := ReplaceStr(tag.Text, INDENT_XML_CHAR, GSettings.IndentString);
+      FConstTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ConstEntry');
    if tag <> nil then
@@ -746,7 +760,7 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'LibTemplate');
    if tag <> nil then
-      LibTemplate := ReplaceStr(tag.Text, INDENT_XML_CHAR, GSettings.IndentString);
+      FLibTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'LibEntry');
    if tag <> nil then
@@ -786,7 +800,7 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ProgramHeaderTemplate');
    if tag <> nil then
-      ProgramHeaderTemplate := ReplaceStr(tag.Text, INDENT_XML_CHAR, GSettings.IndentString);
+      FProgramHeaderTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ReturnTemplate');
    if tag <> nil then
@@ -1094,6 +1108,41 @@ begin
       result := TEncoding.BigEndianUnicode
    else
       result := TEncoding.ANSI;
+end;
+
+function TLangDefinition.GetVarTemplate: string;
+begin
+   result := ReplaceStr(FVarTemplate, INDENT_XML_CHAR, GSettings.IndentSpaces);
+end;
+
+function TLangDefinition.GetConstTemplate: string;
+begin
+   result := ReplaceStr(FConstTemplate, INDENT_XML_CHAR, GSettings.IndentSpaces);
+end;
+
+function TLangDefinition.GetDataTypesTemplate: string;
+begin
+   result := ReplaceStr(FDataTypesTemplate, INDENT_XML_CHAR, GSettings.IndentSpaces);
+end;
+
+function TLangDefinition.GetFunctionsTemplate: string;
+begin
+   result := ReplaceStr(FFunctionsTemplate, INDENT_XML_CHAR, GSettings.IndentSpaces);
+end;
+
+function TLangDefinition.GetFileContentsTemplate: string;
+begin
+   result := ReplaceStr(FFileContentsTemplate, INDENT_XML_CHAR, GSettings.IndentSpaces);
+end;
+
+function TLangDefinition.GetLibTemplate: string;
+begin
+   result := ReplaceStr(FLibTemplate, INDENT_XML_CHAR, GSettings.IndentSpaces);
+end;
+
+function TLangDefinition.GetProgramHeaderTemplate: string;
+begin
+   result := ReplaceStr(FProgramHeaderTemplate, INDENT_XML_CHAR, GSettings.IndentSpaces);
 end;
 
 end.

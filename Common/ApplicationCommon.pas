@@ -68,6 +68,7 @@ type
          class procedure MoveWin(AWinControl: TWinControl; x, y: integer); overload;
          class procedure MoveWin(AWinControl: TWinControl; const APoint: TPoint); overload;
          class procedure MoveWinTopZ(AWinControl: TWinControl; x, y: integer);
+         class procedure IndentSpacesToTabs(ALines: TStringList);
          class function GetScrolledPoint(AMemo: TCustomMemo): TPoint;
          class function CreateDOSProcess(const ACommand: string; ADir: string = ''): boolean;
          class function ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
@@ -150,8 +151,9 @@ const   // Global constants
         LABEL_DEFAULT_FONT_SIZE = 10;
         EDITOR_DEFAULT_GUTTER_FONT_SIZE = 8;
 
-        INDENT_CHAR     = #32;         // space
-        INDENT_XML_CHAR = #9;          // tab
+        TAB_CHAR        = #9;
+        SPACE_CHAR      = #32;
+        INDENT_XML_CHAR = TAB_CHAR;
 
         PAGE_CAPTION_ATTR = 'tab';
         COMMENT_ATTR      = 'comment';
@@ -253,8 +255,8 @@ implementation
 
 uses
    Vcl.Printers, WinApi.Messages, Vcl.Menus, Vcl.Dialogs, Vcl.Imaging.jpeg, Vcl.Imaging.PngImage,
-   System.Math, System.TypInfo, Generics.Collections, System.IOUtils, System.Rtti, UserDataType,
-   XMLProcessor, SynEditHighlighter, Main_Block, BaseEnumerator;
+   System.Math, System.TypInfo, Generics.Collections, System.IOUtils, System.Rtti,
+   UserDataType, XMLProcessor, SynEditHighlighter, Main_Block, BaseEnumerator, System.Character;
 
 type
    THackCustomEdit = class(TCustomEdit);
@@ -1163,14 +1165,13 @@ end;
 
 class function TInfra.ExtractIndentString(const AText: string): string;
 var
-   i: integer;
+   i, len: integer;
 begin
    result := AText;
-   for i := 1 to result.Length do
-   begin
-      if not CharInSet(result[i], [#32, #9, INDENT_CHAR]) then
-         break;
-   end;
+   i := 1;
+   len := result.Length;
+   while (i <= len) and result[i].IsWhiteSpace do
+      i := i + 1;
    SetLength(result, i-1);
 end;
 
@@ -1298,6 +1299,20 @@ begin
    result := -1;
    if AControl is TCheckBox then
       result := GetTextWidth(TCheckBox(AControl).Caption, AControl) + GetSystemMetrics(SM_CXMENUCHECK) + 3;
+end;
+
+class procedure TInfra.IndentSpacesToTabs(ALines: TStringList);
+var
+   i, a: integer;
+   line: string;
+begin
+   for i := 0 to ALines.Count-1 do
+   begin
+      line := ALines[i];
+      a := Length(ExtractIndentString(line));
+      if a > 0 then
+         ALines[i] := StringOfChar(TAB_CHAR, a) + Copy(line, a + 1, MaxInt);
+   end;
 end;
 
 class function TInfra.GetDimensions(const AText: string): TArray<string>;

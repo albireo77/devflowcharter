@@ -261,7 +261,16 @@ begin
       memCodeEditor.Gutter.Color := EditorGutterColor;
       memCodeEditor.Gutter.Font.Color := Font.Color;
       memCodeEditor.Gutter.Visible := EditorShowGutter;
-      memCodeEditor.TabWidth := IndentLength;
+      if IndentChar = TAB_CHAR then
+      begin
+         //memCodeEditor.Options := memCodeEditor.Options - [eoTabsToSpaces];
+         memCodeEditor.TabWidth := 3;
+      end
+      else
+      begin
+         //memCodeEditor.Options := memCodeEditor.Options + [eoTabsToSpaces];
+         memCodeEditor.TabWidth := IndentLength;
+      end;
       memCodeEditor.Font.Size := EditorFontSize;
       memCodeEditor.Gutter.Font.Size := Max(EDITOR_DEFAULT_GUTTER_FONT_SIZE, EditorFontSize - 2);
       stbEditorBar.Visible := EditorShowStatusBar;
@@ -475,6 +484,8 @@ begin
          if not APreserveBookMarks then
             Marks.Clear;
          Highlighter := nil;
+         if GSettings.IndentChar = TAB_CHAR then
+            TInfra.IndentSpacesToTabs(newLines);
          Lines.Assign(newLines);
          if GSettings.EditorShowRichText then
             Highlighter := GInfra.CurrentLang.HighLighter;
@@ -1324,7 +1335,7 @@ begin
       line := ALines[idx];
       for i := 1 to line.Length do
       begin
-         if line[i] = INDENT_CHAR then
+         if line[i] = GSettings.IndentChar then
             result := i
          else
             break;

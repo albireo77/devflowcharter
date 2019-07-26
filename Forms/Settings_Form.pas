@@ -115,6 +115,7 @@ type
     lblPenColor: TLabel;
     pnlEditorKeyword: TPanel;
     lblEditorKeyword: TLabel;
+    cbIndentChar: TComboBox;
     procedure btnBrowseCCompClick(Sender: TObject);
     procedure CloseFormClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -438,6 +439,7 @@ begin
    chkAutoUpdateCode.Checked := false;
    edtEditorIndent.Text := IntToStr(EDITOR_DEFAULT_INDENT_LENGTH);
    SetComboBoxItem(cbFontSize, IntToStr(EDITOR_DEFAULT_FONT_SIZE));
+   cbIndentChar.ItemIndex := 0;
    edtFontNameSize.Text := FLOWCHART_DEFAULT_FONT_NAME + FLOWCHART_FONT_NAMESIZE_SEP + IntToStr(FLOWCHART_MIN_FONT_SIZE);
    FillAllShapes(DEFAULT_DESKTOP_COLOR);
 end;
@@ -540,6 +542,10 @@ begin
    chkAutoSelectCode.Checked := ASettings.EditorAutoSelectBlock;
    chkAutoUpdateCode.Checked := ASettings.EditorAutoUpdate;
    edtFontNameSize.Text := ASettings.FlowchartFontName + FLOWCHART_FONT_NAMESIZE_SEP + ASettings.FlowchartFontSize.ToString;
+   if ASettings.IndentChar = SPACE_CHAR then
+      cbIndentChar.ItemIndex := 0
+   else
+      cbIndentChar.ItemIndex := 1;
    SetComboBoxItem(cbFontSize, ASettings.EditorFontSize.ToString);
    SetComboBoxItem(cbFileEncoding, GInfra.CurrentLang.CompilerFileEncoding);
    DrawShapes(ASettings);

@@ -393,7 +393,7 @@ begin
       name := dataType.GetName;
       if not name.IsEmpty then
       begin
-         indent := GSettings.IndentString;
+         indent := GSettings.IndentSpaces;
          typeAccess := dataType.GetExternModifier;
          if dataType.Kind = dtRecord then
          begin
