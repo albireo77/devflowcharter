@@ -336,6 +336,7 @@ begin
    TextTemplate         := i18Manager.GetString('TextTemplate');
    FolderTemplate       := i18Manager.GetString('FolderTemplate');
    FunctionCallTemplate := i18Manager.GetString('FunctionCallTemplate');
+   ElseLabel            := i18Manager.GetString('ElseLabel');
 end;
 
 destructor TLangDefinition.Destroy;
