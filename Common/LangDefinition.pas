@@ -322,6 +322,20 @@ begin
    EnabledUserDataTypeArray := true;
    LabelFontName := FLOWCHART_DEFAULT_FONT_NAME;
    LabelFontSize := LABEL_DEFAULT_FONT_SIZE;
+   WhileTemplate        := i18Manager.GetString('WhileTemplate');
+   RepeatUntilTemplate  := i18Manager.GetString('RepeatUntilTemplate');
+   ForDoTemplate        := i18Manager.GetString('ForDoTemplate');
+   CaseOfTemplate       := i18Manager.GetString('CaseOfTemplate');
+   IfTemplate           := i18Manager.GetString('IfTemplate');
+   IfElseTemplate       := i18Manager.GetString('IfElseTemplate');
+   FunctionBodyTemplate := i18Manager.GetString('FunctionBodyTemplate');
+   InputTemplate        := i18Manager.GetString('InputTemplate');
+   OutputTemplate       := i18Manager.GetString('OutputTemplate');
+   InstrTemplate        := i18Manager.GetString('InstrTemplate');
+   ReturnTemplate       := i18Manager.GetString('ReturnTemplate');
+   TextTemplate         := i18Manager.GetString('TextTemplate');
+   FolderTemplate       := i18Manager.GetString('FolderTemplate');
+   FunctionCallTemplate := i18Manager.GetString('FunctionCallTemplate');
 end;
 
 destructor TLangDefinition.Destroy;
