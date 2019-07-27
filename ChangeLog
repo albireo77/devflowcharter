@@ -1,3 +1,6 @@
+7.17 [27.07.2019]
+- hotfix for regression in 7.16 (generating incorrect expressions in editor auto-update mode) 
+
 7.16 [27.07.2019]
 - Settings: add setting for indent character (space or tab)
 - Project Explorer: fix empty tree nodes in only flowcharts mode

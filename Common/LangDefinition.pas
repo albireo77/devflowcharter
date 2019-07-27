@@ -398,15 +398,21 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'InstrTemplate');
    if tag <> nil then
-      InstrTemplate := tag.Text;
+      InstrTemplate := tag.Text
+   else
+      InstrTemplate := '';
 
    tag := TXMLProcessor.FindChildTag(ATag, 'InputTemplate');
    if tag <> nil then
-      InputTemplate := tag.Text;
+      InputTemplate := tag.Text
+   else
+      InputTemplate := '';
 
    tag := TXMLProcessor.FindChildTag(ATag, 'OutputTemplate');
    if tag <> nil then
-      OutputTemplate := tag.Text;
+      OutputTemplate := tag.Text
+   else
+      OutputTemplate := '';
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ProcedureLabelKey');
    if tag <> nil then
@@ -522,7 +528,9 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'CaseOfTemplate');
    if tag <> nil then
-      CaseOfTemplate := tag.Text;
+      CaseOfTemplate := tag.Text
+   else
+      CaseOfTemplate := '';
 
    tag := TXMLProcessor.FindChildTag(ATag, 'CaseOfValueTemplate');
    if tag <> nil then
@@ -538,15 +546,21 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'WhileTemplate');
    if tag <> nil then
-      WhileTemplate := tag.Text;
+      WhileTemplate := tag.Text
+   else
+      WhileTemplate := '';
 
    tag := TXMLProcessor.FindChildTag(ATag, 'IfTemplate');
    if tag <> nil then
-      IfTemplate := tag.Text;
+      IfTemplate := tag.Text
+   else
+      IfTemplate := '';
 
    tag := TXMLProcessor.FindChildTag(ATag, 'IfElseTemplate');
    if tag <> nil then
-      IfElseTemplate := tag.Text;
+      IfElseTemplate := tag.Text
+   else
+      IfElseTemplate := '';
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ElseLabel');
    if tag <> nil then
@@ -618,7 +632,9 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'RepeatUntilTemplate');
    if tag <> nil then
-      RepeatUntilTemplate := tag.Text;
+      RepeatUntilTemplate := tag.Text
+   else
+      RepeatUntilTemplate := '';
 
    tag := TXMLProcessor.FindChildTag(ATag, 'RepeatUntilDescTemplate');
    if tag <> nil then
@@ -650,7 +666,9 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ForDoTemplate');
    if tag <> nil then
-      ForDoTemplate := tag.Text;
+      ForDoTemplate := tag.Text
+   else
+      ForDoTemplate := '';
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ForDoTemplateModifier1');
    if tag <> nil then
@@ -662,15 +680,21 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'TextTemplate');
    if tag <> nil then
-      TextTemplate := tag.Text;
+      TextTemplate := tag.Text
+   else
+      TextTemplate := '';
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FolderTemplate');
    if tag <> nil then
-      FolderTemplate := tag.Text;
+      FolderTemplate := tag.Text
+   else
+      FolderTemplate := '';
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionCallTemplate');
    if tag <> nil then
-      FunctionCallTemplate := tag.Text;
+      FunctionCallTemplate := tag.Text
+   else
+      FunctionCallTemplate := '';
 
    tag := TXMLProcessor.FindChildTag(ATag, 'DataTypesTemplate');
    if tag <> nil then
@@ -818,7 +842,9 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ReturnTemplate');
    if tag <> nil then
-      ReturnTemplate := tag.Text;
+      ReturnTemplate := tag.Text
+   else
+      ReturnTemplate := '';
 
    tag := TXMLProcessor.FindChildTag(ATag, 'DefaultExt');
    if tag <> nil then
