@@ -1,3 +1,8 @@
+7.16 [27.07.2019]
+- Settings: add setting for indent character (space or tab)
+- Project Explorer: fix empty tree nodes in only flowcharts mode
+- Translation: add possibility to translate dropdown list items
+
 7.15 [17.07.2019]
 - Flowchart Context Menu: add hints to Cut/Copy items with info that these operations can also be executed by drag and drop
 - Comments: fix remaining border frame in some situations
