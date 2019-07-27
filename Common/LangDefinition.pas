@@ -328,7 +328,6 @@ begin
    CaseOfTemplate       := i18Manager.GetString('CaseOfTemplate');
    IfTemplate           := i18Manager.GetString('IfTemplate');
    IfElseTemplate       := i18Manager.GetString('IfElseTemplate');
-   FunctionBodyTemplate := i18Manager.GetString('FunctionBodyTemplate');
    InputTemplate        := i18Manager.GetString('InputTemplate');
    OutputTemplate       := i18Manager.GetString('OutputTemplate');
    InstrTemplate        := i18Manager.GetString('InstrTemplate');
