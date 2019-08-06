@@ -24,10 +24,16 @@ unit Element;
 interface
 
 uses
-   Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Forms, OmniXml, PageControl_Form;
+   Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Forms, Vcl.Controls, WinApi.Messages,
+   OmniXml, PageControl_Form;
 
 type
-   
+
+    TElementName = class(TEdit)
+       protected
+          procedure WMKillFocus(var msg: TWMKillFocus); message WM_KILLFOCUS;
+    end;
+
    TElement = class(TPanel)
       private
          FParentTab: TTabSheet;
@@ -39,10 +45,9 @@ type
          procedure OnClickRemove(Sender: TObject);
          procedure OnChangeType(Sender: TObject);
          procedure OnChangeName(Sender: TObject); virtual;
-         procedure OnExitName(Sender: TObject);
          procedure UpdateMe;
       public
-         edtName: TEdit;
+         edtName: TElementName;
          cbType: TComboBox;
          btnRemove: TButton;
          property ParentTab: TTabSheet read FParentTab;
@@ -55,7 +60,7 @@ type
 implementation
 
 uses
-   Vcl.Controls, Vcl.Graphics, System.SysUtils, ApplicationCommon, TabComponent;
+   Vcl.Graphics, System.SysUtils, ApplicationCommon, TabComponent;
 
 constructor TElement.Create(AParent: TScrollBox);
 begin
@@ -69,7 +74,7 @@ begin
    FParentForm := TTabComponent(FParentTab).ParentForm;
    DoubleBuffered := true;
 
-   edtName := TEdit.Create(Self);
+   edtName := TElementName.Create(Self);
    edtName.Parent := Self;
    edtName.SetBounds(3, 0, 70, 21);
    edtName.ParentFont := false;
@@ -81,7 +86,6 @@ begin
    edtName.Font.Color := NOK_COLOR;
    edtName.DoubleBuffered := true;
    edtName.OnChange := OnChangeName;
-   edtName.OnExit := OnExitName;
 
    cbType := TComboBox.Create(Self);
    cbType.SetBounds(87, 0, 70, 21);
@@ -148,11 +152,6 @@ begin
       result := false;
 end;
 
-procedure TElement.OnExitName(Sender: TObject);
-begin
-   OnChangeName(Sender);
-end;
-
 procedure TElement.OnChangeName(Sender: TObject);
 var
    info: string;
@@ -210,6 +209,12 @@ begin
    ATag.AppendChild(result);
    result.SetAttribute(NAME_ATTR, Trim(edtName.Text));
    result.SetAttribute(TYPE_ATTR, cbType.Text);
+end;
+
+procedure TElementName.WMKillFocus(var msg: TWMKillFocus);
+begin
+   inherited;
+   OnChange(Self);
 end;
 
 end.
