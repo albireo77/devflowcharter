@@ -39,6 +39,7 @@ type
          procedure OnClickRemove(Sender: TObject);
          procedure OnChangeType(Sender: TObject);
          procedure OnChangeName(Sender: TObject); virtual;
+         procedure OnExitName(Sender: TObject);
          procedure UpdateMe;
       public
          edtName: TEdit;
@@ -80,6 +81,7 @@ begin
    edtName.Font.Color := NOK_COLOR;
    edtName.DoubleBuffered := true;
    edtName.OnChange := OnChangeName;
+   edtName.OnExit := OnExitName;
 
    cbType := TComboBox.Create(Self);
    cbType.SetBounds(87, 0, 70, 21);
@@ -142,8 +144,13 @@ end;
 function TElement.IsValid: boolean;
 begin
    result := true;
-   if edtName.Enabled and ((edtName.Font.Color = NOK_COLOR) or Trim(edtName.Text).IsEmpty) then
+   if edtName.Enabled and ((edtName.Font.Color = NOK_COLOR) or ((Trim(edtName.Text) = '') and not edtName.Focused)) then
       result := false;
+end;
+
+procedure TElement.OnExitName(Sender: TObject);
+begin
+   OnChangeName(Sender);
 end;
 
 procedure TElement.OnChangeName(Sender: TObject);
@@ -153,7 +160,15 @@ var
 begin
    lColor := OK_COLOR;
    info := 'OkIdD';
-   if GInfra.ValidateId(edtName.Text) <> VALID_IDENT then
+   if edtName.Text = '' then
+   begin
+      if not edtName.Focused then
+      begin
+         lColor := NOK_COLOR;
+         info := 'BadIdD';
+      end;
+   end
+   else if GInfra.ValidateId(edtName.Text) <> VALID_IDENT then
    begin
       lColor := NOK_COLOR;
       info := 'BadIdD';

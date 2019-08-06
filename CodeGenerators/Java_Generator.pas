@@ -414,7 +414,8 @@ begin
                   line := indent + 'private ' + fieldType + fieldSize + ' ' + fieldName + ';';
                   ALines.InsertObject(i, line, dataType);
                   funcStrU := fieldName;
-                  funcStrU[1] := funcStrU[1].ToUpper;
+                  if not funcStrU.IsEmpty then
+                     funcStrU[1] := funcStrU[1].ToUpper;
                   line := indent + 'public ' + fieldType + fieldSize + ' get' + funcStrU + '() {';
                   ALines.AddObject(line, dataType);
                   line := indent + indent + 'return ' + fieldName + ';';

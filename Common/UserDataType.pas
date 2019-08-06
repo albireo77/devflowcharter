@@ -446,15 +446,12 @@ begin
    dataType := TUserDataType(ParentTab);
    if dataType.Kind in [dtOther, dtArray] then
    begin
-      if Trim(edtName.Text).IsEmpty then
+      lColor := OK_COLOR;
+      lHint := 'OkIdD';
+      if (edtName.Text = '') and not edtName.Focused then
       begin
          lColor := NOK_COLOR;
          lHint := 'BadIdD';
-      end
-      else
-      begin
-         lColor := OK_COLOR;
-         lHint := 'OkIdD';
       end;
       edtName.Font.Color := lColor;
       edtName.Hint := i18Manager.GetString(lHint);

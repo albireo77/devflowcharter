@@ -381,7 +381,10 @@ begin
       RedrawWindow(sbxElements.Handle, nil, 0, RDW_INVALIDATE or RDW_FRAME or RDW_ERASE or RDW_ALLCHILDREN);
    end;
    if elem.edtName.CanFocus then
+   begin
       elem.edtName.SetFocus;
+      elem.edtName.OnChange(elem.edtName);
+   end;
    PageControl.Refresh;
    UpdateCodeEditor;
 end;
