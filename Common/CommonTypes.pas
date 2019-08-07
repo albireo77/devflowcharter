@@ -28,7 +28,7 @@ uses
    SynEditCodeFolding,
 {$ENDIF}
    System.Classes, Vcl.StdCtrls, Vcl.Forms, Vcl.Controls, Generics.Defaults,
-   Vcl.ComCtrls, SynEditTypes;
+   Vcl.ComCtrls, WinApi.Messages, SynEditTypes;
 
 type
 
@@ -123,6 +123,11 @@ type
       Offset: integer;
    end;
 
+   TNameEdit = class(TEdit)
+       protected
+          procedure WMKillFocus(var msg: TWMKillFocus); message WM_KILLFOCUS;
+    end;
+
 implementation
 
 uses
@@ -179,6 +184,12 @@ begin
    result.FocusEditForm := nil;
    result.FocusEditCallBack := nil;
    result.ActiveControl := nil;
+end;
+
+procedure TNameEdit.WMKillFocus(var msg: TWMKillFocus);
+begin
+   inherited;
+   Change;
 end;
 
 end.

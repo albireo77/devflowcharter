@@ -24,15 +24,10 @@ unit Element;
 interface
 
 uses
-   Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Forms, Vcl.Controls, WinApi.Messages,
-   OmniXml, PageControl_Form;
+   Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Forms, Vcl.Controls, OmniXml,
+   PageControl_Form, CommonTypes;
 
 type
-
-    TElementName = class(TEdit)
-       protected
-          procedure WMKillFocus(var msg: TWMKillFocus); message WM_KILLFOCUS;
-    end;
 
    TElement = class(TPanel)
       private
@@ -47,7 +42,7 @@ type
          procedure OnChangeName(Sender: TObject); virtual;
          procedure UpdateMe;
       public
-         edtName: TElementName;
+         edtName: TNameEdit;
          cbType: TComboBox;
          btnRemove: TButton;
          property ParentTab: TTabSheet read FParentTab;
@@ -74,7 +69,7 @@ begin
    FParentForm := TTabComponent(FParentTab).ParentForm;
    DoubleBuffered := true;
 
-   edtName := TElementName.Create(Self);
+   edtName := TNameEdit.Create(Self);
    edtName.Parent := Self;
    edtName.SetBounds(3, 0, 70, 21);
    edtName.ParentFont := false;
@@ -131,9 +126,7 @@ begin
    if Parent.Height < Parent.Constraints.MaxHeight then
       Parent.Height := Parent.Height - 22;
    Parent := Parent.Parent;
-   FParentForm.UpdateCodeEditor := false;
    TTabComponent(FParentTab).RefreshElements;
-   FParentForm.UpdateCodeEditor := true;
    UpdateMe;
    TTabComponent(FParentTab).UpdateCodeEditor;
 end;
@@ -209,12 +202,6 @@ begin
    ATag.AppendChild(result);
    result.SetAttribute(NAME_ATTR, Trim(edtName.Text));
    result.SetAttribute(TYPE_ATTR, cbType.Text);
-end;
-
-procedure TElementName.WMKillFocus(var msg: TWMKillFocus);
-begin
-   inherited;
-   Change;
 end;
 
 end.
