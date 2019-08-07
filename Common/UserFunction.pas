@@ -183,7 +183,7 @@ end;
 
 procedure TUserFunctionHeader.RefreshSizeEdits;
 begin
-   if FLocalVars.edtSize.Text <> '1' then
+   if (FLocalVars.edtSize.Text <> '1') and Assigned(FLocalVars.edtSize.OnChange) then
       FLocalVars.edtSize.OnChange(FLocalVars.edtSize);
 end;
 
@@ -906,7 +906,8 @@ begin
       cbType.ItemIndex := idx
    else if cbType.Items.Count > 0 then
       cbType.ItemIndex := 0;
-   cbType.OnChange(cbType);
+   if Assigned(cbType.OnChange) then
+      cbType.OnChange(cbType);
    tag2 := TXMLProcessor.FindChildTag(ATag, 'desc');
    if tag2 <> nil then
       memDesc.Text := ReplaceStr(tag2.Text, LB_PHOLDER, sLineBreak);

@@ -157,7 +157,8 @@ begin
    b := FRefreshMode;
    FRefreshMode := true;
    try
-      FStatements.OnChange(FStatements);
+      if Assigned(FStatements.OnChange) then
+         FStatements.OnChange(FStatements);
    finally
       FRefreshMode := b;
       GProject.ChangingOn := chon;

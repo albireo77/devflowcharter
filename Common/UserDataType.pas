@@ -212,7 +212,7 @@ begin
    for i := 0 to sbxElements.ControlCount-1 do
    begin
       field := TField(sbxElements.Controls[i]);
-      if field.edtSize.Text <> '1' then
+      if (field.edtSize.Text <> '1') and Assigned(field.edtSize.OnChange) then
          field.edtSize.OnChange(field.edtSize);
    end;
    ParentForm.UpdateCodeEditor := true;

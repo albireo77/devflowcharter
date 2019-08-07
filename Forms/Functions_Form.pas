@@ -70,7 +70,8 @@ begin
    pgcTabs.ActivePage := header;
    if header.edtName.CanFocus then
       header.edtName.SetFocus;
-   header.edtName.OnChange(header.edtName);
+   if Assigned(header.edtName.OnChange) then
+      header.edtName.OnChange(header.edtName);
    if header.Font.Color <> NOK_COLOR then
       TInfra.UpdateCodeEditor(header);
    GProject.SetChanged;

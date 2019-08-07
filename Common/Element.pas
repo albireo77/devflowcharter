@@ -214,7 +214,7 @@ end;
 procedure TElementName.WMKillFocus(var msg: TWMKillFocus);
 begin
    inherited;
-   OnChange(Self);
+   Change;
 end;
 
 end.

@@ -291,7 +291,7 @@ begin
       for i := 0 to PageControl.PageCount-1 do
       begin
          tab := TTabComponent(PageControl.Pages[i]);
-         if tab.TabVisible then
+         if tab.TabVisible and Assigned(tab.edtName.OnChange) then
             tab.edtName.OnChange(tab.edtName);
       end;
       FParentForm.UpdateCodeEditor := true;
@@ -383,7 +383,8 @@ begin
    if elem.edtName.CanFocus then
    begin
       elem.edtName.SetFocus;
-      elem.edtName.OnChange(elem.edtName);
+      if Assigned(elem.edtName.OnChange) then
+         elem.edtName.OnChange(elem.edtName);
    end;
    PageControl.Refresh;
    UpdateCodeEditor;
@@ -471,7 +472,10 @@ var
 begin
    FParentForm.UpdateCodeEditor := false;
    for elem in GetElements<TElement> do
-      elem.edtName.OnChange(elem.edtName);
+   begin
+      if Assigned(elem.edtName.OnChange) then
+         elem.edtName.OnChange(elem.edtName);
+   end;
    FParentForm.UpdateCodeEditor := true;
 end;
 
@@ -493,7 +497,8 @@ var
    tag: IXMLElement;
 begin
    edtName.Text := ATag.GetAttribute(NAME_ATTR);
-   edtName.OnChange(edtName);
+   if Assigned(edtName.OnChange) then
+      edtName.OnChange(edtName);
    chkExternal.State := TInfra.DecodeCheckBoxState(ATag.GetAttribute('ext_decl'));
    edtLibrary.Text := ATag.GetAttribute('library');
    tag := TXMLProcessor.FindChildTag(ATag, FElementTypeID);

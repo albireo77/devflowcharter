@@ -72,7 +72,8 @@ begin
    dataType := TUserDataType.Create(Self);
    pgcTabs.ActivePage := dataType;
    dataType.edtName.SetFocus;
-   dataType.edtName.OnChange(dataType.edtName);
+   if Assigned(dataType.edtName.OnChange) then
+      dataType.edtName.OnChange(dataType.edtName);
    TInfra.UpdateCodeEditor(dataType);
 end;
 
