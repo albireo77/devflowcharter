@@ -150,25 +150,21 @@ var
    info: string;
    lColor: TColor;
 begin
-   lColor := OK_COLOR;
-   info := 'OkIdD';
+   lColor := NOK_COLOR;
+   info := '';
    if edtName.Text = '' then
    begin
       if not edtName.Focused then
-      begin
-         lColor := NOK_COLOR;
          info := 'BadIdD';
-      end;
    end
    else if GInfra.ValidateId(edtName.Text) <> VALID_IDENT then
-   begin
-      lColor := NOK_COLOR;
-      info := 'BadIdD';
-   end
+      info := 'BadIdD'
    else if TTabComponent(FParentTab).IsDuplicatedElement(Self) then
-   begin
-      lColor := NOK_COLOR;
       info := 'DupIdD';
+   if info.IsEmpty then
+   begin
+      info := 'OkIdD';
+      lColor := OK_COLOR
    end;
    edtName.Font.Color := lColor;
    edtName.Hint := i18Manager.GetString(info);
