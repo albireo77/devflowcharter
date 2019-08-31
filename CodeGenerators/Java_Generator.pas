@@ -912,7 +912,7 @@ begin
                result := JAVA_DOUBLE_TYPE
             else if TryStrToInt64(AValue, i64) then
                result := JAVA_LONG_TYPE
-            else if AValue.Contains('_') then
+            else if AValue.Contains('_') and firstChar.IsDigit and CharInSet(lastChar, ['0'..'9', 'l', 'L', 'd', 'D', 'f', 'F']) then
                result := Java_GetConstantType(ReplaceText(AValue, '_', ''), s)
             else
             begin
