@@ -912,6 +912,8 @@ begin
                result := JAVA_DOUBLE_TYPE
             else if TryStrToInt64(AValue, i64) then
                result := JAVA_LONG_TYPE
+            else if AValue.Contains('_') then
+               result := Java_GetConstantType(ReplaceText(AValue, '_', ''), s)
             else
             begin
                cValue := Copy(AValue, 1, len-1);
