@@ -957,7 +957,7 @@ begin
       hlighter.KeyAttri.Background        := bkgColor;
       hlighter.IdentifierAttri.Foreground := GSettings.EditorIdentColor;
       hlighter.IdentifierAttri.Background := bkgColor;
-      hlighter.DocumentAttri.Foreground   := clHotLight;
+      hlighter.DocumentAttri.Foreground   := GSettings.EditorDocumentColor;
       hlighter.DocumentAttri.Background   := bkgColor;
    end;
 end;

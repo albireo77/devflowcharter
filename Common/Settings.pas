@@ -57,6 +57,7 @@ type
       FEditorStringColor,
       FEditorKeywordColor,
       FEditorCommentColor,
+      FEditorDocumentColor,
       FEditorALineColor,
       FEditorSelectColor,
       FEditorGutterColor,
@@ -123,6 +124,7 @@ type
       property EditorStringColor: TColor read FEditorStringColor;
       property EditorKeywordColor: TColor read FEditorKeywordColor;
       property EditorCommentColor: TColor read FEditorCommentColor;
+      property EditorDocumentColor: TColor read FEditorDocumentColor;
       property EditorALineColor: TColor read FEditorALineColor;
       property EditorSelectColor: TColor read FEditorSelectColor;
       property EditorGutterColor: TColor read FEditorGutterColor;
@@ -202,6 +204,7 @@ const
    KEY_EDITOR_KEYWORD_COLOR = 'EditorKeywordColor';
    KEY_EDITOR_NUMBER_COLOR = 'EditorNumberColor';
    KEY_EDITOR_COMMENT_COLOR = 'EditorCommentColor';
+   KEY_EDITOR_DOCUMENT_COLOR = 'EditorDocumentColor';
    KEY_EDITOR_ALINE_COLOR = 'EditorActiveLineColor';
    KEY_EDITOR_SELECT_COLOR = 'EditorSelectColor';
    KEY_EDITOR_GUTTER_COLOR = 'EditorGutterColor';
@@ -318,6 +321,7 @@ begin
    FEditorKeywordColor        := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_KEYWORD_COLOR, clWindowText);
    FEditorNumberColor         := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_NUMBER_COLOR, clTeal);
    FEditorCommentColor        := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_COMMENT_COLOR, TEXT_COLOR);
+   FEditorDocumentColor       := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_DOCUMENT_COLOR, clHotLight);
    FEditorALineColor          := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_ALINE_COLOR, clCream);
    FEditorSelectColor         := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_SELECT_COLOR, clHighlight);
    FEditorGutterColor         := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_GUTTER_COLOR, clBtnFace);
@@ -384,6 +388,7 @@ begin
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_KEYWORD_COLOR, FEditorKeywordColor);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_NUMBER_COLOR, FEditorNumberColor);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_COMMENT_COLOR, FEditorCommentColor);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_DOCUMENT_COLOR, FEditorDocumentColor);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_ALINE_COLOR, FEditorALineColor);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_SELECT_COLOR, FEditorSelectColor);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_GUTTER_COLOR, FEditorGutterColor);
@@ -492,6 +497,7 @@ begin
       FParseRoutineCall := chkParseRoutine.Checked;
       FParseReturn      := chkParseReturn.Checked;
 
+      // setting FEditorDocumentColor value from GUI is not supported at the moment
       FEditorBkgColor        := pnlEditorBkg.Color;
       FEditorFontColor       := pnlEditorFont.Color;
       FEditorNumberColor     := pnlEditorNumber.Color;
