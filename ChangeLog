@@ -1,3 +1,9 @@
+7.19 [28.09.2019]
+- compiled with Delphi 10.3.2
+- eliminate memory leaks in SynEdit component
+- Java support: save/load color for Javadoc in settings (Windows registry or ini file) instead of being hardcoded
+- Java support: add support for underscore sign in constant number literals
+
 7.18 [08.08.2019]
 - modify adding parameters for user functions and fields for user datatypes - empty value considered valid until focused
 
