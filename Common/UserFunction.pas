@@ -342,6 +342,7 @@ begin
    splDesc := TSplitter.Create(Self);
    splDesc.Parent := Self;
    splDesc.Align := gbDesc.Align;
+   splDesc.Height := 3;
 
    memDesc := TMemo.Create(gbDesc);
    memDesc.Parent := gbDesc;
@@ -533,6 +534,7 @@ begin
    splParams := TSplitter.Create(Self);
    splParams.Parent := Self;
    splParams.Align := gbParams.Align;
+   splParams.Height := 3;
    splParams.OnMoved := OnMovedParams;
 
    lblParams := TLabel.Create(gbParams);
