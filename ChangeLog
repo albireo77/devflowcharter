@@ -1,3 +1,6 @@
+7.20 [28.09.2019]
+- fix splitters in function tab
+
 7.19 [28.09.2019]
 - compiled with Delphi 10.3.2
 - eliminate memory leaks in SynEdit component
