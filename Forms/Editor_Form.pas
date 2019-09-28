@@ -480,7 +480,7 @@ begin
       with memCodeEditor do
       begin
 {$IFDEF USE_CODEFOLDING}
-         AllFoldRanges.ClearAll;
+         AllFoldRanges.DestroyAll;
 {$ENDIF}
          if not APreserveBookMarks then
             Marks.Clear;
