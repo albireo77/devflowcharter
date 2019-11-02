@@ -261,6 +261,7 @@ begin
       memCodeEditor.SelectedColor.Background := EditorSelectColor;
       memCodeEditor.Gutter.Color := EditorGutterColor;
       memCodeEditor.Gutter.Font.Color := EditorFontColor;
+      memCodeEditor.Gutter.BorderColor := EditorBkgColor;
       memCodeEditor.Gutter.Visible := EditorShowGutter;
       if IndentChar = TAB_CHAR then
       begin
@@ -311,6 +312,7 @@ begin
          Enabled := miCodeFoldingEnable.Checked;
          HighlighterFoldRegions := false;
          FolderBarColor := EditorGutterColor;
+         FolderBarLinesColor := EditorFontColor;
          IndentGuides := miIndentGuides.Checked;
       end;
 {$ENDIF}
