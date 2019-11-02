@@ -260,7 +260,7 @@ begin
       memCodeEditor.ActiveLineColor := EditorALineColor;
       memCodeEditor.SelectedColor.Background := EditorSelectColor;
       memCodeEditor.Gutter.Color := EditorGutterColor;
-      memCodeEditor.Gutter.Font.Color := Font.Color;
+      memCodeEditor.Gutter.Font.Color := EditorFontColor;
       memCodeEditor.Gutter.Visible := EditorShowGutter;
       if IndentChar = TAB_CHAR then
       begin
