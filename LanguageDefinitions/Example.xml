@@ -4,7 +4,7 @@
 Reference language definition file for devFlowcharter.
 It contains all supported tags.
 To create file for new language just Save As this file and modify new file according to your needs. 
-Most of the tags are optional and may be removed if not needed. The most crucial and mandatory tag is FileContentsTemplate that defines source file layout.
+Most of the tags are optional and may be removed if not needed. The key and mandatory tag is FileContentsTemplate that defines source file layout.
 -->
 
 <Language>
