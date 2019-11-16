@@ -1,3 +1,7 @@
+7.21 [16.11.2019]
+- Editor: fix displaying gutter on dark background
+- Settings: add command example to Compiler command box hint
+
 7.20 [28.09.2019]
 - fix splitters in function tab
 
