@@ -539,15 +539,19 @@ begin
             Exit;
          if not TryStrToFloat(AValue, f) then
          begin
-            if (firstChar = JAVA_STRING_DELIM) or StartsWithOneOf(AValue, ['new String(', 'String.']) then
+            if firstChar = JAVA_STRING_DELIM then
             begin
-               if AValue.EndsWith('.length()') then
+               if AValue.EndsWith(JAVA_STRING_DELIM + '.length()') then
                   result := JAVA_INT_TYPE
-               else if AValue.EndsWith('.isEmpty()') then
-                  result := JAVA_BOOLEAN_TYPE
-               else
+               else if lastChar = JAVA_STRING_DELIM then
                   result := JAVA_STRING_TYPE
+               else
+                  Exit;
             end
+            else if AValue.StartsWith('new String(' + JAVA_STRING_DELIM) and AValue.EndsWith(JAVA_STRING_DELIM + ')') then
+               result := JAVA_STRING_TYPE
+            else if StartsWithOneOf(AValue, ['String.valueOf(', 'String.join(', 'String.format(']) and (lastChar = ')') then
+               result := JAVA_STRING_TYPE
             else if (len > 2) and (firstChar = JAVA_CHAR_DELIM) and (lastChar = JAVA_CHAR_DELIM) then
             begin
                cValue := Copy(AValue, 2, len-2);
