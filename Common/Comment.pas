@@ -341,7 +341,7 @@ begin
       if not FPage.IsMain then
          tag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
       if Font.Style <> [] then
-         tag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style));
+         tag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style).ToString);
       SaveInXML(tag);
       ATag.AppendChild(tag);
    end;

@@ -50,6 +50,7 @@ type
       FEditorAutoSelectBlock,
       FEditorAutoUpdate: boolean;
       FEditorFontSize,
+      FEditorRightEdgeColumn,
       FFlowchartFontSize: integer;
       FEditorBkgColor,
       FEditorFontColor,
@@ -61,7 +62,8 @@ type
       FEditorALineColor,
       FEditorSelectColor,
       FEditorGutterColor,
-      FEditorIdentColor: TColor;
+      FEditorIdentColor,
+      FEditorRightEdgeColor: TColor;
 
       FIndentLength: integer;
       FIndentSpaces: string;
@@ -129,6 +131,8 @@ type
       property EditorSelectColor: TColor read FEditorSelectColor;
       property EditorGutterColor: TColor read FEditorGutterColor;
       property EditorIdentColor: TColor read FEditorIdentColor;
+      property EditorRightEdgeColor: TColor read FEditorRightEdgeColor;
+      property EditorRightEdgeColumn: integer read FEditorRightEdgeColumn;
       property EditorIndentGuides: boolean read FEditorIndentGuides write FEditorIndentGuides;
       property EditorAutoSelectBlock: boolean read FEditorAutoSelectBlock;
       property EditorAutoUpdate: boolean read FEditorAutoUpdate write FEditorAutoUpdate;
@@ -209,6 +213,8 @@ const
    KEY_EDITOR_SELECT_COLOR = 'EditorSelectColor';
    KEY_EDITOR_GUTTER_COLOR = 'EditorGutterColor';
    KEY_EDITOR_IDENT_COLOR = 'EditorIdentColor';
+   KEY_EDITOR_RIGHT_EDGE_COLOR = 'EditorRightEdgeColor';
+   KEY_EDITOR_RIGHT_EDGE_COLUMN = 'EditorRightEdgeColumn';
    KEY_EDITOR_INDENT = 'IndentLength';
    KEY_EDITOR_INDENT_CHAR = 'IndentChar';
    KEY_EDITOR_SHOW_SCROLLBARS = 'EditorScrollbars';
@@ -326,6 +332,8 @@ begin
    FEditorSelectColor         := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_SELECT_COLOR, clHighlight);
    FEditorGutterColor         := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_GUTTER_COLOR, clBtnFace);
    FEditorIdentColor          := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_IDENT_COLOR, clWindowText);
+   FEditorRightEdgeColor      := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_RIGHT_EDGE_COLOR, clSilver);
+   FEditorRightEdgeColumn     := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_RIGHT_EDGE_COLUMN, 80);
    FDesktopColor              := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_DESKTOP_COLOR, DEFAULT_DESKTOP_COLOR);
    FIndentLength              := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_INDENT, EDITOR_DEFAULT_INDENT_LENGTH);
    FEditorFontSize            := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_FONT_SIZE, EDITOR_DEFAULT_FONT_SIZE);
@@ -393,6 +401,8 @@ begin
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_SELECT_COLOR, FEditorSelectColor);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_GUTTER_COLOR, FEditorGutterColor);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_IDENT_COLOR, FEditorIdentColor);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_RIGHT_EDGE_COLOR, FEditorRightEdgeColor);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_RIGHT_EDGE_COLUMN, FEditorRightEdgeColumn);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_FONT_SIZE, FEditorFontSize);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_DESKTOP_COLOR, FDesktopColor);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_INDENT, FIndentLength);
@@ -497,7 +507,11 @@ begin
       FParseRoutineCall := chkParseRoutine.Checked;
       FParseReturn      := chkParseReturn.Checked;
 
-      // setting FEditorDocumentColor value from GUI is not supported at the moment
+      // setting of following values from GUI is not supported at the moment
+      // FEditorDocumentColor
+      // FEditorRightEdgeColor
+      // FEditorRightEdgeColumn
+
       FEditorBkgColor        := pnlEditorBkg.Color;
       FEditorFontColor       := pnlEditorFont.Color;
       FEditorNumberColor     := pnlEditorNumber.Color;

@@ -62,7 +62,6 @@ type
          class procedure UpdateCodeEditor(AObject: TObject = nil);
          class procedure OnKeyDownSelectAll(Sender: TObject; var Key: Word; Shift: TShiftState);
          class procedure InsertLinesIntoList(ADestList, ASourceList: TStringList; AFromLine: integer);
-         class procedure ExtractThreePipedValues(const ASource: string; var ADest1, ADest2, ADest3: string);
          class procedure DecrementNodeSiblingOffsets(ANode: TTreeNode);
          class procedure DeleteLinesContaining(ALines: TStrings; const AText: string);
          class procedure MoveWin(AWinControl: TWinControl; x, y: integer); overload;
@@ -103,7 +102,7 @@ type
          class function CompareProgramVersion(const AVersion: string): integer;
          class function GetBaseForms: IEnumerable<TBaseForm>;
          class function DecodeFontStyle(AValue: integer): TFontStyles;
-         class function EncodeFontStyle(AStyle: TFontStyles): string;
+         class function EncodeFontStyle(AStyle: TFontStyles): integer;
          class function GetDimensionCount(const AText: string): integer;
          class function GetDimensions(const AText: string): TArray<string>;
          class function GetTextWidth(const AText: string; AControl: TControl): integer;
@@ -930,20 +929,17 @@ begin
       Include(result, fsStrikeOut);
 end;
 
-class function TInfra.EncodeFontStyle(AStyle: TFontStyles): string;
-var
-   val: integer;
+class function TInfra.EncodeFontStyle(AStyle: TFontStyles): integer;
 begin
-   val := 0;
+   result := 0;
    if fsBold in AStyle then
-      val := 1;
+      result := 1;
    if fsItalic in AStyle then
-      val := val + 2;
+      result := result + 2;
    if fsUnderline in AStyle then
-      val := val + 4;
+      result := result + 4;
    if fsStrikeOut in AStyle then
-      val := val + 8;
-   result := val.ToString;
+      result := result + 8;
 end;
 
 class procedure TInfra.DecrementNodeSiblingOffsets(ANode: TTreeNode);
@@ -1236,21 +1232,6 @@ begin
          end;
       end;
    end;
-end;
-
-class procedure TInfra.ExtractThreePipedValues(const ASource: string; var ADest1, ADest2, ADest3: string);
-var
-   i: integer;
-   tokens: TArray<string>;
-begin
-   tokens := ASource.Split(['|'], 3);
-   i := Length(tokens);
-   if i > 0 then
-      ADest1 := tokens[0];
-   if i > 1 then
-      ADest2 := tokens[1];
-   if i > 2 then
-      ADest3 := tokens[2];
 end;
 
 class function TInfra.DecodeCheckBoxState(const AState: string): TCheckBoxState;

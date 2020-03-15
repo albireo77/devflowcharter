@@ -349,6 +349,7 @@ var
    lKind: TDataTypeKind;
    lOrigType, lType: PNativeDataType;
    i, a, count: integer;
+   l3Strings: T3Strings;
 {$IFDEF USE_CODEFOLDING}
    tag1: IXMLElement;
 {$ENDIF}
@@ -458,31 +459,62 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTypeModifier1');
    if tag <> nil then
-      TInfra.ExtractThreePipedValues(tag.Text, FunctionHeaderTypeNone1, FunctionHeaderTypeNotNone1, val);
+   begin
+      l3Strings := T3Strings.Extract(tag.Text);
+      FunctionHeaderTypeNone1 := l3Strings.S0;
+      FunctionHeaderTypeNotNone1 := l3Strings.S1;
+   end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTypeModifier2');
    if tag <> nil then
-      TInfra.ExtractThreePipedValues(tag.Text, FunctionHeaderTypeNone2, FunctionHeaderTypeNotNone2, val);
+   begin
+      l3Strings := T3Strings.Extract(tag.Text);
+      FunctionHeaderTypeNone2 := l3Strings.S0;
+      FunctionHeaderTypeNotNone2 := l3Strings.S1;
+   end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderExternalModifier');
    if tag <> nil then
-      TInfra.ExtractThreePipedValues(tag.Text, FunctionHeaderExternal, FunctionHeaderNotExternal, FunctionHeaderTransExternal);
+   begin
+      l3Strings := T3Strings.Extract(tag.Text);
+      FunctionHeaderExternal := l3Strings.S0;
+      FunctionHeaderNotExternal := l3Strings.S1;
+      FunctionHeaderTransExternal := l3Strings.S2;
+   end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderStaticModifier');
    if tag <> nil then
-      TInfra.ExtractThreePipedValues(tag.Text, FunctionHeaderStatic, FunctionHeaderNotStatic, val);
+   begin
+      l3Strings := T3Strings.Extract(tag.Text);
+      FunctionHeaderStatic := l3Strings.S0;
+      FunctionHeaderNotStatic := l3Strings.S1;
+   end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTypeArrayModifier');
    if tag <> nil then
-      TInfra.ExtractThreePipedValues(tag.Text, FunctionHeaderTypeArray, FunctionHeaderTypeNotArray, val);
+   begin
+      l3Strings := T3Strings.Extract(tag.Text);
+      FunctionHeaderTypeArray := l3Strings.S0;
+      FunctionHeaderTypeNotArray := l3Strings.S1;
+   end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'VarExternModifier');
    if tag <> nil then
-      TInfra.ExtractThreePipedValues(tag.Text, VarExtern, VarNotExtern, VarTransExtern);
+   begin
+      l3Strings := T3Strings.Extract(tag.Text);
+      VarExtern := l3Strings.S0;
+      VarNotExtern := l3Strings.S1;
+      VarTransExtern := l3Strings.S2;
+   end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ConstExternModifier');
    if tag <> nil then
-      TInfra.ExtractThreePipedValues(tag.Text, ConstExtern, ConstNotExtern, ConstTransExtern);
+   begin
+      l3Strings := T3Strings.Extract(tag.Text);
+      ConstExtern := l3Strings.S0;
+      ConstNotExtern := l3Strings.S1;
+      ConstTransExtern := l3Strings.S2;
+   end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionTemplate');
    if tag <> nil then
@@ -646,11 +678,19 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ForDoTemplateModifier1');
    if tag <> nil then
-      TInfra.ExtractThreePipedValues(tag.Text, ForDoAsc1, ForDoDesc1, val);
+   begin
+      l3Strings := T3Strings.Extract(tag.Text);
+      ForDoAsc1 := l3Strings.S0;
+      ForDoDesc1 := l3Strings.S1;
+   end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ForDoTemplateModifier2');
    if tag <> nil then
-      TInfra.ExtractThreePipedValues(tag.Text, ForDoAsc2, ForDoDesc2, val);
+   begin
+      l3Strings := T3Strings.Extract(tag.Text);
+      ForDoAsc2 := l3Strings.S0;
+      ForDoDesc2 := l3Strings.S1;
+   end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'TextTemplate');
    if tag <> nil then
@@ -678,7 +718,12 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeExternalModifier');
    if tag <> nil then
-      TInfra.ExtractThreePipedValues(tag.Text, DataTypeExternal, DataTypeNotExternal, DataTypeTransExternal);
+   begin
+      l3Strings := T3Strings.Extract(tag.Text);
+      DataTypeExternal := l3Strings.S0;
+      DataTypeNotExternal := l3Strings.S1;
+      DataTypeTransExternal := l3Strings.S2;
+   end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeIntMask');
    if tag <> nil then
@@ -734,7 +779,11 @@ begin
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ConstTypeModifier');
    if tag <> nil then
-      TInfra.ExtractThreePipedValues(tag.Text, ConstTypeNotGeneric, ConstTypeGeneric, val);
+   begin
+      l3Strings := T3Strings.Extract(tag.Text);
+      ConstTypeNotGeneric := l3Strings.S0;
+      ConstTypeGeneric := l3Strings.S1;
+   end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'VarEntryInit');
    if tag <> nil then

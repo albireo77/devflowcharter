@@ -275,6 +275,8 @@ begin
       end;
       memCodeEditor.Font.Size := EditorFontSize;
       memCodeEditor.Gutter.Font.Size := Max(EDITOR_DEFAULT_GUTTER_FONT_SIZE, EditorFontSize - 2);
+      memCodeEditor.RightEdge := EditorRightEdgeColumn;
+      memCodeEditor.RightEdgeColor := EditorRightEdgeColor;
       stbEditorBar.Visible := EditorShowStatusBar;
       miStatusBar.Checked := EditorShowStatusBar;
       miGutter.Checked := EditorShowGutter;

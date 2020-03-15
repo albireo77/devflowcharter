@@ -78,7 +78,8 @@ var
    JAVA_DURATION_TYPE,
    JAVA_PERIOD_TYPE,
    JAVA_BIGDECIMAL_TYPE,
-   JAVA_BIGINTEGER_TYPE: integer;
+   JAVA_BIGINTEGER_TYPE,
+   JAVA_PATTERN_TYPE: integer;
    JAVA_PRIMITIVE_TYPES: array of integer;
 
 function GetObjectType(AType: integer): integer;
@@ -875,6 +876,15 @@ begin
                   result := t1;
                end;
             end
+            else if AValue.StartsWith('Pattern.compile(') and (lastChar = ')') then
+            begin
+               cValue := Copy(AValue, 17, len-17);
+               t1 := Java_GetConstantType(cValue, s);
+               if t1 <> JAVA_STRING_TYPE then
+                  Exit;
+               AddLibImport('java.util.regex.Pattern');
+               result := JAVA_PATTERN_TYPE;
+            end
             else if (AValue[1] = '{') and (lastChar = '}') then
             begin
                t1 := 0;
@@ -993,6 +1003,7 @@ initialization
    JAVA_PERIOD_TYPE         := TParserHelper.GetType('Period', JAVA_LANG_ID);
    JAVA_BIGDECIMAL_TYPE     := TParserHelper.GetType('BigDecimal', JAVA_LANG_ID);
    JAVA_BIGINTEGER_TYPE     := TParserHelper.GetType('BigInteger', JAVA_LANG_ID);
+   JAVA_PATTERN_TYPE        := TParserHelper.GetType('Pattern', JAVA_LANG_ID);
 
    JAVA_PRIMITIVE_TYPES := [JAVA_INT_TYPE, JAVA_LONG_TYPE, JAVA_FLOAT_TYPE, JAVA_DOUBLE_TYPE,
                             JAVA_CHAR_TYPE, JAVA_BOOLEAN_TYPE, JAVA_BYTE_TYPE];

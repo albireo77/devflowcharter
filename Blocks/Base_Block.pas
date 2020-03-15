@@ -2282,7 +2282,7 @@ begin
       if memo <> nil then
          memo.SaveInXML(ATag);
       ATag.SetAttribute(FONT_SIZE_ATTR, Font.Size.ToString);
-      ATag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style));
+      ATag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style).ToString);
       txtControl := GetTextControl;
       if (txtControl <> nil) and (txtControl.Text <> '') then
       begin

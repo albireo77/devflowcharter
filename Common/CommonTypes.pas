@@ -108,6 +108,13 @@ type
       class function New: TFocusInfo; static;
    end;
 
+   T3Strings = record
+     S0,
+     S1,
+     S2: string;
+     class function Extract(const From: string): T3Strings; static;
+   end;
+
    PTypesSet = ^TTypesSet;
    TTypesSet = set of 0..255;
 
@@ -184,6 +191,24 @@ begin
    result.FocusEditForm := nil;
    result.FocusEditCallBack := nil;
    result.ActiveControl := nil;
+end;
+
+class function T3Strings.Extract(const From: string): T3Strings;
+var
+   i: integer;
+   tokens: TArray<string>;
+begin
+   result.S0 := '';
+   result.S1 := '';
+   result.S2 := '';
+   tokens := From.Split(['|'], 3);
+   i := Length(tokens);
+   if i > 0 then
+      result.S0 := tokens[0];
+   if i > 1 then
+      result.S1 := tokens[1];
+   if i > 2 then
+      result.S2 := tokens[2];
 end;
 
 procedure TNameEdit.WMKillFocus(var msg: TWMKillFocus);
