@@ -874,7 +874,7 @@ begin
                      Exit;
                   cValue := Trim(Copy(AValue, 5, i-5));
                   t1 := TParserHelper.GetType(cValue);
-                  if IsPrimitiveType(t1) then
+                  if IsPrimitiveType(t1) or MatchText(cValue, ['String', 'Pattern']) then
                      Exit;
                   ProcessType(t1);
                   result := t1;
