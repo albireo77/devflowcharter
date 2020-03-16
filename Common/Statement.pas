@@ -27,7 +27,9 @@ uses
 
 type
 
-  TOnEditChange = procedure(AEdit: TCustomEdit) of object;
+  TStatement = class;
+
+  TOnChangeCallBack = procedure(AStatement: TStatement) of object;
 
   TStatement = class(TCustomEdit, IIdentifiable, IFocusable)
   private
@@ -44,7 +46,7 @@ type
     procedure CreateHandle; override;
   public
     { Public declarations }
-    OnChangeCallBack: TOnEditChange;
+    OnChangeCallBack: TOnChangeCallBack;
     property ParserMode: TYYMode read FParserMode default yymUndefined;
     property Id: integer read GetId;
     procedure Change; override;
@@ -221,7 +223,7 @@ begin
    Hint := i18Manager.GetFormattedString('ExpOk', [txt, sLineBreak]);
    TBlock(Parent).UpdateEditor(Self);
 
-    if FExecuteParse then
+   if FExecuteParse then
    begin
       if txt.IsEmpty then
       begin
@@ -260,9 +262,9 @@ begin
          Hint := i18Manager.GetFormattedString('ExpErr', [txt, sLineBreak, TInfra.GetParserErrMsg]);
          Font.Color := NOK_COLOR;
       end;
-      if Assigned(OnChangeCallBack) then
-         OnChangeCallBack(Self);
    end;
+   if Assigned(OnChangeCallBack) then
+      OnChangeCallBack(Self);
    NavigatorForm.DoInvalidate;
 end;
 

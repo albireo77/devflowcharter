@@ -1279,7 +1279,9 @@ class function TInfra.GetAutoWidth(AControl: TControl): integer;
 begin
    result := -1;
    if AControl is TCheckBox then
-      result := GetTextWidth(TCheckBox(AControl).Caption, AControl) + GetSystemMetrics(SM_CXMENUCHECK) + 3;
+      result := GetTextWidth(TCheckBox(AControl).Caption, AControl) + GetSystemMetrics(SM_CXMENUCHECK) + 3
+   else if AControl is TCustomEdit then
+      result := GetTextWidth(TCustomEdit(AControl).Text, AControl);
 end;
 
 class procedure TInfra.IndentSpacesToTabs(ALines: TStringList);

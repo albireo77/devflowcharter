@@ -24,7 +24,7 @@ interface
 
 uses
    Vcl.StdCtrls, Vcl.Graphics, System.Classes, System.SysUtils, Vcl.ComCtrls, System.Types,
-   Vcl.Controls, Base_Block, OmniXML, CommonInterfaces, CommonTypes;
+   Vcl.Controls, Base_Block, OmniXML, CommonInterfaces, CommonTypes, Statement;
 
 type
 
@@ -34,7 +34,7 @@ type
          DefaultBranch: TBranch;
          procedure Paint; override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
-         procedure OnFStatementChange(AEdit: TCustomEdit);
+         procedure OnStatementChange(AStatement: TStatement);
          function GetDiamondTop: TPoint; override;
          procedure PlaceBranchStatement(ABranch: TBranch);
          function  GetTemplateByControl(AControl: TControl; var AObject: TObject): string;
@@ -68,7 +68,7 @@ implementation
 
 uses
    System.StrUtils, System.UITypes, System.Math, XMLProcessor, Return_Block, Navigator_Form,
-   LangDefinition, Statement, ApplicationCommon;
+   LangDefinition, ApplicationCommon;
 
 constructor TCaseBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; AId: integer = ID_INVALID);
 begin
@@ -97,7 +97,7 @@ begin
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    FStatement.Alignment := taCenter;
-   FStatement.OnChangeCallBack := OnFStatementChange;
+   FStatement.OnChangeCallBack := OnStatementChange;
    PutTextControls;
 
 end;
@@ -168,16 +168,19 @@ begin
    DrawI;
 end;
 
-procedure TCaseBlock.OnFStatementChange(AEdit: TCustomEdit);
+procedure TCaseBlock.OnStatementChange(AStatement: TStatement);
 var
    i: integer;
    lBranch: TBranch;
 begin
-   for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
+   if GSettings.ParseCase then
    begin
-      lBranch := FBranchList[i];
-      if lBranch.Statement <> AEdit then
-         lBranch.Statement.Change;
+      for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
+      begin
+         lBranch := FBranchList[i];
+         if lBranch.Statement <> AStatement then
+            lBranch.Statement.Change;
+      end;
    end;
 end;
 
@@ -408,7 +411,7 @@ begin
       if GInfra.CurrentLang.CaseOfFirstValueTemplate.IsEmpty then
          inherited UpdateEditor(AEdit)
       else
-         OnFStatementChange(nil);
+         OnStatementChange(nil);
    end
    else if (AEdit <> nil) and PerformEditorUpdate then
    begin
