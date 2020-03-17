@@ -184,7 +184,7 @@ begin
    result := NOT_DEFINED;
    block := TInfra.GetParsedBlock;
    if block is TForDoBlock then
-      result := GetVarInfo(TForDoBlock(block).edtVariable.Text).TType;
+      result := GetVarInfo(TForDoBlock(block).edtVar.Text).TType;
 end;
 
 class function TParserHelper.GetCaseVarType: integer;
