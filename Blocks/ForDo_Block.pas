@@ -191,7 +191,7 @@ end;
 procedure TForDoBlock.OnChangeCallBack(AStatement: TStatement);
 begin
    AStatement.Width := Max(TInfra.GetAutoWidth(AStatement), 30);
-   FInitParms.Width := edtStart.Left + edtStart.Width + edtStop.Width + 87;
+   FInitParms.Width := edtVar.Left + edtVar.Width + edtStart.Left + edtStart.Width + edtStop.Width + 99;
    FInitParms.BottomPoint.X := FInitParms.Width - 11;
    Repaint;
 end;
@@ -209,18 +209,28 @@ end;
 
 procedure TForDoBlock.Paint;
 var
-   y, bhx, w, br1, br2: integer;
-   lColor: TColor;
+   y, bhx, br1, br2: integer;
+   lShapeColor: TColor;
    r: TRect;
 begin
    inherited;
    if Expanded then
    begin
+
       bhx := Branch.Hook.X;
-      cbVar.Left := bhx - 79;
-      edtStart.Left := bhx - 30;
+
+      y :=  edtStart.Top + edtStart.Height - 6;
+      r := DrawTextLabel(bhx-97, y, FForLabel, false, true);
+      cbVar.Left := r.Right + 4;
+      edtVar.Left := cbVar.Left + 4;
+
+      r := DrawTextLabel(edtVar.Left + edtVar.Width+3, y, GInfra.CurrentLang.ForDoVarString, false, true);
+      edtStart.Left := r.Right + 4;
       br1 := edtStart.Left + edtStart.Width;
-      edtStop.Left := br1 + 11;
+
+      r := DrawTextLabel(br1+3, y, IfThen(FDescOrder, '«', '»'), false, true);
+      edtStop.Left := r.Right + 4;
+
       br2 := edtStop.Left + edtStop.Width;
       IPoint.X := br2 + 16;
       IPoint.Y := 35;
@@ -237,26 +247,18 @@ begin
       Canvas.MoveTo(br2+30, 19);
       Canvas.LineTo(Width-11, 19);
       Canvas.Brush.Style := bsClear;
-      lColor := GSettings.GetShapeColor(FShape);
-      if lColor <> GSettings.DesktopColor then
-         Canvas.Brush.Color := lColor;
+      lShapeColor := GSettings.GetShapeColor(FShape);
+      if lShapeColor <> GSettings.DesktopColor then
+         Canvas.Brush.Color := lShapeColor;
       Canvas.Polygon([Point(bhx-100, 0),
                       Point(br2-9, 0),
                       Point(br2+30, 19),
                       Point(br2-9, TopHook.Y),
                       Point(bhx-100, TopHook.Y),
                       Point(bhx-100, 0)]);
-      y :=  edtStart.Top + edtStart.Height - 6;
-      DrawTextLabel(bhx-42, y, GInfra.CurrentLang.ForDoVarString, false, true);
-      DrawTextLabel(br1+1, y, IfThen(FDescOrder, '«', '»'), false, true);
-      r := DrawTextLabel(bhx-97, y, FForLabel, false, true);
-      if GInfra.CurrentLang.ForDoVarList then
-         edtVar.Left := cbVar.Left + 4
-      else
-      begin
-         w := Max(bhx-r.Right-46, 12);
-         edtVar.SetBounds(bhx-w-44, edtVar.Top, w, edtVar.Height);
-      end;
+      DrawTextLabel(edtVar.Left + edtVar.Width+3, y, GInfra.CurrentLang.ForDoVarString, false, true);
+      DrawTextLabel(br1+3, y, IfThen(FDescOrder, '«', '»'), false, true);
+      DrawTextLabel(bhx-97, y, FForLabel, false, true);
       DrawBlockLabel(bhx-100, 40, GInfra.CurrentLang.LabelFor);
    end;
    DrawI;
@@ -300,6 +302,8 @@ begin
    edtVar.Hint := i18Manager.GetFormattedString('ExpOk', [edtVar.Text, sLineBreak]);
    if not GInfra.CurrentLang.ForDoVarList then
       UpdateEditor(edtVar);
+   edtVar.Width := Max(TInfra.GetAutoWidth(edtVar), IfThen(GInfra.CurrentLang.ForDoVarList, 28, 5));
+   cbVar.Width := edtVar.Width + 5;
    if GSettings.ParseFor then
    begin
       if (GProject.GlobalVars <> nil) and GProject.GlobalVars.IsValidLoopVar(edtVar.Text) then
@@ -317,9 +321,9 @@ begin
          else
             edtVar.Hint := i18Manager.GetFormattedString('NoCVar', [sLineBreak]);
       end;
-      edtStart.Change;
-      edtStop.Change;
    end;
+   edtStart.Change;
+   edtStop.Change;
 end;
 
 function TForDoBlock.FillCodedTemplate(const ALangId: string): string;
@@ -559,10 +563,11 @@ var
    t: integer;
 begin
    t := 22 - edtStart.Height div 2;
-   edtStart.SetBounds(90, t, 30, edtStart.Height);
-   edtStop.SetBounds(131, t, IfThen(t > 8, 30, 27), edtStop.Height);
-   cbVar.SetBounds(0, t-4, 38, cbVar.Height);
-   edtVar.SetBounds(0, t, 33, edtVar.Height);
+   edtStart.Top := t;
+   edtStop.Top := t;
+   edtVar.Top := t;
+   cbVar.Top := t - 4;
+   VarOnChange(edtVar);
 end;
 
 procedure TForDoBlock.UpdateEditor(AEdit: TCustomEdit);
