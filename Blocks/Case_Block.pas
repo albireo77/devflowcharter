@@ -98,7 +98,6 @@ begin
    Constraints.MinHeight := FInitParms.Height;
    FStatement.Alignment := taCenter;
    FStatement.OnChangeCallBack := OnStatementChange;
-   PutTextControls;
 
 end;
 

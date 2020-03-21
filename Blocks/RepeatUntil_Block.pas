@@ -81,7 +81,6 @@ begin
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    FStatement.Alignment := taCenter;
-   PutTextControls;
 end;
 
 function TRepeatUntilBlock.Clone(ABranch: TBranch): TBlock;
