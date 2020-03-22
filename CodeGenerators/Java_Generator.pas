@@ -548,7 +548,7 @@ begin
                else
                   Exit;
             end
-            else if AValue.StartsWith('new String(' + JAVA_STRING_DELIM) and AValue.EndsWith(JAVA_STRING_DELIM + ')') then
+            else if AValue.StartsWith('new String(' + JAVA_STRING_DELIM) and AValue.EndsWith(JAVA_STRING_DELIM + ')') and (AValue.Length > 13) then
                result := JAVA_STRING_TYPE
             else if StartsWithOneOf(AValue, ['String.valueOf(', 'String.join(', 'String.format(']) and (lastChar = ')') then
                result := JAVA_STRING_TYPE
