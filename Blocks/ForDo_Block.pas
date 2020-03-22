@@ -209,7 +209,7 @@ end;
 
 procedure TForDoBlock.Paint;
 var
-   y, bhx, br1, br2: integer;
+   bhx, br1, br2, t: integer;
    lShapeColor: TColor;
    r: TRect;
 begin
@@ -218,18 +218,19 @@ begin
    begin
 
       bhx := Branch.Hook.X;
+      t := 16 + edtStart.Height div 2;
+      r := DrawTextLabel(bhx-97, t, FForLabel, false, true);
 
-      y :=  edtStart.Top + edtStart.Height - 6;
-      r := DrawTextLabel(bhx-97, y, FForLabel, false, true);
-      cbVar.Left := r.Right + 4;
-      edtVar.Left := cbVar.Left + 4;
+      cbVar.SetBounds(r.Right+4, 34-t, edtVar.Width+5, cbVar.Height);
 
-      r := DrawTextLabel(edtVar.Left + edtVar.Width+3, y, GInfra.CurrentLang.ForDoVarString, false, true);
-      edtStart.Left := r.Right + 4;
+      TInfra.MoveWin(edtVar, cbVar.Left+4, 38-t);
+
+      r := DrawTextLabel(edtVar.Left + edtVar.Width+3, t, GInfra.CurrentLang.ForDoVarString, false, true);
+      TInfra.MoveWin(edtStart, r.Right+4, 38-t);
       br1 := edtStart.Left + edtStart.Width;
 
-      r := DrawTextLabel(br1+3, y, IfThen(FDescOrder, '«', '»'), false, true);
-      edtStop.Left := r.Right + 4;
+      r := DrawTextLabel(br1+3, t, IfThen(FDescOrder, '«', '»'), false, true);
+      TInfra.MoveWin(edtStop, r.Right+4, 38-t);
 
       br2 := edtStop.Left + edtStop.Width;
       IPoint.X := br2 + 16;
@@ -256,9 +257,9 @@ begin
                       Point(br2-9, TopHook.Y),
                       Point(bhx-100, TopHook.Y),
                       Point(bhx-100, 0)]);
-      DrawTextLabel(edtVar.Left + edtVar.Width+3, y, GInfra.CurrentLang.ForDoVarString, false, true);
-      DrawTextLabel(br1+3, y, IfThen(FDescOrder, '«', '»'), false, true);
-      DrawTextLabel(bhx-97, y, FForLabel, false, true);
+      DrawTextLabel(edtVar.Left + edtVar.Width+3, t, GInfra.CurrentLang.ForDoVarString, false, true);
+      DrawTextLabel(br1+3, t, IfThen(FDescOrder, '«', '»'), false, true);
+      DrawTextLabel(bhx-97, t, FForLabel, false, true);
       DrawBlockLabel(bhx-100, 40, GInfra.CurrentLang.LabelFor);
    end;
    DrawI;
@@ -303,7 +304,6 @@ begin
    if not GInfra.CurrentLang.ForDoVarList then
       UpdateEditor(edtVar);
    edtVar.Width := Max(TInfra.GetAutoWidth(edtVar), IfThen(GInfra.CurrentLang.ForDoVarList, 28, 5));
-   cbVar.Width := edtVar.Width + 5;
    if GSettings.ParseFor then
    begin
       if (GProject.GlobalVars <> nil) and GProject.GlobalVars.IsValidLoopVar(edtVar.Text) then
@@ -559,14 +559,7 @@ begin
 end;
 
 procedure TForDoBlock.PutTextControls;
-var
-   t: integer;
 begin
-   t := 22 - edtStart.Height div 2;
-   edtStart.Top := t;
-   edtStop.Top := t;
-   edtVar.Top := t;
-   cbVar.Top := t - 4;
    VarOnChange(edtVar);
 end;
 

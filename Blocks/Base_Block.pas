@@ -1415,10 +1415,9 @@ function TBlock.DrawTextLabel(x, y: integer; const AText: string; rightJust: boo
 var
    fontStyles: TFontStyles;
    fontColor: TColor;
-   tw, th: integer;
+   te: TSize;
 begin
-   tw := 0;
-   th := 0;
+   te := TSize.Create(0, 0);
    if not AText.IsEmpty then
    begin
       fontStyles := Canvas.Font.Style;
@@ -1428,17 +1427,16 @@ begin
       if fsBold in fontStyles then
          Canvas.Font.Style := Canvas.Font.Style + [fsBold];
       Canvas.Brush.Style := bsClear;
-      tw := Canvas.TextWidth(AText);
-      th := Canvas.TextHeight(AText);
+      te := Canvas.TextExtent(AText);
       if rightJust then
-         x := Max(x-tw, 0);
+         x := Max(x-te.Width, 0);
       if downJust then
-         y := Max(y-th, 0);
+         y := Max(y-te.Height, 0);
       Canvas.TextOut(x, y, AText);
       Canvas.Font.Style := fontStyles;
       Canvas.Font.Color := fontColor;
    end;
-   result := TRect.Create(Point(x, y), tw, th);
+   result := TRect.Create(Point(x, y), te.Width, te.Height);
 end;
 
 procedure TBlock.DrawArrow(const aFrom, aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
