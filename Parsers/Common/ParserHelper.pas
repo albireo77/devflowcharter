@@ -84,8 +84,6 @@ type
       class function GetConstValue(const AConstName: string): string;
       class function GetIdentInfo(const AIdentName: string): TIdentInfo;
       class function FindUserFunctionVarList(ABlock: TBlock): TVarDeclareList;
-      class procedure GetParameterInfo(AHeader: TUserFunctionHeader; var AResult: TIdentInfo);
-      class procedure GetVariableInfo(AVarList: TVarDeclareList; var AResult: TIdentInfo);
       class function IsRecordType(AType: integer): boolean;
       class function IsEnumType(AType: integer): boolean;
       class function IsIntegerType(AType: integer): boolean;
@@ -104,10 +102,12 @@ type
       class function AreTypesCompatible(AType1, AType2: integer): boolean;
       class function GetSizeExpArrayAsString(const ATypeAsString: string; const ASizeAsString: string): string;
       class function IsGenericType(const ATypeName: string): boolean;
-      class function GetLibForType(ATypeName: string): string;
+      class function GetLibForType(const ATypeName: string; const ADefault: string = ''): string;
       class function DecodeArrayDimension(AType: integer): integer;
       class function DecodeArrayType(AType: integer): integer;
       class function EncodeArrayType(AType, ADimensionCount: integer): integer;
+      class procedure GetParameterInfo(AHeader: TUserFunctionHeader; var AResult: TIdentInfo);
+      class procedure GetVariableInfo(AVarList: TVarDeclareList; var AResult: TIdentInfo);
    end;
 
 const
@@ -605,21 +605,22 @@ begin
    end;
 end;
 
-class function TParserHelper.GetLibForType(ATypeName: string): string;
+class function TParserHelper.GetLibForType(const ATypeName: string; const ADefault: string = ''): string;
 var
    userDataType: TUserDataType;
    pNativeType: PNativeDataType;
 begin
    result := '';
+   userDataType := nil;
+   pNativeType := GInfra.GetNativeDataType(ATypeName);
    if GProject <> nil then
-   begin
-      pNativeType := GInfra.GetNativeDataType(ATypeName);
       userDataType := GProject.GetUserDataType(ATypeName);
-      if pNativeType <> nil then
-         result := pNativeType.Lib
-      else if userDataType <> nil then
-         result := userDataType.GetLibName;
-   end;
+   if pNativeType <> nil then
+      result := pNativeType.Lib
+   else if userDataType <> nil then
+      result := userDataType.GetLibName;
+   if result.IsEmpty then
+      result := ADefault;
 end;
 
 class function TParserHelper.GetPointerType(AType: integer): integer;

@@ -592,7 +592,7 @@ begin
                else
                   result := JAVA_DURATION_TYPE;
                if result <> JAVA_DURATION_TYPE then
-                  AddLibImport('java.time.Duration');
+                  AddLibImport(TParserHelper.GetLibForType('Duration', 'java.time') + '.Duration');
             end
             else if AValue.StartsWith('Period.') then
             begin
@@ -603,7 +603,7 @@ begin
                else
                   result := JAVA_PERIOD_TYPE;
                if result <> JAVA_PERIOD_TYPE then
-                  AddLibImport('java.time.Period');
+                  AddLibImport(TParserHelper.GetLibForType('Period', 'java.time') + '.Period');
             end
             else if AValue.StartsWith('Instant.') then
             begin
@@ -616,7 +616,7 @@ begin
                else
                   result := JAVA_INSTANT_TYPE;
                if result <> JAVA_INSTANT_TYPE then
-                  AddLibImport('java.time.Instant');
+                  AddLibImport(TParserHelper.GetLibForType('Instant', 'java.time') + '.Instant');
             end
             else if AValue = 'null' then
                result := JAVA_STRING_TYPE
@@ -646,7 +646,7 @@ begin
                else
                   result := JAVA_BIGDECIMAL_TYPE;
                if result <> JAVA_BIGDECIMAL_TYPE then
-                  AddLibImport('java.math.BigDecimal');
+                  AddLibImport(TParserHelper.GetLibForType('BigDecimal', 'java.math') + '.BigDecimal');
             end
             else if StartsWithOneOf(AValue, ['new BigInteger(', 'BigInteger.']) then
             begin
@@ -663,7 +663,7 @@ begin
                else
                   result := JAVA_BIGINTEGER_TYPE;
                if result <> JAVA_BIGINTEGER_TYPE then
-                  AddLibImport('java.math.BigInteger');
+                  AddLibImport(TParserHelper.GetLibForType('BigInteger', 'java.math') + '.BigInteger');
             end
             else if StartsWithOneOf(AValue, ['new Integer(', 'Integer.']) then
             begin
@@ -886,7 +886,7 @@ begin
                t1 := Java_GetConstantType(cValue, s);
                if t1 <> JAVA_STRING_TYPE then
                   Exit;
-               AddLibImport('java.util.regex.Pattern');
+               AddLibImport(TParserHelper.GetLibForType('Pattern', 'java.util.regex') + '.Pattern');
                result := JAVA_PATTERN_TYPE;
             end
             else if (AValue[1] = '{') and (lastChar = '}') then

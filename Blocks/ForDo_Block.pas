@@ -41,7 +41,6 @@ type
          procedure SetDescOrder(AValue: boolean);
          procedure OnChangeCallBack(AStatement: TStatement);
          procedure PutTextControls; override;
-         procedure ChangeWidth;
       public
          edtStart, edtStop: TStatement;
          cbVar: TComboBox;
@@ -192,20 +191,9 @@ end;
 procedure TForDoBlock.OnChangeCallBack(AStatement: TStatement);
 begin
    AStatement.Width := Max(TInfra.GetAutoWidth(AStatement), 30);
-   ChangeWidth;
-end;
-
-procedure TForDoBlock.ChangeWidth;
-var
-   newWidth: integer;
-begin
-   newWidth := edtVar.Left + edtVar.Width + edtStart.Left + edtStart.Width + edtStop.Width + 99;
-   if newWidth <> FInitParms.Width then
-   begin
-      FInitParms.Width := newWidth;
-      FInitParms.BottomPoint.X := newWidth - 11;
-      Repaint;
-   end;
+   Repaint;
+   FInitParms.Width := edtStop.Left + edtStop.Width + 76;
+   FInitParms.BottomPoint.X := FInitParms.Width - 11;
 end;
 
 procedure TForDoBlock.SetDescOrder(AValue: boolean);
