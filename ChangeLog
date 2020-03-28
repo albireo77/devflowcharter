@@ -1,3 +1,7 @@
+8.1 [28.03.2020]
+- fix too wide for..do block in some situations
+- Java: improve generating package imports (package defined for data type in language definition file has precedence)
+
 8.0 [22.03.2020]
 - compiled with Delphi 10.3.3
 - Flowchart: auto-resizable edit boxes in for..do block
