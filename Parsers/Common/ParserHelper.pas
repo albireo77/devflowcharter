@@ -611,14 +611,15 @@ var
    pNativeType: PNativeDataType;
 begin
    result := '';
-   userDataType := nil;
    pNativeType := GInfra.GetNativeDataType(ATypeName);
-   if GProject <> nil then
-      userDataType := GProject.GetUserDataType(ATypeName);
    if pNativeType <> nil then
-      result := pNativeType.Lib
-   else if userDataType <> nil then
-      result := userDataType.GetLibName;
+      result := pNativeType.Lib;
+   if result.IsEmpty and (GProject <> nil) then
+   begin
+      userDataType := GProject.GetUserDataType(ATypeName);
+      if userDataType <> nil then
+         result := userDataType.GetLibName;
+   end;
    if result.IsEmpty then
       result := ADefault;
 end;
