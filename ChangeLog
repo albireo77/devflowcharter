@@ -6,7 +6,7 @@
 - compiled with Delphi 10.3.3
 - Flowchart: auto-resizable edit boxes in for..do block
 - Java support: add java.util.regex.Pattern class
-- Settings: add EditorRightEdgeColumn and EditorRightEdgeColor settings (at the moment not supported in UI) 
+- Settings: add EditorRightEdgeColumn and EditorRightEdgeColor settings (at the moment not supported on Settings page) 
 - minor optimizations
 
 7.21 [16.11.2019]
