@@ -70,7 +70,7 @@ end;
 
 function TInstrBlock.Clone(ABranch: TBranch): TBlock;
 begin
-   result := TInstrBlock.Create(ABranch, TBlockParms.New(Left, Top, Width, Height, ID_INVALID));
+   result := TInstrBlock.Create(ABranch, GetBlockParms);
    result.CloneFrom(Self);
 end;
 

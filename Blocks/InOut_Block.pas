@@ -105,13 +105,13 @@ end;
 
 function TInputBlock.Clone(ABranch: TBranch): TBlock;
 begin
-   result := TInputBlock.Create(ABranch, TBlockParms.New(Left, Top, Width, Height, ID_INVALID));
+   result := TInputBlock.Create(ABranch, GetBlockParms);
    result.CloneFrom(Self);
 end;
 
 function TOutputBlock.Clone(ABranch: TBranch): TBlock;
 begin
-   result := TOutputBlock.Create(ABranch, TBlockParms.New(Left, Top, Width, Height, ID_INVALID));
+   result := TOutputBlock.Create(ABranch, GetBlockParms);
    result.CloneFrom(Self);
 end;
 

@@ -71,19 +71,8 @@ begin
 end;
 
 function TWhileDoBlock.Clone(ABranch: TBranch): TBlock;
-var
-   blockParms: TBlockParms;
 begin
-   blockParms := TBlockParms.New(
-      Left,
-      Top,
-      Width,
-      Height,
-      Branch.Hook.X,
-      Branch.Hook.Y,
-      BottomHook,
-      ID_INVALID);
-   result := TWhileDoBlock.Create(ABranch, blockParms);
+   result := TWhileDoBlock.Create(ABranch, GetBlockParms);
    result.CloneFrom(Self);
 end;
 

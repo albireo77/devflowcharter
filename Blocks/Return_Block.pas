@@ -79,7 +79,7 @@ end;
 
 function TReturnBlock.Clone(ABranch: TBranch): TBlock;
 begin
-   result := TReturnBlock.Create(ABranch, TBlockParms.New(Left, Top, Width, Height, ID_INVALID));
+   result := TReturnBlock.Create(ABranch, GetBlockParms);
    result.CloneFrom(Self);
 end;
 

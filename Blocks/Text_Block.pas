@@ -79,7 +79,7 @@ function TTextBlock.Clone(ABranch: TBranch): TBlock;
 var
    block: TTextBlock;
 begin
-   block := TTextBlock.Create(ABranch, TBlockParms.New(Left, Top, Width, Height, ID_INVALID));
+   block := TTextBlock.Create(ABranch, GetBlockParms);
    block.FStatements.CloneFrom(FStatements);
    block.CloneFrom(Self);
    result := block;

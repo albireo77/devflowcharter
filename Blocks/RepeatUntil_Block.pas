@@ -84,19 +84,8 @@ begin
 end;
 
 function TRepeatUntilBlock.Clone(ABranch: TBranch): TBlock;
-var
-   blockParms: TBlockParms;
 begin
-   blockParms := TBlockParms.New(
-      Left,
-      Top,
-      Width,
-      Height,
-      Branch.Hook.X,
-      Branch.Hook.Y,
-      BottomHook,
-      ID_INVALID);
-   result := TRepeatUntilBlock.Create(ABranch, blockParms);
+   result := TRepeatUntilBlock.Create(ABranch, GetBlockParms);
    result.CloneFrom(Self);
 end;
 

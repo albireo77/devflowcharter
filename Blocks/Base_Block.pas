@@ -117,6 +117,7 @@ type
          function GetErrorMsg(AEdit: TCustomEdit): string;
          procedure SaveInXML2(ATag: IXMLElement);
          procedure ExitSizeMove;
+         function GetBlockParms: TBlockParms; virtual;
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -214,6 +215,7 @@ type
          function ExtractBranchIndex(const AStr: string): integer;
          function GetDiamondTop: TPoint; virtual;
          procedure AfterRemovingBranch; virtual;
+         function GetBlockParms: TBlockParms; override;
       public
          Branch: TBranch;     // primary branch to order child blocks
          Expanded: boolean;
@@ -568,6 +570,16 @@ begin
       Ired := -1;
       Cursor := crDefault;
    end;
+end;
+
+function TBlock.GetBlockParms: TBlockParms;
+begin
+   result := TBlockParms.New(Left, Top, Width, Height, ID_INVALID);
+end;
+
+function TGroupBlock.GetBlockParms: TBlockParms;
+begin
+   result := TBlockParms.New(Left, Top, Width, Height, Branch.Hook.X, Branch.Hook.Y, BottomHook, ID_INVALID);
 end;
 
 procedure TGroupBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);

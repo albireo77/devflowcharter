@@ -102,19 +102,8 @@ begin
 end;
 
 function TCaseBlock.Clone(ABranch: TBranch): TBlock;
-var
-   blockParms: TBlockParms;
 begin
-   blockParms := TBlockParms.New(
-      Left,
-      Top,
-      Width,
-      Height,
-      DefaultBranch.Hook.X,
-      DefaultBranch.Hook.Y,
-      BottomHook,
-      ID_INVALID);
-   result := TCaseBlock.Create(ABranch, blockParms);
+   result := TCaseBlock.Create(ABranch, GetBlockParms);
    result.CloneFrom(Self);
 end;
 

@@ -67,7 +67,7 @@ end;
 
 function TFunctionCallBlock.Clone(ABranch: TBranch): TBlock;
 begin
-   result := TFunctionCallBlock.Create(ABranch, TBlockParms.New(Left, Top, Width, Height, ID_INVALID));
+   result := TFunctionCallBlock.Create(ABranch, GetBlockParms);
    result.CloneFrom(Self);
 end;
 

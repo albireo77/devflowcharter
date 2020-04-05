@@ -39,6 +39,7 @@ type
          procedure Paint; override;
          procedure SetWidth(AMinX: integer); override;
          function GetDiamondTop: TPoint; override;
+         function GetBlockParms: TBlockParms; override;
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
@@ -92,10 +93,19 @@ begin
 end;
 
 function TIfElseBlock.Clone(ABranch: TBranch): TBlock;
-var
-   blockParms: TBlockParms;
 begin
-   blockParms := TBlockParms.New(
+   result := TIfElseBlock.Create(ABranch, GetBlockParms);
+   result.CloneFrom(Self);
+end;
+
+constructor TIfElseBlock.Create(ABranch: TBranch);
+begin
+   Create(ABranch, TBlockParms.New(0, 0, 240, 101, 5, 70, 120, ID_INVALID, 120, 229, 70, 5, 229));
+end;
+
+function TIfElseBlock.GetBlockParms: TBlockParms;
+begin
+   result := TBlockParms.New(
       Left,
       Top,
       Width,
@@ -109,13 +119,6 @@ begin
       FalseBranch.Hook.Y,
       TrueHook,
       FalseHook);
-   result := TIfElseBlock.Create(ABranch, blockParms);
-   result.CloneFrom(Self);
-end;
-
-constructor TIfElseBlock.Create(ABranch: TBranch);
-begin
-   Create(ABranch, TBlockParms.New(0, 0, 240, 101, 5, 70, 120, ID_INVALID, 120, 229, 70, 5, 229));
 end;
 
 procedure TIfElseBlock.Paint;

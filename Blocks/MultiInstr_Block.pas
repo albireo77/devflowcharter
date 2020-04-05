@@ -56,7 +56,7 @@ function TMultiInstrBlock.Clone(ABranch: TBranch): TBlock;
 var
    block: TMultiInstrBlock;
 begin
-   block := TMultiInstrBlock.Create(ABranch, TBlockParms.New(Left, Top, Width, Height, ID_INVALID));
+   block := TMultiInstrBlock.Create(ABranch, GetBlockParms);
    block.FStatements.CloneFrom(FStatements);
    block.CloneFrom(Self);
    result := block;
