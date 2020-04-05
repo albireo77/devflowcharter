@@ -228,19 +228,19 @@ begin
       result.bt := TBlockType(at);
    with TXMLProcessor do
    begin
-      result.x :=    GetIntegerFromXMLNode(AFrom, 'x');
-      result.y :=    GetIntegerFromXMLNode(AFrom, 'y');
-      result.h :=    GetIntegerFromXMLNode(AFrom, 'h');
-      result.w :=    GetIntegerFromXMLNode(AFrom, 'w');
-      result.brx :=  GetIntegerFromXMLNode(AFrom, 'brx');
-      result.bh :=   GetIntegerFromXMLNode(AFrom, 'bh');
-      result.bry :=  GetIntegerFromXMLNode(AFrom, 'bry');
-      result.th :=   GetIntegerFromXMLNode(AFrom, 'th');
-      result.fbrx := GetIntegerFromXMLNode(AFrom, 'fbrx');
-      result.fbry := GetIntegerFromXMLNode(AFrom, 'fbry');
-      result.trh :=  GetIntegerFromXMLNode(AFrom, 'trh');
-      result.flh :=  GetIntegerFromXMLNode(AFrom, 'flh');
-      result.bid :=  GetIntegerFromXMLNode(AFrom, ID_ATTR, ID_INVALID);
+      result.x :=    GetIntFromXMLNode(AFrom, 'x');
+      result.y :=    GetIntFromXMLNode(AFrom, 'y');
+      result.h :=    GetIntFromXMLNode(AFrom, 'h');
+      result.w :=    GetIntFromXMLNode(AFrom, 'w');
+      result.brx :=  GetIntFromXMLNode(AFrom, 'brx');
+      result.bh :=   GetIntFromXMLNode(AFrom, 'bh');
+      result.bry :=  GetIntFromXMLNode(AFrom, 'bry');
+      result.th :=   GetIntFromXMLNode(AFrom, 'th');
+      result.fbrx := GetIntFromXMLNode(AFrom, 'fbrx');
+      result.fbry := GetIntFromXMLNode(AFrom, 'fbry');
+      result.trh :=  GetIntFromXMLNode(AFrom, 'trh');
+      result.flh :=  GetIntFromXMLNode(AFrom, 'flh');
+      result.bid :=  GetIntFromXMLNode(AFrom, ID_ATTR, ID_INVALID);
    end;
 end;
 
