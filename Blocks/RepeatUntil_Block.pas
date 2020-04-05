@@ -24,7 +24,7 @@ unit RepeatUntil_Block;
 interface
 
 uses
-   Vcl.Graphics, System.Types, Base_Block, CommonInterfaces;
+   Vcl.Graphics, System.Types, Base_Block, CommonInterfaces, CommonTypes;
 
 type
 
@@ -33,7 +33,7 @@ type
          FLeftLabel, FRightLabel: string;
       public
          constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; AId: integer = ID_INVALID); overload;
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
          function Clone(ABranch: TBranch): TBlock; override;
          function GetDescTemplate(const ALangId: string): string; override;
       protected
@@ -46,14 +46,20 @@ implementation
 
 uses
    System.Classes, System.SysUtils, System.StrUtils, System.Math, ApplicationCommon,
-   CommonTypes, LangDefinition;
+   LangDefinition;
 
-constructor TRepeatUntilBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; AId: integer = ID_INVALID);
+constructor TRepeatUntilBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
    FType := blRepeat;
 
-   inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, Point(p1X, p1Y), AId);
+   inherited Create(ABranch,
+                    ABlockParms.x,
+                    ABlockParms.y,
+                    ABlockParms.w,
+                    ABlockParms.h,
+                    Point(ABlockParms.brx, ABlockParms.bry),
+                    ABlockParms.bid);
 
    FInitParms.Width := 240;
    FInitParms.Height := 111;
@@ -76,22 +82,33 @@ begin
    BottomPoint.X := Width - 11;
    BottomPoint.Y := Height - 50;
    TopHook.Y := 0;
-   BottomHook := b_hook;
-   TopHook.X := p1X;
+   BottomHook := ABlockParms.bh;
+   TopHook.X := ABlockParms.brx;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    FStatement.Alignment := taCenter;
 end;
 
 function TRepeatUntilBlock.Clone(ABranch: TBranch): TBlock;
+var
+   blockParms: TBlockParms;
 begin
-   result := TRepeatUntilBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, Branch.Hook.X, Branch.Hook.Y);
+   blockParms := TBlockParms.New(
+      Left,
+      Top,
+      Width,
+      Height,
+      Branch.Hook.X,
+      Branch.Hook.Y,
+      BottomHook,
+      ID_INVALID);
+   result := TRepeatUntilBlock.Create(ABranch, blockParms);
    result.CloneFrom(Self);
 end;
 
 constructor TRepeatUntilBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, 0, 0, 240, 111, 120, 120, 29);
+   Create(ABranch, TBlockParms.New(0, 0, 240, 111, 120, 29, 120, ID_INVALID));
 end;
 
 procedure TRepeatUntilBlock.Paint;

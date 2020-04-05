@@ -22,14 +22,14 @@ unit Return_Block;
 interface
 
 uses
-   Vcl.Graphics, System.Classes, Vcl.StdCtrls, Base_Block, CommonInterfaces;
+   Vcl.Graphics, System.Classes, Vcl.StdCtrls, Base_Block, CommonInterfaces, CommonTypes;
 
 type
 
    TReturnBlock = class(TBlock)
       public
          constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID); overload;
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
          function Clone(ABranch: TBranch): TBlock; override;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
          procedure ChangeColor(AColor: TColor); override;
@@ -46,16 +46,21 @@ implementation
 
 uses
    Vcl.Controls, System.SysUtils, System.StrUtils, System.Types, System.UITypes,
-   ApplicationCommon, Project, UserFunction, Main_Block, CommonTypes, LangDefinition;
+   ApplicationCommon, Project, UserFunction, Main_Block, LangDefinition;
 
-constructor TReturnBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
+constructor TReturnBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 var
    defWidth: integer;
 begin
 
    FType := blReturn;
 
-   inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
+   inherited Create(ABranch,
+                    ABlockParms.x,
+                    ABlockParms.y,
+                    ABlockParms.w,
+                    ABlockParms.h,
+                    ABlockParms.bid);
 
    FReturnLabel := i18Manager.GetString('CaptionExit');
 
@@ -79,13 +84,13 @@ end;
 
 function TReturnBlock.Clone(ABranch: TBranch): TBlock;
 begin
-   result := TReturnBlock.Create(ABranch, Left, Top, Width, Height);
+   result := TReturnBlock.Create(ABranch, TBlockParms.New(Left, Top, Width, Height, ID_INVALID));
    result.CloneFrom(Self);
 end;
 
 constructor TReturnBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, 0, 0, 140, 53);
+   Create(ABranch, TBlockParms.New(0, 0, 140, 53, ID_INVALID));
 end;
 
 procedure TReturnBlock.Paint;

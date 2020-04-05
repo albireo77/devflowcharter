@@ -24,14 +24,14 @@ unit FunctionCall_Block;
 interface
 
 uses
-   Vcl.Graphics, Base_Block, CommonInterfaces;
+   Vcl.Graphics, Base_Block, CommonInterfaces, CommonTypes;
 
 type
 
    TFunctionCallBlock = class(TBlock)
       public
          constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID); overload;
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
          function Clone(ABranch: TBranch): TBlock; override;
       protected
          procedure Paint; override;
@@ -41,20 +41,26 @@ type
 implementation
 
 uses
-   Vcl.Controls, Vcl.Forms, System.Classes, System.Types, ApplicationCommon, CommonTypes;
+   Vcl.Controls, Vcl.Forms, System.Classes, System.Types, ApplicationCommon;
 
-constructor TFunctionCallBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
+constructor TFunctionCallBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
    FType := blFuncCall;
-   inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
 
-   FStatement.SetBounds(10, 1, AWidth-20, 19);
+   inherited Create(ABranch,
+                    ABlockParms.x,
+                    ABlockParms.y,
+                    ABlockParms.w,
+                    ABlockParms.h,
+                    ABlockParms.bid);
+
+   FStatement.SetBounds(10, 1, ABlockParms.w-20, 19);
    FStatement.Anchors := [akRight, akLeft, akTop];
    FStatement.SetLRMargins(1, 1);
    FStatement.Color := GSettings.GetShapeColor(shpRoutine);
 
    FShape := shpRoutine;
-   BottomHook := AWidth div 2;
+   BottomHook := ABlockParms.w div 2;
    BottomPoint.X := BottomHook;
    BottomPoint.Y := FStatement.BoundsRect.Bottom + 1;
    IPoint.X := BottomHook + 30;
@@ -66,13 +72,13 @@ end;
 
 function TFunctionCallBlock.Clone(ABranch: TBranch): TBlock;
 begin
-   result := TFunctionCallBlock.Create(ABranch, Left, Top, Width, Height);
+   result := TFunctionCallBlock.Create(ABranch, TBlockParms.New(Left, Top, Width, Height, ID_INVALID));
    result.CloneFrom(Self);
 end;
 
 constructor TFunctionCallBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, 0, 0, 140, 51);
+   Create(ABranch, TBlockParms.New(0, 0, 140, 51, ID_INVALID));
 end;
 
 procedure TFunctionCallBlock.Paint;

@@ -25,7 +25,7 @@ interface
 
 uses
    Vcl.Controls, Vcl.StdCtrls, Vcl.Graphics, System.Classes, Vcl.ComCtrls, Base_Block,
-   CommonInterfaces, StatementMemo, MemoEx;
+   CommonInterfaces, StatementMemo, MemoEx, CommonTypes;
 
 type
 
@@ -40,7 +40,7 @@ type
          function GetTreeNodeText(ANodeOffset: integer = 0): string; override;
       protected
          FErrLine: integer;
-         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID); overload; virtual;
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload; virtual;
          procedure Paint; override;
          procedure OnDblClickMemo(Sender: TObject);
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
@@ -54,16 +54,21 @@ uses
 {$IFDEF USE_CODEFOLDING}
    SynEditCodeFolding,
 {$ENDIF}
-   System.SysUtils, System.Types, System.UITypes, ApplicationCommon, CommonTypes, LangDefinition;
+   System.SysUtils, System.Types, System.UITypes, ApplicationCommon, LangDefinition;
 
-constructor TMultiLineBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
+constructor TMultiLineBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
+   inherited Create(ABranch,
+                    ABlockParms.x,
+                    ABlockParms.y,
+                    ABlockParms.w,
+                    ABlockParms.h,
+                    ABlockParms.bid);
 
    FStatements := TStatementMemo.Create(Self);
    FStatements.Parent := Self;
-   FStatements.SetBounds(1, 1, AWidth-2, Height-31);
+   FStatements.SetBounds(1, 1, ABlockParms.w-2, Height-31);
    FStatements.Font.Assign(Font);
    FStatements.OnDblClick := OnDblClickMemo;
    FStatements.OnMouseDown := OnMouseDownMemo;
@@ -73,7 +78,7 @@ begin
    if FStatements.CanFocus then
       FStatements.SetFocus;
 
-   BottomHook := AWidth div 2;
+   BottomHook := ABlockParms.w div 2;
    BottomPoint.X := BottomHook;
    BottomPoint.Y := FStatements.BoundsRect.Bottom + 1;
    IPoint.X := BottomHook + 30;

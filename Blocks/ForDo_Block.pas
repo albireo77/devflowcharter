@@ -47,7 +47,7 @@ type
          edtVar: TEdit;
          property DescOrder: boolean read FDescOrder write SetDescOrder;
          constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, b_hook, px1, p1Y: integer; AId: integer = ID_INVALID); overload;
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
          function Clone(ABranch: TBranch): TBlock; override;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
          procedure ExpandFold(AResize: boolean); override;
@@ -71,12 +71,18 @@ uses
    Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Types, System.UITypes,
    System.Math, ApplicationCommon, XMLProcessor, Main_Block, UserFunction, Return_Block;
 
-constructor TForDoBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, b_hook, px1, p1Y: integer; AId: integer = ID_INVALID);
+constructor TForDoBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
    FType := blFor;
 
-   inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, Point(pX1, p1Y), AId);
+   inherited Create(ABranch,
+                    ABlockParms.x,
+                    ABlockParms.y,
+                    ABlockParms.w,
+                    ABlockParms.h,
+                    Point(ABlockParms.brx, ABlockParms.bry),
+                    ABlockParms.bid);
 
    FInitParms.Width := 240;
    FInitParms.Height := 91;
@@ -145,8 +151,8 @@ begin
    edtVar.OnChange := VarOnChange;
 
    BottomPoint := Point(Width-11, 20);
-   TopHook := Point(pX1, 39);
-   BottomHook := b_hook;
+   TopHook := Point(ABlockParms.brx, 39);
+   BottomHook := ABlockParms.bh;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    FForLabel := i18Manager.GetString('CaptionFor');
@@ -155,8 +161,19 @@ begin
 end;
 
 function TForDoBlock.Clone(ABranch: TBranch): TBlock;
+var
+   blockParms: TBlockParms;
 begin
-   result := TForDoBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, Branch.Hook.X, Branch.Hook.Y);
+   blockParms := TBlockParms.New(
+      Left,
+      Top,
+      Width,
+      Height,
+      Branch.Hook.X,
+      Branch.Hook.Y,
+      BottomHook,
+      ID_INVALID);
+   result := TForDoBlock.Create(ABranch, blockParms);
    result.CloneFrom(Self);
 end;
 
@@ -185,7 +202,7 @@ end;
 
 constructor TForDoBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, 0, 0, 240, 91, 120, 120, 69);
+   Create(ABranch, TBlockParms.New(0, 0, 240, 91, 120, 69, 120, ID_INVALID));
 end;
 
 procedure TForDoBlock.OnChangeCallBack(AStatement: TStatement);

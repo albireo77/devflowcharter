@@ -41,7 +41,7 @@ type
          procedure AfterRemovingBranch; override;
       public
          constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; AId: integer = ID_INVALID); overload;
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
          function Clone(ABranch: TBranch): TBlock; override;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
@@ -70,12 +70,18 @@ uses
    System.StrUtils, System.UITypes, System.Math, XMLProcessor, Return_Block, Navigator_Form,
    LangDefinition, ApplicationCommon;
 
-constructor TCaseBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, Alower_hook, p1X, p1Y: integer; AId: integer = ID_INVALID);
+constructor TCaseBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
    FType := blCase;
 
-   inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, Point(p1X, p1Y), AId);
+   inherited Create(ABranch,
+                    ABlockParms.x,
+                    ABlockParms.y,
+                    ABlockParms.w,
+                    ABlockParms.h,
+                    Point(ABlockParms.brx, ABlockParms.bry),
+                    ABlockParms.bid);
 
    FInitParms.Width := 200;
    FInitParms.Height := 131;
@@ -87,11 +93,11 @@ begin
 
    DefaultBranch := Branch;
 
-   BottomPoint.X := p1X;
+   BottomPoint.X := ABlockParms.brx;
    BottomPoint.Y := Height-31;
    TopHook.Y := 70;
-   BottomHook := Alower_hook;
-   TopHook.X := p1X;
+   BottomHook := ABlockParms.bh;
+   TopHook.X := ABlockParms.brx;
    IPoint.Y := 50;
    FCaseLabel := i18Manager.GetString('CaptionCase');
    Constraints.MinWidth := FInitParms.Width;
@@ -102,8 +108,19 @@ begin
 end;
 
 function TCaseBlock.Clone(ABranch: TBranch): TBlock;
+var
+   blockParms: TBlockParms;
 begin
-   result := TCaseBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, DefaultBranch.Hook.X, DefaultBranch.Hook.Y);
+   blockParms := TBlockParms.New(
+      Left,
+      Top,
+      Width,
+      Height,
+      DefaultBranch.Hook.X,
+      DefaultBranch.Hook.Y,
+      BottomHook,
+      ID_INVALID);
+   result := TCaseBlock.Create(ABranch, blockParms);
    result.CloneFrom(Self);
 end;
 
@@ -131,7 +148,7 @@ end;
 
 constructor TCaseBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, 0, 0, 200, 131, 100, 100, 99);
+   Create(ABranch, TBlockParms.New(0, 0, 200, 131, 100, 99, 100, ID_INVALID));
 end;
 
 procedure TCaseBlock.Paint;

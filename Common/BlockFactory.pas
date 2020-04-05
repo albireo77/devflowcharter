@@ -63,25 +63,25 @@ end;
 
 class function TBlockFactory.Create(ATag: IXMLElement; ABranch: TBranch): TBlock;
 var
-   p: TBlockInitParms;
+   p: TBlockParms;
 begin
    result := nil;
-   p := TBlockInitParms.Extract(ATag);
+   p := TBlockParms.New(ATag);
    case p.bt of
-      blInstr:      result := TInstrBlock.Create(ABranch, p.x, p.y, p.w, p.h, p.bid);
-      blMultiInstr: result := TMultiInstrBlock.Create(ABranch, p.x, p.y, p.w, p.h, p.bid);
-      blInput:      result := TInputBlock.Create(ABranch, p.x, p.y, p.w, p.h, p.bid);
-      blOutput:     result := TOutputBlock.Create(ABranch, p.x, p.y, p.w, p.h, p.bid);
-      blFuncCall:   result := TFunctionCallBlock.Create(ABranch, p.x, p.y, p.w, p.h, p.bid);
-      blWhile:      result := TWhileDoBlock.Create(ABranch, p.x, p.y, p.w, p.h, p.bh, p.brx, p.bry, p.bid);
-      blRepeat:     result := TRepeatUntilBlock.Create(ABranch, p.x, p.y, p.w, p.h, p.bh, p.brx, p.bry, p.bid);
-      blIf:         result := TIfBlock.Create(ABranch, p.x, p.y, p.w, p.h, p.bh, p.brx, p.bry, p.bid);
-      blFor:        result := TForDoBlock.Create(ABranch, p.x, p.y, p.w, p.h, p.bh, p.brx, p.bry, p.bid);
-      blCase:       result := TCaseBlock.Create(ABranch, p.x, p.y, p.w, p.h, p.bh, p.brx, p.bry, p.bid);
-      blReturn:     result := TReturnBlock.Create(ABranch, p.x, p.y, p.w, p.h, p.bid);
-      blText:       result := TTextBlock.Create(ABranch, p.x, p.y, p.w, p.h, p.bid);
-      blFolder:     result := TFolderBlock.Create(ABranch, p.x, p.y, p.w, p.h, p.bh, p.brx, p.bry, p.bid);
-      blIfElse:     result := TIfElseBlock.Create(ABranch, p.x, p.y, p.w, p.h, p.brx, p.fbrx, p.bh, p.th, p.bry, p.fbry, p.flh, p.trh, p.bid);
+      blInstr:      result := TInstrBlock.Create(ABranch, p);
+      blMultiInstr: result := TMultiInstrBlock.Create(ABranch, p);
+      blInput:      result := TInputBlock.Create(ABranch, p);
+      blOutput:     result := TOutputBlock.Create(ABranch, p);
+      blFuncCall:   result := TFunctionCallBlock.Create(ABranch, p);
+      blWhile:      result := TWhileDoBlock.Create(ABranch, p);
+      blRepeat:     result := TRepeatUntilBlock.Create(ABranch, p);
+      blIf:         result := TIfBlock.Create(ABranch, p);
+      blFor:        result := TForDoBlock.Create(ABranch, p);
+      blCase:       result := TCaseBlock.Create(ABranch, p);
+      blReturn:     result := TReturnBlock.Create(ABranch, p);
+      blText:       result := TTextBlock.Create(ABranch, p);
+      blFolder:     result := TFolderBlock.Create(ABranch, p);
+      blIfElse:     result := TIfElseBlock.Create(ABranch, p);
    end;
    if result <> nil then
       result.GetFromXML(ATag);
@@ -89,10 +89,10 @@ end;
 
 class function TBlockFactory.Create(ATag: IXMLElement; ATab: TBlockTabSheet): TBlock;
 var
-   p: TBlockInitParms;
+   p: TBlockParms;
 begin
    result := nil;
-   p := TBlockInitParms.Extract(ATag);
+   p := TBlockParms.New(ATag);
    if p.bt = blMain then
    begin
       result := TMainBlock.Create(ATab, p.x, p.y, p.w, p.h, p.bh, p.brx, p.bry, p.bid);

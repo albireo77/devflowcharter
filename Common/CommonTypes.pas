@@ -113,10 +113,13 @@ type
      class function Extract(const AFrom: string): T3Strings; static;
    end;
 
-   TBlockInitParms = record
-      x, y, h, w, brx, bh, bry, bid, th, fbrx, fbry, trh, flh: integer;
+   TBlockParms = record
+      x, y, h, w, brx, bry, bh, bid, th, fbrx, fbry, trh, flh: integer;
       bt: TBlockType;
-      class function Extract(AFrom: IXMLElement): TBlockInitParms; static;
+      class function New(x, y, w, h, bid: integer): TBlockParms; overload; static;
+      class function New(x, y, w, h, brx, bry, bh, bid: integer): TBlockParms; overload; static;
+      class function New(x, y, w, h, brx, bry, bh, bid, th, fbrx, fbry, trh, flh: integer): TBlockParms; overload; static;
+      class function New(AFrom: IXMLElement): TBlockParms; overload; static;
    end;
 
    PTypesSet = ^TTypesSet;
@@ -215,33 +218,59 @@ begin
       result.S2 := tokens[2];
 end;
 
-class function TBlockInitParms.Extract(AFrom: IXMLElement): TBlockInitParms;
+class function TBlockParms.New(x, y, w, h, bid: integer): TBlockParms;
+begin
+   result.bt := blUnknown;
+   result.x := x;
+   result.y := y;
+   result.w := w;
+   result.h := h;
+   result.bid := bid;
+end;
+
+class function TBlockParms.New(x, y, w, h, brx, bry, bh, bid: integer): TBlockParms;
+begin
+   result := New(x, y, w, h, bid);
+   result.brx := brx;
+   result.bry := bry;
+   result.bh := bh;
+end;
+
+class function TBlockParms.New(x, y, w, h, brx, bry, bh, bid, th, fbrx, fbry, trh, flh: integer): TBlockParms;
+begin
+   result := New(x, y, w, h, brx, bry, bh, bid);
+   result.th := th;
+   result.fbrx := fbrx;
+   result.fbry := fbry;
+   result.trh := trh;
+   result.flh := flh;
+end;
+
+class function TBlockParms.New(AFrom: IXMLElement): TBlockParms;
 var
    attr: string;
    at: integer;
 begin
+   with TXMLProcessor do
+      result := New(GetIntFromXMLNode(AFrom, 'x'),
+                    GetIntFromXMLNode(AFrom, 'y'),
+                    GetIntFromXMLNode(AFrom, 'w'),
+                    GetIntFromXMLNode(AFrom, 'h'),
+                    GetIntFromXMLNode(AFrom, 'brx'),
+                    GetIntFromXMLNode(AFrom, 'bry'),
+                    GetIntFromXMLNode(AFrom, 'bh'),
+                    GetIntFromXMLNode(AFrom, ID_ATTR, ID_INVALID),
+                    GetIntFromXMLNode(AFrom, 'th'),
+                    GetIntFromXMLNode(AFrom, 'fbrx'),
+                    GetIntFromXMLNode(AFrom, 'fbry'),
+                    GetIntFromXMLNode(AFrom, 'trh'),
+                    GetIntFromXMLNode(AFrom, 'flh'));
    attr := AFrom.GetAttribute(BLOCK_TYPE_ATTR);
    at := StrToIntDef(attr, -1);
    if at = -1 then
       result.bt := TRttiEnumerationType.GetValue<TBlockType>(attr)
    else
       result.bt := TBlockType(at);
-   with TXMLProcessor do
-   begin
-      result.x :=    GetIntFromXMLNode(AFrom, 'x');
-      result.y :=    GetIntFromXMLNode(AFrom, 'y');
-      result.h :=    GetIntFromXMLNode(AFrom, 'h');
-      result.w :=    GetIntFromXMLNode(AFrom, 'w');
-      result.brx :=  GetIntFromXMLNode(AFrom, 'brx');
-      result.bh :=   GetIntFromXMLNode(AFrom, 'bh');
-      result.bry :=  GetIntFromXMLNode(AFrom, 'bry');
-      result.th :=   GetIntFromXMLNode(AFrom, 'th');
-      result.fbrx := GetIntFromXMLNode(AFrom, 'fbrx');
-      result.fbry := GetIntFromXMLNode(AFrom, 'fbry');
-      result.trh :=  GetIntFromXMLNode(AFrom, 'trh');
-      result.flh :=  GetIntFromXMLNode(AFrom, 'flh');
-      result.bid :=  GetIntFromXMLNode(AFrom, ID_ATTR, ID_INVALID);
-   end;
 end;
 
 procedure TNameEdit.WMKillFocus(var msg: TWMKillFocus);

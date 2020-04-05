@@ -24,7 +24,7 @@ unit MultiInstr_Block;
 interface
 
 uses
-   Vcl.Graphics, System.Classes, Base_Block, CommonInterfaces, MultiLine_Block;
+   Vcl.Graphics, System.Classes, Base_Block, CommonInterfaces, MultiLine_Block, CommonTypes;
 
 type
 
@@ -34,7 +34,7 @@ type
          procedure Paint; override;
       public
          constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID); overload; override;
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload; override;
          function Clone(ABranch: TBranch): TBlock; override;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
          procedure ChangeColor(AColor: TColor); override;
@@ -43,12 +43,12 @@ type
 implementation
 
 uses
-   System.SysUtils, System.StrUtils, System.UITypes, ApplicationCommon, CommonTypes, LangDefinition, YaccLib;
+   System.SysUtils, System.StrUtils, System.UITypes, ApplicationCommon, LangDefinition, YaccLib;
 
-constructor TMultiInstrBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
+constructor TMultiInstrBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
    FType := blMultiInstr;
-   inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
+   inherited Create(ABranch, ABlockParms);
    FStatements.ShowHint := true;
 end;
 
@@ -56,7 +56,7 @@ function TMultiInstrBlock.Clone(ABranch: TBranch): TBlock;
 var
    block: TMultiInstrBlock;
 begin
-   block := TMultiInstrBlock.Create(ABranch, Left, Top, Width, Height);
+   block := TMultiInstrBlock.Create(ABranch, TBlockParms.New(Left, Top, Width, Height, ID_INVALID));
    block.FStatements.CloneFrom(FStatements);
    block.CloneFrom(Self);
    result := block;
@@ -70,7 +70,7 @@ end;
 
 constructor TMultiInstrBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, 0, 0, 140, 91);
+   Create(ABranch, TBlockParms.New(0, 0, 140, 91, ID_INVALID));
 end;
 
 procedure TMultiInstrBlock.OnChangeMemo(Sender: TObject);

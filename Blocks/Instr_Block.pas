@@ -23,14 +23,14 @@ unit Instr_Block;
 interface
 
 uses
-   Vcl.Graphics, System.SysUtils, Base_Block, CommonInterfaces;
+   Vcl.Graphics, System.SysUtils, Base_Block, CommonInterfaces, CommonTypes;
 
 type
 
    TInstrBlock = class(TBlock)
       public
          constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID); overload;
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
          function Clone(ABranch: TBranch): TBlock; override;
       protected
          procedure Paint; override;
@@ -40,21 +40,25 @@ type
 implementation
 
 uses
-   System.StrUtils, Vcl.Forms, Vcl.Controls, System.Types, System.Classes, CommonTypes,
-   ApplicationCommon;
+   System.StrUtils, Vcl.Forms, Vcl.Controls, System.Types, System.Classes, ApplicationCommon;
 
-constructor TInstrBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
+constructor TInstrBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
    FType := blInstr;
 
-   inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
+   inherited Create(ABranch,
+                    ABlockParms.x,
+                    ABlockParms.y,
+                    ABlockParms.w,
+                    ABlockParms.h,
+                    ABlockParms.bid);
 
-   FStatement.SetBounds(1, 1, AWidth-2, 19);
+   FStatement.SetBounds(1, 1, ABlockParms.w-2, 19);
    FStatement.Anchors := [akRight, akLeft, akTop];
    FStatement.SetLRMargins(2, 2);
 
-   BottomHook := AWidth div 2;
+   BottomHook := ABlockParms.w div 2;
    BottomPoint.X := BottomHook;
    BottomPoint.Y := FStatement.BoundsRect.Bottom + 1;
    IPoint.X := BottomHook + 30;
@@ -66,12 +70,12 @@ end;
 
 constructor TInstrBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, 0, 0, 140, 51);
+   Create(ABranch, TBlockParms.New(0, 0, 140, 51, ID_INVALID));
 end;
 
 function TInstrBlock.Clone(ABranch: TBranch): TBlock;
 begin
-   result := TInstrBlock.Create(ABranch, Left, Top, Width, Height);
+   result := TInstrBlock.Create(ABranch, TBlockParms.New(Left, Top, Width, Height, ID_INVALID));
    result.CloneFrom(Self);
 end;
 

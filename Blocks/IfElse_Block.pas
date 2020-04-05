@@ -24,7 +24,8 @@ unit IfElse_Block;
 interface
 
 uses
-   WinApi.Windows, Vcl.Graphics, Vcl.ComCtrls, Base_Block, OmniXML, CommonInterfaces;
+   WinApi.Windows, Vcl.Graphics, Vcl.ComCtrls, Base_Block, OmniXML, CommonInterfaces,
+   CommonTypes;
 
 type
 
@@ -40,7 +41,7 @@ type
          function GetDiamondTop: TPoint; override;
       public
          constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, p1X, p3X, b_hook, t_hook, p1Y, p3Y, f_hook, tt_hook: integer; AId: integer = ID_INVALID); overload;
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
          function Clone(ABranch: TBranch): TBlock; override;
          procedure ResizeHorz(AContinue: boolean); override;
          procedure ResizeVert(AContinue: boolean); override;
@@ -56,15 +57,20 @@ const
 implementation
 
 uses
-   System.SysUtils, System.Classes, System.Types, System.Math, Return_Block, CommonTypes,
-   ApplicationCommon;
+   System.SysUtils, System.Classes, System.Types, System.Math, Return_Block, ApplicationCommon;
 
-constructor TIfElseBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, p1X, p3X, b_hook, t_hook, p1Y, p3Y, f_hook, tt_hook: integer; AId: integer = ID_INVALID);
+constructor TIfElseBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
    FType := blIfElse;
 
-   inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, Point(p1X, p1Y), AId);
+   inherited Create(ABranch,
+                    ABlockParms.x,
+                    ABlockParms.y,
+                    ABlockParms.w,
+                    ABlockParms.h,
+                    Point(ABlockParms.brx, ABlockParms.bry),
+                    ABlockParms.bid);
 
    FInitParms.Width := 240;
    FInitParms.Height := 101;
@@ -74,17 +80,17 @@ begin
    FInitParms.P2X := 229;
 
    TrueBranch := Branch;
-   FalseBranch := AddBranch(Point(p3X, p3Y));
+   FalseBranch := AddBranch(Point(ABlockParms.fbrx, ABlockParms.fbry));
 
    FFixedBranches := 2;
-   BottomHook := b_hook;
-   TopHook.X := t_hook;
+   BottomHook := ABlockParms.bh;
+   TopHook.X := ABlockParms.th;
    BottomPoint.X := BottomHook;
    BottomPoint.Y := Height-1;
    IPoint.Y := 50;
    TopHook.Y := 30;
-   TrueHook := tt_hook;
-   FalseHook := f_hook;
+   TrueHook := ABlockParms.trh;
+   FalseHook := ABlockParms.flh;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    FStatement.Alignment := taCenter;
@@ -92,15 +98,30 @@ begin
 end;
 
 function TIfElseBlock.Clone(ABranch: TBranch): TBlock;
+var
+   blockParms: TBlockParms;
 begin
-   result := TIfElseBlock.Create(ABranch, Left, Top, Width, Height, TrueBranch.Hook.X, FalseBranch.Hook.X, BottomHook,
-                                 TopHook.X, TrueBranch.Hook.Y, FalseBranch.Hook.Y, FalseHook, TrueHook);
+   blockParms := TBlockParms.New(
+      Left,
+      Top,
+      Width,
+      Height,
+      TrueBranch.Hook.X,
+      TrueBranch.Hook.Y,
+      BottomHook,
+      ID_INVALID,
+      TopHook.X,
+      FalseBranch.Hook.X,
+      FalseBranch.Hook.Y,
+      TrueHook,
+      FalseHook);
+   result := TIfElseBlock.Create(ABranch, blockParms);
    result.CloneFrom(Self);
 end;
 
 constructor TIfElseBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, 0, 0, 240, 101, 5, 229, 120, 120, 70, 70, 229, 5);
+   Create(ABranch, TBlockParms.New(0, 0, 240, 101, 5, 70, 120, ID_INVALID, 120, 229, 70, 5, 229));
 end;
 
 procedure TIfElseBlock.Paint;

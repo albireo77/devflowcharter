@@ -24,7 +24,7 @@ unit InOut_Block;
 interface
 
 uses
-   Vcl.Graphics, Base_Block, CommonInterfaces;
+   Vcl.Graphics, Base_Block, CommonInterfaces, CommonTypes;
 
 type
 
@@ -32,21 +32,21 @@ type
       protected
          FLabel,
          FLabelSegoe: string;
-         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; const AText: string; AId: integer = ID_INVALID; AdjustWidth: boolean = false); overload;
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms; const AText: string; AdjustWidth: boolean = false); overload;
          procedure Paint; override;
          procedure PutTextControls; override;
    end;
 
    TInputBlock = class(TInOutBlock)
       public
-         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID; AdjustWidth: boolean = false); overload;
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms; AdjustWidth: boolean = false); overload;
          constructor Create(ABranch: TBranch); overload;
          function Clone(ABranch: TBranch): TBlock; override;
    end;
 
    TOutputBlock = class(TInOutBlock)
       public
-         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID; AdjustWidth: boolean = false); overload;
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms; AdjustWidth: boolean = false); overload;
          constructor Create(ABranch: TBranch); overload;
          function Clone(ABranch: TBranch): TBlock; override;
    end;
@@ -55,14 +55,19 @@ implementation
 
 uses
    Vcl.Controls, System.Classes, WinApi.Windows, System.Types, System.UITypes, System.Math,
-   ApplicationCommon, CommonTypes;
+   ApplicationCommon;
 
-constructor TInOutBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; const AText: string; AId: integer = ID_INVALID; AdjustWidth: boolean = false);
+constructor TInOutBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms; const AText: string; AdjustWidth: boolean = false);
 var
    w: integer;
 begin
 
-   inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
+   inherited Create(ABranch,
+                    ABlockParms.x,
+                    ABlockParms.y,
+                    ABlockParms.w,
+                    ABlockParms.h,
+                    ABlockParms.bid);
 
    FStatement.Anchors := [akRight, akLeft, akTop];
    FShape := shpParallel;
@@ -87,42 +92,42 @@ begin
    Constraints.MinHeight := 61;
 end;
 
-constructor TInputBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID; AdjustWidth: boolean = false);
+constructor TInputBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms; AdjustWidth: boolean = false);
 begin
    FType := blInput;
    FLabel := i18Manager.GetString('CaptionIn');
    FLabelSegoe := GInfra.CurrentLang.LabelIn;
-   inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, GInfra.CurrentLang.InputFunction, AId, AdjustWidth);
+   inherited Create(ABranch, ABlockParms, GInfra.CurrentLang.InputFunction, AdjustWidth);
 end;
 
-constructor TOutputBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID; AdjustWidth: boolean = false);
+constructor TOutputBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms; AdjustWidth: boolean = false);
 begin
    FType := blOutput;
    FLabel := i18Manager.GetString('CaptionOut');
    FLabelSegoe := GInfra.CurrentLang.LabelOut;
-   inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, GInfra.CurrentLang.OutputFunction, AId, AdjustWidth);
+   inherited Create(ABranch, ABlockParms, GInfra.CurrentLang.OutputFunction, AdjustWidth);
 end;
 
 function TInputBlock.Clone(ABranch: TBranch): TBlock;
 begin
-   result := TInputBlock.Create(ABranch, Left, Top, Width, Height);
+   result := TInputBlock.Create(ABranch, TBlockParms.New(Left, Top, Width, Height, ID_INVALID));
    result.CloneFrom(Self);
 end;
 
 function TOutputBlock.Clone(ABranch: TBranch): TBlock;
 begin
-   result := TOutputBlock.Create(ABranch, Left, Top, Width, Height);
+   result := TOutputBlock.Create(ABranch, TBlockParms.New(Left, Top, Width, Height, ID_INVALID));
    result.CloneFrom(Self);
 end;
 
 constructor TInputBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, 0, 0, 150, 61, ID_INVALID, true);
+   Create(ABranch, TBlockParms.New(0, 0, 150, 61, ID_INVALID), true);
 end;
 
 constructor TOutputBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, 0, 0, 150, 61, ID_INVALID, true);
+   Create(ABranch, TBlockParms.New(0, 0, 150, 61, ID_INVALID), true);
 end;
 
 procedure TInOutBlock.Paint;

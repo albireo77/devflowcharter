@@ -24,14 +24,14 @@ unit Folder_Block;
 interface
 
 uses
-   System.Types, Base_Block, CommonInterfaces;
+   System.Types, Base_Block, CommonInterfaces, CommonTypes;
 
 type
 
    TFolderBlock = class(TGroupBlock)
       public
          constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; AId: integer = ID_INVALID); overload;
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
          function Clone(ABranch: TBranch): TBlock; override;
       protected
          procedure Paint; override;
@@ -43,14 +43,20 @@ type
 implementation
 
 uses
-   System.StrUtils, CommonTypes, ApplicationCommon;
+   System.StrUtils, ApplicationCommon;
 
-constructor TFolderBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; AId: integer = ID_INVALID);
+constructor TFolderBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
    FType := blFolder;
 
-   inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, Point(p1X, p1Y), AId);
+   inherited Create(ABranch,
+                    ABlockParms.x,
+                    ABlockParms.y,
+                    ABlockParms.w,
+                    ABlockParms.h,
+                    Point(ABlockParms.brx, ABlockParms.bry),
+                    ABlockParms.bid);
 
    FInitParms.Width := 140;
    FInitParms.Height := 61;
@@ -60,11 +66,11 @@ begin
    FInitParms.P2X := 0;
    FInitParms.HeightAffix := 32;
 
-   BottomPoint.X := b_hook;
+   BottomPoint.X := ABlockParms.bh;
    BottomPoint.Y := Height-31;
    TopHook.Y := 0;
-   BottomHook := b_hook;
-   TopHook.X := p1X;
+   BottomHook := ABlockParms.bh;
+   TopHook.X := ABlockParms.brx;
    IPoint.Y := 8;
    FShape := shpFolder;
    Constraints.MinWidth := FInitParms.Width;
@@ -74,14 +80,25 @@ begin
 end;
 
 function TFolderBlock.Clone(ABranch: TBranch): TBlock;
+var
+   blockParms: TBlockParms;
 begin
-   result := TFolderBlock.Create(ABranch, Left, Top, Width, Height, BottomHook, Branch.Hook.X, Branch.Hook.Y);
+   blockParms := TBlockParms.New(
+      Left,
+      Top,
+      Width,
+      Height,
+      Branch.Hook.X,
+      Branch.Hook.Y,
+      BottomHook,
+      ID_INVALID);
+   result := TFolderBlock.Create(ABranch, blockParms);
    result.CloneFrom(Self);
 end;
 
 constructor TFolderBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, 0, 0, 140, 61, 70, 70, 30);
+   Create(ABranch, TBlockParms.New(0, 0, 140, 61, 70, 30, 70, ID_INVALID));
 end;
 
 procedure TFolderBlock.Paint;
