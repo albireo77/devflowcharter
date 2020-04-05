@@ -28,7 +28,7 @@ uses
    SynEditCodeFolding,
 {$ENDIF}
    System.Classes, Vcl.StdCtrls, Vcl.Forms, Vcl.Controls, Generics.Defaults,
-   Vcl.ComCtrls, WinApi.Messages, SynEditTypes;
+   Vcl.ComCtrls, WinApi.Messages, SynEditTypes, OmniXML;
 
 type
 
@@ -109,10 +109,14 @@ type
    end;
 
    T3Strings = record
-     S0,
-     S1,
-     S2: string;
+     S0, S1, S2: string;
      class function Extract(const AFrom: string): T3Strings; static;
+   end;
+
+   TBlockInitParms = record
+      x, y, h, w, brx, bh, bry, bid, th, fbrx, fbry, trh, flh: integer;
+      bt: TBlockType;
+      class function Extract(AFrom: IXMLElement): TBlockInitParms; static;
    end;
 
    PTypesSet = ^TTypesSet;
@@ -138,7 +142,7 @@ type
 implementation
 
 uses
-   System.SysUtils, CommonInterfaces, ApplicationCommon;
+   System.SysUtils, System.Rtti, CommonInterfaces, ApplicationCommon;
 
 constructor TComponentComparer.Create(ACompareType: integer);
 begin
@@ -209,6 +213,32 @@ begin
       result.S1 := tokens[1];
    if i > 2 then
       result.S2 := tokens[2];
+end;
+
+class function TBlockInitParms.Extract(AFrom: IXMLElement): TBlockInitParms;
+var
+   attr: string;
+   at: integer;
+begin
+   attr := AFrom.GetAttribute(BLOCK_TYPE_ATTR);
+   at := StrToIntDef(attr, -1);
+   if at = -1 then
+      result.bt := TRttiEnumerationType.GetValue<TBlockType>(attr)
+   else
+      result.bt := TBlockType(at);
+   result.x :=    StrToIntDef(AFrom.GetAttribute('x'), 0);
+   result.y :=    StrToIntDef(AFrom.GetAttribute('y'), 0);
+   result.h :=    StrToIntDef(AFrom.GetAttribute('h'), 0);
+   result.w :=    StrToIntDef(AFrom.GetAttribute('w'), 0);
+   result.brx :=  StrToIntDef(AFrom.GetAttribute('brx'), 0);
+   result.bh :=   StrToIntDef(AFrom.GetAttribute('bh'), 0);
+   result.bry :=  StrToIntDef(AFrom.GetAttribute('bry'), 0);
+   result.bid :=  StrToIntDef(AFrom.GetAttribute(ID_ATTR), ID_INVALID);
+   result.th :=   StrToIntDef(AFrom.GetAttribute('th'), 0);
+   result.fbrx := StrToIntDef(AFrom.GetAttribute('fbrx'), 0);
+   result.fbry := StrToIntDef(AFrom.GetAttribute('fbry'), 0);
+   result.trh :=  StrToIntDef(AFrom.GetAttribute('trh'), 0);
+   result.flh :=  StrToIntDef(AFrom.GetAttribute('flh'), 0);
 end;
 
 procedure TNameEdit.WMKillFocus(var msg: TWMKillFocus);

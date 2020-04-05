@@ -201,7 +201,10 @@ begin
 
     while tag <> nil do
     begin
-       newBlock := TBlockFactory.Create(tag, branch, tab);
+       if tab <> nil then
+          newBlock := TBlockFactory.Create(tag, tab)
+       else if branch <> nil then
+          newBlock := TBlockFactory.Create(tag, branch);
        tab := nil;
        if newBlock <> nil then
        begin
