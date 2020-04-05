@@ -50,6 +50,7 @@ type
       class function CountChildTags(ATag: IXMLElement; const AChildTagName: string; AWithText: boolean = false): integer;
       class function GetBoolFromChildTag(ATag: IXMLElement; const ATagName: string; ADefault: boolean = false): boolean;
       class function GetBoolFromXMLNode(ATag: IXMLElement; const AAttrName: string; ADefault: boolean = false): boolean;
+      class function GetIntegerFromXMLNode(ATag: IXMLElement; const AAttrName: string = ''; ADefault: integer = 0): integer;
       class function ImportFlowchartFromXMLTag(ATag: IXMLElement;
                                                AParent: TWinControl;
                                                APrevBlock: TBlock;
@@ -122,6 +123,21 @@ begin
          result := true
       else if SameText('false', ctext) then
          result := false;
+   end;
+end;
+
+class function TXMLProcessor.GetIntegerFromXMLNode(ATag: IXMLElement; const AAttrName: string = ''; ADefault: integer = 0): integer;
+var
+   ctext: string;
+begin
+   result := ADefault;
+   if ATag <> nil then
+   begin
+      if AAttrName.IsEmpty then
+         ctext := ATag.Text.Trim
+      else
+         ctext := ATag.GetAttribute(AAttrName).Trim;
+      result := StrToIntDef(ctext, ADefault);
    end;
 end;
 

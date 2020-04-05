@@ -142,7 +142,7 @@ type
 implementation
 
 uses
-   System.SysUtils, System.Rtti, CommonInterfaces, ApplicationCommon;
+   System.SysUtils, System.Rtti, CommonInterfaces, ApplicationCommon, XMLProcessor;
 
 constructor TComponentComparer.Create(ACompareType: integer);
 begin
@@ -226,19 +226,22 @@ begin
       result.bt := TRttiEnumerationType.GetValue<TBlockType>(attr)
    else
       result.bt := TBlockType(at);
-   result.x :=    StrToIntDef(AFrom.GetAttribute('x'), 0);
-   result.y :=    StrToIntDef(AFrom.GetAttribute('y'), 0);
-   result.h :=    StrToIntDef(AFrom.GetAttribute('h'), 0);
-   result.w :=    StrToIntDef(AFrom.GetAttribute('w'), 0);
-   result.brx :=  StrToIntDef(AFrom.GetAttribute('brx'), 0);
-   result.bh :=   StrToIntDef(AFrom.GetAttribute('bh'), 0);
-   result.bry :=  StrToIntDef(AFrom.GetAttribute('bry'), 0);
-   result.bid :=  StrToIntDef(AFrom.GetAttribute(ID_ATTR), ID_INVALID);
-   result.th :=   StrToIntDef(AFrom.GetAttribute('th'), 0);
-   result.fbrx := StrToIntDef(AFrom.GetAttribute('fbrx'), 0);
-   result.fbry := StrToIntDef(AFrom.GetAttribute('fbry'), 0);
-   result.trh :=  StrToIntDef(AFrom.GetAttribute('trh'), 0);
-   result.flh :=  StrToIntDef(AFrom.GetAttribute('flh'), 0);
+   with TXMLProcessor do
+   begin
+      result.x :=    GetIntegerFromXMLNode(AFrom, 'x');
+      result.y :=    GetIntegerFromXMLNode(AFrom, 'y');
+      result.h :=    GetIntegerFromXMLNode(AFrom, 'h');
+      result.w :=    GetIntegerFromXMLNode(AFrom, 'w');
+      result.brx :=  GetIntegerFromXMLNode(AFrom, 'brx');
+      result.bh :=   GetIntegerFromXMLNode(AFrom, 'bh');
+      result.bry :=  GetIntegerFromXMLNode(AFrom, 'bry');
+      result.th :=   GetIntegerFromXMLNode(AFrom, 'th');
+      result.fbrx := GetIntegerFromXMLNode(AFrom, 'fbrx');
+      result.fbry := GetIntegerFromXMLNode(AFrom, 'fbry');
+      result.trh :=  GetIntegerFromXMLNode(AFrom, 'trh');
+      result.flh :=  GetIntegerFromXMLNode(AFrom, 'flh');
+      result.bid :=  GetIntegerFromXMLNode(AFrom, ID_ATTR, ID_INVALID);
+   end;
 end;
 
 procedure TNameEdit.WMKillFocus(var msg: TWMKillFocus);
