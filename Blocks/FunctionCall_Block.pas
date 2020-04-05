@@ -47,12 +47,7 @@ constructor TFunctionCallBlock.Create(ABranch: TBranch; const ABlockParms: TBloc
 begin
    FType := blFuncCall;
 
-   inherited Create(ABranch,
-                    ABlockParms.x,
-                    ABlockParms.y,
-                    ABlockParms.w,
-                    ABlockParms.h,
-                    ABlockParms.bid);
+   inherited Create(ABranch, ABlockParms);
 
    FStatement.SetBounds(10, 1, ABlockParms.w-20, 19);
    FStatement.Anchors := [akRight, akLeft, akTop];

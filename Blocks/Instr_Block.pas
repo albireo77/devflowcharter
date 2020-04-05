@@ -47,12 +47,7 @@ begin
 
    FType := blInstr;
 
-   inherited Create(ABranch,
-                    ABlockParms.x,
-                    ABlockParms.y,
-                    ABlockParms.w,
-                    ABlockParms.h,
-                    ABlockParms.bid);
+   inherited Create(ABranch, ABlockParms);
 
    FStatement.SetBounds(1, 1, ABlockParms.w-2, 19);
    FStatement.Anchors := [akRight, akLeft, akTop];

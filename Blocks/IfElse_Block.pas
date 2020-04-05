@@ -64,13 +64,7 @@ begin
 
    FType := blIfElse;
 
-   inherited Create(ABranch,
-                    ABlockParms.x,
-                    ABlockParms.y,
-                    ABlockParms.w,
-                    ABlockParms.h,
-                    Point(ABlockParms.brx, ABlockParms.bry),
-                    ABlockParms.bid);
+   inherited Create(ABranch, ABlockParms);
 
    FInitParms.Width := 240;
    FInitParms.Height := 101;

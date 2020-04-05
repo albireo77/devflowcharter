@@ -130,7 +130,7 @@ type
          property BType: TBlockType read FType default blUnknown;
          property ParentBranch: TBranch read FParentBranch;
          property Id: integer read GetId;
-         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms);
          destructor Destroy; override;
          function Clone(ABranch: TBranch): TBlock; virtual;
          procedure ChangeColor(AColor: TColor); virtual;
@@ -219,7 +219,7 @@ type
          Expanded: boolean;
          FFoldParms: TInitParms;
          property BlockImportMode: boolean read FBlockImportMode write FBlockImportMode;
-         constructor Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; const AHook: TPoint; AId: integer = ID_INVALID);
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms);
          destructor Destroy; override;
          procedure ResizeHorz(AContinue: boolean); virtual;
          procedure ResizeVert(AContinue: boolean); virtual;
@@ -289,7 +289,7 @@ type
    THackControl = class(TControl);
    THackCustomEdit = class(TCustomEdit);
 
-constructor TBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: integer; AId: integer = ID_INVALID);
+constructor TBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
    if ABranch <> nil then
@@ -317,9 +317,9 @@ begin
    ControlStyle := ControlStyle + [csOpaque];
    ParentBackground := false;
    Canvas.TextFlags := Canvas.TextFlags or ETO_OPAQUE;
-   SetBounds(ALeft, ATop, AWidth, AHeight);
+   SetBounds(ABlockParms.x, ABlockParms.y, ABlockParms.w, ABlockParms.h);
 
-   FId := GProject.Register(Self, AId);
+   FId := GProject.Register(Self, ABlockParms.bid);
    FStatement := TStatement.Create(Self);
    FMouseLeave := true;
    FShape := shpRectangle;
@@ -335,10 +335,10 @@ begin
    OnDragDrop  := MyOnDragDrop;
 end;
 
-constructor TGroupBlock.Create(ABranch: TBranch; ALeft, ATop, AWidth, AHeight: Integer; const AHook: TPoint; AId: integer = ID_INVALID);
+constructor TGroupBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ALeft, ATop, AWidth, AHeight, AId);
+   inherited Create(ABranch, ABlockParms);
 
    FStatement.Width := 65;
 
@@ -372,7 +372,7 @@ begin
    FBranchList := TObjectList<TBranch>.Create;
    FBranchList.Add(nil);
 
-   Branch := AddBranch(AHook);
+   Branch := AddBranch(Point(ABlockParms.brx, ABlockParms.bry));
 end;
 
 procedure TBlock.CloneFrom(ABlock: TBlock);

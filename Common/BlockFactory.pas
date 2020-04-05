@@ -95,7 +95,7 @@ begin
    p := TBlockParms.New(ATag);
    if p.bt = blMain then
    begin
-      result := TMainBlock.Create(ATab, p.x, p.y, p.w, p.h, p.bh, p.brx, p.bry, p.bid);
+      result := TMainBlock.Create(ATab, p);
       result.GetFromXML(ATag);
    end;
 end;

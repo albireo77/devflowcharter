@@ -37,7 +37,7 @@ type
          function GetMaxBounds: TPoint;
       public
          UserFunction: TObject;
-         constructor Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; AId: integer = ID_INVALID); overload;
+         constructor Create(APage: TBlockTabSheet; const ABlockParms: TBlockParms); overload;
          constructor Create(APage: TBlockTabSheet; const ATopLeft: TPoint); overload;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
@@ -80,7 +80,7 @@ uses
    XMLProcessor, DeclareList, Navigator_Form, Return_Block, LangDefinition, UserFunction,
    Comment;
 
-constructor TMainBlock.Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight, b_hook, p1X, p1Y: integer; AId: integer = ID_INVALID);
+constructor TMainBlock.Create(APage: TBlockTabSheet; const ABlockParms: TBlockParms);
 var
    defWidth, defWidthHalf: integer;
 begin
@@ -88,7 +88,7 @@ begin
    FType := blMain;
    FPage := APage;
 
-   inherited Create(nil, ALeft, ATop, AWidth, AHeight, Point(p1X, p1Y), AId);
+   inherited Create(nil, ABlockParms);
 
    FStartLabel := i18Manager.GetString('CaptionStart');
    FStopLabel := i18Manager.GetString('CaptionStop');
@@ -104,8 +104,8 @@ begin
    end
    else
    begin
-      BottomHook := b_hook;
-      TopHook.X := p1X;
+      BottomHook := ABlockParms.bh;
+      TopHook.X := ABlockParms.brx;
    end;
 
    FInitParms.Width := defWidth;
@@ -130,15 +130,18 @@ begin
 end;
 
 constructor TMainBlock.Create(APage: TBlockTabSheet; const ATopLeft: TPoint);
+var
+   blockParms: TBlockParms;
 begin
-   Create(APage,
-          ATopLeft.X,
-          ATopLeft.Y,
-          MAIN_BLOCK_DEF_WIDTH,
-          MAIN_BLOCK_DEF_HEIGHT,
-          MAIN_BLOCK_DEF_WIDTH div 2,
-          MAIN_BLOCK_DEF_WIDTH div 2,
-          MAIN_BLOCK_DEF_HEIGHT-42);
+   blockParms := TBlockParms.New(ATopLeft.X,
+                                 ATopLeft.Y,
+                                 MAIN_BLOCK_DEF_WIDTH,
+                                 MAIN_BLOCK_DEF_HEIGHT,
+                                 MAIN_BLOCK_DEF_WIDTH div 2,
+                                 MAIN_BLOCK_DEF_HEIGHT-42,
+                                 MAIN_BLOCK_DEF_WIDTH div 2,
+                                 ID_INVALID);
+   Create(APage, blockParms);
 end;
 
 procedure TMainBlock.SetPage(APage: TBlockTabSheet);
