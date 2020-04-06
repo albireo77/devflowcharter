@@ -30,6 +30,9 @@ uses
    System.Classes, Vcl.StdCtrls, Vcl.Forms, Vcl.Controls, Generics.Defaults,
    Vcl.ComCtrls, WinApi.Messages, System.Types, SynEditTypes, OmniXML;
 
+const
+   ID_INVALID = -1;
+
 type
 
    TCustomCursor = (crNormal, crIfElse, crFor, crRepeat, crWhile, crInstr, crMultiInstr,
@@ -117,9 +120,9 @@ type
       x, y, h, w, bh, bid, th, trh, flh: integer;
       br, br2: TPoint;
       bt: TBlockType;
-      class function New(x, y, w, h, bid: integer): TBlockParms; overload; static;
-      class function New(x, y, w, h, brx, bry, bh, bid: integer): TBlockParms; overload; static;
-      class function New(x, y, w, h, brx, bry, bh, th, br2x, br2y, trh, flh, bid: integer): TBlockParms; overload; static;
+      class function New(x, y, w, h: integer; bid: integer = ID_INVALID): TBlockParms; overload; static;
+      class function New(x, y, w, h, brx, bry, bh: integer; bid: integer = ID_INVALID): TBlockParms; overload; static;
+      class function New(x, y, w, h, brx, bry, bh, th, br2x, br2y, trh, flh: integer; bid: integer = ID_INVALID): TBlockParms; overload; static;
       class function New(AFrom: IXMLElement): TBlockParms; overload; static;
    end;
 
@@ -219,7 +222,7 @@ begin
       result.S2 := tokens[2];
 end;
 
-class function TBlockParms.New(x, y, w, h, bid: integer): TBlockParms;
+class function TBlockParms.New(x, y, w, h: integer; bid: integer = ID_INVALID): TBlockParms;
 begin
    result.bt := blUnknown;
    result.x := x;
@@ -229,14 +232,14 @@ begin
    result.bid := bid;
 end;
 
-class function TBlockParms.New(x, y, w, h, brx, bry, bh, bid: integer): TBlockParms;
+class function TBlockParms.New(x, y, w, h, brx, bry, bh: integer; bid: integer = ID_INVALID): TBlockParms;
 begin
    result := New(x, y, w, h, bid);
    result.br := Point(brx, bry);
    result.bh := bh;
 end;
 
-class function TBlockParms.New(x, y, w, h, brx, bry, bh, th, br2x, br2y, trh, flh, bid: integer): TBlockParms;
+class function TBlockParms.New(x, y, w, h, brx, bry, bh, th, br2x, br2y, trh, flh: integer; bid: integer = ID_INVALID): TBlockParms;
 begin
    result := New(x, y, w, h, brx, bry, bh, bid);
    result.th := th;

@@ -24,11 +24,9 @@ unit CommonInterfaces;
 interface
 
 uses
-   Vcl.Controls, Vcl.ComCtrls, OmniXML, Vcl.Graphics, System.Types,
-   CommonTypes, MemoEx;
+   Vcl.Controls, Vcl.ComCtrls, OmniXML, Vcl.Graphics, System.Types, CommonTypes, MemoEx;
 
 const
-   ID_INVALID      = -1;
 
    PAGE_INDEX_COMPARE = 0;
    Z_ORDER_COMPARE    = 1;

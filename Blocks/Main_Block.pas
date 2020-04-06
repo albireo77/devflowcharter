@@ -139,8 +139,7 @@ begin
                                  MAIN_BLOCK_DEF_HEIGHT,
                                  MAIN_BLOCK_DEF_WIDTH div 2,
                                  MAIN_BLOCK_DEF_HEIGHT-42,
-                                 MAIN_BLOCK_DEF_WIDTH div 2,
-                                 ID_INVALID);
+                                 MAIN_BLOCK_DEF_WIDTH div 2);
    Create(APage, blockParms);
 end;
 

@@ -24,7 +24,7 @@ unit FunctionCall_Block;
 interface
 
 uses
-   Vcl.Graphics, Base_Block, CommonInterfaces, CommonTypes;
+   Vcl.Graphics, Base_Block, CommonTypes;
 
 type
 
@@ -73,7 +73,7 @@ end;
 
 constructor TFunctionCallBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 140, 51, ID_INVALID));
+   Create(ABranch, TBlockParms.New(0, 0, 140, 51));
 end;
 
 procedure TFunctionCallBlock.Paint;

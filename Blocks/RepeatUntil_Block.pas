@@ -24,7 +24,7 @@ unit RepeatUntil_Block;
 interface
 
 uses
-   Vcl.Graphics, System.Types, Base_Block, CommonInterfaces, CommonTypes;
+   Vcl.Graphics, System.Types, Base_Block, CommonTypes;
 
 type
 
@@ -91,7 +91,7 @@ end;
 
 constructor TRepeatUntilBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 240, 111, 120, 29, 120, ID_INVALID));
+   Create(ABranch, TBlockParms.New(0, 0, 240, 111, 120, 29, 120));
 end;
 
 procedure TRepeatUntilBlock.Paint;

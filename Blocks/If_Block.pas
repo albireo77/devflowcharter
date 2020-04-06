@@ -23,7 +23,7 @@ unit If_Block;
 interface
 
 uses
-   Vcl.Graphics, System.Types, Base_Block, CommonInterfaces, CommonTypes;
+   Vcl.Graphics, System.Types, Base_Block, CommonTypes;
 
 type
 
@@ -78,7 +78,7 @@ end;
 
 constructor TIfBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 200, 121, 100, 89, 100, ID_INVALID));
+   Create(ABranch, TBlockParms.New(0, 0, 200, 121, 100, 89, 100));
 end;
 
 procedure TIfBlock.Paint;

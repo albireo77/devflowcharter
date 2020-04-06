@@ -24,7 +24,7 @@ interface
 
 uses
    Vcl.StdCtrls, Vcl.Graphics, System.Classes, System.SysUtils, Vcl.ComCtrls, System.Types,
-   Vcl.Controls, Base_Block, OmniXML, CommonInterfaces, CommonTypes, Statement;
+   Vcl.Controls, Base_Block, OmniXML, CommonTypes, Statement;
 
 type
 
@@ -131,7 +131,7 @@ end;
 
 constructor TCaseBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 200, 131, 100, 99, 100, ID_INVALID));
+   Create(ABranch, TBlockParms.New(0, 0, 200, 131, 100, 99, 100));
 end;
 
 procedure TCaseBlock.Paint;

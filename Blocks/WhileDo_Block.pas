@@ -24,7 +24,7 @@ unit WhileDo_Block;
 interface
 
 uses
-   Vcl.Graphics, System.Types, Base_Block, CommonInterfaces, CommonTypes;
+   Vcl.Graphics, System.Types, Base_Block, CommonTypes;
 
 type
 
@@ -78,7 +78,7 @@ end;
 
 constructor TWhileDoBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 200, 131, 100, 109, 100, ID_INVALID));
+   Create(ABranch, TBlockParms.New(0, 0, 200, 131, 100, 109, 100));
 end;
 
 procedure TWhileDoBlock.Paint;

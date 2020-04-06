@@ -22,7 +22,7 @@ unit Return_Block;
 interface
 
 uses
-   Vcl.Graphics, System.Classes, Vcl.StdCtrls, Base_Block, CommonInterfaces, CommonTypes;
+   Vcl.Graphics, System.Classes, Vcl.StdCtrls, Base_Block, CommonTypes;
 
 type
 
@@ -85,7 +85,7 @@ end;
 
 constructor TReturnBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 140, 53, ID_INVALID));
+   Create(ABranch, TBlockParms.New(0, 0, 140, 53));
 end;
 
 procedure TReturnBlock.Paint;

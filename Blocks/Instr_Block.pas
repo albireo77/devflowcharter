@@ -23,7 +23,7 @@ unit Instr_Block;
 interface
 
 uses
-   Vcl.Graphics, System.SysUtils, Base_Block, CommonInterfaces, CommonTypes;
+   Vcl.Graphics, System.SysUtils, Base_Block, CommonTypes;
 
 type
 
@@ -65,7 +65,7 @@ end;
 
 constructor TInstrBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 140, 51, ID_INVALID));
+   Create(ABranch, TBlockParms.New(0, 0, 140, 51));
 end;
 
 function TInstrBlock.Clone(ABranch: TBranch): TBlock;

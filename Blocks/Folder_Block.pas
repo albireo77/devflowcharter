@@ -24,7 +24,7 @@ unit Folder_Block;
 interface
 
 uses
-   System.Types, Base_Block, CommonInterfaces, CommonTypes;
+   System.Types, Base_Block, CommonTypes;
 
 type
 
@@ -81,7 +81,7 @@ end;
 
 constructor TFolderBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 140, 61, 70, 30, 70, ID_INVALID));
+   Create(ABranch, TBlockParms.New(0, 0, 140, 61, 70, 30, 70));
 end;
 
 procedure TFolderBlock.Paint;

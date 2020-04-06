@@ -24,7 +24,7 @@ unit InOut_Block;
 interface
 
 uses
-   Vcl.Graphics, Base_Block, CommonInterfaces, CommonTypes;
+   Vcl.Graphics, Base_Block, CommonTypes;
 
 type
 
@@ -117,12 +117,12 @@ end;
 
 constructor TInputBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 150, 61, ID_INVALID), true);
+   Create(ABranch, TBlockParms.New(0, 0, 150, 61), true);
 end;
 
 constructor TOutputBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 150, 61, ID_INVALID), true);
+   Create(ABranch, TBlockParms.New(0, 0, 150, 61), true);
 end;
 
 procedure TInOutBlock.Paint;

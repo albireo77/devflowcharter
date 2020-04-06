@@ -24,8 +24,7 @@ unit IfElse_Block;
 interface
 
 uses
-   WinApi.Windows, Vcl.Graphics, Vcl.ComCtrls, Base_Block, OmniXML, CommonInterfaces,
-   CommonTypes;
+   WinApi.Windows, Vcl.Graphics, Vcl.ComCtrls, Base_Block, OmniXML, CommonTypes;
 
 type
 
@@ -100,7 +99,7 @@ end;
 
 constructor TIfElseBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 240, 101, 5, 70, 120, 120, 229, 70, 5, 229, ID_INVALID));
+   Create(ABranch, TBlockParms.New(0, 0, 240, 101, 5, 70, 120, 120, 229, 70, 5, 229));
 end;
 
 function TIfElseBlock.GetBlockParms: TBlockParms;
@@ -117,8 +116,7 @@ begin
       FalseBranch.Hook.X,
       FalseBranch.Hook.Y,
       TrueHook,
-      FalseHook,
-      ID_INVALID);
+      FalseHook);
 end;
 
 procedure TIfElseBlock.Paint;

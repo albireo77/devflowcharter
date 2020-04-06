@@ -574,12 +574,12 @@ end;
 
 function TBlock.GetBlockParms: TBlockParms;
 begin
-   result := TBlockParms.New(Left, Top, Width, Height, ID_INVALID);
+   result := TBlockParms.New(Left, Top, Width, Height);
 end;
 
 function TGroupBlock.GetBlockParms: TBlockParms;
 begin
-   result := TBlockParms.New(Left, Top, Width, Height, Branch.Hook.X, Branch.Hook.Y, BottomHook, ID_INVALID);
+   result := TBlockParms.New(Left, Top, Width, Height, Branch.Hook.X, Branch.Hook.Y, BottomHook);
 end;
 
 procedure TGroupBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);

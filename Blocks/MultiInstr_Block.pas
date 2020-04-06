@@ -24,7 +24,7 @@ unit MultiInstr_Block;
 interface
 
 uses
-   Vcl.Graphics, System.Classes, Base_Block, CommonInterfaces, MultiLine_Block, CommonTypes;
+   Vcl.Graphics, System.Classes, Base_Block, MultiLine_Block, CommonTypes;
 
 type
 
@@ -70,7 +70,7 @@ end;
 
 constructor TMultiInstrBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 140, 91, ID_INVALID));
+   Create(ABranch, TBlockParms.New(0, 0, 140, 91));
 end;
 
 procedure TMultiInstrBlock.OnChangeMemo(Sender: TObject);

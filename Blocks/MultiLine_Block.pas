@@ -25,7 +25,7 @@ interface
 
 uses
    Vcl.Controls, Vcl.StdCtrls, Vcl.Graphics, System.Classes, Vcl.ComCtrls, Base_Block,
-   CommonInterfaces, StatementMemo, MemoEx, CommonTypes;
+   StatementMemo, MemoEx, CommonTypes;
 
 type
 
