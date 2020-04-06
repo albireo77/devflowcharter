@@ -119,7 +119,7 @@ type
       bt: TBlockType;
       class function New(x, y, w, h, bid: integer): TBlockParms; overload; static;
       class function New(x, y, w, h, brx, bry, bh, bid: integer): TBlockParms; overload; static;
-      class function New(x, y, w, h, brx, bry, bh, bid, th, br2x, br2y, trh, flh: integer): TBlockParms; overload; static;
+      class function New(x, y, w, h, brx, bry, bh, th, br2x, br2y, trh, flh, bid: integer): TBlockParms; overload; static;
       class function New(AFrom: IXMLElement): TBlockParms; overload; static;
    end;
 
@@ -236,7 +236,7 @@ begin
    result.bh := bh;
 end;
 
-class function TBlockParms.New(x, y, w, h, brx, bry, bh, bid, th, br2x, br2y, trh, flh: integer): TBlockParms;
+class function TBlockParms.New(x, y, w, h, brx, bry, bh, th, br2x, br2y, trh, flh, bid: integer): TBlockParms;
 begin
    result := New(x, y, w, h, brx, bry, bh, bid);
    result.th := th;
@@ -258,12 +258,12 @@ begin
                     GetIntFromXMLNode(AFrom, 'brx'),
                     GetIntFromXMLNode(AFrom, 'bry'),
                     GetIntFromXMLNode(AFrom, 'bh'),
-                    GetIntFromXMLNode(AFrom, ID_ATTR, ID_INVALID),
                     GetIntFromXMLNode(AFrom, 'th'),
                     GetIntFromXMLNode(AFrom, 'fbrx'),
                     GetIntFromXMLNode(AFrom, 'fbry'),
                     GetIntFromXMLNode(AFrom, 'trh'),
-                    GetIntFromXMLNode(AFrom, 'flh'));
+                    GetIntFromXMLNode(AFrom, 'flh'),
+                    GetIntFromXMLNode(AFrom, ID_ATTR, ID_INVALID));
    attr := AFrom.GetAttribute(BLOCK_TYPE_ATTR);
    at := StrToIntDef(attr, -1);
    if at = -1 then

@@ -100,7 +100,7 @@ end;
 
 constructor TIfElseBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 240, 101, 5, 70, 120, ID_INVALID, 120, 229, 70, 5, 229));
+   Create(ABranch, TBlockParms.New(0, 0, 240, 101, 5, 70, 120, 120, 229, 70, 5, 229, ID_INVALID));
 end;
 
 function TIfElseBlock.GetBlockParms: TBlockParms;
@@ -113,12 +113,12 @@ begin
       TrueBranch.Hook.X,
       TrueBranch.Hook.Y,
       BottomHook,
-      ID_INVALID,
       TopHook.X,
       FalseBranch.Hook.X,
       FalseBranch.Hook.Y,
       TrueHook,
-      FalseHook);
+      FalseHook,
+      ID_INVALID);
 end;
 
 procedure TIfElseBlock.Paint;
