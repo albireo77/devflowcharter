@@ -28,7 +28,7 @@ uses
    SynEditCodeFolding,
 {$ENDIF}
    System.Classes, Vcl.StdCtrls, Vcl.Forms, Vcl.Controls, Generics.Defaults,
-   Vcl.ComCtrls, WinApi.Messages, SynEditTypes, OmniXML;
+   Vcl.ComCtrls, WinApi.Messages, System.Types, SynEditTypes, OmniXML;
 
 type
 
@@ -114,11 +114,12 @@ type
    end;
 
    TBlockParms = record
-      x, y, h, w, brx, bry, bh, bid, th, fbrx, fbry, trh, flh: integer;
+      x, y, h, w, bh, bid, th, trh, flh: integer;
+      br, br2: TPoint;
       bt: TBlockType;
       class function New(x, y, w, h, bid: integer): TBlockParms; overload; static;
       class function New(x, y, w, h, brx, bry, bh, bid: integer): TBlockParms; overload; static;
-      class function New(x, y, w, h, brx, bry, bh, bid, th, fbrx, fbry, trh, flh: integer): TBlockParms; overload; static;
+      class function New(x, y, w, h, brx, bry, bh, bid, th, br2x, br2y, trh, flh: integer): TBlockParms; overload; static;
       class function New(AFrom: IXMLElement): TBlockParms; overload; static;
    end;
 
@@ -231,17 +232,15 @@ end;
 class function TBlockParms.New(x, y, w, h, brx, bry, bh, bid: integer): TBlockParms;
 begin
    result := New(x, y, w, h, bid);
-   result.brx := brx;
-   result.bry := bry;
+   result.br := Point(brx, bry);
    result.bh := bh;
 end;
 
-class function TBlockParms.New(x, y, w, h, brx, bry, bh, bid, th, fbrx, fbry, trh, flh: integer): TBlockParms;
+class function TBlockParms.New(x, y, w, h, brx, bry, bh, bid, th, br2x, br2y, trh, flh: integer): TBlockParms;
 begin
    result := New(x, y, w, h, brx, bry, bh, bid);
    result.th := th;
-   result.fbrx := fbrx;
-   result.fbry := fbry;
+   result.br2 := Point(br2x, br2y);
    result.trh := trh;
    result.flh := flh;
 end;

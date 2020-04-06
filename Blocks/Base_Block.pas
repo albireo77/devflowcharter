@@ -374,7 +374,7 @@ begin
    FBranchList := TObjectList<TBranch>.Create;
    FBranchList.Add(nil);
 
-   Branch := AddBranch(Point(ABlockParms.brx, ABlockParms.bry));
+   Branch := AddBranch(ABlockParms.br);
 end;
 
 procedure TBlock.CloneFrom(ABlock: TBlock);

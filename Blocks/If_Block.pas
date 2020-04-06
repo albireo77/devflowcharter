@@ -63,7 +63,7 @@ begin
    BottomPoint.Y := Height-31;
    TopHook.Y := 60;
    BottomHook := ABlockParms.bh;
-   TopHook.X := ABlockParms.brx;
+   TopHook.X := ABlockParms.br.X;
    IPoint.Y := 50;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;

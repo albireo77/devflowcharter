@@ -64,7 +64,7 @@ begin
    BottomPoint.Y := Height-31;
    TopHook.Y := 0;
    BottomHook := ABlockParms.bh;
-   TopHook.X := ABlockParms.brx;
+   TopHook.X := ABlockParms.br.X;
    IPoint.Y := 8;
    FShape := shpFolder;
    Constraints.MinWidth := FInitParms.Width;

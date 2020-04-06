@@ -145,7 +145,7 @@ begin
    edtVar.OnChange := VarOnChange;
 
    BottomPoint := Point(Width-11, 20);
-   TopHook := Point(ABlockParms.brx, 39);
+   TopHook := Point(ABlockParms.br.X, 39);
    BottomHook := ABlockParms.bh;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;

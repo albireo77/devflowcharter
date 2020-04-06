@@ -87,11 +87,11 @@ begin
 
    DefaultBranch := Branch;
 
-   BottomPoint.X := ABlockParms.brx;
+   BottomPoint.X := ABlockParms.br.X;
    BottomPoint.Y := Height-31;
    TopHook.Y := 70;
    BottomHook := ABlockParms.bh;
-   TopHook.X := ABlockParms.brx;
+   TopHook.X := ABlockParms.br.X;
    IPoint.Y := 50;
    FCaseLabel := i18Manager.GetString('CaptionCase');
    Constraints.MinWidth := FInitParms.Width;

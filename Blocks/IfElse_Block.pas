@@ -75,7 +75,7 @@ begin
    FInitParms.P2X := 229;
 
    TrueBranch := Branch;
-   FalseBranch := AddBranch(Point(ABlockParms.fbrx, ABlockParms.fbry));
+   FalseBranch := AddBranch(ABlockParms.br2);
 
    FFixedBranches := 2;
    BottomHook := ABlockParms.bh;

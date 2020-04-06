@@ -105,7 +105,7 @@ begin
    else
    begin
       BottomHook := ABlockParms.bh;
-      TopHook.X := ABlockParms.brx;
+      TopHook.X := ABlockParms.br.X;
    end;
 
    FInitParms.Width := defWidth;

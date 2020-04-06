@@ -77,7 +77,7 @@ begin
    BottomPoint.Y := Height - 50;
    TopHook.Y := 0;
    BottomHook := ABlockParms.bh;
-   TopHook.X := ABlockParms.brx;
+   TopHook.X := ABlockParms.br.X;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    FStatement.Alignment := taCenter;
