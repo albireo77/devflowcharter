@@ -230,6 +230,12 @@ begin
    result.w := w;
    result.h := h;
    result.bid := bid;
+   result.bh := 0;
+   result.th := 0;
+   result.trh := 0;
+   result.flh := 0;
+   result.br := TPoint.Zero;
+   result.br2 := TPoint.Zero;
 end;
 
 class function TBlockParms.New(x, y, w, h, brx, bry, bh: integer; bid: integer = ID_INVALID): TBlockParms;
