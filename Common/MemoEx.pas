@@ -270,13 +270,16 @@ var
 begin
    if ATag <> nil then
    begin
-      EditFormWidth := StrToIntDef(ATag.GetAttribute('memW'), EditFormWidth);
-      EditFormHeight := StrToIntDef(ATag.GetAttribute('memH'), EditFormHeight);
-      HasVScroll := TXMLProcessor.GetBoolFromXMLNode(ATag, 'mem_vscroll', FHasVScroll);
-      HasHScroll := TXMLProcessor.GetBoolFromXMLNode(ATag, 'mem_hscroll', FHasHScroll);
-      WordWrap := TXMLProcessor.GetBoolFromXMLNode(ATag, 'mem_wordwrap', WordWrap);
-      h := StrToIntDef(ATag.GetAttribute('mem_hscroll_pos'), 0);
-      v := StrToIntDef(ATag.GetAttribute('mem_vscroll_pos'), 0);
+      with TXMLProcessor do
+      begin
+         EditFormWidth := GetIntFromXMLNode(ATag, 'memW', EditFormWidth);
+         EditFormHeight := GetIntFromXMLNode(ATag, 'memH', EditFormHeight);
+         HasVScroll := GetBoolFromXMLNode(ATag, 'mem_vscroll', FHasVScroll);
+         HasHScroll := GetBoolFromXMLNode(ATag, 'mem_hscroll', FHasHScroll);
+         WordWrap := GetBoolFromXMLNode(ATag, 'mem_wordwrap', WordWrap);
+         h := GetIntFromXMLNode(ATag, 'mem_hscroll_pos');
+         v := GetIntFromXMLNode(ATag, 'mem_vscroll_pos');
+      end;
       Perform(EM_LINESCROLL, h, v);
       val := ATag.GetAttribute('mem_align');
       if not val.IsEmpty then
