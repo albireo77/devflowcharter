@@ -733,7 +733,7 @@ begin
          miUndoRemoveClick(miUndoRemove);
       end
       else if comment <> nil then
-         comment.Clone(page, @p);
+         comment.Clone(page, p);
       GProject.SetChanged;
       NavigatorForm.Invalidate;
       Exit;

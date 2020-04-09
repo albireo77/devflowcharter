@@ -58,7 +58,8 @@ type
          property IsHeader: boolean read GetIsHeader write SetIsHeader;
          constructor Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight: Integer);
          constructor CreateDefault(APage: TBlockTabSheet);
-         function Clone(APage: TBlockTabSheet; ATopLeft: PPoint = nil): TComment;
+         function Clone(APage: TBlockTabSheet; const ATopLeft: TPoint): TComment; overload;
+         function Clone(APage: TBlockTabSheet): TComment; overload;
          destructor Destroy; override;
          procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl);
          procedure ExportToXMLTag(ATag: IXMLElement);
@@ -105,16 +106,15 @@ begin
    OnMouseLeave   := MyOnMouseLeave;
 end;
 
-function TComment.Clone(APage: TBlockTabSheet; ATopLeft: PPoint = nil): TComment;
-var
-   pnt: TPoint;
+function TComment.Clone(APage: TBlockTabSheet; const ATopLeft: TPoint): TComment;
 begin
-   if ATopLeft = nil then
-   begin
-      pnt := BoundsRect.TopLeft;
-      ATopLeft := @pnt;
-   end;
-   result := TComment.Create(APage, ATopLeft^.X, ATopLeft^.Y, Width, Height);
+   result := TComment.Create(APage, ATopLeft.X, ATopLeft.Y, Width, Height);
+   result.CloneFrom(Self);
+end;
+
+function TComment.Clone(APage: TBlockTabSheet): TComment;
+begin
+   result := TComment.Create(APage, Left, Top, Width, Height);
    result.CloneFrom(Self);
 end;
 
