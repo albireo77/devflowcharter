@@ -899,13 +899,13 @@ end;
 
 procedure TUserFunctionHeader.ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
 var
-   idx: integer;
+   i: integer;
    tag2: IXMLElement;
 begin
    inherited ImportFromXMLTag(ATag, APinControl);
-   idx := cbType.Items.IndexOf(ATag.GetAttribute(TYPE_ATTR));
-   if idx <> -1 then
-      cbType.ItemIndex := idx
+   i := cbType.Items.IndexOf(ATag.GetAttribute(TYPE_ATTR));
+   if i <> -1 then
+      cbType.ItemIndex := i
    else if cbType.Items.Count > 0 then
       cbType.ItemIndex := 0;
    if Assigned(cbType.OnChange) then
@@ -913,36 +913,36 @@ begin
    tag2 := TXMLProcessor.FindChildTag(ATag, 'desc');
    if tag2 <> nil then
       memDesc.Text := ReplaceStr(tag2.Text, LB_PHOLDER, sLineBreak);
-   chkBodyVisible.Checked := TXMLProcessor.GetBoolFromXMLNode(ATag, 'show_body');
-   chkInclDescCode.Checked := TXMLProcessor.GetBoolFromXMLNode(ATag, 'desc_incl');
-   chkInclDescFlow.Checked := TXMLProcessor.GetBoolFromXMLNode(ATag, 'desc_incl_flow');
-   chkArrayType.Checked := TXMLProcessor.GetBoolFromXMLNode(ATag, 'arrayType');
-   chkConstructor.Checked := TXMLProcessor.GetBoolFromXMLNode(ATag, 'constructor');
+   chkBodyVisible.Checked := TXMLProcessor.GetBool(ATag, 'show_body');
+   chkInclDescCode.Checked := TXMLProcessor.GetBool(ATag, 'desc_incl');
+   chkInclDescFlow.Checked := TXMLProcessor.GetBool(ATag, 'desc_incl_flow');
+   chkArrayType.Checked := TXMLProcessor.GetBool(ATag, 'arrayType');
+   chkConstructor.Checked := TXMLProcessor.GetBool(ATag, 'constructor');
    if chkStatic.Visible then
-      chkStatic.Checked := TXMLProcessor.GetBoolFromXMLNode(ATag, 'static');
+      chkStatic.Checked := TXMLProcessor.GetBool(ATag, 'static');
    FLocalVars.ImportFromXMLTag(ATag, impAll);
-   idx := StrToIntDef(ATag.GetAttribute('descrh'), -1);
-   if idx > -1 then
-      gbDesc.Height := idx;
-   idx := StrToIntDef(ATag.GetAttribute('headerh'), -1);
-   if idx > -1 then
-      gbHeader.Height := idx;
-   idx := StrToIntDef(ATag.GetAttribute('parmsh'), -1);
-   if idx > -1 then
+   i := TXMLProcessor.GetInt(ATag, 'descrh');
+   if i > 0 then
+      gbDesc.Height := i;
+   i := TXMLProcessor.GetInt(ATag, 'headerh');
+   if i > 0 then
+      gbHeader.Height := i;
+   i := TXMLProcessor.GetInt(ATag, 'parmsh');
+   if i > 0 then
    begin
-      gbParams.Height := idx;
+      gbParams.Height := i;
       sbxElements.Constraints.MaxHeight := gbParams.Height - 66;
    end;
-   idx := StrToIntDef(ATag.GetAttribute('lvarsh'), -1);
-   if idx > -1 then
-      FLocalVars.Height := idx;
+   i := TXMLProcessor.GetInt(ATag, 'lvarsh');
+   if i > 0 then
+      FLocalVars.Height := i;
 end;
 
 procedure TParameter.ImportFromXMLTag(ATag: IXMLElement);
 begin
    inherited ImportFromXMLTag(ATag);
-   chkTable.Checked := TXMLProcessor.GetBoolFromXMLNode(ATag, 'table');
-   chkReference.Checked := TXMLProcessor.GetBoolFromXMLNode(ATag, 'reference');
+   chkTable.Checked := TXMLProcessor.GetBool(ATag, 'table');
+   chkReference.Checked := TXMLProcessor.GetBool(ATag, 'reference');
    edtDefault.Text := ATag.GetAttribute('default');
 end;
 

@@ -353,21 +353,19 @@ end;
 
 procedure TExplorerForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
 var
-   rect: TRect;
    topY: integer;
 begin
-   if TXMLProcessor.GetBoolFromXMLNode(ATag, 'tree_win_show') and GInfra.CurrentLang.EnabledExplorer then
+   if TXMLProcessor.GetBool(ATag, 'tree_win_show') and GInfra.CurrentLang.EnabledExplorer then
    begin
-      rect.Left := StrToIntDef(ATag.GetAttribute('tree_win_x'), 50);
-      rect.Top := StrToIntDef(ATag.GetAttribute('tree_win_y'), 50);
-      rect.Right := StrToIntDef(ATag.GetAttribute('tree_win_w'), 498);
-      rect.Bottom := StrToIntDef(ATag.GetAttribute('tree_win_h'), 574);
       Position := poDesigned;
-      SetBounds(rect.Left, rect.Top, rect.Right, rect.Bottom);
-      if TXMLProcessor.GetBoolFromXMLNode(ATag, 'tree_win_min') then
+      SetBounds(TXMLProcessor.GetInt(ATag, 'tree_win_x', 50),
+                TXMLProcessor.GetInt(ATag, 'tree_win_y', 50),
+                TXMLProcessor.GetInt(ATag, 'tree_win_w', 498),
+                TXMLProcessor.GetInt(ATag, 'tree_win_h', 574));
+      if TXMLProcessor.GetBool(ATag, 'tree_win_min') then
          WindowState := wsMinimized;
       Show;
-      topY := StrToIntDef(ATag.GetAttribute('tree_top_y'), -2);
+      topY := TXMLProcessor.GetInt(ATag, 'tree_top_y', -2);
       if (topY >= 0) and (topY < tvExplorer.Items.Count) then
          tvExplorer.TopItem := tvExplorer.Items[topY];
    end;

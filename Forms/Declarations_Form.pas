@@ -66,26 +66,16 @@ begin
 end;
 
 procedure TDeclarationsForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
-var
-   val: integer;
 begin
-   val := StrToIntDef(ATag.GetAttribute('var_win_h'), -1);
-   if val > -1 then
-      Height := val;
-   val := StrToIntDef(ATag.GetAttribute('var_win_w'), -1);
-   if val > -1 then
-      Width := val;
-   if TXMLProcessor.GetBoolFromXMLNode(ATag, 'var_win_show') and (GInfra.CurrentLang.EnabledVars or GInfra.CurrentLang.EnabledConsts) then
+   Height := TXMLProcessor.GetInt(ATag, 'var_win_h', Height);
+   Width := TXMLProcessor.GetInt(ATag, 'var_win_w', Width);
+   if TXMLProcessor.GetBool(ATag, 'var_win_show') and (GInfra.CurrentLang.EnabledVars or GInfra.CurrentLang.EnabledConsts) then
    begin
       Position := poDesigned;
-      if TXMLProcessor.GetBoolFromXMLNode(ATag, 'var_win_min') then
+      if TXMLProcessor.GetBool(ATag, 'var_win_min') then
          WindowState := wsMinimized;
-      val := StrToIntDef(ATag.GetAttribute('var_win_x'), -1);
-      if val > -1 then
-         Left := val;
-      val := StrToIntDef(ATag.GetAttribute('var_win_y'), -1);
-      if val > -1 then
-         Top := val;
+      Left := TXMLProcessor.GetInt(ATag, 'var_win_x', Left);
+      Top := TXMLProcessor.GetInt(ATag, 'var_win_y', Top);
       Show;
    end;
 end;

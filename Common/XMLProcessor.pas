@@ -48,9 +48,10 @@ type
       class procedure AddCDATA(ATag: IXMLElement; const AText: string);
       class procedure ExportBlockToXML(ABlock: TBlock; ATag: IXMLElement);
       class function CountChildTags(ATag: IXMLElement; const AChildTagName: string; AWithText: boolean = false): integer;
-      class function GetBoolFromChildTag(ATag: IXMLElement; const ATagName: string; ADefault: boolean = false): boolean;
-      class function GetBoolFromXMLNode(ATag: IXMLElement; const AAttrName: string; ADefault: boolean = false): boolean;
-      class function GetIntFromXMLNode(ATag: IXMLElement; const AAttrName: string = ''; ADefault: integer = 0): integer;
+      class function GetBool(ATag: IXMLElement; const AttrName: string; ADefault: boolean = false): boolean; overload;
+      class function GetBool(ATag: IXMLElement; ADefault: boolean = false): boolean; overload;
+      class function GetBool(const AValue: string; ADefault: boolean = false): boolean; overload;
+      class function GetInt(ATag: IXMLElement; const AttrName: string; ADefault: integer = 0): integer;
       class function ImportFlowchartFromXMLTag(ATag: IXMLElement;
                                                AParent: TWinControl;
                                                APrevBlock: TBlock;
@@ -105,45 +106,39 @@ begin
     end;
 end;
 
-class function TXMLProcessor.GetBoolFromXMLNode(ATag: IXMLElement; const AAttrName: string; ADefault: boolean = false): boolean;
+class function TXMLProcessor.GetBool(ATag: IXMLElement; const AttrName: string; ADefault: boolean = false): boolean;
+begin
+   result := ADefault;
+   if ATag <> nil then
+      result := GetBool(ATag.GetAttribute(AttrName).Trim, ADefault);
+end;
+
+class function TXMLProcessor.GetBool(ATag: IXMLElement; ADefault: boolean = false): boolean;
+begin
+   result := ADefault;
+   if ATag <> nil then
+      result := GetBool(ATag.Text.Trim, ADefault);
+end;
+
+class function TXMLProcessor.GetBool(const AValue: string; ADefault: boolean = false): boolean;
 var
    i: integer;
-   ctext: string;
+begin
+   if TryStrToInt(AValue, i) then
+      result := i <> 0
+   else if SameText('true', AValue) then
+      result := true
+   else if SameText('false', AValue) then
+      result := false
+   else
+      result := ADefault;
+end;
+
+class function TXMLProcessor.GetInt(ATag: IXMLElement; const AttrName: string; ADefault: integer = 0): integer;
 begin
    result := ADefault;
    if ATag <> nil then
-   begin
-      if AAttrName.IsEmpty then
-         ctext := ATag.Text.Trim
-      else
-         ctext := ATag.GetAttribute(AAttrName).Trim;
-      if TryStrToInt(ctext, i) then
-         result := i <> 0
-      else if SameText('true', ctext) then
-         result := true
-      else if SameText('false', ctext) then
-         result := false;
-   end;
-end;
-
-class function TXMLProcessor.GetIntFromXMLNode(ATag: IXMLElement; const AAttrName: string = ''; ADefault: integer = 0): integer;
-var
-   ctext: string;
-begin
-   result := ADefault;
-   if ATag <> nil then
-   begin
-      if AAttrName.IsEmpty then
-         ctext := ATag.Text.Trim
-      else
-         ctext := ATag.GetAttribute(AAttrName).Trim;
-      result := StrToIntDef(ctext, ADefault);
-   end;
-end;
-
-class function TXMLProcessor.GetBoolFromChildTag(ATag: IXMLElement; const ATagName: string; ADefault: boolean = false): boolean;
-begin
-   result := GetBoolFromXMLNode(FindChildTag(ATag, ATagName), '', ADefault);
+      result := StrToIntDef(ATag.GetAttribute(AttrName).Trim, ADefault);
 end;
 
 class procedure TXMLProcessor.AddText(ATag: IXMLElement; const AText: string);

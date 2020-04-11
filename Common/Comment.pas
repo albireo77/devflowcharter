@@ -299,19 +299,21 @@ var
 begin
    if ATag <> nil then
    begin
-      SetBounds(ATag.GetAttribute('x').ToInteger, ATag.GetAttribute('y').ToInteger,
-                ATag.GetAttribute('w').ToInteger, ATag.GetAttribute('h').ToInteger);
-      v := StrToIntDef(ATag.GetAttribute(FONT_SIZE_ATTR), GSettings.FlowchartFontSize);
+      SetBounds(TXMLProcessor.GetInt(ATag, 'x'),
+                TXMLProcessor.GetInt(ATag, 'y'),
+                TXMLProcessor.GetInt(ATag, 'w'),
+                TXMLProcessor.GetInt(ATag, 'h'));
+      v := TXMLProcessor.GetInt(ATag, FONT_SIZE_ATTR);
       if v in FLOWCHART_VALID_FONT_SIZES then
          Font.Size := v;
-      FZOrder := StrToIntDef(ATag.GetAttribute(Z_ORDER_ATTR), -1);
-      v := StrToIntDef(ATag.GetAttribute(FONT_STYLE_ATTR), 0);
+      FZOrder := TXMLProcessor.GetInt(ATag, Z_ORDER_ATTR, -1);
+      v := TXMLProcessor.GetInt(ATag, FONT_STYLE_ATTR);
       if v > 0 then
          Font.Style := TInfra.DecodeFontStyle(v);
       Text := ATag.Text;
-      Visible := TXMLProcessor.GetBoolFromXMLNode(ATag, 'v');
+      Visible := TXMLProcessor.GetBool(ATag, 'v');
       FPinControl := APinControl;
-      IsHeader := TXMlProcessor.GetBoolFromXMLNode(ATag, IS_HEADER_ATTR);
+      IsHeader := TXMlProcessor.GetBool(ATag, IS_HEADER_ATTR);
       GetFromXML(ATag);
    end;
 end;

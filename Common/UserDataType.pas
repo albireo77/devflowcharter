@@ -370,7 +370,7 @@ procedure TUserDataType.ImportFromXMLTag(ATag: IXMLElement; APinControl: TContro
 begin
    inherited ImportFromXMLTag(ATag, APinControl);
    if chkAddPtrType.Enabled then
-      chkAddPtrType.Checked := TXMLProcessor.GetBoolFromXMLNode(ATag, POINTER_ATTR);
+      chkAddPtrType.Checked := TXMLProcessor.GetBool(ATag, POINTER_ATTR);
    rgTypeBox.ItemIndex := Ord(TRttiEnumerationType.GetValue<TUserDataTypeKind>(ATag.GetAttribute(KIND_ATTR)));
 end;
 
@@ -471,7 +471,7 @@ var
    size: string;
 begin
    inherited ImportFromXMLTag(ATag);
-   if TXMLProcessor.GetBoolFromXMLNode(ATag, 'table') then  // for backward compatibility
+   if TXMLProcessor.GetBool(ATag, 'table') then  // for backward compatibility
       edtSize.Text := '100'
    else
    begin

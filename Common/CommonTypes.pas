@@ -260,19 +260,19 @@ var
    at: integer;
 begin
    with TXMLProcessor do
-      result := New(GetIntFromXMLNode(AFrom, 'x'),
-                    GetIntFromXMLNode(AFrom, 'y'),
-                    GetIntFromXMLNode(AFrom, 'w'),
-                    GetIntFromXMLNode(AFrom, 'h'),
-                    GetIntFromXMLNode(AFrom, 'brx'),
-                    GetIntFromXMLNode(AFrom, 'bry'),
-                    GetIntFromXMLNode(AFrom, 'bh'),
-                    GetIntFromXMLNode(AFrom, 'th'),
-                    GetIntFromXMLNode(AFrom, 'fbrx'),
-                    GetIntFromXMLNode(AFrom, 'fbry'),
-                    GetIntFromXMLNode(AFrom, 'trh'),
-                    GetIntFromXMLNode(AFrom, 'flh'),
-                    GetIntFromXMLNode(AFrom, ID_ATTR, ID_INVALID));
+      result := New(GetInt(AFrom, 'x'),
+                    GetInt(AFrom, 'y'),
+                    GetInt(AFrom, 'w'),
+                    GetInt(AFrom, 'h'),
+                    GetInt(AFrom, 'brx'),
+                    GetInt(AFrom, 'bry'),
+                    GetInt(AFrom, 'bh'),
+                    GetInt(AFrom, 'th'),
+                    GetInt(AFrom, 'fbrx'),
+                    GetInt(AFrom, 'fbry'),
+                    GetInt(AFrom, 'trh'),
+                    GetInt(AFrom, 'flh'),
+                    GetInt(AFrom, ID_ATTR, ID_INVALID));
    attr := AFrom.GetAttribute(BLOCK_TYPE_ATTR);
    at := StrToIntDef(attr, -1);
    if at = -1 then

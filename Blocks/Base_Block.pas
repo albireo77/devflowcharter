@@ -2341,14 +2341,14 @@ begin
          FRefreshMode := false;
       end;
 
-      i := StrToIntDef(ATag.GetAttribute(FONT_SIZE_ATTR), GSettings.FlowchartFontSize);
+      i := TXMLProcessor.GetInt(ATag, FONT_SIZE_ATTR);
       if i in FLOWCHART_VALID_FONT_SIZES then
          SetFontSize(i);
 
-      i := StrToIntDef(ATag.GetAttribute(FONT_STYLE_ATTR), 0);
+      i := TXMLProcessor.GetInt(ATag, FONT_STYLE_ATTR);
       SetFontStyle(TInfra.DecodeFontStyle(i));
       
-      Frame := TXMLProcessor.GetBoolFromXMLNode(ATag, FRAME_ATTR);
+      Frame := TXMLProcessor.GetBool(ATag, FRAME_ATTR);
 
       memo := GetMemoEx;
       if memo <> nil then
@@ -2377,8 +2377,8 @@ begin
             tag2 := TXMLProcessor.FindChildTag(tag1, 'y');
             if tag2 <> nil then
                hy := StrToIntDef(tag2.Text, 0);
-            bId := StrToIntDef(tag1.GetAttribute(ID_ATTR), ID_INVALID);
-            bStmntId := StrToIntDef(tag1.GetAttribute(BRANCH_STMNT_ATTR), ID_INVALID);
+            bId := TXMLProcessor.GetInt(tag1, ID_ATTR, ID_INVALID);
+            bStmntId := TXMLProcessor.GetInt(tag1, BRANCH_STMNT_ATTR, ID_INVALID);
             if GetBranch(idx) = nil then
                AddBranch(Point(hx, hy), bId, bStmntId);
             tag2 := TXMLProcessor.FindChildTag(tag1, BLOCK_TAG);
@@ -2394,9 +2394,9 @@ begin
       tag2 := TXMLProcessor.FindChildTag(ATag, FOLD_TEXT_ATTR);
       if tag2 <> nil then
          SetFoldedText(tag2.Text);
-      FFoldParms.Width := StrToIntDef(ATag.GetAttribute('fw'), 140);
-      FFoldParms.Height := StrToIntDef(ATag.GetAttribute('fh'), 91);
-      if TXMLProcessor.GetBoolFromXMLNode(ATag, FOLDED_ATTR) then
+      FFoldParms.Width := TXMLProcessor.GetInt(ATag, 'fw', 140);
+      FFoldParms.Height := TXMLProcessor.GetInt(ATag, 'fh', 91);
+      if TXMLProcessor.GetBool(ATag, FOLDED_ATTR) then
          ExpandFold(false);
    end;
 end;
