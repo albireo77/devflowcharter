@@ -49,8 +49,8 @@ type
       class procedure ExportBlockToXML(ABlock: TBlock; ATag: IXMLElement);
       class function CountChildTags(ATag: IXMLElement; const AChildTagName: string; AWithText: boolean = false): integer;
       class function GetBool(ATag: IXMLElement; const AttrName: string; ADefault: boolean = false): boolean; overload;
-      class function GetBool(ATag: IXMLElement; ADefault: boolean = false): boolean; overload;
       class function GetBool(const AValue: string; ADefault: boolean = false): boolean; overload;
+      class function GetBoolFromChild(ATag: IXMLElement; const AChildTagName: string; ADefault: boolean = false): boolean;
       class function GetInt(ATag: IXMLElement; const AttrName: string; ADefault: integer = 0): integer;
       class function ImportFlowchartFromXMLTag(ATag: IXMLElement;
                                                AParent: TWinControl;
@@ -113,11 +113,15 @@ begin
       result := GetBool(ATag.GetAttribute(AttrName).Trim, ADefault);
 end;
 
-class function TXMLProcessor.GetBool(ATag: IXMLElement; ADefault: boolean = false): boolean;
+class function TXMLProcessor.GetBoolFromChild(ATag: IXMLElement; const AChildTagName: string; ADefault: boolean = false): boolean;
+var
+   tag: IXMLElement;
 begin
-   result := ADefault;
-   if ATag <> nil then
-      result := GetBool(ATag.Text.Trim, ADefault);
+   tag := FindChildTag(ATag, AChildTagName);
+   if tag <> nil then
+      result := GetBool(tag.Text.Trim, ADefault)
+   else
+      result := ADefault;
 end;
 
 class function TXMLProcessor.GetBool(const AValue: string; ADefault: boolean = false): boolean;
