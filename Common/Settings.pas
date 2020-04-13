@@ -507,7 +507,7 @@ begin
       FParseRoutineCall := chkParseRoutine.Checked;
       FParseReturn      := chkParseReturn.Checked;
 
-      // setting the following values from Settings Form is not supported at the moment
+      // setting the following values from Settings form is not yet supported
       // FEditorDocumentColor
       // FEditorRightEdgeColor
       // FEditorRightEdgeColumn
