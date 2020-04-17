@@ -258,7 +258,7 @@ type
    TBranch = class(TList<TBlock>, IIdentifiable)
       private
          FParentBlock: TGroupBlock;
-         FRmvBlockIdx: integer;
+         FRemovedBlockIdx: integer;
          FId: integer;
          function GetHeight: integer;
          function GetId: integer;
@@ -271,7 +271,7 @@ type
          property ParentBlock: TGroupBlock read FParentBlock;
          property Height: integer read GetHeight;
          property Id: integer read GetId;
-         constructor Create(const AParent: TGroupBlock; const AHook: TPoint; const AId: integer = ID_INVALID);
+         constructor Create(AParentBlock: TGroupBlock; const AHook: TPoint; AId: integer = ID_INVALID);
          destructor Destroy; override;
          procedure InsertAfter(ANewBlock, ABlock: TBlock);
          function FindInstanceOf(AClass: TClass): integer;
@@ -2796,13 +2796,12 @@ begin
    end;
 end;
 
-constructor TBranch.Create(const AParent: TGroupBlock; const AHook: TPoint; const AId: integer = ID_INVALID);
+constructor TBranch.Create(AParentBlock: TGroupBlock; const AHook: TPoint; AId: integer = ID_INVALID);
 begin
    inherited Create;
-   FParentBlock := AParent;
+   FParentBlock := AParentBlock;
    Hook := AHook;
-   FRmvBlockIdx := -1;
-   Statement := nil;
+   FRemovedBlockIdx := -1;
    FId := GProject.Register(Self, AId);
 end;
 
@@ -2861,17 +2860,17 @@ end;
 
 procedure TBranch.UndoRemove(ABlock: TBlock);
 begin
-   if (ABlock <> nil) and (Self = ABlock.ParentBranch) and (FRmvBlockIdx > -1) then
+   if (ABlock <> nil) and (Self = ABlock.ParentBranch) and (FRemovedBlockIdx >= 0) then
    begin
-      Insert(FRmvBlockIdx, ABlock);
-      FRmvBlockIdx := -1;
+      Insert(FRemovedBlockIdx, ABlock);
+      FRemovedBlockIdx := -1;
    end;
 end;
 
 function TBranch.Remove(ABlock: TBlock): integer;
 begin
    result := inherited Remove(ABlock);
-   FRmvBlockIdx := result;
+   FRemovedBlockIdx := result;
 end;
 
 function TBranch.GetId: integer;
