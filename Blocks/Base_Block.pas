@@ -260,6 +260,7 @@ type
          FParentBlock: TGroupBlock;
          FRemovedBlockIdx: integer;
          FId: integer;
+         procedure ResetRemovedBlockIdx;
          function GetHeight: integer;
          function GetId: integer;
          function _AddRef: Integer; stdcall;
@@ -2801,7 +2802,7 @@ begin
    inherited Create;
    FParentBlock := AParentBlock;
    Hook := AHook;
-   FRemovedBlockIdx := -1;
+   ResetRemovedBlockIdx;
    FId := GProject.Register(Self, AId);
 end;
 
@@ -2814,6 +2815,11 @@ begin
       Items[i].Free;
    GProject.UnRegister(Self);
    inherited Destroy;
+end;
+
+procedure TBranch.ResetRemovedBlockIdx;
+begin
+   FRemovedBlockIdx := -1;	// it must be negative value
 end;
 
 function TBranch.GetMostRight: integer;
@@ -2863,7 +2869,7 @@ begin
    if (ABlock <> nil) and (Self = ABlock.ParentBranch) and (FRemovedBlockIdx >= 0) then
    begin
       Insert(FRemovedBlockIdx, ABlock);
-      FRemovedBlockIdx := -1;
+      ResetRemovedBlockIdx;
    end;
 end;
 
