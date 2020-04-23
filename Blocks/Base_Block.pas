@@ -1881,7 +1881,7 @@ begin
       result := AEdit.Hint;
       i := LastDelimiter(sLineBreak, result);
       if i > 0 then
-         result := ' - ' + Copy(result, i+1, MaxInt);
+         result := ' - ' + Copy(result, i+1);
    end;
 end;
 

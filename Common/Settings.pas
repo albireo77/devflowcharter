@@ -254,12 +254,12 @@ begin
       param := ParamStr(i);
       if param.StartsWith(SETTINGS_FILE_PARAM, true) then
       begin
-         sFile := Copy(param, Length(SETTINGS_FILE_PARAM)+1, MaxInt);
+         sFile := Copy(param, Length(SETTINGS_FILE_PARAM)+1);
          if not sFile.IsEmpty then
             sFile := TPath.GetFullPath(sFile);
       end
       else if param.StartsWith(LANG_DEFS_DIR_PARAM, true) then
-         FLanguageDefinitionsDir := Copy(param, Length(LANG_DEFS_DIR_PARAM)+1, MaxInt);
+         FLanguageDefinitionsDir := Copy(param, Length(LANG_DEFS_DIR_PARAM)+1);
    end;
    if sFile.IsEmpty then
 {$IFDEF MSWINDOWS}

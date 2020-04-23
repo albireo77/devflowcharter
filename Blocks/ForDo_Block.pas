@@ -365,7 +365,7 @@ begin
          varName := varVal;
          i := LastDelimiter(' ', varName);
          if i > 0 then
-            varName := Copy(varName, i+1, MaxInt);
+            varName := Copy(varName, i+1);
          result := Format('for (%s = %s; %s %s %s; %s%s) {', [varVal, startVal, varName, IfThen(FDescOrder, '>=', '<='), stopVal, varName, IfThen(FDescOrder, '--', '++')]);
       end;
    end;

@@ -313,7 +313,7 @@ function Pascal_GetOriginalType(const AType: string): string;
 begin
    result := AType;
    if Pascal_IsPointerType(result) then
-      result := Copy(result, 2, MAXINT);
+      result := Copy(result, 2);
 end;
 
 function Pascal_AreTypesCompatible(AType1, AType2: integer): boolean;

@@ -239,7 +239,7 @@ begin
       if min = -1 then
          min := 0;
       for i := 0 to lines.Count-1 do
-         lines[i] := Copy(lines[i], min+1, MAXINT);
+         lines[i] := Copy(lines[i], min+1);
       for i := 0 to lines.Count-1 do
       begin
          if i <> 0 then

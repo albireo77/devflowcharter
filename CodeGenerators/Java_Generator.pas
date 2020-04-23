@@ -748,7 +748,7 @@ begin
             else if AValue.StartsWith('Collections.') then
             begin
               AddLibImport('java.util.Collections');
-              cValue := Copy(AValue, 13, MaxInt);
+              cValue := Copy(AValue, 13);
               if MatchStr(cValue, ['EMPTY_LIST', 'emptyList()']) then
                  result := JAVA_LIST_TYPE
               else if MatchStr(cValue, ['EMPTY_SET', 'emptySet()']) then
@@ -809,7 +809,7 @@ begin
                cValue := Copy(AValue, 15, len-15);
                if cValue.StartsWith('new ') and cValue.EndsWith('}') then
                begin
-                  s := Copy(cValue, 5, MaxInt);
+                  s := Copy(cValue, 5);
                   s := ReplaceStr(s, ' ', '');
                   i := Pos('[', s);
                   if (i = 0) or (s[i+1] <> ']') or (s[i+2] <> '{') then
@@ -839,7 +839,7 @@ begin
             begin
                if lastChar = '}' then
                begin
-                  cValue := Copy(AValue, 5, MaxInt);
+                  cValue := Copy(AValue, 5);
                   cValue := ReplaceStr(cValue, ' ', '');
                   i := Pos('[', cValue);
                   if i = 0 then
@@ -849,19 +849,19 @@ begin
                   if t1 = UNKNOWN_TYPE then
                      Exit;
                   d := 0;
-                  cValue := Copy(cValue, i, MaxInt);
+                  cValue := Copy(cValue, i);
                   while cValue[1] = '[' do
                   begin
                      if cValue[2] <> ']' then
                         Exit;
                      d := d + 1;
-                     cValue := Copy(cValue, 3, MaxInt);
+                     cValue := Copy(cValue, 3);
                   end;
                   if cValue[1] <> '{' then
                      Exit;
                   ProcessType(t1);
                   t1 := TParserHelper.EncodeArrayType(t1, d);
-                  cValue := Copy(AValue, Pos('{', AValue), MaxInt);
+                  cValue := Copy(AValue, Pos('{', AValue));
                   t2 := Java_GetConstantType(cValue, s);
                   if t1 <> t2 then
                      Exit;

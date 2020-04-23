@@ -682,7 +682,7 @@ end;
 
 class function TInfra.FindText(ASubstr, AText: string; idx: integer; ACaseSens: boolean): integer;
 begin
-   AText := Copy(AText, idx, MAXINT);
+   AText := Copy(AText, idx);
    if not ACaseSens then
    begin
       AText := AText.ToUpper;
@@ -1294,7 +1294,7 @@ begin
       line := ALines[i];
       a := Length(ExtractIndentString(line));
       if a > 0 then
-         ALines[i] := StringOfChar(TAB_CHAR, a) + Copy(line, a + 1, MaxInt);
+         ALines[i] := StringOfChar(TAB_CHAR, a) + Copy(line, a + 1);
    end;
 end;
 

@@ -153,7 +153,7 @@ begin
                      pos := System.Pos('.', lName);
                      if pos > 0 then
                      begin
-                        field := Copy(lName, pos+1, MaxInt);
+                        field := Copy(lName, pos+1);
                         SetLength(lName, pos-1);
                      end;
                      comp := baseForm.FindComponent(lName);
