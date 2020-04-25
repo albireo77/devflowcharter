@@ -313,12 +313,12 @@ object AboutForm: TAboutForm
     ParentFont = False
     OnClick = imDelphiClick
   end
-  object lblInfo: TLabel
+  object lblInfo2: TLabel
     Left = 110
     Top = 92
     Width = 36
     Height = 13
-    Caption = 'lblInfo'
+    Caption = 'lblInfo2'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11

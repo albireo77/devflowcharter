@@ -31,13 +31,13 @@ type
 
   TAboutForm = class(TBaseForm)
     btnOK: TButton;
-    imDelphi: TImage;
-    imSynEdit: TImage;
-    lblXML: TLabel;
-    lblProjectLink: TLabel;
-    lblInfo: TLabel;
     pnlInfo: TPanel;
-    lblInfo1: TLabel;
+    imDelphi,
+    imSynEdit: TImage;
+    lblXML,
+    lblProjectLink,
+    lblInfo1,
+    lblInfo2: TLabel;
     procedure btnOKClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure imDelphiClick(Sender: TObject);
@@ -94,15 +94,15 @@ procedure TAboutForm.FormCreate(Sender: TObject);
 const
    lb = sLineBreak;
 {$IFDEF WIN32}
-   winPlat = 32;
+   winXX = 32;
 {$ENDIF}
 {$IFDEF WIN64}
-   winPlat = 64;
+   winXX = 64;
 {$ENDIF}
 begin
    FVersion := ExtractProgramVersion;
-   lblInfo.Caption := Format(' This program is freeware and released under the%s                GNU General Public License.%s%s    Copyright(C) 2006-2020 The %s%s                             project', [lb, lb, lb, PROGRAM_NAME, lb]);
-   lblInfo1.Caption := Format('                   %s%sThe easiest way from flowchart to program!%s             Version: %s (x%d)', [PROGRAM_NAME, lb, lb, FVersion, winPlat]);
+   lblInfo1.Caption := Format('                   %s%sThe easiest way from flowchart to program!%s             Version: %s (x%d)', [PROGRAM_NAME, lb, lb, FVersion, winXX]);
+   lblInfo2.Caption := Format(' This program is freeware and released under the%s                GNU General Public License.%s%s    Copyright(C) 2006-2020 The %s%s                             project', [lb, lb, lb, PROGRAM_NAME, lb]);
 end;
 
 procedure TAboutForm.imDelphiClick(Sender: TObject);
