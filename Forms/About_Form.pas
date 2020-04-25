@@ -92,17 +92,17 @@ end;
 
 procedure TAboutForm.FormCreate(Sender: TObject);
 const
-   lb = sLineBreak;
-{$IFDEF WIN32}
-   winXX = 32;
-{$ENDIF}
-{$IFDEF WIN64}
-   winXX = 64;
-{$ENDIF}
+   LABEL_1 = '                   ' + PROGRAM_NAME + sLineBreak + 'The easiest way from flowchart to program!' + sLineBreak + '             Version: ';
+   LABEL_2 = ' This program is freeware and released under the' + sLineBreak + '                GNU General Public License.' + sLineBreak + sLineBreak + '       The ' + PROGRAM_NAME + ' project (2006-2020)';
 begin
    FVersion := ExtractProgramVersion;
-   lblInfo1.Caption := Format('                   %s%sThe easiest way from flowchart to program!%s             Version: %s (x%d)', [PROGRAM_NAME, lb, lb, FVersion, winXX]);
-   lblInfo2.Caption := Format(' This program is freeware and released under the%s                GNU General Public License.%s%s       The %s project (2006-2020)', [lb, lb, lb, PROGRAM_NAME]);
+{$IFDEF WIN32}
+   lblInfo1.Caption := LABEL_1 + FVersion + ' (x32)';
+{$ENDIF}
+{$IFDEF WIN64}
+   lblInfo1.Caption := LABEL_1 + FVersion + ' (x64)';
+{$ENDIF}
+   lblInfo2.Caption := LABEL_2;
 end;
 
 procedure TAboutForm.imDelphiClick(Sender: TObject);
