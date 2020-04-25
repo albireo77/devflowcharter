@@ -298,8 +298,8 @@ object AboutForm: TAboutForm
     OnClick = imDelphiClick
   end
   object lblProjectLink: TLabel
-    Left = 145
-    Top = 160
+    Left = 148
+    Top = 147
     Width = 210
     Height = 16
     Cursor = crHandPoint
@@ -316,7 +316,7 @@ object AboutForm: TAboutForm
   object lblInfo2: TLabel
     Left = 110
     Top = 92
-    Width = 36
+    Width = 43
     Height = 13
     Caption = 'lblInfo2'
     Font.Charset = DEFAULT_CHARSET
