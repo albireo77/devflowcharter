@@ -356,7 +356,7 @@ var
    afterLine: boolean;
 begin
    if AText.IsEmpty then
-      exit;
+      Exit;
    line := '';
    bline := '';
    strings := TStringList.Create;

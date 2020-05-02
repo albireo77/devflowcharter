@@ -1148,8 +1148,7 @@ end;
 
 class function TInfra.GetCaretPos(AEdit: TCustomEdit): TBufferCoord;
 begin
-   result.Line := 0;
-   result.Char := 0;
+   result := BufferCoord(0, 0);
    if AEdit is TCustomMemo then
    begin
       result.Line := SendMessage(AEdit.Handle, EM_LINEFROMCHAR, AEdit.SelStart, 0);
