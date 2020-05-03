@@ -322,7 +322,7 @@ end;
 { Reject the current match and execute the next one. }
 { N.B. Reject does not actually cause the input to be rescanned; }
 { instead, internal state information is used to find the next	match. }
-{ Hence you should not try to modify the input stream or the yytext	variable when rejecting a match. }
+{ Hence you should not try to modify the input stream or the yytext variable when rejecting a match. }
 procedure TCustomLexer.Reject;
 var
   i: Integer;
@@ -348,7 +348,7 @@ begin
 end;
 
 { Put the lexical analyzer in the given start state. }
-{ state=0 denotes the default start state, other values are user defined.	}
+{ state=0 denotes the default start state, other values are user defined. }
 procedure TCustomLexer.Start(State: Integer);
 begin
   yysstate := State;
@@ -365,7 +365,7 @@ begin
   result := True;
 end;
 
-{ Start the next match; initialize state information of the lexical	analyzer }
+{ Start the next match; initialize state information of the lexical analyzer }
 procedure TCustomLexer.yynew;
 begin
   { set EOL state unless we have finished. }
@@ -374,7 +374,7 @@ begin
   else if yylastchar <> #0 then
     yylstate := 0;
 
-  yystate	:= yysstate + yylstate;	{ saved state & EOL indicator	}
+  yystate	:= yysstate + yylstate;	{ saved state & EOL indicator }
   Ftext		:= yystext;		          { restore saved match	}
   yystext	:= '';			            { no saved match now }
   yymatches	:= 0;
@@ -396,7 +396,7 @@ begin
   yypos[N] := Length(Ftext);
 end;
 
-{ Declare a match for rule number N	}
+{ Declare a match for rule number N }
 procedure TCustomLexer.yymatch(N: Integer);
 begin
   Inc(yymatches);
@@ -434,7 +434,7 @@ begin
     yylastchar := #0;
 end;
 
-{ Execute the default action (copy character). Return true unless	at end-of-file. }
+{ Execute the default action (copy character). Return true unless at end-of-file. }
 function TCustomLexer.yydefault: Boolean;
 begin
   yyreject := False;
@@ -447,7 +447,7 @@ begin
   yylastchar := yyactchar;
 end;
 
-{ Re-initialize state information after lexical analysis has been	finished. }
+{ Re-initialize state information after lexical analysis has been finished. }
 procedure TCustomLexer.yyclear;
 begin
   Bufptr := 0;
@@ -468,7 +468,7 @@ begin
   yyoutput := TLexFile.Create;
   yyerrorfile := TLexFile.Create;
 
-  { The error file ismainly used for debug - allocate to bit bucket	}
+  { The error file ismainly used for debug - allocate to bit bucket }
   { for now & let user re-assign later if required. }
   yyerrorfile.AssignBitBucket;
 
@@ -485,7 +485,7 @@ begin
   inherited Destroy;
 end;
 
-{ Reset the Lexer for another go.	}
+{ Reset the Lexer for another go. }
 procedure TCustomLexer.Reset;
 begin
   yylineno := 1;
