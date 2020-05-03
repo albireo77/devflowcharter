@@ -62,26 +62,26 @@ type
 
     { State Variables: }
 
-    { Some state information is maintained to keep track for calls to	}
+    { Some state information is maintained to keep track for calls to }
     { yymore, yyless, reject, start and yymatch/yymark, and to initialize state information used by the lexical analyzer. }
-    { - yystext:	contains the initial contents of the yytext	variable; }
+    { - yystext:	contains the initial contents of the yytext variable; }
     {             this will be the empty string, unless	yymore is called which sets yystext to the current yytext. }
     yystext: AnsiString;
 
-    { - yysstate:	Start state of lexical analyzer (set to 0	during initialization, and modified in calls to	the start routine) }
+    { - yysstate:	Start state of lexical analyzer (set to 0 during initialization, and modified in calls to	the start routine) }
     yysstate: Integer;
 
     { - yylstate:	line state information (1 if at beginning of line, 0 otherwise). }
     yylstate: Integer;
 
-    { - yystack:	stack containing matched rules; yymatches	contains the number of matches.	}
+    { - yystack:	stack containing matched rules; yymatches contains the number of matches.	}
     yymatches: Integer;
     yystack: array [1..Lex_max_matches] of Integer;
 
     { - yypos:		for each rule the last marked position (yymark); zeroed when rule has already been considered.	}
     yypos: array [1..Lex_max_rules] of Integer;
 
-    { - yysleng:	copy of the original yyleng used to restore	state information when reject is used. }
+    { - yysleng:	copy of the original yyleng used to restore state information when reject is used. }
     yysleng: Integer;
 
     yystate: Integer;		  { Current state of lexical analyzer. }
@@ -101,10 +101,10 @@ type
     { Get current string length	}
     function GetYYLeng: Integer; virtual;
 
-    { Start the next match; initialize state information of the lexical	analyzer.	}
+    { Start the next match; initialize state information of the lexical	analyzer. }
     procedure yynew;
 
-    { Get next character from the input stream and update yytext and	yyactchar accordingly. }
+    { Get next character from the input stream and update yytext and yyactchar accordingly. }
     procedure yyscan;
 
     { Mark position for rule no. N }
@@ -113,8 +113,7 @@ type
     { Declares a match for rule number N }
     procedure yymatch(N: Integer);
 
-    { Find the last match and the corresponding marked position and	}
-    { adjust the matched string accordingly; return: }
+    { Find the last match and the corresponding marked position and adjust the matched string accordingly; return: }
     { - true if a rule has been matched, false otherwise }
     { - n: the number of the matched rule. }
     function yyfind(var N: Integer): Boolean;
@@ -122,7 +121,7 @@ type
     { Execute the default action (copy character); return true unless	at end-of-file.	}
     function yydefault: Boolean;
 
-    { Re-initialize state information after lexical analysis has been	finished.	}
+    { Re-initialize state information after lexical analysis has been finished. }
     procedure yyclear;
 
     { Write a fatal error message and halt program. }
@@ -131,7 +130,7 @@ type
   public
     yyinput: TLexFile;	{ Input file }
     yyoutput: TLexFile;	{ Output file	}
-    yyerrorfile: TLexFile;	{ Destination for errors.	}
+    yyerrorfile: TLexFile;	{ Destination for errors. }
     yyline: AnsiString;	{ Current input line.	}
     yylineno: Integer;	{ Current input line.	}
     yycolno: Integer;	{ Current input column. }
@@ -168,7 +167,7 @@ type
     { yyinput, yyoutput etc directly since these now have support for	}
     { user assigned I/O as well as string, stream, and file facilities.	}
 
-    { Obtain one character from the input file (null character at	end-of-file). }
+    { Obtain one character from the input file (null character at end-of-file). }
     function Get_char: AnsiChar;
 
     { Return one character to the input file to be reread in subsequent	calls to Get_char. }
@@ -183,14 +182,14 @@ type
     { Append the next match to the current one.	}
     procedure yymore;
 
-    { Truncate yytext to size n and return the remaining characters to	the input stream.	}
+    { Truncate yytext to size n and return the remaining characters to the input stream. }
     procedure yyless(N: Integer);
 
     { Reject the current match and execute the next one. }
     { N.B. Reject does not actually cause the input to be rescanned; }
     { instead, internal state information is used to find the next }
     { match. Hence you should not try to modify the input stream or the	}
-    { yytext variable when rejecting a match.	}
+    { yytext variable when rejecting a match. }
     procedure Reject;
 
     { Set the return value of yylex. }
@@ -244,7 +243,7 @@ var
 label
   retry;
 begin
-  { Is there anything in the undo buffer?	}
+  { Is there anything in the undo buffer? }
   if Bufptr > 0 then
   begin
     Get_char := Buf[Bufptr];
@@ -276,7 +275,7 @@ retry:
   Get_char := C;
 end;
 
-{ Return one character to the input file to be reread in subsequent	calls to Get_char. }
+{ Return one character to the input file to be reread in subsequent calls to Get_char. }
 procedure TCustomLexer.Unget_char(C: AnsiChar);
 begin
   if Bufptr = Lex_max_chars then
