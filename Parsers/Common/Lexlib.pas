@@ -197,7 +197,7 @@ type
     procedure Returnc(C: AnsiChar);
 
     { Put the lexical analyzer in the given start state. }
-    { state=0 denotes the default start state, other values are user defined.	}
+    { state=0 denotes the default start state, other values are user defined. }
     procedure Start(state: Integer);
 
     { The yywrap function is called by yylex at end-of-file (unless you	}
@@ -266,7 +266,7 @@ retry:
       goto retry;
     end;
     FPrevChar := C;
-    C := #10;		{ Always use newline not CR for the analysis.	}
+    C := #10;		{ Always use newline not CR for the analysis. }
     Inc(yylineno);	{ We are now on next line. }
     yycolno := 1;
   end 
@@ -285,7 +285,7 @@ begin
   Buf[Bufptr] := C;
 end;
 
-{ Write one character to the output file.	}
+{ Write one character to the output file. }
 procedure TCustomLexer.Put_char(C: AnsiChar);
 begin
   if C = #10 then
@@ -303,7 +303,7 @@ begin
     Put_char(Ftext[i]);
 end;
 
-{ Append the next match to the current one.	}
+{ Append the next match to the current one. }
 procedure TCustomLexer.yymore;
 begin
   yystext := Ftext;
