@@ -200,13 +200,13 @@ type
     { state=0 denotes the default start state, other values are user defined. }
     procedure Start(state: Integer);
 
-    { The yywrap function is called by yylex at end-of-file (unless you	}
-    { have specified a rule matching end-of-file). You may redefine this }
-    { routine in your Lex program to do application-dependent processing }
-    { at end of file. In particular, yywrap may arrange for more input }
+    { The yywrap function is called by yylex at end-of-file (unless you          }
+    { have specified a rule matching end-of-file). You may redefine this         }
+    { routine in your Lex program to do application-dependent processing         }
+    { at end of file. In particular, yywrap may arrange for more input           }
     { and return false in which case the yylex routine resumes lexical analysis. }
-    { The default yywrap routine supplied here closes input and output }
-    { files and returns true (causing yylex to terminate). }
+    { The default yywrap routine supplied here closes input and output           }
+    { files and returns true (causing yylex to terminate).                       }
     function  yywrap: Boolean;
 
     { reset the lexer for another run. }
