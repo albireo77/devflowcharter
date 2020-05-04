@@ -374,11 +374,11 @@ begin
   else if yylastchar <> #0 then
     yylstate := 0;
 
-  yystate	:= yysstate + yylstate;	{ saved state & EOL indicator }
-  Ftext		:= yystext;		          { restore saved match	}
-  yystext	:= '';			            { no saved match now }
-  yymatches	:= 0;
-  yydone	:= False;
+  yystate   := yysstate + yylstate;	{ saved state & EOL indicator }
+  Ftext     := yystext;		          { restore saved match	}
+  yystext   := '';			            { no saved match now }
+  yymatches := 0;
+  yydone    := False;
 end;
 
 { Get next character from the input stream and update yytext and yyactchar accordingly. }
@@ -438,7 +438,7 @@ end;
 function TCustomLexer.yydefault: Boolean;
 begin
   yyreject := False;
-  yyactchar	:= Get_char;
+  yyactchar := Get_char;
   result := yyactchar <> #0;
   if result then
     Put_char(yyactchar)
@@ -456,7 +456,7 @@ begin
   yylastchar := #0;
   Ftext	:= '';
   yystext := '';
-  FPrevChar	:= #0;
+  FPrevChar := #0;
 end;
 
 constructor TCustomLexer.Create;
