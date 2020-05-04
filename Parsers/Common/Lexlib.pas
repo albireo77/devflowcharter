@@ -185,18 +185,18 @@ type
     { Truncate yytext to size n and return the remaining characters to the input stream. }
     procedure yyless(N: Integer);
 
-    { Reject the current match and execute the next one. }
-    { N.B. Reject does not actually cause the input to be rescanned; }
-    { instead, internal state information is used to find the next }
-    { match. Hence you should not try to modify the input stream or the	}
-    { yytext variable when rejecting a match. }
+    { Reject the current match and execute the next one.                }
+    { N.B. Reject does not actually cause the input to be rescanned;    }
+    { instead, internal state information is used to find the next      }
+    { match. Hence you should not try to modify the input stream or the }
+    { yytext variable when rejecting a match.                           }
     procedure Reject;
 
     { Set the return value of yylex. }
     procedure Return(N: Integer);
     procedure Returnc(C: AnsiChar);
 
-    { Put the lexical analyzer in the given start state. }
+    { Put the lexical analyzer in the given start state.                      }
     { state=0 denotes the default start state, other values are user defined. }
     procedure Start(state: Integer);
 
