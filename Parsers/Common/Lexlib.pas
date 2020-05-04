@@ -374,9 +374,9 @@ begin
   else if yylastchar <> #0 then
     yylstate := 0;
 
-  yystate   := yysstate + yylstate;	{ saved state & EOL indicator }
-  Ftext     := yystext;		          { restore saved match	}
-  yystext   := '';			            { no saved match now }
+  yystate   := yysstate + yylstate; { saved state & EOL indicator }
+  Ftext     := yystext;             { restore saved match	}
+  yystext   := '';                  { no saved match now }
   yymatches := 0;
   yydone    := False;
 end;
