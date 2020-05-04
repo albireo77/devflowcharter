@@ -78,21 +78,21 @@ type
     yymatches: Integer;
     yystack: array [1..Lex_max_matches] of Integer;
 
-    { - yypos: for each rule the last marked position (yymark); zeroed when rule has already been considered.	}
+    { - yypos: for each rule the last marked position (yymark); zeroed when rule has already been considered. }
     yypos: array [1..Lex_max_rules] of Integer;
 
     { - yysleng:	copy of the original yyleng used to restore state information when reject is used. }
     yysleng: Integer;
 
-    yystate: Integer;     { Current state of lexical analyzer. }
-    yyactchar: AnsiChar;  { Current character. }
+    yystate: Integer;     { Current state of lexical analyzer.   }
+    yyactchar: AnsiChar;  { Current character.                   }
     yylastchar: AnsiChar; { Last matched character (#0 if none). }
-    yyrule: Integer;      { Matched rule. }
-    yyreject: Boolean;    { Current match rejected? }
-    yydone: Boolean;      { yylex return value set? }
-    yyretval: Integer;    { yylex return value. }
-    FText: AnsiString;    { Matched text. }
-    FPrevChar: AnsiChar;  { Used to sort CR/LF. }
+    yyrule: Integer;      { Matched rule.                        }
+    yyreject: Boolean;    { Current match rejected?              }
+    yydone: Boolean;      { yylex return value set?              }
+    yyretval: Integer;    { yylex return value.                  }
+    FText: AnsiString;    { Matched text.                        }
+    FPrevChar: AnsiChar;  { Used to sort CR/LF.                  }
 
     { Unget buffer }
     Bufptr: Integer;
@@ -128,12 +128,12 @@ type
     procedure Fatal(const msg: AnsiString);
 
   public
-    yyinput: TLexFile;      { Input file }
-    yyoutput: TLexFile;     { Output file	}
+    yyinput: TLexFile;      { Input file              }
+    yyoutput: TLexFile;     { Output file             }
     yyerrorfile: TLexFile;  { Destination for errors. }
-    yyline: AnsiString;     { Current input line.	}
-    yylineno: Integer;      { Current input line.	}
-    yycolno: Integer;       { Current input column. }
+    yyline: AnsiString;     { Current input line.     }
+    yylineno: Integer;      { Current input line.     }
+    yycolno: Integer;       { Current input column.   }
     property yytext: AnsiString read FText;
     property yyleng: Integer read GetYYLeng;
 
