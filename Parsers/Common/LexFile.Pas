@@ -69,8 +69,8 @@ end;
 procedure TLexFile.AssignString(const S: AnsiString);
 begin
   Close;
-  IO_String	:= S;
-  FLength	:= Length(S);
+  IO_String := S;
+  FLength := Length(S);
   FPos := 0;
   FDir := ddIn;
 end;
@@ -95,10 +95,10 @@ begin
   if EOF then
     result := #0
   else
-	begin
-	  Inc(FPos);
-	  result := IO_String[FPos];
-	end;
+  begin
+    Inc(FPos);
+    result := IO_String[FPos];
+  end;
 end;
 
 { Send a lot of text. }
