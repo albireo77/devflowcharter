@@ -229,10 +229,10 @@ end;
 procedure TCustomLexer.Fatal(const Msg: AnsiString);
 begin
 {$Ifdef HaltOnError}
-  yyerrorfile.Writeln('LexLib: ' + Msg);
+  yyerrorfile.Writeln('LexLib: ' + String(Msg));
   Halt(1);
 {$Else  HaltOnError}
-  raise ELFException.Create('LexLib: ' + Msg);
+  raise ELFException.Create('LexLib: ' + String(Msg));
 {$Endif HaltOnError}
 end;
 

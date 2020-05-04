@@ -16,8 +16,8 @@ type
   ELFException = class(Exception);
   TDir = (ddIn, ddOut, ddBoth);
 
-  { I/O can be by a user supplied routine or method. In this case a	}
-  { single call is used to put or get a character, or check for EOF. }
+  { I/O can be by a user supplied routine or method. In this case }
+  { a single call is used to put or get a character, or check for EOF. }
   { For EOF the function should return #0 if EOF, else any other char. }
   TFmode =	(tfGet, tfPut, tfEOF, tfClose);
   TLexFile = class
@@ -25,14 +25,14 @@ type
 		  IO_String: AnsiString;
 		  FDir: TDir;
 		  FLength: Integer;	{ String length	}
-		  FPos: Integer;	{ String position	}
+		  FPos: Integer;	{ String position }
 		public
 		  property Direction: TDir read FDir;
 
 		  { Set string & force to string input type. }
 		  procedure AssignString(const S: AnsiString); virtual;
 
-		  { Set into bit-bucket mode.	}
+		  { Set into bit-bucket mode. }
 		  procedure AssignBitBucket;
 
 		  { Send a character }
@@ -58,7 +58,7 @@ implementation
 
 {$I+}		{ Raise exceptions on normal I/O errors. }
 
-{ Make I/O into a bit bucket.	}
+{ Make I/O into a bit bucket. }
 procedure TLexFile.AssignBitBucket;
 begin
   Close;
@@ -75,7 +75,7 @@ begin
   FDir := ddIn;
 end;
 
-{ Close the file or whatever.	}
+{ Close the file or whatever. }
 procedure TLexFile.Close;
 begin
   IO_String := '';

@@ -79,7 +79,7 @@ const T_PI = 307;
 const UMINUS = 308;
 
 type YYSType = record
-               yyString : String;
+               yyString : AnsiString;
                case Integer of
                  1 : ( yyInteger : Integer );
                end;	{ YYSType	}
