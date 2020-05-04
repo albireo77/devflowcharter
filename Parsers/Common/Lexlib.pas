@@ -22,31 +22,31 @@ interface
 
 { The Lex library unit supplies a collection of variables and routines }
 { needed by the lexical analyzer routine yylex and application         }
-{ programs using Lex-generated lexical analyzers.	                     }
-{ It also provides access to the input/output streams used by the	     }
-{ lexical analyzer and the text of the matched string, and provides	   }
+{ programs using Lex-generated lexical analyzers.                      }
+{ It also provides access to the input/output streams used by the      }
+{ lexical analyzer and the text of the matched string, and provides    }
 { some utility functions which may be used in actions.                 }
 
-{ This `standard' version of the LexLib unit may be used to implement	 }
-{ lexical analyzers which read from and write to MS-DOS files (using	 }
-{ standard input and output, by default); or analysers reading from	   }
-{ streams or just string variables.	                                   }
-{ This will be suitable for many standard applications.	               }
+{ This `standard' version of the LexLib unit may be used to implement  }
+{ lexical analyzers which read from and write to MS-DOS files (using   }
+{ standard input and output, by default); or analysers reading from    }
+{ streams or just string variables.                                    }
+{ This will be suitable for many standard applications.                }
 { In order to increase usability you may also supply new data in/out   }
 { methods without needing to derive a new class.                       }
 
 { Variables: }
 
-{  yytext contains the current match.	                                   }
-{  yyleng its length.	                                                   }
+{  yytext contains the current match.                                    }
+{  yyleng its length.                                                    }
 {  yyline contains the current input line.                               }
 {  yylineno and yycolno denote the current input position (line, column) }
-{  (These values are often used in giving error diagnostics, but they	   }
+{  (These values are often used in giving error diagnostics, but they    }
 {  will only be meaningful if there is no rescanning across line ends)   }
 
-{  yyinput, yyoutput, and yyerrorfile are used to source, send, and	     }
-{  complain. These are no longer traditional data files, but are 	       }
-{  TLexFile objects that can handle file, stream, or string data.	       }
+{  yyinput, yyoutput, and yyerrorfile are used to source, send, and      }
+{  complain. These are no longer traditional data files, but are         }
+{  TLexFile objects that can handle file, stream, or string data.        }
 
 uses
   LexFile;
@@ -154,7 +154,7 @@ type
     { stream. Characters can be returned to the input buffer by calls	}
     { to unget_char. At end-of-file a null character is returned.	}
 
-    { The input routines also keep track of the input position and set }
+    { The input routines also keep track of the input position and set  }
     { the yyline, yylineno, yycolno variables accordingly. }
 
     { Since the rest of the Lex library only depends on these three	}
