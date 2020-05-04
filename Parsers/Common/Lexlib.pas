@@ -1,20 +1,20 @@
 unit LexLib;
 
-{ Standard Lex library unit for TP Lex Version 3.0.2-11-91 AG	}
+{ Standard Lex library unit for TP Lex Version 3.0.2-11-91 AG }
 
 { Extended by Thierry Coq, sept. 1997 }
 { adapted to Delphi 3 }
 { Notes: }
-{         - input and output files cannot be used by non-console Delphi	applications, so streams have to be used.	}
-{         - the current lexlib library is not object, and therefore one	cannot load several lexers, for example. }
-{           The lexlib interface is transformed into a Lexer object which can then be extended by the lex program.	}
+{         - input and output files cannot be used by non-console Delphi	applications, so streams have to be used.  }
+{         - the current lexlib library is not object, and therefore one	cannot load several lexers, for example.   }
+{           The lexlib interface is transformed into a Lexer object which can then be extended by the lex program. }
 
 { Modified September 2000 by C.P.Osborne for Delphi 4/5	}
 {	12/09/2000	CPO	Mods started. }
 {				No longer a TComponent.	}
 {				Added TLexFile items instead of streams. }
 {				yytext, yyleng now properties. }
-{				Renamed constants Lex_... }
+{				Renamed constants Lex_ }
 {				State variables moved into object. }
 
 
@@ -384,7 +384,7 @@ end;
 { Get next character from the input stream and update yytext and yyactchar accordingly. }
 procedure TCustomLexer.yyscan;
 begin
-  yyactchar	:= Get_char;
+  yyactchar := Get_char;
   Ftext := Ftext + yyactchar;
 end;
 
@@ -420,7 +420,7 @@ begin
   result := yymatches > 0;
   if result then
   begin
-    yysleng	:= Length(Ftext);
+    yysleng := Length(Ftext);
     N := yystack[yymatches];
     yyless(yypos[N]);
     yypos[N] := 0;
