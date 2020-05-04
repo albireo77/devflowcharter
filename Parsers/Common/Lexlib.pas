@@ -3,50 +3,50 @@ unit LexLib;
 { Standard Lex library unit for TP Lex Version 3.0.2-11-91 AG	}
 
 { Extended by Thierry Coq, sept. 1997 }
-{ adapted to Delphi 3	}
+{ adapted to Delphi 3 }
 { Notes: }
 {         - input and output files cannot be used by non-console Delphi	applications, so streams have to be used.	}
 {         - the current lexlib library is not object, and therefore one	cannot load several lexers, for example. }
 {           The lexlib interface is transformed into a Lexer object which can then be extended by the lex program.	}
 
 { Modified September 2000 by C.P.Osborne for Delphi 4/5	}
-{	12/09/2000	CPO	Mods started.	}
+{	12/09/2000	CPO	Mods started. }
 {				No longer a TComponent.	}
 {				Added TLexFile items instead of streams. }
 {				yytext, yyleng now properties. }
-{				Renamed constants Lex_...	}
+{				Renamed constants Lex_... }
 {				State variables moved into object. }
 
 
 interface
 
 { The Lex library unit supplies a collection of variables and routines }
-{ needed by the lexical analyzer routine yylex and application }
-{ programs using Lex-generated lexical analyzers.	}
-{ It also provides access to the input/output streams used by the	}
-{ lexical analyzer and the text of the matched string, and provides	}
-{ some utility functions which may be used in actions. }
+{ needed by the lexical analyzer routine yylex and application         }
+{ programs using Lex-generated lexical analyzers.	                     }
+{ It also provides access to the input/output streams used by the	     }
+{ lexical analyzer and the text of the matched string, and provides	   }
+{ some utility functions which may be used in actions.                 }
 
-{ This `standard' version of the LexLib unit may be used to implement	}
-{ lexical analyzers which read from and write to MS-DOS files (using	}
-{ standard input and output, by default); or analysers reading from	}
-{ streams or just string variables.	}
-{ This will be suitable for many standard applications.	}
-{ In order to increase usability you may also supply new data in/out }
-{ methods without needing to derive a new class. }
+{ This `standard' version of the LexLib unit may be used to implement	 }
+{ lexical analyzers which read from and write to MS-DOS files (using	 }
+{ standard input and output, by default); or analysers reading from	   }
+{ streams or just string variables.	                                   }
+{ This will be suitable for many standard applications.	               }
+{ In order to increase usability you may also supply new data in/out   }
+{ methods without needing to derive a new class.                       }
 
 { Variables: }
 
-{  yytext contains the current match.	}
-{  yyleng its length.	}
-{  yyline contains the current input line. }
+{  yytext contains the current match.	                                   }
+{  yyleng its length.	                                                   }
+{  yyline contains the current input line.                               }
 {  yylineno and yycolno denote the current input position (line, column) }
-{  (These values are often used in giving error diagnostics, but they	}
-{  will only be meaningful if there is no rescanning across line ends) }
+{  (These values are often used in giving error diagnostics, but they	   }
+{  will only be meaningful if there is no rescanning across line ends)   }
 
-{  yyinput, yyoutput, and yyerrorfile are used to source, send, and	}
-{  complain. These are no longer traditional data files, but are 	}
-{  TLexFile objects that can handle file, stream, or string data.	}
+{  yyinput, yyoutput, and yyerrorfile are used to source, send, and	     }
+{  complain. These are no longer traditional data files, but are 	       }
+{  TLexFile objects that can handle file, stream, or string data.	       }
 
 uses
   LexFile;
@@ -64,37 +64,37 @@ type
 
     { Some state information is maintained to keep track for calls to }
     { yymore, yyless, reject, start and yymatch/yymark, and to initialize state information used by the lexical analyzer. }
-    { - yystext:	contains the initial contents of the yytext variable; }
-    {             this will be the empty string, unless	yymore is called which sets yystext to the current yytext. }
+    { - yystext: contains the initial contents of the yytext variable; }
+    {            this will be the empty string, unless	yymore is called which sets yystext to the current yytext. }
     yystext: AnsiString;
 
-    { - yysstate:	Start state of lexical analyzer (set to 0 during initialization, and modified in calls to	the start routine) }
+    { - yysstate: Start state of lexical analyzer (set to 0 during initialization, and modified in calls to the start routine) }
     yysstate: Integer;
 
-    { - yylstate:	line state information (1 if at beginning of line, 0 otherwise). }
+    { - yylstate: line state information (1 if at beginning of line, 0 otherwise). }
     yylstate: Integer;
 
-    { - yystack:	stack containing matched rules; yymatches contains the number of matches.	}
+    { - yystack: stack containing matched rules; yymatches contains the number of matches. }
     yymatches: Integer;
     yystack: array [1..Lex_max_matches] of Integer;
 
-    { - yypos:		for each rule the last marked position (yymark); zeroed when rule has already been considered.	}
+    { - yypos: for each rule the last marked position (yymark); zeroed when rule has already been considered.	}
     yypos: array [1..Lex_max_rules] of Integer;
 
     { - yysleng:	copy of the original yyleng used to restore state information when reject is used. }
     yysleng: Integer;
 
-    yystate: Integer;		  { Current state of lexical analyzer. }
-    yyactchar: AnsiChar;	{ Current character. }
-    yylastchar: AnsiChar;	{ Last matched character (#0 if none). }
-    yyrule: Integer;		  { Matched rule.	}
-    yyreject: Boolean;		{ Current match rejected?	}
-    yydone: Boolean;		  { yylex return value set?	}
-    yyretval: Integer;		{ yylex return value.	}
-    FText: AnsiString;		{ Matched text.	}
-    FPrevChar: AnsiChar;	{ Used to sort CR/LF.	}
+    yystate: Integer;     { Current state of lexical analyzer. }
+    yyactchar: AnsiChar;  { Current character. }
+    yylastchar: AnsiChar; { Last matched character (#0 if none). }
+    yyrule: Integer;      { Matched rule. }
+    yyreject: Boolean;    { Current match rejected? }
+    yydone: Boolean;      { yylex return value set? }
+    yyretval: Integer;    { yylex return value. }
+    FText: AnsiString;    { Matched text. }
+    FPrevChar: AnsiChar;  { Used to sort CR/LF. }
 
-    { Unget buffer...	}
+    { Unget buffer }
     Bufptr: Integer;
     Buf: array [1..Lex_max_chars] of AnsiChar;
 
@@ -128,19 +128,19 @@ type
     procedure Fatal(const msg: AnsiString);
 
   public
-    yyinput: TLexFile;	{ Input file }
-    yyoutput: TLexFile;	{ Output file	}
-    yyerrorfile: TLexFile;	{ Destination for errors. }
-    yyline: AnsiString;	{ Current input line.	}
-    yylineno: Integer;	{ Current input line.	}
-    yycolno: Integer;	{ Current input column. }
+    yyinput: TLexFile;      { Input file }
+    yyoutput: TLexFile;     { Output file	}
+    yyerrorfile: TLexFile;  { Destination for errors. }
+    yyline: AnsiString;     { Current input line.	}
+    yylineno: Integer;      { Current input line.	}
+    yycolno: Integer;       { Current input column. }
     property yytext: AnsiString read FText;
     property yyleng: Integer read GetYYLeng;
 
     constructor Create; virtual;
     destructor Destroy; override;
 
-    { I/O routines:
+    { I/O routines: }
 
     { The following routines get_char, unget_char and put_char are used	}
     { to implement access to the input and output files. Since \n	}
@@ -201,8 +201,8 @@ type
     procedure Start(state: Integer);
 
     { The yywrap function is called by yylex at end-of-file (unless you	}
-    { have specified a rule matching end-of-file). You may redefine this}
-    { routine in your Lex program to do application-dependent processing}
+    { have specified a rule matching end-of-file). You may redefine this }
+    { routine in your Lex program to do application-dependent processing }
     { at end of file. In particular, yywrap may arrange for more input }
     { and return false in which case the yylex routine resumes lexical analysis. }
     { The default yywrap routine supplied here closes input and output }
@@ -354,10 +354,10 @@ begin
   yysstate := State;
 end;
 
-{ The yywrap function is called by yylex at end-of-file (unless you	}
+{ The yywrap function is called by yylex at end-of-file (unless you }
 { have specified a rule matching end-of-file). You may redefine this }
 { routine in your Lex program to do application-dependent processing }
-{ at end of file. In particular, yywrap may arrange for more input	}
+{ at end of file. In particular, yywrap may arrange for more input }
 { and return false in which case the yylex routine resumes lexical analysis. }
 { The default yywrap routine supplied here just returns true (causing yylex to terminate). }
 function TCustomLexer.yywrap: Boolean;
