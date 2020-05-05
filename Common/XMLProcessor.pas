@@ -190,7 +190,6 @@ class function TXMLProcessor.ImportFlowchartFromXMLTag(ATag: IXMLElement;      /
                                                        ABranchInd: integer = PRIMARY_BRANCH_IDX): TBlock;
 var
    tag: IXMLElement;
-   newBlock: TBlock;
    branch: TBranch;
    initCount: integer;
    tab: TBlockTabSheet;
@@ -217,20 +216,15 @@ begin
     while tag <> nil do
     begin
        if tab <> nil then
-          newBlock := TBlockFactory.Create(tag, tab)
-       else if branch <> nil then
-          newBlock := TBlockFactory.Create(tag, branch)
-       else
-          newBlock := nil;
-       tab := nil;
-       if newBlock <> nil then
        begin
-          result := newBlock;
-          if branch <> nil then
-          begin
-             branch.InsertAfter(newBlock, APrevBlock);
-             APrevBlock := newBlock;
-          end;
+          result := TBlockFactory.Create(tag, tab);
+          tab := nil;
+       end
+       else if branch <> nil then
+       begin
+          result := TBlockFactory.Create(tag, branch);
+          branch.InsertAfter(result, APrevBlock);
+          APrevBlock := result;
        end
        else
        begin
