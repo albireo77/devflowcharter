@@ -223,8 +223,11 @@ begin
        else if branch <> nil then
        begin
           result := TBlockFactory.Create(tag, branch);
-          branch.InsertAfter(result, APrevBlock);
-          APrevBlock := result;
+          if result <> nil then
+          begin
+             branch.InsertAfter(result, APrevBlock);
+             APrevBlock := result;
+          end;
        end
        else
        begin
