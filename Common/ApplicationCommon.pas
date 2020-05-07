@@ -50,8 +50,8 @@ type
          destructor Destroy; override;
          class procedure ShowWarningBox(const AWarnMsg: string);
          class procedure ShowFormattedWarningBox(const AKey: string; Args: array of const);
-         class procedure ShowErrorBox(const AErrMsg: string; AErrType: TError);
-         class procedure ShowFormattedErrorBox(const AKey: string; Args: array of const; AErrType: TError);
+         class procedure ShowErrorBox(const AErrorMsg: string; AError: TError);
+         class procedure ShowFormattedErrorBox(const AKey: string; Args: array of const; AError: TError);
          class procedure SetInitialSettings;
          class procedure PopulateDataTypeCombo(AcbType: TComboBox; ASkipIndex: integer = 100);
          class procedure PrintBitmap(ABitmap: TBitmap);
@@ -453,18 +453,18 @@ begin
    end;
 end;
 
-class procedure TInfra.ShowErrorBox(const AErrMsg: string; AErrType: TError);
+class procedure TInfra.ShowErrorBox(const AErrorMsg: string; AError: TError);
 const
    ErrorsTypeArray: array[TError] of string = (' ', 'DeclareError', 'IOError', 'ValidationError', 'ConvertError', 'SyntaxError',
                     'PrintError', 'CompileError', 'ImportError', 'Error');
 begin
-   if AErrType <> errNone then
-      Application.MessageBox(PChar(AErrMsg), PChar(i18Manager.GetString(ErrorsTypeArray[AErrType])), MB_ICONERROR);
+   if AError <> errNone then
+      Application.MessageBox(PChar(AErrorMsg), PChar(i18Manager.GetString(ErrorsTypeArray[AError])), MB_ICONERROR);
 end;
 
-class procedure TInfra.ShowFormattedErrorBox(const AKey: string; Args: array of const; AErrType: TError);
+class procedure TInfra.ShowFormattedErrorBox(const AKey: string; Args: array of const; AError: TError);
 begin
-   ShowErrorBox(i18Manager.GetFormattedString(AKey, Args), AErrType);
+   ShowErrorBox(i18Manager.GetFormattedString(AKey, Args), AError);
 end;
 
 class procedure TInfra.ShowFormattedWarningBox(const AKey: string; Args: array of const);
