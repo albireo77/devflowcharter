@@ -51,7 +51,7 @@ type
     procedure miExportAllClick(Sender: TObject);
     procedure ExportTabsToXMLTag(ATag: IXMLElement);
     function IsEnabled: boolean; virtual; abstract;
-    function ImportTabsFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TErrorType; virtual; abstract;
+    function ImportTabsFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TError; virtual; abstract;
     procedure FormDeactivate(Sender: TObject); virtual;
     procedure RefreshTabs; virtual;
     procedure ExportSettingsToXMLTag(ATag: IXMLElement); override;

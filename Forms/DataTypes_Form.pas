@@ -35,7 +35,7 @@ type
      function IsEnabled: boolean; override;
   public
      { Public declarations }
-     function ImportTabsFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TErrorType; override;
+     function ImportTabsFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TError; override;
      procedure RefreshTabs; override;
      procedure ResetForm; override;
   end;
@@ -95,7 +95,7 @@ begin
    RefreshTabs;
 end;
 
-function TDataTypesForm.ImportTabsFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
+function TDataTypesForm.ImportTabsFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TError;
 begin
    result := GProject.ImportUserDataTypesFromXML(ATag, AImportMode);
 end;

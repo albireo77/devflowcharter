@@ -70,7 +70,7 @@ type
          constructor Create(AParentForm: TPageControlForm);
          destructor Destroy; override;
          procedure ExportToXMLTag(ATag: IXMLElement); virtual;
-         function ExportToXMLFile(const AFile: string): TErrorType;
+         function ExportToXMLFile(const AFile: string): TError;
          procedure ExportToGraphic(AGraphic: TGraphic);
          function GetExportFileName: string;
          function IsDuplicated(ANameEdit: TEdit): boolean;
@@ -177,7 +177,7 @@ begin
       TInfra.UpdateCodeEditor(Self);
 end;
 
-function TTabComponent.ExportToXMLFile(const AFile: string): TErrorType;
+function TTabComponent.ExportToXMLFile(const AFile: string): TError;
 begin
    result := TXMLProcessor.ExportToXMLFile(ExportToXMLTag, AFile);
 end;

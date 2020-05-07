@@ -31,13 +31,13 @@ uses
 type
 
    TXMLExportProc = procedure(ATag: IXMLElement) of object;
-   TXMLImportProc = function(ATag: IXMLElement; AImportMode: TImportMode): TErrorType of object;
+   TXMLImportProc = function(ATag: IXMLElement; AImportMode: TImportMode): TError of object;
 
    TXMLProcessor = class(TObject)
    private
       class function DialogXMLFile(ADialog: TOpenDialog; const AFileName: string = ''): string;
    public
-      class function ExportToXMLFile(AExportProc: TXMLExportProc; const AFilePath: string = ''): TErrorType;
+      class function ExportToXMLFile(AExportProc: TXMLExportProc; const AFilePath: string = ''): TError;
       class function ImportFromXMLFile(AImportProc: TXMLImportProc;
                                        AImportMode: TImportMode;
                                        const AFileName: string = '';
@@ -55,7 +55,7 @@ type
       class function ImportFlowchartFromXMLTag(ATag: IXMLElement;
                                                AParent: TWinControl;
                                                APrevBlock: TBlock;
-                                               var AErrorType: TErrorType;
+                                               var AError: TError;
                                                ABranchInd: integer = PRIMARY_BRANCH_IDX): TBlock;
    end;
 
@@ -186,7 +186,7 @@ end;
 class function TXMLProcessor.ImportFlowchartFromXMLTag(ATag: IXMLElement;      // root XML tag
                                                        AParent: TWinControl;       // Parent window for new block
                                                        APrevBlock: TBlock;
-                                                       var AErrorType: TErrorType;
+                                                       var AError: TError;
                                                        ABranchInd: integer = PRIMARY_BRANCH_IDX): TBlock;
 var
    tag: IXMLElement;
@@ -194,11 +194,12 @@ var
    initCount: integer;
    tab: TBlockTabSheet;
    control: TControl;
+   newBlock: TBlock;
 begin
     result := nil;
     tab := nil;
     branch := nil;
-    AErrorType := errNone;
+    AError := errNone;
     Gerr_text := '';
     initCount := AParent.ControlCount;
     tag := ATag;
@@ -213,31 +214,31 @@ begin
     else if AParent is TBlockTabSheet then
        tab := TBlockTabSheet(AParent);
 
-    while tag <> nil do
+    while (tag <> nil) and (AError = errNone) do
     begin
+       newBlock := nil;
        if tab <> nil then
        begin
-          result := TBlockFactory.Create(tag, tab);
+          newBlock := TBlockFactory.Create(tag, tab);
           tab := nil;
        end
        else if branch <> nil then
        begin
-          result := TBlockFactory.Create(tag, branch);
-          if result <> nil then
+          newBlock := TBlockFactory.Create(tag, branch);
+          if newBlock <> nil then
           begin
-             branch.InsertAfter(result, APrevBlock);
-             APrevBlock := result;
+             branch.InsertAfter(newBlock, APrevBlock);
+             APrevBlock := newBlock;
           end;
-       end
-       else
-       begin
-          AErrorType := errValidate;
-          break;
        end;
+       if newBlock = nil then
+          AError := errValidate
+       else
+          result := newBlock;
        tag := FindNextTag(tag);
     end;
 
-    if AErrorType <> errNone then
+    if AError <> errNone then
     begin
        while initCount < AParent.ControlCount do   // destroy all previously created blocks
        begin
@@ -270,7 +271,7 @@ class function TXMLProcessor.ImportFromXMLFile(AImportProc: TXMLImportProc;
 var
    docXML: IXMLDocument;
    errText: string;
-   status: TErrorType;
+   status: TError;
 begin
    result := '';
    if Assigned(AImportProc) then
@@ -309,7 +310,7 @@ begin
    end;
 end;
 
-class function TXMLProcessor.ExportToXMLFile(AExportProc: TXMLExportProc; const AFilePath: string = ''): TErrorType;
+class function TXMLProcessor.ExportToXMLFile(AExportProc: TXMLExportProc; const AFilePath: string = ''): TError;
 var
    docXML: IXMLDocument;
    xmlInstr: IXMLProcessingInstruction;

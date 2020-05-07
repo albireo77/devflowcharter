@@ -83,10 +83,10 @@ type
       function GetUserFunction(const AFunctionName: string): TUserFunction;
       procedure ExportToGraphic(AGraphic: TGraphic);
       procedure ExportToXMLTag(ATag: IXMLElement);
-      function ExportToXMLFile(const AFile: string): TErrorType;
-      function ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
-      function ImportUserFunctionsFromXML(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
-      function ImportUserDataTypesFromXML(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
+      function ExportToXMLFile(const AFile: string): TError;
+      function ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TError;
+      function ImportUserFunctionsFromXML(ATag: IXMLElement; AImportMode: TImportMode): TError;
+      function ImportUserDataTypesFromXML(ATag: IXMLElement; AImportMode: TImportMode): TError;
       function ImportCommentsFromXML(ATag: IXMLElement): integer;
       procedure ImportPagesFromXML(ATag: IXMLElement);
       function GetMainBlock: TMainBlock;
@@ -419,7 +419,7 @@ begin
    result := MatchText(TInfra.GetMainForm.Caption, [NEW_PROJECT_CAPTION, NEW_PROJECT_CAPTION + '*']);
 end;
 
-function TProject.ExportToXMLFile(const AFile: string): TErrorType;
+function TProject.ExportToXMLFile(const AFile: string): TError;
 begin
    ChangingOn := false;
    result := TXMLProcessor.ExportToXMLFile(ExportToXMLTag, AFile);
@@ -498,7 +498,7 @@ begin
    end;
 end;
 
-function TProject.ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
+function TProject.ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TError;
 var
    s, langName, ver: string;
    baseForm: TBaseForm;
@@ -629,7 +629,7 @@ begin
    end;
 end;
 
-function TProject.ImportUserFunctionsFromXML(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
+function TProject.ImportUserFunctionsFromXML(ATag: IXMLElement; AImportMode: TImportMode): TError;
 var
    tag, tag1: IXMLElement;
    header: TUserFunctionHeader;
@@ -713,7 +713,7 @@ begin
    end;
 end;
 
-function TProject.ImportUserDataTypesFromXML(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
+function TProject.ImportUserDataTypesFromXML(ATag: IXMLElement; AImportMode: TImportMode): TError;
 var
    dataType: TUserDataType;
    tag: IXMLElement;

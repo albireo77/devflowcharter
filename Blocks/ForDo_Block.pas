@@ -54,7 +54,7 @@ type
          procedure ExpandFold(AResize: boolean); override;
          function GetTextControl: TCustomEdit; override;
          function CountErrWarn: TErrWarnCount; override;
-         function GetFromXML(ATag: IXMLElement): TErrorType; override;
+         function GetFromXML(ATag: IXMLElement): TError; override;
          procedure SaveInXML(ATag: IXMLElement); override;
          procedure ChangeColor(AColor: TColor); override;
          procedure PopulateComboBoxes; override;
@@ -590,7 +590,7 @@ begin
       result := FillCodedTemplate(ALangDef.Name);
 end;
 
-function TForDoBlock.GetFromXML(ATag: IXMLElement): TErrorType;
+function TForDoBlock.GetFromXML(ATag: IXMLElement): TError;
 var
    tag: IXMLElement;
 begin

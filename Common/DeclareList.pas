@@ -88,8 +88,8 @@ type
          property Id: integer read GetId;
          constructor Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
          destructor Destroy; override;
-         function ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
-         function ImportItemFromXMLTag(ATag: IXMLElement): TErrorType; virtual;
+         function ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TError;
+         function ImportItemFromXMLTag(ATag: IXMLElement): TError; virtual;
          procedure ExportItemToXMLTag(ATag: IXMLElement; idx: integer); virtual;
          procedure ExportToXMLTag(ATag: IXMLElement);
          function GetImportTag(ATag: IXMLElement): IXMLElement; virtual;
@@ -122,7 +122,7 @@ type
          lblSize,
          lblInit: TLabel;
          constructor Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
-         function ImportItemFromXMLTag(ATag: IXMLElement): TErrorType; override;
+         function ImportItemFromXMLTag(ATag: IXMLElement): TError; override;
          procedure ExportItemToXMLTag(ATag: IXMLElement; idx: integer); override;
          function GetImportTag(ATag: IXMLElement): IXMLElement; override;
          procedure FillForList(AList: TStrings);
@@ -143,7 +143,7 @@ type
          edtValue: TEdit;
          lblValue: TLabel;
          constructor Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
-         function ImportItemFromXMLTag(ATag: IXMLElement): TErrorType; override;
+         function ImportItemFromXMLTag(ATag: IXMLElement): TError; override;
          procedure ExportItemToXMLTag(ATag: IXMLElement; idx: integer); override;
          function GetImportTag(ATag: IXMLElement): IXMLElement; override;
          function GetValue(const AIdent: string): string;
@@ -889,7 +889,7 @@ begin
    result := TXMLProcessor.FindChildTag(ATag, CONST_TAG);
 end;
 
-function TDeclareList.ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
+function TDeclareList.ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TError;
 var
    tag: IXMLElement;
    i: integer;
@@ -920,7 +920,7 @@ begin
    result := errNone;
 end;
 
-function TDeclareList.ImportItemFromXMLTag(ATag: IXMLElement): TErrorType;
+function TDeclareList.ImportItemFromXMLTag(ATag: IXMLElement): TError;
 var
    lName: string;
    lchkExtern: TCheckBox;
@@ -942,7 +942,7 @@ begin
    end;
 end;
 
-function TConstDeclareList.ImportItemFromXMLTag(ATag: IXMLElement): TErrorType;
+function TConstDeclareList.ImportItemFromXMLTag(ATag: IXMLElement): TError;
 var
    idx: integer;
 begin
@@ -955,7 +955,7 @@ begin
    end;
 end;
 
-function TVarDeclareList.ImportItemFromXMLTag(ATag: IXMLElement): TErrorType;
+function TVarDeclareList.ImportItemFromXMLTag(ATag: IXMLElement): TError;
 var
    lType: string;
    idx: integer;

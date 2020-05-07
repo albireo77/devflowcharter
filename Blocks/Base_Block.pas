@@ -142,7 +142,7 @@ type
          procedure RefreshStatements;
          procedure PopulateComboBoxes; virtual;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; virtual;
-         function GetFromXML(ATag: IXMLElement): TErrorType; virtual;
+         function GetFromXML(ATag: IXMLElement): TError; virtual;
          procedure SaveInXML(ATag: IXMLElement); virtual;
          function FillTemplate(const ALangId: string; const ATemplate: string = ''): string; virtual;
          function FillCodedTemplate(const ALangId: string): string; virtual;
@@ -153,7 +153,7 @@ type
          function IsCursorResize: boolean;
          function CanInsertReturnBlock: boolean; virtual;
          procedure ExportToXMLTag(ATag: IXMLElement);
-         function ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
+         function ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TError;
          procedure ExportToGraphic(AGraphic: TGraphic); virtual;
          procedure UpdateEditor(AEdit: TCustomEdit); virtual;
          function SkipUpdateEditor: boolean;
@@ -188,7 +188,7 @@ type
          procedure ImportCommentsFromXML(ATag: IXMLElement);
          procedure CloneFrom(ABlock: TBlock); virtual;
          function GetExportFileName: string; virtual;
-         function ExportToXMLFile(const AFile: string): TErrorType; virtual;
+         function ExportToXMLFile(const AFile: string): TError; virtual;
          procedure OnMouseLeave(AClearRed: boolean = true); virtual;
       published
          property Color;
@@ -237,7 +237,7 @@ type
          procedure PopulateComboBoxes; override;
          function GetMemoEx: TMemoEx; override;
          function CanInsertReturnBlock: boolean; override;
-         function GetFromXML(ATag: IXMLElement): TErrorType; override;
+         function GetFromXML(ATag: IXMLElement): TError; override;
          procedure SaveInXML(ATag: IXMLElement); override;
          procedure GenerateTemplateSection(ALines: TStringList; ATemplate: TStringList; const ALangId: string; ADeep: integer); override;
          function GetBlocks(AIndex: integer = PRIMARY_BRANCH_IDX-1): IEnumerable<TBlock>;
@@ -2061,7 +2061,7 @@ begin
    end;
 end;
 
-function TBlock.ExportToXMLFile(const AFile: string): TErrorType;
+function TBlock.ExportToXMLFile(const AFile: string): TError;
 begin
    result := TXMLProcessor.ExportToXMLFile(ExportToXMLTag, AFile);
 end;
@@ -2323,7 +2323,7 @@ begin
    end;
 end;
 
-function TBlock.GetFromXML(ATag: IXMLElement): TErrorType;
+function TBlock.GetFromXML(ATag: IXMLElement): TError;
 var
    tag: IXMLElement;
    textControl: TCustomEdit;
@@ -2359,7 +2359,7 @@ begin
    end;
 end;
 
-function TGroupBlock.GetFromXML(ATag: IXMLElement): TErrorType;
+function TGroupBlock.GetFromXML(ATag: IXMLElement): TError;
 var
    tag1, tag2: IXMLElement;
    bId, idx, bStmntId, hx, hy: integer;
@@ -2415,7 +2415,7 @@ begin
    end;
 end;
 
-function TBlock.ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TErrorType;
+function TBlock.ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TError;
 var
    block, newBlock: TBlock;
    lParent: TGroupBlock;

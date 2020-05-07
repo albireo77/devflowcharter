@@ -50,8 +50,8 @@ type
          destructor Destroy; override;
          class procedure ShowWarningBox(const AWarnMsg: string);
          class procedure ShowFormattedWarningBox(const AKey: string; Args: array of const);
-         class procedure ShowErrorBox(const AErrMsg: string; AErrType: TErrorType);
-         class procedure ShowFormattedErrorBox(const AKey: string; Args: array of const; AErrType: TErrorType);
+         class procedure ShowErrorBox(const AErrMsg: string; AErrType: TError);
+         class procedure ShowFormattedErrorBox(const AKey: string; Args: array of const; AErrType: TError);
          class procedure SetInitialSettings;
          class procedure PopulateDataTypeCombo(AcbType: TComboBox; ASkipIndex: integer = 100);
          class procedure PrintBitmap(ABitmap: TBitmap);
@@ -97,7 +97,7 @@ type
          class function GetPageIndex(APageControl: TPageControl; X, Y: integer): integer;
          class function FindDuplicatedPage(APage: TTabSheet; const ACaption: TCaption): TTabSheet;
          class function GetComboMaxWidth(ACombo: TComboBox): integer;
-         class function ExportToFile(AExport: IExportable): TErrorType;
+         class function ExportToFile(AExport: IExportable): TError;
          class function StripInstrEnd(const ALine: string): string;
          class function CompareProgramVersion(const AVersion: string): integer;
          class function GetBaseForms: IEnumerable<TBaseForm>;
@@ -312,7 +312,7 @@ begin
    GProject.SetChanged;
 end;
 
-class function TInfra.ExportToFile(AExport: IExportable): TErrorType;
+class function TInfra.ExportToFile(AExport: IExportable): TError;
 var
    graphic: TGraphic;
    dialog: TSaveDialog;
@@ -453,16 +453,16 @@ begin
    end;
 end;
 
-class procedure TInfra.ShowErrorBox(const AErrMsg: string; AErrType: TErrorType);
+class procedure TInfra.ShowErrorBox(const AErrMsg: string; AErrType: TError);
 const
-   ErrorsTypeArray: array[TErrorType] of string = (' ', 'DeclareError', 'IOError', 'ValidationError', 'ConvertError', 'SyntaxError',
+   ErrorsTypeArray: array[TError] of string = (' ', 'DeclareError', 'IOError', 'ValidationError', 'ConvertError', 'SyntaxError',
                     'PrintError', 'CompileError', 'ImportError', 'Error');
 begin
    if AErrType <> errNone then
       Application.MessageBox(PChar(AErrMsg), PChar(i18Manager.GetString(ErrorsTypeArray[AErrType])), MB_ICONERROR);
 end;
 
-class procedure TInfra.ShowFormattedErrorBox(const AKey: string; Args: array of const; AErrType: TErrorType);
+class procedure TInfra.ShowFormattedErrorBox(const AKey: string; Args: array of const; AErrType: TError);
 begin
    ShowErrorBox(i18Manager.GetFormattedString(AKey, Args), AErrType);
 end;

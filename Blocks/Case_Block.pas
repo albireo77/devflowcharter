@@ -51,7 +51,7 @@ type
          function AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch; override;
          function InsertNewBranch(AIndex: integer): TBranch;
          function CountErrWarn: TErrWarnCount; override;
-         function GetFromXML(ATag: IXMLElement): TErrorType; override;
+         function GetFromXML(ATag: IXMLElement): TError; override;
          procedure SaveInXML(ATag: IXMLElement); override;
          procedure ChangeColor(AColor: TColor); override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
@@ -569,7 +569,7 @@ begin
       FBranchList[i].Statement.Color := AColor;
 end;
 
-function TCaseBlock.GetFromXML(ATag: IXMLElement): TErrorType;
+function TCaseBlock.GetFromXML(ATag: IXMLElement): TError;
 var
    tag, tag2: IXMLElement;
    i: integer;

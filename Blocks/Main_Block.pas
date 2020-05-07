@@ -41,7 +41,7 @@ type
          constructor Create(APage: TBlockTabSheet; const ATopLeft: TPoint); overload;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
-         function GetFromXML(ATag: IXMLElement): TErrorType; override;
+         function GetFromXML(ATag: IXMLElement): TError; override;
          procedure SaveInXML(ATag: IXMLElement); override;
          procedure ExportToGraphic(AGraphic: TGraphic); override;
          procedure SetWidth(AMinX: integer); override;
@@ -51,7 +51,7 @@ type
          function IsBoldDesc: boolean; override;
          function Remove(ANode: TTreeNodeWithFriend = nil): boolean; override;
          procedure DrawLabel;
-         function ExportToXMLFile(const AFile: string): TErrorType; override;
+         function ExportToXMLFile(const AFile: string): TError; override;
          function GetExportFileName: string; override;
       protected
          FZOrder: integer;
@@ -366,7 +366,7 @@ begin
       result := inherited GetExportFileName;
 end;
 
-function TMainBlock.ExportToXMLFile(const AFile: string): TErrorType;
+function TMainBlock.ExportToXMLFile(const AFile: string): TError;
 begin
    if UserFunction <> nil then
       result := TXMLProcessor.ExportToXMLFile(TUserFunction(UserFunction).ExportToXMLTag, AFile)
@@ -523,7 +523,7 @@ begin
    end;
 end;
 
-function TMainBlock.GetFromXML(ATag: IXMLElement): TErrorType;
+function TMainBlock.GetFromXML(ATag: IXMLElement): TError;
 begin
    result := inherited GetFromXML(ATag);
    if ATag <> nil then

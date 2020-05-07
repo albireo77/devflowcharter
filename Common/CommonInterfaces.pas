@@ -91,7 +91,7 @@ type
 
    IExportable = interface
       ['{3AB6F6EE-5088-4791-8C11-620A1F768269}']
-      function ExportToXMLFile(const AFile: string): TErrorType;
+      function ExportToXMLFile(const AFile: string): TError;
       procedure ExportToGraphic(AGraphic: TGraphic);
       function GetExportFileName: string;
    end;

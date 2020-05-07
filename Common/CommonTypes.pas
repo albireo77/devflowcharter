@@ -38,7 +38,7 @@ type
    TCustomCursor = (crNormal, crIfElse, crFor, crRepeat, crWhile, crInstr, crMultiInstr,
                     crIf, crFuncCall, crInput, crOutput, crCase, crReturn, crText, crFolder);
 
-   TErrorType = (errNone, errDeclare, errIO, errValidate, errConvert, errSyntax, errPrinter, errCompile, errImport, errGeneral);
+   TError = (errNone, errDeclare, errIO, errValidate, errConvert, errSyntax, errPrinter, errCompile, errImport, errGeneral);
 
    TBlockType = (blUnknown, blInstr, blMultiInstr, blInput, blOutput, blFuncCall,
                  blWhile, blRepeat, blIf, blIfElse, blFor, blCase, blMain, blComment,
