@@ -89,11 +89,9 @@ begin
    if pgcTabs.ActivePage <> nil then
    begin
       tab := TTabComponent(pgcTabs.ActivePage);
-      pgcTabs.OwnerDraw := false;
       tab.Active := false;
       GClpbrd.UndoObject.Free;
-      pgcTabs.OwnerDraw := true;
-      GClpbrd.UndoObject := tab.OverlayObject;
+      GClpbrd.UndoObject := tab.ParentObject;
       TInfra.UpdateCodeEditor;
    end;
 end;
@@ -197,7 +195,7 @@ begin
          begin
             if pgcTabs.Pages[i].TabVisible then
             begin
-               TTabComponent(pgcTabs.Pages[i]).OverlayObject.Free;
+               TTabComponent(pgcTabs.Pages[i]).ParentObject.Free;
                break;
             end;
          end;

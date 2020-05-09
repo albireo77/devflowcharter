@@ -151,7 +151,7 @@ begin
    if FHeader <> nil then
    begin
       FHeader.FUserFunction := Self;
-      FHeader.FOverlayObject := Self;
+      FHeader.FParentObject := Self;
       if FBody <> nil then
       begin
          FHeader.SetPageCombo(FBody.Page.Caption);

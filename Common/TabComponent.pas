@@ -35,7 +35,7 @@ type
          FParentForm: TPageControlForm;
          FId: integer;
       protected
-         FOverlayObject: TComponent;
+         FParentObject: TComponent;
          FActive,
          FCodeIncludeExtern: boolean;
          FElementTypeID: string;
@@ -64,7 +64,7 @@ type
          lblLibrary: TLabel;
          btnAddElement: TButton;
          property Active: boolean read FActive write SetActive;
-         property OverlayObject: TComponent read FOverlayObject write FOverlayObject;
+         property ParentObject: TComponent read FParentObject write FParentObject;
          property Id: integer read GetId;
          property ParentForm: TPageControlForm read FParentForm;
          constructor Create(AParentForm: TPageControlForm);
@@ -115,7 +115,7 @@ begin
    Font.Color := NOK_COLOR;
    Font.Style := [fsBold];
    DoubleBuffered := true;
-   FOverlayObject := Self;
+   FParentObject := Self;
    FActive := true;
    FId := GProject.Register(Self);
    FParentForm := AParentForm;
