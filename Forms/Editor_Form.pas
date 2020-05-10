@@ -213,7 +213,7 @@ var
 begin
    result := '';
    if (endLine < 0) or (endLine >= memCodeEditor.Lines.Count) or (startLine >= endLine) or (startLine < 0) then
-      exit;
+      Exit;
    lines := TStringList.Create;
    try
       if (endLine - startLine) > (memCodeEditor.LinesInWindow div 2) then
@@ -469,7 +469,7 @@ begin
          if (lang <> nil) and not lang.FileContentsGenerator(newLines, skipFuncBody) then
          begin
             TInfra.ShowFormattedErrorBox('NoProgTempl', [sLineBreak, GInfra.CurrentLang.Name, GInfra.CurrentLang.DefFile, FILE_CONTENTS_TAG], errValidate);
-            exit;
+            Exit;
          end;
       finally
          lang := nil;
@@ -596,7 +596,7 @@ begin
          begin
             i := TInfra.FindText(ReplaceDialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart+1, frMatchCase in ReplaceDialog.Options);
             if i = 0 then
-               exit;
+               Exit;
             memCodeEditor.SelStart := i - 1;
             memCodeEditor.SelLength := ReplaceDialog.FindText.Length;
             memCodeEditor.ClearSelection;
@@ -997,7 +997,7 @@ begin
    if (i >= 0) and (i < memCodeEditor.Text.Length) then
       c := memCodeEditor.Text[i+1];
    if memCodeEditor.SelAvail or (memCodeEditor.Font.Color = MATCH_BRACKET_COLOR) or not CharInSet(c, Brackets) then
-      exit;
+      Exit;
    p := memCodeEditor.CaretXY;
    s := c;
    if memCodeEditor.GetHighlighterAttriAtRowCol(p, s, hAttr) and (memCodeEditor.Highlighter.SymbolAttribute = hAttr) then
@@ -1079,13 +1079,13 @@ begin
          FCloseBracketHint := true;
          memCodeEditor.Hint := h;
          memCodeEditor.ShowHint := true;
-         exit;
+         Exit;
       end;
    end;
    w := memCodeEditor.GetWordAtRowCol(p);
    w1 := w;
    if w1.IsEmpty or (memCodeEditor.GetHighlighterAttriAtRowCol(p, w1, hAttr) and (memCodeEditor.Highlighter.StringAttribute = hAttr)) then
-      exit;
+      Exit;
    block := nil;
    gCheck := true;
    lCheck := true;
