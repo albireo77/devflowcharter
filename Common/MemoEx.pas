@@ -132,7 +132,7 @@ end;
 
 procedure TMemoEx.SetWordWrap(AValue: boolean);
 begin
-   if (AValue <> WordWrap) and AValue then
+   if AValue and not WordWrap then
       SetHasHScroll(false);
    inherited SetWordWrap(AValue);
 end;
