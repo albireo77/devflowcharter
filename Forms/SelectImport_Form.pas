@@ -106,10 +106,10 @@ begin
       end;
    end;
    pnlImports.Height := t + 5;
-   chkSelectAll.Top := pnlImports.BoundsRect.Bottom + 11;
+   chkSelectAll.Top := pnlImports.Top + pnlImports.Height + 11;
    btnOk.Top := chkSelectAll.Top - 4;
-   btnCancel.Top := chkSelectAll.Top - 4;
-   Height := btnCancel.BoundsRect.Bottom + 45;
+   btnCancel.Top := btnOk.Top;
+   Height := btnCancel.Top + btnCancel.Height + 45;
 end;
 
 procedure TSelectImportForm.ClearCheckBoxList;
