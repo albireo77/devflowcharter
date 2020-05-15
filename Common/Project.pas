@@ -632,7 +632,7 @@ end;
 function TProject.ImportUserFunctionsFromXML(ATag: IXMLElement; AImportMode: TImportMode): TError;
 var
    tag, tag1: IXMLElement;
-   header: TUserFunctionHeader;
+   header, lastHeader: TUserFunctionHeader;
    body, lastBody: TMainBlock;
    tmpBlock: TBlock;
    page: TTabSheet;
@@ -651,6 +651,7 @@ begin
       end;
       tag := TXMLProcessor.FindChildTag(ATag, FUNCTION_TAG);
       lastBody := nil;
+      lastHeader := nil;
       while (tag <> nil) and (result = errNone) do
       begin
          header := nil;
@@ -690,10 +691,11 @@ begin
             if tmpBlock is TMainBlock then
                body := TMainBlock(tmpBlock);
          end;
-         if result = errNone then
+         if body <> nil then
          begin
             TUserFunction.Create(header, body);
             lastBody := body;
+            lastHeader := header;
          end
          else
             header.Free;
@@ -708,6 +710,8 @@ begin
          if lastBody.Visible then
             box.SetScrollBars;
       end;
+      if lastHeader <> nil then
+         lastHeader.PageControl.ActivePage := lastHeader;
    finally
       selectList.Free;
    end;
@@ -721,6 +725,7 @@ var
 begin
    result := errNone;
    selectList := nil;
+   dataType := nil;
    if GInfra.CurrentLang.EnabledUserDataTypes then
    try
       if AImportMode <> impAll then
@@ -742,6 +747,8 @@ begin
          dataType.RefreshTab;
          tag := TXMLProcessor.FindNextTag(tag);
       end;
+      if dataType <> nil then
+         dataType.PageControl.ActivePage := dataType;
    finally
       selectList.Free;
    end;
