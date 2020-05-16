@@ -712,7 +712,7 @@ begin
             if lastBody.Visible then
                box.SetScrollBars;
          end
-         else if lastBody.Visible then
+         else if (AImportMode = impSelectTab) and lastBody.Visible then
             box.ScrollInView(lastBody);
       end;
       if lastHeader <> nil then
