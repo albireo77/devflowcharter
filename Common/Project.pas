@@ -701,14 +701,19 @@ begin
             header.Free;
          tag := TXMLProcessor.FindNextTag(tag);
       end;
-      if (AImportMode = impSelectPopup) and (lastBody <> nil) then
+      if lastBody <> nil then
       begin
          box := lastBody.Page.Box;
-         p := box.PopupMenu.PopupPoint;
-         if not InvalidPoint(p) then
-            TInfra.MoveWin(lastBody, box.ScreenToClient(p));
-         if lastBody.Visible then
-            box.SetScrollBars;
+         if AImportMode = impSelectPopup then
+         begin
+            p := box.PopupMenu.PopupPoint;
+            if not InvalidPoint(p) then
+               TInfra.MoveWin(lastBody, box.ScreenToClient(p));
+            if lastBody.Visible then
+               box.SetScrollBars;
+         end
+         else if lastBody.Visible then
+            box.ScrollInView(lastBody);
       end;
       if lastHeader <> nil then
          lastHeader.PageControl.ActivePage := lastHeader;
