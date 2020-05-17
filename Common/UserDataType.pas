@@ -471,15 +471,10 @@ var
    size: string;
 begin
    inherited ImportFromXMLTag(ATag);
-   if TXMLProcessor.GetBool(ATag, 'table') then  // for backward compatibility
-      edtSize.Text := '100'
-   else
-   begin
-      size := ATag.GetAttribute(SIZE_ATTR);
-      if size.IsEmpty then
-         size := '1';
-      edtSize.Text := size;
-   end;
+   size := ATag.GetAttribute(SIZE_ATTR);
+   if size.IsEmpty then
+      size := '1';
+   edtSize.Text := size;
 end;
 
 procedure TField.OnChangeSize(Sender: TObject);
