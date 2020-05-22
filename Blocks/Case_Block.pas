@@ -131,7 +131,7 @@ end;
 
 constructor TCaseBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 200, 131, 100, 99, 100));
+   Create(ABranch, TBlockParms.New(blCase, 0, 0, 200, 131, 100, 99, 100));
 end;
 
 procedure TCaseBlock.Paint;

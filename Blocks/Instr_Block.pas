@@ -65,7 +65,7 @@ end;
 
 constructor TInstrBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 140, 51));
+   Create(ABranch, TBlockParms.New(blInstr, 0, 0, 140, 51));
 end;
 
 function TInstrBlock.Clone(ABranch: TBranch): TBlock;

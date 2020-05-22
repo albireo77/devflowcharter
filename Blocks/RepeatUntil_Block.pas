@@ -91,7 +91,7 @@ end;
 
 constructor TRepeatUntilBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 240, 111, 120, 29, 120));
+   Create(ABranch, TBlockParms.New(blRepeat, 0, 0, 240, 111, 120, 29, 120));
 end;
 
 procedure TRepeatUntilBlock.Paint;

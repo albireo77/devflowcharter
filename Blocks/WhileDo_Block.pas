@@ -78,7 +78,7 @@ end;
 
 constructor TWhileDoBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 200, 131, 100, 109, 100));
+   Create(ABranch, TBlockParms.New(blWhile, 0, 0, 200, 131, 100, 109, 100));
 end;
 
 procedure TWhileDoBlock.Paint;

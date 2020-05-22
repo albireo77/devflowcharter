@@ -73,7 +73,7 @@ end;
 
 constructor TFunctionCallBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 140, 51));
+   Create(ABranch, TBlockParms.New(blFuncCall, 0, 0, 140, 51));
 end;
 
 procedure TFunctionCallBlock.Paint;

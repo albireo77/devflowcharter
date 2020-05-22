@@ -85,7 +85,7 @@ end;
 
 constructor TReturnBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 140, 53));
+   Create(ABranch, TBlockParms.New(blReturn, 0, 0, 140, 53));
 end;
 
 procedure TReturnBlock.Paint;

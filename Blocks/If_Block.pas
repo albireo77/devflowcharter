@@ -78,7 +78,7 @@ end;
 
 constructor TIfBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 200, 121, 100, 89, 100));
+   Create(ABranch, TBlockParms.New(blIf, 0, 0, 200, 121, 100, 89, 100));
 end;
 
 procedure TIfBlock.Paint;

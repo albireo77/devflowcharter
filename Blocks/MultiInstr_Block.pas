@@ -70,7 +70,7 @@ end;
 
 constructor TMultiInstrBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 140, 91));
+   Create(ABranch, TBlockParms.New(blMultiInstr, 0, 0, 140, 91));
 end;
 
 procedure TMultiInstrBlock.OnChangeMemo(Sender: TObject);

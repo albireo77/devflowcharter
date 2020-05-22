@@ -72,7 +72,7 @@ end;
 
 constructor TTextBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 140, 91));
+   Create(ABranch, TBlockParms.New(blText, 0, 0, 140, 91));
 end;
 
 function TTextBlock.Clone(ABranch: TBranch): TBlock;

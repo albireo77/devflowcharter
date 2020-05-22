@@ -99,12 +99,13 @@ end;
 
 constructor TIfElseBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 240, 101, 5, 70, 120, 120, 229, 70, 5, 229));
+   Create(ABranch, TBlockParms.New(blIfElse, 0, 0, 240, 101, 5, 70, 120, 120, 229, 70, 5, 229));
 end;
 
 function TIfElseBlock.GetBlockParms: TBlockParms;
 begin
    result := TBlockParms.New(
+      FType,
       Left,
       Top,
       Width,

@@ -186,7 +186,7 @@ end;
 
 constructor TForDoBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 240, 91, 120, 69, 120));
+   Create(ABranch, TBlockParms.New(blFor, 0, 0, 240, 91, 120, 69, 120));
 end;
 
 procedure TForDoBlock.OnChangeCallBack(AStatement: TStatement);

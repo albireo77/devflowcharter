@@ -575,12 +575,12 @@ end;
 
 function TBlock.GetBlockParms: TBlockParms;
 begin
-   result := TBlockParms.New(Left, Top, Width, Height);
+   result := TBlockParms.New(FType, Left, Top, Width, Height);
 end;
 
 function TGroupBlock.GetBlockParms: TBlockParms;
 begin
-   result := TBlockParms.New(Left, Top, Width, Height, Branch.Hook.X, Branch.Hook.Y, BottomHook);
+   result := TBlockParms.New(FType, Left, Top, Width, Height, Branch.Hook.X, Branch.Hook.Y, BottomHook);
 end;
 
 procedure TGroupBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -2426,7 +2426,7 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, BLOCK_TAG);
    if tag <> nil then
       bt := TRttiEnumerationType.GetValue<TBlockType>(tag.GetAttribute(BLOCK_TYPE_ATTR));
-   if (tag = nil) or (bt in [blMain, blUnknown]) then
+   if (tag = nil) or (bt in [blMain, blUnknown, blComment]) then
       Gerr_text := i18Manager.GetString('BadImportTag')
    else
    begin

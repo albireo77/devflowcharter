@@ -133,7 +133,8 @@ constructor TMainBlock.Create(APage: TBlockTabSheet; const ATopLeft: TPoint);
 var
    blockParms: TBlockParms;
 begin
-   blockParms := TBlockParms.New(ATopLeft.X,
+   blockParms := TBlockParms.New(blMain,
+                                 ATopLeft.X,
                                  ATopLeft.Y,
                                  MAIN_BLOCK_DEF_WIDTH,
                                  MAIN_BLOCK_DEF_HEIGHT,

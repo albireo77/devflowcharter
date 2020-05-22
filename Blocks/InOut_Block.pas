@@ -117,12 +117,12 @@ end;
 
 constructor TInputBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 150, 61), true);
+   Create(ABranch, TBlockParms.New(blInput, 0, 0, 150, 61), true);
 end;
 
 constructor TOutputBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 150, 61), true);
+   Create(ABranch, TBlockParms.New(blOutput, 0, 0, 150, 61), true);
 end;
 
 procedure TInOutBlock.Paint;

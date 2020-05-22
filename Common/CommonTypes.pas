@@ -40,9 +40,8 @@ type
 
    TError = (errNone, errDeclare, errIO, errValidate, errConvert, errSyntax, errPrinter, errCompile, errImport, errGeneral);
 
-   TBlockType = (blUnknown, blInstr, blMultiInstr, blInput, blOutput, blFuncCall,
-                 blWhile, blRepeat, blIf, blIfElse, blFor, blCase, blMain, blComment,
-                 blReturn, blText, blFolder);
+   TBlockType = (blUnknown, blInstr, blMultiInstr, blInput, blOutput, blFuncCall, blWhile, blRepeat,
+                 blIf, blIfElse, blFor, blCase, blMain, blComment, blReturn, blText, blFolder);
 
    TDataTypeKind = (tpInt, tpReal, tpString, tpBool, tpRecord, tpEnum, tpArray, tpPtr, tpOther);
 
@@ -120,9 +119,9 @@ type
       x, y, h, w, bh, bid, th, trh, flh: integer;
       br, br2: TPoint;
       bt: TBlockType;
-      class function New(x, y, w, h: integer; bid: integer = ID_INVALID): TBlockParms; overload; static;
-      class function New(x, y, w, h, brx, bry, bh: integer; bid: integer = ID_INVALID): TBlockParms; overload; static;
-      class function New(x, y, w, h, brx, bry, bh, th, br2x, br2y, trh, flh: integer; bid: integer = ID_INVALID): TBlockParms; overload; static;
+      class function New(bt: TBlockType; x, y, w, h: integer; bid: integer = ID_INVALID): TBlockParms; overload; static;
+      class function New(bt: TBlockType; x, y, w, h, brx, bry, bh: integer; bid: integer = ID_INVALID): TBlockParms; overload; static;
+      class function New(bt: TBlockType; x, y, w, h, brx, bry, bh, th, br2x, br2y, trh, flh: integer; bid: integer = ID_INVALID): TBlockParms; overload; static;
       class function New(AFrom: IXMLElement): TBlockParms; overload; static;
    end;
 
@@ -222,9 +221,9 @@ begin
       result.S2 := tokens[2];
 end;
 
-class function TBlockParms.New(x, y, w, h: integer; bid: integer = ID_INVALID): TBlockParms;
+class function TBlockParms.New(bt: TBlockType; x, y, w, h: integer; bid: integer = ID_INVALID): TBlockParms;
 begin
-   result.bt := blUnknown;
+   result.bt := bt;
    result.x := x;
    result.y := y;
    result.w := w;
@@ -238,16 +237,16 @@ begin
    result.br2 := TPoint.Zero;
 end;
 
-class function TBlockParms.New(x, y, w, h, brx, bry, bh: integer; bid: integer = ID_INVALID): TBlockParms;
+class function TBlockParms.New(bt: TBlockType; x, y, w, h, brx, bry, bh: integer; bid: integer = ID_INVALID): TBlockParms;
 begin
-   result := New(x, y, w, h, bid);
+   result := New(bt, x, y, w, h, bid);
    result.br := Point(brx, bry);
    result.bh := bh;
 end;
 
-class function TBlockParms.New(x, y, w, h, brx, bry, bh, th, br2x, br2y, trh, flh: integer; bid: integer = ID_INVALID): TBlockParms;
+class function TBlockParms.New(bt: TBlockType; x, y, w, h, brx, bry, bh, th, br2x, br2y, trh, flh: integer; bid: integer = ID_INVALID): TBlockParms;
 begin
-   result := New(x, y, w, h, brx, bry, bh, bid);
+   result := New(bt, x, y, w, h, brx, bry, bh, bid);
    result.th := th;
    result.br2 := Point(br2x, br2y);
    result.trh := trh;
@@ -258,9 +257,17 @@ class function TBlockParms.New(AFrom: IXMLElement): TBlockParms;
 var
    attr: string;
    at: integer;
+   bt: TBlockType;
 begin
+   attr := AFrom.GetAttribute(BLOCK_TYPE_ATTR);
+   at := StrToIntDef(attr, -1);
+   if at = -1 then
+      bt := TRttiEnumerationType.GetValue<TBlockType>(attr)
+   else
+      bt := TBlockType(at);
    with TXMLProcessor do
-      result := New(GetInt(AFrom, 'x'),
+      result := New(bt,
+                    GetInt(AFrom, 'x'),
                     GetInt(AFrom, 'y'),
                     GetInt(AFrom, 'w'),
                     GetInt(AFrom, 'h'),
@@ -273,12 +280,6 @@ begin
                     GetInt(AFrom, 'trh'),
                     GetInt(AFrom, 'flh'),
                     GetInt(AFrom, ID_ATTR, ID_INVALID));
-   attr := AFrom.GetAttribute(BLOCK_TYPE_ATTR);
-   at := StrToIntDef(attr, -1);
-   if at = -1 then
-      result.bt := TRttiEnumerationType.GetValue<TBlockType>(attr)
-   else
-      result.bt := TBlockType(at);
 end;
 
 procedure TNameEdit.WMKillFocus(var msg: TWMKillFocus);

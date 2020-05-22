@@ -81,7 +81,7 @@ end;
 
 constructor TFolderBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(0, 0, 140, 61, 70, 30, 70));
+   Create(ABranch, TBlockParms.New(blFolder, 0, 0, 140, 61, 70, 30, 70));
 end;
 
 procedure TFolderBlock.Paint;
