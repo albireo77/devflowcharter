@@ -73,8 +73,6 @@ uses
 constructor TCaseBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   FType := blCase;
-
    inherited Create(ABranch, ABlockParms);
 
    FInitParms.Width := 200;

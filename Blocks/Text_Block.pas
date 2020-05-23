@@ -56,7 +56,6 @@ uses
 
 constructor TTextBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
-   FType := blText;
    inherited Create(ABranch, ABlockParms);
    FStatements.Font.Color := TEXT_COLOR;
    Font.Color := TEXT_COLOR;

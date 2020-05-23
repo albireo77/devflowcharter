@@ -53,8 +53,6 @@ var
    defWidth: integer;
 begin
 
-   FType := blReturn;
-
    inherited Create(ABranch, ABlockParms);
 
    FReturnLabel := i18Manager.GetString('CaptionExit');

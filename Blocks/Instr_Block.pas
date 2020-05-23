@@ -45,8 +45,6 @@ uses
 constructor TInstrBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   FType := blInstr;
-
    inherited Create(ABranch, ABlockParms);
 
    FStatement.SetBounds(1, 1, ABlockParms.w-2, 19);

@@ -75,8 +75,6 @@ uses
 constructor TForDoBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   FType := blFor;
-
    inherited Create(ABranch, ABlockParms);
 
    FInitParms.Width := 240;

@@ -45,7 +45,6 @@ uses
 
 constructor TFunctionCallBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
-   FType := blFuncCall;
 
    inherited Create(ABranch, ABlockParms);
 

@@ -89,7 +89,6 @@ end;
 
 constructor TInputBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms; AdjustWidth: boolean = false);
 begin
-   FType := blInput;
    FLabel := i18Manager.GetString('CaptionIn');
    FLabelSegoe := GInfra.CurrentLang.LabelIn;
    inherited Create(ABranch, ABlockParms, GInfra.CurrentLang.InputFunction, AdjustWidth);
@@ -97,7 +96,6 @@ end;
 
 constructor TOutputBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms; AdjustWidth: boolean = false);
 begin
-   FType := blOutput;
    FLabel := i18Manager.GetString('CaptionOut');
    FLabelSegoe := GInfra.CurrentLang.LabelOut;
    inherited Create(ABranch, ABlockParms, GInfra.CurrentLang.OutputFunction, AdjustWidth);

@@ -295,6 +295,8 @@ type
 constructor TBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
+   FType := ABlockParms.bt;
+
    if ABranch <> nil then
    begin
       FParentBlock := ABranch.ParentBlock;

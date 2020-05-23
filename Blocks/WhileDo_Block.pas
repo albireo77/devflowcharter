@@ -47,8 +47,6 @@ uses
 constructor TWhileDoBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   FType := blWhile;
-
    inherited Create(ABranch, ABlockParms);
 
    FInitParms.Width := 200;

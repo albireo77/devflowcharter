@@ -47,8 +47,6 @@ uses
 constructor TIfBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   FType := blIf;
-
    inherited Create(ABranch, ABlockParms);
 
    FInitParms.Width := 200;

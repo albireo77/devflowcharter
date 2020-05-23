@@ -62,8 +62,6 @@ uses
 constructor TIfElseBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   FType := blIfElse;
-
    inherited Create(ABranch, ABlockParms);
 
    FInitParms.Width := 240;

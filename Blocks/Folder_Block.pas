@@ -48,8 +48,6 @@ uses
 constructor TFolderBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   FType := blFolder;
-
    inherited Create(ABranch, ABlockParms);
 
    FInitParms.Width := 140;

@@ -85,7 +85,6 @@ var
    defWidth, defWidthHalf: integer;
 begin
 
-   FType := blMain;
    FPage := APage;
 
    inherited Create(nil, ABlockParms);

@@ -51,8 +51,6 @@ uses
 constructor TRepeatUntilBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   FType := blRepeat;
-
    inherited Create(ABranch, ABlockParms);
 
    FInitParms.Width := 240;
