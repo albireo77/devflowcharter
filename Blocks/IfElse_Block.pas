@@ -105,7 +105,7 @@ end;
 function TIfElseBlock.GetBlockParms: TBlockParms;
 begin
    result := TBlockParms.New(
-      FType,
+      blIfElse,
       Left,
       Top,
       Width,
