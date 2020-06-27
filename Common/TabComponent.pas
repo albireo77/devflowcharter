@@ -484,19 +484,12 @@ end;
 procedure TTabComponent.ExportToXMLTag(ATag: IXMLElement);
 var
    elem: TElement;
-   topComparer: IComparer<TElement>;
 begin
    ATag.SetAttribute(NAME_ATTR, Trim(edtName.Text));
    ATag.SetAttribute(ID_ATTR, FId.ToString);
    ATag.SetAttribute('ext_decl', TRttiEnumerationType.GetName(chkExternal.State));
    ATag.SetAttribute('library', Trim(edtLibrary.Text));
-   topComparer := TDelegatedComparer<TElement>.Create(
-      function(const L, R: TElement): integer
-      begin
-         result := L.Top - R.Top;
-      end
-   );
-   for elem in GetElements<TElement>(topComparer) do
+   for elem in GetElements<TElement>(TElementComparer.Create(TOP_COMPARE)) do
       elem.ExportToXMLTag(ATag);
 end;
 

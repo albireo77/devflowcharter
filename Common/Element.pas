@@ -24,10 +24,18 @@ unit Element;
 interface
 
 uses
-   Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Forms, Vcl.Controls, OmniXml,
-   PageControl_Form, CommonTypes;
+   Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Forms, Vcl.Controls, Generics.Defaults,
+   OmniXml, PageControl_Form, CommonTypes;
 
 type
+
+   TElement = class;
+
+   TElementComparer = class(TComparer<TElement>)
+      FCompareType: integer;
+      constructor Create(ACompareType: integer);
+      function Compare(const L, R: TElement): integer; override;
+   end;
 
    TElement = class(TPanel)
       private
@@ -57,7 +65,7 @@ type
 implementation
 
 uses
-   Vcl.Graphics, System.SysUtils, ApplicationCommon, TabComponent;
+   Vcl.Graphics, System.SysUtils, CommonInterfaces, ApplicationCommon, TabComponent;
 
 constructor TElement.Create(AParent: TScrollBox);
 begin
@@ -225,6 +233,30 @@ begin
       GProject.SetChanged;
       TTabComponent(FParentTab).UpdateCodeEditor;
    end;
+end;
+
+constructor TElementComparer.Create(ACompareType: integer);
+begin
+   inherited Create;
+   FCompareType := ACompareType;
+end;
+
+function TElementComparer.Compare(const L, R: TElement): integer;
+begin
+   if (L = nil) and (R = nil) then
+      result := 0
+   else if L = nil then
+      result := 241
+   else if R = nil then
+      result := -241
+   else if FCompareType = TOP_COMPARE then
+      result := L.Top - R.Top
+   else if FCompareType = NAME_COMPARE then
+      result := TComparer<string>.Default.Compare(Trim(L.edtName.Text), Trim(R.edtName.Text))
+   else if FCompareType = COMPONENT_INDEX_COMPARE then
+      result := L.ComponentIndex - R.ComponentIndex
+   else
+      result := -170;
 end;
 
 end.

@@ -29,8 +29,10 @@ uses
 const
 
    PAGE_INDEX_COMPARE = 0;
-   Z_ORDER_COMPARE    = 1;
-   NAME_COMPARE       = 2;
+   Z_ORDER_COMPARE = 1;
+   NAME_COMPARE = 2;
+   TOP_COMPARE = 3;
+   COMPONENT_INDEX_COMPARE = 4;
 
 type
 
