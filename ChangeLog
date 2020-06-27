@@ -1,3 +1,7 @@
+8.4 [27.06.2020]
+- Function headers: re-order parameters with drag-and-drop
+- Datatypes: re-order fields with drag-and-drop
+
 8.3 [17.05.2020]
 - fix blinking tabs when removing functions/datatypes
 - make sure function body flowchart is in visible range after import
