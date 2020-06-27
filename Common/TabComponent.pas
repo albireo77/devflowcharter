@@ -26,7 +26,7 @@ interface
 uses
    System.Classes, Vcl.ComCtrls, Vcl.Forms, Vcl.StdCtrls, Vcl.Controls, WinApi.Windows,
    Vcl.Graphics, WinApi.Messages, CommonInterfaces, OmniXML, Element, PageControl_Form,
-   CommonTypes;
+   CommonTypes, Generics.Defaults;
 
 type
 
@@ -55,7 +55,7 @@ type
          procedure CreateExtDeclareChBox(AParent: TWinControl; x, y: integer; AAlignment: TLeftRight = taRightJustify);
          procedure CreateNameControls(AParent: TWinControl; x, y: integer);
          procedure CreateLibControls(AParent: TWinControl; x, y: integer);
-         function GetElements<T: class>: IEnumerable<T>;
+         function GetElements<T: class>(AComparer: IComparer<T> = nil): IEnumerable<T>;
       public
          edtName: TEdit;
          chkExternal: TCheckBox;
@@ -345,7 +345,7 @@ begin
    Font.Color := lColor;
 end;
 
-function TTabComponent.GetElements<T>: IEnumerable<T>;
+function TTabComponent.GetElements<T>(AComparer: IComparer<T> = nil): IEnumerable<T>;
 var
    i: integer;
    list: TList<T>;
@@ -355,6 +355,8 @@ begin
       list.Capacity := sbxElements.ControlCount;
    for i := 0 to sbxElements.ControlCount-1 do
       list.Add(sbxElements.Controls[i]);
+   if AComparer <> nil then
+      list.Sort(AComparer);
    result := TEnumeratorFactory<T>.Create(list);
 end;
 
@@ -482,12 +484,19 @@ end;
 procedure TTabComponent.ExportToXMLTag(ATag: IXMLElement);
 var
    elem: TElement;
+   topComparer: IComparer<TElement>;
 begin
    ATag.SetAttribute(NAME_ATTR, Trim(edtName.Text));
    ATag.SetAttribute(ID_ATTR, FId.ToString);
    ATag.SetAttribute('ext_decl', TRttiEnumerationType.GetName(chkExternal.State));
    ATag.SetAttribute('library', Trim(edtLibrary.Text));
-   for elem in GetElements<TElement> do
+   topComparer := TDelegatedComparer<TElement>.Create(
+      function(const L, R: TElement): integer
+      begin
+         result := L.Top - R.Top;
+      end
+   );
+   for elem in GetElements<TElement>(topComparer) do
       elem.ExportToXMLTag(ATag);
 end;
 

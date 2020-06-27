@@ -77,7 +77,7 @@ implementation
 
 uses
    Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, System.Rtti,
-   ApplicationCommon, LangDefinition, ParserHelper, XMLProcessor;
+   Generics.Defaults, ApplicationCommon, LangDefinition, ParserHelper, XMLProcessor;
 
 constructor TUserDataType.Create(AParentForm: TDataTypesForm);
 var
@@ -433,8 +433,16 @@ begin
 end;
 
 function TUserDataType.GetFields: IEnumerable<TField>;
+var
+   topComparer: IComparer<TField>;
 begin
-   result := GetElements<TField>;
+   topComparer := TDelegatedComparer<TField>.Create(
+      function(const L, R: TField): integer
+      begin
+         result := L.Top - R.Top;
+      end
+   );
+   result := GetElements<TField>(topComparer);
 end;
 
 procedure TField.OnChangeName(Sender: TObject);

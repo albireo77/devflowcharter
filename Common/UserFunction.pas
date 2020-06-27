@@ -718,8 +718,16 @@ begin
 end;
 
 function TUserFunctionHeader.GetParameters: IEnumerable<TParameter>;
+var
+   topComparer: IComparer<TParameter>;
 begin
-   result := GetElements<TParameter>;
+   topComparer := TDelegatedComparer<TParameter>.Create(
+      function(const L, R: TParameter): integer
+      begin
+         result := L.Top - R.Top;
+      end
+   );
+   result := GetElements<TParameter>(topComparer);
 end;
 
 function TUserFunctionHeader.GetExternModifier: string;

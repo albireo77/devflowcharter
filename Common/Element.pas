@@ -41,6 +41,8 @@ type
          procedure OnChangeType(Sender: TObject);
          procedure OnChangeName(Sender: TObject); virtual;
          procedure UpdateMe;
+         procedure OnDragOverElement(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
+         procedure OnDragDropElement(Sender, Source: TObject; X, Y: Integer);
       public
          edtName: TNameEdit;
          cbType: TComboBox;
@@ -68,6 +70,7 @@ begin
    FParentTab := GetParentTab;
    FParentForm := TTabComponent(FParentTab).ParentForm;
    DoubleBuffered := true;
+   DragMode := dmAutomatic;
 
    edtName := TNameEdit.Create(Self);
    edtName.Parent := Self;
@@ -100,6 +103,8 @@ begin
    btnRemove.Caption := i18Manager.GetString('btnRemove');
    btnRemove.OnClick := OnClickRemove;
 
+   OnDragOver := OnDragOverElement;
+   OnDragDrop := OnDragDropElement;
 end;
 
 function TElement.GetParentTab: TTabSheet;
@@ -198,6 +203,28 @@ begin
    ATag.AppendChild(result);
    result.SetAttribute(NAME_ATTR, Trim(edtName.Text));
    result.SetAttribute(TYPE_ATTR, cbType.Text);
+end;
+
+procedure TElement.OnDragOverElement(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
+begin
+   if (Source = Sender) or (not (Source is TElement)) or (TElement(Source).Parent <> Parent) then
+      Accept := false;
+end;
+
+procedure TElement.OnDragDropElement(Sender, Source: TObject; X, Y: Integer);
+var
+   sourceElement: TElement;
+   t: integer;
+begin
+   if Source is TElement then
+   begin
+      sourceElement := TElement(Source);
+      t := sourceElement.Top;
+      sourceElement.Top := Top;
+      Top := t;
+      GProject.SetChanged;
+      TTabComponent(FParentTab).UpdateCodeEditor;
+   end;
 end;
 
 end.
