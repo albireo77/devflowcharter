@@ -743,7 +743,7 @@ Available placeholders:
 Element DataTypeExternalModifier
 Description: It returns value based on whether datatype is declared as external|not external|trans-external.
 Trans-external state is enabled only if AllowTransExternDataType is set to true.
-In given example, it returns value "external " if datatype is external or "internal " if not; tran-external state is omitted
+In given example, it returns value "external " if datatype is external or "internal " if not; trans-external state is omitted
 -->
 <DataTypeExternalModifier>external |internal </DataTypeExternalModifier>
 
