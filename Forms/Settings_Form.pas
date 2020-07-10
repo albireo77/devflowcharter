@@ -387,8 +387,6 @@ var
    m: string;
 begin
    langDef := GInfra.GetLangDefinition(cbLanguage.Text);
-   if langDef = nil then
-      raise Exception.Create('Unsupported language: ' + cbLanguage.Text);
    pnlFill.Color := clAqua;
    pnlPen.Color := clBlack;
    pnlDesktop.Color := DEFAULT_DESKTOP_COLOR;
@@ -450,8 +448,6 @@ var
    lang: TLangDefinition;
 begin
    lang := GInfra.GetLangDefinition(cbLanguage.Text);
-   if lang = nil then
-      raise Exception.Create('Unsupported language: ' + cbLanguage.Text);
    cbLanguage.Hint := lang.DefFile;
    parserOn := lang.Parser <> nil;
    chkParseInput.Enabled := parserOn;
