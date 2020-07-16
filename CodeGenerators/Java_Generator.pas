@@ -77,6 +77,7 @@ var
    JAVA_INSTANT_TYPE,
    JAVA_DURATION_TYPE,
    JAVA_PERIOD_TYPE,
+   JAVA_DATETIME_FORMATTER,
    JAVA_BIGDECIMAL_TYPE,
    JAVA_BIGINTEGER_TYPE,
    JAVA_PATTERN_TYPE: integer;
@@ -880,6 +881,19 @@ begin
                   result := t1;
                end;
             end
+            else if AValue.StartsWith('DateTimeFormatter.') then
+            begin
+               cValue := Copy(AValue, 19, len-18);
+               if cValue.StartsWith('ofPattern(') and (lastChar = ')') then
+               begin
+                  cValue := Copy(cValue, 11, cValue.Length-11);
+                  t1 := Java_GetConstantType(cValue, s);
+                  if t1 <> JAVA_STRING_TYPE then
+                     Exit;
+               end;
+               AddLibImport(TParserHelper.GetLibForType('DateTimeFormatter', 'java.time.format') + '.DateTimeFormatter');
+               result := JAVA_DATETIME_FORMATTER;
+            end
             else if AValue.StartsWith('Pattern.compile(') and (lastChar = ')') then
             begin
                cValue := Copy(AValue, 17, len-17);
@@ -1005,6 +1019,7 @@ initialization
    JAVA_INSTANT_TYPE        := TParserHelper.GetType('Instant', JAVA_LANG_ID);
    JAVA_DURATION_TYPE       := TParserHelper.GetType('Duration', JAVA_LANG_ID);
    JAVA_PERIOD_TYPE         := TParserHelper.GetType('Period', JAVA_LANG_ID);
+   JAVA_DATETIME_FORMATTER  := TParserHelper.GetType('DateTimeFormatter', JAVA_LANG_ID);
    JAVA_BIGDECIMAL_TYPE     := TParserHelper.GetType('BigDecimal', JAVA_LANG_ID);
    JAVA_BIGINTEGER_TYPE     := TParserHelper.GetType('BigInteger', JAVA_LANG_ID);
    JAVA_PATTERN_TYPE        := TParserHelper.GetType('Pattern', JAVA_LANG_ID);
