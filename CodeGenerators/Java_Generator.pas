@@ -891,7 +891,7 @@ begin
                   if t1 <> JAVA_STRING_TYPE then
                      Exit;
                end
-               else if not (cValue.StartsWith('ISO_') or MatchText(cValue, ['BASIC_ISO_DATE', 'RFC_1123_DATE_TIME'])) then
+               else if not (cValue.StartsWith('ISO_') or MatchStr(cValue, ['BASIC_ISO_DATE', 'RFC_1123_DATE_TIME'])) then
                   Exit;
                AddLibImport(TParserHelper.GetLibForType('DateTimeFormatter', 'java.time.format') + '.DateTimeFormatter');
                result := JAVA_DATETIME_FORMATTER;
