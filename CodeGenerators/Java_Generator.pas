@@ -883,14 +883,16 @@ begin
             end
             else if AValue.StartsWith('DateTimeFormatter.') then
             begin
-               cValue := Copy(AValue, 19, len-18);
+               cValue := Copy(AValue, 19);
                if cValue.StartsWith('ofPattern(') and (lastChar = ')') then
                begin
                   cValue := Copy(cValue, 11, cValue.Length-11);
                   t1 := Java_GetConstantType(cValue, s);
                   if t1 <> JAVA_STRING_TYPE then
                      Exit;
-               end;
+               end
+               else if not (cValue.StartsWith('ISO_') or MatchText(cValue, ['BASIC_ISO_DATE', 'RFC_1123_DATE_TIME'])) then
+                  Exit;
                AddLibImport(TParserHelper.GetLibForType('DateTimeFormatter', 'java.time.format') + '.DateTimeFormatter');
                result := JAVA_DATETIME_FORMATTER;
             end
