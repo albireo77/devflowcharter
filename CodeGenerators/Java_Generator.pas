@@ -77,6 +77,7 @@ var
    JAVA_INSTANT_TYPE,
    JAVA_DURATION_TYPE,
    JAVA_PERIOD_TYPE,
+   JAVA_LOCALE_TYPE,
    JAVA_DATETIME_FORMATTER,
    JAVA_BIGDECIMAL_TYPE,
    JAVA_BIGINTEGER_TYPE,
@@ -553,6 +554,26 @@ begin
                result := JAVA_STRING_TYPE
             else if StartsWithOneOf(AValue, ['String.valueOf(', 'String.join(', 'String.format(']) and (lastChar = ')') then
                result := JAVA_STRING_TYPE
+            else if AValue.StartsWith('new Locale(' + JAVA_STRING_DELIM) and AValue.EndsWith(JAVA_STRING_DELIM + ')') then
+            begin
+               if AValue.Length in [16, 19] then
+               begin
+                  if (not (AValue[13].isLower)) or (not (AValue[14].isLower)) then
+                     Exit;
+                  if AValue.Length = 19 then
+                  begin
+                     if (not (AValue[16].isUpper)) or (not (AValue[17].isUpper)) then
+                        Exit;
+                     if not ((AValue[15] = '_') or (AValue[15] = '-')) then
+                        Exit;
+                  end;
+               end
+               else
+                  Exit;
+               result := JAVA_LOCALE_TYPE;
+            end
+            else if AValue.StartsWith('Locale.') then
+               result := JAVA_LOCALE_TYPE
             else if (len > 2) and (firstChar = JAVA_CHAR_DELIM) and (lastChar = JAVA_CHAR_DELIM) then
             begin
                cValue := Copy(AValue, 2, len-2);
@@ -875,7 +896,7 @@ begin
                      Exit;
                   cValue := Trim(Copy(AValue, 5, i-5));
                   t1 := TParserHelper.GetType(cValue);
-                  if IsPrimitiveType(t1) or MatchText(cValue, ['String', 'Pattern', 'DateTimeFormatter']) then
+                  if IsPrimitiveType(t1) or MatchText(cValue, ['String', 'Pattern', 'DateTimeFormatter', 'Locale']) then
                      Exit;
                   ProcessType(t1);
                   result := t1;
@@ -1021,6 +1042,7 @@ initialization
    JAVA_INSTANT_TYPE        := TParserHelper.GetType('Instant', JAVA_LANG_ID);
    JAVA_DURATION_TYPE       := TParserHelper.GetType('Duration', JAVA_LANG_ID);
    JAVA_PERIOD_TYPE         := TParserHelper.GetType('Period', JAVA_LANG_ID);
+   JAVA_LOCALE_TYPE         := TParserHelper.GetType('Locale', JAVA_LANG_ID);
    JAVA_DATETIME_FORMATTER  := TParserHelper.GetType('DateTimeFormatter', JAVA_LANG_ID);
    JAVA_BIGDECIMAL_TYPE     := TParserHelper.GetType('BigDecimal', JAVA_LANG_ID);
    JAVA_BIGINTEGER_TYPE     := TParserHelper.GetType('BigInteger', JAVA_LANG_ID);

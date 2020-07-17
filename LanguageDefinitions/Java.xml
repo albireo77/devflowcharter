@@ -86,6 +86,7 @@ It may not contain all supported tags. For all supported tags and their descript
 		<DataType kind="other" library="java.math">BigDecimal</DataType>
 		<DataType kind="other" library="java.math">BigInteger</DataType>
 		<DataType kind="other" library="java.text">DateFormat</DataType>
+		<DataType kind="other" library="java.time.format">DateTimeFormatter</DataType>
 		<DataType kind="other" library="java.util">Date</DataType>
 		<DataType kind="other" library="java.util">Calendar</DataType>
 		<DataType kind="other" library="java.time">LocalDate</DataType>
@@ -95,8 +96,8 @@ It may not contain all supported tags. For all supported tags and their descript
 		<DataType kind="other" library="java.time">Period</DataType>
 		<DataType kind="other" library="java.time">Instant</DataType>
 		<DataType kind="other" library="java.time">Temporal</DataType>
-		<DataType kind="other" library="java.time.format">DateTimeFormatter</DataType>
 		<DataType kind="other" library="java.util">Random</DataType>
+		<DataType kind="other" library="java.util">Locale</DataType>
 		<DataType kind="other" library="java.util.regex">Pattern</DataType>
 		<DataType kind="other" library="java.io">File</DataType>
 		<DataType kind="other" library="java.io">Writer</DataType>
