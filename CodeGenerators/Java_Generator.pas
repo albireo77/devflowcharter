@@ -565,10 +565,14 @@ begin
                   if not ((AValue[15] = '_') or (AValue[15] = '-')) then
                      Exit;
                end;
+               AddLibImport(TParserHelper.GetLibForType('Locale', 'java.util') + '.Locale');
                result := JAVA_LOCALE_TYPE;
             end
             else if AValue.StartsWith('Locale.') and (len > 8) then
-               result := JAVA_LOCALE_TYPE
+            begin
+               AddLibImport(TParserHelper.GetLibForType('Locale', 'java.util') + '.Locale');
+               result := JAVA_LOCALE_TYPE;
+            end
             else if (len > 2) and (firstChar = JAVA_CHAR_DELIM) and (lastChar = JAVA_CHAR_DELIM) then
             begin
                cValue := Copy(AValue, 2, len-2);
