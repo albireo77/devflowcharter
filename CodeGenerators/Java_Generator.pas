@@ -550,17 +550,17 @@ begin
                else
                   Exit;
             end
-            else if AValue.StartsWith('new String(' + JAVA_STRING_DELIM) and AValue.EndsWith(JAVA_STRING_DELIM + ')') and (AValue.Length > 13) then
+            else if AValue.StartsWith('new String(' + JAVA_STRING_DELIM) and AValue.EndsWith(JAVA_STRING_DELIM + ')') and (len > 13) then
                result := JAVA_STRING_TYPE
             else if StartsWithOneOf(AValue, ['String.valueOf(', 'String.join(', 'String.format(']) and (lastChar = ')') then
                result := JAVA_STRING_TYPE
             else if AValue.StartsWith('new Locale(' + JAVA_STRING_DELIM) and AValue.EndsWith(JAVA_STRING_DELIM + ')') then
             begin
-               if AValue.Length in [16, 19] then
+               if len in [16, 19] then
                begin
                   if (not (AValue[13].isLower)) or (not (AValue[14].isLower)) then
                      Exit;
-                  if AValue.Length = 19 then
+                  if len = 19 then
                   begin
                      if (not (AValue[16].isUpper)) or (not (AValue[17].isUpper)) then
                         Exit;
@@ -572,7 +572,7 @@ begin
                   Exit;
                result := JAVA_LOCALE_TYPE;
             end
-            else if AValue.StartsWith('Locale.') and (AValue.Length > 7) then
+            else if AValue.StartsWith('Locale.') and (len > 7) then
                result := JAVA_LOCALE_TYPE
             else if (len > 2) and (firstChar = JAVA_CHAR_DELIM) and (lastChar = JAVA_CHAR_DELIM) then
             begin
@@ -930,7 +930,7 @@ begin
             begin
                t1 := 0;
                t2 := 0;
-               for i := 1 to AValue.Length do
+               for i := 1 to len do
                begin
                   if AValue[i] = '{' then
                      t1 := t1 + 1
