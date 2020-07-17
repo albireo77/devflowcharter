@@ -1,3 +1,6 @@
+8.5 [17.07.2020]
+- Java: add support for DateTimeFormatter and Locale classes
+
 8.4 [27.06.2020]
 - Function headers: re-order parameters with drag-and-drop
 - Datatypes: re-order fields with drag-and-drop

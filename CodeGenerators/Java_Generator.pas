@@ -902,7 +902,7 @@ begin
                begin
                   cValue := Copy(cValue, 11, cValue.Length-11);
                   t1 := Java_GetConstantType(cValue, s);
-                  if t1 <> JAVA_STRING_TYPE then
+                  if (t1 <> JAVA_STRING_TYPE) or (cValue.Length = 2) then
                      Exit;
                end
                else if not (cValue.StartsWith('ISO_') or MatchStr(cValue, ['BASIC_ISO_DATE', 'RFC_1123_DATE_TIME'])) then
