@@ -572,7 +572,7 @@ begin
                   Exit;
                result := JAVA_LOCALE_TYPE;
             end
-            else if AValue.StartsWith('Locale.') then
+            else if AValue.StartsWith('Locale.') and (AValue.Length > 7) then
                result := JAVA_LOCALE_TYPE
             else if (len > 2) and (firstChar = JAVA_CHAR_DELIM) and (lastChar = JAVA_CHAR_DELIM) then
             begin
