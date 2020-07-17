@@ -554,17 +554,11 @@ begin
                result := JAVA_STRING_TYPE
             else if StartsWithOneOf(AValue, ['String.valueOf(', 'String.join(', 'String.format(']) and (lastChar = ')') then
                result := JAVA_STRING_TYPE
-            else if AValue.StartsWith('new Locale(' + JAVA_STRING_DELIM) and AValue.EndsWith(JAVA_STRING_DELIM + ')') and (len in [16, 19]) then
+            else if AValue.StartsWith('new Locale(' + JAVA_STRING_DELIM) and AValue.EndsWith(JAVA_STRING_DELIM + ')') then
             begin
-               if (not (AValue[13].isLower)) or (not (AValue[14].isLower)) then
+               cValue := ReplaceStr(AValue, ' ', '');
+               if cValue.Length < 15 then
                   Exit;
-               if len = 19 then
-               begin
-                  if (not (AValue[16].isUpper)) or (not (AValue[17].isUpper)) then
-                     Exit;
-                  if not ((AValue[15] = '_') or (AValue[15] = '-')) then
-                     Exit;
-               end;
                AddLibImport(TParserHelper.GetLibForType('Locale', 'java.util') + '.Locale');
                result := JAVA_LOCALE_TYPE;
             end
