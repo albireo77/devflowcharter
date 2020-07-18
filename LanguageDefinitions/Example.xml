@@ -5,7 +5,7 @@ Reference language definition file for devFlowcharter.
 It contains all supported tags.
 To create file for new language just Save As this file and modify new file according to your needs. 
 Most of the tags are optional and may be removed if not needed. The key and mandatory tag is FileContentsTemplate that defines source file layout.
-The only valid character to set indent level in elements responsible for code generation (e.g. FileContentsTemplate) is TAB. Whitespace characters will not work.
+The only valid character to set indent level in elements responsible for code generation (e.g. FileContentsTemplate) is TAB. Whitespaces will not work.
 -->
 
 <Language>
@@ -218,7 +218,7 @@ It is used for example in C to allow declaring constants acting as function macr
 
 <!--
 Elements used in code generation will follow.
-The only valid character to set indent level in elements responsible for code generation (e.g. FileContentsTemplate) is TAB. Whitespace characters will not work.
+The only valid character to set indent level in elements responsible for code generation (e.g. FileContentsTemplate) is TAB. Whitespaces will not work.
 In lines containing branch placeholders (e.g. %b1) all characters except for leading tabs are disregarded.
 Template elements may contain many lines.
 -->
