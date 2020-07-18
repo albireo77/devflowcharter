@@ -898,11 +898,9 @@ begin
             else if AValue.StartsWith('DateTimeFormatter.') then
             begin
                cValue := Copy(AValue, 19);
-               if cValue.StartsWith('ofPattern(') and (lastChar = ')') then
+               if cValue.StartsWith('ofPattern(' + JAVA_STRING_DELIM) and (cValue.EndsWith(JAVA_STRING_DELIM + ')')) then
                begin
-                  cValue := Copy(cValue, 11, cValue.Length-11);
-                  t1 := Java_GetConstantType(cValue, s);
-                  if (t1 <> JAVA_STRING_TYPE) or (cValue.Length = 2) then
+                  if ReplaceStr(cValue, ' ', '').Length < 14 then
                      Exit;
                end
                else if not (cValue.StartsWith('ISO_') or MatchStr(cValue, ['BASIC_ISO_DATE', 'RFC_1123_DATE_TIME'])) then
