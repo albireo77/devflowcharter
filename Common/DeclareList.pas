@@ -74,6 +74,7 @@ type
          procedure OnColWidthsChanged(Sender: TObject);
          procedure Resize; override;
          procedure OnCanResizeSplitter(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
+         procedure SetColumnLabel(ACol: integer; const AColLabel: string = '');
       public
          sgList: TStringGridEx;
          btnRemove,
@@ -198,7 +199,7 @@ begin
    sgList.FixedCols := 0;
    sgList.DefaultColWidth := sgList.Width div AColCount;
    for i := 0 to AColCount-1 do
-      sgList.Cells[i, 0] := i18Manager.GetString('sg' + FKind + 'ListCol' + i.ToString);
+      SetColumnLabel(i);
    sgList.DrawingStyle := gdsClassic;
    sgList.Ctl3D := false;
    sgList.FixedColor := clMoneyGreen;
@@ -378,15 +379,25 @@ begin
    Anchors := Anchors + [akBottom];
 end;
 
+procedure TDeclareList.SetColumnLabel(ACol: integer; const AColLabel: string = '');
+var
+   s: string;
+begin
+   if AColLabel.IsEmpty then
+      s := i18Manager.GetString('sg' + FKind + 'ListCol' + ACol.ToString)
+   else
+      s := AColLabel;
+   if not s.EndsWith(':') then
+      s := s + ':';
+   sgList.Cells[ACol, 0] := s;
+end;
+
 procedure TDeclareList.SetExternalCol(AExternalCol: integer);
 begin
    if (AExternalCol >= 0) and (AExternalCol < sgList.ColCount) then
    begin
       FExternalCol := AExternalCol;
-      if GInfra.CurrentLang.ExternalLabel.IsEmpty then
-         sgList.Cells[FExternalCol, 0] := i18Manager.GetString('sg' + FKind + 'ListCol' + FExternalCol.ToString)
-      else
-         sgList.Cells[FExternalCol, 0] := GInfra.CurrentLang.ExternalLabel + ':';
+      SetColumnLabel(FExternalCol, GInfra.CurrentLang.ExternalLabel);
    end;
 end;
 
