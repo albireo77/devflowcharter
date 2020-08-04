@@ -585,7 +585,7 @@ begin
    if FGlobalVars <> nil then
    begin
       FGlobalVars.Caption := i18Manager.GetString(GInfra.CurrentLang.GlobalVarsLabelKey);
-      FGlobalVars.SetExternalCol(4);
+      FGlobalVars.SetExternalColumn(4);
       FGlobalVars.AssociatedList := FGlobalConsts;
       AForm.Width := FGlobalVars.BoundsRect.Right + DECLARATIONS_FORM_RIGHT_MARGIN;
       if FGlobalConsts = nil then
@@ -594,7 +594,7 @@ begin
    if FGlobalConsts <> nil then
    begin
       FGlobalConsts.Caption := i18Manager.GetString(GInfra.CurrentLang.GlobalConstsLabelKey);
-      FGlobalConsts.SetExternalCol(2);
+      FGlobalConsts.SetExternalColumn(2);
       FGlobalConsts.AssociatedList := FGlobalVars;
       AForm.Width := FGlobalConsts.BoundsRect.Right + DECLARATIONS_FORM_RIGHT_MARGIN;
    end;

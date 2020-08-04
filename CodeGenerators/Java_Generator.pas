@@ -36,6 +36,20 @@ const
    JAVA_STRING_DELIM = #34;
    JAVA_CHAR_DELIM   = #39;
 
+   IO_PKG = 'java.io';
+   TIME_PKG = 'java.time';
+   TIME_FORMAT_PKG = TIME_PKG + '.format';
+   MATH_PKG = 'java.math';
+   TEXT_PKG = 'java.text';
+   SECURITY_PKG = 'java.security';
+   CRYPTO_PKG = 'javax.crypto';
+   SAMPLED_PKG = 'javax.sound.sampled';
+   UTIL_PKG = 'java.util';
+   ZIP_PKG = UTIL_PKG + '.zip';
+   REGEX_PKG = UTIL_PKG + '.regex';
+   CONCURRENT_PKG = UTIL_PKG + '.concurrent';
+   ATOMIC_PKG = CONCURRENT_PKG + '.atomic';
+
 var
    javaLang: TLangDefinition;
    FImportLines: TStringList;
@@ -559,12 +573,12 @@ begin
                cValue := ReplaceStr(AValue, ' ', '');
                if cValue.Length < 15 then
                   Exit;
-               AddLibImport(TParserHelper.GetLibForType('Locale', 'java.util') + '.Locale');
+               AddLibImport(TParserHelper.GetLibForType('Locale', UTIL_PKG) + '.Locale');
                result := JAVA_LOCALE_TYPE;
             end
             else if AValue.StartsWith('Locale.') and (len > 8) then
             begin
-               AddLibImport(TParserHelper.GetLibForType('Locale', 'java.util') + '.Locale');
+               AddLibImport(TParserHelper.GetLibForType('Locale', UTIL_PKG) + '.Locale');
                result := JAVA_LOCALE_TYPE;
             end
             else if (len > 2) and (firstChar = JAVA_CHAR_DELIM) and (lastChar = JAVA_CHAR_DELIM) then
@@ -607,7 +621,7 @@ begin
                else
                   result := JAVA_DURATION_TYPE;
                if result <> JAVA_DURATION_TYPE then
-                  AddLibImport(TParserHelper.GetLibForType('Duration', 'java.time') + '.Duration');
+                  AddLibImport(TParserHelper.GetLibForType('Duration', TIME_PKG) + '.Duration');
             end
             else if AValue.StartsWith('Period.') then
             begin
@@ -618,7 +632,7 @@ begin
                else
                   result := JAVA_PERIOD_TYPE;
                if result <> JAVA_PERIOD_TYPE then
-                  AddLibImport(TParserHelper.GetLibForType('Period', 'java.time') + '.Period');
+                  AddLibImport(TParserHelper.GetLibForType('Period', TIME_PKG) + '.Period');
             end
             else if AValue.StartsWith('Instant.') then
             begin
@@ -631,7 +645,7 @@ begin
                else
                   result := JAVA_INSTANT_TYPE;
                if result <> JAVA_INSTANT_TYPE then
-                  AddLibImport(TParserHelper.GetLibForType('Instant', 'java.time') + '.Instant');
+                  AddLibImport(TParserHelper.GetLibForType('Instant', TIME_PKG) + '.Instant');
             end
             else if AValue = 'null' then
                result := JAVA_STRING_TYPE
@@ -661,7 +675,7 @@ begin
                else
                   result := JAVA_BIGDECIMAL_TYPE;
                if result <> JAVA_BIGDECIMAL_TYPE then
-                  AddLibImport(TParserHelper.GetLibForType('BigDecimal', 'java.math') + '.BigDecimal');
+                  AddLibImport(TParserHelper.GetLibForType('BigDecimal', MATH_PKG) + '.BigDecimal');
             end
             else if StartsWithOneOf(AValue, ['new BigInteger(', 'BigInteger.']) then
             begin
@@ -678,7 +692,7 @@ begin
                else
                   result := JAVA_BIGINTEGER_TYPE;
                if result <> JAVA_BIGINTEGER_TYPE then
-                  AddLibImport(TParserHelper.GetLibForType('BigInteger', 'java.math') + '.BigInteger');
+                  AddLibImport(TParserHelper.GetLibForType('BigInteger', MATH_PKG) + '.BigInteger');
             end
             else if StartsWithOneOf(AValue, ['new Integer(', 'Integer.']) then
             begin
@@ -762,7 +776,7 @@ begin
             end
             else if AValue.StartsWith('Collections.') then
             begin
-              AddLibImport('java.util.Collections');
+              AddLibImport(UTIL_PKG + '.Collections');
               cValue := Copy(AValue, 13);
               if MatchStr(cValue, ['EMPTY_LIST', 'emptyList()']) then
                  result := JAVA_LIST_TYPE
@@ -847,7 +861,7 @@ begin
                end;
                result := a;
                AGenericType := ProcessType(result);
-               AddLibImport('java.util.Arrays');
+               AddLibImport(UTIL_PKG + '.Arrays');
                result := JAVA_LIST_TYPE;
             end
             else if AValue.StartsWith('new ') then
@@ -905,7 +919,7 @@ begin
                end
                else if not (cValue.StartsWith('ISO_') or MatchStr(cValue, ['BASIC_ISO_DATE', 'RFC_1123_DATE_TIME'])) then
                   Exit;
-               AddLibImport(TParserHelper.GetLibForType('DateTimeFormatter', 'java.time.format') + '.DateTimeFormatter');
+               AddLibImport(TParserHelper.GetLibForType('DateTimeFormatter', TIME_FORMAT_PKG) + '.DateTimeFormatter');
                result := JAVA_DATETIME_FORMATTER;
             end
             else if AValue.StartsWith('Pattern.compile(') and (lastChar = ')') then
@@ -914,7 +928,7 @@ begin
                t1 := Java_GetConstantType(cValue, s);
                if t1 <> JAVA_STRING_TYPE then
                   Exit;
-               AddLibImport(TParserHelper.GetLibForType('Pattern', 'java.util.regex') + '.Pattern');
+               AddLibImport(TParserHelper.GetLibForType('Pattern', REGEX_PKG) + '.Pattern');
                result := JAVA_PATTERN_TYPE;
             end
             else if (AValue[1] = '{') and (lastChar = '}') then
@@ -1055,118 +1069,118 @@ initialization
    end;
 
    FListImpl := TStringList.Create;
-   FListImpl.AddPair('CopyOnWriteArrayList', 'java.util.concurrent');
-   FListImpl.AddPair('ArrayList', 'java.util');
-   FListImpl.AddPair('LinkedList', 'java.util');
-   FListImpl.AddPair('Stack', 'java.util');
-   FListImpl.AddPair('Vector', 'java.util');
+   FListImpl.AddPair('CopyOnWriteArrayList', CONCURRENT_PKG);
+   FListImpl.AddPair('ArrayList', UTIL_PKG);
+   FListImpl.AddPair('LinkedList', UTIL_PKG);
+   FListImpl.AddPair('Stack', UTIL_PKG);
+   FListImpl.AddPair('Vector', UTIL_PKG);
 
    FMapImpl := TStringList.Create;
-   FMapImpl.AddPair('ConcurrentHashMap', 'java.util.concurrent');
-   FMapImpl.AddPair('ConcurrentSkipListMap', 'java.util.concurrent');
-   FMapImpl.AddPair('EnumMap', 'java.util');
-   FMapImpl.AddPair('WeakHashMap', 'java.util');
-   FMapImpl.AddPair('LinkedHashMap', 'java.util');
-   FMapImpl.AddPair('HashMap', 'java.util');
-   FMapImpl.AddPair('Hashtable', 'java.util');
-   FMapImpl.AddPair('Properties', 'java.util');
-   FMapImpl.AddPair('TreeMap', 'java.util');
+   FMapImpl.AddPair('ConcurrentHashMap', CONCURRENT_PKG);
+   FMapImpl.AddPair('ConcurrentSkipListMap', CONCURRENT_PKG);
+   FMapImpl.AddPair('EnumMap', UTIL_PKG);
+   FMapImpl.AddPair('WeakHashMap', UTIL_PKG);
+   FMapImpl.AddPair('LinkedHashMap', UTIL_PKG);
+   FMapImpl.AddPair('HashMap', UTIL_PKG);
+   FMapImpl.AddPair('Hashtable', UTIL_PKG);
+   FMapImpl.AddPair('Properties', UTIL_PKG);
+   FMapImpl.AddPair('TreeMap', UTIL_PKG);
 
    FSetImpl := TStringList.Create;
-   FSetImpl.AddPair('ConcurrentSkipListSet', 'java.util.concurrent');
-   FSetImpl.AddPair('CopyOnWriteArraySet', 'java.util.concurrent');
-   FSetImpl.AddPair('EnumSet', 'java.util');
-   FSetImpl.AddPair('LinkedHashSet', 'java.util');
-   FSetImpl.AddPair('HashSet', 'java.util');
-   FSetImpl.AddPair('TreeSet', 'java.util');
+   FSetImpl.AddPair('ConcurrentSkipListSet', CONCURRENT_PKG);
+   FSetImpl.AddPair('CopyOnWriteArraySet', CONCURRENT_PKG);
+   FSetImpl.AddPair('EnumSet', UTIL_PKG);
+   FSetImpl.AddPair('LinkedHashSet', UTIL_PKG);
+   FSetImpl.AddPair('HashSet', UTIL_PKG);
+   FSetImpl.AddPair('TreeSet', UTIL_PKG);
 
    FDateFormatImpl := TStringList.Create;
-   FDateFormatImpl.AddPair('SimpleDateFormat', 'java.text');
+   FDateFormatImpl.AddPair('SimpleDateFormat', TEXT_PKG);
 
    FQueueImpl := TStringList.Create;
-   FQueueImpl.AddPair('ArrayBlockingQueue', 'java.util.concurrent');
-   FQueueImpl.AddPair('ArrayDeque', 'java.util');
-   FQueueImpl.AddPair('ConcurrentLinkedDeque', 'java.util.concurrent');
-   FQueueImpl.AddPair('ConcurrentLinkedQueue', 'java.util.concurrent');
-   FQueueImpl.AddPair('DelayQueue', 'java.util.concurrent');
-   FQueueImpl.AddPair('LinkedBlockingDeque', 'java.util.concurrent');
-   FQueueImpl.AddPair('LinkedBlockingQueue', 'java.util.concurrent');
-   FQueueImpl.AddPair('LinkedList', 'java.util');
-   FQueueImpl.AddPair('LinkedTransferQueue', 'java.util.concurrent');
-   FQueueImpl.AddPair('PriorityBlockingQueue', 'java.util.concurrent');
-   FQueueImpl.AddPair('PriorityQueue', 'java.util');
-   FQueueImpl.AddPair('SynchronousQueue', 'java.util.concurrent');
+   FQueueImpl.AddPair('ArrayBlockingQueue', CONCURRENT_PKG);
+   FQueueImpl.AddPair('ArrayDeque', UTIL_PKG);
+   FQueueImpl.AddPair('ConcurrentLinkedDeque', CONCURRENT_PKG);
+   FQueueImpl.AddPair('ConcurrentLinkedQueue', CONCURRENT_PKG);
+   FQueueImpl.AddPair('DelayQueue', CONCURRENT_PKG);
+   FQueueImpl.AddPair('LinkedBlockingDeque', CONCURRENT_PKG);
+   FQueueImpl.AddPair('LinkedBlockingQueue', CONCURRENT_PKG);
+   FQueueImpl.AddPair('LinkedList', UTIL_PKG);
+   FQueueImpl.AddPair('LinkedTransferQueue', CONCURRENT_PKG);
+   FQueueImpl.AddPair('PriorityBlockingQueue', CONCURRENT_PKG);
+   FQueueImpl.AddPair('PriorityQueue', UTIL_PKG);
+   FQueueImpl.AddPair('SynchronousQueue', CONCURRENT_PKG);
 
    FDequeImpl := TStringList.Create;
-   FDequeImpl.AddPair('ArrayDeque', 'java.util');
-   FDequeImpl.AddPair('ConcurrentLinkedDeque', 'java.util.concurrent');
-   FDequeImpl.AddPair('LinkedBlockingDeque', 'java.util.concurrent');
-   FDequeImpl.AddPair('LinkedList', 'java.util');
+   FDequeImpl.AddPair('ArrayDeque', UTIL_PKG);
+   FDequeImpl.AddPair('ConcurrentLinkedDeque', CONCURRENT_PKG);
+   FDequeImpl.AddPair('LinkedBlockingDeque', CONCURRENT_PKG);
+   FDequeImpl.AddPair('LinkedList', UTIL_PKG);
 
    FReaderImpl := TStringList.Create;
-   FReaderImpl.AddPair('BufferedReader', 'java.io');
-   FReaderImpl.AddPair('CharArrayReader', 'java.io');
-   FReaderImpl.AddPair('InputStreamReader', 'java.io');
-   FReaderImpl.AddPair('PipedReader', 'java.io');
-   FReaderImpl.AddPair('StringReader', 'java.io');
+   FReaderImpl.AddPair('BufferedReader', IO_PKG);
+   FReaderImpl.AddPair('CharArrayReader', IO_PKG);
+   FReaderImpl.AddPair('InputStreamReader', IO_PKG);
+   FReaderImpl.AddPair('PipedReader', IO_PKG);
+   FReaderImpl.AddPair('StringReader', IO_PKG);
 
    FWriterImpl := TStringList.Create;
-   FWriterImpl.AddPair('BufferedWriter', 'java.io');
-   FWriterImpl.AddPair('CharArrayWriter', 'java.io');
-   FWriterImpl.AddPair('OutputStreamWriter', 'java.io');
-   FWriterImpl.AddPair('PipedWriter', 'java.io');
-   FWriterImpl.AddPair('PrintWriter', 'java.io');
-   FWriterImpl.AddPair('StringWriter', 'java.io');
+   FWriterImpl.AddPair('BufferedWriter', IO_PKG);
+   FWriterImpl.AddPair('CharArrayWriter', IO_PKG);
+   FWriterImpl.AddPair('OutputStreamWriter', IO_PKG);
+   FWriterImpl.AddPair('PipedWriter', IO_PKG);
+   FWriterImpl.AddPair('PrintWriter', IO_PKG);
+   FWriterImpl.AddPair('StringWriter', IO_PKG);
 
    FInStreamImpl := TStringList.Create;
-   FInStreamImpl.AddPair('AudioInputStream', 'javax.sound.sampled');
-   FInStreamImpl.AddPair('ByteArrayInputStream', 'java.io');
-   FInStreamImpl.AddPair('FileInputStream', 'java.io');
-   FInStreamImpl.AddPair('FilterInputStream', 'java.io');
-   FInStreamImpl.AddPair('ObjectInputStream', 'java.io');
-   FInStreamImpl.AddPair('PipedInputStream', 'java.io');
-   FInStreamImpl.AddPair('SequenceInputStream', 'java.io');
-   FInStreamImpl.AddPair('BufferedInputStream', 'java.io');
-   FInStreamImpl.AddPair('CheckedInputStream', 'java.util.zip');
-   FInStreamImpl.AddPair('CipherInputStream', 'javax.crypto');
-   FInStreamImpl.AddPair('DataInputStream', 'java.io');
-   FInStreamImpl.AddPair('DeflaterInputStream', 'java.util.zip');
-   FInStreamImpl.AddPair('InflaterInputStream', 'java.util.zip');
-   FInStreamImpl.AddPair('DigestInputStream', 'java.security');
-   FInStreamImpl.AddPair('PushbackInputStream', 'java.io');
+   FInStreamImpl.AddPair('AudioInputStream', SAMPLED_PKG);
+   FInStreamImpl.AddPair('ByteArrayInputStream', IO_PKG);
+   FInStreamImpl.AddPair('FileInputStream', IO_PKG);
+   FInStreamImpl.AddPair('FilterInputStream', IO_PKG);
+   FInStreamImpl.AddPair('ObjectInputStream', IO_PKG);
+   FInStreamImpl.AddPair('PipedInputStream', IO_PKG);
+   FInStreamImpl.AddPair('SequenceInputStream', IO_PKG);
+   FInStreamImpl.AddPair('BufferedInputStream', IO_PKG);
+   FInStreamImpl.AddPair('CheckedInputStream', ZIP_PKG);
+   FInStreamImpl.AddPair('CipherInputStream', CRYPTO_PKG);
+   FInStreamImpl.AddPair('DataInputStream', IO_PKG);
+   FInStreamImpl.AddPair('DeflaterInputStream', ZIP_PKG);
+   FInStreamImpl.AddPair('InflaterInputStream', ZIP_PKG);
+   FInStreamImpl.AddPair('DigestInputStream', SECURITY_PKG);
+   FInStreamImpl.AddPair('PushbackInputStream', IO_PKG);
 
    FOutStreamImpl := TStringList.Create;
-   FOutStreamImpl.AddPair('ByteArrayOutputStream', 'java.io');
-   FOutStreamImpl.AddPair('FileOutputStream', 'java.io');
-   FOutStreamImpl.AddPair('FilterOutputStream', 'java.io');
-   FOutStreamImpl.AddPair('ObjectOutputStream', 'java.io');
-   FOutStreamImpl.AddPair('PipedOutputStream', 'java.io');
-   FOutStreamImpl.AddPair('BufferedOutputStream', 'java.io');
-   FOutStreamImpl.AddPair('CipherOutputStream', 'javax.crypto');
-   FOutStreamImpl.AddPair('DataOutputStream', 'java.io');
-   FOutStreamImpl.AddPair('InflaterOutputStream', 'java.util.zip');
-   FOutStreamImpl.AddPair('DeflaterOutputStream', 'java.util.zip');
-   FOutStreamImpl.AddPair('DigestOutputStream', 'java.security');
-   FOutStreamImpl.AddPair('PrintStream', 'java.io');
+   FOutStreamImpl.AddPair('ByteArrayOutputStream', IO_PKG);
+   FOutStreamImpl.AddPair('FileOutputStream', IO_PKG);
+   FOutStreamImpl.AddPair('FilterOutputStream', IO_PKG);
+   FOutStreamImpl.AddPair('ObjectOutputStream', IO_PKG);
+   FOutStreamImpl.AddPair('PipedOutputStream', IO_PKG);
+   FOutStreamImpl.AddPair('BufferedOutputStream', IO_PKG);
+   FOutStreamImpl.AddPair('CipherOutputStream', CRYPTO_PKG);
+   FOutStreamImpl.AddPair('DataOutputStream', IO_PKG);
+   FOutStreamImpl.AddPair('InflaterOutputStream', ZIP_PKG);
+   FOutStreamImpl.AddPair('DeflaterOutputStream', ZIP_PKG);
+   FOutStreamImpl.AddPair('DigestOutputStream', SECURITY_PKG);
+   FOutStreamImpl.AddPair('PrintStream', IO_PKG);
 
    FTemporalImpl := TStringList.Create;
-   FTemporalImpl.AddPair('Instant', 'java.time');
-   FTemporalImpl.AddPair('LocalDateTime', 'java.time');
-   FTemporalImpl.AddPair('LocalDate', 'java.time');
-   FTemporalImpl.AddPair('LocalTime', 'java.time');
-   FTemporalImpl.AddPair('OffsetDateTime', 'java.time');
-   FTemporalImpl.AddPair('OffsetTime', 'java.time');
-   FTemporalImpl.AddPair('ZonedDateTime', 'java.time');
+   FTemporalImpl.AddPair('Instant', TIME_PKG);
+   FTemporalImpl.AddPair('LocalDateTime', TIME_PKG);
+   FTemporalImpl.AddPair('LocalDate', TIME_PKG);
+   FTemporalImpl.AddPair('LocalTime', TIME_PKG);
+   FTemporalImpl.AddPair('OffsetDateTime', TIME_PKG);
+   FTemporalImpl.AddPair('OffsetTime', TIME_PKG);
+   FTemporalImpl.AddPair('ZonedDateTime', TIME_PKG);
 
    FNumberImpl := TStringList.Create;
-   FNumberImpl.AddPair('AtomicInteger', 'java.util.concurrent.atomic');
-   FNumberImpl.AddPair('AtomicLong', 'java.util.concurrent.atomic');
-   FNumberImpl.AddPair('BigDecimal', 'java.math');
-   FNumberImpl.AddPair('BigInteger', 'java.math');
-   FNumberImpl.AddPair('DoubleAccumulator', 'java.util.concurrent.atomic');
-   FNumberImpl.AddPair('DoubleAdder', 'java.util.concurrent.atomic');
-   FNumberImpl.AddPair('LongAccumulator', 'java.util.concurrent.atomic');
-   FNumberImpl.AddPair('LongAdder', 'java.util.concurrent.atomic');
+   FNumberImpl.AddPair('AtomicInteger', ATOMIC_PKG);
+   FNumberImpl.AddPair('AtomicLong', ATOMIC_PKG);
+   FNumberImpl.AddPair('BigDecimal', MATH_PKG);
+   FNumberImpl.AddPair('BigInteger', MATH_PKG);
+   FNumberImpl.AddPair('DoubleAccumulator', ATOMIC_PKG);
+   FNumberImpl.AddPair('DoubleAdder', ATOMIC_PKG);
+   FNumberImpl.AddPair('LongAccumulator', ATOMIC_PKG);
+   FNumberImpl.AddPair('LongAdder', ATOMIC_PKG);
 
 finalization
 

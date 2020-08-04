@@ -105,7 +105,7 @@ type
          procedure SetSplitter(ASplitter: TSplitter);
          procedure SetDefaultFocus;
          function GetExternalState(ARow: integer): TCheckBoxState;
-         procedure SetExternalCol(AExternalCol: integer);
+         procedure SetExternalColumn(AExternalCol: integer);
          function GetExternModifier(idx: integer): string; virtual; abstract;
    end;
 
@@ -392,7 +392,7 @@ begin
    sgList.Cells[ACol, 0] := s;
 end;
 
-procedure TDeclareList.SetExternalCol(AExternalCol: integer);
+procedure TDeclareList.SetExternalColumn(AExternalCol: integer);
 begin
    if (AExternalCol >= 0) and (AExternalCol < sgList.ColCount) then
    begin
