@@ -53,7 +53,7 @@ type
          function IsDeclared(const AName: string; AssociatedListCheck: boolean): boolean;
          function AddUpdateRow: integer; virtual;
          function IsRowVisible(ARow: integer): boolean;
-         function FindValidRowByPoint(x, y: integer): integer;
+         function FindRow(x, y: integer): integer;
          procedure OnRowMovedList(Sender: TObject; FromIndex, ToIndex: Longint);
          procedure OnClickAdd(Sender: TObject); virtual; abstract;
          procedure OnClickImport(Sender: TObject);
@@ -155,10 +155,13 @@ type
 const
    NAME_COL = 0;
 
-   VAR_NAME_COL   = NAME_COL;
-   VAR_TYPE_COL   = 1;
-   VAR_SIZE_COL   = 2;
-   VAR_INIT_COL   = 3;
+   VAR_NAME_COL = NAME_COL;
+   VAR_TYPE_COL = 1;
+   VAR_SIZE_COL = 2;
+   VAR_INIT_COL = 3;
+
+   INVALID_ROW = -1;
+   INVALID_COL = -1;
 
    CONST_NAME_COL  = NAME_COL;
    CONST_VALUE_COL = 1;
@@ -176,7 +179,7 @@ constructor TDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, ADisp
 var
    i: integer;
 begin
-   FExternalCol := -1;
+   FExternalCol := INVALID_COL;
    inherited Create(AParent);
    Parent := AParent;
    ParentFont := false;
@@ -186,7 +189,7 @@ begin
    FModifying := false;
    AssociatedList := nil;
    DoubleBuffered := true;
-   FDragRow := -1;
+   FDragRow := INVALID_ROW;
    FId := TProject.GetInstance.Register(Self);
 
    sgList := TStringGridEx.Create(Self);
@@ -517,7 +520,7 @@ var
    p: TPoint;
 begin
    p := sgList.ScreenToClient(Mouse.CursorPos);
-   if FindValidRowByPoint(p.X, p.Y) <> -1 then
+   if FindRow(p.X, p.Y) <> INVALID_ROW then
       btnChange.Click;
 end;
 
@@ -538,7 +541,7 @@ begin
    RefreshCheckBoxes;
 end;
 
-function TDeclareList.FindValidRowByPoint(x, y: integer): integer;
+function TDeclareList.FindRow(x, y: integer): integer;
 var
    lCol, lRow: integer;
 begin
@@ -546,25 +549,25 @@ begin
    if (lRow > 0) and (lRow < sgList.RowCount-1) then
       result := lRow
    else
-      result := -1;
+      result := INVALID_ROW;
 end;
 
 procedure TDeclareList.OnDragOverList(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-   Accept := (Source = sgList) and (FindValidRowByPoint(X, Y) <> -1);
+   Accept := (Source = sgList) and (FindRow(X, Y) <> INVALID_ROW);
 end;
 
 procedure TDeclareList.OnDragDropList(Sender, Source: TObject; X, Y: Integer);
 var
    lRow: integer;
 begin
-   if (Source = sgList) and (FDragRow <> -1) then
+   if (Source = sgList) and (FDragRow <> INVALID_ROW) then
    begin
-      lRow := FindValidRowByPoint(X, Y);
-      if lRow <> -1 then
+      lRow := FindRow(X, Y);
+      if lRow <> INVALID_ROW then
          sgList.MoveRow(FDragRow, lRow);
    end;
-   FDragRow := -1;
+   FDragRow := INVALID_ROW;
 end;
 
 procedure TDeclareList.OnMouseDownList(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -574,8 +577,8 @@ begin
    edtName.SetFocus;
    if (Button = mbLeft) and (ssShift in Shift) then
    begin
-      lRow := FindValidRowByPoint(X, Y);
-      if lRow <> -1 then
+      lRow := FindRow(X, Y);
+      if lRow <> INVALID_ROW then
       begin
          FDragRow := lRow;
          sgList.BeginDrag(true);
@@ -731,7 +734,7 @@ begin
    begin
       sgList.RowCount := sgList.RowCount + 1;
       result := sgList.RowCount - 2;
-      if FExternalCol <> -1 then
+      if FExternalCol <> INVALID_COL then
       begin
          sgList.Objects[FExternalCol, result] := CreateCheckBox(FExternalCol, result);
          RefreshCheckBoxes;
@@ -749,7 +752,7 @@ var
 begin
    with sgList do
    begin
-      if FExternalCol <> -1 then
+      if FExternalCol <> INVALID_COL then
          Objects[FExternalCol, Row].Free;
       for i := Row to RowCount-2 do
          Rows[i].Assign(Rows[i+1]);
@@ -836,7 +839,7 @@ begin
    inherited;
    if btnAdd <> nil then
    begin
-      if FExternalCol <> -1 then
+      if FExternalCol <> INVALID_COL then
          RefreshCheckBoxes;
       btnAdd.Width := gbBox.Width div 3;
       btnImport.SetBounds(btnAdd.BoundsRect.Right+1, btnImport.Top, btnAdd.Width, btnImport.Height);
@@ -943,7 +946,7 @@ begin
    begin
       idx := sgList.RowCount - 1;
       sgList.Cells[NAME_COL, idx] := lName;
-      if FExternalCol <> -1 then
+      if FExternalCol <> INVALID_COL then
       begin
          lchkExtern := CreateCheckBox(FExternalCol, idx);
          lchkExtern.State := TInfra.DecodeCheckBoxState(ATag.GetAttribute(EXTERN_ATTR));
@@ -1048,7 +1051,7 @@ end;
 function TDeclareList.GetExternalState(ARow: integer): TCheckBoxState;
 begin
    result := cbUnchecked;
-   if (ARow > 0) and (ARow < sgList.RowCount-1) and (FExternalCol <> -1) and (sgList.Objects[FExternalCol, ARow] is TCheckBox) then
+   if (ARow > 0) and (ARow < sgList.RowCount-1) and (FExternalCol <> INVALID_COL) and (sgList.Objects[FExternalCol, ARow] is TCheckBox) then
       result := TCheckBox(sgList.Objects[FExternalCol, ARow]).State;
 end;
 
@@ -1135,7 +1138,7 @@ var
    winControl: TWinControl;
    obj: TObject;
 begin
-   if FExternalCol <> -1 then
+   if FExternalCol <> INVALID_COL then
    begin
       for i := 1 to sgList.RowCount-2 do
       begin
