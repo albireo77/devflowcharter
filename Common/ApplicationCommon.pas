@@ -1218,15 +1218,17 @@ end;
 class function TInfra.FindDuplicatedPage(APage: TTabSheet; const ACaption: TCaption): TTabSheet;
 var
    i: integer;
+   page: TTabSheet;
 begin
    result := nil;
    if APage <> nil then
    begin
       for i := 0 to APage.PageControl.PageCount-1 do
       begin
-         if SameCaption(APage.PageControl.Pages[i].Caption, ACaption) and (APage.PageControl.Pages[i] <> APage) then
+         page := APage.PageControl.Pages[i];
+         if (page <> APage) and SameCaption(page.Caption, ACaption) then
          begin
-            result := APage.PageControl.Pages[i];
+            result := page;
             break;
          end;
       end;
