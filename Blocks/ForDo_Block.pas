@@ -88,6 +88,8 @@ begin
 
    FShape := shpRoadSign;
 
+   FForLabel := i18Manager.GetString('CaptionFor');
+
    edtStart := TStatement.Create(Self);
    edtStart.Color := GSettings.GetShapeColor(FShape);
    edtStart.Font.Size := FStatement.Font.Size;
@@ -125,18 +127,6 @@ begin
    edtVar.DoubleBuffered := true;
    
    PopulateComboBoxes;
-   PutTextControls;
-
-   if GSettings.ParseFor then
-   begin
-      edtVar.Font.Color := NOK_COLOR;
-      edtVar.Hint := i18Manager.GetFormattedString('NoCVar', [sLineBreak]);
-   end
-   else
-   begin
-      edtVar.Font.Color := GSettings.FontColor;
-      edtVar.Hint := i18Manager.GetFormattedString('ExpOk', ['', sLineBreak]);
-   end;
 
    edtVar.BorderStyle := bsNone;
    edtVar.BevelInner := bvNone;
@@ -144,12 +134,15 @@ begin
    edtVar.OnClick := VarOnClick;
    edtVar.OnChange := VarOnChange;
 
+   edtStart.Change;
+   edtStop.Change;
+   edtVar.OnChange(edtVar);
+
    BottomPoint := Point(Width-11, 20);
    TopHook := Point(ABlockParms.br.X, 39);
    BottomHook := ABlockParms.bh;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
-   FForLabel := i18Manager.GetString('CaptionFor');
    FStatement.Free;
    FStatement := nil;
 end;
