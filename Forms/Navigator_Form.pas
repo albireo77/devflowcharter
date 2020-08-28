@@ -65,7 +65,7 @@ const
    EXTENT_Y = 1024;
 var
    lhdc: HDC;
-   selStart, selLength, xExt, yExt: integer;
+   xExt, yExt: integer;
    box: TScrollBoxEx;
    r: TRect;
 begin
