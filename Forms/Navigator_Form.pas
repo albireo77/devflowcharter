@@ -65,19 +65,12 @@ const
    EXTENT_Y = 1024;
 var
    lhdc: HDC;
-   edit: TCustomEdit;
    selStart, selLength, xExt, yExt: integer;
    box: TScrollBoxEx;
    r: TRect;
 begin
    if GProject <> nil then
    begin
-      edit := TInfra.GetActiveEdit;
-      if edit <> nil then
-      begin
-         selStart := edit.SelStart;
-         selLength := edit.SelLength;
-      end;
       lhdc := SaveDC(Canvas.Handle);
       try
          box := GProject.GetActivePage.Box;
@@ -97,11 +90,6 @@ begin
                           r.TopLeft]);
       finally
          RestoreDC(Canvas.Handle, lhdc);
-         if edit <> nil then
-         begin
-            edit.SelStart := selStart;
-            edit.SelLength := selLength;
-         end;
       end;
    end;
 end;

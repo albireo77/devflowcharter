@@ -41,6 +41,7 @@ type
          procedure SetDescOrder(AValue: boolean);
          procedure OnChangeCallBack(AStatement: TStatement);
          procedure PutTextControls; override;
+         function GetTextTop: integer;
          function FillExpression(const AExpression: string; ALangDef: TLangDefinition): string;
       public
          edtStart, edtStop: TStatement;
@@ -69,8 +70,8 @@ type
 implementation
 
 uses
-   Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Types, System.UITypes,
-   System.Math, ApplicationCommon, XMLProcessor, Main_Block, UserFunction, Return_Block;
+   Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Math,
+   ApplicationCommon, XMLProcessor, Main_Block, UserFunction, Return_Block;
 
 constructor TForDoBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
@@ -190,7 +191,7 @@ end;
 procedure TForDoBlock.OnChangeCallBack(AStatement: TStatement);
 begin
    AStatement.Width := Max(TInfra.GetAutoWidth(AStatement), 30);
-   Repaint;
+   PutTextControls;
    FInitParms.Width := edtStop.Left + edtStop.Width + 76;
    FInitParms.BottomPoint.X := FInitParms.Width - 11;
 end;
@@ -206,32 +207,49 @@ begin
    end;
 end;
 
+function TForDoBlock.GetTextTop: integer;
+begin
+   result := 16 + edtStart.Height div 2;
+end;
+
+procedure TForDoBlock.PutTextControls;
+var
+   t, r: integer;
+begin
+   t := GetTextTop;
+   r := DrawTextLabel(Branch.Hook.X-97, t, FForLabel, false, true, false).Right;
+   cbVar.SetBounds(r+4, 34-t, edtVar.Width+5, cbVar.Height);
+   edtVar.SetBounds(cbVar.Left+4, 38-t, edtVar.Width, edtVar.Height);
+   r := DrawTextLabel(edtVar.Left + edtVar.Width+3, t, GInfra.CurrentLang.ForDoVarString, false, true, false).Right;
+   edtStart.SetBounds(r+4, 38-t, edtStart.Width, edtStart.Height);
+   r := DrawTextLabel(edtStart.Left+edtStart.Width+3, t, IfThen(FDescOrder, '«', '»'), false, true, false).Right;
+   edtStop.SetBounds(r+4, 38-t, edtStop.Width, edtStop.Height);
+   Repaint;
+end;
+
 procedure TForDoBlock.Paint;
 var
-   bhx, br1, br2, t: integer;
+   bhx, br0, br1, br2, t, a, b: integer;
    lShapeColor: TColor;
-   r: TRect;
 begin
    inherited;
    if Expanded then
    begin
 
       bhx := Branch.Hook.X;
-      t := 16 + edtStart.Height div 2;
-      r := DrawTextLabel(bhx-97, t, FForLabel, false, true);
+      t := GetTextTop;
 
-      cbVar.SetBounds(r.Right+4, 34-t, edtVar.Width+5, cbVar.Height);
+      a := edtStart.Left - edtVar.Left - edtVar.Width;
+      b := edtStop.Left - edtStart.Left - edtStart.Width;
 
-      TInfra.MoveWin(edtVar, cbVar.Left+4, 38-t);
-
-      r := DrawTextLabel(edtVar.Left + edtVar.Width+3, t, GInfra.CurrentLang.ForDoVarString, false, true);
-      TInfra.MoveWin(edtStart, r.Right+4, 38-t);
+      cbVar.Left := bhx - 79;
+      edtVar.Left := cbVar.Left + 4;
+      br0 := edtVar.Left + edtVar.Width;
+      edtStart.Left := br0 + a;
       br1 := edtStart.Left + edtStart.Width;
-
-      r := DrawTextLabel(br1+3, t, IfThen(FDescOrder, '«', '»'), false, true);
-      TInfra.MoveWin(edtStop, r.Right+4, 38-t);
-
+      edtStop.Left := br1 + b;
       br2 := edtStop.Left + edtStop.Width;
+
       IPoint.X := br2 + 16;
       IPoint.Y := 35;
       DrawArrow(bhx, TopHook.Y, Branch.Hook);
@@ -256,7 +274,7 @@ begin
                       Point(br2-9, TopHook.Y),
                       Point(bhx-100, TopHook.Y),
                       Point(bhx-100, 0)]);
-      DrawTextLabel(edtVar.Left + edtVar.Width+3, t, GInfra.CurrentLang.ForDoVarString, false, true);
+      DrawTextLabel(br0+3, t, GInfra.CurrentLang.ForDoVarString, false, true);
       DrawTextLabel(br1+3, t, IfThen(FDescOrder, '«', '»'), false, true);
       DrawTextLabel(bhx-97, t, FForLabel, false, true);
       DrawBlockLabel(bhx-100, 40, GInfra.CurrentLang.LabelFor);
@@ -321,8 +339,7 @@ begin
             edtVar.Hint := i18Manager.GetFormattedString('NoCVar', [sLineBreak]);
       end;
    end;
-   edtStart.Change;
-   edtStop.Change;
+   PutTextControls;
 end;
 
 function TForDoBlock.FillCodedTemplate(const ALangId: string): string;
@@ -545,11 +562,6 @@ begin
    end;
    AInfo.FocusEdit := edit;
    result := inherited RetrieveFocus(AInfo);
-end;
-
-procedure TForDoBlock.PutTextControls;
-begin
-   VarOnChange(edtVar);
 end;
 
 procedure TForDoBlock.UpdateEditor(AEdit: TCustomEdit);

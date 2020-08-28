@@ -89,7 +89,7 @@ type
          procedure WMWindowPosChanged(var Msg: TWMWindowPosChanged); message WM_WINDOWPOSCHANGED;
          procedure Paint; override;
          procedure DrawI;
-         function DrawTextLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false): TRect;
+         function DrawTextLabel(x, y: integer; const AText: string; ARightJust: boolean = false; ADownJust: boolean = false; APrint: boolean = true): TRect;
          procedure DrawBlockLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false);
          function GetId: integer;
          function PerformEditorUpdate: boolean;
@@ -1426,10 +1426,11 @@ begin
    end;
 end;
 
-function TBlock.DrawTextLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false): TRect;
+function TBlock.DrawTextLabel(x, y: integer; const AText: string; ARightJust: boolean = false; ADownJust: boolean = false; APrint: boolean = true): TRect;
 var
    fontStyles: TFontStyles;
    fontColor: TColor;
+   brushStyle: TBrushStyle;
    te: TSize;
 begin
    te := TSize.Create(0, 0);
@@ -1441,13 +1442,16 @@ begin
       Canvas.Font.Color := GSettings.PenColor;
       if fsBold in fontStyles then
          Canvas.Font.Style := Canvas.Font.Style + [fsBold];
+      brushStyle := Canvas.Brush.Style;
       Canvas.Brush.Style := bsClear;
       te := Canvas.TextExtent(AText);
-      if rightJust then
+      if ARightJust then
          x := Max(x-te.Width, 0);
-      if downJust then
+      if ADownJust then
          y := Max(y-te.Height, 0);
-      Canvas.TextOut(x, y, AText);
+      if APrint then
+         Canvas.TextOut(x, y, AText);
+      Canvas.Brush.Style := brushStyle;
       Canvas.Font.Style := fontStyles;
       Canvas.Font.Color := fontColor;
    end;
