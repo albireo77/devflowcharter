@@ -141,8 +141,8 @@ begin
    BottomPoint := Point(Width-11, 20);
    TopHook := Point(ABlockParms.br.X, 39);
    BottomHook := ABlockParms.bh;
-   Constraints.MinWidth := FInitParms.Width;
-   Constraints.MinHeight := FInitParms.Height;
+   Constraints.MinWidth := 240;
+   Constraints.MinHeight := 91;
    FStatement.Free;
    FStatement := nil;
 end;

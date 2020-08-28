@@ -1,3 +1,6 @@
+8.7 [28.08.2020]
+- fix regression in 8.6 (for..do block not drawn correctly in some situations)
+
 8.6 [28.08.2020]
 - fix blinking for..do blocks when using Navigator
 
