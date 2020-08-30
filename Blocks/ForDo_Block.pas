@@ -39,7 +39,7 @@ type
          procedure VarListOnCloseUp(Sender: TObject);
          procedure SetWidth(AMinX: integer); override;
          procedure SetDescOrder(AValue: boolean);
-         procedure OnChangeCallBack(AStatement: TStatement);
+         procedure OnChangeExtend(AStatement: TStatement);
          procedure PutTextControls; override;
          function GetTextTop: integer;
          function FillExpression(const AExpression: string; ALangDef: TLangDefinition): string;
@@ -94,13 +94,13 @@ begin
    edtStart.Color := GSettings.GetShapeColor(FShape);
    edtStart.Font.Size := FStatement.Font.Size;
    edtStart.DoubleBuffered := true;
-   edtStart.OnChangeCallBack := OnChangeCallBack;
+   edtStart.OnChangeExtend := OnChangeExtend;
 
    edtStop := TStatement.Create(Self);
    edtStop.Color := edtStart.Color;
    edtStop.Font.Size := FStatement.Font.Size;
    edtStop.DoubleBuffered := true;
-   edtStop.OnChangeCallBack := OnChangeCallBack;
+   edtStop.OnChangeExtend := OnChangeExtend;
 
    cbVar := TComboBox.Create(Self);
    cbVar.Parent := Self;
@@ -134,8 +134,8 @@ begin
    edtVar.OnClick := VarOnClick;
    edtVar.OnChange := VarOnChange;
 
-   edtStart.Change;
-   edtStop.Change;
+   edtStart.OnChangeExtend(edtStart);
+   edtStop.OnChangeExtend(edtStop);
    edtVar.OnChange(edtVar);
 
    BottomPoint := Point(Width-11, 20);
@@ -181,7 +181,7 @@ begin
    Create(ABranch, TBlockParms.New(blFor, 0, 0, 240, 91, 120, 69, 120));
 end;
 
-procedure TForDoBlock.OnChangeCallBack(AStatement: TStatement);
+procedure TForDoBlock.OnChangeExtend(AStatement: TStatement);
 begin
    AStatement.Width := Max(TInfra.GetAutoWidth(AStatement), 30);
    PutTextControls;

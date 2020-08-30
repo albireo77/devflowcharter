@@ -29,7 +29,7 @@ type
 
   TStatement = class;
 
-  TOnChangeCallBack = procedure(AStatement: TStatement) of object;
+  TOnChangeExtend = procedure(AStatement: TStatement) of object;
 
   TStatement = class(TCustomEdit, IIdentifiable, IFocusable)
   private
@@ -46,7 +46,7 @@ type
     procedure CreateHandle; override;
   public
     { Public declarations }
-    OnChangeCallBack: TOnChangeCallBack;
+    OnChangeExtend: TOnChangeExtend;
     property ParserMode: TYYMode read FParserMode default yymUndefined;
     property Id: integer read GetId;
     procedure Change; override;
@@ -153,7 +153,7 @@ begin
    AutoSelect := False;
    DoubleBuffered := true;
    FId := GProject.Register(Self);
-   OnChangeCallBack := nil;
+   OnChangeExtend := nil;
    Font.Name := GSettings.FlowchartFontName;
    ControlStyle := ControlStyle + [csOpaque];
    if CanFocus then
@@ -263,8 +263,8 @@ begin
          Font.Color := NOK_COLOR;
       end;
    end;
-   if Assigned(OnChangeCallBack) then
-      OnChangeCallBack(Self);
+   if Assigned(OnChangeExtend) then
+      OnChangeExtend(Self);
    NavigatorForm.DoInvalidate;
 end;
 

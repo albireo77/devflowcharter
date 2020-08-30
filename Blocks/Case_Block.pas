@@ -95,7 +95,7 @@ begin
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    FStatement.Alignment := taCenter;
-   FStatement.OnChangeCallBack := OnStatementChange;
+   FStatement.OnChangeExtend := OnStatementChange;
 
 end;
 
