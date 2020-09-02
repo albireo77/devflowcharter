@@ -73,16 +73,22 @@ uses
    Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Math,
    ApplicationCommon, XMLProcessor, Main_Block, UserFunction, Return_Block;
 
+const
+   DEFAULT_WIDTH = 240;
+   DEFAULT_HEIGHT = 91;
+   DEFAULT_BOTTOM_HOOK = DEFAULT_WIDTH div 2;
+   RIGHT_MARGIN = 11;
+
 constructor TForDoBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
    inherited Create(ABranch, ABlockParms);
 
-   FInitParms.Width := 240;
-   FInitParms.Height := 91;
-   FInitParms.BottomHook := 120;
-   FInitParms.BranchPoint.X := 120;
-   FInitParms.BottomPoint.X := 229;
+   FInitParms.Width := DEFAULT_WIDTH;
+   FInitParms.Height := DEFAULT_HEIGHT;
+   FInitParms.BottomHook := DEFAULT_BOTTOM_HOOK;
+   FInitParms.BranchPoint.X := DEFAULT_BOTTOM_HOOK;
+   FInitParms.BottomPoint.X := DEFAULT_WIDTH - RIGHT_MARGIN;
    FInitParms.P2X := 0;
    FInitParms.HeightAffix := 22;
 
@@ -138,11 +144,11 @@ begin
    edtStop.OnChangeExtend(edtStop);
    edtVar.OnChange(edtVar);
 
-   BottomPoint := Point(Width-11, 20);
+   BottomPoint := Point(Width-RIGHT_MARGIN, 20);
    TopHook := Point(ABlockParms.br.X, 39);
    BottomHook := ABlockParms.bh;
-   Constraints.MinWidth := 240;
-   Constraints.MinHeight := 91;
+   Constraints.MinWidth := DEFAULT_WIDTH;
+   Constraints.MinHeight := DEFAULT_HEIGHT;
    FStatement.Free;
    FStatement := nil;
 end;
@@ -178,7 +184,7 @@ end;
 
 constructor TForDoBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(blFor, 0, 0, 240, 91, 120, 69, 120));
+   Create(ABranch, TBlockParms.New(blFor, 0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_BOTTOM_HOOK, 69, DEFAULT_BOTTOM_HOOK));
 end;
 
 procedure TForDoBlock.OnChangeExtend(AStatement: TStatement);
@@ -186,7 +192,7 @@ begin
    AStatement.Width := Max(TInfra.GetAutoWidth(AStatement), 30);
    PutTextControls;
    FInitParms.Width := edtStop.Left + edtStop.Width + 76;
-   FInitParms.BottomPoint.X := FInitParms.Width - 11;
+   FInitParms.BottomPoint.X := FInitParms.Width - RIGHT_MARGIN;
 end;
 
 procedure TForDoBlock.SetDescOrder(AValue: boolean);
@@ -246,7 +252,7 @@ begin
       IPoint.X := br2 + 16;
       IPoint.Y := 35;
       DrawArrow(bhx, TopHook.Y, Branch.Hook);
-      DrawArrow(Width-11, 19, Width-11, Height-1);
+      DrawArrow(Width-11, 19, Width-RIGHT_MARGIN, Height-1);
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
       begin
          DrawArrow(5, Height-21, 5, 19, arrMiddle);
@@ -256,7 +262,7 @@ begin
                           Point(bhx-100, 19)]);
       end;
       Canvas.MoveTo(br2+30, 19);
-      Canvas.LineTo(Width-11, 19);
+      Canvas.LineTo(Width-RIGHT_MARGIN, 19);
       Canvas.Brush.Style := bsClear;
       lShapeColor := GSettings.GetShapeColor(FShape);
       if lShapeColor <> GSettings.DesktopColor then
@@ -446,7 +452,7 @@ begin
       Width := FInitParms.Width
    else
       Width := AMinX + 30;
-   BottomPoint.X := Width - 11;
+   BottomPoint.X := Width - RIGHT_MARGIN;
 end;
 
 procedure TForDoBlock.ExpandFold(AResize: boolean);
