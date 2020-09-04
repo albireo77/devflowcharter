@@ -1191,7 +1191,7 @@ var
 begin
    if (GProject <> nil) and (htOnItem in pgcPages.GetHitTestInfoAt(MousePos.X, MousePos.Y)) then
    begin
-      idx := TInfra.GetPageIndex(pgcPages, MousePos.X, MousePos.Y);
+      idx := pgcPages.IndexOfTabAt(MousePos.X, MousePos.Y);
       if idx <> -1 then
       begin
          pmTabs.PopupComponent := pgcPages.Pages[idx];
@@ -1237,7 +1237,7 @@ var
 begin
    if Button = mbLeft then
    begin
-      idx := TInfra.GetPageIndex(pgcPages, X, Y);
+      idx := pgcPages.IndexOfTabAt(X, Y);
       if idx <> -1 then
          pgcPages.Pages[idx].BeginDrag(false, 3);
    end;
@@ -1254,7 +1254,7 @@ procedure TMainForm.pgcPagesDragDrop(Sender, Source: TObject; X, Y: Integer);
 var
    idx: integer;
 begin
-   idx := TInfra.GetPageIndex(pgcPages, X, Y);
+   idx := pgcPages.IndexOfTabAt(X, Y);
    if idx <> -1 then
    begin
       pgcPages.Pages[idx].PageIndex := TTabSheet(Source).PageIndex;

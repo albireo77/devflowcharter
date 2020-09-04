@@ -52,6 +52,7 @@ type
     procedure ExportTabsToXMLTag(ATag: IXMLElement);
     function IsEnabled: boolean; virtual; abstract;
     function ImportTabsFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TError; virtual; abstract;
+    function IndexOfTabAt(X, Y: integer): integer;
     procedure FormDeactivate(Sender: TObject); virtual;
     procedure RefreshTabs; virtual;
     procedure ExportSettingsToXMLTag(ATag: IXMLElement); override;
@@ -122,12 +123,12 @@ var
    lRect: TRect;
    tab: TTabComponent;
 begin
-   TabIndex := TInfra.GetPageIndex(TPageControl(Control), Rect.Left+5, Rect.Top+5);
+   TabIndex := IndexOfTabAt(Rect.Left+5, Rect.Top+5);
    if TabIndex <> -1 then
    begin
       lRect := Rect;
       lRect.Right := lRect.Right-3;
-      tab := TTabComponent(TPageControl(Control).Pages[TabIndex]);
+      tab := TTabComponent(pgcTabs.Pages[TabIndex]);
       tab.RefreshTab;
       Control.Canvas.Font.Color := tab.Font.Color;
       Control.Canvas.TextRect(lRect, lRect.Left+5, lRect.Top+3, tab.Caption);
@@ -232,7 +233,7 @@ procedure TPageControlForm.pgcTabsDragDrop(Sender, Source: TObject; X, Y: Intege
 var
    idx: integer;
 begin
-   idx := TInfra.GetPageIndex(pgcTabs, X, Y);
+   idx := IndexOfTabAt(X, Y);
    if idx <> -1 then
    begin
       pgcTabs.Pages[idx].PageIndex := TTabSheet(Source).PageIndex;
@@ -256,7 +257,7 @@ var
 begin
    if Button = mbLeft then
    begin
-      idx := TInfra.GetPageIndex(pgcTabs, X, Y);
+      idx := IndexOfTabAt(X, Y);
       if idx <> -1 then
          pgcTabs.Pages[idx].BeginDrag(false, 3);
    end;
@@ -272,13 +273,29 @@ procedure TPageControlForm.pgcTabsMouseMove(Sender: TObject; Shift: TShiftState;
 var
    idx: integer;
 begin
-   idx := TInfra.GetPageIndex(pgcTabs, X, Y);
+   idx := IndexOfTabAt(X, Y);
    if (idx <> -1) and (idx <> FLastHintTabIndex) then
    begin
       Application.CancelHint;
       pgcTabs.Hint := pgcTabs.Pages[idx].Caption;
       FLastHintTabIndex := idx;
    end;
+end;
+
+// function to get correct page index when some pages are not visible
+function TPageControlForm.IndexOfTabAt(X, Y: integer): integer;
+var
+   i, c: integer;
+begin
+  c := pgcTabs.IndexOfTabAt(X, Y);
+  i := 0;
+  while i <= c do
+  begin
+    if not pgcTabs.Pages[i].TabVisible then
+      Inc(c);
+    Inc(i);
+  end;
+  result := c;
 end;
 
 procedure TPageControlForm.ExportSettingsToXMLTag(ATag: IXMLElement);

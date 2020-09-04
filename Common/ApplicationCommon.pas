@@ -94,7 +94,6 @@ type
          class function GetCaretPos(AEdit: TCustomEdit): TBufferCoord;
          class function ExtractIndentString(const AText: string): string;
          class function GetFunctionHeader(ABlock: TBlock): TUserFunctionHeader;
-         class function GetPageIndex(APageControl: TPageControl; X, Y: integer): integer;
          class function FindDuplicatedPage(APage: TTabSheet; const ACaption: TCaption): TTabSheet;
          class function GetComboMaxWidth(ACombo: TComboBox): integer;
          class function ExportToFile(AExport: IExportable): TError;
@@ -1197,22 +1196,6 @@ begin
    if flag then THackCustomEdit(AControl).BorderStyle := bsSingle;
    THackControl(AControl).Font.Size := ASize;
    if flag then THackCustomEdit(AControl).BorderStyle := bsNone;
-end;
-
-// function to get correct page index when some pages are not visible
-class function TInfra.GetPageIndex(APageControl: TPageControl; X, Y: integer): integer;
-var
-   i, c: integer;
-begin
-  c := APageControl.IndexOfTabAt(X, Y);
-  i := 0;
-  while i <= c do
-  begin
-    if not APageControl.Pages[i].TabVisible then
-      Inc(c);
-    Inc(i);
-  end;
-  result := c;
 end;
 
 class function TInfra.FindDuplicatedPage(APage: TTabSheet; const ACaption: TCaption): TTabSheet;
