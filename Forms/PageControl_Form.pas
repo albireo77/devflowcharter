@@ -71,7 +71,7 @@ type
     { Public declarations }
     function GetVisiblePageCount: integer;
   private
-    FLastHintTabIndex: integer;
+    FLastHintPageIndex: integer;
   end;
 
 implementation
@@ -99,7 +99,7 @@ end;
 procedure TPageControlForm.ResetForm;
 begin
    UpdateCodeEditor := true;
-   FLastHintTabIndex := -1;
+   FLastHintPageIndex := -1;
    inherited ResetForm;
 end;
 
@@ -266,7 +266,7 @@ end;
 procedure TPageControlForm.pgcTabsMouseLeave(Sender: TObject);
 begin
    pgcTabs.Hint := '';
-   FLastHintTabIndex := -1;
+   FLastHintPageIndex := -1;
 end;
 
 procedure TPageControlForm.pgcTabsMouseMove(Sender: TObject; Shift: TShiftState; X, Y: integer);
@@ -274,11 +274,11 @@ var
    idx: integer;
 begin
    idx := TInfra.PageIndexFromTabIndex(pgcTabs, pgcTabs.IndexOfTabAt(X, Y));
-   if (idx <> -1) and (idx <> FLastHintTabIndex) then
+   if (idx <> -1) and (idx <> FLastHintPageIndex) then
    begin
       Application.CancelHint;
       pgcTabs.Hint := pgcTabs.Pages[idx].Caption;
-      FLastHintTabIndex := idx;
+      FLastHintPageIndex := idx;
    end;
 end;
 
