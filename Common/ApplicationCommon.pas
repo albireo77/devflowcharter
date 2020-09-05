@@ -110,6 +110,7 @@ type
          class function GetParserErrMsg: string;
          class function FindLastRow(AObject: TObject; AStart: integer; ALines: TStrings): integer;
          class function DecodeCheckBoxState(const AState: string): TCheckBoxState;
+         class function PageIndexFromTabIndex(APageControl: TPageControl; ATabIndex: integer): integer;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetNativeFunction(const AName: string): PNativeFunction;
          function GetLangDefinition(const AName: string): TLangDefinition;
@@ -1385,6 +1386,18 @@ end;
 class procedure TInfra.MoveWinTopZ(AWinControl: TWinControl; x, y: integer);
 begin
    SetWindowPos(AWinControl.Handle, HWND_TOP, x, y, 0, 0, SWP_NOSIZE);
+end;
+
+class function TInfra.PageIndexFromTabIndex(APageControl: TPageControl; ATabIndex: integer): integer;
+var
+   i: Integer;
+begin
+   result := ATabIndex;
+   for i := 0 to ATabIndex do
+   begin
+      if not APageControl.Pages[i].TabVisible then
+         Inc(result);
+   end;
 end;
 
 function TInfra.ValidateConstId(const AId: string): integer;
