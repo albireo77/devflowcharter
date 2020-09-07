@@ -668,7 +668,7 @@ begin
             begin
                header := TUserFunctionHeader.Create(TInfra.GetFunctionsForm);
                header.ImportFromXMLTag(tag1);
-               header.RefreshTab;
+               header.RefreshFontColor;
             end;
          end
          else if AImportMode <> impAll then
@@ -749,7 +749,7 @@ begin
          end;
          dataType := TUserDataType.Create(TInfra.GetDataTypesForm);
          dataType.ImportFromXMLTag(tag);
-         dataType.RefreshTab;
+         dataType.RefreshFontColor;
          tag := TXMLProcessor.FindNextTag(tag);
       end;
       if dataType <> nil then
@@ -765,7 +765,7 @@ begin
    for dataType in GetUserDataTypes do
    begin
       dataType.RefreshSizeEdits;
-      dataType.RefreshTab;
+      dataType.RefreshFontColor;
    end;
 
 end;

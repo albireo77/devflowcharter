@@ -92,7 +92,7 @@ type
          function Remove(ANode: TTreeNodeWithFriend = nil): boolean;
          function CanRemove: boolean;
          function IsBoldDesc: boolean;
-         procedure RefreshTab;
+         procedure RefreshFontColor;
          procedure UpdateCodeEditor;
          function GetCompareValue(ACompareType: integer): integer;
          function GetExternModifier: string; virtual; abstract;
@@ -335,14 +335,12 @@ begin
    end;
 end;
 
-procedure TTabComponent.RefreshTab;
-var
-   lColor: TColor;
+procedure TTabComponent.RefreshFontColor;
 begin
-   lColor := edtName.Font.Color;
    if HasInvalidElement then
-      lColor := NOK_COLOR;
-   Font.Color := lColor;
+      Font.Color := NOK_COLOR
+   else
+      Font.Color := edtName.Font.Color;
 end;
 
 function TTabComponent.GetElements<T>(AComparer: IComparer<T> = nil): IEnumerable<T>;

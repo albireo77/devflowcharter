@@ -127,7 +127,7 @@ begin
    begin
       lRect := Rect;
       lRect.Right := lRect.Right-3;
-      TTabComponent(page).RefreshTab;
+      TTabComponent(page).RefreshFontColor;
       Control.Canvas.Font.Color := page.Font.Color;
       Control.Canvas.TextRect(lRect, lRect.Left+5, lRect.Top+3, page.Caption);
    end;
