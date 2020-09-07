@@ -1187,15 +1187,15 @@ end;
 procedure TMainForm.pgcPagesContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
 var
    p: TPoint;
-   idx: integer;
+   page: TTabSheet;
 begin
    if (GProject <> nil) and (htOnItem in pgcPages.GetHitTestInfoAt(MousePos.X, MousePos.Y)) then
    begin
-      idx := TInfra.PageIndexFromTabIndex(pgcPages, pgcPages.IndexOfTabAt(MousePos.X, MousePos.Y));
-      if idx <> -1 then
+      page := TInfra.GetPageFromXY(pgcPages, MousePos.X, MousePos.Y);
+      if page <> nil then
       begin
-         pmTabs.PopupComponent := pgcPages.Pages[idx];
-         pgcPages.ActivePageIndex := idx;
+         pmTabs.PopupComponent := page;
+         pgcPages.ActivePageIndex := page.PageIndex;
       end;
       p := pgcPages.ClientToScreen(MousePos);
       pmTabs.Popup(p.X, p.Y);
@@ -1233,13 +1233,13 @@ end;
 procedure TMainForm.pgcPagesMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-   idx: integer;
+   page: TTabSheet;
 begin
    if Button = mbLeft then
    begin
-      idx := TInfra.PageIndexFromTabIndex(pgcPages, pgcPages.IndexOfTabAt(X, Y));
-      if idx <> -1 then
-         pgcPages.Pages[idx].BeginDrag(false, 3);
+      page := TInfra.GetPageFromXY(pgcPages, X, Y);
+      if page <> nil then
+         page.BeginDrag(false, 3);
    end;
 end;
 
@@ -1253,11 +1253,13 @@ end;
 procedure TMainForm.pgcPagesDragDrop(Sender, Source: TObject; X, Y: Integer);
 var
    idx: integer;
+   page: TTabSheet;
 begin
-   idx := TInfra.PageIndexFromTabIndex(pgcPages, pgcPages.IndexOfTabAt(X, Y));
-   if idx <> -1 then
+   page := TInfra.GetPageFromXY(pgcPages, X, Y);
+   if page <> nil then
    begin
-      pgcPages.Pages[idx].PageIndex := TTabSheet(Source).PageIndex;
+      idx := page.PageIndex;
+      page.PageIndex := TTabSheet(Source).PageIndex;
       TTabSheet(Source).PageIndex := idx;
       GProject.SetChanged;
    end;

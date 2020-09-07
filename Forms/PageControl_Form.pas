@@ -120,18 +120,16 @@ procedure TPageControlForm.pgcTabsDrawTab(Control: TCustomTabControl;
   TabIndex: Integer; const Rect: TRect; Active: Boolean);
 var
    lRect: TRect;
-   tab: TTabComponent;
-   pageIndex: integer;
+   page: TTabSheet;
 begin
-   pageIndex := TInfra.PageIndexFromTabIndex(pgcTabs, TabIndex);
-   if pageIndex <> -1 then
+   page := TInfra.GetPageFromTabIndex(pgcTabs, TabIndex);
+   if page <> nil then
    begin
       lRect := Rect;
       lRect.Right := lRect.Right-3;
-      tab := TTabComponent(pgcTabs.Pages[pageIndex]);
-      tab.RefreshTab;
-      Control.Canvas.Font.Color := tab.Font.Color;
-      Control.Canvas.TextRect(lRect, lRect.Left+5, lRect.Top+3, tab.Caption);
+      TTabComponent(page).RefreshTab;
+      Control.Canvas.Font.Color := page.Font.Color;
+      Control.Canvas.TextRect(lRect, lRect.Left+5, lRect.Top+3, page.Caption);
    end;
 end;
 
@@ -231,12 +229,14 @@ end;
 
 procedure TPageControlForm.pgcTabsDragDrop(Sender, Source: TObject; X, Y: Integer);
 var
+   page: TTabSheet;
    idx: integer;
 begin
-   idx := TInfra.PageIndexFromTabIndex(pgcTabs, pgcTabs.IndexOfTabAt(X, Y));
-   if idx <> -1 then
+   page := TInfra.GetPageFromXY(pgcTabs, X, Y);
+   if page <> nil then
    begin
-      pgcTabs.Pages[idx].PageIndex := TTabSheet(Source).PageIndex;
+      idx := page.PageIndex;
+      page.PageIndex := TTabSheet(Source).PageIndex;
       TTabSheet(Source).PageIndex := idx;
       RefreshTabs;
       TInfra.UpdateCodeEditor;
@@ -253,13 +253,13 @@ end;
 procedure TPageControlForm.pgcTabsMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-   idx: integer;
+   page: TTabSheet;
 begin
    if Button = mbLeft then
    begin
-      idx := TInfra.PageIndexFromTabIndex(pgcTabs, pgcTabs.IndexOfTabAt(X, Y));
-      if idx <> -1 then
-         pgcTabs.Pages[idx].BeginDrag(false, 3);
+      page := TInfra.GetPageFromXY(pgcTabs, X, Y);
+      if page <> nil then
+         page.BeginDrag(false, 3);
    end;
 end;
 
@@ -271,14 +271,14 @@ end;
 
 procedure TPageControlForm.pgcTabsMouseMove(Sender: TObject; Shift: TShiftState; X, Y: integer);
 var
-   idx: integer;
+   page: TTabSheet;
 begin
-   idx := TInfra.PageIndexFromTabIndex(pgcTabs, pgcTabs.IndexOfTabAt(X, Y));
-   if (idx <> -1) and (idx <> FLastHintPageIndex) then
+   page := TInfra.GetPageFromXY(pgcTabs, X, Y);
+   if (page <> nil) and (page.PageIndex <> FLastHintPageIndex) then
    begin
       Application.CancelHint;
-      pgcTabs.Hint := pgcTabs.Pages[idx].Caption;
-      FLastHintPageIndex := idx;
+      pgcTabs.Hint := page.Caption;
+      FLastHintPageIndex := page.PageIndex;
    end;
 end;
 

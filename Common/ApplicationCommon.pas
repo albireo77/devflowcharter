@@ -110,7 +110,8 @@ type
          class function GetParserErrMsg: string;
          class function FindLastRow(AObject: TObject; AStart: integer; ALines: TStrings): integer;
          class function DecodeCheckBoxState(const AState: string): TCheckBoxState;
-         class function PageIndexFromTabIndex(APageControl: TPageControl; ATabIndex: integer): integer;
+         class function GetPageFromXY(APageControl: TPageControl; x, y: integer): TTabSheet;
+         class function GetPageFromTabIndex(APageControl: TPageControl; ATabIndex: integer): TTabSheet;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetNativeFunction(const AName: string): PNativeFunction;
          function GetLangDefinition(const AName: string): TLangDefinition;
@@ -1388,16 +1389,25 @@ begin
    SetWindowPos(AWinControl.Handle, HWND_TOP, x, y, 0, 0, SWP_NOSIZE);
 end;
 
-class function TInfra.PageIndexFromTabIndex(APageControl: TPageControl; ATabIndex: integer): integer;
-var
-   i: Integer;
+class function TInfra.GetPageFromXY(APageControl: TPageControl; x, y: integer): TTabSheet;
+
 begin
-   result := ATabIndex;
+   result := GetPageFromTabIndex(APageControl, APageControl.IndexOfTabAt(x, y));
+end;
+
+class function TInfra.GetPageFromTabIndex(APageControl: TPageControl; ATabIndex: integer): TTabSheet;
+var
+   i, idx: Integer;
+begin
+   result := nil;
+   idx := ATabIndex;
    for i := 0 to ATabIndex do
    begin
       if not APageControl.Pages[i].TabVisible then
-         Inc(result);
+         Inc(idx);
    end;
+   if idx <> -1 then
+      result := APageControl.Pages[idx];
 end;
 
 function TInfra.ValidateConstId(const AId: string): integer;
