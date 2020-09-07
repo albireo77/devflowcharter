@@ -1390,14 +1390,13 @@ begin
 end;
 
 class function TInfra.GetPageFromXY(APageControl: TPageControl; x, y: integer): TTabSheet;
-
 begin
    result := GetPageFromTabIndex(APageControl, APageControl.IndexOfTabAt(x, y));
 end;
 
 class function TInfra.GetPageFromTabIndex(APageControl: TPageControl; ATabIndex: integer): TTabSheet;
 var
-   i, idx: Integer;
+   i, idx: integer;
 begin
    result := nil;
    idx := ATabIndex;
