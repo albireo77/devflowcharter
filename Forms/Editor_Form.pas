@@ -1144,13 +1144,14 @@ begin
 end;
 
 procedure TEditorForm.SaveToFile(const APath: string);
-var
-   lines: TStrings;
 begin
 {$IFDEF USE_CODEFOLDING}
-   lines := memCodeEditor.GetUncollapsedStrings;
-   lines.SaveToFile(APath, GInfra.CurrentLang.GetFileEncoding);
-   lines.Free;
+   with memCodeEditor.GetUncollapsedStrings do
+   try
+      SaveToFile(APath, GInfra.CurrentLang.GetFileEncoding);
+   finally
+      Free;
+   end;
 {$ELSE}
    memCodeEditor.Lines.SaveToFile(APath, GInfra.CurrentLang.GetFileEncoding);
 {$ENDIF}
@@ -1160,9 +1161,6 @@ function TEditorForm.SelectCodeRange(AObject: TObject; ADoSelect: boolean = true
 var
    i: integer;
    lines: TStrings;
-{$IFDEF USE_CODEFOLDING}
-   foldRange: TSynEditFoldRange;
-{$ENDIF}
 begin
    result := TCodeRange.New;
    lines := GetAllLines;
@@ -1214,7 +1212,7 @@ begin
                begin
                   if result.Lines.Objects[i] = AObject then
                   begin
-                     foldRange := CollapsableFoldRangeForLine(i+1);
+                     var foldRange := CollapsableFoldRangeForLine(i+1);
                      if (foldRange <> nil) and foldRange.Collapsed then
                      begin
                         result.FoldRange := foldRange;
