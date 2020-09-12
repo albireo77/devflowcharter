@@ -1145,16 +1145,12 @@ end;
 
 procedure TEditorForm.SaveToFile(const APath: string);
 begin
-{$IFDEF USE_CODEFOLDING}
-   with memCodeEditor.GetUncollapsedStrings do
+   with GetAllLines do
    try
       SaveToFile(APath, GInfra.CurrentLang.GetFileEncoding);
    finally
       Free;
    end;
-{$ELSE}
-   memCodeEditor.Lines.SaveToFile(APath, GInfra.CurrentLang.GetFileEncoding);
-{$ENDIF}
 end;
 
 function TEditorForm.SelectCodeRange(AObject: TObject; ADoSelect: boolean = true): TCodeRange;
