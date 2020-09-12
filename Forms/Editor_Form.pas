@@ -781,25 +781,21 @@ begin
    SetSaveDialog(SaveDialog2);
    if SaveDialog2.Execute then
    begin
-      if (SaveDialog2.FilterIndex > 1) and Assigned(memCodeEditor.Highlighter) then
+      synExport := nil;
+      case SaveDialog2.FilterIndex of
+         2: synExport := SynExporterRTF1;
+         3: synExport := SynExporterHTML1;
+      end;
+      if (synExport <> nil) and Assigned(memCodeEditor.Highlighter) then
       begin
-         case SaveDialog2.FilterIndex of
-            2: synExport := SynExporterRTF1;
-            3: synExport := SynExporterHTML1;
-         else
-            synExport := nil;
-         end;
-         if synExport <> nil then
-         begin
-            synExport.Highlighter := memCodeEditor.Highlighter;
-            lines := GetAllLines;
-            try
-               synExport.ExportAll(lines);
-               synExport.SaveToFile(SaveDialog2.FileName);
-            finally
-               synExport.Highlighter := nil;
-               lines.Free;
-            end;
+         synExport.Highlighter := memCodeEditor.Highlighter;
+         lines := GetAllLines;
+         try
+            synExport.ExportAll(lines);
+            synExport.SaveToFile(SaveDialog2.FileName);
+         finally
+            synExport.Highlighter := nil;
+            lines.Free;
          end;
       end
       else
