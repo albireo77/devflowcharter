@@ -50,10 +50,11 @@ type
          destructor Destroy; override;
          function GetString(const AKey: string): string;
          function LoadDefaultLabels: integer;
-         function GetFormattedString(const AKey: string; Args: array of const): string;
+         function GetFormattedString(const AKey: string; const Args: array of const): string;
          function LoadStaticLabels(const AFileName: string): integer;
          function LoadDynamicLabels(const AFileName: string; const AClearRepository: boolean = false): integer;
          function LoadAllLabels(const AFilename: string): integer;
+         function GetJoinedString(const AJoiner: string; const AKeys: array of string): string;
    end;
 
 implementation
@@ -261,9 +262,22 @@ begin
    result := result + LoadDynamicLabels(AFilename);
 end;
 
-function Ti18Manager.GetFormattedString(const AKey: string; Args: array of const): string;
+function Ti18Manager.GetFormattedString(const AKey: string; const Args: array of const): string;
 begin
    result := Format(GetString(AKey), Args);
+end;
+
+function Ti18Manager.GetJoinedString(const AJoiner: string; const AKeys: array of string): string;
+var
+   i: integer;
+begin
+   result := '';
+   for i := 0 to High(AKeys) do
+   begin
+      if i <> 0 then
+         result := result + AJoiner;
+      result := result + GetString(AKeys[i]);
+   end;
 end;
 
 end.

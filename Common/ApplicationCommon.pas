@@ -25,10 +25,11 @@ interface
 
 uses
    WinApi.Windows, Vcl.Forms, Vcl.StdCtrls, Vcl.Grids, Vcl.Controls, Vcl.Graphics,
-   System.SysUtils, System.Classes, System.StrUtils, Vcl.ComCtrls, LocalizationManager,
-   Project, Settings, LangDefinition, CommonTypes, Base_Form, CommonInterfaces,
-   Functions_Form, DataTypes_Form, Declarations_Form, Main_Form, Base_Block, SynEditTypes,
-   Settings_Form, Editor_Form, Explorer_Form, UserFunction, BlockTabSheet, About_Form, YaccLib;
+   System.SysUtils, System.Classes, System.StrUtils,
+   Vcl.ComCtrls, LocalizationManager, Project, Settings, LangDefinition, CommonTypes,
+   Base_Form, CommonInterfaces, Functions_Form, DataTypes_Form, Declarations_Form,
+   Main_Form, Base_Block, SynEditTypes, Settings_Form, Editor_Form, Explorer_Form,
+   UserFunction, BlockTabSheet, About_Form, YaccLib;
 
 type
 
@@ -112,6 +113,7 @@ type
          class function DecodeCheckBoxState(const AState: string): TCheckBoxState;
          class function GetPageFromXY(APageControl: TPageControl; x, y: integer): TTabSheet;
          class function GetPageFromTabIndex(APageControl: TPageControl; ATabIndex: integer): TTabSheet;
+         class function IndexOf(const AArray: array of string; const AValue: string): integer;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetNativeFunction(const AName: string): PNativeFunction;
          function GetLangDefinition(const AName: string): TLangDefinition;
@@ -232,6 +234,15 @@ const   // Global constants
 
         DECLARATIONS_FORM_RIGHT_MARGIN = 16;
 
+        RTF_FILES_FILTER_KEY = 'RTFFilesFilter';
+        HTML_FILES_FILTER_KEY = 'HTMLFilesFilter';
+        XML_FILES_FILTER_KEY = 'XMLFilesFilter';
+        BMP_FILES_FILTER_KEY = 'BMPFilesFilter';
+        PNG_FILES_FILTER_KEY = 'PNGFilesFilter';
+        JPG_FILES_FILTER_KEY = 'JPGFilesFilter';
+        EDITOR_DIALOG_FILTER_KEYS: array of string = [RTF_FILES_FILTER_KEY, HTML_FILES_FILTER_KEY];
+        PROJECT_DIALOG_FILTER_KEYS: array of string = [XML_FILES_FILTER_KEY, BMP_FILES_FILTER_KEY, PNG_FILES_FILTER_KEY, JPG_FILES_FILTER_KEY];
+
         // Language identifiers; must be identical to value in <Name> tag in XML language definition file
         PASCAL_LANG_ID  = 'Pascal';
         C_LANG_ID       = 'ANSI C';
@@ -317,26 +328,28 @@ class function TInfra.ExportToFile(AExport: IExportable): TError;
 var
    graphic: TGraphic;
    dialog: TSaveDialog;
+   idx: integer;
 begin
    result := errNone;
    if AExport <> nil then
    begin
       dialog := GetMainForm.ExportDialog;
       dialog.FileName := AExport.GetExportFileName;
-      dialog.Filter := i18Manager.GetString('XMLFilesFilter') + '|' +
-                       i18Manager.GetString('BMPFilesFilter') + '|' +
-                       i18Manager.GetString('PNGFilesFilter') + '|' +
-                       i18Manager.GetString('JPGFilesFilter');
+      dialog.Filter := i18Manager.GetJoinedString('|', PROJECT_DIALOG_FILTER_KEYS);
       dialog.FilterIndex := 1;
       if dialog.Execute then
       begin
-         graphic := nil;
-         case dialog.FilterIndex of
-            1: result := AExport.ExportToXMLFile(dialog.Filename);
-            2: graphic := TBitmap.Create;
-            3: graphic := TPNGImage.Create;
-            4: graphic := TJPEGImage.Create;
-         end;
+         idx := dialog.FilterIndex - 1;
+         if idx = TInfra.IndexOf(PROJECT_DIALOG_FILTER_KEYS, XML_FILES_FILTER_KEY) then
+            result := AExport.ExportToXMLFile(dialog.Filename)
+         else if idx = TInfra.IndexOf(PROJECT_DIALOG_FILTER_KEYS, BMP_FILES_FILTER_KEY) then
+            graphic := TBitmap.Create
+         else if idx = TInfra.IndexOf(PROJECT_DIALOG_FILTER_KEYS, PNG_FILES_FILTER_KEY) then
+            graphic := TPNGImage.Create
+         else if idx = TInfra.IndexOf(PROJECT_DIALOG_FILTER_KEYS, JPG_FILES_FILTER_KEY) then
+            graphic := TJPEGImage.Create
+         else
+            graphic := nil;
          if graphic <> nil then
          try
             AExport.ExportToGraphic(graphic);
@@ -344,6 +357,21 @@ begin
          finally
             graphic.Free;
          end;
+      end;
+   end;
+end;
+
+class function TInfra.IndexOf(const AArray: array of string; const AValue: string): integer;
+var
+   i: integer;
+begin
+   result := -1;
+   for i := 0 to High(AArray) do
+   begin
+      if AArray[i] = AValue then
+      begin
+         result := i;
+         break;
       end;
    end;
 end;
