@@ -54,7 +54,7 @@ type
          function LoadStaticLabels(const AFileName: string): integer;
          function LoadDynamicLabels(const AFileName: string; const AClearRepository: boolean = false): integer;
          function LoadAllLabels(const AFilename: string): integer;
-         function GetJoinedString(const AJoiner: string; const AKeys: array of string): string;
+         function GetJoinedString(const AJoiner: string; const AKeys: TArray<string>): string;
    end;
 
 implementation
@@ -267,7 +267,7 @@ begin
    result := Format(GetString(AKey), Args);
 end;
 
-function Ti18Manager.GetJoinedString(const AJoiner: string; const AKeys: array of string): string;
+function Ti18Manager.GetJoinedString(const AJoiner: string; const AKeys: TArray<string>): string;
 var
    i: integer;
 begin

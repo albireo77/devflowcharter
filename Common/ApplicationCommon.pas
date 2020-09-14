@@ -113,7 +113,7 @@ type
          class function DecodeCheckBoxState(const AState: string): TCheckBoxState;
          class function GetPageFromXY(APageControl: TPageControl; x, y: integer): TTabSheet;
          class function GetPageFromTabIndex(APageControl: TPageControl; ATabIndex: integer): TTabSheet;
-         class function IndexOf(const AValue: string; const AArray: array of string): integer;
+         class function IndexOf<T>(const AValue: T; const AArray: TArray<T>): integer;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetNativeFunction(const AName: string): PNativeFunction;
          function GetLangDefinition(const AName: string): TLangDefinition;
@@ -240,8 +240,8 @@ const   // Global constants
         BMP_FILES_FILTER_KEY = 'BMPFilesFilter';
         PNG_FILES_FILTER_KEY = 'PNGFilesFilter';
         JPG_FILES_FILTER_KEY = 'JPGFilesFilter';
-        EDITOR_DIALOG_FILTER_KEYS: array of string = [RTF_FILES_FILTER_KEY, HTML_FILES_FILTER_KEY];
-        PROJECT_DIALOG_FILTER_KEYS: array of string = [XML_FILES_FILTER_KEY, BMP_FILES_FILTER_KEY, PNG_FILES_FILTER_KEY, JPG_FILES_FILTER_KEY];
+        EDITOR_DIALOG_FILTER_KEYS: TArray<string> = [RTF_FILES_FILTER_KEY, HTML_FILES_FILTER_KEY];
+        PROJECT_DIALOG_FILTER_KEYS: TArray<string> = [XML_FILES_FILTER_KEY, BMP_FILES_FILTER_KEY, PNG_FILES_FILTER_KEY, JPG_FILES_FILTER_KEY];
 
         // Language identifiers; must be identical to value in <Name> tag in XML language definition file
         PASCAL_LANG_ID  = 'Pascal';
@@ -267,7 +267,8 @@ implementation
 uses
    Vcl.Printers, WinApi.Messages, Vcl.Menus, Vcl.Dialogs, Vcl.Imaging.jpeg, Vcl.Imaging.PngImage,
    System.Math, System.TypInfo, Generics.Collections, System.IOUtils, System.Rtti,
-   UserDataType, XMLProcessor, SynEditHighlighter, Main_Block, BaseEnumerator, System.Character;
+   UserDataType, XMLProcessor, SynEditHighlighter, Main_Block, BaseEnumerator, System.Character,
+   System.Generics.Defaults;
 
 type
    THackCustomEdit = class(TCustomEdit);
@@ -341,13 +342,13 @@ begin
       begin
          graphic := nil;
          idx := dialog.FilterIndex - 1;
-         if idx = TInfra.IndexOf(XML_FILES_FILTER_KEY, PROJECT_DIALOG_FILTER_KEYS) then
+         if idx = TInfra.IndexOf<string>(XML_FILES_FILTER_KEY, PROJECT_DIALOG_FILTER_KEYS) then
             result := AExport.ExportToXMLFile(dialog.Filename)
-         else if idx = TInfra.IndexOf(BMP_FILES_FILTER_KEY, PROJECT_DIALOG_FILTER_KEYS) then
+         else if idx = TInfra.IndexOf<string>(BMP_FILES_FILTER_KEY, PROJECT_DIALOG_FILTER_KEYS) then
             graphic := TBitmap.Create
-         else if idx = TInfra.IndexOf(PNG_FILES_FILTER_KEY, PROJECT_DIALOG_FILTER_KEYS) then
+         else if idx = TInfra.IndexOf<string>(PNG_FILES_FILTER_KEY, PROJECT_DIALOG_FILTER_KEYS) then
             graphic := TPNGImage.Create
-         else if idx = TInfra.IndexOf(JPG_FILES_FILTER_KEY, PROJECT_DIALOG_FILTER_KEYS) then
+         else if idx = TInfra.IndexOf<string>(JPG_FILES_FILTER_KEY, PROJECT_DIALOG_FILTER_KEYS) then
             graphic := TJPEGImage.Create;
          if graphic <> nil then
          try
@@ -360,14 +361,14 @@ begin
    end;
 end;
 
-class function TInfra.IndexOf(const AValue: string; const AArray: array of string): integer;
+class function TInfra.IndexOf<T>(const AValue: T; const AArray: TArray<T>): integer;
 var
    i: integer;
 begin
    result := -1;
    for i := 0 to High(AArray) do
    begin
-      if AArray[i] = AValue then
+      if TComparer<T>.Default.Compare(AValue, AArray[i]) = 0 then
       begin
          result := i;
          break;
