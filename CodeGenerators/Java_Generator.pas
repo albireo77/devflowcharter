@@ -96,7 +96,7 @@ var
    JAVA_BIGDECIMAL_TYPE,
    JAVA_BIGINTEGER_TYPE,
    JAVA_PATTERN_TYPE: integer;
-   JAVA_PRIMITIVE_TYPES: array of integer;
+   JAVA_PRIMITIVE_TYPES: TArray<integer>;
 
 function GetObjectType(AType: integer): integer;
 begin
@@ -121,18 +121,8 @@ begin
 end;
 
 function IsPrimitiveType(AType: integer): boolean;
-var
-   i: integer;
 begin
-   result := false;
-   if AType <> UNKNOWN_TYPE then
-   begin
-      for i := 0 to High(JAVA_PRIMITIVE_TYPES) do
-      begin
-         if JAVA_PRIMITIVE_TYPES[i] = AType then
-            Exit(true);
-      end;
-   end;
+   result := (AType <> UNKNOWN_TYPE) and (TInfra.IndexOf<integer>(AType, JAVA_PRIMITIVE_TYPES) <> -1);
 end;
 
 procedure AddLibImport(const ALib: string);
