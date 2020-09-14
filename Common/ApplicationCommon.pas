@@ -113,7 +113,7 @@ type
          class function DecodeCheckBoxState(const AState: string): TCheckBoxState;
          class function GetPageFromXY(APageControl: TPageControl; x, y: integer): TTabSheet;
          class function GetPageFromTabIndex(APageControl: TPageControl; ATabIndex: integer): TTabSheet;
-         class function IndexOf(const AArray: array of string; const AValue: string): integer;
+         class function IndexOf(const AValue: string; const AArray: array of string): integer;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetNativeFunction(const AName: string): PNativeFunction;
          function GetLangDefinition(const AName: string): TLangDefinition;
@@ -339,17 +339,16 @@ begin
       dialog.FilterIndex := 1;
       if dialog.Execute then
       begin
+         graphic := nil;
          idx := dialog.FilterIndex - 1;
-         if idx = TInfra.IndexOf(PROJECT_DIALOG_FILTER_KEYS, XML_FILES_FILTER_KEY) then
+         if idx = TInfra.IndexOf(XML_FILES_FILTER_KEY, PROJECT_DIALOG_FILTER_KEYS) then
             result := AExport.ExportToXMLFile(dialog.Filename)
-         else if idx = TInfra.IndexOf(PROJECT_DIALOG_FILTER_KEYS, BMP_FILES_FILTER_KEY) then
+         else if idx = TInfra.IndexOf(BMP_FILES_FILTER_KEY, PROJECT_DIALOG_FILTER_KEYS) then
             graphic := TBitmap.Create
-         else if idx = TInfra.IndexOf(PROJECT_DIALOG_FILTER_KEYS, PNG_FILES_FILTER_KEY) then
+         else if idx = TInfra.IndexOf(PNG_FILES_FILTER_KEY, PROJECT_DIALOG_FILTER_KEYS) then
             graphic := TPNGImage.Create
-         else if idx = TInfra.IndexOf(PROJECT_DIALOG_FILTER_KEYS, JPG_FILES_FILTER_KEY) then
-            graphic := TJPEGImage.Create
-         else
-            graphic := nil;
+         else if idx = TInfra.IndexOf(JPG_FILES_FILTER_KEY, PROJECT_DIALOG_FILTER_KEYS) then
+            graphic := TJPEGImage.Create;
          if graphic <> nil then
          try
             AExport.ExportToGraphic(graphic);
@@ -361,7 +360,7 @@ begin
    end;
 end;
 
-class function TInfra.IndexOf(const AArray: array of string; const AValue: string): integer;
+class function TInfra.IndexOf(const AValue: string; const AArray: array of string): integer;
 var
    i: integer;
 begin

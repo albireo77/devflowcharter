@@ -784,9 +784,9 @@ begin
    begin
       synExport := nil;
       idx := SaveDialog2.FilterIndex - 2;
-      if idx = TInfra.IndexOf(EDITOR_DIALOG_FILTER_KEYS, RTF_FILES_FILTER_KEY) then
+      if idx = TInfra.IndexOf(RTF_FILES_FILTER_KEY, EDITOR_DIALOG_FILTER_KEYS) then
          synExport := SynExporterRTF1
-      else if idx = TInfra.IndexOf(EDITOR_DIALOG_FILTER_KEYS, HTML_FILES_FILTER_KEY) then
+      else if idx = TInfra.IndexOf(HTML_FILES_FILTER_KEY, EDITOR_DIALOG_FILTER_KEYS) then
          synExport := SynExporterHTML1;
       if (synExport <> nil) and Assigned(memCodeEditor.Highlighter) then
       begin
