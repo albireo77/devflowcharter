@@ -329,7 +329,7 @@ class function TInfra.ExportToFile(AExport: IExportable): TError;
 var
    graphic: TGraphic;
    dialog: TSaveDialog;
-   idx: integer;
+   filterKey: string;
 begin
    result := errNone;
    if AExport <> nil then
@@ -341,14 +341,14 @@ begin
       if dialog.Execute then
       begin
          graphic := nil;
-         idx := dialog.FilterIndex - 1;
-         if idx = TInfra.IndexOf<string>(XML_FILES_FILTER_KEY, PROJECT_DIALOG_FILTER_KEYS) then
+         filterKey := PROJECT_DIALOG_FILTER_KEYS[dialog.FilterIndex-1];
+         if filterKey = XML_FILES_FILTER_KEY then
             result := AExport.ExportToXMLFile(dialog.Filename)
-         else if idx = TInfra.IndexOf<string>(BMP_FILES_FILTER_KEY, PROJECT_DIALOG_FILTER_KEYS) then
+         else if filterKey = BMP_FILES_FILTER_KEY then
             graphic := TBitmap.Create
-         else if idx = TInfra.IndexOf<string>(PNG_FILES_FILTER_KEY, PROJECT_DIALOG_FILTER_KEYS) then
+         else if filterKey = PNG_FILES_FILTER_KEY then
             graphic := TPNGImage.Create
-         else if idx = TInfra.IndexOf<string>(JPG_FILES_FILTER_KEY, PROJECT_DIALOG_FILTER_KEYS) then
+         else if filterKey = JPG_FILES_FILTER_KEY then
             graphic := TJPEGImage.Create;
          if graphic <> nil then
          try

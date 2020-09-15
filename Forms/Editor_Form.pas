@@ -777,17 +777,20 @@ procedure TEditorForm.miSaveClick(Sender: TObject);
 var
    synExport: TSynCustomExporter;
    lines: TStrings;
-   idx: integer;
+   filterKey: string;
 begin
    SetSaveDialog(SaveDialog2);
    if SaveDialog2.Execute then
    begin
       synExport := nil;
-      idx := SaveDialog2.FilterIndex - 2;
-      if idx = TInfra.IndexOf<string>(RTF_FILES_FILTER_KEY, EDITOR_DIALOG_FILTER_KEYS) then
-         synExport := SynExporterRTF1
-      else if idx = TInfra.IndexOf<string>(HTML_FILES_FILTER_KEY, EDITOR_DIALOG_FILTER_KEYS) then
-         synExport := SynExporterHTML1;
+      if SaveDialog2.FilterIndex > 1 then
+      begin
+         filterKey := EDITOR_DIALOG_FILTER_KEYS[SaveDialog2.FilterIndex-2];
+         if RTF_FILES_FILTER_KEY = filterKey then
+            synExport := SynExporterRTF1
+         else if HTML_FILES_FILTER_KEY = filterKey then
+            synExport := SynExporterHTML1;
+      end;
       if (synExport <> nil) and Assigned(memCodeEditor.Highlighter) then
       begin
          synExport.Highlighter := memCodeEditor.Highlighter;
