@@ -793,7 +793,7 @@ begin
          else if HTML_FILES_FILTER_KEY = filterKey then
             synExport := SynExporterHTML1;
       end;
-      if (synExport <> nil) and Assigned(memCodeEditor.Highlighter) then
+      if synExport <> nil then
       begin
          synExport.Highlighter := memCodeEditor.Highlighter;
          lines := GetAllLines;
