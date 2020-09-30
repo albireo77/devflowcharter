@@ -257,7 +257,7 @@ var
    isExtern: boolean;
 begin
    lang := GInfra.CurrentLang;
-   if (AConstList <> nil) and (AConstList.sgList.RowCount > 2) and not lang.ConstTemplate.IsEmpty then
+   if (AConstList <> nil) and not lang.ConstTemplate.IsEmpty then
    begin
       constList := TStringList.Create;
       try
@@ -324,7 +324,7 @@ var
    dims: TArray<string>;
 begin
    lang := GInfra.CurrentLang;
-   if (AVarList <> nil) and (AVarList.sgList.RowCount > 2) and not lang.VarTemplate.IsEmpty then
+   if (AVarList <> nil) and not lang.VarTemplate.IsEmpty then
    begin
       varList := TStringList.Create;
       try
