@@ -77,8 +77,8 @@ type
       class function GetEnumeratedType(const AValue: string): integer;
       class function GetTypeAsString(AType: integer):string;
       class function GetType(const ATypeName: string; const ALangName: string = ''): integer;
-      class function GetFieldType(const AVarName, AField: string): integer; overload;
-      class function GetFieldType(AType: integer; const AField: string): integer; overload;
+      class function GetFieldType(const AVarName, AFieldName: string): integer; overload;
+      class function GetFieldType(AType: integer; const AFieldName: string): integer; overload;
       class function IsDeclared(const AIdentName: string): boolean;
       class function IsDuplicatedCase: boolean;
       class function GetConstValue(const AConstName: string): string;
@@ -358,7 +358,7 @@ var
 begin
    result := ASizeAsString;
    if result.IsEmpty then
-      exit;
+      Exit;
    if GProject <> nil then
    begin
       dataType := GProject.GetUserDataType(ATypeAsString);
@@ -470,13 +470,13 @@ begin
 end;
 
 // get field type for given structural variable
-class function TParserHelper.GetFieldType(const AVarName, AField: string): integer;
+class function TParserHelper.GetFieldType(const AVarName, AFieldName: string): integer;
 begin
-   result := GetFieldType(GetVarInfo(AVarName).TypeOriginal, AField);
+   result := GetFieldType(GetVarInfo(AVarName).TypeOriginal, AFieldName);
 end;
 
 // get field type for given structural type
-class function TParserHelper.GetFieldType(AType: integer; const AField: string): integer;
+class function TParserHelper.GetFieldType(AType: integer; const AFieldName: string): integer;
 var
    typeString: string;
    dataType: TUserDataType;
@@ -491,7 +491,7 @@ begin
       begin
          for field in dataType.GetFields do
          begin
-            if (field.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(Trim(field.edtName.Text), AField) then
+            if (field.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(Trim(field.edtName.Text), AFieldName) then
             begin
                result := GetType(field.cbType.Text);
                break;
@@ -576,7 +576,8 @@ begin
          if dataType.Active and (dataType.Font.Color <> NOK_COLOR) then
          begin
             for field in dataType.GetFields do
-               if (field.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(AIdentName, Trim(field.edtName.Text)) then exit;
+               if (field.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(AIdentName, Trim(field.edtName.Text)) then
+                  Exit;
          end;
       end;
    end;
@@ -724,7 +725,7 @@ begin
             end;
          end;
       end;
-      if not result and Assigned(GInfra.CurrentLang.AreTypesCompatible) then
+      if (not result) and Assigned(GInfra.CurrentLang.AreTypesCompatible) then
          result := GInfra.CurrentLang.AreTypesCompatible(AType1, AType2);
    end;
 end;
