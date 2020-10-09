@@ -350,9 +350,6 @@ var
    lOrigType, lType: PNativeDataType;
    i, a, count: integer;
    l3Strings: T3Strings;
-{$IFDEF USE_CODEFOLDING}
-   tag1: IXMLElement;
-{$ENDIF}
 begin
    result := errNone;
    val := '';
@@ -1037,7 +1034,7 @@ begin
       begin
          with FoldRegions[i] do
          begin
-            tag1 := TXMLProcessor.FindChildTag(tag, 'Open');
+            var tag1 := TXMLProcessor.FindChildTag(tag, 'Open');
             if tag1 <> nil then
                Open := tag1.GetAttribute('Keyword');
             tag1 := TXMLProcessor.FindChildTag(tag, 'Close');
