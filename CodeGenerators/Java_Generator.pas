@@ -823,10 +823,16 @@ begin
                  end;
               end;
             end
-            else if AValue.StartsWith('Arrays.asList(') and (lastChar = ')') then
+            else if StartsWithOneOf(AValue, ['Arrays.asList(', 'List.of(', 'Set.of(']) and (lastChar = ')') then
             begin
                t1 := UNKNOWN_TYPE;
-               cValue := Copy(AValue, 15, len-15);
+               if AValue.StartsWith('Arrays.asList(') then
+                  t2 := 15
+               else if AValue.StartsWith('List.of(') then
+                  t2 := 9
+               else
+                  t2 := 8;
+               cValue := Copy(AValue, t2, len-t2);
                if cValue.StartsWith('new ') and cValue.EndsWith('}') then
                begin
                   s := Copy(cValue, 5);
@@ -852,8 +858,15 @@ begin
                end;
                result := a;
                AGenericType := ProcessType(result);
-               AddLibImport(UTIL_PKG + '.Arrays');
-               result := JAVA_LIST_TYPE;
+               if t2 = 15 then
+               begin
+                  result := JAVA_LIST_TYPE;
+                  AddLibImport(UTIL_PKG + '.Arrays');
+               end
+               else if t2 = 9 then
+                  result := JAVA_LIST_TYPE
+               else
+                  result := JAVA_SET_TYPE;
             end
             else if AValue.StartsWith('new ') then
             begin
