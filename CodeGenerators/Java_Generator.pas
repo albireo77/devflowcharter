@@ -308,10 +308,9 @@ end;
 procedure Java_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
 var
    i, p1, p2, a, b: integer;
-   varType, varInit, varInit2, varVal, varGeneric, varGenericType, libImport, varAccess, varSize, varName: string;
-   dims: TArray<string>;
+   varType, varInit, varInit2, varVal, varGeneric, varGenericType, libImport, varAccess, varSize, varName, token: string;
+   dims, tokens: TArray<string>;
    pNativeType: PNativeDataType;
-   tokens: TArray<string>;
 begin
    if AVarList <> nil then
    begin
@@ -337,20 +336,22 @@ begin
                   begin
                      varGeneric := Copy(varInit, p1, p2-p1+1);
                      varGenericType := Copy(varInit, p1+1, p2-p1-1);
-                     varGenericType := ReplaceStr(varGenericType, ' ', '');
-                     tokens := varGenericType.Split([',']);
+                     tokens := varGenericType.Split([',', ' ', '<', '>']);
                      for b := 0 to High(tokens) do
                      begin
-                       for a := 0 to High(javaLang.NativeDataTypes) do
-                       begin
-                          pNativeType := @javaLang.NativeDataTypes[a];
-                          if (pNativeType.Lib <> '') and (pNativeType.Name = tokens[b]) then
-                          begin
-                             libImport := pNativeType.Lib + '.' + pNativeType.Name;
-                             AddLibImport(libImport);
-                             break;
-                          end;
-                       end;
+                        token := tokens[b];
+                        if token.IsEmpty then
+                           continue;
+                        for a := 0 to High(javaLang.NativeDataTypes) do
+                        begin
+                           pNativeType := @javaLang.NativeDataTypes[a];
+                           if (pNativeType.Lib <> '') and (pNativeType.Name = token) then
+                           begin
+                              libImport := pNativeType.Lib + '.' + pNativeType.Name;
+                              AddLibImport(libImport);
+                              break;
+                           end;
+                        end;
                      end;
                   end;
                end;
