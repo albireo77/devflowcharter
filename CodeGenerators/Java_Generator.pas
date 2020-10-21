@@ -860,7 +860,6 @@ begin
                   t1 := TParserHelper.GetType(cValue);
                   AGenericType := ProcessType(t1);
                end;
-               AddLibImport(TParserHelper.GetLibForType('EnumSet', UTIL_PKG) + '.EnumSet');
                result := JAVA_ENUM_SET_TYPE;
             end
             else if StartsWithOneOf(AValue, ['Arrays.asList(', 'List.of(', 'Set.of(']) and (lastChar = ')') then
