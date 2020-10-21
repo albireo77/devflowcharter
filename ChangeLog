@@ -2,6 +2,7 @@
 - Java: add support for Set.of(), List.of() and Map.of() methods in constant value evaluation
 - Java: add support for EnumSet and EnumMap types
 - Java: improve building list of imports for nested generic types
+- make attached SynEdit component compile with Delphi 10.4 
 - minor improvements 
 
 8.7 [28.08.2020]
