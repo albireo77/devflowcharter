@@ -98,7 +98,6 @@ It may not contain all supported tags. For all supported tags and their descript
 		<DataType kind="other" library="java.time">Period</DataType>
 		<DataType kind="other" library="java.time">Instant</DataType>
 		<DataType kind="other" library="java.time.temporal">Temporal</DataType>
-		<DataType kind="other" library="java.time.temporal">ChronoUnit</DataType>
 		<DataType kind="other" library="java.util">Random</DataType>
 		<DataType kind="other" library="java.util">Locale</DataType>
 		<DataType kind="other" library="java.util.regex">Pattern</DataType>
