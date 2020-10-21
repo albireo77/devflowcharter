@@ -81,6 +81,7 @@ It may not contain all supported tags. For all supported tags and their descript
 		<DataType kind="other" generic="true" library="java.util">List</DataType>
 		<DataType kind="other" generic="true" library="java.util">Map</DataType>
 		<DataType kind="other" generic="true" library="java.util">Set</DataType>
+		<DataType kind="other" generic="true" library="java.util">EnumSet</DataType>
 		<DataType kind="other" generic="true" library="java.util">Queue</DataType>
 		<DataType kind="other" generic="true" library="java.util">Deque</DataType>
 		<DataType kind="other" library="java.math">BigDecimal</DataType>

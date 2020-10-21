@@ -80,6 +80,7 @@ var
    JAVA_STRING_TYPE,
    JAVA_LIST_TYPE,
    JAVA_SET_TYPE,
+   JAVA_ENUM_SET_TYPE,
    JAVA_MAP_TYPE,
    JAVA_BOOLEAN_TYPE,
    JAVA_BOOLEAN_OBJECT_TYPE,
@@ -823,6 +824,45 @@ begin
                  end;
               end;
             end
+            else if AValue.StartsWith('Map.of(') and (lastChar = ')') then
+            begin
+               cValue := Copy(AValue, 8, AValue.Length-8);
+               tokens := cValue.Split([',']);
+               a := Length(tokens);
+               if (a = 0) or Odd(a) then
+                  Exit;
+               t1 := Java_GetConstantType(tokens[0].Trim, s);
+               t2 := Java_GetConstantType(tokens[1].Trim, s);
+               for i := 2 to High(tokens) do
+               begin
+                  a := Java_GetConstantType(tokens[i].Trim, s);
+                  if (i mod 2) = 0 then
+                  begin
+                     if a <> t1 then
+                        Exit;
+                  end
+                  else if a <> t2 then
+                     Exit;
+               end;
+               s1 := ProcessType(t1);
+               s2 := ProcessType(t2);
+               if (s1 <> '') and (s2 <> '') then
+                  AGenericType := s1 + ', ' + s2;
+               result := JAVA_MAP_TYPE;
+            end
+            else if StartsWithOneOf(AValue, ['EnumSet.allOf(', 'EnumSet.noneOf(', 'EnumSet.of(', 'EnumSet.complementOf(', 'EnumSet.range(']) and (lastChar = ')') then
+            begin
+               i := Pos('(', AValue);
+               a := Pos('.', AValue, i);
+               if a > i then
+               begin
+                  cValue := Copy(AValue, i+1, a-i-1);
+                  t1 := TParserHelper.GetType(cValue);
+                  AGenericType := ProcessType(t1);
+               end;
+               AddLibImport(TParserHelper.GetLibForType('EnumSet', UTIL_PKG) + '.EnumSet');
+               result := JAVA_ENUM_SET_TYPE;
+            end
             else if StartsWithOneOf(AValue, ['Arrays.asList(', 'List.of(', 'Set.of(']) and (lastChar = ')') then
             begin
                t1 := UNKNOWN_TYPE;
@@ -1040,6 +1080,7 @@ initialization
    JAVA_STRING_TYPE         := TParserHelper.GetType('String', JAVA_LANG_ID);
    JAVA_LIST_TYPE           := TParserHelper.GetType('List', JAVA_LANG_ID);
    JAVA_SET_TYPE            := TParserHelper.GetType('Set', JAVA_LANG_ID);
+   JAVA_ENUM_SET_TYPE       := TParserHelper.GetType('EnumSet', JAVA_LANG_ID);
    JAVA_MAP_TYPE            := TParserHelper.GetType('Map', JAVA_LANG_ID);
    JAVA_BOOLEAN_TYPE        := TParserHelper.GetType('boolean', JAVA_LANG_ID);
    JAVA_BOOLEAN_OBJECT_TYPE := TParserHelper.GetType('Boolean', JAVA_LANG_ID);
