@@ -39,6 +39,7 @@ const
    IO_PKG = 'java.io';
    TIME_PKG = 'java.time';
    TIME_FORMAT_PKG = TIME_PKG + '.format';
+   TIME_TEMPORAL_PKG = TIME_PKG + '.temporal';
    MATH_PKG = 'java.math';
    TEXT_PKG = 'java.text';
    SECURITY_PKG = 'java.security';
@@ -614,6 +615,8 @@ begin
                   result := JAVA_DURATION_TYPE;
                if result <> JAVA_DURATION_TYPE then
                   AddLibImport(TParserHelper.GetLibForType('Duration', TIME_PKG) + '.Duration');
+               if AValue.Contains('ChronoUnit.') then
+                  AddLibImport(TParserHelper.GetLibForType('ChronoUnit', TIME_TEMPORAL_PKG) + '.ChronoUnit');
             end
             else if AValue.StartsWith('Period.') then
             begin
