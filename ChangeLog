@@ -1,3 +1,9 @@
+8.8 [21.10.2020]
+- Java: add support for Set.of(), List.of() and Map.of() methods in constant value evaluation
+- Java: add support for EnumSet and EnumMap types
+- Java: improve building list of imports for nested generic types
+- minor improvements 
+
 8.7 [28.08.2020]
 - fix regression in 8.6 (for..do block not drawn correctly in some situations)
 
