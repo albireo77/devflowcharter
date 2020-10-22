@@ -977,7 +977,7 @@ begin
                AddLibImport(TParserHelper.GetLibForType('Pattern', REGEX_PKG) + '.Pattern');
                result := JAVA_PATTERN_TYPE;
             end
-            else if (AValue[1] = '{') and (lastChar = '}') then
+            else if (firstChar = '{') and (lastChar = '}') then
             begin
                t1 := 0;
                t2 := 0;
