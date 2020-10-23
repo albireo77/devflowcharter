@@ -273,11 +273,7 @@ var
 begin
    result := '';
    for i := 0 to High(AKeys) do
-   begin
-      if i <> 0 then
-         result := result + AJoiner;
-      result := result + GetString(AKeys[i]);
-   end;
+      result := result + IfThen(i > 0, AJoiner) + GetString(AKeys[i]);
 end;
 
 end.
