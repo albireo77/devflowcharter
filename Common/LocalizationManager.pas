@@ -268,11 +268,9 @@ begin
 end;
 
 function Ti18Manager.GetJoinedString(const AJoiner: string; const AKeys: TArray<string>): string;
-var
-   i: integer;
 begin
    result := '';
-   for i := 0 to High(AKeys) do
+   for var i := 0 to High(AKeys) do
       result := result + IfThen(i > 0, AJoiner) + GetString(AKeys[i]);
 end;
 

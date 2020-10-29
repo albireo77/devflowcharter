@@ -152,10 +152,6 @@ var
    chLine: TChangeLine;
    templateLines: TStringList;
    i, rowNum: integer;
-{$IFDEF USE_CODEFOLDING}
-   foldRegion: TFoldRegionItem;
-   foldRanges: TSynEditFoldRanges;
-{$ENDIF}
 begin
    if PerformEditorUpdate then
    begin
@@ -185,12 +181,12 @@ begin
                      end
                      else
                      begin
-                        foldRegion := chLine.CodeRange.FoldRange.FoldRegion;
+                        var foldRegion := chLine.CodeRange.FoldRange.FoldRegion;
                         TInfra.GetEditorForm.RemoveFoldRange(chLine.CodeRange.FoldRange);
                         for i := templateLines.Count-1 downto 0 do
                            chLine.CodeRange.Lines.InsertObject(chLine.CodeRange.FirstRow, templateLines[i], templateLines.Objects[i]);
                         TInfra.GetEditorForm.OnChangeEditor;
-                        foldRanges := TInfra.GetEditorForm.FindFoldRangesInCodeRange(chLine.CodeRange, templateLines.Count);
+                        var foldRanges := TInfra.GetEditorForm.FindFoldRangesInCodeRange(chLine.CodeRange, templateLines.Count);
                         try
                            if (foldRanges <> nil) and (foldRanges.Count > 0) and (foldRanges[0].FoldRegion = foldRegion) and not foldRanges[0].Collapsed then
                            begin
