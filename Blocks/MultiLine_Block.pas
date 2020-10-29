@@ -92,11 +92,9 @@ begin
 end;
 
 procedure TMultiLineBlock.Paint;
-var
-   r: TRect;
 begin
    inherited;
-   r := FStatements.BoundsRect;
+   var r := FStatements.BoundsRect;
    r.Inflate(1, 1);
    BottomPoint.Y := r.Bottom;
    IPoint.Y := r.Bottom + 8;
@@ -132,12 +130,10 @@ begin
 end;
 
 function TMultiLineBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
-var
-   tmpList: TStringList;
 begin
    if (fsStrikeOut in Font.Style) or (FStatements.Text = '') then
       Exit(0);
-   tmpList := TStringList.Create;
+   var tmpList := TStringList.Create;
    try
       GenerateDefaultTemplate(tmpList, ALangId, ADeep);
       TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
@@ -231,11 +227,9 @@ begin
 end;
 
 function TMultiLineBlock.GenerateTree(AParentNode: TTreeNode): TTreeNode;
-var
-   i: integer;
 begin
    result := AParentNode;
-   for i := 0 to FStatements.Lines.Count-1 do
+   for var i := 0 to FStatements.Lines.Count-1 do
       TTreeNodeWithFriend(AParentNode.Owner.AddChildObject(AParentNode, GetTreeNodeText(i), FStatements)).Offset := i;
    if TInfra.IsNOkColor(FStatements.Font.Color) then
    begin
