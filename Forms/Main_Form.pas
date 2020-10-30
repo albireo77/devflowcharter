@@ -241,7 +241,7 @@ type
    TDerivedControl = class(TControl);
 
 var
-   MenuItemComparer: IComparer<TMenuItem>;
+   ByCaptionMenuItemComparer: IComparer<TMenuItem>;
 
 {$R *.dfm}
 
@@ -1435,7 +1435,7 @@ begin
    if result > 0 then
    begin
       if result > 1 then
-         TArray.Sort<TMenuItem>(mItems, MenuItemComparer);
+         TArray.Sort<TMenuItem>(mItems, ByCaptionMenuItemComparer);
       miInsertFunc.Add(mItems);
    end;
 end;
@@ -1479,7 +1479,7 @@ initialization
    PopupList.Free;
    PopupList := TPopupListEx.Create;
 
-   MenuItemComparer := TDelegatedComparer<TMenuItem>.Create(
+   ByCaptionMenuItemComparer := TDelegatedComparer<TMenuItem>.Create(
       function(const L, R: TMenuItem): integer
       begin
          result := TComparer<string>.Default.Compare(StripHotKey(L.Caption), StripHotKey(R.Caption));

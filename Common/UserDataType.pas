@@ -79,6 +79,9 @@ uses
    Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, System.Rtti,
    Generics.Defaults, ApplicationCommon, LangDefinition, ParserHelper, XMLProcessor;
 
+var
+   ByTopFieldComparer: IComparer<TField>;
+
 constructor TUserDataType.Create(AParentForm: TDataTypesForm);
 var
    dt: TUserDataTypeKind;
@@ -433,16 +436,8 @@ begin
 end;
 
 function TUserDataType.GetFields: IEnumerable<TField>;
-var
-   topComparer: IComparer<TField>;
 begin
-   topComparer := TDelegatedComparer<TField>.Create(
-      function(const L, R: TField): integer
-      begin
-         result := L.Top - R.Top;
-      end
-   );
-   result := GetElements<TField>(topComparer);
+   result := GetElements<TField>(ByTopFieldComparer);
 end;
 
 procedure TField.OnChangeName(Sender: TObject);
@@ -524,6 +519,15 @@ begin
    else
       result := inherited GetTreeNodeText(ANodeOffset);
 end;
+
+initialization
+
+   ByTopFieldComparer := TDelegatedComparer<TField>.Create(
+      function(const L, R: TField): integer
+      begin
+         result := L.Top - R.Top;
+      end
+   );
 
 end.
 

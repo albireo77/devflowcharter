@@ -141,6 +141,9 @@ uses
    Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, Vcl.Grids, ApplicationCommon,
    Main_Form, XMLProcessor, LangDefinition, Navigator_Form, BlockTabSheet, CommonTypes;
 
+var
+   ByTopParameterComparer: IComparer<TParameter>;
+
 constructor TUserFunction.Create(AFunctionHeader: TUserFunctionHeader; AFunctionBody: TMainBlock);
 begin
    inherited Create(Application);
@@ -718,16 +721,8 @@ begin
 end;
 
 function TUserFunctionHeader.GetParameters: IEnumerable<TParameter>;
-var
-   topComparer: IComparer<TParameter>;
 begin
-   topComparer := TDelegatedComparer<TParameter>.Create(
-      function(const L, R: TParameter): integer
-      begin
-         result := L.Top - R.Top;
-      end
-   );
-   result := GetElements<TParameter>(topComparer);
+   result := GetElements<TParameter>(ByTopParameterComparer);
 end;
 
 function TUserFunctionHeader.GetExternModifier: string;
@@ -1018,6 +1013,15 @@ begin
    else
       result := -170;
 end;
+
+initialization
+
+   ByTopParameterComparer := TDelegatedComparer<TParameter>.Create(
+      function(const L, R: TParameter): integer
+      begin
+         result := L.Top - R.Top;
+      end
+   );
 
 end.
 

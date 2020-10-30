@@ -77,7 +77,7 @@ type
       destructor Destroy; override;
       procedure AddComponent(AComponent: TComponent);
       function GetComments: IEnumerable<TComment>;
-      function GetUserFunctions(ACompareType: integer = PAGE_INDEX_COMPARE): IEnumerable<TUserFunction>;
+      function GetUserFunctions: IEnumerable<TUserFunction>;
       function GetUserDataTypes: IEnumerable<TUserDataType>;
       function GetUserDataType(const ATypeName: string): TUserDataType;
       function GetUserFunction(const AFunctionName: string): TUserFunction;
@@ -126,6 +126,10 @@ uses
    Generics.Collections, ApplicationCommon, XMLProcessor, Base_Form, LangDefinition,
    Navigator_Form, Base_Block, TabComponent, ParserHelper, SelectImport_Form,
    WinApi.Messages, Vcl.ExtCtrls;
+
+var
+   ByPageIndexUserDataTypeComparer: IComparer<TUserDataType>;
+   ByPageIndexUserFunctionComparer: IComparer<TUserFunction>;
 
 constructor TProject.Create;
 begin
@@ -287,22 +291,14 @@ begin
    result := GetComponents<TComment>;
 end;
 
-function TProject.GetUserFunctions(ACompareType: integer = PAGE_INDEX_COMPARE): IEnumerable<TUserFunction>;
+function TProject.GetUserFunctions: IEnumerable<TUserFunction>;
 begin
-   result := GetComponents<TUserFunction>(TUserFunctionComparer.Create(ACompareType));
+   result := GetComponents<TUserFunction>(ByPageIndexUserFunctionComparer);
 end;
 
 function TProject.GetUserDataTypes: IEnumerable<TUserDataType>;
-var
-   Comparer: IComparer<TUserDataType>;
 begin
-   Comparer := TDelegatedComparer<TUserDataType>.Create(
-      function(const L, R: TUserDataType): integer
-      begin
-         result := L.PageIndex - R.PageIndex;
-      end
-   );
-   result := GetComponents<TUserDataType>(Comparer);
+   result := GetComponents<TUserDataType>(ByPageIndexUserDataTypeComparer);
 end;
 
 function TProject.GetComponents<T>(AComparer: IComparer<T> = nil): IEnumerable<T>;
@@ -1192,6 +1188,17 @@ begin
       end;
    end;
 end;
+
+initialization
+
+   ByPageIndexUserDataTypeComparer := TDelegatedComparer<TUserDataType>.Create(
+      function(const L, R: TUserDataType): integer
+      begin
+         result := L.PageIndex - R.PageIndex;
+      end
+   );
+
+   ByPageIndexUserFunctionComparer := TUserFunctionComparer.Create(PAGE_INDEX_COMPARE);
 
 end.
 
