@@ -240,6 +240,9 @@ uses
 type
    TDerivedControl = class(TControl);
 
+var
+   MenuItemComparer: IComparer<TMenuItem>;
+
 {$R *.dfm}
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -1394,7 +1397,6 @@ var
    i: integer;
    lName: string;
    func: TUserFunction;
-   Comparer: IComparer<TMenuItem>;
    nativeFunc: PNativeFunction;
    lang: TLangDefinition;
    mItem: TMenuItem;
@@ -1432,13 +1434,8 @@ begin
    result := Length(mItems);
    if result > 0 then
    begin
-      Comparer := TDelegatedComparer<TMenuItem>.Create(
-         function(const L, R: TMenuItem): integer
-         begin
-            result := TComparer<string>.Default.Compare(StripHotKey(L.Caption), StripHotKey(R.Caption));
-         end
-      );
-      TArray.Sort<TMenuItem>(mItems, Comparer);
+      if result > 1 then
+         TArray.Sort<TMenuItem>(mItems, MenuItemComparer);
       miInsertFunc.Add(mItems);
    end;
 end;
@@ -1478,8 +1475,16 @@ begin
 end;
 
 initialization
+
    PopupList.Free;
    PopupList := TPopupListEx.Create;
+
+   MenuItemComparer := TDelegatedComparer<TMenuItem>.Create(
+      function(const L, R: TMenuItem): integer
+      begin
+         result := TComparer<string>.Default.Compare(StripHotKey(L.Caption), StripHotKey(R.Caption));
+      end
+   );
 
 end.
 
