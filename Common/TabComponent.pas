@@ -104,6 +104,9 @@ uses
    System.SysUtils, Generics.Collections, System.StrUtils, System.Rtti, ApplicationCommon,
    XMLProcessor, BaseEnumerator;
 
+var
+   ByTopElementComparer: IComparer<TElement>;
+
 constructor TTabComponent.Create(AParentForm: TPageControlForm);
 begin
    inherited Create(AParentForm.pgcTabs);
@@ -487,7 +490,7 @@ begin
    ATag.SetAttribute(ID_ATTR, FId.ToString);
    ATag.SetAttribute('ext_decl', TRttiEnumerationType.GetName(chkExternal.State));
    ATag.SetAttribute('library', Trim(edtLibrary.Text));
-   for elem in GetElements<TElement>(TElementComparer.Create(TOP_COMPARE)) do
+   for elem in GetElements<TElement>(ByTopElementComparer) do
       elem.ExportToXMLTag(ATag);
 end;
 
@@ -557,5 +560,9 @@ begin
    if ACompareType = PAGE_INDEX_COMPARE then
       result := PageIndex;
 end;
+
+initialization
+
+   ByTopElementComparer := TElementComparer.Create(TOP_COMPARE);
 
 end.
