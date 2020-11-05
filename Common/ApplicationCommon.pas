@@ -43,7 +43,6 @@ type
          FTemplateLang,
          FCurrentLang: TLangDefinition;
          FLangArray: array of TLangDefinition;
-         FLangArrayCount: integer;
       public
          property CurrentLang: TLangDefinition read FCurrentLang;
          property TemplateLang: TLangDefinition read FTemplateLang;
@@ -305,14 +304,13 @@ begin
    FTemplateLang := TLangDefinition.Create;
    FLangArray := FLangArray + [FTemplateLang];
    FCurrentLang := FLangArray[0];
-   FLangArrayCount := Length(FLangArray);
 end;
 
 destructor TInfra.Destroy;
 var
    i: integer;
 begin
-   for i := 0 to FLangArrayCount-1 do
+   for i := 0 to High(FLangArray) do
       FLangArray[i].Free;
    FLangArray := nil;
    inherited Destroy;
@@ -395,7 +393,7 @@ procedure TInfra.GetLangNames(AList: TStrings);
 var
    i: integer;
 begin
-   for i := 0 to FLangArrayCount-1 do
+   for i := 0 to High(FLangArray) do
       AList.Add(FLangArray[i].Name);
 end;
 
@@ -435,7 +433,7 @@ var
    comp: TComponent;
    lang: TLangDefinition;
 begin
-   for i := 0 to FLangArrayCount-2 do
+   for i := 0 to High(FLangArray)-1 do
    begin
       lang := FLangArray[i];
       comp := GetEditorForm.FindComponent(lang.HighLighterVarName);
@@ -813,7 +811,7 @@ var
    i: integer;
 begin
    result := nil;
-   for i := 0 to FLangArrayCount-1 do
+   for i := 0 to High(FLangArray) do
    begin
       if SameText(FLangArray[i].Name, AName) then
       begin
@@ -827,7 +825,7 @@ procedure TInfra.SetLangHiglighterAttributes;
 var
    i: integer;
 begin
-   for i := 0 to FLangArrayCount-1 do
+   for i := 0 to High(FLangArray) do
    begin
       if Assigned(FLangArray[i].SetHLighterAttrs) then
          FLangArray[i].SetHLighterAttrs;
