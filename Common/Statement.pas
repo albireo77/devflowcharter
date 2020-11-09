@@ -235,27 +235,25 @@ begin
             end;
             yymCondition:
             begin
-               txt := 'NoCExp';
+               Hint := i18Manager.GetFormattedString('NoCExp', [sLineBreak]);
                Font.Color := NOK_COLOR;
             end;
             yymCase:
             begin
-               txt := 'NoCaseExp';
+               Hint := i18Manager.GetFormattedString('NoCaseExp', [sLineBreak]);
                Font.Color := NOK_COLOR;
             end;
             yymAssign:
             begin
-               txt := 'NoInstr';
+               Hint := i18Manager.GetFormattedString('NoInstr', [sLineBreak]);
                Font.Color := WARN_COLOR;
             end;
             yymFuncCall:
             begin
-               txt := 'NoFCall';
+               Hint := i18Manager.GetFormattedString('NoFCall', [sLineBreak]);
                Font.Color := WARN_COLOR;
             end;
          end;
-         if not txt.IsEmpty then
-            Hint := i18Manager.GetFormattedString(txt, [sLineBreak]);
       end
       else if not TInfra.Parse(Self, FParserMode) then
       begin
