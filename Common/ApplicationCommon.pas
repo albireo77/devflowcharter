@@ -44,6 +44,7 @@ type
          FCurrentLang: TLangDefinition;
          FLangArray: array of TLangDefinition;
          FLangArrayHigh: integer;
+         class var FParsedEdit: TCustomEdit;
       public
          property CurrentLang: TLangDefinition read FCurrentLang;
          property TemplateLang: TLangDefinition read FTemplateLang;
@@ -273,9 +274,6 @@ uses
 type
    THackCustomEdit = class(TCustomEdit);
    THackControl = class(TControl);
-
-var
-   FParsedEdit: TCustomEdit;
 
 constructor TInfra.Create;
 var
@@ -1081,8 +1079,13 @@ end;
 
 class function TInfra.Parse(AEdit: TCustomEdit; AParserMode: TYYMode): boolean;
 begin
+   result := false;
    FParsedEdit := AEdit;
-   result := Parse(Trim(AEdit.Text), AParserMode);
+   try
+      result := Parse(Trim(AEdit.Text), AParserMode);
+   except on E: Exception do
+      Application.ShowException(E);
+   end;
    FParsedEdit := nil;
 end;
 
