@@ -142,11 +142,6 @@ const   // Global constants
         INVALID_INIT_VAL = -9;
         VALID_IDENT      =  1;
 
-        FLOWCHART_BLOCKS = [blInstr, blMultiInstr, blInput, blOutput, blFuncCall,
-                            blWhile, blRepeat, blIf, blIfElse, blFor, blCase, blMain, blReturn];
-
-        GROUP_BLOCKS = [blWhile, blRepeat, blIf, blIfElse, blFor, blCase, blMain];
-
         LOOP_BLOCKS = [blWhile, blRepeat, blFor];
 
         EDITOR_DEFAULT_INDENT_LENGTH = 2;
