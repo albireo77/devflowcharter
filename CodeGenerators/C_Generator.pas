@@ -25,38 +25,22 @@ unit C_Generator;
 
 interface
 
-const
-        C_STRING_DELIM = #34;
-        C_CHAR_DELIM   = #39;
-var
-        // flags to include header files
-        io_flag,          // stdio.h
-        math_flag,        // math.h
-        str_flag: byte;   // string.h
-        // datatype indexes used to evaluate expression type
-        C_INT_TYPE,
-        C_REAL_TYPE,
-        C_CHAR_TYPE,
-        C_CHAR_PTR_TYPE: integer;
-
 implementation
 
 uses
    System.SysUtils, System.StrUtils, System.Classes, SynHighlighterCpp, Vcl.Graphics,
    Main_Block, ApplicationCommon, LangDefinition, ParserHelper;
 
+const
+   C_STRING_DELIM = #34;
+   C_CHAR_DELIM   = #39;
+
 var
    cLang: TLangDefinition;
-
-procedure C_ExecuteBeforeGeneration;
-begin
-   // execute parse to set _flag variables
-   io_flag   := 0;
-   math_flag := 0;
-   str_flag  := 0;
-   if GProject <> nil then
-      GProject.RefreshStatements;
-end;
+   C_INT_TYPE,
+   C_REAL_TYPE,
+   C_CHAR_TYPE,
+   C_CHAR_PTR_TYPE: integer;
 
 procedure C_LibSectionGenerator(ALines: TStringList);
 var
@@ -65,12 +49,6 @@ var
 begin
    libList := GProject.GetLibraryList;
    try
-      if math_flag <> 0 then
-         libList.Add('math');
-      if str_flag <> 0 then
-         libList.Add('string');
-      if io_flag <> 0 then
-         libList.Add('stdio');
       for lib in libList do
       begin
          libIncl := lib;
@@ -186,7 +164,6 @@ initialization
    cLang := GInfra.GetLangDefinition(C_LANG_ID);
    if cLang <> nil then
    begin
-      cLang.ExecuteBeforeGeneration :=  C_ExecuteBeforeGeneration;
       cLang.LibSectionGenerator := C_LibSectionGenerator;
       cLang.MainFunctionSectionGenerator := C_MainFunctionSectionGenerator;
       cLang.SetHLighterAttrs := C_SetHLighterAttrs;
