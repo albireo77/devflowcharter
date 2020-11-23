@@ -52,7 +52,7 @@ type
          function GetId: integer;
          function IsDeclared(const AName: string; AssociatedListCheck: boolean): boolean;
          function AddUpdateRow: integer; virtual;
-         function IsRowVisible(ARow: integer): boolean;
+         function IsControlVisibleAtRow(AControl: TWinControl; ARow: integer): boolean;
          function FindRow(x, y: integer): integer;
          procedure OnRowMovedList(Sender: TObject; FromIndex, ToIndex: Longint);
          procedure OnClickAdd(Sender: TObject); virtual; abstract;
@@ -1104,7 +1104,7 @@ begin
    result.Parent := sgList.Parent;
    result.AllowGrayed := GInfra.CurrentLang.AllowTransExternVarConst;
    result.SetBounds(pnt.X, pnt.Y, 12, 12);
-   result.Visible := IsRowVisible(ARow) and (result.BoundsRect.Right < sgList.ClientWidth + sgList.Left + 2);
+   result.Visible := IsControlVisibleAtRow(result, ARow);
    result.OnClick := OnClickChBox;
    result.Repaint;
 end;
@@ -1147,7 +1147,7 @@ begin
          begin
             winControl := TWinControl(obj);
             TInfra.MoveWin(winControl, GetCheckBoxPoint(FExternalCol, i));
-            winControl.Visible := IsRowVisible(i) and (winControl.BoundsRect.Right < sgList.ClientWidth + sgList.Left + 2);
+            winControl.Visible := IsControlVisibleAtRow(winControl, i);
          end;
       end;
    end;
@@ -1163,9 +1163,11 @@ begin
    RefreshCheckBoxes;
 end;
 
-function TDeclareList.IsRowVisible(ARow: integer): boolean;
+function TDeclareList.IsControlVisibleAtRow(AControl: TWinControl; ARow: integer): boolean;
 begin
-   result := (ARow >= sgList.TopRow) and (ARow < sgList.TopRow+sgList.VisibleRowCount);
+   result := (ARow >= sgList.TopRow) and
+             (ARow < sgList.TopRow + sgList.VisibleRowCount) and
+             (AControl.BoundsRect.Right < sgList.ClientWidth + sgList.Left + 2);
 end;
 
 function TDeclareList.GetFocusColor: TColor;
