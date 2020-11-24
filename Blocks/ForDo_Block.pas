@@ -188,11 +188,17 @@ begin
 end;
 
 procedure TForDoBlock.OnChangeExtend(AStatement: TStatement);
+var
+   w: integer;
 begin
-   AStatement.Width := Max(TInfra.GetAutoWidth(AStatement), 30);
-   PutTextControls;
-   FInitParms.Width := edtStop.Left + edtStop.Width + 76;
-   FInitParms.BottomPoint.X := FInitParms.Width - RIGHT_MARGIN;
+   w := Max(TInfra.GetAutoWidth(AStatement), 30);
+   if w <> AStatement.Width then
+   begin
+      AStatement.Width := w;
+      PutTextControls;
+      FInitParms.Width := edtStop.Left + edtStop.Width + 76;
+      FInitParms.BottomPoint.X := FInitParms.Width - RIGHT_MARGIN;
+   end;
 end;
 
 procedure TForDoBlock.SetDescOrder(AValue: boolean);
