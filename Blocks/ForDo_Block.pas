@@ -319,13 +319,13 @@ procedure TForDoBlock.VarOnChange(Sender: TObject);
 var
    header: TUserFunctionHeader;
    isOk: boolean;
+   w: integer;
 begin
    GProject.SetChanged;
    edtVar.Font.Color := GSettings.FontColor;
    edtVar.Hint := i18Manager.GetFormattedString('ExpOk', [edtVar.Text, sLineBreak]);
    if not GInfra.CurrentLang.ForDoVarList then
       UpdateEditor(edtVar);
-   edtVar.Width := Max(TInfra.GetAutoWidth(edtVar), IfThen(GInfra.CurrentLang.ForDoVarList, 28, 5));
    if GSettings.ParseFor then
    begin
       if (GProject.GlobalVars <> nil) and GProject.GlobalVars.IsValidLoopVar(edtVar.Text) then
@@ -344,7 +344,12 @@ begin
             edtVar.Hint := i18Manager.GetFormattedString('NoCVar', [sLineBreak]);
       end;
    end;
-   PutTextControls;
+   w := Max(TInfra.GetAutoWidth(edtVar), IfThen(GInfra.CurrentLang.ForDoVarList, 28, 5));
+   if w <> edtVar.Width then
+   begin
+      edtVar.Width := w;
+      PutTextControls;
+   end;
 end;
 
 function TForDoBlock.FillCodedTemplate(const ALangId: string): string;
