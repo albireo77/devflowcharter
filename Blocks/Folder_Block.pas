@@ -32,7 +32,6 @@ type
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
-         function Clone(ABranch: TBranch): TBlock; override;
       protected
          procedure Paint; override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
@@ -69,12 +68,6 @@ begin
    Constraints.MinHeight := FInitParms.Height;
    FStatement.Free;
    FStatement := nil;
-end;
-
-function TFolderBlock.Clone(ABranch: TBranch): TBlock;
-begin
-   result := TFolderBlock.Create(ABranch, GetBlockParms);
-   result.CloneFrom(Self);
 end;
 
 constructor TFolderBlock.Create(ABranch: TBranch);

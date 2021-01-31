@@ -35,7 +35,6 @@ type
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload; override;
-         function Clone(ABranch: TBranch): TBlock; override;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
          procedure ChangeColor(AColor: TColor); override;
    end;
@@ -49,16 +48,6 @@ constructor TMultiInstrBlock.Create(ABranch: TBranch; const ABlockParms: TBlockP
 begin
    inherited Create(ABranch, ABlockParms);
    FStatements.ShowHint := true;
-end;
-
-function TMultiInstrBlock.Clone(ABranch: TBranch): TBlock;
-var
-   block: TMultiInstrBlock;
-begin
-   block := TMultiInstrBlock.Create(ABranch, GetBlockParms);
-   block.FStatements.CloneFrom(FStatements);
-   block.CloneFrom(Self);
-   result := block;
 end;
 
 procedure TMultiInstrBlock.Paint;

@@ -42,7 +42,6 @@ type
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
-         function Clone(ABranch: TBranch): TBlock; override;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
          procedure ResizeHorz(AContinue: boolean); override;
@@ -97,12 +96,6 @@ begin
    FStatement.Alignment := taCenter;
    FStatement.OnChangeExtend := OnStatementChange;
 
-end;
-
-function TCaseBlock.Clone(ABranch: TBranch): TBlock;
-begin
-   result := TCaseBlock.Create(ABranch, GetBlockParms);
-   result.CloneFrom(Self);
 end;
 
 procedure TCaseBlock.CloneFrom(ABlock: TBlock);

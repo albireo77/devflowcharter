@@ -50,7 +50,6 @@ type
          property DescOrder: boolean read FDescOrder write SetDescOrder;
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
-         function Clone(ABranch: TBranch): TBlock; override;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
          procedure ExpandFold(AResize: boolean); override;
          function GetTextControl: TCustomEdit; override;
@@ -151,12 +150,6 @@ begin
    Constraints.MinHeight := DEFAULT_HEIGHT;
    FStatement.Free;
    FStatement := nil;
-end;
-
-function TForDoBlock.Clone(ABranch: TBranch): TBlock;
-begin
-   result := TForDoBlock.Create(ABranch, GetBlockParms);
-   result.CloneFrom(Self);
 end;
 
 procedure TForDoBlock.CloneFrom(ABlock: TBlock);

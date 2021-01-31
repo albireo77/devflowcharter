@@ -32,7 +32,6 @@ type
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
-         function Clone(ABranch: TBranch): TBlock; override;
       protected
          procedure Paint; override;
    end;
@@ -62,12 +61,6 @@ begin
    TopHook.X := BottomHook;
    Constraints.MinWidth := 140;
    Constraints.MinHeight := 51;
-end;
-
-function TFunctionCallBlock.Clone(ABranch: TBranch): TBlock;
-begin
-   result := TFunctionCallBlock.Create(ABranch, GetBlockParms);
-   result.CloneFrom(Self);
 end;
 
 constructor TFunctionCallBlock.Create(ABranch: TBranch);

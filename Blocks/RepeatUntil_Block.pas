@@ -34,7 +34,6 @@ type
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
-         function Clone(ABranch: TBranch): TBlock; override;
          function GetDescTemplate(const ALangId: string): string; override;
       protected
          procedure Paint; override;
@@ -79,12 +78,6 @@ begin
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    FStatement.Alignment := taCenter;
-end;
-
-function TRepeatUntilBlock.Clone(ABranch: TBranch): TBlock;
-begin
-   result := TRepeatUntilBlock.Create(ABranch, GetBlockParms);
-   result.CloneFrom(Self);
 end;
 
 constructor TRepeatUntilBlock.Create(ABranch: TBranch);

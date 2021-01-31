@@ -858,8 +858,21 @@ begin
 end;
 
 function TBlock.Clone(ABranch: TBranch): TBlock;
+var
+  blockType: TRttiType;
+  method: TRttiMethod;
 begin
-{}
+   result := nil;
+   blockType := TRttiContext.Create.GetType(ClassInfo);
+   for method in blockType.GetMethods do
+   begin
+      if method.IsConstructor and (Length(method.GetParameters) = 2) then
+      begin
+         result := method.Invoke(blockType.AsInstance.MetaclassType, [TValue.From<TBranch>(ABranch), TValue.From<TBlockParms>(GetBlockParms)]).AsType<TBlock>;
+         result.CloneFrom(Self);
+         break;
+      end;
+   end;
 end;
 
 procedure TBlock.NCHitTest(var Msg: TWMNCHitTest);

@@ -42,7 +42,6 @@ type
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
-         function Clone(ABranch: TBranch): TBlock; override;
          procedure ResizeHorz(AContinue: boolean); override;
          procedure ResizeVert(AContinue: boolean); override;
          procedure ExpandFold(AResize: boolean); override;
@@ -87,12 +86,6 @@ begin
    Constraints.MinHeight := FInitParms.Height;
    FStatement.Alignment := taCenter;
 
-end;
-
-function TIfElseBlock.Clone(ABranch: TBranch): TBlock;
-begin
-   result := TIfElseBlock.Create(ABranch, GetBlockParms);
-   result.CloneFrom(Self);
 end;
 
 constructor TIfElseBlock.Create(ABranch: TBranch);

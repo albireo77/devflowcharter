@@ -32,7 +32,6 @@ type
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
-         function Clone(ABranch: TBranch): TBlock; override;
       protected
          procedure Paint; override;
          procedure SetWidth(AMinX: integer); override;
@@ -66,12 +65,6 @@ begin
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    FStatement.Alignment := taCenter;
-end;
-
-function TWhileDoBlock.Clone(ABranch: TBranch): TBlock;
-begin
-   result := TWhileDoBlock.Create(ABranch, GetBlockParms);
-   result.CloneFrom(Self);
 end;
 
 constructor TWhileDoBlock.Create(ABranch: TBranch);

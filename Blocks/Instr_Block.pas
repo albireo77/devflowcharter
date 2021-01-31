@@ -31,7 +31,6 @@ type
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
-         function Clone(ABranch: TBranch): TBlock; override;
       protected
          procedure Paint; override;
    end;
@@ -64,12 +63,6 @@ end;
 constructor TInstrBlock.Create(ABranch: TBranch);
 begin
    Create(ABranch, TBlockParms.New(blInstr, 0, 0, 140, 51));
-end;
-
-function TInstrBlock.Clone(ABranch: TBranch): TBlock;
-begin
-   result := TInstrBlock.Create(ABranch, GetBlockParms);
-   result.CloneFrom(Self);
 end;
 
 procedure TInstrBlock.Paint;

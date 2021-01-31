@@ -30,7 +30,6 @@ type
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
-         function Clone(ABranch: TBranch): TBlock; override;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
          procedure ChangeColor(AColor: TColor); override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
@@ -73,12 +72,6 @@ begin
    FStatement.Anchors := [akRight, akLeft, akTop];
    FStatement.Alignment := taCenter;
    FStatement.Color := GSettings.DesktopColor;
-end;
-
-function TReturnBlock.Clone(ABranch: TBranch): TBlock;
-begin
-   result := TReturnBlock.Create(ABranch, GetBlockParms);
-   result.CloneFrom(Self);
 end;
 
 constructor TReturnBlock.Create(ABranch: TBranch);
