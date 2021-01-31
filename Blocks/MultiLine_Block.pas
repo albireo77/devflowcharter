@@ -42,11 +42,11 @@ type
          FErrLine: integer;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload; virtual;
          procedure Paint; override;
-         function Clone(ABranch: TBranch): TBlock; override;
          procedure OnDblClickMemo(Sender: TObject);
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
          procedure OnMouseDownMemo(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure OnKeyUpMemo(Sender: TObject; var Key: Word; Shift: TShiftState);
+         procedure CloneFrom(ABlock: TBlock); override;
    end;
 
 implementation
@@ -87,10 +87,11 @@ begin
    FErrLine := -1;
 end;
 
-function TMultiLineBlock.Clone(ABranch: TBranch): TBlock;
+procedure TMultiLineBlock.CloneFrom(ABlock: TBlock);
 begin
-   result := inherited Clone(ABranch);
-   TMultiLineBlock(result).FStatements.CloneFrom(FStatements);
+   inherited CloneFrom(ABlock);
+   if ABlock is TMultiLineBlock then
+      FStatements.CloneFrom(TMultiLineBlock(ABlock).FStatements)
 end;
 
 procedure TMultiLineBlock.OnDblClickMemo(Sender: TObject);

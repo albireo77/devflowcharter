@@ -133,7 +133,7 @@ type
          property Id: integer read GetId;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms);
          destructor Destroy; override;
-         function Clone(ABranch: TBranch): TBlock; virtual;
+         function Clone(ABranch: TBranch): TBlock;
          procedure ChangeColor(AColor: TColor); virtual;
          procedure SetFontStyle(const AStyle: TFontStyles);
          procedure SetFontSize(ASize: integer);
