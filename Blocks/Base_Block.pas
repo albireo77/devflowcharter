@@ -882,7 +882,7 @@ begin
       end;
    end;
    if result = nil then
-      raise Exception.Create('(TBranch, TBlockParms) public constructor not found in class ' + ClassName);
+      raise Exception.Create('public constructor (TBranch, TBlockParms) not found in class ' + ClassName);
 end;
 
 procedure TBlock.NCHitTest(var Msg: TWMNCHitTest);
