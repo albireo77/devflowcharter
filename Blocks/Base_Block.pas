@@ -72,6 +72,7 @@ type
          FFrame,
          FMouseLeave: boolean;
          FShape: TColorShape;
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms);
          procedure MyOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MyOnMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); virtual;
@@ -131,7 +132,6 @@ type
          property BType: TBlockType read FType default blUnknown;
          property ParentBranch: TBranch read FParentBranch;
          property Id: integer read GetId;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms);
          destructor Destroy; override;
          function Clone(ABranch: TBranch): TBlock;
          procedure ChangeColor(AColor: TColor); virtual;
@@ -284,8 +284,8 @@ type
 implementation
 
 uses
-   System.StrUtils, Vcl.Menus, System.Types, System.Math, System.Rtti, Main_Block,
-   Return_Block, ApplicationCommon, BlockFactory, UserFunction, XMLProcessor,
+   System.StrUtils, Vcl.Menus, System.Types, System.Math, System.Rtti, System.TypInfo,
+   Main_Block, Return_Block, ApplicationCommon, BlockFactory, UserFunction, XMLProcessor,
    Navigator_Form, LangDefinition, FlashThread, Main_Form;
 
 type
@@ -870,7 +870,11 @@ begin
    for method in blockType.GetMethods do
    begin
       params := method.GetParameters;
-      if method.IsConstructor and (Length(params) = 2) and (params[0].ParamType = ctx.GetType(TBranch)) and (params[1].ParamType = ctx.GetType(TypeInfo(TBlockParms))) then
+      if method.IsConstructor
+         and (method.Visibility = mvPublic)
+         and (Length(params) = 2)
+         and (params[0].ParamType = ctx.GetType(TBranch))
+         and (params[1].ParamType = ctx.GetType(TypeInfo(TBlockParms))) then
       begin
          result := method.Invoke(blockType.AsInstance.MetaclassType, [TValue.From<TBranch>(ABranch), TValue.From<TBlockParms>(GetBlockParms)]).AsType<TBlock>;
          result.CloneFrom(Self);
@@ -878,7 +882,7 @@ begin
       end;
    end;
    if result = nil then
-      raise Exception.Create('2-parameter constructor not found for class ' + ClassName);
+      raise Exception.Create('(TBranch, TBlockParms) public constructor not found in class ' + ClassName);
 end;
 
 procedure TBlock.NCHitTest(var Msg: TWMNCHitTest);

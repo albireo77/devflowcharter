@@ -38,6 +38,7 @@ type
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
          function GetTreeNodeText(ANodeOffset: integer = 0): string; override;
+         procedure CloneFrom(ABlock: TBlock); override;
       protected
          FErrLine: integer;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload; virtual;
@@ -46,7 +47,6 @@ type
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
          procedure OnMouseDownMemo(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure OnKeyUpMemo(Sender: TObject; var Key: Word; Shift: TShiftState);
-         procedure CloneFrom(ABlock: TBlock); override;
    end;
 
 implementation
