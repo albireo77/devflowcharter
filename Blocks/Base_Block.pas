@@ -207,6 +207,7 @@ type
          FFalseLabel: string;
          FFixedBranches: integer;
          FDiamond: array[D_LEFT..D_LEFT_CLOSE] of TPoint;
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms);
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
          procedure SetWidth(AMinX: integer); virtual;
@@ -221,7 +222,6 @@ type
          Expanded: boolean;
          FFoldParms: TInitParms;
          property BlockImportMode: boolean read FBlockImportMode write FBlockImportMode;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms);
          destructor Destroy; override;
          procedure ResizeHorz(AContinue: boolean); virtual;
          procedure ResizeVert(AContinue: boolean); virtual;
