@@ -877,6 +877,8 @@ begin
          break;
       end;
    end;
+   if result = nil then
+      raise Exception.Create('2-parameter constructor not found for class ' + ClassName);
 end;
 
 procedure TBlock.NCHitTest(var Msg: TWMNCHitTest);
