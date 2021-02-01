@@ -862,13 +862,15 @@ var
   blockType: TRttiType;
   method: TRttiMethod;
   params: TArray<TRttiParameter>;
+  ctx: TRttiContext;
 begin
    result := nil;
-   blockType := TRttiContext.Create.GetType(ClassInfo);
+   ctx := TRttiContext.Create;
+   blockType := ctx.GetType(ClassInfo);
    for method in blockType.GetMethods do
    begin
       params := method.GetParameters;
-      if method.IsConstructor and (Length(params) = 2) and (params[0].Name = 'ABranch') and (params[1].Name = 'ABlockParms') then
+      if method.IsConstructor and (Length(params) = 2) and (params[0].ParamType = ctx.GetType(TBranch)) and (params[1].ParamType = ctx.GetType(TypeInfo(TBlockParms))) then
       begin
          result := method.Invoke(blockType.AsInstance.MetaclassType, [TValue.From<TBranch>(ABranch), TValue.From<TBlockParms>(GetBlockParms)]).AsType<TBlock>;
          result.CloneFrom(Self);
