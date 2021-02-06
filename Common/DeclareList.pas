@@ -391,8 +391,6 @@ begin
       s := i18Manager.GetString('sg' + FKind + 'ListCol' + ACol.ToString)
    else
       s := AColLabel;
-   if not s.EndsWith(':') then
-      s := s + ':';
    sgList.Cells[ACol, 0] := s;
 end;
 
