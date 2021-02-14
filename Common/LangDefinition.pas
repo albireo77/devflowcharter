@@ -331,9 +331,11 @@ end;
 destructor TLangDefinition.Destroy;
 begin
    KeyWords.Free;
+   KeyWords := nil;
    NativeDataTypes := nil;
    NativeFunctions := nil;
    Parser.Free;
+   Parser := nil;
    if not FName.Trim.IsEmpty then
       SaveCompilerData;
 {$IFDEF USE_CODEFOLDING}
