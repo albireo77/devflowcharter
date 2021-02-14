@@ -121,6 +121,7 @@ type
          function SetCurrentLang(const ALangName: string): TLangDefinition;
          function ValidateConstId(const AId: string): integer;
          function ValidateId(const AId: string): integer;
+         function ParseVarSize(const ASize: string): boolean;
          procedure SetLangHiglighterAttributes;
          procedure GetLangNames(AList: TStrings);
          procedure SetHLighters;
@@ -1452,6 +1453,18 @@ begin
          end;
       end;
    end;
+end;
+
+function TInfra.ParseVarSize(const ASize: string): boolean;
+var
+   lang: TLangDefinition;
+   goParse: boolean;
+begin
+   result := true;
+   lang := GetLangDefinition(PASCAL_LANG_ID);
+   goParse := (lang <> nil) and Assigned(lang.Parse);
+   if (ASize <> '') and ((ASize[1] = '0') or (ASize[1] = '-') or (goParse and not lang.Parse(ASize, yymVarSize))) then
+      result := false;
 end;
 
 function TInfra.ValidateId(const AId: string): integer;

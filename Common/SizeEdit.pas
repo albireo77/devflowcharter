@@ -41,7 +41,7 @@ type
 implementation
 
 uses
-   System.SysUtils, System.StrUtils, System.Math, ApplicationCommon, LangDefinition, YaccLib;
+   System.SysUtils, System.StrUtils, System.Math, ApplicationCommon;
 
 constructor TSizeEdit.Create(AParent: TWinControl);
 begin
@@ -60,11 +60,8 @@ end;
 
 function TSizeEdit.ParseSize: boolean;
 var
-   dim: string;
    i, dcount: integer;
-   lang: TLangDefinition;
    dims: TArray<string>;
-   goParse: boolean;
 begin
    result := true;
    if GSettings.ValidateDeclaration then
@@ -74,17 +71,12 @@ begin
          result := false
       else if dcount > 0 then
       begin
-         lang := GInfra.GetLangDefinition(PASCAL_LANG_ID);
-         goParse := (lang <> nil) and Assigned(lang.Parse);
          dims := GetDimensions;
          for i := 0 to High(dims) do
          begin
-            dim := dims[i];
-            if (dim <> '') and ((dim[1] = '0') or (dim[1] = '-') or (goParse and not lang.Parse(dim, yymVarSize))) then
-            begin
-               result := false;
+            result := GInfra.ParseVarSize(dims[i]);
+            if not result then
                break;
-            end;
          end;
       end;
    end;
