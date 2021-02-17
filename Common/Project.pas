@@ -130,6 +130,8 @@ uses
 var
    ByPageIndexUserDataTypeComparer: IComparer<TUserDataType>;
    ByPageIndexUserFunctionComparer: IComparer<TUserFunction>;
+   ByPageIndexComponentComparer: IComparer<TComponent>;
+   ByZOrderComponentComparer: IComparer<TComponent>;
 
 constructor TProject.Create;
 begin
@@ -454,7 +456,7 @@ begin
    for i := 0 to pageControl.PageCount-1 do
       UpdateZOrder(TBlockTabSheet(pageControl.Pages[i]).Box);
 
-   components := GetComponents<TComponent>(TComponentComparer.Create(PAGE_INDEX_COMPARE));
+   components := GetComponents<TComponent>(ByPageIndexComponentComparer);
    for comp in components do
    begin
       if Supports(comp, IXMLable, xmlObj) and xmlObj.Active then
@@ -841,7 +843,7 @@ var
    winControl: IWinControl;
    components: IEnumerable<TComponent>;
 begin
-   components := GetComponents<TComponent>(TComponentComparer.Create(Z_ORDER_COMPARE));
+   components := GetComponents<TComponent>(ByZOrderComponentComparer);
    for comp in components do
    begin
       if Supports(comp, IWinControl, winControl) then
@@ -1199,6 +1201,8 @@ initialization
    );
 
    ByPageIndexUserFunctionComparer := TUserFunctionComparer.Create(PAGE_INDEX_COMPARE);
+   ByPageIndexComponentComparer := TComponentComparer.Create(PAGE_INDEX_COMPARE);
+   ByZOrderComponentComparer := TComponentComparer.Create(Z_ORDER_COMPARE);
 
 end.
 
