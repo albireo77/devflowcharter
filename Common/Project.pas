@@ -1130,7 +1130,7 @@ var
 begin
    result := TStringList.Create;
    result.CaseSensitive := GInfra.CurrentLang.CaseSensitiveSyntax;
-   components := GetComponents<TComponent>(TComponentComparer.Create(PAGE_INDEX_COMPARE));
+   components := GetComponents<TComponent>(ByPageIndexComponentComparer);
    for comp in components do
    begin
       if Supports(comp, ITabbable, tabObj) then
