@@ -165,16 +165,16 @@ end;
 procedure TIdentInfo.SetType(AType: integer);
 begin
    FType := AType;
-   FTypeAsString := TParserHelper.GetTypeAsString(FType);
-   FTypeOriginal := TParserHelper.GetOriginalType(FType);
+   FTypeAsString := TParserHelper.GetTypeAsString(AType);
+   FTypeOriginal := TParserHelper.GetOriginalType(AType);
    FTypeOriginalAsString := TParserHelper.GetTypeAsString(FTypeOriginal);
-   FTypePointer := TParserHelper.GetPointerType(FType);
-   FIsInteger := TParserHelper.IsIntegerType(FType);
-   FIsReal := TParserHelper.IsRealType(FType);
+   FTypePointer := TParserHelper.GetPointerType(AType);
+   FIsInteger := TParserHelper.IsIntegerType(AType);
+   FIsReal := TParserHelper.IsRealType(AType);
    FIsNumeric := FIsInteger or FIsReal;
-   FIsRecord := TParserHelper.IsRecordType(FType);
-   FIsEnum := TParserHelper.IsEnumType(FType);
-   FIsPointer := TParserHelper.IsPointerType(FType);
+   FIsRecord := TParserHelper.IsRecordType(AType);
+   FIsEnum := TParserHelper.IsEnumType(AType);
+   FIsPointer := TParserHelper.IsPointerType(AType);
 end;
 
 class function TParserHelper.GetForVarType: integer;
