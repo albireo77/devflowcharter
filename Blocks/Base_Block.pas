@@ -410,7 +410,7 @@ procedure TGroupBlock.CloneFrom(ABlock: TBlock);
 var
    grpBlock: TGroupBlock;
    newBlock, prevBlock, block: TBlock;
-   lBranch, lBranch2: TBranch;
+   br, br2: TBranch;
    i: integer;
 begin
    inherited CloneFrom(ABlock);
@@ -443,16 +443,16 @@ begin
       end;
       for i := PRIMARY_BRANCH_IDX to grpBlock.FBranchList.Count-1 do
       begin
-         lBranch := grpBlock.FBranchList[i];
-         lBranch2 := GetBranch(i);
-         if lBranch2 = nil then
-            lBranch2 := AddBranch(lBranch.Hook);
+         br := grpBlock.FBranchList[i];
+         br2 := GetBranch(i);
+         if br2 = nil then
+            br2 := AddBranch(br.Hook);
          prevBlock := nil;
-         for block in lBranch do
+         for block in br do
          begin
-            newBlock := block.Clone(lBranch2);
-            lBranch2.InsertAfter(newBlock, prevBlock);
-            prevBlock := lBranch2.Last;
+            newBlock := block.Clone(br2);
+            br2.InsertAfter(newBlock, prevBlock);
+            prevBlock := br2.Last;
          end;
       end;
    end;
@@ -588,23 +588,23 @@ end;
 procedure TGroupBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 var
    i: integer;
-   p: PPoint;
+   p: TPoint;
 begin
    if Expanded then
    begin
       for i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
       begin
-         p := @FBranchList[i].Hook;
+         p := FBranchList[i].Hook;
          if Rect(p.X-5, TopHook.Y, p.X+5, p.Y).Contains(Point(X, Y)) then
          begin
-            DrawArrow(p.X, TopHook.Y, p^, arrEnd, clRed);
+            DrawArrow(p.X, TopHook.Y, p, arrEnd, clRed);
             Ired := i;
             Cursor := TCursor(GCustomCursor);
             break;
          end
          else if Ired = i then
          begin
-            DrawArrow(p.X, TopHook.Y, p^);
+            DrawArrow(p.X, TopHook.Y, p);
             Ired := -1;
             Cursor := crDefault;
             break;
@@ -724,15 +724,11 @@ end;
 
 procedure TGroupBlock.OnMouseLeave(AClearRed: boolean = true);
 var
-   p: PPoint;
-   lBranch: TBranch;
+   br: TBranch;
 begin
-   lBranch := GetBranch(Ired);
-   if lBranch <> nil then
-   begin
-      p := @lBranch.Hook;
-      DrawArrow(p.X, TopHook.Y, p^);
-   end;
+   br := GetBranch(Ired);
+   if br <> nil then
+      DrawArrow(br.Hook.X, TopHook.Y, br.Hook);
    inherited OnMouseLeave(AClearRed);
 end;
 
@@ -787,13 +783,13 @@ end;
 function TGroupBlock.GenerateNestedCode(ALines: TStringList; ABranchInd, ADeep: integer; const ALangId: string): integer;
 var
    block: TBlock;
-   lBranch: TBranch;
+   br: TBranch;
 begin
    result := 0;
-   lBranch := GetBranch(ABranchInd);
-   if lBranch <> nil then
+   br := GetBranch(ABranchInd);
+   if br <> nil then
    begin
-      for block in lBranch do
+      for block in br do
           result := result + block.GenerateCode(ALines, ALangId, ADeep);
    end;
 end;
@@ -1021,7 +1017,7 @@ var
    block, blockPrev: TBlock;
    i, first, last: integer;
    p: TPoint;
-   lBranch: TBranch;
+   br: TBranch;
 begin
    if GetBranch(idx) <> nil then
    begin
@@ -1036,13 +1032,13 @@ begin
    for i := first to last do
    begin
       blockPrev := nil;
-      lBranch := FBranchList[i];
-      for block in lBranch do
+      br := FBranchList[i];
+      for block in br do
       begin
          if blockPrev <> nil then
             p := Point(blockPrev.BottomPoint.X+blockPrev.Left-block.TopHook.X, blockPrev.BoundsRect.Bottom)
          else
-            p := Point(lBranch.Hook.X-block.TopHook.X, lBranch.Hook.Y+1);
+            p := Point(br.Hook.X-block.TopHook.X, br.Hook.Y+1);
          TInfra.MoveWin(block, p);
          blockPrev := block;
       end;
@@ -1723,14 +1719,14 @@ end;
 
 function TGroupBlock.CanInsertReturnBlock: boolean;
 var
-   lBranch: TBranch;
+   br: TBranch;
 begin
    if Ired = 0 then
       result := (FParentBranch <> nil) and (FParentBranch.Count > 0) and (FParentBranch.Last = Self)
    else
    begin
-      lBranch := GetBranch(Ired);
-      result := (lBranch <> nil) and (lBranch.Count = 0);
+      br := GetBranch(Ired);
+      result := (br <> nil) and (br.Count = 0);
    end;
 end;
 
@@ -1778,14 +1774,14 @@ end;
 function TGroupBlock.FindLastRow(AStart: integer; ALines: TStrings): integer;
 var
    i: integer;
-   lBranch: TBranch;
+   br: TBranch;
 begin
    result := inherited FindLastRow(AStart, ALines);
    for i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
    begin
-      lBranch := FBranchList[i];
-      if lBranch.Count > 0 then
-         result := Max(result, lBranch.Last.FindLastRow(AStart, ALines));
+      br := FBranchList[i];
+      if br.Count > 0 then
+         result := Max(result, br.Last.FindLastRow(AStart, ALines));
    end;
 end;
 
@@ -2107,17 +2103,17 @@ end;
 
 function TGroupBlock.RemoveBranch(AIndex: integer): boolean;
 var
-   lBranch: TBranch;
+   br: TBranch;
    obj: TObject;
 begin
    result := false;
-   lBranch := GetBranch(AIndex);
-   if (lBranch <> nil) and (AIndex > FFixedBranches) then
+   br := GetBranch(AIndex);
+   if (br <> nil) and (AIndex > FFixedBranches) then
    begin
       obj := nil;
-      if (GClpbrd.UndoObject is TBlock) and (TBlock(GClpbrd.UndoObject).ParentBranch = lBranch) then
+      if (GClpbrd.UndoObject is TBlock) and (TBlock(GClpbrd.UndoObject).ParentBranch = br) then
          obj := GClpbrd.UndoObject;
-      if FBranchList.Remove(lBranch) <> -1 then
+      if FBranchList.Remove(br) <> -1 then
       begin
          obj.Free;
          AfterRemovingBranch;
@@ -2213,7 +2209,7 @@ var
    brx, fw, fh, i: integer;
    txt: string;
    tag1, tag2: IXMLElement;
-   lBranch: TBranch;
+   br: TBranch;
    unPin: boolean;
    comment: TComment;
    block: TBlock;
@@ -2259,22 +2255,22 @@ begin
 
          for i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
          begin
-            lBranch := FBranchList[i];
+            br := FBranchList[i];
 
             tag2 := ATag.OwnerDocument.CreateElement(BRANCH_TAG);
             ATag.AppendChild(tag2);
 
-            tag2.SetAttribute(ID_ATTR, lBranch.Id.ToString);
+            tag2.SetAttribute(ID_ATTR, br.Id.ToString);
 
-            if lBranch.Statement <> nil then
-               tag2.SetAttribute(BRANCH_STMNT_ATTR, lBranch.Statement.Id.ToString);
+            if br.Statement <> nil then
+               tag2.SetAttribute(BRANCH_STMNT_ATTR, br.Statement.Id.ToString);
 
             tag1 := ATag.OwnerDocument.CreateElement('x');
-            TXMLProcessor.AddText(tag1, lBranch.hook.X.ToString);
+            TXMLProcessor.AddText(tag1, br.hook.X.ToString);
             tag2.AppendChild(tag1);
 
             tag1 := ATag.OwnerDocument.CreateElement('y');
-            TXMLProcessor.AddText(tag1, lBranch.hook.Y.ToString);
+            TXMLProcessor.AddText(tag1, br.hook.Y.ToString);
             tag2.AppendChild(tag1);
 
             for block in GetBlocks(i) do

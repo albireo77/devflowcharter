@@ -101,7 +101,7 @@ end;
 procedure TCaseBlock.CloneFrom(ABlock: TBlock);
 var
    i: integer;
-   lBranch, lBranch2: TBranch;
+   br, br2: TBranch;
    caseBlock: TCaseBlock;
 begin
    inherited CloneFrom(ABlock);
@@ -110,12 +110,13 @@ begin
       caseBlock := TCaseBlock(ABlock);
       for i := DEFAULT_BRANCH_IDX+1 to caseBlock.FBranchList.Count-1 do
       begin
-         lBranch2 := GetBranch(i);
-         if lBranch2 = nil then
-            continue;
-         lBranch := caseBlock.FBranchList[i];
-         lBranch2.Statement.Text := lBranch.Statement.Text;
-         lBranch2.Statement.Visible := lBranch.Statement.Visible;
+         br2 := GetBranch(i);
+         if br2 <> nil then
+         begin
+            br := caseBlock.FBranchList[i];
+            br2.Statement.Text := br.Statement.Text;
+            br2.Statement.Visible := br.Statement.Visible;
+         end;
       end;
    end;
 end;
@@ -127,22 +128,22 @@ end;
 
 procedure TCaseBlock.Paint;
 var
-   pnt, dBottom, dRight: PPoint;
+   pnt, dBottom, dRight: TPoint;
    i, x, y: integer;
 begin
    inherited;
    if Expanded then
    begin
       IPoint.X := DefaultBranch.Hook.X - 40;
-      dBottom := @FDiamond[D_BOTTOM];
-      dRight := @FDiamond[D_RIGHT];
+      dBottom := FDiamond[D_BOTTOM];
+      dRight := FDiamond[D_RIGHT];
       TopHook.Y := dBottom.Y + 10;
       BottomPoint.Y := Height - 31;
       DrawArrow(BottomPoint, BottomPoint.X, Height-1);
       for i := DEFAULT_BRANCH_IDX to FBranchList.Count-1 do
       begin
-         pnt := @FBranchList[i].Hook;
-         DrawArrow(pnt.X, TopHook.Y, pnt^);
+         pnt := FBranchList[i].Hook;
+         DrawArrow(pnt.X, TopHook.Y, pnt);
          PlaceBranchStatement(FBranchList[i]);
       end;
       x := dBottom.X + (dRight.X - dBottom.X) div 2;
@@ -161,15 +162,15 @@ end;
 procedure TCaseBlock.OnStatementChange(AStatement: TStatement);
 var
    i: integer;
-   lBranch: TBranch;
+   br: TBranch;
 begin
    if GSettings.ParseCase then
    begin
       for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
       begin
-         lBranch := FBranchList[i];
-         if lBranch.Statement <> AStatement then
-            lBranch.Statement.Change;
+         br := FBranchList[i];
+         if br.Statement <> AStatement then
+            br.Statement.Change;
       end;
    end;
 end;
@@ -251,31 +252,31 @@ end;
 procedure TCaseBlock.ResizeHorz(AContinue: boolean);
 var
    x, leftX, rightX, i: integer;
-   lBranch: TBranch;
+   br: TBranch;
    block: TBlock;
 begin
    BottomHook := Branch.Hook.X;
    rightX := 100;
    for i := DEFAULT_BRANCH_IDX to FBranchList.Count-1 do
    begin
-      lBranch := FBranchList[i];
+      br := FBranchList[i];
       leftX := rightX;
-      lBranch.Hook.X := leftX;
+      br.Hook.X := leftX;
       x := leftX;
       LinkBlocks(i);
-      for block in lBranch do
+      for block in br do
          x := Min(block.Left, x);
-      Inc(lBranch.hook.X, leftX-x);
+      Inc(br.hook.X, leftX-x);
       LinkBlocks(i);
-      PlaceBranchStatement(lBranch);
-      if lBranch.FindInstanceOf(TReturnBlock) = -1 then
+      PlaceBranchStatement(br);
+      if br.FindInstanceOf(TReturnBlock) = -1 then
       begin
-         if lBranch.Count > 0 then
-            BottomHook := lBranch.Last.Left + lBranch.Last.BottomPoint.X
+         if br.Count > 0 then
+            BottomHook := br.Last.Left + br.Last.BottomPoint.X
          else
-            BottomHook := lBranch.Hook.X;
+            BottomHook := br.Hook.X;
       end;
-      rightX := lBranch.GetMostRight + 60;
+      rightX := br.GetMostRight + 60;
    end;
    TopHook.X := DefaultBranch.Hook.X;
    BottomPoint.X := DefaultBranch.Hook.X;
@@ -287,27 +288,27 @@ end;
 procedure TCaseBlock.ResizeVert(AContinue: boolean);
 var
    maxh, h, i: integer;
-   lBranch, hBranch: TBranch;
+   br, hBranch: TBranch;
 begin
    maxh := 0;
    hBranch := DefaultBranch;
    for i := DEFAULT_BRANCH_IDX to FBranchList.Count-1 do
    begin
-      lBranch := FBranchList[i];
-      h := lBranch.Height;
+      br := FBranchList[i];
+      h := br.Height;
       if h > maxh then
       begin
          maxh := h;
-         hBranch := lBranch;
+         hBranch := br;
       end;
    end;
    hBranch.Hook.Y := 99;
    Height := maxh + 131;
    for i := DEFAULT_BRANCH_IDX to FBranchList.Count-1 do
    begin
-      lBranch := FBranchList[i];
-      if lBranch <> hBranch then
-         lBranch.Hook.Y := maxh - lBranch.Height + 99;
+      br := FBranchList[i];
+      if br <> hBranch then
+         br.Hook.Y := maxh - br.Height + 99;
    end;
    LinkBlocks;
    if AContinue then
@@ -447,7 +448,7 @@ end;
 function TCaseBlock.GenerateTree(AParentNode: TTreeNode): TTreeNode;
 var
    newNode: TTreeNodeWithFriend;
-   lBranch: TBranch;
+   br: TBranch;
    exp1, exp2: boolean;
    i: integer;
    block: TBlock;
@@ -463,12 +464,12 @@ begin
 
    for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
    begin
-      lBranch := FBranchList[i];
-      if TInfra.IsNOkColor(lBranch.Statement.Font.Color) then
+      br := FBranchList[i];
+      if TInfra.IsNOkColor(br.Statement.Font.Color) then
          exp2 := true;
-      newNode := TTreeNodeWithFriend(AParentNode.Owner.AddChildObject(result, GetTreeNodeText(i), lBranch.Statement));
+      newNode := TTreeNodeWithFriend(AParentNode.Owner.AddChildObject(result, GetTreeNodeText(i), br.Statement));
       newNode.Offset := i;
-      for block in lBranch do
+      for block in br do
          block.GenerateTree(newNode);
    end;
 

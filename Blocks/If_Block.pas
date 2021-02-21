@@ -74,16 +74,16 @@ end;
 
 procedure TIfBlock.Paint;
 var
-   dRight, dBottom, dLeft: PPoint;
+   dRight, dBottom, dLeft: TPoint;
 begin
    inherited;
    if Expanded then
    begin
-      dRight := @FDiamond[D_RIGHT];
-      dBottom := @FDiamond[D_BOTTOM];
-      dLeft := @FDiamond[D_LEFT];
+      dRight := FDiamond[D_RIGHT];
+      dBottom := FDiamond[D_BOTTOM];
+      dLeft := FDiamond[D_LEFT];
       IPoint.X := Branch.Hook.X + 40;
-      TopHook := dBottom^;
+      TopHook := dBottom;
       BottomPoint.Y := Height - 31;
 
       DrawArrow(TopHook, Branch.Hook);
@@ -91,7 +91,7 @@ begin
       DrawTextLabel(dRight.X, dRight.Y-5, FFalseLabel, false, true);
       DrawBlockLabel(dLeft.X-5, dLeft.Y-5, GInfra.CurrentLang.LabelIf, true, true);
 
-      Canvas.PenPos := dRight^;
+      Canvas.PenPos := dRight;
       Canvas.LineTo(Width-11, dRight.Y);
       DrawArrowTo(Width-11, Height-31, arrMiddle);
       Canvas.LineTo(BottomPoint.X, Height-31);

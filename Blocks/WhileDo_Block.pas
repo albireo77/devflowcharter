@@ -74,18 +74,18 @@ end;
 
 procedure TWhileDoBlock.Paint;
 var
-   dRight, dBottom, dTop, dLeft: PPoint;
+   dRight, dBottom, dTop, dLeft: TPoint;
 begin
    inherited;
    if Expanded then
    begin
       IPoint.X := Branch.Hook.X + 40;
-      dBottom := @FDiamond[D_BOTTOM];
-      dRight := @FDiamond[D_RIGHT];
-      dTop := @FDiamond[D_TOP];
-      dLeft := @FDiamond[D_LEFT];
+      dBottom := FDiamond[D_BOTTOM];
+      dRight := FDiamond[D_RIGHT];
+      dTop := FDiamond[D_TOP];
+      dLeft := FDiamond[D_LEFT];
       BottomPoint.Y := dRight.Y;
-      TopHook := dBottom^;
+      TopHook := dBottom;
 
       DrawArrow(Branch.Hook.X, TopHook.Y, Branch.Hook);
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
@@ -100,7 +100,7 @@ begin
       DrawBlockLabel(dLeft.X+5, dLeft.Y-5, GInfra.CurrentLang.LabelWhile, true, true);
       Canvas.MoveTo(TopHook.X, 0);
       Canvas.LineTo(dTop.X, dTop.Y);
-      Canvas.PenPos := dRight^;
+      Canvas.PenPos := dRight;
       Canvas.LineTo(BottomPoint.X, BottomPoint.Y);
       DrawArrowTo(BottomPoint.X, Height-1);
    end;

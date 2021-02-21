@@ -87,19 +87,19 @@ end;
 
 procedure TRepeatUntilBlock.Paint;
 var
-   dLeft, dRight, dBottom: PPoint;
+   dLeft, dRight, dBottom: TPoint;
 begin
    inherited;
    if Expanded then
    begin
       IPoint.X := BottomHook + 40;
       IPoint.Y := Height - 30;
-      dLeft := @FDiamond[D_LEFT];
-      dRight := @FDiamond[D_RIGHT];
-      dBottom := @FDiamond[D_BOTTOM];
+      dLeft := FDiamond[D_LEFT];
+      dRight := FDiamond[D_RIGHT];
+      dBottom := FDiamond[D_BOTTOM];
       BottomPoint.Y := dRight.Y;
 
-      Canvas.PenPos := dLeft^;
+      Canvas.PenPos := dLeft;
       Canvas.LineTo(5, dLeft.Y);
       DrawArrowTo(5, 0, arrMiddle);
       Canvas.LineTo(Branch.Hook.X, TopHook.Y);
@@ -108,7 +108,7 @@ begin
       DrawTextLabel(dLeft.X, dLeft.Y-5, FLeftLabel, true, true);
       DrawTextLabel(dRight.X, dRight.Y-5, FRightLabel, false, true);
       DrawBlockLabel(dBottom.X-30, dBottom.Y-10, GInfra.CurrentLang.LabelRepeat, true);
-      Canvas.PenPos := dRight^;
+      Canvas.PenPos := dRight;
       Canvas.LineTo(BottomPoint.X, dRight.Y);
       DrawArrowTo(BottomPoint.X, Height-1);
    end;
