@@ -1267,19 +1267,19 @@ end;
 class function TInfra.GetTextWidth(const AText: string; AControl: TControl): integer;
 var
    fontInfo: PPropInfo;
-   cFont: TFont;
+   obj: TObject;
 begin
    result := 0;
    fontInfo := GetPropInfo(AControl, 'Font');
    if fontInfo <> nil then
    begin
-      cFont := TFont(GetObjectProp(AControl, fontInfo));
-      if cFont <> nil then
+      obj := GetObjectProp(AControl, fontInfo);
+      if obj is TFont then
       begin
          with TControlCanvas.Create do
          try
             Control := AControl;
-            Font.Assign(cFont);
+            Font.Assign(TFont(obj));
             result := TextWidth(AText);
          finally
             Free;
