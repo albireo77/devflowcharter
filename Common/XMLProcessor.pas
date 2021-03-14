@@ -36,6 +36,7 @@ type
    TXMLProcessor = class(TObject)
    private
       class function DialogXMLFile(ADialog: TOpenDialog; const AFileName: string = ''): string;
+      class function FindTag(ANode: IXMLNode; const ANodeName: string): IXMLElement;
    public
       class function ExportToXMLFile(AExportProc: TXMLExportProc; const AFilePath: string = ''): TError;
       class function ImportFromXMLFile(AImportProc: TXMLImportProc;
@@ -68,42 +69,31 @@ uses
    System.SysUtils, ApplicationCommon, BlockFactory, BlockTabSheet;
 
 class function TXMLProcessor.FindChildTag(ATag: IXMLElement; const AName: string): IXMLElement;
-var
-   node: IXMLNode;
 begin
-    result := nil;
-    if (ATag <> nil) and ATag.HasChildNodes then
-    begin
-        node := ATag.FirstChild;
-        while node <> nil do
-        begin
-            if node.NodeName = AName then
-            begin
-               result := node as IXMLElement;
-               break;
-            end;
-            node := node.NextSibling;
-        end;
-    end;
+   result := nil;
+   if (ATag <> nil) and ATag.HasChildNodes then
+      result := FindTag(ATag.FirstChild, AName);
 end;
 
 class function TXMLProcessor.FindNextTag(ATag: IXMLElement): IXMLElement;
-var
-   node: IXMLNode;
 begin
-    result := nil;
-    node := nil;
-    if ATag <> nil then
-       node := ATag.NextSibling;
-    while node <> nil do
-    begin
-        if node.NodeName = ATag.NodeName then
-        begin
-           result := node as IXMLElement;
-           break;
-        end;
-        node := node.NextSibling;
-    end;
+   result := nil;
+   if ATag <> nil then
+      result := FindTag(ATag.NextSibling, ATag.NodeName);
+end;
+
+class function TXMLProcessor.FindTag(ANode: IXMLNode; const ANodeName: string): IXMLElement;
+begin
+   result := nil;
+   while ANode <> nil do
+   begin
+      if ANode.NodeName = ANodeName then
+      begin
+         result := ANode as IXMLElement;
+         break;
+      end;
+      ANode := ANode.NextSibling;
+   end;
 end;
 
 class function TXMLProcessor.GetBool(ATag: IXMLElement; const AttrName: string; ADefault: boolean = false): boolean;
