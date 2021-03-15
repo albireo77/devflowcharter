@@ -71,7 +71,7 @@ uses
 class function TXMLProcessor.FindChildTag(ATag: IXMLElement; const AName: string): IXMLElement;
 begin
    result := nil;
-   if (ATag <> nil) and ATag.HasChildNodes then
+   if ATag <> nil then
       result := FindTag(ATag.FirstChild, AName);
 end;
 
