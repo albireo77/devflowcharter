@@ -2540,8 +2540,8 @@ begin
    if ATemplate.IsEmpty then
    begin
       lang := GInfra.GetLangDefinition(ALangId);
-      if (lang <> nil) and not lang.GetTemplate(ClassType).IsEmpty then
-         template := lang.GetTemplateExpr(ClassType);
+      if (lang <> nil) and not lang.GetBlockTemplate(FType).IsEmpty then
+         template := lang.GetBlockTemplateExpr(FType);
    end
    else
       template := ATemplate;
@@ -2690,7 +2690,7 @@ begin
          txt := textControl.Text
       else if textControl <> nil then
          txt := Trim(textControl.Text);
-      template := langDef.GetTemplate(Self.ClassType);
+      template := langDef.GetBlockTemplate(FType);
       if template.IsEmpty then
          template := PRIMARY_PLACEHOLDER;
       template := ReplaceStr(template, PRIMARY_PLACEHOLDER, txt);

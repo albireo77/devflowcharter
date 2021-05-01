@@ -399,7 +399,7 @@ begin
    if ATemplate.IsEmpty then
    begin
       if (lang <> nil) and not lang.ForDoTemplate.IsEmpty then
-         expr := lang.GetTemplateExpr(TForDoBlock);
+         expr := lang.GetBlockTemplateExpr(FType);
    end
    else
       expr := ATemplate;
@@ -543,7 +543,7 @@ begin
    edit := edtStop;
    if not AInfo.SelText.IsEmpty then
    begin
-      expr := GInfra.CurrentLang.GetTemplateExpr(TForDoBlock);
+      expr := GInfra.CurrentLang.GetBlockTemplateExpr(FType);
       i := Pos(PRIMARY_PLACEHOLDER, expr);
       if i <> 0 then
       begin

@@ -1120,14 +1120,14 @@ begin
       begin
          templateLines := TStringList.Create;
          try
-            if ATemplate.IsEmpty then
+            template := ATemplate;
+            if template.IsEmpty then
             begin
-               template := GInfra.CurrentLang.GetTemplate(AObject.ClassType);
+               if AObject is TBlock then
+                  template := GInfra.CurrentLang.GetBlockTemplate(TBlock(AObject).BType);
                if template.IsEmpty then
                   template := PRIMARY_PLACEHOLDER;
-            end
-            else
-               template := ATemplate;
+            end;
             templateLines.Text := template;
             for i := 0 to templateLines.Count-1 do
             begin

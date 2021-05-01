@@ -257,8 +257,8 @@ type
       constructor Create;
       destructor Destroy; override;
       function ImportFromXML(ATag: IXMLElement; AImportMode: TImportMode): TError;
-      function GetTemplate(AClass: TClass): string;
-      function GetTemplateExpr(AClass: TClass): string;
+      function GetBlockTemplate(ABlockType: TBlockType): string;
+      function GetBlockTemplateExpr(ABlockType: TBlockType): string;
       function GetArraySizes(ASizeEdit: TSizeEdit): string;
       procedure SaveCompilerData;
       procedure LoadCompilerData;
@@ -276,10 +276,7 @@ type
 implementation
 
 uses
-   Vcl.Forms, System.StrUtils, System.IniFiles, ApplicationCommon, XMLProcessor,
-   WhileDo_Block, RepeatUntil_Block, ForDo_Block, Case_Block, If_Block, IfElse_Block,
-   Main_Block, InOut_Block, Instr_Block, MultiInstr_Block, Return_Block, Text_Block,
-   FunctionCall_Block, Folder_Block;
+   Vcl.Forms, System.StrUtils, System.IniFiles, ApplicationCommon, XMLProcessor;
 
 constructor TLangDefinition.Create;
 begin
@@ -1077,46 +1074,35 @@ begin
    sFile.WriteString(SETTINGS_SECTION, FCompilerFileEncodingKey, CompilerFileEncoding);
 end;
 
-function TLangDefinition.GetTemplate(AClass: TClass): string;
+function TLangDefinition.GetBlockTemplate(ABlockType: TBlockType): string;
 begin
    result := '';
-   if AClass = TWhileDoBlock then
-      result := WhileTemplate
-   else if AClass = TRepeatUntilBlock then
-      result := RepeatUntilTemplate
-   else if AClass = TForDoBlock then
-      result := ForDoTemplate
-   else if AClass = TCaseBlock then
-      result := CaseOfTemplate
-   else if AClass = TIfBlock then
-      result := IfTemplate
-   else if AClass = TIfElseBlock then
-      result := IfElseTemplate
-   else if AClass = TMainBlock then
-      result := FunctionBodyTemplate
-   else if AClass = TInputBlock then
-      result := InputTemplate
-   else if AClass = TOutputBlock then
-      result := OutputTemplate
-   else if (AClass = TInstrBlock) or (AClass = TMultiInstrBlock) then
-      result := InstrTemplate
-   else if AClass = TReturnBlock then
-      result := ReturnTemplate
-   else if AClass = TTextBlock then
-      result := TextTemplate
-   else if AClass = TFolderBlock then
-      result := FolderTemplate
-   else if AClass = TFunctionCallBlock then
-      result := FunctionCallTemplate;
+   case ABlockType of
+      blInstr,
+      blMultiInstr: result := InstrTemplate;
+      blInput:      result := InputTemplate;
+      blOutput:     result := OutputTemplate;
+      blFuncCall:   result := FunctionCallTemplate;
+      blWhile:      result := WhileTemplate;
+      blRepeat:     result := RepeatUntilTemplate;
+      blFor:        result := ForDoTemplate;
+      blIfElse:     result := IfElseTemplate;
+      blIf:         result := IfTemplate;
+      blCase:       result := CaseOfTemplate;
+      blReturn:     result := ReturnTemplate;
+      blText:       result := TextTemplate;
+      blFolder:     result := FolderTemplate;
+      blMain:       result := FunctionBodyTemplate;
+   end;
 end;
 
-function TLangDefinition.GetTemplateExpr(AClass: TClass): string;
+function TLangDefinition.GetBlockTemplateExpr(ABlockType: TBlockType): string;
 var
    templateLines: TStringList;
    template: string;
 begin
    result := '';
-   template := GetTemplate(AClass);
+   template := GetBlockTemplate(ABlockType);
    if template.IsEmpty then
       template := PRIMARY_PLACEHOLDER;
    templateLines := TStringList.Create;
