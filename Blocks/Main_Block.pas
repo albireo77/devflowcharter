@@ -441,7 +441,7 @@ begin
             begin
                vars := header.LocalVars;
                lName := header.GetName;
-               template := lang.FunctionBodyTemplate;
+               template := GetBlockTemplate(ALangId);
             end
             else
             begin

@@ -398,7 +398,7 @@ begin
    lang := GInfra.GetLangDefinition(ALangId);
    if ATemplate.IsEmpty then
    begin
-      if (lang <> nil) and not lang.ForDoTemplate.IsEmpty then
+      if (lang <> nil) and not GetBlockTemplate(ALangId).IsEmpty then
          expr := lang.GetBlockTemplateExpr(FType);
    end
    else
@@ -420,7 +420,6 @@ function TForDoBlock.GenerateCode(ALines: TStringList; const ALangId: string; AD
 var
    template, line, indent: string;
    tmpList: TStringList;
-   lang: TLangDefinition;
 begin
    result := 0;
    if fsStrikeOut in Font.Style then
@@ -438,8 +437,7 @@ begin
       end
       else
       begin
-         lang := GInfra.GetLangDefinition(ALangId);
-         template := FillTemplate(ALangId, lang.ForDoTemplate);
+         template := FillTemplate(ALangId, GetBlockTemplate(ALangId));
          if not template.IsEmpty then
             GenerateTemplateSection(tmpList, template, ALangId, ADeep);
       end;
@@ -578,7 +576,7 @@ begin
       chLine := TInfra.GetChangeLine(Self);
       if chLine.Row <> ROW_NOT_FOUND then
       begin
-         if lang.ForDoTemplate.IsEmpty then
+         if GetBlockTemplate(lang.Name).IsEmpty then
             chLine.Text := TInfra.ExtractIndentString(chLine.Text) + FillCodedTemplate(lang.Name)
          else
             chLine.Text := FillExpression(chLine.Text, lang);

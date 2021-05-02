@@ -61,8 +61,8 @@ type
       function GetFileContentsTemplate: string;
       function GetLibTemplate: string;
       function GetProgramHeaderTemplate: string;
-      procedure InitExpressionTemplates;
-      procedure EmptyExpressionTemplates;
+      procedure InitBlockTemplates;
+      procedure LoadBlockTemplates(ATag: IXMLElement);
    public
       CommentBegin, CommentEnd,
       DefaultExt,
@@ -79,11 +79,6 @@ type
       ConstEntryArray,
       ConstTypeGeneric,
       ConstTypeNotGeneric,
-      WhileTemplate,
-      IfTemplate,
-      IfElseTemplate,
-      RepeatUntilTemplate,
-      ForDoTemplate,
       ElseLabel,
       LabelFontName,
       LabelRepeat,
@@ -105,12 +100,10 @@ type
       ForDoAsc2,
       ForDoDesc1,
       ForDoDesc2,
-      CaseOfTemplate,
       CaseOfFirstValueTemplate,
       CaseOfValueTemplate,
       CaseOfDefaultValueTemplate,
       PointerTypeMask,
-      FunctionBodyTemplate,
       MainFunctionTemplate,
       ProgramReturnTemplate,
       FunctionTemplate,
@@ -123,13 +116,6 @@ type
       FunctionHeaderTypeNotNone2,
       FunctionHeaderDescParmMask,
       FunctionHeaderDescReturnMask,
-      InputTemplate,
-      OutputTemplate,
-      InstrTemplate,
-      TextTemplate,
-      FolderTemplate,
-      ReturnTemplate,
-      FunctionCallTemplate,
       FunctionHeaderArgsEntryMask,
       FunctionHeaderArgsEntryRef,
       FunctionHeaderArgsEntryArray,
@@ -231,6 +217,7 @@ type
       AllowTransExternDataType: boolean;
       InOutCursorPos,
       FuncBracketsCursorPos: integer;
+      BlockTemplates: array[TBlockType] of string;
       ExecuteBeforeGeneration: procedure;
       ExecuteAfterGeneration: procedure;
       ProgramHeaderSectionGenerator: procedure (ALines: TStringList);
@@ -271,6 +258,12 @@ type
       property LibTemplate: string read GetLibTemplate;
       property ProgramHeaderTemplate: string read GetProgramHeaderTemplate;
    end;
+
+const
+   BLOCK_TO_TEMPLATE_TAG_MAP: array[TBlockType] of string = ('', 'InstrTemplate', 'InstrTemplate', 'InputTemplate', 'OutputTemplate',
+                                                             'FunctionCallTemplate', 'WhileTemplate', 'RepeatUntilTemplate', 'IfTemplate',
+                                                             'IfElseTemplate', 'ForDoTemplate', 'CaseOfTemplate', 'FunctionBodyTemplate',
+                                                             '', 'ReturnTemplate', 'TextTemplate', 'FolderTemplate');
 
 
 implementation
@@ -322,7 +315,7 @@ begin
    LabelFontName := FLOWCHART_DEFAULT_FONT_NAME;
    LabelFontSize := LABEL_DEFAULT_FONT_SIZE;
    ElseLabel := i18Manager.GetString('ElseLabel');
-   InitExpressionTemplates;
+   InitBlockTemplates;
 end;
 
 destructor TLangDefinition.Destroy;
@@ -367,7 +360,7 @@ begin
    FCompilerNoMainKey := 'CompilerPathNoMain_' + FName;
    FCompilerFileEncodingKey := 'CompilerFileEncoding_' + FName;
 
-   EmptyExpressionTemplates;
+   LoadBlockTemplates(ATag);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'CommentBegin');
    if tag <> nil then
@@ -384,18 +377,6 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'OutputFunction');
    if tag <> nil then
       OutputFunction := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'InstrTemplate');
-   if tag <> nil then
-      InstrTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'InputTemplate');
-   if tag <> nil then
-      InputTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'OutputTemplate');
-   if tag <> nil then
-      OutputTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ProcedureLabelKey');
    if tag <> nil then
@@ -540,10 +521,6 @@ begin
    if tag <> nil then
       PointerTypeMask := tag.Text;
 
-   tag := TXMLProcessor.FindChildTag(ATag, 'CaseOfTemplate');
-   if tag <> nil then
-      CaseOfTemplate := tag.Text;
-
    tag := TXMLProcessor.FindChildTag(ATag, 'CaseOfValueTemplate');
    if tag <> nil then
       CaseOfValueTemplate := tag.Text;
@@ -555,18 +532,6 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'CaseOfDefaultValueTemplate');
    if tag <> nil then
       CaseOfDefaultValueTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'WhileTemplate');
-   if tag <> nil then
-      WhileTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'IfTemplate');
-   if tag <> nil then
-      IfTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'IfElseTemplate');
-   if tag <> nil then
-      IfElseTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ElseLabel');
    if tag <> nil then
@@ -636,10 +601,6 @@ begin
    if tag <> nil then
       LabelMultiInstr := tag.Text;
 
-   tag := TXMLProcessor.FindChildTag(ATag, 'RepeatUntilTemplate');
-   if tag <> nil then
-      RepeatUntilTemplate := tag.Text;
-
    tag := TXMLProcessor.FindChildTag(ATag, 'RepeatUntilDescTemplate');
    if tag <> nil then
       RepeatUntilDescTemplate := tag.Text;
@@ -664,14 +625,6 @@ begin
    if tag <> nil then
       ProgramReturnTemplate := tag.Text;
 
-   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionBodyTemplate');
-   if tag <> nil then
-      FunctionBodyTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'ForDoTemplate');
-   if tag <> nil then
-      ForDoTemplate := tag.Text;
-
    tag := TXMLProcessor.FindChildTag(ATag, 'ForDoTemplateModifier1');
    if tag <> nil then
    begin
@@ -687,18 +640,6 @@ begin
       ForDoAsc2 := l3Strings.S0;
       ForDoDesc2 := l3Strings.S1;
    end;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'TextTemplate');
-   if tag <> nil then
-      TextTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'FolderTemplate');
-   if tag <> nil then
-      FolderTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionCallTemplate');
-   if tag <> nil then
-      FunctionCallTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'DataTypesTemplate');
    if tag <> nil then
@@ -852,10 +793,6 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'ProgramHeaderTemplate');
    if tag <> nil then
       FProgramHeaderTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'ReturnTemplate');
-   if tag <> nil then
-      ReturnTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'DefaultExt');
    if tag <> nil then
@@ -1076,24 +1013,7 @@ end;
 
 function TLangDefinition.GetBlockTemplate(ABlockType: TBlockType): string;
 begin
-   result := '';
-   case ABlockType of
-      blInstr,
-      blMultiInstr: result := InstrTemplate;
-      blInput:      result := InputTemplate;
-      blOutput:     result := OutputTemplate;
-      blFuncCall:   result := FunctionCallTemplate;
-      blWhile:      result := WhileTemplate;
-      blRepeat:     result := RepeatUntilTemplate;
-      blFor:        result := ForDoTemplate;
-      blIfElse:     result := IfElseTemplate;
-      blIf:         result := IfTemplate;
-      blCase:       result := CaseOfTemplate;
-      blReturn:     result := ReturnTemplate;
-      blText:       result := TextTemplate;
-      blFolder:     result := FolderTemplate;
-      blMain:       result := FunctionBodyTemplate;
-   end;
+   result := BlockTemplates[ABlockType];
 end;
 
 function TLangDefinition.GetBlockTemplateExpr(ABlockType: TBlockType): string;
@@ -1188,38 +1108,31 @@ begin
    result := ReplaceStr(FProgramHeaderTemplate, INDENT_XML_CHAR, GSettings.IndentSpaces);
 end;
 
-procedure TLangDefinition.InitExpressionTemplates;
+procedure TLangDefinition.InitBlockTemplates;
+var
+   blockType: TBlockType;
 begin
-   WhileTemplate        := i18Manager.GetString('WhileTemplate');
-   RepeatUntilTemplate  := i18Manager.GetString('RepeatUntilTemplate');
-   ForDoTemplate        := i18Manager.GetString('ForDoTemplate');
-   CaseOfTemplate       := i18Manager.GetString('CaseOfTemplate');
-   IfTemplate           := i18Manager.GetString('IfTemplate');
-   IfElseTemplate       := i18Manager.GetString('IfElseTemplate');
-   InputTemplate        := i18Manager.GetString('InputTemplate');
-   OutputTemplate       := i18Manager.GetString('OutputTemplate');
-   InstrTemplate        := i18Manager.GetString('InstrTemplate');
-   ReturnTemplate       := i18Manager.GetString('ReturnTemplate');
-   TextTemplate         := i18Manager.GetString('TextTemplate');
-   FolderTemplate       := i18Manager.GetString('FolderTemplate');
-   FunctionCallTemplate := i18Manager.GetString('FunctionCallTemplate');
+   for blockType :=  Low(TBlockType) to High(TBlockType) do
+   begin
+      BlockTemplates[blockType] := i18Manager.GetString(BLOCK_TO_TEMPLATE_TAG_MAP[blockType]);
+   end;
 end;
 
-procedure TLangDefinition.EmptyExpressionTemplates;
+procedure TLangDefinition.LoadBlockTemplates(ATag: IXMLElement);
+var
+   value: string;
+   tag: IXMLElement;
+   blockType: TBlockType;
 begin
-   WhileTemplate        := '';
-   RepeatUntilTemplate  := '';
-   ForDoTemplate        := '';
-   CaseOfTemplate       := '';
-   IfTemplate           := '';
-   IfElseTemplate       := '';
-   InputTemplate        := '';
-   OutputTemplate       := '';
-   InstrTemplate        := '';
-   ReturnTemplate       := '';
-   TextTemplate         := '';
-   FolderTemplate       := '';
-   FunctionCallTemplate := '';
+   for blockType := Low(TBlockType) to High(TBlockType) do
+   begin
+      tag := TXMLProcessor.FindChildTag(ATag, BLOCK_TO_TEMPLATE_TAG_MAP[blockType]);
+      if tag <> nil then
+         value := tag.Text
+      else
+         value := '';
+      BlockTemplates[blockType] := value;
+   end;
 end;
 
 end.

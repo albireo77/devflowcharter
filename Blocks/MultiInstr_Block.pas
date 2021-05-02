@@ -101,14 +101,13 @@ function TMultiInstrBlock.GenerateCode(ALines: TStringList; const ALangId: strin
 var
    i: integer;
    template, line: string;
-   lang: TLangDefinition;
    tmpList: TStringList;
 begin
    result := 0;
    if (fsStrikeOut in Font.Style) or (FStatements.Text = '') then
       exit;
-   lang := GInfra.GetLangDefinition(ALangId);
-   if (lang <> nil) and not lang.InstrTemplate.IsEmpty then
+   template := GetBlockTemplate(ALangId);
+   if not template.IsEmpty then
    begin
       tmpList := TStringList.Create;
       try
@@ -116,15 +115,12 @@ begin
          begin
             line := FStatements.Lines.Strings[i].Trim;
             if not line.IsEmpty then
-            begin
-               template := ReplaceStr(lang.InstrTemplate, PRIMARY_PLACEHOLDER, line);
-               GenerateTemplateSection(tmpList, template, ALangId, ADeep);
-            end
+               GenerateTemplateSection(tmpList, ReplaceStr(template, PRIMARY_PLACEHOLDER, line), ALangId, ADeep)
             else
                tmpList.AddObject('', Self);
          end;
          if tmpList.Text.IsEmpty then
-            GenerateTemplateSection(tmpList, ReplaceStr(lang.InstrTemplate, PRIMARY_PLACEHOLDER, ''), ALangId, ADeep);
+            GenerateTemplateSection(tmpList, ReplaceStr(template, PRIMARY_PLACEHOLDER, ''), ALangId, ADeep);
          if EndsText(sLineBreak, FStatements.Text) then
             tmpList.AddObject('', Self);
          TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);

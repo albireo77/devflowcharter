@@ -119,6 +119,7 @@ type
          procedure SaveInXML2(ATag: IXMLElement);
          procedure ExitSizeMove;
          function GetBlockParms: TBlockParms; virtual;
+         function GetBlockTemplate(const ALangId: string): string;
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -2527,6 +2528,16 @@ end;
 function TBlock.GetDescTemplate(const ALangId: string): string;
 begin
    result := '';
+end;
+
+function TBlock.GetBlockTemplate(const ALangId: string): string;
+var
+   lang: TLangDefinition;
+begin
+   result := '';
+   lang := GInfra.GetLangDefinition(ALangId);
+   if lang <> nil then
+      result := lang.GetBlockTemplate(FType);
 end;
 
 function TBlock.FillTemplate(const ALangId: string; const ATemplate: string = ''): string;

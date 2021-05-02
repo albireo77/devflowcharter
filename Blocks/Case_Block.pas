@@ -317,9 +317,8 @@ end;
 
 function TCaseBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
 var
-   defTemplate, template, statement: string;
+   defTemplate, template, caseOfTemplate, statement: string;
    i, a: integer;
-   langDef: TLangDefinition;
    lines, caseLines, tmpList: TStringList;
    obj: TObject;
    edit: TCustomEdit;
@@ -329,8 +328,8 @@ begin
    if fsStrikeOut in Font.Style then
       Exit;
 
-   langDef := GInfra.GetLangDefinition(ALangId);
-   if (langDef <> nil) and not langDef.CaseOfTemplate.IsEmpty then
+   caseOfTemplate := GetBlockTemplate(ALangId);
+   if not caseOfTemplate.IsEmpty then
    begin
       statement := Trim(FStatement.Text);
       caseLines := TStringList.Create;
@@ -358,9 +357,9 @@ begin
          tmpList.Clear;
          lines := TStringList.Create;
          try
-            lines.Text := ReplaceStr(langDef.CaseOfTemplate, PRIMARY_PLACEHOLDER, statement);
+            lines.Text := ReplaceStr(caseOfTemplate, PRIMARY_PLACEHOLDER, statement);
             TInfra.InsertTemplateLines(lines, '%s2', caseLines);
-            defTemplate := IfThen(DefaultBranch.Count > 0, langDef.CaseOfDefaultValueTemplate);
+            defTemplate := IfThen(DefaultBranch.Count > 0, GInfra.GetLangDefinition(ALangId).CaseOfDefaultValueTemplate);
             TInfra.InsertTemplateLines(lines, '%s3', defTemplate);
             GenerateTemplateSection(tmpList, lines, ALangId, ADeep);
          finally
