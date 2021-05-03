@@ -120,6 +120,7 @@ type
          procedure ExitSizeMove;
          function GetBlockParms: TBlockParms; virtual;
          function GetBlockTemplate(const ALangId: string): string;
+         function GetBlockTemplateExpr(const ALangId: string): string;
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -2540,6 +2541,31 @@ begin
       result := lang.GetBlockTemplate(FType);
 end;
 
+function TBlock.GetBlockTemplateExpr(const ALangId: string): string;
+var
+   templateLines: TStringList;
+   template: string;
+begin
+   result := '';
+   template := GetBlockTemplate(ALangId);
+   if template.IsEmpty then
+      template := PRIMARY_PLACEHOLDER;
+   templateLines := TStringList.Create;
+   try
+      templateLines.Text := template;
+      for template in templateLines do
+      begin
+         if template.Contains(PRIMARY_PLACEHOLDER) then
+         begin
+            result := template;
+            break;
+         end;
+      end;
+   finally
+      templateLines.Free;
+   end;
+end;
+
 function TBlock.FillTemplate(const ALangId: string; const ATemplate: string = ''): string;
 var
    textControl: TCustomEdit;
@@ -2550,7 +2576,7 @@ begin
    if not ATemplate.IsEmpty then
       template := ATemplate
    else if not GetBlockTemplate(ALangId).IsEmpty then
-      template := GInfra.GetLangDefinition(ALangId).GetBlockTemplateExpr(FType);
+      template := GetBlockTemplateExpr(ALangId);
    if not template.IsEmpty then
    begin
       textControl := GetTextControl;

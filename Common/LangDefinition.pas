@@ -245,7 +245,6 @@ type
       destructor Destroy; override;
       function ImportFromXML(ATag: IXMLElement; AImportMode: TImportMode): TError;
       function GetBlockTemplate(ABlockType: TBlockType): string;
-      function GetBlockTemplateExpr(ABlockType: TBlockType): string;
       function GetArraySizes(ASizeEdit: TSizeEdit): string;
       procedure SaveCompilerData;
       procedure LoadCompilerData;
@@ -1014,31 +1013,6 @@ end;
 function TLangDefinition.GetBlockTemplate(ABlockType: TBlockType): string;
 begin
    result := BlockTemplates[ABlockType];
-end;
-
-function TLangDefinition.GetBlockTemplateExpr(ABlockType: TBlockType): string;
-var
-   templateLines: TStringList;
-   template: string;
-begin
-   result := '';
-   template := GetBlockTemplate(ABlockType);
-   if template.IsEmpty then
-      template := PRIMARY_PLACEHOLDER;
-   templateLines := TStringList.Create;
-   try
-      templateLines.Text := template;
-      for template in templateLines do
-      begin
-         if template.Contains(PRIMARY_PLACEHOLDER) then
-         begin
-            result := template;
-            break;
-         end;
-      end;
-   finally
-      templateLines.Free;
-   end;
 end;
 
 function TLangDefinition.GetArraySizes(ASizeEdit: TSizeEdit): string;

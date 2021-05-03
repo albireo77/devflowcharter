@@ -42,7 +42,7 @@ type
          procedure OnChangeExtend(AStatement: TStatement);
          procedure PutTextControls; override;
          function GetTextTop: integer;
-         function FillExpression(const AExpression: string; ALangDef: TLangDefinition): string;
+         function FillExpression(const AExpression: string; const ALangId: string): string;
       public
          edtStart, edtStop: TStatement;
          cbVar: TComboBox;
@@ -392,18 +392,13 @@ end;
 function TForDoBlock.FillTemplate(const ALangId: string; const ATemplate: string = ''): string;
 var
    expr: string;
-   lang: TLangDefinition;
 begin
    expr := '';
-   lang := GInfra.GetLangDefinition(ALangId);
-   if ATemplate.IsEmpty then
-   begin
-      if (lang <> nil) and not GetBlockTemplate(ALangId).IsEmpty then
-         expr := lang.GetBlockTemplateExpr(FType);
-   end
-   else
-      expr := ATemplate;
-   result := FillExpression(expr, lang);
+   if not ATemplate.IsEmpty then
+      expr := ATemplate
+   else if not GetBlockTemplate(ALangId).IsEmpty then
+      expr := GetBlockTemplateExpr(ALangId);
+   result := FillExpression(expr, ALangId);
 end;
 
 function TForDoBlock.GetDescTemplate(const ALangId: string): string;
@@ -541,7 +536,7 @@ begin
    edit := edtStop;
    if not AInfo.SelText.IsEmpty then
    begin
-      expr := GInfra.CurrentLang.GetBlockTemplateExpr(FType);
+      expr := GetBlockTemplateExpr(GInfra.CurrentLang.Name);
       i := Pos(PRIMARY_PLACEHOLDER, expr);
       if i <> 0 then
       begin
@@ -568,18 +563,18 @@ end;
 procedure TForDoBlock.UpdateEditor(AEdit: TCustomEdit);
 var
    chLine: TChangeLine;
-   lang: TLangDefinition;
+   langName: string;
 begin
-   lang := GInfra.CurrentLang;
+   langName := GInfra.CurrentLang.Name;
    if PerformEditorUpdate then
    begin
       chLine := TInfra.GetChangeLine(Self);
       if chLine.Row <> ROW_NOT_FOUND then
       begin
-         if GetBlockTemplate(lang.Name).IsEmpty then
-            chLine.Text := TInfra.ExtractIndentString(chLine.Text) + FillCodedTemplate(lang.Name)
+         if GetBlockTemplate(langName).IsEmpty then
+            chLine.Text := TInfra.ExtractIndentString(chLine.Text) + FillCodedTemplate(langName)
          else
-            chLine.Text := FillExpression(chLine.Text, lang);
+            chLine.Text := FillExpression(chLine.Text, langName);
          if GSettings.UpdateEditor and not SkipUpdateEditor then
             TInfra.ChangeLine(chLine);
          TInfra.GetEditorForm.SetCaretPos(chLine);
@@ -587,18 +582,21 @@ begin
    end;
 end;
 
-function TForDoBlock.FillExpression(const AExpression: string; ALangDef: TLangDefinition): string;
+function TForDoBlock.FillExpression(const AExpression: string; const ALangId: string): string;
+var
+   lang: TLangDefinition;
 begin
+   lang := GInfra.GetLangDefinition(ALangId);
    if not AExpression.IsEmpty then
    begin
       result := ReplaceStr(AExpression, PRIMARY_PLACEHOLDER, Trim(edtVar.Text));
       result := ReplaceStr(result, '%s2', Trim(edtStart.Text));
       result := ReplaceStr(result, '%s3', Trim(edtStop.Text));
-      result := ReplaceStr(result, '%s4', IfThen(FDescOrder, ALangDef.ForDoDesc1, ALangDef.ForDoAsc1));
-      result := ReplaceStr(result, '%s5', IfThen(FDescOrder, ALangDef.ForDoDesc2, ALangDef.ForDoAsc2));
+      result := ReplaceStr(result, '%s4', IfThen(FDescOrder, lang.ForDoDesc1, lang.ForDoAsc1));
+      result := ReplaceStr(result, '%s5', IfThen(FDescOrder, lang.ForDoDesc2, lang.ForDoAsc2));
    end
    else
-      result := FillCodedTemplate(ALangDef.Name);
+      result := FillCodedTemplate(lang.Name);
 end;
 
 function TForDoBlock.GetFromXML(ATag: IXMLElement): TError;
