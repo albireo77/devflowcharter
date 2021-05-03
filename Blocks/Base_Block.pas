@@ -2547,13 +2547,10 @@ var
 begin
    result := '';
    template := '';
-   if ATemplate.IsEmpty then
-   begin
-      if not GetBlockTemplate(ALangId).IsEmpty then
-         template := GInfra.GetLangDefinition(ALangId).GetBlockTemplateExpr(FType);
-   end
-   else
-      template := ATemplate;
+   if not ATemplate.IsEmpty then
+      template := ATemplate
+   else if not GetBlockTemplate(ALangId).IsEmpty then
+      template := GInfra.GetLangDefinition(ALangId).GetBlockTemplateExpr(FType);
    if not template.IsEmpty then
    begin
       textControl := GetTextControl;

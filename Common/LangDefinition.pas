@@ -1112,7 +1112,7 @@ procedure TLangDefinition.InitBlockTemplates;
 var
    blockType: TBlockType;
 begin
-   for blockType :=  Low(TBlockType) to High(TBlockType) do
+   for blockType := Low(TBlockType) to High(TBlockType) do
    begin
       BlockTemplates[blockType] := i18Manager.GetString(BLOCK_TO_TEMPLATE_TAG_MAP[blockType]);
    end;
