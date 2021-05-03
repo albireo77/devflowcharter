@@ -2544,15 +2544,13 @@ function TBlock.FillTemplate(const ALangId: string; const ATemplate: string = ''
 var
    textControl: TCustomEdit;
    s, template: string;
-   lang: TLangDefinition;
 begin
    result := '';
    template := '';
    if ATemplate.IsEmpty then
    begin
-      lang := GInfra.GetLangDefinition(ALangId);
-      if (lang <> nil) and not lang.GetBlockTemplate(FType).IsEmpty then
-         template := lang.GetBlockTemplateExpr(FType);
+      if not GetBlockTemplate(ALangId).IsEmpty then
+         template := GInfra.GetLangDefinition(ALangId).GetBlockTemplateExpr(FType);
    end
    else
       template := ATemplate;
@@ -2688,25 +2686,20 @@ end;
 
 procedure TBlock.GenerateDefaultTemplate(ALines: TStringList; const ALangId: string; ADeep: integer);
 var
-   langDef: TLangDefinition;
    template, txt: string;
    textControl: TCustomEdit;
 begin
-   langDef := GInfra.GetLangDefinition(ALangId);
-   if langDef <> nil then
-   begin
-      txt := '';
-      textControl := GetTextControl;
-      if textControl is TCustomMemo then
-         txt := textControl.Text
-      else if textControl <> nil then
-         txt := Trim(textControl.Text);
-      template := langDef.GetBlockTemplate(FType);
-      if template.IsEmpty then
-         template := PRIMARY_PLACEHOLDER;
-      template := ReplaceStr(template, PRIMARY_PLACEHOLDER, txt);
-      GenerateTemplateSection(ALines, template, ALangId, ADeep);
-   end;
+   txt := '';
+   textControl := GetTextControl;
+   if textControl is TCustomMemo then
+      txt := textControl.Text
+   else if textControl <> nil then
+      txt := Trim(textControl.Text);
+   template := GetBlockTemplate(ALangId);
+   if template.IsEmpty then
+      template := PRIMARY_PLACEHOLDER;
+   template := ReplaceStr(template, PRIMARY_PLACEHOLDER, txt);
+   GenerateTemplateSection(ALines, template, ALangId, ADeep);
 end;
 
 function TGroupBlock.ExtractBranchIndex(const AStr: string): integer;
