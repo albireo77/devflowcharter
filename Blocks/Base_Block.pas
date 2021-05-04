@@ -2545,7 +2545,7 @@ end;
 function TBlock.GetBlockTemplateExpr(const ALangId: string): string;
 var
    templateLines: TStringList;
-   template: string;
+   template, line: string;
 begin
    result := '';
    template := GetBlockTemplate(ALangId);
@@ -2554,11 +2554,11 @@ begin
    templateLines := TStringList.Create;
    try
       templateLines.Text := template;
-      for template in templateLines do
+      for line in templateLines do
       begin
-         if template.Contains(PRIMARY_PLACEHOLDER) then
+         if line.Contains(PRIMARY_PLACEHOLDER) then
          begin
-            result := template;
+            result := line;
             break;
          end;
       end;
