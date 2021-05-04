@@ -121,6 +121,7 @@ type
          function GetBlockParms: TBlockParms; virtual;
          function GetBlockTemplate(const ALangId: string): string;
          function GetBlockTemplateExpr(const ALangId: string): string;
+         function FindTemplate(const ALangId: string; const ATemplate: string): string;
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -2566,28 +2567,23 @@ begin
    end;
 end;
 
-function TBlock.FillTemplate(const ALangId: string; const ATemplate: string = ''): string;
-var
-   textControl: TCustomEdit;
-   s, template: string;
+function TBlock.FindTemplate(const ALangId: string; const ATemplate: string): string;
 begin
    result := '';
-   template := '';
    if not ATemplate.IsEmpty then
-      template := ATemplate
+      result := ATemplate
    else if not GetBlockTemplate(ALangId).IsEmpty then
-      template := GetBlockTemplateExpr(ALangId);
+      result := GetBlockTemplateExpr(ALangId);
+end;
+
+function TBlock.FillTemplate(const ALangId: string; const ATemplate: string = ''): string;
+var
+   template: string;
+begin
+   result := FillCodedTemplate(ALangId);
+   template := FindTemplate(ALangId, ATemplate);
    if not template.IsEmpty then
-   begin
-      textControl := GetTextControl;
-      if textControl <> nil then
-         s := Trim(textControl.Text)
-      else
-         s := '';
-      result := ReplaceStr(template, PRIMARY_PLACEHOLDER, s);
-   end
-   else
-      result := FillCodedTemplate(ALangId);
+      result := ReplaceStr(template, PRIMARY_PLACEHOLDER, result);
 end;
 
 function TBlock.FillCodedTemplate(const ALangId: string): string;

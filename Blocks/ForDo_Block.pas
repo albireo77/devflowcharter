@@ -390,15 +390,8 @@ begin
 end;
 
 function TForDoBlock.FillTemplate(const ALangId: string; const ATemplate: string = ''): string;
-var
-   expr: string;
 begin
-   expr := '';
-   if not ATemplate.IsEmpty then
-      expr := ATemplate
-   else if not GetBlockTemplate(ALangId).IsEmpty then
-      expr := GetBlockTemplateExpr(ALangId);
-   result := FillExpression(expr, ALangId);
+   result := FillExpression(FindTemplate(ALangId, ATemplate), ALangId);
 end;
 
 function TForDoBlock.GetDescTemplate(const ALangId: string): string;
