@@ -62,7 +62,7 @@ type
       function GetLibTemplate: string;
       function GetProgramHeaderTemplate: string;
       procedure InitBlockTemplates;
-      procedure LoadBlockTemplates(ATag: IXMLElement);
+      procedure ImportBlockTemplates(ATag: IXMLElement);
    public
       CommentBegin, CommentEnd,
       DefaultExt,
@@ -359,7 +359,7 @@ begin
    FCompilerNoMainKey := 'CompilerPathNoMain_' + FName;
    FCompilerFileEncodingKey := 'CompilerFileEncoding_' + FName;
 
-   LoadBlockTemplates(ATag);
+   ImportBlockTemplates(ATag);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'CommentBegin');
    if tag <> nil then
@@ -1092,7 +1092,7 @@ begin
    end;
 end;
 
-procedure TLangDefinition.LoadBlockTemplates(ATag: IXMLElement);
+procedure TLangDefinition.ImportBlockTemplates(ATag: IXMLElement);
 var
    value: string;
    tag: IXMLElement;
