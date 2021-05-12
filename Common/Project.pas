@@ -79,8 +79,7 @@ type
       function GetComments: IEnumerable<TComment>;
       function GetUserFunctions: IEnumerable<TUserFunction>;
       function GetUserDataTypes: IEnumerable<TUserDataType>;
-      function GetUserDataType(const ATypeName: string): TUserDataType;
-      function GetUserFunction(const AFunctionName: string): TUserFunction;
+      function GetComponent<T: class>(const AName: string): T;
       procedure ExportToGraphic(AGraphic: TGraphic);
       procedure ExportToXMLTag(ATag: IXMLElement);
       function ExportToXMLFile(const AFile: string): TError;
@@ -248,7 +247,7 @@ begin
       for i := 0 to FGlobalVars.cbType.Items.Count-1 do
       begin
          name := FGlobalVars.cbType.Items[i];
-         userType := GetUserDataType(name);
+         userType := GetComponent<TUserDataType>(name);
          nativeType := GInfra.GetNativeDataType(name);
          if nativeType <> nil then
          begin
@@ -1159,14 +1158,9 @@ begin
    end;
 end;
 
-function TProject.GetUserDataType(const ATypeName: string): TUserDataType;
+function TProject.GetComponent<T>(const AName: string): T;
 begin
-   result := TUserDataType(GetComponentByName(TUserDataType, ATypeName));
-end;
-
-function TProject.GetUserFunction(const AFunctionName: string): TUserFunction;
-begin
-   result := TUserFunction(GetComponentByName(TUserFunction, AFunctionName));
+   result := T(GetComponentByName(T, AName));
 end;
 
 function TProject.GetComponentByName(AClass: TClass; const AName: string): TComponent;

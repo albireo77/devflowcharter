@@ -247,7 +247,7 @@ begin
    result := NOT_DEFINED;
    if GProject <> nil then
    begin
-      func := GProject.GetUserFunction(AFunctionName);
+      func := GProject.GetComponent<TUserFunction>(AFunctionName);
       if (func <> nil) and (func.Header <> nil) and (func.Header.Font.Color <> NOK_COLOR) then
          result := GetType(func.Header.cbType.Text);
    end;
@@ -292,7 +292,7 @@ begin
    result := false;
    if GProject <> nil then
    begin
-      func := GProject.GetUserFunction(AFunctionName);
+      func := GProject.GetComponent<TUserFunction>(AFunctionName);
       if (func <> nil) and (func.Header <> nil) and (Length(AParmList) = func.Header.ParameterCount) then
       begin
          i := 0;
@@ -361,7 +361,7 @@ begin
       Exit;
    if GProject <> nil then
    begin
-      dataType := GProject.GetUserDataType(ATypeAsString);
+      dataType := GProject.GetComponent<TUserDataType>(ATypeAsString);
       if dataType <> nil then
       begin
          size := dataType.GetDimensions;
@@ -405,7 +405,7 @@ begin
                end;
                if GProject <> nil then
                begin
-                  dataType := GProject.GetUserDataType(param.cbType.Text);
+                  dataType := GProject.GetComponent<TUserDataType>(param.cbType.Text);
                   if dataType <> nil then
                      Inc(DimensCount, dataType.GetDimensionCount);
                end;
@@ -478,15 +478,15 @@ end;
 // get field type for given structural type
 class function TParserHelper.GetFieldType(AType: integer; const AFieldName: string): integer;
 var
-   typeString: string;
+   typeName: string;
    dataType: TUserDataType;
    field: TField;
 begin
    result := NOT_DEFINED;
-   typeString := GetTypeAsString(AType);
-   if (typeString <> i18Manager.GetString('Unknown')) and (GProject <> nil) then
+   typeName := GetTypeAsString(AType);
+   if (typeName <> i18Manager.GetString('Unknown')) and (GProject <> nil) then
    begin
-      dataType := GProject.GetUserDataType(typeString);
+      dataType := GProject.GetComponent<TUserDataType>(typeName);
       if (dataType <> nil) and (dataType.Kind = dtRecord) then
       begin
          for field in dataType.GetFields do
@@ -596,7 +596,7 @@ begin
    begin
       typeName := GetTypeAsString(AType);
       pNativeType := GInfra.GetNativeDataType(typeName);
-      userType := GProject.GetUserDataType(typeName);
+      userType := GProject.GetComponent<TUserDataType>(typeName);
       if pNativeType <> nil then
          result := GetType(pNativeType.OrigType.Name)
       else if (userType <> nil) and (userType.GetDimensionCount > 0) then
@@ -617,7 +617,7 @@ begin
       result := pNativeType.Lib;
    if result.IsEmpty and (GProject <> nil) then
    begin
-      userDataType := GProject.GetUserDataType(ATypeName);
+      userDataType := GProject.GetComponent<TUserDataType>(ATypeName);
       if userDataType <> nil then
          result := userDataType.GetLibName;
    end;

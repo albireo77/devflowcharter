@@ -418,27 +418,27 @@ end;
 function TDeclareList.RetrieveFocus(AInfo: TFocusInfo): boolean;
 var
    i: integer;
-   lName: string;
+   typeName: string;
    list: TDeclareList;
    dataType: TUserDataType;
 begin
    i := 0;
    list := nil;
-   lName := AInfo.SelText.Trim;
-   if not lName.IsEmpty then
+   typeName := AInfo.SelText.Trim;
+   if not typeName.IsEmpty then
    begin
-      i := sgList.Cols[NAME_COL].IndexOf(lName);
+      i := sgList.Cols[NAME_COL].IndexOf(typeName);
       if i > 0 then
          list := Self
       else if AssociatedList <> nil then
       begin
-         i := AssociatedList.sgList.Cols[NAME_COL].IndexOf(lName);
+         i := AssociatedList.sgList.Cols[NAME_COL].IndexOf(typeName);
          if i > 0 then
             list := AssociatedList;
       end;
       if list = nil then
       begin
-         dataType := GProject.GetUserDataType(lName);
+         dataType := GProject.GetComponent<TUserDataType>(typeName);
          if dataType <> nil then
          begin
             result := dataType.RetrieveFocus(AInfo);
@@ -489,7 +489,7 @@ begin
    result := TInfra.GetDimensionCount(sgList.Cells[VAR_SIZE_COL, i]);
    if AIncludeType and (result <> -1) then
    begin
-      dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
+      dataType := GProject.GetComponent<TUserDataType>(sgList.Cells[VAR_TYPE_COL, i]);
       if dataType <> nil then
          result := dataType.GetDimensionCount + result;
    end;
@@ -507,7 +507,7 @@ begin
    size := sgList.Cells[VAR_SIZE_COL, i];
    if AIncludeType then
    begin
-      dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
+      dataType := GProject.GetComponent<TUserDataType>(sgList.Cells[VAR_TYPE_COL, i]);
       if dataType <> nil then
          size := size + dataType.GetDimensions;
    end;
@@ -606,7 +606,7 @@ begin
       begin
          if TParserHelper.IsEnumType(lType) then
          begin
-            dataType := GProject.GetUserDataType(cbType.Text);
+            dataType := GProject.GetComponent<TUserDataType>(cbType.Text);
             if (dataType <> nil) and not dataType.IsValidEnumValue(initVal) then
                status := INVALID_INIT_VAL;
          end
