@@ -1161,17 +1161,19 @@ function TProject.GetComponent<T>(const AName: string): T;
 var
    i: integer;
    tab: ITabbable;
+   comp: TComponent;
 begin
    result := nil;
    if not AName.Trim.IsEmpty then
    begin
       for i := 0 to FComponentList.Count-1 do
       begin
-         if (FComponentList[i].ClassType = T) and Supports(FComponentList[i], ITabbable, tab) then
+         comp := FComponentList[i];
+         if (comp.ClassType = T) and Supports(comp, ITabbable, tab) then
          begin
             if TInfra.SameStrings(tab.GetName, AName) then
             begin
-               result := T(FComponentList[i]);
+               result := T(comp);
                break;
             end;
          end;
