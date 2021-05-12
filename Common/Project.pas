@@ -53,7 +53,6 @@ type
       constructor Create;
       procedure SetGlobalDeclarations(AForm: TDeclarationsForm);
       function GetComponents<T: class>(AComparer: IComparer<T> = nil): IEnumerable<T>;
-      function GetComponentByName(AClass: TClass; const AName: string): TComponent;
       function GetIWinControlComponent(AHandle: THandle): IWinControl;
       procedure RefreshZOrder;
       procedure ExportPagesToXMLTag(ATag: IXMLElement);
@@ -1159,11 +1158,6 @@ begin
 end;
 
 function TProject.GetComponent<T>(const AName: string): T;
-begin
-   result := T(GetComponentByName(T, AName));
-end;
-
-function TProject.GetComponentByName(AClass: TClass; const AName: string): TComponent;
 var
    i: integer;
    tab: ITabbable;
@@ -1173,11 +1167,11 @@ begin
    begin
       for i := 0 to FComponentList.Count-1 do
       begin
-         if (FComponentList[i].ClassType = AClass) and Supports(FComponentList[i], ITabbable, tab) then
+         if (FComponentList[i].ClassType = T) and Supports(FComponentList[i], ITabbable, tab) then
          begin
             if TInfra.SameStrings(tab.GetName, AName) then
             begin
-               result := FComponentList[i];
+               result := T(FComponentList[i]);
                break;
             end;
          end;
