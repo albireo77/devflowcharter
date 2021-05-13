@@ -42,6 +42,11 @@ type
       property Id: integer read GetId;
    end;
 
+   INameable = interface
+      ['{2A2776AE-BDC1-4C7B-9F6E-A01A515509AB}']
+      function GetName: string;
+   end;
+
    IGenericComparable = interface
       ['{67CF9A42-5F40-4514-A352-E7FE29F8CF43}']
       function GetCompareValue(ACompareType: integer): integer;
@@ -60,9 +65,8 @@ type
       procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
    end;
 
-   ITabbable = interface(IActivable)
+   ITabable = interface(IActivable)
       ['{1E316044-89E6-4FFB-AC4D-FA773D4774D8}']
-      function GetName: string;
       function GetTab: TTabSheet;
       function GetLibName: string;
    end;

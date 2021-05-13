@@ -105,7 +105,7 @@ type
       function GetTreeNodeText(ANodeOffset: integer = 0): string; override;
    end;
 
-   TUserFunction = class(TComponent, IXMLable, ITabbable, IIdentifiable, ISizeEditable, IWinControl, IGenericComparable)
+   TUserFunction = class(TComponent, IXMLable, ITabable, INameable, IIdentifiable, ISizeEditable, IWinControl, IGenericComparable)
    private
       FHeader: TUserFunctionHeader;
       FBody: TMainBlock;

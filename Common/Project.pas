@@ -1122,7 +1122,7 @@ end;
 function TProject.GetLibraryList: TStringList;
 var
    libName: string;
-   tabObj: ITabbable;
+   tab: ITabable;
    comp: TComponent;
    components: IEnumerable<TComponent>;
 begin
@@ -1131,14 +1131,11 @@ begin
    components := GetComponents<TComponent>(ByPageIndexComponentComparer);
    for comp in components do
    begin
-      if Supports(comp, ITabbable, tabObj) then
+      if Supports(comp, ITabable, tab) then
       begin
-         libName := tabObj.GetLibName;
-         if not libName.IsEmpty then
-         begin
-            if GInfra.CurrentLang.AllowDuplicatedLibs or (result.IndexOf(libName) = -1) then
-               result.AddObject(libName, tabObj.GetTab);
-         end;
+         libName := tab.GetLibName;
+         if (not libName.IsEmpty) and (GInfra.CurrentLang.AllowDuplicatedLibs or (result.IndexOf(libName) = -1)) then
+            result.AddObject(libName, tab.GetTab);
       end;
    end;
 end;
@@ -1160,7 +1157,7 @@ end;
 function TProject.GetComponent<T>(const AName: string): T;
 var
    i: integer;
-   tab: ITabbable;
+   named: INameable;
    comp: TComponent;
 begin
    result := nil;
@@ -1169,9 +1166,9 @@ begin
       for i := 0 to FComponentList.Count-1 do
       begin
          comp := FComponentList[i];
-         if (comp.ClassType = T) and Supports(comp, ITabbable, tab) then
+         if (comp.ClassType = T) and Supports(comp, INameable, named) then
          begin
-            if TInfra.SameStrings(tab.GetName, AName) then
+            if TInfra.SameStrings(named.GetName, AName) then
             begin
                result := T(comp);
                break;
