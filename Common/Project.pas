@@ -52,7 +52,6 @@ type
       class var FInstance: TProject;
       constructor Create;
       procedure SetGlobalDeclarations(AForm: TDeclarationsForm);
-      function GetComponents<T: class>(AComparer: IComparer<T> = nil): IEnumerable<T>;
       function GetIWinControlComponent(AHandle: THandle): IWinControl;
       procedure RefreshZOrder;
       procedure ExportPagesToXMLTag(ATag: IXMLElement);
@@ -79,6 +78,7 @@ type
       function GetUserFunctions: IEnumerable<TUserFunction>;
       function GetUserDataTypes: IEnumerable<TUserDataType>;
       function GetComponent<T: class>(const AName: string): T;
+      function GetComponents<T: class>(AComparer: IComparer<T> = nil): IEnumerable<T>;
       procedure ExportToGraphic(AGraphic: TGraphic);
       procedure ExportToXMLTag(ATag: IXMLElement);
       function ExportToXMLFile(const AFile: string): TError;
