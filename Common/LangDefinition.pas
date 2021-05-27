@@ -132,6 +132,7 @@ type
       DataTypeRealMask,
       DataTypeOtherMask,
       DataTypeArrayMask,
+      DataTypeUnboundedArrayMask,
       DataTypeRecordTemplate,
       DataTypeRecordFieldMask,
       DataTypeRecordFieldArrayMask,
@@ -692,6 +693,10 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeArrayMask');
    if tag <> nil then
       DataTypeArrayMask := tag.Text;
+
+   tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeUnboundedArrayMask');
+   if tag <> nil then
+      DataTypeUnboundedArrayMask := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeRecordFieldMask');
    if tag <> nil then

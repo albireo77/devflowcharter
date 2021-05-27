@@ -32,11 +32,11 @@ procedure Template_UserDataTypesSectionGenerator(ALines: TStringList);
 var
    dataType: TUserDataType;
    field: TField;
-   name, sizeStr, lRecord, enum, extModifier: string;
+   name, sizeStr, lRecord, enum, extModifier, arrayMask: string;
    b, lType: integer;
    lang: TLangDefinition;
    typesList, typesTemplate, fieldList, template: TStringList;
-   typeStr, fieldStr, valStr, valStr2: string;
+   typeStr, fieldStr, s2, s3: string;
    fields: IEnumerable<TField>;
 begin
    lang := GInfra.CurrentLang;
@@ -73,29 +73,34 @@ begin
                   begin
                      typeStr := ReplaceStr(lang.DataTypeOtherMask, PRIMARY_PLACEHOLDER, name);
                      typeStr := ReplaceStr(typeStr, '%s9', extModifier);
-                     valStr := '';
+                     s2 := '';
                      fields := dataType.GetFields;
                      if fields.GetEnumerator.MoveNext then
-                        valStr := Trim(fields.GetEnumerator.Current.edtName.Text);
-                     template.Text := ReplaceStr(typeStr, '%s2', valStr);
+                        s2 := Trim(fields.GetEnumerator.Current.edtName.Text);
+                     template.Text := ReplaceStr(typeStr, '%s2', s2);
                   end;
 
                   dtArray:
-                  if not lang.DataTypeArrayMask.IsEmpty then
                   begin
-                     typeStr := ReplaceStr(lang.DataTypeArrayMask, PRIMARY_PLACEHOLDER, name);
-                     typeStr := ReplaceStr(typeStr, '%s9', extModifier);
-                     valStr := '';
-                     valStr2 := '';
+                     arrayMask := lang.DataTypeArrayMask;
+                     s2 := '';
+                     s3 := '';
                      fields := dataType.GetFields;
                      if fields.GetEnumerator.MoveNext then
                      begin
                         field := fields.GetEnumerator.Current;
-                        valStr := field.cbType.Text;
-                        valStr2 := lang.GetArraySizes(field.edtSize);
+                        s2 := field.cbType.Text;
+                        s3 := lang.GetArraySizes(field.edtSize);
+                        if ReplaceStr(field.edtSize.Text, ' ', '').StartsWith('[]') and not lang.DataTypeUnboundedArrayMask.IsEmpty then
+                           arrayMask := lang.DataTypeUnboundedArrayMask;
                      end;
-                     typeStr := ReplaceStr(typeStr, '%s2', valStr);
-                     template.Text := ReplaceStr(typeStr, '%s3', valStr2);
+                     if not arrayMask.IsEmpty then
+                     begin
+                        typeStr := ReplaceStr(arrayMask, PRIMARY_PLACEHOLDER, name);
+                        typeStr := ReplaceStr(typeStr, '%s9', extModifier);
+                        typeStr := ReplaceStr(typeStr, '%s2', s2);
+                        template.Text := ReplaceStr(typeStr, '%s3', s3);
+                     end;
                   end;
 
                   dtRecord:
@@ -137,12 +142,12 @@ begin
                   begin
                      typeStr := ReplaceStr(lang.DataTypeEnumTemplate, PRIMARY_PLACEHOLDER, name);
                      template.Text := ReplaceStr(typeStr, '%s9', extModifier);
-                     valStr := '';
+                     s2 := '';
                      for field in dataType.GetFields do
-                        valStr := valStr + Format(lang.DataTypeEnumEntryList, [Trim(field.edtName.Text)]);
+                        s2 := s2 + Format(lang.DataTypeEnumEntryList, [Trim(field.edtName.Text)]);
                      if lang.DataTypeEnumEntryListStripCount > 0 then
-                        SetLength(valStr, valStr.Length - lang.DataTypeEnumEntryListStripCount);
-                     TInfra.InsertTemplateLines(template, '%s2', valStr);
+                        SetLength(s2, s2.Length - lang.DataTypeEnumEntryListStripCount);
+                     TInfra.InsertTemplateLines(template, '%s2', s2);
                   end;
 
                end;

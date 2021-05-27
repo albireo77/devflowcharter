@@ -760,7 +760,7 @@ Available placeholders:
 
 <!--
 Element DataTypeRealMask
-Description: Template for real number types
+Description: Template for real number types.
 If there is no need to generate this kind of data types, it should be empty or removed.
 Available placeholders:
    %s1 - type name
@@ -770,7 +770,7 @@ Available placeholders:
 
 <!--
 Element DataTypeOtherMask
-Description: Template for other types
+Description: Template for other types.
 If there is no need to generate this kind of data types, it should be empty or removed.
 Available placeholders:
    %s1 - type name
@@ -781,7 +781,7 @@ Available placeholders:
 
 <!--
 Element DataTypeArrayMask
-Description: Template for other types
+Description: Template for (bounded) array type.
 If there is no need to generate this kind of data types, it should be empty or removed.
 Available placeholders:
    %s1 - array type name
@@ -789,7 +789,18 @@ Available placeholders:
    %s3 - array type size
    %s9 - string that depends if datatype is external or not (element DataTypeExternalModifier)   
 -->
-<DataTypeArrayMask>%s1 = %s2%s3;</DataTypeArrayMask>
+<DataTypeArrayMask>%s1 = %s2[%s3];</DataTypeArrayMask>
+
+<!--
+Element DataTypeUnboundedArrayMask
+Description: Template for unbounded (no size) array type.
+If unbounded array expression can be generated with DataTypeArrayMask element, this one should be empty or removed.
+Available placeholders:
+   %s1 - array type name
+   %s2 - base array type
+   %s9 - string that depends if datatype is external or not (element DataTypeExternalModifier)   
+-->
+<DataTypeUnboundedArrayMask>%s1 = %s2[];</DataTypeUnboundedArrayMask>
 
 <!--
 Element DataTypeRecordTemplate
