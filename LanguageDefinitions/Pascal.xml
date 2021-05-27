@@ -524,7 +524,7 @@ Available placeholders:
    %s3 - array type size
    %s9 - string that depends if datatype is external or not (element DataTypeExternalModifier)   
 -->
-<DataTypeBoundedArrayMask>%s1 = array[%s3] of %s2;</DataTypeBoundedArrayMask>
+<DataTypeArrayMask>%s1 = array[%s3] of %s2;</DataTypeArrayMask>
 
 <!--
 Element DataTypeUnboundedArrayMask
