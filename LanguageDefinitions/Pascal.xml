@@ -530,6 +530,7 @@ Available placeholders:
 Element DataTypeUnboundedArrayMask
 Description: Template for unbounded (no size) array type.
 If unbounded array expression can be generated with DataTypeArrayMask element, this one should be empty or removed.
+This element is only effective if unbounded arrays are allowed by language (element AllowUnboundedArrays).
 Available placeholders:
    %s1 - array type name
    %s2 - base array type
