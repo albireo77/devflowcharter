@@ -479,7 +479,7 @@ Available placeholders:
 
 <!--
 Element DataTypeOtherMask
-Description: Template for other types
+Description: Template for other types.
 If there is no need to generate this kind of data types, it should be empty or removed.
 Available placeholders:
    %s1 - type name
@@ -490,7 +490,7 @@ Available placeholders:
 
 <!--
 Element DataTypeArrayMask
-Description: Template for other types
+Description: Template for array type.
 If there is no need to generate this kind of data types, it should be empty or removed.
 Available placeholders:
    %s1 - array type name
