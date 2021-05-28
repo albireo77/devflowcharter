@@ -1,3 +1,7 @@
+8.10 [28.05.2021]
+- language definition files: add DataTypeUnboundedArrayMask element
+- small optimizations
+
 8.9 [24.11.2020]
 - catch parsing exceptions locally (do not close entire project)
 - prevent for..do block flickering when adding/removing global variables
