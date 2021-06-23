@@ -35,6 +35,7 @@ type
         function ParseSize: boolean;
         function GetDimensions: TArray<string>;
         procedure OnChangeSize(Sender: TObject);
+        function IsUnboundedArray: boolean;
   end;
 
 
@@ -95,6 +96,11 @@ end;
 procedure TSizeEdit.OnChangeSize(Sender: TObject);
 begin
    Font.Color := IfThen(ParseSize, BLACK_COLOR, NOK_COLOR);
+end;
+
+function TSizeEdit.IsUnboundedArray: boolean;
+begin
+   result := ReplaceStr(Text, ' ', '').StartsWith('[]');
 end;
 
 end.

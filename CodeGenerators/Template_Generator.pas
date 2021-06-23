@@ -91,7 +91,7 @@ begin
                         field := fields.GetEnumerator.Current;
                         s2 := field.cbType.Text;
                         s3 := lang.GetArraySizes(field.edtSize);
-                        if ReplaceStr(field.edtSize.Text, ' ', '').StartsWith('[]') and not lang.DataTypeUnboundedArrayMask.IsEmpty then
+                        if field.edtSize.IsUnboundedArray and not lang.DataTypeUnboundedArrayMask.IsEmpty then
                            arrayMask := lang.DataTypeUnboundedArrayMask;
                      end;
                      if not arrayMask.IsEmpty then
