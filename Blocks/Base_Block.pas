@@ -714,8 +714,7 @@ end;
 
 procedure TBlock.OnMouseLeave(AClearRed: boolean = true);
 begin
-   if Cursor <> crDefault then
-      Cursor := crDefault;
+   Cursor := crDefault;
    ClearSelection;
    if Ired = 0 then
       DrawArrow(BottomPoint, BottomPoint.X, Height-1);

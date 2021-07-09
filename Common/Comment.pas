@@ -256,7 +256,7 @@ begin
       Cursor := crSizeNS
    else if Rect(Width-5, Height-5, Width, Height).Contains(pnt) then
       Cursor := crSizeNWSE
-   else if Cursor <> crDefault then
+   else
       Cursor := crDefault;
 end;
 
