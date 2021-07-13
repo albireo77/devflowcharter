@@ -600,13 +600,13 @@ begin
                result := JAVA_DATE_TYPE
             else if AValue = 'Calendar.getInstance()' then
                result := JAVA_CALENDAR_TYPE
-            else if StartsWithOneOf(AValue, ['ZonedDateTime.now(', 'ZonedDateTime.of(']) then
+            else if StartsWithOneOf(AValue, ['ZonedDateTime.now(', 'ZonedDateTime.of(']) and (lastChar = ')') then
                result := JAVA_ZONED_DATETIME_TYPE
-            else if StartsWithOneOf(AValue, ['LocalDateTime.now(', 'LocalDateTime.of(']) then
+            else if StartsWithOneOf(AValue, ['LocalDateTime.now(', 'LocalDateTime.of(']) and (lastChar = ')') then
                result := JAVA_LOCAL_DATETIME_TYPE
-            else if StartsWithOneOf(AValue, ['LocalDate.now(', 'LocalDate.of(']) then
+            else if StartsWithOneOf(AValue, ['LocalDate.now(', 'LocalDate.of(']) and (lastChar = ')') then
                result := JAVA_LOCAL_DATE_TYPE
-            else if StartsWithOneOf(AValue, ['LocalTime.now(', 'LocalTime.of(']) then
+            else if StartsWithOneOf(AValue, ['LocalTime.now(', 'LocalTime.of(']) and (lastChar = ')') then
                result := JAVA_LOCAL_TIME_TYPE
             else if AValue.StartsWith('Duration.') then
             begin
