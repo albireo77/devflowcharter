@@ -87,6 +87,7 @@ var
    JAVA_BOOLEAN_OBJECT_TYPE,
    JAVA_DATE_TYPE,
    JAVA_CALENDAR_TYPE,
+   JAVA_ZONED_DATETIME_TYPE,
    JAVA_LOCAL_DATETIME_TYPE,
    JAVA_LOCAL_DATE_TYPE,
    JAVA_LOCAL_TIME_TYPE,
@@ -599,11 +600,13 @@ begin
                result := JAVA_DATE_TYPE
             else if AValue = 'Calendar.getInstance()' then
                result := JAVA_CALENDAR_TYPE
-            else if (AValue = 'LocalDateTime.now()') or AValue.StartsWith('LocalDateTime.of(') then
+            else if StartsWithOneOf(AValue, ['ZonedDateTime.now(', 'ZonedDateTime.of(']) then
+               result := JAVA_ZONED_DATETIME_TYPE
+            else if StartsWithOneOf(AValue, ['LocalDateTime.now(', 'LocalDateTime.of(']) then
                result := JAVA_LOCAL_DATETIME_TYPE
-            else if (AValue = 'LocalDate.now()') or AValue.StartsWith('LocalDate.of(') then
+            else if StartsWithOneOf(AValue, ['LocalDate.now(', 'LocalDate.of(']) then
                result := JAVA_LOCAL_DATE_TYPE
-            else if (AValue = 'LocalTime.now()') or AValue.StartsWith('LocalTime.of(') then
+            else if StartsWithOneOf(AValue, ['LocalTime.now(', 'LocalTime.of(']) then
                result := JAVA_LOCAL_TIME_TYPE
             else if AValue.StartsWith('Duration.') then
             begin
@@ -1088,6 +1091,7 @@ initialization
    JAVA_BOOLEAN_OBJECT_TYPE := TParserHelper.GetType('Boolean', JAVA_LANG_ID);
    JAVA_DATE_TYPE           := TParserHelper.GetType('Date', JAVA_LANG_ID);
    JAVA_CALENDAR_TYPE       := TParserHelper.GetType('Calendar', JAVA_LANG_ID);
+   JAVA_ZONED_DATETIME_TYPE := TParserHelper.GetType('ZonedDateTime', JAVA_LANG_ID);
    JAVA_LOCAL_DATETIME_TYPE := TParserHelper.GetType('LocalDateTime', JAVA_LANG_ID);
    JAVA_LOCAL_DATE_TYPE     := TParserHelper.GetType('LocalDate', JAVA_LANG_ID);
    JAVA_LOCAL_TIME_TYPE     := TParserHelper.GetType('LocalTime', JAVA_LANG_ID);

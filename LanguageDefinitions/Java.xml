@@ -93,6 +93,7 @@ It may not contain all supported tags. For all supported tags and their descript
 		<DataType kind="other" library="java.util">Calendar</DataType>
 		<DataType kind="other" library="java.time">LocalDate</DataType>
 		<DataType kind="other" library="java.time">LocalDateTime</DataType>
+		<DataType kind="other" library="java.time">ZonedDateTime</DataType>
 		<DataType kind="other" library="java.time">LocalTime</DataType>
 		<DataType kind="other" library="java.time">Duration</DataType>
 		<DataType kind="other" library="java.time">Period</DataType>
