@@ -87,6 +87,7 @@ var
    JAVA_BOOLEAN_OBJECT_TYPE,
    JAVA_DATE_TYPE,
    JAVA_CALENDAR_TYPE,
+   JAVA_OFFSET_DATETIME_TYPE,
    JAVA_ZONED_DATETIME_TYPE,
    JAVA_LOCAL_DATETIME_TYPE,
    JAVA_LOCAL_DATE_TYPE,
@@ -600,6 +601,8 @@ begin
                result := JAVA_DATE_TYPE
             else if AValue = 'Calendar.getInstance()' then
                result := JAVA_CALENDAR_TYPE
+            else if StartsWithOneOf(AValue, ['OffsetDateTime.now(', 'OffsetDateTime.of(']) and (lastChar = ')') then
+               result := JAVA_OFFSET_DATETIME_TYPE
             else if StartsWithOneOf(AValue, ['ZonedDateTime.now(', 'ZonedDateTime.of(']) and (lastChar = ')') then
                result := JAVA_ZONED_DATETIME_TYPE
             else if StartsWithOneOf(AValue, ['LocalDateTime.now(', 'LocalDateTime.of(']) and (lastChar = ')') then
@@ -1091,6 +1094,7 @@ initialization
    JAVA_BOOLEAN_OBJECT_TYPE := TParserHelper.GetType('Boolean', JAVA_LANG_ID);
    JAVA_DATE_TYPE           := TParserHelper.GetType('Date', JAVA_LANG_ID);
    JAVA_CALENDAR_TYPE       := TParserHelper.GetType('Calendar', JAVA_LANG_ID);
+   JAVA_OFFSET_DATETIME_TYPE:= TParserHelper.GetType('OffsetDateTime', JAVA_LANG_ID);
    JAVA_ZONED_DATETIME_TYPE := TParserHelper.GetType('ZonedDateTime', JAVA_LANG_ID);
    JAVA_LOCAL_DATETIME_TYPE := TParserHelper.GetType('LocalDateTime', JAVA_LANG_ID);
    JAVA_LOCAL_DATE_TYPE     := TParserHelper.GetType('LocalDate', JAVA_LANG_ID);
