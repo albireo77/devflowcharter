@@ -560,10 +560,12 @@ begin
             begin
                if AValue.EndsWith(JAVA_STRING_DELIM + '.length()') then
                   result := JAVA_INT_TYPE
+               else if AValue.EndsWith(JAVA_STRING_DELIM + '.toCharArray()') then
+                  result := TParserHelper.EncodeArrayType(JAVA_CHAR_TYPE, 1)
+               else if AValue.Contains(JAVA_STRING_DELIM + '.getBytes(') and (lastChar = ')') then
+                  result := TParserHelper.EncodeArrayType(JAVA_BYTE_TYPE, 1)
                else if lastChar = JAVA_STRING_DELIM then
-                  result := JAVA_STRING_TYPE
-               else
-                  Exit;
+                  result := JAVA_STRING_TYPE;
             end
             else if AValue.StartsWith('new String(' + JAVA_STRING_DELIM) and AValue.EndsWith(JAVA_STRING_DELIM + ')') and (len > 13) then
                result := JAVA_STRING_TYPE
@@ -967,7 +969,7 @@ begin
                      Exit;
                   cValue := Trim(Copy(AValue, 5, i-5));
                   t1 := TParserHelper.GetType(cValue);
-                  if IsPrimitiveType(t1) or MatchText(cValue, ['String', 'Pattern', 'DateTimeFormatter', 'Locale']) then
+                  if IsPrimitiveType(t1) or MatchText(cValue, ['String', 'Pattern', 'DateTimeFormatter', 'Locale', 'Clock']) then
                      Exit;
                   ProcessType(t1);
                   result := t1;
