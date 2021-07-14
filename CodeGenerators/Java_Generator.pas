@@ -93,6 +93,7 @@ var
    JAVA_LOCAL_DATE_TYPE,
    JAVA_LOCAL_TIME_TYPE,
    JAVA_INSTANT_TYPE,
+   JAVA_CLOCK_TYPE,
    JAVA_DURATION_TYPE,
    JAVA_PERIOD_TYPE,
    JAVA_LOCALE_TYPE,
@@ -519,6 +520,11 @@ begin
    result := false;
 end;
 
+function IsTimeType(const AValue: string; const AType: string; ALastChar: char): boolean;
+begin
+   result := StartsWithOneOf(AValue, [AType + '.now(', AType + '.of(']) and (ALastChar = ')');
+end;
+
 function GetTypeForString(AType: integer; const AValue: string): integer;
 begin
    result := AType;
@@ -601,16 +607,22 @@ begin
                result := JAVA_DATE_TYPE
             else if AValue = 'Calendar.getInstance()' then
                result := JAVA_CALENDAR_TYPE
-            else if StartsWithOneOf(AValue, ['OffsetDateTime.now(', 'OffsetDateTime.of(']) and (lastChar = ')') then
+            else if IsTimeType(AValue, 'OffsetDateTime', lastChar) then
                result := JAVA_OFFSET_DATETIME_TYPE
-            else if StartsWithOneOf(AValue, ['ZonedDateTime.now(', 'ZonedDateTime.of(']) and (lastChar = ')') then
+            else if IsTimeType(AValue, 'ZonedDateTime', lastChar) then
                result := JAVA_ZONED_DATETIME_TYPE
-            else if StartsWithOneOf(AValue, ['LocalDateTime.now(', 'LocalDateTime.of(']) and (lastChar = ')') then
+            else if IsTimeType(AValue, 'LocalDateTime', lastChar) then
                result := JAVA_LOCAL_DATETIME_TYPE
-            else if StartsWithOneOf(AValue, ['LocalDate.now(', 'LocalDate.of(']) and (lastChar = ')') then
+            else if IsTimeType(AValue, 'LocalDate', lastChar) then
                result := JAVA_LOCAL_DATE_TYPE
-            else if StartsWithOneOf(AValue, ['LocalTime.now(', 'LocalTime.of(']) and (lastChar = ')') then
+            else if IsTimeType(AValue, 'LocalTime', lastChar) then
                result := JAVA_LOCAL_TIME_TYPE
+            else if AValue.StartsWith('Clock.') and (lastChar = ')') then
+            begin
+               cValue := Copy(AValue, 7);
+               if StartsWithOneOf(cValue, ['fixed(', 'offset(', 'system(', 'systemDefaultZone(', 'systemUTC(', 'tick(', 'tickMinutes(', 'tickSeconds(']) then
+                  result := JAVA_CLOCK_TYPE
+            end
             else if AValue.StartsWith('Duration.') then
             begin
                if EndsWithOneOf(AValue, ['.toDays()', '.toHours()', '.toMillis()', '.toMinutes()', '.toNanos()']) then
@@ -1100,6 +1112,7 @@ initialization
    JAVA_LOCAL_DATE_TYPE     := TParserHelper.GetType('LocalDate', JAVA_LANG_ID);
    JAVA_LOCAL_TIME_TYPE     := TParserHelper.GetType('LocalTime', JAVA_LANG_ID);
    JAVA_INSTANT_TYPE        := TParserHelper.GetType('Instant', JAVA_LANG_ID);
+   JAVA_CLOCK_TYPE          := TParserHelper.GetType('Clock', JAVA_LANG_ID);
    JAVA_DURATION_TYPE       := TParserHelper.GetType('Duration', JAVA_LANG_ID);
    JAVA_PERIOD_TYPE         := TParserHelper.GetType('Period', JAVA_LANG_ID);
    JAVA_LOCALE_TYPE         := TParserHelper.GetType('Locale', JAVA_LANG_ID);
