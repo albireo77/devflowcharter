@@ -782,7 +782,7 @@ begin
             begin
                if ContainsOneOf(AValue, ['.charValue()', '.toLowerCase(', '.toUpperCase(', '.reverseBytes(', '.toTitleCase(']) then
                   result := JAVA_CHAR_TYPE
-               else if ContainsOneOf( AValue, ['.digit(', '.codePoint']) then
+               else if ContainsOneOf( AValue, ['.digit(', '.getNumericValue(', '.getType(', '.codePoint']) then
                   result := JAVA_INT_TYPE
                else if AValue.Contains('.toString(') then
                   result := JAVA_STRING_TYPE
