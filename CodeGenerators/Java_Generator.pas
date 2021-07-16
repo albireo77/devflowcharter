@@ -522,7 +522,7 @@ end;
 
 function IsTimeType(const AValue: string; const AType: string; ALastChar: char): boolean;
 begin
-   result := StartsWithOneOf(AValue, [AType + '.now(', AType + '.of(']) and (ALastChar = ')');
+   result := StartsWithOneOf(AValue, [AType + '.now(', AType + '.of(', AType + '.parse(']) and (ALastChar = ')');
 end;
 
 function GetTypeForString(AType: integer; const AValue: string): integer;
@@ -969,7 +969,7 @@ begin
                      Exit;
                   cValue := Trim(Copy(AValue, 5, i-5));
                   t1 := TParserHelper.GetType(cValue);
-                  if IsPrimitiveType(t1) or MatchText(cValue, ['String', 'Pattern', 'DateTimeFormatter', 'Locale', 'Clock']) then
+                  if IsPrimitiveType(t1) or MatchText(cValue, ['String', 'Pattern', 'DateTimeFormatter', 'Locale', 'Clock', 'LocalDateTime', 'ZonedDateTime', 'OffsetDateTime', 'LocalTime', 'LocalDate']) then
                      Exit;
                   ProcessType(t1);
                   result := t1;
