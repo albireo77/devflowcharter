@@ -93,7 +93,7 @@ end;
 procedure TAboutForm.FormCreate(Sender: TObject);
 const
    LABEL_1 = '                   ' + PROGRAM_NAME + sLineBreak + 'The easiest way from flowchart to program!' + sLineBreak + '             Version: ';
-   LABEL_2 = ' This program is freeware and released under the' + sLineBreak + '                GNU General Public License.' + sLineBreak + sLineBreak + '       The ' + PROGRAM_NAME + ' project (2006-2020)';
+   LABEL_2 = ' This program is freeware and released under the' + sLineBreak + '                GNU General Public License.' + sLineBreak + sLineBreak + '       The ' + PROGRAM_NAME + ' project (2006-2021)';
 {$IFDEF WIN32}
    winXX = ' (x32)';
 {$ENDIF}
