@@ -75,8 +75,8 @@ type
 implementation
 
 uses
-   Vcl.Graphics, System.SysUtils, System.UITypes, WinApi.Windows, ApplicationCommon,
-   XMLProcessor, UserFunction, Main_Block, Navigator_Form;
+   Vcl.Graphics, System.SysUtils, System.UITypes, WinApi.Windows, Infrastructure,
+   XMLProcessor, UserFunction, Main_Block, Navigator_Form, Constants;
 
 constructor TComment.Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight: Integer);
 begin

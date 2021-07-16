@@ -148,7 +148,7 @@ type
 implementation
 
 uses
-   System.SysUtils, System.Rtti, CommonInterfaces, ApplicationCommon, XMLProcessor;
+   System.SysUtils, System.Rtti, CommonInterfaces, XMLProcessor, Constants;
 
 constructor TComponentComparer.Create(ACompareType: integer);
 begin

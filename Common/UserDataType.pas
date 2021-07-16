@@ -77,7 +77,7 @@ implementation
 
 uses
    Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, System.Rtti,
-   Generics.Defaults, ApplicationCommon, LangDefinition, ParserHelper, XMLProcessor;
+   Generics.Defaults, Infrastructure, LangDefinition, ParserHelper, XMLProcessor, Constants;
 
 var
    ByTopFieldComparer: IComparer<TField>;

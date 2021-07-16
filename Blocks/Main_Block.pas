@@ -76,9 +76,9 @@ const
 implementation
 
 uses
-   Vcl.Forms, System.SysUtils, System.StrUtils, System.Types, System.UITypes, ApplicationCommon,
+   Vcl.Forms, System.SysUtils, System.StrUtils, System.Types, System.UITypes, Infrastructure,
    XMLProcessor, DeclareList, Navigator_Form, Return_Block, LangDefinition, UserFunction,
-   Comment;
+   Comment, Constants;
 
 constructor TMainBlock.Create(APage: TBlockTabSheet; const ABlockParms: TBlockParms);
 var

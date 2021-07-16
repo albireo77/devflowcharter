@@ -288,8 +288,8 @@ implementation
 
 uses
    System.StrUtils, Vcl.Menus, System.Types, System.Math, System.Rtti, System.TypInfo,
-   Main_Block, Return_Block, ApplicationCommon, BlockFactory, UserFunction, XMLProcessor,
-   Navigator_Form, LangDefinition, FlashThread, Main_Form;
+   Main_Block, Return_Block, Infrastructure, BlockFactory, UserFunction, XMLProcessor,
+   Navigator_Form, LangDefinition, FlashThread, Main_Form, Constants;
 
 type
    THackControl = class(TControl);

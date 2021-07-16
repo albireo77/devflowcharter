@@ -29,8 +29,8 @@ implementation
 
 uses
    System.Classes, System.SysUtils, System.StrUtils, Vcl.Graphics, Vcl.ComCtrls,
-   System.Character, SynHighlighterJava, DeclareList, ApplicationCommon, UserDataType,
-   UserFunction, LangDefinition, ParserHelper, CommonTypes;
+   System.Character, SynHighlighterJava, DeclareList, Infrastructure, UserDataType,
+   UserFunction, LangDefinition, ParserHelper, CommonTypes, Constants;
 
 const
    JAVA_STRING_DELIM = #34;

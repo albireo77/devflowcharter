@@ -45,7 +45,7 @@ type
 implementation
 
 uses
-   System.IniFiles, System.SysUtils, ApplicationCommon;
+   System.IniFiles, System.SysUtils, Infrastructure;
 
 constructor THistoryMenu.Create(AParentMenu: TMenuItem; AOnClick: TNotifyEvent);
 begin

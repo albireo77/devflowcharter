@@ -121,7 +121,7 @@ type
 implementation
 
 uses
-   WinApi.Windows, System.SysUtils, Vcl.Forms, ApplicationCommon, Base_Block, Navigator_Form;
+   WinApi.Windows, System.SysUtils, Vcl.Forms, Infrastructure, Base_Block, Navigator_Form, Constants;
 
 constructor TStatement.Create(AOwner: TComponent);
 const

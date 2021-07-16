@@ -70,7 +70,7 @@ implementation
 
 uses
    Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Math,
-   ApplicationCommon, XMLProcessor, Main_Block, UserFunction, Return_Block;
+   Infrastructure, Constants, XMLProcessor, Main_Block, UserFunction, Return_Block;
 
 const
    DEFAULT_WIDTH = 240;

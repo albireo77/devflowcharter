@@ -166,11 +166,16 @@ implementation
 
 uses
    System.StrUtils, System.UITypes, WinApi.Messages, System.Math, WinApi.Windows,
-   ApplicationCommon, Goto_Form, Settings, LangDefinition, Main_Block, Help_Form,
-   Comment, XMLProcessor, Main_Form, Base_Block, SynEditTypes, ParserHelper,
+   Infrastructure, Goto_Form, Settings, LangDefinition, Main_Block, Help_Form,
+   Comment, XMLProcessor, Main_Form, Base_Block, SynEditTypes, ParserHelper, Constants,
    System.Character;
 
 {$R *.dfm}
+
+function CompareIntegers(AList: TStringList; idx1, idx2: integer): integer;
+begin
+   result := AList[idx1].ToInteger - AList[idx2].ToInteger;
+end;
 
 constructor TEditorHintWindow.Create(AOwner: TComponent);
 begin

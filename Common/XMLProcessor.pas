@@ -66,7 +66,7 @@ const
 implementation
 
 uses
-   System.SysUtils, ApplicationCommon, BlockFactory, BlockTabSheet;
+   System.SysUtils, Infrastructure, BlockFactory, BlockTabSheet, Constants;
 
 class function TXMLProcessor.FindChildTag(ATag: IXMLElement; const AName: string): IXMLElement;
 begin

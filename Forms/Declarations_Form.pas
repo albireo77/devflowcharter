@@ -47,7 +47,7 @@ var
 implementation
 
 uses
-   Vcl.Forms, System.SysUtils, ApplicationCommon, XMLProcessor, DeclareList;
+   Vcl.Forms, System.SysUtils, XMLProcessor, DeclareList, Infrastructure, Constants;
 
 {$R *.dfm}
 

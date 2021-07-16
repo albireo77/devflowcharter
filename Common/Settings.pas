@@ -169,7 +169,7 @@ uses
    System.Win.Registry,
 {$ENDIF}
    System.SysUtils, Vcl.Forms, Vcl.Controls, System.Math, System.Classes, System.IOUtils,
-   ApplicationCommon, Main_Form, Navigator_Form;
+   Infrastructure, Main_Form, Navigator_Form, Constants;
 
 const
    KEY_HIGHLIGHT_COLOR = 'HighlightColor';

@@ -54,7 +54,7 @@ var
 implementation
 
 uses
-   WinApi.Windows, System.SysUtils, ApplicationCommon, ShellAPI;
+   WinApi.Windows, System.SysUtils, Constants, ShellAPI;
 
 {$R *.dfm}
 

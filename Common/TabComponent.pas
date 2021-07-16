@@ -101,8 +101,8 @@ type
 implementation
 
 uses
-   System.SysUtils, Generics.Collections, System.StrUtils, System.Rtti, ApplicationCommon,
-   XMLProcessor, BaseEnumerator;
+   System.SysUtils, Generics.Collections, System.StrUtils, System.Rtti, Infrastructure,
+   XMLProcessor, BaseEnumerator, Constants;
 
 var
    ByTopElementComparer: IComparer<TElement>;

@@ -67,7 +67,7 @@ const
 implementation
 
 uses
-   ApplicationCommon;
+   Infrastructure;
 
 { We pass error calls to the yyerrorfile item in the lexer.		}
 { This requires the TLexFile item to have been opened at some stage,	}

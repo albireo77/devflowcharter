@@ -71,7 +71,7 @@ implementation
 
 uses
    System.StrUtils, WinApi.Windows, Vcl.Graphics, System.SysUtils, System.Rtti,
-   WinApi.Messages, XMLProcessor, ApplicationCommon;
+   WinApi.Messages, XMLProcessor, Infrastructure;
 
 constructor TMemoEx.Create(AOwner: TComponent);
 begin

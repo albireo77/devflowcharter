@@ -41,7 +41,7 @@ type
 implementation
 
 uses
-   System.Classes, ApplicationCommon;
+   System.Classes, Infrastructure;
 
 constructor TIfBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin

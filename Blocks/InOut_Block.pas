@@ -53,7 +53,7 @@ implementation
 
 uses
    Vcl.Controls, System.Classes, WinApi.Windows, System.Types, System.UITypes, System.Math,
-   ApplicationCommon;
+   Infrastructure;
 
 constructor TInOutBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms; const AText: string; AdjustWidth: boolean);
 var

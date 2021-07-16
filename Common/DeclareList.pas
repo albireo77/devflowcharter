@@ -173,8 +173,8 @@ const
 implementation
 
 uses
-   System.SysUtils, System.StrUtils, System.UITypes, System.Rtti, ApplicationCommon,
-   XMLProcessor, Project, UserDataType, LangDefinition, ParserHelper;
+   System.SysUtils, System.StrUtils, System.UITypes, System.Rtti, Infrastructure,
+   XMLProcessor, Project, UserDataType, LangDefinition, ParserHelper, Constants;
 
 constructor TDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
 var

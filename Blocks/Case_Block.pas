@@ -67,7 +67,7 @@ implementation
 
 uses
    System.StrUtils, System.UITypes, System.Math, XMLProcessor, Return_Block, Navigator_Form,
-   LangDefinition, ApplicationCommon;
+   LangDefinition, Infrastructure, Constants;
 
 constructor TCaseBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin

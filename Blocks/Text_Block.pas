@@ -51,7 +51,7 @@ type
 implementation
 
 uses
-   System.Classes, System.Types, ApplicationCommon;
+   System.Classes, System.Types, Constants, Infrastructure;
 
 constructor TTextBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin

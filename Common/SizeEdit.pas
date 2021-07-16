@@ -42,7 +42,7 @@ type
 implementation
 
 uses
-   System.SysUtils, System.StrUtils, System.Math, ApplicationCommon;
+   System.SysUtils, System.StrUtils, System.Math, Infrastructure, Constants;
 
 constructor TSizeEdit.Create(AParent: TWinControl);
 begin

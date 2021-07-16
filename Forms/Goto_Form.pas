@@ -51,7 +51,7 @@ implementation
 {$R *.dfm}
 
 uses
-   System.SysUtils, SynEdit, ApplicationCommon;
+   System.SysUtils, SynEdit, Infrastructure;
 
 procedure TGotoForm.FormShow(Sender: TObject);
 begin

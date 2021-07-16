@@ -29,7 +29,7 @@ implementation
 
 uses
    System.SysUtils, System.StrUtils, System.Classes, SynHighlighterCpp, Vcl.Graphics,
-   Main_Block, ApplicationCommon, LangDefinition, ParserHelper;
+   Main_Block, Infrastructure, LangDefinition, ParserHelper, Constants;
 
 const
    C_STRING_DELIM = #34;

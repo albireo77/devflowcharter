@@ -121,7 +121,7 @@ implementation
 
 uses
    System.SysUtils, Vcl.Menus, Vcl.Forms, System.StrUtils, System.Types, System.UITypes,
-   Generics.Collections, ApplicationCommon, XMLProcessor, Base_Form, LangDefinition,
+   Generics.Collections, Infrastructure, Constants, XMLProcessor, Base_Form, LangDefinition,
    Navigator_Form, Base_Block, TabComponent, ParserHelper, SelectImport_Form,
    WinApi.Messages, Vcl.ExtCtrls;
 

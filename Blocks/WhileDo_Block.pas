@@ -41,7 +41,7 @@ type
 implementation
 
 uses
-   System.Classes, ApplicationCommon, Return_Block;
+   System.Classes, Return_Block, Infrastructure;
 
 constructor TWhileDoBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin

@@ -48,8 +48,8 @@ implementation
 {$R *.dfm}
 
 uses
-   Vcl.Forms, System.SysUtils, ApplicationCommon, Base_Block, Main_Block, Navigator_Form,
-   UserFunction, CommonInterfaces, XMLProcessor, BlockTabSheet;
+   Vcl.Forms, System.SysUtils, Infrastructure, Base_Block, Main_Block, Navigator_Form,
+   UserFunction, CommonInterfaces, XMLProcessor, BlockTabSheet, Constants;
 
 procedure TFunctionsForm.miAddClick(Sender: TObject);
 begin

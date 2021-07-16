@@ -65,7 +65,7 @@ type
 implementation
 
 uses
-   Vcl.Graphics, System.SysUtils, CommonInterfaces, ApplicationCommon, TabComponent;
+   Vcl.Graphics, System.SysUtils, CommonInterfaces, TabComponent, Infrastructure, Constants;
 
 constructor TElement.Create(AParent: TScrollBox);
 begin

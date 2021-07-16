@@ -28,7 +28,7 @@ interface
 implementation
 
 uses
-   SynHighlighterPython, Vcl.Graphics, ApplicationCommon, LangDefinition;
+   SynHighlighterPython, Vcl.Graphics, LangDefinition, Infrastructure, Constants;
 
 var
    pythonLang: TLangDefinition;

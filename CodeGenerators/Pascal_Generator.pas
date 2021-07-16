@@ -92,8 +92,8 @@ implementation
 
 uses
    System.SysUtils, System.StrUtils, System.Classes, Vcl.Graphics, Vcl.StdCtrls, SynHighlighterPas,
-   Pascal_Parser, Main_Block, ApplicationCommon, DeclareList, Settings, LocalizationManager,
-   LangDefinition, CommonTypes, ParserHelper, YaccLib;
+   Pascal_Parser, Main_Block, Infrastructure, DeclareList, Settings, LocalizationManager,
+   LangDefinition, CommonTypes, ParserHelper, YaccLib, Constants;
 
 var
    pascalLang: TLangDefinition;

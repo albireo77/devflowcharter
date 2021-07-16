@@ -37,7 +37,7 @@ implementation
 
 uses
    Instr_Block, MultiInstr_Block, InOut_Block, FunctionCall_Block, WhileDo_Block,
-   RepeatUntil_Block, ApplicationCommon, ForDo_Block, IfElse_Block, If_Block,
+   RepeatUntil_Block, ForDo_Block, IfElse_Block, If_Block,
    Case_Block, Return_Block, Text_Block, Main_Block, Folder_Block;
 
 class function TBlockFactory.Create(ABranch: TBranch; ABlockType: TBlockType): TBlock;

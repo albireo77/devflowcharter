@@ -49,7 +49,7 @@ type
 implementation
 
 uses
-   WinApi.Windows, ApplicationCommon;
+   WinApi.Windows, Infrastructure, Constants;
 
 procedure TBaseForm.Localize(AList: TStringList);
 begin

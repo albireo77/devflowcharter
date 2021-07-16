@@ -70,7 +70,7 @@ implementation
 
 uses
    System.SysUtils, System.StrUtils, System.Math, System.UITypes, WinApi.Windows,
-   ApplicationCommon, UserFunction, Navigator_Form, XMLProcessor;
+   UserFunction, Navigator_Form, XMLProcessor, Infrastructure, Constants;
 
 constructor TBlockTabSheet.Create(AMainForm: TMainForm);
 begin

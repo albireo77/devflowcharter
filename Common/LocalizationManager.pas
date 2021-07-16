@@ -61,7 +61,7 @@ implementation
 
 uses
    Vcl.StdCtrls, Vcl.Forms, System.SysUtils, Vcl.Dialogs, WinApi.Windows, Vcl.Menus,
-   Vcl.Buttons, System.StrUtils, Vcl.Controls, System.IOUtils, Base_Form, ApplicationCommon;
+   Vcl.Buttons, System.StrUtils, Vcl.Controls, System.IOUtils, Base_Form;
 
 type
    THackControl = class(TControl);

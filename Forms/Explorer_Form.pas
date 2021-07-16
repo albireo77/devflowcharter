@@ -82,7 +82,7 @@ implementation
 
 uses
    Vcl.Graphics, Vcl.Forms, System.SysUtils, System.UITypes, System.Math,
-   ApplicationCommon, Base_Block, XMLProcessor;
+   Infrastructure, Base_Block, XMLProcessor, Constants;
 
 procedure TExplorerForm.FormShow(Sender: TObject);
 begin

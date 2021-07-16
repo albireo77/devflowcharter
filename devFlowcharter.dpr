@@ -23,7 +23,8 @@ program devFlowcharter;
 
 uses
   Forms,
-  ApplicationCommon in 'Common\ApplicationCommon.pas',
+  Constants in 'Common\Constants.pas',
+  Infrastructure in 'Common\Infrastructure.pas',
   Instr_Block in 'Blocks\Instr_Block.pas',
   Base_Block in 'Blocks\Base_Block.pas',
   ForDo_Block in 'Blocks\ForDo_Block.pas',

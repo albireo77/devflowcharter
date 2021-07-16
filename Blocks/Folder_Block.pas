@@ -42,7 +42,7 @@ type
 implementation
 
 uses
-   System.StrUtils, ApplicationCommon;
+   System.StrUtils, Infrastructure;
 
 constructor TFolderBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin

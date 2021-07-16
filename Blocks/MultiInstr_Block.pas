@@ -42,7 +42,7 @@ type
 implementation
 
 uses
-   System.SysUtils, System.StrUtils, System.UITypes, ApplicationCommon, YaccLib;
+   System.SysUtils, System.StrUtils, System.UITypes, Infrastructure, YaccLib, Constants;
 
 constructor TMultiInstrBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin

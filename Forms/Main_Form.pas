@@ -232,10 +232,10 @@ implementation
 
 uses
    Vcl.StdCtrls, Vcl.Clipbrd, System.StrUtils, System.UITypes, System.Types, System.Generics.Defaults,
-   System.Generics.Collections, System.Math, Toolbox_Form, ApplicationCommon, About_Form,
+   System.Generics.Collections, System.Math, Toolbox_Form, Infrastructure, About_Form,
    Main_Block, ParseGlobals, LocalizationManager, XMLProcessor, UserFunction, ForDo_Block,
    Return_Block, Project, Declarations_Form, Base_Block, Comment, Case_Block, Navigator_Form,
-   CommonTypes, LangDefinition, EditMemo_Form, BlockFactory, BlockTabSheet, MemoEx;
+   CommonTypes, LangDefinition, EditMemo_Form, BlockFactory, BlockTabSheet, MemoEx, Constants;
 
 type
    TDerivedControl = class(TControl);

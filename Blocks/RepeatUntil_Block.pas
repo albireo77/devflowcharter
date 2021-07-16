@@ -44,8 +44,7 @@ type
 implementation
 
 uses
-   System.Classes, System.SysUtils, System.StrUtils, System.Math, ApplicationCommon,
-   LangDefinition;
+   System.Classes, System.SysUtils, System.StrUtils, System.Math, Infrastructure, LangDefinition;
 
 constructor TRepeatUntilBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin

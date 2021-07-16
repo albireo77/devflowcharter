@@ -43,7 +43,7 @@ var
 implementation
 
 uses
-   System.SysUtils, System.StrUtils, ApplicationCommon;
+   System.SysUtils, System.StrUtils, Constants;
 
 {$R *.dfm}
 

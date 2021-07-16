@@ -26,7 +26,7 @@ unit ParserHelper;
 interface
 
 uses
-   Base_Block, ApplicationCommon, DeclareList, UserFunction;
+   Base_Block, DeclareList, UserFunction;
 
 type
 
@@ -137,7 +137,7 @@ implementation
 
 uses
    Vcl.StdCtrls, System.SysUtils, UserDataType, Statement, CommonTypes, Case_Block,
-   Main_Block, ForDo_Block, LangDefinition, CommonInterfaces;
+   Main_Block, ForDo_Block, LangDefinition, CommonInterfaces, Infrastructure, Constants;
 
 class function TIdentInfo.New: TIdentInfo;
 begin

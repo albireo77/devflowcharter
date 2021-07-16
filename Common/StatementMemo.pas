@@ -43,7 +43,7 @@ type
 implementation
 
 uses
-   Vcl.Forms, System.SysUtils, ApplicationCommon, Base_Block;
+   Vcl.Forms, System.SysUtils, Base_Block, Infrastructure, Constants;
 
 constructor TStatementMemo.Create(AOwner: TComponent);
 begin

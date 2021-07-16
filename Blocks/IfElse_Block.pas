@@ -56,7 +56,7 @@ const
 implementation
 
 uses
-   System.SysUtils, System.Classes, System.Types, System.Math, Return_Block, ApplicationCommon;
+   System.SysUtils, System.Classes, System.Types, System.Math, Return_Block, Infrastructure;
 
 constructor TIfElseBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin

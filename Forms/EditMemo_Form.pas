@@ -29,7 +29,7 @@ var
 implementation
 
 uses
-   Vcl.Graphics, Vcl.Forms, System.Types, ApplicationCommon;
+   Vcl.Graphics, Vcl.Forms, System.Types, Infrastructure;
 
 {$R *.dfm}
 

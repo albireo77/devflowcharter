@@ -269,7 +269,7 @@ const
 implementation
 
 uses
-   Vcl.Forms, System.StrUtils, System.IniFiles, ApplicationCommon, XMLProcessor;
+   Vcl.Forms, System.StrUtils, System.IniFiles, XMLProcessor, Constants, Infrastructure;
 
 constructor TLangDefinition.Create;
 begin

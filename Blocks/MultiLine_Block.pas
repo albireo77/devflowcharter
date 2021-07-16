@@ -55,7 +55,8 @@ uses
 {$IFDEF USE_CODEFOLDING}
    SynEditCodeFolding,
 {$ENDIF}
-   System.SysUtils, System.Types, System.UITypes, ApplicationCommon, LangDefinition;
+   System.SysUtils, System.Types, System.UITypes, Infrastructure, Constants,
+   LangDefinition;
 
 constructor TMultiLineBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin

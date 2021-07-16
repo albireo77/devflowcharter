@@ -138,7 +138,7 @@ type
 implementation
 
 uses
-   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, Vcl.Grids, ApplicationCommon,
+   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, Vcl.Grids, Infrastructure, Constants,
    Main_Form, XMLProcessor, LangDefinition, Navigator_Form, BlockTabSheet, CommonTypes;
 
 var
