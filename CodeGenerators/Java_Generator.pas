@@ -30,7 +30,7 @@ implementation
 uses
    System.Classes, System.SysUtils, System.StrUtils, Vcl.Graphics, Vcl.ComCtrls,
    System.Character, SynHighlighterJava, DeclareList, Infrastructure, UserDataType,
-   UserFunction, LangDefinition, ParserHelper, CommonTypes, Constants;
+   UserFunction, LangDefinition, ParserHelper, Types, Constants;
 
 const
    JAVA_STRING_DELIM = #34;

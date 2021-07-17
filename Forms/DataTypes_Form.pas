@@ -24,7 +24,7 @@ unit DataTypes_Form;
 interface
 
 uses
-   OmniXML, PageControl_Form, CommonTypes;
+   OmniXML, PageControl_Form, Types;
 
 type
 
@@ -46,7 +46,7 @@ var
 implementation
 
 uses
-   System.SysUtils, Vcl.Forms, Infrastructure, XMLProcessor, UserDataType, CommonInterfaces;
+   System.SysUtils, Vcl.Forms, Infrastructure, XMLProcessor, UserDataType, Interfaces;
 
 {$R *.dfm}
 

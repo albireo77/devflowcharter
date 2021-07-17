@@ -24,7 +24,7 @@ unit InOut_Block;
 interface
 
 uses
-   Vcl.Graphics, Base_Block, CommonTypes;
+   Vcl.Graphics, Base_Block, Types;
 
 type
 

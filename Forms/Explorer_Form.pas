@@ -25,7 +25,7 @@ interface
 
 uses
    Vcl.Controls, Vcl.StdCtrls, Vcl.Menus, Vcl.ComCtrls, System.Classes, System.Types,
-   OmniXML, Base_Form, CommonTypes, CommonInterfaces;
+   OmniXML, Base_Form, Types, Interfaces;
 
 type
   TExplorerForm = class(TBaseForm)

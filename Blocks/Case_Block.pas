@@ -24,7 +24,7 @@ interface
 
 uses
    Vcl.StdCtrls, Vcl.Graphics, System.Classes, System.SysUtils, Vcl.ComCtrls, System.Types,
-   Vcl.Controls, Base_Block, OmniXML, CommonTypes, Statement;
+   Vcl.Controls, Base_Block, OmniXML, Types, Statement;
 
 type
 

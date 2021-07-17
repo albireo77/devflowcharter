@@ -24,7 +24,7 @@ unit IfElse_Block;
 interface
 
 uses
-   WinApi.Windows, Vcl.Graphics, Vcl.ComCtrls, Base_Block, OmniXML, CommonTypes;
+   WinApi.Windows, Vcl.Graphics, Vcl.ComCtrls, Base_Block, OmniXML, Types;
 
 type
 

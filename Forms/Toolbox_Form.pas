@@ -61,7 +61,7 @@ implementation
 {$R *.dfm}
 
 uses
-   Infrastructure, CommonTypes;
+   Infrastructure, Types;
 
 procedure TToolboxForm.sbNormalClick(Sender: TObject);
 begin

@@ -25,7 +25,7 @@ interface
 
 uses
    Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ExtCtrls, System.Classes, System.Types,
-   Generics.Defaults, OmniXML, Main_Block, DeclareList, CommonInterfaces, TabComponent,
+   Generics.Defaults, OmniXML, Main_Block, DeclareList, Interfaces, TabComponent,
    Element, Functions_Form;
 
 type
@@ -139,7 +139,7 @@ implementation
 
 uses
    Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, Vcl.Grids, Infrastructure, Constants,
-   Main_Form, XMLProcessor, LangDefinition, Navigator_Form, BlockTabSheet, CommonTypes;
+   Main_Form, XMLProcessor, LangDefinition, Navigator_Form, BlockTabSheet, Types;
 
 var
    ByTopParameterComparer: IComparer<TParameter>;

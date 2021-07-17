@@ -25,7 +25,7 @@ interface
 
 uses
    Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Forms, Vcl.Controls, Generics.Defaults,
-   OmniXml, PageControl_Form, CommonTypes;
+   OmniXml, PageControl_Form, Types;
 
 type
 
@@ -65,7 +65,7 @@ type
 implementation
 
 uses
-   Vcl.Graphics, System.SysUtils, CommonInterfaces, TabComponent, Infrastructure, Constants;
+   Vcl.Graphics, System.SysUtils, Interfaces, TabComponent, Infrastructure, Constants;
 
 constructor TElement.Create(AParent: TScrollBox);
 begin

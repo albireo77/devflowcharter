@@ -27,7 +27,7 @@ interface
 uses
    WinApi.Windows, Vcl.Forms, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Controls, Vcl.Graphics,
    WinApi.Messages, System.SysUtils, System.Classes, Vcl.ComCtrls, System.UITypes,
-   Generics.Collections, Statement, OmniXML, BaseEnumerator, CommonInterfaces, CommonTypes,
+   Generics.Collections, Statement, OmniXML, BaseEnumerator, Interfaces, Types,
    BlockTabSheet, Comment, MemoEx;
 
 const

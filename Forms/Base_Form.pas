@@ -25,7 +25,7 @@ interface
 
 uses
    Vcl.Forms, System.Classes, Vcl.Graphics, Vcl.Controls, OmniXML, BaseEnumerator,
-   CommonTypes, CommonInterfaces;
+   Types, Interfaces;
 
 type
 

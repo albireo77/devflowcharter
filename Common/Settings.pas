@@ -22,8 +22,7 @@ unit Settings;
 interface
 
 uses
-  Vcl.Graphics, System.IniFiles, System.Types, LangDefinition, CommonTypes,
-  SynEditHighlighter;
+  Vcl.Graphics, System.IniFiles, System.Types, LangDefinition, Types, SynEditHighlighter;
 
 type
 

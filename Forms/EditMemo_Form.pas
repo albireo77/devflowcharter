@@ -3,8 +3,7 @@ unit EditMemo_Form;
 interface
 
 uses
-  System.Classes, Vcl.StdCtrls, Vcl.Controls, Base_Form, Base_Block,
-  CommonInterfaces, MemoEx;
+  System.Classes, Vcl.StdCtrls, Vcl.Controls, Base_Form, Base_Block, Interfaces, MemoEx;
 
 type
 

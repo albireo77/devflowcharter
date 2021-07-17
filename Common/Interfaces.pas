@@ -19,12 +19,12 @@
 
 
 
-unit CommonInterfaces;
+unit Interfaces;
 
 interface
 
 uses
-   Vcl.Controls, Vcl.ComCtrls, OmniXML, Vcl.Graphics, System.Types, CommonTypes, MemoEx;
+   Vcl.Controls, Vcl.ComCtrls, OmniXML, Vcl.Graphics, System.Types, Types, MemoEx;
 
 const
 

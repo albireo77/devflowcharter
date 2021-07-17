@@ -24,7 +24,7 @@ unit Constants;
 interface
 
 uses
-   Vcl.Graphics, CommonTypes;
+   Vcl.Graphics, Types;
 
 const   // Global constants
 

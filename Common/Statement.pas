@@ -23,7 +23,7 @@ interface
 
 uses
    System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.StdCtrls, WinApi.Messages,
-   CommonInterfaces, CommonTypes, YaccLib;
+   Interfaces, Types, YaccLib;
 
 type
 

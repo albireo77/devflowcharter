@@ -30,8 +30,8 @@ uses
 {$ENDIF}
    Vcl.Forms, Vcl.Controls, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Graphics, System.Types,
    Vcl.Dialogs, Vcl.ComCtrls, Vcl.Clipbrd, Vcl.Menus, System.SysUtils, System.Classes,
-   SynEdit, SynExportRTF, SynEditPrint, CommonTypes, SynHighlighterPas, SynHighlighterCpp,
-   SynMemo, SynExportHTML, OmniXML, Base_Form, CommonInterfaces, SynEditExport, SynEditHighlighter,
+   SynEdit, SynExportRTF, SynEditPrint, Types, SynHighlighterPas, SynHighlighterCpp,
+   SynMemo, SynExportHTML, OmniXML, Base_Form, Interfaces, SynEditExport, SynEditHighlighter,
    SynHighlighterPython, SynHighlighterJava;
 
 type

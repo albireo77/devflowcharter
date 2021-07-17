@@ -25,7 +25,7 @@ interface
 
 uses
    Vcl.Controls, Vcl.Menus, Vcl.ComCtrls, System.Classes, System.Types, OmniXML,
-   Base_Form, CommonTypes;
+   Base_Form, Types;
 
 type
 
@@ -80,7 +80,7 @@ implementation
 
 uses
    System.SysUtils, System.StrUtils, Vcl.Forms, Infrastructure, XMLProcessor,
-   TabComponent, CommonInterfaces;
+   TabComponent, Interfaces;
 
 procedure TPageControlForm.miRemoveClick(Sender: TObject);
 var

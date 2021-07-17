@@ -23,7 +23,7 @@ interface
 
 uses
    Vcl.Controls, OmniXML, Vcl.StdCtrls, Vcl.Grids, System.Classes, System.Types,
-   Vcl.Graphics, Vcl.Forms, Vcl.ExtCtrls, SizeEdit, CommonInterfaces, CommonTypes;
+   Vcl.Graphics, Vcl.Forms, Vcl.ExtCtrls, SizeEdit, Interfaces, Types;
 
 type
 

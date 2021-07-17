@@ -24,7 +24,7 @@ unit Functions_Form;
 interface
 
 uses
-   System.Types, OmniXML, PageControl_Form, CommonTypes;
+   System.Types, OmniXML, PageControl_Form, Types;
 
 type
 
@@ -49,7 +49,7 @@ implementation
 
 uses
    Vcl.Forms, System.SysUtils, Infrastructure, Base_Block, Main_Block, Navigator_Form,
-   UserFunction, CommonInterfaces, XMLProcessor, BlockTabSheet, Constants;
+   UserFunction, Interfaces, XMLProcessor, BlockTabSheet, Constants;
 
 procedure TFunctionsForm.miAddClick(Sender: TObject);
 begin

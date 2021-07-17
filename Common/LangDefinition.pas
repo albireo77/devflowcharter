@@ -26,7 +26,7 @@ uses
     SynEditCodeFolding,
 {$ENDIF}
     System.Classes, System.SysUtils, SizeEdit, SynEditHighlighter, YaccLib, DeclareList, UserFunction,
-    CommonTypes, OmniXML, UserDataType;
+    Types, OmniXML, UserDataType;
 
 type
 

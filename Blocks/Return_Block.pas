@@ -22,7 +22,7 @@ unit Return_Block;
 interface
 
 uses
-   Vcl.Graphics, System.Classes, Vcl.StdCtrls, Base_Block, CommonTypes;
+   Vcl.Graphics, System.Classes, Vcl.StdCtrls, Base_Block, Types;
 
 type
 

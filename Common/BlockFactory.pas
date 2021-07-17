@@ -22,7 +22,7 @@ unit BlockFactory;
 interface
 
 uses
-   Base_Block, CommonTypes, OmniXML, BlockTabSheet;
+   Base_Block, Types, OmniXML, BlockTabSheet;
 
 type
 

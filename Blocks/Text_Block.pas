@@ -24,8 +24,7 @@ unit Text_Block;
 interface
 
 uses
-   Vcl.Graphics, Vcl.ExtCtrls, Vcl.Controls, Base_Block, MultiLine_Block,
-   CommonTypes;
+   Vcl.Graphics, Vcl.ExtCtrls, Vcl.Controls, Base_Block, MultiLine_Block, Types;
 
 type
 

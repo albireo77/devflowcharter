@@ -25,7 +25,7 @@ interface
 
 uses
    WinApi.Windows, Vcl.Graphics, System.Classes, Vcl.ComCtrls, WinApi.Messages,
-   Vcl.Controls, Base_Block, OmniXML, CommonInterfaces, CommonTypes, BlockTabSheet;
+   Vcl.Controls, Base_Block, OmniXML, Interfaces, Types, BlockTabSheet;
 
 type
 

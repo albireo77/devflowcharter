@@ -23,7 +23,7 @@ unit Instr_Block;
 interface
 
 uses
-   Vcl.Graphics, System.SysUtils, Base_Block, CommonTypes;
+   Vcl.Graphics, System.SysUtils, Base_Block, Types;
 
 type
 

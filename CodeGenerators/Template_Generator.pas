@@ -25,8 +25,8 @@ implementation
 
 uses
    System.SysUtils, System.StrUtils, System.Classes, Vcl.StdCtrls, Base_Block, LangDefinition,
-   UserFunction, DeclareList, CommonInterfaces, UserDataType, Infrastructure,
-   ParserHelper, CommonTypes, Constants;
+   UserFunction, DeclareList, Interfaces, UserDataType, Infrastructure,
+   ParserHelper, Types, Constants;
 
 procedure Template_UserDataTypesSectionGenerator(ALines: TStringList);
 var

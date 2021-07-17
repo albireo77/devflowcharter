@@ -24,7 +24,7 @@ unit WhileDo_Block;
 interface
 
 uses
-   Vcl.Graphics, System.Types, Base_Block, CommonTypes;
+   Vcl.Graphics, System.Types, Base_Block, Types;
 
 type
 

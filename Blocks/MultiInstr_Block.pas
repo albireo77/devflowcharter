@@ -24,7 +24,7 @@ unit MultiInstr_Block;
 interface
 
 uses
-   Vcl.Graphics, System.Classes, Base_Block, MultiLine_Block, CommonTypes;
+   Vcl.Graphics, System.Classes, Base_Block, MultiLine_Block, Types;
 
 type
 

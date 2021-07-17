@@ -22,8 +22,7 @@ unit StatementMemo;
 interface
 
 uses
-  System.Classes, Vcl.StdCtrls, Vcl.Graphics, Vcl.Controls, CommonInterfaces,
-  MemoEx, CommonTypes;
+  System.Classes, Vcl.StdCtrls, Vcl.Graphics, Vcl.Controls, Interfaces, MemoEx, Types;
 
 type
 

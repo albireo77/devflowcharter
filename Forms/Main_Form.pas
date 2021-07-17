@@ -28,7 +28,7 @@ interface
 uses
   WinApi.Windows, Vcl.Graphics, Vcl.Forms, Vcl.Controls, System.SysUtils, Vcl.Menus,
   Vcl.ImgList, System.Classes, Vcl.Dialogs, WinApi.Messages, Vcl.ComCtrls, System.ImageList,
-  Base_Form, History, CommonInterfaces, OmniXML;
+  Base_Form, History, Interfaces, OmniXML;
 
 const
    CM_MENU_CLOSED = CM_BASE + 1001;
@@ -235,7 +235,7 @@ uses
    System.Generics.Collections, System.Math, Toolbox_Form, Infrastructure, About_Form,
    Main_Block, ParseGlobals, LocalizationManager, XMLProcessor, UserFunction, ForDo_Block,
    Return_Block, Project, Declarations_Form, Base_Block, Comment, Case_Block, Navigator_Form,
-   CommonTypes, LangDefinition, EditMemo_Form, BlockFactory, BlockTabSheet, MemoEx, Constants;
+   Types, LangDefinition, EditMemo_Form, BlockFactory, BlockTabSheet, MemoEx, Constants;
 
 type
    TDerivedControl = class(TControl);

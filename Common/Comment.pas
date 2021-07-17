@@ -25,7 +25,7 @@ interface
 
 uses
    WinApi.Messages, System.Types, Vcl.Controls, Vcl.Forms, Vcl.StdCtrls, System.Classes,
-   OmniXML, CommonInterfaces, BlockTabSheet, MemoEx;
+   OmniXML, Interfaces, BlockTabSheet, MemoEx;
 
 type
 

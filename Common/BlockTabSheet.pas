@@ -25,7 +25,7 @@ interface
 
 uses
    System.Classes, Vcl.ComCtrls, Vcl.Controls, Vcl.Forms, WinApi.Messages, System.Types,
-   Vcl.Graphics, CommonInterfaces, Main_Form, OmniXML;
+   Vcl.Graphics, Interfaces, Main_Form, OmniXML;
 
 type
 

@@ -25,7 +25,7 @@ interface
 
 uses
    Vcl.Controls, Vcl.StdCtrls, Vcl.Graphics, System.Classes, Vcl.ComCtrls, Base_Block,
-   StatementMemo, MemoEx, CommonTypes;
+   StatementMemo, MemoEx, Types;
 
 type
 
@@ -55,8 +55,7 @@ uses
 {$IFDEF USE_CODEFOLDING}
    SynEditCodeFolding,
 {$ENDIF}
-   System.SysUtils, System.Types, System.UITypes, Infrastructure, Constants,
-   LangDefinition;
+   System.SysUtils, System.Types, System.UITypes, Infrastructure, Constants, LangDefinition;
 
 constructor TMultiLineBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin

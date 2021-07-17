@@ -26,7 +26,7 @@ unit XMLProcessor;
 interface
 
 uses
-   Vcl.Controls, Vcl.Dialogs, OmniXML, Base_Block, CommonTypes;
+   Vcl.Controls, Vcl.Dialogs, OmniXML, Base_Block, Types;
 
 type
 

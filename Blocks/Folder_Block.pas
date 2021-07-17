@@ -24,7 +24,7 @@ unit Folder_Block;
 interface
 
 uses
-   System.Types, Base_Block, CommonTypes;
+   System.Types, Base_Block, Types;
 
 type
 

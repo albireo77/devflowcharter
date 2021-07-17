@@ -25,7 +25,7 @@ interface
 
 uses
    Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls, System.Classes, Vcl.ExtCtrls, OmniXML,
-   SizeEdit, TabComponent, Element, DataTypes_Form, CommonInterfaces, CommonTypes;
+   SizeEdit, TabComponent, Element, DataTypes_Form, Interfaces, Types;
 
 type
 

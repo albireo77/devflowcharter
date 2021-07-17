@@ -136,8 +136,8 @@ const
 implementation
 
 uses
-   Vcl.StdCtrls, System.SysUtils, UserDataType, Statement, CommonTypes, Case_Block,
-   Main_Block, ForDo_Block, LangDefinition, CommonInterfaces, Infrastructure, Constants;
+   Vcl.StdCtrls, System.SysUtils, UserDataType, Statement, Types, Case_Block,
+   Main_Block, ForDo_Block, LangDefinition, Interfaces, Infrastructure, Constants;
 
 class function TIdentInfo.New: TIdentInfo;
 begin
