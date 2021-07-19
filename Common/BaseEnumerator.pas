@@ -46,7 +46,6 @@ type
 
    TEnumeratorFactory<T: class> = class(TInterfacedObject, IEnumerable<T>, IEnumerable)
      private
-        FList: TList<T>;
         FInstance: IEnumerator<T>;
      public
         constructor Create(AList: TList<T>); overload;
@@ -104,7 +103,7 @@ end;
 constructor TEnumeratorFactory<T>.Create(AList: TList<T>);
 begin
    inherited Create;
-   FList := AList;
+   FInstance := TBaseEnumerator<T>.Create(AList);
 end;
 
 function TEnumeratorFactory<T>.GetEnumerator: IEnumerator;
@@ -114,8 +113,6 @@ end;
 
 function TEnumeratorFactory<T>.GenericGetEnumerator: IEnumerator<T>;
 begin
-   if FInstance = nil then
-      FInstance := TBaseEnumerator<T>.Create(FList);
    result := FInstance;
 end;
 
