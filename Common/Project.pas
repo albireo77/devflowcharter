@@ -1116,7 +1116,7 @@ begin
       begin
          if Supports(comp, IWithName, withName) and TInfra.SameStrings(withName.GetName, AName) then
          begin
-            result := T(comp);
+            result := comp;
             break;
          end;
       end;
