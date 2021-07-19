@@ -36,13 +36,13 @@ const
 
 type
 
-   IIdentifiable = interface
+   IWithId = interface
       ['{A7ED5085-D43B-49B3-879E-272A64A766B7}']
       function GetId: integer;
       property Id: integer read GetId;
    end;
 
-   INameable = interface
+   IWithName = interface
       ['{2A2776AE-BDC1-4C7B-9F6E-A01A515509AB}']
       function GetName: string;
    end;
@@ -65,13 +65,13 @@ type
       procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
    end;
 
-   ITabable = interface(IActivable)
+   IWithTab = interface(IActivable)
       ['{1E316044-89E6-4FFB-AC4D-FA773D4774D8}']
       function GetTab: TTabSheet;
       function GetLibName: string;
    end;
 
-   ISizeEditable = interface
+   IWithSizeEdits = interface
       ['{B711195E-B798-49D4-8C8E-159F81C42EA2}']
       procedure RefreshSizeEdits;
    end;
@@ -84,7 +84,7 @@ type
       function GetZOrder: integer;
    end;
 
-   IFocusable = interface
+   IWithFocus = interface
       ['{35418E64-5114-4412-9913-B58489A8E499}']
       function RetrieveFocus(AInfo: TFocusInfo): boolean;
       function CanBeFocused: boolean;

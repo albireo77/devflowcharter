@@ -26,7 +26,7 @@ uses
 
 type
 
-  TStatementMemo = class(TMemoEx, IFocusable)
+  TStatementMemo = class(TMemoEx, IWithFocus)
      public
      { Public declarations }
         constructor Create(AOwner: TComponent); override;

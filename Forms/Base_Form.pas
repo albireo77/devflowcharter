@@ -29,7 +29,7 @@ uses
 
 type
 
-  TBaseForm = class(TForm, IFocusable)
+  TBaseForm = class(TForm, IWithFocus)
     public
       procedure Localize(AList: TStringList); virtual;
       procedure ImportSettingsFromXMLTag(ATag: IXMLElement); virtual;

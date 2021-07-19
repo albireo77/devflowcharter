@@ -31,7 +31,7 @@ type
 
   TOnChangeExtend = procedure(AStatement: TStatement) of object;
 
-  TStatement = class(TCustomEdit, IIdentifiable, IFocusable)
+  TStatement = class(TCustomEdit, IWithId, IWithFocus)
   private
     { Private declarations }
     FExecuteParse: boolean;

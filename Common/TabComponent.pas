@@ -30,7 +30,7 @@ uses
 
 type
 
-   TTabComponent = class(TTabSheet, IXMLable, IIdentifiable, ITabable, INameable, ISizeEditable, IFocusable, IExportable, IGenericComparable)
+   TTabComponent = class(TTabSheet, IXMLable, IWithId, IWithTab, IWithName, IWithSizeEdits, IWithFocus, IExportable, IGenericComparable)
       private
          FParentForm: TPageControlForm;
          FId: integer;

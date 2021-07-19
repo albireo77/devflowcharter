@@ -66,7 +66,7 @@ type
   private
     { Private declarations }
     FErrWarnCount: TErrWarnCount;
-    function GetFocusable(ANode: TTreeNode): IFocusable;
+    function GetWithFocus(ANode: TTreeNode): IWithFocus;
     procedure ClearTreeViewItems;
   public
     { Public declarations }
@@ -129,11 +129,11 @@ begin
    end;
 end;
 
-function TExplorerForm.GetFocusable(ANode: TTreeNode): IFocusable;
+function TExplorerForm.GetWithFocus(ANode: TTreeNode): IWithFocus;
 begin
    result := nil;
    if (ANode <> nil) and TInfra.IsValidControl(ANode.Data) then
-      Supports(ANode.Data, IFocusable, result);
+      Supports(ANode.Data, IWithFocus, result);
 end;
 
 procedure TExplorerForm.Localize(AList: TStringList);
@@ -145,17 +145,17 @@ end;
 
 procedure TExplorerForm.tvExplorerChange(Sender: TObject; Node: TTreeNode);
 var
-   focusable: IFocusable;
+   withFocus: IWithFocus;
    focusInfo: TFocusInfo;
 begin
    if chkAutoNav.Checked then
    begin
-      focusable := GetFocusable(Node);
-      if (focusable <> nil) and focusable.CanBeFocused then
+      withFocus := GetWithFocus(Node);
+      if (withFocus <> nil) and withFocus.CanBeFocused then
       begin
          focusInfo := TFocusInfo.New;
          focusInfo.ActiveControl := tvExplorer;
-         focusable.RetrieveFocus(focusInfo);
+         withFocus.RetrieveFocus(focusInfo);
          GProject.RepaintFlowcharts;
       end;
    end;
@@ -181,7 +181,7 @@ end;
 
 procedure TExplorerForm.PopupMenuPopup(Sender: TObject);
 var
-   focusable: IFocusable;
+   withFocus: IWithFocus;
 begin
    miExpand.Enabled    := false;
    miCollapse.Enabled  := false;
@@ -194,8 +194,8 @@ begin
       miPrevError.Enabled := miNextError.Enabled;
       miExpand.Enabled := tvExplorer.Selected.HasChildren;
       miCollapse.Enabled := miExpand.Enabled;
-      focusable := GetFocusable(tvExplorer.Selected);
-      miRemove.Enabled := (focusable <> nil) and focusable.CanRemove;
+      withFocus := GetWithFocus(tvExplorer.Selected);
+      miRemove.Enabled := (withFocus <> nil) and withFocus.CanRemove;
    end;
 end;
 
@@ -212,7 +212,7 @@ end;
 procedure TExplorerForm.miRefreshClick(Sender: TObject);
 var
    i: integer;
-   focusable: IFocusable;
+   withFocus: IWithFocus;
    origText: string;
    node: TTreeNodeWithFriend;
 begin
@@ -221,10 +221,10 @@ begin
       for i := 0 to tvExplorer.Items.Count-1 do
       begin
          node := TTreeNodeWithFriend(tvExplorer.Items[i]);
-         focusable := GetFocusable(node);
-         if focusable <> nil then
+         withFocus := GetWithFocus(node);
+         if withFocus <> nil then
          begin
-            origText := focusable.GetTreeNodeText(node.Offset);
+            origText := withFocus.GetTreeNodeText(node.Offset);
             if (origText <> '') and (origText <> node.Text) then
                node.Text := origText;
          end;
@@ -237,7 +237,7 @@ end;
 procedure TExplorerForm.miNextErrorClick(Sender: TObject);
 var
    i, c, last: integer;
-   focusable: IFocusable;
+   withFocus: IWithFocus;
 begin
    if tvExplorer.Selected <> nil then
    begin
@@ -254,8 +254,8 @@ begin
       i := tvExplorer.Selected.AbsoluteIndex + c;
       while i <> last do
       begin
-         focusable := GetFocusable(tvExplorer.Items[i]);
-         if (focusable <> nil) and TInfra.IsNOkColor(focusable.GetFocusColor) then
+         withFocus := GetWithFocus(tvExplorer.Items[i]);
+         if (withFocus <> nil) and TInfra.IsNOkColor(withFocus.GetFocusColor) then
          begin
             if not tvExplorer.Items[i].IsVisible then
                tvExplorer.Items[i].MakeVisible;
@@ -271,7 +271,7 @@ procedure TExplorerForm.tvExplorerCustomDrawItem(Sender: TCustomTreeView;
   Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
 var
    nodeRect: TRect;
-   focusable: IFocusable;
+   withFocus: IWithFocus;
    lColor, lColor2: TColor;
    x, y: integer;
    lFont: TFont;
@@ -286,13 +286,13 @@ begin
       x := 2;
       y := 1;
    end;
-   focusable := GetFocusable(Node);
-   if focusable <> nil then
+   withFocus := GetWithFocus(Node);
+   if withFocus <> nil then
    begin
-      lColor2 := focusable.GetFocusColor;
+      lColor2 := withFocus.GetFocusColor;
       if TInfra.IsNOkColor(lColor2) or (lColor2 = TEXT_COLOR) then
          lColor := lColor2;
-      if focusable.IsBoldDesc then
+      if withFocus.IsBoldDesc then
          lFont.Style := lFont.Style + [fsBold];
    end;
    lFont.Color := lColor;
@@ -308,12 +308,12 @@ end;
 
 procedure TExplorerForm.miRemoveClick(Sender: TObject);
 var
-   focusable: IFocusable;
+   withFocus: IWithFocus;
    friendNode, selectedNode, toDelete: TTreeNodeWithFriend;
 begin
    selectedNode := TTreeNodeWithFriend(tvExplorer.Selected);
-   focusable := GetFocusable(selectedNode);
-   if (focusable <> nil) and focusable.Remove(selectedNode) then
+   withFocus := GetWithFocus(selectedNode);
+   if (withFocus <> nil) and withFocus.Remove(selectedNode) then
    begin
       tvExplorer.Items.BeginUpdate;
       friendNode := selectedNode.Friend;

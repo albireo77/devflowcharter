@@ -41,7 +41,7 @@ type
           property OnTopLeftChanged: TNotifyEvent read FTopLeftChanged write FTopLeftChanged;
     end;
 
-   TDeclareList = class(TGroupBox, IFocusable, IIdentifiable)
+   TDeclareList = class(TGroupBox, IWithFocus, IWithId)
       protected
          FModifying: boolean;
          FId,

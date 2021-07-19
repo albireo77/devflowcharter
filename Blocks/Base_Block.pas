@@ -56,7 +56,7 @@ type
    TGroupBlock = class;
    TBranch = class;
 
-   TBlock = class(TCustomControl, IIdentifiable, IFocusable, IExportable, IMemoEx)
+   TBlock = class(TCustomControl, IWithId, IWithFocus, IExportable, IMemoEx)
       private
          FParentBlock: TGroupBlock;
          FParentBranch: TBranch;
@@ -258,7 +258,7 @@ type
          function Remove(ANode: TTreeNodeWithFriend = nil): boolean; override;
    end;
 
-   TBranch = class(TList<TBlock>, IIdentifiable)
+   TBranch = class(TList<TBlock>, IWithId)
       private
          FParentBlock: TGroupBlock;
          FRemovedBlockIdx: integer;

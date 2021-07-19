@@ -218,6 +218,7 @@ type
     function GetMainBlockNextTopLeft: TPoint;
     procedure AcceptFile(const AFilePath: string);
     procedure SetChanged;
+    procedure UpdateTabsColor(AColor: TColor);
   end;
 
   TPopupListEx = class(TPopupList)
@@ -1459,6 +1460,14 @@ procedure TMainForm.CM_MenuClosed(var msg: TMessage);
 begin
    if pmPages.PopupComponent is TBlock then
       TBlock(pmPages.PopupComponent).OnMouseLeave(false);
+end;
+
+procedure TMainForm.UpdateTabsColor(AColor: TColor);
+var
+   i: integer;
+begin
+   for i := 0 to pgcPages.PageCount-1 do
+      TBlockTabSheet(pgcPages.Pages[i]).Box.Color := AColor;
 end;
 
 procedure TPopupListEx.WndProc(var msg: TMessage);
