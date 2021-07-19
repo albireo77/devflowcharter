@@ -1,7 +1,7 @@
 %{
 
 uses 
-   YaccLib, LexLib, Pascal_Generator, ParserHelper, Types, Infrastructure;
+   YaccLib, LexLib, Pascal_Generator, ParserHelper, Infrastructure;
 
 var
    paramList: array of integer;
