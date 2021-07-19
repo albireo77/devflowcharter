@@ -311,17 +311,14 @@ function TProject.GetComponents<T>(AComparer: IComparer<T> = nil): IEnumerable<T
 var
    i: integer;
    list: TList<T>;
+   comp: TComponent;
 begin
    list := TList<T>.Create;
    for i := 0 to FComponentList.Count-1 do
    begin
-       if T <> TComponent then
-       begin
-          if FComponentList[i].ClassType = T then
-             list.Add(FComponentList[i]);
-       end
-       else
-          list.Add(FComponentList[i]);
+      comp := FComponentList[i];
+      if (T = TComponent) or (comp.ClassType = T) then
+         list.Add(comp);
    end;
    if AComparer <> nil then
       list.Sort(AComparer);
