@@ -1,3 +1,6 @@
+8.12 [20.07.2021]
+- compiled with Delphi 10.4.2
+
 8.11 [16.07.2021]
 - Java support: add ZonedDateTime, OffsetDateTime and Clock types;
                 various updates to constant value evaluation
