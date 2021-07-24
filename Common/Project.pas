@@ -430,11 +430,9 @@ end;
 
 procedure TProject.ExportToXMLTag(ATag: IXMLElement);
 var
-   comp: TComponent;
    xmlObj: IXMLable;
    i: integer;
    pageControl: TPageControl;
-   baseForm: TBaseForm;
 begin
 
    ATag.SetAttribute(LANG_ATTR, GInfra.CurrentLang.Name);
@@ -454,13 +452,13 @@ begin
    for i := 0 to pageControl.PageCount-1 do
       UpdateZOrder(TBlockTabSheet(pageControl.Pages[i]).Box);
 
-   for comp in GetComponents(ByPageIndexComponentComparer) do
+   for var comp in GetComponents(ByPageIndexComponentComparer) do
    begin
       if Supports(comp, IXMLable, xmlObj) and xmlObj.Active then
          xmlObj.ExportToXMLTag(ATag);
    end;
 
-   for baseForm in TInfra.GetBaseForms do
+   for var baseForm in TInfra.GetBaseForms do
       baseForm.ExportSettingsToXMLTag(ATag);
 end;
 
@@ -496,7 +494,6 @@ end;
 function TProject.ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TError;
 var
    s, langName, ver: string;
-   baseForm: TBaseForm;
 begin
 
    result := errValidate;
@@ -505,7 +502,7 @@ begin
    if GInfra.GetLangDefinition(langName) = nil then
    begin
       Gerr_text := i18Manager.GetFormattedString('LngNoSprt', [langName]);
-      exit;
+      Exit;
    end;
 
    ver := ATag.GetAttribute(APP_VERSION_ATTR);
@@ -542,7 +539,7 @@ begin
       RefreshStatements;
       ImportCommentsFromXML(ATag);
       RefreshZOrder;
-      for baseForm in TInfra.GetBaseForms do
+      for var baseForm in TInfra.GetBaseForms do
          baseForm.ImportSettingsFromXMLTag(ATag);
    end;
 end;
@@ -797,11 +794,10 @@ end;
 
 function TProject.GetIWinControlComponent(AHandle: THandle): IWinControl;
 var
-   comp: TComponent;
    winControl: IWinControl;
 begin
    result := nil;
-   for comp in GetComponents do
+   for var comp in GetComponents do
    begin
       if Supports(comp, IWinControl, winControl) and (winControl.GetHandle = AHandle) then
       begin
@@ -836,10 +832,9 @@ end;
 
 procedure TProject.RefreshZOrder;
 var
-   comp: TComponent;
    winControl: IWinControl;
 begin
-   for comp in GetComponents(ByZOrderComponentComparer) do
+   for var comp in GetComponents(ByZOrderComponentComparer) do
    begin
       if Supports(comp, IWinControl, winControl) then
          winControl.BringAllToFront;
@@ -871,11 +866,9 @@ begin
 end;
 
 function TProject.GetMainBlock: TMainBlock;
-var
-   func: TUserFunction;
 begin
    result := nil;
-   for func in GetUserFunctions do
+   for var func in GetUserFunctions do
    begin
       if (func.Header = nil) and func.Active then
       begin
@@ -886,10 +879,8 @@ begin
 end;
 
 procedure TProject.PopulateDataTypeCombos;
-var
-   func: TUserFunction;
 begin
-   for func in GetUserFunctions do
+   for var func in GetUserFunctions do
    begin
       if func.Body <> nil then
          func.Body.PopulateComboBoxes;
@@ -897,29 +888,24 @@ begin
 end;
 
 procedure TProject.ChangeDesktopColor(AColor: TColor);
-var
-   func: TUserFunction;
-   comment: TComment;
 begin
    TInfra.GetMainForm.UpdateTabsColor(AColor);
-   for func in GetUserFunctions do
+   for var func in GetUserFunctions do
    begin
       if func.Body <> nil then
          func.Body.ChangeColor(AColor);
    end;
-   for comment in GetComments do
+   for var comment in GetComments do
       comment.Color := AColor;
 end;
 
 function TProject.CountErrWarn: TErrWarnCount;
 var
-   func: TUserFunction;
-   dataType: TUserDataType;
    errWarnCount: TErrWarnCount;
 begin
    result.ErrorCount := 0;
    result.WarningCount := 0;
-   for func in GetUserFunctions do
+   for var func in GetUserFunctions do
    begin
       if func.Active then
       begin
@@ -938,7 +924,7 @@ begin
          end;
       end;
    end;
-   for dataType in GetUserDataTypes do
+   for var dataType in GetUserDataTypes do
    begin
       if dataType.Active then
       begin
@@ -952,8 +938,7 @@ end;
 
 procedure TProject.GenerateTree(ANode: TTreeNode);
 var
-   dataType: TUserDataType;
-   mainFunc, func: TUserFunction;
+   mainFunc: TUserFunction;
    node: TTreeNode;
    mForm: TBaseForm;
 begin
@@ -964,7 +949,7 @@ begin
    begin
       mForm := TInfra.GetDataTypesForm;
       node := ANode.Owner.AddChildObject(ANode, mForm.GetTreeNodeText, mForm);
-      for dataType in GetUserDataTypes do
+      for var dataType in GetUserDataTypes do
       begin
          if dataType.Active then
             dataType.GenerateTree(node);
@@ -985,7 +970,7 @@ begin
    else
       node := ANode;
 
-   for func in GetUserFunctions do
+   for var func in GetUserFunctions do
    begin
       if func.Active then
       begin
@@ -1002,10 +987,8 @@ begin
 end;
 
 procedure TProject.UpdateHeadersBody(APage: TTabSheet);
-var
-   func: TUserFunction;
 begin
-   for func in GetUserFunctions do
+   for var func in GetUserFunctions do
    begin
       if (func.Header <> nil ) and (func.Body <> nil) and (func.Body.Page = APage) then
          func.Header.SetPageCombo(APage.Caption);
@@ -1013,14 +996,11 @@ begin
 end;
 
 procedure TProject.RefreshStatements;
-var
-   func: TUserFunction;
-   chon: boolean;
 begin
-   chon := ChangingOn;
+   var chon := ChangingOn;
    ChangingOn := false;
    try
-      for func in GetUserFunctions do
+      for var func in GetUserFunctions do
       begin
          if func.Active and (func.Body <> nil) then
             func.Body.RefreshStatements;
@@ -1032,11 +1012,9 @@ begin
 end;
 
 function TProject.FindMainBlockForControl(const AControl: TControl): TMainBlock;
-var
-   func: TUserFunction;
 begin
    result := nil;
-   for func in GetUserFunctions do
+   for var func in GetUserFunctions do
    begin
       if func.Active and (func.Body <> nil) and (func.Body.Parent = AControl.Parent) and func.Body.BoundsRect.Contains(AControl.BoundsRect.TopLeft) then
       begin
@@ -1047,10 +1025,8 @@ begin
 end;
 
 procedure TProject.RepaintComments;
-var
-   comment: TComment;
 begin
-   for comment in GetComments do
+   for var comment in GetComments do
    begin
       if comment.Visible then
          comment.Repaint;
@@ -1058,10 +1034,8 @@ begin
 end;
 
 procedure TProject.RepaintFlowcharts;
-var
-   func: TUserFunction;
 begin
-   for func in GetUserFunctions do
+   for var func in GetUserFunctions do
    begin
       if (func.Body <> nil) and func.Body.Visible then
          func.Body.RepaintAll;
@@ -1072,11 +1046,10 @@ function TProject.GetLibraryList: TStringList;
 var
    libName: string;
    tab: IWithTab;
-   comp: TComponent;
 begin
    result := TStringList.Create;
    result.CaseSensitive := GInfra.CurrentLang.CaseSensitiveSyntax;
-   for comp in GetComponents(ByPageIndexComponentComparer) do
+   for var comp in GetComponents(ByPageIndexComponentComparer) do
    begin
       if Supports(comp, IWithTab, tab) then
       begin
@@ -1089,12 +1062,11 @@ end;
 
 procedure TProject.RefreshSizeEdits;
 var
-   comp: TComponent;
    withSizeEdits: IWithSizeEdits;
 begin
    if (GlobalVars <> nil) and (GlobalVars.edtSize.Text <> '1') then
       GlobalVars.edtSize.OnChange(GlobalVars.edtSize);
-   for comp in GetComponents do
+   for var comp in GetComponents do
    begin
       if Supports(comp, IWithSizeEdits, withSizeEdits) then
          withSizeEdits.RefreshSizeEdits;
@@ -1104,12 +1076,11 @@ end;
 function TProject.GetComponent<T>(const AName: string): T;
 var
    withName: IWithName;
-   comp: T;
 begin
    result := nil;
    if not AName.Trim.IsEmpty then
    begin
-      for comp in GetComponents<T> do
+      for var comp in GetComponents<T> do
       begin
          if Supports(comp, IWithName, withName) and TInfra.SameStrings(withName.GetName, AName) then
          begin
