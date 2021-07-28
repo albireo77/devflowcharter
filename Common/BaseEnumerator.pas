@@ -28,7 +28,7 @@ uses
 
 type
 
-   TBaseEnumerator<T: class> = class(TInterfacedObject, IEnumerator<T>, IEnumerator)
+   TBaseEnumerator<T> = class(TInterfacedObject, IEnumerator<T>, IEnumerator)
       private
          FList: TList<T>;
          FIndex: integer;
@@ -44,7 +44,7 @@ type
          destructor Destroy; override;
    end;
 
-   TEnumeratorFactory<T: class> = class(TInterfacedObject, IEnumerable<T>, IEnumerable)
+   TEnumeratorFactory<T> = class(TInterfacedObject, IEnumerable<T>, IEnumerable)
      private
         FInstance: IEnumerator<T>;
      public
@@ -86,8 +86,6 @@ end;
 function TBaseEnumerator<T>.GetCurrent: TObject;
 begin
    result := nil;
-   if InListRange then
-      result := FList[FIndex];
 end;
 
 procedure TBaseEnumerator<T>.Reset;
@@ -97,7 +95,9 @@ end;
 
 function TBaseEnumerator<T>.GenericGetCurrent: T;
 begin
-   result := T(GetCurrent);
+   result := Default(T);
+   if InListRange then
+      result := FList[FIndex];
 end;
 
 constructor TEnumeratorFactory<T>.Create(AList: TList<T>);

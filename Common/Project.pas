@@ -125,7 +125,7 @@ uses
    System.SysUtils, Vcl.Menus, Vcl.Forms, System.StrUtils, System.Types, System.UITypes,
    Generics.Collections, Infrastructure, Constants, XMLProcessor, Base_Form, LangDefinition,
    Navigator_Form, Base_Block, TabComponent, ParserHelper, SelectImport_Form, BaseEnumerator,
-   BaseIEnumerator, WinApi.Messages, Vcl.ExtCtrls, Rtti;
+   WinApi.Messages, Vcl.ExtCtrls, Rtti;
 
 var
    ByPageIndexUserDataTypeComparer: IComparer<TUserDataType>;
@@ -339,7 +339,7 @@ begin
             list.Add(intf);
       end;
    end;
-   result := TIEnumeratorFactory<I>.Create(list);
+   result := TEnumeratorFactory<I>.Create(list);
 end;
 
 function TProject.GetIComponents<I>(AComparer: IComparer<TComponent> = nil): IEnumerable<I>;
