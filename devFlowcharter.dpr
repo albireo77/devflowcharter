@@ -67,6 +67,7 @@ uses
   Return_Block in 'Blocks\Return_Block.pas',
   Base_Form in 'Forms\Base_Form.pas',
   BaseEnumerator in 'Common\BaseEnumerator.pas',
+  BaseIEnumerator in 'Common\BaseIEnumerator.pas',
   Project in 'Common\Project.pas',
   DeclareList in 'Common\DeclareList.pas',
   Comment in 'Common\Comment.pas',

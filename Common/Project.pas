@@ -26,7 +26,7 @@ interface
 uses
    WinApi.Windows, Vcl.Graphics, System.Classes, Vcl.ComCtrls, Vcl.Controls, System.Contnrs,
    Generics.Defaults, UserFunction, OmniXML, UserDataType, Main_Block, DeclareList,
-   BaseEnumerator, Types, Interfaces, BlockTabSheet, Comment, Declarations_Form;
+   Types, Interfaces, BlockTabSheet, Comment, Declarations_Form;
 
 type
 
@@ -78,8 +78,9 @@ type
       function GetUserFunctions: IEnumerable<TUserFunction>;
       function GetUserDataTypes: IEnumerable<TUserDataType>;
       function GetComponent<T: class>(const AName: string): T;
-      function GetComponents<T: class>(AComparer: IComparer<T> = nil): IEnumerable<T>; overload;
-      function GetComponents(AComparer: IComparer<TComponent> = nil): IEnumerable<TComponent>; overload;
+      function GetComponents<T: class>(AComparer: IComparer<T> = nil): IEnumerable<T>;
+      function GetIComponents<T: class; I: IInterface>(AComparer: IComparer<T> = nil): IEnumerable<I>; overload;
+      function GetIComponents<I: IInterface>(AComparer: IComparer<TComponent> = nil): IEnumerable<I>; overload;
       procedure ExportToGraphic(AGraphic: TGraphic);
       procedure ExportToXMLTag(ATag: IXMLElement);
       function ExportToXMLFile(const AFile: string): TError;
@@ -123,8 +124,8 @@ implementation
 uses
    System.SysUtils, Vcl.Menus, Vcl.Forms, System.StrUtils, System.Types, System.UITypes,
    Generics.Collections, Infrastructure, Constants, XMLProcessor, Base_Form, LangDefinition,
-   Navigator_Form, Base_Block, TabComponent, ParserHelper, SelectImport_Form,
-   WinApi.Messages, Vcl.ExtCtrls;
+   Navigator_Form, Base_Block, TabComponent, ParserHelper, SelectImport_Form, BaseEnumerator,
+   BaseIEnumerator, WinApi.Messages, Vcl.ExtCtrls, Rtti;
 
 var
    ByPageIndexUserDataTypeComparer: IComparer<TUserDataType>;
@@ -302,11 +303,6 @@ begin
    result := GetComponents<TUserDataType>(ByPageIndexUserDataTypeComparer);
 end;
 
-function TProject.GetComponents(AComparer: IComparer<TComponent> = nil): IEnumerable<TComponent>;
-begin
-   result := GetComponents<TComponent>(AComparer);
-end;
-
 function TProject.GetComponents<T>(AComparer: IComparer<T> = nil): IEnumerable<T>;
 var
    i: integer;
@@ -323,6 +319,32 @@ begin
    if AComparer <> nil then
       list.Sort(AComparer);
    result := TEnumeratorFactory<T>.Create(list);
+end;
+
+function TProject.GetIComponents<T, I>(AComparer: IComparer<T> = nil): IEnumerable<I>;
+var
+   list: TList<I>;
+   intf: I;
+   rType: TRttiType;
+   iType: TRttiInterfaceType;
+begin
+   list := TList<I>.Create;
+   rType := TRttiContext.Create.GetType(TypeInfo(I));
+   if rType is TRttiInterfaceType then
+   begin
+      iType := rType as TRttiInterfaceType;
+      for var comp in GetComponents<T>(AComparer) do
+      begin
+         if Supports(comp, iType.GUID, intf) then
+            list.Add(intf);
+      end;
+   end;
+   result := TIEnumeratorFactory<I>.Create(list);
+end;
+
+function TProject.GetIComponents<I>(AComparer: IComparer<TComponent> = nil): IEnumerable<I>;
+begin
+   result := GetIComponents<TComponent, I>(AComparer);
 end;
 
 function TProject.Register(AObject: TObject; AId: integer = ID_INVALID): integer;
@@ -430,7 +452,6 @@ end;
 
 procedure TProject.ExportToXMLTag(ATag: IXMLElement);
 var
-   xmlObj: IXMLable;
    i: integer;
    pageControl: TPageControl;
 begin
@@ -452,10 +473,10 @@ begin
    for i := 0 to pageControl.PageCount-1 do
       UpdateZOrder(TBlockTabSheet(pageControl.Pages[i]).Box);
 
-   for var comp in GetComponents(ByPageIndexComponentComparer) do
+   for var xmlable in GetIComponents<IXMLable>(ByPageIndexComponentComparer) do
    begin
-      if Supports(comp, IXMLable, xmlObj) and xmlObj.Active then
-         xmlObj.ExportToXMLTag(ATag);
+      if xmlable.Active then
+         xmlable.ExportToXMLTag(ATag);
    end;
 
    for var baseForm in TInfra.GetBaseForms do
@@ -793,13 +814,11 @@ begin
 end;
 
 function TProject.GetIWinControlComponent(AHandle: THandle): IWinControl;
-var
-   winControl: IWinControl;
 begin
    result := nil;
-   for var comp in GetComponents do
+   for var winControl in GetIComponents<IWinControl> do
    begin
-      if Supports(comp, IWinControl, winControl) and (winControl.GetHandle = AHandle) then
+      if winControl.GetHandle = AHandle then
       begin
          result := winControl;
          break;
@@ -831,14 +850,9 @@ begin
 end;
 
 procedure TProject.RefreshZOrder;
-var
-   winControl: IWinControl;
 begin
-   for var comp in GetComponents(ByZOrderComponentComparer) do
-   begin
-      if Supports(comp, IWinControl, winControl) then
-         winControl.BringAllToFront;
-   end;
+   for var winControl in GetIComponents<IWinControl>(ByZOrderComponentComparer) do
+      winControl.BringAllToFront;
 end;
 
 procedure TProject.ExportToGraphic(AGraphic: TGraphic);
@@ -1045,46 +1059,35 @@ end;
 function TProject.GetLibraryList: TStringList;
 var
    libName: string;
-   tab: IWithTab;
 begin
    result := TStringList.Create;
    result.CaseSensitive := GInfra.CurrentLang.CaseSensitiveSyntax;
-   for var comp in GetComponents(ByPageIndexComponentComparer) do
+   for var tab in GetIComponents<IWithTab>(ByPageIndexComponentComparer) do
    begin
-      if Supports(comp, IWithTab, tab) then
-      begin
-         libName := tab.GetLibName;
-         if (not libName.IsEmpty) and (GInfra.CurrentLang.AllowDuplicatedLibs or (result.IndexOf(libName) = -1)) then
-            result.AddObject(libName, tab.GetTab);
-      end;
+      libName := tab.GetLibName;
+      if (not libName.IsEmpty) and (GInfra.CurrentLang.AllowDuplicatedLibs or (result.IndexOf(libName) = -1)) then
+         result.AddObject(libName, tab.GetTab);
    end;
 end;
 
 procedure TProject.RefreshSizeEdits;
-var
-   withSizeEdits: IWithSizeEdits;
 begin
    if (GlobalVars <> nil) and (GlobalVars.edtSize.Text <> '1') then
       GlobalVars.edtSize.OnChange(GlobalVars.edtSize);
-   for var comp in GetComponents do
-   begin
-      if Supports(comp, IWithSizeEdits, withSizeEdits) then
-         withSizeEdits.RefreshSizeEdits;
-   end;
+   for var withSizeEdits in GetIComponents<IWithSizeEdits> do
+      withSizeEdits.RefreshSizeEdits;
 end;
 
 function TProject.GetComponent<T>(const AName: string): T;
-var
-   withName: IWithName;
 begin
    result := nil;
    if not AName.Trim.IsEmpty then
    begin
-      for var comp in GetComponents<T> do
+      for var withName in GetIComponents<T, IWithName> do
       begin
-         if Supports(comp, IWithName, withName) and TInfra.SameStrings(withName.GetName, AName) then
+         if TInfra.SameStrings(withName.GetName, AName) then
          begin
-            result := comp;
+            result := T(withName);
             break;
          end;
       end;
