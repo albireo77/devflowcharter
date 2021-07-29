@@ -146,6 +146,8 @@ end;
 
 procedure TElement.OnChangeType(Sender: TObject);
 begin
+   if FParentForm.Visible and FParentForm.Enabled then  // replace with CanFocus once fixed by Embarcadero (RSP-34465)
+      FParentForm.SetFocus;
    cbType.Hint := cbType.Text;
    if FParentTab.Font.Color <> NOK_COLOR then
       TTabComponent(FParentTab).UpdateCodeEditor;

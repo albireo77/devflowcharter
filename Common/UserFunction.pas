@@ -741,6 +741,8 @@ procedure TUserFunctionHeader.OnChangeType(Sender: TObject);
 begin
    if Sender = cbType then
    begin
+      if ParentForm.Visible and ParentForm.Enabled then // replace with CanFocus once fixed by Embarcadero (RSP-34465)
+         ParentForm.SetFocus;
       chkArrayType.Enabled := cbType.ItemIndex > 0;
       cbType.Hint := cbType.Text;
    end;
