@@ -362,16 +362,13 @@ begin
       if accepted then
          FObjectIds[idx] := id;
    end
+   else if accepted then
+      FObjectIds.AddObject(id, AObject)
    else
    begin
-      if accepted then
-         FObjectIds.AddObject(id, AObject)
-      else
-      begin
-         FObjectIds.AddObject(FObjectIdSeed.ToString, AObject);
-         result := FObjectIdSeed;
-         FObjectIdSeed := FObjectIdSeed + 1;
-      end;
+      FObjectIds.AddObject(FObjectIdSeed.ToString, AObject);
+      result := FObjectIdSeed;
+      FObjectIdSeed := FObjectIdSeed + 1;
    end;
    if accepted then
    begin
