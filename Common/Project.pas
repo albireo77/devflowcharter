@@ -56,6 +56,9 @@ type
       procedure RefreshZOrder;
       procedure ExportPagesToXMLTag(ATag: IXMLElement);
       function GetSelectList(ATag: IXMLElement; const ALabel: string; const ATagName: string; const ATagName2: string = ''): TStringList;
+      function GetComponents<T: class>(AComparer: IComparer<T> = nil): IEnumerable<T>;
+      function GetIComponents<I: IInterface>(AComparer: IComparer<TComponent> = nil): IEnumerable<I>; overload;
+      function GetIComponents<T: class; I: IInterface>(AComparer: IComparer<T> = nil): IEnumerable<I>; overload;
    public
       Name: string;
       ChangingOn: boolean;
@@ -78,9 +81,6 @@ type
       function GetUserFunctions: IEnumerable<TUserFunction>;
       function GetUserDataTypes: IEnumerable<TUserDataType>;
       function GetComponent<T: class>(const AName: string): T;
-      function GetComponents<T: class>(AComparer: IComparer<T> = nil): IEnumerable<T>;
-      function GetIComponents<T: class; I: IInterface>(AComparer: IComparer<T> = nil): IEnumerable<I>; overload;
-      function GetIComponents<I: IInterface>(AComparer: IComparer<TComponent> = nil): IEnumerable<I>; overload;
       procedure ExportToGraphic(AGraphic: TGraphic);
       procedure ExportToXMLTag(ATag: IXMLElement);
       function ExportToXMLFile(const AFile: string): TError;
@@ -303,6 +303,11 @@ begin
    result := GetComponents<TUserDataType>(ByPageIndexUserDataTypeComparer);
 end;
 
+function TProject.GetIComponents<I>(AComparer: IComparer<TComponent> = nil): IEnumerable<I>;
+begin
+   result := GetIComponents<TComponent, I>(AComparer);
+end;
+
 function TProject.GetComponents<T>(AComparer: IComparer<T> = nil): IEnumerable<T>;
 var
    i: integer;
@@ -340,11 +345,6 @@ begin
       end;
    end;
    result := TEnumeratorFactory<I>.Create(list);
-end;
-
-function TProject.GetIComponents<I>(AComparer: IComparer<TComponent> = nil): IEnumerable<I>;
-begin
-   result := GetIComponents<TComponent, I>(AComparer);
 end;
 
 function TProject.Register(AObject: TObject; AId: integer = ID_INVALID): integer;
