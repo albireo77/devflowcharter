@@ -59,6 +59,7 @@ type
       function GetComponents<T: class>(AComparer: IComparer<T> = nil): IEnumerable<T>;
       function GetIComponents<I: IInterface>(AComparer: IComparer<TComponent> = nil): IEnumerable<I>; overload;
       function GetIComponents<T: class; I: IInterface>(AComparer: IComparer<T> = nil): IEnumerable<I>; overload;
+      function GetComponent<T: class>(const AName: string): T;
    public
       Name: string;
       ChangingOn: boolean;
@@ -80,7 +81,8 @@ type
       function GetComments: IEnumerable<TComment>;
       function GetUserFunctions: IEnumerable<TUserFunction>;
       function GetUserDataTypes: IEnumerable<TUserDataType>;
-      function GetComponent<T: class>(const AName: string): T;
+      function GetUserFunction(const AName: string): TUserFunction;
+      function GetUserDataType(const AName: string): TUserDataType;
       procedure ExportToGraphic(AGraphic: TGraphic);
       procedure ExportToXMLTag(ATag: IXMLElement);
       function ExportToXMLFile(const AFile: string): TError;
@@ -1073,6 +1075,16 @@ begin
       GlobalVars.edtSize.OnChange(GlobalVars.edtSize);
    for var withSizeEdits in GetIComponents<IWithSizeEdits> do
       withSizeEdits.RefreshSizeEdits;
+end;
+
+function TProject.GetUserFunction(const AName: string): TUserFunction;
+begin
+   result := GetComponent<TUserFunction>(AName);
+end;
+
+function TProject.GetUserDataType(const AName: string): TUserDataType;
+begin
+   result := GetComponent<TUserDataType>(AName);
 end;
 
 function TProject.GetComponent<T>(const AName: string): T;

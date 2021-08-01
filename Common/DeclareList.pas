@@ -438,7 +438,7 @@ begin
       end;
       if list = nil then
       begin
-         dataType := GProject.GetComponent<TUserDataType>(typeName);
+         dataType := GProject.GetUserDataType(typeName);
          if dataType <> nil then
          begin
             result := dataType.RetrieveFocus(AInfo);
@@ -489,7 +489,7 @@ begin
    result := TInfra.GetDimensionCount(sgList.Cells[VAR_SIZE_COL, i]);
    if AIncludeType and (result <> -1) then
    begin
-      dataType := GProject.GetComponent<TUserDataType>(sgList.Cells[VAR_TYPE_COL, i]);
+      dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
       if dataType <> nil then
          result := dataType.GetDimensionCount + result;
    end;
@@ -507,7 +507,7 @@ begin
    size := sgList.Cells[VAR_SIZE_COL, i];
    if AIncludeType then
    begin
-      dataType := GProject.GetComponent<TUserDataType>(sgList.Cells[VAR_TYPE_COL, i]);
+      dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
       if dataType <> nil then
          size := size + dataType.GetDimensions;
    end;
@@ -606,7 +606,7 @@ begin
       begin
          if TParserHelper.IsEnumType(lType) then
          begin
-            dataType := GProject.GetComponent<TUserDataType>(cbType.Text);
+            dataType := GProject.GetUserDataType(cbType.Text);
             if (dataType <> nil) and not dataType.IsValidEnumValue(initVal) then
                status := INVALID_INIT_VAL;
          end

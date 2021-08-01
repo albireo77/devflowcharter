@@ -70,8 +70,8 @@ type
    TParserHelper = class(TObject)
    public
       class function IsInLoop: boolean;
-      class function ValidateUserFunctionParms(const AFunctionName: string; AParmList: array of integer): boolean;
-      class function GetUserFunctionType(const AFunctionName: string): integer; overload;
+      class function ValidateUserFunctionParms(const AName: string; AParmList: array of integer): boolean;
+      class function GetUserFunctionType(const AName: string): integer; overload;
       class function GetUserFunctionType: integer; overload;
       class function GetConstType(const AConstName: string): integer;
       class function GetEnumeratedType(const AValue: string): integer;
@@ -240,14 +240,14 @@ begin
       result := GetType(header.cbType.Text);
 end;
 
-class function TParserHelper.GetUserFunctionType(const AFunctionName: string): integer;
+class function TParserHelper.GetUserFunctionType(const AName: string): integer;
 var
    func: TUserFunction;
 begin
    result := NOT_DEFINED;
    if GProject <> nil then
    begin
-      func := GProject.GetComponent<TUserFunction>(AFunctionName);
+      func := GProject.GetUserFunction(AName);
       if (func <> nil) and (func.Header <> nil) and (func.Header.Font.Color <> NOK_COLOR) then
          result := GetType(func.Header.cbType.Text);
    end;
@@ -283,7 +283,7 @@ begin
    end;
 end;
 
-class function TParserHelper.ValidateUserFunctionParms(const AFunctionName: string; AParmList: array of integer): boolean;
+class function TParserHelper.ValidateUserFunctionParms(const AName: string; AParmList: array of integer): boolean;
 var
    i, paramType, currType: integer;
    func: TUserFunction;
@@ -292,7 +292,7 @@ begin
    result := false;
    if GProject <> nil then
    begin
-      func := GProject.GetComponent<TUserFunction>(AFunctionName);
+      func := GProject.GetUserFunction(AName);
       if (func <> nil) and (func.Header <> nil) and (Length(AParmList) = func.Header.ParameterCount) then
       begin
          i := 0;
@@ -361,7 +361,7 @@ begin
       Exit;
    if GProject <> nil then
    begin
-      dataType := GProject.GetComponent<TUserDataType>(ATypeAsString);
+      dataType := GProject.GetUserDataType(ATypeAsString);
       if dataType <> nil then
       begin
          size := dataType.GetDimensions;
@@ -405,7 +405,7 @@ begin
                end;
                if GProject <> nil then
                begin
-                  dataType := GProject.GetComponent<TUserDataType>(param.cbType.Text);
+                  dataType := GProject.GetUserDataType(param.cbType.Text);
                   if dataType <> nil then
                      Inc(DimensCount, dataType.GetDimensionCount);
                end;
@@ -486,7 +486,7 @@ begin
    typeName := GetTypeAsString(AType);
    if (typeName <> i18Manager.GetString('Unknown')) and (GProject <> nil) then
    begin
-      dataType := GProject.GetComponent<TUserDataType>(typeName);
+      dataType := GProject.GetUserDataType(typeName);
       if (dataType <> nil) and (dataType.Kind = dtRecord) then
       begin
          for field in dataType.GetFields do
@@ -596,7 +596,7 @@ begin
    begin
       typeName := GetTypeAsString(AType);
       pNativeType := GInfra.GetNativeDataType(typeName);
-      userType := GProject.GetComponent<TUserDataType>(typeName);
+      userType := GProject.GetUserDataType(typeName);
       if pNativeType <> nil then
          result := GetType(pNativeType.OrigType.Name)
       else if (userType <> nil) and (userType.GetDimensionCount > 0) then
@@ -617,7 +617,7 @@ begin
       result := pNativeType.Lib;
    if result.IsEmpty and (GProject <> nil) then
    begin
-      userDataType := GProject.GetComponent<TUserDataType>(ATypeName);
+      userDataType := GProject.GetUserDataType(ATypeName);
       if userDataType <> nil then
          result := userDataType.GetLibName;
    end;
