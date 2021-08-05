@@ -140,9 +140,8 @@ implementation
 
 uses
    Vcl.Printers, WinApi.Messages, Vcl.Menus, Vcl.Dialogs, Vcl.Imaging.jpeg, Vcl.Imaging.PngImage,
-   System.Math, System.TypInfo, Generics.Collections, System.IOUtils, System.Rtti, Constants,
-   UserDataType, XMLProcessor, SynEditHighlighter, Main_Block, BaseEnumerator, System.Character,
-   System.Generics.Defaults;
+   System.Math, Generics.Collections, System.IOUtils, System.Rtti, Constants, UserDataType,
+   XMLProcessor, SynEditHighlighter, Main_Block, BaseEnumerator, System.Character, System.Generics.Defaults;
 
 type
    THackCustomEdit = class(TCustomEdit);
@@ -1141,26 +1140,15 @@ begin
 end;
 
 class function TInfra.GetTextWidth(const AText: string; AControl: TControl): integer;
-var
-   fontInfo: PPropInfo;
-   prop: TObject;
 begin
    result := 0;
-   fontInfo := GetPropInfo(AControl, 'Font');
-   if fontInfo <> nil then
-   begin
-      prop := GetObjectProp(AControl, fontInfo);
-      if prop is TFont then
-      begin
-         with TControlCanvas.Create do
-         try
-            Control := AControl;
-            Font.Assign(TFont(prop));
-            result := TextWidth(AText);
-         finally
-            Free;
-         end;
-      end;
+   with TControlCanvas.Create do
+   try
+      Control := AControl;
+      Font.Assign(THackControl(AControl).Font);
+      result := TextWidth(AText);
+   finally
+      Free;
    end;
 end;
 
