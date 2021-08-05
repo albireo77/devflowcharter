@@ -349,7 +349,7 @@ begin
 
    memDesc := TMemo.Create(gbDesc);
    memDesc.Parent := gbDesc;
-   memDesc.SetBounds(5, 17, 378, 35);
+   memDesc.SetBounds(5, 17, gbDesc.Width-12, 35);
    memDesc.ParentFont := false;
    memDesc.Font.Style := [];
    memDesc.Font.Color := clGreen;
@@ -387,7 +387,7 @@ begin
    btnGenDesc.Font.Style := [];
    btnGenDesc.DoubleBuffered := true;
    btnGenDesc.Caption := i18Manager.GetString('btnGenDesc');
-   btnGenDesc.SetBounds(304, 54, 80, 20);
+   btnGenDesc.SetBounds(gbDesc.Width-86, 54, 80, 20);
    btnGenDesc.Anchors := [akBottom];
    btnGenDesc.OnClick := OnClickGenDesc;
    btnGenDesc.Anchors := [akLeft, akRight, akBottom];
