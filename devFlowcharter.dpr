@@ -21,6 +21,9 @@ program devFlowcharter;
 
 {$R *.dres}
 
+{$WEAKLINKRTTI ON}
+{$RTTI EXPLICIT METHODS([]) PROPERTIES([]) FIELDS([])}
+
 uses
   Forms,
   Constants in 'Common\Constants.pas',

@@ -886,7 +886,7 @@ end;
 procedure TBlock.NCHitTest(var Msg: TWMNCHitTest);
 begin
    inherited;
-   if GetAsyncKeyState(vkLButton) <> 0 then
+   if (GetAsyncKeyState(vkLButton) <> 0) and not Mouse.IsDragging then
    begin
       FMouseLeave := false;
       case Cursor of
