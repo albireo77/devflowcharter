@@ -44,6 +44,7 @@ type
          FCurrentLang: TLangDefinition;
          FLangArray: array of TLangDefinition;
          class var FParsedEdit: TCustomEdit;
+         class var FPPI: integer;
       public
          property CurrentLang: TLangDefinition read FCurrentLang;
          property TemplateLang: TLangDefinition read FTemplateLang;
@@ -114,6 +115,7 @@ type
          class function GetPageFromXY(APageControl: TPageControl; x, y: integer): TTabSheet;
          class function GetPageFromTabIndex(APageControl: TPageControl; ATabIndex: integer): TTabSheet;
          class function IndexOf<T>(const AValue: T; const AArray: TArray<T>): integer;
+         class function Scaled(on96: integer): integer;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetNativeFunction(const AName: string): PNativeFunction;
          function GetLangDefinition(const AName: string): TLangDefinition;
@@ -175,6 +177,7 @@ begin
    FTemplateLang := TLangDefinition.Create;
    FLangArray := FLangArray + [FTemplateLang];
    FCurrentLang := FLangArray[0];
+   FPPI := Screen.MonitorFromWindow(Application.Handle).PixelsPerInch;
 end;
 
 destructor TInfra.Destroy;
@@ -1158,7 +1161,9 @@ begin
    if AControl is TCheckBox then
       result := GetTextWidth(TCheckBox(AControl).Caption, AControl) + GetSystemMetrics(SM_CXMENUCHECK) + 3
    else if AControl is TCustomEdit then
-      result := GetTextWidth(TCustomEdit(AControl).Text, AControl);
+      result := GetTextWidth(TCustomEdit(AControl).Text, AControl)
+   else if AControl is TButton then
+      result := GetTextWidth(TButton(AControl).Caption, AControl);
 end;
 
 class procedure TInfra.IndentSpacesToTabs(ALines: TStringList);
@@ -1298,6 +1303,11 @@ begin
    end;
    if idx <> -1 then
       result := APageControl.Pages[idx];
+end;
+
+class function TInfra.Scaled(on96: integer): integer;
+begin
+   result := MulDiv(on96, FPPI, 96);
 end;
 
 function TInfra.ValidateConstId(const AId: string): integer;

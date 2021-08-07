@@ -82,7 +82,7 @@ begin
 
    edtName := TNameEdit.Create(Self);
    edtName.Parent := Self;
-   edtName.SetBounds(3, 0, 70, 21);
+   edtName.SetBounds(3, 0, TInfra.Scaled(70), 21);
    edtName.ParentFont := false;
    edtName.Font.Style := [];
    edtName.ParentCtl3D := false;
@@ -94,9 +94,9 @@ begin
    edtName.OnChange := OnChangeName;
 
    cbType := TComboBox.Create(Self);
-   cbType.SetBounds(87, 0, 70, 21);
-   cbType.Constraints.MaxWidth := 74;
    cbType.Parent := Self;
+   cbType.SetBounds(TInfra.Scaled(87), 0, TInfra.Scaled(70), 21);
+   cbType.Constraints.MaxWidth := TInfra.Scaled(74);
    cbType.Style := csDropDownList;
    cbType.ParentFont := false;
    cbType.Font.Style := [];

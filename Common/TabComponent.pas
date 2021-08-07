@@ -378,7 +378,7 @@ begin
    SendMessage(sbxElements.Handle, WM_SETREDRAW, WPARAM(False), 0);
    try
       elem := CreateElement;
-      sbxElements.Height := sbxElements.Height + 22;
+      sbxElements.Height := sbxElements.Height + TInfra.Scaled(22);
    finally
       SendMessage(sbxElements.Handle, WM_SETREDRAW, WPARAM(True), 0);
       RedrawWindow(sbxElements.Handle, nil, 0, RDW_INVALIDATE or RDW_FRAME or RDW_ERASE or RDW_ALLCHILDREN);

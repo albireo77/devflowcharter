@@ -1083,8 +1083,8 @@ begin
       result.X := sgList.ClientWidth;
    if result.Y = 0 then
       result.Y := ARow * (sgList.DefaultRowHeight + sgList.GridLineWidth);
-   result.X := result.X + sgList.Left + (sgList.ColWidths[FExternalCol] div 2) - 5;
-   result.Y := result.Y + sgList.Top + 4;
+   result.X := result.X + sgList.Left + (sgList.ColWidths[FExternalCol] div 2) - TInfra.Scaled(5);
+   result.Y := result.Y + sgList.Top + (sgList.DefaultRowHeight div 2) - TInfra.Scaled(5);
 end;
 
 function TDeclareList.CreateExternalCheckBox(ARow: integer): TCheckBox;
@@ -1099,7 +1099,7 @@ begin
       result.Parent := sgList.Parent;
       sgList.Objects[FExternalCol, ARow] := result;
       result.AllowGrayed := GInfra.CurrentLang.AllowTransExternVarConst;
-      result.SetBounds(pnt.X, pnt.Y, 12, 12);
+      result.SetBounds(pnt.X, pnt.Y, TInfra.Scaled(12), TInfra.Scaled(12));
       result.Visible := IsRowVisible(ARow) and not IsControlTooRight(result);
       result.OnClick := OnClickChBox;
       result.Repaint;

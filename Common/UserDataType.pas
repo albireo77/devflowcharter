@@ -307,8 +307,8 @@ begin
    inherited Create(AParentTab.sbxElements);
    
    FElementTypeID := AParentTab.FElementTypeID;
-   Constraints.MaxWidth := 302;
-   SetBounds(0, Parent.Height, 302, 22);
+   Constraints.MaxWidth := AParentTab.sbxElements.Width - 6;
+   SetBounds(0, Parent.Height, Constraints.MaxWidth, TInfra.Scaled(22));
    Align := alTop;
 
    TInfra.PopulateDataTypeCombo(cbType, ParentTab.PageIndex);
