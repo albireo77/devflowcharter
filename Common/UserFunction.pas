@@ -416,7 +416,8 @@ begin
 
    cbBodyPage := TComboBox.Create(gbBody);
    cbBodyPage.Parent := gbBody;
-   cbBodyPage.SetBounds(lblBodyPage.BoundsRect.Right+6, 20, TInfra.Scaled(95), 21);
+   cbBodyPage.Constraints.MinWidth := TInfra.Scaled(75);
+   cbBodyPage.SetBounds(lblBodyPage.BoundsRect.Right+6, 20, cbBodyPage.Constraints.MinWidth, 21);
    cbBodyPage.Style := csDropDownList;
    cbBodyPage.ParentFont := false;
    cbBodyPage.Font.Style := [];
@@ -432,7 +433,7 @@ begin
    chkBodyVisible.Font.Style := [];
    chkBodyVisible.Font.Color := clWindowText;
    chkBodyVisible.Caption := i18Manager.GetString('Visible');
-   chkBodyVisible.SetBounds(cbBodyPage.BoundsRect.Right+10, 23, TInfra.GetAutoWidth(chkBodyVisible), 17);
+   chkBodyVisible.SetBounds(cbBodyPage.BoundsRect.Right+20, 22, TInfra.GetAutoWidth(chkBodyVisible), TInfra.Scaled(17));
    chkBodyVisible.DoubleBuffered := true;
    chkBodyVisible.Anchors := [akBottom, akLeft];
    chkBodyVisible.OnClick := OnClickBodyVisible;
