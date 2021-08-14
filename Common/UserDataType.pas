@@ -108,7 +108,7 @@ begin
    lblSize.ParentFont := false;
    lblSize.Font.Style := [fsBold];
    lblSize.Font.Color := clWindowText;
-   lblSize.SetBounds(176, 131, 0, 13);
+   lblSize.SetBounds(TInfra.Scaled(176), 131, 0, 13);
    lblSize.Caption := i18Manager.GetString('lblSize');
 
    lblType := TLabel.Create(Self);
@@ -116,7 +116,7 @@ begin
    lblType.ParentFont := false;
    lblType.Font.Style := [fsBold];
    lblType.Font.Color := clWindowText;
-   lblType.SetBounds(87, 131, 0, 13);
+   lblType.SetBounds(TInfra.Scaled(87), 131, 0, 13);
    lblType.Caption := i18Manager.GetString('lblType');
 
    sbxElements := TScrollBox.Create(Self);
@@ -125,7 +125,7 @@ begin
    sbxElements.BorderStyle := bsNone;
    sbxElements.Constraints.MaxHeight := AParentForm.Height - 233;
    sbxElements.Constraints.MinWidth := 302;
-   sbxElements.SetBounds(0, 149, 308, 0);
+   sbxElements.SetBounds(0, 149, TInfra.Scaled(308), 0);
    sbxElements.VertScrollBar.Tracking := true;
    sbxElements.DoubleBuffered := true;
    sbxElements.Anchors := [akTop, akBottom, akLeft, akRight];
@@ -137,28 +137,13 @@ begin
    btnAddElement.Caption := i18Manager.GetString('btnAddField');
    btnAddElement.ShowHint := true;
    btnAddElement.DoubleBuffered := true;
-   btnAddElement.SetBounds(1, 102, 306, 25);
+   btnAddElement.SetBounds(1, 102, TInfra.Scaled(306), 25);
    btnAddElement.OnClick := AddElement;
 
    CreateLibControls(Self, edtName.Left+edtName.Width+7, 10);
 
-   chkAddPtrType := TCheckBox.Create(Self);
-   chkAddPtrType.Parent := Self;
-   chkAddPtrType.Caption := i18Manager.GetString('chkAddPtrType');
-   chkAddPtrType.ParentFont := false;
-   chkAddPtrType.Font.Style := [];
-   chkAddPtrType.Font.Color := clWindowText;
-   chkAddPtrType.SetBounds(180, 42, TInfra.GetAutoWidth(chkAddPtrType), 17);
-   chkAddPtrType.DoubleBuffered := true;
-   chkAddPtrType.Enabled := GInfra.CurrentLang.EnabledPointers;
-   chkAddPtrType.OnClick := OnClickCh;
-
-   CreateExtDeclareChBox(Self, 180, 60);
-   chkExternal.AllowGrayed := GInfra.CurrentLang.AllowTransExternDataType;
-
    rgTypeBox := TRadioGroup.Create(Self);
    rgTypeBox.Parent := Self;
-   rgTypeBox.SetBounds(1, 28, 173, 73);
    rgTypeBox.ParentFont := false;
    rgTypeBox.ParentBackground := false;
    rgTypeBox.Font.Style := [];
@@ -180,6 +165,21 @@ begin
       rgTypeBox.Items[Ord(dtRecord)] := GInfra.CurrentLang.RecordLabel;
    rgTypeBox.ItemIndex := Ord(dtRecord);
    rgTypeBox.OnClick := OnClickType;
+   rgTypeBox.SetBounds(1, 28, rgTypeBox.Buttons[Ord(dtEnum)].BoundsRect.Right-9, 73);
+
+   chkAddPtrType := TCheckBox.Create(Self);
+   chkAddPtrType.Parent := Self;
+   chkAddPtrType.Caption := i18Manager.GetString('chkAddPtrType');
+   chkAddPtrType.ParentFont := false;
+   chkAddPtrType.Font.Style := [];
+   chkAddPtrType.Font.Color := clWindowText;
+   chkAddPtrType.SetBounds(rgTypeBox.BoundsRect.Right+6, 42, TInfra.GetAutoWidth(chkAddPtrType), 17);
+   chkAddPtrType.DoubleBuffered := true;
+   chkAddPtrType.Enabled := GInfra.CurrentLang.EnabledPointers;
+   chkAddPtrType.OnClick := OnClickCh;
+
+   CreateExtDeclareChBox(Self, chkAddPtrType.Left, 60);
+   chkExternal.AllowGrayed := GInfra.CurrentLang.AllowTransExternDataType;
 
    GProject.AddComponent(Self);
 end;
@@ -305,7 +305,7 @@ constructor TField.Create(AParentTab: TUserDataType);
 begin
 
    inherited Create(AParentTab.sbxElements);
-   
+
    FElementTypeID := AParentTab.FElementTypeID;
    Constraints.MaxWidth := AParentTab.sbxElements.Width - 6;
    SetBounds(0, Parent.Height, Constraints.MaxWidth, TInfra.Scaled(22));
@@ -313,10 +313,10 @@ begin
 
    TInfra.PopulateDataTypeCombo(cbType, ParentTab.PageIndex);
 
-   btnRemove.SetBounds(239, 0, 52, 20);
+   btnRemove.SetBounds(TInfra.Scaled(237), 0, TInfra.GetAutoWidth(btnRemove)+14, TInfra.Scaled(20));
 
    edtSize := TSizeEdit.Create(Self);
-   edtSize.SetBounds(176, 2, 54, 17);
+   edtSize.SetBounds(TInfra.Scaled(176), 2, 54, 17);
    edtSize.BorderStyle := bsNone;
    edtSize.OnChange := OnChangeSize;
 end;
