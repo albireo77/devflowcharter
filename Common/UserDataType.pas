@@ -123,9 +123,9 @@ begin
    sbxElements.Parent := Self;
    sbxElements.Ctl3D := false;
    sbxElements.BorderStyle := bsNone;
+   sbxElements.SetBounds(0, 149, TInfra.Scaled(302), 0);
    sbxElements.Constraints.MaxHeight := AParentForm.Height - 233;
-   sbxElements.Constraints.MinWidth := 302;
-   sbxElements.SetBounds(0, 149, TInfra.Scaled(308), 0);
+   sbxElements.Constraints.MinWidth := sbxElements.Width;
    sbxElements.VertScrollBar.Tracking := true;
    sbxElements.DoubleBuffered := true;
    sbxElements.Anchors := [akTop, akBottom, akLeft, akRight];

@@ -1,3 +1,9 @@
+9.0 [15.08.2021]
+- fix access violation in for..do loop in some cases
+- fix bugs in copy/cut with drag and drop when resize frame was enabled
+- fixes for high DPI monitors (125%)
+- reduce exe file size
+
 8.12 [20.07.2021]
 - compiled with Delphi 10.4.2
 
