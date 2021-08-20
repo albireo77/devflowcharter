@@ -68,6 +68,8 @@ uses
    Vcl.Graphics, System.SysUtils, Interfaces, TabComponent, Infrastructure, Constants;
 
 constructor TElement.Create(AParent: TScrollBox);
+var
+   w: integer;
 begin
 
    inherited Create(AParent);
@@ -110,6 +112,8 @@ begin
    btnRemove.DoubleBuffered := true;
    btnRemove.Caption := i18Manager.GetString('btnRemove');
    btnRemove.OnClick := OnClickRemove;
+   w := TInfra.GetAutoWidth(btnRemove);
+   btnRemove.SetBounds(Parent.Width-w-TInfra.Scaled(32), 0, w+14, TInfra.Scaled(20));
 
    OnDragOver := OnDragOverElement;
    OnDragDrop := OnDragDropElement;

@@ -108,7 +108,7 @@ begin
    lblSize.ParentFont := false;
    lblSize.Font.Style := [fsBold];
    lblSize.Font.Color := clWindowText;
-   lblSize.SetBounds(TInfra.Scaled(176), 131, 0, 13);
+   lblSize.SetBounds(TInfra.Scaled(171), 131, 0, 13);
    lblSize.Caption := i18Manager.GetString('lblSize');
 
    lblType := TLabel.Create(Self);
@@ -313,10 +313,8 @@ begin
 
    TInfra.PopulateDataTypeCombo(cbType, ParentTab.PageIndex);
 
-   btnRemove.SetBounds(TInfra.Scaled(237), 0, TInfra.GetAutoWidth(btnRemove)+14, TInfra.Scaled(20));
-
    edtSize := TSizeEdit.Create(Self);
-   edtSize.SetBounds(TInfra.Scaled(176), 2, 54, 17);
+   edtSize.SetBounds(TInfra.Scaled(171), 2, edtSize.Parent.Width-btnRemove.Width-TInfra.Scaled(190), 17);
    edtSize.BorderStyle := bsNone;
    edtSize.OnChange := OnChangeSize;
 end;

@@ -653,8 +653,6 @@ begin
    chkReference.DoubleBuffered := true;
    chkReference.OnClick := OnChangeType;
 
-   btnRemove.SetBounds(chkReference.BoundsRect.Right+12, 0, TInfra.GetAutoWidth(btnRemove)+14, TInfra.Scaled(20));
-
 end;
 
 function TUserFunction.GetHandle: THandle;
