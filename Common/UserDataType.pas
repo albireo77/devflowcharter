@@ -314,7 +314,7 @@ begin
    TInfra.PopulateDataTypeCombo(cbType, ParentTab.PageIndex);
 
    edtSize := TSizeEdit.Create(Self);
-   edtSize.SetBounds(TInfra.Scaled(171), 2, edtSize.Parent.Width-btnRemove.Width-TInfra.Scaled(190), 17);
+   edtSize.SetBounds(cbType.BoundsRect.Right+14, 2, edtSize.Parent.Width-btnRemove.Width-TInfra.Scaled(188), 17);
    edtSize.BorderStyle := bsNone;
    edtSize.OnChange := OnChangeSize;
 end;
