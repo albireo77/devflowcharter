@@ -46,7 +46,7 @@ type
          FElementTypeID: string;
          constructor Create(AParent: TScrollBox);
          procedure OnClickRemove(Sender: TObject);
-         procedure OnChangeType(Sender: TObject);
+         procedure OnChangeType(Sender: TObject); virtual;
          procedure OnChangeName(Sender: TObject); virtual;
          procedure UpdateMe;
          procedure OnDragOverElement(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);

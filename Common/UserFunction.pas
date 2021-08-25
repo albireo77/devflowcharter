@@ -41,6 +41,9 @@ type
 
    TParameter = class(TElement)
       constructor Create(AParentTab: TUserFunctionHeader);
+   protected
+      procedure OnChangeType(Sender: TObject); override;
+      procedure OnChangeName(Sender: TObject); override;
    public
       chkTable: TCheckBox;
       chkReference: TCheckBox;
@@ -976,6 +979,18 @@ begin
    i := TXMLProcessor.GetInt(ATag, 'lvarsh');
    if i > 0 then
       FLocalVars.Height := i;
+end;
+
+procedure TParameter.OnChangeType(Sender: TObject);
+begin
+   inherited OnChangeType(Sender);
+   TUserFunctionHeader(ParentTab).DrawBodyLabel;
+end;
+
+procedure TParameter.OnChangeName(Sender: TObject);
+begin
+   inherited OnChangeName(Sender);
+   TUserFunctionHeader(ParentTab).DrawBodyLabel;
 end;
 
 procedure TParameter.ImportFromXMLTag(ATag: IXMLElement);

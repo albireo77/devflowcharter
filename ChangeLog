@@ -1,3 +1,7 @@
+9.1 [25-08-2021]
+- DataTypes: fix misalignments in fields box introduced in 9.0
+- Functions: fix not updating function description in flowchart for parameter changes
+
 9.0 [15.08.2021]
 - fix access violation in for..do loop in some cases
 - fix bugs in copy/cut with drag and drop when resize frame was enabled
