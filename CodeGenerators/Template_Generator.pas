@@ -715,7 +715,7 @@ begin
          begin
             if not params.IsEmpty then
                params := params + ', ';
-            params := params + param.cbType.Text + IfThen(param.chkTable.Checked, '[] ', ' ') + Trim(param.edtName.Text);
+            params := params + param.cbType.Text + IfThen(param.chkTable.Checked, '[ ] ', ' ') + Trim(param.edtName.Text);
          end;
       end;
       if AIncludeDesc then
