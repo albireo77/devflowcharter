@@ -41,12 +41,10 @@ begin
 end;
 
 procedure TSelectImportForm.FormClose(Sender: TObject; var Action: TCloseAction);
-var
-   i: integer;
 begin
    if (FList <> nil) and not IsAbortResult(ModalResult) then
    begin
-      for i := pnlImports.ControlCount-1 downto 0 do
+      for var i := pnlImports.ControlCount-1 downto 0 do
       begin
          if not TCheckBox(pnlImports.Controls[i]).Checked then
             FList.Delete(i);
@@ -73,24 +71,19 @@ begin
 end;
 
 procedure TSelectImportForm.chkSelectAllClick(Sender: TObject);
-var
-   i: integer;
 begin
-   for i := 0 to pnlImports.ControlCount-1 do
+   for var i := 0 to pnlImports.ControlCount-1 do
       TCheckBox(pnlImports.Controls[i]).Checked := chkSelectAll.Checked;
 end;
 
 procedure TSelectImportForm.SetComponents;
-var
-   i, t: integer;
-   chkBox: TCheckBox;
 begin
-   t := 10;
+   var t := 10;
    if FList <> nil then
    begin
-      for i := 0 to FList.Count-1 do
+      for var i := 0 to FList.Count-1 do
       begin
-         chkBox := TCheckBox.Create(pnlImports);
+         var chkBox := TCheckBox.Create(pnlImports);
          chkBox.Parent := pnlImports;
          chkBox.Caption := FList[i];
          chkBox.Checked := true;
