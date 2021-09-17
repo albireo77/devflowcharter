@@ -114,12 +114,11 @@ end;
 procedure TSelectImportForm.SetHeight(AHeight: integer);
 begin
    var h := MulDiv(Screen.Height, 9, 10);
-   if AHeight > h then
-      Constraints.MaxHeight := h
-   else
-      Constraints.MaxHeight := AHeight;
-   Constraints.MinHeight := Constraints.MaxHeight;
-   Height := Constraints.MaxHeight;
+   if AHeight < h then
+      h := AHeight;
+   Constraints.MaxHeight := h;
+   Constraints.MinHeight := h;
+   Height := h;
 end;
 
 end.
