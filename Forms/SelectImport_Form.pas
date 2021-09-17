@@ -14,12 +14,12 @@ type
     chkSelectAll: TCheckBox;
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure FormCreate(Sender: TObject);
     procedure chkSelectAllClick(Sender: TObject);
   private
      FList: TStringList;
-     procedure CreateCheckBoxList;
-     procedure ClearCheckBoxList;
+     procedure SetComponents;
+     procedure ClearCheckBoxes;
+     procedure SetHeight(AHeight: integer);
   public
      procedure SetSelectList(AList: TStringList);
      procedure ResetForm; override;
@@ -31,7 +31,7 @@ var
 implementation
 
 uses
-   System.UITypes;
+   System.UITypes, WinApi.Windows;
 
 {$R *.dfm}
 
@@ -55,25 +55,19 @@ begin
    FList := nil;
 end;
 
-procedure TSelectImportForm.FormCreate(Sender: TObject);
-begin
-   Constraints.MaxHeight := (Screen.Height * 9) div 10;
-   Constraints.MaxWidth := 279;
-   Constraints.MinWidth := 279;
-end;
-
 procedure TSelectImportForm.FormShow(Sender: TObject);
 begin
    chkSelectAll.Checked := true;
-   ClearCheckBoxList;
-   CreateCheckBoxList;
+   ClearCheckBoxes;
+   SetComponents;
+   SetHeight(btnCancel.Top + btnCancel.Height + 45);
 end;
 
 procedure TSelectImportForm.ResetForm;
 begin
    Caption := '';
    chkSelectAll.Checked := true;
-   ClearCheckBoxList;
+   ClearCheckBoxes;
    FList := nil;
    Close;
 end;
@@ -86,7 +80,7 @@ begin
       TCheckBox(pnlImports.Controls[i]).Checked := chkSelectAll.Checked;
 end;
 
-procedure TSelectImportForm.CreateCheckBoxList;
+procedure TSelectImportForm.SetComponents;
 var
    i, t: integer;
    chkBox: TCheckBox;
@@ -109,13 +103,23 @@ begin
    chkSelectAll.Top := pnlImports.Top + pnlImports.Height + 11;
    btnOk.Top := chkSelectAll.Top - 4;
    btnCancel.Top := btnOk.Top;
-   Height := btnCancel.Top + btnCancel.Height + 45;
 end;
 
-procedure TSelectImportForm.ClearCheckBoxList;
+procedure TSelectImportForm.ClearCheckBoxes;
 begin
    while pnlImports.ControlCount > 0 do
       pnlImports.Controls[0].Free;
+end;
+
+procedure TSelectImportForm.SetHeight(AHeight: integer);
+begin
+   var h := MulDiv(Screen.Height, 9, 10);
+   if AHeight > h then
+      Constraints.MaxHeight := h
+   else
+      Constraints.MaxHeight := AHeight;
+   Constraints.MinHeight := Constraints.MaxHeight;
+   Height := Constraints.MaxHeight;
 end;
 
 end.

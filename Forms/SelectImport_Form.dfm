@@ -4,10 +4,13 @@ object SelectImportForm: TSelectImportForm
   Width = 279
   Height = 414
   HorzScrollBar.Visible = False
+  VertScrollBar.Margin = 5
   AutoScroll = True
   BorderIcons = [biSystemMenu]
   Caption = 'Import'
   Color = clBtnFace
+  Constraints.MaxWidth = 279
+  Constraints.MinWidth = 279
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -16,7 +19,6 @@ object SelectImportForm: TSelectImportForm
   OldCreateOrder = False
   Position = poScreenCenter
   OnClose = FormClose
-  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
