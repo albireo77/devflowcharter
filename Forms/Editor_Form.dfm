@@ -3,7 +3,7 @@ object EditorForm: TEditorForm
   Top = 235
   Caption = 'Code Editor'
   ClientHeight = 519
-  ClientWidth = 409
+  ClientWidth = 418
   Color = clBtnFace
   Constraints.MinHeight = 558
   Constraints.MinWidth = 225
@@ -55,8 +55,6 @@ object EditorForm: TEditorForm
     Gutter.RightOffset = 0
     Gutter.ShowLineNumbers = True
     Highlighter = SynPasSyn1
-    Lines.Strings = (
-      'memCodeEditor')
     MaxUndo = 64
     Options = [eoAutoIndent, eoDragDropEditing, eoGroupUndo, eoRightMouseMovesCursor, eoScrollPastEol, eoShowScrollHint, eoTabsToSpaces, eoTrimTrailingSpaces]
     TabWidth = 3
