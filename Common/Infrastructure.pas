@@ -1144,7 +1144,6 @@ end;
 
 class function TInfra.GetTextWidth(const AText: string; AControl: TControl): integer;
 begin
-   result := 0;
    with TControlCanvas.Create do
    try
       Control := AControl;

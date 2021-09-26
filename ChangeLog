@@ -1,3 +1,8 @@
+9.2 [26-09-2021]
+- make attached SynEdit component compile with Delphi 11
+- Code Editor: fix width to display vertical scrollbar correctly
+- minor fixes and optimizations
+
 9.1 [25-08-2021]
 - DataTypes: fix misalignments in fields box introduced in 9.0
 - Functions: fix not updating function description in flowchart for parameter changes
