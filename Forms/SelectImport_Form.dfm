@@ -5,6 +5,7 @@ object SelectImportForm: TSelectImportForm
   Height = 414
   HorzScrollBar.Visible = False
   VertScrollBar.Margin = 5
+  VertScrollBar.Tracking = True
   AutoScroll = True
   BorderIcons = [biSystemMenu]
   Caption = 'Import'
