@@ -32,8 +32,6 @@ object MemoEditorForm: TMemoEditorForm
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = []
-    Lines.Strings = (
-      'memEditor')
     ParentFont = False
     TabOrder = 0
   end
