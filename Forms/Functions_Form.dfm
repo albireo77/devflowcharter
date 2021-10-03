@@ -15,7 +15,6 @@ object FunctionsForm: TFunctionsForm
   Font.Style = []
   OldCreateOrder = False
   OnDeactivate = FormDeactivate
-  OnMouseWheel = FormMouseWheel
   PixelsPerInch = 96
   TextHeight = 13
 end

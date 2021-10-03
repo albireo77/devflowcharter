@@ -165,10 +165,9 @@ var
 implementation
 
 uses
-   System.StrUtils, System.UITypes, WinApi.Messages, System.Math, WinApi.Windows,
-   Infrastructure, Goto_Form, Settings, LangDefinition, Main_Block, Help_Form,
-   Comment, XMLProcessor, Main_Form, Base_Block, SynEditTypes, ParserHelper, Constants,
-   System.Character;
+   System.StrUtils, System.UITypes, System.Math, WinApi.Windows, Infrastructure,
+   Goto_Form, Settings, LangDefinition, Main_Block, Help_Form, Comment, XMLProcessor,
+   Main_Form, Base_Block, SynEditTypes, ParserHelper, Constants, System.Character;
 
 {$R *.dfm}
 
@@ -1305,7 +1304,7 @@ begin
    scrollEnabled := memCodeEditor.ScrollBars <> TScrollStyle.ssNone;
    if scrollEnabled then
       memCodeEditor.BeginUpdate;
-   SendMessage(memCodeEditor.Handle, WM_SETREDRAW, WPARAM(False), 0);
+   memCodeEditor.LockDrawing;
    try
       GenerateCode(true);
       if AObject <> nil then
@@ -1325,8 +1324,7 @@ begin
          memCodeEditor.CaretXY := caretXY;
          memCodeEditor.TopLine := topLine;
       end;
-      SendMessage(memCodeEditor.Handle, WM_SETREDRAW, WPARAM(True), 0);
-      memCodeEditor.Invalidate;
+      memCodeEditor.UnlockDrawing;
       if scrollEnabled then
          memCodeEditor.EndUpdate;
    end;

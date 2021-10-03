@@ -207,27 +207,22 @@ begin
 end;
 
 function TCaseBlock.InsertNewBranch(AIndex: integer): TBranch;
-var
-   lock: boolean;
-   pnt: TPoint;
 begin
    result := nil;
    if AIndex < 0 then
       AIndex := FBranchList.Count;
    if AIndex > DEFAULT_BRANCH_IDX then
    begin
-      pnt := Point(FBranchList[AIndex-1].GetMostRight+60, Height-32);
-      result := TBranch.Create(Self, pnt);
+      result := TBranch.Create(Self, Point(FBranchList[AIndex-1].GetMostRight+60, Height-32));
       FBranchList.Insert(AIndex, result);
-      lock := LockDrawing;
+      FTopParentBlock.LockDrawing;
       try
          result.Statement := TStatement.Create(Self);
          result.Statement.Alignment := taRightJustify;
          PlaceBranchStatement(result);
          ResizeWithDrawLock;
       finally
-         if lock then
-            UnLockDrawing;
+         FTopParentBlock.UnLockDrawing;
       end;
    end;
 end;

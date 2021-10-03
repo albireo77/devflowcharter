@@ -76,7 +76,6 @@ type
          function IsDuplicated(ANameEdit: TEdit): boolean;
          procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil); virtual;
          function GetLibName: string;
-         procedure ScrollElements(AValue: integer);
          property ScrollPos: integer read GetScrollPos write SetScrollPos;
          function GetName: string;
          function GetTab: TTabSheet;
@@ -87,7 +86,6 @@ type
          function IsDuplicatedElement(AElement: TElement): boolean;
          procedure RefreshElements; virtual;
          function HasInvalidElement: boolean;
-         function HasFocusedComboBox: boolean;
          function GetFocusColor: TColor;
          function Remove(ANode: TTreeNodeWithFriend = nil): boolean;
          function CanRemove: boolean;
@@ -352,8 +350,6 @@ var
    list: TList<T>;
 begin
    list := TList<T>.Create;
-   if list.Capacity < sbxElements.ControlCount then
-      list.Capacity := sbxElements.ControlCount;
    for i := 0 to sbxElements.ControlCount-1 do
       list.Add(sbxElements.Controls[i]);
    if AComparer <> nil then
@@ -375,13 +371,12 @@ procedure TTabComponent.AddElement(Sender: TObject);
 var
    elem: TElement;
 begin
-   SendMessage(sbxElements.Handle, WM_SETREDRAW, WPARAM(False), 0);
+   sbxElements.LockDrawing;
    try
       elem := CreateElement;
       sbxElements.Height := sbxElements.Height + TInfra.Scaled(22);
    finally
-      SendMessage(sbxElements.Handle, WM_SETREDRAW, WPARAM(True), 0);
-      RedrawWindow(sbxElements.Handle, nil, 0, RDW_INVALIDATE or RDW_FRAME or RDW_ERASE or RDW_ALLCHILDREN);
+      sbxElements.UnlockDrawing;
    end;
    if elem.edtName.CanFocus then
    begin
@@ -427,23 +422,6 @@ begin
    for elem in GetElements<TElement> do
    begin
       if not elem.IsValid then
-      begin
-         result := true;
-         break;
-      end;
-   end;
-end;
-
-function TTabComponent.HasFocusedComboBox: boolean;
-var
-   hnd: THandle;
-   elem: TElement;
-begin
-   result := false;
-   hnd := GetFocus();
-   for elem in GetElements<TElement> do
-   begin
-      if elem.cbType.Handle = hnd then
       begin
          result := true;
          break;
@@ -514,11 +492,6 @@ begin
       tag := TXMLProcessor.FindNextTag(tag);
    end;
    FId := GProject.Register(Self, TXMLProcessor.GetInt(ATag, ID_ATTR, ID_INVALID));
-end;
-
-procedure TTabComponent.ScrollElements(AValue: integer);
-begin
-   sbxElements.VertScrollBar.Position := sbxElements.VertScrollBar.Position + AValue;
 end;
 
 function TTabComponent.GetFocusColor: TColor;

@@ -16,7 +16,6 @@ object DataTypesForm: TDataTypesForm
   Font.Style = []
   OldCreateOrder = True
   OnDeactivate = FormDeactivate
-  OnMouseWheel = FormMouseWheel
   PixelsPerInch = 96
   TextHeight = 13
   inherited pgcTabs: TPageControl

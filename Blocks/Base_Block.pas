@@ -175,8 +175,6 @@ type
          function Next: TBlock;
          function Prev: TBlock;
          function CountErrWarn: TErrWarnCount; virtual;
-         function LockDrawing: boolean;
-         procedure UnLockDrawing;
          function GetFocusColor: TColor;
          function Remove(ANode: TTreeNodeWithFriend = nil): boolean; virtual;
          function CanRemove: boolean;
@@ -201,8 +199,7 @@ type
 
    TGroupBlock = class(TBlock)    // block which can aggregate child blocks
       protected
-         FBlockImportMode,
-         FDrawingFlag: boolean;
+         FBlockImportMode: boolean;
          FMemoFolder: TMemoEx;
          FInitParms: TInitParms;
          FBranchList: TObjectList<TBranch>;
@@ -501,12 +498,10 @@ begin
 end;
 
 procedure TBlock.ExitSizeMove;
-var
-   lock: boolean;
 begin
    if FHResize or FVResize then
    begin
-      lock := LockDrawing;
+      FTopParentBlock.LockDrawing;
       try
          if FHResize then
          begin
@@ -523,8 +518,7 @@ begin
             FVResize := false;
          end;
       finally
-         if lock then
-            UnLockDrawing;
+            FTopParentBlock.UnLockDrawing;
       end;
       GProject.SetChanged;
       if FParentBlock = nil then
@@ -671,19 +665,19 @@ var
    menuItem: TMenuItem;
    inst: TControl;
    uobj: TObject;
-   lock: boolean;
+   shiftPressed: boolean;
 begin
    if Source is TBlock then
    begin
-      lock := false;
       srcPage := TBlock(Source).Page;
       srcPage.Form.pmPages.PopupComponent := TBlock(Source);
-      if GetAsyncKeyState(vkShift) <> 0 then
+      shiftPressed := GetAsyncKeyState(vkShift) <> 0;
+      if shiftPressed then
          menuItem := srcPage.Form.miCopy
       else
       begin
          menuItem := srcPage.Form.miCut;
-         lock := TBlock(Source).LockDrawing;
+         TBlock(Source).TopParentBlock.LockDrawing;
       end;
       inst := GClpbrd.Instance;
       uobj := GClpbrd.UndoObject;
@@ -697,8 +691,8 @@ begin
       finally
          GClpbrd.Instance := inst;
          GClpbrd.UndoObject := uobj;
-         if lock then
-            TBlock(Source).UnLockDrawing;
+         if not shiftPressed then
+            TBlock(Source).TopParentBlock.UnLockDrawing;
       end;
    end;
 end;
@@ -942,16 +936,13 @@ begin
 end;
 
 procedure TGroupBlock.ResizeWithDrawLock;
-var
-   lock: boolean;
 begin
-   lock := LockDrawing;
+   FTopParentBlock.LockDrawing;
    try
       ResizeHorz(true);
       ResizeVert(true);
    finally
-      if lock then
-         UnlockDrawing;
+      FTopParentBlock.UnlockDrawing;
    end;
 end;
 
@@ -1687,31 +1678,6 @@ begin
    Canvas.Brush.Style := brushStyle;
    Canvas.Brush.Color := lColor;
    Canvas.Pen.Width := w;
-end;
-
-// return value indicates if drawing was in fact locked by this call
-// it may not since it's already locked by other block before
-function TBlock.LockDrawing: boolean;
-begin
-   result := false;
-   if not FTopParentBlock.FDrawingFlag then
-   begin
-      FTopParentBlock.FDrawingFlag := true;
-      result := true;
-      SendMessage(FTopParentBlock.Handle, WM_SETREDRAW, WPARAM(False), 0);
-   end;
-end;
-
-procedure TBlock.UnLockDrawing;
-begin
-   if FTopParentBlock.FDrawingFlag then
-   begin
-      SendMessage(FTopParentBlock.Handle, WM_SETREDRAW, WPARAM(True), 0);
-      GProject.RepaintFlowcharts;
-      GProject.RepaintComments;
-      RedrawWindow(Page.Handle, nil, 0, RDW_INVALIDATE or RDW_FRAME or RDW_ERASE);
-      FTopParentBlock.FDrawingFlag := false;
-   end;
 end;
 
 function TBlock.CanInsertReturnBlock: boolean;

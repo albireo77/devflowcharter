@@ -11,7 +11,6 @@ object PageControlForm: TPageControlForm
   OldCreateOrder = False
   PopupMode = pmExplicit
   OnDeactivate = FormDeactivate
-  OnMouseWheel = FormMouseWheel
   PixelsPerInch = 96
   TextHeight = 13
   object pgcTabs: TPageControl
