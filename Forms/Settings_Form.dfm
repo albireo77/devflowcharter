@@ -1020,6 +1020,8 @@ object SettingsForm: TSettingsForm
       Ctl3D = False
       ParentBackground = False
       ParentCtl3D = False
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
       OnClick = pnlFillClick
     end

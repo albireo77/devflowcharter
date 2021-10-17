@@ -282,7 +282,19 @@ end;
 procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
    if GProject <> nil then
-      GProject.GetActivePage.Box.BoxKeyDown(Sender, Key, Shift);
+   begin
+      if Key = vkDelete then
+      begin
+         var selectedBlock := GProject.FindSelectedBlock;
+         if selectedBlock <> nil then
+         begin
+            pmPages.PopupComponent := selectedBlock;
+            miRemove.Click;
+         end;
+      end
+      else
+         GProject.GetActivePage.Box.BoxKeyDown(Sender, Key, Shift);
+   end;
 end;
 
 procedure TMainForm.ResetForm;
@@ -396,6 +408,7 @@ begin
     GProject.ChangingOn := true;
     GProject.SetNotChanged;
     Screen.Cursor := tmpCursor;
+    SetFocus;
     if not filePath.IsEmpty then
        AcceptFile(filePath)
     else

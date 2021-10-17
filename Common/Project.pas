@@ -26,7 +26,7 @@ interface
 uses
    WinApi.Windows, Vcl.Graphics, System.Classes, Vcl.ComCtrls, Vcl.Controls, System.Contnrs,
    Generics.Defaults, UserFunction, OmniXML, UserDataType, Main_Block, DeclareList,
-   Types, Interfaces, BlockTabSheet, Comment, Declarations_Form;
+   Types, Interfaces, BlockTabSheet, Comment, Declarations_Form, Base_Block;
 
 type
 
@@ -119,6 +119,7 @@ type
       procedure SetNotChanged;
       procedure SetLibSectionOffset(ALibSectionOffset: integer);
       function GetLibSectionOffset: integer;
+      function FindSelectedBlock: TBlock;
    end;
 
 implementation
@@ -126,7 +127,7 @@ implementation
 uses
    System.SysUtils, Vcl.Menus, Vcl.Forms, System.StrUtils, System.Types, System.UITypes,
    Generics.Collections, Infrastructure, Constants, XMLProcessor, Base_Form, LangDefinition,
-   Navigator_Form, Base_Block, TabComponent, ParserHelper, SelectImport_Form, BaseEnumerator,
+   Navigator_Form, TabComponent, ParserHelper, SelectImport_Form, BaseEnumerator,
    WinApi.Messages, Vcl.ExtCtrls, Rtti;
 
 var
@@ -1052,6 +1053,20 @@ begin
    begin
       if (func.Body <> nil) and func.Body.Visible then
          func.Body.RepaintAll;
+   end;
+end;
+
+function TProject.FindSelectedBlock: TBlock;
+begin
+   result := nil;
+   for var func in GetUserFunctions do
+   begin
+      if func.Body <> nil then
+      begin
+         result := func.Body.FindSelectedBlock;
+         if result <> nil then
+            break;
+      end;
    end;
 end;
 

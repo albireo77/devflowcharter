@@ -193,6 +193,7 @@ type
          function GetExportFileName: string; virtual;
          function ExportToXMLFile(const AFile: string): TError; virtual;
          procedure OnMouseLeave(AClearRed: boolean = true); virtual;
+         function FindSelectedBlock: TBlock; virtual;
       published
          property Color;
          property OnMouseDown;
@@ -256,6 +257,7 @@ type
          function GetBranchIndexByControl(AControl: TControl): integer;
          function RemoveBranch(AIndex: integer): boolean;
          function Remove(ANode: TTreeNodeWithFriend = nil): boolean; override;
+         function FindSelectedBlock: TBlock; override;
    end;
 
    TBranch = class(TList<TBlock>, IWithId)
@@ -1295,6 +1297,32 @@ begin
    if Color <> lColor then
       ChangeColor(lColor);
    NavigatorForm.Invalidate;
+end;
+
+function TBlock.FindSelectedBlock: TBlock;
+begin
+   result := nil;
+   if Color = GSettings.HighlightColor then
+      result := Self;
+end;
+
+function TGroupBlock.FindSelectedBlock: TBlock;
+begin
+   result := inherited FindSelectedBlock;
+   if result = nil then
+   begin
+      for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
+      begin
+         for var block in FBranchList[i] do
+         begin
+            result := block.FindSelectedBlock;
+            if result <> nil then
+               break;
+         end;
+         if result <> nil then
+            break;
+      end;
+   end;
 end;
 
 procedure TGroupBlock.ChangeColor(AColor: TColor);
