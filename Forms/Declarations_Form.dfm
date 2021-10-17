@@ -9,10 +9,12 @@ object DeclarationsForm: TDeclarationsForm
   Constraints.MinHeight = 323
   Constraints.MinWidth = 20
   ParentFont = True
+  KeyPreview = True
   OldCreateOrder = False
   PopupMode = pmExplicit
   Position = poDesigned
   OnCanResize = FormCanResize
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13

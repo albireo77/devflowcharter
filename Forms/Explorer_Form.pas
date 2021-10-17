@@ -63,6 +63,7 @@ type
       var NodeClass: TTreeNodeClass);
     procedure tvExplorerDeletion(Sender: TObject; Node: TTreeNode);
     procedure miRebuildClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
     FErrWarnCount: TErrWarnCount;
@@ -386,6 +387,12 @@ end;
 procedure TExplorerForm.FormCreate(Sender: TObject);
 begin
    chkAutoNav.Checked := GSettings.ExplorerAutoNav;
+end;
+
+procedure TExplorerForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+   if Key = vkDelete then
+      TInfra.GetMainForm.FormKeyDown(TInfra.GetMainForm, Key, Shift);
 end;
 
 procedure TExplorerForm.chkAutoNavClick(Sender: TObject);

@@ -12,9 +12,11 @@ object EditorForm: TEditorForm
   Menu = MainMenu1
   OldCreateOrder = False
   Position = poScreenCenter
+  KeyPreview = True
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
+  OnKeyDown = FormKeyDown
   DesignSize = (
     409
     519)

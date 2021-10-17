@@ -47,6 +47,7 @@ type
     procedure sbNormalClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -61,7 +62,7 @@ implementation
 {$R *.dfm}
 
 uses
-   Infrastructure, Types;
+   Infrastructure, Types, System.UITypes;
 
 procedure TToolboxForm.sbNormalClick(Sender: TObject);
 begin
@@ -107,6 +108,12 @@ end;
 procedure TToolboxForm.FormCreate(Sender: TObject);
 begin
    Left := Screen.Width - Width;
+end;
+
+procedure TToolboxForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+   if Key = vkDelete then
+      TInfra.GetMainForm.FormKeyDown(TInfra.GetMainForm, Key, Shift);
 end;
 
 procedure TToolboxForm.ResetForm;

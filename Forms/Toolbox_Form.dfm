@@ -14,6 +14,7 @@ object ToolboxForm: TToolboxForm
   PopupMode = pmExplicit
   OnClose = FormClose
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 13
   object sbNormal: TSpeedButton

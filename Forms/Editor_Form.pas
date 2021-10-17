@@ -106,6 +106,7 @@ type
       Button: TMouseButton; X, Y, Line: Integer; Mark: TSynEditMark);
     procedure miRegenerateClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure memCodeEditorDblClick(Sender: TObject);
     procedure memCodeEditorDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
@@ -955,6 +956,12 @@ begin
          Clipboard.Close;
       end;
    end;
+end;
+
+procedure TEditorForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+   if Key = vkDelete then
+      TInfra.GetMainForm.FormKeyDown(TInfra.GetMainForm, Key, Shift);
 end;
 
 procedure TEditorForm.miHelpClick(Sender: TObject);
