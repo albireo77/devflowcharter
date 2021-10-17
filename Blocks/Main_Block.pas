@@ -555,7 +555,10 @@ function TMainBlock.Remove(ANode: TTreeNodeWithFriend = nil): boolean;
 begin
    result := inherited Remove(ANode);
    if result and (UserFunction <> nil) then
+   begin
       TUserFunction(UserFunction).Active := false;
+      TInfra.UpdateCodeEditor;
+   end;
 end;
 
 end.
