@@ -124,7 +124,7 @@ type
     procedure memCodeEditorChange(Sender: TObject);
     procedure miFindProjClick(Sender: TObject);
     procedure OnChangeEditor;
-    function ForwardDeleteKeyDown: boolean; override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   private
     { Private declarations }
     FCloseBracketPos: TPoint;
@@ -1676,9 +1676,9 @@ begin
    FWithFocus := nil;
 end;
 
-function TEditorForm.ForwardDeleteKeyDown: boolean;
+procedure TEditorForm.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-   result := false;
+{}
 end;
 
 end.

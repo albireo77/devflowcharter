@@ -32,7 +32,6 @@ type
   TBaseForm = class(TForm, IWithFocus)
     protected
       procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-      function ForwardDeleteKeyDown: boolean; virtual;
     public
       procedure Localize(AList: TStringList); virtual;
       procedure ImportSettingsFromXMLTag(ATag: IXMLElement); virtual;
@@ -147,17 +146,10 @@ begin
    result := Caption;
 end;
 
-
-
 procedure TBaseForm.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-   if (Key = vkDelete) and ForwardDeleteKeyDown then
+   if Key = vkDelete then
       TInfra.GetMainForm.KeyDown(Key, Shift);
-end;
-
-function TBaseForm.ForwardDeleteKeyDown: boolean;
-begin
-   result := true;
 end;
 
 end.
