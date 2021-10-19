@@ -64,7 +64,6 @@ type
     procedure ResetForm; override;
     procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   protected
     FPrefix: string;
   public
@@ -80,8 +79,8 @@ implementation
 {$R *.dfm}
 
 uses
-   System.SysUtils, System.StrUtils, Vcl.Forms, System.UITypes, Infrastructure, XMLProcessor,
-   TabComponent, Interfaces;
+   System.SysUtils, System.StrUtils, Vcl.Forms, Infrastructure, XMLProcessor, TabComponent,
+   Interfaces;
 
 procedure TPageControlForm.miRemoveClick(Sender: TObject);
 var
@@ -213,12 +212,6 @@ procedure TPageControlForm.FormDeactivate(Sender: TObject);
 begin
    if GProject <> nil then
       GProject.RefreshStatements;
-end;
-
-procedure TPageControlForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-   if Key = vkDelete then
-      TInfra.GetMainForm.FormKeyDown(TInfra.GetMainForm, Key, Shift);
 end;
 
 procedure TPageControlForm.FormMouseWheel(Sender: TObject; Shift: TShiftState;

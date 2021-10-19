@@ -63,7 +63,6 @@ type
       var NodeClass: TTreeNodeClass);
     procedure tvExplorerDeletion(Sender: TObject; Node: TTreeNode);
     procedure miRebuildClick(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
     FErrWarnCount: TErrWarnCount;
@@ -82,8 +81,8 @@ implementation
 {$R *.dfm}
 
 uses
-   Vcl.Graphics, Vcl.Forms, System.SysUtils, System.UITypes, System.Math,
-   Infrastructure, Base_Block, XMLProcessor, Constants;
+   Vcl.Graphics, Vcl.Forms, System.SysUtils, System.Math, Infrastructure, Base_Block,
+   XMLProcessor, Constants;
 
 procedure TExplorerForm.FormShow(Sender: TObject);
 begin
@@ -387,12 +386,6 @@ end;
 procedure TExplorerForm.FormCreate(Sender: TObject);
 begin
    chkAutoNav.Checked := GSettings.ExplorerAutoNav;
-end;
-
-procedure TExplorerForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-   if Key = vkDelete then
-      TInfra.GetMainForm.FormKeyDown(TInfra.GetMainForm, Key, Shift);
 end;
 
 procedure TExplorerForm.chkAutoNavClick(Sender: TObject);

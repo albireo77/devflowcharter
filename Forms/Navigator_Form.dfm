@@ -16,7 +16,6 @@ object NavigatorForm: TNavigatorForm
   OldCreateOrder = False
   PopupMode = pmExplicit
   OnCreate = FormCreate
-  OnKeyDown = FormKeyDown
   OnMouseDown = FormMouseDown
   OnMouseMove = FormMouseMove
   OnMouseWheel = FormMouseWheel

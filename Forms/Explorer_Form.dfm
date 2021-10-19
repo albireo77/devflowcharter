@@ -13,7 +13,6 @@ object ExplorerForm: TExplorerForm
   PopupMode = pmExplicit
   Position = poScreenCenter
   OnCreate = FormCreate
-  OnKeyDown = FormKeyDown
   OnMouseWheel = FormMouseWheel
   OnShow = FormShow
   DesignSize = (

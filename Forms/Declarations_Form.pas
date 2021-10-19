@@ -24,15 +24,13 @@ unit Declarations_Form;
 interface
 
 uses
-   OmniXML, Base_Form, System.Classes;
+   OmniXML, Base_Form;
 
 type
 
   TDeclarationsForm = class(TBaseForm)
     procedure FormShow(Sender: TObject);
-    procedure FormCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
-      var Resize: Boolean);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
   private
     { Private declarations }
   public
@@ -48,8 +46,7 @@ var
 implementation
 
 uses
-   Vcl.Forms, System.SysUtils, System.UITypes, XMLProcessor, DeclareList,
-   Infrastructure, Constants;
+   Vcl.Forms, System.SysUtils, XMLProcessor, DeclareList, Infrastructure, Constants;
 
 {$R *.dfm}
 
@@ -105,12 +102,6 @@ begin
             Resize := false;
       end;
    end;
-end;
-
-procedure TDeclarationsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-   if Key = vkDelete then
-      TInfra.GetMainForm.FormKeyDown(TInfra.GetMainForm, Key, Shift);
 end;
 
 procedure TDeclarationsForm.FormShow(Sender: TObject);

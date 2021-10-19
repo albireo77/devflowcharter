@@ -205,7 +205,7 @@ type
     procedure FuncMenuClick(Sender: TObject);
     procedure miIsHeaderClick(Sender: TObject);
     procedure miPasteTextClick(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   private
     { Private declarations }
     FClockPos: TClockPos;
@@ -279,7 +279,7 @@ begin
    end;
 end;
 
-procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TMainForm.KeyDown(var Key: Word; Shift: TShiftState);
 begin
    if GProject <> nil then
    begin
@@ -293,7 +293,7 @@ begin
          end;
       end
       else
-         GProject.GetActivePage.Box.BoxKeyDown(Sender, Key, Shift);
+         GProject.GetActivePage.Box.BoxKeyDown(Self, Key, Shift);
    end;
 end;
 

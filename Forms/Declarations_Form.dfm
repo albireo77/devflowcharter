@@ -14,7 +14,6 @@ object DeclarationsForm: TDeclarationsForm
   PopupMode = pmExplicit
   Position = poDesigned
   OnCanResize = FormCanResize
-  OnKeyDown = FormKeyDown
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13

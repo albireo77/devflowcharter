@@ -21,7 +21,6 @@ type
     procedure scbAlphaValChange(Sender: TObject);
     procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
     procedure SetAlphaValVisible(AValue: boolean);
@@ -40,8 +39,8 @@ var
 implementation
 
 uses
-   WinApi.Windows, System.SysUtils, Vcl.Graphics, Vcl.Forms, System.UITypes,
-   Infrastructure, BlockTabSheet, XMLProcessor;
+   WinApi.Windows, System.SysUtils, Vcl.Graphics, Vcl.Forms, Infrastructure, BlockTabSheet,
+   XMLProcessor;
 
 {$R *.dfm}
 
@@ -58,12 +57,6 @@ begin
    scbAlphaVal.Position := GSettings.NavigatorAlphaValue;
    scbAlphaVal.OnKeyDown := TInfra.GetMainForm.OnKeyDown;
    chkAlphaVisible.Checked := GSettings.NavigatorAlphaVisible;
-end;
-
-procedure TNavigatorForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-   if Key = vkDelete then
-      TInfra.GetMainForm.FormKeyDown(TInfra.GetMainForm, Key, Shift);
 end;
 
 procedure TNavigatorForm.FormPaint(Sender: TObject);
