@@ -191,6 +191,8 @@ type
          function GetExportFileName: string; virtual;
          function ExportToXMLFile(const AFile: string): TError; virtual;
          procedure OnMouseLeave(AClearRed: boolean = true); virtual;
+         procedure LockDrawing;
+         procedure UnlockDrawing;
       published
          property Color;
          property OnMouseDown;
@@ -2248,6 +2250,26 @@ begin
          if unPin then
             UnPinComments;
       end;
+   end;
+end;
+
+procedure TBlock.LockDrawing;
+begin
+   TWinControl(Self).LockDrawing;
+   if IsDrawingLocked then
+   begin
+      for var comment in GetComments(true) do
+         comment.LockDrawing;
+   end;
+end;
+
+procedure TBlock.UnlockDrawing;
+begin
+   TWinControl(Self).UnlockDrawing;
+   if not IsDrawingLocked then
+   begin
+      for var comment in GetComments(true) do
+         comment.UnlockDrawing;
    end;
 end;
 
