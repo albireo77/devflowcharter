@@ -177,6 +177,8 @@ type
          function CountErrWarn: TErrWarnCount; virtual;
          function LockDrawing: boolean;
          procedure UnLockDrawing;
+         procedure LockDrawingComments;
+         procedure UnLockDrawingComments;
          function GetFocusColor: TColor;
          function Remove(ANode: TTreeNodeWithFriend = nil): boolean; virtual;
          function CanRemove: boolean;
@@ -1185,12 +1187,10 @@ begin
 end;
 
 procedure TBlock.MoveComments(x, y: integer);
-var
-   comment: TComment;
 begin
    if (x <> 0) and (y <> 0) and (Left <> 0) and (Top <> 0) and ((x <> Left) or (y <> Top)) then
    begin
-      for comment in GetComments(true) do
+      for var comment in GetComments(true) do
       begin
          if comment.Visible then
             TInfra.MoveWinTopZ(comment, comment.Left+x-Left, comment.Top+y-Top);
@@ -1727,6 +1727,7 @@ begin
       FTopParentBlock.FDrawingFlag := true;
       result := true;
       SendMessage(FTopParentBlock.Handle, WM_SETREDRAW, WPARAM(False), 0);
+      FTopParentBlock.LockDrawingComments;
    end;
 end;
 
@@ -1735,10 +1736,29 @@ begin
    if FTopParentBlock.FDrawingFlag then
    begin
       SendMessage(FTopParentBlock.Handle, WM_SETREDRAW, WPARAM(True), 0);
+      FTopParentBlock.UnLockDrawingComments;
       GProject.RepaintFlowcharts;
       GProject.RepaintComments;
       RedrawWindow(Page.Handle, nil, 0, RDW_INVALIDATE or RDW_FRAME or RDW_ERASE);
       FTopParentBlock.FDrawingFlag := false;
+   end;
+end;
+
+procedure TBlock.LockDrawingComments;
+begin
+   for var comment in GetComments(true) do
+   begin
+      if comment.Visible then
+         SendMessage(comment.Handle, WM_SETREDRAW, WPARAM(False), 0);
+   end;
+end;
+
+procedure TBlock.UnLockDrawingComments;
+begin
+   for var comment in GetComments(true) do
+   begin
+      if comment.Visible then
+         SendMessage(comment.Handle, WM_SETREDRAW, WPARAM(True), 0);
    end;
 end;
 
