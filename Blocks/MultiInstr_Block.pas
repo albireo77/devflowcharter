@@ -42,7 +42,7 @@ type
 implementation
 
 uses
-   System.SysUtils, System.StrUtils, System.UITypes, Infrastructure, YaccLib, Constants;
+   System.SysUtils, System.StrUtils, Infrastructure, YaccLib, Constants;
 
 constructor TMultiInstrBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
@@ -104,8 +104,8 @@ var
    tmpList: TStringList;
 begin
    result := 0;
-   if (fsStrikeOut in Font.Style) or (FStatements.Text = '') then
-      exit;
+   if fsStrikeOut in Font.Style then
+      Exit;
    template := GetBlockTemplate(ALangId);
    if not template.IsEmpty then
    begin
