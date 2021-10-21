@@ -139,7 +139,7 @@ end;
 
 function TMultiLineBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
 begin
-   if (fsStrikeOut in Font.Style) or (FStatements.Text = '') then
+   if fsStrikeOut in Font.Style then
       Exit(0);
    var tmpList := TStringList.Create;
    try
