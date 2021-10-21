@@ -2256,21 +2256,17 @@ end;
 procedure TBlock.LockDrawing;
 begin
    TWinControl(Self).LockDrawing;
-   if IsDrawingLocked then
-   begin
-      for var comment in GetComments(true) do
-         comment.LockDrawing;
-   end;
+   for var comment in GetComments(true) do
+      comment.LockDrawing;
 end;
 
 procedure TBlock.UnlockDrawing;
 begin
    TWinControl(Self).UnlockDrawing;
+   for var comment in GetComments(true) do
+      comment.UnlockDrawing;
    if not IsDrawingLocked then
-   begin
-      for var comment in GetComments(true) do
-         comment.UnlockDrawing;
-   end;
+      GProject.RepaintFlowcharts;
 end;
 
 procedure TBlock.SaveInXML(ATag: IXMLElement);
