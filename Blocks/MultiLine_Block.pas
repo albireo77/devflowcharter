@@ -162,55 +162,52 @@ begin
       chLine := TInfra.GetChangeLine(Self, FStatements);
       if chLine.CodeRange.FirstRow <> ROW_NOT_FOUND then
       begin
-         if GSettings.UpdateEditor and not SkipUpdateEditor then
+         if (chLine.CodeRange.Lines <> nil) and GSettings.UpdateEditor and not SkipUpdateEditor then
          begin
             templateLines := TStringList.Create;
             try
                GenerateCode(templateLines, GInfra.CurrentLang.Name, TInfra.GetEditorForm.GetIndentLevel(chLine.CodeRange.FirstRow, chLine.CodeRange.Lines));
-               if chLine.CodeRange.Lines <> nil then
-               begin
-                  rowNum := chLine.CodeRange.LastRow - chLine.CodeRange.FirstRow + 1;
-                  chLine.CodeRange.Lines.BeginUpdate;
-                  for i := 1 to rowNum do
-                     chLine.CodeRange.Lines.Delete(chLine.CodeRange.FirstRow);
+               rowNum := chLine.CodeRange.LastRow - chLine.CodeRange.FirstRow + 1;
+               chLine.CodeRange.Lines.BeginUpdate;
+               for i := 1 to rowNum do
+                  chLine.CodeRange.Lines.Delete(chLine.CodeRange.FirstRow);
 {$IFDEF USE_CODEFOLDING}
-                  if chLine.CodeRange.FoldRange <> nil then
+               if chLine.CodeRange.FoldRange <> nil then
+               begin
+                  if chLine.CodeRange.IsFolded then
                   begin
-                     if chLine.CodeRange.IsFolded then
-                     begin
-                        rowNum := templateLines.Count - rowNum;
-                        chLine.CodeRange.FoldRange.Widen(rowNum);
-                        for i := 0 to templateLines.Count-1 do
-                           chLine.CodeRange.Lines.InsertObject(chLine.CodeRange.FirstRow, templateLines[i], templateLines.Objects[i]);
-                     end
-                     else
-                     begin
-                        var foldRegion := chLine.CodeRange.FoldRange.FoldRegion;
-                        TInfra.GetEditorForm.RemoveFoldRange(chLine.CodeRange.FoldRange);
-                        for i := templateLines.Count-1 downto 0 do
-                           chLine.CodeRange.Lines.InsertObject(chLine.CodeRange.FirstRow, templateLines[i], templateLines.Objects[i]);
-                        TInfra.GetEditorForm.OnChangeEditor;
-                        var foldRanges := TInfra.GetEditorForm.FindFoldRangesInCodeRange(chLine.CodeRange, templateLines.Count);
-                        try
-                           if (foldRanges <> nil) and (foldRanges.Count > 0) and (foldRanges[0].FoldRegion = foldRegion) and not foldRanges[0].Collapsed then
-                           begin
-                              TInfra.GetEditorForm.memCodeEditor.Collapse(foldRanges[0]);
-                              TInfra.GetEditorForm.memCodeEditor.Refresh;
-                           end;
-                        finally
-                           foldRanges.Free;
-                        end;
-                     end;
+                     rowNum := templateLines.Count - rowNum;
+                     chLine.CodeRange.FoldRange.Widen(rowNum);
+                     for i := 0 to templateLines.Count-1 do
+                        chLine.CodeRange.Lines.InsertObject(chLine.CodeRange.FirstRow, templateLines[i], templateLines.Objects[i]);
                   end
                   else
-{$ENDIF}
                   begin
+                     var foldRegion := chLine.CodeRange.FoldRange.FoldRegion;
+                     TInfra.GetEditorForm.RemoveFoldRange(chLine.CodeRange.FoldRange);
                      for i := templateLines.Count-1 downto 0 do
                         chLine.CodeRange.Lines.InsertObject(chLine.CodeRange.FirstRow, templateLines[i], templateLines.Objects[i]);
+                     TInfra.GetEditorForm.OnChangeEditor;
+                     var foldRanges := TInfra.GetEditorForm.FindFoldRangesInCodeRange(chLine.CodeRange, templateLines.Count);
+                     try
+                        if (foldRanges <> nil) and (foldRanges.Count > 0) and (foldRanges[0].FoldRegion = foldRegion) and not foldRanges[0].Collapsed then
+                        begin
+                           TInfra.GetEditorForm.memCodeEditor.Collapse(foldRanges[0]);
+                           TInfra.GetEditorForm.memCodeEditor.Refresh;
+                        end;
+                     finally
+                        foldRanges.Free;
+                     end;
                   end;
-                  chLine.CodeRange.Lines.EndUpdate;
-                  TInfra.GetEditorForm.OnChangeEditor;
+               end
+               else
+{$ENDIF}
+               begin
+                  for i := templateLines.Count-1 downto 0 do
+                     chLine.CodeRange.Lines.InsertObject(chLine.CodeRange.FirstRow, templateLines[i], templateLines.Objects[i]);
                end;
+               chLine.CodeRange.Lines.EndUpdate;
+               TInfra.GetEditorForm.OnChangeEditor;
             finally
                templateLines.Free;
             end;
