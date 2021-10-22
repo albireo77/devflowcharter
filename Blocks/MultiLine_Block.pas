@@ -167,6 +167,8 @@ begin
             templateLines := TStringList.Create;
             try
                GenerateCode(templateLines, GInfra.CurrentLang.Name, TInfra.GetEditorForm.GetIndentLevel(chLine.CodeRange.FirstRow, chLine.CodeRange.Lines));
+               if GSettings.IndentChar = TAB_CHAR then
+                  TInfra.IndentSpacesToTabs(templateLines);
                rowNum := chLine.CodeRange.LastRow - chLine.CodeRange.FirstRow + 1;
                chLine.CodeRange.Lines.BeginUpdate;
                for i := 1 to rowNum do
