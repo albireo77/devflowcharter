@@ -1,3 +1,8 @@
+9.3 [23-10-2021]
+- added possibility to remove flowchart blocks with Delete key
+- Code Editor: fix indent issues in auto-updating of multiline blocks
+- fix blinking comments when updating flowchart
+
 9.2 [26-09-2021]
 - make attached SynEdit component compile with Delphi 11
 - Code Editor: fix width to display vertical scrollbar correctly
