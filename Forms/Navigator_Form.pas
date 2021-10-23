@@ -39,8 +39,8 @@ var
 implementation
 
 uses
-   WinApi.Windows, System.SysUtils, Vcl.Graphics, Vcl.Forms, Infrastructure,
-   BlockTabSheet, XMLProcessor;
+   WinApi.Windows, System.SysUtils, Vcl.Graphics, Vcl.Forms, Infrastructure, BlockTabSheet,
+   XMLProcessor;
 
 {$R *.dfm}
 

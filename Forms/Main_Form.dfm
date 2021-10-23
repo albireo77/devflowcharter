@@ -24,7 +24,6 @@ object MainForm: TMainForm
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
-  OnKeyDown = FormKeyDown
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -40,7 +39,6 @@ object MainForm: TMainForm
     OnDragDrop = pgcPagesDragDrop
     OnDragOver = pgcPagesDragOver
     OnMouseDown = pgcPagesMouseDown
-    ExplicitTop = -6
   end
   object stbStatusBar: TStatusBar
     Left = 0

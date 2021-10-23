@@ -7,6 +7,7 @@ object PageControlForm: TPageControlForm
   ClientWidth = 407
   Color = clBtnFace
   ParentFont = True
+  KeyPreview = True
   Menu = MainMenu1
   OldCreateOrder = False
   PopupMode = pmExplicit

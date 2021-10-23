@@ -30,8 +30,7 @@ type
 
   TDeclarationsForm = class(TBaseForm)
     procedure FormShow(Sender: TObject);
-    procedure FormCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
-      var Resize: Boolean);
+    procedure FormCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
   private
     { Private declarations }
   public

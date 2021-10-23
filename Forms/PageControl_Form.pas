@@ -77,8 +77,8 @@ implementation
 {$R *.dfm}
 
 uses
-   System.SysUtils, System.StrUtils, Vcl.Forms, Infrastructure, XMLProcessor,
-   TabComponent, Interfaces;
+   System.SysUtils, System.StrUtils, Vcl.Forms, Infrastructure, XMLProcessor, TabComponent,
+   Interfaces;
 
 procedure TPageControlForm.miRemoveClick(Sender: TObject);
 var

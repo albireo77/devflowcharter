@@ -8,6 +8,7 @@ object ExplorerForm: TExplorerForm
   Color = clBtnFace
   Constraints.MinWidth = 300
   ParentFont = True
+  KeyPreview = True
   OldCreateOrder = False
   PopupMode = pmExplicit
   Position = poScreenCenter

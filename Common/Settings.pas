@@ -557,7 +557,8 @@ begin
          colorChanged := true;
          FPenColor := pnlPen.Color;
       end;
-      FHighlightColor := pnlFill.Color;
+      if (FHighlightColor <> pnlFill.Color) and  (pnlFill.Color <> pnlDesktop.Color) then
+         FHighlightColor := pnlFill.Color;
       FConfirmRemove := chkConfirmRemove.Checked;
       FPrintMultPages := chkMultiPrint.Checked;
       FPrintMultPagesHorz := chkMultiPrintHorz.Checked;

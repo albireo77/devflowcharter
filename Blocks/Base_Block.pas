@@ -193,6 +193,7 @@ type
          procedure OnMouseLeave(AClearRed: boolean = true); virtual;
          procedure LockDrawing;
          procedure UnlockDrawing;
+         function FindSelectedBlock: TBlock; virtual;
       published
          property Color;
          property OnMouseDown;
@@ -255,6 +256,7 @@ type
          function GetBranchIndexByControl(AControl: TControl): integer;
          function RemoveBranch(AIndex: integer): boolean;
          function Remove(ANode: TTreeNodeWithFriend = nil): boolean; override;
+         function FindSelectedBlock: TBlock; override;
    end;
 
    TBranch = class(TList<TBlock>, IWithId)
@@ -1176,12 +1178,10 @@ begin
 end;
 
 procedure TBlock.MoveComments(x, y: integer);
-var
-   comment: TComment;
 begin
    if (x <> 0) and (y <> 0) and (Left <> 0) and (Top <> 0) and ((x <> Left) or (y <> Top)) then
    begin
-      for comment in GetComments(true) do
+      for var comment in GetComments(true) do
       begin
          if comment.Visible then
             TInfra.MoveWinTopZ(comment, comment.Left+x-Left, comment.Top+y-Top);
@@ -1288,6 +1288,32 @@ begin
    if Color <> lColor then
       ChangeColor(lColor);
    NavigatorForm.Invalidate;
+end;
+
+function TBlock.FindSelectedBlock: TBlock;
+begin
+   result := nil;
+   if Color = GSettings.HighlightColor then
+      result := Self;
+end;
+
+function TGroupBlock.FindSelectedBlock: TBlock;
+begin
+   result := inherited FindSelectedBlock;
+   if result = nil then
+   begin
+      for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
+      begin
+         for var block in FBranchList[i] do
+         begin
+            result := block.FindSelectedBlock;
+            if result <> nil then
+               break;
+         end;
+         if result <> nil then
+            break;
+      end;
+   end;
 end;
 
 procedure TGroupBlock.ChangeColor(AColor: TColor);

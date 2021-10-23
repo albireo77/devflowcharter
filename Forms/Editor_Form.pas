@@ -124,6 +124,7 @@ type
     procedure memCodeEditorChange(Sender: TObject);
     procedure miFindProjClick(Sender: TObject);
     procedure OnChangeEditor;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   private
     { Private declarations }
     FCloseBracketPos: TPoint;
@@ -1671,6 +1672,11 @@ begin
       FWithFocus.RetrieveFocus(focusInfo);
    end;
    FWithFocus := nil;
+end;
+
+procedure TEditorForm.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+{}
 end;
 
 end.
