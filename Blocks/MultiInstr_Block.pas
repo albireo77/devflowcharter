@@ -100,27 +100,20 @@ end;
 function TMultiInstrBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
 var
    i: integer;
-   template, line, indent: string;
+   template: string;
    tmpList: TStringList;
 begin
    template := GetBlockTemplate(ALangId);
    if (fsStrikeOut in Font.Style) or template.IsEmpty then
       Exit(0);
-   indent := DupeString(GSettings.IndentSpaces, ADeep);
    tmpList := TStringList.Create;
    try
       for i := 0 to FStatements.Lines.Count-1 do
-      begin
-         line := FStatements.Lines.Strings[i].Trim;
-         if not line.IsEmpty then
-            GenerateTemplateSection(tmpList, ReplaceStr(template, PRIMARY_PLACEHOLDER, line), ALangId, ADeep)
-         else
-            tmpList.AddObject(indent, Self);
-      end;
+         GenerateTemplateSection(tmpList, ReplaceStr(template, PRIMARY_PLACEHOLDER, FStatements.Lines.Strings[i].Trim), ALangId, ADeep);
       if tmpList.Text.IsEmpty then
          GenerateTemplateSection(tmpList, ReplaceStr(template, PRIMARY_PLACEHOLDER, ''), ALangId, ADeep);
       if EndsText(sLineBreak, FStatements.Text) then
-         tmpList.AddObject(indent, Self);
+         tmpList.AddObject(DupeString(GSettings.IndentSpaces, ADeep), Self);
       TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
       result := tmpList.Count;
    finally
