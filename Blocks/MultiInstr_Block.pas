@@ -103,21 +103,26 @@ var
    template: string;
    tmpList: TStringList;
 begin
-   template := GetBlockTemplate(ALangId);
-   if (fsStrikeOut in Font.Style) or template.IsEmpty then
+   if fsStrikeOut in Font.Style then
       Exit(0);
-   tmpList := TStringList.Create;
-   try
-      for i := 0 to FStatements.Lines.Count-1 do
-         GenerateTemplateSection(tmpList, ReplaceStr(template, PRIMARY_PLACEHOLDER, FStatements.Lines.Strings[i].Trim), ALangId, ADeep);
-      if tmpList.Text.IsEmpty then
-         GenerateTemplateSection(tmpList, ReplaceStr(template, PRIMARY_PLACEHOLDER, ''), ALangId, ADeep);
-      if EndsText(sLineBreak, FStatements.Text) then
-         tmpList.AddObject(DupeString(GSettings.IndentSpaces, ADeep), Self);
-      TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
-      result := tmpList.Count;
-   finally
-      tmpList.Free;
+   template := GetBlockTemplate(ALangId);
+   if template.IsEmpty then
+      result := inherited GenerateCode(ALines, ALangId, ADeep, AFromLine)
+   else
+   begin
+      tmpList := TStringList.Create;
+      try
+         for i := 0 to FStatements.Lines.Count-1 do
+            GenerateTemplateSection(tmpList, ReplaceStr(template, PRIMARY_PLACEHOLDER, FStatements.Lines.Strings[i].Trim), ALangId, ADeep);
+         if tmpList.Text.IsEmpty then
+            GenerateTemplateSection(tmpList, ReplaceStr(template, PRIMARY_PLACEHOLDER, ''), ALangId, ADeep);
+         if EndsText(sLineBreak, FStatements.Text) then
+            tmpList.AddObject(DupeString(GSettings.IndentSpaces, ADeep), Self);
+         TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
+         result := tmpList.Count;
+      finally
+         tmpList.Free;
+      end;
    end;
 end;
 

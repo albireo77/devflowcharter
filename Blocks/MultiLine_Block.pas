@@ -36,7 +36,6 @@ type
          function GetMemoEx: TMemoEx; override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
-         function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
          function GetTreeNodeText(ANodeOffset: integer = 0): string; override;
          procedure CloneFrom(ABlock: TBlock); override;
       protected
@@ -134,20 +133,6 @@ begin
    begin
       BottomPoint.Y := FStatements.BoundsRect.Bottom + 1;
       IPoint.Y := BottomPoint.Y + 8;
-   end;
-end;
-
-function TMultiLineBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
-begin
-   if fsStrikeOut in Font.Style then
-      Exit(0);
-   var tmpList := TStringList.Create;
-   try
-      GenerateDefaultTemplate(tmpList, ALangId, ADeep);
-      TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
-      result := tmpList.Count;
-   finally
-      tmpList.Free;
    end;
 end;
 
