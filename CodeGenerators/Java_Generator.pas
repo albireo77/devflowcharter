@@ -406,7 +406,7 @@ begin
       name := dataType.GetName;
       if not name.IsEmpty then
       begin
-         indent := GSettings.IndentSpaces;
+         indent := GSettings.IndentString;
          typeAccess := dataType.GetExternModifier;
          if dataType.Kind = dtRecord then
          begin

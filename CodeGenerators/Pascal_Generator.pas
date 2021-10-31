@@ -161,7 +161,7 @@ begin
                end
                else
                begin
-                  line := GSettings.IndentSpaces + varName + ': ';
+                  line := GSettings.IndentString + varName + ': ';
                   if dCount > 0 then
                   begin
                      varSize := '';
@@ -202,7 +202,7 @@ begin
                ALines.Add('var');
                cnt := 1;
             end;
-            ALines.AddObject(GSettings.IndentSpaces + buf + ': ' + currType + ';', AVarList);
+            ALines.AddObject(GSettings.IndentString + buf + ': ' + currType + ';', AVarList);
          end;
       end;
    end;

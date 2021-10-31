@@ -1054,37 +1054,37 @@ end;
 
 function TLangDefinition.GetVarTemplate: string;
 begin
-   result := ReplaceStr(FVarTemplate, INDENT_XML_CHAR, GSettings.IndentSpaces);
+   result := ReplaceStr(FVarTemplate, INDENT_XML_CHAR, GSettings.IndentString);
 end;
 
 function TLangDefinition.GetConstTemplate: string;
 begin
-   result := ReplaceStr(FConstTemplate, INDENT_XML_CHAR, GSettings.IndentSpaces);
+   result := ReplaceStr(FConstTemplate, INDENT_XML_CHAR, GSettings.IndentString);
 end;
 
 function TLangDefinition.GetDataTypesTemplate: string;
 begin
-   result := ReplaceStr(FDataTypesTemplate, INDENT_XML_CHAR, GSettings.IndentSpaces);
+   result := ReplaceStr(FDataTypesTemplate, INDENT_XML_CHAR, GSettings.IndentString);
 end;
 
 function TLangDefinition.GetFunctionsTemplate: string;
 begin
-   result := ReplaceStr(FFunctionsTemplate, INDENT_XML_CHAR, GSettings.IndentSpaces);
+   result := ReplaceStr(FFunctionsTemplate, INDENT_XML_CHAR, GSettings.IndentString);
 end;
 
 function TLangDefinition.GetFileContentsTemplate: string;
 begin
-   result := ReplaceStr(FFileContentsTemplate, INDENT_XML_CHAR, GSettings.IndentSpaces);
+   result := ReplaceStr(FFileContentsTemplate, INDENT_XML_CHAR, GSettings.IndentString);
 end;
 
 function TLangDefinition.GetLibTemplate: string;
 begin
-   result := ReplaceStr(FLibTemplate, INDENT_XML_CHAR, GSettings.IndentSpaces);
+   result := ReplaceStr(FLibTemplate, INDENT_XML_CHAR, GSettings.IndentString);
 end;
 
 function TLangDefinition.GetProgramHeaderTemplate: string;
 begin
-   result := ReplaceStr(FProgramHeaderTemplate, INDENT_XML_CHAR, GSettings.IndentSpaces);
+   result := ReplaceStr(FProgramHeaderTemplate, INDENT_XML_CHAR, GSettings.IndentString);
 end;
 
 procedure TLangDefinition.InitBlockTemplates;

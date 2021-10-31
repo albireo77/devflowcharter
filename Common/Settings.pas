@@ -104,7 +104,7 @@ type
       procedure ResetCurrentLangName;
       function GetShapeColor(const shape: TColorShape): TColor;
       function UpdateEditor: boolean;
-      function IndentString(ALevel: integer): string;
+      function IndentString(ALevel: integer = 1): string;
       property ParseInput: boolean read FParseInput;
       property ParseOutput: boolean read FParseOutput;
       property ParseAssign: boolean read FParseAssign;
@@ -137,7 +137,6 @@ type
       property EditorAutoSelectBlock: boolean read FEditorAutoSelectBlock;
       property EditorAutoUpdate: boolean read FEditorAutoUpdate write FEditorAutoUpdate;
       property IndentLength: integer read FIndentLength;
-      property IndentSpaces: string read FIndentSpaces;
       property IndentChar: char read FIndentChar;
       property FlowchartFontName: string read FFlowchartFontName;
       property FlowchartFontSize: integer read FFlowchartFontSize;
@@ -457,7 +456,7 @@ begin
    end;
 end;
 
-function TSettings.IndentString(ALevel: integer): string;
+function TSettings.IndentString(ALevel: integer = 1): string;
 begin
    result := DupeString(FIndentSpaces, ALevel);
 end;

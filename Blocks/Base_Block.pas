@@ -2843,7 +2843,7 @@ begin
    for i := 0 to ATemplate.Count-1 do
    begin
       line := GSettings.IndentString(ADeep) + ATemplate[i];
-      line := ReplaceStr(line, INDENT_XML_CHAR, GSettings.IndentSpaces);
+      line := ReplaceStr(line, INDENT_XML_CHAR, GSettings.IndentString);
       line := TInfra.StripInstrEnd(line);
       obj := ATemplate.Objects[i];
       if obj = nil then
@@ -2885,7 +2885,7 @@ begin
       else
       begin
          line := GSettings.IndentString(ADeep) + ATemplate[i];
-         line := ReplaceStr(line, INDENT_XML_CHAR, GSettings.IndentSpaces);
+         line := ReplaceStr(line, INDENT_XML_CHAR, GSettings.IndentString);
          obj := ATemplate.Objects[i];
          if obj = nil then
             obj := Self;
