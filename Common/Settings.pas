@@ -104,6 +104,7 @@ type
       procedure ResetCurrentLangName;
       function GetShapeColor(const shape: TColorShape): TColor;
       function UpdateEditor: boolean;
+      function IndentString(ALevel: integer): string;
       property ParseInput: boolean read FParseInput;
       property ParseOutput: boolean read FParseOutput;
       property ParseAssign: boolean read FParseAssign;
@@ -168,7 +169,7 @@ uses
    System.Win.Registry,
 {$ENDIF}
    System.SysUtils, Vcl.Forms, Vcl.Controls, System.Math, System.Classes, System.IOUtils,
-   Infrastructure, Main_Form, Navigator_Form, Constants;
+   System.StrUtils, Infrastructure, Main_Form, Navigator_Form, Constants;
 
 const
    KEY_HIGHLIGHT_COLOR = 'HighlightColor';
@@ -454,6 +455,11 @@ begin
          FormatSettings.DecimalSeparator := lang.DecimalSeparator;
       end;
    end;
+end;
+
+function TSettings.IndentString(ALevel: integer): string;
+begin
+   result := DupeString(FIndentSpaces, ALevel);
 end;
 
 procedure TSettings.UpdateForHLighter(AHLighter: TSynCustomHighlighter);

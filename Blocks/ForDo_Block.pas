@@ -414,7 +414,7 @@ begin
    result := 0;
    if fsStrikeOut in Font.Style then
       exit;
-   indent := DupeString(GSettings.IndentSpaces, ADeep);
+   indent := GSettings.IndentString(ADeep);
    tmpList := TStringList.Create;
    try
       if (ALangId = PYTHON_LANG_ID) or (ALangId = JAVA_LANG_ID) then   // for Java and Python it's impossible to create suitable for..do XML template so hardcoded template must be used

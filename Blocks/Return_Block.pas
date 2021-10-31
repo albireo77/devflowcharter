@@ -44,8 +44,8 @@ type
 implementation
 
 uses
-   Vcl.Controls, System.SysUtils, System.StrUtils, System.Types, System.UITypes,
-   Infrastructure, Project, UserFunction, Main_Block, LangDefinition, Constants;
+   Vcl.Controls, System.SysUtils, System.Types, System.UITypes, Infrastructure,
+   Project, UserFunction, Main_Block, LangDefinition, Constants;
 
 constructor TReturnBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 var
@@ -120,7 +120,7 @@ begin
       exit;
    if ALangId = PASCAL_LANG_ID then
    begin
-      indnt := DupeString(GSettings.IndentSpaces, ADeep);
+      indnt := GSettings.IndentString(ADeep);
       expr := Trim(FStatement.Text);
       inFunc := false;
       if not expr.IsEmpty then

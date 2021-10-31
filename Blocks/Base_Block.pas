@@ -196,6 +196,7 @@ type
          function ExportToXMLFile(const AFile: string): TError; virtual;
          procedure OnMouseLeave(AClearRed: boolean = true); virtual;
          function FindSelectedBlock: TBlock; virtual;
+         function FindRedBlock: TBlock; virtual;
       published
          property Color;
          property OnMouseDown;
@@ -260,6 +261,7 @@ type
          function RemoveBranch(AIndex: integer): boolean;
          function Remove(ANode: TTreeNodeWithFriend = nil): boolean; override;
          function FindSelectedBlock: TBlock; override;
+         function FindRedBlock: TBlock; override;
    end;
 
    TBranch = class(TList<TBlock>, IWithId)
@@ -1316,6 +1318,32 @@ begin
          for var block in FBranchList[i] do
          begin
             result := block.FindSelectedBlock;
+            if result <> nil then
+               break;
+         end;
+         if result <> nil then
+            break;
+      end;
+   end;
+end;
+
+function TBlock.FindRedBlock: TBlock;
+begin
+   result := nil;
+   if IRed >= 0 then
+      result := Self;
+end;
+
+function TGroupBlock.FindRedBlock: TBlock;
+begin
+   result := inherited FindRedBlock;
+   if result = nil then
+   begin
+      for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
+      begin
+         for var block in FBranchList[i] do
+         begin
+            result := block.FindRedBlock;
             if result <> nil then
                break;
          end;
@@ -2814,7 +2842,7 @@ begin
       ALines.Capacity := i;
    for i := 0 to ATemplate.Count-1 do
    begin
-      line := DupeString(GSettings.IndentSpaces, ADeep) + ATemplate[i];
+      line := GSettings.IndentString(ADeep) + ATemplate[i];
       line := ReplaceStr(line, INDENT_XML_CHAR, GSettings.IndentSpaces);
       line := TInfra.StripInstrEnd(line);
       obj := ATemplate.Objects[i];
@@ -2856,7 +2884,7 @@ begin
       end
       else
       begin
-         line := DupeString(GSettings.IndentSpaces, ADeep) + ATemplate[i];
+         line := GSettings.IndentString(ADeep) + ATemplate[i];
          line := ReplaceStr(line, INDENT_XML_CHAR, GSettings.IndentSpaces);
          obj := ATemplate.Objects[i];
          if obj = nil then
