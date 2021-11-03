@@ -999,7 +999,6 @@ begin
    tag := ATag.OwnerDocument.CreateElement(FKind + 'width');
    tag.Text := Width.ToString;
    ATag.AppendChild(tag);
-   ATag.SetAttribute(ID_ATTR, FId.ToString);
 end;
 
 procedure TDeclareList.ExportItemToXMLTag(ATag: IXMLElement; idx: integer);
