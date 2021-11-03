@@ -447,12 +447,10 @@ begin
       end;
    end;
    if list <> nil then
-   begin
-      list.sgList.Row := i;
-      list.Show;
-   end
+      list.sgList.Row := i
    else
       list := Self;
+   list.Show;
    GetParentForm(list, False).Show;
    result := i > 0;
 end;
