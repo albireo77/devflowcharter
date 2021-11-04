@@ -1,3 +1,6 @@
+9.4 [04-11-2021]
+- Code Editor: fix few issues with "Find in Project" feature after loading project from file
+
 9.3 [23-10-2021]
 - added possibility to remove flowchart blocks with Delete key
 - Code Editor: fix indent issues in auto-updating of multiline blocks
