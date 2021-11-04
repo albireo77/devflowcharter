@@ -104,7 +104,7 @@ type
       procedure ResetCurrentLangName;
       function GetShapeColor(const shape: TColorShape): TColor;
       function UpdateEditor: boolean;
-      function IndentString(ALevel: integer = 1): string;
+      function IndentString(ATimes: integer = 1): string;
       property ParseInput: boolean read FParseInput;
       property ParseOutput: boolean read FParseOutput;
       property ParseAssign: boolean read FParseAssign;
@@ -456,9 +456,12 @@ begin
    end;
 end;
 
-function TSettings.IndentString(ALevel: integer = 1): string;
+function TSettings.IndentString(ATimes: integer = 1): string;
 begin
-   result := DupeString(FIndentSpaces, ALevel);
+   if ATimes = 1 then
+      result := FIndentSpaces
+   else
+      result := DupeString(FIndentSpaces, ATimes);
 end;
 
 procedure TSettings.UpdateForHLighter(AHLighter: TSynCustomHighlighter);
