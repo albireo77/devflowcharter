@@ -1,7 +1,7 @@
 {
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
-    
+
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
    as published by the Free Software Foundation; either version 2
@@ -65,7 +65,7 @@ var
    FInStreamImpl,
    FOutStreamImpl,
    FTemporalImpl,
-   FNumberImpl: TStringList;
+   FNumberImpl: TStrings;
    JAVA_INT_TYPE,
    JAVA_INTEGER_TYPE,
    JAVA_LONG_TYPE,
@@ -270,7 +270,7 @@ end;
 function GetImplementerLibImport(const ATypeName: string; const AContents: string): string;
 var
    i: integer;
-   implList: TStringList;
+   implList: TStrings;
    name: string;
 begin
    result := '';
@@ -1138,119 +1138,119 @@ initialization
       javaLang.SetHLighterAttrs := Java_SetHLighterAttrs;
    end;
 
-   FListImpl := TStringList.Create;
-   FListImpl.AddPair('CopyOnWriteArrayList', CONCURRENT_PKG);
-   FListImpl.AddPair('ArrayList', UTIL_PKG);
-   FListImpl.AddPair('LinkedList', UTIL_PKG);
-   FListImpl.AddPair('Stack', UTIL_PKG);
-   FListImpl.AddPair('Vector', UTIL_PKG);
+   FListImpl := TStringList.Create
+      .AddPair('CopyOnWriteArrayList', CONCURRENT_PKG)
+      .AddPair('ArrayList', UTIL_PKG)
+      .AddPair('LinkedList', UTIL_PKG)
+      .AddPair('Stack', UTIL_PKG)
+      .AddPair('Vector', UTIL_PKG);
 
-   FMapImpl := TStringList.Create;
-   FMapImpl.AddPair('ConcurrentHashMap', CONCURRENT_PKG);
-   FMapImpl.AddPair('ConcurrentSkipListMap', CONCURRENT_PKG);
-   FMapImpl.AddPair('EnumMap', UTIL_PKG);
-   FMapImpl.AddPair('WeakHashMap', UTIL_PKG);
-   FMapImpl.AddPair('LinkedHashMap', UTIL_PKG);
-   FMapImpl.AddPair('HashMap', UTIL_PKG);
-   FMapImpl.AddPair('Hashtable', UTIL_PKG);
-   FMapImpl.AddPair('Properties', UTIL_PKG);
-   FMapImpl.AddPair('TreeMap', UTIL_PKG);
+   FMapImpl := TStringList.Create
+      .AddPair('ConcurrentHashMap', CONCURRENT_PKG)
+      .AddPair('ConcurrentSkipListMap', CONCURRENT_PKG)
+      .AddPair('EnumMap', UTIL_PKG)
+      .AddPair('WeakHashMap', UTIL_PKG)
+      .AddPair('LinkedHashMap', UTIL_PKG)
+      .AddPair('HashMap', UTIL_PKG)
+      .AddPair('Hashtable', UTIL_PKG)
+      .AddPair('Properties', UTIL_PKG)
+      .AddPair('TreeMap', UTIL_PKG);
 
-   FSetImpl := TStringList.Create;
-   FSetImpl.AddPair('ConcurrentSkipListSet', CONCURRENT_PKG);
-   FSetImpl.AddPair('CopyOnWriteArraySet', CONCURRENT_PKG);
-   FSetImpl.AddPair('EnumSet', UTIL_PKG);
-   FSetImpl.AddPair('LinkedHashSet', UTIL_PKG);
-   FSetImpl.AddPair('HashSet', UTIL_PKG);
-   FSetImpl.AddPair('TreeSet', UTIL_PKG);
+   FSetImpl := TStringList.Create
+      .AddPair('ConcurrentSkipListSet', CONCURRENT_PKG)
+      .AddPair('CopyOnWriteArraySet', CONCURRENT_PKG)
+      .AddPair('EnumSet', UTIL_PKG)
+      .AddPair('LinkedHashSet', UTIL_PKG)
+      .AddPair('HashSet', UTIL_PKG)
+      .AddPair('TreeSet', UTIL_PKG);
 
-   FDateFormatImpl := TStringList.Create;
-   FDateFormatImpl.AddPair('SimpleDateFormat', TEXT_PKG);
+   FDateFormatImpl := TStringList.Create
+      .AddPair('SimpleDateFormat', TEXT_PKG);
 
-   FQueueImpl := TStringList.Create;
-   FQueueImpl.AddPair('ArrayBlockingQueue', CONCURRENT_PKG);
-   FQueueImpl.AddPair('ArrayDeque', UTIL_PKG);
-   FQueueImpl.AddPair('ConcurrentLinkedDeque', CONCURRENT_PKG);
-   FQueueImpl.AddPair('ConcurrentLinkedQueue', CONCURRENT_PKG);
-   FQueueImpl.AddPair('DelayQueue', CONCURRENT_PKG);
-   FQueueImpl.AddPair('LinkedBlockingDeque', CONCURRENT_PKG);
-   FQueueImpl.AddPair('LinkedBlockingQueue', CONCURRENT_PKG);
-   FQueueImpl.AddPair('LinkedList', UTIL_PKG);
-   FQueueImpl.AddPair('LinkedTransferQueue', CONCURRENT_PKG);
-   FQueueImpl.AddPair('PriorityBlockingQueue', CONCURRENT_PKG);
-   FQueueImpl.AddPair('PriorityQueue', UTIL_PKG);
-   FQueueImpl.AddPair('SynchronousQueue', CONCURRENT_PKG);
+   FQueueImpl := TStringList.Create
+      .AddPair('ArrayBlockingQueue', CONCURRENT_PKG)
+      .AddPair('ArrayDeque', UTIL_PKG)
+      .AddPair('ConcurrentLinkedDeque', CONCURRENT_PKG)
+      .AddPair('ConcurrentLinkedQueue', CONCURRENT_PKG)
+      .AddPair('DelayQueue', CONCURRENT_PKG)
+      .AddPair('LinkedBlockingDeque', CONCURRENT_PKG)
+      .AddPair('LinkedBlockingQueue', CONCURRENT_PKG)
+      .AddPair('LinkedList', UTIL_PKG)
+      .AddPair('LinkedTransferQueue', CONCURRENT_PKG)
+      .AddPair('PriorityBlockingQueue', CONCURRENT_PKG)
+      .AddPair('PriorityQueue', UTIL_PKG)
+      .AddPair('SynchronousQueue', CONCURRENT_PKG);
 
-   FDequeImpl := TStringList.Create;
-   FDequeImpl.AddPair('ArrayDeque', UTIL_PKG);
-   FDequeImpl.AddPair('ConcurrentLinkedDeque', CONCURRENT_PKG);
-   FDequeImpl.AddPair('LinkedBlockingDeque', CONCURRENT_PKG);
-   FDequeImpl.AddPair('LinkedList', UTIL_PKG);
+   FDequeImpl := TStringList.Create
+      .AddPair('ArrayDeque', UTIL_PKG)
+      .AddPair('ConcurrentLinkedDeque', CONCURRENT_PKG)
+      .AddPair('LinkedBlockingDeque', CONCURRENT_PKG)
+      .AddPair('LinkedList', UTIL_PKG);
 
-   FReaderImpl := TStringList.Create;
-   FReaderImpl.AddPair('BufferedReader', IO_PKG);
-   FReaderImpl.AddPair('CharArrayReader', IO_PKG);
-   FReaderImpl.AddPair('InputStreamReader', IO_PKG);
-   FReaderImpl.AddPair('PipedReader', IO_PKG);
-   FReaderImpl.AddPair('StringReader', IO_PKG);
+   FReaderImpl := TStringList.Create
+      .AddPair('BufferedReader', IO_PKG)
+      .AddPair('CharArrayReader', IO_PKG)
+      .AddPair('InputStreamReader', IO_PKG)
+      .AddPair('PipedReader', IO_PKG)
+      .AddPair('StringReader', IO_PKG);
 
-   FWriterImpl := TStringList.Create;
-   FWriterImpl.AddPair('BufferedWriter', IO_PKG);
-   FWriterImpl.AddPair('CharArrayWriter', IO_PKG);
-   FWriterImpl.AddPair('OutputStreamWriter', IO_PKG);
-   FWriterImpl.AddPair('PipedWriter', IO_PKG);
-   FWriterImpl.AddPair('PrintWriter', IO_PKG);
-   FWriterImpl.AddPair('StringWriter', IO_PKG);
+   FWriterImpl := TStringList.Create
+      .AddPair('BufferedWriter', IO_PKG)
+      .AddPair('CharArrayWriter', IO_PKG)
+      .AddPair('OutputStreamWriter', IO_PKG)
+      .AddPair('PipedWriter', IO_PKG)
+      .AddPair('PrintWriter', IO_PKG)
+      .AddPair('StringWriter', IO_PKG);
 
-   FInStreamImpl := TStringList.Create;
-   FInStreamImpl.AddPair('AudioInputStream', SAMPLED_PKG);
-   FInStreamImpl.AddPair('ByteArrayInputStream', IO_PKG);
-   FInStreamImpl.AddPair('FileInputStream', IO_PKG);
-   FInStreamImpl.AddPair('FilterInputStream', IO_PKG);
-   FInStreamImpl.AddPair('ObjectInputStream', IO_PKG);
-   FInStreamImpl.AddPair('PipedInputStream', IO_PKG);
-   FInStreamImpl.AddPair('SequenceInputStream', IO_PKG);
-   FInStreamImpl.AddPair('BufferedInputStream', IO_PKG);
-   FInStreamImpl.AddPair('CheckedInputStream', ZIP_PKG);
-   FInStreamImpl.AddPair('CipherInputStream', CRYPTO_PKG);
-   FInStreamImpl.AddPair('DataInputStream', IO_PKG);
-   FInStreamImpl.AddPair('DeflaterInputStream', ZIP_PKG);
-   FInStreamImpl.AddPair('InflaterInputStream', ZIP_PKG);
-   FInStreamImpl.AddPair('DigestInputStream', SECURITY_PKG);
-   FInStreamImpl.AddPair('PushbackInputStream', IO_PKG);
+   FInStreamImpl := TStringList.Create
+      .AddPair('AudioInputStream', SAMPLED_PKG)
+      .AddPair('ByteArrayInputStream', IO_PKG)
+      .AddPair('FileInputStream', IO_PKG)
+      .AddPair('FilterInputStream', IO_PKG)
+      .AddPair('ObjectInputStream', IO_PKG)
+      .AddPair('PipedInputStream', IO_PKG)
+      .AddPair('SequenceInputStream', IO_PKG)
+      .AddPair('BufferedInputStream', IO_PKG)
+      .AddPair('CheckedInputStream', ZIP_PKG)
+      .AddPair('CipherInputStream', CRYPTO_PKG)
+      .AddPair('DataInputStream', IO_PKG)
+      .AddPair('DeflaterInputStream', ZIP_PKG)
+      .AddPair('InflaterInputStream', ZIP_PKG)
+      .AddPair('DigestInputStream', SECURITY_PKG)
+      .AddPair('PushbackInputStream', IO_PKG);
 
-   FOutStreamImpl := TStringList.Create;
-   FOutStreamImpl.AddPair('ByteArrayOutputStream', IO_PKG);
-   FOutStreamImpl.AddPair('FileOutputStream', IO_PKG);
-   FOutStreamImpl.AddPair('FilterOutputStream', IO_PKG);
-   FOutStreamImpl.AddPair('ObjectOutputStream', IO_PKG);
-   FOutStreamImpl.AddPair('PipedOutputStream', IO_PKG);
-   FOutStreamImpl.AddPair('BufferedOutputStream', IO_PKG);
-   FOutStreamImpl.AddPair('CipherOutputStream', CRYPTO_PKG);
-   FOutStreamImpl.AddPair('DataOutputStream', IO_PKG);
-   FOutStreamImpl.AddPair('InflaterOutputStream', ZIP_PKG);
-   FOutStreamImpl.AddPair('DeflaterOutputStream', ZIP_PKG);
-   FOutStreamImpl.AddPair('DigestOutputStream', SECURITY_PKG);
-   FOutStreamImpl.AddPair('PrintStream', IO_PKG);
+   FOutStreamImpl := TStringList.Create
+      .AddPair('ByteArrayOutputStream', IO_PKG)
+      .AddPair('FileOutputStream', IO_PKG)
+      .AddPair('FilterOutputStream', IO_PKG)
+      .AddPair('ObjectOutputStream', IO_PKG)
+      .AddPair('PipedOutputStream', IO_PKG)
+      .AddPair('BufferedOutputStream', IO_PKG)
+      .AddPair('CipherOutputStream', CRYPTO_PKG)
+      .AddPair('DataOutputStream', IO_PKG)
+      .AddPair('InflaterOutputStream', ZIP_PKG)
+      .AddPair('DeflaterOutputStream', ZIP_PKG)
+      .AddPair('DigestOutputStream', SECURITY_PKG)
+      .AddPair('PrintStream', IO_PKG);
 
-   FTemporalImpl := TStringList.Create;
-   FTemporalImpl.AddPair('Instant', TIME_PKG);
-   FTemporalImpl.AddPair('LocalDateTime', TIME_PKG);
-   FTemporalImpl.AddPair('LocalDate', TIME_PKG);
-   FTemporalImpl.AddPair('LocalTime', TIME_PKG);
-   FTemporalImpl.AddPair('OffsetDateTime', TIME_PKG);
-   FTemporalImpl.AddPair('OffsetTime', TIME_PKG);
-   FTemporalImpl.AddPair('ZonedDateTime', TIME_PKG);
+   FTemporalImpl := TStringList.Create
+      .AddPair('Instant', TIME_PKG)
+      .AddPair('LocalDateTime', TIME_PKG)
+      .AddPair('LocalDate', TIME_PKG)
+      .AddPair('LocalTime', TIME_PKG)
+      .AddPair('OffsetDateTime', TIME_PKG)
+      .AddPair('OffsetTime', TIME_PKG)
+      .AddPair('ZonedDateTime', TIME_PKG);
 
-   FNumberImpl := TStringList.Create;
-   FNumberImpl.AddPair('AtomicInteger', ATOMIC_PKG);
-   FNumberImpl.AddPair('AtomicLong', ATOMIC_PKG);
-   FNumberImpl.AddPair('BigDecimal', MATH_PKG);
-   FNumberImpl.AddPair('BigInteger', MATH_PKG);
-   FNumberImpl.AddPair('DoubleAccumulator', ATOMIC_PKG);
-   FNumberImpl.AddPair('DoubleAdder', ATOMIC_PKG);
-   FNumberImpl.AddPair('LongAccumulator', ATOMIC_PKG);
-   FNumberImpl.AddPair('LongAdder', ATOMIC_PKG);
+   FNumberImpl := TStringList.Create
+      .AddPair('AtomicInteger', ATOMIC_PKG)
+      .AddPair('AtomicLong', ATOMIC_PKG)
+      .AddPair('BigDecimal', MATH_PKG)
+      .AddPair('BigInteger', MATH_PKG)
+      .AddPair('DoubleAccumulator', ATOMIC_PKG)
+      .AddPair('DoubleAdder', ATOMIC_PKG)
+      .AddPair('LongAccumulator', ATOMIC_PKG)
+      .AddPair('LongAdder', ATOMIC_PKG);
 
 finalization
 
