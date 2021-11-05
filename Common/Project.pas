@@ -120,7 +120,6 @@ type
       procedure SetLibSectionOffset(ALibSectionOffset: integer);
       function GetLibSectionOffset: integer;
       function FindSelectedBlock: TBlock;
-      function FindRedBlock: TBlock;
    end;
 
 implementation
@@ -1065,20 +1064,6 @@ begin
       if func.Body <> nil then
       begin
          result := func.Body.FindSelectedBlock;
-         if result <> nil then
-            break;
-      end;
-   end;
-end;
-
-function TProject.FindRedBlock: TBlock;
-begin
-   result := nil;
-   for var func in GetUserFunctions do
-   begin
-      if func.Body <> nil then
-      begin
-         result := func.Body.FindRedBlock;
          if result <> nil then
             break;
       end;
