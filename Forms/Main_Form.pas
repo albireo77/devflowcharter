@@ -290,6 +290,7 @@ begin
          begin
             pmPages.PopupComponent := selectedBlock;
             miRemove.Click;
+            Key := 0;
          end;
       end
       else
