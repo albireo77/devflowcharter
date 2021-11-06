@@ -1,3 +1,8 @@
+9.5 [06-11-2021]
+- Flowchart: prevent propagating Delete key press to text boxes when used to remove block
+- F11 key can now be used to enable/disable resizing frame
+- F12 key can now be used to fold/unfold selected block
+
 9.4 [04-11-2021]
 - Code Editor: fix few issues with "Find in Project" feature after loading project from file
 
