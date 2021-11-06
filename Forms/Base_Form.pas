@@ -51,7 +51,7 @@ type
 implementation
 
 uses
-   WinApi.Windows, System.UITypes, Infrastructure, Constants;
+   WinApi.Windows, Infrastructure, Constants;
 
 procedure TBaseForm.Localize(AList: TStringList);
 begin
@@ -148,7 +148,7 @@ end;
 
 procedure TBaseForm.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-   if Key = vkDelete then
+   if Key in TO_MAIN_FORM_KEYS then
       TInfra.GetMainForm.KeyDown(Key, Shift);
 end;
 

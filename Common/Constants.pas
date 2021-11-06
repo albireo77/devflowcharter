@@ -24,7 +24,7 @@ unit Constants;
 interface
 
 uses
-   Vcl.Graphics, Types;
+   Vcl.Graphics, Types, System.UITypes;
 
 const   // Global constants
 
@@ -52,6 +52,8 @@ const   // Global constants
         TAB_CHAR        = #9;
         SPACE_CHAR      = #32;
         INDENT_XML_CHAR = TAB_CHAR;
+
+        TO_MAIN_FORM_KEYS = [vkDelete, vkF11, vkF12];
 
         PAGE_CAPTION_ATTR = 'tab';
         COMMENT_ATTR      = 'comment';

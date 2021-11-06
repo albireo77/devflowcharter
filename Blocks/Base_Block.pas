@@ -200,6 +200,7 @@ type
          property Color;
          property OnMouseDown;
          property OnResize;
+         property OnMouseMove;
    end;
 
    TGroupBlock = class(TBlock)    // block which can aggregate child blocks

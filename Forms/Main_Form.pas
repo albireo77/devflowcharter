@@ -281,21 +281,29 @@ end;
 
 procedure TMainForm.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-   if GProject <> nil then
+   if GProject = nil then
+      Exit;
+   if Key in TO_MAIN_FORM_KEYS then
    begin
-      if Key = vkDelete then
+      var selectedBlock := GProject.FindSelectedBlock;
+      if selectedBlock <> nil then
       begin
-         var selectedBlock := GProject.FindSelectedBlock;
-         if selectedBlock <> nil then
-         begin
-            pmPages.PopupComponent := selectedBlock;
-            miRemove.Click;
-            Key := 0;
+         pmPages.PopupComponent := selectedBlock;
+         case Key of
+            vkDelete: miRemove.Click;
+            vkF12: miFoldUnfold.Click;
+            vkF11:
+            begin
+               miFrame.Click;
+               var p := selectedBlock.ScreenToClient(Mouse.CursorPos);
+               selectedBlock.OnMouseMove(selectedBlock, Shift, p.X, p.Y);
+            end;
          end;
-      end
-      else
-         GProject.GetActivePage.Box.BoxKeyDown(Self, Key, Shift);
-   end;
+         Key := 0;
+      end;
+   end
+   else
+      GProject.GetActivePage.Box.BoxKeyDown(Self, Key, Shift);
 end;
 
 procedure TMainForm.ResetForm;
