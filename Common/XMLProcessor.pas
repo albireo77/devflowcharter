@@ -52,6 +52,8 @@ type
       class function GetBool(ATag: IXMLElement; const AttrName: string; ADefault: boolean = false): boolean; overload;
       class function GetBool(const AValue: string; ADefault: boolean = false): boolean; overload;
       class function GetBoolFromChild(ATag: IXMLElement; const AChildTagName: string; ADefault: boolean = false): boolean;
+      class function GetTextFromChild(ATag: IXMLElement; const AChildTagName: string; ADefault: string = ''): string;
+      class function GetIntFromChild(ATag: IXMLElement; const AChildTagName: string; ADefault: integer = 0): integer;
       class function GetInt(ATag: IXMLElement; const AttrName: string; ADefault: integer = 0): integer;
       class function ImportFlowchartFromXMLTag(ATag: IXMLElement;
                                                AParent: TWinControl;
@@ -112,6 +114,22 @@ begin
       result := GetBool(tag.Text.Trim, ADefault)
    else
       result := ADefault;
+end;
+
+class function TXMLProcessor.GetTextFromChild(ATag: IXMLElement; const AChildTagName: string; ADefault: string = ''): string;
+var
+   tag: IXMLElement;
+begin
+   tag := FindChildTag(ATag, AChildTagName);
+   if tag <> nil then
+      result := tag.Text
+   else
+      result := ADefault;
+end;
+
+class function TXMLProcessor.GetIntFromChild(ATag: IXMLElement; const AChildTagName: string; ADefault: integer = 0): integer;
+begin
+   result := StrToIntDef(GetTextFromChild(ATag, AChildTagName), ADefault);
 end;
 
 class function TXMLProcessor.GetBool(const AValue: string; ADefault: boolean = false): boolean;

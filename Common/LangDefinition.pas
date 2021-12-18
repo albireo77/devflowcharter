@@ -344,10 +344,7 @@ var
    l3Strings: T3Strings;
 begin
    result := errNone;
-   val := '';
-   tag := TXMLProcessor.FindChildTag(ATag, 'Name');
-   if tag <> nil then
-      val := tag.Text.Trim;
+   val := TXMLProcessor.GetTextFromChild(ATag, 'Name').Trim;
    if val.IsEmpty then
    begin
       GErr_Text := i18Manager.GetString('NameTagNotFound');
@@ -362,77 +359,9 @@ begin
 
    ImportBlockTemplates(ATag);
 
-   tag := TXMLProcessor.FindChildTag(ATag, 'CommentBegin');
-   if tag <> nil then
-      CommentBegin := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'CommentEnd');
-   if tag <> nil then
-      CommentEnd := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'InputFunction');
-   if tag <> nil then
-      InputFunction := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'OutputFunction');
-   if tag <> nil then
-      OutputFunction := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'ProcedureLabelKey');
-   if tag <> nil then
-      ProcedureLabelKey := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionLabelKey');
-   if tag <> nil then
-      FunctionLabelKey := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'ConstructorLabelKey');
-   if tag <> nil then
-      ConstructorLabelKey := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'ProgramLabelKey');
-   if tag <> nil then
-      ProgramLabelKey := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'GlobalVarsLabelKey');
-   if tag <> nil then
-      GlobalVarsLabelKey := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'GlobalConstsLabelKey');
-   if tag <> nil then
-      GlobalConstsLabelKey := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'HighLighterVarName');
-   if tag <> nil then
-      HighLighterVarName := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'FuncBracketsCursorPos');
-   if tag <> nil then
-      FuncBracketsCursorPos := StrToIntDef(tag.Text, 0);
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'FuncBrackets');
-   if tag <> nil then
-      FuncBrackets := tag.Text;
-
    tag := TXMLProcessor.FindChildTag(ATag, 'DecimalSeparator');
    if (tag <> nil) and not tag.Text.IsEmpty then
       DecimalSeparator := tag.Text[1];
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'ForDoVarString');
-   if tag <> nil then
-      ForDoVarString := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'ConstIDSpecChars');
-   if tag <> nil then
-      ConstIDSpecChars := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'InstrEnd');
-   if tag <> nil then
-      InstrEnd := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'VarTemplate');
-   if tag <> nil then
-      FVarTemplate := tag.Text;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTypeModifier1');
    if tag <> nil then
@@ -493,138 +422,6 @@ begin
       ConstTransExtern := l3Strings.S2;
    end;
 
-   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionTemplate');
-   if tag <> nil then
-      FunctionTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTemplate');
-   if tag <> nil then
-      FunctionHeaderTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderDescTemplate');
-   if tag <> nil then
-      FunctionHeaderDescTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderDescParmMask');
-   if tag <> nil then
-      FunctionHeaderDescParmMask := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderDescReturnMask');
-   if tag <> nil then
-      FunctionHeaderDescReturnMask := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'ConstructorHeaderTemplate');
-   if tag <> nil then
-      ConstructorHeaderTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'PointerTypeMask');
-   if tag <> nil then
-      PointerTypeMask := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'CaseOfValueTemplate');
-   if tag <> nil then
-      CaseOfValueTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'CaseOfFirstValueTemplate');
-   if tag <> nil then
-      CaseOfFirstValueTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'CaseOfDefaultValueTemplate');
-   if tag <> nil then
-      CaseOfDefaultValueTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'ElseLabel');
-   if tag <> nil then
-      ElseLabel := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LabelFontName');
-   if (tag <> nil) and (Screen.Fonts.IndexOf(tag.Text) <> -1) then
-      LabelFontName := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LabelFontSize');
-   if tag <> nil then
-      LabelFontSize := StrToIntDef(tag.Text, LABEL_DEFAULT_FONT_SIZE);
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LabelRepeat');
-   if tag <> nil then
-      LabelRepeat := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LabelWhile');
-   if tag <> nil then
-      LabelWhile := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LabelFor');
-   if tag <> nil then
-      LabelFor := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LabelCase');
-   if tag <> nil then
-      LabelCase := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LabelIf');
-   if tag <> nil then
-      LabelIf := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LabelIfElse');
-   if tag <> nil then
-      LabelIfElse := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LabelFuncCall');
-   if tag <> nil then
-      LabelFuncCall := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LabelReturn');
-   if tag <> nil then
-      LabelReturn := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LabelText');
-   if tag <> nil then
-      LabelText := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LabelFolder');
-   if tag <> nil then
-      LabelFolder := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LabelIn');
-   if tag <> nil then
-      LabelIn := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LabelOut');
-   if tag <> nil then
-      LabelOut := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LabelInstr');
-   if tag <> nil then
-      LabelInstr := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LabelMultiInstr');
-   if tag <> nil then
-      LabelMultiInstr := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'RepeatUntilDescTemplate');
-   if tag <> nil then
-      RepeatUntilDescTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'ReturnDescTemplate');
-   if tag <> nil then
-      ReturnDescTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'ForDoDescTemplate');
-   if tag <> nil then
-      ForDoDescTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'CaseOfDescTemplate');
-   if tag <> nil then
-      CaseOfDescTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'MainFunctionTemplate');
-   if tag <> nil then
-      MainFunctionTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'ProgramReturnTemplate');
-   if tag <> nil then
-      ProgramReturnTemplate := tag.Text;
-
    tag := TXMLProcessor.FindChildTag(ATag, 'ForDoTemplateModifier1');
    if tag <> nil then
    begin
@@ -641,18 +438,6 @@ begin
       ForDoDesc2 := l3Strings.S1;
    end;
 
-   tag := TXMLProcessor.FindChildTag(ATag, 'DataTypesTemplate');
-   if tag <> nil then
-      FDataTypesTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionsTemplate');
-   if tag <> nil then
-      FFunctionsTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, FILE_CONTENTS_TAG);
-   if tag <> nil then
-      FFileContentsTemplate := tag.Text;
-
    tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeExternalModifier');
    if tag <> nil then
    begin
@@ -662,62 +447,6 @@ begin
       DataTypeTransExternal := l3Strings.S2;
    end;
 
-   tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeIntMask');
-   if tag <> nil then
-      DataTypeIntMask := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeRealMask');
-   if tag <> nil then
-      DataTypeRealMask := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeOtherMask');
-   if tag <> nil then
-      DataTypeOtherMask := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeRecordTemplate');
-   if tag <> nil then
-      DataTypeRecordTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeEnumTemplate');
-   if tag <> nil then
-      DataTypeEnumTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeEnumEntryList');
-   if tag <> nil then
-      DataTypeEnumEntryList := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeEnumEntryListStripCount');
-   if tag <> nil then
-      DataTypeEnumEntryListStripCount := StrToIntDef(tag.Text, 0);
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeArrayMask');
-   if tag <> nil then
-      DataTypeArrayMask := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeUnboundedArrayMask');
-   if tag <> nil then
-      DataTypeUnboundedArrayMask := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeRecordFieldMask');
-   if tag <> nil then
-      DataTypeRecordFieldMask := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeRecordFieldArrayMask');
-   if tag <> nil then
-      DataTypeRecordFieldArrayMask := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'ConstTemplate');
-   if tag <> nil then
-      FConstTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'ConstEntry');
-   if tag <> nil then
-      ConstEntry := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'ConstEntryArray');
-   if tag <> nil then
-      ConstEntryArray := tag.Text;
-
    tag := TXMLProcessor.FindChildTag(ATag, 'ConstTypeModifier');
    if tag <> nil then
    begin
@@ -726,112 +455,106 @@ begin
       ConstTypeGeneric := l3Strings.S1;
    end;
 
-   tag := TXMLProcessor.FindChildTag(ATag, 'VarEntryInit');
-   if tag <> nil then
-      VarEntryInit := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'VarEntryInitExtern');
-   if tag <> nil then
-      VarEntryInitExtern := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'VarEntry');
-   if tag <> nil then
-      VarEntry := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'VarEntryArray');
-   if tag <> nil then
-      VarEntryArray := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'VarEntryArraySize');
-   if tag <> nil then
-      VarEntryArraySize := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'VarEntryArraySizeStripCount');
-   if tag <> nil then
-      VarEntryArraySizeStripCount := StrToIntDef(tag.Text, 0);
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LibEntryListStripCount');
-   if tag <> nil then
-      LibEntryListStripCount := StrToIntDef(tag.Text, 0);
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LibTemplate');
-   if tag <> nil then
-      FLibTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LibEntry');
-   if tag <> nil then
-      LibEntry := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LibEntryList');
-   if tag <> nil then
-      LibEntryList := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderArgsEntryArray');
-   if tag <> nil then
-      FunctionHeaderArgsEntryArray := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderArgsEntryDefault');
-   if tag <> nil then
-      FunctionHeaderArgsEntryDefault := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderArgsEntryRef');
-   if tag <> nil then
-      FunctionHeaderArgsEntryRef := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderArgsEntryRecord');
-   if tag <> nil then
-      FunctionHeaderArgsEntryRecord := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderArgsEntryEnum');
-   if tag <> nil then
-      FunctionHeaderArgsEntryEnum := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderArgsEntryMask');
-   if tag <> nil then
-      FunctionHeaderArgsEntryMask := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderArgsStripCount');
-   if tag <> nil then
-      FunctionHeaderArgsStripCount := StrToIntDef(tag.Text, 0);
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'ProgramHeaderTemplate');
-   if tag <> nil then
-      FProgramHeaderTemplate := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'DefaultExt');
-   if tag <> nil then
-      DefaultExt := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'LibraryExt');
-   if tag <> nil then
-      LibraryExt := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'AssignOperator');
-   if tag <> nil then
-      AssignOperator := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'InOutCursorPos');
-   if tag <> nil then
-      InOutCursorPos := StrToIntDef(tag.Text, 0);
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'UserTypeDesc');
-   if tag <> nil then
-      UserTypeDesc := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'ExternalLabel');
-   if tag <> nil then
-      ExternalLabel := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'StaticLabel');
-   if tag <> nil then
-      StaticLabel := tag.Text;
-
-   tag := TXMLProcessor.FindChildTag(ATag, 'RecordLabel');
-   if tag <> nil then
-      RecordLabel := tag.Text;
+   tag := TXMLProcessor.FindChildTag(ATag, 'LabelFontName');
+   if (tag <> nil) and (Screen.Fonts.IndexOf(tag.Text) <> -1) then
+      LabelFontName := tag.Text;
 
    with TXMLProcessor do
    begin
+      CommentBegin                   := GetTextFromChild(ATag, 'CommentBegin');
+      CommentEnd                     := GetTextFromChild(ATag, 'CommentEnd');
+      InputFunction                  := GetTextFromChild(ATag, 'InputFunction');
+      OutputFunction                 := GetTextFromChild(ATag, 'OutputFunction');
+      ProcedureLabelKey              := GetTextFromChild(ATag, 'ProcedureLabelKey');
+      FunctionLabelKey               := GetTextFromChild(ATag, 'FunctionLabelKey');
+      ConstructorLabelKey            := GetTextFromChild(ATag, 'ConstructorLabelKey');
+      ProgramLabelKey                := GetTextFromChild(ATag, 'ProgramLabelKey');
+      GlobalVarsLabelKey             := GetTextFromChild(ATag, 'GlobalVarsLabelKey', GlobalVarsLabelKey);
+      GlobalConstsLabelKey           := GetTextFromChild(ATag, 'GlobalConstsLabelKey', GlobalConstsLabelKey);
+      HighLighterVarName             := GetTextFromChild(ATag, 'HighLighterVarName');
+      ForDoVarString                 := GetTextFromChild(ATag, 'ForDoVarString', ForDoVarString);
+      ConstIDSpecChars               := GetTextFromChild(ATag, 'ConstIDSpecChars');
+      FuncBrackets                   := GetTextFromChild(ATag, 'FuncBrackets');
+      InstrEnd                       := GetTextFromChild(ATag, 'InstrEnd');
+      FVarTemplate                   := GetTextFromChild(ATag, 'VarTemplate');
+      FunctionTemplate               := GetTextFromChild(ATag, 'FunctionTemplate');
+      FunctionHeaderTemplate         := GetTextFromChild(ATag, 'FunctionHeaderTemplate');
+      FunctionHeaderDescTemplate     := GetTextFromChild(ATag, 'FunctionHeaderDescTemplate');
+      FunctionHeaderDescParmMask     := GetTextFromChild(ATag, 'FunctionHeaderDescParmMask');
+      FunctionHeaderDescReturnMask   := GetTextFromChild(ATag, 'FunctionHeaderDescReturnMask');
+      ConstructorHeaderTemplate      := GetTextFromChild(ATag, 'ConstructorHeaderTemplate');
+      PointerTypeMask                := GetTextFromChild(ATag, 'PointerTypeMask');
+      CaseOfValueTemplate            := GetTextFromChild(ATag, 'CaseOfValueTemplate');
+      CaseOfFirstValueTemplate       := GetTextFromChild(ATag, 'CaseOfFirstValueTemplate');
+      CaseOfDefaultValueTemplate     := GetTextFromChild(ATag, 'CaseOfDefaultValueTemplate');
+      ElseLabel                      := GetTextFromChild(ATag, 'ElseLabel', ElseLabel);
+      LabelRepeat                    := GetTextFromChild(ATag, 'LabelRepeat');
+      LabelWhile                     := GetTextFromChild(ATag, 'LabelWhile');
+      LabelFor                       := GetTextFromChild(ATag, 'LabelFor');
+      LabelCase                      := GetTextFromChild(ATag, 'LabelCase');
+      LabelIf                        := GetTextFromChild(ATag, 'LabelIf');
+      LabelIfElse                    := GetTextFromChild(ATag, 'LabelIfElse');
+      LabelFuncCall                  := GetTextFromChild(ATag, 'LabelFuncCall');
+      LabelReturn                    := GetTextFromChild(ATag, 'LabelReturn');
+      LabelText                      := GetTextFromChild(ATag, 'LabelText');
+      LabelFolder                    := GetTextFromChild(ATag, 'LabelFolder');
+      LabelIn                        := GetTextFromChild(ATag, 'LabelIn');
+      LabelOut                       := GetTextFromChild(ATag, 'LabelOut');
+      LabelInstr                     := GetTextFromChild(ATag, 'LabelInstr');
+      LabelMultiInstr                := GetTextFromChild(ATag, 'LabelMultiInstr');
+      RepeatUntilDescTemplate        := GetTextFromChild(ATag, 'RepeatUntilDescTemplate');
+      ReturnDescTemplate             := GetTextFromChild(ATag, 'ReturnDescTemplate');
+      ForDoDescTemplate              := GetTextFromChild(ATag, 'ForDoDescTemplate');
+      CaseOfDescTemplate             := GetTextFromChild(ATag, 'CaseOfDescTemplate');
+      MainFunctionTemplate           := GetTextFromChild(ATag, 'MainFunctionTemplate');
+      ProgramReturnTemplate          := GetTextFromChild(ATag, 'ProgramReturnTemplate');
+      FDataTypesTemplate             := GetTextFromChild(ATag, 'DataTypesTemplate');
+      FFunctionsTemplate             := GetTextFromChild(ATag, 'FunctionsTemplate');
+      FFileContentsTemplate          := GetTextFromChild(ATag, FILE_CONTENTS_TAG);
+      DataTypeIntMask                := GetTextFromChild(ATag, 'DataTypeIntMask');
+      DataTypeRealMask               := GetTextFromChild(ATag, 'DataTypeRealMask');
+      DataTypeOtherMask              := GetTextFromChild(ATag, 'DataTypeOtherMask');
+      DataTypeRecordTemplate         := GetTextFromChild(ATag, 'DataTypeRecordTemplate');
+      DataTypeEnumTemplate           := GetTextFromChild(ATag, 'DataTypeEnumTemplate');
+      DataTypeEnumEntryList          := GetTextFromChild(ATag, 'DataTypeEnumEntryList');
+      DataTypeArrayMask              := GetTextFromChild(ATag, 'DataTypeArrayMask');
+      DataTypeUnboundedArrayMask     := GetTextFromChild(ATag, 'DataTypeUnboundedArrayMask');
+      DataTypeRecordFieldMask        := GetTextFromChild(ATag, 'DataTypeRecordFieldMask');
+      DataTypeRecordFieldArrayMask   := GetTextFromChild(ATag, 'DataTypeRecordFieldArrayMask');
+      FConstTemplate                 := GetTextFromChild(ATag, 'ConstTemplate');
+      ConstEntry                     := GetTextFromChild(ATag, 'ConstEntry');
+      ConstEntryArray                := GetTextFromChild(ATag, 'ConstEntryArray');
+      VarEntryInit                   := GetTextFromChild(ATag, 'VarEntryInit');
+      VarEntryInitExtern             := GetTextFromChild(ATag, 'VarEntryInitExtern');
+      VarEntry                       := GetTextFromChild(ATag, 'VarEntry');
+      VarEntryArray                  := GetTextFromChild(ATag, 'VarEntryArray');
+      VarEntryArraySize              := GetTextFromChild(ATag, 'VarEntryArraySize');
+      FLibTemplate                   := GetTextFromChild(ATag, 'LibTemplate');
+      LibEntry                       := GetTextFromChild(ATag, 'LibEntry');
+      LibEntryList                   := GetTextFromChild(ATag, 'LibEntryList');
+      FunctionHeaderArgsEntryArray   := GetTextFromChild(ATag, 'FunctionHeaderArgsEntryArray');
+      FunctionHeaderArgsEntryDefault := GetTextFromChild(ATag, 'FunctionHeaderArgsEntryDefault');
+      FunctionHeaderArgsEntryRef     := GetTextFromChild(ATag, 'FunctionHeaderArgsEntryRef');
+      FunctionHeaderArgsEntryRecord  := GetTextFromChild(ATag, 'FunctionHeaderArgsEntryRecord');
+      FunctionHeaderArgsEntryEnum    := GetTextFromChild(ATag, 'FunctionHeaderArgsEntryEnum');
+      FunctionHeaderArgsEntryMask    := GetTextFromChild(ATag, 'FunctionHeaderArgsEntryMask');
+      FProgramHeaderTemplate         := GetTextFromChild(ATag, 'ProgramHeaderTemplate');
+      DefaultExt                     := GetTextFromChild(ATag, 'DefaultExt', DefaultExt);
+      LibraryExt                     := GetTextFromChild(ATag, 'LibraryExt', LibraryExt);
+      AssignOperator                 := GetTextFromChild(ATag, 'AssignOperator', AssignOperator);
+      UserTypeDesc                   := GetTextFromChild(ATag, 'UserTypeDesc');
+      ExternalLabel                  := GetTextFromChild(ATag, 'ExternalLabel');
+      StaticLabel                    := GetTextFromChild(ATag, 'StaticLabel');
+      RecordLabel                    := GetTextFromChild(ATag, 'RecordLabel');
+
+      FuncBracketsCursorPos           := GetIntFromChild(ATag, 'FuncBracketsCursorPos');
+      LabelFontSize                   := GetIntFromChild(ATag, 'LabelFontSize', LabelFontSize);
+      VarEntryArraySizeStripCount     := GetIntFromChild(ATag, 'VarEntryArraySizeStripCount');
+      LibEntryListStripCount          := GetIntFromChild(ATag, 'LibEntryListStripCount');
+      FunctionHeaderArgsStripCount    := GetIntFromChild(ATag, 'FunctionHeaderArgsStripCount');
+      InOutCursorPos                  := GetIntFromChild(ATag, 'InOutCursorPos');
+      DataTypeEnumEntryListStripCount := GetIntFromChild(ATag, 'DataTypeEnumEntryListStripCount');
+
       ForDoVarList              := GetBoolFromChild(ATag, 'ForDoVarList', ForDoVarList);
       EnabledPointers           := GetBoolFromChild(ATag, 'EnabledPointers', EnabledPointers);
       RepeatUntilAsDoWhile      := GetBoolFromChild(ATag, 'RepeatUntilAsDoWhile', RepeatUntilAsDoWhile);
@@ -1088,30 +811,15 @@ begin
 end;
 
 procedure TLangDefinition.InitBlockTemplates;
-var
-   blockType: TBlockType;
 begin
-   for blockType := Low(TBlockType) to High(TBlockType) do
-   begin
+   for var blockType := Low(TBlockType) to High(TBlockType) do
       BlockTemplates[blockType] := i18Manager.GetString(BLOCK_TO_TEMPLATE_TAG_MAP[blockType]);
-   end;
 end;
 
 procedure TLangDefinition.ImportBlockTemplates(ATag: IXMLElement);
-var
-   value: string;
-   tag: IXMLElement;
-   blockType: TBlockType;
 begin
-   for blockType := Low(TBlockType) to High(TBlockType) do
-   begin
-      tag := TXMLProcessor.FindChildTag(ATag, BLOCK_TO_TEMPLATE_TAG_MAP[blockType]);
-      if tag <> nil then
-         value := tag.Text
-      else
-         value := '';
-      BlockTemplates[blockType] := value;
-   end;
+   for var blockType := Low(TBlockType) to High(TBlockType) do
+      BlockTemplates[blockType] := TXMLProcessor.GetTextFromChild(ATag, BLOCK_TO_TEMPLATE_TAG_MAP[blockType]);
 end;
 
 end.
