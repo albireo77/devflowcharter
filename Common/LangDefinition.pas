@@ -341,7 +341,7 @@ var
    lKind: TDataTypeKind;
    lOrigType, lType: PNativeDataType;
    i, a, count: integer;
-   l3Strings: T3Strings;
+   threeStrings: T3Strings;
 begin
    result := errNone;
    val := TXMLProcessor.GetTextFromChild(ATag, 'Name').Trim;
@@ -366,93 +366,93 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTypeModifier1');
    if tag <> nil then
    begin
-      l3Strings := T3Strings.Extract(tag.Text);
-      FunctionHeaderTypeNone1 := l3Strings.S0;
-      FunctionHeaderTypeNotNone1 := l3Strings.S1;
+      threeStrings := T3Strings.Extract(tag.Text);
+      FunctionHeaderTypeNone1 := threeStrings.S0;
+      FunctionHeaderTypeNotNone1 := threeStrings.S1;
    end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTypeModifier2');
    if tag <> nil then
    begin
-      l3Strings := T3Strings.Extract(tag.Text);
-      FunctionHeaderTypeNone2 := l3Strings.S0;
-      FunctionHeaderTypeNotNone2 := l3Strings.S1;
+      threeStrings := T3Strings.Extract(tag.Text);
+      FunctionHeaderTypeNone2 := threeStrings.S0;
+      FunctionHeaderTypeNotNone2 := threeStrings.S1;
    end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderExternalModifier');
    if tag <> nil then
    begin
-      l3Strings := T3Strings.Extract(tag.Text);
-      FunctionHeaderExternal := l3Strings.S0;
-      FunctionHeaderNotExternal := l3Strings.S1;
-      FunctionHeaderTransExternal := l3Strings.S2;
+      threeStrings := T3Strings.Extract(tag.Text);
+      FunctionHeaderExternal := threeStrings.S0;
+      FunctionHeaderNotExternal := threeStrings.S1;
+      FunctionHeaderTransExternal := threeStrings.S2;
    end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderStaticModifier');
    if tag <> nil then
    begin
-      l3Strings := T3Strings.Extract(tag.Text);
-      FunctionHeaderStatic := l3Strings.S0;
-      FunctionHeaderNotStatic := l3Strings.S1;
+      threeStrings := T3Strings.Extract(tag.Text);
+      FunctionHeaderStatic := threeStrings.S0;
+      FunctionHeaderNotStatic := threeStrings.S1;
    end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'FunctionHeaderTypeArrayModifier');
    if tag <> nil then
    begin
-      l3Strings := T3Strings.Extract(tag.Text);
-      FunctionHeaderTypeArray := l3Strings.S0;
-      FunctionHeaderTypeNotArray := l3Strings.S1;
+      threeStrings := T3Strings.Extract(tag.Text);
+      FunctionHeaderTypeArray := threeStrings.S0;
+      FunctionHeaderTypeNotArray := threeStrings.S1;
    end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'VarExternModifier');
    if tag <> nil then
    begin
-      l3Strings := T3Strings.Extract(tag.Text);
-      VarExtern := l3Strings.S0;
-      VarNotExtern := l3Strings.S1;
-      VarTransExtern := l3Strings.S2;
+      threeStrings := T3Strings.Extract(tag.Text);
+      VarExtern := threeStrings.S0;
+      VarNotExtern := threeStrings.S1;
+      VarTransExtern := threeStrings.S2;
    end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ConstExternModifier');
    if tag <> nil then
    begin
-      l3Strings := T3Strings.Extract(tag.Text);
-      ConstExtern := l3Strings.S0;
-      ConstNotExtern := l3Strings.S1;
-      ConstTransExtern := l3Strings.S2;
+      threeStrings := T3Strings.Extract(tag.Text);
+      ConstExtern := threeStrings.S0;
+      ConstNotExtern := threeStrings.S1;
+      ConstTransExtern := threeStrings.S2;
    end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ForDoTemplateModifier1');
    if tag <> nil then
    begin
-      l3Strings := T3Strings.Extract(tag.Text);
-      ForDoAsc1 := l3Strings.S0;
-      ForDoDesc1 := l3Strings.S1;
+      threeStrings := T3Strings.Extract(tag.Text);
+      ForDoAsc1 := threeStrings.S0;
+      ForDoDesc1 := threeStrings.S1;
    end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ForDoTemplateModifier2');
    if tag <> nil then
    begin
-      l3Strings := T3Strings.Extract(tag.Text);
-      ForDoAsc2 := l3Strings.S0;
-      ForDoDesc2 := l3Strings.S1;
+      threeStrings := T3Strings.Extract(tag.Text);
+      ForDoAsc2 := threeStrings.S0;
+      ForDoDesc2 := threeStrings.S1;
    end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'DataTypeExternalModifier');
    if tag <> nil then
    begin
-      l3Strings := T3Strings.Extract(tag.Text);
-      DataTypeExternal := l3Strings.S0;
-      DataTypeNotExternal := l3Strings.S1;
-      DataTypeTransExternal := l3Strings.S2;
+      threeStrings := T3Strings.Extract(tag.Text);
+      DataTypeExternal := threeStrings.S0;
+      DataTypeNotExternal := threeStrings.S1;
+      DataTypeTransExternal := threeStrings.S2;
    end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'ConstTypeModifier');
    if tag <> nil then
    begin
-      l3Strings := T3Strings.Extract(tag.Text);
-      ConstTypeNotGeneric := l3Strings.S0;
-      ConstTypeGeneric := l3Strings.S1;
+      threeStrings := T3Strings.Extract(tag.Text);
+      ConstTypeNotGeneric := threeStrings.S0;
+      ConstTypeGeneric := threeStrings.S1;
    end;
 
    tag := TXMLProcessor.FindChildTag(ATag, 'LabelFontName');
