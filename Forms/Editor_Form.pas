@@ -1429,14 +1429,14 @@ var
    mark: TSynEditMark;
    showEvent: TNotifyEvent;
 begin
-   if TXMLProcessor.GetBool(ATag, 'src_win_show') and GInfra.CurrentLang.EnabledCodeGenerator then
+   if TXMLProcessor.GetBoolFromAttr(ATag, 'src_win_show') and GInfra.CurrentLang.EnabledCodeGenerator then
    begin
       Position := poDesigned;
-      SetBounds(TXMLProcessor.GetInt(ATag, 'src_win_x', 50),
-                TXMLProcessor.GetInt(ATag, 'src_win_y', 50),
-                TXMLProcessor.GetInt(ATag, 'src_win_w', 425),
-                TXMLProcessor.GetInt(ATag, 'src_win_h', 558));
-      if TXMLProcessor.GetBool(ATag, 'src_win_min') then
+      SetBounds(TXMLProcessor.GetIntFromAttr(ATag, 'src_win_x', 50),
+                TXMLProcessor.GetIntFromAttr(ATag, 'src_win_y', 50),
+                TXMLProcessor.GetIntFromAttr(ATag, 'src_win_w', 425),
+                TXMLProcessor.GetIntFromAttr(ATag, 'src_win_h', 558));
+      if TXMLProcessor.GetBoolFromAttr(ATag, 'src_win_min') then
          WindowState := wsMinimized;
       showEvent := OnShow;
       OnShow := nil;
@@ -1450,7 +1450,7 @@ begin
       memCodeEditor.Lines.BeginUpdate;
       while tag1 <> nil do
       begin
-         memCodeEditor.Lines.AddObject(tag1.Text, GProject.FindObject(TXMLProcessor.GetInt(tag1, ID_ATTR, ID_INVALID)));
+         memCodeEditor.Lines.AddObject(tag1.Text, GProject.FindObject(TXMLProcessor.GetIntFromAttr(tag1, ID_ATTR, ID_INVALID)));
          tag1 := TXMLProcessor.FindNextTag(tag1);
       end;
       memCodeEditor.Lines.EndUpdate;
@@ -1458,9 +1458,9 @@ begin
          memCodeEditor.Highlighter := GInfra.CurrentLang.HighLighter;
       memCodeEditor.ClearUndo;
       memCodeEditor.SetFocus;
-      memCodeEditor.Modified := TXMLProcessor.GetBool(ATag, 'modified');
-      memCodeEditor.SelStart := TXMLProcessor.GetInt(ATag, 'src_win_sel_start');
-      memCodeEditor.SelLength := TXMLProcessor.GetInt(ATag, 'src_win_sel_length');
+      memCodeEditor.Modified := TXMLProcessor.GetBoolFromAttr(ATag, 'modified');
+      memCodeEditor.SelStart := TXMLProcessor.GetIntFromAttr(ATag, 'src_win_sel_start');
+      memCodeEditor.SelLength := TXMLProcessor.GetIntFromAttr(ATag, 'src_win_sel_length');
 {$IFDEF USE_CODEFOLDING}
       if memCodeEditor.CodeFolding.Enabled then
       begin
@@ -1494,16 +1494,16 @@ begin
       end;
 {$ENDIF}
       ATag.OwnerDocument.PreserveWhiteSpace := false;
-      i := TXMLProcessor.GetInt(ATag, 'src_top_line');
+      i := TXMLProcessor.GetIntFromAttr(ATag, 'src_top_line');
       if i > 0 then
          memCodeEditor.TopLine := i;
       tag1 := TXMLProcessor.FindChildTag(ATag, 'src_win_mark');
       while tag1 <> nil do
       begin
          mark := TSynEditMark.Create(memCodeEditor);
-         mark.ImageIndex := TXMLProcessor.GetInt(tag1, 'index');
+         mark.ImageIndex := TXMLProcessor.GetIntFromAttr(tag1, 'index');
          memCodeEditor.Marks.Add(mark);
-         mark.Line := TXMLProcessor.GetInt(tag1, 'line');
+         mark.Line := TXMLProcessor.GetIntFromAttr(tag1, 'line');
          mark.Visible := true;
          tag1 := TXMLProcessor.FindNextTag(tag1);
       end;

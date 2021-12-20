@@ -120,16 +120,16 @@ procedure TBlockTabSheet.ImportFromXMLTag(ATag: IXMLElement);
 var
    val: integer;
 begin
-   val := TXMLProcessor.GetInt(ATag, 'hScrollRange', -1);
+   val := TXMLProcessor.GetIntFromAttr(ATag, 'hScrollRange', -1);
    if val > -1 then
       Box.HorzScrollBar.Range := val;
-   val := TXMLProcessor.GetInt(ATag, 'hScrollPos', -1);
+   val := TXMLProcessor.GetIntFromAttr(ATag, 'hScrollPos', -1);
    if val > -1 then
       Box.HorzScrollBar.Position := val;
-   val := TXMLProcessor.GetInt(ATag, 'vScrollRange', -1);
+   val := TXMLProcessor.GetIntFromAttr(ATag, 'vScrollRange', -1);
    if val > -1 then
       Box.VertScrollBar.Range := val;
-   val := TXMLProcessor.GetInt(ATag, 'vScrollPos', -1);
+   val := TXMLProcessor.GetIntFromAttr(ATag, 'vScrollPos', -1);
    if val > -1 then
       Box.VertScrollBar.Position := val;
 end;

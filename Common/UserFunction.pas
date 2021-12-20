@@ -956,27 +956,27 @@ begin
    tag2 := TXMLProcessor.FindChildTag(ATag, 'desc');
    if tag2 <> nil then
       memDesc.Text := ReplaceStr(tag2.Text, LB_PHOLDER, sLineBreak);
-   chkBodyVisible.Checked := TXMLProcessor.GetBool(ATag, 'show_body');
-   chkInclDescCode.Checked := TXMLProcessor.GetBool(ATag, 'desc_incl');
-   chkInclDescFlow.Checked := TXMLProcessor.GetBool(ATag, 'desc_incl_flow');
-   chkArrayType.Checked := TXMLProcessor.GetBool(ATag, 'arrayType');
-   chkConstructor.Checked := TXMLProcessor.GetBool(ATag, 'constructor');
+   chkBodyVisible.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'show_body');
+   chkInclDescCode.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'desc_incl');
+   chkInclDescFlow.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'desc_incl_flow');
+   chkArrayType.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'arrayType');
+   chkConstructor.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'constructor');
    if chkStatic.Visible then
-      chkStatic.Checked := TXMLProcessor.GetBool(ATag, 'static');
+      chkStatic.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'static');
    FLocalVars.ImportFromXMLTag(ATag, impAll);
-   i := TXMLProcessor.GetInt(ATag, 'descrh');
+   i := TXMLProcessor.GetIntFromAttr(ATag, 'descrh');
    if i > 0 then
       gbDesc.Height := i;
-   i := TXMLProcessor.GetInt(ATag, 'headerh');
+   i := TXMLProcessor.GetIntFromAttr(ATag, 'headerh');
    if i > 0 then
       gbHeader.Height := i;
-   i := TXMLProcessor.GetInt(ATag, 'parmsh');
+   i := TXMLProcessor.GetIntFromAttr(ATag, 'parmsh');
    if i > 0 then
    begin
       gbParams.Height := i;
       sbxElements.Constraints.MaxHeight := gbParams.Height - 66;
    end;
-   i := TXMLProcessor.GetInt(ATag, 'lvarsh');
+   i := TXMLProcessor.GetIntFromAttr(ATag, 'lvarsh');
    if i > 0 then
       FLocalVars.Height := i;
 end;
@@ -996,8 +996,8 @@ end;
 procedure TParameter.ImportFromXMLTag(ATag: IXMLElement);
 begin
    inherited ImportFromXMLTag(ATag);
-   chkTable.Checked := TXMLProcessor.GetBool(ATag, 'table');
-   chkReference.Checked := TXMLProcessor.GetBool(ATag, 'reference');
+   chkTable.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'table');
+   chkReference.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'reference');
    edtDefault.Text := ATag.GetAttribute('default');
 end;
 

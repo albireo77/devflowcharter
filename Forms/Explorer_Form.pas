@@ -355,17 +355,17 @@ procedure TExplorerForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
 var
    topY: integer;
 begin
-   if TXMLProcessor.GetBool(ATag, 'tree_win_show') and GInfra.CurrentLang.EnabledExplorer then
+   if TXMLProcessor.GetBoolFromAttr(ATag, 'tree_win_show') and GInfra.CurrentLang.EnabledExplorer then
    begin
       Position := poDesigned;
-      SetBounds(TXMLProcessor.GetInt(ATag, 'tree_win_x', 50),
-                TXMLProcessor.GetInt(ATag, 'tree_win_y', 50),
-                TXMLProcessor.GetInt(ATag, 'tree_win_w', 498),
-                TXMLProcessor.GetInt(ATag, 'tree_win_h', 574));
-      if TXMLProcessor.GetBool(ATag, 'tree_win_min') then
+      SetBounds(TXMLProcessor.GetIntFromAttr(ATag, 'tree_win_x', 50),
+                TXMLProcessor.GetIntFromAttr(ATag, 'tree_win_y', 50),
+                TXMLProcessor.GetIntFromAttr(ATag, 'tree_win_w', 498),
+                TXMLProcessor.GetIntFromAttr(ATag, 'tree_win_h', 574));
+      if TXMLProcessor.GetBoolFromAttr(ATag, 'tree_win_min') then
          WindowState := wsMinimized;
       Show;
-      topY := TXMLProcessor.GetInt(ATag, 'tree_top_y', -2);
+      topY := TXMLProcessor.GetIntFromAttr(ATag, 'tree_top_y', -2);
       if (topY >= 0) and (topY < tvExplorer.Items.Count) then
          tvExplorer.TopItem := tvExplorer.Items[topY];
    end;

@@ -371,7 +371,7 @@ procedure TUserDataType.ImportFromXMLTag(ATag: IXMLElement; APinControl: TContro
 begin
    inherited ImportFromXMLTag(ATag, APinControl);
    if chkAddPtrType.Enabled then
-      chkAddPtrType.Checked := TXMLProcessor.GetBool(ATag, POINTER_ATTR);
+      chkAddPtrType.Checked := TXMLProcessor.GetBoolFromAttr(ATag, POINTER_ATTR);
    rgTypeBox.ItemIndex := Ord(TRttiEnumerationType.GetValue<TUserDataTypeKind>(ATag.GetAttribute(KIND_ATTR)));
 end;
 

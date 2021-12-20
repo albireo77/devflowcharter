@@ -49,12 +49,12 @@ type
       class procedure AddCDATA(ATag: IXMLElement; const AText: string);
       class procedure ExportBlockToXML(ABlock: TBlock; ATag: IXMLElement);
       class function CountChildTags(ATag: IXMLElement; const AChildTagName: string; AWithText: boolean = false): integer;
-      class function GetBool(ATag: IXMLElement; const AttrName: string; ADefault: boolean = false): boolean; overload;
-      class function GetBool(const AValue: string; ADefault: boolean = false): boolean; overload;
+      class function GetBoolFromAttr(ATag: IXMLElement; const AttrName: string; ADefault: boolean = false): boolean;
+      class function GetIntFromAttr(ATag: IXMLElement; const AttrName: string; ADefault: integer = 0): integer;
+      class function GetBool(const AValue: string; ADefault: boolean = false): boolean;
       class function GetBoolFromChild(ATag: IXMLElement; const AChildTagName: string; ADefault: boolean = false): boolean;
       class function GetTextFromChild(ATag: IXMLElement; const AChildTagName: string; ADefault: string = ''): string;
       class function GetIntFromChild(ATag: IXMLElement; const AChildTagName: string; ADefault: integer = 0): integer;
-      class function GetInt(ATag: IXMLElement; const AttrName: string; ADefault: integer = 0): integer;
       class function ImportFlowchartFromXMLTag(ATag: IXMLElement;
                                                AParent: TWinControl;
                                                APrevBlock: TBlock;
@@ -98,13 +98,6 @@ begin
    end;
 end;
 
-class function TXMLProcessor.GetBool(ATag: IXMLElement; const AttrName: string; ADefault: boolean = false): boolean;
-begin
-   result := ADefault;
-   if ATag <> nil then
-      result := GetBool(ATag.GetAttribute(AttrName).Trim, ADefault);
-end;
-
 class function TXMLProcessor.GetBoolFromChild(ATag: IXMLElement; const AChildTagName: string; ADefault: boolean = false): boolean;
 var
    tag: IXMLElement;
@@ -146,7 +139,14 @@ begin
       result := ADefault;
 end;
 
-class function TXMLProcessor.GetInt(ATag: IXMLElement; const AttrName: string; ADefault: integer = 0): integer;
+class function TXMLProcessor.GetBoolFromAttr(ATag: IXMLElement; const AttrName: string; ADefault: boolean = false): boolean;
+begin
+   result := ADefault;
+   if ATag <> nil then
+      result := GetBool(ATag.GetAttribute(AttrName).Trim, ADefault);
+end;
+
+class function TXMLProcessor.GetIntFromAttr(ATag: IXMLElement; const AttrName: string; ADefault: integer = 0): integer;
 begin
    result := ADefault;
    if ATag <> nil then

@@ -310,19 +310,19 @@ procedure TPageControlForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
 var
    i: integer;
 begin
-   Height := TXMLProcessor.GetInt(ATag, FPrefix + 'win_h', Height);
-   if IsEnabled and TXMLProcessor.GetBool(ATag, FPrefix + 'win_show') then
+   Height := TXMLProcessor.GetIntFromAttr(ATag, FPrefix + 'win_h', Height);
+   if IsEnabled and TXMLProcessor.GetBoolFromAttr(ATag, FPrefix + 'win_show') then
    begin
       Position := poDesigned;
-      if TXMLProcessor.GetBool(ATag, FPrefix + 'win_min') then
+      if TXMLProcessor.GetBoolFromAttr(ATag, FPrefix + 'win_min') then
          WindowState := wsMinimized;
-      Left := TXMLProcessor.GetInt(ATag, FPrefix + 'win_x', Left);
-      Top := TXMLProcessor.GetInt(ATag, FPrefix + 'win_y', Top);
-      i := TXMLProcessor.GetInt(ATag, FPrefix + 'idx', -2);
+      Left := TXMLProcessor.GetIntFromAttr(ATag, FPrefix + 'win_x', Left);
+      Top := TXMLProcessor.GetIntFromAttr(ATag, FPrefix + 'win_y', Top);
+      i := TXMLProcessor.GetIntFromAttr(ATag, FPrefix + 'idx', -2);
       if (i >= 0) and (i < pgcTabs.PageCount) then
       begin
          pgcTabs.ActivePageIndex := i;
-         i := TXMLProcessor.GetInt(ATag, FPrefix + 'scroll_v');
+         i := TXMLProcessor.GetIntFromAttr(ATag, FPrefix + 'scroll_v');
          if i > 0 then
             TTabComponent(pgcTabs.ActivePage).ScrollPos := i;
       end;

@@ -513,7 +513,7 @@ begin
       elem.ImportFromXMLTag(tag);
       tag := TXMLProcessor.FindNextTag(tag);
    end;
-   FId := GProject.Register(Self, TXMLProcessor.GetInt(ATag, ID_ATTR, ID_INVALID));
+   FId := GProject.Register(Self, TXMLProcessor.GetIntFromAttr(ATag, ID_ATTR, ID_INVALID));
 end;
 
 procedure TTabComponent.ScrollElements(AValue: integer);

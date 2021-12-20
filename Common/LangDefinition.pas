@@ -638,7 +638,7 @@ begin
             if lOrigType = nil then
                lOrigType := lType;
             lType.OrigType := lOrigType;
-            lType.IsGeneric := TXMLProcessor.GetBool(tag, 'generic');
+            lType.IsGeneric := TXMLProcessor.GetBoolFromAttr(tag, 'generic');
             lType.Lib := tag.GetAttribute('library');
          end;
          tag := TXMLProcessor.FindNextTag(tag);
@@ -675,7 +675,7 @@ begin
             begin
                Name := val;
                Brackets := tag.GetAttribute('brackets');
-               BracketsCursorPos := TXMLProcessor.GetInt(tag, 'bracketsCursorPos');
+               BracketsCursorPos := TXMLProcessor.GetIntFromAttr(tag, 'bracketsCursorPos');
                Caption := tag.GetAttribute('caption').Trim;
                Hint := tag.GetAttribute('hint').Trim;
                Lib := tag.GetAttribute('library').Trim;
@@ -703,9 +703,9 @@ begin
             tag1 := TXMLProcessor.FindChildTag(tag, 'Close');
             if tag1 <> nil then
                Close := tag1.GetAttribute('Keyword');
-            AddClose := TXMLProcessor.GetBool(tag, 'AddClose');
-            NoSubFolds := TXMLProcessor.GetBool(tag, 'NoSubFolds', true);
-            WholeWords := TXMLProcessor.GetBool(tag, 'WholeWords', true);
+            AddClose := TXMLProcessor.GetBoolFromAttr(tag, 'AddClose');
+            NoSubFolds := TXMLProcessor.GetBoolFromAttr(tag, 'NoSubFolds', true);
+            WholeWords := TXMLProcessor.GetBoolFromAttr(tag, 'WholeWords', true);
             if tag.GetAttribute('Type') = 'rtChar' then
                RegionType := rtChar
             else

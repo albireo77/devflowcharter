@@ -527,7 +527,7 @@ function TMainBlock.GetFromXML(ATag: IXMLElement): TError;
 begin
    result := inherited GetFromXML(ATag);
    if ATag <> nil then
-      FZOrder := TXMLProcessor.GetInt(ATag, Z_ORDER_ATTR, -1);
+      FZOrder := TXMLProcessor.GetIntFromAttr(ATag, Z_ORDER_ATTR, -1);
 end;
 
 function TMainBlock.IsBoldDesc: boolean;

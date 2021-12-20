@@ -267,19 +267,19 @@ begin
       bt := TBlockType(at);
    with TXMLProcessor do
       result := New(bt,
-                    GetInt(AFrom, 'x'),
-                    GetInt(AFrom, 'y'),
-                    GetInt(AFrom, 'w'),
-                    GetInt(AFrom, 'h'),
-                    GetInt(AFrom, 'brx'),
-                    GetInt(AFrom, 'bry'),
-                    GetInt(AFrom, 'bh'),
-                    GetInt(AFrom, 'th'),
-                    GetInt(AFrom, 'fbrx'),
-                    GetInt(AFrom, 'fbry'),
-                    GetInt(AFrom, 'trh'),
-                    GetInt(AFrom, 'flh'),
-                    GetInt(AFrom, ID_ATTR, ID_INVALID));
+                    GetIntFromAttr(AFrom, 'x'),
+                    GetIntFromAttr(AFrom, 'y'),
+                    GetIntFromAttr(AFrom, 'w'),
+                    GetIntFromAttr(AFrom, 'h'),
+                    GetIntFromAttr(AFrom, 'brx'),
+                    GetIntFromAttr(AFrom, 'bry'),
+                    GetIntFromAttr(AFrom, 'bh'),
+                    GetIntFromAttr(AFrom, 'th'),
+                    GetIntFromAttr(AFrom, 'fbrx'),
+                    GetIntFromAttr(AFrom, 'fbry'),
+                    GetIntFromAttr(AFrom, 'trh'),
+                    GetIntFromAttr(AFrom, 'flh'),
+                    GetIntFromAttr(AFrom, ID_ATTR, ID_INVALID));
 end;
 
 procedure TNameEdit.WMKillFocus(var msg: TWMKillFocus);
