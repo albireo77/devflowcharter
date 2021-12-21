@@ -349,9 +349,9 @@ begin
    begin
       GErr_Text := i18Manager.GetString('NameTagNotFound');
       Exit(errValidate);
-   end
-   else
-      FName := val;
+   end;
+
+   FName := val;
 
    FCompilerKey := 'CompilerPath_' + FName;
    FCompilerNoMainKey := 'CompilerPathNoMain_' + FName;
