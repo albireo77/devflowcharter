@@ -269,7 +269,7 @@ const
 implementation
 
 uses
-   Vcl.Forms, System.StrUtils, System.IniFiles, XMLProcessor, Constants, Infrastructure;
+   Vcl.Forms, System.IniFiles, XMLProcessor, Constants, Infrastructure;
 
 constructor TLangDefinition.Create;
 begin
@@ -777,37 +777,37 @@ end;
 
 function TLangDefinition.GetVarTemplate: string;
 begin
-   result := ReplaceStr(FVarTemplate, INDENT_XML_CHAR, GSettings.IndentString);
+   result := TInfra.ReplaceXMLIndents(FVarTemplate);
 end;
 
 function TLangDefinition.GetConstTemplate: string;
 begin
-   result := ReplaceStr(FConstTemplate, INDENT_XML_CHAR, GSettings.IndentString);
+   result := TInfra.ReplaceXMLIndents(FConstTemplate);
 end;
 
 function TLangDefinition.GetDataTypesTemplate: string;
 begin
-   result := ReplaceStr(FDataTypesTemplate, INDENT_XML_CHAR, GSettings.IndentString);
+   result := TInfra.ReplaceXMLIndents(FDataTypesTemplate);
 end;
 
 function TLangDefinition.GetFunctionsTemplate: string;
 begin
-   result := ReplaceStr(FFunctionsTemplate, INDENT_XML_CHAR, GSettings.IndentString);
+   result := TInfra.ReplaceXMLIndents(FFunctionsTemplate);
 end;
 
 function TLangDefinition.GetFileContentsTemplate: string;
 begin
-   result := ReplaceStr(FFileContentsTemplate, INDENT_XML_CHAR, GSettings.IndentString);
+   result := TInfra.ReplaceXMLIndents(FFileContentsTemplate);
 end;
 
 function TLangDefinition.GetLibTemplate: string;
 begin
-   result := ReplaceStr(FLibTemplate, INDENT_XML_CHAR, GSettings.IndentString);
+   result := TInfra.ReplaceXMLIndents(FLibTemplate);
 end;
 
 function TLangDefinition.GetProgramHeaderTemplate: string;
 begin
-   result := ReplaceStr(FProgramHeaderTemplate, INDENT_XML_CHAR, GSettings.IndentString);
+   result := TInfra.ReplaceXMLIndents(FProgramHeaderTemplate);
 end;
 
 procedure TLangDefinition.InitBlockTemplates;

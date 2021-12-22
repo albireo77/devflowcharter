@@ -2806,7 +2806,6 @@ end;
 
 procedure TBlock.GenerateTemplateSection(ALines: TStringList; ATemplate: TStringList; const ALangId: string; ADeep: integer);
 var
-   line: string;
    i: integer;
    obj: TObject;
 begin
@@ -2815,13 +2814,10 @@ begin
       ALines.Capacity := i;
    for i := 0 to ATemplate.Count-1 do
    begin
-      line := GSettings.IndentString(ADeep) + ATemplate[i];
-      line := ReplaceStr(line, INDENT_XML_CHAR, GSettings.IndentString);
-      line := TInfra.StripInstrEnd(line);
       obj := ATemplate.Objects[i];
       if obj = nil then
          obj := Self;
-      ALines.AddObject(line, obj);
+      ALines.AddObject(TInfra.StripInstrEnd(TInfra.ReplaceXMLIndents(GSettings.IndentString(ADeep) + ATemplate[i])), obj);
    end;
 end;
 
@@ -2843,7 +2839,6 @@ procedure TGroupBlock.GenerateTemplateSection(ALines: TStringList; ATemplate: TS
 
 var
    i, b: integer;
-   line: string;
    obj: TObject;
 begin
    for i := 0 to ATemplate.Count-1 do
@@ -2857,12 +2852,10 @@ begin
       end
       else
       begin
-         line := GSettings.IndentString(ADeep) + ATemplate[i];
-         line := ReplaceStr(line, INDENT_XML_CHAR, GSettings.IndentString);
          obj := ATemplate.Objects[i];
          if obj = nil then
             obj := Self;
-         ALines.AddObject(line, obj);
+         ALines.AddObject(TInfra.ReplaceXMLIndents(GSettings.IndentString(ADeep) + ATemplate[i]), obj);
       end;
    end;
 end;

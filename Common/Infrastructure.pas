@@ -116,6 +116,7 @@ type
          class function GetPageFromTabIndex(APageControl: TPageControl; ATabIndex: integer): TTabSheet;
          class function IndexOf<T>(const AValue: T; const AArray: TArray<T>): integer;
          class function Scaled(on96: integer): integer;
+         class function ReplaceXMLIndents(const ALine: string): string;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetNativeFunction(const AName: string): PNativeFunction;
          function GetLangDefinition(const AName: string): TLangDefinition;
@@ -1307,6 +1308,11 @@ end;
 class function TInfra.Scaled(on96: integer): integer;
 begin
    result := MulDiv(on96, FPPI, 96);
+end;
+
+class function TInfra.ReplaceXMLIndents(const ALine: string): string;
+begin
+   result := ReplaceStr(ALine, INDENT_XML_CHAR, GSettings.IndentString);
 end;
 
 function TInfra.ValidateConstId(const AId: string): integer;
