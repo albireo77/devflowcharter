@@ -2817,7 +2817,7 @@ begin
       obj := ATemplate.Objects[i];
       if obj = nil then
          obj := Self;
-      ALines.AddObject(TInfra.StripInstrEnd(TInfra.ReplaceXMLIndents(GSettings.IndentString(ADeep) + ATemplate[i])), obj);
+      ALines.AddObject(GSettings.IndentString(ADeep) + TInfra.StripInstrEnd(TInfra.ReplaceXMLIndents(ATemplate[i])), obj);
    end;
 end;
 
@@ -2855,7 +2855,7 @@ begin
          obj := ATemplate.Objects[i];
          if obj = nil then
             obj := Self;
-         ALines.AddObject(TInfra.ReplaceXMLIndents(GSettings.IndentString(ADeep) + ATemplate[i]), obj);
+         ALines.AddObject(GSettings.IndentString(ADeep) + TInfra.ReplaceXMLIndents(ATemplate[i]), obj);
       end;
    end;
 end;
