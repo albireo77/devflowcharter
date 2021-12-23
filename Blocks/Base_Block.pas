@@ -2840,22 +2840,24 @@ procedure TGroupBlock.GenerateTemplateSection(ALines: TStringList; ATemplate: TS
 var
    i, b: integer;
    obj: TObject;
+   templateLine: string;
 begin
    for i := 0 to ATemplate.Count-1 do
    begin
-      b := ExtractBranchIndex(ATemplate[i]);
+      templateLine := ATemplate[i];
+      b := ExtractBranchIndex(templateLine);
       if b > 0 then
       begin
          if (ALines.Count > 0) and (ALines.Objects[ALines.Count-1] = nil) then
             ALines.Objects[ALines.Count-1] := FBranchList[b];
-         GenerateNestedCode(ALines, b, ADeep + CountLeadIndentChars(ATemplate[i]), ALangId);
+         GenerateNestedCode(ALines, b, ADeep + CountLeadIndentChars(templateLine), ALangId);
       end
       else
       begin
          obj := ATemplate.Objects[i];
          if obj = nil then
             obj := Self;
-         ALines.AddObject(GSettings.IndentString(ADeep) + TInfra.ReplaceXMLIndents(ATemplate[i]), obj);
+         ALines.AddObject(GSettings.IndentString(ADeep) + TInfra.ReplaceXMLIndents(templateLine), obj);
       end;
    end;
 end;

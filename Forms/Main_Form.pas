@@ -280,25 +280,33 @@ begin
 end;
 
 procedure TMainForm.KeyDown(var Key: Word; Shift: TShiftState);
+var
+   selectedBlock: TBlock;
+
+   procedure ExecuteClick(AMenuItem: TMenuItem);
+   begin
+      pmPages.PopupComponent := selectedBlock;
+      AMenuItem.Click;
+   end;
+
 begin
    if GProject = nil then
       Exit;
    if Key in TO_MAIN_FORM_KEYS then
    begin
-      var selectedBlock := GProject.FindSelectedBlock;
+      selectedBlock := GProject.FindSelectedBlock;
       if selectedBlock <> nil then
       begin
-         pmPages.PopupComponent := selectedBlock;
          case Key of
-            vkDelete: miRemove.Click;
+            vkDelete: ExecuteClick(miRemove);
             vkF12:
             begin
                if selectedBlock is TGroupBlock then
-                  miFoldUnfold.Click;
+                  ExecuteClick(miFoldUnfold);
             end;
             vkF11:
             begin
-               miFrame.Click;
+               ExecuteClick(miFrame);
                var p := selectedBlock.ScreenToClient(Mouse.CursorPos);
                selectedBlock.OnMouseMove(selectedBlock, Shift, p.X, p.Y);
             end;
@@ -308,7 +316,7 @@ begin
                begin
                   var groupBlock := TGroupBlock(selectedBlock);
                   if groupBlock.Expanded and groupBlock.HasFoldedBlocks then
-                     miUnfoldAll.Click;
+                     ExecuteClick(miUnfoldAll);
                end;
             end;
          end;
