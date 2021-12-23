@@ -53,7 +53,7 @@ const   // Global constants
         SPACE_CHAR      = #32;
         INDENT_XML_CHAR = TAB_CHAR;
 
-        TO_MAIN_FORM_KEYS = [vkDelete, vkF11, vkF12];
+        TO_MAIN_FORM_KEYS = [vkDelete, vkF10, vkF11, vkF12];
 
         PAGE_CAPTION_ATTR = 'tab';
         COMMENT_ATTR      = 'comment';

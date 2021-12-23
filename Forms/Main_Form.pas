@@ -298,6 +298,15 @@ begin
                var p := selectedBlock.ScreenToClient(Mouse.CursorPos);
                selectedBlock.OnMouseMove(selectedBlock, Shift, p.X, p.Y);
             end;
+            vkF10:
+            begin
+               if selectedBlock is TGroupBlock then
+               begin
+                  var groupBlock := TGroupBlock(selectedBlock);
+                  if groupBlock.Expanded and groupBlock.HasFoldedBlocks then
+                     miUnfoldAll.Click;
+               end;
+            end;
          end;
          Key := 0;
       end;
