@@ -291,7 +291,11 @@ begin
          pmPages.PopupComponent := selectedBlock;
          case Key of
             vkDelete: miRemove.Click;
-            vkF12: miFoldUnfold.Click;
+            vkF12:
+            begin
+               if selectedBlock is TGroupBlock then
+                  miFoldUnfold.Click;
+            end;
             vkF11:
             begin
                miFrame.Click;
