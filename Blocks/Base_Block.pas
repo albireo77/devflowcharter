@@ -2823,7 +2823,7 @@ end;
 
 procedure TGroupBlock.GenerateTemplateSection(ALines: TStringList; ATemplate: TStringList; const ALangId: string; ADeep: integer);
 
-   function CountLeadIndentChars(const AString: string): integer;
+   function CountLeadXMLIndents(const AString: string): integer;
    var
       i: integer;
    begin
@@ -2850,7 +2850,7 @@ begin
       begin
          if (ALines.Count > 0) and (ALines.Objects[ALines.Count-1] = nil) then
             ALines.Objects[ALines.Count-1] := FBranchList[b];
-         GenerateNestedCode(ALines, b, ADeep + CountLeadIndentChars(templateLine), ALangId);
+         GenerateNestedCode(ALines, b, ADeep + CountLeadXMLIndents(templateLine), ALangId);
       end
       else
       begin
