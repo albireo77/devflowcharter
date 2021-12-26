@@ -2825,12 +2825,12 @@ procedure TGroupBlock.GenerateTemplateSection(ALines: TStringList; ATemplate: TS
 
    function CountLeadXMLIndents(const AString: string): integer;
    var
-      i: integer;
+      a: integer;
    begin
       result := 0;
-      for i := 1 to AString.Length do
+      for a := 1 to AString.Length do
       begin
-         if AString[i] = INDENT_XML_CHAR then
+         if AString[a] = INDENT_XML_CHAR then
             result := result + 1
          else
             break;
