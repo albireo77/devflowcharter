@@ -2770,15 +2770,13 @@ begin
 end;
 
 function TGroupBlock.ExtractBranchIndex(const AStr: string): integer;
-var
-   i, b: integer;
-   val: string;
 begin
    result := Pos('%b', AStr);
    if result <> 0 then
    begin
-      val := '';
-      for i := result+2 to AStr.Length do
+      var val := '';
+      var b := 0;
+      for var i := result+2 to AStr.Length do
       begin
          if TryStrToInt(AStr[i], b) then
             val := val + AStr[i]
@@ -2792,10 +2790,8 @@ begin
 end;
 
 procedure TBlock.GenerateTemplateSection(ALines: TStringList; const ATemplate: string; const ALangId: string; ADeep: integer);
-var
-   lines: TStringList;
 begin
-   lines := TStringList.Create;
+   var lines := TStringList.Create;
    try
       lines.Text := ATemplate;
       GenerateTemplateSection(ALines, lines, ALangId, ADeep);
@@ -2805,16 +2801,13 @@ begin
 end;
 
 procedure TBlock.GenerateTemplateSection(ALines: TStringList; ATemplate: TStringList; const ALangId: string; ADeep: integer);
-var
-   i: integer;
-   obj: TObject;
 begin
-   i := ALines.Count + ATemplate.Count;
-   if ALines.Capacity < i then
-      ALines.Capacity := i;
-   for i := 0 to ATemplate.Count-1 do
+   var c := ALines.Count + ATemplate.Count;
+   if ALines.Capacity < c then
+      ALines.Capacity := c;
+   for var i := 0 to ATemplate.Count-1 do
    begin
-      obj := ATemplate.Objects[i];
+      var obj := ATemplate.Objects[i];
       if obj = nil then
          obj := Self;
       ALines.AddObject(GSettings.IndentString(ADeep) + TInfra.StripInstrEnd(TInfra.ReplaceXMLIndents(ATemplate[i])), obj);
@@ -2824,11 +2817,9 @@ end;
 procedure TGroupBlock.GenerateTemplateSection(ALines: TStringList; ATemplate: TStringList; const ALangId: string; ADeep: integer);
 
    function CountLeadXMLIndents(const AString: string): integer;
-   var
-      a: integer;
    begin
       result := 0;
-      for a := 1 to AString.Length do
+      for var a := 1 to AString.Length do
       begin
          if AString[a] = INDENT_XML_CHAR then
             result := result + 1
@@ -2837,15 +2828,11 @@ procedure TGroupBlock.GenerateTemplateSection(ALines: TStringList; ATemplate: TS
       end;
    end;
 
-var
-   i, b: integer;
-   obj: TObject;
-   templateLine: string;
 begin
-   for i := 0 to ATemplate.Count-1 do
+   for var i := 0 to ATemplate.Count-1 do
    begin
-      templateLine := ATemplate[i];
-      b := ExtractBranchIndex(templateLine);
+      var templateLine := ATemplate[i];
+      var b := ExtractBranchIndex(templateLine);
       if b > 0 then
       begin
          if (ALines.Count > 0) and (ALines.Objects[ALines.Count-1] = nil) then
@@ -2854,7 +2841,7 @@ begin
       end
       else
       begin
-         obj := ATemplate.Objects[i];
+         var obj := ATemplate.Objects[i];
          if obj = nil then
             obj := Self;
          ALines.AddObject(GSettings.IndentString(ADeep) + TInfra.ReplaceXMLIndents(templateLine), obj);
@@ -2863,26 +2850,22 @@ begin
 end;
 
 function TBlock.Next: TBlock;
-var
-   idx: integer;
 begin
    result := nil;
    if FParentBranch <> nil then
    begin
-      idx := FParentBranch.IndexOf(Self);
+      var idx := FParentBranch.IndexOf(Self);
       if (idx <> -1) and (FParentBranch.Last <> Self) then
          result := FParentBranch.Items[idx+1];
    end;
 end;
 
 function TBlock.Prev: TBlock;
-var
-   idx: integer;
 begin
    result := nil;
    if FParentBranch <> nil then
    begin
-      idx := FParentBranch.IndexOf(Self);
+      var idx := FParentBranch.IndexOf(Self);
       if idx > 0 then
          result := FParentBranch.Items[idx-1];
    end;
@@ -2898,11 +2881,9 @@ begin
 end;
 
 destructor TBranch.Destroy;
-var
-   i: integer;
 begin
    Statement.Free;
-   for i := 0 to Count-1 do
+   for var i := 0 to Count-1 do
       Items[i].Free;
    GProject.UnRegister(Self);
    inherited Destroy;
@@ -2914,13 +2895,11 @@ begin
 end;
 
 function TBranch.GetMostRight: integer;
-var
-   i, br: integer;
 begin
    result := Hook.X;
-   for i := 0 to Count-1 do
+   for var i := 0 to Count-1 do
    begin
-      br := Items[i].BoundsRect.Right;
+      var br := Items[i].BoundsRect.Right;
       if br > result then
          result := br;
    end;
@@ -2932,20 +2911,16 @@ begin
 end;
 
 function TBranch.GetHeight: integer;
-var
-   i: integer;
 begin
    result := 0;
-   for i := 0 to Count-1 do
+   for var i := 0 to Count-1 do
       Inc(result, Items[i].Height);
 end;
 
 function TBranch.FindInstanceOf(AClass: TClass): integer;
-var
-   i: integer;
 begin
    result := -1;
-   for i := 0 to Count-1 do
+   for var i := 0 to Count-1 do
    begin
       if Items[i].ClassType = AClass then
       begin
