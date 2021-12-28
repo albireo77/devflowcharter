@@ -585,11 +585,8 @@ begin
 end;
 
 procedure TEditorForm.ReplaceDialogReplace(Sender: TObject);
-var
-   i: integer;
-   txt: string;
 begin
-   txt := '';
+   var txt := '';
    Clipboard.Open;
    try
       if Clipboard.HasFormat(CF_TEXT) then
@@ -600,7 +597,7 @@ begin
          memCodeEditor.SelStart := 0;
          while True do
          begin
-            i := TInfra.FindText(ReplaceDialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart+1, frMatchCase in ReplaceDialog.Options);
+            var i := TInfra.FindText(ReplaceDialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart+1, frMatchCase in ReplaceDialog.Options);
             if i = 0 then
                Exit;
             memCodeEditor.SelStart := i - 1;
@@ -833,12 +830,10 @@ begin
 end;
 
 procedure TEditorForm.memCodeEditorStatusChange(Sender: TObject; Changes: TSynStatusChanges);
-var
-   p: TBufferCoord;
 begin
    if Changes * [scAll, scCaretX, scCaretY] <> [] then
    begin
-      p := memCodeEditor.CaretXY;
+      var p := memCodeEditor.CaretXY;
       stbEditorBar.Panels[0].Text := i18Manager.GetFormattedString('StatusBarInfo', [p.Line, p.Char]);
    end;
    if scModified in Changes then
@@ -898,12 +893,10 @@ begin
 end;
 
 procedure TEditorForm.memCodeEditorDblClick(Sender: TObject);
-var
-   hnd: THandle;
 begin
    if memCodeEditor.SelAvail then
    begin
-      hnd := FindDialog.Handle;
+      var hnd := FindDialog.Handle;
       if hnd = 0 then
          hnd := ReplaceDialog.Handle;
       hnd := FindWindowEx(hnd, 0, 'Edit', nil);
@@ -1233,13 +1226,11 @@ begin
 end;
 
 procedure TEditorForm.SetCaretPos(const ALine: TChangeLine);
-var
-   c, line: integer;
 begin
    if ALine.CodeRange.Lines = memCodeEditor.Lines then
    begin
-      c := ALine.Col + ALine.EditCaretXY.Char;
-      line := ALine.Row + ALIne.EditCaretXY.Line + 1;
+      var c := ALine.Col + ALine.EditCaretXY.Char;
+      var line := ALine.Row + ALIne.EditCaretXY.Line + 1;
       if (line > ALine.CodeRange.FirstRow) and (line <= ALine.CodeRange.LastRow+1) and (line <= ALine.CodeRange.Lines.Count) then
       begin
          memCodeEditor.CaretXY := BufferCoord(c, line);
@@ -1249,12 +1240,10 @@ begin
 end;
 
 procedure TEditorForm.UnSelectCodeRange(AObject: TObject);
-var
-   codeRange: TCodeRange;
 begin
    if memCodeEditor.SelAvail and memCodeEditor.CanFocus then
    begin
-      codeRange := SelectCodeRange(AObject, false);
+      var codeRange := SelectCodeRange(AObject, false);
       if (codeRange.FirstRow = memCodeEditor.CharIndexToRowCol(memCodeEditor.SelStart).Line-1) and
          (codeRange.LastRow = memCodeEditor.CharIndexToRowCol(memCodeEditor.SelEnd).Line-1) then
             memCodeEditor.SelStart := memCodeEditor.SelEnd;
@@ -1263,10 +1252,8 @@ end;
 
 {$IFDEF USE_CODEFOLDING}
 procedure TEditorForm.RemoveFoldRange(var AFoldRange: TSynEditFoldRange);
-var
-   idx: integer;
 begin
-   idx := memCodeEditor.AllFoldRanges.AllRanges.IndexOf(AFoldRange);
+   var idx := memCodeEditor.AllFoldRanges.AllRanges.IndexOf(AFoldRange);
    if idx <> -1 then
       memCodeEditor.AllFoldRanges.AllRanges.Delete(idx);
    AFoldRange.Free;
@@ -1274,16 +1261,13 @@ begin
 end;
 
 function TEditorForm.FindFoldRangesInCodeRange(const ACodeRange: TCodeRange; ACount: integer): TSynEditFoldRanges;
-var
-   i: integer;
-   foldRange: TSynEditFoldRange;
 begin
    result := TSynEditFoldRanges.Create;
    if ACodeRange.Lines = memCodeEditor.Lines then
    begin
-      for i := ACodeRange.FirstRow to ACodeRange.FirstRow+ACount do
+      for var i := ACodeRange.FirstRow to ACodeRange.FirstRow+ACount do
       begin
-         foldRange := memCodeEditor.CollapsableFoldRangeForLine(i+1);
+         var foldRange := memCodeEditor.CollapsableFoldRangeForLine(i+1);
          if (foldRange <> nil) and (result.Ranges.IndexOf(foldRange) = -1) then
             result.AddF(foldRange);
       end;
@@ -1334,15 +1318,12 @@ begin
 end;
 
 function TEditorForm.GetIndentLevel(idx: integer; ALines: TStrings): integer;
-var
-   line: string;
-   i: integer;
 begin
    result := 0;
    if (idx >= 0) and (idx < ALines.Count) then
    begin
-      line := ALines[idx];
-      for i := 1 to line.Length do
+      var line := ALines[idx];
+      for var i := 1 to line.Length do
       begin
          if line[i] = GSettings.IndentChar then
             result := i
@@ -1641,7 +1622,7 @@ begin
             selEnd := memCodeEditor.CharIndexToRowCol(memCodeEditor.SelStart + memCodeEditor.SelLength);
             selEnd.Line := selEnd.Line - 1;
             sLine := memCodeEditor.Lines[selStart.Line];
-            focusInfo.SelStart := selStart.Char - sLine.Length + sLine.TrimLeft.Length;
+            focusInfo.SelStart := Max(selStart.Char - sLine.Length + sLine.TrimLeft.Length, 1);
             if selStart.Line <> selEnd.Line then
             begin
                selText := '';
@@ -1649,7 +1630,7 @@ begin
                begin
                   sline := memCodeEditor.Lines[i];
                   if i = selStart.Line then
-                     selText := RightStr(sline, sline.Length - selStart.Char + 1) + #10
+                     selText := RightStr(sline, sline.Length - selStart.Char + 1).TrimLeft + #10
                   else if i = selEnd.Line then
                   begin
                      sline := LeftStr(sline, selEnd.Char-1);
