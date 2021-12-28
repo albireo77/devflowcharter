@@ -1511,14 +1511,17 @@ end;
 
 {$IFDEF USE_CODEFOLDING}
 procedure TEditorForm.ReloadFoldRegions;
-var
-   i: integer;
 begin
    memCodeEditor.CodeFolding.FoldRegions.Clear;
-   for i := 0 to High(GInfra.CurrentLang.FoldRegions) do
+   for var i := 0 to High(GInfra.CurrentLang.FoldRegions) do
    begin
-      with GInfra.CurrentLang.FoldRegions[i] do
-         memCodeEditor.CodeFolding.FoldRegions.Add(RegionType, AddClose, NoSubFolds, WholeWords, PChar(Open), PChar(Close));
+      var foldRegion := GInfra.CurrentLang.FoldRegions[i];
+      memCodeEditor.CodeFolding.FoldRegions.Add(foldRegion.RegionType,
+                                                foldRegion.AddClose,
+                                                foldRegion.NoSubFolds,
+                                                foldRegion.WholeWords,
+                                                PChar(foldRegion.Open),
+                                                PChar(foldRegion.Close));
    end;
    memCodeEditor.InitCodeFolding;
 end;
