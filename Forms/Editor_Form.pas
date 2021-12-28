@@ -1630,14 +1630,10 @@ begin
                begin
                   sline := memCodeEditor.Lines[i];
                   if i = selStart.Line then
-                     selText := RightStr(sline, sline.Length - selStart.Char + 1).TrimLeft + #10
+                     sLine := RightStr(sline, sline.Length - selStart.Char + 1)
                   else if i = selEnd.Line then
-                  begin
-                     sline := LeftStr(sline, selEnd.Char-1);
-                     selText := selText + sline.TrimLeft;
-                  end
-                  else
-                     selText := selText + sline.TrimLeft + #10;
+                     sline := LeftStr(sline, selEnd.Char - 1);
+                  selText := selText + sLine.TrimLeft + IfThen(i <> selEnd.Line, #10);
                end;
                focusInfo.SelText := selText;
             end
