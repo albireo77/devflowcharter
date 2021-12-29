@@ -84,7 +84,9 @@ begin
          begin
             edit.SelStart := FFocusInfo.SelStart;
             edit.SelLength := Length(FFocusInfo.SelText);
-         end;
+         end
+         else
+            edit.SelLength := 0;
          if edit.CanFocus then
             edit.SetFocus;
       end

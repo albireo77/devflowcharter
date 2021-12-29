@@ -1618,7 +1618,7 @@ begin
       displ := memCodeEditor.PixelsToRowColumn(point.X, point.Y);
       if displ.Row > 0 then
       begin
-         if memCodeEditor.SelAvail then
+         if not memCodeEditor.SelText.Trim.IsEmpty then
          begin
             selStart := memCodeEditor.CharIndexToRowCol(memCodeEditor.SelStart);
             selStart.Line := selStart.Line - 1;
