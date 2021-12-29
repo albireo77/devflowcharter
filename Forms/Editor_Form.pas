@@ -1622,7 +1622,7 @@ begin
          selStart.Line := selStart.Line - 1;
          sLine := memCodeEditor.Lines[selStart.Line];
          focusInfo.SelStart := Max(selStart.Char - sLine.Length + sLine.TrimLeft.Length, 1);
-         if not memCodeEditor.SelText.Trim.IsEmpty then
+         if memCodeEditor.SelAvail then
          begin
             selEnd := memCodeEditor.CharIndexToRowCol(memCodeEditor.SelStart + memCodeEditor.SelLength);
             selEnd.Line := selEnd.Line - 1;
@@ -1641,7 +1641,7 @@ begin
                focusInfo.SelText := selText;
             end
             else
-               focusInfo.SelText := MidStr(sLine.TrimLeft, focusInfo.SelStart, memCodeEditor.SelLength);
+               focusInfo.SelText := MidStr(sLine, selStart.Char, memCodeEditor.SelLength).TrimLeft;
             focusInfo.Line := selStart.Line;
          end
          else
