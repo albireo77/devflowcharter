@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
 
@@ -81,12 +81,8 @@ begin
       if FFocusInfo.ActiveControl = nil then
       begin
          if FFocusInfo.SelStart >= 0 then
-         begin
             edit.SelStart := FFocusInfo.SelStart;
-            edit.SelLength := Length(FFocusInfo.SelText);
-         end
-         else
-            edit.SelLength := 0;
+         edit.SelLength := Length(FFocusInfo.SelText);
          if edit.CanFocus then
             edit.SetFocus;
       end

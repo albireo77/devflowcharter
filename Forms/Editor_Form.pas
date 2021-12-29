@@ -1618,14 +1618,14 @@ begin
       displ := memCodeEditor.PixelsToRowColumn(point.X, point.Y);
       if displ.Row > 0 then
       begin
+         selStart := memCodeEditor.CharIndexToRowCol(memCodeEditor.SelStart);
+         selStart.Line := selStart.Line - 1;
+         sLine := memCodeEditor.Lines[selStart.Line];
+         focusInfo.SelStart := Max(selStart.Char - sLine.Length + sLine.TrimLeft.Length, 1);
          if not memCodeEditor.SelText.Trim.IsEmpty then
          begin
-            selStart := memCodeEditor.CharIndexToRowCol(memCodeEditor.SelStart);
-            selStart.Line := selStart.Line - 1;
             selEnd := memCodeEditor.CharIndexToRowCol(memCodeEditor.SelStart + memCodeEditor.SelLength);
             selEnd.Line := selEnd.Line - 1;
-            sLine := memCodeEditor.Lines[selStart.Line];
-            focusInfo.SelStart := Max(selStart.Char - sLine.Length + sLine.TrimLeft.Length, 1);
             if selStart.Line <> selEnd.Line then
             begin
                selText := '';
