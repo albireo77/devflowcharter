@@ -1,3 +1,8 @@
+9.6 [30-12-2021]
+- F10 key can now be used to unfold all blocks in a selected block
+- Code Editor: various fixes in "Find in Project" (adding hint that it's working with text selection; preserving cursor position)
+- minor optimizations
+
 9.5 [06-11-2021]
 - Flowchart: prevent propagating Delete key press to text boxes when used to remove block
 - F11 key can now be used to enable/disable resizing frame
