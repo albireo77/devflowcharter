@@ -1006,10 +1006,8 @@ begin
 end;
 
 procedure TVarDeclareList.ExportItemToXMLTag(ATag: IXMLElement; idx: integer);
-var
-   tag: IXMLElement;
 begin
-   tag := ATag.OwnerDocument.CreateElement(VAR_TAG);
+   var tag := ATag.OwnerDocument.CreateElement(VAR_TAG);
    ATag.AppendChild(tag);
    tag.SetAttribute(TYPE_ATTR, sgList.Cells[VAR_TYPE_COL, idx]);
    tag.SetAttribute(SIZE_ATTR, sgList.Cells[VAR_SIZE_COL, idx]);
@@ -1018,10 +1016,8 @@ begin
 end;
 
 procedure TConstDeclareList.ExportItemToXMLTag(ATag: IXMLElement; idx: integer);
-var
-   tag: IXMLElement;
 begin
-   tag := ATag.OwnerDocument.CreateElement(CONST_TAG);
+   var tag := ATag.OwnerDocument.CreateElement(CONST_TAG);
    ATag.AppendChild(tag);
    tag.SetAttribute(VALUE_ATTR, sgList.Cells[CONST_VALUE_COL, idx]);
    inherited ExportItemToXMLTag(tag, idx);
@@ -1045,10 +1041,8 @@ begin
 end;
 
 function TVarDeclareList.GetExternModifier(idx: integer): string;
-var
-   lang: TLangDefinition;
 begin
-   lang := GInfra.CurrentLang;
+   var lang := GInfra.CurrentLang;
    case GetExternalState(idx) of
       cbChecked:   result := lang.VarExtern;
       cbUnchecked: result := lang.VarNotExtern;
@@ -1057,10 +1051,8 @@ begin
 end;
 
 function TConstDeclareList.GetExternModifier(idx: integer): string;
-var
-   lang: TLangDefinition;
 begin
-   lang := GInfra.CurrentLang;
+   var lang := GInfra.CurrentLang;
    case GetExternalState(idx) of
       cbChecked:   result := lang.ConstExtern;
       cbUnchecked: result := lang.ConstNotExtern;
@@ -1080,23 +1072,23 @@ begin
       result.X := sgList.ClientWidth;
    if result.Y = 0 then
       result.Y := ARow * (sgList.DefaultRowHeight + sgList.GridLineWidth);
-   result.X := result.X + sgList.Left + (sgList.ColWidths[FExternalCol] div 2) - TInfra.Scaled(5);
-   result.Y := result.Y + sgList.Top + (sgList.DefaultRowHeight div 2) - TInfra.Scaled(5);
+   var s5 := TInfra.Scaled(5);
+   result.X := result.X + sgList.Left + (sgList.ColWidths[FExternalCol] div 2) - s5;
+   result.Y := result.Y + sgList.Top + (sgList.DefaultRowHeight div 2) - s5;
 end;
 
 function TDeclareList.CreateExternalCheckBox(ARow: integer): TCheckBox;
-var
-   pnt: TPoint;
 begin
    result := nil;
    if FExternalCol <> INVALID_COL then
    begin
-      pnt := GetExternalCheckBoxPoint(ARow);
+      var s12 := TInfra.Scaled(12);
+      var pnt := GetExternalCheckBoxPoint(ARow);
       result := TCheckBox.Create(sgList.Parent);
       result.Parent := sgList.Parent;
       sgList.Objects[FExternalCol, ARow] := result;
       result.AllowGrayed := GInfra.CurrentLang.AllowTransExternVarConst;
-      result.SetBounds(pnt.X, pnt.Y, TInfra.Scaled(12), TInfra.Scaled(12));
+      result.SetBounds(pnt.X, pnt.Y, s12, s12);
       result.Visible := IsRowVisible(ARow) and not IsControlTooRight(result);
       result.OnClick := OnClickChBox;
       result.Repaint;
@@ -1118,28 +1110,22 @@ begin
 end;
 
 function TStringGridEx.GetMinWidth: integer;
-var
-   i: integer;
 begin
    result := Left + 3;
-   for i := 0 to ColCount-1 do
+   for var i := 0 to ColCount-1 do
       result := result + ColWidths[i] + GridLineWidth;
 end;
 
 procedure TDeclareList.RefreshCheckBoxes;
-var
-   i: integer;
-   winControl: TWinControl;
-   obj: TObject;
 begin
    if FExternalCol <> INVALID_COL then
    begin
-      for i := 1 to sgList.RowCount-2 do
+      for var i := 1 to sgList.RowCount-2 do
       begin
-         obj := sgList.Objects[FExternalCol, i];
+         var obj := sgList.Objects[FExternalCol, i];
          if obj is TWinControl then
          begin
-            winControl := TWinControl(obj);
+            var winControl := TWinControl(obj);
             TInfra.MoveWin(winControl, GetExternalCheckBoxPoint(i));
             winControl.Visible := IsRowVisible(i) and not IsControlTooRight(winControl);
          end;
