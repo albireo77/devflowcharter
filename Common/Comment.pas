@@ -40,8 +40,8 @@ type
          procedure OnMouseDownComment(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure OnMouseMoveComment(Sender: TObject; Shift: TShiftState; X, Y: Integer);
          procedure OnDblClickComment(Sender: TObject);
-         procedure ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
-         procedure MyOnMouseLeave(Sender: TObject);
+         procedure OnContextPopupComment(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
+         procedure OnMouseLeaveComment(Sender: TObject);
          procedure NCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
          procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
          procedure WMExitSizeMove(var Msg: TWMMove); message WM_EXITSIZEMOVE;
@@ -102,8 +102,8 @@ begin
    OnMouseMove    := OnMouseMoveComment;
    OnDblClick     := OnDblClickComment;
    OnChange       := OnChangeComment;
-   OnContextPopup := ContextPopup;
-   OnMouseLeave   := MyOnMouseLeave;
+   OnContextPopup := OnContextPopupComment;
+   OnMouseLeave   := OnMouseLeaveComment;
 end;
 
 function TComment.Clone(APage: TBlockTabSheet; const ATopLeft: TPoint): TComment;
@@ -136,7 +136,7 @@ begin
    result := Self;
 end;
 
-procedure TComment.MyOnMouseLeave(Sender: TObject);
+procedure TComment.OnMouseLeaveComment(Sender: TObject);
 begin
    if FMouseLeave then
    begin
@@ -246,10 +246,8 @@ begin
 end;
 
 procedure TComment.OnMouseMoveComment(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-var
-   pnt: TPoint;
 begin
-   pnt := Point(X, Y);
+   var pnt := Point(X, Y);
    if Rect(Width-5, 0, Width, Height-5).Contains(pnt) then
       Cursor := crSizeWE
    else if Rect(0, Height-5, Width-5, Height).Contains(pnt) then
@@ -283,19 +281,15 @@ begin
    UpdateScrolls;
 end;
 
-procedure TComment.ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
-var
-   pnt: TPoint;
+procedure TComment.OnContextPopupComment(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
 begin
    Handled := true;
-   pnt := ClientToScreen(MousePos);
+   var pnt := ClientToScreen(MousePos);
    PopupMenu.PopupComponent := Self;
    PopupMenu.Popup(pnt.X, pnt.Y);
 end;
 
 procedure TComment.ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl);
-var
-   v: integer;
 begin
    if ATag <> nil then
    begin
@@ -303,7 +297,7 @@ begin
                 TXMLProcessor.GetIntFromAttr(ATag, 'y'),
                 TXMLProcessor.GetIntFromAttr(ATag, 'w'),
                 TXMLProcessor.GetIntFromAttr(ATag, 'h'));
-      v := TXMLProcessor.GetIntFromAttr(ATag, FONT_SIZE_ATTR);
+      var v := TXMLProcessor.GetIntFromAttr(ATag, FONT_SIZE_ATTR);
       if v in FLOWCHART_VALID_FONT_SIZES then
          Font.Size := v;
       FZOrder := TXMLProcessor.GetIntFromAttr(ATag, Z_ORDER_ATTR, -1);
@@ -325,12 +319,10 @@ begin
 end;
 
 procedure TComment.ExportToXMLTag2(ATag: IXMLElement);
-var
-   tag: IXMLElement;
 begin
    if ATag <> nil then
    begin
-      tag := ATag.OwnerDocument.CreateElement(COMMENT_ATTR);
+      var tag := ATag.OwnerDocument.CreateElement(COMMENT_ATTR);
       TXMLProcessor.AddCDATA(tag, Text);
       tag.SetAttribute('x', Left.ToString);
       tag.SetAttribute('y', Top.ToString);
