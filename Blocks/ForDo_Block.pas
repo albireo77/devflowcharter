@@ -155,12 +155,10 @@ begin
 end;
 
 procedure TForDoBlock.CloneFrom(ABlock: TBlock);
-var
-   forBlock: TForDoBlock;
 begin
    if ABlock is TForDoBlock then
    begin
-      forBlock := TForDoBlock(ABlock);
+      var forBlock := TForDoBlock(ABlock);
       edtStart.Text := forBlock.edtStart.Text;
       edtStop.Text := forBlock.edtStop.Text;
       edtVar.Text := forBlock.edtVar.Text;
@@ -183,10 +181,8 @@ begin
 end;
 
 procedure TForDoBlock.OnChangeExtend(AStatement: TStatement);
-var
-   w: integer;
 begin
-   w := Max(TInfra.GetAutoWidth(AStatement), 30);
+   var w := Max(TInfra.GetAutoWidth(AStatement), 30);
    if w <> AStatement.Width then
    begin
       AStatement.Width := w;
@@ -213,17 +209,15 @@ begin
 end;
 
 procedure TForDoBlock.PutTextControls;
-var
-   t, r: integer;
 begin
-   t := GetTextTop;
-   r := DrawTextLabel(Branch.Hook.X-97, t, FForLabel, false, true, false).Right;
+   var t := GetTextTop;
+   var r := DrawTextLabel(Branch.Hook.X-97, t, FForLabel, false, true, false).Right;
    cbVar.SetBounds(r+4, 34-t, edtVar.Width+5, cbVar.Height);
-   edtVar.SetBounds(cbVar.Left+4, 38-t, edtVar.Width, edtVar.Height);
-   r := DrawTextLabel(edtVar.Left + edtVar.Width+3, t, GInfra.CurrentLang.ForDoVarString, false, true, false).Right;
-   edtStart.SetBounds(r+4, 38-t, edtStart.Width, edtStart.Height);
-   r := DrawTextLabel(edtStart.Left+edtStart.Width+3, t, IfThen(FDescOrder, '«', '»'), false, true, false).Right;
-   edtStop.SetBounds(r+4, 38-t, edtStop.Width, edtStop.Height);
+   TInfra.MoveWin(edtVar, cbVar.Left+4, 38-t);
+   r := DrawTextLabel(edtVar.Left + edtVar.Width + 3, t, GInfra.CurrentLang.ForDoVarString, false, true, false).Right;
+   TInfra.MoveWin(edtStart, r+4, 38-t);
+   r := DrawTextLabel(edtStart.Left + edtStart.Width + 3, t, IfThen(FDescOrder, '«', '»'), false, true, false).Right;
+   TInfra.MoveWin(edtStop, r+4, 38-t);
    Repaint;
 end;
 
@@ -397,11 +391,9 @@ begin
 end;
 
 function TForDoBlock.GetDescTemplate(const ALangId: string): string;
-var
-   lang: TLangDefinition;
 begin
    result := '';
-   lang := GInfra.GetLangDefinition(ALangId);
+   var lang := GInfra.GetLangDefinition(ALangId);
    if lang <> nil then
       result := lang.ForDoDescTemplate;
 end;
@@ -556,14 +548,11 @@ begin
 end;
 
 procedure TForDoBlock.UpdateEditor(AEdit: TCustomEdit);
-var
-   chLine: TChangeLine;
-   langName: string;
 begin
-   langName := GInfra.CurrentLang.Name;
+   var langName := GInfra.CurrentLang.Name;
    if PerformEditorUpdate then
    begin
-      chLine := TInfra.GetChangeLine(Self);
+      var chLine := TInfra.GetChangeLine(Self);
       if chLine.Row <> ROW_NOT_FOUND then
       begin
          if GetBlockTemplate(langName).IsEmpty then
@@ -578,10 +567,8 @@ begin
 end;
 
 function TForDoBlock.FillExpression(const AExpression: string; const ALangId: string): string;
-var
-   lang: TLangDefinition;
 begin
-   lang := GInfra.GetLangDefinition(ALangId);
+   var lang := GInfra.GetLangDefinition(ALangId);
    if not AExpression.IsEmpty then
    begin
       result := ReplaceStr(AExpression, PRIMARY_PLACEHOLDER, Trim(edtVar.Text));
@@ -595,13 +582,11 @@ begin
 end;
 
 function TForDoBlock.GetFromXML(ATag: IXMLElement): TError;
-var
-   tag: IXMLElement;
 begin
    inherited GetFromXML(ATag);
    if ATag <> nil then
    begin
-      tag := TXMLProcessor.FindChildTag(ATag, 'i_var');
+      var tag := TXMLProcessor.FindChildTag(ATag, 'i_var');
       if tag <> nil then
       begin
          cbVar.Text := tag.Text;
@@ -620,13 +605,11 @@ begin
 end;
 
 procedure TForDoBlock.SaveInXML(ATag: IXMLElement);
-var
-   tag: IXMLElement;
 begin
    inherited SaveInXML(ATag);
    if ATag <> nil then
    begin
-      tag := ATag.OwnerDocument.CreateElement('i_var');
+      var tag := ATag.OwnerDocument.CreateElement('i_var');
       TXMLProcessor.AddText(tag, edtVar.Text);
       ATag.AppendChild(tag);
       tag := ATag.OwnerDocument.CreateElement('init_val');
