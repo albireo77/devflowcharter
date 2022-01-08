@@ -131,9 +131,8 @@ begin
       begin
          result := TTabComponent(winControl);
          break;
-      end
-      else
-         winControl := winControl.Parent;
+      end;
+      winControl := winControl.Parent;
    end;
 end;
 
