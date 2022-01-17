@@ -64,7 +64,7 @@ type
          lblLibrary: TLabel;
          btnAddElement: TButton;
          property Active: boolean read FActive write SetActive;
-         property ParentObject: TComponent read FParentObject write FParentObject;
+         property ParentObject: TComponent read FParentObject;
          property Id: integer read GetId;
          property ParentForm: TPageControlForm read FParentForm;
          constructor Create(AParentForm: TPageControlForm);
