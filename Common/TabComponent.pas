@@ -63,9 +63,9 @@ type
          lblName: TLabel;
          lblLibrary: TLabel;
          btnAddElement: TButton;
+         property Id: integer read GetId;
          property Active: boolean read FActive write SetActive;
          property ParentObject: TComponent read FParentObject;
-         property Id: integer read GetId;
          property ParentForm: TPageControlForm read FParentForm;
          constructor Create(AParentForm: TPageControlForm);
          destructor Destroy; override;
@@ -101,8 +101,8 @@ type
 implementation
 
 uses
-   System.SysUtils, Generics.Collections, System.StrUtils, System.Rtti, Infrastructure,
-   XMLProcessor, BaseEnumerator, Constants;
+   System.SysUtils, Generics.Collections, System.Rtti, Infrastructure, XMLProcessor,
+   BaseEnumerator, Constants;
 
 var
    ByTopElementComparer: IComparer<TElement>;
