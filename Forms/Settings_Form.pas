@@ -147,7 +147,7 @@ var
 implementation
 
 uses
-   System.StrUtils, System.SysUtils, LangDefinition, Constants, Infrastructure;
+   System.StrUtils, System.SysUtils, LangDefinition, Constants, Infrastructure, Math;
 
 const
    SHAPE_BORDER_COLOR = clBlack;
@@ -478,16 +478,8 @@ begin
    edtCompilerNoMain.Enabled := lang.EnabledCompiler;
    btnBrowseCompilers.Enabled := lang.EnabledCompiler;
    cbFileEncoding.Enabled := lang.EnabledCompiler;
-   if lang.EnabledCompiler then
-   begin
-      edtCompiler.Text := lang.CompilerCommand;
-      edtCompilerNoMain.Text := lang.CompilerCommandNoMain;
-   end
-   else
-   begin
-      edtCompiler.Text := '';
-      edtCompilerNoMain.Text := '';
-   end;
+   edtCompiler.Text := IfThen(lang.EnabledCompiler, lang.CompilerCommand);
+   edtCompilerNoMain.Text := IfThen(lang.EnabledCompiler, lang.CompilerCommandNoMain);
    SetComboBoxItem(cbFileEncoding, lang.CompilerFileEncoding);
    chkMultiPrintHorz.Enabled := chkMultiPrint.Checked;
    if not chkMultiPrint.Checked then
@@ -538,10 +530,7 @@ begin
    chkAutoSelectCode.Checked := ASettings.EditorAutoSelectBlock;
    chkAutoUpdateCode.Checked := ASettings.EditorAutoUpdate;
    edtFontNameSize.Text := ASettings.FlowchartFontName + FLOWCHART_FONT_NAMESIZE_SEP + ASettings.FlowchartFontSize.ToString;
-   if ASettings.IndentChar = SPACE_CHAR then
-      cbIndentChar.ItemIndex := 0
-   else
-      cbIndentChar.ItemIndex := 1;
+   cbIndentChar.ItemIndex := IfThen(ASettings.IndentChar = TAB_CHAR, 1);
    SetComboBoxItem(cbFontSize, ASettings.EditorFontSize.ToString);
    SetComboBoxItem(cbFileEncoding, GInfra.CurrentLang.CompilerFileEncoding);
    DrawShapes(ASettings);

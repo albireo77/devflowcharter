@@ -534,10 +534,10 @@ begin
       FValidateDeclaration   := chkValidateConsts.Checked;
       FEditorFontSize        := StrToIntDef(cbFontSize.Text, EDITOR_DEFAULT_FONT_SIZE);
       FIndentLength          := StrToIntDef(edtEditorIndent.Text, EDITOR_DEFAULT_INDENT_LENGTH);
-      if cbIndentChar.ItemIndex = 0 then
-         FIndentChar := SPACE_CHAR
+      if cbIndentChar.ItemIndex = 1 then
+         FIndentChar := TAB_CHAR
       else
-         FIndentChar := TAB_CHAR;
+         FIndentChar := SPACE_CHAR;
       FIndentSpaces := StringOfChar(SPACE_CHAR, FIndentLength);
 
       for shape := Low(TColorShape) to High(TColorShape) do
