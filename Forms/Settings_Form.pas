@@ -163,8 +163,6 @@ const
 {$R *.dfm}
 
 procedure TSettingsForm.Localize(AList: TStringList);
-var
-   val: integer;
 begin
    lblFileEncoding.Left := cbFileEncoding.Left - lblFileEncoding.Width - 5;
    lblCompiler.Left := 7;
@@ -175,7 +173,7 @@ begin
    edtCompilerNoMain.Width := 449 - edtCompilerNoMain.Left;
    edtTranslateFile.Left := lblFile.Width + lblFile.Left + 5;;
    edtTranslateFile.Width := 449 - edtTranslateFile.Left;
-   val := lblDesktop.Width;
+   var val := lblDesktop.Width;
    if val < lblBlockColor.Width then
       val := lblBlockColor.Width;
    if val < lblFontColor.Width then
@@ -257,12 +255,9 @@ begin
 end;
 
 procedure TSettingsForm.imgShapesClick(Sender: TObject);
-var
-   shape: TColorShape;
-   pnt: TPoint;
 begin
-   pnt := imgShapes.ScreenToClient(Mouse.CursorPos);
-   shape := High(TColorShape);
+   var pnt := imgShapes.ScreenToClient(Mouse.CursorPos);
+   var shape := High(TColorShape);
    repeat
       if SHAPE_RECTS[shape].Contains(pnt) then
          break;
@@ -273,15 +268,12 @@ begin
 end;
 
 procedure TSettingsForm.FillShape(const shape: TColorShape; const AColor: TColor);
-var
-   pnt: TPoint;
-   rect: TRect;
 begin
    if shape <> shpNone then
    begin
       imgShapes.Canvas.Brush.Color := AColor;
-      rect := SHAPE_RECTS[shape];
-      pnt := rect.CenterPoint;
+      var rect := SHAPE_RECTS[shape];
+      var pnt := rect.CenterPoint;
       imgShapes.Canvas.FloodFill(pnt.X, pnt.Y, SHAPE_BORDER_COLOR, fsBorder);
       if shape = shpFolder then
          imgShapes.Canvas.FloodFill(rect.Left+1, rect.Top+1, SHAPE_BORDER_COLOR, fsBorder)
@@ -294,10 +286,8 @@ begin
 end;
 
 function TSettingsForm.GetShapeColor(const shape: TColorShape): TColor;
-var
-   pnt: TPoint;
 begin
-   pnt := SHAPE_RECTS[shape].CenterPoint;
+   var pnt := SHAPE_RECTS[shape].CenterPoint;
    if pnt.IsZero then
       result := clNone
    else
@@ -305,27 +295,21 @@ begin
 end;
 
 procedure TSettingsForm.FillAllShapes(const AColor: TColor);
-var
-   shape: TColorShape;
 begin
-   for shape := Low(TColorShape) to High(TColorShape) do
+   for var shape := Low(TColorShape) to High(TColorShape) do
       FillShape(shape, AColor);
 end;
 
 procedure TSettingsForm.DrawShapes(ASettings: TSettings);
-var
-   shape: TColorShape;
-   rect: TRect;
-   p: TPoint;
 begin
    with imgShapes.Canvas do
    begin
       Pen.Color := SHAPE_BORDER_COLOR;
-      for shape := Low(TColorShape) to High(TColorShape) do
+      for var shape := Low(TColorShape) to High(TColorShape) do
       begin
          if shape <> shpNone then
          begin
-            rect := SHAPE_RECTS[shape];
+            var rect := SHAPE_RECTS[shape];
             Brush.Color := ASettings.GetShapeColor(shape);
             case shape of
                shpEllipse:
@@ -334,7 +318,7 @@ begin
                   Rectangle(rect);
                shpParallel:
                begin
-                  p := Point(rect.Left+10, rect.Top);
+                  var p := Point(rect.Left+10, rect.Top);
                   Polygon([p,
                            Point(rect.Right, rect.Top),
                            Point(rect.Right-10, rect.Bottom),
@@ -343,7 +327,7 @@ begin
                end;
                shpDiamond:
                begin
-                  p := rect.CenterPoint;
+                  var p := rect.CenterPoint;
                   Polygon([Point(rect.Left, p.Y),
                            Point(p.X, rect.Top),
                            Point(rect.Right, p.Y),
@@ -443,13 +427,10 @@ begin
 end;
 
 procedure TSettingsForm.ProtectFields;
-var
-   parserOn: boolean;
-   lang: TLangDefinition;
 begin
-   lang := GInfra.GetLangDefinition(cbLanguage.Text);
+   var lang := GInfra.GetLangDefinition(cbLanguage.Text);
+   var parserOn := lang.Parser <> nil;
    cbLanguage.Hint := lang.DefFile;
-   parserOn := lang.Parser <> nil;
    chkParseInput.Enabled := parserOn;
    chkParseOutput.Enabled := parserOn;
    chkParseAssign.Enabled := parserOn;
@@ -560,10 +541,8 @@ begin
 end;
 
 procedure TSettingsForm.SetComboBoxItem(AComboBox: TComboBox; const AText: string);
-var
-   i: integer;
 begin
-   i := AComboBox.Items.IndexOf(AText);
+   var i := AComboBox.Items.IndexOf(AText);
    if i = -1 then
       i := 0;
    AComboBox.ItemIndex := i;
