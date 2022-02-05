@@ -74,7 +74,7 @@ uses
    Infrastructure, Constants, XMLProcessor, Main_Block, UserFunction, Return_Block;
 
 const
-   DEFAULT_WIDTH = 240;
+   DEFAULT_WIDTH = 244;
    DEFAULT_HEIGHT = 91;
    DEFAULT_BOTTOM_HOOK = DEFAULT_WIDTH div 2;
    RIGHT_MARGIN = 11;
