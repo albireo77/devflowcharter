@@ -187,7 +187,7 @@ begin
    begin
       AStatement.Width := w;
       PutTextControls;
-      FInitParms.Width := edtStop.Left + edtStop.Width + 76;
+      FInitParms.Width := edtStop.Left + edtStop.Width + 80;
       FInitParms.BottomPoint.X := FInitParms.Width - RIGHT_MARGIN;
    end;
 end;
@@ -242,7 +242,7 @@ begin
       edtStart.Left := br0 + a;
       br1 := edtStart.Left + edtStart.Width;
       edtStop.Left := br1 + b;
-      br2 := edtStop.Left + edtStop.Width;
+      br2 := edtStop.Left + edtStop.Width + 4;
 
       IPoint.X := br2 + 16;
       IPoint.Y := 35;
@@ -405,7 +405,7 @@ var
 begin
    result := 0;
    if fsStrikeOut in Font.Style then
-      exit;
+      Exit;
    indent := GSettings.IndentString(ADeep);
    tmpList := TStringList.Create;
    try
@@ -459,25 +459,21 @@ begin
 end;
 
 function TForDoBlock.CountErrWarn: TErrWarnCount;
-var
-   lTextControl: TCustomEdit;
 begin
    result := inherited CountErrWarn;
-   lTextControl := GetTextControl;
-   if (lTextControl <> edtVar) and (edtVar.Font.Color = NOK_COLOR) then
+   var tc := GetTextControl;
+   if (tc <> edtVar) and (edtVar.Font.Color = NOK_COLOR) then
       Inc(result.ErrorCount);
-   if (lTextControl <> edtStart) and (edtStart.GetFocusColor = NOK_COLOR) then
+   if (tc <> edtStart) and (edtStart.GetFocusColor = NOK_COLOR) then
       Inc(result.ErrorCount);
-   if (lTextControl <> edtStop) and (edtStop.GetFocusColor = NOK_COLOR) then
+   if (tc <> edtStop) and (edtStop.GetFocusColor = NOK_COLOR) then
       Inc(result.ErrorCount);
 end;
 
 procedure TForDoBlock.ChangeColor(AColor: TColor);
-var
-   lColor: TColor;
 begin
    inherited ChangeColor(AColor);
-   lColor := GSettings.GetShapeColor(FShape);
+   var lColor := GSettings.GetShapeColor(FShape);
    if lColor = GSettings.DesktopColor then
    begin
       edtStart.Color := AColor;
@@ -495,8 +491,6 @@ begin
 end;
 
 procedure TForDoBlock.PopulateComboBoxes;
-var
-   header: TUserFunctionHeader;
 begin
    inherited PopulateComboBoxes;
    if GInfra.CurrentLang.ForDoVarList then
@@ -506,7 +500,7 @@ begin
          Items.Clear;
          if GProject.GlobalVars <> nil then
             GProject.GlobalVars.FillForList(Items);
-         header := TInfra.GetFunctionHeader(Self);
+         var header := TInfra.GetFunctionHeader(Self);
          if header <> nil then
             header.LocalVars.FillForList(Items);
          ItemIndex := Items.IndexOf(edtVar.Text);
