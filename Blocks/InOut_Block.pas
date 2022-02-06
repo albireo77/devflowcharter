@@ -77,9 +77,9 @@ begin
    FStatement.SelStart := IfThen(w <= 0, Length(FStatement.Text) + w, w - 1);
    BottomHook := Width div 2;
    BottomPoint.X := BottomHook;
-   BottomPoint.Y := 30;
+   BottomPoint.Y := 31;
    IPoint.X := BottomHook + 30;
-   IPoint.Y := 40;
+   IPoint.Y := 41;
    TopHook.X := BottomHook;
    Constraints.MinWidth := 150;
    Constraints.MinHeight := 61;
@@ -129,17 +129,17 @@ begin
       Canvas.Brush.Color := lColor;
    Canvas.Polygon([Point(20, 0),
                    Point(Width-1, 0),
-                   Point(Width-21, 30),
-                   Point(0, 30),
+                   Point(Width-21, 31),
+                   Point(0, 31),
                    Point(20, 0)]);
    Canvas.MoveTo(w+32, 0);
-   Canvas.LineTo(w+12, 30);
+   Canvas.LineTo(w+12, 31);
    fontStyles := Canvas.Font.Style;
    Canvas.Font.Style := [];
    R := Rect(17, 15-(Canvas.TextHeight('X') div 2), w+17, 23);
    DrawText(Canvas.Handle, PChar(FLabel), -1, R, DT_CENTER);
    Canvas.Font.Style := fontStyles;
-   DrawBlockLabel(5, 30, FLabelSegoe);
+   DrawBlockLabel(5, 31, FLabelSegoe);
    DrawI;
 end;
 
