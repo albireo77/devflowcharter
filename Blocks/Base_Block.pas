@@ -1077,6 +1077,7 @@ var
    i: integer;
 begin
    Font.Style := AStyle;
+   Canvas.Font.Style := AStyle;
    for i := 0 to ControlCount-1 do
    begin
       if Controls[i] is TBlock then
@@ -1092,6 +1093,7 @@ var
    i: integer;
 begin
    Font.Size := ASize;
+   Canvas.Font.Size := ASize;
    for i := 0 to ControlCount-1 do
    begin
       if Controls[i] is TBlock then
@@ -1442,7 +1444,6 @@ begin
          r.Inflate(0, 0, 1, 1);
       Rectangle(r);
       Pen.Style := psSolid;
-      Font.Assign(Self.Font);
       Font.Color := Pen.Color;
    end;
 end;
