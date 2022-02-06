@@ -66,6 +66,7 @@ begin
    FShape := shpParallel;
    FStatement.Color := GSettings.GetShapeColor(FShape);
    FStatement.Text := AText;
+   Canvas.Font.Assign(Font);
    PutTextControls;
    if AdjustWidth then
    begin
@@ -145,7 +146,6 @@ end;
 
 procedure TInOutBlock.PutTextControls;
 begin
-   Paint;
    var l := TInfra.Scaled(Canvas.TextWidth(FLabel)) + 33;
    var t := 16 - FStatement.Height div 2;
    FStatement.SetBounds(l, t, Width-l-20, FStatement.Height);
