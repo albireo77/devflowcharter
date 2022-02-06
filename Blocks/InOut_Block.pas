@@ -121,7 +121,7 @@ var
    lColor: TColor;
 begin
    inherited;
-   w := Canvas.TextWidth(FLabel);
+   w := TInfra.Scaled(Canvas.TextWidth(FLabel));
    DrawArrow(BottomPoint, BottomPoint.X, Height-1);
    Canvas.Brush.Style := bsClear;
    lColor := GSettings.GetShapeColor(FShape);
@@ -144,21 +144,10 @@ begin
 end;
 
 procedure TInOutBlock.PutTextControls;
-var
-   t, l: integer;
 begin
-   l := Canvas.TextWidth(FLabel);
-   case FStatement.Font.Size of
-      12: l := l + 37;
-      10: l := l + 33;
-   else
-      l := l + 30;
-   end;
-   t := 17 - FStatement.Height div 2;
-   if t + FStatement.Height > 29 then
-      t := 30 - FStatement.Height;
-   if t < 4 then
-      l := l + 4 - t;
+   Paint;
+   var l := TInfra.Scaled(Canvas.TextWidth(FLabel)) + 33;
+   var t := 16 - FStatement.Height div 2;
    FStatement.SetBounds(l, t, Width-l-20, FStatement.Height);
 end;
 
