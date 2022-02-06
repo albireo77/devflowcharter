@@ -330,6 +330,7 @@ begin
    ControlStyle := ControlStyle + [csOpaque];
    ParentBackground := false;
    Canvas.TextFlags := Canvas.TextFlags or ETO_OPAQUE;
+   Canvas.Font.Assign(Font);
    SetBounds(ABlockParms.x, ABlockParms.y, ABlockParms.w, ABlockParms.h);
 
    FId := GProject.Register(Self, ABlockParms.bid);

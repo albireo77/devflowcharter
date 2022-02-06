@@ -66,7 +66,6 @@ begin
    FShape := shpParallel;
    FStatement.Color := GSettings.GetShapeColor(FShape);
    FStatement.Text := AText;
-   Canvas.Font.Assign(Font);
    PutTextControls;
    if AdjustWidth then
    begin
