@@ -35,6 +35,8 @@ type
          FLabelRect: TRect;
          FHandle: HDC;
          function GetMaxBounds: TPoint;
+         procedure DrawStartEllipse;
+         procedure DrawStopEllipse;
       public
          UserFunction: TObject;
          constructor Create(APage: TBlockTabSheet; const ABlockParms: TBlockParms); overload;
@@ -116,7 +118,7 @@ begin
    FInitParms.HeightAffix := 42;
 
    BottomPoint.X := FInitParms.BottomPoint.X;
-   TopHook.Y := 30;
+   TopHook.Y := TInfra.Scaled(30);
    FZOrder := -1;
    FShape := shpEllipse;
    Constraints.MinWidth := FInitParms.Width;
@@ -307,13 +309,30 @@ begin
       end
       else
          FLabelRect := TRect.Empty;
-      DrawEllipsedText(Branch.Hook.X, TopHook.Y, FStartLabel);
+      DrawStartEllipse;
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
-         DrawEllipsedText(BottomHook, Height-11, FStopLabel);
+         DrawStopEllipse;
       Canvas.Font.Style := fontStyles;
       DrawArrow(Branch.Hook.X, TopHook.Y, Branch.Hook);
    end;
    DrawI;
+end;
+
+procedure TMainBlock.DrawStartEllipse;
+begin
+   DrawEllipsedText(Branch.Hook.X, TopHook.Y, FStartLabel);
+end;
+
+procedure TMainBlock.DrawStopEllipse;
+var
+   y: integer;
+begin
+   if Branch.Count = 0 then
+      y := Branch.Hook.Y + 1
+   else
+      y := Branch.Last.BoundsRect.Bottom;
+   y := y + GetEllipseTextRect(0, 0, FStopLabel).Height;
+   DrawEllipsedText(BottomHook, y, FStopLabel);
 end;
 
 function TMainBlock.GetFunctionLabel(var ARect: TRect): string;
