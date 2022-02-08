@@ -39,7 +39,6 @@ type
          procedure Paint; override;
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); override;
          function GetDefaultWidth: integer;
-         procedure DrawReturnEllipse;
    end;
 
 implementation
@@ -55,9 +54,9 @@ begin
 
    FReturnLabel := i18Manager.GetString('CaptionExit');
 
-   var defWidth := GetDefaultWidth;
-   if defWidth > Width then
-      Width := defWidth;
+   var dw := GetDefaultWidth;
+   if dw > Width then
+      Width := dw;
 
    var y := GetEllipseTextRect(0, 0, FReturnLabel).Height + 1;
 
@@ -85,15 +84,10 @@ begin
    inherited;
    var fontStyles := Canvas.Font.Style;
    Canvas.Font.Style := [];
-   DrawReturnEllipse;
-   Canvas.Font.Style := fontStyles;
-   DrawI;
-end;
-
-procedure TReturnBlock.DrawReturnEllipse;
-begin
    var h := GetEllipseTextRect(BottomHook, 0, FReturnLabel).Height;
    DrawEllipsedText(BottomHook, h, FReturnLabel);
+   Canvas.Font.Style := fontStyles;
+   DrawI;
 end;
 
 function TReturnBlock.GetDefaultWidth: integer;
@@ -150,16 +144,13 @@ begin
 end;
 
 procedure TReturnBlock.UpdateEditor(AEdit: TCustomEdit);
-var
-   chLine: TChangeLine;
-   list: TStringList;
 begin
    if PerformEditorUpdate then
    begin
-      chLine := TInfra.GetChangeLine(Self, FStatement);
+      var chLine := TInfra.GetChangeLine(Self, FStatement);
       if chLine.Row <> ROW_NOT_FOUND then
       begin
-         list := TStringList.Create;
+         var list := TStringList.Create;
          try
             GenerateCode(list, GInfra.CurrentLang.Name, 0);
             chLine.Text := TInfra.ExtractIndentString(chLine.Text) + list.Text;
