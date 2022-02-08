@@ -468,10 +468,8 @@ begin
 end;
 
 destructor TBlock.Destroy;
-var
-   comment: TComment;
 begin
-   for comment in GetPinComments do
+   for var comment in GetPinComments do
       comment.Free;
    if Self = GClpbrd.Instance then
       GClpbrd.Instance := nil;
@@ -507,12 +505,10 @@ begin
 end;
 
 procedure TBlock.ExitSizeMove;
-var
-   lock: boolean;
 begin
    if FHResize or FVResize then
    begin
-      lock := LockDrawing;
+      var lock := LockDrawing;
       try
          if FHResize then
          begin
@@ -564,10 +560,8 @@ begin
 end;
 
 procedure TBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-var
-   p: TPoint;
 begin
-   p := Point(X, Y);
+   var p := Point(X, Y);
    SelectBlock(p);
    SetCursor(p);
    if Rect(BottomPoint.X-5, BottomPoint.Y, BottomPoint.X+5, Height).Contains(p) then
@@ -595,15 +589,12 @@ begin
 end;
 
 procedure TGroupBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-var
-   i: integer;
-   p: TPoint;
 begin
    if Expanded then
    begin
-      for i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
+      for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
       begin
-         p := FBranchList[i].Hook;
+         var p := FBranchList[i].Hook;
          if Rect(p.X-5, TopHook.Y, p.X+5, p.Y).Contains(Point(X, Y)) then
          begin
             DrawArrow(p.X, TopHook.Y, p, arrEnd, clRed);
@@ -636,13 +627,11 @@ begin
 end;
 
 function TBlock.IsForeParent(AParent: TObject): boolean;
-var
-   lParent: TWinControl;
 begin
    result := false;
    if AParent <> nil then
    begin
-      lParent := Parent;
+      var lParent := Parent;
       while lParent is TBlock do
       begin
          if lParent = AParent then
@@ -731,10 +720,8 @@ begin
 end;
 
 procedure TGroupBlock.OnMouseLeave(AClearRed: boolean = true);
-var
-   br: TBranch;
 begin
-   br := GetBranch(Ired);
+   var br := GetBranch(Ired);
    if br <> nil then
       DrawArrow(br.Hook.X, TopHook.Y, br.Hook);
    inherited OnMouseLeave(AClearRed);
@@ -920,12 +907,10 @@ begin
 end;
 
 procedure TBlock.MyOnMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-   p: TPoint;
 begin
    if Button = mbRight then
    begin
-      p := ClientToScreen(Point(X, Y));
+      var p := ClientToScreen(Point(X, Y));
       PopupMenu.PopupComponent := Self;
       FMouseLeave := false;
       PopupMenu.Popup(p.X, p.Y);
@@ -948,10 +933,8 @@ begin
 end;
 
 procedure TGroupBlock.ResizeWithDrawLock;
-var
-   lock: boolean;
 begin
-   lock := LockDrawing;
+   var lock := LockDrawing;
    try
       ResizeHorz(true);
       ResizeVert(true);
@@ -1073,12 +1056,10 @@ begin
 end;
 
 procedure TBlock.SetFontStyle(const AStyle: TFontStyles);
-var
-   i: integer;
 begin
    Font.Style := AStyle;
    Canvas.Font.Style := AStyle;
-   for i := 0 to ControlCount-1 do
+   for var i := 0 to ControlCount-1 do
    begin
       if Controls[i] is TBlock then
          TBlock(Controls[i]).SetFontStyle(AStyle)
@@ -1089,12 +1070,10 @@ begin
 end;
 
 procedure TBlock.SetFontSize(ASize: integer);
-var
-   i: integer;
 begin
    Font.Size := ASize;
    Canvas.Font.Size := ASize;
-   for i := 0 to ControlCount-1 do
+   for var i := 0 to ControlCount-1 do
    begin
       if Controls[i] is TBlock then
          TBlock(Controls[i]).SetFontSize(ASize)
@@ -1111,12 +1090,11 @@ begin
 end;
 
 procedure TBlock.SetFont(AFont: TFont);
-var
-   i: integer;
 begin
    Font.Assign(AFont);
+   Canvas.Font.Assign(AFont);
    Refresh;
-   for i := 0 to ControlCount-1 do
+   for var i := 0 to ControlCount-1 do
    begin
       if Controls[i] is TBlock then
       begin
@@ -1160,22 +1138,18 @@ begin
 end;
 
 procedure TBlock.BringAllToFront;
-var
-   comment: TComment;
 begin
    BringToFront;
-   for comment in GetComments do
+   for var comment in GetComments do
       comment.BringToFront;
 end;
 
 function TBlock.IsInFront(AControl: TWinControl): boolean;
-var
-   hnd: THandle;
 begin
    result := false;
    if AControl <> nil then
    begin
-      hnd := GetWindow(AControl.Handle, GW_HWNDLAST);
+      var hnd := GetWindow(AControl.Handle, GW_HWNDLAST);
       while hnd <> 0 do
       begin
          if hnd = FTopParentBlock.Handle then
@@ -1294,10 +1268,8 @@ begin
 end;
 
 procedure TBlock.ClearSelection;
-var
-   lColor: TColor;
 begin
-   lColor := Page.Box.Color;
+   var lColor := Page.Box.Color;
    if Color <> lColor then
       ChangeColor(lColor);
    NavigatorForm.Invalidate;
@@ -1373,15 +1345,12 @@ begin
 end;
 
 procedure TGroupBlock.ExpandAll;
-var
-   i: integer;
-   block: TBlock;
 begin
    if not Expanded then
       ExpandFold(true);
-   for i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
+   for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
    begin
-      for block in FBranchList[i] do
+      for var block in FBranchList[i] do
       begin
          if block is TGroupBlock then
             TGroupBlock(block).ExpandAll;
@@ -1390,11 +1359,9 @@ begin
 end;
 
 procedure TBlock.RepaintAll;
-var
-   i: integer;
 begin
    Repaint;
-   for i := 0 to ControlCount-1 do
+   for var i := 0 to ControlCount-1 do
    begin
       if Controls[i] is TBlock then
          TBlock(Controls[i]).RepaintAll
@@ -1427,11 +1394,9 @@ begin
 end;
 
 procedure TBlock.Paint;
-var
-   r: TRect;
 begin
    inherited;
-   r := ClientRect;
+   var r := ClientRect;
    with Canvas do
    begin
       Brush.Style := bsSolid;
