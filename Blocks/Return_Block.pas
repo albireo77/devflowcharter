@@ -22,7 +22,7 @@ unit Return_Block;
 interface
 
 uses
-   Vcl.Graphics, System.Classes, Vcl.StdCtrls, Base_Block, Types;
+   Vcl.Graphics, System.Classes, Vcl.StdCtrls, Base_Block, Types, System.Types;
 
 type
 
@@ -38,14 +38,15 @@ type
          FReturnLabel: string;
          procedure Paint; override;
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); override;
-         function GetDefaultWidth: integer;
+         function GetReturnEllipseRect: TRect;
+         procedure PutTextControls; override;
    end;
 
 implementation
 
 uses
-   Vcl.Controls, System.SysUtils, System.UITypes, Infrastructure, Project, UserFunction,
-   Main_Block, LangDefinition, Constants;
+   Vcl.Controls, System.SysUtils, System.UITypes, System.Math, Infrastructure,
+   Project, UserFunction, Main_Block, LangDefinition, Constants;
 
 constructor TReturnBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
@@ -54,21 +55,16 @@ begin
 
    FReturnLabel := i18Manager.GetString('CaptionExit');
 
-   var dw := GetDefaultWidth;
-   if dw > Width then
-      Width := dw;
-
-   var y := GetEllipseTextRect(0, 0, FReturnLabel).Height + 1;
+   Width := Max(Width, GetReturnEllipseRect.Width+48);
 
    FShape := shpEllipse;
    BottomHook := Width div 2;
    BottomPoint.X := BottomHook;
    BottomPoint.Y := 19;
-   IPoint.X := BottomHook + 30;
-   IPoint.Y := y;
    TopHook.X := BottomHook;
 
-   FStatement.SetBounds(BottomHook-26, y, 52, FStatement.Height);
+   PutTextControls;
+
    FStatement.Anchors := [akRight, akLeft, akTop];
    FStatement.Alignment := taCenter;
    FStatement.Color := GSettings.DesktopColor;
@@ -84,15 +80,14 @@ begin
    inherited;
    var fontStyles := Canvas.Font.Style;
    Canvas.Font.Style := [];
-   var h := GetEllipseTextRect(BottomHook, 0, FReturnLabel).Height;
-   DrawEllipsedText(BottomHook, h, FReturnLabel);
+   DrawEllipsedText(BottomHook, GetReturnEllipseRect.Height, FReturnLabel);
    Canvas.Font.Style := fontStyles;
    DrawI;
 end;
 
-function TReturnBlock.GetDefaultWidth: integer;
+function TReturnBlock.GetReturnEllipseRect: TRect;
 begin
-   result := GetEllipseTextRect(0, 0, FReturnLabel).Width + 48;
+   result := GetEllipseTextRect(0, 0, FReturnLabel);
 end;
 
 function TReturnBlock.GetDescTemplate(const ALangId: string): string;
@@ -173,6 +168,14 @@ end;
 procedure TReturnBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
    SelectBlock(Point(X, Y));
+end;
+
+procedure TReturnBlock.PutTextControls;
+begin
+   var y := GetReturnEllipseRect.Height + 1;
+   IPoint.X := BottomHook + 30;
+   IPoint.Y := y;
+   FStatement.SetBounds(BottomHook-26, y, 52, FStatement.Height);
 end;
 
 end.
