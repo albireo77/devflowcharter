@@ -91,7 +91,6 @@ type
       LabelFuncCall,
       LabelInstr,
       LabelMultiInstr,
-      LabelReturn,
       LabelCase,
       LabelText,
       LabelFolder,
@@ -495,7 +494,6 @@ begin
       LabelIf                        := GetTextFromChild(ATag, 'LabelIf');
       LabelIfElse                    := GetTextFromChild(ATag, 'LabelIfElse');
       LabelFuncCall                  := GetTextFromChild(ATag, 'LabelFuncCall');
-      LabelReturn                    := GetTextFromChild(ATag, 'LabelReturn');
       LabelText                      := GetTextFromChild(ATag, 'LabelText');
       LabelFolder                    := GetTextFromChild(ATag, 'LabelFolder');
       LabelIn                        := GetTextFromChild(ATag, 'LabelIn');

@@ -39,36 +39,37 @@ type
          procedure Paint; override;
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); override;
          function GetDefaultWidth: integer;
+         procedure DrawReturnEllipse;
    end;
 
 implementation
 
 uses
-   Vcl.Controls, System.SysUtils, System.Types, System.UITypes, Infrastructure,
-   Project, UserFunction, Main_Block, LangDefinition, Constants;
+   Vcl.Controls, System.SysUtils, System.UITypes, Infrastructure, Project, UserFunction,
+   Main_Block, LangDefinition, Constants;
 
 constructor TReturnBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
-var
-   defWidth: integer;
 begin
 
    inherited Create(ABranch, ABlockParms);
 
    FReturnLabel := i18Manager.GetString('CaptionExit');
 
-   defWidth := GetDefaultWidth;
+   var defWidth := GetDefaultWidth;
    if defWidth > Width then
       Width := defWidth;
+
+   var y := GetEllipseTextRect(0, 0, FReturnLabel).Height + 1;
 
    FShape := shpEllipse;
    BottomHook := Width div 2;
    BottomPoint.X := BottomHook;
    BottomPoint.Y := 19;
    IPoint.X := BottomHook + 30;
-   IPoint.Y := 30;
+   IPoint.Y := y;
    TopHook.X := BottomHook;
 
-   FStatement.SetBounds(BottomHook-26, 31, 52, 19);
+   FStatement.SetBounds(BottomHook-26, y, 52, FStatement.Height);
    FStatement.Anchors := [akRight, akLeft, akTop];
    FStatement.Alignment := taCenter;
    FStatement.Color := GSettings.DesktopColor;
@@ -76,21 +77,23 @@ end;
 
 constructor TReturnBlock.Create(ABranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(blReturn, 0, 0, 140, 53));
+   Create(ABranch, TBlockParms.New(blReturn, 0, 0, 140, 63));
 end;
 
 procedure TReturnBlock.Paint;
-var
-   fontStyles: TFontStyles;
-   R: TRect;
 begin
    inherited;
-   fontStyles := Canvas.Font.Style;
+   var fontStyles := Canvas.Font.Style;
    Canvas.Font.Style := [];
-   R := DrawEllipsedText(BottomHook, 30, FReturnLabel);
-   DrawBlockLabel(R.Left, R.Bottom, GInfra.CurrentLang.LabelReturn, true);
+   DrawReturnEllipse;
    Canvas.Font.Style := fontStyles;
    DrawI;
+end;
+
+procedure TReturnBlock.DrawReturnEllipse;
+begin
+   var h := GetEllipseTextRect(BottomHook, 0, FReturnLabel).Height;
+   DrawEllipsedText(BottomHook, h, FReturnLabel);
 end;
 
 function TReturnBlock.GetDefaultWidth: integer;
@@ -99,11 +102,9 @@ begin
 end;
 
 function TReturnBlock.GetDescTemplate(const ALangId: string): string;
-var
-   lang: TLangDefinition;
 begin
    result := '';
-   lang := GInfra.GetLangDefinition(ALangId);
+   var lang := GInfra.GetLangDefinition(ALangId);
    if lang <> nil then
       result := lang.ReturnDescTemplate;
 end;
@@ -117,7 +118,7 @@ var
 begin
    result := 0;
    if fsStrikeOut in Font.Style then
-      exit;
+      Exit;
    if ALangId = PASCAL_LANG_ID then
    begin
       indnt := GSettings.IndentString(ADeep);
