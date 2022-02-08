@@ -141,7 +141,7 @@ begin
 
       DrawTextLabel(dLeft.X, dLeft.Y-5, FTrueLabel, true, true);
       DrawTextLabel(dRight.X, dRight.Y-5, FFalseLabel, false, true);
-      DrawBlockLabel(dLeft.X+5, dLeft.Y+5, GInfra.CurrentLang.LabelIfElse, true);
+      DrawBlockLabel(dLeft.X+10, dLeft.Y+5, GInfra.CurrentLang.LabelIfElse, true);
    end;
    DrawI;
 end;
