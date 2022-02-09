@@ -56,9 +56,9 @@ uses
    Infrastructure;
 
 const
-   BLOCK_WIDTH    = 150;
-   BLOCK_HEIGHT   = 61;
-   BOTTOM_POINT_Y = BLOCK_HEIGHT - 30;
+   DEF_BLOCK_WIDTH    = 150;
+   DEF_BLOCK_HEIGHT   = 61;
+   BOTTOM_POINT_Y = DEF_BLOCK_HEIGHT - 30;
 
 constructor TInOutBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms; const AText: string; AdjustWidth: boolean);
 var
@@ -86,8 +86,8 @@ begin
    IPoint.X := BottomHook + 30;
    IPoint.Y := BOTTOM_POINT_Y + 10;
    TopHook.X := BottomHook;
-   Constraints.MinWidth := BLOCK_WIDTH;
-   Constraints.MinHeight := BLOCK_HEIGHT;
+   Constraints.MinWidth := DEF_BLOCK_WIDTH;
+   Constraints.MinHeight := DEF_BLOCK_HEIGHT;
 end;
 
 constructor TInputBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
@@ -101,7 +101,7 @@ constructor TInputBlock.Create(ABranch: TBranch);
 begin
    FLabel := i18Manager.GetString('CaptionIn');
    FLabelSegoe := GInfra.CurrentLang.LabelIn;
-   inherited Create(ABranch, TBlockParms.New(blInput, 0, 0, BLOCK_WIDTH, BLOCK_HEIGHT), GInfra.CurrentLang.InputFunction, true);
+   inherited Create(ABranch, TBlockParms.New(blInput, 0, 0, DEF_BLOCK_WIDTH, DEF_BLOCK_HEIGHT), GInfra.CurrentLang.InputFunction, true);
 end;
 
 constructor TOutputBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
@@ -115,7 +115,7 @@ constructor TOutputBlock.Create(ABranch: TBranch);
 begin
    FLabel := i18Manager.GetString('CaptionOut');
    FLabelSegoe := GInfra.CurrentLang.LabelOut;
-   inherited Create(ABranch, TBlockParms.New(blOutput, 0, 0, BLOCK_WIDTH, BLOCK_HEIGHT), GInfra.CurrentLang.OutputFunction, true);
+   inherited Create(ABranch, TBlockParms.New(blOutput, 0, 0, DEF_BLOCK_WIDTH, DEF_BLOCK_HEIGHT), GInfra.CurrentLang.OutputFunction, true);
 end;
 
 procedure TInOutBlock.Paint;
