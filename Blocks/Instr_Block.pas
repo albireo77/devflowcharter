@@ -34,6 +34,7 @@ type
       protected
          procedure Paint; override;
          procedure PutTextControls; override;
+         function CalculateStatementHeight: integer;
    end;
 
 
@@ -47,7 +48,7 @@ begin
 
    inherited Create(ABranch, ABlockParms);
 
-   FStatement.SetBounds(1, 1, ABlockParms.w-2, TInfra.Scaled(FStatement.Font.Size + 9));
+   FStatement.SetBounds(1, 1, ABlockParms.w-2, CalculateStatementHeight);
    FStatement.Anchors := [akRight, akLeft, akTop];
    FStatement.SetLRMargins(2, 2);
 
@@ -81,9 +82,14 @@ end;
 
 procedure TInstrBlock.PutTextControls;
 begin
-   FStatement.Height := TInfra.Scaled(FStatement.Font.Size + 9);
+   FStatement.Height := CalculateStatementHeight;
    BottomPoint.Y := FStatement.BoundsRect.Bottom + 1;
    IPoint.Y := BottomPoint.Y + 8;
+end;
+
+function TInstrBlock.CalculateStatementHeight: integer;
+begin
+   result := Abs(FStatement.Font.Height) + 6;
 end;
 
 end.
