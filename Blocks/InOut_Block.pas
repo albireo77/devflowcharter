@@ -55,6 +55,11 @@ uses
    Vcl.Controls, System.Classes, WinApi.Windows, System.Types, System.UITypes, System.Math,
    Infrastructure;
 
+const
+   BLOCK_WIDTH    = 150;
+   BLOCK_HEIGHT   = 61;
+   BOTTOM_POINT_Y = BLOCK_HEIGHT - 30;
+
 constructor TInOutBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms; const AText: string; AdjustWidth: boolean);
 var
    w: integer;
@@ -77,12 +82,12 @@ begin
    FStatement.SelStart := IfThen(w <= 0, Length(FStatement.Text) + w, w - 1);
    BottomHook := Width div 2;
    BottomPoint.X := BottomHook;
-   BottomPoint.Y := 31;
+   BottomPoint.Y := BOTTOM_POINT_Y;
    IPoint.X := BottomHook + 30;
-   IPoint.Y := 41;
+   IPoint.Y := BOTTOM_POINT_Y + 10;
    TopHook.X := BottomHook;
-   Constraints.MinWidth := 150;
-   Constraints.MinHeight := 61;
+   Constraints.MinWidth := BLOCK_WIDTH;
+   Constraints.MinHeight := BLOCK_HEIGHT;
 end;
 
 constructor TInputBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
@@ -96,7 +101,7 @@ constructor TInputBlock.Create(ABranch: TBranch);
 begin
    FLabel := i18Manager.GetString('CaptionIn');
    FLabelSegoe := GInfra.CurrentLang.LabelIn;
-   inherited Create(ABranch, TBlockParms.New(blInput, 0, 0, 150, 61), GInfra.CurrentLang.InputFunction, true);
+   inherited Create(ABranch, TBlockParms.New(blInput, 0, 0, BLOCK_WIDTH, BLOCK_HEIGHT), GInfra.CurrentLang.InputFunction, true);
 end;
 
 constructor TOutputBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
@@ -110,7 +115,7 @@ constructor TOutputBlock.Create(ABranch: TBranch);
 begin
    FLabel := i18Manager.GetString('CaptionOut');
    FLabelSegoe := GInfra.CurrentLang.LabelOut;
-   inherited Create(ABranch, TBlockParms.New(blOutput, 0, 0, 150, 61), GInfra.CurrentLang.OutputFunction, true);
+   inherited Create(ABranch, TBlockParms.New(blOutput, 0, 0, BLOCK_WIDTH, BLOCK_HEIGHT), GInfra.CurrentLang.OutputFunction, true);
 end;
 
 procedure TInOutBlock.Paint;
@@ -129,24 +134,27 @@ begin
       Canvas.Brush.Color := lColor;
    Canvas.Polygon([Point(20, 0),
                    Point(Width-1, 0),
-                   Point(Width-21, 31),
-                   Point(0, 31),
+                   Point(Width-21, BOTTOM_POINT_Y),
+                   Point(0, BOTTOM_POINT_Y),
                    Point(20, 0)]);
    Canvas.MoveTo(w+32, 0);
-   Canvas.LineTo(w+12, 31);
+   Canvas.LineTo(w+12, BOTTOM_POINT_Y);
    fontStyles := Canvas.Font.Style;
    Canvas.Font.Style := [];
    R := Rect(17, 15-(Canvas.TextHeight('X') div 2), w+17, 23);
    DrawText(Canvas.Handle, PChar(FLabel), -1, R, DT_CENTER);
    Canvas.Font.Style := fontStyles;
-   DrawBlockLabel(5, 31, FLabelSegoe);
+   DrawBlockLabel(5, BOTTOM_POINT_Y, FLabelSegoe);
    DrawI;
 end;
 
 procedure TInOutBlock.PutTextControls;
 begin
    var l := TInfra.Scaled(Canvas.TextWidth(FLabel)) + 33;
-   var t := 16 - FStatement.Height div 2;
+   var t := 17 - FStatement.Height div 2;
+   var d := BOTTOM_POINT_Y - t - FStatement.Height;
+   if d < 0 then
+      t := t + d;
    FStatement.SetBounds(l, t, Width-l-20, FStatement.Height);
 end;
 
