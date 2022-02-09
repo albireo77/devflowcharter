@@ -126,7 +126,7 @@ var
    lColor: TColor;
 begin
    inherited;
-   w := TInfra.Scaled(Canvas.TextWidth(FLabel));
+   w := Canvas.TextWidth(FLabel);
    DrawArrow(BottomPoint, BottomPoint.X, Height-1);
    Canvas.Brush.Style := bsClear;
    lColor := GSettings.GetShapeColor(FShape);
@@ -137,8 +137,8 @@ begin
                    Point(Width-21, BOTTOM_POINT_Y),
                    Point(0, BOTTOM_POINT_Y),
                    Point(20, 0)]);
-   Canvas.MoveTo(w+32, 0);
-   Canvas.LineTo(w+12, BOTTOM_POINT_Y);
+   Canvas.MoveTo(w+33, 0);
+   Canvas.LineTo(w+13, BOTTOM_POINT_Y);
    fontStyles := Canvas.Font.Style;
    Canvas.Font.Style := [];
    R := Rect(17, 15-(Canvas.TextHeight('X') div 2), w+17, 23);
@@ -150,7 +150,7 @@ end;
 
 procedure TInOutBlock.PutTextControls;
 begin
-   var l := TInfra.Scaled(Canvas.TextWidth(FLabel)) + 33;
+   var l := Canvas.TextWidth(FLabel) + 34;
    var t := 17 - FStatement.Height div 2;
    var d := BOTTOM_POINT_Y - t - FStatement.Height;
    if d < 0 then
