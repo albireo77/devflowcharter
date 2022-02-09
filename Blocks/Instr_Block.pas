@@ -33,20 +33,21 @@ type
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
       protected
          procedure Paint; override;
+         procedure PutTextControls; override;
    end;
 
 
 implementation
 
 uses
-   System.StrUtils, Vcl.Forms, Vcl.Controls, System.Types, System.Classes, Infrastructure;
+   Vcl.Controls, System.Types, System.Classes, Infrastructure;
 
 constructor TInstrBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
    inherited Create(ABranch, ABlockParms);
 
-   FStatement.SetBounds(1, 1, ABlockParms.w-2, 19);
+   FStatement.SetBounds(1, 1, ABlockParms.w-2, TInfra.Scaled(FStatement.Font.Size + 9));
    FStatement.Anchors := [akRight, akLeft, akTop];
    FStatement.SetLRMargins(2, 2);
 
@@ -66,11 +67,9 @@ begin
 end;
 
 procedure TInstrBlock.Paint;
-var
-   r: TRect;
 begin
    inherited;
-   r := FStatement.BoundsRect;
+   var r := FStatement.BoundsRect;
    r.Inflate(1, 1);
    BottomPoint.Y := r.Bottom;
    IPoint.Y := r.Bottom + 8;
@@ -78,6 +77,13 @@ begin
    Canvas.FrameRect(r);
    DrawBlockLabel(5, r.Bottom, GInfra.CurrentLang.LabelInstr);
    DrawI;
+end;
+
+procedure TInstrBlock.PutTextControls;
+begin
+   FStatement.Height := TInfra.Scaled(FStatement.Font.Size + 9);
+   BottomPoint.Y := FStatement.BoundsRect.Bottom + 1;
+   IPoint.Y := BottomPoint.Y + 8;
 end;
 
 end.
