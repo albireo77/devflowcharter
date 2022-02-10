@@ -23,7 +23,7 @@ unit Instr_Block;
 interface
 
 uses
-   Vcl.Graphics, System.SysUtils, Base_Block, Types;
+   System.SysUtils, Base_Block, Types;
 
 type
 
@@ -41,7 +41,7 @@ type
 implementation
 
 uses
-   Vcl.Controls, System.Types, System.Classes, Infrastructure;
+   Vcl.Controls, System.Types, Infrastructure;
 
 constructor TInstrBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin

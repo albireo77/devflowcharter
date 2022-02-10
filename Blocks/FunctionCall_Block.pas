@@ -24,7 +24,7 @@ unit FunctionCall_Block;
 interface
 
 uses
-   Vcl.Graphics, Base_Block, Types;
+   Base_Block, Types;
 
 type
 
@@ -34,20 +34,22 @@ type
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
       protected
          procedure Paint; override;
+         procedure PutTextControls; override;
+         function CalculateStatementHeight: integer;
    end;
 
 
 implementation
 
 uses
-   Vcl.Controls, Vcl.Forms, System.Classes, System.Types, Infrastructure;
+   Vcl.Controls, Vcl.Graphics, System.Types, Infrastructure;
 
 constructor TFunctionCallBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
    inherited Create(ABranch, ABlockParms);
 
-   FStatement.SetBounds(10, 1, ABlockParms.w-20, 19);
+   FStatement.SetBounds(10, 1, ABlockParms.w-20, CalculateStatementHeight);
    FStatement.Anchors := [akRight, akLeft, akTop];
    FStatement.SetLRMargins(1, 1);
    FStatement.Color := GSettings.GetShapeColor(shpRoutine);
@@ -85,13 +87,25 @@ begin
    IPoint.Y := br.Y + 8;
    r := Rect(0, FStatement.Top-1, Width, br.Y);
    Canvas.Rectangle(r);
-   DrawBlockLabel(5, br.Y, GInfra.CurrentLang.LabelFuncCall);
+   DrawBlockLabel(1, br.Y-2, GInfra.CurrentLang.LabelFuncCall);
    DrawArrow(BottomPoint, BottomPoint.X, Height-1);
    r := Rect(FStatement.Left-4, FStatement.Top-1, FStatement.Left-1, br.Y);
    Canvas.Rectangle(r);
    r.SetLocation(br.X+1, r.Top);
    Canvas.Rectangle(r);
    DrawI;
+end;
+
+function TFunctionCallBlock.CalculateStatementHeight: integer;
+begin
+   result := Abs(FStatement.Font.Height) + 6;
+end;
+
+procedure TFunctionCallBlock.PutTextControls;
+begin
+   FStatement.Height := CalculateStatementHeight;
+   BottomPoint.Y := FStatement.BoundsRect.Bottom + 1;
+   IPoint.Y := BottomPoint.Y + 8;
 end;
 
 end.
