@@ -99,11 +99,9 @@ begin
 end;
 
 procedure TCorner.Paint;
-var
-   r: TRect;
 begin
    inherited;
-   r := ClientRect;
+   var r := ClientRect;
    r.Inflate(0, 0, -1, -1);
 
    Canvas.Pen.Color := THackWinControl(Parent).Color;

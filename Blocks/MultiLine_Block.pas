@@ -24,7 +24,7 @@ unit MultiLine_Block;
 interface
 
 uses
-   Vcl.Controls, Vcl.StdCtrls, Vcl.Graphics, System.Classes, Vcl.ComCtrls, Base_Block,
+   Vcl.Controls, Vcl.StdCtrls, System.Classes, Vcl.ComCtrls, Base_Block,
    StatementMemo, MemoEx, Types;
 
 type
@@ -54,7 +54,7 @@ uses
 {$IFDEF USE_CODEFOLDING}
    SynEditCodeFolding,
 {$ENDIF}
-   System.SysUtils, System.Types, System.UITypes, Infrastructure, Constants, LangDefinition;
+   System.UITypes, Infrastructure, Constants, LangDefinition;
 
 constructor TMultiLineBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin

@@ -25,10 +25,9 @@ unit Base_Block;
 interface
 
 uses
-   WinApi.Windows, Vcl.Forms, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Controls, Vcl.Graphics,
-   WinApi.Messages, System.SysUtils, System.Classes, Vcl.ComCtrls, System.UITypes,
-   Generics.Collections, Statement, OmniXML, BaseEnumerator, Interfaces, Types,
-   BlockTabSheet, Comment, MemoEx;
+   WinApi.Windows, Vcl.StdCtrls, Vcl.Controls, Vcl.Graphics, WinApi.Messages, System.Classes,
+   Vcl.ComCtrls, Generics.Collections, Statement, OmniXML, BaseEnumerator,
+   Interfaces, Types, BlockTabSheet, Comment, MemoEx;
 
 const
    PRIMARY_BRANCH_IDX = 1;
@@ -293,8 +292,8 @@ implementation
 
 uses
    System.StrUtils, Vcl.Menus, System.Types, System.Math, System.Rtti, System.TypInfo,
-   Main_Block, Return_Block, Infrastructure, BlockFactory, UserFunction, XMLProcessor,
-   Navigator_Form, LangDefinition, FlashThread, Main_Form, Constants;
+   System.SysUtils, System.UITypes, Main_Block, Return_Block, Infrastructure, BlockFactory,
+   UserFunction, XMLProcessor, Navigator_Form, LangDefinition, FlashThread, Main_Form, Constants;
 
 type
    THackControl = class(TControl);
@@ -2592,21 +2591,17 @@ begin
 end;
 
 function TBlock.FillTemplate(const ALangId: string; const ATemplate: string = ''): string;
-var
-   template: string;
 begin
    result := FillCodedTemplate(ALangId);
-   template := FindTemplate(ALangId, ATemplate);
+   var template := FindTemplate(ALangId, ATemplate);
    if not template.IsEmpty then
       result := ReplaceStr(template, PRIMARY_PLACEHOLDER, result);
 end;
 
 function TBlock.FillCodedTemplate(const ALangId: string): string;
-var
-   textControl: TCustomEdit;
 begin
    result := '';
-   textControl := GetTextControl;
+   var textControl := GetTextControl;
    if textControl <> nil then
       result := Trim(textControl.Text);
 end;

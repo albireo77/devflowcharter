@@ -23,8 +23,8 @@ unit Case_Block;
 interface
 
 uses
-   Vcl.StdCtrls, Vcl.Graphics, System.Classes, System.SysUtils, Vcl.ComCtrls, System.Types,
-   Vcl.Controls, Base_Block, OmniXML, Types, Statement;
+   Vcl.StdCtrls, Vcl.Graphics, System.Classes, Vcl.ComCtrls, System.Types, Vcl.Controls,
+   Base_Block, OmniXML, Types, Statement;
 
 type
 
@@ -66,8 +66,8 @@ const
 implementation
 
 uses
-   System.StrUtils, System.UITypes, System.Math, XMLProcessor, Return_Block, Navigator_Form,
-   LangDefinition, Infrastructure, Constants;
+   System.StrUtils, System.Math, System.SysUtils, XMLProcessor, Return_Block, LangDefinition,
+   Infrastructure, Constants;
 
 constructor TCaseBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
