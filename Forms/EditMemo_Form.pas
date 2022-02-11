@@ -50,12 +50,10 @@ begin
 end;
 
 procedure TMemoEditorForm.FormShow(Sender: TObject);
-var
-   pnt: TPoint;
 begin
    if Source <> nil then
    begin
-      pnt := Source.ClientOrigin;
+      var pnt := Source.ClientOrigin;
       SetBounds(pnt.X, pnt.Y, Source.EditFormWidth, Source.EditFormHeight);
       memEditor.Font.Assign(Source.Font);
       memEditor.Font.Color := clNavy;

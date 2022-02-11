@@ -60,15 +60,12 @@ begin
 end;
 
 procedure TGotoForm.btnGotoClick(Sender: TObject);
-var
-   i, line: integer;
-   gotoFlag: boolean;
 begin
 
    with TInfra.GetEditorForm.memCodeEditor do
    begin
-      gotoFlag := false;
-      line := 0;
+      var gotoFlag := false;
+      var line := 0;
       if rbLine.Checked then
       begin
          line := StrToIntDef(edtNumber.Text, 0);
@@ -80,7 +77,7 @@ begin
       else if rbNextBookmark.Checked then
       begin
          line := Lines.Count;
-         for i := 0 to Marks.Count-1 do
+         for var i := 0 to Marks.Count-1 do
          begin
             if (Marks[i].Line > CaretY) and (Marks[i].Line <= line) then
             begin
@@ -92,7 +89,7 @@ begin
       else if rbPrevBookmark.Checked then
       begin
          line := 1;
-         for i := 0 to Marks.Count-1 do
+         for var i := 0 to Marks.Count-1 do
          begin
             if (Marks[i].Line < CaretY) and (Marks[i].Line >= line) then
             begin

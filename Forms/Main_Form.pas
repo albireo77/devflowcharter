@@ -26,9 +26,9 @@ unit Main_Form;
 interface
 
 uses
-  WinApi.Windows, Vcl.Graphics, Vcl.Forms, Vcl.Controls, System.SysUtils, Vcl.Menus,
-  Vcl.ImgList, System.Classes, Vcl.Dialogs, WinApi.Messages, Vcl.ComCtrls, System.ImageList,
-  Base_Form, History, Interfaces, OmniXML;
+  WinApi.Windows, Vcl.Graphics, Vcl.Forms, System.SysUtils, Vcl.Menus, Vcl.ImgList,
+  System.Classes, Vcl.Dialogs, WinApi.Messages, Vcl.ComCtrls, System.ImageList,
+  Base_Form, History, Interfaces, OmniXML, Vcl.Controls;
 
 const
    CM_MENU_CLOSED = CM_BASE + 1001;

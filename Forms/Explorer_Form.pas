@@ -24,8 +24,8 @@ unit Explorer_Form;
 interface
 
 uses
-   Vcl.Controls, Vcl.StdCtrls, Vcl.Menus, Vcl.ComCtrls, System.Classes, System.Types,
-   OmniXML, Base_Form, Types, Interfaces;
+   Vcl.StdCtrls, Vcl.Menus, Vcl.ComCtrls, System.Classes, System.Types, OmniXML,
+   Base_Form, Types, Interfaces, Vcl.Controls;
 
 type
   TExplorerForm = class(TBaseForm)

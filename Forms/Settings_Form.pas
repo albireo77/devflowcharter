@@ -24,8 +24,8 @@ unit Settings_Form;
 interface
 
 uses
-  Vcl.Controls, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Graphics, System.Classes, System.Types,
-  Base_Form, Settings, Types;
+  Vcl.Dialogs, Vcl.StdCtrls, Vcl.Graphics, System.Classes, System.Types, Base_Form,
+  Settings, Types, Vcl.Controls, Vcl.ExtCtrls;
 
 type
   TSettingsForm = class(TBaseForm)

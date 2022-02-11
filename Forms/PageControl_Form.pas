@@ -24,8 +24,8 @@ unit PageControl_Form;
 interface
 
 uses
-   Vcl.Controls, Vcl.Menus, Vcl.ComCtrls, System.Classes, System.Types, OmniXML,
-   Base_Form, Types;
+   Vcl.Menus, Vcl.ComCtrls, System.Classes, System.Types, OmniXML, Base_Form, Types,
+   Vcl.Controls;
 
 type
 
@@ -83,12 +83,10 @@ uses
    Interfaces;
 
 procedure TPageControlForm.miRemoveClick(Sender: TObject);
-var
-   tab: TTabComponent;
 begin
    if pgcTabs.ActivePage <> nil then
    begin
-      tab := TTabComponent(pgcTabs.ActivePage);
+      var tab := TTabComponent(pgcTabs.ActivePage);
       tab.Active := false;
       GClpbrd.UndoObject.Free;
       GClpbrd.UndoObject := tab.ParentObject;
@@ -118,14 +116,11 @@ end;
 
 procedure TPageControlForm.pgcTabsDrawTab(Control: TCustomTabControl;
   TabIndex: Integer; const Rect: TRect; Active: Boolean);
-var
-   lRect: TRect;
-   page: TTabSheet;
 begin
-   page := TInfra.GetPageFromTabIndex(pgcTabs, TabIndex);
+   var page := TInfra.GetPageFromTabIndex(pgcTabs, TabIndex);
    if page <> nil then
    begin
-      lRect := Rect;
+      var lRect := Rect;
       lRect.Right := lRect.Right-3;
       TTabComponent(page).RefreshFontColor;
       Control.Canvas.Font.Color := page.Font.Color;
@@ -154,19 +149,15 @@ begin
 end;
 
 procedure TPageControlForm.miExportAllClick(Sender: TObject);
-var
-   fileName: string;
 begin
-   fileName := ReplaceStr(GProject.Name + ' ' + Caption, ' ', '_');
+   var fileName := ReplaceStr(GProject.Name + ' ' + Caption, ' ', '_');
    TXMLProcessor.ExportToXMLFile(ExportTabsToXMLTag, fileName);
 end;
 
 function TPageControlForm.GetVisiblePageCount: integer;
-var
-   i: integer;
 begin
    result := 0;
-   for i:= 0 to pgcTabs.PageCount-1 do
+   for var i:= 0 to pgcTabs.PageCount-1 do
    begin
       if pgcTabs.Pages[i].TabVisible then
          Inc(result);

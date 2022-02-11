@@ -46,7 +46,7 @@ var
 implementation
 
 uses
-   System.SysUtils, Vcl.Forms, Infrastructure, XMLProcessor, UserDataType, Interfaces;
+   System.SysUtils, Infrastructure, XMLProcessor, UserDataType, Interfaces;
 
 {$R *.dfm}
 

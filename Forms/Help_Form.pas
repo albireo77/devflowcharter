@@ -24,7 +24,7 @@ unit Help_Form;
 interface
 
 uses
-  System.Classes, Vcl.Controls, Vcl.StdCtrls, Base_Form;
+  System.Classes, Vcl.StdCtrls, Vcl.Controls, Base_Form;
 
 type
 
@@ -48,12 +48,9 @@ uses
 {$R *.dfm}
 
 procedure THelpForm.Localize(AList: TStringList);
-var
-   i: integer;
-   txt: string;
 begin
-   txt := '';
-   for i := 1 to 28 do
+   var txt := '';
+   for var i := 1 to 28 do
       txt := txt + ' ' + AList.Values['EditorHelp' + i.ToString] + sLineBreak;
    memHelp.Text := ReplaceText(txt, ' ' + LB_PHOLDER2, StringOfChar('-', 55));
    inherited Localize(AList);

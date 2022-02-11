@@ -24,8 +24,7 @@ unit About_Form;
 interface
 
 uses
-   Vcl.Controls, Vcl.Forms, Vcl.StdCtrls, Vcl.Imaging.jpeg, System.Classes, Vcl.ExtCtrls,
-   Base_Form;
+   Vcl.StdCtrls, Vcl.Imaging.jpeg, System.Classes, Vcl.ExtCtrls, Base_Form, Vcl.Controls;
 
 type
 
@@ -54,7 +53,7 @@ var
 implementation
 
 uses
-   WinApi.Windows, System.SysUtils, Constants, ShellAPI;
+   WinApi.Windows, System.SysUtils, Vcl.Forms, Constants, ShellAPI;
 
 {$R *.dfm}
 
