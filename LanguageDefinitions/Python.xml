@@ -101,7 +101,6 @@ Description: Key for label displayed for flowchart of project's main program
 <LabelIf>if</LabelIf>
 <LabelIfElse>if else</LabelIfElse>
 <LabelFuncCall>func call</LabelFuncCall>
-<LabelReturn>return</LabelReturn>
 <LabelFolder>folder</LabelFolder>
 <LabelText>text</LabelText>
 <LabelIn>input</LabelIn>

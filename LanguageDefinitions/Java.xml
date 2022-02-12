@@ -214,7 +214,6 @@ Will be displayed in flowchart for given blocks.
 <LabelIf>if</LabelIf>
 <LabelIfElse>if else</LabelIfElse>
 <LabelFuncCall>method call</LabelFuncCall>
-<LabelReturn>return</LabelReturn>
 <LabelFolder>folder</LabelFolder>
 <LabelText>text</LabelText>
 <LabelIn>input</LabelIn>
