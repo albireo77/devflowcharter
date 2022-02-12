@@ -145,7 +145,7 @@ type
 implementation
 
 uses
-   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, Vcl.Grids, Infrastructure, Constants,
+   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, Infrastructure, Constants,
    Main_Form, XMLProcessor, LangDefinition, Navigator_Form, BlockTabSheet, Types;
 
 var

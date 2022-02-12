@@ -24,8 +24,8 @@ unit Comment;
 interface
 
 uses
-   WinApi.Messages, System.Types, Vcl.Controls, Vcl.Forms, Vcl.StdCtrls, System.Classes,
-   OmniXML, Interfaces, BlockTabSheet, MemoEx;
+   WinApi.Messages, System.Types, Vcl.Controls, System.Classes, OmniXML, Interfaces,
+   BlockTabSheet, MemoEx;
 
 type
 
@@ -75,7 +75,7 @@ type
 implementation
 
 uses
-   Vcl.Graphics, System.SysUtils, System.UITypes, WinApi.Windows, Infrastructure,
+   Vcl.Graphics, Vcl.Forms, System.SysUtils, System.UITypes, WinApi.Windows, Infrastructure,
    XMLProcessor, UserFunction, Main_Block, Navigator_Form, Constants;
 
 constructor TComment.Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight: Integer);
