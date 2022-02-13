@@ -212,7 +212,7 @@ procedure TForDoBlock.PutTextControls;
 begin
    var t := GetTextTop;
    var r := DrawTextLabel(Branch.Hook.X-97, t, FForLabel, false, true, false).Right;
-   cbVar.SetBounds(r+8, 34-t, edtVar.Width+5, cbVar.Height);
+   cbVar.SetBounds(r+cbVar.Font.Size-4, 34-t, edtVar.Width+5, cbVar.Height);
    TInfra.MoveWin(edtVar, cbVar.Left+4, 38-t);
    r := DrawTextLabel(edtVar.Left + edtVar.Width + 3, t, GInfra.CurrentLang.ForDoVarString, false, true, false).Right;
    TInfra.MoveWin(edtStart, r+4, 38-t);
@@ -236,7 +236,7 @@ begin
       a := edtStart.Left - edtVar.Left - edtVar.Width;
       b := edtStop.Left - edtStart.Left - edtStart.Width;
 
-      cbVar.Left := bhx - 75;
+      cbVar.Left :=  bhx + cbVar.Font.Size - 87;
       edtVar.Left := cbVar.Left + 4;
       br0 := edtVar.Left + edtVar.Width;
       edtStart.Left := br0 + a;
