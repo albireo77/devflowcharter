@@ -141,7 +141,7 @@ begin
    Canvas.LineTo(w+13, BOTTOM_POINT_Y);
    fontStyles := Canvas.Font.Style;
    Canvas.Font.Style := [];
-   R := Rect(17, 1, w+17, BOTTOM_POINT_Y - 3);
+   R := Rect(17, 1, w+17, BOTTOM_POINT_Y-3);
    DrawText(Canvas.Handle, PChar(FLabel), -1, R, DT_SINGLELINE or DT_VCENTER);
    Canvas.Font.Style := fontStyles;
    DrawBlockLabel(5, BOTTOM_POINT_Y, FLabelSegoe);
