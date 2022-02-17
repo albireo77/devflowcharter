@@ -141,7 +141,7 @@ begin
    Canvas.LineTo(w+13, BOTTOM_POINT_Y);
    fontStyles := Canvas.Font.Style;
    Canvas.Font.Style := [];
-   R := Rect(17, 1, w+17, 31);
+   R := Rect(17, 1, w+17, BOTTOM_POINT_Y - 3);
    DrawText(Canvas.Handle, PChar(FLabel), -1, R, DT_SINGLELINE or DT_VCENTER);
    Canvas.Font.Style := fontStyles;
    DrawBlockLabel(5, BOTTOM_POINT_Y, FLabelSegoe);
@@ -151,7 +151,7 @@ end;
 procedure TInOutBlock.PutTextControls;
 begin
    var l := Canvas.TextWidth(FLabel) + 34;
-   var t := 18 - FStatement.Height div 2;
+   var t := (BOTTOM_POINT_Y - FStatement.Height) div 2 + 1;
    FStatement.SetBounds(l, t, Width-l-20, FStatement.Height);
 end;
 
