@@ -74,7 +74,7 @@ uses
    Infrastructure, Constants, XMLProcessor, Main_Block, UserFunction, Return_Block;
 
 const
-   DEFAULT_WIDTH = 244;
+   DEFAULT_WIDTH = 246;
    DEFAULT_HEIGHT = 91;
    DEFAULT_BOTTOM_HOOK = DEFAULT_WIDTH div 2;
    RIGHT_MARGIN = 11;
@@ -187,7 +187,7 @@ begin
    begin
       AStatement.Width := w;
       PutTextControls;
-      FInitParms.Width := edtStop.Left + edtStop.Width + 80;
+      FInitParms.Width := edtStop.Left + edtStop.Width + 82;
       FInitParms.BottomPoint.X := FInitParms.Width - RIGHT_MARGIN;
    end;
 end;
@@ -242,7 +242,7 @@ begin
       edtStart.Left := br0 + a;
       br1 := edtStart.Left + edtStart.Width;
       edtStop.Left := br1 + b;
-      br2 := edtStop.Left + edtStop.Width + 4;
+      br2 := edtStop.Left + edtStop.Width + 6;
 
       IPoint.X := br2 + 16;
       IPoint.Y := 35;
