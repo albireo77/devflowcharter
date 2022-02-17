@@ -56,8 +56,8 @@ uses
    Infrastructure;
 
 const
-   DEF_BLOCK_WIDTH    = 150;
-   DEF_BLOCK_HEIGHT   = 61;
+   DEF_BLOCK_WIDTH    = 153;
+   DEF_BLOCK_HEIGHT   = 64;
    BOTTOM_POINT_Y = DEF_BLOCK_HEIGHT - 30;
 
 constructor TInOutBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms; const AText: string; AdjustWidth: boolean);
@@ -141,8 +141,8 @@ begin
    Canvas.LineTo(w+13, BOTTOM_POINT_Y);
    fontStyles := Canvas.Font.Style;
    Canvas.Font.Style := [];
-   R := Rect(17, 15-(Canvas.TextHeight('X') div 2), w+17, 23);
-   DrawText(Canvas.Handle, PChar(FLabel), -1, R, DT_CENTER);
+   R := Rect(17, 1, w+17, 31);
+   DrawText(Canvas.Handle, PChar(FLabel), -1, R, DT_SINGLELINE or DT_VCENTER);
    Canvas.Font.Style := fontStyles;
    DrawBlockLabel(5, BOTTOM_POINT_Y, FLabelSegoe);
    DrawI;
@@ -151,10 +151,7 @@ end;
 procedure TInOutBlock.PutTextControls;
 begin
    var l := Canvas.TextWidth(FLabel) + 34;
-   var t := 17 - FStatement.Height div 2;
-   var d := BOTTOM_POINT_Y - t - FStatement.Height;
-   if d < 0 then
-      t := t + d;
+   var t := 18 - FStatement.Height div 2;
    FStatement.SetBounds(l, t, Width-l-20, FStatement.Height);
 end;
 
