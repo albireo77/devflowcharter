@@ -65,6 +65,7 @@ type
          function FillTemplate(const ALangId: string; const ATemplate: string = ''): string; override;
          function FillCodedTemplate(const ALangId: string): string; override;
          function GetDescTemplate(const ALangId: string): string; override;
+         procedure ResizeVert(AContinue: boolean); override;
    end;
 
 implementation
@@ -222,29 +223,16 @@ begin
 end;
 
 procedure TForDoBlock.Paint;
-var
-   bhx, br0, br1, br2, t, a, b: integer;
-   lShapeColor: TColor;
 begin
    inherited;
    if Expanded and FIsInitialized then
    begin
 
-      bhx := Branch.Hook.X;
-      t := GetTextTop;
+      var bhx := Branch.Hook.X;
+      var t := GetTextTop;
+      var bst := edtStop.BoundsRect.Right + 6;
 
-      a := edtStart.Left - edtVar.Left - edtVar.Width;
-      b := edtStop.Left - edtStart.Left - edtStart.Width;
-
-      cbVar.Left := DrawTextLabel(bhx-97, t, FForLabel, false, true, false).Right + 1;
-      edtVar.Left := cbVar.Left + 4;
-      br0 := edtVar.Left + edtVar.Width;
-      edtStart.Left := br0 + a;
-      br1 := edtStart.Left + edtStart.Width;
-      edtStop.Left := br1 + b;
-      br2 := edtStop.Left + edtStop.Width + 6;
-
-      IPoint.X := br2 + 16;
+      IPoint.X := bst + 16;
       IPoint.Y := 35;
       DrawArrow(bhx, TopHook.Y, Branch.Hook);
       DrawArrow(Width-11, 19, Width-RIGHT_MARGIN, Height-1);
@@ -256,20 +244,20 @@ begin
                           Point(5, 19),
                           Point(bhx-100, 19)]);
       end;
-      Canvas.MoveTo(br2+30, 19);
+      Canvas.MoveTo(bst+30, 19);
       Canvas.LineTo(Width-RIGHT_MARGIN, 19);
       Canvas.Brush.Style := bsClear;
-      lShapeColor := GSettings.GetShapeColor(FShape);
-      if lShapeColor <> GSettings.DesktopColor then
-         Canvas.Brush.Color := lShapeColor;
+      var shpColor := GSettings.GetShapeColor(FShape);
+      if shpColor <> GSettings.DesktopColor then
+         Canvas.Brush.Color := shpColor;
       Canvas.Polygon([Point(bhx-100, 0),
-                      Point(br2-9, 0),
-                      Point(br2+30, 19),
-                      Point(br2-9, TopHook.Y),
+                      Point(bst-9, 0),
+                      Point(bst+30, 19),
+                      Point(bst-9, TopHook.Y),
                       Point(bhx-100, TopHook.Y),
                       Point(bhx-100, 0)]);
-      DrawTextLabel(br0+3, t, GInfra.CurrentLang.ForDoVarString, false, true);
-      DrawTextLabel(br1+3, t, IfThen(FDescOrder, '«', '»'), false, true);
+      DrawTextLabel(edtVar.BoundsRect.Right+3, t, GInfra.CurrentLang.ForDoVarString, false, true);
+      DrawTextLabel(edtStart.BoundsRect.Right+3, t, IfThen(FDescOrder, '«', '»'), false, true);
       DrawTextLabel(bhx-97, t, FForLabel, false, true);
       DrawBlockLabel(bhx-100, 40, GInfra.CurrentLang.LabelFor);
    end;
@@ -539,6 +527,12 @@ begin
    end;
    AInfo.FocusEdit := edit;
    result := inherited RetrieveFocus(AInfo);
+end;
+
+procedure TForDoBlock.ResizeVert(AContinue: boolean);
+begin
+   inherited ResizeVert(AContinue);
+   PutTextControls;
 end;
 
 procedure TForDoBlock.UpdateEditor(AEdit: TCustomEdit);
