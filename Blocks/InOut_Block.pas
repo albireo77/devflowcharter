@@ -151,7 +151,7 @@ end;
 procedure TInOutBlock.PutTextControls;
 begin
    var l := Canvas.TextWidth(FLabel) + 34;
-   var t := (BOTTOM_POINT_Y - FStatement.Height) div 2 + 1;
+   var t := (BOTTOM_POINT_Y - FStatement.Height) div 2 + 2;
    FStatement.SetBounds(l, t, Width-l-20, FStatement.Height);
 end;
 
