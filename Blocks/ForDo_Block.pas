@@ -214,11 +214,11 @@ begin
    var t := GetTextTop;
    var r := DrawTextLabel(Branch.Hook.X-97, t, FForLabel, false, true, false).Right;
    cbVar.SetBounds(r+1, 34-t, edtVar.Width+5, cbVar.Height);
-   TInfra.MoveWin(edtVar, cbVar.Left+4, 38-t);
+   edtVar.SetBounds(cbVar.Left+4, 38-t, edtVar.Width, edtVar.Height);
    r := DrawTextLabel(edtVar.Left + edtVar.Width + 3, t, GInfra.CurrentLang.ForDoVarString, false, true, false).Right;
-   TInfra.MoveWin(edtStart, r+4, 38-t);
+   edtStart.SetBounds(r+4, 38-t, edtStart.Width, edtStart.Height);
    r := DrawTextLabel(edtStart.Left + edtStart.Width + 3, t, IfThen(FDescOrder, '«', '»'), false, true, false).Right;
-   TInfra.MoveWin(edtStop, r+4, 38-t);
+   edtStop.SetBounds(r+4, 38-t, edtStop.Width, edtStop.Height);
    Invalidate;
 end;
 
@@ -227,13 +227,10 @@ begin
    inherited;
    if Expanded and FIsInitialized then
    begin
-
       var bhx := Branch.Hook.X;
       var t := GetTextTop;
       var bst := edtStop.BoundsRect.Right + 6;
-
-      IPoint.X := bst + 16;
-      IPoint.Y := 35;
+      IPoint := Point(bst + 16, 35);
       DrawArrow(bhx, TopHook.Y, Branch.Hook);
       DrawArrow(Width-11, 19, Width-RIGHT_MARGIN, Height-1);
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
