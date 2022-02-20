@@ -79,9 +79,10 @@ begin
       line := codeEditor.Lines.Count;
       for var i := 0 to codeEditor.Marks.Count-1 do
       begin
-         if (codeEditor.Marks[i].Line > codeEditor.CaretY) and (codeEditor.Marks[i].Line <= line) then
+         var cLine := codeEditor.Marks[i].Line;
+         if (cLine > codeEditor.CaretY) and (cLine <= line) then
          begin
-            line := codeEditor.Marks[i].Line;
+            line := cLine;
             gotoFlag := true;
          end;
       end;
@@ -91,9 +92,10 @@ begin
       line := 1;
       for var i := 0 to codeEditor.Marks.Count-1 do
       begin
-         if (codeEditor.Marks[i].Line < codeEditor.CaretY) and (codeEditor.Marks[i].Line >= line) then
+         var cLine := codeEditor.Marks[i].Line;
+         if (cLine < codeEditor.CaretY) and (cLine >= line) then
          begin
-            line := codeEditor.Marks[i].Line;
+            line := cLine;
             gotoFlag := true;
          end;
       end;
