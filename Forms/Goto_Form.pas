@@ -62,45 +62,45 @@ end;
 procedure TGotoForm.btnGotoClick(Sender: TObject);
 begin
 
-   with TInfra.GetEditorForm.memCodeEditor do
+   var codeEditor := TInfra.GetEditorForm.memCodeEditor;
+   var gotoFlag := false;
+   var line := 0;
+
+   if rbLine.Checked then
    begin
-      var gotoFlag := false;
-      var line := 0;
-      if rbLine.Checked then
+      line := StrToIntDef(edtNumber.Text, 0);
+      if line > 0 then
+         gotoFlag := true;
+      codeEditor.SetFocus;
+      Close;
+   end
+   else if rbNextBookmark.Checked then
+   begin
+      line := codeEditor.Lines.Count;
+      for var i := 0 to codeEditor.Marks.Count-1 do
       begin
-         line := StrToIntDef(edtNumber.Text, 0);
-         if line > 0 then
+         if (codeEditor.Marks[i].Line > codeEditor.CaretY) and (codeEditor.Marks[i].Line <= line) then
+         begin
+            line := codeEditor.Marks[i].Line;
             gotoFlag := true;
-         SetFocus;
-         Self.Close;
-      end
-      else if rbNextBookmark.Checked then
-      begin
-         line := Lines.Count;
-         for var i := 0 to Marks.Count-1 do
-         begin
-            if (Marks[i].Line > CaretY) and (Marks[i].Line <= line) then
-            begin
-               line := Marks[i].Line;
-               gotoFlag := true;
-            end;
-         end;
-      end
-      else if rbPrevBookmark.Checked then
-      begin
-         line := 1;
-         for var i := 0 to Marks.Count-1 do
-         begin
-            if (Marks[i].Line < CaretY) and (Marks[i].Line >= line) then
-            begin
-               line := Marks[i].Line;
-               gotoFlag := true;
-            end;
          end;
       end;
-      if gotoFlag then
-         GotoLineAndCenter(line);
+   end
+   else if rbPrevBookmark.Checked then
+   begin
+      line := 1;
+      for var i := 0 to codeEditor.Marks.Count-1 do
+      begin
+         if (codeEditor.Marks[i].Line < codeEditor.CaretY) and (codeEditor.Marks[i].Line >= line) then
+         begin
+            line := codeEditor.Marks[i].Line;
+            gotoFlag := true;
+         end;
+      end;
    end;
+   if gotoFlag then
+      codeEditor.GotoLineAndCenter(line);
+
 end;
 
 end.
