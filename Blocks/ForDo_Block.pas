@@ -219,7 +219,7 @@ begin
    TInfra.MoveWin(edtStart, r+4, 38-t);
    r := DrawTextLabel(edtStart.Left + edtStart.Width + 3, t, IfThen(FDescOrder, '«', '»'), false, true, false).Right;
    TInfra.MoveWin(edtStop, r+4, 38-t);
-   Repaint;
+   Invalidate;
 end;
 
 procedure TForDoBlock.Paint;
