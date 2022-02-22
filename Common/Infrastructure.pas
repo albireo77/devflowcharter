@@ -50,10 +50,10 @@ type
          property TemplateLang: TLangDefinition read FTemplateLang;
          constructor Create;
          destructor Destroy; override;
-         class procedure ShowWarningBox(const AWarnMsg: string);
-         class procedure ShowFormattedWarningBox(const AKey: string; Args: array of const);
-         class procedure ShowErrorBox(const AErrorMsg: string; AError: TError);
-         class procedure ShowFormattedErrorBox(const AKey: string; Args: array of const; AError: TError);
+         class procedure ShowWarningBox(const AWarnMsg: string); overload;
+         class procedure ShowWarningBox(const AKey: string; Args: array of const); overload;
+         class procedure ShowErrorBox(const AErrorMsg: string; AError: TError); overload;
+         class procedure ShowErrorBox(const AKey: string; Args: array of const; AError: TError); overload;
          class procedure SetInitialSettings;
          class procedure PopulateDataTypeCombo(AcbType: TComboBox; ASkipIndex: integer = 100);
          class procedure PrintBitmap(ABitmap: TBitmap);
@@ -72,8 +72,8 @@ type
          class procedure IndentSpacesToTabs(ALines: TStringList);
          class function GetScrolledPoint(AMemo: TCustomMemo): TPoint;
          class function CreateDOSProcess(const ACommand: string; ADir: string = ''): boolean;
-         class function ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
-         class function ShowFormattedQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
+         class function ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer; overload;
+         class function ShowQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer; overload;
          class function FindText(ASubstr, AText: string; idx: integer; ACaseSens: boolean): integer;
          class function IsPrinter: boolean;
          class function IsValidControl(AObject: TObject): boolean;
@@ -180,7 +180,7 @@ begin
    FCurrentLang := FLangArray[0];
    FPPI := Screen.MonitorFromWindow(Application.Handle).PixelsPerInch;
    if FPPI > MAX_SUPPORTED_PPI then
-      ShowFormattedWarningBox('OverMaxPPI', [FPPI, MAX_SUPPORTED_PPI, sLineBreak]);
+      ShowWarningBox('OverMaxPPI', [FPPI, MAX_SUPPORTED_PPI, sLineBreak]);
 end;
 
 destructor TInfra.Destroy;
@@ -356,12 +356,12 @@ begin
       Application.MessageBox(PChar(AErrorMsg), PChar(i18Manager.GetString(ErrorsTypeArray[AError])), MB_ICONERROR);
 end;
 
-class procedure TInfra.ShowFormattedErrorBox(const AKey: string; Args: array of const; AError: TError);
+class procedure TInfra.ShowErrorBox(const AKey: string; Args: array of const; AError: TError);
 begin
    ShowErrorBox(i18Manager.GetFormattedString(AKey, Args), AError);
 end;
 
-class procedure TInfra.ShowFormattedWarningBox(const AKey: string; Args: array of const);
+class procedure TInfra.ShowWarningBox(const AKey: string; Args: array of const);
 begin
    ShowWarningBox(i18Manager.GetFormattedString(AKey, Args));
 end;
@@ -376,7 +376,7 @@ begin
    result := Application.MessageBox(PChar(AMsg), PChar(i18Manager.GetString('Confirmation')), AFlags);
 end;
 
-class function TInfra.ShowFormattedQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
+class function TInfra.ShowQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
 begin
    result := ShowQuestionBox(i18Manager.GetFormattedString(AKey, Args), AFlags);
 end;

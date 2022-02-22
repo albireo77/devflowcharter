@@ -313,12 +313,11 @@ end;
 
 function TProject.GetComponents<T>(AComparer: IComparer<T> = nil): IEnumerable<T>;
 var
-   i: integer;
    list: TList<T>;
    comp: TComponent;
 begin
    list := TList<T>.Create;
-   for i := 0 to FComponentList.Count-1 do
+   for var i := 0 to FComponentList.Count-1 do
    begin
       comp := FComponentList[i];
       if (T = TComponent) or (comp.ClassType = T) then
@@ -382,20 +381,16 @@ begin
 end;
 
 procedure TProject.UnRegister(AObject: TObject);
-var
-   idx: integer;
 begin
-   idx := FObjectIds.IndexOfObject(AObject);
+   var idx := FObjectIds.IndexOfObject(AObject);
    if idx <> -1 then
       FObjectIds.Delete(idx);
 end;
 
 function TProject.FindObject(AId: integer): TObject;
-var
-   idx: integer;
 begin
    result := nil;
-   idx := FObjectIds.IndexOf(AId.ToString);
+   var idx := FObjectIds.IndexOf(AId.ToString);
    if idx <> -1 then
       result := FObjectIds.Objects[idx];
 end;
@@ -528,12 +523,12 @@ begin
 
    ver := ATag.GetAttribute(APP_VERSION_ATTR);
    if TInfra.CompareProgramVersion(ver) > 0 then
-      TInfra.ShowFormattedWarningBox('OldVerMsg', [ver]);
+      TInfra.ShowWarningBox('OldVerMsg', [ver]);
 
    s := IfThen(SameText(langName, GInfra.TemplateLang.Name), 'ChangeLngNone', 'ChangeLngAsk');
 
    if (not SameText(GInfra.CurrentLang.Name, langName)) and
-      (TInfra.ShowFormattedQuestionBox(s, [langName.Trim, sLineBreak], MB_YESNO+MB_ICONQUESTION) = mrYes) then
+      (TInfra.ShowQuestionBox(s, [langName.Trim, sLineBreak], MB_YESNO+MB_ICONQUESTION) = mrYes) then
    begin
       GSettings.CurrentLangName := langName;
 {$IFDEF USE_CODEFOLDING}

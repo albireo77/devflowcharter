@@ -474,7 +474,7 @@ begin
             lang := GInfra.TemplateLang;
          if (lang <> nil) and not lang.FileContentsGenerator(newLines, skipFuncBody) then
          begin
-            TInfra.ShowFormattedErrorBox('NoProgTempl', [sLineBreak, GInfra.CurrentLang.Name, GInfra.CurrentLang.DefFile, FILE_CONTENTS_TAG], errValidate);
+            TInfra.ShowErrorBox('NoProgTempl', [sLineBreak, GInfra.CurrentLang.Name, GInfra.CurrentLang.DefFile, FILE_CONTENTS_TAG], errValidate);
             Exit;
          end;
       finally
@@ -755,7 +755,7 @@ begin
        end;
     end
     else
-       TInfra.ShowFormattedErrorBox('CompilerNotFound', [GInfra.CurrentLang.Name], errCompile)
+       TInfra.ShowErrorBox('CompilerNotFound', [GInfra.CurrentLang.Name], errCompile)
 end;
 
 procedure TEditorForm.miPrintClick(Sender: TObject);

@@ -312,7 +312,7 @@ begin
          if errText.IsEmpty then
             errText := GErr_text;
          errText := i18Manager.GetFormattedString('FileError', [result]) + sLineBreak + errText;
-         TInfra.ShowFormattedErrorBox('ImportFailed', [sLineBreak, errText], errImport);
+         TInfra.ShowErrorBox('ImportFailed', [sLineBreak, errText], errImport);
          result := '';
       end;
    end;
@@ -334,7 +334,7 @@ begin
          filePath := AFilePath;
       if FileExists(filePath) and FileIsReadOnly(filePath) then
       begin
-         TInfra.ShowFormattedErrorBox('SaveReadOnlyFile', [filePath], errIO);
+         TInfra.ShowErrorBox('SaveReadOnlyFile', [filePath], errIO);
          result := errIO;
       end
       else if not filePath.IsEmpty then
@@ -350,7 +350,7 @@ begin
          except on E: Exception do
             begin
                result := errIO;
-               TInfra.ShowFormattedErrorBox('SaveError', [filePath, sLineBreak, E.Message], result);
+               TInfra.ShowErrorBox('SaveError', [filePath, sLineBreak, E.Message], result);
             end;
          end;
       end;

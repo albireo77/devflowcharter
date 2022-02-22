@@ -252,7 +252,6 @@ const
               'MULTIASSIGN', 'IF', 'SUBROUTINE', 'INPUT', 'OUTPUT', 'CASE', 'RETURN', 'TEXT', 'FOLDER');
 var
    lCursor: TCustomCursor;
-   i: integer;
    menuItem: TMenuItem;
 begin
    lCursor := crNormal;
@@ -270,7 +269,7 @@ begin
    FHistoryMenu.Load;
    pgcPages.DoubleBuffered := true;
    FClockPos := Low(TClockPos);
-   for i := FLOWCHART_MIN_FONT_SIZE to FLOWCHART_MAX_FONT_SIZE do
+   for var i := FLOWCHART_MIN_FONT_SIZE to FLOWCHART_MAX_FONT_SIZE do
    begin
       menuItem := TMenuItem.Create(miFontSize);
       menuItem.Caption := i.ToString;
@@ -451,10 +450,8 @@ begin
 end;
 
 procedure TMainForm.miGenerateClick(Sender: TObject);
-var
-   form: TForm;
 begin
-   form := TInfra.GetEditorForm;
+   var form := TInfra.GetEditorForm;
    if form.Showing then
    begin
       if form.WindowState = wsMinimized then
@@ -488,24 +485,20 @@ begin
 end;
 
 procedure TMainForm.miSaveClick(Sender: TObject);
-var
-   filePath: string;
 begin
     if GProject.IsNew then
        miSaveAs.Click
     else
     begin
-       filePath := ReplaceText(Caption, PROJECT_CAPTION, '');
+       var filePath := ReplaceText(Caption, PROJECT_CAPTION, '');
        filePath := ReplaceText(filePath, '*', '');
        GProject.ExportToXMLFile(filePath);
     end;
 end;
 
 procedure TMainForm.miPrintClick(Sender: TObject);
-var
-   bitmap: TBitmap;
 begin
-   bitmap := TBitmap.Create;
+   var bitmap := TBitmap.Create;
    try
       GProject.ExportToGraphic(bitmap);
       TInfra.PrintBitmap(bitmap);
@@ -729,14 +722,11 @@ begin
 end;
 
 procedure TMainForm.miCommentClick(Sender: TObject);
-var
-   p: TPoint;
-   page: TBlockTabSheet;
 begin
    if GProject <> nil then
    begin
-      page := GProject.GetActivePage;
-      p := page.Box.ScreenToClient(page.Box.PopupMenu.PopupPoint);
+      var page := GProject.GetActivePage;
+      var p := page.Box.ScreenToClient(page.Box.PopupMenu.PopupPoint);
       TComment.Create(page, p.X, p.Y, 150, 50);
       GProject.SetChanged;
    end;
@@ -875,7 +865,7 @@ function TMainForm.ConfirmSave: integer;
 begin
    result := mrCancel;
    if GProject <> nil then
-      result := TInfra.ShowFormattedQuestionBox('ConfirmClose', [GProject.Name]);
+      result := TInfra.ShowQuestionBox('ConfirmClose', [GProject.Name]);
 end;
 
 procedure TMainForm.SetChanged;
@@ -954,10 +944,8 @@ begin
 end;
 
 procedure TMainForm.miCopyClick(Sender: TObject);
-var
-   comp: TComponent;
 begin
-   comp := pmPages.PopupComponent;
+   var comp := pmPages.PopupComponent;
    if (comp is TCustomEdit) and (TCustomEdit(comp).SelLength > 0) then
    begin
       if Sender = miCopy then
@@ -975,10 +963,8 @@ begin
 end;
 
 procedure TMainForm.miRemoveClick(Sender: TObject);
-var
-   comp: TComponent;
 begin
-   comp := pmPages.PopupComponent;
+   var comp := pmPages.PopupComponent;
    if (comp = GClpbrd.Instance) or (GClpbrd.UndoObject = GClpbrd.Instance) then
       GClpbrd.Instance := nil;
    if comp is TBlock then
@@ -1046,12 +1032,10 @@ begin
 end;
 
 procedure TMainForm.miFoldUnfoldClick(Sender: TObject);
-var
-   block: TGroupBlock;
 begin
    if pmPages.PopupComponent is TGroupBlock then
    begin
-      block := TGroupBlock(pmPages.PopupComponent);
+      var block := TGroupBlock(pmPages.PopupComponent);
       block.ClearSelection;
       block.ExpandFold(true);
    end;
@@ -1145,12 +1129,10 @@ begin
 end;
 
 procedure TMainForm.miAddMainClick(Sender: TObject);
-var
-   body: TMainBlock;
 begin
    if GProject <> nil then
    begin
-      body := TMainBlock.Create(GProject.GetActivePage, GetMainBlockNextTopLeft);
+      var body := TMainBlock.Create(GProject.GetActivePage, GetMainBlockNextTopLeft);
       TUserFunction.Create(nil, body);
       TInfra.UpdateCodeEditor(body);
    end;
@@ -1221,30 +1203,25 @@ begin
 end;
 
 procedure TMainForm.miNewFunctionClick(Sender: TObject);
-var
-   box: TScrollBoxEx;
 begin
    if GProject <> nil then
    begin
-      box := GProject.GetActivePage.Box;
+      var box := GProject.GetActivePage.Box;
       TInfra.GetFunctionsForm.AddUserFunction(box.ScreenToClient(box.PopupMenu.PopupPoint));
    end;
 end;
 
 procedure TMainForm.pgcPagesContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
-var
-   p: TPoint;
-   page: TTabSheet;
 begin
    if (GProject <> nil) and (htOnItem in pgcPages.GetHitTestInfoAt(MousePos.X, MousePos.Y)) then
    begin
-      page := TInfra.GetPageFromXY(pgcPages, MousePos.X, MousePos.Y);
+      var page := TInfra.GetPageFromXY(pgcPages, MousePos.X, MousePos.Y);
       if page <> nil then
       begin
          pmTabs.PopupComponent := page;
          pgcPages.ActivePageIndex := page.PageIndex;
       end;
-      p := pgcPages.ClientToScreen(MousePos);
+      var p := pgcPages.ClientToScreen(MousePos);
       pmTabs.Popup(p.X, p.Y);
    end
 end;
@@ -1279,12 +1256,10 @@ end;
 
 procedure TMainForm.pgcPagesMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-   page: TTabSheet;
 begin
    if Button = mbLeft then
    begin
-      page := TInfra.GetPageFromXY(pgcPages, X, Y);
+      var page := TInfra.GetPageFromXY(pgcPages, X, Y);
       if page <> nil then
          page.BeginDrag(false, 3);
    end;
@@ -1298,14 +1273,11 @@ begin
 end;
 
 procedure TMainForm.pgcPagesDragDrop(Sender, Source: TObject; X, Y: Integer);
-var
-   idx: integer;
-   page: TTabSheet;
 begin
-   page := TInfra.GetPageFromXY(pgcPages, X, Y);
+   var page := TInfra.GetPageFromXY(pgcPages, X, Y);
    if page <> nil then
    begin
-      idx := page.PageIndex;
+      var idx := page.PageIndex;
       page.PageIndex := TTabSheet(Source).PageIndex;
       TTabSheet(Source).PageIndex := idx;
       GProject.SetChanged;
@@ -1313,14 +1285,11 @@ begin
 end;
 
 procedure TMainForm.miRenamePageClick(Sender: TObject);
-var
-   lCaption: TCaption;
-   page: TTabSheet;
 begin
    if pmTabs.PopupComponent is TTabSheet then
    begin
-      page := TTabSheet(pmTabs.PopupComponent);
-      lCaption := InputBox(i18Manager.GetString('Page'), i18Manager.GetString('EnterPage'), page.Caption).Trim;
+      var page := TTabSheet(pmTabs.PopupComponent);
+      var lCaption := InputBox(i18Manager.GetString('Page'), i18Manager.GetString('EnterPage'), page.Caption).Trim;
       if (lCaption <> '') and (TInfra.FindDuplicatedPage(page, lCaption) = nil) then
       begin
          page.Caption := lCaption;
@@ -1331,14 +1300,11 @@ begin
 end;
 
 procedure TMainForm.miAddPageClick(Sender: TObject);
-var
-   lCaption: TCaption;
-   page: TTabSheet;
 begin
-   lCaption := InputBox(i18Manager.GetString('Page'), i18Manager.GetString('EnterPage'), '').Trim;
+   var lCaption := InputBox(i18Manager.GetString('Page'), i18Manager.GetString('EnterPage'), '').Trim;
    if (lCaption <> '') and (GProject.GetPage(lCaption, false) = nil) then
    begin
-      page := GProject.GetPage(lCaption);
+      var page := GProject.GetPage(lCaption);
       page.PageControl.ActivePage := page;
       NavigatorForm.Invalidate;
       GProject.SetChanged;
@@ -1351,8 +1317,6 @@ begin
 end;
 
 procedure TMainForm.pmEditsPopup(Sender: TObject);
-var
-   edit: TCustomEdit;
 begin
    miUndo.Enabled := false;
    miCut1.Enabled := false;
@@ -1362,7 +1326,7 @@ begin
    miInsertFunc.Visible := false;
    if pmEdits.PopupComponent is TCustomEdit then
    begin
-      edit := TCustomEdit(pmEdits.PopupComponent);
+      var edit := TCustomEdit(pmEdits.PopupComponent);
       miUndo.Enabled := edit.CanUndo;
       miCut1.Enabled := not edit.SelText.IsEmpty;
       miCopy1.Enabled := miCut1.Enabled;
@@ -1373,12 +1337,10 @@ begin
 end;
 
 procedure TMainForm.pmEditsMenuClick(Sender: TObject);
-var
-   edit: TCustomEdit;
 begin
    if pmEdits.PopupComponent is TCustomEdit then
    begin
-      edit := TCustomEdit(pmEdits.PopupComponent);
+      var edit := TCustomEdit(pmEdits.PopupComponent);
       if Sender = miUndo then
          edit.Undo
       else if Sender = miCut1 then
@@ -1506,20 +1468,16 @@ begin
 end;
 
 procedure TMainForm.UpdateTabsColor(AColor: TColor);
-var
-   i: integer;
 begin
-   for i := 0 to pgcPages.PageCount-1 do
+   for var i := 0 to pgcPages.PageCount-1 do
       TBlockTabSheet(pgcPages.Pages[i]).Box.Color := AColor;
 end;
 
 procedure TPopupListEx.WndProc(var msg: TMessage);
-var
-   mform: TMainForm;
 begin
    if (msg.Msg = WM_UNINITMENUPOPUP) and (Screen.ActiveForm is TMainForm) then
    begin
-      mform := TMainForm(Screen.ActiveForm);
+      var mform := TMainForm(Screen.ActiveForm);
       if msg.WParam = mform.pmPages.Handle then
          PostMessage(mForm.Handle, CM_MENU_CLOSED, msg.WParam, msg.LParam);
    end;
