@@ -235,11 +235,9 @@ begin
 end;
 
 class function TInfra.IndexOf<T>(const AValue: T; const AArray: TArray<T>): integer;
-var
-   i: integer;
 begin
    result := -1;
-   for i := 0 to High(AArray) do
+   for var i := 0 to High(AArray) do
    begin
       if TComparer<T>.Default.Compare(AValue, AArray[i]) = 0 then
       begin
@@ -250,14 +248,12 @@ begin
 end;
 
 function TInfra.SetCurrentLang(const ALangName: string): TLangDefinition;
-var
-   lang: TLangDefinition;
 begin
    if ALangName.IsEmpty then
       FCurrentLang := FLangArray[0]
    else
    begin
-      lang := GetLangDefinition(ALangName);
+      var lang := GetLangDefinition(ALangName);
       if lang <> nil then
          FCurrentLang := lang;
    end;
@@ -265,19 +261,15 @@ begin
 end;
 
 procedure TInfra.GetLangNames(AList: TStrings);
-var
-   i: integer;
 begin
-   for i := 0 to High(FLangArray) do
+   for var i := 0 to High(FLangArray) do
       AList.Add(FLangArray[i].Name);
 end;
 
 function TInfra.GetNativeDataType(const AName: string): PNativeDataType;
-var
-   i: integer;
 begin
    result := nil;
-   for i := 0 to High(FCurrentLang.NativeDataTypes) do
+   for var i := 0 to High(FCurrentLang.NativeDataTypes) do
    begin
       if SameStrings(AName, FCurrentLang.NativeDataTypes[i].Name) then
       begin
@@ -615,15 +607,13 @@ begin
 end;
 
 class function TInfra.GetComboMaxWidth(ACombo: TComboBox): integer;
-var
-   i, len: integer;
 begin
    result := 0;
    if ACombo <> nil then
    begin
-      for i := 0 to ACombo.Items.Count-1 do
+      for var i := 0 to ACombo.Items.Count-1 do
       begin
-         len := ACombo.Canvas.TextWidth(ACombo.Items[i]);
+         var len := ACombo.Canvas.TextWidth(ACombo.Items[i]);
          if len > result then
             result := len;
       end;
@@ -682,11 +672,9 @@ begin
 end;
 
 function TInfra.GetLangDefinition(const AName: string): TLangDefinition;
-var
-   i: integer;
 begin
    result := nil;
-   for i := 0 to High(FLangArray) do
+   for var i := 0 to High(FLangArray) do
    begin
       if SameText(FLangArray[i].Name, AName) then
       begin
@@ -697,10 +685,8 @@ begin
 end;
 
 procedure TInfra.SetLangHiglighterAttributes;
-var
-   i: integer;
 begin
-   for i := 0 to High(FLangArray) do
+   for var i := 0 to High(FLangArray) do
    begin
       if Assigned(FLangArray[i].SetHLighterAttrs) then
          FLangArray[i].SetHLighterAttrs;
@@ -708,11 +694,9 @@ begin
 end;
 
 class function TInfra.StripInstrEnd(const ALine: string): string;
-var
-   iend: string;
 begin
    result := ALine;
-   iend := GInfra.CurrentLang.InstrEnd;
+   var iend := GInfra.CurrentLang.InstrEnd;
    if (not result.IsEmpty) and not iend.IsEmpty then
    begin
       if result.Trim = iend then
@@ -723,11 +707,9 @@ begin
 end;
 
 class function TInfra.FindLastRow(AObject: TObject; AStart: integer; ALines: TStrings): integer;
-var
-   i: integer;
 begin
    result := AStart;
-   for i := result+1 to ALines.Count-1 do
+   for var i := result+1 to ALines.Count-1 do
    begin
       if ALines.Objects[i] = AObject then
          result := i;
@@ -803,17 +785,15 @@ begin
 end;
 
 class procedure TInfra.InsertLinesIntoList(ADestList, ASourceList: TStringList; AFromLine: integer);
-var
-   i, lineCount: integer;
 begin
    if AFromLine < 0 then
       ADestList.AddStrings(ASourceList)
    else
    begin
-      lineCount := ADestList.Count + ASourceList.Count;
+      var lineCount := ADestList.Count + ASourceList.Count;
       if ADestList.Capacity < lineCount then
          ADestList.Capacity := lineCount;
-      for i := ASourceList.Count-1 downto 0 do
+      for var i := ASourceList.Count-1 downto 0 do
          ADestList.InsertObject(AFromLine, ASourceList.Strings[i], ASourceList.Objects[i]);
    end;
 end;
@@ -845,15 +825,12 @@ begin
 end;
 
 class procedure TInfra.DecrementNodeSiblingOffsets(ANode: TTreeNode);
-var
-   i: integer;
-   node: TTreeNodeWithFriend;
 begin
    if ANode.Parent <> nil then
    begin
-      for i := ANode.Index+1 to ANode.Parent.Count-1 do
+      for var i := ANode.Index+1 to ANode.Parent.Count-1 do
       begin
-         node := TTreeNodeWithFriend(ANode.Parent.Item[i]);
+         var node := TTreeNodeWithFriend(ANode.Parent.Item[i]);
          if (node.Data <> nil) and (node.Data = ANode.Data) and (node.Offset > 0) then
             node.Offset := node.Offset - 1;
       end;
@@ -926,11 +903,9 @@ begin
 end;
 
 class function TInfra.GetActiveEdit: TCustomEdit;
-var
-   control: TControl;
 begin
    result := nil;
-   control := GetMainForm.ActiveControl;
+   var control := GetMainForm.ActiveControl;
    if (control is TCustomEdit) and control.HasParent then
       result := TCustomEdit(control);
 end;
