@@ -179,13 +179,13 @@ begin
    FLangArray := FLangArray + [FTemplateLang];
    FCurrentLang := FLangArray[0];
    FPPI := Screen.MonitorFromWindow(Application.Handle).PixelsPerInch;
+   if FPPI > MAX_SUPPORTED_PPI then
+      ShowFormattedWarningBox('OverMaxPPI', [FPPI, MAX_SUPPORTED_PPI, sLineBreak]);
 end;
 
 destructor TInfra.Destroy;
-var
-   i: integer;
 begin
-   for i := 0 to High(FLangArray) do
+   for var i := 0 to High(FLangArray) do
       FLangArray[i].Free;
    FLangArray := nil;
    inherited Destroy;
@@ -1066,25 +1066,21 @@ begin
 end;
 
 class function TInfra.ExtractIndentString(const AText: string): string;
-var
-   i, len: integer;
 begin
    result := AText;
-   i := 1;
-   len := result.Length;
+   var i := 1;
+   var len := result.Length;
    while (i <= len) and result[i].IsWhiteSpace do
       i := i + 1;
    SetLength(result, i-1);
 end;
 
 class function TInfra.GetFunctionHeader(ABlock: TBlock): TUserFunctionHeader;
-var
-   mainBlock: TMainBlock;
 begin
    result := nil;
    if ABlock <> nil then
    begin
-      mainBlock := TMainBlock(ABlock.TopParentBlock);
+      var mainBlock := TMainBlock(ABlock.TopParentBlock);
       if mainBlock.UserFunction is TUserFunction then
          result := TUserFunction(mainBlock.UserFunction).Header;
    end;
@@ -1097,26 +1093,21 @@ begin
 end;
 
 class procedure TInfra.SetFontSize(AControl: TControl; ASize: integer);
-var
-   flag: boolean;
 begin
-   flag := (AControl is TCustomEdit) and (THackCustomEdit(AControl).BorderStyle = bsNone);
+   var flag := (AControl is TCustomEdit) and (THackCustomEdit(AControl).BorderStyle = bsNone);
    if flag then THackCustomEdit(AControl).BorderStyle := bsSingle;
    THackControl(AControl).Font.Size := ASize;
    if flag then THackCustomEdit(AControl).BorderStyle := bsNone;
 end;
 
 class function TInfra.FindDuplicatedPage(APage: TTabSheet; const ACaption: TCaption): TTabSheet;
-var
-   i: integer;
-   page: TTabSheet;
 begin
    result := nil;
    if APage <> nil then
    begin
-      for i := 0 to APage.PageControl.PageCount-1 do
+      for var i := 0 to APage.PageControl.PageCount-1 do
       begin
-         page := APage.PageControl.Pages[i];
+         var page := APage.PageControl.Pages[i];
          if (page <> APage) and SameCaption(page.Caption, ACaption) then
          begin
             result := page;
@@ -1167,14 +1158,11 @@ begin
 end;
 
 class procedure TInfra.IndentSpacesToTabs(ALines: TStringList);
-var
-   i, a: integer;
-   line: string;
 begin
-   for i := 0 to ALines.Count-1 do
+   for var i := 0 to ALines.Count-1 do
    begin
-      line := ALines[i];
-      a := Length(ExtractIndentString(line));
+      var line := ALines[i];
+      var a := Length(ExtractIndentString(line));
       if a > 0 then
          ALines[i] := StringOfChar(TAB_CHAR, a) + Copy(line, a + 1);
    end;
@@ -1260,10 +1248,8 @@ begin
 end;
 
 class procedure TInfra.DeleteLinesContaining(ALines: TStrings; const AText: string);
-var
-   i: integer;
 begin
-   for i := ALines.Count-1 downto 0 do
+   for var i := ALines.Count-1 downto 0 do
    begin
       if ALines.Strings[i].Contains(AText) then
          ALines.Delete(i);
@@ -1291,12 +1277,10 @@ begin
 end;
 
 class function TInfra.GetPageFromTabIndex(APageControl: TPageControl; ATabIndex: integer): TTabSheet;
-var
-   i, idx: integer;
 begin
    result := nil;
-   idx := ATabIndex;
-   for i := 0 to ATabIndex do
+   var idx := ATabIndex;
+   for var i := 0 to ATabIndex do
    begin
       if not APageControl.Pages[i].TabVisible then
          Inc(idx);
@@ -1316,14 +1300,12 @@ begin
 end;
 
 function TInfra.ValidateConstId(const AId: string): integer;
-var
-   i: integer;
 begin
    result := ValidateId(AId);
    if (result = INCORRECT_IDENT) and (not CurrentLang.ConstIDSpecChars.IsEmpty) and not AId.Trim.IsEmpty then
    begin
       result := VALID_IDENT;
-      for i := 1 to AId.Length do
+      for var i := 1 to AId.Length do
       begin
          if (Pos(AId[i], CurrentLang.ConstIDSpecChars) = 0) and not CharInSet(AId[i], ID_ALLOW_CHARS) then
          begin
@@ -1335,13 +1317,10 @@ begin
 end;
 
 function TInfra.ParseVarSize(const ASize: string): boolean;
-var
-   lang: TLangDefinition;
-   goParse: boolean;
 begin
    result := true;
-   lang := GetLangDefinition(PASCAL_LANG_ID);
-   goParse := (lang <> nil) and Assigned(lang.Parse);
+   var lang := GetLangDefinition(PASCAL_LANG_ID);
+   var goParse := (lang <> nil) and Assigned(lang.Parse);
    if (ASize <> '') and ((ASize[1] = '0') or (ASize[1] = '-') or (goParse and not lang.Parse(ASize, yymVarSize))) then
       result := false;
 end;

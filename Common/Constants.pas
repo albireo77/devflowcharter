@@ -119,6 +119,8 @@ const   // Global constants
 
         FUNCTION_TYPE_IND = -5;
 
+        MAX_SUPPORTED_PPI = 120;
+
         PRIMARY_PLACEHOLDER = '%s1';
 
         DEF_PAGE_CAPTION_KEY = 'mainPage';
