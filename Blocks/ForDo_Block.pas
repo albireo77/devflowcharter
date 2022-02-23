@@ -44,6 +44,7 @@ type
          procedure PutTextControls; override;
          function GetTextTop: integer;
          function FillExpression(const AExpression: string; const ALangId: string): string;
+         procedure OnChangeAll;
       public
          edtStart, edtStop: TStatement;
          cbVar: TComboBox;
@@ -141,9 +142,7 @@ begin
    edtVar.OnClick := VarOnClick;
    edtVar.OnChange := VarOnChange;
 
-   edtStart.OnChangeExtend(edtStart);
-   edtStop.OnChangeExtend(edtStop);
-   edtVar.OnChange(edtVar);
+   OnChangeAll;
 
    BottomPoint := Point(Width-RIGHT_MARGIN, 20);
    TopHook := Point(ABlockParms.br.X, 39);
@@ -587,7 +586,8 @@ begin
          edtStop.Text := ReplaceStr(tag.Text, '#' , ' ');
       FRefreshMode := false;
       FDescOrder := ATag.GetAttribute('order') = 'ordDesc';
-   end
+   end;
+   OnChangeAll;
 end;
 
 procedure TForDoBlock.SaveInXML(ATag: IXMLElement);
@@ -606,6 +606,13 @@ begin
       ATag.AppendChild(tag);
       ATag.SetAttribute('order', IfThen(FDescOrder, 'ordDesc', 'ordAsc'));
    end;
+end;
+
+procedure TForDoBlock.OnChangeAll;
+begin
+   edtStart.OnChangeExtend(edtStart);
+   edtStop.OnChangeExtend(edtStop);
+   edtVar.OnChange(edtVar);
 end;
 
 end.
