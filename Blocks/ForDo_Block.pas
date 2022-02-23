@@ -174,6 +174,7 @@ begin
       end;
    end;
    inherited CloneFrom(ABlock);
+   PutTextControls;
 end;
 
 constructor TForDoBlock.Create(ABranch: TBranch);
