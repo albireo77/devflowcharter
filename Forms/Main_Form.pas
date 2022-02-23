@@ -374,7 +374,7 @@ end;
 procedure TMainForm.FormShow(Sender: TObject);
 begin
    SetProjectMenu(false);
-   // will display PPI dialog when main form is aleady visible
+   // will display PPI dialog when main form is already visible
    PostMessage(Handle, WM_PPI_DIALOG, 0, 0);
 end;
 
