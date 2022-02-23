@@ -1265,7 +1265,10 @@ end;
 
 class function TInfra.Scaled(on96: integer): integer;
 begin
-   result := MulDiv(on96, FPPI, 96);
+   if FPPI = 96 then
+      result := on96
+   else
+      result := MulDiv(on96, FPPI, 96);
 end;
 
 class function TInfra.ReplaceXMLIndents(const ALine: string): string;

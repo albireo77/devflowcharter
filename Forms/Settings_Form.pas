@@ -165,21 +165,22 @@ const
 
 procedure TSettingsForm.Localize(AList: TStringList);
 begin
+   var w := TInfra.Scaled(449);
    lblFileEncoding.Left := cbFileEncoding.Left - lblFileEncoding.Width - 5;
    lblCompiler.Left := 7;
    edtCompiler.Left := lblCompiler.Width + lblCompiler.Left + 5;
-   edtCompiler.Width := 449 - edtCompiler.Left;
+   edtCompiler.Width := w - edtCompiler.Left;
    lblCompilerNoMain.Left := 7;
    edtCompilerNoMain.Left := lblCompilerNoMain.Width + lblCompilerNoMain.Left + 5;
-   edtCompilerNoMain.Width := 449 - edtCompilerNoMain.Left;
+   edtCompilerNoMain.Width := w - edtCompilerNoMain.Left;
    edtTranslateFile.Left := lblFile.Width + lblFile.Left + 5;;
-   edtTranslateFile.Width := 449 - edtTranslateFile.Left;
+   edtTranslateFile.Width := w - edtTranslateFile.Left;
    var val := lblDesktop.Width;
    if val < lblBlockColor.Width then
       val := lblBlockColor.Width;
    if val < lblFontColor.Width then
       val := lblFontColor.Width;
-   Inc(val, lblDesktop.Left+10);
+   Inc(val, lblDesktop.Left + 10);
    pnlDesktop.Left := val;
    pnlFill.Left := val;
    pnlFont.Left := val;
