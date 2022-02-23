@@ -84,12 +84,10 @@ begin
 end;
 
 destructor TBlockTabSheet.Destroy;
-var
-   func: TUserFunction;
 begin
    if GProject <> nil then
    begin
-      for func in GProject.GetUserFunctions do
+      for var func in GProject.GetUserFunctions do
       begin
          if func.Body.Page = Self then
             func.Free;
@@ -104,10 +102,8 @@ begin
 end;
 
 procedure TBlockTabSheet.ExportToXMLTag(ATag: IXMLElement);
-var
-   tag: IXMLElement;
 begin
-   tag := ATag.OwnerDocument.CreateElement('page');
+   var tag := ATag.OwnerDocument.CreateElement('page');
    ATag.AppendChild(tag);
    tag.SetAttribute('name', IfThen(IsMain, MAIN_PAGE_MARKER, Caption));
    tag.SetAttribute('hScrollRange', Box.HorzScrollBar.Range.ToString);
@@ -117,10 +113,8 @@ begin
 end;
 
 procedure TBlockTabSheet.ImportFromXMLTag(ATag: IXMLElement);
-var
-   val: integer;
 begin
-   val := TXMLProcessor.GetIntFromAttr(ATag, 'hScrollRange', -1);
+   var val := TXMLProcessor.GetIntFromAttr(ATag, 'hScrollRange', -1);
    if val > -1 then
       Box.HorzScrollBar.Range := val;
    val := TXMLProcessor.GetIntFromAttr(ATag, 'hScrollPos', -1);
@@ -187,12 +181,10 @@ begin
 end;
 
 procedure TScrollBoxEx.SetScrollBars;
-var
-   pnt: TPoint;
 begin
    if Parent <> nil then
    begin
-      pnt := GetBottomRight;
+      var pnt := GetBottomRight;
       HorzScrollBar.Range := Max(pnt.X, ClientWidth);
       VertScrollBar.Range := Max(pnt.Y, ClientHeight);
    end;
@@ -207,22 +199,18 @@ begin
 end;
 
 procedure TScrollBoxEx.BoxMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-   pnt: TPoint;
 begin
    if (Button = mbRight) and (GProject <> nil) then
    begin
-      pnt := ClientToScreen(Point(X, Y));
+      var pnt := ClientToScreen(Point(X, Y));
       PopupMenu.PopupComponent := Self;
       PopupMenu.Popup(pnt.X, pnt.Y);
    end;
 end;
 
 procedure TScrollBoxEx.BoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-var
-   y: integer;
 begin
-   y := 0;
+   var y := 0;
    if Key = vkNext then
       y := 15 * 20
    else if Key = vkPrior then
@@ -269,9 +257,6 @@ begin
 end;
 
 procedure TScrollBoxEx.PaintToCanvas(ACanvas: TCanvas);
-var
-   hnd: THandle;
-   winCtrl: TWinControl;
 begin
    with ACanvas do
    begin
@@ -279,10 +264,10 @@ begin
       Brush.Color := Self.Color;
       FillRect(ClipRect);
    end;
-   hnd := GetWindow(GetTopWindow(Handle), GW_HWNDLAST);
+   var hnd := GetWindow(GetTopWindow(Handle), GW_HWNDLAST);
    while hnd <> 0 do
    begin
-      winCtrl := FindControl(hnd);
+      var winCtrl := FindControl(hnd);
       if (winCtrl <> nil) and winCtrl.Visible then
          winCtrl.PaintTo(ACanvas, winCtrl.Left + HorzScrollBar.Position, winCtrl.Top + VertScrollBar.Position);
       hnd := GetNextWindow(hnd, GW_HWNDPREV);
