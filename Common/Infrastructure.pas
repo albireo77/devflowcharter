@@ -46,6 +46,7 @@ type
          class var FParsedEdit: TCustomEdit;
          class var FPPI: integer;
       public
+         class property PPI: integer read FPPI;
          property CurrentLang: TLangDefinition read FCurrentLang;
          property TemplateLang: TLangDefinition read FTemplateLang;
          constructor Create;
@@ -179,8 +180,6 @@ begin
    FLangArray := FLangArray + [FTemplateLang];
    FCurrentLang := FLangArray[0];
    FPPI := Screen.MonitorFromWindow(Application.Handle).PixelsPerInch;
-   if FPPI > MAX_SUPPORTED_PPI then
-      ShowWarningBox('OverMaxPPI', [FPPI, MAX_SUPPORTED_PPI, sLineBreak]);
 end;
 
 destructor TInfra.Destroy;
