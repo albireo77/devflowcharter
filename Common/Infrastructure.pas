@@ -108,7 +108,7 @@ type
          class function GetDimensionCount(const AText: string): integer;
          class function GetDimensions(const AText: string): TArray<string>;
          class function GetTextWidth(const AText: string; AControl: TControl): integer;
-         class function GetAutoWidth(AControl: TControl): integer;
+         class function GetAutoWidth(AControl: TControl; AMinWidth: integer = 0): integer;
          class function GetLibObject: TObject;
          class function GetParserErrMsg: string;
          class function FindLastRow(AObject: TObject; AStart: integer; ALines: TStrings): integer;
@@ -1120,15 +1120,16 @@ begin
    end;
 end;
 
-class function TInfra.GetAutoWidth(AControl: TControl): integer;
+class function TInfra.GetAutoWidth(AControl: TControl; AMinWidth: integer = 0): integer;
 begin
-   result := -1;
+   result := 0;
    if AControl is TCheckBox then
       result := GetTextWidth(TCheckBox(AControl).Caption, AControl) + GetSystemMetrics(SM_CXMENUCHECK) + 3
    else if AControl is TCustomEdit then
       result := GetTextWidth(TCustomEdit(AControl).Text, AControl)
    else if AControl is TButton then
       result := GetTextWidth(TButton(AControl).Caption, AControl);
+   result := Max(result, AMinWidth);
 end;
 
 class procedure TInfra.IndentSpacesToTabs(ALines: TStringList);

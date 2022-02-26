@@ -222,10 +222,8 @@ begin
 end;
 
 function TUserDataType.GetExternModifier: string;
-var
-   lang: TLangDefinition;
 begin
-   lang := GInfra.CurrentLang;
+   var lang := GInfra.CurrentLang;
    case chkExternal.State of
       cbChecked:   result := lang.DataTypeExternal;
       cbUnchecked: result := lang.DataTypeNotExternal;
@@ -320,12 +318,9 @@ begin
 end;
 
 function TUserDataType.CreateElement: TElement;
-var
-   field: TField;
-   t: TUserDataTypeKind;
 begin
-   t := Kind;
-   field := TField.Create(Self);
+   var t := Kind;
+   var field := TField.Create(Self);
    field.cbType.Enabled := t in [dtRecord, dtArray];
    field.edtSize.Enabled := field.cbType.Enabled;
    field.edtName.Enabled := t <> dtArray;
@@ -356,10 +351,8 @@ begin
 end;
 
 procedure TUserDataType.ExportToXMLTag(ATag: IXMLElement);
-var
-   tag: IXMLElement;
 begin
-   tag := ATag.OwnerDocument.CreateElement(DATATYPE_TAG);
+   var tag := ATag.OwnerDocument.CreateElement(DATATYPE_TAG);
    ATag.AppendChild(tag);
    inherited ExportToXMLTag(tag);
    if chkAddPtrType.Enabled and chkAddPtrType.Checked then
@@ -376,54 +369,45 @@ begin
 end;
 
 function TUserDataType.GetDimensionCount: integer;
-var
-   field: TField;
 begin
    result := 0;
    if (Kind = dtArray) and (sbxElements.ControlCount > 0) then
    begin
-      field := TField(sbxElements.Controls[0]);
+      var field := TField(sbxElements.Controls[0]);
       if field.edtSize.Font.Color <> NOK_COLOR then
          result := field.edtSize.DimensionCount;
    end;
 end;
 
 function TUserDataType.GetDimensions: string;
-var
-   field: TField;
 begin
    result := '';
    if (Kind = dtArray) and (sbxElements.ControlCount > 0) then
    begin
-      field := TField(sbxElements.Controls[0]);
+      var field := TField(sbxElements.Controls[0]);
       if field.edtSize.Font.Color <> NOK_COLOR then
          result := Trim(field.edtSize.Text);
    end;
 end;
 
 function TUserDataType.GetOriginalType: integer;
-var
-   field: TField;
 begin
    result := TParserHelper.GetType(Trim(edtName.Text));
    if (Kind = dtArray) and (sbxElements.ControlCount > 0) then
    begin
-      field := TField(sbxElements.Controls[0]);
+      var field := TField(sbxElements.Controls[0]);
       result := TParserHelper.GetType(field.cbType.Text);
    end;
 end;
 
 function TUserDataType.IsValidEnumValue(const AValue: string): boolean;
-var
-   field: TField;
-   i: integer;
 begin
    result := false;
    if Kind = dtEnum then
    begin
-      for i := 0 to sbxElements.ControlCount-1 do
+      for var i := 0 to sbxElements.ControlCount-1 do
       begin
-         field := TField(sbxElements.Controls[i]);
+         var field := TField(sbxElements.Controls[i]);
          if Trim(field.edtName.Text) = AValue then
          begin
             result := true;
@@ -468,11 +452,9 @@ begin
 end;
 
 procedure TField.ImportFromXMLTag(ATag: IXMLElement);
-var
-   size: string;
 begin
    inherited ImportFromXMLTag(ATag);
-   size := ATag.GetAttribute(SIZE_ATTR);
+   var size := ATag.GetAttribute(SIZE_ATTR);
    if size.IsEmpty then
       size := '1';
    edtSize.Text := size;

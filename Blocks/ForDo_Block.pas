@@ -183,7 +183,7 @@ end;
 
 procedure TForDoBlock.OnChangeExtend(AStatement: TStatement);
 begin
-   var w := Max(TInfra.GetAutoWidth(AStatement), 30);
+   var w := TInfra.GetAutoWidth(AStatement, 30);
    if w <> AStatement.Width then
    begin
       AStatement.Width := w;
@@ -318,7 +318,7 @@ begin
             edtVar.Hint := i18Manager.GetFormattedString('NoCVar', [sLineBreak]);
       end;
    end;
-   w := Max(TInfra.GetAutoWidth(edtVar), IfThen(GInfra.CurrentLang.ForDoVarList, 28, 5));
+   w := TInfra.GetAutoWidth(edtVar, IfThen(GInfra.CurrentLang.ForDoVarList, 28, 5));
    if w <> edtVar.Width then
    begin
       edtVar.Width := w;

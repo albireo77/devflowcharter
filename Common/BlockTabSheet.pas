@@ -160,17 +160,14 @@ begin
 end;
 
 function TScrollBoxEx.GetBottomRight: TPoint;
-var
-   cPoint, sPoint: TPoint;
-   i: integer;
 begin
    result := TPoint.Zero;
-   sPoint := Point(HorzScrollBar.Position, VertScrollBar.Position);
-   for i := 0 to ControlCount-1 do
+   var sPoint := Point(HorzScrollBar.Position, VertScrollBar.Position);
+   for var i := 0 to ControlCount-1 do
    begin
       if Controls[i].Visible then
       begin
-         cPoint := Controls[i].BoundsRect.BottomRight + sPoint;
+         var cPoint := Controls[i].BoundsRect.BottomRight + sPoint;
          if cPoint.X > result.X then
             result.X := cPoint.X;
          if cPoint.Y > result.Y then
