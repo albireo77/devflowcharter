@@ -247,12 +247,10 @@ begin
 end;
 
 procedure TUserFunctionHeader.GenerateDescription(ALines: TStrings);
-var
-   i: integer;
 begin
    if chkInclDescCode.Checked and (memDesc.Text <> '') then
    begin
-      for i := 0 to memDesc.Lines.Count-1 do
+      for var i := 0 to memDesc.Lines.Count-1 do
          ALines.Add(memDesc.Lines[i]);
       if EndsText(sLineBreak, memDesc.Text) then
          ALines.Add('');
@@ -260,15 +258,13 @@ begin
 end;
 
 procedure TUserFunction.SetActive(AValue: boolean);
-var
-   vis: boolean;
 begin
    if FActive <> AValue then
    begin
       FActive := AValue;
       if FBody <> nil then
       begin
-         vis := AValue;
+         var vis := AValue;
          if FHeader <> nil then
             vis := vis and FHeader.chkBodyVisible.Checked;
          FBody.SetVisible(vis);
@@ -299,14 +295,12 @@ begin
 end;
 
 procedure TUserFunction.ExportToXMLTag(ATag: IXMLElement);
-var
-   tag: IXMLElement;
 begin
    if FHeader <> nil then
       FHeader.ExportToXMLTag(ATag)
    else if FBody <> nil then
    begin
-      tag := ATag.OwnerDocument.CreateElement(FUNCTION_TAG);
+      var tag := ATag.OwnerDocument.CreateElement(FUNCTION_TAG);
       ATag.AppendChild(tag);
       FBody.ExportToXMLTag(tag);
    end;
@@ -619,15 +613,13 @@ begin
 end;
 
 constructor TParameter.Create(AParentTab: TUserFunctionHeader);
-var
-   w17: integer;
 begin
 
    inherited Create(AParentTab.sbxElements);
 
    FElementTypeID := AParentTab.FElementTypeID;
 
-   w17 := TInfra.Scaled(17);
+   var w17 := TInfra.Scaled(17);
 
    Constraints.MaxWidth := AParentTab.sbxElements.Width - 17;
    SetBounds(0, Parent.Height, Constraints.MaxWidth, TInfra.Scaled(22));
@@ -666,12 +658,10 @@ begin
 end;
 
 procedure TUserFunctionHeader.OnChangeName(Sender: TObject);
-var
-   info, funcName: string;
 begin
-   info := '';
+   var info := '';
    edtName.Font.Color := NOK_COLOR;
-   funcName := Trim(edtName.Text);
+   var funcName := Trim(edtName.Text);
    if GInfra.ValidateId(funcName) <> VALID_IDENT then
       info := 'BadIdD'
    else if not GInfra.CurrentLang.AllowUserFunctionOverload then
@@ -764,10 +754,8 @@ begin
 end;
 
 function TUserFunctionHeader.GetExternModifier: string;
-var
-   lang: TLangDefinition;
 begin
-   lang := GInfra.CurrentLang;
+   var lang := GInfra.CurrentLang;
    case chkExternal.State of
       cbChecked:   result := lang.FunctionHeaderExternal;
       cbUnchecked: result := lang.FunctionHeaderNotExternal;
@@ -909,18 +897,16 @@ begin
 end;
 
 procedure TUserFunctionHeader.ExportToXMLTag(ATag: IXMLElement);
-var
-   tag, tag2, tag3: IXMLElement;
 begin
-   tag := ATag.OwnerDocument.CreateElement(FUNCTION_TAG);
+   var tag := ATag.OwnerDocument.CreateElement(FUNCTION_TAG);
    ATag.AppendChild(tag);
-   tag2 := ATag.OwnerDocument.CreateElement(HEADER_TAG);
+   var tag2 := ATag.OwnerDocument.CreateElement(HEADER_TAG);
    tag.AppendChild(tag2);
    inherited ExportToXMLTag(tag2);
    tag2.SetAttribute(TYPE_ATTR, IfThen(cbType.ItemIndex = 0, 'none', cbType.Text));
    if memDesc.Text <> '' then
    begin
-      tag3 := ATag.OwnerDocument.CreateElement('desc');
+      var tag3 := ATag.OwnerDocument.CreateElement('desc');
       TXMLProcessor.AddCDATA(tag3, ReplaceStr(memDesc.Text, sLineBreak, LB_PHOLDER));
       tag2.AppendChild(tag3);
    end;
@@ -941,19 +927,16 @@ begin
 end;
 
 procedure TUserFunctionHeader.ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
-var
-   i: integer;
-   tag2: IXMLElement;
 begin
    inherited ImportFromXMLTag(ATag, APinControl);
-   i := cbType.Items.IndexOf(ATag.GetAttribute(TYPE_ATTR));
+   var i := cbType.Items.IndexOf(ATag.GetAttribute(TYPE_ATTR));
    if i <> -1 then
       cbType.ItemIndex := i
    else if cbType.Items.Count > 0 then
       cbType.ItemIndex := 0;
    if Assigned(cbType.OnChange) then
       cbType.OnChange(cbType);
-   tag2 := TXMLProcessor.FindChildTag(ATag, 'desc');
+   var tag2 := TXMLProcessor.FindChildTag(ATag, 'desc');
    if tag2 <> nil then
       memDesc.Text := ReplaceStr(tag2.Text, LB_PHOLDER, sLineBreak);
    chkBodyVisible.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'show_body');
@@ -1002,10 +985,8 @@ begin
 end;
 
 function TParameter.ExportToXMLTag(ATag: IXMLElement): IXMLElement;
-var
-   tag: IXMLElement;
 begin
-   tag := inherited ExportToXMLTag(ATag);
+   var tag := inherited ExportToXMLTag(ATag);
    tag.SetAttribute('table', chkTable.Checked.ToString);
    tag.SetAttribute('reference', chkReference.Checked.ToString);
    if edtDefault.Text <> '' then
