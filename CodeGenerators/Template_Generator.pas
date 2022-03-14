@@ -665,14 +665,12 @@ begin
 end;
 
 function Template_GetUserTypeDesc(ADataType: TUserDataType): string;
-var
-   kind: string;
 begin
    result := GInfra.CurrentLang.UserTypeDesc;
    if not result.IsEmpty then
    begin
       result := ReplaceStr(result, PRIMARY_PLACEHOLDER, ADataType.edtName.Text);
-      kind := '';
+      var kind := '';
       if ADataType.rgTypeBox.ItemIndex <> -1 then
          kind := ADataType.rgTypeBox.Items[ADataType.rgTypeBox.ItemIndex];
       result := ReplaceStr(result, '%s2', kind);

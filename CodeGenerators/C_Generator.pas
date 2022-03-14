@@ -65,14 +65,12 @@ begin
 end;
 
 procedure C_MainFunctionSectionGenerator(ALines: TStringList; ADeep: integer);
-var
-   lBlock: TMainBlock;
 begin
    if GProject <> nil then
    begin
-      lBlock := GProject.GetMainBlock;
-      if lBlock <> nil then
-         lBlock.GenerateCode(ALines, cLang.Name, ADeep);
+      var mainBlock := GProject.GetMainBlock;
+      if mainBlock <> nil then
+         mainBlock.GenerateCode(ALines, cLang.Name, ADeep);
    end;
 end;
 

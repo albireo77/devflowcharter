@@ -131,12 +131,10 @@ begin
 end;
 
 procedure AddLibImport(const ALib: string);
-var
-   importLib: string;
 begin
    if (FImportLines <> nil) and not ALib.IsEmpty then
    begin
-      importLib := Format(javaLang.LibEntry, [ALib]);
+      var importLib := Format(javaLang.LibEntry, [ALib]);
       if (importLib <> '') and (FImportLines.IndexOf(importLib) = -1) then
          FImportLines.AddObject(importLib, TInfra.GetLibObject);
    end;
@@ -467,28 +465,23 @@ begin
 end;
 
 function ProcessType(AType: integer): string;
-var
-   t: integer;
-   libName: string;
 begin
    result := '';
    if AType <> UNKNOWN_TYPE then
    begin
-      t := GetObjectType(AType);
+      var t := GetObjectType(AType);
       if t <> UNKNOWN_TYPE then
          AType := t;
       result := TParserHelper.GetTypeAsString(AType);
-      libName := TParserHelper.GetLibForType(result);
+      var libName := TParserHelper.GetLibForType(result);
       if not libName.IsEmpty then
          AddLibImport(libName + '.' + result);
    end;
 end;
 
 function ContainsOneOf(const AString: string; const ASubStrings: array of string): boolean;
-var
-   i: integer;
 begin
-   for i := 0 to High(ASubStrings) do
+   for var i := 0 to High(ASubStrings) do
    begin
       if AString.Contains(ASubStrings[i]) then
          Exit(true);
@@ -497,10 +490,8 @@ begin
 end;
 
 function StartsWithOneOf(const AString: string; const AStartings: array of string): boolean;
-var
-   i: integer;
 begin
-   for i := 0 to High(AStartings) do
+   for var i := 0 to High(AStartings) do
    begin
       if AString.StartsWith(AStartings[i]) then
          Exit(true);
@@ -509,10 +500,8 @@ begin
 end;
 
 function EndsWithOneOf(const AString: string; const AEndings: array of string): boolean;
-var
-   i: integer;
 begin
-   for i := 0 to High(AEndings) do
+   for var i := 0 to High(AEndings) do
    begin
       if AString.EndsWith(AEndings[i]) then
          Exit(true);

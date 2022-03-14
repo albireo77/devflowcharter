@@ -37,14 +37,11 @@ begin
 end;
 
 procedure TIBASIC_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
-var
-   buffer: string;
-   i: integer;
 begin
    if AVarList <> nil then
    begin
-      buffer := '';
-      for i := 1 to AVarList.sgList.RowCount-2 do
+      var buffer := '';
+      for var i := 1 to AVarList.sgList.RowCount-2 do
       begin
          if i <> 1 then
             buffer := buffer + ', ';
@@ -91,16 +88,14 @@ begin
 end;
 
 procedure TIBASIC_MainFunctionSectionGenerator(ALines: TStringList; deep: integer);
-var
-   block: TMainBlock;
 begin
    if GProject <> nil then
    begin
-      block := GProject.GetMainBlock;
-      if block <> nil then
+      var mainBlock := GProject.GetMainBlock;
+      if mainBlock <> nil then
       begin
-         block.GenerateCode(ALines, tiBasicLang.Name, deep);
-         ALines.AddObject('EndPrgm', block);
+         mainBlock.GenerateCode(ALines, tiBasicLang.Name, deep);
+         ALines.AddObject('EndPrgm', mainBlock);
       end;
    end;
 end;
