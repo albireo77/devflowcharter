@@ -143,8 +143,6 @@ begin
 end;
 
 function TTabComponent.RetrieveFocus(AInfo: TFocusInfo): boolean;
-var
-   elem: TElement;
 begin
    if FActive then
    begin
@@ -152,7 +150,7 @@ begin
       Show;
       if not AInfo.SelText.IsEmpty then
       begin
-         for elem in GetElements<TElement> do
+         for var elem in GetElements<TElement> do
          begin
             if SameText(Trim(elem.edtName.Text), AInfo.SelText) then
             begin
@@ -281,9 +279,6 @@ begin
 end;
 
 procedure TTabComponent.SetActive(AValue: boolean);
-var
-   i: integer;
-   tab: TTabComponent;
 begin
    if AValue <> FActive then
    begin
@@ -291,9 +286,9 @@ begin
       TabVisible := FActive;
       GProject.SetChanged;
       FParentForm.UpdateCodeEditor := false;
-      for i := 0 to PageControl.PageCount-1 do
+      for var i := 0 to PageControl.PageCount-1 do
       begin
-         tab := TTabComponent(PageControl.Pages[i]);
+         var tab := TTabComponent(PageControl.Pages[i]);
          if tab.TabVisible and Assigned(tab.edtName.OnChange) then
             tab.edtName.OnChange(tab.edtName);
       end;
@@ -319,16 +314,13 @@ begin
 end;
 
 function TTabComponent.IsDuplicated(ANameEdit: TEdit): boolean;
-var
-   tab: TTabComponent;
-   i: integer;
 begin
    result := false;
    if ANameEdit <> nil then
    begin
-      for i := 0 to PageControl.PageCount-1 do
+      for var i := 0 to PageControl.PageCount-1 do
       begin
-         tab := TTabComponent(PageControl.Pages[i]);
+         var tab := TTabComponent(PageControl.Pages[i]);
          if tab.TabVisible and (tab.edtName <> ANameEdit) and TInfra.SameStrings(Trim(tab.edtName.Text), Trim(ANameEdit.Text)) then
          begin
             result := true;
@@ -347,14 +339,11 @@ begin
 end;
 
 function TTabComponent.GetElements<T>(AComparer: IComparer<T> = nil): IEnumerable<T>;
-var
-   i: integer;
-   list: TList<T>;
 begin
-   list := TList<T>.Create;
+   var list := TList<T>.Create;
    if list.Capacity < sbxElements.ControlCount then
       list.Capacity := sbxElements.ControlCount;
-   for i := 0 to sbxElements.ControlCount-1 do
+   for var i := 0 to sbxElements.ControlCount-1 do
       list.Add(sbxElements.Controls[i]);
    if AComparer <> nil then
       list.Sort(AComparer);
@@ -420,11 +409,9 @@ begin
 end;
 
 function TTabComponent.HasInvalidElement: boolean;
-var
-   elem: TElement;
 begin
    result := false;
-   for elem in GetElements<TElement> do
+   for var elem in GetElements<TElement> do
    begin
       if not elem.IsValid then
       begin
@@ -435,13 +422,10 @@ begin
 end;
 
 function TTabComponent.HasFocusedComboBox: boolean;
-var
-   hnd: THandle;
-   elem: TElement;
 begin
    result := false;
-   hnd := GetFocus();
-   for elem in GetElements<TElement> do
+   var hnd := GetFocus;
+   for var elem in GetElements<TElement> do
    begin
       if elem.cbType.Handle = hnd then
       begin
@@ -452,13 +436,11 @@ begin
 end;
 
 function TTabComponent.IsDuplicatedElement(AElement: TElement): boolean;
-var
-   elem: TElement;
 begin
    result := false;
    if (AElement <> nil) and (AElement.ParentTab = Self) then
    begin
-      for elem in GetElements<TElement> do
+      for var elem in GetElements<TElement> do
       begin
          if (elem <> AElement) and TInfra.SameStrings(Trim(AElement.edtName.Text), Trim(elem.edtName.Text)) then
          begin
@@ -470,11 +452,9 @@ begin
 end;
 
 procedure TTabComponent.RefreshElements;
-var
-   elem: TElement;
 begin
    FParentForm.UpdateCodeEditor := false;
-   for elem in GetElements<TElement> do
+   for var elem in GetElements<TElement> do
    begin
       if Assigned(elem.edtName.OnChange) then
          elem.edtName.OnChange(elem.edtName);
@@ -483,31 +463,26 @@ begin
 end;
 
 procedure TTabComponent.ExportToXMLTag(ATag: IXMLElement);
-var
-   elem: TElement;
 begin
    ATag.SetAttribute(NAME_ATTR, Trim(edtName.Text));
    ATag.SetAttribute(ID_ATTR, FId.ToString);
    ATag.SetAttribute('ext_decl', TRttiEnumerationType.GetName(chkExternal.State));
    ATag.SetAttribute('library', Trim(edtLibrary.Text));
-   for elem in GetElements<TElement>(ByTopElementComparer) do
+   for var elem in GetElements<TElement>(ByTopElementComparer) do
       elem.ExportToXMLTag(ATag);
 end;
 
 procedure TTabComponent.ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
-var
-   elem: TElement;
-   tag: IXMLElement;
 begin
    edtName.Text := ATag.GetAttribute(NAME_ATTR);
    if Assigned(edtName.OnChange) then
       edtName.OnChange(edtName);
    chkExternal.State := TInfra.DecodeCheckBoxState(ATag.GetAttribute('ext_decl'));
    edtLibrary.Text := ATag.GetAttribute('library');
-   tag := TXMLProcessor.FindChildTag(ATag, FElementTypeID);
+   var tag := TXMLProcessor.FindChildTag(ATag, FElementTypeID);
    while tag <> nil do
    begin
-      elem := CreateElement;
+      var elem := CreateElement;
       sbxElements.Constraints.MaxHeight := sbxElements.Constraints.MaxHeight + 22;
       sbxElements.Height := sbxElements.Height + 22;
       elem.ImportFromXMLTag(tag);

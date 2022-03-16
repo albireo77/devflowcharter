@@ -717,20 +717,16 @@ begin
 end;
 
 procedure TLangDefinition.LoadCompilerData;
-var
-   sFile: TCustomIniFile;
 begin
-   sFile := GSettings.SettingsFile;
+   var sFile := GSettings.SettingsFile;
    CompilerCommand := sFile.ReadString(SETTINGS_SECTION, FCompilerKey, '');
    CompilerCommandNoMain := sFile.ReadString(SETTINGS_SECTION, FCompilerNoMainKey, '');
    CompilerFileEncoding := sFile.ReadString(SETTINGS_SECTION, FCompilerFileEncodingKey, '');
 end;
 
 procedure TLangDefinition.SaveCompilerData;
-var
-   sFile: TCustomIniFile;
 begin
-   sFile := GSettings.SettingsFile;
+   var sFile := GSettings.SettingsFile;
    sFile.WriteString(SETTINGS_SECTION, FCompilerKey, CompilerCommand);
    sFile.WriteString(SETTINGS_SECTION, FCompilerNoMainKey, CompilerCommandNoMain);
    sFile.WriteString(SETTINGS_SECTION, FCompilerFileEncodingKey, CompilerFileEncoding);
@@ -742,15 +738,12 @@ begin
 end;
 
 function TLangDefinition.GetArraySizes(ASizeEdit: TSizeEdit): string;
-var
-   i: integer;
-   dims: TArray<string>;
 begin
    result := '';
    if ASizeEdit <> nil then
    begin
-      dims := ASizeEdit.GetDimensions;
-      for i := 0 to High(dims) do
+      var dims := ASizeEdit.GetDimensions;
+      for var i := 0 to High(dims) do
          result := result + Format(VarEntryArraySize, [dims[i]]);
       if VarEntryArraySizeStripCount > 0 then
          SetLength(result, result.Length - VarEntryArraySizeStripCount);
