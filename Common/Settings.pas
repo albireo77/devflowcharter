@@ -167,7 +167,7 @@ uses
 {$IFDEF MSWINDOWS}
    System.Win.Registry,
 {$ENDIF}
-   System.SysUtils, Vcl.Forms, Vcl.Controls, System.Math, System.Classes, System.IOUtils,
+   System.SysUtils, Vcl.Forms, Vcl.Controls, System.Math, System.IOUtils,
    System.StrUtils, Infrastructure, Main_Form, Navigator_Form, Constants;
 
 const
@@ -242,15 +242,12 @@ constructor TSettings.Create;
 const
    SETTINGS_FILE_PARAM = '-settingsFile=';
    LANG_DEFS_DIR_PARAM = '-langDefinitionsDir=';
-var
-   i: integer;
-   param, sFile: string;
 begin
    inherited Create;
-   sFile := '';
-   for i := 1 to ParamCount do
+   var sFile := '';
+   for var i := 1 to ParamCount do
    begin
-      param := ParamStr(i);
+      var param := ParamStr(i);
       if param.StartsWith(SETTINGS_FILE_PARAM, true) then
       begin
          sFile := Copy(param, Length(SETTINGS_FILE_PARAM)+1);
@@ -421,21 +418,17 @@ begin
 end;
 
 procedure TSettings.ResetCurrentLangName;
-var
-   lName: string;
 begin
-   lName := FCurrentLangName;
+   var lName := FCurrentLangName;
    FCurrentLangName := 'a2s%WE';
    SetCurrentLangName(lName);
 end;
 
 procedure TSettings.SetCurrentLangName(const ACurrentLangName: string);
-var
-   lang: TLangDefinition;
 begin
    if FCurrentLangName <> ACurrentLangName then
    begin
-      lang := GInfra.SetCurrentLang(ACurrentLangName);
+      var lang := GInfra.SetCurrentLang(ACurrentLangName);
       if lang <> nil then
       begin
          FCurrentLangName := lang.Name;
@@ -471,15 +464,13 @@ end;
 
 procedure TSettings.LoadFromEditor;
 begin
-   with TInfra.GetEditorForm do
-   begin
-      FEditorShowStatusBar := miStatusBar.Checked;
-      FEditorShowScrollbars := miScrollBars.Checked;
-      FEditorShowGutter := miGutter.Checked;
-      FEditorIndentGuides := miIndentGuides.Checked;
-      FEditorShowRichText := miRichText.Checked;
-      FEditorCodeFolding := miCodeFoldingEnable.Checked;
-   end;
+   var eForm := TInfra.GetEditorForm;
+   FEditorShowStatusBar  := eForm.miStatusBar.Checked;
+   FEditorShowScrollbars := eForm.miScrollBars.Checked;
+   FEditorShowGutter     := eForm.miGutter.Checked;
+   FEditorIndentGuides   := eForm.miIndentGuides.Checked;
+   FEditorShowRichText   := eForm.miRichText.Checked;
+   FEditorCodeFolding    := eForm.miCodeFoldingEnable.Checked;
 end;
 
 function TSettings.GetShapeColor(const shape: TColorShape): TColor;
@@ -488,161 +479,153 @@ begin
 end;
 
 procedure TSettings.LoadFromForm;
-var
-   redrawFlow, colorChanged, applyAll: boolean;
-   langDef: TLangDefinition;
-   lColor: TColor;
-   shape: TColorShape;
-   flowFontSize: integer;
-   flowFontName: string;
-   tokens: TArray<string>;
 begin
 
-   redrawFlow := false;
-   colorChanged := false;
-   applyAll := true;
-   
-   with TInfra.GetSettingsForm do
+   var redrawFlow := false;
+   var colorChanged := false;
+   var applyAll := true;
+
+   var sForm := TInfra.GetSettingsForm;
+
+   FParseInput       := sForm.chkParseInput.Checked;
+   FParseOutput      := sForm.chkParseOutput.Checked;
+   FParseAssign      := sForm.chkParseAssign.Checked;
+   FParseMultiAssign := sForm.chkParseMultiAssign.Checked;
+   FParseCondition   := sForm.chkParseCondition.Checked;
+   FParseFor         := sForm.chkParseFor.Checked;
+   FParseCase        := sForm.chkParseCase.Checked;
+   FParseRoutineCall := sForm.chkParseRoutine.Checked;
+   FParseReturn      := sForm.chkParseReturn.Checked;
+
+   // setting the following values from Settings form is not yet supported
+   // FEditorDocumentColor
+   // FEditorRightEdgeColor
+   // FEditorRightEdgeColumn
+
+   FEditorBkgColor        := sForm.pnlEditorBkg.Color;
+   FEditorFontColor       := sForm.pnlEditorFont.Color;
+   FEditorNumberColor     := sForm.pnlEditorNumber.Color;
+   FEditorStringColor     := sForm.pnlEditorString.Color;
+   FEditorKeywordColor    := sForm.pnlEditorKeyword.Color;
+   FEditorCommentColor    := sForm.pnlEditorComment.Color;
+   FEditorALineColor      := sForm.pnlEditorActiveLine.Color;
+   FEditorSelectColor     := sForm.pnlEditorSelect.Color;
+   FEditorGutterColor     := sForm.pnlEditorGutter.Color;
+   FEditorIdentColor      := sForm.pnlEditorIdent.Color;
+   FEditorAutoSelectBlock := sForm.chkAutoSelectCode.Checked;
+   FEditorAutoUpdate      := sForm.chkAutoUpdateCode.Checked;
+   FValidateDeclaration   := sForm.chkValidateConsts.Checked;
+   FEditorFontSize        := StrToIntDef(sForm.cbFontSize.Text, EDITOR_DEFAULT_FONT_SIZE);
+   FIndentLength          := StrToIntDef(sForm.edtEditorIndent.Text, EDITOR_DEFAULT_INDENT_LENGTH);
+
+   if sForm.cbIndentChar.ItemIndex = 1 then
+      FIndentChar := TAB_CHAR
+   else
+      FIndentChar := SPACE_CHAR;
+   FIndentSpaces := StringOfChar(SPACE_CHAR, FIndentLength);
+
+   for var shape := Low(TColorShape) to High(TColorShape) do
    begin
-      FParseInput       := chkParseInput.Checked;
-      FParseOutput      := chkParseOutput.Checked;
-      FParseAssign      := chkParseAssign.Checked;
-      FParseMultiAssign := chkParseMultiAssign.Checked;
-      FParseCondition   := chkParseCondition.Checked;
-      FParseFor         := chkParseFor.Checked;
-      FParseCase        := chkParseCase.Checked;
-      FParseRoutineCall := chkParseRoutine.Checked;
-      FParseReturn      := chkParseReturn.Checked;
-
-      // setting the following values from Settings form is not yet supported
-      // FEditorDocumentColor
-      // FEditorRightEdgeColor
-      // FEditorRightEdgeColumn
-
-      FEditorBkgColor        := pnlEditorBkg.Color;
-      FEditorFontColor       := pnlEditorFont.Color;
-      FEditorNumberColor     := pnlEditorNumber.Color;
-      FEditorStringColor     := pnlEditorString.Color;
-      FEditorKeywordColor    := pnlEditorKeyword.Color;
-      FEditorCommentColor    := pnlEditorComment.Color;
-      FEditorALineColor      := pnlEditorActiveLine.Color;
-      FEditorSelectColor     := pnlEditorSelect.Color;
-      FEditorGutterColor     := pnlEditorGutter.Color;
-      FEditorIdentColor      := pnlEditorIdent.Color;
-      FEditorAutoSelectBlock := chkAutoSelectCode.Checked;
-      FEditorAutoUpdate      := chkAutoUpdateCode.Checked;
-      FValidateDeclaration   := chkValidateConsts.Checked;
-      FEditorFontSize        := StrToIntDef(cbFontSize.Text, EDITOR_DEFAULT_FONT_SIZE);
-      FIndentLength          := StrToIntDef(edtEditorIndent.Text, EDITOR_DEFAULT_INDENT_LENGTH);
-      if cbIndentChar.ItemIndex = 1 then
-         FIndentChar := TAB_CHAR
-      else
-         FIndentChar := SPACE_CHAR;
-      FIndentSpaces := StringOfChar(SPACE_CHAR, FIndentLength);
-
-      for shape := Low(TColorShape) to High(TColorShape) do
+      var lColor := GetShapeColor(shape);
+      if lColor <> FShapeColors[shape] then
       begin
-         lColor := GetShapeColor(shape);
-         if lColor <> FShapeColors[shape] then
-         begin
-           FShapeColors[shape] := lColor;
-           colorChanged := true;
-         end;
-      end;
-
-      if (FFontColor <> pnlFont.Color) and not TInfra.IsNOkColor(pnlFont.Color) then
-      begin
+         FShapeColors[shape] := lColor;
          colorChanged := true;
-         FFontColor := pnlFont.Color;
       end;
-      if FDesktopColor <> pnlDesktop.Color then
-      begin
-         colorChanged := true;
-         FDesktopColor := pnlDesktop.Color;
-      end;
-      if FPenColor <> pnlPen.Color then
-      begin
-         colorChanged := true;
-         FPenColor := pnlPen.Color;
-      end;
-      if (FHighlightColor <> pnlFill.Color) and  (pnlFill.Color <> pnlDesktop.Color) then
-         FHighlightColor := pnlFill.Color;
-      FConfirmRemove := chkConfirmRemove.Checked;
-      FPrintMultPages := chkMultiPrint.Checked;
-      FPrintMultPagesHorz := chkMultiPrintHorz.Checked;
-
-      if edtTranslateFile.Text <> FTranslateFile then
-      begin
-         if edtTranslateFile.Text = '' then
-         begin
-            FTranslateFile := '';
-            if i18Manager.LoadDefaultLabels = 0 then
-               Application.Terminate;
-         end
-         else if i18Manager.LoadAllLabels(edtTranslateFile.Text) > 0 then
-            FTranslateFile := edtTranslateFile.Text;
-      end;
-
-      langDef := GInfra.GetLangDefinition(cbLanguage.Text);
-      if langDef <> nil then
-      begin
-         langDef.CompilerCommand := Trim(edtCompiler.Text);
-         langDef.CompilerCommandNoMain := Trim(edtCompilerNoMain.Text);
-         langDef.CompilerFileEncoding := cbFileEncoding.Text;
-      end;
-
-      if FShowFuncLabels <> chkShowFuncLabels.Checked then
-      begin
-         FShowFuncLabels := not FShowFuncLabels;
-         redrawFlow := true;
-      end;
-
-      if FShowBlockLabels <> chkShowBlockLabels.Checked then
-      begin
-         FShowBlockLabels := not FShowBlockLabels;
-         redrawFlow := true;
-      end;
-
-      flowFontName := edtFontNameSize.Text;
-      tokens := flowFontName.Split([FLOWCHART_FONT_NAMESIZE_SEP], 2);
-      flowFontName := tokens[0];
-      flowFontSize := tokens[1].ToInteger;
-
-      if (GProject <> nil) and ((FEnableDBuffering <> chkEnableDBuffer.Checked)
-                                or (GInfra.CurrentLang.Name <> cbLanguage.Text)
-                                or (FFlowchartFontName <> flowFontName)
-                                or (FFlowchartFontSize <> flowFontSize)) then
-      begin
-         if TInfra.ShowQuestionBox('CloseProjectAsk', [sLineBreak]) = mrYes then
-            TInfra.SetInitialSettings
-         else
-            applyAll := false;
-      end;
-
-      if applyAll then
-      begin
-         FEnableDBuffering := chkEnableDBuffer.Checked;
-         FFlowchartFontName := flowFontName;
-         FFlowchartFontSize := flowFontSize;
-         if CurrentLangName <> cbLanguage.Text then
-         begin
-            CurrentLangName := cbLanguage.Text;
-{$IFDEF USE_CODEFOLDING}
-            TInfra.GetEditorForm.ReloadFoldRegions;
-{$ENDIF}
-         end;
-      end;
-
-      if GProject <> nil then
-         GProject.RefreshStatements;
-
-      TInfra.GetEditorForm.SetFormAttributes;
-
-      FPrintRect.Left   := StrToIntDef(edtMarginLeft.Text, DEFAULT_PRINT_MARGIN);
-      FPrintRect.Top    := StrToIntDef(edtMarginTop.Text, DEFAULT_PRINT_MARGIN);
-      FPrintRect.Right  := PRINT_SCALE_BASE - StrToIntDef(edtMarginRight.Text, DEFAULT_PRINT_MARGIN);
-      FPrintRect.Bottom := PRINT_SCALE_BASE - StrToIntDef(edtMarginBottom.Text, DEFAULT_PRINT_MARGIN);
    end;
+
+   if (FFontColor <> sForm.pnlFont.Color) and not TInfra.IsNOkColor(sForm.pnlFont.Color) then
+   begin
+      colorChanged := true;
+      FFontColor := sForm.pnlFont.Color;
+   end;
+   if FDesktopColor <> sForm.pnlDesktop.Color then
+   begin
+      colorChanged := true;
+      FDesktopColor := sForm.pnlDesktop.Color;
+   end;
+   if FPenColor <> sForm.pnlPen.Color then
+   begin
+      colorChanged := true;
+      FPenColor := sForm.pnlPen.Color;
+   end;
+   if (FHighlightColor <> sForm.pnlFill.Color) and  (sForm.pnlFill.Color <> sForm.pnlDesktop.Color) then
+      FHighlightColor := sForm.pnlFill.Color;
+   FConfirmRemove := sForm.chkConfirmRemove.Checked;
+   FPrintMultPages := sForm.chkMultiPrint.Checked;
+   FPrintMultPagesHorz := sForm.chkMultiPrintHorz.Checked;
+
+   if sForm.edtTranslateFile.Text <> FTranslateFile then
+   begin
+      if sForm.edtTranslateFile.Text = '' then
+      begin
+         FTranslateFile := '';
+         if i18Manager.LoadDefaultLabels = 0 then
+            Application.Terminate;
+      end
+      else if i18Manager.LoadAllLabels(sForm.edtTranslateFile.Text) > 0 then
+         FTranslateFile := sForm.edtTranslateFile.Text;
+   end;
+
+   var lang := GInfra.GetLangDefinition(sForm.cbLanguage.Text);
+   if lang <> nil then
+   begin
+      lang.CompilerCommand := Trim(sForm.edtCompiler.Text);
+      lang.CompilerCommandNoMain := Trim(sForm.edtCompilerNoMain.Text);
+      lang.CompilerFileEncoding := sForm.cbFileEncoding.Text;
+   end;
+
+   if FShowFuncLabels <> sForm.chkShowFuncLabels.Checked then
+   begin
+      FShowFuncLabels := not FShowFuncLabels;
+      redrawFlow := true;
+   end;
+
+   if FShowBlockLabels <> sForm.chkShowBlockLabels.Checked then
+   begin
+      FShowBlockLabels := not FShowBlockLabels;
+      redrawFlow := true;
+   end;
+
+   var flowFontName: string := sForm.edtFontNameSize.Text;
+   var tokens := flowFontName.Split([FLOWCHART_FONT_NAMESIZE_SEP], 2);
+   flowFontName := tokens[0];
+   var flowFontSize := tokens[1].ToInteger;
+
+   if (GProject <> nil) and ((FEnableDBuffering <> sForm.chkEnableDBuffer.Checked)
+                        or (GInfra.CurrentLang.Name <> sForm.cbLanguage.Text)
+                        or (FFlowchartFontName <> flowFontName)
+                        or (FFlowchartFontSize <> flowFontSize)) then
+   begin
+      if TInfra.ShowQuestionBox('CloseProjectAsk', [sLineBreak]) = mrYes then
+         TInfra.SetInitialSettings
+      else
+         applyAll := false;
+   end;
+
+   if applyAll then
+   begin
+      FEnableDBuffering := sForm.chkEnableDBuffer.Checked;
+      FFlowchartFontName := flowFontName;
+      FFlowchartFontSize := flowFontSize;
+      if CurrentLangName <> sForm.cbLanguage.Text then
+      begin
+         CurrentLangName := sForm.cbLanguage.Text;
+   {$IFDEF USE_CODEFOLDING}
+         TInfra.GetEditorForm.ReloadFoldRegions;
+   {$ENDIF}
+      end;
+   end;
+
+   if GProject <> nil then
+      GProject.RefreshStatements;
+
+   TInfra.GetEditorForm.SetFormAttributes;
+
+   FPrintRect.Left   := StrToIntDef(sForm.edtMarginLeft.Text, DEFAULT_PRINT_MARGIN);
+   FPrintRect.Top    := StrToIntDef(sForm.edtMarginTop.Text, DEFAULT_PRINT_MARGIN);
+   FPrintRect.Right  := PRINT_SCALE_BASE - StrToIntDef(sForm.edtMarginRight.Text, DEFAULT_PRINT_MARGIN);
+   FPrintRect.Bottom := PRINT_SCALE_BASE - StrToIntDef(sForm.edtMarginBottom.Text, DEFAULT_PRINT_MARGIN);
 
    if GProject <> nil then
    begin
@@ -654,6 +637,7 @@ begin
         NavigatorForm.Invalidate;
      end;
    end;
+
 end;
 
 procedure TSettings.SetForm;
