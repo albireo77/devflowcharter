@@ -132,11 +132,12 @@ type
     FFocusEditor: boolean;
     FDialog: TFindDialog;
     FWithFocus: IWithFocus;
-    procedure PasteComment(const AText: string);
     function BuildBracketHint(startLine, endLine: integer): string;
     function CharToPixels(P: TBufferCoord): TPoint;
-    procedure GenerateCode(APreserveBookMarks: boolean = false);
     function GetAllLines: TStrings;
+    procedure PasteComment(const AText: string);
+    procedure GenerateCode(APreserveBookMarks: boolean = false);
+    procedure DisplayLines(ALines: TStringList; APreserveBookMarks: boolean);
   public
     { Public declarations }
     procedure SetFormAttributes;
@@ -439,35 +440,25 @@ begin
 end;
 
 procedure TEditorForm.GenerateCode(APreserveBookMarks: boolean = false);
-var
-   lang: TLangDefinition;
-   skipFuncBody: boolean;
-   newLines: TStringList;
 begin
 
-   newLines := TStringList.Create;
+   var newLines := TStringList.Create;
    try
 
-      lang := nil;
-      skipFuncBody := false;
+      var skipFuncBody := false;
+
       if Assigned(GInfra.CurrentLang.SkipFuncBodyGen) then
-         lang := GInfra.CurrentLang
+         GInfra.CurrentLang.SkipFuncBodyGen
       else if Assigned(GInfra.TemplateLang.SkipFuncBodyGen) then
-         lang := GInfra.TemplateLang;
-      if lang <> nil then
-         skipFuncBody := lang.SkipFuncBodyGen;
+         GInfra.TemplateLang.SkipFuncBodyGen;
 
-
-      lang := nil;
       if Assigned(GInfra.CurrentLang.ExecuteBeforeGeneration) then
-         lang := GInfra.CurrentLang
+         GInfra.CurrentLang.ExecuteBeforeGeneration
       else if Assigned(GInfra.TemplateLang.ExecuteBeforeGeneration) then
-         lang := GInfra.TemplateLang;
-      if lang <> nil then
-         lang.ExecuteBeforeGeneration;
+         GInfra.TemplateLang.ExecuteBeforeGeneration;
 
       try
-         lang := nil;
+         var lang: TLangDefinition := nil;
          if Assigned(GInfra.CurrentLang.FileContentsGenerator) then
             lang := GInfra.CurrentLang
          else if Assigned(GInfra.TemplateLang.FileContentsGenerator) then
@@ -478,44 +469,43 @@ begin
             Exit;
          end;
       finally
-         lang := nil;
          if Assigned(GInfra.CurrentLang.ExecuteAfterGeneration) then
-            lang := GInfra.CurrentLang
+            GInfra.CurrentLang.ExecuteAfterGeneration
          else if Assigned(GInfra.TemplateLang.ExecuteAfterGeneration) then
-            lang := GInfra.TemplateLang;
-         if lang <> nil then
-            lang.ExecuteAfterGeneration;
+            GInfra.TemplateLang.ExecuteAfterGeneration;
       end;
 
-      with memCodeEditor do
-      begin
-{$IFDEF USE_CODEFOLDING}
-         AllFoldRanges.DestroyAll;
-{$ENDIF}
-         if not APreserveBookMarks then
-            Marks.Clear;
-         Highlighter := nil;
-         if GSettings.IndentChar = TAB_CHAR then
-            TInfra.IndentSpacesToTabs(newLines);
-         Lines.Assign(newLines);
-         if GSettings.EditorShowRichText then
-            Highlighter := GInfra.CurrentLang.HighLighter;
-         if Assigned(OnChange) then
-            OnChange(memCodeEditor);
-         if FFocusEditor then
-         begin
-            if CanFocus then
-               SetFocus;
-         end
-         else
-            FFocusEditor := true;
-         ClearUndo;
-         Modified := false;
-      end;
+      DisplayLines(newLines, APreserveBookMarks);
 
    finally
       newLines.Free;
    end;
+end;
+
+procedure TEditorForm.DisplayLines(ALines: TStringList; APreserveBookMarks: boolean);
+begin
+{$IFDEF USE_CODEFOLDING}
+   memCodeEditor.AllFoldRanges.DestroyAll;
+{$ENDIF}
+   if not APreserveBookMarks then
+      memCodeEditor.Marks.Clear;
+   memCodeEditor.Highlighter := nil;
+   if GSettings.IndentChar = TAB_CHAR then
+      TInfra.IndentSpacesToTabs(ALines);
+   memCodeEditor.Lines.Assign(ALines);
+   if GSettings.EditorShowRichText then
+      memCodeEditor.Highlighter := GInfra.CurrentLang.HighLighter;
+   if Assigned(memCodeEditor.OnChange) then
+      memCodeEditor.OnChange(memCodeEditor);
+   if FFocusEditor then
+   begin
+      if memCodeEditor.CanFocus then
+         memCodeEditor.SetFocus;
+   end
+   else
+      FFocusEditor := true;
+   memCodeEditor.ClearUndo;
+   memCodeEditor.Modified := false;
 end;
 
 procedure TEditorForm.FormShow(Sender: TObject);
