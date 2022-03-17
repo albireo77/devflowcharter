@@ -68,8 +68,6 @@ uses
    Vcl.Graphics, System.SysUtils, Interfaces, TabComponent, Infrastructure, Constants;
 
 constructor TElement.Create(AParent: TScrollBox);
-var
-   w: integer;
 begin
 
    inherited Create(AParent);
@@ -112,7 +110,7 @@ begin
    btnRemove.DoubleBuffered := true;
    btnRemove.Caption := i18Manager.GetString('btnRemove');
    btnRemove.OnClick := OnClickRemove;
-   w := TInfra.GetAutoWidth(btnRemove);
+   var w := TInfra.GetAutoWidth(btnRemove);
    btnRemove.SetBounds(Parent.Width-w-TInfra.Scaled(32), 0, w+14, TInfra.Scaled(20));
 
    OnDragOver := OnDragOverElement;
@@ -120,11 +118,9 @@ begin
 end;
 
 function TElement.GetParentTab: TTabSheet;
-var
-   winControl: TWinControl;
 begin
    result := nil;
-   winControl := Parent;
+   var winControl := Parent;
    while not (winControl is TForm) do
    begin
       if winControl is TTabComponent then
@@ -164,12 +160,9 @@ begin
 end;
 
 procedure TElement.OnChangeName(Sender: TObject);
-var
-   info: string;
-   lColor: TColor;
 begin
-   lColor := NOK_COLOR;
-   info := '';
+   var lColor := NOK_COLOR;
+   var info := '';
    if edtName.Text = '' then
    begin
       if not edtName.Focused then
@@ -198,11 +191,9 @@ begin
 end;
 
 procedure TElement.ImportFromXMLTag(ATag: IXMLElement);
-var
-   idx: integer;
 begin
    edtName.Text := ATag.GetAttribute(NAME_ATTR);
-   idx := cbType.Items.IndexOf(ATag.GetAttribute(TYPE_ATTR));
+   var idx := cbType.Items.IndexOf(ATag.GetAttribute(TYPE_ATTR));
    if idx <> -1 then
       cbType.ItemIndex := idx
    else if cbType.Items.Count > 0 then 
@@ -225,14 +216,11 @@ begin
 end;
 
 procedure TElement.OnDragDropElement(Sender, Source: TObject; X, Y: Integer);
-var
-   sourceElement: TElement;
-   t: integer;
 begin
    if Source is TElement then
    begin
-      sourceElement := TElement(Source);
-      t := sourceElement.Top;
+      var sourceElement := TElement(Source);
+      var t := sourceElement.Top;
       sourceElement.Top := Top;
       Top := t;
       GProject.SetChanged;
