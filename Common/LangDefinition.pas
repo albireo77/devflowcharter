@@ -227,7 +227,7 @@ type
       ConstSectionGenerator: procedure (ALines: TStringList; AConstList: TConstDeclareList);
       UserFunctionsSectionGenerator: procedure (ALines: TStringList; ASkipBodyGenerate: boolean);
       MainFunctionSectionGenerator: procedure (ALines: TStringList; ADeep: integer);
-      FileContentsGenerator: function (ALines: TStringList; ASkipBodyGenerate: boolean): boolean;
+      ProgramGenerator: function (ALines: TStringList; ASkipBodyGenerate: boolean): boolean;
       GetUserFuncDesc: function (AHeader: TUserFunctionHeader; AFullParams: boolean = true; AIncludeDesc: boolean = true): string;
       GetUserFuncHeaderDesc: function (AHeader: TUserFunctionHeader): string;
       GetUserTypeDesc: function (ADataType: TUserDataType): string;
@@ -289,7 +289,7 @@ begin
    ConstSectionGenerator := nil;
    UserFunctionsSectionGenerator := nil;
    MainFunctionSectionGenerator := nil;
-   FileContentsGenerator := nil;
+   ProgramGenerator := nil;
    GetUserFuncDesc := nil;
    GetUserFuncHeaderDesc := nil;
    GetUserTypeDesc := nil;

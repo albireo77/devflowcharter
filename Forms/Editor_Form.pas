@@ -135,7 +135,7 @@ type
     function BuildBracketHint(startLine, endLine: integer): string;
     function CharToPixels(P: TBufferCoord): TPoint;
     function GetAllLines: TStrings;
-    function GenerateCode: TStringList;
+    function GenerateProgram: TStringList;
     procedure PasteComment(const AText: string);
     procedure DisplayLines(ALines: TStringList; APreserveBookMarks: boolean);
   public
@@ -439,7 +439,7 @@ begin
    end;
 end;
 
-function TEditorForm.GenerateCode: TStringList;
+function TEditorForm.GenerateProgram: TStringList;
 begin
    result := TStringList.Create;
 
@@ -460,11 +460,11 @@ begin
 
    try
       var lang: TLangDefinition := nil;
-      if Assigned(currLang.FileContentsGenerator) then
+      if Assigned(currLang.ProgramGenerator) then
          lang := currLang
-      else if Assigned(templLang.FileContentsGenerator) then
+      else if Assigned(templLang.ProgramGenerator) then
          lang := templLang;
-      if (lang <> nil) and not lang.FileContentsGenerator(result, skipFuncBody) then
+      if (lang <> nil) and not lang.ProgramGenerator(result, skipFuncBody) then
       begin
          TInfra.ShowErrorBox('NoProgTempl', [sLineBreak, currLang.Name, currLang.DefFile, FILE_CONTENTS_TAG], errValidate);
          result.Clear;
@@ -507,19 +507,15 @@ end;
 
 procedure TEditorForm.FormShow(Sender: TObject);
 begin
-   var codeLines := GenerateCode;
+   var programLines := GenerateProgram;
    try
-      DisplayLines(codeLines, false);
+      DisplayLines(programLines, false);
    finally
-      codeLines.Free;
+      programLines.Free;
    end;
 end;
 
 procedure TEditorForm.pmPopMenuPopup(Sender: TObject);
-var
-   pnt: TPoint;
-   dispCoord: TDisplayCoord;
-   obj: TObject;
 begin
    FWithFocus := nil;
    miFindProj.Enabled := false;
@@ -531,11 +527,11 @@ begin
    miPasteComment.Enabled := miPaste.Enabled;
    miUndo.Enabled := memCodeEditor.CanUndo;
    miRedo.Enabled := memCodeEditor.CanRedo;
-   pnt := memCodeEditor.ScreenToClient(Mouse.CursorPos);
-   dispCoord := memCodeEditor.PixelsToRowColumn(pnt.X, pnt.Y);
+   var pnt := memCodeEditor.ScreenToClient(Mouse.CursorPos);
+   var dispCoord := memCodeEditor.PixelsToRowColumn(pnt.X, pnt.Y);
    if dispCoord.Row > 0 then
    begin
-      obj := memCodeEditor.Lines.Objects[dispCoord.Row-1];
+      var obj := memCodeEditor.Lines.Objects[dispCoord.Row-1];
       miFindProj.Enabled := TInfra.IsValidControl(obj) and Supports(obj, IWithFocus, FWithFocus) and FWithFocus.CanBeFocused;
    end;
 end;
@@ -1283,9 +1279,9 @@ begin
    if scrollEnabled then
       memCodeEditor.BeginUpdate;
    SendMessage(memCodeEditor.Handle, WM_SETREDRAW, WPARAM(False), 0);
-   var codeLines := GenerateCode;
+   var programLines := GenerateProgram;
    try
-      DisplayLines(codeLines, true);
+      DisplayLines(programLines, true);
       if AObject <> nil then
       begin
          codeRange := SelectCodeRange(AObject, false);
@@ -1298,7 +1294,7 @@ begin
          end;
       end;
    finally
-      codeLines.Free;
+      programLines.Free;
       if not gotoLine then
       begin
          memCodeEditor.CaretXY := caretXY;

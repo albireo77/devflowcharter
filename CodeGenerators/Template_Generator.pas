@@ -553,7 +553,7 @@ begin
    end;
 end;
 
-function Template_FileContentsGenerator(ALines: TStringList; ASkipBodyGenerate: boolean): boolean;
+function Template_ProgramGenerator(ALines: TStringList; ASkipBodyGenerate: boolean): boolean;
 var
    fileTemplate, headerTemplate, mainFuncTemplate, libTemplate, constTemplate,
    varTemplate, funcTemplate, dataTypeTemplate: TStringList;
@@ -800,7 +800,7 @@ initialization
       LibSectionGenerator := Template_LibSectionGenerator;
       ConstSectionGenerator := Template_ConstSectionGenerator;
       UserDataTypesSectionGenerator := Template_UserDataTypesSectionGenerator;
-      FileContentsGenerator := Template_FileContentsGenerator;
+      ProgramGenerator := Template_ProgramGenerator;
       GetConstantType := Template_GetConstantType;
       GetPointerTypeName := Template_GetPointerTypeName;
       GetUserFuncDesc := Template_GetUserFuncDesc;
