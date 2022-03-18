@@ -449,9 +449,9 @@ begin
 
 
    if Assigned(currLang.SkipFuncBodyGen) then
-      currLang.SkipFuncBodyGen
+      skipFuncBody := currLang.SkipFuncBodyGen
    else if Assigned(templLang.SkipFuncBodyGen) then
-      templLang.SkipFuncBodyGen;
+      skipFuncBody := templLang.SkipFuncBodyGen;
 
    if Assigned(currLang.ExecuteBeforeGeneration) then
       currLang.ExecuteBeforeGeneration
