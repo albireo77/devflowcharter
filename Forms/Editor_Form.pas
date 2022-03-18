@@ -135,8 +135,8 @@ type
     function BuildBracketHint(startLine, endLine: integer): string;
     function CharToPixels(P: TBufferCoord): TPoint;
     function GetAllLines: TStrings;
+    function GenerateCode: TStringList;
     procedure PasteComment(const AText: string);
-    procedure GenerateCode(APreserveBookMarks: boolean = false);
     procedure DisplayLines(ALines: TStringList; APreserveBookMarks: boolean);
   public
     { Public declarations }
@@ -439,51 +439,48 @@ begin
    end;
 end;
 
-procedure TEditorForm.GenerateCode(APreserveBookMarks: boolean = false);
+function TEditorForm.GenerateCode: TStringList;
 begin
+   result := TStringList.Create;
 
-   var newLines := TStringList.Create;
+   var skipFuncBody := false;
+   var currLang := GInfra.CurrentLang;
+   var templLang := GInfra.TemplateLang;
+
+
+   if Assigned(currLang.SkipFuncBodyGen) then
+      currLang.SkipFuncBodyGen
+   else if Assigned(templLang.SkipFuncBodyGen) then
+      templLang.SkipFuncBodyGen;
+
+   if Assigned(currLang.ExecuteBeforeGeneration) then
+      currLang.ExecuteBeforeGeneration
+   else if Assigned(templLang.ExecuteBeforeGeneration) then
+      templLang.ExecuteBeforeGeneration;
+
    try
-      var skipFuncBody := false;
-      var currLang := GInfra.CurrentLang;
-      var templLang := GInfra.TemplateLang;
-
-      if Assigned(currLang.SkipFuncBodyGen) then
-         currLang.SkipFuncBodyGen
-      else if Assigned(templLang.SkipFuncBodyGen) then
-         templLang.SkipFuncBodyGen;
-
-      if Assigned(currLang.ExecuteBeforeGeneration) then
-         currLang.ExecuteBeforeGeneration
-      else if Assigned(templLang.ExecuteBeforeGeneration) then
-         templLang.ExecuteBeforeGeneration;
-
-      try
-         var lang: TLangDefinition := nil;
-         if Assigned(currLang.FileContentsGenerator) then
-            lang := currLang
-         else if Assigned(templLang.FileContentsGenerator) then
-            lang := templLang;
-         if (lang <> nil) and not lang.FileContentsGenerator(newLines, skipFuncBody) then
-         begin
-            TInfra.ShowErrorBox('NoProgTempl', [sLineBreak, currLang.Name, currLang.DefFile, FILE_CONTENTS_TAG], errValidate);
-            Exit;
-         end;
-      finally
-         if Assigned(currLang.ExecuteAfterGeneration) then
-            currLang.ExecuteAfterGeneration
-         else if Assigned(templLang.ExecuteAfterGeneration) then
-            templLang.ExecuteAfterGeneration;
+      var lang: TLangDefinition := nil;
+      if Assigned(currLang.FileContentsGenerator) then
+         lang := currLang
+      else if Assigned(templLang.FileContentsGenerator) then
+         lang := templLang;
+      if (lang <> nil) and not lang.FileContentsGenerator(result, skipFuncBody) then
+      begin
+         TInfra.ShowErrorBox('NoProgTempl', [sLineBreak, currLang.Name, currLang.DefFile, FILE_CONTENTS_TAG], errValidate);
+         result.Clear;
       end;
-
-      DisplayLines(newLines, APreserveBookMarks);
    finally
-      newLines.Free;
+      if Assigned(currLang.ExecuteAfterGeneration) then
+         currLang.ExecuteAfterGeneration
+      else if Assigned(templLang.ExecuteAfterGeneration) then
+         templLang.ExecuteAfterGeneration;
    end;
 end;
 
 procedure TEditorForm.DisplayLines(ALines: TStringList; APreserveBookMarks: boolean);
 begin
+   if (ALines = nil) or (ALines.Count = 0) then
+      Exit;
 {$IFDEF USE_CODEFOLDING}
    memCodeEditor.AllFoldRanges.DestroyAll;
 {$ENDIF}
@@ -510,7 +507,12 @@ end;
 
 procedure TEditorForm.FormShow(Sender: TObject);
 begin
-   GenerateCode;
+   var codeLines := GenerateCode;
+   try
+      DisplayLines(codeLines, false);
+   finally
+      codeLines.Free;
+   end;
 end;
 
 procedure TEditorForm.pmPopMenuPopup(Sender: TObject);
@@ -1281,8 +1283,9 @@ begin
    if scrollEnabled then
       memCodeEditor.BeginUpdate;
    SendMessage(memCodeEditor.Handle, WM_SETREDRAW, WPARAM(False), 0);
+   var codeLines := GenerateCode;
    try
-      GenerateCode(true);
+      DisplayLines(codeLines, true);
       if AObject <> nil then
       begin
          codeRange := SelectCodeRange(AObject, false);
@@ -1295,6 +1298,7 @@ begin
          end;
       end;
    finally
+      codeLines.Free;
       if not gotoLine then
       begin
          memCodeEditor.CaretXY := caretXY;
