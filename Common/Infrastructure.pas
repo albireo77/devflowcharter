@@ -125,6 +125,7 @@ type
          function ValidateConstId(const AId: string): integer;
          function ValidateId(const AId: string): integer;
          function ParseVarSize(const ASize: string): boolean;
+         function GenerateProgram: TStringList;
          procedure SetLangHiglighterAttributes;
          procedure GetLangNames(AList: TStrings);
          procedure SetHLighters;
@@ -195,6 +196,41 @@ begin
    if GSettings.UpdateEditor then
       GetEditorForm.RefreshEditorForObject(AObject);
    GProject.SetChanged;
+end;
+
+function TInfra.GenerateProgram: TStringList;
+begin
+   result := TStringList.Create;
+
+   var skipFuncBody := false;
+
+   if Assigned(FCurrentLang.SkipFuncBodyGen) then
+      skipFuncBody := FCurrentLang.SkipFuncBodyGen
+   else if Assigned(FTemplateLang.SkipFuncBodyGen) then
+      skipFuncBody := FTemplateLang.SkipFuncBodyGen;
+
+   if Assigned(FCurrentLang.ExecuteBeforeGeneration) then
+      FCurrentLang.ExecuteBeforeGeneration
+   else if Assigned(FTemplateLang.ExecuteBeforeGeneration) then
+      FTemplateLang.ExecuteBeforeGeneration;
+
+   try
+      var lang: TLangDefinition := nil;
+      if Assigned(FCurrentLang.ProgramGenerator) then
+         lang := FCurrentLang
+      else if Assigned(FTemplateLang.ProgramGenerator) then
+         lang := FTemplateLang;
+      if (lang <> nil) and not lang.ProgramGenerator(result, skipFuncBody) then
+      begin
+         ShowErrorBox('NoProgTempl', [sLineBreak, FCurrentLang.Name, FCurrentLang.DefFile, FILE_CONTENTS_TAG], errValidate);
+         result.Clear;
+      end;
+   finally
+      if Assigned(FCurrentLang.ExecuteAfterGeneration) then
+         FCurrentLang.ExecuteAfterGeneration
+      else if Assigned(FTemplateLang.ExecuteAfterGeneration) then
+         FTemplateLang.ExecuteAfterGeneration;
+   end;
 end;
 
 class function TInfra.ExportToFile(AExport: IExportable): TError;

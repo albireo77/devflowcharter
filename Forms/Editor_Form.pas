@@ -135,7 +135,6 @@ type
     function BuildBracketHint(startLine, endLine: integer): string;
     function CharToPixels(P: TBufferCoord): TPoint;
     function GetAllLines: TStrings;
-    function GenerateProgram: TStringList;
     procedure PasteComment(const AText: string);
     procedure DisplayLines(ALines: TStringList; APreserveBookMarks: boolean);
   public
@@ -439,44 +438,6 @@ begin
    end;
 end;
 
-function TEditorForm.GenerateProgram: TStringList;
-begin
-   result := TStringList.Create;
-
-   var skipFuncBody := false;
-   var currLang := GInfra.CurrentLang;
-   var templLang := GInfra.TemplateLang;
-
-
-   if Assigned(currLang.SkipFuncBodyGen) then
-      skipFuncBody := currLang.SkipFuncBodyGen
-   else if Assigned(templLang.SkipFuncBodyGen) then
-      skipFuncBody := templLang.SkipFuncBodyGen;
-
-   if Assigned(currLang.ExecuteBeforeGeneration) then
-      currLang.ExecuteBeforeGeneration
-   else if Assigned(templLang.ExecuteBeforeGeneration) then
-      templLang.ExecuteBeforeGeneration;
-
-   try
-      var lang: TLangDefinition := nil;
-      if Assigned(currLang.ProgramGenerator) then
-         lang := currLang
-      else if Assigned(templLang.ProgramGenerator) then
-         lang := templLang;
-      if (lang <> nil) and not lang.ProgramGenerator(result, skipFuncBody) then
-      begin
-         TInfra.ShowErrorBox('NoProgTempl', [sLineBreak, currLang.Name, currLang.DefFile, FILE_CONTENTS_TAG], errValidate);
-         result.Clear;
-      end;
-   finally
-      if Assigned(currLang.ExecuteAfterGeneration) then
-         currLang.ExecuteAfterGeneration
-      else if Assigned(templLang.ExecuteAfterGeneration) then
-         templLang.ExecuteAfterGeneration;
-   end;
-end;
-
 procedure TEditorForm.DisplayLines(ALines: TStringList; APreserveBookMarks: boolean);
 begin
    if (ALines = nil) or (ALines.Count = 0) then
@@ -507,7 +468,7 @@ end;
 
 procedure TEditorForm.FormShow(Sender: TObject);
 begin
-   var programLines := GenerateProgram;
+   var programLines := GInfra.GenerateProgram;
    try
       DisplayLines(programLines, false);
    finally
@@ -1279,7 +1240,7 @@ begin
    if scrollEnabled then
       memCodeEditor.BeginUpdate;
    SendMessage(memCodeEditor.Handle, WM_SETREDRAW, WPARAM(False), 0);
-   var programLines := GenerateProgram;
+   var programLines := GInfra.GenerateProgram;
    try
       DisplayLines(programLines, true);
       if AObject <> nil then
