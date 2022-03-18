@@ -444,39 +444,39 @@ begin
 
    var newLines := TStringList.Create;
    try
-
       var skipFuncBody := false;
+      var currLang := GInfra.CurrentLang;
+      var templLang := GInfra.TemplateLang;
 
-      if Assigned(GInfra.CurrentLang.SkipFuncBodyGen) then
-         GInfra.CurrentLang.SkipFuncBodyGen
-      else if Assigned(GInfra.TemplateLang.SkipFuncBodyGen) then
-         GInfra.TemplateLang.SkipFuncBodyGen;
+      if Assigned(currLang.SkipFuncBodyGen) then
+         currLang.SkipFuncBodyGen
+      else if Assigned(templLang.SkipFuncBodyGen) then
+         templLang.SkipFuncBodyGen;
 
-      if Assigned(GInfra.CurrentLang.ExecuteBeforeGeneration) then
-         GInfra.CurrentLang.ExecuteBeforeGeneration
-      else if Assigned(GInfra.TemplateLang.ExecuteBeforeGeneration) then
-         GInfra.TemplateLang.ExecuteBeforeGeneration;
+      if Assigned(currLang.ExecuteBeforeGeneration) then
+         currLang.ExecuteBeforeGeneration
+      else if Assigned(templLang.ExecuteBeforeGeneration) then
+         templLang.ExecuteBeforeGeneration;
 
       try
          var lang: TLangDefinition := nil;
-         if Assigned(GInfra.CurrentLang.FileContentsGenerator) then
-            lang := GInfra.CurrentLang
-         else if Assigned(GInfra.TemplateLang.FileContentsGenerator) then
-            lang := GInfra.TemplateLang;
+         if Assigned(currLang.FileContentsGenerator) then
+            lang := currLang
+         else if Assigned(templLang.FileContentsGenerator) then
+            lang := templLang;
          if (lang <> nil) and not lang.FileContentsGenerator(newLines, skipFuncBody) then
          begin
-            TInfra.ShowErrorBox('NoProgTempl', [sLineBreak, GInfra.CurrentLang.Name, GInfra.CurrentLang.DefFile, FILE_CONTENTS_TAG], errValidate);
+            TInfra.ShowErrorBox('NoProgTempl', [sLineBreak, currLang.Name, currLang.DefFile, FILE_CONTENTS_TAG], errValidate);
             Exit;
          end;
       finally
-         if Assigned(GInfra.CurrentLang.ExecuteAfterGeneration) then
-            GInfra.CurrentLang.ExecuteAfterGeneration
-         else if Assigned(GInfra.TemplateLang.ExecuteAfterGeneration) then
-            GInfra.TemplateLang.ExecuteAfterGeneration;
+         if Assigned(currLang.ExecuteAfterGeneration) then
+            currLang.ExecuteAfterGeneration
+         else if Assigned(templLang.ExecuteAfterGeneration) then
+            templLang.ExecuteAfterGeneration;
       end;
 
       DisplayLines(newLines, APreserveBookMarks);
-
    finally
       newLines.Free;
    end;
