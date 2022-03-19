@@ -203,10 +203,10 @@ begin
    result := TStringList.Create;
    var eMessage := '';
    try
-      if Assigned(FCurrentLang.ExecuteBeforeGeneration) then
-         FCurrentLang.ExecuteBeforeGeneration
-      else if Assigned(FTemplateLang.ExecuteBeforeGeneration) then
-         FTemplateLang.ExecuteBeforeGeneration;
+      if Assigned(FCurrentLang.BeforeProgramGenerator) then
+         FCurrentLang.BeforeProgramGenerator
+      else if Assigned(FTemplateLang.BeforeProgramGenerator) then
+         FTemplateLang.BeforeProgramGenerator;
       if Assigned(FCurrentLang.ProgramGenerator) then
          FCurrentLang.ProgramGenerator(result)
       else if Assigned(FTemplateLang.ProgramGenerator) then
@@ -214,10 +214,10 @@ begin
    except on E: Exception do
       eMessage := E.Message;
    end;
-   if Assigned(FCurrentLang.ExecuteAfterGeneration) then
-      FCurrentLang.ExecuteAfterGeneration
-   else if Assigned(FTemplateLang.ExecuteAfterGeneration) then
-      FTemplateLang.ExecuteAfterGeneration;
+   if Assigned(FCurrentLang.AfterProgramGenerator) then
+      FCurrentLang.AfterProgramGenerator
+   else if Assigned(FTemplateLang.AfterProgramGenerator) then
+      FTemplateLang.AfterProgramGenerator;
    if not eMessage.IsEmpty then
       ShowErrorBox('CodeGenErr', [sLineBreak, eMessage], errGeneral)
    else if result.Count = 0 then

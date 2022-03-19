@@ -218,8 +218,8 @@ type
       InOutCursorPos,
       FuncBracketsCursorPos: integer;
       BlockTemplates: array[TBlockType] of string;
-      ExecuteBeforeGeneration: procedure;
-      ExecuteAfterGeneration: procedure;
+      BeforeProgramGenerator: procedure;
+      AfterProgramGenerator: procedure;
       ProgramHeaderSectionGenerator: procedure (ALines: TStringList);
       LibSectionGenerator: procedure (ALines: TStringList);
       UserDataTypesSectionGenerator: procedure (ALines: TStringList);
@@ -281,8 +281,8 @@ begin
    KeyWords := TStringList.Create;
    UpperCaseConstId := true;
    EnabledPointers := true;
-   ExecuteBeforeGeneration := nil;
-   ExecuteAfterGeneration := nil;
+   BeforeProgramGenerator := nil;
+   AfterProgramGenerator := nil;
    ProgramHeaderSectionGenerator := nil;
    LibSectionGenerator := nil;
    UserDataTypesSectionGenerator := nil;

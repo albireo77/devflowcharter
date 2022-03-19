@@ -217,12 +217,12 @@ begin
    end;
 end;
 
-procedure Java_ExecuteBeforeGeneration;
+procedure Java_BeforeProgramGenerator;
 begin
    FImportLines := nil;
 end;
 
-procedure Java_ExecuteAfterGeneration;
+procedure Java_AfterProgramGenerator;
 begin
    FImportLines := nil;
 end;
@@ -1118,8 +1118,8 @@ initialization
    javaLang := GInfra.GetLangDefinition(JAVA_LANG_ID);
    if javaLang <> nil then
    begin
-      javaLang.ExecuteBeforeGeneration :=  Java_ExecuteBeforeGeneration;
-      javaLang.ExecuteAfterGeneration :=  Java_ExecuteAfterGeneration;
+      javaLang.BeforeProgramGenerator :=  Java_BeforeProgramGenerator;
+      javaLang.AfterProgramGenerator :=  Java_AfterProgramGenerator;
       javaLang.LibSectionGenerator := Java_LibSectionGenerator;
       javaLang.VarSectionGenerator := Java_VarSectionGenerator;
       javaLang.UserDataTypesSectionGenerator := Java_UserDataTypesSectionGenerator;
