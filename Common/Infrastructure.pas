@@ -215,16 +215,12 @@ begin
       FTemplateLang.ExecuteBeforeGeneration;
 
    try
-      var lang: TLangDefinition := nil;
       if Assigned(FCurrentLang.ProgramGenerator) then
-         lang := FCurrentLang
+         FCurrentLang.ProgramGenerator(result, skipFuncBody)
       else if Assigned(FTemplateLang.ProgramGenerator) then
-         lang := FTemplateLang;
-      if (lang <> nil) and not lang.ProgramGenerator(result, skipFuncBody) then
-      begin
+         FTemplateLang.ProgramGenerator(result, skipFuncBody);
+      if result.Count = 0 then
          ShowErrorBox('NoProgTempl', [sLineBreak, FCurrentLang.Name, FCurrentLang.DefFile, PROGRAM_TEMPLATE_TAG], errValidate);
-         result.Clear;
-      end;
    finally
       if Assigned(FCurrentLang.ExecuteAfterGeneration) then
          FCurrentLang.ExecuteAfterGeneration
