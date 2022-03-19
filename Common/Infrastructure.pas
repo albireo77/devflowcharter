@@ -201,22 +201,26 @@ end;
 function TInfra.GenerateProgram: TStringList;
 begin
    result := TStringList.Create;
-   if Assigned(FCurrentLang.ExecuteBeforeGeneration) then
-      FCurrentLang.ExecuteBeforeGeneration
-   else if Assigned(FTemplateLang.ExecuteBeforeGeneration) then
-      FTemplateLang.ExecuteBeforeGeneration;
+   var eMessage := '';
    try
+      if Assigned(FCurrentLang.ExecuteBeforeGeneration) then
+         FCurrentLang.ExecuteBeforeGeneration
+      else if Assigned(FTemplateLang.ExecuteBeforeGeneration) then
+         FTemplateLang.ExecuteBeforeGeneration;
       if Assigned(FCurrentLang.ProgramGenerator) then
          FCurrentLang.ProgramGenerator(result)
       else if Assigned(FTemplateLang.ProgramGenerator) then
          FTemplateLang.ProgramGenerator(result);
-   finally
-      if Assigned(FCurrentLang.ExecuteAfterGeneration) then
-         FCurrentLang.ExecuteAfterGeneration
-      else if Assigned(FTemplateLang.ExecuteAfterGeneration) then
-         FTemplateLang.ExecuteAfterGeneration;
+   except on E: Exception do
+      eMessage := E.Message;
    end;
-   if result.Count = 0 then
+   if Assigned(FCurrentLang.ExecuteAfterGeneration) then
+      FCurrentLang.ExecuteAfterGeneration
+   else if Assigned(FTemplateLang.ExecuteAfterGeneration) then
+      FTemplateLang.ExecuteAfterGeneration;
+   if not eMessage.IsEmpty then
+      ShowErrorBox('CodeGenErr', [sLineBreak, eMessage], errGeneral)
+   else if result.Count = 0 then
       ShowErrorBox('NoProgTempl', [sLineBreak, FCurrentLang.Name, FCurrentLang.DefFile, PROGRAM_TEMPLATE_TAG], errValidate);
 end;
 
