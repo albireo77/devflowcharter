@@ -227,7 +227,7 @@ type
       ConstSectionGenerator: procedure (ALines: TStringList; AConstList: TConstDeclareList);
       UserFunctionsSectionGenerator: procedure (ALines: TStringList; ASkipBodyGenerate: boolean);
       MainFunctionSectionGenerator: procedure (ALines: TStringList; ADeep: integer);
-      ProgramGenerator: procedure (ALines: TStringList; ASkipBodyGenerate: boolean);
+      ProgramGenerator: procedure (ALines: TStringList);
       GetUserFuncDesc: function (AHeader: TUserFunctionHeader; AFullParams: boolean = true; AIncludeDesc: boolean = true): string;
       GetUserFuncHeaderDesc: function (AHeader: TUserFunctionHeader): string;
       GetUserTypeDesc: function (ADataType: TUserDataType): string;

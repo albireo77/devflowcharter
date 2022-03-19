@@ -553,18 +553,24 @@ begin
    end;
 end;
 
-function Template_ProgramGenerator(ALines: TStringList; ASkipBodyGenerate: boolean): boolean;
+function Template_SkipFuncBodyGen: boolean;
+begin
+   result := false;
+end;
+
+procedure Template_ProgramGenerator(ALines: TStringList);
 var
    programTemplate, headerTemplate, mainFuncTemplate, libTemplate, constTemplate,
    varTemplate, funcTemplate, dataTypeTemplate: TStringList;
    currLang: TLangDefinition;
    i: integer;
+   skipFuncBody: boolean;
 begin
 
    currLang := GInfra.CurrentLang;
 
    if currLang.ProgramTemplate.IsEmpty then
-      Exit(false);
+      Exit;
 
    try
       // generate program header section
@@ -611,14 +617,19 @@ begin
            Template_UserDataTypesSectionGenerator(dataTypeTemplate);
      end;
 
+     if Assigned(currLang.SkipFuncBodyGen) then
+        skipFuncBody := currLang.SkipFuncBodyGen
+     else
+        skipFuncBody := Template_SkipFuncBodyGen;
+
      // generate user functions section
      funcTemplate := TStringList.Create;
      if currLang.EnabledUserFunctionHeader then
      begin
         if Assigned(currLang.UserFunctionsSectionGenerator) then
-           currLang.UserFunctionsSectionGenerator(funcTemplate, ASkipBodyGenerate)
+           currLang.UserFunctionsSectionGenerator(funcTemplate, skipFuncBody)
         else
-           Template_UserFunctionsSectionGenerator(funcTemplate, ASkipBodyGenerate);
+           Template_UserFunctionsSectionGenerator(funcTemplate, skipFuncBody);
      end;
 
       // generate main function section
@@ -650,18 +661,11 @@ begin
       funcTemplate.Free;
       dataTypeTemplate.Free;
    end;
-
-   result := true;
 end;
 
 function Template_GetPointerTypeName(const AValue: string): string;
 begin
    result := Format(GInfra.CurrentLang.PointerTypeMask, [AValue]);
-end;
-
-function Template_SkipFuncBodyGen: boolean;
-begin
-   result := false;
 end;
 
 function Template_GetUserTypeDesc(ADataType: TUserDataType): string;

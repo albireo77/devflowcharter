@@ -202,13 +202,6 @@ function TInfra.GenerateProgram: TStringList;
 begin
    result := TStringList.Create;
 
-   var skipFuncBody := false;
-
-   if Assigned(FCurrentLang.SkipFuncBodyGen) then
-      skipFuncBody := FCurrentLang.SkipFuncBodyGen
-   else if Assigned(FTemplateLang.SkipFuncBodyGen) then
-      skipFuncBody := FTemplateLang.SkipFuncBodyGen;
-
    if Assigned(FCurrentLang.ExecuteBeforeGeneration) then
       FCurrentLang.ExecuteBeforeGeneration
    else if Assigned(FTemplateLang.ExecuteBeforeGeneration) then
@@ -216,9 +209,9 @@ begin
 
    try
       if Assigned(FCurrentLang.ProgramGenerator) then
-         FCurrentLang.ProgramGenerator(result, skipFuncBody)
+         FCurrentLang.ProgramGenerator(result)
       else if Assigned(FTemplateLang.ProgramGenerator) then
-         FTemplateLang.ProgramGenerator(result, skipFuncBody);
+         FTemplateLang.ProgramGenerator(result);
       if result.Count = 0 then
          ShowErrorBox('NoProgTempl', [sLineBreak, FCurrentLang.Name, FCurrentLang.DefFile, PROGRAM_TEMPLATE_TAG], errValidate);
    finally
