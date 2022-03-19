@@ -86,7 +86,7 @@ const   // Global constants
         DATATYPE_TAG      = 'datatype';
         FUNCTION_TAG      = 'routine';
         HEADER_TAG        = 'header';
-        FILE_CONTENTS_TAG = 'FileContentsTemplate';
+        PROGRAM_TEMPLATE_TAG = 'FileContentsTemplate';
 
         LB_PHOLDER  = '#!';
         LB_PHOLDER2  = '##';

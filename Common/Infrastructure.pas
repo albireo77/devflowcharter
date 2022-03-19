@@ -222,7 +222,7 @@ begin
          lang := FTemplateLang;
       if (lang <> nil) and not lang.ProgramGenerator(result, skipFuncBody) then
       begin
-         ShowErrorBox('NoProgTempl', [sLineBreak, FCurrentLang.Name, FCurrentLang.DefFile, FILE_CONTENTS_TAG], errValidate);
+         ShowErrorBox('NoProgTempl', [sLineBreak, FCurrentLang.Name, FCurrentLang.DefFile, PROGRAM_TEMPLATE_TAG], errValidate);
          result.Clear;
       end;
    finally

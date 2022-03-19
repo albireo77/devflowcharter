@@ -51,14 +51,14 @@ type
       FConstTemplate,
       FDataTypesTemplate,
       FFunctionsTemplate,
-      FFileContentsTemplate,
+      FProgramTemplate,
       FLibTemplate,
       FProgramHeaderTemplate: string;
       function GetVarTemplate: string;
       function GetConstTemplate: string;
       function GetDataTypesTemplate: string;
       function GetFunctionsTemplate: string;
-      function GetFileContentsTemplate: string;
+      function GetProgramTemplate: string;
       function GetLibTemplate: string;
       function GetProgramHeaderTemplate: string;
       procedure InitBlockTemplates;
@@ -253,7 +253,7 @@ type
       property ConstTemplate: string read GetConstTemplate;
       property DataTypesTemplate: string read GetDataTypesTemplate;
       property FunctionsTemplate: string read GetFunctionsTemplate;
-      property FileContentsTemplate: string read GetFileContentsTemplate;
+      property ProgramTemplate: string read GetProgramTemplate;
       property LibTemplate: string read GetLibTemplate;
       property ProgramHeaderTemplate: string read GetProgramHeaderTemplate;
    end;
@@ -508,7 +508,7 @@ begin
       ProgramReturnTemplate          := GetTextFromChild(ATag, 'ProgramReturnTemplate');
       FDataTypesTemplate             := GetTextFromChild(ATag, 'DataTypesTemplate');
       FFunctionsTemplate             := GetTextFromChild(ATag, 'FunctionsTemplate');
-      FFileContentsTemplate          := GetTextFromChild(ATag, FILE_CONTENTS_TAG);
+      FProgramTemplate               := GetTextFromChild(ATag, PROGRAM_TEMPLATE_TAG);
       DataTypeIntMask                := GetTextFromChild(ATag, 'DataTypeIntMask');
       DataTypeRealMask               := GetTextFromChild(ATag, 'DataTypeRealMask');
       DataTypeOtherMask              := GetTextFromChild(ATag, 'DataTypeOtherMask');
@@ -786,9 +786,9 @@ begin
    result := TInfra.ReplaceXMLIndents(FFunctionsTemplate);
 end;
 
-function TLangDefinition.GetFileContentsTemplate: string;
+function TLangDefinition.GetProgramTemplate: string;
 begin
-   result := TInfra.ReplaceXMLIndents(FFileContentsTemplate);
+   result := TInfra.ReplaceXMLIndents(FProgramTemplate);
 end;
 
 function TLangDefinition.GetLibTemplate: string;

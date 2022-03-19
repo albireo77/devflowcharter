@@ -563,7 +563,7 @@ begin
 
    currLang := GInfra.CurrentLang;
 
-   if currLang.FileContentsTemplate.IsEmpty then
+   if currLang.ProgramTemplate.IsEmpty then
       Exit(false);
 
    try
@@ -629,7 +629,7 @@ begin
          Template_MainFunctionSectionGenerator(mainFuncTemplate, 0);
 
       fileTemplate := TStringList.Create;
-      fileTemplate.Text := currLang.FileContentsTemplate;
+      fileTemplate.Text := currLang.ProgramTemplate;
       TInfra.InsertTemplateLines(fileTemplate, PRIMARY_PLACEHOLDER, GProject.Name);
       TInfra.InsertTemplateLines(fileTemplate, '%s2', headerTemplate);
       i := TInfra.InsertTemplateLines(fileTemplate, '%s3', libTemplate);
