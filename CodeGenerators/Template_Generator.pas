@@ -555,7 +555,7 @@ end;
 
 function Template_ProgramGenerator(ALines: TStringList; ASkipBodyGenerate: boolean): boolean;
 var
-   fileTemplate, headerTemplate, mainFuncTemplate, libTemplate, constTemplate,
+   programTemplate, headerTemplate, mainFuncTemplate, libTemplate, constTemplate,
    varTemplate, funcTemplate, dataTypeTemplate: TStringList;
    currLang: TLangDefinition;
    i: integer;
@@ -628,20 +628,20 @@ begin
       else
          Template_MainFunctionSectionGenerator(mainFuncTemplate, 0);
 
-      fileTemplate := TStringList.Create;
-      fileTemplate.Text := currLang.ProgramTemplate;
-      TInfra.InsertTemplateLines(fileTemplate, PRIMARY_PLACEHOLDER, GProject.Name);
-      TInfra.InsertTemplateLines(fileTemplate, '%s2', headerTemplate);
-      i := TInfra.InsertTemplateLines(fileTemplate, '%s3', libTemplate);
+      programTemplate := TStringList.Create;
+      programTemplate.Text := currLang.ProgramTemplate;
+      TInfra.InsertTemplateLines(programTemplate, PRIMARY_PLACEHOLDER, GProject.Name);
+      TInfra.InsertTemplateLines(programTemplate, '%s2', headerTemplate);
+      i := TInfra.InsertTemplateLines(programTemplate, '%s3', libTemplate);
       GProject.SetLibSectionOffset(i);
-      TInfra.InsertTemplateLines(fileTemplate, '%s4', constTemplate);
-      TInfra.InsertTemplateLines(fileTemplate, '%s5', varTemplate);
-      TInfra.InsertTemplateLines(fileTemplate, '%s6', dataTypeTemplate);
-      TInfra.InsertTemplateLines(fileTemplate, '%s7', funcTemplate);
-      TInfra.InsertTemplateLines(fileTemplate, '%s8', mainFuncTemplate);
-      ALines.AddStrings(fileTemplate);
+      TInfra.InsertTemplateLines(programTemplate, '%s4', constTemplate);
+      TInfra.InsertTemplateLines(programTemplate, '%s5', varTemplate);
+      TInfra.InsertTemplateLines(programTemplate, '%s6', dataTypeTemplate);
+      TInfra.InsertTemplateLines(programTemplate, '%s7', funcTemplate);
+      TInfra.InsertTemplateLines(programTemplate, '%s8', mainFuncTemplate);
+      ALines.AddStrings(programTemplate);
    finally
-      fileTemplate.Free;
+      programTemplate.Free;
       headerTemplate.Free;
       mainFuncTemplate.Free;
       libTemplate.Free;
