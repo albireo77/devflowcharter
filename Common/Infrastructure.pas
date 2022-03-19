@@ -210,14 +210,14 @@ begin
          FCurrentLang.ProgramGenerator(result)
       else if Assigned(FTemplateLang.ProgramGenerator) then
          FTemplateLang.ProgramGenerator(result);
-      if result.Count = 0 then
-         ShowErrorBox('NoProgTempl', [sLineBreak, FCurrentLang.Name, FCurrentLang.DefFile, PROGRAM_TEMPLATE_TAG], errValidate);
    finally
       if Assigned(FCurrentLang.ExecuteAfterGeneration) then
          FCurrentLang.ExecuteAfterGeneration
       else if Assigned(FTemplateLang.ExecuteAfterGeneration) then
          FTemplateLang.ExecuteAfterGeneration;
    end;
+   if result.Count = 0 then
+      ShowErrorBox('NoProgTempl', [sLineBreak, FCurrentLang.Name, FCurrentLang.DefFile, PROGRAM_TEMPLATE_TAG], errValidate);
 end;
 
 class function TInfra.ExportToFile(AExport: IExportable): TError;
