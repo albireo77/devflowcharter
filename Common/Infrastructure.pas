@@ -201,12 +201,10 @@ end;
 function TInfra.GenerateProgram: TStringList;
 begin
    result := TStringList.Create;
-
    if Assigned(FCurrentLang.ExecuteBeforeGeneration) then
       FCurrentLang.ExecuteBeforeGeneration
    else if Assigned(FTemplateLang.ExecuteBeforeGeneration) then
       FTemplateLang.ExecuteBeforeGeneration;
-
    try
       if Assigned(FCurrentLang.ProgramGenerator) then
          FCurrentLang.ProgramGenerator(result)
