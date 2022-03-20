@@ -453,8 +453,7 @@ begin
    memCodeEditor.Lines.Assign(ALines);
    if GSettings.EditorShowRichText then
       memCodeEditor.Highlighter := GInfra.CurrentLang.HighLighter;
-   if Assigned(memCodeEditor.OnChange) then
-      memCodeEditor.OnChange(memCodeEditor);
+   OnChangeEditor;
    if FFocusEditor then
    begin
       if memCodeEditor.CanFocus then
