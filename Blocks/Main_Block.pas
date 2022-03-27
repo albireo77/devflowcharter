@@ -178,14 +178,11 @@ begin
 end;
 
 function TMainBlock.GetDefaultWidth: integer;
-var
-   R: TRect;
-   w: integer;
 begin
-   R := GetEllipseTextRect(0, 0, FStartLabel);
+   var R := GetEllipseTextRect(0, 0, FStartLabel);
    result := R.Width;
    R := GetEllipseTextRect(0, 0, FStopLabel);
-   w := R.Width;
+   var w := R.Width;
    if w > result then
       result := w;
    result := result + 40;
@@ -523,11 +520,9 @@ begin
 end;
 
 function TMainBlock.GenerateTree(AParentNode: TTreeNode): TTreeNode;
-var
-   block: TBlock;
 begin
    result := AParentNode;
-   for block in Branch do
+   for var block in Branch do
        block.GenerateTree(AParentNode);
 end;
 

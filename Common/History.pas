@@ -55,12 +55,10 @@ begin
 end;
 
 procedure THistoryMenu.AddFile(const AFilePath: string);
-var
-   menuItem: TMenuItem;
 begin
    if FileExists(AFilePath) then
    begin
-      menuItem := FParentMenu.Find(AFilePath);
+      var menuItem := FParentMenu.Find(AFilePath);
       if menuItem <> nil then
       begin
          if menuItem.MenuIndex = 0 then
@@ -80,22 +78,16 @@ begin
 end;
 
 procedure THistoryMenu.Save;
-var
-   i: integer;
-   sFile: TCustomIniFile;
 begin
-   sFile := GSettings.SettingsFile;
-   for i := 0 to FParentMenu.Count-1 do
+   var sFile := GSettings.SettingsFile;
+   for var i := 0 to FParentMenu.Count-1 do
        sFile.WriteString(HISTORY_SECTION, i.ToString, FParentMenu[i].Caption);
 end;
 
 procedure THistoryMenu.Load;
-var
-   i: integer;
-   sFile: TCustomIniFile;
 begin
-   sFile := GSettings.SettingsFile;
-   for i := HISTORY_SIZE-1 downto 0 do
+   var sFile := GSettings.SettingsFile;
+   for var i := HISTORY_SIZE-1 downto 0 do
        AddFile(sFile.ReadString(HISTORY_SECTION, i.ToString, ''));
 end;
 

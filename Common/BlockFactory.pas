@@ -62,11 +62,9 @@ begin
 end;
 
 class function TBlockFactory.Create(ATag: IXMLElement; ABranch: TBranch): TBlock;
-var
-   p: TBlockParms;
 begin
    result := nil;
-   p := TBlockParms.New(ATag);
+   var p := TBlockParms.New(ATag);
    case p.bt of
       blInstr:      result := TInstrBlock.Create(ABranch, p);
       blMultiInstr: result := TMultiInstrBlock.Create(ABranch, p);
@@ -88,11 +86,9 @@ begin
 end;
 
 class function TBlockFactory.Create(ATag: IXMLElement; ATab: TBlockTabSheet): TBlock;
-var
-   p: TBlockParms;
 begin
    result := nil;
-   p := TBlockParms.New(ATag);
+   var p := TBlockParms.New(ATag);
    if p.bt = blMain then
    begin
       result := TMainBlock.Create(ATab, p);
