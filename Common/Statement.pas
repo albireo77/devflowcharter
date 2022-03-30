@@ -128,12 +128,10 @@ const
    BlockToParserMapping: array[TBlockType] of TYYMode = (yymUndefined, yymAssign, yymAssign,
                          yymInput, yymOutput, yymFuncCall, yymCondition, yymCondition, yymCondition,
                          yymCondition, yymFor, yymCase, yymUndefined, yymUndefined, yymReturn, yymUndefined, yymUndefined);
-var
-   block: TBlock;
 begin
    inherited Create(AOwner);
    Parent := TWinControl(AOwner);
-   block := TBlock(AOwner);
+   var block := TBlock(AOwner);
    Color := block.Color;
    PopupMenu := block.Page.Form.pmEdits;
    FParserMode := BlockToParserMapping[block.BType];
@@ -211,18 +209,13 @@ begin
 end;
 
 procedure TStatement.Change;
-var
-   txt: string;
 begin
-
    inherited Change;
-   
-   txt := Trim(Text);
+   var txt := Trim(Text);
    Font.Color := GSettings.FontColor;
    GProject.SetChanged;
    Hint := i18Manager.GetFormattedString('ExpOk', [txt, sLineBreak]);
    TBlock(Parent).UpdateEditor(Self);
-
    if FExecuteParse then
    begin
       if txt.IsEmpty then
@@ -280,8 +273,6 @@ begin
 end;
 
 procedure TStatement.DoEnter;
-var
-   chon: boolean;
 begin
    inherited DoEnter;
    case FParserMode of
@@ -297,7 +288,7 @@ begin
    else
       FExecuteParse := false;
    end;
-   chon := GProject.ChangingOn;
+   var chon := GProject.ChangingOn;
    GProject.ChangingOn := false;
    try
       Change;
