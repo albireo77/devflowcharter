@@ -31,6 +31,8 @@ type
 
   TOnChangeExtend = procedure(AStatement: TStatement) of object;
 
+  THackWinControl = class(TWinControl);
+
   TStatement = class(TCustomEdit, IWithId, IWithFocus)
   private
     { Private declarations }
@@ -49,7 +51,7 @@ type
     OnChangeExtend: TOnChangeExtend;
     property ParserMode: TYYMode read FParserMode default yymUndefined;
     property Id: integer read GetId;
-    constructor Create(AOwner: TWinControl; AParserMode: TYYMode; AId: integer = ID_INVALID);
+    constructor Create(AParent: TWinControl; AParserMode: TYYMode; AId: integer = ID_INVALID);
     destructor Destroy; override;
     procedure Change; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
@@ -122,12 +124,12 @@ implementation
 uses
    WinApi.Windows, System.SysUtils, Vcl.Forms, Infrastructure, Base_Block, Navigator_Form, Constants;
 
-constructor TStatement.Create(AOwner: TWinControl; AParserMode: TYYMode; AId: integer = ID_INVALID);
+constructor TStatement.Create(AParent: TWinControl; AParserMode: TYYMode; AId: integer = ID_INVALID);
 begin
-   inherited Create(AOwner);
-   Parent := AOwner;
-   Color := TBlock(AOwner).Color;
-   PopupMenu := TBlock(AOwner).Page.Form.pmEdits;
+   inherited Create(AParent);
+   Parent := AParent;
+   Color := THackWinControl(AParent).Color;
+   PopupMenu := THackWinControl(AParent).PopupMenu;
    BorderStyle := bsNone;
    ShowHint := True;
    AutoSelect := False;
