@@ -31,8 +31,6 @@ type
 
   TOnChangeExtend = procedure(AStatement: TStatement) of object;
 
-  THackWinControl = class(TWinControl);
-
   TStatement = class(TCustomEdit, IWithId, IWithFocus)
   private
     { Private declarations }
@@ -128,8 +126,8 @@ constructor TStatement.Create(AParent: TWinControl; AParserMode: TYYMode; AId: i
 begin
    inherited Create(AParent);
    Parent := AParent;
-   Color := THackWinControl(AParent).Color;
-   PopupMenu := THackWinControl(AParent).PopupMenu;
+   Color := TBlock(AParent).Color;
+   PopupMenu := TBlock(AParent).Page.Form.pmEdits;
    BorderStyle := bsNone;
    ShowHint := True;
    AutoSelect := False;
