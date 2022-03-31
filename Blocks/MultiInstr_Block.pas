@@ -52,6 +52,7 @@ end;
 
 procedure TMultiInstrBlock.Paint;
 begin
+   FParserMode := yymAssign;
    inherited;
    DrawBlockLabel(5, FStatements.BoundsRect.Bottom+1, GInfra.CurrentLang.LabelMultiInstr);
 end;
@@ -127,13 +128,11 @@ begin
 end;
 
 procedure TMultiInstrBlock.ChangeColor(AColor: TColor);
-var
-   b, chon: boolean;
 begin
    inherited ChangeColor(AColor);
-   chon := GProject.ChangingOn;
+   var chon := GProject.ChangingOn;
    GProject.ChangingOn := false;
-   b := FRefreshMode;
+   var b := FRefreshMode;
    FRefreshMode := true;
    try
       if Assigned(FStatements.OnChange) then

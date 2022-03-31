@@ -41,10 +41,12 @@ type
 implementation
 
 uses
-   System.Classes, Infrastructure;
+   System.Classes, Infrastructure, YaccLib;
 
 constructor TIfBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
+
+   FParserMode := yymCondition;
 
    inherited Create(ABranch, ABlockParms);
 

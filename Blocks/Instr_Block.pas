@@ -41,10 +41,12 @@ type
 implementation
 
 uses
-   Vcl.Controls, System.Types, Infrastructure;
+   Vcl.Controls, System.Types, Infrastructure, YaccLib;
 
 constructor TInstrBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
+
+   FParserMode := yymAssign;
 
    inherited Create(ABranch, ABlockParms);
 

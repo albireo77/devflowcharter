@@ -42,10 +42,12 @@ type
 implementation
 
 uses
-   Vcl.Controls, Vcl.Graphics, System.Types, Infrastructure;
+   Vcl.Controls, Vcl.Graphics, System.Types, Infrastructure, YaccLib;
 
 constructor TFunctionCallBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
+
+   FParserMode := yymFuncCall;
 
    inherited Create(ABranch, ABlockParms);
 

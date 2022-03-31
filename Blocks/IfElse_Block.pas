@@ -56,10 +56,12 @@ const
 implementation
 
 uses
-   System.SysUtils, System.Classes, System.Math, Return_Block, Infrastructure;
+   System.SysUtils, System.Classes, System.Math, Return_Block, Infrastructure, YaccLib;
 
 constructor TIfElseBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
+
+   FParserMode := yymCondition;
 
    inherited Create(ABranch, ABlockParms);
 

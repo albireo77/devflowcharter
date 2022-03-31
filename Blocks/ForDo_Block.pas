@@ -72,7 +72,7 @@ type
 implementation
 
 uses
-   Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Math,
+   Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Math, YaccLib,
    Infrastructure, Constants, XMLProcessor, Main_Block, UserFunction, Return_Block;
 
 const
@@ -83,6 +83,8 @@ const
 
 constructor TForDoBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
+
+   FParserMode := yymFor;
 
    inherited Create(ABranch, ABlockParms);
 
@@ -98,13 +100,13 @@ begin
 
    FForLabel := i18Manager.GetString('CaptionFor');
 
-   edtStart := TStatement.Create(Self);
+   edtStart := TStatement.Create(Self, FParserMode);
    edtStart.Color := GSettings.GetShapeColor(FShape);
    edtStart.Font.Size := FStatement.Font.Size;
    edtStart.DoubleBuffered := true;
    edtStart.OnChangeExtend := OnChangeExtend;
 
-   edtStop := TStatement.Create(Self);
+   edtStop := TStatement.Create(Self, FParserMode);
    edtStop.Color := edtStart.Color;
    edtStop.Font.Size := FStatement.Font.Size;
    edtStop.DoubleBuffered := true;

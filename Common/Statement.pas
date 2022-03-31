@@ -49,13 +49,12 @@ type
     OnChangeExtend: TOnChangeExtend;
     property ParserMode: TYYMode read FParserMode default yymUndefined;
     property Id: integer read GetId;
+    constructor Create(AOwner: TComponent; AParserMode: TYYMode; AId: integer = ID_INVALID);
+    destructor Destroy; override;
     procedure Change; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure DoEnter; override;
-    constructor Create(AOwner: TComponent); overload; override;
-    constructor Create(AOwner: TComponent; const AId: integer); overload;
-    destructor Destroy; override;
     function RetrieveFocus(AInfo: TFocusInfo): boolean;
     function CanBeFocused: boolean;
     function GetFocusColor: TColor;
@@ -123,45 +122,22 @@ implementation
 uses
    WinApi.Windows, System.SysUtils, Vcl.Forms, Infrastructure, Base_Block, Navigator_Form, Constants;
 
-constructor TStatement.Create(AOwner: TComponent);
-const
-   BlockToParserMapping: array[TBlockType] of TYYMode = (yymUndefined, yymAssign, yymAssign,
-                         yymInput, yymOutput, yymFuncCall, yymCondition, yymCondition, yymCondition,
-                         yymCondition, yymFor, yymCase, yymUndefined, yymUndefined, yymReturn, yymUndefined, yymUndefined);
+constructor TStatement.Create(AOwner: TComponent; AParserMode: TYYMode; AId: integer = ID_INVALID);
 begin
    inherited Create(AOwner);
    Parent := TWinControl(AOwner);
-   var block := TBlock(AOwner);
-   Color := block.Color;
-   PopupMenu := block.Page.Form.pmEdits;
-   FParserMode := BlockToParserMapping[block.BType];
-   if Parent.ControlCount > 0 then
-   begin
-      if Parent.Controls[0] = Self then
-      begin
-         if Parent.Parent is TBlock then
-            block := TBlock(Parent.Parent);
-      end
-      else if FParserMode = yymCase then
-         FParserMode := yymCaseValue;
-   end;
-   Font.Assign(block.GetFont);
+   Color := TBlock(AOwner).Color;
+   PopupMenu := TBlock(AOwner).Page.Form.pmEdits;
    BorderStyle := bsNone;
    ShowHint := True;
    AutoSelect := False;
    DoubleBuffered := true;
-   FId := GProject.Register(Self);
    OnChangeExtend := nil;
-   Font.Name := GSettings.FlowchartFontName;
    ControlStyle := ControlStyle + [csOpaque];
+   FParserMode := AParserMode;
+   FId := GProject.Register(Self, AId);
    if CanFocus then
       SetFocus;
-end;
-
-constructor TStatement.Create(AOwner: TComponent; const AId: integer);
-begin
-   Create(AOwner);
-   FId := GProject.Register(Self, AId);
 end;
 
 destructor TStatement.Destroy;

@@ -47,7 +47,7 @@ type
          procedure ResizeHorz(AContinue: boolean); override;
          procedure ResizeVert(AContinue: boolean); override;
          procedure ExpandFold(AResize: boolean); override;
-         function AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch; override;
+         function AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchTextId: integer = ID_INVALID): TBranch; override;
          function InsertNewBranch(AIndex: integer): TBranch;
          function CountErrWarn: TErrWarnCount; override;
          function GetFromXML(ATag: IXMLElement): TError; override;
@@ -67,10 +67,12 @@ implementation
 
 uses
    System.StrUtils, System.Math, System.SysUtils, XMLProcessor, Return_Block, LangDefinition,
-   Infrastructure, Constants;
+   Infrastructure, Constants, YaccLib;
 
 constructor TCaseBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
+
+   FParserMode := yymCase;
 
    inherited Create(ABranch, ABlockParms);
 
@@ -195,12 +197,12 @@ begin
    end;
 end;
 
-function TCaseBlock.AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch;
+function TCaseBlock.AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchTextId: integer = ID_INVALID): TBranch;
 begin
    result := inherited AddBranch(AHook, ABranchId);
    if FBranchList.IndexOf(result) > DEFAULT_BRANCH_IDX then       // don't execute when default branch is being added in constructor
    begin
-      result.Statement := TStatement.Create(Self, ABranchStmntId);
+      result.Statement := TStatement.Create(Self, yymCaseValue, ABranchTextId);
       result.Statement.Alignment := taRightJustify;
       PlaceBranchStatement(result);
    end;
@@ -221,7 +223,7 @@ begin
       FBranchList.Insert(AIndex, result);
       lock := LockDrawing;
       try
-         result.Statement := TStatement.Create(Self);
+         result.Statement := TStatement.Create(Self, yymCaseValue);
          result.Statement.Alignment := taRightJustify;
          PlaceBranchStatement(result);
          ResizeWithDrawLock;

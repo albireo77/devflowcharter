@@ -46,10 +46,12 @@ implementation
 
 uses
    Vcl.Controls, System.SysUtils, System.UITypes, System.Math, Infrastructure,
-   Project, UserFunction, Main_Block, LangDefinition, Constants;
+   Project, UserFunction, Main_Block, LangDefinition, Constants, YaccLib;
 
 constructor TReturnBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
+
+   FParserMode := yymReturn;
 
    inherited Create(ABranch, ABlockParms);
 

@@ -44,10 +44,12 @@ type
 implementation
 
 uses
-   System.Classes, System.Math, Infrastructure, LangDefinition;
+   System.Classes, System.Math, Infrastructure, LangDefinition, YaccLib;
 
 constructor TRepeatUntilBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
+
+   FParserMode := yymCondition;
 
    inherited Create(ABranch, ABlockParms);
 

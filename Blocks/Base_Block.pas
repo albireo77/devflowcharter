@@ -27,7 +27,7 @@ interface
 uses
    WinApi.Windows, Vcl.StdCtrls, Vcl.Controls, Vcl.Graphics, WinApi.Messages, System.Classes,
    Vcl.ComCtrls, Generics.Collections, Statement, OmniXML, BaseEnumerator,
-   Interfaces, Types, BlockTabSheet, Comment, MemoEx;
+   Interfaces, Types, BlockTabSheet, Comment, MemoEx, YaccLib;
 
 const
    PRIMARY_BRANCH_IDX = 1;
@@ -70,6 +70,7 @@ type
          FRefreshMode,
          FFrame,
          FMouseLeave: boolean;
+         FParserMode: TYYMode;
          FShape: TColorShape;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms);
          procedure MyOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -126,7 +127,7 @@ type
          IPoint: TPoint;          // points to I mark
          BottomHook: integer;
          TopHook: TPoint;
-         Ired: Integer;           // indicates active arrow; -1: none, 0: bottom, 1: branch1, 2: branch2 and so on...
+         Ired: Integer;           // indicates active arrow; -1: none, 0: bottom, 1: branch1, 2: branch2...
          property Frame: boolean read FFrame write SetFrame;
          property TopParentBlock: TGroupBlock read FTopParentBlock;
          property Page: TBlockTabSheet read GetPage write SetPage;
@@ -134,6 +135,7 @@ type
          property BType: TBlockType read FType default blUnknown;
          property ParentBranch: TBranch read FParentBranch;
          property Id: integer read GetId;
+         property ParserMode: TYYMode read FParserMode;
          destructor Destroy; override;
          function Clone(ABranch: TBranch): TBlock;
          procedure ChangeColor(AColor: TColor); virtual;
@@ -237,7 +239,7 @@ type
          function FindLastRow(AStart: integer; ALines: TStrings): integer; override;
          procedure ChangeColor(AColor: TColor); override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
-         function AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch; virtual;
+         function AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchTextId: integer = ID_INVALID): TBranch; virtual;
          procedure ExpandAll;
          function HasFoldedBlocks: boolean;
          procedure PopulateComboBoxes; override;
@@ -333,7 +335,7 @@ begin
    SetBounds(ABlockParms.x, ABlockParms.y, ABlockParms.w, ABlockParms.h);
 
    FId := GProject.Register(Self, ABlockParms.bid);
-   FStatement := TStatement.Create(Self);
+   FStatement := TStatement.Create(Self, FParserMode);
    FMouseLeave := true;
    FShape := shpRectangle;
    FStatement.Color := GSettings.GetShapeColor(FShape);
@@ -1987,7 +1989,7 @@ begin
    end;
 end;
 
-function TGroupBlock.AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchStmntId: integer = ID_INVALID): TBranch;
+function TGroupBlock.AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchTextId: integer = ID_INVALID): TBranch;
 begin
    result := TBranch.Create(Self, AHook, ABranchId);
    FBranchList.Add(result);

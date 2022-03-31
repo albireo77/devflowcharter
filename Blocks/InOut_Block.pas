@@ -53,7 +53,7 @@ implementation
 
 uses
    Vcl.Controls, System.Classes, WinApi.Windows, System.Types, System.UITypes, System.Math,
-   Infrastructure;
+   Infrastructure, YaccLib;
 
 const
    DEF_BLOCK_WIDTH    = 153;
@@ -94,6 +94,7 @@ constructor TInputBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms)
 begin
    FLabel := i18Manager.GetString('CaptionIn');
    FLabelSegoe := GInfra.CurrentLang.LabelIn;
+   FParserMode := yymInput;
    inherited Create(ABranch, ABlockParms, GInfra.CurrentLang.InputFunction, false);
 end;
 
@@ -101,6 +102,7 @@ constructor TInputBlock.Create(ABranch: TBranch);
 begin
    FLabel := i18Manager.GetString('CaptionIn');
    FLabelSegoe := GInfra.CurrentLang.LabelIn;
+   FParserMode := yymInput;
    inherited Create(ABranch, TBlockParms.New(blInput, 0, 0, DEF_BLOCK_WIDTH, DEF_BLOCK_HEIGHT), GInfra.CurrentLang.InputFunction, true);
 end;
 
@@ -108,6 +110,7 @@ constructor TOutputBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms
 begin
    FLabel := i18Manager.GetString('CaptionOut');
    FLabelSegoe := GInfra.CurrentLang.LabelOut;
+   FParserMode := yymOutput;
    inherited Create(ABranch, ABlockParms, GInfra.CurrentLang.OutputFunction, false);
 end;
 
@@ -115,6 +118,7 @@ constructor TOutputBlock.Create(ABranch: TBranch);
 begin
    FLabel := i18Manager.GetString('CaptionOut');
    FLabelSegoe := GInfra.CurrentLang.LabelOut;
+   FParserMode := yymOutput;
    inherited Create(ABranch, TBlockParms.New(blOutput, 0, 0, DEF_BLOCK_WIDTH, DEF_BLOCK_HEIGHT), GInfra.CurrentLang.OutputFunction, true);
 end;
 
