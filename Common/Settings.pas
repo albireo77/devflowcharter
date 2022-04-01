@@ -526,7 +526,7 @@ begin
 
    for var shape := Low(TColorShape) to High(TColorShape) do
    begin
-      var lColor := GetShapeColor(shape);
+      var lColor := sForm.GetShapeColor(shape);
       if lColor <> FShapeColors[shape] then
       begin
          FShapeColors[shape] := lColor;
