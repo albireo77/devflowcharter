@@ -55,7 +55,7 @@ type
    TGroupBlock = class;
    TBranch = class;
 
-   TBlock = class(TBaseBlock, IWithId, IWithFocus, IExportable, IMemoEx)
+   TBlock = class(TCustomControl, IWithId, IWithFocus, IExportable, IMemoEx)
       private
          FParentBlock: TGroupBlock;
          FParentBranch: TBranch;

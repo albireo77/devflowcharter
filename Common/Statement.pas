@@ -29,7 +29,7 @@ type
 
   TStatement = class;
 
-  TBaseBlock = class(TCustomControl);
+  THackWinControl = class(TWinControl);
 
   TOnChangeExtend = procedure(AStatement: TStatement) of object;
 
@@ -50,7 +50,7 @@ type
     { Public declarations }
     OnChangeExtend: TOnChangeExtend;
     property Id: integer read GetId;
-    constructor Create(AParent: TBaseBlock; AParserMode: TYYMode; AId: integer = ID_INVALID);
+    constructor Create(AParent: TWinControl; AParserMode: TYYMode; AId: integer = ID_INVALID);
     destructor Destroy; override;
     procedure Change; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
@@ -123,11 +123,11 @@ implementation
 uses
    WinApi.Windows, System.SysUtils, Vcl.Forms, Infrastructure, Base_Block, Navigator_Form, Constants;
 
-constructor TStatement.Create(AParent: TBaseBlock; AParserMode: TYYMode; AId: integer = ID_INVALID);
+constructor TStatement.Create(AParent: TWinControl; AParserMode: TYYMode; AId: integer = ID_INVALID);
 begin
    inherited Create(AParent);
    Parent := AParent;
-   Color := AParent.Color;
+   Color := THackWinControl(AParent).Color;
    PopupMenu := TInfra.GetMainForm.pmEdits;
    BorderStyle := bsNone;
    ShowHint := True;
@@ -245,8 +245,8 @@ end;
 procedure TStatement.MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer);
 begin
    inherited MouseDown(Button, Shift, X, Y);
-   if HasParent and Assigned(TBaseBlock(Parent).OnMouseDown) then
-      TBaseBlock(Parent).OnMouseDown(Parent, Button, Shift, X, Y);
+   if HasParent and Assigned(THackWinControl(Parent).OnMouseDown) then
+      THackWinControl(Parent).OnMouseDown(Parent, Button, Shift, X, Y);
 end;
 
 procedure TStatement.DoEnter;
