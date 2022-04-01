@@ -183,7 +183,8 @@ begin
    Font.Color := GSettings.FontColor;
    GProject.SetChanged;
    Hint := i18Manager.GetFormattedString('ExpOk', [txt, sLineBreak]);
-   TBlock(Parent).UpdateEditor(Self);
+   if Parent is TBlock then
+      TBlock(Parent).UpdateEditor(Self);
    if FExecuteParse then
    begin
       if txt.IsEmpty then
