@@ -28,9 +28,7 @@ uses
 type
 
   TStatement = class;
-
-  THackWinControl = class(TWinControl);
-
+  TWinControlHack = class(TWinControl);
   TOnChangeExtend = procedure(AStatement: TStatement) of object;
 
   TStatement = class(TCustomEdit, IWithId, IWithFocus)
@@ -127,7 +125,7 @@ constructor TStatement.Create(AParent: TWinControl; AParserMode: TYYMode; AId: i
 begin
    inherited Create(AParent);
    Parent := AParent;
-   Color := THackWinControl(AParent).Color;
+   Color := TWinControlHack(AParent).Color;
    PopupMenu := TInfra.GetMainForm.pmEdits;
    BorderStyle := bsNone;
    ShowHint := True;
@@ -245,8 +243,8 @@ end;
 procedure TStatement.MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer);
 begin
    inherited MouseDown(Button, Shift, X, Y);
-   if HasParent and Assigned(THackWinControl(Parent).OnMouseDown) then
-      THackWinControl(Parent).OnMouseDown(Parent, Button, Shift, X, Y);
+   if HasParent and Assigned(TWinControlHack(Parent).OnMouseDown) then
+      TWinControlHack(Parent).OnMouseDown(Parent, Button, Shift, X, Y);
 end;
 
 procedure TStatement.DoEnter;
