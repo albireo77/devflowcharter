@@ -34,12 +34,15 @@ type
   TStatement = class(TCustomEdit, IWithId, IWithFocus)
   private
     { Private declarations }
-    FExecuteParse: boolean;
+    FExecuteParse,
+    FHasFocusParent: boolean;
     FParserMode: TYYMode;
     FId,
     FLMargin,
     FRMargin: integer;
+    FFocusParent: IWithFocus;
     function GetId: integer;
+    function HasFocusParent: boolean;
     procedure ApplyMargins;
   protected
     procedure WndProc(var msg: TMessage); override;
@@ -125,6 +128,7 @@ constructor TStatement.Create(AParent: TWinControl; AParserMode: TYYMode; AId: i
 begin
    inherited Create(AParent);
    Parent := AParent;
+   FHasFocusParent := Supports(AParent, IWithFocus, FFocusParent);
    Color := TWinControlHack(AParent).Color;
    PopupMenu := TInfra.GetMainForm.pmEdits;
    BorderStyle := bsNone;
@@ -170,17 +174,6 @@ procedure TStatement.CreateHandle;
 begin
    inherited;
    ApplyMargins;
-end;
-
-function TStatement.RetrieveFocus(AInfo: TFocusInfo): boolean;
-begin
-   AInfo.FocusEdit := Self;
-   result := TBlock(Parent).RetrieveFocus(AInfo);
-end;
-
-function TStatement.CanBeFocused: boolean;
-begin
-   result := TBlock(Parent).CanBeFocused;
 end;
 
 procedure TStatement.Change;
@@ -289,12 +282,12 @@ function TStatement.Remove(ANode: TTreeNodeWithFriend = nil): boolean;
 begin
    result := CanRemove;
    if result then
-      result := TBlock(Parent).Remove(ANode);
+      result := FFocusParent.Remove(ANode);
 end;
 
 function TStatement.CanRemove: boolean;
 begin
-   result := HasParent and TBlock(Parent).CanRemove;
+   result := HasFocusParent and FFocusParent.CanRemove;
 end;
 
 function TStatement.IsBoldDesc: boolean;
@@ -305,8 +298,24 @@ end;
 function TStatement.GetTreeNodeText(ANodeOffset: integer = 0): string;
 begin
    result := '';
-   if HasParent then
-      result := TBlock(Parent).GetTreeNodeText(ANodeOffset);
+   if HasFocusParent then
+      result := FFocusParent.GetTreeNodeText(ANodeOffset);
+end;
+
+function TStatement.RetrieveFocus(AInfo: TFocusInfo): boolean;
+begin
+   AInfo.FocusEdit := Self;
+   result := HasFocusParent and FFocusParent.RetrieveFocus(AInfo);
+end;
+
+function TStatement.CanBeFocused: boolean;
+begin
+   result := HasFocusParent and FFocusParent.CanBeFocused;
+end;
+
+function TStatement.HasFocusParent: boolean;
+begin
+   result := HasParent and FHasFocusParent;
 end;
 
 end.
