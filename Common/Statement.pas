@@ -47,7 +47,7 @@ type
   public
     { Public declarations }
     OnChangeExtend: TOnChangeExtend;
-    property ParserMode: TYYMode read FParserMode default yymUndefined;
+    property ParserMode: TYYMode read FParserMode;
     property Id: integer read GetId;
     constructor Create(AParent: TWinControl; AParserMode: TYYMode; AId: integer = ID_INVALID);
     destructor Destroy; override;
