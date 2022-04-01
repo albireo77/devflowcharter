@@ -29,6 +29,8 @@ type
 
   TStatement = class;
 
+  THackWinControl = class(TWinControl);
+
   TOnChangeExtend = procedure(AStatement: TStatement) of object;
 
   TStatement = class(TCustomEdit, IWithId, IWithFocus)
@@ -125,8 +127,8 @@ constructor TStatement.Create(AParent: TWinControl; AParserMode: TYYMode; AId: i
 begin
    inherited Create(AParent);
    Parent := AParent;
-   Color := TBlock(AParent).Color;
-   PopupMenu := TBlock(AParent).Page.Form.pmEdits;
+   Color := THackWinControl(AParent).Color;
+   PopupMenu := TInfra.GetMainForm.pmEdits;
    BorderStyle := bsNone;
    ShowHint := True;
    AutoSelect := False;
@@ -243,8 +245,8 @@ end;
 procedure TStatement.MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer);
 begin
    inherited MouseDown(Button, Shift, X, Y);
-   if (Parent is TBlock) and Assigned(TBlock(Parent).OnMouseDown) then
-      TBlock(Parent).OnMouseDown(Parent, Button, Shift, X, Y);
+   if HasParent and Assigned(THackWinControl(Parent).OnMouseDown) then
+      THackWinControl(Parent).OnMouseDown(Parent, Button, Shift, X, Y);
 end;
 
 procedure TStatement.DoEnter;
