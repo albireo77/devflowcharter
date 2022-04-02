@@ -39,6 +39,7 @@ type
          procedure PlaceBranchStatement(ABranch: TBranch);
          function  GetTemplateByControl(AControl: TControl; var AObject: TObject): string;
          procedure AfterRemovingBranch; override;
+         function CreateBranchStatement(ABranchStatementId: integer = ID_INVALID): TStatement;
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
@@ -197,9 +198,7 @@ begin
    result := inherited AddBranch(AHook, ABranchId);
    if FBranchList.IndexOf(result) > DEFAULT_BRANCH_IDX then       // don't execute when default branch is being added in constructor
    begin
-      result.Statement := TStatement.Create(Self, yymCaseValue, ABranchTextId);
-      result.Statement.Alignment := taRightJustify;
-      result.Statement.OnChangeExtend := UpdateEditor;
+      result.Statement := CreateBranchStatement(ABranchTextId);
       PlaceBranchStatement(result);
    end;
 end;
@@ -219,9 +218,7 @@ begin
       FBranchList.Insert(AIndex, result);
       lock := LockDrawing;
       try
-         result.Statement := TStatement.Create(Self, yymCaseValue);
-         result.Statement.Alignment := taRightJustify;
-         result.Statement.OnChangeExtend := UpdateEditor;
+         result.Statement := CreateBranchStatement;
          PlaceBranchStatement(result);
          ResizeWithDrawLock;
       finally
@@ -229,6 +226,14 @@ begin
             UnLockDrawing;
       end;
    end;
+end;
+
+function TCaseBlock.CreateBranchStatement(ABranchStatementId: integer = ID_INVALID): TStatement;
+begin
+   result := TStatement.Create(Self, yymCaseValue, ABranchStatementId);
+   result.Color := Color;
+   result.Alignment := taRightJustify;
+   result.OnChangeExtend := UpdateEditor;
 end;
 
 procedure TCaseBlock.PlaceBranchStatement(ABranch: TBranch);

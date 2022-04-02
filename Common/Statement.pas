@@ -128,7 +128,6 @@ begin
    inherited Create(AParent);
    Parent := AParent;
    FHasFocusParent := Supports(AParent, IWithFocus, FFocusParent);
-   Color := TWinControlHack(AParent).Color;
    PopupMenu := TInfra.GetMainForm.pmEdits;
    BorderStyle := bsNone;
    ShowHint := True;
