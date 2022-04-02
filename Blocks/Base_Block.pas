@@ -2310,13 +2310,11 @@ begin
 end;
 
 procedure TBlock.SaveInXML(ATag: IXMLElement);
-var
-   comment: TComment;
 begin
    SaveInXML2(ATag);
    if (ATag <> nil) and (PinComments > 0) then
    begin
-      for comment in GetPinComments do
+      for var comment in GetPinComments do
          comment.ExportToXMLTag2(ATag);
       UnPinComments;
    end;
@@ -2357,16 +2355,13 @@ begin
 end;
 
 procedure TBlock.ImportCommentsFromXML(ATag: IXMLElement);
-var
-   tag: IXMLElement;
-   comment: TComment;
 begin
    if ProcessComments then
    begin
-      tag := TXMLProcessor.FindChildTag(ATag, COMMENT_ATTR);
+      var tag := TXMLProcessor.FindChildTag(ATag, COMMENT_ATTR);
       while tag <> nil do
       begin
-         comment := TComment.CreateDefault(Page);
+         var comment := TComment.CreateDefault(Page);
          comment.ImportFromXMLTag(tag, Self);
          tag := TXMLProcessor.FindNextTag(tag);
       end;
@@ -2454,11 +2449,9 @@ begin
 end;
 
 procedure TBlock.ExportToXMLTag(ATag: IXMLElement);
-var
-   block: TBlock;
 begin
    TXMLProcessor.ExportBlockToXML(Self, ATag);
-   block := Next;
+   var block := Next;
    while (block <> nil) and block.Frame do
    begin
       TXMLProcessor.ExportBlockToXML(block, ATag);
@@ -2517,10 +2510,8 @@ begin
 end;
 
 function TBlock.GetFocusColor: TColor;
-var
-   edit: TCustomEdit;
 begin
-   edit := GetTextControl;
+   var edit := GetTextControl;
    if (edit <> nil) and edit.HasParent then
       result := THackControl(edit).Font.Color
    else
@@ -2528,12 +2519,10 @@ begin
 end;
 
 procedure TBlock.UpdateEditor(AEdit: TCustomEdit);
-var
-   chLine: TChangeLine;
 begin
    if (AEdit <> nil) and PerformEditorUpdate then
    begin
-      chLine := TInfra.GetChangeLine(Self, AEdit);
+      var chLine := TInfra.GetChangeLine(Self, AEdit);
       if chLine.Row <> ROW_NOT_FOUND then
       begin
          chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
@@ -2556,11 +2545,9 @@ begin
 end;
 
 function TBlock.GetBlockTemplate(const ALangId: string): string;
-var
-   lang: TLangDefinition;
 begin
    result := '';
-   lang := GInfra.GetLangDefinition(ALangId);
+   var lang := GInfra.GetLangDefinition(ALangId);
    if lang <> nil then
       result := lang.GetBlockTemplate(FType);
 end;
