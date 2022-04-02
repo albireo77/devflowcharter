@@ -34,8 +34,7 @@ type
          DefaultBranch: TBranch;
          procedure Paint; override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
-         procedure OnStatementChange(AStatement: TStatement); override;
-         procedure OnStatementChangeBranch(AStatement: TStatement);
+         procedure OnChangeEdit(AEdit: TCustomEdit);
          function GetDiamondTop: TPoint; override;
          procedure PlaceBranchStatement(ABranch: TBranch);
          function  GetTemplateByControl(AControl: TControl; var AObject: TObject): string;
@@ -97,6 +96,7 @@ begin
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    FStatement.Alignment := taCenter;
+   FStatement.OnChangeExtend := OnChangeEdit;
 
 end;
 
@@ -161,23 +161,18 @@ begin
    DrawI;
 end;
 
-procedure TCaseBlock.OnStatementChange(AStatement: TStatement);
+procedure TCaseBlock.OnChangeEdit(AEdit: TCustomEdit);
 begin
    if GSettings.ParseCase then
    begin
       for var i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
       begin
          var br := FBranchList[i];
-         if br.Statement <> AStatement then
+         if br.Statement <> AEdit then
             br.Statement.Change;
       end;
    end;
-   inherited OnStatementChange(AStatement);
-end;
-
-procedure TCaseBlock.OnStatementChangeBranch(AStatement: TStatement);
-begin
-   inherited OnStatementChange(AStatement);
+   UpdateEditor(AEdit);
 end;
 
 function TCaseBlock.IsDuplicatedCase(AEdit: TCustomEdit): boolean;
@@ -204,7 +199,7 @@ begin
    begin
       result.Statement := TStatement.Create(Self, yymCaseValue, ABranchTextId);
       result.Statement.Alignment := taRightJustify;
-      result.Statement.OnChangeExtend := OnStatementChangeBranch;
+      result.Statement.OnChangeExtend := UpdateEditor;
       PlaceBranchStatement(result);
    end;
 end;
@@ -226,7 +221,7 @@ begin
       try
          result.Statement := TStatement.Create(Self, yymCaseValue);
          result.Statement.Alignment := taRightJustify;
-         result.Statement.OnChangeExtend := OnStatementChangeBranch;
+         result.Statement.OnChangeExtend := UpdateEditor;
          PlaceBranchStatement(result);
          ResizeWithDrawLock;
       finally
@@ -405,7 +400,7 @@ begin
       if GInfra.CurrentLang.CaseOfFirstValueTemplate.IsEmpty then
          inherited UpdateEditor(AEdit)
       else
-         OnStatementChange(nil);
+         OnChangeEdit(nil);
    end
    else if (AEdit <> nil) and PerformEditorUpdate then
    begin

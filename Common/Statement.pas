@@ -27,9 +27,8 @@ uses
 
 type
 
-  TStatement = class;
   TWinControlHack = class(TWinControl);
-  TOnChangeExtend = procedure(AStatement: TStatement) of object;
+  TOnChangeExtend = procedure(AEdit: TCustomEdit) of object;
 
   TStatement = class(TCustomEdit, IWithId, IWithFocus)
   private

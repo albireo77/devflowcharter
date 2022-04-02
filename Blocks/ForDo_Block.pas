@@ -44,7 +44,7 @@ type
          function GetTextTop: integer;
          function FillExpression(const AExpression: string; const ALangId: string): string;
          procedure OnChangeAll;
-         procedure OnStatementChange(AStatement: TStatement); override;
+         procedure OnChangeEdit(AEdit: TCustomEdit);
       public
          edtStart, edtStop: TStatement;
          cbVar: TComboBox;
@@ -104,13 +104,13 @@ begin
    edtStart.Color := GSettings.GetShapeColor(FShape);
    edtStart.Font.Size := FStatement.Font.Size;
    edtStart.DoubleBuffered := true;
-   edtStart.OnChangeExtend := OnStatementChange;
+   edtStart.OnChangeExtend := OnChangeEdit;
 
    edtStop := TStatement.Create(Self, FParserMode);
    edtStop.Color := edtStart.Color;
    edtStop.Font.Size := FStatement.Font.Size;
    edtStop.DoubleBuffered := true;
-   edtStop.OnChangeExtend := OnStatementChange;
+   edtStop.OnChangeExtend := OnChangeEdit;
 
    cbVar := TComboBox.Create(Self);
    cbVar.Parent := Self;
@@ -183,17 +183,17 @@ begin
    Create(ABranch, TBlockParms.New(blFor, 0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_BOTTOM_HOOK, 69, DEFAULT_BOTTOM_HOOK));
 end;
 
-procedure TForDoBlock.OnStatementChange(AStatement: TStatement);
+procedure TForDoBlock.OnChangeEdit(AEdit: TCustomEdit);
 begin
-   var w := TInfra.GetAutoWidth(AStatement, 30);
-   if w <> AStatement.Width then
+   var w := TInfra.GetAutoWidth(AEdit, 30);
+   if w <> AEdit.Width then
    begin
-      AStatement.Width := w;
+      AEdit.Width := w;
       PutTextControls;
       FInitParms.Width := edtStop.Left + edtStop.Width + 82;
       FInitParms.BottomPoint.X := FInitParms.Width - RIGHT_MARGIN;
    end;
-   inherited OnStatementChange(AStatement);
+   UpdateEditor(AEdit);
 end;
 
 procedure TForDoBlock.SetDescOrder(AValue: boolean);
