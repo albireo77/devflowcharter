@@ -179,10 +179,10 @@ end;
 procedure TStatement.Change;
 begin
    inherited Change;
-   var txt := Trim(Text);
-   Font.Color := GSettings.FontColor;
    GProject.SetChanged;
-   Hint := i18Manager.GetFormattedString('ExpOk', [txt, sLineBreak]);
+   var txt := Trim(Text);
+   var h := i18Manager.GetFormattedString('ExpOk', [txt, sLineBreak]);
+   var c := GSettings.FontColor;
    if FExecuteParse then
    begin
       if txt.IsEmpty then
@@ -190,37 +190,39 @@ begin
          case FParserMode of
             yymFor:
             begin
-               Hint := i18Manager.GetFormattedString('ExpErr', ['', sLineBreak, i18Manager.GetString('IntReq')]);
-               Font.Color := NOK_COLOR;
+               h := i18Manager.GetFormattedString('ExpErr', ['', sLineBreak, i18Manager.GetString('IntReq')]);
+               c := NOK_COLOR;
             end;
             yymCondition:
             begin
-               Hint := i18Manager.GetFormattedString('NoCExp', [sLineBreak]);
-               Font.Color := NOK_COLOR;
+               h := i18Manager.GetFormattedString('NoCExp', [sLineBreak]);
+               c := NOK_COLOR;
             end;
             yymCase:
             begin
-               Hint := i18Manager.GetFormattedString('NoCaseExp', [sLineBreak]);
-               Font.Color := NOK_COLOR;
+               h := i18Manager.GetFormattedString('NoCaseExp', [sLineBreak]);
+               c := NOK_COLOR;
             end;
             yymAssign:
             begin
-               Hint := i18Manager.GetFormattedString('NoInstr', [sLineBreak]);
-               Font.Color := WARN_COLOR;
+               h := i18Manager.GetFormattedString('NoInstr', [sLineBreak]);
+               c := WARN_COLOR;
             end;
             yymFuncCall:
             begin
-               Hint := i18Manager.GetFormattedString('NoFCall', [sLineBreak]);
-               Font.Color := WARN_COLOR;
+               h := i18Manager.GetFormattedString('NoFCall', [sLineBreak]);
+               c := WARN_COLOR;
             end;
          end;
       end
       else if not TInfra.Parse(Self, FParserMode) then
       begin
-         Hint := i18Manager.GetFormattedString('ExpErr', [txt, sLineBreak, TInfra.GetParserErrMsg]);
-         Font.Color := NOK_COLOR;
+         h := i18Manager.GetFormattedString('ExpErr', [txt, sLineBreak, TInfra.GetParserErrMsg]);
+         c := NOK_COLOR;
       end;
    end;
+   Hint := h;
+   Font.Color := c;
    if Assigned(OnChangeExtend) then
       OnChangeExtend(Self);
    NavigatorForm.DoInvalidate;
