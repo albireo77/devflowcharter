@@ -34,7 +34,8 @@ type
          DefaultBranch: TBranch;
          procedure Paint; override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
-         procedure OnStatementChange(AStatement: TStatement);
+         procedure OnStatementChange(AStatement: TStatement); override;
+         procedure OnStatementChangeBranch(AStatement: TStatement);
          function GetDiamondTop: TPoint; override;
          procedure PlaceBranchStatement(ABranch: TBranch);
          function  GetTemplateByControl(AControl: TControl; var AObject: TObject): string;
@@ -96,7 +97,6 @@ begin
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    FStatement.Alignment := taCenter;
-   FStatement.OnChangeExtend := OnStatementChange;
 
 end;
 
@@ -162,32 +162,32 @@ begin
 end;
 
 procedure TCaseBlock.OnStatementChange(AStatement: TStatement);
-var
-   i: integer;
-   br: TBranch;
 begin
    if GSettings.ParseCase then
    begin
-      for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
+      for var i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
       begin
-         br := FBranchList[i];
+         var br := FBranchList[i];
          if br.Statement <> AStatement then
             br.Statement.Change;
       end;
    end;
+   inherited OnStatementChange(AStatement);
+end;
+
+procedure TCaseBlock.OnStatementChangeBranch(AStatement: TStatement);
+begin
+   inherited OnStatementChange(AStatement);
 end;
 
 function TCaseBlock.IsDuplicatedCase(AEdit: TCustomEdit): boolean;
-var
-   i: integer;
-   edit: TCustomEdit;
 begin
    result := false;
    if (AEdit <> nil) and (AEdit.Parent = Self) then
    begin
-      for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
+      for var i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
       begin
-         edit := FBranchList[i].Statement;
+         var edit := FBranchList[i].Statement;
          if (edit <> AEdit) and (Trim(edit.Text) = Trim(AEdit.Text)) then
          begin
             result := true;
@@ -204,6 +204,7 @@ begin
    begin
       result.Statement := TStatement.Create(Self, yymCaseValue, ABranchTextId);
       result.Statement.Alignment := taRightJustify;
+      result.Statement.OnChangeExtend := OnStatementChangeBranch;
       PlaceBranchStatement(result);
    end;
 end;
@@ -225,6 +226,7 @@ begin
       try
          result.Statement := TStatement.Create(Self, yymCaseValue);
          result.Statement.Alignment := taRightJustify;
+         result.Statement.OnChangeExtend := OnStatementChangeBranch;
          PlaceBranchStatement(result);
          ResizeWithDrawLock;
       finally

@@ -118,6 +118,7 @@ type
          function GetErrorMsg(AEdit: TCustomEdit): string;
          procedure SaveInXML2(ATag: IXMLElement);
          procedure ExitSizeMove;
+         procedure OnStatementChange(AStatement: TStatement); virtual;
          function GetBlockParms: TBlockParms; virtual;
          function GetBlockTemplate(const ALangId: string): string;
          function GetBlockTemplateExpr(const ALangId: string): string;
@@ -334,12 +335,13 @@ begin
    Canvas.Font.Assign(Font);
    SetBounds(ABlockParms.x, ABlockParms.y, ABlockParms.w, ABlockParms.h);
 
+   Ired := -1;
    FId := GProject.Register(Self, ABlockParms.bid);
-   FStatement := TStatement.Create(Self, FParserMode);
    FMouseLeave := true;
    FShape := shpRectangle;
+   FStatement := TStatement.Create(Self, FParserMode);
+   FStatement.OnChangeExtend := OnStatementChange;
    FStatement.Color := GSettings.GetShapeColor(FShape);
-   Ired := -1;
 
    OnMouseDown := MyOnMouseDown;
    OnMouseUp   := MyOnMouseUp;
@@ -1343,6 +1345,11 @@ begin
          TInfra.GetEditorForm.UnSelectCodeRange(Self);
       NavigatorForm.Invalidate;
    end;
+end;
+
+procedure TBlock.OnStatementChange(AStatement: TStatement);
+begin
+   UpdateEditor(AStatement);
 end;
 
 procedure TGroupBlock.ExpandAll;

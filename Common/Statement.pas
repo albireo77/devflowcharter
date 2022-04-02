@@ -122,7 +122,7 @@ type
 implementation
 
 uses
-   WinApi.Windows, System.SysUtils, Vcl.Forms, Infrastructure, Base_Block, Navigator_Form, Constants;
+   WinApi.Windows, System.SysUtils, Vcl.Forms, Infrastructure, Navigator_Form, Constants;
 
 constructor TStatement.Create(AParent: TWinControl; AParserMode: TYYMode; AId: integer = ID_INVALID);
 begin
@@ -183,8 +183,6 @@ begin
    Font.Color := GSettings.FontColor;
    GProject.SetChanged;
    Hint := i18Manager.GetFormattedString('ExpOk', [txt, sLineBreak]);
-   if Parent is TBlock then
-      TBlock(Parent).UpdateEditor(Self);
    if FExecuteParse then
    begin
       if txt.IsEmpty then
