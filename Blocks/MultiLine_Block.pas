@@ -207,7 +207,10 @@ end;
 procedure TMultiLineBlock.OnMouseDownMemo(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
    if ssLeft in Shift then
-      OnMouseDown(Sender, Button, Shift, X, Y);
+   begin
+      var p := TControl(Sender).ClientToParent(Point(X, Y));
+      OnMouseDown(TControl(Sender).Parent, Button, Shift, p.X, p.Y);
+   end;
    if Button = mbLeft then
       TInfra.GetEditorForm.SetCaretPos(TInfra.GetChangeLine(Self, FStatements));
 end;
