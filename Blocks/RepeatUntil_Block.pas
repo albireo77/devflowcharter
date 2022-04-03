@@ -49,7 +49,7 @@ uses
 constructor TRepeatUntilBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, yymCondition);
+   inherited Create(ABranch, ABlockParms, shpDiamond, yymCondition);
 
    FInitParms.Width := 240;
    FInitParms.Height := 111;

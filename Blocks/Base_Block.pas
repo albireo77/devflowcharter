@@ -71,7 +71,7 @@ type
          FFrame,
          FMouseLeave: boolean;
          FShape: TColorShape;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms; AParserMode: TYYMode);
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms; AShape: TColorShape; AParserMode: TYYMode);
          procedure MyOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MyOnMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); virtual;
@@ -213,7 +213,7 @@ type
          FFalseLabel: string;
          FFixedBranches: integer;
          FDiamond: array[D_LEFT..D_LEFT_CLOSE] of TPoint;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms; AParserMode: TYYMode = yymUndefined);
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms; AShape: TColorShape; AParserMode: TYYMode = yymUndefined);
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
          procedure SetWidth(AMinX: integer); virtual;
@@ -299,7 +299,7 @@ type
    TControlHack = class(TControl);
    TCustomEditHack = class(TCustomEdit);
 
-constructor TBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms; AParserMode: TYYMode);
+constructor TBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms; AShape: TColorShape; AParserMode: TYYMode);
 begin
 
    FType := ABlockParms.bt;
@@ -335,7 +335,7 @@ begin
    Ired := -1;
    FId := GProject.Register(Self, ABlockParms.bid);
    FMouseLeave := true;
-   FShape := shpRectangle;
+   FShape := AShape;
    FStatement := TStatement.Create(Self, AParserMode);
    FStatement.OnChangeExtend := UpdateEditor;
    FStatement.Color := GSettings.GetShapeColor(FShape);
@@ -349,10 +349,10 @@ begin
    OnDragDrop  := MyOnDragDrop;
 end;
 
-constructor TGroupBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms; AParserMode: TYYMode = yymUndefined);
+constructor TGroupBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms; AShape: TColorShape; AParserMode: TYYMode = yymUndefined);
 begin
 
-   inherited Create(ABranch, ABlockParms, AParserMode);
+   inherited Create(ABranch, ABlockParms, AShape, AParserMode);
 
    FStatement.Width := 65;
 
@@ -376,9 +376,6 @@ begin
 
    FFoldParms.Width := 140;
    FFoldParms.Height := 91;
-
-   FShape := shpDiamond;
-   FStatement.Color := GSettings.GetShapeColor(FShape);
 
    FTrueLabel := i18Manager.GetString('CaptionTrue');
    FFalseLabel := i18Manager.GetString('CaptionFalse');

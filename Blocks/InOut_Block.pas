@@ -73,11 +73,9 @@ var
    w: integer;
 begin
 
-   inherited Create(ABranch, ABlockParms, AParserMode);
+   inherited Create(ABranch, ABlockParms, shpParallel, AParserMode);
 
    FStatement.Anchors := [akRight, akLeft, akTop];
-   FShape := shpParallel;
-   FStatement.Color := GSettings.GetShapeColor(FShape);
    FStatement.Text := AText;
    PutTextControls;
    if AdjustWidth then

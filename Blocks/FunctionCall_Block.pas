@@ -47,14 +47,13 @@ uses
 constructor TFunctionCallBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, yymFuncCall);
+   inherited Create(ABranch, ABlockParms, shpRoutine, yymFuncCall);
 
    FStatement.SetBounds(10, 1, ABlockParms.w-20, CalculateStatementHeight);
    FStatement.Anchors := [akRight, akLeft, akTop];
    FStatement.SetLRMargins(1, 1);
    FStatement.Color := GSettings.GetShapeColor(shpRoutine);
 
-   FShape := shpRoutine;
    BottomHook := ABlockParms.w div 2;
    BottomPoint.X := BottomHook;
    BottomPoint.Y := FStatement.BoundsRect.Bottom + 1;

@@ -47,7 +47,7 @@ uses
 constructor TFolderBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms);
+   inherited Create(ABranch, ABlockParms, shpFolder);
 
    FInitParms.Width := 140;
    FInitParms.Height := 61;
@@ -63,7 +63,6 @@ begin
    BottomHook := ABlockParms.bh;
    TopHook.X := ABlockParms.br.X;
    IPoint.Y := 8;
-   FShape := shpFolder;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    FStatement.Free;

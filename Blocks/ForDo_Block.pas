@@ -84,7 +84,7 @@ const
 constructor TForDoBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, yymFor);
+   inherited Create(ABranch, ABlockParms, shpRoadSign, yymFor);
 
    FInitParms.Width := DEFAULT_WIDTH;
    FInitParms.Height := DEFAULT_HEIGHT;
@@ -94,7 +94,6 @@ begin
    FInitParms.P2X := 0;
    FInitParms.HeightAffix := 22;
 
-   FShape := shpRoadSign;
    var sColor := GSettings.GetShapeColor(FShape);
    FForLabel := i18Manager.GetString('CaptionFor');
 

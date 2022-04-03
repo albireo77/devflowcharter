@@ -46,7 +46,7 @@ uses
 constructor TInstrBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, yymAssign);
+   inherited Create(ABranch, ABlockParms, shpRectangle, yymAssign);
 
    FStatement.SetBounds(1, 1, ABlockParms.w-2, CalculateStatementHeight);
    FStatement.Anchors := [akRight, akLeft, akTop];

@@ -51,13 +51,12 @@ uses
 constructor TReturnBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, yymReturn);
+   inherited Create(ABranch, ABlockParms, shpEllipse, yymReturn);
 
    FReturnLabel := i18Manager.GetString('CaptionExit');
 
    Width := Max(Width, GetReturnEllipseRect.Width+48);
 
-   FShape := shpEllipse;
    BottomHook := Width div 2;
    BottomPoint.X := BottomHook;
    BottomPoint.Y := 19;

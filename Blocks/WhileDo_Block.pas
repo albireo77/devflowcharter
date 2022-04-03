@@ -46,7 +46,7 @@ uses
 constructor TWhileDoBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, yymCondition);
+   inherited Create(ABranch, ABlockParms, shpDiamond, yymCondition);
 
    FInitParms.Width := 200;
    FInitParms.Height := 131;

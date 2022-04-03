@@ -87,7 +87,7 @@ begin
 
    FPage := APage;
 
-   inherited Create(nil, ABlockParms);
+   inherited Create(nil, ABlockParms, shpEllipse);
 
    FStartLabel := i18Manager.GetString('CaptionStart');
    FStopLabel := i18Manager.GetString('CaptionStop');
@@ -118,7 +118,6 @@ begin
    BottomPoint.X := FInitParms.BottomPoint.X;
    TopHook.Y := TInfra.Scaled(30);
    FZOrder := -1;
-   FShape := shpEllipse;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    OnResize := MyOnResize;
