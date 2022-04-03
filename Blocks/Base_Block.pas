@@ -1724,26 +1724,21 @@ begin
 end;
 
 function TGroupBlock.CanInsertReturnBlock: boolean;
-var
-   br: TBranch;
 begin
    if Ired = 0 then
       result := (FParentBranch <> nil) and (FParentBranch.Count > 0) and (FParentBranch.Last = Self)
    else
    begin
-      br := GetBranch(Ired);
+      var br := GetBranch(Ired);
       result := (br <> nil) and (br.Count = 0);
    end;
 end;
 
 procedure TBlock.WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo);
-var
-   p: TPoint;
-   box: TScrollBoxEx;
 begin
    inherited;
-   box := Page.Box;
-   p := ClientToParent(TPoint.Zero, box);
+   var box := Page.Box;
+   var p := ClientToParent(TPoint.Zero, box);
    if FHResize then
       Msg.MinMaxInfo.ptMaxTrackSize.X := box.ClientWidth - p.X;
    if FVResize then
@@ -1778,14 +1773,11 @@ begin
 end;
 
 function TGroupBlock.FindLastRow(AStart: integer; ALines: TStrings): integer;
-var
-   i: integer;
-   br: TBranch;
 begin
    result := inherited FindLastRow(AStart, ALines);
-   for i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
+   for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
    begin
-      br := FBranchList[i];
+      var br := FBranchList[i];
       if br.Count > 0 then
          result := Max(result, br.Last.FindLastRow(AStart, ALines));
    end;
@@ -1807,12 +1799,9 @@ begin
 end;
 
 function TBlock.CanBeFocused: boolean;
-var
-   lParent: TGroupBlock;
-   func: TUserFunction;
 begin
    result := true;
-   lParent := FParentBlock;
+   var lParent := FParentBlock;
    while lParent <> nil do
    begin
       if not lParent.Expanded then
@@ -1824,7 +1813,7 @@ begin
    end;
    if result then
    begin
-      func := TUserFunction(TMainBlock(FTopParentBlock).UserFunction);
+      var func := TUserFunction(TMainBlock(FTopParentBlock).UserFunction);
       if func <> nil then
       begin
          result := func.Active;
@@ -1844,12 +1833,10 @@ begin
 end;
 
 function TBlock.RetrieveFocus(AInfo: TFocusInfo): boolean;
-var
-   lPage: TBlockTabSheet;
 begin
    if AInfo.FocusEdit = nil then
       AInfo.FocusEdit := GetTextControl;
-   lPage := Page;
+   var lPage := Page;
    AInfo.FocusEditForm := lPage.Form;
    lPage.PageControl.ActivePage := lPage;
    result := FocusOnTextControl(AInfo);
@@ -1903,14 +1890,12 @@ begin
 end;
 
 function TBlock.GetErrorMsg(AEdit: TCustomEdit): string;
-var
-   i: integer;
 begin
    result := '';
    if (AEdit <> nil) and TInfra.IsNOkColor(TControlHack(AEdit).Font.Color) then
    begin
       result := AEdit.Hint;
-      i := LastDelimiter(sLineBreak, result);
+      var i := LastDelimiter(sLineBreak, result);
       if i > 0 then
          result := ' - ' + Copy(result, i+1);
    end;
@@ -1936,11 +1921,9 @@ begin
 end;
 
 function TGroupBlock.GenerateTree(AParentNode: TTreeNode): TTreeNode;
-var
-   block: TBlock;
 begin
    result := inherited GenerateTree(AParentNode);
-   for block in FBranchList[PRIMARY_BRANCH_IDX] do
+   for var block in FBranchList[PRIMARY_BRANCH_IDX] do
        block.GenerateTree(result);
 end;
 
@@ -1960,13 +1943,11 @@ begin
 end;
 
 function TGroupBlock.GetBranchIndexByControl(AControl: TControl): integer;
-var
-   i: integer;
 begin
    result := BRANCH_IDX_NOT_FOUND;
    if FBranchList = nil then
       Exit;
-   for i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
+   for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
    begin
       if FBranchList[i].Statement = AControl then
       begin
@@ -2032,15 +2013,11 @@ begin
 end;
 
 function TBlock.PinComments: integer;
-var
-   comment: TComment;
-   p: TPoint;
-   lPage: TBlockTabSheet;
 begin
    result := 0;
-   lPage := Page;
-   p := ClientToParent(TPoint.Zero, lPage.Box);
-   for comment in GetComments do
+   var lPage := Page;
+   var p := ClientToParent(TPoint.Zero, lPage.Box);
+   for var comment in GetComments do
    begin
       comment.Visible := false;
       TInfra.MoveWin(comment, comment.Left - p.X, comment.Top - p.Y);
@@ -2051,15 +2028,11 @@ begin
 end;
 
 function TBlock.UnPinComments: integer;
-var
-   comment: TComment;
-   p: TPoint;
-   box: TScrollBoxEx;
 begin
    result := 0;
-   box := Page.Box;
-   p := ClientToParent(TPoint.Zero, box);
-   for comment in GetPinComments do
+   var box := Page.Box;
+   var p := ClientToParent(TPoint.Zero, box);
+   for var comment in GetPinComments do
    begin
       TInfra.MoveWin(comment, comment.Left + p.X, comment.Top + p.Y);
       comment.Parent := box;
@@ -2108,15 +2081,12 @@ begin
 end;
 
 function TGroupBlock.RemoveBranch(AIndex: integer): boolean;
-var
-   br: TBranch;
-   obj: TObject;
 begin
    result := false;
-   br := GetBranch(AIndex);
+   var br := GetBranch(AIndex);
    if (br <> nil) and (AIndex > FFixedBranches) then
    begin
-      obj := nil;
+      var obj: TObject := nil;
       if (GClpbrd.UndoObject is TBlock) and (TBlock(GClpbrd.UndoObject).ParentBranch = br) then
          obj := GClpbrd.UndoObject;
       if FBranchList.Remove(br) <> -1 then
@@ -2533,18 +2503,15 @@ begin
 end;
 
 function TBlock.GetBlockTemplateExpr(const ALangId: string): string;
-var
-   templateLines: TStringList;
-   template, line: string;
 begin
    result := '';
-   template := GetBlockTemplate(ALangId);
+   var template := GetBlockTemplate(ALangId);
    if template.IsEmpty then
       template := PRIMARY_PLACEHOLDER;
-   templateLines := TStringList.Create;
+   var templateLines := TStringList.Create;
    try
       templateLines.Text := template;
-      for line in templateLines do
+      for var line in templateLines do
       begin
          if line.Contains(PRIMARY_PLACEHOLDER) then
          begin
@@ -2618,14 +2585,11 @@ begin
 end;
 
 procedure TGroupBlock.PopulateComboBoxes;
-var
-   i: integer;
-   block: TBlock;
 begin
    inherited PopulateComboBoxes;
-   for i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
+   for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
    begin
-      for block in FBranchList[i] do
+      for var block in FBranchList[i] do
           block.PopulateComboBoxes;
    end;
 end;
@@ -2666,20 +2630,16 @@ begin
 end;
 
 function TBlock.SkipUpdateEditor: boolean;
-var
-   funcHeader: TUserFunctionHeader;
 begin
-   funcHeader := TInfra.GetFunctionHeader(Self);
+   var funcHeader := TInfra.GetFunctionHeader(Self);
    result := (funcHeader <> nil) and (TInfra.IsNOkColor(funcHeader.Font.Color) or (funcHeader.chkExternal.Checked and not GInfra.CurrentLang.CodeIncludeExternFunction));
 end;
 
 function TBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
-var
-   tmpList: TStringList;
 begin
    if fsStrikeOut in Font.Style then
       Exit(0);
-   tmpList := TStringList.Create;
+   var tmpList := TStringList.Create;
    try
       GenerateDefaultTemplate(tmpList, ALangId, ADeep);
       TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
@@ -2690,17 +2650,14 @@ begin
 end;
 
 procedure TBlock.GenerateDefaultTemplate(ALines: TStringList; const ALangId: string; ADeep: integer);
-var
-   template, txt: string;
-   textControl: TCustomEdit;
 begin
-   txt := '';
-   textControl := GetTextControl;
+   var txt := '';
+   var textControl := GetTextControl;
    if textControl is TCustomMemo then
       txt := textControl.Text
    else if textControl <> nil then
       txt := Trim(textControl.Text);
-   template := GetBlockTemplate(ALangId);
+   var template := GetBlockTemplate(ALangId);
    if template.IsEmpty then
       template := PRIMARY_PLACEHOLDER;
    template := ReplaceStr(template, PRIMARY_PLACEHOLDER, txt);
