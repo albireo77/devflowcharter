@@ -102,14 +102,10 @@ begin
 
    edtStart := TStatement.Create(Self, FParserMode);
    edtStart.Color := GSettings.GetShapeColor(FShape);
-   edtStart.Font.Size := FStatement.Font.Size;
-   edtStart.DoubleBuffered := true;
    edtStart.OnChangeExtend := OnChangeEdit;
 
    edtStop := TStatement.Create(Self, FParserMode);
    edtStop.Color := edtStart.Color;
-   edtStop.Font.Size := FStatement.Font.Size;
-   edtStop.DoubleBuffered := true;
    edtStop.OnChangeExtend := OnChangeEdit;
 
    cbVar := TComboBox.Create(Self);
