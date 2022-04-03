@@ -298,8 +298,8 @@ uses
    UserFunction, XMLProcessor, Navigator_Form, LangDefinition, FlashThread, Main_Form, Constants;
 
 type
-   THackControl = class(TControl);
-   THackCustomEdit = class(TCustomEdit);
+   TControlHack = class(TControl);
+   TCustomEditHack = class(TCustomEdit);
 
 constructor TBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
@@ -1063,10 +1063,11 @@ begin
    Canvas.Font.Style := AStyle;
    for var i := 0 to ControlCount-1 do
    begin
-      if Controls[i] is TBlock then
-         TBlock(Controls[i]).SetFontStyle(AStyle)
+      var control := Controls[i];
+      if control is TBlock then
+         TBlock(control).SetFontStyle(AStyle)
       else
-         THackControl(Controls[i]).Font.Style := AStyle;
+         TControlHack(control).Font.Style := AStyle;
    end;
    Refresh;
 end;
@@ -1077,10 +1078,11 @@ begin
    Canvas.Font.Size := ASize;
    for var i := 0 to ControlCount-1 do
    begin
-      if Controls[i] is TBlock then
-         TBlock(Controls[i]).SetFontSize(ASize)
+      var control := Controls[i];
+      if control is TBlock then
+         TBlock(control).SetFontSize(ASize)
       else
-         TInfra.SetFontSize(Controls[i], ASize);
+         TInfra.SetFontSize(control, ASize);
    end;
    PutTextControls;
    Refresh;
@@ -1098,15 +1100,16 @@ begin
    Refresh;
    for var i := 0 to ControlCount-1 do
    begin
-      if Controls[i] is TBlock then
+      var control := Controls[i];
+      if control is TBlock then
       begin
-         TBlock(Controls[i]).SetFontStyle(AFont.Style);
-         TBlock(Controls[i]).SetFontSize(AFont.Size);
+         TBlock(control).SetFontStyle(AFont.Style);
+         TBlock(control).SetFontSize(AFont.Size);
       end
       else
       begin
-         THackControl(Controls[i]).Font.Style := AFont.Style;
-         TInfra.SetFontSize(Controls[i], AFont.Size);
+         TControlHack(control).Font.Style := AFont.Style;
+         TInfra.SetFontSize(control, AFont.Size);
       end;
    end;
    PutTextControls;
@@ -1249,7 +1252,7 @@ end;
 procedure TBlock.ChangeColor(AColor: TColor);
 var
    comment: TComment;
-   lEdit: THackCustomEdit;
+   lEdit: TCustomEditHack;
    lColor: TColor;
 begin
    Color := AColor;
@@ -1258,7 +1261,7 @@ begin
       if comment.Visible then
          comment.Color := AColor;
    end;
-   lEdit := THackCustomEdit(GetTextControl);
+   lEdit := TCustomEditHack(GetTextControl);
    if lEdit <> nil then
    begin
       lColor := GSettings.GetShapeColor(FShape);
@@ -1582,12 +1585,10 @@ begin
 end;
 
 function TBlock.DrawEllipsedText(ax, ay: integer; const AText: string): TRect;
-var
-   lColor: TColor;
 begin
    result := GetEllipseTextRect(ax, ay, AText);
    Canvas.Brush.Style := bsClear;
-   lColor := GSettings.GetShapeColor(shpEllipse);
+   var lColor := GSettings.GetShapeColor(shpEllipse);
    if lColor <> GSettings.DesktopColor then
       Canvas.Brush.Color := lColor;
    Canvas.Ellipse(result);
@@ -1605,30 +1606,25 @@ begin
 end;
 
 function TBlock.CountErrWarn: TErrWarnCount;
-var
-   textControl: TCustomEdit;
 begin
    result.ErrorCount := 0;
    result.WarningCount := 0;
-   textControl := GetTextControl;
+   var textControl := GetTextControl;
    if textControl <> nil then
    begin
-      if THackControl(textControl).Font.Color = NOK_COLOR then
+      if TControlHack(textControl).Font.Color = NOK_COLOR then
          result.ErrorCount := 1
-      else if THackControl(textControl).Font.Color = WARN_COLOR then
+      else if TControlHack(textControl).Font.Color = WARN_COLOR then
          result.WarningCount := 1;
    end;
 end;
 
 function TGroupBlock.CountErrWarn: TErrWarnCount;
-var
-   errWarnCount: TErrWarnCount;
-   block: TBlock;
 begin
    result := inherited CountErrWarn;
-   for block in GetBlocks do
+   for var block in GetBlocks do
    begin
-      errWarnCount := block.CountErrWarn;
+      var errWarnCount := block.CountErrWarn;
       Inc(result.ErrorCount, errWarnCount.ErrorCount);
       Inc(result.WarningCount, errWarnCount.WarningCount);
    end;
@@ -1921,7 +1917,7 @@ var
    i: integer;
 begin
    result := '';
-   if (AEdit <> nil) and TInfra.IsNOkColor(THackControl(AEdit).Font.Color) then
+   if (AEdit <> nil) and TInfra.IsNOkColor(TControlHack(AEdit).Font.Color) then
    begin
       result := AEdit.Hint;
       i := LastDelimiter(sLineBreak, result);
@@ -1941,7 +1937,7 @@ begin
    begin
       nodeText := GetTreeNodeText;
       result := AParentNode.Owner.AddChildObject(AParentNode, nodeText, textControl);
-      if TInfra.IsNOkColor(THackControl(textControl).Font.Color) then
+      if TInfra.IsNOkColor(TControlHack(textControl).Font.Color) then
       begin
          AParentNode.MakeVisible;
          AParentNode.Expand(false);
@@ -2507,7 +2503,7 @@ function TBlock.GetFocusColor: TColor;
 begin
    var edit := GetTextControl;
    if (edit <> nil) and edit.HasParent then
-      result := THackControl(edit).Font.Color
+      result := TControlHack(edit).Font.Color
    else
       result := OK_COLOR;
 end;
