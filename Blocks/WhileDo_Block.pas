@@ -46,9 +46,7 @@ uses
 constructor TWhileDoBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   FParserMode := yymCondition;
-
-   inherited Create(ABranch, ABlockParms);
+   inherited Create(ABranch, ABlockParms, yymCondition);
 
    FInitParms.Width := 200;
    FInitParms.Height := 131;

@@ -70,9 +70,8 @@ type
          FRefreshMode,
          FFrame,
          FMouseLeave: boolean;
-         FParserMode: TYYMode;
          FShape: TColorShape;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms);
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms; AParserMode: TYYMode);
          procedure MyOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MyOnMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); virtual;
@@ -135,7 +134,6 @@ type
          property BType: TBlockType read FType default blUnknown;
          property ParentBranch: TBranch read FParentBranch;
          property Id: integer read GetId;
-         property ParserMode: TYYMode read FParserMode;
          destructor Destroy; override;
          function Clone(ABranch: TBranch): TBlock;
          procedure ChangeColor(AColor: TColor); virtual;
@@ -215,7 +213,7 @@ type
          FFalseLabel: string;
          FFixedBranches: integer;
          FDiamond: array[D_LEFT..D_LEFT_CLOSE] of TPoint;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms);
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms; AParserMode: TYYMode = yymUndefined);
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
          procedure SetWidth(AMinX: integer); virtual;
@@ -301,7 +299,7 @@ type
    TControlHack = class(TControl);
    TCustomEditHack = class(TCustomEdit);
 
-constructor TBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
+constructor TBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms; AParserMode: TYYMode);
 begin
 
    FType := ABlockParms.bt;
@@ -338,7 +336,7 @@ begin
    FId := GProject.Register(Self, ABlockParms.bid);
    FMouseLeave := true;
    FShape := shpRectangle;
-   FStatement := TStatement.Create(Self, FParserMode);
+   FStatement := TStatement.Create(Self, AParserMode);
    FStatement.OnChangeExtend := UpdateEditor;
    FStatement.Color := GSettings.GetShapeColor(FShape);
 
@@ -351,10 +349,10 @@ begin
    OnDragDrop  := MyOnDragDrop;
 end;
 
-constructor TGroupBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
+constructor TGroupBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms; AParserMode: TYYMode = yymUndefined);
 begin
 
-   inherited Create(ABranch, ABlockParms);
+   inherited Create(ABranch, ABlockParms, AParserMode);
 
    FStatement.Width := 65;
 

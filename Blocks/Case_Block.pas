@@ -73,9 +73,7 @@ uses
 constructor TCaseBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   FParserMode := yymCase;
-
-   inherited Create(ABranch, ABlockParms);
+   inherited Create(ABranch, ABlockParms, yymCase);
 
    FInitParms.Width := 200;
    FInitParms.Height := 131;

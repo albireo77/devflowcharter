@@ -51,9 +51,7 @@ uses
 constructor TReturnBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   FParserMode := yymReturn;
-
-   inherited Create(ABranch, ABlockParms);
+   inherited Create(ABranch, ABlockParms, yymReturn);
 
    FReturnLabel := i18Manager.GetString('CaptionExit');
 

@@ -61,9 +61,7 @@ uses
 constructor TIfElseBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   FParserMode := yymCondition;
-
-   inherited Create(ABranch, ABlockParms);
+   inherited Create(ABranch, ABlockParms, yymCondition);
 
    FInitParms.Width := 240;
    FInitParms.Height := 101;

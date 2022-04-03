@@ -83,8 +83,6 @@ uses
    Comment, Constants;
 
 constructor TMainBlock.Create(APage: TBlockTabSheet; const ABlockParms: TBlockParms);
-var
-   defWidth, defWidthHalf: integer;
 begin
 
    FPage := APage;
@@ -94,8 +92,8 @@ begin
    FStartLabel := i18Manager.GetString('CaptionStart');
    FStopLabel := i18Manager.GetString('CaptionStop');
 
-   defWidth := GetDefaultWidth;
-   defWidthHalf := defWidth div 2;
+   var defWidth := GetDefaultWidth;
+   var defWidthHalf := defWidth div 2;
    if defWidth > Width then
    begin
       Width := defWidth;

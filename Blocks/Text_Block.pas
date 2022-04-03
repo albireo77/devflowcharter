@@ -38,7 +38,7 @@ type
    TTextBlock = class(TMultiLineBlock)
       public
          constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload; override;
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
          procedure ChangeColor(AColor: TColor); override;
       protected
          FCorner: TCorner;

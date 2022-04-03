@@ -24,7 +24,7 @@ unit MultiLine_Block;
 interface
 
 uses
-   Vcl.Controls, Vcl.StdCtrls, System.Classes, Vcl.ComCtrls, Base_Block,
+   Vcl.Controls, Vcl.StdCtrls, System.Classes, Vcl.ComCtrls, Base_Block, YaccLib,
    StatementMemo, MemoEx, Types;
 
 type
@@ -40,7 +40,7 @@ type
          procedure CloneFrom(ABlock: TBlock); override;
       protected
          FErrLine: integer;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload; virtual;
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms; AParserMode: TYYMode = yymUndefined);
          procedure Paint; override;
          procedure OnDblClickMemo(Sender: TObject);
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
@@ -56,10 +56,10 @@ uses
 {$ENDIF}
    System.UITypes, Infrastructure, Constants, LangDefinition;
 
-constructor TMultiLineBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
+constructor TMultiLineBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms; AParserMode: TYYMode = yymUndefined);
 begin
 
-   inherited Create(ABranch, ABlockParms);
+   inherited Create(ABranch, ABlockParms, AParserMode);
 
    FStatements := TStatementMemo.Create(Self);
    FStatements.Parent := Self;

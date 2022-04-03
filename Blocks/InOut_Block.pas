@@ -24,7 +24,7 @@ unit InOut_Block;
 interface
 
 uses
-   Vcl.Graphics, Base_Block, Types;
+   Vcl.Graphics, Base_Block, Types, YaccLib;
 
 type
 
@@ -32,7 +32,11 @@ type
       protected
          FLabel,
          FLabelSegoe: string;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms; const AText: string; AdjustWidth: boolean); overload;
+         constructor Create(ABranch: TBranch;
+                            const ABlockParms: TBlockParms;
+                            const AText: string;
+                            AdjustWidth: boolean;
+                            AParserMode: TYYMode); overload;
          procedure Paint; override;
          procedure PutTextControls; override;
    end;
@@ -53,19 +57,23 @@ implementation
 
 uses
    Vcl.Controls, System.Classes, WinApi.Windows, System.Types, System.UITypes, System.Math,
-   Infrastructure, YaccLib;
+   Infrastructure;
 
 const
    DEF_BLOCK_WIDTH    = 153;
    DEF_BLOCK_HEIGHT   = 64;
    BOTTOM_POINT_Y = DEF_BLOCK_HEIGHT - 30;
 
-constructor TInOutBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms; const AText: string; AdjustWidth: boolean);
+constructor TInOutBlock.Create(ABranch: TBranch;
+                               const ABlockParms: TBlockParms;
+                               const AText: string;
+                               AdjustWidth: boolean;
+                               AParserMode: TYYMode);
 var
    w: integer;
 begin
 
-   inherited Create(ABranch, ABlockParms);
+   inherited Create(ABranch, ABlockParms, AParserMode);
 
    FStatement.Anchors := [akRight, akLeft, akTop];
    FShape := shpParallel;
@@ -94,32 +102,28 @@ constructor TInputBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms)
 begin
    FLabel := i18Manager.GetString('CaptionIn');
    FLabelSegoe := GInfra.CurrentLang.LabelIn;
-   FParserMode := yymInput;
-   inherited Create(ABranch, ABlockParms, GInfra.CurrentLang.InputFunction, false);
+   inherited Create(ABranch, ABlockParms, GInfra.CurrentLang.InputFunction, false, yymInput);
 end;
 
 constructor TInputBlock.Create(ABranch: TBranch);
 begin
    FLabel := i18Manager.GetString('CaptionIn');
    FLabelSegoe := GInfra.CurrentLang.LabelIn;
-   FParserMode := yymInput;
-   inherited Create(ABranch, TBlockParms.New(blInput, 0, 0, DEF_BLOCK_WIDTH, DEF_BLOCK_HEIGHT), GInfra.CurrentLang.InputFunction, true);
+   inherited Create(ABranch, TBlockParms.New(blInput, 0, 0, DEF_BLOCK_WIDTH, DEF_BLOCK_HEIGHT), GInfra.CurrentLang.InputFunction, true, yymInput);
 end;
 
 constructor TOutputBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
    FLabel := i18Manager.GetString('CaptionOut');
    FLabelSegoe := GInfra.CurrentLang.LabelOut;
-   FParserMode := yymOutput;
-   inherited Create(ABranch, ABlockParms, GInfra.CurrentLang.OutputFunction, false);
+   inherited Create(ABranch, ABlockParms, GInfra.CurrentLang.OutputFunction, false, yymOutput);
 end;
 
 constructor TOutputBlock.Create(ABranch: TBranch);
 begin
    FLabel := i18Manager.GetString('CaptionOut');
    FLabelSegoe := GInfra.CurrentLang.LabelOut;
-   FParserMode := yymOutput;
-   inherited Create(ABranch, TBlockParms.New(blOutput, 0, 0, DEF_BLOCK_WIDTH, DEF_BLOCK_HEIGHT), GInfra.CurrentLang.OutputFunction, true);
+   inherited Create(ABranch, TBlockParms.New(blOutput, 0, 0, DEF_BLOCK_WIDTH, DEF_BLOCK_HEIGHT), GInfra.CurrentLang.OutputFunction, true, yymOutput);
 end;
 
 procedure TInOutBlock.Paint;

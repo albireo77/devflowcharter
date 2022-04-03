@@ -34,7 +34,7 @@ type
          procedure Paint; override;
       public
          constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload; override;
+         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
          procedure ChangeColor(AColor: TColor); override;
    end;
@@ -46,13 +46,12 @@ uses
 
 constructor TMultiInstrBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
-   inherited Create(ABranch, ABlockParms);
+   inherited Create(ABranch, ABlockParms, yymAssign);
    FStatements.ShowHint := true;
 end;
 
 procedure TMultiInstrBlock.Paint;
 begin
-   FParserMode := yymAssign;
    inherited;
    DrawBlockLabel(5, FStatements.BoundsRect.Bottom+1, GInfra.CurrentLang.LabelMultiInstr);
 end;
@@ -63,14 +62,11 @@ begin
 end;
 
 procedure TMultiInstrBlock.OnChangeMemo(Sender: TObject);
-var
-   txt, line: string;
-   i: integer;
 begin
    GProject.SetChanged;
    FErrLine := -1;
    FStatements.Font.Color := GSettings.FontColor;
-   txt := Trim(FStatements.Text);
+   var txt := Trim(FStatements.Text);
    FStatements.Hint := i18Manager.GetFormattedString('ExpOk', [txt, sLineBreak]);
    UpdateEditor(nil);
    if GSettings.ParseMultiAssign then
@@ -82,9 +78,9 @@ begin
       end
       else
       begin
-         for i := 0 to FStatements.Lines.Count-1 do
+         for var i := 0 to FStatements.Lines.Count-1 do
          begin
-            line := FStatements.Lines.Strings[i].Trim;
+            var line := FStatements.Lines.Strings[i].Trim;
             if not TInfra.Parse(line, yymAssign) then
             begin
                FStatements.Font.Color := NOK_COLOR;
@@ -99,21 +95,17 @@ begin
 end;
 
 function TMultiInstrBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
-var
-   i: integer;
-   template: string;
-   tmpList: TStringList;
 begin
    if fsStrikeOut in Font.Style then
       Exit(0);
-   template := GetBlockTemplate(ALangId);
+   var template := GetBlockTemplate(ALangId);
    if template.IsEmpty then
       result := inherited GenerateCode(ALines, ALangId, ADeep, AFromLine)
    else
    begin
-      tmpList := TStringList.Create;
+      var tmpList := TStringList.Create;
       try
-         for i := 0 to FStatements.Lines.Count-1 do
+         for var i := 0 to FStatements.Lines.Count-1 do
             GenerateTemplateSection(tmpList, ReplaceStr(template, PRIMARY_PLACEHOLDER, FStatements.Lines.Strings[i].Trim), ALangId, ADeep);
          if tmpList.Text.IsEmpty then
             GenerateTemplateSection(tmpList, ReplaceStr(template, PRIMARY_PLACEHOLDER, ''), ALangId, ADeep);

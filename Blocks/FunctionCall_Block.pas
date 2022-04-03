@@ -47,9 +47,7 @@ uses
 constructor TFunctionCallBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   FParserMode := yymFuncCall;
-
-   inherited Create(ABranch, ABlockParms);
+   inherited Create(ABranch, ABlockParms, yymFuncCall);
 
    FStatement.SetBounds(10, 1, ABlockParms.w-20, CalculateStatementHeight);
    FStatement.Anchors := [akRight, akLeft, akTop];
