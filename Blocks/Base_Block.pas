@@ -1368,24 +1368,22 @@ begin
    Repaint;
    for var i := 0 to ControlCount-1 do
    begin
-      if Controls[i] is TBlock then
-         TBlock(Controls[i]).RepaintAll
+      var control :=  Controls[i];
+      if control is TBlock then
+         TBlock(control).RepaintAll
       else
-         Controls[i].Repaint;
+         control.Repaint;
    end;
 end;
 
 function TGroupBlock.HasFoldedBlocks: boolean;
-var
-   block: TBlock;
-   i: integer;
 begin
    result := not Expanded;
    if Expanded then
    begin
-      for i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
+      for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
       begin
-         for block in FBranchList[i] do
+         for var block in FBranchList[i] do
          begin
             if block is TGroupBlock then
             begin
@@ -1428,43 +1426,35 @@ begin
 end;
 
 procedure TBlock.DrawBlockLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false);
-var
-   fontName: string;
-   fontSize: integer;
-   fontStyles: TFontStyles;
 begin
    if GSettings.ShowBlockLabels and not AText.IsEmpty then
    begin
-      fontName := Canvas.Font.Name;
-      fontStyles := Canvas.Font.Style;
-      Canvas.Font.Name := GInfra.CurrentLang.LabelFontName;
-      Canvas.Font.Style := [fsBold];
-      fontSize := Canvas.Font.Size;
-      Canvas.Font.Size := GInfra.CurrentLang.LabelFontSize;
+      var f := Canvas.Font;
+      var fontName := f.Name;
+      var fontStyles := f.Style;
+      var fontSize := f.Size;
+      f.Name := GInfra.CurrentLang.LabelFontName;
+      f.Style := [fsBold];
+      f.Size := GInfra.CurrentLang.LabelFontSize;
       DrawTextLabel(x, y, AText, rightJust, downJust);
-      Canvas.Font.Name := fontName;
-      Canvas.Font.Size := fontSize;
-      Canvas.Font.Style := fontStyles;
+      f.Name := fontName;
+      f.Style := fontStyles;
+      f.Size := fontSize;
    end;
 end;
 
 function TBlock.DrawTextLabel(x, y: integer; const AText: string; ARightJust: boolean = false; ADownJust: boolean = false; APrint: boolean = true): TRect;
-var
-   fontStyles: TFontStyles;
-   fontColor: TColor;
-   brushStyle: TBrushStyle;
-   te: TSize;
 begin
-   te := TSize.Create(0, 0);
+   var te := TSize.Create(0, 0);
    if not AText.IsEmpty then
    begin
-      fontStyles := Canvas.Font.Style;
-      fontColor := Canvas.Font.Color;
+      var fontStyles := Canvas.Font.Style;
+      var fontColor := Canvas.Font.Color;
       Canvas.Font.Style := [];
       Canvas.Font.Color := GSettings.PenColor;
       if fsBold in fontStyles then
          Canvas.Font.Style := Canvas.Font.Style + [fsBold];
-      brushStyle := Canvas.Brush.Style;
+      var brushStyle := Canvas.Brush.Style;
       Canvas.Brush.Style := bsClear;
       te := Canvas.TextExtent(AText);
       if ARightJust then
