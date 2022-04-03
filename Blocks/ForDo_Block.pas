@@ -97,40 +97,36 @@ begin
    FInitParms.HeightAffix := 22;
 
    FShape := shpRoadSign;
-
+   var sColor := GSettings.GetShapeColor(FShape);
    FForLabel := i18Manager.GetString('CaptionFor');
 
    edtStart := TStatement.Create(Self, FParserMode);
-   edtStart.Color := GSettings.GetShapeColor(FShape);
+   edtStart.Color := sColor;
    edtStart.OnChangeExtend := OnChangeEdit;
 
    edtStop := TStatement.Create(Self, FParserMode);
-   edtStop.Color := edtStart.Color;
+   edtStop.Color := sColor;
    edtStop.OnChangeExtend := OnChangeEdit;
 
    cbVar := TComboBox.Create(Self);
    cbVar.Parent := Self;
    cbVar.Visible := False;
    cbVar.Font.Color := GSettings.FontColor;
-   cbVar.Font.Size := FStatement.Font.Size;
-   cbVar.Font.Name := GSettings.FlowchartFontName;
    cbVar.Ctl3D := False;
    cbVar.BevelInner := bvRaised;
    cbVar.BevelKind := bkSoft;
    cbVar.BevelOuter := bvNone;
    cbVar.OnCloseUp := VarListOnCloseUp;
    cbVar.Style := csOwnerDrawFixed;
-   cbVar.Color := edtStart.Color;
+   cbVar.Color := sColor;
 
    edtVar := TEdit.Create(Self);
    edtVar.Parent := Self;
    edtVar.ReadOnly := GInfra.CurrentLang.ForDoVarList;
    edtVar.ShowHint := True;
    edtVar.AutoSelect := False;
-   edtVar.Color := edtStart.Color;
-   edtVar.Font.Size := FStatement.Font.Size;
-   edtVar.Font.Name := GSettings.FlowchartFontName;
    edtVar.DoubleBuffered := true;
+   edtVar.Color := sColor;
    
    PopulateComboBoxes;
 
