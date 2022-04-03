@@ -46,7 +46,7 @@ uses
 
 constructor TMultiInstrBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
-   inherited Create(ABranch, ABlockParms, yymAssign);
+   inherited Create(ABranch, ABlockParms);
    FStatements.ShowHint := true;
 end;
 
@@ -65,16 +65,16 @@ procedure TMultiInstrBlock.OnChangeMemo(Sender: TObject);
 begin
    GProject.SetChanged;
    FErrLine := -1;
-   FStatements.Font.Color := GSettings.FontColor;
    var txt := Trim(FStatements.Text);
-   FStatements.Hint := i18Manager.GetFormattedString('ExpOk', [txt, sLineBreak]);
+   var h := i18Manager.GetFormattedString('ExpOk', [txt, sLineBreak]);
+   var c := GSettings.FontColor;
    UpdateEditor(nil);
    if GSettings.ParseMultiAssign then
    begin
       if txt.IsEmpty then
       begin
-         FStatements.Hint := i18Manager.GetFormattedString('NoInstr', [sLineBreak]);
-         FStatements.Font.Color := WARN_COLOR
+         h := i18Manager.GetFormattedString('NoInstr', [sLineBreak]);
+         c := WARN_COLOR
       end
       else
       begin
@@ -83,14 +83,16 @@ begin
             var line := FStatements.Lines.Strings[i].Trim;
             if not TInfra.Parse(line, yymAssign) then
             begin
-               FStatements.Font.Color := NOK_COLOR;
-               FStatements.Hint := i18Manager.GetFormattedString('ExpErrMult', [i+1, line, sLineBreak, TInfra.GetParserErrMsg]);
+               h := i18Manager.GetFormattedString('ExpErrMult', [i+1, line, sLineBreak, TInfra.GetParserErrMsg]);
+               c := NOK_COLOR;
                FErrLine := i;
                break;
             end;
          end;
       end;
    end;
+   FStatements.Hint := h;
+   FStatements.Font.Color := c;
    inherited;
 end;
 
