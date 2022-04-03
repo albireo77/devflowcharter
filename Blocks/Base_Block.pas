@@ -387,16 +387,14 @@ begin
 end;
 
 procedure TBlock.CloneFrom(ABlock: TBlock);
-var
-   edit, editSrc: TCustomEdit;
 begin
    if ABlock <> nil then
    begin
       Visible := ABlock.Visible;
       SetFont(ABlock.Font);
       FFrame :=  ABlock.FFrame;
-      editSrc := ABlock.GetTextControl;
-      edit := GetTextControl;
+      var editSrc := ABlock.GetTextControl;
+      var edit := GetTextControl;
       if edit <> nil then
       begin
          if editSrc <> nil then
@@ -773,15 +771,12 @@ begin
 end;
 
 function TGroupBlock.GenerateNestedCode(ALines: TStringList; ABranchInd, ADeep: integer; const ALangId: string): integer;
-var
-   block: TBlock;
-   br: TBranch;
 begin
    result := 0;
-   br := GetBranch(ABranchInd);
+   var br := GetBranch(ABranchInd);
    if br <> nil then
    begin
-      for block in br do
+      for var block in br do
           result := result + block.GenerateCode(ALines, ALangId, ADeep);
    end;
 end;
@@ -1897,15 +1892,12 @@ begin
 end;
 
 function TBlock.GenerateTree(AParentNode: TTreeNode): TTreeNode;
-var
-   nodeText: string;
-   textControl: TCustomEdit;
 begin
    result := AParentNode;
-   textControl := GetTextControl;
+   var textControl := GetTextControl;
    if textControl <> nil then
    begin
-      nodeText := GetTreeNodeText;
+      var nodeText := GetTreeNodeText;
       result := AParentNode.Owner.AddChildObject(AParentNode, nodeText, textControl);
       if TInfra.IsNOkColor(TControlHack(textControl).Font.Color) then
       begin
@@ -1923,16 +1915,13 @@ begin
 end;
 
 function TBlock.GetTreeNodeText(ANodeOffset: integer = 0): string;
-var
-   descTemplate, errMsg: string;
-   textControl: TCustomEdit;
 begin
    result := '';
-   textControl := GetTextControl;
+   var textControl := GetTextControl;
    if textControl <> nil then
    begin
-      errMsg := GetErrorMsg(textControl);
-      descTemplate := GetDescTemplate(GInfra.CurrentLang.Name);
+      var errMsg := GetErrorMsg(textControl);
+      var descTemplate := GetDescTemplate(GInfra.CurrentLang.Name);
       result := FillTemplate(GInfra.CurrentLang.Name, descTemplate) + errMsg;
    end;
 end;
