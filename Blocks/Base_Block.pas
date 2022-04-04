@@ -489,12 +489,10 @@ begin
 end;
 
 procedure TBlock.WMExitSizeMove(var Msg: TWMMove);
-var
-   memo: TMemoEx;
 begin
    inherited;
    ExitSizeMove;
-   memo := GetMemoEx;
+   var memo := GetMemoEx;
    if memo <> nil then
       memo.UpdateScrolls;
 end;
@@ -531,19 +529,15 @@ begin
 end;
 
 procedure TBlock.CloneComments(ASource: TBlock);
-var
-   newComment, comment: TComment;
-   unPin: boolean;
-   lPage: TBlockTabSheet;
 begin
    if ASource <> nil then
    begin
-      lPage := Page;
-      unPin := ASource.PinComments > 0;
+      var lPage := Page;
+      var unPin := ASource.PinComments > 0;
       try
-         for comment in ASource.GetPinComments do
+         for var comment in ASource.GetPinComments do
          begin
-            newComment := comment.Clone(lPage);
+            var newComment := comment.Clone(lPage);
             newComment.PinControl := Self;
          end;
          UnPinComments;
@@ -792,9 +786,6 @@ begin
 end;
 
 procedure TBlock.MyOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-   menuItem: TMenuItem;
-   mForm: TMainForm;
 begin
    if Button = mbLeft then
    begin
@@ -808,8 +799,8 @@ begin
          FTopParentBlock.OnResize(FTopParentBlock);
          if Ired >= 0 then
          begin
-            mForm := Page.Form;
-            menuItem := nil;
+            var mForm := Page.Form;
+            var menuItem: TMenuItem := nil;
             case GCustomCursor of
                crInstr:       menuItem := mForm.miInstr;
                crMultiInstr:  menuItem := mForm.miMultiInstr;

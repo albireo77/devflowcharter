@@ -100,21 +100,17 @@ begin
 end;
 
 procedure TCaseBlock.CloneFrom(ABlock: TBlock);
-var
-   i: integer;
-   br, br2: TBranch;
-   caseBlock: TCaseBlock;
 begin
    inherited CloneFrom(ABlock);
    if ABlock is TCaseBlock then
    begin
-      caseBlock := TCaseBlock(ABlock);
-      for i := DEFAULT_BRANCH_IDX+1 to caseBlock.FBranchList.Count-1 do
+      var caseBlock := TCaseBlock(ABlock);
+      for var i := DEFAULT_BRANCH_IDX+1 to caseBlock.FBranchList.Count-1 do
       begin
-         br2 := GetBranch(i);
+         var br2 := GetBranch(i);
          if br2 <> nil then
          begin
-            br := caseBlock.FBranchList[i];
+            var br := caseBlock.FBranchList[i];
             br2.Statement.Text := br.Statement.Text;
             br2.Statement.Visible := br.Statement.Visible;
          end;
@@ -202,19 +198,16 @@ begin
 end;
 
 function TCaseBlock.InsertNewBranch(AIndex: integer): TBranch;
-var
-   lock: boolean;
-   pnt: TPoint;
 begin
    result := nil;
    if AIndex < 0 then
       AIndex := FBranchList.Count;
    if AIndex > DEFAULT_BRANCH_IDX then
    begin
-      pnt := Point(FBranchList[AIndex-1].GetMostRight+60, Height-32);
+      var pnt := Point(FBranchList[AIndex-1].GetMostRight+60, Height-32);
       result := TBranch.Create(Self, pnt);
       FBranchList.Insert(AIndex, result);
-      lock := LockDrawing;
+      var lock := LockDrawing;
       try
          result.Statement := CreateBranchStatement;
          PlaceBranchStatement(result);
@@ -235,17 +228,14 @@ begin
 end;
 
 procedure TCaseBlock.PlaceBranchStatement(ABranch: TBranch);
-var
-   prevBranch: TBranch;
-   idx, w: integer;
 begin
-   idx := FBranchList.IndexOf(ABranch);
+   var idx := FBranchList.IndexOf(ABranch);
    if idx > DEFAULT_BRANCH_IDX then
    begin
-      prevBranch := FBranchList[idx-1];
+      var prevBranch := FBranchList[idx-1];
       if prevBranch <> nil then
       begin
-         w := Min(ABranch.Hook.X-prevBranch.Hook.X-10, 300);
+         var w := Min(ABranch.Hook.X-prevBranch.Hook.X-10, 300);
          ABranch.Statement.SetBounds(ABranch.Hook.X-w-5, TopHook.Y+1, w, ABranch.Statement.Height);
       end;
    end;
@@ -394,9 +384,6 @@ begin
 end;
 
 procedure TCaseBlock.UpdateEditor(AEdit: TCustomEdit);
-var
-   chLine: TChangeLine;
-   obj: TObject;
 begin
    if AEdit = FStatement then
    begin
@@ -407,8 +394,8 @@ begin
    end
    else if (AEdit <> nil) and PerformEditorUpdate then
    begin
-      obj := AEdit;
-      chLine := TInfra.GetChangeLine(obj, AEdit, GetTemplateByControl(AEdit, obj));
+      var obj := TObject(AEdit);
+      var chLine := TInfra.GetChangeLine(obj, AEdit, GetTemplateByControl(AEdit, obj));
       if chLine.Row <> ROW_NOT_FOUND then
       begin
          chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
@@ -421,15 +408,13 @@ begin
 end;
 
 procedure TCaseBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
-var
-   i: integer;
 begin
    Resize := (NewHeight >= Constraints.MinHeight) and (NewWidth >= Constraints.MinWidth);
    if Resize and FVResize then
    begin
       if Expanded then
       begin
-         for i := DEFAULT_BRANCH_IDX to FBranchList.Count-1 do
+         for var i := DEFAULT_BRANCH_IDX to FBranchList.Count-1 do
             Inc(FBranchList[i].Hook.Y, NewHeight-Height);
       end
       else
@@ -495,44 +480,36 @@ begin
 end;
 
 function TCaseBlock.GetTreeNodeText(ANodeOffset: integer = 0): string;
-var
-   bStatement: TStatement;
 begin
    result := '';
    if ANodeOffset = 0 then
       result := inherited GetTreeNodeText(ANodeOffset)
    else if ANodeOffset < FBranchList.Count then
    begin
-      bStatement := FBranchList[ANodeOffset].Statement;
+      var bStatement := FBranchList[ANodeOffset].Statement;
       result := bStatement.Text + ': ' + GetErrorMsg(bStatement);
    end;
 end;
 
 function TCaseBlock.GetDescTemplate(const ALangId: string): string;
-var
-   lang: TLangDefinition;
 begin
    result := '';
-   lang := GInfra.GetLangDefinition(ALangId);
+   var lang := GInfra.GetLangDefinition(ALangId);
    if lang <> nil then
       result := lang.CaseOfDescTemplate;
 end;
 
 procedure TCaseBlock.ExpandFold(AResize: boolean);
-var
-   i: integer;
 begin
    inherited ExpandFold(AResize);
-   for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
+   for var i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
       FBranchList[i].Statement.Visible := Expanded;
 end;
 
 function TCaseBlock.CountErrWarn: TErrWarnCount;
-var
-   i: integer;
 begin
    result := inherited CountErrWarn;
-   for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
+   for var i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
    begin
       if FBranchList[i].Statement.GetFocusColor = NOK_COLOR then
          Inc(result.ErrorCount);
@@ -545,41 +522,34 @@ begin
 end;
 
 procedure TCaseBlock.AfterRemovingBranch;
-var
-   i: integer;
 begin
-   for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
+   for var i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
       FBranchList[i].Statement.DoEnter;
    inherited;
 end;
 
 procedure TCaseBlock.ChangeColor(AColor: TColor);
-var
-   i: integer;
 begin
    inherited ChangeColor(AColor);
-   for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
+   for var i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
       FBranchList[i].Statement.Color := AColor;
 end;
 
 function TCaseBlock.GetFromXML(ATag: IXMLElement): TError;
-var
-   tag, tag2: IXMLElement;
-   i: integer;
 begin
    result := inherited GetFromXML(ATag);
    if ATag <> nil then
    begin
-      tag := TXMLProcessor.FindChildTag(ATag, BRANCH_TAG);
+      var tag := TXMLProcessor.FindChildTag(ATag, BRANCH_TAG);
       if tag <> nil then
       begin
          tag := TXMLProcessor.FindNextTag(tag);   // skip default branch stored in first tag
          FRefreshMode := true;
-         for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
+         for var i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
          begin
             if tag <> nil then
             begin
-               tag2 := TXMLProcessor.FindChildTag(tag, 'value');
+               var tag2 := TXMLProcessor.FindChildTag(tag, 'value');
                if tag2 <> nil then
                   FBranchList[i].Statement.Text := tag2.Text;
             end;
@@ -592,22 +562,19 @@ begin
 end;
 
 procedure TCaseBlock.SaveInXML(ATag: IXMLElement);
-var
-   tag, tag2: IXMLElement;
-   i: integer;
 begin
    inherited SaveInXML(ATag);
    if ATag <> nil then
    begin
-      tag := TXMLProcessor.FindChildTag(ATag, BRANCH_TAG);
+      var tag := TXMLProcessor.FindChildTag(ATag, BRANCH_TAG);
       if tag <> nil then
       begin
          tag := TXMLProcessor.FindNextTag(tag);   // skip default branch stored in first tag
-         for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
+         for var i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
          begin
             if tag <> nil then
             begin
-               tag2 := ATag.OwnerDocument.CreateElement('value');
+               var tag2 := ATag.OwnerDocument.CreateElement('value');
                TXMLProcessor.AddCDATA(tag2, FBranchList[i].Statement.Text);
                tag.AppendChild(tag2);
             end;
