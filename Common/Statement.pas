@@ -236,10 +236,7 @@ procedure TStatement.MouseDown(Button: TMouseButton; Shift: TShiftState; X: Inte
 begin
    inherited MouseDown(Button, Shift, X, Y);
    if HasParent and Assigned(TWinControlHack(Parent).OnMouseDown) then
-   begin
-      var p := ClientToParent(Point(X, Y));
-      TWinControlHack(Parent).OnMouseDown(Parent, Button, Shift, p.X, p.Y);
-   end;
+      TWinControlHack(Parent).OnMouseDown(Parent, Button, Shift, X+Left, Y+Top);
 end;
 
 procedure TStatement.DoEnter;
