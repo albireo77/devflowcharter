@@ -112,14 +112,12 @@ begin
 end;
 
 procedure TIfElseBlock.Paint;
-var
-   dRight, dLeft: TPoint;
 begin
    inherited;
    if Expanded then
    begin
-      dRight := FDiamond[D_RIGHT];
-      dLeft := FDiamond[D_LEFT];
+      var dRight := FDiamond[D_RIGHT];
+      var dLeft := FDiamond[D_LEFT];
       IPoint.X := TopHook.X + 40;
       BottomPoint.X := BottomHook;
       BottomPoint.Y := Height - 25;
@@ -226,18 +224,13 @@ begin
 end;
 
 procedure TIfElseBlock.ResizeVert(AContinue: boolean);
-var
-   b1, b2: TBranch;
 begin
+   var b1 := FalseBranch;
+   var b2 := TrueBranch;
    if TrueBranch.Height > FalseBranch.Height then
    begin
       b1 := TrueBranch;
       b2 := FalseBranch;
-   end
-   else
-   begin
-      b1 := FalseBranch;
-      b2 := TrueBranch;
    end;
    b1.Hook.Y := 70;
    Height := b1.Height + b1.Hook.Y + 31;
@@ -276,14 +269,11 @@ begin
 end;
 
 function TIfElseBlock.GenerateTree(AParentNode: TTreeNode): TTreeNode;
-var
-   elseNode: TTreeNodeWithFriend;
-   block: TBlock;
 begin
    result := inherited GenerateTree(AParentNode);
-   elseNode := TTreeNodeWithFriend(AParentNode.Owner.AddChild(AParentNode, GInfra.CurrentLang.ElseLabel));
+   var elseNode := TTreeNodeWithFriend(AParentNode.Owner.AddChild(AParentNode, GInfra.CurrentLang.ElseLabel));
    TTreeNodeWithFriend(result).Friend := elseNode;
-   for block in FalseBranch do
+   for var block in FalseBranch do
        block.GenerateTree(elseNode);
 end;
 
@@ -302,21 +292,16 @@ begin
 end;
 
 procedure TIfElseBlock.SaveInXML(ATag: IXMLElement);
-var
-   th, fbrx: integer;
 begin
    inherited SaveInXML(ATag);
    if ATag <> nil then
    begin
+      var fbrx := FFoldParms.P2X;
+      var th := FFoldParms.TopHook;
       if Expanded then
       begin
          fbrx := FalseBranch.Hook.X;
          th := TopHook.X;
-      end
-      else
-      begin
-         fbrx := FFoldParms.P2X;
-         th := FFoldParms.TopHook;
       end;
       ATag.SetAttribute('fbrx', fbrx.ToString);
       ATag.SetAttribute('th', th.ToString);

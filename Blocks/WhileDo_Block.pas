@@ -73,17 +73,15 @@ begin
 end;
 
 procedure TWhileDoBlock.Paint;
-var
-   dRight, dBottom, dTop, dLeft: TPoint;
 begin
    inherited;
    if Expanded then
    begin
       IPoint.X := Branch.Hook.X + 40;
-      dBottom := FDiamond[D_BOTTOM];
-      dRight := FDiamond[D_RIGHT];
-      dTop := FDiamond[D_TOP];
-      dLeft := FDiamond[D_LEFT];
+      var dBottom := FDiamond[D_BOTTOM];
+      var dRight := FDiamond[D_RIGHT];
+      var dTop := FDiamond[D_TOP];
+      var dLeft := FDiamond[D_LEFT];
       BottomPoint.Y := dRight.Y;
       TopHook := dBottom;
 

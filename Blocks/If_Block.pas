@@ -73,15 +73,13 @@ begin
 end;
 
 procedure TIfBlock.Paint;
-var
-   dRight, dBottom, dLeft: TPoint;
 begin
    inherited;
    if Expanded then
    begin
-      dRight := FDiamond[D_RIGHT];
-      dBottom := FDiamond[D_BOTTOM];
-      dLeft := FDiamond[D_LEFT];
+      var dRight := FDiamond[D_RIGHT];
+      var dBottom := FDiamond[D_BOTTOM];
+      var dLeft := FDiamond[D_LEFT];
       IPoint.X := Branch.Hook.X + 40;
       TopHook := dBottom;
       BottomPoint.Y := Height - 31;

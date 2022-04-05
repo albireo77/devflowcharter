@@ -85,17 +85,15 @@ begin
 end;
 
 procedure TRepeatUntilBlock.Paint;
-var
-   dLeft, dRight, dBottom: TPoint;
 begin
    inherited;
    if Expanded then
    begin
       IPoint.X := BottomHook + 40;
       IPoint.Y := Height - 30;
-      dLeft := FDiamond[D_LEFT];
-      dRight := FDiamond[D_RIGHT];
-      dBottom := FDiamond[D_BOTTOM];
+      var dLeft := FDiamond[D_LEFT];
+      var dRight := FDiamond[D_RIGHT];
+      var dBottom := FDiamond[D_BOTTOM];
       BottomPoint.Y := dRight.Y;
 
       Canvas.PenPos := dLeft;
@@ -115,11 +113,9 @@ begin
 end;
 
 function TRepeatUntilBlock.GetDescTemplate(const ALangId: string): string;
-var
-   lang: TLangDefinition;
 begin
    result := '';
-   lang := GInfra.GetLangDefinition(ALangId);
+   var lang := GInfra.GetLangDefinition(ALangId);
    if lang <> nil then
       result := lang.RepeatUntilDescTemplate;
 end;
