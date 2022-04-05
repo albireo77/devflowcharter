@@ -53,6 +53,19 @@ type
 
    TImportMode = (impSelectTab, impSelectPopup, impAll);
 
+   TPointArray = array of TPoint;
+
+   TDiamond = record
+     Top,
+     Bottom,
+     Right,
+     Left: TPoint;
+     class function New(const ATop: TPoint; A: integer): TDiamond; static;
+     function Width: integer;
+     function Height: integer;
+     function Polygon: TPointArray;
+   end;
+
    TCodeRange = record
       FirstRow,
       LastRow: integer;
@@ -286,6 +299,29 @@ procedure TNameEdit.WMKillFocus(var msg: TWMKillFocus);
 begin
    inherited;
    Change;
+end;
+
+function TDiamond.Width: integer;
+begin
+   result := Right.X - Left.X;
+end;
+
+function TDiamond.Height: integer;
+begin
+   result := Bottom.Y - Top.Y;
+end;
+
+function TDiamond.Polygon: TPointArray;
+begin
+   result := [Top, Right, Bottom, Left, Top];
+end;
+
+class function TDiamond.New(const ATop: TPoint; A: integer): TDiamond;
+begin
+   result.Left   := Point(ATop.X-2*A, ATop.Y+A);
+   result.Bottom := Point(ATop.X, ATop.Y+2*A);
+   result.Right  := Point(ATop.X+2*A, ATop.Y+A);
+   result.Top    := ATop;
 end;
 
 end.

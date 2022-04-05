@@ -32,11 +32,6 @@ uses
 const
    PRIMARY_BRANCH_IDX = 1;
    LAST_LINE = -1;
-   D_LEFT = 0;
-   D_BOTTOM = 1;
-   D_RIGHT = 2;
-   D_TOP = 3;
-   D_LEFT_CLOSE = 4;
    
 type
 
@@ -212,7 +207,7 @@ type
          FTrueLabel,
          FFalseLabel: string;
          FFixedBranches: integer;
-         FDiamond: array[D_LEFT..D_LEFT_CLOSE] of TPoint;
+         FDiamond: TDiamond;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms; AShape: TColorShape; AParserMode: TYYMode = yymUndefined);
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
@@ -1621,17 +1616,13 @@ begin
       if (edit <> nil) and not InvalidPoint(p) then
       begin
          a := (edit.Height + edit.Width div 2) div 2 + 1;
-         FDiamond[D_LEFT] := Point(p.X-2*a, p.Y+a);
-         FDiamond[D_BOTTOM] := Point(p.X, p.Y+2*a);
-         FDiamond[D_RIGHT] := Point(p.X+2*a, p.Y+a);
-         FDiamond[D_TOP] := p;
-         FDiamond[D_LEFT_CLOSE] := FDiamond[D_LEFT];
+         FDiamond := TDiamond.New(p, a);
          TInfra.MoveWin(edit, p.X-edit.Width div 2, p.Y+a-edit.Height div 2);
          Canvas.Brush.Style := bsClear;
          lColor2 := GSettings.GetShapeColor(FShape);
          if lColor2 <> GSettings.DesktopColor then
             Canvas.Brush.Color := lColor2;
-         Canvas.Polygon(FDiamond);
+         Canvas.Polygon(FDiamond.Polygon);
       end;
    end
    else

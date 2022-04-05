@@ -116,12 +116,10 @@ begin
    inherited;
    if Expanded then
    begin
-      var dRight := FDiamond[D_RIGHT];
-      var dLeft := FDiamond[D_LEFT];
       IPoint.X := TopHook.X + 40;
       BottomPoint.X := BottomHook;
       BottomPoint.Y := Height - 25;
-      TopHook.Y := dLeft.Y;
+      TopHook.Y := FDiamond.Left.Y;
 
       DrawArrow(BottomHook, Height-30, BottomHook, Height-1);
       DrawArrow(TrueBranch.Hook.X, TopHook.Y, TrueBranch.Hook);
@@ -132,14 +130,14 @@ begin
          DrawArrow(FalseHook, Height-30, BottomHook+4, Height-30);
 
       Canvas.Ellipse(BottomHook-5, Height-34, BottomHook+5, Height-24);
-      Canvas.MoveTo(FalseBranch.Hook.X, dRight.Y);
-      Canvas.LineTo(dRight.X, dRight.Y);
-      Canvas.MoveTo(TrueBranch.Hook.X, dLeft.Y);
-      Canvas.LineTo(dLeft.X, dLeft.Y);
+      Canvas.MoveTo(FalseBranch.Hook.X, FDiamond.Right.Y);
+      Canvas.LineTo(FDiamond.Right.X, FDiamond.Right.Y);
+      Canvas.MoveTo(TrueBranch.Hook.X, FDiamond.Left.Y);
+      Canvas.LineTo(FDiamond.Left.X, FDiamond.Left.Y);
 
-      DrawTextLabel(dLeft.X, dLeft.Y-5, FTrueLabel, true, true);
-      DrawTextLabel(dRight.X, dRight.Y-5, FFalseLabel, false, true);
-      DrawBlockLabel(dLeft.X+10, dLeft.Y+5, GInfra.CurrentLang.LabelIfElse, true);
+      DrawTextLabel(FDiamond.Left.X, FDiamond.Left.Y-5, FTrueLabel, true, true);
+      DrawTextLabel(FDiamond.Right.X, FDiamond.Right.Y-5, FFalseLabel, false, true);
+      DrawBlockLabel(FDiamond.Left.X+10, FDiamond.Left.Y+5, GInfra.CurrentLang.LabelIfElse, true);
    end;
    DrawI;
 end;

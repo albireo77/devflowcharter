@@ -91,22 +91,19 @@ begin
    begin
       IPoint.X := BottomHook + 40;
       IPoint.Y := Height - 30;
-      var dLeft := FDiamond[D_LEFT];
-      var dRight := FDiamond[D_RIGHT];
-      var dBottom := FDiamond[D_BOTTOM];
-      BottomPoint.Y := dRight.Y;
+      BottomPoint.Y := FDiamond.Right.Y;
 
-      Canvas.PenPos := dLeft;
-      Canvas.LineTo(5, dLeft.Y);
+      Canvas.PenPos := FDiamond.Left;
+      Canvas.LineTo(5, FDiamond.Left.Y);
       DrawArrowTo(5, 0, arrMiddle);
       Canvas.LineTo(Branch.Hook.X, TopHook.Y);
       DrawArrowTo(Branch.Hook);
 
-      DrawTextLabel(dLeft.X, dLeft.Y-5, FLeftLabel, true, true);
-      DrawTextLabel(dRight.X, dRight.Y-5, FRightLabel, false, true);
-      DrawBlockLabel(dBottom.X-30, dBottom.Y-10, GInfra.CurrentLang.LabelRepeat, true);
-      Canvas.PenPos := dRight;
-      Canvas.LineTo(BottomPoint.X, dRight.Y);
+      DrawTextLabel(FDiamond.Left.X, FDiamond.Left.Y-5, FLeftLabel, true, true);
+      DrawTextLabel(FDiamond.Right.X, FDiamond.Right.Y-5, FRightLabel, false, true);
+      DrawBlockLabel(FDiamond.Bottom.X-30, FDiamond.Bottom.Y-10, GInfra.CurrentLang.LabelRepeat, true);
+      Canvas.PenPos := FDiamond.Right;
+      Canvas.LineTo(BottomPoint.X, FDiamond.Right.Y);
       DrawArrowTo(BottomPoint.X, Height-1);
    end;
    DrawI;

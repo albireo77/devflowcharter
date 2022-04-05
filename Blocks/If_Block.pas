@@ -77,20 +77,17 @@ begin
    inherited;
    if Expanded then
    begin
-      var dRight := FDiamond[D_RIGHT];
-      var dBottom := FDiamond[D_BOTTOM];
-      var dLeft := FDiamond[D_LEFT];
       IPoint.X := Branch.Hook.X + 40;
-      TopHook := dBottom;
+      TopHook := FDiamond.Bottom;
       BottomPoint.Y := Height - 31;
 
       DrawArrow(TopHook, Branch.Hook);
-      DrawTextLabel(dBottom.X-10, dBottom.Y, FTrueLabel, true);
-      DrawTextLabel(dRight.X, dRight.Y-5, FFalseLabel, false, true);
-      DrawBlockLabel(dLeft.X-5, dLeft.Y-5, GInfra.CurrentLang.LabelIf, true, true);
+      DrawTextLabel(FDiamond.Bottom.X-10, FDiamond.Bottom.Y, FTrueLabel, true);
+      DrawTextLabel(FDiamond.Right.X, FDiamond.Right.Y-5, FFalseLabel, false, true);
+      DrawBlockLabel(FDiamond.Left.X-5, FDiamond.Left.Y-5, GInfra.CurrentLang.LabelIf, true, true);
 
-      Canvas.PenPos := dRight;
-      Canvas.LineTo(Width-11, dRight.Y);
+      Canvas.PenPos := FDiamond.Right;
+      Canvas.LineTo(Width-11, FDiamond.Right.Y);
       DrawArrowTo(Width-11, Height-31, arrMiddle);
       Canvas.LineTo(BottomPoint.X, Height-31);
       DrawArrow(BottomPoint, BottomPoint.X, Height-1);
