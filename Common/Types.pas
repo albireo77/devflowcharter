@@ -301,6 +301,15 @@ begin
    Change;
 end;
 
+class function TDiamond.New(const ATop: TPoint; AEdit: TCustomEdit): TDiamond;
+begin
+   var a         := (AEdit.Height + AEdit.Width div 2) div 2 + 1;
+   result.Left   := Point(ATop.X-2*a, ATop.Y+a);
+   result.Bottom := Point(ATop.X, ATop.Y+2*a);
+   result.Right  := Point(ATop.X+2*a, ATop.Y+a);
+   result.Top    := ATop;
+end;
+
 function TDiamond.Width: integer;
 begin
    result := Right.X - Left.X;
@@ -314,15 +323,6 @@ end;
 function TDiamond.Polygon: TPointArray;
 begin
    result := [Top, Right, Bottom, Left, Top];
-end;
-
-class function TDiamond.New(const ATop: TPoint; AEdit: TCustomEdit): TDiamond;
-begin
-   var a := (AEdit.Height + AEdit.Width div 2) div 2 + 1;
-   result.Left   := Point(ATop.X-2*a, ATop.Y+a);
-   result.Bottom := Point(ATop.X, ATop.Y+2*a);
-   result.Right  := Point(ATop.X+2*a, ATop.Y+a);
-   result.Top    := ATop;
 end;
 
 end.

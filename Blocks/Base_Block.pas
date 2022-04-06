@@ -1610,7 +1610,7 @@ begin
       begin
          FDiamond := TDiamond.New(p, edit);
          TInfra.MoveWin(edit, FDiamond.Top.X - edit.Width div 2,
-                              FDiamond.Top.Y + FDiamond.Height div 2 - edit.Height div 2);
+                              FDiamond.Top.Y - edit.Height div 2 + FDiamond.Height div 2);
          Canvas.Brush.Style := bsClear;
          var lColor2 := GSettings.GetShapeColor(FShape);
          if lColor2 <> GSettings.DesktopColor then
