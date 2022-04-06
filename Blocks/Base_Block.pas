@@ -1597,29 +1597,22 @@ begin
 end;
 
 procedure TGroupBlock.Paint;
-var
-   p: TPoint;
-   brushStyle: TBrushStyle;
-   lColor, lColor2: TColor;
-   w, a: integer;
-   edit: TCustomEdit;
-   r: TRect;
 begin
    inherited;
-   brushStyle := Canvas.Brush.Style;
-   lColor := Canvas.Brush.Color;
-   w := Canvas.Pen.Width;
+   var brushStyle := Canvas.Brush.Style;
+   var lColor := Canvas.Brush.Color;
+   var w := Canvas.Pen.Width;
    if Expanded then
    begin
-      p := GetDiamondTop;
-      edit := GetTextControl;
+      var p := GetDiamondTop;
+      var edit := GetTextControl;
       if (edit <> nil) and not InvalidPoint(p) then
       begin
-         a := (edit.Height + edit.Width div 2) div 2 + 1;
-         FDiamond := TDiamond.New(p, a);
-         TInfra.MoveWin(edit, p.X-edit.Width div 2, p.Y+a-edit.Height div 2);
+         FDiamond := TDiamond.New(p, edit);
+         TInfra.MoveWin(edit, FDiamond.Top.X - edit.Width div 2,
+                              FDiamond.Top.Y + FDiamond.Height div 2 - edit.Height div 2);
          Canvas.Brush.Style := bsClear;
-         lColor2 := GSettings.GetShapeColor(FShape);
+         var lColor2 := GSettings.GetShapeColor(FShape);
          if lColor2 <> GSettings.DesktopColor then
             Canvas.Brush.Color := lColor2;
          Canvas.Polygon(FDiamond.Polygon);
@@ -1627,11 +1620,11 @@ begin
    end
    else
    begin
-      lColor2 := GSettings.GetShapeColor(shpFolder);
+      var lColor2 := GSettings.GetShapeColor(shpFolder);
       if lColor2 <> GSettings.DesktopColor then
          Canvas.Brush.Color := lColor2;
       Canvas.Pen.Width := 2;
-      r := FMemoFolder.BoundsRect;
+      var r := FMemoFolder.BoundsRect;
       r.Inflate(3, 3, 4, 4);
       Canvas.Rectangle(r);
       Canvas.Pen.Width := 1;
