@@ -1092,24 +1092,18 @@ begin
 end;
 
 function TBlock.GetComments(AInFront: boolean = false): IEnumerable<TComment>;
-var
-   comment: TComment;
-   isFront: boolean;
-   lPage: TBlockTabSheet;
-   list: TList<TComment>;
 begin
-   list := TList<TComment>.Create;
+   var list := TList<TComment>.Create;
    if Visible then
    begin
-      lPage := Page;
-      for comment in GProject.GetComments do
+      var lPage := Page;
+      for var comment in GProject.GetComments do
       begin
          if comment.Page = lPage then
          begin
+            var isFront := true;
             if AInFront then
-               isFront := IsInFront(comment)
-            else
-               isFront := true;
+               isFront := IsInFront(comment);
             if isFront and (comment.PinControl = nil) and ClientRect.Contains(ParentToClient(comment.BoundsRect.TopLeft, lPage.Box)) then
                list.Add(comment);
          end
@@ -1169,12 +1163,9 @@ begin
 end;
 
 function TBlock.GetPinComments: IEnumerable<TComment>;
-var
-   comment: TComment;
-   list: TList<TComment>;
 begin
-   list := TList<TComment>.Create;
-   for comment in GProject.GetComments do
+   var list := TList<TComment>.Create;
+   for var comment in GProject.GetComments do
    begin
       if comment.PinControl = Self then
          list.Add(comment);
@@ -1192,19 +1183,15 @@ begin
 end;
 
 procedure TBlock.RefreshStatements;
-var
-   i: integer;
-   b, b1: boolean;
-   control: TControl;
 begin
-    b := NavigatorForm.InvalidateInd;
+    var b := NavigatorForm.InvalidateInd;
     NavigatorForm.InvalidateInd := false;
-    b1 := FRefreshMode;
+    var b1 := FRefreshMode;
     FRefreshMode := true;
     try
-       for i := 0 to ControlCount-1 do
+       for var i := 0 to ControlCount-1 do
        begin
-          control := Controls[i];
+          var control := Controls[i];
           if control is TStatement then
              TStatement(control).DoEnter
           else if (control is TMemoEx) and Assigned(TMemoEx(control).OnChange) then
@@ -1604,11 +1591,11 @@ begin
    var w := Canvas.Pen.Width;
    if Expanded then
    begin
-      var p := GetDiamondTop;
+      var dTop := GetDiamondTop;
       var edit := GetTextControl;
-      if (edit <> nil) and not InvalidPoint(p) then
+      if (edit <> nil) and not InvalidPoint(dTop) then
       begin
-         FDiamond := TDiamond.New(p, edit);
+         FDiamond := TDiamond.New(dTop, edit);
          TInfra.MoveWin(edit, FDiamond.Top.X - edit.Width div 2,
                               FDiamond.Top.Y - edit.Height div 2 + FDiamond.Height div 2);
          Canvas.Brush.Style := bsClear;
