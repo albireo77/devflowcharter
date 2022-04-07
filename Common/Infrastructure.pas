@@ -149,8 +149,8 @@ uses
    XMLProcessor, SynEditHighlighter, Main_Block, BaseEnumerator, System.Character, System.Generics.Defaults;
 
 type
-   THackCustomEdit = class(TCustomEdit);
-   THackControl = class(TControl);
+   TCustomEditHack = class(TCustomEdit);
+   TControlHack = class(TControl);
 
 constructor TInfra.Create;
 var
@@ -904,23 +904,19 @@ begin
 end;
 
 class function TInfra.CompareProgramVersion(const AVersion: string): integer;
-var
-   currVersion: string;
-   nums, numsCurr: TArray<string>;
-   i, e1, e2: integer;
 begin
    result := 0;
-   currVersion := GetAboutForm.GetProgramVersion;
+   var currVersion := GetAboutForm.GetProgramVersion;
    if AVersion.IsEmpty or (currVersion = UNKNOWN_VERSION) or (currVersion = AVersion) then
       Exit;
-   nums := AVersion.Split([VERSION_NUMBER_SEP], 4);
-   numsCurr := currVersion.Split([VERSION_NUMBER_SEP], 4);
-   for i := 0 to High(numsCurr) do
+   var nums := AVersion.Split([VERSION_NUMBER_SEP], 4);
+   var numsCurr := currVersion.Split([VERSION_NUMBER_SEP], 4);
+   for var i := 0 to High(numsCurr) do
    begin
       if (result <> 0) or (i > High(nums)) then
          break;
-      e1 := StrToIntDef(nums[i], -1);
-      e2 := StrToIntDef(numsCurr[i], -1);
+      var e1 := StrToIntDef(nums[i], -1);
+      var e2 := StrToIntDef(numsCurr[i], -1);
       if e1 > e2 then
          result := 1
       else if e1 < e2 then
@@ -1095,10 +1091,10 @@ end;
 
 class procedure TInfra.SetFontSize(AControl: TControl; ASize: integer);
 begin
-   var flag := (AControl is TCustomEdit) and (THackCustomEdit(AControl).BorderStyle = bsNone);
-   if flag then THackCustomEdit(AControl).BorderStyle := bsSingle;
-   THackControl(AControl).Font.Size := ASize;
-   if flag then THackCustomEdit(AControl).BorderStyle := bsNone;
+   var flag := (AControl is TCustomEdit) and (TCustomEditHack(AControl).BorderStyle = bsNone);
+   if flag then TCustomEditHack(AControl).BorderStyle := bsSingle;
+   TControlHack(AControl).Font.Size := ASize;
+   if flag then TCustomEditHack(AControl).BorderStyle := bsNone;
 end;
 
 class function TInfra.FindDuplicatedPage(APage: TTabSheet; const ACaption: TCaption): TTabSheet;
@@ -1140,7 +1136,7 @@ begin
    with TControlCanvas.Create do
    try
       Control := AControl;
-      Font.Assign(THackControl(AControl).Font);
+      Font.Assign(TControlHack(AControl).Font);
       result := TextWidth(AText);
    finally
       Free;
