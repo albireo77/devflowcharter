@@ -46,7 +46,7 @@ uses
 constructor TIfBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpDiamond, yymCondition);
+   inherited Create(ABranch, ABlockParms, shpDiamond, taCenter, yymCondition);
 
    FInitParms.Width := 200;
    FInitParms.Height := 121;
@@ -64,7 +64,6 @@ begin
    IPoint.Y := 50;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
-   FStatement.Alignment := taCenter;
 end;
 
 constructor TIfBlock.Create(ABranch: TBranch);

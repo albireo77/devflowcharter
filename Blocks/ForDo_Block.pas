@@ -84,7 +84,7 @@ const
 constructor TForDoBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpRoadSign, yymFor);
+   inherited Create(ABranch, ABlockParms, shpRoadSign, taLeftJustify, yymFor);
 
    FInitParms.Width := DEFAULT_WIDTH;
    FInitParms.Height := DEFAULT_HEIGHT;
@@ -97,11 +97,11 @@ begin
    var sColor := GSettings.GetShapeColor(FShape);
    FForLabel := i18Manager.GetString('CaptionFor');
 
-   edtStart := TStatement.Create(Self, yymFor);
+   edtStart := TStatement.Create(Self, yymFor, taLeftJustify);
    edtStart.Color := sColor;
    edtStart.OnChangeExtend := OnChangeEdit;
 
-   edtStop := TStatement.Create(Self, yymFor);
+   edtStop := TStatement.Create(Self, yymFor, taLeftJustify);
    edtStop.Color := sColor;
    edtStop.OnChangeExtend := OnChangeEdit;
 

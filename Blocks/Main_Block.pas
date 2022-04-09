@@ -87,7 +87,7 @@ begin
 
    FPage := APage;
 
-   inherited Create(nil, ABlockParms, shpEllipse);
+   inherited Create(nil, ABlockParms, shpEllipse, taLeftJustify);
 
    FStartLabel := i18Manager.GetString('CaptionStart');
    FStopLabel := i18Manager.GetString('CaptionStop');

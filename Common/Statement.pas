@@ -50,7 +50,7 @@ type
     { Public declarations }
     OnChangeExtend: TOnChangeExtend;
     property Id: integer read GetId;
-    constructor Create(AParent: TWinControl; AParserMode: TYYMode; AId: integer = ID_INVALID);
+    constructor Create(AParent: TWinControl; AParserMode: TYYMode; AAlignment: TAlignment; AId: integer = ID_INVALID);
     destructor Destroy; override;
     procedure Change; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
@@ -123,15 +123,16 @@ implementation
 uses
    WinApi.Windows, System.SysUtils, Vcl.Forms, Infrastructure, Navigator_Form, Constants;
 
-constructor TStatement.Create(AParent: TWinControl; AParserMode: TYYMode; AId: integer = ID_INVALID);
+constructor TStatement.Create(AParent: TWinControl; AParserMode: TYYMode; AAlignment: TAlignment; AId: integer = ID_INVALID);
 begin
    inherited Create(AParent);
    Parent := AParent;
    FHasFocusParent := Supports(AParent, IWithFocus, FFocusParent);
    PopupMenu := TInfra.GetMainForm.pmEdits;
+   AutoSelect := False;
+   Alignment := AAlignment;
    BorderStyle := bsNone;
    ShowHint := True;
-   AutoSelect := False;
    DoubleBuffered := true;
    OnChangeExtend := nil;
    FParserMode := AParserMode;

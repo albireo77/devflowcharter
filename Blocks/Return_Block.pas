@@ -51,7 +51,7 @@ uses
 constructor TReturnBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpEllipse, yymReturn);
+   inherited Create(ABranch, ABlockParms, shpEllipse, yymReturn, taCenter);
 
    FReturnLabel := i18Manager.GetString('CaptionExit');
 
@@ -65,7 +65,6 @@ begin
    PutTextControls;
 
    FStatement.Anchors := [akRight, akLeft, akTop];
-   FStatement.Alignment := taCenter;
    FStatement.Color := GSettings.DesktopColor;
 end;
 

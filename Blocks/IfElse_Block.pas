@@ -61,7 +61,7 @@ uses
 constructor TIfElseBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpDiamond, yymCondition);
+   inherited Create(ABranch, ABlockParms, shpDiamond, taCenter, yymCondition);
 
    FInitParms.Width := 240;
    FInitParms.Height := 101;
@@ -84,7 +84,6 @@ begin
    FalseHook := ABlockParms.flh;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
-   FStatement.Alignment := taCenter;
 
 end;
 

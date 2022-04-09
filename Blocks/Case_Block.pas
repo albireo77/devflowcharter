@@ -73,7 +73,7 @@ uses
 constructor TCaseBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpDiamond, yymCase);
+   inherited Create(ABranch, ABlockParms, shpDiamond, taCenter, yymCase);
 
    FInitParms.Width := 200;
    FInitParms.Height := 131;
@@ -94,7 +94,6 @@ begin
    FCaseLabel := i18Manager.GetString('CaptionCase');
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
-   FStatement.Alignment := taCenter;
    FStatement.OnChangeExtend := OnChangeEdit;
 
 end;
@@ -217,9 +216,8 @@ end;
 
 function TCaseBlock.CreateBranchStatement(ABranchStatementId: integer = ID_INVALID): TStatement;
 begin
-   result := TStatement.Create(Self, yymCaseValue, ABranchStatementId);
+   result := TStatement.Create(Self, yymCaseValue, taRightJustify, ABranchStatementId);
    result.Color := Color;
-   result.Alignment := taRightJustify;
    result.OnChangeExtend := UpdateEditor;
 end;
 

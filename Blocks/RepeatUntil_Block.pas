@@ -49,7 +49,7 @@ uses
 constructor TRepeatUntilBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpDiamond, yymCondition);
+   inherited Create(ABranch, ABlockParms, shpDiamond, taCenter, yymCondition);
 
    FInitParms.Width := 240;
    FInitParms.Height := 111;
@@ -76,7 +76,6 @@ begin
    TopHook.X := ABlockParms.br.X;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
-   FStatement.Alignment := taCenter;
 end;
 
 constructor TRepeatUntilBlock.Create(ABranch: TBranch);

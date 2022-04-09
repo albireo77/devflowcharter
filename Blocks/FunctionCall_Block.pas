@@ -42,12 +42,12 @@ type
 implementation
 
 uses
-   Vcl.Controls, Vcl.Graphics, System.Types, Infrastructure, YaccLib;
+   Vcl.Controls, Vcl.Graphics, System.Types, System.Classes, Infrastructure, YaccLib;
 
 constructor TFunctionCallBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpRoutine, yymFuncCall);
+   inherited Create(ABranch, ABlockParms, shpRoutine, yymFuncCall, taLeftJustify);
 
    FStatement.SetBounds(10, 1, ABlockParms.w-20, CalculateStatementHeight);
    FStatement.Anchors := [akRight, akLeft, akTop];

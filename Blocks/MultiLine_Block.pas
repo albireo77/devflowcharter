@@ -59,7 +59,7 @@ uses
 constructor TMultiLineBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpRectangle, yymUndefined);
+   inherited Create(ABranch, ABlockParms, shpRectangle, yymUndefined, taLeftJustify);
 
    FStatements := TStatementMemo.Create(Self);
    FStatements.Parent := Self;

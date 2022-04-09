@@ -73,7 +73,7 @@ var
    w: integer;
 begin
 
-   inherited Create(ABranch, ABlockParms, shpParallel, AParserMode);
+   inherited Create(ABranch, ABlockParms, shpParallel, AParserMode, taLeftJustify);
 
    FStatement.Anchors := [akRight, akLeft, akTop];
    FStatement.Text := AText;

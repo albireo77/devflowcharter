@@ -41,12 +41,12 @@ type
 implementation
 
 uses
-   Vcl.Controls, System.Types, Infrastructure, YaccLib;
+   Vcl.Controls, System.Types, System.Classes, Infrastructure, YaccLib;
 
 constructor TInstrBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpRectangle, yymAssign);
+   inherited Create(ABranch, ABlockParms, shpRectangle, yymAssign, taLeftJustify);
 
    FStatement.SetBounds(1, 1, ABlockParms.w-2, CalculateStatementHeight);
    FStatement.Anchors := [akRight, akLeft, akTop];

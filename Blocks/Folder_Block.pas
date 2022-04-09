@@ -42,12 +42,12 @@ type
 implementation
 
 uses
-   System.StrUtils, Infrastructure;
+   System.StrUtils, System.Classes, Infrastructure;
 
 constructor TFolderBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpFolder);
+   inherited Create(ABranch, ABlockParms, shpFolder, taLeftJustify);
 
    FInitParms.Width := 140;
    FInitParms.Height := 61;
