@@ -134,7 +134,6 @@ begin
    AutoSelect := False;
    DoubleBuffered := true;
    OnChangeExtend := nil;
-   ControlStyle := ControlStyle + [csOpaque];
    FParserMode := AParserMode;
    FId := GProject.Register(Self, AId);
    if CanFocus then
