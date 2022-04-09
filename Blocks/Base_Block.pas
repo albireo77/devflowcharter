@@ -1058,7 +1058,7 @@ begin
       if control is TBlock then
          TBlock(control).SetFontSize(ASize)
       else
-         TControlHack(control).Font.Size := ASize;
+         TInfra.SetFontSize(control, ASize);
    end;
    PutTextControls;
    Refresh;
@@ -1085,7 +1085,7 @@ begin
       else
       begin
          TControlHack(control).Font.Style := AFont.Style;
-         TControlHack(control).Font.Size := AFont.Size;
+         TInfra.SetFontSize(control, AFont.Size);
       end;
    end;
    PutTextControls;
@@ -1597,7 +1597,7 @@ begin
       begin
          FDiamond := TDiamond.New(dTop, edit);
          TInfra.MoveWin(edit, FDiamond.Top.X - edit.Width div 2,
-                              FDiamond.Top.Y + FDiamond.Height div 2 - edit.Height div 2);
+                              FDiamond.Top.Y - edit.Height div 2 + FDiamond.Height div 2);
          Canvas.Brush.Style := bsClear;
          var lColor2 := GSettings.GetShapeColor(FShape);
          if lColor2 <> GSettings.DesktopColor then
