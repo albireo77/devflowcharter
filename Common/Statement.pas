@@ -55,6 +55,7 @@ type
     procedure Change; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure CreateWnd; override;
     procedure DoEnter; override;
     function RetrieveFocus(AInfo: TFocusInfo): boolean;
     function CanBeFocused: boolean;
@@ -130,11 +131,11 @@ begin
    FHasFocusParent := Supports(AParent, IWithFocus, FFocusParent);
    PopupMenu := TInfra.GetMainForm.pmEdits;
    BorderStyle := bsNone;
+   ControlStyle := ControlStyle + [csFixedHeight];
    ShowHint := True;
    AutoSelect := False;
    DoubleBuffered := true;
    OnChangeExtend := nil;
-   ControlStyle := ControlStyle + [csOpaque];
    FParserMode := AParserMode;
    FId := GProject.Register(Self, AId);
    if CanFocus then
@@ -166,6 +167,12 @@ begin
    inherited;
    if (msg.Msg = CM_FONTCHANGED) and not (csLoading in ComponentState) then
       ApplyMargins;
+end;
+
+procedure TStatement.CreateWnd;
+begin
+   inherited;
+   ControlStyle := ControlStyle + [csFixedHeight];
 end;
 
 procedure TStatement.CreateHandle;

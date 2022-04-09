@@ -240,9 +240,6 @@ uses
    Return_Block, Project, Declarations_Form, Base_Block, Comment, Case_Block, Navigator_Form,
    Types, LangDefinition, EditMemo_Form, BlockFactory, BlockTabSheet, MemoEx, Constants;
 
-type
-   TDerivedControl = class(TControl);
-
 var
    ByCaptionMenuItemComparer: IComparer<TMenuItem>;
 
@@ -937,14 +934,11 @@ begin
 end;
 
 procedure TMainForm.miFontSizeClick(Sender: TObject);
-var
-   comp: TComponent;
-   fontSize: integer;
 begin
-   comp := pmPages.PopupComponent;
+   var comp := pmPages.PopupComponent;
    if (comp is TBlock) or (comp is TComment) then
    begin
-      fontSize := StripHotKey(TMenuItem(Sender).Caption).ToInteger;
+      var fontSize := StripHotKey(TMenuItem(Sender).Caption).ToInteger;
       if comp is TBlock then
          TBlock(comp).SetFontSize(fontSize)
       else if comp is TComment then
@@ -990,10 +984,8 @@ begin
 end;
 
 procedure TMainForm.miSubRoutinesClick(Sender: TObject);
-var
-   form: TForm;
 begin
-   form := nil;
+   var form := TForm(nil);
    if Sender = miSubRoutines then
       form := TInfra.GetFunctionsForm
    else if Sender = miToolbox then
