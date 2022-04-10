@@ -61,7 +61,6 @@ type
          class function InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; const ATemplateString: string; AObject: TObject = nil): integer; overload;
          class function InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; ATemplate: TStringList; AObject: TObject = nil): integer; overload;
          class procedure ChangeLine(const ALine: TChangeLine);
-         class procedure SetFontSize(AControl: TControl; ASize: integer);
          class procedure UpdateCodeEditor(AObject: TObject = nil);
          class procedure OnKeyDownSelectAll(Sender: TObject; var Key: Word; Shift: TShiftState);
          class procedure InsertLinesIntoList(ADestList, ASourceList: TStringList; AFromLine: integer);
@@ -1087,16 +1086,6 @@ class procedure TInfra.ChangeLine(const ALine: TChangeLine);
 begin
    if (ALine.CodeRange.Lines <> nil) and (ALine.Row >= 0) and (ALine.Row < ALine.CodeRange.Lines.Count) then
       ALine.CodeRange.Lines[ALine.Row] := ALine.Text;
-end;
-
-class procedure TInfra.SetFontSize(AControl: TControl; ASize: integer);
-begin
-   var isBsNone := (AControl is TCustomEdit) and (TCustomEditHack(AControl).BorderStyle = bsNone);
-   if isBsNone then
-      TCustomEditHack(AControl).BorderStyle := bsSingle;
-   TControlHack(AControl).Font.Size := ASize;
-   if isBsNone then
-      TCustomEditHack(AControl).BorderStyle := bsNone;
 end;
 
 class function TInfra.FindDuplicatedPage(APage: TTabSheet; const ACaption: TCaption): TTabSheet;

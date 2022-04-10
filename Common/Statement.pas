@@ -220,7 +220,9 @@ begin
       end;
    end;
    Hint := h;
+   ControlStyle := ControlStyle - [csFixedHeight];
    Font.Color := c;
+   ControlStyle := ControlStyle + [csFixedHeight];
    if Assigned(OnChangeExtend) then
       OnChangeExtend(Self);
    NavigatorForm.DoInvalidate;
