@@ -1062,7 +1062,7 @@ begin
       if control is TBlock then
          TBlock(control).SetFontSize(ASize)
       else
-         TControlHack(control).Font.Size := ASize;
+         TInfra.SetFontSize(control, ASize);
    end;
    PutTextControls;
    Refresh;
@@ -1089,7 +1089,7 @@ begin
       else
       begin
          TControlHack(control).Font.Style := AFont.Style;
-         TControlHack(control).Font.Size := AFont.Size;
+         TInfra.SetFontSize(control, AFont.Size);
       end;
    end;
    PutTextControls;
