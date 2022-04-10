@@ -148,6 +148,7 @@ uses
    XMLProcessor, SynEditHighlighter, Main_Block, BaseEnumerator, System.Character, System.Generics.Defaults;
 
 type
+   TCustomEditHack = class(TCustomEdit);
    TControlHack = class(TControl);
 
 constructor TInfra.Create;
