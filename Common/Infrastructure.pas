@@ -146,7 +146,8 @@ implementation
 uses
    Vcl.Printers, WinApi.Messages, Vcl.Menus, Vcl.Dialogs, Vcl.Imaging.jpeg, Vcl.Imaging.PngImage,
    System.Math, Generics.Collections, System.IOUtils, System.Rtti, Constants, UserDataType,
-   XMLProcessor, SynEditHighlighter, Main_Block, BaseEnumerator, System.Character, System.Generics.Defaults;
+   Statement, XMLProcessor, SynEditHighlighter, Main_Block, BaseEnumerator, System.Character,
+   System.Generics.Defaults;
 
 type
    TCustomEditHack = class(TCustomEdit);
@@ -1091,12 +1092,12 @@ end;
 
 class procedure TInfra.SetFontSize(AControl: TControl; ASize: integer);
 begin
-   var isBsNone := (AControl is TCustomEdit) and (TCustomEditHack(AControl).BorderStyle = bsNone);
-   if isBsNone then
-      TCustomEditHack(AControl).BorderStyle := bsSingle;
+   var flag := (AControl is TStatement) and not (csFixedHeight in AControl.ControlStyle);
+   if flag then
+      AControl.ControlStyle := AControl.ControlStyle + [csFixedHeight];
    TControlHack(AControl).Font.Size := ASize;
-   if isBsNone then
-      TCustomEditHack(AControl).BorderStyle := bsNone;
+   if flag then
+      AControl.ControlStyle := AControl.ControlStyle - [csFixedHeight];
 end;
 
 class function TInfra.FindDuplicatedPage(APage: TTabSheet; const ACaption: TCaption): TTabSheet;
