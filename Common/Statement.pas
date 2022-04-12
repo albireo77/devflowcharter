@@ -70,7 +70,7 @@ type
     //property BevelInner;
     //property BevelOuter;
     //property BiDiMode;
-    property BorderStyle;
+    //property BorderStyle;
     //property CharCase;
     property Color;
     //property Constraints;
