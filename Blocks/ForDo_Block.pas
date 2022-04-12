@@ -67,6 +67,7 @@ type
          function FillCodedTemplate(const ALangId: string): string; override;
          function GetDescTemplate(const ALangId: string): string; override;
          procedure ResizeVert(AContinue: boolean); override;
+         procedure ResizeHorz(AContinue: boolean); override;
    end;
 
 implementation
@@ -521,6 +522,12 @@ end;
 procedure TForDoBlock.ResizeVert(AContinue: boolean);
 begin
    inherited ResizeVert(AContinue);
+   PutTextControls;
+end;
+
+procedure TForDoBlock.ResizeHorz(AContinue: boolean);
+begin
+   inherited ResizeHorz(AContinue);
    PutTextControls;
 end;
 
