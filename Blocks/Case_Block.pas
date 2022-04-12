@@ -518,7 +518,7 @@ end;
 procedure TCaseBlock.AfterRemovingBranch;
 begin
    for var i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
-      FBranchList[i].Statement.DoEnter;
+      FBranchList[i].Statement.Change;
    inherited;
 end;
 

@@ -1197,7 +1197,7 @@ begin
        begin
           var control := Controls[i];
           if control is TStatement then
-             TStatement(control).DoEnter
+             TStatement(control).Change
           else if (control is TMemoEx) and Assigned(TMemoEx(control).OnChange) then
              TMemoEx(control).OnChange(control)
           else if (control is TEdit) and Assigned(TEdit(control).OnChange) then

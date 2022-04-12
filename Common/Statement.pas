@@ -33,16 +33,16 @@ type
   TStatement = class(TCustomEdit, IWithId, IWithFocus)
   private
     { Private declarations }
-    FExecuteParse,
     FHasFocusParent: boolean;
     FParserMode: TYYMode;
     FId,
     FLMargin,
     FRMargin: integer;
     FFocusParent: IWithFocus;
+    procedure ApplyMargins;
     function GetId: integer;
     function HasFocusParent: boolean;
-    procedure ApplyMargins;
+    function ExecuteParse: boolean;
   protected
     procedure WndProc(var msg: TMessage); override;
     procedure CreateHandle; override;
@@ -55,7 +55,6 @@ type
     procedure Change; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure DoEnter; override;
     function RetrieveFocus(AInfo: TFocusInfo): boolean;
     function CanBeFocused: boolean;
     function GetFocusColor: TColor;
@@ -139,6 +138,7 @@ begin
    FId := GProject.Register(Self, AId);
    if CanFocus then
       SetFocus;
+   Change;
 end;
 
 destructor TStatement.Destroy;
@@ -181,7 +181,7 @@ begin
    var txt := Trim(Text);
    var h := i18Manager.GetFormattedString('ExpOk', [txt, sLineBreak]);
    var c := GSettings.FontColor;
-   if FExecuteParse then
+   if ExecuteParse then
    begin
       if txt.IsEmpty then
       begin
@@ -239,28 +239,20 @@ begin
       TWinControlHack(Parent).OnMouseDown(Parent, Button, Shift, X+Left, Y+Top);
 end;
 
-procedure TStatement.DoEnter;
+function TStatement.ExecuteParse: boolean;
 begin
-   inherited DoEnter;
    case FParserMode of
-      yymInput:     FExecuteParse := GSettings.ParseInput;
-      yymOutput:    FExecuteParse := GSettings.ParseOutput;
-      yymAssign:    FExecuteParse := GSettings.ParseAssign;
-      yymFuncCall:  FExecuteParse := GSettings.ParseRoutineCall;
-      yymFor:       FExecuteParse := GSettings.ParseFor;
-      yymReturn:    FExecuteParse := GSettings.ParseReturn;
-      yymCondition: FExecuteParse := GSettings.ParseCondition;
+      yymInput:     result := GSettings.ParseInput;
+      yymOutput:    result := GSettings.ParseOutput;
+      yymAssign:    result := GSettings.ParseAssign;
+      yymFuncCall:  result := GSettings.ParseRoutineCall;
+      yymFor:       result := GSettings.ParseFor;
+      yymReturn:    result := GSettings.ParseReturn;
+      yymCondition: result := GSettings.ParseCondition;
       yymCase,
-      yymCaseValue: FExecuteParse := GSettings.ParseCase;
+      yymCaseValue: result := GSettings.ParseCase;
    else
-      FExecuteParse := false;
-   end;
-   var chon := GProject.ChangingOn;
-   GProject.ChangingOn := false;
-   try
-      Change;
-   finally
-      GProject.ChangingOn := chon;
+      result := false;
    end;
 end;
 
