@@ -42,7 +42,6 @@ type
     procedure ApplyMargins;
     function GetId: integer;
     function HasFocusParent: boolean;
-    function ExecuteParse: boolean;
   protected
     procedure WndProc(var msg: TMessage); override;
     procedure CreateHandle; override;
@@ -181,7 +180,7 @@ begin
    var txt := Trim(Text);
    var h := i18Manager.GetFormattedString('ExpOk', [txt, sLineBreak]);
    var c := GSettings.FontColor;
-   if ExecuteParse then
+   if GSettings.ExecuteParse(FParserMode) then
    begin
       if txt.IsEmpty then
       begin
@@ -237,23 +236,6 @@ begin
    inherited MouseDown(Button, Shift, X, Y);
    if HasParent and Assigned(TWinControlHack(Parent).OnMouseDown) then
       TWinControlHack(Parent).OnMouseDown(Parent, Button, Shift, X+Left, Y+Top);
-end;
-
-function TStatement.ExecuteParse: boolean;
-begin
-   case FParserMode of
-      yymInput:     result := GSettings.ParseInput;
-      yymOutput:    result := GSettings.ParseOutput;
-      yymAssign:    result := GSettings.ParseAssign;
-      yymFuncCall:  result := GSettings.ParseRoutineCall;
-      yymFor:       result := GSettings.ParseFor;
-      yymReturn:    result := GSettings.ParseReturn;
-      yymCondition: result := GSettings.ParseCondition;
-      yymCase,
-      yymCaseValue: result := GSettings.ParseCase;
-   else
-      result := false;
-   end;
 end;
 
 function TStatement.GetId: integer;

@@ -22,7 +22,8 @@ unit Settings;
 interface
 
 uses
-  Vcl.Graphics, System.IniFiles, System.Types, LangDefinition, Types, SynEditHighlighter;
+  Vcl.Graphics, System.IniFiles, System.Types, LangDefinition, Types, YaccLib,
+  SynEditHighlighter;
 
 type
 
@@ -105,6 +106,7 @@ type
       function GetShapeColor(const shape: TColorShape): TColor;
       function UpdateEditor: boolean;
       function IndentString(ATimes: integer = 1): string;
+      function ExecuteParse(AParserMode: TYYMode): boolean;
       property ParseInput: boolean read FParseInput;
       property ParseOutput: boolean read FParseOutput;
       property ParseAssign: boolean read FParseAssign;
@@ -648,6 +650,23 @@ end;
 function TSettings.UpdateEditor: boolean;
 begin
    result := TInfra.GetEditorForm.Visible and FEditorAutoUpdate;
+end;
+
+function TSettings.ExecuteParse(AParserMode: TYYMode): boolean;
+begin
+   case AParserMode of
+      yymInput:     result := FParseInput;
+      yymOutput:    result := FParseOutput;
+      yymAssign:    result := FParseAssign;
+      yymFuncCall:  result := FParseRoutineCall;
+      yymFor:       result := FParseFor;
+      yymReturn:    result := FParseReturn;
+      yymCondition: result := FParseCondition;
+      yymCase,
+      yymCaseValue: result := FParseCase;
+   else
+      result := false;
+   end;
 end;
 
 end.
