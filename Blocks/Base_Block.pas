@@ -1196,14 +1196,10 @@ begin
        for var i := 0 to ControlCount-1 do
        begin
           var control := Controls[i];
-          if control is TStatement then
-             TStatement(control).Change
-          else if (control is TMemoEx) and Assigned(TMemoEx(control).OnChange) then
-             TMemoEx(control).OnChange(control)
-          else if (control is TEdit) and Assigned(TEdit(control).OnChange) then
-             TEdit(control).OnChange(control)
+          if control is TCustomEdit then
+             TCustomEditHack(control).Change
           else if (control is TBlock) and (control <> GClpbrd.UndoObject) then
-             TBlock(control).RefreshStatements;
+             TBlock(control).RefreshStatements
        end;
     finally
        FRefreshMode := b1;
