@@ -1,3 +1,8 @@
+9.9 [13-04-2022]
+- fix issues with for..do block after resizing in horizontal direction
+- exceptions during code generation no longer force to shutdown application
+- many optimizations and code cleanups
+
 9.8 [23-02-2022]
 - Flowchart: optimizations and fixes to drawing of for..do block
 - add warning message upon start if display DPI is not supported by devFlowcharter

@@ -1199,7 +1199,7 @@ begin
           if control is TCustomEdit then
              TCustomEditHack(control).Change
           else if (control is TBlock) and (control <> GClpbrd.UndoObject) then
-             TBlock(control).RefreshStatements
+             TBlock(control).RefreshStatements;
        end;
     finally
        FRefreshMode := b1;
