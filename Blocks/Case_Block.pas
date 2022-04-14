@@ -225,6 +225,7 @@ end;
 
 procedure TCaseBlock.OnEnterBranchStatement(Sender: TObject);
 begin
+   inherited;
    TStatement(Sender).Change;
 end;
 
