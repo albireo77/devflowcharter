@@ -1,3 +1,6 @@
+9.10 [15-04-2022]
+- Code Editor: fix regression introduced in 9.9 with cursor not set to line associated with focused statement in flowchart
+
 9.9 [13-04-2022]
 - fix issues with for..do block after resizing in horizontal direction
 - exceptions during code generation no longer force to shutdown application

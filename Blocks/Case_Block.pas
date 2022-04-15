@@ -40,7 +40,6 @@ type
          function  GetTemplateByControl(AControl: TControl; var AObject: TObject): string;
          procedure AfterRemovingBranch; override;
          function CreateBranchStatement(ABranchStatementId: integer = ID_INVALID): TStatement;
-         procedure OnEnterBranchStatement(Sender: TObject);
       public
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
@@ -219,14 +218,7 @@ function TCaseBlock.CreateBranchStatement(ABranchStatementId: integer = ID_INVAL
 begin
    result := TStatement.Create(Self, yymCaseValue, taRightJustify, ABranchStatementId);
    result.Color := Color;
-   result.OnEnter := OnEnterBranchStatement;
    result.OnChangeExtend := UpdateEditor;
-end;
-
-procedure TCaseBlock.OnEnterBranchStatement(Sender: TObject);
-begin
-   inherited;
-   TStatement(Sender).Change;
 end;
 
 procedure TCaseBlock.PlaceBranchStatement(ABranch: TBranch);

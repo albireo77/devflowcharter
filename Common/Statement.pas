@@ -54,6 +54,7 @@ type
     procedure Change; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure DoEnter; override;
     function RetrieveFocus(AInfo: TFocusInfo): boolean;
     function CanBeFocused: boolean;
     function GetFocusColor: TColor;
@@ -137,7 +138,6 @@ begin
    FId := GProject.Register(Self, AId);
    if CanFocus then
       SetFocus;
-   Change;
 end;
 
 destructor TStatement.Destroy;
@@ -229,6 +229,12 @@ procedure TStatement.KeyDown(var Key: Word; Shift: TShiftState);
 begin
    inherited KeyDown(Key, Shift);
    TInfra.OnKeyDownSelectAll(Self, Key, Shift);
+end;
+
+procedure TStatement.DoEnter;
+begin
+   inherited DoEnter;
+   Change;
 end;
 
 procedure TStatement.MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer);
