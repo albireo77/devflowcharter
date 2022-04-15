@@ -105,7 +105,7 @@ type
     //property OnDragOver;
     //property OnEndDock;
     //property OnEndDrag;
-    property OnEnter;
+    //property OnEnter;
     //property OnExit;
     //property OnKeyDown;
     //property OnKeyPress;
