@@ -234,7 +234,13 @@ end;
 procedure TStatement.DoEnter;
 begin
    inherited DoEnter;
-   Change;
+   var chon := GProject.ChangingOn;
+   GProject.ChangingOn := false;
+   try
+      Change;
+   finally
+      GProject.ChangingOn := chon;
+   end;
 end;
 
 procedure TStatement.MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer);
