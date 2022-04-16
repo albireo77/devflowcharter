@@ -24,8 +24,7 @@ unit MemoEx;
 interface
 
 uses
-   Vcl.StdCtrls, System.Classes, System.UITypes, Vcl.Controls, Vcl.Forms, OmniXML,
-   CommonTypes;
+   Vcl.StdCtrls, Vcl.Forms, System.Classes, System.UITypes, OmniXML, CommonTypes;
 
 type
    TMemoEx = class(TCustomMemo)
@@ -70,8 +69,8 @@ type
 implementation
 
 uses
-   System.StrUtils, WinApi.Windows, Vcl.Graphics, System.SysUtils, System.Rtti,
-   WinApi.Messages, XMLProcessor, Infrastructure;
+   WinApi.Windows, WinApi.Messages, System.StrUtils, System.SysUtils, System.Rtti,
+   XMLProcessor, Infrastructure;
 
 constructor TMemoEx.Create(AOwner: TComponent);
 begin
@@ -101,8 +100,6 @@ begin
 end;
 
 procedure TMemoEx.CloneFrom(AMemo: TMemoEx);
-var
-   pnt: TPoint;
 begin
    Visible := AMemo.Visible;
    SetBounds(Left, Top, AMemo.Width, AMemo.Height);
@@ -114,7 +111,7 @@ begin
    EditFormHeight := AMemo.EditFormHeight;
    HasVScroll := AMemo.HasVScroll;
    HasHScroll := AMemo.HasHScroll;
-   pnt := TInfra.GetScrolledPoint(AMemo);
+   var pnt := TInfra.GetScrolledPoint(AMemo);
    Perform(EM_LINESCROLL, pnt.X, pnt.Y);
 end;
 
@@ -138,36 +135,30 @@ begin
 end;
 
 procedure TMemoEx.SetAlignment(AValue: TAlignment);
-var
-   pnt: TPoint;
 begin
    if AValue <> Alignment then
    begin
-      pnt := TInfra.GetScrolledPoint(Self);
+      var pnt := TInfra.GetScrolledPoint(Self);
       inherited SetAlignment(AValue);
       Perform(EM_LINESCROLL, pnt.X, pnt.Y);
    end;
 end;
 
 procedure TMemoEx.SetScrollBars(AValue: TScrollStyle);
-var
-   pnt: TPoint;
 begin
    if AValue <> ScrollBars then
    begin
-      pnt := TInfra.GetScrolledPoint(Self);
+      var pnt := TInfra.GetScrolledPoint(Self);
       inherited SetScrollBars(AValue);
       Perform(EM_LINESCROLL, pnt.X, pnt.Y);
    end;
 end;
 
 procedure TMemoEx.ChangeBorderStyle(AStyle: TBorderStyle);
-var
-   pnt: TPoint;
 begin
    if AStyle <> BorderStyle then
    begin
-      pnt := TInfra.GetScrolledPoint(Self);
+      var pnt := TInfra.GetScrolledPoint(Self);
       BorderStyle := AStyle;
       Perform(EM_LINESCROLL, pnt.X, pnt.Y);
    end;
@@ -264,9 +255,6 @@ begin
 end;
 
 procedure TMemoEx.GetFromXML(ATag: IXMLElement);
-var
-   val: string;
-   h, v: integer;
 begin
    if ATag <> nil then
    begin
@@ -275,18 +263,16 @@ begin
       HasVScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_vscroll', FHasVScroll);
       HasHScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_hscroll', FHasHScroll);
       WordWrap := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_wordwrap', WordWrap);
-      h := TXMLProcessor.GetIntFromAttr(ATag, 'mem_hscroll_pos');
-      v := TXMLProcessor.GetIntFromAttr(ATag, 'mem_vscroll_pos');
+      var h := TXMLProcessor.GetIntFromAttr(ATag, 'mem_hscroll_pos');
+      var v := TXMLProcessor.GetIntFromAttr(ATag, 'mem_vscroll_pos');
       Perform(EM_LINESCROLL, h, v);
-      val := ATag.GetAttribute('mem_align');
+      var val := ATag.GetAttribute('mem_align');
       if not val.IsEmpty then
          Alignment := TRttiEnumerationType.GetValue<TAlignment>(val);
    end;
 end;
 
 procedure TMemoEx.SaveInXML(ATag: IXMLElement);
-var
-   pnt: TPoint;
 begin
    if ATag <> nil then
    begin
@@ -296,7 +282,7 @@ begin
       ATag.SetAttribute('mem_hscroll', HasHScroll.ToString);
       ATag.SetAttribute('mem_wordwrap', WordWrap.ToString);
       ATag.SetAttribute('mem_align', TRttiEnumerationType.GetName(Alignment));
-      pnt := TInfra.GetScrolledPoint(Self);
+      var pnt := TInfra.GetScrolledPoint(Self);
       ATag.SetAttribute('mem_hscroll_pos', pnt.X.ToString);
       ATag.SetAttribute('mem_vscroll_pos', pnt.Y.ToString);
    end;
