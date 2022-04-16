@@ -133,7 +133,6 @@ begin
    BorderStyle := bsNone;
    ShowHint := True;
    DoubleBuffered := true;
-   OnChangeExtend := nil;
    FParserMode := AParserMode;
    FId := GProject.Register(Self, AId);
    if CanFocus then
