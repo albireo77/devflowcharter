@@ -34,7 +34,7 @@ type
          DefaultBranch: TBranch;
          procedure Paint; override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
-         procedure OnChangeEdit(AEdit: TCustomEdit);
+         procedure EditorAction(AEdit: TCustomEdit);
          function GetDiamondTop: TPoint; override;
          procedure PlaceBranchStatement(ABranch: TBranch);
          function  GetTemplateByControl(AControl: TControl; var AObject: TObject): string;
@@ -94,7 +94,7 @@ begin
    FCaseLabel := i18Manager.GetString('CaptionCase');
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
-   FStatement.OnChangeExtend := OnChangeEdit;
+   FStatement.EditorAction := EditorAction;
 
 end;
 
@@ -151,7 +151,7 @@ begin
    DrawI;
 end;
 
-procedure TCaseBlock.OnChangeEdit(AEdit: TCustomEdit);
+procedure TCaseBlock.EditorAction(AEdit: TCustomEdit);
 begin
    if GSettings.ParseCase then
    begin
@@ -218,7 +218,7 @@ function TCaseBlock.CreateBranchStatement(ABranchStatementId: integer = ID_INVAL
 begin
    result := TStatement.Create(Self, yymCaseValue, taRightJustify, ABranchStatementId);
    result.Color := Color;
-   result.OnChangeExtend := UpdateEditor;
+   result.EditorAction := UpdateEditor;
 end;
 
 procedure TCaseBlock.PlaceBranchStatement(ABranch: TBranch);
@@ -384,7 +384,7 @@ begin
       if GInfra.CurrentLang.CaseOfFirstValueTemplate.IsEmpty then
          inherited UpdateEditor(AEdit)
       else
-         OnChangeEdit(nil);
+         EditorAction(nil);
    end
    else if (AEdit <> nil) and PerformEditorUpdate then
    begin

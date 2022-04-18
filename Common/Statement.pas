@@ -28,7 +28,7 @@ uses
 type
 
   TWinControlHack = class(TWinControl);
-  TOnChangeExtend = procedure(AEdit: TCustomEdit) of object;
+  TEditorAction = procedure(AEdit: TCustomEdit) of object;
 
   TStatement = class(TCustomEdit, IWithId, IWithFocus)
   private
@@ -47,7 +47,7 @@ type
     procedure CreateHandle; override;
   public
     { Public declarations }
-    OnChangeExtend: TOnChangeExtend;
+    EditorAction: TEditorAction;
     property Id: integer read GetId;
     constructor Create(AParent: TWinControl; AParserMode: TYYMode; AAlignment: TAlignment; AId: integer = ID_INVALID);
     destructor Destroy; override;
@@ -137,6 +137,7 @@ begin
    FId := GProject.Register(Self, AId);
    if CanFocus then
       SetFocus;
+   Change;
 end;
 
 destructor TStatement.Destroy;
@@ -219,8 +220,8 @@ begin
    end;
    Hint := h;
    Font.Color := c;
-   if Assigned(OnChangeExtend) then
-      OnChangeExtend(Self);
+   if Assigned(EditorAction) then
+      EditorAction(Self);
    NavigatorForm.DoInvalidate;
 end;
 
@@ -233,13 +234,8 @@ end;
 procedure TStatement.DoEnter;
 begin
    inherited DoEnter;
-   var chon := GProject.ChangingOn;
-   GProject.ChangingOn := false;
-   try
-      Change;
-   finally
-      GProject.ChangingOn := chon;
-   end;
+   if Assigned(EditorAction) then
+      EditorAction(Self);
 end;
 
 procedure TStatement.MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer);

@@ -44,7 +44,7 @@ type
          function GetTextTop: integer;
          function FillExpression(const AExpression: string; const ALangId: string): string;
          procedure OnChangeAll;
-         procedure OnChangeEdit(AEdit: TCustomEdit);
+         procedure EditorAction(AEdit: TCustomEdit);
       public
          edtStart, edtStop: TStatement;
          cbVar: TComboBox;
@@ -100,11 +100,11 @@ begin
 
    edtStart := TStatement.Create(Self, yymFor, taLeftJustify);
    edtStart.Color := sColor;
-   edtStart.OnChangeExtend := OnChangeEdit;
+   edtStart.EditorAction := EditorAction;
 
    edtStop := TStatement.Create(Self, yymFor, taLeftJustify);
    edtStop.Color := sColor;
-   edtStop.OnChangeExtend := OnChangeEdit;
+   edtStop.EditorAction := EditorAction;
 
    cbVar := TComboBox.Create(Self);
    cbVar.Parent := Self;
@@ -173,7 +173,7 @@ begin
    Create(ABranch, TBlockParms.New(blFor, 0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_BOTTOM_HOOK, 69, DEFAULT_BOTTOM_HOOK));
 end;
 
-procedure TForDoBlock.OnChangeEdit(AEdit: TCustomEdit);
+procedure TForDoBlock.EditorAction(AEdit: TCustomEdit);
 begin
    var w := TInfra.GetAutoWidth(AEdit, 30);
    if w <> AEdit.Width then
@@ -609,8 +609,8 @@ end;
 
 procedure TForDoBlock.OnChangeAll;
 begin
-   edtStart.OnChangeExtend(edtStart);
-   edtStop.OnChangeExtend(edtStop);
+   edtStart.EditorAction(edtStart);
+   edtStop.EditorAction(edtStop);
    edtVar.OnChange(edtVar);
 end;
 

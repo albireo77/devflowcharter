@@ -336,7 +336,7 @@ begin
    FMouseLeave := true;
    FShape := AShape;
    FStatement := TStatement.Create(Self, AParserMode, AAlignment);
-   FStatement.OnChangeExtend := UpdateEditor;
+   FStatement.EditorAction := UpdateEditor;
    FStatement.Color := GSettings.GetShapeColor(FShape);
 
    OnMouseDown := MyOnMouseDown;
