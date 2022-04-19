@@ -1012,7 +1012,7 @@ begin
       for var func in GetUserFunctions do
       begin
          if func.Active and (func.Body <> nil) then
-            func.Body.RefreshStatements;
+            func.Body.PerformRefreshStatements;
       end;
    finally
       ChangingOn := chon;

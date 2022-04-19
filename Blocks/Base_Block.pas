@@ -56,6 +56,7 @@ type
          FParentBranch: TBranch;
          FId: integer;
          function IsInSelect(const APoint: TPoint): boolean;
+         procedure RefreshStatements;
       protected
          FType: TBlockType;
          FStatement: TStatement;
@@ -136,7 +137,7 @@ type
          procedure SetFontSize(ASize: integer);
          function GetFont: TFont;
          procedure SetFont(AFont: TFont);
-         procedure RefreshStatements;
+         procedure PerformRefreshStatements;
          procedure PopulateComboBoxes; virtual;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; virtual;
          function GetFromXML(ATag: IXMLElement): TError; virtual;
@@ -1186,10 +1187,16 @@ begin
    result := Point(-1, -1);
 end;
 
-procedure TBlock.RefreshStatements;
+procedure TBlock.PerformRefreshStatements;
 begin
     var b := NavigatorForm.InvalidateInd;
     NavigatorForm.InvalidateInd := false;
+    RefreshStatements;
+    NavigatorForm.InvalidateInd := b;
+end;
+
+procedure TBlock.RefreshStatements;
+begin
     var b1 := FRefreshMode;
     FRefreshMode := true;
     try
@@ -1204,7 +1211,6 @@ begin
     finally
        FRefreshMode := b1;
     end;
-    NavigatorForm.InvalidateInd := b;
 end;
 
 function TBlock.GetId: integer;
@@ -2086,7 +2092,7 @@ begin
       IPoint.Y := FFoldParms.IPoint.Y;
       Constraints.MinWidth := FInitParms.Width;
       Constraints.MinHeight := FInitParms.Height;
-      RefreshStatements;
+      PerformRefreshStatements;
    end
    else
    begin

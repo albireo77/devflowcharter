@@ -853,7 +853,7 @@ begin
                if not newBlock.Visible then
                begin
                   newBlock.Show;
-                  newBlock.RefreshStatements;
+                  newBlock.PerformRefreshStatements;
                end;
                if srcBlock <> nil then
                   newBlock.CloneComments(srcBlock);

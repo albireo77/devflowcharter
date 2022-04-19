@@ -269,7 +269,7 @@ begin
             vis := vis and FHeader.chkBodyVisible.Checked;
          FBody.SetVisible(vis);
          if FBody.Visible then
-            FBody.RefreshStatements;
+            FBody.PerformRefreshStatements;
          FBody.Page.Box.SetScrollBars;
       end;
       if (FHeader <> nil) and (AValue <> FHeader.Active) then
