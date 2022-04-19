@@ -477,35 +477,28 @@ begin
 end;
 
 function TVarDeclareList.GetDimensionCount(const AVarName: string; AIncludeType: boolean = false): integer;
-var
-   i: integer;
-   dataType: TUserDataType;
 begin
-   i := sgList.Cols[VAR_NAME_COL].IndexOf(AVarName);
+   var i := sgList.Cols[VAR_NAME_COL].IndexOf(AVarName);
    if i < 1 then
       Exit(-1);
    result := TInfra.GetDimensionCount(sgList.Cells[VAR_SIZE_COL, i]);
    if AIncludeType and (result <> -1) then
    begin
-      dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
+      var dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
       if dataType <> nil then
          result := dataType.GetDimensionCount + result;
    end;
 end;
 
 function TVarDeclareList.GetDimensions(const AVarName: string; AIncludeType: boolean = false): TArray<string>;
-var
-   i: integer;
-   size: string;
-   dataType: TUserDataType;
 begin
-   i := sgList.Cols[VAR_NAME_COL].IndexOf(AVarName);
+   var i := sgList.Cols[VAR_NAME_COL].IndexOf(AVarName);
    if i < 1 then
       Exit(nil);
-   size := sgList.Cells[VAR_SIZE_COL, i];
+   var size := sgList.Cells[VAR_SIZE_COL, i];
    if AIncludeType then
    begin
-      dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
+      var dataType := GProject.GetUserDataType(sgList.Cells[VAR_TYPE_COL, i]);
       if dataType <> nil then
          size := size + dataType.GetDimensions;
    end;
@@ -513,10 +506,8 @@ begin
 end;
 
 procedure TDeclareList.OnDblClickList(Sender: TObject);
-var
-   p: TPoint;
 begin
-   p := sgList.ScreenToClient(Mouse.CursorPos);
+   var p := sgList.ScreenToClient(Mouse.CursorPos);
    if FindRow(p.X, p.Y) <> INVALID_ROW then
       btnChange.Click;
 end;
@@ -555,12 +546,10 @@ begin
 end;
 
 procedure TDeclareList.OnDragDropList(Sender, Source: TObject; X, Y: Integer);
-var
-   lRow: integer;
 begin
    if (Source = sgList) and (FDragRow <> INVALID_ROW) then
    begin
-      lRow := FindRow(X, Y);
+      var lRow := FindRow(X, Y);
       if lRow <> INVALID_ROW then
          sgList.MoveRow(FDragRow, lRow);
    end;
@@ -568,13 +557,11 @@ begin
 end;
 
 procedure TDeclareList.OnMouseDownList(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-   lRow: integer;
 begin
    edtName.SetFocus;
    if (Button = mbLeft) and (ssShift in Shift) then
    begin
-      lRow := FindRow(X, Y);
+      var lRow := FindRow(X, Y);
       if lRow <> INVALID_ROW then
       begin
          FDragRow := lRow;
@@ -645,12 +632,10 @@ begin
 end;
 
 procedure TDeclareList.OnClickExport(Sender: TObject);
-var
-   fileName: string;
 begin
    if sgList.RowCount > 2 then
    begin
-      fileName := GProject.Name + '_' + i18Manager.GetString(FKind + 's');
+      var fileName := GProject.Name + '_' + i18Manager.GetString(FKind + 's');
       TXMLProcessor.ExportToXMLFile(ExportToXMLTag, fileName);
    end;
 end;
@@ -741,14 +726,12 @@ begin
 end;
 
 procedure TDeclareList.OnClickRemove(Sender: TObject);
-var
-   i: integer;
 begin
    with sgList do
    begin
       if FExternalCol <> INVALID_COL then
          Objects[FExternalCol, Row].Free;
-      for i := Row to RowCount-2 do
+      for var i := Row to RowCount-2 do
          Rows[i].Assign(Rows[i+1]);
       RowCount := RowCount - 1;
       if (Row = RowCount-1) and (Row <> 1) then
@@ -803,20 +786,16 @@ begin
 end;
 
 function TConstDeclareList.GetValue(const AIdent: string): string;
-var
-   i: integer;
 begin
    result := '';
-   i := sgList.Cols[CONST_NAME_COL].IndexOf(AIdent);
+   var i := sgList.Cols[CONST_NAME_COL].IndexOf(AIdent);
    if i > 0 then
       result := sgList.Cells[CONST_VALUE_COL, i];
 end;
 
 function TDeclareList.IsDeclared(const AName: string; AssociatedListCheck: boolean): boolean;
-var
-   i: integer;
 begin
-   i := sgList.Cols[NAME_COL].IndexOf(AName);
+   var i := sgList.Cols[NAME_COL].IndexOf(AName);
    result := (i > 0) and not (FModifying and (i = sgList.Row));
    if (AssociatedList <> nil) and AssociatedListCheck and not result then
       result := AssociatedList.IsDeclared(AName, false);
@@ -843,13 +822,11 @@ begin
 end;
 
 procedure TVarDeclareList.FillForList(AList: TStrings);
-var
-   i, lType: integer;
 begin
    AList.BeginUpdate;
-   for i := 1 to sgList.RowCount-2 do
+   for var i := 1 to sgList.RowCount-2 do
    begin
-      lType := TParserHelper.GetType(sgList.Cells[VAR_TYPE_COL, i]);
+      var lType := TParserHelper.GetType(sgList.Cells[VAR_TYPE_COL, i]);
       if (TParserHelper.IsIntegerType(lType) or (TParserHelper.IsEnumType(lType) and  GInfra.CurrentLang.AllowEnumsInForLoop)) and (sgList.Cells[VAR_SIZE_COL, i] = '1') then
          AList.Add(sgList.Cells[VAR_NAME_COL, i]);
    end;
@@ -857,14 +834,12 @@ begin
 end;
 
 function TVarDeclareList.IsValidLoopVar(const AName: string): boolean;
-var
-   i, lType: integer;
 begin
    result := false;
-   i := sgList.Cols[VAR_NAME_COL].IndexOf(AName);
+   var i := sgList.Cols[VAR_NAME_COL].IndexOf(AName);
    if i > 0 then
    begin
-      lType := TParserHelper.GetType(sgList.Cells[VAR_TYPE_COL, i]);
+      var lType := TParserHelper.GetType(sgList.Cells[VAR_TYPE_COL, i]);
       result := (TParserHelper.IsIntegerType(lType) or (TParserHelper.IsEnumType(lType) and  GInfra.CurrentLang.AllowEnumsInForLoop)) and (sgList.Cells[VAR_SIZE_COL, i] = '1');
    end;
 end;
@@ -928,18 +903,14 @@ begin
 end;
 
 function TDeclareList.ImportItemFromXMLTag(ATag: IXMLElement): TError;
-var
-   lName: string;
-   box: TCheckBox;
-   idx: integer;
 begin
    result := errValidate;
-   lName := ATag.GetAttribute(NAME_ATTR).Trim;
+   var lName := ATag.GetAttribute(NAME_ATTR).Trim;
    if (not lName.IsEmpty) and (sgList.Cols[NAME_COL].IndexOf(lName) < 1) then
    begin
-      idx := sgList.RowCount - 1;
+      var idx := sgList.RowCount - 1;
       sgList.Cells[NAME_COL, idx] := lName;
-      box := CreateExternalCheckBox(idx);
+      var box := CreateExternalCheckBox(idx);
       if box <> nil then
          box.State := TInfra.DecodeCheckBoxState(ATag.GetAttribute(EXTERN_ATTR));
       result := errNone;
@@ -947,28 +918,23 @@ begin
 end;
 
 function TConstDeclareList.ImportItemFromXMLTag(ATag: IXMLElement): TError;
-var
-   idx: integer;
 begin
    result := inherited ImportItemFromXMLTag(ATag);
    if result = errNone then
    begin
-      idx := sgList.RowCount - 1;
+      var idx := sgList.RowCount - 1;
       sgList.Cells[CONST_VALUE_COL, idx] := ATag.GetAttribute(VALUE_ATTR);
       sgList.RowCount := idx + 2;
    end;
 end;
 
 function TVarDeclareList.ImportItemFromXMLTag(ATag: IXMLElement): TError;
-var
-   lType: string;
-   idx: integer;
 begin
    result := inherited ImportItemFromXMLTag(ATag);
    if result = errNone then
    begin
-      idx := sgList.RowCount - 1;
-      lType := ATag.GetAttribute(TYPE_ATTR);
+      var idx := sgList.RowCount - 1;
+      var lType := ATag.GetAttribute(TYPE_ATTR);
       if cbType.Items.IndexOf(lType) = -1 then
          lType := i18Manager.GetString('Unknown');
       sgList.Cells[VAR_TYPE_COL, idx] := lType;

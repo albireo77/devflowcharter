@@ -11,11 +11,9 @@ type
     scbAlphaVal: TScrollBar;
     procedure FormCreate(Sender: TObject);
     procedure FormPaint(Sender: TObject);
-    procedure FormMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure FormResize(Sender: TObject);
-    procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X,
-      Y: Integer);
+    procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure chkAlphaVisibleClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure scbAlphaValChange(Sender: TObject);
@@ -26,11 +24,10 @@ type
     procedure SetAlphaValVisible(AValue: boolean);
   public
     { Public declarations }
-    InvalidateInd: boolean;
+    InvalidateIndicator: boolean;
     procedure ResetForm; override;
     procedure ExportSettingsToXMLTag(ATag: IXMLElement); override;
     procedure ImportSettingsFromXMLTag(ATag: IXMLElement); override;
-    procedure DoInvalidate;
   end;
 
 var
@@ -47,7 +44,7 @@ uses
 procedure TNavigatorForm.FormCreate(Sender: TObject);
 begin
    DoubleBuffered := true;
-   InvalidateInd := true;
+   InvalidateIndicator := true;
    SetBounds(50, 50, 426, 341);
    Constraints.MinWidth := 150;
    Constraints.MinHeight := 150;
@@ -113,7 +110,7 @@ procedure TNavigatorForm.ResetForm;
 begin
    inherited ResetForm;
    Position := poDesigned;
-   InvalidateInd := true;
+   InvalidateIndicator := true;
    SetBounds(50, 50, 426, 341);
 end;
 
@@ -188,12 +185,6 @@ begin
       scbAlphaVal.Width := 1;
       scbAlphaVal.Height := 1;
    end;
-end;
-
-procedure TNavigatorForm.DoInvalidate;
-begin
-   if InvalidateInd then
-      Invalidate;
 end;
 
 procedure TNavigatorForm.scbAlphaValChange(Sender: TObject);

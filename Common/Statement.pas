@@ -222,7 +222,8 @@ begin
    Font.Color := c;
    if Assigned(EditorAction) then
       EditorAction(Self);
-   NavigatorForm.DoInvalidate;
+   if NavigatorForm.InvalidateIndicator then
+      NavigatorForm.Invalidate;
 end;
 
 procedure TStatement.KeyDown(var Key: Word; Shift: TShiftState);

@@ -1189,10 +1189,10 @@ end;
 
 procedure TBlock.PerformRefreshStatements;
 begin
-    var b := NavigatorForm.InvalidateInd;
-    NavigatorForm.InvalidateInd := false;
+    var b := NavigatorForm.InvalidateIndicator;
+    NavigatorForm.InvalidateIndicator := false;
     RefreshStatements;
-    NavigatorForm.InvalidateInd := b;
+    NavigatorForm.InvalidateIndicator := b;
 end;
 
 procedure TBlock.RefreshStatements;
@@ -1743,17 +1743,17 @@ end;
 
 procedure TBlock.MyOnChange(Sender: TObject);
 begin
-   NavigatorForm.DoInvalidate;
+   if NavigatorForm.InvalidateIndicator then
+      NavigatorForm.Invalidate;
 end;
 
 procedure TBlock.OnChangeMemo(Sender: TObject);
-var
-   memo: TMemoEx;
 begin
-   memo := GetMemoEx;
+   var memo := GetMemoEx;
    if memo <> nil then
       memo.UpdateScrolls;
-   NavigatorForm.DoInvalidate;
+   if NavigatorForm.InvalidateIndicator then
+      NavigatorForm.Invalidate;
 end;
 
 function TBlock.CanBeFocused: boolean;
