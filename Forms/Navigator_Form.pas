@@ -60,44 +60,37 @@ procedure TNavigatorForm.FormPaint(Sender: TObject);
 const
    EXTENT_X = 1024;
    EXTENT_Y = 1024;
-var
-   lhdc: HDC;
-   xExt, yExt: integer;
-   box: TScrollBoxEx;
-   r: TRect;
 begin
    if GProject <> nil then
    begin
-      lhdc := SaveDC(Canvas.Handle);
+      var hdc := SaveDC(Canvas.Handle);
       try
-         box := GProject.GetActivePage.Box;
-         xExt := MulDiv(EXTENT_X, box.HorzScrollBar.Range, ClientWidth);
-         yExt := MulDiv(EXTENT_Y, box.VertScrollBar.Range, ClientHeight);
+         var box := GProject.GetActivePage.Box;
+         var xExt := MulDiv(EXTENT_X, box.HorzScrollBar.Range, ClientWidth);
+         var yExt := MulDiv(EXTENT_Y, box.VertScrollBar.Range, ClientHeight);
          SetMapMode(Canvas.Handle, MM_ANISOTROPIC);
          SetWindowExtEx(Canvas.Handle, xExt, yExt, nil);
          SetViewPortExtEx(Canvas.Handle, EXTENT_X, EXTENT_Y, nil);
          box.PaintToCanvas(Canvas);
          Canvas.Pen.Width := 2;
          Canvas.Pen.Color := clRed;
-         r := box.GetDisplayRect;
+         var r := box.GetDisplayRect;
          Canvas.Polyline([r.TopLeft,
                           Point(r.Right, r.Top),
                           r.BottomRight,
                           Point(r.Left, r.Bottom),
                           r.TopLeft]);
       finally
-         RestoreDC(Canvas.Handle, lhdc);
+         RestoreDC(Canvas.Handle, hdc);
       end;
    end;
 end;
 
 procedure TNavigatorForm.FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-   box: TScrollBox;
 begin
    if (Button = mbLeft) and (GProject <> nil) then
    begin
-      box := GProject.GetActivePage.Box;
+      var box := GProject.GetActivePage.Box;
       box.HorzScrollBar.Position := MulDiv(X, box.HorzScrollBar.Range, ClientWidth) - (box.ClientWidth div 2);
       box.VertScrollBar.Position := MulDiv(Y, box.VertScrollBar.Range, ClientHeight) - (box.ClientHeight div 2);
       Repaint;
