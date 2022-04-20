@@ -24,8 +24,7 @@ unit Infrastructure;
 interface
 
 uses
-   WinApi.Windows, Vcl.Forms, Vcl.StdCtrls, Vcl.Grids, Vcl.Controls, Vcl.Graphics,
-   System.SysUtils, System.Classes, System.StrUtils,
+   WinApi.Windows, Vcl.StdCtrls, Vcl.Controls, Vcl.Graphics, System.Classes, System.StrUtils,
    Vcl.ComCtrls, LocalizationManager, Project, Settings, LangDefinition, Types,
    Base_Form, Interfaces, Functions_Form, DataTypes_Form, Declarations_Form,
    Main_Form, Base_Block, SynEditTypes, Settings_Form, Editor_Form, Explorer_Form,
@@ -144,10 +143,10 @@ type
 implementation
 
 uses
-   Vcl.Printers, WinApi.Messages, Vcl.Menus, Vcl.Dialogs, Vcl.Imaging.jpeg, Vcl.Imaging.PngImage,
-   System.Math, Generics.Collections, System.IOUtils, System.Rtti, Constants, UserDataType,
-   Statement, XMLProcessor, SynEditHighlighter, Main_Block, BaseEnumerator, System.Character,
-   System.Generics.Defaults;
+   Vcl.Printers, Vcl.Menus, Vcl.Dialogs, Vcl.Imaging.jpeg, Vcl.Imaging.PngImage,
+   Vcl.Forms, System.Math, System.IOUtils, System.Rtti, System.Character,
+   System.Generics.Defaults, System.SysUtils, Generics.Collections, WinApi.Messages,
+   Constants, UserDataType, XMLProcessor, SynEditHighlighter, Main_Block, BaseEnumerator;
 
 type
    TCustomEditHack = class(TCustomEdit);
@@ -1092,7 +1091,9 @@ end;
 
 class procedure TInfra.SetFontSize(AControl: TControl; ASize: integer);
 begin
-   var flag := (AControl is TStatement) and not (csFixedHeight in AControl.ControlStyle);
+   var flag := (AControl is TCustomEdit)
+               and not (AControl is TCustomMemo)
+               and not (csFixedHeight in AControl.ControlStyle);
    if flag then
       AControl.ControlStyle := AControl.ControlStyle + [csFixedHeight];
    TControlHack(AControl).Font.Size := ASize;
