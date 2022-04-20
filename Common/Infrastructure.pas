@@ -24,8 +24,8 @@ unit Infrastructure;
 interface
 
 uses
-   WinApi.Windows, Vcl.StdCtrls, Vcl.Controls, Vcl.Graphics, System.Classes, System.StrUtils,
-   Vcl.ComCtrls, LocalizationManager, Project, Settings, LangDefinition, Types,
+   WinApi.Windows, Vcl.StdCtrls, Vcl.Controls, Vcl.Graphics, Vcl.ComCtrls, System.Classes,
+   LocalizationManager, Project, Settings, LangDefinition, Types,
    Base_Form, Interfaces, Functions_Form, DataTypes_Form, Declarations_Form,
    Main_Form, Base_Block, SynEditTypes, Settings_Form, Editor_Form, Explorer_Form,
    UserFunction, BlockTabSheet, About_Form, YaccLib;
@@ -144,7 +144,7 @@ implementation
 
 uses
    Vcl.Printers, Vcl.Menus, Vcl.Dialogs, Vcl.Imaging.jpeg, Vcl.Imaging.PngImage,
-   Vcl.Forms, System.Math, System.IOUtils, System.Rtti, System.Character,
+   Vcl.Forms, System.Math, System.IOUtils, System.Rtti, System.Character, System.StrUtils,
    System.Generics.Defaults, System.SysUtils, Generics.Collections, WinApi.Messages,
    Constants, UserDataType, XMLProcessor, SynEditHighlighter, Main_Block, BaseEnumerator;
 
