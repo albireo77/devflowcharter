@@ -1,3 +1,6 @@
+9.11 [20-04-2022]
+- fix displaying for..do block on high DPI screens 
+
 9.10 [15-04-2022]
 - Code Editor: fix regression introduced in 9.9 with cursor not set to line associated with focused statement in flowchart
 
