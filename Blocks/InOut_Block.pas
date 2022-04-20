@@ -24,7 +24,7 @@ unit InOut_Block;
 interface
 
 uses
-   Vcl.Graphics, Base_Block, Types, YaccLib;
+   Base_Block, Types, YaccLib;
 
 type
 
@@ -56,12 +56,11 @@ type
 implementation
 
 uses
-   Vcl.Controls, System.Classes, WinApi.Windows, System.Types, System.UITypes, System.Math,
-   Infrastructure;
+   Vcl.Controls, Vcl.Graphics, System.Classes, WinApi.Windows, System.Math, Infrastructure;
 
 const
-   DEF_BLOCK_WIDTH    = 153;
-   DEF_BLOCK_HEIGHT   = 64;
+   DEF_BLOCK_WIDTH = 153;
+   DEF_BLOCK_HEIGHT = 64;
    BOTTOM_POINT_Y = DEF_BLOCK_HEIGHT - 30;
 
 constructor TInOutBlock.Create(ABranch: TBranch;
@@ -69,8 +68,6 @@ constructor TInOutBlock.Create(ABranch: TBranch;
                                const AText: string;
                                AdjustWidth: boolean;
                                AParserMode: TYYMode);
-var
-   w: integer;
 begin
 
    inherited Create(ABranch, ABlockParms, shpParallel, AParserMode, taLeftJustify);
@@ -80,12 +77,12 @@ begin
    PutTextControls;
    if AdjustWidth then
    begin
-      w :=  TInfra.GetTextWidth(FStatement.Text, FStatement) + FStatement.Left + 20;
+      var w :=  TInfra.GetTextWidth(FStatement.Text, FStatement) + FStatement.Left + 20;
       if Width < w then
          Width := w;
    end;
-   w := GInfra.CurrentLang.InOutCursorPos;
-   FStatement.SelStart := IfThen(w <= 0, Length(FStatement.Text) + w, w - 1);
+   var p := GInfra.CurrentLang.InOutCursorPos;
+   FStatement.SelStart := IfThen(p <= 0, Length(FStatement.Text) + p, p - 1);
    BottomHook := Width div 2;
    BottomPoint.X := BottomHook;
    BottomPoint.Y := BOTTOM_POINT_Y;
@@ -157,9 +154,9 @@ end;
 procedure TInOutBlock.PutTextControls;
 begin
    var l := Canvas.TextWidth(FLabel) + 34;
-   var t := BOTTOM_POINT_Y - FStatement.Height + 6;
-   if t < 12 then
-      Dec(t, 6);
+   var t := BOTTOM_POINT_Y - FStatement.Height;
+   if t > 5 then
+      Inc(t, 6);
    FStatement.SetBounds(l, t div 2, Width-l-20, FStatement.Height);
 end;
 
