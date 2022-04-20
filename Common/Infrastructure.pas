@@ -25,10 +25,9 @@ interface
 
 uses
    WinApi.Windows, Vcl.StdCtrls, Vcl.Controls, Vcl.Graphics, Vcl.ComCtrls, System.Classes,
-   LocalizationManager, Project, Settings, LangDefinition, Types,
-   Base_Form, Interfaces, Functions_Form, DataTypes_Form, Declarations_Form,
-   Main_Form, Base_Block, SynEditTypes, Settings_Form, Editor_Form, Explorer_Form,
-   UserFunction, BlockTabSheet, About_Form, YaccLib;
+   LocalizationManager, Project, Settings, LangDefinition, Types, Base_Form, Interfaces,
+   Functions_Form, DataTypes_Form, Declarations_Form, Main_Form, Base_Block, SynEditTypes,
+   Settings_Form, Editor_Form, Explorer_Form, UserFunction, BlockTabSheet, About_Form, YaccLib;
 
 type
 
