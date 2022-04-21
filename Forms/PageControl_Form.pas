@@ -24,8 +24,7 @@ unit PageControl_Form;
 interface
 
 uses
-   Vcl.Menus, Vcl.ComCtrls, System.Classes, System.Types, OmniXML, Base_Form, Types,
-   Vcl.Controls;
+   Vcl.Menus, Vcl.ComCtrls, Vcl.Controls, System.Classes, System.Types, OmniXML, Base_Form, Types;
 
 type
 
@@ -130,10 +129,9 @@ end;
 
 procedure TPageControlForm.ExportTabsToXMLTag(ATag: IXMLElement);
 var
-   i: integer;
    xmlable: IXMLable;
 begin
-   for i:= 0 to pgcTabs.PageCount-1 do
+   for var i := 0 to pgcTabs.PageCount-1 do
    begin
       if pgcTabs.Pages[i].TabVisible and Supports(pgcTabs.Pages[i], IXMLable, xmlable) then
          xmlable.ExportToXMLTag(ATag);
@@ -157,7 +155,7 @@ end;
 function TPageControlForm.GetVisiblePageCount: integer;
 begin
    result := 0;
-   for var i:= 0 to pgcTabs.PageCount-1 do
+   for var i := 0 to pgcTabs.PageCount-1 do
    begin
       if pgcTabs.Pages[i].TabVisible then
          Inc(result);
@@ -171,17 +169,15 @@ begin
 end;
 
 procedure TPageControlForm.miRemoveAllClick(Sender: TObject);
-var
-   i, res: integer;
 begin
-   res := mrYes;
+   var res := mrYes;
    if GSettings.ConfirmRemove then
       res := TInfra.ShowQuestionBox(i18Manager.GetString('ConfirmRemove'));
    if res = mrYes then
    begin
       while GetVisiblePageCount > 0 do
       begin
-         for i := 0 to pgcTabs.PageCount-1 do
+         for var i := 0 to pgcTabs.PageCount-1 do
          begin
             if pgcTabs.Pages[i].TabVisible then
             begin
@@ -207,26 +203,21 @@ end;
 
 procedure TPageControlForm.FormMouseWheel(Sender: TObject; Shift: TShiftState;
    WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
-var
-   tab: TTabComponent;
 begin
    if pgcTabs.ActivePage is TTabComponent then
    begin
-      tab := TTabComponent(pgcTabs.ActivePage);
+      var tab := TTabComponent(pgcTabs.ActivePage);
       if not tab.HasFocusedComboBox then
          tab.ScrollElements(-WheelDelta div 10);
    end;
 end;
 
 procedure TPageControlForm.pgcTabsDragDrop(Sender, Source: TObject; X, Y: Integer);
-var
-   page: TTabSheet;
-   idx: integer;
 begin
-   page := TInfra.GetPageFromXY(pgcTabs, X, Y);
+   var page := TInfra.GetPageFromXY(pgcTabs, X, Y);
    if page <> nil then
    begin
-      idx := page.PageIndex;
+      var idx := page.PageIndex;
       page.PageIndex := TTabSheet(Source).PageIndex;
       TTabSheet(Source).PageIndex := idx;
       RefreshTabs;
@@ -243,12 +234,10 @@ end;
 
 procedure TPageControlForm.pgcTabsMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-   page: TTabSheet;
 begin
    if Button = mbLeft then
    begin
-      page := TInfra.GetPageFromXY(pgcTabs, X, Y);
+      var page := TInfra.GetPageFromXY(pgcTabs, X, Y);
       if page <> nil then
          page.BeginDrag(false, 3);
    end;
@@ -261,10 +250,8 @@ begin
 end;
 
 procedure TPageControlForm.pgcTabsMouseMove(Sender: TObject; Shift: TShiftState; X, Y: integer);
-var
-   page: TTabSheet;
 begin
-   page := TInfra.GetPageFromXY(pgcTabs, X, Y);
+   var page := TInfra.GetPageFromXY(pgcTabs, X, Y);
    if (page <> nil) and (page.PageIndex <> FLastHintPageIndex) then
    begin
       Application.CancelHint;
@@ -274,8 +261,6 @@ begin
 end;
 
 procedure TPageControlForm.ExportSettingsToXMLTag(ATag: IXMLElement);
-var
-   i, a: integer;
 begin
    RefreshTabs;
    ATag.SetAttribute(FPrefix + 'win_h', Height.ToString);
@@ -284,11 +269,11 @@ begin
       ATag.SetAttribute(FPrefix + 'win_show', 'true');
       ATag.SetAttribute(FPrefix + 'win_x', Left.ToString);
       ATag.SetAttribute(FPrefix + 'win_y', Top.ToString);
-      i := pgcTabs.ActivePageIndex;
+      var i := pgcTabs.ActivePageIndex;
       if i <> -1 then
       begin
          ATag.SetAttribute(FPrefix + 'idx', i.ToString);
-         a := TTabComponent(pgcTabs.ActivePage).ScrollPos;
+         var a := TTabComponent(pgcTabs.ActivePage).ScrollPos;
          if a > 0 then
             ATag.SetAttribute(FPrefix + 'scroll_v', a.ToString);
       end;
@@ -298,8 +283,6 @@ begin
 end;
 
 procedure TPageControlForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
-var
-   i: integer;
 begin
    Height := TXMLProcessor.GetIntFromAttr(ATag, FPrefix + 'win_h', Height);
    if IsEnabled and TXMLProcessor.GetBoolFromAttr(ATag, FPrefix + 'win_show') then
@@ -309,7 +292,7 @@ begin
          WindowState := wsMinimized;
       Left := TXMLProcessor.GetIntFromAttr(ATag, FPrefix + 'win_x', Left);
       Top := TXMLProcessor.GetIntFromAttr(ATag, FPrefix + 'win_y', Top);
-      i := TXMLProcessor.GetIntFromAttr(ATag, FPrefix + 'idx', -2);
+      var i := TXMLProcessor.GetIntFromAttr(ATag, FPrefix + 'idx', -2);
       if (i >= 0) and (i < pgcTabs.PageCount) then
       begin
          pgcTabs.ActivePageIndex := i;
