@@ -24,7 +24,7 @@ unit Comment;
 interface
 
 uses
-   WinApi.Messages, System.Types, Vcl.Controls, System.Classes, OmniXML, Interfaces,
+   WinApi.Messages, Vcl.Controls, System.Types, System.Classes, OmniXML, Interfaces,
    BlockTabSheet, MemoEx;
 
 type

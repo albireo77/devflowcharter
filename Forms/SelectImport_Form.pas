@@ -3,8 +3,7 @@ unit SelectImport_Form;
 interface
 
 uses
-   System.SysUtils, System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.ExtCtrls,
-   Vcl.StdCtrls, Vcl.Buttons, Base_Form;
+   System.Classes, Vcl.Forms, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Controls, Base_Form;
 
 type
   TSelectImportForm = class(TBaseForm)
@@ -31,7 +30,7 @@ var
 implementation
 
 uses
-   System.UITypes, WinApi.Windows;
+   WinApi.Windows;
 
 {$R *.dfm}
 
