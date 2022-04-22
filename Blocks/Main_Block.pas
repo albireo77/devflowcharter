@@ -24,8 +24,8 @@ unit Main_Block;
 interface
 
 uses
-   WinApi.Windows, Vcl.Graphics, System.Classes, Vcl.ComCtrls, WinApi.Messages,
-   Vcl.Controls, Base_Block, OmniXML, Interfaces, Types, BlockTabSheet;
+   WinApi.Windows, WinApi.Messages, Vcl.Graphics, Vcl.ComCtrls, System.Classes,
+   Base_Block, OmniXML, Interfaces, Types, BlockTabSheet;
 
 type
 
@@ -78,9 +78,8 @@ const
 implementation
 
 uses
-   Vcl.Forms, System.SysUtils, System.StrUtils, System.Types, System.UITypes, Infrastructure,
-   XMLProcessor, DeclareList, Navigator_Form, Return_Block, LangDefinition, UserFunction,
-   Comment, Constants;
+   Vcl.Forms, System.SysUtils, System.StrUtils, Infrastructure, XMLProcessor, DeclareList,
+   Navigator_Form, Return_Block, LangDefinition, UserFunction, Comment, Constants;
 
 constructor TMainBlock.Create(APage: TBlockTabSheet; const ABlockParms: TBlockParms);
 begin
@@ -128,10 +127,8 @@ begin
 end;
 
 constructor TMainBlock.Create(APage: TBlockTabSheet; const ATopLeft: TPoint);
-var
-   blockParms: TBlockParms;
 begin
-   blockParms := TBlockParms.New(blMain,
+   var blockParms := TBlockParms.New(blMain,
                                  ATopLeft.X,
                                  ATopLeft.Y,
                                  MAIN_BLOCK_DEF_WIDTH,
@@ -143,16 +140,12 @@ begin
 end;
 
 procedure TMainBlock.SetPage(APage: TBlockTabSheet);
-var
-   header: TUserFunctionHeader;
-   unPin: boolean;
-   comment: TComment;
 begin
    if FPage <> APage then
    begin
-      unPin := Expanded and (PinComments > 0);
+      var unPin := Expanded and (PinComments > 0);
       try
-         for comment in GetPinComments do
+         for var comment in GetPinComments do
              comment.Page := APage;
       finally
          if unPin then
@@ -162,7 +155,7 @@ begin
       Parent := APage.Box;
       if UserFunction <> nil then
       begin
-         header := TUserFunction(UserFunction).Header;
+         var header := TUserFunction(UserFunction).Header;
          if header <> nil then
             header.SetPageCombo(APage.Caption);
       end;
@@ -203,9 +196,6 @@ begin
 end;
 
 function TMainBlock.GetMaxBounds: TPoint;
-var
-   pnt: TPoint;
-   comment: TComment;
 begin
    result := TPoint.Zero;
    if Visible then
@@ -213,11 +203,11 @@ begin
       result := BoundsRect.BottomRight;
       if Expanded then
       begin
-         for comment in GetComments do
+         for var comment in GetComments do
          begin
             if comment.Visible then
             begin
-               pnt := comment.BoundsRect.BottomRight;
+               var pnt := comment.BoundsRect.BottomRight;
                if pnt.X > result.X then
                   result.X := pnt.X;
                if pnt.Y > result.Y then

@@ -24,7 +24,7 @@ unit MultiLine_Block;
 interface
 
 uses
-   Vcl.Controls, Vcl.StdCtrls, System.Classes, Vcl.ComCtrls, Base_Block, StatementMemo,
+   Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls, System.Classes, Base_Block, StatementMemo,
    MemoEx, Types;
 
 type
