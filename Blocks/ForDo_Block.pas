@@ -237,9 +237,7 @@ begin
       Canvas.MoveTo(bst+30, 19);
       Canvas.LineTo(Width-RIGHT_MARGIN, 19);
       Canvas.Brush.Style := bsClear;
-      var shpColor := GSettings.GetShapeColor(FShape);
-      if shpColor <> GSettings.DesktopColor then
-         Canvas.Brush.Color := shpColor;
+      SetBrushColorForShape(FShape);
       Canvas.Polygon([Point(bhx-100, 0),
                       Point(bst-9, 0),
                       Point(bst+30, 19),

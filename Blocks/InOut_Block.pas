@@ -122,19 +122,12 @@ begin
 end;
 
 procedure TInOutBlock.Paint;
-var
-   R: TRect;
-   w: integer;
-   fontStyles: TFontStyles;
-   lColor: TColor;
 begin
    inherited;
-   w := Canvas.TextWidth(FLabel);
+   var w := Canvas.TextWidth(FLabel);
    DrawArrow(BottomPoint, BottomPoint.X, Height-1);
    Canvas.Brush.Style := bsClear;
-   lColor := GSettings.GetShapeColor(FShape);
-   if lColor <> GSettings.DesktopColor then
-      Canvas.Brush.Color := lColor;
+   SetBrushColorForShape(FShape);
    Canvas.Polygon([Point(20, 0),
                    Point(Width-1, 0),
                    Point(Width-21, BOTTOM_POINT_Y),
@@ -142,9 +135,9 @@ begin
                    Point(20, 0)]);
    Canvas.MoveTo(w+33, 0);
    Canvas.LineTo(w+13, BOTTOM_POINT_Y);
-   fontStyles := Canvas.Font.Style;
+   var fontStyles := Canvas.Font.Style;
    Canvas.Font.Style := [];
-   R := Rect(17, 1, w+17, BOTTOM_POINT_Y-3);
+   var R := Rect(17, 1, w+17, BOTTOM_POINT_Y-3);
    DrawText(Canvas.Handle, PChar(FLabel), -1, R, DT_SINGLELINE or DT_VCENTER);
    Canvas.Font.Style := fontStyles;
    DrawBlockLabel(5, BOTTOM_POINT_Y, FLabelSegoe);

@@ -70,21 +70,15 @@ begin
 end;
 
 procedure TFunctionCallBlock.Paint;
-var
-   br: TPoint;
-   lColor: TColor;
-   r: TRect;
 begin
    inherited;
    Canvas.Brush.Style := bsClear;
-   lColor := GSettings.GetShapeColor(FShape);
-   if lColor <> GSettings.DesktopColor then
-      Canvas.Brush.Color := lColor;
-   br := FStatement.BoundsRect.BottomRight;
+   SetBrushColorForShape(FShape);
+   var br := FStatement.BoundsRect.BottomRight;
    Inc(br.Y);
    BottomPoint.Y := br.Y;
    IPoint.Y := br.Y + 8;
-   r := Rect(0, FStatement.Top-1, Width, br.Y);
+   var r := Rect(0, FStatement.Top-1, Width, br.Y);
    Canvas.Rectangle(r);
    DrawBlockLabel(1, br.Y-2, GInfra.CurrentLang.LabelFuncCall);
    DrawArrow(BottomPoint, BottomPoint.X, Height-1);
