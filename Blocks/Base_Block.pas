@@ -113,7 +113,7 @@ type
          function GetErrorMsg(AEdit: TCustomEdit): string;
          procedure SaveInXML2(ATag: IXMLElement);
          procedure ExitSizeMove;
-         procedure SetBrushColorForShape(AShape: TColorShape);
+         procedure SetBrushColor(AShape: TColorShape);
          function GetBlockParms: TBlockParms; virtual;
          function GetBlockTemplate(const ALangId: string): string;
          function GetBlockTemplateExpr(const ALangId: string): string;
@@ -1386,7 +1386,7 @@ begin
    end;
 end;
 
-procedure TBlock.SetBrushColorForShape(AShape: TColorShape);
+procedure TBlock.SetBrushColor(AShape: TColorShape);
 begin
    Canvas.Brush.Style := bsClear;
    var lColor := GSettings.GetShapeColor(AShape);
@@ -1555,7 +1555,7 @@ end;
 function TBlock.DrawEllipsedText(ax, ay: integer; const AText: string): TRect;
 begin
    result := GetEllipseTextRect(ax, ay, AText);
-   SetBrushColorForShape(shpEllipse);
+   SetBrushColor(shpEllipse);
    Canvas.Ellipse(result);
    DrawText(Canvas.Handle, PChar(AText), -1, result, DT_CENTER or DT_SINGLELINE or DT_VCENTER);
 end;
@@ -1610,13 +1610,13 @@ begin
          FDiamond := TDiamond.New(dTop, edit);
          TInfra.MoveWin(edit, FDiamond.Top.X - edit.Width div 2,
                               FDiamond.Top.Y - edit.Height div 2 + FDiamond.Height div 2);
-         SetBrushColorForShape(FShape);
+         SetBrushColor(FShape);
          Canvas.Polygon(FDiamond.Polygon);
       end;
    end
    else
    begin
-      SetBrushColorForShape(shpFolder);
+      SetBrushColor(shpFolder);
       Canvas.Pen.Width := 2;
       var r := FMemoFolder.BoundsRect;
       r.Inflate(3, 3, 4, 4);

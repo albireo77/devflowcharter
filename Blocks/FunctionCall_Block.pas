@@ -72,7 +72,7 @@ end;
 procedure TFunctionCallBlock.Paint;
 begin
    inherited;
-   SetBrushColorForShape(FShape);
+   SetBrushColor(FShape);
    var br := FStatement.BoundsRect.BottomRight;
    Inc(br.Y);
    BottomPoint.Y := br.Y;

@@ -236,7 +236,7 @@ begin
       end;
       Canvas.MoveTo(bst+30, 19);
       Canvas.LineTo(Width-RIGHT_MARGIN, 19);
-      SetBrushColorForShape(FShape);
+      SetBrushColor(FShape);
       Canvas.Polygon([Point(bhx-100, 0),
                       Point(bst-9, 0),
                       Point(bst+30, 19),
