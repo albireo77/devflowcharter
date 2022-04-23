@@ -223,26 +223,20 @@ begin
 end;
 
 procedure TExplorerForm.miNextErrorClick(Sender: TObject);
-var
-   i, c, last: integer;
-   withFocus: IWithFocus;
 begin
    if tvExplorer.Selected <> nil then
    begin
+      var c := -1;
+      var last := -1;
       if Sender = miNextError then
       begin
          c := 1;
          last := tvExplorer.Items.Count;
-      end
-      else
-      begin
-         c := -1;
-         last := -1;
       end;
-      i := tvExplorer.Selected.AbsoluteIndex + c;
+      var i := tvExplorer.Selected.AbsoluteIndex + c;
       while i <> last do
       begin
-         withFocus := GetWithFocus(tvExplorer.Items[i]);
+         var withFocus := GetWithFocus(tvExplorer.Items[i]);
          if (withFocus <> nil) and TInfra.IsNOkColor(withFocus.GetFocusColor) then
          begin
             if not tvExplorer.Items[i].IsVisible then
@@ -250,7 +244,7 @@ begin
             tvExplorer.Selected := tvExplorer.Items[i];
             break;
          end;
-         i := i + c;
+         Inc(i, c);
       end;
    end;
 end;
