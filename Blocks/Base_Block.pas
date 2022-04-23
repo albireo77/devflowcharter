@@ -1388,6 +1388,7 @@ end;
 
 procedure TBlock.SetBrushColorForShape(AShape: TColorShape);
 begin
+   Canvas.Brush.Style := bsClear;
    var lColor := GSettings.GetShapeColor(AShape);
    if lColor <> GSettings.DesktopColor then
       Canvas.Brush.Color := lColor;
@@ -1554,7 +1555,6 @@ end;
 function TBlock.DrawEllipsedText(ax, ay: integer; const AText: string): TRect;
 begin
    result := GetEllipseTextRect(ax, ay, AText);
-   Canvas.Brush.Style := bsClear;
    SetBrushColorForShape(shpEllipse);
    Canvas.Ellipse(result);
    DrawText(Canvas.Handle, PChar(AText), -1, result, DT_CENTER or DT_SINGLELINE or DT_VCENTER);
@@ -1610,7 +1610,6 @@ begin
          FDiamond := TDiamond.New(dTop, edit);
          TInfra.MoveWin(edit, FDiamond.Top.X - edit.Width div 2,
                               FDiamond.Top.Y - edit.Height div 2 + FDiamond.Height div 2);
-         Canvas.Brush.Style := bsClear;
          SetBrushColorForShape(FShape);
          Canvas.Polygon(FDiamond.Polygon);
       end;

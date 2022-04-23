@@ -126,7 +126,6 @@ begin
    inherited;
    var w := Canvas.TextWidth(FLabel);
    DrawArrow(BottomPoint, BottomPoint.X, Height-1);
-   Canvas.Brush.Style := bsClear;
    SetBrushColorForShape(FShape);
    Canvas.Polygon([Point(20, 0),
                    Point(Width-1, 0),

@@ -72,7 +72,6 @@ end;
 procedure TFunctionCallBlock.Paint;
 begin
    inherited;
-   Canvas.Brush.Style := bsClear;
    SetBrushColorForShape(FShape);
    var br := FStatement.BoundsRect.BottomRight;
    Inc(br.Y);
