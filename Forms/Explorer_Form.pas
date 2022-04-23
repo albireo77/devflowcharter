@@ -24,8 +24,8 @@ unit Explorer_Form;
 interface
 
 uses
-   Vcl.StdCtrls, Vcl.Menus, Vcl.ComCtrls, System.Classes, System.Types, OmniXML,
-   Base_Form, Types, Interfaces, Vcl.Controls;
+   Vcl.StdCtrls, Vcl.Menus, Vcl.ComCtrls, Vcl.Controls, System.Classes, System.Types,
+   OmniXML, Base_Form, Types, Interfaces;
 
 type
   TExplorerForm = class(TBaseForm)
@@ -117,10 +117,8 @@ begin
 end;
 
 procedure TExplorerForm.ClearTreeViewItems;
-var
-   deletionEvent:  TTVExpandedEvent;
 begin
-   deletionEvent := tvExplorer.OnDeletion;
+   var deletionEvent := tvExplorer.OnDeletion;
    tvExplorer.OnDeletion := nil;
    try
       tvExplorer.Items.Clear;
@@ -144,16 +142,13 @@ begin
 end;
 
 procedure TExplorerForm.tvExplorerChange(Sender: TObject; Node: TTreeNode);
-var
-   withFocus: IWithFocus;
-   focusInfo: TFocusInfo;
 begin
    if chkAutoNav.Checked then
    begin
-      withFocus := GetWithFocus(Node);
+      var withFocus := GetWithFocus(Node);
       if (withFocus <> nil) and withFocus.CanBeFocused then
       begin
-         focusInfo := TFocusInfo.New;
+         var focusInfo := TFocusInfo.New;
          focusInfo.ActiveControl := tvExplorer;
          withFocus.RetrieveFocus(focusInfo);
          GProject.RepaintFlowcharts;
@@ -180,8 +175,6 @@ begin
 end;
 
 procedure TExplorerForm.PopupMenuPopup(Sender: TObject);
-var
-   withFocus: IWithFocus;
 begin
    miExpand.Enabled    := false;
    miCollapse.Enabled  := false;
@@ -194,7 +187,7 @@ begin
       miPrevError.Enabled := miNextError.Enabled;
       miExpand.Enabled := tvExplorer.Selected.HasChildren;
       miCollapse.Enabled := miExpand.Enabled;
-      withFocus := GetWithFocus(tvExplorer.Selected);
+      var withFocus := GetWithFocus(tvExplorer.Selected);
       miRemove.Enabled := (withFocus <> nil) and withFocus.CanRemove;
    end;
 end;
@@ -352,8 +345,6 @@ begin
 end;
 
 procedure TExplorerForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
-var
-   topY: integer;
 begin
    if TXMLProcessor.GetBoolFromAttr(ATag, 'tree_win_show') and GInfra.CurrentLang.EnabledExplorer then
    begin
@@ -365,7 +356,7 @@ begin
       if TXMLProcessor.GetBoolFromAttr(ATag, 'tree_win_min') then
          WindowState := wsMinimized;
       Show;
-      topY := TXMLProcessor.GetIntFromAttr(ATag, 'tree_top_y', -2);
+      var topY := TXMLProcessor.GetIntFromAttr(ATag, 'tree_top_y', -2);
       if (topY >= 0) and (topY < tvExplorer.Items.Count) then
          tvExplorer.TopItem := tvExplorer.Items[topY];
    end;
