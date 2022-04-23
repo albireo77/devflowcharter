@@ -29,7 +29,7 @@ uses
 
 type
 
-   THackEdit = class(TCustomEdit);
+   TCustomEditHack = class(TCustomEdit);
 
    TFlashThread = class(TThread)
    private
@@ -63,14 +63,11 @@ begin
 end;
 
 procedure TFlashThread.PerformFlash;
-var
-   fontColor: TColor;
-   edit: THackEdit;
 begin
    if FFocusInfo.FocusEdit <> nil then
    begin
-      edit := THackEdit(FFocusInfo.FocusEdit);
-      fontColor := edit.Font.Color;
+      var edit := TCustomEditHack(FFocusInfo.FocusEdit);
+      var fontColor := edit.Font.Color;
       edit.Font.Color := edit.Color;
       edit.Color := fontColor;
       edit.Repaint;

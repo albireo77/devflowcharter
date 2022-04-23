@@ -203,21 +203,16 @@ begin
 end;
 
 procedure TExplorerForm.miRefreshClick(Sender: TObject);
-var
-   i: integer;
-   withFocus: IWithFocus;
-   origText: string;
-   node: TTreeNodeWithFriend;
 begin
    tvExplorer.Items.BeginUpdate;
    try
-      for i := 0 to tvExplorer.Items.Count-1 do
+      for var i := 0 to tvExplorer.Items.Count-1 do
       begin
-         node := TTreeNodeWithFriend(tvExplorer.Items[i]);
-         withFocus := GetWithFocus(node);
+         var node := TTreeNodeWithFriend(tvExplorer.Items[i]);
+         var withFocus := GetWithFocus(node);
          if withFocus <> nil then
          begin
-            origText := withFocus.GetTreeNodeText(node.Offset);
+            var origText := withFocus.GetTreeNodeText(node.Offset);
             if (origText <> '') and (origText <> node.Text) then
                node.Text := origText;
          end;
@@ -262,34 +257,28 @@ end;
 
 procedure TExplorerForm.tvExplorerCustomDrawItem(Sender: TCustomTreeView;
   Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
-var
-   nodeRect: TRect;
-   withFocus: IWithFocus;
-   lColor, lColor2: TColor;
-   x, y: integer;
-   lFont: TFont;
 begin
-   x := 0;
-   y := 0;
-   lFont := Sender.Canvas.Font;
-   lColor := OK_COLOR;
+   var x := 0;
+   var y := 0;
+   var lFont := Sender.Canvas.Font;
+   var lColor := OK_COLOR;
    if cdsSelected in State then
    begin
       Sender.Canvas.Brush.Style := bsClear;
       x := 2;
       y := 1;
    end;
-   withFocus := GetWithFocus(Node);
+   var withFocus := GetWithFocus(Node);
    if withFocus <> nil then
    begin
-      lColor2 := withFocus.GetFocusColor;
+      var lColor2 := withFocus.GetFocusColor;
       if TInfra.IsNOkColor(lColor2) or (lColor2 = TEXT_COLOR) then
          lColor := lColor2;
       if withFocus.IsBoldDesc then
          lFont.Style := lFont.Style + [fsBold];
    end;
    lFont.Color := lColor;
-   nodeRect := Node.DisplayRect(True);
+   var nodeRect := Node.DisplayRect(True);
    Sender.Canvas.TextOut(nodeRect.Left+x, nodeRect.Top+y, Node.Text);
    DefaultDraw := true;
 end;
