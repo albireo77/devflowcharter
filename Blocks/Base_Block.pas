@@ -1220,21 +1220,17 @@ begin
 end;
 
 procedure TBlock.ChangeColor(AColor: TColor);
-var
-   comment: TComment;
-   lEdit: TCustomEditHack;
-   lColor: TColor;
 begin
    Color := AColor;
-   for comment in GetComments do
+   for var comment in GetComments do
    begin
       if comment.Visible then
          comment.Color := AColor;
    end;
-   lEdit := TCustomEditHack(GetTextControl);
+   var lEdit := TCustomEditHack(GetTextControl);
    if lEdit <> nil then
    begin
-      lColor := GSettings.GetShapeColor(FShape);
+      var lColor := GSettings.GetShapeColor(FShape);
       if lColor = GSettings.DesktopColor then
          lEdit.Color := AColor
       else
@@ -1277,21 +1273,17 @@ begin
 end;
 
 procedure TGroupBlock.ChangeColor(AColor: TColor);
-var
-   i: integer;
-   block: TBlock;
-   lColor: TColor;
 begin
    inherited ChangeColor(AColor);
    if Expanded then
    begin
-      for i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
+      for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
       begin
-         for block in FBranchList[i] do
+         for var block in FBranchList[i] do
              block.ChangeColor(AColor);
       end;
    end;
-   lColor := GSettings.GetShapeColor(shpFolder);
+   var lColor := GSettings.GetShapeColor(shpFolder);
    if lColor = GSettings.DesktopColor then
       FMemoFolder.Color := AColor
    else

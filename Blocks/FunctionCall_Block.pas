@@ -52,7 +52,6 @@ begin
    FStatement.SetBounds(10, 1, ABlockParms.w-20, CalculateStatementHeight);
    FStatement.Anchors := [akRight, akLeft, akTop];
    FStatement.SetLRMargins(1, 1);
-   FStatement.Color := GSettings.GetShapeColor(shpRoutine);
 
    BottomHook := ABlockParms.w div 2;
    BottomPoint.X := BottomHook;
