@@ -1227,14 +1227,14 @@ begin
       if comment.Visible then
          comment.Color := AColor;
    end;
-   var lEdit := TCustomEditHack(GetTextControl);
-   if lEdit <> nil then
+   var edit := TCustomEditHack(GetTextControl);
+   if edit <> nil then
    begin
       var lColor := GSettings.GetShapeColor(FShape);
       if lColor = GSettings.DesktopColor then
-         lEdit.Color := AColor
+         edit.Color := AColor
       else
-         lEdit.Color := lColor;
+         edit.Color := lColor;
    end;
 end;
 
@@ -1602,7 +1602,7 @@ begin
          FDiamond := TDiamond.New(dTop, edit);
          TInfra.MoveWin(edit, FDiamond.Top.X - edit.Width div 2,
                               FDiamond.Top.Y - edit.Height div 2 + FDiamond.Height div 2);
-         SetBrushColor(FShape);
+         SetBrushColor(shpDiamond);
          Canvas.Polygon(FDiamond.Polygon);
       end;
    end
