@@ -1185,7 +1185,7 @@ end;
 
 function TGroupBlock.GetDiamondTop: TPoint;
 begin
-   result := Point(-1, -1);
+   result := TPoint.Zero;
 end;
 
 procedure TBlock.PerformRefreshStatements;
@@ -1595,14 +1595,13 @@ begin
    var w := Canvas.Pen.Width;
    if Expanded then
    begin
-      var dTop := GetDiamondTop;
       var edit := GetTextControl;
-      if (edit <> nil) and not InvalidPoint(dTop) then
+      if (edit <> nil) and (FShape = shpDiamond) then
       begin
-         FDiamond := TDiamond.New(dTop, edit);
+         FDiamond := TDiamond.New(GetDiamondTop, edit);
          TInfra.MoveWin(edit, FDiamond.Top.X - edit.Width div 2,
                               FDiamond.Top.Y - edit.Height div 2 + FDiamond.Height div 2);
-         SetBrushColor(shpDiamond);
+         SetBrushColor(FShape);
          Canvas.Polygon(FDiamond.Polygon);
       end;
    end
