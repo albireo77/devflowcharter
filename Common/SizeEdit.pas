@@ -60,20 +60,17 @@ begin
 end;
 
 function TSizeEdit.ParseSize: boolean;
-var
-   i, dcount: integer;
-   dims: TArray<string>;
 begin
    result := true;
    if GSettings.ValidateDeclaration then
    begin
-      dcount := GetDimensionCount;
+      var dcount := GetDimensionCount;
       if dcount < 0 then
          result := false
       else if dcount > 0 then
       begin
-         dims := GetDimensions;
-         for i := 0 to High(dims) do
+         var dims := GetDimensions;
+         for var i := 0 to High(dims) do
          begin
             result := GInfra.ParseVarSize(dims[i]);
             if not result then

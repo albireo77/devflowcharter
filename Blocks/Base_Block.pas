@@ -1601,7 +1601,7 @@ begin
          FDiamond := TDiamond.New(GetDiamondTop, edit);
          TInfra.MoveWin(edit, FDiamond.Top.X - edit.Width div 2,
                               FDiamond.Top.Y - edit.Height div 2 + FDiamond.Height div 2);
-         SetBrushColor(FShape);
+         SetBrushColor(shpDiamond);
          Canvas.Polygon(FDiamond.Polygon);
       end;
    end
