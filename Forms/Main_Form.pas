@@ -212,6 +212,7 @@ type
     FClockPos: TClockPos;
     FHistoryMenu: THistoryMenu;
     function BuildFuncMenu: integer;
+    function CreateNewProject: boolean;
     procedure CM_MenuClosed(var msg: TMessage); message CM_MENU_CLOSED;
     procedure WM_PPIDialog(var Msg: TMessage); message WM_PPI_DIALOG;
   public
@@ -249,11 +250,8 @@ procedure TMainForm.FormCreate(Sender: TObject);
 const
    CursorIDs: array[TCustomCursor] of PChar = (' ', 'IFELSE', 'FOR', 'REPEAT', 'WHILE', 'ASSIGN',
               'MULTIASSIGN', 'IF', 'SUBROUTINE', 'INPUT', 'OUTPUT', 'CASE', 'RETURN', 'TEXT', 'FOLDER');
-var
-   lCursor: TCustomCursor;
-   menuItem: TMenuItem;
 begin
-   lCursor := crNormal;
+   var lCursor := crNormal;
    repeat
       Inc(lCursor);
       Screen.Cursors[Ord(lCursor)] := LoadCursor(HInstance, CursorIDs[lCursor]);
@@ -270,7 +268,7 @@ begin
    FClockPos := Low(TClockPos);
    for var i := FLOWCHART_MIN_FONT_SIZE to FLOWCHART_MAX_FONT_SIZE do
    begin
-      menuItem := TMenuItem.Create(miFontSize);
+      var menuItem := TMenuItem.Create(miFontSize);
       menuItem.Caption := i.ToString;
       menuItem.OnClick := miFontSizeClick;
       miFontSize.Add(menuItem);
@@ -337,13 +335,10 @@ begin
 end;
 
 procedure TMainForm.SetProjectMenu(AEnabled: boolean);
-var
-   clang: TLangDefinition;
-   mMenu: TMainMenu;
 begin
-   mMenu := Menu;
+   var mMenu := Menu;
    Menu := nil;
-   clang := GInfra.CurrentLang;
+   var clang := GInfra.CurrentLang;
    miSave.Enabled := AEnabled;
    miSaveAs.Enabled := AEnabled;
    miClose.Enabled := AEnabled;
@@ -401,8 +396,9 @@ begin
    FClockPos := nextPos[FClockPos];
 end;
 
-procedure TMainForm.miNewClick(Sender: TObject);
+function TMainForm.CreateNewProject: boolean;
 begin
+   result := false;
    if (GProject <> nil) and GProject.IsChanged then
    begin
       case ConfirmSave of
@@ -412,6 +408,14 @@ begin
    end;
    TInfra.SetInitialSettings;
    GProject := TProject.GetInstance;
+   SetProjectMenu(true);
+   result := true;
+end;
+
+procedure TMainForm.miNewClick(Sender: TObject);
+begin
+   if not CreateNewProject then
+      Exit;
    var mBlock := TMainBlock.Create(GProject.GetMainPage, GetMainBlockNextTopLeft);
    mBlock.OnResize(mBlock);
    TUserFunction.Create(nil, mBlock);
@@ -421,20 +425,13 @@ end;
 
 procedure TMainForm.miOpenClick(Sender: TObject);
 begin
-    if (GProject <> nil) and GProject.IsChanged then
-    begin
-       case ConfirmSave of
-          IDYES: miSave.Click;
-          IDCANCEL: Exit;
-       end;
-    end;
+   if not CreateNewProject then
+      Exit;
     var filePath := '';
     if Sender <> miOpen then
        filePath := StripHotKey(TMenuItem(Sender).Caption);
-    TInfra.SetInitialSettings;
     var tmpCursor := Screen.Cursor;
     Screen.Cursor := crHourGlass;
-    GProject := TProject.GetInstance;
     filePath := TXMLProcessor.ImportFromXMLFile(GProject.ImportFromXMLTag, impAll, filePath);
     GProject.ChangingOn := true;
     GProject.SetNotChanged;

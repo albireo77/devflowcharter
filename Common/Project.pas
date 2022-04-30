@@ -142,7 +142,6 @@ begin
    FObjectIds := TStringList.Create;
    FComponentList := TComponentList.Create;
    FLibSectionOffset := -1;
-   TInfra.GetMainForm.SetProjectMenu(true);
 end;
 
 destructor TProject.Destroy;

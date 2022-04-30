@@ -407,8 +407,6 @@ begin
 end;
 
 class procedure TInfra.SetInitialSettings;
-var
-   baseForm: TBaseForm;
 begin
    with GClpbrd do
    begin
@@ -421,20 +419,16 @@ begin
    GProject := nil;
    GCustomCursor := crNormal;
    Screen.Cursor := crDefault;
-   for baseForm in GetBaseForms do
+   for var baseForm in GetBaseForms do
       baseForm.ResetForm;
 end;
 
 class function TInfra.GetBaseForms: IEnumerable<TBaseForm>;
-var
-   list: TList<TBaseForm>;
-   i: integer;
-   comp: TComponent;
 begin
-   list := TList<TBaseForm>.Create;
-   for i := 0 to Application.ComponentCount-1 do
+   var list := TList<TBaseForm>.Create;
+   for var i := 0 to Application.ComponentCount-1 do
    begin
-      comp := Application.Components[i];
+      var comp := Application.Components[i];
       if comp is TBaseForm then
          list.Add(TBaseForm(comp));
    end;
