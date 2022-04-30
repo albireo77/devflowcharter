@@ -426,11 +426,9 @@ procedure TMainForm.miOpenClick(Sender: TObject);
 begin
    if not CreateNewProject then
       Exit;
-    var filePath := '';
-    if Sender <> miOpen then
-       filePath := StripHotKey(TMenuItem(Sender).Caption);
     var tmpCursor := Screen.Cursor;
     Screen.Cursor := crHourGlass;
+    var filePath := IfThen(Sender <> miOpen, StripHotKey(TMenuItem(Sender).Caption));
     filePath := TXMLProcessor.ImportFromXMLFile(GProject.ImportFromXMLTag, impAll, filePath);
     GProject.ChangingOn := true;
     GProject.SetNotChanged;
