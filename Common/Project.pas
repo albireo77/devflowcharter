@@ -179,17 +179,13 @@ begin
 end;
 
 function TProject.GetPage(const ACaption: string; ACreate: boolean = true): TBlockTabSheet;
-var
-   i: integer;
-   caption: string;
-   pageControl: TPageControl;
 begin
    result := nil;
-   caption := ACaption.Trim;
+   var caption := ACaption.Trim;
    if not caption.IsEmpty then
    begin
-      pageControl := TInfra.GetMainForm.pgcPages;
-      for i := 0 to pageControl.PageCount-1 do
+      var pageControl := TInfra.GetMainForm.pgcPages;
+      for var i := 0 to pageControl.PageCount-1 do
       begin
          if SameCaption(pageControl.Pages[i].Caption, caption) then
          begin
@@ -228,12 +224,6 @@ begin
 end;
 
 procedure TProject.PopulateDataTypeSets;
-var
-   userType: TUserDataType;
-   i: integer;
-   name: string;
-   nativeType: PNativeDataType;
-   typesSet: PTypesSet;
 begin
    FIntegerTypesSet := [];
    FRealTypesSet := [];
@@ -248,11 +238,12 @@ begin
 
    if FGlobalVars <> nil then
    begin
-      for i := 0 to FGlobalVars.cbType.Items.Count-1 do
+      for var i := 0 to FGlobalVars.cbType.Items.Count-1 do
       begin
-         name := FGlobalVars.cbType.Items[i];
-         userType := GetComponent<TUserDataType>(name);
-         nativeType := GInfra.GetNativeDataType(name);
+         var name := FGlobalVars.cbType.Items[i];
+         var userType := GetComponent<TUserDataType>(name);
+         var nativeType := GInfra.GetNativeDataType(name);
+         var typesSet: PTypesSet := nil;
          if nativeType <> nil then
          begin
             case nativeType.Kind of
@@ -312,14 +303,11 @@ begin
 end;
 
 function TProject.GetComponents<T>(AComparer: IComparer<T> = nil): IEnumerable<T>;
-var
-   list: TList<T>;
-   comp: TComponent;
 begin
-   list := TList<T>.Create;
+   var list := TList<T>.Create;
    for var i := 0 to FComponentList.Count-1 do
    begin
-      comp := FComponentList[i];
+      var comp := FComponentList[i];
       if (T = TComponent) or (comp.ClassType = T) then
          list.Add(comp);
    end;
@@ -329,17 +317,13 @@ begin
 end;
 
 function TProject.GetIComponents<T, I>(AComparer: IComparer<T> = nil): IEnumerable<I>;
-var
-   list: TList<I>;
-   intf: I;
-   rType: TRttiType;
-   iType: TRttiInterfaceType;
 begin
-   list := TList<I>.Create;
-   rType := TRttiContext.Create.GetType(TypeInfo(I));
+   var list := TList<I>.Create;
+   var rType := TRttiContext.Create.GetType(TypeInfo(I));
+   var intf: I := nil;
    if rType is TRttiInterfaceType then
    begin
-      iType := rType as TRttiInterfaceType;
+      var iType := rType as TRttiInterfaceType;
       for var comp in GetComponents<T>(AComparer) do
       begin
          if Supports(comp, iType.GUID, intf) then
@@ -350,14 +334,10 @@ begin
 end;
 
 function TProject.Register(AObject: TObject; AId: integer = ID_INVALID): integer;
-var
-   idx: integer;
-   id: string;
-   accepted: boolean;
 begin
-   id := AId.ToString;
-   accepted := (AId <> ID_INVALID) and (FObjectIds.IndexOf(id) = -1);
-   idx := FObjectIds.IndexOfObject(AObject);
+   var id := AId.ToString;
+   var accepted := (AId <> ID_INVALID) and (FObjectIds.IndexOf(id) = -1);
+   var idx := FObjectIds.IndexOfObject(AObject);
    if idx <> -1 then
    begin
       result := FObjectIds[idx].ToInteger;
@@ -396,15 +376,11 @@ begin
 end;
 
 procedure TProject.ExportPagesToXMLTag(ATag: IXMLElement);
-var
-   i: integer;
-   pageControl: TPageControl;
-   tag: IXMLElement;
 begin
-   tag := ATag.OwnerDocument.CreateElement('pages');
+   var tag := ATag.OwnerDocument.CreateElement('pages');
    ATag.AppendChild(tag);
-   pageControl := TInfra.GetMainForm.pgcPages;
-   for i := 0 to pageControl.PageCount-1 do
+   var pageControl := TInfra.GetMainForm.pgcPages;
+   for var i := 0 to pageControl.PageCount-1 do
       TBlockTabSheet(pageControl.Pages[i]).ExportToXMLTag(tag);
 end;
 
@@ -446,9 +422,6 @@ begin
 end;
 
 procedure TProject.ExportToXMLTag(ATag: IXMLElement);
-var
-   i: integer;
-   pageControl: TPageControl;
 begin
 
    ATag.SetAttribute(LANG_ATTR, GInfra.CurrentLang.Name);
@@ -464,8 +437,8 @@ begin
    if FGlobalConsts <> nil then
       FGlobalConsts.ExportToXMLTag(ATag);
 
-   pageControl := TInfra.GetMainForm.pgcPages;
-   for i := 0 to pageControl.PageCount-1 do
+   var pageControl := TInfra.GetMainForm.pgcPages;
+   for var i := 0 to pageControl.PageCount-1 do
       UpdateZOrder(TBlockTabSheet(pageControl.Pages[i]).Box);
 
    for var xmlable in GetIComponents<IXMLable>(ByPageIndexComponentComparer) do
@@ -479,20 +452,17 @@ begin
 end;
 
 procedure TProject.ImportPagesFromXML(ATag: IXMLElement);
-var
-   pageFront: string;
-   page, activePage: TBlockTabSheet;
-   tag: IXMLElement;
+
 begin
    if ATag <> nil then
    begin
-      activePage := nil;
-      pageFront := ATag.GetAttribute(PAGE_FRONT_ATTR);
-      tag := TXMLProcessor.FindChildTag(ATag, 'pages');
+      var activePage: TBlockTabSheet := nil;
+      var pageFront := ATag.GetAttribute(PAGE_FRONT_ATTR);
+      var tag := TXMLProcessor.FindChildTag(ATag, 'pages');
       tag := TXMLProcessor.FindChildTag(tag, 'page');
       while tag <> nil do
       begin
-         page := GetPage(tag.GetAttribute('name'));
+         var page := GetPage(tag.GetAttribute('name'));
          if page <> nil then
          begin
             page.ImportFromXMLTag(tag);
@@ -508,24 +478,22 @@ begin
 end;
 
 function TProject.ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TError;
-var
-   s, langName, ver: string;
 begin
 
    result := errValidate;
 
-   langName := ATag.GetAttribute(LANG_ATTR);
+   var langName := ATag.GetAttribute(LANG_ATTR);
    if GInfra.GetLangDefinition(langName) = nil then
    begin
       Gerr_text := i18Manager.GetFormattedString('LngNoSprt', [langName]);
       Exit;
    end;
 
-   ver := ATag.GetAttribute(APP_VERSION_ATTR);
+   var ver := ATag.GetAttribute(APP_VERSION_ATTR);
    if TInfra.CompareProgramVersion(ver) > 0 then
       TInfra.ShowWarningBox('OldVerMsg', [ver]);
 
-   s := IfThen(SameText(langName, GInfra.TemplateLang.Name), 'ChangeLngNone', 'ChangeLngAsk');
+   var s := IfThen(SameText(langName, GInfra.TemplateLang.Name), 'ChangeLngNone', 'ChangeLngAsk');
 
    if (not SameText(GInfra.CurrentLang.Name, langName)) and
       (TInfra.ShowQuestionBox(s, [langName.Trim, sLineBreak], MB_YESNO+MB_ICONQUESTION) = mrYes) then
@@ -561,9 +529,6 @@ begin
 end;
 
 procedure TProject.SetGlobalDeclarations(AForm: TDeclarationsForm);
-var
-   x: integer;
-   splitter: TSplitter;
 begin
    FGlobalVars.Free;
    FGlobalVars := nil;
@@ -573,7 +538,8 @@ begin
       FGlobalVars := TVarDeclareList.Create(AForm, 2, 1, DEF_VARLIST_WIDTH, 6, 5, DEF_VARLIST_WIDTH-10);
    if GInfra.CurrentLang.EnabledConsts then
    begin
-      splitter := nil;
+      var splitter: TSplitter := nil;
+      var x := 0;
       if FGlobalVars <> nil then
       begin
          FGlobalVars.Align := alLeft;
@@ -609,15 +575,13 @@ begin
 end;
 
 function TProject.GetSelectList(ATag: IXMLElement; const ALabel: string; const ATagName: string; const ATagName2: string = ''): TStringList;
-var
-   tag, tag1: IXMLElement;
-   isTag2Empty: boolean;
 begin
-   isTag2Empty := ATagName2.IsEmpty;
+   var isTag2Empty := ATagName2.IsEmpty;
    result := TStringList.Create;
-   tag := TXMLProcessor.FindChildTag(ATag, ATagName);
+   var tag := TXMLProcessor.FindChildTag(ATag, ATagName);
    while tag <> nil do
    begin
+      var tag1: IXMLElement := nil;
       if not isTag2Empty then
          tag1 := TXMLProcessor.FindChildTag(tag, ATagName2)
       else
@@ -731,14 +695,10 @@ begin
 end;
 
 function TProject.ImportUserDataTypesFromXML(ATag: IXMLElement; AImportMode: TImportMode): TError;
-var
-   dataType: TUserDataType;
-   tag: IXMLElement;
-   selectList: TStringList;
 begin
    result := errNone;
-   selectList := nil;
-   dataType := nil;
+   var selectList: TStringList := nil;
+   var dataType: TUserDataType := nil;
    if GInfra.CurrentLang.EnabledUserDataTypes then
    try
       if AImportMode <> impAll then
@@ -747,7 +707,7 @@ begin
          if (selectList <> nil) and (selectList.Count = 0) then
             Exit;
       end;
-      tag := TXMLProcessor.FindChildTag(ATag, DATATYPE_TAG);
+      var tag := TXMLProcessor.FindChildTag(ATag, DATATYPE_TAG);
       while tag <> nil do
       begin
          if (selectList <> nil) and (selectList.IndexOf(tag.GetAttribute(NAME_ATTR)) = -1) then
@@ -779,19 +739,15 @@ begin
 end;
 
 function TProject.ImportCommentsFromXML(ATag: IXMLElement): integer;
-var
-   comment: TComment;
-   tag: IXMLElement;
-   page: TBlockTabSheet;
 begin
    result := NO_ERROR;
-   tag := TXMLProcessor.FindChildTag(ATag, COMMENT_ATTR);
+   var tag := TXMLProcessor.FindChildTag(ATag, COMMENT_ATTR);
    while tag <> nil do
    begin
-      page := GetPage(tag.GetAttribute(PAGE_CAPTION_ATTR));
+      var page := GetPage(tag.GetAttribute(PAGE_CAPTION_ATTR));
       if page = nil then
          page := GetMainPage;
-      comment := TComment.CreateDefault(page);
+      var comment := TComment.CreateDefault(page);
       comment.ImportFromXMLTag(tag, nil);
       tag := TXMLProcessor.FindNextTag(tag);
    end;
@@ -822,18 +778,14 @@ begin
 end;
 
 procedure TProject.UpdateZOrder(AParent: TWinControl);
-var
-   winControl: IWinControl;
-   hnd: THandle;
-   i: integer;
 begin
-   i := 0;
+   var i := 0;
    if AParent <> nil then
    begin
-      hnd := GetWindow(GetTopWindow(AParent.Handle), GW_HWNDLAST);
+      var hnd := GetWindow(GetTopWindow(AParent.Handle), GW_HWNDLAST);
       while hnd <> 0 do
       begin
-         winControl := GetIWinControlComponent(hnd);
+         var winControl := GetIWinControlComponent(hnd);
          if winControl <> nil then
          begin
             winControl.SetZOrder(i);
@@ -851,17 +803,14 @@ begin
 end;
 
 procedure TProject.ExportToGraphic(AGraphic: TGraphic);
-var
-   lBitmap: TBitmap;
-   page: TBlockTabSheet;
-   pnt: TPoint;
 begin
+   var lBitmap: TBitmap := nil;
    if AGraphic is TBitmap then
       lBitmap := TBitmap(AGraphic)
    else
       lBitmap := TBitmap.Create;
-   page := GetActivePage;
-   pnt := page.Box.GetBottomRight;
+   var page := GetActivePage;
+   var pnt := page.Box.GetBottomRight;
    lBitmap.Width := pnt.X;
    lBitmap.Height := pnt.Y;
    page.DrawI := false;
@@ -909,8 +858,6 @@ begin
 end;
 
 function TProject.CountErrWarn: TErrWarnCount;
-var
-   errWarnCount: TErrWarnCount;
 begin
    result.ErrorCount := 0;
    result.WarningCount := 0;
@@ -927,7 +874,7 @@ begin
          end;
          if func.Body <> nil then
          begin
-            errWarnCount := func.Body.CountErrWarn;
+            var errWarnCount := func.Body.CountErrWarn;
             Inc(result.ErrorCount, errWarnCount.ErrorCount);
             Inc(result.WarningCount, errWarnCount.WarningCount);
          end;
@@ -946,13 +893,11 @@ begin
 end;
 
 procedure TProject.GenerateTree(ANode: TTreeNode);
-var
-   mainFunc: TUserFunction;
-   node: TTreeNode;
-   mForm: TBaseForm;
 begin
 
-   mainFunc := nil;
+   var mainFunc: TUserFunction := nil;
+   var mForm: TBaseForm := nil;
+   var node: TTreeNode := nil;
 
    if GInfra.CurrentLang.EnabledUserDataTypes then
    begin
@@ -1066,14 +1011,12 @@ begin
 end;
 
 function TProject.GetLibraryList: TStringList;
-var
-   libName: string;
 begin
    result := TStringList.Create;
    result.CaseSensitive := GInfra.CurrentLang.CaseSensitiveSyntax;
    for var tab in GetIComponents<IWithTab>(ByPageIndexComponentComparer) do
    begin
-      libName := tab.GetLibName;
+      var libName := tab.GetLibName;
       if (not libName.IsEmpty) and (GInfra.CurrentLang.AllowDuplicatedLibs or (result.IndexOf(libName) = -1)) then
          result.AddObject(libName, tab.GetTab);
    end;
