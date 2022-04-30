@@ -398,12 +398,11 @@ end;
 
 function TMainForm.CreateNewProject: boolean;
 begin
-   result := false;
    if (GProject <> nil) and GProject.IsChanged then
    begin
       case ConfirmSave of
          IDYES: miSave.Click;
-         IDCANCEL: Exit;
+         IDCANCEL: Exit(false);
       end;
    end;
    TInfra.SetInitialSettings;
@@ -1133,14 +1132,11 @@ begin
 end;
 
 procedure TMainForm.miNewFlowchartClick(Sender: TObject);
-var
-   mainBlock: TMainBlock;
-   page: TBlockTabSheet;
 begin
    if GProject <> nil then
    begin
-      page := GProject.GetActivePage;
-      mainBlock := TMainBlock.Create(page, page.Box.ScreenToClient(page.Box.PopupMenu.PopupPoint));
+      var page := GProject.GetActivePage;
+      var mainBlock := TMainBlock.Create(page, page.Box.ScreenToClient(page.Box.PopupMenu.PopupPoint));
       mainBlock.OnResize(mainBlock);
       TUserFunction.Create(nil, mainBlock);
       GProject.SetChanged;
@@ -1234,10 +1230,8 @@ begin
 end;
 
 procedure TMainForm.miRemovePageClick(Sender: TObject);
-var
-   res: integer;
 begin
-   res := IDYES;
+   var res := IDYES;
    if GSettings.ConfirmRemove then
       res := TInfra.ShowQuestionBox(i18Manager.GetString('ConfirmRemove'));
    if res = IDYES then
