@@ -157,16 +157,6 @@ begin
    inherited Destroy;
 end;
 
-procedure TProject.SetLibSectionOffset(ALibSectionOffset: integer);
-begin
-   FLibSectionOffset := ALibSectionOffset;
-end;
-
-function TProject.GetLibSectionOffset: integer;
-begin
-   result := FLibSectionOffset;
-end;
-
 class function TProject.GetInstance: TProject;
 begin
    if FInstance = nil then
@@ -176,6 +166,16 @@ begin
       FInstance.PopulateDataTypeSets;
    end;
    result := FInstance;
+end;
+
+procedure TProject.SetLibSectionOffset(ALibSectionOffset: integer);
+begin
+   FLibSectionOffset := ALibSectionOffset;
+end;
+
+function TProject.GetLibSectionOffset: integer;
+begin
+   result := FLibSectionOffset;
 end;
 
 function TProject.GetPage(const ACaption: string; ACreate: boolean = true): TBlockTabSheet;

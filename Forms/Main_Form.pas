@@ -402,8 +402,6 @@ begin
 end;
 
 procedure TMainForm.miNewClick(Sender: TObject);
-var
-   mBlock: TMainBlock;
 begin
    if (GProject <> nil) and GProject.IsChanged then
    begin
@@ -414,7 +412,7 @@ begin
    end;
    TInfra.SetInitialSettings;
    GProject := TProject.GetInstance;
-   mBlock := TMainBlock.Create(GProject.GetMainPage, GetMainBlockNextTopLeft);
+   var mBlock := TMainBlock.Create(GProject.GetMainPage, GetMainBlockNextTopLeft);
    mBlock.OnResize(mBlock);
    TUserFunction.Create(nil, mBlock);
    ExportDialog.FileName := '';
@@ -422,9 +420,6 @@ begin
 end;
 
 procedure TMainForm.miOpenClick(Sender: TObject);
-var
-   tmpCursor: TCursor;
-   filePath: string;
 begin
     if (GProject <> nil) and GProject.IsChanged then
     begin
@@ -433,11 +428,11 @@ begin
           IDCANCEL: Exit;
        end;
     end;
-    filePath := '';
+    var filePath := '';
     if Sender <> miOpen then
        filePath := StripHotKey(TMenuItem(Sender).Caption);
     TInfra.SetInitialSettings;
-    tmpCursor := Screen.Cursor;
+    var tmpCursor := Screen.Cursor;
     Screen.Cursor := crHourGlass;
     GProject := TProject.GetInstance;
     filePath := TXMLProcessor.ImportFromXMLFile(GProject.ImportFromXMLTag, impAll, filePath);
