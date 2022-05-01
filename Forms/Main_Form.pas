@@ -432,7 +432,6 @@ begin
       var mBlock := TMainBlock.Create(GProject.GetMainPage, GetMainBlockNextTopLeft);
       mBlock.OnResize(mBlock);
       TUserFunction.Create(nil, mBlock);
-      ExportDialog.FileName := '';
       GProject.ChangingOn := true;
    end;
 end;

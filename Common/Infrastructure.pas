@@ -256,6 +256,8 @@ begin
             graphic.Free;
          end;
       end;
+      dialog.FileName := '';
+      dialog.Filter := '';
    end;
 end;
 
