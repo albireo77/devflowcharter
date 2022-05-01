@@ -213,6 +213,7 @@ type
     FHistoryMenu: THistoryMenu;
     function BuildFuncMenu: integer;
     function CreateNewProject: boolean;
+    function CloseExistingProject: boolean;
     procedure CM_MenuClosed(var msg: TMessage); message CM_MENU_CLOSED;
     procedure WM_PPIDialog(var Msg: TMessage); message WM_PPI_DIALOG;
   public
@@ -396,7 +397,7 @@ begin
    FClockPos := nextPos[FClockPos];
 end;
 
-function TMainForm.CreateNewProject: boolean;
+function TMainForm.CloseExistingProject: boolean;
 begin
    if (GProject <> nil) and GProject.IsChanged then
    begin
@@ -406,38 +407,53 @@ begin
       end;
    end;
    TInfra.SetInitialSettings;
-   GProject := TProject.GetInstance;
-   SetProjectMenu(true);
    result := true;
+end;
+
+procedure TMainForm.miCloseClick(Sender: TObject);
+begin
+   CloseExistingProject;
+end;
+
+function TMainForm.CreateNewProject: boolean;
+begin
+   result := CloseExistingProject;
+   if result then
+   begin
+      GProject := TProject.GetInstance;
+      SetProjectMenu(true);
+   end;
 end;
 
 procedure TMainForm.miNewClick(Sender: TObject);
 begin
-   if not CreateNewProject then
-      Exit;
-   var mBlock := TMainBlock.Create(GProject.GetMainPage, GetMainBlockNextTopLeft);
-   mBlock.OnResize(mBlock);
-   TUserFunction.Create(nil, mBlock);
-   ExportDialog.FileName := '';
-   GProject.ChangingOn := true;
+   if CreateNewProject then
+   begin
+      var mBlock := TMainBlock.Create(GProject.GetMainPage, GetMainBlockNextTopLeft);
+      mBlock.OnResize(mBlock);
+      TUserFunction.Create(nil, mBlock);
+      ExportDialog.FileName := '';
+      GProject.ChangingOn := true;
+   end;
 end;
 
 procedure TMainForm.miOpenClick(Sender: TObject);
 begin
-   if not CreateNewProject then
-      Exit;
-    var tmpCursor := Screen.Cursor;
-    Screen.Cursor := crHourGlass;
-    var filePath := IfThen(Sender <> miOpen, StripHotKey(TMenuItem(Sender).Caption));
-    filePath := TXMLProcessor.ImportFromXMLFile(GProject.ImportFromXMLTag, impAll, filePath);
-    GProject.ChangingOn := true;
-    GProject.SetNotChanged;
-    Screen.Cursor := tmpCursor;
-    SetFocus;
-    if not filePath.IsEmpty then
-       AcceptFile(filePath)
-    else
-       TInfra.SetInitialSettings;
+   if CreateNewProject then
+   begin
+      var tmpCursor := Screen.Cursor;
+      Screen.Cursor := crHourGlass;
+      var filePath := IfThen(Sender <> miOpen, StripHotKey(TMenuItem(Sender).Caption));
+      filePath := TXMLProcessor.ImportFromXMLFile(GProject.ImportFromXMLTag, impAll, filePath);
+      GProject.ChangingOn := true;
+      GProject.SetNotChanged;
+      Screen.Cursor := tmpCursor;
+      SetFocus;
+      if not filePath.IsEmpty then
+         AcceptFile(filePath)
+      else
+         TInfra.SetInitialSettings;
+   end;
 end;
 
 procedure TMainForm.miSaveAsClick(Sender: TObject);
@@ -466,18 +482,6 @@ end;
 procedure TMainForm.miExitClick(Sender: TObject);
 begin
    Close;
-end;
-
-procedure TMainForm.miCloseClick(Sender: TObject);
-begin
-   if GProject.IsChanged then
-   begin
-      case ConfirmSave of
-         IDYES: miSave.Click;
-         IDCANCEL: Exit;
-      end;
-   end;
-   TInfra.SetInitialSettings;
 end;
 
 procedure TMainForm.miSaveClick(Sender: TObject);
