@@ -224,22 +224,18 @@ begin
 end;
 
 class function TInfra.ExportToFile(AExport: IExportable): TError;
-var
-   graphic: TGraphic;
-   dialog: TSaveDialog;
-   filterKey: string;
 begin
    result := errNone;
    if AExport <> nil then
    begin
-      dialog := GetMainForm.ExportDialog;
+      var dialog := GetMainForm.ExportDialog;
       dialog.FileName := AExport.GetExportFileName;
       dialog.Filter := i18Manager.GetJoinedString('|', PROJECT_DIALOG_FILTER_KEYS);
       dialog.FilterIndex := 1;
       if dialog.Execute then
       begin
-         graphic := nil;
-         filterKey := PROJECT_DIALOG_FILTER_KEYS[dialog.FilterIndex-1];
+         var graphic: TGraphic := nil;
+         var filterKey := PROJECT_DIALOG_FILTER_KEYS[dialog.FilterIndex-1];
          if filterKey = XML_FILES_FILTER_KEY then
             result := AExport.ExportToXMLFile(dialog.Filename)
          else if filterKey = BMP_FILES_FILTER_KEY then
@@ -307,11 +303,9 @@ begin
 end;
 
 function TInfra.GetNativeFunction(const AName: string): PNativeFunction;
-var
-   i: integer;
 begin
    result := nil;
-   for i := 0 to High(FCurrentLang.NativeFunctions) do
+   for var i := 0 to High(FCurrentLang.NativeFunctions) do
    begin
       if SameStrings(AName, FCurrentLang.NativeFunctions[i].Name) then
       begin
@@ -322,15 +316,11 @@ begin
 end;
 
 procedure TInfra.SetHLighters;
-var
-   i: integer;
-   comp: TComponent;
-   lang: TLangDefinition;
 begin
-   for i := 0 to High(FLangArray)-1 do
+   for var i := 0 to High(FLangArray)-1 do
    begin
-      lang := FLangArray[i];
-      comp := GetEditorForm.FindComponent(lang.HighLighterVarName);
+      var lang := FLangArray[i];
+      var comp := GetEditorForm.FindComponent(lang.HighLighterVarName);
       if comp is TSynCustomHighlighter then
          lang.HighLighter := TSynCustomHighlighter(comp);
       if lang = GInfra.CurrentLang then
@@ -928,11 +918,9 @@ begin
 end;
 
 class function TInfra.GetParsedBlock: TBlock;
-var
-   edit: TCustomEdit;
 begin
    result := nil;
-   edit := GetParsedEdit;
+   var edit := GetParsedEdit;
    if (edit <> nil) and (edit.Parent is TBlock) then
       result := TBlock(edit.Parent);
 end;
@@ -1191,13 +1179,9 @@ begin
 end;
 
 class function TInfra.GetDimensionCount(const AText: string): integer;
-var
-   i, len: integer;
-   txt: string;
-   nextOpen: boolean;
 begin
-   txt := ReplaceStr(AText, ' ', '');
-   len := txt.Length;
+   var txt := ReplaceStr(AText, ' ', '');
+   var len := txt.Length;
    if len = 0 then
       Exit(-1);
    if txt[1] = '[' then
@@ -1205,8 +1189,8 @@ begin
       if txt[len] <> ']' then
          Exit(-1);
       result := 0;
-      nextOpen := true;
-      for i := 1 to len do
+      var nextOpen := true;
+      for var i := 1 to len do
       begin
          if txt[i] = '[' then
          begin
