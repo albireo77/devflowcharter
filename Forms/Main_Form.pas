@@ -214,6 +214,7 @@ type
     function BuildFuncMenu: integer;
     function CreateNewProject: boolean;
     function CloseExistingProject: boolean;
+    function CanCloseExistingProject: boolean;
     procedure CM_MenuClosed(var msg: TMessage); message CM_MENU_CLOSED;
     procedure WM_PPIDialog(var Msg: TMessage); message WM_PPI_DIALOG;
   public
@@ -397,7 +398,7 @@ begin
    FClockPos := nextPos[FClockPos];
 end;
 
-function TMainForm.CloseExistingProject: boolean;
+function TMainForm.CanCloseExistingProject: boolean;
 begin
    if (GProject <> nil) and GProject.IsChanged then
    begin
@@ -406,13 +407,24 @@ begin
          IDCANCEL: Exit(false);
       end;
    end;
-   TInfra.SetInitialSettings;
    result := true;
+end;
+
+function TMainForm.CloseExistingProject: boolean;
+begin
+   result := CanCloseExistingProject;
+   if result then
+      TInfra.SetInitialSettings;
 end;
 
 procedure TMainForm.miCloseClick(Sender: TObject);
 begin
    CloseExistingProject;
+end;
+
+procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+   CanClose := CanCloseExistingProject;
 end;
 
 function TMainForm.CreateNewProject: boolean;
@@ -509,17 +521,6 @@ end;
 procedure TMainForm.miAboutClick(Sender: TObject);
 begin
    AboutForm.ShowModal;
-end;
-
-procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-begin
-   if (GProject <> nil) and GProject.IsChanged then
-   begin
-      case ConfirmSave of
-         IDYES: miSave.Click;
-         IDCANCEL: CanClose := false;
-      end;
-   end;
 end;
 
 procedure TMainForm.OnException(Sender: TObject; E: Exception);
