@@ -1037,36 +1037,25 @@ begin
 end;
 
 procedure TMainForm.miAddBranchClick(Sender: TObject);
-var
-   caseBlock: TCaseBlock;
-   branch: TBranch;
-   i: integer;
 begin
    if pmPages.PopupComponent is TCaseBlock then
    begin
-      caseBlock := TCaseBlock(pmPages.PopupComponent);
-      if Sender = miInsertBranch then
-         i := caseBlock.Ired
-      else
-         i := -1;
-      branch := caseBlock.InsertNewBranch(i);
-      TInfra.UpdateCodeEditor(branch);
+      var caseBlock := TCaseBlock(pmPages.PopupComponent);
+      var i := IfThen(Sender = miInsertBranch, caseBlock.Ired, -1);
+      TInfra.UpdateCodeEditor(caseBlock.InsertNewBranch(i));
    end;
 end;
 
 procedure TMainForm.miRemoveBranchClick(Sender: TObject);
-var
-   res: integer;
-   caseBlock: TCaseBlock;
 begin
    if pmPages.PopupComponent is TCaseBlock then
    begin
-      res := IDYES;
+      var res := IDYES;
       if GSettings.ConfirmRemove then
          res := TInfra.ShowQuestionBox(i18Manager.GetString('ConfirmRemove'));
       if res = IDYES then
       begin
-         caseBlock := TCaseBlock(pmPages.PopupComponent);
+         var caseBlock := TCaseBlock(pmPages.PopupComponent);
          caseBlock.RemoveBranch(caseBlock.Ired);
          TInfra.UpdateCodeEditor(caseBlock.Branch);
       end;
@@ -1074,15 +1063,12 @@ begin
 end;
 
 procedure TMainForm.miUnfoldAllClick(Sender: TObject);
-var
-   block: TGroupBlock;
-   lock: boolean;
 begin
    if pmPages.PopupComponent is TGroupBlock then
    begin
-      block := TGroupBlock(pmPages.PopupComponent);
+      var block := TGroupBlock(pmPages.PopupComponent);
       block.ClearSelection;
-      lock := block.LockDrawing;
+      var lock := block.LockDrawing;
       try
          block.ExpandAll;
       finally
@@ -1100,14 +1086,11 @@ begin
 end;
 
 procedure TMainForm.miPrint2Click(Sender: TObject);
-var
-   bitmap: TBitmap;
-   block: TBlock;
 begin
    if pmPages.PopupComponent is TBlock then
    begin
-      block := TBlock(pmPages.PopupComponent);
-      bitmap := TBitmap.Create;
+      var block := TBlock(pmPages.PopupComponent);
+      var bitmap := TBitmap.Create;
       try
          block.ExportToGraphic(bitmap);
          TInfra.PrintBitmap(bitmap);
