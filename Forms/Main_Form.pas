@@ -400,14 +400,14 @@ end;
 
 function TMainForm.CanCloseExistingProject: boolean;
 begin
+   result := true;
    if (GProject <> nil) and GProject.IsChanged then
    begin
       case ConfirmSave of
          IDYES: miSave.Click;
-         IDCANCEL: Exit(false);
+         IDCANCEL: result := false;
       end;
    end;
-   result := true;
 end;
 
 function TMainForm.CloseExistingProject: boolean;
