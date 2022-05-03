@@ -414,7 +414,7 @@ function TMainForm.CloseExistingProject: boolean;
 begin
    result := CanCloseExistingProject;
    if result then
-      TInfra.SetInitialSettings;
+      TInfra.Reset;
 end;
 
 procedure TMainForm.miCloseClick(Sender: TObject);
@@ -463,7 +463,7 @@ begin
       if not filePath.IsEmpty then
          AcceptFile(filePath)
       else
-         TInfra.SetInitialSettings;
+         TInfra.Reset;
    end;
 end;
 
@@ -528,7 +528,7 @@ begin
    Application.ShowException(E);
    if GProject <> nil then
       miSaveAs.Click;
-   TInfra.SetInitialSettings;
+   TInfra.Reset;
 end;
 
 procedure TMainForm.miUndoRemoveClick(Sender: TObject);

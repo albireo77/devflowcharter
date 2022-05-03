@@ -600,7 +600,7 @@ begin
                         or (FFlowchartFontSize <> flowFontSize)) then
    begin
       if TInfra.ShowQuestionBox('CloseProjectAsk', [sLineBreak]) = mrYes then
-         TInfra.SetInitialSettings
+         TInfra.Reset
       else
          applyAll := false;
    end;

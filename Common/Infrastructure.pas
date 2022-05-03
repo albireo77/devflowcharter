@@ -53,7 +53,7 @@ type
          class procedure ShowWarningBox(const AKey: string; Args: array of const); overload;
          class procedure ShowErrorBox(const AErrorMsg: string; AError: TError); overload;
          class procedure ShowErrorBox(const AKey: string; Args: array of const; AError: TError); overload;
-         class procedure SetInitialSettings;
+         class procedure Reset;
          class procedure PopulateDataTypeCombo(AcbType: TComboBox; ASkipIndex: integer = 100);
          class procedure PrintBitmap(ABitmap: TBitmap);
          class function InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; const ATemplateString: string; AObject: TObject = nil): integer; overload;
@@ -398,7 +398,7 @@ begin
    result := ShowQuestionBox(i18Manager.GetFormattedString(AKey, Args), AFlags);
 end;
 
-class procedure TInfra.SetInitialSettings;
+class procedure TInfra.Reset;
 begin
    with GClpbrd do
    begin
@@ -964,22 +964,18 @@ begin
 end;
 
 class function TInfra.GetChangeLine(AObject: TObject; AEdit: TCustomEdit = nil; const ATemplate: string = ''): TChangeLine;
-var
-   templateLines: TStringList;
-   i, p: integer;
-   indent, template: string;
 begin
-   p := 0;
    result := TChangeLine.New;
    result.EditCaretXY := TInfra.GetCaretPos(AEdit);
+   var p := 0;
    if AObject <> nil then
    begin
       result.CodeRange := GetEditorForm.SelectCodeRange(AObject, false);
       if result.CodeRange.FirstRow <> ROW_NOT_FOUND then
       begin
-         templateLines := TStringList.Create;
+         var templateLines := TStringList.Create;
          try
-            template := ATemplate;
+            var template := ATemplate;
             if template.IsEmpty then
             begin
                if AObject is TBlock then
@@ -988,7 +984,7 @@ begin
                   template := PRIMARY_PLACEHOLDER;
             end;
             templateLines.Text := template;
-            for i := 0 to templateLines.Count-1 do
+            for var i := 0 to templateLines.Count-1 do
             begin
                p := Pos(PRIMARY_PLACEHOLDER, templateLines[i]);
                if p <> 0 then
@@ -1001,7 +997,7 @@ begin
                   break;
                end;
             end;
-            indent := TInfra.ExtractIndentString(result.CodeRange.Lines[result.Row]);
+            var indent := TInfra.ExtractIndentString(result.CodeRange.Lines[result.Row]);
             result.Col := indent.Length;
             if result.Row = ROW_NOT_FOUND then    // row with placeholder not found
             begin
@@ -1154,18 +1150,15 @@ begin
 end;
 
 class function TInfra.GetDimensions(const AText: string): TArray<string>;
-var
-   txt, s: string;
-   d, i: integer;
 begin
-   txt := ReplaceStr(AText, ' ', '');
-   d := GetDimensionCount(txt);
+   var txt := ReplaceStr(AText, ' ', '');
+   var d := GetDimensionCount(txt);
    if d < 1 then
       Exit(nil);
    SetLength(result, d);
-   s := '';
+   var s := '';
    d := 0;
-   for i := 1 to txt.Length do
+   for var i := 1 to txt.Length do
    begin
       if txt[i] = ']' then
       begin
