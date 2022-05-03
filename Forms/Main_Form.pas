@@ -978,7 +978,7 @@ end;
 
 procedure TMainForm.miSubRoutinesClick(Sender: TObject);
 begin
-   var form := TForm(nil);
+   var form: TForm := nil;
    if Sender = miSubRoutines then
       form := TInfra.GetFunctionsForm
    else if Sender = miToolbox then
