@@ -214,7 +214,7 @@ type
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
          procedure SetWidth(AMinX: integer); virtual;
-         procedure LinkBlocks(const idx: integer = PRIMARY_BRANCH_IDX-1);
+         procedure LinkBlocks(ABranchIndex: integer = PRIMARY_BRANCH_IDX-1);
          procedure Paint; override;
          function ExtractBranchIndex(const AStr: string): integer;
          function GetDiamondTop: TPoint; virtual;
@@ -243,7 +243,7 @@ type
          function GetFromXML(ATag: IXMLElement): TError; override;
          procedure SaveInXML(ATag: IXMLElement); override;
          procedure GenerateTemplateSection(ALines: TStringList; ATemplate: TStringList; const ALangId: string; ADeep: integer); override;
-         function GetBlocks(AIndex: integer = PRIMARY_BRANCH_IDX-1): IEnumerable<TBlock>;
+         function GetAllBlocks: IEnumerable<TBlock>;
          procedure ResizeWithDrawLock;
          function GetFoldedText: string;
          procedure SetFoldedText(const AText: string);
@@ -979,33 +979,6 @@ begin
 {}
 end;
 
-procedure TGroupBlock.LinkBlocks(const idx: integer = PRIMARY_BRANCH_IDX-1);
-var
-   p: TPoint;
-begin
-   var first := PRIMARY_BRANCH_IDX;
-   var last := FBranchList.Count - 1;
-   if GetBranch(idx) <> nil then
-   begin
-      first := idx;
-      last := idx;
-   end;
-   for var i := first to last do
-   begin
-      var blockPrev: TBlock := nil;
-      var br := FBranchList[i];
-      for var block in br do
-      begin
-         if blockPrev <> nil then
-            p := Point(blockPrev.BottomPoint.X+blockPrev.Left-block.TopHook.X, blockPrev.BoundsRect.Bottom)
-         else
-            p := Point(br.Hook.X-block.TopHook.X, br.Hook.Y+1);
-         TInfra.MoveWin(block, p);
-         blockPrev := block;
-      end;
-   end;
-end;
-
 function TGroupBlock.GetFoldedText: string;
 begin
    result := FMemoFolder.Text;
@@ -1244,14 +1217,9 @@ begin
    result := inherited FindSelectedBlock;
    if result = nil then
    begin
-      for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
+      for var block in GetAllBlocks do
       begin
-         for var block in FBranchList[i] do
-         begin
-            result := block.FindSelectedBlock;
-            if result <> nil then
-               break;
-         end;
+         result := block.FindSelectedBlock;
          if result <> nil then
             break;
       end;
@@ -1263,11 +1231,8 @@ begin
    inherited ChangeColor(AColor);
    if Expanded then
    begin
-      for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
-      begin
-         for var block in FBranchList[i] do
-             block.ChangeColor(AColor);
-      end;
+      for var block in GetAllBlocks do
+         block.ChangeColor(AColor);
    end;
    var lColor := GSettings.GetShapeColor(shpFolder);
    if lColor = GSettings.DesktopColor then
@@ -1301,13 +1266,10 @@ procedure TGroupBlock.ExpandAll;
 begin
    if not Expanded then
       ExpandFold(true);
-   for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
+   for var block in GetAllBlocks do
    begin
-      for var block in FBranchList[i] do
-      begin
-         if block is TGroupBlock then
-            TGroupBlock(block).ExpandAll;
-      end;
+      if block is TGroupBlock then
+         TGroupBlock(block).ExpandAll;
    end;
 end;
 
@@ -1329,17 +1291,14 @@ begin
    result := not Expanded;
    if Expanded then
    begin
-      for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
+      for var block in GetAllBlocks do
       begin
-         for var block in FBranchList[i] do
+         if block is TGroupBlock then
          begin
-            if block is TGroupBlock then
-            begin
-               result := TGroupBlock(block).HasFoldedBlocks;
-               if result then break;
-            end;
+            result := TGroupBlock(block).HasFoldedBlocks;
+            if result then
+               break;
          end;
-         if result then break;
       end;
    end;
 end;
@@ -1565,7 +1524,7 @@ end;
 function TGroupBlock.CountErrWarn: TErrWarnCount;
 begin
    result := inherited CountErrWarn;
-   for var block in GetBlocks do
+   for var block in GetAllBlocks do
    begin
       var errWarnCount := block.CountErrWarn;
       Inc(result.ErrorCount, errWarnCount.ErrorCount);
@@ -2047,11 +2006,8 @@ begin
       textControl.Visible := Expanded;
    FMemoFolder.Visible := not Expanded;
 
-   for i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
-   begin
-      for block in FBranchList[i] do
-          block.Visible := Expanded;
-   end;
+   for block in GetAllBlocks do
+      block.Visible := Expanded;
 
    if Expanded then
    begin
@@ -2179,7 +2135,7 @@ begin
             TXMLProcessor.AddText(tag1, br.hook.Y.ToString);
             tag2.AppendChild(tag1);
 
-            for block in GetBlocks(i) do
+            for block in br do
                 TXMLProcessor.ExportBlockToXML(block, tag2);
          end;
       finally
@@ -2513,34 +2469,50 @@ end;
 procedure TGroupBlock.PopulateComboBoxes;
 begin
    inherited PopulateComboBoxes;
-   for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
-   begin
-      for var block in FBranchList[i] do
-          block.PopulateComboBoxes;
-   end;
+   for var block in GetAllBlocks do
+      block.PopulateComboBoxes;
 end;
 
-function TGroupBlock.GetBlocks(AIndex: integer = PRIMARY_BRANCH_IDX-1): IEnumerable<TBlock>;
+function TGroupBlock.GetAllBlocks: IEnumerable<TBlock>;
 begin
    var list := TList<TBlock>.Create;
-   var first := PRIMARY_BRANCH_IDX;
-   var last := FBranchList.Count - 1;
-   if GetBranch(AIndex) <> nil then
-   begin
-      first := AIndex;
-      last := AIndex;
-   end;
-   var a := 0;
-   for var i := first to last do
-      a := a + FBranchList[i].Count;
-   if list.Capacity < a then
-      list.Capacity := a;
-   for var i := first to last do
+   for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
    begin
       for var block in FBranchList[i] do
           list.Add(block);
    end;
    result := TEnumeratorFactory<TBlock>.Create(list);
+end;
+
+procedure TGroupBlock.LinkBlocks(ABranchIndex: integer = PRIMARY_BRANCH_IDX-1);
+
+   procedure LinkBlocks(ABranch: TBranch);
+   var
+      p: TPoint;
+   begin
+      if ABranch <> nil then
+      begin
+         var blockPrev: TBlock := nil;
+         for var block in ABranch do
+         begin
+            if blockPrev <> nil then
+               p := Point(blockPrev.BottomPoint.X+blockPrev.Left-block.TopHook.X, blockPrev.BoundsRect.Bottom)
+            else
+               p := Point(ABranch.Hook.X-block.TopHook.X, ABranch.Hook.Y+1);
+            TInfra.MoveWin(block, p);
+            blockPrev := block;
+         end;
+      end;
+   end;
+
+begin
+   if ABranchIndex < PRIMARY_BRANCH_IDX then
+   begin
+      for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
+         LinkBlocks(FBranchList[i]);
+   end
+   else
+      LinkBlocks(GetBranch(ABranchIndex));
 end;
 
 function TBlock.SkipUpdateEditor: boolean;
