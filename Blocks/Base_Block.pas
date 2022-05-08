@@ -833,18 +833,13 @@ begin
 end;
 
 function TBlock.Clone(ABranch: TBranch): TBlock;
-var
-  blockType: TRttiType;
-  method: TRttiMethod;
-  params: TArray<TRttiParameter>;
-  ctx: TRttiContext;
 begin
    result := nil;
-   ctx := TRttiContext.Create;
-   blockType := ctx.GetType(ClassInfo);
-   for method in blockType.GetMethods do
+   var ctx := TRttiContext.Create;
+   var blockType := ctx.GetType(ClassInfo);
+   for var method in blockType.GetMethods do
    begin
-      params := method.GetParameters;
+      var params := method.GetParameters;
       if method.IsConstructor
          and (method.Visibility = mvPublic)
          and (Length(params) = 2)
@@ -937,9 +932,6 @@ begin
 end;
 
 procedure TGroupBlock.ResizeHorz(AContinue: boolean);
-var
-   xLeft, xRight: integer;
-   block: TBlock;
 begin
 
    Branch.Hook.X := FInitParms.BranchPoint.X;
@@ -955,8 +947,8 @@ begin
    else
    begin
       // resize in left direction
-      xLeft := 30;   // 30 - left margin
-      for block in Branch do
+      var xLeft := 30;   // 30 - left margin
+      for var block in Branch do
           xLeft := Min(xLeft, block.Left);
 
       Branch.Hook.X := Branch.Hook.X + 30 - xLeft;
@@ -965,8 +957,8 @@ begin
       BottomHook := Branch.Last.Left + Branch.Last.BottomPoint.X;
 
       // resize in right direction
-      xRight := 0;
-      for block in Branch do
+      var xRight := 0;
+      for var block in Branch do
           xRight := Max(xRight, block.BoundsRect.Right);
 
       SetWidth(xRight);  // set final width
@@ -2539,12 +2531,10 @@ begin
 end;
 
 function TGroupBlock.GetBlocks(AIndex: integer = PRIMARY_BRANCH_IDX-1): IEnumerable<TBlock>;
-var
-   first, last, i, a: integer;
-   block: TBlock;
-   list: TList<TBlock>;
 begin
-   list := TList<TBlock>.Create;
+   var list := TList<TBlock>.Create;
+   var first := 0;
+   var last := -1;
    if GetBranch(AIndex) <> nil then
    begin
       first := AIndex;
@@ -2554,20 +2544,15 @@ begin
    begin
       first := PRIMARY_BRANCH_IDX;
       last := FBranchList.Count - 1;
-   end
-   else
-   begin
-      first := 0;
-      last := -1;
    end;
-   a := 0;
-   for i := first to last do
+   var a := 0;
+   for var i := first to last do
       a := a + FBranchList[i].Count;
    if list.Capacity < a then
       list.Capacity := a;
-   for i := first to last do
+   for var i := first to last do
    begin
-      for block in FBranchList[i] do
+      for var block in FBranchList[i] do
           list.Add(block);
    end;
    result := TEnumeratorFactory<TBlock>.Create(list);
