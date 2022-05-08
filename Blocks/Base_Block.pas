@@ -981,26 +981,20 @@ end;
 
 procedure TGroupBlock.LinkBlocks(const idx: integer = PRIMARY_BRANCH_IDX-1);
 var
-   block, blockPrev: TBlock;
-   i, first, last: integer;
    p: TPoint;
-   br: TBranch;
 begin
+   var first := PRIMARY_BRANCH_IDX;
+   var last := FBranchList.Count - 1;
    if GetBranch(idx) <> nil then
    begin
       first := idx;
       last := idx;
-   end
-   else
-   begin
-      first := PRIMARY_BRANCH_IDX;
-      last := FBranchList.Count - 1;
    end;
-   for i := first to last do
+   for var i := first to last do
    begin
-      blockPrev := nil;
-      br := FBranchList[i];
-      for block in br do
+      var blockPrev: TBlock := nil;
+      var br := FBranchList[i];
+      for var block in br do
       begin
          if blockPrev <> nil then
             p := Point(blockPrev.BottomPoint.X+blockPrev.Left-block.TopHook.X, blockPrev.BoundsRect.Bottom)
@@ -2486,27 +2480,23 @@ begin
 end;
 
 procedure TBlock.ExportToGraphic(AGraphic: TGraphic);
-var
-   bitmap: TBitmap;
-   comment: TComment;
-   pnt: TPoint;
-   lPage: TBlockTabSheet;
 begin
    ClearSelection;
+   var bitmap: TBitmap := nil;
    if AGraphic is TBitmap then
       bitmap := TBitmap(AGraphic)
    else
       bitmap := TBitmap.Create;
    bitmap.Width := Width + 2;
    bitmap.Height := Height + 2;
-   lPage := Page;
+   var lPage := Page;
    lPage.DrawI := false;
    bitmap.Canvas.Lock;
    try
       PaintTo(bitmap.Canvas.Handle, 1, 1);
-      for comment in GetComments do
+      for var comment in GetComments do
       begin
-         pnt := ParentToClient(comment.BoundsRect.TopLeft, lPage.Box);
+         var pnt := ParentToClient(comment.BoundsRect.TopLeft, lPage.Box);
          comment.PaintTo(bitmap.Canvas.Handle, pnt.X, pnt.Y);
       end;
    finally
@@ -2533,17 +2523,12 @@ end;
 function TGroupBlock.GetBlocks(AIndex: integer = PRIMARY_BRANCH_IDX-1): IEnumerable<TBlock>;
 begin
    var list := TList<TBlock>.Create;
-   var first := 0;
-   var last := -1;
+   var first := PRIMARY_BRANCH_IDX;
+   var last := FBranchList.Count - 1;
    if GetBranch(AIndex) <> nil then
    begin
       first := AIndex;
       last := AIndex;
-   end
-   else if AIndex < PRIMARY_BRANCH_IDX then
-   begin
-      first := PRIMARY_BRANCH_IDX;
-      last := FBranchList.Count - 1;
    end;
    var a := 0;
    for var i := first to last do
