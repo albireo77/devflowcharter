@@ -164,7 +164,7 @@ begin
       Exit;
    end;
 
-   LinkBlocks;
+   LinkAllBlocks;
 
    if (Ired <> FALSE_BRANCH_IDX) and (TrueBranch.Count > 0) then           // TRUE branch
    begin
@@ -172,7 +172,7 @@ begin
       for block in TrueBranch do
           leftX := Min(block.Left, leftX);
       TrueBranch.Hook.X := TrueBranch.Hook.X - leftX + 10;
-      LinkBlocks;
+      LinkAllBlocks;
 
       maxXTrue := BottomHook - 30;
       for block in TrueBranch do
@@ -183,7 +183,7 @@ begin
       BottomPoint.X := BottomHook;
       Width := Width + dlt + 10;
       Inc(FalseBranch.Hook.X, dlt);
-      LinkBlocks;
+      LinkAllBlocks;
       TrueHook := TrueBranch.Last.Left + TrueBranch.Last.BottomPoint.X;
       if FalseBranch.Count > 0 then
          FalseHook := FalseBranch.Last.Left + FalseBranch.Last.BottomPoint.X
@@ -201,13 +201,13 @@ begin
           minXFalse := Min(block.Left, minXFalse);
       dlt := BottomHook + 30 - minXFalse;
       FalseBranch.Hook.X := FalseBranch.Hook.X + dlt;
-      LinkBlocks;
+      LinkAllBlocks;
 
       rightX := 0;
       for block in FalseBranch do
           rightX := Max(block.BoundsRect.Right, rightX);
       Width := rightX + 10;
-      LinkBlocks;
+      LinkAllBlocks;
       FalseHook := FalseBranch.Last.Left + FalseBranch.Last.BottomPoint.X;
       if TrueBranch.Count > 0 then
          TrueHook := TrueBranch.Last.Left + TrueBranch.Last.BottomPoint.X
@@ -232,7 +232,7 @@ begin
    b1.Hook.Y := 70;
    Height := b1.Height + b1.Hook.Y + 31;
    b2.Hook.Y := Height - b2.Height - 31;
-   LinkBlocks;
+   LinkAllBlocks;
    if AContinue then
       ParentBlock.ResizeVert(AContinue);
 end;

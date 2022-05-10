@@ -214,7 +214,8 @@ type
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
          procedure SetWidth(AMinX: integer); virtual;
-         procedure LinkBlocks(ABranchIndex: integer = PRIMARY_BRANCH_IDX-1);
+         procedure LinkAllBlocks;
+         procedure LinkBlocks(ABranch: TBranch);
          procedure Paint; override;
          function ExtractBranchIndex(const AStr: string): integer;
          function GetDiamondTop: TPoint; virtual;
@@ -513,7 +514,7 @@ begin
          if FVResize then
          begin
             if Self is TGroupBlock then
-               TGroupBlock(Self).LinkBlocks;
+               TGroupBlock(Self).LinkAllBlocks;
             if FParentBlock <> nil then
                FParentBlock.ResizeVert(true);
             FVResize := false;
@@ -926,7 +927,7 @@ end;
 procedure TGroupBlock.ResizeVert(AContinue: boolean);
 begin
    Height := Branch.Height + Branch.Hook.Y + FInitParms.HeightAffix;
-   LinkBlocks;
+   LinkAllBlocks;
    if AContinue and (FParentBlock <> nil) then
       FParentBlock.ResizeVert(AContinue);
 end;
@@ -936,7 +937,7 @@ begin
 
    Branch.Hook.X := FInitParms.BranchPoint.X;
    TopHook.X := Branch.Hook.X;
-   LinkBlocks;
+   LinkAllBlocks;
 
    if Branch.Count = 0 then   // case if primary branch is empty
    begin
@@ -953,7 +954,7 @@ begin
 
       Branch.Hook.X := Branch.Hook.X + 30 - xLeft;
       TopHook.X := Branch.Hook.X;
-      LinkBlocks;
+      LinkAllBlocks;
       BottomHook := Branch.Last.Left + Branch.Last.BottomPoint.X;
 
       // resize in right direction
@@ -2484,35 +2485,29 @@ begin
    result := TEnumeratorFactory<TBlock>.Create(list);
 end;
 
-procedure TGroupBlock.LinkBlocks(ABranchIndex: integer = PRIMARY_BRANCH_IDX-1);
-
-   procedure LinkBlocks(ABranch: TBranch);
-   var
-      p: TPoint;
+procedure TGroupBlock.LinkBlocks(ABranch: TBranch);
+var
+   p: TPoint;
+begin
+   if ABranch <> nil then
    begin
-      if ABranch <> nil then
+      var blockPrev: TBlock := nil;
+      for var block in ABranch do
       begin
-         var blockPrev: TBlock := nil;
-         for var block in ABranch do
-         begin
-            if blockPrev <> nil then
-               p := Point(blockPrev.BottomPoint.X+blockPrev.Left-block.TopHook.X, blockPrev.BoundsRect.Bottom)
-            else
-               p := Point(ABranch.Hook.X-block.TopHook.X, ABranch.Hook.Y+1);
-            TInfra.MoveWin(block, p);
-            blockPrev := block;
-         end;
+         if blockPrev <> nil then
+            p := Point(blockPrev.BottomPoint.X+blockPrev.Left-block.TopHook.X, blockPrev.BoundsRect.Bottom)
+         else
+            p := Point(ABranch.Hook.X-block.TopHook.X, ABranch.Hook.Y+1);
+         TInfra.MoveWin(block, p);
+         blockPrev := block;
       end;
    end;
+end;
 
+procedure TGroupBlock.LinkAllBlocks;
 begin
-   if ABranchIndex < PRIMARY_BRANCH_IDX then
-   begin
-      for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
-         LinkBlocks(FBranchList[i]);
-   end
-   else
-      LinkBlocks(GetBranch(ABranchIndex));
+   for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
+      LinkBlocks(FBranchList[i]);
 end;
 
 function TBlock.SkipUpdateEditor: boolean;

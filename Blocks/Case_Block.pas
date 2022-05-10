@@ -249,11 +249,11 @@ begin
       leftX := rightX;
       br.Hook.X := leftX;
       x := leftX;
-      LinkBlocks(i);
+      LinkBlocks(br);
       for block in br do
          x := Min(block.Left, x);
       Inc(br.hook.X, leftX-x);
-      LinkBlocks(i);
+      LinkBlocks(br);
       PlaceBranchStatement(br);
       if br.FindInstanceOf(TReturnBlock) = -1 then
       begin
@@ -296,7 +296,7 @@ begin
       if br <> hBranch then
          br.Hook.Y := maxh - br.Height + 99;
    end;
-   LinkBlocks;
+   LinkAllBlocks;
    if AContinue then
       ParentBlock.ResizeVert(AContinue);
 end;
