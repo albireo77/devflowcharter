@@ -341,8 +341,6 @@ end;
 function TTabComponent.GetElements<T>(AComparer: IComparer<T> = nil): IEnumerable<T>;
 begin
    var list := TList<T>.Create;
-   if list.Capacity < sbxElements.ControlCount then
-      list.Capacity := sbxElements.ControlCount;
    for var i := 0 to sbxElements.ControlCount-1 do
       list.Add(sbxElements.Controls[i]);
    if AComparer <> nil then

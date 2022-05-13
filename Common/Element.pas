@@ -65,7 +65,8 @@ type
 implementation
 
 uses
-   Vcl.Graphics, System.SysUtils, Interfaces, TabComponent, Infrastructure, Constants;
+   Vcl.Graphics, System.SysUtils, System.Classes, Interfaces, TabComponent, Infrastructure,
+   Constants;
 
 constructor TElement.Create(AParent: TScrollBox);
 begin
@@ -141,6 +142,7 @@ begin
    TTabComponent(FParentTab).RefreshElements;
    UpdateMe;
    TTabComponent(FParentTab).UpdateCodeEditor;
+   TThread.ForceQueue(nil, Free);
 end;
 
 procedure TElement.OnChangeType(Sender: TObject);
