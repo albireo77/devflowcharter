@@ -30,9 +30,6 @@ uses
   System.Classes, Vcl.Dialogs, WinApi.Messages, Vcl.ComCtrls, System.ImageList,
   Base_Form, History, Interfaces, OmniXML, Vcl.Controls;
 
-const
-   CM_MENU_CLOSED = CM_BASE + 1001;
-
 type
 
   TClockPos = (cp12, cp3, cp6, cp9);
@@ -214,7 +211,7 @@ type
     function CreateNewProject: boolean;
     function CloseExistingProject: boolean;
     function CanCloseExistingProject: boolean;
-    procedure CM_MenuClosed(var msg: TMessage); message CM_MENU_CLOSED;
+    procedure PopupMenuClosed;
     procedure PPIDialog;
   public
     { Public declarations }
@@ -1433,7 +1430,7 @@ begin
       TCustomEdit(pmPages.PopupComponent).PasteFromClipboard;
 end;
 
-procedure TMainForm.CM_MenuClosed(var msg: TMessage);
+procedure TMainForm.PopupMenuClosed;
 begin
    if pmPages.PopupComponent is TBlock then
       TBlock(pmPages.PopupComponent).OnMouseLeave(false);
@@ -1451,7 +1448,7 @@ begin
    begin
       var mform := TMainForm(Screen.ActiveForm);
       if msg.WParam = mform.pmPages.Handle then
-         PostMessage(mForm.Handle, CM_MENU_CLOSED, msg.WParam, msg.LParam);
+         TThread.ForceQueue(nil, mForm.PopupMenuClosed);
    end;
    inherited;
 end;
