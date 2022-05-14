@@ -310,7 +310,12 @@ end;
 
 function TTabComponent.GetElementCount: integer;
 begin
-   result := sbxElements.ControlCount;
+   result := 0;
+   for var i := 0 to sbxElements.ControlCount-1 do
+   begin
+      if sbxElements.Controls[i].Visible then
+         Inc(result);
+   end;
 end;
 
 function TTabComponent.IsDuplicated(ANameEdit: TEdit): boolean;
