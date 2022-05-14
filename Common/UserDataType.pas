@@ -199,7 +199,7 @@ end;
 
 procedure TUserDataType.AddElement(Sender: TObject);
 begin
-   if (Kind in [dtOther, dtArray]) and (sbxElements.ControlCount = 0) then
+   if (Kind in [dtOther, dtArray]) and (GetFirstField = nil) then
       btnAddElement.Enabled := false;
    inherited AddElement(Sender);
 end;
