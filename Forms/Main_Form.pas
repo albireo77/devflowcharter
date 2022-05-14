@@ -32,7 +32,6 @@ uses
 
 const
    CM_MENU_CLOSED = CM_BASE + 1001;
-   WM_PPI_DIALOG = WM_USER + 1;
 
 type
 
@@ -216,7 +215,7 @@ type
     function CloseExistingProject: boolean;
     function CanCloseExistingProject: boolean;
     procedure CM_MenuClosed(var msg: TMessage); message CM_MENU_CLOSED;
-    procedure WM_PPIDialog(var Msg: TMessage); message WM_PPI_DIALOG;
+    procedure PPIDialog;
   public
     { Public declarations }
     function ConfirmSave: integer;
@@ -369,10 +368,10 @@ procedure TMainForm.FormShow(Sender: TObject);
 begin
    SetProjectMenu(false);
    // will display PPI dialog when main form is already visible
-   PostMessage(Handle, WM_PPI_DIALOG, 0, 0);
+   TThread.ForceQueue(nil, PPIDialog);
 end;
 
-procedure TMainForm.WM_PPIDialog(var Msg: TMessage);
+procedure TMainForm.PPIDialog;
 begin
    if TInfra.PPI > MAX_SUPPORTED_PPI then
       TInfra.ShowWarningBox('OverMaxPPI', [TInfra.PPI, MAX_SUPPORTED_PPI, sLineBreak]);
