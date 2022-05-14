@@ -30,7 +30,6 @@ uses
 
 procedure Template_UserDataTypesSectionGenerator(ALines: TStringList);
 var
-   lRecord, enum, extModifier: string;
    typeStr, fieldStr, s2, s3: string;
 begin
    var lang := GInfra.CurrentLang;
@@ -44,7 +43,7 @@ begin
             var name := dataType.GetName;
             if (name <> '') and (lang.CodeIncludeExternDataType or not dataType.chkExternal.Checked) then
             begin
-               extModifier := dataType.GetExternModifier;
+               var extModifier := dataType.GetExternModifier;
                template.Clear;
                case dataType.Kind of
 
@@ -113,8 +112,8 @@ begin
                            fieldStr := ReplaceStr(fieldStr, PRIMARY_PLACEHOLDER, Trim(field.edtName.Text));
                            fieldStr := ReplaceStr(fieldStr, '%s2', field.cbType.Text);
                            fieldStr := ReplaceStr(fieldStr, '%s3', sizeStr);
-                           lRecord := '';
-                           enum := '';
+                           var lRecord := '';
+                           var enum := '';
                            var lType := TParserHelper.GetType(field.cbType.Text);
                            if TParserHelper.IsRecordType(lType) then
                               lRecord := lang.FunctionHeaderArgsEntryRecord
