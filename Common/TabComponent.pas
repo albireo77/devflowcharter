@@ -342,7 +342,11 @@ function TTabComponent.GetElements<T>(AComparer: IComparer<T> = nil): IEnumerabl
 begin
    var list := TList<T>.Create;
    for var i := 0 to sbxElements.ControlCount-1 do
-      list.Add(sbxElements.Controls[i]);
+   begin
+      var control := sbxElements.Controls[i];
+      if control.Visible then
+         list.Add(control);
+   end;
    if AComparer <> nil then
       list.Sort(AComparer);
    result := TEnumeratorFactory<T>.Create(list);

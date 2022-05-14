@@ -138,7 +138,6 @@ begin
    Hide;
    if Parent.Height < Parent.Constraints.MaxHeight then
       Parent.Height := Parent.Height - 22;
-   Parent := Parent.Parent;
    TTabComponent(FParentTab).RefreshElements;
    UpdateMe;
    TTabComponent(FParentTab).UpdateCodeEditor;
