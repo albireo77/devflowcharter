@@ -30,24 +30,18 @@ uses
 
 procedure Template_UserDataTypesSectionGenerator(ALines: TStringList);
 var
-   dataType: TUserDataType;
-   field: TField;
-   name, sizeStr, lRecord, enum, extModifier, arrayMask: string;
-   b, lType: integer;
-   lang: TLangDefinition;
-   typesList, typesTemplate, fieldList, template: TStringList;
+   lRecord, enum, extModifier: string;
    typeStr, fieldStr, s2, s3: string;
-   fields: IEnumerable<TField>;
 begin
-   lang := GInfra.CurrentLang;
+   var lang := GInfra.CurrentLang;
    if not lang.DataTypesTemplate.IsEmpty then
    begin
-      template := TStringList.Create;
-      typesList := TStringList.Create;
+      var template := TStringList.Create;
+      var typesList := TStringList.Create;
       try
-         for dataType in GProject.GetUserDataTypes do
+         for var dataType in GProject.GetUserDataTypes do
          begin
-            name := dataType.GetName;
+            var name := dataType.GetName;
             if (name <> '') and (lang.CodeIncludeExternDataType or not dataType.chkExternal.Checked) then
             begin
                extModifier := dataType.GetExternModifier;
@@ -74,21 +68,20 @@ begin
                      typeStr := ReplaceStr(lang.DataTypeOtherMask, PRIMARY_PLACEHOLDER, name);
                      typeStr := ReplaceStr(typeStr, '%s9', extModifier);
                      s2 := '';
-                     fields := dataType.GetFields;
-                     if fields.GetEnumerator.MoveNext then
-                        s2 := Trim(fields.GetEnumerator.Current.edtName.Text);
+                     var field := dataType.GetFirstField;
+                     if field <> nil then
+                        s2 := Trim(field.edtName.Text);
                      template.Text := ReplaceStr(typeStr, '%s2', s2);
                   end;
 
                   dtArray:
                   begin
-                     arrayMask := lang.DataTypeArrayMask;
+                     var arrayMask := lang.DataTypeArrayMask;
                      s2 := '';
                      s3 := '';
-                     fields := dataType.GetFields;
-                     if fields.GetEnumerator.MoveNext then
+                     var field := dataType.GetFirstField;
+                     if field <> nil then
                      begin
-                        field := fields.GetEnumerator.Current;
                         s2 := field.cbType.Text;
                         s3 := lang.GetArraySizes(field.edtSize);
                         if field.edtSize.IsUnboundedArray and not lang.DataTypeUnboundedArrayMask.IsEmpty then
@@ -108,11 +101,11 @@ begin
                   begin
                      typeStr := ReplaceStr(lang.DataTypeRecordTemplate, PRIMARY_PLACEHOLDER, name);
                      template.Text := ReplaceStr(typeStr, '%s9', extModifier);
-                     fieldList := TStringList.Create;
+                     var fieldList := TStringList.Create;
                      try
-                        for field in dataType.GetFields do
+                        for var field in dataType.GetFields do
                         begin
-                           sizeStr := lang.GetArraySizes(field.edtSize);
+                           var sizeStr := lang.GetArraySizes(field.edtSize);
                            if sizeStr.IsEmpty then
                               fieldStr := lang.DataTypeRecordFieldMask
                            else
@@ -122,7 +115,7 @@ begin
                            fieldStr := ReplaceStr(fieldStr, '%s3', sizeStr);
                            lRecord := '';
                            enum := '';
-                           lType := TParserHelper.GetType(field.cbType.Text);
+                           var lType := TParserHelper.GetType(field.cbType.Text);
                            if TParserHelper.IsRecordType(lType) then
                               lRecord := lang.FunctionHeaderArgsEntryRecord
                            else if TParserHelper.IsEnumType(lType) then
@@ -143,7 +136,7 @@ begin
                      typeStr := ReplaceStr(lang.DataTypeEnumTemplate, PRIMARY_PLACEHOLDER, name);
                      template.Text := ReplaceStr(typeStr, '%s9', extModifier);
                      s2 := '';
-                     for field in dataType.GetFields do
+                     for var field in dataType.GetFields do
                         s2 := s2 + Format(lang.DataTypeEnumEntryList, [Trim(field.edtName.Text)]);
                      if lang.DataTypeEnumEntryListStripCount > 0 then
                         SetLength(s2, s2.Length - lang.DataTypeEnumEntryListStripCount);
@@ -151,13 +144,13 @@ begin
                   end;
 
                end;
-               for b := 0 to template.Count-1 do
+               for var b := 0 to template.Count-1 do
                   typesList.AddObject(template[b], dataType)
             end;
          end;
          if typesList.Count > 0 then
          begin
-            typesTemplate := TStringList.Create;
+            var typesTemplate := TStringList.Create;
             try
                typesTemplate.Text := lang.DataTypesTemplate;
                TInfra.InsertTemplateLines(typesTemplate, PRIMARY_PLACEHOLDER, typesList);
@@ -184,14 +177,11 @@ begin
 end;
 
 procedure Template_ProgramHeaderSectionGenerator(ALines: TStringList);
-var
-   hdrTemplate: TStringList;
-   lang: TLangDefinition;
 begin
-    lang := GInfra.CurrentLang;
+    var lang := GInfra.CurrentLang;
     if not lang.ProgramHeaderTemplate.IsEmpty then
     begin
-       hdrTemplate := TStringList.Create;
+       var hdrTemplate := TStringList.Create;
        try
           hdrTemplate.Text := lang.ProgramHeaderTemplate;
           TInfra.InsertTemplateLines(hdrTemplate, PRIMARY_PLACEHOLDER, GProject.Name);
@@ -394,10 +384,8 @@ begin
 end;
 
 procedure Template_MainFunctionSectionGenerator(ALines: TStringList; ADeep: integer);
-var
-   block: TBlock;
 begin
-   block := GProject.GetMainBlock;
+   var block := GProject.GetMainBlock;
    if block <> nil then
       block.GenerateCode(ALines, GInfra.CurrentLang.Name, ADeep);
 end;
