@@ -48,7 +48,6 @@ type
          procedure OnClickRemove(Sender: TObject);
          procedure OnChangeType(Sender: TObject); virtual;
          procedure OnChangeName(Sender: TObject); virtual;
-         procedure UpdateMe;
          procedure OnDragOverElement(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
          procedure OnDragDropElement(Sender, Source: TObject; X, Y: Integer);
       public
@@ -139,7 +138,8 @@ begin
    if Parent.Height < Parent.Constraints.MaxHeight then
       Parent.Height := Parent.Height - 22;
    TTabComponent(FParentTab).RefreshElements;
-   UpdateMe;
+   FParentTab.PageControl.Refresh;
+   GProject.SetChanged;
    TTabComponent(FParentTab).UpdateCodeEditor;
    TThread.ForceQueue(nil, Free);
 end;
@@ -180,15 +180,10 @@ begin
    end;
    edtName.Font.Color := lColor;
    edtName.Hint := i18Manager.GetString(info);
-   UpdateMe;
-   if FParentForm.UpdateCodeEditor then
-      TTabComponent(FParentTab).UpdateCodeEditor;
-end;
-
-procedure TElement.UpdateMe;
-begin
    FParentTab.PageControl.Refresh;
    GProject.SetChanged;
+   if FParentForm.UpdateCodeEditor then
+      TTabComponent(FParentTab).UpdateCodeEditor;
 end;
 
 procedure TElement.ImportFromXMLTag(ATag: IXMLElement);

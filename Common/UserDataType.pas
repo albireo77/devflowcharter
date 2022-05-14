@@ -69,6 +69,7 @@ type
       procedure GenerateTree(ANode: TTreeNode);
       function Kind: TUserDataTypeKind;
       function GetFields: IEnumerable<TField>;
+      function GetFirstField: TField;
       function GetExternModifier: string; override;
       function GetTreeNodeText(ANodeOffset: integer = 0): string; override;
    end;
@@ -83,9 +84,6 @@ var
    ByTopFieldComparer: IComparer<TField>;
 
 constructor TUserDataType.Create(AParentForm: TDataTypesForm);
-var
-   dt: TUserDataTypeKind;
-   s: string;
 begin
 
    FElementTypeID := 'field';
@@ -151,9 +149,9 @@ begin
    rgTypeBox.DoubleBuffered := true;
    rgTypeBox.Columns := 2;
    rgTypeBox.Caption := i18Manager.GetString('rgTypeBox');
-   for dt := Low(TUserDataTypeKind) to High(TUserDataTypeKind) do
+   for var dt := Low(TUserDataTypeKind) to High(TUserDataTypeKind) do
    begin
-      s := TRttiEnumerationType.GetName(dt);
+      var s := TRttiEnumerationType.GetName(dt);
       rgTypeBox.Items.Add(i18Manager.GetString(s));
    end;
    rgTypeBox.Buttons[Ord(dtInt)].Enabled := GInfra.CurrentLang.EnabledUserDataTypeInt;
@@ -207,15 +205,11 @@ begin
 end;
 
 procedure TUserDataType.RefreshSizeEdits;
-var
-   i: integer;
-   field: TField;
 begin
    ParentForm.UpdateCodeEditor := false;
-   for i := 0 to sbxElements.ControlCount-1 do
+   for var field in GetFields do
    begin
-      field := TField(sbxElements.Controls[i]);
-      if (field.edtSize.Text <> '1') and Assigned(field.edtSize.OnChange) then
+      if field.edtSize.Text <> '1' then
          field.edtSize.OnChange(field.edtSize);
    end;
    ParentForm.UpdateCodeEditor := true;
@@ -242,46 +236,38 @@ begin
 end;
 
 procedure TUserDataType.OnClickType(Sender: TObject);
-var
-   b: boolean;
-   field: TField;
-   i: integer;
-   t: TUserDataTypeKind;
-   str: string;
 begin
-   t := Kind;
-   b := t in [dtRecord, dtEnum, dtOther, dtArray];
+   var t := Kind;
+   var b := t in [dtRecord, dtEnum, dtOther, dtArray];
    sbxElements.Enabled := b;
    lblName2.Enabled := b and (t <> dtArray);
    lblSize.Enabled := t in [dtRecord, dtArray];
    lblType.Enabled := lblSize.Enabled;
    if b then
    begin
-      str := IfThen(t = dtRecord, 'Field', 'Value');
+      var str := IfThen(t = dtRecord, 'Field', 'Value');
       btnAddElement.Caption := i18Manager.GetString('btnAdd' + str);
       lblName2.Caption := i18Manager.GetString('lbl' + str);
    end;
-   for i := 0 to sbxElements.ControlCount-1 do
+   var i := 0;
+   for var field in GetFields do
    begin
-      field := TField(sbxElements.Controls[i]);
-      with field do
+      field.edtName.Enabled := b;
+      field.cbType.Enabled := t = dtRecord;
+      field.btnRemove.Enabled := b;
+      field.edtSize.Enabled := field.cbType.Enabled;
+      if i = 0 then
       begin
-         edtName.Enabled := b;
-         cbType.Enabled := t = dtRecord;
-         btnRemove.Enabled := b;
-         edtSize.Enabled := cbType.Enabled;
-         if i = 0 then
+         if t = dtOther then
+            b := false
+         else if t = dtArray then
          begin
-            if t = dtOther then
-               b := false
-            else if t = dtArray then
-            begin
-               b := false;
-               edtName.Enabled := false;
-               edtSize.Enabled := true;
-               cbType.Enabled := true;
-            end;
+            b := false;
+            field.edtName.Enabled := false;
+            field.edtSize.Enabled := true;
+            field.cbType.Enabled := true;
          end;
+         i := 1;
       end;
    end;
    btnAddElement.Enabled := b;
@@ -371,33 +357,25 @@ end;
 function TUserDataType.GetDimensionCount: integer;
 begin
    result := 0;
-   if (Kind = dtArray) and (sbxElements.ControlCount > 0) then
-   begin
-      var field := TField(sbxElements.Controls[0]);
-      if field.edtSize.Font.Color <> NOK_COLOR then
-         result := field.edtSize.DimensionCount;
-   end;
+   var field := GetFirstField;
+   if (Kind = dtArray) and (field <> nil) and (field.edtSize.Font.Color <> NOK_COLOR) then
+      result := field.edtSize.DimensionCount;
 end;
 
 function TUserDataType.GetDimensions: string;
 begin
    result := '';
-   if (Kind = dtArray) and (sbxElements.ControlCount > 0) then
-   begin
-      var field := TField(sbxElements.Controls[0]);
-      if field.edtSize.Font.Color <> NOK_COLOR then
-         result := Trim(field.edtSize.Text);
-   end;
+   var field := GetFirstField;
+   if (Kind = dtArray) and (field <> nil) and (field.edtSize.Font.Color <> NOK_COLOR) then
+      result := Trim(field.edtSize.Text);
 end;
 
 function TUserDataType.GetOriginalType: integer;
 begin
    result := TParserHelper.GetType(Trim(edtName.Text));
-   if (Kind = dtArray) and (sbxElements.ControlCount > 0) then
-   begin
-      var field := TField(sbxElements.Controls[0]);
+   var field := GetFirstField;
+   if (Kind = dtArray) and (field <> nil) then
       result := TParserHelper.GetType(field.cbType.Text);
-   end;
 end;
 
 function TUserDataType.IsValidEnumValue(const AValue: string): boolean;
@@ -405,9 +383,8 @@ begin
    result := false;
    if Kind = dtEnum then
    begin
-      for var i := 0 to sbxElements.ControlCount-1 do
+      for var field in GetFields do
       begin
-         var field := TField(sbxElements.Controls[i]);
          if Trim(field.edtName.Text) = AValue then
          begin
             result := true;
@@ -422,17 +399,21 @@ begin
    result := GetElements<TField>(ByTopFieldComparer);
 end;
 
-procedure TField.OnChangeName(Sender: TObject);
-var
-   lColor: TColor;
-   lHint: string;
-   dataType: TUserDataType;
+function TUserDataType.GetFirstField: TField;
 begin
-   dataType := TUserDataType(ParentTab);
+   result := nil;
+   var fields := GetFields;
+   if fields.GetEnumerator.MoveNext then
+      result := fields.GetEnumerator.Current;
+end;
+
+procedure TField.OnChangeName(Sender: TObject);
+begin
+   var dataType := TUserDataType(ParentTab);
    if dataType.Kind in [dtOther, dtArray] then
    begin
-      lColor := OK_COLOR;
-      lHint := 'OkIdD';
+      var lColor := OK_COLOR;
+      var lHint := 'OkIdD';
       if (edtName.Text = '') and not edtName.Focused then
       begin
          lColor := NOK_COLOR;
@@ -440,7 +421,8 @@ begin
       end;
       edtName.Font.Color := lColor;
       edtName.Hint := i18Manager.GetString(lHint);
-      UpdateMe;
+      ParentTab.PageControl.Refresh;
+      GProject.SetChanged;
    end
    else
       inherited OnChangeName(Sender);
@@ -463,7 +445,8 @@ end;
 procedure TField.OnChangeSize(Sender: TObject);
 begin
    edtSize.OnChangeSize(edtSize);
-   UpdateMe;
+   ParentTab.PageControl.Refresh;
+   GProject.SetChanged;
    if ParentForm.UpdateCodeEditor then
       TTabComponent(ParentTab).UpdateCodeEditor;
 end;
@@ -486,10 +469,8 @@ begin
 end;
 
 function TUserDataType.GetTreeNodeText(ANodeOffset: integer = 0): string;
-var
-   lang: TLangDefinition;
 begin
-   lang := nil;
+   var lang: TLangDefinition := nil;
    if Assigned(GInfra.CurrentLang.GetUserTypeDesc) then
       lang := GInfra.CurrentLang
    else if Assigned(GInfra.TemplateLang.GetUserTypeDesc) then
