@@ -382,8 +382,7 @@ begin
    if elem.edtName.CanFocus then
    begin
       elem.edtName.SetFocus;
-      if Assigned(elem.edtName.OnChange) then
-         elem.edtName.OnChange(elem.edtName);
+      elem.edtName.OnChange(elem.edtName);
    end;
    PageControl.Refresh;
    UpdateCodeEditor;
@@ -462,10 +461,7 @@ procedure TTabComponent.RefreshElements;
 begin
    FParentForm.UpdateCodeEditor := false;
    for var elem in GetElements<TElement> do
-   begin
-      if Assigned(elem.edtName.OnChange) then
-         elem.edtName.OnChange(elem.edtName);
-   end;
+      elem.edtName.OnChange(elem.edtName);
    FParentForm.UpdateCodeEditor := true;
 end;
 
