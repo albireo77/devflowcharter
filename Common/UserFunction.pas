@@ -193,7 +193,7 @@ end;
 
 procedure TUserFunctionHeader.RefreshSizeEdits;
 begin
-   if (FLocalVars.edtSize.Text <> '1') and Assigned(FLocalVars.edtSize.OnChange) then
+   if FLocalVars.edtSize.Text <> '1' then
       FLocalVars.edtSize.OnChange(FLocalVars.edtSize);
 end;
 
@@ -660,7 +660,7 @@ end;
 procedure TUserFunctionHeader.OnChangeName(Sender: TObject);
 begin
    var info := '';
-   edtName.Font.Color := NOK_COLOR;
+   var lColor := NOK_COLOR;
    var funcName := Trim(edtName.Text);
    if GInfra.ValidateId(funcName) <> VALID_IDENT then
       info := 'BadIdD'
@@ -673,9 +673,10 @@ begin
    end;
    if info.IsEmpty then
    begin
-      edtName.Font.Color := OK_COLOR;
+      lColor := OK_COLOR;
       info := 'OkIdD';
    end;
+   edtName.Font.Color := lColor;
    edtName.Hint := i18Manager.GetFormattedString(info, [funcName]);
    DrawBodyLabel;
    inherited OnChangeName(Sender);
@@ -708,16 +709,12 @@ begin
 end;
 
 procedure TUserFunctionHeader.SetPageCombo(const ACaption: TCaption = '');
-var
-   i: integer;
-   pageControl: TPageControl;
-   lCaption: TCaption;
 begin
-   lCaption := cbBodyPage.Text;
+   var lCaption := cbBodyPage.Text;
    cbBodyPage.Items.Clear;
    cbBodyPage.Items.BeginUpdate;
-   pageControl := TInfra.GetMainForm.pgcPages;
-   for i := 0 to pageControl.PageCount-1 do
+   var pageControl := TInfra.GetMainForm.pgcPages;
+   for var i := 0 to pageControl.PageCount-1 do
       cbBodyPage.Items.Add(pageControl.Pages[i].Caption);
    cbBodyPage.Items.EndUpdate;
    if ACaption = '' then
@@ -727,7 +724,7 @@ begin
    end
    else
       lCaption := ACaption;
-   i := cbBodyPage.Items.IndexOf(lCaption);
+   var i := cbBodyPage.Items.IndexOf(lCaption);
    if i <> -1 then
       cbBodyPage.ItemIndex := i;
    cbBodyPage.DropDownCount := cbBodyPage.Items.Count;
@@ -735,10 +732,8 @@ begin
 end;
 
 procedure TUserFunctionHeader.OnChangeBodyPage(Sender: TObject);
-var
-   page: TBlockTabSheet;
 begin
-   page := GProject.GetPage(cbBodyPage.Text);
+   var page := GProject.GetPage(cbBodyPage.Text);
    if (page <> nil) and (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
    begin
       FUserFunction.Body.Page := page;
@@ -798,15 +793,13 @@ begin
 end;
 
 function TUserFunction.GetTreeNodeText(ANodeOffset: integer = 0): string;
-var
-   lang: TLangDefinition;
 begin
    result := '';
+   var lang: TLangDefinition := nil;
    if IsMain then
    begin
       if GInfra.CurrentLang.EnabledUserFunctionHeader then
       begin
-         lang := nil;
          if Assigned(GInfra.CurrentLang.GetMainProgramDesc) then
             lang := GInfra.CurrentLang
          else if Assigned(GInfra.TemplateLang.GetMainProgramDesc) then
@@ -819,7 +812,6 @@ begin
    end
    else
    begin
-      lang := nil;
       if Assigned(GInfra.CurrentLang.GetUserFuncDesc) then
          lang := GInfra.CurrentLang
       else if Assigned(GInfra.TemplateLang.GetUserFuncDesc) then
@@ -850,18 +842,15 @@ begin
 end;
 
 procedure TUserFunctionHeader.OnClickGenDesc(Sender: TObject);
-var
-   lang: TLangDefinition;
-   description: string;
 begin
-   lang := nil;
+   var lang: TLangDefinition := nil;
    if Assigned(GInfra.CurrentLang.GetUserFuncHeaderDesc) then
       lang := GInfra.CurrentLang
    else if Assigned(GInfra.TemplateLang.GetUserFuncHeaderDesc) then
       lang := GInfra.TemplateLang;
    if lang <> nil then
    begin
-      description := lang.GetUserFuncHeaderDesc(Self).TrimRight;
+      var description := lang.GetUserFuncHeaderDesc(Self).TrimRight;
       if not description.IsEmpty then
       begin
          memDesc.Text := description;

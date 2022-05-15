@@ -314,13 +314,11 @@ begin
 end;
 
 procedure TUserDataType.OnChangeName(Sender: TObject);
-var
-   info, typeName: string;
-   dataType: PNativeDataType;
 begin
-   edtName.Font.Color := NOK_COLOR;
-   typeName := Trim(edtName.Text);
-   dataType := GInfra.GetNativeDataType(typeName);
+   var lColor := NOK_COLOR;
+   var info := 'OkIdD';
+   var typeName := Trim(edtName.Text);
+   var dataType := GInfra.GetNativeDataType(typeName);
    if typeName.IsEmpty then
       info := 'BadIdD'
    else if IsDuplicated(edtName) then
@@ -328,10 +326,8 @@ begin
    else if dataType <> nil then
       info := 'DefNtvType'
    else
-   begin
-      edtName.Font.Color := OK_COLOR;
-      info := 'OkIdD';
-   end;
+      lColor := OK_COLOR;
+   edtName.Font.Color := lColor;
    edtName.Hint := i18Manager.GetFormattedString(info, [typeName]);
    inherited OnChangeName(Sender);
 end;
