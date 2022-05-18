@@ -64,34 +64,31 @@ end;
 
 procedure TFlashThread.PerformFlash;
 begin
-   if FFocusInfo.FocusEdit <> nil then
+   var edit := TCustomEditHack(FFocusInfo.FocusEdit);
+   var fontColor := edit.Font.Color;
+   edit.Font.Color := edit.Color;
+   edit.Color := fontColor;
+   edit.Repaint;
+   Sleep(SLEEP_TIME);
+   edit.Color := edit.Font.Color;
+   edit.Font.Color := fontColor;
+   edit.Repaint;
+   if FFocusInfo.ActiveControl = nil then
    begin
-      var edit := TCustomEditHack(FFocusInfo.FocusEdit);
-      var fontColor := edit.Font.Color;
-      edit.Font.Color := edit.Color;
-      edit.Color := fontColor;
-      edit.Repaint;
-      Sleep(SLEEP_TIME);
-      edit.Color := edit.Font.Color;
-      edit.Font.Color := fontColor;
-      edit.Repaint;
-      if FFocusInfo.ActiveControl = nil then
+      if FFocusInfo.SelStart >= 0 then
+         edit.SelStart := FFocusInfo.SelStart;
+      edit.SelLength := Length(FFocusInfo.SelText);
+      if edit.CanFocus then
+         edit.SetFocus;
+   end
+   else if FFocusInfo.ActiveControl.CanFocus then
+   begin
+      FFocusInfo.ActiveControl.SetFocus;
+      if FFocusInfo.FocusEditForm <> nil then
       begin
-         if FFocusInfo.SelStart >= 0 then
-            edit.SelStart := FFocusInfo.SelStart;
-         edit.SelLength := Length(FFocusInfo.SelText);
-         if edit.CanFocus then
-            edit.SetFocus;
-      end
-      else if FFocusInfo.ActiveControl.CanFocus then
-      begin
-         FFocusInfo.ActiveControl.SetFocus;
-         if FFocusInfo.FocusEditForm <> nil then
-         begin
-            FFocusInfo.FocusEditForm.ActiveControl := FFocusInfo.FocusEdit;
-            if Assigned(FFocusInfo.FocusEditCallBack) then
-               FFocusInfo.FocusEditCallBack(FFocusInfo.FocusEdit);
-         end;
+         FFocusInfo.FocusEditForm.ActiveControl := FFocusInfo.FocusEdit;
+         if Assigned(FFocusInfo.FocusEditCallBack) then
+            FFocusInfo.FocusEditCallBack(FFocusInfo.FocusEdit);
       end;
    end;
 end;
