@@ -99,10 +99,8 @@ begin
 end;
 
 class function TXMLProcessor.GetBoolFromChild(ATag: IXMLElement; const AChildTagName: string; ADefault: boolean = false): boolean;
-var
-   tag: IXMLElement;
 begin
-   tag := FindChildTag(ATag, AChildTagName);
+   var tag := FindChildTag(ATag, AChildTagName);
    if tag <> nil then
       result := GetBool(tag.Text.Trim, ADefault)
    else
@@ -110,10 +108,8 @@ begin
 end;
 
 class function TXMLProcessor.GetTextFromChild(ATag: IXMLElement; const AChildTagName: string; ADefault: string = ''): string;
-var
-   tag: IXMLElement;
 begin
-   tag := FindChildTag(ATag, AChildTagName);
+   var tag := FindChildTag(ATag, AChildTagName);
    if tag <> nil then
       result := tag.Text
    else
@@ -166,11 +162,9 @@ begin
 end;
 
 class function TXMLProcessor.CountChildTags(ATag: IXMLElement; const AChildTagName: string; AWithText: boolean = false): integer;
-var
-   tag: IXMLElement;
 begin
    result := 0;
-   tag := FindChildTag(ATag, AChildTagName);
+   var tag := FindChildTag(ATag, AChildTagName);
    while tag <> nil do
    begin
       if not (AWithText and tag.Text.Trim.IsEmpty) then
@@ -180,12 +174,10 @@ begin
 end;
 
 class procedure TXMLProcessor.ExportBlockToXML(ABlock: TBlock; ATag: IXMLElement);
-var
-   tag: IXMLElement;
 begin
    if (ATag <> nil) and (ABlock <> nil) then
    begin
-      tag := ATag.OwnerDocument.CreateElement(BLOCK_TAG);
+      var tag := ATag.OwnerDocument.CreateElement(BLOCK_TAG);
       ATag.AppendChild(tag);
       ABlock.SaveInXML(tag);
    end;
@@ -277,20 +269,18 @@ class function TXMLProcessor.ImportFromXMLFile(AImportProc: TXMLImportProc;
                                                const AFileName: string = '';
                                                APreserveSpace: boolean = false): string;
 var
-   docXML: IXMLDocument;
-   errText: string;
    status: TError;
 begin
    result := '';
    if Assigned(AImportProc) then
    begin
-      errText := '';
+      var errText := '';
       result := AFileName;
       if result.IsEmpty then
          result := TXMLProcessor.DialogXMLFile(TInfra.GetMainForm.OpenDialog);
       if result.IsEmpty then
          Exit;
-      docXML := CreateXMLDoc;
+      var docXML := CreateXMLDoc;
       docXML.PreserveWhiteSpace := APreserveSpace;
       try
          if docXML.Load(result) then
