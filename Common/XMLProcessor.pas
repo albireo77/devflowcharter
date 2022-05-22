@@ -272,14 +272,14 @@ begin
    result := '';
    if Assigned(AImportProc) then
    begin
-      var errText := '';
       result := AFileName;
       if result.IsEmpty then
          result := TXMLProcessor.DialogXMLFile(TInfra.GetMainForm.OpenDialog);
       if result.IsEmpty then
          Exit;
-      var docXML := CreateXMLDoc;
+      var errText := '';
       var status := errSyntax;
+      var docXML := CreateXMLDoc;
       docXML.PreserveWhiteSpace := APreserveSpace;
       try
          if docXML.Load(result) then
