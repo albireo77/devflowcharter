@@ -268,8 +268,6 @@ class function TXMLProcessor.ImportFromXMLFile(AImportProc: TXMLImportProc;
                                                AImportMode: TImportMode;
                                                const AFileName: string = '';
                                                APreserveSpace: boolean = false): string;
-var
-   status: TError;
 begin
    result := '';
    if Assigned(AImportProc) then
@@ -281,16 +279,16 @@ begin
       if result.IsEmpty then
          Exit;
       var docXML := CreateXMLDoc;
+      var status := errSyntax;
       docXML.PreserveWhiteSpace := APreserveSpace;
       try
          if docXML.Load(result) then
             status := AImportProc(docXML.DocumentElement, AImportMode)
          else
-         begin
-            status := errSyntax;
-            with docXML.ParseError do
-               errText := i18Manager.GetFormattedString('ParserError', [ErrorCode, Line, LinePos, Reason]);
-         end;
+            errText := i18Manager.GetFormattedString('ParserError', [docXML.ParseError.ErrorCode,
+                                                                     docXML.ParseError.Line,
+                                                                     docXML.ParseError.LinePos,
+                                                                     docXML.ParseError.Reason]);
       except on E: Exception do
          begin
             status := errIO;
