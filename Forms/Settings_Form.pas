@@ -367,16 +367,12 @@ begin
 end;
 
 procedure TSettingsForm.SetDefault;
-var
-   parserOn: boolean;
-   langDef: TLangDefinition;
-   m: string;
 begin
-   langDef := GInfra.GetLangDefinition(cbLanguage.Text);
+   var langDef := GInfra.GetLangDefinition(cbLanguage.Text);
    pnlFill.Color := clAqua;
    pnlPen.Color := clBlack;
    pnlDesktop.Color := DEFAULT_DESKTOP_COLOR;
-   parserOn := langDef.Parser <> nil;
+   var parserOn := langDef.Parser <> nil;
    chkParseInput.Enabled := parserOn;
    chkParseInput.Checked := parserOn;
    chkParseOutput.Enabled := parserOn;
@@ -399,7 +395,7 @@ begin
    chkMultiPrint.Checked := false;
    chkMultiPrintHorz.Checked := false;
    chkMultiPrintHorz.Enabled := false;
-   m := IntToStr(DEFAULT_PRINT_MARGIN);
+   var m := IntToStr(DEFAULT_PRINT_MARGIN);
    edtMarginLeft.Text := m;
    edtMarginRight.Text := m;
    edtMarginTop.Text := m;
@@ -533,12 +529,9 @@ begin
 end;
 
 procedure TSettingsForm.edtFontNameSizeClick(Sender: TObject);
-var
-   fontNameSize: string;
-   tokens: TArray<string>;
 begin
-   fontNameSize := edtFontNameSize.Text;
-   tokens := fontNameSize.Split([FLOWCHART_FONT_NAMESIZE_SEP], 2);
+   var fontNameSize := string(edtFontNameSize.Text);
+   var tokens := fontNameSize.Split([FLOWCHART_FONT_NAMESIZE_SEP], 2);
    FontDialog.Font.Name := tokens[0];
    FontDialog.Font.Size := tokens[1].ToInteger;
    FontDialog.MinFontSize := FLOWCHART_MIN_FONT_SIZE;
