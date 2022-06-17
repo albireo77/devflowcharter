@@ -3,7 +3,8 @@ unit Navigator_Form;
 interface
 
 uses
-  System.Classes, Vcl.Controls, Vcl.StdCtrls, System.Types, Base_Form, OmniXML;
+  System.Classes, Vcl.Controls, Vcl.StdCtrls, System.Types, WinApi.Messages,
+  Base_Form, OmniXML;
 
 type
   TNavigatorForm = class(TBaseForm)
@@ -17,11 +18,10 @@ type
     procedure chkAlphaVisibleClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure scbAlphaValChange(Sender: TObject);
-    procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
-      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
   private
     { Private declarations }
     procedure SetAlphaValVisible(AValue: boolean);
+    procedure MouseWheelHandler(var AMessage: TMessage); override;
   public
     { Public declarations }
     InvalidateIndicator: boolean;
@@ -118,11 +118,11 @@ begin
       FormMouseDown(Sender, mbLeft, Shift, X, Y);
 end;
 
-procedure TNavigatorForm.FormMouseWheel(Sender: TObject; Shift: TShiftState;
-  WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+procedure TNavigatorForm.MouseWheelHandler(var AMessage: TMessage);
 begin
+   inherited MouseWheelHandler(AMessage);
    if GProject <> nil then
-      GProject.GetActivePage.Box.BoxMouseWheel(Sender, Shift, WheelDelta, MousePos, Handled);
+      GProject.GetActivePage.Box.Perform(AMessage.Msg, AMessage.WParam, AMessage.LParam);
 end;
 
 procedure TNavigatorForm.ExportSettingsToXMLTag(ATag: IXMLElement);

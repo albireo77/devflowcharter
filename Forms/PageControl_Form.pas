@@ -61,8 +61,6 @@ type
     procedure pgcTabsMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure pgcTabsMouseLeave(Sender: TObject);
     procedure ResetForm; override;
-    procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
-      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
   protected
     FPrefix: string;
   public
@@ -199,17 +197,6 @@ procedure TPageControlForm.FormDeactivate(Sender: TObject);
 begin
    if GProject <> nil then
       GProject.RefreshStatements;
-end;
-
-procedure TPageControlForm.FormMouseWheel(Sender: TObject; Shift: TShiftState;
-   WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
-begin
-   if pgcTabs.ActivePage is TTabComponent then
-   begin
-      var tab := TTabComponent(pgcTabs.ActivePage);
-      if not tab.HasFocusedComboBox then
-         tab.ScrollElements(-WheelDelta div 10);
-   end;
 end;
 
 procedure TPageControlForm.pgcTabsDragDrop(Sender, Source: TObject; X, Y: Integer);

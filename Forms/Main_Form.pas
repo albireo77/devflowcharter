@@ -737,7 +737,6 @@ var
    comment: TComment;
    p: TPoint;
    blockType: TBlockType;
-   lock: boolean;
    page: TBlockTabSheet;
    func: TUserFunction;
 begin
@@ -792,7 +791,7 @@ begin
 
       if branch <> nil then
       begin
-         lock := branch.ParentBlock.LockDrawing;
+         branch.ParentBlock.TopParentBlock.LockDrawing;
          try
             newBlock := nil;
             blockType := blUnknown;
@@ -849,8 +848,7 @@ begin
                TInfra.UpdateCodeEditor(newBlock);
             end;
          finally
-            if lock then
-               branch.ParentBlock.UnLockDrawing;
+            branch.ParentBlock.TopParentBlock.UnLockDrawing;
          end;
       end;
    end;
@@ -1064,12 +1062,11 @@ begin
    begin
       var block := TGroupBlock(pmPages.PopupComponent);
       block.ClearSelection;
-      var lock := block.LockDrawing;
+      block.TopParentBlock.LockDrawing;
       try
          block.ExpandAll;
       finally
-         if lock then
-            block.UnLockDrawing;
+         block.TopParentBlock.UnLockDrawing;
       end;
    end;
 end;

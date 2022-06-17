@@ -199,17 +199,15 @@ begin
       AIndex := FBranchList.Count;
    if AIndex > DEFAULT_BRANCH_IDX then
    begin
-      var pnt := Point(FBranchList[AIndex-1].GetMostRight+60, Height-32);
-      result := TBranch.Create(Self, pnt);
+      result := TBranch.Create(Self, Point(FBranchList[AIndex-1].GetMostRight+60, Height-32));
       FBranchList.Insert(AIndex, result);
-      var lock := LockDrawing;
+      FTopParentBlock.LockDrawing;
       try
          result.Statement := CreateBranchStatement;
          PlaceBranchStatement(result);
          ResizeWithDrawLock;
       finally
-         if lock then
-            UnLockDrawing;
+         FTopParentBlock.UnLockDrawing;
       end;
    end;
 end;

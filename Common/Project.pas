@@ -98,7 +98,6 @@ type
       function CountErrWarn: TErrWarnCount;
       procedure GenerateTree(ANode: TTreeNode);
       procedure RepaintFlowcharts;
-      procedure RepaintComments;
       function GetLibraryList: TStringList;
       function FindObject(AId: integer): TObject;
       procedure RefreshSizeEdits;
@@ -974,15 +973,6 @@ begin
          result := func.Body;
          break;
       end;
-   end;
-end;
-
-procedure TProject.RepaintComments;
-begin
-   for var comment in GetComments do
-   begin
-      if comment.Visible then
-         comment.Repaint;
    end;
 end;
 

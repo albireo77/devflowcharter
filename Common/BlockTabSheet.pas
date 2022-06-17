@@ -61,8 +61,6 @@ type
       function GetBottomRight: TPoint;
       function GetDisplayRect: TRect;
       procedure BoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-      procedure BoxMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer;
-                MousePos: TPoint; var Handled: Boolean);
       property Page: TBlockTabSheet read FPage;
    end;
 
@@ -144,7 +142,6 @@ begin
    VertScrollBar.Tracking := true;
    PopupMenu := APage.Form.pmPages;
    OnMouseUp := BoxMouseUp;
-   OnMouseWheel := BoxMouseWheel;
 end;
 
 procedure TScrollBoxEx.ScrollV(var Msg: TWMVScroll);
@@ -228,18 +225,6 @@ begin
       Key := 0;
       PerformFormsRepaint;
    end;
-end;
-
-procedure TScrollBoxEx.BoxMouseWheel(Sender: TObject; Shift: TShiftState;
-   WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
-var
-   w: Word;
-begin
-   if WheelDelta < 0 then
-      w := vkDown
-   else
-      w := vkUp;
-   BoxKeyDown(Self, w, [ssCtrl]);
 end;
 
 function TScrollBoxEx.GetDisplayRect: TRect;
