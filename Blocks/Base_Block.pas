@@ -790,15 +790,11 @@ begin
       if IsInSelect(Point(X, Y)) then
          BeginDrag(false, 3)
       else if not IsCursorResize then
-      begin          // drag entire flowchart
-         ReleaseCapture;
-         FTopParentBlock.BringAllToFront;
-         SendMessage(FTopParentBlock.Handle, WM_SYSCOMMAND, $F012, 0);
-         FTopParentBlock.OnResize(FTopParentBlock);
+      begin
+         var menuItem: TMenuItem := nil;
          if Ired >= 0 then
          begin
             var mForm := Page.Form;
-            var menuItem: TMenuItem := nil;
             case GCustomCursor of
                crInstr:       menuItem := mForm.miInstr;
                crMultiInstr:  menuItem := mForm.miMultiInstr;
@@ -819,11 +815,18 @@ begin
                      menuItem := mForm.miReturn;
                end;
             end;
-            if menuItem <> nil then
-            begin
-               PopupMenu.PopupComponent := Self;
-               menuItem.OnClick(menuItem);
-            end;
+         end;
+         if menuItem <> nil then
+         begin
+            PopupMenu.PopupComponent := Self;
+            menuItem.OnClick(menuItem);
+         end
+         else          // drag entire flowchart
+         begin
+            ReleaseCapture;
+            FTopParentBlock.BringAllToFront;
+            SendMessage(FTopParentBlock.Handle, WM_SYSCOMMAND, $F012, 0);
+            FTopParentBlock.OnResize(FTopParentBlock);
          end;
       end;
    end;
