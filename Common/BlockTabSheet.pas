@@ -96,7 +96,7 @@ end;
 
 function TBlockTabSheet.IsMain: boolean;
 begin
-   result := (GProject <> nil) and (GProject.GetMainPage = Self);
+   result := (GProject <> nil) and (GProject.MainPage = Self);
 end;
 
 procedure TBlockTabSheet.ExportToXMLTag(ATag: IXMLElement);

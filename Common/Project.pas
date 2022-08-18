@@ -106,8 +106,8 @@ type
       function Register(AObject: TObject; AId: integer = ID_INVALID): integer;
       procedure UnRegister(AObject: TObject);
       function GetPage(const ACaption: string; ACreate: boolean = true): TBlockTabSheet;
-      function GetMainPage: TBlockTabSheet;
-      function GetActivePage: TBlockTabSheet;
+      function MainPage: TBlockTabSheet;
+      function ActivePage: TBlockTabSheet;
       procedure UpdateHeadersBody(APage: TTabSheet);
       function FindMainBlockForControl(const AControl: TControl): TMainBlock;
       function GetProgramHeader: string;
@@ -194,7 +194,7 @@ begin
       if result = nil then
       begin
          if SameCaption(caption, MAIN_PAGE_MARKER) then
-            result := GetMainPage
+            result := MainPage
          else if ACreate then
          begin
             result := TBlockTabSheet.Create(TInfra.GetMainForm);
@@ -204,14 +204,14 @@ begin
    end;
 end;
 
-function TProject.GetMainPage: TBlockTabSheet;
+function TProject.MainPage: TBlockTabSheet;
 begin
    if FMainPage = nil then
       FMainPage := GetPage(i18Manager.GetString(DEF_PAGE_CAPTION_KEY));
    result := FMainPage;
 end;
 
-function TProject.GetActivePage: TBlockTabSheet;
+function TProject.ActivePage: TBlockTabSheet;
 begin
    result := TBlockTabSheet(TInfra.GetMainForm.pgcPages.ActivePage);
 end;
@@ -427,8 +427,8 @@ begin
 
    ExportPagesToXMLTag(ATag);
 
-   if GetMainPage <> GetActivePage then
-      ATag.SetAttribute(PAGE_FRONT_ATTR, GetActivePage.Caption);
+   if MainPage <> ActivePage then
+      ATag.SetAttribute(PAGE_FRONT_ATTR, ActivePage.Caption);
 
    if FGlobalVars <> nil then
       FGlobalVars.ExportToXMLTag(ATag);
@@ -470,7 +470,7 @@ begin
          tag := TXMLProcessor.FindNextTag(tag);
       end;
       if activePage = nil then
-         activePage := GetMainPage;
+         activePage := MainPage;
       activePage.PageControl.ActivePage := activePage;
    end;
 end;
@@ -653,10 +653,10 @@ begin
             begin
                page := GetPage(tag1.GetAttribute(PAGE_CAPTION_ATTR));
                if page = nil then
-                  page := GetMainPage;
+                  page := MainPage;
             end
             else
-               page := GetActivePage;
+               page := ActivePage;
             tmpBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag1, page, nil, result);
             if tmpBlock is TMainBlock then
                body := TMainBlock(tmpBlock);
@@ -744,7 +744,7 @@ begin
    begin
       var page := GetPage(tag.GetAttribute(PAGE_CAPTION_ATTR));
       if page = nil then
-         page := GetMainPage;
+         page := MainPage;
       var comment := TComment.CreateDefault(page);
       comment.ImportFromXMLTag(tag, nil);
       tag := TXMLProcessor.FindNextTag(tag);
@@ -807,7 +807,7 @@ begin
       lBitmap := TBitmap(AGraphic)
    else
       lBitmap := TBitmap.Create;
-   var page := GetActivePage;
+   var page := ActivePage;
    var pnt := page.Box.GetBottomRight;
    lBitmap.Width := pnt.X;
    lBitmap.Height := pnt.Y;

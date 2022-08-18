@@ -62,7 +62,7 @@ var
    body: TMainBlock;
 begin
    Show;
-   body := TMainBlock.Create(GProject.GetActivePage, ABodyTopLeft);
+   body := TMainBlock.Create(GProject.ActivePage, ABodyTopLeft);
    header := TUserFunctionHeader.Create(Self);
    TUserFunction.Create(header, body);
    if Visible and Enabled then  // replace with CanFocus once fixed by Embarcadero (RSP-34465)

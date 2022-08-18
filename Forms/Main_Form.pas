@@ -318,7 +318,7 @@ begin
       end;
    end
    else
-      GProject.GetActivePage.Box.BoxKeyDown(Self, Key, Shift);
+      GProject.ActivePage.Box.BoxKeyDown(Self, Key, Shift);
 end;
 
 procedure TMainForm.ResetForm;
@@ -437,7 +437,7 @@ procedure TMainForm.miNewClick(Sender: TObject);
 begin
    if CreateNewProject then
    begin
-      var mBlock := TMainBlock.Create(GProject.GetMainPage, GetMainBlockNextTopLeft);
+      var mBlock := TMainBlock.Create(GProject.MainPage, GetMainBlockNextTopLeft);
       mBlock.OnResize(mBlock);
       TUserFunction.Create(nil, mBlock);
       GProject.ChangingOn := true;
@@ -721,7 +721,7 @@ procedure TMainForm.miCommentClick(Sender: TObject);
 begin
    if GProject <> nil then
    begin
-      var page := GProject.GetActivePage;
+      var page := GProject.ActivePage;
       var p := page.Box.ScreenToClient(page.Box.PopupMenu.PopupPoint);
       TComment.Create(page, p.X, p.Y, 150, 50);
       GProject.SetChanged;
@@ -753,7 +753,7 @@ begin
 
    if (Sender = miPaste) and ((func <> nil) or (comment <> nil)) then
    begin
-      page := GProject.GetActivePage;
+      page := GProject.ActivePage;
       p := page.Box.ScreenToClient(page.Box.PopupMenu.PopupPoint);
       if func <> nil then
       begin
@@ -1103,7 +1103,7 @@ procedure TMainForm.miAddMainClick(Sender: TObject);
 begin
    if GProject <> nil then
    begin
-      var body := TMainBlock.Create(GProject.GetActivePage, GetMainBlockNextTopLeft);
+      var body := TMainBlock.Create(GProject.ActivePage, GetMainBlockNextTopLeft);
       TUserFunction.Create(nil, body);
       TInfra.UpdateCodeEditor(body);
    end;
@@ -1113,7 +1113,7 @@ procedure TMainForm.miNewFlowchartClick(Sender: TObject);
 begin
    if GProject <> nil then
    begin
-      var page := GProject.GetActivePage;
+      var page := GProject.ActivePage;
       var mainBlock := TMainBlock.Create(page, page.Box.ScreenToClient(page.Box.PopupMenu.PopupPoint));
       mainBlock.OnResize(mainBlock);
       TUserFunction.Create(nil, mainBlock);
@@ -1174,7 +1174,7 @@ procedure TMainForm.miNewFunctionClick(Sender: TObject);
 begin
    if GProject <> nil then
    begin
-      var box := GProject.GetActivePage.Box;
+      var box := GProject.ActivePage.Box;
       TInfra.GetFunctionsForm.AddUserFunction(box.ScreenToClient(box.PopupMenu.PopupPoint));
    end;
 end;

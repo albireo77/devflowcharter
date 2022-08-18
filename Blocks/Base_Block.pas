@@ -2127,11 +2127,6 @@ begin
 end;
 
 procedure TBlock.SaveInXML2(ATag: IXMLElement);
-var
-   txtControl: TCustomEdit;
-   txt: string;
-   tag: IXMLElement;
-   memo: TMemoEx;
 begin
    if ATag <> nil then
    begin
@@ -2144,16 +2139,16 @@ begin
       ATag.SetAttribute('bh', BottomHook.ToString);
       ATag.SetAttribute('brx', BottomPoint.X.ToString);
       ATag.SetAttribute(ID_ATTR, FId.ToString);
-      memo := GetMemoEx;
+      var memo := GetMemoEx;
       if memo <> nil then
          memo.SaveInXML(ATag);
       ATag.SetAttribute(FONT_SIZE_ATTR, Font.Size.ToString);
       ATag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style).ToString);
-      txtControl := GetTextControl;
+      var txtControl := GetTextControl;
       if (txtControl <> nil) and (txtControl.Text <> '') then
       begin
-         txt := ReplaceStr(txtControl.Text, sLineBreak, LB_PHOLDER);
-         tag := ATag.OwnerDocument.CreateElement(TEXT_TAG);
+         var txt := ReplaceStr(txtControl.Text, sLineBreak, LB_PHOLDER);
+         var tag := ATag.OwnerDocument.CreateElement(TEXT_TAG);
          TXMLProcessor.AddCDATA(tag, txt);
          ATag.AppendChild(tag);
       end;
@@ -2176,17 +2171,12 @@ begin
 end;
 
 function TBlock.GetFromXML(ATag: IXMLElement): TError;
-var
-   tag: IXMLElement;
-   textControl: TCustomEdit;
-   i: integer;
-   memo: TMemoEx;
 begin
    result := errNone;
    if ATag <> nil then
    begin
-      tag := TXMLProcessor.FindChildTag(ATag, TEXT_TAG);
-      textControl := GetTextControl;
+      var tag := TXMLProcessor.FindChildTag(ATag, TEXT_TAG);
+      var textControl := GetTextControl;
       if (tag <> nil) and (textControl <> nil) then
       begin
          FRefreshMode := true;
@@ -2194,7 +2184,7 @@ begin
          FRefreshMode := false;
       end;
 
-      i := TXMLProcessor.GetIntFromAttr(ATag, FONT_SIZE_ATTR);
+      var i := TXMLProcessor.GetIntFromAttr(ATag, FONT_SIZE_ATTR);
       if i in FLOWCHART_VALID_FONT_SIZES then
          SetFontSize(i);
 
@@ -2203,7 +2193,7 @@ begin
 
       Frame := TXMLProcessor.GetBoolFromAttr(ATag, FRAME_ATTR);
 
-      memo := GetMemoEx;
+      var memo := GetMemoEx;
       if memo <> nil then
          memo.GetFromXML(ATag);
 

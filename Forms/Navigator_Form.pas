@@ -65,7 +65,7 @@ begin
    begin
       var hdc := SaveDC(Canvas.Handle);
       try
-         var box := GProject.GetActivePage.Box;
+         var box := GProject.ActivePage.Box;
          var xExt := MulDiv(EXTENT_X, box.HorzScrollBar.Range, ClientWidth);
          var yExt := MulDiv(EXTENT_Y, box.VertScrollBar.Range, ClientHeight);
          SetMapMode(Canvas.Handle, MM_ANISOTROPIC);
@@ -90,7 +90,7 @@ procedure TNavigatorForm.FormMouseDown(Sender: TObject; Button: TMouseButton; Sh
 begin
    if (Button = mbLeft) and (GProject <> nil) then
    begin
-      var box := GProject.GetActivePage.Box;
+      var box := GProject.ActivePage.Box;
       box.HorzScrollBar.Position := MulDiv(X, box.HorzScrollBar.Range, ClientWidth) - (box.ClientWidth div 2);
       box.VertScrollBar.Position := MulDiv(Y, box.VertScrollBar.Range, ClientHeight) - (box.ClientHeight div 2);
       Repaint;
@@ -122,7 +122,7 @@ procedure TNavigatorForm.MouseWheelHandler(var AMessage: TMessage);
 begin
    inherited MouseWheelHandler(AMessage);
    if GProject <> nil then
-      GProject.GetActivePage.Box.Perform(AMessage.Msg, AMessage.WParam, AMessage.LParam);
+      GProject.ActivePage.Box.Perform(AMessage.Msg, AMessage.WParam, AMessage.LParam);
 end;
 
 procedure TNavigatorForm.ExportSettingsToXMLTag(ATag: IXMLElement);
