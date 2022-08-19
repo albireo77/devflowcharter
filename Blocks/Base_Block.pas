@@ -356,18 +356,15 @@ begin
    FStatement.Width := 65;
 
    FMemoFolder := TMemoEx.Create(Self);
-   with FMemoFolder do
-   begin
-      Parent := Self;
-      Visible := false;
-      SetBounds(4, 4, 132, 55);
-      DoubleBuffered := true;
-      Color := GSettings.GetShapeColor(shpFolder);
-      Font.Assign(FStatement.Font);
-      OnMouseDown := Self.OnMouseDown;
-      Font.Color := clNavy;
-      OnChange := Self.OnChangeMemo;
-   end;
+   FMemoFolder.Parent := Self;
+   FMemoFolder.Visible := false;
+   FMemoFolder.SetBounds(4, 4, 132, 55);
+   FMemoFolder.DoubleBuffered := true;
+   FMemoFolder.Color := GSettings.GetShapeColor(shpFolder);
+   FMemoFolder.Font.Assign(FStatement.Font);
+   FMemoFolder.OnMouseDown := OnMouseDown;
+   FMemoFolder.Font.Color := clNavy;
+   FMemoFolder.OnChange := OnChangeMemo;
 
    Expanded := true;
 
@@ -1640,9 +1637,8 @@ end;
 
 procedure TBlock.OnChangeMemo(Sender: TObject);
 begin
-   var memo := GetMemoEx;
-   if memo <> nil then
-      memo.UpdateScrolls;
+   if Sender is TMemoEx then
+      TMemoEx(Sender).UpdateScrolls;
    if NavigatorForm.InvalidateIndicator then
       NavigatorForm.Invalidate;
 end;
