@@ -240,12 +240,9 @@ end;
 
 procedure TScrollBoxEx.PaintToCanvas(ACanvas: TCanvas);
 begin
-   with ACanvas do
-   begin
-      Brush.Style := bsSolid;
-      Brush.Color := Self.Color;
-      FillRect(ClipRect);
-   end;
+   ACanvas.Brush.Style := bsSolid;
+   ACanvas.Brush.Color := Color;
+   ACanvas.FillRect(ACanvas.ClipRect);
    var hnd := GetWindow(GetTopWindow(Handle), GW_HWNDLAST);
    while hnd <> 0 do
    begin
