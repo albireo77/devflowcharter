@@ -243,13 +243,18 @@ begin
    ACanvas.Brush.Style := bsSolid;
    ACanvas.Brush.Color := Color;
    ACanvas.FillRect(ACanvas.ClipRect);
-   var hnd := GetWindow(GetTopWindow(Handle), GW_HWNDLAST);
-   while hnd <> 0 do
-   begin
-      var winCtrl := FindControl(hnd);
-      if (winCtrl <> nil) and winCtrl.Visible then
-         winCtrl.PaintTo(ACanvas, winCtrl.Left + HorzScrollBar.Position, winCtrl.Top + VertScrollBar.Position);
-      hnd := GetNextWindow(hnd, GW_HWNDPREV);
+   ACanvas.Lock;
+   try
+      var hnd := GetWindow(GetTopWindow(Handle), GW_HWNDLAST);
+      while hnd <> 0 do
+      begin
+         var winCtrl := FindControl(hnd);
+         if (winCtrl <> nil) and winCtrl.Visible then
+            winCtrl.PaintTo(ACanvas, winCtrl.Left + HorzScrollBar.Position, winCtrl.Top + VertScrollBar.Position);
+         hnd := GetNextWindow(hnd, GW_HWNDPREV);
+      end;
+   finally
+      ACanvas.Unlock;
    end;
 end;
 
