@@ -36,7 +36,6 @@ type
          constructor Create(ABranch: TBranch); overload;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
-         procedure ChangeColor(AColor: TColor); override;
    end;
 
 implementation
@@ -118,22 +117,6 @@ begin
       finally
          tmpList.Free;
       end;
-   end;
-end;
-
-procedure TMultiInstrBlock.ChangeColor(AColor: TColor);
-begin
-   inherited ChangeColor(AColor);
-   var chon := GProject.ChangingOn;
-   GProject.ChangingOn := false;
-   var b := FRefreshMode;
-   FRefreshMode := true;
-   try
-      if Assigned(FStatements.OnChange) then
-         FStatements.OnChange(FStatements);
-   finally
-      FRefreshMode := b;
-      GProject.ChangingOn := chon;
    end;
 end;
 
