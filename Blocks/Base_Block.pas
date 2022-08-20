@@ -1303,20 +1303,17 @@ procedure TBlock.Paint;
 begin
    inherited;
    var r := ClientRect;
-   with Canvas do
-   begin
-      Brush.Style := bsSolid;
-      Brush.Color := Self.Color;
-      Pen.Style := psClear;
-      Pen.Color := GSettings.PenColor;
-      if FFrame then
-         Pen.Style := psDashDot
-      else
-         r.Inflate(0, 0, 1, 1);
-      Rectangle(r);
-      Pen.Style := psSolid;
-      Font.Color := Pen.Color;
-   end;
+   Canvas.Brush.Style := bsSolid;
+   Canvas.Brush.Color := Color;
+   Canvas.Pen.Style := psClear;
+   Canvas.Pen.Color := GSettings.PenColor;
+   if FFrame then
+      Canvas.Pen.Style := psDashDot
+   else
+      r.Inflate(0, 0, 1, 1);
+   Canvas.Rectangle(r);
+   Canvas.Pen.Style := psSolid;
+   Canvas.Font.Color := Canvas.Pen.Color;
 end;
 
 procedure TBlock.SetBrushColor(AShape: TColorShape);
