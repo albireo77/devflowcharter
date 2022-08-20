@@ -1197,8 +1197,10 @@ procedure TBlock.ClearSelection;
 begin
    var lColor := Page.Box.Color;
    if Color <> lColor then
+   begin
       ChangeColor(lColor);
-   NavigatorForm.Invalidate;
+      NavigatorForm.Invalidate;
+   end;
 end;
 
 function TBlock.FindSelectedBlock: TBlock;
