@@ -179,8 +179,12 @@ begin
    if Parent <> nil then
    begin
       var pnt := GetBottomRight;
-      HorzScrollBar.Range := Max(pnt.X, ClientWidth);
-      VertScrollBar.Range := Max(pnt.Y, ClientHeight);
+      var hr := Max(pnt.X, ClientWidth);
+      var vr := Max(pnt.Y, ClientHeight);
+      if HorzScrollBar.Range <> hr then
+         HorzScrollBar.Range := hr;
+      if VertScrollBar.Range <> vr then
+         VertScrollBar.Range := vr;
    end;
    NavigatorForm.Invalidate;
 end;

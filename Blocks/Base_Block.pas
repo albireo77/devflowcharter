@@ -820,10 +820,15 @@ begin
          end
          else          // drag entire flowchart
          begin
+            var br := FTopParentBlock.BoundsRect;
+            var b := br.Bottom;
+            var r := br.Right;
             ReleaseCapture;
             FTopParentBlock.BringAllToFront;
             SendMessage(FTopParentBlock.Handle, WM_SYSCOMMAND, $F012, 0);
-            FTopParentBlock.OnResize(FTopParentBlock);
+            br := FTopParentBlock.BoundsRect;
+            if (b <> br.Bottom) or (r <> br.Right) then
+               FTopParentBlock.OnResize(FTopParentBlock);
          end;
       end;
    end;
