@@ -414,10 +414,6 @@ end;
 procedure TMainBlock.MyOnResize(Sender: TObject);
 begin
    FPage.Box.SetScrollbars;
-   if FPage.Box.HorzScrollBar.Position + BoundsRect.Right < MARGIN_X then
-      Left := 0;
-   if FPage.Box.VertScrollBar.Position + BoundsRect.Bottom < MARGIN_Y then
-      Top := 0;
    BringAllToFront;
    FPage.Box.Invalidate;
 end;
