@@ -55,7 +55,7 @@ type
          FParentBlock: TGroupBlock;
          FParentBranch: TBranch;
          FId: integer;
-         function IsInSelect(const APoint: TPoint): boolean;
+         function IsAtSelect(const APoint: TPoint): boolean;
          procedure RefreshStatements;
       protected
          FType: TBlockType;
@@ -109,7 +109,7 @@ type
          procedure CreateParams(var Params: TCreateParams); override;
          procedure OnWindowPosChanged(x, y: integer); virtual;
          function ProcessComments: boolean;
-         function IsForeParent(AParent: TObject): boolean;
+         function IsAncestor(AParent: TObject): boolean;
          function GetErrorMsg(AEdit: TCustomEdit): string;
          procedure SaveInXML2(ATag: IXMLElement);
          procedure ExitSizeMove;
@@ -610,7 +610,7 @@ begin
       Cursor := crDefault;
 end;
 
-function TBlock.IsForeParent(AParent: TObject): boolean;
+function TBlock.IsAncestor(AParent: TObject): boolean;
 begin
    result := false;
    if AParent <> nil then
@@ -639,7 +639,7 @@ begin
    else
       shiftState := [];
    MyOnMouseMove(Sender, shiftState, X, Y);
-   if (Ired < 0) or (not (Source is TBlock)) or (Source is TMainBlock) or (Source is TReturnBlock) or ((not isShift) and ((Source = Self) or IsForeParent(Source))) then
+   if (Ired < 0) or (not (Source is TBlock)) or (Source is TMainBlock) or (Source is TReturnBlock) or ((not isShift) and ((Source = Self) or IsAncestor(Source))) then
       Accept := false;
 end;
 
@@ -775,7 +775,7 @@ begin
    result := FStatement;
 end;
 
-function TBlock.IsInSelect(const APoint: TPoint): boolean;
+function TBlock.IsAtSelect(const APoint: TPoint): boolean;
 begin
    result := Bounds(IPoint.X-5, IPoint.Y, 10, 10).Contains(APoint);
 end;
@@ -784,7 +784,7 @@ procedure TBlock.MyOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TSh
 begin
    if Button = mbLeft then
    begin
-      if IsInSelect(Point(X, Y)) then
+      if IsAtSelect(Point(X, Y)) then
          BeginDrag(false, 3)
       else if not IsCursorResize then
       begin
@@ -1246,7 +1246,7 @@ end;
 
 procedure TBlock.SelectBlock(const APoint: TPoint);
 begin
-   if IsInSelect(APoint) then
+   if IsAtSelect(APoint) then
    begin
       if Color <> GSettings.HighlightColor then
       begin
@@ -1597,7 +1597,7 @@ end;
 
 function TBlock.IsCursorSelect: boolean;
 begin
-   result := IsInSelect(ScreenToClient(Mouse.CursorPos));
+   result := IsAtSelect(ScreenToClient(Mouse.CursorPos));
 end;
 
 function TBlock.IsCursorResize: boolean;
