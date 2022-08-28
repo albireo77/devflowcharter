@@ -55,7 +55,6 @@ type
          FParentBlock: TGroupBlock;
          FParentBranch: TBranch;
          FId: integer;
-         function IsAtSelect(const APoint: TPoint): boolean;
          procedure RefreshStatements;
       protected
          FType: TBlockType;
@@ -89,7 +88,8 @@ type
          procedure DrawBlockLabel(x, y: integer; const AText: string; rightJust: boolean = false; downJust: boolean = false);
          function GetId: integer;
          function PerformEditorUpdate: boolean;
-         procedure SelectBlock(const APoint: TPoint);
+         procedure Select;
+         function IsAtSelectPos(const APoint: TPoint): boolean;
          procedure SetCursor(const APoint: TPoint);
          procedure SetFrame(AValue: boolean);
          procedure PutTextControls; virtual;
@@ -148,7 +148,7 @@ type
          function GetDescTemplate(const ALangId: string): string; virtual;
          function GetTextControl: TCustomEdit; virtual;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; virtual;
-         function IsCursorSelect: boolean;
+         function IsMouseAtSelectPos: boolean;
          function IsCursorResize: boolean;
          function CanInsertReturnBlock: boolean; virtual;
          procedure ExportToXMLTag(ATag: IXMLElement);
@@ -165,7 +165,7 @@ type
          procedure GenerateTemplateSection(ALines: TStringList; const ATemplate: string; const ALangId: string; ADeep: integer); overload;
          function GetMemoEx: TMemoEx; virtual;
          function FocusOnTextControl(AInfo: TFocusInfo): boolean;
-         procedure ClearSelection;
+         procedure DeSelect;
          procedure ChangeFrame;
          procedure RepaintAll;
          function Next: TBlock;
@@ -545,9 +545,16 @@ end;
 
 procedure TBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
+
    var p := Point(X, Y);
-   SelectBlock(p);
+
+   if IsAtSelectPos(p) then
+      Select
+   else
+      DeSelect;
+
    SetCursor(p);
+
    if Rect(BottomPoint.X-5, BottomPoint.Y, BottomPoint.X+5, Height).Contains(p) then
    begin
       DrawArrow(BottomPoint, BottomPoint.X, Height-1, arrEnd, clRed);
@@ -694,7 +701,7 @@ end;
 procedure TBlock.OnMouseLeave(AClearRed: boolean = true);
 begin
    Cursor := crDefault;
-   ClearSelection;
+   DeSelect;
    if Ired = 0 then
       DrawArrow(BottomPoint, BottomPoint.X, Height-1);
    if AClearRed then
@@ -750,7 +757,7 @@ end;
 
 procedure TBlock.MyOnDblClick(Sender: TObject);
 begin
-   if IsCursorSelect then
+   if IsMouseAtSelectPos then
       ChangeFrame;
 end;
 
@@ -775,7 +782,7 @@ begin
    result := FStatement;
 end;
 
-function TBlock.IsAtSelect(const APoint: TPoint): boolean;
+function TBlock.IsAtSelectPos(const APoint: TPoint): boolean;
 begin
    result := Bounds(IPoint.X-5, IPoint.Y, 10, 10).Contains(APoint);
 end;
@@ -784,7 +791,7 @@ procedure TBlock.MyOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TSh
 begin
    if Button = mbLeft then
    begin
-      if IsAtSelect(Point(X, Y)) then
+      if IsAtSelectPos(Point(X, Y)) then
          BeginDrag(false, 3)
       else if not IsCursorResize then
       begin
@@ -904,7 +911,7 @@ begin
    begin
       FFrame := AValue;
       GProject.SetChanged;
-      ClearSelection;
+      DeSelect;
       Invalidate;
       if FFrame then
          TInfra.GetEditorForm.SelectCodeRange(Self)
@@ -1198,20 +1205,10 @@ begin
    end;
 end;
 
-procedure TBlock.ClearSelection;
-begin
-   var lColor := Page.Box.Color;
-   if Color <> lColor then
-   begin
-      ChangeColor(lColor);
-      NavigatorForm.Invalidate;
-   end;
-end;
-
 function TBlock.FindSelectedBlock: TBlock;
 begin
    result := nil;
-   if Color = GSettings.HighlightColor then
+   if Color = GSettings.SelectColor then
       result := Self;
 end;
 
@@ -1244,19 +1241,20 @@ begin
       FMemoFolder.Color := lColor;
 end;
 
-procedure TBlock.SelectBlock(const APoint: TPoint);
+procedure TBlock.Select;
 begin
-   if IsAtSelect(APoint) then
+   if Color <> GSettings.SelectColor then
    begin
-      if Color <> GSettings.HighlightColor then
-      begin
-         ChangeColor(GSettings.HighlightColor);
-         if GSettings.EditorAutoSelectBlock then
-            TInfra.GetEditorForm.SelectCodeRange(Self);
-         NavigatorForm.Invalidate;
-      end;
-   end
-   else if Color <> Page.Box.Color then
+      ChangeColor(GSettings.SelectColor);
+      if GSettings.EditorAutoSelectBlock then
+         TInfra.GetEditorForm.SelectCodeRange(Self);
+      NavigatorForm.Invalidate;
+   end;
+end;
+
+procedure TBlock.DeSelect;
+begin
+   if Color = GSettings.SelectColor then
    begin
       ChangeColor(Page.Box.Color);
       if GSettings.EditorAutoSelectBlock and not FFrame then
@@ -1595,9 +1593,9 @@ begin
       Msg.MinMaxInfo.ptMaxTrackSize.Y := box.ClientHeight - p.Y;
 end;
 
-function TBlock.IsCursorSelect: boolean;
+function TBlock.IsMouseAtSelectPos: boolean;
 begin
-   result := IsAtSelect(ScreenToClient(Mouse.CursorPos));
+   result := IsAtSelectPos(ScreenToClient(Mouse.CursorPos));
 end;
 
 function TBlock.IsCursorResize: boolean;
@@ -1822,7 +1820,7 @@ begin
    if result then
    begin
       GClpbrd.UndoObject.Free;
-      ClearSelection;
+      DeSelect;
       SetVisible(false);
       if FParentBranch <> nil then
       begin
@@ -2397,7 +2395,7 @@ end;
 
 procedure TBlock.ExportToGraphic(AGraphic: TGraphic);
 begin
-   ClearSelection;
+   DeSelect;
    var bitmap: TBitmap := nil;
    if AGraphic is TBitmap then
       bitmap := TBitmap(AGraphic)

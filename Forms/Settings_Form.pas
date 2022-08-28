@@ -477,7 +477,7 @@ begin
    edtMarginTop.Text := ASettings.PrintRect.Top.ToString;
    edtMarginRight.Text := (PRINT_SCALE_BASE - ASettings.PrintRect.Right).ToString;
    edtMarginBottom.Text := (PRINT_SCALE_BASE - ASettings.PrintRect.Bottom).ToString;
-   pnlFill.Color := ASettings.HighlightColor;
+   pnlFill.Color := ASettings.SelectColor;
    pnlPen.Color := ASettings.PenColor;
    pnlDesktop.Color := ASettings.DesktopColor;
    pnlEditorFont.Color := ASettings.EditorFontColor;

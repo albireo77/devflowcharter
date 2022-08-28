@@ -72,7 +72,7 @@ type
       FConfirmRemove: boolean;
       FPrintMultPages: boolean;
       FPrintMultPagesHorz: boolean;
-      FHighlightColor: TColor;
+      FSelectColor: TColor;
       FDesktopColor: TColor;
       FTranslateFile: string;
       FFontColor: TColor;
@@ -145,7 +145,7 @@ type
       property ConfirmRemove: boolean read FConfirmRemove;
       property PrintMultPages: boolean read FPrintMultPages;
       property PrintMultPagesHorz: boolean read FPrintMultPagesHorz;
-      property HighlightColor: TColor read FHighlightColor;
+      property SelectColor: TColor read FSelectColor;
       property PenColor: TColor read FPenColor;
       property DesktopColor: TColor read FDesktopColor;
       property TranslateFile: string read FTranslateFile;
@@ -173,7 +173,7 @@ uses
    System.StrUtils, Infrastructure, Main_Form, Navigator_Form, Constants;
 
 const
-   KEY_HIGHLIGHT_COLOR = 'HighlightColor';
+   KEY_SELECT_COLOR = 'HighlightColor';
    KEY_DESKTOP_COLOR = 'DesktopColor';
    KEY_ELLIPSE_COLOR = 'EllipseColor';
    KEY_DIAMOND_COLOR = 'DiamondColor';
@@ -282,7 +282,7 @@ end;
 procedure TSettings.Load;
 begin
    FFontColor                 := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_FONT_COLOR, NOK_COLOR);
-   FHighlightColor            := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_HIGHLIGHT_COLOR, clAqua);
+   FSelectColor               := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_SELECT_COLOR, clAqua);
    FPenColor                  := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PEN_COLOR, clBlack);
    FShapeColors[shpEllipse]   := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_ELLIPSE_COLOR, DEFAULT_DESKTOP_COLOR);
    FShapeColors[shpDiamond]   := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_DIAMOND_COLOR, DEFAULT_DESKTOP_COLOR);
@@ -386,7 +386,7 @@ begin
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_NAVIGATOR_ALPHA_VALUE, FNavigatorAlphaValue);
    FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_NAVIGATOR_ALPHA_VISIBLE, FNavigatorAlphaVisible);
    FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_EXPLORER_AUTO_NAV, FExplorerAutoNav);
-   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_HIGHLIGHT_COLOR, FHighlightColor);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_SELECT_COLOR, FSelectColor);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_PEN_COLOR, FPenColor);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_FONT_COLOR, FEditorFontColor);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_EDITOR_BKG_COLOR, FEditorBkgColor);
@@ -551,8 +551,8 @@ begin
       colorChanged := true;
       FPenColor := sForm.pnlPen.Color;
    end;
-   if (FHighlightColor <> sForm.pnlFill.Color) and  (sForm.pnlFill.Color <> sForm.pnlDesktop.Color) then
-      FHighlightColor := sForm.pnlFill.Color;
+   if (FSelectColor <> sForm.pnlFill.Color) and  (sForm.pnlFill.Color <> sForm.pnlDesktop.Color) then
+      FSelectColor := sForm.pnlFill.Color;
    FConfirmRemove := sForm.chkConfirmRemove.Checked;
    FPrintMultPages := sForm.chkMultiPrint.Checked;
    FPrintMultPagesHorz := sForm.chkMultiPrintHorz.Checked;

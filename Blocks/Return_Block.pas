@@ -165,7 +165,8 @@ end;
 
 procedure TReturnBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
-   SelectBlock(Point(X, Y));
+   if IsAtSelectPos(Point(X, Y)) then
+      Select;
 end;
 
 procedure TReturnBlock.PutTextControls;

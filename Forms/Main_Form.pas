@@ -632,7 +632,7 @@ begin
           if (GClpbrd.Instance is TComment) or ((GClpbrd.Instance is TReturnBlock) and not miReturn.Enabled) then
              miPaste.Enabled := False;
        end
-       else if block.IsCursorSelect then
+       else if block.IsMouseAtSelectPos then
        begin
           miRemove.Visible := True;
           miFont.Visible := True;
@@ -1025,7 +1025,7 @@ begin
    if pmPages.PopupComponent is TGroupBlock then
    begin
       var block := TGroupBlock(pmPages.PopupComponent);
-      block.ClearSelection;
+      block.DeSelect;
       block.ExpandFold(true);
    end;
 end;
@@ -1061,7 +1061,7 @@ begin
    if pmPages.PopupComponent is TGroupBlock then
    begin
       var block := TGroupBlock(pmPages.PopupComponent);
-      block.ClearSelection;
+      block.DeSelect;
       block.TopParentBlock.LockDrawing;
       try
          block.ExpandAll;

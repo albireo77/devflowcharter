@@ -228,7 +228,7 @@ var
    selStart: integer;
    pdi: boolean;
 begin
-   ClearSelection;
+   DeSelect;
    if AGraphic is TBitmap then
       bitmap := TBitmap(AGraphic)
    else
@@ -241,24 +241,27 @@ begin
    pdi := FPage.DrawI;
    FPage.DrawI := false;
    bitmap.Canvas.Lock;
-   PaintTo(bitmap.Canvas, 1, 1);
-   if Expanded then
-   begin
-      for comment in GetComments do
+   try
+      PaintTo(bitmap.Canvas, 1, 1);
+      if Expanded then
       begin
-         if comment.Visible then
+         for comment in GetComments do
          begin
-            bStyle := comment.BorderStyle;
-            selStart := comment.SelStart;
-            comment.BorderStyle := bsNone;
-            comment.PaintTo(bitmap.Canvas, comment.Left-Left, comment.Top-Top);
-            comment.BorderStyle := bStyle;
-            comment.SelStart := selStart;
+            if comment.Visible then
+            begin
+               bStyle := comment.BorderStyle;
+               selStart := comment.SelStart;
+               comment.BorderStyle := bsNone;
+               comment.PaintTo(bitmap.Canvas, comment.Left-Left, comment.Top-Top);
+               comment.BorderStyle := bStyle;
+               comment.SelStart := selStart;
+            end;
          end;
       end;
+   finally
+      bitmap.Canvas.Unlock;
+      FPage.DrawI := pdi;
    end;
-   bitmap.Canvas.Unlock;
-   FPage.DrawI := pdi;
    if AGraphic <> bitmap then
    begin
       AGraphic.Assign(bitmap);
@@ -406,8 +409,10 @@ begin
       inherited MyOnMouseMove(Sender, Shift, X, Y)
    else
    begin
-      SelectBlock(Point(X, Y));
-      SetCursor(Point(X, Y));
+      var p := Point(X, Y);
+      if IsAtSelectPos(p) then
+         Select;
+      SetCursor(p);
    end;
 end;
 
