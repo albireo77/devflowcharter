@@ -551,8 +551,8 @@ begin
       colorChanged := true;
       FPenColor := sForm.pnlPen.Color;
    end;
-   if (FSelectColor <> sForm.pnlFill.Color) and  (sForm.pnlFill.Color <> sForm.pnlDesktop.Color) then
-      FSelectColor := sForm.pnlFill.Color;
+   if (FSelectColor <> sForm.pnlSelect.Color) and  (sForm.pnlSelect.Color <> sForm.pnlDesktop.Color) then
+      FSelectColor := sForm.pnlSelect.Color;
    FConfirmRemove := sForm.chkConfirmRemove.Checked;
    FPrintMultPages := sForm.chkMultiPrint.Checked;
    FPrintMultPagesHorz := sForm.chkMultiPrintHorz.Checked;

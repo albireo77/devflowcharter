@@ -78,8 +78,8 @@ type
     gbFlowchartSettings: TGroupBox;
     lblDesktop: TLabel;
     pnlDesktop: TPanel;
-    lblBlockColor: TLabel;
-    pnlFill: TPanel;
+    lblSelectColor: TLabel;
+    pnlSelect: TPanel;
     imgShapes: TImage;
     lblFontColor: TLabel;
     pnlFont: TPanel;
@@ -120,7 +120,7 @@ type
     procedure CloseFormClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure pnlFillClick(Sender: TObject);
+    procedure pnlSelectClick(Sender: TObject);
     procedure btnDefaultSettingsClick(Sender: TObject);
     procedure cbLanguageChange(Sender: TObject);
     procedure btnBrowseScriptsClick(Sender: TObject);
@@ -176,13 +176,13 @@ begin
    edtTranslateFile.Left := lblFile.Width + lblFile.Left + 5;;
    edtTranslateFile.Width := w - edtTranslateFile.Left;
    var val := lblDesktop.Width;
-   if val < lblBlockColor.Width then
-      val := lblBlockColor.Width;
+   if val < lblSelectColor.Width then
+      val := lblSelectColor.Width;
    if val < lblFontColor.Width then
       val := lblFontColor.Width;
    Inc(val, lblDesktop.Left + 10);
    pnlDesktop.Left := val;
-   pnlFill.Left := val;
+   pnlSelect.Left := val;
    pnlFont.Left := val;
    pnlPen.Left := val;
    edtCompiler.Hint := ReplaceStr(AList.Values['edtCompilerHint'], LB_PHOLDER2, sLineBreak);
@@ -228,7 +228,7 @@ begin
    cbLanguage.ItemIndex := cbLanguage.Items.IndexOf(GInfra.CurrentLang.Name);
 end;
 
-procedure TSettingsForm.pnlFillClick(Sender: TObject);
+procedure TSettingsForm.pnlSelectClick(Sender: TObject);
 begin
    if ColorDialog.Execute then
       TPanel(Sender).Color := ColorDialog.Color;
@@ -369,7 +369,7 @@ end;
 procedure TSettingsForm.SetDefault;
 begin
    var langDef := GInfra.GetLangDefinition(cbLanguage.Text);
-   pnlFill.Color := clAqua;
+   pnlSelect.Color := clAqua;
    pnlPen.Color := clBlack;
    pnlDesktop.Color := DEFAULT_DESKTOP_COLOR;
    var parserOn := langDef.Parser <> nil;
@@ -477,7 +477,7 @@ begin
    edtMarginTop.Text := ASettings.PrintRect.Top.ToString;
    edtMarginRight.Text := (PRINT_SCALE_BASE - ASettings.PrintRect.Right).ToString;
    edtMarginBottom.Text := (PRINT_SCALE_BASE - ASettings.PrintRect.Bottom).ToString;
-   pnlFill.Color := ASettings.SelectColor;
+   pnlSelect.Color := ASettings.SelectColor;
    pnlPen.Color := ASettings.PenColor;
    pnlDesktop.Color := ASettings.DesktopColor;
    pnlEditorFont.Color := ASettings.EditorFontColor;

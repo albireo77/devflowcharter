@@ -8,12 +8,10 @@ object SettingsForm: TSettingsForm
   ClientWidth = 557
   Color = clBtnFace
   ParentFont = True
-  OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
   OnShow = FormShow
-  PixelsPerInch = 96
-  TextHeight = 13
+  TextHeight = 15
   object btnSaveSettings: TButton
     Tag = 1
     Left = 398
@@ -630,7 +628,7 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 0
-        OnClick = pnlFillClick
+        OnClick = pnlSelectClick
       end
       object pnlEditorGutter: TPanel
         Left = 65
@@ -645,7 +643,7 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 1
-        OnClick = pnlFillClick
+        OnClick = pnlSelectClick
       end
       object pnlEditorFont: TPanel
         Left = 65
@@ -660,7 +658,7 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 2
-        OnClick = pnlFillClick
+        OnClick = pnlSelectClick
       end
       object pnlEditorBkg: TPanel
         Left = 176
@@ -675,7 +673,7 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 3
-        OnClick = pnlFillClick
+        OnClick = pnlSelectClick
       end
       object pnlEditorNumber: TPanel
         Left = 400
@@ -690,7 +688,7 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 4
-        OnClick = pnlFillClick
+        OnClick = pnlSelectClick
       end
       object pnlEditorString: TPanel
         Left = 500
@@ -705,7 +703,7 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 5
-        OnClick = pnlFillClick
+        OnClick = pnlSelectClick
       end
       object pnlEditorSelect: TPanel
         Left = 288
@@ -720,7 +718,7 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 6
-        OnClick = pnlFillClick
+        OnClick = pnlSelectClick
       end
       object pnlEditorComment: TPanel
         Left = 288
@@ -735,7 +733,7 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 7
-        OnClick = pnlFillClick
+        OnClick = pnlSelectClick
       end
       object pnlEditorIdent: TPanel
         Left = 400
@@ -750,7 +748,7 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 8
-        OnClick = pnlFillClick
+        OnClick = pnlSelectClick
       end
       object pnlEditorKeyword: TPanel
         Left = 500
@@ -765,7 +763,7 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 9
-        OnClick = pnlFillClick
+        OnClick = pnlSelectClick
       end
     end
     object edtEditorIndent: TEdit
@@ -980,7 +978,7 @@ object SettingsForm: TSettingsForm
       Font.Style = []
       ParentFont = False
     end
-    object lblBlockColor: TLabel
+    object lblSelectColor: TLabel
       Tag = 6
       Left = 8
       Top = 75
@@ -1008,7 +1006,7 @@ object SettingsForm: TSettingsForm
       Font.Style = []
       ParentFont = False
     end
-    object pnlFill: TPanel
+    object pnlSelect: TPanel
       Left = 70
       Top = 71
       Width = 25
@@ -1023,7 +1021,7 @@ object SettingsForm: TSettingsForm
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
-      OnClick = pnlFillClick
+      OnClick = pnlSelectClick
     end
     object pnlDesktop: TPanel
       Left = 70
@@ -1038,7 +1036,7 @@ object SettingsForm: TSettingsForm
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 1
-      OnClick = pnlFillClick
+      OnClick = pnlSelectClick
     end
     object pnlFont: TPanel
       Left = 70
@@ -1055,7 +1053,7 @@ object SettingsForm: TSettingsForm
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
-      OnClick = pnlFillClick
+      OnClick = pnlSelectClick
     end
     object edtFontNameSize: TEdit
       Tag = 5
@@ -1139,7 +1137,7 @@ object SettingsForm: TSettingsForm
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 7
-      OnClick = pnlFillClick
+      OnClick = pnlSelectClick
     end
   end
   object gbPrintSettings: TGroupBox
