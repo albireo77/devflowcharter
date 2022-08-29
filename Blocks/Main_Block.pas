@@ -411,7 +411,9 @@ begin
    begin
       var p := Point(X, Y);
       if IsAtSelectPos(p) then
-         Select;
+         Select
+      else
+         DeSelect;
       SetCursor(p);
    end;
 end;
