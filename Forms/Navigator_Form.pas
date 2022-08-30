@@ -158,6 +158,7 @@ procedure TNavigatorForm.chkAlphaVisibleClick(Sender: TObject);
 begin
    SetAlphaValVisible(chkAlphaVisible.Checked);
    GSettings.NavigatorAlphaVisible := chkAlphaVisible.Checked;
+   Invalidate;
 end;
 
 procedure TNavigatorForm.FormShow(Sender: TObject);
