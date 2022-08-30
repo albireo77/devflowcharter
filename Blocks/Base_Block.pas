@@ -569,16 +569,6 @@ begin
    end;
 end;
 
-function TBlock.GetBlockParms: TBlockParms;
-begin
-   result := TBlockParms.New(FType, Left, Top, Width, Height);
-end;
-
-function TGroupBlock.GetBlockParms: TBlockParms;
-begin
-   result := TBlockParms.New(FType, Left, Top, Width, Height, Branch.Hook.X, Branch.Hook.Y, BottomHook);
-end;
-
 procedure TGroupBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
    if Expanded then
@@ -603,6 +593,16 @@ begin
       end;
    end;
    inherited MyOnMouseMove(Sender, Shift, X, Y);
+end;
+
+function TBlock.GetBlockParms: TBlockParms;
+begin
+   result := TBlockParms.New(FType, Left, Top, Width, Height);
+end;
+
+function TGroupBlock.GetBlockParms: TBlockParms;
+begin
+   result := TBlockParms.New(FType, Left, Top, Width, Height, Branch.Hook.X, Branch.Hook.Y, BottomHook);
 end;
 
 procedure TBlock.SetCursor(const APoint: TPoint);
