@@ -79,7 +79,7 @@ begin
    var r := Rect(0, FStatement.Top-1, Width, br.Y);
    Canvas.Rectangle(r);
    DrawBlockLabel(1, br.Y-2, GInfra.CurrentLang.LabelFuncCall);
-   DrawArrow(BottomPoint, BottomPoint.X, Height-1);
+   DrawArrow(BottomPoint, Point(BottomPoint.X, Height-1));
    r := Rect(FStatement.Left-4, FStatement.Top-1, FStatement.Left-1, br.Y);
    Canvas.Rectangle(r);
    r.SetLocation(br.X+1, r.Top);

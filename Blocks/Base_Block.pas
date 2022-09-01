@@ -93,12 +93,9 @@ type
          procedure SetCursor(const APoint: TPoint);
          procedure SetFrame(AValue: boolean);
          procedure PutTextControls; virtual;
-         procedure DrawArrowTo(const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone); overload;
          procedure DrawArrowTo(toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone); overload;
          procedure DrawArrow(const aFrom, aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone); overload;
          procedure DrawArrow(fromX, fromY, toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone); overload;
-         procedure DrawArrow(fromX, fromY: integer; const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone); overload;
-         procedure DrawArrow(const aFrom: TPoint; toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone); overload;
          function GetEllipseTextRect(ax, ay: integer; const AText: string): TRect;
          function DrawEllipsedText(ax, ay: integer; const AText: string): TRect;
          procedure MoveComments(x, y: integer);
@@ -557,13 +554,13 @@ begin
 
    if Rect(BottomPoint.X-5, BottomPoint.Y, BottomPoint.X+5, Height).Contains(p) then
    begin
-      DrawArrow(BottomPoint, BottomPoint.X, Height-1, arrEnd, clRed);
+      DrawArrow(BottomPoint, Point(BottomPoint.X, Height-1), arrEnd, clRed);
       Ired := 0;
       Cursor := TCursor(GCustomCursor);
    end
    else if Ired = 0 then
    begin
-      DrawArrow(BottomPoint, BottomPoint.X, Height-1);
+      DrawArrow(BottomPoint, Point(BottomPoint.X, Height-1));
       Ired := -1;
       Cursor := crDefault;
    end;
@@ -578,14 +575,14 @@ begin
          var p := FBranchList[i].Hook;
          if Rect(p.X-5, TopHook.Y, p.X+5, p.Y).Contains(Point(X, Y)) then
          begin
-            DrawArrow(p.X, TopHook.Y, p, arrEnd, clRed);
+            DrawArrow(Point(p.X, TopHook.Y), p, arrEnd, clRed);
             Ired := i;
             Cursor := TCursor(GCustomCursor);
             break;
          end
          else if Ired = i then
          begin
-            DrawArrow(p.X, TopHook.Y, p);
+            DrawArrow(Point(p.X, TopHook.Y), p);
             Ired := -1;
             Cursor := crDefault;
             break;
@@ -636,15 +633,11 @@ begin
 end;
 
 procedure TBlock.MyOnDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
-var
-   isShift: boolean;
-   shiftState: TShiftState;
 begin
-   isShift := GetAsyncKeyState(vkShift) <> 0;
+   var shiftState: TShiftState := [];
+   var isShift := GetAsyncKeyState(vkShift) <> 0;
    if isShift then
-      shiftState := [ssShift]
-   else
-      shiftState := [];
+      shiftState := [ssShift];
    MyOnMouseMove(Sender, shiftState, X, Y);
    if (Ired < 0) or (not (Source is TBlock)) or (Source is TMainBlock) or (Source is TReturnBlock) or ((not isShift) and ((Source = Self) or IsAncestor(Source))) then
       Accept := false;
@@ -703,7 +696,7 @@ begin
    Cursor := crDefault;
    DeSelect;
    if Ired = 0 then
-      DrawArrow(BottomPoint, BottomPoint.X, Height-1);
+      DrawArrow(BottomPoint, Point(BottomPoint.X, Height-1));
    if AClearRed then
       Ired := -1;
    if FVResize or FHResize then
@@ -714,7 +707,7 @@ procedure TGroupBlock.OnMouseLeave(AClearRed: boolean = true);
 begin
    var br := GetBranch(Ired);
    if br <> nil then
-      DrawArrow(br.Hook.X, TopHook.Y, br.Hook);
+      DrawArrow(Point(br.Hook.X, TopHook.Y), br.Hook);
    inherited OnMouseLeave(AClearRed);
 end;
 
@@ -1383,31 +1376,15 @@ begin
    result := TRect.Create(Point(x, y), te.Width, te.Height);
 end;
 
-procedure TBlock.DrawArrow(const aFrom, aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
-begin
-   DrawArrow(aFrom.X, aFrom.Y, aTo.X, aTo.Y, AArrowPos, AColor);
-end;
-
-procedure TBlock.DrawArrow(fromX, fromY: integer; const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
-begin
-   DrawArrow(fromX, fromY, aTo.X, aTo.Y, AArrowPos, AColor);
-end;
-
-procedure TBlock.DrawArrow(const aFrom: TPoint; toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
-begin
-   DrawArrow(aFrom.X, aFrom.Y, toX, toY, AArrowPos, AColor);
-end;
-
 // this method draw arrow line from current pen position
 procedure TBlock.DrawArrowTo(toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
 begin
-   DrawArrow(Canvas.PenPos, toX, toY, AArrowPos, AColor);
+   DrawArrow(Canvas.PenPos, Point(toX, toY), AArrowPos, AColor);
 end;
 
-// this method draw arrow line from current pen position
-procedure TBlock.DrawArrowTo(const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
+procedure TBlock.DrawArrow(const aFrom, aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
 begin
-   DrawArrow(Canvas.PenPos, aTo, AArrowPos, AColor);
+   DrawArrow(aFrom.X, aFrom.Y, aTo.X, aTo.Y, AArrowPos, AColor);
 end;
 
 procedure TBlock.DrawArrow(fromX, fromY, toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
@@ -1557,7 +1534,7 @@ begin
       Canvas.Rectangle(r);
       Canvas.Pen.Width := 1;
       if FTopParentBlock <> Self then
-         DrawArrow(BottomPoint, BottomPoint.X, Height-1);
+         DrawArrow(BottomPoint, Point(BottomPoint.X, Height-1));
       r.Inflate(-2, -2, -3, -3);
       Canvas.Rectangle(r);
    end;

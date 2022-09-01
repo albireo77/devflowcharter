@@ -81,8 +81,8 @@ begin
    begin
       IPoint.X := Branch.Hook.X + 30;
       BottomPoint.Y := Height - 31;
-      DrawArrow(BottomPoint, BottomPoint.X, Height-1);
-      DrawArrow(Branch.Hook.X, TopHook.Y, Branch.Hook);
+      DrawArrow(BottomPoint, Point(BottomPoint.X, Height-1));
+      DrawArrow(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
       DrawBlockLabel(5, 2, GInfra.CurrentLang.LabelFolder);
    end;
    DrawI;

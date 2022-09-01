@@ -121,8 +121,8 @@ begin
       TopHook.Y := FDiamond.Left.Y;
 
       DrawArrow(BottomHook, Height-30, BottomHook, Height-1);
-      DrawArrow(TrueBranch.Hook.X, TopHook.Y, TrueBranch.Hook);
-      DrawArrow(FalseBranch.Hook.X, TopHook.Y, FalseBranch.Hook);
+      DrawArrow(Point(TrueBranch.Hook.X, TopHook.Y), TrueBranch.Hook);
+      DrawArrow(Point(FalseBranch.Hook.X, TopHook.Y), FalseBranch.Hook);
       if TrueBranch.FindInstanceOf(TReturnBlock) = -1 then
          DrawArrow(TrueHook, Height-30, BottomHook-5, Height-30);
       if FalseBranch.FindInstanceOf(TReturnBlock) = -1 then

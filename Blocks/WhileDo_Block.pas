@@ -80,7 +80,7 @@ begin
       BottomPoint.Y := FDiamond.Right.Y;
       TopHook := FDiamond.Bottom;
 
-      DrawArrow(Branch.Hook.X, TopHook.Y, Branch.Hook);
+      DrawArrow(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
       begin
          Canvas.MoveTo(BottomHook, Height-21);

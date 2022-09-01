@@ -300,7 +300,7 @@ begin
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
          DrawStopEllipse;
       Canvas.Font.Style := fontStyles;
-      DrawArrow(Branch.Hook.X, TopHook.Y, Branch.Hook);
+      DrawArrow(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
    end;
    DrawI;
 end;

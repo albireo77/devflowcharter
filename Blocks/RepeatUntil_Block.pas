@@ -96,7 +96,7 @@ begin
       Canvas.LineTo(5, FDiamond.Left.Y);
       DrawArrowTo(5, 0, arrMiddle);
       Canvas.LineTo(Branch.Hook.X, TopHook.Y);
-      DrawArrowTo(Branch.Hook);
+      DrawArrowTo(Branch.Hook.X, Branch.Hook.Y);
 
       DrawTextLabel(FDiamond.Left.X, FDiamond.Left.Y-5, FLeftLabel, true, true);
       DrawTextLabel(FDiamond.Right.X, FDiamond.Right.Y-5, FRightLabel, false, true);

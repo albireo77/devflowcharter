@@ -224,7 +224,7 @@ begin
       var t := GetTextTop;
       var bst := edtStop.BoundsRect.Right + 6;
       IPoint := Point(bst + 16, 35);
-      DrawArrow(bhx, TopHook.Y, Branch.Hook);
+      DrawArrow(Point(bhx, TopHook.Y), Branch.Hook);
       DrawArrow(Width-11, 19, Width-RIGHT_MARGIN, Height-1);
       if Branch.FindInstanceOf(TReturnBlock) = -1 then
       begin

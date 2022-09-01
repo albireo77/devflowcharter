@@ -89,7 +89,7 @@ begin
       Canvas.LineTo(Width-11, FDiamond.Right.Y);
       DrawArrowTo(Width-11, Height-31, arrMiddle);
       Canvas.LineTo(BottomPoint.X, Height-31);
-      DrawArrow(BottomPoint, BottomPoint.X, Height-1);
+      DrawArrow(BottomPoint, Point(BottomPoint.X, Height-1));
    end;
    DrawI;
 end;

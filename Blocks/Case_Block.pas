@@ -131,11 +131,11 @@ begin
       IPoint.X := DefaultBranch.Hook.X - 40;
       TopHook.Y := FDiamond.Bottom.Y + 10;
       BottomPoint.Y := Height - 31;
-      DrawArrow(BottomPoint, BottomPoint.X, Height-1);
+      DrawArrow(BottomPoint, Point(BottomPoint.X, Height-1));
       for var i := DEFAULT_BRANCH_IDX to FBranchList.Count-1 do
       begin
          pnt := FBranchList[i].Hook;
-         DrawArrow(pnt.X, TopHook.Y, pnt);
+         DrawArrow(pnt.X, TopHook.Y, pnt.X, pnt.Y);
          PlaceBranchStatement(FBranchList[i]);
       end;
       var x := FDiamond.Bottom.X + FDiamond.Width div 4;
