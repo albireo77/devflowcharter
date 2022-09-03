@@ -1680,6 +1680,7 @@ begin
       box.Show;
       FTopParentBlock.BringAllToFront;
       box.ScrollInView(AInfo.FocusEdit);
+      box.Repaint;
       idx2 := 0;
       if AInfo.FocusEdit is TCustomMemo then
       begin
