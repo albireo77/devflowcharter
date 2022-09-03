@@ -34,27 +34,27 @@ type
          FPage: TBlockTabSheet;
          FLabelRect: TRect;
          FHandle: HDC;
-         function GetMaxBounds: TPoint;
          procedure DrawStartEllipse;
          procedure DrawStopEllipse;
+         function GetMaxBounds: TPoint;
       public
          UserFunction: TObject;
          constructor Create(APage: TBlockTabSheet; const ABlockParms: TBlockParms); overload;
          constructor Create(APage: TBlockTabSheet; const ATopLeft: TPoint); overload;
-         function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
-         function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
-         function GetFromXML(ATag: IXMLElement): TError; override;
          procedure SaveInXML(ATag: IXMLElement); override;
          procedure ExportToGraphic(AGraphic: TGraphic); override;
          procedure SetWidth(AMinX: integer); override;
-         function GetHandle: THandle;
          procedure SetZOrder(AValue: integer);
-         function GetZOrder: integer;
-         function IsBoldDesc: boolean; override;
-         function Remove(ANode: TTreeNodeWithFriend = nil): boolean; override;
          procedure DrawLabel;
          function ExportToXMLFile(const AFile: string): TError; override;
          function GetExportFileName: string; override;
+         function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
+         function GetFromXML(ATag: IXMLElement): TError; override;
+         function GetHandle: THandle;
+         function GetZOrder: integer;
+         function IsBoldDesc: boolean; override;
+         function Remove(ANode: TTreeNodeWithFriend = nil): boolean; override;
+         function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
       protected
          FZOrder: integer;
          FStartLabel,
@@ -62,13 +62,13 @@ type
          procedure MyOnResize(Sender: TObject);
          procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); override;
          procedure Paint; override;
+         procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
+         procedure SetPage(APage: TBlockTabSheet); override;
+         procedure OnWindowPosChanged(x, y: integer); override;
          function GetFunctionLabel(var ARect: TRect): string;
          function GetDefaultWidth: integer;
-         procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
-         function GetUndoObject: TObject; override;
-         procedure SetPage(APage: TBlockTabSheet); override;
          function GetPage: TBlockTabSheet; override;
-         procedure OnWindowPosChanged(x, y: integer); override;
+         function GetUndoObject: TObject; override;
    end;
 
 const

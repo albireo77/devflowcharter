@@ -46,7 +46,7 @@ implementation
 
 uses
    Vcl.Controls, System.SysUtils, System.UITypes, System.Math, Infrastructure,
-   Project, UserFunction, Main_Block, LangDefinition, Constants, YaccLib;
+   Project, UserFunction, LangDefinition, Constants, YaccLib;
 
 constructor TReturnBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
@@ -97,34 +97,30 @@ begin
 end;
 
 function TReturnBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
-var
-   indnt, expr: string;
-   userFunction: TUserFunction;
-   inFunc: boolean;
-   tmpList: TStringList;
 begin
    result := 0;
    if fsStrikeOut in Font.Style then
       Exit;
    if ALangId = PASCAL_LANG_ID then
    begin
-      indnt := GSettings.IndentString(ADeep);
-      expr := Trim(FStatement.Text);
-      inFunc := false;
+      var expr := Trim(FStatement.Text);
+      var inFunction := false;
+      var userFunction: TUserFunction := nil;
       if not expr.IsEmpty then
       begin
          for userFunction in GProject.GetUserFunctions do
          begin
-            inFunc := userFunction.Active and (userFunction.Body = FTopParentBlock) and (userFunction.Header <> nil) and (userFunction.Header.cbType.ItemIndex > 0);
-            if inFunc then
+            inFunction := userFunction.Active and (userFunction.Body = FTopParentBlock) and (userFunction.Header <> nil) and (userFunction.Header.cbType.ItemIndex > 0);
+            if inFunction then
                break;
          end;
       end;
-      tmpList := TStringList.Create;
+      var tmpList := TStringList.Create;
       try
-         if inFunc then
-            tmpList.AddObject(indnt + userFunction.Header.edtName.Text + ' ' + GInfra.GetLangDefinition(ALangId).AssignOperator + ' ' + expr + ';', Self);
-         if not (((TMainBlock(FTopParentBlock).Branch.Count > 0) and (TMainBlock(FTopParentBlock).Branch.Last = Self)) and inFunc) then
+         var indnt := GSettings.IndentString(ADeep);
+         if inFunction then
+            tmpList.AddObject(Format('%s%s %s %s;', [indnt, userFunction.Header.edtName.Text, GInfra.GetLangDefinition(ALangId).AssignOperator, expr]), Self);
+         if not (((FTopParentBlock.Branch.Count > 0) and (FTopParentBlock.Branch.Last = Self)) and inFunction) then
             tmpList.AddObject(indnt + 'exit;', Self);
          TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
          result := tmpList.Count;
