@@ -108,6 +108,8 @@ const   // Global constants
 
         ID_ALLOW_CHARS = ['a'..'z', 'A'..'Z', '0'..'9', '_'];
 
+        APPLICATION_DEFAULT_FONT_NAME = 'Tahoma';
+        APPLICATION_DEFAULT_FONT_SIZE = 8;
         FLOWCHART_DEFAULT_FONT_NAME = 'Tahoma';
         FLOWCHART_MIN_FONT_SIZE = 8;
         FLOWCHART_MAX_FONT_SIZE = FLOWCHART_MIN_FONT_SIZE + 4;

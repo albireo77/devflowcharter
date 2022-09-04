@@ -256,6 +256,8 @@ begin
    until lCursor = High(TCustomCursor);
    InitialiseVariables;
    SystemParametersInfo(SPI_SETDRAGFULLWINDOWS, Ord(True), nil, 0);
+   Application.DefaultFont.Name := APPLICATION_DEFAULT_FONT_NAME;
+   Application.DefaultFont.Size := APPLICATION_DEFAULT_FONT_SIZE;
    Application.HintHidePause := HINT_PAUSE;
    Application.OnException := OnException;
    Application.Title := PROGRAM_NAME;
