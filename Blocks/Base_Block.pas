@@ -828,7 +828,9 @@ begin
             SendMessage(FTopParentBlock.Handle, WM_SYSCOMMAND, $F012, 0);
             br := FTopParentBlock.BoundsRect;
             if (b <> br.Bottom) or (r <> br.Right) then
-               FTopParentBlock.OnResize(FTopParentBlock);
+               FTopParentBlock.OnResize(FTopParentBlock)
+            else
+               FTopParentBlock.BringAllToFront;
          end;
       end;
    end;
