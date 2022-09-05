@@ -75,6 +75,7 @@ uses
 constructor TMemoEx.Create(AOwner: TComponent);
 begin
    inherited Create(AOwner);
+   EditMargins.Auto := true;
    EditFormWidth := 280;
    EditFormHeight := 182;
    FHasVScroll := true;
