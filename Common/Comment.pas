@@ -217,9 +217,14 @@ begin
       else
       begin
          BringToFront;
+         var br := BoundsRect;
+         var b := br.Bottom;
+         var r := br.Right;
          ReleaseCapture;
          SendMessage(Handle, WM_SYSCOMMAND, $F012, 0);
-         FPage.Box.SetScrollBars
+         br := BoundsRect;
+         if (b <> br.Bottom) or (r <> br.Right) then
+            FPage.Box.SetScrollBars;
       end;
    end;
 end;
