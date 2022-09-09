@@ -284,6 +284,7 @@ begin
    inherited;
    ChangeBorderStyle(bsNone);
    UpdateScrolls;
+   NavigatorForm.Invalidate;
 end;
 
 procedure TComment.OnContextPopupComment(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
