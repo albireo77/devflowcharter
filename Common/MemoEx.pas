@@ -39,7 +39,7 @@ type
       protected
          procedure SetWordWrap(AValue: boolean);
          procedure SetScrollBars(AValue: TScrollStyle);
-         procedure SetAlignment(AValue: TAlignment);
+         procedure SetAlignment(AValue: TAlignment); virtual;
          procedure ChangeBorderStyle(AStyle: TBorderStyle);
       public
          EditFormWidth,

@@ -46,6 +46,7 @@ type
          procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
          procedure WMExitSizeMove(var Msg: TWMMove); message WM_EXITSIZEMOVE;
          procedure SetActive(AValue: boolean);
+         procedure SetAlignment(AValue: TAlignment); override;
          function GetActive: boolean;
          procedure OnChangeComment(Sender: TObject);
          procedure SetPage(APage: TBlockTabSheet);
@@ -163,6 +164,15 @@ end;
 function TComment.GetActive: boolean;
 begin
    result := FActive;
+end;
+
+procedure TComment.SetAlignment(AValue: TAlignment);
+begin
+   if AValue <> Alignment then
+   begin
+      inherited SetAlignment(AValue);
+      NavigatorForm.Invalidate;
+   end;
 end;
 
 procedure TComment.BringAllToFront;
