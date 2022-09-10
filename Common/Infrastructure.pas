@@ -69,7 +69,7 @@ type
          class procedure MoveWin(AWinControl: TWinControl; const APoint: TPoint); overload;
          class procedure MoveWinTopZ(AWinControl: TWinControl; x, y: integer);
          class procedure IndentSpacesToTabs(ALines: TStringList);
-         class function GetScrolledPoint(AMemo: TCustomMemo): TPoint;
+         class function GetScrolledPos(AMemo: TCustomMemo): TPoint;
          class function CreateDOSProcess(const ACommand: string; ADir: string = ''): boolean;
          class function ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer; overload;
          class function ShowQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer; overload;
@@ -1016,7 +1016,7 @@ begin
    end;
 end;
 
-class function TInfra.GetScrolledPoint(AMemo: TCustomMemo): TPoint;
+class function TInfra.GetScrolledPos(AMemo: TCustomMemo): TPoint;
 var
    c: cardinal;
    charIndex: integer;
