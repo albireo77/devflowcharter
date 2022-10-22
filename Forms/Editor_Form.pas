@@ -785,8 +785,13 @@ begin
    end;
    if scModified in Changes then
    begin
-      stbEditorBar.Panels[1].Text := IfThen(memCodeEditor.Modified, i18Manager.GetString('Modified'));
-      GProject.SetChanged;
+      if memCodeEditor.Modified then
+      begin
+         stbEditorBar.Panels[1].Text := i18Manager.GetString('Modified');
+         GProject.SetChanged;
+      end
+      else
+         stbEditorBar.Panels[1].Text := '';
    end;
    if scInsertMode in Changes then
       stbEditorBar.Panels[2].Text := i18Manager.GetString(IfThen(memCodeEditor.InsertMode, 'InsertMode', 'OverwriteMode'));
