@@ -1538,15 +1538,16 @@ end;
 
 procedure TEditorForm.memCodeEditorChange(Sender: TObject);
 begin
-{$IFDEF USE_CODEFOLDING}
-   if memCodeEditor.CodeFolding.Enabled then
-      memCodeEditor.ReScanForFoldRanges;
-{$ENDIF}
+   GProject.SetChanged;
+   OnChangeEditor;
 end;
 
 procedure TEditorForm.OnChangeEditor;
 begin
-   memCodeEditorChange(memCodeEditor);
+{$IFDEF USE_CODEFOLDING}
+   if memCodeEditor.CodeFolding.Enabled then
+      memCodeEditor.ReScanForFoldRanges;
+{$ENDIF}
 end;
 
 procedure TEditorForm.miFindProjClick(Sender: TObject);
