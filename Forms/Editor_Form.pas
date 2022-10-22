@@ -784,7 +784,10 @@ begin
       stbEditorBar.Panels[0].Text := i18Manager.GetFormattedString('StatusBarInfo', [p.Line, p.Char]);
    end;
    if scModified in Changes then
+   begin
       stbEditorBar.Panels[1].Text := IfThen(memCodeEditor.Modified, i18Manager.GetString('Modified'));
+      GProject.SetChanged;
+   end;
    if scInsertMode in Changes then
       stbEditorBar.Panels[2].Text := i18Manager.GetString(IfThen(memCodeEditor.InsertMode, 'InsertMode', 'OverwriteMode'));
 end;
@@ -1538,16 +1541,15 @@ end;
 
 procedure TEditorForm.memCodeEditorChange(Sender: TObject);
 begin
-   GProject.SetChanged;
-   OnChangeEditor;
-end;
-
-procedure TEditorForm.OnChangeEditor;
-begin
 {$IFDEF USE_CODEFOLDING}
    if memCodeEditor.CodeFolding.Enabled then
       memCodeEditor.ReScanForFoldRanges;
 {$ENDIF}
+end;
+
+procedure TEditorForm.OnChangeEditor;
+begin
+   memCodeEditorChange(memCodeEditor);
 end;
 
 procedure TEditorForm.miFindProjClick(Sender: TObject);
