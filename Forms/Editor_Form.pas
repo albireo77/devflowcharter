@@ -158,6 +158,7 @@ type
   TEditorHintWindow = class(THintWindow)
      constructor Create (AOwner: TComponent); override;
      procedure ActivateHintData(ARect: TRect; const AHint: string; AData: Pointer); override;
+     function CalcHintRect(MaxWidth: Integer; const AHint: string; AData: Pointer): TRect; override;
   end;
 
 var
@@ -189,6 +190,22 @@ begin
       ARect.SetLocation(TPoint(AData^));
    ARect.Offset(0, -ARect.Height);
    inherited ActivateHintData(ARect, AHint, AData);
+end;
+
+// implementation taken from base class (THintWindow)
+function TEditorHintWindow.CalcHintRect(MaxWidth: Integer; const AHint: string; AData: TCustomData): TRect;
+begin
+  Result := System.Types.Rect(0, 0, MaxWidth, 0);
+  //code below removed to allow use of custom font (not Screen.HintFont)
+  //if Screen.ActiveCustomForm <> nil then
+  //begin
+  //  Canvas.Font := Screen.HintFont;
+  //  Canvas.Font.Height := Muldiv(Canvas.Font.Height, Screen.ActiveCustomForm.CurrentPPI, Screen.PixelsPerInch);
+  //end;
+  DrawText(Canvas.Handle, AHint, -1, Result, DT_CALCRECT or DT_LEFT or
+    DT_WORDBREAK or DT_NOPREFIX or DrawTextBiDiModeFlagsReadingOnly);
+  Inc(Result.Right, 6);
+  Inc(Result.Bottom, 2);
 end;
 
 procedure TEditorForm.FormCreate(Sender: TObject);
