@@ -199,7 +199,9 @@ begin
                templateLines.Free;
             end;
          end;
-         TInfra.GetEditorForm.SetCaretPos(chLine);
+         var editorForm := TInfra.GetEditorForm;
+         editorForm.SetCaretPos(chLine);
+         editorForm.memCodeEditor.Modified := true;
       end;
    end;
 end;

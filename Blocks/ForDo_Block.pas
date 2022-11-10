@@ -540,9 +540,7 @@ begin
             chLine.Text := TInfra.ExtractIndentString(chLine.Text) + FillCodedTemplate(langName)
          else
             chLine.Text := FillExpression(chLine.Text, langName);
-         if GSettings.UpdateEditor and not SkipUpdateEditor then
-            TInfra.ChangeLine(chLine);
-         TInfra.GetEditorForm.SetCaretPos(chLine);
+         TInfra.GetEditorForm.UpdateEditorForBlock(Self, chLine);
       end;
    end;
 end;

@@ -392,9 +392,7 @@ begin
       begin
          chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
          chLine.Text := ReplaceStr(chLine.Text, '%s2', Trim(FStatement.Text));
-         if GSettings.UpdateEditor and not SkipUpdateEditor then
-            TInfra.ChangeLine(chLine);
-         TInfra.GetEditorForm.SetCaretPos(chLine);
+         TInfra.GetEditorForm.UpdateEditorForBlock(Self, chLine);
       end;
    end;
 end;

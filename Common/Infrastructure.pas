@@ -58,7 +58,6 @@ type
          class procedure PrintBitmap(ABitmap: TBitmap);
          class function InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; const ATemplateString: string; AObject: TObject = nil): integer; overload;
          class function InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; ATemplate: TStringList; AObject: TObject = nil): integer; overload;
-         class procedure ChangeLine(const ALine: TChangeLine);
          class procedure SetFontSize(AControl: TControl; ASize: integer);
          class procedure UpdateCodeEditor(AObject: TObject = nil);
          class procedure OnKeyDownSelectAll(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -1060,12 +1059,6 @@ begin
       if mainBlock.UserFunction is TUserFunction then
          result := TUserFunction(mainBlock.UserFunction).Header;
    end;
-end;
-
-class procedure TInfra.ChangeLine(const ALine: TChangeLine);
-begin
-   if (ALine.CodeRange.Lines <> nil) and (ALine.Row >= 0) and (ALine.Row < ALine.CodeRange.Lines.Count) then
-      ALine.CodeRange.Lines[ALine.Row] := ALine.Text;
 end;
 
 class procedure TInfra.SetFontSize(AControl: TControl; ASize: integer);

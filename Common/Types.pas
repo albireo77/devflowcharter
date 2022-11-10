@@ -108,6 +108,7 @@ type
       EditCaretXY: TBufferCoord;
       CodeRange: TCodeRange;
       class function New: TChangeLine; static;
+      function Change: boolean;
    end;
 
    TFocusInfo = record
@@ -299,6 +300,16 @@ procedure TNameEdit.WMKillFocus(var msg: TWMKillFocus);
 begin
    inherited;
    Change;
+end;
+
+function TChangeLine.Change: boolean;
+begin
+   result := (CodeRange.Lines <> nil) and
+             (Row >= 0) and
+             (Row < CodeRange.Lines.Count) and
+             (CodeRange.Lines[Row] <> Text);
+   if result then
+      CodeRange.Lines[Row] := Text;
 end;
 
 class function TDiamond.New(const ATop: TPoint; AEdit: TCustomEdit): TDiamond;

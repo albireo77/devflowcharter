@@ -146,9 +146,7 @@ begin
          finally
             list.Free;
          end;
-         if GSettings.UpdateEditor and not SkipUpdateEditor then
-            TInfra.ChangeLine(chLine);
-         TInfra.GetEditorForm.SetCaretPos(chLine);
+         TInfra.GetEditorForm.UpdateEditorForBlock(Self, chLine);
       end;
    end;
 end;

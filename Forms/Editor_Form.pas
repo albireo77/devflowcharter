@@ -32,7 +32,7 @@ uses
    Vcl.Dialogs, Vcl.ComCtrls, Vcl.Clipbrd, Vcl.Menus, System.SysUtils, System.Classes,
    SynEdit, SynExportRTF, SynEditPrint, Types, SynHighlighterPas, SynHighlighterCpp,
    SynMemo, SynExportHTML, OmniXML, Base_Form, Interfaces, SynEditExport, SynEditHighlighter,
-   SynHighlighterPython, SynHighlighterJava;
+   SynHighlighterPython, SynHighlighterJava, Base_Block;
 
 type
 
@@ -136,7 +136,7 @@ type
     function CharToPixels(P: TBufferCoord): TPoint;
     function GetAllLines: TStrings;
     procedure PasteComment(const AText: string);
-    procedure DisplayLines(ALines: TStringList; APreserveBookMarks: boolean);
+    procedure DisplayLines(ALines: TStringList; AReset: boolean);
   public
     { Public declarations }
     procedure SetFormAttributes;
@@ -145,6 +145,7 @@ type
     procedure ImportSettingsFromXMLTag(ATag: IXMLElement); override;
     function GetIndentLevel(idx: integer; ALines: TStrings): integer;
     procedure RefreshEditorForObject(AObject: TObject);
+    procedure UpdateEditorForBlock(ABlock: TBlock; const AChangeLine: TChangeLine);
     procedure SetCaretPos(const ALine: TChangeLine);
     procedure SaveToFile(const APath: string);
     procedure InsertLibraryEntry(const ALibrary: string);
@@ -169,7 +170,7 @@ implementation
 uses
    System.StrUtils, System.UITypes, System.Math, WinApi.Windows, Infrastructure,
    Goto_Form, Settings, LangDefinition, Main_Block, Help_Form, Comment, XMLProcessor,
-   Main_Form, Base_Block, SynEditTypes, ParserHelper, Constants, System.Character;
+   Main_Form, SynEditTypes, ParserHelper, Constants, System.Character;
 
 {$R *.dfm}
 
@@ -196,7 +197,7 @@ end;
 function TEditorHintWindow.CalcHintRect(MaxWidth: Integer; const AHint: string; AData: TCustomData): TRect;
 begin
   Result := System.Types.Rect(0, 0, MaxWidth, 0);
-  //code below removed to allow use of custom font (not Screen.HintFont)
+  //code below removed to allow use of custom font (e.g. font of underlying control) instead of Screen.HintFont
   //if Screen.ActiveCustomForm <> nil then
   //begin
   //  Canvas.Font := Screen.HintFont;
@@ -454,14 +455,14 @@ begin
    end;
 end;
 
-procedure TEditorForm.DisplayLines(ALines: TStringList; APreserveBookMarks: boolean);
+procedure TEditorForm.DisplayLines(ALines: TStringList; AReset: boolean);
 begin
    if (ALines = nil) or (ALines.Count = 0) then
       Exit;
 {$IFDEF USE_CODEFOLDING}
    memCodeEditor.AllFoldRanges.DestroyAll;
 {$ENDIF}
-   if not APreserveBookMarks then
+   if AReset then
       memCodeEditor.Marks.Clear;
    memCodeEditor.Highlighter := nil;
    if GSettings.IndentChar = TAB_CHAR then
@@ -478,14 +479,15 @@ begin
    else
       FFocusEditor := true;
    memCodeEditor.ClearUndo;
-   memCodeEditor.Modified := false;
+   memCodeEditor.Modified := not AReset;
 end;
 
 procedure TEditorForm.FormShow(Sender: TObject);
 begin
    var programLines := GInfra.GenerateProgram;
    try
-      DisplayLines(programLines, false);
+      DisplayLines(programLines, true);
+      GProject.SetChanged;
    finally
       programLines.Free;
    end;
@@ -818,7 +820,7 @@ procedure TEditorForm.memCodeEditorGutterClick(Sender: TObject;
   Button: TMouseButton; X, Y, Line: Integer; Mark: TSynEditMark);
 const
    MARK_FIRST_INDEX = 0;   // index of first bookmark image in MainForm.ImageList1
-   MARK_LAST_INDEX = 4;   // index of last bookmark image in MainForm.ImageList1
+   MARK_LAST_INDEX = 4;    // index of last bookmark image in MainForm.ImageList1
    MAX_MARKS = MARK_LAST_INDEX - MARK_FIRST_INDEX + 1;
 var
    i, a: integer;
@@ -1247,6 +1249,13 @@ begin
 end;
 {$ENDIF}
 
+procedure TEditorForm.UpdateEditorForBlock(ABlock: TBlock; const AChangeLine: TChangeLine);
+begin
+   if GSettings.UpdateEditor and (not ABlock.SkipUpdateEditor) and AChangeLine.Change then
+      memCodeEditor.Modified := true;
+   SetCaretPos(AChangeLine);
+end;
+
 procedure TEditorForm.RefreshEditorForObject(AObject: TObject);
 var
    topLine, line: integer;
@@ -1265,7 +1274,7 @@ begin
    var programLines := GInfra.GenerateProgram;
    memCodeEditor.LockDrawing;
    try
-      DisplayLines(programLines, true);
+      DisplayLines(programLines, false);
       if AObject <> nil then
       begin
          codeRange := SelectCodeRange(AObject, false);
@@ -1372,7 +1381,6 @@ begin
       finally
          lines.Free;
       end;
-      ATag.SetAttribute('modified', memCodeEditor.Modified.ToString);
    end;
 end;
 
@@ -1412,7 +1420,6 @@ begin
          memCodeEditor.Highlighter := GInfra.CurrentLang.HighLighter;
       memCodeEditor.ClearUndo;
       memCodeEditor.SetFocus;
-      memCodeEditor.Modified := TXMLProcessor.GetBoolFromAttr(ATag, 'modified');
       memCodeEditor.SelStart := TXMLProcessor.GetIntFromAttr(ATag, 'src_win_sel_start');
       memCodeEditor.SelLength := TXMLProcessor.GetIntFromAttr(ATag, 'src_win_sel_length');
 {$IFDEF USE_CODEFOLDING}
