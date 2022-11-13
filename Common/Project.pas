@@ -45,7 +45,7 @@ type
       FStringTypesSet: TTypesSet;
       FComponentList: TComponentList;
       FObjectIds: TStringList;
-      FObjectIdSeed,
+      FNextObjectId,
       FLibSectionOffset: integer;
       FMainPage: TBlockTabSheet;
       FChanged: boolean;
@@ -346,14 +346,14 @@ begin
       FObjectIds.AddObject(id, AObject)
    else
    begin
-      FObjectIds.AddObject(FObjectIdSeed.ToString, AObject);
-      result := FObjectIdSeed;
-      FObjectIdSeed := FObjectIdSeed + 1;
+      FObjectIds.AddObject(FNextObjectId.ToString, AObject);
+      result := FNextObjectId;
+      Inc(FNextObjectId);
    end;
    if accepted then
    begin
-      if FObjectIdSeed <= AId then
-         FObjectIdSeed := AId + 1;
+      if FNextObjectId <= AId then
+         FNextObjectId := AId + 1;
       result := AId;
    end;
 end;
