@@ -66,6 +66,7 @@ type
          FFrame,
          FMouseLeave: boolean;
          FShape: TColorShape;
+         FRedArrow: integer;                // indicates active arrow; -1: none, 0: bottom, 1: branch1, 2: branch2...
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms; AShape: TColorShape; AParserMode: TYYMode; AAlignment: TAlignment);
          procedure MyOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
          procedure MyOnMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -120,7 +121,7 @@ type
          IPoint: TPoint;          // points to I mark
          BottomHook: integer;
          TopHook: TPoint;
-         Ired: Integer;           // indicates active arrow; -1: none, 0: bottom, 1: branch1, 2: branch2...
+         property RedArrow: integer read FRedArrow;
          property Frame: boolean read FFrame write SetFrame;
          property TopParentBlock: TGroupBlock read FTopParentBlock;
          property Page: TBlockTabSheet read GetPage write SetPage;
@@ -183,7 +184,7 @@ type
          procedure CloneFrom(ABlock: TBlock); virtual;
          function GetExportFileName: string; virtual;
          function ExportToXMLFile(const AFile: string): TError; virtual;
-         procedure OnMouseLeave(AClearRed: boolean = true); virtual;
+         procedure OnMouseLeave(AClearRedArrow: boolean = true); virtual;
          procedure LockDrawing;
          procedure UnlockDrawing;
          function FindSelectedBlock: TBlock; virtual;
@@ -247,7 +248,7 @@ type
          function CanBeFocused: boolean; override;
          function UnPinComments: integer; override;
          procedure CloneFrom(ABlock: TBlock); override;
-         procedure OnMouseLeave(AClearRed: boolean = true); override;
+         procedure OnMouseLeave(AClearRedArrow: boolean = true); override;
          function GetBranchIndexByControl(AControl: TControl): integer;
          function RemoveBranch(AIndex: integer): boolean;
          function Remove(ANode: TTreeNodeWithFriend = nil): boolean; override;
@@ -328,7 +329,7 @@ begin
    Canvas.Font.Assign(Font);
    SetBounds(ABlockParms.x, ABlockParms.y, ABlockParms.w, ABlockParms.h);
 
-   Ired := -1;
+   FRedArrow := -1;
    FId := GProject.Register(Self, ABlockParms.bid);
    FMouseLeave := true;
    FShape := AShape;
@@ -555,13 +556,13 @@ begin
    if Rect(BottomPoint.X-5, BottomPoint.Y, BottomPoint.X+5, Height).Contains(p) then
    begin
       DrawArrow(BottomPoint, Point(BottomPoint.X, Height-1), arrEnd, clRed);
-      Ired := 0;
+      FRedArrow := 0;
       Cursor := TCursor(GCustomCursor);
    end
-   else if Ired = 0 then
+   else if FRedArrow = 0 then
    begin
       DrawArrow(BottomPoint, Point(BottomPoint.X, Height-1));
-      Ired := -1;
+      FRedArrow := -1;
       Cursor := crDefault;
    end;
 end;
@@ -576,14 +577,14 @@ begin
          if Rect(p.X-5, TopHook.Y, p.X+5, p.Y).Contains(Point(X, Y)) then
          begin
             DrawArrow(Point(p.X, TopHook.Y), p, arrEnd, clRed);
-            Ired := i;
+            FRedArrow := i;
             Cursor := TCursor(GCustomCursor);
             break;
          end
-         else if Ired = i then
+         else if FRedArrow = i then
          begin
             DrawArrow(Point(p.X, TopHook.Y), p);
-            Ired := -1;
+            FRedArrow := -1;
             Cursor := crDefault;
             break;
          end;
@@ -639,7 +640,7 @@ begin
    if isShift then
       shiftState := [ssShift];
    MyOnMouseMove(Sender, shiftState, X, Y);
-   if (Ired < 0) or (not (Source is TBlock)) or (Source is TMainBlock) or (Source is TReturnBlock) or ((not isShift) and ((Source = Self) or IsAncestor(Source))) then
+   if (FRedArrow < 0) or (not (Source is TBlock)) or (Source is TMainBlock) or (Source is TReturnBlock) or ((not isShift) and ((Source = Self) or IsAncestor(Source))) then
       Accept := false;
 end;
 
@@ -691,24 +692,24 @@ begin
       FMouseLeave := true;
 end;
 
-procedure TBlock.OnMouseLeave(AClearRed: boolean = true);
+procedure TBlock.OnMouseLeave(AClearRedArrow: boolean = true);
 begin
    Cursor := crDefault;
    DeSelect;
-   if Ired = 0 then
+   if FRedArrow = 0 then
       DrawArrow(BottomPoint, Point(BottomPoint.X, Height-1));
-   if AClearRed then
-      Ired := -1;
+   if AClearRedArrow then
+      FRedArrow := -1;
    if FVResize or FHResize then
       SendMessage(Handle, WM_NCHITTEST, 0, 0);
 end;
 
-procedure TGroupBlock.OnMouseLeave(AClearRed: boolean = true);
+procedure TGroupBlock.OnMouseLeave(AClearRedArrow: boolean = true);
 begin
-   var br := GetBranch(Ired);
+   var br := GetBranch(FRedArrow);
    if br <> nil then
       DrawArrow(Point(br.Hook.X, TopHook.Y), br.Hook);
-   inherited OnMouseLeave(AClearRed);
+   inherited OnMouseLeave(AClearRedArrow);
 end;
 
 procedure TBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
@@ -789,7 +790,7 @@ begin
       else if not IsCursorResize then
       begin
          var menuItem: TMenuItem := nil;
-         if Ired >= 0 then
+         if FRedArrow >= 0 then
          begin
             var mForm := Page.Form;
             case GCustomCursor of
@@ -1547,16 +1548,16 @@ end;
 
 function TBlock.CanInsertReturnBlock: boolean;
 begin
-   result := (Ired = 0) and (FParentBranch <> nil) and (FParentBranch.Count > 0) and (FParentBranch.Last = Self);
+   result := (FRedArrow = 0) and (FParentBranch <> nil) and (FParentBranch.Count > 0) and (FParentBranch.Last = Self);
 end;
 
 function TGroupBlock.CanInsertReturnBlock: boolean;
 begin
-   if Ired = 0 then
+   if FRedArrow = 0 then
       result := (FParentBranch <> nil) and (FParentBranch.Count > 0) and (FParentBranch.Last = Self)
    else
    begin
-      var br := GetBranch(Ired);
+      var br := GetBranch(FRedArrow);
       result := (br <> nil) and (br.Count = 0);
    end;
 end;
@@ -2250,7 +2251,7 @@ begin
    begin
       lParent := nil;
       block := Self;
-      if (Ired = 0) and (FParentBlock <> nil) then
+      if (FRedArrow = 0) and (FParentBlock <> nil) then
          lParent := FParentBlock
       else if Self is TGroupBlock then
       begin
@@ -2261,7 +2262,7 @@ begin
       begin
          lParent.BlockImportMode := true;
          try
-            newBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag, lParent, block, result, Ired);
+            newBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag, lParent, block, result, FRedArrow);
          finally
             lParent.BlockImportMode := false;
          end;

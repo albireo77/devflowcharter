@@ -622,7 +622,7 @@ begin
    begin
        block := TBlock(comp);
        lFont := block.GetFont;
-       if block.Ired >= 0 then
+       if block.RedArrow >= 0 then
        begin
           miMemo.Visible := False;
           miInsert.Visible := True;
@@ -672,7 +672,7 @@ begin
        end;
        miFrame.Visible := True;
        miFrame.Checked := block.Frame;
-       if (block is TCaseBlock) and (block.Ired > PRIMARY_BRANCH_IDX) then
+       if (block is TCaseBlock) and (block.RedArrow > PRIMARY_BRANCH_IDX) then
        begin
           miRemoveBranch.Visible := True;
           miInsertBranch.Visible := True;
@@ -732,7 +732,7 @@ end;
 
 procedure TMainForm.miInstrClick(Sender: TObject);
 var
-   newBlock, currBlock, srcBlock: TBlock;
+   newBlock, currentBlock, srcBlock: TBlock;
    branch: TBranch;
    lParent: TGroupBlock;
    tmpCursor: TCursor;
@@ -775,21 +775,21 @@ begin
 
    if pmPages.PopupComponent is TBlock then
    begin
-      currBlock := TBlock(pmPages.PopupComponent);
-      if (currBlock.Ired > 0) and (currBlock is TGroupBlock) then
-         lParent := TGroupBlock(currBlock)
-      else if currBlock.Ired = 0 then
-         lParent := currBlock.ParentBlock;
+      currentBlock := TBlock(pmPages.PopupComponent);
+      if (currentBlock.RedArrow > 0) and (currentBlock is TGroupBlock) then
+         lParent := TGroupBlock(currentBlock)
+      else if currentBlock.RedArrow = 0 then
+         lParent := currentBlock.ParentBlock;
    end;
 
    if lParent <> nil then
    begin
 
-      branch := lParent.GetBranch(lParent.Ired);
+      branch := lParent.GetBranch(lParent.RedArrow);
       if branch <> nil then
-         currBlock := nil
+         currentBlock := nil
       else
-         branch := currBlock.ParentBranch;
+         branch := currentBlock.ParentBranch;
 
       if branch <> nil then
       begin
@@ -837,7 +837,7 @@ begin
                newBlock := TBlockFactory.Create(branch, blockType);
             if newBlock <> nil then
             begin
-               branch.InsertAfter(newBlock, currBlock);
+               branch.InsertAfter(newBlock, currentBlock);
                lParent.ResizeHorz(true);
                lParent.ResizeVert(true);
                if not newBlock.Visible then
@@ -1007,7 +1007,7 @@ begin
    if GProject <> nil then
    begin
       comp := pmPages.PopupComponent;
-      if (comp is TBlock) and (TBlock(comp).Ired >= 0) then
+      if (comp is TBlock) and (TBlock(comp).RedArrow >= 0) then
          impProc := TBlock(comp).ImportFromXMLTag
       else
          impProc := GProject.ImportUserFunctionsFromXML;
@@ -1037,7 +1037,7 @@ begin
    if pmPages.PopupComponent is TCaseBlock then
    begin
       var caseBlock := TCaseBlock(pmPages.PopupComponent);
-      var i := IfThen(Sender = miInsertBranch, caseBlock.Ired, -1);
+      var i := IfThen(Sender = miInsertBranch, caseBlock.RedArrow, -1);
       TInfra.UpdateCodeEditor(caseBlock.InsertNewBranch(i));
    end;
 end;
@@ -1052,7 +1052,7 @@ begin
       if res = IDYES then
       begin
          var caseBlock := TCaseBlock(pmPages.PopupComponent);
-         caseBlock.RemoveBranch(caseBlock.Ired);
+         caseBlock.RemoveBranch(caseBlock.RedArrow);
          TInfra.UpdateCodeEditor(caseBlock.Branch);
       end;
    end;

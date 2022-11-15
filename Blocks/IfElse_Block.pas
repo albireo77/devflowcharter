@@ -166,7 +166,7 @@ begin
 
    LinkAllBlocks;
 
-   if (Ired <> FALSE_BRANCH_IDX) and (TrueBranch.Count > 0) then           // TRUE branch
+   if (FRedArrow <> FALSE_BRANCH_IDX) and (TrueBranch.Count > 0) then           // TRUE branch
    begin
       leftX := 10;
       for block in TrueBranch do
@@ -194,7 +194,7 @@ begin
       end;
    end;
 
-   if (Ired <> TRUE_BRANCH_IDX) and (FalseBranch.Count > 0) then           // FALSE branch
+   if (FRedArrow <> TRUE_BRANCH_IDX) and (FalseBranch.Count > 0) then           // FALSE branch
    begin
       minXFalse := BottomHook + 30;
       for block in FalseBranch do
