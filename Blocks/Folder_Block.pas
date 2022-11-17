@@ -24,7 +24,7 @@ unit Folder_Block;
 interface
 
 uses
-   System.Types, Base_Block, Types;
+   Base_Block, Types;
 
 type
 
@@ -36,7 +36,6 @@ type
          procedure Paint; override;
          procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
          procedure SetWidth(AMinX: integer); override;
-         function GetDiamondTop: TPoint; override;
    end;
 
 implementation
@@ -86,11 +85,6 @@ begin
       DrawBlockLabel(5, 2, GInfra.CurrentLang.LabelFolder);
    end;
    DrawI;
-end;
-
-function TFolderBlock.GetDiamondTop: TPoint;
-begin
-   result := Point(-1, -1);
 end;
 
 procedure TFolderBlock.SetWidth(AMinX: integer);
