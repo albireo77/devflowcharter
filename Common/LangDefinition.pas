@@ -648,13 +648,15 @@ begin
          val := tag.Text.Trim;
          if not val.IsEmpty then
          begin
-            var nativeFunction := NativeFunctions[i];
-            nativeFunction.Name := val;
-            nativeFunction.Brackets := tag.GetAttribute('brackets');
-            nativeFunction.BracketsCursorPos := TXMLProcessor.GetIntFromAttr(tag, 'bracketsCursorPos');
-            nativeFunction.Caption := tag.GetAttribute('caption').Trim;
-            nativeFunction.Hint := tag.GetAttribute('hint').Trim;
-            nativeFunction.Lib := tag.GetAttribute('library').Trim;
+            with NativeFunctions[i] do
+            begin
+               Name := val;
+               Brackets := tag.GetAttribute('brackets');
+               BracketsCursorPos := TXMLProcessor.GetIntFromAttr(tag, 'bracketsCursorPos');
+               Caption := tag.GetAttribute('caption').Trim;
+               Hint := tag.GetAttribute('hint').Trim;
+               Lib := tag.GetAttribute('library').Trim;
+            end;
             Inc(i);
          end;
          tag := TXMLProcessor.FindNextTag(tag);
@@ -670,20 +672,22 @@ begin
       tag := TXMLProcessor.FindChildTag(tag, 'FoldRegion');
       while (tag <> nil) and (i < count) do
       begin
-         var foldRegion := FoldRegions[i];
-         var tag1 := TXMLProcessor.FindChildTag(tag, 'Open');
-         if tag1 <> nil then
-            foldRegion.Open := tag1.GetAttribute('Keyword');
-         tag1 := TXMLProcessor.FindChildTag(tag, 'Close');
-         if tag1 <> nil then
-            foldRegion.Close := tag1.GetAttribute('Keyword');
-         foldRegion.AddClose := TXMLProcessor.GetBoolFromAttr(tag, 'AddClose');
-         foldRegion.NoSubFolds := TXMLProcessor.GetBoolFromAttr(tag, 'NoSubFolds', true);
-         foldRegion.WholeWords := TXMLProcessor.GetBoolFromAttr(tag, 'WholeWords', true);
-         if tag.GetAttribute('Type') = 'rtChar' then
-            foldRegion.RegionType := rtChar
-         else
-            foldRegion.RegionType := rtKeyword;
+         with FoldRegions[i] do
+         begin
+            var tag1 := TXMLProcessor.FindChildTag(tag, 'Open');
+            if tag1 <> nil then
+               Open := tag1.GetAttribute('Keyword');
+            tag1 := TXMLProcessor.FindChildTag(tag, 'Close');
+            if tag1 <> nil then
+               Close := tag1.GetAttribute('Keyword');
+            AddClose := TXMLProcessor.GetBoolFromAttr(tag, 'AddClose');
+            NoSubFolds := TXMLProcessor.GetBoolFromAttr(tag, 'NoSubFolds', true);
+            WholeWords := TXMLProcessor.GetBoolFromAttr(tag, 'WholeWords', true);
+            if tag.GetAttribute('Type') = 'rtChar' then
+               RegionType := rtChar
+            else
+               RegionType := rtKeyword;
+         end;
          tag := TXMLProcessor.FindNextTag(tag);
          Inc(i);
       end;
