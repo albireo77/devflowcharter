@@ -1495,13 +1495,8 @@ begin
    memCodeEditor.CodeFolding.FoldRegions.Clear;
    for var i := 0 to High(GInfra.CurrentLang.FoldRegions) do
    begin
-      var foldRegion := GInfra.CurrentLang.FoldRegions[i];
-      memCodeEditor.CodeFolding.FoldRegions.Add(foldRegion.RegionType,
-                                                foldRegion.AddClose,
-                                                foldRegion.NoSubFolds,
-                                                foldRegion.WholeWords,
-                                                PChar(foldRegion.Open),
-                                                PChar(foldRegion.Close));
+      with GInfra.CurrentLang.FoldRegions[i] do
+         memCodeEditor.CodeFolding.FoldRegions.Add(RegionType, AddClose, NoSubFolds, WholeWords, PChar(Open), PChar(Close));
    end;
    memCodeEditor.InitCodeFolding;
 end;
