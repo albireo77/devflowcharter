@@ -320,8 +320,10 @@ begin
       for i := 1 to AVarList.sgList.RowCount-2 do
       begin
          varName := AVarList.sgList.Cells[VAR_NAME_COL, i];
-         varType :=  AVarList.sgList.Cells[VAR_TYPE_COL, i];
          varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
+         varType :=  AVarList.sgList.Cells[VAR_TYPE_COL, i];
+         if TParserHelper.GetType(varType) = UNKNOWN_TYPE then
+            continue;
          varGeneric := '';
          varSize := '';
          varAccess := '';

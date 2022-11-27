@@ -326,8 +326,10 @@ begin
          begin
             varSize := '';
             name := AVarList.sgList.Cells[VAR_NAME_COL, i];
-            typeStr := AVarList.sgList.Cells[VAR_TYPE_COL, i];
             isExtern := AVarList.GetExternalState(i) = cbChecked;
+            typeStr := AVarList.sgList.Cells[VAR_TYPE_COL, i];
+            if TParserHelper.GetType(typeStr) = UNKNOWN_TYPE then
+               continue;
             if (isExtern and lang.CodeIncludeExternVarConst) or not isExtern then
             begin
                dcount := AVarList.GetDimensionCount(name);
