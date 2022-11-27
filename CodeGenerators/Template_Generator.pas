@@ -206,7 +206,7 @@ begin
    lang := GInfra.CurrentLang;
    libList := GProject.GetLibraryList;
    try
-      if (libList.Count > 0) and (not lang.LibTemplate.IsEmpty) and not (lang.LibEntry.IsEmpty and lang.LibEntryList.IsEmpty) then
+      if (libList.Count > 0) and not lang.LibTemplate.IsEmpty then
       begin
          libStr := '';
          if lang.LibTemplate.Contains(PRIMARY_PLACEHOLDER) then
@@ -225,16 +225,19 @@ begin
          end;
          for i := 0 to libList.Count-1 do
             libStr := libStr + Format(libFormat, [libList[i]]);
-         if stripCount > 0 then
-            SetLength(libStr, libStr.Length - stripCount);
-         libTemplate := TStringList.Create;
-         try
-            libTemplate.Text := lang.LibTemplate;
-            TInfra.InsertTemplateLines(libTemplate, p1, libStr, TInfra.GetLibObject);
-            TInfra.InsertTemplateLines(libTemplate, p2, '');
-            ALines.AddStrings(libTemplate);
-         finally
-            libTemplate.Free;
+         if not libStr.Trim.IsEmpty then
+         begin
+            if stripCount > 0 then
+               SetLength(libStr, libStr.Length - stripCount);
+            libTemplate := TStringList.Create;
+            try
+               libTemplate.Text := lang.LibTemplate;
+               TInfra.InsertTemplateLines(libTemplate, p1, libStr, TInfra.GetLibObject);
+               TInfra.InsertTemplateLines(libTemplate, p2, '');
+               ALines.AddStrings(libTemplate);
+            finally
+               libTemplate.Free;
+            end;
          end;
       end;
    finally
