@@ -251,7 +251,6 @@ var
    constStr, constType, constValue, template, genericTypes: string;
    lang: TLangDefinition;
    constList, constTemplate: TStringList;
-   isExtern: boolean;
 begin
    lang := GInfra.CurrentLang;
    if (AConstList <> nil) and not lang.ConstTemplate.IsEmpty then
@@ -260,39 +259,37 @@ begin
       try
          for i := 1 to AConstList.sgList.RowCount-2 do
          begin
-            isExtern := AConstList.GetExternalState(i) = cbChecked;
-            if (isExtern and lang.CodeIncludeExternVarConst) or not isExtern then
+            if (AConstList.GetExternalState(i) = cbChecked) and not lang.CodeIncludeExternVarConst then
+               continue;
+            constValue := AConstList.sgList.Cells[CONST_VALUE_COL, i];
+            constType := '';
+            d := 0;
+            if Assigned(GInfra.CurrentLang.GetConstantType) then
+               t := GInfra.CurrentLang.GetConstantType(constValue, genericTypes)
+            else
+               t := Template_GetConstantType(constValue, genericTypes);
+            if t <> UNKNOWN_TYPE then
             begin
-               constValue := AConstList.sgList.Cells[CONST_VALUE_COL, i];
-               constType := '';
-               d := 0;
-               if Assigned(GInfra.CurrentLang.GetConstantType) then
-                  t := GInfra.CurrentLang.GetConstantType(constValue, genericTypes)
-               else
-                  t := Template_GetConstantType(constValue, genericTypes);
-               if t <> UNKNOWN_TYPE then
-               begin
-                  d := TParserHelper.DecodeArrayDimension(t);
-                  if d > 0 then
-                     t := TParserHelper.DecodeArrayType(t);
-                  constType := TParserHelper.GetTypeAsString(t);
-                  template := GInfra.CurrentLang.ConstTypeGeneric;
-                  if template.IsEmpty or genericTypes.IsEmpty or not TParserHelper.IsGenericType(constType) then
-                     template := GInfra.CurrentLang.ConstTypeNotGeneric;
-                  if not template.IsEmpty then
-                  begin
-                     constType := ReplaceStr(template, PRIMARY_PLACEHOLDER, constType);
-                     constType := ReplaceStr(constType, '%s2', genericTypes);
-                  end;
-               end;
-               constStr := ReplaceStr(IfThen(d > 0, lang.ConstEntryArray, lang.ConstEntry), PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
-               constStr := ReplaceStr(constStr, '%s2', constValue);
-               constStr := ReplaceStr(constStr, '%s3', AConstList.GetExternModifier(i));
-               constStr := ReplaceStr(constStr, '%s4', constType);
+               d := TParserHelper.DecodeArrayDimension(t);
                if d > 0 then
-                  constStr := ReplaceStr(constStr, '%s5', DupeString(ReplaceStr(lang.VarEntryArraySize, '%s', ''), d));
-               constList.AddObject(constStr, AConstList);
+                  t := TParserHelper.DecodeArrayType(t);
+               constType := TParserHelper.GetTypeAsString(t);
+               template := GInfra.CurrentLang.ConstTypeGeneric;
+               if template.IsEmpty or genericTypes.IsEmpty or not TParserHelper.IsGenericType(constType) then
+                  template := GInfra.CurrentLang.ConstTypeNotGeneric;
+               if not template.IsEmpty then
+               begin
+                  constType := ReplaceStr(template, PRIMARY_PLACEHOLDER, constType);
+                  constType := ReplaceStr(constType, '%s2', genericTypes);
+               end;
             end;
+            constStr := ReplaceStr(IfThen(d > 0, lang.ConstEntryArray, lang.ConstEntry), PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
+            constStr := ReplaceStr(constStr, '%s2', constValue);
+            constStr := ReplaceStr(constStr, '%s3', AConstList.GetExternModifier(i));
+            constStr := ReplaceStr(constStr, '%s4', constType);
+            if d > 0 then
+               constStr := ReplaceStr(constStr, '%s5', DupeString(ReplaceStr(lang.VarEntryArraySize, '%s', ''), d));
+            constList.AddObject(constStr, AConstList);
          end;
          if constList.Count > 0 then
          begin
@@ -331,44 +328,41 @@ begin
             name := AVarList.sgList.Cells[VAR_NAME_COL, i];
             isExtern := AVarList.GetExternalState(i) = cbChecked;
             typeStr := AVarList.sgList.Cells[VAR_TYPE_COL, i];
-            if TParserHelper.GetType(typeStr) = UNKNOWN_TYPE then
+            if (TParserHelper.GetType(typeStr) = UNKNOWN_TYPE) or (isExtern and not lang.CodeIncludeExternVarConst) then
                continue;
-            if (isExtern and lang.CodeIncludeExternVarConst) or not isExtern then
+            dcount := AVarList.GetDimensionCount(name);
+            if dcount > 0 then
             begin
-               dcount := AVarList.GetDimensionCount(name);
-               if dcount > 0 then
-               begin
-                  dims := AVarList.GetDimensions(name);
-                  for b := 0 to High(dims) do
-                     varSize := varSize + Format(lang.VarEntryArraySize, [dims[b]]);
-                  if lang.VarEntryArraySizeStripCount > 0 then
-                     SetLength(varSize, varSize.Length - lang.VarEntryArraySizeStripCount);
-                  varStr := ReplaceStr(lang.VarEntryArray, PRIMARY_PLACEHOLDER, name);
-                  varStr := ReplaceStr(varStr, '%s3', varSize);
-               end
-               else
-                  varStr := ReplaceStr(lang.VarEntry, PRIMARY_PLACEHOLDER, name);
-               varStr := ReplaceStr(varStr, '%s2', typeStr);
-               varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
-               if not varInit.IsEmpty then
-               begin
-                  initEntry := IfThen(isExtern, lang.VarEntryInitExtern, lang.VarEntryInit);
-                  if not initEntry.IsEmpty then
-                     varInit := ReplaceStr(initEntry, PRIMARY_PLACEHOLDER, varInit);
-               end;
-               varStr := ReplaceStr(varStr, '%s4', varInit);
-               lType := TParserHelper.GetType(typeStr);
-               lRecord := '';
-               enum := '';
-               if TParserHelper.IsRecordType(lType) then
-                  lRecord := lang.FunctionHeaderArgsEntryRecord
-               else if TParserHelper.IsEnumType(lType) then
-                  enum := lang.FunctionHeaderArgsEntryEnum;
-               varStr := ReplaceStr(varStr, '%s5', lRecord);
-               varStr := ReplaceStr(varStr, '%s6', enum);
-               varStr := ReplaceStr(varStr, '%s7', AVarList.GetExternModifier(i));
-               varList.AddObject(varStr, AVarList);
+               dims := AVarList.GetDimensions(name);
+               for b := 0 to High(dims) do
+                  varSize := varSize + Format(lang.VarEntryArraySize, [dims[b]]);
+               if lang.VarEntryArraySizeStripCount > 0 then
+                  SetLength(varSize, varSize.Length - lang.VarEntryArraySizeStripCount);
+               varStr := ReplaceStr(lang.VarEntryArray, PRIMARY_PLACEHOLDER, name);
+               varStr := ReplaceStr(varStr, '%s3', varSize);
+            end
+            else
+               varStr := ReplaceStr(lang.VarEntry, PRIMARY_PLACEHOLDER, name);
+            varStr := ReplaceStr(varStr, '%s2', typeStr);
+            varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
+            if not varInit.IsEmpty then
+            begin
+               initEntry := IfThen(isExtern, lang.VarEntryInitExtern, lang.VarEntryInit);
+               if not initEntry.IsEmpty then
+                  varInit := ReplaceStr(initEntry, PRIMARY_PLACEHOLDER, varInit);
             end;
+            varStr := ReplaceStr(varStr, '%s4', varInit);
+            lType := TParserHelper.GetType(typeStr);
+            lRecord := '';
+            enum := '';
+            if TParserHelper.IsRecordType(lType) then
+               lRecord := lang.FunctionHeaderArgsEntryRecord
+            else if TParserHelper.IsEnumType(lType) then
+               enum := lang.FunctionHeaderArgsEntryEnum;
+            varStr := ReplaceStr(varStr, '%s5', lRecord);
+            varStr := ReplaceStr(varStr, '%s6', enum);
+            varStr := ReplaceStr(varStr, '%s7', AVarList.GetExternModifier(i));
+            varList.AddObject(varStr, AVarList);
          end;
          if varList.Count > 0 then
          begin
