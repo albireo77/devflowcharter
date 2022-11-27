@@ -206,7 +206,7 @@ begin
    lang := GInfra.CurrentLang;
    libList := GProject.GetLibraryList;
    try
-      if (libList.Count > 0) and (not lang.LibTemplate.IsEmpty) and ((not lang.LibEntry.IsEmpty) or (not lang.LibEntryList.IsEmpty)) then
+      if (libList.Count > 0) and (not lang.LibTemplate.IsEmpty) and not (lang.LibEntry.IsEmpty and lang.LibEntryList.IsEmpty) then
       begin
          libStr := '';
          if lang.LibTemplate.Contains(PRIMARY_PLACEHOLDER) then
