@@ -214,7 +214,7 @@ begin
             libFormat := lang.LibEntry + sLineBreak;
             p1 := PRIMARY_PLACEHOLDER;
             p2 := '%s2';
-            stripCount := 0;
+            stripCount := Length(sLineBreak);
          end
          else
          begin
