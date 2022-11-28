@@ -24,7 +24,7 @@ implementation
 
 uses
    System.SysUtils, System.Classes, System.StrUtils, UserFunction, DeclareList,
-   Main_Block, LangDefinition, Interfaces, Infrastructure, Constants, ParserHelper;
+   Main_Block, LangDefinition, Interfaces, Infrastructure, Constants;
 
 var
    tiBasicLang: TLangDefinition;
@@ -43,8 +43,6 @@ begin
       var buffer := '';
       for var i := 1 to AVarList.sgList.RowCount-2 do
       begin
-         if TParserHelper.GetType(AVarList.sgList.Cells[VAR_TYPE_COL, i]) = UNKNOWN_TYPE then
-            continue;
          if not buffer.IsEmpty then
             buffer := buffer + ', ';
          buffer := buffer + AVarList.sgList.Cells[VAR_NAME_COL, i];
