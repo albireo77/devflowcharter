@@ -26,7 +26,7 @@ implementation
 uses
    System.SysUtils, System.StrUtils, System.Classes, Vcl.StdCtrls, Base_Block, LangDefinition,
    UserFunction, DeclareList, Interfaces, UserDataType, Infrastructure,
-   ParserHelper, Types, Constants;
+   ParserHelper, Types, Constants, TabComponent;
 
 procedure Template_UserDataTypesSectionGenerator(ALines: TStringList);
 var
@@ -198,7 +198,7 @@ end;
 
 procedure Template_LibSectionGenerator(ALines: TStringList);
 var
-   i, stripCount: integer;
+   stripCount: integer;
    libList, libTemplate: TStringList;
    lang: TLangDefinition;
    libStr, libFormat, p1, p2: string;
@@ -223,8 +223,15 @@ begin
             p2 := PRIMARY_PLACEHOLDER;
             stripCount := lang.LibEntryListStripCount;
          end;
-         for i := 0 to libList.Count-1 do
-            libStr := libStr + Format(libFormat, [libList[i]]);
+         for var i := 0 to libList.Count-1 do
+         begin
+            var typeName := '';
+            if libList.Objects[i] is TTabComponent then
+               typeName := TTabComponent(libList.Objects[i]).GetName;
+            var libEntry := ReplaceStr(libFormat, '%s1', typeName);
+            libEntry := ReplaceStr(libEntry, '%s', libList.Strings[i]);
+            libStr := libStr + libEntry;
+         end;
          if not libStr.Trim.IsEmpty then
          begin
             if stripCount > 0 then

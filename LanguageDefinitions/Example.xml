@@ -711,8 +711,26 @@ Notice: %s1 and %s2 placeholders should be used interchangeably
 	%s1
 
 </LibTemplate>
+
+<!--
+Element LibEntry
+Description: Library import separate entry
+Available placeholders:
+   %s - library name  
+   %s1 - specific type to be imported 
+-->
 <LibEntry>include %s;</LibEntry>
+<!--<LibEntry>include %s.%s1;</LibEntry>-->
+
+<!--
+Element LibEntryList
+Description: Library import list entry 
+Available placeholders:
+   %s - library name  
+   %s1 - specific type to be imported 
+-->
 <!--<LibEntryList>%s, </LibEntryList>-->
+<!--<LibEntryList>%s.%s1, </LibEntryList>-->
 
 <!--
 Element LibEntryListStripCount
