@@ -79,6 +79,7 @@ begin
          TInfra.PopulateDataTypeCombo(GProject.GlobalVars.cbType);
       GProject.PopulateDataTypeSets;
       GProject.PopulateDataTypeCombos;
+      GProject.RefreshVarTypes;
    end;
    TInfra.GetFunctionsForm.RefreshTabs;
    inherited FormDeactivate(Sender);

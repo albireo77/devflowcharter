@@ -101,6 +101,7 @@ type
       function GetLibraryList: TStringList;
       function FindObject(AId: integer): TObject;
       procedure RefreshSizeEdits;
+      procedure RefreshVarTypes;
       procedure PopulateDataTypeSets;
       procedure UpdateZOrder(AParent: TWinControl);
       function Register(AObject: TObject; AId: integer = ID_INVALID): integer;
@@ -961,6 +962,17 @@ begin
       ChangingOn := chon;
    end;
    NavigatorForm.Invalidate;
+end;
+
+procedure TProject.RefreshVarTypes;
+begin
+   if FGlobalVars <> nil then
+      FGlobalVars.RefreshTypes;
+   for var func in GetUserFunctions do
+   begin
+      if func.Header <> nil then
+         func.Header.LocalVars.RefreshTypes;
+   end;
 end;
 
 function TProject.FindMainBlockForControl(const AControl: TControl): TMainBlock;

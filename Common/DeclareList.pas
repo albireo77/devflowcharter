@@ -128,6 +128,7 @@ type
          procedure ExportItemToXMLTag(ATag: IXMLElement; idx: integer); override;
          function GetImportTag(ATag: IXMLElement): IXMLElement; override;
          procedure FillForList(AList: TStrings);
+         procedure RefreshTypes;
          function IsValidLoopVar(const AName: string): boolean;
          function IsGlobal: boolean; override;
          function GetDimensionCount(const AVarName: string; AIncludeType: boolean = false): integer;
@@ -727,20 +728,19 @@ end;
 
 procedure TDeclareList.OnClickRemove(Sender: TObject);
 begin
-   with sgList do
+   if FExternalCol <> INVALID_COL then
+      sgList.Objects[FExternalCol, sgList.Row].Free;
+   sgList.BeginUpdate;
+   for var i := sgList.Row to sgList.RowCount-2 do
+      sgList.Rows[i].Assign(sgList.Rows[i+1]);
+   sgList.RowCount := sgList.RowCount - 1;
+   if (sgList.Row = sgList.RowCount-1) and (sgList.Row <> 1) then
+      sgList.Row := sgList.Row - 1;
+   sgList.EndUpdate;
+   if sgList.RowCount = 2 then
    begin
-      if FExternalCol <> INVALID_COL then
-         Objects[FExternalCol, Row].Free;
-      for var i := Row to RowCount-2 do
-         Rows[i].Assign(Rows[i+1]);
-      RowCount := RowCount - 1;
-      if (Row = RowCount-1) and (Row <> 1) then
-         Row := Row - 1;
-      if RowCount = 2 then
-      begin
-         btnChange.Enabled := False;
-         btnRemove.Enabled := False;
-      end;
+      btnChange.Enabled := False;
+      btnRemove.Enabled := False;
    end;
    OnTopLeftChanged(sgList);
    GProject.SetChanged;
@@ -1097,6 +1097,17 @@ begin
          end;
       end;
    end;
+end;
+
+procedure TVarDeclareList.RefreshTypes;
+begin
+   sgList.BeginUpdate;
+   for var i := 1 to sgList.RowCount-2 do
+   begin
+      if TParserHelper.GetType(sgList.Cells[VAR_TYPE_COL, i]) = UNKNOWN_TYPE then
+         sgList.Cells[VAR_TYPE_COL, i] := i18Manager.GetString('Unknown');
+   end;
+   sgList.EndUpdate;
 end;
 
 procedure TDeclareList.OnColWidthsChanged(Sender: TObject);
