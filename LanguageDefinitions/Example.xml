@@ -720,6 +720,7 @@ Available placeholders:
    %s1 - specific function or type to be imported 
 -->
 <LibEntry>include %s;</LibEntry>
+<!-- below second option with %s1 placeholder -->
 <!--<LibEntry>include %s.%s1;</LibEntry>-->
 
 <!--
@@ -730,6 +731,7 @@ Available placeholders:
    %s1 - specific function or type to be imported 
 -->
 <!--<LibEntryList>%s, </LibEntryList>-->
+<!-- below second option with %s1 placeholder -->
 <!--<LibEntryList>%s.%s1, </LibEntryList>-->
 
 <!--

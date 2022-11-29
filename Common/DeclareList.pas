@@ -892,12 +892,14 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, FKind + 'width');
    if tag <> nil then
       Width := StrToIntDef(tag.Text, Width);
+   sgList.BeginUpdate;
    tag := GetImportTag(ATag);
    while tag <> nil do
    begin
       ImportItemFromXMLTag(tag);
       tag := TXMLProcessor.FindNextTag(tag);
    end;
+   sgList.EndUpdate;
    RefreshCheckBoxes;
    result := errNone;
 end;

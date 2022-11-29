@@ -225,10 +225,10 @@ begin
          end;
          for var i := 0 to libList.Count-1 do
          begin
-            var typeName := '';
+            var tabName := '';
             if libList.Objects[i] is TTabComponent then
-               typeName := TTabComponent(libList.Objects[i]).GetName;
-            var libEntry := ReplaceStr(libFormat, '%s1', typeName);
+               tabName := TTabComponent(libList.Objects[i]).GetName;
+            var libEntry := ReplaceStr(libFormat, '%s1', tabName);
             libEntry := ReplaceStr(libEntry, '%s', libList.Strings[i]);
             libStr := libStr + libEntry;
          end;
