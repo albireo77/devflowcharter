@@ -110,7 +110,7 @@ type
       function MainPage: TBlockTabSheet;
       function ActivePage: TBlockTabSheet;
       procedure UpdateHeadersBody(APage: TTabSheet);
-      function FindMainBlockForControl(const AControl: TControl): TMainBlock;
+      function FindMainBlockForControl(AControl: TControl): TMainBlock;
       function GetProgramHeader: string;
       function GetExportFileName: string;
       procedure SetChanged;
@@ -975,7 +975,7 @@ begin
    end;
 end;
 
-function TProject.FindMainBlockForControl(const AControl: TControl): TMainBlock;
+function TProject.FindMainBlockForControl(AControl: TControl): TMainBlock;
 begin
    result := nil;
    for var func in GetUserFunctions do
