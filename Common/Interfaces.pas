@@ -68,7 +68,7 @@ type
    IWithTab = interface(IActivable)
       ['{1E316044-89E6-4FFB-AC4D-FA773D4774D8}']
       function GetTab: TTabSheet;
-      function GetLibName: string;
+      function GetLibrary: string;
    end;
 
    IWithSizeEdits = interface

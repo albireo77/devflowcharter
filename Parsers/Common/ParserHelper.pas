@@ -572,7 +572,7 @@ begin
    begin
       var userDataType := GProject.GetUserDataType(ATypeName);
       if userDataType <> nil then
-         result := userDataType.GetLibName;
+         result := userDataType.GetLibrary;
    end;
    if result.IsEmpty then
       result := ADefault;

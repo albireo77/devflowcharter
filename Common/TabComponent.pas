@@ -75,7 +75,7 @@ type
          function GetExportFileName: string;
          function IsDuplicated(ANameEdit: TEdit): boolean;
          procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil); virtual;
-         function GetLibName: string;
+         function GetLibrary: string;
          property ScrollPos: integer read GetScrollPos write SetScrollPos;
          function GetName: string;
          function GetTab: TTabSheet;
@@ -294,7 +294,7 @@ begin
    end;
 end;
 
-function TTabComponent.GetLibName: string;
+function TTabComponent.GetLibrary: string;
 begin
    result := '';
    if FActive and (Font.Color <> NOK_COLOR) then

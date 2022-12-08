@@ -1017,9 +1017,9 @@ begin
    result.CaseSensitive := GInfra.CurrentLang.CaseSensitiveSyntax;
    for var tab in GetIComponents<IWithTab>(ByPageIndexComponentComparer) do
    begin
-      var libName := tab.GetLibName;
-      if (not libName.IsEmpty) and (GInfra.CurrentLang.AllowDuplicatedLibs or (result.IndexOf(libName) = -1)) then
-         result.AddObject(libName, tab.GetTab);
+      var lib := tab.GetLibrary;
+      if (not lib.IsEmpty) and (GInfra.CurrentLang.AllowDuplicatedLibs or (result.IndexOf(lib) = -1)) then
+         result.AddObject(lib, tab.GetTab);
    end;
 end;
 

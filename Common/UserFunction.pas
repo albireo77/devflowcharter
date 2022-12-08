@@ -129,7 +129,7 @@ type
       procedure ExportToXMLTag(ATag: IXMLElement);
       procedure GenerateTree(ANode: TTreeNode);
       function GetId: integer;
-      function GetLibName: string;
+      function GetLibrary: string;
       procedure RefreshSizeEdits;
       function GetName: string;
       function GetTab: TTabSheet;
@@ -223,11 +223,11 @@ begin
       result := FBody.GetZOrder;
 end;
 
-function TUserFunction.GetLibName: string;
+function TUserFunction.GetLibrary: string;
 begin
    result := '';
    if FHeader <> nil then
-      result := FHeader.GetLibName;
+      result := FHeader.GetLibrary;
 end;
 
 destructor TUserFunctionHeader.Destroy;
