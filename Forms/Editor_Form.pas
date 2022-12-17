@@ -128,7 +128,7 @@ type
   private
     { Private declarations }
     FCloseBracketPos: TPoint;
-    FCloseBracketHint,
+    FCloseBracketPosP: PPoint;
     FFocusEditor: boolean;
     FDialog: TFindDialog;
     FWithFocus: IWithFocus;
@@ -187,8 +187,8 @@ end;
 
 procedure TEditorHintWindow.ActivateHintData(ARect: TRect; const AHint: string; AData: Pointer);
 begin
-   if (AData <> nil) and not TPoint(AData^).IsZero then
-      ARect.SetLocation(TPoint(AData^));
+   if AData <> nil then
+      ARect.SetLocation(PPoint(AData)^);
    ARect.Offset(0, -ARect.Height);
    inherited ActivateHintData(ARect, AHint, AData);
 end;
@@ -221,11 +221,11 @@ end;
 
 procedure TEditorForm.OnShowHint(var HintStr: string; var CanShow: Boolean; var HintInfo: THintInfo);
 begin
-   if (HintInfo.HintControl = memCodeEditor) and FCloseBracketHint then
+   if (HintInfo.HintControl = memCodeEditor) and (FCloseBracketPosP <> nil) then
    begin
-      FCloseBracketHint := false;
       HintInfo.HintWindowClass := TEditorHintWindow;
-      HintInfo.HintData := @FCloseBracketPos;
+      HintInfo.HintData := FCloseBracketPosP;
+      FCloseBracketPosP := nil;
    end;
 end;
 
@@ -353,8 +353,7 @@ begin
    memCodeEditor.ClearAll;
    memCodeEditor.Highlighter := nil;
    FFocusEditor := true;
-   FCloseBracketHint := false;
-   FCloseBracketPos := TPoint.Zero;
+   FCloseBracketPosP := nil;
    FWithFocus := nil;
    Width := 425;
    Height := 558;
@@ -1027,12 +1026,10 @@ var
    idInfo: TIdentInfo;
    obj: TObject;
    block: TBlock;
-   pos: TPoint;
    i: integer;
 begin
    h := '';
-   FCloseBracketHint := false;
-   FCloseBracketPos := TPoint.Zero;
+   FCloseBracketPosP := nil;
    memCodeEditor.ShowHint := false;
    memCodeEditor.Hint := '';
    p := memCodeEditor.DisplayToBufferPos(memCodeEditor.PixelsToRowColumn(X, Y));
@@ -1045,14 +1042,9 @@ begin
       h := BuildBracketHint(i, p.Line-2);
       if not h.IsEmpty then
       begin
-         with memCodeEditor do
-         begin
-            pos := ClientToScreen(CharToPixels(p));
-            Dec(pos.Y, LineHeight-Canvas.TextHeight('I')+1);
-            Dec(pos.X, 3);
-         end;
-         FCloseBracketPos := pos;
-         FCloseBracketHint := true;
+         FCloseBracketPos := memCodeEditor.ClientToScreen(CharToPixels(p))
+                             - Point(3, memCodeEditor.LineHeight-memCodeEditor.Canvas.TextHeight('I')+1);
+         FCloseBracketPosP := @FCloseBracketPos;
          memCodeEditor.Hint := h;
          memCodeEditor.ShowHint := true;
          Exit;
