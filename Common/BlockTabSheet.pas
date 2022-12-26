@@ -79,6 +79,7 @@ begin
    Align := alClient;
    DrawI := true;
    Box := TScrollBoxEx.Create(Self);
+   Box.UseWheelForScrolling := true;
 end;
 
 destructor TBlockTabSheet.Destroy;

@@ -586,6 +586,7 @@ begin
    sbxElements.Constraints.MaxHeight := 44;
    sbxElements.Constraints.MinWidth := sbxElements.Width;
    sbxElements.VertScrollBar.Tracking := true;
+   sbxElements.UseWheelForScrolling := true;
    sbxElements.Anchors := [akTop, akBottom, akLeft];
 
    btnAddElement := TButton.Create(gbParams);

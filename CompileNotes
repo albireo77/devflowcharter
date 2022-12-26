@@ -1,5 +1,5 @@
 To compile devFlowcharter you will need:
-- Delphi 11.1
+- Delphi 11.2
 - SynEdit (https://github.com/SynEdit/SynEdit)
   To compile devF with SynEdit from their website, USE_CODEFOLDING conditional directive must be disabled in devF project setup.
   Archive ThirdParty/ThirdParty.zip contains customized SynEdit with code folding. It is preferred SynEdit package for devF.

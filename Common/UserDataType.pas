@@ -126,6 +126,7 @@ begin
    sbxElements.Constraints.MinWidth := sbxElements.Width;
    sbxElements.VertScrollBar.Tracking := true;
    sbxElements.DoubleBuffered := true;
+   sbxElements.UseWheelForScrolling := true;
    sbxElements.Anchors := [akTop, akBottom, akLeft, akRight];
 
    btnAddElement := TButton.Create(Self);
