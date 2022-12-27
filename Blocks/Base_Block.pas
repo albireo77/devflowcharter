@@ -2046,7 +2046,10 @@ begin
             var commentTag := commentTags.NextNode;
             while commentTag <> nil do
             begin
-               if IXMLElement(commentTag).GetAttribute(Z_ORDER_ATTR) = comment.GetZOrder.ToString then
+               var zOrder := IXMLElement(commentTag).GetAttribute(Z_ORDER_ATTR);
+               var pageCaption := IXMLElement(commentTag).GetAttribute(PAGE_CAPTION_ATTR);
+               if (zOrder = comment.GetZOrder.ToString) and
+                  ((pageCaption = comment.Page.Caption) or (pageCaption.IsEmpty and comment.Page.IsMain)) then
                   break;
                commentTag := commentTags.NextNode;
             end;
