@@ -740,7 +740,7 @@ end;
 function TProject.ImportCommentsFromXML(ATag: IXMLElement): integer;
 begin
    result := NO_ERROR;
-   var tag := TXMLProcessor.FindChildTag(ATag, COMMENT_ATTR);
+   var tag := TXMLProcessor.FindChildTag(ATag, COMMENT_TAG);
    while tag <> nil do
    begin
       var page := GetPage(tag.GetAttribute(PAGE_CAPTION_ATTR));

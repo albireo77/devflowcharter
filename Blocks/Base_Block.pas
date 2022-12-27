@@ -2040,8 +2040,20 @@ begin
             ATag.AppendChild(tag1);
          end;
 
+         var commentTags := ATag.OwnerDocument.GetElementsByTagName(COMMENT_TAG);
          for comment in GetPinComments do
-            comment.ExportToXMLTag2(ATag);
+         begin
+            var commentTag := commentTags.NextNode;
+            while commentTag <> nil do
+            begin
+               if IXMLElement(commentTag).GetAttribute(Z_ORDER_ATTR) = comment.GetZOrder.ToString then
+                  break;
+               commentTag := commentTags.NextNode;
+            end;
+            if commentTag = nil then
+               comment.ExportToXMLTag2(ATag);
+            commentTags.Reset;
+         end;
 
          for i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
          begin
@@ -2133,7 +2145,7 @@ procedure TBlock.ImportCommentsFromXML(ATag: IXMLElement);
 begin
    if ProcessComments then
    begin
-      var tag := TXMLProcessor.FindChildTag(ATag, COMMENT_ATTR);
+      var tag := TXMLProcessor.FindChildTag(ATag, COMMENT_TAG);
       while tag <> nil do
       begin
          var comment := TComment.CreateDefault(Page);

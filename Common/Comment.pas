@@ -338,7 +338,7 @@ procedure TComment.ExportToXMLTag2(ATag: IXMLElement);
 begin
    if ATag <> nil then
    begin
-      var tag := ATag.OwnerDocument.CreateElement(COMMENT_ATTR);
+      var tag := ATag.OwnerDocument.CreateElement(COMMENT_TAG);
       TXMLProcessor.AddCDATA(tag, Text);
       tag.SetAttribute('x', Left.ToString);
       tag.SetAttribute('y', Top.ToString);

@@ -56,7 +56,6 @@ const   // Global constants
         TO_MAIN_FORM_KEYS = [vkDelete, vkF10, vkF11, vkF12];
 
         PAGE_CAPTION_ATTR = 'tab';
-        COMMENT_ATTR      = 'comment';
         PAGE_FRONT_ATTR   = 'pageFront';
         LANG_ATTR         = 'language';
         FOLDED_ATTR       = 'folded';
@@ -86,6 +85,7 @@ const   // Global constants
         DATATYPE_TAG      = 'datatype';
         FUNCTION_TAG      = 'routine';
         HEADER_TAG        = 'header';
+        COMMENT_TAG      =  'comment';
         PROGRAM_TEMPLATE_TAG = 'FileContentsTemplate';
 
         LB_PHOLDER  = '#!';
