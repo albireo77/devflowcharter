@@ -1,7 +1,7 @@
 {
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
-   
+
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
    as published by the Free Software Foundation; either version 2
@@ -32,7 +32,7 @@ uses
 const
    PRIMARY_BRANCH_IDX = 1;
    LAST_LINE = -1;
-   
+
 type
 
    TInitParms = record
@@ -178,7 +178,7 @@ type
          procedure SetVisible(AVisible: boolean; ASetComments: boolean = true); virtual;
          procedure BringAllToFront;
          function PinComments: integer;
-         function UnPinComments: integer; virtual;
+         procedure UnPinComments; virtual;
          procedure CloneComments(ASource: TBlock);
          procedure ImportCommentsFromXML(ATag: IXMLElement);
          procedure CloneFrom(ABlock: TBlock); virtual;
@@ -246,7 +246,7 @@ type
          function CountErrWarn: TErrWarnCount; override;
          procedure SetVisible(AVisible: boolean; ASetComments: boolean = true); override;
          function CanBeFocused: boolean; override;
-         function UnPinComments: integer; override;
+         procedure UnPinComments; override;
          procedure CloneFrom(ABlock: TBlock); override;
          procedure OnMouseLeave(AClearRedArrow: boolean = true); override;
          function GetBranchIndexByControl(AControl: TControl): integer;
@@ -1837,39 +1837,34 @@ end;
 function TBlock.PinComments: integer;
 begin
    result := 0;
-   var lPage := Page;
-   var p := ClientToParent(TPoint.Zero, lPage.Box);
+   var p := ClientToParent(TPoint.Zero, Page.Box);
    for var comment in GetComments do
    begin
       comment.Visible := false;
       TInfra.MoveWin(comment, comment.Left - p.X, comment.Top - p.Y);
       comment.PinControl := Self;
-      comment.Parent := lPage;
+      comment.Parent := Page;
       Inc(result);
    end;
 end;
 
-function TBlock.UnPinComments: integer;
+procedure TBlock.UnPinComments;
 begin
-   result := 0;
-   var box := Page.Box;
-   var p := ClientToParent(TPoint.Zero, box);
+   var p := ClientToParent(TPoint.Zero, Page.Box);
    for var comment in GetPinComments do
    begin
       TInfra.MoveWin(comment, comment.Left + p.X, comment.Top + p.Y);
-      comment.Parent := box;
+      comment.Parent := Page.Box;
       comment.Visible := true;
       comment.PinControl := nil;
       comment.BringToFront;
-      Inc(result);
    end;
 end;
 
-function TGroupBlock.UnPinComments: integer;
+procedure TGroupBlock.UnPinComments;
 begin
-   result := 0;
    if Expanded then
-      result := inherited UnPinComments;
+      inherited;
 end;
 
 procedure TBlock.SetVisible(AVisible: boolean; ASetComments: boolean = true);
@@ -1995,7 +1990,7 @@ begin
       FParentBlock.ResizeWithDrawLock;
       NavigatorForm.Invalidate;
    end;
-   
+
    UnPinComments;
 end;
 
