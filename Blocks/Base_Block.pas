@@ -1065,15 +1065,14 @@ begin
    var list := TList<TComment>.Create;
    if Visible then
    begin
-      var lPage := Page;
       for var comment in GProject.GetComments do
       begin
-         if comment.Page = lPage then
+         if comment.Page = Page then
          begin
             var isFront := true;
             if AInFront then
                isFront := IsInFront(comment);
-            if isFront and (comment.PinControl = nil) and ClientRect.Contains(ParentToClient(comment.BoundsRect.TopLeft, lPage.Box)) then
+            if isFront and (comment.PinControl = nil) and ClientRect.Contains(ParentToClient(comment.BoundsRect.TopLeft, Page.Box)) then
                list.Add(comment);
          end
       end;
