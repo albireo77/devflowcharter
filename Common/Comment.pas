@@ -77,7 +77,7 @@ implementation
 
 uses
    Vcl.Graphics, Vcl.Forms, System.SysUtils, System.UITypes, WinApi.Windows, Infrastructure,
-   XMLProcessor, UserFunction, Main_Block, Navigator_Form, Constants;
+   XMLProcessor, OmniXMLUtils, UserFunction, Main_Block, Navigator_Form, Constants;
 
 constructor TComment.Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight: Integer);
 begin
@@ -309,21 +309,21 @@ procedure TComment.ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl);
 begin
    if ATag <> nil then
    begin
-      SetBounds(TXMLProcessor.GetIntFromAttr(ATag, 'x'),
-                TXMLProcessor.GetIntFromAttr(ATag, 'y'),
-                TXMLProcessor.GetIntFromAttr(ATag, 'w'),
-                TXMLProcessor.GetIntFromAttr(ATag, 'h'));
-      var v := TXMLProcessor.GetIntFromAttr(ATag, FONT_SIZE_ATTR);
+      SetBounds(GetNodeAttrInt(ATag, 'x', 0),
+                GetNodeAttrInt(ATag, 'y', 0),
+                GetNodeAttrInt(ATag, 'w', 0),
+                GetNodeAttrInt(ATag, 'h', 0));
+      var v := GetNodeAttrInt(ATag, FONT_SIZE_ATTR, 0);
       if v in FLOWCHART_VALID_FONT_SIZES then
          Font.Size := v;
-      FZOrder := TXMLProcessor.GetIntFromAttr(ATag, Z_ORDER_ATTR, -1);
-      v := TXMLProcessor.GetIntFromAttr(ATag, FONT_STYLE_ATTR);
+      FZOrder := GetNodeAttrInt(ATag, Z_ORDER_ATTR, -1);
+      v := GetNodeAttrInt(ATag, FONT_STYLE_ATTR, 0);
       if v > 0 then
          Font.Style := TInfra.DecodeFontStyle(v);
       Text := ATag.Text;
-      Visible := TXMLProcessor.GetBoolFromAttr(ATag, 'v');
+      Visible := GetNodeAttrBool(ATag, 'v', false);
       FPinControl := APinControl;
-      IsHeader := TXMlProcessor.GetBoolFromAttr(ATag, IS_HEADER_ATTR);
+      IsHeader := GetNodeAttrBool(ATag, IS_HEADER_ATTR, false);
       GetFromXML(ATag);
    end;
 end;
@@ -338,8 +338,7 @@ procedure TComment.ExportToXMLTag2(ATag: IXMLElement);
 begin
    if ATag <> nil then
    begin
-      var tag := ATag.OwnerDocument.CreateElement(COMMENT_TAG);
-      TXMLProcessor.AddCDATA(tag, Text);
+      var tag := SetNodeCData(ATag, COMMENT_TAG, Text) as IXMLELement;
       tag.SetAttribute('x', Left.ToString);
       tag.SetAttribute('y', Top.ToString);
       tag.SetAttribute('w', Width.ToString);
@@ -353,7 +352,6 @@ begin
       if Font.Style <> [] then
          tag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style).ToString);
       SaveInXML(tag);
-      ATag.AppendChild(tag);
    end;
 end;
 

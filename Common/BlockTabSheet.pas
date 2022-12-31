@@ -68,7 +68,7 @@ implementation
 
 uses
    System.SysUtils, System.StrUtils, System.Math, System.UITypes, WinApi.Windows,
-   UserFunction, Navigator_Form, XMLProcessor, Infrastructure, Constants;
+   UserFunction, Navigator_Form, OmniXMLUtils, Infrastructure, Constants;
 
 constructor TBlockTabSheet.Create(AMainForm: TMainForm);
 begin
@@ -113,16 +113,16 @@ end;
 
 procedure TBlockTabSheet.ImportFromXMLTag(ATag: IXMLElement);
 begin
-   var val := TXMLProcessor.GetIntFromAttr(ATag, 'hScrollRange', -1);
+   var val := GetNodeAttrInt(ATag, 'hScrollRange', -1);
    if val > -1 then
       Box.HorzScrollBar.Range := val;
-   val := TXMLProcessor.GetIntFromAttr(ATag, 'hScrollPos', -1);
+   val := GetNodeAttrInt(ATag, 'hScrollPos', -1);
    if val > -1 then
       Box.HorzScrollBar.Position := val;
-   val := TXMLProcessor.GetIntFromAttr(ATag, 'vScrollRange', -1);
+   val := GetNodeAttrInt(ATag, 'vScrollRange', -1);
    if val > -1 then
       Box.VertScrollBar.Range := val;
-   val := TXMLProcessor.GetIntFromAttr(ATag, 'vScrollPos', -1);
+   val := GetNodeAttrInt(ATag, 'vScrollPos', -1);
    if val > -1 then
       Box.VertScrollBar.Position := val;
 end;

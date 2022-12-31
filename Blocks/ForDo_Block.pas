@@ -74,7 +74,8 @@ implementation
 
 uses
    Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Math, YaccLib,
-   Infrastructure, Constants, XMLProcessor, Main_Block, UserFunction, Return_Block;
+   Infrastructure, Constants, XMLProcessor, Main_Block, UserFunction, Return_Block,
+   OmniXMLUtils;
 
 const
    DEFAULT_WIDTH = 246;
@@ -589,15 +590,9 @@ begin
    inherited SaveInXML(ATag);
    if ATag <> nil then
    begin
-      var tag := ATag.OwnerDocument.CreateElement('i_var');
-      TXMLProcessor.AddText(tag, edtVar.Text);
-      ATag.AppendChild(tag);
-      tag := ATag.OwnerDocument.CreateElement('init_val');
-      TXMLProcessor.AddText(tag, ReplaceStr(edtStart.Text, ' ', '#'));
-      ATag.AppendChild(tag);
-      tag := ATag.OwnerDocument.CreateElement('end_val');
-      TXMLProcessor.AddText(tag, ReplaceStr(edtStop.Text, ' ', '#'));
-      ATag.AppendChild(tag);
+      SetNodeText(ATag, 'i_var', edtVar.Text);
+      SetNodeText(ATag, 'init_val', ReplaceStr(edtStart.Text, ' ', '#'));
+      SetNodeText(ATag, 'end_val', ReplaceStr(edtStop.Text, ' ', '#'));
       ATag.SetAttribute('order', IfThen(FDescOrder, 'ordDesc', 'ordAsc'));
    end;
 end;

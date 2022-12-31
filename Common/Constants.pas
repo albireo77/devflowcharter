@@ -59,7 +59,6 @@ const   // Global constants
         PAGE_FRONT_ATTR   = 'pageFront';
         LANG_ATTR         = 'language';
         FOLDED_ATTR       = 'folded';
-        FOLD_TEXT_ATTR    = 'foldtext';
         FRAME_ATTR        = 'frame';
         BLOCK_TYPE_ATTR   = 'type';
         ID_ATTR           = 'hash';
@@ -86,6 +85,7 @@ const   // Global constants
         FUNCTION_TAG      = 'routine';
         HEADER_TAG        = 'header';
         COMMENT_TAG       = 'comment';
+        FOLD_TEXT_TAG     = 'foldtext';
         PROGRAM_TEMPLATE_TAG = 'FileContentsTemplate';
 
         LB_PHOLDER  = '#!';

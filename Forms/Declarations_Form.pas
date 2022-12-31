@@ -46,7 +46,7 @@ var
 implementation
 
 uses
-   Vcl.Forms, System.SysUtils, XMLProcessor, DeclareList, Infrastructure, Constants;
+   Vcl.Forms, System.SysUtils, OmniXMLUtils, DeclareList, Infrastructure, Constants;
 
 {$R *.dfm}
 
@@ -66,15 +66,15 @@ end;
 
 procedure TDeclarationsForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
 begin
-   Height := TXMLProcessor.GetIntFromAttr(ATag, 'var_win_h', Height);
-   Width := TXMLProcessor.GetIntFromAttr(ATag, 'var_win_w', Width);
-   if TXMLProcessor.GetBoolFromAttr(ATag, 'var_win_show') and (GInfra.CurrentLang.EnabledVars or GInfra.CurrentLang.EnabledConsts) then
+   Height := GetNodeAttrInt(ATag, 'var_win_h', Height);
+   Width := GetNodeAttrInt(ATag, 'var_win_w', Width);
+   if GetNodeAttrBool(ATag, 'var_win_show', false) and (GInfra.CurrentLang.EnabledVars or GInfra.CurrentLang.EnabledConsts) then
    begin
       Position := poDesigned;
-      if TXMLProcessor.GetBoolFromAttr(ATag, 'var_win_min') then
+      if GetNodeAttrBool(ATag, 'var_win_min', false) then
          WindowState := wsMinimized;
-      Left := TXMLProcessor.GetIntFromAttr(ATag, 'var_win_x', Left);
-      Top := TXMLProcessor.GetIntFromAttr(ATag, 'var_win_y', Top);
+      Left := GetNodeAttrInt(ATag, 'var_win_x', Left);
+      Top := GetNodeAttrInt(ATag, 'var_win_y', Top);
       Show;
    end;
 end;

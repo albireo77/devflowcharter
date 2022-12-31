@@ -68,7 +68,7 @@ implementation
 
 uses
    System.StrUtils, System.Math, System.SysUtils, XMLProcessor, Return_Block, LangDefinition,
-   Infrastructure, Constants, YaccLib;
+   Infrastructure, Constants, YaccLib, OmniXMLUtils;
 
 constructor TCaseBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
@@ -562,12 +562,9 @@ begin
          tag := TXMLProcessor.FindNextTag(tag);   // skip default branch stored in first tag
          for var i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
          begin
-            if tag <> nil then
-            begin
-               var tag2 := ATag.OwnerDocument.CreateElement('value');
-               TXMLProcessor.AddCDATA(tag2, FBranchList[i].Statement.Text);
-               tag.AppendChild(tag2);
-            end;
+            if tag = nil then
+               break;
+            SetNodeCData(tag, 'value', FBranchList[i].Statement.Text);
             tag := TXMLProcessor.FindNextTag(tag);
          end;
       end;

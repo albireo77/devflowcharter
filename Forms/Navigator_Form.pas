@@ -37,7 +37,7 @@ implementation
 
 uses
    WinApi.Windows, System.SysUtils, Vcl.Graphics, Vcl.Forms, Infrastructure, BlockTabSheet,
-   XMLProcessor;
+   OmniXMLUtils;
 
 {$R *.dfm}
 
@@ -141,15 +141,15 @@ end;
 
 procedure TNavigatorForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
 begin
-   if TXMLProcessor.GetBoolFromAttr(ATag, 'nav_win_show') then
+   if GetNodeAttrBool(ATag, 'nav_win_show', false) then
    begin
       Position := poDesigned;
-      if TXMLProcessor.GetBoolFromAttr(ATag, 'nav_win_min') then
+      if GetNodeAttrBool(ATag, 'nav_win_min', false) then
          WindowState := wsMinimized;
-      SetBounds(TXMLProcessor.GetIntFromAttr(ATag, 'nav_win_x', 50),
-                TXMLProcessor.GetIntFromAttr(ATag, 'nav_win_y', 50),
-                TXMLProcessor.GetIntFromAttr(ATag, 'nav_win_width', 426),
-                TXMLProcessor.GetIntFromAttr(ATag, 'nav_win_height', 341));
+      SetBounds(GetNodeAttrInt(ATag, 'nav_win_x', 50),
+                GetNodeAttrInt(ATag, 'nav_win_y', 50),
+                GetNodeAttrInt(ATag, 'nav_win_width', 426),
+                GetNodeAttrInt(ATag, 'nav_win_height', 341));
       Show;
    end;
 end;

@@ -175,7 +175,7 @@ implementation
 
 uses
    System.SysUtils, System.StrUtils, System.UITypes, System.Rtti, Infrastructure,
-   XMLProcessor, Project, UserDataType, LangDefinition, ParserHelper, Constants;
+   XMLProcessor, Project, UserDataType, LangDefinition, ParserHelper, Constants, OmniXMLUtils;
 
 constructor TDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
 var
@@ -947,24 +947,15 @@ begin
 end;
 
 procedure TDeclareList.ExportToXMLTag(ATag: IXMLElement);
-var
-   i: integer;
-   tag: IXMLElement;
 begin
-   for i := 1 to sgList.RowCount-2 do
+   for var i := 1 to sgList.RowCount-2 do
       ExportItemToXMLTag(ATag, i);
    if goColSizing in sgList.Options then
    begin
-      for i := 0 to sgList.ColCount-1 do
-      begin
-         tag := ATag.OwnerDocument.CreateElement(FKind + 'colwidth');
-         tag.Text := sgList.ColWidths[i].ToString;
-         ATag.AppendChild(tag);
-      end;
+      for var i := 0 to sgList.ColCount-1 do
+         AppendNode(ATag, FKind + 'colwidth').Text := sgList.ColWidths[i].ToString;
    end;
-   tag := ATag.OwnerDocument.CreateElement(FKind + 'width');
-   tag.Text := Width.ToString;
-   ATag.AppendChild(tag);
+   SetNodeText(ATag, FKind + 'width', Width.ToString);
 end;
 
 procedure TDeclareList.ExportItemToXMLTag(ATag: IXMLElement; idx: integer);

@@ -70,7 +70,7 @@ implementation
 
 uses
    WinApi.Windows, WinApi.Messages, System.StrUtils, System.SysUtils, System.Rtti,
-   XMLProcessor, Infrastructure;
+   OmniXMLUtils, Infrastructure;
 
 constructor TMemoEx.Create(AOwner: TComponent);
 begin
@@ -259,13 +259,13 @@ procedure TMemoEx.GetFromXML(ATag: IXMLElement);
 begin
    if ATag <> nil then
    begin
-      EditFormWidth := TXMLProcessor.GetIntFromAttr(ATag, 'memW', EditFormWidth);
-      EditFormHeight := TXMLProcessor.GetIntFromAttr(ATag, 'memH', EditFormHeight);
-      HasVScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_vscroll', FHasVScroll);
-      HasHScroll := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_hscroll', FHasHScroll);
-      WordWrap := TXMLProcessor.GetBoolFromAttr(ATag, 'mem_wordwrap', WordWrap);
-      var h := TXMLProcessor.GetIntFromAttr(ATag, 'mem_hscroll_pos');
-      var v := TXMLProcessor.GetIntFromAttr(ATag, 'mem_vscroll_pos');
+      EditFormWidth := GetNodeAttrInt(ATag, 'memW', EditFormWidth);
+      EditFormHeight := GetNodeAttrInt(ATag, 'memH', EditFormHeight);
+      HasVScroll := GetNodeAttrBool(ATag, 'mem_vscroll', FHasVScroll);
+      HasHScroll := GetNodeAttrBool(ATag, 'mem_hscroll', FHasHScroll);
+      WordWrap := GetNodeAttrBool(ATag, 'mem_wordwrap', WordWrap);
+      var h := GetNodeAttrInt(ATag, 'mem_hscroll_pos', 0);
+      var v := GetNodeAttrInt(ATag, 'mem_vscroll_pos', 0);
       Perform(EM_LINESCROLL, h, v);
       var val := ATag.GetAttribute('mem_align');
       if not val.IsEmpty then

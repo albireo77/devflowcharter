@@ -76,8 +76,8 @@ implementation
 {$R *.dfm}
 
 uses
-   System.SysUtils, System.StrUtils, Vcl.Forms, Infrastructure, XMLProcessor, TabComponent,
-   Interfaces;
+   System.SysUtils, System.StrUtils, Vcl.Forms, Infrastructure, XMLProcessor, OmniXMLUtils,
+   TabComponent, Interfaces;
 
 procedure TPageControlForm.miRemoveClick(Sender: TObject);
 begin
@@ -271,19 +271,19 @@ end;
 
 procedure TPageControlForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
 begin
-   Height := TXMLProcessor.GetIntFromAttr(ATag, FPrefix + 'win_h', Height);
-   if IsEnabled and TXMLProcessor.GetBoolFromAttr(ATag, FPrefix + 'win_show') then
+   Height := GetNodeAttrInt(ATag, FPrefix + 'win_h', Height);
+   if IsEnabled and GetNodeAttrBool(ATag, FPrefix + 'win_show', false) then
    begin
       Position := poDesigned;
-      if TXMLProcessor.GetBoolFromAttr(ATag, FPrefix + 'win_min') then
+      if GetNodeAttrBool(ATag, FPrefix + 'win_min', false) then
          WindowState := wsMinimized;
-      Left := TXMLProcessor.GetIntFromAttr(ATag, FPrefix + 'win_x', Left);
-      Top := TXMLProcessor.GetIntFromAttr(ATag, FPrefix + 'win_y', Top);
-      var i := TXMLProcessor.GetIntFromAttr(ATag, FPrefix + 'idx', -2);
+      Left := GetNodeAttrInt(ATag, FPrefix + 'win_x', Left);
+      Top := GetNodeAttrInt(ATag, FPrefix + 'win_y', Top);
+      var i := GetNodeAttrInt(ATag, FPrefix + 'idx', -2);
       if (i >= 0) and (i < pgcTabs.PageCount) then
       begin
          pgcTabs.ActivePageIndex := i;
-         i := TXMLProcessor.GetIntFromAttr(ATag, FPrefix + 'scroll_v');
+         i := GetNodeAttrInt(ATag, FPrefix + 'scroll_v', 0);
          if i > 0 then
             TTabComponent(pgcTabs.ActivePage).ScrollPos := i;
       end;

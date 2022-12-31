@@ -162,7 +162,7 @@ type
 implementation
 
 uses
-   System.SysUtils, System.Rtti, Interfaces, XMLProcessor, Constants;
+   System.SysUtils, System.Rtti, Interfaces, OmniXMLUtils, Constants;
 
 constructor TComponentComparer.Create(ACompareType: integer);
 begin
@@ -279,21 +279,20 @@ begin
       bt := TRttiEnumerationType.GetValue<TBlockType>(attr)
    else
       bt := TBlockType(at);
-   with TXMLProcessor do
-      result := New(bt,
-                    GetIntFromAttr(AFrom, 'x'),
-                    GetIntFromAttr(AFrom, 'y'),
-                    GetIntFromAttr(AFrom, 'w'),
-                    GetIntFromAttr(AFrom, 'h'),
-                    GetIntFromAttr(AFrom, 'brx'),
-                    GetIntFromAttr(AFrom, 'bry'),
-                    GetIntFromAttr(AFrom, 'bh'),
-                    GetIntFromAttr(AFrom, 'th'),
-                    GetIntFromAttr(AFrom, 'fbrx'),
-                    GetIntFromAttr(AFrom, 'fbry'),
-                    GetIntFromAttr(AFrom, 'trh'),
-                    GetIntFromAttr(AFrom, 'flh'),
-                    GetIntFromAttr(AFrom, ID_ATTR, ID_INVALID));
+   result := New(bt,
+                 GetNodeAttrInt(AFrom, 'x', 0),
+                 GetNodeAttrInt(AFrom, 'y', 0),
+                 GetNodeAttrInt(AFrom, 'w', 0),
+                 GetNodeAttrInt(AFrom, 'h', 0),
+                 GetNodeAttrInt(AFrom, 'brx', 0),
+                 GetNodeAttrInt(AFrom, 'bry', 0),
+                 GetNodeAttrInt(AFrom, 'bh', 0),
+                 GetNodeAttrInt(AFrom, 'th', 0),
+                 GetNodeAttrInt(AFrom, 'fbrx', 0),
+                 GetNodeAttrInt(AFrom, 'fbry', 0),
+                 GetNodeAttrInt(AFrom, 'trh', 0),
+                 GetNodeAttrInt(AFrom, 'flh', 0),
+                 GetNodeAttrInt(AFrom, ID_ATTR, ID_INVALID));
 end;
 
 procedure TNameEdit.WMKillFocus(var msg: TWMKillFocus);

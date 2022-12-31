@@ -286,7 +286,8 @@ implementation
 uses
    System.StrUtils, Vcl.Menus, System.Types, System.Math, System.Rtti, System.TypInfo,
    System.SysUtils, System.UITypes, Main_Block, Return_Block, Infrastructure, BlockFactory,
-   UserFunction, XMLProcessor, Navigator_Form, LangDefinition, FlashThread, Main_Form, Constants;
+   UserFunction, XMLProcessor, Navigator_Form, LangDefinition, FlashThread, Main_Form,
+   OmniXMLUtils, Constants;
 
 type
    TControlHack = class(TControl);
@@ -2033,28 +2034,24 @@ begin
 
          txt := GetFoldedText;
          if not txt.IsEmpty then
-         begin
-            tag1 := ATag.OwnerDocument.CreateElement(FOLD_TEXT_ATTR);
-            TXMLProcessor.AddCDATA(tag1, txt);
-            ATag.AppendChild(tag1);
-         end;
+            SetNodeCData(ATag, FOLD_TEXT_TAG, txt);
 
-         var commentTags := ATag.OwnerDocument.GetElementsByTagName(COMMENT_TAG);
+         var commentNodes := ATag.OwnerDocument.GetElementsByTagName(COMMENT_TAG);
          for comment in GetPinComments do
          begin
-            var commentTag := commentTags.NextNode;
-            while commentTag <> nil do
+            var commentNode := commentNodes.NextNode;
+            while commentNode <> nil do
             begin
-               var zOrder := IXMLElement(commentTag).GetAttribute(Z_ORDER_ATTR);
-               var pageCaption := IXMLElement(commentTag).GetAttribute(PAGE_CAPTION_ATTR);
+               var zOrder := IXMLElement(commentNode).GetAttribute(Z_ORDER_ATTR);
+               var pageCaption := IXMLElement(commentNode).GetAttribute(PAGE_CAPTION_ATTR);
                if (zOrder = comment.GetZOrder.ToString) and
                   ((pageCaption = comment.Page.Caption) or (pageCaption.IsEmpty and comment.Page.IsMain)) then
                   break;
-               commentTag := commentTags.NextNode;
+               commentNode := commentNodes.NextNode;
             end;
-            if commentTag = nil then
+            if commentNode = nil then
                comment.ExportToXMLTag2(ATag);
-            commentTags.Reset;
+            commentNodes.Reset;
          end;
 
          for i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
@@ -2069,13 +2066,8 @@ begin
             if br.Statement <> nil then
                tag2.SetAttribute(BRANCH_STMNT_ATTR, br.Statement.Id.ToString);
 
-            tag1 := ATag.OwnerDocument.CreateElement('x');
-            TXMLProcessor.AddText(tag1, br.hook.X.ToString);
-            tag2.AppendChild(tag1);
-
-            tag1 := ATag.OwnerDocument.CreateElement('y');
-            TXMLProcessor.AddText(tag1, br.hook.Y.ToString);
-            tag2.AppendChild(tag1);
+            SetNodeText(tag2, 'x', br.hook.X.ToString);
+            SetNodeText(tag2, 'y', br.hook.Y.ToString);
 
             for block in br do
                 TXMLProcessor.ExportBlockToXML(block, tag2);
@@ -2134,12 +2126,7 @@ begin
       ATag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style).ToString);
       var txtControl := GetTextControl;
       if (txtControl <> nil) and (txtControl.Text <> '') then
-      begin
-         var txt := ReplaceStr(txtControl.Text, sLineBreak, LB_PHOLDER);
-         var tag := ATag.OwnerDocument.CreateElement(TEXT_TAG);
-         TXMLProcessor.AddCDATA(tag, txt);
-         ATag.AppendChild(tag);
-      end;
+         SetNodeCData(ATag, TEXT_TAG, ReplaceStr(txtControl.Text, sLineBreak, LB_PHOLDER));
    end;
 end;
 
@@ -2172,14 +2159,14 @@ begin
          FRefreshMode := false;
       end;
 
-      var i := TXMLProcessor.GetIntFromAttr(ATag, FONT_SIZE_ATTR);
+      var i := GetNodeAttrInt(ATag, FONT_SIZE_ATTR, 0);
       if i in FLOWCHART_VALID_FONT_SIZES then
          SetFontSize(i);
 
-      i := TXMLProcessor.GetIntFromAttr(ATag, FONT_STYLE_ATTR);
+      i := GetNodeAttrInt(ATag, FONT_STYLE_ATTR, 0);
       SetFontStyle(TInfra.DecodeFontStyle(i));
 
-      Frame := TXMLProcessor.GetBoolFromAttr(ATag, FRAME_ATTR);
+      Frame := GetNodeAttrBool(ATag, FRAME_ATTR, false);
 
       var memo := GetMemoEx;
       if memo <> nil then
@@ -2208,8 +2195,8 @@ begin
             tag2 := TXMLProcessor.FindChildTag(tag1, 'y');
             if tag2 <> nil then
                hy := StrToIntDef(tag2.Text, 0);
-            bId := TXMLProcessor.GetIntFromAttr(tag1, ID_ATTR, ID_INVALID);
-            bStmntId := TXMLProcessor.GetIntFromAttr(tag1, BRANCH_STMNT_ATTR, ID_INVALID);
+            bId := GetNodeAttrInt(tag1, ID_ATTR, ID_INVALID);
+            bStmntId := GetNodeAttrInt(tag1, BRANCH_STMNT_ATTR, ID_INVALID);
             if GetBranch(idx) = nil then
                AddBranch(Point(hx, hy), bId, bStmntId);
             tag2 := TXMLProcessor.FindChildTag(tag1, BLOCK_TAG);
@@ -2222,12 +2209,12 @@ begin
             tag1 := TXMLProcessor.FindNextTag(tag1);
          until tag1 = nil;
       end;
-      tag2 := TXMLProcessor.FindChildTag(ATag, FOLD_TEXT_ATTR);
+      tag2 := TXMLProcessor.FindChildTag(ATag, FOLD_TEXT_TAG);
       if tag2 <> nil then
          SetFoldedText(tag2.Text);
-      FFoldParms.Width := TXMLProcessor.GetIntFromAttr(ATag, 'fw', 140);
-      FFoldParms.Height := TXMLProcessor.GetIntFromAttr(ATag, 'fh', 91);
-      if TXMLProcessor.GetBoolFromAttr(ATag, FOLDED_ATTR) then
+      FFoldParms.Width := GetNodeAttrInt(ATag, 'fw', 140);
+      FFoldParms.Height := GetNodeAttrInt(ATag, 'fh', 91);
+      if GetNodeAttrBool(ATag, FOLDED_ATTR, false) then
          ExpandFold(false);
    end;
 end;

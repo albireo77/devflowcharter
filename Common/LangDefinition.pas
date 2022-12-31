@@ -268,7 +268,7 @@ const
 implementation
 
 uses
-   Vcl.Forms, System.IniFiles, XMLProcessor, Constants, Infrastructure;
+   Vcl.Forms, System.IniFiles, XMLProcessor, Constants, Infrastructure, OmniXMLUtils;
 
 constructor TLangDefinition.Create;
 begin
@@ -322,7 +322,7 @@ var
    threeStrings: T3Strings;
 begin
    result := errNone;
-   val := TXMLProcessor.GetTextFromChild(ATag, 'Name').Trim;
+   val := GetNodeTextStr(ATag, 'Name', '');
    if val.IsEmpty then
    begin
       GErr_Text := i18Manager.GetString('NameTagNotFound');
@@ -437,131 +437,128 @@ begin
    if (tag <> nil) and (Screen.Fonts.IndexOf(tag.Text) <> -1) then
       LabelFontName := tag.Text;
 
-   with TXMLProcessor do
-   begin
-      CommentBegin                    := GetTextFromChild(ATag, 'CommentBegin');
-      CommentEnd                      := GetTextFromChild(ATag, 'CommentEnd');
-      InputFunction                   := GetTextFromChild(ATag, 'InputFunction');
-      OutputFunction                  := GetTextFromChild(ATag, 'OutputFunction');
-      ProcedureLabelKey               := GetTextFromChild(ATag, 'ProcedureLabelKey');
-      FunctionLabelKey                := GetTextFromChild(ATag, 'FunctionLabelKey');
-      ConstructorLabelKey             := GetTextFromChild(ATag, 'ConstructorLabelKey');
-      ProgramLabelKey                 := GetTextFromChild(ATag, 'ProgramLabelKey');
-      GlobalVarsLabelKey              := GetTextFromChild(ATag, 'GlobalVarsLabelKey', GlobalVarsLabelKey);
-      GlobalConstsLabelKey            := GetTextFromChild(ATag, 'GlobalConstsLabelKey', GlobalConstsLabelKey);
-      HighLighterVarName              := GetTextFromChild(ATag, 'HighLighterVarName');
-      ForDoVarString                  := GetTextFromChild(ATag, 'ForDoVarString', ForDoVarString);
-      ConstIDSpecChars                := GetTextFromChild(ATag, 'ConstIDSpecChars');
-      FuncBrackets                    := GetTextFromChild(ATag, 'FuncBrackets');
-      InstrEnd                        := GetTextFromChild(ATag, 'InstrEnd');
-      FVarTemplate                    := GetTextFromChild(ATag, 'VarTemplate');
-      FunctionTemplate                := GetTextFromChild(ATag, 'FunctionTemplate');
-      FunctionHeaderTemplate          := GetTextFromChild(ATag, 'FunctionHeaderTemplate');
-      FunctionHeaderDescTemplate      := GetTextFromChild(ATag, 'FunctionHeaderDescTemplate');
-      FunctionHeaderDescParmMask      := GetTextFromChild(ATag, 'FunctionHeaderDescParmMask');
-      FunctionHeaderDescReturnMask    := GetTextFromChild(ATag, 'FunctionHeaderDescReturnMask');
-      ConstructorHeaderTemplate       := GetTextFromChild(ATag, 'ConstructorHeaderTemplate');
-      PointerTypeMask                 := GetTextFromChild(ATag, 'PointerTypeMask');
-      CaseOfValueTemplate             := GetTextFromChild(ATag, 'CaseOfValueTemplate');
-      CaseOfFirstValueTemplate        := GetTextFromChild(ATag, 'CaseOfFirstValueTemplate');
-      CaseOfDefaultValueTemplate      := GetTextFromChild(ATag, 'CaseOfDefaultValueTemplate');
-      ElseLabel                       := GetTextFromChild(ATag, 'ElseLabel', ElseLabel);
-      LabelRepeat                     := GetTextFromChild(ATag, 'LabelRepeat');
-      LabelWhile                      := GetTextFromChild(ATag, 'LabelWhile');
-      LabelFor                        := GetTextFromChild(ATag, 'LabelFor');
-      LabelCase                       := GetTextFromChild(ATag, 'LabelCase');
-      LabelIf                         := GetTextFromChild(ATag, 'LabelIf');
-      LabelIfElse                     := GetTextFromChild(ATag, 'LabelIfElse');
-      LabelFuncCall                   := GetTextFromChild(ATag, 'LabelFuncCall');
-      LabelText                       := GetTextFromChild(ATag, 'LabelText');
-      LabelFolder                     := GetTextFromChild(ATag, 'LabelFolder');
-      LabelIn                         := GetTextFromChild(ATag, 'LabelIn');
-      LabelOut                        := GetTextFromChild(ATag, 'LabelOut');
-      LabelInstr                      := GetTextFromChild(ATag, 'LabelInstr');
-      LabelMultiInstr                 := GetTextFromChild(ATag, 'LabelMultiInstr');
-      RepeatUntilDescTemplate         := GetTextFromChild(ATag, 'RepeatUntilDescTemplate');
-      ReturnDescTemplate              := GetTextFromChild(ATag, 'ReturnDescTemplate');
-      ForDoDescTemplate               := GetTextFromChild(ATag, 'ForDoDescTemplate');
-      CaseOfDescTemplate              := GetTextFromChild(ATag, 'CaseOfDescTemplate');
-      MainFunctionTemplate            := GetTextFromChild(ATag, 'MainFunctionTemplate');
-      ProgramReturnTemplate           := GetTextFromChild(ATag, 'ProgramReturnTemplate');
-      FDataTypesTemplate              := GetTextFromChild(ATag, 'DataTypesTemplate');
-      FFunctionsTemplate              := GetTextFromChild(ATag, 'FunctionsTemplate');
-      FProgramTemplate                := GetTextFromChild(ATag, PROGRAM_TEMPLATE_TAG);
-      DataTypeIntMask                 := GetTextFromChild(ATag, 'DataTypeIntMask');
-      DataTypeRealMask                := GetTextFromChild(ATag, 'DataTypeRealMask');
-      DataTypeOtherMask               := GetTextFromChild(ATag, 'DataTypeOtherMask');
-      DataTypeRecordTemplate          := GetTextFromChild(ATag, 'DataTypeRecordTemplate');
-      DataTypeEnumTemplate            := GetTextFromChild(ATag, 'DataTypeEnumTemplate');
-      DataTypeEnumEntryList           := GetTextFromChild(ATag, 'DataTypeEnumEntryList');
-      DataTypeArrayMask               := GetTextFromChild(ATag, 'DataTypeArrayMask');
-      DataTypeUnboundedArrayMask      := GetTextFromChild(ATag, 'DataTypeUnboundedArrayMask');
-      DataTypeRecordFieldMask         := GetTextFromChild(ATag, 'DataTypeRecordFieldMask');
-      DataTypeRecordFieldArrayMask    := GetTextFromChild(ATag, 'DataTypeRecordFieldArrayMask');
-      FConstTemplate                  := GetTextFromChild(ATag, 'ConstTemplate');
-      ConstEntry                      := GetTextFromChild(ATag, 'ConstEntry');
-      ConstEntryArray                 := GetTextFromChild(ATag, 'ConstEntryArray');
-      VarEntryInit                    := GetTextFromChild(ATag, 'VarEntryInit');
-      VarEntryInitExtern              := GetTextFromChild(ATag, 'VarEntryInitExtern');
-      VarEntry                        := GetTextFromChild(ATag, 'VarEntry');
-      VarEntryArray                   := GetTextFromChild(ATag, 'VarEntryArray');
-      VarEntryArraySize               := GetTextFromChild(ATag, 'VarEntryArraySize');
-      FLibTemplate                    := GetTextFromChild(ATag, 'LibTemplate');
-      LibEntry                        := GetTextFromChild(ATag, 'LibEntry');
-      LibEntryList                    := GetTextFromChild(ATag, 'LibEntryList');
-      FunctionHeaderArgsEntryArray    := GetTextFromChild(ATag, 'FunctionHeaderArgsEntryArray');
-      FunctionHeaderArgsEntryDefault  := GetTextFromChild(ATag, 'FunctionHeaderArgsEntryDefault');
-      FunctionHeaderArgsEntryRef      := GetTextFromChild(ATag, 'FunctionHeaderArgsEntryRef');
-      FunctionHeaderArgsEntryRecord   := GetTextFromChild(ATag, 'FunctionHeaderArgsEntryRecord');
-      FunctionHeaderArgsEntryEnum     := GetTextFromChild(ATag, 'FunctionHeaderArgsEntryEnum');
-      FunctionHeaderArgsEntryMask     := GetTextFromChild(ATag, 'FunctionHeaderArgsEntryMask');
-      FProgramHeaderTemplate          := GetTextFromChild(ATag, 'ProgramHeaderTemplate');
-      DefaultExt                      := GetTextFromChild(ATag, 'DefaultExt', DefaultExt);
-      LibraryExt                      := GetTextFromChild(ATag, 'LibraryExt', LibraryExt);
-      AssignOperator                  := GetTextFromChild(ATag, 'AssignOperator', AssignOperator);
-      UserTypeDesc                    := GetTextFromChild(ATag, 'UserTypeDesc');
-      ExternalLabel                   := GetTextFromChild(ATag, 'ExternalLabel');
-      StaticLabel                     := GetTextFromChild(ATag, 'StaticLabel');
-      RecordLabel                     := GetTextFromChild(ATag, 'RecordLabel');
+   CommentBegin                    := GetNodeTextStr(ATag, 'CommentBegin', CommentBegin);
+   CommentEnd                      := GetNodeTextStr(ATag, 'CommentEnd', CommentEnd);
+   InputFunction                   := GetNodeTextStr(ATag, 'InputFunction', InputFunction);
+   OutputFunction                  := GetNodeTextStr(ATag, 'OutputFunction', OutputFunction);
+   ProcedureLabelKey               := GetNodeTextStr(ATag, 'ProcedureLabelKey', ProcedureLabelKey);
+   FunctionLabelKey                := GetNodeTextStr(ATag, 'FunctionLabelKey', FunctionLabelKey);
+   ConstructorLabelKey             := GetNodeTextStr(ATag, 'ConstructorLabelKey', ConstructorLabelKey);
+   ProgramLabelKey                 := GetNodeTextStr(ATag, 'ProgramLabelKey', ProgramLabelKey);
+   GlobalVarsLabelKey              := GetNodeTextStr(ATag, 'GlobalVarsLabelKey', GlobalVarsLabelKey);
+   GlobalConstsLabelKey            := GetNodeTextStr(ATag, 'GlobalConstsLabelKey', GlobalConstsLabelKey);
+   HighLighterVarName              := GetNodeTextStr(ATag, 'HighLighterVarName', HighLighterVarName);
+   ForDoVarString                  := GetNodeTextStr(ATag, 'ForDoVarString', ForDoVarString);
+   ConstIDSpecChars                := GetNodeTextStr(ATag, 'ConstIDSpecChars', ConstIDSpecChars);
+   FuncBrackets                    := GetNodeTextStr(ATag, 'FuncBrackets', FuncBrackets);
+   InstrEnd                        := GetNodeTextStr(ATag, 'InstrEnd', InstrEnd);
+   FVarTemplate                    := GetNodeTextStr(ATag, 'VarTemplate', FVarTemplate);
+   FunctionTemplate                := GetNodeTextStr(ATag, 'FunctionTemplate', FunctionTemplate);
+   FunctionHeaderTemplate          := GetNodeTextStr(ATag, 'FunctionHeaderTemplate', FunctionHeaderTemplate);
+   FunctionHeaderDescTemplate      := GetNodeTextStr(ATag, 'FunctionHeaderDescTemplate', FunctionHeaderDescTemplate);
+   FunctionHeaderDescParmMask      := GetNodeTextStr(ATag, 'FunctionHeaderDescParmMask', FunctionHeaderDescParmMask);
+   FunctionHeaderDescReturnMask    := GetNodeTextStr(ATag, 'FunctionHeaderDescReturnMask', FunctionHeaderDescReturnMask);
+   ConstructorHeaderTemplate       := GetNodeTextStr(ATag, 'ConstructorHeaderTemplate', ConstructorHeaderTemplate);
+   PointerTypeMask                 := GetNodeTextStr(ATag, 'PointerTypeMask', PointerTypeMask);
+   CaseOfValueTemplate             := GetNodeTextStr(ATag, 'CaseOfValueTemplate', CaseOfValueTemplate);
+   CaseOfFirstValueTemplate        := GetNodeTextStr(ATag, 'CaseOfFirstValueTemplate', CaseOfFirstValueTemplate);
+   CaseOfDefaultValueTemplate      := GetNodeTextStr(ATag, 'CaseOfDefaultValueTemplate', CaseOfDefaultValueTemplate);
+   ElseLabel                       := GetNodeTextStr(ATag, 'ElseLabel', ElseLabel);
+   LabelRepeat                     := GetNodeTextStr(ATag, 'LabelRepeat', LabelRepeat);
+   LabelWhile                      := GetNodeTextStr(ATag, 'LabelWhile', LabelWhile);
+   LabelFor                        := GetNodeTextStr(ATag, 'LabelFor', LabelFor);
+   LabelCase                       := GetNodeTextStr(ATag, 'LabelCase', LabelCase);
+   LabelIf                         := GetNodeTextStr(ATag, 'LabelIf', LabelIf);
+   LabelIfElse                     := GetNodeTextStr(ATag, 'LabelIfElse', LabelIfElse);
+   LabelFuncCall                   := GetNodeTextStr(ATag, 'LabelFuncCall', LabelFuncCall);
+   LabelText                       := GetNodeTextStr(ATag, 'LabelText', LabelText);
+   LabelFolder                     := GetNodeTextStr(ATag, 'LabelFolder', LabelFolder);
+   LabelIn                         := GetNodeTextStr(ATag, 'LabelIn', LabelIn);
+   LabelOut                        := GetNodeTextStr(ATag, 'LabelOut', LabelOut);
+   LabelInstr                      := GetNodeTextStr(ATag, 'LabelInstr', LabelInstr);
+   LabelMultiInstr                 := GetNodeTextStr(ATag, 'LabelMultiInstr', LabelMultiInstr);
+   RepeatUntilDescTemplate         := GetNodeTextStr(ATag, 'RepeatUntilDescTemplate', RepeatUntilDescTemplate);
+   ReturnDescTemplate              := GetNodeTextStr(ATag, 'ReturnDescTemplate', ReturnDescTemplate);
+   ForDoDescTemplate               := GetNodeTextStr(ATag, 'ForDoDescTemplate', ForDoDescTemplate);
+   CaseOfDescTemplate              := GetNodeTextStr(ATag, 'CaseOfDescTemplate', CaseOfDescTemplate);
+   MainFunctionTemplate            := GetNodeTextStr(ATag, 'MainFunctionTemplate', MainFunctionTemplate);
+   ProgramReturnTemplate           := GetNodeTextStr(ATag, 'ProgramReturnTemplate', ProgramReturnTemplate);
+   FDataTypesTemplate              := GetNodeTextStr(ATag, 'DataTypesTemplate', FDataTypesTemplate);
+   FFunctionsTemplate              := GetNodeTextStr(ATag, 'FunctionsTemplate', FFunctionsTemplate);
+   FProgramTemplate                := GetNodeTextStr(ATag, PROGRAM_TEMPLATE_TAG, FProgramTemplate);
+   DataTypeIntMask                 := GetNodeTextStr(ATag, 'DataTypeIntMask', DataTypeIntMask);
+   DataTypeRealMask                := GetNodeTextStr(ATag, 'DataTypeRealMask', DataTypeRealMask);
+   DataTypeOtherMask               := GetNodeTextStr(ATag, 'DataTypeOtherMask', DataTypeOtherMask);
+   DataTypeRecordTemplate          := GetNodeTextStr(ATag, 'DataTypeRecordTemplate', DataTypeRecordTemplate);
+   DataTypeEnumTemplate            := GetNodeTextStr(ATag, 'DataTypeEnumTemplate', DataTypeEnumTemplate);
+   DataTypeEnumEntryList           := GetNodeTextStr(ATag, 'DataTypeEnumEntryList', DataTypeEnumEntryList);
+   DataTypeArrayMask               := GetNodeTextStr(ATag, 'DataTypeArrayMask', DataTypeArrayMask);
+   DataTypeUnboundedArrayMask      := GetNodeTextStr(ATag, 'DataTypeUnboundedArrayMask', DataTypeUnboundedArrayMask);
+   DataTypeRecordFieldMask         := GetNodeTextStr(ATag, 'DataTypeRecordFieldMask', DataTypeRecordFieldMask);
+   DataTypeRecordFieldArrayMask    := GetNodeTextStr(ATag, 'DataTypeRecordFieldArrayMask', DataTypeRecordFieldArrayMask);
+   FConstTemplate                  := GetNodeTextStr(ATag, 'ConstTemplate', FConstTemplate);
+   ConstEntry                      := GetNodeTextStr(ATag, 'ConstEntry', ConstEntry);
+   ConstEntryArray                 := GetNodeTextStr(ATag, 'ConstEntryArray', ConstEntryArray);
+   VarEntryInit                    := GetNodeTextStr(ATag, 'VarEntryInit', VarEntryInit);
+   VarEntryInitExtern              := GetNodeTextStr(ATag, 'VarEntryInitExtern', VarEntryInitExtern);
+   VarEntry                        := GetNodeTextStr(ATag, 'VarEntry', VarEntry);
+   VarEntryArray                   := GetNodeTextStr(ATag, 'VarEntryArray', VarEntryArray);
+   VarEntryArraySize               := GetNodeTextStr(ATag, 'VarEntryArraySize', VarEntryArraySize);
+   FLibTemplate                    := GetNodeTextStr(ATag, 'LibTemplate', FLibTemplate);
+   LibEntry                        := GetNodeTextStr(ATag, 'LibEntry', LibEntry);
+   LibEntryList                    := GetNodeTextStr(ATag, 'LibEntryList', LibEntryList);
+   FunctionHeaderArgsEntryArray    := GetNodeTextStr(ATag, 'FunctionHeaderArgsEntryArray', FunctionHeaderArgsEntryArray);
+   FunctionHeaderArgsEntryDefault  := GetNodeTextStr(ATag, 'FunctionHeaderArgsEntryDefault', FunctionHeaderArgsEntryDefault);
+   FunctionHeaderArgsEntryRef      := GetNodeTextStr(ATag, 'FunctionHeaderArgsEntryRef', FunctionHeaderArgsEntryRef);
+   FunctionHeaderArgsEntryRecord   := GetNodeTextStr(ATag, 'FunctionHeaderArgsEntryRecord', FunctionHeaderArgsEntryRecord);
+   FunctionHeaderArgsEntryEnum     := GetNodeTextStr(ATag, 'FunctionHeaderArgsEntryEnum', FunctionHeaderArgsEntryEnum);
+   FunctionHeaderArgsEntryMask     := GetNodeTextStr(ATag, 'FunctionHeaderArgsEntryMask', FunctionHeaderArgsEntryMask);
+   FProgramHeaderTemplate          := GetNodeTextStr(ATag, 'ProgramHeaderTemplate', FProgramHeaderTemplate);
+   DefaultExt                      := GetNodeTextStr(ATag, 'DefaultExt', DefaultExt);
+   LibraryExt                      := GetNodeTextStr(ATag, 'LibraryExt', LibraryExt);
+   AssignOperator                  := GetNodeTextStr(ATag, 'AssignOperator', AssignOperator);
+   UserTypeDesc                    := GetNodeTextStr(ATag, 'UserTypeDesc', UserTypeDesc);
+   ExternalLabel                   := GetNodeTextStr(ATag, 'ExternalLabel', ExternalLabel);
+   StaticLabel                     := GetNodeTextStr(ATag, 'StaticLabel', StaticLabel);
+   RecordLabel                     := GetNodeTextStr(ATag, 'RecordLabel', RecordLabel);
 
-      FuncBracketsCursorPos           := GetIntFromChild(ATag, 'FuncBracketsCursorPos');
-      LabelFontSize                   := GetIntFromChild(ATag, 'LabelFontSize', LabelFontSize);
-      VarEntryArraySizeStripCount     := GetIntFromChild(ATag, 'VarEntryArraySizeStripCount');
-      LibEntryListStripCount          := GetIntFromChild(ATag, 'LibEntryListStripCount');
-      FunctionHeaderArgsStripCount    := GetIntFromChild(ATag, 'FunctionHeaderArgsStripCount');
-      InOutCursorPos                  := GetIntFromChild(ATag, 'InOutCursorPos');
-      DataTypeEnumEntryListStripCount := GetIntFromChild(ATag, 'DataTypeEnumEntryListStripCount');
+   FuncBracketsCursorPos           := GetNodeTextInt(ATag, 'FuncBracketsCursorPos', FuncBracketsCursorPos);
+   LabelFontSize                   := GetNodeTextInt(ATag, 'LabelFontSize', LabelFontSize);
+   VarEntryArraySizeStripCount     := GetNodeTextInt(ATag, 'VarEntryArraySizeStripCount', VarEntryArraySizeStripCount);
+   LibEntryListStripCount          := GetNodeTextInt(ATag, 'LibEntryListStripCount', LibEntryListStripCount);
+   FunctionHeaderArgsStripCount    := GetNodeTextInt(ATag, 'FunctionHeaderArgsStripCount', FunctionHeaderArgsStripCount);
+   InOutCursorPos                  := GetNodeTextInt(ATag, 'InOutCursorPos', InOutCursorPos);
+   DataTypeEnumEntryListStripCount := GetNodeTextInt(ATag, 'DataTypeEnumEntryListStripCount', DataTypeEnumEntryListStripCount);
 
-      ForDoVarList                    := GetBoolFromChild(ATag, 'ForDoVarList');
-      EnabledPointers                 := GetBoolFromChild(ATag, 'EnabledPointers', EnabledPointers);
-      RepeatUntilAsDoWhile            := GetBoolFromChild(ATag, 'RepeatUntilAsDoWhile');
-      EnabledConsts                   := GetBoolFromChild(ATag, 'EnabledConsts');
-      EnabledVars                     := GetBoolFromChild(ATag, 'EnabledVars');
-      EnabledCompiler                 := GetBoolFromChild(ATag, 'EnabledCompiler');
-      EnabledUserFunctionHeader       := GetBoolFromChild(ATag, 'EnabledUserFunctionHeader');
-      EnabledUserFunctionBody         := GetBoolFromChild(ATag, 'EnabledUserFunctionBody');
-      EnabledUserDataTypes            := GetBoolFromChild(ATag, 'EnabledUserDataTypes');
-      EnabledUserDataTypeInt          := GetBoolFromChild(ATag, 'EnabledUserDataTypeInt', EnabledUserDataTypeInt);
-      EnabledUserDataTypeReal         := GetBoolFromChild(ATag, 'EnabledUserDataTypeReal', EnabledUserDataTypeReal);
-      EnabledUserDataTypeOther        := GetBoolFromChild(ATag, 'EnabledUserDataTypeOther', EnabledUserDataTypeOther);
-      EnabledUserDataTypeArray        := GetBoolFromChild(ATag, 'EnabledUserDataTypeArray', EnabledUserDataTypeArray);
-      EnabledUserDataTypeEnum         := GetBoolFromChild(ATag, 'EnabledUserDataTypeEnum', EnabledUserDataTypeEnum);
-      EnabledExplorer                 := GetBoolFromChild(ATag, 'EnabledExplorer');
-      EnabledCodeGenerator            := GetBoolFromChild(ATag, 'EnabledCodeGenerator');
-      EnabledMainProgram              := GetBoolFromChild(ATag, 'EnabledMainProgram');
-      CaseSensitiveSyntax             := GetBoolFromChild(ATag, 'CaseSensitiveSyntax');
-      UpperCaseConstId                := GetBoolFromChild(ATag, 'UpperCaseConstId', UpperCaseConstId);
-      AllowEnumsInForLoop             := GetBoolFromChild(ATag, 'AllowEnumsInForLoop');
-      AllowUserFunctionOverload       := GetBoolFromChild(ATag, 'AllowUserFunctionOverload');
-      AllowUnboundedArrays            := GetBoolFromChild(ATag, 'AllowUnboundedArrays');
-      AllowDuplicatedLibs             := GetBoolFromChild(ATag, 'AllowDuplicatedLibs');
-      AllowTransExternVarConst        := GetBoolFromChild(ATag, 'AllowTransExternVarConst');
-      AllowTransExternFunction        := GetBoolFromChild(ATag, 'AllowTransExternFunction');
-      AllowTransExternDataType        := GetBoolFromChild(ATag, 'AllowTransExternDataType');
-      CodeIncludeExternVarConst       := GetBoolFromChild(ATag, 'CodeIncludeExternVarConst');
-      CodeIncludeExternDataType       := GetBoolFromChild(ATag, 'CodeIncludeExternDataType');
-      CodeIncludeExternFunction       := GetBoolFromChild(ATag, 'CodeIncludeExternFunction');
-   end;
+   ForDoVarList                    := GetNodeTextBool(ATag, 'ForDoVarList', ForDoVarList);
+   EnabledPointers                 := GetNodeTextBool(ATag, 'EnabledPointers', EnabledPointers);
+   RepeatUntilAsDoWhile            := GetNodeTextBool(ATag, 'RepeatUntilAsDoWhile', RepeatUntilAsDoWhile);
+   EnabledConsts                   := GetNodeTextBool(ATag, 'EnabledConsts', EnabledConsts);
+   EnabledVars                     := GetNodeTextBool(ATag, 'EnabledVars', EnabledVars);
+   EnabledCompiler                 := GetNodeTextBool(ATag, 'EnabledCompiler', EnabledCompiler);
+   EnabledUserFunctionHeader       := GetNodeTextBool(ATag, 'EnabledUserFunctionHeader', EnabledUserFunctionHeader);
+   EnabledUserFunctionBody         := GetNodeTextBool(ATag, 'EnabledUserFunctionBody', EnabledUserFunctionBody);
+   EnabledUserDataTypes            := GetNodeTextBool(ATag, 'EnabledUserDataTypes', EnabledUserDataTypes);
+   EnabledUserDataTypeInt          := GetNodeTextBool(ATag, 'EnabledUserDataTypeInt', EnabledUserDataTypeInt);
+   EnabledUserDataTypeReal         := GetNodeTextBool(ATag, 'EnabledUserDataTypeReal', EnabledUserDataTypeReal);
+   EnabledUserDataTypeOther        := GetNodeTextBool(ATag, 'EnabledUserDataTypeOther', EnabledUserDataTypeOther);
+   EnabledUserDataTypeArray        := GetNodeTextBool(ATag, 'EnabledUserDataTypeArray', EnabledUserDataTypeArray);
+   EnabledUserDataTypeEnum         := GetNodeTextBool(ATag, 'EnabledUserDataTypeEnum', EnabledUserDataTypeEnum);
+   EnabledExplorer                 := GetNodeTextBool(ATag, 'EnabledExplorer', EnabledExplorer);
+   EnabledCodeGenerator            := GetNodeTextBool(ATag, 'EnabledCodeGenerator', EnabledCodeGenerator);
+   EnabledMainProgram              := GetNodeTextBool(ATag, 'EnabledMainProgram', EnabledMainProgram);
+   CaseSensitiveSyntax             := GetNodeTextBool(ATag, 'CaseSensitiveSyntax', CaseSensitiveSyntax);
+   UpperCaseConstId                := GetNodeTextBool(ATag, 'UpperCaseConstId', UpperCaseConstId);
+   AllowEnumsInForLoop             := GetNodeTextBool(ATag, 'AllowEnumsInForLoop', AllowEnumsInForLoop);
+   AllowUserFunctionOverload       := GetNodeTextBool(ATag, 'AllowUserFunctionOverload', AllowUserFunctionOverload);
+   AllowUnboundedArrays            := GetNodeTextBool(ATag, 'AllowUnboundedArrays', AllowUnboundedArrays);
+   AllowDuplicatedLibs             := GetNodeTextBool(ATag, 'AllowDuplicatedLibs', AllowDuplicatedLibs);
+   AllowTransExternVarConst        := GetNodeTextBool(ATag, 'AllowTransExternVarConst', AllowTransExternVarConst);
+   AllowTransExternFunction        := GetNodeTextBool(ATag, 'AllowTransExternFunction', AllowTransExternFunction);
+   AllowTransExternDataType        := GetNodeTextBool(ATag, 'AllowTransExternDataType', AllowTransExternDataType);
+   CodeIncludeExternVarConst       := GetNodeTextBool(ATag, 'CodeIncludeExternVarConst', CodeIncludeExternVarConst);
+   CodeIncludeExternDataType       := GetNodeTextBool(ATag, 'CodeIncludeExternDataType', CodeIncludeExternDataType);
+   CodeIncludeExternFunction       := GetNodeTextBool(ATag, 'CodeIncludeExternFunction', CodeIncludeExternFunction);
 
    tag := TXMLProcessor.FindChildTag(ATag, 'NativeDataTypes');
    if tag <> nil then
@@ -615,7 +612,7 @@ begin
             if lOrigType = nil then
                lOrigType := lType;
             lType.OrigType := lOrigType;
-            lType.IsGeneric := TXMLProcessor.GetBoolFromAttr(tag, 'generic');
+            lType.IsGeneric := GetNodeAttrBool(tag, 'generic', false);
             lType.Lib := tag.GetAttribute('library');
          end;
          tag := TXMLProcessor.FindNextTag(tag);
@@ -628,12 +625,7 @@ begin
    begin
       KeyWords.Sorted := false;
       KeyWords.CaseSensitive := CaseSensitiveSyntax;
-      tag := TXMLProcessor.FindChildTag(tag, 'KeyWord');
-      while tag <> nil do
-      begin
-         KeyWords.Add(tag.Text);
-         tag := TXMLProcessor.FindNextTag(tag);
-      end;
+      GetNodesText(tag, 'KeyWord', KeyWords);
       KeyWords.Sort;
    end;
    tag := TXMLProcessor.FindChildTag(ATag, 'NativeFunctions');
@@ -652,7 +644,7 @@ begin
             begin
                Name := val;
                Brackets := tag.GetAttribute('brackets');
-               BracketsCursorPos := TXMLProcessor.GetIntFromAttr(tag, 'bracketsCursorPos');
+               BracketsCursorPos := GetNodeAttrInt(tag, 'bracketsCursorPos', 0);
                Caption := tag.GetAttribute('caption').Trim;
                Hint := tag.GetAttribute('hint').Trim;
                Lib := tag.GetAttribute('library').Trim;
@@ -680,9 +672,9 @@ begin
             tag1 := TXMLProcessor.FindChildTag(tag, 'Close');
             if tag1 <> nil then
                Close := tag1.GetAttribute('Keyword');
-            AddClose := TXMLProcessor.GetBoolFromAttr(tag, 'AddClose');
-            NoSubFolds := TXMLProcessor.GetBoolFromAttr(tag, 'NoSubFolds', true);
-            WholeWords := TXMLProcessor.GetBoolFromAttr(tag, 'WholeWords', true);
+            AddClose := GetNodeAttrBool(tag, 'AddClose', false);
+            NoSubFolds := GetNodeAttrBool(tag, 'NoSubFolds', true);
+            WholeWords := GetNodeAttrBool(tag, 'WholeWords', true);
             if tag.GetAttribute('Type') = 'rtChar' then
                RegionType := rtChar
             else
@@ -789,7 +781,7 @@ end;
 procedure TLangDefinition.ImportBlockTemplates(ATag: IXMLElement);
 begin
    for var blockType := Low(TBlockType) to High(TBlockType) do
-      BlockTemplates[blockType] := TXMLProcessor.GetTextFromChild(ATag, BLOCK_TO_TEMPLATE_TAG_MAP[blockType]);
+      BlockTemplates[blockType] := GetNodeTextStr(ATag, BLOCK_TO_TEMPLATE_TAG_MAP[blockType], '');
 end;
 
 end.

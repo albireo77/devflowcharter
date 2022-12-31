@@ -146,7 +146,7 @@ implementation
 
 uses
    Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, Infrastructure, Constants,
-   Main_Form, XMLProcessor, LangDefinition, Navigator_Form, BlockTabSheet, Types;
+   Main_Form, XMLProcessor, LangDefinition, Navigator_Form, BlockTabSheet, Types, OmniXMLUtils;
 
 var
    ByTopParameterComparer: IComparer<TParameter>;
@@ -895,11 +895,7 @@ begin
    inherited ExportToXMLTag(tag2);
    tag2.SetAttribute(TYPE_ATTR, IfThen(cbType.ItemIndex = 0, 'none', cbType.Text));
    if memDesc.Text <> '' then
-   begin
-      var tag3 := ATag.OwnerDocument.CreateElement('desc');
-      TXMLProcessor.AddCDATA(tag3, ReplaceStr(memDesc.Text, sLineBreak, LB_PHOLDER));
-      tag2.AppendChild(tag3);
-   end;
+      SetNodeCData(tag2, 'desc', ReplaceStr(memDesc.Text, sLineBreak, LB_PHOLDER));
    tag2.SetAttribute('show_body', chkBodyVisible.Checked.ToString);
    tag2.SetAttribute('desc_incl', chkInclDescCode.Checked.ToString);
    tag2.SetAttribute('desc_incl_flow', chkInclDescFlow.Checked.ToString);
@@ -929,27 +925,27 @@ begin
    var tag2 := TXMLProcessor.FindChildTag(ATag, 'desc');
    if tag2 <> nil then
       memDesc.Text := ReplaceStr(tag2.Text, LB_PHOLDER, sLineBreak);
-   chkBodyVisible.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'show_body');
-   chkInclDescCode.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'desc_incl');
-   chkInclDescFlow.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'desc_incl_flow');
-   chkArrayType.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'arrayType');
-   chkConstructor.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'constructor');
+   chkBodyVisible.Checked := GetNodeAttrBool(ATag, 'show_body', false);
+   chkInclDescCode.Checked := GetNodeAttrBool(ATag, 'desc_incl', false);
+   chkInclDescFlow.Checked := GetNodeAttrBool(ATag, 'desc_incl_flow', false);
+   chkArrayType.Checked := GetNodeAttrBool(ATag, 'arrayType', false);
+   chkConstructor.Checked := GetNodeAttrBool(ATag, 'constructor', false);
    if chkStatic.Visible then
-      chkStatic.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'static');
+      chkStatic.Checked := GetNodeAttrBool(ATag, 'static', false);
    FLocalVars.ImportFromXMLTag(ATag, impAll);
-   i := TXMLProcessor.GetIntFromAttr(ATag, 'descrh');
+   i := GetNodeAttrInt(ATag, 'descrh', 0);
    if i > 0 then
       gbDesc.Height := i;
-   i := TXMLProcessor.GetIntFromAttr(ATag, 'headerh');
+   i := GetNodeAttrInt(ATag, 'headerh', 0);
    if i > 0 then
       gbHeader.Height := i;
-   i := TXMLProcessor.GetIntFromAttr(ATag, 'parmsh');
+   i := GetNodeAttrInt(ATag, 'parmsh', 0);
    if i > 0 then
    begin
       gbParams.Height := i;
       sbxElements.Constraints.MaxHeight := gbParams.Height - 66;
    end;
-   i := TXMLProcessor.GetIntFromAttr(ATag, 'lvarsh');
+   i := GetNodeAttrInt(ATag, 'lvarsh', 0);
    if i > 0 then
       FLocalVars.Height := i;
 end;
@@ -969,8 +965,8 @@ end;
 procedure TParameter.ImportFromXMLTag(ATag: IXMLElement);
 begin
    inherited ImportFromXMLTag(ATag);
-   chkTable.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'table');
-   chkReference.Checked := TXMLProcessor.GetBoolFromAttr(ATag, 'reference');
+   chkTable.Checked := GetNodeAttrBool(ATag, 'table', false);
+   chkReference.Checked := GetNodeAttrBool(ATag, 'reference', false);
    edtDefault.Text := ATag.GetAttribute('default');
 end;
 

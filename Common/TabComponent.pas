@@ -100,7 +100,7 @@ implementation
 
 uses
    System.SysUtils, Generics.Collections, System.Rtti, Infrastructure, XMLProcessor,
-   BaseEnumerator, Constants;
+   OmniXMLUtils, BaseEnumerator, Constants;
 
 var
    ByTopElementComparer: IComparer<TElement>;
@@ -474,7 +474,7 @@ begin
       elem.ImportFromXMLTag(tag);
       tag := TXMLProcessor.FindNextTag(tag);
    end;
-   FId := GProject.Register(Self, TXMLProcessor.GetIntFromAttr(ATag, ID_ATTR, ID_INVALID));
+   FId := GProject.Register(Self, GetNodeAttrInt(ATag, ID_ATTR, ID_INVALID));
 end;
 
 function TTabComponent.GetFocusColor: TColor;

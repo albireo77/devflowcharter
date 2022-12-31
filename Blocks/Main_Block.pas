@@ -78,8 +78,9 @@ const
 implementation
 
 uses
-   Vcl.Forms, System.SysUtils, System.StrUtils, Infrastructure, XMLProcessor, DeclareList,
-   Navigator_Form, Return_Block, LangDefinition, UserFunction, Comment, Constants;
+   Vcl.Forms, System.SysUtils, System.StrUtils, Infrastructure, XMLProcessor, OmniXMLUtils,
+   DeclareList, Navigator_Form, Return_Block, LangDefinition, UserFunction, Comment,
+   Constants;
 
 constructor TMainBlock.Create(APage: TBlockTabSheet; const ABlockParms: TBlockParms);
 begin
@@ -535,7 +536,7 @@ function TMainBlock.GetFromXML(ATag: IXMLElement): TError;
 begin
    result := inherited GetFromXML(ATag);
    if ATag <> nil then
-      FZOrder := TXMLProcessor.GetIntFromAttr(ATag, Z_ORDER_ATTR, -1);
+      FZOrder := GetNodeAttrInt(ATag, Z_ORDER_ATTR, -1);
 end;
 
 function TMainBlock.IsBoldDesc: boolean;

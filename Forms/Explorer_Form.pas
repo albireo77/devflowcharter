@@ -82,7 +82,7 @@ implementation
 
 uses
    Vcl.Graphics, Vcl.Forms, System.SysUtils, System.Math, Infrastructure, Base_Block,
-   XMLProcessor, Constants;
+   Constants, OmniXMLUtils;
 
 procedure TExplorerForm.FormShow(Sender: TObject);
 begin
@@ -329,17 +329,17 @@ end;
 
 procedure TExplorerForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
 begin
-   if TXMLProcessor.GetBoolFromAttr(ATag, 'tree_win_show') and GInfra.CurrentLang.EnabledExplorer then
+   if GetNodeAttrBool(ATag, 'tree_win_show', false) and GInfra.CurrentLang.EnabledExplorer then
    begin
       Position := poDesigned;
-      SetBounds(TXMLProcessor.GetIntFromAttr(ATag, 'tree_win_x', 50),
-                TXMLProcessor.GetIntFromAttr(ATag, 'tree_win_y', 50),
-                TXMLProcessor.GetIntFromAttr(ATag, 'tree_win_w', 498),
-                TXMLProcessor.GetIntFromAttr(ATag, 'tree_win_h', 574));
-      if TXMLProcessor.GetBoolFromAttr(ATag, 'tree_win_min') then
+      SetBounds(GetNodeAttrInt(ATag, 'tree_win_x', 50),
+                GetNodeAttrInt(ATag, 'tree_win_y', 50),
+                GetNodeAttrInt(ATag, 'tree_win_w', 498),
+                GetNodeAttrInt(ATag, 'tree_win_h', 574));
+      if GetNodeAttrBool(ATag, 'tree_win_min', false) then
          WindowState := wsMinimized;
       Show;
-      var topY := TXMLProcessor.GetIntFromAttr(ATag, 'tree_top_y', -2);
+      var topY := GetNodeAttrInt(ATag, 'tree_top_y', -2);
       if (topY >= 0) and (topY < tvExplorer.Items.Count) then
          tvExplorer.TopItem := tvExplorer.Items[topY];
    end;

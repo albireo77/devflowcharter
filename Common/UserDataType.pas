@@ -78,7 +78,7 @@ implementation
 
 uses
    Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, System.Rtti,
-   Generics.Defaults, Infrastructure, LangDefinition, ParserHelper, XMLProcessor, Constants;
+   Generics.Defaults, Infrastructure, LangDefinition, ParserHelper, OmniXMLUtils, Constants;
 
 var
    ByTopFieldComparer: IComparer<TField>;
@@ -347,7 +347,7 @@ procedure TUserDataType.ImportFromXMLTag(ATag: IXMLElement; APinControl: TContro
 begin
    inherited ImportFromXMLTag(ATag, APinControl);
    if chkAddPtrType.Enabled then
-      chkAddPtrType.Checked := TXMLProcessor.GetBoolFromAttr(ATag, POINTER_ATTR);
+      chkAddPtrType.Checked := GetNodeAttrBool(ATag, POINTER_ATTR, false);
    rgTypeBox.ItemIndex := Ord(TRttiEnumerationType.GetValue<TUserDataTypeKind>(ATag.GetAttribute(KIND_ATTR)));
 end;
 
