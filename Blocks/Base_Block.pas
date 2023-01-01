@@ -1995,49 +1995,33 @@ begin
 end;
 
 procedure TGroupBlock.SaveInXML(ATag: IXMLElement);
-var
-   brx, fw, fh, i: integer;
-   txt: string;
-   tag1, tag2: IXMLElement;
-   br: TBranch;
-   unPin: boolean;
-   comment: TComment;
-   block: TBlock;
 begin
    SaveInXML2(ATag);
    if ATag <> nil then
    begin
-      unPin := false;
+      var unPin := false;
       if Expanded then
-      begin
-         fw := FFoldParms.Width;
-         fh := FFoldParms.Height;
-         brx := Branch.Hook.X;
-         unPin := PinComments > 0;
-      end
+         unPin := PinComments > 0
       else
       begin
-         fw := Width;
-         fh := Height;
-         brx := FFoldParms.BranchPoint.X;
-         ATag.SetAttribute('h', FFoldParms.Height.ToString);
-         ATag.SetAttribute('w', FFoldParms.Width.ToString);
-         ATag.SetAttribute('bh', FFoldParms.BottomHook.ToString);
+         SetNodeAttrInt(ATag, 'h', FFoldParms.Height);
+         SetNodeAttrInt(ATag, 'w', FFoldParms.Width);
+         SetNodeAttrInt(ATag, 'bh', FFoldParms.BottomHook);
       end;
 
       try
-         ATag.SetAttribute('brx', brx.ToString);
-         ATag.SetAttribute('bry', Branch.Hook.Y.ToString);
-         ATag.SetAttribute('fw', fw.ToString);
-         ATag.SetAttribute('fh', fh.ToString);
-         ATag.SetAttribute(FOLDED_ATTR, (not Expanded).ToString);
+         SetNodeAttrInt(ATag, 'bry', Branch.Hook.Y);
+         SetNodeAttrInt(ATag, 'brx', IfThen(Expanded, Branch.Hook.X, FFoldParms.BranchPoint.X));
+         SetNodeAttrInt(ATag, 'fw', IfThen(Expanded, FFoldParms.Width, Width));
+         SetNodeAttrInt(ATag, 'fh', IfThen(Expanded, FFoldParms.Height, Height));
+         SetNodeAttrBool(ATag, FOLDED_ATTR, not Expanded);
 
-         txt := GetFoldedText;
+         var txt := GetFoldedText;
          if not txt.IsEmpty then
             SetNodeCData(ATag, FOLD_TEXT_TAG, txt);
 
          var commentNodes := ATag.OwnerDocument.GetElementsByTagName(COMMENT_TAG);
-         for comment in GetPinComments do
+         for var comment in GetPinComments do
          begin
             var commentNode := commentNodes.NextNode;
             while commentNode <> nil do
@@ -2054,23 +2038,20 @@ begin
             commentNodes.Reset;
          end;
 
-         for i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
+         for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
          begin
-            br := FBranchList[i];
-
-            tag2 := ATag.OwnerDocument.CreateElement(BRANCH_TAG);
-            ATag.AppendChild(tag2);
-
-            tag2.SetAttribute(ID_ATTR, br.Id.ToString);
+            var br := FBranchList[i];
+            var node := AppendNode(ATag, BRANCH_TAG);
+            SetNodeAttrInt(node, ID_ATTR, br.Id);
 
             if br.Statement <> nil then
-               tag2.SetAttribute(BRANCH_STMNT_ATTR, br.Statement.Id.ToString);
+               SetNodeAttrInt(node, BRANCH_STMNT_ATTR, br.Statement.Id);
 
-            SetNodeText(tag2, 'x', br.hook.X.ToString);
-            SetNodeText(tag2, 'y', br.hook.Y.ToString);
+            SetNodeText(node, 'x', br.hook.X.ToString);
+            SetNodeText(node, 'y', br.hook.Y.ToString);
 
-            for block in br do
-                TXMLProcessor.ExportBlockToXML(block, tag2);
+            for var block in br do
+                TXMLProcessor.ExportBlockToXML(block, IXMLElement(node));
          end;
       finally
          if unPin then

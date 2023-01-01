@@ -43,10 +43,10 @@ type
                                        AImportMode: TImportMode;
                                        const AFileName: string = '';
                                        APreserveSpace: boolean = false): string;
-      class function FindChildTag(ATag: IXMLElement; const AName: string): IXMLElement;
-      class function FindNextTag(ATag: IXMLElement): IXMLElement;
+      class function FindChildTag(ANode: IXMLNode; const AName: string): IXMLElement;
+      class function FindNextTag(ANode: IXMLNode): IXMLElement;
       class procedure ExportBlockToXML(ABlock: TBlock; ATag: IXMLElement);
-      class function CountChildTags(ATag: IXMLElement; const AChildTagName: string; AWithText: boolean = false): integer;
+      class function CountNodesWithText(ANodes: IXMLNodeList): integer;
       class function ImportFlowchartFromXMLTag(ATag: IXMLElement;
                                                AParent: TWinControl;
                                                APrevBlock: TBlock;
@@ -62,18 +62,18 @@ implementation
 uses
    System.SysUtils, Infrastructure, BlockFactory, BlockTabSheet, Constants;
 
-class function TXMLProcessor.FindChildTag(ATag: IXMLElement; const AName: string): IXMLElement;
+class function TXMLProcessor.FindChildTag(ANode: IXMLNode; const AName: string): IXMLElement;
 begin
    result := nil;
-   if ATag <> nil then
-      result := FindTag(ATag.FirstChild, AName);
+   if ANode <> nil then
+      result := FindTag(ANode.FirstChild, AName);
 end;
 
-class function TXMLProcessor.FindNextTag(ATag: IXMLElement): IXMLElement;
+class function TXMLProcessor.FindNextTag(ANode: IXMLNode): IXMLElement;
 begin
    result := nil;
-   if ATag <> nil then
-      result := FindTag(ATag.NextSibling, ATag.NodeName);
+   if ANode <> nil then
+      result := FindTag(ANode.NextSibling, ANode.NodeName);
 end;
 
 class function TXMLProcessor.FindTag(ANode: IXMLNode; const ANodeName: string): IXMLElement;
@@ -90,16 +90,18 @@ begin
    end;
 end;
 
-class function TXMLProcessor.CountChildTags(ATag: IXMLElement; const AChildTagName: string; AWithText: boolean = false): integer;
+class function TXMLProcessor.CountNodesWithText(ANodes: IXMLNodeList): integer;
 begin
    result := 0;
-   var tag := FindChildTag(ATag, AChildTagName);
-   while tag <> nil do
+   ANodes.Reset;
+   var node := ANodes.NextNode;
+   while node <> nil do
    begin
-      if not (AWithText and tag.Text.Trim.IsEmpty) then
-         result := result + 1;
-      tag := FindNextTag(tag);
+      if not node.Text.Trim.IsEmpty then
+         Inc(result);
+      node := ANodes.NextNode;
    end;
+   ANodes.Reset;
 end;
 
 class procedure TXMLProcessor.ExportBlockToXML(ABlock: TBlock; ATag: IXMLElement);

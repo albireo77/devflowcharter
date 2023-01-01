@@ -318,7 +318,7 @@ var
    val, lName, kinds: string;
    lKind: TDataTypeKind;
    lOrigType, lType: PNativeDataType;
-   i, a, count: integer;
+   i, a: integer;
    threeStrings: T3Strings;
 begin
    result := errNone;
@@ -564,16 +564,17 @@ begin
    if tag <> nil then
    begin
       a := 0;
-      count := TXMLProcessor.CountChildTags(tag, 'DataType', true);
+      var datatypeNodes := FilterNodes(tag, 'DataType');
+      var count := TXMLProcessor.CountNodesWithText(datatypeNodes);
       SetLength(NativeDataTypes, count);
-      tag := TXMLProcessor.FindChildTag(tag, 'DataType');
-      while tag <> nil do
+      var node := datatypeNodes.NextNode;
+      while node <> nil do
       begin
          lOrigType := nil;
-         lName := tag.Text.Trim;
+         lName := node.Text.Trim;
          if not lName.IsEmpty then
          begin
-            kinds := tag.GetAttribute('kind');
+            kinds := GetNodeAttrStr(node, 'kind', '');
             if kinds = 'int' then
                lKind := tpInt
             else if kinds = 'real' then
@@ -587,7 +588,7 @@ begin
                if EnabledPointers then
                begin
                   lKind := tpPtr;
-                  val := tag.GetAttribute('origtype').Trim;
+                  val := GetNodeAttrStr(node, 'origtype', '').Trim;
                   for i := 0 to a-1 do
                   begin
                      if SameText(val, NativeDataTypes[i].Name) then
@@ -612,10 +613,10 @@ begin
             if lOrigType = nil then
                lOrigType := lType;
             lType.OrigType := lOrigType;
-            lType.IsGeneric := GetNodeAttrBool(tag, 'generic', false);
-            lType.Lib := tag.GetAttribute('library');
+            lType.IsGeneric := GetNodeAttrBool(node, 'generic', false);
+            lType.Lib := GetNodeAttrStr(node, 'library', '');
          end;
-         tag := TXMLProcessor.FindNextTag(tag);
+         node := datatypeNodes.NextNode;
       end;
       if a < count then
          SetLength(NativeDataTypes, a);
@@ -631,27 +632,27 @@ begin
    tag := TXMLProcessor.FindChildTag(ATag, 'NativeFunctions');
    if tag <> nil then
    begin
-      count := TXMLProcessor.CountChildTags(tag, 'Function', true);
-      SetLength(NativeFunctions, count);
-      tag := TXMLProcessor.FindChildTag(tag, 'Function');
+      var functionNodes := FilterNodes(tag, 'Function');
+      SetLength(NativeFunctions, TXMLProcessor.CountNodesWithText(functionNodes));
+      var node := functionNodes.NextNode;
       i := 0;
-      while tag <> nil do
+      while node <> nil do
       begin
-         val := tag.Text.Trim;
+         val := node.Text.Trim;
          if not val.IsEmpty then
          begin
             with NativeFunctions[i] do
             begin
                Name := val;
-               Brackets := tag.GetAttribute('brackets');
-               BracketsCursorPos := GetNodeAttrInt(tag, 'bracketsCursorPos', 0);
-               Caption := tag.GetAttribute('caption').Trim;
-               Hint := tag.GetAttribute('hint').Trim;
-               Lib := tag.GetAttribute('library').Trim;
+               Brackets := GetNodeAttrStr(node, 'brackets', '');
+               BracketsCursorPos := GetNodeAttrInt(node, 'bracketsCursorPos', 0);
+               Caption := GetNodeAttrStr(node, 'caption', '').Trim;
+               Hint := GetNodeAttrStr(node, 'hint', '').Trim;
+               Lib := GetNodeAttrStr(node, 'library', '').Trim;
             end;
             Inc(i);
          end;
-         tag := TXMLProcessor.FindNextTag(tag);
+         node := functionNodes.NextNode;
       end;
    end;
 {$IFDEF USE_CODEFOLDING}
@@ -659,28 +660,28 @@ begin
    if tag <> nil then
    begin
       i := 0;
-      count := TXMLProcessor.CountChildTags(tag, 'FoldRegion');
-      SetLength(FoldRegions, count);
-      tag := TXMLProcessor.FindChildTag(tag, 'FoldRegion');
-      while (tag <> nil) and (i < count) do
+      var foldRegionNodes := FilterNodes(tag, 'FoldRegion');
+      SetLength(FoldRegions, foldRegionNodes.Length);
+      var node := foldRegionNodes.NextNode;
+      while node <> nil do
       begin
          with FoldRegions[i] do
          begin
-            var tag1 := TXMLProcessor.FindChildTag(tag, 'Open');
+            var tag1 := TXMLProcessor.FindChildTag(node, 'Open');
             if tag1 <> nil then
                Open := tag1.GetAttribute('Keyword');
-            tag1 := TXMLProcessor.FindChildTag(tag, 'Close');
+            tag1 := TXMLProcessor.FindChildTag(node, 'Close');
             if tag1 <> nil then
                Close := tag1.GetAttribute('Keyword');
-            AddClose := GetNodeAttrBool(tag, 'AddClose', false);
-            NoSubFolds := GetNodeAttrBool(tag, 'NoSubFolds', true);
-            WholeWords := GetNodeAttrBool(tag, 'WholeWords', true);
-            if tag.GetAttribute('Type') = 'rtChar' then
+            AddClose := GetNodeAttrBool(node, 'AddClose', false);
+            NoSubFolds := GetNodeAttrBool(node, 'NoSubFolds', true);
+            WholeWords := GetNodeAttrBool(node, 'WholeWords', true);
+            if GetNodeAttrStr(node, 'Type', '') = 'rtChar' then
                RegionType := rtChar
             else
                RegionType := rtKeyword;
          end;
-         tag := TXMLProcessor.FindNextTag(tag);
+         node := foldRegionNodes.NextNode;
          Inc(i);
       end;
    end;
