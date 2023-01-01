@@ -1312,28 +1312,28 @@ procedure TEditorForm.ExportSettingsToXMLTag(ATag: IXMLElement);
 begin
    if Visible then
    begin
-      ATag.SetAttribute('src_win_show', 'true');
-      ATag.SetAttribute('src_win_x', Left.ToString);
-      ATag.SetAttribute('src_win_y', Top.ToString);
-      ATag.SetAttribute('src_win_w', Width.ToString);
-      ATag.SetAttribute('src_win_h', Height.ToString);
-      ATag.SetAttribute('src_win_sel_start', memCodeEditor.SelStart.ToString);
+      SetNodeAttrBool(ATag, 'src_win_show', True);
+      SetNodeAttrInt(ATag, 'src_win_x', Left);
+      SetNodeAttrInt(ATag, 'src_win_y', Top);
+      SetNodeAttrInt(ATag, 'src_win_w', Width);
+      SetNodeAttrInt(ATag, 'src_win_h', Height);
+      SetNodeAttrInt(ATag, 'src_win_sel_start', memCodeEditor.SelStart);
       if memCodeEditor.SelAvail then
-         ATag.SetAttribute('src_win_sel_length', memCodeEditor.SelLength.ToString);
+         SetNodeAttrInt(ATag, 'src_win_sel_length', memCodeEditor.SelLength);
       if memCodeEditor.Marks.Count > 0 then
       begin
          for var i := 0 to memCodeEditor.Marks.Count-1 do
          begin
-            var tag2 := ATag.OwnerDocument.CreateElement('src_win_mark');
-            tag2.SetAttribute('line', memCodeEditor.Marks[i].Line.ToString);
-            tag2.SetAttribute('index', memCodeEditor.Marks[i].ImageIndex.ToString);
-            ATag.AppendChild(tag2);
+            var mark := memCodeEditor.Marks[i];
+            var node := AppendNode(ATag, 'src_win_mark');
+            SetNodeAttrInt(node, 'line', mark.Line);
+            SetNodeAttrInt(node, 'index', mark.ImageIndex);
          end;
       end;
       if memCodeEditor.TopLine > 1 then
-         ATag.SetAttribute('src_top_line', memCodeEditor.TopLine.ToString);
+         SetNodeAttrInt(ATag, 'src_top_line', memCodeEditor.TopLine);
       if WindowState = wsMinimized then
-         ATag.SetAttribute('src_win_min', 'true');
+         SetNodeAttrBool(ATag, 'src_win_min', True);
 {$IFDEF USE_CODEFOLDING}
       if memCodeEditor.CodeFolding.Enabled then
       begin
@@ -1358,7 +1358,7 @@ begin
             var withId: IWithId := nil;
             SetCDataChild(node, lines[i]);
             if TInfra.IsValidControl(lines.Objects[i]) and Supports(lines.Objects[i], IWithId, withId) then
-               IXMLElement(node).SetAttribute(ID_ATTR, withId.Id.ToString);
+               SetNodeAttrInt(node, ID_ATTR, withId.Id);
          end;
       finally
          lines.Free;

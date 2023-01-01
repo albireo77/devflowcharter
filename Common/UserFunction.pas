@@ -299,11 +299,7 @@ begin
    if FHeader <> nil then
       FHeader.ExportToXMLTag(ATag)
    else if FBody <> nil then
-   begin
-      var tag := ATag.OwnerDocument.CreateElement(FUNCTION_TAG);
-      ATag.AppendChild(tag);
-      FBody.ExportToXMLTag(tag);
-   end;
+      FBody.ExportToXMLTag(IXMLElement(AppendNode(ATag, FUNCTION_TAG)));
 end;
 
 procedure TUserFunction.ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
@@ -888,28 +884,26 @@ end;
 
 procedure TUserFunctionHeader.ExportToXMLTag(ATag: IXMLElement);
 begin
-   var tag := ATag.OwnerDocument.CreateElement(FUNCTION_TAG);
-   ATag.AppendChild(tag);
-   var tag2 := ATag.OwnerDocument.CreateElement(HEADER_TAG);
-   tag.AppendChild(tag2);
-   inherited ExportToXMLTag(tag2);
-   tag2.SetAttribute(TYPE_ATTR, IfThen(cbType.ItemIndex = 0, 'none', cbType.Text));
+   var functionNode := AppendNode(ATag, FUNCTION_TAG);
+   var headerNode := AppendNode(functionNode, HEADER_TAG);
+   inherited ExportToXMLTag(IXMLElement(headerNode));
+   SetNodeAttrStr(headerNode, TYPE_ATTR, IfThen(cbType.ItemIndex = 0, 'none', cbType.Text));
    if memDesc.Text <> '' then
-      SetNodeCData(tag2, 'desc', ReplaceStr(memDesc.Text, sLineBreak, LB_PHOLDER));
-   tag2.SetAttribute('show_body', chkBodyVisible.Checked.ToString);
-   tag2.SetAttribute('desc_incl', chkInclDescCode.Checked.ToString);
-   tag2.SetAttribute('desc_incl_flow', chkInclDescFlow.Checked.ToString);
-   FLocalVars.ExportToXMLTag(tag2);
-   tag2.SetAttribute('descrh', gbDesc.Height.ToString);
-   tag2.SetAttribute('headerh', gbHeader.Height.ToString);
-   tag2.SetAttribute('parmsh', gbParams.Height.ToString);
-   tag2.SetAttribute('lvarsh', FLocalVars.Height.ToString);
-   tag2.SetAttribute('arrayType', chkArrayType.Checked.ToString);
-   tag2.SetAttribute('constructor', chkConstructor.Checked.ToString);
+      SetNodeCData(headerNode, 'desc', ReplaceStr(memDesc.Text, sLineBreak, LB_PHOLDER));
+   SetNodeAttrBool(headerNode, 'show_body', chkBodyVisible.Checked);
+   SetNodeAttrBool(headerNode, 'desc_incl', chkInclDescCode.Checked);
+   SetNodeAttrBool(headerNode, 'desc_incl_flow', chkInclDescFlow.Checked);
+   FLocalVars.ExportToXMLTag(IXMLElement(headerNode));
+   SetNodeAttrInt(headerNode, 'descrh', gbDesc.Height);
+   SetNodeAttrInt(headerNode, 'headerh', gbHeader.Height);
+   SetNodeAttrInt(headerNode, 'parmsh', gbParams.Height);
+   SetNodeAttrInt(headerNode, 'lvarsh', FLocalVars.Height);
+   SetNodeAttrBool(headerNode, 'arrayType', chkArrayType.Checked);
+   SetNodeAttrBool(headerNode, 'constructor', chkConstructor.Checked);
    if chkStatic.Visible then
-      tag2.SetAttribute('static', chkStatic.Checked.ToString);
+      SetNodeAttrBool(headerNode, 'static', chkStatic.Checked);
    if (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
-      FUserFunction.Body.ExportToXMLTag(tag);
+      FUserFunction.Body.ExportToXMLTag(IXMLElement(functionNode));
 end;
 
 procedure TUserFunctionHeader.ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
@@ -967,16 +961,16 @@ begin
    inherited ImportFromXMLTag(ATag);
    chkTable.Checked := GetNodeAttrBool(ATag, 'table', false);
    chkReference.Checked := GetNodeAttrBool(ATag, 'reference', false);
-   edtDefault.Text := ATag.GetAttribute('default');
+   edtDefault.Text := GetNodeAttrStr(ATag, 'default', '');
 end;
 
 function TParameter.ExportToXMLTag(ATag: IXMLElement): IXMLElement;
 begin
    var tag := inherited ExportToXMLTag(ATag);
-   tag.SetAttribute('table', chkTable.Checked.ToString);
-   tag.SetAttribute('reference', chkReference.Checked.ToString);
+   SetNodeAttrBool(tag, 'table', chkTable.Checked);
+   SetNodeAttrBool(tag, 'reference', chkReference.Checked);
    if edtDefault.Text <> '' then
-      tag.SetAttribute('default', edtDefault.Text);
+      SetNodeAttrStr(tag, 'default', edtDefault.Text);
 end;
 
 function TUserFunction.GetCompareValue(ACompareType: integer): integer;

@@ -955,7 +955,7 @@ begin
       for var i := 0 to sgList.ColCount-1 do
          AppendNode(ATag, FKind + 'colwidth').Text := sgList.ColWidths[i].ToString;
    end;
-   SetNodeText(ATag, FKind + 'width', Width.ToString);
+   SetNodeTextInt(ATag, FKind + 'width', Width);
 end;
 
 procedure TDeclareList.ExportItemToXMLTag(ATag: IXMLElement; idx: integer);
@@ -976,10 +976,9 @@ end;
 
 procedure TConstDeclareList.ExportItemToXMLTag(ATag: IXMLElement; idx: integer);
 begin
-   var tag := ATag.OwnerDocument.CreateElement(CONST_TAG);
-   ATag.AppendChild(tag);
-   tag.SetAttribute(VALUE_ATTR, sgList.Cells[CONST_VALUE_COL, idx]);
-   inherited ExportItemToXMLTag(tag, idx);
+   var node := AppendNode(ATag, CONST_TAG);
+   SetNodeAttrStr(node, VALUE_ATTR, sgList.Cells[CONST_VALUE_COL, idx]);
+   inherited ExportItemToXMLTag(IXMLElement(node), idx);
 end;
 
 function TVarDeclareList.IsGlobal: boolean;

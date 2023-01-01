@@ -2047,8 +2047,8 @@ begin
             if br.Statement <> nil then
                SetNodeAttrInt(node, BRANCH_STMNT_ATTR, br.Statement.Id);
 
-            SetNodeText(node, 'x', br.hook.X.ToString);
-            SetNodeText(node, 'y', br.hook.Y.ToString);
+            SetNodeTextInt(node, 'x', br.hook.X);
+            SetNodeTextInt(node, 'y', br.hook.Y);
 
             for var block in br do
                 TXMLProcessor.ExportBlockToXML(block, IXMLElement(node));
