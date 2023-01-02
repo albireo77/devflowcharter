@@ -33,8 +33,8 @@ type
       procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     public
       procedure Localize(AList: TStringList); virtual;
-      procedure ImportSettingsFromXMLTag(ATag: IXMLElement); virtual;
-      procedure ExportSettingsToXMLTag(ATag: IXMLElement); virtual;
+      procedure ImportFromXML(ANode: IXMLNode); virtual;
+      procedure ExportToXML(ANode: IXMLNode); virtual;
       procedure ResetForm; virtual;
       procedure Show;
       function RetrieveFocus(AInfo: TFocusInfo): boolean;
@@ -57,12 +57,12 @@ begin
    Caption := AList.Values['FormCaption'];
 end;
 
-procedure TBaseForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
+procedure TBaseForm.ImportFromXML(ANode: IXMLNode);
 begin
 {}
 end;
 
-procedure TBaseForm.ExportSettingsToXMLTag(ATag: IXMLElement);
+procedure TBaseForm.ExportToXML(ANode: IXMLNode);
 begin
 {}
 end;

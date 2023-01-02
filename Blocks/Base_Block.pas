@@ -109,7 +109,7 @@ type
          function ProcessComments: boolean;
          function IsAncestor(AParent: TObject): boolean;
          function GetErrorMsg(AEdit: TCustomEdit): string;
-         procedure SaveInXML2(ATag: IXMLElement);
+         procedure SaveInXML2(ANode: IXMLNode);
          procedure ExitSizeMove;
          procedure SetBrushColor(AShape: TColorShape);
          function GetBlockParms: TBlockParms; virtual;
@@ -139,8 +139,8 @@ type
          procedure PerformRefreshStatements;
          procedure PopulateComboBoxes; virtual;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; virtual;
-         function GetFromXML(ATag: IXMLElement): TError; virtual;
-         procedure SaveInXML(ATag: IXMLElement); virtual;
+         function GetFromXML(ANode: IXMLNode): TError; virtual;
+         procedure SaveInXML(ANode: IXMLNode); virtual;
          function FillTemplate(const ALangId: string; const ATemplate: string = ''): string; virtual;
          function FillCodedTemplate(const ALangId: string): string; virtual;
          function GetDescTemplate(const ALangId: string): string; virtual;
@@ -149,8 +149,8 @@ type
          function IsMouseAtSelectPos: boolean;
          function IsCursorResize: boolean;
          function CanInsertReturnBlock: boolean; virtual;
-         procedure ExportToXMLTag(ATag: IXMLElement);
-         function ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TError;
+         procedure ExportToXML(ANode: IXMLNode);
+         function ImportFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
          procedure ExportToGraphic(AGraphic: TGraphic); virtual;
          procedure UpdateEditor(AEdit: TCustomEdit); virtual;
          function SkipUpdateEditor: boolean;
@@ -180,7 +180,7 @@ type
          function PinComments: integer;
          procedure UnPinComments; virtual;
          procedure CloneComments(ASource: TBlock);
-         procedure ImportCommentsFromXML(ATag: IXMLElement);
+         procedure ImportCommentsFromXML(ANode: IXMLNode);
          procedure CloneFrom(ABlock: TBlock); virtual;
          function GetExportFileName: string; virtual;
          function ExportToXMLFile(const AFile: string): TError; virtual;
@@ -236,8 +236,8 @@ type
          procedure PopulateComboBoxes; override;
          function GetMemoEx: TMemoEx; override;
          function CanInsertReturnBlock: boolean; override;
-         function GetFromXML(ATag: IXMLElement): TError; override;
-         procedure SaveInXML(ATag: IXMLElement); override;
+         function GetFromXML(ANode: IXMLNode): TError; override;
+         procedure SaveInXML(ANode: IXMLNode); override;
          procedure GenerateTemplateSection(ALines: TStringList; ATemplate: TStringList; const ALangId: string; ADeep: integer); override;
          function GetAllBlocks: IEnumerable<TBlock>;
          procedure ResizeWithDrawLock;
@@ -1884,7 +1884,7 @@ end;
 
 function TBlock.ExportToXMLFile(const AFile: string): TError;
 begin
-   result := TXMLProcessor.ExportToXMLFile(ExportToXMLTag, AFile);
+   result := TXMLProcessor.ExportToXMLFile(ExportToXML, AFile);
 end;
 
 procedure TGroupBlock.SetVisible(AVisible: boolean; ASetComments: boolean = true);
@@ -1994,54 +1994,54 @@ begin
    UnPinComments;
 end;
 
-procedure TGroupBlock.SaveInXML(ATag: IXMLElement);
+procedure TGroupBlock.SaveInXML(ANode: IXMLNode);
 begin
-   SaveInXML2(ATag);
-   if ATag <> nil then
+   SaveInXML2(ANode);
+   if ANode <> nil then
    begin
       var unPin := false;
       if Expanded then
          unPin := PinComments > 0
       else
       begin
-         SetNodeAttrInt(ATag, 'h', FFoldParms.Height);
-         SetNodeAttrInt(ATag, 'w', FFoldParms.Width);
-         SetNodeAttrInt(ATag, 'bh', FFoldParms.BottomHook);
+         SetNodeAttrInt(ANode, 'h', FFoldParms.Height);
+         SetNodeAttrInt(ANode, 'w', FFoldParms.Width);
+         SetNodeAttrInt(ANode, 'bh', FFoldParms.BottomHook);
       end;
 
       try
-         SetNodeAttrInt(ATag, 'bry', Branch.Hook.Y);
-         SetNodeAttrInt(ATag, 'brx', IfThen(Expanded, Branch.Hook.X, FFoldParms.BranchPoint.X));
-         SetNodeAttrInt(ATag, 'fw', IfThen(Expanded, FFoldParms.Width, Width));
-         SetNodeAttrInt(ATag, 'fh', IfThen(Expanded, FFoldParms.Height, Height));
-         SetNodeAttrBool(ATag, FOLDED_ATTR, not Expanded);
+         SetNodeAttrInt(ANode, 'bry', Branch.Hook.Y);
+         SetNodeAttrInt(ANode, 'brx', IfThen(Expanded, Branch.Hook.X, FFoldParms.BranchPoint.X));
+         SetNodeAttrInt(ANode, 'fw', IfThen(Expanded, FFoldParms.Width, Width));
+         SetNodeAttrInt(ANode, 'fh', IfThen(Expanded, FFoldParms.Height, Height));
+         SetNodeAttrBool(ANode, FOLDED_ATTR, not Expanded);
 
          var txt := GetFoldedText;
          if not txt.IsEmpty then
-            SetNodeCData(ATag, FOLD_TEXT_TAG, txt);
+            SetNodeCData(ANode, FOLD_TEXT_TAG, txt);
 
-         var commentNodes := ATag.OwnerDocument.GetElementsByTagName(COMMENT_TAG);
+         var commentNodes := ANode.OwnerDocument.GetElementsByTagName(COMMENT_TAG);
          for var comment in GetPinComments do
          begin
             var commentNode := commentNodes.NextNode;
             while commentNode <> nil do
             begin
-               var zOrder := IXMLElement(commentNode).GetAttribute(Z_ORDER_ATTR);
-               var pageCaption := IXMLElement(commentNode).GetAttribute(PAGE_CAPTION_ATTR);
-               if (zOrder = comment.GetZOrder.ToString) and
+               var zOrder := GetNodeAttrInt(commentNode, Z_ORDER_ATTR, -149);
+               var pageCaption := GetNodeAttrStr(commentNode, PAGE_CAPTION_ATTR, '');
+               if (zOrder = comment.GetZOrder) and
                   ((pageCaption = comment.Page.Caption) or (pageCaption.IsEmpty and comment.Page.IsMain)) then
                   break;
                commentNode := commentNodes.NextNode;
             end;
             if commentNode = nil then
-               comment.ExportToXMLTag2(ATag);
+               comment.ExportToXML2(ANode);
             commentNodes.Reset;
          end;
 
          for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
          begin
             var br := FBranchList[i];
-            var node := AppendNode(ATag, BRANCH_TAG);
+            var node := AppendNode(ANode, BRANCH_TAG);
             SetNodeAttrInt(node, ID_ATTR, br.Id);
 
             if br.Statement <> nil then
@@ -2051,7 +2051,7 @@ begin
             SetNodeTextInt(node, 'y', br.hook.Y);
 
             for var block in br do
-                TXMLProcessor.ExportBlockToXML(block, IXMLElement(node));
+                TXMLProcessor.ExportBlockToXML(block, node);
          end;
       finally
          if unPin then
@@ -2076,153 +2076,153 @@ begin
       GProject.RepaintFlowcharts;
 end;
 
-procedure TBlock.SaveInXML(ATag: IXMLElement);
+procedure TBlock.SaveInXML(ANode: IXMLNode);
 begin
-   SaveInXML2(ATag);
-   if (ATag <> nil) and (PinComments > 0) then
+   SaveInXML2(ANode);
+   if (ANode <> nil) and (PinComments > 0) then
    begin
       for var comment in GetPinComments do
-         comment.ExportToXMLTag2(ATag);
+         comment.ExportToXML2(ANode);
       UnPinComments;
    end;
 end;
 
-procedure TBlock.SaveInXML2(ATag: IXMLElement);
+procedure TBlock.SaveInXML2(ANode: IXMLNode);
 begin
-   if ATag <> nil then
+   if ANode <> nil then
    begin
-      ATag.SetAttribute(BLOCK_TYPE_ATTR, TRttiEnumerationType.GetName(BType));
-      ATag.SetAttribute(FRAME_ATTR, FFrame.ToString);
-      ATag.SetAttribute('x', Left.ToString);
-      ATag.SetAttribute('y', Top.ToString);
-      ATag.SetAttribute('h', Height.ToString);
-      ATag.SetAttribute('w', Width.ToString);
-      ATag.SetAttribute('bh', BottomHook.ToString);
-      ATag.SetAttribute('brx', BottomPoint.X.ToString);
-      ATag.SetAttribute(ID_ATTR, FId.ToString);
+      SetNodeAttrStr(ANode, BLOCK_TYPE_ATTR, TRttiEnumerationType.GetName(BType));
+      SetNodeAttrBool(ANode, FRAME_ATTR, FFrame);
+      SetNodeAttrInt(ANode, 'x', Left);
+      SetNodeAttrInt(ANode, 'y', Top);
+      SetNodeAttrInt(ANode, 'h', Height);
+      SetNodeAttrInt(ANode, 'w', Width);
+      SetNodeAttrInt(ANode, 'bh', BottomHook);
+      SetNodeAttrInt(ANode, 'brx', BottomPoint.X);
+      SetNodeAttrInt(ANode, ID_ATTR, FId);
       var memo := GetMemoEx;
       if memo <> nil then
-         memo.SaveInXML(ATag);
-      ATag.SetAttribute(FONT_SIZE_ATTR, Font.Size.ToString);
-      ATag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style).ToString);
+         memo.SaveInXML(ANode);
+      SetNodeAttrInt(ANode, FONT_SIZE_ATTR, Font.Size);
+      SetNodeAttrInt(ANode, FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style));
       var txtControl := GetTextControl;
       if (txtControl <> nil) and (txtControl.Text <> '') then
-         SetNodeCData(ATag, TEXT_TAG, ReplaceStr(txtControl.Text, sLineBreak, LB_PHOLDER));
+         SetNodeCData(ANode, TEXT_TAG, ReplaceStr(txtControl.Text, sLineBreak, LB_PHOLDER));
    end;
 end;
 
-procedure TBlock.ImportCommentsFromXML(ATag: IXMLElement);
+procedure TBlock.ImportCommentsFromXML(ANode: IXMLNode);
 begin
    if ProcessComments then
    begin
-      var tag := TXMLProcessor.FindChildTag(ATag, COMMENT_TAG);
-      while tag <> nil do
+      var node := TXMLProcessor.FindChildTag(ANode, COMMENT_TAG);
+      while node <> nil do
       begin
          var comment := TComment.CreateDefault(Page);
-         comment.ImportFromXMLTag(tag, Self);
-         tag := TXMLProcessor.FindNextTag(tag);
+         comment.ImportFromXML(node, Self);
+         node := TXMLProcessor.FindNextTag(node);
       end;
       UnPinComments;
    end;
 end;
 
-function TBlock.GetFromXML(ATag: IXMLElement): TError;
+function TBlock.GetFromXML(ANode: IXMLNode): TError;
 begin
    result := errNone;
-   if ATag <> nil then
+   if ANode <> nil then
    begin
-      var tag := TXMLProcessor.FindChildTag(ATag, TEXT_TAG);
+      var node := TXMLProcessor.FindChildTag(ANode, TEXT_TAG);
       var textControl := GetTextControl;
-      if (tag <> nil) and (textControl <> nil) then
+      if (node <> nil) and (textControl <> nil) then
       begin
          FRefreshMode := true;
-         textControl.Text := ReplaceStr(tag.Text, LB_PHOLDER, sLineBreak);
+         textControl.Text := ReplaceStr(node.Text, LB_PHOLDER, sLineBreak);
          FRefreshMode := false;
       end;
 
-      var i := GetNodeAttrInt(ATag, FONT_SIZE_ATTR, 0);
+      var i := GetNodeAttrInt(ANode, FONT_SIZE_ATTR, 0);
       if i in FLOWCHART_VALID_FONT_SIZES then
          SetFontSize(i);
 
-      i := GetNodeAttrInt(ATag, FONT_STYLE_ATTR, 0);
+      i := GetNodeAttrInt(ANode, FONT_STYLE_ATTR, 0);
       SetFontStyle(TInfra.DecodeFontStyle(i));
 
-      Frame := GetNodeAttrBool(ATag, FRAME_ATTR, false);
+      Frame := GetNodeAttrBool(ANode, FRAME_ATTR, false);
 
       var memo := GetMemoEx;
       if memo <> nil then
-         memo.GetFromXML(ATag);
+         memo.GetFromXML(ANode);
 
-      ImportCommentsFromXML(ATag);
+      ImportCommentsFromXML(ANode);
    end;
 end;
 
-function TGroupBlock.GetFromXML(ATag: IXMLElement): TError;
+function TGroupBlock.GetFromXML(ANode: IXMLNode): TError;
 var
-   tag1, tag2: IXMLElement;
+   node1, node2: IXMLNode;
    bId, idx, bStmntId, hx, hy: integer;
 begin
-   result := inherited GetFromXML(ATag);
-   if ATag <> nil then
+   result := inherited GetFromXML(ANode);
+   if ANode <> nil then
    begin
-      tag1 := TXMLProcessor.FindChildTag(ATag, BRANCH_TAG);
-      if tag1 <> nil then
+      node1 := TXMLProcessor.FindChildTag(ANode, BRANCH_TAG);
+      if node1 <> nil then
       begin
          idx := PRIMARY_BRANCH_IDX;
          repeat
-            tag2 := TXMLProcessor.FindChildTag(tag1, 'x');
-            if tag2 <> nil then
-               hx := StrToIntDef(tag2.Text, 0);
-            tag2 := TXMLProcessor.FindChildTag(tag1, 'y');
-            if tag2 <> nil then
-               hy := StrToIntDef(tag2.Text, 0);
-            bId := GetNodeAttrInt(tag1, ID_ATTR, ID_INVALID);
-            bStmntId := GetNodeAttrInt(tag1, BRANCH_STMNT_ATTR, ID_INVALID);
+            node2 := TXMLProcessor.FindChildTag(node1, 'x');
+            if node2 <> nil then
+               hx := StrToIntDef(node2.Text, 0);
+            node2 := TXMLProcessor.FindChildTag(node1, 'y');
+            if node2 <> nil then
+               hy := StrToIntDef(node2.Text, 0);
+            bId := GetNodeAttrInt(node1, ID_ATTR, ID_INVALID);
+            bStmntId := GetNodeAttrInt(node1, BRANCH_STMNT_ATTR, ID_INVALID);
             if GetBranch(idx) = nil then
                AddBranch(Point(hx, hy), bId, bStmntId);
-            tag2 := TXMLProcessor.FindChildTag(tag1, BLOCK_TAG);
-            if tag2 <> nil then
+            node2 := TXMLProcessor.FindChildTag(node1, BLOCK_TAG);
+            if node2 <> nil then
             begin
-               TXMLProcessor.ImportFlowchartFromXMLTag(tag2, Self, nil, result, idx);
+               TXMLProcessor.ImportFlowchartFromXML(node2, Self, nil, result, idx);
                if result <> errNone then break;
             end;
             idx := idx + 1;
-            tag1 := TXMLProcessor.FindNextTag(tag1);
-         until tag1 = nil;
+            node1 := TXMLProcessor.FindNextTag(node1);
+         until node1 = nil;
       end;
-      tag2 := TXMLProcessor.FindChildTag(ATag, FOLD_TEXT_TAG);
-      if tag2 <> nil then
-         SetFoldedText(tag2.Text);
-      FFoldParms.Width := GetNodeAttrInt(ATag, 'fw', 140);
-      FFoldParms.Height := GetNodeAttrInt(ATag, 'fh', 91);
-      if GetNodeAttrBool(ATag, FOLDED_ATTR, false) then
+      node2 := TXMLProcessor.FindChildTag(ANode, FOLD_TEXT_TAG);
+      if node2 <> nil then
+         SetFoldedText(node2.Text);
+      FFoldParms.Width := GetNodeAttrInt(ANode, 'fw', 140);
+      FFoldParms.Height := GetNodeAttrInt(ANode, 'fh', 91);
+      if GetNodeAttrBool(ANode, FOLDED_ATTR, false) then
          ExpandFold(false);
    end;
 end;
 
-procedure TBlock.ExportToXMLTag(ATag: IXMLElement);
+procedure TBlock.ExportToXML(ANode: IXMLNode);
 begin
-   TXMLProcessor.ExportBlockToXML(Self, ATag);
+   TXMLProcessor.ExportBlockToXML(Self, ANode);
    var block := Next;
    while (block <> nil) and block.Frame do
    begin
-      TXMLProcessor.ExportBlockToXML(block, ATag);
+      TXMLProcessor.ExportBlockToXML(block, ANode);
       block := block.Next;
    end;
 end;
 
-function TBlock.ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TError;
+function TBlock.ImportFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
 var
    block, newBlock: TBlock;
    lParent: TGroupBlock;
-   tag: IXMLElement;
+   node: IXMLNode;
    bt: TBlockType;
 begin
    result := errValidate;
-   tag := TXMLProcessor.FindChildTag(ATag, BLOCK_TAG);
-   if tag <> nil then
-      bt := TRttiEnumerationType.GetValue<TBlockType>(tag.GetAttribute(BLOCK_TYPE_ATTR));
-   if (tag = nil) or (bt in [blMain, blUnknown, blComment]) then
+   node := TXMLProcessor.FindChildTag(ANode, BLOCK_TAG);
+   if node <> nil then
+      bt := TRttiEnumerationType.GetValue<TBlockType>(GetNodeAttrStr(node, BLOCK_TYPE_ATTR, ''));
+   if (node = nil) or (bt in [blMain, blUnknown, blComment]) then
       Gerr_text := i18Manager.GetString('BadImportTag')
    else
    begin
@@ -2237,16 +2237,16 @@ begin
       end;
       if lParent <> nil then
       begin
-         lParent.BlockImportMode := true;
+         lParent.BlockImportMode := True;
          try
-            newBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag, lParent, block, result, FRedArrow);
+            newBlock := TXMLProcessor.ImportFlowchartFromXML(node, lParent, block, result, FRedArrow);
          finally
             lParent.BlockImportMode := false;
          end;
          if result = errNone then
          begin
             lParent.ResizeWithDrawLock;
-            newBlock.ImportCommentsFromXML(tag);
+            newBlock.ImportCommentsFromXML(node);
          end;
       end;
    end;

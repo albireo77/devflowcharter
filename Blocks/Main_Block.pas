@@ -41,7 +41,7 @@ type
          UserFunction: TObject;
          constructor Create(APage: TBlockTabSheet; const ABlockParms: TBlockParms); overload;
          constructor Create(APage: TBlockTabSheet; const ATopLeft: TPoint); overload;
-         procedure SaveInXML(ATag: IXMLElement); override;
+         procedure SaveInXML(ANode: IXMLNode); override;
          procedure ExportToGraphic(AGraphic: TGraphic); override;
          procedure SetWidth(AMinX: integer); override;
          procedure SetZOrder(AValue: integer);
@@ -49,7 +49,7 @@ type
          function ExportToXMLFile(const AFile: string): TError; override;
          function GetExportFileName: string; override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
-         function GetFromXML(ATag: IXMLElement): TError; override;
+         function GetFromXML(ANode: IXMLNode): TError; override;
          function GetHandle: THandle;
          function GetZOrder: integer;
          function IsBoldDesc: boolean; override;
@@ -376,7 +376,7 @@ end;
 function TMainBlock.ExportToXMLFile(const AFile: string): TError;
 begin
    if UserFunction <> nil then
-      result := TXMLProcessor.ExportToXMLFile(TUserFunction(UserFunction).ExportToXMLTag, AFile)
+      result := TXMLProcessor.ExportToXMLFile(TUserFunction(UserFunction).ExportToXML, AFile)
    else
       result := inherited ExportToXMLFile(AFile);
 end;
@@ -521,22 +521,22 @@ begin
        block.GenerateTree(AParentNode);
 end;
 
-procedure TMainBlock.SaveInXML(ATag: IXMLElement);
+procedure TMainBlock.SaveInXML(ANode: IXMLNode);
 begin
-   inherited SaveInXML(ATag);
-   if ATag <> nil then
+   inherited SaveInXML(ANode);
+   if ANode <> nil then
    begin
-      ATag.SetAttribute(Z_ORDER_ATTR, FZOrder.ToString);
+      SetNodeAttrInt(ANode, Z_ORDER_ATTR, FZOrder);
       if not FPage.IsMain then
-         ATag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
+         SetNodeAttrStr(ANode, PAGE_CAPTION_ATTR, FPage.Caption);
    end;
 end;
 
-function TMainBlock.GetFromXML(ATag: IXMLElement): TError;
+function TMainBlock.GetFromXML(ANode: IXMLNode): TError;
 begin
-   result := inherited GetFromXML(ATag);
-   if ATag <> nil then
-      FZOrder := GetNodeAttrInt(ATag, Z_ORDER_ATTR, -1);
+   result := inherited GetFromXML(ANode);
+   if ANode <> nil then
+      FZOrder := GetNodeAttrInt(ANode, Z_ORDER_ATTR, -1);
 end;
 
 function TMainBlock.IsBoldDesc: boolean;

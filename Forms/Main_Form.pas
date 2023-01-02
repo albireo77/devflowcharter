@@ -453,7 +453,7 @@ begin
       var tmpCursor := Screen.Cursor;
       Screen.Cursor := crHourGlass;
       var filePath := IfThen(Sender <> miOpen, StripHotKey(TMenuItem(Sender).Caption));
-      filePath := TXMLProcessor.ImportFromXMLFile(GProject.ImportFromXMLTag, impAll, filePath);
+      filePath := TXMLProcessor.ImportFromXMLFile(GProject.ImportFromXML, impAll, filePath);
       GProject.ChangingOn := true;
       GProject.SetNotChanged;
       Screen.Cursor := tmpCursor;
@@ -1008,7 +1008,7 @@ begin
    begin
       comp := pmPages.PopupComponent;
       if (comp is TBlock) and (TBlock(comp).RedArrow >= 0) then
-         impProc := TBlock(comp).ImportFromXMLTag
+         impProc := TBlock(comp).ImportFromXML
       else
          impProc := GProject.ImportUserFunctionsFromXML;
       if not TXMLProcessor.ImportFromXMLFile(impProc, impSelectPopup).IsEmpty then

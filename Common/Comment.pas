@@ -62,9 +62,9 @@ type
          function Clone(APage: TBlockTabSheet; const ATopLeft: TPoint): TComment; overload;
          function Clone(APage: TBlockTabSheet): TComment; overload;
          destructor Destroy; override;
-         procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl);
-         procedure ExportToXMLTag(ATag: IXMLElement);
-         procedure ExportToXMLTag2(ATag: IXMLElement);
+         procedure ImportFromXML(ANode: IXMLNode; APinControl: TControl);
+         procedure ExportToXML(ANode: IXMLNode);
+         procedure ExportToXML2(ANode: IXMLNode);
          function GetHandle: THandle;
          procedure BringAllToFront;
          procedure SetZOrder(AValue: integer);
@@ -305,53 +305,53 @@ begin
    PopupMenu.Popup(pnt.X, pnt.Y);
 end;
 
-procedure TComment.ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl);
+procedure TComment.ImportFromXML(ANode: IXMLNode; APinControl: TControl);
 begin
-   if ATag <> nil then
+   if ANode <> nil then
    begin
-      SetBounds(GetNodeAttrInt(ATag, 'x', 0),
-                GetNodeAttrInt(ATag, 'y', 0),
-                GetNodeAttrInt(ATag, 'w', 0),
-                GetNodeAttrInt(ATag, 'h', 0));
-      var v := GetNodeAttrInt(ATag, FONT_SIZE_ATTR, 0);
+      SetBounds(GetNodeAttrInt(ANode, 'x', 0),
+                GetNodeAttrInt(ANode, 'y', 0),
+                GetNodeAttrInt(ANode, 'w', 0),
+                GetNodeAttrInt(ANode, 'h', 0));
+      var v := GetNodeAttrInt(ANode, FONT_SIZE_ATTR, 0);
       if v in FLOWCHART_VALID_FONT_SIZES then
          Font.Size := v;
-      FZOrder := GetNodeAttrInt(ATag, Z_ORDER_ATTR, -1);
-      v := GetNodeAttrInt(ATag, FONT_STYLE_ATTR, 0);
+      FZOrder := GetNodeAttrInt(ANode, Z_ORDER_ATTR, -1);
+      v := GetNodeAttrInt(ANode, FONT_STYLE_ATTR, 0);
       if v > 0 then
          Font.Style := TInfra.DecodeFontStyle(v);
-      Text := ATag.Text;
-      Visible := GetNodeAttrBool(ATag, 'v', false);
+      Text := ANode.Text;
+      Visible := GetNodeAttrBool(ANode, 'v', False);
       FPinControl := APinControl;
-      IsHeader := GetNodeAttrBool(ATag, IS_HEADER_ATTR, false);
-      GetFromXML(ATag);
+      IsHeader := GetNodeAttrBool(ANode, IS_HEADER_ATTR, False);
+      GetFromXML(ANode);
    end;
 end;
 
-procedure TComment.ExportToXMLTag(ATag: IXMLElement);
+procedure TComment.ExportToXML(ANode: IXMLNode);
 begin
    if (FPinControl = nil) and (GProject.FindMainBlockForControl(Self) = nil) then
-      ExportToXMLTag2(ATag);
+      ExportToXML2(ANode);
 end;
 
-procedure TComment.ExportToXMLTag2(ATag: IXMLElement);
+procedure TComment.ExportToXML2(ANode: IXMLNode);
 begin
-   if ATag <> nil then
+   if ANode <> nil then
    begin
-      var tag := SetNodeCData(ATag, COMMENT_TAG, Text) as IXMLELement;
-      tag.SetAttribute('x', Left.ToString);
-      tag.SetAttribute('y', Top.ToString);
-      tag.SetAttribute('w', Width.ToString);
-      tag.SetAttribute('h', Height.ToString);
-      tag.SetAttribute(FONT_SIZE_ATTR, Font.Size.ToString);
-      tag.SetAttribute('v', Visible.ToString);
-      tag.SetAttribute(Z_ORDER_ATTR, FZOrder.ToString);
-      tag.SetAttribute(IS_HEADER_ATTR, IsHeader.ToString);
+      var node := SetNodeCData(ANode, COMMENT_TAG, Text);
+      SetNodeAttrInt(node, 'x', Left);
+      SetNodeAttrInt(node, 'y', Top);
+      SetNodeAttrInt(node, 'w', Width);
+      SetNodeAttrInt(node, 'h', Height);
+      SetNodeAttrInt(node, FONT_SIZE_ATTR, Font.Size);
+      SetNodeAttrBool(node, 'v', Visible);
+      SetNodeAttrInt(node, Z_ORDER_ATTR, FZOrder);
+      SetNodeAttrBool(node, IS_HEADER_ATTR, IsHeader);
       if not FPage.IsMain then
-         tag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
+         SetNodeAttrStr(node, PAGE_CAPTION_ATTR, FPage.Caption);
       if Font.Style <> [] then
-         tag.SetAttribute(FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style).ToString);
-      SaveInXML(tag);
+         SetNodeAttrInt(node, FONT_STYLE_ATTR, TInfra.EncodeFontStyle(Font.Style));
+      SaveInXML(node);
    end;
 end;
 

@@ -70,8 +70,8 @@ type
     procedure ClearTreeViewItems;
   public
     { Public declarations }
-    procedure ExportSettingsToXMLTag(ATag: IXMLElement); override;
-    procedure ImportSettingsFromXMLTag(ATag: IXMLElement); override;
+    procedure ExportToXML(ANode: IXMLNode); override;
+    procedure ImportFromXML(ANode: IXMLNode); override;
   end;
 
 var
@@ -312,34 +312,34 @@ begin
    end;
 end;
 
-procedure TExplorerForm.ExportSettingsToXMLTag(ATag: IXMLElement);
+procedure TExplorerForm.ExportToXML(ANode: IXMLNode);
 begin
    if Visible then
    begin
-      ATag.SetAttribute('tree_win_show', 'true');
-      ATag.SetAttribute('tree_win_x', Left.ToString);
-      ATag.SetAttribute('tree_win_y', Top.ToString);
-      ATag.SetAttribute('tree_win_w', Width.ToString);
-      ATag.SetAttribute('tree_win_h', Height.ToString);
-      ATag.SetAttribute('tree_top_y', tvExplorer.TopItem.AbsoluteIndex.ToString);
+      SetNodeAttrBool(ANode, 'tree_win_show', True);
+      SetNodeAttrInt(ANode, 'tree_win_x', Left);
+      SetNodeAttrInt(ANode, 'tree_win_y', Top);
+      SetNodeAttrInt(ANode, 'tree_win_w', Width);
+      SetNodeAttrInt(ANode, 'tree_win_h', Height);
+      SetNodeAttrInt(ANode, 'tree_top_y', tvExplorer.TopItem.AbsoluteIndex);
       if WindowState = wsMinimized then
-         ATag.SetAttribute('tree_win_min', 'true');
+         SetNodeAttrBool(ANode, 'tree_win_min', True);
    end;
 end;
 
-procedure TExplorerForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
+procedure TExplorerForm.ImportFromXML(ANode: IXMLNode);
 begin
-   if GetNodeAttrBool(ATag, 'tree_win_show', false) and GInfra.CurrentLang.EnabledExplorer then
+   if GetNodeAttrBool(ANode, 'tree_win_show', false) and GInfra.CurrentLang.EnabledExplorer then
    begin
       Position := poDesigned;
-      SetBounds(GetNodeAttrInt(ATag, 'tree_win_x', 50),
-                GetNodeAttrInt(ATag, 'tree_win_y', 50),
-                GetNodeAttrInt(ATag, 'tree_win_w', 498),
-                GetNodeAttrInt(ATag, 'tree_win_h', 574));
-      if GetNodeAttrBool(ATag, 'tree_win_min', false) then
+      SetBounds(GetNodeAttrInt(ANode, 'tree_win_x', 50),
+                GetNodeAttrInt(ANode, 'tree_win_y', 50),
+                GetNodeAttrInt(ANode, 'tree_win_w', 498),
+                GetNodeAttrInt(ANode, 'tree_win_h', 574));
+      if GetNodeAttrBool(ANode, 'tree_win_min', false) then
          WindowState := wsMinimized;
       Show;
-      var topY := GetNodeAttrInt(ATag, 'tree_top_y', -2);
+      var topY := GetNodeAttrInt(ANode, 'tree_top_y', -2);
       if (topY >= 0) and (topY < tvExplorer.Items.Count) then
          tvExplorer.TopItem := tvExplorer.Items[topY];
    end;

@@ -54,8 +54,8 @@ type
       procedure SetGlobalDeclarations(AForm: TDeclarationsForm);
       function GetIWinControlComponent(AHandle: THandle): IWinControl;
       procedure RefreshZOrder;
-      procedure ExportPagesToXMLTag(ATag: IXMLElement);
-      function GetSelectList(ATag: IXMLElement; const ALabel: string; const ATagName: string; const ATagName2: string = ''): TStringList;
+      procedure ExportPagesToXML(ANode: IXMLNode);
+      function GetSelectList(ANode: IXMLNode; const ALabel: string; const ANodeName: string; const ANodeName2: string = ''): TStringList;
       function GetComponents<T: class>(AComparer: IComparer<T> = nil): IEnumerable<T>;
       function GetIComponents<I: IInterface>(AComparer: IComparer<TComponent> = nil): IEnumerable<I>; overload;
       function GetIComponents<T: class; I: IInterface>(AComparer: IComparer<T> = nil): IEnumerable<I>; overload;
@@ -84,13 +84,13 @@ type
       function GetUserFunction(const AName: string): TUserFunction;
       function GetUserDataType(const AName: string): TUserDataType;
       procedure ExportToGraphic(AGraphic: TGraphic);
-      procedure ExportToXMLTag(ATag: IXMLElement);
+      procedure ExportToXML(ANode: IXMLNode);
       function ExportToXMLFile(const AFile: string): TError;
-      function ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TError;
-      function ImportUserFunctionsFromXML(ATag: IXMLElement; AImportMode: TImportMode): TError;
-      function ImportUserDataTypesFromXML(ATag: IXMLElement; AImportMode: TImportMode): TError;
-      function ImportCommentsFromXML(ATag: IXMLElement): integer;
-      procedure ImportPagesFromXML(ATag: IXMLElement);
+      function ImportFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
+      function ImportUserFunctionsFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
+      function ImportUserDataTypesFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
+      function ImportCommentsFromXML(ANode: IXMLNode): integer;
+      procedure ImportPagesFromXML(ANode: IXMLNode);
       function GetMainBlock: TMainBlock;
       procedure PopulateDataTypeCombos;
       procedure RefreshStatements;
@@ -128,7 +128,7 @@ uses
    System.SysUtils, Vcl.Menus, Vcl.Forms, System.StrUtils, System.Types, System.UITypes,
    Generics.Collections, Infrastructure, Constants, XMLProcessor, Base_Form, LangDefinition,
    Navigator_Form, TabComponent, ParserHelper, SelectImport_Form, BaseEnumerator,
-   WinApi.Messages, Vcl.ExtCtrls, Rtti;
+   WinApi.Messages, Vcl.ExtCtrls, Rtti, OmniXMLUtils;
 
 var
    ByPageIndexUserDataTypeComparer: IComparer<TUserDataType>;
@@ -374,13 +374,11 @@ begin
       result := FObjectIds.Objects[idx];
 end;
 
-procedure TProject.ExportPagesToXMLTag(ATag: IXMLElement);
+procedure TProject.ExportPagesToXML(ANode: IXMLNode);
 begin
-   var tag := ATag.OwnerDocument.CreateElement('pages');
-   ATag.AppendChild(tag);
    var pageControl := TInfra.GetMainForm.pgcPages;
    for var i := 0 to pageControl.PageCount-1 do
-      TBlockTabSheet(pageControl.Pages[i]).ExportToXMLTag(tag);
+      TBlockTabSheet(pageControl.Pages[i]).ExportToXML(AppendNode(ANode, 'pages'));
 end;
 
 procedure TProject.SetChanged;
@@ -411,7 +409,7 @@ end;
 function TProject.ExportToXMLFile(const AFile: string): TError;
 begin
    ChangingOn := false;
-   result := TXMLProcessor.ExportToXMLFile(ExportToXMLTag, AFile);
+   result := TXMLProcessor.ExportToXMLFile(ExportToXML, AFile);
    ChangingOn := true;
    if result = errNone then
    begin
@@ -420,21 +418,21 @@ begin
    end;
 end;
 
-procedure TProject.ExportToXMLTag(ATag: IXMLElement);
+procedure TProject.ExportToXML(ANode: IXMLNode);
 begin
 
-   ATag.SetAttribute(LANG_ATTR, GInfra.CurrentLang.Name);
-   ATag.SetAttribute(APP_VERSION_ATTR, TInfra.GetAboutForm.GetProgramVersion);
+   SetNodeAttrStr(ANode, LANG_ATTR, GInfra.CurrentLang.Name);
+   SetNodeAttrStr(ANode, APP_VERSION_ATTR, TInfra.GetAboutForm.GetProgramVersion);
 
-   ExportPagesToXMLTag(ATag);
+   ExportPagesToXML(ANode);
 
    if MainPage <> ActivePage then
-      ATag.SetAttribute(PAGE_FRONT_ATTR, ActivePage.Caption);
+      SetNodeAttrStr(ANode, PAGE_FRONT_ATTR, ActivePage.Caption);
 
    if FGlobalVars <> nil then
-      FGlobalVars.ExportToXMLTag(ATag);
+      FGlobalVars.ExportToXML(ANode);
    if FGlobalConsts <> nil then
-      FGlobalConsts.ExportToXMLTag(ATag);
+      FGlobalConsts.ExportToXML(ANode);
 
    var pageControl := TInfra.GetMainForm.pgcPages;
    for var i := 0 to pageControl.PageCount-1 do
@@ -443,32 +441,32 @@ begin
    for var xmlable in GetIComponents<IXMLable>(ByPageIndexComponentComparer) do
    begin
       if xmlable.Active then
-         xmlable.ExportToXMLTag(ATag);
+         xmlable.ExportToXML(ANode);
    end;
 
    for var baseForm in TInfra.GetBaseForms do
-      baseForm.ExportSettingsToXMLTag(ATag);
+      baseForm.ExportToXML(ANode);
 end;
 
-procedure TProject.ImportPagesFromXML(ATag: IXMLElement);
+procedure TProject.ImportPagesFromXML(ANode: IXMLNode);
 
 begin
-   if ATag <> nil then
+   if ANode <> nil then
    begin
       var activePage: TBlockTabSheet := nil;
-      var pageFront := ATag.GetAttribute(PAGE_FRONT_ATTR);
-      var tag := TXMLProcessor.FindChildTag(ATag, 'pages');
-      tag := TXMLProcessor.FindChildTag(tag, 'page');
-      while tag <> nil do
+      var pageFront := GetNodeAttrStr(ANode, PAGE_FRONT_ATTR, '');
+      var node := TXMLProcessor.FindChildTag(ANode, 'pages');
+      node := TXMLProcessor.FindChildTag(node, 'page');
+      while node <> nil do
       begin
-         var page := GetPage(tag.GetAttribute('name'));
+         var page := GetPage(GetNodeAttrStr(node, 'name', ''));
          if page <> nil then
          begin
-            page.ImportFromXMLTag(tag);
+            page.ImportFromXML(node);
             if (activePage = nil) and SameCaption(page.Caption, pageFront) then
                activePage := page;
          end;
-         tag := TXMLProcessor.FindNextTag(tag);
+         node := TXMLProcessor.FindNextTag(node);
       end;
       if activePage = nil then
          activePage := MainPage;
@@ -476,19 +474,19 @@ begin
    end;
 end;
 
-function TProject.ImportFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TError;
+function TProject.ImportFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
 begin
 
    result := errValidate;
 
-   var langName := ATag.GetAttribute(LANG_ATTR);
+   var langName := GetNodeAttrStr(ANode, LANG_ATTR, '');
    if GInfra.GetLangDefinition(langName) = nil then
    begin
       Gerr_text := i18Manager.GetFormattedString('LngNoSprt', [langName]);
       Exit;
    end;
 
-   var ver := ATag.GetAttribute(APP_VERSION_ATTR);
+   var ver := GetNodeAttrStr(ANode, APP_VERSION_ATTR, '');
    if TInfra.CompareProgramVersion(ver) > 0 then
       TInfra.ShowWarningBox('OldVerMsg', [ver]);
 
@@ -507,23 +505,23 @@ begin
    end;
 
    if FGlobalConsts <> nil then
-      FGlobalConsts.ImportFromXMLTag(ATag, impAll);
+      FGlobalConsts.ImportFromXML(ANode, impAll);
 
-   ImportUserDataTypesFromXML(ATag, impAll);
-   ImportPagesFromXML(ATag);
+   ImportUserDataTypesFromXML(ANode, impAll);
+   ImportPagesFromXML(ANode);
 
-   result := ImportUserFunctionsFromXML(ATag, impAll);
+   result := ImportUserFunctionsFromXML(ANode, impAll);
    if result = errNone then
    begin
       if FGlobalVars <> nil then
-         FGlobalVars.ImportFromXMLTag(ATag, impAll);
+         FGlobalVars.ImportFromXML(ANode, impAll);
       PopulateDataTypeCombos;
       RefreshSizeEdits;
       RefreshStatements;
-      ImportCommentsFromXML(ATag);
+      ImportCommentsFromXML(ANode);
       RefreshZOrder;
       for var baseForm in TInfra.GetBaseForms do
-         baseForm.ImportSettingsFromXMLTag(ATag);
+         baseForm.ImportFromXML(ANode);
    end;
 end;
 
@@ -573,16 +571,16 @@ begin
    end;
 end;
 
-function TProject.GetSelectList(ATag: IXMLElement; const ALabel: string; const ATagName: string; const ATagName2: string = ''): TStringList;
+function TProject.GetSelectList(ANode: IXMLNode; const ALabel: string; const ANodeName: string; const ANodeName2: string = ''): TStringList;
 begin
-   var isTag2Empty := ATagName2.IsEmpty;
+   var isTag2Empty := ANodeName2.IsEmpty;
    result := TStringList.Create;
-   var tag := TXMLProcessor.FindChildTag(ATag, ATagName);
+   var tag := TXMLProcessor.FindChildTag(ANode, ANodeName);
    while tag <> nil do
    begin
       var tag1: IXMLElement := nil;
       if not isTag2Empty then
-         tag1 := TXMLProcessor.FindChildTag(tag, ATagName2)
+         tag1 := TXMLProcessor.FindChildTag(tag, ANodeName2)
       else
          tag1 := tag;
       if tag1 <> nil then
@@ -600,9 +598,9 @@ begin
    end;
 end;
 
-function TProject.ImportUserFunctionsFromXML(ATag: IXMLElement; AImportMode: TImportMode): TError;
+function TProject.ImportUserFunctionsFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
 var
-   tag, tag1: IXMLElement;
+   node, node1: IXMLNode;
    header, lastHeader: TUserFunctionHeader;
    body, lastBody: TMainBlock;
    tmpBlock: TBlock;
@@ -616,49 +614,49 @@ begin
    try
       if AImportMode <> impAll then
       begin
-         selectList := GetSelectList(ATag, 'ImportFunc', FUNCTION_TAG, HEADER_TAG);
+         selectList := GetSelectList(ANode, 'ImportFunc', FUNCTION_TAG, HEADER_TAG);
          if (selectList <> nil) and (selectList.Count = 0) then
             Exit;
       end;
-      tag := TXMLProcessor.FindChildTag(ATag, FUNCTION_TAG);
+      node := TXMLProcessor.FindChildTag(ANode, FUNCTION_TAG);
       lastBody := nil;
       lastHeader := nil;
-      while (tag <> nil) and (result = errNone) do
+      while (node <> nil) and (result = errNone) do
       begin
          header := nil;
          body := nil;
-         tag1 := TXMLProcessor.FindChildTag(tag, HEADER_TAG);
-         if tag1 <> nil then
+         node1 := TXMLProcessor.FindChildTag(node, HEADER_TAG);
+         if node1 <> nil then
          begin
-            if (selectList <> nil) and (selectList.IndexOf(tag1.GetAttribute(NAME_ATTR)) = -1) then
+            if (selectList <> nil) and (selectList.IndexOf(GetNodeAttrStr(node1, NAME_ATTR, '')) = -1) then
             begin
-               tag := TXMLProcessor.FindNextTag(tag);
+               node := TXMLProcessor.FindNextTag(node);
                continue;
             end;
             if GInfra.CurrentLang.EnabledUserFunctionHeader then
             begin
                header := TUserFunctionHeader.Create(TInfra.GetFunctionsForm);
-               header.ImportFromXMLTag(tag1);
+               header.ImportFromXML(node1);
                header.RefreshFontColor;
             end;
          end
          else if AImportMode <> impAll then
          begin
-            tag := TXMLProcessor.FindNextTag(tag);
+            node := TXMLProcessor.FindNextTag(node);
             continue;
          end;
-         tag1 := TXMLProcessor.FindChildTag(tag, BLOCK_TAG);
-         if (tag1 <> nil) and GInfra.CurrentLang.EnabledUserFunctionBody then
+         node1 := TXMLProcessor.FindChildTag(node, BLOCK_TAG);
+         if (node1 <> nil) and GInfra.CurrentLang.EnabledUserFunctionBody then
          begin
             if AImportMode = impAll then
             begin
-               page := GetPage(tag1.GetAttribute(PAGE_CAPTION_ATTR));
+               page := GetPage(GetNodeAttrStr(node1, PAGE_CAPTION_ATTR, ''));
                if page = nil then
                   page := MainPage;
             end
             else
                page := ActivePage;
-            tmpBlock := TXMLProcessor.ImportFlowchartFromXMLTag(tag1, page, nil, result);
+            tmpBlock := TXMLProcessor.ImportFlowchartFromXML(node1, page, nil, result);
             if tmpBlock is TMainBlock then
                body := TMainBlock(tmpBlock);
          end;
@@ -670,7 +668,7 @@ begin
          end
          else
             header.Free;
-         tag := TXMLProcessor.FindNextTag(tag);
+         node := TXMLProcessor.FindNextTag(node);
       end;
       if lastBody <> nil then
       begin
@@ -693,7 +691,7 @@ begin
    end;
 end;
 
-function TProject.ImportUserDataTypesFromXML(ATag: IXMLElement; AImportMode: TImportMode): TError;
+function TProject.ImportUserDataTypesFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
 begin
    result := errNone;
    var selectList: TStringList := nil;
@@ -702,22 +700,23 @@ begin
    try
       if AImportMode <> impAll then
       begin
-         selectList := GetSelectList(ATag, 'ImportType', DATATYPE_TAG);
+         selectList := GetSelectList(ANode, 'ImportType', DATATYPE_TAG);
          if (selectList <> nil) and (selectList.Count = 0) then
             Exit;
       end;
-      var tag := TXMLProcessor.FindChildTag(ATag, DATATYPE_TAG);
-      while tag <> nil do
+      var node := TXMLProcessor.FindChildTag(ANode, DATATYPE_TAG);
+      while node <> nil do
       begin
-         if (selectList <> nil) and (selectList.IndexOf(tag.GetAttribute(NAME_ATTR)) = -1) then
+         var dataTypeName := GetNodeAttrStr(node, NAME_ATTR, '');
+         if (selectList <> nil) and (selectList.IndexOf(dataTypeName) = -1) then
          begin
-            tag := TXMLProcessor.FindNextTag(tag);
+            node := TXMLProcessor.FindNextTag(node);
             continue;
          end;
          dataType := TUserDataType.Create(TInfra.GetDataTypesForm);
-         dataType.ImportFromXMLTag(tag);
+         dataType.ImportFromXML(node);
          dataType.RefreshFontColor;
-         tag := TXMLProcessor.FindNextTag(tag);
+         node := TXMLProcessor.FindNextTag(node);
       end;
       if dataType <> nil then
          dataType.PageControl.ActivePage := dataType;
@@ -737,18 +736,18 @@ begin
 
 end;
 
-function TProject.ImportCommentsFromXML(ATag: IXMLElement): integer;
+function TProject.ImportCommentsFromXML(ANode: IXMLNode): integer;
 begin
    result := NO_ERROR;
-   var tag := TXMLProcessor.FindChildTag(ATag, COMMENT_TAG);
-   while tag <> nil do
+   var node := TXMLProcessor.FindChildTag(ANode, COMMENT_TAG);
+   while node <> nil do
    begin
-      var page := GetPage(tag.GetAttribute(PAGE_CAPTION_ATTR));
+      var page := GetPage(GetNodeAttrStr(node, PAGE_CAPTION_ATTR, ''));
       if page = nil then
          page := MainPage;
       var comment := TComment.CreateDefault(page);
-      comment.ImportFromXMLTag(tag, nil);
-      tag := TXMLProcessor.FindNextTag(tag);
+      comment.ImportFromXML(node, nil);
+      node := TXMLProcessor.FindNextTag(node);
    end;
 end;
 

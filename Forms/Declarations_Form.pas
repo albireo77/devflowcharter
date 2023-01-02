@@ -35,8 +35,8 @@ type
     { Private declarations }
   public
     { Public declarations }
-    procedure ExportSettingsToXMLTag(ATag: IXMLElement); override;
-    procedure ImportSettingsFromXMLTag(ATag: IXMLElement); override;
+    procedure ExportToXML(ANode: IXMLNode); override;
+    procedure ImportFromXML(ANode: IXMLNode); override;
     procedure ResetForm; override;
   end;
 
@@ -50,31 +50,31 @@ uses
 
 {$R *.dfm}
 
-procedure TDeclarationsForm.ExportSettingsToXMLTag(ATag: IXMLElement);
+procedure TDeclarationsForm.ExportToXML(ANode: IXMLNode);
 begin
-   ATag.SetAttribute('var_win_h', Height.ToString);
-   ATag.SetAttribute('var_win_w', Width.ToString);
+   SetNodeAttrInt(ANode, 'var_win_h', Height);
+   SetNodeAttrInt(ANode, 'var_win_w', Width);
    if Visible then
    begin
-      ATag.SetAttribute('var_win_show', 'true');
-      ATag.SetAttribute('var_win_x', Left.ToString);
-      ATag.SetAttribute('var_win_y', Top.ToString);
+      SetNodeAttrBool(ANode, 'var_win_show', True);
+      SetNodeAttrInt(ANode, 'var_win_x', Left);
+      SetNodeAttrInt(ANode, 'var_win_y', Top);
       if WindowState = wsMinimized then
-         ATag.SetAttribute('var_win_min', 'true');
+         SetNodeAttrBool(ANode, 'var_win_min', True);
    end;
 end;
 
-procedure TDeclarationsForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
+procedure TDeclarationsForm.ImportFromXML(ANode: IXMLNode);
 begin
-   Height := GetNodeAttrInt(ATag, 'var_win_h', Height);
-   Width := GetNodeAttrInt(ATag, 'var_win_w', Width);
-   if GetNodeAttrBool(ATag, 'var_win_show', false) and (GInfra.CurrentLang.EnabledVars or GInfra.CurrentLang.EnabledConsts) then
+   Height := GetNodeAttrInt(ANode, 'var_win_h', Height);
+   Width := GetNodeAttrInt(ANode, 'var_win_w', Width);
+   if GetNodeAttrBool(ANode, 'var_win_show', false) and (GInfra.CurrentLang.EnabledVars or GInfra.CurrentLang.EnabledConsts) then
    begin
       Position := poDesigned;
-      if GetNodeAttrBool(ATag, 'var_win_min', false) then
+      if GetNodeAttrBool(ANode, 'var_win_min', false) then
          WindowState := wsMinimized;
-      Left := GetNodeAttrInt(ATag, 'var_win_x', Left);
-      Top := GetNodeAttrInt(ATag, 'var_win_y', Top);
+      Left := GetNodeAttrInt(ANode, 'var_win_x', Left);
+      Top := GetNodeAttrInt(ANode, 'var_win_y', Top);
       Show;
    end;
 end;

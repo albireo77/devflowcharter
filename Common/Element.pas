@@ -56,8 +56,8 @@ type
          btnRemove: TButton;
          property ParentTab: TTabSheet read FParentTab;
          property ParentForm: TPageControlForm read FParentForm;
-         function ExportToXMLTag(ATag: IXMLElement): IXMLElement; virtual;
-         procedure ImportFromXMLTag(ATag: IXMLElement); virtual;
+         function ExportToXML(ANode: IXMLNode): IXMLNode; virtual;
+         procedure ImportFromXML(ANode: IXMLNode); virtual;
          function IsValid: boolean; virtual;
    end;
 
@@ -65,7 +65,7 @@ implementation
 
 uses
    Vcl.Graphics, System.SysUtils, System.Classes, Interfaces, TabComponent, Infrastructure,
-   Constants;
+   Constants, OmniXMLUtils;
 
 constructor TElement.Create(AParent: TScrollBox);
 begin
@@ -186,23 +186,22 @@ begin
       TTabComponent(FParentTab).UpdateCodeEditor;
 end;
 
-procedure TElement.ImportFromXMLTag(ATag: IXMLElement);
+procedure TElement.ImportFromXML(ANode: IXMLNode);
 begin
-   edtName.Text := ATag.GetAttribute(NAME_ATTR);
-   var idx := cbType.Items.IndexOf(ATag.GetAttribute(TYPE_ATTR));
+   edtName.Text :=  GetNodeAttrStr(ANode, NAME_ATTR, '');
+   var idx := cbType.Items.IndexOf(GetNodeAttrStr(ANode, TYPE_ATTR, ''));
    if idx <> -1 then
       cbType.ItemIndex := idx
-   else if cbType.Items.Count > 0 then 
+   else if cbType.Items.Count > 0 then
       cbType.ItemIndex := 0;
    cbType.Hint := cbType.Text;
 end;
 
-function TElement.ExportToXMLTag(ATag: IXMLElement): IXMLElement;
+function TElement.ExportToXML(ANode: IXMLNode): IXMLNode;
 begin
-   result := ATag.OwnerDocument.CreateElement(FElementTypeID);
-   ATag.AppendChild(result);
-   result.SetAttribute(NAME_ATTR, Trim(edtName.Text));
-   result.SetAttribute(TYPE_ATTR, cbType.Text);
+   result := AppendNode(ANode, FElementTypeID);
+   SetNodeAttrStr(result, NAME_ATTR, Trim(edtName.Text));
+   SetNodeAttrStr(result, TYPE_ATTR, cbType.Text);
 end;
 
 procedure TElement.OnDragOverElement(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);

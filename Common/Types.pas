@@ -136,7 +136,7 @@ type
       class function New(bt: TBlockType; x, y, w, h: integer; bid: integer = ID_INVALID): TBlockParms; overload; static;
       class function New(bt: TBlockType; x, y, w, h, brx, bry, bh: integer; bid: integer = ID_INVALID): TBlockParms; overload; static;
       class function New(bt: TBlockType; x, y, w, h, brx, bry, bh, th, br2x, br2y, trh, flh: integer; bid: integer = ID_INVALID): TBlockParms; overload; static;
-      class function New(AFrom: IXMLElement): TBlockParms; overload; static;
+      class function New(AFrom: IXMLNode): TBlockParms; overload; static;
    end;
 
    PTypesSet = ^TTypesSet;
@@ -267,13 +267,13 @@ begin
    result.flh := flh;
 end;
 
-class function TBlockParms.New(AFrom: IXMLElement): TBlockParms;
+class function TBlockParms.New(AFrom: IXMLNode): TBlockParms;
 var
    attr: string;
    at: integer;
    bt: TBlockType;
 begin
-   attr := AFrom.GetAttribute(BLOCK_TYPE_ATTR);
+   attr := GetNodeAttrStr(AFrom, BLOCK_TYPE_ATTR, '');
    at := StrToIntDef(attr, -1);
    if at = -1 then
       bt := TRttiEnumerationType.GetValue<TBlockType>(attr)

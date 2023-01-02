@@ -29,8 +29,8 @@ type
    TBlockFactory = class(TObject)
    public
       class function Create(ABranch: TBranch; ABlockType: TBlockType): TBlock; overload;
-      class function Create(ATag: IXMLElement; ABranch: TBranch): TBlock; overload;
-      class function Create(ATag: IXMLElement; ATab: TBlockTabSheet): TBlock; overload;
+      class function Create(ANode: IXMLNode; ABranch: TBranch): TBlock; overload;
+      class function Create(ANode: IXMLNode; ATab: TBlockTabSheet): TBlock; overload;
    end;
 
 implementation
@@ -61,10 +61,10 @@ begin
    end;
 end;
 
-class function TBlockFactory.Create(ATag: IXMLElement; ABranch: TBranch): TBlock;
+class function TBlockFactory.Create(ANode: IXMLNode; ABranch: TBranch): TBlock;
 begin
    result := nil;
-   var p := TBlockParms.New(ATag);
+   var p := TBlockParms.New(ANode);
    case p.bt of
       blInstr:      result := TInstrBlock.Create(ABranch, p);
       blMultiInstr: result := TMultiInstrBlock.Create(ABranch, p);
@@ -82,17 +82,17 @@ begin
       blIfElse:     result := TIfElseBlock.Create(ABranch, p);
    end;
    if result <> nil then
-      result.GetFromXML(ATag);
+      result.GetFromXML(ANode);
 end;
 
-class function TBlockFactory.Create(ATag: IXMLElement; ATab: TBlockTabSheet): TBlock;
+class function TBlockFactory.Create(ANode: IXMLNode; ATab: TBlockTabSheet): TBlock;
 begin
    result := nil;
-   var p := TBlockParms.New(ATag);
+   var p := TBlockParms.New(ANode);
    if p.bt = blMain then
    begin
       result := TMainBlock.Create(ATab, p);
-      result.GetFromXML(ATag);
+      result.GetFromXML(ANode);
    end;
 end;
 

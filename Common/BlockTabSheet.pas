@@ -39,8 +39,8 @@ type
       Box: TScrollBoxEx;
       constructor Create(AMainForm: TMainForm);
       destructor Destroy; override;
-      procedure ExportToXMLTag(ATag: IXMLElement);
-      procedure ImportFromXMLTag(ATag: IXMLElement);
+      procedure ExportToXML(ANode: IXMLNode);
+      procedure ImportFromXML(ANode: IXMLNode);
       function IsMain: boolean;
       property Form: TMainForm read FForm;
    end;
@@ -100,29 +100,28 @@ begin
    result := (GProject <> nil) and (GProject.MainPage = Self);
 end;
 
-procedure TBlockTabSheet.ExportToXMLTag(ATag: IXMLElement);
+procedure TBlockTabSheet.ExportToXML(ANode: IXMLNode);
 begin
-   var tag := ATag.OwnerDocument.CreateElement('page');
-   ATag.AppendChild(tag);
-   tag.SetAttribute('name', IfThen(IsMain, MAIN_PAGE_MARKER, Caption));
-   tag.SetAttribute('hScrollRange', Box.HorzScrollBar.Range.ToString);
-   tag.SetAttribute('vScrollRange', Box.VertScrollBar.Range.ToString);
-   tag.SetAttribute('hScrollPos', Box.HorzScrollBar.Position.ToString);
-   tag.SetAttribute('vScrollPos', Box.VertScrollBar.Position.ToString);
+   var node := AppendNode(ANode, 'page');
+   SetNodeAttrStr(node, 'name', IfThen(IsMain, MAIN_PAGE_MARKER, Caption));
+   SetNodeAttrInt(node, 'hScrollRange', Box.HorzScrollBar.Range);
+   SetNodeAttrInt(node, 'vScrollRange', Box.VertScrollBar.Range);
+   SetNodeAttrInt(node, 'hScrollPos', Box.HorzScrollBar.Position);
+   SetNodeAttrInt(node, 'vScrollPos', Box.VertScrollBar.Position);
 end;
 
-procedure TBlockTabSheet.ImportFromXMLTag(ATag: IXMLElement);
+procedure TBlockTabSheet.ImportFromXML(ANode: IXMLNode);
 begin
-   var val := GetNodeAttrInt(ATag, 'hScrollRange', -1);
+   var val := GetNodeAttrInt(ANode, 'hScrollRange', -1);
    if val > -1 then
       Box.HorzScrollBar.Range := val;
-   val := GetNodeAttrInt(ATag, 'hScrollPos', -1);
+   val := GetNodeAttrInt(ANode, 'hScrollPos', -1);
    if val > -1 then
       Box.HorzScrollBar.Position := val;
-   val := GetNodeAttrInt(ATag, 'vScrollRange', -1);
+   val := GetNodeAttrInt(ANode, 'vScrollRange', -1);
    if val > -1 then
       Box.VertScrollBar.Range := val;
-   val := GetNodeAttrInt(ATag, 'vScrollPos', -1);
+   val := GetNodeAttrInt(ANode, 'vScrollPos', -1);
    if val > -1 then
       Box.VertScrollBar.Position := val;
 end;

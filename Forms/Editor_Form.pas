@@ -141,8 +141,8 @@ type
     { Public declarations }
     procedure SetFormAttributes;
     procedure ExecuteCopyToClipboard(AIfRichText: boolean);
-    procedure ExportSettingsToXMLTag(ATag: IXMLElement); override;
-    procedure ImportSettingsFromXMLTag(ATag: IXMLElement); override;
+    procedure ExportToXML(ANode: IXMLNode); override;
+    procedure ImportFromXML(ANode: IXMLNode); override;
     function GetIndentLevel(idx: integer; ALines: TStrings): integer;
     procedure RefreshEditorForObject(AObject: TObject);
     procedure UpdateEditorForBlock(ABlock: TBlock; const AChangeLine: TChangeLine);
@@ -1308,32 +1308,32 @@ begin
    end;
 end;
 
-procedure TEditorForm.ExportSettingsToXMLTag(ATag: IXMLElement);
+procedure TEditorForm.ExportToXML(ANode: IXMLNode);
 begin
    if Visible then
    begin
-      SetNodeAttrBool(ATag, 'src_win_show', True);
-      SetNodeAttrInt(ATag, 'src_win_x', Left);
-      SetNodeAttrInt(ATag, 'src_win_y', Top);
-      SetNodeAttrInt(ATag, 'src_win_w', Width);
-      SetNodeAttrInt(ATag, 'src_win_h', Height);
-      SetNodeAttrInt(ATag, 'src_win_sel_start', memCodeEditor.SelStart);
+      SetNodeAttrBool(ANode, 'src_win_show', True);
+      SetNodeAttrInt(ANode, 'src_win_x', Left);
+      SetNodeAttrInt(ANode, 'src_win_y', Top);
+      SetNodeAttrInt(ANode, 'src_win_w', Width);
+      SetNodeAttrInt(ANode, 'src_win_h', Height);
+      SetNodeAttrInt(ANode, 'src_win_sel_start', memCodeEditor.SelStart);
       if memCodeEditor.SelAvail then
-         SetNodeAttrInt(ATag, 'src_win_sel_length', memCodeEditor.SelLength);
+         SetNodeAttrInt(ANode, 'src_win_sel_length', memCodeEditor.SelLength);
       if memCodeEditor.Marks.Count > 0 then
       begin
          for var i := 0 to memCodeEditor.Marks.Count-1 do
          begin
             var mark := memCodeEditor.Marks[i];
-            var node := AppendNode(ATag, 'src_win_mark');
+            var node := AppendNode(ANode, 'src_win_mark');
             SetNodeAttrInt(node, 'line', mark.Line);
             SetNodeAttrInt(node, 'index', mark.ImageIndex);
          end;
       end;
       if memCodeEditor.TopLine > 1 then
-         SetNodeAttrInt(ATag, 'src_top_line', memCodeEditor.TopLine);
+         SetNodeAttrInt(ANode, 'src_top_line', memCodeEditor.TopLine);
       if WindowState = wsMinimized then
-         SetNodeAttrBool(ATag, 'src_win_min', True);
+         SetNodeAttrBool(ANode, 'src_win_min', True);
 {$IFDEF USE_CODEFOLDING}
       if memCodeEditor.CodeFolding.Enabled then
       begin
@@ -1344,7 +1344,7 @@ begin
             if foldRange.Collapsed then
             begin
                if node = nil then
-                  node := AppendNode(ATag, 'fold_ranges');
+                  node := AppendNode(ANode, 'fold_ranges');
                AppendNode(node, 'fold_range').Text := memCodeEditor.GetRealLineNumber(foldRange.FromLine).ToString;
             end;
          end;
@@ -1354,7 +1354,7 @@ begin
       try
          for var i := 0 to lines.Count-1 do
          begin
-            var node := AppendNode(ATag, 'text_line');
+            var node := AppendNode(ANode, 'text_line');
             var withId: IWithId := nil;
             SetCDataChild(node, lines[i]);
             if TInfra.IsValidControl(lines.Objects[i]) and Supports(lines.Objects[i], IWithId, withId) then
@@ -1366,21 +1366,21 @@ begin
    end;
 end;
 
-procedure TEditorForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
+procedure TEditorForm.ImportFromXML(ANode: IXMLNode);
 var
    i: integer;
    tag1: IXMLElement;
    mark: TSynEditMark;
    showEvent: TNotifyEvent;
 begin
-   if GetNodeAttrBool(ATag, 'src_win_show', false) and GInfra.CurrentLang.EnabledCodeGenerator then
+   if GetNodeAttrBool(ANode, 'src_win_show', false) and GInfra.CurrentLang.EnabledCodeGenerator then
    begin
       Position := poDesigned;
-      SetBounds(GetNodeAttrInt(ATag, 'src_win_x', 50),
-                GetNodeAttrInt(ATag, 'src_win_y', 50),
-                GetNodeAttrInt(ATag, 'src_win_w', 425),
-                GetNodeAttrInt(ATag, 'src_win_h', 558));
-      if GetNodeAttrBool(ATag, 'src_win_min', false) then
+      SetBounds(GetNodeAttrInt(ANode, 'src_win_x', 50),
+                GetNodeAttrInt(ANode, 'src_win_y', 50),
+                GetNodeAttrInt(ANode, 'src_win_w', 425),
+                GetNodeAttrInt(ANode, 'src_win_h', 558));
+      if GetNodeAttrBool(ANode, 'src_win_min', false) then
          WindowState := wsMinimized;
       showEvent := OnShow;
       OnShow := nil;
@@ -1389,8 +1389,8 @@ begin
       finally
          OnShow := showEvent;
       end;
-      ATag.OwnerDocument.PreserveWhiteSpace := true;
-      tag1 := TXMLProcessor.FindChildTag(ATag, 'text_line');
+      ANode.OwnerDocument.PreserveWhiteSpace := true;
+      tag1 := TXMLProcessor.FindChildTag(ANode, 'text_line');
       memCodeEditor.Lines.BeginUpdate;
       while tag1 <> nil do
       begin
@@ -1402,13 +1402,13 @@ begin
          memCodeEditor.Highlighter := GInfra.CurrentLang.HighLighter;
       memCodeEditor.ClearUndo;
       memCodeEditor.SetFocus;
-      memCodeEditor.SelStart := GetNodeAttrInt(ATag, 'src_win_sel_start', 0);
-      memCodeEditor.SelLength := GetNodeAttrInt(ATag, 'src_win_sel_length', 0);
+      memCodeEditor.SelStart := GetNodeAttrInt(ANode, 'src_win_sel_start', 0);
+      memCodeEditor.SelLength := GetNodeAttrInt(ANode, 'src_win_sel_length', 0);
 {$IFDEF USE_CODEFOLDING}
       if memCodeEditor.CodeFolding.Enabled then
       begin
          memCodeEditor.ReScanForFoldRanges;
-         tag1 := TXMLProcessor.FindChildTag(ATag, 'fold_ranges');
+         tag1 := TXMLProcessor.FindChildTag(ANode, 'fold_ranges');
          if tag1 <> nil then
          begin
             var foldLines := TStringList.Create;
@@ -1436,11 +1436,11 @@ begin
          end;
       end;
 {$ENDIF}
-      ATag.OwnerDocument.PreserveWhiteSpace := false;
-      i := GetNodeAttrInt(ATag, 'src_top_line', 0);
+      ANode.OwnerDocument.PreserveWhiteSpace := false;
+      i := GetNodeAttrInt(ANode, 'src_top_line', 0);
       if i > 0 then
          memCodeEditor.TopLine := i;
-      tag1 := TXMLProcessor.FindChildTag(ATag, 'src_win_mark');
+      tag1 := TXMLProcessor.FindChildTag(ANode, 'src_win_mark');
       while tag1 <> nil do
       begin
          mark := TSynEditMark.Create(memCodeEditor);

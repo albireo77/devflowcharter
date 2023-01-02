@@ -34,7 +34,7 @@ type
     function IsEnabled: boolean; override;
   public
     { Public declarations }
-    function ImportTabsFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TError; override;
+    function ImportTabsFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError; override;
     procedure RefreshTabs; override;
     procedure ResetForm; override;
     procedure AddUserFunction(const ABodyTopLeft: TPoint);
@@ -88,9 +88,9 @@ begin
    end;
 end;
 
-function TFunctionsForm.ImportTabsFromXMLTag(ATag: IXMLElement; AImportMode: TImportMode): TError;
+function TFunctionsForm.ImportTabsFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
 begin
-   result := GProject.ImportUserFunctionsFromXML(ATag, AImportMode);
+   result := GProject.ImportUserFunctionsFromXML(ANode, AImportMode);
 end;
 
 procedure TFunctionsForm.RefreshTabs;

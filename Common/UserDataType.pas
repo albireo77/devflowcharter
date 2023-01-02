@@ -38,8 +38,8 @@ type
       procedure OnChangeName(Sender: TObject); override;
    public
       edtSize: TSizeEdit;
-      function ExportToXMLTag(ATag: IXMLElement): IXMLElement; override;
-      procedure ImportFromXMLTag(ATag: IXMLElement); override;
+      function ExportToXML(ANode: IXMLNode): IXMLNode; override;
+      procedure ImportFromXML(ANode: IXMLNode); override;
       function IsValid: boolean; override;
    end;
 
@@ -59,8 +59,8 @@ type
       lblSize: TLabel;
       property FieldCount: integer read GetElementCount default 0;
       constructor Create(AParentForm: TDataTypesForm);
-      procedure ExportToXMLTag(ATag: IXMLElement); override;
-      procedure ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
+      procedure ExportToXML(ANode: IXMLNode); override;
+      procedure ImportFromXML(ANode: IXMLNode; APinControl: TControl = nil);
       procedure RefreshSizeEdits; override;
       function IsValidEnumValue(const AValue: string): boolean;
       function GetDimensionCount: integer;
@@ -333,22 +333,21 @@ begin
    inherited OnChangeName(Sender);
 end;
 
-procedure TUserDataType.ExportToXMLTag(ATag: IXMLElement);
+procedure TUserDataType.ExportToXML(ANode: IXMLNode);
 begin
-   var tag := ATag.OwnerDocument.CreateElement(DATATYPE_TAG);
-   ATag.AppendChild(tag);
-   inherited ExportToXMLTag(tag);
+   var node := AppendNode(ANode, DATATYPE_TAG);
+   inherited ExportToXML(node);
    if chkAddPtrType.Enabled and chkAddPtrType.Checked then
-      tag.SetAttribute(POINTER_ATTR, 'true');
-   tag.SetAttribute(KIND_ATTR, TRttiEnumerationType.GetName(Kind));
+      SetNodeAttrBool(node, POINTER_ATTR, True);
+   SetNodeAttrStr(node, KIND_ATTR, TRttiEnumerationType.GetName(Kind));
 end;
 
-procedure TUserDataType.ImportFromXMLTag(ATag: IXMLElement; APinControl: TControl = nil);
+procedure TUserDataType.ImportFromXML(ANode: IXMLNode; APinControl: TControl = nil);
 begin
-   inherited ImportFromXMLTag(ATag, APinControl);
+   inherited ImportFromXML(ANode, APinControl);
    if chkAddPtrType.Enabled then
-      chkAddPtrType.Checked := GetNodeAttrBool(ATag, POINTER_ATTR, false);
-   rgTypeBox.ItemIndex := Ord(TRttiEnumerationType.GetValue<TUserDataTypeKind>(ATag.GetAttribute(KIND_ATTR)));
+      chkAddPtrType.Checked := GetNodeAttrBool(ANode, POINTER_ATTR, false);
+   rgTypeBox.ItemIndex := Ord(TRttiEnumerationType.GetValue<TUserDataTypeKind>(GetNodeAttrStr(ANode, KIND_ATTR, '')));
 end;
 
 function TUserDataType.GetDimensionCount: integer;
@@ -425,15 +424,16 @@ begin
       inherited OnChangeName(Sender);
 end;
 
-function TField.ExportToXMLTag(ATag: IXMLElement): IXMLElement;
+function TField.ExportToXML(ANode: IXMLNode): IXMLNode;
 begin
-   inherited ExportToXMLTag(ATag).SetAttribute(SIZE_ATTR, edtSize.Text);
+   result := inherited ExportToXML(ANode);
+   SetNodeAttrStr(result, SIZE_ATTR, edtSize.Text);
 end;
 
-procedure TField.ImportFromXMLTag(ATag: IXMLElement);
+procedure TField.ImportFromXML(ANode: IXMLNode);
 begin
-   inherited ImportFromXMLTag(ATag);
-   var size := ATag.GetAttribute(SIZE_ATTR);
+   inherited ImportFromXML(ANode);
+   var size := GetNodeAttrStr(ANode, SIZE_ATTR, '');
    if size.IsEmpty then
       size := '1';
    edtSize.Text := size;

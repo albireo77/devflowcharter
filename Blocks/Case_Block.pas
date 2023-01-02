@@ -51,8 +51,8 @@ type
          function AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchTextId: integer = ID_INVALID): TBranch; override;
          function InsertNewBranch(AIndex: integer): TBranch;
          function CountErrWarn: TErrWarnCount; override;
-         function GetFromXML(ATag: IXMLElement): TError; override;
-         procedure SaveInXML(ATag: IXMLElement); override;
+         function GetFromXML(ANode: IXMLNode): TError; override;
+         procedure SaveInXML(ANode: IXMLNode); override;
          procedure ChangeColor(AColor: TColor); override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
          function IsDuplicatedCase(AEdit: TCustomEdit): boolean;
@@ -525,12 +525,12 @@ begin
       FBranchList[i].Statement.Color := AColor;
 end;
 
-function TCaseBlock.GetFromXML(ATag: IXMLElement): TError;
+function TCaseBlock.GetFromXML(ANode: IXMLNode): TError;
 begin
-   result := inherited GetFromXML(ATag);
-   if ATag <> nil then
+   result := inherited GetFromXML(ANode);
+   if ANode <> nil then
    begin
-      var tag := TXMLProcessor.FindChildTag(ATag, BRANCH_TAG);
+      var tag := TXMLProcessor.FindChildTag(ANode, BRANCH_TAG);
       if tag <> nil then
       begin
          tag := TXMLProcessor.FindNextTag(tag);   // skip default branch stored in first tag
@@ -551,21 +551,21 @@ begin
    end;
 end;
 
-procedure TCaseBlock.SaveInXML(ATag: IXMLElement);
+procedure TCaseBlock.SaveInXML(ANode: IXMLNode);
 begin
-   inherited SaveInXML(ATag);
-   if ATag <> nil then
+   inherited SaveInXML(ANode);
+   if ANode <> nil then
    begin
-      var tag := TXMLProcessor.FindChildTag(ATag, BRANCH_TAG);
-      if tag <> nil then
+      var node := TXMLProcessor.FindChildTag(ANode, BRANCH_TAG);
+      if node <> nil then
       begin
-         tag := TXMLProcessor.FindNextTag(tag);   // skip default branch stored in first tag
+         node := TXMLProcessor.FindNextTag(node);   // skip default branch stored in first tag
          for var i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
          begin
-            if tag = nil then
+            if node = nil then
                break;
-            SetNodeCData(tag, 'value', FBranchList[i].Statement.Text);
-            tag := TXMLProcessor.FindNextTag(tag);
+            SetNodeCData(node, 'value', FBranchList[i].Statement.Text);
+            node := TXMLProcessor.FindNextTag(node);
          end;
       end;
    end;

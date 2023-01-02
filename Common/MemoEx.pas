@@ -48,8 +48,8 @@ type
          property HasHScroll: boolean read FHasHScroll write SetHasHScroll;
          constructor Create(AOwner: TComponent); override;
          procedure UpdateScrolls;
-         procedure GetFromXML(ATag: IXMLElement);
-         procedure SaveInXML(ATag: IXMLElement);
+         procedure GetFromXML(ANode: IXMLNode);
+         procedure SaveInXML(ANode: IXMLNode);
          function Clone(AOwner: TComponent): TMemoEx;
          procedure CloneFrom(AMemo: TMemoEx);
       published
@@ -255,37 +255,37 @@ begin
    Repaint;
 end;
 
-procedure TMemoEx.GetFromXML(ATag: IXMLElement);
+procedure TMemoEx.GetFromXML(ANode: IXMLNode);
 begin
-   if ATag <> nil then
+   if ANode <> nil then
    begin
-      EditFormWidth := GetNodeAttrInt(ATag, 'memW', EditFormWidth);
-      EditFormHeight := GetNodeAttrInt(ATag, 'memH', EditFormHeight);
-      HasVScroll := GetNodeAttrBool(ATag, 'mem_vscroll', FHasVScroll);
-      HasHScroll := GetNodeAttrBool(ATag, 'mem_hscroll', FHasHScroll);
-      WordWrap := GetNodeAttrBool(ATag, 'mem_wordwrap', WordWrap);
-      var h := GetNodeAttrInt(ATag, 'mem_hscroll_pos', 0);
-      var v := GetNodeAttrInt(ATag, 'mem_vscroll_pos', 0);
+      EditFormWidth := GetNodeAttrInt(ANode, 'memW', EditFormWidth);
+      EditFormHeight := GetNodeAttrInt(ANode, 'memH', EditFormHeight);
+      HasVScroll := GetNodeAttrBool(ANode, 'mem_vscroll', FHasVScroll);
+      HasHScroll := GetNodeAttrBool(ANode, 'mem_hscroll', FHasHScroll);
+      WordWrap := GetNodeAttrBool(ANode, 'mem_wordwrap', WordWrap);
+      var h := GetNodeAttrInt(ANode, 'mem_hscroll_pos', 0);
+      var v := GetNodeAttrInt(ANode, 'mem_vscroll_pos', 0);
       Perform(EM_LINESCROLL, h, v);
-      var val := ATag.GetAttribute('mem_align');
+      var val := GetNodeAttrStr(ANode, 'mem_align', '');
       if not val.IsEmpty then
          Alignment := TRttiEnumerationType.GetValue<TAlignment>(val);
    end;
 end;
 
-procedure TMemoEx.SaveInXML(ATag: IXMLElement);
+procedure TMemoEx.SaveInXML(ANode: IXMLNode);
 begin
-   if ATag <> nil then
+   if ANode <> nil then
    begin
-      ATag.SetAttribute('memW', EditFormWidth.ToString);
-      ATag.SetAttribute('memH', EditFormHeight.ToString);
-      ATag.SetAttribute('mem_vscroll', HasVScroll.ToString);
-      ATag.SetAttribute('mem_hscroll', HasHScroll.ToString);
-      ATag.SetAttribute('mem_wordwrap', WordWrap.ToString);
-      ATag.SetAttribute('mem_align', TRttiEnumerationType.GetName(Alignment));
+      SetNodeAttrInt(ANode, 'memW', EditFormWidth);
+      SetNodeAttrInt(ANode, 'memH', EditFormHeight);
+      SetNodeAttrBool(ANode, 'mem_vscroll', HasVScroll);
+      SetNodeAttrBool(ANode, 'mem_hscroll', HasHScroll);
+      SetNodeAttrBool(ANode, 'mem_wordwrap', WordWrap);
+      SetNodeAttrStr(ANode, 'mem_align', TRttiEnumerationType.GetName(Alignment));
       var pos := TInfra.GetScrolledPos(Self);
-      ATag.SetAttribute('mem_hscroll_pos', pos.X.ToString);
-      ATag.SetAttribute('mem_vscroll_pos', pos.Y.ToString);
+      SetNodeAttrInt(ANode, 'mem_hscroll_pos', pos.X);
+      SetNodeAttrInt(ANode, 'mem_vscroll_pos', pos.Y);
    end;
 end;
 

@@ -30,8 +30,8 @@ uses
 
 type
 
-   TXMLExportProc = procedure(ATag: IXMLElement) of object;
-   TXMLImportProc = function(ATag: IXMLElement; AImportMode: TImportMode): TError of object;
+   TXMLExportProc = procedure(ANode: IXMLNode) of object;
+   TXMLImportProc = function(ANode: IXMLNode; AImportMode: TImportMode): TError of object;
 
    TXMLProcessor = class(TObject)
    private
@@ -45,13 +45,13 @@ type
                                        APreserveSpace: boolean = false): string;
       class function FindChildTag(ANode: IXMLNode; const AName: string): IXMLElement;
       class function FindNextTag(ANode: IXMLNode): IXMLElement;
-      class procedure ExportBlockToXML(ABlock: TBlock; ATag: IXMLElement);
+      class procedure ExportBlockToXML(ABlock: TBlock; ANode: IXMLNode);
       class function CountNodesWithText(ANodes: IXMLNodeList): integer;
-      class function ImportFlowchartFromXMLTag(ATag: IXMLElement;
-                                               AParent: TWinControl;
-                                               APrevBlock: TBlock;
-                                               var AError: TError;
-                                               ABranchInd: integer = PRIMARY_BRANCH_IDX): TBlock;
+      class function ImportFlowchartFromXML(ANode: IXMLNode;
+                                            AParent: TWinControl;
+                                            APrevBlock: TBlock;
+                                            var AError: TError;
+                                            ABranchInd: integer = PRIMARY_BRANCH_IDX): TBlock;
    end;
 
 const
@@ -60,7 +60,7 @@ const
 implementation
 
 uses
-   System.SysUtils, Infrastructure, BlockFactory, BlockTabSheet, Constants;
+   System.SysUtils, Infrastructure, BlockFactory, BlockTabSheet, Constants, OmniXMLUtils;
 
 class function TXMLProcessor.FindChildTag(ANode: IXMLNode; const AName: string): IXMLElement;
 begin
@@ -104,23 +104,19 @@ begin
    ANodes.Reset;
 end;
 
-class procedure TXMLProcessor.ExportBlockToXML(ABlock: TBlock; ATag: IXMLElement);
+class procedure TXMLProcessor.ExportBlockToXML(ABlock: TBlock; ANode: IXMLNode);
 begin
-   if (ATag <> nil) and (ABlock <> nil) then
-   begin
-      var tag := ATag.OwnerDocument.CreateElement(BLOCK_TAG);
-      ATag.AppendChild(tag);
-      ABlock.SaveInXML(tag);
-   end;
+   if (ANode <> nil) and (ABlock <> nil) then
+      ABlock.SaveInXML(AppendNode(ANode, BLOCK_TAG));
 end;
 
-class function TXMLProcessor.ImportFlowchartFromXMLTag(ATag: IXMLElement;      // root XML tag
-                                                       AParent: TWinControl;       // Parent window for new block
-                                                       APrevBlock: TBlock;
-                                                       var AError: TError;
-                                                       ABranchInd: integer = PRIMARY_BRANCH_IDX): TBlock;
+class function TXMLProcessor.ImportFlowchartFromXML(ANode: IXMLNode;            // root XML node
+                                                    AParent: TWinControl;       // Parent window for new block
+                                                    APrevBlock: TBlock;
+                                                    var AError: TError;
+                                                    ABranchInd: integer = PRIMARY_BRANCH_IDX): TBlock;
 var
-   tag: IXMLElement;
+   node: IXMLNode;
    branch: TBranch;
    initCount: integer;
    tab: TBlockTabSheet;
@@ -133,29 +129,29 @@ begin
     AError := errNone;
     Gerr_text := '';
     initCount := AParent.ControlCount;
-    tag := ATag;
+    node := ANode;
 
     if AParent is TGroupBlock then
     begin
        if APrevBlock <> nil then                                  // predBlock is not nil so newBlock will be put into list
           branch := APrevBlock.ParentBranch                       // containing predBlock, just after predBlock
-       else                                                      // predBlock is nil so newBlock will be put at the beginning of the list
+       else                                                       // predBlock is nil so newBlock will be put at the beginning of the list
           branch := TGroupBlock(AParent).GetBranch(ABranchInd);   // branch is determined by branch_id
     end
     else if AParent is TBlockTabSheet then
        tab := TBlockTabSheet(AParent);
 
-    while (tag <> nil) and (AError = errNone) do
+    while (node <> nil) and (AError = errNone) do
     begin
        newBlock := nil;
        if tab <> nil then
        begin
-          newBlock := TBlockFactory.Create(tag, tab);
+          newBlock := TBlockFactory.Create(node, tab);
           tab := nil;
        end
        else if branch <> nil then
        begin
-          newBlock := TBlockFactory.Create(tag, branch);
+          newBlock := TBlockFactory.Create(node, branch);
           if newBlock <> nil then
           begin
              branch.InsertAfter(newBlock, APrevBlock);
@@ -166,7 +162,7 @@ begin
           AError := errValidate
        else
           result := newBlock;
-       tag := FindNextTag(tag);
+       node := FindNextTag(node);
     end;
 
     if AError <> errNone then

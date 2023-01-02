@@ -56,8 +56,8 @@ type
          procedure ExpandFold(AResize: boolean); override;
          function GetTextControl: TCustomEdit; override;
          function CountErrWarn: TErrWarnCount; override;
-         function GetFromXML(ATag: IXMLElement): TError; override;
-         procedure SaveInXML(ATag: IXMLElement); override;
+         function GetFromXML(ANode: IXMLNode): TError; override;
+         procedure SaveInXML(ANode: IXMLNode); override;
          procedure ChangeColor(AColor: TColor); override;
          procedure PopulateComboBoxes; override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
@@ -561,39 +561,39 @@ begin
       result := FillCodedTemplate(lang.Name);
 end;
 
-function TForDoBlock.GetFromXML(ATag: IXMLElement): TError;
+function TForDoBlock.GetFromXML(ANode: IXMLNode): TError;
 begin
-   inherited GetFromXML(ATag);
-   if ATag <> nil then
+   inherited GetFromXML(ANode);
+   if ANode <> nil then
    begin
-      var tag := TXMLProcessor.FindChildTag(ATag, 'i_var');
+      var tag := TXMLProcessor.FindChildTag(ANode, 'i_var');
       if tag <> nil then
       begin
          cbVar.Text := tag.Text;
          edtVar.Text := tag.Text;
       end;
       FRefreshMode := true;
-      tag := TXMLProcessor.FindChildTag(ATag, 'init_val');
+      tag := TXMLProcessor.FindChildTag(ANode, 'init_val');
       if tag <> nil then
          edtStart.Text := ReplaceStr(tag.Text, '#', ' ');
-      tag := TXMLProcessor.FindChildTag(ATag, 'end_val');
+      tag := TXMLProcessor.FindChildTag(ANode, 'end_val');
       if tag <> nil then
          edtStop.Text := ReplaceStr(tag.Text, '#' , ' ');
       FRefreshMode := false;
-      FDescOrder := ATag.GetAttribute('order') = 'ordDesc';
+      FDescOrder := GetNodeAttrStr(ANode, 'order', '') = 'ordDesc';
    end;
    OnChangeAll;
 end;
 
-procedure TForDoBlock.SaveInXML(ATag: IXMLElement);
+procedure TForDoBlock.SaveInXML(ANode: IXMLNode);
 begin
-   inherited SaveInXML(ATag);
-   if ATag <> nil then
+   inherited SaveInXML(ANode);
+   if ANode <> nil then
    begin
-      SetNodeText(ATag, 'i_var', edtVar.Text);
-      SetNodeText(ATag, 'init_val', ReplaceStr(edtStart.Text, ' ', '#'));
-      SetNodeText(ATag, 'end_val', ReplaceStr(edtStop.Text, ' ', '#'));
-      ATag.SetAttribute('order', IfThen(FDescOrder, 'ordDesc', 'ordAsc'));
+      SetNodeText(ANode, 'i_var', edtVar.Text);
+      SetNodeText(ANode, 'init_val', ReplaceStr(edtStart.Text, ' ', '#'));
+      SetNodeText(ANode, 'end_val', ReplaceStr(edtStop.Text, ' ', '#'));
+      SetNodeAttrStr(ANode, 'order', IfThen(FDescOrder, 'ordDesc', 'ordAsc'));
    end;
 end;
 

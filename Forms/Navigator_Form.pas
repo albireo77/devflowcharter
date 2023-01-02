@@ -26,8 +26,8 @@ type
     { Public declarations }
     InvalidateIndicator: boolean;
     procedure ResetForm; override;
-    procedure ExportSettingsToXMLTag(ATag: IXMLElement); override;
-    procedure ImportSettingsFromXMLTag(ATag: IXMLElement); override;
+    procedure ExportToXML(ANode: IXMLNode); override;
+    procedure ImportFromXML(ANode: IXMLNode); override;
   end;
 
 var
@@ -125,31 +125,31 @@ begin
       GProject.ActivePage.Box.Perform(AMessage.Msg, AMessage.WParam, AMessage.LParam);
 end;
 
-procedure TNavigatorForm.ExportSettingsToXMLTag(ATag: IXMLElement);
+procedure TNavigatorForm.ExportToXML(ANode: IXMLNode);
 begin
    if Visible then
    begin
-      ATag.SetAttribute('nav_win_show', 'true');
-      ATag.SetAttribute('nav_win_x', Left.ToString);
-      ATag.SetAttribute('nav_win_y', Top.ToString);
-      ATag.SetAttribute('nav_win_width', Width.ToString);
-      ATag.SetAttribute('nav_win_height', Height.ToString);
+      SetNodeAttrBool(ANode, 'nav_win_show', True);
+      SetNodeAttrInt(ANode, 'nav_win_x', Left);
+      SetNodeAttrInt(ANode, 'nav_win_y', Top);
+      SetNodeAttrInt(ANode, 'nav_win_width', Width);
+      SetNodeAttrInt(ANode, 'nav_win_height', Height);
       if WindowState = wsMinimized then
-         ATag.SetAttribute('nav_win_min', 'true');
+         SetNodeAttrBool(ANode, 'nav_win_min', True);
    end;
 end;
 
-procedure TNavigatorForm.ImportSettingsFromXMLTag(ATag: IXMLElement);
+procedure TNavigatorForm.ImportFromXML(ANode: IXMLNode);
 begin
-   if GetNodeAttrBool(ATag, 'nav_win_show', false) then
+   if GetNodeAttrBool(ANode, 'nav_win_show', false) then
    begin
       Position := poDesigned;
-      if GetNodeAttrBool(ATag, 'nav_win_min', false) then
+      if GetNodeAttrBool(ANode, 'nav_win_min', false) then
          WindowState := wsMinimized;
-      SetBounds(GetNodeAttrInt(ATag, 'nav_win_x', 50),
-                GetNodeAttrInt(ATag, 'nav_win_y', 50),
-                GetNodeAttrInt(ATag, 'nav_win_width', 426),
-                GetNodeAttrInt(ATag, 'nav_win_height', 341));
+      SetBounds(GetNodeAttrInt(ANode, 'nav_win_x', 50),
+                GetNodeAttrInt(ANode, 'nav_win_y', 50),
+                GetNodeAttrInt(ANode, 'nav_win_width', 426),
+                GetNodeAttrInt(ANode, 'nav_win_height', 341));
       Show;
    end;
 end;
