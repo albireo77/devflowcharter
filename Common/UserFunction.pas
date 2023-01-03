@@ -916,7 +916,7 @@ begin
       cbType.ItemIndex := 0;
    if Assigned(cbType.OnChange) then
       cbType.OnChange(cbType);
-   var node := TXMLProcessor.FindChildTag(ANode, 'desc');
+   var node := FindNode(ANode, 'desc');
    if node <> nil then
       memDesc.Text := ReplaceStr(node.Text, LB_PHOLDER, sLineBreak);
    chkBodyVisible.Checked := GetNodeAttrBool(ANode, 'show_body', false);

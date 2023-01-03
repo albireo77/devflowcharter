@@ -566,19 +566,19 @@ begin
    inherited GetFromXML(ANode);
    if ANode <> nil then
    begin
-      var tag := TXMLProcessor.FindChildTag(ANode, 'i_var');
-      if tag <> nil then
+      var node := FindNode(ANode, 'i_var');
+      if node <> nil then
       begin
-         cbVar.Text := tag.Text;
-         edtVar.Text := tag.Text;
+         cbVar.Text := node.Text;
+         edtVar.Text := node.Text;
       end;
       FRefreshMode := true;
-      tag := TXMLProcessor.FindChildTag(ANode, 'init_val');
-      if tag <> nil then
-         edtStart.Text := ReplaceStr(tag.Text, '#', ' ');
-      tag := TXMLProcessor.FindChildTag(ANode, 'end_val');
-      if tag <> nil then
-         edtStop.Text := ReplaceStr(tag.Text, '#' , ' ');
+      node := FindNode(ANode, 'init_val');
+      if node <> nil then
+         edtStart.Text := ReplaceStr(node.Text, '#', ' ');
+      node := FindNode(ANode, 'end_val');
+      if node <> nil then
+         edtStop.Text := ReplaceStr(node.Text, '#' , ' ');
       FRefreshMode := false;
       FDescOrder := GetNodeAttrStr(ANode, 'order', '') = 'ordDesc';
    end;

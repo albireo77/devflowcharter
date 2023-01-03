@@ -1367,11 +1367,6 @@ begin
 end;
 
 procedure TEditorForm.ImportFromXML(ANode: IXMLNode);
-var
-   i: integer;
-   tag1: IXMLElement;
-   mark: TSynEditMark;
-   showEvent: TNotifyEvent;
 begin
    if GetNodeAttrBool(ANode, 'src_win_show', false) and GInfra.CurrentLang.EnabledCodeGenerator then
    begin
@@ -1382,7 +1377,7 @@ begin
                 GetNodeAttrInt(ANode, 'src_win_h', 558));
       if GetNodeAttrBool(ANode, 'src_win_min', false) then
          WindowState := wsMinimized;
-      showEvent := OnShow;
+      var showEvent := OnShow;
       OnShow := nil;
       try
          Show;
@@ -1390,12 +1385,13 @@ begin
          OnShow := showEvent;
       end;
       ANode.OwnerDocument.PreserveWhiteSpace := true;
-      tag1 := TXMLProcessor.FindChildTag(ANode, 'text_line');
       memCodeEditor.Lines.BeginUpdate;
-      while tag1 <> nil do
+      var lineNodes := FilterNodes(ANode, 'text_line');
+      var lineNode := lineNodes.NextNode;
+      while lineNode <> nil do
       begin
-         memCodeEditor.Lines.AddObject(tag1.Text, GProject.FindObject(GetNodeAttrInt(tag1, ID_ATTR, ID_INVALID)));
-         tag1 := TXMLProcessor.FindNextTag(tag1);
+         memCodeEditor.Lines.AddObject(lineNode.Text, GProject.FindObject(GetNodeAttrInt(lineNode, ID_ATTR, ID_INVALID)));
+         lineNode := lineNodes.NextNode;
       end;
       memCodeEditor.Lines.EndUpdate;
       if GSettings.EditorShowRichText then
@@ -1408,20 +1404,21 @@ begin
       if memCodeEditor.CodeFolding.Enabled then
       begin
          memCodeEditor.ReScanForFoldRanges;
-         tag1 := TXMLProcessor.FindChildTag(ANode, 'fold_ranges');
-         if tag1 <> nil then
+         var node := FindNode(ANode, 'fold_ranges');
+         if node <> nil then
          begin
             var foldLines := TStringList.Create;
             try
-               var tag2 := TXMLProcessor.FindChildTag(tag1, 'fold_range');
-               while tag2 <> nil do
+               var rangeNodes := FilterNodes(node, 'fold_range');
+               var rangeNode := rangeNodes.NextNode;
+               while rangeNode <> nil do
                begin
-                  if StrToIntDef(tag2.Text, 0) > 0 then
-                     foldLines.Add(tag2.Text);
-                  tag2 := TXMLProcessor.FindNextTag(tag2);
+                  if StrToIntDef(rangeNode.Text, 0) > 0 then
+                     foldLines.Add(rangeNode.Text);
+                  rangeNode := rangeNodes.NextNode;
                end;
                foldLines.CustomSort(@CompareIntegers);
-               for i := foldLines.Count-1 downto 0 do
+               for var i := foldLines.Count-1 downto 0 do
                begin
                   var foldRange := memCodeEditor.CollapsableFoldRangeForLine(foldLines[i].ToInteger);
                   if (foldRange <> nil) and not foldRange.Collapsed then
@@ -1437,18 +1434,19 @@ begin
       end;
 {$ENDIF}
       ANode.OwnerDocument.PreserveWhiteSpace := false;
-      i := GetNodeAttrInt(ANode, 'src_top_line', 0);
+      var i := GetNodeAttrInt(ANode, 'src_top_line', 0);
       if i > 0 then
          memCodeEditor.TopLine := i;
-      tag1 := TXMLProcessor.FindChildTag(ANode, 'src_win_mark');
-      while tag1 <> nil do
+      var markNodes := FilterNodes(ANode, 'src_win_mark');
+      var markNode := markNodes.NextNode;
+      while markNode <> nil do
       begin
-         mark := TSynEditMark.Create(memCodeEditor);
-         mark.ImageIndex := GetNodeAttrInt(tag1, 'index', 0);
+         var mark := TSynEditMark.Create(memCodeEditor);
+         mark.ImageIndex := GetNodeAttrInt(markNode, 'index', 0);
          memCodeEditor.Marks.Add(mark);
-         mark.Line := GetNodeAttrInt(tag1, 'line', 0);
+         mark.Line := GetNodeAttrInt(markNode, 'line', 0);
          mark.Visible := true;
-         tag1 := TXMLProcessor.FindNextTag(tag1);
+         markNode := markNodes.NextNode;
       end;
    end;
 end;

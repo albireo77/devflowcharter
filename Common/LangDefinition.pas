@@ -314,7 +314,7 @@ end;
 
 function TLangDefinition.ImportFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
 var
-   tag: IXMLElement;
+   node: IXMLNode;
    val, lName, kinds: string;
    lKind: TDataTypeKind;
    lOrigType, lType: PNativeDataType;
@@ -337,105 +337,105 @@ begin
 
    ImportBlockTemplates(ANode);
 
-   tag := TXMLProcessor.FindChildTag(ANode, 'DecimalSeparator');
-   if (tag <> nil) and not tag.Text.IsEmpty then
-      DecimalSeparator := tag.Text[1];
+   node := FindNode(ANode, 'DecimalSeparator');
+   if (node <> nil) and not node.Text.IsEmpty then
+      DecimalSeparator := node.Text[1];
 
-   tag := TXMLProcessor.FindChildTag(ANode, 'FunctionHeaderTypeModifier1');
-   if tag <> nil then
+   node := FindNode(ANode, 'FunctionHeaderTypeModifier1');
+   if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(tag.Text);
+      threeStrings := T3Strings.Extract(node.Text);
       FunctionHeaderTypeNone1 := threeStrings.S0;
       FunctionHeaderTypeNotNone1 := threeStrings.S1;
    end;
 
-   tag := TXMLProcessor.FindChildTag(ANode, 'FunctionHeaderTypeModifier2');
-   if tag <> nil then
+   node := FindNode(ANode, 'FunctionHeaderTypeModifier2');
+   if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(tag.Text);
+      threeStrings := T3Strings.Extract(node.Text);
       FunctionHeaderTypeNone2 := threeStrings.S0;
       FunctionHeaderTypeNotNone2 := threeStrings.S1;
    end;
 
-   tag := TXMLProcessor.FindChildTag(ANode, 'FunctionHeaderExternalModifier');
-   if tag <> nil then
+   node := FindNode(ANode, 'FunctionHeaderExternalModifier');
+   if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(tag.Text);
+      threeStrings := T3Strings.Extract(node.Text);
       FunctionHeaderExternal := threeStrings.S0;
       FunctionHeaderNotExternal := threeStrings.S1;
       FunctionHeaderTransExternal := threeStrings.S2;
    end;
 
-   tag := TXMLProcessor.FindChildTag(ANode, 'FunctionHeaderStaticModifier');
-   if tag <> nil then
+   node := FindNode(ANode, 'FunctionHeaderStaticModifier');
+   if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(tag.Text);
+      threeStrings := T3Strings.Extract(node.Text);
       FunctionHeaderStatic := threeStrings.S0;
       FunctionHeaderNotStatic := threeStrings.S1;
    end;
 
-   tag := TXMLProcessor.FindChildTag(ANode, 'FunctionHeaderTypeArrayModifier');
-   if tag <> nil then
+   node := FindNode(ANode, 'FunctionHeaderTypeArrayModifier');
+   if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(tag.Text);
+      threeStrings := T3Strings.Extract(node.Text);
       FunctionHeaderTypeArray := threeStrings.S0;
       FunctionHeaderTypeNotArray := threeStrings.S1;
    end;
 
-   tag := TXMLProcessor.FindChildTag(ANode, 'VarExternModifier');
-   if tag <> nil then
+   node := FindNode(ANode, 'VarExternModifier');
+   if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(tag.Text);
+      threeStrings := T3Strings.Extract(node.Text);
       VarExtern := threeStrings.S0;
       VarNotExtern := threeStrings.S1;
       VarTransExtern := threeStrings.S2;
    end;
 
-   tag := TXMLProcessor.FindChildTag(ANode, 'ConstExternModifier');
-   if tag <> nil then
+   node := FindNode(ANode, 'ConstExternModifier');
+   if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(tag.Text);
+      threeStrings := T3Strings.Extract(node.Text);
       ConstExtern := threeStrings.S0;
       ConstNotExtern := threeStrings.S1;
       ConstTransExtern := threeStrings.S2;
    end;
 
-   tag := TXMLProcessor.FindChildTag(ANode, 'ForDoTemplateModifier1');
-   if tag <> nil then
+   node := FindNode(ANode, 'ForDoTemplateModifier1');
+   if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(tag.Text);
+      threeStrings := T3Strings.Extract(node.Text);
       ForDoAsc1 := threeStrings.S0;
       ForDoDesc1 := threeStrings.S1;
    end;
 
-   tag := TXMLProcessor.FindChildTag(ANode, 'ForDoTemplateModifier2');
-   if tag <> nil then
+   node := FindNode(ANode, 'ForDoTemplateModifier2');
+   if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(tag.Text);
+      threeStrings := T3Strings.Extract(node.Text);
       ForDoAsc2 := threeStrings.S0;
       ForDoDesc2 := threeStrings.S1;
    end;
 
-   tag := TXMLProcessor.FindChildTag(ANode, 'DataTypeExternalModifier');
-   if tag <> nil then
+   node := FindNode(ANode, 'DataTypeExternalModifier');
+   if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(tag.Text);
+      threeStrings := T3Strings.Extract(node.Text);
       DataTypeExternal := threeStrings.S0;
       DataTypeNotExternal := threeStrings.S1;
       DataTypeTransExternal := threeStrings.S2;
    end;
 
-   tag := TXMLProcessor.FindChildTag(ANode, 'ConstTypeModifier');
-   if tag <> nil then
+   node := FindNode(ANode, 'ConstTypeModifier');
+   if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(tag.Text);
+      threeStrings := T3Strings.Extract(node.Text);
       ConstTypeNotGeneric := threeStrings.S0;
       ConstTypeGeneric := threeStrings.S1;
    end;
 
-   tag := TXMLProcessor.FindChildTag(ANode, 'LabelFontName');
-   if (tag <> nil) and (Screen.Fonts.IndexOf(tag.Text) <> -1) then
-      LabelFontName := tag.Text;
+   node := FindNode(ANode, 'LabelFontName');
+   if (node <> nil) and (Screen.Fonts.IndexOf(node.Text) <> -1) then
+      LabelFontName := node.Text;
 
    CommentBegin                    := GetNodeTextStr(ANode, 'CommentBegin', CommentBegin);
    CommentEnd                      := GetNodeTextStr(ANode, 'CommentEnd', CommentEnd);
@@ -560,21 +560,21 @@ begin
    CodeIncludeExternDataType       := GetNodeTextBool(ANode, 'CodeIncludeExternDataType', CodeIncludeExternDataType);
    CodeIncludeExternFunction       := GetNodeTextBool(ANode, 'CodeIncludeExternFunction', CodeIncludeExternFunction);
 
-   tag := TXMLProcessor.FindChildTag(ANode, 'NativeDataTypes');
-   if tag <> nil then
+   node := FindNode(ANode, 'NativeDataTypes');
+   if node <> nil then
    begin
       a := 0;
-      var datatypeNodes := FilterNodes(tag, 'DataType');
+      var datatypeNodes := FilterNodes(node, 'DataType');
       var count := TXMLProcessor.CountNodesWithText(datatypeNodes);
       SetLength(NativeDataTypes, count);
-      var node := datatypeNodes.NextNode;
-      while node <> nil do
+      var dnode := datatypeNodes.NextNode;
+      while dnode <> nil do
       begin
          lOrigType := nil;
-         lName := node.Text.Trim;
+         lName := dnode.Text.Trim;
          if not lName.IsEmpty then
          begin
-            kinds := GetNodeAttrStr(node, 'kind', '');
+            kinds := GetNodeAttrStr(dnode, 'kind', '');
             if kinds = 'int' then
                lKind := tpInt
             else if kinds = 'real' then
@@ -588,7 +588,7 @@ begin
                if EnabledPointers then
                begin
                   lKind := tpPtr;
-                  val := GetNodeAttrStr(node, 'origtype', '').Trim;
+                  val := GetNodeAttrStr(dnode, 'origtype', '').Trim;
                   for i := 0 to a-1 do
                   begin
                      if SameText(val, NativeDataTypes[i].Name) then
@@ -613,75 +613,75 @@ begin
             if lOrigType = nil then
                lOrigType := lType;
             lType.OrigType := lOrigType;
-            lType.IsGeneric := GetNodeAttrBool(node, 'generic', false);
-            lType.Lib := GetNodeAttrStr(node, 'library', '');
+            lType.IsGeneric := GetNodeAttrBool(dnode, 'generic', false);
+            lType.Lib := GetNodeAttrStr(dnode, 'library', '');
          end;
-         node := datatypeNodes.NextNode;
+         dnode := datatypeNodes.NextNode;
       end;
       if a < count then
          SetLength(NativeDataTypes, a);
    end;
-   tag := TXMLProcessor.FindChildTag(ANode, 'KeyWords');
-   if tag <> nil then
+   node := FindNode(ANode, 'KeyWords');
+   if node <> nil then
    begin
       KeyWords.Sorted := false;
       KeyWords.CaseSensitive := CaseSensitiveSyntax;
-      GetNodesText(tag, 'KeyWord', KeyWords);
+      GetNodesText(node, 'KeyWord', KeyWords);
       KeyWords.Sort;
    end;
-   tag := TXMLProcessor.FindChildTag(ANode, 'NativeFunctions');
-   if tag <> nil then
+   node := FindNode(ANode, 'NativeFunctions');
+   if node <> nil then
    begin
-      var functionNodes := FilterNodes(tag, 'Function');
+      var functionNodes := FilterNodes(node, 'Function');
       SetLength(NativeFunctions, TXMLProcessor.CountNodesWithText(functionNodes));
-      var node := functionNodes.NextNode;
+      var fnode := functionNodes.NextNode;
       i := 0;
-      while node <> nil do
+      while fnode <> nil do
       begin
-         val := node.Text.Trim;
+         val := fnode.Text.Trim;
          if not val.IsEmpty then
          begin
             with NativeFunctions[i] do
             begin
                Name := val;
-               Brackets := GetNodeAttrStr(node, 'brackets', '');
-               BracketsCursorPos := GetNodeAttrInt(node, 'bracketsCursorPos', 0);
-               Caption := GetNodeAttrStr(node, 'caption', '').Trim;
-               Hint := GetNodeAttrStr(node, 'hint', '').Trim;
-               Lib := GetNodeAttrStr(node, 'library', '').Trim;
+               Brackets := GetNodeAttrStr(fnode, 'brackets', '');
+               BracketsCursorPos := GetNodeAttrInt(fnode, 'bracketsCursorPos', 0);
+               Caption := GetNodeAttrStr(fnode, 'caption', '').Trim;
+               Hint := GetNodeAttrStr(fnode, 'hint', '').Trim;
+               Lib := GetNodeAttrStr(fnode, 'library', '').Trim;
             end;
             Inc(i);
          end;
-         node := functionNodes.NextNode;
+         fnode := functionNodes.NextNode;
       end;
    end;
 {$IFDEF USE_CODEFOLDING}
-   tag := TXMLProcessor.FindChildTag(ANode, 'FoldRegions');
-   if tag <> nil then
+   node := FindNode(ANode, 'FoldRegions');
+   if node <> nil then
    begin
       i := 0;
-      var foldRegionNodes := FilterNodes(tag, 'FoldRegion');
+      var foldRegionNodes := FilterNodes(node, 'FoldRegion');
       SetLength(FoldRegions, foldRegionNodes.Length);
-      var node := foldRegionNodes.NextNode;
-      while node <> nil do
+      var rnode := foldRegionNodes.NextNode;
+      while rnode <> nil do
       begin
          with FoldRegions[i] do
          begin
-            var tag1 := TXMLProcessor.FindChildTag(node, 'Open');
-            if tag1 <> nil then
-               Open := tag1.GetAttribute('Keyword');
-            tag1 := TXMLProcessor.FindChildTag(node, 'Close');
-            if tag1 <> nil then
-               Close := tag1.GetAttribute('Keyword');
-            AddClose := GetNodeAttrBool(node, 'AddClose', false);
-            NoSubFolds := GetNodeAttrBool(node, 'NoSubFolds', true);
-            WholeWords := GetNodeAttrBool(node, 'WholeWords', true);
-            if GetNodeAttrStr(node, 'Type', '') = 'rtChar' then
+            var onode := FindNode(rnode, 'Open');
+            if onode <> nil then
+               Open := GetNodeAttrStr(onode, 'Keyword', '');
+            var cnode := FindNode(rnode, 'Close');
+            if cnode <> nil then
+               Close := GetNodeAttrStr(cnode, 'Keyword', '');
+            AddClose := GetNodeAttrBool(rnode, 'AddClose', false);
+            NoSubFolds := GetNodeAttrBool(rnode, 'NoSubFolds', true);
+            WholeWords := GetNodeAttrBool(rnode, 'WholeWords', true);
+            if GetNodeAttrStr(rnode, 'Type', '') = 'rtChar' then
                RegionType := rtChar
             else
                RegionType := rtKeyword;
          end;
-         node := foldRegionNodes.NextNode;
+         rnode := foldRegionNodes.NextNode;
          Inc(i);
       end;
    end;

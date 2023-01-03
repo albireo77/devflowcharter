@@ -530,23 +530,21 @@ begin
    result := inherited GetFromXML(ANode);
    if ANode <> nil then
    begin
-      var tag := TXMLProcessor.FindChildTag(ANode, BRANCH_TAG);
-      if tag <> nil then
+      var branchNodes := FilterNodes(ANode, BRANCH_TAG);
+      branchNodes.NextNode;          // skip default branch stored in first tag
+      var branchNode := branchNodes.NextNode;
+      FRefreshMode := true;
+      for var i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
       begin
-         tag := TXMLProcessor.FindNextTag(tag);   // skip default branch stored in first tag
-         FRefreshMode := true;
-         for var i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
+         if branchNode <> nil then
          begin
-            if tag <> nil then
-            begin
-               var tag2 := TXMLProcessor.FindChildTag(tag, 'value');
-               if tag2 <> nil then
-                  FBranchList[i].Statement.Text := tag2.Text;
-            end;
-            tag := TXMLProcessor.FindNextTag(tag);
+            var node := FindNode(branchNode, 'value');
+            if node <> nil then
+               FBranchList[i].Statement.Text := node.Text;
          end;
-         FRefreshMode := false;
+         branchNode := branchNodes.NextNode;
       end;
+      FRefreshMode := false;
       Repaint;
    end;
 end;
@@ -556,17 +554,15 @@ begin
    inherited SaveInXML(ANode);
    if ANode <> nil then
    begin
-      var node := TXMLProcessor.FindChildTag(ANode, BRANCH_TAG);
-      if node <> nil then
+      var branchNodes := FilterNodes(ANode, BRANCH_TAG);
+      branchNodes.NextNode;          // skip default branch stored in first tag
+      var branchNode := branchNodes.NextNode;
+      for var i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
       begin
-         node := TXMLProcessor.FindNextTag(node);   // skip default branch stored in first tag
-         for var i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
-         begin
-            if node = nil then
-               break;
-            SetNodeCData(node, 'value', FBranchList[i].Statement.Text);
-            node := TXMLProcessor.FindNextTag(node);
-         end;
+         if branchNode = nil then
+            break;
+         SetNodeCData(branchNode, 'value', FBranchList[i].Statement.Text);
+         branchNode := branchNodes.NextNode;
       end;
    end;
 end;

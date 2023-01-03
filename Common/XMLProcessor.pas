@@ -36,15 +36,12 @@ type
    TXMLProcessor = class(TObject)
    private
       class function DialogXMLFile(ADialog: TOpenDialog; const AFileName: string = ''): string;
-      class function FindTag(ANode: IXMLNode; const ANodeName: string): IXMLElement;
    public
       class function ExportToXMLFile(AExportProc: TXMLExportProc; const AFilePath: string = ''): TError;
       class function ImportFromXMLFile(AImportProc: TXMLImportProc;
                                        AImportMode: TImportMode;
                                        const AFileName: string = '';
                                        APreserveSpace: boolean = false): string;
-      class function FindChildTag(ANode: IXMLNode; const AName: string): IXMLElement;
-      class function FindNextTag(ANode: IXMLNode): IXMLElement;
       class procedure ExportBlockToXML(ABlock: TBlock; ANode: IXMLNode);
       class function CountNodesWithText(ANodes: IXMLNodeList): integer;
       class function ImportFlowchartFromXML(ANode: IXMLNode;
@@ -61,34 +58,6 @@ implementation
 
 uses
    System.SysUtils, Infrastructure, BlockFactory, BlockTabSheet, Constants, OmniXMLUtils;
-
-class function TXMLProcessor.FindChildTag(ANode: IXMLNode; const AName: string): IXMLElement;
-begin
-   result := nil;
-   if ANode <> nil then
-      result := FindTag(ANode.FirstChild, AName);
-end;
-
-class function TXMLProcessor.FindNextTag(ANode: IXMLNode): IXMLElement;
-begin
-   result := nil;
-   if ANode <> nil then
-      result := FindTag(ANode.NextSibling, ANode.NodeName);
-end;
-
-class function TXMLProcessor.FindTag(ANode: IXMLNode; const ANodeName: string): IXMLElement;
-begin
-   result := nil;
-   while ANode <> nil do
-   begin
-      if ANode.NodeName = ANodeName then
-      begin
-         result := ANode as IXMLElement;
-         break;
-      end;
-      ANode := ANode.NextSibling;
-   end;
-end;
 
 class function TXMLProcessor.CountNodesWithText(ANodes: IXMLNodeList): integer;
 begin
@@ -141,7 +110,7 @@ begin
     else if AParent is TBlockTabSheet then
        tab := TBlockTabSheet(AParent);
 
-    while (node <> nil) and (AError = errNone) do
+    while (node <> nil) and (node.NodeName = BLOCK_TAG) and (AError = errNone) do
     begin
        newBlock := nil;
        if tab <> nil then
@@ -162,7 +131,7 @@ begin
           AError := errValidate
        else
           result := newBlock;
-       node := FindNextTag(node);
+       node := node.NextSibling;
     end;
 
     if AError <> errNone then

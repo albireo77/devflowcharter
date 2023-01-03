@@ -455,18 +455,18 @@ begin
    begin
       var activePage: TBlockTabSheet := nil;
       var pageFront := GetNodeAttrStr(ANode, PAGE_FRONT_ATTR, '');
-      var node := TXMLProcessor.FindChildTag(ANode, 'pages');
-      node := TXMLProcessor.FindChildTag(node, 'page');
-      while node <> nil do
+      var pageNodes := FilterNodes(FindNode(ANode, 'pages'), 'page');
+      var pageNode := pageNodes.NextNode;
+      while pageNode <> nil do
       begin
-         var page := GetPage(GetNodeAttrStr(node, 'name', ''));
+         var page := GetPage(GetNodeAttrStr(pageNode, 'name', ''));
          if page <> nil then
          begin
-            page.ImportFromXML(node);
+            page.ImportFromXML(pageNode);
             if (activePage = nil) and SameCaption(page.Caption, pageFront) then
                activePage := page;
          end;
-         node := TXMLProcessor.FindNextTag(node);
+         pageNode := pageNodes.NextNode;
       end;
       if activePage = nil then
          activePage := MainPage;
@@ -573,19 +573,20 @@ end;
 
 function TProject.GetSelectList(ANode: IXMLNode; const ALabel: string; const ANodeName: string; const ANodeName2: string = ''): TStringList;
 begin
-   var isTag2Empty := ANodeName2.IsEmpty;
    result := TStringList.Create;
-   var tag := TXMLProcessor.FindChildTag(ANode, ANodeName);
-   while tag <> nil do
+   var isTag2Empty := ANodeName2.IsEmpty;
+   var nodes := FilterNodes(ANode, ANodeName);
+   var node := nodes.NextNode;
+   while node <> nil do
    begin
-      var tag1: IXMLElement := nil;
+      var node1: IXMLNode := nil;
       if not isTag2Empty then
-         tag1 := TXMLProcessor.FindChildTag(tag, ANodeName2)
+         node1 := FindNode(node, ANodeName2)
       else
-         tag1 := tag;
-      if tag1 <> nil then
-         result.Add(tag1.GetAttribute(NAME_ATTR));
-      tag := TXMLProcessor.FindNextTag(tag);
+         node1 := node;
+      if node1 <> nil then
+         result.Add(GetNodeAttrStr(node1, NAME_ATTR, ''));
+      node := nodes.NextNode;
    end;
    if result.Count = 1 then
       FreeAndNil(result)
@@ -600,14 +601,10 @@ end;
 
 function TProject.ImportUserFunctionsFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
 var
-   node, node1: IXMLNode;
    header, lastHeader: TUserFunctionHeader;
    body, lastBody: TMainBlock;
-   tmpBlock: TBlock;
    page: TTabSheet;
    selectList: TStringList;
-   box: TScrollBoxEx;
-   p: TPoint;
 begin
    result := errNone;
    selectList := nil;
@@ -618,45 +615,46 @@ begin
          if (selectList <> nil) and (selectList.Count = 0) then
             Exit;
       end;
-      node := TXMLProcessor.FindChildTag(ANode, FUNCTION_TAG);
+      var funcNodes := FilterNodes(ANode, FUNCTION_TAG);
+      var funcNode := funcNodes.NextNode;
       lastBody := nil;
       lastHeader := nil;
-      while (node <> nil) and (result = errNone) do
+      while (funcNode <> nil) and (result = errNone) do
       begin
          header := nil;
          body := nil;
-         node1 := TXMLProcessor.FindChildTag(node, HEADER_TAG);
-         if node1 <> nil then
+         var headerNode := FindNode(funcNode, HEADER_TAG);
+         if headerNode <> nil then
          begin
-            if (selectList <> nil) and (selectList.IndexOf(GetNodeAttrStr(node1, NAME_ATTR, '')) = -1) then
+            if (selectList <> nil) and (selectList.IndexOf(GetNodeAttrStr(headerNode, NAME_ATTR, '')) = -1) then
             begin
-               node := TXMLProcessor.FindNextTag(node);
+               funcNode := funcNodes.NextNode;
                continue;
             end;
             if GInfra.CurrentLang.EnabledUserFunctionHeader then
             begin
                header := TUserFunctionHeader.Create(TInfra.GetFunctionsForm);
-               header.ImportFromXML(node1);
+               header.ImportFromXML(headerNode);
                header.RefreshFontColor;
             end;
          end
          else if AImportMode <> impAll then
          begin
-            node := TXMLProcessor.FindNextTag(node);
+            funcNode := funcNodes.NextNode;
             continue;
          end;
-         node1 := TXMLProcessor.FindChildTag(node, BLOCK_TAG);
-         if (node1 <> nil) and GInfra.CurrentLang.EnabledUserFunctionBody then
+         var blockNode := FindNode(funcNode, BLOCK_TAG);
+         if (blockNode <> nil) and GInfra.CurrentLang.EnabledUserFunctionBody then
          begin
             if AImportMode = impAll then
             begin
-               page := GetPage(GetNodeAttrStr(node1, PAGE_CAPTION_ATTR, ''));
+               page := GetPage(GetNodeAttrStr(blockNode, PAGE_CAPTION_ATTR, ''));
                if page = nil then
                   page := MainPage;
             end
             else
                page := ActivePage;
-            tmpBlock := TXMLProcessor.ImportFlowchartFromXML(node1, page, nil, result);
+            var tmpBlock := TXMLProcessor.ImportFlowchartFromXML(blockNode, page, nil, result);
             if tmpBlock is TMainBlock then
                body := TMainBlock(tmpBlock);
          end;
@@ -668,14 +666,14 @@ begin
          end
          else
             header.Free;
-         node := TXMLProcessor.FindNextTag(node);
+         funcNode := funcNodes.NextNode;
       end;
       if lastBody <> nil then
       begin
-         box := lastBody.Page.Box;
+         var box := lastBody.Page.Box;
          if AImportMode = impSelectPopup then
          begin
-            p := box.PopupMenu.PopupPoint;
+            var p := box.PopupMenu.PopupPoint;
             if not InvalidPoint(p) then
                TInfra.MoveWin(lastBody, box.ScreenToClient(p));
             if lastBody.Visible then
@@ -704,19 +702,20 @@ begin
          if (selectList <> nil) and (selectList.Count = 0) then
             Exit;
       end;
-      var node := TXMLProcessor.FindChildTag(ANode, DATATYPE_TAG);
-      while node <> nil do
+      var dataTypeNodes := FilterNodes(ANode, DATATYPE_TAG);
+      var dataTypeNode := dataTypeNodes.NextNode;
+      while dataTypeNode <> nil do
       begin
-         var dataTypeName := GetNodeAttrStr(node, NAME_ATTR, '');
+         var dataTypeName := GetNodeAttrStr(dataTypeNode, NAME_ATTR, '');
          if (selectList <> nil) and (selectList.IndexOf(dataTypeName) = -1) then
          begin
-            node := TXMLProcessor.FindNextTag(node);
+            dataTypeNode := dataTypeNodes.NextNode;
             continue;
          end;
          dataType := TUserDataType.Create(TInfra.GetDataTypesForm);
-         dataType.ImportFromXML(node);
+         dataType.ImportFromXML(dataTypeNode);
          dataType.RefreshFontColor;
-         node := TXMLProcessor.FindNextTag(node);
+         dataTypeNode := dataTypeNodes.NextNode;
       end;
       if dataType <> nil then
          dataType.PageControl.ActivePage := dataType;
@@ -739,15 +738,16 @@ end;
 function TProject.ImportCommentsFromXML(ANode: IXMLNode): integer;
 begin
    result := NO_ERROR;
-   var node := TXMLProcessor.FindChildTag(ANode, COMMENT_TAG);
-   while node <> nil do
+   var commentNodes := FilterNodes(ANode, COMMENT_TAG);
+   var commentNode := commentNodes.NextNode;
+   while commentNode <> nil do
    begin
-      var page := GetPage(GetNodeAttrStr(node, PAGE_CAPTION_ATTR, ''));
+      var page := GetPage(GetNodeAttrStr(commentNode, PAGE_CAPTION_ATTR, ''));
       if page = nil then
          page := MainPage;
       var comment := TComment.CreateDefault(page);
-      comment.ImportFromXML(node, nil);
-      node := TXMLProcessor.FindNextTag(node);
+      comment.ImportFromXML(commentNode, nil);
+      commentNode := commentNodes.NextNode;
    end;
 end;
 

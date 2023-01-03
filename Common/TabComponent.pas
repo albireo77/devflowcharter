@@ -465,14 +465,15 @@ begin
       edtName.OnChange(edtName);
    chkExternal.State := TInfra.DecodeCheckBoxState(GetNodeAttrStr(ANode, 'ext_decl', ''));
    edtLibrary.Text := GetNodeAttrStr(ANode, 'library', '');
-   var node := TXMLProcessor.FindChildTag(ANode, FElementTypeID);
+   var nodes := FilterNodes(ANode, FElementTypeID);
+   var node := nodes.NextNode;
    while node <> nil do
    begin
       var elem := CreateElement;
       sbxElements.Constraints.MaxHeight := sbxElements.Constraints.MaxHeight + 22;
       sbxElements.Height := sbxElements.Height + 22;
       elem.ImportFromXML(node);
-      node := TXMLProcessor.FindNextTag(node);
+      node := nodes.NextNode;
    end;
    FId := GProject.Register(Self, GetNodeAttrInt(ANode, ID_ATTR, ID_INVALID));
 end;

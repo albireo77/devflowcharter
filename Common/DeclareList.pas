@@ -47,7 +47,8 @@ type
          FId,
          FDragRow,
          FExternalCol: integer;
-         FKind: string;
+         FKind,
+         FTag: string;
          FSplitter: TSplitter;
          function GetId: integer;
          function IsDeclared(const AName: string; AssociatedListCheck: boolean): boolean;
@@ -94,7 +95,7 @@ type
          function ImportItemFromXML(ANode: IXMLNode): TError; virtual;
          procedure ExportItemToXML(ANode: IXMLNode; idx: integer); virtual;
          procedure ExportToXML(ANode: IXMLNode);
-         function GetImportNode(ANode: IXMLNode): IXMLNode; virtual;
+         function GetImportNode(ANode: IXMLNode): IXMLNode; virtual; abstract;
          function RetrieveFocus(AInfo: TFocusInfo): boolean;
          function GetTreeNodeText(ANodeOffset: integer = 0): string;
          function CanBeFocused: boolean;
@@ -178,8 +179,6 @@ uses
    XMLProcessor, Project, UserDataType, LangDefinition, ParserHelper, Constants, OmniXMLUtils;
 
 constructor TDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
-var
-   i: integer;
 begin
    FExternalCol := INVALID_COL;
    inherited Create(AParent);
@@ -203,7 +202,7 @@ begin
    sgList.FixedRows := 1;
    sgList.FixedCols := 0;
    sgList.DefaultColWidth := sgList.Width div AColCount;
-   for i := 0 to AColCount-1 do
+   for var i := 0 to AColCount-1 do
       SetColumnLabel(i);
    sgList.DrawingStyle := gdsClassic;
    sgList.Ctl3D := false;
@@ -303,6 +302,7 @@ constructor TConstDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, 
 begin
 
    FKind := 'Const';
+   FTag := CONST_TAG;
 
    inherited Create(AParent, ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth);
 
@@ -334,6 +334,7 @@ constructor TVarDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, AD
 begin
 
    FKind := 'Var';
+   FTag := VAR_TAG;
 
    inherited Create(AParent, ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth);
 
@@ -844,22 +845,17 @@ begin
    end;
 end;
 
-function TDeclareList.GetImportNode(ANode: IXMLNode): IXMLNode;
-begin
-   result := ANode;
-end;
-
 function TVarDeclareList.GetImportNode(ANode: IXMLNode): IXMLNode;
 begin
-   result := TXMLProcessor.FindChildTag(ANode, VAR_TAG);
+   result := FindNode(ANode, VAR_TAG);
    if result = nil then
    begin
-      result := TXMLProcessor.FindChildTag(ANode, FUNCTION_TAG);
+      result := FindNode(ANode, FUNCTION_TAG);
       if result <> nil then
       begin
-         result := TXMLProcessor.FindChildTag(result, HEADER_TAG);
+         result := FindNode(result, HEADER_TAG);
          if result <> nil then
-            result := TXMLProcessor.FindChildTag(result, VAR_TAG);
+            result := FindNode(result, VAR_TAG);
       end;
    end;
    if result <> nil then
@@ -868,36 +864,34 @@ end;
 
 function TConstDeclareList.GetImportNode(ANode: IXMLNode): IXMLNode;
 begin
-   result := TXMLProcessor.FindChildTag(ANode, CONST_TAG);
+   result := FindNode(ANode, CONST_TAG);
 end;
 
 function TDeclareList.ImportFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
-var
-   node: IXMLNode;
-   i: integer;
 begin
    if ANode <> nil then
       FId := GProject.Register(Self, GetNodeAttrInt(ANode, ID_ATTR, ID_INVALID));
    if goColSizing in sgList.Options then
    begin
-      i := 0;
-      node := TXMLProcessor.FindChildTag(ANode, FKind + 'colwidth');
+      var i := 0;
+      var nodes := FilterNodes(ANode, FKind + 'colwidth');
+      var node := nodes.NextNode;
       while (node <> nil) and (i < sgList.ColCount) do
       begin
          sgList.ColWidths[i] := StrToIntDef(node.Text, sgList.ColWidths[i]);
-         node := TXMLProcessor.FindNextTag(node);
+         node := nodes.NextNode;
          i := i + 1;
       end;
    end;
-   node := TXMLProcessor.FindChildTag(ANode, FKind + 'width');
+   var node := FindNode(ANode, FKind + 'width');
    if node <> nil then
       Width := StrToIntDef(node.Text, Width);
    sgList.BeginUpdate;
    node := GetImportNode(ANode);
-   while node <> nil do
+   while (node <> nil) and (node.NodeName = FTag) do
    begin
       ImportItemFromXML(node);
-      node := TXMLProcessor.FindNextTag(node);
+      node := node.NextSibling;
    end;
    sgList.EndUpdate;
    RefreshCheckBoxes;

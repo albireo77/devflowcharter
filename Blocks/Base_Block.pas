@@ -2115,12 +2115,13 @@ procedure TBlock.ImportCommentsFromXML(ANode: IXMLNode);
 begin
    if ProcessComments then
    begin
-      var node := TXMLProcessor.FindChildTag(ANode, COMMENT_TAG);
-      while node <> nil do
+      var commentNodes := FilterNodes(ANode, COMMENT_TAG);
+      var commentNode := commentNodes.NextNode;
+      while commentNode <> nil do
       begin
          var comment := TComment.CreateDefault(Page);
-         comment.ImportFromXML(node, Self);
-         node := TXMLProcessor.FindNextTag(node);
+         comment.ImportFromXML(commentNode, Self);
+         commentNode := commentNodes.NextNode;
       end;
       UnPinComments;
    end;
@@ -2131,7 +2132,7 @@ begin
    result := errNone;
    if ANode <> nil then
    begin
-      var node := TXMLProcessor.FindChildTag(ANode, TEXT_TAG);
+      var node := FindNode(ANode, TEXT_TAG);
       var textControl := GetTextControl;
       if (node <> nil) and (textControl <> nil) then
       begin
@@ -2158,41 +2159,41 @@ begin
 end;
 
 function TGroupBlock.GetFromXML(ANode: IXMLNode): TError;
-var
-   node1, node2: IXMLNode;
-   bId, idx, bStmntId, hx, hy: integer;
 begin
    result := inherited GetFromXML(ANode);
    if ANode <> nil then
    begin
-      node1 := TXMLProcessor.FindChildTag(ANode, BRANCH_TAG);
-      if node1 <> nil then
+      var branchNodes := FilterNodes(ANode, BRANCH_TAG);
+      var branchNode := branchNodes.NextNode;
+      if branchNode <> nil then
       begin
-         idx := PRIMARY_BRANCH_IDX;
+         var idx := PRIMARY_BRANCH_IDX;
          repeat
-            node2 := TXMLProcessor.FindChildTag(node1, 'x');
-            if node2 <> nil then
-               hx := StrToIntDef(node2.Text, 0);
-            node2 := TXMLProcessor.FindChildTag(node1, 'y');
-            if node2 <> nil then
-               hy := StrToIntDef(node2.Text, 0);
-            bId := GetNodeAttrInt(node1, ID_ATTR, ID_INVALID);
-            bStmntId := GetNodeAttrInt(node1, BRANCH_STMNT_ATTR, ID_INVALID);
+            var hx := 0;
+            var hy := 0;
+            var node := FindNode(branchNode, 'x');
+            if node <> nil then
+               hx := StrToIntDef(node.Text, 0);
+            node := FindNode(branchNode, 'y');
+            if node <> nil then
+               hy := StrToIntDef(node.Text, 0);
+            var bId := GetNodeAttrInt(branchNode, ID_ATTR, ID_INVALID);
+            var bStmntId := GetNodeAttrInt(branchNode, BRANCH_STMNT_ATTR, ID_INVALID);
             if GetBranch(idx) = nil then
                AddBranch(Point(hx, hy), bId, bStmntId);
-            node2 := TXMLProcessor.FindChildTag(node1, BLOCK_TAG);
-            if node2 <> nil then
+            node := FindNode(branchNode, BLOCK_TAG);
+            if node <> nil then
             begin
-               TXMLProcessor.ImportFlowchartFromXML(node2, Self, nil, result, idx);
+               TXMLProcessor.ImportFlowchartFromXML(node, Self, nil, result, idx);
                if result <> errNone then break;
             end;
             idx := idx + 1;
-            node1 := TXMLProcessor.FindNextTag(node1);
-         until node1 = nil;
+            branchNode := branchNodes.NextNode;
+         until branchNode = nil;
       end;
-      node2 := TXMLProcessor.FindChildTag(ANode, FOLD_TEXT_TAG);
-      if node2 <> nil then
-         SetFoldedText(node2.Text);
+      var tnode := FindNode(ANode, FOLD_TEXT_TAG);
+      if tnode <> nil then
+         SetFoldedText(tnode.Text);
       FFoldParms.Width := GetNodeAttrInt(ANode, 'fw', 140);
       FFoldParms.Height := GetNodeAttrInt(ANode, 'fh', 91);
       if GetNodeAttrBool(ANode, FOLDED_ATTR, false) then
@@ -2219,7 +2220,7 @@ var
    bt: TBlockType;
 begin
    result := errValidate;
-   node := TXMLProcessor.FindChildTag(ANode, BLOCK_TAG);
+   node := FindNode(ANode, BLOCK_TAG);
    if node <> nil then
       bt := TRttiEnumerationType.GetValue<TBlockType>(GetNodeAttrStr(node, BLOCK_TYPE_ATTR, ''));
    if (node = nil) or (bt in [blMain, blUnknown, blComment]) then
