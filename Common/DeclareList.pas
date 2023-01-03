@@ -48,7 +48,7 @@ type
          FDragRow,
          FExternalCol: integer;
          FShort,
-         FTag: string;
+         FNodeName: string;
          FSplitter: TSplitter;
          function GetId: integer;
          function IsDeclared(const AName: string; AssociatedListCheck: boolean): boolean;
@@ -302,7 +302,7 @@ constructor TConstDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, 
 begin
 
    FShort := 'Const';
-   FTag := CONST_TAG;
+   FNodeName := CONST_TAG;
 
    inherited Create(AParent, ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth);
 
@@ -334,7 +334,7 @@ constructor TVarDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, AD
 begin
 
    FShort := 'Var';
-   FTag := VAR_TAG;
+   FNodeName := VAR_TAG;
 
    inherited Create(AParent, ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth);
 
@@ -888,9 +888,10 @@ begin
       Width := StrToIntDef(node.Text, Width);
    sgList.BeginUpdate;
    node := GetImportNode(ANode);
-   while (node <> nil) and (node.NodeName = FTag) do
+   while node <> nil do
    begin
-      ImportItemFromXML(node);
+      if node.NodeName = FNodeName then
+         ImportItemFromXML(node);
       node := node.NextSibling;
    end;
    sgList.EndUpdate;

@@ -110,27 +110,30 @@ begin
     else if AParent is TBlockTabSheet then
        tab := TBlockTabSheet(AParent);
 
-    while (node <> nil) and (node.NodeName = BLOCK_TAG) and (AError = errNone) do
+    while (node <> nil) and (AError = errNone) do
     begin
-       newBlock := nil;
-       if tab <> nil then
+       if node.NodeName = BLOCK_TAG then
        begin
-          newBlock := TBlockFactory.Create(node, tab);
-          tab := nil;
-       end
-       else if branch <> nil then
-       begin
-          newBlock := TBlockFactory.Create(node, branch);
-          if newBlock <> nil then
+          newBlock := nil;
+          if tab <> nil then
           begin
-             branch.InsertAfter(newBlock, APrevBlock);
-             APrevBlock := newBlock;
+             newBlock := TBlockFactory.Create(node, tab);
+             tab := nil;
+          end
+          else if branch <> nil then
+          begin
+             newBlock := TBlockFactory.Create(node, branch);
+             if newBlock <> nil then
+             begin
+                branch.InsertAfter(newBlock, APrevBlock);
+                APrevBlock := newBlock;
+             end;
           end;
+          if newBlock = nil then
+             AError := errValidate
+          else
+             result := newBlock;
        end;
-       if newBlock = nil then
-          AError := errValidate
-       else
-          result := newBlock;
        node := node.NextSibling;
     end;
 
