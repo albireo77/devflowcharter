@@ -47,7 +47,7 @@ type
          FId,
          FDragRow,
          FExternalCol: integer;
-         FKind,
+         FShort,
          FTag: string;
          FSplitter: TSplitter;
          function GetId: integer;
@@ -301,7 +301,7 @@ end;
 constructor TConstDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
 begin
 
-   FKind := 'Const';
+   FShort := 'Const';
    FTag := CONST_TAG;
 
    inherited Create(AParent, ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth);
@@ -333,7 +333,7 @@ end;
 constructor TVarDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
 begin
 
-   FKind := 'Var';
+   FShort := 'Var';
    FTag := VAR_TAG;
 
    inherited Create(AParent, ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth);
@@ -390,7 +390,7 @@ var
    s: string;
 begin
    if AColLabel.IsEmpty then
-      s := i18Manager.GetString('sg' + FKind + 'ListCol' + ACol.ToString)
+      s := i18Manager.GetString('sg' + FShort + 'ListCol' + ACol.ToString)
    else
       s := AColLabel;
    sgList.Cells[ACol, 0] := s;
@@ -637,7 +637,7 @@ procedure TDeclareList.OnClickExport(Sender: TObject);
 begin
    if sgList.RowCount > 2 then
    begin
-      var fileName := GProject.Name + '_' + i18Manager.GetString(FKind + 's');
+      var fileName := GProject.Name + '_' + i18Manager.GetString(FShort + 's');
       TXMLProcessor.ExportToXMLFile(ExportToXML, fileName);
    end;
 end;
@@ -874,7 +874,7 @@ begin
    if goColSizing in sgList.Options then
    begin
       var i := 0;
-      var nodes := FilterNodes(ANode, FKind + 'colwidth');
+      var nodes := FilterNodes(ANode, FShort + 'colwidth');
       var node := nodes.NextNode;
       while (node <> nil) and (i < sgList.ColCount) do
       begin
@@ -883,7 +883,7 @@ begin
          i := i + 1;
       end;
    end;
-   var node := FindNode(ANode, FKind + 'width');
+   var node := FindNode(ANode, FShort + 'width');
    if node <> nil then
       Width := StrToIntDef(node.Text, Width);
    sgList.BeginUpdate;
@@ -947,9 +947,9 @@ begin
    if goColSizing in sgList.Options then
    begin
       for var i := 0 to sgList.ColCount-1 do
-         AppendNode(ANode, FKind + 'colwidth').Text := sgList.ColWidths[i].ToString;
+         AppendNode(ANode, FShort + 'colwidth').Text := sgList.ColWidths[i].ToString;
    end;
-   SetNodeTextInt(ANode, FKind + 'width', Width);
+   SetNodeTextInt(ANode, FShort + 'width', Width);
 end;
 
 procedure TDeclareList.ExportItemToXML(ANode: IXMLNode; idx: integer);
