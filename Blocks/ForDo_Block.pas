@@ -74,8 +74,7 @@ implementation
 
 uses
    Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Math, YaccLib,
-   Infrastructure, Constants, XMLProcessor, Main_Block, UserFunction, Return_Block,
-   OmniXMLUtils;
+   Infrastructure, Constants, Main_Block, UserFunction, Return_Block, OmniXMLUtils;
 
 const
    DEFAULT_WIDTH = 246;

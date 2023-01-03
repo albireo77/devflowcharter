@@ -146,7 +146,7 @@ implementation
 
 uses
    Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, Infrastructure, Constants,
-   Main_Form, XMLProcessor, LangDefinition, Navigator_Form, BlockTabSheet, Types, OmniXMLUtils;
+   Main_Form, LangDefinition, Navigator_Form, BlockTabSheet, Types, OmniXMLUtils;
 
 var
    ByTopParameterComparer: IComparer<TParameter>;

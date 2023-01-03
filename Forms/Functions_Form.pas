@@ -49,7 +49,7 @@ implementation
 
 uses
    System.SysUtils, Infrastructure, Base_Block, Main_Block, Navigator_Form,
-   UserFunction, Interfaces, XMLProcessor, BlockTabSheet, Constants;
+   UserFunction, Interfaces, BlockTabSheet, Constants;
 
 procedure TFunctionsForm.miAddClick(Sender: TObject);
 begin

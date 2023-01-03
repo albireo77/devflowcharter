@@ -170,7 +170,7 @@ implementation
 uses
    System.StrUtils, System.UITypes, System.Math, WinApi.Windows, Infrastructure,
    Goto_Form, Settings, LangDefinition, Main_Block, Help_Form, Comment, OmniXMLUtils,
-   XMLProcessor, Main_Form, SynEditTypes, ParserHelper, Constants, System.Character;
+   Main_Form, SynEditTypes, ParserHelper, Constants, System.Character;
 
 {$R *.dfm}
 
