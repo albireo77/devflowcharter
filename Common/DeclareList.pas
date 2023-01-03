@@ -858,8 +858,6 @@ begin
             result := FindNode(result, VAR_TAG);
       end;
    end;
-   if result <> nil then
-      TInfra.PopulateDataTypeCombo(cbType);
 end;
 
 function TConstDeclareList.GetImportNode(ANode: IXMLNode): IXMLNode;
