@@ -63,6 +63,7 @@ type
       function GetProgramHeaderTemplate: string;
       procedure InitBlockTemplates;
       procedure ImportBlockTemplates(ANode: IXMLNode);
+      function CountNodesWithText(ANodes: IXMLNodeList): integer;
    public
       CommentBegin, CommentEnd,
       DefaultExt,
@@ -268,7 +269,7 @@ const
 implementation
 
 uses
-   Vcl.Forms, System.IniFiles, XMLProcessor, Constants, Infrastructure, OmniXMLUtils;
+   Vcl.Forms, System.IniFiles, Constants, Infrastructure, OmniXMLUtils;
 
 constructor TLangDefinition.Create;
 begin
@@ -565,7 +566,7 @@ begin
    begin
       a := 0;
       var datatypeNodes := FilterNodes(node, 'DataType');
-      var count := TXMLProcessor.CountNodesWithText(datatypeNodes);
+      var count := CountNodesWithText(datatypeNodes);
       SetLength(NativeDataTypes, count);
       var dnode := datatypeNodes.NextNode;
       while dnode <> nil do
@@ -633,7 +634,7 @@ begin
    if node <> nil then
    begin
       var functionNodes := FilterNodes(node, 'Function');
-      SetLength(NativeFunctions, TXMLProcessor.CountNodesWithText(functionNodes));
+      SetLength(NativeFunctions, CountNodesWithText(functionNodes));
       var fnode := functionNodes.NextNode;
       i := 0;
       while fnode <> nil do
@@ -783,6 +784,20 @@ procedure TLangDefinition.ImportBlockTemplates(ANode: IXMLNode);
 begin
    for var blockType := Low(TBlockType) to High(TBlockType) do
       BlockTemplates[blockType] := GetNodeTextStr(ANode, BLOCK_TO_TEMPLATE_TAG_MAP[blockType], '');
+end;
+
+function TLangDefinition.CountNodesWithText(ANodes: IXMLNodeList): integer;
+begin
+   result := 0;
+   ANodes.Reset;
+   var node := ANodes.NextNode;
+   while node <> nil do
+   begin
+      if not node.Text.Trim.IsEmpty then
+         Inc(result);
+      node := ANodes.NextNode;
+   end;
+   ANodes.Reset;
 end;
 
 end.

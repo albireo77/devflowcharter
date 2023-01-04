@@ -42,7 +42,6 @@ type
                                        AImportMode: TImportMode;
                                        const AFileName: string = '';
                                        APreserveSpace: boolean = false): string;
-      class function CountNodesWithText(ANodes: IXMLNodeList): integer;
       class function ImportFlowchartFromXML(ANode: IXMLNode;
                                             AParent: TWinControl;
                                             APrevBlock: TBlock;
@@ -56,24 +55,10 @@ const
 implementation
 
 uses
-   System.SysUtils, Infrastructure, BlockFactory, BlockTabSheet, Constants, OmniXMLUtils;
+   System.SysUtils, Infrastructure, BlockFactory, BlockTabSheet, Constants;
 
-class function TXMLProcessor.CountNodesWithText(ANodes: IXMLNodeList): integer;
-begin
-   result := 0;
-   ANodes.Reset;
-   var node := ANodes.NextNode;
-   while node <> nil do
-   begin
-      if not node.Text.Trim.IsEmpty then
-         Inc(result);
-      node := ANodes.NextNode;
-   end;
-   ANodes.Reset;
-end;
-
-class function TXMLProcessor.ImportFlowchartFromXML(ANode: IXMLNode;            // root XML node
-                                                    AParent: TWinControl;       // Parent window for new block
+class function TXMLProcessor.ImportFlowchartFromXML(ANode: IXMLNode;
+                                                    AParent: TWinControl;
                                                     APrevBlock: TBlock;
                                                     var AError: TError;
                                                     ABranchInd: integer = PRIMARY_BRANCH_IDX): TBlock;
@@ -95,10 +80,10 @@ begin
 
     if AParent is TGroupBlock then
     begin
-       if APrevBlock <> nil then                                  // predBlock is not nil so newBlock will be put into list
-          branch := APrevBlock.ParentBranch                       // containing predBlock, just after predBlock
-       else                                                       // predBlock is nil so newBlock will be put at the beginning of the list
-          branch := TGroupBlock(AParent).GetBranch(ABranchInd);   // branch is determined by branch_id
+       if APrevBlock <> nil then
+          branch := APrevBlock.ParentBranch
+       else
+          branch := TGroupBlock(AParent).GetBranch(ABranchInd);
     end
     else if AParent is TBlockTabSheet then
        tab := TBlockTabSheet(AParent);
@@ -132,7 +117,7 @@ begin
 
     if AError <> errNone then
     begin
-       while initCount < AParent.ControlCount do   // destroy all previously created blocks
+       while initCount < AParent.ControlCount do
        begin
           branch := nil;
           control := AParent.Controls[initCount];
@@ -166,7 +151,7 @@ begin
    begin
       result := AFileName;
       if result.IsEmpty then
-         result := TXMLProcessor.DialogXMLFile(TInfra.GetMainForm.OpenDialog);
+         result := DialogXMLFile(TInfra.GetMainForm.OpenDialog);
       if result.IsEmpty then
          Exit;
       var errText := '';
@@ -209,7 +194,7 @@ begin
    if Assigned(AExportProc) then
    begin
       if ExtractFilePath(AFilePath).IsEmpty then
-         filePath := TXMLProcessor.DialogXMLFile(TInfra.GetMainForm.ExportDialog, AFilePath)
+         filePath := DialogXMLFile(TInfra.GetMainForm.ExportDialog, AFilePath)
       else
          filePath := AFilePath;
       if FileExists(filePath) and FileIsReadOnly(filePath) then
