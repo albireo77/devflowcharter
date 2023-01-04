@@ -2051,7 +2051,7 @@ begin
             SetNodeTextInt(node, 'y', br.hook.Y);
 
             for var block in br do
-                TXMLProcessor.ExportBlockToXML(block, node);
+               block.SaveInXml(AppendNode(node, BLOCK_TAG));
          end;
       finally
          if unPin then
@@ -2203,11 +2203,11 @@ end;
 
 procedure TBlock.ExportToXML(ANode: IXMLNode);
 begin
-   TXMLProcessor.ExportBlockToXML(Self, ANode);
+   SaveInXml(AppendNode(ANode, BLOCK_TAG));
    var block := Next;
    while (block <> nil) and block.Frame do
    begin
-      TXMLProcessor.ExportBlockToXML(block, ANode);
+      block.SaveInXml(AppendNode(ANode, BLOCK_TAG));
       block := block.Next;
    end;
 end;

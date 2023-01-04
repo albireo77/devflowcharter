@@ -42,7 +42,6 @@ type
                                        AImportMode: TImportMode;
                                        const AFileName: string = '';
                                        APreserveSpace: boolean = false): string;
-      class procedure ExportBlockToXML(ABlock: TBlock; ANode: IXMLNode);
       class function CountNodesWithText(ANodes: IXMLNodeList): integer;
       class function ImportFlowchartFromXML(ANode: IXMLNode;
                                             AParent: TWinControl;
@@ -71,12 +70,6 @@ begin
       node := ANodes.NextNode;
    end;
    ANodes.Reset;
-end;
-
-class procedure TXMLProcessor.ExportBlockToXML(ABlock: TBlock; ANode: IXMLNode);
-begin
-   if (ANode <> nil) and (ABlock <> nil) then
-      ABlock.SaveInXML(AppendNode(ANode, BLOCK_TAG));
 end;
 
 class function TXMLProcessor.ImportFlowchartFromXML(ANode: IXMLNode;            // root XML node
