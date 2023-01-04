@@ -654,7 +654,7 @@ begin
             end
             else
                page := ActivePage;
-            var tmpBlock := TXMLProcessor.ImportFlowchartFromXML(blockNode, page, nil, result);
+            var tmpBlock := TXMLProcessor.ImportFlowchartFromXML(blockNode, page, nil, result, PRIMARY_BRANCH_IDX);
             if tmpBlock is TMainBlock then
                body := TMainBlock(tmpBlock);
          end;

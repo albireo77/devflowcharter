@@ -39,7 +39,7 @@ type
    public
       class function ExportToXMLFile(AExportProc: TXMLExportProc; const AFilePath: string): TError;
       class function ImportFromXMLFile(AImportProc: TXMLImportProc; AImportMode: TImportMode; const AFileName: string = ''; APreserveSpace: boolean = false): string;
-      class function ImportFlowchartFromXML(ANode: IXMLNode; AParent: TWinControl; APrevBlock: TBlock; var AError: TError; ABranchInd: integer = PRIMARY_BRANCH_IDX): TBlock;
+      class function ImportFlowchartFromXML(ANode: IXMLNode; AParent: TWinControl; APrevBlock: TBlock; var AError: TError; ABranchIdx: integer): TBlock;
    end;
 
 const
@@ -50,7 +50,7 @@ implementation
 uses
    System.SysUtils, Infrastructure, BlockFactory, BlockTabSheet, Constants;
 
-class function TXMLProcessor.ImportFlowchartFromXML(ANode: IXMLNode; AParent: TWinControl; APrevBlock: TBlock; var AError: TError; ABranchInd: integer = PRIMARY_BRANCH_IDX): TBlock;
+class function TXMLProcessor.ImportFlowchartFromXML(ANode: IXMLNode; AParent: TWinControl; APrevBlock: TBlock; var AError: TError; ABranchIdx: integer): TBlock;
 var
    node: IXMLNode;
    branch: TBranch;
@@ -72,7 +72,7 @@ begin
        if APrevBlock <> nil then
           branch := APrevBlock.ParentBranch
        else
-          branch := TGroupBlock(AParent).GetBranch(ABranchInd);
+          branch := TGroupBlock(AParent).GetBranch(ABranchIdx);
     end
     else if AParent is TBlockTabSheet then
        tab := TBlockTabSheet(AParent);
