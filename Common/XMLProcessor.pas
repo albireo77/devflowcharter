@@ -35,18 +35,11 @@ type
 
    TXMLProcessor = class(TObject)
    private
-      class function DialogXMLFile(ADialog: TOpenDialog; const AFileName: string = ''): string;
+      class function DialogXMLFile(ADialog: TOpenDialog; const AFileName: string): string;
    public
-      class function ExportToXMLFile(AExportProc: TXMLExportProc; const AFilePath: string = ''): TError;
-      class function ImportFromXMLFile(AImportProc: TXMLImportProc;
-                                       AImportMode: TImportMode;
-                                       const AFileName: string = '';
-                                       APreserveSpace: boolean = false): string;
-      class function ImportFlowchartFromXML(ANode: IXMLNode;
-                                            AParent: TWinControl;
-                                            APrevBlock: TBlock;
-                                            var AError: TError;
-                                            ABranchInd: integer = PRIMARY_BRANCH_IDX): TBlock;
+      class function ExportToXMLFile(AExportProc: TXMLExportProc; const AFilePath: string): TError;
+      class function ImportFromXMLFile(AImportProc: TXMLImportProc; AImportMode: TImportMode; const AFileName: string = ''; APreserveSpace: boolean = false): string;
+      class function ImportFlowchartFromXML(ANode: IXMLNode; AParent: TWinControl; APrevBlock: TBlock; var AError: TError; ABranchInd: integer = PRIMARY_BRANCH_IDX): TBlock;
    end;
 
 const
@@ -57,11 +50,7 @@ implementation
 uses
    System.SysUtils, Infrastructure, BlockFactory, BlockTabSheet, Constants;
 
-class function TXMLProcessor.ImportFlowchartFromXML(ANode: IXMLNode;
-                                                    AParent: TWinControl;
-                                                    APrevBlock: TBlock;
-                                                    var AError: TError;
-                                                    ABranchInd: integer = PRIMARY_BRANCH_IDX): TBlock;
+class function TXMLProcessor.ImportFlowchartFromXML(ANode: IXMLNode; AParent: TWinControl; APrevBlock: TBlock; var AError: TError; ABranchInd: integer = PRIMARY_BRANCH_IDX): TBlock;
 var
    node: IXMLNode;
    branch: TBranch;
@@ -132,7 +121,7 @@ begin
 
 end;
 
-class function TXMLProcessor.DialogXMLFile(ADialog: TOpenDialog; const AFileName: string = ''): string;
+class function TXMLProcessor.DialogXMLFile(ADialog: TOpenDialog; const AFileName: string): string;
 begin
    result := '';
    ADialog.Filter := i18Manager.GetString('XMLFilesFilter');
@@ -141,17 +130,14 @@ begin
       result := ADialog.FileName;
 end;
 
-class function TXMLProcessor.ImportFromXMLFile(AImportProc: TXMLImportProc;
-                                               AImportMode: TImportMode;
-                                               const AFileName: string = '';
-                                               APreserveSpace: boolean = false): string;
+class function TXMLProcessor.ImportFromXMLFile(AImportProc: TXMLImportProc; AImportMode: TImportMode; const AFileName: string = ''; APreserveSpace: boolean = false): string;
 begin
    result := '';
    if Assigned(AImportProc) then
    begin
       result := AFileName;
       if result.IsEmpty then
-         result := DialogXMLFile(TInfra.GetMainForm.OpenDialog);
+         result := DialogXMLFile(TInfra.GetMainForm.OpenDialog, '');
       if result.IsEmpty then
          Exit;
       var errText := '';
@@ -183,7 +169,7 @@ begin
    end;
 end;
 
-class function TXMLProcessor.ExportToXMLFile(AExportProc: TXMLExportProc; const AFilePath: string = ''): TError;
+class function TXMLProcessor.ExportToXMLFile(AExportProc: TXMLExportProc; const AFilePath: string): TError;
 var
    docXML: IXMLDocument;
    xmlInstr: IXMLProcessingInstruction;
