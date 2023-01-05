@@ -338,7 +338,8 @@ procedure TComment.ExportToXML2(ANode: IXMLNode);
 begin
    if ANode <> nil then
    begin
-      var node := SetNodeCData(ANode, COMMENT_TAG, Text);
+      var node := AppendNode(ANode, COMMENT_TAG);
+      SetCDataChild(node, Text);
       SetNodeAttrInt(node, 'x', Left);
       SetNodeAttrInt(node, 'y', Top);
       SetNodeAttrInt(node, 'w', Width);
