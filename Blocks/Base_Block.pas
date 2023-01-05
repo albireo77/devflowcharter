@@ -2184,7 +2184,7 @@ begin
             node := FindNode(branchNode, BLOCK_TAG);
             if node <> nil then
             begin
-               TXMLProcessor.ImportFlowchartFromXML(node, Self, nil, result, idx);
+               TXMLProcessor.ImportFlowchartFromXML(node, Self, nil, idx, result);
                if result <> errNone then break;
             end;
             idx := idx + 1;
@@ -2240,7 +2240,7 @@ begin
       begin
          lParent.BlockImportMode := True;
          try
-            newBlock := TXMLProcessor.ImportFlowchartFromXML(node, lParent, block, result, FRedArrow);
+            newBlock := TXMLProcessor.ImportFlowchartFromXML(node, lParent, block, FRedArrow, result);
          finally
             lParent.BlockImportMode := false;
          end;

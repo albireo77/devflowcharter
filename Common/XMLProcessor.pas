@@ -39,7 +39,7 @@ type
    public
       class function ExportToXMLFile(AExportProc: TXMLExportProc; const AFilePath: string): TError;
       class function ImportFromXMLFile(AImportProc: TXMLImportProc; AImportMode: TImportMode; const AFileName: string = ''; APreserveSpace: boolean = false): string;
-      class function ImportFlowchartFromXML(ANode: IXMLNode; AParent: TWinControl; APrevBlock: TBlock; var AError: TError; ABranchIdx: integer): TBlock;
+      class function ImportFlowchartFromXML(ANode: IXMLNode; AParent: TWinControl; APrevBlock: TBlock; ABranchIdx: integer; var AError: TError): TBlock;
    end;
 
 const
@@ -50,7 +50,7 @@ implementation
 uses
    System.SysUtils, Infrastructure, BlockFactory, BlockTabSheet, Constants;
 
-class function TXMLProcessor.ImportFlowchartFromXML(ANode: IXMLNode; AParent: TWinControl; APrevBlock: TBlock; var AError: TError; ABranchIdx: integer): TBlock;
+class function TXMLProcessor.ImportFlowchartFromXML(ANode: IXMLNode; AParent: TWinControl; APrevBlock: TBlock; ABranchIdx: integer; var AError: TError): TBlock;
 var
    node: IXMLNode;
    branch: TBranch;
