@@ -377,8 +377,9 @@ end;
 procedure TProject.ExportPagesToXML(ANode: IXMLNode);
 begin
    var pageControl := TInfra.GetMainForm.pgcPages;
+   var pagesNode := AppendNode(ANode, 'pages');
    for var i := 0 to pageControl.PageCount-1 do
-      TBlockTabSheet(pageControl.Pages[i]).ExportToXML(AppendNode(ANode, 'pages'));
+      TBlockTabSheet(pageControl.Pages[i]).ExportToXML(pagesNode);
 end;
 
 procedure TProject.SetChanged;
