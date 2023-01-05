@@ -144,8 +144,8 @@ begin
       try
          if docXML.Load(result) then
             status := AImportProc(docXML.DocumentElement, AImportMode)
-         else
-            errText := i18Manager.GetFormattedString('ParserError', [docXML.ParseError.ErrorCode, docXML.ParseError.Line, docXML.ParseError.LinePos, docXML.ParseError.Reason]);
+         else with docXML.ParseError do
+            errText := i18Manager.GetFormattedString('ParserError', [ErrorCode, Line, LinePos, Reason]);
       except on E: Exception do
          begin
             status := errIO;
