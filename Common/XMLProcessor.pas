@@ -17,10 +17,6 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 }
 
-
-
-{ This unit contains routines to read/write XML files }
-
 unit XMLProcessor;
 
 interface
@@ -108,12 +104,13 @@ begin
     begin
        while initCount < AParent.ControlCount do
        begin
-          branch := nil;
           control := AParent.Controls[initCount];
           if control is TBlock then
-             branch := TBlock(control).ParentBranch;
-          if branch <> nil then
-             branch.Remove(TBlock(control));
+          begin
+             var block := TBlock(control);
+             if block.ParentBranch <> nil then
+                block.ParentBranch.Remove(block);
+          end;
           control.Destroy;
        end;
        result := nil;
@@ -148,10 +145,7 @@ begin
          if docXML.Load(result) then
             status := AImportProc(docXML.DocumentElement, AImportMode)
          else
-            errText := i18Manager.GetFormattedString('ParserError', [docXML.ParseError.ErrorCode,
-                                                                     docXML.ParseError.Line,
-                                                                     docXML.ParseError.LinePos,
-                                                                     docXML.ParseError.Reason]);
+            errText := i18Manager.GetFormattedString('ParserError', [docXML.ParseError.ErrorCode, docXML.ParseError.Line, docXML.ParseError.LinePos, docXML.ParseError.Reason]);
       except on E: Exception do
          begin
             status := errIO;
