@@ -116,7 +116,7 @@ begin
    FInitParms.HeightAffix := 42;
 
    BottomPoint.X := FInitParms.BottomPoint.X;
-   TopHook.Y := TInfra.Scaled(30);
+   TopHook.Y := TInfra.Scaled(Self, 30);
    FZOrder := -1;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;

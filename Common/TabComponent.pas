@@ -372,7 +372,7 @@ begin
    sbxElements.LockDrawing;
    try
       elem := CreateElement;
-      sbxElements.Height := sbxElements.Height + TInfra.Scaled(22);
+      sbxElements.Height := sbxElements.Height + TInfra.Scaled(Self, 22);
    finally
       sbxElements.UnlockDrawing;
    end;

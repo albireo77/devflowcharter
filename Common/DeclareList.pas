@@ -1022,7 +1022,7 @@ begin
       result.X := sgList.ClientWidth;
    if result.Y = 0 then
       result.Y := ARow * (sgList.DefaultRowHeight + sgList.GridLineWidth);
-   var s5 := TInfra.Scaled(5);
+   var s5 := TInfra.Scaled(Self, 5);
    result.X := result.X + sgList.Left + (sgList.ColWidths[FExternalCol] div 2) - s5;
    result.Y := result.Y + sgList.Top + (sgList.DefaultRowHeight div 2) - s5;
 end;
@@ -1032,7 +1032,7 @@ begin
    result := nil;
    if FExternalCol <> INVALID_COL then
    begin
-      var s12 := TInfra.Scaled(12);
+      var s12 := TInfra.Scaled(Self, 12);
       var pnt := GetExternalCheckBoxPoint(ARow);
       result := TCheckBox.Create(sgList.Parent);
       result.Parent := sgList.Parent;

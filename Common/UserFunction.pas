@@ -344,13 +344,16 @@ begin
    splDesc.Align := gbDesc.Align;
    splDesc.Height := 3;
 
+   var s22 := TInfra.Scaled(Self, 22);
+   var s16 := TInfra.Scaled(Self, 16);
+
    chkInclDescCode := TCheckBox.Create(gbDesc);
    chkInclDescCode.Parent := gbDesc;
    chkInclDescCode.ParentFont := false;
    chkInclDescCode.Font.Style := [];
    chkInclDescCode.Font.Color := clWindowText;
    chkInclDescCode.Caption := i18Manager.GetString('chkInclDescCode');
-   chkInclDescCode.SetBounds(5, gbDesc.Height-TInfra.Scaled(22), TInfra.GetAutoWidth(chkInclDescCode), TInfra.Scaled(16));
+   chkInclDescCode.SetBounds(5, gbDesc.Height-s22, TInfra.GetAutoWidth(chkInclDescCode), s16);
    chkInclDescCode.DoubleBuffered := true;
    chkInclDescCode.Anchors := [akBottom, akLeft];
    chkInclDescCode.OnClick := OnClickInclDescCode;
@@ -361,7 +364,7 @@ begin
    chkInclDescFlow.Font.Style := [];
    chkInclDescFlow.Font.Color := clWindowText;
    chkInclDescFlow.Caption := i18Manager.GetString('chkInclDescFlow');
-   chkInclDescFlow.SetBounds(chkInclDescCode.BoundsRect.Right+20, gbDesc.Height-TInfra.Scaled(22), TInfra.GetAutoWidth(chkInclDescFlow), TInfra.Scaled(16));
+   chkInclDescFlow.SetBounds(chkInclDescCode.BoundsRect.Right+20, gbDesc.Height-s22, TInfra.GetAutoWidth(chkInclDescFlow), s16);
    chkInclDescFlow.DoubleBuffered := true;
    chkInclDescFlow.Anchors := [akBottom, akLeft];
    chkInclDescFlow.OnClick := OnClickInclDescFlow;
@@ -384,7 +387,7 @@ begin
    btnGenDesc.Font.Style := [];
    btnGenDesc.DoubleBuffered := true;
    btnGenDesc.Caption := i18Manager.GetString('btnGenDesc');
-   btnGenDesc.SetBounds(gbDesc.Width-TInfra.Scaled(85), chkInclDescCode.Top-3, TInfra.Scaled(80), TInfra.Scaled(20));
+   btnGenDesc.SetBounds(gbDesc.Width-TInfra.Scaled(Self, 85), chkInclDescCode.Top-3, TInfra.Scaled(Self, 80), TInfra.Scaled(Self, 20));
    btnGenDesc.Anchors := [akBottom];
    btnGenDesc.OnClick := OnClickGenDesc;
    btnGenDesc.Anchors := [akLeft, akRight, akBottom];
@@ -409,7 +412,7 @@ begin
 
    cbBodyPage := TComboBox.Create(gbBody);
    cbBodyPage.Parent := gbBody;
-   cbBodyPage.Constraints.MinWidth := TInfra.Scaled(75);
+   cbBodyPage.Constraints.MinWidth := TInfra.Scaled(Self, 75);
    cbBodyPage.SetBounds(lblBodyPage.BoundsRect.Right+6, 20, cbBodyPage.Constraints.MinWidth, 21);
    cbBodyPage.Style := csDropDownList;
    cbBodyPage.ParentFont := false;
@@ -426,7 +429,7 @@ begin
    chkBodyVisible.Font.Style := [];
    chkBodyVisible.Font.Color := clWindowText;
    chkBodyVisible.Caption := i18Manager.GetString('Visible');
-   chkBodyVisible.SetBounds(cbBodyPage.BoundsRect.Right+20, 22, TInfra.GetAutoWidth(chkBodyVisible), TInfra.Scaled(17));
+   chkBodyVisible.SetBounds(cbBodyPage.BoundsRect.Right+20, 22, TInfra.GetAutoWidth(chkBodyVisible), TInfra.Scaled(Self, 17));
    chkBodyVisible.DoubleBuffered := true;
    chkBodyVisible.Anchors := [akBottom, akLeft];
    chkBodyVisible.OnClick := OnClickBodyVisible;
@@ -547,7 +550,7 @@ begin
    lblParamType.Font.Style := [];
    lblParamType.ParentFont := false;
    lblParamType.Font.Color := clWindowText;
-   lblParamType.SetBounds(TInfra.Scaled(92), 18, 0, 13);
+   lblParamType.SetBounds(TInfra.Scaled(Self, 92), 18, 0, 13);
    lblParamType.Caption := i18Manager.GetString('lblParamType');
 
    lblParamDefault := TLabel.Create(gbParams);
@@ -555,7 +558,7 @@ begin
    lblParamDefault.Font.Style := [];
    lblParamDefault.ParentFont := false;
    lblParamDefault.Font.Color := clWindowText;
-   lblParamDefault.SetBounds(TInfra.Scaled(180), 18, 0, 13);
+   lblParamDefault.SetBounds(TInfra.Scaled(Self, 180), 18, 0, 13);
    lblParamDefault.Caption := i18Manager.GetString('lblParamDefault');
 
    lblParamArray := TLabel.Create(gbParams);
@@ -563,7 +566,7 @@ begin
    lblParamArray.Font.Style := [];
    lblParamArray.ParentFont := false;
    lblParamArray.Font.Color := clWindowText;
-   lblParamArray.SetBounds(TInfra.Scaled(239), 18, 0, 13);
+   lblParamArray.SetBounds(TInfra.Scaled(Self, 239), 18, 0, 13);
    lblParamArray.Caption := i18Manager.GetString('lblParamArray');
 
    lblParamRef := TLabel.Create(gbParams);
@@ -571,7 +574,7 @@ begin
    lblParamRef.Font.Style := [];
    lblParamRef.ParentFont := false;
    lblParamRef.Font.Color := clWindowText;
-   lblParamRef.SetBounds(TInfra.Scaled(281), 18, 0, 13);
+   lblParamRef.SetBounds(TInfra.Scaled(Self, 281), 18, 0, 13);
    lblParamRef.Caption := i18Manager.GetString('lblParamRef');
 
    sbxElements := TScrollBox.Create(gbParams);
@@ -616,16 +619,16 @@ begin
 
    FElementTypeID := AParentTab.FElementTypeID;
 
-   var w17 := TInfra.Scaled(17);
+   var w17 := TInfra.Scaled(Self, 17);
 
    Constraints.MaxWidth := AParentTab.sbxElements.Width - 17;
-   SetBounds(0, Parent.Height, Constraints.MaxWidth, TInfra.Scaled(22));
+   SetBounds(0, Parent.Height, Constraints.MaxWidth, TInfra.Scaled(Self, 22));
    Align := alTop;
    TInfra.PopulateDataTypeCombo(cbType);
 
    edtDefault := TEdit.Create(Self);
    edtDefault.Parent := Self;
-   edtDefault.SetBounds(TInfra.Scaled(174), 0, TInfra.Scaled(50), 21);
+   edtDefault.SetBounds(TInfra.Scaled(Self, 174), 0, TInfra.Scaled(Self, 50), 21);
    edtDefault.ParentFont := false;
    edtDefault.Font.Style := [];
    edtDefault.Font.Color := clGreen;
@@ -635,13 +638,13 @@ begin
 
    chkTable := TCheckBox.Create(Self);
    chkTable.Parent := Self;
-   chkTable.SetBounds(TInfra.Scaled(240), 1, w17, w17);
+   chkTable.SetBounds(TInfra.Scaled(Self, 240), 1, w17, w17);
    chkTable.DoubleBuffered := true;
    chkTable.OnClick := OnChangeType;
 
    chkReference := TCheckBox.Create(Self);
    chkReference.Parent := Self;
-   chkReference.SetBounds(TInfra.Scaled(278), 1, w17, w17);
+   chkReference.SetBounds(TInfra.Scaled(Self, 278), 1, w17, w17);
    chkReference.DoubleBuffered := true;
    chkReference.OnClick := OnChangeType;
 

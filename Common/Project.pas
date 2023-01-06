@@ -537,7 +537,7 @@ begin
    if GInfra.CurrentLang.EnabledConsts then
    begin
       var splitter: TSplitter := nil;
-      var x := 0;
+      var x := 2;
       if FGlobalVars <> nil then
       begin
          FGlobalVars.Align := alLeft;
@@ -547,9 +547,7 @@ begin
          splitter.Left := x - 4;
          splitter.Align := FGlobalVars.Align;
          FGlobalVars.SetSplitter(splitter);
-      end
-      else
-         x := 2;
+      end;
       FGlobalConsts := TConstDeclareList.Create(AForm, x, 1, DEF_CONSTLIST_WIDTH-5, 6, 3, DEF_CONSTLIST_WIDTH-15);
       if splitter <> nil then
          FGlobalConsts.Align := alClient;

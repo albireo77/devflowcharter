@@ -106,7 +106,7 @@ begin
    lblSize.ParentFont := false;
    lblSize.Font.Style := [fsBold];
    lblSize.Font.Color := clWindowText;
-   lblSize.SetBounds(TInfra.Scaled(171), 131, 0, 13);
+   lblSize.SetBounds(TInfra.Scaled(Self, 171), 131, 0, 13);
    lblSize.Caption := i18Manager.GetString('lblSize');
 
    lblType := TLabel.Create(Self);
@@ -114,14 +114,14 @@ begin
    lblType.ParentFont := false;
    lblType.Font.Style := [fsBold];
    lblType.Font.Color := clWindowText;
-   lblType.SetBounds(TInfra.Scaled(87), 131, 0, 13);
+   lblType.SetBounds(TInfra.Scaled(Self, 87), 131, 0, 13);
    lblType.Caption := i18Manager.GetString('lblType');
 
    sbxElements := TScrollBox.Create(Self);
    sbxElements.Parent := Self;
    sbxElements.Ctl3D := false;
    sbxElements.BorderStyle := bsNone;
-   sbxElements.SetBounds(0, 149, TInfra.Scaled(302), 0);
+   sbxElements.SetBounds(0, 149, TInfra.Scaled(Self, 302), 0);
    sbxElements.Constraints.MaxHeight := AParentForm.Height - 233;
    sbxElements.Constraints.MinWidth := sbxElements.Width;
    sbxElements.VertScrollBar.Tracking := true;
@@ -136,7 +136,7 @@ begin
    btnAddElement.Caption := i18Manager.GetString('btnAddField');
    btnAddElement.ShowHint := true;
    btnAddElement.DoubleBuffered := true;
-   btnAddElement.SetBounds(1, 102, TInfra.Scaled(306), 25);
+   btnAddElement.SetBounds(1, 102, TInfra.Scaled(Self, 306), 25);
    btnAddElement.OnClick := AddElement;
 
    CreateLibControls(Self, edtName.Left+edtName.Width+7, 10);
@@ -293,13 +293,13 @@ begin
 
    FElementTypeID := AParentTab.FElementTypeID;
    Constraints.MaxWidth := AParentTab.sbxElements.Width - 6;
-   SetBounds(0, Parent.Height, Constraints.MaxWidth, TInfra.Scaled(22));
+   SetBounds(0, Parent.Height, Constraints.MaxWidth, TInfra.Scaled(Self, 22));
    Align := alTop;
 
    TInfra.PopulateDataTypeCombo(cbType, ParentTab.PageIndex);
 
    edtSize := TSizeEdit.Create(Self);
-   edtSize.SetBounds(TInfra.Scaled(171), 2, edtSize.Parent.Width-btnRemove.Width-TInfra.Scaled(188), 17);
+   edtSize.SetBounds(TInfra.Scaled(Self, 171), 2, edtSize.Parent.Width-btnRemove.Width-TInfra.Scaled(Self, 188), 17);
    edtSize.BorderStyle := bsNone;
    edtSize.OnChange := OnChangeSize;
 end;

@@ -165,7 +165,7 @@ const
 
 procedure TSettingsForm.Localize(AList: TStringList);
 begin
-   var w := TInfra.Scaled(449);
+   var w := TInfra.Scaled(Self, 449);
    lblFileEncoding.Left := cbFileEncoding.Left - lblFileEncoding.Width - 5;
    lblCompiler.Left := 7;
    edtCompiler.Left := lblCompiler.Width + lblCompiler.Left + 5;

@@ -42,9 +42,7 @@ type
          FCurrentLang: TLangDefinition;
          FLangArray: array of TLangDefinition;
          class var FParsedEdit: TCustomEdit;
-         class var FPPI: integer;
       public
-         class property PPI: integer read FPPI;
          property CurrentLang: TLangDefinition read FCurrentLang;
          property TemplateLang: TLangDefinition read FTemplateLang;
          constructor Create;
@@ -113,7 +111,7 @@ type
          class function GetPageFromXY(APageControl: TPageControl; x, y: integer): TTabSheet;
          class function GetPageFromTabIndex(APageControl: TPageControl; ATabIndex: integer): TTabSheet;
          class function IndexOf<T>(const AValue: T; const AArray: TArray<T>): integer;
-         class function Scaled(on96: integer): integer;
+         class function Scaled(AWinControl: TWinControl; on96: integer): integer;
          class function ReplaceXMLIndents(const ALine: string): string;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetNativeFunction(const AName: string): PNativeFunction;
@@ -178,7 +176,6 @@ begin
    FTemplateLang := TLangDefinition.Create;
    FLangArray := FLangArray + [FTemplateLang];
    FCurrentLang := FLangArray[0];
-   FPPI := Screen.MonitorFromWindow(Application.Handle).PixelsPerInch;
 end;
 
 destructor TInfra.Destroy;
@@ -1256,12 +1253,13 @@ begin
       result := APageControl.Pages[idx];
 end;
 
-class function TInfra.Scaled(on96: integer): integer;
+class function TInfra.Scaled(AWinControl: TWinControl; on96: integer): integer;
 begin
-   if FPPI = 96 then
+   var ppi := Screen.MonitorFromWindow(AWinControl.Handle).PixelsPerInch;
+   if ppi = 96 then
       result := on96
    else
-      result := MulDiv(on96, FPPI, 96);
+      result := MulDiv(on96, ppi, 96);
 end;
 
 class function TInfra.ReplaceXMLIndents(const ALine: string): string;

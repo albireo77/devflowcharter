@@ -82,7 +82,7 @@ begin
 
    edtName := TNameEdit.Create(Self);
    edtName.Parent := Self;
-   edtName.SetBounds(3, 0, TInfra.Scaled(70), 21);
+   edtName.SetBounds(3, 0, TInfra.Scaled(Self, 70), 21);
    edtName.ParentFont := false;
    edtName.Font.Style := [];
    edtName.ParentCtl3D := false;
@@ -95,8 +95,8 @@ begin
 
    cbType := TComboBox.Create(Self);
    cbType.Parent := Self;
-   cbType.SetBounds(TInfra.Scaled(87), 0, TInfra.Scaled(70), 21);
-   cbType.Constraints.MaxWidth := TInfra.Scaled(74);
+   cbType.SetBounds(TInfra.Scaled(Self, 87), 0, TInfra.Scaled(Self, 70), 21);
+   cbType.Constraints.MaxWidth := TInfra.Scaled(Self, 74);
    cbType.Style := csDropDownList;
    cbType.ParentFont := false;
    cbType.Font.Style := [];
@@ -111,7 +111,7 @@ begin
    btnRemove.Caption := i18Manager.GetString('btnRemove');
    btnRemove.OnClick := OnClickRemove;
    var w := TInfra.GetAutoWidth(btnRemove);
-   btnRemove.SetBounds(Parent.Width-w-TInfra.Scaled(32), 0, w+14, TInfra.Scaled(20));
+   btnRemove.SetBounds(Parent.Width-w-TInfra.Scaled(Self, 32), 0, w+14, TInfra.Scaled(Self, 20));
 
    OnDragOver := OnDragOverElement;
    OnDragDrop := OnDragDropElement;
