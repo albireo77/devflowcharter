@@ -218,15 +218,12 @@ begin
 end;
 
 class function T3Strings.Extract(const AFrom: string): T3Strings;
-var
-   i: integer;
-   tokens: TArray<string>;
 begin
    result.S0 := '';
    result.S1 := '';
    result.S2 := '';
-   tokens := AFrom.Split(['|'], 3);
-   i := Length(tokens);
+   var tokens := AFrom.Split(['|'], 3);
+   var i := Length(tokens);
    if i > 0 then
       result.S0 := tokens[0];
    if i > 1 then
