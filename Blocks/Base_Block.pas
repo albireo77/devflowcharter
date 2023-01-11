@@ -2163,33 +2163,31 @@ begin
    result := inherited GetFromXML(ANode);
    if ANode <> nil then
    begin
+      var idx := PRIMARY_BRANCH_IDX;
       var branchNodes := FilterNodes(ANode, BRANCH_TAG);
       var branchNode := branchNodes.NextNode;
-      if branchNode <> nil then
+      while branchNode <> nil do
       begin
-         var idx := PRIMARY_BRANCH_IDX;
-         repeat
-            var hx := 0;
-            var hy := 0;
-            var node := FindNode(branchNode, 'x');
-            if node <> nil then
-               hx := StrToIntDef(node.Text, 0);
-            node := FindNode(branchNode, 'y');
-            if node <> nil then
-               hy := StrToIntDef(node.Text, 0);
-            var bId := GetNodeAttrInt(branchNode, ID_ATTR, ID_INVALID);
-            var bStmntId := GetNodeAttrInt(branchNode, BRANCH_STMNT_ATTR, ID_INVALID);
-            if GetBranch(idx) = nil then
-               AddBranch(Point(hx, hy), bId, bStmntId);
-            node := FindNode(branchNode, BLOCK_TAG);
-            if node <> nil then
-            begin
-               TXMLProcessor.ImportFlowchartFromXML(node, Self, nil, idx, result);
-               if result <> errNone then break;
-            end;
-            idx := idx + 1;
-            branchNode := branchNodes.NextNode;
-         until branchNode = nil;
+         var hx := 0;
+         var hy := 0;
+         var node := FindNode(branchNode, 'x');
+         if node <> nil then
+            hx := StrToIntDef(node.Text, 0);
+         node := FindNode(branchNode, 'y');
+         if node <> nil then
+            hy := StrToIntDef(node.Text, 0);
+         var bId := GetNodeAttrInt(branchNode, ID_ATTR, ID_INVALID);
+         var bStmntId := GetNodeAttrInt(branchNode, BRANCH_STMNT_ATTR, ID_INVALID);
+         if GetBranch(idx) = nil then
+            AddBranch(Point(hx, hy), bId, bStmntId);
+         node := FindNode(branchNode, BLOCK_TAG);
+         if node <> nil then
+         begin
+            TXMLProcessor.ImportFlowchartFromXML(node, Self, nil, idx, result);
+            if result <> errNone then break;
+         end;
+         Inc(idx);
+         branchNode := branchNodes.NextNode;
       end;
       var tnode := FindNode(ANode, FOLD_TEXT_TAG);
       if tnode <> nil then
