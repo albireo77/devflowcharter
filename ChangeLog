@@ -1,3 +1,12 @@
+10.0 [??-??-????]
+- compiled with Delphi 11
+- rewrite XML backend using OmniXMLUtils unit
+- fix duplicated comments saved to XML file when flowcharts overlapped
+- Editor: fixed hint font
+- Editor: improve setting Modified status in various scenarios
+- Language Definition File: add new placeholder to LibEntry element allowing to include type or function name
+- minor optimizations and fixes
+
 9.11 [20-04-2022]
 - fix displaying for..do block on high DPI screens 
 
