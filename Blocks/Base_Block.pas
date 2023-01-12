@@ -618,7 +618,7 @@ end;
 
 function TBlock.IsAncestor(AParent: TObject): boolean;
 begin
-   result := false;
+   result := False;
    if AParent <> nil then
    begin
       var lParent := Parent;
@@ -626,7 +626,7 @@ begin
       begin
          if lParent = AParent then
          begin
-            result := true;
+            result := True;
             break;
          end;
          lParent := lParent.Parent;
@@ -866,25 +866,25 @@ begin
    inherited;
    if (GetAsyncKeyState(vkLButton) <> 0) and not Mouse.IsDragging then
    begin
-      FMouseLeave := false;
+      FMouseLeave := False;
       case Cursor of
          crSizeWE:
          begin
             Msg.Result := HTRIGHT;
-            FHResize := true;
+            FHResize := True;
             BringToFront;
          end;
          crSizeNS:
          begin
             Msg.Result := HTBOTTOM;
-            FVResize := true;
+            FVResize := True;
             BringToFront;
          end;
          crSizeNWSE:
          begin
             Msg.Result := HTBOTTOMRIGHT;
-            FHResize := true;
-            FVResize := true;
+            FHResize := True;
+            FVResize := True;
             BringToFront;
          end;
       end;
@@ -897,7 +897,7 @@ begin
    begin
       var p := ClientToScreen(Point(X, Y));
       PopupMenu.PopupComponent := Self;
-      FMouseLeave := false;
+      FMouseLeave := False;
       PopupMenu.Popup(p.X, p.Y);
    end;
 end;
@@ -921,8 +921,8 @@ procedure TGroupBlock.ResizeWithDrawLock;
 begin
    FTopParentBlock.LockDrawing;
    try
-      ResizeHorz(true);
-      ResizeVert(true);
+      ResizeHorz(True);
+      ResizeVert(True);
    finally
       FTopParentBlock.UnlockDrawing;
    end;
@@ -1070,7 +1070,7 @@ begin
       begin
          if comment.Page = Page then
          begin
-            var isFront := true;
+            var isFront := True;
             if AInFront then
                isFront := IsInFront(comment);
             if isFront and (comment.PinControl = nil) and ClientRect.Contains(ParentToClient(comment.BoundsRect.TopLeft, Page.Box)) then
@@ -1090,7 +1090,7 @@ end;
 
 function TBlock.IsInFront(AControl: TWinControl): boolean;
 begin
-   result := false;
+   result := False;
    if AControl <> nil then
    begin
       var hnd := GetWindow(AControl.Handle, GW_HWNDLAST);
@@ -1098,7 +1098,7 @@ begin
       begin
          if hnd = FTopParentBlock.Handle then
          begin
-            result := true;
+            result := True;
             break;
          end
          else if hnd = AControl.Handle then
@@ -1627,13 +1627,13 @@ end;
 
 function TBlock.CanBeFocused: boolean;
 begin
-   result := true;
+   result := True;
    var lParent := FParentBlock;
    while lParent <> nil do
    begin
       if not lParent.Expanded then
       begin
-         result := false;
+         result := False;
          break;
       end;
       lParent := lParent.ParentBlock;
@@ -1648,7 +1648,7 @@ begin
             result := func.Header.chkBodyVisible.Checked;
       end;
       if result and (FParentBranch <> nil) and (FParentBranch.IndexOf(Self) = -1) then
-         result := false;
+         result := False;
    end;
 end;
 
@@ -2136,9 +2136,9 @@ begin
       var textControl := GetTextControl;
       if (node <> nil) and (textControl <> nil) then
       begin
-         FRefreshMode := true;
+         FRefreshMode := True;
          textControl.Text := ReplaceStr(node.Text, LB_PHOLDER, sLineBreak);
-         FRefreshMode := false;
+         FRefreshMode := False;
       end;
 
       var i := GetNodeAttrInt(ANode, FONT_SIZE_ATTR, 0);
@@ -2226,21 +2226,21 @@ begin
    else
    begin
       lParent := nil;
-      block := Self;
-      if (FRedArrow = 0) and (FParentBlock <> nil) then
-         lParent := FParentBlock
-      else if Self is TGroupBlock then
+      block := nil;
+      if FRedArrow = 0 then
       begin
+         lParent := FParentBlock;
+         block := Self;
+      end
+      else if FRedArrow > 0 then
          lParent := TGroupBlock(Self);
-         block := nil;
-      end;
       if lParent <> nil then
       begin
          lParent.BlockImportMode := True;
          try
             newBlock := TXMLProcessor.ImportFlowchartFromXML(node, lParent, block, FRedArrow, result);
          finally
-            lParent.BlockImportMode := false;
+            lParent.BlockImportMode := False;
          end;
          if result = errNone then
          begin
