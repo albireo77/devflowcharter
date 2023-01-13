@@ -1899,7 +1899,7 @@ end;
 
 function TGroupBlock.RemoveBranch(AIndex: integer): boolean;
 begin
-   result := false;
+   result := False;
    var br := GetBranch(AIndex);
    if (br <> nil) and (AIndex > FFixedBranches) then
    begin
@@ -1910,7 +1910,7 @@ begin
       begin
          obj.Free;
          AfterRemovingBranch;
-         result := true;
+         result := True;
       end;
    end;
 end;
@@ -2398,11 +2398,10 @@ begin
 end;
 
 procedure TGroupBlock.LinkBlocks(ABranch: TBranch);
-var
-   p: TPoint;
 begin
    if ABranch <> nil then
    begin
+      var p: TPoint;
       var blockPrev: TBlock := nil;
       for var block in ABranch do
       begin
