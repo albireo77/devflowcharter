@@ -112,18 +112,10 @@ end;
 
 procedure TBlockTabSheet.ImportFromXML(ANode: IXMLNode);
 begin
-   var val := GetNodeAttrInt(ANode, 'hScrollRange', -1);
-   if val > -1 then
-      Box.HorzScrollBar.Range := val;
-   val := GetNodeAttrInt(ANode, 'hScrollPos', -1);
-   if val > -1 then
-      Box.HorzScrollBar.Position := val;
-   val := GetNodeAttrInt(ANode, 'vScrollRange', -1);
-   if val > -1 then
-      Box.VertScrollBar.Range := val;
-   val := GetNodeAttrInt(ANode, 'vScrollPos', -1);
-   if val > -1 then
-      Box.VertScrollBar.Position := val;
+   Box.HorzScrollBar.Range := GetNodeAttrInt(ANode, 'hScrollRange');
+   Box.HorzScrollBar.Position := GetNodeAttrInt(ANode, 'hScrollPos');
+   Box.VertScrollBar.Range := GetNodeAttrInt(ANode, 'vScrollRange');
+   Box.VertScrollBar.Position := GetNodeAttrInt(ANode, 'vScrollPos');
 end;
 
 constructor TScrollBoxEx.Create(APage: TBlockTabSheet);

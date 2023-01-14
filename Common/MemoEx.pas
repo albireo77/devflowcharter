@@ -259,17 +259,15 @@ procedure TMemoEx.GetFromXML(ANode: IXMLNode);
 begin
    if ANode <> nil then
    begin
-      EditFormWidth := GetNodeAttrInt(ANode, 'memW', EditFormWidth);
-      EditFormHeight := GetNodeAttrInt(ANode, 'memH', EditFormHeight);
-      HasVScroll := GetNodeAttrBool(ANode, 'mem_vscroll', FHasVScroll);
-      HasHScroll := GetNodeAttrBool(ANode, 'mem_hscroll', FHasHScroll);
-      WordWrap := GetNodeAttrBool(ANode, 'mem_wordwrap', WordWrap);
-      var h := GetNodeAttrInt(ANode, 'mem_hscroll_pos', 0);
-      var v := GetNodeAttrInt(ANode, 'mem_vscroll_pos', 0);
+      EditFormWidth := GetNodeAttrInt(ANode, 'memW');
+      EditFormHeight := GetNodeAttrInt(ANode, 'memH');
+      HasVScroll := GetNodeAttrBool(ANode, 'mem_vscroll');
+      HasHScroll := GetNodeAttrBool(ANode, 'mem_hscroll');
+      WordWrap := GetNodeAttrBool(ANode, 'mem_wordwrap');
+      var h := GetNodeAttrInt(ANode, 'mem_hscroll_pos');
+      var v := GetNodeAttrInt(ANode, 'mem_vscroll_pos');
       Perform(EM_LINESCROLL, h, v);
-      var val := GetNodeAttrStr(ANode, 'mem_align', '');
-      if not val.IsEmpty then
-         Alignment := TRttiEnumerationType.GetValue<TAlignment>(val);
+      Alignment := TRttiEnumerationType.GetValue<TAlignment>(GetNodeAttrStr(ANode, 'mem_align'));
    end;
 end;
 

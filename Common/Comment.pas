@@ -309,21 +309,21 @@ procedure TComment.ImportFromXML(ANode: IXMLNode; APinControl: TControl);
 begin
    if ANode <> nil then
    begin
-      SetBounds(GetNodeAttrInt(ANode, 'x', 0),
-                GetNodeAttrInt(ANode, 'y', 0),
-                GetNodeAttrInt(ANode, 'w', 0),
-                GetNodeAttrInt(ANode, 'h', 0));
-      var v := GetNodeAttrInt(ANode, FONT_SIZE_ATTR, 0);
+      SetBounds(GetNodeAttrInt(ANode, 'x'),
+                GetNodeAttrInt(ANode, 'y'),
+                GetNodeAttrInt(ANode, 'w'),
+                GetNodeAttrInt(ANode, 'h'));
+      var v := GetNodeAttrInt(ANode, FONT_SIZE_ATTR);
       if v in FLOWCHART_VALID_FONT_SIZES then
          Font.Size := v;
-      FZOrder := GetNodeAttrInt(ANode, Z_ORDER_ATTR, -1);
+      FZOrder := GetNodeAttrInt(ANode, Z_ORDER_ATTR);
       v := GetNodeAttrInt(ANode, FONT_STYLE_ATTR, 0);
       if v > 0 then
          Font.Style := TInfra.DecodeFontStyle(v);
       Text := ANode.Text;
-      Visible := GetNodeAttrBool(ANode, 'v', False);
+      Visible := GetNodeAttrBool(ANode, 'v');
       FPinControl := APinControl;
-      IsHeader := GetNodeAttrBool(ANode, IS_HEADER_ATTR, False);
+      IsHeader := GetNodeAttrBool(ANode, IS_HEADER_ATTR);
       GetFromXML(ANode);
    end;
 end;
