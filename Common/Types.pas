@@ -277,10 +277,10 @@ begin
    else
       bt := TBlockType(at);
    result := New(bt,
-                 GetNodeAttrInt(AFrom, 'x', 0),
-                 GetNodeAttrInt(AFrom, 'y', 0),
-                 GetNodeAttrInt(AFrom, 'w', 0),
-                 GetNodeAttrInt(AFrom, 'h', 0),
+                 GetNodeAttrInt(AFrom, 'x'),
+                 GetNodeAttrInt(AFrom, 'y'),
+                 GetNodeAttrInt(AFrom, 'w'),
+                 GetNodeAttrInt(AFrom, 'h'),
                  GetNodeAttrInt(AFrom, 'brx', 0),
                  GetNodeAttrInt(AFrom, 'bry', 0),
                  GetNodeAttrInt(AFrom, 'bh', 0),
