@@ -460,11 +460,11 @@ end;
 
 procedure TTabComponent.ImportFromXML(ANode: IXMLNode; APinControl: TControl = nil);
 begin
-   edtName.Text := GetNodeAttrStr(ANode, NAME_ATTR, '');
+   edtName.Text := GetNodeAttrStr(ANode, NAME_ATTR);
    if Assigned(edtName.OnChange) then
       edtName.OnChange(edtName);
-   chkExternal.State := TInfra.DecodeCheckBoxState(GetNodeAttrStr(ANode, 'ext_decl', ''));
-   edtLibrary.Text := GetNodeAttrStr(ANode, 'library', '');
+   chkExternal.State := TInfra.DecodeCheckBoxState(GetNodeAttrStr(ANode, 'ext_decl'));
+   edtLibrary.Text := GetNodeAttrStr(ANode, 'library');
    var nodes := FilterNodes(ANode, FElementTypeID);
    var node := nodes.NextNode;
    while node <> nil do
@@ -475,7 +475,7 @@ begin
       elem.ImportFromXML(node);
       node := nodes.NextNode;
    end;
-   FId := GProject.Register(Self, GetNodeAttrInt(ANode, ID_ATTR, ID_INVALID));
+   FId := GProject.Register(Self, GetNodeAttrInt(ANode, ID_ATTR));
 end;
 
 function TTabComponent.GetFocusColor: TColor;
