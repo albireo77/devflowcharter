@@ -347,7 +347,7 @@ begin
    inherited ImportFromXML(ANode, APinControl);
    if chkAddPtrType.Enabled then
       chkAddPtrType.Checked := GetNodeAttrBool(ANode, POINTER_ATTR, false);
-   rgTypeBox.ItemIndex := Ord(TRttiEnumerationType.GetValue<TUserDataTypeKind>(GetNodeAttrStr(ANode, KIND_ATTR, '')));
+   rgTypeBox.ItemIndex := Ord(TRttiEnumerationType.GetValue<TUserDataTypeKind>(GetNodeAttrStr(ANode, KIND_ATTR)));
 end;
 
 function TUserDataType.GetDimensionCount: integer;
@@ -433,7 +433,7 @@ end;
 procedure TField.ImportFromXML(ANode: IXMLNode);
 begin
    inherited ImportFromXML(ANode);
-   var size := GetNodeAttrStr(ANode, SIZE_ATTR, '');
+   var size := GetNodeAttrStr(ANode, SIZE_ATTR);
    if size.IsEmpty then
       size := '1';
    edtSize.Text := size;
