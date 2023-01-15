@@ -912,7 +912,7 @@ end;
 procedure TUserFunctionHeader.ImportFromXML(ANode: IXMLNode; APinControl: TControl = nil);
 begin
    inherited ImportFromXML(ANode, APinControl);
-   var i := cbType.Items.IndexOf(GetNodeAttrStr(ANode, TYPE_ATTR, ''));
+   var i := cbType.Items.IndexOf(GetNodeAttrStr(ANode, TYPE_ATTR));
    if i <> -1 then
       cbType.ItemIndex := i
    else if cbType.Items.Count > 0 then
@@ -922,29 +922,19 @@ begin
    var node := FindNode(ANode, 'desc');
    if node <> nil then
       memDesc.Text := ReplaceStr(node.Text, LB_PHOLDER, sLineBreak);
-   chkBodyVisible.Checked := GetNodeAttrBool(ANode, 'show_body', false);
-   chkInclDescCode.Checked := GetNodeAttrBool(ANode, 'desc_incl', false);
-   chkInclDescFlow.Checked := GetNodeAttrBool(ANode, 'desc_incl_flow', false);
-   chkArrayType.Checked := GetNodeAttrBool(ANode, 'arrayType', false);
-   chkConstructor.Checked := GetNodeAttrBool(ANode, 'constructor', false);
+   chkBodyVisible.Checked := GetNodeAttrBool(ANode, 'show_body');
+   chkInclDescCode.Checked := GetNodeAttrBool(ANode, 'desc_incl');
+   chkInclDescFlow.Checked := GetNodeAttrBool(ANode, 'desc_incl_flow');
+   chkArrayType.Checked := GetNodeAttrBool(ANode, 'arrayType');
+   chkConstructor.Checked := GetNodeAttrBool(ANode, 'constructor');
    if chkStatic.Visible then
       chkStatic.Checked := GetNodeAttrBool(ANode, 'static', false);
    FLocalVars.ImportFromXML(ANode, impAll);
-   i := GetNodeAttrInt(ANode, 'descrh', 0);
-   if i > 0 then
-      gbDesc.Height := i;
-   i := GetNodeAttrInt(ANode, 'headerh', 0);
-   if i > 0 then
-      gbHeader.Height := i;
-   i := GetNodeAttrInt(ANode, 'parmsh', 0);
-   if i > 0 then
-   begin
-      gbParams.Height := i;
-      sbxElements.Constraints.MaxHeight := gbParams.Height - 66;
-   end;
-   i := GetNodeAttrInt(ANode, 'lvarsh', 0);
-   if i > 0 then
-      FLocalVars.Height := i;
+   gbDesc.Height := GetNodeAttrInt(ANode, 'descrh');
+   gbHeader.Height := GetNodeAttrInt(ANode, 'headerh');
+   gbParams.Height := GetNodeAttrInt(ANode, 'parmsh');
+   sbxElements.Constraints.MaxHeight := gbParams.Height - 66;
+   FLocalVars.Height := GetNodeAttrInt(ANode, 'lvarsh');
 end;
 
 procedure TParameter.OnChangeType(Sender: TObject);
@@ -962,8 +952,8 @@ end;
 procedure TParameter.ImportFromXML(ANode: IXMLNode);
 begin
    inherited ImportFromXML(ANode);
-   chkTable.Checked := GetNodeAttrBool(ANode, 'table', false);
-   chkReference.Checked := GetNodeAttrBool(ANode, 'reference', false);
+   chkTable.Checked := GetNodeAttrBool(ANode, 'table');
+   chkReference.Checked := GetNodeAttrBool(ANode, 'reference');
    edtDefault.Text := GetNodeAttrStr(ANode, 'default', '');
 end;
 
