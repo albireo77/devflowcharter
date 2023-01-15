@@ -66,15 +66,15 @@ end;
 
 procedure TDeclarationsForm.ImportFromXML(ANode: IXMLNode);
 begin
-   Height := GetNodeAttrInt(ANode, 'var_win_h', Height);
-   Width := GetNodeAttrInt(ANode, 'var_win_w', Width);
-   if GetNodeAttrBool(ANode, 'var_win_show', false) and (GInfra.CurrentLang.EnabledVars or GInfra.CurrentLang.EnabledConsts) then
+   Height := GetNodeAttrInt(ANode, 'var_win_h');
+   Width := GetNodeAttrInt(ANode, 'var_win_w');
+   if GetNodeAttrBool(ANode, 'var_win_show', False) and (GInfra.CurrentLang.EnabledVars or GInfra.CurrentLang.EnabledConsts) then
    begin
       Position := poDesigned;
-      if GetNodeAttrBool(ANode, 'var_win_min', false) then
+      if GetNodeAttrBool(ANode, 'var_win_min', False) then
          WindowState := wsMinimized;
-      Left := GetNodeAttrInt(ANode, 'var_win_x', Left);
-      Top := GetNodeAttrInt(ANode, 'var_win_y', Top);
+      Left := GetNodeAttrInt(ANode, 'var_win_x');
+      Top := GetNodeAttrInt(ANode, 'var_win_y');
       Show;
    end;
 end;

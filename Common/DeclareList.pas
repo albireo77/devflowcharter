@@ -95,7 +95,7 @@ type
          function ImportItemFromXML(ANode: IXMLNode): TError; virtual;
          procedure ExportItemToXML(ANode: IXMLNode; idx: integer); virtual;
          procedure ExportToXML(ANode: IXMLNode);
-         function GetImportNode(ANode: IXMLNode): IXMLNode; virtual; abstract;
+         function GetImportNode(ANode: IXMLNode): IXMLNode; virtual;
          function RetrieveFocus(AInfo: TFocusInfo): boolean;
          function GetTreeNodeText(ANodeOffset: integer = 0): string;
          function CanBeFocused: boolean;
@@ -149,7 +149,6 @@ type
          constructor Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
          function ImportItemFromXML(ANode: IXMLNode): TError; override;
          procedure ExportItemToXML(ANode: IXMLNode; idx: integer); override;
-         function GetImportNode(ANode: IXMLNode): IXMLNode; override;
          function GetValue(const AIdent: string): string;
          function IsGlobal: boolean; override;
          function GetExternModifier(idx: integer): string; override;
@@ -847,7 +846,7 @@ end;
 
 function TVarDeclareList.GetImportNode(ANode: IXMLNode): IXMLNode;
 begin
-   result := FindNode(ANode, VAR_TAG);
+   result := inherited GetImportNode(ANode);
    if result = nil then
    begin
       result := FindNode(ANode, FUNCTION_TAG);
@@ -860,9 +859,9 @@ begin
    end;
 end;
 
-function TConstDeclareList.GetImportNode(ANode: IXMLNode): IXMLNode;
+function TDeclareList.GetImportNode(ANode: IXMLNode): IXMLNode;
 begin
-   result := FindNode(ANode, CONST_TAG);
+   result := FindNode(ANode, FNodeName);
 end;
 
 function TDeclareList.ImportFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
@@ -900,14 +899,14 @@ end;
 function TDeclareList.ImportItemFromXML(ANode: IXMLNode): TError;
 begin
    result := errValidate;
-   var lName := GetNodeAttrStr(ANode, NAME_ATTR, '').Trim;
+   var lName := GetNodeAttrStr(ANode, NAME_ATTR).Trim;
    if (not lName.IsEmpty) and (sgList.Cols[NAME_COL].IndexOf(lName) < 1) then
    begin
       var idx := sgList.RowCount - 1;
       sgList.Cells[NAME_COL, idx] := lName;
       var box := CreateExternalCheckBox(idx);
       if box <> nil then
-         box.State := TInfra.DecodeCheckBoxState(GetNodeAttrStr(ANode, EXTERN_ATTR, ''));
+         box.State := TInfra.DecodeCheckBoxState(GetNodeAttrStr(ANode, EXTERN_ATTR));
       result := errNone;
    end;
 end;
@@ -918,7 +917,7 @@ begin
    if result = errNone then
    begin
       var idx := sgList.RowCount - 1;
-      sgList.Cells[CONST_VALUE_COL, idx] := GetNodeAttrStr(ANode, VALUE_ATTR, '');
+      sgList.Cells[CONST_VALUE_COL, idx] := GetNodeAttrStr(ANode, VALUE_ATTR);
       sgList.RowCount := idx + 2;
    end;
 end;
@@ -929,12 +928,12 @@ begin
    if result = errNone then
    begin
       var idx := sgList.RowCount - 1;
-      var lType := GetNodeAttrStr(ANode, TYPE_ATTR, '');
+      var lType := GetNodeAttrStr(ANode, TYPE_ATTR);
       if cbType.Items.IndexOf(lType) = -1 then
          lType := i18Manager.GetString('Unknown');
       sgList.Cells[VAR_TYPE_COL, idx] := lType;
-      sgList.Cells[VAR_SIZE_COL, idx] := GetNodeAttrStr(ANode, SIZE_ATTR, '');
-      sgList.Cells[VAR_INIT_COL, idx] := GetNodeAttrStr(ANode, INIT_ATTR, '');
+      sgList.Cells[VAR_SIZE_COL, idx] := GetNodeAttrStr(ANode, SIZE_ATTR);
+      sgList.Cells[VAR_INIT_COL, idx] := GetNodeAttrStr(ANode, INIT_ATTR);
       sgList.RowCount := idx + 2;
    end;
 end;
