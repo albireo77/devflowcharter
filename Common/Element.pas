@@ -188,8 +188,8 @@ end;
 
 procedure TElement.ImportFromXML(ANode: IXMLNode);
 begin
-   edtName.Text :=  GetNodeAttrStr(ANode, NAME_ATTR, '');
-   var idx := cbType.Items.IndexOf(GetNodeAttrStr(ANode, TYPE_ATTR, ''));
+   edtName.Text :=  GetNodeAttrStr(ANode, NAME_ATTR);
+   var idx := cbType.Items.IndexOf(GetNodeAttrStr(ANode, TYPE_ATTR));
    if idx <> -1 then
       cbType.ItemIndex := idx
    else if cbType.Items.Count > 0 then
