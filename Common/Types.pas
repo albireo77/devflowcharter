@@ -270,7 +270,7 @@ var
    at: integer;
    bt: TBlockType;
 begin
-   attr := GetNodeAttrStr(AFrom, BLOCK_TYPE_ATTR, '');
+   attr := GetNodeAttrStr(AFrom, BLOCK_TYPE_ATTR);
    at := StrToIntDef(attr, -1);
    if at = -1 then
       bt := TRttiEnumerationType.GetValue<TBlockType>(attr)

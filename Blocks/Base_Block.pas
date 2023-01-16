@@ -2211,22 +2211,18 @@ begin
 end;
 
 function TBlock.ImportFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
-var
-   block, newBlock: TBlock;
-   lParent: TGroupBlock;
-   node: IXMLNode;
-   bt: TBlockType;
 begin
    result := errValidate;
-   node := FindNode(ANode, BLOCK_TAG);
+   var bt := blUnknown;
+   var node := FindNode(ANode, BLOCK_TAG);
    if node <> nil then
-      bt := TRttiEnumerationType.GetValue<TBlockType>(GetNodeAttrStr(node, BLOCK_TYPE_ATTR, ''));
-   if (node = nil) or (bt in [blMain, blUnknown, blComment]) then
+      bt := TRttiEnumerationType.GetValue<TBlockType>(GetNodeAttrStr(node, BLOCK_TYPE_ATTR));
+   if bt in [blMain, blUnknown, blComment] then
       Gerr_text := i18Manager.GetString('BadImportTag')
    else
    begin
-      lParent := nil;
-      block := nil;
+      var lParent: TGroupBlock := nil;
+      var block: TBlock := nil;
       if FRedArrow = 0 then
       begin
          lParent := FParentBlock;
@@ -2236,13 +2232,14 @@ begin
          lParent := TGroupBlock(Self);
       if lParent <> nil then
       begin
+         var newBlock: TBlock := nil;
          lParent.BlockImportMode := True;
          try
             newBlock := TXMLProcessor.ImportFlowchartFromXML(node, lParent, block, FRedArrow, result);
          finally
             lParent.BlockImportMode := False;
          end;
-         if result = errNone then
+         if newBlock <> nil then
          begin
             lParent.ResizeWithDrawLock;
             newBlock.ImportCommentsFromXML(node);
