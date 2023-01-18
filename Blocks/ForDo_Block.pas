@@ -123,7 +123,7 @@ begin
    edtVar.ReadOnly := GInfra.CurrentLang.ForDoVarList;
    edtVar.ShowHint := True;
    edtVar.AutoSelect := False;
-   edtVar.DoubleBuffered := true;
+   edtVar.DoubleBuffered := True;
    edtVar.Color := sColor;
    
    PopulateComboBoxes;
@@ -143,7 +143,7 @@ begin
    Constraints.MinHeight := DEFAULT_HEIGHT;
    FStatement.Free;
    FStatement := nil;
-   FIsInitialized := true;
+   FIsInitialized := True;
 end;
 
 procedure TForDoBlock.CloneFrom(ABlock: TBlock);
@@ -159,9 +159,9 @@ begin
       FDescOrder := forBlock.FDescOrder;
       if not forBlock.Expanded then
       begin
-         edtStart.Visible := false;
-         edtStop.Visible := false;
-         edtVar.Visible := false;
+         edtStart.Visible := False;
+         edtStop.Visible := False;
+         edtVar.Visible := False;
       end;
    end;
    inherited CloneFrom(ABlock);
@@ -205,12 +205,12 @@ end;
 procedure TForDoBlock.PutTextControls;
 begin
    var t := GetTextTop;
-   var r := DrawTextLabel(Branch.Hook.X-97, t, FForLabel, false, true, false).Right;
+   var r := DrawTextLabel(Branch.Hook.X-97, t, FForLabel, False, True, False).Right;
    cbVar.SetBounds(r+1, 34-t, edtVar.Width+5, cbVar.Height);
    edtVar.SetBounds(cbVar.Left+4, 38-t, edtVar.Width, edtVar.Height);
-   r := DrawTextLabel(edtVar.Left + edtVar.Width + 3, t, GInfra.CurrentLang.ForDoVarString, false, true, false).Right;
+   r := DrawTextLabel(edtVar.Left + edtVar.Width + 3, t, GInfra.CurrentLang.ForDoVarString, False, True, False).Right;
    edtStart.SetBounds(r+4, 38-t, edtStart.Width, edtStart.Height);
-   r := DrawTextLabel(edtStart.Left + edtStart.Width + 3, t, IfThen(FDescOrder, '«', '»'), false, true, false).Right;
+   r := DrawTextLabel(edtStart.Left + edtStart.Width + 3, t, IfThen(FDescOrder, '«', '»'), False, True, False).Right;
    edtStop.SetBounds(r+4, 38-t, edtStop.Width, edtStop.Height);
    Invalidate;
 end;
@@ -243,9 +243,9 @@ begin
                       Point(bst-9, TopHook.Y),
                       Point(bhx-100, TopHook.Y),
                       Point(bhx-100, 0)]);
-      DrawTextLabel(edtVar.BoundsRect.Right+3, t, GInfra.CurrentLang.ForDoVarString, false, true);
-      DrawTextLabel(edtStart.BoundsRect.Right+3, t, IfThen(FDescOrder, '«', '»'), false, true);
-      DrawTextLabel(bhx-97, t, FForLabel, false, true);
+      DrawTextLabel(edtVar.BoundsRect.Right+3, t, GInfra.CurrentLang.ForDoVarString, False, True);
+      DrawTextLabel(edtStart.BoundsRect.Right+3, t, IfThen(FDescOrder, '«', '»'), False, True);
+      DrawTextLabel(bhx-97, t, FForLabel, False, True);
       DrawBlockLabel(bhx-100, 40, GInfra.CurrentLang.LabelFor);
    end;
    DrawI;
@@ -293,7 +293,7 @@ begin
    if GSettings.ParseFor then
    begin
       if (GProject.GlobalVars <> nil) and GProject.GlobalVars.IsValidLoopVar(edtVar.Text) then
-         isOk := true
+         isOk := True
       else
       begin
          header := TInfra.GetFunctionHeader(Self);
@@ -418,7 +418,7 @@ procedure TForDoBlock.ExpandFold(AResize: boolean);
 begin
    edtStart.Visible := not Expanded;
    edtStop.Visible := not Expanded;
-   cbVar.Visible := false;
+   cbVar.Visible := False;
    edtVar.Visible := not Expanded;
    inherited ExpandFold(AResize);
 end;
@@ -484,16 +484,12 @@ begin
 end;
 
 function TForDoBlock.RetrieveFocus(AInfo: TFocusInfo): boolean;
-var
-   edit: TCustomEdit;
-   expr: string;
-   i: integer;
 begin
-   edit := edtStop;
+   var edit := TCustomEdit(edtStop);
    if not AInfo.SelText.IsEmpty then
    begin
-      expr := GetBlockTemplateExpr(GInfra.CurrentLang.Name);
-      i := Pos(PRIMARY_PLACEHOLDER, expr);
+      var expr := GetBlockTemplateExpr(GInfra.CurrentLang.Name);
+      var i := Pos(PRIMARY_PLACEHOLDER, expr);
       if i <> 0 then
       begin
          i := i + Length(edtVar.Text);
@@ -571,15 +567,15 @@ begin
          cbVar.Text := node.Text;
          edtVar.Text := node.Text;
       end;
-      FRefreshMode := true;
+      FRefreshMode := True;
       node := FindNode(ANode, 'init_val');
       if node <> nil then
          edtStart.Text := ReplaceStr(node.Text, '#', ' ');
       node := FindNode(ANode, 'end_val');
       if node <> nil then
          edtStop.Text := ReplaceStr(node.Text, '#' , ' ');
-      FRefreshMode := false;
-      FDescOrder := GetNodeAttrStr(ANode, 'order', '') = 'ordDesc';
+      FRefreshMode := False;
+      FDescOrder := GetNodeAttrStr(ANode, 'order') = 'ordDesc';
    end;
    OnChangeAll;
 end;

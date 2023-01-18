@@ -135,9 +135,9 @@ begin
       Canvas.MoveTo(TrueBranch.Hook.X, FDiamond.Left.Y);
       Canvas.LineTo(FDiamond.Left.X, FDiamond.Left.Y);
 
-      DrawTextLabel(FDiamond.Left.X, FDiamond.Left.Y-5, FTrueLabel, true, true);
-      DrawTextLabel(FDiamond.Right.X, FDiamond.Right.Y-5, FFalseLabel, false, true);
-      DrawBlockLabel(FDiamond.Left.X+10, FDiamond.Left.Y+5, GInfra.CurrentLang.LabelIfElse, true);
+      DrawTextLabel(FDiamond.Left.X, FDiamond.Left.Y-5, FTrueLabel, True, True);
+      DrawTextLabel(FDiamond.Right.X, FDiamond.Right.Y-5, FFalseLabel, False, True);
+      DrawBlockLabel(FDiamond.Left.X+10, FDiamond.Left.Y+5, GInfra.CurrentLang.LabelIfElse, True);
    end;
    DrawI;
 end;
