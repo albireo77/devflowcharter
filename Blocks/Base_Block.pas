@@ -2026,7 +2026,7 @@ begin
             var commentNode := commentNodes.NextNode;
             while commentNode <> nil do
             begin
-               var zOrder := GetNodeAttrInt(commentNode, Z_ORDER_ATTR, -149);
+               var zOrder := GetNodeAttrInt(commentNode, Z_ORDER_ATTR);
                var pageCaption := GetNodeAttrStr(commentNode, PAGE_CAPTION_ATTR, '');
                if (zOrder = comment.GetZOrder) and
                   ((pageCaption = comment.Page.Caption) or (pageCaption.IsEmpty and comment.Page.IsMain)) then
@@ -2192,9 +2192,9 @@ begin
       var tnode := FindNode(ANode, FOLD_TEXT_TAG);
       if tnode <> nil then
          SetFoldedText(tnode.Text);
-      FFoldParms.Width := GetNodeAttrInt(ANode, 'fw', 140);
-      FFoldParms.Height := GetNodeAttrInt(ANode, 'fh', 91);
-      if GetNodeAttrBool(ANode, FOLDED_ATTR, False) then
+      FFoldParms.Width := GetNodeAttrInt(ANode, 'fw');
+      FFoldParms.Height := GetNodeAttrInt(ANode, 'fh');
+      if GetNodeAttrBool(ANode, FOLDED_ATTR) then
          ExpandFold(False);
    end;
 end;
