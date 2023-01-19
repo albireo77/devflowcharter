@@ -240,7 +240,7 @@ begin
    bitmap.Width := pnt.X;
    bitmap.Height := pnt.Y;
    pdi := FPage.DrawI;
-   FPage.DrawI := false;
+   FPage.DrawI := False;
    bitmap.Canvas.Lock;
    try
       PaintTo(bitmap.Canvas, 1, 1);
@@ -312,14 +312,12 @@ begin
 end;
 
 procedure TMainBlock.DrawStopEllipse;
-var
-   y: integer;
 begin
+   var y := GetEllipseTextRect(0, 0, FStopLabel).Height;
    if Branch.Count = 0 then
-      y := Branch.Hook.Y + 1
+      Inc(y, Branch.Hook.Y+1)
    else
-      y := Branch.Last.BoundsRect.Bottom;
-   y := y + GetEllipseTextRect(0, 0, FStopLabel).Height;
+      Inc(y, Branch.Last.BoundsRect.Bottom);
    DrawEllipsedText(BottomHook, y, FStopLabel);
 end;
 
@@ -342,7 +340,7 @@ begin
          else if Assigned(GInfra.TemplateLang.GetUserFuncDesc) then
             lang := GInfra.TemplateLang;
          if lang <> nil then
-            result := lang.GetUserFuncDesc(header, false, header.chkInclDescFlow.Checked);
+            result := lang.GetUserFuncDesc(header, False, header.chkInclDescFlow.Checked);
       end
       else
       begin
@@ -536,12 +534,12 @@ function TMainBlock.GetFromXML(ANode: IXMLNode): TError;
 begin
    result := inherited GetFromXML(ANode);
    if ANode <> nil then
-      FZOrder := GetNodeAttrInt(ANode, Z_ORDER_ATTR, -1);
+      FZOrder := GetNodeAttrInt(ANode, Z_ORDER_ATTR);
 end;
 
 function TMainBlock.IsBoldDesc: boolean;
 begin
-   result := true;
+   result := True;
 end;
 
 procedure TMainBlock.WMWindowPosChanging(var Msg: TWMWindowPosChanging);
@@ -565,7 +563,7 @@ begin
    result := inherited Remove(ANode);
    if result and (UserFunction <> nil) then
    begin
-      TUserFunction(UserFunction).Active := false;
+      TUserFunction(UserFunction).Active := False;
       TInfra.UpdateCodeEditor;
    end;
 end;
