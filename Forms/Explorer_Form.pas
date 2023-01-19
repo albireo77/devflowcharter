@@ -176,11 +176,11 @@ end;
 
 procedure TExplorerForm.PopupMenuPopup(Sender: TObject);
 begin
-   miExpand.Enabled    := false;
-   miCollapse.Enabled  := false;
-   miNextError.Enabled := false;
-   miPrevError.Enabled := false;
-   miRemove.Enabled    := false;
+   miExpand.Enabled    := False;
+   miCollapse.Enabled  := False;
+   miNextError.Enabled := False;
+   miPrevError.Enabled := False;
+   miRemove.Enabled    := False;
    if tvExplorer.Selected <> nil then
    begin
       miNextError.Enabled := (FErrWarnCount.ErrorCount > 0) or (FErrWarnCount.WarningCount > 0);
@@ -194,11 +194,11 @@ end;
 
 procedure TExplorerForm.miRebuildClick(Sender: TObject);
 begin
-   tvExplorer.Enabled := false;
+   tvExplorer.Enabled := False;
    try
       FormShow(Self);
    finally
-      tvExplorer.Enabled := true;
+      tvExplorer.Enabled := True;
    end;
 end;
 
@@ -274,7 +274,7 @@ begin
    lFont.Color := lColor;
    var nodeRect := Node.DisplayRect(True);
    Sender.Canvas.TextOut(nodeRect.Left+x, nodeRect.Top+y, Node.Text);
-   DefaultDraw := true;
+   DefaultDraw := True;
 end;
 
 procedure TExplorerForm.tvExplorerDeletion(Sender: TObject; Node: TTreeNode);
@@ -329,17 +329,17 @@ end;
 
 procedure TExplorerForm.ImportFromXML(ANode: IXMLNode);
 begin
-   if GetNodeAttrBool(ANode, 'tree_win_show', false) and GInfra.CurrentLang.EnabledExplorer then
+   if GetNodeAttrBool(ANode, 'tree_win_show', False) and GInfra.CurrentLang.EnabledExplorer then
    begin
       Position := poDesigned;
-      SetBounds(GetNodeAttrInt(ANode, 'tree_win_x', 50),
-                GetNodeAttrInt(ANode, 'tree_win_y', 50),
-                GetNodeAttrInt(ANode, 'tree_win_w', 498),
-                GetNodeAttrInt(ANode, 'tree_win_h', 574));
-      if GetNodeAttrBool(ANode, 'tree_win_min', false) then
+      SetBounds(GetNodeAttrInt(ANode, 'tree_win_x'),
+                GetNodeAttrInt(ANode, 'tree_win_y'),
+                GetNodeAttrInt(ANode, 'tree_win_w'),
+                GetNodeAttrInt(ANode, 'tree_win_h'));
+      if GetNodeAttrBool(ANode, 'tree_win_min', False) then
          WindowState := wsMinimized;
       Show;
-      var topY := GetNodeAttrInt(ANode, 'tree_top_y', -2);
+      var topY := GetNodeAttrInt(ANode, 'tree_top_y');
       if (topY >= 0) and (topY < tvExplorer.Items.Count) then
          tvExplorer.TopItem := tvExplorer.Items[topY];
    end;

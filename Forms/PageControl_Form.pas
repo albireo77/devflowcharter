@@ -84,7 +84,7 @@ begin
    if pgcTabs.ActivePage <> nil then
    begin
       var tab := TTabComponent(pgcTabs.ActivePage);
-      tab.Active := false;
+      tab.Active := False;
       GClpbrd.UndoObject.Free;
       GClpbrd.UndoObject := tab.ParentObject;
       TInfra.UpdateCodeEditor;
@@ -93,7 +93,7 @@ end;
 
 procedure TPageControlForm.ResetForm;
 begin
-   UpdateCodeEditor := true;
+   UpdateCodeEditor := True;
    FLastHintPageIndex := -1;
    inherited ResetForm;
 end;
@@ -216,7 +216,7 @@ procedure TPageControlForm.pgcTabsDragOver(Sender, Source: TObject; X,
   Y: Integer; State: TDragState; var Accept: Boolean);
 begin
    if not (Source is TTabComponent) then
-      Accept := false;
+      Accept := False;
 end;
 
 procedure TPageControlForm.pgcTabsMouseDown(Sender: TObject;
@@ -272,13 +272,13 @@ end;
 procedure TPageControlForm.ImportFromXML(ANode: IXMLNode);
 begin
    Height := GetNodeAttrInt(ANode, FPrefix + 'win_h', Height);
-   if IsEnabled and GetNodeAttrBool(ANode, FPrefix + 'win_show', false) then
+   if IsEnabled and GetNodeAttrBool(ANode, FPrefix + 'win_show', False) then
    begin
       Position := poDesigned;
-      if GetNodeAttrBool(ANode, FPrefix + 'win_min', false) then
+      if GetNodeAttrBool(ANode, FPrefix + 'win_min', False) then
          WindowState := wsMinimized;
-      Left := GetNodeAttrInt(ANode, FPrefix + 'win_x', Left);
-      Top := GetNodeAttrInt(ANode, FPrefix + 'win_y', Top);
+      Left := GetNodeAttrInt(ANode, FPrefix + 'win_x');
+      Top := GetNodeAttrInt(ANode, FPrefix + 'win_y');
       var i := GetNodeAttrInt(ANode, FPrefix + 'idx', -2);
       if (i >= 0) and (i < pgcTabs.PageCount) then
       begin

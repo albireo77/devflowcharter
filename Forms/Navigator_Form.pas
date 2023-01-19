@@ -43,8 +43,8 @@ uses
 
 procedure TNavigatorForm.FormCreate(Sender: TObject);
 begin
-   DoubleBuffered := true;
-   InvalidateIndicator := true;
+   DoubleBuffered := True;
+   InvalidateIndicator := True;
    SetBounds(50, 50, 426, 341);
    Constraints.MinWidth := 150;
    Constraints.MinHeight := 150;
@@ -141,15 +141,15 @@ end;
 
 procedure TNavigatorForm.ImportFromXML(ANode: IXMLNode);
 begin
-   if GetNodeAttrBool(ANode, 'nav_win_show', false) then
+   if GetNodeAttrBool(ANode, 'nav_win_show', False) then
    begin
       Position := poDesigned;
-      if GetNodeAttrBool(ANode, 'nav_win_min', false) then
+      if GetNodeAttrBool(ANode, 'nav_win_min', False) then
          WindowState := wsMinimized;
-      SetBounds(GetNodeAttrInt(ANode, 'nav_win_x', 50),
-                GetNodeAttrInt(ANode, 'nav_win_y', 50),
-                GetNodeAttrInt(ANode, 'nav_win_width', 426),
-                GetNodeAttrInt(ANode, 'nav_win_height', 341));
+      SetBounds(GetNodeAttrInt(ANode, 'nav_win_x'),
+                GetNodeAttrInt(ANode, 'nav_win_y'),
+                GetNodeAttrInt(ANode, 'nav_win_width'),
+                GetNodeAttrInt(ANode, 'nav_win_height'));
       Show;
    end;
 end;

@@ -86,39 +86,31 @@ begin
    Width := 610;
 end;
 
-procedure TDeclarationsForm.FormCanResize(Sender: TObject; var NewWidth,
-  NewHeight: Integer; var Resize: Boolean);
-var
-   i: integer;
-   declareList: TDeclareList;
+procedure TDeclarationsForm.FormCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
 begin
    if NewWidth < Width then
    begin
-      i := ControlCount;
+      var i := ControlCount;
       if (i > 0) and  (Controls[i-1] is TDeclareList) then
       begin
-         declareList := TDeclareList(Controls[i-1]);
+         var declareList := TDeclareList(Controls[i-1]);
          if NewWidth < (declareList.sgList.GetMinWidth + declareList.Left + DECLARATIONS_FORM_RIGHT_MARGIN) then
-            Resize := false;
+            Resize := False;
       end;
    end;
 end;
 
 procedure TDeclarationsForm.FormShow(Sender: TObject);
-var
-   i: integer;
-   f: boolean;
-   declareList: TDeclareList;
 begin
-   f := true;
-   for i := 0 to ControlCount-1 do
+   var f := True;
+   for var i := 0 to ControlCount-1 do
    begin
       if Controls[i] is TDeclareList then
       begin
-         declareList := TDeclareList(Controls[i]);
+         var declareList := TDeclareList(Controls[i]);
          if f then
          begin
-             f := false;
+             f := False;
              declareList.SetDefaultFocus;
          end;
          declareList.sgList.ColWidthsChanged;
