@@ -136,7 +136,7 @@ procedure TElement.OnClickRemove(Sender: TObject);
 begin
    Hide;
    if Parent.Height < Parent.Constraints.MaxHeight then
-      Parent.Height := Parent.Height - 22;
+      Parent.Height := Parent.Height - Height;
    TTabComponent(FParentTab).RefreshElements;
    FParentTab.PageControl.Refresh;
    GProject.SetChanged;
