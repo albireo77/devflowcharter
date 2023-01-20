@@ -30,7 +30,7 @@ var
 implementation
 
 uses
-   WinApi.Windows;
+   Infrastructure, WinApi.Windows;
 
 {$R *.dfm}
 
@@ -54,16 +54,17 @@ end;
 
 procedure TSelectImportForm.FormShow(Sender: TObject);
 begin
-   chkSelectAll.Checked := true;
+   chkSelectAll.Checked := True;
    ClearCheckBoxes;
    SetComponents;
-   SetHeight(btnCancel.Top + btnCancel.Height + 45);
+   Width := Constraints.MaxWidth;
+   SetHeight(btnCancel.Top + btnCancel.Height + TInfra.Scaled(Self, 45));
 end;
 
 procedure TSelectImportForm.ResetForm;
 begin
    Caption := '';
-   chkSelectAll.Checked := true;
+   chkSelectAll.Checked := True;
    ClearCheckBoxes;
    FList := nil;
    Close;

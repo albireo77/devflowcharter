@@ -470,8 +470,8 @@ begin
    while node <> nil do
    begin
       var elem := CreateElement;
-      sbxElements.Constraints.MaxHeight := sbxElements.Constraints.MaxHeight + 22;
-      sbxElements.Height := sbxElements.Height + 22;
+      sbxElements.Constraints.MaxHeight := sbxElements.Constraints.MaxHeight + elem.Height;
+      sbxElements.Height := sbxElements.Height + elem.Height;
       elem.ImportFromXML(node);
       node := nodes.NextNode;
    end;
