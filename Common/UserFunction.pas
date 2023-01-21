@@ -157,7 +157,7 @@ begin
    GProject.AddComponent(Self);
    FBody := AFunctionBody;
    FHeader := AFunctionHeader;
-   FActive := true;
+   FActive := True;
    if FHeader <> nil then
    begin
       FHeader.FUserFunction := Self;
@@ -326,17 +326,17 @@ begin
 
    FLocalVars := TVarDeclareList.Create(Self, 0, 350, 389, 3, 4, 380);
    FLocalVars.Caption := i18Manager.GetString('LocalDeclare');
-   FLocalVars.gbBox.DoubleBuffered := true;
+   FLocalVars.gbBox.DoubleBuffered := True;
 
    gbDesc := TGroupBox.Create(Self);
    gbDesc.Parent := Self;
    gbDesc.SetBounds(0, 0, 400, 77);
-   gbDesc.ParentFont := false;
-   gbDesc.ParentBackground := false;
+   gbDesc.ParentFont := False;
+   gbDesc.ParentBackground := False;
    gbDesc.Font.Color := clBlack;
    gbDesc.Align := alTop;
    gbDesc.Caption := i18Manager.GetString('gbDesc');
-   gbDesc.DoubleBuffered := true;
+   gbDesc.DoubleBuffered := True;
    gbDesc.Constraints.MinHeight := gbDesc.Height;
 
    splDesc := TSplitter.Create(Self);
@@ -349,43 +349,43 @@ begin
 
    chkInclDescCode := TCheckBox.Create(gbDesc);
    chkInclDescCode.Parent := gbDesc;
-   chkInclDescCode.ParentFont := false;
+   chkInclDescCode.ParentFont := False;
    chkInclDescCode.Font.Style := [];
    chkInclDescCode.Font.Color := clWindowText;
    chkInclDescCode.Caption := i18Manager.GetString('chkInclDescCode');
    chkInclDescCode.SetBounds(5, gbDesc.Height-s22, TInfra.GetAutoWidth(chkInclDescCode), s16);
-   chkInclDescCode.DoubleBuffered := true;
+   chkInclDescCode.DoubleBuffered := True;
    chkInclDescCode.Anchors := [akBottom, akLeft];
    chkInclDescCode.OnClick := OnClickInclDescCode;
 
    chkInclDescFlow := TCheckBox.Create(gbDesc);
    chkInclDescFlow.Parent := gbDesc;
-   chkInclDescFlow.ParentFont := false;
+   chkInclDescFlow.ParentFont := False;
    chkInclDescFlow.Font.Style := [];
    chkInclDescFlow.Font.Color := clWindowText;
    chkInclDescFlow.Caption := i18Manager.GetString('chkInclDescFlow');
    chkInclDescFlow.SetBounds(chkInclDescCode.BoundsRect.Right+20, gbDesc.Height-s22, TInfra.GetAutoWidth(chkInclDescFlow), s16);
-   chkInclDescFlow.DoubleBuffered := true;
+   chkInclDescFlow.DoubleBuffered := True;
    chkInclDescFlow.Anchors := [akBottom, akLeft];
    chkInclDescFlow.OnClick := OnClickInclDescFlow;
 
    memDesc := TMemo.Create(gbDesc);
    memDesc.Parent := gbDesc;
    memDesc.SetBounds(5, 17, gbDesc.Width-12, chkInclDescCode.Top-22);
-   memDesc.ParentFont := false;
+   memDesc.ParentFont := False;
    memDesc.Font.Style := [];
    memDesc.Font.Color := clGreen;
-   memDesc.WordWrap := false;
-   memDesc.DoubleBuffered := true;
+   memDesc.WordWrap := False;
+   memDesc.DoubleBuffered := True;
    memDesc.ScrollBars := ssVertical;
    memDesc.Anchors := [akTop, akBottom, akLeft, akRight];
    memDesc.OnChange := OnChangeDesc;
 
    btnGenDesc := TButton.Create(gbDesc);
    btnGenDesc.Parent := gbDesc;
-   btnGenDesc.ParentFont := false;
+   btnGenDesc.ParentFont := False;
    btnGenDesc.Font.Style := [];
-   btnGenDesc.DoubleBuffered := true;
+   btnGenDesc.DoubleBuffered := True;
    btnGenDesc.Caption := i18Manager.GetString('btnGenDesc');
    btnGenDesc.SetBounds(gbDesc.Width-TInfra.Scaled(Self, 85), chkInclDescCode.Top-3, TInfra.Scaled(Self, 80), TInfra.Scaled(Self, 20));
    btnGenDesc.Anchors := [akBottom];
@@ -395,17 +395,17 @@ begin
    gbBody := TGroupBox.Create(Self);
    gbBody.Parent := Self;
    gbBody.SetBounds(0, 80, 400, 50);
-   gbBody.ParentFont := false;
-   gbBody.ParentBackground := false;
+   gbBody.ParentFont := False;
+   gbBody.ParentBackground := False;
    gbBody.Font.Color := clBlack;
    gbBody.Caption := i18Manager.GetString('Body');
-   gbBody.DoubleBuffered := true;
+   gbBody.DoubleBuffered := True;
    gbBody.Align := alTop;
 
    lblBodyPage := TLabel.Create(gbBody);
    lblBodyPage.Parent := gbBody;
    lblBodyPage.SetBounds(8, 25, 0, 13);
-   lblBodyPage.ParentFont := false;
+   lblBodyPage.ParentFont := False;
    lblBodyPage.Caption := i18Manager.GetString('lblBodyPage');
    lblBodyPage.Font.Style := [];
    lblBodyPage.Font.Color := clWindowText;
@@ -415,7 +415,7 @@ begin
    cbBodyPage.Constraints.MinWidth := TInfra.Scaled(Self, 75);
    cbBodyPage.SetBounds(lblBodyPage.BoundsRect.Right+6, 20, cbBodyPage.Constraints.MinWidth, 21);
    cbBodyPage.Style := csDropDownList;
-   cbBodyPage.ParentFont := false;
+   cbBodyPage.ParentFont := False;
    cbBodyPage.Font.Style := [];
    cbBodyPage.Font.Color := clWindowText;
    cbBodyPage.DropDownCount := 9;
@@ -425,24 +425,24 @@ begin
 
    chkBodyVisible := TCheckBox.Create(gbBody);
    chkBodyVisible.Parent := gbBody;
-   chkBodyVisible.ParentFont := false;
+   chkBodyVisible.ParentFont := False;
    chkBodyVisible.Font.Style := [];
    chkBodyVisible.Font.Color := clWindowText;
    chkBodyVisible.Caption := i18Manager.GetString('Visible');
    chkBodyVisible.SetBounds(cbBodyPage.BoundsRect.Right+20, 22, TInfra.GetAutoWidth(chkBodyVisible), TInfra.Scaled(Self, 17));
-   chkBodyVisible.DoubleBuffered := true;
+   chkBodyVisible.DoubleBuffered := True;
    chkBodyVisible.Anchors := [akBottom, akLeft];
    chkBodyVisible.OnClick := OnClickBodyVisible;
-   chkBodyVisible.Checked := true;
+   chkBodyVisible.Checked := True;
 
    gbHeader := TGroupBox.Create(Self);
    gbHeader.Parent := Self;
    gbHeader.SetBounds(0, 130, 400, 83);
-   gbHeader.ParentFont := false;
-   gbHeader.ParentBackground := false;
+   gbHeader.ParentFont := False;
+   gbHeader.ParentBackground := False;
    gbHeader.Font.Color := clBlack;
    gbHeader.Caption := i18Manager.GetString('Header');
-   gbHeader.DoubleBuffered := true;
+   gbHeader.DoubleBuffered := True;
    gbHeader.Align := alTop;
 
    CreateNameControls(gbHeader, 8, 25);
@@ -450,7 +450,7 @@ begin
    lblType := TLabel.Create(gbHeader);
    lblTYpe.Parent := gbHeader;
    lblType.SetBounds(165, 25, 0, 13);
-   lblType.ParentFont := false;
+   lblType.ParentFont := False;
    lblType.Caption := i18Manager.GetString('lblRetType');
    lblType.Font.Style := [];
    lblType.Font.Color := clWindowText;
@@ -459,7 +459,7 @@ begin
    cbType.Parent := gbHeader;
    cbType.SetBounds(lblType.BoundsRect.Right + 6, 20, 85, 21);
    cbType.Style := csDropDownList;
-   cbType.ParentFont := false;
+   cbType.ParentFont := False;
    cbType.Font.Style := [];
    cbType.Font.Color := clWindowText;
    cbType.DropDownCount := 9;
@@ -470,15 +470,15 @@ begin
 
    chkArrayType := TCheckBox.Create(gbHeader);
    chkArrayType.Parent := gbHeader;
-   chkArrayType.ParentFont := false;
+   chkArrayType.ParentFont := False;
    chkArrayType.Font.Style := [];
    chkArrayType.Font.Color := clWindowText;
    x := cbType.BoundsRect.Right + 10;
    chkArrayType.Caption := i18Manager.GetString('chkArrayType');
    chkArrayType.SetBounds(x, 23, gbHeader.Width-x-3, 17);
-   chkArrayType.DoubleBuffered := true;
+   chkArrayType.DoubleBuffered := True;
    chkArrayType.Anchors := [akBottom, akLeft];
-   chkArrayType.Enabled := false;
+   chkArrayType.Enabled := False;
    chkArrayType.OnClick := OnChangeType;
 
    CreateExtDeclareChBox(gbHeader, 165, 52, taLeftJustify);
@@ -486,7 +486,7 @@ begin
 
    chkStatic := TCheckBox.Create(gbHeader);
    chkStatic.Parent := gbHeader;
-   chkStatic.ParentFont := false;
+   chkStatic.ParentFont := False;
    chkStatic.Font.Style := [];
    chkStatic.Font.Color := clWindowText;
    chkStatic.Alignment := taLeftJustify;
@@ -496,13 +496,13 @@ begin
       chkStatic.Caption := GInfra.CurrentLang.StaticLabel;
       chkStatic.SetBounds(chkExternal.BoundsRect.Right + 15, 52, TInfra.GetAutoWidth(chkStatic), 17);
    end;
-   chkStatic.DoubleBuffered := true;
+   chkStatic.DoubleBuffered := True;
    chkStatic.Anchors := [akBottom, akLeft];
    chkStatic.OnClick := OnClickCh;
 
    chkConstructor := TCheckBox.Create(gbHeader);
    chkConstructor.Parent := gbHeader;
-   chkConstructor.ParentFont := false;
+   chkConstructor.ParentFont := False;
    chkConstructor.Font.Style := [];
    chkConstructor.Font.Color := clWindowText;
    chkConstructor.Alignment := taLeftJustify;
@@ -512,7 +512,7 @@ begin
    else
       ctrl := chkExternal;
    chkConstructor.SetBounds(ctrl.BoundsRect.Right + 15, 52, TInfra.GetAutoWidth(chkConstructor), 17);
-   chkConstructor.DoubleBuffered := true;
+   chkConstructor.DoubleBuffered := True;
    chkConstructor.Anchors := [akBottom, akLeft];
    chkConstructor.OnClick := OnClickCh;
 
@@ -523,12 +523,12 @@ begin
    gbParams := TGroupBox.Create(Self);
    gbParams.Parent := Self;
    gbParams.SetBounds(0, 215, 400, 110);
-   gbParams.ParentFont := false;
-   gbParams.ParentBackground := false;
+   gbParams.ParentFont := False;
+   gbParams.ParentBackground := False;
    gbParams.Font.Color := clBlack;
    gbParams.Caption := i18Manager.GetString('Params');
    gbParams.Constraints.MinHeight := gbParams.Height;
-   gbParams.DoubleBuffered := true;
+   gbParams.DoubleBuffered := True;
    gbParams.Align := alTop;
 
    splParams := TSplitter.Create(Self);
@@ -540,7 +540,7 @@ begin
    lblParam := TLabel.Create(gbParams);
    lblParam.Parent := gbParams;
    lblParam.Font.Style := [];
-   lblParam.ParentFont := false;
+   lblParam.ParentFont := False;
    lblParam.Font.Color := clWindowText;
    lblParam.SetBounds(8, 18, 0, 13);
    lblParam.Caption := i18Manager.GetString('lblParam');
@@ -548,7 +548,7 @@ begin
    lblParamType := TLabel.Create(gbParams);
    lblParamType.Parent := gbParams;
    lblParamType.Font.Style := [];
-   lblParamType.ParentFont := false;
+   lblParamType.ParentFont := False;
    lblParamType.Font.Color := clWindowText;
    lblParamType.SetBounds(TInfra.Scaled(Self, 92), 18, 0, 13);
    lblParamType.Caption := i18Manager.GetString('lblParamType');
@@ -556,7 +556,7 @@ begin
    lblParamDefault := TLabel.Create(gbParams);
    lblParamDefault.Parent := gbParams;
    lblParamDefault.Font.Style := [];
-   lblParamDefault.ParentFont := false;
+   lblParamDefault.ParentFont := False;
    lblParamDefault.Font.Color := clWindowText;
    lblParamDefault.SetBounds(TInfra.Scaled(Self, 180), 18, 0, 13);
    lblParamDefault.Caption := i18Manager.GetString('lblParamDefault');
@@ -564,7 +564,7 @@ begin
    lblParamArray := TLabel.Create(gbParams);
    lblParamArray.Parent := gbParams;
    lblParamArray.Font.Style := [];
-   lblParamArray.ParentFont := false;
+   lblParamArray.ParentFont := False;
    lblParamArray.Font.Color := clWindowText;
    lblParamArray.SetBounds(TInfra.Scaled(Self, 239), 18, 0, 13);
    lblParamArray.Caption := i18Manager.GetString('lblParamArray');
@@ -572,7 +572,7 @@ begin
    lblParamRef := TLabel.Create(gbParams);
    lblParamRef.Parent := gbParams;
    lblParamRef.Font.Style := [];
-   lblParamRef.ParentFont := false;
+   lblParamRef.ParentFont := False;
    lblParamRef.Font.Color := clWindowText;
    lblParamRef.SetBounds(TInfra.Scaled(Self, 281), 18, 0, 13);
    lblParamRef.Caption := i18Manager.GetString('lblParamRef');
@@ -580,19 +580,19 @@ begin
    sbxElements := TScrollBox.Create(gbParams);
    sbxElements.Parent := gbParams;
    sbxElements.SetBounds(6, 36, gbParams.Width-10, 0);
-   sbxElements.Ctl3D := false;
+   sbxElements.Ctl3D := False;
    sbxElements.BorderStyle := bsNone;
    sbxElements.Constraints.MaxHeight := 44;
    sbxElements.Constraints.MinWidth := sbxElements.Width;
-   sbxElements.VertScrollBar.Tracking := true;
-   sbxElements.UseWheelForScrolling := true;
+   sbxElements.VertScrollBar.Tracking := True;
+   sbxElements.UseWheelForScrolling := True;
    sbxElements.Anchors := [akTop, akBottom, akLeft];
 
    btnAddElement := TButton.Create(gbParams);
    btnAddElement.Parent := gbParams;
-   btnAddElement.ParentFont := false;
+   btnAddElement.ParentFont := False;
    btnAddElement.Font.Style := [];
-   btnAddElement.DoubleBuffered := true;
+   btnAddElement.DoubleBuffered := True;
    btnAddElement.Caption := i18Manager.GetString('btnAddParm');
    btnAddElement.SetBounds(8, 81, gbParams.Width-12, 25);
    btnAddElement.Anchors := [akBottom];
@@ -629,23 +629,23 @@ begin
    edtDefault := TEdit.Create(Self);
    edtDefault.Parent := Self;
    edtDefault.SetBounds(TInfra.Scaled(Self, 174), 0, TInfra.Scaled(Self, 50), 21);
-   edtDefault.ParentFont := false;
+   edtDefault.ParentFont := False;
    edtDefault.Font.Style := [];
    edtDefault.Font.Color := clGreen;
-   edtDefault.ParentCtl3D := false;
-   edtDefault.Ctl3D := true;
+   edtDefault.ParentCtl3D := False;
+   edtDefault.Ctl3D := True;
    edtDefault.OnChange := OnChangeType;
 
    chkTable := TCheckBox.Create(Self);
    chkTable.Parent := Self;
    chkTable.SetBounds(TInfra.Scaled(Self, 240), 1, w17, w17);
-   chkTable.DoubleBuffered := true;
+   chkTable.DoubleBuffered := True;
    chkTable.OnClick := OnChangeType;
 
    chkReference := TCheckBox.Create(Self);
    chkReference.Parent := Self;
    chkReference.SetBounds(TInfra.Scaled(Self, 278), 1, w17, w17);
-   chkReference.DoubleBuffered := true;
+   chkReference.DoubleBuffered := True;
    chkReference.OnClick := OnChangeType;
 
 end;
@@ -774,21 +774,17 @@ begin
 end;
 
 procedure TUserFunction.GenerateTree(ANode: TTreeNode);
-var
-   node: TTreeNode;
-   obj: TObject;
 begin
+   var obj: TObject := FHeader;
    if IsMain then
-      obj := FBody
-   else
-      obj := FHeader;
-   node := ANode.Owner.AddChildObject(ANode, GetTreeNodeText, obj);
+      obj := FBody;
+   var node := ANode.Owner.AddChildObject(ANode, GetTreeNodeText, obj);
    if FBody <> nil then
       FBody.GenerateTree(node);
    if (FHeader <> nil) and TInfra.IsNOkColor(FHeader.Font.Color) then
    begin
       ANode.MakeVisible;
-      ANode.Expand(false);
+      ANode.Expand(False);
    end;
 end;
 
@@ -817,7 +813,7 @@ begin
       else if Assigned(GInfra.TemplateLang.GetUserFuncDesc) then
          lang := GInfra.TemplateLang;
       if lang <> nil then
-         result := lang.GetUserFuncDesc(FHeader, false, false).Trim;
+         result := lang.GetUserFuncDesc(FHeader, False, False).Trim;
    end;
 end;
 
@@ -928,7 +924,7 @@ begin
    chkArrayType.Checked := GetNodeAttrBool(ANode, 'arrayType');
    chkConstructor.Checked := GetNodeAttrBool(ANode, 'constructor');
    if chkStatic.Visible then
-      chkStatic.Checked := GetNodeAttrBool(ANode, 'static', false);
+      chkStatic.Checked := GetNodeAttrBool(ANode, 'static', False);
    FLocalVars.ImportFromXML(ANode, impAll);
    gbDesc.Height := GetNodeAttrInt(ANode, 'descrh');
    gbHeader.Height := GetNodeAttrInt(ANode, 'headerh');
