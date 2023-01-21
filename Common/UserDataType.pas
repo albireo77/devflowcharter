@@ -122,7 +122,7 @@ begin
    sbxElements.Ctl3D := False;
    sbxElements.BorderStyle := bsNone;
    sbxElements.SetBounds(0, 149, TInfra.Scaled(Self, 302), 0);
-   sbxElements.Constraints.MaxHeight := AParentForm.Height - 233;
+   sbxElements.Constraints.MaxHeight := Height - 148;
    sbxElements.Constraints.MinWidth := sbxElements.Width;
    sbxElements.VertScrollBar.Tracking := True;
    sbxElements.UseWheelForScrolling := True;
@@ -227,7 +227,7 @@ begin
    inherited;
    if sbxElements <> nil then
    begin
-      sbxElements.Constraints.MaxHeight := ParentForm.Height - 233;
+      sbxElements.Constraints.MaxHeight := Height - 148;
       sbxElements.Height := sbxElements.Constraints.MaxHeight;
    end;
 end;
