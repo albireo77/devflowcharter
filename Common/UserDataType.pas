@@ -95,7 +95,7 @@ begin
 
    lblName2 := TLabel.Create(Self);
    lblName2.Parent := Self;
-   lblName2.ParentFont := false;
+   lblName2.ParentFont := False;
    lblName2.Font.Style := [fsBold];
    lblName2.Font.Color := clWindowText;
    lblName2.SetBounds(5, 131, 0, 13);
@@ -103,7 +103,7 @@ begin
 
    lblSize := TLabel.Create(Self);
    lblSize.Parent := Self;
-   lblSize.ParentFont := false;
+   lblSize.ParentFont := False;
    lblSize.Font.Style := [fsBold];
    lblSize.Font.Color := clWindowText;
    lblSize.SetBounds(TInfra.Scaled(Self, 171), 131, 0, 13);
@@ -111,7 +111,7 @@ begin
 
    lblType := TLabel.Create(Self);
    lblType.Parent := Self;
-   lblType.ParentFont := false;
+   lblType.ParentFont := False;
    lblType.Font.Style := [fsBold];
    lblType.Font.Color := clWindowText;
    lblType.SetBounds(TInfra.Scaled(Self, 87), 131, 0, 13);
@@ -119,23 +119,21 @@ begin
 
    sbxElements := TScrollBox.Create(Self);
    sbxElements.Parent := Self;
-   sbxElements.Ctl3D := false;
+   sbxElements.Ctl3D := False;
    sbxElements.BorderStyle := bsNone;
    sbxElements.SetBounds(0, 149, TInfra.Scaled(Self, 302), 0);
    sbxElements.Constraints.MaxHeight := AParentForm.Height - 233;
    sbxElements.Constraints.MinWidth := sbxElements.Width;
-   sbxElements.VertScrollBar.Tracking := true;
-   sbxElements.DoubleBuffered := true;
-   sbxElements.UseWheelForScrolling := true;
+   sbxElements.VertScrollBar.Tracking := True;
+   sbxElements.UseWheelForScrolling := True;
    sbxElements.Anchors := [akTop, akBottom, akLeft, akRight];
 
    btnAddElement := TButton.Create(Self);
    btnAddElement.Parent := Self;
-   btnAddElement.ParentFont := false;
+   btnAddElement.ParentFont := False;
    btnAddElement.Font.Style := [];
    btnAddElement.Caption := i18Manager.GetString('btnAddField');
-   btnAddElement.ShowHint := true;
-   btnAddElement.DoubleBuffered := true;
+   btnAddElement.ShowHint := True;
    btnAddElement.SetBounds(1, 102, TInfra.Scaled(Self, 306), 25);
    btnAddElement.OnClick := AddElement;
 
@@ -143,11 +141,10 @@ begin
 
    rgTypeBox := TRadioGroup.Create(Self);
    rgTypeBox.Parent := Self;
-   rgTypeBox.ParentFont := false;
-   rgTypeBox.ParentBackground := false;
+   rgTypeBox.ParentFont := False;
+   rgTypeBox.ParentBackground := False;
    rgTypeBox.Font.Style := [];
    rgTypeBox.Font.Color := clWindowText;
-   rgTypeBox.DoubleBuffered := true;
    rgTypeBox.Columns := 2;
    rgTypeBox.Caption := i18Manager.GetString('rgTypeBox');
    for var dt := Low(TUserDataTypeKind) to High(TUserDataTypeKind) do
@@ -169,11 +166,10 @@ begin
    chkAddPtrType := TCheckBox.Create(Self);
    chkAddPtrType.Parent := Self;
    chkAddPtrType.Caption := i18Manager.GetString('chkAddPtrType');
-   chkAddPtrType.ParentFont := false;
+   chkAddPtrType.ParentFont := False;
    chkAddPtrType.Font.Style := [];
    chkAddPtrType.Font.Color := clWindowText;
    chkAddPtrType.SetBounds(rgTypeBox.BoundsRect.Right+6, 42, TInfra.GetAutoWidth(chkAddPtrType), 17);
-   chkAddPtrType.DoubleBuffered := true;
    chkAddPtrType.Enabled := GInfra.CurrentLang.EnabledPointers;
    chkAddPtrType.OnClick := OnClickCh;
 
@@ -201,19 +197,19 @@ end;
 procedure TUserDataType.AddElement(Sender: TObject);
 begin
    if (Kind in [dtOther, dtArray]) and (GetFirstField = nil) then
-      btnAddElement.Enabled := false;
+      btnAddElement.Enabled := False;
    inherited AddElement(Sender);
 end;
 
 procedure TUserDataType.RefreshSizeEdits;
 begin
-   ParentForm.UpdateCodeEditor := false;
+   ParentForm.UpdateCodeEditor := False;
    for var field in GetFields do
    begin
       if field.edtSize.Text <> '1' then
          field.edtSize.OnChange(field.edtSize);
    end;
-   ParentForm.UpdateCodeEditor := true;
+   ParentForm.UpdateCodeEditor := True;
 end;
 
 function TUserDataType.GetExternModifier: string;
@@ -260,13 +256,13 @@ begin
       if i = 0 then
       begin
          if t = dtOther then
-            b := false
+            b := False
          else if t = dtArray then
          begin
-            b := false;
-            field.edtName.Enabled := false;
-            field.edtSize.Enabled := true;
-            field.cbType.Enabled := true;
+            b := False;
+            field.edtName.Enabled := False;
+            field.edtSize.Enabled := True;
+            field.cbType.Enabled := True;
          end;
          i := 1;
       end;
@@ -275,7 +271,7 @@ begin
    if GInfra.CurrentLang.EnabledPointers then
    begin
       if t = dtEnum then
-         chkAddPtrType.Checked := false;
+         chkAddPtrType.Checked := False;
       chkAddPtrType.Enabled := t <> dtEnum;
    end;
    RefreshElements;
@@ -346,7 +342,7 @@ procedure TUserDataType.ImportFromXML(ANode: IXMLNode; APinControl: TControl = n
 begin
    inherited ImportFromXML(ANode, APinControl);
    if chkAddPtrType.Enabled then
-      chkAddPtrType.Checked := GetNodeAttrBool(ANode, POINTER_ATTR, false);
+      chkAddPtrType.Checked := GetNodeAttrBool(ANode, POINTER_ATTR, False);
    rgTypeBox.ItemIndex := Ord(TRttiEnumerationType.GetValue<TUserDataTypeKind>(GetNodeAttrStr(ANode, KIND_ATTR)));
 end;
 
@@ -376,14 +372,14 @@ end;
 
 function TUserDataType.IsValidEnumValue(const AValue: string): boolean;
 begin
-   result := false;
+   result := False;
    if Kind = dtEnum then
    begin
       for var field in GetFields do
       begin
          if Trim(field.edtName.Text) = AValue then
          begin
-            result := true;
+            result := True;
             break;
          end;
       end;
@@ -461,7 +457,7 @@ begin
    if TInfra.IsNOkColor(Font.Color) then
    begin
       ANode.MakeVisible;
-      ANode.Expand(false);
+      ANode.Expand(False);
    end;
 end;
 
