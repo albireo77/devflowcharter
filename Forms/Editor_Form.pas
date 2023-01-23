@@ -113,7 +113,7 @@ type
     procedure miHelpClick(Sender: TObject);
     procedure memCodeEditorPaintTransient(Sender: TObject; Canvas: TCanvas; TransientType: TTransientType);
     procedure memCodeEditorMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-    function SelectCodeRange(AObject: TObject; ADoSelect: boolean = true): TCodeRange;
+    function SelectCodeRange(AObject: TObject; ADoSelect: boolean = True): TCodeRange;
     procedure UnSelectCodeRange(AObject: TObject);
     procedure Localize(AList: TStringList); override;
     procedure ResetForm; override;
@@ -308,7 +308,7 @@ begin
       if miRichText.Enabled then
          miRichText.Checked := EditorShowRichText
       else
-         miRichText.Checked := false;
+         miRichText.Checked := False;
       if EditorShowScrollbars then
          memCodeEditor.ScrollBars := ssBoth
       else
@@ -324,7 +324,7 @@ begin
 {$IFDEF USE_CODEFOLDING}
       miCodeFoldingEnable.Enabled := Length(GInfra.CurrentLang.FoldRegions) > 0;
 {$ELSE}
-      miCodeFoldingEnable.Enabled := false;
+      miCodeFoldingEnable.Enabled := False;
 {$ENDIF}
       miCodeFoldingEnable.Checked := EditorCodeFolding and miCodeFoldingEnable.Enabled;
       miCollapseAll.Enabled := miCodeFoldingEnable.Checked;
@@ -335,7 +335,7 @@ begin
       with memCodeEditor.CodeFolding do
       begin
          Enabled := miCodeFoldingEnable.Checked;
-         HighlighterFoldRegions := false;
+         HighlighterFoldRegions := False;
          FolderBarColor := EditorGutterColor;
          FolderBarLinesColor := EditorFontColor;
          IndentGuides := miIndentGuides.Checked;
@@ -404,12 +404,12 @@ begin
       beginComment := GInfra.CurrentLang.CommentBegin;
       endComment := GInfra.CurrentLang.CommentEnd;
       count := strings.Count - 1;
-      afterLine := true;
+      afterLine := True;
       for i := 0 to count do
       begin
          if memCodeEditor.CaretX <= memCodeEditor.Lines[memCodeEditor.CaretY-1+i].Length then
          begin
-            afterLine := false;
+            afterLine := False;
             break;
          end;
       end;
@@ -476,7 +476,7 @@ begin
          memCodeEditor.SetFocus;
    end
    else
-      FFocusEditor := true;
+      FFocusEditor := True;
    memCodeEditor.ClearUndo;
    memCodeEditor.Modified := not AReset;
 end;
@@ -485,7 +485,7 @@ procedure TEditorForm.FormShow(Sender: TObject);
 begin
    var programLines := GInfra.GenerateProgram;
    try
-      DisplayLines(programLines, true);
+      DisplayLines(programLines, True);
       GProject.SetChanged;
    finally
       programLines.Free;
@@ -495,7 +495,7 @@ end;
 procedure TEditorForm.pmPopMenuPopup(Sender: TObject);
 begin
    FWithFocus := nil;
-   miFindProj.Enabled := false;
+   miFindProj.Enabled := False;
    miCut.Enabled := memCodeEditor.SelAvail;
    miCopy.Enabled := miCut.Enabled;
    miCopyRichText.Enabled := miCopy.Enabled and (memCodeEditor.Highlighter <> nil);
@@ -536,7 +536,7 @@ begin
    else if Sender = miCut then
       memCodeEditor.CutToClipboard
    else if Sender = miCopy then
-      ExecuteCopyToClipboard(false)
+      ExecuteCopyToClipboard(False)
    else if Sender = miCopyRichText then
       ExecuteCopyToClipboard(true)
    else if Sender = miPaste then
@@ -645,12 +645,12 @@ begin
       Exit
    else
       libEntry := ALibrary;
-   found := false;
+   found := False;
    for i := 0 to memCodeEditor.Lines.Count-1 do
    begin
       if memCodeEditor.Lines[i].TrimLeft.StartsWith(libEntry, not GInfra.CurrentLang.CaseSensitiveSyntax) then
       begin
-         found := true;
+         found := True;
          break;
       end;
    end;
@@ -831,11 +831,11 @@ begin
       begin
          for i := MARK_FIRST_INDEX to MARK_LAST_INDEX do
          begin
-            found := true;
+            found := True;
             for a := 0 to memCodeEditor.Marks.Count-1 do
                if i = memCodeEditor.Marks[a].ImageIndex then
                begin
-                  found := false;
+                  found := False;
                   break;
                end;
             if found then break;
@@ -846,7 +846,7 @@ begin
          Mark.ImageIndex := i;
          memCodeEditor.Marks.Add(Mark);
          Mark.Line := Line;
-         Mark.Visible := true;
+         Mark.Visible := True;
       end;
    end
    else
@@ -1030,7 +1030,7 @@ var
 begin
    h := '';
    FCloseBracketPosP := nil;
-   memCodeEditor.ShowHint := false;
+   memCodeEditor.ShowHint := False;
    memCodeEditor.Hint := '';
    p := memCodeEditor.DisplayToBufferPos(memCodeEditor.PixelsToRowColumn(X, Y));
    p1 := memCodeEditor.GetMatchingBracketEx(p);
@@ -1046,7 +1046,7 @@ begin
                              - Point(3, memCodeEditor.LineHeight-memCodeEditor.Canvas.TextHeight('I')+1);
          FCloseBracketPosP := @FCloseBracketPos;
          memCodeEditor.Hint := h;
-         memCodeEditor.ShowHint := true;
+         memCodeEditor.ShowHint := True;
          Exit;
       end;
    end;
@@ -1055,8 +1055,8 @@ begin
    if w1.IsEmpty or (memCodeEditor.GetHighlighterAttriAtRowCol(p, w1, hAttr) and (memCodeEditor.Highlighter.StringAttribute = hAttr)) then
       Exit;
    block := nil;
-   gCheck := true;
-   lCheck := true;
+   gCheck := True;
+   lCheck := True;
    idInfo := TIdentInfo.New;
    obj := memCodeEditor.Lines.Objects[p.Line-1];
    idInfo.Ident := w;
@@ -1065,14 +1065,14 @@ begin
    TParserHelper.GetParameterInfo(TInfra.GetFunctionHeader(block), idInfo);
    if idInfo.TType <> NOT_DEFINED then
    begin
-      lCheck := false;
-      gCheck := false;
+      lCheck := False;
+      gCheck := False;
    end;
    if lCheck then
    begin
       TParserHelper.GetVariableInfo(TParserHelper.FindUserFunctionVarList(block), idInfo);
       if idInfo.TType <> NOT_DEFINED then
-         gCheck := false;
+         gCheck := False;
    end;
    if gCheck then
       idInfo := TParserHelper.GetIdentInfo(w);
@@ -1097,7 +1097,7 @@ begin
    if not h.IsEmpty then
    begin
       memCodeEditor.Hint := h;
-      memCodeEditor.ShowHint := true;
+      memCodeEditor.ShowHint := True;
    end;
 end;
 
@@ -1121,7 +1121,7 @@ begin
    end;
 end;
 
-function TEditorForm.SelectCodeRange(AObject: TObject; ADoSelect: boolean = true): TCodeRange;
+function TEditorForm.SelectCodeRange(AObject: TObject; ADoSelect: boolean = True): TCodeRange;
 var
    i: integer;
    lines: TStrings;
@@ -1142,8 +1142,8 @@ begin
             result.FirstRow := result.Lines.IndexOfObject(AObject);
             if result.FirstRow <> ROW_NOT_FOUND then
             begin
-               ADoSelect := false;
-               result.IsFolded := true;
+               ADoSelect := False;
+               result.IsFolded := True;
                result.FoldRange := memCodeEditor.AllFoldRanges[i];
                break;
             end
@@ -1209,7 +1209,7 @@ procedure TEditorForm.UnSelectCodeRange(AObject: TObject);
 begin
    if memCodeEditor.SelAvail and memCodeEditor.CanFocus then
    begin
-      var codeRange := SelectCodeRange(AObject, false);
+      var codeRange := SelectCodeRange(AObject, False);
       if (codeRange.FirstRow = memCodeEditor.CharIndexToRowCol(memCodeEditor.SelStart).Line-1) and
          (codeRange.LastRow = memCodeEditor.CharIndexToRowCol(memCodeEditor.SelEnd).Line-1) then
             memCodeEditor.SelStart := memCodeEditor.SelEnd;
@@ -1256,8 +1256,8 @@ var
    gotoLine: boolean;
    scrollEnabled: boolean;
 begin
-   FFocusEditor := false;
-   gotoLine := false;
+   FFocusEditor := False;
+   gotoLine := False;
    topLine := memCodeEditor.TopLine;
    caretXY := memCodeEditor.CaretXY;
    scrollEnabled := memCodeEditor.ScrollBars <> TScrollStyle.ssNone;
@@ -1266,10 +1266,10 @@ begin
    var programLines := GInfra.GenerateProgram;
    memCodeEditor.LockDrawing;
    try
-      DisplayLines(programLines, false);
+      DisplayLines(programLines, False);
       if AObject <> nil then
       begin
-         codeRange := SelectCodeRange(AObject, false);
+         codeRange := SelectCodeRange(AObject, False);
          line := codeRange.FirstRow + 1;
          if (line > 0) and not codeRange.IsFolded then
          begin
@@ -1368,14 +1368,14 @@ end;
 
 procedure TEditorForm.ImportFromXML(ANode: IXMLNode);
 begin
-   if GetNodeAttrBool(ANode, 'src_win_show', false) and GInfra.CurrentLang.EnabledCodeGenerator then
+   if GetNodeAttrBool(ANode, 'src_win_show', False) and GInfra.CurrentLang.EnabledCodeGenerator then
    begin
       Position := poDesigned;
-      SetBounds(GetNodeAttrInt(ANode, 'src_win_x', 50),
-                GetNodeAttrInt(ANode, 'src_win_y', 50),
-                GetNodeAttrInt(ANode, 'src_win_w', 425),
-                GetNodeAttrInt(ANode, 'src_win_h', 558));
-      if GetNodeAttrBool(ANode, 'src_win_min', false) then
+      SetBounds(GetNodeAttrInt(ANode, 'src_win_x'),
+                GetNodeAttrInt(ANode, 'src_win_y'),
+                GetNodeAttrInt(ANode, 'src_win_w'),
+                GetNodeAttrInt(ANode, 'src_win_h'));
+      if GetNodeAttrBool(ANode, 'src_win_min', False) then
          WindowState := wsMinimized;
       var showEvent := OnShow;
       OnShow := nil;
@@ -1384,7 +1384,7 @@ begin
       finally
          OnShow := showEvent;
       end;
-      ANode.OwnerDocument.PreserveWhiteSpace := true;
+      ANode.OwnerDocument.PreserveWhiteSpace := True;
       memCodeEditor.Lines.BeginUpdate;
       var lineNodes := FilterNodes(ANode, 'text_line');
       var lineNode := lineNodes.NextNode;
@@ -1398,7 +1398,7 @@ begin
          memCodeEditor.Highlighter := GInfra.CurrentLang.HighLighter;
       memCodeEditor.ClearUndo;
       memCodeEditor.SetFocus;
-      memCodeEditor.SelStart := GetNodeAttrInt(ANode, 'src_win_sel_start', 0);
+      memCodeEditor.SelStart := GetNodeAttrInt(ANode, 'src_win_sel_start');
       memCodeEditor.SelLength := GetNodeAttrInt(ANode, 'src_win_sel_length', 0);
 {$IFDEF USE_CODEFOLDING}
       if memCodeEditor.CodeFolding.Enabled then
@@ -1445,7 +1445,7 @@ begin
          mark.ImageIndex := GetNodeAttrInt(markNode, 'index', 0);
          memCodeEditor.Marks.Add(mark);
          mark.Line := GetNodeAttrInt(markNode, 'line', 0);
-         mark.Visible := true;
+         mark.Visible := True;
          markNode := markNodes.NextNode;
       end;
    end;
@@ -1507,12 +1507,12 @@ begin
       if memCodeEditor.CodeFolding.Enabled and not miCodeFoldingEnable.Checked then
          memCodeEditor.UnCollapseAll;
       memCodeEditor.CodeFolding.Enabled := miCodeFoldingEnable.Checked;
-      memCodeEditor.CodeFolding.HighlighterFoldRegions := false;
+      memCodeEditor.CodeFolding.HighlighterFoldRegions := False;
       miIndentGuides.Enabled := memCodeEditor.CodeFolding.Enabled;
       miCollapseAll.Enabled := memCodeEditor.CodeFolding.Enabled;
       miUnCollapseAll.Enabled := memCodeEditor.CodeFolding.Enabled;
       if not miIndentGuides.Enabled then
-         miIndentGuides.Checked := false;
+         miIndentGuides.Checked := False;
       memCodeEditor.CodeFolding.IndentGuides := miIndentGuides.Checked;
       memCodeEditor.Gutter.RightOffset := IfThen(memCodeEditor.CodeFolding.Enabled, 21);
 {$ENDIF}
@@ -1602,7 +1602,7 @@ begin
          else
             focusInfo.Line := displ.Row - 1;
          focusInfo.LineText := memCodeEditor.Lines[focusInfo.Line].TrimLeft;
-         codeRange := SelectCodeRange(memCodeEditor.Lines.Objects[focusInfo.Line], false);
+         codeRange := SelectCodeRange(memCodeEditor.Lines.Objects[focusInfo.Line], False);
          if codeRange.FirstRow <> ROW_NOT_FOUND then
             focusInfo.RelativeLine := focusInfo.Line - codeRange.FirstRow;
       end;
