@@ -391,18 +391,18 @@ begin
    chkParseCase.Checked := parserOn;
    chkParseReturn.Enabled := parserOn;
    chkParseReturn.Checked := parserOn;
-   chkConfirmRemove.Checked := true;
-   chkMultiPrint.Checked := false;
-   chkMultiPrintHorz.Checked := false;
-   chkMultiPrintHorz.Enabled := false;
+   chkConfirmRemove.Checked := True;
+   chkMultiPrint.Checked := False;
+   chkMultiPrintHorz.Checked := False;
+   chkMultiPrintHorz.Enabled := False;
    var m := IntToStr(DEFAULT_PRINT_MARGIN);
    edtMarginLeft.Text := m;
    edtMarginRight.Text := m;
    edtMarginTop.Text := m;
    edtMarginBottom.Text := m;
-   chkEnableDBuffer.Checked := false;
-   chkShowFuncLabels.Checked := true;
-   chkShowBlockLabels.Checked := false;
+   chkEnableDBuffer.Checked := False;
+   chkShowFuncLabels.Checked := True;
+   chkShowBlockLabels.Checked := False;
    pnlEditorBkg.Color := clWindow;
    pnlEditorFont.Color := clWindowText;
    pnlEditorNumber.Color := clTeal;
@@ -414,9 +414,9 @@ begin
    pnlEditorGutter.Color := clBtnFace;
    pnlEditorIdent.Color := clWindowText;
    pnlFont.Color := OK_COLOR;
-   chkValidateConsts.Checked := true;
-   chkAutoSelectCode.Checked := false;
-   chkAutoUpdateCode.Checked := false;
+   chkValidateConsts.Checked := True;
+   chkAutoSelectCode.Checked := False;
+   chkAutoUpdateCode.Checked := False;
    edtEditorIndent.Text := IntToStr(EDITOR_DEFAULT_INDENT_LENGTH);
    SetComboBoxItem(cbFontSize, IntToStr(EDITOR_DEFAULT_FONT_SIZE));
    SetFontNameSize(FLOWCHART_DEFAULT_FONT_NAME, FLOWCHART_MIN_FONT_SIZE);
@@ -440,15 +440,15 @@ begin
    chkParseReturn.Enabled := parserOn;
    if not parserOn then
    begin
-      chkParseInput.Checked := false;
-      chkParseOutput.Checked := false;
-      chkParseAssign.Checked := false;
-      chkParseMultiAssign.Checked := false;
-      chkParseCondition.Checked := false;
-      chkParseFor.Checked := false;
-      chkParseCase.Checked := false;
-      chkParseRoutine.Checked := false;
-      chkParseReturn.Checked := false;
+      chkParseInput.Checked := False;
+      chkParseOutput.Checked := False;
+      chkParseAssign.Checked := False;
+      chkParseMultiAssign.Checked := False;
+      chkParseCondition.Checked := False;
+      chkParseFor.Checked := False;
+      chkParseCase.Checked := False;
+      chkParseRoutine.Checked := False;
+      chkParseReturn.Checked := False;
    end;
    lblCompiler.Enabled := lang.EnabledCompiler;
    lblFileEncoding.Enabled := lang.EnabledCompiler;
@@ -462,7 +462,7 @@ begin
    SetComboBoxItem(cbFileEncoding, lang.CompilerFileEncoding);
    chkMultiPrintHorz.Enabled := chkMultiPrint.Checked;
    if not chkMultiPrint.Checked then
-      chkMultiPrintHorz.Checked := false;
+      chkMultiPrintHorz.Checked := False;
 end;
 
 procedure TSettingsForm.SetSettings(ASettings: TSettings);
@@ -525,7 +525,7 @@ procedure TSettingsForm.chkMultiPrintClick(Sender: TObject);
 begin
    chkMultiPrintHorz.Enabled := chkMultiPrint.Checked;
    if not chkMultiPrint.Checked then
-      chkMultiPrintHorz.Checked := false;
+      chkMultiPrintHorz.Checked := False;
 end;
 
 procedure TSettingsForm.edtFontNameSizeClick(Sender: TObject);
