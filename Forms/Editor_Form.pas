@@ -1557,34 +1557,26 @@ begin
 end;
 
 procedure TEditorForm.miFindProjClick(Sender: TObject);
-var
-   point: TPoint;
-   displ: TDisplayCoord;
-   selStart, selEnd: TBufferCoord;
-   focusInfo: TFocusInfo;
-   codeRange: TCodeRange;
-   i: integer;
-   selText, sline: string;
 begin
    if (FWithFocus <> nil) and FWithFocus.CanBeFocused then
    begin
-      focusInfo := TFocusInfo.New;
-      point := memCodeEditor.ScreenToClient(pmPopMenu.PopupPoint);
-      displ := memCodeEditor.PixelsToRowColumn(point.X, point.Y);
+      var focusInfo := TFocusInfo.New;
+      var point := memCodeEditor.ScreenToClient(pmPopMenu.PopupPoint);
+      var displ := memCodeEditor.PixelsToRowColumn(point.X, point.Y);
       if displ.Row > 0 then
       begin
-         selStart := memCodeEditor.CharIndexToRowCol(memCodeEditor.SelStart);
+         var selStart := memCodeEditor.CharIndexToRowCol(memCodeEditor.SelStart);
          selStart.Line := selStart.Line - 1;
-         sLine := memCodeEditor.Lines[selStart.Line];
+         var sLine := memCodeEditor.Lines[selStart.Line];
          focusInfo.SelStart := Max(selStart.Char - sLine.Length + sLine.TrimLeft.Length, 1);
          if memCodeEditor.SelAvail then
          begin
-            selEnd := memCodeEditor.CharIndexToRowCol(memCodeEditor.SelStart + memCodeEditor.SelLength);
+            var selEnd := memCodeEditor.CharIndexToRowCol(memCodeEditor.SelStart + memCodeEditor.SelLength);
             selEnd.Line := selEnd.Line - 1;
             if selStart.Line <> selEnd.Line then
             begin
-               selText := '';
-               for i := selStart.Line to selEnd.Line do
+               var selText := '';
+               for var i := selStart.Line to selEnd.Line do
                begin
                   sline := memCodeEditor.Lines[i];
                   if i = selStart.Line then
@@ -1602,7 +1594,7 @@ begin
          else
             focusInfo.Line := displ.Row - 1;
          focusInfo.LineText := memCodeEditor.Lines[focusInfo.Line].TrimLeft;
-         codeRange := SelectCodeRange(memCodeEditor.Lines.Objects[focusInfo.Line], False);
+         var codeRange := SelectCodeRange(memCodeEditor.Lines.Objects[focusInfo.Line], False);
          if codeRange.FirstRow <> ROW_NOT_FOUND then
             focusInfo.RelativeLine := focusInfo.Line - codeRange.FirstRow;
       end;

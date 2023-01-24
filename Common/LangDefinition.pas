@@ -229,7 +229,7 @@ type
       UserFunctionsSectionGenerator: procedure (ALines: TStringList; ASkipBodyGenerate: boolean);
       MainFunctionSectionGenerator: procedure (ALines: TStringList; ADeep: integer);
       ProgramGenerator: procedure (ALines: TStringList);
-      GetUserFuncDesc: function (AHeader: TUserFunctionHeader; AFullParams: boolean = true; AIncludeDesc: boolean = true): string;
+      GetUserFuncDesc: function (AHeader: TUserFunctionHeader; AFullParams: boolean = True; AIncludeDesc: boolean = True): string;
       GetUserFuncHeaderDesc: function (AHeader: TUserFunctionHeader): string;
       GetUserTypeDesc: function (ADataType: TUserDataType): string;
       SetHLighterAttrs: procedure;
@@ -280,17 +280,17 @@ begin
    AssignOperator := '=';
    ForDoVarString := '=';
    KeyWords := TStringList.Create;
-   UpperCaseConstId := true;
-   EnabledPointers := true;
+   UpperCaseConstId := True;
+   EnabledPointers := True;
    CompilerFileEncoding := 'ANSI';
    DecimalSeparator := '.';
    GlobalVarsLabelKey := 'GlobalVars';
    GlobalConstsLabelKey := 'GlobalConsts';
-   EnabledUserDataTypeInt := true;
-   EnabledUserDataTypeReal := true;
-   EnabledUserDataTypeOther := true;
-   EnabledUserDataTypeEnum := true;
-   EnabledUserDataTypeArray := true;
+   EnabledUserDataTypeInt := True;
+   EnabledUserDataTypeReal := True;
+   EnabledUserDataTypeOther := True;
+   EnabledUserDataTypeEnum := True;
+   EnabledUserDataTypeArray := True;
    LabelFontName := FLOWCHART_DEFAULT_FONT_NAME;
    LabelFontSize := LABEL_DEFAULT_FONT_SIZE;
    ElseLabel := i18Manager.GetString('ElseLabel');
@@ -614,7 +614,7 @@ begin
             if lOrigType = nil then
                lOrigType := lType;
             lType.OrigType := lOrigType;
-            lType.IsGeneric := GetNodeAttrBool(dnode, 'generic', false);
+            lType.IsGeneric := GetNodeAttrBool(dnode, 'generic', False);
             lType.Lib := GetNodeAttrStr(dnode, 'library', '');
          end;
          dnode := datatypeNodes.NextNode;
@@ -625,7 +625,7 @@ begin
    node := FindNode(ANode, 'KeyWords');
    if node <> nil then
    begin
-      KeyWords.Sorted := false;
+      KeyWords.Sorted := False;
       KeyWords.CaseSensitive := CaseSensitiveSyntax;
       GetNodesText(node, 'KeyWord', KeyWords);
       KeyWords.Sort;
@@ -674,9 +674,9 @@ begin
             var cnode := FindNode(rnode, 'Close');
             if cnode <> nil then
                Close := GetNodeAttrStr(cnode, 'Keyword', '');
-            AddClose := GetNodeAttrBool(rnode, 'AddClose', false);
-            NoSubFolds := GetNodeAttrBool(rnode, 'NoSubFolds', true);
-            WholeWords := GetNodeAttrBool(rnode, 'WholeWords', true);
+            AddClose := GetNodeAttrBool(rnode, 'AddClose', False);
+            NoSubFolds := GetNodeAttrBool(rnode, 'NoSubFolds', True);
+            WholeWords := GetNodeAttrBool(rnode, 'WholeWords', True);
             if GetNodeAttrStr(rnode, 'Type', '') = 'rtChar' then
                RegionType := rtChar
             else
