@@ -1995,6 +1995,26 @@ begin
 end;
 
 procedure TGroupBlock.SaveInXML(ANode: IXMLNode);
+
+   function IsAlreadyExported(AComment: TComment; AExportedComments: IXMLNodeList): boolean;
+   begin
+      result := False;
+      AExportedComments.Reset;
+      var exportedComment := AExportedComments.NextNode;
+      while exportedComment <> nil do
+      begin
+         var zOrder := GetNodeAttrInt(exportedComment, Z_ORDER_ATTR);
+         var pageCaption := GetNodeAttrStr(exportedComment, PAGE_CAPTION_ATTR, '');
+         if (zOrder = AComment.GetZOrder) and
+            ((pageCaption = AComment.Page.Caption) or (pageCaption.IsEmpty and AComment.Page.IsMain)) then
+         begin
+            result := True;
+            break;
+         end;
+         exportedComment := AExportedComments.NextNode;
+      end;
+   end;
+
 begin
    SaveInXML2(ANode);
    if ANode <> nil then
@@ -2020,22 +2040,11 @@ begin
          if not txt.IsEmpty then
             SetNodeCData(ANode, FOLD_TEXT_TAG, txt);
 
-         var commentNodes := ANode.OwnerDocument.GetElementsByTagName(COMMENT_TAG);
+         var exportedComments := ANode.OwnerDocument.GetElementsByTagName(COMMENT_TAG);
          for var comment in GetPinComments do
          begin
-            var commentNode := commentNodes.NextNode;
-            while commentNode <> nil do
-            begin
-               var zOrder := GetNodeAttrInt(commentNode, Z_ORDER_ATTR);
-               var pageCaption := GetNodeAttrStr(commentNode, PAGE_CAPTION_ATTR, '');
-               if (zOrder = comment.GetZOrder) and
-                  ((pageCaption = comment.Page.Caption) or (pageCaption.IsEmpty and comment.Page.IsMain)) then
-                  break;
-               commentNode := commentNodes.NextNode;
-            end;
-            if commentNode = nil then
+            if not IsAlreadyExported(comment, exportedComments) then
                comment.ExportToXML2(ANode);
-            commentNodes.Reset;
          end;
 
          for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do

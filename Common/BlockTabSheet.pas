@@ -75,11 +75,11 @@ begin
    inherited Create(AMainForm.pgcPages);
    PageControl := AMainForm.pgcPages;
    FForm := AMainForm;
-   ParentFont := false;
+   ParentFont := False;
    Align := alClient;
-   DrawI := true;
+   DrawI := True;
    Box := TScrollBoxEx.Create(Self);
-   Box.UseWheelForScrolling := true;
+   Box.UseWheelForScrolling := True;
 end;
 
 destructor TBlockTabSheet.Destroy;
@@ -124,14 +124,14 @@ begin
    Parent := APage;
    FPage := APage;
    Align := alClient;
-   ParentFont := false;
+   ParentFont := False;
    Font.Size := GSettings.FlowchartFontSize;
    BorderStyle := bsNone;
    Color := GSettings.DesktopColor;
    HorzScrollBar.Range := ClientWidth;
    VertScrollBar.Range := ClientHeight;
-   HorzScrollBar.Tracking := true;
-   VertScrollBar.Tracking := true;
+   HorzScrollBar.Tracking := True;
+   VertScrollBar.Tracking := True;
    PopupMenu := APage.Form.pmPages;
    OnMouseUp := BoxMouseUp;
 end;
