@@ -88,13 +88,13 @@ begin
    Font.Size := GSettings.FlowchartFontSize;
    Font.Color := clNavy;
    Font.Name := GSettings.FlowchartFontName;
-   FActive := true;
-   DoubleBuffered := true;
+   FActive := True;
+   DoubleBuffered := True;
    Constraints.MinWidth := 25;
    Constraints.MinHeight := 25;
    FZOrder := -1;
    PopupMenu := APage.Box.PopupMenu;
-   FMouseLeave := true;
+   FMouseLeave := True;
    SetBounds(ALeft, ATop, AWidth, AHeight);
    GProject.AddComponent(Self);
 
@@ -128,7 +128,7 @@ destructor TComment.Destroy;
 begin
    Hide;
    FPage.Box.SetScrollBars;
-   IsHeader := false;
+   IsHeader := False;
    inherited Destroy;
 end;
 
@@ -222,7 +222,7 @@ begin
       if ssShift in Shift then
       begin
          if Trim(Text) <> '' then
-            BeginDrag(true)
+            BeginDrag(True)
       end
       else
       begin
@@ -277,10 +277,10 @@ procedure TComment.NCHitTest(var Msg: TWMNCHitTest);
 begin
    inherited;
    ChangeBorderStyle(bsSingle);
-   FMouseLeave := true;
+   FMouseLeave := True;
    if GetAsyncKeyState(vkLButton) <> 0 then
    begin
-      FMouseLeave := false;
+      FMouseLeave := False;
       case Cursor of
          crSizeWE:   Msg.Result := HTRIGHT;
          crSizeNS:   Msg.Result := HTBOTTOM;
@@ -299,7 +299,7 @@ end;
 
 procedure TComment.OnContextPopupComment(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
 begin
-   Handled := true;
+   Handled := True;
    var pnt := ClientToScreen(MousePos);
    PopupMenu.PopupComponent := Self;
    PopupMenu.Popup(pnt.X, pnt.Y);
