@@ -531,13 +531,11 @@ begin
 end;
 
 procedure TMainForm.miUndoRemoveClick(Sender: TObject);
-var
-   block: TBlock;
-   xmlObj: IXMLable;
 begin
+   var xmlObj: IXMLable := nil;
    if (GClpbrd.UndoObject is TBlock) and (TBlock(GClpbrd.UndoObject).ParentBlock <> nil) then
    begin
-      block := TBlock(GClpbrd.UndoObject);
+      var block := TBlock(GClpbrd.UndoObject);
       if not block.ParentBlock.CanFocus or
          not block.ParentBlock.Expanded or ((block is TReturnBlock) and (block.ParentBranch.FindInstanceOf(TReturnBlock) <> -1)) then Exit;
       block.ParentBranch.UndoRemove(block);
