@@ -264,7 +264,7 @@ begin
    Caption := PROGRAM_NAME;
    FHistoryMenu := THistoryMenu.Create(miReopen, miOpen.OnClick);
    FHistoryMenu.Load;
-   pgcPages.DoubleBuffered := true;
+   pgcPages.DoubleBuffered := True;
    FClockPos := Low(TClockPos);
    for var i := FLOWCHART_MIN_FONT_SIZE to FLOWCHART_MAX_FONT_SIZE do
    begin
@@ -325,10 +325,10 @@ end;
 
 procedure TMainForm.ResetForm;
 begin
-   miUndoRemove.Enabled := false;
+   miUndoRemove.Enabled := False;
    Caption := PROGRAM_NAME;
    FClockPos := Low(TClockPos);
-   SetProjectMenu(false);
+   SetProjectMenu(False);
    miInsertFunc.Clear;
    while pgcPages.PageCount > 0 do
       pgcPages.Pages[0].Free;
@@ -365,7 +365,7 @@ end;
 
 procedure TMainForm.FormShow(Sender: TObject);
 begin
-   SetProjectMenu(false);
+   SetProjectMenu(False);
    // will display PPI dialog when main form is already visible
    TThread.ForceQueue(nil, PPIDialog);
 end;
@@ -399,12 +399,12 @@ end;
 
 function TMainForm.CanCloseExistingProject: boolean;
 begin
-   result := true;
+   result := True;
    if (GProject <> nil) and GProject.IsChanged then
    begin
       case ConfirmSave of
          IDYES: miSave.Click;
-         IDCANCEL: result := false;
+         IDCANCEL: result := False;
       end;
    end;
 end;
@@ -432,7 +432,7 @@ begin
    if result then
    begin
       GProject := TProject.GetInstance;
-      SetProjectMenu(true);
+      SetProjectMenu(True);
    end;
 end;
 
@@ -443,7 +443,7 @@ begin
       var mBlock := TMainBlock.Create(GProject.MainPage, GetMainBlockNextTopLeft);
       mBlock.OnResize(mBlock);
       TUserFunction.Create(nil, mBlock);
-      GProject.ChangingOn := true;
+      GProject.ChangingOn := True;
    end;
 end;
 
@@ -455,7 +455,7 @@ begin
       Screen.Cursor := crHourGlass;
       var filePath := IfThen(Sender <> miOpen, StripHotKey(TMenuItem(Sender).Caption));
       filePath := TXMLProcessor.ImportFromXMLFile(GProject.ImportFromXML, impAll, filePath);
-      GProject.ChangingOn := true;
+      GProject.ChangingOn := True;
       GProject.SetNotChanged;
       Screen.Cursor := tmpCursor;
       SetFocus;
@@ -531,27 +531,25 @@ begin
 end;
 
 procedure TMainForm.miUndoRemoveClick(Sender: TObject);
-var
-   block: TBlock;
-   xmlObj: IXMLable;
 begin
+   var xmlObj: IXMLable := nil;
    if (GClpbrd.UndoObject is TBlock) and (TBlock(GClpbrd.UndoObject).ParentBlock <> nil) then
    begin
-      block := TBlock(GClpbrd.UndoObject);
+      var block := TBlock(GClpbrd.UndoObject);
       if not block.ParentBlock.CanFocus or
          not block.ParentBlock.Expanded or ((block is TReturnBlock) and (block.ParentBranch.FindInstanceOf(TReturnBlock) <> -1)) then Exit;
       block.ParentBranch.UndoRemove(block);
       block.ParentBlock.ResizeWithDrawLock;
-      block.SetVisible(true);
+      block.SetVisible(True);
       NavigatorForm.Invalidate;
    end
    else if Supports(GClpbrd.UndoObject, IXMLable, xmlObj) then
-      xmlObj.Active := true;
+      xmlObj.Active := True;
    TInfra.UpdateCodeEditor(GClpbrd.UndoObject);
    if (GClpbrd.UndoObject is TUserFunction) and (GClpbrd.Instance = TUserFunction(GClpbrd.UndoObject).Body) then
       GClpbrd.Instance := nil;
    GClpbrd.UndoObject := nil;
-   miUndoRemove.Enabled := false;
+   miUndoRemove.Enabled := False;
 end;
 
 procedure TMainForm.pmPagesPopup(Sender: TObject);
@@ -651,7 +649,7 @@ begin
              expanded := TGroupBlock(block).Expanded;
              if expanded and (block is TCaseBlock) then
                 miAddBranch.Visible := True;
-             miFoldUnfold.Caption := i18Manager.GetString('miFold' + BoolToStr(expanded, true));
+             miFoldUnfold.Caption := i18Manager.GetString('miFold' + BoolToStr(expanded, True));
           end;
           if (block is TGroupBlock) and TGroupBlock(block).Expanded and TGroupBlock(block).HasFoldedBlocks then
              miUnfoldAll.Visible := True;
@@ -839,8 +837,8 @@ begin
             if newBlock <> nil then
             begin
                branch.InsertAfter(newBlock, currentBlock);
-               lParent.ResizeHorz(true);
-               lParent.ResizeVert(true);
+               lParent.ResizeHorz(True);
+               lParent.ResizeVert(True);
                if not newBlock.Visible then
                begin
                   newBlock.Show;
@@ -993,9 +991,8 @@ begin
 end;
 
 procedure TMainForm.miExportClick(Sender: TObject);
-var
-   exp: IExportable;
 begin
+   var exp: IExportable := nil;
    if Supports(pmPages.PopupComponent, IExportable, exp) then
       TInfra.ExportToFile(exp);
 end;
@@ -1029,7 +1026,7 @@ begin
    begin
       var block := TGroupBlock(pmPages.PopupComponent);
       block.DeSelect;
-      block.ExpandFold(true);
+      block.ExpandFold(True);
    end;
 end;
 
@@ -1131,13 +1128,11 @@ begin
 end;
 
 procedure TMainForm.miMemoEditClick(Sender: TObject);
-var
-   memoEx: IMemoEx;
-   memo: TMemoEx;
 begin
+   var memoEx: IMemoEx := nil;
    if Supports(pmPages.PopupComponent, IMemoEx, memoEx) then
    begin
-      memo := memoEx.GetMemoEx;
+      var memo := memoEx.GetMemoEx;
       if memo <> nil then
       begin
          MemoEditorForm.Source := memo;
@@ -1147,13 +1142,11 @@ begin
 end;
 
 procedure TMainForm.miMemoVScrollClick(Sender: TObject);
-var
-   memoEx: IMemoEx;
-   memo: TMemoEx;
 begin
+   var memoEx: IMemoEx := nil;
    if Supports(pmPages.PopupComponent, IMemoEx, memoEx) then
    begin
-      memo := memoEx.GetMemoEx;
+      var memo := memoEx.GetMemoEx;
       if memo <> nil then
       begin
          if Sender = miMemoVScroll then
@@ -1199,14 +1192,14 @@ end;
 
 procedure TMainForm.pmTabsPopup(Sender: TObject);
 begin
-   miRemovePage.Enabled := false;
-   miRenamePage.Enabled := false;
-   miAddPage.Enabled := false;
+   miRemovePage.Enabled := False;
+   miRenamePage.Enabled := False;
+   miAddPage.Enabled := False;
    if pmTabs.PopupComponent is TBlockTabSheet then
    begin
       miRemovePage.Enabled := not TBlockTabSheet(pmTabs.PopupComponent).IsMain;
       miRenamePage.Enabled := miRemovePage.Enabled;
-      miAddPage.Enabled := true;
+      miAddPage.Enabled := True;
    end;
 end;
 
@@ -1223,22 +1216,19 @@ begin
    end;
 end;
 
-procedure TMainForm.pgcPagesMouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TMainForm.pgcPagesMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
    if Button = mbLeft then
    begin
       var page := TInfra.GetPageFromXY(pgcPages, X, Y);
       if page <> nil then
-         page.BeginDrag(false, 3);
+         page.BeginDrag(False, 3);
    end;
 end;
 
-procedure TMainForm.pgcPagesDragOver(Sender, Source: TObject; X,
-  Y: Integer; State: TDragState; var Accept: Boolean);
+procedure TMainForm.pgcPagesDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-   if not (Source is TBlockTabSheet) then
-      Accept := false;
+   Accept := Source is TBlockTabSheet;
 end;
 
 procedure TMainForm.pgcPagesDragDrop(Sender, Source: TObject; X, Y: Integer);
@@ -1271,7 +1261,7 @@ end;
 procedure TMainForm.miAddPageClick(Sender: TObject);
 begin
    var lCaption := InputBox(i18Manager.GetString('Page'), i18Manager.GetString('EnterPage'), '').Trim;
-   if (lCaption <> '') and (GProject.GetPage(lCaption, false) = nil) then
+   if (lCaption <> '') and (GProject.GetPage(lCaption, False) = nil) then
    begin
       var page := GProject.GetPage(lCaption);
       page.PageControl.ActivePage := page;
@@ -1287,12 +1277,12 @@ end;
 
 procedure TMainForm.pmEditsPopup(Sender: TObject);
 begin
-   miUndo.Enabled := false;
-   miCut1.Enabled := false;
-   miCopy1.Enabled := false;
-   miPaste1.Enabled := false;
-   miRemove1.Enabled := false;
-   miInsertFunc.Visible := false;
+   miUndo.Enabled := False;
+   miCut1.Enabled := False;
+   miCopy1.Enabled := False;
+   miPaste1.Enabled := False;
+   miRemove1.Enabled := False;
+   miInsertFunc.Visible := False;
    if pmEdits.PopupComponent is TCustomEdit then
    begin
       var edit := TCustomEdit(pmEdits.PopupComponent);
@@ -1433,7 +1423,7 @@ end;
 procedure TMainForm.PopupMenuClosed;
 begin
    if pmPages.PopupComponent is TBlock then
-      TBlock(pmPages.PopupComponent).OnMouseLeave(false);
+      TBlock(pmPages.PopupComponent).OnMouseLeave(False);
 end;
 
 procedure TMainForm.UpdateTabsColor(AColor: TColor);
