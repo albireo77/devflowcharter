@@ -161,7 +161,7 @@ begin
       repeat
          lFile := TPath.GetFullPath(langDir + searchRec.Name);
          lang := TLangDefinition.Create;
-         if TXMLProcessor.ImportFromXMLFile(lang.ImportFromXML, impAll, lFile, true).IsEmpty then
+         if TXMLProcessor.ImportFromXMLFile(lang.ImportFromXML, impAll, lFile, True).IsEmpty then
             lang.Free
          else
          begin
@@ -596,11 +596,11 @@ end;
 
 class function TInfra.IsPrinter: boolean;
 begin
-   result := true;
+   result := True;
    try
       Printer.PrinterIndex := -1;
    except
-      result := false;
+      result := False;
    end;
 end;
 
@@ -609,7 +609,7 @@ begin
    try
       result := (AObject is TControl) and (TControl(AObject).Parent <> nil);
    except
-      result := false;
+      result := False;
    end;
 end;
 
@@ -930,7 +930,7 @@ end;
 
 class function TInfra.Parse(AEdit: TCustomEdit; AParserMode: TYYMode): boolean;
 begin
-   result := false;
+   result := False;
    FParsedEdit := AEdit;
    try
       result := Parse(Trim(AEdit.Text), AParserMode);
@@ -942,7 +942,7 @@ end;
 
 class function TInfra.Parse(const AText: string; AParserMode: TYYMode): boolean;
 begin
-   result := true;
+   result := True;
    if Assigned(GInfra.CurrentLang.Parse) then
       result := GInfra.CurrentLang.Parse(AText, AParserMode);
 end;
@@ -966,7 +966,7 @@ begin
    var p := 0;
    if AObject <> nil then
    begin
-      result.CodeRange := GetEditorForm.SelectCodeRange(AObject, false);
+      result.CodeRange := GetEditorForm.SelectCodeRange(AObject, False);
       if result.CodeRange.FirstRow <> ROW_NOT_FOUND then
       begin
          var templateLines := TStringList.Create;
@@ -1172,13 +1172,13 @@ begin
       if txt[len] <> ']' then
          Exit(-1);
       result := 0;
-      var nextOpen := true;
+      var nextOpen := True;
       for var i := 1 to len do
       begin
          if txt[i] = '[' then
          begin
             if nextOpen then
-               nextOpen := false
+               nextOpen := False
             else
             begin
                result := -1;
@@ -1194,7 +1194,7 @@ begin
                   result := -1;
                   break;
                end;
-               nextOpen := true;
+               nextOpen := True;
             end
             else
             begin
@@ -1286,11 +1286,11 @@ end;
 
 function TInfra.ParseVarSize(const ASize: string): boolean;
 begin
-   result := true;
+   result := True;
    var lang := GetLangDefinition(PASCAL_LANG_ID);
    var goParse := (lang <> nil) and Assigned(lang.Parse);
    if (ASize <> '') and ((ASize[1] = '0') or (ASize[1] = '-') or (goParse and not lang.Parse(ASize, yymVarSize))) then
-      result := false;
+      result := False;
 end;
 
 function TInfra.ValidateId(const AId: string): integer;
