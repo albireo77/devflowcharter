@@ -24,8 +24,8 @@ interface
 implementation
 
 uses
-   System.SysUtils, System.StrUtils, System.Classes, Vcl.StdCtrls, Base_Block, LangDefinition,
-   UserFunction, DeclareList, Interfaces, UserDataType, Infrastructure,
+   System.SysUtils, System.StrUtils, System.Classes, System.Math, Vcl.StdCtrls, Base_Block,
+   LangDefinition, UserFunction, DeclareList, Interfaces, UserDataType, Infrastructure,
    ParserHelper, Types, Constants, TabComponent;
 
 procedure Template_UserDataTypesSectionGenerator(ALines: TStringList);
@@ -166,13 +166,9 @@ begin
 end;
 
 function Template_GetConstantType(const AValue: string; var AGenericType: string): integer;
-var
-   i: integer;
 begin
-   result := UNKNOWN_TYPE;
    AGenericType := '';
-   if TryStrToInt(AValue, i) then
-      result := GENERIC_INT_TYPE;
+   result := IfThen(TryStrToInt(AValue, result), GENERIC_INT_TYPE, UNKNOWN_TYPE);
 end;
 
 procedure Template_ProgramHeaderSectionGenerator(ALines: TStringList);
@@ -548,7 +544,7 @@ end;
 
 function Template_SkipFuncBodyGen: boolean;
 begin
-   result := false;
+   result := False;
 end;
 
 procedure Template_ProgramGenerator(ALines: TStringList);
@@ -680,7 +676,7 @@ begin
    result := ReplaceStr(result, PRIMARY_PLACEHOLDER, GProject.Name);
 end;
 
-function Template_GetUserFuncDesc(AHeader: TUserFunctionHeader; AFullParams: boolean = true; AIncludeDesc: boolean = true): string;
+function Template_GetUserFuncDesc(AHeader: TUserFunctionHeader; AFullParams: boolean = True; AIncludeDesc: boolean = True): string;
 var
    params, desc, lType, key, lb, arrayType: string;
    lang: TLangDefinition;
@@ -788,8 +784,8 @@ initialization
 
    with GInfra.TemplateLang do
    begin
-      EnabledUserFunctionBody := true;
-      EnabledExplorer := true;
+      EnabledUserFunctionBody := True;
+      EnabledExplorer := True;
       MainFunctionSectionGenerator := Template_MainFunctionSectionGenerator;
       UserFunctionsSectionGenerator := Template_UserFunctionsSectionGenerator;
       VarSectionGenerator := Template_VarSectionGenerator;
