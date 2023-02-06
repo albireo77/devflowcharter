@@ -417,15 +417,10 @@ begin
 end;
 
 function TDeclareList.RetrieveFocus(AInfo: TFocusInfo): boolean;
-var
-   i: integer;
-   typeName: string;
-   list: TDeclareList;
-   dataType: TUserDataType;
 begin
-   i := 0;
-   list := nil;
-   typeName := AInfo.SelText.Trim;
+   var i := 0;
+   var list: TDeclareList := nil;
+   var typeName := AInfo.SelText.Trim;
    if not typeName.IsEmpty then
    begin
       i := sgList.Cols[NAME_COL].IndexOf(typeName);
@@ -439,7 +434,7 @@ begin
       end;
       if list = nil then
       begin
-         dataType := GProject.GetUserDataType(typeName);
+         var dataType := GProject.GetUserDataType(typeName);
          if dataType <> nil then
          begin
             result := dataType.RetrieveFocus(AInfo);
