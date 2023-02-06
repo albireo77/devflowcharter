@@ -385,13 +385,10 @@ begin
 end;
 
 procedure TDeclareList.SetColumnLabel(ACol: integer; const AColLabel: string = '');
-var
-   s: string;
 begin
-   if AColLabel.IsEmpty then
-      s := i18Manager.GetString('sg' + FShort + 'ListCol' + ACol.ToString)
-   else
-      s := AColLabel;
+   var s := AColLabel; 
+   if s.IsEmpty then
+      s := i18Manager.GetString('sg' + FShort + 'ListCol' + ACol.ToString);
    sgList.Cells[ACol, 0] := s;
 end;
 
