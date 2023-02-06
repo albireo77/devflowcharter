@@ -132,8 +132,8 @@ type
          procedure RefreshTypes;
          function IsValidLoopVar(const AName: string): boolean;
          function IsGlobal: boolean; override;
-         function GetDimensionCount(const AVarName: string; AIncludeType: boolean = false): integer;
-         function GetDimensions(const AVarName: string; AIncludeType: boolean = false): TArray<string>;
+         function GetDimensionCount(const AVarName: string; AIncludeType: boolean = False): integer;
+         function GetDimensions(const AVarName: string; AIncludeType: boolean = False): TArray<string>;
          function GetExternModifier(idx: integer): string; override;
    end;
 
@@ -182,13 +182,13 @@ begin
    FExternalCol := INVALID_COL;
    inherited Create(AParent);
    Parent := AParent;
-   ParentFont := false;
-   ParentBackground := false;
+   ParentFont := False;
+   ParentBackground := False;
    Font.Style := [fsBold];
    Font.Color := clBlack;
-   FModifying := false;
+   FModifying := False;
    AssociatedList := nil;
-   DoubleBuffered := true;
+   DoubleBuffered := True;
    FDragRow := INVALID_ROW;
    FId := TProject.GetInstance.Register(Self);
 
@@ -204,13 +204,13 @@ begin
    for var i := 0 to AColCount-1 do
       SetColumnLabel(i);
    sgList.DrawingStyle := gdsClassic;
-   sgList.Ctl3D := false;
+   sgList.Ctl3D := False;
    sgList.FixedColor := clMoneyGreen;
    sgList.Options := sgList.Options + [goRowSelect, goColSizing, goThumbTracking, goRowMoving] - [goRangeSelect];
    sgList.ScrollBars := ssVertical;
-   sgList.ParentFont := false;
+   sgList.ParentFont := False;
    sgList.Font.Style := [];
-   sgList.DoubleBuffered := true;
+   sgList.DoubleBuffered := True;
    sgList.OnDblClick := OnDblClickList;
    sgList.OnSelectCell := OnSelectCellList;
    sgList.OnMouseDown := OnMouseDownList;
@@ -228,9 +228,9 @@ begin
    btnRemove.SetBounds(4, sgList.BoundsRect.Bottom+8, (Width div 2)-5, 25);
    btnRemove.OnClick := OnClickRemove;
    btnRemove.Caption := i18Manager.GetString('btnRemove');
-   btnRemove.ParentFont := false;
+   btnRemove.ParentFont := False;
    btnRemove.Font.Style := [];
-   btnRemove.Enabled := false;
+   btnRemove.Enabled := False;
    btnRemove.Anchors := [akBottom, akLeft];
 
    btnChange := TButton.Create(Self);
@@ -238,16 +238,16 @@ begin
    btnChange.SetBounds(Width div 2, btnRemove.Top, (Width div 2)-5, 25);
    btnChange.OnClick := OnClickChange;
    btnChange.Caption := i18Manager.GetString('btnChange');
-   btnChange.ParentFont := false;
+   btnChange.ParentFont := False;
    btnChange.Font.Style := [];
-   btnChange.Enabled := false;
+   btnChange.Enabled := False;
    btnChange.Anchors := [akBottom, akLeft];
 
    gbBox := TGroupBox.Create(Self);
    gbBox.Parent := Self;
    gbBox.SetBounds(5, btnChange.BoundsRect.Bottom+4, AGBoxWidth, 72);
-   gbBox.ParentFont := false;
-   gbBox.ParentBackground := false;
+   gbBox.ParentFont := False;
+   gbBox.ParentBackground := False;
    gbBox.Font.Style := [];
    gbBox.Anchors := [akBottom, akLeft, akRight];
 
@@ -265,7 +265,7 @@ begin
    btnAdd.Parent := Self;
    btnAdd.SetBounds(4, gbBox.BoundsRect.Bottom+3, (Width-11) div 3, 25);
    btnAdd.OnClick := OnClickAdd;
-   btnAdd.ParentFont := false;
+   btnAdd.ParentFont := False;
    btnAdd.Font.Style := [];
    btnAdd.Anchors := [akLeft, akBottom, akRight];
    btnAdd.Caption := i18Manager.GetString('btnAdd');
@@ -274,7 +274,7 @@ begin
    btnImport.Parent := Self;
    btnImport.SetBounds(btnAdd.BoundsRect.Right+1, btnAdd.Top, btnAdd.Width, 25);
    btnImport.OnClick := OnClickImport;
-   btnImport.ParentFont := false;
+   btnImport.ParentFont := False;
    btnImport.Font.Style := [];
    btnImport.Anchors := [akLeft, akBottom, akRight];
    btnImport.Caption := i18Manager.GetString('btnImport');
@@ -283,7 +283,7 @@ begin
    btnExport.Parent := Self;
    btnExport.SetBounds(btnImport.BoundsRect.Right+1, btnAdd.Top, btnAdd.Width, 25);
    btnExport.OnClick := OnClickExport;
-   btnExport.ParentFont := false;
+   btnExport.ParentFont := False;
    btnExport.Font.Style := [];
    btnExport.Anchors := [akLeft, akBottom, akRight];
    btnExport.Caption := i18Manager.GetString('btnExport');
@@ -321,7 +321,7 @@ begin
    edtValue.Parent := gbBox;
    edtValue.SetBounds(lblValue.Width+10, 42, gbBox.Width-lblValue.Width-18, 21);
    edtValue.Anchors := edtValue.Anchors + [akRight];
-   edtValue.ShowHint := true;
+   edtValue.ShowHint := True;
    edtValue.Hint := i18Manager.GetString('DisableFieldValid');
    edtValue.OnKeyDown := OnKeyDownCommon;
 
@@ -376,7 +376,7 @@ begin
    edtInit.Parent := gbBox;
    edtInit.SetBounds(lblInit.BoundsRect.Right+5, 42, gbBox.Width-lblInit.BoundsRect.Right-13, 21);
    edtInit.Anchors := edtInit.Anchors + [akRight];
-   edtInit.ShowHint := true;
+   edtInit.ShowHint := True;
    edtInit.Hint := i18Manager.GetString('DisableFieldValid');
    edtInit.OnKeyDown := OnKeyDownCommon;
 
@@ -413,7 +413,7 @@ end;
 procedure TDeclareList.OnCanResizeSplitter(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
 begin
    if (NewSize < sgList.BoundsRect.Right + 4) and (NewSize < sgList.GetMinWidth) then
-      Accept := false;
+      Accept := False;
 end;
 
 function TDeclareList.RetrieveFocus(AInfo: TFocusInfo): boolean;
@@ -463,7 +463,7 @@ end;
 
 function TDeclareList.CanBeFocused: boolean;
 begin
-   result := true;
+   result := True;
 end;
 
 function TDeclareList.GetId: integer;
@@ -477,7 +477,7 @@ begin
       edtName.SetFocus;
 end;
 
-function TVarDeclareList.GetDimensionCount(const AVarName: string; AIncludeType: boolean = false): integer;
+function TVarDeclareList.GetDimensionCount(const AVarName: string; AIncludeType: boolean = False): integer;
 begin
    var i := sgList.Cols[VAR_NAME_COL].IndexOf(AVarName);
    if i < 1 then
@@ -491,7 +491,7 @@ begin
    end;
 end;
 
-function TVarDeclareList.GetDimensions(const AVarName: string; AIncludeType: boolean = false): TArray<string>;
+function TVarDeclareList.GetDimensions(const AVarName: string; AIncludeType: boolean = False): TArray<string>;
 begin
    var i := sgList.Cols[VAR_NAME_COL].IndexOf(AVarName);
    if i < 1 then
@@ -566,7 +566,7 @@ begin
       if lRow <> INVALID_ROW then
       begin
          FDragRow := lRow;
-         sgList.BeginDrag(true);
+         sgList.BeginDrag(True);
       end;
    end;
 end;
@@ -581,7 +581,7 @@ begin
    status := GInfra.ValidateId(edtName.Text);
    lType := TParserHelper.GetType(cbType.Text);
    if status <> VALID_IDENT then
-   else if IsDeclared(edtName.Text, true) then
+   else if IsDeclared(edtName.Text, True) then
       status := DUPLICATED_IDENT
    else if not edtSize.ParseSize then
       status := INCORRECT_SIZE
@@ -663,7 +663,7 @@ begin
    constType := GENERIC_INT_TYPE;
    status := GInfra.ValidateConstId(edtName.Text);
    if status <> VALID_IDENT then
-   else if IsDeclared(edtName.Text, true) then
+   else if IsDeclared(edtName.Text, True) then
       status := DUPLICATED_IDENT
    else
    begin
@@ -708,10 +708,10 @@ begin
    if FModifying then
    begin
       result := sgList.Row;
-      sgList.Enabled := true;
-      btnChange.Enabled := true;
-      btnRemove.Enabled := true;
-      FModifying := false;
+      sgList.Enabled := True;
+      btnChange.Enabled := True;
+      btnRemove.Enabled := True;
+      FModifying := False;
    end
    else
    begin
@@ -768,7 +768,7 @@ begin
    btnChange.Enabled := False;
    btnRemove.Enabled := False;
    edtName.SetFocus;
-   FModifying := true;
+   FModifying := True;
 end;
 
 procedure TVarDeclareList.OnClickChange(Sender: TObject);
@@ -798,7 +798,7 @@ begin
    var i := sgList.Cols[NAME_COL].IndexOf(AName);
    result := (i > 0) and not (FModifying and (i = sgList.Row));
    if (AssociatedList <> nil) and AssociatedListCheck and not result then
-      result := AssociatedList.IsDeclared(AName, false);
+      result := AssociatedList.IsDeclared(AName, False);
 end;
 
 procedure TDeclareList.OnKeyDownCommon(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -835,7 +835,7 @@ end;
 
 function TVarDeclareList.IsValidLoopVar(const AName: string): boolean;
 begin
-   result := false;
+   result := False;
    var i := sgList.Cols[VAR_NAME_COL].IndexOf(AName);
    if i > 0 then
    begin
@@ -1125,12 +1125,12 @@ end;
 
 function TDeclareLIst.CanRemove: boolean;
 begin
-   result := false;
+   result := False;
 end;
 
 function TDeclareList.IsBoldDesc: boolean;
 begin
-   result := true;
+   result := True;
 end;
 
 end.
