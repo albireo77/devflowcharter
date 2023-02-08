@@ -75,13 +75,13 @@ uses
 constructor TMemoEx.Create(AOwner: TComponent);
 begin
    inherited Create(AOwner);
-   EditMargins.Auto := true;
+   EditMargins.Auto := True;
    EditFormWidth := 280;
    EditFormHeight := 182;
-   FHasVScroll := true;
-   ParentCtl3D := false;
+   FHasVScroll := True;
+   ParentCtl3D := False;
    BorderStyle := bsNone;
-   Ctl3D := false;
+   Ctl3D := False;
    OnKeyDown := TInfra.OnKeyDownSelectAll;
 end;
 
@@ -123,7 +123,7 @@ begin
    begin
       FHasHScroll := AValue;
       if FHasHScroll then
-         WordWrap := false;
+         WordWrap := False;
       UpdateHScroll;
    end;
 end;
@@ -131,7 +131,7 @@ end;
 procedure TMemoEx.SetWordWrap(AValue: boolean);
 begin
    if AValue and not WordWrap then
-      SetHasHScroll(false);
+      SetHasHScroll(False);
    inherited SetWordWrap(AValue);
 end;
 
@@ -166,13 +166,10 @@ begin
 end;
 
 procedure TMemoEx.ResetScrollBars(const AStyle: TScrollStyle);
-var
-   sStyle: TScrollStyle;
 begin
+   var sStyle := TScrollStyle.ssVertical; 
    if AStyle = TScrollStyle.ssVertical then
-      sStyle := TScrollStyle.ssHorizontal
-   else
-      sStyle := TScrollStyle.ssVertical;
+      sStyle := TScrollStyle.ssHorizontal;
    if ScrollBars = TScrollStyle.ssBoth then
       ScrollBars := AStyle
    else if ScrollBars = sStyle then
@@ -220,19 +217,17 @@ begin
 end;
 
 procedure TMemoEx.UpdateHScroll;
-var
-   cnt, w, i: integer;
-   r: TRect;
 begin
    if FHasHScroll and not WordWrap then
    begin
-      w := 0;
-      for i := 0 to Lines.Count-1 do
+      var w := 0;
+      for var i := 0 to Lines.Count-1 do
       begin
-         cnt := TInfra.GetTextWidth(Lines[i], Self);
+         var cnt := TInfra.GetTextWidth(Lines[i], Self);
          if cnt > w then
             w := cnt;
       end;
+      var r: TRect;
       Perform(EM_GETRECT, 0, LPARAM(@r));
       if w > r.Width then
       begin
