@@ -177,31 +177,28 @@ begin
 end;
 
 procedure TMemoEx.UpdateVScroll;
-var
-   count, lineCount: integer;
-   oldFont: HFont;
-   hnd: THandle;
-   txtMetric: TTextMetric;
-   r: TRect;
 begin
    if FHasVScroll then
    begin
-      hnd := GetDC(Handle);
+      var lineCount := 0;
+      var hnd := GetDC(Handle);
       try
-         oldFont := SelectObject(hnd, Font.Handle);
+         var oldFont := SelectObject(hnd, Font.Handle);
          try
+            var r: TRect;
+            var txtMetrics: TTextMetric;
             Perform(EM_GETRECT, 0, LPARAM(@r));
-            GetTextMetrics(hnd, txtMetric);
-            lineCount := r.Height div txtMetric.tmHeight;
+            GetTextMetrics(hnd, txtMetrics);
+            lineCount := r.Height div txtMetrics.tmHeight;
          finally
             SelectObject(hnd, oldFont);
          end;
       finally
          ReleaseDC(Handle, hnd);
       end;
-      count := Lines.Count;
+      var count := Lines.Count;
       if EndsText(sLineBreak, Text) then
-         count := count + 1;
+         Inc(count);
       if count > lineCount then
       begin
          if ScrollBars = TScrollStyle.ssNone then
