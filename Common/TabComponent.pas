@@ -109,15 +109,15 @@ constructor TTabComponent.Create(AParentForm: TPageControlForm);
 begin
    inherited Create(AParentForm.pgcTabs);
    PageControl := AParentForm.pgcTabs;
-   ParentFont := false;
-   ParentBackground := false;
+   ParentFont := False;
+   ParentBackground := False;
    Brush.Color := AParentForm.Color;
    Align := alClient;
    Font.Color := NOK_COLOR;
    Font.Style := [fsBold];
-   DoubleBuffered := true;
+   DoubleBuffered := True;
    FParentObject := Self;
-   FActive := true;
+   FActive := True;
    FId := GProject.Register(Self);
    FParentForm := AParentForm;
 end;
@@ -217,13 +217,13 @@ begin
       chkExternal.Caption := i18Manager.GetString('chkExternal')
    else
       chkExternal.Caption := GInfra.CurrentLang.ExternalLabel;
-   chkExternal.ParentFont := false;
+   chkExternal.ParentFont := False;
    chkExternal.Font.Style := [];
    chkExternal.Font.Color := clWindowText;
    chkExternal.SetBounds(x, y, TInfra.GetAutoWidth(chkExternal), 17);
-   chkExternal.DoubleBuffered := true;
+   chkExternal.DoubleBuffered := True;
    chkExternal.OnClick := OnClickCh;
-   chkExternal.ShowHint := true;
+   chkExternal.ShowHint := True;
 end;
 
 procedure TTabComponent.CreateNameControls(AParent: TWinControl; x, y: integer);
@@ -232,18 +232,18 @@ begin
    lblName.Parent := AParent;
    lblName.SetBounds(x, y, 0, 13);
    lblName.Caption := i18Manager.GetString('lblName');
-   lblName.ParentFont := false;
+   lblName.ParentFont := False;
    lblName.Font.Style := [];
    lblName.Font.Color := clWindowText;
 
    edtName := TEdit.Create(AParent);
    edtName.Parent := AParent;
    edtName.SetBounds(lblName.BoundsRect.Right+5, y-6, 104, 21);
-   edtName.ParentFont := false;
+   edtName.ParentFont := False;
    edtName.Font.Style := [];
-   edtName.ShowHint := true;
+   edtName.ShowHint := True;
    edtName.Hint := i18Manager.GetString('BadIdD');
-   edtName.DoubleBuffered := true;
+   edtName.DoubleBuffered := True;
    edtName.OnChange := OnChangeName;
 end;
 
@@ -253,18 +253,18 @@ begin
    lblLibrary.Parent := AParent;
    lblLibrary.SetBounds(x, y, 0, 13);
    lblLibrary.Caption := i18Manager.GetString('lblLibrary');
-   lblLibrary.ParentFont := false;
+   lblLibrary.ParentFont := False;
    lblLibrary.Font.Style := [];
    lblLibrary.Font.Color := clWindowText;
 
    edtLibrary := TEdit.Create(AParent);
    edtLibrary.Parent := AParent;
    edtLibrary.SetBounds(lblLibrary.BoundsRect.Right+5, y-6, 135-lblLibrary.Width, 21);
-   edtLibrary.ParentFont := false;
+   edtLibrary.ParentFont := False;
    edtLibrary.Font.Style := [];
    edtLibrary.Font.Color := clGreen;
-   edtLibrary.ShowHint := true;
-   edtLibrary.DoubleBuffered := true;
+   edtLibrary.ShowHint := True;
+   edtLibrary.DoubleBuffered := True;
    edtLibrary.OnChange := OnChangeLib;
    edtLibrary.Hint := i18Manager.GetFormattedString('edtLibraryHint', [GInfra.CurrentLang.LibraryExt]);
 end;
@@ -283,14 +283,14 @@ begin
       FActive := AValue;
       TabVisible := FActive;
       GProject.SetChanged;
-      FParentForm.UpdateCodeEditor := false;
+      FParentForm.UpdateCodeEditor := False;
       for var i := 0 to PageControl.PageCount-1 do
       begin
          var tab := TTabComponent(PageControl.Pages[i]);
          if tab.TabVisible and Assigned(tab.edtName.OnChange) then
             tab.edtName.OnChange(tab.edtName);
       end;
-      FParentForm.UpdateCodeEditor := true;
+      FParentForm.UpdateCodeEditor := True;
    end;
 end;
 
@@ -318,7 +318,7 @@ end;
 
 function TTabComponent.IsDuplicated(ANameEdit: TEdit): boolean;
 begin
-   result := false;
+   result := False;
    if ANameEdit <> nil then
    begin
       for var i := 0 to PageControl.PageCount-1 do
@@ -326,7 +326,7 @@ begin
          var tab := TTabComponent(PageControl.Pages[i]);
          if tab.TabVisible and (tab.edtName <> ANameEdit) and TInfra.SameStrings(Trim(tab.edtName.Text), Trim(ANameEdit.Text)) then
          begin
-            result := true;
+            result := True;
             break;
          end;
       end;
@@ -413,12 +413,12 @@ end;
 
 function TTabComponent.HasInvalidElement: boolean;
 begin
-   result := false;
+   result := False;
    for var elem in GetElements<TElement> do
    begin
       if not elem.IsValid then
       begin
-         result := true;
+         result := True;
          break;
       end;
    end;
@@ -426,14 +426,14 @@ end;
 
 function TTabComponent.IsDuplicatedElement(AElement: TElement): boolean;
 begin
-   result := false;
+   result := False;
    if (AElement <> nil) and (AElement.ParentTab = Self) then
    begin
       for var elem in GetElements<TElement> do
       begin
          if (elem <> AElement) and TInfra.SameStrings(Trim(AElement.edtName.Text), Trim(elem.edtName.Text)) then
          begin
-            result := true;
+            result := True;
             break;
          end;
       end;
@@ -442,10 +442,10 @@ end;
 
 procedure TTabComponent.RefreshElements;
 begin
-   FParentForm.UpdateCodeEditor := false;
+   FParentForm.UpdateCodeEditor := False;
    for var elem in GetElements<TElement> do
       elem.edtName.OnChange(elem.edtName);
-   FParentForm.UpdateCodeEditor := true;
+   FParentForm.UpdateCodeEditor := True;
 end;
 
 procedure TTabComponent.ExportToXML(ANode: IXMLNode);
@@ -502,7 +502,7 @@ end;
 
 function TTabComponent.IsBoldDesc: boolean;
 begin
-   result := false;
+   result := False;
 end;
 
 function TTabComponent.GetTreeNodeText(ANodeOffset: integer = 0): string;
