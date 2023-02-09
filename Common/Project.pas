@@ -386,7 +386,7 @@ procedure TProject.SetChanged;
 begin
    if ChangingOn and not FChanged then
    begin
-      FChanged := true;
+      FChanged := True;
       TInfra.GetMainForm.SetChanged;
    end;
 end;
@@ -394,7 +394,7 @@ end;
 procedure TProject.SetNotChanged;
 begin
    if ChangingOn then
-      FChanged := false;
+      FChanged := False;
 end;
 
 function TProject.IsChanged: boolean;
@@ -409,12 +409,12 @@ end;
 
 function TProject.ExportToXMLFile(const AFile: string): TError;
 begin
-   ChangingOn := false;
+   ChangingOn := False;
    result := TXMLProcessor.ExportToXMLFile(ExportToXML, AFile);
-   ChangingOn := true;
+   ChangingOn := True;
    if result = errNone then
    begin
-      FChanged := false;
+      FChanged := False;
       TInfra.GetMainForm.AcceptFile(AFile);
    end;
 end;
@@ -502,7 +502,7 @@ begin
 {$ENDIF}
       TInfra.GetEditorForm.SetFormAttributes;
       SetGlobalDeclarations(TInfra.GetDeclarationsForm);
-      TInfra.GetMainForm.SetProjectMenu(true);
+      TInfra.GetMainForm.SetProjectMenu(True);
    end;
 
    if FGlobalConsts <> nil then
@@ -810,9 +810,9 @@ begin
    var pnt := page.Box.GetBottomRight;
    lBitmap.Width := pnt.X;
    lBitmap.Height := pnt.Y;
-   page.DrawI := false;
+   page.DrawI := False;
    page.Box.PaintToCanvas(lBitmap.Canvas);
-   page.DrawI := true;
+   page.DrawI := True;
    if AGraphic <> lBitmap then
    begin
       AGraphic.Assign(lBitmap);
@@ -949,7 +949,7 @@ end;
 procedure TProject.RefreshStatements;
 begin
    var chon := ChangingOn;
-   ChangingOn := false;
+   ChangingOn := False;
    try
       for var func in GetUserFunctions do
       begin
