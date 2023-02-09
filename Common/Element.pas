@@ -73,24 +73,24 @@ begin
    inherited Create(AParent);
    Parent := AParent;
    
-   Ctl3D := false;
+   Ctl3D := False;
    BevelOuter := bvNone;
    FParentTab := GetParentTab;
    FParentForm := TTabComponent(FParentTab).ParentForm;
-   DoubleBuffered := true;
+   DoubleBuffered := True;
    DragMode := dmAutomatic;
 
    edtName := TNameEdit.Create(Self);
    edtName.Parent := Self;
    edtName.SetBounds(3, 0, TInfra.Scaled(Self, 70), 21);
-   edtName.ParentFont := false;
+   edtName.ParentFont := False;
    edtName.Font.Style := [];
-   edtName.ParentCtl3D := false;
-   edtName.Ctl3D := true;
-   edtName.ShowHint := true;
+   edtName.ParentCtl3D := False;
+   edtName.Ctl3D := True;
+   edtName.ShowHint := True;
    edtName.Hint := i18Manager.GetString('BadIdD');
    edtName.Font.Color := NOK_COLOR;
-   edtName.DoubleBuffered := true;
+   edtName.DoubleBuffered := True;
    edtName.OnChange := OnChangeName;
 
    cbType := TComboBox.Create(Self);
@@ -98,16 +98,16 @@ begin
    cbType.SetBounds(TInfra.Scaled(Self, 87), 0, TInfra.Scaled(Self, 70), 21);
    cbType.Constraints.MaxWidth := TInfra.Scaled(Self, 74);
    cbType.Style := csDropDownList;
-   cbType.ParentFont := false;
+   cbType.ParentFont := False;
    cbType.Font.Style := [];
    cbType.Font.Color := clWindowText;
    cbType.OnChange := OnChangeType;
 
    btnRemove := TButton.Create(Self);
    btnRemove.Parent := Self;
-   btnRemove.ParentFont := false;
+   btnRemove.ParentFont := False;
    btnRemove.Font.Style := [];
-   btnRemove.DoubleBuffered := true;
+   btnRemove.DoubleBuffered := True;
    btnRemove.Caption := i18Manager.GetString('btnRemove');
    btnRemove.OnClick := OnClickRemove;
    var w := TInfra.GetAutoWidth(btnRemove);
@@ -155,9 +155,9 @@ end;
 
 function TElement.IsValid: boolean;
 begin
-   result := true;
+   result := True;
    if edtName.Enabled and ((edtName.Font.Color = NOK_COLOR) or ((Trim(edtName.Text) = '') and not edtName.Focused)) then
-      result := false;
+      result := False;
 end;
 
 procedure TElement.OnChangeName(Sender: TObject);
@@ -207,7 +207,7 @@ end;
 procedure TElement.OnDragOverElement(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
    if (Source = Sender) or (not (Source is TElement)) or (TElement(Source).Parent <> Parent) then
-      Accept := false;
+      Accept := False;
 end;
 
 procedure TElement.OnDragDropElement(Sender, Source: TObject; X, Y: Integer);
