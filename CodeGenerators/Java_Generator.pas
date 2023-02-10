@@ -152,7 +152,7 @@ var
    param: TParameter;
 begin
 
-   result := false;
+   result := False;
 
    // search in instance variables
    varList := GProject.GlobalVars;
@@ -162,7 +162,7 @@ begin
       begin
          typeStr := varList.sgList.Cells[VAR_TYPE_COL, i];
          if typeStr = AType then
-            Exit(true);
+            Exit(True);
       end;
    end;
 
@@ -174,7 +174,7 @@ begin
       begin
          typeStr := TParserHelper.GetTypeAsString(TParserHelper.GetConstType(constList.sgList.Cells[CONST_NAME_COL, i]));
          if typeStr = AType then
-            Exit(true);
+            Exit(True);
       end;
    end;
 
@@ -186,7 +186,7 @@ begin
          for field in dataType.GetFields do
          begin
             if field.cbType.Enabled and (field.cbType.Text = AType) then
-               Exit(true);
+               Exit(True);
          end;
       end;
    end;
@@ -197,7 +197,7 @@ begin
       if (func.Header <> nil) and not func.GetName.IsEmpty then
       begin
          if func.Header.cbType.Text = AType then
-            Exit(true);
+            Exit(True);
          varList := func.Header.LocalVars;
          if varList <> nil then
          begin
@@ -205,13 +205,13 @@ begin
             begin
                typeStr := varList.sgList.Cells[VAR_TYPE_COL, i];
                if typeStr = AType then
-                  Exit(true);
+                  Exit(True);
             end;
          end;
          for param in func.Header.GetParameters do
          begin
             if param.cbType.Text = AType then
-               Exit(true);
+               Exit(True);
          end;
       end;
    end;
@@ -486,9 +486,9 @@ begin
    for var i := 0 to High(ASubStrings) do
    begin
       if AString.Contains(ASubStrings[i]) then
-         Exit(true);
+         Exit(True);
    end;
-   result := false;
+   result := False;
 end;
 
 function StartsWithOneOf(const AString: string; const AStartings: array of string): boolean;
@@ -496,9 +496,9 @@ begin
    for var i := 0 to High(AStartings) do
    begin
       if AString.StartsWith(AStartings[i]) then
-         Exit(true);
+         Exit(True);
    end;
-   result := false;
+   result := False;
 end;
 
 function EndsWithOneOf(const AString: string; const AEndings: array of string): boolean;
@@ -506,9 +506,9 @@ begin
    for var i := 0 to High(AEndings) do
    begin
       if AString.EndsWith(AEndings[i]) then
-         Exit(true);
+         Exit(True);
    end;
-   result := false;
+   result := False;
 end;
 
 function IsTimeType(const AValue: string; const AType: string; ALastChar: char): boolean;
@@ -1052,14 +1052,11 @@ begin
 end;
 
 procedure Java_SetHLighterAttrs;
-var
-   hlighter: TSynJavaSyn;
-   bkgColor: TColor;
 begin
    if (javaLang <> nil) and (javaLang.HighLighter is TSynJavaSyn) then
    begin
-      bkgColor := GSettings.EditorBkgColor;
-      hlighter := TSynJavaSyn(javaLang.HighLighter);
+      var bkgColor := GSettings.EditorBkgColor;
+      var hlighter := TSynJavaSyn(javaLang.HighLighter);
       hlighter.StringAttri.Foreground     := GSettings.EditorStringColor;
       hlighter.StringAttri.Background     := bkgColor;
       hlighter.NumberAttri.Foreground     := GSettings.EditorNumberColor;
