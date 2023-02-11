@@ -132,7 +132,7 @@ begin
    Alignment := AAlignment;
    BorderStyle := bsNone;
    ShowHint := True;
-   DoubleBuffered := true;
+   DoubleBuffered := True;
    FParserMode := AParserMode;
    FId := GProject.Register(Self, AId);
    if CanFocus then
@@ -273,7 +273,7 @@ end;
 
 function TStatement.IsBoldDesc: boolean;
 begin
-   result := false;
+   result := False;
 end;
 
 function TStatement.GetTreeNodeText(ANodeOffset: integer = 0): string;
