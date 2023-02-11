@@ -442,7 +442,7 @@ begin
             FParseMultiAssign := False;
             FParseCondition := False;
             FParseFor := False;
-            FParseCase := false;
+            FParseCase := False;
             FParseRoutineCall := False;
             FParseReturn := False;
          end;
