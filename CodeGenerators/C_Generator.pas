@@ -75,14 +75,11 @@ begin
 end;
 
 procedure C_SetHLighterAttrs;
-var
-   hlighter: TSynCppSyn;
-   bkgColor: TColor;
 begin
    if (cLang <> nil) and (cLang.HighLighter is TSynCppSyn) then
    begin
-      bkgColor := GSettings.EditorBkgColor;
-      hlighter := TSynCppSyn(cLang.HighLighter);
+      var bkgColor := GSettings.EditorBkgColor;
+      var hlighter := TSynCppSyn(cLang.HighLighter);
       hlighter.StringAttri.Foreground     := GSettings.EditorStringColor;
       hlighter.StringAttri.Background     := bkgColor;
       hlighter.CharAttri.Foreground       := GSettings.EditorStringColor;
@@ -149,7 +146,7 @@ end;
 
 function C_SkipFuncBodyGen: boolean;
 begin
-   result := false;
+   result := False;
 end;
 
 initialization
