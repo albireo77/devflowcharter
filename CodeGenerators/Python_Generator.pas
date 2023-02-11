@@ -34,14 +34,11 @@ var
    pythonLang: TLangDefinition;
 
 procedure Python_SetHLighterAttrs;
-var
-   hlighter: TSynPythonSyn;
-   bkgColor: TColor;
 begin
    if (pythonLang <> nil) and (pythonLang.HighLighter is TSynPythonSyn) then
    begin
-      bkgColor := GSettings.EditorBkgColor;
-      hlighter := TSynPythonSyn(pythonLang.HighLighter);
+      var bkgColor := GSettings.EditorBkgColor;
+      var hlighter := TSynPythonSyn(pythonLang.HighLighter);
       hlighter.StringAttri.Foreground     := GSettings.EditorStringColor;
       hlighter.StringAttri.Background     := bkgColor;
       hlighter.NumberAttri.Foreground     := GSettings.EditorNumberColor;
