@@ -292,33 +292,33 @@ begin
    FShapeColors[shpRoadSign]  := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_ROADSIGN_COLOR, DEFAULT_DESKTOP_COLOR);
    FShapeColors[shpRoutine]   := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_ROUTINE_COLOR, DEFAULT_DESKTOP_COLOR);
    FNavigatorAlphaValue       := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_NAVIGATOR_ALPHA_VALUE, 255);
-   FNavigatorAlphaVisible     := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_NAVIGATOR_ALPHA_VISIBLE, true);
-   FExplorerAutoNav           := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EXPLORER_AUTO_NAV, true);
-   FEnableDBuffering          := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_ENABLE_DBUFFERING, false);
-   FParseInput                := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_INPUT, false);
-   FParseOutput               := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_OUTPUT, false);
-   FParseReturn               := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_RETURN, false);
-   FParseAssign               := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_ASSIGN, false);
-   FParseMultiAssign          := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_MULTI_ASSIGN, false);
-   FParseCondition            := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_CONDITION, false);
-   FParseRoutineCall          := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_SUBROUTINE, false);
-   FParseFor                  := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_FOR, false);
-   FParseCase                 := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_CASE, false);
-   FConfirmRemove             := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_CONFIRM_REMOVE, true);
-   FPrintMultPages            := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PRINT_MULTI_PAGES, false);
-   FPrintMultPagesHorz        := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PRINT_MULTI_PAGES_HORZ, false);
+   FNavigatorAlphaVisible     := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_NAVIGATOR_ALPHA_VISIBLE, True);
+   FExplorerAutoNav           := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EXPLORER_AUTO_NAV, True);
+   FEnableDBuffering          := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_ENABLE_DBUFFERING, False);
+   FParseInput                := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_INPUT, False);
+   FParseOutput               := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_OUTPUT, False);
+   FParseReturn               := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_RETURN, False);
+   FParseAssign               := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_ASSIGN, False);
+   FParseMultiAssign          := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_MULTI_ASSIGN, False);
+   FParseCondition            := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_CONDITION, False);
+   FParseRoutineCall          := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_SUBROUTINE, False);
+   FParseFor                  := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_FOR, False);
+   FParseCase                 := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PARSE_CASE, False);
+   FConfirmRemove             := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_CONFIRM_REMOVE, True);
+   FPrintMultPages            := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PRINT_MULTI_PAGES, False);
+   FPrintMultPagesHorz        := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PRINT_MULTI_PAGES_HORZ, False);
    FPrintRect.Left            := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_LEFT, DEFAULT_PRINT_MARGIN);
    FPrintRect.Top             := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_TOP, DEFAULT_PRINT_MARGIN);
    FPrintRect.Right           := PRINT_SCALE_BASE - FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_RIGHT, DEFAULT_PRINT_MARGIN);
    FPrintRect.Bottom          := PRINT_SCALE_BASE - FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_BOTTOM, DEFAULT_PRINT_MARGIN);
-   FEditorShowGutter          := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EDITOR_SHOW_GUTTER, true);
-   FEditorIndentGuides        := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EDITOR_INDENT_GUIDES, false);
-   FEditorShowRichText        := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EDITOR_SHOW_RICHTEXT, false);
-   FEditorCodeFolding         := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EDITOR_CODE_FOLDING, false);
-   FEditorShowScrollbars      := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EDITOR_SHOW_SCROLLBARS, true);
-   FEditorShowStatusBar       := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_SHOW_STATUSBAR, true);
-   FEditorAutoSelectBlock     := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_AUTOSELECT_CODE_BLOCK, false);
-   FEditorAutoUpdate          := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_AUTOUPDATE_CODE, false);
+   FEditorShowGutter          := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EDITOR_SHOW_GUTTER, True);
+   FEditorIndentGuides        := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EDITOR_INDENT_GUIDES, False);
+   FEditorShowRichText        := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EDITOR_SHOW_RICHTEXT, False);
+   FEditorCodeFolding         := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EDITOR_CODE_FOLDING, False);
+   FEditorShowScrollbars      := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EDITOR_SHOW_SCROLLBARS, True);
+   FEditorShowStatusBar       := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_SHOW_STATUSBAR, True);
+   FEditorAutoSelectBlock     := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_AUTOSELECT_CODE_BLOCK, False);
+   FEditorAutoUpdate          := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_AUTOUPDATE_CODE, False);
    FEditorBkgColor            := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_BKG_COLOR, clWindow);
    FEditorFontColor           := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_FONT_COLOR, clWindowText);
    FEditorStringColor         := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_STRING_COLOR, clTeal);
@@ -335,9 +335,9 @@ begin
    FDesktopColor              := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_DESKTOP_COLOR, DEFAULT_DESKTOP_COLOR);
    FIndentLength              := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_INDENT, EDITOR_DEFAULT_INDENT_LENGTH);
    FEditorFontSize            := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_FONT_SIZE, EDITOR_DEFAULT_FONT_SIZE);
-   FShowFuncLabels            := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_SHOW_FUNC_LABELS, true);
-   FShowBlockLabels           := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_SHOW_BLOCK_LABELS, false);
-   FValidateDeclaration       := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_VALIDATE_DECLARATION, true);
+   FShowFuncLabels            := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_SHOW_FUNC_LABELS, True);
+   FShowBlockLabels           := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_SHOW_BLOCK_LABELS, False);
+   FValidateDeclaration       := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_VALIDATE_DECLARATION, True);
    FFlowchartFontName         := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_FLOWCHART_FONT_NAME, FLOWCHART_DEFAULT_FONT_NAME);
    FTranslateFile             := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_LOCALIZATION_FILE, '');
    FCurrentLangName           := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_CURRENT_LANGUAGE, '');
@@ -436,15 +436,15 @@ begin
          FCurrentLangName := lang.Name;
          if lang.Parser = nil then
          begin
-            FParseInput := false;
-            FParseOutput := false;
-            FParseAssign := false;
-            FParseMultiAssign := false;
-            FParseCondition := false;
-            FParseFor := false;
+            FParseInput := False;
+            FParseOutput := False;
+            FParseAssign := False;
+            FParseMultiAssign := False;
+            FParseCondition := False;
+            FParseFor := False;
             FParseCase := false;
-            FParseRoutineCall := false;
-            FParseReturn := false;
+            FParseRoutineCall := False;
+            FParseReturn := False;
          end;
          FormatSettings.DecimalSeparator := lang.DecimalSeparator;
       end;
@@ -483,9 +483,9 @@ end;
 procedure TSettings.LoadFromForm;
 begin
 
-   var redrawFlow := false;
-   var colorChanged := false;
-   var applyAll := true;
+   var redrawFlow := False;
+   var colorChanged := False;
+   var applyAll := True;
 
    var sForm := TInfra.GetSettingsForm;
 
@@ -532,23 +532,23 @@ begin
       if lColor <> FShapeColors[shape] then
       begin
          FShapeColors[shape] := lColor;
-         colorChanged := true;
+         colorChanged := True;
       end;
    end;
 
    if (FFontColor <> sForm.pnlFont.Color) and not TInfra.IsNOkColor(sForm.pnlFont.Color) then
    begin
-      colorChanged := true;
+      colorChanged := True;
       FFontColor := sForm.pnlFont.Color;
    end;
    if FDesktopColor <> sForm.pnlDesktop.Color then
    begin
-      colorChanged := true;
+      colorChanged := True;
       FDesktopColor := sForm.pnlDesktop.Color;
    end;
    if FPenColor <> sForm.pnlPen.Color then
    begin
-      colorChanged := true;
+      colorChanged := True;
       FPenColor := sForm.pnlPen.Color;
    end;
    if (FSelectColor <> sForm.pnlSelect.Color) and  (sForm.pnlSelect.Color <> sForm.pnlDesktop.Color) then
@@ -580,13 +580,13 @@ begin
    if FShowFuncLabels <> sForm.chkShowFuncLabels.Checked then
    begin
       FShowFuncLabels := not FShowFuncLabels;
-      redrawFlow := true;
+      redrawFlow := True;
    end;
 
    if FShowBlockLabels <> sForm.chkShowBlockLabels.Checked then
    begin
       FShowBlockLabels := not FShowBlockLabels;
-      redrawFlow := true;
+      redrawFlow := True;
    end;
 
    var flowFontName: string := sForm.edtFontNameSize.Text;
@@ -602,7 +602,7 @@ begin
       if TInfra.ShowQuestionBox('CloseProjectAsk', [sLineBreak]) = mrYes then
          TInfra.Reset
       else
-         applyAll := false;
+         applyAll := False;
    end;
 
    if applyAll then
@@ -665,7 +665,7 @@ begin
       yymCase,
       yymCaseValue: result := FParseCase;
    else
-      result := false;
+      result := False;
    end;
 end;
 
