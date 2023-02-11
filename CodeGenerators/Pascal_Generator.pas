@@ -226,7 +226,7 @@ begin
          ALines.Add('implementation');
          ALines.Add('');
          if Assigned(GInfra.TemplateLang.UserFunctionsSectionGenerator) then
-            GInfra.TemplateLang.UserFunctionsSectionGenerator(ALines, false);
+            GInfra.TemplateLang.UserFunctionsSectionGenerator(ALines, False);
          ALines.Add('end.');
          ALines.Add('');
       end;
@@ -317,7 +317,7 @@ end;
 
 function Pascal_Parse(const AText: string; AParserMode: TYYMode): boolean;
 begin
-   result := true;
+   result := True;
    if (pascalLang <> nil) and (pascalLang.Parser is TPascalParser) then
    begin
       pascalLang.Parser.Reset;
