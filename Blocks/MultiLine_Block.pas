@@ -29,8 +29,6 @@ uses
 
 type
 
-   TWinControlHack = class(TWinControl);
-
    TMultiLineBlock = class(TBlock)
       public
          FStatements: TStatementMemo;
