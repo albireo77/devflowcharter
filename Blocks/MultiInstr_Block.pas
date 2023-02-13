@@ -30,7 +30,7 @@ type
 
    TMultiInstrBlock = class(TMultiLineBlock)
       protected
-         procedure OnChangeMemo(Sender: TObject);
+         procedure OnChangeStatements(Sender: TObject);
          procedure Paint; override;
       public
          constructor Create(ABranch: TBranch); overload;
@@ -47,7 +47,7 @@ constructor TMultiInstrBlock.Create(ABranch: TBranch; const ABlockParms: TBlockP
 begin
    inherited Create(ABranch, ABlockParms);
    FStatements.ShowHint := true;
-   FStatements.OnChange := OnChangeMemo;
+   FStatements.OnChange := OnChangeStatements;
 end;
 
 procedure TMultiInstrBlock.Paint;
@@ -61,7 +61,7 @@ begin
    Create(ABranch, TBlockParms.New(blMultiInstr, 0, 0, 140, 91));
 end;
 
-procedure TMultiInstrBlock.OnChangeMemo(Sender: TObject);
+procedure TMultiInstrBlock.OnChangeStatements(Sender: TObject);
 begin
    GProject.SetChanged;
    FErrLine := -1;

@@ -43,7 +43,7 @@ type
       protected
          FCorner: TCorner;
          procedure Paint; override;
-         procedure OnChangeMemo(Sender: TObject);
+         procedure OnChangeStatements(Sender: TObject);
          function CanResize(var NewWidth, NewHeight: Integer): Boolean; override;
    end;
 
@@ -56,7 +56,7 @@ constructor TTextBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
    inherited Create(ABranch, ABlockParms);
    FStatements.Font.Color := TEXT_COLOR;
-   FStatements.OnChange := OnChangeMemo;
+   FStatements.OnChange := OnChangeStatements;
    Font.Color := TEXT_COLOR;
    FCorner := TCorner.Create(Self);
    FCorner.Parent := Self;
@@ -86,7 +86,7 @@ begin
       FCorner.Left := Width - FCorner.Width;
 end;
 
-procedure TTextBlock.OnChangeMemo(Sender: TObject);
+procedure TTextBlock.OnChangeStatements(Sender: TObject);
 begin
    inherited;
    UpdateEditor(nil);
