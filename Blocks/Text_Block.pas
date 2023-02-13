@@ -43,8 +43,8 @@ type
       protected
          FCorner: TCorner;
          procedure Paint; override;
-         procedure OnChangeMemo(Sender: TObject); override;
-         procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
+         procedure OnChangeMemo(Sender: TObject);
+         function CanResize(var NewWidth, NewHeight: Integer): Boolean; override;
    end;
 
 implementation
@@ -56,6 +56,7 @@ constructor TTextBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
    inherited Create(ABranch, ABlockParms);
    FStatements.Font.Color := TEXT_COLOR;
+   FStatements.OnChange := OnChangeMemo;
    Font.Color := TEXT_COLOR;
    FCorner := TCorner.Create(Self);
    FCorner.Parent := Self;
@@ -78,10 +79,10 @@ begin
    DrawBlockLabel(5, FStatements.BoundsRect.Bottom+1, GInfra.CurrentLang.LabelText);
 end;
 
-procedure TTextBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
+function TTextBlock.CanResize(var NewWidth, NewHeight: Integer): Boolean;
 begin
-   inherited MyOnCanResize(Sender, NewWidth, NewHeight, Resize);
-   if FHResize and Resize then
+   result := inherited;
+   if FHResize and result then
       FCorner.Left := Width - FCorner.Width;
 end;
 

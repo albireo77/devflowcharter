@@ -304,7 +304,7 @@ begin
             begin
                ExecuteClick(miFrame);
                var p := selectedBlock.ScreenToClient(Mouse.CursorPos);
-               selectedBlock.OnMouseMove(selectedBlock, Shift, p.X, p.Y);
+               selectedBlock.MouseMove(Shift, p.X, p.Y);
             end;
             vkF10:
             begin
@@ -440,9 +440,9 @@ procedure TMainForm.miNewClick(Sender: TObject);
 begin
    if CreateNewProject then
    begin
-      var mBlock := TMainBlock.Create(GProject.MainPage, GetMainBlockNextTopLeft);
-      mBlock.OnResize(mBlock);
-      TUserFunction.Create(nil, mBlock);
+      var mainBlock := TMainBlock.Create(GProject.MainPage, GetMainBlockNextTopLeft);
+      mainBlock.Resize;
+      TUserFunction.Create(nil, mainBlock);
       GProject.ChangingOn := True;
    end;
 end;
@@ -1115,7 +1115,7 @@ begin
    begin
       var page := GProject.ActivePage;
       var mainBlock := TMainBlock.Create(page, page.Box.ScreenToClient(page.Box.PopupMenu.PopupPoint));
-      mainBlock.OnResize(mainBlock);
+      mainBlock.Resize;
       TUserFunction.Create(nil, mainBlock);
       GProject.SetChanged;
    end;

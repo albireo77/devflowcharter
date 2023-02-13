@@ -34,7 +34,7 @@ type
          FalseBranch: TBranch;
          TrueHook,
          FalseHook: integer;
-         procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
+         function CanResize(var NewWidth, NewHeight: Integer): Boolean; override;
          procedure Paint; override;
          procedure SetWidth(AMinX: integer); override;
          function GetDiamondTop: TPoint; override;
@@ -238,10 +238,10 @@ begin
       ParentBlock.ResizeVert(AContinue);
 end;
 
-procedure TIfElseBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
+function TIfElseBlock.CanResize(var NewWidth, NewHeight: Integer): Boolean;
 begin
-   Resize := (NewWidth >= Constraints.MinWidth) and (NewHeight >= Constraints.MinHeight);
-   if Resize and FVResize then
+   result := (NewWidth >= Constraints.MinWidth) and (NewHeight >= Constraints.MinHeight);
+   if result and FVResize then
    begin
       if Expanded then
       begin
@@ -254,7 +254,7 @@ begin
          BottomPoint.Y := NewHeight - 28;
       end;
    end;
-   if FHResize and Resize and not Expanded then
+   if FHResize and result and not Expanded then
    begin
       BottomPoint.X := NewWidth div 2;
       TopHook.X := BottomPoint.X;

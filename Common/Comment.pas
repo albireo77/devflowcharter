@@ -37,9 +37,9 @@ type
          FZOrder: integer;
       protected
          FMouseLeave: boolean;
-         procedure OnMouseDownComment(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-         procedure OnMouseMoveComment(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-         procedure OnDblClickComment(Sender: TObject);
+         procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+         procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+         procedure DblClick; override;
          procedure OnContextPopupComment(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
          procedure OnMouseLeaveComment(Sender: TObject);
          procedure NCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
@@ -48,7 +48,7 @@ type
          procedure SetActive(AValue: boolean);
          procedure SetAlignment(AValue: TAlignment); override;
          function GetActive: boolean;
-         procedure OnChangeComment(Sender: TObject);
+         procedure Change; override;
          procedure SetPage(APage: TBlockTabSheet);
          procedure SetIsHeader(AValue: boolean);
          function GetIsHeader: boolean;
@@ -98,13 +98,8 @@ begin
    SetBounds(ALeft, ATop, AWidth, AHeight);
    GProject.AddComponent(Self);
 
-   OnEndDrag      := OnEndDragComment;
-   OnMouseDown    := OnMouseDownComment;
-   OnMouseMove    := OnMouseMoveComment;
-   OnDblClick     := OnDblClickComment;
-   OnChange       := OnChangeComment;
-   OnContextPopup := OnContextPopupComment;
-   OnMouseLeave   := OnMouseLeaveComment;
+   OnEndDrag := OnEndDragComment;
+   OnMouseLeave := OnMouseLeaveComment;
 end;
 
 function TComment.Clone(APage: TBlockTabSheet; const ATopLeft: TPoint): TComment;
@@ -215,8 +210,9 @@ begin
       GProject.HeaderComment := nil;
 end;
 
-procedure TComment.OnMouseDownComment(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TComment.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
+   inherited;
    if Button = mbLeft then
    begin
       if ssShift in Shift then
@@ -246,8 +242,9 @@ begin
       result := Handle;
 end;
 
-procedure TComment.OnChangeComment(Sender: TObject);
+procedure TComment.Change;
 begin
+   inherited;
    GProject.SetChanged;
    if IsHeader then
       TInfra.UpdateCodeEditor;
@@ -255,13 +252,15 @@ begin
    NavigatorForm.Invalidate;
 end;
 
-procedure TComment.OnDblClickComment(Sender: TObject);
+procedure TComment.DblClick;
 begin
+   inherited;
    SelectAll;
 end;
 
-procedure TComment.OnMouseMoveComment(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+procedure TComment.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
+   inherited;
    var pnt := Point(X, Y);
    if Rect(Width-5, 0, Width, Height-5).Contains(pnt) then
       Cursor := crSizeWE

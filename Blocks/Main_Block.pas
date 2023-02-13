@@ -53,14 +53,14 @@ type
          function GetHandle: THandle;
          function GetZOrder: integer;
          function IsBoldDesc: boolean; override;
+         procedure Resize; override;
          function Remove(ANode: TTreeNodeWithFriend = nil): boolean; override;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
       protected
          FZOrder: integer;
          FStartLabel,
          FStopLabel: string;
-         procedure MyOnResize(Sender: TObject);
-         procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); override;
+         procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
          procedure Paint; override;
          procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
          procedure SetPage(APage: TBlockTabSheet); override;
@@ -120,7 +120,6 @@ begin
    FZOrder := -1;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
-   OnResize := MyOnResize;
    FLabelRect := TRect.Empty;
    FHandle := Canvas.Handle;
    FStatement.Free;
@@ -402,10 +401,10 @@ begin
    end;
 end;
 
-procedure TMainBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+procedure TMainBlock.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
    if Expanded then
-      inherited MyOnMouseMove(Sender, Shift, X, Y)
+      inherited
    else
    begin
       var p := Point(X, Y);
@@ -417,7 +416,7 @@ begin
    end;
 end;
 
-procedure TMainBlock.MyOnResize(Sender: TObject);
+procedure TMainBlock.Resize;
 begin
    FPage.Box.SetScrollbars;
    if FPage.Box.HorzScrollBar.Position + BoundsRect.Right < MARGIN_X then

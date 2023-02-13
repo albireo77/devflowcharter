@@ -33,7 +33,7 @@ type
          FCaseLabel: string;
          DefaultBranch: TBranch;
          procedure Paint; override;
-         procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
+         function CanResize(var NewWidth, NewHeight: Integer): Boolean; override;
          procedure EditorAction(AEdit: TCustomEdit);
          function GetDiamondTop: TPoint; override;
          procedure PlaceBranchStatement(ABranch: TBranch);
@@ -390,10 +390,10 @@ begin
    end;
 end;
 
-procedure TCaseBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
+function TCaseBlock.CanResize(var NewWidth, NewHeight: Integer): Boolean;
 begin
-   Resize := (NewHeight >= Constraints.MinHeight) and (NewWidth >= Constraints.MinWidth);
-   if Resize and FVResize then
+   result := (NewHeight >= Constraints.MinHeight) and (NewWidth >= Constraints.MinWidth);
+   if result and FVResize then
    begin
       if Expanded then
       begin
@@ -406,7 +406,7 @@ begin
          BottomPoint.Y := NewHeight - 28;
       end;
    end;
-   if Resize and FHResize and not Expanded then
+   if result and FHResize and not Expanded then
    begin
       BottomPoint.X := NewWidth div 2;
       TopHook.X := BottomPoint.X;

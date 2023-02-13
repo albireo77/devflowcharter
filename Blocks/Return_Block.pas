@@ -37,7 +37,7 @@ type
       protected
          FReturnLabel: string;
          procedure Paint; override;
-         procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); override;
+         procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
          function GetReturnEllipseRect: TRect;
          procedure PutTextControls; override;
    end;
@@ -157,8 +157,9 @@ begin
    FStatement.Color := AColor;
 end;
 
-procedure TReturnBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+procedure TReturnBlock.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
+   inherited;
    if IsAtSelectPos(Point(X, Y)) then
       Select
    else

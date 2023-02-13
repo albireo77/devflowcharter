@@ -228,8 +228,9 @@ end;
 
 procedure TStatement.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-   inherited KeyDown(Key, Shift);
-   TInfra.OnKeyDownSelectAll(Self, Key, Shift);
+   inherited;
+   if (ssCtrl in Shift) and (Key = Ord('A')) then
+      SelectAll;
 end;
 
 procedure TStatement.DoEnter;
@@ -241,10 +242,11 @@ end;
 
 procedure TStatement.MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer);
 begin
-   inherited MouseDown(Button, Shift, X, Y);
-   if HasParent and Assigned(TWinControlHack(Parent).OnMouseDown) then
-      TWinControlHack(Parent).OnMouseDown(Parent, Button, Shift, X+Left, Y+Top);
+   inherited;
+   if HasParent then
+      TWinControlHack(Parent).MouseDown(Button, Shift, X+Left, Y+Top);
 end;
+
 
 function TStatement.GetId: integer;
 begin

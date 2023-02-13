@@ -58,7 +58,6 @@ type
          class function InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; ATemplate: TStringList; AObject: TObject = nil): integer; overload;
          class procedure SetFontSize(AControl: TControl; ASize: integer);
          class procedure UpdateCodeEditor(AObject: TObject = nil);
-         class procedure OnKeyDownSelectAll(Sender: TObject; var Key: Word; Shift: TShiftState);
          class procedure InsertLinesIntoList(ADestList, ASourceList: TStringList; AFromLine: integer);
          class procedure DecrementNodeSiblingOffsets(ANode: TTreeNode);
          class procedure DeleteLinesContaining(ALines: TStrings; const AText: string);
@@ -322,12 +321,6 @@ begin
       if lang = GInfra.CurrentLang then
          GSettings.UpdateForHLighter(lang.HighLighter);
    end;
-end;
-
-class procedure TInfra.OnKeyDownSelectAll(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-   if (ssCtrl in Shift) and (Key = Ord('A')) and (Sender is TCustomEdit) then
-      TCustomEdit(Sender).SelectAll;
 end;
 
 class function TInfra.CreateDOSProcess(const ACommand: string; ADir: string = ''): boolean;

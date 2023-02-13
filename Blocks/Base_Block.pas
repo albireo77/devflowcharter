@@ -68,15 +68,13 @@ type
          FShape: TColorShape;
          FRedArrow: integer;                // indicates active arrow; -1: none, 0: bottom, 1: branch1, 2: branch2...
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms; AShape: TColorShape; AParserMode: TYYMode; AAlignment: TAlignment);
-         procedure MyOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-         procedure MyOnMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-         procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); virtual;
-         procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); virtual;
-         procedure MyOnDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
-         procedure MyOnDragDrop(Sender, Source: TObject; X, Y: Integer);
+         procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+         procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+         function CanResize(var NewWidth, NewHeight: Integer): Boolean; override;
+         procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean); override;
+         procedure DragDrop(Source: TObject; X, Y: Integer); override;
          procedure MyOnChange(Sender: TObject);
-         procedure MyOnDblClick(Sender: TObject);
-         procedure OnChangeMemo(Sender: TObject); virtual;
+         procedure DblClick; override;
          procedure WMMouseLeave(var Msg: TMessage); message WM_MOUSELEAVE;
          procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
          procedure NCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
@@ -154,6 +152,7 @@ type
          procedure ExportToGraphic(AGraphic: TGraphic); virtual;
          procedure UpdateEditor(AEdit: TCustomEdit); virtual;
          function SkipUpdateEditor: boolean;
+         procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
          function RetrieveFocus(AInfo: TFocusInfo): boolean; virtual;
          function CanBeFocused: boolean; virtual;
          function GetTreeNodeText(ANodeOffset: integer = 0): string; virtual;
@@ -188,11 +187,6 @@ type
          procedure LockDrawing;
          procedure UnlockDrawing;
          function FindSelectedBlock: TBlock; virtual;
-      published
-         property Color;
-         property OnMouseDown;
-         property OnResize;
-         property OnMouseMove;
    end;
 
    TGroupBlock = class(TBlock)    // block which can aggregate child blocks
@@ -206,8 +200,8 @@ type
          FFixedBranches: integer;
          FDiamond: TDiamond;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms; AShape: TColorShape; AAlignment: TAlignment; AParserMode: TYYMode = yymUndefined);
-         procedure MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer); override;
-         procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
+         procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+         function CanResize(var NewWidth, NewHeight: Integer): Boolean; override;
          procedure SetWidth(AMinX: integer); virtual;
          procedure LinkAllBlocks;
          procedure LinkBlocks(ABranch: TBranch);
@@ -337,14 +331,6 @@ begin
    FStatement := TStatement.Create(Self, AParserMode, AAlignment);
    FStatement.EditorAction := UpdateEditor;
    FStatement.Color := GSettings.GetShapeColor(FShape);
-
-   OnMouseDown := MyOnMouseDown;
-   OnMouseUp   := MyOnMouseUp;
-   OnMouseMove := MyOnMouseMove;
-   OnCanResize := MyOnCanResize;
-   OnDblClick  := MyOnDblClick;
-   OnDragOver  := MyOnDragOver;
-   OnDragDrop  := MyOnDragDrop;
 end;
 
 constructor TGroupBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms; AShape: TColorShape; AAlignment: TAlignment; AParserMode: TYYMode = yymUndefined);
@@ -361,9 +347,7 @@ begin
    FMemoFolder.DoubleBuffered := True;
    FMemoFolder.Color := GSettings.GetShapeColor(shpFolder);
    FMemoFolder.Font.Assign(FStatement.Font);
-   FMemoFolder.OnMouseDown := OnMouseDown;
    FMemoFolder.Font.Color := clNavy;
-   FMemoFolder.OnChange := OnChangeMemo;
 
    Expanded := True;
 
@@ -542,16 +526,14 @@ begin
    end;
 end;
 
-procedure TBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+procedure TBlock.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-
+   inherited;
    var p := Point(X, Y);
-
    if IsAtSelectPos(p) then
       Select
    else
       DeSelect;
-
    SetCursor(p);
 
    if Rect(BottomPoint.X-5, BottomPoint.Y, BottomPoint.X+5, Height).Contains(p) then
@@ -568,7 +550,7 @@ begin
    end;
 end;
 
-procedure TGroupBlock.MyOnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+procedure TGroupBlock.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
    if Expanded then
    begin
@@ -591,7 +573,7 @@ begin
          end;
       end;
    end;
-   inherited MyOnMouseMove(Sender, Shift, X, Y);
+   inherited;
 end;
 
 function TBlock.GetBlockParms: TBlockParms;
@@ -634,18 +616,18 @@ begin
    end;
 end;
 
-procedure TBlock.MyOnDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
+procedure TBlock.DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
    var shiftState: TShiftState := [];
    var isShift := GetAsyncKeyState(vkShift) <> 0;
    if isShift then
       shiftState := [ssShift];
-   MyOnMouseMove(Sender, shiftState, X, Y);
+   MouseMove(shiftState, X, Y);
    if (FRedArrow < 0) or (not (Source is TBlock)) or (Source is TMainBlock) or (Source is TReturnBlock) or ((not isShift) and ((Source = Self) or IsAncestor(Source))) then
       Accept := False;
 end;
 
-procedure TBlock.MyOnDragDrop(Sender, Source: TObject; X, Y: Integer);
+procedure TBlock.DragDrop(Source: TObject; X, Y: Integer);
 var
    srcPage: TBlockTabSheet;
    mForm: TMainForm;
@@ -713,10 +695,10 @@ begin
    inherited OnMouseLeave(AClearRedArrow);
 end;
 
-procedure TBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
+function TBlock.CanResize(var NewWidth, NewHeight: Integer): Boolean;
 begin
-   Resize := (NewWidth >= Constraints.MinWidth) and (NewHeight >= Constraints.MinHeight);
-   if FHResize and Resize then
+   result := (NewWidth >= Constraints.MinWidth) and (NewHeight >= Constraints.MinHeight);
+   if FHResize and result then
    begin
       BottomPoint.X := NewWidth div 2;
       TopHook.X := BottomPoint.X;
@@ -724,10 +706,10 @@ begin
    end;
 end;
 
-procedure TGroupBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
+function TGroupBlock.CanResize(var NewWidth, NewHeight: Integer): Boolean;
 begin
-   Resize := (NewWidth >= Constraints.MinWidth) and (NewHeight >= Constraints.MinHeight);
-   if FHResize and Resize then
+   result := (NewWidth >= Constraints.MinWidth) and (NewHeight >= Constraints.MinHeight);
+   if FHResize and result then
    begin
       if Expanded then
          Inc(BottomPoint.X, NewWidth-Width)
@@ -738,7 +720,7 @@ begin
          IPoint.X := BottomPoint.X + 30;
       end;
    end;
-   if FVResize and Resize then
+   if FVResize and result then
    begin
       if Expanded then
          Inc(Branch.Hook.Y, NewHeight-Height)
@@ -750,8 +732,9 @@ begin
    end;
 end;
 
-procedure TBlock.MyOnDblClick(Sender: TObject);
+procedure TBlock.DblClick;
 begin
+   inherited;
    if IsMouseAtSelectPos then
       ChangeFrame;
 end;
@@ -782,8 +765,9 @@ begin
    result := Bounds(IPoint.X-5, IPoint.Y, 10, 10).Contains(APoint);
 end;
 
-procedure TBlock.MyOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TBlock.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
+   inherited;
    if Button = mbLeft then
    begin
       if IsAtSelectPos(Point(X, Y)) then
@@ -830,7 +814,7 @@ begin
             SendMessage(FTopParentBlock.Handle, WM_SYSCOMMAND, $F012, 0);
             br := FTopParentBlock.BoundsRect;
             if (b <> br.Bottom) or (r <> br.Right) then
-               FTopParentBlock.OnResize(FTopParentBlock)
+               FTopParentBlock.Resize
             else
                FTopParentBlock.BringAllToFront;
          end;
@@ -891,7 +875,7 @@ begin
    end;
 end;
 
-procedure TBlock.MyOnMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TBlock.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
    if Button = mbRight then
    begin
@@ -1617,14 +1601,6 @@ begin
       NavigatorForm.Invalidate;
 end;
 
-procedure TBlock.OnChangeMemo(Sender: TObject);
-begin
-   if Sender is TMemoEx then
-      TMemoEx(Sender).UpdateScrolls;
-   if NavigatorForm.InvalidateIndicator then
-      NavigatorForm.Invalidate;
-end;
-
 function TBlock.CanBeFocused: boolean;
 begin
    result := True;
@@ -1923,7 +1899,7 @@ end;
 
 procedure TGroupBlock.ExpandFold(AResize: boolean);
 var
-   tmpWidth, tmpHeight, i: integer;
+   tmpWidth, tmpHeight: integer;
    block: TBlock;
    textControl: TCustomEdit;
 begin

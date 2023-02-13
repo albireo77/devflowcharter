@@ -24,9 +24,12 @@ unit MemoEx;
 interface
 
 uses
-   Vcl.StdCtrls, Vcl.Forms, System.Classes, System.UITypes, OmniXML, CommonTypes;
+   Vcl.StdCtrls, Vcl.Forms, System.Classes, System.UITypes, Vcl.Controls, OmniXML, CommonTypes;
 
 type
+
+   TWinControlHack = class(TWinControl);
+
    TMemoEx = class(TCustomMemo)
       private
          FHasVScroll,
@@ -41,6 +44,9 @@ type
          procedure SetScrollBars(AValue: TScrollStyle);
          procedure SetAlignment(AValue: TAlignment); virtual;
          procedure ChangeBorderStyle(AStyle: TBorderStyle);
+         procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+         procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+         procedure Change; override;
       public
          EditFormWidth,
          EditFormHeight: integer;
@@ -70,7 +76,7 @@ implementation
 
 uses
    WinApi.Windows, WinApi.Messages, System.StrUtils, System.SysUtils, System.Rtti,
-   OmniXMLUtils, Infrastructure;
+   OmniXMLUtils, Infrastructure, Navigator_Form;
 
 constructor TMemoEx.Create(AOwner: TComponent);
 begin
@@ -82,7 +88,13 @@ begin
    ParentCtl3D := False;
    BorderStyle := bsNone;
    Ctl3D := False;
-   OnKeyDown := TInfra.OnKeyDownSelectAll;
+end;
+
+procedure TMemoEx.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+   inherited;
+   if (ssCtrl in Shift) and (Key = Ord('A')) then
+      SelectAll;
 end;
 
 procedure TMemoEx.SetHasVScroll(AValue: boolean);
@@ -116,6 +128,23 @@ begin
    Perform(EM_LINESCROLL, pos.X, pos.Y);
 end;
 
+procedure TMemoEx.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+   inherited;
+   if ssLeft in Shift then
+   begin
+      var p := ClientToParent(Point(X, Y));
+      TWinControlHack(Parent).MouseDown(Button, Shift, p.X, p.Y);
+   end;
+end;
+
+procedure TMemoEx.Change;
+begin
+   inherited;
+   UpdateScrolls;
+   if NavigatorForm.InvalidateIndicator then
+      NavigatorForm.Invalidate;
+end;
 
 procedure TMemoEx.SetHasHScroll(AValue: boolean);
 begin

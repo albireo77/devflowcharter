@@ -29,6 +29,8 @@ uses
 
 type
 
+   TWinControlHack = class(TWinControl);
+
    TMultiLineBlock = class(TBlock)
       public
          FStatements: TStatementMemo;
@@ -42,10 +44,7 @@ type
          FErrLine: integer;
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms);
          procedure Paint; override;
-         procedure OnDblClickMemo(Sender: TObject);
-         procedure MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean); override;
-         procedure OnMouseDownMemo(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-         procedure OnKeyUpMemo(Sender: TObject; var Key: Word; Shift: TShiftState);
+         function CanResize(var NewWidth, NewHeight: Integer): Boolean; override;
    end;
 
 implementation
@@ -54,7 +53,7 @@ uses
 {$IFDEF USE_CODEFOLDING}
    SynEditCodeFolding,
 {$ENDIF}
-   System.UITypes, Infrastructure, Constants, LangDefinition, YaccLib;
+   Infrastructure, Constants, LangDefinition, YaccLib;
 
 constructor TMultiLineBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
@@ -65,10 +64,6 @@ begin
    FStatements.Parent := Self;
    FStatements.SetBounds(1, 1, ABlockParms.w-2, Height-31);
    FStatements.Font.Assign(Font);
-   FStatements.OnDblClick := OnDblClickMemo;
-   FStatements.OnMouseDown := OnMouseDownMemo;
-   FStatements.OnKeyUp := OnKeyUpMemo;
-   FStatements.OnChange := OnChangeMemo;
    FStatements.PopupMenu := Page.Form.pmEdits;
    if FStatements.CanFocus then
       FStatements.SetFocus;
@@ -93,11 +88,6 @@ begin
       FStatements.CloneFrom(TMultiLineBlock(ABlock).FStatements)
 end;
 
-procedure TMultiLineBlock.OnDblClickMemo(Sender: TObject);
-begin
-   FStatements.SelectAll;
-end;
-
 procedure TMultiLineBlock.Paint;
 begin
    inherited;
@@ -120,16 +110,16 @@ begin
    result := FStatements;
 end;
 
-procedure TMultiLineBlock.MyOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
+function TMultiLineBlock.CanResize(var NewWidth, NewHeight: Integer): Boolean;
 begin
-   Resize := (NewWidth >= Constraints.MinWidth) and (NewHeight >= Constraints.MinHeight);
-   if FHResize and Resize then
+   result := (NewWidth >= Constraints.MinWidth) and (NewHeight >= Constraints.MinHeight);
+   if FHResize and result then
    begin
       BottomPoint.X := Width div 2;
       IPoint.X := BottomPoint.X + 30;
       TopHook.X := BottomPoint.X;
    end;
-   if FVResize and Resize then
+   if FVResize and result then
    begin
       BottomPoint.Y := FStatements.BoundsRect.Bottom + 1;
       IPoint.Y := BottomPoint.Y + 8;
@@ -203,23 +193,6 @@ begin
          TInfra.GetEditorForm.SetCaretPos(chLine);
       end;
    end;
-end;
-
-procedure TMultiLineBlock.OnMouseDownMemo(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-   if ssLeft in Shift then
-   begin
-      var p := TControl(Sender).ClientToParent(Point(X, Y));
-      OnMouseDown(TControl(Sender).Parent, Button, Shift, p.X, p.Y);
-   end;
-   if Button = mbLeft then
-      TInfra.GetEditorForm.SetCaretPos(TInfra.GetChangeLine(Self, FStatements));
-end;
-
-procedure TMultiLineBlock.OnKeyUpMemo(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-   if Key in [vkUp, vkDown, vkLeft, vkRight] then
-      OnMouseDownMemo(Sender, mbLeft, Shift, 0, 0);
 end;
 
 function TMultiLineBlock.GenerateTree(AParentNode: TTreeNode): TTreeNode;
