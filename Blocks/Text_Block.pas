@@ -28,7 +28,7 @@ uses
 
 type
 
-  THackWinControl = class(TWinControl);
+  TWinControlHack = class(TWinControl);
 
   TCorner = class(TPanel)
      protected
@@ -105,7 +105,7 @@ begin
    var r := ClientRect;
    r.Inflate(0, 0, -1, -1);
 
-   Canvas.Pen.Color := THackWinControl(Parent).Color;
+   Canvas.Pen.Color := TWinControlHack(Parent).Color;
    Canvas.Brush.Color := Canvas.Pen.Color;
    Canvas.Polygon([r.TopLeft, Point(r.Right, r.Top), r.BottomRight, r.TopLeft]);
 

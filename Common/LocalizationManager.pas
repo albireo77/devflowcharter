@@ -64,7 +64,7 @@ uses
    Vcl.Buttons, System.StrUtils, Vcl.Controls, System.IOUtils, Base_Form;
 
 type
-   THackControl = class(TControl);
+   TControlHack = class(TControl);
 
 constructor Ti18Manager.Create;
 begin
@@ -81,30 +81,26 @@ end;
 // this function load labels that are needed all the time during application use (e.g. error message to be displayed
 // on incorrect action); in ini file section names with dynamic labels don't end with 'Form'
 function Ti18Manager.LoadDynamicLabels(const AFileName: string; const AClearRepository: boolean = False): integer;
-var
-   values, sections: TStringList;
-   i, a: integer;
-   iniFile: TIniFile;
 begin
    result := 0;
    if FileExists(AFileName) then
    begin
-      sections := TStringList.Create;
-      values := TStringList.Create;
-      iniFile := TIniFile.Create(AFilename);
+      var sections := TStringList.Create;
+      var values := TStringList.Create;
+      var iniFile := TIniFile.Create(AFilename);
       try
          iniFile.ReadSections(sections);
          if sections.Count > 0 then
          begin
             if AClearRepository then
                FRepository.Clear;
-            for i := 0 to sections.Count-1 do
+            for var i := 0 to sections.Count-1 do
             begin
                if not sections[i].EndsWith('Form', True) then
                begin
                   values.Clear;
                   iniFile.ReadSectionValues(sections[i], values);
-                  for a := 0 to values.Count-1 do
+                  for var a := 0 to values.Count-1 do
                      FRepository.AddOrSetValue(values.Names[a], values.ValueFromIndex[a]);
                   result := result + values.Count;
                end
@@ -122,36 +118,29 @@ end;
 // such label is no longer needed; it is important to call this function when all application's forms are already created;
 // in ini file section names with static labels end with 'Form' - one section for each application form
 function Ti18Manager.LoadStaticLabels(const AFileName: string): integer;
-var
-   comp: TComponent;
-   i, a, pos: integer;
-   keys, sections: TStringList;
-   baseForm: TBaseForm;
-   value, lName, field: string;
-   iniFile: TIniFile;
 begin
    result := 0;
    if FileExists(AFileName) then
    begin
-      sections := TStringList.Create;
-      keys := TStringList.Create;
-      iniFile := TIniFile.Create(AFilename);
+      var sections := TStringList.Create;
+      var keys := TStringList.Create;
+      var iniFile := TIniFile.Create(AFilename);
       try
          iniFile.ReadSections(sections);
          if sections.Count > 0 then
          begin
-            for i := 0 to sections.Count-1 do
+            for var i := 0 to sections.Count-1 do
             begin
                iniFile.ReadSectionValues(sections[i], keys);
-               comp := Application.FindComponent(sections[i]);
+               var comp := Application.FindComponent(sections[i]);
                if comp is TBaseForm then
                begin
-                  baseForm := TBaseForm(comp);
-                  for a := 0 to keys.Count-1 do
+                  var baseForm := TBaseForm(comp);
+                  for var a := 0 to keys.Count-1 do
                   begin
-                     field := '';
-                     lName := keys.Names[a];
-                     pos := System.Pos('.', lName);
+                     var field := '';
+                     var lName := keys.Names[a];
+                     var pos := System.Pos('.', lName);
                      if pos > 0 then
                      begin
                         field := Copy(lName, pos+1);
@@ -160,18 +149,18 @@ begin
                      comp := baseForm.FindComponent(lName);
                      if comp <> nil then
                      begin
-                        value := keys.ValueFromIndex[a];
+                        var value := keys.ValueFromIndex[a];
                         if SameText(field, 'Caption') then
                         begin
                            if comp is TMenuItem then
                               TMenuItem(comp).Caption := value
                            else if comp is TControl then
-                              THackControl(comp).Caption := value;
+                              TControlHack(comp).Caption := value;
                         end
                         else if SameText(field, 'Text') then
                         begin
                            if comp is TControl then
-                              THackControl(comp).Text := value;
+                              TControlHack(comp).Text := value;
                         end
                         else if SameText(field, 'Hint') then
                         begin
@@ -192,7 +181,7 @@ begin
                               DIALOG:       TOpenDialog(comp).Filter := value;
                               EDIT_TEXT:    TEdit(comp).Text := value;
                               EDIT_HINT,
-                              SPEED_BUTTON: THackControl(comp).Hint := value;
+                              SPEED_BUTTON: TControlHack(comp).Hint := value;
                               COMBO_BOX:
                               begin
                                  pos := StrToIntDef(field, -1);
@@ -200,7 +189,7 @@ begin
                                     TComboBox(comp).Items[pos] := value;
                               end
                            else
-                              THackControl(comp).Caption := value;
+                              TControlHack(comp).Caption := value;
                            end;
                         end;
                      end;
@@ -220,13 +209,10 @@ begin
 end;
 
 function Ti18Manager.LoadDefaultLabels: integer;
-var
-   resStream: TResourceStream;
-   langFile, errMsg: string;
 begin
-   errMsg := '';
-   langFile := TPath.GetTempPath + 'english.lng';
-   resStream := TResourceStream.Create(Hinstance, 'DEFAULT_LOCALIZATION_FILE', 'LNG_FILE');
+   var errMsg := '';
+   var langFile := TPath.GetTempPath + 'english.lng';
+   var resStream := TResourceStream.Create(Hinstance, 'DEFAULT_LOCALIZATION_FILE', 'LNG_FILE');
    try
       try
          resStream.SaveToFile(langFile);
