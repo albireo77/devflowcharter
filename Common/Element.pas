@@ -48,8 +48,8 @@ type
          procedure OnClickRemove(Sender: TObject);
          procedure OnChangeType(Sender: TObject); virtual;
          procedure OnChangeName(Sender: TObject); virtual;
-         procedure OnDragOverElement(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
-         procedure OnDragDropElement(Sender, Source: TObject; X, Y: Integer);
+         procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean); override;
+         procedure DragDrop(Source: TObject; X, Y: Integer); override;
       public
          edtName: TNameEdit;
          cbType: TComboBox;
@@ -112,9 +112,6 @@ begin
    btnRemove.OnClick := OnClickRemove;
    var w := TInfra.GetAutoWidth(btnRemove);
    btnRemove.SetBounds(Parent.Width-w-TInfra.Scaled(Self, 32), 0, w+14, TInfra.Scaled(Self, 20));
-
-   OnDragOver := OnDragOverElement;
-   OnDragDrop := OnDragDropElement;
 end;
 
 function TElement.GetParentTab: TTabSheet;
@@ -204,13 +201,13 @@ begin
    SetNodeAttrStr(result, TYPE_ATTR, cbType.Text);
 end;
 
-procedure TElement.OnDragOverElement(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
+procedure TElement.DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-   if (Source = Sender) or (not (Source is TElement)) or (TElement(Source).Parent <> Parent) then
+   if (Source = Self) or (not (Source is TElement)) or (TElement(Source).Parent <> Parent) then
       Accept := False;
 end;
 
-procedure TElement.OnDragDropElement(Sender, Source: TObject; X, Y: Integer);
+procedure TElement.DragDrop(Source: TObject; X, Y: Integer);
 begin
    if Source is TElement then
    begin

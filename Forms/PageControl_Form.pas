@@ -226,7 +226,7 @@ begin
    begin
       var page := TInfra.GetPageFromXY(pgcTabs, X, Y);
       if page <> nil then
-         page.BeginDrag(false, 3);
+         page.BeginDrag(False, 3);
    end;
 end;
 

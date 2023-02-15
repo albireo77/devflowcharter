@@ -77,7 +77,7 @@ type
 implementation
 
 uses
-   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, System.Rtti,
+   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, System.Rtti, System.Math,
    Generics.Defaults, Infrastructure, LangDefinition, ParserHelper, OmniXMLUtils, Constants;
 
 var
@@ -207,7 +207,7 @@ begin
    for var field in GetFields do
    begin
       if field.edtSize.Text <> '1' then
-         field.edtSize.OnChange(field.edtSize);
+         field.edtSize.Change;
    end;
    ParentForm.UpdateCodeEditor := True;
 end;
@@ -437,7 +437,8 @@ end;
 
 procedure TField.OnChangeSize(Sender: TObject);
 begin
-   edtSize.OnChangeSize(edtSize);
+   var sizeEdit := TSizeEdit(Sender);
+   sizeEdit.Font.Color := IfThen(sizeEdit.ParseSize, BLACK_COLOR, NOK_COLOR);
    ParentTab.PageControl.Refresh;
    GProject.SetChanged;
    if ParentForm.UpdateCodeEditor then

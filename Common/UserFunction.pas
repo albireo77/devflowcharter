@@ -194,7 +194,7 @@ end;
 procedure TUserFunctionHeader.RefreshSizeEdits;
 begin
    if FLocalVars.edtSize.Text <> '1' then
-      FLocalVars.edtSize.OnChange(FLocalVars.edtSize);
+      FLocalVars.edtSize.Change;
 end;
 
 function TUserFunction.GetId: integer;

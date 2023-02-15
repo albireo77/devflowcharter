@@ -34,7 +34,7 @@ type
         constructor Create(AParent: TWinControl);
         function ParseSize: boolean;
         function GetDimensions: TArray<string>;
-        procedure OnChangeSize(Sender: TObject);
+        procedure Change; override;
         function IsUnboundedArray: boolean;
   end;
 
@@ -49,24 +49,23 @@ begin
    inherited Create(AParent);
    Parent := AParent;
    Text := '1';
-   ShowHint := true;
+   ShowHint := True;
    CharCase := ecUpperCase;
    Hint := i18Manager.GetString('DisableFieldValid') + sLineBreak + ReplaceStr(i18Manager.GetString('edtSizeHint'), LB_PHOLDER2, sLineBreak);
-   ParentFont := false;
+   ParentFont := False;
    Font.Style := [];
    Font.Color := BLACK_COLOR;
-   DoubleBuffered := true;
-   OnChange := OnChangeSize;
+   DoubleBuffered := True;
 end;
 
 function TSizeEdit.ParseSize: boolean;
 begin
-   result := true;
+   result := True;
    if GSettings.ValidateDeclaration then
    begin
       var dcount := GetDimensionCount;
       if dcount < 0 then
-         result := false
+         result := False
       else if dcount > 0 then
       begin
          var dims := GetDimensions;
@@ -90,8 +89,9 @@ begin
    result := TInfra.GetDimensions(Text);
 end;
 
-procedure TSizeEdit.OnChangeSize(Sender: TObject);
+procedure TSizeEdit.Change;
 begin
+   inherited;
    Font.Color := IfThen(ParseSize, BLACK_COLOR, NOK_COLOR);
 end;
 
