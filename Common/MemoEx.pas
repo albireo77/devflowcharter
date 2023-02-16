@@ -59,17 +59,12 @@ type
          function Clone(AOwner: TComponent): TMemoEx;
          procedure CloneFrom(AMemo: TMemoEx);
       published
-         property OnDblClick;
-         property OnMouseDown;
-         property OnKeyUp;
          property OnChange;
          property PopupMenu;
          property Font;
          property Color;
          property BorderStyle;
          property WordWrap write SetWordWrap;
-         property ScrollBars write SetScrollBars;
-         property Alignment write SetAlignment;
    end;
 
 implementation
@@ -132,10 +127,7 @@ procedure TMemoEx.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Inte
 begin
    inherited;
    if ssLeft in Shift then
-   begin
-      var p := ClientToParent(Point(X, Y));
-      TWinControlHack(Parent).MouseDown(Button, Shift, p.X, p.Y);
-   end;
+      TWinControlHack(Parent).MouseDown(Button, Shift, X+Left, Y+Top);
 end;
 
 procedure TMemoEx.Change;
