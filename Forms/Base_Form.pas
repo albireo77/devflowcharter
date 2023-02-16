@@ -24,7 +24,7 @@ unit Base_Form;
 interface
 
 uses
-   Vcl.Forms, System.Classes, Vcl.Graphics, OmniXML, BaseEnumerator, Types, Interfaces;
+   Vcl.Forms, System.Classes, Vcl.Graphics, OmniXML, Types, Interfaces;
 
 type
 
@@ -79,22 +79,20 @@ begin
    Show;
    if (AInfo.ActiveControl <> nil) and AInfo.ActiveControl.CanFocus then
       AInfo.ActiveControl.SetFocus;
-   result := true;
+   result := True;
 end;
 
 function TBaseForm.CanBeFocused: boolean;
 begin
-   result := true;
+   result := True;
 end;
 
 function TBaseForm.IsOverlapped: boolean;
-var
-   brect, wrect: TRect;
-   wnd: HWND;
 begin
-   result := false;
-   brect := BoundsRect;
-   wnd := GetWindow(TInfra.GetMainForm.Handle, GW_HWNDFIRST);
+   result := False;
+   var wrect: TRect;
+   var brect := BoundsRect;
+   var wnd := GetWindow(TInfra.GetMainForm.Handle, GW_HWNDFIRST);
    while (wnd <> 0) and (wnd <> Handle) do
    begin
       if IsWindowVisible(wnd) then
@@ -102,7 +100,7 @@ begin
          GetWindowRect(wnd, wrect);
          if brect.IntersectsWith(wrect) then
          begin
-            result := true;
+            result := True;
             break;
          end;
        end;
@@ -132,12 +130,12 @@ end;
 
 function TBaseForm.CanRemove: boolean;
 begin
-   result := false;
+   result := False;
 end;
 
 function TBaseForm.IsBoldDesc: boolean;
 begin
-   result := true;
+   result := True;
 end;
 
 function TBaseForm.GetTreeNodeText(ANodeOffset: integer = 0): string;
