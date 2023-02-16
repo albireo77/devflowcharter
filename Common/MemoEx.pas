@@ -126,7 +126,7 @@ end;
 procedure TMemoEx.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
    inherited;
-   if ssLeft in Shift then
+   if Button = mbLeft then
       TWinControlHack(Parent).MouseDown(Button, Shift, X+Left, Y+Top);
 end;
 

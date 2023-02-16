@@ -243,7 +243,7 @@ end;
 procedure TStatement.MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer);
 begin
    inherited;
-   if HasParent then
+   if HasParent and (Button = mbLeft) then
       TWinControlHack(Parent).MouseDown(Button, Shift, X+Left, Y+Top);
 end;
 
