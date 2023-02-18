@@ -321,44 +321,32 @@ begin
 end;
 
 function TMainBlock.GetFunctionLabel(var ARect: TRect): string;
-var
-   lang: TLangDefinition;
-   d: integer;
-   header: TUserFunctionHeader;
 begin
    result := '';
    ARect := Rect(Branch.Hook.X+75, 7, 0, 0);
    if GSettings.ShowFuncLabels and (UserFunction <> nil) and Expanded then
    begin
-      lang := nil;
-      header := TUserFunction(UserFunction).Header;
+      var header := TUserFunction(UserFunction).Header;
       if header <> nil then
       begin
-         if Assigned(GInfra.CurrentLang.GetUserFuncDesc) then
-            lang := GInfra.CurrentLang
-         else if Assigned(GInfra.TemplateLang.GetUserFuncDesc) then
+         var lang := GInfra.CurrentLang;
+         if not Assigned(lang.GetUserFuncDesc) then
             lang := GInfra.TemplateLang;
-         if lang <> nil then
-            result := lang.GetUserFuncDesc(header, False, header.chkInclDescFlow.Checked);
+         result := lang.GetUserFuncDesc(header, False, header.chkInclDescFlow.Checked);
       end
       else
       begin
-         if Assigned(GInfra.CurrentLang.GetMainProgramDesc) then
-            lang := GInfra.CurrentLang
-         else if Assigned(GInfra.TemplateLang.GetMainProgramDesc) then
+         var lang := GInfra.CurrentLang;
+         if not Assigned(lang.GetMainProgramDesc) then
             lang := GInfra.TemplateLang;
-         if lang <> nil then
-            result := lang.GetMainProgramDesc;
+         result := lang.GetMainProgramDesc;
       end;
    end;
    if not result.IsEmpty then
    begin
       DrawText(Canvas.Handle, PChar(result), -1, ARect, DT_CALCRECT);
       if (Branch.Count > 0) and (ARect.Bottom > Branch.First.Top-5) and (ARect.Left < Branch.First.BoundsRect.Right+5) then
-      begin
-         d := Branch.First.BoundsRect.Right + 5 - ARect.Left;
-         ARect.Offset(d, 0);
-      end;
+         ARect.Offset(Branch.First.BoundsRect.Right + 5 - ARect.Left, 0);
    end;
 end;
 
@@ -428,58 +416,40 @@ begin
 end;
 
 function TMainBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
-var
-   lName, template, ending: string;
-   lang: TLangDefinition;
-   progList, varList, tmpList: TStringList;
-   vars: TVarDeclareList;
-   header: TUserFunctionHeader;
 begin
-   tmpList := TStringList.Create;
+   var lang := GInfra.GetLangDefinition(ALangId);
+   var tmpList := TStringList.Create;
    try
       if ALangId = TIBASIC_LANG_ID then
          GenerateNestedCode(tmpList, PRIMARY_BRANCH_IDX, ADeep+1, ALangId)
-      else
+      else if lang <> nil then
       begin
-         lang := GInfra.GetLangDefinition(ALangId);
-         if lang <> nil then
+         var vars := GProject.GlobalVars;
+         var lName := GProject.Name;
+         var template := lang.MainFunctionTemplate;
+         var header := TInfra.GetFunctionHeader(Self);
+         if header <> nil then
          begin
-            header := TInfra.GetFunctionHeader(Self);
-            if header <> nil then
-            begin
-               vars := header.LocalVars;
-               lName := header.GetName;
-               template := GetBlockTemplate(ALangId);
-            end
-            else
-            begin
-               vars := GProject.GlobalVars;
-               lName := GProject.Name;
-               template := lang.MainFunctionTemplate;
-            end;
-            if not template.IsEmpty then
-            begin
-               progList := TStringList.Create;
-               varList := TStringList.Create;
-               try
-                  progList.Text := ReplaceStr(template, PRIMARY_PLACEHOLDER, lName);
-                  if header = nil then
-                  begin
-                     ending := '';
-                     if not ((Branch.Count > 0) and (Branch.Last is TReturnBlock)) then
-                        ending := lang.ProgramReturnTemplate;
-                     TInfra.InsertTemplateLines(progList, '%s3', ending);
-                  end;
-                  if Assigned(GInfra.CurrentLang.VarSectionGenerator) then
-                     GInfra.CurrentLang.VarSectionGenerator(varList, vars)
-                  else if Assigned(GInfra.TemplateLang.VarSectionGenerator) then
-                     GInfra.TemplateLang.VarSectionGenerator(varList, vars);
-                  TInfra.InsertTemplateLines(progList, '%s2', varList);
-                  GenerateTemplateSection(tmpList, progList, ALangId, ADeep);
-               finally
-                  varList.Free;
-                  progList.Free;
-               end;
+            vars := header.LocalVars;
+            lName := header.GetName;
+            template := GetBlockTemplate(ALangId);
+         end;
+         if not template.IsEmpty then
+         begin
+            var progList := TStringList.Create;
+            var varList := TStringList.Create;
+            try
+               progList.Text := ReplaceStr(template, PRIMARY_PLACEHOLDER, lName);
+               if header = nil then
+                  TInfra.InsertTemplateLines(progList, '%s3', IfThen((Branch.Count = 0) or not (Branch.Last is TReturnBlock), lang.ProgramReturnTemplate));
+               if not Assigned(lang.VarSectionGenerator) then
+                  lang := GInfra.TemplateLang;
+               lang.VarSectionGenerator(varList, vars);
+               TInfra.InsertTemplateLines(progList, '%s2', varList);
+               GenerateTemplateSection(tmpList, progList, ALangId, ADeep);
+            finally
+               varList.Free;
+               progList.Free;
             end;
          end;
       end;

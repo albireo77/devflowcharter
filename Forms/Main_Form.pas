@@ -1359,25 +1359,19 @@ end;
 
 function TMainForm.BuildFuncMenu: integer;
 var
-   i: integer;
-   lName: string;
-   func: TUserFunction;
    nativeFunc: PNativeFunction;
-   lang: TLangDefinition;
-   mItem: TMenuItem;
    mItems: array of TMenuItem;
 begin
    miInsertFunc.Clear;
-   for func in GProject.GetUserFunctions do
+   for var func in GProject.GetUserFunctions do
    begin
-      lName := func.GetName;
+      var lName := func.GetName;
       if not lName.IsEmpty then
       begin
-         mItem := TMenuItem.Create(miInsertFunc);
+         var mItem := TMenuItem.Create(miInsertFunc);
          mItem.Caption := lName;
-         if Assigned(GInfra.CurrentLang.GetUserFuncDesc) then
-            lang := GInfra.CurrentLang
-         else
+         var lang := GInfra.CurrentLang;
+         if not Assigned(lang.GetUserFuncDesc) then
             lang := GInfra.TemplateLang;
          mItem.Hint := lang.GetUserFuncDesc(func.Header);
          if func.Header <> nil then
@@ -1386,9 +1380,9 @@ begin
          mItems := mItems + [mItem];
       end;
    end;
-   for i := 0 to High(GInfra.CurrentLang.NativeFunctions) do
+   for var i := 0 to High(GInfra.CurrentLang.NativeFunctions) do
    begin
-      mItem := TMenuItem.Create(miInsertFunc);
+      var mItem := TMenuItem.Create(miInsertFunc);
       nativeFunc := @GInfra.CurrentLang.NativeFunctions[i];
       mItem.Caption := IfThen(nativeFunc.Caption.IsEmpty, nativeFunc.Name, nativeFunc.Caption);
       mItem.Hint := nativeFunc.Hint;

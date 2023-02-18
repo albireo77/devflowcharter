@@ -1024,7 +1024,7 @@ end;
 procedure TProject.RefreshSizeEdits;
 begin
    if (GlobalVars <> nil) and (GlobalVars.edtSize.Text <> '1') then
-      GlobalVars.edtSize.OnChange(GlobalVars.edtSize);
+      GlobalVars.edtSize.Change;
    for var withSizeEdits in GetIComponents<IWithSizeEdits> do
       withSizeEdits.RefreshSizeEdits;
 end;

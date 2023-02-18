@@ -791,29 +791,24 @@ end;
 function TUserFunction.GetTreeNodeText(ANodeOffset: integer = 0): string;
 begin
    result := '';
-   var lang: TLangDefinition := nil;
    if IsMain then
    begin
       if GInfra.CurrentLang.EnabledUserFunctionHeader then
       begin
-         if Assigned(GInfra.CurrentLang.GetMainProgramDesc) then
-            lang := GInfra.CurrentLang
-         else if Assigned(GInfra.TemplateLang.GetMainProgramDesc) then
+         var lang := GInfra.CurrentLang;
+         if not Assigned(lang.GetMainProgramDesc) then
             lang := GInfra.TemplateLang;
-         if lang <> nil then
-            result := lang.GetMainProgramDesc;
+         result := lang.GetMainProgramDesc;
       end
       else
          result := i18Manager.GetString('Flowchart');
    end
    else
    begin
-      if Assigned(GInfra.CurrentLang.GetUserFuncDesc) then
-         lang := GInfra.CurrentLang
-      else if Assigned(GInfra.TemplateLang.GetUserFuncDesc) then
+      var lang := GInfra.CurrentLang;
+      if not Assigned(lang.GetUserFuncDesc) then
          lang := GInfra.TemplateLang;
-      if lang <> nil then
-         result := lang.GetUserFuncDesc(FHeader, False, False).Trim;
+      result := lang.GetUserFuncDesc(FHeader, False, False).Trim;
    end;
 end;
 
@@ -839,19 +834,14 @@ end;
 
 procedure TUserFunctionHeader.OnClickGenDesc(Sender: TObject);
 begin
-   var lang: TLangDefinition := nil;
-   if Assigned(GInfra.CurrentLang.GetUserFuncHeaderDesc) then
-      lang := GInfra.CurrentLang
-   else if Assigned(GInfra.TemplateLang.GetUserFuncHeaderDesc) then
+   var lang := GInfra.CurrentLang;
+   if not Assigned(lang.GetUserFuncHeaderDesc) then
       lang := GInfra.TemplateLang;
-   if lang <> nil then
+   var description := lang.GetUserFuncHeaderDesc(Self).TrimRight;
+   if not description.IsEmpty then
    begin
-      var description := lang.GetUserFuncHeaderDesc(Self).TrimRight;
-      if not description.IsEmpty then
-      begin
-         memDesc.Text := description;
-         GProject.SetChanged;
-      end;
+      memDesc.Text := description;
+      GProject.SetChanged;
    end;
 end;
 

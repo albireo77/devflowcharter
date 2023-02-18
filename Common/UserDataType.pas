@@ -464,15 +464,10 @@ end;
 
 function TUserDataType.GetTreeNodeText(ANodeOffset: integer = 0): string;
 begin
-   var lang: TLangDefinition := nil;
-   if Assigned(GInfra.CurrentLang.GetUserTypeDesc) then
-      lang := GInfra.CurrentLang
-   else if Assigned(GInfra.TemplateLang.GetUserTypeDesc) then
+   var lang := GInfra.CurrentLang;
+   if not Assigned(lang.GetUserTypeDesc) then
       lang := GInfra.TemplateLang;
-   if lang <> nil then
-      result := lang.GetUserTypeDesc(Self).Trim
-   else
-      result := inherited GetTreeNodeText(ANodeOffset);
+   result := lang.GetUserTypeDesc(Self).Trim;
 end;
 
 initialization
