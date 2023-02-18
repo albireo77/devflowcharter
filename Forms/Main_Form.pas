@@ -1358,8 +1358,6 @@ begin
 end;
 
 function TMainForm.BuildFuncMenu: integer;
-type
-   TMenuItemArray = array of TMenuItem;
 begin
    var mItems: TMenuItemArray;
    miInsertFunc.Clear;

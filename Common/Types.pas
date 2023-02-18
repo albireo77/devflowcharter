@@ -27,7 +27,7 @@ uses
 {$IFDEF USE_CODEFOLDING}
    SynEditCodeFolding,
 {$ENDIF}
-   System.Classes, Vcl.StdCtrls, Vcl.Forms, Vcl.Controls, Generics.Defaults,
+   System.Classes, Vcl.StdCtrls, Vcl.Forms, Vcl.Controls, Vcl.Menus, Generics.Defaults,
    Vcl.ComCtrls, WinApi.Messages, System.Types, SynEditTypes, OmniXML;
 
 const
@@ -54,6 +54,8 @@ type
    TImportMode = (impSelectTab, impSelectPopup, impAll);
 
    TPointArray = array of TPoint;
+
+   TMenuItemArray = array of TMenuItem;
 
    TDiamond = record
      Top,
