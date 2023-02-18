@@ -677,32 +677,26 @@ begin
 end;
 
 function Template_GetUserFuncDesc(AHeader: TUserFunctionHeader; AFullParams: boolean = True; AIncludeDesc: boolean = True): string;
-var
-   params, desc, lType, key, lb, arrayType: string;
-   lang: TLangDefinition;
-   param: TParameter;
 begin
    result := '';
    if AHeader <> nil then
    begin
-      lang := GInfra.CurrentLang;
-      desc := '';
-      lType := AHeader.cbType.Text;
-      key := '';
-      lb := '';
-      arrayType := IfThen(AHeader.chkArrayType.Checked, lang.FunctionHeaderTypeArray, lang.FunctionHeaderTypeNotArray);
+      var lang := GInfra.CurrentLang;
+      var desc := '';
+      var lType := AHeader.cbType.Text;
+      var key := lang.ProcedureLabelKey;
+      var lb := '';
+      var arrayType := IfThen(AHeader.chkArrayType.Checked, lang.FunctionHeaderTypeArray, lang.FunctionHeaderTypeNotArray);
       if AHeader.chkConstructor.Checked then
          key := lang.ConstructorLabelKey
       else if AHeader.cbType.ItemIndex > 0 then
-         key := lang.FunctionLabelKey
-      else
-         key := lang.ProcedureLabelKey;
+         key := lang.FunctionLabelKey;
+      var params := '';
       if (AHeader.ParameterCount > 1) and not AFullParams then
          params := '...'
       else
       begin
-         params := '';
-         for param in AHeader.GetParameters do
+         for var param in AHeader.GetParameters do
          begin
             if not params.IsEmpty then
                params := params + ', ';
