@@ -682,16 +682,16 @@ begin
    if AHeader <> nil then
    begin
       var lang := GInfra.CurrentLang;
+      var arrayType := IfThen(AHeader.chkArrayType.Checked, lang.FunctionHeaderTypeArray, lang.FunctionHeaderTypeNotArray);
       var desc := IfThen(AIncludeDesc, AHeader.memDesc.Text);
       var lb := IfThen(AIncludeDesc, sLineBreak);
       var lType := AHeader.cbType.Text;
       var key := lang.ProcedureLabelKey;
-      var arrayType := IfThen(AHeader.chkArrayType.Checked, lang.FunctionHeaderTypeArray, lang.FunctionHeaderTypeNotArray);
+      var params := '';
       if AHeader.chkConstructor.Checked then
          key := lang.ConstructorLabelKey
       else if AHeader.cbType.ItemIndex > 0 then
          key := lang.FunctionLabelKey;
-      var params := '';
       if (AHeader.ParameterCount > 1) and not AFullParams then
          params := '...'
       else
