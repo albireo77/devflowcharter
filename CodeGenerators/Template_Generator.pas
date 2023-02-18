@@ -682,10 +682,10 @@ begin
    if AHeader <> nil then
    begin
       var lang := GInfra.CurrentLang;
-      var desc := '';
+      var desc := IfThen(AIncludeDesc, AHeader.memDesc.Text);
+      var lb := IfThen(AIncludeDesc, sLineBreak);
       var lType := AHeader.cbType.Text;
       var key := lang.ProcedureLabelKey;
-      var lb := '';
       var arrayType := IfThen(AHeader.chkArrayType.Checked, lang.FunctionHeaderTypeArray, lang.FunctionHeaderTypeNotArray);
       if AHeader.chkConstructor.Checked then
          key := lang.ConstructorLabelKey
@@ -702,11 +702,6 @@ begin
                params := params + ', ';
             params := params + param.cbType.Text + IfThen(param.chkTable.Checked, '[ ] ', ' ') + Trim(param.edtName.Text);
          end;
-      end;
-      if AIncludeDesc then
-      begin
-         desc := AHeader.memDesc.Text;
-         lb := sLineBreak;
       end;
       if not key.IsEmpty then
       begin
