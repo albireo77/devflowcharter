@@ -193,31 +193,23 @@ begin
 end;
 
 procedure Template_LibSectionGenerator(ALines: TStringList);
-var
-   stripCount: integer;
-   libList, libTemplate: TStringList;
-   lang: TLangDefinition;
-   libStr, libFormat, p1, p2: string;
 begin
-   lang := GInfra.CurrentLang;
-   libList := GProject.GetLibraryList;
+   var lang := GInfra.CurrentLang;
+   var libList := GProject.GetLibraryList;
    try
       if (libList.Count > 0) and not lang.LibTemplate.IsEmpty then
       begin
-         libStr := '';
+         var libStr := '';
+         var libFormat := lang.LibEntryList;
+         var p1 := '%s2';
+         var p2 := PRIMARY_PLACEHOLDER;
+         var stripCount := lang.LibEntryListStripCount;
          if lang.LibTemplate.Contains(PRIMARY_PLACEHOLDER) then
          begin
             libFormat := lang.LibEntry + sLineBreak;
             p1 := PRIMARY_PLACEHOLDER;
             p2 := '%s2';
             stripCount := Length(sLineBreak);
-         end
-         else
-         begin
-            libFormat := lang.LibEntryList;
-            p1 := '%s2';
-            p2 := PRIMARY_PLACEHOLDER;
-            stripCount := lang.LibEntryListStripCount;
          end;
          for var i := 0 to libList.Count-1 do
          begin
@@ -232,7 +224,7 @@ begin
          begin
             if stripCount > 0 then
                SetLength(libStr, libStr.Length - stripCount);
-            libTemplate := TStringList.Create;
+            var libTemplate := TStringList.Create;
             try
                libTemplate.Text := lang.LibTemplate;
                TInfra.InsertTemplateLines(libTemplate, p1, libStr, TInfra.GetLibObject);
@@ -249,26 +241,23 @@ begin
 end;
 
 procedure Template_ConstSectionGenerator(ALines: TStringList; AConstList: TConstDeclareList);
-var
-   i, t, d: integer;
-   constStr, constType, constValue, template, genericTypes: string;
-   lang: TLangDefinition;
-   constList, constTemplate: TStringList;
 begin
-   lang := GInfra.CurrentLang;
-   if (AConstList <> nil) and not lang.ConstTemplate.IsEmpty then
+   var currLang := GInfra.CurrentLang;
+   if (AConstList <> nil) and not currLang.ConstTemplate.IsEmpty then
    begin
-      constList := TStringList.Create;
+      var constList := TStringList.Create;
       try
-         for i := 1 to AConstList.sgList.RowCount-2 do
+         for var i := 1 to AConstList.sgList.RowCount-2 do
          begin
-            if (AConstList.GetExternalState(i) = cbChecked) and not lang.CodeIncludeExternVarConst then
+            if (AConstList.GetExternalState(i) = cbChecked) and not currLang.CodeIncludeExternVarConst then
                continue;
-            constValue := AConstList.sgList.Cells[CONST_VALUE_COL, i];
-            constType := '';
-            d := 0;
-            if Assigned(GInfra.CurrentLang.GetConstantType) then
-               t := GInfra.CurrentLang.GetConstantType(constValue, genericTypes)
+            var constValue := AConstList.sgList.Cells[CONST_VALUE_COL, i];
+            var genericTypes := '';
+            var constType := '';
+            var d := 0;
+            var t := 0;
+            if Assigned(currLang.GetConstantType) then
+               t := currLang.GetConstantType(constValue, genericTypes)
             else
                t := Template_GetConstantType(constValue, genericTypes);
             if t <> UNKNOWN_TYPE then
@@ -277,28 +266,28 @@ begin
                if d > 0 then
                   t := TParserHelper.DecodeArrayType(t);
                constType := TParserHelper.GetTypeAsString(t);
-               template := GInfra.CurrentLang.ConstTypeGeneric;
+               var template := currLang.ConstTypeGeneric;
                if template.IsEmpty or genericTypes.IsEmpty or not TParserHelper.IsGenericType(constType) then
-                  template := GInfra.CurrentLang.ConstTypeNotGeneric;
+                  template := currLang.ConstTypeNotGeneric;
                if not template.IsEmpty then
                begin
                   constType := ReplaceStr(template, PRIMARY_PLACEHOLDER, constType);
                   constType := ReplaceStr(constType, '%s2', genericTypes);
                end;
             end;
-            constStr := ReplaceStr(IfThen(d > 0, lang.ConstEntryArray, lang.ConstEntry), PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
+            var constStr := ReplaceStr(IfThen(d > 0, currLang.ConstEntryArray, currLang.ConstEntry), PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
             constStr := ReplaceStr(constStr, '%s2', constValue);
             constStr := ReplaceStr(constStr, '%s3', AConstList.GetExternModifier(i));
             constStr := ReplaceStr(constStr, '%s4', constType);
             if d > 0 then
-               constStr := ReplaceStr(constStr, '%s5', DupeString(ReplaceStr(lang.VarEntryArraySize, '%s', ''), d));
+               constStr := ReplaceStr(constStr, '%s5', DupeString(ReplaceStr(currLang.VarEntryArraySize, '%s', ''), d));
             constList.AddObject(constStr, AConstList);
          end;
          if constList.Count > 0 then
          begin
-            constTemplate := TStringList.Create;
+            var constTemplate := TStringList.Create;
             try
-               constTemplate.Text := lang.ConstTemplate;
+               constTemplate.Text := currLang.ConstTemplate;
                TInfra.InsertTemplateLines(constTemplate, PRIMARY_PLACEHOLDER, constList);
                ALines.AddStrings(constTemplate);
             finally
