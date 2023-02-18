@@ -718,29 +718,23 @@ begin
 end;
 
 function Template_GetUserFuncHeaderDesc(AHeader: TUserFunctionHeader): string;
-var
-   lang: TLangDefinition;
-   template, parms: TStringList;
-   parmString, returnString: string;
-   parm: TParameter;
-   i: integer;
 begin
    result := '';
-   lang := GInfra.CurrentLang;
+   var lang := GInfra.CurrentLang;
    if (AHeader <> nil) and not lang.FunctionHeaderDescTemplate.IsEmpty then
    begin
-       template := TStringList.Create;
-       parms := TStringList.Create;
+       var template := TStringList.Create;
+       var parms := TStringList.Create;
        try
           template.Text := ReplaceStr(lang.FunctionHeaderDescTemplate, PRIMARY_PLACEHOLDER, Trim(AHeader.edtName.Text));
           template.Text := ReplaceStr(template.Text, '%s2', AHeader.cbType.Text);
 
           if not lang.FunctionHeaderDescParmMask.IsEmpty then
           begin
-             i := 1;
-             for parm in AHeader.GetParameters do
+             var i := 1;
+             for var parm in AHeader.GetParameters do
              begin
-                parmString := ReplaceStr(lang.FunctionHeaderDescParmMask, PRIMARY_PLACEHOLDER, Trim(parm.edtName.Text));
+                var parmString := ReplaceStr(lang.FunctionHeaderDescParmMask, PRIMARY_PLACEHOLDER, Trim(parm.edtName.Text));
                 parmString := ReplaceStr(parmString, '%s2', parm.cbType.Text);
                 parmString := ReplaceStr(parmString, '%s3', Trim(parm.edtDefault.Text));
                 parmString := ReplaceStr(parmString, '%s4', i.ToString);
@@ -757,7 +751,7 @@ begin
              TInfra.DeleteLinesContaining(template, '%s4')
           else
           begin
-             returnString := ReplaceStr(lang.FunctionHeaderDescReturnMask, PRIMARY_PLACEHOLDER, AHeader.cbType.Text);
+             var returnString := ReplaceStr(lang.FunctionHeaderDescReturnMask, PRIMARY_PLACEHOLDER, AHeader.cbType.Text);
              template.Text := ReplaceStr(template.Text, '%s4', returnString);
           end;
 
