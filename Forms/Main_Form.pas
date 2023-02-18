@@ -1383,8 +1383,7 @@ begin
    for var i := 0 to High(GInfra.CurrentLang.NativeFunctions) do
    begin
       var mItem := TMenuItem.Create(miInsertFunc);
-      var nativeFunc: PNativeFunction := nil;
-      nativeFunc := @GInfra.CurrentLang.NativeFunctions[i];
+      var nativeFunc := PNativeFunction(@GInfra.CurrentLang.NativeFunctions[i]);
       mItem.Caption := IfThen(nativeFunc.Caption.IsEmpty, nativeFunc.Name, nativeFunc.Caption);
       mItem.Hint := nativeFunc.Hint;
       mItem.Tag := NativeInt(nativeFunc);
