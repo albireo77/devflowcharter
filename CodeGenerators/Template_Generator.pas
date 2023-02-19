@@ -275,7 +275,8 @@ begin
                   constType := ReplaceStr(constType, '%s2', genericTypes);
                end;
             end;
-            var constStr := ReplaceStr(IfThen(d > 0, currLang.ConstEntryArray, currLang.ConstEntry), PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
+            var constStr := IfThen(d > 0, currLang.ConstEntryArray, currLang.ConstEntry);
+            constStr := ReplaceStr(constStr, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
             constStr := ReplaceStr(constStr, '%s2', constValue);
             constStr := ReplaceStr(constStr, '%s3', AConstList.GetExternModifier(i));
             constStr := ReplaceStr(constStr, '%s4', constType);
