@@ -250,13 +250,13 @@ begin
    for var i := 1 to ParamCount do
    begin
       var param := ParamStr(i);
-      if param.StartsWith(SETTINGS_FILE_PARAM, true) then
+      if param.StartsWith(SETTINGS_FILE_PARAM, True) then
       begin
          sFile := Copy(param, Length(SETTINGS_FILE_PARAM)+1);
          if not sFile.IsEmpty then
             sFile := TPath.GetFullPath(sFile);
       end
-      else if param.StartsWith(LANG_DEFS_DIR_PARAM, true) then
+      else if param.StartsWith(LANG_DEFS_DIR_PARAM, True) then
          FLanguageDefinitionsDir := Copy(param, Length(LANG_DEFS_DIR_PARAM)+1);
    end;
    if sFile.IsEmpty then

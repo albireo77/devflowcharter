@@ -52,9 +52,9 @@ const
 
 constructor TFlashThread.Create(const AFocusInfo: TFocusInfo);
 begin
-   inherited Create(false);
+   inherited Create(False);
    FFocusInfo := AFocusInfo;
-   FreeOnTerminate := true;
+   FreeOnTerminate := True;
 end;
 
 procedure TFlashThread.Execute;

@@ -63,14 +63,14 @@ procedure TGotoForm.btnGotoClick(Sender: TObject);
 begin
 
    var codeEditor := TInfra.GetEditorForm.memCodeEditor;
-   var gotoFlag := false;
+   var gotoFlag := False;
    var line := 0;
 
    if rbLine.Checked then
    begin
       line := StrToIntDef(edtNumber.Text, 0);
       if line > 0 then
-         gotoFlag := true;
+         gotoFlag := True;
       codeEditor.SetFocus;
       Close;
    end
@@ -83,7 +83,7 @@ begin
          if (cLine > codeEditor.CaretY) and (cLine <= line) then
          begin
             line := cLine;
-            gotoFlag := true;
+            gotoFlag := True;
          end;
       end;
    end
@@ -96,7 +96,7 @@ begin
          if (cLine < codeEditor.CaretY) and (cLine >= line) then
          begin
             line := cLine;
-            gotoFlag := true;
+            gotoFlag := True;
          end;
       end;
    end;

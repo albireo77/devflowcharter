@@ -34,7 +34,7 @@ type
       class function DialogXMLFile(ADialog: TOpenDialog; const AFileName: string): string;
    public
       class function ExportToXMLFile(AExportProc: TXMLExportProc; const AFilePath: string): TError;
-      class function ImportFromXMLFile(AImportProc: TXMLImportProc; AImportMode: TImportMode; const AFileName: string = ''; APreserveSpace: boolean = false): string;
+      class function ImportFromXMLFile(AImportProc: TXMLImportProc; AImportMode: TImportMode; const AFileName: string = ''; APreserveSpace: boolean = False): string;
       class function ImportFlowchartFromXML(ANode: IXMLNode; AParent: TWinControl; APrevBlock: TBlock; ABranchIdx: integer; var AError: TError): TBlock;
    end;
 
@@ -127,7 +127,7 @@ begin
       result := ADialog.FileName;
 end;
 
-class function TXMLProcessor.ImportFromXMLFile(AImportProc: TXMLImportProc; AImportMode: TImportMode; const AFileName: string = ''; APreserveSpace: boolean = false): string;
+class function TXMLProcessor.ImportFromXMLFile(AImportProc: TXMLImportProc; AImportMode: TImportMode; const AFileName: string = ''; APreserveSpace: boolean = False): string;
 begin
    result := '';
    if Assigned(AImportProc) then

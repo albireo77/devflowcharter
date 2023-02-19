@@ -88,9 +88,9 @@ begin
          DrawArrowTo(5, 0, arrMiddle);
          Canvas.LineTo(TopHook.X, 0);
       end;
-      DrawTextLabel(FDiamond.Bottom.X-10, FDiamond.Bottom.Y, FTrueLabel, true);
-      DrawTextLabel(FDiamond.Right.X, FDiamond.Right.Y-5, FFalseLabel, false, true);
-      DrawBlockLabel(FDiamond.Left.X+5, FDiamond.Left.Y-5, GInfra.CurrentLang.LabelWhile, true, true);
+      DrawTextLabel(FDiamond.Bottom.X-10, FDiamond.Bottom.Y, FTrueLabel, True);
+      DrawTextLabel(FDiamond.Right.X, FDiamond.Right.Y-5, FFalseLabel, False, True);
+      DrawBlockLabel(FDiamond.Left.X+5, FDiamond.Left.Y-5, GInfra.CurrentLang.LabelWhile, True, True);
       Canvas.MoveTo(TopHook.X, 0);
       Canvas.LineTo(FDiamond.Top.X, FDiamond.Top.Y);
       Canvas.PenPos := FDiamond.Right;

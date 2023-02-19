@@ -98,9 +98,9 @@ begin
       Canvas.LineTo(Branch.Hook.X, TopHook.Y);
       DrawArrowTo(Branch.Hook.X, Branch.Hook.Y);
 
-      DrawTextLabel(FDiamond.Left.X, FDiamond.Left.Y-5, FLeftLabel, true, true);
-      DrawTextLabel(FDiamond.Right.X, FDiamond.Right.Y-5, FRightLabel, false, true);
-      DrawBlockLabel(FDiamond.Bottom.X-30, FDiamond.Bottom.Y-10, GInfra.CurrentLang.LabelRepeat, true);
+      DrawTextLabel(FDiamond.Left.X, FDiamond.Left.Y-5, FLeftLabel, True, True);
+      DrawTextLabel(FDiamond.Right.X, FDiamond.Right.Y-5, FRightLabel, False, True);
+      DrawBlockLabel(FDiamond.Bottom.X-30, FDiamond.Bottom.Y-10, GInfra.CurrentLang.LabelRepeat, True);
       Canvas.PenPos := FDiamond.Right;
       Canvas.LineTo(BottomPoint.X, FDiamond.Right.Y);
       DrawArrowTo(BottomPoint.X, Height-1);

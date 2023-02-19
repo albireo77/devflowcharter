@@ -46,7 +46,7 @@ uses
 constructor TMultiInstrBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
    inherited Create(ABranch, ABlockParms);
-   FStatements.ShowHint := true;
+   FStatements.ShowHint := True;
    FStatements.OnChange := OnChangeStatements;
 end;
 

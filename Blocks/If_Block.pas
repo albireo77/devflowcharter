@@ -81,9 +81,9 @@ begin
       BottomPoint.Y := Height - 31;
 
       DrawArrow(TopHook, Branch.Hook);
-      DrawTextLabel(FDiamond.Bottom.X-10, FDiamond.Bottom.Y, FTrueLabel, true);
-      DrawTextLabel(FDiamond.Right.X, FDiamond.Right.Y-5, FFalseLabel, false, true);
-      DrawBlockLabel(FDiamond.Left.X-5, FDiamond.Left.Y-5, GInfra.CurrentLang.LabelIf, true, true);
+      DrawTextLabel(FDiamond.Bottom.X-10, FDiamond.Bottom.Y, FTrueLabel, True);
+      DrawTextLabel(FDiamond.Right.X, FDiamond.Right.Y-5, FFalseLabel, False, True);
+      DrawBlockLabel(FDiamond.Left.X-5, FDiamond.Left.Y-5, GInfra.CurrentLang.LabelIf, True, True);
 
       Canvas.PenPos := FDiamond.Right;
       Canvas.LineTo(Width-11, FDiamond.Right.Y);

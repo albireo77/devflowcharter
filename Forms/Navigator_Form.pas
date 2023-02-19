@@ -103,7 +103,7 @@ procedure TNavigatorForm.ResetForm;
 begin
    inherited ResetForm;
    Position := poDesigned;
-   InvalidateIndicator := true;
+   InvalidateIndicator := True;
    SetBounds(50, 50, 426, 341);
 end;
 

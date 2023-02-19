@@ -86,7 +86,7 @@ begin
          var chkBox := TCheckBox.Create(pnlImports);
          chkBox.Parent := pnlImports;
          chkBox.Caption := FList[i];
-         chkBox.Checked := true;
+         chkBox.Checked := True;
          chkBox.Left := 10;
          chkBox.Top := t;
          t := t + chkBox.Height + 10;

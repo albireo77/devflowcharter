@@ -125,26 +125,22 @@ begin
 end;
 
 procedure TMultiLineBlock.UpdateEditor(AEdit: TCustomEdit);
-var
-   chLine: TChangeLine;
-   templateLines: TStringList;
-   i, rowNum: integer;
 begin
    if PerformEditorUpdate then
    begin
-      chLine := TInfra.GetChangeLine(Self, FStatements);
+      var chLine := TInfra.GetChangeLine(Self, FStatements);
       if chLine.CodeRange.FirstRow <> ROW_NOT_FOUND then
       begin
          if (chLine.CodeRange.Lines <> nil) and GSettings.UpdateEditor and not SkipUpdateEditor then
          begin
-            templateLines := TStringList.Create;
+            var templateLines := TStringList.Create;
             try
                GenerateCode(templateLines, GInfra.CurrentLang.Name, TInfra.GetEditorForm.GetIndentLevel(chLine.CodeRange.FirstRow, chLine.CodeRange.Lines));
                if GSettings.IndentChar = TAB_CHAR then
                   TInfra.IndentSpacesToTabs(templateLines);
-               rowNum := chLine.CodeRange.LastRow - chLine.CodeRange.FirstRow + 1;
+               var rowNum := chLine.CodeRange.LastRow - chLine.CodeRange.FirstRow + 1;
                chLine.CodeRange.Lines.BeginUpdate;
-               for i := 1 to rowNum do
+               for var i := 1 to rowNum do
                   chLine.CodeRange.Lines.Delete(chLine.CodeRange.FirstRow);
 {$IFDEF USE_CODEFOLDING}
                if chLine.CodeRange.FoldRange <> nil then
@@ -153,14 +149,14 @@ begin
                   begin
                      rowNum := templateLines.Count - rowNum;
                      chLine.CodeRange.FoldRange.Widen(rowNum);
-                     for i := 0 to templateLines.Count-1 do
+                     for var i := 0 to templateLines.Count-1 do
                         chLine.CodeRange.Lines.InsertObject(chLine.CodeRange.FirstRow, templateLines[i], templateLines.Objects[i]);
                   end
                   else
                   begin
                      var foldRegion := chLine.CodeRange.FoldRange.FoldRegion;
                      TInfra.GetEditorForm.RemoveFoldRange(chLine.CodeRange.FoldRange);
-                     for i := templateLines.Count-1 downto 0 do
+                     for var i := templateLines.Count-1 downto 0 do
                         chLine.CodeRange.Lines.InsertObject(chLine.CodeRange.FirstRow, templateLines[i], templateLines.Objects[i]);
                      TInfra.GetEditorForm.OnChangeEditor;
                      var foldRanges := TInfra.GetEditorForm.FindFoldRangesInCodeRange(chLine.CodeRange, templateLines.Count);
@@ -178,7 +174,7 @@ begin
                else
 {$ENDIF}
                begin
-                  for i := templateLines.Count-1 downto 0 do
+                  for var i := templateLines.Count-1 downto 0 do
                      chLine.CodeRange.Lines.InsertObject(chLine.CodeRange.FirstRow, templateLines[i], templateLines.Objects[i]);
                end;
                chLine.CodeRange.Lines.EndUpdate;
@@ -186,7 +182,7 @@ begin
             finally
                templateLines.Free;
             end;
-            TInfra.GetEditorForm.memCodeEditor.Modified := true;
+            TInfra.GetEditorForm.memCodeEditor.Modified := True;
          end;
          TInfra.GetEditorForm.SetCaretPos(chLine);
       end;
@@ -201,7 +197,7 @@ begin
    if TInfra.IsNOkColor(FStatements.Font.Color) then
    begin
       AParentNode.MakeVisible;
-      AParentNode.Expand(false);
+      AParentNode.Expand(False);
    end;
 end;
 

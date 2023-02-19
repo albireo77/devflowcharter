@@ -68,7 +68,7 @@ end;
 
 procedure TMemoEditorForm.FormCreate(Sender: TObject);
 begin
-   memEditor.DoubleBuffered := true;
+   memEditor.DoubleBuffered := True;
    if (i18Manager.LoadStaticLabels(GSettings.TranslateFile) = 0) and (i18Manager.LoadDefaultLabels = 0) then
       Application.Terminate;
 end;

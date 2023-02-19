@@ -188,7 +188,7 @@ end;
 
 class function TCodeRange.New: TCodeRange;
 begin
-   result.IsFolded := false;
+   result.IsFolded := False;
    result.FirstRow := ROW_NOT_FOUND;
    result.LastRow := ROW_NOT_FOUND;
    result.Lines := nil;

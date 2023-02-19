@@ -167,9 +167,9 @@ begin
    begin
       tvExplorer.Items.BeginUpdate;
       if Sender = miExpand then
-         tvExplorer.Selected.Expand(true)
+         tvExplorer.Selected.Expand(True)
       else if Sender = miCollapse then
-         tvExplorer.Selected.Collapse(true);
+         tvExplorer.Selected.Collapse(True);
       tvExplorer.Items.EndUpdate;
    end;
 end;

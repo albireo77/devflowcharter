@@ -104,7 +104,7 @@ begin
    if ALangId = PASCAL_LANG_ID then
    begin
       var expr := Trim(FStatement.Text);
-      var inFunction := false;
+      var inFunction := False;
       var userFunction: TUserFunction := nil;
       if not expr.IsEmpty then
       begin

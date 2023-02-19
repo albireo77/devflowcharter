@@ -352,7 +352,7 @@ begin
 {$ENDIF}
    memCodeEditor.ClearAll;
    memCodeEditor.Highlighter := nil;
-   FFocusEditor := true;
+   FFocusEditor := True;
    FCloseBracketPosP := nil;
    FWithFocus := nil;
    Width := 425;
@@ -538,7 +538,7 @@ begin
    else if Sender = miCopy then
       ExecuteCopyToClipboard(False)
    else if Sender = miCopyRichText then
-      ExecuteCopyToClipboard(true)
+      ExecuteCopyToClipboard(True)
    else if Sender = miPaste then
       memCodeEditor.PasteFromClipboard
    else if Sender = miRemove then
@@ -884,7 +884,7 @@ begin
    if State = dsDragEnter then
       memCodeEditor.SetFocus;
    if not ((Source is TComment) or (Source is TBlock)) then
-      Accept := false
+      Accept := False
    else
       memCodeEditor.CaretXY := memCodeEditor.DisplayToBufferPos(memCodeEditor.PixelsToRowColumn(X, Y));
 end;
@@ -1244,7 +1244,7 @@ end;
 procedure TEditorForm.UpdateEditorForBlock(ABlock: TBlock; const AChangeLine: TChangeLine);
 begin
    if GSettings.UpdateEditor and (not ABlock.SkipUpdateEditor) and AChangeLine.Change then
-      memCodeEditor.Modified := true;
+      memCodeEditor.Modified := True;
    SetCaretPos(AChangeLine);
 end;
 
@@ -1433,7 +1433,7 @@ begin
          end;
       end;
 {$ENDIF}
-      ANode.OwnerDocument.PreserveWhiteSpace := false;
+      ANode.OwnerDocument.PreserveWhiteSpace := False;
       var i := GetNodeAttrInt(ANode, 'src_top_line', 0);
       if i > 0 then
          memCodeEditor.TopLine := i;

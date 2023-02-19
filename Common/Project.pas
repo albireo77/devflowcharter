@@ -106,7 +106,7 @@ type
       procedure UpdateZOrder(AParent: TWinControl);
       function Register(AObject: TObject; AId: integer = ID_INVALID): integer;
       procedure UnRegister(AObject: TObject);
-      function GetPage(const ACaption: string; ACreate: boolean = true): TBlockTabSheet;
+      function GetPage(const ACaption: string; ACreate: boolean = True): TBlockTabSheet;
       function MainPage: TBlockTabSheet;
       function ActivePage: TBlockTabSheet;
       procedure UpdateHeadersBody(APage: TTabSheet);
@@ -177,7 +177,7 @@ begin
    result := FLibSectionOffset;
 end;
 
-function TProject.GetPage(const ACaption: string; ACreate: boolean = true): TBlockTabSheet;
+function TProject.GetPage(const ACaption: string; ACreate: boolean = True): TBlockTabSheet;
 begin
    result := nil;
    var caption := ACaption.Trim;
