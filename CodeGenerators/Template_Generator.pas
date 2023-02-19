@@ -739,10 +739,7 @@ begin
           if AHeader.chkConstructor.Checked or (AHeader.cbType.ItemIndex = 0) then
              TInfra.DeleteLinesContaining(template, '%s4')
           else
-          begin
-             var returnString := ReplaceStr(lang.FunctionHeaderDescReturnMask, PRIMARY_PLACEHOLDER, AHeader.cbType.Text);
-             template.Text := ReplaceStr(template.Text, '%s4', returnString);
-          end;
+             template.Text := ReplaceStr(template.Text, '%s4', ReplaceStr(lang.FunctionHeaderDescReturnMask, PRIMARY_PLACEHOLDER, AHeader.cbType.Text));
 
           result := template.Text;
        finally
