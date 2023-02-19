@@ -791,11 +791,11 @@ end;
 function TUserFunction.GetTreeNodeText(ANodeOffset: integer = 0): string;
 begin
    result := '';
+   var lang := GInfra.CurrentLang;
    if IsMain then
    begin
-      if GInfra.CurrentLang.EnabledUserFunctionHeader then
+      if lang.EnabledUserFunctionHeader then
       begin
-         var lang := GInfra.CurrentLang;
          if not Assigned(lang.GetMainProgramDesc) then
             lang := GInfra.TemplateLang;
          result := lang.GetMainProgramDesc;
@@ -805,7 +805,6 @@ begin
    end
    else
    begin
-      var lang := GInfra.CurrentLang;
       if not Assigned(lang.GetUserFuncDesc) then
          lang := GInfra.TemplateLang;
       result := lang.GetUserFuncDesc(FHeader, False, False).Trim;
