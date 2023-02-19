@@ -107,18 +107,12 @@ begin
 end;
 
 procedure Pascal_ProgramHeaderSectionGenerator(ALines: TStringList);
-var
-   progName: string;
 begin
-
    GInfra.TemplateLang.ProgramHeaderSectionGenerator(ALines);
-
-   if GProject.Name.IsEmpty then
-      progName := i18Manager.GetString('Unknown')
-   else
-      progName := GProject.Name;
+   var progName := GProject.Name;
+   if progName.IsEmpty then
+      progName := i18Manager.GetString('Unknown');
    progName := ReplaceStr(progName, ' ', '_') + ';';
-
    if GProject.GetMainBlock <> nil then
       ALines.Add('program ' + progName)
    else

@@ -65,7 +65,7 @@ uses
 
 procedure TToolboxForm.sbNormalClick(Sender: TObject);
 begin
-    (Sender as TSpeedButton).Down := true;
+    (Sender as TSpeedButton).Down := True;
     if Sender = sbNormal then
        GCustomCursor := crNormal
     else if Sender = sbRepeat then
@@ -101,7 +101,7 @@ end;
 procedure TToolboxForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
    GCustomCursor := crNormal;
-   sbNormal.Down := true;
+   sbNormal.Down := True;
 end;
 
 procedure TToolboxForm.FormCreate(Sender: TObject);
@@ -111,7 +111,7 @@ end;
 
 procedure TToolboxForm.ResetForm;
 begin
-   sbNormal.Down := true;
+   sbNormal.Down := True;
    Close;
 end;
 
