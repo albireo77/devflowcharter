@@ -245,18 +245,15 @@ end;
 class function TParserHelper.GetType(const ATypeName: string; const ALangName: string = ''): integer;
 begin
    result := UNKNOWN_TYPE;
-   var lang := GInfra.CurrentLang;
-   if not ALangName.IsEmpty then
-      lang := GInfra.GetLangDefinition(ALangName);
-   if lang <> nil then
+   var lang := GInfra.GetLangDefinition(ALangName);
+   if lang = nil then
+      lang := GInfra.CurrentLang;
+   for var i := 0 to High(lang.NativeDataTypes) do
    begin
-      for var i := 0 to High(lang.NativeDataTypes) do
+      if TInfra.SameStrings(lang.NativeDataTypes[i].Name, ATypeName) then
       begin
-         if TInfra.SameStrings(lang.NativeDataTypes[i].Name, ATypeName) then
-         begin
-            result := i;
-            break;
-         end;
+         result := i;
+         break;
       end;
    end;
    if (result = UNKNOWN_TYPE) and (GProject <> nil) and (GProject.GlobalVars <> nil) then
