@@ -280,10 +280,6 @@ begin
 end;
 
 procedure TForDoBlock.VarOnChange(Sender: TObject);
-var
-   header: TUserFunctionHeader;
-   isOk: boolean;
-   w: integer;
 begin
    GProject.SetChanged;
    edtVar.Font.Color := GSettings.FontColor;
@@ -292,11 +288,10 @@ begin
       UpdateEditor(edtVar);
    if GSettings.ParseFor then
    begin
-      if (GProject.GlobalVars <> nil) and GProject.GlobalVars.IsValidLoopVar(edtVar.Text) then
-         isOk := True
-      else
+      var isOk := True;
+      if (GProject.GlobalVars = nil) or not GProject.GlobalVars.IsValidLoopVar(edtVar.Text) then
       begin
-         header := TInfra.GetFunctionHeader(Self);
+         var header := TInfra.GetFunctionHeader(Self);
          isOk := (header <> nil) and header.LocalVars.IsValidLoopVar(edtVar.Text);
       end;
       if not isOk then
@@ -308,7 +303,7 @@ begin
             edtVar.Hint := i18Manager.GetFormattedString('NoCVar', [sLineBreak]);
       end;
    end;
-   w := TInfra.GetAutoWidth(edtVar, IfThen(GInfra.CurrentLang.ForDoVarList, 28, 5));
+   var w := TInfra.GetAutoWidth(edtVar, IfThen(GInfra.CurrentLang.ForDoVarList, 28, 5));
    if w <> edtVar.Width then
    begin
       edtVar.Width := w;
@@ -317,19 +312,15 @@ begin
 end;
 
 function TForDoBlock.FillCodedTemplate(const ALangId: string): string;
-var
-   varVal, startVal, stopVal, varName: string;
-   lang: TLangDefinition;
-   i: integer;
 begin
    result := '';
-   varVal := Trim(edtVar.Text);
-   startVal := Trim(edtStart.Text);
-   stopVal := Trim(edtStop.Text);
-   lang := GInfra.GetLangDefinition(ALangId);
+   var i := 0;
+   var varVal := Trim(edtVar.Text);
+   var startVal := Trim(edtStart.Text);
+   var stopVal := Trim(edtStop.Text);
    if ALangId = PYTHON_LANG_ID then
    begin
-      result := 'for ' + varVal + ' ' + lang.ForDoVarString + ' ';
+      result := 'for ' + varVal + ' ' + GInfra.GetLangDefinition(ALangId).ForDoVarString + ' ';
       if stopVal.IsEmpty then
       begin
          if TryStrToInt(startVal, i) then
@@ -351,7 +342,7 @@ begin
          result := 'for (' + varVal + ' : ' + startVal + ') {'
       else
       begin
-         varName := varVal;
+         var varName := varVal;
          i := LastDelimiter(' ', varName);
          if i > 0 then
             varName := Copy(varName, i+1);
@@ -374,19 +365,16 @@ begin
 end;
 
 function TForDoBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
-var
-   template, line, indent: string;
-   tmpList: TStringList;
 begin
    result := 0;
    if fsStrikeOut in Font.Style then
       Exit;
-   indent := GSettings.IndentString(ADeep);
-   tmpList := TStringList.Create;
+   var indent := GSettings.IndentString(ADeep);
+   var tmpList := TStringList.Create;
    try
       if (ALangId = PYTHON_LANG_ID) or (ALangId = JAVA_LANG_ID) then   // for Java and Python it's impossible to create suitable for..do XML template so hardcoded template must be used
       begin
-         line := indent + FillCodedTemplate(ALangId);
+         var line := indent + FillCodedTemplate(ALangId);
          tmpList.AddObject(line, Self);
          GenerateNestedCode(tmpList, PRIMARY_BRANCH_IDX, ADeep+1, ALangId);
          if ALangId = JAVA_LANG_ID then
@@ -394,7 +382,7 @@ begin
       end
       else
       begin
-         template := FillTemplate(ALangId, GetBlockTemplate(ALangId));
+         var template := FillTemplate(ALangId, GetBlockTemplate(ALangId));
          if not template.IsEmpty then
             GenerateTemplateSection(tmpList, template, ALangId, ADeep);
       end;
@@ -407,10 +395,7 @@ end;
 
 procedure TForDoBlock.SetWidth(AMinX: integer);
 begin
-   if AMinX < FInitParms.Width - 30 then
-      Width := FInitParms.Width
-   else
-      Width := AMinX + 30;
+   Width := IfThen(AMinX < FInitParms.Width-30, FInitParms.Width, AMinX+30);
    BottomPoint.X := Width - RIGHT_MARGIN;
 end;
 
@@ -470,16 +455,13 @@ begin
    inherited PopulateComboBoxes;
    if GInfra.CurrentLang.ForDoVarList then
    begin
-      with cbVar do
-      begin
-         Items.Clear;
-         if GProject.GlobalVars <> nil then
-            GProject.GlobalVars.FillForList(Items);
-         var header := TInfra.GetFunctionHeader(Self);
-         if header <> nil then
-            header.LocalVars.FillForList(Items);
-         ItemIndex := Items.IndexOf(edtVar.Text);
-      end;
+      cbVar.Items.Clear;
+      if GProject.GlobalVars <> nil then
+         GProject.GlobalVars.FillForList(cbVar.Items);
+      var header := TInfra.GetFunctionHeader(Self);
+      if header <> nil then
+         header.LocalVars.FillForList(cbVar.Items);
+      cbVar.ItemIndex := cbVar.Items.IndexOf(edtVar.Text);
    end;
 end;
 
@@ -526,12 +508,12 @@ end;
 
 procedure TForDoBlock.UpdateEditor(AEdit: TCustomEdit);
 begin
-   var langName := GInfra.CurrentLang.Name;
    if PerformEditorUpdate then
    begin
       var chLine := TInfra.GetChangeLine(Self);
       if chLine.Row <> ROW_NOT_FOUND then
       begin
+         var langName := GInfra.CurrentLang.Name;
          if GetBlockTemplate(langName).IsEmpty then
             chLine.Text := TInfra.ExtractIndentString(chLine.Text) + FillCodedTemplate(langName)
          else
