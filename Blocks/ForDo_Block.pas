@@ -210,7 +210,7 @@ begin
    edtVar.SetBounds(cbVar.Left+4, 38-t, edtVar.Width, edtVar.Height);
    r := DrawTextLabel(edtVar.Left + edtVar.Width + 3, t, GInfra.CurrentLang.ForDoVarString, False, True, False).Right;
    edtStart.SetBounds(r+4, 38-t, edtStart.Width, edtStart.Height);
-   r := DrawTextLabel(edtStart.Left + edtStart.Width + 3, t, IfThen(FDescOrder, '«', '»'), False, True, False).Right;
+   r := DrawTextLabel(edtStart.Left + edtStart.Width + 3, t, IfThen(FDescOrder, 'Â«', 'Â»'), False, True, False).Right;
    edtStop.SetBounds(r+4, 38-t, edtStop.Width, edtStop.Height);
    Invalidate;
 end;
@@ -244,7 +244,7 @@ begin
                       Point(bhx-100, TopHook.Y),
                       Point(bhx-100, 0)]);
       DrawTextLabel(edtVar.BoundsRect.Right+3, t, GInfra.CurrentLang.ForDoVarString, False, True);
-      DrawTextLabel(edtStart.BoundsRect.Right+3, t, IfThen(FDescOrder, '«', '»'), False, True);
+      DrawTextLabel(edtStart.BoundsRect.Right+3, t, IfThen(FDescOrder, 'Â«', 'Â»'), False, True);
       DrawTextLabel(bhx-97, t, FForLabel, False, True);
       DrawBlockLabel(bhx-100, 40, GInfra.CurrentLang.LabelFor);
    end;
@@ -292,7 +292,8 @@ begin
       if (GProject.GlobalVars = nil) or not GProject.GlobalVars.IsValidLoopVar(edtVar.Text) then
       begin
          var header := TInfra.GetFunctionHeader(Self);
-         isOk := (header <> nil) and header.LocalVars.IsValidLoopVar(edtVar.Text);
+         if header <> nil then
+            isOk := header.LocalVars.IsValidLoopVar(edtVar.Text);
       end;
       if not isOk then
       begin
