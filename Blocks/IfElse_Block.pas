@@ -143,11 +143,7 @@ begin
 end;
 
 procedure TIfElseBlock.ResizeHorz(AContinue: boolean);
-var
-   leftX, maxXTrue, minXFalse, rightX, dlt: integer;
-   block: TBlock;
 begin
-
    if (TrueBranch.Count = 0) and (FalseBranch.Count = 0) then  // no child blocks
    begin
       Width := FInitParms.Width;
@@ -164,21 +160,19 @@ begin
          ParentBlock.ResizeHorz(AContinue);
       Exit;
    end;
-
    LinkAllBlocks;
-
    if (FRedArrow <> FALSE_BRANCH_IDX) and (TrueBranch.Count > 0) then           // TRUE branch
    begin
-      leftX := 10;
-      for block in TrueBranch do
+      var leftX := 10;
+      for var block in TrueBranch do
           leftX := Min(block.Left, leftX);
       TrueBranch.Hook.X := TrueBranch.Hook.X - leftX + 10;
       LinkAllBlocks;
 
-      maxXTrue := BottomHook - 30;
-      for block in TrueBranch do
+      var maxXTrue := BottomHook - 30;
+      for var block in TrueBranch do
           maxXTrue := Max(block.BoundsRect.Right, maxXTrue);
-      dlt := maxXTrue - BottomHook + 30;
+      var dlt := maxXTrue - BottomHook + 30;
       Inc(TopHook.X, dlt);
       BottomHook := BottomHook + dlt;
       BottomPoint.X := BottomHook;
@@ -194,18 +188,17 @@ begin
          Width := FalseHook + 11;
       end;
    end;
-
    if (FRedArrow <> TRUE_BRANCH_IDX) and (FalseBranch.Count > 0) then           // FALSE branch
    begin
-      minXFalse := BottomHook + 30;
-      for block in FalseBranch do
+      var minXFalse := BottomHook + 30;
+      for var block in FalseBranch do
           minXFalse := Min(block.Left, minXFalse);
-      dlt := BottomHook + 30 - minXFalse;
+      var dlt := BottomHook + 30 - minXFalse;
       FalseBranch.Hook.X := FalseBranch.Hook.X + dlt;
       LinkAllBlocks;
 
-      rightX := 0;
-      for block in FalseBranch do
+      var rightX := 0;
+      for var block in FalseBranch do
           rightX := Max(block.BoundsRect.Right, rightX);
       Width := rightX + 10;
       LinkAllBlocks;
@@ -215,7 +208,6 @@ begin
       else
          TrueHook := TrueBranch.Hook.X;
    end;
-
    if AContinue then
       ParentBlock.ResizeHorz(AContinue);
 
