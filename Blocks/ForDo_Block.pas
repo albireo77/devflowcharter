@@ -1,4 +1,4 @@
-{
+﻿{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
 
@@ -288,14 +288,13 @@ begin
       UpdateEditor(edtVar);
    if GSettings.ParseFor then
    begin
-      var isOk := True;
+      var isVarOk := True;
       if (GProject.GlobalVars = nil) or not GProject.GlobalVars.IsValidLoopVar(edtVar.Text) then
       begin
          var header := TInfra.GetFunctionHeader(Self);
-         if header <> nil then
-            isOk := header.LocalVars.IsValidLoopVar(edtVar.Text);
+         isVarOk := (header <> nil) and header.LocalVars.IsValidLoopVar(edtVar.Text);
       end;
-      if not isOk then
+      if not isVarOk then
       begin
          edtVar.Font.Color := NOK_COLOR;
          if edtVar.Text <> '' then
