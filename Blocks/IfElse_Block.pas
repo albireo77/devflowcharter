@@ -163,16 +163,15 @@ begin
    LinkAllBlocks;
    if (FRedArrow <> FALSE_BRANCH_IDX) and (TrueBranch.Count > 0) then           // TRUE branch
    begin
-      var leftX := 10;
+      var lx := 10;
       for var block in TrueBranch do
-          leftX := Min(block.Left, leftX);
-      TrueBranch.Hook.X := TrueBranch.Hook.X - leftX + 10;
+          lx := Min(block.Left, lx);
+      TrueBranch.Hook.X := TrueBranch.Hook.X - lx + 10;
       LinkAllBlocks;
-
-      var maxXTrue := BottomHook - 30;
+      var mx := BottomHook - 30;
       for var block in TrueBranch do
-          maxXTrue := Max(block.BoundsRect.Right, maxXTrue);
-      var dlt := maxXTrue - BottomHook + 30;
+          mx := Max(block.BoundsRect.Right, mx);
+      var dlt := mx - BottomHook + 30;
       Inc(TopHook.X, dlt);
       BottomHook := BottomHook + dlt;
       BottomPoint.X := BottomHook;
@@ -190,17 +189,16 @@ begin
    end;
    if (FRedArrow <> TRUE_BRANCH_IDX) and (FalseBranch.Count > 0) then           // FALSE branch
    begin
-      var minXFalse := BottomHook + 30;
+      var mx := BottomHook + 30;
       for var block in FalseBranch do
-          minXFalse := Min(block.Left, minXFalse);
-      var dlt := BottomHook + 30 - minXFalse;
+          mx := Min(block.Left, mx);
+      var dlt := BottomHook + 30 - mx;
       FalseBranch.Hook.X := FalseBranch.Hook.X + dlt;
       LinkAllBlocks;
-
-      var rightX := 0;
+      var rx := 0;
       for var block in FalseBranch do
-          rightX := Max(block.BoundsRect.Right, rightX);
-      Width := rightX + 10;
+          rx := Max(block.BoundsRect.Right, rx);
+      Width := rx + 10;
       LinkAllBlocks;
       FalseHook := FalseBranch.Last.Left + FalseBranch.Last.BottomPoint.X;
       if TrueBranch.Count > 0 then
@@ -210,7 +208,6 @@ begin
    end;
    if AContinue then
       ParentBlock.ResizeHorz(AContinue);
-
 end;
 
 procedure TIfElseBlock.ResizeVert(AContinue: boolean);
