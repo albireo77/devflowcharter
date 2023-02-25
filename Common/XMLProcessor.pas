@@ -171,25 +171,28 @@ begin
       var filePath := AFilePath;
       if ExtractFilePath(filePath).IsEmpty then
          filePath := DialogXMLFile(TInfra.GetMainForm.ExportDialog, filePath);
-      if FileExists(filePath) and FileIsReadOnly(filePath) then
+      if not filePath.IsEmpty then
       begin
-         TInfra.ShowErrorBox('SaveReadOnlyFile', [filePath], errIO);
-         result := errIO;
-      end
-      else if not filePath.IsEmpty then
-      begin
-         var docXML := CreateXMLDoc;
-         var xmlInstr := docXML.CreateProcessingInstruction('xml', XML_HEADER);
-         docXML.AppendChild(xmlInstr);
-         var tag := docXML.CreateElement('project');
-         docXML.AppendChild(tag);
-         AExportProc(tag);
-         try
-            docXML.Save(filePath, ofIndent);
-         except on E: Exception do
-            begin
-               result := errIO;
-               TInfra.ShowErrorBox('SaveError', [filePath, sLineBreak, E.Message], result);
+         if FileExists(filePath) and FileIsReadOnly(filePath) then
+         begin
+            TInfra.ShowErrorBox('SaveReadOnlyFile', [filePath], errIO);
+            result := errIO;
+         end
+         else
+         begin
+            var docXML := CreateXMLDoc;
+            var xmlInstr := docXML.CreateProcessingInstruction('xml', XML_HEADER);
+            docXML.AppendChild(xmlInstr);
+            var tag := docXML.CreateElement('project');
+            docXML.AppendChild(tag);
+            AExportProc(tag);
+            try
+               docXML.Save(filePath, ofIndent);
+            except on E: Exception do
+               begin
+                  result := errIO;
+                  TInfra.ShowErrorBox('SaveError', [filePath, sLineBreak, E.Message], result);
+               end;
             end;
          end;
       end;
