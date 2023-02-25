@@ -164,19 +164,13 @@ begin
 end;
 
 class function TXMLProcessor.ExportToXMLFile(AExportProc: TXMLExportProc; const AFilePath: string): TError;
-var
-   docXML: IXMLDocument;
-   xmlInstr: IXMLProcessingInstruction;
-   tag: IXMLElement;
-   filePath: string;
 begin
    result := errNone;
    if Assigned(AExportProc) then
    begin
-      if ExtractFilePath(AFilePath).IsEmpty then
-         filePath := DialogXMLFile(TInfra.GetMainForm.ExportDialog, AFilePath)
-      else
-         filePath := AFilePath;
+      var filePath := AFilePath;
+      if ExtractFilePath(filePath).IsEmpty then
+         filePath := DialogXMLFile(TInfra.GetMainForm.ExportDialog, filePath);
       if FileExists(filePath) and FileIsReadOnly(filePath) then
       begin
          TInfra.ShowErrorBox('SaveReadOnlyFile', [filePath], errIO);
@@ -184,10 +178,10 @@ begin
       end
       else if not filePath.IsEmpty then
       begin
-         docXML := CreateXMLDoc;
-         xmlInstr := docXML.CreateProcessingInstruction('xml', XML_HEADER);
+         var docXML := CreateXMLDoc;
+         var xmlInstr := docXML.CreateProcessingInstruction('xml', XML_HEADER);
          docXML.AppendChild(xmlInstr);
-         tag := docXML.CreateElement('project');
+         var tag := docXML.CreateElement('project');
          docXML.AppendChild(tag);
          AExportProc(tag);
          try
