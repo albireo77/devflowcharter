@@ -173,7 +173,7 @@ begin
           mx := Max(block.BoundsRect.Right, mx);
       var dlt := mx - BottomHook + 30;
       Inc(TopHook.X, dlt);
-      BottomHook := BottomHook + dlt;
+      BottomHook := mx + 30;
       BottomPoint.X := BottomHook;
       Width := Width + dlt + 10;
       Inc(FalseBranch.Hook.X, dlt);
