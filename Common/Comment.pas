@@ -100,6 +100,7 @@ begin
 
    OnEndDrag := OnEndDragComment;
    OnMouseLeave := OnMouseLeaveComment;
+   OnContextPopup := OnContextPopupComment;
 end;
 
 function TComment.Clone(APage: TBlockTabSheet; const ATopLeft: TPoint): TComment;
