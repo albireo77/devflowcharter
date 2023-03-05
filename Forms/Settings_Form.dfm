@@ -948,6 +948,7 @@ object SettingsForm: TSettingsForm
       Top = 32
       Width = 265
       Height = 67
+      Transparent = True
       OnClick = imgShapesClick
     end
     object lblFontColor: TLabel
