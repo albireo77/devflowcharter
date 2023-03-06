@@ -76,6 +76,7 @@ uses
 constructor TMemoEx.Create(AOwner: TComponent);
 begin
    inherited Create(AOwner);
+   StyleElements := StyleElements - [seClient];
    EditMargins.Auto := True;
    EditFormWidth := 280;
    EditFormHeight := 182;
