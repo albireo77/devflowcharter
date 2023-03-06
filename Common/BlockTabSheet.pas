@@ -80,6 +80,7 @@ begin
    DrawI := True;
    Box := TScrollBoxEx.Create(Self);
    Box.UseWheelForScrolling := True;
+   Box.StyleElements := Box.StyleElements - [seClient];
 end;
 
 destructor TBlockTabSheet.Destroy;
