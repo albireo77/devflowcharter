@@ -628,6 +628,7 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 0
+        StyleElements = [seFont, seBorder]
         OnClick = pnlSelectClick
       end
       object pnlEditorGutter: TPanel
@@ -643,6 +644,7 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 1
+        StyleElements = [seFont, seBorder]
         OnClick = pnlSelectClick
       end
       object pnlEditorFont: TPanel
@@ -658,6 +660,7 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 2
+        StyleElements = [seFont, seBorder]
         OnClick = pnlSelectClick
       end
       object pnlEditorBkg: TPanel
@@ -673,6 +676,7 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 3
+        StyleElements = [seFont, seBorder]
         OnClick = pnlSelectClick
       end
       object pnlEditorNumber: TPanel
@@ -688,6 +692,7 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 4
+        StyleElements = [seFont, seBorder]
         OnClick = pnlSelectClick
       end
       object pnlEditorString: TPanel
@@ -703,6 +708,7 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 5
+        StyleElements = [seFont, seBorder]
         OnClick = pnlSelectClick
       end
       object pnlEditorSelect: TPanel
@@ -718,6 +724,7 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 6
+        StyleElements = [seFont, seBorder]
         OnClick = pnlSelectClick
       end
       object pnlEditorComment: TPanel
@@ -733,6 +740,7 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 7
+        StyleElements = [seFont, seBorder]
         OnClick = pnlSelectClick
       end
       object pnlEditorIdent: TPanel
@@ -748,6 +756,7 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 8
+        StyleElements = [seFont, seBorder]
         OnClick = pnlSelectClick
       end
       object pnlEditorKeyword: TPanel
@@ -763,6 +772,7 @@ object SettingsForm: TSettingsForm
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 9
+        StyleElements = [seFont, seBorder]
         OnClick = pnlSelectClick
       end
     end
@@ -1022,6 +1032,7 @@ object SettingsForm: TSettingsForm
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
+      StyleElements = [seFont, seBorder]
       OnClick = pnlSelectClick
     end
     object pnlDesktop: TPanel
@@ -1037,6 +1048,7 @@ object SettingsForm: TSettingsForm
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 1
+      StyleElements = [seFont, seBorder]
       OnClick = pnlSelectClick
     end
     object pnlFont: TPanel
@@ -1054,6 +1066,7 @@ object SettingsForm: TSettingsForm
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
+      StyleElements = [seFont, seBorder]
       OnClick = pnlSelectClick
     end
     object edtFontNameSize: TEdit
@@ -1138,6 +1151,7 @@ object SettingsForm: TSettingsForm
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 7
+      StyleElements = [seFont, seBorder]
       OnClick = pnlSelectClick
     end
   end

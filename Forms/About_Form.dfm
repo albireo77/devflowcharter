@@ -10,11 +10,9 @@ object AboutForm: TAboutForm
   ClientWidth = 417
   Color = clBtnFace
   ParentFont = True
-  OldCreateOrder = False
   Position = poMainFormCenter
   OnCreate = FormCreate
-  PixelsPerInch = 96
-  TextHeight = 13
+  TextHeight = 15
   object imDelphi: TImage
     Left = 0
     Top = 165
@@ -350,6 +348,7 @@ object AboutForm: TAboutForm
     Color = clMoneyGreen
     ParentBackground = False
     TabOrder = 1
+    StyleElements = [seFont, seBorder]
     object lblInfo1: TLabel
       Left = 58
       Top = 16
