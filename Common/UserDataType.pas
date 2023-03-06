@@ -119,6 +119,7 @@ begin
 
    sbxElements := TScrollBox.Create(Self);
    sbxElements.Parent := Self;
+   sbxElements.StyleElements := sbxElements.StyleElements - [seClient];
    sbxElements.Ctl3D := False;
    sbxElements.BorderStyle := bsNone;
    sbxElements.SetBounds(0, 149, TInfra.Scaled(Self, 302), 0);

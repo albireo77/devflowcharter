@@ -108,6 +108,7 @@ begin
 
    cbVar := TComboBox.Create(Self);
    cbVar.Parent := Self;
+   cbVar.StyleElements := cbVar.StyleElements - [seClient];
    cbVar.Visible := False;
    cbVar.Font.Color := GSettings.FontColor;
    cbVar.Ctl3D := False;
@@ -120,6 +121,7 @@ begin
 
    edtVar := TEdit.Create(Self);
    edtVar.Parent := Self;
+   edtVar.StyleElements := edtVar.StyleElements - [seClient];
    edtVar.ReadOnly := GInfra.CurrentLang.ForDoVarList;
    edtVar.ShowHint := True;
    edtVar.AutoSelect := False;

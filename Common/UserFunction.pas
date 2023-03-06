@@ -579,6 +579,7 @@ begin
 
    sbxElements := TScrollBox.Create(gbParams);
    sbxElements.Parent := gbParams;
+   sbxElements.StyleElements := sbxElements.StyleElements - [seClient];
    sbxElements.SetBounds(6, 36, gbParams.Width-10, 0);
    sbxElements.Ctl3D := False;
    sbxElements.BorderStyle := bsNone;
