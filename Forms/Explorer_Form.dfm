@@ -73,6 +73,7 @@ object ExplorerForm: TExplorerForm
     PopupMenu = PopupMenu
     ReadOnly = True
     TabOrder = 0
+    StyleElements = [seFont, seBorder]
     OnChange = tvExplorerChange
     OnCreateNodeClass = tvExplorerCreateNodeClass
     OnCustomDrawItem = tvExplorerCustomDrawItem
