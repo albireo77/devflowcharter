@@ -159,7 +159,6 @@ end;
 
 procedure TReturnBlock.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-   inherited;
    if IsAtSelectPos(Point(X, Y)) then
       Select
    else
