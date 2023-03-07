@@ -1424,8 +1424,12 @@ var
 begin
    GetWindowExtEx(Canvas.Handle, wndExt);
    GetViewportExtEx(Canvas.Handle, viewPort);
-   cx := viewPort.cx / wndExt.cx;
-   cy := viewPort.cy / wndExt.cy;
+   cx := viewPort.cx;
+   cy := viewPort.cy;
+   if wndExt.cx <> 0 then
+      cx := cx / wndExt.cx;
+   if wndExt.cy <> 0 then
+      cy := cy / wndExt.cy;
    R := TRect.Empty;
    DrawText(Canvas.Handle, PChar(AText), -1, R, DT_CALCRECT);
    ar := R.Height * cy / Sqrt(2);
