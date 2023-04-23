@@ -833,11 +833,13 @@ begin
          begin
             found := True;
             for a := 0 to memCodeEditor.Marks.Count-1 do
+            begin
                if i = memCodeEditor.Marks[a].ImageIndex then
                begin
                   found := False;
                   break;
                end;
+            end;
             if found then break;
          end;
          if not found then
