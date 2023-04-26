@@ -1,4 +1,4 @@
-10.0 [??-??-????]
+10.0 [26-04-2023]
 - compiled with Delphi 11
 - rewrite XML backend using OmniXMLUtils unit
 - fix duplicated comments saved to XML file when flowcharts overlapped
