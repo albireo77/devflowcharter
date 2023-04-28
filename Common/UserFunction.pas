@@ -911,8 +911,8 @@ begin
    chkBodyVisible.Checked := GetNodeAttrBool(ANode, 'show_body');
    chkInclDescCode.Checked := GetNodeAttrBool(ANode, 'desc_incl');
    chkInclDescFlow.Checked := GetNodeAttrBool(ANode, 'desc_incl_flow');
-   chkArrayType.Checked := GetNodeAttrBool(ANode, 'arrayType');
-   chkConstructor.Checked := GetNodeAttrBool(ANode, 'constructor');
+   chkArrayType.Checked := GetNodeAttrBool(ANode, 'arrayType', False);
+   chkConstructor.Checked := GetNodeAttrBool(ANode, 'constructor', False);
    if chkStatic.Visible then
       chkStatic.Checked := GetNodeAttrBool(ANode, 'static', False);
    FLocalVars.ImportFromXML(ANode, impAll);
