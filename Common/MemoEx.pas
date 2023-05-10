@@ -278,10 +278,10 @@ begin
       HasVScroll := GetNodeAttrBool(ANode, 'mem_vscroll');
       HasHScroll := GetNodeAttrBool(ANode, 'mem_hscroll');
       WordWrap := GetNodeAttrBool(ANode, 'mem_wordwrap');
-      var h := GetNodeAttrInt(ANode, 'mem_hscroll_pos');
-      var v := GetNodeAttrInt(ANode, 'mem_vscroll_pos');
+      var h := GetNodeAttrInt(ANode, 'mem_hscroll_pos', 0);
+      var v := GetNodeAttrInt(ANode, 'mem_vscroll_pos', 0);
       Perform(EM_LINESCROLL, h, v);
-      Alignment := TRttiEnumerationType.GetValue<TAlignment>(GetNodeAttrStr(ANode, 'mem_align'));
+      Alignment := TRttiEnumerationType.GetValue<TAlignment>(GetNodeAttrStr(ANode, 'mem_align', 'taLeftJustify'));
    end;
 end;
 
