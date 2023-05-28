@@ -49,7 +49,7 @@ type
 
    TArrowPosition = (arrMiddle, arrEnd);
 
-   TColorShape = (shpNone, shpEllipse, shpParallel, shpDiamond, shpRectangle, shpRoadSign, shpRoutine, shpFolder);
+   TColorShape = (shpEllipse, shpParallel, shpDiamond, shpRectangle, shpRoadSign, shpRoutine, shpFolder);
 
    TImportMode = (impSelectTab, impSelectPopup, impAll);
 

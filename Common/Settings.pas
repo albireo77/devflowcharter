@@ -103,7 +103,7 @@ type
       procedure SetForm;
       procedure UpdateForHLighter(AHLighter: TSynCustomHighlighter);
       procedure ResetCurrentLangName;
-      function GetShapeColor(const shape: TColorShape): TColor;
+      function GetShapeColor(AShape: TColorShape): TColor;
       function UpdateEditor: boolean;
       function IndentString(ATimes: integer = 1): string;
       function ExecuteParse(AParserMode: TYYMode): boolean;
@@ -350,7 +350,6 @@ begin
    if TInfra.IsNOkColor(FFontColor) then
       FFontColor := OK_COLOR;
    FIndentSpaces := StringOfChar(SPACE_CHAR, FIndentLength);
-   FShapeColors[shpNone] := clNone;
 end;
 
 procedure TSettings.Save;
@@ -475,9 +474,9 @@ begin
    FEditorCodeFolding    := eForm.miCodeFoldingEnable.Checked;
 end;
 
-function TSettings.GetShapeColor(const shape: TColorShape): TColor;
+function TSettings.GetShapeColor(AShape: TColorShape): TColor;
 begin
-   result := FShapeColors[shape];
+   result := FShapeColors[AShape];
 end;
 
 procedure TSettings.LoadFromForm;

@@ -131,15 +131,15 @@ type
     procedure edtFontNameSizeClick(Sender: TObject);
   private
     procedure SetComboBoxItem(AComboBox: TComboBox; const AText: string);
-    procedure FillShape(const shape: TColorShape; const AColor: TColor);
+    procedure FillShape(AShape: TColorShape; AColor: TColor);
     procedure DrawShapes(ASettings: TSettings);
-    procedure FillAllShapes(const AColor: TColor);
+    procedure FillAllShapes(AColor: TColor);
     procedure SetFontNameSize(const AFontName: string; AFontSize: integer);
   public
     procedure SetDefault;
     procedure ProtectFields;
     procedure SetSettings(ASettings: TSettings);
-    function GetShapeColor(const shape: TColorShape): TColor;
+    function GetShapeColor(AShape: TColorShape): TColor;
   end;
 
 var
@@ -152,8 +152,7 @@ uses
 
 const
    SHAPE_BORDER_COLOR = clBlack;
-   SHAPE_RECTS: array[TColorShape] of TRect = ((Left:0;   Top:0;  Right:0;   Bottom:0),     // none
-                                               (Left:10;  Top:10; Right:60;  Bottom:35),    // ellipse
+   SHAPE_RECTS: array[TColorShape] of TRect = ((Left:10;  Top:10; Right:60;  Bottom:35),    // ellipse
                                                (Left:10;  Top:45; Right:60;  Bottom:65),    // parallelogram
                                                (Left:75;  Top:13; Right:125; Bottom:63),    // diamond
                                                (Left:140; Top:10; Right:190; Bottom:35),    // rectangle
@@ -259,44 +258,42 @@ end;
 procedure TSettingsForm.imgShapesClick(Sender: TObject);
 begin
    var pnt := imgShapes.ScreenToClient(Mouse.CursorPos);
-   var shape := High(TColorShape);
-   repeat
-      if SHAPE_RECTS[shape].Contains(pnt) then
-         break;
-      shape := Pred(shape);
-   until shape = shpNone;
-   if (shape <> shpNone) and ColorDialog.Execute then
-      FillShape(shape, ColorDialog.Color);
-end;
-
-procedure TSettingsForm.FillShape(const shape: TColorShape; const AColor: TColor);
-begin
-   if shape <> shpNone then
+   for var shape := Low(TColorShape) to High(TColorShape) do
    begin
-      imgShapes.Canvas.Brush.Color := AColor;
-      var rect := SHAPE_RECTS[shape];
-      var pnt := rect.CenterPoint;
-      imgShapes.Canvas.FloodFill(pnt.X, pnt.Y, SHAPE_BORDER_COLOR, fsBorder);
-      if shape = shpFolder then
-         imgShapes.Canvas.FloodFill(rect.Left+1, rect.Top+1, SHAPE_BORDER_COLOR, fsBorder)
-      else if shape = shpRoutine then
+      if SHAPE_RECTS[shape].Contains(pnt) then
       begin
-         imgShapes.Canvas.FloodFill(rect.Left+3, rect.Top+2, SHAPE_BORDER_COLOR, fsBorder);
-         imgShapes.Canvas.FloodFill(rect.Right-3, rect.Top+2, SHAPE_BORDER_COLOR, fsBorder);
+         if ColorDialog.Execute then
+            FillShape(shape, ColorDialog.Color);
+         break;
       end;
    end;
 end;
 
-function TSettingsForm.GetShapeColor(const shape: TColorShape): TColor;
+procedure TSettingsForm.FillShape(AShape: TColorShape; AColor: TColor);
 begin
-   var pnt := SHAPE_RECTS[shape].CenterPoint;
+   imgShapes.Canvas.Brush.Color := AColor;
+   var rect := SHAPE_RECTS[AShape];
+   var pnt := rect.CenterPoint;
+   imgShapes.Canvas.FloodFill(pnt.X, pnt.Y, SHAPE_BORDER_COLOR, fsBorder);
+   if AShape = shpFolder then
+      imgShapes.Canvas.FloodFill(rect.Left+1, rect.Top+1, SHAPE_BORDER_COLOR, fsBorder)
+   else if AShape = shpRoutine then
+   begin
+      imgShapes.Canvas.FloodFill(rect.Left+3, rect.Top+2, SHAPE_BORDER_COLOR, fsBorder);
+      imgShapes.Canvas.FloodFill(rect.Right-3, rect.Top+2, SHAPE_BORDER_COLOR, fsBorder);
+   end;
+end;
+
+function TSettingsForm.GetShapeColor(AShape: TColorShape): TColor;
+begin
+   var pnt := SHAPE_RECTS[AShape].CenterPoint;
    if pnt.IsZero then
       result := clNone
    else
       result := imgShapes.Canvas.Pixels[pnt.X, pnt.Y];
 end;
 
-procedure TSettingsForm.FillAllShapes(const AColor: TColor);
+procedure TSettingsForm.FillAllShapes(AColor: TColor);
 begin
    for var shape := Low(TColorShape) to High(TColorShape) do
       FillShape(shape, AColor);
@@ -309,57 +306,54 @@ begin
       Pen.Color := SHAPE_BORDER_COLOR;
       for var shape := Low(TColorShape) to High(TColorShape) do
       begin
-         if shape <> shpNone then
-         begin
-            var rect := SHAPE_RECTS[shape];
-            Brush.Color := ASettings.GetShapeColor(shape);
-            case shape of
-               shpEllipse:
-                  Ellipse(rect);
-               shpRectangle:
-                  Rectangle(rect);
-               shpParallel:
-               begin
-                  var p := Point(rect.Left+10, rect.Top);
-                  Polygon([p,
-                           Point(rect.Right, rect.Top),
-                           Point(rect.Right-10, rect.Bottom),
-                           Point(rect.Left, rect.Bottom),
-                           p]);
-               end;
-               shpDiamond:
-               begin
-                  var p := rect.CenterPoint;
-                  Polygon([Point(rect.Left, p.Y),
-                           Point(p.X, rect.Top),
-                           Point(rect.Right, p.Y),
-                           Point(p.X, rect.Bottom),
-                           Point(rect.Left, p.Y)]);
-               end;
-               shpRoadSign:
-                  Polygon([rect.TopLeft,
-                           Point(rect.Left+35, rect.Top),
-                           Point(rect.Right, rect.CenterPoint.Y),
-                           Point(rect.Left+35, rect.Bottom),
-                           Point(rect.Left, rect.Bottom),
-                           rect.TopLeft]);
-               shpRoutine:
-               begin
-                  Rectangle(rect);
-                  Brush.Color := Pen.Color;
-                  rect := System.Types.Rect(rect.Left+5, rect.Top, rect.Right-42, rect.Bottom);
-                  Rectangle(rect);
-                  rect.Offset(37, 0);
-                  Rectangle(rect);
-               end;
-               shpFolder:
-               begin
-                  Pen.Width := 2;
-                  Rectangle(rect);
-                  rect.Inflate(-2, -2, -3, -3);
-                  Pen.Width := 1;
-                  Rectangle(rect);
-               end;
+         var rect := SHAPE_RECTS[shape];
+         Brush.Color := ASettings.GetShapeColor(shape);
+         case shape of
+            shpEllipse:
+               Ellipse(rect);
+            shpRectangle:
+               Rectangle(rect);
+            shpParallel:
+            begin
+               var p := Point(rect.Left+10, rect.Top);
+               Polygon([p,
+                        Point(rect.Right, rect.Top),
+                        Point(rect.Right-10, rect.Bottom),
+                        Point(rect.Left, rect.Bottom),
+                        p]);
+            end;
+            shpDiamond:
+            begin
+               var p := rect.CenterPoint;
+               Polygon([Point(rect.Left, p.Y),
+                        Point(p.X, rect.Top),
+                        Point(rect.Right, p.Y),
+                        Point(p.X, rect.Bottom),
+                        Point(rect.Left, p.Y)]);
+            end;
+            shpRoadSign:
+               Polygon([rect.TopLeft,
+                        Point(rect.Left+35, rect.Top),
+                        Point(rect.Right, rect.CenterPoint.Y),
+                        Point(rect.Left+35, rect.Bottom),
+                        Point(rect.Left, rect.Bottom),
+                        rect.TopLeft]);
+            shpRoutine:
+            begin
+               Rectangle(rect);
+               Brush.Color := Pen.Color;
+               rect := System.Types.Rect(rect.Left+5, rect.Top, rect.Right-42, rect.Bottom);
+               Rectangle(rect);
+               rect.Offset(37, 0);
+               Rectangle(rect);
+            end;
+            shpFolder:
+            begin
+               Pen.Width := 2;
+               Rectangle(rect);
+               rect.Inflate(-2, -2, -3, -3);
+               Pen.Width := 1;
+               Rectangle(rect);
             end;
          end;
       end;
