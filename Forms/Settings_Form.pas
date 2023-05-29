@@ -135,10 +135,10 @@ type
     procedure DrawShapes(ASettings: TSettings);
     procedure FillAllShapes(AColor: TColor);
     procedure SetFontNameSize(const AFontName: string; AFontSize: integer);
-  public
-    procedure SetDefault;
-    procedure ProtectFields;
     procedure LoadFromSettings(ASettings: TSettings);
+    procedure ProtectFields;
+    procedure SetDefault;
+  public
     function GetShapeColor(AShape: TColorShape): TColor;
   end;
 
@@ -216,7 +216,7 @@ end;
 
 procedure TSettingsForm.FormShow(Sender: TObject);
 begin
-   GSettings.SetForm;
+   LoadFromSettings(GSettings);
 end;
 
 procedure TSettingsForm.FormCreate(Sender: TObject);
