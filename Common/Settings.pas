@@ -643,7 +643,7 @@ end;
 
 procedure TSettings.SetForm;
 begin
-   TInfra.GetSettingsForm.SetSettings(Self);
+   TInfra.GetSettingsForm.LoadFromSettings(Self);
 end;
 
 function TSettings.UpdateEditor: boolean;

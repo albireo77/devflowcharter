@@ -138,7 +138,7 @@ type
   public
     procedure SetDefault;
     procedure ProtectFields;
-    procedure SetSettings(ASettings: TSettings);
+    procedure LoadFromSettings(ASettings: TSettings);
     function GetShapeColor(AShape: TColorShape): TColor;
   end;
 
@@ -298,60 +298,58 @@ end;
 
 procedure TSettingsForm.DrawShapes(ASettings: TSettings);
 begin
-   with imgShapes.Canvas do
+   var cnv := imgShapes.Canvas;
+   cnv.Pen.Color := SHAPE_BORDER_COLOR;
+   for var shape := Low(TColorShape) to High(TColorShape) do
    begin
-      Pen.Color := SHAPE_BORDER_COLOR;
-      for var shape := Low(TColorShape) to High(TColorShape) do
-      begin
-         var rect := SHAPE_RECTS[shape];
-         Brush.Color := ASettings.GetShapeColor(shape);
-         case shape of
-            shpEllipse:
-               Ellipse(rect);
-            shpRectangle:
-               Rectangle(rect);
-            shpParallel:
-            begin
-               var p := Point(rect.Left+10, rect.Top);
-               Polygon([p,
-                        Point(rect.Right, rect.Top),
-                        Point(rect.Right-10, rect.Bottom),
-                        Point(rect.Left, rect.Bottom),
-                        p]);
-            end;
-            shpDiamond:
-            begin
-               var p := rect.CenterPoint;
-               Polygon([Point(rect.Left, p.Y),
-                        Point(p.X, rect.Top),
-                        Point(rect.Right, p.Y),
-                        Point(p.X, rect.Bottom),
-                        Point(rect.Left, p.Y)]);
-            end;
-            shpRoadSign:
-               Polygon([rect.TopLeft,
-                        Point(rect.Left+35, rect.Top),
-                        Point(rect.Right, rect.CenterPoint.Y),
-                        Point(rect.Left+35, rect.Bottom),
-                        Point(rect.Left, rect.Bottom),
-                        rect.TopLeft]);
-            shpRoutine:
-            begin
-               Rectangle(rect);
-               Brush.Color := Pen.Color;
-               rect := System.Types.Rect(rect.Left+5, rect.Top, rect.Right-42, rect.Bottom);
-               Rectangle(rect);
-               rect.Offset(37, 0);
-               Rectangle(rect);
-            end;
-            shpFolder:
-            begin
-               Pen.Width := 2;
-               Rectangle(rect);
-               rect.Inflate(-2, -2, -3, -3);
-               Pen.Width := 1;
-               Rectangle(rect);
-            end;
+      var rect := SHAPE_RECTS[shape];
+      cnv.Brush.Color := ASettings.GetShapeColor(shape);
+      case shape of
+         shpEllipse:
+            cnv.Ellipse(rect);
+         shpRectangle:
+            cnv.Rectangle(rect);
+         shpParallel:
+         begin
+            var p := Point(rect.Left+10, rect.Top);
+            cnv.Polygon([p,
+                         Point(rect.Right, rect.Top),
+                         Point(rect.Right-10, rect.Bottom),
+                         Point(rect.Left, rect.Bottom),
+                         p]);
+         end;
+         shpDiamond:
+         begin
+            var p := rect.CenterPoint;
+            cnv.Polygon([Point(rect.Left, p.Y),
+                         Point(p.X, rect.Top),
+                         Point(rect.Right, p.Y),
+                         Point(p.X, rect.Bottom),
+                         Point(rect.Left, p.Y)]);
+         end;
+         shpRoadSign:
+            cnv.Polygon([rect.TopLeft,
+                         Point(rect.Left+35, rect.Top),
+                         Point(rect.Right, rect.CenterPoint.Y),
+                         Point(rect.Left+35, rect.Bottom),
+                         Point(rect.Left, rect.Bottom),
+                         rect.TopLeft]);
+         shpRoutine:
+         begin
+            cnv.Rectangle(rect);
+            cnv.Brush.Color := cnv.Pen.Color;
+            rect := System.Types.Rect(rect.Left+5, rect.Top, rect.Right-42, rect.Bottom);
+            cnv.Rectangle(rect);
+            rect.Offset(37, 0);
+            cnv.Rectangle(rect);
+         end;
+         shpFolder:
+         begin
+            cnv.Pen.Width := 2;
+            cnv.Rectangle(rect);
+            rect.Inflate(-2, -2, -3, -3);
+            cnv.Pen.Width := 1;
+            cnv.Rectangle(rect);
          end;
       end;
    end;
@@ -456,7 +454,7 @@ begin
       chkMultiPrintHorz.Checked := False;
 end;
 
-procedure TSettingsForm.SetSettings(ASettings: TSettings);
+procedure TSettingsForm.LoadFromSettings(ASettings: TSettings);
 begin
    chkConfirmRemove.Checked := ASettings.ConfirmRemove;
    chkMultiPrint.Checked := ASettings.PrintMultPages;
