@@ -188,7 +188,7 @@ end;
 
 class function TInfra.ShouldUpdateEditor: boolean;
 begin
-   result := EditorForm.Visible and GSettings.EditorAutoUpdate;
+   result := GetEditorForm.Visible and GSettings.EditorAutoUpdate;
 end;
 
 class procedure TInfra.UpdateCodeEditor(AObject: TObject = nil);
