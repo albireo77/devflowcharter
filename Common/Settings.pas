@@ -103,7 +103,6 @@ type
       procedure UpdateForHLighter(AHLighter: TSynCustomHighlighter);
       procedure ResetCurrentLangName;
       function GetShapeColor(AShape: TColorShape): TColor;
-      function UpdateEditor: boolean;
       function IndentString(ATimes: integer = 1): string;
       function ExecuteParse(AParserMode: TYYMode): boolean;
       property ParseInput: boolean read FParseInput;
@@ -639,11 +638,6 @@ begin
      end;
    end;
 
-end;
-
-function TSettings.UpdateEditor: boolean;
-begin
-   result := TInfra.GetEditorForm.Visible and FEditorAutoUpdate;
 end;
 
 function TSettings.ExecuteParse(AParserMode: TYYMode): boolean;

@@ -912,7 +912,7 @@ begin
       if block <> nil then
       begin
          block.SetFontStyle(fontStyles);
-         if (Sender = miStyleStrikeOut) and not block.SkipUpdateEditor then
+         if (Sender = miStyleStrikeOut) and block.ShouldUpdateEditor then
             TInfra.UpdateCodeEditor;
       end
       else if comment <> nil then
@@ -1352,7 +1352,7 @@ begin
          edit.SelStart := cursorPos + Length(funcName) + selPos;
       if not backup.IsEmpty then
          Clipboard.AsText := backup;
-      if GSettings.UpdateEditor and not lLibrary.IsEmpty then
+      if TInfra.ShouldUpdateEditor and not lLibrary.IsEmpty then
          TInfra.GetEditorForm.InsertLibraryEntry(lLibrary);
    end;
 end;

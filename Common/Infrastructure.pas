@@ -112,6 +112,7 @@ type
          class function IndexOf<T>(const AValue: T; const AArray: TArray<T>): integer;
          class function Scaled(AWinControl: TWinControl; on96: integer): integer;
          class function ReplaceXMLIndents(const ALine: string): string;
+         class function ShouldUpdateEditor: boolean;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetNativeFunction(const AName: string): PNativeFunction;
          function GetLangDefinition(const AName: string): TLangDefinition;
@@ -185,9 +186,14 @@ begin
    inherited Destroy;
 end;
 
+class function TInfra.ShouldUpdateEditor: boolean;
+begin
+   result := EditorForm.Visible and GSettings.EditorAutoUpdate;
+end;
+
 class procedure TInfra.UpdateCodeEditor(AObject: TObject = nil);
 begin
-   if GSettings.UpdateEditor then
+   if ShouldUpdateEditor then
       GetEditorForm.RefreshEditorForObject(AObject);
    GProject.SetChanged;
 end;

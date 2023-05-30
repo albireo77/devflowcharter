@@ -194,7 +194,7 @@ begin
    begin
       FDescOrder := AValue;
       Repaint;
-      if GSettings.UpdateEditor and not SkipUpdateEditor then
+      if ShouldUpdateEditor then
          UpdateEditor(nil);
    end;
 end;
@@ -277,7 +277,7 @@ begin
       edtVar.Hint := i18Manager.GetFormattedString('NoCVar', [sLineBreak]);
       edtVar.Font.Color := NOK_COLOR;
    end;
-   if GSettings.UpdateEditor and not SkipUpdateEditor then
+   if ShouldUpdateEditor then
       UpdateEditor(nil);
 end;
 
