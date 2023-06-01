@@ -912,7 +912,7 @@ begin
       if block <> nil then
       begin
          block.SetFontStyle(fontStyles);
-         if (Sender = miStyleStrikeOut) and block.ShouldUpdateEditor then
+         if (Sender = miStyleStrikeOut) and block.ShouldUpdateEditor(False) then
             TInfra.UpdateCodeEditor;
       end
       else if comment <> nil then

@@ -510,7 +510,7 @@ end;
 
 procedure TForDoBlock.UpdateEditor(AEdit: TCustomEdit);
 begin
-   if PerformEditorUpdate then
+   if ShouldUpdateEditor then
    begin
       var chLine := TInfra.GetChangeLine(Self);
       if chLine.Row <> ROW_NOT_FOUND then
