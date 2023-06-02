@@ -185,7 +185,7 @@ type
          procedure LockDrawing;
          procedure UnlockDrawing;
          function FindSelectedBlock: TBlock; virtual;
-         function ShouldUpdateEditor(AStrikeOutCheck: boolean = True): boolean;
+         function ShouldUpdateEditor(AWithStrikeOut: boolean = True): boolean;
    end;
 
    TGroupBlock = class(TBlock)    // block which can aggregate child blocks
@@ -2268,12 +2268,12 @@ begin
    end;
 end;
 
-function TBlock.ShouldUpdateEditor(AStrikeOutCheck: boolean = True): boolean;
+function TBlock.ShouldUpdateEditor(AWithStrikeOut: boolean = True): boolean;
 begin
    var funcHeader := TInfra.GetFunctionHeader(Self);
    var skipUpdateEditor := (funcHeader <> nil) and (TInfra.IsNOkColor(funcHeader.Font.Color) or (funcHeader.chkExternal.Checked and not GInfra.CurrentLang.CodeIncludeExternFunction));
    result := TInfra.ShouldUpdateEditor and (not skipUpdateEditor) and not FRefreshMode;
-   if AStrikeOutCheck then
+   if AWithStrikeOut then
       result := result and not (fsStrikeOut in Font.Style)
 end;
 
