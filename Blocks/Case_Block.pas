@@ -377,7 +377,7 @@ begin
       else
          EditorAction(nil);
    end
-   else if (AEdit <> nil) and PerformEditorUpdate then
+   else if (AEdit <> nil) and ShouldFocusEditor then
    begin
       var obj := TObject(AEdit);
       var chLine := TInfra.GetChangeLine(obj, AEdit, GetTemplateByControl(AEdit, obj));

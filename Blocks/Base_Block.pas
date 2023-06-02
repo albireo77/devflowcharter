@@ -86,7 +86,7 @@ type
          function DrawTextLabel(x, y: integer; const AText: string; ARightJust: boolean = False; ADownJust: boolean = False; APrint: boolean = True): TRect;
          procedure DrawBlockLabel(x, y: integer; const AText: string; rightJust: boolean = False; downJust: boolean = False);
          function GetId: integer;
-         function PerformEditorUpdate: boolean;
+         function ShouldFocusEditor: boolean;
          procedure Select;
          function IsAtSelectPos(const APoint: TPoint): boolean;
          procedure SetCursor(const APoint: TPoint);
@@ -2257,7 +2257,7 @@ end;
 
 procedure TBlock.UpdateEditor(AEdit: TCustomEdit);
 begin
-   if (AEdit <> nil) and PerformEditorUpdate then
+   if (AEdit <> nil) and ShouldFocusEditor then
    begin
       var chLine := TInfra.GetChangeLine(Self, AEdit);
       if chLine.Row <> ROW_NOT_FOUND then
@@ -2276,7 +2276,7 @@ begin
    result := TInfra.ShouldUpdateEditor and not skipUpdateEditor;
 end;
 
-function TBlock.PerformEditorUpdate: boolean;
+function TBlock.ShouldFocusEditor: boolean;
 begin
    result := TInfra.GetEditorForm.Visible and (not FRefreshMode) and not (fsStrikeOut in Font.Style);
 end;

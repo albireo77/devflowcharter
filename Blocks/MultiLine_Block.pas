@@ -126,7 +126,7 @@ end;
 
 procedure TMultiLineBlock.UpdateEditor(AEdit: TCustomEdit);
 begin
-   if PerformEditorUpdate then
+   if ShouldFocusEditor then
    begin
       var chLine := TInfra.GetChangeLine(Self, FStatements);
       if chLine.CodeRange.FirstRow <> ROW_NOT_FOUND then
