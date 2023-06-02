@@ -86,6 +86,7 @@ type
          function DrawTextLabel(x, y: integer; const AText: string; ARightJust: boolean = False; ADownJust: boolean = False; APrint: boolean = True): TRect;
          procedure DrawBlockLabel(x, y: integer; const AText: string; rightJust: boolean = False; downJust: boolean = False);
          function GetId: integer;
+         function PerformEditorUpdate: boolean;
          procedure Select;
          function IsAtSelectPos(const APoint: TPoint): boolean;
          procedure SetCursor(const APoint: TPoint);
@@ -185,7 +186,7 @@ type
          procedure LockDrawing;
          procedure UnlockDrawing;
          function FindSelectedBlock: TBlock; virtual;
-         function ShouldUpdateEditor(AWithStrikeOut: boolean = True): boolean;
+         function ShouldUpdateEditor: boolean;
    end;
 
    TGroupBlock = class(TBlock)    // block which can aggregate child blocks
@@ -2256,7 +2257,7 @@ end;
 
 procedure TBlock.UpdateEditor(AEdit: TCustomEdit);
 begin
-   if (AEdit <> nil) and ShouldUpdateEditor then
+   if (AEdit <> nil) and PerformEditorUpdate then
    begin
       var chLine := TInfra.GetChangeLine(Self, AEdit);
       if chLine.Row <> ROW_NOT_FOUND then
@@ -2268,13 +2269,16 @@ begin
    end;
 end;
 
-function TBlock.ShouldUpdateEditor(AWithStrikeOut: boolean = True): boolean;
+function TBlock.ShouldUpdateEditor: boolean;
 begin
    var funcHeader := TInfra.GetFunctionHeader(Self);
    var skipUpdateEditor := (funcHeader <> nil) and (TInfra.IsNOkColor(funcHeader.Font.Color) or (funcHeader.chkExternal.Checked and not GInfra.CurrentLang.CodeIncludeExternFunction));
-   result := TInfra.ShouldUpdateEditor and (not skipUpdateEditor) and not FRefreshMode;
-   if AWithStrikeOut then
-      result := result and not (fsStrikeOut in Font.Style)
+   result := TInfra.ShouldUpdateEditor and not skipUpdateEditor;
+end;
+
+function TBlock.PerformEditorUpdate: boolean;
+begin
+   result := TInfra.GetEditorForm.Visible and (not FRefreshMode) and not (fsStrikeOut in Font.Style);
 end;
 
 function TBlock.GetDescTemplate(const ALangId: string): string;

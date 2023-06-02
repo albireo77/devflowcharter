@@ -134,7 +134,7 @@ end;
 
 procedure TReturnBlock.UpdateEditor(AEdit: TCustomEdit);
 begin
-   if ShouldUpdateEditor then
+   if PerformEditorUpdate then
    begin
       var chLine := TInfra.GetChangeLine(Self, FStatement);
       if chLine.Row <> ROW_NOT_FOUND then
