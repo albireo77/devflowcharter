@@ -45,8 +45,7 @@ type
       FStringTypesSet: TTypesSet;
       FComponentList: TComponentList;
       FObjectIds: TStringList;
-      FNextObjectId,
-      FLibSectionOffset: integer;
+      FNextObjectId: integer;
       FMainPage: TBlockTabSheet;
       FChanged: boolean;
       class var FInstance: TProject;
@@ -64,6 +63,7 @@ type
       Name: string;
       ChangingOn: boolean;
       HeaderComment: TComment;
+      LibSectionOffset: integer;
       property IntegerTypesSet: TTypesSet read FIntegerTypesSet;
       property BoolTypesSet: TTypesSet read FBoolTypesSet;
       property OtherTypesSet: TTypesSet read FOtherTypesSet;
@@ -117,8 +117,6 @@ type
       function IsChanged: boolean;
       function IsNew: boolean;
       procedure SetNotChanged;
-      procedure SetLibSectionOffset(ALibSectionOffset: integer);
-      function GetLibSectionOffset: integer;
       function FindSelectedBlock: TBlock;
    end;
 
@@ -141,7 +139,7 @@ begin
    inherited Create;
    FObjectIds := TStringList.Create;
    FComponentList := TComponentList.Create;
-   FLibSectionOffset := -1;
+   LibSectionOffset := -1;
 end;
 
 destructor TProject.Destroy;
@@ -165,16 +163,6 @@ begin
       FInstance.PopulateDataTypeSets;
    end;
    result := FInstance;
-end;
-
-procedure TProject.SetLibSectionOffset(ALibSectionOffset: integer);
-begin
-   FLibSectionOffset := ALibSectionOffset;
-end;
-
-function TProject.GetLibSectionOffset: integer;
-begin
-   result := FLibSectionOffset;
 end;
 
 function TProject.GetPage(const ACaption: string; ACreate: boolean = True): TBlockTabSheet;

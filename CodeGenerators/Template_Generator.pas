@@ -623,7 +623,7 @@ begin
       TInfra.InsertTemplateLines(programTemplate, PRIMARY_PLACEHOLDER, GProject.Name);
       TInfra.InsertTemplateLines(programTemplate, '%s2', headerTemplate);
       i := TInfra.InsertTemplateLines(programTemplate, '%s3', libTemplate);
-      GProject.SetLibSectionOffset(i);
+      GProject.LibSectionOffset := i;
       TInfra.InsertTemplateLines(programTemplate, '%s4', constTemplate);
       TInfra.InsertTemplateLines(programTemplate, '%s5', varTemplate);
       TInfra.InsertTemplateLines(programTemplate, '%s6', dataTypeTemplate);

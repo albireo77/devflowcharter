@@ -665,7 +665,7 @@ begin
       end
       else
       begin
-         i := GProject.GetLibSectionOffset;
+         i := GProject.LibSectionOffset;
          if i >= 0 then
          begin
             if not GInfra.CurrentLang.LibTemplate.IsEmpty then
