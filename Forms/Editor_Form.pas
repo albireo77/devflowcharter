@@ -663,26 +663,22 @@ begin
          indent := TInfra.ExtractIndentString(memCodeEditor.Lines[i]);
          memCodeEditor.Lines.InsertObject(i, indent + libEntry, libObj);
       end
-      else
+      else if GProject.LibSectionOffset >= 0 then
       begin
-         i := GProject.LibSectionOffset;
-         if i >= 0 then
+         if not GInfra.CurrentLang.LibTemplate.IsEmpty then
          begin
-            if not GInfra.CurrentLang.LibTemplate.IsEmpty then
-            begin
-               lines := TStringList.Create;
-               try
-                  lines.Text := GInfra.CurrentLang.LibTemplate;
-                  TInfra.InsertTemplateLines(lines, PRIMARY_PLACEHOLDER, libEntry, libObj);
-                  for a := lines.Count-1 downto 0 do
-                     memCodeEditor.Lines.InsertObject(i, lines.Strings[a], lines.Objects[a]);
-               finally
-                  lines.Free;
-               end;
-            end
-            else
-               memCodeEditor.Lines.InsertObject(i, libEntry, libObj);
-         end;
+            lines := TStringList.Create;
+            try
+               lines.Text := GInfra.CurrentLang.LibTemplate;
+               TInfra.InsertTemplateLines(lines, PRIMARY_PLACEHOLDER, libEntry, libObj);
+               for a := lines.Count-1 downto 0 do
+                  memCodeEditor.Lines.InsertObject(GProject.LibSectionOffset, lines.Strings[a], lines.Objects[a]);
+            finally
+               lines.Free;
+            end;
+         end
+         else
+            memCodeEditor.Lines.InsertObject(GProject.LibSectionOffset, libEntry, libObj);
       end;
    end;
 end;
