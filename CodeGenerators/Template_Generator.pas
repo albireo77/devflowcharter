@@ -542,7 +542,6 @@ var
    programTemplate, headerTemplate, mainFuncTemplate, libTemplate, constTemplate,
    varTemplate, funcTemplate, dataTypeTemplate: TStringList;
    currLang: TLangDefinition;
-   i: integer;
    skipFuncBody: boolean;
 begin
 
@@ -622,8 +621,7 @@ begin
       programTemplate.Text := currLang.ProgramTemplate;
       TInfra.InsertTemplateLines(programTemplate, PRIMARY_PLACEHOLDER, GProject.Name);
       TInfra.InsertTemplateLines(programTemplate, '%s2', headerTemplate);
-      i := TInfra.InsertTemplateLines(programTemplate, '%s3', libTemplate);
-      GProject.LibSectionOffset := i;
+      GProject.LibSectionOffset := TInfra.InsertTemplateLines(programTemplate, '%s3', libTemplate);
       TInfra.InsertTemplateLines(programTemplate, '%s4', constTemplate);
       TInfra.InsertTemplateLines(programTemplate, '%s5', varTemplate);
       TInfra.InsertTemplateLines(programTemplate, '%s6', dataTypeTemplate);
