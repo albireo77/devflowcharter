@@ -386,7 +386,7 @@ begin
             end;
          end;
          if AVarList.IsGlobal then
-            varAccess := AVarList.GetExternModifier(i);
+            varAccess := AVarList.GetExternalModifier(i);
          varVal := varAccess + varType + varGeneric + varSize + ' ' + varName + varInit + ';';
          ALines.AddObject(varVal, AVarList);
       end;

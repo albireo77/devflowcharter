@@ -109,7 +109,7 @@ type
          procedure SetDefaultFocus;
          function GetExternalState(ARow: integer): TCheckBoxState;
          procedure SetExternalColumn(AExternalCol: integer);
-         function GetExternModifier(idx: integer): string;
+         function GetExternalModifier(idx: integer): string;
    end;
 
    TVarDeclareList = class(TDeclareList)
@@ -986,7 +986,7 @@ begin
       result := TCheckBox(sgList.Objects[FExternalCol, ARow]).State;
 end;
 
-function TDeclareList.GetExternModifier(idx: integer): string;
+function TDeclareList.GetExternalModifier(idx: integer): string;
 begin
    result := FExternalModifiers[GetExternalState(idx)];
 end;

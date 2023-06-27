@@ -278,7 +278,7 @@ begin
             var constStr := IfThen(d > 0, currLang.ConstEntryArray, currLang.ConstEntry);
             constStr := ReplaceStr(constStr, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
             constStr := ReplaceStr(constStr, '%s2', constValue);
-            constStr := ReplaceStr(constStr, '%s3', AConstList.GetExternModifier(i));
+            constStr := ReplaceStr(constStr, '%s3', AConstList.GetExternalModifier(i));
             constStr := ReplaceStr(constStr, '%s4', constType);
             if d > 0 then
                constStr := ReplaceStr(constStr, '%s5', DupeString(ReplaceStr(currLang.VarEntryArraySize, '%s', ''), d));
@@ -354,7 +354,7 @@ begin
                enum := lang.FunctionHeaderArgsEntryEnum;
             varStr := ReplaceStr(varStr, '%s5', lRecord);
             varStr := ReplaceStr(varStr, '%s6', enum);
-            varStr := ReplaceStr(varStr, '%s7', AVarList.GetExternModifier(i));
+            varStr := ReplaceStr(varStr, '%s7', AVarList.GetExternalModifier(i));
             varList.AddObject(varStr, AVarList);
          end;
          if varList.Count > 0 then
