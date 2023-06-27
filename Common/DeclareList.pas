@@ -49,6 +49,7 @@ type
          FExternalCol: integer;
          FShort,
          FNodeName: string;
+         FExternalModifiers: array[TCheckBoxState] of string;
          FSplitter: TSplitter;
          function GetId: integer;
          function IsDeclared(const AName: string; AssociatedListCheck: boolean): boolean;
@@ -108,7 +109,7 @@ type
          procedure SetDefaultFocus;
          function GetExternalState(ARow: integer): TCheckBoxState;
          procedure SetExternalColumn(AExternalCol: integer);
-         function GetExternModifier(idx: integer): string; virtual; abstract;
+         function GetExternModifier(idx: integer): string;
    end;
 
    TVarDeclareList = class(TDeclareList)
@@ -134,7 +135,6 @@ type
          function IsGlobal: boolean; override;
          function GetDimensionCount(const AVarName: string; AIncludeType: boolean = False): integer;
          function GetDimensions(const AVarName: string; AIncludeType: boolean = False): TArray<string>;
-         function GetExternModifier(idx: integer): string; override;
    end;
 
    TConstDeclareList = class(TDeclareList)
@@ -151,7 +151,6 @@ type
          procedure ExportItemToXML(ANode: IXMLNode; idx: integer); override;
          function GetValue(const AIdent: string): string;
          function IsGlobal: boolean; override;
-         function GetExternModifier(idx: integer): string; override;
    end;
 
 const
@@ -302,6 +301,9 @@ begin
 
    FShort := 'Const';
    FNodeName := CONST_TAG;
+   FExternalModifiers[cbChecked]   := GInfra.CurrentLang.ConstExtern;
+   FExternalModifiers[cbUnchecked] := GInfra.CurrentLang.ConstNotExtern;
+   FExternalModifiers[cbGrayed]    := GInfra.CurrentLang.ConstTransExtern;
 
    inherited Create(AParent, ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth);
 
@@ -334,6 +336,9 @@ begin
 
    FShort := 'Var';
    FNodeName := VAR_TAG;
+   FExternalModifiers[cbChecked]   := GInfra.CurrentLang.VarExtern;
+   FExternalModifiers[cbUnchecked] := GInfra.CurrentLang.VarNotExtern;
+   FExternalModifiers[cbGrayed]    := GInfra.CurrentLang.VarTransExtern;
 
    inherited Create(AParent, ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth);
 
@@ -981,24 +986,9 @@ begin
       result := TCheckBox(sgList.Objects[FExternalCol, ARow]).State;
 end;
 
-function TVarDeclareList.GetExternModifier(idx: integer): string;
+function TDeclareList.GetExternModifier(idx: integer): string;
 begin
-   var lang := GInfra.CurrentLang;
-   case GetExternalState(idx) of
-      cbChecked:   result := lang.VarExtern;
-      cbUnchecked: result := lang.VarNotExtern;
-      cbGrayed:    result := lang.VarTransExtern;
-   end;
-end;
-
-function TConstDeclareList.GetExternModifier(idx: integer): string;
-begin
-   var lang := GInfra.CurrentLang;
-   case GetExternalState(idx) of
-      cbChecked:   result := lang.ConstExtern;
-      cbUnchecked: result := lang.ConstNotExtern;
-      cbGrayed:    result := lang.ConstTransExtern;
-   end;
+   result := FExternalModifiers[GetExternalState(idx)];
 end;
 
 procedure TDeclareList.OnClickChBox(Sender: TObject);
