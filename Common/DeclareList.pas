@@ -42,6 +42,8 @@ type
     end;
 
    TDeclareList = class(TGroupBox, IWithFocus, IWithId)
+      private
+         FExternalModifiers: array[TCheckBoxState] of string;
       protected
          FModifying: boolean;
          FId,
@@ -49,7 +51,6 @@ type
          FExternalCol: integer;
          FShort,
          FNodeName: string;
-         FExternalModifiers: array[TCheckBoxState] of string;
          FSplitter: TSplitter;
          function GetId: integer;
          function IsDeclared(const AName: string; AssociatedListCheck: boolean): boolean;
@@ -78,6 +79,7 @@ type
          procedure Resize; override;
          procedure OnCanResizeSplitter(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
          procedure SetColumnLabel(ACol: integer; const AColLabel: string = '');
+         procedure SetExternalModifiers(const AExtern, ANotExtern, ATransExtern: string);
       public
          sgList: TStringGridEx;
          btnRemove,
@@ -301,9 +303,8 @@ begin
 
    FShort := 'Const';
    FNodeName := CONST_TAG;
-   FExternalModifiers[cbChecked]   := GInfra.CurrentLang.ConstExtern;
-   FExternalModifiers[cbUnchecked] := GInfra.CurrentLang.ConstNotExtern;
-   FExternalModifiers[cbGrayed]    := GInfra.CurrentLang.ConstTransExtern;
+   with GInfra.CurrentLang do
+      SetExternalModifiers(ConstExtern, ConstNotExtern, ConstTransExtern);
 
    inherited Create(AParent, ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth);
 
@@ -336,9 +337,8 @@ begin
 
    FShort := 'Var';
    FNodeName := VAR_TAG;
-   FExternalModifiers[cbChecked]   := GInfra.CurrentLang.VarExtern;
-   FExternalModifiers[cbUnchecked] := GInfra.CurrentLang.VarNotExtern;
-   FExternalModifiers[cbGrayed]    := GInfra.CurrentLang.VarTransExtern;
+   with GInfra.CurrentLang do
+      SetExternalModifiers(VarExtern, VarNotExtern, VarTransExtern);
 
    inherited Create(AParent, ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth);
 
@@ -416,6 +416,13 @@ procedure TDeclareList.OnCanResizeSplitter(Sender: TObject; var NewSize: Integer
 begin
    if (NewSize < sgList.BoundsRect.Right + 4) and (NewSize < sgList.GetMinWidth) then
       Accept := False;
+end;
+
+procedure TDeclareList.SetExternalModifiers(const AExtern, ANotExtern, ATransExtern: string);
+begin
+   FExternalModifiers[cbChecked]   := AExtern;
+   FExternalModifiers[cbUnchecked] := ANotExtern;
+   FExternalModifiers[cbGrayed]    := ATransExtern;
 end;
 
 function TDeclareList.RetrieveFocus(AInfo: TFocusInfo): boolean;
