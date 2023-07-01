@@ -63,7 +63,7 @@ type
          procedure UpdateEditor(AEdit: TCustomEdit); override;
          function RetrieveFocus(AInfo: TFocusInfo): boolean; override;
          procedure CloneFrom(ABlock: TBlock); override;
-         function FillTemplate(const ALangId: string; const ATemplate: string = ''): string; override;
+         function FillTemplate(const ALangId, ATemplate: string): string; override;
          function FillCodedTemplate(const ALangId: string): string; override;
          function GetDescTemplate(const ALangId: string): string; override;
          procedure ResizeVert(AContinue: boolean); override;
@@ -353,7 +353,7 @@ begin
    end;
 end;
 
-function TForDoBlock.FillTemplate(const ALangId: string; const ATemplate: string = ''): string;
+function TForDoBlock.FillTemplate(const ALangId, ATemplate: string): string;
 begin
    result := FillExpression(FindTemplate(ALangId, ATemplate), ALangId);
 end;

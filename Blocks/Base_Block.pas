@@ -139,7 +139,7 @@ type
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; virtual;
          function GetFromXML(ANode: IXMLNode): TError; virtual;
          procedure SaveInXML(ANode: IXMLNode); virtual;
-         function FillTemplate(const ALangId: string; const ATemplate: string = ''): string; virtual;
+         function FillTemplate(const ALangId, ATemplate: string): string; virtual;
          function FillCodedTemplate(const ALangId: string): string; virtual;
          function GetDescTemplate(const ALangId: string): string; virtual;
          function GetTextControl: TCustomEdit; virtual;
@@ -2325,7 +2325,7 @@ begin
       result := GetBlockTemplateExpr(ALangId);
 end;
 
-function TBlock.FillTemplate(const ALangId: string; const ATemplate: string = ''): string;
+function TBlock.FillTemplate(const ALangId, ATemplate: string): string;
 begin
    result := FillCodedTemplate(ALangId);
    var template := FindTemplate(ALangId, ATemplate);
