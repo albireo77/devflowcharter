@@ -113,7 +113,7 @@ type
          function GetBlockParms: TBlockParms; virtual;
          function GetBlockTemplate(const ALangId: string): string;
          function GetBlockTemplateExpr(const ALangId: string): string;
-         function FindTemplate(const ALangId: string; const ATemplate: string): string;
+         function FindTemplate(const ALangId, ATemplate: string): string;
       public
          BottomPoint: TPoint;    // points to arrow at the bottom of the block
          IPoint: TPoint;          // points to I mark
@@ -2316,7 +2316,7 @@ begin
    end;
 end;
 
-function TBlock.FindTemplate(const ALangId: string; const ATemplate: string): string;
+function TBlock.FindTemplate(const ALangId, ATemplate: string): string;
 begin
    result := '';
    if not ATemplate.IsEmpty then
