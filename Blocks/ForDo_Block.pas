@@ -42,7 +42,7 @@ type
          procedure SetDescOrder(AValue: boolean);
          procedure PutTextControls; override;
          function GetTextTop: integer;
-         function FillExpression(const AExpression: string; const ALangId: string): string;
+         function FillExpression(const AExpression, ALangId: string): string;
          procedure OnChangeAll;
          procedure EditorAction(AEdit: TCustomEdit);
       public
@@ -525,7 +525,7 @@ begin
    end;
 end;
 
-function TForDoBlock.FillExpression(const AExpression: string; const ALangId: string): string;
+function TForDoBlock.FillExpression(const AExpression, ALangId: string): string;
 begin
    var lang := GInfra.GetLangDefinition(ALangId);
    if not AExpression.IsEmpty then
