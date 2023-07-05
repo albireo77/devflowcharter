@@ -24,8 +24,8 @@ unit Settings_Form;
 interface
 
 uses
-  Vcl.Dialogs, Vcl.StdCtrls, Vcl.Graphics, System.Classes, System.Types, Base_Form,
-  Settings, Types, Vcl.Controls, Vcl.ExtCtrls;
+  Vcl.Dialogs, Vcl.StdCtrls, Vcl.Graphics, System.Types, Base_Form,
+  Settings, Types, Vcl.Controls, Vcl.ExtCtrls, System.Classes;
 
 type
   TSettingsForm = class(TBaseForm)
@@ -131,7 +131,6 @@ type
     procedure edtFontNameSizeClick(Sender: TObject);
   private
     procedure SetComboBoxItem(AComboBox: TComboBox; const AText: string);
-    procedure FillShape(AShape: TColorShape; AColor: TColor);
     procedure DrawShapes(ASettings: TSettings);
     procedure FillAllShapes(AColor: TColor);
     procedure SetFontNameSize(const AFontName: string; AFontSize: integer);
@@ -140,6 +139,13 @@ type
     procedure SetDefault;
   public
     function GetShapeColor(AShape: TColorShape): TColor;
+  end;
+
+  TColorShapeHelper = record helper for TColorShape
+    procedure Draw(ACanvas: TCanvas; ASettings: TSettings);
+    procedure Fill(ACanvas: TCanvas; AColor: TColor);
+    function Rect: TRect;
+    function Color(ACanvas: TCanvas): TColor;
   end;
 
 var
@@ -152,13 +158,6 @@ uses
 
 const
    SHAPE_BORDER_COLOR = clBlack;
-   SHAPE_RECTS: array[TColorShape] of TRect = ((Left:10;  Top:10; Right:60;  Bottom:35),    // ellipse
-                                               (Left:10;  Top:45; Right:60;  Bottom:65),    // parallelogram
-                                               (Left:75;  Top:13; Right:125; Bottom:63),    // diamond
-                                               (Left:140; Top:10; Right:190; Bottom:35),    // rectangle
-                                               (Left:205; Top:10; Right:252; Bottom:34),    // roadsign
-                                               (Left:140; Top:40; Right:190; Bottom:65),    // routine
-                                               (Left:205; Top:40; Right:255; Bottom:65));   // folder
 
 {$R *.dfm}
 
@@ -260,99 +259,30 @@ begin
    var pnt := imgShapes.ScreenToClient(Mouse.CursorPos);
    for var shape := Low(TColorShape) to High(TColorShape) do
    begin
-      if SHAPE_RECTS[shape].Contains(pnt) then
+      if shape.Rect.Contains(pnt) then
       begin
          if ColorDialog.Execute then
-            FillShape(shape, ColorDialog.Color);
+            shape.Fill(imgShapes.Canvas, ColorDialog.Color);
          break;
       end;
    end;
 end;
 
-procedure TSettingsForm.FillShape(AShape: TColorShape; AColor: TColor);
-begin
-   imgShapes.Canvas.Brush.Color := AColor;
-   var rect := SHAPE_RECTS[AShape];
-   var pnt := rect.CenterPoint;
-   imgShapes.Canvas.FloodFill(pnt.X, pnt.Y, SHAPE_BORDER_COLOR, fsBorder);
-   if AShape = shpFolder then
-      imgShapes.Canvas.FloodFill(rect.Left+1, rect.Top+1, SHAPE_BORDER_COLOR, fsBorder)
-   else if AShape = shpRoutine then
-   begin
-      imgShapes.Canvas.FloodFill(rect.Left+3, rect.Top+2, SHAPE_BORDER_COLOR, fsBorder);
-      imgShapes.Canvas.FloodFill(rect.Right-3, rect.Top+2, SHAPE_BORDER_COLOR, fsBorder);
-   end;
-end;
-
 function TSettingsForm.GetShapeColor(AShape: TColorShape): TColor;
 begin
-   var pnt := SHAPE_RECTS[AShape].CenterPoint;
-   result := imgShapes.Canvas.Pixels[pnt.X, pnt.Y];
+   result := AShape.Color(imgShapes.Canvas);
 end;
 
 procedure TSettingsForm.FillAllShapes(AColor: TColor);
 begin
    for var shape := Low(TColorShape) to High(TColorShape) do
-      FillShape(shape, AColor);
+      shape.Fill(imgShapes.Canvas, AColor);
 end;
 
 procedure TSettingsForm.DrawShapes(ASettings: TSettings);
 begin
-   var cnv := imgShapes.Canvas;
-   cnv.Pen.Color := SHAPE_BORDER_COLOR;
    for var shape := Low(TColorShape) to High(TColorShape) do
-   begin
-      var rect := SHAPE_RECTS[shape];
-      cnv.Brush.Color := ASettings.GetShapeColor(shape);
-      case shape of
-         shpEllipse:
-            cnv.Ellipse(rect);
-         shpRectangle:
-            cnv.Rectangle(rect);
-         shpParallel:
-         begin
-            var p := Point(rect.Left+10, rect.Top);
-            cnv.Polygon([p,
-                         Point(rect.Right, rect.Top),
-                         Point(rect.Right-10, rect.Bottom),
-                         Point(rect.Left, rect.Bottom),
-                         p]);
-         end;
-         shpDiamond:
-         begin
-            var p := rect.CenterPoint;
-            cnv.Polygon([Point(rect.Left, p.Y),
-                         Point(p.X, rect.Top),
-                         Point(rect.Right, p.Y),
-                         Point(p.X, rect.Bottom),
-                         Point(rect.Left, p.Y)]);
-         end;
-         shpRoadSign:
-            cnv.Polygon([rect.TopLeft,
-                         Point(rect.Left+35, rect.Top),
-                         Point(rect.Right, rect.CenterPoint.Y),
-                         Point(rect.Left+35, rect.Bottom),
-                         Point(rect.Left, rect.Bottom),
-                         rect.TopLeft]);
-         shpRoutine:
-         begin
-            cnv.Rectangle(rect);
-            cnv.Brush.Color := cnv.Pen.Color;
-            rect := System.Types.Rect(rect.Left+5, rect.Top, rect.Right-42, rect.Bottom);
-            cnv.Rectangle(rect);
-            rect.Offset(37, 0);
-            cnv.Rectangle(rect);
-         end;
-         shpFolder:
-         begin
-            cnv.Pen.Width := 2;
-            cnv.Rectangle(rect);
-            rect.Inflate(-2, -2, -3, -3);
-            cnv.Pen.Width := 1;
-            cnv.Rectangle(rect);
-         end;
-      end;
-   end;
+      shape.Draw(imgShapes.Canvas, ASettings);
 end;
 
 procedure TSettingsForm.SetDefault;
@@ -535,6 +465,96 @@ begin
    if i = -1 then
       i := 0;
    AComboBox.ItemIndex := i;
+end;
+
+function TColorShapeHelper.Rect: TRect;
+const
+   SHAPE_RECTS: array[TColorShape] of TRect = ((Left:10;  Top:10; Right:60;  Bottom:35),    // ellipse
+                                               (Left:10;  Top:45; Right:60;  Bottom:65),    // parallelogram
+                                               (Left:75;  Top:13; Right:125; Bottom:63),    // diamond
+                                               (Left:140; Top:10; Right:190; Bottom:35),    // rectangle
+                                               (Left:205; Top:10; Right:252; Bottom:34),    // roadsign
+                                               (Left:140; Top:40; Right:190; Bottom:65),    // routine
+                                               (Left:205; Top:40; Right:255; Bottom:65));   // folder
+begin
+   result := SHAPE_RECTS[Self];
+end;
+
+procedure TColorShapeHelper.Draw(ACanvas: TCanvas; ASettings: TSettings);
+begin
+   var r := Rect;
+   ACanvas.Pen.Color := SHAPE_BORDER_COLOR;
+   ACanvas.Brush.Color := ASettings.GetShapeColor(Self);
+   case Self of
+      shpEllipse:
+         ACanvas.Ellipse(r);
+      shpRectangle:
+         ACanvas.Rectangle(r);
+      shpParallel:
+      begin
+         var p := Point(r.Left+10, r.Top);
+         ACanvas.Polygon([p,
+                          Point(r.Right, r.Top),
+                          Point(r.Right-10, r.Bottom),
+                          Point(r.Left, r.Bottom),
+                          p]);
+      end;
+      shpDiamond:
+      begin
+         var p := r.CenterPoint;
+         ACanvas.Polygon([Point(r.Left, p.Y),
+                          Point(p.X, r.Top),
+                          Point(r.Right, p.Y),
+                          Point(p.X, r.Bottom),
+                          Point(r.Left, p.Y)]);
+      end;
+      shpRoadSign:
+         ACanvas.Polygon([r.TopLeft,
+                          Point(r.Left+35, r.Top),
+                          Point(r.Right, r.CenterPoint.Y),
+                          Point(r.Left+35, r.Bottom),
+                          Point(r.Left, r.Bottom),
+                          r.TopLeft]);
+      shpRoutine:
+      begin
+         ACanvas.Rectangle(r);
+         ACanvas.Brush.Color := ACanvas.Pen.Color;
+         var r1 := System.Types.Rect(r.Left+5, r.Top, r.Right-42, r.Bottom);
+         ACanvas.Rectangle(r1);
+         r1.Offset(37, 0);
+         ACanvas.Rectangle(r1);
+      end;
+      shpFolder:
+      begin
+         ACanvas.Pen.Width := 2;
+         ACanvas.Rectangle(r);
+         var r1 := r;
+         r1.Inflate(-2, -2, -3, -3);
+         ACanvas.Pen.Width := 1;
+         ACanvas.Rectangle(r1);
+      end;
+   end;
+end;
+
+procedure TColorShapeHelper.Fill(ACanvas: TCanvas; AColor: TColor);
+begin
+   ACanvas.Brush.Color := AColor;
+   var r := Rect;
+   var pnt := r.CenterPoint;
+   ACanvas.FloodFill(pnt.X, pnt.Y, SHAPE_BORDER_COLOR, fsBorder);
+   if Self = shpFolder then
+      ACanvas.FloodFill(r.Left+1, r.Top+1, SHAPE_BORDER_COLOR, fsBorder)
+   else if Self = shpRoutine then
+   begin
+      ACanvas.FloodFill(r.Left+3, r.Top+2, SHAPE_BORDER_COLOR, fsBorder);
+      ACanvas.FloodFill(r.Right-3, r.Top+2, SHAPE_BORDER_COLOR, fsBorder);
+   end;
+end;
+
+function TColorShapeHelper.Color(ACanvas: TCanvas): TColor;
+begin
+   var pnt := Rect.CenterPoint;
+   result := ACanvas.Pixels[pnt.X, pnt.Y];
 end;
 
 end.
