@@ -142,7 +142,7 @@ type
   end;
 
   TColorShapeHelper = record helper for TColorShape
-    procedure Draw(ACanvas: TCanvas; ASettings: TSettings);
+    procedure Draw(ACanvas: TCanvas; AColor: TColor);
     procedure Fill(ACanvas: TCanvas; AColor: TColor);
     function Rect: TRect;
     function Color(ACanvas: TCanvas): TColor;
@@ -282,7 +282,7 @@ end;
 procedure TSettingsForm.DrawShapes(ASettings: TSettings);
 begin
    for var shape := Low(TColorShape) to High(TColorShape) do
-      shape.Draw(imgShapes.Canvas, ASettings);
+      shape.Draw(imgShapes.Canvas, ASettings.GetShapeColor(shape));
 end;
 
 procedure TSettingsForm.SetDefault;
@@ -480,11 +480,11 @@ begin
    result := SHAPE_RECTS[Self];
 end;
 
-procedure TColorShapeHelper.Draw(ACanvas: TCanvas; ASettings: TSettings);
+procedure TColorShapeHelper.Draw(ACanvas: TCanvas; AColor: TColor);
 begin
    var r := Rect;
    ACanvas.Pen.Color := SHAPE_BORDER_COLOR;
-   ACanvas.Brush.Color := ASettings.GetShapeColor(Self);
+   ACanvas.Brush.Color := AColor;
    case Self of
       shpEllipse:
          ACanvas.Ellipse(r);
