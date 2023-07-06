@@ -496,27 +496,27 @@ begin
       begin
          var p := Point(r.Left+10, r.Top);
          Canvas.Polygon([p,
-                          Point(r.Right, r.Top),
-                          Point(r.Right-10, r.Bottom),
-                          Point(r.Left, r.Bottom),
-                          p]);
+                         Point(r.Right, r.Top),
+                         Point(r.Right-10, r.Bottom),
+                         Point(r.Left, r.Bottom),
+                         p]);
       end;
       shpDiamond:
       begin
          var p := r.CenterPoint;
          Canvas.Polygon([Point(r.Left, p.Y),
-                          Point(p.X, r.Top),
-                          Point(r.Right, p.Y),
-                          Point(p.X, r.Bottom),
-                          Point(r.Left, p.Y)]);
+                         Point(p.X, r.Top),
+                         Point(r.Right, p.Y),
+                         Point(p.X, r.Bottom),
+                         Point(r.Left, p.Y)]);
       end;
       shpRoadSign:
          Canvas.Polygon([r.TopLeft,
-                          Point(r.Left+35, r.Top),
-                          Point(r.Right, r.CenterPoint.Y),
-                          Point(r.Left+35, r.Bottom),
-                          Point(r.Left, r.Bottom),
-                          r.TopLeft]);
+                         Point(r.Left+35, r.Top),
+                         Point(r.Right, r.CenterPoint.Y),
+                         Point(r.Left+35, r.Bottom),
+                         Point(r.Left, r.Bottom),
+                         r.TopLeft]);
       shpRoutine:
       begin
          Canvas.Rectangle(r);
