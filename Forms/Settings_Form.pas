@@ -187,7 +187,6 @@ begin
    edtCompiler.Hint := ReplaceStr(AList.Values['edtCompilerHint'], LB_PHOLDER2, sLineBreak);
    edtCompilerNoMain.Hint := ReplaceStr(AList.Values['edtCompilerNoMainHint'], LB_PHOLDER2, sLineBreak);
    chkEnableDBuffer.Hint := ReplaceStr(AList.Values['chkEnableDBufferHint'], LB_PHOLDER2, sLineBreak);
-   shpDiamond.Canvas := imgShapes.Canvas;   // hack equivalent for TColorShapeHelper.Canvas
    inherited Localize(AList);
 end;
 
@@ -226,6 +225,7 @@ begin
    imgShapes.Canvas.FillRect(imgShapes.Canvas.ClipRect);
    GInfra.GetLangNames(cbLanguage.Items);
    cbLanguage.ItemIndex := cbLanguage.Items.IndexOf(GInfra.CurrentLang.Name);
+   shpDiamond.Canvas := imgShapes.Canvas;   // hack equivalent for TColorShapeHelper.Canvas
 end;
 
 procedure TSettingsForm.pnlSelectClick(Sender: TObject);
