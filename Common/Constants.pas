@@ -152,6 +152,8 @@ const   // Global constants
         PYTHON_LANG_ID  = 'Python 3';
         JAVA_LANG_ID    = 'Java';
 
+        COLOR_SHAPES: array[TColorShape] of TColorShape = (shpEllipse, shpParallel, shpDiamond, shpRectangle, shpRoadSign, shpRoutine, shpFolder);
+
 implementation
 
 end.

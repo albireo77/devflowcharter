@@ -259,12 +259,12 @@ end;
 procedure TSettingsForm.imgShapesClick(Sender: TObject);
 begin
    var pnt := imgShapes.ScreenToClient(Mouse.CursorPos);
-   for var shape := Low(TColorShape) to High(TColorShape) do
+   for var colorShape in COLOR_SHAPES do
    begin
-      if shape.Rect.Contains(pnt) then
+      if colorShape.Rect.Contains(pnt) then
       begin
          if ColorDialog.Execute then
-            shape.Fill(ColorDialog.Color);
+            colorShape.Fill(ColorDialog.Color);
          break;
       end;
    end;
@@ -277,14 +277,14 @@ end;
 
 procedure TSettingsForm.FillAllShapes(AColor: TColor);
 begin
-   for var shape := Low(TColorShape) to High(TColorShape) do
-      shape.Fill(AColor);
+   for var colorShape in COLOR_SHAPES do
+      colorShape.Fill(AColor);
 end;
 
 procedure TSettingsForm.DrawShapes(ASettings: TSettings);
 begin
-   for var shape := Low(TColorShape) to High(TColorShape) do
-      shape.Draw(ASettings.GetShapeColor(shape));
+   for var colorShape in COLOR_SHAPES do
+      colorShape.Draw(ASettings.GetShapeColor(colorShape));
 end;
 
 procedure TSettingsForm.SetDefault;

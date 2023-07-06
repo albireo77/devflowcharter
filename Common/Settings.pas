@@ -523,12 +523,12 @@ begin
       FIndentChar := SPACE_CHAR;
    FIndentSpaces := StringOfChar(SPACE_CHAR, FIndentLength);
 
-   for var shape := Low(TColorShape) to High(TColorShape) do
+   for var colorShape in COLOR_SHAPES do
    begin
-      var lColor := sForm.GetShapeColor(shape);
-      if lColor <> FShapeColors[shape] then
+      var lColor := sForm.GetShapeColor(colorShape);
+      if lColor <> FShapeColors[colorShape] then
       begin
-         FShapeColors[shape] := lColor;
+         FShapeColors[colorShape] := lColor;
          colorChanged := True;
       end;
    end;
