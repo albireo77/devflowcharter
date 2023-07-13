@@ -225,7 +225,6 @@ begin
    imgShapes.Canvas.Brush.Color := gbFlowchartSettings.Color;
    imgShapes.Canvas.FillRect(imgShapes.Canvas.ClipRect);
    GInfra.GetLangNames(cbLanguage.Items);
-   cbLanguage.ItemIndex := cbLanguage.Items.IndexOf(GInfra.CurrentLang.Name);
    shpDiamond.Image := imgShapes;   // hack for TColorShapeHelper.Image
 end;
 
