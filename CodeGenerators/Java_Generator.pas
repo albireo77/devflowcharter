@@ -483,12 +483,15 @@ end;
 
 function ContainsOneOf(const AString: string; const ASubStrings: array of string): boolean;
 begin
+   result := False;
    for var i := 0 to High(ASubStrings) do
    begin
       if AString.Contains(ASubStrings[i]) then
-         Exit(True);
+      begin
+         result := True;
+         break;
+      end;
    end;
-   result := False;
 end;
 
 function StartsWithOneOf(const AString: string; const AStartings: array of string): boolean;
