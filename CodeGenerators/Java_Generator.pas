@@ -496,22 +496,28 @@ end;
 
 function StartsWithOneOf(const AString: string; const AStartings: array of string): boolean;
 begin
+   result := False;
    for var i := 0 to High(AStartings) do
    begin
       if AString.StartsWith(AStartings[i]) then
-         Exit(True);
+      begin
+         result := True;
+         break;
+      end;
    end;
-   result := False;
 end;
 
 function EndsWithOneOf(const AString: string; const AEndings: array of string): boolean;
 begin
+   result := False;
    for var i := 0 to High(AEndings) do
    begin
       if AString.EndsWith(AEndings[i]) then
-         Exit(True);
+      begin
+         result := True;
+         break;
+      end;
    end;
-   result := False;
 end;
 
 function IsTimeType(const AValue: string; const AType: string; ALastChar: char): boolean;
