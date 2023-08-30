@@ -538,35 +538,38 @@ begin
 end;
 
 procedure Template_ProgramGenerator(ALines: TStringList);
-var
-   programTemplate, headerTemplate, mainFuncTemplate, libTemplate, constTemplate,
-   varTemplate, funcTemplate, dataTypeTemplate: TStringList;
-   currLang: TLangDefinition;
-   skipFuncBody: boolean;
 begin
 
-   currLang := GInfra.CurrentLang;
+   var currLang := GInfra.CurrentLang;
 
    if currLang.ProgramTemplate.IsEmpty then
       Exit;
 
+   var headerTemplate := TStringList.Create;
+   var libTemplate := TStringList.Create;
+   var constTemplate := TStringList.Create;
+   var varTemplate := TStringList.Create;
+   var dataTypeTemplate := TStringList.Create;
+   var funcTemplate := TStringList.Create;
+   var mainFuncTemplate := TStringList.Create;
+   var programTemplate := TStringList.Create;
+   var skipFuncBody := Template_SkipFuncBodyGen;
+
    try
+
       // generate program header section
-      headerTemplate := TStringList.Create;
       if Assigned(currLang.ProgramHeaderSectionGenerator) then
          currLang.ProgramHeaderSectionGenerator(headerTemplate)
       else
          Template_ProgramHeaderSectionGenerator(headerTemplate);
 
       // generate libraries section
-      libTemplate := TStringList.Create;
       if Assigned(currLang.LibSectionGenerator) then
          currLang.LibSectionGenerator(libTemplate)
       else
          Template_LibSectionGenerator(libTemplate);
 
      // generate global constants section
-     constTemplate := TStringList.Create;
      if currLang.EnabledConsts then
      begin
         if Assigned(currLang.ConstSectionGenerator) then
@@ -576,7 +579,6 @@ begin
      end;
 
      // generate global variables section
-     varTemplate := TStringList.Create;
      if currLang.EnabledVars then
      begin
         if Assigned(currLang.VarSectionGenerator) then
@@ -586,7 +588,6 @@ begin
       end;
 
      // generate user data types section
-     dataTypeTemplate := TStringList.Create;
      if currLang.EnabledUserDataTypes then
      begin
         if Assigned(currLang.UserDataTypesSectionGenerator) then
@@ -596,12 +597,9 @@ begin
      end;
 
      if Assigned(currLang.SkipFuncBodyGen) then
-        skipFuncBody := currLang.SkipFuncBodyGen
-     else
-        skipFuncBody := Template_SkipFuncBodyGen;
+        skipFuncBody := currLang.SkipFuncBodyGen;
 
      // generate user functions section
-     funcTemplate := TStringList.Create;
      if currLang.EnabledUserFunctionHeader then
      begin
         if Assigned(currLang.UserFunctionsSectionGenerator) then
@@ -611,13 +609,11 @@ begin
      end;
 
       // generate main function section
-      mainFuncTemplate := TStringList.Create;
       if Assigned(currLang.MainFunctionSectionGenerator) then
          currLang.MainFunctionSectionGenerator(mainFuncTemplate, 0)
       else
          Template_MainFunctionSectionGenerator(mainFuncTemplate, 0);
 
-      programTemplate := TStringList.Create;
       programTemplate.Text := currLang.ProgramTemplate;
       TInfra.InsertTemplateLines(programTemplate, PRIMARY_PLACEHOLDER, GProject.Name);
       TInfra.InsertTemplateLines(programTemplate, '%s2', headerTemplate);
