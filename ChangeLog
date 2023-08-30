@@ -1,3 +1,7 @@
+10.3 [30-08-2023]
+- fix potential memory access violations when generating code
+- minor improvements
+
 10.2 [10-05-2023]
 - fix "No attribute..." errors when importing functions
 
