@@ -79,16 +79,14 @@ end;
 
 procedure THistoryMenu.Save;
 begin
-   var sFile := GSettings.SettingsFile;
    for var i := 0 to FParentMenu.Count-1 do
-       sFile.WriteString(HISTORY_SECTION, i.ToString, FParentMenu[i].Caption);
+       GSettings.SettingsFile.WriteString(HISTORY_SECTION, i.ToString, FParentMenu[i].Caption);
 end;
 
 procedure THistoryMenu.Load;
 begin
-   var sFile := GSettings.SettingsFile;
    for var i := HISTORY_SIZE-1 downto 0 do
-       AddFile(sFile.ReadString(HISTORY_SECTION, i.ToString, ''));
+       AddFile(GSettings.SettingsFile.ReadString(HISTORY_SECTION, i.ToString, ''));
 end;
 
 end.
