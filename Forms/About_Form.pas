@@ -93,15 +93,10 @@ procedure TAboutForm.FormCreate(Sender: TObject);
 const
    LABEL_1 = '                   %s%sThe easiest way from flowchart to program!%s             Version: %s (x%d)';
    LABEL_2 = ' This program is freeware and released under the%s                GNU General Public License.%s%s       The %s project (2006-2022)';
-{$IFDEF WIN32}
-   winXX = 32;
-{$ENDIF}
-{$IFDEF WIN64}
-   winXX = 64;
-{$ENDIF}
+   WIN_PLATFORM = {$IFDEF WIN32}32{$ELSE}64{$ENDIF};
 begin
    FVersion := ExtractProgramVersion;
-   lblInfo1.Caption := Format(LABEL_1, [PROGRAM_NAME, sLineBreak, sLineBreak, FVersion, winXX]);
+   lblInfo1.Caption := Format(LABEL_1, [PROGRAM_NAME, sLineBreak, sLineBreak, FVersion, WIN_PLATFORM]);
    lblInfo2.Caption := Format(LABEL_2, [sLineBreak, sLineBreak, sLineBreak, PROGRAM_NAME]);
 end;
 
