@@ -76,10 +76,10 @@ begin
    begin
       SetLength(buf, n);
       if GetFileVersionInfo(PWideChar(s), 0, n, buf) and VerQueryValue(buf, '\', Pointer(value), n) then
-         result := Format('%d%s%d%s%d%s%d', [LongRec(value.dwFileVersionMS).Hi, VERSION_NUMBER_SEP,
-                                             LongRec(value.dwFileVersionMS).Lo, VERSION_NUMBER_SEP,
-                                             LongRec(value.dwFileVersionLS).Hi, VERSION_NUMBER_SEP,
-                                             LongRec(value.dwFileVersionLS).Lo]);
+         result := String.join(VERSION_NUMBER_SEPARATOR, [LongRec(value.dwFileVersionMS).Hi,
+                                                          LongRec(value.dwFileVersionMS).Lo,
+                                                          LongRec(value.dwFileVersionLS).Hi,
+                                                          LongRec(value.dwFileVersionLS).Lo]);
       buf := nil;
    end;
 end;

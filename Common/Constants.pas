@@ -91,7 +91,7 @@ const   // Global constants
         LB_PHOLDER  = '#!';
         LB_PHOLDER2  = '##';
 
-        VERSION_NUMBER_SEP  = '.';
+        VERSION_NUMBER_SEPARATOR  = '.';
 
         MAIN_PAGE_MARKER  = 'mainPage#!';
 

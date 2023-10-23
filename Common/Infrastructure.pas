@@ -886,11 +886,11 @@ end;
 class function TInfra.CompareProgramVersion(const AVersion: string): integer;
 begin
    result := 0;
-   var currVersion := GetAboutForm.GetProgramVersion;
-   if AVersion.IsEmpty or (currVersion = UNKNOWN_VERSION) or (currVersion = AVersion) then
+   var currentVersion := GetAboutForm.GetProgramVersion;
+   if AVersion.IsEmpty or (currentVersion = UNKNOWN_VERSION) or (currentVersion = AVersion) then
       Exit;
-   var nums := AVersion.Split([VERSION_NUMBER_SEP], 4);
-   var numsCurr := currVersion.Split([VERSION_NUMBER_SEP], 4);
+   var nums := AVersion.Split([VERSION_NUMBER_SEPARATOR], 4);
+   var numsCurr := currentVersion.Split([VERSION_NUMBER_SEPARATOR], 4);
    for var i := 0 to High(numsCurr) do
    begin
       if (result <> 0) or (i > High(nums)) then
