@@ -411,7 +411,7 @@ procedure TProject.ExportToXML(ANode: IXMLNode);
 begin
 
    SetNodeAttrStr(ANode, LANG_ATTR, GInfra.CurrentLang.Name);
-   SetNodeAttrStr(ANode, APP_VERSION_ATTR, TInfra.GetAboutForm.GetApplicationVersion);
+   SetNodeAttrStr(ANode, APP_VERSION_ATTR, TInfra.GetAboutForm.GetAppVersion);
 
    ExportPagesToXML(ANode);
 

@@ -41,10 +41,10 @@ type
     procedure FormCreate(Sender: TObject);
     procedure imDelphiClick(Sender: TObject);
   private
-    FVersion: string;
-    function ExtractProgramVersion: string;
+    FAppVersion: string;
+    function ExtractAppVersion: string;
   public
-    function GetApplicationVersion: string;
+    function GetAppVersion: string;
   end;
 
 var
@@ -62,7 +62,7 @@ begin
    Close;
 end;
 
-function TAboutForm.ExtractProgramVersion: string;
+function TAboutForm.ExtractAppVersion: string;
 var
    s: string;
    n, hnd: DWORD;
@@ -84,9 +84,9 @@ begin
    end;
 end;
 
-function TAboutForm.GetApplicationVersion: string;
+function TAboutForm.GetAppVersion: string;
 begin
-   result := FVersion;
+   result := FAppVersion;
 end;
 
 procedure TAboutForm.FormCreate(Sender: TObject);
@@ -95,8 +95,8 @@ const
    LABEL_2 = ' This program is freeware and released under the%s                GNU General Public License.%s%s       The %s project (2006-2023)';
    WIN_PLATFORM = {$IFDEF WIN32}32{$ELSE}64{$ENDIF};
 begin
-   FVersion := ExtractProgramVersion;
-   lblInfo1.Caption := Format(LABEL_1, [PROGRAM_NAME, sLineBreak, sLineBreak, FVersion, WIN_PLATFORM]);
+   FAppVersion := ExtractAppVersion;
+   lblInfo1.Caption := Format(LABEL_1, [PROGRAM_NAME, sLineBreak, sLineBreak, FAppVersion, WIN_PLATFORM]);
    lblInfo2.Caption := Format(LABEL_2, [sLineBreak, sLineBreak, sLineBreak, PROGRAM_NAME]);
 end;
 

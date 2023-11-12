@@ -889,7 +889,7 @@ class function TInfra.IsNewerProjectVersion(const AProjectVersion: string): bool
       result := StrToIntDef(AVersion.Replace(VERSION_NUMBER_SEPARATOR, ''), 0);
    end;
 begin
-   result := GetVersionNumber(AProjectVersion) > GetVersionNumber(GetAboutForm.GetApplicationVersion);
+   result := GetVersionNumber(AProjectVersion) > GetVersionNumber(GetAboutForm.GetAppVersion);
 end;
 
 class function TInfra.GetActiveEdit: TCustomEdit;
