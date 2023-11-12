@@ -127,8 +127,6 @@ const   // Global constants
 
         DEF_PAGE_CAPTION_KEY = 'mainPage';
 
-        UNKNOWN_VERSION = 'unknown';
-
         SETTINGS_SECTION = 'Settings';
 
         PRINT_SCALE_BASE     = 100;   // 100 %

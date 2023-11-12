@@ -95,7 +95,7 @@ type
          class function GetComboMaxWidth(ACombo: TComboBox): integer;
          class function ExportToFile(AExport: IExportable): TError;
          class function StripInstrEnd(const ALine: string): string;
-         class function CompareProgramVersion(const AVersion: string): integer;
+         class function IsNewerProjectVersion(const AProjectVersion: string): boolean;
          class function GetBaseForms: IEnumerable<TBaseForm>;
          class function DecodeFontStyle(AValue: integer): TFontStyles;
          class function EncodeFontStyle(AStyle: TFontStyles): integer;
@@ -883,25 +883,13 @@ begin
    result := ExplorerForm;
 end;
 
-class function TInfra.CompareProgramVersion(const AVersion: string): integer;
-begin
-   result := 0;
-   var currentVersion := GetAboutForm.GetProgramVersion;
-   if AVersion.IsEmpty or (currentVersion = UNKNOWN_VERSION) or (currentVersion = AVersion) then
-      Exit;
-   var nums := AVersion.Split([VERSION_NUMBER_SEPARATOR], 4);
-   var numsCurr := currentVersion.Split([VERSION_NUMBER_SEPARATOR], 4);
-   for var i := 0 to High(numsCurr) do
+class function TInfra.IsNewerProjectVersion(const AProjectVersion: string): boolean;
+   function GetVersionNumber(const AVersion: string): integer;
    begin
-      if (result <> 0) or (i > High(nums)) then
-         break;
-      var e1 := StrToIntDef(nums[i], -1);
-      var e2 := StrToIntDef(numsCurr[i], -1);
-      if e1 > e2 then
-         result := 1
-      else if e1 < e2 then
-         result := -1;
+      result := StrToIntDef(AVersion.Replace(VERSION_NUMBER_SEPARATOR, ''), 0);
    end;
+begin
+   result := GetVersionNumber(AProjectVersion) > GetVersionNumber(GetAboutForm.GetApplicationVersion);
 end;
 
 class function TInfra.GetActiveEdit: TCustomEdit;

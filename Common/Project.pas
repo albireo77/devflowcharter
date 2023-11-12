@@ -411,7 +411,7 @@ procedure TProject.ExportToXML(ANode: IXMLNode);
 begin
 
    SetNodeAttrStr(ANode, LANG_ATTR, GInfra.CurrentLang.Name);
-   SetNodeAttrStr(ANode, APP_VERSION_ATTR, TInfra.GetAboutForm.GetProgramVersion);
+   SetNodeAttrStr(ANode, APP_VERSION_ATTR, TInfra.GetAboutForm.GetApplicationVersion);
 
    ExportPagesToXML(ANode);
 
@@ -476,7 +476,7 @@ begin
    end;
 
    var ver := GetNodeAttrStr(ANode, APP_VERSION_ATTR, '');
-   if TInfra.CompareProgramVersion(ver) > 0 then
+   if TInfra.IsNewerProjectVersion(ver) then
       TInfra.ShowWarningBox('OldVerMsg', [ver]);
 
    var s := IfThen(SameText(langName, GInfra.TemplateLang.Name), 'ChangeLngNone', 'ChangeLngAsk');

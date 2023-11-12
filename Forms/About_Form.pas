@@ -44,7 +44,7 @@ type
     FVersion: string;
     function ExtractProgramVersion: string;
   public
-    function GetProgramVersion: string;
+    function GetApplicationVersion: string;
   end;
 
 var
@@ -69,7 +69,7 @@ var
    buf: TBytes;
    value: PVSFixedFileInfo;
 begin
-   result := UNKNOWN_VERSION;
+   result := '';
    s := Application.ExeName;
    n := GetFileVersionInfoSize(PChar(s), hnd);
    if n > 0 then
@@ -84,7 +84,7 @@ begin
    end;
 end;
 
-function TAboutForm.GetProgramVersion: string;
+function TAboutForm.GetApplicationVersion: string;
 begin
    result := FVersion;
 end;
