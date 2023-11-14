@@ -143,8 +143,7 @@ uses
    Vcl.Printers, Vcl.Menus, Vcl.Dialogs, Vcl.Imaging.jpeg, Vcl.Imaging.PngImage,
    Vcl.Forms, System.Math, System.IOUtils, System.Rtti, System.Character, System.StrUtils,
    System.Generics.Defaults, System.SysUtils, Generics.Collections, WinApi.Messages,
-   Constants, UserDataType, XMLProcessor, SynEditHighlighter, Main_Block,
-   BaseEnumerator, About_Form;
+   Constants, UserDataType, XMLProcessor, SynEditHighlighter, Main_Block, BaseEnumerator;
 
 type
    TCustomEditHack = class(TCustomEdit);
