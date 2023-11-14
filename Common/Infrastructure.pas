@@ -27,7 +27,7 @@ uses
    WinApi.Windows, Vcl.StdCtrls, Vcl.Controls, Vcl.Graphics, Vcl.ComCtrls, System.Classes,
    LocalizationManager, Project, Settings, LangDefinition, Types, Base_Form, Interfaces,
    Functions_Form, DataTypes_Form, Declarations_Form, Main_Form, Base_Block, SynEditTypes,
-   Settings_Form, Editor_Form, Explorer_Form, UserFunction, BlockTabSheet, About_Form, YaccLib;
+   Settings_Form, Editor_Form, Explorer_Form, UserFunction, BlockTabSheet, YaccLib;
 
 type
 
@@ -78,9 +78,9 @@ type
          class function GetDeclarationsForm: TDeclarationsForm;
          class function GetEditorForm: TEditorForm;
          class function GetSettingsForm: TSettingsForm;
-         class function GetAboutForm: TAboutForm;
          class function GetExplorerForm: TExplorerForm;
          class function GetMainForm: TMainForm;
+         class function GetAppVersion: string;
          class function GetActiveEdit: TCustomEdit;
          class function GetParsedBlock: TBlock;
          class function GetParsedEdit: TCustomEdit;
@@ -142,7 +142,8 @@ uses
    Vcl.Printers, Vcl.Menus, Vcl.Dialogs, Vcl.Imaging.jpeg, Vcl.Imaging.PngImage,
    Vcl.Forms, System.Math, System.IOUtils, System.Rtti, System.Character, System.StrUtils,
    System.Generics.Defaults, System.SysUtils, Generics.Collections, WinApi.Messages,
-   Constants, UserDataType, XMLProcessor, SynEditHighlighter, Main_Block, BaseEnumerator;
+   Constants, UserDataType, XMLProcessor, SynEditHighlighter, Main_Block,
+   BaseEnumerator, About_Form;
 
 type
    TCustomEditHack = class(TCustomEdit);
@@ -873,14 +874,14 @@ begin
    result := SettingsForm;
 end;
 
-class function TInfra.GetAboutForm: TAboutForm;
-begin
-   result := AboutForm;
-end;
-
 class function TInfra.GetExplorerForm: TExplorerForm;
 begin
    result := ExplorerForm;
+end;
+
+class function TInfra.GetAppVersion: string;
+begin
+   result := AboutForm.GetAppVersion;
 end;
 
 class function TInfra.IsNewerProjectVersion(const AProjectVersion: string): boolean;
@@ -889,7 +890,7 @@ class function TInfra.IsNewerProjectVersion(const AProjectVersion: string): bool
       result := StrToIntDef(AVersion.Replace(VERSION_NUMBER_SEPARATOR, ''), 0);
    end;
 begin
-   result := GetVersionNumber(AProjectVersion) > GetVersionNumber(GetAboutForm.GetAppVersion);
+   result := GetVersionNumber(AProjectVersion) > GetVersionNumber(GetAppVersion);
 end;
 
 class function TInfra.GetActiveEdit: TCustomEdit;
