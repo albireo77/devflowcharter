@@ -40,11 +40,6 @@ type
     procedure btnOKClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure imDelphiClick(Sender: TObject);
-  private
-    FAppVersion: string;
-    function ExtractAppVersion: string;
-  public
-    function GetAppVersion: string;
   end;
 
 var
@@ -53,7 +48,7 @@ var
 implementation
 
 uses
-   WinApi.Windows, System.SysUtils, Vcl.Forms, Constants, ShellAPI;
+   WinApi.Windows, System.SysUtils, Constants, ShellAPI, Infrastructure;
 
 {$R *.dfm}
 
@@ -62,41 +57,13 @@ begin
    Close;
 end;
 
-function TAboutForm.ExtractAppVersion: string;
-var
-   s: string;
-   n, hnd: DWORD;
-   buf: TBytes;
-   value: PVSFixedFileInfo;
-begin
-   result := '';
-   s := Application.ExeName;
-   n := GetFileVersionInfoSize(PChar(s), hnd);
-   if n > 0 then
-   begin
-      SetLength(buf, n);
-      if GetFileVersionInfo(PWideChar(s), 0, n, buf) and VerQueryValue(buf, '\', Pointer(value), n) then
-         result := String.join(VERSION_NUMBER_SEPARATOR, [LongRec(value.dwFileVersionMS).Hi,
-                                                          LongRec(value.dwFileVersionMS).Lo,
-                                                          LongRec(value.dwFileVersionLS).Hi,
-                                                          LongRec(value.dwFileVersionLS).Lo]);
-      buf := nil;
-   end;
-end;
-
-function TAboutForm.GetAppVersion: string;
-begin
-   result := FAppVersion;
-end;
-
 procedure TAboutForm.FormCreate(Sender: TObject);
 const
    LABEL_1 = '                   %s%sThe easiest way from flowchart to program!%s             Version: %s (x%d)';
    LABEL_2 = ' This program is freeware and released under the%s                GNU General Public License.%s%s       The %s project (2006-2023)';
    WIN_PLATFORM = {$IFDEF WIN32}32{$ELSE}64{$ENDIF};
 begin
-   FAppVersion := ExtractAppVersion;
-   lblInfo1.Caption := Format(LABEL_1, [PROGRAM_NAME, sLineBreak, sLineBreak, FAppVersion, WIN_PLATFORM]);
+   lblInfo1.Caption := Format(LABEL_1, [PROGRAM_NAME, sLineBreak, sLineBreak, TInfra.AppVersion, WIN_PLATFORM]);
    lblInfo2.Caption := Format(LABEL_2, [sLineBreak, sLineBreak, sLineBreak, PROGRAM_NAME]);
 end;
 

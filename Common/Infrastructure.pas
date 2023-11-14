@@ -41,10 +41,12 @@ type
          FTemplateLang,
          FCurrentLang: TLangDefinition;
          FLangArray: array of TLangDefinition;
+         class var FAppVersion: string;
          class var FParsedEdit: TCustomEdit;
       public
          property CurrentLang: TLangDefinition read FCurrentLang;
          property TemplateLang: TLangDefinition read FTemplateLang;
+         class property AppVersion: string read FAppVersion;
          constructor Create;
          destructor Destroy; override;
          class procedure ShowWarningBox(const AWarnMsg: string); overload;
@@ -80,7 +82,6 @@ type
          class function GetSettingsForm: TSettingsForm;
          class function GetExplorerForm: TExplorerForm;
          class function GetMainForm: TMainForm;
-         class function GetAppVersion: string;
          class function GetActiveEdit: TCustomEdit;
          class function GetParsedBlock: TBlock;
          class function GetParsedEdit: TCustomEdit;
@@ -153,7 +154,10 @@ constructor TInfra.Create;
 var
    searchRec: TSearchRec;
    lang: TLangDefinition;
-   lFile, langDir: string;
+   lFile, langDir, s: string;
+   n, hnd: DWORD;
+   buf: TBytes;
+   value: PVSFixedFileInfo;
 begin
    inherited Create;
    langDir := GSettings.LanguageDefinitionsDir;
@@ -177,6 +181,18 @@ begin
    FTemplateLang := TLangDefinition.Create;
    FLangArray := FLangArray + [FTemplateLang];
    FCurrentLang := FLangArray[0];
+   s := Application.ExeName;
+   n := GetFileVersionInfoSize(PChar(s), hnd);
+   if n > 0 then
+   begin
+      SetLength(buf, n);
+      if GetFileVersionInfo(PWideChar(s), 0, n, buf) and VerQueryValue(buf, '\', Pointer(value), n) then
+         FAppVersion := String.join(VERSION_NUMBER_SEPARATOR, [LongRec(value.dwFileVersionMS).Hi,
+                                                               LongRec(value.dwFileVersionMS).Lo,
+                                                               LongRec(value.dwFileVersionLS).Hi,
+                                                               LongRec(value.dwFileVersionLS).Lo]);
+      buf := nil;
+   end;
 end;
 
 destructor TInfra.Destroy;
@@ -879,18 +895,13 @@ begin
    result := ExplorerForm;
 end;
 
-class function TInfra.GetAppVersion: string;
-begin
-   result := AboutForm.GetAppVersion;
-end;
-
 class function TInfra.IsNewerProjectVersion(const AProjectVersion: string): boolean;
    function GetVersionNumber(const AVersion: string): integer;
    begin
       result := StrToIntDef(AVersion.Replace(VERSION_NUMBER_SEPARATOR, ''), 0);
    end;
 begin
-   result := GetVersionNumber(AProjectVersion) > GetVersionNumber(GetAppVersion);
+   result := GetVersionNumber(AProjectVersion) > GetVersionNumber(FAppVersion);
 end;
 
 class function TInfra.GetActiveEdit: TCustomEdit;
