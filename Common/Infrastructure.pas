@@ -190,7 +190,6 @@ begin
                                                                LongRec(value.dwFileVersionMS).Lo,
                                                                LongRec(value.dwFileVersionLS).Hi,
                                                                LongRec(value.dwFileVersionLS).Lo]);
-      buf := nil;
    end;
 end;
 
