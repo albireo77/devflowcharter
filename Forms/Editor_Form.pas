@@ -1315,7 +1315,7 @@ begin
       begin
          for var i := 0 to memCodeEditor.Marks.Count-1 do
          begin
-            var mark := memCodeEditor.Marks[i];
+            var mark := TSynEditMark(memCodeEditor.Marks[i]);
             var node := AppendNode(ANode, 'src_win_mark');
             SetNodeAttrInt(node, 'line', mark.Line);
             SetNodeAttrInt(node, 'index', mark.ImageIndex);

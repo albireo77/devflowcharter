@@ -79,7 +79,7 @@ begin
       line := codeEditor.Lines.Count;
       for var i := 0 to codeEditor.Marks.Count-1 do
       begin
-         var cLine := codeEditor.Marks[i].Line;
+         var cLine := TSynEditMark(codeEditor.Marks[i]).Line;
          if (cLine > codeEditor.CaretY) and (cLine <= line) then
          begin
             line := cLine;
@@ -92,7 +92,7 @@ begin
       line := 1;
       for var i := 0 to codeEditor.Marks.Count-1 do
       begin
-         var cLine := codeEditor.Marks[i].Line;
+         var cLine := TSynEditMark(codeEditor.Marks[i]).Line;
          if (cLine < codeEditor.CaretY) and (cLine >= line) then
          begin
             line := cLine;
