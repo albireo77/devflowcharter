@@ -1301,6 +1301,7 @@ end;
 
 procedure TEditorForm.ExportToXML(ANode: IXMLNode);
 begin
+   var i := 0;
    if Visible then
    begin
       SetNodeAttrBool(ANode, 'src_win_show', True);
@@ -1313,9 +1314,9 @@ begin
          SetNodeAttrInt(ANode, 'src_win_sel_length', memCodeEditor.SelLength);
       if memCodeEditor.Marks.Count > 0 then
       begin
-         for var i := 0 to memCodeEditor.Marks.Count-1 do
+         for i := 0 to memCodeEditor.Marks.Count-1 do
          begin
-            var mark := TSynEditMark(memCodeEditor.Marks[i]);
+            var mark := memCodeEditor.Marks[i];
             var node := AppendNode(ANode, 'src_win_mark');
             SetNodeAttrInt(node, 'line', mark.Line);
             SetNodeAttrInt(node, 'index', mark.ImageIndex);
@@ -1329,7 +1330,7 @@ begin
       if memCodeEditor.CodeFolding.Enabled then
       begin
          var node: IXMLNode := nil;
-         for var i := 0 to memCodeEditor.AllFoldRanges.AllCount-1 do
+         for i := 0 to memCodeEditor.AllFoldRanges.AllCount-1 do
          begin
             var foldRange := memCodeEditor.AllFoldRanges[i];
             if foldRange.Collapsed then
@@ -1343,7 +1344,7 @@ begin
 {$ENDIF}
       var lines := GetAllLines;
       try
-         for var i := 0 to lines.Count-1 do
+         for i := 0 to lines.Count-1 do
          begin
             var node := AppendNode(ANode, 'text_line');
             var withId: IWithId := nil;
