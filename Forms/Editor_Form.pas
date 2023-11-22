@@ -1312,15 +1312,12 @@ begin
       SetNodeAttrInt(ANode, 'src_win_sel_start', memCodeEditor.SelStart);
       if memCodeEditor.SelAvail then
          SetNodeAttrInt(ANode, 'src_win_sel_length', memCodeEditor.SelLength);
-      if memCodeEditor.Marks.Count > 0 then
+      for i := 0 to memCodeEditor.Marks.Count-1 do
       begin
-         for i := 0 to memCodeEditor.Marks.Count-1 do
-         begin
-            var mark := memCodeEditor.Marks[i];
-            var node := AppendNode(ANode, 'src_win_mark');
-            SetNodeAttrInt(node, 'line', mark.Line);
-            SetNodeAttrInt(node, 'index', mark.ImageIndex);
-         end;
+         var mark := memCodeEditor.Marks[i];
+         var node := AppendNode(ANode, 'src_win_mark');
+         SetNodeAttrInt(node, 'line', mark.Line);
+         SetNodeAttrInt(node, 'index', mark.ImageIndex);
       end;
       if memCodeEditor.TopLine > 1 then
          SetNodeAttrInt(ANode, 'src_top_line', memCodeEditor.TopLine);
