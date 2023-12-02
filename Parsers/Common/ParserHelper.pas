@@ -76,7 +76,8 @@ type
       class function GetConstType(const AConstName: string): integer;
       class function GetEnumeratedType(const AValue: string): integer;
       class function GetTypeAsString(AType: integer):string;
-      class function GetType(const ATypeName: string; const ALangName: string = ''): integer;
+      class function GetType(const ATypeName, ALangName: string): integer; overload;
+      class function GetType(const ATypeName: string): integer; overload;
       class function GetFieldType(const AVarName, AFieldName: string): integer; overload;
       class function GetFieldType(AType: integer; const AFieldName: string): integer; overload;
       class function IsDeclared(const AIdentName: string): boolean;
@@ -241,15 +242,10 @@ begin
    end;
 end;
 
-// get type descriptor for given type string
-class function TParserHelper.GetType(const ATypeName: string; const ALangName: string = ''): integer;
+class function TParserHelper.GetType(const ATypeName, ALangName: string): integer;
 begin
    result := UNKNOWN_TYPE;
-   var lang: TLangDefinition := nil;
-   if ALangName.IsEmpty then
-      lang := GInfra.CurrentLang
-   else
-      lang := GInfra.GetLangDefinition(ALangName);
+   var lang := GInfra.GetLangDefinition(ALangName);
    if lang <> nil then
    begin
       for var i := 0 to High(lang.NativeDataTypes) do
@@ -267,6 +263,11 @@ begin
       if result = -1 then
          result := UNKNOWN_TYPE;
    end;
+end;
+
+class function TParserHelper.GetType(const ATypeName: string): integer;
+begin
+   result := GetType(ATypeName, GInfra.CurrentLang.Name);
 end;
 
 class function TParserHelper.ValidateUserFunctionParms(const AName: string; AParmList: array of integer): boolean;
