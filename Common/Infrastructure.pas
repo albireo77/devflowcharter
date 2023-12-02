@@ -762,18 +762,12 @@ begin
    begin
       var line := ADestList[i];
       var p := Pos(APlaceHolder, line);
-      if p <> 0 then
+      if p > 0 then
       begin
-         var lBegin := '';
-         var lEnd := '';
          if (ATemplate <> nil) and (ATemplate.Count > 0) then
          begin
-            for var a := p+APlaceHolder.Length to line.Length do
-               lEnd := lEnd + line[a];
-            for var a := 1 to p-1 do
-               lBegin := lBegin + line[a];
-            if ADestList.Capacity < ADestList.Count + ATemplate.Count then
-               ADestList.Capacity := ADestList.Count + ATemplate.Count;
+            var lBegin := Copy(line, 1, p-1);
+            var lEnd := Copy(line, p+APlaceHolder.Length);
             for var a := ATemplate.Count-1 downto 0 do
             begin
                var obj := AObject;
@@ -807,9 +801,6 @@ begin
       ADestList.AddStrings(ASourceList)
    else
    begin
-      var lineCount := ADestList.Count + ASourceList.Count;
-      if ADestList.Capacity < lineCount then
-         ADestList.Capacity := lineCount;
       for var i := ASourceList.Count-1 downto 0 do
          ADestList.InsertObject(AFromLine, ASourceList.Strings[i], ASourceList.Objects[i]);
    end;
