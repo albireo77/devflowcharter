@@ -755,33 +755,29 @@ begin
 end;
 
 class function TInfra.InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; ATemplate: TStringList; AObject: TObject = nil): integer;
-var
-   i, a, p: integer;
-   lBegin, lEnd: string;
-   obj: TObject;
 begin
    result := -1;
-   i := 0;
+   var i := 0;
    while i < ADestList.Count do
    begin
-      p := Pos(APlaceHolder, ADestList[i]);
+      var line := ADestList[i];
+      var p := Pos(APlaceHolder, line);
       if p <> 0 then
       begin
-         lBegin := '';
-         lEnd := '';
+         var lBegin := '';
+         var lEnd := '';
          if (ATemplate <> nil) and (ATemplate.Count > 0) then
          begin
-            for a := p+APlaceHolder.Length to ADestList[i].Length do
-               lEnd := lEnd + ADestList[i][a];
-            for a := 1 to p-1 do
-               lBegin := lBegin + ADestList[i][a];
+            for var a := p+APlaceHolder.Length to line.Length do
+               lEnd := lEnd + line[a];
+            for var a := 1 to p-1 do
+               lBegin := lBegin + line[a];
             if ADestList.Capacity < ADestList.Count + ATemplate.Count then
                ADestList.Capacity := ADestList.Count + ATemplate.Count;
-            for a := ATemplate.Count-1 downto 0 do
+            for var a := ATemplate.Count-1 downto 0 do
             begin
-               if AObject <> nil then
-                  obj := AObject
-               else
+               var obj := AObject;
+               if obj = nil then
                   obj := ATemplate.Objects[a];
                ADestList.InsertObject(i, lBegin + ATemplate[a] + lEnd, obj);
             end;
@@ -789,11 +785,11 @@ begin
          end
          else
          begin
-            if ADestList[i].Trim = APlaceHolder then
+            if line.Trim = APlaceHolder then
                ADestList.Delete(i)
             else
             begin
-               ADestList[i] := ReplaceStr(ADestList[i], APlaceHolder, '');
+               ADestList[i] := ReplaceStr(line, APlaceHolder, '');
                if AObject <> nil then
                   ADestList.Objects[i] := AObject;
             end;
@@ -801,7 +797,7 @@ begin
          result := i;
          break;
       end;
-      i := i + 1;
+      Inc(i);
    end;
 end;
 
