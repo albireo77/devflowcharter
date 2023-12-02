@@ -761,19 +761,16 @@ begin
    while i < ADestList.Count do
    begin
       var line := ADestList[i];
-      var p := Pos(APlaceHolder, line);
-      if p > 0 then
+      if ContainsText(line, APlaceHolder) then
       begin
          if (ATemplate <> nil) and (ATemplate.Count > 0) then
          begin
-            var lBegin := Copy(line, 1, p-1);
-            var lEnd := Copy(line, p+APlaceHolder.Length);
             for var a := ATemplate.Count-1 downto 0 do
             begin
                var obj := AObject;
                if obj = nil then
                   obj := ATemplate.Objects[a];
-               ADestList.InsertObject(i, lBegin + ATemplate[a] + lEnd, obj);
+               ADestList.InsertObject(i, ReplaceText(line, APlaceHolder, ATemplate[a]), obj);
             end;
             ADestList.Delete(i+ATemplate.Count);
          end
@@ -783,7 +780,7 @@ begin
                ADestList.Delete(i)
             else
             begin
-               ADestList[i] := ReplaceStr(line, APlaceHolder, '');
+               ADestList[i] := ReplaceText(line, APlaceHolder, '');
                if AObject <> nil then
                   ADestList.Objects[i] := AObject;
             end;
