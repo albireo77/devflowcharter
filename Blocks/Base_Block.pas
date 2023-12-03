@@ -279,9 +279,9 @@ implementation
 
 uses
    System.StrUtils, Vcl.Menus, System.Types, System.Math, System.Rtti, System.TypInfo,
-   System.SysUtils, System.UITypes, Main_Block, Return_Block, Infrastructure, BlockFactory,
-   UserFunction, XMLProcessor, Navigator_Form, LangDefinition, FlashThread, Main_Form,
-   OmniXMLUtils, Constants;
+   System.Character, System.SysUtils, System.UITypes, Main_Block, Return_Block,
+   Infrastructure, BlockFactory, UserFunction, XMLProcessor, Navigator_Form, LangDefinition,
+   FlashThread, Main_Form, OmniXMLUtils, Constants;
 
 type
    TControlHack = class(TControl);
@@ -2445,17 +2445,16 @@ end;
 
 function TGroupBlock.ExtractBranchIndex(const AStr: string): integer;
 begin
-   result := Pos('%b', AStr);
-   if result <> 0 then
+   result := Pos(BRANCH_PLACEHOLDER, AStr);
+   if result > 0 then
    begin
       var val := '';
-      var b := 0;
-      for var i := result+2 to AStr.Length do
+      var startPos := result + BRANCH_PLACEHOLDER.Length;
+      for var i := startPos to AStr.Length do
       begin
-         if TryStrToInt(AStr[i], b) then
-            val := val + AStr[i]
-         else
+         if not AStr[i].IsDigit then
             break;
+         val := val + AStr[i]
       end;
       result := StrToIntDef(val, 0);
       if result >= FBranchList.Count then

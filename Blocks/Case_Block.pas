@@ -318,7 +318,7 @@ begin
             edit := FBranchList[i].Statement;
             obj := edit;
             template := GetTemplateByControl(edit, obj);
-            tmpList.Text := ReplaceStr(template, '%b1', '%b' + i.ToString);
+            tmpList.Text := ReplaceStr(template, BRANCH_PLACEHOLDER + '1', BRANCH_PLACEHOLDER + i.ToString);
             caseLines.AddStrings(tmpList);
             for a := 0 to caseLines.Count-1 do
             begin

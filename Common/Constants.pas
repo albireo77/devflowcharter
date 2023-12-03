@@ -134,6 +134,8 @@ const   // Global constants
 
         DECLARATIONS_FORM_RIGHT_MARGIN = 16;
 
+        BRANCH_PLACEHOLDER = '%b';
+
         RTF_FILES_FILTER_KEY = 'RTFFilesFilter';
         HTML_FILES_FILTER_KEY = 'HTMLFilesFilter';
         XML_FILES_FILTER_KEY = 'XMLFilesFilter';
