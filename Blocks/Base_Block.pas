@@ -2482,12 +2482,11 @@ procedure TGroupBlock.GenerateTemplateSection(ALines: TStringList; ATemplate: TS
       if result > 0 then
       begin
          var val := '';
-         var startPos := result + BRANCH_PLACEHOLDER.Length;
-         for var i := startPos to AString.Length do
+         for var c in Copy(AString, result + BRANCH_PLACEHOLDER.Length) do
          begin
-            if not AString[i].IsDigit then
+            if not c.IsDigit then
                break;
-            val := val + AString[i]
+            val := val + c
          end;
          result := StrToIntDef(val, 0);
       end;
