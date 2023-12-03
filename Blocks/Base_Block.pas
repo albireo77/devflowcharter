@@ -2455,9 +2455,6 @@ end;
 
 procedure TBlock.GenerateTemplateSection(ALines: TStringList; ATemplate: TStringList; const ALangId: string; ADeep: integer);
 begin
-   var c := ALines.Count + ATemplate.Count;
-   if ALines.Capacity < c then
-      ALines.Capacity := c;
    for var i := 0 to ATemplate.Count-1 do
    begin
       var obj := ATemplate.Objects[i];
