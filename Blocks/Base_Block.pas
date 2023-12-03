@@ -278,9 +278,9 @@ implementation
 
 uses
    System.StrUtils, Vcl.Menus, System.Types, System.Math, System.Rtti, System.TypInfo,
-   System.SysUtils, System.UITypes, Main_Block, Return_Block, Infrastructure, BlockFactory,
-   UserFunction, XMLProcessor, Navigator_Form, LangDefinition, FlashThread, Main_Form,
-   OmniXMLUtils, Constants;
+   System.Character, System.SysUtils, System.UITypes, Main_Block, Return_Block,
+   Infrastructure, BlockFactory, UserFunction, XMLProcessor, Navigator_Form, LangDefinition,
+   FlashThread, Main_Form, OmniXMLUtils, Constants;
 
 type
    TControlHack = class(TControl);
@@ -2468,7 +2468,6 @@ begin
 end;
 
 procedure TGroupBlock.GenerateTemplateSection(ALines: TStringList; ATemplate: TStringList; const ALangId: string; ADeep: integer);
-
    function CountLeadXMLIndents(const AString: string): integer;
    begin
       result := 0;
@@ -2480,12 +2479,27 @@ procedure TGroupBlock.GenerateTemplateSection(ALines: TStringList; ATemplate: TS
             break;
       end;
    end;
-
+   function ExtractBranchIndex(const AString: string): integer;
+   begin
+      result := Pos(BRANCH_PLACEHOLDER, AString);
+      if result > 0 then
+      begin
+         var val := '';
+         var startPos := result + BRANCH_PLACEHOLDER.Length;
+         for var i := startPos to AString.Length do
+         begin
+            if not AString[i].IsDigit then
+               break;
+            val := val + AString[i]
+         end;
+         result := StrToIntDef(val, 0);
+      end;
+   end;
 begin
    for var i := 0 to ATemplate.Count-1 do
    begin
       var templateLine := ATemplate[i];
-      var b := TInfra.ExtractBranchIndex(templateLine);
+      var b := ExtractBranchIndex(templateLine);
       if (b > 0) and (b < FBranchList.Count) then
       begin
          if (ALines.Count > 0) and (ALines.Objects[ALines.Count-1] = nil) then
