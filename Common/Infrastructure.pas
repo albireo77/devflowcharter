@@ -91,6 +91,7 @@ type
          class function GetChangeLine(AObject: TObject; AEdit: TCustomEdit = nil; const ATemplate: string = ''): TChangeLine;
          class function GetCaretPos(AEdit: TCustomEdit): TBufferCoord;
          class function ExtractIndentString(const AText: string): string;
+         class function ExtractBranchIndex(const AStr: string): integer;
          class function GetFunctionHeader(ABlock: TBlock): TUserFunctionHeader;
          class function FindDuplicatedPage(APage: TTabSheet; const ACaption: TCaption): TTabSheet;
          class function GetComboMaxWidth(ACombo: TComboBox): integer;
@@ -1026,6 +1027,23 @@ begin
    while (i <= len) and result[i].IsWhiteSpace do
       i := i + 1;
    SetLength(result, i-1);
+end;
+
+class function TInfra.ExtractBranchIndex(const AStr: string): integer;
+begin
+   result := Pos(BRANCH_PLACEHOLDER, AStr);
+   if result > 0 then
+   begin
+      var val := '';
+      var startPos := result + BRANCH_PLACEHOLDER.Length;
+      for var i := startPos to AStr.Length do
+      begin
+         if not AStr[i].IsDigit then
+            break;
+         val := val + AStr[i]
+      end;
+      result := StrToIntDef(val, 0);
+   end;
 end;
 
 class function TInfra.GetFunctionHeader(ABlock: TBlock): TUserFunctionHeader;

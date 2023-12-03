@@ -206,7 +206,6 @@ type
          procedure LinkAllBlocks;
          procedure LinkBlocks(ABranch: TBranch);
          procedure Paint; override;
-         function ExtractBranchIndex(const AStr: string): integer;
          function GetDiamondTop: TPoint; virtual;
          procedure AfterRemovingBranch; virtual;
          function GetBlockParms: TBlockParms; override;
@@ -279,9 +278,9 @@ implementation
 
 uses
    System.StrUtils, Vcl.Menus, System.Types, System.Math, System.Rtti, System.TypInfo,
-   System.Character, System.SysUtils, System.UITypes, Main_Block, Return_Block,
-   Infrastructure, BlockFactory, UserFunction, XMLProcessor, Navigator_Form, LangDefinition,
-   FlashThread, Main_Form, OmniXMLUtils, Constants;
+   System.SysUtils, System.UITypes, Main_Block, Return_Block, Infrastructure, BlockFactory,
+   UserFunction, XMLProcessor, Navigator_Form, LangDefinition, FlashThread, Main_Form,
+   OmniXMLUtils, Constants;
 
 type
    TControlHack = class(TControl);
@@ -2443,25 +2442,6 @@ begin
    GenerateTemplateSection(ALines, template, ALangId, ADeep);
 end;
 
-function TGroupBlock.ExtractBranchIndex(const AStr: string): integer;
-begin
-   result := Pos(BRANCH_PLACEHOLDER, AStr);
-   if result > 0 then
-   begin
-      var val := '';
-      var startPos := result + BRANCH_PLACEHOLDER.Length;
-      for var i := startPos to AStr.Length do
-      begin
-         if not AStr[i].IsDigit then
-            break;
-         val := val + AStr[i]
-      end;
-      result := StrToIntDef(val, 0);
-      if result >= FBranchList.Count then
-         result := 0;
-   end;
-end;
-
 procedure TBlock.GenerateTemplateSection(ALines: TStringList; const ATemplate: string; const ALangId: string; ADeep: integer);
 begin
    var lines := TStringList.Create;
@@ -2505,8 +2485,8 @@ begin
    for var i := 0 to ATemplate.Count-1 do
    begin
       var templateLine := ATemplate[i];
-      var b := ExtractBranchIndex(templateLine);
-      if b > 0 then
+      var b := TInfra.ExtractBranchIndex(templateLine);
+      if (b > 0) and (b < FBranchList.Count) then
       begin
          if (ALines.Count > 0) and (ALines.Objects[ALines.Count-1] = nil) then
             ALines.Objects[ALines.Count-1] := FBranchList[b];
