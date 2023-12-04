@@ -758,6 +758,7 @@ class function TInfra.InsertTemplateLines(ADestList: TStringList; const APlaceHo
 begin
    result := -1;
    var i := 0;
+   var obj := AObject;
    while i < ADestList.Count do
    begin
       var line := ADestList[i];
@@ -767,8 +768,7 @@ begin
          begin
             for var a := ATemplate.Count-1 downto 0 do
             begin
-               var obj := AObject;
-               if obj = nil then
+               if AObject = nil then
                   obj := ATemplate.Objects[a];
                ADestList.InsertObject(i, ReplaceText(line, APlaceHolder, ATemplate[a]), obj);
             end;
