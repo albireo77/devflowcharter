@@ -630,17 +630,17 @@ procedure TBlock.DragDrop(Source: TObject; X, Y: Integer);
 begin
    if Source is TBlock then
    begin
-      var sourceBlock := TBlock(Source);
-      var srcPage := sourceBlock.Page;
+      var srcBlock := TBlock(Source);
+      var srcPage := srcBlock.Page;
       var menuItem: TMenuItem;
-      srcPage.Form.pmPages.PopupComponent := sourceBlock;
+      srcPage.Form.pmPages.PopupComponent := srcBlock;
       var shiftPressed := GetAsyncKeyState(vkShift) <> 0;
       if shiftPressed then
          menuItem := srcPage.Form.miCopy
       else
       begin
          menuItem := srcPage.Form.miCut;
-         sourceBlock.TopParentBlock.LockDrawing;
+         srcBlock.TopParentBlock.LockDrawing;
       end;
       var inst := GClpbrd.Instance;
       var uobj := GClpbrd.UndoObject;
@@ -655,7 +655,7 @@ begin
          GClpbrd.Instance := inst;
          GClpbrd.UndoObject := uobj;
          if not shiftPressed then
-            sourceBlock.TopParentBlock.UnLockDrawing;
+            srcBlock.TopParentBlock.UnLockDrawing;
       end;
    end;
 end;
