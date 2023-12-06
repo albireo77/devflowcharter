@@ -627,31 +627,26 @@ begin
 end;
 
 procedure TBlock.DragDrop(Source: TObject; X, Y: Integer);
-var
-   srcPage: TBlockTabSheet;
-   mForm: TMainForm;
-   menuItem: TMenuItem;
-   inst: TControl;
-   uobj: TObject;
-   shiftPressed: boolean;
 begin
    if Source is TBlock then
    begin
-      srcPage := TBlock(Source).Page;
-      srcPage.Form.pmPages.PopupComponent := TBlock(Source);
-      shiftPressed := GetAsyncKeyState(vkShift) <> 0;
+      var sourceBlock := TBlock(Source);
+      var srcPage := sourceBlock.Page;
+      var menuItem: TMenuItem;
+      srcPage.Form.pmPages.PopupComponent := sourceBlock;
+      var shiftPressed := GetAsyncKeyState(vkShift) <> 0;
       if shiftPressed then
          menuItem := srcPage.Form.miCopy
       else
       begin
          menuItem := srcPage.Form.miCut;
-         TBlock(Source).TopParentBlock.LockDrawing;
+         sourceBlock.TopParentBlock.LockDrawing;
       end;
-      inst := GClpbrd.Instance;
-      uobj := GClpbrd.UndoObject;
+      var inst := GClpbrd.Instance;
+      var uobj := GClpbrd.UndoObject;
       GClpbrd.Instance := nil;
       GClpbrd.UndoObject := nil;
-      mForm := Page.Form;
+      var mForm := Page.Form;
       try
          menuItem.OnClick(menuItem);
          mForm.pmPages.PopupComponent := Self;
@@ -660,7 +655,7 @@ begin
          GClpbrd.Instance := inst;
          GClpbrd.UndoObject := uobj;
          if not shiftPressed then
-            TBlock(Source).TopParentBlock.UnLockDrawing;
+            sourceBlock.TopParentBlock.UnLockDrawing;
       end;
    end;
 end;
