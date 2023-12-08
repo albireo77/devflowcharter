@@ -327,6 +327,7 @@ begin
    FLocalVars := TVarDeclareList.Create(Self, 0, 350, 389, 3, 4, 380);
    FLocalVars.Caption := i18Manager.GetString('LocalDeclare');
    FLocalVars.gbBox.DoubleBuffered := True;
+   FLocalVars.gbBox.Color := FUNCTION_HEADER_DARKER_COLOR;
 
    gbDesc := TGroupBox.Create(Self);
    gbDesc.Parent := Self;
@@ -397,6 +398,7 @@ begin
    gbBody.SetBounds(0, 80, 400, 50);
    gbBody.ParentFont := False;
    gbBody.ParentBackground := False;
+   gbBody.Color := FUNCTION_HEADER_DARKER_COLOR;
    gbBody.Font.Color := clBlack;
    gbBody.Caption := i18Manager.GetString('Body');
    gbBody.DoubleBuffered := True;
@@ -526,6 +528,7 @@ begin
    gbParams.ParentFont := False;
    gbParams.ParentBackground := False;
    gbParams.Font.Color := clBlack;
+   gbParams.Color := FUNCTION_HEADER_DARKER_COLOR;
    gbParams.Caption := i18Manager.GetString('Params');
    gbParams.Constraints.MinHeight := gbParams.Height;
    gbParams.DoubleBuffered := True;

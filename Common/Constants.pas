@@ -136,6 +136,8 @@ const   // Global constants
 
         BRANCH_PLACEHOLDER = '%b';
 
+        FUNCTION_HEADER_DARKER_COLOR = cl3DLight;
+
         RTF_FILES_FILTER_KEY = 'RTFFilesFilter';
         HTML_FILES_FILTER_KEY = 'HTMLFilesFilter';
         XML_FILES_FILTER_KEY = 'XMLFilesFilter';
