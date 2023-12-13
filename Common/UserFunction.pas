@@ -619,9 +619,9 @@ end;
 constructor TParameter.Create(AParentTab: TUserFunctionHeader);
 begin
 
-   inherited Create(AParentTab.sbxElements);
-
    FElementTypeID := AParentTab.FElementTypeID;
+
+   inherited Create(AParentTab.sbxElements);
 
    var w17 := TInfra.Scaled(Self, 17);
 

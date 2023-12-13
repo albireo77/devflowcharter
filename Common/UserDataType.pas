@@ -286,9 +286,10 @@ end;
 constructor TField.Create(AParentTab: TUserDataType);
 begin
 
+   FElementTypeID := AParentTab.FElementTypeID;
+
    inherited Create(AParentTab.sbxElements);
 
-   FElementTypeID := AParentTab.FElementTypeID;
    Constraints.MaxWidth := AParentTab.sbxElements.Width - 6;
    SetBounds(0, Parent.Height, Constraints.MaxWidth, TInfra.Scaled(Self, 22));
    Align := alTop;

@@ -1,7 +1,7 @@
 {
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
-    
+
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
    as published by the Free Software Foundation; either version 2
@@ -43,13 +43,15 @@ type
          FParentForm: TPageControlForm;
          function GetParentTab: TTabSheet;
       protected
-         FElementTypeID: string;
+         FElementTypeID,
+         FHintStr: string;
          constructor Create(AParent: TScrollBox);
          procedure OnClickRemove(Sender: TObject);
          procedure OnChangeType(Sender: TObject); virtual;
          procedure OnChangeName(Sender: TObject); virtual;
          procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean); override;
          procedure DragDrop(Source: TObject; X, Y: Integer); override;
+         procedure CMHintShow(var Message: TCMHintShow); message CM_HINTSHOW;
       public
          edtName: TNameEdit;
          cbType: TComboBox;
@@ -72,11 +74,12 @@ begin
 
    inherited Create(AParent);
    Parent := AParent;
-   
+
    Ctl3D := False;
    BevelOuter := bvNone;
    FParentTab := GetParentTab;
    FParentForm := TTabComponent(FParentTab).ParentForm;
+   FHintStr := i18Manager.GetString(FElementTypeID + 'HintStr');
    DoubleBuffered := True;
    DragMode := dmAutomatic;
 
@@ -112,6 +115,13 @@ begin
    btnRemove.OnClick := OnClickRemove;
    var w := TInfra.GetAutoWidth(btnRemove);
    btnRemove.SetBounds(Parent.Width-w-TInfra.Scaled(Self, 32), 0, w+14, TInfra.Scaled(Self, 20));
+end;
+
+procedure TElement.CMHintShow(var Message: TCMHintShow);
+begin
+  inherited;
+  if Message.HintInfo.HintControl = Self then
+     Message.HintInfo.HintStr := FHintStr;
 end;
 
 function TElement.GetParentTab: TTabSheet;
@@ -245,3 +255,4 @@ begin
 end;
 
 end.
+
