@@ -38,13 +38,11 @@ type
    end;
 
    TElement = class(TPanel)
-      private
-         FParentTab: TTabSheet;
-         FParentForm: TPageControlForm;
-         function GetParentTab: TTabSheet;
       protected
          FElementTypeID,
          FHintStr: string;
+         FParentTab: TTabSheet;
+         FParentForm: TPageControlForm;
          constructor Create(AParent: TScrollBox);
          procedure OnClickRemove(Sender: TObject);
          procedure OnChangeType(Sender: TObject); virtual;
@@ -77,9 +75,6 @@ begin
 
    Ctl3D := False;
    BevelOuter := bvNone;
-   FParentTab := GetParentTab;
-   FParentForm := TTabComponent(FParentTab).ParentForm;
-   FHintStr := i18Manager.GetString(FElementTypeID + 'HintStr');
    DoubleBuffered := True;
    DragMode := dmAutomatic;
 
@@ -122,21 +117,6 @@ begin
   inherited;
   if Message.HintInfo.HintControl = Self then
      Message.HintInfo.HintStr := FHintStr;
-end;
-
-function TElement.GetParentTab: TTabSheet;
-begin
-   result := nil;
-   var winControl := Parent;
-   while not (winControl is TForm) do
-   begin
-      if winControl is TTabComponent then
-      begin
-         result := TTabComponent(winControl);
-         break;
-      end;
-      winControl := winControl.Parent;
-   end;
 end;
 
 procedure TElement.OnClickRemove(Sender: TObject);

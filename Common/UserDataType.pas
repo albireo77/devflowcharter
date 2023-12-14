@@ -286,10 +286,12 @@ end;
 constructor TField.Create(AParentTab: TUserDataType);
 begin
 
-   FElementTypeID := AParentTab.FElementTypeID;
-
    inherited Create(AParentTab.sbxElements);
 
+   FElementTypeID := AParentTab.FElementTypeID;
+   FHintStr := i18Manager.GetString(FElementTypeID + 'HintStr');
+   FParentTab := AParentTab;
+   FParentForm := TTabComponent(FParentTab).ParentForm;
    Constraints.MaxWidth := AParentTab.sbxElements.Width - 6;
    SetBounds(0, Parent.Height, Constraints.MaxWidth, TInfra.Scaled(Self, 22));
    Align := alTop;
