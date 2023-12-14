@@ -626,7 +626,7 @@ begin
    FElementTypeID := AParentTab.FElementTypeID;
    FHintStr := i18Manager.GetString(FElementTypeID + 'HintStr');
    FParentTab := AParentTab;
-   FParentForm := TTabComponent(FParentTab).ParentForm;
+   FParentForm := AParentTab.ParentForm;
    Constraints.MaxWidth := AParentTab.sbxElements.Width - 17;
    SetBounds(0, Parent.Height, Constraints.MaxWidth, TInfra.Scaled(Self, 22));
    Align := alTop;
