@@ -618,10 +618,10 @@ begin
 
    inherited Create(AParentTab.sbxElements);
 
-   FElementTypeID := AParentTab.FElementTypeID;
-   FHintStr := i18Manager.GetString(FElementTypeID + 'HintStr');
    FParentTab := AParentTab;
    FParentForm := AParentTab.ParentForm;
+   FElementTypeID := AParentTab.FElementTypeID;
+   FHintStr := i18Manager.GetString(FElementTypeID + 'HintStr');
    Constraints.MaxWidth := AParentTab.sbxElements.Width - 17;
    SetBounds(0, Parent.Height, Constraints.MaxWidth, TInfra.Scaled(Self, 22));
    Align := alTop;
