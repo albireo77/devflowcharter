@@ -319,7 +319,7 @@ var
    ctrl: TControl;
 begin
 
-   FElementTypeID := 'arg';
+   FElementTypeId := 'arg';
    FCodeIncludeExtern := GInfra.CurrentLang.CodeIncludeExternFunction;
 
    inherited Create(AParentForm);
@@ -616,12 +616,10 @@ end;
 constructor TParameter.Create(AParentTab: TUserFunctionHeader);
 begin
 
-   inherited Create(AParentTab.sbxElements);
+   inherited Create(AParentTab.sbxElements, AParentTab.FElementTypeId);
 
    FParentTab := AParentTab;
    FParentForm := AParentTab.ParentForm;
-   FElementTypeID := AParentTab.FElementTypeID;
-   FHintStr := i18Manager.GetString(FElementTypeID + 'HintStr');
    Constraints.MaxWidth := AParentTab.sbxElements.Width - 17;
    SetBounds(0, Parent.Height, Constraints.MaxWidth, TInfra.Scaled(Self, 22));
    Align := alTop;

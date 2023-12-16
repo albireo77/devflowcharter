@@ -39,11 +39,11 @@ type
 
    TElement = class(TPanel)
       protected
-         FElementTypeID,
+         FTypeId,
          FHintStr: string;
          FParentTab: TTabSheet;
          FParentForm: TPageControlForm;
-         constructor Create(AParent: TScrollBox);
+         constructor Create(AParent: TScrollBox; const ATypeId: string);
          procedure OnClickRemove(Sender: TObject);
          procedure OnChangeType(Sender: TObject); virtual;
          procedure OnChangeName(Sender: TObject); virtual;
@@ -67,7 +67,7 @@ uses
    Vcl.Graphics, System.SysUtils, System.Classes, Interfaces, TabComponent, Infrastructure,
    Constants, OmniXMLUtils;
 
-constructor TElement.Create(AParent: TScrollBox);
+constructor TElement.Create(AParent: TScrollBox; const ATypeId: string);
 begin
 
    inherited Create(AParent);
@@ -77,6 +77,8 @@ begin
    BevelOuter := bvNone;
    DoubleBuffered := True;
    DragMode := dmAutomatic;
+   FTypeId := ATypeId;
+   FHintStr := i18Manager.GetString(FTypeId + 'HintStr');
 
    edtName := TNameEdit.Create(Self);
    edtName.Parent := Self;
@@ -186,7 +188,7 @@ end;
 
 function TElement.ExportToXML(ANode: IXMLNode): IXMLNode;
 begin
-   result := AppendNode(ANode, FElementTypeID);
+   result := AppendNode(ANode, FTypeId);
    SetNodeAttrStr(result, NAME_ATTR, Trim(edtName.Text));
    SetNodeAttrStr(result, TYPE_ATTR, cbType.Text);
 end;

@@ -86,7 +86,7 @@ var
 constructor TUserDataType.Create(AParentForm: TDataTypesForm);
 begin
 
-   FElementTypeID := 'field';
+   FElementTypeId := 'field';
    FCodeIncludeExtern := GInfra.CurrentLang.CodeIncludeExternDataType;
 
    inherited Create(AParentForm);
@@ -286,12 +286,10 @@ end;
 constructor TField.Create(AParentTab: TUserDataType);
 begin
 
-   inherited Create(AParentTab.sbxElements);
+   inherited Create(AParentTab.sbxElements, AParentTab.FElementTypeId);
 
    FParentTab := AParentTab;
    FParentForm := AParentTab.ParentForm;
-   FElementTypeID := AParentTab.FElementTypeID;
-   FHintStr := i18Manager.GetString(FElementTypeID + 'HintStr');
    Constraints.MaxWidth := AParentTab.sbxElements.Width - 6;
    SetBounds(0, Parent.Height, Constraints.MaxWidth, TInfra.Scaled(Self, 22));
    Align := alTop;

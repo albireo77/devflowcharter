@@ -38,7 +38,7 @@ type
          FParentObject: TComponent;
          FActive,
          FCodeIncludeExtern: boolean;
-         FElementTypeID: string;
+         FElementTypeId: string;
          sbxElements: TScrollBox;
          procedure SetActive(AValue: boolean); virtual;
          function GetActive: boolean; virtual;
@@ -465,7 +465,7 @@ begin
       edtName.OnChange(edtName);
    chkExternal.State := TInfra.DecodeCheckBoxState(GetNodeAttrStr(ANode, 'ext_decl'));
    edtLibrary.Text := GetNodeAttrStr(ANode, 'library');
-   var nodes := FilterNodes(ANode, FElementTypeID);
+   var nodes := FilterNodes(ANode, FElementTypeId);
    var node := nodes.NextNode;
    while node <> nil do
    begin
