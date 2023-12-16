@@ -618,8 +618,6 @@ begin
 
    inherited Create(AParentTab.sbxElements);
 
-   var w17 := TInfra.Scaled(Self, 17);
-
    FElementTypeID := AParentTab.FElementTypeID;
    FHintStr := i18Manager.GetString(FElementTypeID + 'HintStr');
    FParentTab := AParentTab;
@@ -628,6 +626,7 @@ begin
    SetBounds(0, Parent.Height, Constraints.MaxWidth, TInfra.Scaled(Self, 22));
    Align := alTop;
    TInfra.PopulateDataTypeCombo(cbType);
+   var w17 := TInfra.Scaled(Self, 17);
 
    edtDefault := TEdit.Create(Self);
    edtDefault.Parent := Self;
