@@ -347,7 +347,7 @@ begin
    for var i := 0 to sbxElements.ControlCount-1 do
    begin
       var control := sbxElements.Controls[i];
-      if control.Visible then
+      if control.Visible and (control is T) then
          list.Add(control);
    end;
    if AComparer <> nil then
