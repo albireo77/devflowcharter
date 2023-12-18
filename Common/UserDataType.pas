@@ -305,11 +305,10 @@ end;
 function TUserDataType.CreateElement: TElement;
 begin
    var t := Kind;
-   var field := TField.Create(Self);
-   field.cbType.Enabled := t in [dtRecord, dtArray];
-   field.edtSize.Enabled := field.cbType.Enabled;
-   field.edtName.Enabled := t <> dtArray;
-   result := field;
+   result := TField.Create(Self);
+   result.cbType.Enabled := t in [dtRecord, dtArray];
+   TField(result).edtSize.Enabled := result.cbType.Enabled;
+   result.edtName.Enabled := t <> dtArray;
 end;
 
 procedure TUserDataType.OnChangeName(Sender: TObject);
