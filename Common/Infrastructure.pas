@@ -880,7 +880,7 @@ end;
 class function TInfra.CompareWithAppVersion(const AVersion: string): integer;
 begin
    result := 0;
-   if AVersion.IsEmpty or (FAppVersion = AVersion) then
+   if AVersion.IsEmpty or FAppVersion.IsEmpty or (FAppVersion = AVersion) then
       Exit;
    var nums := AVersion.Split([VERSION_NUMBER_SEPARATOR], 4);
    var numsApp := FAppVersion.Split([VERSION_NUMBER_SEPARATOR], 4);
