@@ -96,7 +96,7 @@ type
          class function GetComboMaxWidth(ACombo: TComboBox): integer;
          class function ExportToFile(AExport: IExportable): TError;
          class function StripInstrEnd(const ALine: string): string;
-         class function IsNewerProjectVersion(const AProjectVersion: string): boolean;
+         class function CompareWithAppVersion(const AVersion: string): integer;
          class function GetBaseForms: IEnumerable<TBaseForm>;
          class function DecodeFontStyle(AValue: integer): TFontStyles;
          class function EncodeFontStyle(AStyle: TFontStyles): integer;
@@ -877,13 +877,24 @@ begin
    result := ExplorerForm;
 end;
 
-class function TInfra.IsNewerProjectVersion(const AProjectVersion: string): boolean;
-   function GetVersionNumber(const AVersion: string): integer;
-   begin
-      result := StrToIntDef(AVersion.Replace(VERSION_NUMBER_SEPARATOR, ''), 0);
-   end;
+class function TInfra.CompareWithAppVersion(const AVersion: string): integer;
 begin
-   result := GetVersionNumber(AProjectVersion) > GetVersionNumber(FAppVersion);
+   result := 0;
+   if AVersion.IsEmpty or (FAppVersion = AVersion) then
+      Exit;
+   var nums := AVersion.Split([VERSION_NUMBER_SEPARATOR], 4);
+   var numsApp := FAppVersion.Split([VERSION_NUMBER_SEPARATOR], 4);
+   for var i := 0 to High(numsApp) do
+   begin
+      if (result <> 0) or (i > High(nums)) then
+         break;
+      var e1 := StrToIntDef(nums[i], -1);
+      var e2 := StrToIntDef(numsApp[i], -1);
+      if e1 > e2 then
+         result := 1
+      else if e1 < e2 then
+         result := -1;
+   end;
 end;
 
 class function TInfra.GetActiveEdit: TCustomEdit;

@@ -476,7 +476,7 @@ begin
    end;
 
    var ver := GetNodeAttrStr(ANode, APP_VERSION_ATTR, '');
-   if TInfra.IsNewerProjectVersion(ver) then
+   if TInfra.CompareWithAppVersion(ver) > 0 then
       TInfra.ShowWarningBox('OldVerMsg', [ver]);
 
    var s := IfThen(SameText(langName, GInfra.TemplateLang.Name), 'ChangeLngNone', 'ChangeLngAsk');
