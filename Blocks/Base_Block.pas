@@ -2055,7 +2055,7 @@ begin
    TWinControl(Self).UnlockDrawing;
    for var comment in GetComments(True) do
       comment.UnlockDrawing;
-   if not IsDrawingLocked then
+   if not RedrawDisabled then
       GProject.RepaintFlowcharts;
 end;
 
