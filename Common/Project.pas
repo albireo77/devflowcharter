@@ -295,7 +295,7 @@ begin
    for var i := 0 to FComponentList.Count-1 do
    begin
       var comp := FComponentList[i];
-      if (T = TComponent) or (comp.ClassType = T) then
+      if comp is T then
          list.Add(comp);
    end;
    if AComparer <> nil then
