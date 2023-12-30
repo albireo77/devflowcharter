@@ -54,7 +54,7 @@ type
       function GetIWinControlComponent(AHandle: THandle): IWinControl;
       procedure RefreshZOrder;
       procedure ExportPagesToXML(ANode: IXMLNode);
-      function GetSelectList(ANode: IXMLNode; const ALabel: string; const ANodeName: string; const ANodeName2: string = ''): TStringList;
+      function GetSelectList(ANode: IXMLNode; const ALabel, ANodeName: string; const ANodeName2: string = ''): TStringList;
       function GetComponents<T: class>(AComparer: IComparer<T> = nil): IEnumerable<T>;
       function GetIComponents<I: IInterface>(AComparer: IComparer<TComponent> = nil): IEnumerable<I>; overload;
       function GetIComponents<T: class; I: IInterface>(AComparer: IComparer<T> = nil): IEnumerable<I>; overload;
@@ -558,7 +558,7 @@ begin
    end;
 end;
 
-function TProject.GetSelectList(ANode: IXMLNode; const ALabel: string; const ANodeName: string; const ANodeName2: string = ''): TStringList;
+function TProject.GetSelectList(ANode: IXMLNode; const ALabel, ANodeName: string; const ANodeName2: string = ''): TStringList;
 begin
    result := TStringList.Create;
    var nodes := FilterNodes(ANode, ANodeName);
