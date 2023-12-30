@@ -561,16 +561,13 @@ end;
 function TProject.GetSelectList(ANode: IXMLNode; const ALabel: string; const ANodeName: string; const ANodeName2: string = ''): TStringList;
 begin
    result := TStringList.Create;
-   var isTag2Empty := ANodeName2.IsEmpty;
    var nodes := FilterNodes(ANode, ANodeName);
    var node := nodes.NextNode;
    while node <> nil do
    begin
-      var node1: IXMLNode := nil;
-      if not isTag2Empty then
-         node1 := FindNode(node, ANodeName2)
-      else
-         node1 := node;
+      var node1 := node;
+      if not ANodeName2.IsEmpty then
+         node1 := FindNode(node, ANodeName2);
       if node1 <> nil then
          result.Add(GetNodeAttrStr(node1, NAME_ATTR, ''));
       node := nodes.NextNode;
