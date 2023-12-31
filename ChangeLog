@@ -1,3 +1,7 @@
+10.5 [31-12-2023]
+- fix comparing project and app versions
+- minor optimizations
+
 10.4 [15-12-2023]
 - Function Header: add hint that parameters can be reordered by mouse dragging
 - Datatype: add hint that fields can be reordered by mouse dragging
