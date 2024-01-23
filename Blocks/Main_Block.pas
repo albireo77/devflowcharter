@@ -148,11 +148,11 @@ begin
          for var comment in GetPinComments do
              comment.Page := APage;
       finally
+         FPage := APage;
+         Parent := APage.Box;
          if unPin then
             UnPinComments;
       end;
-      FPage := APage;
-      Parent := APage.Box;
       if UserFunction <> nil then
       begin
          var header := TUserFunction(UserFunction).Header;
