@@ -145,11 +145,11 @@ begin
    begin
       var unPin := Expanded and (PinComments > 0);
       try
+         FPage := APage;
+         Parent := APage.Box;
          for var comment in GetPinComments do
              comment.Page := APage;
       finally
-         FPage := APage;
-         Parent := APage.Box;
          if unPin then
             UnPinComments;
       end;
