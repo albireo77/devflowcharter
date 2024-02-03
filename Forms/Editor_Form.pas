@@ -137,6 +137,7 @@ type
     function GetAllLines: TStrings;
     procedure PasteComment(const AText: string);
     procedure DisplayLines(ALines: TStringList; AReset: boolean);
+    procedure InsertIntoEditor(ALines: TStringList; const APos: TDisplayCoord);
   public
     { Public declarations }
     procedure SetFormAttributes;
@@ -170,7 +171,8 @@ implementation
 uses
    System.StrUtils, System.UITypes, System.Math, WinApi.Windows, Infrastructure,
    Goto_Form, Settings, LangDefinition, Main_Block, Help_Form, Comment, OmniXMLUtils,
-   Main_Form, SynEditTypes, ParserHelper, Constants, System.Character;
+   Main_Form, SynEditTypes, ParserHelper, TabComponent, UserFunction, UserDataType,
+   Constants, System.Character;
 
 {$R *.dfm}
 
@@ -874,19 +876,15 @@ procedure TEditorForm.memCodeEditorDragOver(Sender, Source: TObject;
 begin
    if State = dsDragEnter then
       memCodeEditor.SetFocus;
-   if not ((Source is TComment) or (Source is TBlock)) then
+   if not ((Source is TComment) or (Source is TBlock) or (Source is TTabComponent)) then
       Accept := False
    else
       memCodeEditor.CaretXY := memCodeEditor.DisplayToBufferPos(memCodeEditor.PixelsToRowColumn(X, Y));
 end;
 
 procedure TEditorForm.memCodeEditorDragDrop(Sender, Source: TObject; X, Y: Integer);
-var
-   pos: TDisplayCoord;
-   tmpList: TStringList;
-   i: integer;
 begin
-   pos := memCodeEditor.PixelsToRowColumn(X, Y);
+   var pos := memCodeEditor.PixelsToRowColumn(X, Y);
    if Source is TComment then
    begin
       memCodeEditor.CaretXY := memCodeEditor.DisplayToBufferPos(pos);
@@ -894,22 +892,61 @@ begin
    end
    else if Source is TBlock then
    begin
-      Clipboard.Open;
-      tmpList := TStringList.Create;
+      var tmpList := TStringList.Create;
       try
          TBlock(Source).GenerateCode(tmpList, GInfra.CurrentLang.Name, 0);
-         memCodeEditor.BeginUpdate;
-         for i := 0 to tmpList.Count-1 do
+         InsertIntoEditor(tmpList, pos);
+      finally
+         tmpList.Free;
+      end;
+   end
+   else if Source is TUserFunctionHeader then
+   begin
+      var userFunction := TUserFunctionHeader(Source).UserFunction;
+      var tmpList := TStringList.Create;
+      try
+         if Assigned(GInfra.CurrentLang.UserFunctionGenerator) then
+            GInfra.CurrentLang.UserFunctionGenerator(tmpList, userFunction, False)
+         else
+            GInfra.TemplateLang.UserFunctionGenerator(tmpList, userFunction, False);
+         InsertIntoEditor(tmpList, pos);
+      finally
+         tmpList.Free;
+      end;
+   end
+   else if Source is TUserDataType then
+   begin
+      var userDataType := TUserDataType(Source);
+      var tmpList := TStringList.Create;
+      try
+         if Assigned(GInfra.CurrentLang.UserDataTypeGenerator) then
+            GInfra.CurrentLang.UserDataTypeGenerator(tmpList, userDataType)
+         else
+            GInfra.TemplateLang.UserDataTypeGenerator(tmpList, userDataType);
+         InsertIntoEditor(tmpList, pos);
+      finally
+         tmpList.Free;
+      end;
+   end;
+end;
+
+procedure TEditorForm.InsertIntoEditor(ALines: TStringList; const APos: TDisplayCoord);
+begin
+   if ALines.Count > 0 then
+   begin
+      Clipboard.Open;
+      memCodeEditor.BeginUpdate;
+      try
+         for var i := 0 to ALines.Count-1 do
          begin
-            Clipboard.AsText := tmpList.Strings[i];
-            memCodeEditor.CaretY := pos.Row + i;
-            memCodeEditor.CaretX := pos.Column;
+            Clipboard.AsText := ALines.Strings[i];
+            memCodeEditor.CaretY := APos.Row + i;
+            memCodeEditor.CaretX := APos.Column;
             memCodeEditor.Lines.Insert(memCodeEditor.CaretY-1, '');
             memCodeEditor.PasteFromClipboard;
          end;
-         memCodeEditor.EndUpdate;
       finally
-         tmpList.Free;
+         memCodeEditor.EndUpdate;
          Clipboard.Close;
       end;
    end;
