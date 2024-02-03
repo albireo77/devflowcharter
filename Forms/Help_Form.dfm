@@ -4,7 +4,7 @@ object HelpForm: THelpForm
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Code Editor - Help'
-  ClientHeight = 428
+  ClientHeight = 433
   ClientWidth = 411
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -21,7 +21,7 @@ object HelpForm: THelpForm
     Left = 0
     Top = 0
     Width = 411
-    Height = 428
+    Height = 433
     TabStop = False
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
