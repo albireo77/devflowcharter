@@ -86,14 +86,11 @@ end;
 
 procedure TIBASIC_MainFunctionSectionGenerator(ALines: TStringList; deep: integer);
 begin
-   if GProject <> nil then
+   var mainBlock := GProject.GetMainBlock;
+   if mainBlock <> nil then
    begin
-      var mainBlock := GProject.GetMainBlock;
-      if mainBlock <> nil then
-      begin
-         mainBlock.GenerateCode(ALines, tiBasicLang.Name, deep);
-         ALines.AddObject('EndPrgm', mainBlock);
-      end;
+      mainBlock.GenerateCode(ALines, tiBasicLang.Name, deep);
+      ALines.AddObject('EndPrgm', mainBlock);
    end;
 end;
 

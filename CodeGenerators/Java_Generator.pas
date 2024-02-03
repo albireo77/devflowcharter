@@ -393,76 +393,71 @@ begin
    end;
 end;
 
-procedure Java_UserDataTypesSectionGenerator(ALines: TStringList);
-var
-   name, line, fieldSize, fieldName, fieldType, funcStrU, typeAccess, indent: string;
-   dataType: TUserDataType;
-   field: TField;
-   i: integer;
+procedure Java_UserDataTypeGenerator(ALines: TStringList; ADataType: TUserDataType);
 begin
-   i := 0;
-   for dataType in GProject.GetUserDataTypes do
+   var name := ADataType.GetName;
+   if not name.IsEmpty then
    begin
-      name := dataType.GetName;
-      if not name.IsEmpty then
+      var indent := GSettings.IndentString;
+      var typeAccess := ADataType.GetExternModifier;
+      if ADataType.Kind = dtRecord then
       begin
-         indent := GSettings.IndentString;
-         typeAccess := dataType.GetExternModifier;
-         if dataType.Kind = dtRecord then
+         ALines.AddObject(typeAccess + 'class ' + name + ' {', ADataType);
+         if ADataType.FieldCount > 0 then
          begin
-            if i > 0 then
-               ALines.AddObject('', dataType);
-            line := typeAccess + 'class ' + name + ' {';
-            ALines.AddObject(line, dataType);
-            if dataType.FieldCount > 0 then
+            ALines.AddObject('', ADataType);
+            var i := ALines.Count;
+            ALines.AddObject('', ADataType);
+            for var field in ADataType.GetFields do
             begin
-               ALines.AddObject('', dataType);
-               i := ALines.Count;
-               ALines.AddObject('', dataType);
-               for field in dataType.GetFields do
-               begin
-                  fieldSize := javaLang.GetArraySizes(field.edtSize);
-                  fieldName := Trim(field.edtName.Text);
-                  fieldType := field.cbType.Text;
-                  line := indent + 'private ' + fieldType + fieldSize + ' ' + fieldName + ';';
-                  ALines.InsertObject(i, line, dataType);
-                  funcStrU := fieldName;
-                  if not funcStrU.IsEmpty then
-                     funcStrU[1] := funcStrU[1].ToUpper;
-                  line := indent + 'public ' + fieldType + fieldSize + ' get' + funcStrU + '() {';
-                  ALines.AddObject(line, dataType);
-                  line := indent + indent + 'return ' + fieldName + ';';
-                  ALines.AddObject(line, dataType);
-                  ALines.AddObject(indent + '}', dataType);
-                  line := indent + 'public void set' + funcStrU + '(' + fieldType + fieldSize + ' ' + fieldName + ') {';
-                  ALines.AddObject(line, dataType);
-                  line := indent + indent + 'this.' + fieldName + ' = ' + fieldName + ';';
-                  ALines.AddObject(line, dataType);
-                  ALines.AddObject(indent + '}', dataType);
-                  i := i + 1;
-               end;
+               var fieldSize := javaLang.GetArraySizes(field.edtSize);
+               var fieldName := Trim(field.edtName.Text);
+               var fieldType := field.cbType.Text;
+               var line := indent + 'private ' + fieldType + fieldSize + ' ' + fieldName + ';';
+               ALines.InsertObject(i, line, ADataType);
+               var funcStrU := fieldName;
+               if not funcStrU.IsEmpty then
+                  funcStrU[1] := funcStrU[1].ToUpper;
+               line := indent + 'public ' + fieldType + fieldSize + ' get' + funcStrU + '() {';
+               ALines.AddObject(line, ADataType);
+               line := indent + indent + 'return ' + fieldName + ';';
+               ALines.AddObject(line, ADataType);
+               ALines.AddObject(indent + '}', ADataType);
+               line := indent + 'public void set' + funcStrU + '(' + fieldType + fieldSize + ' ' + fieldName + ') {';
+               ALines.AddObject(line, ADataType);
+               line := indent + indent + 'this.' + fieldName + ' = ' + fieldName + ';';
+               ALines.AddObject(line, ADataType);
+               ALines.AddObject(indent + '}', ADataType);
+               i := i + 1;
             end;
-            ALines.AddObject('}', dataType);
-            i := 1;
-         end
-         else if dataType.Kind = dtEnum then
-         begin
-            if i > 0 then
-               ALines.AddObject('', dataType);
-            line := typeAccess + 'enum ' + name + ' {';
-            ALines.AddObject(line, dataType);
-            if dataType.FieldCount > 0 then
-            begin
-               line := indent;
-               for field in dataType.GetFields do
-                  line := line + Trim(field.edtName.Text).ToUpper + ', ';
-               SetLength(line, Length(line)-2);
-               ALines.AddObject(line, dataType);
-            end;
-            ALines.AddObject('}', dataType);
-            i := 1;
          end;
+         ALines.AddObject('}', ADataType);
+      end
+      else if ADataType.Kind = dtEnum then
+      begin
+         ALines.AddObject(typeAccess + 'enum ' + name + ' {', ADataType);
+         if ADataType.FieldCount > 0 then
+         begin
+            var line := indent;
+            for var field in ADataType.GetFields do
+               line := line + Trim(field.edtName.Text).ToUpper + ', ';
+            SetLength(line, Length(line)-2);
+            ALines.AddObject(line, ADataType);
+         end;
+         ALines.AddObject('}', ADataType);
       end;
+   end;
+end;
+
+procedure Java_UserDataTypesSectionGenerator(ALines: TStringList);
+begin
+   var i := 0;
+   for var dataType in GProject.GetUserDataTypes do
+   begin
+      if i > 0 then
+         ALines.AddObject('', dataType);
+      Java_UserDataTypeGenerator(ALines, dataType);
+      i := i + 1;
    end;
 end;
 
@@ -1130,6 +1125,7 @@ initialization
       javaLang.AfterProgramGenerator :=  Java_AfterProgramGenerator;
       javaLang.LibSectionGenerator := Java_LibSectionGenerator;
       javaLang.VarSectionGenerator := Java_VarSectionGenerator;
+      javaLang.UserDataTypeGenerator := Java_UserDataTypeGenerator;
       javaLang.UserDataTypesSectionGenerator := Java_UserDataTypesSectionGenerator;
       javaLang.GetConstantType := Java_GetConstantType;
       javaLang.SetHLighterAttrs := Java_SetHLighterAttrs;
