@@ -101,6 +101,7 @@ type
       property ParameterCount: integer read GetElementCount;
       constructor Create(AParentForm: TFunctionsForm);
       destructor Destroy; override;
+      procedure ExportCode(ALines: TStringList); override;
       procedure ExportToXML(ANode: IXMLNode); override;
       procedure ImportFromXML(ANode: IXMLNode; APinControl: TControl = nil);
       procedure RefreshSizeEdits; override;
@@ -680,6 +681,14 @@ begin
    edtName.Hint := i18Manager.GetFormattedString(info, [funcName]);
    DrawBodyLabel;
    inherited OnChangeName(Sender);
+end;
+
+procedure TUserFunctionHeader.ExportCode(ALines: TStringList);
+begin
+   if Assigned(GInfra.CurrentLang.UserFunctionGenerator) then
+      GInfra.CurrentLang.UserFunctionGenerator(ALines, FUserFunction, False)
+   else
+      GInfra.TemplateLang.UserFunctionGenerator(ALines, FUserFunction, False);
 end;
 
 procedure TUserFunctionHeader.AddElement(Sender: TObject);

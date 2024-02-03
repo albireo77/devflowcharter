@@ -83,6 +83,7 @@ type
       function GetUserDataTypes: IEnumerable<TUserDataType>;
       function GetUserFunction(const AName: string): TUserFunction;
       function GetUserDataType(const AName: string): TUserDataType;
+      procedure ExportCode(ALines: TStringList);
       procedure ExportToGraphic(AGraphic: TGraphic);
       procedure ExportToXML(ANode: IXMLNode);
       function ExportToXMLFile(const AFile: string): TError;
@@ -555,6 +556,16 @@ begin
       FGlobalConsts.SetExternalColumn(2);
       FGlobalConsts.AssociatedList := FGlobalVars;
       AForm.Width := FGlobalConsts.BoundsRect.Right + DECLARATIONS_FORM_RIGHT_MARGIN;
+   end;
+end;
+
+procedure TProject.ExportCode(ALines: TStringList);
+begin
+   var lines := GInfra.GenerateProgram;
+   try
+      ALines.AddStrings(lines);
+   finally
+      lines.Free;
    end;
 end;
 

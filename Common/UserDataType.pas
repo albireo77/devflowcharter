@@ -62,6 +62,7 @@ type
       procedure ExportToXML(ANode: IXMLNode); override;
       procedure ImportFromXML(ANode: IXMLNode; APinControl: TControl = nil);
       procedure RefreshSizeEdits; override;
+      procedure ExportCode(ALines: TStringList); override;
       function IsValidEnumValue(const AValue: string): boolean;
       function GetDimensionCount: integer;
       function GetDimensions: string;
@@ -221,6 +222,14 @@ begin
       cbUnchecked: result := lang.DataTypeNotExternal;
       cbGrayed:    result := lang.DataTypeTransExternal;
    end;
+end;
+
+procedure TUserDataType.ExportCode(ALines: TStringList);
+begin
+   if Assigned(GInfra.CurrentLang.UserDataTypeGenerator) then
+      GInfra.CurrentLang.UserDataTypeGenerator(ALines, Self)
+   else
+      GInfra.TemplateLang.UserDataTypeGenerator(ALines, Self);
 end;
 
 procedure TUserDataType.Resize;

@@ -69,6 +69,7 @@ type
          property ParentForm: TPageControlForm read FParentForm;
          constructor Create(AParentForm: TPageControlForm);
          destructor Destroy; override;
+         procedure ExportCode(ALines: TStringList); virtual; abstract;
          procedure ExportToXML(ANode: IXMLNode); virtual;
          function ExportToXMLFile(const AFile: string): TError;
          procedure ExportToGraphic(AGraphic: TGraphic);

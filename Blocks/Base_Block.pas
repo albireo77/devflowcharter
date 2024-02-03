@@ -148,6 +148,7 @@ type
          function IsCursorResize: boolean;
          function CanInsertReturnBlock: boolean; virtual;
          procedure ExportToXML(ANode: IXMLNode);
+         procedure ExportCode(ALines: TStringList);
          function ImportFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
          procedure ExportToGraphic(AGraphic: TGraphic); virtual;
          procedure UpdateEditor(AEdit: TCustomEdit); virtual;
@@ -1820,6 +1821,11 @@ begin
       comment.Parent := Page;
       Inc(result);
    end;
+end;
+
+procedure TBlock.ExportCode(ALines: TStringList);
+begin
+   GenerateCode(ALines, GInfra.CurrentLang.Name, 0);
 end;
 
 procedure TBlock.UnPinComments;

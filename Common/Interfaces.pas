@@ -24,7 +24,8 @@ unit Interfaces;
 interface
 
 uses
-   Vcl.Controls, Vcl.ComCtrls, OmniXML, Vcl.Graphics, System.Types, Types, MemoEx;
+   Vcl.Controls, Vcl.ComCtrls, OmniXML, Vcl.Graphics, System.Types, Types, MemoEx,
+   System.Classes;
 
 const
 
@@ -99,6 +100,7 @@ type
       ['{3AB6F6EE-5088-4791-8C11-620A1F768269}']
       function ExportToXMLFile(const AFile: string): TError;
       procedure ExportToGraphic(AGraphic: TGraphic);
+      procedure ExportCode(ALines: TStringList);
       function GetExportFileName: string;
    end;
 
