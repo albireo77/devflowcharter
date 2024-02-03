@@ -28,139 +28,151 @@ uses
    LangDefinition, UserFunction, DeclareList, Interfaces, UserDataType, Infrastructure,
    ParserHelper, Types, Constants, TabComponent;
 
-procedure Template_UserDataTypesSectionGenerator(ALines: TStringList);
-var
-   typeStr, fieldStr, s2, s3: string;
+procedure Template_UserDataTypeGenerator(ALines: TStringList; ADataType: TUserDataType);
 begin
    var lang := GInfra.CurrentLang;
-   if not lang.DataTypesTemplate.IsEmpty then
+   var name := ADataType.GetName;
+   if (name <> '') and (lang.CodeIncludeExternDataType or not ADataType.chkExternal.Checked) then
    begin
+      var typeStr := '';
+      var s2 := '';
+      var s3 := '';
+      var extModifier := ADataType.GetExternModifier;
       var template := TStringList.Create;
-      var typesList := TStringList.Create;
+      try
+
+         case ADataType.Kind of
+
+            dtInt:
+            if not lang.DataTypeIntMask.IsEmpty then
+            begin
+               typeStr := ReplaceStr(lang.DataTypeIntMask, PRIMARY_PLACEHOLDER, name);
+               template.Text := ReplaceStr(typeStr, '%s9', extModifier);
+            end;
+
+            dtReal:
+            if not lang.DataTypeRealMask.IsEmpty then
+            begin
+               typeStr := ReplaceStr(lang.DataTypeRealMask, PRIMARY_PLACEHOLDER, name);
+               template.Text := ReplaceStr(typeStr, '%s9', extModifier);
+            end;
+
+            dtOther:
+            if not lang.DataTypeOtherMask.IsEmpty then
+            begin
+               typeStr := ReplaceStr(lang.DataTypeOtherMask, PRIMARY_PLACEHOLDER, name);
+               typeStr := ReplaceStr(typeStr, '%s9', extModifier);
+               s2 := '';
+               var field := ADataType.GetFirstField;
+               if field <> nil then
+                  s2 := Trim(field.edtName.Text);
+                  template.Text := ReplaceStr(typeStr, '%s2', s2);
+               end;
+
+            dtArray:
+            begin
+               var arrayMask := lang.DataTypeArrayMask;
+               s2 := '';
+               s3 := '';
+               var field := ADataType.GetFirstField;
+               if field <> nil then
+               begin
+                  s2 := field.cbType.Text;
+                  s3 := lang.GetArraySizes(field.edtSize);
+                  if field.edtSize.IsUnboundedArray and not lang.DataTypeUnboundedArrayMask.IsEmpty then
+                     arrayMask := lang.DataTypeUnboundedArrayMask;
+               end;
+               if not arrayMask.IsEmpty then
+               begin
+                  typeStr := ReplaceStr(arrayMask, PRIMARY_PLACEHOLDER, name);
+                  typeStr := ReplaceStr(typeStr, '%s9', extModifier);
+                  typeStr := ReplaceStr(typeStr, '%s2', s2);
+                  template.Text := ReplaceStr(typeStr, '%s3', s3);
+               end;
+            end;
+
+            dtRecord:
+            if not lang.DataTypeRecordTemplate.IsEmpty then
+            begin
+               typeStr := ReplaceStr(lang.DataTypeRecordTemplate, PRIMARY_PLACEHOLDER, name);
+               template.Text := ReplaceStr(typeStr, '%s9', extModifier);
+               var fieldList := TStringList.Create;
+               try
+                  for var field in ADataType.GetFields do
+                  begin
+                     var sizeStr := lang.GetArraySizes(field.edtSize);
+                     var fieldStr := lang.DataTypeRecordFieldArrayMask;
+                     if sizeStr.IsEmpty then
+                        fieldStr := lang.DataTypeRecordFieldMask;
+                     fieldStr := ReplaceStr(fieldStr, PRIMARY_PLACEHOLDER, Trim(field.edtName.Text));
+                     fieldStr := ReplaceStr(fieldStr, '%s2', field.cbType.Text);
+                     fieldStr := ReplaceStr(fieldStr, '%s3', sizeStr);
+                     var lRecord := '';
+                     var enum := '';
+                     var lType := TParserHelper.GetType(field.cbType.Text);
+                     if TParserHelper.IsRecordType(lType) then
+                        lRecord := lang.FunctionHeaderArgsEntryRecord
+                     else if TParserHelper.IsEnumType(lType) then
+                        enum := lang.FunctionHeaderArgsEntryEnum;
+                     fieldStr := ReplaceStr(fieldStr, '%s4', lRecord);
+                     fieldStr := ReplaceStr(fieldStr, '%s5', enum);
+                     fieldList.Add(fieldStr);
+                  end;
+                  TInfra.InsertTemplateLines(template, '%s2', fieldList);
+               finally
+                  fieldList.Free;
+               end;
+            end;
+
+            dtEnum:
+            if not lang.DataTypeEnumTemplate.IsEmpty then
+            begin
+               typeStr := ReplaceStr(lang.DataTypeEnumTemplate, PRIMARY_PLACEHOLDER, name);
+               template.Text := ReplaceStr(typeStr, '%s9', extModifier);
+               s2 := '';
+               for var field in ADataType.GetFields do
+                  s2 := s2 + Format(lang.DataTypeEnumEntryList, [Trim(field.edtName.Text)]);
+               if lang.DataTypeEnumEntryListStripCount > 0 then
+                  SetLength(s2, s2.Length - lang.DataTypeEnumEntryListStripCount);
+               TInfra.InsertTemplateLines(template, '%s2', s2);
+            end;
+
+         end;
+         for var b := 0 to template.Count-1 do
+            ALines.AddObject(template[b], ADataType);
+      finally
+         template.Free;
+      end;
+   end;
+end;
+
+procedure Template_UserDataTypesSectionGenerator(ALines: TStringList);
+begin
+   var dataTypesTemplateText := GInfra.CurrentLang.DataTypesTemplate;
+   if not dataTypesTemplateText.IsEmpty then
+   begin
+      var lines := TStringList.Create;
       try
          for var dataType in GProject.GetUserDataTypes do
          begin
-            var name := dataType.GetName;
-            if (name <> '') and (lang.CodeIncludeExternDataType or not dataType.chkExternal.Checked) then
-            begin
-               var extModifier := dataType.GetExternModifier;
-               template.Clear;
-               case dataType.Kind of
-
-                  dtInt:
-                  if not lang.DataTypeIntMask.IsEmpty then
-                  begin
-                     typeStr := ReplaceStr(lang.DataTypeIntMask, PRIMARY_PLACEHOLDER, name);
-                     template.Text := ReplaceStr(typeStr, '%s9', extModifier);
-                  end;
-
-                  dtReal:
-                  if not lang.DataTypeRealMask.IsEmpty then
-                  begin
-                     typeStr := ReplaceStr(lang.DataTypeRealMask, PRIMARY_PLACEHOLDER, name);
-                     template.Text := ReplaceStr(typeStr, '%s9', extModifier);
-                  end;
-
-                  dtOther:
-                  if not lang.DataTypeOtherMask.IsEmpty then
-                  begin
-                     typeStr := ReplaceStr(lang.DataTypeOtherMask, PRIMARY_PLACEHOLDER, name);
-                     typeStr := ReplaceStr(typeStr, '%s9', extModifier);
-                     s2 := '';
-                     var field := dataType.GetFirstField;
-                     if field <> nil then
-                        s2 := Trim(field.edtName.Text);
-                     template.Text := ReplaceStr(typeStr, '%s2', s2);
-                  end;
-
-                  dtArray:
-                  begin
-                     var arrayMask := lang.DataTypeArrayMask;
-                     s2 := '';
-                     s3 := '';
-                     var field := dataType.GetFirstField;
-                     if field <> nil then
-                     begin
-                        s2 := field.cbType.Text;
-                        s3 := lang.GetArraySizes(field.edtSize);
-                        if field.edtSize.IsUnboundedArray and not lang.DataTypeUnboundedArrayMask.IsEmpty then
-                           arrayMask := lang.DataTypeUnboundedArrayMask;
-                     end;
-                     if not arrayMask.IsEmpty then
-                     begin
-                        typeStr := ReplaceStr(arrayMask, PRIMARY_PLACEHOLDER, name);
-                        typeStr := ReplaceStr(typeStr, '%s9', extModifier);
-                        typeStr := ReplaceStr(typeStr, '%s2', s2);
-                        template.Text := ReplaceStr(typeStr, '%s3', s3);
-                     end;
-                  end;
-
-                  dtRecord:
-                  if not lang.DataTypeRecordTemplate.IsEmpty then
-                  begin
-                     typeStr := ReplaceStr(lang.DataTypeRecordTemplate, PRIMARY_PLACEHOLDER, name);
-                     template.Text := ReplaceStr(typeStr, '%s9', extModifier);
-                     var fieldList := TStringList.Create;
-                     try
-                        for var field in dataType.GetFields do
-                        begin
-                           var sizeStr := lang.GetArraySizes(field.edtSize);
-                           if sizeStr.IsEmpty then
-                              fieldStr := lang.DataTypeRecordFieldMask
-                           else
-                              fieldStr := lang.DataTypeRecordFieldArrayMask;
-                           fieldStr := ReplaceStr(fieldStr, PRIMARY_PLACEHOLDER, Trim(field.edtName.Text));
-                           fieldStr := ReplaceStr(fieldStr, '%s2', field.cbType.Text);
-                           fieldStr := ReplaceStr(fieldStr, '%s3', sizeStr);
-                           var lRecord := '';
-                           var enum := '';
-                           var lType := TParserHelper.GetType(field.cbType.Text);
-                           if TParserHelper.IsRecordType(lType) then
-                              lRecord := lang.FunctionHeaderArgsEntryRecord
-                           else if TParserHelper.IsEnumType(lType) then
-                              enum := lang.FunctionHeaderArgsEntryEnum;
-                           fieldStr := ReplaceStr(fieldStr, '%s4', lRecord);
-                           fieldStr := ReplaceStr(fieldStr, '%s5', enum);
-                           fieldList.Add(fieldStr);
-                        end;
-                        TInfra.InsertTemplateLines(template, '%s2', fieldList);
-                     finally
-                        fieldList.Free;
-                     end;
-                  end;
-
-                  dtEnum:
-                  if not lang.DataTypeEnumTemplate.IsEmpty then
-                  begin
-                     typeStr := ReplaceStr(lang.DataTypeEnumTemplate, PRIMARY_PLACEHOLDER, name);
-                     template.Text := ReplaceStr(typeStr, '%s9', extModifier);
-                     s2 := '';
-                     for var field in dataType.GetFields do
-                        s2 := s2 + Format(lang.DataTypeEnumEntryList, [Trim(field.edtName.Text)]);
-                     if lang.DataTypeEnumEntryListStripCount > 0 then
-                        SetLength(s2, s2.Length - lang.DataTypeEnumEntryListStripCount);
-                     TInfra.InsertTemplateLines(template, '%s2', s2);
-                  end;
-
-               end;
-               for var b := 0 to template.Count-1 do
-                  typesList.AddObject(template[b], dataType)
-            end;
+            if Assigned(GInfra.CurrentLang.UserDataTypeGenerator) then
+               GInfra.CurrentLang.UserDataTypeGenerator(lines, dataType)
+            else
+               Template_UserDataTypeGenerator(lines, dataType);
          end;
-         if typesList.Count > 0 then
+         if lines.Count > 0 then
          begin
-            var typesTemplate := TStringList.Create;
+            var dataTypesTemplate := TStringList.Create;
             try
-               typesTemplate.Text := lang.DataTypesTemplate;
-               TInfra.InsertTemplateLines(typesTemplate, PRIMARY_PLACEHOLDER, typesList);
-               ALines.AddStrings(typesTemplate);
+               dataTypesTemplate.Text := dataTypesTemplateText;
+               TInfra.InsertTemplateLines(dataTypesTemplate, PRIMARY_PLACEHOLDER, lines);
+               ALines.AddStrings(dataTypesTemplate);
             finally
-               typesTemplate.Free;
+               dataTypesTemplate.Free;
             end;
          end;
       finally
-         template.Free;
-         typesList.Free;
+         lines.Free;
       end;
    end;
 end;
@@ -381,153 +393,149 @@ begin
       block.GenerateCode(ALines, GInfra.CurrentLang.Name, ADeep);
 end;
 
-procedure Template_UserFunctionsSectionGenerator(ALines: TStringList; ASkipBodyGen: boolean);
-var
-   func: TUserFunction;
-   param: TParameter;
-   name, argList, paramStr, ref, lArray, lRecord, enum, defValue, hText, typeArray, isStatic, memDesc, h0, h1, h2: string;
-   lang: TLangDefinition;
-   headerTemplate, varList, funcTemplate, bodyTemplate, funcList, funcsTemplate: TStringList;
-   intType: integer;
+procedure Template_UserFunctionGenerator(ALines: TStringList; AFunction: TUserFunction; ASkipBodyGen: boolean);
 begin
-   lang := GInfra.CurrentLang;
-   if not lang.FunctionsTemplate.IsEmpty then
+   var lang := GInfra.CurrentLang;
+   var name := AFunction.GetName;
+   if (name <> '') and (lang.CodeIncludeExternFunction or not AFunction.Header.chkExternal.Checked) and not lang.FunctionTemplate.IsEmpty then
    begin
-      funcList := TStringList.Create;
+      var argList := '';
+      for var param in AFunction.Header.GetParameters do
+      begin
+         var paramStr := ReplaceStr(lang.FunctionHeaderArgsEntryMask, PRIMARY_PLACEHOLDER, Trim(param.edtName.Text));
+         paramStr := ReplaceStr(paramStr, '%s2', param.cbType.Text);
+         var ref := '';
+         var lArray := '';
+         var lRecord := '';
+         var enum := '';
+         if param.chkReference.Checked then
+            ref := lang.FunctionHeaderArgsEntryRef;
+         if param.chkTable.Checked then
+            lArray := lang.FunctionHeaderArgsEntryArray;
+         var intType := TParserHelper.GetType(param.cbType.Text);
+         if TParserHelper.IsRecordType(intType) then
+            lRecord := lang.FunctionHeaderArgsEntryRecord
+         else if TParserHelper.IsEnumType(intType) then
+            enum := lang.FunctionHeaderArgsEntryEnum;
+         var defValue := Trim(param.edtDefault.Text);
+         if not defValue.IsEmpty then
+            defValue := ReplaceStr(lang.FunctionHeaderArgsEntryDefault, '%s', defValue);
+         paramStr := ReplaceStr(paramStr, '%s3', ref);
+         paramStr := ReplaceStr(paramStr, '%s4', lArray);
+         paramStr := ReplaceStr(paramStr, '%s5', lRecord);
+         paramStr := ReplaceStr(paramStr, '%s6', enum);
+         paramStr := ReplaceStr(paramStr, '%s7', defValue);
+         argList := argList + paramStr;
+      end;
+
+      if lang.FunctionHeaderArgsStripCount > 0 then
+         SetLength(argList, argList.Length - lang.FunctionHeaderArgsStripCount);
+
+      var typeArray := '';
+      var h0 := '';
+      var h1 := lang.FunctionHeaderTypeNone1;
+      var h2 := lang.FunctionHeaderTypeNone2;
+      var isStatic := '';
+      if AFunction.Header.cbType.ItemIndex > 0 then
+      begin
+         typeArray := IfThen(AFunction.Header.chkArrayType.Checked, lang.FunctionHeaderTypeArray, lang.FunctionHeaderTypeNotArray);
+         h0 := AFunction.Header.cbType.Text;
+         h1 := lang.FunctionHeaderTypeNotNone1;
+         h2 := lang.FunctionHeaderTypeNotNone2;
+      end;
+      if AFunction.Header.chkStatic.Visible then
+         isStatic := IfThen(AFunction.Header.chkStatic.Checked, lang.FunctionHeaderStatic, lang.FunctionHeaderNotStatic);
+
+      var hText := IfThen(AFunction.Header.chkConstructor.Checked, lang.ConstructorHeaderTemplate, lang.FunctionHeaderTemplate);
+      hText := ReplaceStr(hText, PRIMARY_PLACEHOLDER, name);
+      hText := ReplaceStr(hText, '%s3', argList);
+      hText := ReplaceStr(hText, '%s4', h0);
+      hText := ReplaceStr(hText, '%s5', h1);
+      hText := ReplaceStr(hText, '%s6', h2);
+      hText := ReplaceStr(hText, '%s7', AFunction.Header.GetExternModifier);
+      hText := ReplaceStr(hText, '%s8', typeArray);
+      hText := ReplaceStr(hText, '%s9', isStatic);
+
+      var headerTemplate := TStringList.Create;
       try
-         for func in GProject.GetUserFunctions do
+         headerTemplate.Text := hText;
+         if ASkipBodyGen then
          begin
-            name := func.GetName;
-            if (name <> '') and (lang.CodeIncludeExternFunction or not func.Header.chkExternal.Checked) and not lang.FunctionTemplate.IsEmpty then
-            begin
-               // assemble list of function parameters
-               argList := '';
-               for param in func.Header.GetParameters do
-               begin
-                  paramStr := ReplaceStr(lang.FunctionHeaderArgsEntryMask, PRIMARY_PLACEHOLDER, Trim(param.edtName.Text));
-                  paramStr := ReplaceStr(paramStr, '%s2', param.cbType.Text);
-                  ref := '';
-                  lArray := '';
-                  lRecord := '';
-                  enum := '';
-                  if param.chkReference.Checked then
-                     ref := lang.FunctionHeaderArgsEntryRef;
-                  if param.chkTable.Checked then
-                     lArray := lang.FunctionHeaderArgsEntryArray;
-                  intType := TParserHelper.GetType(param.cbType.Text);
-                  if TParserHelper.IsRecordType(intType) then
-                     lRecord := lang.FunctionHeaderArgsEntryRecord
-                  else if TParserHelper.IsEnumType(intType) then
-                     enum := lang.FunctionHeaderArgsEntryEnum;
-                  defValue := Trim(param.edtDefault.Text);
-                  if not defValue.IsEmpty then
-                     defValue := ReplaceStr(lang.FunctionHeaderArgsEntryDefault, '%s', defValue);
-                  paramStr := ReplaceStr(paramStr, '%s3', ref);
-                  paramStr := ReplaceStr(paramStr, '%s4', lArray);
-                  paramStr := ReplaceStr(paramStr, '%s5', lRecord);
-                  paramStr := ReplaceStr(paramStr, '%s6', enum);
-                  paramStr := ReplaceStr(paramStr, '%s7', defValue);
-                  argList := argList + paramStr;
-               end;
-
-               if lang.FunctionHeaderArgsStripCount > 0 then
-                  SetLength(argList, argList.Length - lang.FunctionHeaderArgsStripCount);
-
-               if func.Header.cbType.ItemIndex > 0 then
-               begin
-                  typeArray := IfThen(func.Header.chkArrayType.Checked, lang.FunctionHeaderTypeArray, lang.FunctionHeaderTypeNotArray);
-                  h0 := func.Header.cbType.Text;
-                  h1 := lang.FunctionHeaderTypeNotNone1;
-                  h2 := lang.FunctionHeaderTypeNotNone2;
-               end
-               else
-               begin
-                  typeArray := '';
-                  h0 := '';
-                  h1 := lang.FunctionHeaderTypeNone1;
-                  h2 := lang.FunctionHeaderTypeNone2;
-               end;
-
-               if func.Header.chkStatic.Visible then
-                  isStatic := IfThen(func.Header.chkStatic.Checked, lang.FunctionHeaderStatic, lang.FunctionHeaderNotStatic)
-               else
-                  isStatic := '';
-
-               hText := IfThen(func.Header.chkConstructor.Checked, lang.ConstructorHeaderTemplate, lang.FunctionHeaderTemplate);
-               hText := ReplaceStr(hText, PRIMARY_PLACEHOLDER, name);
-               hText := ReplaceStr(hText, '%s3', argList);
-               hText := ReplaceStr(hText, '%s4', h0);
-               hText := ReplaceStr(hText, '%s5', h1);
-               hText := ReplaceStr(hText, '%s6', h2);
-               hText := ReplaceStr(hText, '%s7', func.Header.GetExternModifier);
-               hText := ReplaceStr(hText, '%s8', typeArray);
-               hText := ReplaceStr(hText, '%s9', isStatic);
-
-               headerTemplate := TStringList.Create;
-               try
-                  headerTemplate.Text := hText;
-                  if ASkipBodyGen then
-                  begin
-                     TInfra.InsertTemplateLines(headerTemplate, '%s2', nil);
-                     funcList.AddStrings(headerTemplate);
-                  end
-                  else
-                  begin
-                     memDesc := '';
-                     if func.Header.chkInclDescCode.Checked then
-                        memDesc := TrimRight(func.Header.memDesc.Text);
-                     if memDesc.IsEmpty then
-                        TInfra.InsertTemplateLines(headerTemplate, '%s2', nil)
-                     else
-                        headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s2', memDesc);
-
-                     funcTemplate := TStringList.Create;
-                     try
-                        funcTemplate.Text := lang.FunctionTemplate;
-                        TInfra.InsertTemplateLines(funcTemplate, PRIMARY_PLACEHOLDER, headerTemplate, func.Header);
-                        varList := TStringList.Create;
-                        try
-                           if Assigned(lang.VarSectionGenerator) then
-                              lang.VarSectionGenerator(varList, func.Header.LocalVars)
-                           else
-                              Template_VarSectionGenerator(varList, func.Header.LocalVars);
-                           TInfra.InsertTemplateLines(funcTemplate, '%s2', varList);
-                        finally
-                           varList.Free;
-                        end;
-                        if func.Body <> nil then
-                        begin
-                           bodyTemplate := TStringList.Create;
-                           try
-                              func.Body.GenerateCode(bodyTemplate, lang.Name, 0);
-                              TInfra.InsertTemplateLines(funcTemplate, '%s3', bodyTemplate);
-                           finally
-                              bodyTemplate.Free;
-                           end;
-                           func.Body.GenerateTemplateSection(funcList, funcTemplate, lang.Name, 0);
-                        end;
-                     finally
-                        funcTemplate.Free;
-                     end;
-                  end;
-               finally
-                  headerTemplate.Free;
-               end;
-            end;
-         end;
-         if funcList.Count > 0 then
+            TInfra.InsertTemplateLines(headerTemplate, '%s2', nil);
+            ALines.AddStrings(headerTemplate);
+         end
+         else
          begin
-            funcsTemplate := TStringList.Create;
+            var memDesc := '';
+            if AFunction.Header.chkInclDescCode.Checked then
+               memDesc := TrimRight(AFunction.Header.memDesc.Text);
+            if memDesc.IsEmpty then
+               TInfra.InsertTemplateLines(headerTemplate, '%s2', nil)
+            else
+               headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s2', memDesc);
+
+            var funcTemplate := TStringList.Create;
             try
-               funcsTemplate.Text := lang.FunctionsTemplate;
-               TInfra.InsertTemplateLines(funcsTemplate, PRIMARY_PLACEHOLDER, funcList);
-               ALines.AddStrings(funcsTemplate);
+               funcTemplate.Text := lang.FunctionTemplate;
+               TInfra.InsertTemplateLines(funcTemplate, PRIMARY_PLACEHOLDER, headerTemplate, AFunction.Header);
+               var varList := TStringList.Create;
+               try
+                  if Assigned(lang.VarSectionGenerator) then
+                     lang.VarSectionGenerator(varList, AFunction.Header.LocalVars)
+                  else
+                     Template_VarSectionGenerator(varList, AFunction.Header.LocalVars);
+                  TInfra.InsertTemplateLines(funcTemplate, '%s2', varList);
+               finally
+                  varList.Free;
+               end;
+               if AFunction.Body <> nil then
+               begin
+                  var bodyTemplate := TStringList.Create;
+                  try
+                     AFunction.Body.GenerateCode(bodyTemplate, lang.Name, 0);
+                     TInfra.InsertTemplateLines(funcTemplate, '%s3', bodyTemplate);
+                  finally
+                     bodyTemplate.Free;
+                  end;
+                  AFunction.Body.GenerateTemplateSection(ALines, funcTemplate, lang.Name, 0);
+               end;
             finally
-               funcsTemplate.Free;
+               funcTemplate.Free;
             end;
          end;
       finally
-         funcList.Free;
+         headerTemplate.Free;
+      end;
+   end;
+end;
+
+procedure Template_UserFunctionsSectionGenerator(ALines: TStringList; ASkipBodyGen: boolean);
+begin
+   var functionsTemplateText := GInfra.CurrentLang.FunctionsTemplate;
+   if not functionsTemplateText.IsEmpty then
+   begin
+      var lines := TStringList.Create;
+      try
+         for var func in GProject.GetUserFunctions do
+         begin
+            if Assigned(GInfra.CurrentLang.UserFunctionGenerator) then
+               GInfra.CurrentLang.UserFunctionGenerator(lines, func, ASkipBodyGen)
+            else
+               Template_UserFunctionGenerator(lines, func, ASkipBodyGen);
+         end;
+         if lines.Count > 0 then
+         begin
+            var functionsTemplate := TStringList.Create;
+            try
+               functionsTemplate.Text := functionsTemplateText;
+               TInfra.InsertTemplateLines(functionsTemplate, PRIMARY_PLACEHOLDER, lines);
+               ALines.AddStrings(functionsTemplate);
+            finally
+               functionsTemplate.Free;
+            end;
+         end;
+      finally
+         lines.Free;
       end;
    end;
 end;
@@ -752,11 +760,13 @@ initialization
       EnabledExplorer := True;
       MainFunctionSectionGenerator := Template_MainFunctionSectionGenerator;
       UserFunctionsSectionGenerator := Template_UserFunctionsSectionGenerator;
+      UserFunctionGenerator := Template_UserFunctionGenerator;
       VarSectionGenerator := Template_VarSectionGenerator;
       ProgramHeaderSectionGenerator := Template_ProgramHeaderSectionGenerator;
       LibSectionGenerator := Template_LibSectionGenerator;
       ConstSectionGenerator := Template_ConstSectionGenerator;
       UserDataTypesSectionGenerator := Template_UserDataTypesSectionGenerator;
+      UserDataTypeGenerator := Template_UserDataTypeGenerator;
       ProgramGenerator := Template_ProgramGenerator;
       GetConstantType := Template_GetConstantType;
       GetPointerTypeName := Template_GetPointerTypeName;

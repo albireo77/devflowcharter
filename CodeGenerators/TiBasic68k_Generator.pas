@@ -52,39 +52,36 @@ begin
    end;
 end;
 
-procedure TIBASIC_UserFunctionsSectionGenerator(ALines: TStringList; ASkipBodyGen: boolean);
-var
-   func: TUserFunction;
-   funcHeader, funcParms, funcPrefix, funcName: string;
-   param: TParameter;
+procedure TIBASIC_UserFunctionGenerator(ALines: TStringList; AFunction: TUserFunction; ASkipBodyGen: boolean);
 begin
-   if GProject <> nil then
+   var funcName := AFunction.GetName;
+   if (funcName <> '') and (tiBasicLang.CodeIncludeExternFunction or not AFunction.Header.chkExternal.Checked) then
    begin
-      for func in GProject.GetUserFunctions do
+      var funcPrefix := IfThen(AFunction.Header.cbType.ItemIndex <> 0, 'Func', 'Prgm');
+      var funcParms := '';
+      for var param in AFunction.Header.GetParameters do
       begin
-         funcName := func.GetName;
-         if funcName.IsEmpty or (func.Header.chkExternal.Checked and not tiBasicLang.CodeIncludeExternFunction) then
-            continue;
-         funcPrefix := IfThen(func.Header.cbType.ItemIndex <> 0, 'Func', 'Prgm');
-         funcParms := '';
-         for param in func.Header.GetParameters do
-         begin
-            if not funcParms.IsEmpty then
-               funcParms := funcParms + ',';
-            funcParms := funcParms + Trim(param.edtName.Text);
-         end;
-         funcHeader := 'Define ' + funcName + '(' + funcParms + ')=' + funcPrefix;
-         func.Header.GenerateDescription(ALines);
-         ALines.AddObject(funcHeader, func.Header);
-         if func.Body <> nil then
-         begin
-            TIBASIC_VarSectionGenerator(ALines, func.Header.LocalVars);
-            func.Body.GenerateCode(ALines, tiBasicLang.Name, 0);
-         end;
-         ALines.AddObject('End' + funcPrefix, func.Header);
-         ALines.Add('');
+         if not funcParms.IsEmpty then
+            funcParms := funcParms + ',';
+         funcParms := funcParms + Trim(param.edtName.Text);
       end;
+      var funcHeader := 'Define ' + funcName + '(' + funcParms + ')=' + funcPrefix;
+      AFunction.Header.GenerateDescription(ALines);
+      ALines.AddObject(funcHeader, AFunction.Header);
+      if AFunction.Body <> nil then
+      begin
+         TIBASIC_VarSectionGenerator(ALines, AFunction.Header.LocalVars);
+         AFunction.Body.GenerateCode(ALines, tiBasicLang.Name, 0);
+      end;
+      ALines.AddObject('End' + funcPrefix, AFunction.Header);
+      ALines.Add('');
    end;
+end;
+
+procedure TIBASIC_UserFunctionsSectionGenerator(ALines: TStringList; ASkipBodyGen: boolean);
+begin
+   for var func in GProject.GetUserFunctions do
+      TIBASIC_UserFunctionGenerator(ALines, func, ASkipBodyGen);
 end;
 
 procedure TIBASIC_MainFunctionSectionGenerator(ALines: TStringList; deep: integer);
@@ -107,6 +104,7 @@ initialization
    begin
       tiBasicLang.ProgramHeaderSectionGenerator := TIBASIC_ProgramHeaderSectionGenerator;
       tiBasicLang.VarSectionGenerator := TIBASIC_VarSectionGenerator;
+      tiBasicLang.UserFunctionGenerator := TIBASIC_UserFunctionGenerator;
       tiBasicLang.UserFunctionsSectionGenerator := TIBASIC_UserFunctionsSectionGenerator;
       tiBasicLang.MainFunctionSectionGenerator := TIBASIC_MainFunctionSectionGenerator;
    end;

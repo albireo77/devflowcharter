@@ -223,9 +223,11 @@ type
       AfterProgramGenerator: procedure;
       ProgramHeaderSectionGenerator: procedure (ALines: TStringList);
       LibSectionGenerator: procedure (ALines: TStringList);
+      UserDataTypeGenerator: procedure (ALines: TStringList; ADataType: TUserDataType);
       UserDataTypesSectionGenerator: procedure (ALines: TStringList);
       VarSectionGenerator: procedure (ALines: TStringList; AVarList: TVarDeclareList);
       ConstSectionGenerator: procedure (ALines: TStringList; AConstList: TConstDeclareList);
+      UserFunctionGenerator: procedure (ALines: TStringList; AFunction: TUserFunction; ASkipBodyGen: boolean);
       UserFunctionsSectionGenerator: procedure (ALines: TStringList; ASkipBodyGenerate: boolean);
       MainFunctionSectionGenerator: procedure (ALines: TStringList; ADeep: integer);
       ProgramGenerator: procedure (ALines: TStringList);
