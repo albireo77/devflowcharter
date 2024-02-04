@@ -43,23 +43,31 @@ In general, support for programming language in devFlowcharter can be done on 2 
        In parser unit change parser class name from TYacc (default) to specific one (e.g. TPythonParser).
        Parsers\Common\ParserFunctions.pas contains language independent routines helpful in creating various parsers.
    2c. SaveAs this template unit (e.g. Python_Generator.pas), add it to devFlowcharter Delphi project and implement generator procedures:
-          _PreGenerationActivities
+
+          _BeforeProgramGenerator
+          _AfterProgramGenerator
           _ProgramHeaderSectionGenerator
-          _RoutineSectionGenerator
-          _MainProgramSectionGenerator
-          _TypeSectionGenerator
+          _LibSectionGenerator
+          _UserDataTypeGenerator
+          _UserDataTypesSectionGenerator
           _VarSectionGenerator
           _ConstSectionGenerator
-          _LibSectionGenerator
-          _GetUserTypeDesc
+          _UserFunctionGenerator
+          _UserFunctionsSectionGenerator
+          _MainFunctionSectionGenerator
+          _ProgramGenerator
           _GetUserFuncDesc
-          _SetHighlighterAttributes   (should be implemented only if SynEdit highlighter component exists)
-          _GetLiteralType   (function to get datatype of given literal; Example: _GetLiteralType('6.5e-2') = PASCAL_REAL_TYPE)
-          _GetPointerTypeName  (function to obtain pointer datatype for given datatype; Example: _GetPointerTypeName('integer') = '^integer')
-          _IsPointerType    (function to verify if given datatype is of pointer type; Example: _IsPointerType('^integer') = true)
-          _GetOriginalType    (function to obtain original datatype from given pointer data type; Example: _GetOriginalType('^integer') = 'integer')
-          _Parse (function to parse expressions with internal parser)
-          _GetHLighterVarName (function to obtain variable name of highlighter component from point 2a)
+          _GetUserFuncHeaderDesc
+          _GetUserTypeDesc
+          _SetHLighterAttrs
+          _GetPointerTypeName
+          _GetConstantType
+          _IsPointerType
+          _GetOriginalType
+          _AreTypesCompatible
+          _SkipFuncBodyGen
+          _GetMainProgramDesc
+
        If any generation method is not needed, it may not be implemented at all.
    2d. Add language identifier string constant (e.g. PYTHON_LANG_ID) to Constants unit.
        It should contain the same value as <Name> tag in language definition XML file.

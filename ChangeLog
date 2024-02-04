@@ -1,5 +1,8 @@
+10.7 [04-02-2024]
+- Code Editor: generate code for single user function or data type by drag and drop
+
 10.6 [25-01-2024]
-- fix moving pinned comments between tabs
+- fix not moving flowchart pinned comments between tabs
 
 10.5 [31-12-2023]
 - fix comparing project and app versions
