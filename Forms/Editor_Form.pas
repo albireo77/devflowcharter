@@ -371,20 +371,18 @@ begin
 end;
 
 procedure TEditorForm.PasteComment(const AText: string);
-var
-   line, bline, beginComment, endComment: string;
-   bc: TBufferCoord;
-   strings: TStringList;
-   i, count: integer;
-   afterLine: boolean;
 begin
    if AText.IsEmpty then
       Exit;
-   line := '';
-   bline := '';
-   strings := TStringList.Create;
+   var line := '';
+   var ctext := '';
+   Clipboard.Open;
+   if Clipboard.HasFormat(CF_TEXT) then
+      ctext := Clipboard.AsText;
+   memCodeEditor.BeginUpdate;
+   var strings := TStringList.Create;
    try
-      for i := 1 to AText.Length do
+      for var i := 1 to AText.Length do
       begin
          if not AText[i].IsControl then
          begin
@@ -398,15 +396,12 @@ begin
             line := '';
          end;
       end;
-      Clipboard.Open;
-      if Clipboard.HasFormat(CF_TEXT) then
-         bline := Clipboard.AsText;
-      bc := memCodeEditor.CaretXY;
-      beginComment := GInfra.CurrentLang.CommentBegin;
-      endComment := GInfra.CurrentLang.CommentEnd;
-      count := strings.Count - 1;
-      afterLine := True;
-      for i := 0 to count do
+      var bc := memCodeEditor.CaretXY;
+      var beginComment := GInfra.CurrentLang.CommentBegin;
+      var endComment := GInfra.CurrentLang.CommentEnd;
+      var count := strings.Count - 1;
+      var afterLine := True;
+      for var i := 0 to count do
       begin
          if memCodeEditor.CaretX <= memCodeEditor.Lines[memCodeEditor.CaretY-1+i].Length then
          begin
@@ -414,7 +409,7 @@ begin
             break;
          end;
       end;
-      for i := 0 to count do
+      for var i := 0 to count do
       begin
          line := ' ' + strings[i].Trim;
          memCodeEditor.CaretY := bc.Line + i;
@@ -430,7 +425,7 @@ begin
             if i = 0 then
             begin
                line := beginComment + line;
-               if (count = i) and not endComment.IsEmpty then
+               if (i = count) and not endComment.IsEmpty then
                   line := line + ' ' + endComment;
             end
             else if i = count then
@@ -448,10 +443,11 @@ begin
          memCodeEditor.PasteFromClipboard;
       end;
    finally
-      if not bline.IsEmpty then
-         Clipboard.AsText := bline;
-      Clipboard.Close;
       strings.Free;
+      memCodeEditor.EndUpdate;
+      if not ctext.IsEmpty then
+         Clipboard.AsText := ctext;
+      Clipboard.Close;
    end;
 end;
 
@@ -892,7 +888,10 @@ begin
    end
    else if Supports(Source, IExportable, exportable) then
    begin
+      var ctext := '';
       Clipboard.Open;
+      if Clipboard.HasFormat(CF_TEXT) then
+         ctext := Clipboard.AsText;
       memCodeEditor.BeginUpdate;
       var lines := TStringList.Create;
       try
@@ -908,6 +907,8 @@ begin
       finally
          lines.Free;
          memCodeEditor.EndUpdate;
+         if not cText.IsEmpty then
+            Clipboard.AsText := ctext;
          Clipboard.Close;
       end;
    end
