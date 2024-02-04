@@ -50,8 +50,15 @@ uses
 procedure THelpForm.Localize(AList: TStringList);
 begin
    var txt := '';
-   for var i := 1 to 28 do
-      txt := txt + ' ' + AList.Values['EditorHelp' + i.ToString] + sLineBreak;
+   var i := 1;
+   while True do
+   begin
+      var idx := AList.IndexOfName('EditorHelp' + i.ToString);
+      if idx = -1 then
+         break;
+      txt := txt + ' ' + AList.ValueFromIndex[idx] + sLineBreak;
+      i := i + 1;
+   end;
    memHelp.Text := ReplaceText(txt, ' ' + LB_PHOLDER2, StringOfChar('-', 55));
    inherited Localize(AList);
 end;
