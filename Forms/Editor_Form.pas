@@ -133,7 +133,8 @@ type
     FDialog: TFindDialog;
     FWithFocus: IWithFocus;
     function BuildBracketHint(startLine, endLine: integer): string;
-    function CharToPixels(P: TBufferCoord): TPoint;
+    function CharToPixels(const P: TBufferCoord): TPoint;
+    function PixelsToBufferPos(X, Y: integer): TBufferCoord;
     function GetAllLines: TStrings;
     procedure PasteComment(const AText: string; X: integer = -1; Y: integer = -1);
     procedure DisplayLines(ALines: TStringList; AReset: boolean);
@@ -375,10 +376,7 @@ begin
    if AText.IsEmpty then
       Exit;
    if (X <> -1) and (Y <> -1) then
-   begin
-      with memCodeEditor do
-         CaretXY := DisplayToBufferPos(PixelsToRowColumn(X, Y));
-   end;
+      memCodeEditor.CaretXY := PixelsToBufferPos(X, Y);
    var line := '';
    var ctext := '';
    Clipboard.Open;
@@ -879,7 +877,7 @@ begin
    if not ((Source is TComment) or Supports(Source, IExportable, exportable)) then
       Accept := False
    else
-      memCodeEditor.CaretXY := memCodeEditor.DisplayToBufferPos(memCodeEditor.PixelsToRowColumn(X, Y));
+      memCodeEditor.CaretXY := PixelsToBufferPos(X, Y);
 end;
 
 procedure TEditorForm.memCodeEditorDragDrop(Sender, Source: TObject; X, Y: Integer);
@@ -991,9 +989,14 @@ begin
    end;
 end;
 
-function TEditorForm.CharToPixels(P: TBufferCoord): TPoint;
+function TEditorForm.CharToPixels(const P: TBufferCoord): TPoint;
 begin
    result := memCodeEditor.RowColumnToPixels(memCodeEditor.BufferToDisplayPos(P));
+end;
+
+function TEditorForm.PixelsToBufferPos(X, Y: integer): TBufferCoord;
+begin
+   result := memCodeEditor.DisplayToBufferPos(memCodeEditor.PixelsToRowColumn(X, Y));
 end;
 
 procedure TEditorForm.memCodeEditorMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -1011,7 +1014,7 @@ begin
    FCloseBracketPosP := nil;
    memCodeEditor.ShowHint := False;
    memCodeEditor.Hint := '';
-   p := memCodeEditor.DisplayToBufferPos(memCodeEditor.PixelsToRowColumn(X, Y));
+   p := PixelsToBufferPos(X, Y);
    p1 := memCodeEditor.GetMatchingBracketEx(p);
    if (p1.Line > 0) and (p1.Line < p.Line) then
    begin
