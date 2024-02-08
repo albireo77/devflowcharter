@@ -888,28 +888,15 @@ begin
    end
    else if Supports(Source, IExportable, exportable) then
    begin
-      var ctext := '';
-      Clipboard.Open;
-      if Clipboard.HasFormat(CF_TEXT) then
-         ctext := Clipboard.AsText;
       memCodeEditor.BeginUpdate;
       var lines := TStringList.Create;
       try
          exportable.ExportCode(lines);
          for var i := 0 to lines.Count-1 do
-         begin
-            Clipboard.AsText := lines.Strings[i];
-            memCodeEditor.CaretY := pos.Row + i;
-            memCodeEditor.CaretX := pos.Column;
-            memCodeEditor.Lines.Insert(memCodeEditor.CaretY-1, '');
-            memCodeEditor.PasteFromClipboard;
-         end;
+            memCodeEditor.Lines.Insert(pos.Row + i - 1, StringOfChar(SPACE_CHAR, pos.Column-1) + lines.Strings[i]);
       finally
          lines.Free;
          memCodeEditor.EndUpdate;
-         if not cText.IsEmpty then
-            Clipboard.AsText := ctext;
-         Clipboard.Close;
       end;
    end
 end;
