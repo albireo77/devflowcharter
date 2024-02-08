@@ -135,7 +135,7 @@ type
     function BuildBracketHint(startLine, endLine: integer): string;
     function CharToPixels(P: TBufferCoord): TPoint;
     function GetAllLines: TStrings;
-    procedure PasteComment(const AText: string);
+    procedure PasteComment(const AText: string; X: integer = -1; Y: integer = -1);
     procedure DisplayLines(ALines: TStringList; AReset: boolean);
   public
     { Public declarations }
@@ -370,10 +370,15 @@ begin
    inherited Localize(AList);
 end;
 
-procedure TEditorForm.PasteComment(const AText: string);
+procedure TEditorForm.PasteComment(const AText: string; X: integer = -1; Y: integer = -1);
 begin
    if AText.IsEmpty then
       Exit;
+   if (X <> -1) and (Y <> -1) then
+   begin
+      with memCodeEditor do
+         CaretXY := DisplayToBufferPos(PixelsToRowColumn(X, Y));
+   end;
    var line := '';
    var ctext := '';
    Clipboard.Open;
@@ -880,20 +885,17 @@ end;
 procedure TEditorForm.memCodeEditorDragDrop(Sender, Source: TObject; X, Y: Integer);
 begin
    var exportable: IExportable := nil;
-   var pos := memCodeEditor.PixelsToRowColumn(X, Y);
    if Source is TComment then
-   begin
-      memCodeEditor.CaretXY := memCodeEditor.DisplayToBufferPos(pos);
-      PasteComment(TComment(Source).Text);
-   end
+      PasteComment(TComment(Source).Text, X, Y)
    else if Supports(Source, IExportable, exportable) then
    begin
       memCodeEditor.BeginUpdate;
       var lines := TStringList.Create;
       try
          exportable.ExportCode(lines);
+         var pos := memCodeEditor.PixelsToRowColumn(X, Y);
          for var i := 0 to lines.Count-1 do
-            memCodeEditor.Lines.Insert(pos.Row + i - 1, StringOfChar(SPACE_CHAR, pos.Column-1) + lines.Strings[i]);
+            memCodeEditor.Lines.Insert(pos.Row + i - 1, StringOfChar(SPACE_CHAR, pos.Column - 1) + lines.Strings[i]);
       finally
          lines.Free;
          memCodeEditor.EndUpdate;
