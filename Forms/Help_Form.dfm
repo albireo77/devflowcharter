@@ -1,11 +1,12 @@
 object HelpForm: THelpForm
   Left = 415
   Top = 186
+  AutoSize = True
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Code Editor - Help'
-  ClientHeight = 433
-  ClientWidth = 392
+  ClientHeight = 14
+  ClientWidth = 49
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,8 +19,8 @@ object HelpForm: THelpForm
   PixelsPerInch = 96
   TextHeight = 13
   object lblHelp: TLabel
-    Left = 1
-    Top = 1
+    Left = 0
+    Top = 0
     Width = 49
     Height = 14
     Caption = 'lblHelp'

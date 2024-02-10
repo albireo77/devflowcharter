@@ -56,9 +56,7 @@ begin
       var idx := AList.IndexOfName('EditorHelp' + i.ToString);
       if idx = -1 then
          break;
-      if not txt.IsEmpty then
-         txt := txt + sLineBreak;
-      txt := txt + ' ' + AList.ValueFromIndex[idx];
+      txt := txt + ' ' + AList.ValueFromIndex[idx] + sLineBreak;
       i := i + 1;
    end;
    lblHelp.Caption := ReplaceText(txt, ' ' + LB_PHOLDER2, StringOfChar('-', 55));
