@@ -874,7 +874,7 @@ begin
    if not ((Source is TComment) or Supports(Source, IExportable, exportable)) then
       Accept := False
    else
-      memCodeEditor.CaretXY := memCodeEditor.DisplayToBufferPos(memCodeEditor.PixelsToRowColumn(X, Y));;
+      memCodeEditor.CaretXY := memCodeEditor.DisplayToBufferPos(memCodeEditor.PixelsToRowColumn(X, Y));
 end;
 
 procedure TEditorForm.memCodeEditorDragDrop(Sender, Source: TObject; X, Y: Integer);
@@ -1006,7 +1006,7 @@ begin
    FCloseBracketPosP := nil;
    memCodeEditor.ShowHint := False;
    memCodeEditor.Hint := '';
-   p := memCodeEditor.DisplayToBufferPos(memCodeEditor.PixelsToRowColumn(X, Y));;
+   p := memCodeEditor.DisplayToBufferPos(memCodeEditor.PixelsToRowColumn(X, Y));
    p1 := memCodeEditor.GetMatchingBracketEx(p);
    if (p1.Line > 0) and (p1.Line < p.Line) then
    begin
