@@ -880,6 +880,7 @@ end;
 procedure TEditorForm.memCodeEditorDragDrop(Sender, Source: TObject; X, Y: Integer);
 begin
    var exportable: IExportable := nil;
+   var caretXY := memCodeEditor.CaretXY;
    if Source is TComment then
       PasteComment(TComment(Source).Text)
    else if Supports(Source, IExportable, exportable) then
@@ -895,7 +896,8 @@ begin
          lines.Free;
          memCodeEditor.EndUpdate;
       end;
-   end
+   end;
+   memCodeEditor.CaretXY := caretXY;
 end;
 
 procedure TEditorForm.miHelpClick(Sender: TObject);
