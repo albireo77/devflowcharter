@@ -293,61 +293,53 @@ begin
 end;
 
 function TCaseBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
-var
-   defTemplate, template, caseOfTemplate, statement: string;
-   i, a: integer;
-   lines, caseLines, tmpList: TStringList;
-   obj: TObject;
-   edit: TCustomEdit;
 begin
 
    result := 0;
-   if fsStrikeOut in Font.Style then
+   var caseOfTemplate := GetBlockTemplate(ALangId);
+
+   if (fsStrikeOut in Font.Style) or caseOfTemplate.IsEmpty then
       Exit;
 
-   caseOfTemplate := GetBlockTemplate(ALangId);
-   if not caseOfTemplate.IsEmpty then
-   begin
-      statement := Trim(FStatement.Text);
-      caseLines := TStringList.Create;
-      tmpList := TStringList.Create;
-      try
-         for i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
-         begin
-            tmpList.Clear;
-            edit := FBranchList[i].Statement;
-            obj := edit;
-            template := GetTemplateByControl(edit, obj);
-            tmpList.Text := ReplaceStr(template, BRANCH_PLACEHOLDER + '1', BRANCH_PLACEHOLDER + i.ToString);
-            caseLines.AddStrings(tmpList);
-            for a := 0 to caseLines.Count-1 do
-            begin
-               if caseLines[a].Contains(PRIMARY_PLACEHOLDER) then
-               begin
-                  caseLines[a] := ReplaceStr(caseLines[a], PRIMARY_PLACEHOLDER, Trim(edit.Text));
-                  caseLines.Objects[a] := obj;
-               end;
-               if caseLines[a].Contains('%s2') then
-                  caseLines[a] := ReplaceStr(caseLines[a], '%s2', statement);
-            end;
-         end;
+   var statement := Trim(FStatement.Text);
+   var caseLines := TStringList.Create;
+   var tmpList := TStringList.Create;
+   try
+      for var i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
+      begin
          tmpList.Clear;
-         lines := TStringList.Create;
-         try
-            lines.Text := ReplaceStr(caseOfTemplate, PRIMARY_PLACEHOLDER, statement);
-            TInfra.InsertTemplateLines(lines, '%s2', caseLines);
-            defTemplate := IfThen(DefaultBranch.Count > 0, GInfra.GetLangDefinition(ALangId).CaseOfDefaultValueTemplate);
-            TInfra.InsertTemplateLines(lines, '%s3', defTemplate);
-            GenerateTemplateSection(tmpList, lines, ALangId, ADeep);
-         finally
-            lines.Free;
+         var edit := FBranchList[i].Statement;
+         var obj := TObject(edit);
+         var template := GetTemplateByControl(edit, obj);
+         tmpList.Text := ReplaceStr(template, BRANCH_PLACEHOLDER + '1', BRANCH_PLACEHOLDER + i.ToString);
+         caseLines.AddStrings(tmpList);
+         for var a := 0 to caseLines.Count-1 do
+         begin
+            if caseLines[a].Contains(PRIMARY_PLACEHOLDER) then
+            begin
+               caseLines[a] := ReplaceStr(caseLines[a], PRIMARY_PLACEHOLDER, Trim(edit.Text));
+               caseLines.Objects[a] := obj;
+            end;
+            if caseLines[a].Contains('%s2') then
+               caseLines[a] := ReplaceStr(caseLines[a], '%s2', statement);
          end;
-         TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
-         result := tmpList.Count;
-      finally
-         caseLines.Free;
-         tmpList.Free;
       end;
+      tmpList.Clear;
+      var lines := TStringList.Create;
+      try
+         lines.Text := ReplaceStr(caseOfTemplate, PRIMARY_PLACEHOLDER, statement);
+         TInfra.InsertTemplateLines(lines, '%s2', caseLines);
+         var defTemplate := IfThen(DefaultBranch.Count > 0, GInfra.GetLangDefinition(ALangId).CaseOfDefaultValueTemplate);
+         TInfra.InsertTemplateLines(lines, '%s3', defTemplate);
+         GenerateTemplateSection(tmpList, lines, ALangId, ADeep);
+      finally
+         lines.Free;
+      end;
+      TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
+      result := tmpList.Count;
+   finally
+      caseLines.Free;
+      tmpList.Free;
    end;
 end;
 
