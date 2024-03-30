@@ -322,7 +322,7 @@ var
    lKind: TDataTypeKind;
    lOrigType, lType: PNativeDataType;
    i, a: integer;
-   threeStrings: T3Strings;
+   tStrings: T3Strings;
 begin
    result := errNone;
    val := GetNodeTextStr(ANode, 'Name', '');
@@ -347,93 +347,93 @@ begin
    node := FindNode(ANode, 'FunctionHeaderTypeModifier1');
    if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(node.Text);
-      FunctionHeaderTypeNone1 := threeStrings.S0;
-      FunctionHeaderTypeNotNone1 := threeStrings.S1;
+      tStrings := T3Strings.Extract(node.Text);
+      FunctionHeaderTypeNone1 := tStrings.S0;
+      FunctionHeaderTypeNotNone1 := tStrings.S1;
    end;
 
    node := FindNode(ANode, 'FunctionHeaderTypeModifier2');
    if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(node.Text);
-      FunctionHeaderTypeNone2 := threeStrings.S0;
-      FunctionHeaderTypeNotNone2 := threeStrings.S1;
+      tStrings := T3Strings.Extract(node.Text);
+      FunctionHeaderTypeNone2 := tStrings.S0;
+      FunctionHeaderTypeNotNone2 := tStrings.S1;
    end;
 
    node := FindNode(ANode, 'FunctionHeaderExternalModifier');
    if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(node.Text);
-      FunctionHeaderExternal := threeStrings.S0;
-      FunctionHeaderNotExternal := threeStrings.S1;
-      FunctionHeaderTransExternal := threeStrings.S2;
+      tStrings := T3Strings.Extract(node.Text);
+      FunctionHeaderExternal := tStrings.S0;
+      FunctionHeaderNotExternal := tStrings.S1;
+      FunctionHeaderTransExternal := tStrings.S2;
    end;
 
    node := FindNode(ANode, 'FunctionHeaderStaticModifier');
    if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(node.Text);
-      FunctionHeaderStatic := threeStrings.S0;
-      FunctionHeaderNotStatic := threeStrings.S1;
+      tStrings := T3Strings.Extract(node.Text);
+      FunctionHeaderStatic := tStrings.S0;
+      FunctionHeaderNotStatic := tStrings.S1;
    end;
 
    node := FindNode(ANode, 'FunctionHeaderTypeArrayModifier');
    if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(node.Text);
-      FunctionHeaderTypeArray := threeStrings.S0;
-      FunctionHeaderTypeNotArray := threeStrings.S1;
+      tStrings := T3Strings.Extract(node.Text);
+      FunctionHeaderTypeArray := tStrings.S0;
+      FunctionHeaderTypeNotArray := tStrings.S1;
    end;
 
    node := FindNode(ANode, 'VarExternModifier');
    if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(node.Text);
-      VarExtern := threeStrings.S0;
-      VarNotExtern := threeStrings.S1;
-      VarTransExtern := threeStrings.S2;
+      tStrings := T3Strings.Extract(node.Text);
+      VarExtern := tStrings.S0;
+      VarNotExtern := tStrings.S1;
+      VarTransExtern := tStrings.S2;
    end;
 
    node := FindNode(ANode, 'ConstExternModifier');
    if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(node.Text);
-      ConstExtern := threeStrings.S0;
-      ConstNotExtern := threeStrings.S1;
-      ConstTransExtern := threeStrings.S2;
+      tStrings := T3Strings.Extract(node.Text);
+      ConstExtern := tStrings.S0;
+      ConstNotExtern := tStrings.S1;
+      ConstTransExtern := tStrings.S2;
    end;
 
    node := FindNode(ANode, 'ForDoTemplateModifier1');
    if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(node.Text);
-      ForDoAsc1 := threeStrings.S0;
-      ForDoDesc1 := threeStrings.S1;
+      tStrings := T3Strings.Extract(node.Text);
+      ForDoAsc1 := tStrings.S0;
+      ForDoDesc1 := tStrings.S1;
    end;
 
    node := FindNode(ANode, 'ForDoTemplateModifier2');
    if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(node.Text);
-      ForDoAsc2 := threeStrings.S0;
-      ForDoDesc2 := threeStrings.S1;
+      tStrings := T3Strings.Extract(node.Text);
+      ForDoAsc2 := tStrings.S0;
+      ForDoDesc2 := tStrings.S1;
    end;
 
    node := FindNode(ANode, 'DataTypeExternalModifier');
    if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(node.Text);
-      DataTypeExternal := threeStrings.S0;
-      DataTypeNotExternal := threeStrings.S1;
-      DataTypeTransExternal := threeStrings.S2;
+      tStrings := T3Strings.Extract(node.Text);
+      DataTypeExternal := tStrings.S0;
+      DataTypeNotExternal := tStrings.S1;
+      DataTypeTransExternal := tStrings.S2;
    end;
 
    node := FindNode(ANode, 'ConstTypeModifier');
    if node <> nil then
    begin
-      threeStrings := T3Strings.Extract(node.Text);
-      ConstTypeNotGeneric := threeStrings.S0;
-      ConstTypeGeneric := threeStrings.S1;
+      tStrings := T3Strings.Extract(node.Text);
+      ConstTypeNotGeneric := tStrings.S0;
+      ConstTypeGeneric := tStrings.S1;
    end;
 
    node := FindNode(ANode, 'LabelFontName');
