@@ -153,8 +153,7 @@ end;
 
 procedure TComment.SetActive(AValue: boolean);
 begin
-   if AValue <> FActive then
-      FActive := AValue;
+   FActive := AValue;
 end;
 
 function TComment.GetActive: boolean;
