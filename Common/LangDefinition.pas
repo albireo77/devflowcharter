@@ -437,7 +437,7 @@ begin
    end;
 
    node := FindNode(ANode, 'LabelFontName');
-   if (node <> nil) and (Screen.Fonts.IndexOf(node.Text) <> -1) then
+   if (node <> nil) and Screen.Fonts.Contains(node.Text) then
       LabelFontName := node.Text;
 
    CommentBegin                    := GetNodeTextStr(ANode, 'CommentBegin', CommentBegin);

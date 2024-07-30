@@ -1276,7 +1276,7 @@ begin
    result := VALID_IDENT;
    if not IsValidIdent(AId) then
       result := INCORRECT_IDENT
-   else if CurrentLang.Keywords.IndexOf(AId) <> -1 then
+   else if CurrentLang.Keywords.Contains(AId) then
       result := RESERVED_IDENT;
 end;
 
