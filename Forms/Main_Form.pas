@@ -962,12 +962,7 @@ begin
    if comp is TBlock then
       TBlock(comp).Remove
    else if comp is TComment then
-   begin
-      if TComment(comp).SelLength > 0 then
-         TComment(comp).SelText := ''
-      else
-         comp.Free;
-   end;
+      comp.Free;
    GProject.SetChanged;
 end;
 
