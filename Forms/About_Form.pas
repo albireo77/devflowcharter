@@ -59,12 +59,21 @@ end;
 
 procedure TAboutForm.FormCreate(Sender: TObject);
 const
-   LABEL_1 = '                   %s%sThe easiest way from flowchart to program!%s             Version: %s (x%d)';
-   LABEL_2 = ' This program is freeware and released under the%s                GNU General Public License.%s%s       The %s project (2006-2024)';
+   LABEL_1 = '''
+                      %s
+   The easiest way from flowchart to program!
+                Version: %s (x%d)
+   ''';
+   LABEL_2 = '''
+    This program is freeware and released under the
+                   GNU General Public License.
+
+          The %s project (2006-2024)
+   ''';
    WIN_PLATFORM = {$IFDEF WIN32}32{$ELSE}64{$ENDIF};
 begin
-   lblInfo1.Caption := Format(LABEL_1, [PROGRAM_NAME, sLineBreak, sLineBreak, TInfra.AppVersion, WIN_PLATFORM]);
-   lblInfo2.Caption := Format(LABEL_2, [sLineBreak, sLineBreak, sLineBreak, PROGRAM_NAME]);
+   lblInfo1.Caption := Format(LABEL_1, [PROGRAM_NAME, TInfra.AppVersion, WIN_PLATFORM]);
+   lblInfo2.Caption := Format(LABEL_2, [PROGRAM_NAME]);
 end;
 
 procedure TAboutForm.imDelphiClick(Sender: TObject);

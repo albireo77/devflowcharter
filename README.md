@@ -5,7 +5,7 @@ At the moment Pascal, C, TIBASIC, Java and Python are supported. Since language 
 
 ## Compilation
 To compile devF you need:
-- Delphi 11.2 or newer
+- Delphi 12 or newer
 - SynEdit package (https://github.com/SynEdit/SynEdit)  
   To compile devF with SynEdit from website above, USE_CODEFOLDING conditional directive must be disabled in devF project setup.
   Archive ThirdPartyLibs/ThirdPartyLibs.zip contains customized SynEdit with code folding. It is preferred SynEdit package for devF.
