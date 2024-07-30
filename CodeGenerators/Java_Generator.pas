@@ -29,7 +29,7 @@ implementation
 
 uses
    System.Classes, System.SysUtils, System.StrUtils, Vcl.Graphics, Vcl.ComCtrls,
-   System.Character, SynHighlighterJava, DeclareList, Infrastructure, UserDataType,
+   System.Character, System.Generics.Collections, SynHighlighterJava, DeclareList, Infrastructure, UserDataType,
    UserFunction, LangDefinition, ParserHelper, Types, Constants;
 
 const
@@ -127,7 +127,7 @@ end;
 
 function IsPrimitiveType(AType: integer): boolean;
 begin
-   result := (AType <> UNKNOWN_TYPE) and (TInfra.IndexOf<integer>(AType, JAVA_PRIMITIVE_TYPES) <> -1);
+   result := (AType <> UNKNOWN_TYPE) and TArray.Contains(JAVA_PRIMITIVE_TYPES, AType);
 end;
 
 procedure AddLibImport(const ALib: string);

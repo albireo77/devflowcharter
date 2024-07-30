@@ -110,7 +110,6 @@ type
          class function DecodeCheckBoxState(const AState: string): TCheckBoxState;
          class function GetPageFromXY(APageControl: TPageControl; x, y: integer): TTabSheet;
          class function GetPageFromTabIndex(APageControl: TPageControl; ATabIndex: integer): TTabSheet;
-         class function IndexOf<T>(const AValue: T; const AArray: TArray<T>): integer;
          class function Scaled(AWinControl: TWinControl; on96: integer): integer;
          class function ReplaceXMLIndents(const ALine: string): string;
          class function ShouldUpdateEditor: boolean;
@@ -270,19 +269,6 @@ begin
       end;
       dialog.FileName := '';
       dialog.Filter := '';
-   end;
-end;
-
-class function TInfra.IndexOf<T>(const AValue: T; const AArray: TArray<T>): integer;
-begin
-   result := -1;
-   for var i := 0 to High(AArray) do
-   begin
-      if TComparer<T>.Default.Compare(AValue, AArray[i]) = 0 then
-      begin
-         result := i;
-         break;
-      end;
    end;
 end;
 
