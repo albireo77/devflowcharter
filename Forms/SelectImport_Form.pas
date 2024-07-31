@@ -72,8 +72,8 @@ end;
 
 procedure TSelectImportForm.chkSelectAllClick(Sender: TObject);
 begin
-   for var i := 0 to pnlImports.ControlCount-1 do
-      TCheckBox(pnlImports.Controls[i]).Checked := chkSelectAll.Checked;
+   for var control in pnlImports.GetControls do
+      TCheckBox(control).Checked := chkSelectAll.Checked;
 end;
 
 procedure TSelectImportForm.SetComponents;

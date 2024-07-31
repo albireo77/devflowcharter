@@ -103,11 +103,11 @@ end;
 procedure TDeclarationsForm.FormShow(Sender: TObject);
 begin
    var f := True;
-   for var i := 0 to ControlCount-1 do
+   for var control in GetControls do
    begin
-      if Controls[i] is TDeclareList then
+      if control is TDeclareList then
       begin
-         var declareList := TDeclareList(Controls[i]);
+         var declareList := TDeclareList(control);
          if f then
          begin
              f := False;

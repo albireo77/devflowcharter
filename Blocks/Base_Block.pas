@@ -986,9 +986,8 @@ procedure TBlock.SetFontStyle(const AStyle: TFontStyles);
 begin
    Font.Style := AStyle;
    Canvas.Font.Style := AStyle;
-   for var i := 0 to ControlCount-1 do
+   for var control in GetControls do
    begin
-      var control := Controls[i];
       if control is TBlock then
          TBlock(control).SetFontStyle(AStyle)
       else
@@ -1001,9 +1000,8 @@ procedure TBlock.SetFontSize(ASize: integer);
 begin
    Font.Size := ASize;
    Canvas.Font.Size := ASize;
-   for var i := 0 to ControlCount-1 do
+   for var control in GetControls do
    begin
-      var control := Controls[i];
       if control is TBlock then
          TBlock(control).SetFontSize(ASize)
       else
@@ -1023,9 +1021,8 @@ begin
    Font.Assign(AFont);
    Canvas.Font.Assign(AFont);
    Refresh;
-   for var i := 0 to ControlCount-1 do
+   for var control in GetControls do
    begin
-      var control := Controls[i];
       if control is TBlock then
       begin
          TBlock(control).SetFontStyle(AFont.Style);
@@ -1140,19 +1137,18 @@ end;
 
 procedure TBlock.RefreshStatements;
 begin
-    var b1 := FRefreshMode;
+    var b := FRefreshMode;
     FRefreshMode := True;
     try
-       for var i := 0 to ControlCount-1 do
+       for var control in GetControls do
        begin
-          var control := Controls[i];
           if control is TCustomEdit then
              TCustomEditHack(control).Change
           else if (control is TBlock) and (control <> GClpbrd.UndoObject) then
              TBlock(control).RefreshStatements;
        end;
     finally
-       FRefreshMode := b1;
+       FRefreshMode := b;
     end;
 end;
 
@@ -1252,9 +1248,8 @@ end;
 procedure TBlock.RepaintAll;
 begin
    Repaint;
-   for var i := 0 to ControlCount-1 do
+   for var control in GetControls do
    begin
-      var control :=  Controls[i];
       if control is TBlock then
          TBlock(control).RepaintAll
       else

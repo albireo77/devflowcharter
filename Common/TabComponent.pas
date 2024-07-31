@@ -310,11 +310,8 @@ end;
 function TTabComponent.GetElementCount: integer;
 begin
    result := 0;
-   for var i := 0 to sbxElements.ControlCount-1 do
-   begin
-      if sbxElements.Controls[i].Visible then
-         Inc(result);
-   end;
+   for var control in sbxElements.GetControls([ceftVisible]) do
+      Inc(result);
 end;
 
 function TTabComponent.IsDuplicated(ANameEdit: TEdit): boolean;
@@ -345,10 +342,9 @@ end;
 function TTabComponent.GetElements<T>(AComparer: IComparer<T> = nil): IEnumerable<T>;
 begin
    var list := TList<T>.Create;
-   for var i := 0 to sbxElements.ControlCount-1 do
+   for var control in sbxElements.GetControls([ceftVisible]) do
    begin
-      var control := sbxElements.Controls[i];
-      if control.Visible and (control is T) then
+      if control is T then
          list.Add(control);
    end;
    if AComparer <> nil then
