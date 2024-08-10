@@ -961,7 +961,7 @@ begin
       GClpbrd.Instance := nil;
    if comp is TBlock then
       TBlock(comp).Remove
-   else if comp is TComment then
+   else
       comp.Free;
    GProject.SetChanged;
 end;
