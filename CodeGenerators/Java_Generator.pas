@@ -229,51 +229,33 @@ begin
 end;
 
 procedure Java_LibSectionGenerator(ALines: TStringList);
-var
-   i: integer;
-   libList: TStringList;
-   typeName, libImport: string;
-   pNativeType: PNativeDataType;
 begin
-
    FImportLines := ALines;
-
-   for i := 0 to High(javaLang.NativeDataTypes) do
+   for var i := 0 to High(javaLang.NativeDataTypes) do
    begin
-      pNativeType := @javaLang.NativeDataTypes[i];
-      if (pNativeType.Lib <> '') and CheckForDataType(pNativeType.Name) then
-      begin
-         libImport := pNativeType.Lib + '.' + pNativeType.Name;
-         AddLibImport(libImport);
-      end;
+     var nativeType := javaLang.NativeDataTypes[i];
+      if (nativeType.Lib <> '') and CheckForDataType(nativeType.Name) then
+         AddLibImport(nativeType.Lib + '.' + nativeType.Name);
    end;
-
-   libList := GProject.GetLibraryList;
+   var libList := GProject.GetLibraryList;
    try
-      for i := 0 to libList.Count-1 do
+      for var i := 0 to libList.Count-1 do
       begin
-         typeName := '';
+         var typeName := '';
          if libList.Objects[i] is TTabSheet then
             typeName := TTabSheet(libList.Objects[i]).Caption;
          if not typeName.IsEmpty then
-         begin
-            libImport := libList.Strings[i] + '.' + typeName;
-            AddLibImport(libImport);
-         end;
+            AddLibImport(libList.Strings[i] + '.' + typeName);
       end;
    finally
       libList.Free;
    end;
 end;
 
-function GetImplementerLibImport(const ATypeName: string; const AContents: string): string;
-var
-   i: integer;
-   implList: TStrings;
-   name: string;
+function GetImplementerLibImport(const ATypeName, AContents: string): string;
 begin
    result := '';
-   implList := nil;
+   var implList: TStrings := nil;
    if ATypeName.EndsWith('List') then
       implList := FListImpl
    else if ATypeName.EndsWith('Map') then
@@ -300,9 +282,9 @@ begin
       implList := FNumberImpl;
    if implList <> nil then
    begin
-      for i := 0 to implList.Count-1 do
+      for var i := 0 to implList.Count-1 do
       begin
-         name := implList.Names[i];
+         var name := implList.Names[i];
          if AContents.Contains(name) then
             Exit(implList.Values[name] + '.' + name);
       end;
