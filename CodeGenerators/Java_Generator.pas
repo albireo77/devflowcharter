@@ -231,9 +231,8 @@ end;
 procedure Java_LibSectionGenerator(ALines: TStringList);
 begin
    FImportLines := ALines;
-   for var i := 0 to High(javaLang.NativeDataTypes) do
+   for var nativeType in javaLang.NativeDataTypes do
    begin
-     var nativeType := javaLang.NativeDataTypes[i];
       if (nativeType.Lib <> '') and CheckForDataType(nativeType.Name) then
          AddLibImport(nativeType.Lib + '.' + nativeType.Name);
    end;
@@ -292,28 +291,23 @@ begin
 end;
 
 procedure Java_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
-var
-   i, p1, p2, a, b: integer;
-   varType, varInit, varInit2, varVal, varGeneric, varGenericType, libImport, varAccess, varSize, varName, token: string;
-   dims, tokens: TArray<string>;
-   pNativeType: PNativeDataType;
 begin
    if AVarList <> nil then
    begin
-      for i := 1 to AVarList.sgList.RowCount-2 do
+      for var i := 1 to AVarList.sgList.RowCount-2 do
       begin
-         varName := AVarList.sgList.Cells[VAR_NAME_COL, i];
-         varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
-         varType :=  AVarList.sgList.Cells[VAR_TYPE_COL, i];
+         var varName := AVarList.sgList.Cells[VAR_NAME_COL, i];
+         var varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
+         var varType :=  AVarList.sgList.Cells[VAR_TYPE_COL, i];
          if TParserHelper.GetType(varType) = UNKNOWN_TYPE then
             continue;
-         varGeneric := '';
-         varSize := '';
-         varAccess := '';
-         p1 := 0;
-         p2 := 0;
+         var varGeneric := '';
+         var varSize := '';
+         var varAccess := '';
          if not varInit.IsEmpty then
          begin
+            var p1 := 0;
+            var p2 := 0;
             if TParserHelper.IsGenericType(varType) then
             begin
                p1 := Pos('<', varInit);
@@ -323,20 +317,15 @@ begin
                   if p2 > p1 then
                   begin
                      varGeneric := Copy(varInit, p1, p2-p1+1);
-                     varGenericType := Copy(varInit, p1+1, p2-p1-1);
-                     tokens := varGenericType.Split([',', ' ', '<', '>']);
-                     for b := 0 to High(tokens) do
+                     for var token in Copy(varInit, p1+1, p2-p1-1).Split([',', ' ', '<', '>']) do
                      begin
-                        token := tokens[b];
                         if token.IsEmpty then
                            continue;
-                        for a := 0 to High(javaLang.NativeDataTypes) do
+                        for var nativeType in javaLang.NativeDataTypes do
                         begin
-                           pNativeType := @javaLang.NativeDataTypes[a];
-                           if (pNativeType.Lib <> '') and (pNativeType.Name = token) then
+                           if (nativeType.Name = token) and not nativeType.Lib.IsEmpty then
                            begin
-                              libImport := pNativeType.Lib + '.' + pNativeType.Name;
-                              AddLibImport(libImport);
+                              AddLibImport(nativeType.Lib + '.' + nativeType.Name);
                               break;
                            end;
                         end;
@@ -344,23 +333,21 @@ begin
                   end;
                end;
             end;
-            libImport := GetImplementerLibImport(varType, varInit);
-            AddLibImport(libImport);
+            AddLibImport(GetImplementerLibImport(varType, varInit));
             if p2 > p1 then
                Delete(varInit, p1+1, p2-p1-1);      // make diamond operator
             varInit := ' = ' + varInit;
          end;
-         p1 := AVarList.GetDimensionCount(varName);
-         if p1 > 0 then
+         if AVarList.GetDimensionCount(varName) > 0 then
          begin
-            varInit2 := '';
-            dims := AVarList.GetDimensions(varName);
+            var varInit2 := '';
+            var dims := AVarList.GetDimensions(varName);
             if dims <> nil then
             begin
-               for p2 := 0 to High(dims) do
+               for var dim in dims do
                begin
-                  varSize := varSize + Format(javaLang.VarEntryArraySize, [dims[p2]]);
-                  varInit2 := varInit2 + '[' + dims[p2] + ']';
+                  varSize := varSize + Format(javaLang.VarEntryArraySize, [dim]);
+                  varInit2 := varInit2 + '[' + dim + ']';
                end;
                if varInit.IsEmpty then
                   varInit := ' = new ' + varType + varInit2;
@@ -370,7 +357,7 @@ begin
          end;
          if AVarList.IsGlobal then
             varAccess := AVarList.GetExternalModifier(i);
-         varVal := varAccess + varType + varGeneric + varSize + ' ' + varName + varInit + ';';
+         var varVal := varAccess + varType + varGeneric + varSize + ' ' + varName + varInit + ';';
          ALines.AddObject(varVal, AVarList);
       end;
    end;
