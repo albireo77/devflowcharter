@@ -724,7 +724,7 @@ begin
    begin
       var page := GProject.ActivePage;
       var p := page.Box.ScreenToClient(page.Box.PopupMenu.PopupPoint);
-      TComment.Create(page, p.X, p.Y, 150, 50);
+      TComment.Create(page, p.X, p.Y, 150, 50).SetFocus;
       GProject.SetChanged;
    end;
 end;
