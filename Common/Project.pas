@@ -324,7 +324,7 @@ end;
 function TProject.Register(AObject: TObject; AId: integer = ID_INVALID): integer;
 begin
    var id := AId.ToString;
-   var accepted := (AId <> ID_INVALID) and (FObjectIds.IndexOf(id) = -1);
+   var accepted := (AId <> ID_INVALID) and not FObjectIds.Contains(id);
    var idx := FObjectIds.IndexOfObject(AObject);
    if idx <> -1 then
    begin
@@ -620,7 +620,7 @@ begin
          var headerNode := FindNode(funcNode, HEADER_TAG);
          if headerNode <> nil then
          begin
-            if (selectList <> nil) and (selectList.IndexOf(GetNodeAttrStr(headerNode, NAME_ATTR, '')) = -1) then
+            if (selectList <> nil) and not selectList.Contains(GetNodeAttrStr(headerNode, NAME_ATTR, '')) then
             begin
                funcNode := funcNodes.NextNode;
                continue;
@@ -701,7 +701,7 @@ begin
       while dataTypeNode <> nil do
       begin
          var dataTypeName := GetNodeAttrStr(dataTypeNode, NAME_ATTR, '');
-         if (selectList <> nil) and (selectList.IndexOf(dataTypeName) = -1) then
+         if (selectList <> nil) and not selectList.Contains(dataTypeName) then
          begin
             dataTypeNode := dataTypeNodes.NextNode;
             continue;
@@ -1011,7 +1011,7 @@ begin
    for var tab in GetIComponents<IWithTab>(ByPageIndexComponentComparer) do
    begin
       var lib := tab.GetLibrary;
-      if (not lib.IsEmpty) and (GInfra.CurrentLang.AllowDuplicatedLibs or (result.IndexOf(lib) = -1)) then
+      if (not lib.IsEmpty) and (GInfra.CurrentLang.AllowDuplicatedLibs or not result.Contains(lib)) then
          result.AddObject(lib, tab.GetTab);
    end;
 end;

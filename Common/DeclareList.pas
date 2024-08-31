@@ -933,7 +933,7 @@ begin
    begin
       var idx := sgList.RowCount - 1;
       var lType := GetNodeAttrStr(ANode, TYPE_ATTR);
-      if cbType.Items.IndexOf(lType) = -1 then
+      if not cbType.Items.Contains(lType) then
          lType := i18Manager.GetString('Unknown');
       sgList.Cells[VAR_TYPE_COL, idx] := lType;
       sgList.Cells[VAR_SIZE_COL, idx] := GetNodeAttrStr(ANode, SIZE_ATTR);

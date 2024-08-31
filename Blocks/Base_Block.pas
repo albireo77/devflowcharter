@@ -1617,7 +1617,7 @@ begin
          if result and (func.Header <> nil) then
             result := func.Header.chkBodyVisible.Checked;
       end;
-      if result and (FParentBranch <> nil) and (FParentBranch.IndexOf(Self) = -1) then
+      if result and (FParentBranch <> nil) and not FParentBranch.Contains(Self) then
          result := False;
    end;
 end;
