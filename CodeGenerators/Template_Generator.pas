@@ -66,8 +66,8 @@ begin
                var field := ADataType.GetFirstField;
                if field <> nil then
                   s2 := Trim(field.edtName.Text);
-                  template.Text := ReplaceStr(typeStr, '%s2', s2);
-               end;
+               template.Text := ReplaceStr(typeStr, '%s2', s2);
+            end;
 
             dtArray:
             begin
