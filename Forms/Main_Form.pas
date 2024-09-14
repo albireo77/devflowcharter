@@ -1304,7 +1304,7 @@ begin
       else if Sender = miPaste1 then
          edit.PasteFromClipboard
       else if Sender = miRemove1 then
-         edit.SelText := '';
+         edit.ClearSelection;
    end;
 end;
 
