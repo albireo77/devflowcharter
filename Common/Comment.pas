@@ -77,7 +77,7 @@ implementation
 
 uses
    Vcl.Graphics, Vcl.Forms, System.SysUtils, System.UITypes, WinApi.Windows, Infrastructure,
-   OmniXMLUtils, UserFunction, Main_Block, Navigator_Form, Constants;
+   OmniXMLUtils, Navigator_Form, Constants;
 
 constructor TComment.Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight: Integer);
 begin
