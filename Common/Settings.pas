@@ -22,8 +22,7 @@ unit Settings;
 interface
 
 uses
-  Vcl.Graphics, System.IniFiles, System.Types, LangDefinition, Types, YaccLib,
-  SynEditHighlighter;
+  Vcl.Graphics, System.IniFiles, System.Types, Types, YaccLib, SynEditHighlighter;
 
 type
 
@@ -167,8 +166,8 @@ uses
 {$IFDEF MSWINDOWS}
    System.Win.Registry,
 {$ENDIF}
-   System.SysUtils, Vcl.Forms, Vcl.Controls, System.Math, System.IOUtils,
-   System.StrUtils, Infrastructure, Main_Form, Navigator_Form, Constants;
+   System.SysUtils, Vcl.Forms, Vcl.Controls, System.Math, System.IOUtils, System.StrUtils,
+   Infrastructure, Navigator_Form, Constants;
 
 const
    KEY_SELECT_COLOR = 'HighlightColor';
