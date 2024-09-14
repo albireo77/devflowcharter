@@ -67,8 +67,8 @@ type
 implementation
 
 uses
-   System.SysUtils, System.StrUtils, System.Math, System.UITypes, WinApi.Windows,
-   Navigator_Form, OmniXMLUtils, Infrastructure, Constants;
+   System.StrUtils, System.Math, System.UITypes, WinApi.Windows, Navigator_Form,
+   OmniXMLUtils, Infrastructure, Constants;
 
 constructor TBlockTabSheet.Create(AMainForm: TMainForm);
 begin
