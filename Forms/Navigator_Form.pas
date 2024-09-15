@@ -36,8 +36,7 @@ var
 implementation
 
 uses
-   WinApi.Windows, System.SysUtils, Vcl.Graphics, Vcl.Forms, Infrastructure, BlockTabSheet,
-   OmniXMLUtils;
+   WinApi.Windows, System.SysUtils, Vcl.Graphics, Vcl.Forms, Infrastructure, OmniXMLUtils;
 
 {$R *.dfm}
 
@@ -49,8 +48,8 @@ begin
    Constraints.MinWidth := 150;
    Constraints.MinHeight := 150;
    ControlStyle := ControlStyle + [csOpaque];
-   Constraints.MaxWidth := (Screen.Width*9) div 10;
-   Constraints.MaxHeight := (Screen.Height*9) div 10;
+   Constraints.MaxWidth := (Screen.Width * 9) div 10;
+   Constraints.MaxHeight := (Screen.Height * 9) div 10;
    scbAlphaVal.Position := GSettings.NavigatorAlphaValue;
    scbAlphaVal.OnKeyDown := TInfra.GetMainForm.OnKeyDown;
    chkAlphaVisible.Checked := GSettings.NavigatorAlphaVisible;
