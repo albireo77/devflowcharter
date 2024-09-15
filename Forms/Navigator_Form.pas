@@ -64,7 +64,7 @@ begin
       vkDown, vkRight: y := 15;
       vkUp, vkLeft:    y := -15;
    end;
-   if y <> 0 then
+   if (y <> 0) and (GProject <> nil) then
    begin
       var box := GProject.ActivePage.Box;
       if Msg.CharCode in [vkLeft, vkRight] then
