@@ -24,8 +24,7 @@ unit ForDo_Block;
 interface
 
 uses
-   Vcl.StdCtrls, Vcl.Graphics, System.Classes, Base_Block, Statement, OmniXML,
-   Types, LangDefinition;
+   Vcl.StdCtrls, Vcl.Graphics, System.Classes, Base_Block, Statement, OmniXML, Types;
 
 type
 
@@ -74,7 +73,7 @@ implementation
 
 uses
    Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Math, YaccLib,
-   Infrastructure, Constants, Main_Block, UserFunction, Return_Block, OmniXMLUtils;
+   Infrastructure, Constants, Return_Block, OmniXMLUtils;
 
 const
    DEFAULT_WIDTH = 246;
