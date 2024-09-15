@@ -12,7 +12,6 @@ object NavigatorForm: TNavigatorForm
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  KeyPreview = True
   OldCreateOrder = False
   PopupMode = pmExplicit
   OnCreate = FormCreate
