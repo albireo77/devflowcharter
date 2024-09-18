@@ -132,24 +132,20 @@ begin
 end;
 
 procedure Pascal_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
-var
-   buf, varSize, varInit, line, varName, varType, currType: string;
-   i, a, b, dCount, cnt: integer;
-   dims: TArray<string>;
 begin
    if (AVarList <> nil) and (AVarList.sgList.RowCount > 2) and (GProject <> nil) and (GProject.GlobalVars <> nil) then
    begin
-      cnt := 0;
-      for a := 0 to GProject.GlobalVars.cbType.Items.Count-1 do
+      var cnt := 0;
+      for var a := 0 to GProject.GlobalVars.cbType.Items.Count-1 do
       begin
-         buf := '';
-         currType := GProject.GlobalVars.cbType.Items[a];
-         for i := 1 to AVarList.sgList.RowCount-2 do
+         var buf := '';
+         var currType := GProject.GlobalVars.cbType.Items[a];
+         for var i := 1 to AVarList.sgList.RowCount-2 do
          begin
-            varName := AVarList.sgList.Cells[VAR_NAME_COL, i];
-            varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
-            varType :=  AVarList.sgList.Cells[VAR_TYPE_COL, i];
-            dCount := AVarList.GetDimensionCount(varName);
+            var varName := AVarList.sgList.Cells[VAR_NAME_COL, i];
+            var varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
+            var varType :=  AVarList.sgList.Cells[VAR_TYPE_COL, i];
+            var dCount := AVarList.GetDimensionCount(varName);
             if (dCount < 0) or (AVarList.GetExternalState(i) = cbChecked) then
                continue;
             if varType = currType then
@@ -163,23 +159,23 @@ begin
                end
                else
                begin
-                  line := GSettings.IndentString + varName + ': ';
+                  var line := GSettings.IndentString + varName + ': ';
                   if dCount > 0 then
                   begin
-                     varSize := '';
-                     dims := AVarList.GetDimensions(varName);
+                     var varSize := '';
+                     var dims := AVarList.GetDimensions(varName);
                      if dims <> nil then
                      begin
-                        for b := 0 to High(dims) do
+                        for var dim in dims do
                         begin
-                           if dims[b].IsEmpty then
+                           if dim.IsEmpty then
                               varSize := varSize + 'array of '
                            else
-                              varSize := varSize + '1..' + dims[b] + ', ';
+                              varSize := varSize + '1..' + dim + ', ';
                         end;
                         if varSize.EndsWith(', ') then
                         begin
-                           SetLength(varSize, varSize.Length-2);
+                           SetLength(varSize, varSize.Length - 2);
                            varSize := 'array[' + varSize + '] of ';
                         end;
                      end;

@@ -68,10 +68,9 @@ begin
          result := False
       else if dcount > 0 then
       begin
-         var dims := GetDimensions;
-         for var i := 0 to High(dims) do
+         for var dim in GetDimensions do
          begin
-            result := GInfra.ParseVarSize(dims[i]);
+            result := GInfra.ParseVarSize(dim);
             if not result then
                break;
          end;
