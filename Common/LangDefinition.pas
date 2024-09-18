@@ -717,9 +717,8 @@ begin
    result := '';
    if ASizeEdit <> nil then
    begin
-      var dims := ASizeEdit.GetDimensions;
-      for var i := 0 to High(dims) do
-         result := result + Format(VarEntryArraySize, [dims[i]]);
+      for var dim in ASizeEdit.GetDimensions do
+         result := result + Format(VarEntryArraySize, [dim]);
       if VarEntryArraySizeStripCount > 0 then
          SetLength(result, result.Length - VarEntryArraySizeStripCount);
    end;
