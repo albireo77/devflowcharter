@@ -616,16 +616,9 @@ end;
 class function TInfra.GetComboMaxWidth(ACombo: TComboBox): integer;
 begin
    result := 0;
-   if ACombo <> nil then
-   begin
-      for var i := 0 to ACombo.Items.Count-1 do
-      begin
-         var len := ACombo.Canvas.TextWidth(ACombo.Items[i]);
-         if len > result then
-            result := len;
-      end;
-      result := result + 28;
-   end;
+   for var comboItem in ACombo.Items do
+      result := Max(result, ACombo.Canvas.TextWidth(comboItem));
+   result := result + 28;
 end;
 
 class procedure TInfra.PopulateDataTypeCombo(AcbType: TComboBox; ASkipIndex: integer = 100);
