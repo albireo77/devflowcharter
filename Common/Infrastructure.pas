@@ -622,13 +622,9 @@ begin
 end;
 
 class procedure TInfra.PopulateDataTypeCombo(AcbType: TComboBox; ASkipIndex: integer = 100);
-var
-   i, idx: integer;
-   userType: TUserDataType;
-   lType, lName: string;
-   lang: TLangDefinition;
 begin
-   lType := AcbType.Text;
+
+   var lType := AcbType.Text;
    AcbType.Items.BeginUpdate;
    AcbType.Clear;
 
@@ -636,13 +632,13 @@ begin
       AcbType.Items.Add(i18Manager.GetString('NoType'));
 
 // first, populate with native types from language definition XML file
-   for i := 0 to High(GInfra.CurrentLang.NativeDataTypes) do
-      AcbType.Items.Add(GInfra.CurrentLang.NativeDataTypes[i].Name);
+   for var nativeType in GInfra.CurrentLang.NativeDataTypes do
+      AcbType.Items.Add(nativeType.Name);
 
 // next, populate with user data types defined in GUI
    if GInfra.CurrentLang.EnabledUserDataTypes and (GProject <> nil) then
    begin
-      lang := nil;
+      var lang: TLangDefinition := nil;
       if GInfra.CurrentLang.EnabledPointers then
       begin
          if Assigned(GInfra.CurrentLang.GetPointerTypeName) then
@@ -650,9 +646,9 @@ begin
          else if Assigned(GInfra.TemplateLang.GetPointerTypeName) then
             lang := GInfra.TemplateLang;
       end;
-      for userType in GProject.GetUserDataTypes do
+      for var userType in GProject.GetUserDataTypes do
       begin
-         lName := userType.GetName;
+         var lName := userType.GetName;
          if (userType.PageIndex < ASkipIndex) and not lName.IsEmpty then
          begin
             AcbType.Items.Add(lName);
@@ -661,7 +657,7 @@ begin
          end;
       end;
    end;
-   idx := AcbType.Items.IndexOf(lType);
+   var idx := AcbType.Items.IndexOf(lType);
    if idx = -1 then
       idx := 0;
    AcbType.ItemIndex := idx;
