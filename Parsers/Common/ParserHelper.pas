@@ -101,7 +101,7 @@ type
       class function GetVarInfo(const AVarName: string): TIdentInfo;
       class function IsArrayType(AType: integer): boolean;
       class function AreTypesCompatible(AType1, AType2: integer): boolean;
-      class function GetSizeExpArrayAsString(const ATypeAsString: string; const ASizeAsString: string): string;
+      class function GetSizeExpArrayAsString(const ATypeAsString, ASizeAsString: string): string;
       class function IsGenericType(const ATypeName: string): boolean;
       class function GetLibForType(const ATypeName: string; const ADefault: string = ''): string;
       class function DecodeArrayDimension(AType: integer): integer;
