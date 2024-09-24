@@ -329,7 +329,7 @@ begin
       result := header.LocalVars;
 end;
 
-class function TParserHelper.GetSizeExpArrayAsString(const ATypeAsString: string; const ASizeAsString: string): string;
+class function TParserHelper.GetSizeExpArrayAsString(const ATypeAsString, ASizeAsString: string): string;
 begin
    result := ASizeAsString;
    if result.IsEmpty then
