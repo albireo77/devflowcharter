@@ -580,7 +580,6 @@ end;
 
 class function TParserHelper.GetPointerType(AType: integer): integer;
 begin
-   result := UNKNOWN_TYPE;
    var lang := GInfra.CurrentLang;
    if not Assigned(lang.GetPointerTypeName) then
       lang := GInfra.TemplateLang;
