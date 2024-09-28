@@ -1067,20 +1067,17 @@ end;
 function TBlock.IsInFront(AControl: TWinControl): boolean;
 begin
    result := False;
-   if AControl <> nil then
+   var hnd := GetWindow(AControl.Handle, GW_HWNDLAST);
+   while hnd <> 0 do
    begin
-      var hnd := GetWindow(AControl.Handle, GW_HWNDLAST);
-      while hnd <> 0 do
+      if hnd = FTopParentBlock.Handle then
       begin
-         if hnd = FTopParentBlock.Handle then
-         begin
-            result := True;
-            break;
-         end
-         else if hnd = AControl.Handle then
-            break;
-         hnd := GetNextWindow(hnd, GW_HWNDPREV);
-      end;
+         result := True;
+         break;
+      end
+      else if hnd = AControl.Handle then
+         break;
+      hnd := GetNextWindow(hnd, GW_HWNDPREV);
    end;
 end;
 
