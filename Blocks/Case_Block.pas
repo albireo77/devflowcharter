@@ -67,8 +67,8 @@ const
 implementation
 
 uses
-   System.StrUtils, System.Math, System.SysUtils, Return_Block, Infrastructure,
-   Constants, YaccLib, OmniXMLUtils;
+   System.StrUtils, System.Math, System.SysUtils, Infrastructure, Constants, YaccLib,
+   OmniXMLUtils;
 
 constructor TCaseBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
@@ -249,7 +249,7 @@ begin
       Inc(br.hook.X, leftX-x);
       LinkBlocks(br);
       PlaceBranchStatement(br);
-      if br.FindInstanceOf(TReturnBlock) = -1 then
+      if not br.HasLastReturnBlock then
       begin
          if br.Count > 0 then
             BottomHook := br.Last.Left + br.Last.BottomPoint.X

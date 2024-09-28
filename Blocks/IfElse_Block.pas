@@ -56,8 +56,7 @@ const
 implementation
 
 uses
-   System.SysUtils, System.Classes, System.Math, Return_Block, Infrastructure, YaccLib,
-   OmniXMLUtils;
+   System.SysUtils, System.Classes, System.Math, Infrastructure, YaccLib, OmniXMLUtils;
 
 constructor TIfElseBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
@@ -124,9 +123,9 @@ begin
       DrawArrow(BottomHook, Height-30, BottomHook, Height-1);
       DrawArrow(Point(TrueBranch.Hook.X, TopHook.Y), TrueBranch.Hook);
       DrawArrow(Point(FalseBranch.Hook.X, TopHook.Y), FalseBranch.Hook);
-      if TrueBranch.FindInstanceOf(TReturnBlock) = -1 then
+      if not TrueBranch.HasLastReturnBlock then
          DrawArrow(TrueHook, Height-30, BottomHook-5, Height-30);
-      if FalseBranch.FindInstanceOf(TReturnBlock) = -1 then
+      if not FalseBranch.HasLastReturnBlock then
          DrawArrow(FalseHook, Height-30, BottomHook+4, Height-30);
 
       Canvas.Ellipse(BottomHook-5, Height-34, BottomHook+5, Height-24);

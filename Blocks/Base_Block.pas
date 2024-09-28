@@ -269,7 +269,7 @@ type
          constructor Create(AParentBlock: TGroupBlock; const AHook: TPoint; AId: integer = ID_INVALID);
          destructor Destroy; override;
          procedure InsertAfter(ANewBlock, ABlock: TBlock);
-         function FindInstanceOf(AClass: TClass): integer;
+         function HasLastReturnBlock: boolean;
          function Remove(ABlock: TBlock): integer;
          procedure UndoRemove(ABlock: TBlock);
          function GetMostRight: integer;
@@ -2573,17 +2573,9 @@ begin
       Inc(result, Items[i].Height);
 end;
 
-function TBranch.FindInstanceOf(AClass: TClass): integer;
+function TBranch.HasLastReturnBlock: boolean;
 begin
-   result := -1;
-   for var i := 0 to Count-1 do
-   begin
-      if Items[i].ClassType = AClass then
-      begin
-         result := i;
-         break;
-      end;
-   end;
+   result := (Count > 0) and (Last is TReturnBlock);
 end;
 
 procedure TBranch.UndoRemove(ABlock: TBlock);

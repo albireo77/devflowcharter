@@ -41,7 +41,7 @@ type
 implementation
 
 uses
-   System.Classes, Return_Block, Infrastructure, YaccLib;
+   System.Classes, Infrastructure, YaccLib;
 
 constructor TWhileDoBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
@@ -81,7 +81,7 @@ begin
       TopHook := FDiamond.Bottom;
 
       DrawArrow(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
-      if Branch.FindInstanceOf(TReturnBlock) = -1 then
+      if not Branch.HasLastReturnBlock then
       begin
          Canvas.MoveTo(BottomHook, Height-21);
          Canvas.LineTo(5, Height-21);

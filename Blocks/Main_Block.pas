@@ -79,7 +79,7 @@ implementation
 
 uses
    Vcl.Forms, System.SysUtils, System.StrUtils, Infrastructure, XMLProcessor, OmniXMLUtils,
-   Navigator_Form, Return_Block, UserFunction, Comment, Constants;
+   Navigator_Form, UserFunction, Comment, Constants;
 
 constructor TMainBlock.Create(APage: TBlockTabSheet; const ABlockParms: TBlockParms);
 begin
@@ -296,7 +296,7 @@ begin
       else
          FLabelRect := TRect.Empty;
       DrawStartEllipse;
-      if Branch.FindInstanceOf(TReturnBlock) = -1 then
+      if not Branch.HasLastReturnBlock then
          DrawStopEllipse;
       Canvas.Font.Style := fontStyles;
       DrawArrow(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
@@ -440,7 +440,7 @@ begin
             try
                progList.Text := ReplaceStr(template, PRIMARY_PLACEHOLDER, lName);
                if header = nil then
-                  TInfra.InsertTemplateLines(progList, '%s3', IfThen((Branch.Count = 0) or not (Branch.Last is TReturnBlock), lang.ProgramReturnTemplate));
+                  TInfra.InsertTemplateLines(progList, '%s3', IfThen(not Branch.HasLastReturnBlock, lang.ProgramReturnTemplate));
                if not Assigned(lang.VarSectionGenerator) then
                   lang := GInfra.TemplateLang;
                lang.VarSectionGenerator(varList, vars);
