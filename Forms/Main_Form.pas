@@ -537,7 +537,7 @@ begin
    begin
       var block := TBlock(GClpbrd.UndoObject);
       if not block.ParentBlock.CanFocus or
-         not block.ParentBlock.Expanded or ((block is TReturnBlock) and block.ParentBranch.HasLastReturnBlock) then Exit;
+         not block.ParentBlock.Expanded or ((block is TReturnBlock) and block.ParentBranch.EndsWithReturnBlock) then Exit;
       block.ParentBranch.UndoRemove(block);
       block.ParentBlock.ResizeWithDrawLock;
       block.SetVisible(True);

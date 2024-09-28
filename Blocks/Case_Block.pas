@@ -249,7 +249,7 @@ begin
       Inc(br.hook.X, leftX-x);
       LinkBlocks(br);
       PlaceBranchStatement(br);
-      if not br.HasLastReturnBlock then
+      if not br.EndsWithReturnBlock then
       begin
          if br.Count > 0 then
             BottomHook := br.Last.Left + br.Last.BottomPoint.X

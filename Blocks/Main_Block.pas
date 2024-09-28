@@ -296,7 +296,7 @@ begin
       else
          FLabelRect := TRect.Empty;
       DrawStartEllipse;
-      if not Branch.HasLastReturnBlock then
+      if not Branch.EndsWithReturnBlock then
          DrawStopEllipse;
       Canvas.Font.Style := fontStyles;
       DrawArrow(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
@@ -440,7 +440,7 @@ begin
             try
                progList.Text := ReplaceStr(template, PRIMARY_PLACEHOLDER, lName);
                if header = nil then
-                  TInfra.InsertTemplateLines(progList, '%s3', IfThen(not Branch.HasLastReturnBlock, lang.ProgramReturnTemplate));
+                  TInfra.InsertTemplateLines(progList, '%s3', IfThen(not Branch.EndsWithReturnBlock, lang.ProgramReturnTemplate));
                if not Assigned(lang.VarSectionGenerator) then
                   lang := GInfra.TemplateLang;
                lang.VarSectionGenerator(varList, vars);

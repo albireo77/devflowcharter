@@ -123,9 +123,9 @@ begin
       DrawArrow(BottomHook, Height-30, BottomHook, Height-1);
       DrawArrow(Point(TrueBranch.Hook.X, TopHook.Y), TrueBranch.Hook);
       DrawArrow(Point(FalseBranch.Hook.X, TopHook.Y), FalseBranch.Hook);
-      if not TrueBranch.HasLastReturnBlock then
+      if not TrueBranch.EndsWithReturnBlock then
          DrawArrow(TrueHook, Height-30, BottomHook-5, Height-30);
-      if not FalseBranch.HasLastReturnBlock then
+      if not FalseBranch.EndsWithReturnBlock then
          DrawArrow(FalseHook, Height-30, BottomHook+4, Height-30);
 
       Canvas.Ellipse(BottomHook-5, Height-34, BottomHook+5, Height-24);

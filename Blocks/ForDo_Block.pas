@@ -227,7 +227,7 @@ begin
       IPoint := Point(bst + 16, 35);
       DrawArrow(Point(bhx, TopHook.Y), Branch.Hook);
       DrawArrow(Width-11, 19, Width-RIGHT_MARGIN, Height-1);
-      if not Branch.HasLastReturnBlock then
+      if not Branch.EndsWithReturnBlock then
       begin
          DrawArrow(5, Height-21, 5, 19, arrMiddle);
          Canvas.Polyline([Point(BottomHook, Height-21),

@@ -269,7 +269,7 @@ type
          constructor Create(AParentBlock: TGroupBlock; const AHook: TPoint; AId: integer = ID_INVALID);
          destructor Destroy; override;
          procedure InsertAfter(ANewBlock, ABlock: TBlock);
-         function HasLastReturnBlock: boolean;
+         function EndsWithReturnBlock: boolean;
          function Remove(ABlock: TBlock): integer;
          procedure UndoRemove(ABlock: TBlock);
          function GetMostRight: integer;
@@ -2573,7 +2573,7 @@ begin
       Inc(result, Items[i].Height);
 end;
 
-function TBranch.HasLastReturnBlock: boolean;
+function TBranch.EndsWithReturnBlock: boolean;
 begin
    result := (Count > 0) and (Last is TReturnBlock);
 end;

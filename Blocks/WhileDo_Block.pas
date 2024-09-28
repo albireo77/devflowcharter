@@ -81,7 +81,7 @@ begin
       TopHook := FDiamond.Bottom;
 
       DrawArrow(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
-      if not Branch.HasLastReturnBlock then
+      if not Branch.EndsWithReturnBlock then
       begin
          Canvas.MoveTo(BottomHook, Height-21);
          Canvas.LineTo(5, Height-21);
