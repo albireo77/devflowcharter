@@ -56,7 +56,7 @@ type
          class procedure Reset;
          class procedure PopulateDataTypeCombo(AcbType: TComboBox; ASkipIndex: integer = 100);
          class procedure PrintBitmap(ABitmap: TBitmap);
-         class function InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; const ATemplateString: string; AObject: TObject = nil): integer; overload;
+         class function InsertTemplateLines(ADestList: TStringList; const APlaceHolder, ATemplateString: string; AObject: TObject = nil): integer; overload;
          class function InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; ATemplate: TStringList; AObject: TObject = nil): integer; overload;
          class procedure SetFontSize(AControl: TControl; ASize: integer);
          class procedure UpdateCodeEditor(AObject: TObject = nil);
@@ -194,8 +194,8 @@ end;
 
 destructor TInfra.Destroy;
 begin
-   for var i := 0 to High(FLangArray) do
-      FLangArray[i].Free;
+   for var lang in FLangArray do
+      lang.Free;
    FLangArray := nil;
    inherited Destroy;
 end;
@@ -670,11 +670,11 @@ end;
 function TInfra.GetLangDefinition(const AName: string): TLangDefinition;
 begin
    result := nil;
-   for var i := 0 to High(FLangArray) do
+   for var lang in FLangArray do
    begin
-      if SameText(FLangArray[i].Name, AName) then
+      if SameText(lang.Name, AName) then
       begin
-         result := FLangArray[i];
+         result := lang;
          break;
       end;
    end;
@@ -682,10 +682,10 @@ end;
 
 procedure TInfra.SetLangHiglighterAttributes;
 begin
-   for var i := 0 to High(FLangArray) do
+   for var lang in FLangArray do
    begin
-      if Assigned(FLangArray[i].SetHLighterAttrs) then
-         FLangArray[i].SetHLighterAttrs;
+      if Assigned(lang.SetHLighterAttrs) then
+         lang.SetHLighterAttrs;
    end;
 end;
 
@@ -712,7 +712,7 @@ begin
    end;
 end;
 
-class function TInfra.InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; const ATemplateString: string; AObject: TObject = nil): integer;
+class function TInfra.InsertTemplateLines(ADestList: TStringList; const APlaceHolder, ATemplateString: string; AObject: TObject = nil): integer;
 var
    template: TStringList;
 begin
