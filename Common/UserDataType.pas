@@ -79,7 +79,7 @@ implementation
 
 uses
    Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, System.Rtti, System.Math,
-   Generics.Defaults, Infrastructure, LangDefinition, ParserHelper, OmniXMLUtils, Constants;
+   Generics.Defaults, Infrastructure, ParserHelper, OmniXMLUtils, Constants;
 
 var
    ByTopFieldComparer: IComparer<TField>;
