@@ -62,7 +62,6 @@ begin
             begin
                typeStr := ReplaceStr(lang.DataTypeOtherMask, PRIMARY_PLACEHOLDER, name);
                typeStr := ReplaceStr(typeStr, '%s9', extModifier);
-               s2 := '';
                var field := ADataType.GetFirstField;
                if field <> nil then
                   s2 := Trim(field.edtName.Text);
@@ -72,8 +71,6 @@ begin
             dtArray:
             begin
                var arrayMask := lang.DataTypeArrayMask;
-               s2 := '';
-               s3 := '';
                var field := ADataType.GetFirstField;
                if field <> nil then
                begin
@@ -129,7 +126,6 @@ begin
             begin
                typeStr := ReplaceStr(lang.DataTypeEnumTemplate, PRIMARY_PLACEHOLDER, name);
                template.Text := ReplaceStr(typeStr, '%s9', extModifier);
-               s2 := '';
                for var field in ADataType.GetFields do
                   s2 := s2 + Format(lang.DataTypeEnumEntryList, [Trim(field.edtName.Text)]);
                if lang.DataTypeEnumEntryListStripCount > 0 then

@@ -125,9 +125,9 @@ implementation
 
 uses
    System.SysUtils, Vcl.Menus, Vcl.Forms, System.StrUtils, System.Types, System.UITypes,
-   Generics.Collections, Infrastructure, Constants, XMLProcessor, Base_Form, LangDefinition,
-   Navigator_Form, TabComponent, ParserHelper, SelectImport_Form, BaseEnumerator,
-   WinApi.Messages, Vcl.ExtCtrls, Rtti, OmniXMLUtils;
+   Generics.Collections, Infrastructure, Constants, XMLProcessor, Base_Form, Navigator_Form,
+   ParserHelper, SelectImport_Form, BaseEnumerator, WinApi.Messages, Vcl.ExtCtrls,
+   Rtti, OmniXMLUtils;
 
 var
    ByPageIndexUserDataTypeComparer: IComparer<TUserDataType>;
