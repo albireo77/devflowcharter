@@ -74,7 +74,7 @@ type
          class function FindText(ASubstr, AText: string; idx: integer; ACaseSens: boolean): integer;
          class function IsPrinter: boolean;
          class function IsValidControl(AObject: TObject): boolean;
-         class function SameStrings(const AStr1: string; const AStr2: string): boolean;
+         class function SameStrings(const AStr1, AStr2: string): boolean;
          class function GetDataTypesForm: TDataTypesForm;
          class function GetFunctionsForm: TFunctionsForm;
          class function GetDeclarationsForm: TDeclarationsForm;
@@ -424,7 +424,7 @@ begin
 end;
 
 // compares two strings based on current case-sensitive context
-class function TInfra.SameStrings(const AStr1: string; const AStr2: string): boolean;
+class function TInfra.SameStrings(const AStr1, AStr2: string): boolean;
 begin
    if GInfra.CurrentLang.CaseSensitiveSyntax then
       result := SameStr(AStr1, AStr2)
