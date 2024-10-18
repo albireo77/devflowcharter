@@ -1073,11 +1073,12 @@ end;
 
 procedure TVarDeclareList.RefreshTypes;
 begin
+   var unknown := i18Manager.GetString('Unknown');
    sgList.BeginUpdate;
    for var i := 1 to sgList.RowCount-2 do
    begin
       if TParserHelper.GetType(sgList.Cells[VAR_TYPE_COL, i]) = UNKNOWN_TYPE then
-         sgList.Cells[VAR_TYPE_COL, i] := i18Manager.GetString('Unknown');
+         sgList.Cells[VAR_TYPE_COL, i] := unknown;
    end;
    sgList.EndUpdate;
 end;
