@@ -48,8 +48,7 @@ implementation
 {$R *.dfm}
 
 uses
-   System.SysUtils, Infrastructure, Base_Block, Main_Block, Navigator_Form,
-   UserFunction, Interfaces, BlockTabSheet, Constants;
+   System.SysUtils, Infrastructure, Main_Block, Navigator_Form, UserFunction, Constants;
 
 procedure TFunctionsForm.miAddClick(Sender: TObject);
 begin

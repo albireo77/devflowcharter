@@ -46,7 +46,7 @@ var
 implementation
 
 uses
-   System.SysUtils, Infrastructure, UserDataType, Interfaces;
+   System.SysUtils, Infrastructure, UserDataType;
 
 {$R *.dfm}
 
