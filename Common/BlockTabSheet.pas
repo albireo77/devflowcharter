@@ -156,10 +156,8 @@ begin
    for var control in GetControls([ceftVisible]) do
    begin
       var cPoint := control.BoundsRect.BottomRight + sPoint;
-      if cPoint.X > result.X then
-         result.X := cPoint.X;
-      if cPoint.Y > result.Y then
-         result.Y := cPoint.Y;
+      result.X := Max(result.X, cPoint.X);
+      result.Y := Max(result.Y, cPoint.Y);
    end;
    result := result + Point(MARGIN_X, MARGIN_Y);
 end;
