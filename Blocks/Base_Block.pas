@@ -1647,7 +1647,7 @@ begin
       box.ScrollInView(AInfo.FocusEdit);
       box.Repaint;
       var idx2 := 0;
-      var txt := '';
+      var txt := AInfo.FocusEdit.Text;
       if AInfo.FocusEdit is TCustomMemo then
       begin
          var memo := TCustomMemo(AInfo.FocusEdit);
@@ -1662,9 +1662,7 @@ begin
          end
          else
             txt := memo.Text;
-      end
-      else
-         txt := AInfo.FocusEdit.Text;
+      end;
       var idx := Pos(txt, AInfo.LineText);
       if idx > 0 then
          AInfo.SelStart := AInfo.SelStart - idx + idx2
