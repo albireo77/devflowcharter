@@ -1637,30 +1637,26 @@ begin
 end;
 
 function TBlock.FocusOnTextControl(AInfo: TFocusInfo): boolean;
-var
-   idx, idx2, i: integer;
-   txt: string;
-   memo: TCustomMemo;
-   box: TScrollBoxEx;
 begin
    result := False;
    if ContainsControl(AInfo.FocusEdit) and AInfo.FocusEdit.CanFocus then
    begin
-      box := Page.Box;
+      var box := Page.Box;
       box.Show;
       FTopParentBlock.BringAllToFront;
       box.ScrollInView(AInfo.FocusEdit);
       box.Repaint;
-      idx2 := 0;
+      var idx2 := 0;
+      var txt := '';
       if AInfo.FocusEdit is TCustomMemo then
       begin
-         memo := TCustomMemo(AInfo.FocusEdit);
+         var memo := TCustomMemo(AInfo.FocusEdit);
          if AInfo.RelativeLine < memo.Lines.Count then
          begin
             txt := memo.Lines[AInfo.RelativeLine];
             if AInfo.RelativeLine > 0 then
             begin
-               for i := 0 to AInfo.RelativeLine-1 do
+               for var i := 0 to AInfo.RelativeLine-1 do
                   idx2 := idx2 + (memo.Lines[i] + sLineBreak).Length;
             end;
          end
@@ -1669,13 +1665,13 @@ begin
       end
       else
          txt := AInfo.FocusEdit.Text;
-      idx := Pos(txt, AInfo.LineText);
-      if idx <> 0 then
+      var idx := Pos(txt, AInfo.LineText);
+      if idx > 0 then
          AInfo.SelStart := AInfo.SelStart - idx + idx2
       else
       begin
          idx := Pos(AInfo.SelText, txt);
-         if idx <> 0 then
+         if idx > 0 then
             AInfo.SelStart := idx - 1 + idx2;
       end;
       AInfo.FocusEditCallBack := UpdateEditor;
