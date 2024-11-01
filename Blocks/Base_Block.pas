@@ -1650,18 +1650,18 @@ begin
       var txt := AInfo.FocusEdit.Text;
       if AInfo.FocusEdit is TCustomMemo then
       begin
-         var memo := TCustomMemo(AInfo.FocusEdit);
-         if AInfo.RelativeLine < memo.Lines.Count then
+         var lines := TCustomMemo(AInfo.FocusEdit).Lines;
+         if AInfo.RelativeLine < lines.Count then
          begin
-            txt := memo.Lines[AInfo.RelativeLine];
+            txt := lines[AInfo.RelativeLine];
             if AInfo.RelativeLine > 0 then
             begin
                for var i := 0 to AInfo.RelativeLine-1 do
-                  idx2 := idx2 + (memo.Lines[i] + sLineBreak).Length;
+                  idx2 := idx2 + (lines[i] + sLineBreak).Length;
             end;
          end
          else
-            txt := memo.Text;
+            txt := lines.Text;
       end;
       var idx := Pos(txt, AInfo.LineText);
       if idx > 0 then
