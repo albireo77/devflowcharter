@@ -1657,7 +1657,7 @@ begin
             if AInfo.RelativeLine > 0 then
             begin
                for var i := 0 to AInfo.RelativeLine-1 do
-                  idx2 := idx2 + (lines[i] + sLineBreak).Length;
+                  Inc(idx2, (lines[i] + sLineBreak).Length);
             end;
          end
          else
