@@ -93,6 +93,7 @@ type
          function IsBoldDesc: boolean;
          procedure RefreshFontColor;
          procedure UpdateCodeEditor;
+         procedure SetAsActivePage;
          function GetCompareValue(ACompareType: integer): integer;
          function GetExternModifier: string; virtual; abstract;
    end;
@@ -512,6 +513,11 @@ begin
    result := -1;
    if ACompareType = PAGE_INDEX_COMPARE then
       result := PageIndex;
+end;
+
+procedure TTabComponent.SetAsActivePage;
+begin
+   PageControl.ActivePage := Self;
 end;
 
 initialization

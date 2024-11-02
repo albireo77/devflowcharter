@@ -39,6 +39,7 @@ type
       Box: TScrollBoxEx;
       constructor Create(AMainForm: TMainForm);
       destructor Destroy; override;
+      procedure SetAsActivePage;
       procedure ExportToXML(ANode: IXMLNode);
       procedure ImportFromXML(ANode: IXMLNode);
       function IsMain: boolean;
@@ -99,6 +100,11 @@ end;
 function TBlockTabSheet.IsMain: boolean;
 begin
    result := (GProject <> nil) and (GProject.MainPage = Self);
+end;
+
+procedure TBlockTabSheet.SetAsActivePage;
+begin
+   PageControl.ActivePage := Self;
 end;
 
 procedure TBlockTabSheet.ExportToXML(ANode: IXMLNode);

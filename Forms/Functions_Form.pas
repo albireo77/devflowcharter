@@ -80,7 +80,7 @@ begin
    if (body <> nil) and body.Visible then
    begin
       var bpage := body.Page;
-      bpage.PageControl.ActivePage := bpage;
+      bpage.SetAsActivePage;
       bpage.Box.ScrollInView(body);
       body.BringAllToFront;
       NavigatorForm.Invalidate;

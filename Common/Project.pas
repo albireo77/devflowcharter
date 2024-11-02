@@ -460,7 +460,7 @@ begin
       end;
       if activePage = nil then
          activePage := MainPage;
-      activePage.PageControl.ActivePage := activePage;
+      activePage.SetAsActivePage;
    end;
 end;
 
@@ -677,7 +677,7 @@ begin
             box.ScrollInView(lastBody);
       end;
       if lastHeader <> nil then
-         lastHeader.PageControl.ActivePage := lastHeader;
+         lastHeader.SetAsActivePage;
    finally
       selectList.Free;
    end;
@@ -712,7 +712,7 @@ begin
          dataTypeNode := dataTypeNodes.NextNode;
       end;
       if dataType <> nil then
-         dataType.PageControl.ActivePage := dataType;
+         dataType.SetAsActivePage;
    finally
       selectList.Free;
    end;

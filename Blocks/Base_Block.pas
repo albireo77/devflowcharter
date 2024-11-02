@@ -1632,7 +1632,7 @@ begin
       AInfo.FocusEdit := GetTextControl;
    var lPage := Page;
    AInfo.FocusEditForm := lPage.Form;
-   lPage.PageControl.ActivePage := lPage;
+   lPage.SetAsActivePage;
    result := FocusOnTextControl(AInfo);
 end;
 

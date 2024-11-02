@@ -1258,8 +1258,7 @@ begin
    var lCaption := InputBox(i18Manager.GetString('Page'), i18Manager.GetString('EnterPage'), '').Trim;
    if (lCaption <> '') and (GProject.GetPage(lCaption, False) = nil) then
    begin
-      var page := GProject.GetPage(lCaption);
-      page.PageControl.ActivePage := page;
+      GProject.GetPage(lCaption).SetAsActivePage;
       NavigatorForm.Invalidate;
       GProject.SetChanged;
    end;

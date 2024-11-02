@@ -746,7 +746,7 @@ begin
    if (page <> nil) and (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
    begin
       FUserFunction.Body.Page := page;
-      page.PageControl.ActivePage := page;
+      page.SetAsActivePage;
       page.Box.ScrollInView(FUserFunction.Body);
       NavigatorForm.Invalidate;
    end;
