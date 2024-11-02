@@ -161,7 +161,6 @@ type
          procedure GenerateTemplateSection(ALines: TStringList; ATemplate: TStringList; const ALangId: string; ADeep: integer); overload; virtual;
          procedure GenerateTemplateSection(ALines: TStringList; const ATemplate: string; const ALangId: string; ADeep: integer); overload;
          function GetMemoEx: TMemoEx; virtual;
-         function FocusOnTextControl(AInfo: TFocusInfo): boolean;
          procedure DeSelect;
          procedure ChangeFrame;
          procedure RepaintAll;
@@ -1628,24 +1627,21 @@ end;
 
 function TBlock.RetrieveFocus(AInfo: TFocusInfo): boolean;
 begin
-   if AInfo.FocusEdit = nil then
-      AInfo.FocusEdit := GetTextControl;
+
+   result := False;
+   var scrollTo := TControl(Self);
    var lPage := Page;
    AInfo.FocusEditForm := lPage.Form;
    lPage.SetAsActivePage;
-   result := FocusOnTextControl(AInfo);
-end;
+   lPage.Box.Show;
+   FTopParentBlock.BringAllToFront;
 
-function TBlock.FocusOnTextControl(AInfo: TFocusInfo): boolean;
-begin
-   result := False;
-   if ContainsControl(AInfo.FocusEdit) and AInfo.FocusEdit.CanFocus then
+   if AInfo.FocusEdit = nil then
+      AInfo.FocusEdit := GetTextControl;
+   if (AInfo.FocusEdit <> nil) and AInfo.FocusEdit.CanFocus then
    begin
-      var box := Page.Box;
-      box.Show;
-      FTopParentBlock.BringAllToFront;
-      box.ScrollInView(AInfo.FocusEdit);
-      box.Repaint;
+      result := True;
+      scrollTo := AInfo.FocusEdit;
       var idx2 := 0;
       var txt := AInfo.FocusEdit.Text;
       if AInfo.FocusEdit is TCustomMemo then
@@ -1674,8 +1670,9 @@ begin
       end;
       AInfo.FocusEditCallBack := UpdateEditor;
       TFlashThread.Create(AInfo);
-      result := True;
    end;
+   lPage.Box.ScrollInView(scrollTo);
+   lPage.Box.Repaint;
 end;
 
 function TBlock.GetErrorMsg(AEdit: TCustomEdit): string;
