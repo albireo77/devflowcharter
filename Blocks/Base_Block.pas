@@ -1631,7 +1631,6 @@ begin
    result := False;
    var scrollTo := TControl(Self);
    var lPage := Page;
-   AInfo.FocusEditForm := lPage.Form;
    lPage.SetAsActivePage;
    lPage.Box.Show;
    FTopParentBlock.BringAllToFront;
@@ -1669,6 +1668,7 @@ begin
             AInfo.SelStart := idx - 1 + idx2;
       end;
       AInfo.FocusEditCallBack := UpdateEditor;
+      AInfo.FocusEditForm := lPage.Form;
       TFlashThread.Create(AInfo);
    end;
    lPage.Box.ScrollInView(scrollTo);
