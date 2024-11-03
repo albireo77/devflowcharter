@@ -1527,9 +1527,8 @@ end;
 
 function TGroupBlock.CanInsertReturnBlock: boolean;
 begin
-   if FRedArrow = 0 then
-      result := (FParentBranch <> nil) and (FParentBranch.Count > 0) and (FParentBranch.Last = Self)
-   else
+   result := inherited CanInsertReturnBlock;
+   if not result then
    begin
       var br := GetBranch(FRedArrow);
       result := (br <> nil) and (br.Count = 0);
