@@ -1527,12 +1527,8 @@ end;
 
 function TGroupBlock.CanInsertReturnBlock: boolean;
 begin
-   result := inherited CanInsertReturnBlock;
-   if not result then
-   begin
-      var br := GetBranch(FRedArrow);
-      result := (br <> nil) and (br.Count = 0);
-   end;
+   var br := GetBranch(FRedArrow);
+   result := ((br <> nil) and (br.Count = 0)) or inherited;
 end;
 
 procedure TBlock.WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo);
