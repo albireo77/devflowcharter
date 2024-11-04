@@ -561,7 +561,7 @@ begin
                   begin
                      for a := 3 to 6 do
                      begin
-                        if not CharInSet(cValue[a], ['0'..'9', 'a'..'f', 'A'..'F']) then
+                        if not CharInSet(cValue[a].ToUpper, ['0'..'9', 'A'..'F']) then
                            Exit;
                      end;
                      result := JAVA_CHAR_TYPE;
@@ -999,7 +999,7 @@ begin
                result := JAVA_DOUBLE_TYPE
             else if TryStrToInt64(AValue, i64) then
                result := JAVA_LONG_TYPE
-            else if AValue.Contains('_') and firstChar.IsDigit and CharInSet(lastChar, ['0'..'9', 'l', 'L', 'd', 'D', 'f', 'F']) then
+            else if AValue.Contains('_') and firstChar.IsDigit and CharInSet(lastChar.ToUpper, ['0'..'9', 'L', 'D', 'F']) then
                result := Java_GetConstantType(ReplaceText(AValue, '_', ''), s)
             else
             begin
