@@ -43,24 +43,20 @@ var
    C_CHAR_PTR_TYPE: integer;
 
 procedure C_LibSectionGenerator(ALines: TStringList);
-var
-   libList: TStringList;
-   libIncl, lib: string;
 begin
-   libList := GProject.GetLibraryList;
+   var libs := GProject.GetLibraryList;
    try
-      for lib in libList do
+      for var lib in libs do
       begin
-         libIncl := lib;
+         var libIncl := lib;
          if not lib.Contains('.') then
             libIncl := libIncl + cLang.LibraryExt;
          if not lib.Contains('"') then
             libIncl := '<' + libIncl + '>';
-         libIncl := '#include ' + libIncl;
-         ALines.AddObject(libIncl, TInfra.GetLibObject);
+         ALines.AddObject('#include ' + libIncl, TInfra.GetLibObject);
       end;
    finally
-      libList.Free;
+      libs.Free;
    end;
 end;
 
