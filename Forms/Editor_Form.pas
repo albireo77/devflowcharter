@@ -231,14 +231,11 @@ begin
 end;
 
 function TEditorForm.BuildBracketHint(startLine, endLine: integer): string;
-var
-   i, min, len: integer;
-   lines: TStringList;
 begin
    result := '';
    if (endLine < 0) or (endLine >= memCodeEditor.Lines.Count) or (startLine >= endLine) or (startLine < 0) then
       Exit;
-   lines := TStringList.Create;
+   var lines := TStringList.Create;
    try
       if (endLine - startLine) > (memCodeEditor.LinesInWindow div 2) then
       begin
@@ -248,28 +245,22 @@ begin
       end
       else
       begin
-         for i := startLine to endLine do
+         for var i := startLine to endLine do
             lines.Add(memCodeEditor.Lines[i]);
       end;
-      min := -1;
-      for i := 0 to lines.Count-1 do
+      var min := -1;
+      for var i := 0 to lines.Count-1 do
       begin
          if lines[i].Trim.IsEmpty then
             continue;
-         len := TInfra.ExtractIndentString(lines[i]).Length;
+         var len := TInfra.ExtractIndentString(lines[i]).Length;
          if (min = -1) or (len < min) then
             min := len;
       end;
       if min = -1 then
          min := 0;
-      for i := 0 to lines.Count-1 do
-         lines[i] := Copy(lines[i], min+1);
-      for i := 0 to lines.Count-1 do
-      begin
-         if i <> 0 then
-            result := result + sLineBreak;
-         result := result + lines[i];
-      end;
+      for var i := 0 to lines.Count-1 do
+         result := result + IfThen(i > 0, sLineBreak) + Copy(lines[i], min+1);
    finally
       lines.Free;
    end;
