@@ -719,20 +719,16 @@ begin
 end;
 
 procedure TEditorForm.miSaveClick(Sender: TObject);
-var
-   synExport: TSynCustomExporter;
-   lines: TStrings;
-   filterKey: string;
 begin
    SetSaveDialog(SaveDialog2);
    if Assigned(memCodeEditor.Highlighter) then
       SaveDialog2.Filter := SaveDialog2.Filter + '|' + i18Manager.GetJoinedString('|', EDITOR_DIALOG_FILTER_KEYS);
    if SaveDialog2.Execute then
    begin
-      synExport := nil;
+      var synExport: TSynCustomExporter := nil;
       if SaveDialog2.FilterIndex > 1 then
       begin
-         filterKey := EDITOR_DIALOG_FILTER_KEYS[SaveDialog2.FilterIndex-2];
+         var filterKey := EDITOR_DIALOG_FILTER_KEYS[SaveDialog2.FilterIndex-2];
          if RTF_FILES_FILTER_KEY = filterKey then
             synExport := SynExporterRTF1
          else if HTML_FILES_FILTER_KEY = filterKey then
@@ -741,7 +737,7 @@ begin
       if synExport <> nil then
       begin
          synExport.Highlighter := memCodeEditor.Highlighter;
-         lines := GetAllLines;
+         var lines := GetAllLines;
          try
             synExport.ExportAll(lines);
             synExport.SaveToFile(SaveDialog2.FileName);
