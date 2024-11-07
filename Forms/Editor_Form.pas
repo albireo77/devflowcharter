@@ -260,7 +260,8 @@ begin
       if min = -1 then
          min := 0;
       for var i := 0 to lines.Count-1 do
-         result := result + IfThen(i > 0, sLineBreak) + Copy(lines[i], min+1);
+         lines[i] := Copy(lines[i], min+1);
+      result := lines.Text.Trim;
    finally
       lines.Free;
    end;
