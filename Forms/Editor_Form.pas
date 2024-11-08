@@ -236,6 +236,7 @@ begin
    if (endLine < 0) or (endLine >= memCodeEditor.Lines.Count) or (startLine >= endLine) or (startLine < 0) then
       Exit;
    var lines := TStringList.Create;
+   lines.TrailingLineBreak := False;
    try
       if (endLine - startLine) > (memCodeEditor.LinesInWindow div 2) then
       begin
@@ -261,7 +262,7 @@ begin
          min := 0;
       for var i := 0 to lines.Count-1 do
          lines[i] := Copy(lines[i], min+1);
-      result := lines.Text.Trim;
+      result := lines.Text;
    finally
       lines.Free;
    end;
