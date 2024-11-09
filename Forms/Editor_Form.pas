@@ -1212,18 +1212,12 @@ begin
 end;
 
 procedure TEditorForm.RefreshEditorForObject(AObject: TObject);
-var
-   topLine, line: integer;
-   codeRange: TCodeRange;
-   caretXY: TBufferCoord;
-   gotoLine: boolean;
-   scrollEnabled: boolean;
 begin
    FFocusEditor := False;
-   gotoLine := False;
-   topLine := memCodeEditor.TopLine;
-   caretXY := memCodeEditor.CaretXY;
-   scrollEnabled := memCodeEditor.ScrollBars <> TScrollStyle.ssNone;
+   var gotoLine := False;
+   var topLine := memCodeEditor.TopLine;
+   var caretXY := memCodeEditor.CaretXY;
+   var scrollEnabled := memCodeEditor.ScrollBars <> TScrollStyle.ssNone;
    if scrollEnabled then
       memCodeEditor.BeginUpdate;
    var programLines := GInfra.GenerateProgram;
@@ -1232,8 +1226,8 @@ begin
       DisplayLines(programLines, False);
       if AObject <> nil then
       begin
-         codeRange := SelectCodeRange(AObject, False);
-         line := codeRange.FirstRow + 1;
+         var codeRange := SelectCodeRange(AObject, False);
+         var line := codeRange.FirstRow + 1;
          if (line > 0) and not codeRange.IsFolded then
          begin
             gotoLine := (line < topLine) or (line > topLine + memCodeEditor.LinesInWindow);
