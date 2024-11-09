@@ -110,7 +110,7 @@ type
          class function DecodeCheckBoxState(const AState: string): TCheckBoxState;
          class function GetPageFromXY(APageControl: TPageControl; x, y: integer): TTabSheet;
          class function GetPageFromTabIndex(APageControl: TPageControl; ATabIndex: integer): TTabSheet;
-         class function Scaled(AWinControl: TWinControl; on96: integer): integer;
+         class function Scaled(AControl: TControl; on96: integer): integer;
          class function ReplaceXMLIndents(const ALine: string): string;
          class function ShouldUpdateEditor: boolean;
          function GetNativeDataType(const AName: string): PNativeDataType;
@@ -1220,9 +1220,9 @@ begin
       result := APageControl.Pages[idx];
 end;
 
-class function TInfra.Scaled(AWinControl: TWinControl; on96: integer): integer;
+class function TInfra.Scaled(AControl: TControl; on96: integer): integer;
 begin
-   var ppi := Screen.MonitorFromWindow(AWinControl.Handle).PixelsPerInch;
+   var ppi := AControl.CurrentPPI;
    if ppi = 96 then
       result := on96
    else

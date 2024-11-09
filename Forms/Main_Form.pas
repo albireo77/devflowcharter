@@ -372,7 +372,7 @@ end;
 
 procedure TMainForm.PPIDialog;
 begin
-   var ppi := Screen.MonitorFromWindow(Handle).PixelsPerInch;
+   var ppi := CurrentPPI;
    if ppi > MAX_SUPPORTED_PPI then
       TInfra.ShowWarningBox('OverMaxPPI', [ppi, MAX_SUPPORTED_PPI, sLineBreak]);
 end;
