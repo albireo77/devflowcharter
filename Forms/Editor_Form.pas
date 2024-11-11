@@ -367,36 +367,22 @@ procedure TEditorForm.PasteComment(const AText: string);
 begin
    if AText.IsEmpty then
       Exit;
-   var line := '';
    var ctext := '';
    Clipboard.Open;
    if Clipboard.HasFormat(CF_TEXT) then
       ctext := Clipboard.AsText;
    memCodeEditor.BeginUpdate;
+   var bc := memCodeEditor.CaretXY;
+   var beginComment := GInfra.CurrentLang.CommentBegin;
+   var endComment := GInfra.CurrentLang.CommentEnd;
+   var afterLine := True;
    var strings := TStringList.Create;
    try
-      for var i := 1 to AText.Length do
-      begin
-         if not AText[i].IsControl then
-         begin
-            line := line + AText[i];
-            if i = AText.Length then
-               strings.Add(line);
-         end
-         else if AText[i] = #10 then
-         begin
-            strings.Add(line);
-            line := '';
-         end;
-      end;
-      var bc := memCodeEditor.CaretXY;
-      var beginComment := GInfra.CurrentLang.CommentBegin;
-      var endComment := GInfra.CurrentLang.CommentEnd;
+      strings.Text := AText;
       var count := strings.Count - 1;
-      var afterLine := True;
       for var i := 0 to count do
       begin
-         if memCodeEditor.CaretX <= memCodeEditor.Lines[memCodeEditor.CaretY-1+i].Length then
+         if bc.Char <= memCodeEditor.Lines[bc.Line-1+i].Length then
          begin
             afterLine := False;
             break;
@@ -404,9 +390,8 @@ begin
       end;
       for var i := 0 to count do
       begin
-         line := ' ' + strings[i].Trim;
-         memCodeEditor.CaretY := bc.Line + i;
-         memCodeEditor.CaretX := bc.Char;
+         var line := ' ' + strings[i].Trim;
+         memCodeEditor.CaretXY := BufferCoord(bc.Char, bc.Line + i);
          if afterLine then
          begin
             line := beginComment + line;
