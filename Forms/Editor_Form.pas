@@ -372,14 +372,12 @@ begin
    if Clipboard.HasFormat(CF_TEXT) then
       ctext := Clipboard.AsText;
    memCodeEditor.BeginUpdate;
-   var bc := memCodeEditor.CaretXY;
-   var beginComment := GInfra.CurrentLang.CommentBegin;
-   var endComment := GInfra.CurrentLang.CommentEnd;
-   var afterLine := True;
    var strings := TStringList.Create;
    try
       strings.Text := AText;
       var count := strings.Count - 1;
+      var bc := memCodeEditor.CaretXY;
+      var afterLine := True;
       for var i := 0 to count do
       begin
          if bc.Char <= memCodeEditor.Lines[bc.Line-1+i].Length then
@@ -388,6 +386,8 @@ begin
             break;
          end;
       end;
+      var beginComment := GInfra.CurrentLang.CommentBegin;
+      var endComment := GInfra.CurrentLang.CommentEnd;
       for var i := 0 to count do
       begin
          var line := ' ' + strings[i].Trim;
@@ -847,8 +847,8 @@ begin
       memCodeEditor.SetFocus;
    if not ((Source is TComment) or Supports(Source, IExportable, exportable)) then
       Accept := False
-   else
-      memCodeEditor.CaretXY := memCodeEditor.DisplayToBufferPos(memCodeEditor.PixelsToRowColumn(X, Y));
+   else with memCodeEditor do
+      CaretXY := DisplayToBufferPos(PixelsToRowColumn(X, Y));
 end;
 
 procedure TEditorForm.memCodeEditorDragDrop(Sender, Source: TObject; X, Y: Integer);
@@ -1070,12 +1070,9 @@ begin
 end;
 
 function TEditorForm.SelectCodeRange(AObject: TObject; ADoSelect: boolean = True): TCodeRange;
-var
-   i: integer;
-   lines: TStrings;
 begin
    result := TCodeRange.New;
-   lines := GetAllLines;
+   var lines := GetAllLines;
    result.FirstRow := lines.IndexOfObject(AObject);
    lines.Free;
    if result.FirstRow <> ROW_NOT_FOUND then
@@ -1084,7 +1081,7 @@ begin
       result.FirstRow := memCodeEditor.Lines.IndexOfObject(AObject);
       if result.FirstRow = ROW_NOT_FOUND then
       begin
-         for i := 0 to memCodeEditor.AllFoldRanges.AllCount-1 do
+         for var i := 0 to memCodeEditor.AllFoldRanges.AllCount-1 do
          begin
             result.Lines := memCodeEditor.AllFoldRanges[i].CollapsedLines;
             result.FirstRow := result.Lines.IndexOfObject(AObject);
@@ -1120,7 +1117,7 @@ begin
 {$IFDEF USE_CODEFOLDING}
             if not result.IsFolded and not ADoSelect then
             begin
-               for i := result.FirstRow to result.LastRow do
+               for var i := result.FirstRow to result.LastRow do
                begin
                   if result.Lines.Objects[i] = AObject then
                   begin
@@ -1143,11 +1140,11 @@ procedure TEditorForm.SetCaretPos(const ALine: TChangeLine);
 begin
    if ALine.CodeRange.Lines = memCodeEditor.Lines then
    begin
-      var c := ALine.Col + ALine.EditCaretXY.Char;
+      var col := ALine.Col + ALine.EditCaretXY.Char;
       var line := ALine.Row + ALIne.EditCaretXY.Line + 1;
       if (line > ALine.CodeRange.FirstRow) and (line <= ALine.CodeRange.LastRow+1) and (line <= ALine.CodeRange.Lines.Count) then
       begin
-         memCodeEditor.CaretXY := BufferCoord(c, line);
+         memCodeEditor.CaretXY := BufferCoord(col, line);
          memCodeEditor.EnsureCursorPosVisible;
       end;
    end;
