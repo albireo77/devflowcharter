@@ -325,17 +325,16 @@ begin
    ARect := Rect(Branch.Hook.X+75, 7, 0, 0);
    if GSettings.ShowFuncLabels and (UserFunction <> nil) and Expanded then
    begin
+      var lang := GInfra.CurrentLang;
       var header := TUserFunction(UserFunction).Header;
       if header <> nil then
       begin
-         var lang := GInfra.CurrentLang;
          if not Assigned(lang.GetUserFuncDesc) then
             lang := GInfra.TemplateLang;
          result := lang.GetUserFuncDesc(header, False, header.chkInclDescFlow.Checked);
       end
       else
       begin
-         var lang := GInfra.CurrentLang;
          if not Assigned(lang.GetMainProgramDesc) then
             lang := GInfra.TemplateLang;
          result := lang.GetMainProgramDesc;
