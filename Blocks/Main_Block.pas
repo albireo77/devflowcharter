@@ -25,7 +25,7 @@ interface
 
 uses
    WinApi.Windows, WinApi.Messages, Vcl.Graphics, Vcl.ComCtrls, System.Classes,
-   Base_Block, OmniXML, Interfaces, Types, BlockTabSheet;
+   System.Math, Base_Block, OmniXML, Interfaces, Types, BlockTabSheet;
 
 type
 
@@ -34,8 +34,8 @@ type
          FPage: TBlockTabSheet;
          FLabelRect: TRect;
          FHandle: HDC;
-         procedure DrawStartEllipse;
-         procedure DrawStopEllipse;
+         procedure DrawStart;
+         procedure DrawStop;
          function GetMaxBounds: TPoint;
       public
          UserFunction: TObject;
@@ -168,13 +168,8 @@ end;
 
 function TMainBlock.GetDefaultWidth: integer;
 begin
-   var R := GetEllipseTextRect(0, 0, FStartLabel);
-   result := R.Width;
-   R := GetEllipseTextRect(0, 0, FStopLabel);
-   var w := R.Width;
-   if w > result then
-      result := w;
-   result := result + 40;
+   result := GetEllipseTextRect(0, 0, FStartLabel).Width;
+   result := Max(result, GetEllipseTextRect(0, 0, FStopLabel).Width) + 40;
 end;
 
 procedure TMainBlock.SetZOrder(AValue: integer);
@@ -295,21 +290,21 @@ begin
       end
       else
          FLabelRect := TRect.Empty;
-      DrawStartEllipse;
+      DrawStart;
       if not Branch.EndsWithReturnBlock then
-         DrawStopEllipse;
+         DrawStop;
       Canvas.Font.Style := fontStyles;
       DrawArrow(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
    end;
    DrawI;
 end;
 
-procedure TMainBlock.DrawStartEllipse;
+procedure TMainBlock.DrawStart;
 begin
    DrawEllipsedText(Branch.Hook.X, TopHook.Y, FStartLabel);
 end;
 
-procedure TMainBlock.DrawStopEllipse;
+procedure TMainBlock.DrawStop;
 begin
    var y := GetEllipseTextRect(0, 0, FStopLabel).Height;
    if Branch.Count = 0 then
