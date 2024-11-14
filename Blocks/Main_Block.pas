@@ -66,7 +66,6 @@ type
          procedure SetPage(APage: TBlockTabSheet); override;
          procedure OnWindowPosChanged(x, y: integer); override;
          function GetFunctionLabel(var ARect: TRect): string;
-         function GetDefaultWidth: integer;
          function GetPage: TBlockTabSheet; override;
          function GetUndoObject: TObject; override;
    end;
@@ -89,16 +88,18 @@ begin
    inherited Create(nil, ABlockParms, shpEllipse, taLeftJustify);
 
    FStartLabel := i18Manager.GetString('CaptionStart');
-   FStopLabel := i18Manager.GetString('CaptionStop');
+   FStopLabel  := i18Manager.GetString('CaptionStop');
 
-   var defWidth := GetDefaultWidth;
-   var defWidthHalf := defWidth div 2;
-   if defWidth > Width then
+   var w := Max(GetEllipseTextRect(0, 0, FStartLabel).Width,
+                GetEllipseTextRect(0, 0, FStopLabel).Width) + 40;
+   var w2 := w div 2;
+
+   if w > Width then
    begin
-      Width := defWidth;
-      Branch.Hook.X := defWidthHalf;
-      BottomHook := defWidthHalf;
-      TopHook.X := defWidthHalf;
+      Width := w;
+      Branch.Hook.X := w2;
+      BottomHook := w2;
+      TopHook.X := w2;
    end
    else
    begin
@@ -106,10 +107,10 @@ begin
       TopHook.X := ABlockParms.br.X;
    end;
 
-   FInitParms.Width := defWidth;
+   FInitParms.Width := w;
    FInitParms.Height := MAIN_BLOCK_DEF_HEIGHT;
-   FInitParms.BottomHook := defWidthHalf;
-   FInitParms.BranchPoint.X := defWidthHalf;
+   FInitParms.BottomHook := w2;
+   FInitParms.BranchPoint.X := w2;
    FInitParms.BottomPoint.X := -60000;
    FInitParms.P2X := 0;
    FInitParms.HeightAffix := 42;
@@ -164,11 +165,6 @@ end;
 function TMainBlock.GetPage: TBlockTabSheet;
 begin
    result := FPage;
-end;
-
-function TMainBlock.GetDefaultWidth: integer;
-begin
-   result := Max(GetEllipseTextRect(0, 0, FStartLabel).Width, GetEllipseTextRect(0, 0, FStopLabel).Width) + 40;
 end;
 
 procedure TMainBlock.SetZOrder(AValue: integer);
