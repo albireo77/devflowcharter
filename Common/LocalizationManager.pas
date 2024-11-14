@@ -90,7 +90,7 @@ begin
       var iniFile := TIniFile.Create(AFilename);
       try
          iniFile.ReadSections(sections);
-         if sections.Count > 0 then
+         if not sections.IsEmpty then
          begin
             if AClearRepository then
                FRepository.Clear;
@@ -127,7 +127,7 @@ begin
       var iniFile := TIniFile.Create(AFilename);
       try
          iniFile.ReadSections(sections);
-         if sections.Count > 0 then
+         if not sections.IsEmpty then
          begin
             for var i := 0 to sections.Count-1 do
             begin

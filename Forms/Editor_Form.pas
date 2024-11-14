@@ -429,7 +429,7 @@ end;
 
 procedure TEditorForm.DisplayLines(ALines: TStringList; AReset: boolean);
 begin
-   if (ALines = nil) or (ALines.Count = 0) then
+   if (ALines = nil) or ALines.IsEmpty then
       Exit;
 {$IFDEF USE_CODEFOLDING}
    memCodeEditor.AllFoldRanges.DestroyAll;

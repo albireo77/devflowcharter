@@ -251,7 +251,7 @@ begin
       PlaceBranchStatement(br);
       if not br.EndsWithReturnBlock then
       begin
-         if br.Count > 0 then
+         if not br.IsEmpty then
             BottomHook := br.Last.Left + br.Last.BottomPoint.X
          else
             BottomHook := br.Hook.X;
@@ -329,7 +329,7 @@ begin
       lines.Text := ReplaceStr(caseOfTemplate, PRIMARY_PLACEHOLDER, statement);
       TInfra.InsertTemplateLines(lines, '%s2', caseLines);
 
-      var defTemplate := IfThen(DefaultBranch.Count > 0, GInfra.GetLangDefinition(ALangId).CaseOfDefaultValueTemplate);
+      var defTemplate := IfThen(not DefaultBranch.IsEmpty, GInfra.GetLangDefinition(ALangId).CaseOfDefaultValueTemplate);
       TInfra.InsertTemplateLines(lines, '%s3', defTemplate);
 
       GenerateTemplateSection(tmpList, lines, ALangId, ADeep);

@@ -156,7 +156,7 @@ begin
             else
                Template_UserDataTypeGenerator(lines, dataType);
          end;
-         if lines.Count > 0 then
+         if not lines.IsEmpty then
          begin
             var dataTypesTemplate := TStringList.Create;
             try
@@ -205,7 +205,7 @@ begin
    var lang := GInfra.CurrentLang;
    var libList := GProject.GetLibraryList;
    try
-      if (libList.Count > 0) and not lang.LibTemplate.IsEmpty then
+      if (not libList.IsEmpty) and not lang.LibTemplate.IsEmpty then
       begin
          var libStr := '';
          var libFormat := lang.LibEntryList;
@@ -292,7 +292,7 @@ begin
                constStr := ReplaceStr(constStr, '%s5', DupeString(ReplaceStr(lang.VarEntryArraySize, '%s', ''), d));
             constList.AddObject(constStr, AConstList);
          end;
-         if constList.Count > 0 then
+         if not constList.IsEmpty then
          begin
             var constTemplate := TStringList.Create;
             try
@@ -357,7 +357,7 @@ begin
             varStr := ReplaceStr(varStr, '%s7', AVarList.GetExternalModifier(i));
             varList.AddObject(varStr, AVarList);
          end;
-         if varList.Count > 0 then
+         if not varList.IsEmpty then
          begin
             var varTemplate := TStringList.Create;
             try
@@ -511,7 +511,7 @@ begin
             else
                Template_UserFunctionGenerator(lines, func, ASkipBodyGen);
          end;
-         if lines.Count > 0 then
+         if not lines.IsEmpty then
          begin
             var functionsTemplate := TStringList.Create;
             try
@@ -722,7 +722,7 @@ begin
                 Inc(i);
              end;
           end;
-          if parms.Count > 0 then
+          if not parms.IsEmpty then
              TInfra.InsertTemplateLines(template, '%s3', parms)
           else
              TInfra.DeleteLinesContaining(template, '%s3');

@@ -143,7 +143,7 @@ end;
 
 procedure TIfElseBlock.ResizeHorz(AContinue: boolean);
 begin
-   if (TrueBranch.Count = 0) and (FalseBranch.Count = 0) then  // no child blocks
+   if TrueBranch.IsEmpty and FalseBranch.IsEmpty then  // no child blocks
    begin
       Width := FInitParms.Width;
       TrueBranch.Hook.X := FInitParms.BranchPoint.X;
@@ -160,7 +160,7 @@ begin
       Exit;
    end;
    LinkAllBlocks;
-   if (FRedArrow <> FALSE_BRANCH_IDX) and (TrueBranch.Count > 0) then           // TRUE branch
+   if (FRedArrow <> FALSE_BRANCH_IDX) and not TrueBranch.IsEmpty then           // TRUE branch
    begin
       var lx := 10;
       for var block in TrueBranch do
@@ -178,7 +178,7 @@ begin
       Inc(FalseBranch.Hook.X, dlt);
       LinkAllBlocks;
       TrueHook := TrueBranch.Last.Left + TrueBranch.Last.BottomPoint.X;
-      if FalseBranch.Count > 0 then
+      if not FalseBranch.IsEmpty then
          FalseHook := FalseBranch.Last.Left + FalseBranch.Last.BottomPoint.X
       else
       begin
@@ -186,7 +186,7 @@ begin
          Width := FalseHook + 11;
       end;
    end;
-   if (FRedArrow <> TRUE_BRANCH_IDX) and (FalseBranch.Count > 0) then           // FALSE branch
+   if (FRedArrow <> TRUE_BRANCH_IDX) and not FalseBranch.IsEmpty then           // FALSE branch
    begin
       var mx := BottomHook + 30;
       for var block in FalseBranch do
@@ -200,7 +200,7 @@ begin
       Width := rx + 10;
       LinkAllBlocks;
       FalseHook := FalseBranch.Last.Left + FalseBranch.Last.BottomPoint.X;
-      if TrueBranch.Count > 0 then
+      if not TrueBranch.IsEmpty then
          TrueHook := TrueBranch.Last.Left + TrueBranch.Last.BottomPoint.X
       else
          TrueHook := TrueBranch.Hook.X;

@@ -145,7 +145,7 @@ end;
 
 destructor TProject.Destroy;
 begin
-   while FComponentList.Count > 0 do             // automatic disposing objects that are stored in list by calling list's destructor
+   while not FComponentList.IsEmpty do             // automatic disposing objects that are stored in list by calling list's destructor
       FComponentList[0].Free;                    // will generate EListError exception for pinned comments
    FComponentList.Free;                          // so to destroy FComponentList, objects must be freed in while loop first
    FGlobalVars.Free;

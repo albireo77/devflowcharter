@@ -116,7 +116,7 @@ begin
          Lines.Delete(ANode.Offset)
       else
          result := False;
-      if (Lines.Count = 0) and (Parent is TBlock) then
+      if Lines.IsEmpty and (Parent is TBlock) then
          result := TBlock(Parent).Remove(ANode);
    end;
 end;

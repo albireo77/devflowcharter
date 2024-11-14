@@ -739,7 +739,7 @@ begin
       var line := ADestList[i];
       if ContainsText(line, APlaceHolder) then
       begin
-         if (ATemplate <> nil) and (ATemplate.Count > 0) then
+         if (ATemplate <> nil) and not ATemplate.IsEmpty then
          begin
             for var a := ATemplate.Count-1 downto 0 do
             begin

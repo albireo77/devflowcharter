@@ -921,7 +921,7 @@ begin
    TopHook.X := Branch.Hook.X;
    LinkAllBlocks;
 
-   if Branch.Count = 0 then   // case if primary branch is empty
+   if Branch.IsEmpty then   // case if primary branch is empty
    begin
       Width := FInitParms.Width;
       BottomHook := FInitParms.BottomHook;
@@ -1528,7 +1528,7 @@ end;
 function TGroupBlock.CanInsertReturnBlock: boolean;
 begin
    var br := GetBranch(FRedArrow);
-   result := ((br <> nil) and (br.Count = 0)) or inherited;
+   result := ((br <> nil) and br.IsEmpty) or inherited;
 end;
 
 procedure TBlock.WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo);
@@ -1575,7 +1575,7 @@ begin
    for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
    begin
       var br := FBranchList[i];
-      if br.Count > 0 then
+      if not br.IsEmpty then
          result := Max(result, br.Last.FindLastRow(AStart, ALines));
    end;
 end;
@@ -2561,7 +2561,7 @@ end;
 
 function TBranch.EndsWithReturnBlock: boolean;
 begin
-   result := (Count > 0) and (Last is TReturnBlock);
+   result := (not IsEmpty) and (Last is TReturnBlock);
 end;
 
 procedure TBranch.UndoRemove(ABlock: TBlock);

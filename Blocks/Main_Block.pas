@@ -302,7 +302,7 @@ end;
 procedure TMainBlock.DrawStop;
 begin
    var y := GetEllipseTextRect(0, 0, FStopLabel).Height;
-   if Branch.Count = 0 then
+   if Branch.IsEmpty then
       Inc(y, Branch.Hook.Y+1)
    else
       Inc(y, Branch.Last.BoundsRect.Bottom);
@@ -333,8 +333,12 @@ begin
    if not result.IsEmpty then
    begin
       DrawText(Canvas.Handle, PChar(result), -1, ARect, DT_CALCRECT);
-      if (Branch.Count > 0) and (ARect.Bottom > Branch.First.Top-5) and (ARect.Left < Branch.First.BoundsRect.Right+5) then
-         ARect.Offset(Branch.First.BoundsRect.Right + 5 - ARect.Left, 0);
+      if not Branch.IsEmpty then
+      begin
+         var r := Branch.First.BoundsRect.Right + 5;
+         if (ARect.Bottom > Branch.First.Top-5) and (ARect.Left < r) then
+            ARect.Offset(r - ARect.Left, 0);
+      end;
    end;
 end;
 
