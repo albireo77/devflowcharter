@@ -51,7 +51,7 @@ uses
 {$IFDEF USE_CODEFOLDING}
    SynEditCodeFolding,
 {$ENDIF}
-   Infrastructure, Constants, LangDefinition, YaccLib;
+   Infrastructure, Constants, YaccLib;
 
 constructor TMultiLineBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin

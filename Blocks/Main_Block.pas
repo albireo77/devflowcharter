@@ -168,8 +168,7 @@ end;
 
 function TMainBlock.GetDefaultWidth: integer;
 begin
-   result := GetEllipseTextRect(0, 0, FStartLabel).Width;
-   result := Max(result, GetEllipseTextRect(0, 0, FStopLabel).Width) + 40;
+   result := Max(GetEllipseTextRect(0, 0, FStartLabel).Width, GetEllipseTextRect(0, 0, FStopLabel).Width) + 40;
 end;
 
 procedure TMainBlock.SetZOrder(AValue: integer);
