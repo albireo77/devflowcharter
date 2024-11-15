@@ -191,11 +191,9 @@ begin
          begin
             if comment.Visible then
             begin
-               var pnt := comment.BoundsRect.BottomRight;
-               if pnt.X > result.X then
-                  result.X := pnt.X;
-               if pnt.Y > result.Y then
-                  result.Y := pnt.Y;
+               var p := comment.BoundsRect.BottomRight;
+               result.X := Max(result.X, p.X);
+               result.Y := Max(result.Y, p.Y);
             end;
          end;
       end;
