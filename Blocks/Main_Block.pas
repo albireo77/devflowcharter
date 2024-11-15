@@ -32,8 +32,6 @@ type
    TMainBlock = class(TGroupBlock, IWinControl)
       private
          FPage: TBlockTabSheet;
-         FLabelRect: TRect;
-         FHandle: HDC;
          procedure DrawStart;
          procedure DrawStop;
          function GetMaxBounds: TPoint;
@@ -119,8 +117,6 @@ begin
    FZOrder := -1;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
-   FLabelRect := TRect.Empty;
-   FHandle := Canvas.Handle;
    FStatement.Free;
    FStatement := nil;
 end;
@@ -279,11 +275,7 @@ begin
          Canvas.Font.Color := clNavy;
          DrawText(Canvas.Handle, PChar(lLabel), -1, R, 0);
          Canvas.Font.Color := fontColor;
-         if Canvas.Handle = FHandle then
-            FLabelRect := R;
-      end
-      else
-         FLabelRect := TRect.Empty;
+      end;
       DrawStart;
       if not Branch.EndsWithReturnBlock then
          DrawStop;
