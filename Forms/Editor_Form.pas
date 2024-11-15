@@ -1008,7 +1008,7 @@ begin
    idInfo.Ident := w;
    if TInfra.IsValidControl(obj) and (obj is TBlock) then
       block := TBlock(obj);
-   TParserHelper.GetParameterInfo(TInfra.GetFunctionHeader(block), idInfo);
+   TParserHelper.GetParameterInfo(GProject.FindFunctionHeader(block), idInfo);
    if idInfo.TType <> NOT_DEFINED then
    begin
       lCheck := False;

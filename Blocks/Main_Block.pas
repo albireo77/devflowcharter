@@ -36,7 +36,6 @@ type
          procedure DrawStop;
          function GetMaxBounds: TPoint;
       public
-         UserFunction: TObject;
          constructor Create(APage: TBlockTabSheet; const ABlockParms: TBlockParms); overload;
          constructor Create(APage: TBlockTabSheet; const ATopLeft: TPoint); overload;
          procedure SaveInXML(ANode: IXMLNode); override;
@@ -148,12 +147,9 @@ begin
          if unPin then
             UnPinComments;
       end;
-      if UserFunction <> nil then
-      begin
-         var header := TUserFunction(UserFunction).Header;
-         if header <> nil then
-            header.SetPageCombo(APage.Caption);
-      end;
+      var header := GProject.FindFunctionHeader(Self);
+      if header <> nil then
+         header.SetPageCombo(APage.Caption);
    end;
 end;
 
@@ -302,10 +298,10 @@ function TMainBlock.GetFunctionLabel(var ARect: TRect): string;
 begin
    result := '';
    ARect := Rect(Branch.Hook.X+75, 7, 0, 0);
-   if GSettings.ShowFuncLabels and (UserFunction <> nil) and Expanded then
+   if GSettings.ShowFuncLabels and Expanded then
    begin
       var lang := GInfra.CurrentLang;
-      var header := TUserFunction(UserFunction).Header;
+      var header := GProject.FindFunctionHeader(Self);
       if header <> nil then
       begin
          if not Assigned(lang.GetUserFuncDesc) then
@@ -333,16 +329,18 @@ end;
 
 function TMainBlock.GetExportFileName: string;
 begin
-   if UserFunction <> nil then
-      result := TUserFunction(UserFunction).GetName
+   var userFunction := GProject.FindUserFunction(Self);
+   if userFunction <> nil then
+      result := userFunction.GetName
    else
       result := inherited GetExportFileName;
 end;
 
 function TMainBlock.ExportToXMLFile(const AFile: string): TError;
 begin
-   if UserFunction <> nil then
-      result := TXMLProcessor.ExportToXMLFile(TUserFunction(UserFunction).ExportToXML, AFile)
+   var userFunction := GProject.FindUserFunction(Self);
+   if userFunction <> nil then
+      result := TXMLProcessor.ExportToXMLFile(userFunction.ExportToXML, AFile)
    else
       result := inherited ExportToXMLFile(AFile);
 end;
@@ -385,7 +383,7 @@ begin
          var vars := GProject.GlobalVars;
          var lName := GProject.Name;
          var template := lang.MainFunctionTemplate;
-         var header := TInfra.GetFunctionHeader(Self);
+         var header := GProject.FindFunctionHeader(Self);
          if header <> nil then
          begin
             vars := header.LocalVars;
@@ -482,16 +480,20 @@ end;
 
 function TMainBlock.GetUndoObject: TObject;
 begin
-   result := UserFunction;
+   result := GProject.FindUserFunction(Self);
 end;
 
 function TMainBlock.Remove(ANode: TTreeNodeWithFriend = nil): boolean;
 begin
    result := inherited Remove(ANode);
-   if result and (UserFunction <> nil) then
+   if result then
    begin
-      TUserFunction(UserFunction).Active := False;
-      TInfra.UpdateCodeEditor;
+      var userFunction := GProject.FindUserFunction(Self);
+      if userFunction <> nil then
+      begin
+         userFunction.Active := False;
+         TInfra.UpdateCodeEditor;
+      end;
    end;
 end;
 

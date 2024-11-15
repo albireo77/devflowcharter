@@ -27,7 +27,7 @@ uses
    WinApi.Windows, Vcl.StdCtrls, Vcl.Controls, Vcl.Graphics, Vcl.ComCtrls, System.Classes,
    LocalizationManager, Project, Settings, LangDefinition, Types, Base_Form, Interfaces,
    Functions_Form, DataTypes_Form, Declarations_Form, Main_Form, Base_Block, SynEditTypes,
-   Settings_Form, Editor_Form, Explorer_Form, UserFunction, BlockTabSheet, YaccLib;
+   Settings_Form, Editor_Form, Explorer_Form, BlockTabSheet, YaccLib;
 
 type
 
@@ -91,7 +91,6 @@ type
          class function GetChangeLine(AObject: TObject; AEdit: TCustomEdit = nil; const ATemplate: string = ''): TChangeLine;
          class function GetCaretPos(AEdit: TCustomEdit): TBufferCoord;
          class function ExtractIndentString(const AText: string): string;
-         class function GetFunctionHeader(ABlock: TBlock): TUserFunctionHeader;
          class function FindDuplicatedPage(APage: TTabSheet; const ACaption: TCaption): TTabSheet;
          class function GetComboMaxWidth(ACombo: TComboBox): integer;
          class function ExportToFile(AExport: IExportable): TError;
@@ -1012,17 +1011,6 @@ begin
    while (i <= len) and result[i].IsWhiteSpace do
       i := i + 1;
    SetLength(result, i-1);
-end;
-
-class function TInfra.GetFunctionHeader(ABlock: TBlock): TUserFunctionHeader;
-begin
-   result := nil;
-   if ABlock <> nil then
-   begin
-      var mainBlock := TMainBlock(ABlock.TopParentBlock);
-      if mainBlock.UserFunction is TUserFunction then
-         result := TUserFunction(mainBlock.UserFunction).Header;
-   end;
 end;
 
 class procedure TInfra.SetFontSize(AControl: TControl; ASize: integer);

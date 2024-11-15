@@ -225,7 +225,7 @@ end;
 class function TParserHelper.GetUserFunctionType: integer;
 begin
    result := NOT_DEFINED;
-   var header := TInfra.GetFunctionHeader(TInfra.GetParsedBlock);
+   var header := GProject.FindFunctionHeader(TInfra.GetParsedBlock);
    if (header <> nil) and (header.Font.Color <> NOK_COLOR) then
       result := GetType(header.cbType.Text);
 end;
@@ -323,7 +323,7 @@ end;
 class function TParserHelper.FindUserFunctionVarList(ABlock: TBlock): TVarDeclareList;
 begin
    result := nil;
-   var header := TInfra.GetFunctionHeader(ABlock);
+   var header := GProject.FindFunctionHeader(ABlock);
    if header <> nil then
       result := header.LocalVars;
 end;
@@ -428,7 +428,7 @@ begin
    var block := TInfra.GetParsedBlock;
    if block <> nil then
    begin
-      GetParameterInfo(TInfra.GetFunctionHeader(block), result);
+      GetParameterInfo(GProject.FindFunctionHeader(block), result);
       if result.TType = NOT_DEFINED  then
          GetVariableInfo(FindUserFunctionVarList(block), result);
    end;

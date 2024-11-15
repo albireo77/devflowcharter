@@ -292,7 +292,7 @@ begin
       var isVarOk := True;
       if (GProject.GlobalVars = nil) or not GProject.GlobalVars.IsValidLoopVar(edtVar.Text) then
       begin
-         var header := TInfra.GetFunctionHeader(Self);
+         var header := GProject.FindFunctionHeader(Self);
          isVarOk := (header <> nil) and header.LocalVars.IsValidLoopVar(edtVar.Text);
       end;
       if not isVarOk then
@@ -459,7 +459,7 @@ begin
       cbVar.Items.Clear;
       if GProject.GlobalVars <> nil then
          GProject.GlobalVars.FillForList(cbVar.Items);
-      var header := TInfra.GetFunctionHeader(Self);
+      var header := GProject.FindFunctionHeader(Self);
       if header <> nil then
          header.LocalVars.FillForList(cbVar.Items);
       cbVar.ItemIndex := cbVar.Items.IndexOf(edtVar.Text);

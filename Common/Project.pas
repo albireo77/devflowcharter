@@ -119,6 +119,8 @@ type
       function IsNew: boolean;
       procedure SetNotChanged;
       function FindSelectedBlock: TBlock;
+      function FindUserFunction(ABlock: TGroupBlock): TUserFunction;
+      function FindFunctionHeader(ABlock: TBlock): TUserFunctionHeader;
    end;
 
 implementation
@@ -825,6 +827,30 @@ begin
          result := func.Body;
          break;
       end;
+   end;
+end;
+
+function TProject.FindUserFunction(ABlock: TGroupBlock): TUserFunction;
+begin
+   result := nil;
+   for var func in GetUserFunctions do
+   begin
+      if func.Body = ABlock then
+      begin
+         result := func;
+         break;
+      end;
+   end;
+end;
+
+function TProject.FindFunctionHeader(ABlock: TBlock): TUserFunctionHeader;
+begin
+   result := nil;
+   if ABlock <> nil then
+   begin
+      var userFunction := FindUserFunction(ABlock.TopParentBlock);
+      if userFunction <> nil then
+         result := userFunction.Header;
    end;
 end;
 

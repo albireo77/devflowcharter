@@ -1601,7 +1601,7 @@ begin
    end;
    if result then
    begin
-      var func := TUserFunction(TMainBlock(FTopParentBlock).UserFunction);
+      var func := GProject.FindUserFunction(FTopParentBlock);
       if func <> nil then
       begin
          result := func.Active;
@@ -2249,8 +2249,8 @@ end;
 
 function TBlock.ShouldUpdateEditor: boolean;
 begin
-   var funcHeader := TInfra.GetFunctionHeader(Self);
-   var skipUpdateEditor := (funcHeader <> nil) and (TInfra.IsNOkColor(funcHeader.Font.Color) or (funcHeader.chkExternal.Checked and not GInfra.CurrentLang.CodeIncludeExternFunction));
+   var header := GProject.FindFunctionHeader(Self);
+   var skipUpdateEditor := (header <> nil) and (TInfra.IsNOkColor(header.Font.Color) or (header.chkExternal.Checked and not GInfra.CurrentLang.CodeIncludeExternFunction));
    result := TInfra.ShouldUpdateEditor and not skipUpdateEditor;
 end;
 

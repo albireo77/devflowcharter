@@ -171,7 +171,6 @@ begin
    end;
    if FBody <> nil then
    begin
-      FBody.UserFunction := Self;
       FBody.SetWidth(FBody.Width);
       FBody.Page.Box.SetScrollBars;
    end;
