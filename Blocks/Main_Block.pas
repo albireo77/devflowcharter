@@ -45,7 +45,6 @@ type
          procedure ExportToGraphic(AGraphic: TGraphic); override;
          procedure SetWidth(AMinX: integer); override;
          procedure SetZOrder(AValue: integer);
-         procedure DrawLabel;
          function ExportToXMLFile(const AFile: string): TError; override;
          function GetExportFileName: string; override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
@@ -356,29 +355,6 @@ begin
       result := TXMLProcessor.ExportToXMLFile(TUserFunction(UserFunction).ExportToXML, AFile)
    else
       result := inherited ExportToXMLFile(AFile);
-end;
-
-procedure TMainBlock.DrawLabel;
-var
-   R: TRect;
-   lLabel: string;
-   lColor: TColor;
-begin
-   lLabel := GetFunctionLabel(R);
-   if not lLabel.IsEmpty then
-   begin
-      if not FLabelRect.IsEmpty then
-      begin
-         Canvas.Brush.Style := bsSolid;
-         Canvas.Brush.Color := Color;
-         Canvas.FillRect(FLabelRect);
-      end;
-      lColor := Canvas.Font.Color;
-      Canvas.Font.Color := clNavy;
-      DrawText(Canvas.Handle, PChar(lLabel), -1, R, 0);
-      Canvas.Font.Color := lColor;
-      FLabelRect := R;
-   end;
 end;
 
 procedure TMainBlock.MouseMove(Shift: TShiftState; X, Y: Integer);

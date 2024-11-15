@@ -56,6 +56,7 @@ type
    private
       FUserFunction: TUserFunction;
       FLocalVars: TVarDeclareList;
+      procedure RedrawBody;
    protected
       procedure OnChangeName(Sender: TObject); override;
       procedure OnChangeDesc(Sender: TObject);
@@ -69,7 +70,6 @@ type
       function CreateElement: TElement; override;
       procedure OnChangeBodyPage(Sender: TObject);
       procedure OnDropDownBodyPage(Sender: TObject);
-      procedure DrawBodyLabel;
       procedure OnClickCh(Sender: TObject); override;
       procedure AddElement(Sender: TObject); override;
    public
@@ -146,8 +146,8 @@ type
 implementation
 
 uses
-   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, Infrastructure, Constants,
-   Navigator_Form, Types, OmniXMLUtils;
+   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, WinApi.Windows, Infrastructure,
+   Constants, Navigator_Form, Types, OmniXMLUtils;
 
 var
    ByTopParameterComparer: IComparer<TParameter>;
@@ -311,7 +311,7 @@ end;
 procedure TUserFunctionHeader.OnClickCh(Sender: TObject);
 begin
    inherited;
-   DrawBodyLabel;
+   RedrawBody;
 end;
 
 constructor TUserFunctionHeader.Create(AParentForm: TFunctionsForm);
@@ -679,7 +679,7 @@ begin
    end;
    edtName.Font.Color := lColor;
    edtName.Hint := i18Manager.GetFormattedString(info, [funcName]);
-   DrawBodyLabel;
+   RedrawBody;
    inherited OnChangeName(Sender);
 end;
 
@@ -707,7 +707,7 @@ procedure TUserFunctionHeader.OnChangeDesc(Sender: TObject);
 begin
    GProject.SetChanged;
    if GSettings.ShowFuncLabels and chkInclDescFlow.Checked then
-      DrawBodyLabel;
+      RedrawBody;
    if (Font.Color <> NOK_COLOR) and chkInclDescCode.Checked then
       UpdateCodeEditor;
 end;
@@ -779,7 +779,7 @@ begin
    if Font.Color <> NOK_COLOR then
       UpdateCodeEditor;
    GProject.SetChanged;
-   DrawBodyLabel;
+   RedrawBody;
 end;
 
 procedure TUserFunction.GenerateTree(ANode: TTreeNode);
@@ -834,7 +834,7 @@ procedure TUserFunctionHeader.OnClickInclDescFlow(Sender: TObject);
 begin
    if GSettings.ShowFuncLabels then
    begin
-      DrawBodyLabel;
+      RedrawBody;
       NavigatorForm.Invalidate;
    end;
    GProject.SetChanged;
@@ -870,12 +870,12 @@ begin
       UpdateCodeEditor;
 end;
 
-procedure TUserFunctionHeader.DrawBodyLabel;
+procedure TUserFunctionHeader.RedrawBody;
 begin
    if (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
    begin
       FUserFunction.Body.SetWidth(0);
-      FUserFunction.Body.DrawLabel;
+      RedrawWindow(FUserFunction.Body.Handle, nil, 0, RDW_INVALIDATE or RDW_NOCHILDREN);
    end;
 end;
 
@@ -934,13 +934,13 @@ end;
 procedure TParameter.OnChangeType(Sender: TObject);
 begin
    inherited OnChangeType(Sender);
-   TUserFunctionHeader(ParentTab).DrawBodyLabel;
+   TUserFunctionHeader(ParentTab).RedrawBody;
 end;
 
 procedure TParameter.OnChangeName(Sender: TObject);
 begin
    inherited OnChangeName(Sender);
-   TUserFunctionHeader(ParentTab).DrawBodyLabel;
+   TUserFunctionHeader(ParentTab).RedrawBody;
 end;
 
 procedure TParameter.ImportFromXML(ANode: IXMLNode);
