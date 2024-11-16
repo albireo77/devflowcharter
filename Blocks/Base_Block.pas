@@ -887,7 +887,7 @@ begin
       FFrame := AValue;
       GProject.SetChanged;
       DeSelect;
-      RedrawWindow(Handle, nil, 0, RDW_INVALIDATE or RDW_NOCHILDREN);
+      Invalidate;
       if FFrame then
          TInfra.GetEditorForm.SelectCodeRange(Self)
       else

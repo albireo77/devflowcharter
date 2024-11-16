@@ -146,8 +146,8 @@ type
 implementation
 
 uses
-   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, WinApi.Windows, Infrastructure,
-   Constants, Navigator_Form, Types, OmniXMLUtils;
+   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, Infrastructure, Constants,
+   Navigator_Form, Types, OmniXMLUtils;
 
 var
    ByTopParameterComparer: IComparer<TParameter>;
@@ -874,7 +874,7 @@ begin
    if (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
    begin
       FUserFunction.Body.SetWidth(0);
-      RedrawWindow(FUserFunction.Body.Handle, nil, 0, RDW_INVALIDATE or RDW_NOCHILDREN);
+      FUserFunction.Body.Invalidate;
    end;
 end;
 
