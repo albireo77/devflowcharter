@@ -886,12 +886,8 @@ begin
    begin
       FFrame := AValue;
       GProject.SetChanged;
-      DeSelect;
       Invalidate;
-      if FFrame then
-         TInfra.GetEditorForm.SelectCodeRange(Self)
-      else
-         TInfra.GetEditorForm.UnSelectCodeRange(Self);
+      NavigatorForm.Invalidate;
    end;
 end;
 
