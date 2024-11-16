@@ -64,9 +64,9 @@ procedure C_MainFunctionSectionGenerator(ALines: TStringList; ADeep: integer);
 begin
    if GProject <> nil then
    begin
-      var mainBlock := GProject.GetMainBlock;
-      if mainBlock <> nil then
-         mainBlock.GenerateCode(ALines, cLang.Name, ADeep);
+      var main := GProject.GetMain;
+      if main <> nil then
+         main.GenerateCode(ALines, cLang.Name, ADeep);
    end;
 end;
 

@@ -33,7 +33,7 @@ procedure TIBASIC_ProgramHeaderSectionGenerator(ALines: TStringList);
 begin
    if not GProject.Name.IsEmpty then
       ALines.Add(GProject.Name + '()');
-   ALines.AddObject('Prgm', GProject.GetMainBlock);
+   ALines.AddObject('Prgm', GProject.GetMain);
 end;
 
 procedure TIBASIC_VarSectionGenerator(ALines: TStringList; AVarList: TVarDeclareList);
@@ -86,11 +86,11 @@ end;
 
 procedure TIBASIC_MainFunctionSectionGenerator(ALines: TStringList; deep: integer);
 begin
-   var mainBlock := GProject.GetMainBlock;
-   if mainBlock <> nil then
+   var main := GProject.GetMain;
+   if main <> nil then
    begin
-      mainBlock.GenerateCode(ALines, tiBasicLang.Name, deep);
-      ALines.AddObject('EndPrgm', mainBlock);
+      main.GenerateCode(ALines, tiBasicLang.Name, deep);
+      ALines.AddObject('EndPrgm', main);
    end;
 end;
 

@@ -1090,7 +1090,7 @@ end;
 
 procedure TMainForm.miProjectClick(Sender: TObject);
 begin
-   miAddMain.Enabled := GInfra.CurrentLang.EnabledMainProgram and (GProject <> nil) and (GProject.GetMainBlock = nil);
+   miAddMain.Enabled := GInfra.CurrentLang.EnabledMainProgram and (GProject <> nil) and (GProject.GetMain = nil);
    miUndoRemove.Enabled := GClpbrd.UndoObject <> nil;
 end;
 

@@ -650,26 +650,22 @@ begin
 end;
 
 procedure TEditorForm.miCompileClick(Sender: TObject);
-var
-   command, commandNoMain, fileName, fileNameNoExt: string;
-   lPos: integer;
-   mainBlock: TMainBlock;
 begin
     SetSaveDialog(SaveDialog1);
-    mainBlock := GProject.GetMainBlock;
-    command := GInfra.CurrentLang.CompilerCommand;
-    commandNoMain := GInfra.CurrentLang.CompilerCommandNoMain;
-    if (not command.IsEmpty) or ((mainBlock = nil) and not commandNoMain.IsEmpty) then
+    var main := GProject.GetMain;
+    var command := GInfra.CurrentLang.CompilerCommand;
+    var commandNoMain := GInfra.CurrentLang.CompilerCommandNoMain;
+    if (not command.IsEmpty) or ((main = nil) and not commandNoMain.IsEmpty) then
     begin
        if SaveDialog1.Execute then
        begin
           SaveToFile(SaveDialog1.FileName);
-          fileName := ExtractFileName(SaveDialog1.FileName);
-          fileNameNoExt := fileName;
-          lPos := Pos('.', fileNameNoExt);
-          if lPos <> 0 then
-             SetLength(fileNameNoExt, lPos-1);
-          if mainBlock = nil then
+          var fileName := ExtractFileName(SaveDialog1.FileName);
+          var fileNameNoExt := fileName;
+          var p := Pos('.', fileNameNoExt);
+          if p > 0 then
+             SetLength(fileNameNoExt, p-1);
+          if main = nil then
           begin
              if commandNoMain.IsEmpty then
                 commandNoMain := '%s3';

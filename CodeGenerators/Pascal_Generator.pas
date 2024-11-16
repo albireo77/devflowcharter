@@ -121,7 +121,7 @@ begin
    if progName.IsEmpty then
       progName := i18Manager.GetString('Unknown');
    progName := ReplaceStr(progName, ' ', '_') + ';';
-   if GProject.GetMainBlock <> nil then
+   if GProject.GetMain <> nil then
       ALines.Add('program ' + progName)
    else
    begin
@@ -211,11 +211,11 @@ procedure Pascal_MainFunctionSectionGenerator(ALines: TStringList; deep: integer
 begin
    if GProject <> nil then
    begin
-      var block := GProject.GetMainBlock;
-      if block <> nil then
+      var main := GProject.GetMain;
+      if main <> nil then
       begin
          var idx := ALines.Count;
-         block.GenerateCode(ALines, pascalLang.Name, deep);
+         main.GenerateCode(ALines, pascalLang.Name, deep);
          if rand_flag <> 0 then
             ALines.Insert(idx+1, GSettings.IndentString(deep+1) + 'Randomize;');
       end
@@ -328,7 +328,7 @@ end;
 
 function Pascal_SkipFuncBodyGen: boolean;
 begin
-   result := (GProject <> nil) and (GProject.GetMainBlock = nil);
+   result := (GProject <> nil) and (GProject.GetMain = nil);
 end;
 
 initialization

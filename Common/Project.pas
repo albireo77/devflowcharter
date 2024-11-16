@@ -92,7 +92,7 @@ type
       function ImportUserDataTypesFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
       function ImportCommentsFromXML(ANode: IXMLNode): integer;
       procedure ImportPagesFromXML(ANode: IXMLNode);
-      function GetMainBlock: TMainBlock;
+      function GetMain: TMainBlock;
       procedure PopulateDataTypeCombos;
       procedure RefreshStatements;
       procedure ChangeDesktopColor(AColor: TColor);
@@ -817,12 +817,12 @@ begin
    end;
 end;
 
-function TProject.GetMainBlock: TMainBlock;
+function TProject.GetMain: TMainBlock;
 begin
    result := nil;
    for var func in GetUserFunctions do
    begin
-      if (func.Header = nil) and func.Active then
+      if func.IsMain and func.Active then
       begin
          result := func.Body;
          break;

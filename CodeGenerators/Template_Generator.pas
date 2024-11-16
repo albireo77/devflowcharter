@@ -376,9 +376,9 @@ end;
 
 procedure Template_MainFunctionSectionGenerator(ALines: TStringList; ADeep: integer);
 begin
-   var block := GProject.GetMainBlock;
-   if block <> nil then
-      block.GenerateCode(ALines, GInfra.CurrentLang.Name, ADeep);
+   var main := GProject.GetMain;
+   if main <> nil then
+      main.GenerateCode(ALines, GInfra.CurrentLang.Name, ADeep);
 end;
 
 procedure Template_UserFunctionGenerator(ALines: TStringList; AFunction: TUserFunction; ASkipBodyGen: boolean);
