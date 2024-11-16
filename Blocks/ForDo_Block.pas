@@ -72,8 +72,8 @@ type
 implementation
 
 uses
-   Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Math, YaccLib,
-   Infrastructure, Constants, OmniXMLUtils;
+   Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Math, WinApi.Windows,
+   YaccLib, Infrastructure, Constants, OmniXMLUtils;
 
 const
    DEFAULT_WIDTH = 246;
@@ -192,7 +192,7 @@ begin
    if AValue <> FDescOrder then
    begin
       FDescOrder := AValue;
-      Repaint;
+      RedrawWindow(Handle, nil, 0, RDW_INVALIDATE or RDW_NOCHILDREN);
       if ShouldUpdateEditor then
          UpdateEditor(nil);
    end;
