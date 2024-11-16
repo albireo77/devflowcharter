@@ -106,7 +106,7 @@ type
       procedure ImportFromXML(ANode: IXMLNode; APinControl: TControl = nil);
       procedure RefreshSizeEdits; override;
       procedure GenerateDescription(ALines: TStrings);
-      procedure SetPageCombo(const ACaption: TCaption = '');
+      procedure SetPageBox(const ACaption: TCaption = '');
       function GetParameters: IEnumerable<TParameter>;
       procedure RefreshElements; override;
       function GetExternModifier: string; override;
@@ -124,7 +124,7 @@ type
       property Header: TUserFunctionHeader read FHeader;
       property Body: TMainBlock read FBody;
       property Active: boolean read GetActive write SetActive;
-      constructor Create(AFunctionHeader: TUserFunctionHeader; AFunctionBody: TMainBlock);
+      constructor Create(AHeader: TUserFunctionHeader; ABody: TMainBlock);
       destructor Destroy; override;
       procedure ImportFromXML(ANode: IXMLNode; APinControl: TControl = nil);
       procedure ExportToXML(ANode: IXMLNode);
@@ -152,12 +152,12 @@ uses
 var
    ByTopParameterComparer: IComparer<TParameter>;
 
-constructor TUserFunction.Create(AFunctionHeader: TUserFunctionHeader; AFunctionBody: TMainBlock);
+constructor TUserFunction.Create(AHeader: TUserFunctionHeader; ABody: TMainBlock);
 begin
    inherited Create(Application);
    GProject.AddComponent(Self);
-   FBody := AFunctionBody;
-   FHeader := AFunctionHeader;
+   FBody := ABody;
+   FHeader := AHeader;
    FActive := True;
    if FHeader <> nil then
    begin
@@ -165,7 +165,7 @@ begin
       FHeader.FParentObject := Self;
       if FBody <> nil then
       begin
-         FHeader.SetPageCombo(FBody.Page.Caption);
+         FHeader.SetPageBox(FBody.Page.Caption);
          FHeader.chkBodyVisible.OnClick(FHeader.chkBodyVisible);
       end;
    end;
@@ -421,7 +421,7 @@ begin
    cbBodyPage.DropDownCount := 9;
    cbBodyPage.OnDropDown := OnDropDownBodyPage;
    cbBodyPage.OnChange := OnChangeBodyPage;
-   SetPageCombo;
+   SetPageBox;
 
    chkBodyVisible := TCheckBox.Create(gbBody);
    chkBodyVisible.Parent := gbBody;
@@ -713,10 +713,10 @@ end;
 
 procedure TUserFunctionHeader.OnDropDownBodyPage(Sender: TObject);
 begin
-   SetPageCombo(cbBodyPage.Text);
+   SetPageBox(cbBodyPage.Text);
 end;
 
-procedure TUserFunctionHeader.SetPageCombo(const ACaption: TCaption = '');
+procedure TUserFunctionHeader.SetPageBox(const ACaption: TCaption = '');
 begin
    var lCaption := cbBodyPage.Text;
    cbBodyPage.Items.Clear;

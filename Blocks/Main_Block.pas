@@ -149,7 +149,7 @@ begin
       end;
       var header := GProject.FindFunctionHeader(Self);
       if header <> nil then
-         header.SetPageCombo(APage.Caption);
+         header.SetPageBox(APage.Caption);
    end;
 end;
 

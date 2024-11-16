@@ -963,7 +963,7 @@ begin
    for var func in GetUserFunctions do
    begin
       if (func.Header <> nil ) and (func.Body <> nil) and (func.Body.Page = APage) then
-         func.Header.SetPageCombo(APage.Caption);
+         func.Header.SetPageBox(APage.Caption);
    end;
 end;
 
