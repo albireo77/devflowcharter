@@ -832,10 +832,7 @@ end;
 procedure TUserFunctionHeader.OnClickInclDescFlow(Sender: TObject);
 begin
    if GSettings.ShowFuncLabels then
-   begin
       RedrawBody;
-      NavigatorForm.Invalidate;
-   end;
    GProject.SetChanged;
 end;
 
@@ -875,6 +872,7 @@ begin
    begin
       FUserFunction.Body.SetWidth(0);
       FUserFunction.Body.Invalidate;
+      NavigatorForm.Invalidate;
    end;
 end;
 
