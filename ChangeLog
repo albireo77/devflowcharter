@@ -1,3 +1,6 @@
+10.11 [16-11-2024]
+- fix sometimes not updating flowchart labels in Navigator window
+
 10.10 [15-09-2024]
 - fix disabled Undo after removing text in flowchart text controls using popup menu
 - Navigator: enable navigation by arrow keys
