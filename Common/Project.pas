@@ -119,7 +119,7 @@ type
       function IsNew: boolean;
       procedure SetNotChanged;
       function FindSelectedBlock: TBlock;
-      function FindUserFunction(ABlock: TGroupBlock): TUserFunction;
+      function FindUserFunction(ABody: TGroupBlock): TUserFunction;
       function FindFunctionHeader(ABlock: TBlock): TUserFunctionHeader;
    end;
 
@@ -830,12 +830,12 @@ begin
    end;
 end;
 
-function TProject.FindUserFunction(ABlock: TGroupBlock): TUserFunction;
+function TProject.FindUserFunction(ABody: TGroupBlock): TUserFunction;
 begin
    result := nil;
    for var func in GetUserFunctions do
    begin
-      if func.Body = ABlock then
+      if func.Body = ABody then
       begin
          result := func;
          break;
