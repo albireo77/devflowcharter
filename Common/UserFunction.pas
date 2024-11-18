@@ -248,10 +248,9 @@ end;
 
 procedure TUserFunctionHeader.GenerateDescription(ALines: TStrings);
 begin
-   if chkInclDescCode.Checked and (memDesc.Text <> '') then
+   if chkInclDescCode.Checked and not memDesc.Lines.IsEmpty then
    begin
-      for var i := 0 to memDesc.Lines.Count-1 do
-         ALines.Add(memDesc.Lines[i]);
+      ALines.AddStrings(memDesc.Lines);
       if EndsText(sLineBreak, memDesc.Text) then
          ALines.Add('');
    end;
