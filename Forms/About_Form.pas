@@ -62,7 +62,7 @@ const
    LABEL_1 = '''
                       %s
    The easiest way from flowchart to program!
-                Version: %s (x%d)
+                Version: %s (win%d)
    ''';
    LABEL_2 = '''
     This program is freeware and released under the
