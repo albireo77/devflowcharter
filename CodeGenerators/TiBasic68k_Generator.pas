@@ -66,7 +66,7 @@ begin
          funcParms := funcParms + Trim(param.edtName.Text);
       end;
       var funcHeader := 'Define ' + funcName + '(' + funcParms + ')=' + funcPrefix;
-      AFunction.Header.GenerateDescription(ALines);
+      AFunction.Header.AddDescriptionToCode(ALines);
       ALines.AddObject(funcHeader, AFunction.Header);
       if AFunction.Body <> nil then
       begin

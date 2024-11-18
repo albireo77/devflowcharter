@@ -105,7 +105,7 @@ type
       procedure ExportToXML(ANode: IXMLNode); override;
       procedure ImportFromXML(ANode: IXMLNode; APinControl: TControl = nil);
       procedure RefreshSizeEdits; override;
-      procedure GenerateDescription(ALines: TStrings);
+      procedure AddDescriptionToCode(ALines: TStrings);
       procedure SetPageBox(const ACaption: TCaption = '');
       function GetParameters: IEnumerable<TParameter>;
       procedure RefreshElements; override;
@@ -246,9 +246,9 @@ begin
    end;
 end;
 
-procedure TUserFunctionHeader.GenerateDescription(ALines: TStrings);
+procedure TUserFunctionHeader.AddDescriptionToCode(ALines: TStrings);
 begin
-   if chkInclDescCode.Checked and not memDesc.Lines.IsEmpty then
+   if chkInclDescCode.Checked then
    begin
       ALines.AddStrings(memDesc.Lines);
       if EndsText(sLineBreak, memDesc.Text) then
