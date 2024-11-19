@@ -73,11 +73,16 @@ It may not contain all supported tags. For all supported tags and their descript
 		<DataType kind="other">Byte</DataType>
 		<DataType kind="other">Short</DataType>
 		<DataType kind="other">Integer</DataType>
+		<DataType kind="other" library="java.util.concurrent.atomic">AtomicInteger</DataType>
 		<DataType kind="other">Long</DataType>
+		<DataType kind="other" library="java.util.concurrent.atomic">LongAdder</DataType>
+		<DataType kind="other" library="java.util.concurrent.atomic">AtomicLong</DataType>
 		<DataType kind="other">Float</DataType>
 		<DataType kind="other">Double</DataType>
+		<DataType kind="other" library="java.util.concurrent.atomic">DoubleAdder</DataType>
 		<DataType kind="other">Number</DataType>
 		<DataType kind="other">Boolean</DataType>
+		<DataType kind="other" library="java.util.concurrent.atomic">AtomicBoolean</DataType>
 		<DataType kind="other" generic="true" library="java.util">List</DataType>
 		<DataType kind="other" generic="true" library="java.util">Map</DataType>
 		<DataType kind="other" generic="true" library="java.util">Set</DataType>
