@@ -251,7 +251,7 @@ begin
    if chkInclDescCode.Checked then
    begin
       ALines.AddStrings(memDesc.Lines);
-      if EndsText(sLineBreak, memDesc.Text) then
+      if EndsText(memDesc.Lines.LineBreak, memDesc.Text) then
          ALines.Add('');
    end;
 end;

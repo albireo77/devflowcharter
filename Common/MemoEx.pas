@@ -219,7 +219,7 @@ begin
          ReleaseDC(Handle, hnd);
       end;
       var count := Lines.Count;
-      if EndsText(sLineBreak, Text) then
+      if EndsText(Lines.LineBreak, Text) then
          Inc(count);
       if count > lineCount then
       begin

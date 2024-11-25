@@ -50,13 +50,10 @@ type
          function GetActive: boolean;
          procedure Change; override;
          procedure SetPage(APage: TBlockTabSheet);
-         procedure SetIsHeader(AValue: boolean);
-         function GetIsHeader: boolean;
          procedure OnEndDragComment(Sender, Target: TObject; X, Y: Integer);
       public
          property PinControl: TControl read FPinControl write FPinControl;
          property Page: TBlockTabSheet read FPage write SetPage;
-         property IsHeader: boolean read GetIsHeader write SetIsHeader;
          constructor Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight: Integer);
          constructor CreateDefault(APage: TBlockTabSheet);
          function Clone(APage: TBlockTabSheet; const ATopLeft: TPoint): TComment; overload;
@@ -124,7 +121,8 @@ destructor TComment.Destroy;
 begin
    Hide;
    FPage.Box.SetScrollBars;
-   IsHeader := False;
+   if GProject.HeaderComment = Self then
+      GProject.HeaderComment := nil;
    inherited Destroy;
 end;
 
@@ -197,19 +195,6 @@ begin
       GProject.SetChanged;
 end;
 
-function TComment.GetIsHeader: boolean;
-begin
-   result := GProject.HeaderComment = Self;
-end;
-
-procedure TComment.SetIsHeader(AValue: boolean);
-begin
-   if AValue then
-      GProject.HeaderComment := Self
-   else if GProject.HeaderComment = Self then
-      GProject.HeaderComment := nil;
-end;
-
 procedure TComment.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
    inherited;
@@ -246,7 +231,7 @@ procedure TComment.Change;
 begin
    inherited;
    GProject.SetChanged;
-   if IsHeader then
+   if GProject.HeaderComment = Self then
       TInfra.UpdateCodeEditor;
    UpdateScrolls;
    NavigatorForm.Invalidate;
@@ -322,7 +307,8 @@ begin
       Text := ANode.Text;
       Visible := GetNodeAttrBool(ANode, 'v');
       FPinControl := APinControl;
-      IsHeader := GetNodeAttrBool(ANode, IS_HEADER_ATTR);
+      if GetNodeAttrBool(ANode, IS_HEADER_ATTR) then
+         GProject.HeaderComment := Self;
       GetFromXML(ANode);
    end;
 end;
@@ -346,7 +332,7 @@ begin
       SetNodeAttrInt(node, FONT_SIZE_ATTR, Font.Size);
       SetNodeAttrBool(node, 'v', Visible);
       SetNodeAttrInt(node, Z_ORDER_ATTR, FZOrder);
-      SetNodeAttrBool(node, IS_HEADER_ATTR, IsHeader);
+      SetNodeAttrBool(node, IS_HEADER_ATTR, GProject.HeaderComment = Self);
       if not FPage.IsMain then
          SetNodeAttrStr(node, PAGE_CAPTION_ATTR, FPage.Caption);
       if Font.Style <> [] then

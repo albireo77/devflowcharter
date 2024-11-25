@@ -111,7 +111,7 @@ begin
             GenerateTemplateSection(tmpList, ReplaceStr(template, PRIMARY_PLACEHOLDER, FStatements.Lines.Strings[i].Trim), ALangId, ADeep);
          if tmpList.Text.IsEmpty then
             GenerateTemplateSection(tmpList, ReplaceStr(template, PRIMARY_PLACEHOLDER, ''), ALangId, ADeep);
-         if EndsText(sLineBreak, FStatements.Text) then
+         if EndsText(FStatements.Lines.LineBreak, FStatements.Text) then
             tmpList.AddObject(GSettings.IndentString(ADeep), Self);
          TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);
          result := tmpList.Count;

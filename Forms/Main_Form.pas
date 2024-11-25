@@ -686,7 +686,7 @@ begin
       miCopy.Visible := True;
       miCut.Visible := TComment(comp).SelLength > 0;
       miIsHeader.Visible := True;
-      miIsHeader.Checked := TComment(comp).IsHeader;
+      miIsHeader.Checked := GProject.HeaderComment = comp;
       if GClpbrd.Instance is TBlock then
          miPaste.Enabled := False;
    end
@@ -1395,7 +1395,10 @@ procedure TMainForm.miIsHeaderClick(Sender: TObject);
 begin
    if pmPages.PopupComponent is TComment then
    begin
-      TComment(pmPages.PopupComponent).IsHeader := not miIsHeader.Checked;
+      if miIsHeader.Checked then
+         GProject.HeaderComment := nil
+      else
+         GProject.HeaderComment := TComment(pmPages.PopupComponent);
       TInfra.UpdateCodeEditor;
    end;
 end;

@@ -753,7 +753,7 @@ begin
    if HeaderComment <> nil then
    begin
       result := HeaderComment.Text;
-      if EndsText(sLineBreak, HeaderComment.Text) then
+      if EndsText(HeaderComment.Lines.LineBreak, HeaderComment.Text) then
          result := result + sLineBreak;
    end;
 end;
