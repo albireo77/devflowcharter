@@ -509,11 +509,10 @@ procedure TBlock.CloneComments(ASource: TBlock);
 begin
    if ASource <> nil then
    begin
-      var lPage := Page;
       var unPin := ASource.PinComments > 0;
       try
          for var comment in ASource.GetPinComments do
-            comment.Clone(lPage).PinControl := Self;
+            comment.Clone(Page).PinControl := Self;
          UnPinComments;
       finally
          if unPin then
