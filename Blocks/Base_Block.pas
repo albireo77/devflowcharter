@@ -513,10 +513,7 @@ begin
       var unPin := ASource.PinComments > 0;
       try
          for var comment in ASource.GetPinComments do
-         begin
-            var newComment := comment.Clone(lPage);
-            newComment.PinControl := Self;
-         end;
+            comment.Clone(lPage).PinControl := Self;
          UnPinComments;
       finally
          if unPin then
