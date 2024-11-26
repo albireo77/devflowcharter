@@ -507,17 +507,14 @@ end;
 
 procedure TBlock.CloneComments(ASource: TBlock);
 begin
-   if ASource <> nil then
-   begin
-      var unPin := ASource.PinComments > 0;
-      try
-         for var comment in ASource.GetPinComments do
-            comment.Clone(Page).PinControl := Self;
-         UnPinComments;
-      finally
-         if unPin then
-            ASource.UnPinComments;
-      end;
+   var unPin := ASource.PinComments > 0;
+   try
+      for var comment in ASource.GetPinComments do
+         comment.Clone(Page).PinControl := Self;
+      UnPinComments;
+   finally
+      if unPin then
+         ASource.UnPinComments;
    end;
 end;
 
