@@ -161,7 +161,7 @@ begin
                      TInfra.GetEditorForm.OnChangeEditor;
                      var foldRanges := TInfra.GetEditorForm.FindFoldRangesInCodeRange(chLine.CodeRange, templateLines.Count);
                      try
-                        if (foldRanges <> nil) and (foldRanges.Count > 0) and (foldRanges[0].FoldRegion = foldRegion) and not foldRanges[0].Collapsed then
+                        if (foldRanges.Count > 0) and (foldRanges[0].FoldRegion = foldRegion) and not foldRanges[0].Collapsed then
                         begin
                            TInfra.GetEditorForm.memCodeEditor.Collapse(foldRanges[0]);
                            TInfra.GetEditorForm.memCodeEditor.Refresh;
