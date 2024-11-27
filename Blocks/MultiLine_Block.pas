@@ -128,6 +128,7 @@ procedure TMultiLineBlock.UpdateEditor(AEdit: TCustomEdit);
 begin
    if ShouldFocusEditor then
    begin
+      var editorForm := TInfra.GetEditorForm;
       var chLine := TInfra.GetChangeLine(Self, FStatements);
       if chLine.CodeRange.FirstRow <> ROW_NOT_FOUND then
       begin
@@ -135,7 +136,7 @@ begin
          begin
             var templateLines := TStringList.Create;
             try
-               GenerateCode(templateLines, GInfra.CurrentLang.Name, TInfra.GetEditorForm.GetIndentLevel(chLine.CodeRange.FirstRow, chLine.CodeRange.Lines));
+               GenerateCode(templateLines, GInfra.CurrentLang.Name, editorForm.GetIndentLevel(chLine.CodeRange.FirstRow, chLine.CodeRange.Lines));
                if GSettings.IndentChar = TAB_CHAR then
                   TInfra.IndentSpacesToTabs(templateLines);
                var rowNum := chLine.CodeRange.LastRow - chLine.CodeRange.FirstRow + 1;
@@ -155,16 +156,16 @@ begin
                   else
                   begin
                      var foldRegion := chLine.CodeRange.FoldRange.FoldRegion;
-                     TInfra.GetEditorForm.RemoveFoldRange(chLine.CodeRange.FoldRange);
+                     editorForm.RemoveFoldRange(chLine.CodeRange.FoldRange);
                      for var i := templateLines.Count-1 downto 0 do
                         chLine.CodeRange.Lines.InsertObject(chLine.CodeRange.FirstRow, templateLines[i], templateLines.Objects[i]);
-                     TInfra.GetEditorForm.OnChangeEditor;
-                     var foldRanges := TInfra.GetEditorForm.FindFoldRangesInCodeRange(chLine.CodeRange, templateLines.Count);
+                     editorForm.OnChangeEditor;
+                     var foldRanges := editorForm.FindFoldRangesInCodeRange(chLine.CodeRange, templateLines.Count);
                      try
                         if (foldRanges.Count > 0) and (foldRanges[0].FoldRegion = foldRegion) and not foldRanges[0].Collapsed then
                         begin
-                           TInfra.GetEditorForm.memCodeEditor.Collapse(foldRanges[0]);
-                           TInfra.GetEditorForm.memCodeEditor.Refresh;
+                           editorForm.memCodeEditor.Collapse(foldRanges[0]);
+                           editorForm.memCodeEditor.Refresh;
                         end;
                      finally
                         foldRanges.Free;
@@ -178,13 +179,13 @@ begin
                      chLine.CodeRange.Lines.InsertObject(chLine.CodeRange.FirstRow, templateLines[i], templateLines.Objects[i]);
                end;
                chLine.CodeRange.Lines.EndUpdate;
-               TInfra.GetEditorForm.OnChangeEditor;
+               editorForm.OnChangeEditor;
             finally
                templateLines.Free;
             end;
-            TInfra.GetEditorForm.memCodeEditor.Modified := True;
+            editorForm.memCodeEditor.Modified := True;
          end;
-         TInfra.GetEditorForm.SetCaretPos(chLine);
+         editorForm.SetCaretPos(chLine);
       end;
    end;
 end;
