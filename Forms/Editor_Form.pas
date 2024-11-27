@@ -151,7 +151,7 @@ type
     procedure InsertLibraryEntry(const ALibrary: string);
 {$IFDEF USE_CODEFOLDING}
     procedure RemoveFoldRange(var AFoldRange: TSynEditFoldRange);
-    function FindFoldRangesInCodeRange(const ACodeRange: TCodeRange; ACount: integer): TSynEditFoldRanges;
+    function FindFoldRangeInCodeRange(const ACodeRange: TCodeRange; ACount: integer): TSynEditFoldRange;
     procedure ReloadFoldRegions;
 {$ENDIF}
   end;
@@ -1165,16 +1165,16 @@ begin
    AFoldRange := nil;
 end;
 
-function TEditorForm.FindFoldRangesInCodeRange(const ACodeRange: TCodeRange; ACount: integer): TSynEditFoldRanges;
+function TEditorForm.FindFoldRangeInCodeRange(const ACodeRange: TCodeRange; ACount: integer): TSynEditFoldRange;
 begin
-   result := TSynEditFoldRanges.Create;
+   result := nil;
    if ACodeRange.Lines = memCodeEditor.Lines then
    begin
       for var i := ACodeRange.FirstRow to ACodeRange.FirstRow+ACount do
       begin
-         var foldRange := memCodeEditor.CollapsableFoldRangeForLine(i+1);
-         if (foldRange <> nil) and (result.Ranges.IndexOf(foldRange) = -1) then
-            result.AddF(foldRange);
+         result := memCodeEditor.CollapsableFoldRangeForLine(i+1);
+         if result <> nil then
+            break;
       end;
    end;
 end;
@@ -1237,7 +1237,8 @@ begin
          else
             break;
       end;
-      result := result div GSettings.IndentLength;
+      if GSettings.IndentLength > 0 then
+         result := result div GSettings.IndentLength;
    end;
 end;
 

@@ -155,20 +155,15 @@ begin
                   end
                   else
                   begin
-                     var foldRegion := chLine.CodeRange.FoldRange.FoldRegion;
                      editorForm.RemoveFoldRange(chLine.CodeRange.FoldRange);
                      for var i := templateLines.Count-1 downto 0 do
                         chLine.CodeRange.Lines.InsertObject(chLine.CodeRange.FirstRow, templateLines[i], templateLines.Objects[i]);
                      editorForm.OnChangeEditor;
-                     var foldRanges := editorForm.FindFoldRangesInCodeRange(chLine.CodeRange, templateLines.Count);
-                     try
-                        if (foldRanges.Count > 0) and (foldRanges[0].FoldRegion = foldRegion) and not foldRanges[0].Collapsed then
-                        begin
-                           editorForm.memCodeEditor.Collapse(foldRanges[0]);
-                           editorForm.memCodeEditor.Refresh;
-                        end;
-                     finally
-                        foldRanges.Free;
+                     var foldRange := editorForm.FindFoldRangeInCodeRange(chLine.CodeRange, templateLines.Count);
+                     if (foldRange <> nil) and (foldRange.FoldRegion = chLine.CodeRange.FoldRange.FoldRegion) and not foldRange.Collapsed then
+                     begin
+                        editorForm.memCodeEditor.Collapse(foldRange);
+                        editorForm.memCodeEditor.Refresh;
                      end;
                   end;
                end
