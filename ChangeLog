@@ -1,3 +1,8 @@
+10.13 [28-11-2024]
+- Code Editor: fix "division by 0" errors when indent length is 0
+- Code Editor Help: more clear info that functions and dataytypes can be dragged to editor starting from their tab name
+- Java: add AtomicInteger, AtomicLong, AtomicBoolean, LongAdder, DoubleAdder types to Java.xml
+
 10.12 [17-11-2024]
 - mention in menu hint that resize frame can also be switched by LMB double click
 
