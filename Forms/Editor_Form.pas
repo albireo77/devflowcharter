@@ -1101,31 +1101,33 @@ begin
             result.LastRow := TBlock(AObject).FindLastRow(result.FirstRow, result.Lines)
          else
             result.LastRow := TInfra.FindLastRow(AObject, result.FirstRow, result.Lines);
-         with memCodeEditor do
+         if ADoSelect then
          begin
-            if ADoSelect and CanFocus then
+            with memCodeEditor do
             begin
-               SelStart := RowColToCharIndex(BufferCoord(result.Lines[result.LastRow].Length+1, result.LastRow+1));
+               CaretXY := BufferCoord(result.Lines[result.LastRow].Length+1, result.LastRow+1);;
+               EnsureCursorPosVisible;
+               SelStart := RowColToCharIndex(CaretXY);
                SelEnd := RowColToCharIndex(BufferCoord(1, result.FirstRow+1));
             end;
+         end;
 {$IFDEF USE_CODEFOLDING}
-            if not result.IsFolded and not ADoSelect then
+         if not result.IsFolded and not ADoSelect then
+         begin
+            for var i := result.FirstRow to result.LastRow do
             begin
-               for var i := result.FirstRow to result.LastRow do
+               if result.Lines.Objects[i] = AObject then
                begin
-                  if result.Lines.Objects[i] = AObject then
+                  var foldRange := memCodeEditor.CollapsableFoldRangeForLine(i+1);
+                  if (foldRange <> nil) and foldRange.Collapsed then
                   begin
-                     var foldRange := CollapsableFoldRangeForLine(i+1);
-                     if (foldRange <> nil) and foldRange.Collapsed then
-                     begin
-                        result.FoldRange := foldRange;
-                        break;
-                     end
-                  end;
+                     result.FoldRange := foldRange;
+                     break;
+                  end
                end;
             end;
-{$ENDIF}
          end;
+{$ENDIF}
       end;
    end;
 end;
