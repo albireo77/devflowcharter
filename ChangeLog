@@ -1,3 +1,8 @@
+11.0 [01-12-2024]
+- Flowchart: enable keyboard shortcuts for inserting blocks. Now it's possible to do this without context menu.
+- Flowchart: fix Alt-A sequence not working correctly in text box
+- Code Editor: fix sometimes not scrolling to be in view when selecting flowchart elements
+
 10.13 [28-11-2024]
 - Code Editor: fix "division by 0" errors when indent length is 0
 - Code Editor Help: more clear info that functions and dataytypes can be dragged to editor starting from their tab name
