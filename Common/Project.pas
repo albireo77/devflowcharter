@@ -119,6 +119,7 @@ type
       function IsNew: boolean;
       procedure SetNotChanged;
       function FindSelectedBlock: TBlock;
+      function FindRedArrowBlock: TBlock;
       function FindUserFunction(ABody: TGroupBlock): TUserFunction;
       function FindFunctionHeader(ABlock: TBlock): TUserFunctionHeader;
    end;
@@ -1024,6 +1025,20 @@ begin
       if func.Body <> nil then
       begin
          result := func.Body.FindSelectedBlock;
+         if result <> nil then
+            break;
+      end;
+   end;
+end;
+
+function TProject.FindRedArrowBlock: TBlock;
+begin
+   result := nil;
+   for var func in GetUserFunctions do
+   begin
+      if func.Body <> nil then
+      begin
+         result := func.Body.FindRedArrowBlock;
          if result <> nil then
             break;
       end;

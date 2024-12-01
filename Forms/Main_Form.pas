@@ -203,6 +203,7 @@ type
     procedure miIsHeaderClick(Sender: TObject);
     procedure miPasteTextClick(Sender: TObject);
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure FormShortCut(var Msg: TWMKey; var Handled: Boolean);
   private
     { Private declarations }
     FClockPos: TClockPos;
@@ -360,6 +361,22 @@ begin
    begin
       GProject.RepaintFlowcharts;
       GProject.RefreshStatements;
+   end;
+end;
+
+procedure TMainForm.FormShortCut(var Msg: TWMKey; var Handled: Boolean);
+begin
+   PopupMenu := nil;
+   if GProject <> nil then
+   begin
+      var box := GProject.ActivePage.Box;
+      PopupMenu := box.PopupMenu;
+      var comp := TComponent(GProject.FindSelectedBlock);
+      if comp = nil then
+         comp := GProject.FindRedArrowBlock;
+      if comp = nil then
+         comp := box;
+      pmPages.PopupComponent := comp;
    end;
 end;
 
@@ -606,10 +623,12 @@ begin
    miMemoWordWrap.Checked := False;
    miMemoAlignRight.Checked := False;
 
+   comp := pmPages.PopupComponent;
+   if not TInfra.IsValidControl(comp) then
+      Exit;
+
    isFunction := GClpbrd.UndoObject is TUserFunction;
    miPaste.Enabled := TInfra.IsValidControl(GClpbrd.Instance) or isFunction;
-
-   comp := pmPages.PopupComponent;
 
    if Supports(comp, IMemoEx, memoEx) then
    begin

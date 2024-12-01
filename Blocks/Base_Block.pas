@@ -186,6 +186,7 @@ type
          procedure LockDrawing;
          procedure UnlockDrawing;
          function FindSelectedBlock: TBlock; virtual;
+         function FindRedArrowBlock: TBlock; virtual;
          function ShouldUpdateEditor: boolean;
    end;
 
@@ -246,6 +247,7 @@ type
          function RemoveBranch(AIndex: integer): boolean;
          function Remove(ANode: TTreeNodeWithFriend = nil): boolean; override;
          function FindSelectedBlock: TBlock; override;
+         function FindRedArrowBlock: TBlock; override;
    end;
 
    TBranch = class(TList<TBlock>, IWithId)
@@ -1178,6 +1180,32 @@ begin
          result := block.FindSelectedBlock;
          if result <> nil then
             break;
+      end;
+   end;
+end;
+
+function TBlock.FindRedArrowBlock: TBlock;
+begin
+   result := nil;
+   if FRedArrow = 0 then
+      result := Self;
+end;
+
+function TGroupBlock.FindRedArrowBlock: TBlock;
+begin
+   result := inherited FindRedArrowBlock;
+   if result = nil then
+   begin
+      if FRedArrow >= 0 then
+         result := Self
+      else
+      begin
+         for var block in GetAllBlocks do
+         begin
+            result := block.FindRedArrowBlock;
+            if result <> nil then
+               break;
+         end;
       end;
    end;
 end;

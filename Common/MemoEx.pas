@@ -89,7 +89,7 @@ end;
 procedure TMemoEx.KeyDown(var Key: Word; Shift: TShiftState);
 begin
    inherited;
-   if (ssCtrl in Shift) and (Key = Ord('A')) then
+   if (Shift = [ssCtrl]) and (Key = Ord('A')) then
       SelectAll;
 end;
 
