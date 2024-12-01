@@ -212,6 +212,7 @@ type
     function CreateNewProject: boolean;
     function CloseExistingProject: boolean;
     function CanCloseExistingProject: boolean;
+    function GetPlacePoint(ABox: TScrollBox): TPoint;
     procedure PopupMenuClosed;
     procedure PPIDialog;
   public
@@ -239,6 +240,9 @@ uses
    Main_Block, ParseGlobals, LocalizationManager, XMLProcessor, UserFunction, ForDo_Block,
    Return_Block, Project, Declarations_Form, Base_Block, Comment, Case_Block, Navigator_Form,
    Types, LangDefinition, EditMemo_Form, BlockFactory, BlockTabSheet, MemoEx, Constants;
+
+type
+  TPopupMenuHack = class(TPopupMenu);
 
 var
    ByCaptionMenuItemComparer: IComparer<TMenuItem>;
@@ -377,6 +381,7 @@ begin
       if comp = nil then
          comp := box;
       pmPages.PopupComponent := comp;
+      TPopupMenuHack(pmPages).SetPopupPoint(TPoint.Zero);
    end;
 end;
 
@@ -597,8 +602,11 @@ begin
    miImport.Visible := True;
    miFoldUnfold.Visible := False;
    miAddBranch.Visible := False;
+   miAddBranch.Enabled := False;
    miRemoveBranch.Visible := False;
+   miRemoveBranch.Enabled := False;
    miInsertBranch.Visible := False;
+   miInsertBranch.Enabled := False;
    miText.Enabled := False;
    miFolder.Enabled := False;
    miFoldUnfold.Caption := i18Manager.GetString('miFoldTrue');
@@ -667,7 +675,10 @@ begin
              miFoldUnfold.Visible := True;
              expanded := TGroupBlock(block).Expanded;
              if expanded and (block is TCaseBlock) then
+             begin
                 miAddBranch.Visible := True;
+                miAddBranch.Enabled := True;
+             end;
              miFoldUnfold.Caption := i18Manager.GetString('miFold' + BoolToStr(expanded, True));
           end;
           if (block is TGroupBlock) and TGroupBlock(block).Expanded and TGroupBlock(block).HasFoldedBlocks then
@@ -693,7 +704,9 @@ begin
        if (block is TCaseBlock) and (block.RedArrow > PRIMARY_BRANCH_IDX) then
        begin
           miRemoveBranch.Visible := True;
+          miRemoveBranch.Enabled := True;
           miInsertBranch.Visible := True;
+          miInsertBranch.Enabled := True;
        end;
    end
    else if comp is TComment then
@@ -742,7 +755,7 @@ begin
    if GProject <> nil then
    begin
       var page := GProject.ActivePage;
-      var p := page.Box.ScreenToClient(page.Box.PopupMenu.PopupPoint);
+      var p := GetPlacePoint(page.Box);
       TComment.Create(page, p.X, p.Y, 150, 50).SetFocus;
       GProject.SetChanged;
    end;
@@ -1128,7 +1141,7 @@ begin
    if GProject <> nil then
    begin
       var page := GProject.ActivePage;
-      var mainBlock := TMainBlock.Create(page, page.Box.ScreenToClient(page.Box.PopupMenu.PopupPoint));
+      var mainBlock := TMainBlock.Create(page, GetPlacePoint(page.Box));
       mainBlock.Resize;
       TUserFunction.Create(nil, mainBlock);
       GProject.SetChanged;
@@ -1183,10 +1196,15 @@ end;
 procedure TMainForm.miNewFunctionClick(Sender: TObject);
 begin
    if GProject <> nil then
-   begin
-      var box := GProject.ActivePage.Box;
-      TInfra.GetFunctionsForm.AddUserFunction(box.ScreenToClient(box.PopupMenu.PopupPoint));
-   end;
+      TInfra.GetFunctionsForm.AddUserFunction(GetPlacePoint(GProject.ActivePage.Box));
+end;
+
+function TMainForm.GetPlacePoint(ABox: TScrollBox): TPoint;
+begin
+   result := ABox.PopupMenu.PopupPoint;
+   if result.IsZero then
+      result := Mouse.CursorPos;
+   result := ABox.ScreenToClient(result);
 end;
 
 procedure TMainForm.pgcPagesContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);

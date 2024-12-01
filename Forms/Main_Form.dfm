@@ -162,16 +162,19 @@ object MainForm: TMainForm
       object miNewFlowchart: TMenuItem
         Tag = 2
         Caption = 'Flowchart'
+        ShortCut = 32836
         OnClick = miNewFlowchartClick
       end
       object miNewFunction: TMenuItem
         Tag = 2
         Caption = 'Function Here'
+        ShortCut = 32854
         OnClick = miNewFunctionClick
       end
       object miComment: TMenuItem
         Tag = 2
         Caption = 'Comment'
+        ShortCut = 32843
         OnClick = miCommentClick
       end
       object N6: TMenuItem
