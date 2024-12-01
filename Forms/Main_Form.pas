@@ -767,8 +767,8 @@ var
    branch: TBranch;
    lParent: TGroupBlock;
    tmpCursor: TCursor;
-   comment: TComment;
    p: TPoint;
+   comment: TComment;
    blockType: TBlockType;
    page: TBlockTabSheet;
    func: TUserFunction;
@@ -787,7 +787,7 @@ begin
    if (Sender = miPaste) and ((func <> nil) or (comment <> nil)) then
    begin
       page := GProject.ActivePage;
-      p := page.Box.ScreenToClient(page.Box.PopupMenu.PopupPoint);
+      p := GetPlacePoint(page.Box);
       if func <> nil then
       begin
          if func.Body <> nil then
