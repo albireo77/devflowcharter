@@ -472,7 +472,7 @@ begin
 
    result := errValidate;
 
-   var langName := GetNodeAttrStr(ANode, LANG_ATTR, '');
+   var langName := GetNodeAttrStr(ANode, LANG_ATTR);
    if GInfra.GetLangDefinition(langName) = nil then
    begin
       Gerr_text := i18Manager.GetFormattedString('LngNoSprt', [langName]);
