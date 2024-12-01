@@ -374,14 +374,14 @@ begin
    if GProject <> nil then
    begin
       var box := GProject.ActivePage.Box;
-      PopupMenu := box.PopupMenu;
       var comp := TComponent(GProject.FindSelectedBlock);
       if comp = nil then
          comp := GProject.FindRedArrowBlock;
       if comp = nil then
          comp := box;
-      pmPages.PopupComponent := comp;
-      TPopupMenuHack(pmPages).SetPopupPoint(TPoint.Zero);
+      PopupMenu := box.PopupMenu;
+      PopupMenu.PopupComponent := comp;
+      TPopupMenuHack(PopupMenu).SetPopupPoint(TPoint.Zero);
    end;
 end;
 
