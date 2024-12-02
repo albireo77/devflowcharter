@@ -2,7 +2,7 @@
 - fix not opening plain-flowchart files
 
 11.0 [01-12-2024]
-- Flowchart: enable keyboard shortcuts for inserting blocks. Now it's possible without context menu.
+- Flowchart: enable keyboard shortcuts for inserting blocks. Now it's possible without use of context menu.
 - Flowchart: fix Alt-A sequence not working correctly in text box
 - Code Editor: fix scroll in view sometimes not working correctly when selecting flowchart elements
 
