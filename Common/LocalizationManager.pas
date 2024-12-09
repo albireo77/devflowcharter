@@ -52,7 +52,7 @@ type
          function LoadDefaultLabels: integer;
          function GetFormattedString(const AKey: string; const Args: array of const): string;
          function LoadStaticLabels(const AFileName: string): integer;
-         function LoadDynamicLabels(const AFileName: string; const AClearRepository: boolean = False): integer;
+         function LoadDynamicLabels(const AFileName: string): integer;
          function LoadAllLabels(const AFilename: string): integer;
          function GetJoinedString(const AJoiner: string; const AKeys: TArray<string>): string;
    end;
@@ -80,7 +80,7 @@ end;
 
 // this function load labels that are needed all the time during application use (e.g. error message to be displayed
 // on incorrect action); in ini file section names with dynamic labels don't end with 'Form'
-function Ti18Manager.LoadDynamicLabels(const AFileName: string; const AClearRepository: boolean = False): integer;
+function Ti18Manager.LoadDynamicLabels(const AFileName: string): integer;
 begin
    result := 0;
    if FileExists(AFileName) then
@@ -92,8 +92,6 @@ begin
          iniFile.ReadSections(sections);
          if not sections.IsEmpty then
          begin
-            if AClearRepository then
-               FRepository.Clear;
             for var i := 0 to sections.Count-1 do
             begin
                if not sections[i].EndsWith('Form', True) then
