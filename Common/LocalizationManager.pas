@@ -90,19 +90,16 @@ begin
       var iniFile := TIniFile.Create(AFilename);
       try
          iniFile.ReadSections(sections);
-         if not sections.IsEmpty then
+         for var i := 0 to sections.Count-1 do
          begin
-            for var i := 0 to sections.Count-1 do
+            if not sections[i].EndsWith('Form', True) then
             begin
-               if not sections[i].EndsWith('Form', True) then
-               begin
-                  values.Clear;
-                  iniFile.ReadSectionValues(sections[i], values);
-                  for var a := 0 to values.Count-1 do
-                     FRepository.AddOrSetValue(values.Names[a], values.ValueFromIndex[a]);
-                  result := result + values.Count;
-               end
-            end;
+               values.Clear;
+               iniFile.ReadSectionValues(sections[i], values);
+               for var a := 0 to values.Count-1 do
+                  FRepository.AddOrSetValue(values.Names[a], values.ValueFromIndex[a]);
+               result := result + values.Count;
+            end
          end;
       finally
          values.Free;
@@ -121,86 +118,83 @@ begin
    if FileExists(AFileName) then
    begin
       var sections := TStringList.Create;
-      var keys := TStringList.Create;
+      var values := TStringList.Create;
       var iniFile := TIniFile.Create(AFilename);
       try
          iniFile.ReadSections(sections);
-         if not sections.IsEmpty then
+         for var i := 0 to sections.Count-1 do
          begin
-            for var i := 0 to sections.Count-1 do
+            iniFile.ReadSectionValues(sections[i], values);
+            var comp := Application.FindComponent(sections[i]);
+            if comp is TBaseForm then
             begin
-               iniFile.ReadSectionValues(sections[i], keys);
-               var comp := Application.FindComponent(sections[i]);
-               if comp is TBaseForm then
+               var form := TBaseForm(comp);
+               for var a := 0 to values.Count-1 do
                begin
-                  var baseForm := TBaseForm(comp);
-                  for var a := 0 to keys.Count-1 do
+                  var field := '';
+                  var lName := values.Names[a];
+                  var pos := System.Pos('.', lName);
+                  if pos > 0 then
                   begin
-                     var field := '';
-                     var lName := keys.Names[a];
-                     var pos := System.Pos('.', lName);
-                     if pos > 0 then
+                     field := Copy(lName, pos+1);
+                     SetLength(lName, pos-1);
+                  end;
+                  comp := form.FindComponent(lName);
+                  if comp <> nil then
+                  begin
+                     var value := values.ValueFromIndex[a];
+                     if SameText(field, 'Caption') then
                      begin
-                        field := Copy(lName, pos+1);
-                        SetLength(lName, pos-1);
-                     end;
-                     comp := baseForm.FindComponent(lName);
-                     if comp <> nil then
+                        if comp is TMenuItem then
+                           TMenuItem(comp).Caption := value
+                        else if comp is TControl then
+                           TControlHack(comp).Caption := value;
+                     end
+                     else if SameText(field, 'Text') then
                      begin
-                        var value := keys.ValueFromIndex[a];
-                        if SameText(field, 'Caption') then
-                        begin
-                           if comp is TMenuItem then
-                              TMenuItem(comp).Caption := value
-                           else if comp is TControl then
-                              TControlHack(comp).Caption := value;
-                        end
-                        else if SameText(field, 'Text') then
-                        begin
-                           if comp is TControl then
-                              TControlHack(comp).Text := value;
-                        end
-                        else if SameText(field, 'Hint') then
-                        begin
-                           if comp is TMenuItem then
-                              TMenuItem(comp).Hint := value
-                           else if comp is TControl then
-                              TControl(comp).Hint := value;
-                        end
-                        else if SameText(field, 'Filter') then
-                        begin
-                           if comp is TOpenDialog then
-                              TOpenDialog(comp).Filter := value;
-                        end
+                        if comp is TControl then
+                           TControlHack(comp).Text := value;
+                     end
+                     else if SameText(field, 'Hint') then
+                     begin
+                        if comp is TMenuItem then
+                           TMenuItem(comp).Hint := value
+                        else if comp is TControl then
+                           TControl(comp).Hint := value;
+                     end
+                     else if SameText(field, 'Filter') then
+                     begin
+                        if comp is TOpenDialog then
+                           TOpenDialog(comp).Filter := value;
+                     end
+                     else
+                     begin
+                        case comp.Tag of
+                           MENU_ITEM:    TMenuItem(comp).Caption := value;
+                           DIALOG:       TOpenDialog(comp).Filter := value;
+                           EDIT_TEXT:    TEdit(comp).Text := value;
+                           EDIT_HINT,
+                           SPEED_BUTTON: TControlHack(comp).Hint := value;
+                           COMBO_BOX:
+                           begin
+                              pos := StrToIntDef(field, -1);
+                              if (pos >= 0) and (pos < TComboBox(comp).Items.Count) then
+                                 TComboBox(comp).Items[pos] := value;
+                           end
                         else
-                        begin
-                           case comp.Tag of
-                              MENU_ITEM:    TMenuItem(comp).Caption := value;
-                              DIALOG:       TOpenDialog(comp).Filter := value;
-                              EDIT_TEXT:    TEdit(comp).Text := value;
-                              EDIT_HINT,
-                              SPEED_BUTTON: TControlHack(comp).Hint := value;
-                              COMBO_BOX:
-                              begin
-                                 pos := StrToIntDef(field, -1);
-                                 if (pos >= 0) and (pos < TComboBox(comp).Items.Count) then
-                                    TComboBox(comp).Items[pos] := value;
-                              end
-                           else
-                              TControlHack(comp).Caption := value;
-                           end;
+                           TControlHack(comp).Caption := value;
                         end;
                      end;
                   end;
-                  baseForm.Localize(keys);
-                  result := result + keys.Count;
                end;
-               keys.Clear;
+               form.Localize(values);
+               result := result + values.Count;
             end;
+            values.Clear;
          end;
       finally
          sections.Free;
-         keys.Free;
+         values.Free;
          iniFile.Free;
       end;
    end;
