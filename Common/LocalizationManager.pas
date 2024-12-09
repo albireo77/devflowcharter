@@ -244,8 +244,7 @@ end;
 function Ti18Manager.LoadAllLabels(const AFilename: string): integer;
 begin
    FRepository.Clear;
-   result := LoadStaticLabels(AFilename);
-   result := result + LoadDynamicLabels(AFilename);
+   result := LoadStaticLabels(AFilename) + LoadDynamicLabels(AFilename);
 end;
 
 function Ti18Manager.GetFormattedString(const AKey: string; const Args: array of const): string;
