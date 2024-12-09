@@ -29,12 +29,12 @@ uses
 
 type
   TSettingsForm = class(TBaseForm)
-    btnSaveSettings: TButton;
+    btnSave: TButton;
     OpenDialog: TOpenDialog;
-    gbMiscSettings: TGroupBox;
+    gbMisc: TGroupBox;
     gbProgLang: TGroupBox;
-    btnDiscardSettings: TButton;
-    gbParseSettings: TGroupBox;
+    btnDiscard: TButton;
+    gbParse: TGroupBox;
     chkParseInput: TCheckBox;
     chkParseOutput: TCheckBox;
     chkParseAssign: TCheckBox;
@@ -42,9 +42,9 @@ type
     chkParseCondition: TCheckBox;
     ColorDialog: TColorDialog;
     chkParseRoutine: TCheckBox;
-    gbEditorSettings: TGroupBox;
+    gbEditor: TGroupBox;
     chkParseFor: TCheckBox;
-    btnDefaultSettings: TButton;
+    btnDefault: TButton;
     gbEditorColors: TGroupBox;
     pnlEditorActiveLine: TPanel;
     lblEditorActiveLine: TLabel;
@@ -75,7 +75,7 @@ type
     edtTranslateFile: TEdit;
     btnBrowseScripts: TButton;
     chkParseCase: TCheckBox;
-    gbFlowchartSettings: TGroupBox;
+    gbFlowchart: TGroupBox;
     lblDesktop: TLabel;
     pnlDesktop: TPanel;
     lblSelectColor: TLabel;
@@ -83,7 +83,7 @@ type
     imgShapes: TImage;
     lblFontColor: TLabel;
     pnlFont: TPanel;
-    gbPrintSettings: TGroupBox;
+    gbPrint: TGroupBox;
     chkMultiPrint: TCheckBox;
     chkMultiPrintHorz: TCheckBox;
     gbPrintMargins: TGroupBox;
@@ -210,7 +210,7 @@ end;
 
 procedure TSettingsForm.CloseFormClick(Sender: TObject);
 begin
-   if Sender = btnSaveSettings then
+   if Sender = btnSave then
       GSettings.LoadFromForm;
    Close;
 end;
@@ -222,7 +222,7 @@ end;
 
 procedure TSettingsForm.FormCreate(Sender: TObject);
 begin
-   imgShapes.Canvas.Brush.Color := gbFlowchartSettings.Color;
+   imgShapes.Canvas.Brush.Color := gbFlowchart.Color;
    imgShapes.Canvas.FillRect(imgShapes.Canvas.ClipRect);
    GInfra.GetLangNames(cbLanguage.Items);
    shpDiamond.Image := imgShapes;   // hack for TColorShapeHelper.Image

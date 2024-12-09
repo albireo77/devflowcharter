@@ -12,7 +12,7 @@ object SettingsForm: TSettingsForm
   OnCreate = FormCreate
   OnShow = FormShow
   TextHeight = 15
-  object btnSaveSettings: TButton
+  object btnSave: TButton
     Tag = 1
     Left = 398
     Top = 674
@@ -23,7 +23,7 @@ object SettingsForm: TSettingsForm
     TabOrder = 5
     OnClick = CloseFormClick
   end
-  object gbMiscSettings: TGroupBox
+  object gbMisc: TGroupBox
     Tag = 4
     Left = 5
     Top = 620
@@ -220,7 +220,7 @@ object SettingsForm: TSettingsForm
         'BE Unicode')
     end
   end
-  object btnDiscardSettings: TButton
+  object btnDiscard: TButton
     Tag = 1
     Left = 479
     Top = 674
@@ -230,7 +230,7 @@ object SettingsForm: TSettingsForm
     TabOrder = 6
     OnClick = CloseFormClick
   end
-  object gbParseSettings: TGroupBox
+  object gbParse: TGroupBox
     Tag = 4
     Left = 5
     Top = 171
@@ -399,7 +399,7 @@ object SettingsForm: TSettingsForm
       TabOrder = 8
     end
   end
-  object gbEditorSettings: TGroupBox
+  object gbEditor: TGroupBox
     Tag = 4
     Left = 5
     Top = 252
@@ -866,7 +866,7 @@ object SettingsForm: TSettingsForm
         'tab')
     end
   end
-  object btnDefaultSettings: TButton
+  object btnDefault: TButton
     Tag = 1
     Left = 8
     Top = 674
@@ -939,7 +939,7 @@ object SettingsForm: TSettingsForm
       OnClick = btnBrowseScriptsClick
     end
   end
-  object gbFlowchartSettings: TGroupBox
+  object gbFlowchart: TGroupBox
     Tag = 4
     Left = 5
     Top = 396
@@ -1155,7 +1155,7 @@ object SettingsForm: TSettingsForm
       OnClick = pnlSelectClick
     end
   end
-  object gbPrintSettings: TGroupBox
+  object gbPrint: TGroupBox
     Tag = 4
     Left = 5
     Top = 520
