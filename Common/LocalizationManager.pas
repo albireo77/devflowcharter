@@ -78,8 +78,8 @@ begin
    inherited Destroy;
 end;
 
-// this function load labels that are needed all the time during application use (e.g. error message to be displayed
-// on incorrect action); in ini file section names with dynamic labels don't end with 'Form'
+// This function loads labels that are needed during application use like error messages.
+// In ini file section names with dynamic labels don't end with 'Form'.
 function Ti18Manager.LoadDynamicLabels(AIniFile: TCustomIniFile): integer;
 begin
    result := 0;
@@ -105,9 +105,8 @@ begin
    end;
 end;
 
-// this function load labels that are to be used only once (e.g. button caption); after labelling visual component,
-// such label is no longer needed; it is important to call this function when all application's forms are already created;
-// in ini file section names with static labels end with 'Form' - one section for each application form
+// This function loads labels that are to be used only once. After labelling non-dynamic, visual component such label is no longer needed.
+// In ini file section names with static labels end with 'Form'. One section per each application form.
 function Ti18Manager.LoadStaticLabels(AIniFile: TCustomIniFile): integer;
 begin
    result := 0;
