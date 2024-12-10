@@ -45,23 +45,23 @@ type
    Ti18Manager = class(TObject)
       private
          FRepository: TDictionary<string, string>;
+         function LoadStaticLabels(AIniFile: TCustomIniFile): integer;
+         function LoadDynamicLabels(AIniFile: TCustomIniFile): integer;
       public
          constructor Create;
          destructor Destroy; override;
+         function LoadLabels(const AFilename: string; ALoadDynamic: boolean = True; ALoadStatic: boolean = True): integer;
+         function LoadDefaultLabels(ALoadDynamic: boolean = True; ALoadStatic: boolean = True): integer;
          function GetString(const AKey: string): string;
-         function LoadDefaultLabels: integer;
          function GetFormattedString(const AKey: string; const Args: array of const): string;
-         function LoadStaticLabels(const AFileName: string): integer;
-         function LoadDynamicLabels(const AFileName: string): integer;
-         function LoadAllLabels(const AFilename: string): integer;
          function GetJoinedString(const AJoiner: string; const AKeys: TArray<string>): string;
    end;
 
 implementation
 
 uses
-   Vcl.StdCtrls, Vcl.Forms, System.SysUtils, Vcl.Dialogs, WinApi.Windows, Vcl.Menus,
-   Vcl.Buttons, System.StrUtils, Vcl.Controls, System.IOUtils, Base_Form;
+   Vcl.StdCtrls, Vcl.Forms, System.SysUtils, Vcl.Dialogs, Vcl.Menus, Vcl.Buttons,
+   System.StrUtils, Vcl.Controls, Base_Form;
 
 type
    TControlHack = class(TControl);
@@ -80,150 +80,148 @@ end;
 
 // this function load labels that are needed all the time during application use (e.g. error message to be displayed
 // on incorrect action); in ini file section names with dynamic labels don't end with 'Form'
-function Ti18Manager.LoadDynamicLabels(const AFileName: string): integer;
+function Ti18Manager.LoadDynamicLabels(AIniFile: TCustomIniFile): integer;
 begin
    result := 0;
-   if FileExists(AFileName) then
-   begin
-      var sections := TStringList.Create;
-      var values := TStringList.Create;
-      var iniFile := TIniFile.Create(AFilename);
-      try
-         iniFile.ReadSections(sections);
-         for var i := 0 to sections.Count-1 do
+   var sections := TStringList.Create;
+   var values := TStringList.Create;
+   try
+      FRepository.Clear;
+      AIniFile.ReadSections(sections);
+      for var i := 0 to sections.Count-1 do
+      begin
+         if not sections[i].EndsWith('Form', True) then
          begin
-            if not sections[i].EndsWith('Form', True) then
-            begin
-               values.Clear;
-               iniFile.ReadSectionValues(sections[i], values);
-               for var a := 0 to values.Count-1 do
-                  FRepository.AddOrSetValue(values.Names[a], values.ValueFromIndex[a]);
-               result := result + values.Count;
-            end
-         end;
-      finally
-         values.Free;
-         sections.Free;
-         iniFile.Free;
+            values.Clear;
+            AIniFile.ReadSectionValues(sections[i], values);
+            for var a := 0 to values.Count-1 do
+               FRepository.AddOrSetValue(values.Names[a], values.ValueFromIndex[a]);
+            result := result + values.Count;
+         end
       end;
+   finally
+      values.Free;
+      sections.Free;
    end;
 end;
 
 // this function load labels that are to be used only once (e.g. button caption); after labelling visual component,
 // such label is no longer needed; it is important to call this function when all application's forms are already created;
 // in ini file section names with static labels end with 'Form' - one section for each application form
-function Ti18Manager.LoadStaticLabels(const AFileName: string): integer;
+function Ti18Manager.LoadStaticLabels(AIniFile: TCustomIniFile): integer;
 begin
    result := 0;
-   if FileExists(AFileName) then
-   begin
-      var sections := TStringList.Create;
-      var values := TStringList.Create;
-      var iniFile := TIniFile.Create(AFilename);
-      try
-         iniFile.ReadSections(sections);
-         for var i := 0 to sections.Count-1 do
+   var sections := TStringList.Create;
+   var values := TStringList.Create;
+   try
+      AIniFile.ReadSections(sections);
+      for var i := 0 to sections.Count-1 do
+      begin
+         AIniFile.ReadSectionValues(sections[i], values);
+         var comp := Application.FindComponent(sections[i]);
+         if comp is TBaseForm then
          begin
-            iniFile.ReadSectionValues(sections[i], values);
-            var comp := Application.FindComponent(sections[i]);
-            if comp is TBaseForm then
+            var form := TBaseForm(comp);
+            for var a := 0 to values.Count-1 do
             begin
-               var form := TBaseForm(comp);
-               for var a := 0 to values.Count-1 do
+               var field := '';
+               var lName := values.Names[a];
+               var pos := System.Pos('.', lName);
+               if pos > 0 then
                begin
-                  var field := '';
-                  var lName := values.Names[a];
-                  var pos := System.Pos('.', lName);
-                  if pos > 0 then
+                  field := Copy(lName, pos+1);
+                  SetLength(lName, pos-1);
+               end;
+               comp := form.FindComponent(lName);
+               if comp <> nil then
+               begin
+                  var value := values.ValueFromIndex[a];
+                  if SameText(field, 'Caption') then
                   begin
-                     field := Copy(lName, pos+1);
-                     SetLength(lName, pos-1);
-                  end;
-                  comp := form.FindComponent(lName);
-                  if comp <> nil then
+                     if comp is TMenuItem then
+                        TMenuItem(comp).Caption := value
+                     else if comp is TControl then
+                        TControlHack(comp).Caption := value;
+                  end
+                  else if SameText(field, 'Text') then
                   begin
-                     var value := values.ValueFromIndex[a];
-                     if SameText(field, 'Caption') then
-                     begin
-                        if comp is TMenuItem then
-                           TMenuItem(comp).Caption := value
-                        else if comp is TControl then
-                           TControlHack(comp).Caption := value;
-                     end
-                     else if SameText(field, 'Text') then
-                     begin
-                        if comp is TControl then
-                           TControlHack(comp).Text := value;
-                     end
-                     else if SameText(field, 'Hint') then
-                     begin
-                        if comp is TMenuItem then
-                           TMenuItem(comp).Hint := value
-                        else if comp is TControl then
-                           TControl(comp).Hint := value;
-                     end
-                     else if SameText(field, 'Filter') then
-                     begin
-                        if comp is TOpenDialog then
-                           TOpenDialog(comp).Filter := value;
-                     end
-                     else
-                     begin
-                        case comp.Tag of
-                           MENU_ITEM:    TMenuItem(comp).Caption := value;
-                           DIALOG:       TOpenDialog(comp).Filter := value;
-                           EDIT_TEXT:    TEdit(comp).Text := value;
-                           EDIT_HINT,
-                           SPEED_BUTTON: TControlHack(comp).Hint := value;
-                           COMBO_BOX:
-                           begin
-                              pos := StrToIntDef(field, -1);
-                              if (pos >= 0) and (pos < TComboBox(comp).Items.Count) then
-                                 TComboBox(comp).Items[pos] := value;
-                           end
+                     if comp is TControl then
+                        TControlHack(comp).Text := value;
+                  end
+                  else if SameText(field, 'Hint') then
+                  begin
+                     if comp is TMenuItem then
+                        TMenuItem(comp).Hint := value
+                     else if comp is TControl then
+                        TControl(comp).Hint := value;
+                  end
+                  else if SameText(field, 'Filter') then
+                  begin
+                     if comp is TOpenDialog then
+                        TOpenDialog(comp).Filter := value;
+                  end
+                  else
+                  begin
+                     case comp.Tag of
+                        MENU_ITEM:    TMenuItem(comp).Caption := value;
+                        DIALOG:       TOpenDialog(comp).Filter := value;
+                        EDIT_TEXT:    TEdit(comp).Text := value;
+                        EDIT_HINT,
+                        SPEED_BUTTON: TControlHack(comp).Hint := value;
+                        COMBO_BOX:
+                        begin
+                           pos := StrToIntDef(field, -1);
+                           if (pos >= 0) and (pos < TComboBox(comp).Items.Count) then
+                              TComboBox(comp).Items[pos] := value;
+                        end
                         else
                            TControlHack(comp).Caption := value;
-                        end;
                      end;
                   end;
                end;
-               form.Localize(values);
-               result := result + values.Count;
             end;
-            values.Clear;
+            form.Localize(values);
+            result := result + values.Count;
          end;
-      finally
-         sections.Free;
-         values.Free;
-         iniFile.Free;
+         values.Clear;
       end;
+   finally
+      sections.Free;
+      values.Free;
    end;
 end;
 
-function Ti18Manager.LoadDefaultLabels: integer;
+function Ti18Manager.LoadDefaultLabels(ALoadDynamic: boolean = True; ALoadStatic: boolean = True): integer;
 begin
-   var errMsg := '';
-   var langFile := TPath.GetTempPath + 'english.lng';
+   result := 0;
+   var iniFile: TMemIniFile := nil;
    var resStream := TResourceStream.Create(Hinstance, 'DEFAULT_LOCALIZATION_FILE', 'LNG_FILE');
    try
-      try
-         resStream.SaveToFile(langFile);
-         result := LoadAllLabels(langFile);
-      except on E: EFCreateError do
-         begin
-            errMsg := 'Could not create default translation file ' + langFile + ':' + sLineBreak + E.Message;
-            result := 0;
-         end;
-      end;
+      iniFile := TMemIniFile.Create(resStream);
+      if ALoadDynamic then
+         result := LoadDynamicLabels(iniFile);
+      if ALoadStatic then
+         Inc(result, LoadStaticLabels(iniFile));
    finally
-      System.SysUtils.DeleteFile(langFile);
+      iniFile.Free;
       resStream.Free;
    end;
-   if result = 0 then
+end;
+
+function Ti18Manager.LoadLabels(const AFilename: string; ALoadDynamic: boolean = True; ALoadStatic: boolean = True): integer;
+begin
+   result := 0;
+   if FileExists(AFilename) then
    begin
-      if errMsg.IsEmpty then
-         errMsg := 'Failed to load translation labels.';
-      Application.MessageBox(PChar(errMsg), 'IO Error', MB_ICONERROR);
+      var iniFile := TIniFile.Create(AFilename);
+      try
+         if ALoadDynamic then
+            result := LoadDynamicLabels(iniFile);
+         if ALoadStatic then
+            Inc(result, LoadStaticLabels(iniFile));
+      finally
+         iniFile.Free;
+      end;
    end;
 end;
 
@@ -231,12 +229,6 @@ function Ti18Manager.GetString(const AKey: string): string;
 begin
    if not FRepository.TryGetValue(AKey, result) then
       result := AKey;
-end;
-
-function Ti18Manager.LoadAllLabels(const AFilename: string): integer;
-begin
-   FRepository.Clear;
-   result := LoadStaticLabels(AFilename) + LoadDynamicLabels(AFilename);
 end;
 
 function Ti18Manager.GetFormattedString(const AKey: string; const Args: array of const): string;

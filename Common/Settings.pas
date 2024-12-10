@@ -559,10 +559,9 @@ begin
       if translateFile = '' then
       begin
          FTranslateFile := '';
-         if i18Manager.LoadDefaultLabels = 0 then
-            Application.Terminate;
+         i18Manager.LoadDefaultLabels;
       end
-      else if i18Manager.LoadAllLabels(translateFile) > 0 then
+      else if i18Manager.LoadLabels(translateFile) > 0 then
          FTranslateFile := translateFile;
    end;
 

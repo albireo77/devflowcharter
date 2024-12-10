@@ -28,7 +28,7 @@ var
 implementation
 
 uses
-   Vcl.Graphics, Vcl.Forms, Infrastructure;
+   Vcl.Graphics, Vcl.Forms, WinApi.Windows, Infrastructure;
 
 {$R *.dfm}
 
@@ -69,8 +69,12 @@ end;
 procedure TMemoEditorForm.FormCreate(Sender: TObject);
 begin
    memEditor.DoubleBuffered := True;
-   if (i18Manager.LoadStaticLabels(GSettings.TranslateFile) = 0) and (i18Manager.LoadDefaultLabels = 0) then
+   // this must be executed here as all forms have been created in this moment
+   if (i18Manager.LoadLabels(GSettings.TranslateFile, False, True) = 0) and (i18Manager.LoadDefaultLabels(False, True) = 0) then
+   begin
+      Application.MessageBox(PChar('Failed to load translation labels. Application cannot start.'), 'IO Error', MB_ICONERROR);
       Application.Terminate;
+   end;
 end;
 
 end.

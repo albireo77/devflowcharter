@@ -1262,8 +1262,11 @@ initialization
    GSettings := TSettings.Create;
 
    i18Manager := Ti18Manager.Create;
-   if i18Manager.LoadDynamicLabels(GSettings.TranslateFile) = 0 then
-      i18Manager.LoadDefaultLabels;
+   if (i18Manager.LoadLabels(GSettings.TranslateFile, True, False) = 0) and (i18Manager.LoadDefaultLabels(True, False) = 0) then
+   begin
+      Application.MessageBox(PChar('Failed to load translation labels. Application cannot start.'), 'IO Error', MB_ICONERROR);
+      Application.Terminate;
+   end;
 
    GInfra := TInfra.Create;
 
