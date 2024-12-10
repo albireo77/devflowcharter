@@ -96,7 +96,7 @@ begin
             AIniFile.ReadSectionValues(sections[i], values);
             for var a := 0 to values.Count-1 do
                FRepository.AddOrSetValue(values.Names[a], values.ValueFromIndex[a]);
-            result := result + values.Count;
+            Inc(result, values.Count);
          end
       end;
    finally
@@ -181,7 +181,7 @@ begin
                end;
             end;
             form.Localize(values);
-            result := result + values.Count;
+            Inc(result, values.Count);
          end;
          values.Clear;
       end;
