@@ -83,17 +83,17 @@ end;
 function Ti18Manager.LoadDynamicLabels(AIniFile: TCustomIniFile): integer;
 begin
    result := 0;
+   FRepository.Clear;
    var sections := TStringList.Create;
    var values := TStringList.Create;
    try
-      FRepository.Clear;
       AIniFile.ReadSections(sections);
-      for var i := 0 to sections.Count-1 do
+      for var section in sections do
       begin
-         if not sections[i].EndsWith('Form', True) then
+         if not section.EndsWith('Form', True) then
          begin
             values.Clear;
-            AIniFile.ReadSectionValues(sections[i], values);
+            AIniFile.ReadSectionValues(section, values);
             for var a := 0 to values.Count-1 do
                FRepository.AddOrSetValue(values.Names[a], values.ValueFromIndex[a]);
             Inc(result, values.Count);
@@ -115,10 +115,10 @@ begin
    var values := TStringList.Create;
    try
       AIniFile.ReadSections(sections);
-      for var i := 0 to sections.Count-1 do
+      for var section in sections do
       begin
-         AIniFile.ReadSectionValues(sections[i], values);
-         var comp := Application.FindComponent(sections[i]);
+         AIniFile.ReadSectionValues(section, values);
+         var comp := Application.FindComponent(section);
          if comp is TBaseForm then
          begin
             var form := TBaseForm(comp);
