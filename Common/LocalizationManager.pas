@@ -39,7 +39,7 @@ const
    EDIT_TEXT    = 10;
    STATIC_TEXT  = 11;
    COMBO_BOX    = 12;
-   
+
 type
 
    Ti18Manager = class(TObject)
@@ -47,10 +47,11 @@ type
          FRepository: TDictionary<string, string>;
          function LoadStaticLabels(AIniFile: TCustomIniFile): integer;
          function LoadDynamicLabels(AIniFile: TCustomIniFile): integer;
+         function LoadLabels(AStream: TStream; ALoadDynamic, ALoadStatic: boolean): integer; overload;
       public
          constructor Create;
          destructor Destroy; override;
-         function LoadLabels(const AFilename: string; ALoadDynamic: boolean = True; ALoadStatic: boolean = True): integer;
+         function LoadLabels(const AFilename: string; ALoadDynamic: boolean = True; ALoadStatic: boolean = True): integer; overload;
          function LoadDefaultLabels(ALoadDynamic: boolean = True; ALoadStatic: boolean = True): integer;
          function GetString(const AKey: string): string;
          function GetFormattedString(const AKey: string; const Args: array of const): string;
@@ -192,35 +193,28 @@ end;
 
 function Ti18Manager.LoadDefaultLabels(ALoadDynamic: boolean = True; ALoadStatic: boolean = True): integer;
 begin
+   result := LoadLabels(TResourceStream.Create(Hinstance, 'DEFAULT_LOCALIZATION_FILE', 'LNG_FILE'), ALoadDynamic, ALoadStatic);
+end;
+
+function Ti18Manager.LoadLabels(const AFileName: string; ALoadDynamic: boolean = True; ALoadStatic: boolean = True): integer;
+begin
    result := 0;
-   var iniFile: TMemIniFile := nil;
-   var resStream := TResourceStream.Create(Hinstance, 'DEFAULT_LOCALIZATION_FILE', 'LNG_FILE');
+   if FileExists(AFilename) then
+      result := LoadLabels(TFileStream.Create(AFileName, fmOpenRead), ALoadDynamic, ALoadStatic);
+end;
+
+function Ti18Manager.LoadLabels(AStream: TStream; ALoadDynamic, ALoadStatic: boolean): integer;
+begin
+   result := 0;
+   var iniFile := TMemIniFile.Create(AStream);
    try
-      iniFile := TMemIniFile.Create(resStream);
       if ALoadDynamic then
          result := LoadDynamicLabels(iniFile);
       if ALoadStatic then
          Inc(result, LoadStaticLabels(iniFile));
    finally
       iniFile.Free;
-      resStream.Free;
-   end;
-end;
-
-function Ti18Manager.LoadLabels(const AFilename: string; ALoadDynamic: boolean = True; ALoadStatic: boolean = True): integer;
-begin
-   result := 0;
-   if FileExists(AFilename) then
-   begin
-      var iniFile := TIniFile.Create(AFilename);
-      try
-         if ALoadDynamic then
-            result := LoadDynamicLabels(iniFile);
-         if ALoadStatic then
-            Inc(result, LoadStaticLabels(iniFile));
-      finally
-         iniFile.Free;
-      end;
+      AStream.Free;
    end;
 end;
 
@@ -243,3 +237,4 @@ begin
 end;
 
 end.
+
