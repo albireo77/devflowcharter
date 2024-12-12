@@ -1,5 +1,5 @@
 11.2 [12-12-2024]
-- default settings read from memory instead from temporary file
+- default English translation read from memory instead from temporary file
 
 11.1 [01-12-2024]
 - fix not opening plain-flowchart files
