@@ -70,7 +70,7 @@ procedure TMemoEditorForm.FormCreate(Sender: TObject);
 begin
    memEditor.DoubleBuffered := True;
    // this must be executed here as all forms have been created in this moment
-   if (i18Manager.LoadLabels(GSettings.TranslateFile, False, True) = 0) and (i18Manager.LoadDefaultLabels(False, True) = 0) then
+   if (i18Manager.LoadLabels(GSettings.TranslateFile, False) = 0) and (i18Manager.LoadDefaultLabels(False) = 0) then
    begin
       Application.MessageBox(PChar('Failed to load translation labels. Application cannot start.'), 'IO Error', MB_ICONERROR);
       Application.Terminate;
