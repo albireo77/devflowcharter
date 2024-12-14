@@ -21,7 +21,7 @@ unit LocalizationManager;
 
 interface
 
-{$R ENGLISH_LOC.RES}
+{$R ENGLISH_TRANSLATION.RES}
 
 uses
    System.Classes, System.IniFiles, System.Generics.Collections;
@@ -193,7 +193,7 @@ end;
 
 function Ti18Manager.LoadDefaultLabels(ALoadDynamic: boolean = True; ALoadStatic: boolean = True): integer;
 begin
-   result := LoadLabels(TResourceStream.Create(Hinstance, 'DEFAULT_LOCALIZATION_FILE', 'LNG_FILE'), ALoadDynamic, ALoadStatic);
+   result := LoadLabels(TResourceStream.Create(Hinstance, 'DEFAULT_TRANSLATION_FILE', 'LNG_FILE'), ALoadDynamic, ALoadStatic);
 end;
 
 function Ti18Manager.LoadLabels(const AFileName: string; ALoadDynamic: boolean = True; ALoadStatic: boolean = True): integer;

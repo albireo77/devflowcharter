@@ -3,7 +3,8 @@ unit EditMemo_Form;
 interface
 
 uses
-  System.Classes, Vcl.StdCtrls, Vcl.Controls, Base_Form, Base_Block, Interfaces, MemoEx;
+  System.Classes, Vcl.StdCtrls, Vcl.Controls, Base_Form, Base_Block, Interfaces,
+  MemoEx;
 
 type
 
@@ -28,7 +29,7 @@ var
 implementation
 
 uses
-   Vcl.Graphics, Vcl.Forms, WinApi.Windows, Infrastructure;
+   Vcl.Graphics, Infrastructure;
 
 {$R *.dfm}
 
@@ -70,11 +71,8 @@ procedure TMemoEditorForm.FormCreate(Sender: TObject);
 begin
    memEditor.DoubleBuffered := True;
    // this must be executed here as all forms have been created in this moment
-   if (i18Manager.LoadLabels(GSettings.TranslationFile, False) = 0) and (i18Manager.LoadDefaultLabels(False) = 0) then
-   begin
-      Application.MessageBox(PChar('Failed to load translation labels. Application cannot start.'), 'IO Error', MB_ICONERROR);
-      Application.Terminate;
-   end;
+   if i18Manager.LoadLabels(GSettings.TranslationFile, False) = 0 then
+      i18Manager.LoadDefaultLabels(False);
 end;
 
 end.
