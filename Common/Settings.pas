@@ -73,7 +73,7 @@ type
       FPrintMultPagesHorz: boolean;
       FSelectColor: TColor;
       FDesktopColor: TColor;
-      FTranslateFile: string;
+      FTranslationFile: string;
       FFontColor: TColor;
       FPenColor: TColor;
       FPrintRect: TRect;
@@ -145,7 +145,7 @@ type
       property SelectColor: TColor read FSelectColor;
       property PenColor: TColor read FPenColor;
       property DesktopColor: TColor read FDesktopColor;
-      property TranslateFile: string read FTranslateFile;
+      property TranslationFile: string read FTranslationFile;
       property FontColor: TColor read FFontColor;
       property PrintRect: TRect read FPrintRect;
       property EnableDBuffering: boolean read FEnableDBuffering;
@@ -218,7 +218,7 @@ const
    KEY_EDITOR_SHOW_SCROLLBARS = 'EditorScrollbars';
    KEY_EDITOR_FONT_SIZE = 'EditorFontSize';
 
-   KEY_LOCALIZATION_FILE = 'LocalizationScript';
+   KEY_TRANSLATION_FILE = 'LocalizationScript';
    KEY_PRINT_MULTI_PAGES = 'PrintMultiPages';
    KEY_PRINT_MULTI_PAGES_HORZ = 'PrintMultiPagesHorz';
    KEY_PRINT_MARGIN_LEFT = 'PrintMarginLeft';
@@ -336,14 +336,14 @@ begin
    FShowBlockLabels           := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_SHOW_BLOCK_LABELS, False);
    FValidateDeclaration       := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_VALIDATE_DECLARATION, True);
    FFlowchartFontName         := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_FLOWCHART_FONT_NAME, FLOWCHART_DEFAULT_FONT_NAME);
-   FTranslateFile             := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_LOCALIZATION_FILE, '');
+   FTranslationFile           := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_TRANSLATION_FILE, '');
    FCurrentLangName           := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_CURRENT_LANGUAGE, '');
    FFlowchartFontSize         := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_FLOWCHART_FONT_SIZE, FLOWCHART_MIN_FONT_SIZE);
    FIndentChar                := Char(FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_INDENT_CHAR, Integer(SPACE_CHAR)));
    if not (FFlowchartFontSize in FLOWCHART_VALID_FONT_SIZES) then
       FFlowchartFontSize := FLOWCHART_MIN_FONT_SIZE;
-   if not FileExists(FTranslateFile) then
-      FTranslateFile := '';
+   if not FileExists(FTranslationFile) then
+      FTranslationFile := '';
    if TInfra.IsNOkColor(FFontColor) then
       FFontColor := OK_COLOR;
    FIndentSpaces := StringOfChar(SPACE_CHAR, FIndentLength);
@@ -409,7 +409,7 @@ begin
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_ROADSIGN_COLOR, FShapeColors[shpRoadSign]);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_ROUTINE_COLOR, FShapeColors[shpRoutine]);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_FONT_COLOR, FFontColor);
-   FSettingsFile.WriteString(SETTINGS_SECTION, KEY_LOCALIZATION_FILE, FTranslateFile);
+   FSettingsFile.WriteString(SETTINGS_SECTION, KEY_TRANSLATION_FILE, FTranslationFile);
    FSettingsFile.WriteString(SETTINGS_SECTION, KEY_FLOWCHART_FONT_NAME, FFlowchartFontName);
    FSettingsFile.WriteString(SETTINGS_SECTION, KEY_CURRENT_LANGUAGE, FCurrentLangName);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_FLOWCHART_FONT_SIZE, FFlowchartFontSize);
@@ -553,16 +553,16 @@ begin
    FPrintMultPages := sForm.chkMultiPrint.Checked;
    FPrintMultPagesHorz := sForm.chkMultiPrintHorz.Checked;
 
-   var translateFile := sForm.edtTranslateFile.Text;
-   if translateFile <> FTranslateFile then
+   var translationFile := sForm.edtTranslationFile.Text;
+   if translationFile <> FTranslationFile then
    begin
-      if translateFile = '' then
+      if translationFile = '' then
       begin
-         FTranslateFile := '';
+         FTranslationFile := '';
          i18Manager.LoadDefaultLabels;
       end
-      else if i18Manager.LoadLabels(translateFile) > 0 then
-         FTranslateFile := translateFile;
+      else if i18Manager.LoadLabels(translationFile) > 0 then
+         FTranslationFile := translationFile;
    end;
 
    var lang := GInfra.GetLangDefinition(sForm.cbLanguage.Text);

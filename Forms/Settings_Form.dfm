@@ -906,7 +906,7 @@ object SettingsForm: TSettingsForm
       Font.Style = []
       ParentFont = False
     end
-    object edtTranslateFile: TEdit
+    object edtTranslationFile: TEdit
       Tag = 5
       Left = 88
       Top = 24

@@ -72,7 +72,7 @@ type
     pnlEditorIdent: TPanel;
     gbTranslation: TGroupBox;
     lblFile: TLabel;
-    edtTranslateFile: TEdit;
+    edtTranslationFile: TEdit;
     btnBrowseScripts: TButton;
     chkParseCase: TCheckBox;
     gbFlowchart: TGroupBox;
@@ -173,8 +173,8 @@ begin
    lblCompilerNoMain.Left := 7;
    edtCompilerNoMain.Left := lblCompilerNoMain.Width + lblCompilerNoMain.Left + 5;
    edtCompilerNoMain.Width := w - edtCompilerNoMain.Left;
-   edtTranslateFile.Left := lblFile.Width + lblFile.Left + 5;;
-   edtTranslateFile.Width := w - edtTranslateFile.Left;
+   edtTranslationFile.Left := lblFile.Width + lblFile.Left + 5;;
+   edtTranslationFile.Width := w - edtTranslationFile.Left;
    var val := lblDesktop.Width;
    if val < lblSelectColor.Width then
       val := lblSelectColor.Width;
@@ -252,7 +252,7 @@ begin
       DefaultExt := '*.lng';
       FileName := '';
       if Execute then
-         edtTranslateFile.Text := FileName;
+         edtTranslationFile.Text := FileName;
    end;
 end;
 
@@ -412,7 +412,7 @@ begin
    pnlEditorIdent.Color := ASettings.EditorIdentColor;
    edtEditorIndent.Text := ASettings.IndentLength.ToString;
    pnlFont.Color := ASettings.FontColor;
-   edtTranslateFile.Text := ASettings.TranslateFile;
+   edtTranslationFile.Text := ASettings.TranslationFile;
    cbLanguage.ItemIndex := cbLanguage.Items.IndexOf(ASettings.CurrentLangName);
    edtCompiler.Text := GInfra.CurrentLang.CompilerCommand;
    edtCompilerNoMain.Text := GInfra.CurrentLang.CompilerCommandNoMain;
