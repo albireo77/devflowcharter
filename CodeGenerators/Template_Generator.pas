@@ -652,7 +652,7 @@ end;
 
 function Template_GetMainProgramDesc: string;
 begin
-   result := t9nManager.GetString(GInfra.CurrentLang.ProgramLabelKey);
+   result := trnsManager.GetString(GInfra.CurrentLang.ProgramLabelKey);
    result := ReplaceStr(result, PRIMARY_PLACEHOLDER, GProject.Name);
 end;
 
@@ -685,7 +685,7 @@ begin
       end;
       if not key.IsEmpty then
       begin
-         result := t9nManager.GetString(key);
+         result := trnsManager.GetString(key);
          result := ReplaceStr(result, LB_PHOLDER2, lb);
          result := ReplaceStr(result, PRIMARY_PLACEHOLDER, Trim(AHeader.edtName.Text));
          result := ReplaceStr(result, '%s2', params);

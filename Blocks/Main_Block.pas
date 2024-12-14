@@ -83,8 +83,8 @@ begin
 
    inherited Create(nil, ABlockParms, shpEllipse, taLeftJustify);
 
-   FStartLabel := t9nManager.GetString('CaptionStart');
-   FStopLabel  := t9nManager.GetString('CaptionStop');
+   FStartLabel := trnsManager.GetString('CaptionStart');
+   FStopLabel  := trnsManager.GetString('CaptionStop');
 
    var w := Max(GetEllipseTextRect(0, 0, FStartLabel).Width,
                 GetEllipseTextRect(0, 0, FStopLabel).Width) + 40;

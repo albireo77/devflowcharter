@@ -119,7 +119,7 @@ begin
    GInfra.TemplateLang.ProgramHeaderSectionGenerator(ALines);
    var progName := GProject.Name;
    if progName.IsEmpty then
-      progName := t9nManager.GetString('Unknown');
+      progName := trnsManager.GetString('Unknown');
    progName := ReplaceStr(progName, ' ', '_') + ';';
    if GProject.GetMain <> nil then
       ALines.Add('program ' + progName)

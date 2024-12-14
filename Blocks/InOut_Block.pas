@@ -95,28 +95,28 @@ end;
 
 constructor TInputBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
-   FLabel := t9nManager.GetString('CaptionIn');
+   FLabel := trnsManager.GetString('CaptionIn');
    FLabelSegoe := GInfra.CurrentLang.LabelIn;
    inherited Create(ABranch, ABlockParms, GInfra.CurrentLang.InputFunction, False, yymInput);
 end;
 
 constructor TInputBlock.Create(ABranch: TBranch);
 begin
-   FLabel := t9nManager.GetString('CaptionIn');
+   FLabel := trnsManager.GetString('CaptionIn');
    FLabelSegoe := GInfra.CurrentLang.LabelIn;
    inherited Create(ABranch, TBlockParms.New(blInput, 0, 0, DEF_BLOCK_WIDTH, DEF_BLOCK_HEIGHT), GInfra.CurrentLang.InputFunction, True, yymInput);
 end;
 
 constructor TOutputBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
-   FLabel := t9nManager.GetString('CaptionOut');
+   FLabel := trnsManager.GetString('CaptionOut');
    FLabelSegoe := GInfra.CurrentLang.LabelOut;
    inherited Create(ABranch, ABlockParms, GInfra.CurrentLang.OutputFunction, False, yymOutput);
 end;
 
 constructor TOutputBlock.Create(ABranch: TBranch);
 begin
-   FLabel := t9nManager.GetString('CaptionOut');
+   FLabel := trnsManager.GetString('CaptionOut');
    FLabelSegoe := GInfra.CurrentLang.LabelOut;
    inherited Create(ABranch, TBlockParms.New(blOutput, 0, 0, DEF_BLOCK_WIDTH, DEF_BLOCK_HEIGHT), GInfra.CurrentLang.OutputFunction, True, yymOutput);
 end;

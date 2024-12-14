@@ -324,7 +324,7 @@ begin
    inherited Create(AParentForm);
 
    FLocalVars := TVarDeclareList.Create(Self, 0, 350, 389, 3, 4, 380);
-   FLocalVars.Caption := t9nManager.GetString('LocalDeclare');
+   FLocalVars.Caption := trnsManager.GetString('LocalDeclare');
    FLocalVars.gbBox.DoubleBuffered := True;
 
    gbDesc := TGroupBox.Create(Self);
@@ -334,7 +334,7 @@ begin
    gbDesc.ParentBackground := False;
    gbDesc.Font.Color := clBlack;
    gbDesc.Align := alTop;
-   gbDesc.Caption := t9nManager.GetString('gbDesc');
+   gbDesc.Caption := trnsManager.GetString('gbDesc');
    gbDesc.DoubleBuffered := True;
    gbDesc.Constraints.MinHeight := gbDesc.Height;
 
@@ -351,7 +351,7 @@ begin
    chkInclDescCode.ParentFont := False;
    chkInclDescCode.Font.Style := [];
    chkInclDescCode.Font.Color := clWindowText;
-   chkInclDescCode.Caption := t9nManager.GetString('chkInclDescCode');
+   chkInclDescCode.Caption := trnsManager.GetString('chkInclDescCode');
    chkInclDescCode.SetBounds(5, gbDesc.Height-s22, TInfra.GetAutoWidth(chkInclDescCode), s16);
    chkInclDescCode.DoubleBuffered := True;
    chkInclDescCode.Anchors := [akBottom, akLeft];
@@ -362,7 +362,7 @@ begin
    chkInclDescFlow.ParentFont := False;
    chkInclDescFlow.Font.Style := [];
    chkInclDescFlow.Font.Color := clWindowText;
-   chkInclDescFlow.Caption := t9nManager.GetString('chkInclDescFlow');
+   chkInclDescFlow.Caption := trnsManager.GetString('chkInclDescFlow');
    chkInclDescFlow.SetBounds(chkInclDescCode.BoundsRect.Right+20, gbDesc.Height-s22, TInfra.GetAutoWidth(chkInclDescFlow), s16);
    chkInclDescFlow.DoubleBuffered := True;
    chkInclDescFlow.Anchors := [akBottom, akLeft];
@@ -385,7 +385,7 @@ begin
    btnGenDesc.ParentFont := False;
    btnGenDesc.Font.Style := [];
    btnGenDesc.DoubleBuffered := True;
-   btnGenDesc.Caption := t9nManager.GetString('btnGenDesc');
+   btnGenDesc.Caption := trnsManager.GetString('btnGenDesc');
    btnGenDesc.SetBounds(gbDesc.Width-TInfra.Scaled(Self, 85), chkInclDescCode.Top-3, TInfra.Scaled(Self, 80), TInfra.Scaled(Self, 20));
    btnGenDesc.Anchors := [akBottom];
    btnGenDesc.OnClick := OnClickGenDesc;
@@ -397,7 +397,7 @@ begin
    gbBody.ParentFont := False;
    gbBody.ParentBackground := False;
    gbBody.Font.Color := clBlack;
-   gbBody.Caption := t9nManager.GetString('Body');
+   gbBody.Caption := trnsManager.GetString('Body');
    gbBody.DoubleBuffered := True;
    gbBody.Align := alTop;
 
@@ -405,7 +405,7 @@ begin
    lblBodyPage.Parent := gbBody;
    lblBodyPage.SetBounds(8, 25, 0, 13);
    lblBodyPage.ParentFont := False;
-   lblBodyPage.Caption := t9nManager.GetString('lblBodyPage');
+   lblBodyPage.Caption := trnsManager.GetString('lblBodyPage');
    lblBodyPage.Font.Style := [];
    lblBodyPage.Font.Color := clWindowText;
 
@@ -427,7 +427,7 @@ begin
    chkBodyVisible.ParentFont := False;
    chkBodyVisible.Font.Style := [];
    chkBodyVisible.Font.Color := clWindowText;
-   chkBodyVisible.Caption := t9nManager.GetString('Visible');
+   chkBodyVisible.Caption := trnsManager.GetString('Visible');
    chkBodyVisible.SetBounds(cbBodyPage.BoundsRect.Right+20, 22, TInfra.GetAutoWidth(chkBodyVisible), TInfra.Scaled(Self, 17));
    chkBodyVisible.DoubleBuffered := True;
    chkBodyVisible.Anchors := [akBottom, akLeft];
@@ -440,7 +440,7 @@ begin
    gbHeader.ParentFont := False;
    gbHeader.ParentBackground := False;
    gbHeader.Font.Color := clBlack;
-   gbHeader.Caption := t9nManager.GetString('Header');
+   gbHeader.Caption := trnsManager.GetString('Header');
    gbHeader.DoubleBuffered := True;
    gbHeader.Align := alTop;
 
@@ -450,7 +450,7 @@ begin
    lblTYpe.Parent := gbHeader;
    lblType.SetBounds(165, 25, 0, 13);
    lblType.ParentFont := False;
-   lblType.Caption := t9nManager.GetString('lblRetType');
+   lblType.Caption := trnsManager.GetString('lblRetType');
    lblType.Font.Style := [];
    lblType.Font.Color := clWindowText;
 
@@ -473,7 +473,7 @@ begin
    chkArrayType.Font.Style := [];
    chkArrayType.Font.Color := clWindowText;
    x := cbType.BoundsRect.Right + 10;
-   chkArrayType.Caption := t9nManager.GetString('chkArrayType');
+   chkArrayType.Caption := trnsManager.GetString('chkArrayType');
    chkArrayType.SetBounds(x, 23, gbHeader.Width-x-3, 17);
    chkArrayType.DoubleBuffered := True;
    chkArrayType.Anchors := [akBottom, akLeft];
@@ -505,7 +505,7 @@ begin
    chkConstructor.Font.Style := [];
    chkConstructor.Font.Color := clWindowText;
    chkConstructor.Alignment := taLeftJustify;
-   chkConstructor.Caption := t9nManager.GetString('constructor');
+   chkConstructor.Caption := trnsManager.GetString('constructor');
    if chkStatic.Visible then
       ctrl := chkStatic
    else
@@ -525,7 +525,7 @@ begin
    gbParams.ParentFont := False;
    gbParams.ParentBackground := False;
    gbParams.Font.Color := clBlack;
-   gbParams.Caption := t9nManager.GetString('Params');
+   gbParams.Caption := trnsManager.GetString('Params');
    gbParams.Constraints.MinHeight := gbParams.Height;
    gbParams.DoubleBuffered := True;
    gbParams.Align := alTop;
@@ -542,7 +542,7 @@ begin
    lblParam.ParentFont := False;
    lblParam.Font.Color := clWindowText;
    lblParam.SetBounds(8, 18, 0, 13);
-   lblParam.Caption := t9nManager.GetString('lblParam');
+   lblParam.Caption := trnsManager.GetString('lblParam');
 
    lblParamType := TLabel.Create(gbParams);
    lblParamType.Parent := gbParams;
@@ -550,7 +550,7 @@ begin
    lblParamType.ParentFont := False;
    lblParamType.Font.Color := clWindowText;
    lblParamType.SetBounds(TInfra.Scaled(Self, 92), 18, 0, 13);
-   lblParamType.Caption := t9nManager.GetString('lblParamType');
+   lblParamType.Caption := trnsManager.GetString('lblParamType');
 
    lblParamDefault := TLabel.Create(gbParams);
    lblParamDefault.Parent := gbParams;
@@ -558,7 +558,7 @@ begin
    lblParamDefault.ParentFont := False;
    lblParamDefault.Font.Color := clWindowText;
    lblParamDefault.SetBounds(TInfra.Scaled(Self, 180), 18, 0, 13);
-   lblParamDefault.Caption := t9nManager.GetString('lblParamDefault');
+   lblParamDefault.Caption := trnsManager.GetString('lblParamDefault');
 
    lblParamArray := TLabel.Create(gbParams);
    lblParamArray.Parent := gbParams;
@@ -566,7 +566,7 @@ begin
    lblParamArray.ParentFont := False;
    lblParamArray.Font.Color := clWindowText;
    lblParamArray.SetBounds(TInfra.Scaled(Self, 239), 18, 0, 13);
-   lblParamArray.Caption := t9nManager.GetString('lblParamArray');
+   lblParamArray.Caption := trnsManager.GetString('lblParamArray');
 
    lblParamRef := TLabel.Create(gbParams);
    lblParamRef.Parent := gbParams;
@@ -574,7 +574,7 @@ begin
    lblParamRef.ParentFont := False;
    lblParamRef.Font.Color := clWindowText;
    lblParamRef.SetBounds(TInfra.Scaled(Self, 281), 18, 0, 13);
-   lblParamRef.Caption := t9nManager.GetString('lblParamRef');
+   lblParamRef.Caption := trnsManager.GetString('lblParamRef');
 
    sbxElements := TScrollBox.Create(gbParams);
    sbxElements.Parent := gbParams;
@@ -593,7 +593,7 @@ begin
    btnAddElement.ParentFont := False;
    btnAddElement.Font.Style := [];
    btnAddElement.DoubleBuffered := True;
-   btnAddElement.Caption := t9nManager.GetString('btnAddParm');
+   btnAddElement.Caption := trnsManager.GetString('btnAddParm');
    btnAddElement.SetBounds(8, 81, gbParams.Width-12, 25);
    btnAddElement.Anchors := [akBottom];
    btnAddElement.OnClick := AddElement;
@@ -676,7 +676,7 @@ begin
       info := 'OkIdD';
    end;
    edtName.Font.Color := lColor;
-   edtName.Hint := t9nManager.GetFormattedString(info, [funcName]);
+   edtName.Hint := trnsManager.GetFormattedString(info, [funcName]);
    RedrawBody;
    inherited OnChangeName(Sender);
 end;
@@ -808,7 +808,7 @@ begin
          result := lang.GetMainProgramDesc;
       end
       else
-         result := t9nManager.GetString('Flowchart');
+         result := trnsManager.GetString('Flowchart');
    end
    else
    begin

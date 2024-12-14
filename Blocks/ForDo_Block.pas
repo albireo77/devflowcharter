@@ -95,7 +95,7 @@ begin
    FInitParms.HeightAffix := 22;
 
    var sColor := GSettings.GetShapeColor(FShape);
-   FForLabel := t9nManager.GetString('CaptionFor');
+   FForLabel := trnsManager.GetString('CaptionFor');
 
    edtStart := TStatement.Create(Self, yymFor, taLeftJustify);
    edtStart.Color := sColor;
@@ -268,12 +268,12 @@ begin
    edtVar.Text := cbVar.Text;
    if (edtVar.Text <> '') or not GSettings.ParseFor then
    begin
-      edtVar.Hint := t9nManager.GetFormattedString('ExpOk', [edtVar.Text, sLineBreak]);
+      edtVar.Hint := trnsManager.GetFormattedString('ExpOk', [edtVar.Text, sLineBreak]);
       edtVar.Font.Color := GSettings.FontColor;
    end
    else
    begin
-      edtVar.Hint := t9nManager.GetFormattedString('NoCVar', [sLineBreak]);
+      edtVar.Hint := trnsManager.GetFormattedString('NoCVar', [sLineBreak]);
       edtVar.Font.Color := NOK_COLOR;
    end;
    if ShouldUpdateEditor then
@@ -284,7 +284,7 @@ procedure TForDoBlock.VarOnChange(Sender: TObject);
 begin
    GProject.SetChanged;
    edtVar.Font.Color := GSettings.FontColor;
-   edtVar.Hint := t9nManager.GetFormattedString('ExpOk', [edtVar.Text, sLineBreak]);
+   edtVar.Hint := trnsManager.GetFormattedString('ExpOk', [edtVar.Text, sLineBreak]);
    if not GInfra.CurrentLang.ForDoVarList then
       UpdateEditor(edtVar);
    if GSettings.ParseFor then
@@ -299,9 +299,9 @@ begin
       begin
          edtVar.Font.Color := NOK_COLOR;
          if edtVar.Text <> '' then
-            edtVar.Hint := t9nManager.GetFormattedString('BadCVar', [edtVar.Text, sLineBreak])
+            edtVar.Hint := trnsManager.GetFormattedString('BadCVar', [edtVar.Text, sLineBreak])
          else
-            edtVar.Hint := t9nManager.GetFormattedString('NoCVar', [sLineBreak]);
+            edtVar.Hint := trnsManager.GetFormattedString('NoCVar', [sLineBreak]);
       end;
    end;
    var w := TInfra.GetAutoWidth(edtVar, IfThen(GInfra.CurrentLang.ForDoVarList, 28, 5));

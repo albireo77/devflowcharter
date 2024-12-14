@@ -179,7 +179,7 @@ begin
    inherited Change;
    GProject.SetChanged;
    var txt := Trim(Text);
-   var h := t9nManager.GetFormattedString('ExpOk', [txt, sLineBreak]);
+   var h := trnsManager.GetFormattedString('ExpOk', [txt, sLineBreak]);
    var c := GSettings.FontColor;
    if GSettings.ExecuteParse(FParserMode) then
    begin
@@ -188,34 +188,34 @@ begin
          case FParserMode of
             yymFor:
             begin
-               h := t9nManager.GetFormattedString('ExpErr', ['', sLineBreak, t9nManager.GetString('IntReq')]);
+               h := trnsManager.GetFormattedString('ExpErr', ['', sLineBreak, trnsManager.GetString('IntReq')]);
                c := NOK_COLOR;
             end;
             yymCondition:
             begin
-               h := t9nManager.GetFormattedString('NoCExp', [sLineBreak]);
+               h := trnsManager.GetFormattedString('NoCExp', [sLineBreak]);
                c := NOK_COLOR;
             end;
             yymCase:
             begin
-               h := t9nManager.GetFormattedString('NoCaseExp', [sLineBreak]);
+               h := trnsManager.GetFormattedString('NoCaseExp', [sLineBreak]);
                c := NOK_COLOR;
             end;
             yymAssign:
             begin
-               h := t9nManager.GetFormattedString('NoInstr', [sLineBreak]);
+               h := trnsManager.GetFormattedString('NoInstr', [sLineBreak]);
                c := WARN_COLOR;
             end;
             yymFuncCall:
             begin
-               h := t9nManager.GetFormattedString('NoFCall', [sLineBreak]);
+               h := trnsManager.GetFormattedString('NoFCall', [sLineBreak]);
                c := WARN_COLOR;
             end;
          end;
       end
       else if not TInfra.Parse(Self, FParserMode) then
       begin
-         h := t9nManager.GetFormattedString('ExpErr', [txt, sLineBreak, TInfra.GetParserErrMsg]);
+         h := trnsManager.GetFormattedString('ExpErr', [txt, sLineBreak, TInfra.GetParserErrMsg]);
          c := NOK_COLOR;
       end;
    end;

@@ -559,9 +559,9 @@ begin
       if translationFile = '' then
       begin
          FTranslationFile := '';
-         t9nManager.LoadDefaultLabels;
+         trnsManager.LoadDefaultLabels;
       end
-      else if t9nManager.LoadLabels(translationFile) > 0 then
+      else if trnsManager.LoadLabels(translationFile) > 0 then
          FTranslationFile := translationFile;
    end;
 

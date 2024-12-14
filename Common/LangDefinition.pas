@@ -295,7 +295,7 @@ begin
    EnabledUserDataTypeArray := True;
    LabelFontName := FLOWCHART_DEFAULT_FONT_NAME;
    LabelFontSize := LABEL_DEFAULT_FONT_SIZE;
-   ElseLabel := t9nManager.GetString('ElseLabel');
+   ElseLabel := trnsManager.GetString('ElseLabel');
    InitBlockTemplates;
 end;
 
@@ -328,7 +328,7 @@ begin
    val := GetNodeTextStr(ANode, 'Name', '');
    if val.IsEmpty then
    begin
-      GErr_Text := t9nManager.GetString('NameTagNotFound');
+      GErr_Text := trnsManager.GetString('NameTagNotFound');
       Exit(errValidate);
    end;
 
@@ -778,7 +778,7 @@ end;
 procedure TLangDefinition.InitBlockTemplates;
 begin
    for var blockType := Low(TBlockType) to High(TBlockType) do
-      BlockTemplates[blockType] := t9nManager.GetString(BLOCK_TO_TEMPLATE_TAG_MAP[blockType]);
+      BlockTemplates[blockType] := trnsManager.GetString(BLOCK_TO_TEMPLATE_TAG_MAP[blockType]);
 end;
 
 procedure TLangDefinition.ImportBlockTemplates(ANode: IXMLNode);

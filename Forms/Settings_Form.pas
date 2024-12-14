@@ -200,7 +200,7 @@ procedure TSettingsForm.btnBrowseCCompClick(Sender: TObject);
 begin
    with OpenDialog do
    begin
-      Filter := t9nManager.GetString('ExeFilesFilter');
+      Filter := trnsManager.GetString('ExeFilesFilter');
       DefaultExt := '*.exe';
       FileName := '';
       if Execute then
@@ -248,7 +248,7 @@ procedure TSettingsForm.btnBrowseScriptsClick(Sender: TObject);
 begin
    with OpenDialog do
    begin
-      Filter := t9nManager.GetString('LngFilesFilter');
+      Filter := trnsManager.GetString('LngFilesFilter');
       DefaultExt := '*.lng';
       FileName := '';
       if Execute then

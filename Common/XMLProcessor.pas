@@ -121,7 +121,7 @@ end;
 class function TXMLProcessor.DialogXMLFile(ADialog: TOpenDialog; const AFileName: string): string;
 begin
    result := '';
-   ADialog.Filter := t9nManager.GetString('XMLFilesFilter');
+   ADialog.Filter := trnsManager.GetString('XMLFilesFilter');
    ADialog.FileName := AFileName;
    if ADialog.Execute then
       result := ADialog.FileName;
@@ -145,7 +145,7 @@ begin
          if docXML.Load(result) then
             status := AImportProc(docXML.DocumentElement, AImportMode)
          else with docXML.ParseError do
-            errText := t9nManager.GetFormattedString('ParserError', [ErrorCode, Line, LinePos, Reason]);
+            errText := trnsManager.GetFormattedString('ParserError', [ErrorCode, Line, LinePos, Reason]);
       except on E: Exception do
          begin
             status := errIO;
@@ -156,7 +156,7 @@ begin
       begin
          if errText.IsEmpty then
             errText := GErr_text;
-         errText := t9nManager.GetFormattedString('FileError', [result]) + sLineBreak + errText;
+         errText := trnsManager.GetFormattedString('FileError', [result]) + sLineBreak + errText;
          TInfra.ShowErrorBox('ImportFailed', [sLineBreak, errText], errImport);
          result := '';
       end;

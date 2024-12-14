@@ -78,7 +78,7 @@ begin
    DoubleBuffered := True;
    DragMode := dmAutomatic;
    FTypeId := ATypeId;
-   FHintStr := t9nManager.GetString(FTypeId + 'HintStr');
+   FHintStr := trnsManager.GetString(FTypeId + 'HintStr');
 
    edtName := TNameEdit.Create(Self);
    edtName.Parent := Self;
@@ -88,7 +88,7 @@ begin
    edtName.ParentCtl3D := False;
    edtName.Ctl3D := True;
    edtName.ShowHint := True;
-   edtName.Hint := t9nManager.GetString('BadIdD');
+   edtName.Hint := trnsManager.GetString('BadIdD');
    edtName.Font.Color := NOK_COLOR;
    edtName.DoubleBuffered := True;
    edtName.OnChange := OnChangeName;
@@ -108,7 +108,7 @@ begin
    btnRemove.ParentFont := False;
    btnRemove.Font.Style := [];
    btnRemove.DoubleBuffered := True;
-   btnRemove.Caption := t9nManager.GetString('btnRemove');
+   btnRemove.Caption := trnsManager.GetString('btnRemove');
    btnRemove.OnClick := OnClickRemove;
    var w := TInfra.GetAutoWidth(btnRemove);
    btnRemove.SetBounds(Parent.Width-w-TInfra.Scaled(Self, 32), 0, w+14, TInfra.Scaled(Self, 20));
@@ -168,7 +168,7 @@ begin
       lColor := OK_COLOR
    end;
    edtName.Font.Color := lColor;
-   edtName.Hint := t9nManager.GetString(info);
+   edtName.Hint := trnsManager.GetString(info);
    FParentTab.PageControl.Refresh;
    GProject.SetChanged;
    if FParentForm.UpdateCodeEditor then

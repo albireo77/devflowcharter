@@ -90,14 +90,14 @@ begin
     begin
        FErrWarnCount := GProject.CountErrWarn;
        lblErrors.Font.Color := IfThen(FErrWarnCount.ErrorCount = 0, OK_COLOR, NOK_COLOR);
-       lblErrors.Caption := t9nManager.GetFormattedString('lblErrors', [FErrWarnCount.ErrorCount]);
-       lblWarnings.Caption := t9nManager.GetFormattedString('lblWarnings', [FErrWarnCount.WarningCount]);
+       lblErrors.Caption := trnsManager.GetFormattedString('lblErrors', [FErrWarnCount.ErrorCount]);
+       lblWarnings.Caption := trnsManager.GetFormattedString('lblWarnings', [FErrWarnCount.WarningCount]);
        ClearTreeViewItems;
        with tvExplorer do
        begin
           Items.BeginUpdate;
           try
-             Selected := Items.AddChild(nil, t9nManager.GetFormattedString('RootNodeText', [GProject.Name]));
+             Selected := Items.AddChild(nil, trnsManager.GetFormattedString('RootNodeText', [GProject.Name]));
              GProject.GenerateTree(Selected);
           finally
              Items.EndUpdate;
