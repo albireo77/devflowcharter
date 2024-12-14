@@ -559,9 +559,9 @@ begin
       if translationFile = '' then
       begin
          FTranslationFile := '';
-         i18Manager.LoadDefaultLabels;
+         t9nManager.LoadDefaultLabels;
       end
-      else if i18Manager.LoadLabels(translationFile) > 0 then
+      else if t9nManager.LoadLabels(translationFile) > 0 then
          FTranslationFile := translationFile;
    end;
 

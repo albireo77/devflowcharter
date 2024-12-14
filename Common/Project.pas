@@ -200,7 +200,7 @@ end;
 function TProject.MainPage: TBlockTabSheet;
 begin
    if FMainPage = nil then
-      FMainPage := GetPage(i18Manager.GetString(DEF_PAGE_CAPTION_KEY));
+      FMainPage := GetPage(t9nManager.GetString(DEF_PAGE_CAPTION_KEY));
    result := FMainPage;
 end;
 
@@ -475,7 +475,7 @@ begin
    var langName := GetNodeAttrStr(ANode, LANG_ATTR);
    if GInfra.GetLangDefinition(langName) = nil then
    begin
-      Gerr_text := i18Manager.GetFormattedString('LngNoSprt', [langName]);
+      Gerr_text := t9nManager.GetFormattedString('LngNoSprt', [langName]);
       Exit;
    end;
 
@@ -546,7 +546,7 @@ begin
    end;
    if FGlobalVars <> nil then
    begin
-      FGlobalVars.Caption := i18Manager.GetString(GInfra.CurrentLang.GlobalVarsLabelKey);
+      FGlobalVars.Caption := t9nManager.GetString(GInfra.CurrentLang.GlobalVarsLabelKey);
       FGlobalVars.SetExternalColumn(4);
       FGlobalVars.AssociatedList := FGlobalConsts;
       AForm.Width := FGlobalVars.BoundsRect.Right + DECLARATIONS_FORM_RIGHT_MARGIN;
@@ -555,7 +555,7 @@ begin
    end;
    if FGlobalConsts <> nil then
    begin
-      FGlobalConsts.Caption := i18Manager.GetString(GInfra.CurrentLang.GlobalConstsLabelKey);
+      FGlobalConsts.Caption := t9nManager.GetString(GInfra.CurrentLang.GlobalConstsLabelKey);
       FGlobalConsts.SetExternalColumn(2);
       FGlobalConsts.AssociatedList := FGlobalVars;
       AForm.Width := FGlobalConsts.BoundsRect.Right + DECLARATIONS_FORM_RIGHT_MARGIN;
@@ -590,7 +590,7 @@ begin
    else if result.Count > 1 then
    begin
       SelectImportForm.SetSelectList(result);
-      SelectImportForm.Caption := i18Manager.GetString(ALabel);
+      SelectImportForm.Caption := t9nManager.GetString(ALabel);
       if IsAbortResult(SelectImportForm.ShowModal) then
          result.Clear;
    end;

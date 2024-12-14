@@ -82,7 +82,7 @@ input_line:			assignment	{ CheckMode([yymAssign]); }
 routine_call:		T_BREAK			{
 							if not TParserHelper.IsInLoop then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetString('BreakErr');
+                                                           yyerrmsg := t9nManager.GetString('BreakErr');
                                                            yyabort;
                                                         end;
 						}
@@ -92,7 +92,7 @@ routine_call:		T_BREAK			{
 		|	T_CONTINUE		{
 							if not TParserHelper.IsInLoop then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetString('ContErr');
+                                                           yyerrmsg := t9nManager.GetString('ContErr');
                                                            yyabort;
                                                         end;
 
@@ -107,22 +107,22 @@ assignment:		var_const T_ASSIGN_SIGN statement   {
                                                         arg1 := TParserHelper.GetIdentInfo($1);
                                                         if arg1.IdentType = CONSTANT then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadConstOp', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadConstOp', [$1]);
                                                            yyabort;
                                                         end
 							else if arg1.TType = PASCAL_TEXT_FILE_TYPE then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadVarOper', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadVarOper', [$1]);
                                                            yyabort;
                                                         end
                                                         else if arg1.IdentType = ENUM_VALUE then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadEnumOper', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadEnumOper', [$1]);
                                                            yyabort;
                                                         end
 							else if not TParserHelper.AreTypesCompatible(arg1.TType, $3) then
 							begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('IncTypes', [arg1.TypeAsString, TParserHelper.GetTypeAsString($3)]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('IncTypes', [arg1.TypeAsString, TParserHelper.GetTypeAsString($3)]);
                                                            yyabort;
                                                         end;
 						}
@@ -131,17 +131,17 @@ assignment:		var_const T_ASSIGN_SIGN statement   {
                                                         arg1 := TParserHelper.GetIdentInfo($1);
 							if arg1.IdentType = CONSTANT then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadConstOp', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadConstOp', [$1]);
                                                            yyabort;
                                                         end
                                                         else if not arg1.IsPointer then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('NotPtrType', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('NotPtrType', [$1]);
                                                            yyabort;
                                                         end
 							else if not TParserHelper.AreTypesCompatible(arg1.TypeOriginal, $4) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('IncTypes', [arg1.TypeAsString, TParserHelper.GetTypeAsString($4)]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('IncTypes', [arg1.TypeAsString, TParserHelper.GetTypeAsString($4)]);
                                                            yyabort;
                                                         end;
 						}
@@ -149,7 +149,7 @@ assignment:		var_const T_ASSIGN_SIGN statement   {
 		|	table_exp T_ASSIGN_SIGN statement  {
 							if not TParserHelper.AreTypesCompatible($1, $3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
                                                            yyabort;
                                                         end;
 						}
@@ -157,7 +157,7 @@ assignment:		var_const T_ASSIGN_SIGN statement   {
 		|	struct_exp T_ASSIGN_SIGN statement  {
 							if not TParserHelper.AreTypesCompatible($1, $3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
                                                            yyabort;
                                                         end;
 						}
@@ -166,12 +166,12 @@ assignment:		var_const T_ASSIGN_SIGN statement   {
                                                         arg1 := TParserHelper.GetIdentInfo($1);
 							if arg1.IdentType = CONSTANT then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadConstOp', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadConstOp', [$1]);
                                                            yyabort;
                                                         end
 							else if arg1.TType <> PASCAL_BOOL_TYPE then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('IncTypes', [arg1.TypeAsString, 'boolean']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('IncTypes', [arg1.TypeAsString, 'boolean']);
                                                            yyabort;
                                                         end;
 						}
@@ -202,12 +202,12 @@ list_read:		var_const		{
                                                         arg1 := TParserHelper.GetIdentInfo($1);
 							if arg1.IdentType = CONSTANT then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadConstOp', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadConstOp', [$1]);
                                                            yyabort;
                                                         end
 							else if (arg1.TType = PASCAL_BOOL_TYPE) or arg1.IsPointer or arg1.isRecord or (arg1.Size > 1) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadInOper', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadInOper', [$1]);
                                                            yyabort;
                                                         end;
 						}
@@ -216,17 +216,17 @@ list_read:		var_const		{
                                                         arg1 := TParserHelper.GetIdentInfo($1);
 							if arg1.IdentType = CONSTANT then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadConstOp', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadConstOp', [$1]);
                                                            yyabort;
                                                         end
 							else if not arg1.IsPointer then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('NotPtrType', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('NotPtrType', [$1]);
                                                            yyabort;
                                                         end
 							else if arg1.Size > 1 then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadInOper', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadInOper', [$1]);
                                                            yyabort;
                                                         end;
 						}
@@ -234,7 +234,7 @@ list_read:		var_const		{
 		|	table_exp		{
 							if ($1 = PASCAL_BOOL_TYPE) or TParserHelper.IsPointerType($1) or TParserHelper.isRecordType($1) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadInOper', ['']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadInOper', ['']);
                                                            yyabort;
                                                         end;
 						}
@@ -295,17 +295,17 @@ statement:		L_INT			{       $$ := PASCAL_INT_TYPE; is_constant := true;	}
 							is_constant := false;
 							if arg1.IdentType = CONSTANT then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadConstOp', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadConstOp', [$1]);
                                                            yyabort;
                                                         end
 							else if not arg1.IsPointer then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('NotPtrType', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('NotPtrType', [$1]);
                                                            yyabort;
                                                         end
                                                         else if arg1.DimensCount > 0 then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadPtrArray', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadPtrArray', [$1]);
                                                            yyabort;
                                                         end
                                                         else
@@ -317,7 +317,7 @@ statement:		L_INT			{       $$ := PASCAL_INT_TYPE; is_constant := true;	}
 							is_constant := false;
 							if arg1.IdentType = CONSTANT then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadConstOp', [$2]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadConstOp', [$2]);
                                                            yyabort;
                                                         end
 							else
@@ -331,7 +331,7 @@ statement:		L_INT			{       $$ := PASCAL_INT_TYPE; is_constant := true;	}
 		|	'-' statement %prec UMINUS	{
 							if not TParserHelper.IsNumericType($2) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString($2), '-']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString($2), '-']);
                                                            yyabort;
                                                         end;
 							$$ := $2;
@@ -345,7 +345,7 @@ statement:		L_INT			{       $$ := PASCAL_INT_TYPE; is_constant := true;	}
                                                               $$ := PASCAL_STRING_TYPE;
                                                               exit;
                                                            end;
-                                                           yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
                                                            yyabort;
                                                         end;
 							if TParserHelper.IsRealType($1) or TParserHelper.IsRealType($3) then
@@ -357,7 +357,7 @@ statement:		L_INT			{       $$ := PASCAL_INT_TYPE; is_constant := true;	}
 		|	statement '-' statement	{
 							if not TParserHelper.IsNumericType($1) or not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
                                                            yyabort;
                                                         end;
 							if TParserHelper.IsRealType($1) or TParserHelper.IsRealType($3) then
@@ -369,7 +369,7 @@ statement:		L_INT			{       $$ := PASCAL_INT_TYPE; is_constant := true;	}
 		|	statement '*' statement	{
 							if not TParserHelper.IsNumericType($1) or not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
                                                            yyabort;
                                                         end;
 							if TParserHelper.IsRealType($1) or TParserHelper.IsRealType($3) then
@@ -381,7 +381,7 @@ statement:		L_INT			{       $$ := PASCAL_INT_TYPE; is_constant := true;	}
 		|	statement '/' statement	{
 							if not TParserHelper.IsNumericType($1) or not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_REAL_TYPE;
@@ -394,12 +394,12 @@ statement:		L_INT			{       $$ := PASCAL_INT_TYPE; is_constant := true;	}
 		|	statement T_DIV statement	{
 							if not TParserHelper.IsIntegerType($1) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString($1), 'div']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString($1), 'div']);
                                                            yyabort;
                                                         end
 							else if not TParserHelper.IsIntegerType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString($3), 'div']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString($3), 'div']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_INT_TYPE;
@@ -408,12 +408,12 @@ statement:		L_INT			{       $$ := PASCAL_INT_TYPE; is_constant := true;	}
 		|	statement T_MOD statement	  {
 							if not TParserHelper.IsIntegerType($1) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString($1), 'mod']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString($1), 'mod']);
                                                            yyabort;
                                                         end
 							else if not TParserHelper.IsIntegerType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString($3), 'mod']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadOperArg', [TParserHelper.GetTypeAsString($3), 'mod']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_INT_TYPE;
@@ -429,7 +429,7 @@ condition:		T_NOT condition
 		|	statement '=' statement	{
 							if PASCAL_TEXT_FILE_TYPE in [$1, $3] then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetString('BadCmpr');
+                                                           yyerrmsg := t9nManager.GetString('BadCmpr');
                                                            yyabort;
                                                         end
 							else if $1 <> $3 then
@@ -439,7 +439,7 @@ condition:		T_NOT condition
                                                               (TParserHelper.IsPointerType($3) and ($1 = GENERIC_PTR_TYPE)) or
 							      (($1 = PASCAL_CHAR_TYPE) and (($3 = PASCAL_STRING_TYPE) and (slength = 1))) or
 							      (($3 = PASCAL_CHAR_TYPE) and (($1 = PASCAL_STRING_TYPE) and (slength = 1))) then exit;
-                                                           yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
                                                            yyabort;
                                                         end;
 						}
@@ -447,7 +447,7 @@ condition:		T_NOT condition
 		 |	statement GL statement	{
 							if not TParserHelper.IsNumericType($1) or not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetString('BadCmpr');
+                                                           yyerrmsg := t9nManager.GetString('BadCmpr');
                                                            yyabort;
                                                         end;
 						}
@@ -455,7 +455,7 @@ condition:		T_NOT condition
 		 |	statement GE statement	{
 							if not TParserHelper.IsNumericType($1) or not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetString('BadCmpr');
+                                                           yyerrmsg := t9nManager.GetString('BadCmpr');
                                                            yyabort;
                                                         end;
 						}
@@ -463,7 +463,7 @@ condition:		T_NOT condition
 		 |	statement LE statement	{
 							if not TParserHelper.IsNumericType($1) or not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetString('BadCmpr');
+                                                           yyerrmsg := t9nManager.GetString('BadCmpr');
                                                            yyabort;
                                                         end;
 						}
@@ -471,7 +471,7 @@ condition:		T_NOT condition
 		 |	statement NE statement	{
 							if PASCAL_TEXT_FILE_TYPE in [$1, $3] then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetString('BadCmpr');
+                                                           yyerrmsg := t9nManager.GetString('BadCmpr');
                                                            yyabort;
                                                         end
 							else if $1 <> $3 then
@@ -481,7 +481,7 @@ condition:		T_NOT condition
                                                               (TParserHelper.IsPointerType($3) and ($1 = GENERIC_PTR_TYPE)) or
 							      (($1 = PASCAL_CHAR_TYPE) and (($3 = PASCAL_STRING_TYPE) and (slength = 1))) or
 							      (($3 = PASCAL_CHAR_TYPE) and (($1 = PASCAL_STRING_TYPE) and (slength = 1))) then exit;
-                                                           yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString($3)]);
                                                            yyabort;
                                                         end;
 						}
@@ -492,7 +492,7 @@ condition:		T_NOT condition
 valid_identifier:	T_IDENTIFIER		{
 							if not TParserHelper.IsDeclared($1) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('UnknId', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('UnknId', [$1]);
                                                            yyabort;
                                                         end;
 						    	$$ := $1;
@@ -504,7 +504,7 @@ var_const:		valid_identifier	{
                                                         arg1 := TParserHelper.GetIdentInfo($1);
 							if not (arg1.IdentType in [VARIABLE, VARRAY, CONSTANT, ENUM_VALUE]) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('UnknId', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('UnknId', [$1]);
                                                            yyabort;
                                                         end;
 							$$ := $1;
@@ -516,12 +516,12 @@ routine:		valid_identifier '(' parameters_list ')'	{
                                                         arg1 := TParserHelper.GetIdentInfo($1);
 							if arg1.IdentType <> ROUTINE_ID then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('UnknId', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('UnknId', [$1]);
                                                            yyabort;
                                                         end
 							else if not TParserHelper.ValidateUserFunctionParms($1, paramList) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParms', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParms', [$1]);
                                                            yyabort;
                                                         end;
                                                         paramList := nil;
@@ -531,7 +531,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 		|	T_NEW '(' statement ')'	{
 							if not TParserHelper.IsPointerType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParmU', ['New']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParmU', ['New']);
                                                            yyabort;
                                                         end;
 							$$ := UNKNOWN_TYPE;
@@ -540,7 +540,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 		|	T_DISPOSE '(' statement ')'	{
 							if not TParserHelper.IsPointerType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParmU', ['Dispose']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParmU', ['Dispose']);
                                                            yyabort;
                                                         end;
 							$$ := UNKNOWN_TYPE;
@@ -549,7 +549,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 		|	T_SIN '(' statement ')'	{
 							if not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Sin']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Sin']);
                                                            yyabort;
                                                         end;
                                         		$$ := PASCAL_REAL_TYPE;
@@ -558,7 +558,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 		|	T_COS '(' statement ')'	{
 							if not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Cos']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Cos']);
                                                            yyabort;
                                                         end;
                                         		$$ := PASCAL_REAL_TYPE;
@@ -567,7 +567,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 		|	T_TAN '(' statement ')'	{
 							if not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Tan']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Tan']);
                                                            yyabort;
                                                         end;
                                         		$$ := PASCAL_REAL_TYPE;
@@ -576,7 +576,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 		|	T_COTAN '(' statement ')'	{
 							if not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Cotan']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Cotan']);
                                                            yyabort;
                                                         end;
                                         		$$ := PASCAL_REAL_TYPE;
@@ -585,7 +585,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 		|	T_ABS '(' statement ')'	{
 							if not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Abs']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Abs']);
                                                            yyabort;
                                                         end;
 							if TParserHelper.IsRealType($3) then
@@ -597,7 +597,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 		|	T_SQRT '(' statement ')'	{
 							if not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Sqrt']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Sqrt']);
                                                            yyabort;
                                                         end;
                                         		$$ := PASCAL_REAL_TYPE;
@@ -606,7 +606,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 		|	T_LN '(' statement ')'	{
 							if not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Ln']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Ln']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_REAL_TYPE;
@@ -615,7 +615,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 		|	T_EXP '(' statement ')'	{
 							if not TParserHelper.IsNumericType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Exp']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Exp']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_REAL_TYPE;
@@ -624,7 +624,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 		|	T_LEN '(' statement ')'	{
 							if $3 <> PASCAL_STRING_TYPE then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Length']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Length']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_INT_TYPE;
@@ -634,7 +634,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
                                                         arg1 := TParserHelper.GetIdentInfo($3);
 							if (arg1.DimensCount = 0) and (arg1.TType <> PASCAL_STRING_TYPE) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParmU', ['Length']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParmU', ['Length']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_INT_TYPE;
@@ -642,7 +642,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 
 		|	T_RAND '(' '-' L_INT ')'	{
 							rand_flag := 1;
-							yyerrmsg := i18Manager.GetFormattedString('BadFuncParmU', ['random']);
+							yyerrmsg := t9nManager.GetFormattedString('BadFuncParmU', ['random']);
 							yyabort;
 						}
 
@@ -650,7 +650,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 							rand_flag := 1;
 							if not TParserHelper.IsIntegerType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Random']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Random']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_INT_TYPE;
@@ -660,7 +660,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
                                                         lIsInteger := TParserHelper.IsIntegerType($3);
 							if not lIsInteger and not TParserHelper.IsRealType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Sqr']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Sqr']);
                                                            yyabort;
                                                         end;
 							if lIsInteger then
@@ -672,7 +672,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 		|	T_TRUNC '(' statement ')'	{
 							if not TParserHelper.IsRealType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Trunc']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Trunc']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_INT_TYPE;
@@ -682,12 +682,12 @@ routine:		valid_identifier '(' parameters_list ')'	{
                                                         arg1 := TParserHelper.GetIdentInfo($3);
 							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'assign']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'assign']);
                                                            yyabort;
                                                         end
 							else if $5 <> PASCAL_STRING_TYPE then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($5), 'Assign']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($5), 'Assign']);
                                                            yyabort;
                                                         end;
 							$$ := UNKNOWN_TYPE;
@@ -697,7 +697,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
                                                         arg1 := TParserHelper.GetIdentInfo($3);
 							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Close']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Close']);
                                                            yyabort;
                                                         end;
 							$$ := UNKNOWN_TYPE;
@@ -707,7 +707,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
                                                         arg1 := TParserHelper.GetIdentInfo($3);
 							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Reset']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Reset']);
                                                            yyabort;
                                                         end;
 							$$ := UNKNOWN_TYPE;
@@ -717,7 +717,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
                                                         arg1 := TParserHelper.GetIdentInfo($3);
 							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Rewrite']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Rewrite']);
                                                            yyabort;
                                                         end;
 							$$ := UNKNOWN_TYPE;
@@ -727,7 +727,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
                                                         arg1 := TParserHelper.GetIdentInfo($3);
 							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Append']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Append']);
                                                            yyabort;
                                                         end;
 							$$ := UNKNOWN_TYPE;
@@ -737,7 +737,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
                                                         arg1 := TParserHelper.GetIdentInfo($3);
 							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Eof']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Eof']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_BOOL_TYPE;
@@ -747,7 +747,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
                                                         arg1 := TParserHelper.GetIdentInfo($3);
 							if arg1.TType <> PASCAL_TEXT_FILE_TYPE then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Eoln']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [arg1.TypeAsString, 'Eoln']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_BOOL_TYPE;
@@ -757,12 +757,12 @@ routine:		valid_identifier '(' parameters_list ')'	{
                                                         arg1 := TParserHelper.GetIdentInfo($3);
 							if ((arg1.DimensCount = 0) and (arg1.TType <> PASCAL_STRING_TYPE)) or ((arg1.DimensCount > 0) and not ReplaceStr(arg1.SizeAsString, ' ', '').StartsWith('[]')) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetString('SetLenDynArr');
+                                                           yyerrmsg := t9nManager.GetString('SetLenDynArr');
                                                            yyabort;
                                                         end;
 							if not TParserHelper.IsIntegerType($5) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($5), 'SetLength']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($5), 'SetLength']);
                                                            yyabort;
                                                         end;
 							$$ := UNKNOWN_TYPE;
@@ -771,7 +771,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 		|	T_ORD '(' statement ')'	{
 							if ($3 <> PASCAL_CHAR_TYPE) and not TParserHelper.IsEnumType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Ord']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Ord']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_INT_TYPE;
@@ -780,7 +780,7 @@ routine:		valid_identifier '(' parameters_list ')'	{
 		|	T_CHR '(' statement ')'	{
 							if $3 <> PASCAL_INT_TYPE then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Chr']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Chr']);
                                                            yyabort;
                                                         end;
 							$$ := PASCAL_CHAR_TYPE;
@@ -805,17 +805,17 @@ struct_exp:		var_const '.' valid_identifier	{
                                                         arg1 := TParserHelper.GetIdentInfo($1);
 							if not arg1.isRecord then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('NotStructType', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('NotStructType', [$1]);
                                                            yyabort;
                                                         end
 							else if arg1.Size > 1 then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadVarOper', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadVarOper', [$1]);
                                                            yyabort;
                                                         end
 							else if TParserHelper.GetFieldType($1, $3) = NOT_DEFINED then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('NoFieldStruct', [arg1.TypeAsString, $3]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('NoFieldStruct', [arg1.TypeAsString, $3]);
                                                            yyabort;
                                                         end;
 							$$ := TParserHelper.GetFieldType($1, $3);
@@ -826,22 +826,22 @@ struct_exp:		var_const '.' valid_identifier	{
                                                         lType := TParserHelper.GetFieldType($1, $4);
 							if not TParserHelper.isRecordType(arg1.TypeOriginal) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('NotStructType', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('NotStructType', [$1]);
                                                            yyabort;
                                                         end
                                                         else if not arg1.IsPointer then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('NotPtrType', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('NotPtrType', [$1]);
                                                            yyabort;
                                                         end
 							else if arg1.DimensCount > 0 then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadVarOper', [$1]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadVarOper', [$1]);
                                                            yyabort;
                                                         end
 							else if lType = NOT_DEFINED then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('NoFieldStruct', [TParserHelper.GetTypeAsString(arg1.TypeOriginal), $4]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('NoFieldStruct', [TParserHelper.GetTypeAsString(arg1.TypeOriginal), $4]);
                                                            yyabort;
                                                         end;
 							$$ := lType;
@@ -850,12 +850,12 @@ struct_exp:		var_const '.' valid_identifier	{
 		|	table_exp '.' valid_identifier	{
 							if not TParserHelper.isRecordType($1) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadVarOper', ['']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadVarOper', ['']);
                                                            yyabort;
                                                         end
 							else if TParserHelper.GetFieldType($1, $3) = NOT_DEFINED then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('NoFieldStruct', [TParserHelper.GetTypeAsString($1), $3]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('NoFieldStruct', [TParserHelper.GetTypeAsString($1), $3]);
                                                            yyabort;
                                                         end;
 							$$ := TParserHelper.GetFieldType($1, $3);
@@ -864,7 +864,7 @@ struct_exp:		var_const '.' valid_identifier	{
                 |       struct_exp '^'          {
                                                         if not TParserHelper.IsPointerType($1) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), 'pointer']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), 'pointer']);
                                                            yyabort;
                                                         end;
                                                         $$ := TParserHelper.GetOriginalType($1);
@@ -875,7 +875,7 @@ table_index:
                         statement               {
                                                         if not TParserHelper.IsIntegerType($1) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadIndx', [TParserHelper.GetTypeAsString($1)]);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadIndx', [TParserHelper.GetTypeAsString($1)]);
                                                            yyabort;
                                                         end;
 							pcount := 1;
@@ -892,12 +892,12 @@ table_exp:
 							begin
 							   if arg1.IdentType <> VARRAY then
                                                            begin
-                                                              yyerrmsg := i18Manager.GetFormattedString('BadArrExp', [sLineBreak, $1]);
+                                                              yyerrmsg := t9nManager.GetFormattedString('BadArrExp', [sLineBreak, $1]);
                                                               yyabort;
                                                            end;
 							   if arg1.DimensCount <> pcount then
 							   begin
-							      yyerrmsg := i18Manager.GetFormattedString('BadIndxNumber', [pcount, $1, sLineBreak, arg1.DimensCount]);
+							      yyerrmsg := t9nManager.GetFormattedString('BadIndxNumber', [pcount, $1, sLineBreak, arg1.DimensCount]);
 							      yyabort;
 							   end;
 							end
@@ -907,7 +907,7 @@ table_exp:
 							   begin
 							      if pcount <> 1 then
 							      begin
-							         yyerrmsg := i18Manager.GetFormattedString('BadIndxNumber', [pcount, $1, sLineBreak, 1]);	
+							         yyerrmsg := t9nManager.GetFormattedString('BadIndxNumber', [pcount, $1, sLineBreak, 1]);	
 							         yyabort;
 							      end
 							      else
@@ -918,7 +918,7 @@ table_exp:
 							   end
 							   else if not (pcount in [arg1.DimensCount, arg1.DimensCount+1]) or ((pcount = arg1.DimensCount+1) and (PASCAL_CHAR_TYPE = UNKNOWN_TYPE)) then
 							   begin
-							      yyerrmsg := i18Manager.GetFormattedString('BadIndxNumber', [pcount, $1, sLineBreak, arg1.DimensCount]);
+							      yyerrmsg := t9nManager.GetFormattedString('BadIndxNumber', [pcount, $1, sLineBreak, arg1.DimensCount]);
 							      yyabort;
 							   end
 							   else
@@ -933,7 +933,7 @@ table_exp:
 		|	table_exp '^'		{
                                                         if not TParserHelper.IsPointerType($1) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), 'pointer']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), 'pointer']);
                                                            yyabort;
                                                         end;
                                                         $$ := TParserHelper.GetOriginalType($1);
@@ -944,7 +944,7 @@ output_statement:
 			statement		{
 							if TParserHelper.IsPointerType($1) or TParserHelper.isRecordType($1) or ($1 = UNKNOWN_TYPE) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetString('BadOutput');
+                                                           yyerrmsg := t9nManager.GetString('BadOutput');
                                                            yyabort;
                                                         end;
 							$$ := $1;
@@ -954,7 +954,7 @@ output_statement:
 		|	output_statement ':' statement  {
 							if not TParserHelper.IsIntegerType($3) then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Writeln']);
+                                                           yyerrmsg := t9nManager.GetFormattedString('BadFuncParm', [TParserHelper.GetTypeAsString($3), 'Writeln']);
                                                            yyabort;
                                                         end;
 							$$ := $1;
@@ -963,7 +963,7 @@ output_statement:
 		|	output_statement ',' output_statement	{
 							if $3 = PASCAL_TEXT_FILE_TYPE then
                                                         begin
-                                                           yyerrmsg := i18Manager.GetString('BadOutput');
+                                                           yyerrmsg := t9nManager.GetString('BadOutput');
                                                            yyabort;
                                                         end;
 							$$ := $1;
@@ -976,12 +976,12 @@ range:			statement		{
 							lIsInteger := TParserHelper.IsIntegerType($1);
 							if not is_constant and (yymode = yymVarSize) then
 							begin
-							   yyerrmsg := i18Manager.GetString('NotConst');
+							   yyerrmsg := t9nManager.GetString('NotConst');
 							   yyabort;
 							end
 							else if  (yymode = yymReturn) and (($1 <> rval) and not (TParserHelper.IsPointerType(rval) and ($1 = GENERIC_PTR_TYPE)) and not ((TParserHelper.IsNumericType(rval) and TParserHelper.IsNumericType($1)) and not (TParserHelper.IsIntegerType(rval) and TParserHelper.IsRealType($1)))) then
 							begin
-							   yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString(rval)]);
+							   yyerrmsg := t9nManager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), TParserHelper.GetTypeAsString(rval)]);
 							   yyabort;	
 							end
 							else if yymode in [yymFor, yymCase, yymCaseValue, yymVarSize] then
@@ -990,12 +990,12 @@ range:			statement		{
 							   begin
 							      if (yymode = yymCaseValue) and TParserHelper.IsDuplicatedCase then
                                                               begin
-                                                                 yyerrmsg := i18Manager.GetString('DupCaseVal');
+                                                                 yyerrmsg := t9nManager.GetString('DupCaseVal');
                                                                  yyabort;
                                                               end
 							      else if ($1 <> PASCAL_CHAR_TYPE) and not lIsInteger and not lIsEnum then
                                                               begin
-                                                                 yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), 'integer']);
+                                                                 yyerrmsg := t9nManager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString($1), 'integer']);
                                                                  yyabort;
                                                               end
 							      else if yymode = yymCaseValue then
@@ -1003,7 +1003,7 @@ range:			statement		{
 							         lType := TParserHelper.GetCaseVarType;
 								 if (lType <> $1) and not (TParserHelper.IsIntegerType(lType) and lIsInteger) then
 							         begin
-                                                                    yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(lType), TParserHelper.GetTypeAsString($1)]);
+                                                                    yyerrmsg := t9nManager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(lType), TParserHelper.GetTypeAsString($1)]);
                                                                     yyabort;
 								 end;
 							      end;
@@ -1013,7 +1013,7 @@ range:			statement		{
   							      lType := TParserHelper.GetForVarType;
 							      if (lType <> $1) and not (TParserHelper.IsIntegerType(lType) and lIsInteger) then
                                                               begin
-                                                                 yyerrmsg := i18Manager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(lType), TParserHelper.GetTypeAsString($1)]);
+                                                                 yyerrmsg := t9nManager.GetFormattedString('IncTypes', [TParserHelper.GetTypeAsString(lType), TParserHelper.GetTypeAsString($1)]);
                                                                  yyabort;
                                                               end;
 							   end

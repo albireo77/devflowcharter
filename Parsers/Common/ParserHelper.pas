@@ -142,7 +142,7 @@ uses
 class function TIdentInfo.New: TIdentInfo;
 begin
    result.FType := NOT_DEFINED;
-   result.FTypeAsString := i18Manager.GetString('Unknown');
+   result.FTypeAsString := t9nManager.GetString('Unknown');
    result.FTypeOriginal := result.FType;
    result.FTypeOriginalAsString := result.FTypeAsString;
    result.FTypePointer := result.FType;
@@ -447,7 +447,7 @@ class function TParserHelper.GetFieldType(AType: integer; const AFieldName: stri
 begin
    result := NOT_DEFINED;
    var typeName := GetTypeAsString(AType);
-   if (typeName <> i18Manager.GetString('Unknown')) and (GProject <> nil) then
+   if (typeName <> t9nManager.GetString('Unknown')) and (GProject <> nil) then
    begin
       var dataType := GProject.GetUserDataType(typeName);
       if (dataType <> nil) and (dataType.Kind = dtRecord) then
@@ -522,7 +522,7 @@ begin
    else if DecodeArrayDimension(AType) > 0 then
       result := 'array'
    else
-      result := i18Manager.GetString('Unknown');
+      result := t9nManager.GetString('Unknown');
 end;
 
 class function TParserHelper.IsDeclared(const AIdentName: string): boolean;

@@ -357,8 +357,8 @@ begin
    FFoldParms.Width := 140;
    FFoldParms.Height := 91;
 
-   FTrueLabel := i18Manager.GetString('CaptionTrue');
-   FFalseLabel := i18Manager.GetString('CaptionFalse');
+   FTrueLabel := t9nManager.GetString('CaptionTrue');
+   FFalseLabel := t9nManager.GetString('CaptionFalse');
 
    FBranchList := TObjectList<TBranch>.Create;
    FBranchList.Add(nil);
@@ -2202,7 +2202,7 @@ begin
    if node <> nil then
       bt := TRttiEnumerationType.GetValue<TBlockType>(GetNodeAttrStr(node, BLOCK_TYPE_ATTR));
    if bt in [blMain, blUnknown, blComment] then
-      Gerr_text := i18Manager.GetString('BadImportTag')
+      Gerr_text := t9nManager.GetString('BadImportTag')
    else
    begin
       var lParent: TGroupBlock := nil;

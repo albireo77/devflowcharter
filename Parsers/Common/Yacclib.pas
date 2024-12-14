@@ -126,7 +126,7 @@ procedure TCustomParser.CheckMode(AValidModes: TYYModeSet);
 begin
   if not (yymode in AValidModes) then
   begin
-    yyerrmsg := i18Manager.GetString(PARSER_ERROR_KEYS[yymode]);
+    yyerrmsg := t9nManager.GetString(PARSER_ERROR_KEYS[yymode]);
     yyabort;
   end;  
 end;
@@ -136,7 +136,7 @@ begin
   if yyerrmsg <> '' then
     result := yyerrmsg
   else if yyflag <> yyfaccept then
-    result := i18Manager.GetString(PARSER_ERROR_KEYS[yymode])
+    result := t9nManager.GetString(PARSER_ERROR_KEYS[yymode])
   else
     result := '';  
 end;

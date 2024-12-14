@@ -179,7 +179,7 @@ begin
    inherited Change;
    GProject.SetChanged;
    var txt := Trim(Text);
-   var h := i18Manager.GetFormattedString('ExpOk', [txt, sLineBreak]);
+   var h := t9nManager.GetFormattedString('ExpOk', [txt, sLineBreak]);
    var c := GSettings.FontColor;
    if GSettings.ExecuteParse(FParserMode) then
    begin
@@ -188,34 +188,34 @@ begin
          case FParserMode of
             yymFor:
             begin
-               h := i18Manager.GetFormattedString('ExpErr', ['', sLineBreak, i18Manager.GetString('IntReq')]);
+               h := t9nManager.GetFormattedString('ExpErr', ['', sLineBreak, t9nManager.GetString('IntReq')]);
                c := NOK_COLOR;
             end;
             yymCondition:
             begin
-               h := i18Manager.GetFormattedString('NoCExp', [sLineBreak]);
+               h := t9nManager.GetFormattedString('NoCExp', [sLineBreak]);
                c := NOK_COLOR;
             end;
             yymCase:
             begin
-               h := i18Manager.GetFormattedString('NoCaseExp', [sLineBreak]);
+               h := t9nManager.GetFormattedString('NoCaseExp', [sLineBreak]);
                c := NOK_COLOR;
             end;
             yymAssign:
             begin
-               h := i18Manager.GetFormattedString('NoInstr', [sLineBreak]);
+               h := t9nManager.GetFormattedString('NoInstr', [sLineBreak]);
                c := WARN_COLOR;
             end;
             yymFuncCall:
             begin
-               h := i18Manager.GetFormattedString('NoFCall', [sLineBreak]);
+               h := t9nManager.GetFormattedString('NoFCall', [sLineBreak]);
                c := WARN_COLOR;
             end;
          end;
       end
       else if not TInfra.Parse(Self, FParserMode) then
       begin
-         h := i18Manager.GetFormattedString('ExpErr', [txt, sLineBreak, TInfra.GetParserErrMsg]);
+         h := t9nManager.GetFormattedString('ExpErr', [txt, sLineBreak, TInfra.GetParserErrMsg]);
          c := NOK_COLOR;
       end;
    end;

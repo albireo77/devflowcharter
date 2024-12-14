@@ -214,9 +214,9 @@ begin
    chkExternal.Parent := AParent;
    chkExternal.Alignment := AAlignment;
    if not FCodeIncludeExtern then
-      chkExternal.Hint := i18Manager.GetString('chkExternal.Hint');
+      chkExternal.Hint := t9nManager.GetString('chkExternal.Hint');
    if GInfra.CurrentLang.ExternalLabel.IsEmpty then
-      chkExternal.Caption := i18Manager.GetString('chkExternal')
+      chkExternal.Caption := t9nManager.GetString('chkExternal')
    else
       chkExternal.Caption := GInfra.CurrentLang.ExternalLabel;
    chkExternal.ParentFont := False;
@@ -233,7 +233,7 @@ begin
    lblName := TLabel.Create(AParent);
    lblName.Parent := AParent;
    lblName.SetBounds(x, y, 0, 13);
-   lblName.Caption := i18Manager.GetString('lblName');
+   lblName.Caption := t9nManager.GetString('lblName');
    lblName.ParentFont := False;
    lblName.Font.Style := [];
    lblName.Font.Color := clWindowText;
@@ -244,7 +244,7 @@ begin
    edtName.ParentFont := False;
    edtName.Font.Style := [];
    edtName.ShowHint := True;
-   edtName.Hint := i18Manager.GetString('BadIdD');
+   edtName.Hint := t9nManager.GetString('BadIdD');
    edtName.DoubleBuffered := True;
    edtName.OnChange := OnChangeName;
 end;
@@ -254,7 +254,7 @@ begin
    lblLibrary := TLabel.Create(AParent);
    lblLibrary.Parent := AParent;
    lblLibrary.SetBounds(x, y, 0, 13);
-   lblLibrary.Caption := i18Manager.GetString('lblLibrary');
+   lblLibrary.Caption := t9nManager.GetString('lblLibrary');
    lblLibrary.ParentFont := False;
    lblLibrary.Font.Style := [];
    lblLibrary.Font.Color := clWindowText;
@@ -268,7 +268,7 @@ begin
    edtLibrary.ShowHint := True;
    edtLibrary.DoubleBuffered := True;
    edtLibrary.OnChange := OnChangeLib;
-   edtLibrary.Hint := i18Manager.GetFormattedString('edtLibraryHint', [GInfra.CurrentLang.LibraryExt]);
+   edtLibrary.Hint := t9nManager.GetFormattedString('edtLibraryHint', [GInfra.CurrentLang.LibraryExt]);
 end;
 
 procedure TTabComponent.OnClickCh(Sender: TObject);

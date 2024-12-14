@@ -674,7 +674,7 @@ begin
           command := ReplaceText(command, '%s1', fileName);
           command := ReplaceText(command, '%s2', fileNameNoExt);
           if not TInfra.CreateDOSProcess(command, ExtractFileDir(SaveDialog1.FileName)) then
-             TInfra.ShowErrorBox(i18Manager.GetString('CompileFail'), errCompile);
+             TInfra.ShowErrorBox(t9nManager.GetString('CompileFail'), errCompile);
        end;
     end
     else
@@ -684,7 +684,7 @@ end;
 procedure TEditorForm.miPrintClick(Sender: TObject);
 begin
    if not TInfra.IsPrinter then
-      TInfra.ShowErrorBox(i18Manager.GetString('NoPrinter'), errPrinter)
+      TInfra.ShowErrorBox(t9nManager.GetString('NoPrinter'), errPrinter)
    else if (GProject <> nil) and MainForm.PrintDialog.Execute then
    begin
       with SynEditPrint1 do
@@ -703,7 +703,7 @@ procedure TEditorForm.miSaveClick(Sender: TObject);
 begin
    SetSaveDialog(SaveDialog2);
    if Assigned(memCodeEditor.Highlighter) then
-      SaveDialog2.Filter := SaveDialog2.Filter + '|' + i18Manager.GetJoinedString('|', EDITOR_DIALOG_FILTER_KEYS);
+      SaveDialog2.Filter := SaveDialog2.Filter + '|' + t9nManager.GetJoinedString('|', EDITOR_DIALOG_FILTER_KEYS);
    if SaveDialog2.Execute then
    begin
       var synExport: TSynCustomExporter := nil;
@@ -753,20 +753,20 @@ begin
    if Changes * [scAll, scCaretX, scCaretY] <> [] then
    begin
       var p := memCodeEditor.CaretXY;
-      stbEditorBar.Panels[0].Text := i18Manager.GetFormattedString('StatusBarInfo', [p.Line, p.Char]);
+      stbEditorBar.Panels[0].Text := t9nManager.GetFormattedString('StatusBarInfo', [p.Line, p.Char]);
    end;
    if scModified in Changes then
    begin
       if memCodeEditor.Modified then
       begin
-         stbEditorBar.Panels[1].Text := i18Manager.GetString('Modified');
+         stbEditorBar.Panels[1].Text := t9nManager.GetString('Modified');
          GProject.SetChanged;
       end
       else
          stbEditorBar.Panels[1].Text := '';
    end;
    if scInsertMode in Changes then
-      stbEditorBar.Panels[2].Text := i18Manager.GetString(IfThen(memCodeEditor.InsertMode, 'InsertMode', 'OverwriteMode'));
+      stbEditorBar.Panels[2].Text := t9nManager.GetString(IfThen(memCodeEditor.InsertMode, 'InsertMode', 'OverwriteMode'));
 end;
 
 procedure TEditorForm.memCodeEditorGutterClick(Sender: TObject;
@@ -1019,22 +1019,22 @@ begin
    if gCheck then
       idInfo := TParserHelper.GetIdentInfo(w);
    case idInfo.Scope of
-      LOCAL: scope := i18Manager.GetString('VarLocal');
-      PARAMETER: scope := i18Manager.GetString('VarParm');
+      LOCAL: scope := t9nManager.GetString('VarLocal');
+      PARAMETER: scope := t9nManager.GetString('VarParm');
    else
       scope := '';
    end;
    case idInfo.IdentType of
       VARRAY:
       begin
-         h := i18Manager.GetFormattedString('HintArray', [scope, idInfo.DimensCount, w, idInfo.SizeAsString, idInfo.TypeAsString]);
+         h := t9nManager.GetFormattedString('HintArray', [scope, idInfo.DimensCount, w, idInfo.SizeAsString, idInfo.TypeAsString]);
          if (idInfo.SizeExpArrayAsString <> idInfo.SizeAsString) and not idInfo.SizeExpArrayAsString.IsEmpty then
-            h := h + sLineBreak + i18Manager.GetFormattedString('HintArrayExp', [idInfo.TypeAsString, sLineBreak, scope, idInfo.DimensCount, w, idInfo.SizeExpArrayAsString, idInfo.TypeOriginalAsString]);
+            h := h + sLineBreak + t9nManager.GetFormattedString('HintArrayExp', [idInfo.TypeAsString, sLineBreak, scope, idInfo.DimensCount, w, idInfo.SizeExpArrayAsString, idInfo.TypeOriginalAsString]);
       end;
-      VARIABLE:   h := i18Manager.GetFormattedString('HintVar', [scope, w, idInfo.TypeAsString]);
-      CONSTANT:   h := i18Manager.GetFormattedString('HintConst', [w, idInfo.Value]);
-      ROUTINE_ID: h := i18Manager.GetFormattedString('HintRoutine', [w, idInfo.TypeAsString]);
-      ENUM_VALUE: h := i18Manager.GetFormattedString('HintEnum', [w, idInfo.TypeAsString]);
+      VARIABLE:   h := t9nManager.GetFormattedString('HintVar', [scope, w, idInfo.TypeAsString]);
+      CONSTANT:   h := t9nManager.GetFormattedString('HintConst', [w, idInfo.Value]);
+      ROUTINE_ID: h := t9nManager.GetFormattedString('HintRoutine', [w, idInfo.TypeAsString]);
+      ENUM_VALUE: h := t9nManager.GetFormattedString('HintEnum', [w, idInfo.TypeAsString]);
    end;
    if not h.IsEmpty then
    begin
@@ -1390,9 +1390,9 @@ begin
    with ASaveDialog do
    begin
       DefaultExt := GInfra.CurrentLang.DefaultExt;
-      Filter := i18Manager.GetFormattedString('SourceFilesFilter', [GInfra.CurrentLang.Name, DefaultExt, DefaultExt]);
+      Filter := t9nManager.GetFormattedString('SourceFilesFilter', [GInfra.CurrentLang.Name, DefaultExt, DefaultExt]);
       if GProject.Name.IsEmpty then
-         FileName := i18Manager.GetString('Unknown')
+         FileName := t9nManager.GetString('Unknown')
       else
          FileName := GProject.Name;
    end;

@@ -228,7 +228,7 @@ begin
    btnRemove.Parent := Self;
    btnRemove.SetBounds(4, sgList.BoundsRect.Bottom+8, (Width div 2)-5, 25);
    btnRemove.OnClick := OnClickRemove;
-   btnRemove.Caption := i18Manager.GetString('btnRemove');
+   btnRemove.Caption := t9nManager.GetString('btnRemove');
    btnRemove.ParentFont := False;
    btnRemove.Font.Style := [];
    btnRemove.Enabled := False;
@@ -238,7 +238,7 @@ begin
    btnChange.Parent := Self;
    btnChange.SetBounds(Width div 2, btnRemove.Top, (Width div 2)-5, 25);
    btnChange.OnClick := OnClickChange;
-   btnChange.Caption := i18Manager.GetString('btnChange');
+   btnChange.Caption := t9nManager.GetString('btnChange');
    btnChange.ParentFont := False;
    btnChange.Font.Style := [];
    btnChange.Enabled := False;
@@ -256,7 +256,7 @@ begin
    lblName.Parent := gbBox;
    lblName.Top := 22;
    lblName.Left := 5;
-   lblName.Caption := i18Manager.GetString('sgVarListCol0');
+   lblName.Caption := t9nManager.GetString('sgVarListCol0');
 
    edtName := TEdit.Create(gbBox);
    edtName.Parent := gbBox;
@@ -269,7 +269,7 @@ begin
    btnAdd.ParentFont := False;
    btnAdd.Font.Style := [];
    btnAdd.Anchors := [akLeft, akBottom, akRight];
-   btnAdd.Caption := i18Manager.GetString('btnAdd');
+   btnAdd.Caption := t9nManager.GetString('btnAdd');
 
    btnImport := TButton.Create(Self);
    btnImport.Parent := Self;
@@ -278,7 +278,7 @@ begin
    btnImport.ParentFont := False;
    btnImport.Font.Style := [];
    btnImport.Anchors := [akLeft, akBottom, akRight];
-   btnImport.Caption := i18Manager.GetString('btnImport');
+   btnImport.Caption := t9nManager.GetString('btnImport');
 
    btnExport := TButton.Create(Self);
    btnExport.Parent := Self;
@@ -287,7 +287,7 @@ begin
    btnExport.ParentFont := False;
    btnExport.Font.Style := [];
    btnExport.Anchors := [akLeft, akBottom, akRight];
-   btnExport.Caption := i18Manager.GetString('btnExport');
+   btnExport.Caption := t9nManager.GetString('btnExport');
 
 end;
 
@@ -314,7 +314,7 @@ begin
    lblValue := TLabel.Create(gbBox);
    lblValue.Parent := gbBox;
    lblValue.Top := 47;
-   lblValue.Caption := i18Manager.GetString('sgConstListCol1');
+   lblValue.Caption := t9nManager.GetString('sgConstListCol1');
    lblValue.Left := 5;
 
    if GInfra.CurrentLang.UpperCaseConstId then
@@ -325,10 +325,10 @@ begin
    edtValue.SetBounds(lblValue.Width+10, 42, gbBox.Width-lblValue.Width-18, 21);
    edtValue.Anchors := edtValue.Anchors + [akRight];
    edtValue.ShowHint := True;
-   edtValue.Hint := i18Manager.GetString('DisableFieldValid');
+   edtValue.Hint := t9nManager.GetString('DisableFieldValid');
    edtValue.OnKeyDown := OnKeyDownCommon;
 
-   gbBox.Caption := i18Manager.GetString('gbConstant');
+   gbBox.Caption := t9nManager.GetString('gbConstant');
    Anchors := Anchors + [akBottom];
 end;
 
@@ -348,12 +348,12 @@ begin
    lblType.Parent := gbBox;
    lblType.Left := 5;
    lblType.Top := 47;
-   lblType.Caption := i18Manager.GetString('sgVarListCol1');
+   lblType.Caption := t9nManager.GetString('sgVarListCol1');
 
    lblSize := TLabel.Create(gbBox);
    lblSize.Parent := gbBox;
    lblSize.Top := 22;
-   lblSize.Caption := i18Manager.GetString('sgVarListCol2');
+   lblSize.Caption := t9nManager.GetString('sgVarListCol2');
    lblSize.Left := lblName.Width + edtName.Width + 20;
 
    edtSize := TSizeEdit.Create(gbBox);
@@ -375,17 +375,17 @@ begin
    lblInit.Parent := gbBox;
    lblInit.Left := cbType.BoundsRect.Right + 10;
    lblInit.Top := 47;
-   lblInit.Caption := i18Manager.GetString('sgVarListCol3');
+   lblInit.Caption := t9nManager.GetString('sgVarListCol3');
 
    edtInit := TEdit.Create(gbBox);
    edtInit.Parent := gbBox;
    edtInit.SetBounds(lblInit.BoundsRect.Right+5, 42, gbBox.Width-lblInit.BoundsRect.Right-13, 21);
    edtInit.Anchors := edtInit.Anchors + [akRight];
    edtInit.ShowHint := True;
-   edtInit.Hint := i18Manager.GetString('DisableFieldValid');
+   edtInit.Hint := t9nManager.GetString('DisableFieldValid');
    edtInit.OnKeyDown := OnKeyDownCommon;
 
-   gbBox.Caption := i18Manager.GetString('gbVariable');
+   gbBox.Caption := t9nManager.GetString('gbVariable');
    Anchors := Anchors + [akBottom];
 end;
 
@@ -393,7 +393,7 @@ procedure TDeclareList.SetColumnLabel(ACol: integer; const AColLabel: string = '
 begin
    var s := AColLabel; 
    if s.IsEmpty then
-      s := i18Manager.GetString('sg' + FShort + 'ListCol' + ACol.ToString);
+      s := t9nManager.GetString('sg' + FShort + 'ListCol' + ACol.ToString);
    sgList.Cells[ACol, 0] := s;
 end;
 
@@ -623,7 +623,7 @@ begin
          DUPLICATED_IDENT: info := 'DupId';
          RESERVED_IDENT:   info := 'IncorrectIdKeyword';
       end;
-      TInfra.ShowErrorBox(i18Manager.GetFormattedString(info, [edit.Text, GInfra.CurrentLang.Name]), errDeclare);
+      TInfra.ShowErrorBox(t9nManager.GetFormattedString(info, [edit.Text, GInfra.CurrentLang.Name]), errDeclare);
       edit.SetFocus;
    end
    else
@@ -640,7 +640,7 @@ procedure TDeclareList.OnClickExport(Sender: TObject);
 begin
    if sgList.RowCount > 2 then
    begin
-      var fileName := GProject.Name + '_' + i18Manager.GetString(FShort + 's');
+      var fileName := GProject.Name + '_' + t9nManager.GetString(FShort + 's');
       TXMLProcessor.ExportToXMLFile(ExportToXML, fileName);
    end;
 end;
@@ -690,7 +690,7 @@ begin
             edit := edtValue;
          end;
       end;
-      TInfra.ShowErrorBox(i18Manager.GetFormattedString(info, [edit.Text, GInfra.CurrentLang.Name]), errDeclare);
+      TInfra.ShowErrorBox(t9nManager.GetFormattedString(info, [edit.Text, GInfra.CurrentLang.Name]), errDeclare);
       edit.SetFocus;
    end
    else
@@ -934,7 +934,7 @@ begin
       var idx := sgList.RowCount - 1;
       var lType := GetNodeAttrStr(ANode, TYPE_ATTR);
       if not cbType.Items.Contains(lType) then
-         lType := i18Manager.GetString('Unknown');
+         lType := t9nManager.GetString('Unknown');
       sgList.Cells[VAR_TYPE_COL, idx] := lType;
       sgList.Cells[VAR_SIZE_COL, idx] := GetNodeAttrStr(ANode, SIZE_ATTR);
       sgList.Cells[VAR_INIT_COL, idx] := GetNodeAttrStr(ANode, INIT_ATTR);
@@ -1073,7 +1073,7 @@ end;
 
 procedure TVarDeclareList.RefreshTypes;
 begin
-   var unknown := i18Manager.GetString('Unknown');
+   var unknown := t9nManager.GetString('Unknown');
    sgList.BeginUpdate;
    for var i := 1 to sgList.RowCount-2 do
    begin

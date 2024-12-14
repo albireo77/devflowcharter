@@ -91,7 +91,7 @@ begin
    BottomHook := ABlockParms.bh;
    TopHook.X := ABlockParms.br.X;
    IPoint.Y := 50;
-   FCaseLabel := i18Manager.GetString('CaptionCase');
+   FCaseLabel := t9nManager.GetString('CaptionCase');
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
    FStatement.EditorAction := EditorAction;
@@ -427,7 +427,7 @@ begin
          block.GenerateTree(newNode);
    end;
 
-   var newNode := TTreeNodeWithFriend(AParentNode.Owner.AddChild(result, i18Manager.GetString('DefValue')));
+   var newNode := TTreeNodeWithFriend(AParentNode.Owner.AddChild(result, t9nManager.GetString('DefValue')));
    newNode.Offset := FBranchList.Count;
 
    for var block in DefaultBranch do

@@ -100,7 +100,7 @@ begin
    lblName2.Font.Style := [fsBold];
    lblName2.Font.Color := clWindowText;
    lblName2.SetBounds(5, 131, 0, 13);
-   lblName2.Caption := i18Manager.GetString('lblField');
+   lblName2.Caption := t9nManager.GetString('lblField');
 
    lblSize := TLabel.Create(Self);
    lblSize.Parent := Self;
@@ -108,7 +108,7 @@ begin
    lblSize.Font.Style := [fsBold];
    lblSize.Font.Color := clWindowText;
    lblSize.SetBounds(TInfra.Scaled(Self, 171), 131, 0, 13);
-   lblSize.Caption := i18Manager.GetString('lblSize');
+   lblSize.Caption := t9nManager.GetString('lblSize');
 
    lblType := TLabel.Create(Self);
    lblType.Parent := Self;
@@ -116,7 +116,7 @@ begin
    lblType.Font.Style := [fsBold];
    lblType.Font.Color := clWindowText;
    lblType.SetBounds(TInfra.Scaled(Self, 87), 131, 0, 13);
-   lblType.Caption := i18Manager.GetString('lblType');
+   lblType.Caption := t9nManager.GetString('lblType');
 
    sbxElements := TScrollBox.Create(Self);
    sbxElements.Parent := Self;
@@ -134,7 +134,7 @@ begin
    btnAddElement.Parent := Self;
    btnAddElement.ParentFont := False;
    btnAddElement.Font.Style := [];
-   btnAddElement.Caption := i18Manager.GetString('btnAddField');
+   btnAddElement.Caption := t9nManager.GetString('btnAddField');
    btnAddElement.ShowHint := True;
    btnAddElement.SetBounds(1, 102, TInfra.Scaled(Self, 306), 25);
    btnAddElement.OnClick := AddElement;
@@ -148,11 +148,11 @@ begin
    rgTypeBox.Font.Style := [];
    rgTypeBox.Font.Color := clWindowText;
    rgTypeBox.Columns := 2;
-   rgTypeBox.Caption := i18Manager.GetString('rgTypeBox');
+   rgTypeBox.Caption := t9nManager.GetString('rgTypeBox');
    for var dt := Low(TUserDataTypeKind) to High(TUserDataTypeKind) do
    begin
       var s := TRttiEnumerationType.GetName(dt);
-      rgTypeBox.Items.Add(i18Manager.GetString(s));
+      rgTypeBox.Items.Add(t9nManager.GetString(s));
    end;
    rgTypeBox.Buttons[Ord(dtInt)].Enabled := GInfra.CurrentLang.EnabledUserDataTypeInt;
    rgTypeBox.Buttons[Ord(dtReal)].Enabled := GInfra.CurrentLang.EnabledUserDataTypeReal;
@@ -167,7 +167,7 @@ begin
 
    chkAddPtrType := TCheckBox.Create(Self);
    chkAddPtrType.Parent := Self;
-   chkAddPtrType.Caption := i18Manager.GetString('chkAddPtrType');
+   chkAddPtrType.Caption := t9nManager.GetString('chkAddPtrType');
    chkAddPtrType.ParentFont := False;
    chkAddPtrType.Font.Style := [];
    chkAddPtrType.Font.Color := clWindowText;
@@ -253,8 +253,8 @@ begin
    if b then
    begin
       var str := IfThen(t = dtRecord, 'Field', 'Value');
-      btnAddElement.Caption := i18Manager.GetString('btnAdd' + str);
-      lblName2.Caption := i18Manager.GetString('lbl' + str);
+      btnAddElement.Caption := t9nManager.GetString('btnAdd' + str);
+      lblName2.Caption := t9nManager.GetString('lbl' + str);
    end;
    var i := 0;
    for var field in GetFields do
@@ -334,7 +334,7 @@ begin
    else
       lColor := OK_COLOR;
    edtName.Font.Color := lColor;
-   edtName.Hint := i18Manager.GetFormattedString(info, [typeName]);
+   edtName.Hint := t9nManager.GetFormattedString(info, [typeName]);
    inherited OnChangeName(Sender);
 end;
 
@@ -421,7 +421,7 @@ begin
          lHint := 'BadIdD';
       end;
       edtName.Font.Color := lColor;
-      edtName.Hint := i18Manager.GetString(lHint);
+      edtName.Hint := t9nManager.GetString(lHint);
       ParentTab.PageControl.Refresh;
       GProject.SetChanged;
    end

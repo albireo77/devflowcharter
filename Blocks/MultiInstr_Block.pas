@@ -66,14 +66,14 @@ begin
    GProject.SetChanged;
    FErrLine := -1;
    var txt := Trim(FStatements.Text);
-   var h := i18Manager.GetFormattedString('ExpOk', [txt, sLineBreak]);
+   var h := t9nManager.GetFormattedString('ExpOk', [txt, sLineBreak]);
    var c := GSettings.FontColor;
    UpdateEditor(nil);
    if GSettings.ParseMultiAssign then
    begin
       if txt.IsEmpty then
       begin
-         h := i18Manager.GetFormattedString('NoInstr', [sLineBreak]);
+         h := t9nManager.GetFormattedString('NoInstr', [sLineBreak]);
          c := WARN_COLOR
       end
       else
@@ -83,7 +83,7 @@ begin
             var line := FStatements.Lines[i].Trim;
             if not TInfra.Parse(line, yymAssign) then
             begin
-               h := i18Manager.GetFormattedString('ExpErrMult', [i+1, line, sLineBreak, TInfra.GetParserErrMsg]);
+               h := t9nManager.GetFormattedString('ExpErrMult', [i+1, line, sLineBreak, TInfra.GetParserErrMsg]);
                c := NOK_COLOR;
                FErrLine := i;
                break;

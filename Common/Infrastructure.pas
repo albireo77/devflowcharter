@@ -133,7 +133,7 @@ type
     GSettings:      TSettings;
     GCustomCursor:  TCustomCursor;
     GErr_text:      string;
-    i18Manager:     TTranslationManager;
+    t9nManager:     TTranslationManager;
 
 implementation
 
@@ -244,7 +244,7 @@ begin
    begin
       var dialog := GetMainForm.ExportDialog;
       dialog.FileName := AExport.GetExportFileName;
-      dialog.Filter := i18Manager.GetJoinedString('|', PROJECT_DIALOG_FILTER_KEYS);
+      dialog.Filter := t9nManager.GetJoinedString('|', PROJECT_DIALOG_FILTER_KEYS);
       dialog.FilterIndex := 1;
       if dialog.Execute then
       begin
@@ -365,32 +365,32 @@ const
                     'PrintError', 'CompileError', 'ImportError', 'Error');
 begin
    if AError <> errNone then
-      Application.MessageBox(PChar(AErrorMsg), PChar(i18Manager.GetString(ErrorsTypeArray[AError])), MB_ICONERROR);
+      Application.MessageBox(PChar(AErrorMsg), PChar(t9nManager.GetString(ErrorsTypeArray[AError])), MB_ICONERROR);
 end;
 
 class procedure TInfra.ShowErrorBox(const AKey: string; Args: array of const; AError: TError);
 begin
-   ShowErrorBox(i18Manager.GetFormattedString(AKey, Args), AError);
+   ShowErrorBox(t9nManager.GetFormattedString(AKey, Args), AError);
 end;
 
 class procedure TInfra.ShowWarningBox(const AKey: string; Args: array of const);
 begin
-   ShowWarningBox(i18Manager.GetFormattedString(AKey, Args));
+   ShowWarningBox(t9nManager.GetFormattedString(AKey, Args));
 end;
 
 class procedure TInfra.ShowWarningBox(const AWarnMsg: string);
 begin
-   Application.MessageBox(PChar(AWarnMsg), PChar(i18Manager.GetString('Warning')), MB_ICONWARNING);
+   Application.MessageBox(PChar(AWarnMsg), PChar(t9nManager.GetString('Warning')), MB_ICONWARNING);
 end;
 
 class function TInfra.ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
 begin
-   result := Application.MessageBox(PChar(AMsg), PChar(i18Manager.GetString('Confirmation')), AFlags);
+   result := Application.MessageBox(PChar(AMsg), PChar(t9nManager.GetString('Confirmation')), AFlags);
 end;
 
 class function TInfra.ShowQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
 begin
-   result := ShowQuestionBox(i18Manager.GetFormattedString(AKey, Args), AFlags);
+   result := ShowQuestionBox(t9nManager.GetFormattedString(AKey, Args), AFlags);
 end;
 
 class procedure TInfra.Reset;
@@ -444,7 +444,7 @@ var
    printRect: TRect;
 begin
    if not IsPrinter then
-     ShowErrorBox(i18Manager.GetString('NoPrinter'), errPrinter)
+     ShowErrorBox(t9nManager.GetString('NoPrinter'), errPrinter)
    else if MainForm.PrintDialog.Execute then
    begin
      last_err := 0;
@@ -540,9 +540,9 @@ begin
               pos := fPoint;
               if GSettings.PrintMultPages then
               begin
-                 fLine1 := i18Manager.GetFormattedString('PageCount', [(i-1)*rowCount+j, colCount*rowCount]);
-                 fLine2 := i18Manager.GetFormattedString('ColumnCount', [i, colCount]);
-                 fLine3 := i18Manager.GetFormattedString('RowCount', [j, rowCount]);
+                 fLine1 := t9nManager.GetFormattedString('PageCount', [(i-1)*rowCount+j, colCount*rowCount]);
+                 fLine2 := t9nManager.GetFormattedString('ColumnCount', [i, colCount]);
+                 fLine3 := t9nManager.GetFormattedString('RowCount', [j, rowCount]);
                  maxValue := Printer.Canvas.TextWidth(GProject.Name);
                  maxTmp := Printer.Canvas.TextWidth(fLine1);
                  if maxValue < maxTmp then
@@ -576,7 +576,7 @@ begin
      if status <> GDI_ERROR then
         Printer.EndDoc
      else
-        ShowErrorBox(i18Manager.GetFormattedString('PrinterError', [sLineBreak, SysErrorMessage(last_err)]), errPrinter);
+        ShowErrorBox(t9nManager.GetFormattedString('PrinterError', [sLineBreak, SysErrorMessage(last_err)]), errPrinter);
    end;
 end;
 
@@ -628,7 +628,7 @@ begin
    AcbType.Clear;
 
    if AcbType.Tag = FUNCTION_TYPE_IND then
-      AcbType.Items.Add(i18Manager.GetString('NoType'));
+      AcbType.Items.Add(t9nManager.GetString('NoType'));
 
 // first, populate with native types from language definition XML file
    for var nativeType in GInfra.CurrentLang.NativeDataTypes do
@@ -1261,9 +1261,9 @@ initialization
 
    GSettings := TSettings.Create;
 
-   i18Manager := TTranslationManager.Create;
-   if i18Manager.LoadLabels(GSettings.TranslationFile, True, False) = 0 then
-      i18Manager.LoadDefaultLabels(True, False);
+   t9nManager := TTranslationManager.Create;
+   if t9nManager.LoadLabels(GSettings.TranslationFile, True, False) = 0 then
+      t9nManager.LoadDefaultLabels(True, False);
 
    GInfra := TInfra.Create;
 
@@ -1276,8 +1276,8 @@ finalization
    GSettings.Free;
    GSettings := nil;
 
-   i18Manager.Free;
-   i18Manager := nil;
+   t9nManager.Free;
+   t9nManager := nil;
 
 end.
 

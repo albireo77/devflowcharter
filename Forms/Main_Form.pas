@@ -609,7 +609,7 @@ begin
    miInsertBranch.Enabled := False;
    miText.Enabled := False;
    miFolder.Enabled := False;
-   miFoldUnfold.Caption := i18Manager.GetString('miFoldTrue');
+   miFoldUnfold.Caption := t9nManager.GetString('miFoldTrue');
    miReturn.Enabled := False;
    miUnfoldAll.Visible := False;
    miPrint2.Visible := False;
@@ -679,7 +679,7 @@ begin
                 miAddBranch.Visible := True;
                 miAddBranch.Enabled := True;
              end;
-             miFoldUnfold.Caption := i18Manager.GetString('miFold' + BoolToStr(expanded, True));
+             miFoldUnfold.Caption := t9nManager.GetString('miFold' + BoolToStr(expanded, True));
           end;
           if (block is TGroupBlock) and TGroupBlock(block).Expanded and TGroupBlock(block).HasFoldedBlocks then
              miUnfoldAll.Visible := True;
@@ -1073,7 +1073,7 @@ begin
    begin
       var res := IDYES;
       if GSettings.ConfirmRemove then
-         res := TInfra.ShowQuestionBox(i18Manager.GetString('ConfirmRemove'));
+         res := TInfra.ShowQuestionBox(t9nManager.GetString('ConfirmRemove'));
       if res = IDYES then
       begin
          var caseBlock := TCaseBlock(pmPages.PopupComponent);
@@ -1239,7 +1239,7 @@ procedure TMainForm.miRemovePageClick(Sender: TObject);
 begin
    var res := IDYES;
    if GSettings.ConfirmRemove then
-      res := TInfra.ShowQuestionBox(i18Manager.GetString('ConfirmRemove'));
+      res := TInfra.ShowQuestionBox(t9nManager.GetString('ConfirmRemove'));
    if res = IDYES then
    begin
       pmTabs.PopupComponent.Free;
@@ -1280,7 +1280,7 @@ begin
    if pmTabs.PopupComponent is TTabSheet then
    begin
       var page := TTabSheet(pmTabs.PopupComponent);
-      var lCaption := InputBox(i18Manager.GetString('Page'), i18Manager.GetString('EnterPage'), page.Caption).Trim;
+      var lCaption := InputBox(t9nManager.GetString('Page'), t9nManager.GetString('EnterPage'), page.Caption).Trim;
       if (lCaption <> '') and (TInfra.FindDuplicatedPage(page, lCaption) = nil) then
       begin
          page.Caption := lCaption;
@@ -1292,7 +1292,7 @@ end;
 
 procedure TMainForm.miAddPageClick(Sender: TObject);
 begin
-   var lCaption := InputBox(i18Manager.GetString('Page'), i18Manager.GetString('EnterPage'), '').Trim;
+   var lCaption := InputBox(t9nManager.GetString('Page'), t9nManager.GetString('EnterPage'), '').Trim;
    if (lCaption <> '') and (GProject.GetPage(lCaption, False) = nil) then
    begin
       GProject.GetPage(lCaption).SetAsActivePage;

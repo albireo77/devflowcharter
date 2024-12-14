@@ -71,8 +71,8 @@ procedure TMemoEditorForm.FormCreate(Sender: TObject);
 begin
    memEditor.DoubleBuffered := True;
    // this must be executed here as all forms have been created in this moment
-   if i18Manager.LoadLabels(GSettings.TranslationFile, False) = 0 then
-      i18Manager.LoadDefaultLabels(False);
+   if t9nManager.LoadLabels(GSettings.TranslationFile, False) = 0 then
+      t9nManager.LoadDefaultLabels(False);
 end;
 
 end.
