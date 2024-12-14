@@ -145,7 +145,7 @@ type
       property SelectColor: TColor read FSelectColor;
       property PenColor: TColor read FPenColor;
       property DesktopColor: TColor read FDesktopColor;
-      property TranslationFile: string read FTranslationFile;
+      property TranslationFile: string read FTranslationFile write FTranslationFile;
       property FontColor: TColor read FFontColor;
       property PrintRect: TRect read FPrintRect;
       property EnableDBuffering: boolean read FEnableDBuffering;

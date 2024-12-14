@@ -1262,8 +1262,14 @@ initialization
    GSettings := TSettings.Create;
 
    t9nManager := TTranslationManager.Create;
-   if t9nManager.LoadLabels(GSettings.TranslationFile, True, False) = 0 then
+   if GSettings.TranslationFile.IsEmpty then
+      t9nManager.LoadDefaultLabels(True, False)
+   else if t9nManager.LoadLabels(GSettings.TranslationFile, True, False) = 0 then
+   begin
       t9nManager.LoadDefaultLabels(True, False);
+      TInfra.ShowWarningBox('LoadTranslFail', [GSettings.TranslationFile, sLineBreak]);
+      GSettings.TranslationFile := '';
+   end;
 
    GInfra := TInfra.Create;
 
