@@ -204,7 +204,7 @@ end;	{ yyaction	}
 
 
 type YYTRec = record
-                cc : set of AnsiChar;
+                cc : set of Char;
                 s  : Integer;
               end;
 

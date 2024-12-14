@@ -142,7 +142,7 @@ begin
          CheckMode([yymInput]); 
        end;
    4 : begin
-         CheckMode([yymOutput]); 
+         CheckMode([yymOutput]);
        end;
    5 : begin
          CheckMode([yymCaseValue]); 
