@@ -115,7 +115,7 @@ type
     procedure memCodeEditorMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     function SelectCodeRange(AObject: TObject; ADoSelect: boolean = True): TCodeRange;
     procedure UnSelectCodeRange(AObject: TObject);
-    procedure Localize(AList: TStringList); override;
+    procedure AfterTranslation(AList: TStringList); override;
     procedure ResetForm; override;
     procedure SetSaveDialog(ASaveDialog: TSaveDialog);
     procedure miGotoClick(Sender: TObject);
@@ -353,12 +353,12 @@ begin
    inherited ResetForm;
 end;
 
-procedure TEditorForm.Localize(AList: TStringList);
+procedure TEditorForm.AfterTranslation(AList: TStringList);
 begin
    if stbEditorBar.Panels[1].Text <> '' then
       stbEditorBar.Panels[1].Text := AList.Values['Modified'];
    stbEditorBar.Panels[2].Text := AList.Values[IfThen(memCodeEditor.InsertMode, 'InsertMode', 'OverwriteMode')];
-   inherited Localize(AList);
+   inherited AfterTranslation(AList);
 end;
 
 procedure TEditorForm.PasteComment(const AText: string);

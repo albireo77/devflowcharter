@@ -180,7 +180,7 @@ begin
                   end;
                end;
             end;
-            form.Localize(values);
+            form.AfterTranslation(values);
             Inc(result, values.Count);
          end;
          values.Clear;

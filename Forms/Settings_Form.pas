@@ -125,7 +125,7 @@ type
     procedure cbLanguageChange(Sender: TObject);
     procedure btnBrowseScriptsClick(Sender: TObject);
     procedure imgShapesClick(Sender: TObject);
-    procedure Localize(AList: TStringList); override;
+    procedure AfterTranslation(AList: TStringList); override;
     procedure chkMultiPrintClick(Sender: TObject);
     procedure ResetForm; override;
     procedure edtFontNameSizeClick(Sender: TObject);
@@ -163,7 +163,7 @@ const
 
 {$R *.dfm}
 
-procedure TSettingsForm.Localize(AList: TStringList);
+procedure TSettingsForm.AfterTranslation(AList: TStringList);
 begin
    var w := TInfra.Scaled(Self, 449);
    lblFileEncoding.Left := cbFileEncoding.Left - lblFileEncoding.Width - 5;
@@ -188,7 +188,7 @@ begin
    edtCompiler.Hint := ReplaceStr(AList.Values['edtCompilerHint'], LB_PHOLDER2, sLineBreak);
    edtCompilerNoMain.Hint := ReplaceStr(AList.Values['edtCompilerNoMainHint'], LB_PHOLDER2, sLineBreak);
    chkEnableDBuffer.Hint := ReplaceStr(AList.Values['chkEnableDBufferHint'], LB_PHOLDER2, sLineBreak);
-   inherited Localize(AList);
+   inherited AfterTranslation(AList);
 end;
 
 procedure TSettingsForm.ResetForm;

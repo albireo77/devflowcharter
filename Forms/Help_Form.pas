@@ -30,7 +30,7 @@ type
 
   THelpForm = class(TBaseForm)
     lblHelp: TLabel;
-    procedure Localize(AList: TStringList); override;
+    procedure AfterTranslation(AList: TStringList); override;
   private
     { Private declarations }
   public
@@ -47,7 +47,7 @@ uses
 
 {$R *.dfm}
 
-procedure THelpForm.Localize(AList: TStringList);
+procedure THelpForm.AfterTranslation(AList: TStringList);
 begin
    var txt := '';
    var i := 1;
@@ -60,7 +60,7 @@ begin
       i := i + 1;
    end;
    lblHelp.Caption := ReplaceText(txt, ' ' + LB_PHOLDER2, StringOfChar('-', 55));
-   inherited Localize(AList);
+   inherited AfterTranslation(AList);
 end;
 
 end.

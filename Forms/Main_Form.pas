@@ -177,7 +177,7 @@ type
     procedure miAddBranchClick(Sender: TObject);
     procedure miRemoveBranchClick(Sender: TObject);
     procedure miUnfoldAllClick(Sender: TObject);
-    procedure Localize(AList: TStringList); override;
+    procedure AfterTranslation(AList: TStringList); override;
     procedure ResetForm; override;
     procedure SetProjectMenu(AEnabled: boolean);
     procedure miPrint2Click(Sender: TObject);
@@ -359,7 +359,7 @@ begin
    Menu := mMenu;
 end;
 
-procedure TMainForm.Localize(AList: TStringList);
+procedure TMainForm.AfterTranslation(AList: TStringList);
 begin
    if GProject <> nil then
    begin

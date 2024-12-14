@@ -32,7 +32,7 @@ type
     protected
       procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     public
-      procedure Localize(AList: TStringList); virtual;
+      procedure AfterTranslation(AList: TStringList); virtual;
       procedure ImportFromXML(ANode: IXMLNode); virtual;
       procedure ExportToXML(ANode: IXMLNode); virtual;
       procedure ResetForm; virtual;
@@ -52,7 +52,7 @@ implementation
 uses
    WinApi.Windows, Infrastructure, Constants;
 
-procedure TBaseForm.Localize(AList: TStringList);
+procedure TBaseForm.AfterTranslation(AList: TStringList);
 begin
    Caption := AList.Values['FormCaption'];
 end;
