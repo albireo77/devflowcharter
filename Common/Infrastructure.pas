@@ -25,7 +25,7 @@ interface
 
 uses
    WinApi.Windows, Vcl.StdCtrls, Vcl.Controls, Vcl.Graphics, Vcl.ComCtrls, System.Classes,
-   LocalizationManager, Project, Settings, LangDefinition, Types, Base_Form, Interfaces,
+   TranslationManager, Project, Settings, LangDefinition, Types, Base_Form, Interfaces,
    Functions_Form, DataTypes_Form, Declarations_Form, Main_Form, Base_Block, SynEditTypes,
    Settings_Form, Editor_Form, Explorer_Form, BlockTabSheet, YaccLib;
 
@@ -133,7 +133,7 @@ type
     GSettings:      TSettings;
     GCustomCursor:  TCustomCursor;
     GErr_text:      string;
-    i18Manager:     Ti18Manager;
+    i18Manager:     TTranslationManager;
 
 implementation
 
@@ -1261,7 +1261,7 @@ initialization
 
    GSettings := TSettings.Create;
 
-   i18Manager := Ti18Manager.Create;
+   i18Manager := TTranslationManager.Create;
    if i18Manager.LoadLabels(GSettings.TranslationFile, True, False) = 0 then
       i18Manager.LoadDefaultLabels(True, False);
 

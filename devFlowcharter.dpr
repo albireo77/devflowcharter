@@ -63,7 +63,7 @@ uses
   DataTypes_Form in 'Forms\DataTypes_Form.pas' {DataTypesForm},
   UserDataType in 'Common\UserDataType.pas',
   Help_Form in 'Forms\Help_Form.pas' {HelpForm},
-  LocalizationManager in 'Common\LocalizationManager.pas',
+  TranslationManager in 'Common\TranslationManager.pas',
   Case_Block in 'Blocks\Case_Block.pas',
   Statement in 'Common\Statement.pas',
   TiBasic68k_Generator in 'CodeGenerators\TiBasic68k_Generator.pas',

@@ -237,7 +237,7 @@ implementation
 uses
    Vcl.StdCtrls, Vcl.Clipbrd, System.StrUtils, System.UITypes, System.Types, System.Generics.Defaults,
    System.Generics.Collections, System.Math, Toolbox_Form, Infrastructure, About_Form,
-   Main_Block, ParseGlobals, LocalizationManager, XMLProcessor, UserFunction, ForDo_Block,
+   Main_Block, ParseGlobals, TranslationManager, XMLProcessor, UserFunction, ForDo_Block,
    Return_Block, Project, Declarations_Form, Base_Block, Comment, Case_Block, Navigator_Form,
    Types, LangDefinition, EditMemo_Form, BlockFactory, BlockTabSheet, MemoEx, Constants;
 

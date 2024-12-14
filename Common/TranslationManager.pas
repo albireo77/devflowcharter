@@ -17,7 +17,7 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 }
 
-unit LocalizationManager;
+unit TranslationManager;
 
 interface
 
@@ -42,7 +42,7 @@ const
 
 type
 
-   Ti18Manager = class(TObject)
+   TTranslationManager = class(TObject)
       private
          FRepository: TDictionary<string, string>;
          function LoadStaticLabels(AIniFile: TCustomIniFile): integer;
@@ -67,13 +67,13 @@ uses
 type
    TControlHack = class(TControl);
 
-constructor Ti18Manager.Create;
+constructor TTranslationManager.Create;
 begin
    inherited Create;
    FRepository := TDictionary<string, string>.Create;
 end;
 
-destructor Ti18Manager.Destroy;
+destructor TTranslationManager.Destroy;
 begin
    FRepository.Free;
    inherited Destroy;
@@ -81,7 +81,7 @@ end;
 
 // This function loads labels that are needed during application use like error messages.
 // In ini file section names with dynamic labels don't end with 'Form'.
-function Ti18Manager.LoadDynamicLabels(AIniFile: TCustomIniFile): integer;
+function TTranslationManager.LoadDynamicLabels(AIniFile: TCustomIniFile): integer;
 begin
    result := 0;
    FRepository.Clear;
@@ -108,7 +108,7 @@ end;
 
 // This function loads labels that are to be used only once. After labelling non-dynamic, visual component such label is no longer needed.
 // In ini file section names with static labels end with 'Form'. One section per each application form.
-function Ti18Manager.LoadStaticLabels(AIniFile: TCustomIniFile): integer;
+function TTranslationManager.LoadStaticLabels(AIniFile: TCustomIniFile): integer;
 begin
    result := 0;
    var sections := TStringList.Create;
@@ -191,19 +191,19 @@ begin
    end;
 end;
 
-function Ti18Manager.LoadDefaultLabels(ALoadDynamic: boolean = True; ALoadStatic: boolean = True): integer;
+function TTranslationManager.LoadDefaultLabels(ALoadDynamic: boolean = True; ALoadStatic: boolean = True): integer;
 begin
    result := LoadLabels(TResourceStream.Create(Hinstance, 'DEFAULT_TRANSLATION_FILE', 'LNG_FILE'), ALoadDynamic, ALoadStatic);
 end;
 
-function Ti18Manager.LoadLabels(const AFileName: string; ALoadDynamic: boolean = True; ALoadStatic: boolean = True): integer;
+function TTranslationManager.LoadLabels(const AFileName: string; ALoadDynamic: boolean = True; ALoadStatic: boolean = True): integer;
 begin
    result := 0;
    if FileExists(AFilename) then
       result := LoadLabels(TFileStream.Create(AFileName, fmOpenRead), ALoadDynamic, ALoadStatic);
 end;
 
-function Ti18Manager.LoadLabels(AStream: TStream; ALoadDynamic, ALoadStatic: boolean): integer;
+function TTranslationManager.LoadLabels(AStream: TStream; ALoadDynamic, ALoadStatic: boolean): integer;
 begin
    result := 0;
    var iniFile := TMemIniFile.Create(AStream);
@@ -218,18 +218,18 @@ begin
    end;
 end;
 
-function Ti18Manager.GetString(const AKey: string): string;
+function TTranslationManager.GetString(const AKey: string): string;
 begin
    if not FRepository.TryGetValue(AKey, result) then
       result := AKey;
 end;
 
-function Ti18Manager.GetFormattedString(const AKey: string; const Args: array of const): string;
+function TTranslationManager.GetFormattedString(const AKey: string; const Args: array of const): string;
 begin
    result := Format(GetString(AKey), Args);
 end;
 
-function Ti18Manager.GetJoinedString(const AJoiner: string; const AKeys: TArray<string>): string;
+function TTranslationManager.GetJoinedString(const AJoiner: string; const AKeys: TArray<string>): string;
 begin
    result := '';
    for var i := 0 to High(AKeys) do
