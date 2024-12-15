@@ -1027,16 +1027,16 @@ end;
 procedure TMainForm.miImportClick(Sender: TObject);
 var
    comp: TComponent;
-   impProc: TXMLImportProc;
+   importFunc: TFunc<IXMLNode, TImportMode, TError>;
 begin
    if GProject <> nil then
    begin
       comp := pmPages.PopupComponent;
       if (comp is TBlock) and (TBlock(comp).RedArrow >= 0) then
-         impProc := TBlock(comp).ImportFromXML
+         importFunc := TBlock(comp).ImportFromXML
       else
-         impProc := GProject.ImportUserFunctionsFromXML;
-      if not TXMLProcessor.ImportFromXMLFile(impProc, impSelectPopup).IsEmpty then
+         importFunc := GProject.ImportUserFunctionsFromXML;
+      if not TXMLProcessor.ImportFromXMLFile(importFunc, impSelectPopup).IsEmpty then
          TInfra.UpdateCodeEditor;
    end;
 end;

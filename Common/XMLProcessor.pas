@@ -22,19 +22,16 @@ unit XMLProcessor;
 interface
 
 uses
-   Vcl.Controls, Vcl.Dialogs, OmniXML, Base_Block, Types;
+   Vcl.Controls, Vcl.Dialogs, System.SysUtils, OmniXML, Base_Block, Types;
 
 type
-
-   TXMLExportProc = procedure(ANode: IXMLNode) of object;
-   TXMLImportProc = function(ANode: IXMLNode; AImportMode: TImportMode): TError of object;
 
    TXMLProcessor = class(TObject)
    private
       class function DialogXMLFile(ADialog: TOpenDialog; const AFileName: string): string;
    public
-      class function ExportToXMLFile(AExportProc: TXMLExportProc; const AFilePath: string): TError;
-      class function ImportFromXMLFile(AImportProc: TXMLImportProc; AImportMode: TImportMode; const AFileName: string = ''; APreserveSpace: boolean = False): string;
+      class function ExportToXMLFile(AExportProc: TProc<IXMLNode>; const AFilePath: string): TError;
+      class function ImportFromXMLFile(AImportFunc: TFunc<IXMLNode, TImportMode, TError>; AImportMode: TImportMode; const AFileName: string = ''; APreserveSpace: boolean = False): string;
       class function ImportFlowchartFromXML(ANode: IXMLNode; AParent: TWinControl; APrevBlock: TBlock; ABranchIdx: integer; var AError: TError): TBlock;
    end;
 
@@ -44,7 +41,7 @@ const
 implementation
 
 uses
-   System.SysUtils, Infrastructure, BlockFactory, BlockTabSheet, Constants;
+   Infrastructure, BlockFactory, BlockTabSheet, Constants;
 
 class function TXMLProcessor.ImportFlowchartFromXML(ANode: IXMLNode; AParent: TWinControl; APrevBlock: TBlock; ABranchIdx: integer; var AError: TError): TBlock;
 var
@@ -127,10 +124,10 @@ begin
       result := ADialog.FileName;
 end;
 
-class function TXMLProcessor.ImportFromXMLFile(AImportProc: TXMLImportProc; AImportMode: TImportMode; const AFileName: string = ''; APreserveSpace: boolean = False): string;
+class function TXMLProcessor.ImportFromXMLFile(AImportFunc: TFunc<IXMLNode, TImportMode, TError>; AImportMode: TImportMode; const AFileName: string = ''; APreserveSpace: boolean = False): string;
 begin
    result := '';
-   if Assigned(AImportProc) then
+   if Assigned(AImportFunc) then
    begin
       result := AFileName;
       if result.IsEmpty then
@@ -143,7 +140,7 @@ begin
       docXML.PreserveWhiteSpace := APreserveSpace;
       try
          if docXML.Load(result) then
-            status := AImportProc(docXML.DocumentElement, AImportMode)
+            status := AImportFunc(docXML.DocumentElement, AImportMode)
          else with docXML.ParseError do
             errText := trnsManager.GetFormattedString('ParserError', [ErrorCode, Line, LinePos, Reason]);
       except on E: Exception do
@@ -163,7 +160,7 @@ begin
    end;
 end;
 
-class function TXMLProcessor.ExportToXMLFile(AExportProc: TXMLExportProc; const AFilePath: string): TError;
+class function TXMLProcessor.ExportToXMLFile(AExportProc: TProc<IXMLNode>; const AFilePath: string): TError;
 begin
    result := errNone;
    if Assigned(AExportProc) then
