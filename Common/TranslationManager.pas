@@ -199,7 +199,7 @@ end;
 function TTranslationManager.LoadLabels(const AFileName: string; ALoadDynamic: boolean = True; ALoadStatic: boolean = True): integer;
 begin
    result := 0;
-   if FileExists(AFilename) then
+   if FileExists(AFileName) then
       result := LoadLabels(TFileStream.Create(AFileName, fmOpenRead), ALoadDynamic, ALoadStatic);
 end;
 
