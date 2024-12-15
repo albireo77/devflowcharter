@@ -803,7 +803,10 @@ begin
             SendMessage(FTopParentBlock.Handle, WM_SYSCOMMAND, $F012, 0);
             br := FTopParentBlock.BoundsRect;
             if (b <> br.Bottom) or (r <> br.Right) then
-               FTopParentBlock.Resize
+            begin
+               FTopParentBlock.Resize;
+               GProject.SetChanged;
+            end
             else
                FTopParentBlock.BringAllToFront;
          end;

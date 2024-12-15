@@ -1275,15 +1275,10 @@ initialization
 
 finalization
 
-   GInfra.Free;
-   GInfra := nil;
-
+   FreeAndNil(GInfra);
    GSettings.Save;
-   GSettings.Free;
-   GSettings := nil;
-
-   trnsManager.Free;
-   trnsManager := nil;
+   FreeAndNil(GSettings);
+   FreeAndNil(trnsManager);
 
 end.
 
