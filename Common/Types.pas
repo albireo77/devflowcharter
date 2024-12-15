@@ -28,7 +28,7 @@ uses
    SynEditCodeFolding,
 {$ENDIF}
    System.Classes, Vcl.StdCtrls, Vcl.Forms, Vcl.Controls, Vcl.Menus, Generics.Defaults,
-   Vcl.ComCtrls, WinApi.Messages, System.Types, SynEditTypes, OmniXML;
+   Vcl.ComCtrls, WinApi.Messages, System.Types, System.SysUtils, SynEditTypes, OmniXML;
 
 const
    ID_INVALID = -1;
@@ -121,7 +121,7 @@ type
       SelStart: integer;
       FocusEdit: TCustomEdit;
       FocusEditForm: TForm;
-      FocusEditCallBack: procedure(AEdit: TCustomEdit) of object;
+      FocusEditCallBack: TProc<TCustomEdit>;
       ActiveControl: TWinControl;
       class function New: TFocusInfo; static;
    end;
@@ -164,7 +164,7 @@ type
 implementation
 
 uses
-   System.SysUtils, System.Rtti, Interfaces, OmniXMLUtils, Constants;
+   System.Rtti, Interfaces, OmniXMLUtils, Constants;
 
 constructor TComponentComparer.Create(ACompareType: integer);
 begin

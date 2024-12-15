@@ -23,12 +23,11 @@ interface
 
 uses
    System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.StdCtrls, WinApi.Messages,
-   Interfaces, Types, YaccLib;
+   System.SysUtils, Interfaces, Types, YaccLib;
 
 type
 
   TWinControlHack = class(TWinControl);
-  TEditorAction = procedure(AEdit: TCustomEdit) of object;
 
   TStatement = class(TCustomEdit, IWithId, IWithFocus)
   private
@@ -47,7 +46,7 @@ type
     procedure CreateHandle; override;
   public
     { Public declarations }
-    EditorAction: TEditorAction;
+    EditorAction: TProc<TCustomEdit>;
     property Id: integer read GetId;
     constructor Create(AParent: TWinControl; AParserMode: TYYMode; AAlignment: TAlignment; AId: integer = ID_INVALID);
     destructor Destroy; override;
@@ -120,7 +119,7 @@ type
 implementation
 
 uses
-   WinApi.Windows, System.SysUtils, Vcl.Forms, Infrastructure, Navigator_Form, Constants;
+   WinApi.Windows, Vcl.Forms, Infrastructure, Navigator_Form, Constants;
 
 constructor TStatement.Create(AParent: TWinControl; AParserMode: TYYMode; AAlignment: TAlignment; AId: integer = ID_INVALID);
 begin
