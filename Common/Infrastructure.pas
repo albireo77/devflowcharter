@@ -1244,7 +1244,7 @@ begin
    result := True;
    var lang := GetLangDefinition(PASCAL_LANG_ID);
    var goParse := (lang <> nil) and Assigned(lang.Parse);
-   if (ASize.Length > 0) and ((ASize[1] in ['0', '-']) or (goParse and not lang.Parse(ASize, yymVarSize))) then
+   if (ASize.Length > 0) and (CharInSet(ASize[1], ['0', '-']) or (goParse and not lang.Parse(ASize, yymVarSize))) then
       result := False;
 end;
 
