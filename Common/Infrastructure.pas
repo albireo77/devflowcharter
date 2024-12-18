@@ -1262,13 +1262,14 @@ initialization
    GSettings := TSettings.Create;
 
    trnsManager := TTranslationManager.Create;
-   if GSettings.TranslationFile.IsEmpty then
-      trnsManager.LoadDefaultLabels(True, False)
-   else if trnsManager.LoadLabels(GSettings.TranslationFile, True, False) = 0 then
+   if trnsManager.LoadLabels(GSettings.TranslationFile, True, False) = 0 then
    begin
       trnsManager.LoadDefaultLabels(True, False);
-      TInfra.ShowWarningBox('LoadTranslFail', [GSettings.TranslationFile, sLineBreak]);
-      GSettings.TranslationFile := '';
+      if not GSettings.TranslationFile.IsEmpty then
+      begin
+         TInfra.ShowWarningBox('LoadTranslFail', [GSettings.TranslationFile, sLineBreak]);
+         GSettings.TranslationFile := '';
+      end;
    end;
 
    GInfra := TInfra.Create;
