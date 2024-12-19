@@ -166,8 +166,8 @@ uses
 {$IFDEF MSWINDOWS}
    System.Win.Registry,
 {$ENDIF}
-   System.SysUtils, Vcl.Forms, Vcl.Controls, System.Math, System.IOUtils, System.StrUtils,
-   Infrastructure, Navigator_Form, Constants;
+   System.SysUtils, Vcl.Controls, System.IOUtils, System.StrUtils, Infrastructure,
+   Navigator_Form, Constants;
 
 const
    KEY_SELECT_COLOR = 'HighlightColor';
@@ -342,8 +342,6 @@ begin
    FIndentChar                := Char(FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_INDENT_CHAR, Integer(SPACE_CHAR)));
    if not (FFlowchartFontSize in FLOWCHART_VALID_FONT_SIZES) then
       FFlowchartFontSize := FLOWCHART_MIN_FONT_SIZE;
-   if not FileExists(FTranslationFile) then
-      FTranslationFile := '';
    if TInfra.IsNOkColor(FFontColor) then
       FFontColor := OK_COLOR;
    FIndentSpaces := StringOfChar(SPACE_CHAR, FIndentLength);
