@@ -1,1 +1,1 @@
-DEFAULT_TRANSLATION_FILE LNG_FILE ".\loc\english.lng"
+DEFAULT_TRANSLATION_FILE LNG_FILE ".\translations\english.lng"
