@@ -248,6 +248,7 @@ procedure TSettingsForm.btnBrowseScriptsClick(Sender: TObject);
 begin
    with OpenDialog do
    begin
+      InitialDir := ExtractFilePath(edtTranslationFile.Text);
       Filter := trnsManager.GetString('LngFilesFilter');
       DefaultExt := '*.lng';
       FileName := '';
