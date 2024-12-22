@@ -73,7 +73,7 @@ type
     gbTranslation: TGroupBox;
     lblFile: TLabel;
     edtTranslationFile: TEdit;
-    btnBrowseScripts: TButton;
+    btnBrowseTranslations: TButton;
     chkParseCase: TCheckBox;
     gbFlowchart: TGroupBox;
     lblDesktop: TLabel;
@@ -123,7 +123,7 @@ type
     procedure pnlSelectClick(Sender: TObject);
     procedure btnDefaultSettingsClick(Sender: TObject);
     procedure cbLanguageChange(Sender: TObject);
-    procedure btnBrowseScriptsClick(Sender: TObject);
+    procedure btnBrowseTranslationsClick(Sender: TObject);
     procedure imgShapesClick(Sender: TObject);
     procedure AfterTranslation(AList: TStringList); override;
     procedure chkMultiPrintClick(Sender: TObject);
@@ -244,7 +244,7 @@ begin
    ProtectFields;
 end;
 
-procedure TSettingsForm.btnBrowseScriptsClick(Sender: TObject);
+procedure TSettingsForm.btnBrowseTranslationsClick(Sender: TObject);
 begin
    with OpenDialog do
    begin

@@ -922,7 +922,7 @@ object SettingsForm: TSettingsForm
       ShowHint = True
       TabOrder = 0
     end
-    object btnBrowseScripts: TButton
+    object btnBrowseTranslations: TButton
       Tag = 1
       Left = 456
       Top = 24
@@ -936,7 +936,7 @@ object SettingsForm: TSettingsForm
       Font.Style = []
       ParentFont = False
       TabOrder = 1
-      OnClick = btnBrowseScriptsClick
+      OnClick = btnBrowseTranslationsClick
     end
   end
   object gbFlowchart: TGroupBox
