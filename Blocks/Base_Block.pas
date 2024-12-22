@@ -450,7 +450,8 @@ begin
       GClpbrd.Instance := nil;
    if Self = GClpbrd.UndoObject then
       GClpbrd.UndoObject := nil;
-   GProject.UnRegister(Self);
+   if GProject <> nil then
+      GProject.UnRegister(Self);
    inherited Destroy;
 end;
 
@@ -1100,10 +1101,13 @@ end;
 function TBlock.GetPinComments: IEnumerable<TComment>;
 begin
    var list := TList<TComment>.Create;
-   for var comment in GProject.GetComments do
+   if GProject <> nil then
    begin
-      if comment.PinControl = Self then
-         list.Add(comment);
+      for var comment in GProject.GetComments do
+      begin
+         if comment.PinControl = Self then
+            list.Add(comment);
+      end;
    end;
    result := TEnumeratorFactory<TComment>.Create(list);
 end;
@@ -2547,7 +2551,8 @@ begin
    Statement.Free;
    for var i := 0 to Count-1 do
       Items[i].Free;
-   GProject.UnRegister(Self);
+   if GProject <> nil then
+      GProject.UnRegister(Self);
    inherited Destroy;
 end;
 

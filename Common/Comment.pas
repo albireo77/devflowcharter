@@ -307,7 +307,7 @@ begin
       Text := ANode.Text;
       Visible := GetNodeAttrBool(ANode, 'v');
       FPinControl := APinControl;
-      if GetNodeAttrBool(ANode, IS_HEADER_ATTR) then
+      if GetNodeAttrBool(ANode, IS_HEADER_ATTR, False) then
          GProject.HeaderComment := Self;
       GetFromXML(ANode);
    end;
