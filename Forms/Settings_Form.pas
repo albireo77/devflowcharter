@@ -246,11 +246,11 @@ end;
 
 procedure TSettingsForm.btnBrowseTranslationsClick(Sender: TObject);
 begin
+   var iDir := ExtractFileDir(edtTranslationFile.Text);
    with OpenDialog do
    begin
-      var sDir := ExtractFileDir(edtTranslationFile.Text);
-      if DirectoryExists(sDir) then
-         InitialDir := sDir;
+      if DirectoryExists(iDir) then
+         InitialDir := iDir;
       Filter := trnsManager.GetString('LngFilesFilter');
       DefaultExt := '*.lng';
       FileName := '';
