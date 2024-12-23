@@ -1,3 +1,6 @@
+11.5 [23-12-2024]
+- Functions: fix too narrow local variables panel on high DPI screens
+
 11.4 [22-12-2024]
 - more robust procedure of opening project in case of errors
 - "loc" directory (containing translations) renamed to "translations"
