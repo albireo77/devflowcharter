@@ -323,7 +323,7 @@ begin
 
    inherited Create(AParentForm);
 
-   FLocalVars := TVarDeclareList.Create(Self, 0, 350, 389, 3, 4, 380);
+   FLocalVars := TVarDeclareList.Create(Self, 0, 350, Width, 3, 4, 380);
    FLocalVars.Caption := trnsManager.GetString('LocalDeclare');
    FLocalVars.gbBox.DoubleBuffered := True;
 
