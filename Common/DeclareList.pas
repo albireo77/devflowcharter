@@ -243,7 +243,7 @@ begin
 
    gbBox := TGroupBox.Create(Self);
    gbBox.Parent := Self;
-   gbBox.SetBounds(5, btnChange.BoundsRect.Bottom+4, AWidth-10, 72);
+   gbBox.SetBounds(5, btnChange.BoundsRect.Bottom+4, AWidth-9, 72);
    gbBox.ParentFont := False;
    gbBox.ParentBackground := False;
    gbBox.Font.Style := [];
