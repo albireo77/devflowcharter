@@ -92,7 +92,7 @@ type
          edtName: TEdit;
          AssociatedList: TDeclareList;
          property Id: integer read GetId;
-         constructor Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
+         constructor Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount: integer);
          destructor Destroy; override;
          function ImportFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
          function ImportItemFromXML(ANode: IXMLNode): TError; virtual;
@@ -127,7 +127,7 @@ type
          lblType,
          lblSize,
          lblInit: TLabel;
-         constructor Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
+         constructor Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount: integer);
          function ImportItemFromXML(ANode: IXMLNode): TError; override;
          procedure ExportItemToXML(ANode: IXMLNode; idx: integer); override;
          function GetImportNode(ANode: IXMLNode): IXMLNode; override;
@@ -148,7 +148,7 @@ type
       public
          edtValue: TEdit;
          lblValue: TLabel;
-         constructor Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
+         constructor Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount: integer);
          function ImportItemFromXML(ANode: IXMLNode): TError; override;
          procedure ExportItemToXML(ANode: IXMLNode; idx: integer); override;
          function GetValue(const AIdent: string): string;
@@ -169,16 +169,13 @@ const
    CONST_NAME_COL  = NAME_COL;
    CONST_VALUE_COL = 1;
 
-   DEF_VARLIST_WIDTH = 358;
-   DEF_CONSTLIST_WIDTH = 235;
-
 implementation
 
 uses
    System.SysUtils, System.StrUtils, System.UITypes, System.Rtti, Infrastructure,
    XMLProcessor, Project, UserDataType, LangDefinition, ParserHelper, Constants, OmniXMLUtils;
 
-constructor TDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
+constructor TDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount: integer);
 begin
    FExternalCol := INVALID_COL;
    inherited Create(AParent);
@@ -246,7 +243,7 @@ begin
 
    gbBox := TGroupBox.Create(Self);
    gbBox.Parent := Self;
-   gbBox.SetBounds(5, btnChange.BoundsRect.Bottom+4, AGBoxWidth, 72);
+   gbBox.SetBounds(5, btnChange.BoundsRect.Bottom+4, AWidth-10, 72);
    gbBox.ParentFont := False;
    gbBox.ParentBackground := False;
    gbBox.Font.Style := [];
@@ -298,7 +295,7 @@ begin
    inherited Destroy;
 end;
 
-constructor TConstDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
+constructor TConstDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount: integer);
 begin
 
    FShort := 'Const';
@@ -306,7 +303,7 @@ begin
    with GInfra.CurrentLang do
       SetExternalModifiers(ConstExtern, ConstNotExtern, ConstTransExtern);
 
-   inherited Create(AParent, ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth);
+   inherited Create(AParent, ALeft, ATop, AWidth, ADispRowCount, AColCount);
 
    edtName.SetBounds(lblName.Width+10, 17, gbBox.Width-lblName.Width-18, 21);
    edtName.Anchors := edtName.Anchors + [akRight];
@@ -332,7 +329,7 @@ begin
    Anchors := Anchors + [akBottom];
 end;
 
-constructor TVarDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth: integer);
+constructor TVarDeclareList.Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount: integer);
 begin
 
    FShort := 'Var';
@@ -340,7 +337,7 @@ begin
    with GInfra.CurrentLang do
       SetExternalModifiers(VarExtern, VarNotExtern, VarTransExtern);
 
-   inherited Create(AParent, ALeft, ATop, AWidth, ADispRowCount, AColCount, AGBoxWidth);
+   inherited Create(AParent, ALeft, ATop, AWidth, ADispRowCount, AColCount);
 
    edtName.SetBounds(lblName.Width+10, 17, 100, 21);
    

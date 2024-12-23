@@ -525,7 +525,7 @@ begin
    FGlobalConsts.Free;
    FGlobalConsts := nil;
    if GInfra.CurrentLang.EnabledVars then
-      FGlobalVars := TVarDeclareList.Create(AForm, 2, 1, DEF_VARLIST_WIDTH, 6, 5, DEF_VARLIST_WIDTH-10);
+      FGlobalVars := TVarDeclareList.Create(AForm, 2, 1, 358, 6, 5);
    if GInfra.CurrentLang.EnabledConsts then
    begin
       var splitter: TSplitter := nil;
@@ -540,7 +540,7 @@ begin
          splitter.Align := FGlobalVars.Align;
          FGlobalVars.SetSplitter(splitter);
       end;
-      FGlobalConsts := TConstDeclareList.Create(AForm, x, 1, DEF_CONSTLIST_WIDTH-5, 6, 3, DEF_CONSTLIST_WIDTH-15);
+      FGlobalConsts := TConstDeclareList.Create(AForm, x, 1, 235, 6, 3);
       if splitter <> nil then
          FGlobalConsts.Align := alClient;
    end;
