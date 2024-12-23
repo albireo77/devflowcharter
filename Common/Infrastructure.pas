@@ -1075,7 +1075,7 @@ class function TInfra.GetAutoWidth(AControl: TControl; AMinWidth: integer = 0): 
 begin
    result := 0;
    if AControl is TCheckBox then
-      result := GetTextWidth(TCheckBox(AControl).Caption, AControl) + GetSystemMetrics(SM_CXMENUCHECK) + 3
+      result := GetTextWidth(TCheckBox(AControl).Caption, AControl) + GetSystemMetrics(SM_CXMENUCHECK) + 4
    else if AControl is TCustomEdit then
       result := GetTextWidth(TCustomEdit(AControl).Text, AControl)
    else if AControl is TButton then
