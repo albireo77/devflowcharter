@@ -110,7 +110,7 @@ Attributes details:
 <!--
 Element ProcedureLabelKey
 Description: Key for label displayed for flowchart of function that returns nothing (type = none).
-It should contain name of key (free to be added) present in translation file (.lng) in Others section
+It should contain name of key (free to be added) present in translation file (.lng)
 -->
 <ProcedureLabelKey>ProcedureLabelExample</ProcedureLabelKey>
 
@@ -910,14 +910,14 @@ Used to change default label displayed for record data type; it's not translated
 <!--
 Element GlobalVarsLabelKey
 Description: Label displayed for global variables.
-It should contain name of key present in translation file (.lng) in Others section.
+It should contain name of key present in translation file (.lng)
 -->
 <GlobalVarsLabelKey>GlobalVars</GlobalVarsLabelKey>
 
 <!--
 Element GlobalConstsLabelKey
 Description: Label displayed for global constants.
-It should contain name of key present in translation file (.lng) in Others section.
+It should contain name of key present in translation file (.lng)
 -->
 <GlobalConstsLabelKey>GlobalConsts</GlobalConstsLabelKey>
 
