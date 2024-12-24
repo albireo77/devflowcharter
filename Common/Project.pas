@@ -546,7 +546,7 @@ begin
    begin
       FGlobalVars.Caption := trnsManager.GetString(GInfra.CurrentLang.GlobalVarsLabelKey);
       FGlobalVars.SetExternalColumn(4);
-      FGlobalVars.AssociatedList := FGlobalConsts;
+      FGlobalVars.Associate := FGlobalConsts;
       AForm.Width := FGlobalVars.BoundsRect.Right + DECLARATIONS_FORM_RIGHT_MARGIN;
       if FGlobalConsts = nil then
          FGlobalVars.Align := alClient;
@@ -555,7 +555,7 @@ begin
    begin
       FGlobalConsts.Caption := trnsManager.GetString(GInfra.CurrentLang.GlobalConstsLabelKey);
       FGlobalConsts.SetExternalColumn(2);
-      FGlobalConsts.AssociatedList := FGlobalVars;
+      FGlobalConsts.Associate := FGlobalVars;
       AForm.Width := FGlobalConsts.BoundsRect.Right + DECLARATIONS_FORM_RIGHT_MARGIN;
    end;
 end;

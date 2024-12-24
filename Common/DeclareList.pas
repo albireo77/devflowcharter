@@ -53,7 +53,7 @@ type
          FNodeName: string;
          FSplitter: TSplitter;
          function GetId: integer;
-         function IsDeclared(const AName: string; AssociatedListCheck: boolean): boolean;
+         function IsDeclared(const AName: string; AssociateCheck: boolean): boolean;
          function AddUpdateRow: integer; virtual;
          function IsRowVisible(ARow: integer): boolean;
          function IsControlTooRight(AControl: TWinControl): boolean;
@@ -90,7 +90,7 @@ type
          gbBox: TGroupBox;
          lblName: TLabel;
          edtName: TEdit;
-         AssociatedList: TDeclareList;
+         Associate: TDeclareList;
          property Id: integer read GetId;
          constructor Create(AParent: TWinControl; ALeft, ATop, AWidth, ADispRowCount, AColCount: integer);
          destructor Destroy; override;
@@ -184,8 +184,6 @@ begin
    ParentBackground := False;
    Font.Style := [fsBold];
    Font.Color := clBlack;
-   FModifying := False;
-   AssociatedList := nil;
    DoubleBuffered := True;
    FDragRow := INVALID_ROW;
    FId := TProject.GetInstance.Register(Self);
@@ -432,11 +430,11 @@ begin
       i := sgList.Cols[NAME_COL].IndexOf(typeName);
       if i > 0 then
          list := Self
-      else if AssociatedList <> nil then
+      else if Associate <> nil then
       begin
-         i := AssociatedList.sgList.Cols[NAME_COL].IndexOf(typeName);
+         i := Associate.sgList.Cols[NAME_COL].IndexOf(typeName);
          if i > 0 then
-            list := AssociatedList;
+            list := Associate;
       end;
       if list = nil then
       begin
@@ -794,12 +792,12 @@ begin
       result := sgList.Cells[CONST_VALUE_COL, i];
 end;
 
-function TDeclareList.IsDeclared(const AName: string; AssociatedListCheck: boolean): boolean;
+function TDeclareList.IsDeclared(const AName: string; AssociateCheck: boolean): boolean;
 begin
    var i := sgList.Cols[NAME_COL].IndexOf(AName);
    result := (i > 0) and not (FModifying and (i = sgList.Row));
-   if (AssociatedList <> nil) and AssociatedListCheck and not result then
-      result := AssociatedList.IsDeclared(AName, False);
+   if (Associate <> nil) and AssociateCheck and not result then
+      result := Associate.IsDeclared(AName, False);
 end;
 
 procedure TDeclareList.OnKeyDownCommon(Sender: TObject; var Key: Word; Shift: TShiftState);
