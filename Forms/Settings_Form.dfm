@@ -131,14 +131,16 @@ object SettingsForm: TSettingsForm
     object edtCompiler: TEdit
       Tag = 5
       Left = 104
-      Top = 46
+      Top = 48
       Width = 345
-      Height = 21
+      Height = 19
+      Ctl3D = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []
+      ParentCtl3D = False
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
@@ -181,14 +183,16 @@ object SettingsForm: TSettingsForm
     object edtCompilerNoMain: TEdit
       Tag = 5
       Left = 200
-      Top = 70
+      Top = 72
       Width = 249
-      Height = 21
+      Height = 19
+      Ctl3D = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []
+      ParentCtl3D = False
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
@@ -779,15 +783,17 @@ object SettingsForm: TSettingsForm
     object edtEditorIndent: TEdit
       Tag = 5
       Left = 503
-      Top = 13
+      Top = 14
       Width = 38
-      Height = 21
+      Height = 19
+      Ctl3D = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []
       NumbersOnly = True
+      ParentCtl3D = False
       ParentFont = False
       TabOrder = 0
     end
@@ -909,14 +915,16 @@ object SettingsForm: TSettingsForm
     object edtTranslationFile: TEdit
       Tag = 5
       Left = 88
-      Top = 24
+      Top = 26
       Width = 361
-      Height = 21
+      Height = 19
+      Ctl3D = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []
+      ParentCtl3D = False
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
@@ -1074,13 +1082,15 @@ object SettingsForm: TSettingsForm
       Left = 104
       Top = 21
       Width = 145
-      Height = 21
+      Height = 19
       TabStop = False
+      Ctl3D = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []
+      ParentCtl3D = False
       ParentFont = False
       ParentShowHint = False
       ReadOnly = True
@@ -1271,60 +1281,68 @@ object SettingsForm: TSettingsForm
       object edtMarginLeft: TEdit
         Tag = 5
         Left = 56
-        Top = 24
+        Top = 28
         Width = 25
-        Height = 21
+        Height = 19
+        Ctl3D = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = []
         NumbersOnly = True
+        ParentCtl3D = False
         ParentFont = False
         TabOrder = 0
       end
       object edtMarginRight: TEdit
         Tag = 5
         Left = 56
-        Top = 48
+        Top = 52
         Width = 25
-        Height = 21
+        Height = 19
+        Ctl3D = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = []
         NumbersOnly = True
+        ParentCtl3D = False
         ParentFont = False
         TabOrder = 1
       end
       object edtMarginTop: TEdit
         Tag = 5
         Left = 144
-        Top = 24
+        Top = 28
         Width = 25
-        Height = 21
+        Height = 19
+        Ctl3D = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = []
         NumbersOnly = True
+        ParentCtl3D = False
         ParentFont = False
         TabOrder = 2
       end
       object edtMarginBottom: TEdit
         Tag = 5
         Left = 144
-        Top = 48
+        Top = 52
         Width = 25
-        Height = 21
+        Height = 19
+        Ctl3D = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = []
         NumbersOnly = True
+        ParentCtl3D = False
         ParentFont = False
         TabOrder = 3
       end

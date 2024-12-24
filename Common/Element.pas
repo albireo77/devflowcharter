@@ -84,9 +84,9 @@ begin
    edtName.Parent := Self;
    edtName.SetBounds(3, 0, TInfra.Scaled(Self, 70), 21);
    edtName.ParentFont := False;
-   edtName.Font.Style := [];
    edtName.ParentCtl3D := False;
-   edtName.Ctl3D := True;
+   edtName.Font.Style := [];
+   edtName.Ctl3D := False;
    edtName.ShowHint := True;
    edtName.Hint := trnsManager.GetString('BadIdD');
    edtName.Font.Color := NOK_COLOR;

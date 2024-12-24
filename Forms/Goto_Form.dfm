@@ -45,10 +45,12 @@ object GotoForm: TGotoForm
     object edtNumber: TEdit
       Tag = 5
       Left = 72
-      Top = 5
+      Top = 7
       Width = 41
       Height = 21
+      Ctl3D = False
       NumbersOnly = True
+      ParentCtl3D = False
       TabOrder = 1
       Text = '0'
     end

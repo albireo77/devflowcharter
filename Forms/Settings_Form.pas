@@ -168,12 +168,12 @@ begin
    var w := TInfra.Scaled(Self, 449);
    lblFileEncoding.Left := cbFileEncoding.Left - lblFileEncoding.Width - 5;
    lblCompiler.Left := 7;
-   edtCompiler.Left := lblCompiler.Width + lblCompiler.Left + 5;
+   edtCompiler.Left := lblCompiler.Width + lblCompiler.Left + 6;
    edtCompiler.Width := w - edtCompiler.Left;
    lblCompilerNoMain.Left := 7;
-   edtCompilerNoMain.Left := lblCompilerNoMain.Width + lblCompilerNoMain.Left + 5;
+   edtCompilerNoMain.Left := lblCompilerNoMain.Width + lblCompilerNoMain.Left + 6;
    edtCompilerNoMain.Width := w - edtCompilerNoMain.Left;
-   edtTranslationFile.Left := lblFile.Width + lblFile.Left + 5;;
+   edtTranslationFile.Left := lblFile.Width + lblFile.Left + 6;
    edtTranslationFile.Width := w - edtTranslationFile.Left;
    var val := lblDesktop.Width;
    if val < lblSelectColor.Width then

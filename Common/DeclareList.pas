@@ -255,6 +255,8 @@ begin
 
    edtName := TEdit.Create(gbBox);
    edtName.Parent := gbBox;
+   edtName.ParentCtl3D := False;
+   edtName.Ctl3D := False;
    edtName.OnKeyDown := OnKeyDownCommon;
 
    btnAdd := TButton.Create(Self);
@@ -303,7 +305,7 @@ begin
 
    inherited Create(AParent, ALeft, ATop, AWidth, ADispRowCount, AColCount);
 
-   edtName.SetBounds(lblName.Width+10, 17, gbBox.Width-lblName.Width-18, 21);
+   edtName.SetBounds(lblName.Width+10, 19, gbBox.Width-lblName.Width-18, 21);
    edtName.Anchors := edtName.Anchors + [akRight];
 
    lblValue := TLabel.Create(gbBox);
@@ -317,9 +319,11 @@ begin
 
    edtValue := TEdit.Create(gbBox);
    edtValue.Parent := gbBox;
-   edtValue.SetBounds(lblValue.Width+10, 42, gbBox.Width-lblValue.Width-18, 21);
+   edtValue.SetBounds(lblValue.Width+10, 44, gbBox.Width-lblValue.Width-18, 21);
    edtValue.Anchors := edtValue.Anchors + [akRight];
    edtValue.ShowHint := True;
+   edtValue.ParentCtl3D := False;
+   edtValue.Ctl3D := False;
    edtValue.Hint := trnsManager.GetString('DisableFieldValid');
    edtValue.OnKeyDown := OnKeyDownCommon;
 
@@ -337,7 +341,7 @@ begin
 
    inherited Create(AParent, ALeft, ATop, AWidth, ADispRowCount, AColCount);
 
-   edtName.SetBounds(lblName.Width+10, 17, 100, 21);
+   edtName.SetBounds(lblName.Width+10, 19, 100, 21);
    
    lblType := TLabel.Create(gbBox);
    lblType.Parent := gbBox;
@@ -353,14 +357,14 @@ begin
 
    edtSize := TSizeEdit.Create(gbBox);
    edtSize.Parent := gbBox;
-   edtSize.SetBounds(lblSize.BoundsRect.Right+5, 17, gbBox.Width - lblSize.BoundsRect.Right-13, 21);
+   edtSize.SetBounds(lblSize.BoundsRect.Right+5, 19, gbBox.Width - lblSize.BoundsRect.Right-13, 21);
    edtSize.Anchors := edtSize.Anchors + [akRight];
    edtSize.OnKeyDown := OnKeyDownCommon;
 
    cbType := TComboBox.Create(gbBox);
    cbType.Parent := gbBox;
    cbType.Style := csDropDownList;
-   cbType.SetBounds(lblType.BoundsRect.Right + 5, 42, 0, 21);
+   cbType.SetBounds(lblType.BoundsRect.Right + 5, 44, 0, 21);
    cbType.Constraints.MaxWidth := edtName.BoundsRect.Right - lblType.BoundsRect.Right - 5;
    cbType.Constraints.MinWidth := cbType.Constraints.MaxWidth;
    cbType.OnKeyDown := OnKeyDownCommon;
@@ -374,9 +378,11 @@ begin
 
    edtInit := TEdit.Create(gbBox);
    edtInit.Parent := gbBox;
-   edtInit.SetBounds(lblInit.BoundsRect.Right+5, 42, gbBox.Width-lblInit.BoundsRect.Right-13, 21);
+   edtInit.SetBounds(lblInit.BoundsRect.Right+5, 44, gbBox.Width-lblInit.BoundsRect.Right-13, 21);
    edtInit.Anchors := edtInit.Anchors + [akRight];
    edtInit.ShowHint := True;
+   edtInit.ParentCtl3D := False;
+   edtInit.Ctl3D := False;
    edtInit.Hint := trnsManager.GetString('DisableFieldValid');
    edtInit.OnKeyDown := OnKeyDownCommon;
 
