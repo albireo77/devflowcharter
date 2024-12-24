@@ -186,7 +186,7 @@ Attributes details:
 <!--
 Element ProcedureLabelKey
 Description: Key for label displayed close to flowchart for body of function that does not return specific data type.
-It should contain name of key (free to be added) present in translation file (.lng) in Others section
+It should contain name of key present (free to be added) in translation .lng file (section Others)
 -->
 <ProcedureLabelKey>ProcedureLabelJava</ProcedureLabelKey>
 

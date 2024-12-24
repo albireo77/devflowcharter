@@ -93,7 +93,7 @@ It may not contain all supported tags. For all supported tags and their descript
 <!--
 Element ProcedureLabelKey
 Description: Key for label displayed for flowchart of function that returns nothing (type = none).
-It should contain name of key (free to be added) present in translation file (.lng) in Others section
+It should contain name of key present (free to be added) in translation .lng file (section Others)
 -->
 <ProcedureLabelKey>ProcedureLabelC</ProcedureLabelKey>
 

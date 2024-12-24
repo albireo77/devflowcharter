@@ -173,7 +173,7 @@ Attributes details:
 <!--
 Element ProcedureLabelKey
 Description: Key for abel displayed for flowchart of function that returns nothing (type = none).
-It should contain name of key (free to be added) present in translation file (.lng) in Others section
+It should contain name of key present (free to be added) in translation .lng file (section Others)
 -->
 <ProcedureLabelKey>ProcedureLabelPascal</ProcedureLabelKey>
 
