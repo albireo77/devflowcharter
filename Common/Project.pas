@@ -520,10 +520,8 @@ end;
 
 procedure TProject.SetGlobalDeclarations(AForm: TDeclarationsForm);
 begin
-   FGlobalVars.Free;
-   FGlobalVars := nil;
-   FGlobalConsts.Free;
-   FGlobalConsts := nil;
+   FreeAndNil(FGlobalVars);
+   FreeAndNil(FGlobalConsts);
    if GInfra.CurrentLang.EnabledVars then
       FGlobalVars := TVarDeclareList.Create(AForm, 2, 1, 358, 6, 5);
    if GInfra.CurrentLang.EnabledConsts then
