@@ -910,14 +910,14 @@ Used to change default label displayed for record data type; it's not translated
 <!--
 Element GlobalVarsLabelKey
 Description: Label displayed for global variables.
-It should contain name of key present in translation file (.lng)
+It should contain name of key present in translation .lng file (section Others)
 -->
 <GlobalVarsLabelKey>GlobalVars</GlobalVarsLabelKey>
 
 <!--
 Element GlobalConstsLabelKey
 Description: Label displayed for global constants.
-It should contain name of key present in translation file (.lng)
+It should contain name of key present in translation .lng file (section Others)
 -->
 <GlobalConstsLabelKey>GlobalConsts</GlobalConstsLabelKey>
 
