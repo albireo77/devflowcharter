@@ -4,17 +4,16 @@ object FunctionsForm: TFunctionsForm
   Caption = 'Functions'
   ClientHeight = 587
   ClientWidth = 397
-  Color = clBtnFace
+  Color = clWindow
   Constraints.MaxWidth = 413
   Constraints.MinHeight = 625
   Constraints.MinWidth = 413
+  Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   OnDeactivate = FormDeactivate
-  PixelsPerInch = 96
   TextHeight = 13
 end

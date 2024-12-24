@@ -5,15 +5,14 @@ object PageControlForm: TPageControlForm
   Caption = 'PageControl'
   ClientHeight = 517
   ClientWidth = 407
-  Color = clBtnFace
+  Color = clWindow
+  Ctl3D = False
   ParentFont = True
   KeyPreview = True
   Menu = MainMenu1
-  OldCreateOrder = False
   PopupMode = pmExplicit
   OnDeactivate = FormDeactivate
-  PixelsPerInch = 96
-  TextHeight = 13
+  TextHeight = 15
   object pgcTabs: TPageControl
     Left = 0
     Top = 0

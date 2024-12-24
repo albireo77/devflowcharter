@@ -200,7 +200,6 @@ begin
    for var i := 0 to AColCount-1 do
       SetColumnLabel(i);
    sgList.DrawingStyle := gdsClassic;
-   sgList.Ctl3D := False;
    sgList.FixedColor := clMoneyGreen;
    sgList.Options := sgList.Options + [goRowSelect, goColSizing, goThumbTracking, goRowMoving] - [goRangeSelect];
    sgList.ScrollBars := ssVertical;
@@ -255,8 +254,6 @@ begin
 
    edtName := TEdit.Create(gbBox);
    edtName.Parent := gbBox;
-   edtName.ParentCtl3D := False;
-   edtName.Ctl3D := False;
    edtName.OnKeyDown := OnKeyDownCommon;
 
    btnAdd := TButton.Create(Self);
@@ -322,8 +319,6 @@ begin
    edtValue.SetBounds(lblValue.Width+10, 44, gbBox.Width-lblValue.Width-18, 21);
    edtValue.Anchors := edtValue.Anchors + [akRight];
    edtValue.ShowHint := True;
-   edtValue.ParentCtl3D := False;
-   edtValue.Ctl3D := False;
    edtValue.Hint := trnsManager.GetString('DisableFieldValid');
    edtValue.OnKeyDown := OnKeyDownCommon;
 
@@ -381,8 +376,6 @@ begin
    edtInit.SetBounds(lblInit.BoundsRect.Right+5, 44, gbBox.Width-lblInit.BoundsRect.Right-13, 21);
    edtInit.Anchors := edtInit.Anchors + [akRight];
    edtInit.ShowHint := True;
-   edtInit.ParentCtl3D := False;
-   edtInit.Ctl3D := False;
    edtInit.Hint := trnsManager.GetString('DisableFieldValid');
    edtInit.OnKeyDown := OnKeyDownCommon;
 

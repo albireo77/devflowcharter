@@ -242,12 +242,10 @@ begin
    edtName.Parent := AParent;
    edtName.SetBounds(lblName.BoundsRect.Right+5, y-5, 104, 21);
    edtName.ParentFont := False;
-   edtName.ParentCtl3D := False;
    edtName.Font.Style := [];
    edtName.ShowHint := True;
    edtName.Hint := trnsManager.GetString('BadIdD');
    edtName.DoubleBuffered := True;
-   edtName.Ctl3D := False;
    edtName.OnChange := OnChangeName;
 end;
 
@@ -265,12 +263,10 @@ begin
    edtLibrary.Parent := AParent;
    edtLibrary.SetBounds(lblLibrary.BoundsRect.Right+5, y-5, 135-lblLibrary.Width, 21);
    edtLibrary.ParentFont := False;
-   edtLibrary.ParentCtl3D := False;
    edtLibrary.Font.Style := [];
    edtLibrary.Font.Color := clGreen;
    edtLibrary.ShowHint := True;
    edtLibrary.DoubleBuffered := True;
-   edtLibrary.Ctl3D := False;
    edtLibrary.OnChange := OnChangeLib;
    edtLibrary.Hint := trnsManager.GetFormattedString('edtLibraryHint', [GInfra.CurrentLang.LibraryExt]);
 end;

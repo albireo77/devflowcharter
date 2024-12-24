@@ -53,8 +53,6 @@ begin
    CharCase := ecUpperCase;
    Hint := trnsManager.GetString('DisableFieldValid') + sLineBreak + ReplaceStr(trnsManager.GetString('edtSizeHint'), LB_PHOLDER2, sLineBreak);
    ParentFont := False;
-   ParentCtl3D := False;
-   Ctl3D := False;
    Font.Style := [];
    Font.Color := BLACK_COLOR;
    DoubleBuffered := True;

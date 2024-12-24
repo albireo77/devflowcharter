@@ -6,7 +6,8 @@ object SettingsForm: TSettingsForm
   Caption = 'Settings'
   ClientHeight = 702
   ClientWidth = 557
-  Color = clBtnFace
+  Color = clWindow
+  Ctl3D = False
   ParentFont = True
   Position = poScreenCenter
   OnCreate = FormCreate
@@ -134,13 +135,11 @@ object SettingsForm: TSettingsForm
       Top = 48
       Width = 345
       Height = 19
-      Ctl3D = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []
-      ParentCtl3D = False
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
@@ -186,13 +185,11 @@ object SettingsForm: TSettingsForm
       Top = 72
       Width = 249
       Height = 19
-      Ctl3D = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []
-      ParentCtl3D = False
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
@@ -628,9 +625,7 @@ object SettingsForm: TSettingsForm
         BorderWidth = 1
         BorderStyle = bsSingle
         Color = clWindow
-        Ctl3D = False
         ParentBackground = False
-        ParentCtl3D = False
         TabOrder = 0
         StyleElements = [seFont, seBorder]
         OnClick = pnlSelectClick
@@ -644,9 +639,7 @@ object SettingsForm: TSettingsForm
         BorderWidth = 1
         BorderStyle = bsSingle
         Color = clWindow
-        Ctl3D = False
         ParentBackground = False
-        ParentCtl3D = False
         TabOrder = 1
         StyleElements = [seFont, seBorder]
         OnClick = pnlSelectClick
@@ -660,9 +653,7 @@ object SettingsForm: TSettingsForm
         BorderWidth = 1
         BorderStyle = bsSingle
         Color = clWindow
-        Ctl3D = False
         ParentBackground = False
-        ParentCtl3D = False
         TabOrder = 2
         StyleElements = [seFont, seBorder]
         OnClick = pnlSelectClick
@@ -676,9 +667,7 @@ object SettingsForm: TSettingsForm
         BorderWidth = 1
         BorderStyle = bsSingle
         Color = clWindow
-        Ctl3D = False
         ParentBackground = False
-        ParentCtl3D = False
         TabOrder = 3
         StyleElements = [seFont, seBorder]
         OnClick = pnlSelectClick
@@ -692,9 +681,7 @@ object SettingsForm: TSettingsForm
         BorderWidth = 1
         BorderStyle = bsSingle
         Color = clWindow
-        Ctl3D = False
         ParentBackground = False
-        ParentCtl3D = False
         TabOrder = 4
         StyleElements = [seFont, seBorder]
         OnClick = pnlSelectClick
@@ -708,9 +695,7 @@ object SettingsForm: TSettingsForm
         BorderWidth = 1
         BorderStyle = bsSingle
         Color = clWindow
-        Ctl3D = False
         ParentBackground = False
-        ParentCtl3D = False
         TabOrder = 5
         StyleElements = [seFont, seBorder]
         OnClick = pnlSelectClick
@@ -724,9 +709,7 @@ object SettingsForm: TSettingsForm
         BorderWidth = 1
         BorderStyle = bsSingle
         Color = clWindow
-        Ctl3D = False
         ParentBackground = False
-        ParentCtl3D = False
         TabOrder = 6
         StyleElements = [seFont, seBorder]
         OnClick = pnlSelectClick
@@ -740,9 +723,7 @@ object SettingsForm: TSettingsForm
         BorderWidth = 1
         BorderStyle = bsSingle
         Color = clWindow
-        Ctl3D = False
         ParentBackground = False
-        ParentCtl3D = False
         TabOrder = 7
         StyleElements = [seFont, seBorder]
         OnClick = pnlSelectClick
@@ -756,9 +737,7 @@ object SettingsForm: TSettingsForm
         BorderWidth = 1
         BorderStyle = bsSingle
         Color = clWindow
-        Ctl3D = False
         ParentBackground = False
-        ParentCtl3D = False
         TabOrder = 8
         StyleElements = [seFont, seBorder]
         OnClick = pnlSelectClick
@@ -772,9 +751,7 @@ object SettingsForm: TSettingsForm
         BorderWidth = 1
         BorderStyle = bsSingle
         Color = clWindow
-        Ctl3D = False
         ParentBackground = False
-        ParentCtl3D = False
         TabOrder = 9
         StyleElements = [seFont, seBorder]
         OnClick = pnlSelectClick
@@ -786,14 +763,12 @@ object SettingsForm: TSettingsForm
       Top = 14
       Width = 38
       Height = 19
-      Ctl3D = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []
       NumbersOnly = True
-      ParentCtl3D = False
       ParentFont = False
       TabOrder = 0
     end
@@ -918,13 +893,11 @@ object SettingsForm: TSettingsForm
       Top = 26
       Width = 361
       Height = 19
-      Ctl3D = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []
-      ParentCtl3D = False
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
@@ -1034,9 +1007,7 @@ object SettingsForm: TSettingsForm
       BorderWidth = 1
       BorderStyle = bsSingle
       Color = clWindow
-      Ctl3D = False
       ParentBackground = False
-      ParentCtl3D = False
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
@@ -1052,9 +1023,7 @@ object SettingsForm: TSettingsForm
       BorderWidth = 1
       BorderStyle = bsSingle
       Color = clWindow
-      Ctl3D = False
       ParentBackground = False
-      ParentCtl3D = False
       TabOrder = 1
       StyleElements = [seFont, seBorder]
       OnClick = pnlSelectClick
@@ -1068,9 +1037,7 @@ object SettingsForm: TSettingsForm
       BorderWidth = 1
       BorderStyle = bsSingle
       Color = clWindow
-      Ctl3D = False
       ParentBackground = False
-      ParentCtl3D = False
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
@@ -1084,13 +1051,11 @@ object SettingsForm: TSettingsForm
       Width = 145
       Height = 19
       TabStop = False
-      Ctl3D = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
       Font.Name = 'MS Sans Serif'
       Font.Style = []
-      ParentCtl3D = False
       ParentFont = False
       ParentShowHint = False
       ReadOnly = True
@@ -1157,9 +1122,7 @@ object SettingsForm: TSettingsForm
       BorderWidth = 1
       BorderStyle = bsSingle
       Color = clWindow
-      Ctl3D = False
       ParentBackground = False
-      ParentCtl3D = False
       TabOrder = 7
       StyleElements = [seFont, seBorder]
       OnClick = pnlSelectClick
@@ -1284,14 +1247,12 @@ object SettingsForm: TSettingsForm
         Top = 28
         Width = 25
         Height = 19
-        Ctl3D = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = []
         NumbersOnly = True
-        ParentCtl3D = False
         ParentFont = False
         TabOrder = 0
       end
@@ -1301,14 +1262,12 @@ object SettingsForm: TSettingsForm
         Top = 52
         Width = 25
         Height = 19
-        Ctl3D = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = []
         NumbersOnly = True
-        ParentCtl3D = False
         ParentFont = False
         TabOrder = 1
       end
@@ -1318,14 +1277,12 @@ object SettingsForm: TSettingsForm
         Top = 28
         Width = 25
         Height = 19
-        Ctl3D = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = []
         NumbersOnly = True
-        ParentCtl3D = False
         ParentFont = False
         TabOrder = 2
       end
@@ -1335,14 +1292,12 @@ object SettingsForm: TSettingsForm
         Top = 52
         Width = 25
         Height = 19
-        Ctl3D = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = []
         NumbersOnly = True
-        ParentCtl3D = False
         ParentFont = False
         TabOrder = 3
       end

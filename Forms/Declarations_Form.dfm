@@ -5,16 +5,15 @@ object DeclarationsForm: TDeclarationsForm
   Caption = 'Global Declarations'
   ClientHeight = 284
   ClientWidth = 452
-  Color = clBtnFace
+  Color = clWindow
   Constraints.MinHeight = 323
   Constraints.MinWidth = 20
+  Ctl3D = False
   ParentFont = True
   KeyPreview = True
-  OldCreateOrder = False
   PopupMode = pmExplicit
   Position = poDesigned
   OnCanResize = FormCanResize
   OnShow = FormShow
-  PixelsPerInch = 96
-  TextHeight = 13
+  TextHeight = 15
 end

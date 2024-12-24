@@ -9,6 +9,7 @@ object DataTypesForm: TDataTypesForm
   Constraints.MaxWidth = 330
   Constraints.MinWidth = 330
   Constraints.MinHeight = 323
+  Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11

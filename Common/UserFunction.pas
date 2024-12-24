@@ -372,8 +372,6 @@ begin
    memDesc.Parent := gbDesc;
    memDesc.SetBounds(5, 17, gbDesc.Width-12, chkInclDescCode.Top-22);
    memDesc.ParentFont := False;
-   memDesc.ParentCtl3D := False;
-   memDesc.Ctl3D := False;
    memDesc.Font.Style := [];
    memDesc.Font.Color := clGreen;
    memDesc.WordWrap := False;
@@ -582,7 +580,6 @@ begin
    sbxElements.Parent := gbParams;
    sbxElements.StyleElements := sbxElements.StyleElements - [seClient];
    sbxElements.SetBounds(6, 36, gbParams.Width-10, 0);
-   sbxElements.Ctl3D := False;
    sbxElements.BorderStyle := bsNone;
    sbxElements.Constraints.MaxHeight := 44;
    sbxElements.Constraints.MinWidth := sbxElements.Width;
@@ -631,10 +628,8 @@ begin
    edtDefault.Parent := Self;
    edtDefault.SetBounds(TInfra.Scaled(Self, 174), 0, TInfra.Scaled(Self, 50), 21);
    edtDefault.ParentFont := False;
-   edtDefault.ParentCtl3D := False;
    edtDefault.Font.Style := [];
    edtDefault.Font.Color := clGreen;
-   edtDefault.Ctl3D := False;
    edtDefault.OnChange := OnChangeType;
 
    chkTable := TCheckBox.Create(Self);
