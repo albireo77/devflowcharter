@@ -10,6 +10,7 @@ object MainForm: TMainForm
   ClientHeight = 800
   ClientWidth = 1078
   Color = clWhite
+  Ctl3D = False
   DragKind = dkDock
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,7 +19,6 @@ object MainForm: TMainForm
   Font.Style = []
   KeyPreview = True
   Menu = mmMainMenu
-  OldCreateOrder = False
   Position = poDefault
   WindowState = wsMaximized
   OnClose = FormClose
@@ -26,7 +26,6 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnShortCut = FormShortCut
   OnShow = FormShow
-  PixelsPerInch = 96
   TextHeight = 13
   object pgcPages: TPageControl
     Left = 0

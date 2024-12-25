@@ -6,13 +6,13 @@ object NavigatorForm: TNavigatorForm
   Caption = 'NavigatorForm'
   ClientHeight = 589
   ClientWidth = 344
-  Color = clBtnFace
+  Color = clWindow
+  Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   PopupMode = pmExplicit
   OnCreate = FormCreate
   OnMouseDown = FormMouseDown
@@ -23,7 +23,6 @@ object NavigatorForm: TNavigatorForm
   DesignSize = (
     344
     589)
-  PixelsPerInch = 96
   TextHeight = 13
   object scbAlphaVal: TScrollBar
     Left = 310
@@ -33,14 +32,12 @@ object NavigatorForm: TNavigatorForm
     Anchors = [akTop, akRight]
     BiDiMode = bdLeftToRight
     Constraints.MaxWidth = 17
-    Ctl3D = False
     Kind = sbVertical
     LargeChange = 5
     Max = 255
     Min = 50
     PageSize = 0
     ParentBiDiMode = False
-    ParentCtl3D = False
     Position = 50
     TabOrder = 1
     TabStop = False
@@ -54,8 +51,6 @@ object NavigatorForm: TNavigatorForm
     Height = 16
     Anchors = [akTop, akRight]
     Caption = 'chkAlphaVisible'
-    Ctl3D = False
-    ParentCtl3D = False
     TabOrder = 0
     OnClick = chkAlphaVisibleClick
   end

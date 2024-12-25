@@ -81,9 +81,7 @@ begin
    EditFormWidth := 280;
    EditFormHeight := 182;
    FHasVScroll := True;
-   ParentCtl3D := False;
    BorderStyle := bsNone;
-   Ctl3D := False;
 end;
 
 procedure TMemoEx.KeyDown(var Key: Word; Shift: TShiftState);

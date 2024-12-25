@@ -110,7 +110,6 @@ begin
    cbVar.StyleElements := cbVar.StyleElements - [seClient];
    cbVar.Visible := False;
    cbVar.Font.Color := GSettings.FontColor;
-   cbVar.Ctl3D := False;
    cbVar.BevelInner := bvRaised;
    cbVar.BevelKind := bkSoft;
    cbVar.BevelOuter := bvNone;

@@ -5,6 +5,7 @@ object EditorForm: TEditorForm
   ClientHeight = 519
   ClientWidth = 418
   Color = clBtnFace
+  Ctl3D = False
   Constraints.MinHeight = 558
   Constraints.MinWidth = 225
   ParentFont = True
@@ -26,8 +27,6 @@ object EditorForm: TEditorForm
     Width = 418
     Height = 487
     Anchors = [akLeft, akTop, akRight, akBottom]
-    Ctl3D = True
-    ParentCtl3D = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13

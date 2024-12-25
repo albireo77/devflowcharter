@@ -62,7 +62,6 @@ begin
    FCorner.Parent := Self;
    FCorner.Color := FStatements.Color;
    FCorner.BevelOuter := bvNone;
-   FCorner.Ctl3D := False;
    FCorner.DoubleBuffered := True;
    FCorner.ControlStyle := FCorner.ControlStyle + [csOpaque];
    FCorner.SetBounds(Width-15, 0, 15, 15);

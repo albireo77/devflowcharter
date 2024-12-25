@@ -9,19 +9,18 @@ object SelectImportForm: TSelectImportForm
   AutoScroll = True
   BorderIcons = [biSystemMenu]
   Caption = 'Import'
-  Color = clBtnFace
+  Color = clWindow
   Constraints.MaxWidth = 279
   Constraints.MinWidth = 279
+  Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   OnClose = FormClose
   OnShow = FormShow
-  PixelsPerInch = 96
   TextHeight = 13
   object pnlImports: TPanel
     Left = 24
@@ -31,9 +30,7 @@ object SelectImportForm: TSelectImportForm
     BevelOuter = bvNone
     BorderStyle = bsSingle
     Color = clMoneyGreen
-    Ctl3D = False
     ParentBackground = False
-    ParentCtl3D = False
     TabOrder = 0
   end
   object btnOk: TButton
