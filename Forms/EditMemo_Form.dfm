@@ -5,21 +5,20 @@ object MemoEditorForm: TMemoEditorForm
   Caption = 'MemoEditorForm'
   ClientHeight = 143
   ClientWidth = 264
-  Color = clBtnFace
+  Color = clWindow
   Constraints.MinHeight = 182
   Constraints.MinWidth = 280
+  Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   OnCreate = FormCreate
   OnShow = FormShow
   DesignSize = (
     264
     143)
-  PixelsPerInch = 96
   TextHeight = 13
   object memEditor: TMemo
     Left = 0
@@ -27,13 +26,11 @@ object MemoEditorForm: TMemoEditorForm
     Width = 264
     Height = 143
     Align = alClient
-    Ctl3D = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNavy
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = []
-    ParentCtl3D = False
     ParentFont = False
     TabOrder = 0
   end
