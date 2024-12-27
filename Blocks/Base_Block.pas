@@ -312,8 +312,6 @@ begin
       Parent := Page.Box;
    end;
 
-   ParentFont  := True;
-   ParentColor := True;
    Color       := Page.Box.Color;
    Font.Name   := GSettings.FlowchartFontName;
    PopupMenu   := Page.Form.pmPages;
