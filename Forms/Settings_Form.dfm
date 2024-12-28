@@ -132,7 +132,7 @@ object SettingsForm: TSettingsForm
     object edtCompiler: TEdit
       Tag = 5
       Left = 104
-      Top = 48
+      Top = 49
       Width = 345
       Height = 19
       Font.Charset = DEFAULT_CHARSET
@@ -182,7 +182,7 @@ object SettingsForm: TSettingsForm
     object edtCompilerNoMain: TEdit
       Tag = 5
       Left = 200
-      Top = 72
+      Top = 73
       Width = 249
       Height = 19
       Font.Charset = DEFAULT_CHARSET
@@ -890,7 +890,7 @@ object SettingsForm: TSettingsForm
     object edtTranslationFile: TEdit
       Tag = 5
       Left = 88
-      Top = 26
+      Top = 27
       Width = 361
       Height = 19
       Font.Charset = DEFAULT_CHARSET
