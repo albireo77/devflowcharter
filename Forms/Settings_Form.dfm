@@ -148,7 +148,7 @@ object SettingsForm: TSettingsForm
     object btnBrowseCompilers: TButton
       Tag = 1
       Left = 456
-      Top = 46
+      Top = 48
       Width = 86
       Height = 21
       Caption = 'Browse...'
@@ -906,7 +906,7 @@ object SettingsForm: TSettingsForm
     object btnBrowseTranslations: TButton
       Tag = 1
       Left = 456
-      Top = 24
+      Top = 26
       Width = 86
       Height = 21
       Caption = 'Browse...'
