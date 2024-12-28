@@ -280,9 +280,8 @@ implementation
 
 uses
    System.StrUtils, Vcl.Menus, System.Types, System.Math, System.Rtti, System.TypInfo,
-   System.Character, System.SysUtils, System.UITypes, Main_Block, Return_Block,
-   Infrastructure, BlockFactory, UserFunction, XMLProcessor, Navigator_Form, LangDefinition,
-   FlashThread, Main_Form, OmniXMLUtils, Constants;
+   System.Character, System.SysUtils, System.UITypes, Main_Block, Return_Block, Infrastructure,
+   BlockFactory, XMLProcessor, Navigator_Form, FlashThread, OmniXMLUtils, Constants;
 
 type
    TControlHack = class(TControl);
@@ -312,9 +311,9 @@ begin
       Parent := Page.Box;
    end;
 
-   Color       := Page.Box.Color;
-   Font.Name   := GSettings.FlowchartFontName;
-   PopupMenu   := Page.Form.pmPages;
+   Color := Page.Box.Color;
+   Font.Name := GSettings.FlowchartFontName;
+   PopupMenu := Page.Form.pmPages;
    DoubleBuffered := GSettings.EnableDBuffering;
    ControlStyle := ControlStyle + [csOpaque];
    ParentBackground := False;

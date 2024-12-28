@@ -1,3 +1,6 @@
+11.7 [28-12-2024]
+- further improvements to look better on Windows 11
+
 11.6 [24-12-2024]
 - set Ctl3D = False for text controls to have better look on Windows 11
 
