@@ -8,7 +8,7 @@ object AboutForm: TAboutForm
   Caption = 'About...'
   ClientHeight = 220
   ClientWidth = 417
-  Color = clBtnFace
+  Color = clWindow
   ParentFont = True
   Position = poMainFormCenter
   OnCreate = FormCreate

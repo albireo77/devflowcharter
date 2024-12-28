@@ -5,7 +5,7 @@ object ExplorerForm: TExplorerForm
   Caption = 'Project Explorer'
   ClientHeight = 547
   ClientWidth = 284
-  Color = clBtnFace
+  Color = clWindow
   Constraints.MinWidth = 300
   ParentFont = True
   KeyPreview = True

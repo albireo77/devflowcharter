@@ -4,7 +4,7 @@ object EditorForm: TEditorForm
   Caption = 'Code Editor'
   ClientHeight = 519
   ClientWidth = 418
-  Color = clBtnFace
+  Color = clWindow
   Ctl3D = False
   Constraints.MinHeight = 558
   Constraints.MinWidth = 225

@@ -7,7 +7,7 @@ object ToolboxForm: TToolboxForm
   Caption = 'Tool Box'
   ClientHeight = 254
   ClientWidth = 63
-  Color = clBtnFace
+  Color = clWindow
   ParentFont = True
   KeyPreview = True
   OldCreateOrder = False
