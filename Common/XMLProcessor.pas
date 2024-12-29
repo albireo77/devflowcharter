@@ -35,9 +35,6 @@ type
       class function ImportFlowchartFromXML(ANode: IXMLNode; AParent: TWinControl; APrevBlock: TBlock; ABranchIdx: integer; var AError: TError): TBlock;
    end;
 
-const
-   XML_HEADER = 'version="1.0" encoding="UTF-8"';
-
 implementation
 
 uses
@@ -161,6 +158,8 @@ begin
 end;
 
 class function TXMLProcessor.ExportToXMLFile(AExportProc: TProc<IXMLNode>; const AFilePath: string): TError;
+const
+   XML_HEADER = 'version="1.0" encoding="UTF-8"';
 begin
    result := errNone;
    if Assigned(AExportProc) then
