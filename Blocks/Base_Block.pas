@@ -623,15 +623,13 @@ begin
    if Source is TBlock then
    begin
       var srcBlock := TBlock(Source);
-      var srcPage := srcBlock.Page;
-      var menuItem: TMenuItem;
-      srcPage.Form.pmPages.PopupComponent := srcBlock;
+      var srcForm := srcBlock.Page.Form;
+      var menuItem := srcForm.miCopy;
+      srcForm.pmPages.PopupComponent := srcBlock;
       var shiftPressed := GetAsyncKeyState(vkShift) <> 0;
-      if shiftPressed then
-         menuItem := srcPage.Form.miCopy
-      else
+      if not shiftPressed then
       begin
-         menuItem := srcPage.Form.miCut;
+         menuItem := srcForm.miCut;
          srcBlock.TopParentBlock.LockDrawing;
       end;
       var inst := GClpbrd.Instance;
@@ -1073,7 +1071,7 @@ end;
 
 procedure TBlock.MoveComments(x, y: integer);
 begin
-   if (x <> 0) and (y <> 0) and (Left <> 0) and (Top <> 0) and ((x <> Left) or (y <> Top)) then
+   if (x <> 0) and (y <> 0) and ((x <> Left) or (y <> Top)) then
    begin
       for var comment in GetComments(True) do
       begin
