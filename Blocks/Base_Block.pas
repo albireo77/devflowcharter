@@ -1071,12 +1071,14 @@ end;
 
 procedure TBlock.MoveComments(x, y: integer);
 begin
-   if ((x <> 0) and (x <> Left)) or ((y <> 0) and (y <> Top)) then
+   for var comment in GetComments(True) do
    begin
-      for var comment in GetComments(True) do
+      if comment.Visible then
       begin
-         if comment.Visible then
-            TInfra.MoveWinTopZ(comment, comment.Left+x-Left, comment.Top+y-Top);
+         var cx := IfThen(x <> 0, x-Left);
+         var cy := IfThen(y <> 0, y-Top);
+         if (cx <> 0) or (cy <> 0) then
+           TInfra.MoveWinTopZ(comment, comment.Left+cx, comment.Top+cy);
       end;
    end;
 end;
