@@ -1071,7 +1071,7 @@ end;
 
 procedure TBlock.MoveComments(x, y: integer);
 begin
-   if (x <> 0) and (y <> 0) and ((x <> Left) or (y <> Top)) then
+   if ((x <> 0) and (x <> Left)) or ((y <> 0) and (y <> Top)) then
    begin
       for var comment in GetComments(True) do
       begin
