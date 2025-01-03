@@ -469,7 +469,8 @@ end;
 
 procedure TMainBlock.WMWindowPosChanging(var Msg: TWMWindowPosChanging);
 begin
-   MoveComments(Msg.WindowPos.x, Msg.WindowPos.y);
+   if (Msg.WindowPos.flags and SWP_NOMOVE) = 0 then
+      MoveComments(Msg.WindowPos.x, Msg.WindowPos.y);
    inherited;
 end;
 
