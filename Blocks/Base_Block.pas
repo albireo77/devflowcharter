@@ -1071,13 +1071,13 @@ procedure TBlock.WMWindowPosChanging(var Msg: TWMWindowPosChanging);
 begin
    if (Msg.WindowPos.flags and SWP_NOMOVE) = 0 then
    begin
-      for var comment in GetComments(True) do
+      var cx := Msg.WindowPos.x - Left;
+      var cy := Msg.WindowPos.y - Top;
+      if (cx <> 0) or (cy <> 0) then
       begin
-         if comment.Visible then
+         for var comment in GetComments(True) do
          begin
-            var cx := Msg.WindowPos.x - Left;
-            var cy := Msg.WindowPos.y - Top;
-            if (cx <> 0) or (cy <> 0) then
+            if comment.Visible then
                SetWindowPos(comment.Handle, HWND_TOP, comment.Left+cx, comment.Top+cy, 0, 0, SWP_NOSIZE);
          end;
       end;
