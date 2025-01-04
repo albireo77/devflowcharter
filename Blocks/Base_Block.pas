@@ -1030,12 +1030,12 @@ begin
    begin
       for var comment in GProject.GetComments do
       begin
-         if comment.Page = Page then
+         if comment.Parent = FTopParentBlock.Parent then
          begin
             var isFront := True;
             if AInFront then
                isFront := IsInFront(comment);
-            if isFront and (comment.PinControl = nil) and ClientRect.Contains(ParentToClient(comment.BoundsRect.TopLeft, Page.Box)) then
+            if isFront and (comment.PinControl = nil) and ClientRect.Contains(ParentToClient(comment.BoundsRect.TopLeft, FTopParentBlock.Parent)) then
                list.Add(comment);
          end
       end;
