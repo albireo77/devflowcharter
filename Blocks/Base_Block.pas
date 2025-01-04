@@ -1030,14 +1030,11 @@ begin
    begin
       for var comment in GProject.GetComments do
       begin
-         if comment.Parent = FTopParentBlock.Parent then
-         begin
-            var isFront := True;
-            if AInFront then
-               isFront := IsInFront(comment);
-            if isFront and (comment.PinControl = nil) and ClientRect.Contains(ParentToClient(comment.BoundsRect.TopLeft, FTopParentBlock.Parent)) then
+         if (comment.PinControl = nil) and
+            (comment.Parent = FTopParentBlock.Parent) and
+            ((not AInFront) or IsInFront(comment)) and
+            ClientRect.Contains(ParentToClient(comment.BoundsRect.TopLeft, FTopParentBlock.Parent)) then
                list.Add(comment);
-         end
       end;
    end;
    result := TEnumeratorFactory<TComment>.Create(list);
