@@ -1075,9 +1075,10 @@ begin
       begin
          if comment.Visible then
          begin
-            var x := comment.Left + Msg.WindowPos.x - Left;
-            var y := comment.Top + Msg.WindowPos.y - Top;
-            SetWindowPos(comment.Handle, HWND_TOP, x, y, 0, 0, SWP_NOSIZE);
+            var cx := Msg.WindowPos.x - Left;
+            var cy := Msg.WindowPos.y - Top;
+            if (cx <> 0) or (cy <> 0) then
+               SetWindowPos(comment.Handle, HWND_TOP, comment.Left+cx, comment.Top+cy, 0, 0, SWP_NOSIZE);
          end;
       end;
    end;
