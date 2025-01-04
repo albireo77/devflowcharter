@@ -80,7 +80,7 @@ type
          procedure NCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
          procedure WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo); message WM_GETMINMAXINFO;
          procedure WMExitSizeMove(var Msg: TWMMove); message WM_EXITSIZEMOVE;
-         procedure WMWindowPosChanged(var Msg: TWMWindowPosChanged); message WM_WINDOWPOSCHANGED;
+         procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
          procedure Paint; override;
          procedure DrawI;
          function DrawTextLabel(x, y: integer; const AText: string; ARightJust: boolean = False; ADownJust: boolean = False; APrint: boolean = True): TRect;
@@ -97,13 +97,11 @@ type
          procedure DrawArrow(fromX, fromY, toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone); overload;
          function GetEllipseTextRect(ax, ay: integer; const AText: string): TRect;
          function DrawEllipsedText(ax, ay: integer; const AText: string): TRect;
-         procedure MoveComments(x, y: integer);
          function GetUndoObject: TObject; virtual;
          function IsInFront(AControl: TWinControl): boolean;
          procedure SetPage(APage: TBlockTabSheet); virtual;
          function GetPage: TBlockTabSheet; virtual;
          procedure CreateParams(var Params: TCreateParams); override;
-         procedure OnWindowPosChanged(x, y: integer); virtual;
          function ProcessComments: boolean;
          function IsAncestor(AParent: TObject): boolean;
          function GetErrorMsg(AEdit: TCustomEdit): string;
@@ -1069,24 +1067,20 @@ begin
    end;
 end;
 
-procedure TBlock.MoveComments(x, y: integer);
-begin
-   for var comment in GetComments(True) do
-   begin
-      if comment.Visible then
-         TInfra.MoveWinTopZ(comment, comment.Left+x-Left, comment.Top+y-Top);
-   end;
-end;
-
-procedure TBlock.OnWindowPosChanged(x, y: integer);
-begin
-   MoveComments(x, y);
-end;
-
-procedure TBlock.WMWindowPosChanged(var Msg: TWMWindowPosChanged);
+procedure TBlock.WMWindowPosChanging(var Msg: TWMWindowPosChanging);
 begin
    if (Msg.WindowPos.flags and SWP_NOMOVE) = 0 then
-      OnWindowPosChanged(Msg.WindowPos.x, Msg.WindowPos.y);
+   begin
+      for var comment in GetComments(True) do
+      begin
+         if comment.Visible then
+         begin
+            var x := comment.Left + Msg.WindowPos.x - Left;
+            var y := comment.Top + Msg.WindowPos.y - Top;
+            SetWindowPos(comment.Handle, HWND_TOP, x, y, 0, 0, SWP_NOSIZE);
+         end;
+      end;
+   end;
    inherited;
 end;
 
