@@ -55,7 +55,7 @@ type
          FParentBlock: TGroupBlock;
          FParentBranch: TBranch;
          FId: integer;
-         FIsLocated: boolean;
+         FPosChanged: boolean;
          procedure RefreshStatements;
       protected
          FType: TBlockType;
@@ -1068,7 +1068,7 @@ end;
 
 procedure TBlock.WMWindowPosChanging(var Msg: TWMWindowPosChanging);
 begin
-   if FIsLocated and ((Msg.WindowPos.flags and SWP_NOMOVE) = 0) then
+   if FPosChanged and ((Msg.WindowPos.flags and SWP_NOMOVE) = 0) then
    begin
       var dx := Msg.WindowPos.x - Left;
       var dy := Msg.WindowPos.y - Top;
@@ -1087,7 +1087,7 @@ end;
 procedure TBlock.WMWindowPosChanged(var Msg: TWMWindowPosChanged);
 begin
    if (Msg.WindowPos.flags and SWP_NOMOVE) = 0 then
-      FIsLocated := True;
+      FPosChanged := True;
    inherited;
 end;
 
