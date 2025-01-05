@@ -55,7 +55,6 @@ type
          FParentBlock: TGroupBlock;
          FParentBranch: TBranch;
          FId: integer;
-         FPosChanged: boolean;
          procedure RefreshStatements;
       protected
          FType: TBlockType;
@@ -65,7 +64,8 @@ type
          FVResize,
          FRefreshMode,
          FFrame,
-         FMouseLeave: boolean;
+         FMouseLeave,
+         FPosChanged: boolean;
          FShape: TColorShape;
          FRedArrow: integer;                // indicates active arrow; -1: none, 0: bottom, 1: branch1, 2: branch2...
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms; AShape: TColorShape; AParserMode: TYYMode; AAlignment: TAlignment);
@@ -104,6 +104,7 @@ type
          procedure SetPage(APage: TBlockTabSheet); virtual;
          function GetPage: TBlockTabSheet; virtual;
          procedure CreateParams(var Params: TCreateParams); override;
+         procedure OnWindowPosChanging(AWindowPos: PWindowPos); virtual;
          function ProcessComments: boolean;
          function IsAncestor(AParent: TObject): boolean;
          function GetErrorMsg(AEdit: TCustomEdit): string;
@@ -1068,19 +1069,7 @@ end;
 
 procedure TBlock.WMWindowPosChanging(var Msg: TWMWindowPosChanging);
 begin
-   if FPosChanged and ((Msg.WindowPos.flags and SWP_NOMOVE) = 0) then
-   begin
-      var dx := Msg.WindowPos.x - Left;
-      var dy := Msg.WindowPos.y - Top;
-      if (dx <> 0) or (dy <> 0) then
-      begin
-         for var comment in GetComments(True) do
-         begin
-            if comment.Visible then
-               SetWindowPos(comment.Handle, HWND_TOP, comment.Left+dx, comment.Top+dy, 0, 0, SWP_NOSIZE);
-         end;
-      end;
-   end;
+   OnWindowPosChanging(Msg.WindowPos);
    inherited;
 end;
 
@@ -1089,6 +1078,27 @@ begin
    if (Msg.WindowPos.flags and SWP_NOMOVE) = 0 then
       FPosChanged := True;
    inherited;
+end;
+
+procedure TBlock.OnWindowPosChanging(AWindowPos: PWindowPos);
+begin
+   if FPosChanged and ((AWindowPos.flags and SWP_NOMOVE) = 0) then
+   begin
+      var dx := AWindowPos.x - Left;
+      var dy := AWindowPos.y - Top;
+      if (dx <> 0) or (dy <> 0) then
+      begin
+         for var comment in GetComments(True) do
+         begin
+            if not comment.Moved then
+            begin
+               if comment.Visible then
+                  SetWindowPos(comment.Handle, HWND_TOP, comment.Left+dx, comment.Top+dy, 0, 0, SWP_NOSIZE);
+               comment.Moved := True;
+            end;
+         end;
+      end;
+   end;
 end;
 
 function TBlock.GetPinComments: IEnumerable<TComment>;
@@ -2405,8 +2415,14 @@ end;
 
 procedure TGroupBlock.LinkAllBlocks;
 begin
-   for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
-      LinkBlocks(FBranchList[i]);
+   var comments := GetComments(True);
+   try
+      for var i := PRIMARY_BRANCH_IDX to FBranchList.Count-1 do
+         LinkBlocks(FBranchList[i]);
+   finally
+      for var comment in comments do
+         comment.Moved := False;
+   end;
 end;
 
 function TBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;

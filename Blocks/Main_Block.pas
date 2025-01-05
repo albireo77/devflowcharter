@@ -24,8 +24,8 @@ unit Main_Block;
 interface
 
 uses
-   WinApi.Windows, Vcl.Graphics, Vcl.ComCtrls, System.Classes, System.Math, Base_Block,
-   OmniXML, Interfaces, Types, BlockTabSheet;
+   WinApi.Windows, WinApi.Messages, Vcl.Graphics, Vcl.ComCtrls, System.Classes,
+   System.Math, Base_Block, OmniXML, Interfaces, Types, BlockTabSheet;
 
 type
 
@@ -58,6 +58,7 @@ type
          FStopLabel: string;
          procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
          procedure Paint; override;
+         procedure OnWindowPosChanging(AWindowPos: PWindowPos); override;
          procedure SetPage(APage: TBlockTabSheet); override;
          function GetFunctionLabel(var ARect: TRect): string;
          function GetPage: TBlockTabSheet; override;
@@ -463,6 +464,23 @@ end;
 function TMainBlock.IsBoldDesc: boolean;
 begin
    result := True;
+end;
+
+procedure TMainBlock.OnWindowPosChanging(AWindowPos: PWindowPos);
+begin
+   if FPosChanged and ((AWindowPos.flags and SWP_NOMOVE) = 0) then
+   begin
+      var dx := AWindowPos.x - Left;
+      var dy := AWindowPos.y - Top;
+      if (dx <> 0) or (dy <> 0) then
+      begin
+         for var comment in GetComments(True) do
+         begin
+            if comment.Visible then
+               SetWindowPos(comment.Handle, HWND_TOP, comment.Left+dx, comment.Top+dy, 0, 0, SWP_NOSIZE);
+         end;
+      end;
+   end;
 end;
 
 function TMainBlock.GetUndoObject: TObject;

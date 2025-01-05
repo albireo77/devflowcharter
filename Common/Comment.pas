@@ -33,7 +33,8 @@ type
       private
          FPinControl: TControl;
          FPage: TBlockTabSheet;
-         FActive: boolean;
+         FActive,
+         FMoved: boolean;
          FZOrder: integer;
       protected
          FMouseLeave: boolean;
@@ -53,6 +54,7 @@ type
          procedure OnEndDragComment(Sender, Target: TObject; X, Y: Integer);
       public
          property PinControl: TControl read FPinControl write FPinControl;
+         property Moved: boolean read FMoved write FMoved;
          property Page: TBlockTabSheet read FPage write SetPage;
          constructor Create(APage: TBlockTabSheet; ALeft, ATop, AWidth, AHeight: Integer);
          constructor CreateDefault(APage: TBlockTabSheet);
