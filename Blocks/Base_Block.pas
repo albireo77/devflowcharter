@@ -1033,7 +1033,7 @@ begin
          if (comment.PinControl = nil) and
             (comment.Parent = FTopParentBlock.Parent) and
             ((not AInFront) or IsInFront(comment)) and
-            ClientRect.Contains(ParentToClient(comment.BoundsRect.TopLeft, FTopParentBlock.Parent)) then
+            ClientToScreen(ClientRect).Contains(comment.ClientOrigin) then
                list.Add(comment);
       end;
    end;
