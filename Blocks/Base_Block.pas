@@ -55,6 +55,7 @@ type
          FParentBlock: TGroupBlock;
          FParentBranch: TBranch;
          FId: integer;
+         FIsLocated: boolean;
          procedure RefreshStatements;
       protected
          FType: TBlockType;
@@ -1066,18 +1067,23 @@ end;
 
 procedure TBlock.WMWindowPosChanging(var Msg: TWMWindowPosChanging);
 begin
-   if ((Msg.WindowPos.flags and SWP_NOMOVE) = 0) and (Left <> 0) then
+   if (Msg.WindowPos.flags and SWP_NOMOVE) = 0 then
    begin
-      var dx := Msg.WindowPos.x - Left;
-      var dy := Msg.WindowPos.y - Top;
-      if (dx <> 0) or (dy <> 0) then
+      if FIsLocated then
       begin
-         for var comment in GetComments(True) do
+         var dx := Msg.WindowPos.x - Left;
+         var dy := Msg.WindowPos.y - Top;
+         if (dx <> 0) or (dy <> 0) then
          begin
-            if comment.Visible then
-               SetWindowPos(comment.Handle, HWND_TOP, comment.Left+dx, comment.Top+dy, 0, 0, SWP_NOSIZE);
+            for var comment in GetComments(True) do
+            begin
+               if comment.Visible then
+                  SetWindowPos(comment.Handle, HWND_TOP, comment.Left+dx, comment.Top+dy, 0, 0, SWP_NOSIZE);
+            end;
          end;
-      end;
+      end
+      else
+         FIsLocated := True;
    end;
    inherited;
 end;
