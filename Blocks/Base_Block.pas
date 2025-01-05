@@ -1066,7 +1066,7 @@ end;
 
 procedure TBlock.WMWindowPosChanging(var Msg: TWMWindowPosChanging);
 begin
-   if (Msg.WindowPos.flags and SWP_NOMOVE) = 0 then
+   if ((Msg.WindowPos.flags and SWP_NOMOVE) = 0) and (Left <> 0) then
    begin
       var dx := Msg.WindowPos.x - Left;
       var dy := Msg.WindowPos.y - Top;
