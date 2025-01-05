@@ -82,6 +82,7 @@ type
          procedure WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo); message WM_GETMINMAXINFO;
          procedure WMExitSizeMove(var Msg: TWMMove); message WM_EXITSIZEMOVE;
          procedure WMWindowPosChanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
+         procedure WMWindowPosChanged(var Msg: TWMWindowPosChanged); message WM_WINDOWPOSCHANGED;
          procedure Paint; override;
          procedure DrawI;
          function DrawTextLabel(x, y: integer; const AText: string; ARightJust: boolean = False; ADownJust: boolean = False; APrint: boolean = True): TRect;
@@ -1067,24 +1068,26 @@ end;
 
 procedure TBlock.WMWindowPosChanging(var Msg: TWMWindowPosChanging);
 begin
-   if (Msg.WindowPos.flags and SWP_NOMOVE) = 0 then
+   if FIsLocated and ((Msg.WindowPos.flags and SWP_NOMOVE) = 0) then
    begin
-      if FIsLocated then
+      var dx := Msg.WindowPos.x - Left;
+      var dy := Msg.WindowPos.y - Top;
+      if (dx <> 0) or (dy <> 0) then
       begin
-         var dx := Msg.WindowPos.x - Left;
-         var dy := Msg.WindowPos.y - Top;
-         if (dx <> 0) or (dy <> 0) then
+         for var comment in GetComments(True) do
          begin
-            for var comment in GetComments(True) do
-            begin
-               if comment.Visible then
-                  SetWindowPos(comment.Handle, HWND_TOP, comment.Left+dx, comment.Top+dy, 0, 0, SWP_NOSIZE);
-            end;
+            if comment.Visible then
+               SetWindowPos(comment.Handle, HWND_TOP, comment.Left+dx, comment.Top+dy, 0, 0, SWP_NOSIZE);
          end;
-      end
-      else
-         FIsLocated := True;
+      end;
    end;
+   inherited;
+end;
+
+procedure TBlock.WMWindowPosChanged(var Msg: TWMWindowPosChanged);
+begin
+   if (Msg.WindowPos.flags and SWP_NOMOVE) = 0 then
+      FIsLocated := True;
    inherited;
 end;
 
