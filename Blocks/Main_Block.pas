@@ -58,7 +58,7 @@ type
          FStopLabel: string;
          procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
          procedure Paint; override;
-         procedure OnCommentPosChanging(AComment: TComment; dx, dy: integer); override;
+         procedure MoveComment(AComment: TComment; dx, dy: integer); override;
          procedure SetPage(APage: TBlockTabSheet); override;
          function GetFunctionLabel(var ARect: TRect): string;
          function GetPage: TBlockTabSheet; override;
@@ -466,7 +466,7 @@ begin
    result := True;
 end;
 
-procedure TMainBlock.OnCommentPosChanging(AComment: TComment; dx, dy: integer);
+procedure TMainBlock.MoveComment(AComment: TComment; dx, dy: integer);
 begin
    if AComment.Visible then
       TInfra.MoveWinTopZ(AComment, AComment.Left+dx, AComment.Top+dy);

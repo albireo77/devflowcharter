@@ -104,7 +104,7 @@ type
          procedure SetPage(APage: TBlockTabSheet); virtual;
          function GetPage: TBlockTabSheet; virtual;
          procedure CreateParams(var Params: TCreateParams); override;
-         procedure OnCommentPosChanging(AComment: TComment; dx, dy: integer); virtual;
+         procedure MoveComment(AComment: TComment; dx, dy: integer); virtual;
          function ProcessComments: boolean;
          function IsAncestor(AParent: TObject): boolean;
          function GetErrorMsg(AEdit: TCustomEdit): string;
@@ -1076,7 +1076,7 @@ begin
       if (dx <> 0) or (dy <> 0) then
       begin
          for var comment in GetComments(True) do
-            OnCommentPosChanging(comment, dx, dy);
+            MoveComment(comment, dx, dy);
       end;
    end;
    inherited;
@@ -1089,7 +1089,7 @@ begin
    inherited;
 end;
 
-procedure TBlock.OnCommentPosChanging(AComment: TComment; dx, dy: integer);
+procedure TBlock.MoveComment(AComment: TComment; dx, dy: integer);
 begin
   if not AComment.Moved then
   begin
