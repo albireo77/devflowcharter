@@ -477,7 +477,7 @@ begin
          for var comment in GetComments(True) do
          begin
             if comment.Visible then
-               SetWindowPos(comment.Handle, HWND_TOP, comment.Left+dx, comment.Top+dy, 0, 0, SWP_NOSIZE);
+               TInfra.MoveWinTopZ(comment, comment.Left+dx, comment.Top+dy);
          end;
       end;
    end;
