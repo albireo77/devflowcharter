@@ -24,8 +24,8 @@ unit Main_Block;
 interface
 
 uses
-   WinApi.Windows, WinApi.Messages, Vcl.Graphics, Vcl.ComCtrls, System.Classes,
-   System.Math, Base_Block, OmniXML, Interfaces, Types, BlockTabSheet;
+   WinApi.Windows, Vcl.Graphics, Vcl.ComCtrls, System.Classes, System.Math, Base_Block,
+   OmniXML, Interfaces, Types, BlockTabSheet, Comment;
 
 type
 
@@ -58,7 +58,7 @@ type
          FStopLabel: string;
          procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
          procedure Paint; override;
-         procedure OnWindowPosChanging(AWindowPos: PWindowPos); override;
+         procedure OnCommentPosChanging(AComment: TComment; dx, dy: integer); override;
          procedure SetPage(APage: TBlockTabSheet); override;
          function GetFunctionLabel(var ARect: TRect): string;
          function GetPage: TBlockTabSheet; override;
@@ -73,7 +73,7 @@ implementation
 
 uses
    Vcl.Forms, System.SysUtils, System.StrUtils, Infrastructure, XMLProcessor, OmniXMLUtils,
-   Navigator_Form, UserFunction, Comment, Constants;
+   Navigator_Form, UserFunction, Constants;
 
 constructor TMainBlock.Create(APage: TBlockTabSheet; const ABlockParms: TBlockParms);
 begin
@@ -466,21 +466,10 @@ begin
    result := True;
 end;
 
-procedure TMainBlock.OnWindowPosChanging(AWindowPos: PWindowPos);
+procedure TMainBlock.OnCommentPosChanging(AComment: TComment; dx, dy: integer);
 begin
-   if FPosChanged and ((AWindowPos.flags and SWP_NOMOVE) = 0) then
-   begin
-      var dx := AWindowPos.x - Left;
-      var dy := AWindowPos.y - Top;
-      if (dx <> 0) or (dy <> 0) then
-      begin
-         for var comment in GetComments(True) do
-         begin
-            if comment.Visible then
-               TInfra.MoveWinTopZ(comment, comment.Left+dx, comment.Top+dy);
-         end;
-      end;
-   end;
+   if AComment.Visible then
+      TInfra.MoveWinTopZ(AComment, AComment.Left+dx, AComment.Top+dy);
 end;
 
 function TMainBlock.GetUndoObject: TObject;

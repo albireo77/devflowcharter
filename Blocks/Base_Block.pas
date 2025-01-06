@@ -104,7 +104,7 @@ type
          procedure SetPage(APage: TBlockTabSheet); virtual;
          function GetPage: TBlockTabSheet; virtual;
          procedure CreateParams(var Params: TCreateParams); override;
-         procedure OnWindowPosChanging(AWindowPos: PWindowPos); virtual;
+         procedure OnCommentPosChanging(AComment: TComment; dx, dy: integer); virtual;
          function ProcessComments: boolean;
          function IsAncestor(AParent: TObject): boolean;
          function GetErrorMsg(AEdit: TCustomEdit): string;
@@ -1069,7 +1069,16 @@ end;
 
 procedure TBlock.WMWindowPosChanging(var Msg: TWMWindowPosChanging);
 begin
-   OnWindowPosChanging(Msg.WindowPos);
+   if FPosChanged and ((Msg.WindowPos.flags and SWP_NOMOVE) = 0) then
+   begin
+      var dx := Msg.WindowPos.x - Left;
+      var dy := Msg.WindowPos.y - Top;
+      if (dx <> 0) or (dy <> 0) then
+      begin
+         for var comment in GetComments(True) do
+            OnCommentPosChanging(comment, dx, dy);
+      end;
+   end;
    inherited;
 end;
 
@@ -1080,25 +1089,14 @@ begin
    inherited;
 end;
 
-procedure TBlock.OnWindowPosChanging(AWindowPos: PWindowPos);
+procedure TBlock.OnCommentPosChanging(AComment: TComment; dx, dy: integer);
 begin
-   if FPosChanged and ((AWindowPos.flags and SWP_NOMOVE) = 0) then
-   begin
-      var dx := AWindowPos.x - Left;
-      var dy := AWindowPos.y - Top;
-      if (dx <> 0) or (dy <> 0) then
-      begin
-         for var comment in GetComments(True) do
-         begin
-            if not comment.Moved then
-            begin
-               if comment.Visible then
-                  TInfra.MoveWinTopZ(comment, comment.Left+dx, comment.Top+dy);
-               comment.Moved := True;
-            end;
-         end;
-      end;
-   end;
+  if not AComment.Moved then
+  begin
+     if AComment.Visible then
+        TInfra.MoveWinTopZ(AComment, AComment.Left+dx, AComment.Top+dy);
+     AComment.Moved := True;
+  end;
 end;
 
 function TBlock.GetPinComments: IEnumerable<TComment>;
