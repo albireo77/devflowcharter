@@ -65,7 +65,7 @@ type
          FRefreshMode,
          FFrame,
          FMouseLeave,
-         FPosChanged: boolean;
+         FPosChanged: boolean;              // flag to indicate that block was moved from its initial position (0, 0)
          FShape: TColorShape;
          FRedArrow: integer;                // indicates active arrow; -1: none, 0: bottom, 1: branch1, 2: branch2...
          constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms; AShape: TColorShape; AParserMode: TYYMode; AAlignment: TAlignment);
