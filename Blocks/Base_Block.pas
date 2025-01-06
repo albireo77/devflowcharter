@@ -1124,27 +1124,27 @@ end;
 
 procedure TBlock.PerformRefreshStatements;
 begin
-    var b := NavigatorForm.InvalidateIndicator;
-    NavigatorForm.InvalidateIndicator := False;
-    RefreshStatements;
-    NavigatorForm.InvalidateIndicator := b;
+   var b := NavigatorForm.InvalidateIndicator;
+   NavigatorForm.InvalidateIndicator := False;
+   RefreshStatements;
+   NavigatorForm.InvalidateIndicator := b;
 end;
 
 procedure TBlock.RefreshStatements;
 begin
-    var b := FRefreshMode;
-    FRefreshMode := True;
-    try
-       for var control in GetControls do
-       begin
-          if control is TCustomEdit then
-             TCustomEditHack(control).Change
-          else if (control is TBlock) and (control <> GClpbrd.UndoObject) then
-             TBlock(control).RefreshStatements;
-       end;
-    finally
-       FRefreshMode := b;
-    end;
+   var b := FRefreshMode;
+   FRefreshMode := True;
+   try
+      for var control in GetControls do
+      begin
+         if control is TCustomEdit then
+            TCustomEditHack(control).Change
+         else if (control is TBlock) and (control <> GClpbrd.UndoObject) then
+            TBlock(control).RefreshStatements;
+      end;
+   finally
+      FRefreshMode := b;
+   end;
 end;
 
 function TBlock.GetId: integer;
