@@ -76,11 +76,7 @@ begin
    FStatement.Text := AText;
    PutTextControls;
    if AdjustWidth then
-   begin
-      var w :=  TInfra.GetTextWidth(FStatement.Text, FStatement) + FStatement.Left + 20;
-      if Width < w then
-         Width := w;
-   end;
+      Width := Max(Width, TInfra.GetTextWidth(FStatement.Text, FStatement) + FStatement.Left + 20);
    var p := GInfra.CurrentLang.InOutCursorPos;
    FStatement.SelStart := IfThen(p <= 0, Length(FStatement.Text) + p, p - 1);
    BottomHook := Width div 2;
