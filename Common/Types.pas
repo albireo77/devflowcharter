@@ -331,7 +331,7 @@ end;
 
 function TDiamond.Polygon: TPointArray;
 begin
-   result := [Top, Right, Bottom, Left, Top];
+   result := [Top, Right, Bottom, Left];
 end;
 
 end.

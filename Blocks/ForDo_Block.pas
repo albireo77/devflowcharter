@@ -241,8 +241,7 @@ begin
                       Point(bst-9, 0),
                       Point(bst+30, 19),
                       Point(bst-9, TopHook.Y),
-                      Point(bhx-100, TopHook.Y),
-                      Point(bhx-100, 0)]);
+                      Point(bhx-100, TopHook.Y)]);
       DrawTextLabel(edtVar.BoundsRect.Right+3, t, GInfra.CurrentLang.ForDoVarString, False, True);
       DrawTextLabel(edtStart.BoundsRect.Right+3, t, IfThen(FDescOrder, '«', '»'), False, True);
       DrawTextLabel(bhx-97, t, FForLabel, False, True);

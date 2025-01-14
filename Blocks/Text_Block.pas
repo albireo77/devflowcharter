@@ -106,11 +106,11 @@ begin
 
    Canvas.Pen.Color := TWinControlHack(Parent).Color;
    Canvas.Brush.Color := Canvas.Pen.Color;
-   Canvas.Polygon([r.TopLeft, Point(r.Right, r.Top), r.BottomRight, r.TopLeft]);
+   Canvas.Polygon([r.TopLeft, Point(r.Right, r.Top), r.BottomRight]);
 
    Canvas.Pen.Color := GSettings.PenColor;
    Canvas.Brush.Color := Color;
-   Canvas.Polygon([r.TopLeft, r.BottomRight, Point(r.Left, r.Bottom), r.TopLeft]);
+   Canvas.Polygon([r.TopLeft, r.BottomRight, Point(r.Left, r.Bottom)]);
 end;
 
 end.

@@ -1417,8 +1417,7 @@ begin
    Canvas.Brush.Color := AColor;
    Canvas.Polygon([p,
                    Point(p.X+MD[isVert, False], p.Y+MD[isVert, True]),
-                   Point(aX, aY),
-                   p]);
+                   Point(aX, aY)]);
    Canvas.MoveTo(fromX, fromY);
    Canvas.LineTo(toX, toY);
 end;

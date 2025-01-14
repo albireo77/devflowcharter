@@ -126,8 +126,7 @@ begin
    Canvas.Polygon([Point(20, 0),
                    Point(Width-1, 0),
                    Point(Width-21, BOTTOM_POINT_Y),
-                   Point(0, BOTTOM_POINT_Y),
-                   Point(20, 0)]);
+                   Point(0, BOTTOM_POINT_Y)]);
    Canvas.MoveTo(w+33, 0);
    Canvas.LineTo(w+13, BOTTOM_POINT_Y);
    var fontStyles := Canvas.Font.Style;

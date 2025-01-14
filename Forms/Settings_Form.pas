@@ -497,12 +497,10 @@ begin
          cnv.Rectangle(r);
       shpParallel:
       begin
-         var p := Point(r.Left+10, r.Top);
-         cnv.Polygon([p,
+         cnv.Polygon([Point(r.Left+10, r.Top),
                       Point(r.Right, r.Top),
                       Point(r.Right-10, r.Bottom),
-                      Point(r.Left, r.Bottom),
-                      p]);
+                      Point(r.Left, r.Bottom)]);
       end;
       shpDiamond:
       begin
@@ -510,16 +508,14 @@ begin
          cnv.Polygon([Point(r.Left, p.Y),
                       Point(p.X, r.Top),
                       Point(r.Right, p.Y),
-                      Point(p.X, r.Bottom),
-                      Point(r.Left, p.Y)]);
+                      Point(p.X, r.Bottom)]);
       end;
       shpRoadSign:
          cnv.Polygon([r.TopLeft,
                       Point(r.Left+35, r.Top),
                       Point(r.Right, r.CenterPoint.Y),
                       Point(r.Left+35, r.Bottom),
-                      Point(r.Left, r.Bottom),
-                      r.TopLeft]);
+                      Point(r.Left, r.Bottom)]);
       shpRoutine:
       begin
          cnv.Rectangle(r);
