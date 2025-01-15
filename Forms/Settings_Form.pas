@@ -496,12 +496,10 @@ begin
       shpRectangle:
          cnv.Rectangle(r);
       shpParallel:
-      begin
          cnv.Polygon([Point(r.Left+10, r.Top),
                       Point(r.Right, r.Top),
                       Point(r.Right-10, r.Bottom),
                       Point(r.Left, r.Bottom)]);
-      end;
       shpDiamond:
       begin
          var p := r.CenterPoint;
