@@ -1241,7 +1241,7 @@ object SettingsForm: TSettingsForm
         Font.Style = []
         ParentFont = False
       end
-      object edtMarginLeft: TEdit
+      object edtPrintMarginLeft: TEdit
         Tag = 5
         Left = 56
         Top = 28
@@ -1256,7 +1256,7 @@ object SettingsForm: TSettingsForm
         ParentFont = False
         TabOrder = 0
       end
-      object edtMarginRight: TEdit
+      object edtPrintMarginRight: TEdit
         Tag = 5
         Left = 56
         Top = 52
@@ -1271,7 +1271,7 @@ object SettingsForm: TSettingsForm
         ParentFont = False
         TabOrder = 1
       end
-      object edtMarginTop: TEdit
+      object edtPrintMarginTop: TEdit
         Tag = 5
         Left = 144
         Top = 28
@@ -1286,7 +1286,7 @@ object SettingsForm: TSettingsForm
         ParentFont = False
         TabOrder = 2
       end
-      object edtMarginBottom: TEdit
+      object edtPrintMarginBottom: TEdit
         Tag = 5
         Left = 144
         Top = 52

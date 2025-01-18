@@ -511,8 +511,8 @@ begin
    FEditorAutoSelectBlock := sForm.chkAutoSelectCode.Checked;
    FEditorAutoUpdate      := sForm.chkAutoUpdateCode.Checked;
    FValidateDeclaration   := sForm.chkValidateConsts.Checked;
-   FEditorFontSize        := StrToIntDef(sForm.cbFontSize.Text, EDITOR_DEFAULT_FONT_SIZE);
-   FIndentLength          := StrToIntDef(sForm.edtEditorIndent.Text, EDITOR_DEFAULT_INDENT_LENGTH);
+   FEditorFontSize        := StrToInt(sForm.cbFontSize.Text);
+   FIndentLength          := StrToInt(sForm.edtEditorIndent.Text);
 
    if sForm.cbIndentChar.ItemIndex = 1 then
       FIndentChar := TAB_CHAR
@@ -618,10 +618,10 @@ begin
 
    TInfra.GetEditorForm.SetFormAttributes;
 
-   FPrintRect.Left   := StrToIntDef(sForm.edtMarginLeft.Text, DEFAULT_PRINT_MARGIN);
-   FPrintRect.Top    := StrToIntDef(sForm.edtMarginTop.Text, DEFAULT_PRINT_MARGIN);
-   FPrintRect.Right  := PRINT_SCALE_BASE - StrToIntDef(sForm.edtMarginRight.Text, DEFAULT_PRINT_MARGIN);
-   FPrintRect.Bottom := PRINT_SCALE_BASE - StrToIntDef(sForm.edtMarginBottom.Text, DEFAULT_PRINT_MARGIN);
+   FPrintRect.Left   := StrToInt(sForm.edtPrintMarginLeft.Text);
+   FPrintRect.Top    := StrToInt(sForm.edtPrintMarginTop.Text);
+   FPrintRect.Right  := PRINT_SCALE_BASE - StrToInt(sForm.edtPrintMarginRight.Text);
+   FPrintRect.Bottom := PRINT_SCALE_BASE - StrToInt(sForm.edtPrintMarginBottom.Text);
 
    if GProject <> nil then
    begin
