@@ -457,13 +457,13 @@ begin
      Printer.Canvas.Font.Height := GetDeviceCaps(Printer.Canvas.Handle, LOGPIXELSY) * 12 div 72;
      lineHeight := Printer.Canvas.TextHeight('X');
      Inc(lineHeight, lineHeight * 8 div 100);
-     printRect := GSettings.PrintRect;
-     ScaleX := Printer.PageWidth div PRINT_SCALE_BASE;
-     ScaleY := Printer.PageHeight div PRINT_SCALE_BASE;
-     printRect.Width := ScaleX * printRect.Width;
-     printRect.Height := ScaleY * printRect.Height - lineHeight;
-     printRect.Left := ScaleX * printRect.Left;
-     printRect.Top := ScaleY * printRect.Top;
+     ScaleX := Printer.PageWidth div 100;
+     ScaleY := Printer.PageHeight div 100;
+     with GSettings.PrintMargins do
+        printRect := Rect(ScaleX * Left,
+                          ScaleY * Top,
+                          ScaleX * (100 - Right),
+                          ScaleY * (100 - Bottom));
      fPoint := printRect.BottomRight;
      stepX := ABitmap.Width;
      stepY := ABitmap.Height;

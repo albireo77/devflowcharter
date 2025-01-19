@@ -76,7 +76,7 @@ type
       FTranslationFile: string;
       FFontColor: TColor;
       FPenColor: TColor;
-      FPrintRect: TRect;
+      FPrintMargins: TRect;
       FEnableDBuffering,
       FShowFuncLabels,
       FShowBlockLabels,
@@ -147,7 +147,7 @@ type
       property DesktopColor: TColor read FDesktopColor;
       property TranslationFile: string read FTranslationFile write FTranslationFile;
       property FontColor: TColor read FFontColor;
-      property PrintRect: TRect read FPrintRect;
+      property PrintMargins: TRect read FPrintMargins;
       property EnableDBuffering: boolean read FEnableDBuffering;
       property ShowFuncLabels: boolean read FShowFuncLabels;
       property ShowBlockLabels: boolean read FShowBlockLabels;
@@ -304,10 +304,6 @@ begin
    FConfirmRemove             := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_CONFIRM_REMOVE, True);
    FPrintMultPages            := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PRINT_MULTI_PAGES, False);
    FPrintMultPagesHorz        := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_PRINT_MULTI_PAGES_HORZ, False);
-   FPrintRect.Left            := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_LEFT, DEFAULT_PRINT_MARGIN);
-   FPrintRect.Top             := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_TOP, DEFAULT_PRINT_MARGIN);
-   FPrintRect.Right           := PRINT_SCALE_BASE - FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_RIGHT, DEFAULT_PRINT_MARGIN);
-   FPrintRect.Bottom          := PRINT_SCALE_BASE - FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_BOTTOM, DEFAULT_PRINT_MARGIN);
    FEditorShowGutter          := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EDITOR_SHOW_GUTTER, True);
    FEditorIndentGuides        := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EDITOR_INDENT_GUIDES, False);
    FEditorShowRichText        := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EDITOR_SHOW_RICHTEXT, False);
@@ -340,6 +336,10 @@ begin
    FCurrentLangName           := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_CURRENT_LANGUAGE, '');
    FFlowchartFontSize         := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_FLOWCHART_FONT_SIZE, FLOWCHART_MIN_FONT_SIZE);
    FIndentChar                := Char(FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_INDENT_CHAR, Integer(SPACE_CHAR)));
+   FPrintMargins              := Rect(FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_LEFT, DEFAULT_PRINT_MARGIN),
+                                      FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_TOP, DEFAULT_PRINT_MARGIN),
+                                      FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_RIGHT, DEFAULT_PRINT_MARGIN),
+                                      FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_BOTTOM, DEFAULT_PRINT_MARGIN));
    if not (FFlowchartFontSize in FLOWCHART_VALID_FONT_SIZES) then
       FFlowchartFontSize := FLOWCHART_MIN_FONT_SIZE;
    if TInfra.IsNOkColor(FFontColor) then
@@ -363,10 +363,10 @@ begin
    FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_PRINT_MULTI_PAGES_HORZ, FPrintMultPagesHorz);
    FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_AUTOSELECT_CODE_BLOCK, FEditorAutoSelectBlock);
    FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_AUTOUPDATE_CODE, FEditorAutoUpdate);
-   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_LEFT, FPrintRect.Left);
-   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_TOP, FPrintRect.Top);
-   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_RIGHT, PRINT_SCALE_BASE - FPrintRect.Right);
-   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_BOTTOM, PRINT_SCALE_BASE - FPrintRect.Bottom);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_LEFT, FPrintMargins.Left);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_TOP, FPrintMargins.Top);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_RIGHT, FPrintMargins.Right);
+   FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_BOTTOM, FPrintMargins.Bottom);
    FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_EDITOR_SHOW_GUTTER, FEditorShowGutter);
    FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_EDITOR_CODE_FOLDING, FEditorCodeFolding);
    FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_EDITOR_SHOW_RICHTEXT, FEditorShowRichText);
@@ -615,13 +615,8 @@ begin
 
    if GProject <> nil then
       GProject.RefreshStatements;
-
    TInfra.GetEditorForm.SetFormAttributes;
-
-   FPrintRect.Left   := StrToIntDef(sForm.edtPrintMarginLeft.Text, DEFAULT_PRINT_MARGIN);
-   FPrintRect.Top    := StrToIntDef(sForm.edtPrintMarginTop.Text, DEFAULT_PRINT_MARGIN);
-   FPrintRect.Right  := PRINT_SCALE_BASE - StrToIntDef(sForm.edtPrintMarginRight.Text, DEFAULT_PRINT_MARGIN);
-   FPrintRect.Bottom := PRINT_SCALE_BASE - StrToIntDef(sForm.edtPrintMarginBottom.Text, DEFAULT_PRINT_MARGIN);
+   FPrintMargins := sForm.PrintMargins;
 
    if GProject <> nil then
    begin

@@ -129,8 +129,7 @@ const   // Global constants
 
         SETTINGS_SECTION = 'Settings';
 
-        PRINT_SCALE_BASE     = 100;   // 100 %
-        DEFAULT_PRINT_MARGIN = 5;     //   5 %
+        DEFAULT_PRINT_MARGIN = 5;     // percentage
 
         DECLARATIONS_FORM_RIGHT_MARGIN = 16;
 

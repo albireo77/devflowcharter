@@ -137,7 +137,10 @@ type
     procedure LoadFromSettings(ASettings: TSettings);
     procedure ProtectFields;
     procedure SetDefault;
+    procedure SetPrintMargins(const APrintMargins: TRect);
+    function GetPrintMargins: TRect;
   public
+    property PrintMargins: TRect read GetPrintMargins write SetPrintMargins;
     function GetShapeColor(AShape: TColorShape): TColor;
   end;
 
@@ -194,6 +197,22 @@ end;
 procedure TSettingsForm.ResetForm;
 begin
 {}
+end;
+
+procedure TSettingsForm.SetPrintMargins(const APrintMargins: TRect);
+begin
+   edtPrintMarginLeft.Text   := APrintMargins.Left.ToString;
+   edtPrintMarginTop.Text    := APrintMargins.Top.ToString;
+   edtPrintMarginRight.Text  := APrintMargins.Right.ToString;
+   edtPrintMarginBottom.Text := APrintMargins.Bottom.ToString;
+end;
+
+function TSettingsForm.GetPrintMargins: TRect;
+begin
+   result := Rect(StrToIntDef(edtPrintMarginLeft.Text, DEFAULT_PRINT_MARGIN),
+                  StrToIntDef(edtPrintMarginTop.Text, DEFAULT_PRINT_MARGIN),
+                  StrToIntDef(edtPrintMarginRight.Text, DEFAULT_PRINT_MARGIN),
+                  StrToIntDef(edtPrintMarginBottom.Text, DEFAULT_PRINT_MARGIN));
 end;
 
 procedure TSettingsForm.btnBrowseCCompClick(Sender: TObject);
@@ -318,11 +337,7 @@ begin
    chkMultiPrint.Checked := False;
    chkMultiPrintHorz.Checked := False;
    chkMultiPrintHorz.Enabled := False;
-   var m := IntToStr(DEFAULT_PRINT_MARGIN);
-   edtPrintMarginLeft.Text := m;
-   edtPrintMarginRight.Text := m;
-   edtPrintMarginTop.Text := m;
-   edtPrintMarginBottom.Text := m;
+   PrintMargins := Rect(DEFAULT_PRINT_MARGIN, DEFAULT_PRINT_MARGIN, DEFAULT_PRINT_MARGIN, DEFAULT_PRINT_MARGIN);
    chkEnableDBuffer.Checked := False;
    chkShowFuncLabels.Checked := True;
    chkShowBlockLabels.Checked := False;
@@ -396,10 +411,7 @@ begin
    chkShowFuncLabels.Checked := ASettings.ShowFuncLabels;
    chkShowBlockLabels.Checked := ASettings.ShowBlockLabels;
    chkMultiPrintHorz.Checked := ASettings.PrintMultPagesHorz;
-   edtPrintMarginLeft.Text := ASettings.PrintRect.Left.ToString;
-   edtPrintMarginTop.Text := ASettings.PrintRect.Top.ToString;
-   edtPrintMarginRight.Text := (PRINT_SCALE_BASE - ASettings.PrintRect.Right).ToString;
-   edtPrintMarginBottom.Text := (PRINT_SCALE_BASE - ASettings.PrintRect.Bottom).ToString;
+   PrintMargins := ASettings.PrintMargins;
    pnlSelect.Color := ASettings.SelectColor;
    pnlPen.Color := ASettings.PenColor;
    pnlDesktop.Color := ASettings.DesktopColor;
