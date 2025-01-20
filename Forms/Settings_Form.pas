@@ -309,6 +309,11 @@ begin
 end;
 
 procedure TSettingsForm.SetDefault;
+const
+   DEFAULT_PRINT_MARGINS: TRect = (Left:   DEFAULT_PRINT_MARGIN;
+                                   Top:    DEFAULT_PRINT_MARGIN;
+                                   Right:  DEFAULT_PRINT_MARGIN;
+                                   Bottom: DEFAULT_PRINT_MARGIN);
 begin
    var langDef := GInfra.GetLangDefinition(cbLanguage.Text);
    pnlSelect.Color := clAqua;
@@ -337,7 +342,7 @@ begin
    chkMultiPrint.Checked := False;
    chkMultiPrintHorz.Checked := False;
    chkMultiPrintHorz.Enabled := False;
-   PrintMargins := Rect(DEFAULT_PRINT_MARGIN, DEFAULT_PRINT_MARGIN, DEFAULT_PRINT_MARGIN, DEFAULT_PRINT_MARGIN);
+   PrintMargins := DEFAULT_PRINT_MARGINS;
    chkEnableDBuffer.Checked := False;
    chkShowFuncLabels.Checked := True;
    chkShowBlockLabels.Checked := False;
