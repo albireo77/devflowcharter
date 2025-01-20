@@ -278,6 +278,8 @@ end;
 
 procedure TSettings.Load;
 begin
+   FIndentChar                := Char(FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_INDENT_CHAR, Integer(SPACE_CHAR)));
+   FIndentLength              := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_INDENT, EDITOR_DEFAULT_INDENT_LENGTH);
    FFontColor                 := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_FONT_COLOR, NOK_COLOR);
    FSelectColor               := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_SELECT_COLOR, clAqua);
    FPenColor                  := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PEN_COLOR, clBlack);
@@ -289,6 +291,16 @@ begin
    FShapeColors[shpRoadSign]  := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_ROADSIGN_COLOR, DEFAULT_DESKTOP_COLOR);
    FShapeColors[shpRoutine]   := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_ROUTINE_COLOR, DEFAULT_DESKTOP_COLOR);
    FNavigatorAlphaValue       := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_NAVIGATOR_ALPHA_VALUE, 255);
+   FDesktopColor              := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_DESKTOP_COLOR, DEFAULT_DESKTOP_COLOR);
+   FEditorFontSize            := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_FONT_SIZE, EDITOR_DEFAULT_FONT_SIZE);
+   FFlowchartFontSize         := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_FLOWCHART_FONT_SIZE, FLOWCHART_MIN_FONT_SIZE);
+   FPrintMargins.Left         := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_LEFT, DEFAULT_PRINT_MARGIN);
+   FPrintMargins.Top          := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_TOP, DEFAULT_PRINT_MARGIN);
+   FPrintMargins.Right        := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_RIGHT, DEFAULT_PRINT_MARGIN);
+   FPrintMargins.Bottom       := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_BOTTOM, DEFAULT_PRINT_MARGIN);
+   FShowFuncLabels            := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_SHOW_FUNC_LABELS, True);
+   FShowBlockLabels           := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_SHOW_BLOCK_LABELS, False);
+   FValidateDeclaration       := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_VALIDATE_DECLARATION, True);
    FNavigatorAlphaVisible     := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_NAVIGATOR_ALPHA_VISIBLE, True);
    FExplorerAutoNav           := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EXPLORER_AUTO_NAV, True);
    FEnableDBuffering          := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_ENABLE_DBUFFERING, False);
@@ -325,21 +337,9 @@ begin
    FEditorIdentColor          := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_IDENT_COLOR, clWindowText);
    FEditorRightEdgeColor      := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_RIGHT_EDGE_COLOR, clSilver);
    FEditorRightEdgeColumn     := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_RIGHT_EDGE_COLUMN, 80);
-   FDesktopColor              := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_DESKTOP_COLOR, DEFAULT_DESKTOP_COLOR);
-   FIndentLength              := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_INDENT, EDITOR_DEFAULT_INDENT_LENGTH);
-   FEditorFontSize            := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_FONT_SIZE, EDITOR_DEFAULT_FONT_SIZE);
-   FShowFuncLabels            := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_SHOW_FUNC_LABELS, True);
-   FShowBlockLabels           := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_SHOW_BLOCK_LABELS, False);
-   FValidateDeclaration       := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_VALIDATE_DECLARATION, True);
    FFlowchartFontName         := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_FLOWCHART_FONT_NAME, FLOWCHART_DEFAULT_FONT_NAME);
    FTranslationFile           := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_TRANSLATION_FILE, '');
    FCurrentLangName           := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_CURRENT_LANGUAGE, '');
-   FFlowchartFontSize         := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_FLOWCHART_FONT_SIZE, FLOWCHART_MIN_FONT_SIZE);
-   FIndentChar                := Char(FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_INDENT_CHAR, Integer(SPACE_CHAR)));
-   FPrintMargins              := Rect(FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_LEFT, DEFAULT_PRINT_MARGIN),
-                                      FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_TOP, DEFAULT_PRINT_MARGIN),
-                                      FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_RIGHT, DEFAULT_PRINT_MARGIN),
-                                      FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_BOTTOM, DEFAULT_PRINT_MARGIN));
    if not (FFlowchartFontSize in FLOWCHART_VALID_FONT_SIZES) then
       FFlowchartFontSize := FLOWCHART_MIN_FONT_SIZE;
    if TInfra.IsNOkColor(FFontColor) then
