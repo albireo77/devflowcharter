@@ -209,10 +209,10 @@ end;
 
 function TSettingsForm.GetPrintMargins: TRect;
 begin
-   result := Rect(StrToIntDef(edtPrintMarginLeft.Text, DEFAULT_PRINT_MARGIN),
-                  StrToIntDef(edtPrintMarginTop.Text, DEFAULT_PRINT_MARGIN),
-                  StrToIntDef(edtPrintMarginRight.Text, DEFAULT_PRINT_MARGIN),
-                  StrToIntDef(edtPrintMarginBottom.Text, DEFAULT_PRINT_MARGIN));
+   result.Left   := StrToIntDef(edtPrintMarginLeft.Text, DEFAULT_PRINT_MARGIN);
+   result.Top    := StrToIntDef(edtPrintMarginTop.Text, DEFAULT_PRINT_MARGIN);
+   result.Right  := StrToIntDef(edtPrintMarginRight.Text, DEFAULT_PRINT_MARGIN);
+   result.Bottom := StrToIntDef(edtPrintMarginBottom.Text, DEFAULT_PRINT_MARGIN);
 end;
 
 procedure TSettingsForm.btnBrowseCCompClick(Sender: TObject);
