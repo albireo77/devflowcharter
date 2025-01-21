@@ -209,10 +209,10 @@ end;
 
 function TSettingsForm.GetPrintMargins: TRect;
 begin
-   result.Left   := StrToIntDef(edtPrintMarginLeft.Text, DEFAULT_PRINT_MARGIN);
-   result.Top    := StrToIntDef(edtPrintMarginTop.Text, DEFAULT_PRINT_MARGIN);
-   result.Right  := StrToIntDef(edtPrintMarginRight.Text, DEFAULT_PRINT_MARGIN);
-   result.Bottom := StrToIntDef(edtPrintMarginBottom.Text, DEFAULT_PRINT_MARGIN);
+   result.Left   := StrToIntDef(edtPrintMarginLeft.Text, DEFAULT_PRINT_MARGINS.Left);
+   result.Top    := StrToIntDef(edtPrintMarginTop.Text, DEFAULT_PRINT_MARGINS.Top);
+   result.Right  := StrToIntDef(edtPrintMarginRight.Text, DEFAULT_PRINT_MARGINS.Right);
+   result.Bottom := StrToIntDef(edtPrintMarginBottom.Text, DEFAULT_PRINT_MARGINS.Bottom);
 end;
 
 procedure TSettingsForm.btnBrowseCCompClick(Sender: TObject);
@@ -309,11 +309,6 @@ begin
 end;
 
 procedure TSettingsForm.SetDefault;
-const
-   DEFAULT_PRINT_MARGINS: TRect = (Left:   DEFAULT_PRINT_MARGIN;
-                                   Top:    DEFAULT_PRINT_MARGIN;
-                                   Right:  DEFAULT_PRINT_MARGIN;
-                                   Bottom: DEFAULT_PRINT_MARGIN);
 begin
    var langDef := GInfra.GetLangDefinition(cbLanguage.Text);
    pnlSelect.Color := clAqua;

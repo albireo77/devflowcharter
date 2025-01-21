@@ -294,10 +294,10 @@ begin
    FDesktopColor              := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_DESKTOP_COLOR, DEFAULT_DESKTOP_COLOR);
    FEditorFontSize            := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_FONT_SIZE, EDITOR_DEFAULT_FONT_SIZE);
    FFlowchartFontSize         := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_FLOWCHART_FONT_SIZE, FLOWCHART_MIN_FONT_SIZE);
-   FPrintMargins.Left         := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_LEFT, DEFAULT_PRINT_MARGIN);
-   FPrintMargins.Top          := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_TOP, DEFAULT_PRINT_MARGIN);
-   FPrintMargins.Right        := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_RIGHT, DEFAULT_PRINT_MARGIN);
-   FPrintMargins.Bottom       := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_BOTTOM, DEFAULT_PRINT_MARGIN);
+   FPrintMargins.Left         := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_LEFT, DEFAULT_PRINT_MARGINS.Left);
+   FPrintMargins.Top          := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_TOP, DEFAULT_PRINT_MARGINS.Top);
+   FPrintMargins.Right        := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_RIGHT, DEFAULT_PRINT_MARGINS.Right);
+   FPrintMargins.Bottom       := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_BOTTOM, DEFAULT_PRINT_MARGINS.Bottom);
    FShowFuncLabels            := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_SHOW_FUNC_LABELS, True);
    FShowBlockLabels           := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_SHOW_BLOCK_LABELS, False);
    FValidateDeclaration       := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_VALIDATE_DECLARATION, True);

@@ -24,7 +24,7 @@ unit Constants;
 interface
 
 uses
-   Vcl.Graphics, Types, System.UITypes;
+   Vcl.Graphics, Types, System.Types, System.UITypes;
 
 const   // Global constants
 
@@ -129,7 +129,7 @@ const   // Global constants
 
         SETTINGS_SECTION = 'Settings';
 
-        DEFAULT_PRINT_MARGIN = 5;     // percentage
+        DEFAULT_PRINT_MARGINS: TRect = (Left:5; Top:5; Right:5; Bottom:5);  // in percents
 
         DECLARATIONS_FORM_RIGHT_MARGIN = 16;
 
