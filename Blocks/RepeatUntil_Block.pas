@@ -44,7 +44,7 @@ type
 implementation
 
 uses
-   System.Classes, System.Math, Infrastructure, LangDefinition, YaccLib;
+   System.Classes, System.Math, Infrastructure, YaccLib;
 
 constructor TRepeatUntilBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
 begin
