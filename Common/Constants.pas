@@ -62,7 +62,7 @@ const   // Global constants
         FRAME_ATTR        = 'frame';
         BLOCK_TYPE_ATTR   = 'type';
         ID_ATTR           = 'hash';
-        BRANCH_STMNT_ATTR = 'bstmnt_hash';
+        BRANCH_TEXT_ATTR  = 'bstmnt_hash';
         FONT_SIZE_ATTR    = 'fontsize';
         FONT_STYLE_ATTR   = 'fontstyle';
         Z_ORDER_ATTR      = 'ZOrdVal';

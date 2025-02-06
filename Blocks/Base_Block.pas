@@ -2036,7 +2036,7 @@ begin
             SetNodeAttrInt(node, ID_ATTR, br.Id);
 
             if br.Statement <> nil then
-               SetNodeAttrInt(node, BRANCH_STMNT_ATTR, br.Statement.Id);
+               SetNodeAttrInt(node, BRANCH_TEXT_ATTR, br.Statement.Id);
 
             SetNodeTextInt(node, 'x', br.hook.X);
             SetNodeTextInt(node, 'y', br.hook.Y);
@@ -2159,19 +2159,19 @@ begin
       var branchNode := branchNodes.NextNode;
       while branchNode <> nil do
       begin
-         var hx := 0;
-         var hy := 0;
-         var node := FindNode(branchNode, 'x');
-         if node <> nil then
-            hx := StrToIntDef(node.Text, 0);
-         node := FindNode(branchNode, 'y');
-         if node <> nil then
-            hy := StrToIntDef(node.Text, 0);
-         var bid := GetNodeAttrInt(branchNode, ID_ATTR);
-         var bsid := GetNodeAttrInt(branchNode, BRANCH_STMNT_ATTR, ID_UNDEFINED);
          if GetBranch(idx) = nil then
-            AddBranch(Point(hx, hy), bid, bsid);
-         node := FindNode(branchNode, BLOCK_TAG);
+         begin
+            var hx := 0;
+            var hy := 0;
+            var node := FindNode(branchNode, 'x');
+            if node <> nil then
+               hx := StrToIntDef(node.Text, 0);
+            node := FindNode(branchNode, 'y');
+            if node <> nil then
+               hy := StrToIntDef(node.Text, 0);
+            AddBranch(Point(hx, hy), GetNodeAttrInt(branchNode, ID_ATTR), GetNodeAttrInt(branchNode, BRANCH_TEXT_ATTR, ID_UNDEFINED));
+         end;
+         var node := FindNode(branchNode, BLOCK_TAG);
          if node <> nil then
          begin
             TXMLProcessor.ImportFlowchartFromXML(node, Self, nil, idx, result);
