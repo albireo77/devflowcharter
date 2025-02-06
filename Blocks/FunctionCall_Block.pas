@@ -30,8 +30,8 @@ type
 
    TFunctionCallBlock = class(TBlock)
       public
-         constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
+         constructor Create(AParentBranch: TBranch); overload;
+         constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms); overload;
       protected
          procedure Paint; override;
          procedure PutTextControls; override;
@@ -44,10 +44,10 @@ implementation
 uses
    Vcl.Controls, Vcl.Graphics, System.Types, System.Classes, Infrastructure, YaccLib;
 
-constructor TFunctionCallBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
+constructor TFunctionCallBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpRoutine, yymFuncCall, taLeftJustify);
+   inherited Create(AParentBranch, ABlockParms, shpRoutine, yymFuncCall, taLeftJustify);
 
    FStatement.SetBounds(10, 1, ABlockParms.w-20, CalculateStatementHeight);
    FStatement.Anchors := [akRight, akLeft, akTop];
@@ -63,9 +63,9 @@ begin
    Constraints.MinHeight := 51;
 end;
 
-constructor TFunctionCallBlock.Create(ABranch: TBranch);
+constructor TFunctionCallBlock.Create(AParentBranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(blFuncCall, 0, 0, 140, 51));
+   Create(AParentBranch, TBlockParms.New(blFuncCall, 0, 0, 140, 51));
 end;
 
 procedure TFunctionCallBlock.Paint;

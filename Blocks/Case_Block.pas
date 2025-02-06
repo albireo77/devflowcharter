@@ -41,14 +41,14 @@ type
          procedure AfterRemovingBranch; override;
          function CreateBranchStatement(ABranchStatementId: integer = ID_INVALID): TStatement;
       public
-         constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
+         constructor Create(AParentBranch: TBranch); overload;
+         constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms); overload;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
          procedure ResizeHorz(AContinue: boolean); override;
          procedure ResizeVert(AContinue: boolean); override;
          procedure ExpandFold(AResize: boolean); override;
-         function AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchTextId: integer = ID_INVALID): TBranch; override;
+         function AddBranch(const AHook: TPoint; AId: integer = ID_INVALID; ATextId: integer = ID_INVALID): TBranch; override;
          function InsertNewBranch(AIndex: integer): TBranch;
          function CountErrWarn: TErrWarnCount; override;
          function GetFromXML(ANode: IXMLNode): TError; override;
@@ -70,10 +70,10 @@ uses
    System.StrUtils, System.Math, System.SysUtils, Infrastructure, Constants, YaccLib,
    OmniXMLUtils;
 
-constructor TCaseBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
+constructor TCaseBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpDiamond, taCenter, yymCase);
+   inherited Create(AParentBranch, ABlockParms, shpDiamond, taCenter, yymCase);
 
    FInitParms.Width := 200;
    FInitParms.Height := 131;
@@ -98,6 +98,11 @@ begin
 
 end;
 
+constructor TCaseBlock.Create(AParentBranch: TBranch);
+begin
+   Create(AParentBranch, TBlockParms.New(blCase, 0, 0, 200, 131, 100, 99, 100));
+end;
+
 procedure TCaseBlock.CloneFrom(ABlock: TBlock);
 begin
    inherited CloneFrom(ABlock);
@@ -115,11 +120,6 @@ begin
          end;
       end;
    end;
-end;
-
-constructor TCaseBlock.Create(ABranch: TBranch);
-begin
-   Create(ABranch, TBlockParms.New(blCase, 0, 0, 200, 131, 100, 99, 100));
 end;
 
 procedure TCaseBlock.Paint;
@@ -182,12 +182,12 @@ begin
    end;
 end;
 
-function TCaseBlock.AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchTextId: integer = ID_INVALID): TBranch;
+function TCaseBlock.AddBranch(const AHook: TPoint; AId: integer = ID_INVALID; ATextId: integer = ID_INVALID): TBranch;
 begin
-   result := inherited AddBranch(AHook, ABranchId);
+   result := inherited AddBranch(AHook, AId);
    if FBranchList.IndexOf(result) > DEFAULT_BRANCH_IDX then       // don't execute when default branch is being added in constructor
    begin
-      result.Statement := CreateBranchStatement(ABranchTextId);
+      result.Statement := CreateBranchStatement(ATextId);
       PlaceBranchStatement(result);
    end;
 end;

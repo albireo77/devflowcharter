@@ -32,7 +32,7 @@ type
       protected
          FLabel,
          FLabelSegoe: string;
-         constructor Create(ABranch: TBranch;
+         constructor Create(AParentBranch: TBranch;
                             const ABlockParms: TBlockParms;
                             const AText: string;
                             AdjustWidth: boolean;
@@ -43,14 +43,14 @@ type
 
    TInputBlock = class(TInOutBlock)
       public
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
-         constructor Create(ABranch: TBranch); overload;
+         constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms); overload;
+         constructor Create(AParentBranch: TBranch); overload;
    end;
 
    TOutputBlock = class(TInOutBlock)
       public
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
-         constructor Create(ABranch: TBranch); overload;
+         constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms); overload;
+         constructor Create(AParentBranch: TBranch); overload;
    end;
 
 implementation
@@ -63,14 +63,14 @@ const
    DEF_BLOCK_HEIGHT = 64;
    BOTTOM_POINT_Y = DEF_BLOCK_HEIGHT - 30;
 
-constructor TInOutBlock.Create(ABranch: TBranch;
+constructor TInOutBlock.Create(AParentBranch: TBranch;
                                const ABlockParms: TBlockParms;
                                const AText: string;
                                AdjustWidth: boolean;
                                AParserMode: TYYMode);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpParallel, AParserMode, taLeftJustify);
+   inherited Create(AParentBranch, ABlockParms, shpParallel, AParserMode, taLeftJustify);
 
    FStatement.Anchors := [akRight, akLeft, akTop];
    FStatement.Text := AText;
@@ -89,32 +89,32 @@ begin
    Constraints.MinHeight := DEF_BLOCK_HEIGHT;
 end;
 
-constructor TInputBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
+constructor TInputBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin
    FLabel := trnsManager.GetString('CaptionIn');
    FLabelSegoe := GInfra.CurrentLang.LabelIn;
-   inherited Create(ABranch, ABlockParms, GInfra.CurrentLang.InputFunction, False, yymInput);
+   inherited Create(AParentBranch, ABlockParms, GInfra.CurrentLang.InputFunction, False, yymInput);
 end;
 
-constructor TInputBlock.Create(ABranch: TBranch);
+constructor TInputBlock.Create(AParentBranch: TBranch);
 begin
    FLabel := trnsManager.GetString('CaptionIn');
    FLabelSegoe := GInfra.CurrentLang.LabelIn;
-   inherited Create(ABranch, TBlockParms.New(blInput, 0, 0, DEF_BLOCK_WIDTH, DEF_BLOCK_HEIGHT), GInfra.CurrentLang.InputFunction, True, yymInput);
+   inherited Create(AParentBranch, TBlockParms.New(blInput, 0, 0, DEF_BLOCK_WIDTH, DEF_BLOCK_HEIGHT), GInfra.CurrentLang.InputFunction, True, yymInput);
 end;
 
-constructor TOutputBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
+constructor TOutputBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin
    FLabel := trnsManager.GetString('CaptionOut');
    FLabelSegoe := GInfra.CurrentLang.LabelOut;
-   inherited Create(ABranch, ABlockParms, GInfra.CurrentLang.OutputFunction, False, yymOutput);
+   inherited Create(AParentBranch, ABlockParms, GInfra.CurrentLang.OutputFunction, False, yymOutput);
 end;
 
-constructor TOutputBlock.Create(ABranch: TBranch);
+constructor TOutputBlock.Create(AParentBranch: TBranch);
 begin
    FLabel := trnsManager.GetString('CaptionOut');
    FLabelSegoe := GInfra.CurrentLang.LabelOut;
-   inherited Create(ABranch, TBlockParms.New(blOutput, 0, 0, DEF_BLOCK_WIDTH, DEF_BLOCK_HEIGHT), GInfra.CurrentLang.OutputFunction, True, yymOutput);
+   inherited Create(AParentBranch, TBlockParms.New(blOutput, 0, 0, DEF_BLOCK_WIDTH, DEF_BLOCK_HEIGHT), GInfra.CurrentLang.OutputFunction, True, yymOutput);
 end;
 
 procedure TInOutBlock.Paint;

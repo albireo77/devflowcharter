@@ -30,8 +30,8 @@ type
 
    TWhileDoBlock = class(TGroupBlock)
       public
-         constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
+         constructor Create(AParentBranch: TBranch); overload;
+         constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms); overload;
       protected
          procedure Paint; override;
          procedure SetWidth(AMinX: integer); override;
@@ -43,10 +43,10 @@ implementation
 uses
    System.Classes, Infrastructure, YaccLib;
 
-constructor TWhileDoBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
+constructor TWhileDoBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpDiamond, taCenter, yymCondition);
+   inherited Create(AParentBranch, ABlockParms, shpDiamond, taCenter, yymCondition);
 
    FInitParms.Width := 200;
    FInitParms.Height := 131;
@@ -66,9 +66,9 @@ begin
    Constraints.MinHeight := FInitParms.Height;
 end;
 
-constructor TWhileDoBlock.Create(ABranch: TBranch);
+constructor TWhileDoBlock.Create(AParentBranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(blWhile, 0, 0, 200, 131, 100, 109, 100));
+   Create(AParentBranch, TBlockParms.New(blWhile, 0, 0, 200, 131, 100, 109, 100));
 end;
 
 procedure TWhileDoBlock.Paint;

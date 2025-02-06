@@ -32,8 +32,8 @@ type
       private
          FLeftLabel, FRightLabel: string;
       public
-         constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
+         constructor Create(AParentBranch: TBranch); overload;
+         constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms); overload;
          function GetDescTemplate(const ALangId: string): string; override;
       protected
          procedure Paint; override;
@@ -46,10 +46,10 @@ implementation
 uses
    System.Classes, System.Math, Infrastructure, YaccLib;
 
-constructor TRepeatUntilBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
+constructor TRepeatUntilBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpDiamond, taCenter, yymCondition);
+   inherited Create(AParentBranch, ABlockParms, shpDiamond, taCenter, yymCondition);
 
    FInitParms.Width := 240;
    FInitParms.Height := 111;
@@ -78,9 +78,9 @@ begin
    Constraints.MinHeight := FInitParms.Height;
 end;
 
-constructor TRepeatUntilBlock.Create(ABranch: TBranch);
+constructor TRepeatUntilBlock.Create(AParentBranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(blRepeat, 0, 0, 240, 111, 120, 29, 120));
+   Create(AParentBranch, TBlockParms.New(blRepeat, 0, 0, 240, 111, 120, 29, 120));
 end;
 
 procedure TRepeatUntilBlock.Paint;

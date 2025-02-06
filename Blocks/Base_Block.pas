@@ -68,7 +68,7 @@ type
          FPosChanged: boolean;              // flag to indicate that block was moved from its initial position (0, 0)
          FShape: TColorShape;
          FRedArrow: integer;                // indicates active arrow; -1: none, 0: bottom, 1: branch1, 2: branch2...
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms; AShape: TColorShape; AParserMode: TYYMode; AAlignment: TAlignment);
+         constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms; AShape: TColorShape; AParserMode: TYYMode; AAlignment: TAlignment);
          procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
          procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
          function CanResize(var NewWidth, NewHeight: Integer): Boolean; override;
@@ -201,7 +201,7 @@ type
          FFalseLabel: string;
          FFixedBranches: integer;
          FDiamond: TDiamond;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms; AShape: TColorShape; AAlignment: TAlignment; AParserMode: TYYMode = yymUndefined);
+         constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms; AShape: TColorShape; AAlignment: TAlignment; AParserMode: TYYMode = yymUndefined);
          procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
          function CanResize(var NewWidth, NewHeight: Integer): Boolean; override;
          procedure SetWidth(AMinX: integer); virtual;
@@ -225,7 +225,7 @@ type
          function FindLastRow(AStart: integer; ALines: TStrings): integer; override;
          procedure ChangeColor(AColor: TColor); override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
-         function AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchTextId: integer = ID_INVALID): TBranch; virtual;
+         function AddBranch(const AHook: TPoint; AId: integer = ID_INVALID; ATextId: integer = ID_INVALID): TBranch; virtual;
          procedure ExpandAll;
          function HasFoldedBlocks: boolean;
          procedure PopulateComboBoxes; override;
@@ -288,7 +288,7 @@ type
    TControlHack = class(TControl);
    TCustomEditHack = class(TCustomEdit);
 
-constructor TBlock.Create(ABranch: TBranch;
+constructor TBlock.Create(AParentBranch: TBranch;
                           const ABlockParms: TBlockParms;
                           AShape: TColorShape;
                           AParserMode: TYYMode;
@@ -297,13 +297,13 @@ begin
 
    FType := ABlockParms.bt;
 
-   if ABranch <> nil then
+   if AParentBranch <> nil then
    begin
-      FParentBlock := ABranch.ParentBlock;
+      FParentBlock := AParentBranch.ParentBlock;
       FTopParentBlock := FParentBlock.TopParentBlock;
       inherited Create(FParentBlock);
       Parent := FParentBlock;
-      FParentBranch := ABranch;
+      FParentBranch := AParentBranch;
    end
    else                                     // current object is TMainBlock class
    begin
@@ -331,10 +331,10 @@ begin
    FStatement.Color := GSettings.GetShapeColor(FShape);
 end;
 
-constructor TGroupBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms; AShape: TColorShape; AAlignment: TAlignment; AParserMode: TYYMode = yymUndefined);
+constructor TGroupBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms; AShape: TColorShape; AAlignment: TAlignment; AParserMode: TYYMode = yymUndefined);
 begin
 
-   inherited Create(ABranch, ABlockParms, AShape, AParserMode, AAlignment);
+   inherited Create(AParentBranch, ABlockParms, AShape, AParserMode, AAlignment);
 
    FStatement.Width := 65;
 
@@ -1756,9 +1756,9 @@ begin
    end;
 end;
 
-function TGroupBlock.AddBranch(const AHook: TPoint; ABranchId: integer = ID_INVALID; ABranchTextId: integer = ID_INVALID): TBranch;
+function TGroupBlock.AddBranch(const AHook: TPoint; AId: integer = ID_INVALID; ATextId: integer = ID_INVALID): TBranch;
 begin
-   result := TBranch.Create(Self, AHook, ABranchId);
+   result := TBranch.Create(Self, AHook, AId);
    FBranchList.Add(result);
 end;
 
@@ -2167,10 +2167,10 @@ begin
          node := FindNode(branchNode, 'y');
          if node <> nil then
             hy := StrToIntDef(node.Text, 0);
-         var bId := GetNodeAttrInt(branchNode, ID_ATTR);
-         var bStmntId := GetNodeAttrInt(branchNode, BRANCH_STMNT_ATTR, ID_INVALID);
+         var bid := GetNodeAttrInt(branchNode, ID_ATTR);
+         var bsid := GetNodeAttrInt(branchNode, BRANCH_STMNT_ATTR, ID_INVALID);
          if GetBranch(idx) = nil then
-            AddBranch(Point(hx, hy), bId, bStmntId);
+            AddBranch(Point(hx, hy), bid, bsid);
          node := FindNode(branchNode, BLOCK_TAG);
          if node <> nil then
          begin

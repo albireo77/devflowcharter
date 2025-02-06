@@ -40,8 +40,8 @@ type
          function GetDiamondTop: TPoint; override;
          function GetBlockParms: TBlockParms; override;
       public
-         constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
+         constructor Create(AParentBranch: TBranch); overload;
+         constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms); overload;
          procedure ResizeHorz(AContinue: boolean); override;
          procedure ResizeVert(AContinue: boolean); override;
          procedure ExpandFold(AResize: boolean); override;
@@ -58,10 +58,10 @@ implementation
 uses
    System.SysUtils, System.Classes, System.Math, Infrastructure, YaccLib, OmniXMLUtils;
 
-constructor TIfElseBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
+constructor TIfElseBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpDiamond, taCenter, yymCondition);
+   inherited Create(AParentBranch, ABlockParms, shpDiamond, taCenter, yymCondition);
 
    FInitParms.Width := 240;
    FInitParms.Height := 101;
@@ -87,9 +87,9 @@ begin
 
 end;
 
-constructor TIfElseBlock.Create(ABranch: TBranch);
+constructor TIfElseBlock.Create(AParentBranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(blIfElse, 0, 0, 240, 101, 5, 70, 120, 120, 229, 70, 5, 229));
+   Create(AParentBranch, TBlockParms.New(blIfElse, 0, 0, 240, 101, 5, 70, 120, 120, 229, 70, 5, 229));
 end;
 
 function TIfElseBlock.GetBlockParms: TBlockParms;

@@ -33,8 +33,8 @@ type
          procedure OnChangeStatements(Sender: TObject);
          procedure Paint; override;
       public
-         constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
+         constructor Create(AParentBranch: TBranch); overload;
+         constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms); overload;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
    end;
 
@@ -43,22 +43,22 @@ implementation
 uses
    System.SysUtils, System.StrUtils, Infrastructure, YaccLib, Constants;
 
-constructor TMultiInstrBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
+constructor TMultiInstrBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin
-   inherited Create(ABranch, ABlockParms);
+   inherited Create(AParentBranch, ABlockParms);
    FStatements.ShowHint := True;
    FStatements.OnChange := OnChangeStatements;
+end;
+
+constructor TMultiInstrBlock.Create(AParentBranch: TBranch);
+begin
+   Create(AParentBranch, TBlockParms.New(blMultiInstr, 0, 0, 140, 91));
 end;
 
 procedure TMultiInstrBlock.Paint;
 begin
    inherited;
    DrawBlockLabel(5, FStatements.BoundsRect.Bottom+1, GInfra.CurrentLang.LabelMultiInstr);
-end;
-
-constructor TMultiInstrBlock.Create(ABranch: TBranch);
-begin
-   Create(ABranch, TBlockParms.New(blMultiInstr, 0, 0, 140, 91));
 end;
 
 procedure TMultiInstrBlock.OnChangeStatements(Sender: TObject);

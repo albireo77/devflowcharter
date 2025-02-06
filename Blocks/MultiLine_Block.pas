@@ -40,7 +40,7 @@ type
          procedure CloneFrom(ABlock: TBlock); override;
       protected
          FErrLine: integer;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms);
+         constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
          procedure Paint; override;
          function CanResize(var NewWidth, NewHeight: Integer): Boolean; override;
    end;
@@ -53,10 +53,10 @@ uses
 {$ENDIF}
    Infrastructure, Constants, YaccLib;
 
-constructor TMultiLineBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
+constructor TMultiLineBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpRectangle, yymUndefined, taLeftJustify);
+   inherited Create(AParentBranch, ABlockParms, shpRectangle, yymUndefined, taLeftJustify);
 
    FStatements := TStatementMemo.Create(Self);
    FStatements.Parent := Self;

@@ -30,8 +30,8 @@ type
 
    TFolderBlock = class(TGroupBlock)
       public
-         constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
+         constructor Create(AParentBranch: TBranch); overload;
+         constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms); overload;
       protected
          procedure Paint; override;
          function CanResize(var NewWidth, NewHeight: Integer): Boolean; override;
@@ -43,10 +43,10 @@ implementation
 uses
    System.StrUtils, System.Classes, Infrastructure;
 
-constructor TFolderBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
+constructor TFolderBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpFolder, taLeftJustify);
+   inherited Create(AParentBranch, ABlockParms, shpFolder, taLeftJustify);
 
    FInitParms.Width := 140;
    FInitParms.Height := 61;
@@ -68,9 +68,9 @@ begin
    FStatement := nil;
 end;
 
-constructor TFolderBlock.Create(ABranch: TBranch);
+constructor TFolderBlock.Create(AParentBranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(blFolder, 0, 0, 140, 61, 70, 30, 70));
+   Create(AParentBranch, TBlockParms.New(blFolder, 0, 0, 140, 61, 70, 30, 70));
 end;
 
 procedure TFolderBlock.Paint;

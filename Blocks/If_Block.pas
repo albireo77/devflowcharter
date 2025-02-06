@@ -29,8 +29,8 @@ type
 
    TIfBlock = class(TGroupBlock)
       public
-         constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
+         constructor Create(AParentBranch: TBranch); overload;
+         constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms); overload;
       protected
          procedure Paint; override;
          function CanResize(var NewWidth, NewHeight: Integer): Boolean; override;
@@ -43,10 +43,10 @@ implementation
 uses
    System.Classes, Infrastructure, YaccLib;
 
-constructor TIfBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
+constructor TIfBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpDiamond, taCenter, yymCondition);
+   inherited Create(AParentBranch, ABlockParms, shpDiamond, taCenter, yymCondition);
 
    FInitParms.Width := 200;
    FInitParms.Height := 121;
@@ -66,9 +66,9 @@ begin
    Constraints.MinHeight := FInitParms.Height;
 end;
 
-constructor TIfBlock.Create(ABranch: TBranch);
+constructor TIfBlock.Create(AParentBranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(blIf, 0, 0, 200, 121, 100, 89, 100));
+   Create(AParentBranch, TBlockParms.New(blIf, 0, 0, 200, 121, 100, 89, 100));
 end;
 
 procedure TIfBlock.Paint;

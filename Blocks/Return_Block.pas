@@ -28,8 +28,8 @@ type
 
    TReturnBlock = class(TBlock)
       public
-         constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
+         constructor Create(AParentBranch: TBranch); overload;
+         constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms); overload;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
          procedure ChangeColor(AColor: TColor); override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
@@ -48,10 +48,10 @@ uses
    Vcl.Controls, System.SysUtils, System.UITypes, System.Math, Infrastructure,
    Project, UserFunction, LangDefinition, Constants, YaccLib;
 
-constructor TReturnBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
+constructor TReturnBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpEllipse, yymReturn, taCenter);
+   inherited Create(AParentBranch, ABlockParms, shpEllipse, yymReturn, taCenter);
 
    FReturnLabel := trnsManager.GetString('CaptionExit');
 
@@ -68,9 +68,9 @@ begin
    FStatement.Color := GSettings.DesktopColor;
 end;
 
-constructor TReturnBlock.Create(ABranch: TBranch);
+constructor TReturnBlock.Create(AParentBranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(blReturn, 0, 0, 140, 63));
+   Create(AParentBranch, TBlockParms.New(blReturn, 0, 0, 140, 63));
 end;
 
 procedure TReturnBlock.Paint;

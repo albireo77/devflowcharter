@@ -29,8 +29,8 @@ type
 
    TInstrBlock = class(TBlock)
       public
-         constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
+         constructor Create(AParentBranch: TBranch); overload;
+         constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms); overload;
       protected
          procedure Paint; override;
          procedure PutTextControls; override;
@@ -43,10 +43,10 @@ implementation
 uses
    Vcl.Controls, System.Types, System.Classes, Infrastructure, YaccLib;
 
-constructor TInstrBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
+constructor TInstrBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpRectangle, yymAssign, taLeftJustify);
+   inherited Create(AParentBranch, ABlockParms, shpRectangle, yymAssign, taLeftJustify);
 
    FStatement.SetBounds(1, 1, ABlockParms.w-2, CalculateStatementHeight);
    FStatement.Anchors := [akRight, akLeft, akTop];
@@ -62,9 +62,9 @@ begin
    Constraints.MinHeight := 51;
 end;
 
-constructor TInstrBlock.Create(ABranch: TBranch);
+constructor TInstrBlock.Create(AParentBranch: TBranch);
 begin
-   Create(ABranch, TBlockParms.New(blInstr, 0, 0, 140, 51));
+   Create(AParentBranch, TBlockParms.New(blInstr, 0, 0, 140, 51));
 end;
 
 procedure TInstrBlock.Paint;

@@ -49,8 +49,8 @@ type
          cbVar: TComboBox;
          edtVar: TEdit;
          property DescOrder: boolean read FDescOrder write SetDescOrder;
-         constructor Create(ABranch: TBranch); overload;
-         constructor Create(ABranch: TBranch; const ABlockParms: TBlockParms); overload;
+         constructor Create(AParentBranch: TBranch); overload;
+         constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms); overload;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
          procedure ExpandFold(AResize: boolean); override;
          function GetTextControl: TCustomEdit; override;
@@ -81,10 +81,10 @@ const
    DEFAULT_BOTTOM_HOOK = DEFAULT_WIDTH div 2;
    RIGHT_MARGIN = 11;
 
-constructor TForDoBlock.Create(ABranch: TBranch; const ABlockParms: TBlockParms);
+constructor TForDoBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin
 
-   inherited Create(ABranch, ABlockParms, shpRoadSign, taLeftJustify, yymFor);
+   inherited Create(AParentBranch, ABlockParms, shpRoadSign, taLeftJustify, yymFor);
 
    FInitParms.Width := DEFAULT_WIDTH;
    FInitParms.Height := DEFAULT_HEIGHT;
@@ -146,6 +146,11 @@ begin
    FIsInitialized := True;
 end;
 
+constructor TForDoBlock.Create(AParentBranch: TBranch);
+begin
+   Create(AParentBranch, TBlockParms.New(blFor, 0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_BOTTOM_HOOK, 69, DEFAULT_BOTTOM_HOOK));
+end;
+
 procedure TForDoBlock.CloneFrom(ABlock: TBlock);
 begin
    if ABlock is TForDoBlock then
@@ -166,11 +171,6 @@ begin
    end;
    inherited CloneFrom(ABlock);
    PutTextControls;
-end;
-
-constructor TForDoBlock.Create(ABranch: TBranch);
-begin
-   Create(ABranch, TBlockParms.New(blFor, 0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_BOTTOM_HOOK, 69, DEFAULT_BOTTOM_HOOK));
 end;
 
 procedure TForDoBlock.EditorAction(AEdit: TCustomEdit);
