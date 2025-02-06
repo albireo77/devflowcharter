@@ -79,7 +79,6 @@ constructor TMainBlock.Create(APage: TBlockTabSheet; const ABlockParms: TBlockPa
 begin
 
    FPage := APage;
-
    inherited Create(nil, ABlockParms, shpEllipse, taLeftJustify);
 
    FStartLabel := trnsManager.GetString('CaptionStart');
