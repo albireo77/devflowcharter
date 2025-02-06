@@ -865,7 +865,7 @@ end;
 function TDeclareList.ImportFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
 begin
    if ANode <> nil then
-      FId := GProject.Register(Self, GetNodeAttrInt(ANode, ID_ATTR, ID_INVALID));
+      FId := GProject.Register(Self, GetNodeAttrInt(ANode, ID_ATTR, ID_UNDEFINED));
    if goColSizing in sgList.Options then
    begin
       var i := 0;

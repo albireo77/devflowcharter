@@ -199,7 +199,7 @@ end;
 
 function TUserFunction.GetId: integer;
 begin
-   result := ID_INVALID;
+   result := ID_UNDEFINED;
    if FHeader <> nil then
       result := FHeader.Id;
 end;

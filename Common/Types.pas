@@ -31,7 +31,7 @@ uses
    Vcl.ComCtrls, WinApi.Messages, System.Types, System.SysUtils, SynEditTypes, OmniXML;
 
 const
-   ID_INVALID = -1;
+   ID_UNDEFINED = -1;
 
 type
 
@@ -135,9 +135,9 @@ type
       x, y, h, w, bh, bid, th, trh, flh: integer;
       br, br2: TPoint;
       bt: TBlockType;
-      class function New(bt: TBlockType; x, y, w, h: integer; bid: integer = ID_INVALID): TBlockParms; overload; static;
-      class function New(bt: TBlockType; x, y, w, h, brx, bry, bh: integer; bid: integer = ID_INVALID): TBlockParms; overload; static;
-      class function New(bt: TBlockType; x, y, w, h, brx, bry, bh, th, br2x, br2y, trh, flh: integer; bid: integer = ID_INVALID): TBlockParms; overload; static;
+      class function New(bt: TBlockType; x, y, w, h: integer; bid: integer = ID_UNDEFINED): TBlockParms; overload; static;
+      class function New(bt: TBlockType; x, y, w, h, brx, bry, bh: integer; bid: integer = ID_UNDEFINED): TBlockParms; overload; static;
+      class function New(bt: TBlockType; x, y, w, h, brx, bry, bh, th, br2x, br2y, trh, flh: integer; bid: integer = ID_UNDEFINED): TBlockParms; overload; static;
       class function New(AFrom: IXMLNode): TBlockParms; overload; static;
    end;
 
@@ -234,7 +234,7 @@ begin
       result.S2 := tokens[2];
 end;
 
-class function TBlockParms.New(bt: TBlockType; x, y, w, h: integer; bid: integer = ID_INVALID): TBlockParms;
+class function TBlockParms.New(bt: TBlockType; x, y, w, h: integer; bid: integer = ID_UNDEFINED): TBlockParms;
 begin
    result.bt := bt;
    result.x := x;
@@ -250,14 +250,14 @@ begin
    result.br2 := TPoint.Zero;
 end;
 
-class function TBlockParms.New(bt: TBlockType; x, y, w, h, brx, bry, bh: integer; bid: integer = ID_INVALID): TBlockParms;
+class function TBlockParms.New(bt: TBlockType; x, y, w, h, brx, bry, bh: integer; bid: integer = ID_UNDEFINED): TBlockParms;
 begin
    result := New(bt, x, y, w, h, bid);
    result.br := Point(brx, bry);
    result.bh := bh;
 end;
 
-class function TBlockParms.New(bt: TBlockType; x, y, w, h, brx, bry, bh, th, br2x, br2y, trh, flh: integer; bid: integer = ID_INVALID): TBlockParms;
+class function TBlockParms.New(bt: TBlockType; x, y, w, h, brx, bry, bh, th, br2x, br2y, trh, flh: integer; bid: integer = ID_UNDEFINED): TBlockParms;
 begin
    result := New(bt, x, y, w, h, brx, bry, bh, bid);
    result.th := th;
@@ -291,7 +291,7 @@ begin
                  GetNodeAttrInt(AFrom, 'fbry', 0),
                  GetNodeAttrInt(AFrom, 'trh', 0),
                  GetNodeAttrInt(AFrom, 'flh', 0),
-                 GetNodeAttrInt(AFrom, ID_ATTR, ID_INVALID));
+                 GetNodeAttrInt(AFrom, ID_ATTR, ID_UNDEFINED));
 end;
 
 procedure TNameEdit.WMKillFocus(var msg: TWMKillFocus);

@@ -1324,7 +1324,7 @@ begin
       var lineNode := lineNodes.NextNode;
       while lineNode <> nil do
       begin
-         memCodeEditor.Lines.AddObject(lineNode.Text, GProject.FindObject(GetNodeAttrInt(lineNode, ID_ATTR, ID_INVALID)));
+         memCodeEditor.Lines.AddObject(lineNode.Text, GProject.FindObject(GetNodeAttrInt(lineNode, ID_ATTR, ID_UNDEFINED)));
          lineNode := lineNodes.NextNode;
       end;
       memCodeEditor.Lines.EndUpdate;

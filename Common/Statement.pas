@@ -48,7 +48,7 @@ type
     { Public declarations }
     EditorAction: TProc<TCustomEdit>;
     property Id: integer read GetId;
-    constructor Create(AParent: TWinControl; AParserMode: TYYMode; AAlignment: TAlignment; AId: integer = ID_INVALID);
+    constructor Create(AParent: TWinControl; AParserMode: TYYMode; AAlignment: TAlignment; AId: integer = ID_UNDEFINED);
     destructor Destroy; override;
     procedure Change; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
@@ -121,7 +121,7 @@ implementation
 uses
    WinApi.Windows, Vcl.Forms, Infrastructure, Navigator_Form, Constants;
 
-constructor TStatement.Create(AParent: TWinControl; AParserMode: TYYMode; AAlignment: TAlignment; AId: integer = ID_INVALID);
+constructor TStatement.Create(AParent: TWinControl; AParserMode: TYYMode; AAlignment: TAlignment; AId: integer = ID_UNDEFINED);
 begin
    inherited Create(AParent);
    Parent := AParent;

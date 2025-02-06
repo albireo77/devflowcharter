@@ -39,7 +39,7 @@ type
          procedure PlaceBranchStatement(ABranch: TBranch);
          function  GetTemplateByControl(AControl: TControl; var AObject: TObject): string;
          procedure AfterRemovingBranch; override;
-         function CreateBranchStatement(ABranchStatementId: integer = ID_INVALID): TStatement;
+         function CreateBranchStatement(ABranchStatementId: integer = ID_UNDEFINED): TStatement;
       public
          constructor Create(AParentBranch: TBranch); overload;
          constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms); overload;
@@ -48,7 +48,7 @@ type
          procedure ResizeHorz(AContinue: boolean); override;
          procedure ResizeVert(AContinue: boolean); override;
          procedure ExpandFold(AResize: boolean); override;
-         function AddBranch(const AHook: TPoint; AId: integer = ID_INVALID; ATextId: integer = ID_INVALID): TBranch; override;
+         function AddBranch(const AHook: TPoint; AId: integer = ID_UNDEFINED; ATextId: integer = ID_UNDEFINED): TBranch; override;
          function InsertNewBranch(AIndex: integer): TBranch;
          function CountErrWarn: TErrWarnCount; override;
          function GetFromXML(ANode: IXMLNode): TError; override;
@@ -182,7 +182,7 @@ begin
    end;
 end;
 
-function TCaseBlock.AddBranch(const AHook: TPoint; AId: integer = ID_INVALID; ATextId: integer = ID_INVALID): TBranch;
+function TCaseBlock.AddBranch(const AHook: TPoint; AId: integer = ID_UNDEFINED; ATextId: integer = ID_UNDEFINED): TBranch;
 begin
    result := inherited AddBranch(AHook, AId);
    if FBranchList.IndexOf(result) > DEFAULT_BRANCH_IDX then       // don't execute when default branch is being added in constructor
@@ -212,7 +212,7 @@ begin
    end;
 end;
 
-function TCaseBlock.CreateBranchStatement(ABranchStatementId: integer = ID_INVALID): TStatement;
+function TCaseBlock.CreateBranchStatement(ABranchStatementId: integer = ID_UNDEFINED): TStatement;
 begin
    result := TStatement.Create(Self, yymCaseValue, taRightJustify, ABranchStatementId);
    result.Color := Color;

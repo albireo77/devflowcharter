@@ -105,7 +105,7 @@ type
       procedure RefreshVarTypes;
       procedure PopulateDataTypeSets;
       procedure UpdateZOrder(AParent: TWinControl);
-      function Register(AObject: TObject; AId: integer = ID_INVALID): integer;
+      function Register(AObject: TObject; AId: integer = ID_UNDEFINED): integer;
       procedure UnRegister(AObject: TObject);
       function GetPage(const ACaption: string; ACreate: boolean = True): TBlockTabSheet;
       function MainPage: TBlockTabSheet;
@@ -324,10 +324,10 @@ begin
    result := TEnumeratorFactory<I>.Create(list);
 end;
 
-function TProject.Register(AObject: TObject; AId: integer = ID_INVALID): integer;
+function TProject.Register(AObject: TObject; AId: integer = ID_UNDEFINED): integer;
 begin
    var id := AId.ToString;
-   var accepted := (AId <> ID_INVALID) and not FObjectIds.Contains(id);
+   var accepted := (AId <> ID_UNDEFINED) and not FObjectIds.Contains(id);
    var idx := FObjectIds.IndexOfObject(AObject);
    if idx <> -1 then
    begin

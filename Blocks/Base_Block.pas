@@ -225,7 +225,7 @@ type
          function FindLastRow(AStart: integer; ALines: TStrings): integer; override;
          procedure ChangeColor(AColor: TColor); override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
-         function AddBranch(const AHook: TPoint; AId: integer = ID_INVALID; ATextId: integer = ID_INVALID): TBranch; virtual;
+         function AddBranch(const AHook: TPoint; AId: integer = ID_UNDEFINED; ATextId: integer = ID_UNDEFINED): TBranch; virtual;
          procedure ExpandAll;
          function HasFoldedBlocks: boolean;
          procedure PopulateComboBoxes; override;
@@ -268,7 +268,7 @@ type
          property ParentBlock: TGroupBlock read FParentBlock;
          property Height: integer read GetHeight;
          property Id: integer read GetId;
-         constructor Create(AParentBlock: TGroupBlock; const AHook: TPoint; AId: integer = ID_INVALID);
+         constructor Create(AParentBlock: TGroupBlock; const AHook: TPoint; AId: integer = ID_UNDEFINED);
          destructor Destroy; override;
          procedure InsertAfter(ANewBlock, ABlock: TBlock);
          function EndsWithReturnBlock: boolean;
@@ -1756,7 +1756,7 @@ begin
    end;
 end;
 
-function TGroupBlock.AddBranch(const AHook: TPoint; AId: integer = ID_INVALID; ATextId: integer = ID_INVALID): TBranch;
+function TGroupBlock.AddBranch(const AHook: TPoint; AId: integer = ID_UNDEFINED; ATextId: integer = ID_UNDEFINED): TBranch;
 begin
    result := TBranch.Create(Self, AHook, AId);
    FBranchList.Add(result);
@@ -2168,7 +2168,7 @@ begin
          if node <> nil then
             hy := StrToIntDef(node.Text, 0);
          var bid := GetNodeAttrInt(branchNode, ID_ATTR);
-         var bsid := GetNodeAttrInt(branchNode, BRANCH_STMNT_ATTR, ID_INVALID);
+         var bsid := GetNodeAttrInt(branchNode, BRANCH_STMNT_ATTR, ID_UNDEFINED);
          if GetBranch(idx) = nil then
             AddBranch(Point(hx, hy), bid, bsid);
          node := FindNode(branchNode, BLOCK_TAG);
@@ -2543,7 +2543,7 @@ begin
    end;
 end;
 
-constructor TBranch.Create(AParentBlock: TGroupBlock; const AHook: TPoint; AId: integer = ID_INVALID);
+constructor TBranch.Create(AParentBlock: TGroupBlock; const AHook: TPoint; AId: integer = ID_UNDEFINED);
 begin
    inherited Create;
    FParentBlock := AParentBlock;
