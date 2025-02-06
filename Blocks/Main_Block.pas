@@ -85,10 +85,8 @@ begin
    FStartLabel := trnsManager.GetString('CaptionStart');
    FStopLabel  := trnsManager.GetString('CaptionStop');
 
-   var w := Max(GetEllipseTextRect(0, 0, FStartLabel).Width,
-                GetEllipseTextRect(0, 0, FStopLabel).Width) + 40;
+   var w := Max(GetEllipseTextRect(0, 0, FStartLabel).Width, GetEllipseTextRect(0, 0, FStopLabel).Width) + 40;
    var w2 := w div 2;
-
    if w > Width then
    begin
       Width := w;
