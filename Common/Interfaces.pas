@@ -24,8 +24,7 @@ unit Interfaces;
 interface
 
 uses
-   Vcl.Controls, Vcl.ComCtrls, OmniXML, Vcl.Graphics, System.Types, Types, MemoEx,
-   System.Classes;
+   Vcl.Controls, Vcl.ComCtrls, Vcl.Graphics, System.Classes, OmniXML, Types, MemoEx;
 
 const
 
