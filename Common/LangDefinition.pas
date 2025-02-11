@@ -670,12 +670,8 @@ begin
       begin
          with FoldRegions[i] do
          begin
-            var onode := FindNode(rnode, 'Open');
-            if onode <> nil then
-               Open := GetNodeAttrStr(onode, 'Keyword', '');
-            var cnode := FindNode(rnode, 'Close');
-            if cnode <> nil then
-               Close := GetNodeAttrStr(cnode, 'Keyword', '');
+            Open := GetNodeAttrStr(FindNode(rnode, 'Open'), 'Keyword', '');
+            Close := GetNodeAttrStr(FindNode(rnode, 'Close'), 'Keyword', '');
             AddClose := GetNodeAttrBool(rnode, 'AddClose', False);
             NoSubFolds := GetNodeAttrBool(rnode, 'NoSubFolds', True);
             WholeWords := GetNodeAttrBool(rnode, 'WholeWords', True);
