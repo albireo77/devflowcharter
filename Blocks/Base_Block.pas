@@ -2571,11 +2571,7 @@ function TBranch.GetMostRight: integer;
 begin
    result := Hook.X;
    for var i := 0 to Count-1 do
-   begin
-      var br := Items[i].BoundsRect.Right;
-      if br > result then
-         result := br;
-   end;
+      result := Max(result, Items[i].BoundsRect.Right);
 end;
 
 procedure TBranch.InsertAfter(ANewBlock, ABlock: TBlock);
