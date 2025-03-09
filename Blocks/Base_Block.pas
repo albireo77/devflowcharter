@@ -1393,31 +1393,28 @@ const
 var
    isVert, toBottomRight: boolean;
    aX, aY: integer;
-   p: TPoint;
+   p, aTo: TPoint;
 begin
    if AColor = clNone then
       AColor := GSettings.PenColor;
-   aX := toX;
-   aY := toY;
    isVert := fromX = toX;
+   aTo := Point(toX, toY);
    if AArrowPos = arrMiddle then
    begin
       if isVert then
-         Inc(aY, (fromY-toY) div 2)
+         aTo.Offset(0, (fromY-toY) div 2)
       else
-         Inc(aX, (fromX-toX) div 2);
+         aTo.Offset((fromX-toX) div 2, 0);
    end;
    if isVert then
       toBottomRight := toY > fromY
    else
       toBottomRight := toX > fromX;
-   p := Point(aX+MX[isVert, toBottomRight], aY+MY[isVert, toBottomRight]);
+   p := aTo + Point(MX[isVert, toBottomRight], MY[isVert, toBottomRight]);
    Canvas.Brush.Style := bsSolid;
    Canvas.Pen.Color := AColor;
    Canvas.Brush.Color := AColor;
-   Canvas.Polygon([p,
-                   Point(p.X+MD[isVert, False], p.Y+MD[isVert, True]),
-                   Point(aX, aY)]);
+   Canvas.Polygon([p, p+Point(MD[isVert, False], MD[isVert, True]), aTo]);
    Canvas.MoveTo(fromX, fromY);
    Canvas.LineTo(toX, toY);
 end;
