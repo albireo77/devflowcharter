@@ -1394,22 +1394,22 @@ begin
    if AColor = clNone then
       AColor := GSettings.PenColor;
    var isVert := fromX = toX;
-   var aTo := Point(toX, toY);
+   var arrTo := Point(toX, toY);
    if AArrowPos = arrMiddle then
    begin
       if isVert then
-         aTo.Offset(0, (fromY-toY) div 2)
+         arrTo.Offset(0, (fromY-toY) div 2)
       else
-         aTo.Offset((fromX-toX) div 2, 0);
+         arrTo.Offset((fromX-toX) div 2, 0);
    end;
    var toBottomRight := toX > fromX;
    if isVert then
       toBottomRight := toY > fromY;
-   var aFrom := aTo + Point(MX[isVert, toBottomRight], MY[isVert, toBottomRight]);
+   var arrFrom := arrTo + Point(MX[isVert, toBottomRight], MY[isVert, toBottomRight]);
    Canvas.Brush.Style := bsSolid;
    Canvas.Pen.Color := AColor;
    Canvas.Brush.Color := AColor;
-   Canvas.Polygon([aFrom, aFrom + Point(MD[isVert, False], MD[isVert, True]), aTo]);
+   Canvas.Polygon([arrFrom, arrFrom + Point(MD[isVert, False], MD[isVert, True]), arrTo]);
    Canvas.MoveTo(fromX, fromY);
    Canvas.LineTo(toX, toY);
 end;
