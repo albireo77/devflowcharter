@@ -1387,9 +1387,8 @@ end;
 
 procedure TBlock.DrawArrow(fromX, fromY, toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
 const
-   MX: array[boolean, boolean] of integer = ((10, -10), (-5, -5));
-   MY: array[boolean, boolean] of integer = ((5, 5), (10, -10));
-   MD: array[boolean, boolean] of integer = ((0, -10), (10, 0));
+   M: array[boolean, boolean] of TPoint = (((X: 10; Y: 5), (X: -10; Y: 5)), ((X: -5; Y: 10), (X: -5; Y: -10)));
+   D: array[boolean] of TPoint = ((X: 0; Y: -10), (X: 10; Y: 0));
 begin
    if AColor = clNone then
       AColor := GSettings.PenColor;
@@ -1405,11 +1404,11 @@ begin
    var toBottomRight := toX > fromX;
    if isVert then
       toBottomRight := toY > fromY;
-   var arrFrom := arrTo + Point(MX[isVert, toBottomRight], MY[isVert, toBottomRight]);
+   var arrFrom := arrTo + M[isVert, toBottomRight];
    Canvas.Brush.Style := bsSolid;
    Canvas.Pen.Color := AColor;
    Canvas.Brush.Color := AColor;
-   Canvas.Polygon([arrFrom, arrFrom + Point(MD[isVert, False], MD[isVert, True]), arrTo]);
+   Canvas.Polygon([arrFrom, arrFrom + D[isVert], arrTo]);
    Canvas.MoveTo(fromX, fromY);
    Canvas.LineTo(toX, toY);
 end;
