@@ -1387,25 +1387,25 @@ end;
 
 procedure TBlock.DrawArrow(fromX, fromY, toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
 const
-   M: array[boolean, boolean] of TPoint = (((X: -10; Y: -5), (X: 10; Y: -5)), ((X: 5; Y: -10), (X: 5; Y: 10)));
+   M: array[boolean, boolean] of TPoint = (((X: 10; Y: 5), (X: -10; Y: 5)), ((X: -5; Y: 10), (X: -5; Y: -10)));
    D: array[boolean] of TPoint = ((X: 0; Y: -10), (X: 10; Y: 0));
 begin
    if AColor = clNone then
       AColor := GSettings.PenColor;
    var isVert := fromX = toX;
-   var arr3 := Point(toX, toY);
+   var arr1 := Point(toX, toY);
    if AArrowPos = arrMiddle then
    begin
       if isVert then
-         arr3.Offset(0, (fromY-toY) div 2)
+         arr1.Offset(0, (fromY-toY) div 2)
       else
-         arr3.Offset((fromX-toX) div 2, 0);
+         arr1.Offset((fromX-toX) div 2, 0);
    end;
    var toBottomRight := toX > fromX;
    if isVert then
       toBottomRight := toY > fromY;
-   var arr1 := arr3 - M[isVert, toBottomRight];
-   var arr2 := arr1 + D[isVert];
+   var arr2 := arr1 + M[isVert, toBottomRight];
+   var arr3 := arr2 + D[isVert];
    Canvas.Brush.Style := bsSolid;
    Canvas.Pen.Color := AColor;
    Canvas.Brush.Color := AColor;
