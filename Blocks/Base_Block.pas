@@ -996,6 +996,8 @@ begin
       else
          TInfra.SetFontSize(control, ASize);
    end;
+   for var comment in GetComments(True) do
+      comment.Font.Size := ASize;
    PutTextControls;
    Refresh;
 end;
