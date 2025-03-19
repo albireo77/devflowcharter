@@ -998,6 +998,8 @@ begin
    end;
    for var comment in GetComments(True) do
       comment.Font.Size := ASize;
+   for var comment in GetPinComments do
+      comment.Font.Size := ASize;
    PutTextControls;
    Refresh;
 end;
