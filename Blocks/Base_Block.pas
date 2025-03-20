@@ -982,6 +982,10 @@ begin
       else
          TControlHack(control).Font.Style := AStyle;
    end;
+   for var comment in GetComments(True) do
+      comment.Font.Style := AStyle;
+   for var comment in GetPinComments do
+      comment.Font.Style := AStyle;
    Refresh;
 end;
 
