@@ -120,7 +120,7 @@ begin
       BottomPoint.Y := Height - 25;
       TopHook.Y := FDiamond.Left.Y;
 
-      DrawArrow(BottomHook, Height-30, BottomHook, Height-1);
+      DrawArrowVert(Height-30, Point(BottomHook, Height-1));
       DrawArrowVert(TopHook.Y, TrueBranch.Hook);
       DrawArrowVert(TopHook.Y, FalseBranch.Hook);
       if not TrueBranch.EndsWithReturnBlock then

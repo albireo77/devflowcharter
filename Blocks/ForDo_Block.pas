@@ -225,10 +225,10 @@ begin
       var bst := edtStop.BoundsRect.Right + 6;
       IPoint := Point(bst + 16, 35);
       DrawArrowVert(TopHook.Y, Branch.Hook);
-      DrawArrow(Width-11, 19, Width-RIGHT_MARGIN, Height-1);
+      DrawArrowVert(19, Point(Width-RIGHT_MARGIN, Height-1));
       if not Branch.EndsWithReturnBlock then
       begin
-         DrawArrow(5, Height-21, 5, 19, arrMiddle);
+         DrawArrowVert(Height-21, Point(5, 19), arrMiddle);
          Canvas.Polyline([Point(BottomHook, Height-21),
                           Point(5, Height-21),
                           Point(5, 19),
