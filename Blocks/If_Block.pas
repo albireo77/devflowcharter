@@ -80,7 +80,7 @@ begin
       TopHook := FDiamond.Bottom;
       BottomPoint.Y := Height - 31;
 
-      DrawArrow(TopHook, Branch.Hook);
+      DrawArrowVert(TopHook.Y, Branch.Hook);
       DrawTextLabel(FDiamond.Bottom.X-10, FDiamond.Bottom.Y, FTrueLabel, True);
       DrawTextLabel(FDiamond.Right.X, FDiamond.Right.Y-5, FFalseLabel, False, True);
       DrawBlockLabel(FDiamond.Left.X-5, FDiamond.Left.Y-5, GInfra.CurrentLang.LabelIf, True, True);
@@ -89,7 +89,7 @@ begin
       Canvas.LineTo(Width-11, FDiamond.Right.Y);
       DrawArrowTo(Width-11, Height-31, arrMiddle);
       Canvas.LineTo(BottomPoint.X, Height-31);
-      DrawArrow(BottomPoint, Point(BottomPoint.X, Height-1));
+      DrawArrowVert(BottomPoint, Height-1);
    end;
    DrawI;
 end;

@@ -93,7 +93,7 @@ begin
    r.Inflate(1, 1);
    BottomPoint.Y := r.Bottom;
    IPoint.Y := r.Bottom + 8;
-   DrawArrow(BottomPoint, Point(BottomPoint.X, Height-1));
+   DrawArrowVert(BottomPoint, Height-1);
    Canvas.FrameRect(r);
    DrawI;
 end;

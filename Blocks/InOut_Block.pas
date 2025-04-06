@@ -121,7 +121,7 @@ procedure TInOutBlock.Paint;
 begin
    inherited;
    var w := Canvas.TextWidth(FLabel);
-   DrawArrow(BottomPoint, Point(BottomPoint.X, Height-1));
+   DrawArrowVert(BottomPoint, Height-1);
    SetBrushColor(FShape);
    Canvas.Polygon([Point(20, 0),
                    Point(Width-1, 0),

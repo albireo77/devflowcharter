@@ -95,8 +95,9 @@ type
          procedure SetFrame(AValue: boolean);
          procedure PutTextControls; virtual;
          procedure DrawArrowTo(toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
-         procedure DrawArrow(const aFrom, aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone); overload;
-         procedure DrawArrow(fromX, fromY, toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone); overload;
+         procedure DrawArrow(fromX, fromY, toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
+         procedure DrawArrowVert(const aFrom: TPoint; aToY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone); overload;
+         procedure DrawArrowVert(aFromY: integer; const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone); overload;
          function GetEllipseTextRect(ax, ay: integer; const AText: string): TRect;
          function DrawEllipsedText(ax, ay: integer; const AText: string): TRect;
          function GetUndoObject: TObject; virtual;
@@ -530,13 +531,13 @@ begin
 
    if Rect(BottomPoint.X-5, BottomPoint.Y, BottomPoint.X+5, Height).Contains(p) then
    begin
-      DrawArrow(BottomPoint, Point(BottomPoint.X, Height-1), arrEnd, clRed);
+      DrawArrowVert(BottomPoint, Height-1, arrEnd, clRed);
       FRedArrow := 0;
       Cursor := TCursor(GCustomCursor);
    end
    else if FRedArrow = 0 then
    begin
-      DrawArrow(BottomPoint, Point(BottomPoint.X, Height-1));
+      DrawArrowVert(BottomPoint, Height-1);
       FRedArrow := -1;
       Cursor := crDefault;
    end;
@@ -551,14 +552,14 @@ begin
          var p := FBranchList[i].Hook;
          if Rect(p.X-5, TopHook.Y, p.X+5, p.Y).Contains(Point(X, Y)) then
          begin
-            DrawArrow(Point(p.X, TopHook.Y), p, arrEnd, clRed);
+            DrawArrowVert(TopHook.Y, p, arrEnd, clRed);
             FRedArrow := i;
             Cursor := TCursor(GCustomCursor);
             break;
          end
          else if FRedArrow = i then
          begin
-            DrawArrow(Point(p.X, TopHook.Y), p);
+            DrawArrowVert(TopHook.Y, p);
             FRedArrow := -1;
             Cursor := crDefault;
             break;
@@ -665,7 +666,7 @@ begin
    Cursor := crDefault;
    DeSelect;
    if FRedArrow = 0 then
-      DrawArrow(BottomPoint, Point(BottomPoint.X, Height-1));
+      DrawArrowVert(BottomPoint, Height-1);
    if AClearRedArrow then
       FRedArrow := -1;
    if FVResize or FHResize then
@@ -676,7 +677,7 @@ procedure TGroupBlock.OnMouseLeave(AClearRedArrow: boolean = True);
 begin
    var br := GetBranch(FRedArrow);
    if br <> nil then
-      DrawArrow(Point(br.Hook.X, TopHook.Y), br.Hook);
+      DrawArrowVert(TopHook.Y, br.Hook);
    inherited OnMouseLeave(AClearRedArrow);
 end;
 
@@ -1385,12 +1386,18 @@ end;
 // this method draw arrow line from current pen position
 procedure TBlock.DrawArrowTo(toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
 begin
-   DrawArrow(Canvas.PenPos, Point(toX, toY), AArrowPos, AColor);
+   var p := Canvas.PenPos;
+   DrawArrow(p.X, p.Y, toX, toY, AArrowPos, AColor);
 end;
 
-procedure TBlock.DrawArrow(const aFrom, aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
+procedure TBlock.DrawArrowVert(const aFrom: TPoint; aToY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
 begin
-   DrawArrow(aFrom.X, aFrom.Y, aTo.X, aTo.Y, AArrowPos, AColor);
+   DrawArrow(aFrom.X, aFrom.Y, aFrom.X, aToY, AArrowPos, AColor);
+end;
+
+procedure TBlock.DrawArrowVert(aFromY: integer; const aTo: TPoint; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
+begin
+   DrawArrow(aTo.X, aFromY, aTo.X, aTo.Y, AArrowPos, AColor);
 end;
 
 procedure TBlock.DrawArrow(fromX, fromY, toX, toY: integer; AArrowPos: TArrowPosition = arrEnd; AColor: TColor = clNone);
@@ -1535,7 +1542,7 @@ begin
       Canvas.Rectangle(r);
       Canvas.Pen.Width := 1;
       if FTopParentBlock <> Self then
-         DrawArrow(BottomPoint, Point(BottomPoint.X, Height-1));
+         DrawArrowVert(BottomPoint, Height-1);
       r.Inflate(-2, -2, -3, -3);
       Canvas.Rectangle(r);
    end;

@@ -270,7 +270,7 @@ begin
       if not Branch.EndsWithReturnBlock then
          DrawStop;
       Canvas.Font.Style := fontStyles;
-      DrawArrow(Point(Branch.Hook.X, TopHook.Y), Branch.Hook);
+      DrawArrowVert(TopHook.Y, Branch.Hook);
    end;
    DrawI;
 end;
