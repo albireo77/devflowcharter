@@ -1936,11 +1936,9 @@ begin
       FFoldParms.Height := tmpHeight;
       BottomHook := FFoldParms.BottomHook;
       TopHook.X := FFoldParms.TopHook;
-      BottomPoint.X := FFoldParms.BottomPoint.X;
-      BottomPoint.Y := FFoldParms.BottomPoint.Y;
+      BottomPoint := FFoldParms.BottomPoint;
       Branch.Hook.X := FFoldParms.BranchPoint.X;
-      IPoint.X := FFoldParms.IPoint.X;
-      IPoint.Y := FFoldParms.IPoint.Y;
+      IPoint := FFoldParms.IPoint;
       Constraints.MinWidth := FInitParms.Width;
       Constraints.MinHeight := FInitParms.Height;
       PerformRefreshStatements;
@@ -1955,11 +1953,9 @@ begin
       FFoldParms.Height := Height;
       FFoldParms.BottomHook := BottomHook;
       FFoldParms.TopHook := TopHook.X;
-      FFoldParms.BottomPoint.X := BottomPoint.X;
-      FFoldParms.BottomPoint.Y := BottomPoint.Y;
+      FFoldParms.BottomPoint := BottomPoint;
       FFoldParms.BranchPoint.X := Branch.Hook.X;
-      FFoldParms.IPoint.X := IPoint.X;
-      FFoldParms.IPoint.Y := IPoint.Y;
+      FFoldParms.IPoint := IPoint;
       Constraints.MinWidth := 140;
       Constraints.MinHeight := 54;
       Width := tmpWidth;
