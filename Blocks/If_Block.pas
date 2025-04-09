@@ -28,6 +28,9 @@ uses
 type
 
    TIfBlock = class(TGroupBlock)
+      private
+         FTrueLabel,
+         FFalseLabel: string;
       public
          constructor Create(AParentBranch: TBranch); overload;
          constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms); overload;
@@ -55,6 +58,9 @@ begin
    FInitParms.BottomPoint.X := 100;
    FInitParms.P2X := 0;
    FInitParms.HeightAffix := 32;
+
+   FTrueLabel := trnsManager.GetString('CaptionTrue');
+   FFalseLabel := trnsManager.GetString('CaptionFalse');
 
    BottomPoint.X := ABlockParms.bh;
    BottomPoint.Y := Height-31;

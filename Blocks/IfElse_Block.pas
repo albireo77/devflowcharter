@@ -29,6 +29,9 @@ uses
 type
 
    TIfElseBlock = class(TGroupBlock)
+      private
+         FTrueLabel,
+         FFalseLabel: string;
       protected
          TrueBranch,
          FalseBranch: TBranch;
@@ -72,6 +75,9 @@ begin
 
    TrueBranch := Branch;
    FalseBranch := AddBranch(ABlockParms.br2);
+
+   FTrueLabel := trnsManager.GetString('CaptionTrue');
+   FFalseLabel := trnsManager.GetString('CaptionFalse');
 
    FFixedBranches := 2;
    BottomHook := ABlockParms.bh;

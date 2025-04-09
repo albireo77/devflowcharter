@@ -30,7 +30,8 @@ type
 
    TRepeatUntilBlock = class(TGroupBlock)
       private
-         FLeftLabel, FRightLabel: string;
+         FLeftLabel,
+         FRightLabel: string;
       public
          constructor Create(AParentBranch: TBranch); overload;
          constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms); overload;
@@ -61,13 +62,13 @@ begin
 
    if GInfra.CurrentLang.RepeatUntilAsDoWhile then
    begin
-      FLeftLabel := FTrueLabel;
-      FRightLabel := FFalseLabel;
+      FLeftLabel := trnsManager.GetString('CaptionTrue');
+      FRightLabel := trnsManager.GetString('CaptionFalse');
    end
    else
    begin
-      FLeftLabel := FFalseLabel;
-      FRightLabel := FTrueLabel;
+      FLeftLabel := trnsManager.GetString('CaptionFalse');
+      FRightLabel := trnsManager.GetString('CaptionTrue');
    end;
    BottomPoint.X := Width - 11;
    BottomPoint.Y := Height - 50;

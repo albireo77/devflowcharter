@@ -198,8 +198,6 @@ type
          FMemoFolder: TMemoEx;
          FInitParms: TInitParms;
          FBranchList: TObjectList<TBranch>;
-         FTrueLabel,
-         FFalseLabel: string;
          FFixedBranches: integer;
          FDiamond: TDiamond;
          constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms; AShape: TColorShape; AAlignment: TAlignment; AParserMode: TYYMode = yymUndefined);
@@ -354,9 +352,6 @@ begin
 
    FFoldParms.Width := 140;
    FFoldParms.Height := 91;
-
-   FTrueLabel := trnsManager.GetString('CaptionTrue');
-   FFalseLabel := trnsManager.GetString('CaptionFalse');
 
    FBranchList := TObjectList<TBranch>.Create;
    FBranchList.Add(nil);

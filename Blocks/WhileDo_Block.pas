@@ -29,6 +29,9 @@ uses
 type
 
    TWhileDoBlock = class(TGroupBlock)
+      private
+         FTrueLabel,
+         FFalseLabel: string;
       public
          constructor Create(AParentBranch: TBranch); overload;
          constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms); overload;
@@ -64,6 +67,8 @@ begin
    IPoint.Y := 69;
    Constraints.MinWidth := FInitParms.Width;
    Constraints.MinHeight := FInitParms.Height;
+   FTrueLabel := trnsManager.GetString('CaptionTrue');
+   FFalseLabel := trnsManager.GetString('CaptionFalse');
 end;
 
 constructor TWhileDoBlock.Create(AParentBranch: TBranch);
