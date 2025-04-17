@@ -1345,44 +1345,36 @@ begin
 end;
 
 procedure TMainForm.FuncMenuClick(Sender: TObject);
-var
-   funcName, lBrackets, backup, lLibrary: string;
-   edit: TCustomEdit;
-   menuItem: TMenuItem;
-   cursorPos, selPos: integer;
 begin
    if (Sender is TMenuItem) and (pmEdits.PopupComponent is TCustomEdit) then
    begin
-      edit := TCustomEdit(pmEdits.PopupComponent);
-      menuItem := TMenuItem(Sender);
-      funcName := StripHotKey(menuItem.Caption);
-      backup := '';
-      selPos := edit.SelStart;
+      var edit := TCustomEdit(pmEdits.PopupComponent);
+      var menuItem := TMenuItem(Sender);
+      var backup := '';
+      var selPos := edit.SelStart;
+      var funcName := StripHotKey(menuItem.Caption);
+      var fCursorPos := GInfra.CurrentLang.FuncBracketsCursorPos;
+      var fBrackets := GInfra.CurrentLang.FuncBrackets;
+      var fLibrary := menuItem.Name;
       if menuItem.Tag <> 0 then
       begin
          var func := PNativeFunction(menuItem.Tag);
          if not func.Caption.IsEmpty then
             funcName := func.Name;
-         cursorPos := func.BracketsCursorPos;
-         lBrackets := func.Brackets;
-         lLibrary := func.Lib;
-      end
-      else
-      begin
-         cursorPos := GInfra.CurrentLang.FuncBracketsCursorPos;
-         lBrackets := GInfra.CurrentLang.FuncBrackets;
-         lLibrary := menuItem.Name;
+         fCursorPos := func.BracketsCursorPos;
+         fBrackets := func.Brackets;
+         fLibrary := func.Lib;
       end;
       if Clipboard.HasFormat(CF_TEXT) then
          backup := Clipboard.AsText;
-      Clipboard.AsText := funcName + lBrackets;
+      Clipboard.AsText := funcName + fBrackets;
       edit.PasteFromClipboard;
-      if cursorPos <> 0 then
-         edit.SelStart := cursorPos + Length(funcName) + selPos;
+      if fCursorPos <> 0 then
+         edit.SelStart := fCursorPos + Length(funcName) + selPos;
       if not backup.IsEmpty then
          Clipboard.AsText := backup;
-      if TInfra.ShouldUpdateEditor and not lLibrary.IsEmpty then
-         TInfra.GetEditorForm.InsertLibraryEntry(lLibrary);
+      if TInfra.ShouldUpdateEditor and not (fLibrary = '') then
+         TInfra.GetEditorForm.InsertLibraryEntry(fLibrary);
    end;
 end;
 
