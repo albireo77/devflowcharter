@@ -1360,14 +1360,12 @@ begin
       selPos := edit.SelStart;
       if menuItem.Tag <> 0 then
       begin
-         with PNativeFunction(menuItem.Tag)^ do
-         begin
-            if not Caption.IsEmpty then
-               funcName := Name;
-            cursorPos := BracketsCursorPos;
-            lBrackets := Brackets;
-            lLibrary := Lib;
-         end;
+         var func := PNativeFunction(menuItem.Tag);
+         if not func.Caption.IsEmpty then
+            funcName := func.Name;
+         cursorPos := func.BracketsCursorPos;
+         lBrackets := func.Brackets;
+         lLibrary := func.Lib;
       end
       else
       begin
