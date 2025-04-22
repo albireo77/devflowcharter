@@ -1402,10 +1402,10 @@ begin
    for var i := 0 to High(GInfra.CurrentLang.NativeFunctions) do
    begin
       var mItem := TMenuItem.Create(miInsertFunc);
-      var nativeFunc := PNativeFunction(@GInfra.CurrentLang.NativeFunctions[i]);
-      mItem.Caption := IfThen(nativeFunc.Caption.IsEmpty, nativeFunc.Name, nativeFunc.Caption);
-      mItem.Hint := nativeFunc.Hint;
-      mItem.Tag := NativeInt(nativeFunc);
+      var func := PNativeFunction(@GInfra.CurrentLang.NativeFunctions[i]);
+      mItem.Caption := IfThen(func.Caption.IsEmpty, func.Name, func.Caption);
+      mItem.Hint := func.Hint;
+      mItem.Tag := NativeInt(func);
       mItem.OnClick := FuncMenuClick;
       mItems := mItems + [mItem];
    end;
