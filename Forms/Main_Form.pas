@@ -1373,7 +1373,7 @@ begin
          edit.SelStart := fCursorPos + Length(funcName) + selPos;
       if not backup.IsEmpty then
          Clipboard.AsText := backup;
-      if TInfra.ShouldUpdateEditor and not (fLibrary = '') then
+      if TInfra.ShouldUpdateEditor and (fLibrary <> '') then
          TInfra.GetEditorForm.InsertLibraryEntry(fLibrary);
    end;
 end;
