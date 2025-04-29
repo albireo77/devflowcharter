@@ -297,7 +297,7 @@ begin
    begin
       if SameStrings(AName, FCurrentLang.NativeDataTypes[i].Name) then
       begin
-         result := @FCurrentLang.NativeDataTypes[i];
+         result := FCurrentLang.NativeDataTypes[i];
          break;
       end;
    end;
@@ -310,7 +310,7 @@ begin
    begin
       if SameStrings(AName, FCurrentLang.NativeFunctions[i].Name) then
       begin
-         result := @FCurrentLang.NativeFunctions[i];
+         result := FCurrentLang.NativeFunctions[i];
          break;
       end;
    end;

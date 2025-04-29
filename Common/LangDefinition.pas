@@ -184,8 +184,8 @@ type
       FoldRegions: array of TFoldRegionRecord;
 {$ENDIF}
       Parser: TCustomParser;
-      NativeDataTypes: array of TNativeDataType;
-      NativeFunctions: array of TNativeFunction;
+      NativeDataTypes: array of PNativeDataType;
+      NativeFunctions: array of PNativeFunction;
       KeyWords: TStringList;
       EnabledConsts,
       EnabledVars,
@@ -303,6 +303,10 @@ destructor TLangDefinition.Destroy;
 begin
    KeyWords.Free;
    KeyWords := nil;
+   for var i := 0 to High(NativeDataTypes) do
+      Dispose(NativeDataTypes[i]);
+   for var i := 0 to High(NativeFunctions) do
+      Dispose(NativeFunctions[i]);
    NativeDataTypes := nil;
    NativeFunctions := nil;
    Parser.Free;
@@ -316,23 +320,17 @@ begin
 end;
 
 function TLangDefinition.ImportFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
-var
-   node: IXMLNode;
-   val, lName, kinds: string;
-   lKind: TDataTypeKind;
-   lOrigType, lType: PNativeDataType;
-   i, a: integer;
-   s3: T3Strings;
 begin
+
    result := errNone;
-   val := GetNodeTextStr(ANode, 'Name', '');
-   if val.IsEmpty then
+   var name := GetNodeTextStr(ANode, 'Name', '');
+   if name.IsEmpty then
    begin
       GErr_Text := trnsManager.GetString('NameTagNotFound');
       Exit(errValidate);
    end;
 
-   FName := val;
+   FName := name;
 
    FCompilerKey := 'CompilerPath_' + FName;
    FCompilerNoMainKey := 'CompilerPathNoMain_' + FName;
@@ -340,10 +338,11 @@ begin
 
    ImportBlockTemplates(ANode);
 
-   node := FindNode(ANode, 'DecimalSeparator');
+   var node := FindNode(ANode, 'DecimalSeparator');
    if (node <> nil) and not node.Text.IsEmpty then
       DecimalSeparator := node.Text[1];
 
+   var s3: T3Strings;
    node := FindNode(ANode, 'FunctionHeaderTypeModifier1');
    if node <> nil then
    begin
@@ -566,58 +565,58 @@ begin
    node := FindNode(ANode, 'NativeDataTypes');
    if node <> nil then
    begin
-      a := 0;
+      var a := 0;
       var datatypeNodes := FilterNodes(node, 'DataType');
       var count := CountNodesWithText(datatypeNodes);
       SetLength(NativeDataTypes, count);
       var dnode := datatypeNodes.NextNode;
       while dnode <> nil do
       begin
-         lOrigType := nil;
-         lName := dnode.Text.Trim;
-         if not lName.IsEmpty then
+         var kind := tpOther;
+         var originalType: PNativeDataType := nil;
+         name := dnode.Text.Trim;
+         if not name.IsEmpty then
          begin
-            kinds := GetNodeAttrStr(dnode, 'kind', '');
+            var kinds := GetNodeAttrStr(dnode, 'kind', '');
             if kinds = 'int' then
-               lKind := tpInt
+               kind := tpInt
             else if kinds = 'real' then
-               lKind := tpReal
+               kind := tpReal
             else if kinds = 'bool' then
-               lKind := tpBool
+               kind := tpBool
             else if kinds = 'string' then
-               lKind := tpString
+               kind := tpString
             else if kinds = 'ptr' then
             begin
                if EnabledPointers then
                begin
-                  lKind := tpPtr;
-                  val := GetNodeAttrStr(dnode, 'origtype', '').Trim;
-                  for i := 0 to a-1 do
+                  kind := tpPtr;
+                  var val := GetNodeAttrStr(dnode, 'origtype', '').Trim;
+                  for var i := 0 to a-1 do
                   begin
                      if SameText(val, NativeDataTypes[i].Name) then
                      begin
-                        lOrigType := @NativeDataTypes[i];
+                        originalType := NativeDataTypes[i];
                         break;
                      end;
                   end;
                end
                else
-                  lName := '';
-            end
-            else
-               lKind := tpOther;
+                  name := '';
+            end;
          end;
-         if not lName.IsEmpty then
+         if not name.IsEmpty then
          begin
-            a := a + 1;
-            lType := @NativeDataTypes[a-1];
-            lType.Name := lName;
-            lType.Kind := lKind;
-            if lOrigType = nil then
-               lOrigType := lType;
-            lType.OrigType := lOrigType;
-            lType.IsGeneric := GetNodeAttrBool(dnode, 'generic', False);
-            lType.Lib := GetNodeAttrStr(dnode, 'library', '');
+            var dataType := New(PNativeDataType);
+            dataType.Name := name;
+            dataType.Kind := kind;
+            if originalType = nil then
+               originalType := dataType;
+            dataType.OriginalType := originalType;
+            dataType.IsGeneric := GetNodeAttrBool(dnode, 'generic', False);
+            dataType.Lib := GetNodeAttrStr(dnode, 'library', '');
+            Inc(a);
+            NativeDataTypes[a-1] := dataType;
          end;
          dnode := datatypeNodes.NextNode;
       end;
@@ -638,21 +637,20 @@ begin
       var functionNodes := FilterNodes(node, 'Function');
       SetLength(NativeFunctions, CountNodesWithText(functionNodes));
       var fnode := functionNodes.NextNode;
-      i := 0;
+      var i := 0;
       while fnode <> nil do
       begin
-         val := fnode.Text.Trim;
-         if not val.IsEmpty then
+         name := fnode.Text.Trim;
+         if not name.IsEmpty then
          begin
-            with NativeFunctions[i] do
-            begin
-               Name := val;
-               Brackets := GetNodeAttrStr(fnode, 'brackets', '');
-               BracketsCursorPos := GetNodeAttrInt(fnode, 'bracketsCursorPos', 0);
-               Caption := GetNodeAttrStr(fnode, 'caption', '').Trim;
-               Hint := GetNodeAttrStr(fnode, 'hint', '').Trim;
-               Lib := GetNodeAttrStr(fnode, 'library', '').Trim;
-            end;
+            var nativeFunction := New(PNativeFunction);
+            nativeFunction.Name := name;
+            nativeFunction.Brackets := GetNodeAttrStr(fnode, 'brackets', '');
+            nativeFunction.BracketsCursorPos := GetNodeAttrInt(fnode, 'bracketsCursorPos', 0);
+            nativeFunction.Caption := GetNodeAttrStr(fnode, 'caption', '').Trim;
+            nativeFunction.Hint := GetNodeAttrStr(fnode, 'hint', '').Trim;
+            nativeFunction.Lib := GetNodeAttrStr(fnode, 'library', '').Trim;
+            NativeFunctions[i] := nativeFunction;
             Inc(i);
          end;
          fnode := functionNodes.NextNode;
@@ -662,7 +660,7 @@ begin
    node := FindNode(ANode, 'FoldRegions');
    if node <> nil then
    begin
-      i := 0;
+      var i := 0;
       var foldRegionNodes := FilterNodes(node, 'FoldRegion');
       SetLength(FoldRegions, foldRegionNodes.Length);
       var rnode := foldRegionNodes.NextNode;

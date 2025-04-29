@@ -553,7 +553,7 @@ begin
       var pNativeType := GInfra.GetNativeDataType(typeName);
       var userType := GProject.GetUserDataType(typeName);
       if pNativeType <> nil then
-         result := GetType(pNativeType.OrigType.Name)
+         result := GetType(pNativeType.OriginalType.Name)
       else if (userType <> nil) and (userType.GetDimensionCount > 0) then
          result := userType.GetOriginalType
       else if Assigned(GInfra.CurrentLang.GetOriginalType) then

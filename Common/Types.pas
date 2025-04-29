@@ -83,7 +83,7 @@ type
    TNativeDataType = record
       Name: string;
       Kind: TDataTypeKind;
-      OrigType: PNativeDataType;
+      OriginalType: PNativeDataType;
       IsGeneric: boolean;
       Lib: string;
    end;
