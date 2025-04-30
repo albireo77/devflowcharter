@@ -571,48 +571,47 @@ begin
          var kind := tpOther;
          var originalType: PNativeDataType := nil;
          name := dnode.Text.Trim;
-         if not name.IsEmpty then
+         if name.IsEmpty then
          begin
-            var kinds := GetNodeAttrStr(dnode, 'kind', '');
-            if kinds = 'int' then
-               kind := tpInt
-            else if kinds = 'real' then
-               kind := tpReal
-            else if kinds = 'bool' then
-               kind := tpBool
-            else if kinds = 'string' then
-               kind := tpString
-            else if kinds = 'ptr' then
+            dnode := datatypeNodes.NextNode;
+            continue;
+         end;
+         var kinds := GetNodeAttrStr(dnode, 'kind', '');
+         if kinds = 'int' then
+            kind := tpInt
+         else if kinds = 'real' then
+            kind := tpReal
+         else if kinds = 'bool' then
+            kind := tpBool
+         else if kinds = 'string' then
+            kind := tpString
+         else if kinds = 'ptr' then
+         begin
+            kind := tpPtr;
+            if not EnabledPointers then
             begin
-               if EnabledPointers then
+               dnode := datatypeNodes.NextNode;
+               continue;
+            end;
+            var val := GetNodeAttrStr(dnode, 'origtype', '').Trim;
+            for var i := 0 to High(NativeDataTypes) do
+            begin
+               if SameText(val, NativeDataTypes[i].Name) then
                begin
-                  kind := tpPtr;
-                  var val := GetNodeAttrStr(dnode, 'origtype', '').Trim;
-                  for var i := 0 to High(NativeDataTypes) do
-                  begin
-                     if SameText(val, NativeDataTypes[i].Name) then
-                     begin
-                        originalType := NativeDataTypes[i];
-                        break;
-                     end;
-                  end;
-               end
-               else
-                  name := '';
+                  originalType := NativeDataTypes[i];
+                  break;
+               end;
             end;
          end;
-         if not name.IsEmpty then
-         begin
-            var dataType := New(PNativeDataType);
-            dataType.Name := name;
-            dataType.Kind := kind;
-            if originalType = nil then
-               originalType := dataType;
-            dataType.OriginalType := originalType;
-            dataType.IsGeneric := GetNodeAttrBool(dnode, 'generic', False);
-            dataType.Lib := GetNodeAttrStr(dnode, 'library', '');
-            NativeDataTypes := NativeDataTypes + [dataType];
-         end;
+         var dataType := New(PNativeDataType);
+         dataType.Name := name;
+         dataType.Kind := kind;
+         if originalType = nil then
+            originalType := dataType;
+         dataType.OriginalType := originalType;
+         dataType.IsGeneric := GetNodeAttrBool(dnode, 'generic', False);
+         dataType.Lib := GetNodeAttrStr(dnode, 'library', '');
+         NativeDataTypes := NativeDataTypes + [dataType];
          dnode := datatypeNodes.NextNode;
       end;
    end;
