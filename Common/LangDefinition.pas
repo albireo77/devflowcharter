@@ -63,7 +63,6 @@ type
       function GetProgramHeaderTemplate: string;
       procedure InitBlockTemplates;
       procedure ImportBlockTemplates(ANode: IXMLNode);
-      function CountNodesWithText(ANodes: IXMLNodeList): integer;
    public
       CommentBegin, CommentEnd,
       DefaultExt,
@@ -565,10 +564,7 @@ begin
    node := FindNode(ANode, 'NativeDataTypes');
    if node <> nil then
    begin
-      var a := 0;
       var datatypeNodes := FilterNodes(node, 'DataType');
-      var count := CountNodesWithText(datatypeNodes);
-      SetLength(NativeDataTypes, count);
       var dnode := datatypeNodes.NextNode;
       while dnode <> nil do
       begin
@@ -592,7 +588,7 @@ begin
                begin
                   kind := tpPtr;
                   var val := GetNodeAttrStr(dnode, 'origtype', '').Trim;
-                  for var i := 0 to a-1 do
+                  for var i := 0 to High(NativeDataTypes) do
                   begin
                      if SameText(val, NativeDataTypes[i].Name) then
                      begin
@@ -615,13 +611,10 @@ begin
             dataType.OriginalType := originalType;
             dataType.IsGeneric := GetNodeAttrBool(dnode, 'generic', False);
             dataType.Lib := GetNodeAttrStr(dnode, 'library', '');
-            Inc(a);
-            NativeDataTypes[a-1] := dataType;
+            NativeDataTypes := NativeDataTypes + [dataType];
          end;
          dnode := datatypeNodes.NextNode;
       end;
-      if a < count then
-         SetLength(NativeDataTypes, a);
    end;
    node := FindNode(ANode, 'KeyWords');
    if node <> nil then
@@ -635,9 +628,7 @@ begin
    if node <> nil then
    begin
       var functionNodes := FilterNodes(node, 'Function');
-      SetLength(NativeFunctions, CountNodesWithText(functionNodes));
       var fnode := functionNodes.NextNode;
-      var i := 0;
       while fnode <> nil do
       begin
          name := fnode.Text.Trim;
@@ -650,8 +641,7 @@ begin
             nativeFunction.Caption := GetNodeAttrStr(fnode, 'caption', '').Trim;
             nativeFunction.Hint := GetNodeAttrStr(fnode, 'hint', '').Trim;
             nativeFunction.Lib := GetNodeAttrStr(fnode, 'library', '').Trim;
-            NativeFunctions[i] := nativeFunction;
-            Inc(i);
+            NativeFunctions := NativeFunctions + [nativeFunction];
          end;
          fnode := functionNodes.NextNode;
       end;
@@ -779,20 +769,6 @@ procedure TLangDefinition.ImportBlockTemplates(ANode: IXMLNode);
 begin
    for var blockType := Low(TBlockType) to High(TBlockType) do
       BlockTemplates[blockType] := GetNodeTextStr(ANode, BLOCK_TO_TEMPLATE_TAG_MAP[blockType], '');
-end;
-
-function TLangDefinition.CountNodesWithText(ANodes: IXMLNodeList): integer;
-begin
-   result := 0;
-   ANodes.Reset;
-   var node := ANodes.NextNode;
-   while node <> nil do
-   begin
-      if not node.Text.Trim.IsEmpty then
-         Inc(result);
-      node := ANodes.NextNode;
-   end;
-   ANodes.Reset;
 end;
 
 end.
