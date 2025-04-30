@@ -594,11 +594,11 @@ begin
                continue;
             end;
             var val := GetNodeAttrStr(dnode, 'origtype', '').Trim;
-            for var i := 0 to High(NativeDataTypes) do
+            for var t in NativeDataTypes do
             begin
-               if SameText(val, NativeDataTypes[i].Name) then
+               if SameText(val, t.Name) then
                begin
-                  originalType := NativeDataTypes[i];
+                  originalType := t;
                   break;
                end;
             end;

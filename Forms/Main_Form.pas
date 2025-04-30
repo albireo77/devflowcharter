@@ -1399,13 +1399,12 @@ begin
          mItems := mItems + [mItem];
       end;
    end;
-   for var i := 0 to High(GInfra.CurrentLang.NativeFunctions) do
+   for var func in GInfra.CurrentLang.NativeFunctions do
    begin
       var mItem := TMenuItem.Create(miInsertFunc);
-      var pFunc := GInfra.CurrentLang.NativeFunctions[i];
-      mItem.Caption := IfThen(pFunc.Caption.IsEmpty, pFunc.Name, pFunc.Caption);
-      mItem.Hint := pFunc.Hint;
-      mItem.Tag := NativeInt(pFunc);
+      mItem.Caption := IfThen(func.Caption.IsEmpty, func.Name, func.Caption);
+      mItem.Hint := func.Hint;
+      mItem.Tag := NativeInt(func);
       mItem.OnClick := FuncMenuClick;
       mItems := mItems + [mItem];
    end;

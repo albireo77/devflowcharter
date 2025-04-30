@@ -293,11 +293,11 @@ end;
 function TInfra.GetNativeDataType(const AName: string): PNativeDataType;
 begin
    result := nil;
-   for var i := 0 to High(FCurrentLang.NativeDataTypes) do
+   for var t in FCurrentLang.NativeDataTypes do
    begin
-      if SameStrings(AName, FCurrentLang.NativeDataTypes[i].Name) then
+      if SameStrings(AName, t.Name) then
       begin
-         result := FCurrentLang.NativeDataTypes[i];
+         result := t;
          break;
       end;
    end;
@@ -306,11 +306,11 @@ end;
 function TInfra.GetNativeFunction(const AName: string): PNativeFunction;
 begin
    result := nil;
-   for var i := 0 to High(FCurrentLang.NativeFunctions) do
+   for var f in FCurrentLang.NativeFunctions do
    begin
-      if SameStrings(AName, FCurrentLang.NativeFunctions[i].Name) then
+      if SameStrings(AName, f.Name) then
       begin
-         result := FCurrentLang.NativeFunctions[i];
+         result := f;
          break;
       end;
    end;
