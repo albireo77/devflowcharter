@@ -302,10 +302,10 @@ destructor TLangDefinition.Destroy;
 begin
    KeyWords.Free;
    KeyWords := nil;
-   for var i := 0 to High(NativeDataTypes) do
-      Dispose(NativeDataTypes[i]);
-   for var i := 0 to High(NativeFunctions) do
-      Dispose(NativeFunctions[i]);
+   for var t in NativeDataTypes do
+      Dispose(t);
+   for var f in NativeFunctions do
+      Dispose(f);
    NativeDataTypes := nil;
    NativeFunctions := nil;
    Parser.Free;
