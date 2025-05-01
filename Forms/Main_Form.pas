@@ -1382,6 +1382,9 @@ function TMainForm.BuildFuncMenu: integer;
 begin
    var mItems: TMenuItemArray;
    miInsertFunc.Clear;
+   var lang := GInfra.CurrentLang;
+   if not Assigned(lang.GetUserFuncDesc) then
+      lang := GInfra.TemplateLang;
    for var func in GProject.GetUserFunctions do
    begin
       var lName := func.GetName;
@@ -1389,9 +1392,6 @@ begin
       begin
          var mItem := TMenuItem.Create(miInsertFunc);
          mItem.Caption := lName;
-         var lang := GInfra.CurrentLang;
-         if not Assigned(lang.GetUserFuncDesc) then
-            lang := GInfra.TemplateLang;
          mItem.Hint := lang.GetUserFuncDesc(func.Header);
          if func.Header <> nil then
             mItem.Name := Trim(func.Header.edtLibrary.Text);
