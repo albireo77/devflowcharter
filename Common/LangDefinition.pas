@@ -269,7 +269,7 @@ const
 implementation
 
 uses
-   Vcl.Forms, Constants, Infrastructure, OmniXMLUtils;
+   Vcl.Forms, System.Rtti, Constants, Infrastructure, OmniXMLUtils;
 
 constructor TLangDefinition.Create;
 begin
@@ -567,7 +567,6 @@ begin
       var dnode := datatypeNodes.NextNode;
       while dnode <> nil do
       begin
-         var kind := tpOther;
          var originalType: PNativeDataType := nil;
          name := dnode.Text.Trim;
          if name.IsEmpty then
@@ -575,18 +574,9 @@ begin
             dnode := datatypeNodes.NextNode;
             continue;
          end;
-         var kinds := GetNodeAttrStr(dnode, 'kind', '');
-         if kinds = 'int' then
-            kind := tpInt
-         else if kinds = 'real' then
-            kind := tpReal
-         else if kinds = 'bool' then
-            kind := tpBool
-         else if kinds = 'string' then
-            kind := tpString
-         else if kinds = 'ptr' then
+         var kind := TRttiEnumerationType.GetValue<TDataTypeKind>('tp' + GetNodeAttrStr(dnode, 'kind', 'Other'));
+         if kind = tpPtr then
          begin
-            kind := tpPtr;
             if not EnabledPointers then
             begin
                dnode := datatypeNodes.NextNode;
