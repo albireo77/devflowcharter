@@ -266,11 +266,10 @@ const
                                                              'IfElseTemplate', 'ForDoTemplate', 'CaseOfTemplate', 'FunctionBodyTemplate',
                                                              '', 'ReturnTemplate', 'TextTemplate', 'FolderTemplate');
 
-
 implementation
 
 uses
-   Vcl.Forms, System.IniFiles, Constants, Infrastructure, OmniXMLUtils;
+   Vcl.Forms, Constants, Infrastructure, OmniXMLUtils;
 
 constructor TLangDefinition.Create;
 begin
