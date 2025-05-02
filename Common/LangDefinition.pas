@@ -318,6 +318,8 @@ begin
 end;
 
 function TLangDefinition.ImportFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
+label
+   skip;
 begin
 
    result := errNone;
@@ -570,18 +572,12 @@ begin
          var originalType: PNativeDataType := nil;
          name := dnode.Text.Trim;
          if name.IsEmpty then
-         begin
-            dnode := datatypeNodes.NextNode;
-            continue;
-         end;
+            goto skip;
          var kind := TRttiEnumerationType.GetValue<TDataTypeKind>('tp' + GetNodeAttrStr(dnode, 'kind', 'Other'));
          if kind = tpPtr then
          begin
             if not EnabledPointers then
-            begin
-               dnode := datatypeNodes.NextNode;
-               continue;
-            end;
+               goto skip;
             var val := GetNodeAttrStr(dnode, 'origtype', '').Trim;
             for var t in NativeDataTypes do
             begin
@@ -601,6 +597,7 @@ begin
          dataType.IsGeneric := GetNodeAttrBool(dnode, 'generic', False);
          dataType.Lib := GetNodeAttrStr(dnode, 'library', '');
          NativeDataTypes := NativeDataTypes + [dataType];
+         skip:
          dnode := datatypeNodes.NextNode;
       end;
    end;
