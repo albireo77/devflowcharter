@@ -36,7 +36,7 @@ type
 implementation
 
 uses
-   Instr_Block, MultiInstr_Block, InOut_Block, FunctionCall_Block, WhileDo_Block,
+   System.SysUtils, Instr_Block, MultiInstr_Block, InOut_Block, FunctionCall_Block, WhileDo_Block,
    RepeatUntil_Block, ForDo_Block, IfElse_Block, If_Block,
    Case_Block, Return_Block, Text_Block, Main_Block, Folder_Block;
 
@@ -81,8 +81,8 @@ begin
       blFolder:     result := TFolderBlock.Create(ABranch, p);
       blIfElse:     result := TIfElseBlock.Create(ABranch, p);
    end;
-   if result <> nil then
-      result.GetFromXML(ANode);
+   if (result <> nil) and (result.GetFromXML(ANode) <> errNone) then
+      FreeAndNil(result);
 end;
 
 class function TBlockFactory.Create(ANode: IXMLNode; ATab: TBlockTabSheet): TBlock;
@@ -92,7 +92,8 @@ begin
    if p.bt = blMain then
    begin
       result := TMainBlock.Create(ATab, p);
-      result.GetFromXML(ANode);
+      if result.GetFromXML(ANode) <> errNone then
+         FreeAndNil(result);
    end;
 end;
 
