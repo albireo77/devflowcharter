@@ -574,6 +574,8 @@ begin
          if name.IsEmpty then
             goto skip;
          var kind := TRttiEnumerationType.GetValue<TDataTypeKind>('tp' + GetNodeAttrStr(dnode, 'kind', 'Other'));
+         if Ord(kind) < 0 then
+            kind := tpOther;
          if kind = tpPtr then
          begin
             if not EnabledPointers then
