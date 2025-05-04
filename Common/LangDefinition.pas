@@ -31,7 +31,8 @@ uses
 type
 
 {$IFDEF USE_CODEFOLDING}
-   TFoldRegionRecord = record
+   PFoldRegion = ^TFoldRegion;
+   TFoldRegion = record
       Open,
       Close: string;
       AddClose,
@@ -180,7 +181,7 @@ type
       DataTypeEnumEntryListStripCount: integer;
       HighLighter: TSynCustomHighlighter;
 {$IFDEF USE_CODEFOLDING}
-      FoldRegions: array of TFoldRegionRecord;
+      FoldRegions: array of PFoldRegion;
 {$ENDIF}
       Parser: TCustomParser;
       NativeDataTypes: array of PNativeDataType;
@@ -312,6 +313,8 @@ begin
    if not FName.Trim.IsEmpty then
       SaveCompilerData;
 {$IFDEF USE_CODEFOLDING}
+   for var fr in FoldRegions do
+      Dispose(fr);
    FoldRegions := nil;
 {$ENDIF}
    inherited;
@@ -637,26 +640,22 @@ begin
    node := FindNode(ANode, 'FoldRegions');
    if node <> nil then
    begin
-      var i := 0;
       var foldRegionNodes := FilterNodes(node, 'FoldRegion');
-      SetLength(FoldRegions, foldRegionNodes.Length);
       var rnode := foldRegionNodes.NextNode;
       while rnode <> nil do
       begin
-         with FoldRegions[i] do
-         begin
-            Open := GetNodeAttrStr(FindNode(rnode, 'Open'), 'Keyword', '');
-            Close := GetNodeAttrStr(FindNode(rnode, 'Close'), 'Keyword', '');
-            AddClose := GetNodeAttrBool(rnode, 'AddClose', False);
-            NoSubFolds := GetNodeAttrBool(rnode, 'NoSubFolds', True);
-            WholeWords := GetNodeAttrBool(rnode, 'WholeWords', True);
-            if GetNodeAttrStr(rnode, 'Type', '') = 'rtChar' then
-               RegionType := rtChar
-            else
-               RegionType := rtKeyword;
-         end;
+         var foldRegion := New(PFoldRegion);
+         foldRegion.Open := GetNodeAttrStr(FindNode(rnode, 'Open'), 'Keyword', '');
+         foldRegion.Close := GetNodeAttrStr(FindNode(rnode, 'Close'), 'Keyword', '');
+         foldRegion.AddClose := GetNodeAttrBool(rnode, 'AddClose', False);
+         foldRegion.NoSubFolds := GetNodeAttrBool(rnode, 'NoSubFolds', True);
+         foldRegion.WholeWords := GetNodeAttrBool(rnode, 'WholeWords', True);
+         if GetNodeAttrStr(rnode, 'Type', '') = 'rtChar' then
+            foldRegion.RegionType := rtChar
+         else
+            foldRegion.RegionType := rtKeyword;
+         FoldRegions := FoldRegions + [foldRegion];
          rnode := foldRegionNodes.NextNode;
-         Inc(i);
       end;
    end;
 {$ENDIF}

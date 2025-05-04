@@ -1407,11 +1407,8 @@ end;
 procedure TEditorForm.ReloadFoldRegions;
 begin
    memCodeEditor.CodeFolding.FoldRegions.Clear;
-   for var i := 0 to High(GInfra.CurrentLang.FoldRegions) do
-   begin
-      with GInfra.CurrentLang.FoldRegions[i] do
-         memCodeEditor.CodeFolding.FoldRegions.Add(RegionType, AddClose, NoSubFolds, WholeWords, PChar(Open), PChar(Close));
-   end;
+   for var fr in GInfra.CurrentLang.FoldRegions do
+      memCodeEditor.CodeFolding.FoldRegions.Add(fr.RegionType, fr.AddClose, fr.NoSubFolds, fr.WholeWords, PChar(fr.Open), PChar(fr.Close));
    memCodeEditor.InitCodeFolding;
 end;
 {$ENDIF}
