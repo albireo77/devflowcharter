@@ -880,7 +880,6 @@ begin
       end;
       NavigatorForm.Invalidate;
    end;
-
 end;
 
 function TMainForm.ConfirmSave: integer;
