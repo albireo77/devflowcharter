@@ -182,7 +182,7 @@ object MainForm: TMainForm
       object miPaste: TMenuItem
         Tag = 2
         Caption = 'Paste'
-        OnClick = miInstrClick
+        OnClick = miPasteClick
       end
       object miImport: TMenuItem
         Tag = 2

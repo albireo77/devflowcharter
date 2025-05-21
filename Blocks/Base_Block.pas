@@ -190,6 +190,7 @@ type
          function FindSelectedBlock: TBlock; virtual;
          function FindRedArrowBlock: TBlock; virtual;
          function ShouldUpdateEditor: boolean;
+         procedure InsertAfter(AfterBlock: TBlock);
    end;
 
    TGroupBlock = class(TBlock)    // block which can aggregate child blocks
@@ -499,6 +500,21 @@ begin
          BringAllToFront;
       NavigatorForm.Invalidate;
    end;
+end;
+
+procedure TBlock.InsertAfter(AfterBlock: TBlock);
+begin
+   if (AfterBlock <> nil) and (AfterBlock.ParentBranch <> FParentBranch) then
+      Exit;
+   FParentBranch.InsertAfter(Self, AfterBlock);
+   FParentBlock.ResizeHorz(True);
+   FParentBlock.ResizeVert(True);
+   if not Visible then
+   begin
+      Show;
+      PerformRefreshStatements;
+   end;
+   TInfra.UpdateCodeEditor(Self);
 end;
 
 procedure TBlock.CloneComments(ASource: TBlock);

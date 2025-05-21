@@ -204,6 +204,7 @@ type
     procedure miPasteTextClick(Sender: TObject);
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure FormShortCut(var Msg: TWMKey; var Handled: Boolean);
+    procedure miPasteClick(Sender: TObject);
   private
     { Private declarations }
     FClockPos: TClockPos;
@@ -761,33 +762,41 @@ begin
    end;
 end;
 
-procedure TMainForm.miInstrClick(Sender: TObject);
-var
-   newBlock, currentBlock, srcBlock: TBlock;
-   branch: TBranch;
-   lParent: TGroupBlock;
-   tmpCursor: TCursor;
-   p: TPoint;
-   comment: TComment;
-   blockType: TBlockType;
-   page: TBlockTabSheet;
-   func: TUserFunction;
+function FindBranchAndAfterBlock(APopupMenu: TPopupMenu; var AfterBlock: TBlock): TBranch;
 begin
+   result := nil;
+   AfterBlock := nil;
+   var parentBlock: TGroupBlock := nil;
+   if APopupMenu.PopupComponent is TBlock then
+   begin
+      AfterBlock := TBlock(APopupMenu.PopupComponent);
+      if (AfterBlock.RedArrow > 0) and (AfterBlock is TGroupBlock) then
+         parentBlock := TGroupBlock(AfterBlock)
+      else if AfterBlock.RedArrow = 0 then
+         parentBlock := AfterBlock.ParentBlock;
+   end;
+   if parentBlock <> nil then
+   begin
+      result := parentBlock.GetBranch(parentBlock.RedArrow);
+      if result <> nil then
+         AfterBlock := nil
+      else
+         result := AfterBlock.ParentBranch;
+   end;
+end;
 
-   srcBlock := nil;
-   lParent := nil;
-   func := nil;
-   comment := nil;
-
+procedure TMainForm.miPasteClick(Sender: TObject);
+begin
+   var func: TUserFunction := nil;
+   var comment: TComment := nil;
    if GClpbrd.UndoObject is TUserFunction then
       func := TUserFunction(GClpbrd.UndoObject)
    else if GClpbrd.Instance is TComment then
       comment := TComment(GClpbrd.Instance);
-
-   if (Sender = miPaste) and ((func <> nil) or (comment <> nil)) then
+   if (func <> nil) or (comment <> nil) then
    begin
-      page := GProject.ActivePage;
-      p := GetPlacePoint(page.Box);
+      var page := GProject.ActivePage;
+      var p := GetPlacePoint(page.Box);
       if func <> nil then
       begin
          if func.Body <> nil then
@@ -803,89 +812,75 @@ begin
       NavigatorForm.Invalidate;
       Exit;
    end;
-
-   if pmPages.PopupComponent is TBlock then
+   if TInfra.IsValidControl(GClpbrd.Instance) and (GClpbrd.Instance is TBlock) then
    begin
-      currentBlock := TBlock(pmPages.PopupComponent);
-      if (currentBlock.RedArrow > 0) and (currentBlock is TGroupBlock) then
-         lParent := TGroupBlock(currentBlock)
-      else if currentBlock.RedArrow = 0 then
-         lParent := currentBlock.ParentBlock;
-   end;
-
-   if lParent <> nil then
-   begin
-
-      branch := lParent.GetBranch(lParent.RedArrow);
-      if branch <> nil then
-         currentBlock := nil
-      else
-         branch := currentBlock.ParentBranch;
-
+      var afterBlock: TBlock := nil;
+      var branch := FindBranchAndAfterBlock(pmPages, afterBlock);
       if branch <> nil then
       begin
+         var tmpCursor := Screen.Cursor;
          branch.ParentBlock.TopParentBlock.LockDrawing;
+         Screen.Cursor := crHourGlass;
          try
-            newBlock := nil;
-            blockType := blUnknown;
-            if Sender = miInstr then
-               blockType := blInstr
-            else if Sender = miMultiInstr then
-               blockType := blMultiInstr
-            else if Sender = miIfElse then
-               blockType := blIfElse
-            else if Sender = miWhile then
-               blockType := blWhile
-            else if Sender = miFor then
-               blockType := blFor
-            else if Sender = miRepeat then
-               blockType := blRepeat
-            else if Sender = miInput then
-               blockType := blInput
-            else if Sender = miOutput then
-               blockType := blOutput
-            else if Sender = miRoutineCall then
-               blockType := blFuncCall
-            else if Sender = miIf then
-               blockType := blIf
-            else if Sender = miCase then
-               blockType := blCase
-            else if Sender = miReturn then
-               blockType := blReturn
-            else if Sender = miText then
-               blockType := blText
-            else if Sender = miFolder then
-               blockType := blFolder
-            else if (Sender = miPaste) and TInfra.IsValidControl(GClpbrd.Instance) and (GClpbrd.Instance is TBlock) then
-            begin
-               srcBlock := TBlock(GClpbrd.Instance);
-               tmpCursor := Screen.Cursor;
-               Screen.Cursor := crHourGlass;
-               newBlock := srcBlock.Clone(branch);
-               Screen.Cursor := tmpCursor;
-            end;
-            if blockType <> blUnknown then
-               newBlock := TBlockFactory.Create(branch, blockType);
-            if newBlock <> nil then
-            begin
-               branch.InsertAfter(newBlock, currentBlock);
-               lParent.ResizeHorz(True);
-               lParent.ResizeVert(True);
-               if not newBlock.Visible then
-               begin
-                  newBlock.Show;
-                  newBlock.PerformRefreshStatements;
-               end;
-               if srcBlock <> nil then
-                  newBlock.CloneComments(srcBlock);
-               TInfra.UpdateCodeEditor(newBlock);
-            end;
+            var srcBlock := TBlock(GClpbrd.Instance);
+            var newBlock := srcBlock.Clone(branch);
+            newBlock.InsertAfter(afterBlock);
+            newBlock.CloneComments(srcBlock);
          finally
+            Screen.Cursor := tmpCursor;
             branch.ParentBlock.TopParentBlock.UnLockDrawing;
          end;
+         NavigatorForm.Invalidate;
       end;
    end;
-   NavigatorForm.Invalidate;
+end;
+
+procedure TMainForm.miInstrClick(Sender: TObject);
+begin
+   var afterBlock: TBlock := nil;
+   var branch := FindBranchAndAfterBlock(pmPages, afterBlock);
+   if branch <> nil then
+   begin
+      var blockType := blUnknown;
+      if Sender = miInstr then
+         blockType := blInstr
+      else if Sender = miMultiInstr then
+         blockType := blMultiInstr
+      else if Sender = miIfElse then
+         blockType := blIfElse
+      else if Sender = miWhile then
+         blockType := blWhile
+      else if Sender = miFor then
+         blockType := blFor
+      else if Sender = miRepeat then
+         blockType := blRepeat
+      else if Sender = miInput then
+         blockType := blInput
+      else if Sender = miOutput then
+         blockType := blOutput
+      else if Sender = miRoutineCall then
+         blockType := blFuncCall
+      else if Sender = miIf then
+         blockType := blIf
+      else if Sender = miCase then
+         blockType := blCase
+      else if Sender = miReturn then
+         blockType := blReturn
+      else if Sender = miText then
+         blockType := blText
+      else if Sender = miFolder then
+         blockType := blFolder;
+      branch.ParentBlock.TopParentBlock.LockDrawing;
+      try
+         var newBlock := TBlockFactory.Create(branch, blockType);
+         if newBlock <> nil then
+            newBlock.InsertAfter(afterBlock);
+      finally
+         branch.ParentBlock.TopParentBlock.UnLockDrawing;
+      end;
+      NavigatorForm.Invalidate;
+   end;
+
 end;
 
 function TMainForm.ConfirmSave: integer;
