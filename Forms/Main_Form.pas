@@ -787,32 +787,21 @@ end;
 
 procedure TMainForm.miPasteClick(Sender: TObject);
 begin
-   var func: TUserFunction := nil;
-   var comment: TComment := nil;
+   var page := GProject.ActivePage;
+   var p := GetPlacePoint(page.Box);
    if GClpbrd.UndoObject is TUserFunction then
-      func := TUserFunction(GClpbrd.UndoObject)
-   else if GClpbrd.Instance is TComment then
-      comment := TComment(GClpbrd.Instance);
-   if (func <> nil) or (comment <> nil) then
    begin
-      var page := GProject.ActivePage;
-      var p := GetPlacePoint(page.Box);
-      if func <> nil then
+      var func := TUserFunction(GClpbrd.UndoObject);
+      if func.Body <> nil then
       begin
-         if func.Body <> nil then
-         begin
-            func.Body.Page := page;
-            TInfra.MoveWin(func.Body, p);
-         end;
-         miUndoRemoveClick(miUndoRemove);
-      end
-      else if comment <> nil then
-         comment.Clone(page, p);
-      GProject.SetChanged;
-      NavigatorForm.Invalidate;
-      Exit;
-   end;
-   if TInfra.IsValidControl(GClpbrd.Instance) and (GClpbrd.Instance is TBlock) then
+         func.Body.Page := page;
+         TInfra.MoveWin(func.Body, p);
+      end;
+      miUndoRemoveClick(miUndoRemove);
+   end
+   else if GClpbrd.Instance is TComment then
+      TComment(GClpbrd.Instance).Clone(page, p)
+   else if TInfra.IsValidControl(GClpbrd.Instance) and (GClpbrd.Instance is TBlock) then
    begin
       var afterBlock: TBlock := nil;
       var branch := FindBranchAndAfterBlock(pmPages, afterBlock);
@@ -830,7 +819,6 @@ begin
             Screen.Cursor := tmpCursor;
             branch.ParentBlock.TopParentBlock.UnLockDrawing;
          end;
-         NavigatorForm.Invalidate;
       end;
    end;
 end;
@@ -878,7 +866,6 @@ begin
       finally
          branch.ParentBlock.TopParentBlock.UnLockDrawing;
       end;
-      NavigatorForm.Invalidate;
    end;
 end;
 
