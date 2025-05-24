@@ -762,14 +762,14 @@ begin
    end;
 end;
 
-function FindBranchAndAfterBlock(APopupMenu: TPopupMenu; var AfterBlock: TBlock): TBranch;
+function FindBranchAndAfterBlock(AComponent: TComponent; var AfterBlock: TBlock): TBranch;
 begin
    result := nil;
    AfterBlock := nil;
    var parentBlock: TGroupBlock := nil;
-   if APopupMenu.PopupComponent is TBlock then
+   if AComponent is TBlock then
    begin
-      AfterBlock := TBlock(APopupMenu.PopupComponent);
+      AfterBlock := TBlock(AComponent);
       if (AfterBlock.RedArrow > 0) and (AfterBlock is TGroupBlock) then
          parentBlock := TGroupBlock(AfterBlock)
       else if AfterBlock.RedArrow = 0 then
@@ -804,7 +804,7 @@ begin
    else if TInfra.IsValidControl(GClpbrd.Instance) and (GClpbrd.Instance is TBlock) then
    begin
       var afterBlock: TBlock := nil;
-      var branch := FindBranchAndAfterBlock(pmPages, afterBlock);
+      var branch := FindBranchAndAfterBlock(pmPages.PopupComponent, afterBlock);
       if branch <> nil then
       begin
          var tmpCursor := Screen.Cursor;
@@ -826,7 +826,7 @@ end;
 procedure TMainForm.miInstrClick(Sender: TObject);
 begin
    var afterBlock: TBlock := nil;
-   var branch := FindBranchAndAfterBlock(pmPages, afterBlock);
+   var branch := FindBranchAndAfterBlock(pmPages.PopupComponent, afterBlock);
    if branch <> nil then
    begin
       var blockType := blUnknown;
