@@ -743,7 +743,6 @@ begin
       FUserFunction.Body.Page := page;
       page.SetAsActivePage;
       page.Box.ScrollInView(FUserFunction.Body);
-      NavigatorForm.Invalidate;
    end;
 end;
 
