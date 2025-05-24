@@ -816,7 +816,10 @@ begin
                GProject.SetChanged;
             end
             else
+            begin
                FTopParentBlock.BringAllToFront;
+               NavigatorForm.Invalidate;
+            end;
          end;
       end;
    end;
