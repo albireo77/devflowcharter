@@ -231,9 +231,9 @@ begin
    begin
       for var i := 0 to FGlobalVars.cbType.Items.Count-1 do
       begin
-         var name := FGlobalVars.cbType.Items[i];
-         var userType := GetComponent<TUserDataType>(name);
-         var nativeType := GInfra.GetNativeDataType(name);
+         var typeName := FGlobalVars.cbType.Items[i];
+         var userType := GetComponent<TUserDataType>(typeName);
+         var nativeType := GInfra.GetNativeDataType(typeName);
          var typesSet: PTypesSet := @FOtherTypesSet;
          if nativeType <> nil then
          begin
@@ -255,7 +255,7 @@ begin
                dtArray:  typesSet := @FArrayTypesSet;
             end;
          end
-         else if Assigned(GInfra.CurrentLang.IsPointerType) and GInfra.CurrentLang.IsPointerType(name) then
+         else if Assigned(GInfra.CurrentLang.IsPointerType) and GInfra.CurrentLang.IsPointerType(typeName) then
             typesSet := @FPointerTypesSet;
          Include(typesSet^, i);
       end;
