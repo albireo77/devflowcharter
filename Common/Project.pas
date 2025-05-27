@@ -234,7 +234,7 @@ begin
          var name := FGlobalVars.cbType.Items[i];
          var userType := GetComponent<TUserDataType>(name);
          var nativeType := GInfra.GetNativeDataType(name);
-         var typesSet: PTypesSet := nil;
+         var typesSet: PTypesSet := @FOtherTypesSet;
          if nativeType <> nil then
          begin
             case nativeType.Kind of
@@ -243,8 +243,6 @@ begin
                tpString: typesSet := @FStringTypesSet;
                tpBool:   typesSet := @FBoolTypesSet;
                tpPtr:    typesSet := @FPointerTypesSet;
-            else
-               typesSet := @FOtherTypesSet;
             end;
          end
          else if userType <> nil then
@@ -255,14 +253,10 @@ begin
                dtRecord: typesSet := @FRecordTypesSet;
                dtEnum:   typesSet := @FEnumTypesSet;
                dtArray:  typesSet := @FArrayTypesSet;
-            else
-               typesSet := @FOtherTypesSet;
             end;
          end
          else if Assigned(GInfra.CurrentLang.IsPointerType) and GInfra.CurrentLang.IsPointerType(name) then
-            typesSet := @FPointerTypesSet
-         else
-            typesSet := @FOtherTypesSet;
+            typesSet := @FPointerTypesSet;
          Include(typesSet^, i);
       end;
    end;
