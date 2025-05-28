@@ -142,7 +142,7 @@ type
    end;
 
    PTypesSet = ^TTypesSet;
-   TTypesSet = set of 0..255;
+   TTypesSet = set of Byte;
 
    TComponentComparer = class(TComparer<TComponent>)
       FCompareType: integer;
