@@ -28,11 +28,11 @@ uses
 {$IFDEF USE_CODEFOLDING}
    SynEditCodeFolding,
 {$ENDIF}
-   Vcl.Forms, Vcl.Controls, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Graphics, System.Types,
-   Vcl.Dialogs, Vcl.ComCtrls, Vcl.Clipbrd, Vcl.Menus, System.SysUtils, System.Classes,
-   SynEdit, SynExportRTF, SynEditPrint, Types, SynHighlighterPas, SynHighlighterCpp,
-   SynMemo, SynExportHTML, OmniXML, Base_Form, Interfaces, SynEditExport, SynEditHighlighter,
-   SynHighlighterPython, SynHighlighterJava, Base_Block;
+   Vcl.Forms, Vcl.Controls, Vcl.Graphics, Vcl.Dialogs, Vcl.ComCtrls, Vcl.Clipbrd,
+   Vcl.Menus, System.Types, System.SysUtils, System.Classes, SynEdit, SynExportRTF,
+   SynEditPrint, Types, SynHighlighterPas, SynHighlighterCpp, SynMemo, SynExportHTML,
+   OmniXML, Base_Form, Interfaces, SynEditExport, SynEditHighlighter, SynHighlighterPython,
+   SynHighlighterJava, Base_Block;
 
 type
 
@@ -168,7 +168,7 @@ var
 implementation
 
 uses
-   System.StrUtils, System.Math, WinApi.Windows, Infrastructure, Goto_Form, Main_Block,
+   System.StrUtils, System.Math, System.UITypes, WinApi.Windows, Infrastructure, Goto_Form, Main_Block,
    Help_Form, Comment, OmniXMLUtils, Main_Form, SynEditTypes, ParserHelper, Constants;
 
 {$R *.dfm}
@@ -302,9 +302,9 @@ begin
       else
          miRichText.Checked := False;
       if EditorShowScrollbars then
-         memCodeEditor.ScrollBars := ssBoth
+         memCodeEditor.ScrollBars := TScrollStyle.ssBoth
       else
-         memCodeEditor.ScrollBars := ssNone;
+         memCodeEditor.ScrollBars := TScrollStyle.ssNone;
       if stbEditorBar.Visible then
          memCodeEditor.Height := ClientHeight - stbEditorBar.Height
       else
@@ -1459,9 +1459,9 @@ begin
    else if Sender = miScrollbars then
    begin
       if miScrollbars.Checked then
-         memCodeEditor.ScrollBars := ssBoth
+         memCodeEditor.ScrollBars := TScrollStyle.ssBoth
       else
-         memCodeEditor.ScrollBars := ssNone;
+         memCodeEditor.ScrollBars := TScrollStyle.ssNone;
    end
    else if Sender = miGutter then
       memCodeEditor.Gutter.Visible := miGutter.Checked

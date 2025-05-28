@@ -539,7 +539,7 @@ end;
 
 function TForDoBlock.GetFromXML(ANode: IXMLNode): TError;
 begin
-   inherited GetFromXML(ANode);
+   result := inherited GetFromXML(ANode);
    if ANode <> nil then
    begin
       var node := FindNode(ANode, 'i_var');
