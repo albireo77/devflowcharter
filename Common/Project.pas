@@ -217,15 +217,14 @@ end;
 procedure TProject.PopulateDataTypeSets;
 begin
    FIntegerTypesSet := [];
-   FRealTypesSet := [];
-   FBoolTypesSet := [];
-   FOtherTypesSet := [];
-   FPointerTypesSet := [];
-   FRecordTypesSet := [];
-   FEnumTypesSet := [];
-   FArrayTypesSet := [];
-   FStringTypesSet := [];
-   Include(FPointerTypesSet, GENERIC_PTR_TYPE);
+   FRealTypesSet    := [];
+   FBoolTypesSet    := [];
+   FOtherTypesSet   := [];
+   FRecordTypesSet  := [];
+   FEnumTypesSet    := [];
+   FArrayTypesSet   := [];
+   FStringTypesSet  := [];
+   FPointerTypesSet := [GENERIC_PTR_TYPE];
 
    if FGlobalVars <> nil then
    begin

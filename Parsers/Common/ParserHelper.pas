@@ -113,9 +113,8 @@ type
 
 const
 
-   // generic datatype descriptors
-   GENERIC_INT_TYPE  = 0;
-   GENERIC_PTR_TYPE  = 99;
+   GENERIC_INT_TYPE = 0;
+   GENERIC_PTR_TYPE = 99;
 
    DIMENSION_LEVEL_STEP = 100;
 
@@ -123,12 +122,12 @@ const
    UNKNOWN_TYPE   = -2;
    NOT_DEFINED    = -3;
 
-   VARIABLE     = 1;
-   VARRAY       = 2;
-   CONSTANT     = 3;
-   ROUTINE_ID   = 4;
-   ENUM_VALUE   = 5;
-   UNKNOWN      = -1;
+   VARIABLE   = 1;
+   VARRAY     = 2;
+   CONSTANT   = 3;
+   ROUTINE_ID = 4;
+   ENUM_VALUE = 5;
+   UNKNOWN    = -1;
 
    GLOBAL    = -10;
    LOCAL     = -11;
