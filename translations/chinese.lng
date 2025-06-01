@@ -250,19 +250,19 @@ LoadTranslFail=无法从 %s 文件导入翻译.%s 读取默认翻译
 ; The following keys (4 for each programming language) are used to display labels next to flowcharts. Example is example language as defined in ../LanguageDefinitions/Example.xml file.
 
 ; Key ProcedureLabelExample
-; Available placeholders: %s1 - procedure name; %s2 - parameters list, %s4 - procedure description, %s6 - external modifier, ## - new line
+; Available placeholders: %s1 - 过程名; %s2 - 输入变量, %s4 - 描述, %s6 - 访问限制, ## - 下一行
 ProcedureLabelExample=过程 %s1(%s2)##%s4
 
 ; Key ConstructorLabelExample 
-; Available placeholders: %s1 - constructor name; %s2 - parameters list, %s3 - return type (created object type), %s4 - constructor description, %s6 - external modifier, ## - new line
-ConstructorLabelExample=constructor %s6%s1(%s2)##%s4
+; Available placeholders: %s1 - 构造器名; %s2 - 输入变量, %s3 - 返回类型 (创建对象类型), %s4 - 描述, %s6 - 访问限制, ## - 下一行
+ConstructorLabelExample=构造器 %s6%s1(%s2)##%s4
 
 ; Key FunctionLabelExample
-; Available placeholders: %s1 - function name; %s2 - parameters list; %s3 - function return type, %s4 - function description, %s5 - array return type modifier, %s6 - external modifier, ## - new line 
+; Available placeholders: %s1 - 函数名; %s2 - 输入变量; %s3 - 函数返回类型, %s4 - 描述, %s5 - 数组返回类型标注, %s6 - 访问限制, ## - 下一行
 FunctionLabelExample=函数 %s1(%s2): %s3##%s4
 
 ; Key ProgramLabelExample
-; Available placeholders: %s1 - name of the project
+; Available placeholders: %s1 - 程序名
 ProgramLabelExample=程序 %s1
 
 ProcedureLabelPascal=procedure %s1(%s2)##%s4
@@ -313,7 +313,7 @@ miSettings=设置
 miManual=帮助
 miAbout=关于...
 miInsert=插入
-miNewFlowchart=Flowchart
+miNewFlowchart=框图
 miNewFunction=函数
 miFont=字体
 miRemove=删除
@@ -459,7 +459,7 @@ miExpand=展开
 miCollapse=折叠
 miRemove=删除
 miRefresh=刷新
-miRebuild=Rebuild
+miRebuild=重新构建
 chkAutoNav=启用自动定位
 
 [EditorForm]
