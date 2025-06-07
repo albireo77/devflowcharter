@@ -92,13 +92,15 @@ end;
 class function TBlockFactory.Create(ANode: IXMLNode; ATab: TBlockTabSheet): TBlock;
 begin
    result := nil;
-   var p := TBlockParms.New(ANode);
-   if p.bt = blMain then
-   begin
-      result := TMainBlock.Create(ATab, p);
-      if result.GetFromXML(ANode) <> errNone then
-         FreeAndNil(result);
+   try
+      var p := TBlockParms.New(ANode);
+      if p.bt = blMain then
+         result := TMainBlock.Create(ATab, p);
+   except on E: Exception do
+      GErr_text := E.Message;
    end;
+   if (result <> nil) and (result.GetFromXML(ANode) <> errNone) then
+      FreeAndNil(result);
 end;
 
 end.
