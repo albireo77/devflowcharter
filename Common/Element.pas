@@ -192,7 +192,7 @@ end;
 
 procedure TElement.DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-   if (Source = Self) or (not (Source is TElement)) or (TElement(Source).Parent <> Parent) then
+   if (Source = Self) or (Source is not TElement) or (TElement(Source).Parent <> Parent) then
       Accept := False;
 end;
 

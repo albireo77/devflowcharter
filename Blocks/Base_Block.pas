@@ -627,7 +627,7 @@ begin
    if isShift then
       shiftState := [ssShift];
    MouseMove(shiftState, X, Y);
-   if (FRedArrow < 0) or (not (Source is TBlock)) or (Source is TMainBlock) or (Source is TReturnBlock) or ((not isShift) and ((Source = Self) or IsAncestor(Source))) then
+   if (FRedArrow < 0) or (Source is not TBlock) or (Source is TMainBlock) or (Source is TReturnBlock) or ((not isShift) and ((Source = Self) or IsAncestor(Source))) then
       Accept := False;
 end;
 
@@ -2297,7 +2297,7 @@ end;
 
 function TBlock.ShouldFocusEditor: boolean;
 begin
-   result := TInfra.GetEditorForm.Visible and (not FRefreshMode) and not (fsStrikeOut in Font.Style);
+   result := TInfra.GetEditorForm.Visible and (not FRefreshMode) and (fsStrikeOut not in Font.Style);
 end;
 
 function TBlock.GetDescTemplate(const ALangId: string): string;

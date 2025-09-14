@@ -665,11 +665,11 @@ begin
        begin
           miRemove.Visible := True;
           miFont.Visible := True;
-          if not (block is TReturnBlock) then
+          if block is not TReturnBlock then
              miExport.Visible := True;
           miPrint2.Visible := True;
           miCut.Visible := True;
-          if not (block is TMainBlock) then
+          if block is not TMainBlock then
              miCopy.Visible := True;
           if block is TGroupBlock then
           begin

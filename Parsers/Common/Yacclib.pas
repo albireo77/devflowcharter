@@ -124,7 +124,7 @@ end;
 
 procedure TCustomParser.CheckMode(AValidModes: TYYModeSet);
 begin
-  if not (yymode in AValidModes) then
+  if yymode not in AValidModes then
   begin
     yyerrmsg := trnsManager.GetString(PARSER_ERROR_KEYS[yymode]);
     yyabort;

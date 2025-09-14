@@ -163,7 +163,7 @@ end;
 procedure TStatement.WndProc(var msg: TMessage);
 begin
    inherited;
-   if (msg.Msg = CM_FONTCHANGED) and not (csLoading in ComponentState) then
+   if (msg.Msg = CM_FONTCHANGED) and (csLoading not in ComponentState) then
       ApplyMargins;
 end;
 

@@ -471,7 +471,7 @@ end;
 
 procedure TDeclareList.SetDefaultFocus;
 begin
-   if edtName.CanFocus and not (GetParentForm(Self, False).ActiveControl is TCustomEdit) then
+   if edtName.CanFocus and (GetParentForm(Self, False).ActiveControl is not TCustomEdit) then
       edtName.SetFocus;
 end;
 

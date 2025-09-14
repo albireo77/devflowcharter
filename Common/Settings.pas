@@ -340,7 +340,7 @@ begin
    FFlowchartFontName         := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_FLOWCHART_FONT_NAME, FLOWCHART_DEFAULT_FONT_NAME);
    FTranslationFile           := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_TRANSLATION_FILE, '');
    FCurrentLangName           := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_CURRENT_LANGUAGE, '');
-   if not (FFlowchartFontSize in FLOWCHART_VALID_FONT_SIZES) then
+   if FFlowchartFontSize not in FLOWCHART_VALID_FONT_SIZES then
       FFlowchartFontSize := FLOWCHART_MIN_FONT_SIZE;
    if TInfra.IsNOkColor(FFontColor) then
       FFontColor := OK_COLOR;

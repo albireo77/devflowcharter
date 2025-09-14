@@ -1016,8 +1016,8 @@ end;
 class procedure TInfra.SetFontSize(AControl: TControl; ASize: integer);
 begin
    var flag := (AControl is TCustomEdit)
-               and not (AControl is TCustomMemo)
-               and not (csFixedHeight in AControl.ControlStyle);
+               and (AControl is not TCustomMemo)
+               and (csFixedHeight not in AControl.ControlStyle);
    if flag then
       AControl.ControlStyle := AControl.ControlStyle + [csFixedHeight];
    TControlHack(AControl).Font.Size := ASize;
