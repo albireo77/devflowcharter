@@ -136,9 +136,9 @@ begin
 
       Canvas.Ellipse(BottomHook-5, Height-34, BottomHook+5, Height-24);
       Canvas.MoveTo(FalseBranch.Hook.X, FDiamond.Right.Y);
-      Canvas.LineTo(FDiamond.Right.X, FDiamond.Right.Y);
+      Canvas.LineTo(FDiamond.Right);
       Canvas.MoveTo(TrueBranch.Hook.X, FDiamond.Left.Y);
-      Canvas.LineTo(FDiamond.Left.X, FDiamond.Left.Y);
+      Canvas.LineTo(FDiamond.Left);
 
       DrawTextLabel(FDiamond.Left.X, FDiamond.Left.Y-5, FTrueLabel, True, True);
       DrawTextLabel(FDiamond.Right.X, FDiamond.Right.Y-5, FFalseLabel, False, True);
