@@ -2352,8 +2352,7 @@ procedure TBlock.ExportToGraphic(AGraphic: TGraphic);
 begin
    DeSelect;
    var bitmap := if AGraphic is TBitmap then TBitmap(AGraphic) else TBitmap.Create;
-   bitmap.Width := Width + 2;
-   bitmap.Height := Height + 2;
+   bitmap.SetSize(Width + 2, Height + 2);
    var lPage := Page;
    lPage.DrawI := False;
    bitmap.Canvas.Lock;
