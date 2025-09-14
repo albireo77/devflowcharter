@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
 
@@ -184,13 +184,9 @@ begin
       Inc(FalseBranch.Hook.X, dlt);
       LinkAllBlocks;
       TrueHook := TrueBranch.Last.Left + TrueBranch.Last.BottomPoint.X;
-      if not FalseBranch.IsEmpty then
-         FalseHook := FalseBranch.Last.Left + FalseBranch.Last.BottomPoint.X
-      else
-      begin
-         FalseHook := FalseBranch.Hook.X;
+      FalseHook := if FalseBranch.IsEmpty then FalseBranch.Hook.X else (FalseBranch.Last.Left + FalseBranch.Last.BottomPoint.X);
+      if FalseBranch.IsEmpty then
          Width := FalseHook + 11;
-      end;
    end;
    if (FRedArrow <> TRUE_BRANCH_IDX) and not FalseBranch.IsEmpty then           // FALSE branch
    begin
@@ -206,10 +202,7 @@ begin
       Width := rx + 10;
       LinkAllBlocks;
       FalseHook := FalseBranch.Last.Left + FalseBranch.Last.BottomPoint.X;
-      if not TrueBranch.IsEmpty then
-         TrueHook := TrueBranch.Last.Left + TrueBranch.Last.BottomPoint.X
-      else
-         TrueHook := TrueBranch.Hook.X;
+      TrueHook := if TrueBranch.IsEmpty then TrueBranch.Hook.X else (TrueBranch.Last.Left + TrueBranch.Last.BottomPoint.X);
    end;
    if AContinue then
       ParentBlock.ResizeHorz(AContinue);

@@ -112,10 +112,7 @@ end;
 
 procedure TWhileDoBlock.SetWidth(AMinX: integer);
 begin
-   if AMinX < FInitParms.Width - 30 then
-      Width := FInitParms.Width
-   else
-      Width := AMinX + 30;
+   Width := if AMinX < FInitParms.Width - 30 then FInitParms.Width else (AMinX + 30);
    BottomPoint.X := Width - 11;
 end;
 

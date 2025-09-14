@@ -72,8 +72,8 @@ type
 implementation
 
 uses
-   Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Math, YaccLib,
-   Infrastructure, Constants, OmniXMLUtils;
+   Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, YaccLib, Infrastructure,
+   Constants, OmniXMLUtils;
 
 const
    DEFAULT_WIDTH = 246;
@@ -302,7 +302,7 @@ begin
                            trnsManager.GetFormattedString('NoCVar', [sLineBreak]);
       end;
    end;
-   var w := TInfra.GetAutoWidth(edtVar, IfThen(GInfra.CurrentLang.ForDoVarList, 28, 5));
+   var w := TInfra.GetAutoWidth(edtVar, if GInfra.CurrentLang.ForDoVarList then 28 else 5);
    if w <> edtVar.Width then
    begin
       edtVar.Width := w;
@@ -394,7 +394,7 @@ end;
 
 procedure TForDoBlock.SetWidth(AMinX: integer);
 begin
-   Width := IfThen(AMinX < FInitParms.Width-30, FInitParms.Width, AMinX+30);
+   Width := if AMinX < FInitParms.Width - 30 then FInitParms.Width else (AMinX + 30);
    BottomPoint.X := Width - RIGHT_MARGIN;
 end;
 
@@ -569,7 +569,7 @@ begin
       SetNodeText(ANode, 'i_var', edtVar.Text);
       SetNodeText(ANode, 'init_val', ReplaceStr(edtStart.Text, ' ', '#'));
       SetNodeText(ANode, 'end_val', ReplaceStr(edtStop.Text, ' ', '#'));
-      SetNodeAttrStr(ANode, 'order', IfThen(FDescOrder, 'ordDesc', 'ordAsc'));
+      SetNodeAttrStr(ANode, 'order', if FDescOrder then 'ordDesc' else 'ordAsc');
    end;
 end;
 

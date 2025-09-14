@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
 
@@ -90,10 +90,7 @@ end;
 procedure TFolderBlock.SetWidth(AMinX: integer);
 begin
    BottomPoint.X := BottomHook;
-   if AMinX < FInitParms.Width - 30 then
-      Width := FInitParms.Width
-   else
-      Width := AMinX + 30;
+   Width := if AMinX < FInitParms.Width - 30 then FInitParms.Width else (AMinX + 30);
 end;
 
 function TFolderBlock.CanResize(var NewWidth, NewHeight: Integer): Boolean;
