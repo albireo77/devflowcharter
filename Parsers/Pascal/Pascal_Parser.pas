@@ -142,7 +142,7 @@ begin
          CheckMode([yymInput]); 
        end;
    4 : begin
-         CheckMode([yymOutput]);
+         CheckMode([yymOutput]); 
        end;
    5 : begin
          CheckMode([yymCaseValue]); 
@@ -629,7 +629,7 @@ begin
   72 : begin
          
          arg1 := TParserHelper.GetIdentInfo(yyv[yysp-0].yyString);
-         							if not (arg1.IdentType in [VARIABLE, VARRAY, CONSTANT, ENUM_VALUE]) then
+         							if arg1.IdentType not in [VARIABLE, VARRAY, CONSTANT, ENUM_VALUE] then
          begin
          yyerrmsg := trnsManager.GetFormattedString('UnknId', [yyv[yysp-0].yyString]);
          yyabort;
