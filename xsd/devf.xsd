@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+  <xs:simpleType name="nonEmptyString">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="nonBlankString">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\s*[\S]+.*"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="oneCharString">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+      <xs:maxLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:element name="comment">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute name="x" type="xs:integer" use="required"/>
+          <xs:attribute name="y" type="xs:integer" use="required"/>
+          <xs:attribute name="w" type="xs:integer" use="required"/>
+          <xs:attribute name="h" type="xs:integer" use="required"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="FoldRegion">
+    <xs:complexType>
+      <xs:attribute name="AddClose" type="xs:boolean" use="required"/>
+      <xs:attribute name="NoSubFolds" type="xs:boolean" use="required"/>
+      <xs:attribute name="Type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="rtKeyword"/>
+            <xs:enumeration value="rtChar"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="WholeWords" type="xs:boolean" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Language">
+    <xs:complexType>
+      <xs:all>
+        <xs:element name="Name" type="nonBlankString"/>
+        <xs:element name="CommentBegin" type="nonBlankString" minOccurs="0"/>
+        <xs:element name="CommentEnd" type="nonBlankString" minOccurs="0"/>
+        <xs:element name="InputFunction" type="nonBlankString" minOccurs="0"/>
+        <xs:element name="OutputFunction" type="nonBlankString" minOccurs="0"/>
+        <xs:element name="InOutCursorPos" type="xs:integer" minOccurs="0"/>
+        <xs:element name="DefaultExt" type="nonBlankString"/>
+        <xs:element name="LibraryExt" type="nonBlankString" minOccurs="0"/>
+        <xs:element name="AssignOperator" type="nonBlankString"/>
+        <xs:element name="FuncBrackets" type="nonBlankString" minOccurs="0"/>
+        <xs:element name="FuncBracketsCursorPos" type="xs:integer" minOccurs="0"/>
+        <xs:element name="DecimalSeparator" type="oneCharString" minOccurs="0"/>
+        <xs:element name="InstrEnd" type="nonBlankString" minOccurs="0"/>
+        <xs:element name="EnabledConsts" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="EnabledVars" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="EnabledCompiler" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="EnabledUserFunctionHeader" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="EnabledUserFunctionBody" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="EnabledUserDataTypes" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="EnabledUserDataTypeInt" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="EnabledUserDataTypeReal" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="EnabledUserDataTypeOther" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="EnabledUserDataTypeEnum" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="EnabledUserDataTypeArray" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="EnabledPointers" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="EnabledExplorer" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="EnabledCodeGenerator" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="EnabledMainProgram" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="CaseSensitiveSyntax" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="UpperCaseConstId" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="AllowEnumsInForLoop" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="AllowUserFunctionOverload" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="AllowUnboundedArrays" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="AllowDuplicatedLibs" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="AllowTransExternVarConst" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="AllowTransExternFunction" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="AllowTransExternDataType" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="CodeIncludeExternVarConst" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="CodeIncludeExternDataType" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="CodeIncludeExternFunction" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="FoldRegions" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="FoldRegion" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

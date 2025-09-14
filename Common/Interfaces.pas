@@ -24,7 +24,7 @@ unit Interfaces;
 interface
 
 uses
-   Vcl.Controls, Vcl.ComCtrls, Vcl.Graphics, System.Classes, OmniXML, Types, MemoEx;
+   Vcl.Controls, Vcl.ComCtrls, Vcl.Graphics, System.Classes, MSXML2_TLB, Types, MemoEx;
 
 const
 
@@ -61,8 +61,8 @@ type
 
    IXMLable = interface(IActivable)
       ['{371696A8-8B69-4293-8A9B-B00ACEE315C6}']
-      procedure ExportToXML(ANode: IXMLNode);
-      procedure ImportFromXML(ANode: IXMLNode; APinControl: TControl = nil);
+      procedure ExportToXML(ATag: IXMLDOMElement);
+      procedure ImportFromXML(ATag: IXMLDOMElement; APinControl: TControl = nil);
    end;
 
    IWithTab = interface(IActivable)

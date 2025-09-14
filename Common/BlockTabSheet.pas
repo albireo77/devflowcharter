@@ -25,7 +25,7 @@ interface
 
 uses
    System.Classes, Vcl.ComCtrls, Vcl.Controls, Vcl.Forms, WinApi.Messages, System.Types,
-   Vcl.Graphics, Main_Form, OmniXML;
+   Vcl.Graphics, Main_Form, MSXML2_TLB;
 
 type
 
@@ -40,8 +40,8 @@ type
       constructor Create(AMainForm: TMainForm);
       destructor Destroy; override;
       procedure SetAsActivePage;
-      procedure ExportToXML(ANode: IXMLNode);
-      procedure ImportFromXML(ANode: IXMLNode);
+      procedure ExportToXML(ATag: IXMLDOMElement);
+      procedure ImportFromXML(ATag: IXMLDOMElement);
       function IsMain: boolean;
       property Form: TMainForm read FForm;
    end;
@@ -69,7 +69,7 @@ implementation
 
 uses
    System.StrUtils, System.Math, System.UITypes, WinApi.Windows, Navigator_Form,
-   OmniXMLUtils, Infrastructure, Constants;
+   XMLUtils, Infrastructure, Constants;
 
 constructor TBlockTabSheet.Create(AMainForm: TMainForm);
 begin
@@ -107,22 +107,22 @@ begin
    PageControl.ActivePage := Self;
 end;
 
-procedure TBlockTabSheet.ExportToXML(ANode: IXMLNode);
+procedure TBlockTabSheet.ExportToXML(ATag: IXMLDOMElement);
 begin
-   var node := AppendNode(ANode, 'page');
-   SetNodeAttrStr(node, 'name', IfThen(IsMain, MAIN_PAGE_MARKER, Caption));
-   SetNodeAttrInt(node, 'hScrollRange', Box.HorzScrollBar.Range);
-   SetNodeAttrInt(node, 'vScrollRange', Box.VertScrollBar.Range);
-   SetNodeAttrInt(node, 'hScrollPos', Box.HorzScrollBar.Position);
-   SetNodeAttrInt(node, 'vScrollPos', Box.VertScrollBar.Position);
+   var tag := AppendTag(ATag, 'page');
+   tag.SetAttribute('name', IfThen(IsMain, MAIN_PAGE_MARKER, Caption));
+   tag.SetAttribute('hScrollRange', Box.HorzScrollBar.Range);
+   tag.SetAttribute('vScrollRange', Box.VertScrollBar.Range);
+   tag.SetAttribute('hScrollPos', Box.HorzScrollBar.Position);
+   tag.SetAttribute('vScrollPos', Box.VertScrollBar.Position);
 end;
 
-procedure TBlockTabSheet.ImportFromXML(ANode: IXMLNode);
+procedure TBlockTabSheet.ImportFromXML(ATag: IXMLDOMElement);
 begin
-   Box.HorzScrollBar.Range := GetNodeAttrInt(ANode, 'hScrollRange');
-   Box.HorzScrollBar.Position := GetNodeAttrInt(ANode, 'hScrollPos');
-   Box.VertScrollBar.Range := GetNodeAttrInt(ANode, 'vScrollRange');
-   Box.VertScrollBar.Position := GetNodeAttrInt(ANode, 'vScrollPos');
+   Box.HorzScrollBar.Range := GetNodeAttrInt(ATag, 'hScrollRange', Box.HorzScrollBar.Range);
+   Box.HorzScrollBar.Position := GetNodeAttrInt(ATag, 'hScrollPos', Box.HorzScrollBar.Position);
+   Box.VertScrollBar.Range := GetNodeAttrInt(ATag, 'vScrollRange', Box.VertScrollBar.Range);
+   Box.VertScrollBar.Position := GetNodeAttrInt(ATag, 'vScrollPos', Box.VertScrollBar.Position);
 end;
 
 constructor TScrollBoxEx.Create(APage: TBlockTabSheet);

@@ -22,15 +22,15 @@ unit BlockFactory;
 interface
 
 uses
-   Base_Block, Types, OmniXML, BlockTabSheet;
+   Base_Block, Types, MSXML2_TLB, BlockTabSheet;
 
 type
 
    TBlockFactory = class(TObject)
    public
       class function Create(ABranch: TBranch; ABlockType: TBlockType): TBlock; overload;
-      class function Create(ANode: IXMLNode; ABranch: TBranch): TBlock; overload;
-      class function Create(ANode: IXMLNode; ATab: TBlockTabSheet): TBlock; overload;
+      class function Create(ATag: IXMLDOMElement; ABranch: TBranch): TBlock; overload;
+      class function Create(ATag: IXMLDOMElement; ATab: TBlockTabSheet): TBlock; overload;
    end;
 
 implementation
@@ -61,11 +61,11 @@ begin
    end;
 end;
 
-class function TBlockFactory.Create(ANode: IXMLNode; ABranch: TBranch): TBlock;
+class function TBlockFactory.Create(ATag: IXMLDOMElement; ABranch: TBranch): TBlock;
 begin
    result := nil;
    try
-      var p := TBlockParms.New(ANode);
+      var p := TBlockParms.New(ATag);
       case p.bt of
          blInstr:      result := TInstrBlock.Create(ABranch, p);
          blMultiInstr: result := TMultiInstrBlock.Create(ABranch, p);
@@ -85,21 +85,21 @@ begin
    except on E: Exception do
       GErr_text := E.Message;
    end;
-   if (result <> nil) and (result.GetFromXML(ANode) <> errNone) then
+   if (result <> nil) and (result.GetFromXML(ATag) <> errNone) then
       FreeAndNil(result);
 end;
 
-class function TBlockFactory.Create(ANode: IXMLNode; ATab: TBlockTabSheet): TBlock;
+class function TBlockFactory.Create(ATag: IXMLDOMElement; ATab: TBlockTabSheet): TBlock;
 begin
    result := nil;
    try
-      var p := TBlockParms.New(ANode);
+      var p := TBlockParms.New(ATag);
       if p.bt = blMain then
          result := TMainBlock.Create(ATab, p);
    except on E: Exception do
       GErr_text := E.Message;
    end;
-   if (result <> nil) and (result.GetFromXML(ANode) <> errNone) then
+   if (result <> nil) and (result.GetFromXML(ATag) <> errNone) then
       FreeAndNil(result);
 end;
 

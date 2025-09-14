@@ -24,7 +24,7 @@ unit Functions_Form;
 interface
 
 uses
-   System.Types, OmniXML, PageControl_Form, Types;
+   System.Types, PageControl_Form, Types, MSXML2_TLB;
 
 type
 
@@ -34,7 +34,7 @@ type
     function IsEnabled: boolean; override;
   public
     { Public declarations }
-    function ImportTabsFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError; override;
+    function ImportTabsFromXML(ATag: IXMLDOMElement; AImportMode: TImportMode): TError; override;
     procedure RefreshTabs; override;
     procedure ResetForm; override;
     procedure AddUserFunction(const ABodyTopLeft: TPoint);
@@ -87,9 +87,9 @@ begin
    end;
 end;
 
-function TFunctionsForm.ImportTabsFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
+function TFunctionsForm.ImportTabsFromXML(ATag: IXMLDOMElement; AImportMode: TImportMode): TError;
 begin
-   result := GProject.ImportUserFunctionsFromXML(ANode, AImportMode);
+   result := GProject.ImportUserFunctionsFromXML(ATag, AImportMode);
 end;
 
 procedure TFunctionsForm.RefreshTabs;

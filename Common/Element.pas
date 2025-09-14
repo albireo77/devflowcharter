@@ -25,7 +25,7 @@ interface
 
 uses
    Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Forms, Vcl.Controls, Generics.Defaults,
-   OmniXml, PageControl_Form, Types;
+   PageControl_Form, Types, MSXML2_TLB;
 
 type
 
@@ -56,8 +56,8 @@ type
          btnRemove: TButton;
          property ParentTab: TTabSheet read FParentTab;
          property ParentForm: TPageControlForm read FParentForm;
-         function ExportToXML(ANode: IXMLNode): IXMLNode; virtual;
-         procedure ImportFromXML(ANode: IXMLNode); virtual;
+         function ExportToXML(ATag: IXMLDOMElement): IXMLDOMElement; virtual;
+         procedure ImportFromXML(ATag: IXMLDOMElement); virtual;
          function IsValid: boolean; virtual;
    end;
 
@@ -65,7 +65,7 @@ implementation
 
 uses
    Vcl.Graphics, System.SysUtils, System.Classes, Interfaces, TabComponent, Infrastructure,
-   Constants, OmniXMLUtils;
+   Constants, XMLUtils;
 
 constructor TElement.Create(AParent: TScrollBox; const ATypeId: string);
 begin
@@ -172,10 +172,10 @@ begin
       TTabComponent(FParentTab).UpdateCodeEditor;
 end;
 
-procedure TElement.ImportFromXML(ANode: IXMLNode);
+procedure TElement.ImportFromXML(ATag: IXMLDOMElement);
 begin
-   edtName.Text :=  GetNodeAttrStr(ANode, NAME_ATTR);
-   var idx := cbType.Items.IndexOf(GetNodeAttrStr(ANode, TYPE_ATTR));
+   edtName.Text := GetNodeAttrStr(ATag, NAME_ATTR, '');
+   var idx := cbType.Items.IndexOf(GetNodeAttrStr(ATag, TYPE_ATTR, ''));
    if idx <> -1 then
       cbType.ItemIndex := idx
    else if cbType.Items.Count > 0 then
@@ -183,11 +183,11 @@ begin
    cbType.Hint := cbType.Text;
 end;
 
-function TElement.ExportToXML(ANode: IXMLNode): IXMLNode;
+function TElement.ExportToXML(ATag: IXMLDOMElement): IXMLDOMElement;
 begin
-   result := AppendNode(ANode, FTypeId);
-   SetNodeAttrStr(result, NAME_ATTR, Trim(edtName.Text));
-   SetNodeAttrStr(result, TYPE_ATTR, cbType.Text);
+   result := AppendTag(ATag, FTypeId);
+   result.SetAttribute(NAME_ATTR, Trim(edtName.Text));
+   result.SetAttribute(TYPE_ATTR, cbType.Text);
 end;
 
 procedure TElement.DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);

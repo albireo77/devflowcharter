@@ -24,7 +24,7 @@ unit Declarations_Form;
 interface
 
 uses
-   OmniXML, Base_Form;
+   MSXML2_TLB, Base_Form;
 
 type
 
@@ -35,8 +35,8 @@ type
     { Private declarations }
   public
     { Public declarations }
-    procedure ExportToXML(ANode: IXMLNode); override;
-    procedure ImportFromXML(ANode: IXMLNode); override;
+    procedure ExportToXML(ATag: IXMLDOMElement); override;
+    procedure ImportFromXML(ATag: IXMLDOMElement); override;
     procedure ResetForm; override;
   end;
 
@@ -46,35 +46,35 @@ var
 implementation
 
 uses
-   Vcl.Forms, System.SysUtils, OmniXMLUtils, DeclareList, Infrastructure, Constants;
+   Vcl.Forms, System.SysUtils, XMLUtils, DeclareList, Infrastructure, Constants;
 
 {$R *.dfm}
 
-procedure TDeclarationsForm.ExportToXML(ANode: IXMLNode);
+procedure TDeclarationsForm.ExportToXML(ATag: IXMLDOMElement);
 begin
-   SetNodeAttrInt(ANode, 'var_win_h', Height);
-   SetNodeAttrInt(ANode, 'var_win_w', Width);
+   ATag.SetAttribute('var_win_h', Height);
+   ATag.SetAttribute('var_win_w', Width);
    if Visible then
    begin
-      SetNodeAttrBool(ANode, 'var_win_show', True);
-      SetNodeAttrInt(ANode, 'var_win_x', Left);
-      SetNodeAttrInt(ANode, 'var_win_y', Top);
+      ATag.SetAttribute('var_win_show', True);
+      ATag.SetAttribute('var_win_x', Left);
+      ATag.SetAttribute('var_win_y', Top);
       if WindowState = wsMinimized then
-         SetNodeAttrBool(ANode, 'var_win_min', True);
+         ATag.SetAttribute('var_win_min', True);
    end;
 end;
 
-procedure TDeclarationsForm.ImportFromXML(ANode: IXMLNode);
+procedure TDeclarationsForm.ImportFromXML(ATag: IXMLDOMElement);
 begin
-   Height := GetNodeAttrInt(ANode, 'var_win_h');
-   Width := GetNodeAttrInt(ANode, 'var_win_w');
-   if GetNodeAttrBool(ANode, 'var_win_show', False) and (GInfra.CurrentLang.EnabledVars or GInfra.CurrentLang.EnabledConsts) then
+   Height := GetNodeAttrInt(ATag, 'var_win_h', Height);
+   Width := GetNodeAttrInt(ATag, 'var_win_w', Width);
+   if GetNodeAttrBool(ATag, 'var_win_show', False) and (GInfra.CurrentLang.EnabledVars or GInfra.CurrentLang.EnabledConsts) then
    begin
       Position := poDesigned;
-      if GetNodeAttrBool(ANode, 'var_win_min', False) then
+      if GetNodeAttrBool(ATag, 'var_win_min', False) then
          WindowState := wsMinimized;
-      Left := GetNodeAttrInt(ANode, 'var_win_x');
-      Top := GetNodeAttrInt(ANode, 'var_win_y');
+      Left := GetNodeAttrInt(ATag, 'var_win_x', Left);
+      Top := GetNodeAttrInt(ATag, 'var_win_y', Top);
       Show;
    end;
 end;

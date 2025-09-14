@@ -277,24 +277,6 @@ object AboutForm: TAboutForm
     ShowHint = True
     OnClick = imDelphiClick
   end
-  object lblXML: TLabel
-    Left = 145
-    Top = 194
-    Width = 82
-    Height = 18
-    Cursor = crHandPoint
-    Hint = 'github.com/mremec/omnixml'
-    Caption = 'OmniXML'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clMedGray
-    Font.Height = -16
-    Font.Name = 'Verdana'
-    Font.Style = [fsBold]
-    ParentFont = False
-    ParentShowHint = False
-    ShowHint = True
-    OnClick = imDelphiClick
-  end
   object lblProjectLink: TLabel
     Left = 148
     Top = 147

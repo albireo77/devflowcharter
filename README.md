@@ -9,8 +9,6 @@ To compile devF you need:
 - SynEdit package (https://github.com/SynEdit/SynEdit)  
   To compile devF with SynEdit from website above, USE_CODEFOLDING conditional directive must be disabled in devF project setup.
   Archive ThirdPartyLibs/ThirdPartyLibs.zip contains customized SynEdit with code folding. It is preferred SynEdit package for devF.
-- OmniXML package (https://github.com/mremec/omnixml)  
-  At the moment modified version from ThirdPartyLibs/ThirdPartyLibs.zip archive must be used.
 
 ![Alt text](Powered-by-Delphi.png?raw=true "Delphi")  
 [Check it out!](http://www.embarcadero.com/products/delphi)

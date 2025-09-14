@@ -24,7 +24,7 @@ unit IfElse_Block;
 interface
 
 uses
-   WinApi.Windows, Vcl.ComCtrls, Base_Block, OmniXML, Types;
+   WinApi.Windows, Vcl.ComCtrls, Base_Block, MSXML2_TLB, Types;
 
 type
 
@@ -49,7 +49,7 @@ type
          procedure ResizeVert(AContinue: boolean); override;
          procedure ExpandFold(AResize: boolean); override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
-         procedure SaveInXML(ANode: IXMLNode); override;
+         procedure SaveInXML(ATag: IXMLDOMElement); override;
    end;
 
 const
@@ -59,7 +59,7 @@ const
 implementation
 
 uses
-   System.SysUtils, System.Classes, System.Math, Infrastructure, YaccLib, OmniXMLUtils;
+   System.SysUtils, System.Classes, System.Math, Infrastructure, YaccLib, XMLUtils;
 
 constructor TIfElseBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin
@@ -283,10 +283,10 @@ begin
    result := Point(TopHook.X, 0);
 end;
 
-procedure TIfElseBlock.SaveInXML(ANode: IXMLNode);
+procedure TIfElseBlock.SaveInXML(ATag: IXMLDOMElement);
 begin
-   inherited SaveInXML(ANode);
-   if ANode <> nil then
+   inherited SaveInXML(ATag);
+   if ATag <> nil then
    begin
       var fbrx := FFoldParms.P2X;
       var th := FFoldParms.TopHook;
@@ -295,11 +295,11 @@ begin
          fbrx := FalseBranch.Hook.X;
          th := TopHook.X;
       end;
-      SetNodeAttrInt(ANode, 'fbrx', fbrx);
-      SetNodeAttrInt(ANode, 'th', th);
-      SetNodeAttrInt(ANode, 'fbry', FalseBranch.Hook.Y);
-      SetNodeAttrInt(ANode, 'flh', FalseHook);
-      SetNodeAttrInt(ANode, 'trh', TrueHook);
+      ATag.SetAttribute('fbrx', fbrx);
+      ATag.SetAttribute('th', th);
+      ATag.SetAttribute('fbry', FalseBranch.Hook.Y);
+      ATag.SetAttribute('flh', FalseHook);
+      ATag.SetAttribute('trh', TrueHook);
    end;
 end;
 

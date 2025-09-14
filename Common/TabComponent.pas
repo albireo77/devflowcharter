@@ -25,8 +25,8 @@ interface
 
 uses
    System.Classes, Vcl.ComCtrls, Vcl.Forms, Vcl.StdCtrls, Vcl.Controls, WinApi.Windows,
-   Vcl.Graphics, WinApi.Messages, Interfaces, OmniXML, Element, PageControl_Form,
-   Types, Generics.Defaults;
+   Vcl.Graphics, WinApi.Messages, Interfaces, Element, PageControl_Form, Types,
+   Generics.Defaults, MSXML2_TLB;
 
 type
 
@@ -70,12 +70,12 @@ type
          constructor Create(AParentForm: TPageControlForm);
          destructor Destroy; override;
          procedure ExportCode(ALines: TStringList); virtual; abstract;
-         procedure ExportToXML(ANode: IXMLNode); virtual;
+         procedure ExportToXML(ATag: IXMLDOMElement); virtual;
          function ExportToXMLFile(const AFile: string): TError;
          procedure ExportToGraphic(AGraphic: TGraphic);
          function GetExportFileName: string;
          function IsDuplicated(ANameEdit: TEdit): boolean;
-         procedure ImportFromXML(ANode: IXMLNode; APinControl: TControl = nil); virtual;
+         procedure ImportFromXML(ATag: IXMLDOMElement; APinControl: TControl = nil); virtual;
          function GetLibrary: string;
          property ScrollPos: integer read GetScrollPos write SetScrollPos;
          function GetName: string;
@@ -102,7 +102,7 @@ implementation
 
 uses
    System.SysUtils, Generics.Collections, System.Rtti, Infrastructure, XMLProcessor,
-   OmniXMLUtils, BaseEnumerator, Constants;
+   XMLUtils, BaseEnumerator, Constants;
 
 var
    ByTopElementComparer: IComparer<TElement>;
@@ -446,33 +446,33 @@ begin
    FParentForm.UpdateCodeEditor := True;
 end;
 
-procedure TTabComponent.ExportToXML(ANode: IXMLNode);
+procedure TTabComponent.ExportToXML(ATag: IXMLDOMElement);
 begin
-   SetNodeAttrInt(ANode, ID_ATTR, FId);
-   SetNodeAttrStr(ANode, NAME_ATTR, Trim(edtName.Text));
-   SetNodeAttrStr(ANode, 'ext_decl', TRttiEnumerationType.GetName(chkExternal.State));
-   SetNodeAttrStr(ANode, 'library', Trim(edtLibrary.Text));
+   ATag.SetAttribute(ID_ATTR, FId);
+   ATag.SetAttribute(NAME_ATTR, Trim(edtName.Text));
+   ATag.SetAttribute('ext_decl', TRttiEnumerationType.GetName(chkExternal.State));
+   ATag.SetAttribute('library', Trim(edtLibrary.Text));
    for var elem in GetElements<TElement>(ByTopElementComparer) do
-      elem.ExportToXML(ANode);
+      elem.ExportToXML(ATag);
 end;
 
-procedure TTabComponent.ImportFromXML(ANode: IXMLNode; APinControl: TControl = nil);
+procedure TTabComponent.ImportFromXML(ATag: IXMLDOMElement; APinControl: TControl = nil);
 begin
-   edtName.Text := GetNodeAttrStr(ANode, NAME_ATTR);
+   edtName.Text := GetNodeAttrStr(ATag, NAME_ATTR, '');
    if Assigned(edtName.OnChange) then
       edtName.OnChange(edtName);
-   chkExternal.State := TInfra.DecodeCheckBoxState(GetNodeAttrStr(ANode, 'ext_decl'));
-   edtLibrary.Text := GetNodeAttrStr(ANode, 'library');
-   var nodes := FilterNodes(ANode, FElementTypeId);
+   chkExternal.State := TInfra.DecodeCheckBoxState(GetNodeAttrStr(ATag, 'ext_decl', ''));
+   edtLibrary.Text := GetNodeAttrStr(ATag, 'library', '');
+   var nodes := ATag.selectNodes(FElementTypeId);
    var node := nodes.NextNode;
    while node <> nil do
    begin
       var elem := CreateElement;
       sbxElements.Height := sbxElements.Height + elem.Height;
-      elem.ImportFromXML(node);
+      elem.ImportFromXML(node as IXMLDOMElement);
       node := nodes.NextNode;
    end;
-   FId := GProject.Register(Self, GetNodeAttrInt(ANode, ID_ATTR));
+   FId := GProject.Register(Self, GetNodeAttrInt(ATag, ID_ATTR, ID_UNDEFINED));
 end;
 
 function TTabComponent.GetFocusColor: TColor;

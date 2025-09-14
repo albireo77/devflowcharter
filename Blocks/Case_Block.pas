@@ -24,7 +24,7 @@ interface
 
 uses
    Vcl.StdCtrls, Vcl.Graphics, System.Classes, Vcl.ComCtrls, System.Types, Vcl.Controls,
-   Base_Block, OmniXML, Types, Statement;
+   Base_Block, MSXML2_TLB, Types, Statement;
 
 type
 
@@ -51,8 +51,8 @@ type
          function AddBranch(const AHook: TPoint; AId: integer = ID_UNDEFINED; ATextId: integer = ID_UNDEFINED): TBranch; override;
          function InsertNewBranch(AIndex: integer): TBranch;
          function CountErrWarn: TErrWarnCount; override;
-         function GetFromXML(ANode: IXMLNode): TError; override;
-         procedure SaveInXML(ANode: IXMLNode); override;
+         function GetFromXML(ATag: IXMLDOMElement): TError; override;
+         procedure SaveInXML(ATag: IXMLDOMElement); override;
          procedure ChangeColor(AColor: TColor); override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
          function IsDuplicatedCase(AEdit: TCustomEdit): boolean;
@@ -68,7 +68,7 @@ implementation
 
 uses
    System.StrUtils, System.Math, System.SysUtils, Infrastructure, Constants, YaccLib,
-   OmniXMLUtils;
+   XMLUtils;
 
 constructor TCaseBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin
@@ -503,12 +503,12 @@ begin
       FBranchList[i].Statement.Color := AColor;
 end;
 
-function TCaseBlock.GetFromXML(ANode: IXMLNode): TError;
+function TCaseBlock.GetFromXML(ATag: IXMLDOMElement): TError;
 begin
-   result := inherited GetFromXML(ANode);
-   if ANode <> nil then
+   result := inherited GetFromXML(ATag);
+   if ATag <> nil then
    begin
-      var branchNodes := FilterNodes(ANode, BRANCH_TAG);
+      var branchNodes := ATag.SelectNodes(BRANCH_TAG);
       branchNodes.NextNode;          // skip default branch stored in first tag
       var branchNode := branchNodes.NextNode;
       FRefreshMode := True;
@@ -516,9 +516,9 @@ begin
       begin
          if branchNode <> nil then
          begin
-            var node := FindNode(branchNode, 'value');
-            if node <> nil then
-               FBranchList[i].Statement.Text := node.Text;
+            var tag := FindChildTag(branchNode, 'value');
+            if tag <> nil then
+               FBranchList[i].Statement.Text := tag.Text;
          end;
          branchNode := branchNodes.NextNode;
       end;
@@ -527,19 +527,19 @@ begin
    end;
 end;
 
-procedure TCaseBlock.SaveInXML(ANode: IXMLNode);
+procedure TCaseBlock.SaveInXML(ATag: IXMLDOMElement);
 begin
-   inherited SaveInXML(ANode);
-   if ANode <> nil then
+   inherited SaveInXML(ATag);
+   if ATag <> nil then
    begin
-      var branchNodes := FilterNodes(ANode, BRANCH_TAG);
+      var branchNodes := ATag.SelectNodes(BRANCH_TAG);
       branchNodes.NextNode;          // skip default branch stored in first tag
       var branchNode := branchNodes.NextNode;
       for var i := DEFAULT_BRANCH_IDX+1 to FBranchList.Count-1 do
       begin
          if branchNode = nil then
             break;
-         SetNodeCData(branchNode, 'value', FBranchList[i].Statement.Text);
+         AppendCDATAChild(branchNode as IXMLDOMElement, 'value', FBranchList[i].Statement.Text);
          branchNode := branchNodes.NextNode;
       end;
    end;

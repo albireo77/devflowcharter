@@ -24,7 +24,7 @@ unit MemoEx;
 interface
 
 uses
-   Vcl.StdCtrls, Vcl.Forms, System.Classes, System.UITypes, Vcl.Controls, OmniXML, CommonTypes;
+   Vcl.StdCtrls, Vcl.Forms, System.Classes, System.UITypes, Vcl.Controls, MSXML2_TLB, CommonTypes;
 
 type
 
@@ -54,8 +54,8 @@ type
          property HasHScroll: boolean read FHasHScroll write SetHasHScroll;
          constructor Create(AOwner: TComponent); override;
          procedure UpdateScrolls;
-         procedure GetFromXML(ANode: IXMLNode);
-         procedure SaveInXML(ANode: IXMLNode);
+         procedure GetFromXML(ATag: IXMLDOMElement);
+         procedure SaveInXML(ATag: IXMLDOMElement);
          function Clone(AOwner: TComponent): TMemoEx;
          procedure CloneFrom(AMemo: TMemoEx);
       published
@@ -71,7 +71,7 @@ implementation
 
 uses
    WinApi.Windows, WinApi.Messages, System.StrUtils, System.SysUtils, System.Rtti,
-   OmniXMLUtils, Infrastructure, Navigator_Form;
+   XMLUtils, Infrastructure, Navigator_Form;
 
 constructor TMemoEx.Create(AOwner: TComponent);
 begin
@@ -267,35 +267,35 @@ begin
    Repaint;
 end;
 
-procedure TMemoEx.GetFromXML(ANode: IXMLNode);
+procedure TMemoEx.GetFromXML(ATag: IXMLDOMElement);
 begin
-   if ANode <> nil then
+   if ATag <> nil then
    begin
-      EditFormWidth := GetNodeAttrInt(ANode, 'memW');
-      EditFormHeight := GetNodeAttrInt(ANode, 'memH');
-      HasVScroll := GetNodeAttrBool(ANode, 'mem_vscroll');
-      HasHScroll := GetNodeAttrBool(ANode, 'mem_hscroll');
-      WordWrap := GetNodeAttrBool(ANode, 'mem_wordwrap');
-      var h := GetNodeAttrInt(ANode, 'mem_hscroll_pos', 0);
-      var v := GetNodeAttrInt(ANode, 'mem_vscroll_pos', 0);
+      EditFormWidth := GetNodeAttrInt(ATag, 'memW', EditFormWidth);
+      EditFormHeight := GetNodeAttrInt(ATag, 'memH', EditFormHeight);
+      HasVScroll := GetNodeAttrBool(ATag, 'mem_vscroll', HasVScroll);
+      HasHScroll := GetNodeAttrBool(ATag, 'mem_hscroll', HasHScroll);
+      WordWrap := GetNodeAttrBool(ATag, 'mem_wordwrap', WordWrap);
+      var h := GetNodeAttrInt(ATag, 'mem_hscroll_pos', 0);
+      var v := GetNodeAttrInt(ATag, 'mem_vscroll_pos', 0);
       Perform(EM_LINESCROLL, h, v);
-      Alignment := TRttiEnumerationType.GetValue<TAlignment>(GetNodeAttrStr(ANode, 'mem_align', 'taLeftJustify'));
+      Alignment := TRttiEnumerationType.GetValue<TAlignment>(GetNodeAttrStr(ATag, 'mem_align', 'taLeftJustify'));
    end;
 end;
 
-procedure TMemoEx.SaveInXML(ANode: IXMLNode);
+procedure TMemoEx.SaveInXML(ATag: IXMLDOMElement);
 begin
-   if ANode <> nil then
+   if ATag <> nil then
    begin
-      SetNodeAttrInt(ANode, 'memW', EditFormWidth);
-      SetNodeAttrInt(ANode, 'memH', EditFormHeight);
-      SetNodeAttrBool(ANode, 'mem_vscroll', HasVScroll);
-      SetNodeAttrBool(ANode, 'mem_hscroll', HasHScroll);
-      SetNodeAttrBool(ANode, 'mem_wordwrap', WordWrap);
-      SetNodeAttrStr(ANode, 'mem_align', TRttiEnumerationType.GetName(Alignment));
+      ATag.SetAttribute('memW', EditFormWidth);
+      ATag.SetAttribute('memH', EditFormHeight);
+      ATag.SetAttribute('mem_vscroll', HasVScroll);
+      ATag.SetAttribute('mem_hscroll', HasHScroll);
+      ATag.SetAttribute('mem_wordwrap', WordWrap);
+      ATag.SetAttribute('mem_align', TRttiEnumerationType.GetName(Alignment));
       var pos := TInfra.GetScrolledPos(Self);
-      SetNodeAttrInt(ANode, 'mem_hscroll_pos', pos.X);
-      SetNodeAttrInt(ANode, 'mem_vscroll_pos', pos.Y);
+      ATag.SetAttribute('mem_hscroll_pos', pos.X);
+      ATag.SetAttribute('mem_vscroll_pos', pos.Y);
    end;
 end;
 

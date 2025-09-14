@@ -24,7 +24,7 @@ unit DataTypes_Form;
 interface
 
 uses
-   OmniXML, PageControl_Form, Types;
+   PageControl_Form, Types, MSXML2_TLB;
 
 type
 
@@ -35,7 +35,7 @@ type
      function IsEnabled: boolean; override;
   public
      { Public declarations }
-     function ImportTabsFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError; override;
+     function ImportTabsFromXML(ATag: IXMLDOMElement; AImportMode: TImportMode): TError; override;
      procedure RefreshTabs; override;
      procedure ResetForm; override;
   end;
@@ -90,9 +90,9 @@ begin
    RefreshTabs;
 end;
 
-function TDataTypesForm.ImportTabsFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError;
+function TDataTypesForm.ImportTabsFromXML(ATag: IXMLDOMElement; AImportMode: TImportMode): TError;
 begin
-   result := GProject.ImportUserDataTypesFromXML(ANode, AImportMode);
+   result := GProject.ImportUserDataTypesFromXML(ATag, AImportMode);
 end;
 
 procedure TDataTypesForm.ResetForm;

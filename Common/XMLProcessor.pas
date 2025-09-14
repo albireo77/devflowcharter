@@ -21,28 +21,31 @@ unit XMLProcessor;
 
 interface
 
+{$R XSD_FILE.RES}
+
 uses
-   Vcl.Controls, Vcl.Dialogs, System.SysUtils, OmniXML, Base_Block, Types;
+   Vcl.Controls, Vcl.Dialogs, System.SysUtils, MSXML2_TLB, Base_Block, Types;
 
 type
 
    TXMLProcessor = class(TObject)
    private
       class function DialogXMLFile(ADialog: TOpenDialog; const AFileName: string): string;
+      class function GetXSD(const AResourceName: string): string;
    public
-      class function ExportToXMLFile(AExportProc: TProc<IXMLNode>; const AFilePath: string): TError;
-      class function ImportFromXMLFile(AImportFunc: TFunc<IXMLNode, TImportMode, TError>; AImportMode: TImportMode; const AFileName: string = ''; APreserveSpace: boolean = False): string;
-      class function ImportFlowchartFromXML(ANode: IXMLNode; AParent: TWinControl; APrevBlock: TBlock; ABranchIdx: integer; var AError: TError): TBlock;
+      class function ExportToXMLFile(AExportProc: TProc<IXMLDOMElement>; const AFilePath: string): TError;
+      class function ImportFromXMLFile(AImportFunc: TFunc<IXMLDOMElement, TImportMode, TError>; AImportMode: TImportMode; const AFileName: string = ''; APreserveSpace: boolean = False): string;
+      class function ImportFlowchartFromXML(ATag: IXMLDOMElement; AParent: TWinControl; APrevBlock: TBlock; ABranchIdx: integer; var AError: TError): TBlock;
    end;
 
 implementation
 
 uses
-   Infrastructure, BlockFactory, BlockTabSheet, Constants;
+   Infrastructure, BlockFactory, BlockTabSheet, Constants, System.Classes;
 
-class function TXMLProcessor.ImportFlowchartFromXML(ANode: IXMLNode; AParent: TWinControl; APrevBlock: TBlock; ABranchIdx: integer; var AError: TError): TBlock;
+class function TXMLProcessor.ImportFlowchartFromXML(ATag: IXMLDOMElement; AParent: TWinControl; APrevBlock: TBlock; ABranchIdx: integer; var AError: TError): TBlock;
 var
-   node: IXMLNode;
+   node: IXMLDOMNode;
    branch: TBranch;
    initCount: integer;
    tab: TBlockTabSheet;
@@ -55,7 +58,7 @@ begin
     AError := errNone;
     Gerr_text := '';
     initCount := AParent.ControlCount;
-    node := ANode;
+    node := ATag;
 
     if AParent is TGroupBlock then
     begin
@@ -74,12 +77,12 @@ begin
           newBlock := nil;
           if tab <> nil then
           begin
-             newBlock := TBlockFactory.Create(node, tab);
+             newBlock := TBlockFactory.Create(node as IXMLDOMElement, tab);
              tab := nil;
           end
           else if branch <> nil then
           begin
-             newBlock := TBlockFactory.Create(node, branch);
+             newBlock := TBlockFactory.Create(node as IXMLDOMElement, branch);
              if newBlock <> nil then
              begin
                 branch.InsertAfter(newBlock, APrevBlock);
@@ -121,7 +124,7 @@ begin
       result := ADialog.FileName;
 end;
 
-class function TXMLProcessor.ImportFromXMLFile(AImportFunc: TFunc<IXMLNode, TImportMode, TError>; AImportMode: TImportMode; const AFileName: string = ''; APreserveSpace: boolean = False): string;
+class function TXMLProcessor.ImportFromXMLFile(AImportFunc: TFunc<IXMLDOMElement, TImportMode, TError>; AImportMode: TImportMode; const AFileName: string = ''; APreserveSpace: boolean = False): string;
 begin
    result := '';
    if Assigned(AImportFunc) then
@@ -133,12 +136,25 @@ begin
          Exit;
       var errText := '';
       var status := errSyntax;
-      var docXML := CreateXMLDoc;
-      docXML.PreserveWhiteSpace := APreserveSpace;
+
+      var xsdDoc := CoDOMDocument60.Create;
+      xsdDoc.Async := False;
+      xsdDoc.ValidateOnParse := False;
+      if not xsdDoc.LoadXML(GetXSD('XSD_DEFINITION')) then
+         ShowMessage(xsdDoc.ParseError.Reason);
+
+      var schemaCache := CoXMLSchemaCache60.Create;
+      schemaCache.Add('', xsdDoc);
+
+      var xmlDoc := CoDOMDocument60.Create;
+      xmlDoc.Async := False;
+      xmlDoc.ValidateOnParse := True;
+      xmlDoc.PreserveWhiteSpace := APreserveSpace;
+      xmlDoc.Schemas := schemaCache;
       try
-         if docXML.Load(result) then
-            status := AImportFunc(docXML.DocumentElement, AImportMode)
-         else with docXML.ParseError do
+         if xmlDoc.Load(result) then
+            status := AImportFunc(xmlDoc.DocumentElement, AImportMode)
+         else with xmlDoc.ParseError do
             errText := trnsManager.GetFormattedString('ParserError', [ErrorCode, Line, LinePos, Reason]);
       except on E: Exception do
          begin
@@ -157,7 +173,7 @@ begin
    end;
 end;
 
-class function TXMLProcessor.ExportToXMLFile(AExportProc: TProc<IXMLNode>; const AFilePath: string): TError;
+class function TXMLProcessor.ExportToXMLFile(AExportProc: TProc<IXMLDOMElement>; const AFilePath: string): TError;
 const
    XML_HEADER = 'version="1.0" encoding="UTF-8"';
 begin
@@ -176,14 +192,14 @@ begin
          end
          else
          begin
-            var docXML := CreateXMLDoc;
-            var xmlInstr := docXML.CreateProcessingInstruction('xml', XML_HEADER);
-            docXML.AppendChild(xmlInstr);
-            var tag := docXML.CreateElement('project');
-            docXML.AppendChild(tag);
+            var xmlDoc := CoDOMDocument60.Create;
+            var xmlInstr := xmlDoc.CreateProcessingInstruction('xml', XML_HEADER);
+            xmlDoc.AppendChild(xmlInstr);
+            var tag := xmlDoc.CreateElement('project');
+            xmlDoc.AppendChild(tag);
             AExportProc(tag);
             try
-               docXML.Save(filePath, ofIndent);
+               xmlDoc.Save(filePath);
             except on E: Exception do
                begin
                   result := errIO;
@@ -192,6 +208,19 @@ begin
             end;
          end;
       end;
+   end;
+end;
+
+class function TXMLProcessor.GetXSD(const AResourceName: string): string;
+begin
+   var resourceStream := TResourceStream.Create(Hinstance, AResourceName, 'XSD_FILE');
+   var stringStream := TStringStream.Create('', TEncoding.UTF8);
+   try
+      stringStream.CopyFrom(resourceStream);
+      result := stringStream.DataString;
+   finally
+      stringStream.Free;
+      resourceStream.Free;
    end;
 end;
 

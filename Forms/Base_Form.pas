@@ -24,7 +24,7 @@ unit Base_Form;
 interface
 
 uses
-   Vcl.Forms, System.Classes, Vcl.Graphics, OmniXML, Types, Interfaces;
+   Vcl.Forms, System.Classes, Vcl.Graphics, MSXML2_TLB, Types, Interfaces;
 
 type
 
@@ -33,8 +33,8 @@ type
       procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     public
       procedure AfterTranslation(AList: TStringList); virtual;
-      procedure ImportFromXML(ANode: IXMLNode); virtual;
-      procedure ExportToXML(ANode: IXMLNode); virtual;
+      procedure ImportFromXML(ATag: IXMLDOMElement); virtual;
+      procedure ExportToXML(ATag: IXMLDOMElement); virtual;
       procedure ResetForm; virtual;
       procedure Show;
       function RetrieveFocus(AInfo: TFocusInfo): boolean;
@@ -57,12 +57,12 @@ begin
    Caption := AList.Values['FormCaption'];
 end;
 
-procedure TBaseForm.ImportFromXML(ANode: IXMLNode);
+procedure TBaseForm.ImportFromXML(ATag: IXMLDOMElement);
 begin
 {}
 end;
 
-procedure TBaseForm.ExportToXML(ANode: IXMLNode);
+procedure TBaseForm.ExportToXML(ATag: IXMLDOMElement);
 begin
 {}
 end;

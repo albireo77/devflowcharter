@@ -24,7 +24,7 @@ unit ForDo_Block;
 interface
 
 uses
-   Vcl.StdCtrls, Vcl.Graphics, System.Classes, Base_Block, Statement, OmniXML, Types;
+   Vcl.StdCtrls, Vcl.Graphics, System.Classes, Base_Block, Statement, MSXML2_TLB, Types;
 
 type
 
@@ -55,8 +55,8 @@ type
          procedure ExpandFold(AResize: boolean); override;
          function GetTextControl: TCustomEdit; override;
          function CountErrWarn: TErrWarnCount; override;
-         function GetFromXML(ANode: IXMLNode): TError; override;
-         procedure SaveInXML(ANode: IXMLNode); override;
+         function GetFromXML(ATag: IXMLDOMElement): TError; override;
+         procedure SaveInXML(ATag: IXMLDOMElement); override;
          procedure ChangeColor(AColor: TColor); override;
          procedure PopulateComboBoxes; override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
@@ -73,7 +73,7 @@ implementation
 
 uses
    Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Math, YaccLib,
-   Infrastructure, Constants, OmniXMLUtils;
+   Infrastructure, Constants, XMLUtils;
 
 const
    DEFAULT_WIDTH = 246;
@@ -537,39 +537,39 @@ begin
       result := FillCodedTemplate(lang.Name);
 end;
 
-function TForDoBlock.GetFromXML(ANode: IXMLNode): TError;
+function TForDoBlock.GetFromXML(ATag: IXMLDOMElement): TError;
 begin
-   result := inherited GetFromXML(ANode);
-   if ANode <> nil then
+   result := inherited GetFromXML(ATag);
+   if ATag <> nil then
    begin
-      var node := FindNode(ANode, 'i_var');
-      if node <> nil then
+      var tag := FindChildTag(ATag, 'i_var');
+      if tag <> nil then
       begin
-         cbVar.Text := node.Text;
-         edtVar.Text := node.Text;
+         cbVar.Text := tag.Text;
+         edtVar.Text := tag.Text;
       end;
       FRefreshMode := True;
-      node := FindNode(ANode, 'init_val');
-      if node <> nil then
-         edtStart.Text := ReplaceStr(node.Text, '#', ' ');
-      node := FindNode(ANode, 'end_val');
-      if node <> nil then
-         edtStop.Text := ReplaceStr(node.Text, '#' , ' ');
+      tag := FindChildTag(ATag, 'init_val');
+      if tag <> nil then
+         edtStart.Text := ReplaceStr(tag.Text, '#', ' ');
+      tag := FindChildTag(ATag, 'end_val');
+      if tag <> nil then
+         edtStop.Text := ReplaceStr(tag.Text, '#' , ' ');
       FRefreshMode := False;
-      FDescOrder := GetNodeAttrStr(ANode, 'order') = 'ordDesc';
+      FDescOrder := GetNodeAttrStr(ATag, 'order', 'ordAsc') = 'ordDesc';
    end;
    OnChangeAll;
 end;
 
-procedure TForDoBlock.SaveInXML(ANode: IXMLNode);
+procedure TForDoBlock.SaveInXML(ATag: IXMLDOMElement);
 begin
-   inherited SaveInXML(ANode);
-   if ANode <> nil then
+   inherited SaveInXML(ATag);
+   if ATag <> nil then
    begin
-      SetNodeText(ANode, 'i_var', edtVar.Text);
-      SetNodeText(ANode, 'init_val', ReplaceStr(edtStart.Text, ' ', '#'));
-      SetNodeText(ANode, 'end_val', ReplaceStr(edtStop.Text, ' ', '#'));
-      SetNodeAttrStr(ANode, 'order', IfThen(FDescOrder, 'ordDesc', 'ordAsc'));
+      AppendTag(ATag, 'i_var').Text := edtVar.Text;
+      AppendTag(ATag, 'init_val').Text := ReplaceStr(edtStart.Text, ' ', '#');
+      AppendTag(ATag, 'end_val').Text := ReplaceStr(edtStop.Text, ' ', '#');
+      ATag.SetAttribute('order', IfThen(FDescOrder, 'ordDesc', 'ordAsc'));
    end;
 end;
 

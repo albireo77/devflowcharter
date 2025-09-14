@@ -24,7 +24,7 @@ unit UserDataType;
 interface
 
 uses
-   Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls, System.Classes, Vcl.ExtCtrls, OmniXML,
+   Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls, System.Classes, Vcl.ExtCtrls, MSXML2_TLB,
    SizeEdit, TabComponent, Element, DataTypes_Form, Interfaces, Types;
 
 type
@@ -38,8 +38,8 @@ type
       procedure OnChangeName(Sender: TObject); override;
    public
       edtSize: TSizeEdit;
-      function ExportToXML(ANode: IXMLNode): IXMLNode; override;
-      procedure ImportFromXML(ANode: IXMLNode); override;
+      function ExportToXML(ATag: IXMLDOMElement): IXMLDOMElement; override;
+      procedure ImportFromXML(ATag: IXMLDOMElement); override;
       function IsValid: boolean; override;
    end;
 
@@ -59,8 +59,8 @@ type
       lblSize: TLabel;
       property FieldCount: integer read GetElementCount default 0;
       constructor Create(AParentForm: TDataTypesForm);
-      procedure ExportToXML(ANode: IXMLNode); override;
-      procedure ImportFromXML(ANode: IXMLNode; APinControl: TControl = nil);
+      procedure ExportToXML(ATag: IXMLDOMElement); override;
+      procedure ImportFromXML(ATag: IXMLDOMElement; APinControl: TControl = nil);
       procedure RefreshSizeEdits; override;
       procedure ExportCode(ALines: TStringList); override;
       function IsValidEnumValue(const AValue: string): boolean;
@@ -79,7 +79,7 @@ implementation
 
 uses
    Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, System.Rtti, System.Math,
-   Generics.Defaults, Infrastructure, ParserHelper, OmniXMLUtils, Constants;
+   Generics.Defaults, Infrastructure, ParserHelper, Constants, XMLUtils;
 
 var
    ByTopFieldComparer: IComparer<TField>;
@@ -337,21 +337,21 @@ begin
    inherited OnChangeName(Sender);
 end;
 
-procedure TUserDataType.ExportToXML(ANode: IXMLNode);
+procedure TUserDataType.ExportToXML(ATag: IXMLDOMElement);
 begin
-   var node := AppendNode(ANode, DATATYPE_TAG);
-   inherited ExportToXML(node);
+   var tag := AppendTag(ATag, DATATYPE_TAG);
+   inherited ExportToXML(ATag);
    if chkAddPtrType.Enabled and chkAddPtrType.Checked then
-      SetNodeAttrBool(node, POINTER_ATTR, True);
-   SetNodeAttrStr(node, KIND_ATTR, TRttiEnumerationType.GetName(Kind));
+      tag.SetAttribute(POINTER_ATTR, True);
+   tag.setAttribute(KIND_ATTR, TRttiEnumerationType.GetName(Kind));
 end;
 
-procedure TUserDataType.ImportFromXML(ANode: IXMLNode; APinControl: TControl = nil);
+procedure TUserDataType.ImportFromXML(ATag: IXMLDOMElement; APinControl: TControl = nil);
 begin
-   inherited ImportFromXML(ANode, APinControl);
+   inherited ImportFromXML(ATag, APinControl);
    if chkAddPtrType.Enabled then
-      chkAddPtrType.Checked := GetNodeAttrBool(ANode, POINTER_ATTR, False);
-   rgTypeBox.ItemIndex := Ord(TRttiEnumerationType.GetValue<TUserDataTypeKind>(GetNodeAttrStr(ANode, KIND_ATTR)));
+      chkAddPtrType.Checked := GetNodeAttrBool(ATag, POINTER_ATTR, False);
+    rgTypeBox.ItemIndex := Ord(TRttiEnumerationType.GetValue<TUserDataTypeKind>(GetNodeAttrStr(ATag, KIND_ATTR, '')));
 end;
 
 function TUserDataType.GetDimensionCount: integer;
@@ -428,16 +428,16 @@ begin
       inherited OnChangeName(Sender);
 end;
 
-function TField.ExportToXML(ANode: IXMLNode): IXMLNode;
+function TField.ExportToXML(ATag: IXMLDOMElement): IXMLDOMElement;
 begin
-   result := inherited ExportToXML(ANode);
-   SetNodeAttrStr(result, SIZE_ATTR, edtSize.Text);
+   result := inherited ExportToXML(ATag);
+   result.SetAttribute(SIZE_ATTR, edtSize.Text);
 end;
 
-procedure TField.ImportFromXML(ANode: IXMLNode);
+procedure TField.ImportFromXML(ATag: IXMLDOMElement);
 begin
-   inherited ImportFromXML(ANode);
-   var size := GetNodeAttrStr(ANode, SIZE_ATTR);
+   inherited ImportFromXML(ATag);
+   var size := GetNodeAttrStr(ATag, SIZE_ATTR, '');
    if size.IsEmpty then
       size := '1';
    edtSize.Text := size;

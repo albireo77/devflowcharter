@@ -4,7 +4,7 @@ interface
 
 uses
   System.Classes, Vcl.Controls, Vcl.StdCtrls, System.Types, WinApi.Messages,
-  Base_Form, OmniXML;
+  Base_Form, MSXML2_TLB;
 
 type
   TNavigatorForm = class(TBaseForm)
@@ -27,8 +27,8 @@ type
     { Public declarations }
     InvalidateIndicator: boolean;
     procedure ResetForm; override;
-    procedure ExportToXML(ANode: IXMLNode); override;
-    procedure ImportFromXML(ANode: IXMLNode); override;
+    procedure ExportToXML(ATag: IXMLDOMElement); override;
+    procedure ImportFromXML(ATag: IXMLDOMElement); override;
   end;
 
 var
@@ -38,7 +38,7 @@ implementation
 
 uses
    WinApi.Windows, System.SysUtils, System.UITypes, Vcl.Graphics, Vcl.Forms, Infrastructure,
-   OmniXMLUtils;
+   XMLUtils;
 
 {$R *.dfm}
 
@@ -146,31 +146,31 @@ begin
       GProject.ActivePage.Box.Perform(AMessage.Msg, AMessage.WParam, AMessage.LParam);
 end;
 
-procedure TNavigatorForm.ExportToXML(ANode: IXMLNode);
+procedure TNavigatorForm.ExportToXML(ATag: IXMLDOMElement);
 begin
    if Visible then
    begin
-      SetNodeAttrBool(ANode, 'nav_win_show', True);
-      SetNodeAttrInt(ANode, 'nav_win_x', Left);
-      SetNodeAttrInt(ANode, 'nav_win_y', Top);
-      SetNodeAttrInt(ANode, 'nav_win_width', Width);
-      SetNodeAttrInt(ANode, 'nav_win_height', Height);
+      ATag.SetAttribute('nav_win_show', True);
+      ATag.SetAttribute('nav_win_x', Left);
+      ATag.SetAttribute('nav_win_y', Top);
+      ATag.SetAttribute('nav_win_width', Width);
+      ATag.SetAttribute('nav_win_height', Height);
       if WindowState = wsMinimized then
-         SetNodeAttrBool(ANode, 'nav_win_min', True);
+         ATag.SetAttribute('nav_win_min', True);
    end;
 end;
 
-procedure TNavigatorForm.ImportFromXML(ANode: IXMLNode);
+procedure TNavigatorForm.ImportFromXML(ATag: IXMLDOMElement);
 begin
-   if GetNodeAttrBool(ANode, 'nav_win_show', False) then
+   if GetNodeAttrBool(ATag, 'nav_win_show', False) then
    begin
       Position := poDesigned;
-      if GetNodeAttrBool(ANode, 'nav_win_min', False) then
+      if GetNodeAttrBool(ATag, 'nav_win_min', False) then
          WindowState := wsMinimized;
-      SetBounds(GetNodeAttrInt(ANode, 'nav_win_x'),
-                GetNodeAttrInt(ANode, 'nav_win_y'),
-                GetNodeAttrInt(ANode, 'nav_win_width'),
-                GetNodeAttrInt(ANode, 'nav_win_height'));
+      SetBounds(GetNodeAttrInt(ATag, 'nav_win_x', Left),
+                GetNodeAttrInt(ATag, 'nav_win_y', Top),
+                GetNodeAttrInt(ATag, 'nav_win_width', Width),
+                GetNodeAttrInt(ATag, 'nav_win_height', Height));
       Show;
    end;
 end;

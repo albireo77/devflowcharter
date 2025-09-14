@@ -24,7 +24,8 @@ unit PageControl_Form;
 interface
 
 uses
-   Vcl.Menus, Vcl.ComCtrls, Vcl.Controls, System.Classes, System.Types, OmniXML, Base_Form, Types;
+   Vcl.Menus, Vcl.ComCtrls, Vcl.Controls, System.Classes, System.Types, MSXML2_TLB,
+   Base_Form, Types;
 
 type
 
@@ -48,13 +49,13 @@ type
     procedure miRemoveAllClick(Sender: TObject);
     procedure pgcTabsChange(Sender: TObject); virtual;
     procedure miExportAllClick(Sender: TObject);
-    procedure ExportTabsToXML(ANode: IXMLNode);
+    procedure ExportTabsToXML(ATag: IXMLDOMElement);
     function IsEnabled: boolean; virtual; abstract;
-    function ImportTabsFromXML(ANode: IXMLNode; AImportMode: TImportMode): TError; virtual; abstract;
+    function ImportTabsFromXML(ATag: IXMLDOMElement; AImportMode: TImportMode): TError; virtual; abstract;
     procedure FormDeactivate(Sender: TObject); virtual;
     procedure RefreshTabs; virtual;
-    procedure ExportToXML(ANode: IXMLNode); override;
-    procedure ImportFromXML(ANode: IXMLNode); override;
+    procedure ExportToXML(ATag: IXMLDOMElement); override;
+    procedure ImportFromXML(ATag: IXMLDOMElement); override;
     procedure pgcTabsDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure pgcTabsDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
     procedure pgcTabsMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -76,7 +77,7 @@ implementation
 {$R *.dfm}
 
 uses
-   System.SysUtils, System.StrUtils, Vcl.Forms, Infrastructure, XMLProcessor, OmniXMLUtils,
+   System.SysUtils, System.StrUtils, Vcl.Forms, Infrastructure, XMLProcessor, XMLUtils,
    TabComponent, Interfaces;
 
 procedure TPageControlForm.miRemoveClick(Sender: TObject);
@@ -125,14 +126,14 @@ begin
    end;
 end;
 
-procedure TPageControlForm.ExportTabsToXML(ANode: IXMLNode);
+procedure TPageControlForm.ExportTabsToXML(ATag: IXMLDOMElement);
 var
    xmlable: IXMLable;
 begin
    for var i := 0 to pgcTabs.PageCount-1 do
    begin
       if pgcTabs.Pages[i].TabVisible and Supports(pgcTabs.Pages[i], IXMLable, xmlable) then
-         xmlable.ExportToXML(ANode);
+         xmlable.ExportToXML(ATag);
    end;
 end;
 
@@ -246,43 +247,43 @@ begin
    end;
 end;
 
-procedure TPageControlForm.ExportToXML(ANode: IXMLNode);
+procedure TPageControlForm.ExportToXML(ATag: IXMLDOMElement);
 begin
    RefreshTabs;
-   SetNodeAttrInt(ANode, FPrefix + 'win_h', Height);
+   ATag.SetAttribute(FPrefix + 'win_h', Height);
    if Visible then
    begin
-      SetNodeAttrBool(ANode, FPrefix + 'win_show', True);
-      SetNodeAttrInt(ANode, FPrefix + 'win_x', Left);
-      SetNodeAttrInt(ANode, FPrefix + 'win_y', Top);
+      ATag.SetAttribute(FPrefix + 'win_show', True);
+      ATag.SetAttribute(FPrefix + 'win_x', Left);
+      ATag.SetAttribute(FPrefix + 'win_y', Top);
       var i := pgcTabs.ActivePageIndex;
       if i <> -1 then
       begin
-         SetNodeAttrInt(ANode, FPrefix + 'idx', i);
+         ATag.SetAttribute(FPrefix + 'idx', i);
          var a := TTabComponent(pgcTabs.ActivePage).ScrollPos;
          if a > 0 then
-            SetNodeAttrInt(ANode, FPrefix + 'scroll_v', a);
+            ATag.SetAttribute(FPrefix + 'scroll_v', a);
       end;
       if WindowState = wsMinimized then
-         SetNodeAttrBool(ANode, FPrefix + 'win_min', True);
+         ATag.SetAttribute(FPrefix + 'win_min', True);
    end;
 end;
 
-procedure TPageControlForm.ImportFromXML(ANode: IXMLNode);
+procedure TPageControlForm.ImportFromXML(ATag: IXMLDOMElement);
 begin
-   Height := GetNodeAttrInt(ANode, FPrefix + 'win_h', Height);
-   if IsEnabled and GetNodeAttrBool(ANode, FPrefix + 'win_show', False) then
+   Height := GetNodeAttrInt(ATag, FPrefix + 'win_h', Height);
+   if IsEnabled and GetNodeAttrBool(ATag, FPrefix + 'win_show', False) then
    begin
       Position := poDesigned;
-      if GetNodeAttrBool(ANode, FPrefix + 'win_min', False) then
+      if GetNodeAttrBool(ATag, FPrefix + 'win_min', False) then
          WindowState := wsMinimized;
-      Left := GetNodeAttrInt(ANode, FPrefix + 'win_x');
-      Top := GetNodeAttrInt(ANode, FPrefix + 'win_y');
-      var i := GetNodeAttrInt(ANode, FPrefix + 'idx', -2);
+      Left := GetNodeAttrInt(ATag, FPrefix + 'win_x', Left);
+      Top := GetNodeAttrInt(ATag, FPrefix + 'win_y', Top);
+      var i := GetNodeAttrInt(ATag, FPrefix + 'idx', -2);
       if (i >= 0) and (i < pgcTabs.PageCount) then
       begin
          pgcTabs.ActivePageIndex := i;
-         i := GetNodeAttrInt(ANode, FPrefix + 'scroll_v', 0);
+         i := GetNodeAttrInt(ATag, FPrefix + 'scroll_v', 0);
          if i > 0 then
             TTabComponent(pgcTabs.ActivePage).ScrollPos := i;
       end;

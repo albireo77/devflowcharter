@@ -28,7 +28,7 @@ interface
 uses
   WinApi.Windows, Vcl.Graphics, Vcl.Forms, System.SysUtils, Vcl.Menus, Vcl.ImgList,
   System.Classes, Vcl.Dialogs, WinApi.Messages, Vcl.ComCtrls, System.ImageList,
-  Base_Form, History, Interfaces, OmniXML, Vcl.Controls;
+  Base_Form, History, Interfaces, Vcl.Controls;
 
 type
 
@@ -240,7 +240,7 @@ uses
    System.Generics.Collections, System.Math, Toolbox_Form, Infrastructure, About_Form,
    Main_Block, ParseGlobals, TranslationManager, XMLProcessor, UserFunction, ForDo_Block,
    Return_Block, Project, Declarations_Form, Base_Block, Comment, Case_Block, Navigator_Form,
-   Types, LangDefinition, EditMemo_Form, BlockFactory, BlockTabSheet, MemoEx, Constants;
+   Types, LangDefinition, EditMemo_Form, BlockFactory, BlockTabSheet, MemoEx, Constants, MSXML2_TLB;
 
 type
   TPopupMenuHack = class(TPopupMenu);
@@ -1008,7 +1008,7 @@ end;
 procedure TMainForm.miImportClick(Sender: TObject);
 var
    comp: TComponent;
-   importFunc: TFunc<IXMLNode, TImportMode, TError>;
+   importFunc: TFunc<IXMLDOMElement, TImportMode, TError>;
 begin
    if GProject <> nil then
    begin

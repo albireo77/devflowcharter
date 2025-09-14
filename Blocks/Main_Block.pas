@@ -25,7 +25,7 @@ interface
 
 uses
    WinApi.Windows, Vcl.Graphics, Vcl.ComCtrls, System.Classes, System.Math, Base_Block,
-   OmniXML, Interfaces, Types, BlockTabSheet, Comment;
+   MSXML2_TLB, Interfaces, Types, BlockTabSheet, Comment;
 
 type
 
@@ -38,14 +38,14 @@ type
       public
          constructor Create(APage: TBlockTabSheet; const ABlockParms: TBlockParms); overload;
          constructor Create(APage: TBlockTabSheet; const ATopLeft: TPoint); overload;
-         procedure SaveInXML(ANode: IXMLNode); override;
+         procedure SaveInXML(ATag: IXMLDOMElement); override;
          procedure ExportToGraphic(AGraphic: TGraphic); override;
          procedure SetWidth(AMinX: integer); override;
          procedure SetZOrder(AValue: integer);
          function ExportToXMLFile(const AFile: string): TError; override;
          function GetExportFileName: string; override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
-         function GetFromXML(ANode: IXMLNode): TError; override;
+         function GetFromXML(ATag: IXMLDOMElement): TError; override;
          function GetHandle: THandle;
          function GetZOrder: integer;
          function IsBoldDesc: boolean; override;
@@ -72,7 +72,7 @@ const
 implementation
 
 uses
-   Vcl.Forms, System.SysUtils, System.StrUtils, Infrastructure, XMLProcessor, OmniXMLUtils,
+   Vcl.Forms, System.SysUtils, System.StrUtils, Infrastructure, XMLProcessor, XMLUtils,
    Navigator_Form, UserFunction, Constants;
 
 constructor TMainBlock.Create(APage: TBlockTabSheet; const ABlockParms: TBlockParms);
@@ -440,22 +440,22 @@ begin
        block.GenerateTree(AParentNode);
 end;
 
-procedure TMainBlock.SaveInXML(ANode: IXMLNode);
+procedure TMainBlock.SaveInXML(ATag: IXMLDOMElement);
 begin
-   inherited SaveInXML(ANode);
-   if ANode <> nil then
+   inherited SaveInXML(ATag);
+   if ATag <> nil then
    begin
-      SetNodeAttrInt(ANode, Z_ORDER_ATTR, FZOrder);
+      ATag.SetAttribute(Z_ORDER_ATTR, FZOrder);
       if not FPage.IsMain then
-         SetNodeAttrStr(ANode, PAGE_CAPTION_ATTR, FPage.Caption);
+         ATag.SetAttribute(PAGE_CAPTION_ATTR, FPage.Caption);
    end;
 end;
 
-function TMainBlock.GetFromXML(ANode: IXMLNode): TError;
+function TMainBlock.GetFromXML(ATag: IXMLDOMElement): TError;
 begin
-   result := inherited GetFromXML(ANode);
-   if ANode <> nil then
-      FZOrder := GetNodeAttrInt(ANode, Z_ORDER_ATTR);
+   result := inherited GetFromXML(ATag);
+   if ATag <> nil then
+      FZOrder := GetNodeAttrInt(ATag, Z_ORDER_ATTR, 0);
 end;
 
 function TMainBlock.IsBoldDesc: boolean;

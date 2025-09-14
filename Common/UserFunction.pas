@@ -25,8 +25,8 @@ interface
 
 uses
    Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ExtCtrls, System.Classes, System.Types,
-   Generics.Defaults, OmniXML, Main_Block, DeclareList, Interfaces, TabComponent,
-   Element, Functions_Form;
+   Generics.Defaults, Main_Block, DeclareList, Interfaces, TabComponent,
+   Element, Functions_Form, MSXML2_TLB;
 
 type
 
@@ -48,8 +48,8 @@ type
       chkTable: TCheckBox;
       chkReference: TCheckBox;
       edtDefault: TEdit;
-      function ExportToXML(ANode: IXMLNode): IXMLNode; override;
-      procedure ImportFromXML(ANode: IXMLNode); override;
+      function ExportToXML(ATag: IXMLDOMElement): IXMLDOMElement; override;
+      procedure ImportFromXML(ATag: IXMLDOMElement); override;
    end;
 
    TUserFunctionHeader = class(TTabComponent)
@@ -102,8 +102,8 @@ type
       constructor Create(AParentForm: TFunctionsForm);
       destructor Destroy; override;
       procedure ExportCode(ALines: TStringList); override;
-      procedure ExportToXML(ANode: IXMLNode); override;
-      procedure ImportFromXML(ANode: IXMLNode; APinControl: TControl = nil);
+      procedure ExportToXML(ATag: IXMLDOMElement); override;
+      procedure ImportFromXML(ATag: IXMLDOMElement; APinControl: TControl = nil);
       procedure RefreshSizeEdits; override;
       procedure AddDescriptionToCode(ALines: TStrings);
       procedure SetPageBox(const ACaption: TCaption = '');
@@ -126,8 +126,8 @@ type
       property Active: boolean read GetActive write SetActive;
       constructor Create(AHeader: TUserFunctionHeader; ABody: TMainBlock);
       destructor Destroy; override;
-      procedure ImportFromXML(ANode: IXMLNode; APinControl: TControl = nil);
-      procedure ExportToXML(ANode: IXMLNode);
+      procedure ImportFromXML(ATag: IXMLDOMElement; APinControl: TControl = nil);
+      procedure ExportToXML(ATag: IXMLDOMElement);
       procedure GenerateTree(ANode: TTreeNode);
       function GetId: integer;
       function GetLibrary: string;
@@ -147,7 +147,7 @@ implementation
 
 uses
    Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, Infrastructure, Constants,
-   Navigator_Form, Types, OmniXMLUtils;
+   Navigator_Form, Types, XMLUtils;
 
 var
    ByTopParameterComparer: IComparer<TParameter>;
@@ -293,15 +293,15 @@ begin
    result := FActive;
 end;
 
-procedure TUserFunction.ExportToXML(ANode: IXMLNode);
+procedure TUserFunction.ExportToXML(ATag: IXMLDOMElement);
 begin
    if FHeader <> nil then
-      FHeader.ExportToXML(ANode)
+      FHeader.ExportToXML(ATag)
    else if FBody <> nil then
-      FBody.ExportToXML(AppendNode(ANode, FUNCTION_TAG));
+      FBody.ExportToXML(AppendTag(ATag, FUNCTION_TAG));
 end;
 
-procedure TUserFunction.ImportFromXML(ANode: IXMLNode; APinControl: TControl = nil);
+procedure TUserFunction.ImportFromXML(ATag: IXMLDOMElement; APinControl: TControl = nil);
 begin
 {}
 end;
@@ -871,56 +871,56 @@ begin
    end;
 end;
 
-procedure TUserFunctionHeader.ExportToXML(ANode: IXMLNode);
+procedure TUserFunctionHeader.ExportToXML(ATag: IXMLDOMElement);
 begin
-   var functionNode := AppendNode(ANode, FUNCTION_TAG);
-   var headerNode := AppendNode(functionNode, HEADER_TAG);
-   inherited ExportToXML(headerNode);
-   SetNodeAttrStr(headerNode, TYPE_ATTR, IfThen(cbType.ItemIndex = 0, 'none', cbType.Text));
+   var functionTag := AppendTag(ATag, FUNCTION_TAG);
+   var headerTag := AppendTag(functionTag, HEADER_TAG);
+   inherited ExportToXML(headerTag);
+   headerTag.SetAttribute(TYPE_ATTR, IfThen(cbType.ItemIndex = 0, 'none', cbType.Text));
    if memDesc.Text <> '' then
-      SetNodeCData(headerNode, 'desc', ReplaceStr(memDesc.Text, sLineBreak, LB_PHOLDER));
-   SetNodeAttrBool(headerNode, 'show_body', chkBodyVisible.Checked);
-   SetNodeAttrBool(headerNode, 'desc_incl', chkInclDescCode.Checked);
-   SetNodeAttrBool(headerNode, 'desc_incl_flow', chkInclDescFlow.Checked);
-   FLocalVars.ExportToXML(headerNode);
-   SetNodeAttrInt(headerNode, 'descrh', gbDesc.Height);
-   SetNodeAttrInt(headerNode, 'headerh', gbHeader.Height);
-   SetNodeAttrInt(headerNode, 'parmsh', gbParams.Height);
-   SetNodeAttrInt(headerNode, 'lvarsh', FLocalVars.Height);
-   SetNodeAttrBool(headerNode, 'arrayType', chkArrayType.Checked);
-   SetNodeAttrBool(headerNode, 'constructor', chkConstructor.Checked);
+      AppendCDATAChild(headerTag, 'desc', ReplaceStr(memDesc.Text, sLineBreak, LB_PHOLDER));
+   headerTag.SetAttribute('show_body', chkBodyVisible.Checked);
+   headerTag.SetAttribute('desc_incl', chkInclDescCode.Checked);
+   headerTag.SetAttribute('desc_incl_flow', chkInclDescFlow.Checked);
+   FLocalVars.ExportToXML(headerTag);
+   headerTag.SetAttribute('descrh', gbDesc.Height);
+   headerTag.SetAttribute('headerh', gbHeader.Height);
+   headerTag.SetAttribute('parmsh', gbParams.Height);
+   headerTag.SetAttribute('lvarsh', FLocalVars.Height);
+   headerTag.SetAttribute('arrayType', chkArrayType.Checked);
+   headerTag.SetAttribute('constructor', chkConstructor.Checked);
    if chkStatic.Visible then
-      SetNodeAttrBool(headerNode, 'static', chkStatic.Checked);
+      headerTag.SetAttribute('static', chkStatic.Checked);
    if (FUserFunction <> nil) and (FUserFunction.Body <> nil) then
-      FUserFunction.Body.ExportToXML(functionNode);
+      FUserFunction.Body.ExportToXML(functionTag);
 end;
 
-procedure TUserFunctionHeader.ImportFromXML(ANode: IXMLNode; APinControl: TControl = nil);
+procedure TUserFunctionHeader.ImportFromXML(ATag: IXMLDOMElement; APinControl: TControl = nil);
 begin
-   inherited ImportFromXML(ANode, APinControl);
-   var i := cbType.Items.IndexOf(GetNodeAttrStr(ANode, TYPE_ATTR));
+   inherited ImportFromXML(ATag, APinControl);
+   var i := cbType.Items.IndexOf(GetNodeAttrStr(ATag, TYPE_ATTR, ''));
    if i <> -1 then
       cbType.ItemIndex := i
    else if cbType.Items.Count > 0 then
       cbType.ItemIndex := 0;
    if Assigned(cbType.OnChange) then
       cbType.OnChange(cbType);
-   var node := FindNode(ANode, 'desc');
-   if node <> nil then
-      memDesc.Text := ReplaceStr(node.Text, LB_PHOLDER, sLineBreak);
-   chkBodyVisible.Checked := GetNodeAttrBool(ANode, 'show_body');
-   chkInclDescCode.Checked := GetNodeAttrBool(ANode, 'desc_incl');
-   chkInclDescFlow.Checked := GetNodeAttrBool(ANode, 'desc_incl_flow');
-   chkArrayType.Checked := GetNodeAttrBool(ANode, 'arrayType', False);
-   chkConstructor.Checked := GetNodeAttrBool(ANode, 'constructor', False);
+   var tag := FindChildTag(ATag, 'desc');
+   if tag <> nil then
+      memDesc.Text := ReplaceStr(tag.Text, LB_PHOLDER, sLineBreak);
+   chkBodyVisible.Checked := GetNodeAttrBool(ATag, 'show_body', True);
+   chkInclDescCode.Checked := GetNodeAttrBool(ATag, 'desc_incl', False);
+   chkInclDescFlow.Checked := GetNodeAttrBool(ATag, 'desc_incl_flow', False);
+   chkArrayType.Checked := GetNodeAttrBool(ATag, 'arrayType', False);
+   chkConstructor.Checked := GetNodeAttrBool(ATag, 'constructor', False);
    if chkStatic.Visible then
-      chkStatic.Checked := GetNodeAttrBool(ANode, 'static', False);
-   FLocalVars.ImportFromXML(ANode, impAll);
-   gbDesc.Height := GetNodeAttrInt(ANode, 'descrh');
-   gbHeader.Height := GetNodeAttrInt(ANode, 'headerh');
-   gbParams.Height := GetNodeAttrInt(ANode, 'parmsh');
+      chkStatic.Checked := GetNodeAttrBool(ATag, 'static', False);
+   FLocalVars.ImportFromXML(ATag, impAll);
+   gbDesc.Height := GetNodeAttrInt(ATag, 'descrh', gbDesc.Height);
+   gbHeader.Height := GetNodeAttrInt(ATag, 'headerh', gbHeader.Height);
+   gbParams.Height := GetNodeAttrInt(ATag, 'parmsh', gbParams.Height);
    sbxElements.Constraints.MaxHeight := gbParams.Height - 66;
-   FLocalVars.Height := GetNodeAttrInt(ANode, 'lvarsh');
+   FLocalVars.Height := GetNodeAttrInt(ATag, 'lvarsh', FLocalVars.Height);
 end;
 
 procedure TParameter.OnChangeType(Sender: TObject);
@@ -935,21 +935,21 @@ begin
    TUserFunctionHeader(ParentTab).RedrawBody;
 end;
 
-procedure TParameter.ImportFromXML(ANode: IXMLNode);
+procedure TParameter.ImportFromXML(ATag: IXMLDOMElement);
 begin
-   inherited ImportFromXML(ANode);
-   chkTable.Checked := GetNodeAttrBool(ANode, 'table');
-   chkReference.Checked := GetNodeAttrBool(ANode, 'reference');
-   edtDefault.Text := GetNodeAttrStr(ANode, 'default', '');
+   inherited ImportFromXML(ATag);
+   chkTable.Checked := GetNodeAttrBool(ATag, 'table', False);
+   chkReference.Checked := GetNodeAttrBool(ATag, 'reference', False);
+   edtDefault.Text := GetNodeAttrStr(ATag, 'default', '');
 end;
 
-function TParameter.ExportToXML(ANode: IXMLNode): IXMLNode;
+function TParameter.ExportToXML(ATag: IXMLDOMElement): IXMLDOMElement;
 begin
-   result := inherited ExportToXML(ANode);
-   SetNodeAttrBool(result, 'table', chkTable.Checked);
-   SetNodeAttrBool(result, 'reference', chkReference.Checked);
+   result := inherited ExportToXML(ATag);
+   result.SetAttribute('table', chkTable.Checked);
+   result.SetAttribute('reference', chkReference.Checked);
    if edtDefault.Text <> '' then
-      SetNodeAttrStr(result, 'default', edtDefault.Text);
+      result.SetAttribute('default', edtDefault.Text);
 end;
 
 function TUserFunction.GetCompareValue(ACompareType: integer): integer;

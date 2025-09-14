@@ -33,7 +33,6 @@ type
     pnlInfo: TPanel;
     imDelphi,
     imSynEdit: TImage;
-    lblXML,
     lblProjectLink,
     lblInfo1,
     lblInfo2: TLabel;

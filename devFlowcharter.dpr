@@ -93,7 +93,9 @@ uses
   BlockTabSheet in 'Common\BlockTabSheet.pas',
   Python_Generator in 'CodeGenerators\Python_Generator.pas',
   MemoEx in 'Common\MemoEx.pas',
-  Java_Generator in 'CodeGenerators\Java_Generator.pas';
+  Java_Generator in 'CodeGenerators\Java_Generator.pas',
+  MSXML2_TLB in 'Imports\MSXML2_TLB.pas',
+  XMLUtils in 'Common\XMLUtils.pas';
 
 {$R *.res}
 

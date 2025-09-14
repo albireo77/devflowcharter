@@ -28,7 +28,7 @@ uses
    SynEditCodeFolding,
 {$ENDIF}
    System.Classes, Vcl.StdCtrls, Vcl.Forms, Vcl.Controls, Vcl.Menus, Generics.Defaults,
-   Vcl.ComCtrls, WinApi.Messages, System.Types, System.SysUtils, SynEditTypes, OmniXML;
+   Vcl.ComCtrls, WinApi.Messages, System.Types, System.SysUtils, SynEditTypes, MSXML2_TLB;
 
 const
    ID_UNDEFINED = -1;
@@ -138,7 +138,7 @@ type
       class function New(bt: TBlockType; x, y, w, h: integer; bid: integer = ID_UNDEFINED): TBlockParms; overload; static;
       class function New(bt: TBlockType; x, y, w, h, brx, bry, bh: integer; bid: integer = ID_UNDEFINED): TBlockParms; overload; static;
       class function New(bt: TBlockType; x, y, w, h, brx, bry, bh, th, br2x, br2y, trh, flh: integer; bid: integer = ID_UNDEFINED): TBlockParms; overload; static;
-      class function New(AFrom: IXMLNode): TBlockParms; overload; static;
+      class function New(AFrom: IXMLDOMElement): TBlockParms; overload; static;
    end;
 
    PTypesSet = ^TTypesSet;
@@ -164,7 +164,7 @@ type
 implementation
 
 uses
-   System.Rtti, Interfaces, OmniXMLUtils, Constants;
+   System.Rtti, Interfaces, XMLUtils, Constants;
 
 constructor TComponentComparer.Create(ACompareType: integer);
 begin
@@ -266,23 +266,23 @@ begin
    result.flh := flh;
 end;
 
-class function TBlockParms.New(AFrom: IXMLNode): TBlockParms;
+class function TBlockParms.New(AFrom: IXMLDOMElement): TBlockParms;
 var
    attr: string;
    at: integer;
    bt: TBlockType;
 begin
-   attr := GetNodeAttrStr(AFrom, BLOCK_TYPE_ATTR);
+   attr := GetNodeAttrStr(AFrom, BLOCK_TYPE_ATTR, '');
    at := StrToIntDef(attr, -1);
    if at = -1 then
       bt := TRttiEnumerationType.GetValue<TBlockType>(attr)
    else
       bt := TBlockType(at);
    result := New(bt,
-                 GetNodeAttrInt(AFrom, 'x'),
-                 GetNodeAttrInt(AFrom, 'y'),
-                 GetNodeAttrInt(AFrom, 'w'),
-                 GetNodeAttrInt(AFrom, 'h'),
+                 GetNodeAttrInt(AFrom, 'x', 0),
+                 GetNodeAttrInt(AFrom, 'y', 0),
+                 GetNodeAttrInt(AFrom, 'w', 0),
+                 GetNodeAttrInt(AFrom, 'h', 0),
                  GetNodeAttrInt(AFrom, 'brx', 0),
                  GetNodeAttrInt(AFrom, 'bry', 0),
                  GetNodeAttrInt(AFrom, 'bh', 0),
