@@ -1187,10 +1187,7 @@ begin
    if edit <> nil then
    begin
       var lColor := GSettings.GetShapeColor(FShape);
-      if lColor = GSettings.DesktopColor then
-         edit.Color := AColor
-      else
-         edit.Color := lColor;
+      edit.Color := if lColor <> GSettings.DesktopColor then lColor else AColor;
    end;
 end;
 
@@ -1250,10 +1247,7 @@ begin
          block.ChangeColor(AColor);
    end;
    var lColor := GSettings.GetShapeColor(shpFolder);
-   if lColor = GSettings.DesktopColor then
-      FMemoFolder.Color := AColor
-   else
-      FMemoFolder.Color := lColor;
+   FMemoFolder.Color := if lColor <> GSettings.DesktopColor then lColor else AColor;
 end;
 
 procedure TBlock.Select;
@@ -1818,10 +1812,7 @@ begin
    result := CanRemove;
    if result then
    begin
-      if ANode <> nil then
-         result := RemoveBranch(GetBranchIndexByControl(ANode.Data))
-      else
-         result := False;
+      result := if ANode <> nil then RemoveBranch(GetBranchIndexByControl(ANode.Data)) else False;
       if not result then
          result := inherited Remove(ANode);
    end;
@@ -2030,9 +2021,9 @@ begin
 
       try
          SetNodeAttrInt(ANode, 'bry', Branch.Hook.Y);
-         SetNodeAttrInt(ANode, 'brx', IfThen(Expanded, Branch.Hook.X, FFoldParms.BranchPoint.X));
-         SetNodeAttrInt(ANode, 'fw', IfThen(Expanded, FFoldParms.Width, Width));
-         SetNodeAttrInt(ANode, 'fh', IfThen(Expanded, FFoldParms.Height, Height));
+         SetNodeAttrInt(ANode, 'brx', if Expanded then Branch.Hook.X else FFoldParms.BranchPoint.X);
+         SetNodeAttrInt(ANode, 'fw', if Expanded then FFoldParms.Width else Width);
+         SetNodeAttrInt(ANode, 'fh', if Expanded then FFoldParms.Height else Height);
          SetNodeAttrBool(ANode, FOLDED_ATTR, not Expanded);
 
          var txt := GetFoldedText;
@@ -2268,10 +2259,7 @@ end;
 function TBlock.GetFocusColor: TColor;
 begin
    var edit := GetTextControl;
-   if (edit <> nil) and edit.HasParent then
-      result := TControlHack(edit).Font.Color
-   else
-      result := OK_COLOR;
+   result := if (edit <> nil) and edit.HasParent then TControlHack(edit).Font.Color else OK_COLOR;
 end;
 
 procedure TBlock.UpdateEditor(AEdit: TCustomEdit);
@@ -2363,11 +2351,7 @@ end;
 procedure TBlock.ExportToGraphic(AGraphic: TGraphic);
 begin
    DeSelect;
-   var bitmap: TBitmap := nil;
-   if AGraphic is TBitmap then
-      bitmap := TBitmap(AGraphic)
-   else
-      bitmap := TBitmap.Create;
+   var bitmap := if AGraphic is TBitmap then TBitmap(AGraphic) else TBitmap.Create;
    bitmap.Width := Width + 2;
    bitmap.Height := Height + 2;
    var lPage := Page;
@@ -2413,15 +2397,13 @@ procedure TGroupBlock.LinkBlocks(ABranch: TBranch);
 begin
    if ABranch <> nil then
    begin
-      var p: TPoint;
       var blockPrev: TBlock := nil;
       for var block in ABranch do
       begin
-         if blockPrev <> nil then
-            p := Point(blockPrev.BottomPoint.X+blockPrev.Left-block.TopHook.X, blockPrev.BoundsRect.Bottom)
-         else
-            p := Point(ABranch.Hook.X-block.TopHook.X, ABranch.Hook.Y+1);
-         TInfra.MoveWin(block, p);
+         TInfra.MoveWin(block, if blockPrev <> nil then
+                                  Point(blockPrev.BottomPoint.X+blockPrev.Left-block.TopHook.X, blockPrev.BoundsRect.Bottom)
+                               else
+                                  Point(ABranch.Hook.X-block.TopHook.X, ABranch.Hook.Y+1));
          blockPrev := block;
       end;
    end;
@@ -2630,10 +2612,7 @@ end;
 
 function TBranch.QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
 begin
-   if GetInterface(IID, Obj) then
-      result := 0
-   else
-      result := E_NOINTERFACE;
+   result := if GetInterface(IID, Obj) then 0 else E_NOINTERFACE;
 end;
 
 function TBranch._AddRef: Integer; stdcall;    // no reference counting

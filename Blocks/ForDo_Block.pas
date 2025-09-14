@@ -296,10 +296,10 @@ begin
       if not isVarOk then
       begin
          edtVar.Font.Color := NOK_COLOR;
-         if edtVar.Text <> '' then
-            edtVar.Hint := trnsManager.GetFormattedString('BadCVar', [edtVar.Text, sLineBreak])
-         else
-            edtVar.Hint := trnsManager.GetFormattedString('NoCVar', [sLineBreak]);
+         edtVar.Hint := if edtVar.Text <> '' then
+                           trnsManager.GetFormattedString('BadCVar', [edtVar.Text, sLineBreak])
+                        else
+                           trnsManager.GetFormattedString('NoCVar', [sLineBreak]);
       end;
    end;
    var w := TInfra.GetAutoWidth(edtVar, IfThen(GInfra.CurrentLang.ForDoVarList, 28, 5));

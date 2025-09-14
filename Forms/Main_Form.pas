@@ -1164,12 +1164,7 @@ begin
          else if Sender = miMemoWordWrap then
             memo.WordWrap := miMemoWordWrap.Checked
          else if Sender = miMemoAlignRight then
-         begin
-            if miMemoAlignRight.Checked then
-               memo.Alignment := taRightJustify
-            else
-               memo.Alignment := taLeftJustify;
-         end;
+            memo.Alignment := if miMemoAlignRight.Checked then taRightJustify else taLeftJustify;
       end;
    end;
 end;
@@ -1402,10 +1397,7 @@ procedure TMainForm.miIsHeaderClick(Sender: TObject);
 begin
    if pmPages.PopupComponent is TComment then
    begin
-      if miIsHeader.Checked then
-         GProject.HeaderComment := nil
-      else
-         GProject.HeaderComment := TComment(pmPages.PopupComponent);
+      GProject.HeaderComment := if miIsHeader.Checked then nil else TComment(pmPages.PopupComponent);
       TInfra.UpdateCodeEditor;
    end;
 end;

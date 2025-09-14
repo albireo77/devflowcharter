@@ -250,12 +250,7 @@ begin
       LinkBlocks(br);
       PlaceBranchStatement(br);
       if not br.EndsWithReturnBlock then
-      begin
-         if not br.IsEmpty then
-            BottomHook := br.Last.Left + br.Last.BottomPoint.X
-         else
-            BottomHook := br.Hook.X;
-      end;
+         BottomHook := if br.IsEmpty then br.Hook.X else (br.Last.Left + br.Last.BottomPoint.X);
       rightX := br.GetMostRight + 60;
    end;
    TopHook.X := DefaultBranch.Hook.X;
