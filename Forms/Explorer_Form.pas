@@ -81,15 +81,15 @@ implementation
 {$R *.dfm}
 
 uses
-   Vcl.Graphics, Vcl.Forms, System.SysUtils, System.Math, Infrastructure, Base_Block,
-   Constants, OmniXMLUtils;
+   Vcl.Graphics, Vcl.Forms, System.SysUtils, Infrastructure, Base_Block, Constants,
+   OmniXMLUtils;
 
 procedure TExplorerForm.FormShow(Sender: TObject);
 begin
     if GProject <> nil then
     begin
        FErrWarnCount := GProject.CountErrWarn;
-       lblErrors.Font.Color := IfThen(FErrWarnCount.ErrorCount = 0, OK_COLOR, NOK_COLOR);
+       lblErrors.Font.Color := if FErrWarnCount.ErrorCount = 0 then OK_COLOR else NOK_COLOR;
        lblErrors.Caption := trnsManager.GetFormattedString('lblErrors', [FErrWarnCount.ErrorCount]);
        lblWarnings.Caption := trnsManager.GetFormattedString('lblWarnings', [FErrWarnCount.WarningCount]);
        ClearTreeViewItems;
@@ -349,12 +349,7 @@ procedure TExplorerForm.FormMouseWheel(Sender: TObject; Shift: TShiftState;
    WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 begin
    if (ssCtrl in Shift) and (tvExplorer.Selected <> nil) then
-   begin
-      if WheelDelta < 0 then
-         tvExplorer.Selected := tvExplorer.Selected.GetNextVisible
-      else
-         tvExplorer.Selected := tvExplorer.Selected.GetPrevVisible;
-   end;
+      tvExplorer.Selected := if WheelDelta < 0 then tvExplorer.Selected.GetNextVisible else tvExplorer.Selected.GetPrevVisible;
 end;
 
 procedure TExplorerForm.FormCreate(Sender: TObject);
