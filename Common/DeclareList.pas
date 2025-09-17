@@ -533,10 +533,7 @@ var
    lCol, lRow: integer;
 begin
    sgList.MouseToCell(x, y, lCol, lRow);
-   if (lRow > 0) and (lRow < sgList.RowCount-1) then
-      result := lRow
-   else
-      result := INVALID_ROW;
+   result := if (lRow > 0) and (lRow < sgList.RowCount-1) then lRow else INVALID_ROW;
 end;
 
 procedure TDeclareList.OnDragOverList(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);

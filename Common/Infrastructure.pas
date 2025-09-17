@@ -425,10 +425,7 @@ end;
 // compares two strings based on current case-sensitive context
 class function TInfra.SameStrings(const AStr1, AStr2: string): boolean;
 begin
-   if GInfra.CurrentLang.CaseSensitiveSyntax then
-      result := SameStr(AStr1, AStr2)
-   else
-      result := SameText(AStr1, AStr2);
+   result := if GInfra.CurrentLang.CaseSensitiveSyntax then SameStr(AStr1, AStr2) else SameText(AStr1, AStr2);
 end;
 
 class procedure TInfra.PrintBitmap(ABitmap: TBitmap);
@@ -479,14 +476,8 @@ begin
            LogPixY1 := GetDeviceCaps(ABitmap.Canvas.Handle, LOGPIXELSY);
            LogPixX2 := GetDeviceCaps(Printer.Canvas.Handle, LOGPIXELSX);
            LogPixY2 := GetDeviceCaps(Printer.Canvas.Handle, LOGPIXELSY);
-           if LogPixX1 > LogPixX2 then      // horizontal
-              ScaleX := LogPixX1 div LogPixX2
-           else
-              ScaleX := LogPixX2 div LogPixX1;
-           if LogPixY1 > LogPixY2 then      // vertical
-              ScaleY := LogPixY1 div LogPixY2
-           else
-              ScaleY := LogPixY2 div LogPixY1;
+           ScaleX := if LogPixX1 > LogPixX2 then (LogPixX1 div LogPixX2) else (LogPixX2 div LogPixX1);
+           ScaleY := if LogPixY1 > LogPixY2 then (LogPixY1 div LogPixY2) else (LogPixY2 div LogPixY1);
            stepX := printRect.Width div ScaleX;
            stepY := printRect.Height div ScaleY;
         end
@@ -1211,10 +1202,7 @@ end;
 class function TInfra.Scaled(AControl: TControl; on96: integer): integer;
 begin
    var ppi := AControl.CurrentPPI;
-   if ppi = 96 then
-      result := on96
-   else
-      result := MulDiv(on96, ppi, 96);
+   result := if ppi = 96 then on96 else MulDiv(on96, ppi, 96);
 end;
 
 class function TInfra.ReplaceXMLIndents(const ALine: string): string;

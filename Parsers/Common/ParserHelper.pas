@@ -339,12 +339,7 @@ begin
       begin
          var size := dataType.GetDimensions;
          if not size.IsEmpty then
-         begin
-            if result <> '1' then
-               result := result + size
-            else
-               result := size;
-         end;
+            result := if result <> '1' then (result + size) else size;
       end;
    end;
 end;
@@ -683,10 +678,7 @@ end;
 
 class function TParserHelper.EncodeArrayType(AType, ADimensionCount: integer): integer;
 begin
-   if (AType >= 0) and (AType < DIMENSION_LEVEL_STEP) then
-      result := AType + DIMENSION_LEVEL_STEP * ADimensionCount
-   else
-      result := AType;
+   result := if (AType >= 0) and (AType < DIMENSION_LEVEL_STEP) then (AType + DIMENSION_LEVEL_STEP * ADimensionCount) else AType;
 end;
 
 end.

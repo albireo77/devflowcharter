@@ -151,12 +151,7 @@ begin
             if varType = currType then
             begin
                if (dCount = 0) and varInit.IsEmpty then
-               begin
-                  if buf.IsEmpty then
-                     buf := varName
-                  else
-                     buf := buf + ', ' + varName;
-               end
+                  buf := if buf.IsEmpty then varName else (buf + ', ' + varName)
                else
                begin
                   var line := GSettings.IndentString + varName + ': ';
@@ -167,12 +162,7 @@ begin
                      if dims <> nil then
                      begin
                         for var dim in dims do
-                        begin
-                           if dim.IsEmpty then
-                              varSize := varSize + 'array of '
-                           else
-                              varSize := varSize + '1..' + dim + ', ';
-                        end;
+                           varSize := varSize + if dim.IsEmpty then 'array of ' else ('1..' + dim + ', ');
                         if varSize.EndsWith(', ') then
                         begin
                            SetLength(varSize, varSize.Length - 2);

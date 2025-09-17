@@ -650,10 +650,7 @@ begin
          foldRegion.AddClose := GetNodeAttrBool(rnode, 'AddClose', False);
          foldRegion.NoSubFolds := GetNodeAttrBool(rnode, 'NoSubFolds', True);
          foldRegion.WholeWords := GetNodeAttrBool(rnode, 'WholeWords', True);
-         if GetNodeAttrStr(rnode, 'Type', '') = 'rtChar' then
-            foldRegion.RegionType := rtChar
-         else
-            foldRegion.RegionType := rtKeyword;
+         foldRegion.RegionType := if GetNodeAttrStr(rnode, 'Type', '') = 'rtChar' then rtChar else rtKeyword;
          FoldRegions := FoldRegions + [foldRegion];
          rnode := foldRegionNodes.NextNode;
       end;
