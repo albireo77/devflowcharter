@@ -255,10 +255,7 @@ end;
 
 function TStatement.GetFocusColor: TColor;
 begin
-   if HasParent then
-      result := Font.Color
-   else
-      result := OK_COLOR;
+   result := if HasParent then Font.Color else OK_COLOR;
 end;
 
 function TStatement.Remove(ANode: TTreeNodeWithFriend = nil): boolean;

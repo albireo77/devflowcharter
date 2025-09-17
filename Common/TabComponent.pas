@@ -189,15 +189,9 @@ begin
 end;
 
 procedure TTabComponent.ExportToGraphic(AGraphic: TGraphic);
-var
-   bitmap: TBitmap;
 begin
-   if AGraphic is TBitmap then
-      bitmap := TBitmap(AGraphic)
-   else
-      bitmap := TBitmap.Create;
-   bitmap.Width := Width;
-   bitmap.Height := Height;
+   var bitmap := if AGraphic is TBitmap then TBitmap(AGraphic) else TBitmap.Create;
+   bitmap.SetSize(Width, Height);
    bitmap.Canvas.Lock;
    PaintTo(bitmap.Canvas, 0, 0);
    bitmap.Canvas.Unlock;
@@ -215,10 +209,10 @@ begin
    chkExternal.Alignment := AAlignment;
    if not FCodeIncludeExtern then
       chkExternal.Hint := trnsManager.GetString('chkExternal.Hint');
-   if GInfra.CurrentLang.ExternalLabel.IsEmpty then
-      chkExternal.Caption := trnsManager.GetString('chkExternal')
-   else
-      chkExternal.Caption := GInfra.CurrentLang.ExternalLabel;
+   chkExternal.Caption := if GInfra.CurrentLang.ExternalLabel.IsEmpty then
+                             trnsManager.GetString('chkExternal')
+                          else
+                             GInfra.CurrentLang.ExternalLabel;
    chkExternal.ParentFont := False;
    chkExternal.Font.Style := [];
    chkExternal.Font.Color := clWindowText;
@@ -334,10 +328,7 @@ end;
 
 procedure TTabComponent.RefreshFontColor;
 begin
-   if HasInvalidElement then
-      Font.Color := NOK_COLOR
-   else
-      Font.Color := edtName.Font.Color;
+   Font.Color := if HasInvalidElement then NOK_COLOR else edtName.Font.Color;
 end;
 
 function TTabComponent.GetElements<T>(AComparer: IComparer<T> = nil): IEnumerable<T>;
@@ -477,10 +468,7 @@ end;
 
 function TTabComponent.GetFocusColor: TColor;
 begin
-   if HasParent then
-      result := Font.Color
-   else
-      result := OK_COLOR;
+   result := if HasParent then Font.Color else OK_COLOR;
 end;
 
 function TTabComponent.Remove(ANode: TTreeNodeWithFriend = nil): boolean;

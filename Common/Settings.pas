@@ -447,10 +447,7 @@ end;
 
 function TSettings.IndentString(ATimes: integer = 1): string;
 begin
-   if ATimes = 1 then
-      result := FIndentSpaces
-   else
-      result := DupeString(FIndentSpaces, ATimes);
+   result := if ATimes = 1 then FIndentSpaces else DupeString(FIndentSpaces, ATimes);
 end;
 
 procedure TSettings.UpdateForHLighter(AHLighter: TSynCustomHighlighter);
@@ -514,10 +511,7 @@ begin
    FEditorFontSize        := StrToIntDef(sForm.cbFontSize.Text, EDITOR_DEFAULT_FONT_SIZE);
    FIndentLength          := StrToIntDef(sForm.edtEditorIndent.Text, EDITOR_DEFAULT_INDENT_LENGTH);
 
-   if sForm.cbIndentChar.ItemIndex = 1 then
-      FIndentChar := TAB_CHAR
-   else
-      FIndentChar := SPACE_CHAR;
+   FIndentChar := if sForm.cbIndentChar.ItemIndex = 1 then TAB_CHAR else SPACE_CHAR;
    FIndentSpaces := StringOfChar(SPACE_CHAR, FIndentLength);
 
    for var colorShape in COLOR_SHAPES do
