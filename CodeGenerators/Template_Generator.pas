@@ -24,7 +24,7 @@ interface
 implementation
 
 uses
-   System.SysUtils, System.StrUtils, System.Classes, System.Math, Vcl.StdCtrls, Base_Block,
+   System.SysUtils, System.StrUtils, System.Classes, Vcl.StdCtrls, Base_Block,
    UserFunction, DeclareList, Interfaces, UserDataType, Infrastructure, ParserHelper,
    Types, Constants, TabComponent;
 
@@ -176,7 +176,7 @@ end;
 function Template_GetConstantType(const AValue: string; var AGenericType: string): integer;
 begin
    AGenericType := '';
-   result := IfThen(TryStrToInt(AValue, result), GENERIC_INT_TYPE, UNKNOWN_TYPE);
+   result := if TryStrToInt(AValue, result) then GENERIC_INT_TYPE else UNKNOWN_TYPE;
 end;
 
 procedure Template_ProgramHeaderSectionGenerator(ALines: TStringList);
@@ -263,11 +263,10 @@ begin
             var genericTypes := '';
             var constType := '';
             var d := 0;
-            var t := 0;
-            if Assigned(lang.GetConstantType) then
-               t := lang.GetConstantType(constValue, genericTypes)
-            else
-               t := Template_GetConstantType(constValue, genericTypes);
+            var t := if Assigned(lang.GetConstantType) then
+                        lang.GetConstantType(constValue, genericTypes)
+                     else
+                        Template_GetConstantType(constValue, genericTypes);
             if t <> UNKNOWN_TYPE then
             begin
                d := TParserHelper.DecodeArrayDimension(t);
@@ -283,7 +282,7 @@ begin
                   constType := ReplaceStr(constType, '%s2', genericTypes);
                end;
             end;
-            var constStr := IfThen(d > 0, lang.ConstEntryArray, lang.ConstEntry);
+            var constStr := if d > 0 then lang.ConstEntryArray else lang.ConstEntry;
             constStr := ReplaceStr(constStr, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
             constStr := ReplaceStr(constStr, '%s2', constValue);
             constStr := ReplaceStr(constStr, '%s3', AConstList.GetExternalModifier(i));
@@ -340,7 +339,7 @@ begin
             var varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
             if not varInit.IsEmpty then
             begin
-               var initEntry := IfThen(isExtern, lang.VarEntryInitExtern, lang.VarEntryInit);
+               var initEntry := if isExtern then lang.VarEntryInitExtern else lang.VarEntryInit;
                if not initEntry.IsEmpty then
                   varInit := ReplaceStr(initEntry, PRIMARY_PLACEHOLDER, varInit);
             end;
@@ -426,15 +425,15 @@ begin
       var isStatic := '';
       if AFunction.Header.cbType.ItemIndex > 0 then
       begin
-         typeArray := IfThen(AFunction.Header.chkArrayType.Checked, lang.FunctionHeaderTypeArray, lang.FunctionHeaderTypeNotArray);
+         typeArray := if AFunction.Header.chkArrayType.Checked then lang.FunctionHeaderTypeArray else lang.FunctionHeaderTypeNotArray;
          h0 := AFunction.Header.cbType.Text;
          h1 := lang.FunctionHeaderTypeNotNone1;
          h2 := lang.FunctionHeaderTypeNotNone2;
       end;
       if AFunction.Header.chkStatic.Visible then
-         isStatic := IfThen(AFunction.Header.chkStatic.Checked, lang.FunctionHeaderStatic, lang.FunctionHeaderNotStatic);
+         isStatic := if AFunction.Header.chkStatic.Checked then lang.FunctionHeaderStatic else lang.FunctionHeaderNotStatic;
 
-      var hText := IfThen(AFunction.Header.chkConstructor.Checked, lang.ConstructorHeaderTemplate, lang.FunctionHeaderTemplate);
+      var hText := if AFunction.Header.chkConstructor.Checked then lang.ConstructorHeaderTemplate else lang.FunctionHeaderTemplate;
       hText := ReplaceStr(hText, PRIMARY_PLACEHOLDER, name);
       hText := ReplaceStr(hText, '%s3', argList);
       hText := ReplaceStr(hText, '%s4', h0);
@@ -663,9 +662,9 @@ begin
    begin
       var params := '';
       var lang := GInfra.CurrentLang;
-      var arrayType := IfThen(AHeader.chkArrayType.Checked, lang.FunctionHeaderTypeArray, lang.FunctionHeaderTypeNotArray);
-      var desc := IfThen(AIncludeDesc, AHeader.memDesc.Text);
-      var lb := IfThen(AIncludeDesc, sLineBreak);
+      var arrayType := if AHeader.chkArrayType.Checked then lang.FunctionHeaderTypeArray else lang.FunctionHeaderTypeNotArray;
+      var desc := if AIncludeDesc then AHeader.memDesc.Text else '';
+      var lb := if AIncludeDesc then sLineBreak else '';
       var lType := AHeader.cbType.Text;
       var key := lang.ProcedureLabelKey;
       if AHeader.chkConstructor.Checked then
@@ -680,7 +679,7 @@ begin
          begin
             if not params.IsEmpty then
                params := params + ', ';
-            params := params + param.cbType.Text + IfThen(param.chkTable.Checked, '[ ] ', ' ') + Trim(param.edtName.Text);
+            params := params + param.cbType.Text + (if param.chkTable.Checked then '[ ] ' else ' ') + Trim(param.edtName.Text);
          end;
       end;
       if not key.IsEmpty then

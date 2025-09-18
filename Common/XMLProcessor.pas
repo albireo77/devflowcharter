@@ -58,12 +58,7 @@ begin
     node := ANode;
 
     if AParent is TGroupBlock then
-    begin
-       if APrevBlock <> nil then
-          branch := APrevBlock.ParentBranch
-       else
-          branch := TGroupBlock(AParent).GetBranch(ABranchIdx);
-    end
+       branch := if APrevBlock <> nil then APrevBlock.ParentBranch else TGroupBlock(AParent).GetBranch(ABranchIdx)
     else if AParent is TBlockTabSheet then
        tab := TBlockTabSheet(AParent);
 

@@ -78,8 +78,8 @@ type
 implementation
 
 uses
-   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, System.Rtti, System.Math,
-   Generics.Defaults, Infrastructure, ParserHelper, OmniXMLUtils, Constants;
+   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, System.Rtti, Generics.Defaults,
+   Infrastructure, ParserHelper, OmniXMLUtils, Constants;
 
 var
    ByTopFieldComparer: IComparer<TField>;
@@ -225,10 +225,7 @@ end;
 
 procedure TUserDataType.ExportCode(ALines: TStringList);
 begin
-   if Assigned(GInfra.CurrentLang.UserDataTypeGenerator) then
-      GInfra.CurrentLang.UserDataTypeGenerator(ALines, Self)
-   else
-      GInfra.TemplateLang.UserDataTypeGenerator(ALines, Self);
+   (if Assigned(GInfra.CurrentLang.UserDataTypeGenerator) then GInfra.CurrentLang else GInfra.TemplateLang).UserDataTypeGenerator(ALines, Self);
 end;
 
 procedure TUserDataType.Resize;
@@ -251,7 +248,7 @@ begin
    lblType.Enabled := lblSize.Enabled;
    if b then
    begin
-      var str := IfThen(t = dtRecord, 'Field', 'Value');
+      var str := if t = dtRecord then 'Field' else 'Value';
       btnAddElement.Caption := trnsManager.GetString('btnAdd' + str);
       lblName2.Caption := trnsManager.GetString('lbl' + str);
    end;
@@ -446,7 +443,7 @@ end;
 procedure TField.OnChangeSize(Sender: TObject);
 begin
    var sizeEdit := TSizeEdit(Sender);
-   sizeEdit.Font.Color := IfThen(sizeEdit.ParseSize, BLACK_COLOR, NOK_COLOR);
+   sizeEdit.Font.Color := if sizeEdit.ParseSize then BLACK_COLOR else NOK_COLOR;
    ParentTab.PageControl.Refresh;
    GProject.SetChanged;
    if ParentForm.UpdateCodeEditor then

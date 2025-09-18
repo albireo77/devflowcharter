@@ -267,17 +267,10 @@ begin
 end;
 
 class function TBlockParms.New(AFrom: IXMLNode): TBlockParms;
-var
-   attr: string;
-   at: integer;
-   bt: TBlockType;
 begin
-   attr := GetNodeAttrStr(AFrom, BLOCK_TYPE_ATTR);
-   at := StrToIntDef(attr, -1);
-   if at = -1 then
-      bt := TRttiEnumerationType.GetValue<TBlockType>(attr)
-   else
-      bt := TBlockType(at);
+   var attr := GetNodeAttrStr(AFrom, BLOCK_TYPE_ATTR);
+   var at := StrToIntDef(attr, -1);
+   var bt := if at = -1 then TRttiEnumerationType.GetValue<TBlockType>(attr) else TBlockType(at);
    result := New(bt,
                  GetNodeAttrInt(AFrom, 'x'),
                  GetNodeAttrInt(AFrom, 'y'),
