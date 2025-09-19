@@ -1416,6 +1416,7 @@ begin
    if AColor = clNone then
       AColor := GSettings.PenColor;
    var isVert := fromX = toX;
+   var toBottomRight := if isVert then (toY > fromY) else (toX > fromX);
    var arr1 := Point(toX, toY);
    if AArrowPos = arrMiddle then
    begin
@@ -1424,9 +1425,6 @@ begin
       else
          arr1.Offset((fromX-toX) div 2, 0);
    end;
-   var toBottomRight := toX > fromX;
-   if isVert then
-      toBottomRight := toY > fromY;
    var arr2 := arr1 + M[isVert, toBottomRight];
    var arr3 := arr2 + D[isVert];
    Canvas.Brush.Style := bsSolid;
