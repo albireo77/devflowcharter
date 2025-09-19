@@ -622,10 +622,8 @@ end;
 
 procedure TBlock.DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-   var shiftState: TShiftState := [];
    var isShift := GetAsyncKeyState(vkShift) <> 0;
-   if isShift then
-      shiftState := [ssShift];
+   var shiftState := if isShift then [ssShift] else [];
    MouseMove(shiftState, X, Y);
    if (FRedArrow < 0) or (Source is not TBlock) or (Source is TMainBlock) or (Source is TReturnBlock) or ((not isShift) and ((Source = Self) or IsAncestor(Source))) then
       Accept := False;
@@ -2167,14 +2165,10 @@ begin
       begin
          if GetBranch(idx) = nil then
          begin
-            var hx := 0;
-            var hy := 0;
             var node := FindNode(branchNode, 'x');
-            if node <> nil then
-               hx := StrToIntDef(node.Text, 0);
+            var hx := if node <> nil then StrToIntDef(node.Text, 0) else 0;
             node := FindNode(branchNode, 'y');
-            if node <> nil then
-               hy := StrToIntDef(node.Text, 0);
+            var hy := if node <> nil then StrToIntDef(node.Text, 0) else 0;
             AddBranch(Point(hx, hy), GetNodeAttrInt(branchNode, ID_ATTR), GetNodeAttrInt(branchNode, BRANCH_TEXT_ATTR, ID_UNDEFINED));
          end;
          var node := FindNode(branchNode, BLOCK_TAG);
