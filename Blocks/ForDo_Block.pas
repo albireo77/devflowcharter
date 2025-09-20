@@ -357,10 +357,8 @@ end;
 
 function TForDoBlock.GetDescTemplate(const ALangId: string): string;
 begin
-   result := '';
    var lang := GInfra.GetLangDefinition(ALangId);
-   if lang <> nil then
-      result := lang.ForDoDescTemplate;
+   result := if lang <> nil then lang.ForDoDescTemplate else '';
 end;
 
 function TForDoBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;

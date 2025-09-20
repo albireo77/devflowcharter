@@ -871,9 +871,10 @@ end;
 
 function TMainForm.ConfirmSave: integer;
 begin
-   result := mrCancel;
-   if GProject <> nil then
-      result := TInfra.ShowQuestionBox('ConfirmClose', [GProject.Name]);
+   result := if GProject <> nil then
+                TInfra.ShowQuestionBox('ConfirmClose', [GProject.Name])
+             else
+                mrCancel;
 end;
 
 procedure TMainForm.SetChanged;
@@ -1052,9 +1053,10 @@ procedure TMainForm.miRemoveBranchClick(Sender: TObject);
 begin
    if pmPages.PopupComponent is TCaseBlock then
    begin
-      var res := IDYES;
-      if GSettings.ConfirmRemove then
-         res := TInfra.ShowQuestionBox(trnsManager.GetString('ConfirmRemove'));
+      var res := if GSettings.ConfirmRemove then
+                    TInfra.ShowQuestionBox(trnsManager.GetString('ConfirmRemove'))
+                 else
+                    IDYES;
       if res = IDYES then
       begin
          var caseBlock := TCaseBlock(pmPages.PopupComponent);
@@ -1213,9 +1215,10 @@ end;
 
 procedure TMainForm.miRemovePageClick(Sender: TObject);
 begin
-   var res := IDYES;
-   if GSettings.ConfirmRemove then
-      res := TInfra.ShowQuestionBox(trnsManager.GetString('ConfirmRemove'));
+   var res := if GSettings.ConfirmRemove then
+                 TInfra.ShowQuestionBox(trnsManager.GetString('ConfirmRemove'))
+              else
+                 IDYES;
    if res = IDYES then
    begin
       pmTabs.PopupComponent.Free;
@@ -1358,9 +1361,7 @@ function TMainForm.BuildFuncMenu: integer;
 begin
    var mItems: TMenuItemArray;
    miInsertFunc.Clear;
-   var lang := GInfra.CurrentLang;
-   if not Assigned(lang.GetUserFuncDesc) then
-      lang := GInfra.TemplateLang;
+   var lang := if Assigned(GInfra.CurrentLang.GetUserFuncDesc) then GInfra.CurrentLang else GInfra.TemplateLang;
    for var func in GProject.GetUserFunctions do
    begin
       var lName := func.GetName;

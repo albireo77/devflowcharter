@@ -456,10 +456,8 @@ end;
 
 function TCaseBlock.GetDescTemplate(const ALangId: string): string;
 begin
-   result := '';
    var lang := GInfra.GetLangDefinition(ALangId);
-   if lang <> nil then
-      result := lang.CaseOfDescTemplate;
+   result := if lang <> nil then lang.CaseOfDescTemplate else '';
 end;
 
 procedure TCaseBlock.ExpandFold(AResize: boolean);
