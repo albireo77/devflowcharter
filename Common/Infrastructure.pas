@@ -906,9 +906,7 @@ end;
 
 class function TInfra.GetParserErrMsg: string;
 begin
-   result := '';
-   if GInfra.CurrentLang.Parser <> nil then
-      result := GInfra.CurrentLang.Parser.GetErrMsg;
+   result := if GInfra.CurrentLang.Parser <> nil then GInfra.CurrentLang.Parser.GetErrMsg else '';
 end;
 
 class function TInfra.IsNOkColor(AColor: TColor): boolean;
