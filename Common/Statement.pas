@@ -277,9 +277,7 @@ end;
 
 function TStatement.GetTreeNodeText(ANodeOffset: integer = 0): string;
 begin
-   result := '';
-   if HasFocusParent then
-      result := FFocusParent.GetTreeNodeText(ANodeOffset);
+   result := if HasFocusParent then FFocusParent.GetTreeNodeText(ANodeOffset) else '';
 end;
 
 function TStatement.RetrieveFocus(AInfo: TFocusInfo): boolean;

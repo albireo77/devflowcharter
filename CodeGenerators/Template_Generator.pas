@@ -221,9 +221,7 @@ begin
          end;
          for var i := 0 to libList.Count-1 do
          begin
-            var tabName := '';
-            if libList.Objects[i] is TTabComponent then
-               tabName := TTabComponent(libList.Objects[i]).GetName;
+            var tabName := if libList.Objects[i] is TTabComponent then TTabComponent(libList.Objects[i]).GetName else '';
             var libEntry := ReplaceStr(libFormat, '%s1', tabName);
             libEntry := ReplaceStr(libEntry, '%s', libList.Strings[i]);
             libStr := libStr + libEntry;
@@ -453,9 +451,7 @@ begin
          end
          else
          begin
-            var memDesc := '';
-            if AFunction.Header.chkInclDescCode.Checked then
-               memDesc := TrimRight(AFunction.Header.memDesc.Text);
+            var memDesc := if AFunction.Header.chkInclDescCode.Checked then TrimRight(AFunction.Header.memDesc.Text) else '';
             if memDesc.IsEmpty then
                TInfra.InsertTemplateLines(headerTemplate, '%s2', nil)
             else
