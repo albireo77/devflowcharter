@@ -199,9 +199,7 @@ end;
 
 function TUserFunction.GetId: integer;
 begin
-   result := ID_UNDEFINED;
-   if FHeader <> nil then
-      result := FHeader.Id;
+   result := if FHeader <> nil then FHeader.Id else ID_UNDEFINED;
 end;
 
 procedure TUserFunction.BringAllToFront;
@@ -218,16 +216,12 @@ end;
 
 function TUserFunction.GetZOrder: integer;
 begin
-   result := -1;
-   if FBody <> nil then
-      result := FBody.GetZOrder;
+   result := if FBody <> nil then FBody.GetZOrder else -1;
 end;
 
 function TUserFunction.GetLibrary: string;
 begin
-   result := '';
-   if FHeader <> nil then
-      result := FHeader.GetLibrary;
+   result := if FHeader <> nil then FHeader.GetLibrary else '';
 end;
 
 destructor TUserFunctionHeader.Destroy;
