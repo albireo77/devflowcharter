@@ -385,10 +385,7 @@ end;
 
 procedure TDeclareList.SetColumnLabel(ACol: integer; const AColLabel: string = '');
 begin
-   var s := AColLabel; 
-   if s.IsEmpty then
-      s := trnsManager.GetString('sg' + FShort + 'ListCol' + ACol.ToString);
-   sgList.Cells[ACol, 0] := s;
+   sgList.Cells[ACol, 0] := if AColLabel.IsEmpty then trnsManager.GetString('sg' + FShort + 'ListCol' + ACol.ToString) else AColLabel;
 end;
 
 procedure TDeclareList.SetExternalColumn(AExternalCol: integer);
