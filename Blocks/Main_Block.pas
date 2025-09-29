@@ -196,8 +196,8 @@ end;
 procedure TMainBlock.ExportToGraphic(AGraphic: TGraphic);
 begin
    DeSelect;
-   var bitmap := if AGraphic is TBitmap then TBitmap(AGraphic) else TBitmap.Create;
    var pnt := GetMaxBounds - Point(Left + MARGIN_X - 1, Top + MARGIN_Y - 1);
+   var bitmap := if AGraphic is TBitmap then TBitmap(AGraphic) else TBitmap.Create;
    bitmap.SetSize(pnt.X, pnt.Y);
    var pdi := FPage.DrawI;
    FPage.DrawI := False;
