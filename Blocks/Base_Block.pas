@@ -167,7 +167,6 @@ type
          procedure ChangeFrame;
          procedure RepaintAll;
          function Next: TBlock;
-         function Prev: TBlock;
          function CountErrWarn: TErrWarnCount; virtual;
          function GetFocusColor: TColor;
          function Remove(ANode: TTreeNodeWithFriend = nil): boolean; virtual;
@@ -2520,17 +2519,6 @@ begin
       var idx := FParentBranch.IndexOf(Self);
       if (idx <> -1) and (FParentBranch.Last <> Self) then
          result := FParentBranch.Items[idx+1];
-   end;
-end;
-
-function TBlock.Prev: TBlock;
-begin
-   result := nil;
-   if FParentBranch <> nil then
-   begin
-      var idx := FParentBranch.IndexOf(Self);
-      if idx > 0 then
-         result := FParentBranch.Items[idx-1];
    end;
 end;
 
