@@ -2391,10 +2391,11 @@ begin
       var blockPrev: TBlock := nil;
       for var block in ABranch do
       begin
-         TInfra.MoveWin(block, if blockPrev <> nil then
-                                  Point(blockPrev.BottomPoint.X+blockPrev.Left-block.TopHook.X, blockPrev.BoundsRect.Bottom)
-                               else
-                                  Point(ABranch.Hook.X-block.TopHook.X, ABranch.Hook.Y+1));
+         var p := if blockPrev <> nil then
+                     Point(blockPrev.BottomPoint.X+blockPrev.Left-block.TopHook.X, blockPrev.BoundsRect.Bottom)
+                  else
+                     Point(ABranch.Hook.X-block.TopHook.X, ABranch.Hook.Y+1);
+         TInfra.MoveWin(block, p);
          blockPrev := block;
       end;
    end;
