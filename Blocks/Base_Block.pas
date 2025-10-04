@@ -73,7 +73,6 @@ type
          procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
          function CanResize(var NewWidth, NewHeight: Integer): Boolean; override;
          procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean); override;
-         procedure DragDrop(Source: TObject; X, Y: Integer); override;
          procedure MyOnChange(Sender: TObject);
          procedure DblClick; override;
          procedure WMMouseLeave(var Msg: TMessage); message WM_MOUSELEAVE;
@@ -141,6 +140,7 @@ type
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; virtual;
          function GetFromXML(ANode: IXMLNode): TError; virtual;
          procedure SaveInXML(ANode: IXMLNode); virtual;
+         procedure DragDrop(Source: TObject; X, Y: Integer); override;
          function FillTemplate(const ALangId, ATemplate: string): string; virtual;
          function FillCodedTemplate(const ALangId: string): string; virtual;
          function GetDescTemplate(const ALangId: string): string; virtual;
@@ -201,7 +201,6 @@ type
          FFixedBranches: integer;
          FDiamond: TDiamond;
          constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms; AShape: TColorShape; AAlignment: TAlignment; AParserMode: TYYMode = yymUndefined);
-         procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
          function CanResize(var NewWidth, NewHeight: Integer): Boolean; override;
          procedure SetWidth(AMinX: integer); virtual;
          procedure LinkAllBlocks;
@@ -223,6 +222,7 @@ type
          function GetBranch(idx: integer): TBranch;
          function FindLastRow(AStart: integer; ALines: TStrings): integer; override;
          procedure ChangeColor(AColor: TColor); override;
+         procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
          function AddBranch(const AHook: TPoint; AId: integer = ID_UNDEFINED; ATextId: integer = ID_UNDEFINED): TBranch; virtual;
          procedure ExpandAll;

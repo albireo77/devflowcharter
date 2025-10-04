@@ -48,7 +48,6 @@ type
          procedure OnChangeType(Sender: TObject); virtual;
          procedure OnChangeName(Sender: TObject); virtual;
          procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean); override;
-         procedure DragDrop(Source: TObject; X, Y: Integer); override;
          procedure CMHintShow(var Message: TCMHintShow); message CM_HINTSHOW;
       public
          edtName: TNameEdit;
@@ -58,6 +57,7 @@ type
          property ParentForm: TPageControlForm read FParentForm;
          function ExportToXML(ANode: IXMLNode): IXMLNode; virtual;
          procedure ImportFromXML(ANode: IXMLNode); virtual;
+         procedure DragDrop(Source: TObject; X, Y: Integer); override;
          function IsValid: boolean; virtual;
    end;
 

@@ -72,8 +72,8 @@ type
 implementation
 
 uses
-   Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, YaccLib, Infrastructure,
-   Constants, OmniXMLUtils;
+   Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Types, System.UITypes,
+   YaccLib, Infrastructure, Constants, OmniXMLUtils;
 
 const
    DEFAULT_WIDTH = 246;

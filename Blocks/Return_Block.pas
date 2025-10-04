@@ -33,11 +33,11 @@ type
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
          procedure ChangeColor(AColor: TColor); override;
          procedure UpdateEditor(AEdit: TCustomEdit); override;
+         procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
          function GetDescTemplate(const ALangId: string): string; override;
       protected
          FReturnLabel: string;
          procedure Paint; override;
-         procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
          function GetReturnEllipseRect: TRect;
          procedure PutTextControls; override;
    end;

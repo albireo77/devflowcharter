@@ -22,13 +22,13 @@ type
   private
     { Private declarations }
     procedure SetAlphaValVisible(AValue: boolean);
-    procedure MouseWheelHandler(var AMessage: TMessage); override;
   public
     { Public declarations }
     InvalidateIndicator: boolean;
     procedure ResetForm; override;
     procedure ExportToXML(ANode: IXMLNode); override;
     procedure ImportFromXML(ANode: IXMLNode); override;
+    procedure MouseWheelHandler(var AMessage: TMessage); override;
   end;
 
 var

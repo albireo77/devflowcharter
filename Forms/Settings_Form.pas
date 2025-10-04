@@ -159,7 +159,8 @@ var
 implementation
 
 uses
-   System.StrUtils, System.SysUtils, LangDefinition, Constants, Infrastructure, Math;
+   System.StrUtils, System.SysUtils, System.UITypes, LangDefinition, Constants,
+   Infrastructure, Math;
 
 const
    SHAPE_BORDER_COLOR = clBlack;

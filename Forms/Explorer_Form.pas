@@ -81,8 +81,8 @@ implementation
 {$R *.dfm}
 
 uses
-   Vcl.Graphics, Vcl.Forms, System.SysUtils, Infrastructure, Base_Block, Constants,
-   OmniXMLUtils;
+   Vcl.Graphics, Vcl.Forms, System.SysUtils, System.UITypes, Infrastructure, Base_Block,
+   Constants, OmniXMLUtils;
 
 procedure TExplorerForm.FormShow(Sender: TObject);
 begin

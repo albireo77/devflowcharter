@@ -50,13 +50,13 @@ type
          function GetZOrder: integer;
          function IsBoldDesc: boolean; override;
          procedure Resize; override;
+         procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
          function Remove(ANode: TTreeNodeWithFriend = nil): boolean; override;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
       protected
          FZOrder: integer;
          FStartLabel,
          FStopLabel: string;
-         procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
          procedure Paint; override;
          procedure MoveComment(AComment: TComment; dx, dy: integer); override;
          procedure SetPage(APage: TBlockTabSheet); override;
@@ -72,8 +72,8 @@ const
 implementation
 
 uses
-   Vcl.Forms, System.SysUtils, System.StrUtils, Infrastructure, XMLProcessor, OmniXMLUtils,
-   Navigator_Form, UserFunction, Constants;
+   Vcl.Forms, System.SysUtils, System.StrUtils, System.Types, System.UITypes, Infrastructure,
+   XMLProcessor, OmniXMLUtils, Navigator_Form, UserFunction, Constants;
 
 constructor TMainBlock.Create(APage: TBlockTabSheet; const ABlockParms: TBlockParms);
 begin

@@ -41,7 +41,7 @@ type
 implementation
 
 uses
-   System.SysUtils, System.StrUtils, Infrastructure, YaccLib, Constants;
+   System.SysUtils, System.StrUtils, System.UITypes, Infrastructure, YaccLib, Constants;
 
 constructor TMultiInstrBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin

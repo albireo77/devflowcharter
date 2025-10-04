@@ -59,7 +59,8 @@ const
 implementation
 
 uses
-   System.SysUtils, System.Classes, System.Math, Infrastructure, YaccLib, OmniXMLUtils;
+   System.SysUtils, System.Classes, System.Types, System.Math, Infrastructure, YaccLib,
+   OmniXMLUtils;
 
 constructor TIfElseBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin

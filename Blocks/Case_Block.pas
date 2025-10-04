@@ -67,8 +67,8 @@ const
 implementation
 
 uses
-   System.StrUtils, System.Math, System.SysUtils, Infrastructure, Constants, YaccLib,
-   OmniXMLUtils;
+   System.StrUtils, System.Math, System.SysUtils, System.UITypes, Infrastructure,
+   Constants, YaccLib, OmniXMLUtils;
 
 constructor TCaseBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin

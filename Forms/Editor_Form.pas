@@ -168,8 +168,9 @@ var
 implementation
 
 uses
-   System.StrUtils, System.Math, System.UITypes, WinApi.Windows, Infrastructure, Goto_Form, Main_Block,
-   Help_Form, Comment, OmniXMLUtils, Main_Form, SynEditTypes, ParserHelper, Constants;
+   System.StrUtils, System.Math, System.UITypes, System.Contnrs, WinApi.Windows,
+   Infrastructure, Goto_Form, Main_Block, Help_Form, Comment, OmniXMLUtils, Main_Form,
+   SynEditTypes, ParserHelper, Constants;
 
 {$R *.dfm}
 

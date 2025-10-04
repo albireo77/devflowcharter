@@ -56,7 +56,8 @@ type
 implementation
 
 uses
-   Vcl.Controls, Vcl.Graphics, System.Classes, WinApi.Windows, System.Math, Infrastructure;
+   Vcl.Controls, Vcl.Graphics, System.Classes, System.Types, System.UITypes, WinApi.Windows,
+   System.Math, Infrastructure;
 
 const
    DEF_BLOCK_WIDTH = 153;
