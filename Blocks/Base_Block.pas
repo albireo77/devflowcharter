@@ -2260,7 +2260,7 @@ begin
       var chLine := TInfra.GetChangeLine(Self, AEdit);
       if chLine.Row <> ROW_NOT_FOUND then
       begin
-         chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
+         chLine.Text := ReplaceText(chLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
          chLine.Text := TInfra.StripInstrEnd(chLine.Text);
          TInfra.GetEditorForm.UpdateEditorForBlock(Self, chLine);
       end;
@@ -2328,7 +2328,7 @@ begin
    result := FillCodedTemplate(ALangId);
    var template := FindTemplate(ALangId, ATemplate);
    if not template.IsEmpty then
-      result := ReplaceStr(template, PRIMARY_PLACEHOLDER, result);
+      result := ReplaceText(template, PRIMARY_PLACEHOLDER, result);
 end;
 
 function TBlock.FillCodedTemplate(const ALangId: string): string;
@@ -2437,7 +2437,7 @@ begin
    var template := GetBlockTemplate(ALangId);
    if template.IsEmpty then
       template := PRIMARY_PLACEHOLDER;
-   template := ReplaceStr(template, PRIMARY_PLACEHOLDER, txt);
+   template := ReplaceText(template, PRIMARY_PLACEHOLDER, txt);
    GenerateTemplateSection(ALines, template, ALangId, ADeep);
 end;
 

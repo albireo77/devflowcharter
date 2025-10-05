@@ -306,22 +306,22 @@ begin
          var edit := FBranchList[i].Statement;
          var obj := TObject(edit);
          var template := GetTemplateByControl(edit, obj);
-         tmpList.Text := ReplaceStr(template, BRANCH_PLACEHOLDER + '1', BRANCH_PLACEHOLDER + i.ToString);
+         tmpList.Text := ReplaceText(template, BRANCH_PLACEHOLDER + '1', BRANCH_PLACEHOLDER + i.ToString);
          caseLines.AddStrings(tmpList);
          tmpList.Clear;
          for var a := 0 to caseLines.Count-1 do
          begin
             if caseLines[a].Contains(PRIMARY_PLACEHOLDER, True) then
             begin
-               caseLines[a] := ReplaceStr(caseLines[a], PRIMARY_PLACEHOLDER, Trim(edit.Text));
+               caseLines[a] := ReplaceText(caseLines[a], PRIMARY_PLACEHOLDER, Trim(edit.Text));
                caseLines.Objects[a] := obj;
             end;
             if caseLines[a].Contains('%s2', True) then
-               caseLines[a] := ReplaceStr(caseLines[a], '%s2', statement);
+               caseLines[a] := ReplaceText(caseLines[a], '%s2', statement);
          end;
       end;
 
-      lines.Text := ReplaceStr(caseOfTemplate, PRIMARY_PLACEHOLDER, statement);
+      lines.Text := ReplaceText(caseOfTemplate, PRIMARY_PLACEHOLDER, statement);
       TInfra.InsertTemplateLines(lines, '%s2', caseLines);
 
       var defTemplate := IfThen(not DefaultBranch.IsEmpty, GInfra.GetLangDefinition(ALangId).CaseOfDefaultValueTemplate);
@@ -369,8 +369,8 @@ begin
       var chLine := TInfra.GetChangeLine(obj, AEdit, GetTemplateByControl(AEdit, obj));
       if chLine.Row <> ROW_NOT_FOUND then
       begin
-         chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
-         chLine.Text := ReplaceStr(chLine.Text, '%s2', Trim(FStatement.Text));
+         chLine.Text := ReplaceText(chLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
+         chLine.Text := ReplaceText(chLine.Text, '%s2', Trim(FStatement.Text));
          TInfra.GetEditorForm.UpdateEditorForBlock(Self, chLine);
       end;
    end;

@@ -371,7 +371,7 @@ begin
             var progList := TStringList.Create;
             var varList := TStringList.Create;
             try
-               progList.Text := ReplaceStr(template, PRIMARY_PLACEHOLDER, lName);
+               progList.Text := ReplaceText(template, PRIMARY_PLACEHOLDER, lName);
                if header = nil then
                   TInfra.InsertTemplateLines(progList, '%s3', IfThen(not Branch.EndsWithReturnBlock, lang.ProgramReturnTemplate));
                if not Assigned(lang.VarSectionGenerator) then

@@ -108,9 +108,9 @@ begin
       var tmpList := TStringList.Create;
       try
          for var i := 0 to FStatements.Lines.Count-1 do
-            GenerateTemplateSection(tmpList, ReplaceStr(template, PRIMARY_PLACEHOLDER, FStatements.Lines[i].Trim), ALangId, ADeep);
+            GenerateTemplateSection(tmpList, ReplaceText(template, PRIMARY_PLACEHOLDER, FStatements.Lines[i].Trim), ALangId, ADeep);
          if tmpList.Text.IsEmpty then
-            GenerateTemplateSection(tmpList, ReplaceStr(template, PRIMARY_PLACEHOLDER, ''), ALangId, ADeep);
+            GenerateTemplateSection(tmpList, ReplaceText(template, PRIMARY_PLACEHOLDER, ''), ALangId, ADeep);
          if EndsText(FStatements.Lines.LineBreak, FStatements.Text) then
             tmpList.AddObject(GSettings.IndentString(ADeep), Self);
          TInfra.InsertLinesIntoList(ALines, tmpList, AFromLine);

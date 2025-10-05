@@ -476,7 +476,7 @@ begin
             edit := edtVar
          else
          begin
-            expr := ReplaceStr(expr, PRIMARY_PLACEHOLDER, edtVar.Text);
+            expr := ReplaceText(expr, PRIMARY_PLACEHOLDER, edtVar.Text);
             i := Pos('%s2', expr);
             if i <> 0 then
             begin
@@ -525,11 +525,11 @@ begin
    var lang := GInfra.GetLangDefinition(ALangId);
    if not AExpression.IsEmpty then
    begin
-      result := ReplaceStr(AExpression, PRIMARY_PLACEHOLDER, Trim(edtVar.Text));
-      result := ReplaceStr(result, '%s2', Trim(edtStart.Text));
-      result := ReplaceStr(result, '%s3', Trim(edtStop.Text));
-      result := ReplaceStr(result, '%s4', IfThen(FDescOrder, lang.ForDoDesc1, lang.ForDoAsc1));
-      result := ReplaceStr(result, '%s5', IfThen(FDescOrder, lang.ForDoDesc2, lang.ForDoAsc2));
+      result := ReplaceText(AExpression, PRIMARY_PLACEHOLDER, Trim(edtVar.Text));
+      result := ReplaceText(result, '%s2', Trim(edtStart.Text));
+      result := ReplaceText(result, '%s3', Trim(edtStop.Text));
+      result := ReplaceText(result, '%s4', IfThen(FDescOrder, lang.ForDoDesc1, lang.ForDoAsc1));
+      result := ReplaceText(result, '%s5', IfThen(FDescOrder, lang.ForDoDesc2, lang.ForDoAsc2));
    end
    else
       result := FillCodedTemplate(lang.Name);
