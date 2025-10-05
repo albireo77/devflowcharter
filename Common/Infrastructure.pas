@@ -71,7 +71,6 @@ type
          class function CreateDOSProcess(const ACommand: string; ADir: string = ''): boolean;
          class function ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer; overload;
          class function ShowQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer; overload;
-         class function FindText(ASubstr, AText: string; idx: integer; ACaseSens: boolean): integer;
          class function IsPrinter: boolean;
          class function IsValidControl(AObject: TObject): boolean;
          class function SameStrings(const AStr1, AStr2: string): boolean;
@@ -112,6 +111,8 @@ type
          class function Scaled(AControl: TControl; on96: integer): integer;
          class function ReplaceXMLIndents(const ALine: string): string;
          class function ShouldUpdateEditor: boolean;
+         class function PosText(const ASubStr, AStr: string; Offset: integer; MatchCase: boolean): integer; overload;
+         class function PosText(const ASubStr, AStr: string; Offset: integer = 1): integer; overload;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetNativeFunction(const AName: string): PNativeFunction;
          function GetLangDefinition(const AName: string): TLangDefinition;
@@ -571,17 +572,14 @@ begin
    end;
 end;
 
-class function TInfra.FindText(ASubstr, AText: string; idx: integer; ACaseSens: boolean): integer;
+class function TInfra.PosText(const ASubStr, AStr: string; Offset: integer = 1): integer;
 begin
-   AText := Copy(AText, idx);
-   if not ACaseSens then
-   begin
-      AText := AText.ToUpper;
-      ASubstr := ASubstr.ToUpper;
-   end;
-   result := Pos(ASubstr, AText);
-   if result > 0 then
-      result :=  result + idx - 1;
+   result := Pos(ASubstr.ToUpper, AStr.ToUpper, Offset);
+end;
+
+class function TInfra.PosText(const ASubStr, AStr: string; Offset: integer; MatchCase: boolean): integer;
+begin
+   result := if MatchCase then Pos(ASubStr, AStr, Offset) else PosText(ASubStr, AStr, Offset);
 end;
 
 class function TInfra.IsPrinter: boolean;
@@ -937,7 +935,7 @@ begin
             templateLines.Text := template;
             for var i := 0 to templateLines.Count-1 do
             begin
-               p := Pos(PRIMARY_PLACEHOLDER, templateLines[i]);
+               p := PosText(PRIMARY_PLACEHOLDER, templateLines[i]);
                if p <> 0 then
                begin
                   if (i = templateLines.Count-1) and (i <> 0) then

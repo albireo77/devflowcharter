@@ -2477,7 +2477,7 @@ procedure TGroupBlock.GenerateTemplateSection(ALines: TStringList; ATemplate: TS
    end;
    function ExtractBranchIndex(const AString: string): integer;
    begin
-      result := Pos(BRANCH_PLACEHOLDER, AString);
+      result := TInfra.PosText(BRANCH_PLACEHOLDER, AString);
       if result > 0 then
       begin
          var val := '';

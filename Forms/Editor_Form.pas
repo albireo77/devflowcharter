@@ -524,7 +524,7 @@ begin
          memCodeEditor.SelStart := 0;
          while True do
          begin
-            var i := TInfra.FindText(ReplaceDialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart+1, frMatchCase in ReplaceDialog.Options);
+            var i := TInfra.PosText(ReplaceDialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart+1, frMatchCase in ReplaceDialog.Options);
             if i = 0 then
                Exit;
             memCodeEditor.SelStart := i - 1;
@@ -566,13 +566,13 @@ begin
    len := dialog.FindText.Length;
    memCodeEditor.Repaint;
    if frDown in dialog.Options then
-      i := TInfra.FindText(dialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart + memCodeEditor.SelLength + 1, frMatchCase in dialog.Options)
+      i := TInfra.PosText(dialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart + memCodeEditor.SelLength + 1, frMatchCase in dialog.Options)
    else
    begin
       startPos := 1;
       while True do
       begin
-         i := TInfra.FindText(dialog.FindText, memCodeEditor.Text, startPos, frMatchCase in dialog.Options);
+         i := TInfra.PosText(dialog.FindText, memCodeEditor.Text, startPos, frMatchCase in dialog.Options);
          if (i > 0) and (i <= memCodeEditor.SelStart) then
             startPos := i + len
          else
@@ -882,7 +882,7 @@ begin
       for i := 0 to memCodeEditor.Lines.Count-1 do
       begin
          s := memCodeEditor.Lines[i];
-         f := TInfra.FindText(FDialog.FindText, s, 1, frMatchCase in FDialog.Options);
+         f := TInfra.PosText(FDialog.FindText, s, 1, frMatchCase in FDialog.Options);
          while f > 0 do
          begin
             p := BufferCoord(f, i+1);
@@ -892,7 +892,7 @@ begin
             if hAttr <> nil then
                Canvas.Font.Style := hAttr.Style;
             Canvas.TextOut(pos.X, pos.Y, s1);
-            f := TInfra.FindText(FDialog.FindText, s, f+len, frMatchCase in FDialog.Options);
+            f := TInfra.PosText(FDialog.FindText, s, f+len, frMatchCase in FDialog.Options);
          end;
       end;
       Canvas.Brush.Color := brushColor;

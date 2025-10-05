@@ -468,7 +468,7 @@ begin
    if not AInfo.SelText.IsEmpty then
    begin
       var expr := GetBlockTemplateExpr(GInfra.CurrentLang.Name);
-      var i := Pos(PRIMARY_PLACEHOLDER, expr);
+      var i := TInfra.PosText(PRIMARY_PLACEHOLDER, expr);
       if i <> 0 then
       begin
          i := i + Length(edtVar.Text);
@@ -477,7 +477,7 @@ begin
          else
          begin
             expr := ReplaceText(expr, PRIMARY_PLACEHOLDER, edtVar.Text);
-            i := Pos('%s2', expr);
+            i := TInfra.PosText('%s2', expr);
             if i <> 0 then
             begin
                i := i + Length(Trim(edtStart.Text));
