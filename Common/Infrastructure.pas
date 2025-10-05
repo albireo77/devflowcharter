@@ -727,7 +727,7 @@ begin
    while i < ADestList.Count do
    begin
       var line := ADestList[i];
-      if ContainsText(line, APlaceHolder) then
+      if line.Contains(APlaceHolder, True) then
       begin
          if (ATemplate <> nil) and not ATemplate.IsEmpty then
          begin
