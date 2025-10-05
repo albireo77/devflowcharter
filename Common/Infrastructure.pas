@@ -111,8 +111,7 @@ type
          class function Scaled(AControl: TControl; on96: integer): integer;
          class function ReplaceXMLIndents(const ALine: string): string;
          class function ShouldUpdateEditor: boolean;
-         class function PosText(const ASubStr, AStr: string; Offset: integer; MatchCase: boolean): integer; overload;
-         class function PosText(const ASubStr, AStr: string; Offset: integer = 1): integer; overload;
+         class function PosText(const ASubStr, AStr: string; Offset: integer = 1; MatchCase: boolean = False): integer;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetNativeFunction(const AName: string): PNativeFunction;
          function GetLangDefinition(const AName: string): TLangDefinition;
@@ -572,14 +571,9 @@ begin
    end;
 end;
 
-class function TInfra.PosText(const ASubStr, AStr: string; Offset: integer = 1): integer;
+class function TInfra.PosText(const ASubStr, AStr: string; Offset: integer = 1; MatchCase: boolean = False): integer;
 begin
-   result := Pos(ASubstr.ToUpper, AStr.ToUpper, Offset);
-end;
-
-class function TInfra.PosText(const ASubStr, AStr: string; Offset: integer; MatchCase: boolean): integer;
-begin
-   result := if MatchCase then Pos(ASubStr, AStr, Offset) else PosText(ASubStr, AStr, Offset);
+   result := if MatchCase then Pos(ASubStr, AStr, Offset) else Pos(ASubStr.ToUpper, AStr.ToUpper, Offset);
 end;
 
 class function TInfra.IsPrinter: boolean;
