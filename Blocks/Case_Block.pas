@@ -311,12 +311,12 @@ begin
          tmpList.Clear;
          for var a := 0 to caseLines.Count-1 do
          begin
-            if caseLines[a].Contains(PRIMARY_PLACEHOLDER) then
+            if caseLines[a].Contains(PRIMARY_PLACEHOLDER, True) then
             begin
                caseLines[a] := ReplaceStr(caseLines[a], PRIMARY_PLACEHOLDER, Trim(edit.Text));
                caseLines.Objects[a] := obj;
             end;
-            if caseLines[a].Contains('%s2') then
+            if caseLines[a].Contains('%s2', True) then
                caseLines[a] := ReplaceStr(caseLines[a], '%s2', statement);
          end;
       end;

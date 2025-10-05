@@ -2303,7 +2303,7 @@ begin
       templateLines.Text := template;
       for var line in templateLines do
       begin
-         if line.Contains(PRIMARY_PLACEHOLDER) then
+         if line.Contains(PRIMARY_PLACEHOLDER, True) then
          begin
             result := line;
             break;

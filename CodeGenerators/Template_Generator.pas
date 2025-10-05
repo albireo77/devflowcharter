@@ -212,7 +212,7 @@ begin
          var p1 := '%s2';
          var p2 := PRIMARY_PLACEHOLDER;
          var stripCount := lang.LibEntryListStripCount;
-         if lang.LibTemplate.Contains(PRIMARY_PLACEHOLDER) then
+         if lang.LibTemplate.Contains(PRIMARY_PLACEHOLDER, True) then
          begin
             libFormat := lang.LibEntry + sLineBreak;
             p1 := PRIMARY_PLACEHOLDER;
