@@ -136,7 +136,7 @@ const
 implementation
 
 uses
-   System.SysUtils, Types, Case_Block, ForDo_Block, Interfaces, Infrastructure, Constants;
+   System.SysUtils, Types, Case_Block, ForDo_Block, Infrastructure, Constants;
 
 class function TIdentInfo.New: TIdentInfo;
 begin
