@@ -146,7 +146,7 @@ begin
       Canvas.LineTo(DefaultBranch.Hook.X, TopHook.Y);
       Canvas.LineTo(DefaultBranch.Hook.X, TopHook.Y-10);
       Canvas.MoveTo(BottomHook, BottomPoint.Y);
-      Canvas.LineTo(BottomPoint.X, BottomPoint.Y);
+      Canvas.LineTo(BottomPoint);
    end;
    DrawI;
 end;
