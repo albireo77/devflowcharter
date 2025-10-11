@@ -65,6 +65,7 @@ begin
    var codeEditor := TInfra.GetEditorForm.memCodeEditor;
    var gotoFlag := False;
    var line := 0;
+   var i := 0;
 
    if rbLine.Checked then
    begin
@@ -77,7 +78,7 @@ begin
    else if rbNextBookmark.Checked then
    begin
       line := codeEditor.Lines.Count;
-      for var i := 0 to codeEditor.Marks.Count-1 do
+      for i := 0 to codeEditor.Marks.Count-1 do
       begin
          var cLine := codeEditor.Marks[i].Line;
          if (cLine > codeEditor.CaretY) and (cLine <= line) then
@@ -90,7 +91,7 @@ begin
    else if rbPrevBookmark.Checked then
    begin
       line := 1;
-      for var i := 0 to codeEditor.Marks.Count-1 do
+      for i := 0 to codeEditor.Marks.Count-1 do
       begin
          var cLine := codeEditor.Marks[i].Line;
          if (cLine < codeEditor.CaretY) and (cLine >= line) then
