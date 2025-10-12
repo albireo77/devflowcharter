@@ -1525,11 +1525,11 @@ begin
    var w := Canvas.Pen.Width;
    if Expanded then
    begin
-      var edit := GetTextControl;
-      if (edit <> nil) and (FShape = shpDiamond) then
+      var ctrl := GetTextControl;
+      if (ctrl <> nil) and (FShape = shpDiamond) then
       begin
-         FDiamond := TDiamond.New(GetDiamondTop, edit);
-         TInfra.MoveWin(edit, FDiamond.Top - Point(edit.Width div 2, edit.Height div 2 - FDiamond.Height div 2));
+         FDiamond := TDiamond.New(GetDiamondTop, ctrl);
+         TInfra.MoveWin(ctrl, FDiamond.CtrlPos);
          SetBrushColor(shpDiamond);
          Canvas.Polygon(FDiamond.Polygon);
       end;

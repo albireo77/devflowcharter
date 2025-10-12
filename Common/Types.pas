@@ -61,8 +61,9 @@ type
      Top,
      Bottom,
      Right,
-     Left: TPoint;
-     class function New(const ATop: TPoint; AEdit: TCustomEdit): TDiamond; static;
+     Left,
+     CtrlPos: TPoint;
+     class function New(const ATop: TPoint; ACtrl: TWinControl): TDiamond; static;
      function Width: integer;
      function Height: integer;
      function Polygon: TPointArray;
@@ -303,13 +304,14 @@ begin
       CodeRange.Lines[Row] := Text;
 end;
 
-class function TDiamond.New(const ATop: TPoint; AEdit: TCustomEdit): TDiamond;
+class function TDiamond.New(const ATop: TPoint; ACtrl: TWinControl): TDiamond;
 begin
-   var a         := (AEdit.Height + AEdit.Width div 2) div 2 + 1;
-   result.Left   := Point(ATop.X-2*a, ATop.Y+a);
-   result.Bottom := Point(ATop.X, ATop.Y+2*a);
-   result.Right  := Point(ATop.X+2*a, ATop.Y+a);
-   result.Top    := ATop;
+   var a          := (ACtrl.Height + ACtrl.Width div 2) div 2 + 1;
+   result.Left    := Point(ATop.X-2*a, ATop.Y+a);
+   result.Bottom  := Point(ATop.X, ATop.Y+2*a);
+   result.Right   := Point(ATop.X+2*a, ATop.Y+a);
+   result.Top     := ATop;
+   result.CtrlPos := ATop - Point(ACtrl.Width div 2, ACtrl.Height div 2 - result.Height div 2);
 end;
 
 function TDiamond.Width: integer;
