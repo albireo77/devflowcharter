@@ -104,7 +104,7 @@ type
          procedure SetPage(APage: TBlockTabSheet); virtual;
          function GetPage: TBlockTabSheet; virtual;
          procedure CreateParams(var Params: TCreateParams); override;
-         procedure MoveComment(AComment: TComment; dx, dy: integer); virtual;
+         procedure MoveComment(AComment: TComment; const APoint: TPoint); virtual;
          function ProcessComments: boolean;
          function IsAncestor(AParent: TObject): boolean;
          function GetErrorMsg(AEdit: TCustomEdit): string;
@@ -1091,12 +1091,11 @@ procedure TBlock.WMWindowPosChanging(var Msg: TWMWindowPosChanging);
 begin
    if FPosChanged and ((Msg.WindowPos.flags and SWP_NOMOVE) = 0) then
    begin
-      var dx := Msg.WindowPos.x - Left;
-      var dy := Msg.WindowPos.y - Top;
-      if (dx <> 0) or (dy <> 0) then
+      var p := Point(Msg.WindowPos.x, Msg.WindowPos.y) - BoundsRect.TopLeft;
+      if (p.X <> 0) or (p.Y <> 0) then
       begin
          for var comment in GetComments(True) do
-            MoveComment(comment, dx, dy);
+            MoveComment(comment, p);
       end;
    end;
    inherited;
@@ -1109,12 +1108,12 @@ begin
    inherited;
 end;
 
-procedure TBlock.MoveComment(AComment: TComment; dx, dy: integer);
+procedure TBlock.MoveComment(AComment: TComment; const APoint: TPoint);
 begin
   if not AComment.Moved then
   begin
      if AComment.Visible then
-        TInfra.MoveWinTopZ(AComment, AComment.Left+dx, AComment.Top+dy);
+        TInfra.MoveWinTopZ(AComment, AComment.BoundsRect.TopLeft + APoint);
      AComment.Moved := True;
   end;
 end;

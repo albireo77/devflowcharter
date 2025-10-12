@@ -58,7 +58,7 @@ type
          FStartLabel,
          FStopLabel: string;
          procedure Paint; override;
-         procedure MoveComment(AComment: TComment; dx, dy: integer); override;
+         procedure MoveComment(AComment: TComment; const APoint: TPoint); override;
          procedure SetPage(APage: TBlockTabSheet); override;
          function GetFunctionLabel(var ARect: TRect): string;
          function GetPage: TBlockTabSheet; override;
@@ -435,10 +435,10 @@ begin
    result := True;
 end;
 
-procedure TMainBlock.MoveComment(AComment: TComment; dx, dy: integer);
+procedure TMainBlock.MoveComment(AComment: TComment; const APoint: TPoint);
 begin
    if AComment.Visible then
-      TInfra.MoveWinTopZ(AComment, AComment.Left+dx, AComment.Top+dy);
+      TInfra.MoveWinTopZ(AComment, AComment.BoundsRect.TopLeft + APoint);
 end;
 
 function TMainBlock.GetUndoObject: TObject;
