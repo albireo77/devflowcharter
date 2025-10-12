@@ -306,12 +306,13 @@ end;
 
 class function TDiamond.New(const ATop: TPoint; const ACtrl: TSize): TDiamond;
 begin
-   var a          := (ACtrl.Height + ACtrl.Width div 2) div 2 + 1;
-   result.Left    := Point(ATop.X-2*a, ATop.Y+a);
-   result.Bottom  := Point(ATop.X, ATop.Y+2*a);
-   result.Right   := Point(ATop.X+2*a, ATop.Y+a);
-   result.Top     := ATop;
-   result.CtrlPos := ATop - Bounds(0, 0, ACtrl.Width, ACtrl.Height).CenterPoint + Point(0, a);
+   var a         := (ACtrl.Height + ACtrl.Width div 2) div 2 + 1;
+   result.Left   := Point(ATop.X-2*a, ATop.Y+a);
+   result.Bottom := Point(ATop.X, ATop.Y+2*a);
+   result.Right  := Point(ATop.X+2*a, ATop.Y+a);
+   result.Top    := ATop;
+   result.CtrlPos.X := ATop.X - ACtrl.Width div 2;
+   result.CtrlPos.Y := ATop.Y - ACtrl.Height div 2 + a;
 end;
 
 function TDiamond.Width: integer;
