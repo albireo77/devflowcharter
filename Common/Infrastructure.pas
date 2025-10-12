@@ -63,8 +63,7 @@ type
          class procedure InsertLinesIntoList(ADestList, ASourceList: TStringList; AFromLine: integer);
          class procedure DecrementNodeSiblingOffsets(ANode: TTreeNode);
          class procedure DeleteLinesContaining(ALines: TStrings; const AText: string);
-         class procedure MoveWin(AWinControl: TWinControl; x, y: integer); overload;
-         class procedure MoveWin(AWinControl: TWinControl; const APoint: TPoint); overload;
+         class procedure MoveWin(AWinControl: TWinControl; const APoint: TPoint);
          class procedure MoveWinTopZ(AWinControl: TWinControl; x, y: integer);
          class procedure IndentSpacesToTabs(ALines: TStringList);
          class function GetScrolledPos(AMemo: TCustomMemo): TPoint;
@@ -1158,12 +1157,7 @@ end;
 
 class procedure TInfra.MoveWin(AWinControl: TWinControl; const APoint: TPoint);
 begin
-   MoveWin(AWinControl, APoint.X, APoint.Y);
-end;
-
-class procedure TInfra.MoveWin(AWinControl: TWinControl; x, y: integer);
-begin
-   SetWindowPos(AWinControl.Handle, 0, x, y, 0, 0, SWP_NOSIZE or SWP_NOZORDER);
+   SetWindowPos(AWinControl.Handle, 0, APoint.X, APoint.Y, 0, 0, SWP_NOSIZE or SWP_NOZORDER);
 end;
 
 class procedure TInfra.MoveWinTopZ(AWinControl: TWinControl; x, y: integer);

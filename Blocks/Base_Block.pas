@@ -1530,8 +1530,7 @@ begin
       if (edit <> nil) and (FShape = shpDiamond) then
       begin
          FDiamond := TDiamond.New(GetDiamondTop, edit);
-         TInfra.MoveWin(edit, FDiamond.Top.X - edit.Width div 2,
-                              FDiamond.Top.Y - edit.Height div 2 + FDiamond.Height div 2);
+         TInfra.MoveWin(edit, FDiamond.Top - Point(edit.Width div 2, edit.Height div 2 - FDiamond.Height div 2));
          SetBrushColor(shpDiamond);
          Canvas.Polygon(FDiamond.Polygon);
       end;
@@ -1818,6 +1817,11 @@ begin
    result := False;
 end;
 
+procedure TBlock.ExportCode(ALines: TStringList);
+begin
+   GenerateCode(ALines, GInfra.CurrentLang.Name, 0);
+end;
+
 function TBlock.PinComments: integer;
 begin
    result := 0;
@@ -1825,16 +1829,11 @@ begin
    for var comment in GetComments do
    begin
       comment.Visible := False;
-      TInfra.MoveWin(comment, comment.Left - p.X, comment.Top - p.Y);
+      TInfra.MoveWin(comment, comment.BoundsRect.TopLeft - p);
       comment.PinControl := Self;
       comment.Parent := Page;
       Inc(result);
    end;
-end;
-
-procedure TBlock.ExportCode(ALines: TStringList);
-begin
-   GenerateCode(ALines, GInfra.CurrentLang.Name, 0);
 end;
 
 procedure TBlock.UnPinComments;
@@ -1842,7 +1841,7 @@ begin
    var p := ClientToParent(TPoint.Zero, Page.Box);
    for var comment in GetPinComments do
    begin
-      TInfra.MoveWin(comment, comment.Left + p.X, comment.Top + p.Y);
+      TInfra.MoveWin(comment, comment.BoundsRect.TopLeft + p);
       comment.Parent := Page.Box;
       comment.Visible := True;
       comment.PinControl := nil;
