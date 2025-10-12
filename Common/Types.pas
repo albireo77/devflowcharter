@@ -63,7 +63,7 @@ type
      Right,
      Left,
      CtrlPos: TPoint;
-     class function New(const ATop: TPoint; ACtrl: TWinControl): TDiamond; static;
+     class function New(const ATop: TPoint; const ACtrl: TSize): TDiamond; static;
      function Width: integer;
      function Height: integer;
      function Polygon: TPointArray;
@@ -304,7 +304,7 @@ begin
       CodeRange.Lines[Row] := Text;
 end;
 
-class function TDiamond.New(const ATop: TPoint; ACtrl: TWinControl): TDiamond;
+class function TDiamond.New(const ATop: TPoint; const ACtrl: TSize): TDiamond;
 begin
    var a          := (ACtrl.Height + ACtrl.Width div 2) div 2 + 1;
    result.Left    := Point(ATop.X-2*a, ATop.Y+a);

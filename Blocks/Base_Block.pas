@@ -1528,7 +1528,7 @@ begin
       var ctrl := GetTextControl;
       if (ctrl <> nil) and (FShape = shpDiamond) then
       begin
-         FDiamond := TDiamond.New(GetDiamondTop, ctrl);
+         FDiamond := TDiamond.New(GetDiamondTop, ctrl.BoundsRect.Size);
          TInfra.MoveWin(ctrl, FDiamond.CtrlPos);
          SetBrushColor(shpDiamond);
          Canvas.Polygon(FDiamond.Polygon);
