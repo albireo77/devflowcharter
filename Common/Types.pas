@@ -311,7 +311,7 @@ begin
    result.Bottom  := Point(ATop.X, ATop.Y+2*a);
    result.Right   := Point(ATop.X+2*a, ATop.Y+a);
    result.Top     := ATop;
-   result.CtrlPos := ATop - Point(ACtrl.Width div 2, ACtrl.Height div 2 - result.Height div 2);
+   result.CtrlPos := ATop - Bounds(0, 0, ACtrl.Width, ACtrl.Height).CenterPoint + Point(0, result.Height div 2);
 end;
 
 function TDiamond.Width: integer;
