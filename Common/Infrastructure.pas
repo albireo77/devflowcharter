@@ -64,7 +64,7 @@ type
          class procedure DecrementNodeSiblingOffsets(ANode: TTreeNode);
          class procedure DeleteLinesContaining(ALines: TStrings; const AText: string);
          class procedure MoveWin(AWinControl: TWinControl; const APoint: TPoint);
-         class procedure MoveWinTopZ(AWinControl: TWinControl; x, y: integer);
+         class procedure MoveWinTopZ(AWinControl: TWinControl; const APoint: TPoint);
          class procedure IndentSpacesToTabs(ALines: TStringList);
          class function GetScrolledPos(AMemo: TCustomMemo): TPoint;
          class function CreateDOSProcess(const ACommand: string; ADir: string = ''): boolean;
@@ -1160,9 +1160,9 @@ begin
    SetWindowPos(AWinControl.Handle, 0, APoint.X, APoint.Y, 0, 0, SWP_NOSIZE or SWP_NOZORDER);
 end;
 
-class procedure TInfra.MoveWinTopZ(AWinControl: TWinControl; x, y: integer);
+class procedure TInfra.MoveWinTopZ(AWinControl: TWinControl; const APoint: TPoint);
 begin
-   SetWindowPos(AWinControl.Handle, HWND_TOP, x, y, 0, 0, SWP_NOSIZE);
+   SetWindowPos(AWinControl.Handle, HWND_TOP, APoint.X, APoint.Y, 0, 0, SWP_NOSIZE);
 end;
 
 class function TInfra.GetPageFromXY(APageControl: TPageControl; x, y: integer): TTabSheet;
