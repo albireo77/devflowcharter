@@ -58,11 +58,18 @@ type
    TMenuItemArray = array of TMenuItem;
 
    TDiamond = record
-     Top,
-     Bottom,
-     Right,
-     Left,
-     CtrlPos: TPoint;
+   private
+     FTop,
+     FBottom,
+     FRight,
+     FLeft,
+     FCtrlPos: TPoint;
+   public
+     property Top: TPoint read FTop;
+     property Bottom: TPoint read FBottom;
+     property Right: TPoint read FRight;
+     property Left: TPoint read FLeft;
+     property CtrlPos: TPoint read FCtrlPos;
      class function New(const ATop: TPoint; const ACtrl: TSize): TDiamond; static;
      function Width: integer;
      function Height: integer;
@@ -306,27 +313,27 @@ end;
 
 class function TDiamond.New(const ATop: TPoint; const ACtrl: TSize): TDiamond;
 begin
-   var a          := (ACtrl.Height + ACtrl.Width div 2) div 2 + 1;
-   result.Left    := Point(ATop.X-2*a, ATop.Y+a);
-   result.Bottom  := Point(ATop.X, ATop.Y+2*a);
-   result.Right   := Point(ATop.X+2*a, ATop.Y+a);
-   result.Top     := ATop;
-   result.CtrlPos := ATop - Point(ACtrl.Width div 2, ACtrl.Height div 2 - a);
+   var a           := (ACtrl.Height + ACtrl.Width div 2) div 2 + 1;
+   result.FLeft    := Point(ATop.X-2*a, ATop.Y+a);
+   result.FBottom  := Point(ATop.X, ATop.Y+2*a);
+   result.FRight   := Point(ATop.X+2*a, ATop.Y+a);
+   result.FTop     := ATop;
+   result.FCtrlPos := ATop - Point(ACtrl.Width div 2, ACtrl.Height div 2 - a);
 end;
 
 function TDiamond.Width: integer;
 begin
-   result := Right.X - Left.X;
+   result := FRight.X - FLeft.X;
 end;
 
 function TDiamond.Height: integer;
 begin
-   result := Bottom.Y - Top.Y;
+   result := FBottom.Y - FTop.Y;
 end;
 
 function TDiamond.Polygon: TPointArray;
 begin
-   result := [Top, Right, Bottom, Left];
+   result := [FTop, FRight, FBottom, FLeft];
 end;
 
 end.
