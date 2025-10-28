@@ -44,6 +44,9 @@ type
    end;
 
    TUserDataType = class(TTabComponent)
+   private
+      function FindItemIndex(Box: TRadioGroup; Kind: TUserDataTypeKind): integer;
+      function CreateTypeBox: TRadioGroup;
    protected
       procedure OnChangeName(Sender: TObject); override;
       procedure OnClickType(Sender: TObject);
@@ -140,29 +143,7 @@ begin
 
    CreateLibControls(Self, edtName.Left+edtName.Width+7, 10);
 
-   rgTypeBox := TRadioGroup.Create(Self);
-   rgTypeBox.Parent := Self;
-   rgTypeBox.ParentFont := False;
-   rgTypeBox.ParentBackground := False;
-   rgTypeBox.Font.Style := [];
-   rgTypeBox.Font.Color := clWindowText;
-   rgTypeBox.Columns := 2;
-   rgTypeBox.Caption := trnsManager.GetString('rgTypeBox');
-   for var dt := Low(TUserDataTypeKind) to High(TUserDataTypeKind) do
-   begin
-      var s := TRttiEnumerationType.GetName(dt);
-      rgTypeBox.Items.Add(trnsManager.GetString(s));
-   end;
-   rgTypeBox.Buttons[Ord(dtInt)].Enabled := GInfra.CurrentLang.EnabledUserDataTypeInt;
-   rgTypeBox.Buttons[Ord(dtReal)].Enabled := GInfra.CurrentLang.EnabledUserDataTypeReal;
-   rgTypeBox.Buttons[Ord(dtOther)].Enabled := GInfra.CurrentLang.EnabledUserDataTypeOther;
-   rgTypeBox.Buttons[Ord(dtArray)].Enabled := GInfra.CurrentLang.EnabledUserDataTypeArray;
-   rgTypeBox.Buttons[Ord(dtEnum)].Enabled := GInfra.CurrentLang.EnabledUserDataTypeEnum;
-   if not GInfra.CurrentLang.RecordLabel.IsEmpty then
-      rgTypeBox.Items[Ord(dtRecord)] := GInfra.CurrentLang.RecordLabel;
-   rgTypeBox.ItemIndex := Ord(dtRecord);
-   rgTypeBox.OnClick := OnClickType;
-   rgTypeBox.SetBounds(1, 28, rgTypeBox.Buttons[Ord(dtEnum)].BoundsRect.Right-9, 73);
+   rgTypeBox := CreateTypeBox;
 
    chkAddPtrType := TCheckBox.Create(Self);
    chkAddPtrType.Parent := Self;
@@ -180,9 +161,60 @@ begin
    GProject.AddComponent(Self);
 end;
 
+function TUserDataType.CreateTypeBox: TRadioGroup;
+begin
+   result := TRadioGroup.Create(Self);
+   result.Parent := Self;
+   result.ParentFont := False;
+   result.ParentBackground := False;
+   result.Font.Style := [];
+   result.Font.Color := clWindowText;
+   result.Caption := trnsManager.GetString('rgTypeBox');
+   var currLang := GInfra.CurrentLang;
+   var caps := TStringList.Create;
+   try
+      for var k := Low(TUserDataTypeKind) to High(TUserDataTypeKind) do
+      begin
+         if (k = dtInt) and not currLang.EnabledUserDataTypeInt then
+            continue;
+         if (k = dtReal) and not currLang.EnabledUserDataTypeReal then
+            continue;
+         if (k = dtOther) and not currLang.EnabledUserDataTypeOther then
+            continue;
+         if (k = dtArray) and not currLang.EnabledUserDataTypeArray then
+            continue;
+         if (k = dtEnum) and not currLang.EnabledUserDataTypeEnum then
+            continue;
+         if (k = dtCustom) and not currLang.EnabledUserDataTypeCustom then
+            continue;
+         caps.AddObject(trnsManager.GetString(TRttiEnumerationType.GetName(k)), TObject(k));
+      end;
+      result.Columns := Ceil(caps.Count / 3);
+      result.SetBounds(1, 28, Min(180, 85 * result.Columns), 73);
+      result.Items.AddStrings(caps);
+   finally
+      caps.Free;
+   end;
+   if not currLang.RecordLabel.IsEmpty then
+      result.Items[FindItemIndex(result, dtRecord)] := currLang.RecordLabel;
+   if currLang.EnabledUserDataTypeOther and not currLang.OtherLabel.IsEmpty then
+      result.Items[FindItemIndex(result, dtOther)] := currLang.OtherLabel;
+   if currLang.EnabledUserDataTypeCustom and not currLang.CustomLabel.IsEmpty then
+      result.Items[FindItemIndex(result, dtCustom)] := currLang.CustomLabel;
+   if currLang.EnabledUserDataTypeEnum and not currLang.EnumLabel.IsEmpty then
+      result.Items[FindItemIndex(result, dtEnum)] := currLang.EnumLabel;
+   result.ItemIndex := FindItemIndex(result, dtRecord);
+   result.OnClick := OnClickType;
+end;
+
 function TUserDataType.Kind: TUserDataTypeKind;
 begin
-   result := TUserDataTypeKind(rgTypeBox.ItemIndex);
+   result := TUserDataTypeKind(rgTypeBox.Items.Objects[rgTypeBox.ItemIndex]);
+end;
+
+function TUserDataType.FindItemIndex(Box: TRadioGroup; Kind: TUserDataTypeKind): integer;
+begin
+   result := Box.Items.IndexOfObject(TObject(Kind));
 end;
 
 procedure TUserDataType.SetActive(AValue: boolean);
@@ -244,14 +276,14 @@ end;
 procedure TUserDataType.OnClickType(Sender: TObject);
 begin
    var t := Kind;
-   var b := t in [dtRecord, dtEnum, dtOther, dtArray];
+   var b := t in [dtRecord, dtEnum, dtOther, dtArray, dtCustom];
    sbxElements.Enabled := b;
    lblName2.Enabled := b and (t <> dtArray);
-   lblSize.Enabled := t in [dtRecord, dtArray];
+   lblSize.Enabled := t in [dtRecord, dtArray, dtCustom];
    lblType.Enabled := lblSize.Enabled;
    if b then
    begin
-      var str := IfThen(t = dtRecord, 'Field', 'Value');
+      var str := IfThen(t in [dtRecord, dtCustom], 'Field', 'Value');
       btnAddElement.Caption := trnsManager.GetString('btnAdd' + str);
       lblName2.Caption := trnsManager.GetString('lbl' + str);
    end;
@@ -259,7 +291,7 @@ begin
    for var field in GetFields do
    begin
       field.edtName.Enabled := b;
-      field.cbType.Enabled := t = dtRecord;
+      field.cbType.Enabled := t in [dtRecord, dtCustom];
       field.btnRemove.Enabled := b;
       field.edtSize.Enabled := field.cbType.Enabled;
       if i = 0 then
@@ -313,7 +345,7 @@ end;
 function TUserDataType.CreateElement: TElement;
 begin
    result := TField.Create(Self);
-   result.cbType.Enabled := Kind in [dtRecord, dtArray];
+   result.cbType.Enabled := Kind in [dtRecord, dtArray, dtCustom];
    TField(result).edtSize.Enabled := result.cbType.Enabled;
    result.edtName.Enabled := Kind <> dtArray;
 end;
@@ -351,7 +383,7 @@ begin
    inherited ImportFromXML(ANode, APinControl);
    if chkAddPtrType.Enabled then
       chkAddPtrType.Checked := GetNodeAttrBool(ANode, POINTER_ATTR, False);
-   rgTypeBox.ItemIndex := Ord(TRttiEnumerationType.GetValue<TUserDataTypeKind>(GetNodeAttrStr(ANode, KIND_ATTR)));
+   rgTypeBox.ItemIndex := FindItemIndex(rgTypeBox, TRttiEnumerationType.GetValue<TUserDataTypeKind>(GetNodeAttrStr(ANode, KIND_ATTR)));
 end;
 
 function TUserDataType.GetDimensionCount: integer;

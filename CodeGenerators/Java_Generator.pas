@@ -369,20 +369,25 @@ begin
    if not name.IsEmpty then
    begin
       var indent := GSettings.IndentString;
-      var typeAccess := ADataType.GetExternModifier;
+      var fc := ADataType.FieldCount;
       if ADataType.Kind = dtRecord then
       begin
-         ALines.AddObject(typeAccess + 'class ' + name + ' {', ADataType);
-         if ADataType.FieldCount > 0 then
+         ALines.AddObject('class ' + name + ' {', ADataType);
+         if fc > 0 then
          begin
             ALines.AddObject('', ADataType);
             var i := ALines.Count;
+            var u := i;
+            var a := i + fc;
             ALines.AddObject('', ADataType);
+            var constrParams := '';
             for var field in ADataType.GetFields do
             begin
                var fieldSize := javaLang.GetArraySizes(field.edtSize);
                var fieldName := Trim(field.edtName.Text);
                var fieldType := field.cbType.Text;
+               constrParams := constrParams + fieldType + fieldSize + ' ' + fieldName + ', ';
+               ALines.InsertObject(u, indent + indent + 'this.' + fieldName + ' = ' + fieldName + ';', ADataType);
                var line := indent + 'private ' + fieldType + fieldSize + ' ' + fieldName + ';';
                ALines.InsertObject(i, line, ADataType);
                var funcStrU := fieldName;
@@ -399,22 +404,36 @@ begin
                ALines.AddObject(line, ADataType);
                ALines.AddObject(indent + '}', ADataType);
                i := i + 1;
+               u := u + 2;
             end;
+            SetLength(constrParams, constrParams.Length - 2);
+            ALines.InsertObject(a, '', ADataType);
+            ALines.InsertObject(a + 1, indent + 'public ' + name + '(' + constrParams + ') {', ADataType);
+            ALines.InsertObject(a + fc + 2, indent + '}', ADataType);
          end;
          ALines.AddObject('}', ADataType);
       end
       else if ADataType.Kind = dtEnum then
       begin
-         ALines.AddObject(typeAccess + 'enum ' + name + ' {', ADataType);
+         ALines.AddObject('enum ' + name + ' {', ADataType);
          if ADataType.FieldCount > 0 then
          begin
             var line := indent;
             for var field in ADataType.GetFields do
                line := line + Trim(field.edtName.Text).ToUpper + ', ';
-            SetLength(line, Length(line)-2);
+            SetLength(line, Length(line) - 2);
             ALines.AddObject(line, ADataType);
          end;
          ALines.AddObject('}', ADataType);
+      end
+      else if ADataType.Kind = dtCustom then
+      begin
+         var fields := '';
+         for var field in ADataType.GetFields do
+            fields := fields + field.cbType.Text + ' ' + Trim(field.edtName.Text) + ', ';
+         if fields.Length > 1 then
+            SetLength(fields, fields.Length - 2);
+         ALines.AddObject('record ' + name + '(' + fields + ') {}', ADataType);
       end;
    end;
 end;

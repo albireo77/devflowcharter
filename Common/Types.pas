@@ -45,7 +45,7 @@ type
 
    TDataTypeKind = (tpInt, tpReal, tpString, tpBool, tpRecord, tpEnum, tpArray, tpPtr, tpOther);
 
-   TUserDataTypeKind = (dtInt, dtRecord, dtArray, dtReal, dtOther, dtEnum);
+   TUserDataTypeKind = (dtInt, dtRecord, dtArray, dtReal, dtOther, dtEnum, dtCustom);
 
    TArrowPosition = (arrMiddle, arrEnd);
 
@@ -157,9 +157,9 @@ type
    end;
 
    TNameEdit = class(TEdit)
-       protected
-          procedure WMKillFocus(var msg: TWMKillFocus); message WM_KILLFOCUS;
-    end;
+   protected
+      procedure WMKillFocus(var msg: TWMKillFocus); message WM_KILLFOCUS;
+   end;
 
 implementation
 
