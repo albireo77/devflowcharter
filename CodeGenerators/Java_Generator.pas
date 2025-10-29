@@ -430,7 +430,7 @@ begin
       begin
          var fields := '';
          for var field in ADataType.GetFields do
-            fields := fields + field.cbType.Text + ' ' + Trim(field.edtName.Text) + ', ';
+            fields := fields + field.cbType.Text + javaLang.GetArraySizes(field.edtSize) + ' ' + Trim(field.edtName.Text) + ', ';
          if fields.Length > 1 then
             SetLength(fields, fields.Length - 2);
          ALines.AddObject('record ' + name + '(' + fields + ') {}', ADataType);
