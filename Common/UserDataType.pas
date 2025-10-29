@@ -81,8 +81,8 @@ type
 implementation
 
 uses
-   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, System.Rtti, Generics.Defaults,
-   Infrastructure, ParserHelper, OmniXMLUtils, Constants;
+   Vcl.Forms, Vcl.Graphics, System.SysUtils, System.StrUtils, System.Rtti, System.Math,
+   Generics.Defaults, Infrastructure, ParserHelper, OmniXMLUtils, Constants;
 
 var
    ByTopFieldComparer: IComparer<TField>;
