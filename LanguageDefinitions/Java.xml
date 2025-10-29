@@ -31,6 +31,7 @@ It may not contain all supported tags. For all supported tags and their descript
     <EnabledUserDataTypeOther>true</EnabledUserDataTypeOther>
     <EnabledUserDataTypeEnum>true</EnabledUserDataTypeEnum>
     <EnabledUserDataTypeArray>false</EnabledUserDataTypeArray>
+    <EnabledUserDataTypeCustom>true</EnabledUserDataTypeCustom>
     <EnabledPointers>false</EnabledPointers>
     <EnabledExplorer>true</EnabledExplorer>
     <EnabledCodeGenerator>true</EnabledCodeGenerator>
@@ -395,21 +396,33 @@ Available placeholders:
 
 <!--
 Element ExternalLabel
-Used to change default label displayed for external variable/constant or function/datatype; it's non translated
+Used to change default label displayed for external variable/constant or function/datatype. If not empty, it overrides label from translation file.
 -->
 <ExternalLabel>public</ExternalLabel>
 
 <!--
 Element StaticLabel
-Used to change default label displayed for static functions; it's not translated
+Used to change default label displayed for static functions. If not empty, it overrides label from translation file.
 -->
 <StaticLabel>static</StaticLabel>
 
 <!--
 Element RecordLabel
-Used to change default label displayed for record data type; it's not translated
+Used to change default label displayed for record data type. If not empty, it overrides label from translation file.
 -->
-<RecordLabel>Bean</RecordLabel>
+<RecordLabel>POJO</RecordLabel>
+
+<!--
+Element CustomLabel
+Used to change default label displayed for custom data type if it's enabled. If not empty, it overrides label from translation file.
+-->
+<CustomLabel>record</CustomLabel>
+
+<!--
+Element EnumLabel
+Used to change default label displayed for enumeration data type if it's enabled. If not empty, it overrides label from translation file.
+-->
+<EnumLabel>enum</EnumLabel>
 
 <!--
 Element GlobalVarsLabelKey

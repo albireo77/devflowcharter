@@ -568,7 +568,7 @@ Available placeholders:
 
 <!--
 Element RecordLabel
-Used to change default label displayed for record data type; it's not translated
+Used to change default label displayed for record data type. If not empty, it overrides label from translation file.
 -->
 <RecordLabel>struct</RecordLabel>
 
