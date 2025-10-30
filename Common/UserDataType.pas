@@ -91,7 +91,8 @@ constructor TUserDataType.Create(AParentForm: TDataTypesForm);
 begin
 
    FElementTypeId := 'field';
-   FCodeIncludeExtern := GInfra.CurrentLang.CodeIncludeExternDataType;
+   var currLang := GInfra.CurrentLang;
+   FCodeIncludeExtern := currLang.CodeIncludeExternDataType;
 
    inherited Create(AParentForm);
 
@@ -144,7 +145,6 @@ begin
    CreateLibControls(Self, edtName.Left+edtName.Width+7, 10);
 
    rgTypeBox := CreateTypeBox;
-   var currLang := GInfra.CurrentLang;
    if not currLang.RecordLabel.IsEmpty then
       rgTypeBox.Items[FindItemIndex(dtRecord)] := currLang.RecordLabel;
    if currLang.EnabledUserDataTypeOther and not currLang.OtherLabel.IsEmpty then
@@ -163,11 +163,11 @@ begin
    chkAddPtrType.Font.Style := [];
    chkAddPtrType.Font.Color := clWindowText;
    chkAddPtrType.SetBounds(rgTypeBox.BoundsRect.Right+6, 42, TInfra.GetAutoWidth(chkAddPtrType), 17);
-   chkAddPtrType.Enabled := GInfra.CurrentLang.EnabledPointers;
+   chkAddPtrType.Enabled := currLang.EnabledPointers;
    chkAddPtrType.OnClick := OnClickCh;
 
    CreateExtDeclareChBox(Self, chkAddPtrType.Left, 60);
-   chkExternal.AllowGrayed := GInfra.CurrentLang.AllowTransExternDataType;
+   chkExternal.AllowGrayed := currLang.AllowTransExternDataType;
 
    GProject.AddComponent(Self);
 end;
