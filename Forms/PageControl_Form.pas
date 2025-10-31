@@ -190,7 +190,7 @@ end;
 
 procedure TPageControlForm.pgcTabsChange(Sender: TObject);
 begin
-   if GetAsyncKeyState(vkControl) <> 0 then
+   if GetAsyncKeyState(vkControl) < 0 then
       TInfra.GetEditorForm.SelectCodeRange(pgcTabs.ActivePage);
 end;
 
