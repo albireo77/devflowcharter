@@ -1,4 +1,4 @@
-{  
+{
    Copyright (C) 2006 The devFlowcharter project.
    The initial author of this file is Michal Domagala.
 
@@ -59,7 +59,8 @@ const
 implementation
 
 uses
-   System.SysUtils, System.Classes, System.Math, Infrastructure, YaccLib, OmniXMLUtils;
+   System.SysUtils, System.Classes, System.Types, System.Math, Infrastructure, YaccLib,
+   OmniXMLUtils;
 
 constructor TIfElseBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin
@@ -136,9 +137,9 @@ begin
 
       Canvas.Ellipse(BottomHook-5, Height-34, BottomHook+5, Height-24);
       Canvas.MoveTo(FalseBranch.Hook.X, FDiamond.Right.Y);
-      Canvas.LineTo(FDiamond.Right.X, FDiamond.Right.Y);
+      Canvas.LineTo(FDiamond.Right);
       Canvas.MoveTo(TrueBranch.Hook.X, FDiamond.Left.Y);
-      Canvas.LineTo(FDiamond.Left.X, FDiamond.Left.Y);
+      Canvas.LineTo(FDiamond.Left);
 
       DrawTextLabel(FDiamond.Left.X, FDiamond.Left.Y-5, FTrueLabel, True, True);
       DrawTextLabel(FDiamond.Right.X, FDiamond.Right.Y-5, FFalseLabel, False, True);
@@ -184,13 +185,9 @@ begin
       Inc(FalseBranch.Hook.X, dlt);
       LinkAllBlocks;
       TrueHook := TrueBranch.Last.Left + TrueBranch.Last.BottomPoint.X;
-      if not FalseBranch.IsEmpty then
-         FalseHook := FalseBranch.Last.Left + FalseBranch.Last.BottomPoint.X
-      else
-      begin
-         FalseHook := FalseBranch.Hook.X;
+      FalseHook := if FalseBranch.IsEmpty then FalseBranch.Hook.X else (FalseBranch.Last.Left + FalseBranch.Last.BottomPoint.X);
+      if FalseBranch.IsEmpty then
          Width := FalseHook + 11;
-      end;
    end;
    if (FRedArrow <> TRUE_BRANCH_IDX) and not FalseBranch.IsEmpty then           // FALSE branch
    begin
@@ -206,10 +203,7 @@ begin
       Width := rx + 10;
       LinkAllBlocks;
       FalseHook := FalseBranch.Last.Left + FalseBranch.Last.BottomPoint.X;
-      if not TrueBranch.IsEmpty then
-         TrueHook := TrueBranch.Last.Left + TrueBranch.Last.BottomPoint.X
-      else
-         TrueHook := TrueBranch.Hook.X;
+      TrueHook := if TrueBranch.IsEmpty then TrueBranch.Hook.X else (TrueBranch.Last.Left + TrueBranch.Last.BottomPoint.X);
    end;
    if AContinue then
       ParentBlock.ResizeHorz(AContinue);

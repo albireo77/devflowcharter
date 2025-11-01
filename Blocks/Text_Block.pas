@@ -50,7 +50,7 @@ type
 implementation
 
 uses
-   System.Types, Constants, Infrastructure;
+   System.Types, System.UITypes, Constants, Infrastructure;
 
 constructor TTextBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin

@@ -34,6 +34,7 @@ The only valid character to set indent level in elements responsible for code ge
     <EnabledUserDataTypeOther>true</EnabledUserDataTypeOther>
     <EnabledUserDataTypeEnum>true</EnabledUserDataTypeEnum>
     <EnabledUserDataTypeArray>true</EnabledUserDataTypeArray>
+    <EnabledUserDataTypeCustom>false</EnabledUserDataTypeCustom>
     <EnabledPointers>true</EnabledPointers>
     <EnabledExplorer>true</EnabledExplorer>
     <EnabledCodeGenerator>true</EnabledCodeGenerator>
@@ -296,7 +297,7 @@ It returns value "<=" if block is increasing or ">=" if decreasing
 <!--
 Element ForDoTemplateModifier2
 Description: It returns value based on whether for..do block is increasing|decreasing
-It returns value "++" if block is increasing or "--" if decreasing
+It returns 2 pluses if block is increasing or 2 minuses if decreasing
 -->
 <ForDoTemplateModifier2>++|--</ForDoTemplateModifier2>
 
@@ -891,21 +892,39 @@ Available placeholders:
 
 <!--
 Element ExternalLabel
-Used to change default label displayed for external variable/constant or function/datatype; it's not translated
+Used to change default label displayed for external variable/constant or function/datatype. If not empty, it overrides label from translation file.
 -->
 <ExternalLabel></ExternalLabel>
 
 <!--
 Element StaticLabel
-Used to change default label displayed for static functions; it's not translated
+Used to change default label displayed for static functions. If not empty, it overrides label from translation file.
 -->
 <StaticLabel></StaticLabel>
 
 <!--
 Element RecordLabel
-Used to change default label displayed for record data type; it's not translated
+Used to change default label displayed for record data type. If not empty, it overrides label from translation file.
 -->
 <RecordLabel></RecordLabel>
+
+<!--
+Element CustomLabel
+Used to change default label displayed for custom data type if it's enabled. If not empty, it overrides label from translation file.
+-->
+<CustomLabel></CustomLabel>
+
+<!--
+Element EnumLabel
+Used to change default label displayed for enumeration data type if it's enabled. If not empty, it overrides label from translation file.
+-->
+<EnumLabel></EnumLabel>
+
+<!--
+Element OtherLabel
+Used to change default label displayed for other data type. If not empty, it overrides label from translation file.
+-->
+<OtherLabel></OtherLabel>
 
 <!--
 Element GlobalVarsLabelKey

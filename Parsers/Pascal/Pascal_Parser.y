@@ -502,7 +502,7 @@ valid_identifier:	T_IDENTIFIER		{
 
 var_const:		valid_identifier	{
                                                         arg1 := TParserHelper.GetIdentInfo($1);
-							if not (arg1.IdentType in [VARIABLE, VARRAY, CONSTANT, ENUM_VALUE]) then
+							if arg1.IdentType not in [VARIABLE, VARRAY, CONSTANT, ENUM_VALUE] then
                                                         begin
                                                            yyerrmsg := trnsManager.GetFormattedString('UnknId', [$1]);
                                                            yyabort;

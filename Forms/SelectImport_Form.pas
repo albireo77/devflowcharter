@@ -30,7 +30,7 @@ var
 implementation
 
 uses
-   Infrastructure, WinApi.Windows;
+   Infrastructure, WinApi.Windows, System.UITypes;
 
 {$R *.dfm}
 

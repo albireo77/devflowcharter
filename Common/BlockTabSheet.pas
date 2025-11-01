@@ -68,8 +68,8 @@ type
 implementation
 
 uses
-   System.StrUtils, System.Math, System.UITypes, WinApi.Windows, Navigator_Form,
-   OmniXMLUtils, Infrastructure, Constants;
+   System.Math, System.UITypes, WinApi.Windows, Navigator_Form, OmniXMLUtils, Infrastructure,
+   Constants;
 
 constructor TBlockTabSheet.Create(AMainForm: TMainForm);
 begin
@@ -110,7 +110,7 @@ end;
 procedure TBlockTabSheet.ExportToXML(ANode: IXMLNode);
 begin
    var node := AppendNode(ANode, 'page');
-   SetNodeAttrStr(node, 'name', IfThen(IsMain, MAIN_PAGE_MARKER, Caption));
+   SetNodeAttrStr(node, 'name', if IsMain then MAIN_PAGE_MARKER else Caption);
    SetNodeAttrInt(node, 'hScrollRange', Box.HorzScrollBar.Range);
    SetNodeAttrInt(node, 'vScrollRange', Box.VertScrollBar.Range);
    SetNodeAttrInt(node, 'hScrollPos', Box.HorzScrollBar.Position);

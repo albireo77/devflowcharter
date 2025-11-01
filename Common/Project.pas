@@ -476,7 +476,7 @@ begin
    if TInfra.CompareWithAppVersion(ver) > 0 then
       TInfra.ShowWarningBox('OldVerMsg', [ver]);
 
-   var s := IfThen(SameText(langName, GInfra.TemplateLang.Name), 'ChangeLngNone', 'ChangeLngAsk');
+   var s := if SameText(langName, GInfra.TemplateLang.Name) then 'ChangeLngNone' else 'ChangeLngAsk';
 
    if (not SameText(GInfra.CurrentLang.Name, langName)) and
       (TInfra.ShowQuestionBox(s, [langName.Trim, sLineBreak], MB_YESNO+MB_ICONQUESTION) = mrYes) then
@@ -790,11 +790,7 @@ end;
 
 procedure TProject.ExportToGraphic(AGraphic: TGraphic);
 begin
-   var lBitmap: TBitmap := nil;
-   if AGraphic is TBitmap then
-      lBitmap := TBitmap(AGraphic)
-   else
-      lBitmap := TBitmap.Create;
+   var lBitmap := if AGraphic is TBitmap then TBitmap(AGraphic) else TBitmap.Create;
    var page := ActivePage;
    var pnt := page.Box.GetBottomRight;
    lBitmap.Width := pnt.X;

@@ -93,18 +93,12 @@ end;
 
 function TStatementMemo.CanBeFocused: boolean;
 begin
-   if Parent is TBlock then
-      result := TBlock(Parent).CanBeFocused
-   else
-      result := CanFocus;
+   result := if Parent is TBlock then TBlock(Parent).CanBeFocused else CanFocus;
 end;
 
 function TStatementMemo.GetFocusColor: TColor;
 begin
-   if HasParent then
-      result := Font.Color
-   else
-      result := OK_COLOR;
+   result := if HasParent then Font.Color else OK_COLOR;
 end;
 
 function TStatementMemo.Remove(ANode: TTreeNodeWithFriend = nil): boolean;

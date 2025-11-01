@@ -24,7 +24,7 @@ interface
 implementation
 
 uses
-   System.SysUtils, System.StrUtils, System.Classes, System.Math, Vcl.StdCtrls, Base_Block,
+   System.SysUtils, System.StrUtils, System.Classes, Vcl.StdCtrls, Base_Block,
    UserFunction, DeclareList, Interfaces, UserDataType, Infrastructure, ParserHelper,
    Types, Constants, TabComponent;
 
@@ -46,26 +46,26 @@ begin
             dtInt:
             if not lang.DataTypeIntMask.IsEmpty then
             begin
-               typeStr := ReplaceStr(lang.DataTypeIntMask, PRIMARY_PLACEHOLDER, name);
-               template.Text := ReplaceStr(typeStr, '%s9', extModifier);
+               typeStr := ReplaceText(lang.DataTypeIntMask, PRIMARY_PLACEHOLDER, name);
+               template.Text := ReplaceText(typeStr, '%s9', extModifier);
             end;
 
             dtReal:
             if not lang.DataTypeRealMask.IsEmpty then
             begin
-               typeStr := ReplaceStr(lang.DataTypeRealMask, PRIMARY_PLACEHOLDER, name);
-               template.Text := ReplaceStr(typeStr, '%s9', extModifier);
+               typeStr := ReplaceText(lang.DataTypeRealMask, PRIMARY_PLACEHOLDER, name);
+               template.Text := ReplaceText(typeStr, '%s9', extModifier);
             end;
 
             dtOther:
             if not lang.DataTypeOtherMask.IsEmpty then
             begin
-               typeStr := ReplaceStr(lang.DataTypeOtherMask, PRIMARY_PLACEHOLDER, name);
-               typeStr := ReplaceStr(typeStr, '%s9', extModifier);
+               typeStr := ReplaceText(lang.DataTypeOtherMask, PRIMARY_PLACEHOLDER, name);
+               typeStr := ReplaceText(typeStr, '%s9', extModifier);
                var field := ADataType.GetFirstField;
                if field <> nil then
                   s2 := Trim(field.edtName.Text);
-               template.Text := ReplaceStr(typeStr, '%s2', s2);
+               template.Text := ReplaceText(typeStr, '%s2', s2);
             end;
 
             dtArray:
@@ -81,18 +81,18 @@ begin
                end;
                if not arrayMask.IsEmpty then
                begin
-                  typeStr := ReplaceStr(arrayMask, PRIMARY_PLACEHOLDER, name);
-                  typeStr := ReplaceStr(typeStr, '%s9', extModifier);
-                  typeStr := ReplaceStr(typeStr, '%s2', s2);
-                  template.Text := ReplaceStr(typeStr, '%s3', s3);
+                  typeStr := ReplaceText(arrayMask, PRIMARY_PLACEHOLDER, name);
+                  typeStr := ReplaceText(typeStr, '%s9', extModifier);
+                  typeStr := ReplaceText(typeStr, '%s2', s2);
+                  template.Text := ReplaceText(typeStr, '%s3', s3);
                end;
             end;
 
             dtRecord:
             if not lang.DataTypeRecordTemplate.IsEmpty then
             begin
-               typeStr := ReplaceStr(lang.DataTypeRecordTemplate, PRIMARY_PLACEHOLDER, name);
-               template.Text := ReplaceStr(typeStr, '%s9', extModifier);
+               typeStr := ReplaceText(lang.DataTypeRecordTemplate, PRIMARY_PLACEHOLDER, name);
+               template.Text := ReplaceText(typeStr, '%s9', extModifier);
                var fieldList := TStringList.Create;
                try
                   for var field in ADataType.GetFields do
@@ -101,9 +101,9 @@ begin
                      var fieldStr := lang.DataTypeRecordFieldArrayMask;
                      if sizeStr.IsEmpty then
                         fieldStr := lang.DataTypeRecordFieldMask;
-                     fieldStr := ReplaceStr(fieldStr, PRIMARY_PLACEHOLDER, Trim(field.edtName.Text));
-                     fieldStr := ReplaceStr(fieldStr, '%s2', field.cbType.Text);
-                     fieldStr := ReplaceStr(fieldStr, '%s3', sizeStr);
+                     fieldStr := ReplaceText(fieldStr, PRIMARY_PLACEHOLDER, Trim(field.edtName.Text));
+                     fieldStr := ReplaceText(fieldStr, '%s2', field.cbType.Text);
+                     fieldStr := ReplaceText(fieldStr, '%s3', sizeStr);
                      var lRecord := '';
                      var enum := '';
                      var lType := TParserHelper.GetType(field.cbType.Text);
@@ -111,8 +111,8 @@ begin
                         lRecord := lang.FunctionHeaderArgsEntryRecord
                      else if TParserHelper.IsEnumType(lType) then
                         enum := lang.FunctionHeaderArgsEntryEnum;
-                     fieldStr := ReplaceStr(fieldStr, '%s4', lRecord);
-                     fieldStr := ReplaceStr(fieldStr, '%s5', enum);
+                     fieldStr := ReplaceText(fieldStr, '%s4', lRecord);
+                     fieldStr := ReplaceText(fieldStr, '%s5', enum);
                      fieldList.Add(fieldStr);
                   end;
                   TInfra.InsertTemplateLines(template, '%s2', fieldList);
@@ -124,8 +124,8 @@ begin
             dtEnum:
             if not lang.DataTypeEnumTemplate.IsEmpty then
             begin
-               typeStr := ReplaceStr(lang.DataTypeEnumTemplate, PRIMARY_PLACEHOLDER, name);
-               template.Text := ReplaceStr(typeStr, '%s9', extModifier);
+               typeStr := ReplaceText(lang.DataTypeEnumTemplate, PRIMARY_PLACEHOLDER, name);
+               template.Text := ReplaceText(typeStr, '%s9', extModifier);
                for var field in ADataType.GetFields do
                   s2 := s2 + Format(lang.DataTypeEnumEntryList, [Trim(field.edtName.Text)]);
                if lang.DataTypeEnumEntryListStripCount > 0 then
@@ -176,7 +176,7 @@ end;
 function Template_GetConstantType(const AValue: string; var AGenericType: string): integer;
 begin
    AGenericType := '';
-   result := IfThen(TryStrToInt(AValue, result), GENERIC_INT_TYPE, UNKNOWN_TYPE);
+   result := if TryStrToInt(AValue, result) then GENERIC_INT_TYPE else UNKNOWN_TYPE;
 end;
 
 procedure Template_ProgramHeaderSectionGenerator(ALines: TStringList);
@@ -212,7 +212,7 @@ begin
          var p1 := '%s2';
          var p2 := PRIMARY_PLACEHOLDER;
          var stripCount := lang.LibEntryListStripCount;
-         if lang.LibTemplate.Contains(PRIMARY_PLACEHOLDER) then
+         if lang.LibTemplate.Contains(PRIMARY_PLACEHOLDER, True) then
          begin
             libFormat := lang.LibEntry + sLineBreak;
             p1 := PRIMARY_PLACEHOLDER;
@@ -221,11 +221,9 @@ begin
          end;
          for var i := 0 to libList.Count-1 do
          begin
-            var tabName := '';
-            if libList.Objects[i] is TTabComponent then
-               tabName := TTabComponent(libList.Objects[i]).GetName;
-            var libEntry := ReplaceStr(libFormat, '%s1', tabName);
-            libEntry := ReplaceStr(libEntry, '%s', libList.Strings[i]);
+            var tabName := if libList.Objects[i] is TTabComponent then TTabComponent(libList.Objects[i]).GetName else '';
+            var libEntry := ReplaceText(libFormat, '%s1', tabName);
+            libEntry := ReplaceText(libEntry, '%s', libList.Strings[i]);
             libStr := libStr + libEntry;
          end;
          if not libStr.Trim.IsEmpty then
@@ -263,11 +261,10 @@ begin
             var genericTypes := '';
             var constType := '';
             var d := 0;
-            var t := 0;
-            if Assigned(lang.GetConstantType) then
-               t := lang.GetConstantType(constValue, genericTypes)
-            else
-               t := Template_GetConstantType(constValue, genericTypes);
+            var t := if Assigned(lang.GetConstantType) then
+                        lang.GetConstantType(constValue, genericTypes)
+                     else
+                        Template_GetConstantType(constValue, genericTypes);
             if t <> UNKNOWN_TYPE then
             begin
                d := TParserHelper.DecodeArrayDimension(t);
@@ -279,17 +276,17 @@ begin
                   template := lang.ConstTypeNotGeneric;
                if not template.IsEmpty then
                begin
-                  constType := ReplaceStr(template, PRIMARY_PLACEHOLDER, constType);
-                  constType := ReplaceStr(constType, '%s2', genericTypes);
+                  constType := ReplaceText(template, PRIMARY_PLACEHOLDER, constType);
+                  constType := ReplaceText(constType, '%s2', genericTypes);
                end;
             end;
-            var constStr := IfThen(d > 0, lang.ConstEntryArray, lang.ConstEntry);
-            constStr := ReplaceStr(constStr, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
-            constStr := ReplaceStr(constStr, '%s2', constValue);
-            constStr := ReplaceStr(constStr, '%s3', AConstList.GetExternalModifier(i));
-            constStr := ReplaceStr(constStr, '%s4', constType);
+            var constStr := if d > 0 then lang.ConstEntryArray else lang.ConstEntry;
+            constStr := ReplaceText(constStr, PRIMARY_PLACEHOLDER, AConstList.sgList.Cells[CONST_NAME_COL, i]);
+            constStr := ReplaceText(constStr, '%s2', constValue);
+            constStr := ReplaceText(constStr, '%s3', AConstList.GetExternalModifier(i));
+            constStr := ReplaceText(constStr, '%s4', constType);
             if d > 0 then
-               constStr := ReplaceStr(constStr, '%s5', DupeString(ReplaceStr(lang.VarEntryArraySize, '%s', ''), d));
+               constStr := ReplaceText(constStr, '%s5', DupeString(ReplaceText(lang.VarEntryArraySize, '%s', ''), d));
             constList.AddObject(constStr, AConstList);
          end;
          if not constList.IsEmpty then
@@ -331,20 +328,20 @@ begin
                   varSize := varSize + Format(lang.VarEntryArraySize, [dim]);
                if lang.VarEntryArraySizeStripCount > 0 then
                   SetLength(varSize, varSize.Length - lang.VarEntryArraySizeStripCount);
-               varStr := ReplaceStr(lang.VarEntryArray, PRIMARY_PLACEHOLDER, name);
-               varStr := ReplaceStr(varStr, '%s3', varSize);
+               varStr := ReplaceText(lang.VarEntryArray, PRIMARY_PLACEHOLDER, name);
+               varStr := ReplaceText(varStr, '%s3', varSize);
             end
             else
-               varStr := ReplaceStr(lang.VarEntry, PRIMARY_PLACEHOLDER, name);
-            varStr := ReplaceStr(varStr, '%s2', typeStr);
+               varStr := ReplaceText(lang.VarEntry, PRIMARY_PLACEHOLDER, name);
+            varStr := ReplaceText(varStr, '%s2', typeStr);
             var varInit := AVarList.sgList.Cells[VAR_INIT_COL, i];
             if not varInit.IsEmpty then
             begin
-               var initEntry := IfThen(isExtern, lang.VarEntryInitExtern, lang.VarEntryInit);
+               var initEntry := if isExtern then lang.VarEntryInitExtern else lang.VarEntryInit;
                if not initEntry.IsEmpty then
-                  varInit := ReplaceStr(initEntry, PRIMARY_PLACEHOLDER, varInit);
+                  varInit := ReplaceText(initEntry, PRIMARY_PLACEHOLDER, varInit);
             end;
-            varStr := ReplaceStr(varStr, '%s4', varInit);
+            varStr := ReplaceText(varStr, '%s4', varInit);
             var lType := TParserHelper.GetType(typeStr);
             var lRecord := '';
             var enum := '';
@@ -352,9 +349,9 @@ begin
                lRecord := lang.FunctionHeaderArgsEntryRecord
             else if TParserHelper.IsEnumType(lType) then
                enum := lang.FunctionHeaderArgsEntryEnum;
-            varStr := ReplaceStr(varStr, '%s5', lRecord);
-            varStr := ReplaceStr(varStr, '%s6', enum);
-            varStr := ReplaceStr(varStr, '%s7', AVarList.GetExternalModifier(i));
+            varStr := ReplaceText(varStr, '%s5', lRecord);
+            varStr := ReplaceText(varStr, '%s6', enum);
+            varStr := ReplaceText(varStr, '%s7', AVarList.GetExternalModifier(i));
             varList.AddObject(varStr, AVarList);
          end;
          if not varList.IsEmpty then
@@ -390,8 +387,8 @@ begin
       var argList := '';
       for var param in AFunction.Header.GetParameters do
       begin
-         var paramStr := ReplaceStr(lang.FunctionHeaderArgsEntryMask, PRIMARY_PLACEHOLDER, Trim(param.edtName.Text));
-         paramStr := ReplaceStr(paramStr, '%s2', param.cbType.Text);
+         var paramStr := ReplaceText(lang.FunctionHeaderArgsEntryMask, PRIMARY_PLACEHOLDER, Trim(param.edtName.Text));
+         paramStr := ReplaceText(paramStr, '%s2', param.cbType.Text);
          var ref := '';
          var lArray := '';
          var lRecord := '';
@@ -407,12 +404,12 @@ begin
             enum := lang.FunctionHeaderArgsEntryEnum;
          var defValue := Trim(param.edtDefault.Text);
          if not defValue.IsEmpty then
-            defValue := ReplaceStr(lang.FunctionHeaderArgsEntryDefault, '%s', defValue);
-         paramStr := ReplaceStr(paramStr, '%s3', ref);
-         paramStr := ReplaceStr(paramStr, '%s4', lArray);
-         paramStr := ReplaceStr(paramStr, '%s5', lRecord);
-         paramStr := ReplaceStr(paramStr, '%s6', enum);
-         paramStr := ReplaceStr(paramStr, '%s7', defValue);
+            defValue := ReplaceText(lang.FunctionHeaderArgsEntryDefault, '%s', defValue);
+         paramStr := ReplaceText(paramStr, '%s3', ref);
+         paramStr := ReplaceText(paramStr, '%s4', lArray);
+         paramStr := ReplaceText(paramStr, '%s5', lRecord);
+         paramStr := ReplaceText(paramStr, '%s6', enum);
+         paramStr := ReplaceText(paramStr, '%s7', defValue);
          argList := argList + paramStr;
       end;
 
@@ -426,23 +423,23 @@ begin
       var isStatic := '';
       if AFunction.Header.cbType.ItemIndex > 0 then
       begin
-         typeArray := IfThen(AFunction.Header.chkArrayType.Checked, lang.FunctionHeaderTypeArray, lang.FunctionHeaderTypeNotArray);
+         typeArray := if AFunction.Header.chkArrayType.Checked then lang.FunctionHeaderTypeArray else lang.FunctionHeaderTypeNotArray;
          h0 := AFunction.Header.cbType.Text;
          h1 := lang.FunctionHeaderTypeNotNone1;
          h2 := lang.FunctionHeaderTypeNotNone2;
       end;
       if AFunction.Header.chkStatic.Visible then
-         isStatic := IfThen(AFunction.Header.chkStatic.Checked, lang.FunctionHeaderStatic, lang.FunctionHeaderNotStatic);
+         isStatic := if AFunction.Header.chkStatic.Checked then lang.FunctionHeaderStatic else lang.FunctionHeaderNotStatic;
 
-      var hText := IfThen(AFunction.Header.chkConstructor.Checked, lang.ConstructorHeaderTemplate, lang.FunctionHeaderTemplate);
-      hText := ReplaceStr(hText, PRIMARY_PLACEHOLDER, name);
-      hText := ReplaceStr(hText, '%s3', argList);
-      hText := ReplaceStr(hText, '%s4', h0);
-      hText := ReplaceStr(hText, '%s5', h1);
-      hText := ReplaceStr(hText, '%s6', h2);
-      hText := ReplaceStr(hText, '%s7', AFunction.Header.GetExternModifier);
-      hText := ReplaceStr(hText, '%s8', typeArray);
-      hText := ReplaceStr(hText, '%s9', isStatic);
+      var hText := if AFunction.Header.chkConstructor.Checked then lang.ConstructorHeaderTemplate else lang.FunctionHeaderTemplate;
+      hText := ReplaceText(hText, PRIMARY_PLACEHOLDER, name);
+      hText := ReplaceText(hText, '%s3', argList);
+      hText := ReplaceText(hText, '%s4', h0);
+      hText := ReplaceText(hText, '%s5', h1);
+      hText := ReplaceText(hText, '%s6', h2);
+      hText := ReplaceText(hText, '%s7', AFunction.Header.GetExternModifier);
+      hText := ReplaceText(hText, '%s8', typeArray);
+      hText := ReplaceText(hText, '%s9', isStatic);
 
       var headerTemplate := TStringList.Create;
       try
@@ -454,13 +451,11 @@ begin
          end
          else
          begin
-            var memDesc := '';
-            if AFunction.Header.chkInclDescCode.Checked then
-               memDesc := TrimRight(AFunction.Header.memDesc.Text);
+            var memDesc := if AFunction.Header.chkInclDescCode.Checked then TrimRight(AFunction.Header.memDesc.Text) else '';
             if memDesc.IsEmpty then
                TInfra.InsertTemplateLines(headerTemplate, '%s2', nil)
             else
-               headerTemplate.Text := ReplaceStr(headerTemplate.Text, '%s2', memDesc);
+               headerTemplate.Text := ReplaceText(headerTemplate.Text, '%s2', memDesc);
 
             var funcTemplate := TStringList.Create;
             try
@@ -642,18 +637,18 @@ begin
    result := GInfra.CurrentLang.UserTypeDesc;
    if not result.IsEmpty then
    begin
-      result := ReplaceStr(result, PRIMARY_PLACEHOLDER, ADataType.edtName.Text);
+      result := ReplaceText(result, PRIMARY_PLACEHOLDER, ADataType.edtName.Text);
       var kind := '';
       if ADataType.rgTypeBox.ItemIndex <> -1 then
          kind := ADataType.rgTypeBox.Items[ADataType.rgTypeBox.ItemIndex];
-      result := ReplaceStr(result, '%s2', kind);
+      result := ReplaceText(result, '%s2', kind);
    end;
 end;
 
 function Template_GetMainProgramDesc: string;
 begin
    result := trnsManager.GetString(GInfra.CurrentLang.ProgramLabelKey);
-   result := ReplaceStr(result, PRIMARY_PLACEHOLDER, GProject.Name);
+   result := ReplaceText(result, PRIMARY_PLACEHOLDER, GProject.Name);
 end;
 
 function Template_GetUserFuncDesc(AHeader: TUserFunctionHeader; AFullParams: boolean = True; AIncludeDesc: boolean = True): string;
@@ -663,9 +658,9 @@ begin
    begin
       var params := '';
       var lang := GInfra.CurrentLang;
-      var arrayType := IfThen(AHeader.chkArrayType.Checked, lang.FunctionHeaderTypeArray, lang.FunctionHeaderTypeNotArray);
-      var desc := IfThen(AIncludeDesc, AHeader.memDesc.Text);
-      var lb := IfThen(AIncludeDesc, sLineBreak);
+      var arrayType := if AHeader.chkArrayType.Checked then lang.FunctionHeaderTypeArray else lang.FunctionHeaderTypeNotArray;
+      var desc := if AIncludeDesc then AHeader.memDesc.Text else '';
+      var lb := if AIncludeDesc then sLineBreak else '';
       var lType := AHeader.cbType.Text;
       var key := lang.ProcedureLabelKey;
       if AHeader.chkConstructor.Checked then
@@ -680,19 +675,19 @@ begin
          begin
             if not params.IsEmpty then
                params := params + ', ';
-            params := params + param.cbType.Text + IfThen(param.chkTable.Checked, '[ ] ', ' ') + Trim(param.edtName.Text);
+            params := params + param.cbType.Text + (if param.chkTable.Checked then '[ ] ' else ' ') + Trim(param.edtName.Text);
          end;
       end;
       if not key.IsEmpty then
       begin
          result := trnsManager.GetString(key);
-         result := ReplaceStr(result, LB_PHOLDER2, lb);
-         result := ReplaceStr(result, PRIMARY_PLACEHOLDER, Trim(AHeader.edtName.Text));
-         result := ReplaceStr(result, '%s2', params);
-         result := ReplaceStr(result, '%s3', lType);
-         result := ReplaceStr(result, '%s4', desc);
-         result := ReplaceStr(result, '%s5', arrayType);
-         result := ReplaceStr(result, '%s6', AHeader.GetExternModifier);
+         result := ReplaceText(result, LB_PHOLDER2, lb);
+         result := ReplaceText(result, PRIMARY_PLACEHOLDER, Trim(AHeader.edtName.Text));
+         result := ReplaceText(result, '%s2', params);
+         result := ReplaceText(result, '%s3', lType);
+         result := ReplaceText(result, '%s4', desc);
+         result := ReplaceText(result, '%s5', arrayType);
+         result := ReplaceText(result, '%s6', AHeader.GetExternModifier);
       end;
    end;
 end;
@@ -706,18 +701,18 @@ begin
        var template := TStringList.Create;
        var parms := TStringList.Create;
        try
-          template.Text := ReplaceStr(lang.FunctionHeaderDescTemplate, PRIMARY_PLACEHOLDER, Trim(AHeader.edtName.Text));
-          template.Text := ReplaceStr(template.Text, '%s2', AHeader.cbType.Text);
+          template.Text := ReplaceText(lang.FunctionHeaderDescTemplate, PRIMARY_PLACEHOLDER, Trim(AHeader.edtName.Text));
+          template.Text := ReplaceText(template.Text, '%s2', AHeader.cbType.Text);
 
           if not lang.FunctionHeaderDescParmMask.IsEmpty then
           begin
              var i := 1;
              for var parm in AHeader.GetParameters do
              begin
-                var parmString := ReplaceStr(lang.FunctionHeaderDescParmMask, PRIMARY_PLACEHOLDER, Trim(parm.edtName.Text));
-                parmString := ReplaceStr(parmString, '%s2', parm.cbType.Text);
-                parmString := ReplaceStr(parmString, '%s3', Trim(parm.edtDefault.Text));
-                parmString := ReplaceStr(parmString, '%s4', i.ToString);
+                var parmString := ReplaceText(lang.FunctionHeaderDescParmMask, PRIMARY_PLACEHOLDER, Trim(parm.edtName.Text));
+                parmString := ReplaceText(parmString, '%s2', parm.cbType.Text);
+                parmString := ReplaceText(parmString, '%s3', Trim(parm.edtDefault.Text));
+                parmString := ReplaceText(parmString, '%s4', i.ToString);
                 parms.Add(parmString);
                 Inc(i);
              end;
@@ -730,7 +725,7 @@ begin
           if AHeader.chkConstructor.Checked or (AHeader.cbType.ItemIndex = 0) then
              TInfra.DeleteLinesContaining(template, '%s4')
           else
-             template.Text := ReplaceStr(template.Text, '%s4', ReplaceStr(lang.FunctionHeaderDescReturnMask, PRIMARY_PLACEHOLDER, AHeader.cbType.Text));
+             template.Text := ReplaceText(template.Text, '%s4', ReplaceText(lang.FunctionHeaderDescReturnMask, PRIMARY_PLACEHOLDER, AHeader.cbType.Text));
 
           result := template.Text;
        finally

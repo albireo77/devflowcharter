@@ -36,9 +36,9 @@ type
 implementation
 
 uses
-   System.SysUtils, Instr_Block, MultiInstr_Block, InOut_Block, FunctionCall_Block, WhileDo_Block,
-   RepeatUntil_Block, ForDo_Block, IfElse_Block, If_Block,
-   Case_Block, Return_Block, Text_Block, Main_Block, Folder_Block;
+   System.SysUtils, Instr_Block, MultiInstr_Block, InOut_Block, FunctionCall_Block,
+   WhileDo_Block, RepeatUntil_Block, ForDo_Block, IfElse_Block, If_Block, Case_Block,
+   Return_Block, Text_Block, Main_Block, Folder_Block, Infrastructure;
 
 class function TBlockFactory.Create(ABranch: TBranch; ABlockType: TBlockType): TBlock;
 begin
@@ -64,22 +64,26 @@ end;
 class function TBlockFactory.Create(ANode: IXMLNode; ABranch: TBranch): TBlock;
 begin
    result := nil;
-   var p := TBlockParms.New(ANode);
-   case p.bt of
-      blInstr:      result := TInstrBlock.Create(ABranch, p);
-      blMultiInstr: result := TMultiInstrBlock.Create(ABranch, p);
-      blInput:      result := TInputBlock.Create(ABranch, p);
-      blOutput:     result := TOutputBlock.Create(ABranch, p);
-      blFuncCall:   result := TFunctionCallBlock.Create(ABranch, p);
-      blWhile:      result := TWhileDoBlock.Create(ABranch, p);
-      blRepeat:     result := TRepeatUntilBlock.Create(ABranch, p);
-      blIf:         result := TIfBlock.Create(ABranch, p);
-      blFor:        result := TForDoBlock.Create(ABranch, p);
-      blCase:       result := TCaseBlock.Create(ABranch, p);
-      blReturn:     result := TReturnBlock.Create(ABranch, p);
-      blText:       result := TTextBlock.Create(ABranch, p);
-      blFolder:     result := TFolderBlock.Create(ABranch, p);
-      blIfElse:     result := TIfElseBlock.Create(ABranch, p);
+   try
+      var p := TBlockParms.New(ANode);
+      case p.bt of
+         blInstr:      result := TInstrBlock.Create(ABranch, p);
+         blMultiInstr: result := TMultiInstrBlock.Create(ABranch, p);
+         blInput:      result := TInputBlock.Create(ABranch, p);
+         blOutput:     result := TOutputBlock.Create(ABranch, p);
+         blFuncCall:   result := TFunctionCallBlock.Create(ABranch, p);
+         blWhile:      result := TWhileDoBlock.Create(ABranch, p);
+         blRepeat:     result := TRepeatUntilBlock.Create(ABranch, p);
+         blIf:         result := TIfBlock.Create(ABranch, p);
+         blFor:        result := TForDoBlock.Create(ABranch, p);
+         blCase:       result := TCaseBlock.Create(ABranch, p);
+         blReturn:     result := TReturnBlock.Create(ABranch, p);
+         blText:       result := TTextBlock.Create(ABranch, p);
+         blFolder:     result := TFolderBlock.Create(ABranch, p);
+         blIfElse:     result := TIfElseBlock.Create(ABranch, p);
+      end;
+   except on E: Exception do
+      GErr_text := E.Message;
    end;
    if (result <> nil) and (result.GetFromXML(ANode) <> errNone) then
       FreeAndNil(result);
@@ -88,13 +92,15 @@ end;
 class function TBlockFactory.Create(ANode: IXMLNode; ATab: TBlockTabSheet): TBlock;
 begin
    result := nil;
-   var p := TBlockParms.New(ANode);
-   if p.bt = blMain then
-   begin
-      result := TMainBlock.Create(ATab, p);
-      if result.GetFromXML(ANode) <> errNone then
-         FreeAndNil(result);
+   try
+      var p := TBlockParms.New(ANode);
+      if p.bt = blMain then
+         result := TMainBlock.Create(ATab, p);
+   except on E: Exception do
+      GErr_text := E.Message;
    end;
+   if (result <> nil) and (result.GetFromXML(ANode) <> errNone) then
+      FreeAndNil(result);
 end;
 
 end.

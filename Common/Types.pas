@@ -45,7 +45,7 @@ type
 
    TDataTypeKind = (tpInt, tpReal, tpString, tpBool, tpRecord, tpEnum, tpArray, tpPtr, tpOther);
 
-   TUserDataTypeKind = (dtInt, dtRecord, dtArray, dtReal, dtOther, dtEnum);
+   TUserDataTypeKind = (dtInt, dtRecord, dtArray, dtReal, dtOther, dtEnum, dtCustom);
 
    TArrowPosition = (arrMiddle, arrEnd);
 
@@ -58,11 +58,19 @@ type
    TMenuItemArray = array of TMenuItem;
 
    TDiamond = record
-     Top,
-     Bottom,
-     Right,
-     Left: TPoint;
-     class function New(const ATop: TPoint; AEdit: TCustomEdit): TDiamond; static;
+   private
+     FTop,
+     FBottom,
+     FRight,
+     FLeft,
+     FCtrlPos: TPoint;
+   public
+     property Top: TPoint read FTop;
+     property Bottom: TPoint read FBottom;
+     property Right: TPoint read FRight;
+     property Left: TPoint read FLeft;
+     property CtrlPos: TPoint read FCtrlPos;
+     class function New(const ATop: TPoint; const ACtrl: TSize): TDiamond; static;
      function Width: integer;
      function Height: integer;
      function Polygon: TPointArray;
@@ -157,9 +165,9 @@ type
    end;
 
    TNameEdit = class(TEdit)
-       protected
-          procedure WMKillFocus(var msg: TWMKillFocus); message WM_KILLFOCUS;
-    end;
+   protected
+      procedure WMKillFocus(var msg: TWMKillFocus); message WM_KILLFOCUS;
+   end;
 
 implementation
 
@@ -267,17 +275,10 @@ begin
 end;
 
 class function TBlockParms.New(AFrom: IXMLNode): TBlockParms;
-var
-   attr: string;
-   at: integer;
-   bt: TBlockType;
 begin
-   attr := GetNodeAttrStr(AFrom, BLOCK_TYPE_ATTR);
-   at := StrToIntDef(attr, -1);
-   if at = -1 then
-      bt := TRttiEnumerationType.GetValue<TBlockType>(attr)
-   else
-      bt := TBlockType(at);
+   var attr := GetNodeAttrStr(AFrom, BLOCK_TYPE_ATTR);
+   var at := StrToIntDef(attr, -1);
+   var bt := if at = -1 then TRttiEnumerationType.GetValue<TBlockType>(attr) else TBlockType(at);
    result := New(bt,
                  GetNodeAttrInt(AFrom, 'x'),
                  GetNodeAttrInt(AFrom, 'y'),
@@ -310,28 +311,29 @@ begin
       CodeRange.Lines[Row] := Text;
 end;
 
-class function TDiamond.New(const ATop: TPoint; AEdit: TCustomEdit): TDiamond;
+class function TDiamond.New(const ATop: TPoint; const ACtrl: TSize): TDiamond;
 begin
-   var a         := (AEdit.Height + AEdit.Width div 2) div 2 + 1;
-   result.Left   := Point(ATop.X-2*a, ATop.Y+a);
-   result.Bottom := Point(ATop.X, ATop.Y+2*a);
-   result.Right  := Point(ATop.X+2*a, ATop.Y+a);
-   result.Top    := ATop;
+   var a           := (ACtrl.Height + ACtrl.Width div 2) div 2 + 1;
+   result.FLeft    := Point(ATop.X-2*a, ATop.Y+a);
+   result.FBottom  := Point(ATop.X, ATop.Y+2*a);
+   result.FRight   := Point(ATop.X+2*a, ATop.Y+a);
+   result.FTop     := ATop;
+   result.FCtrlPos := ATop - Point(ACtrl.Width div 2, ACtrl.Height div 2 - a);
 end;
 
 function TDiamond.Width: integer;
 begin
-   result := Right.X - Left.X;
+   result := FRight.X - FLeft.X;
 end;
 
 function TDiamond.Height: integer;
 begin
-   result := Bottom.Y - Top.Y;
+   result := FBottom.Y - FTop.Y;
 end;
 
 function TDiamond.Polygon: TPointArray;
 begin
-   result := [Top, Right, Bottom, Left];
+   result := [FTop, FRight, FBottom, FLeft];
 end;
 
 end.

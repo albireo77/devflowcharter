@@ -97,9 +97,9 @@ begin
       DrawTextLabel(FDiamond.Right.X, FDiamond.Right.Y-5, FFalseLabel, False, True);
       DrawBlockLabel(FDiamond.Left.X+5, FDiamond.Left.Y-5, GInfra.CurrentLang.LabelWhile, True, True);
       Canvas.MoveTo(TopHook.X, 0);
-      Canvas.LineTo(FDiamond.Top.X, FDiamond.Top.Y);
+      Canvas.LineTo(FDiamond.Top);
       Canvas.PenPos := FDiamond.Right;
-      Canvas.LineTo(BottomPoint.X, BottomPoint.Y);
+      Canvas.LineTo(BottomPoint);
       DrawArrowTo(BottomPoint.X, Height-1);
    end;
    DrawI;
@@ -112,10 +112,7 @@ end;
 
 procedure TWhileDoBlock.SetWidth(AMinX: integer);
 begin
-   if AMinX < FInitParms.Width - 30 then
-      Width := FInitParms.Width
-   else
-      Width := AMinX + 30;
+   Width := if AMinX < FInitParms.Width - 30 then FInitParms.Width else (AMinX + 30);
    BottomPoint.X := Width - 11;
 end;
 

@@ -73,7 +73,6 @@ type
          procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
          function CanResize(var NewWidth, NewHeight: Integer): Boolean; override;
          procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean); override;
-         procedure DragDrop(Source: TObject; X, Y: Integer); override;
          procedure MyOnChange(Sender: TObject);
          procedure DblClick; override;
          procedure WMMouseLeave(var Msg: TMessage); message WM_MOUSELEAVE;
@@ -105,7 +104,7 @@ type
          procedure SetPage(APage: TBlockTabSheet); virtual;
          function GetPage: TBlockTabSheet; virtual;
          procedure CreateParams(var Params: TCreateParams); override;
-         procedure MoveComment(AComment: TComment; dx, dy: integer); virtual;
+         procedure MoveComment(AComment: TComment; const APoint: TPoint); virtual;
          function ProcessComments: boolean;
          function IsAncestor(AParent: TObject): boolean;
          function GetErrorMsg(AEdit: TCustomEdit): string;
@@ -141,6 +140,7 @@ type
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; virtual;
          function GetFromXML(ANode: IXMLNode): TError; virtual;
          procedure SaveInXML(ANode: IXMLNode); virtual;
+         procedure DragDrop(Source: TObject; X, Y: Integer); override;
          function FillTemplate(const ALangId, ATemplate: string): string; virtual;
          function FillCodedTemplate(const ALangId: string): string; virtual;
          function GetDescTemplate(const ALangId: string): string; virtual;
@@ -167,7 +167,6 @@ type
          procedure ChangeFrame;
          procedure RepaintAll;
          function Next: TBlock;
-         function Prev: TBlock;
          function CountErrWarn: TErrWarnCount; virtual;
          function GetFocusColor: TColor;
          function Remove(ANode: TTreeNodeWithFriend = nil): boolean; virtual;
@@ -202,7 +201,6 @@ type
          FFixedBranches: integer;
          FDiamond: TDiamond;
          constructor Create(AParentBranch: TBranch; const ABlockParms: TBlockParms; AShape: TColorShape; AAlignment: TAlignment; AParserMode: TYYMode = yymUndefined);
-         procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
          function CanResize(var NewWidth, NewHeight: Integer): Boolean; override;
          procedure SetWidth(AMinX: integer); virtual;
          procedure LinkAllBlocks;
@@ -224,6 +222,7 @@ type
          function GetBranch(idx: integer): TBranch;
          function FindLastRow(AStart: integer; ALines: TStrings): integer; override;
          procedure ChangeColor(AColor: TColor); override;
+         procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
          function GenerateTree(AParentNode: TTreeNode): TTreeNode; override;
          function AddBranch(const AHook: TPoint; AId: integer = ID_UNDEFINED; ATextId: integer = ID_UNDEFINED): TBranch; virtual;
          procedure ExpandAll;
@@ -622,12 +621,10 @@ end;
 
 procedure TBlock.DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-   var shiftState: TShiftState := [];
    var isShift := GetAsyncKeyState(vkShift) <> 0;
-   if isShift then
-      shiftState := [ssShift];
+   var shiftState := if isShift then [ssShift] else [];
    MouseMove(shiftState, X, Y);
-   if (FRedArrow < 0) or (not (Source is TBlock)) or (Source is TMainBlock) or (Source is TReturnBlock) or ((not isShift) and ((Source = Self) or IsAncestor(Source))) then
+   if (FRedArrow < 0) or (Source is not TBlock) or (Source is TMainBlock) or (Source is TReturnBlock) or ((not isShift) and ((Source = Self) or IsAncestor(Source))) then
       Accept := False;
 end;
 
@@ -845,7 +842,7 @@ begin
       end;
    end;
    if result = nil then
-      raise Exception.Create('public constructor (TBranch, TBlockParms) not found in class ' + ClassName);
+      raise Exception.CreateFmt('public constructor (%s, %s) not found in class %s', [NameOf(TBranch), NameOf(TBlockParms), ClassName]);
 end;
 
 procedure TBlock.NCHitTest(var Msg: TWMNCHitTest);
@@ -1094,12 +1091,11 @@ procedure TBlock.WMWindowPosChanging(var Msg: TWMWindowPosChanging);
 begin
    if FPosChanged and ((Msg.WindowPos.flags and SWP_NOMOVE) = 0) then
    begin
-      var dx := Msg.WindowPos.x - Left;
-      var dy := Msg.WindowPos.y - Top;
-      if (dx <> 0) or (dy <> 0) then
+      var p := Point(Msg.WindowPos.x, Msg.WindowPos.y) - BoundsRect.TopLeft;
+      if (p.X <> 0) or (p.Y <> 0) then
       begin
          for var comment in GetComments(True) do
-            MoveComment(comment, dx, dy);
+            MoveComment(comment, p);
       end;
    end;
    inherited;
@@ -1112,12 +1108,12 @@ begin
    inherited;
 end;
 
-procedure TBlock.MoveComment(AComment: TComment; dx, dy: integer);
+procedure TBlock.MoveComment(AComment: TComment; const APoint: TPoint);
 begin
   if not AComment.Moved then
   begin
      if AComment.Visible then
-        TInfra.MoveWinTopZ(AComment, AComment.Left+dx, AComment.Top+dy);
+        TInfra.MoveWinTopZ(AComment, AComment.BoundsRect.TopLeft + APoint);
      AComment.Moved := True;
   end;
 end;
@@ -1187,10 +1183,7 @@ begin
    if edit <> nil then
    begin
       var lColor := GSettings.GetShapeColor(FShape);
-      if lColor = GSettings.DesktopColor then
-         edit.Color := AColor
-      else
-         edit.Color := lColor;
+      edit.Color := if lColor <> GSettings.DesktopColor then lColor else AColor;
    end;
 end;
 
@@ -1250,10 +1243,7 @@ begin
          block.ChangeColor(AColor);
    end;
    var lColor := GSettings.GetShapeColor(shpFolder);
-   if lColor = GSettings.DesktopColor then
-      FMemoFolder.Color := AColor
-   else
-      FMemoFolder.Color := lColor;
+   FMemoFolder.Color := if lColor <> GSettings.DesktopColor then lColor else AColor;
 end;
 
 procedure TBlock.Select;
@@ -1422,6 +1412,7 @@ begin
    if AColor = clNone then
       AColor := GSettings.PenColor;
    var isVert := fromX = toX;
+   var toBottomRight := if isVert then (toY > fromY) else (toX > fromX);
    var arr1 := Point(toX, toY);
    if AArrowPos = arrMiddle then
    begin
@@ -1430,9 +1421,6 @@ begin
       else
          arr1.Offset((fromX-toX) div 2, 0);
    end;
-   var toBottomRight := toX > fromX;
-   if isVert then
-      toBottomRight := toY > fromY;
    var arr2 := arr1 + M[isVert, toBottomRight];
    var arr3 := arr2 + D[isVert];
    Canvas.Brush.Style := bsSolid;
@@ -1537,12 +1525,11 @@ begin
    var w := Canvas.Pen.Width;
    if Expanded then
    begin
-      var edit := GetTextControl;
-      if (edit <> nil) and (FShape = shpDiamond) then
+      var ctrl := GetTextControl;
+      if (ctrl <> nil) and (FShape = shpDiamond) then
       begin
-         FDiamond := TDiamond.New(GetDiamondTop, edit);
-         TInfra.MoveWin(edit, FDiamond.Top.X - edit.Width div 2,
-                              FDiamond.Top.Y - edit.Height div 2 + FDiamond.Height div 2);
+         FDiamond := TDiamond.New(GetDiamondTop, ctrl.BoundsRect.Size);
+         TInfra.MoveWin(ctrl, FDiamond.CtrlPos);
          SetBrushColor(shpDiamond);
          Canvas.Polygon(FDiamond.Polygon);
       end;
@@ -1818,10 +1805,7 @@ begin
    result := CanRemove;
    if result then
    begin
-      if ANode <> nil then
-         result := RemoveBranch(GetBranchIndexByControl(ANode.Data))
-      else
-         result := False;
+      result := if ANode <> nil then RemoveBranch(GetBranchIndexByControl(ANode.Data)) else False;
       if not result then
          result := inherited Remove(ANode);
    end;
@@ -1832,6 +1816,11 @@ begin
    result := False;
 end;
 
+procedure TBlock.ExportCode(ALines: TStringList);
+begin
+   GenerateCode(ALines, GInfra.CurrentLang.Name, 0);
+end;
+
 function TBlock.PinComments: integer;
 begin
    result := 0;
@@ -1839,16 +1828,11 @@ begin
    for var comment in GetComments do
    begin
       comment.Visible := False;
-      TInfra.MoveWin(comment, comment.Left - p.X, comment.Top - p.Y);
+      TInfra.MoveWin(comment, comment.BoundsRect.TopLeft - p);
       comment.PinControl := Self;
       comment.Parent := Page;
       Inc(result);
    end;
-end;
-
-procedure TBlock.ExportCode(ALines: TStringList);
-begin
-   GenerateCode(ALines, GInfra.CurrentLang.Name, 0);
 end;
 
 procedure TBlock.UnPinComments;
@@ -1856,7 +1840,7 @@ begin
    var p := ClientToParent(TPoint.Zero, Page.Box);
    for var comment in GetPinComments do
    begin
-      TInfra.MoveWin(comment, comment.Left + p.X, comment.Top + p.Y);
+      TInfra.MoveWin(comment, comment.BoundsRect.TopLeft + p);
       comment.Parent := Page.Box;
       comment.Visible := True;
       comment.PinControl := nil;
@@ -2030,9 +2014,9 @@ begin
 
       try
          SetNodeAttrInt(ANode, 'bry', Branch.Hook.Y);
-         SetNodeAttrInt(ANode, 'brx', IfThen(Expanded, Branch.Hook.X, FFoldParms.BranchPoint.X));
-         SetNodeAttrInt(ANode, 'fw', IfThen(Expanded, FFoldParms.Width, Width));
-         SetNodeAttrInt(ANode, 'fh', IfThen(Expanded, FFoldParms.Height, Height));
+         SetNodeAttrInt(ANode, 'brx', if Expanded then Branch.Hook.X else FFoldParms.BranchPoint.X);
+         SetNodeAttrInt(ANode, 'fw', if Expanded then FFoldParms.Width else Width);
+         SetNodeAttrInt(ANode, 'fh', if Expanded then FFoldParms.Height else Height);
          SetNodeAttrBool(ANode, FOLDED_ATTR, not Expanded);
 
          var txt := GetFoldedText;
@@ -2178,14 +2162,10 @@ begin
       begin
          if GetBranch(idx) = nil then
          begin
-            var hx := 0;
-            var hy := 0;
             var node := FindNode(branchNode, 'x');
-            if node <> nil then
-               hx := StrToIntDef(node.Text, 0);
+            var hx := if node <> nil then StrToIntDef(node.Text, 0) else 0;
             node := FindNode(branchNode, 'y');
-            if node <> nil then
-               hy := StrToIntDef(node.Text, 0);
+            var hy := if node <> nil then StrToIntDef(node.Text, 0) else 0;
             AddBranch(Point(hx, hy), GetNodeAttrInt(branchNode, ID_ATTR), GetNodeAttrInt(branchNode, BRANCH_TEXT_ATTR, ID_UNDEFINED));
          end;
          var node := FindNode(branchNode, BLOCK_TAG);
@@ -2268,10 +2248,7 @@ end;
 function TBlock.GetFocusColor: TColor;
 begin
    var edit := GetTextControl;
-   if (edit <> nil) and edit.HasParent then
-      result := TControlHack(edit).Font.Color
-   else
-      result := OK_COLOR;
+   result := if (edit <> nil) and edit.HasParent then TControlHack(edit).Font.Color else OK_COLOR;
 end;
 
 procedure TBlock.UpdateEditor(AEdit: TCustomEdit);
@@ -2281,7 +2258,7 @@ begin
       var chLine := TInfra.GetChangeLine(Self, AEdit);
       if chLine.Row <> ROW_NOT_FOUND then
       begin
-         chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
+         chLine.Text := ReplaceText(chLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
          chLine.Text := TInfra.StripInstrEnd(chLine.Text);
          TInfra.GetEditorForm.UpdateEditorForBlock(Self, chLine);
       end;
@@ -2297,7 +2274,7 @@ end;
 
 function TBlock.ShouldFocusEditor: boolean;
 begin
-   result := TInfra.GetEditorForm.Visible and (not FRefreshMode) and not (fsStrikeOut in Font.Style);
+   result := TInfra.GetEditorForm.Visible and (not FRefreshMode) and (fsStrikeOut not in Font.Style);
 end;
 
 function TBlock.GetDescTemplate(const ALangId: string): string;
@@ -2324,7 +2301,7 @@ begin
       templateLines.Text := template;
       for var line in templateLines do
       begin
-         if line.Contains(PRIMARY_PLACEHOLDER) then
+         if line.Contains(PRIMARY_PLACEHOLDER, True) then
          begin
             result := line;
             break;
@@ -2349,7 +2326,7 @@ begin
    result := FillCodedTemplate(ALangId);
    var template := FindTemplate(ALangId, ATemplate);
    if not template.IsEmpty then
-      result := ReplaceStr(template, PRIMARY_PLACEHOLDER, result);
+      result := ReplaceText(template, PRIMARY_PLACEHOLDER, result);
 end;
 
 function TBlock.FillCodedTemplate(const ALangId: string): string;
@@ -2363,13 +2340,8 @@ end;
 procedure TBlock.ExportToGraphic(AGraphic: TGraphic);
 begin
    DeSelect;
-   var bitmap: TBitmap := nil;
-   if AGraphic is TBitmap then
-      bitmap := TBitmap(AGraphic)
-   else
-      bitmap := TBitmap.Create;
-   bitmap.Width := Width + 2;
-   bitmap.Height := Height + 2;
+   var bitmap := if AGraphic is TBitmap then TBitmap(AGraphic) else TBitmap.Create;
+   bitmap.SetSize(Width + 2, Height + 2);
    var lPage := Page;
    lPage.DrawI := False;
    bitmap.Canvas.Lock;
@@ -2413,14 +2385,13 @@ procedure TGroupBlock.LinkBlocks(ABranch: TBranch);
 begin
    if ABranch <> nil then
    begin
-      var p: TPoint;
       var blockPrev: TBlock := nil;
       for var block in ABranch do
       begin
-         if blockPrev <> nil then
-            p := Point(blockPrev.BottomPoint.X+blockPrev.Left-block.TopHook.X, blockPrev.BoundsRect.Bottom)
-         else
-            p := Point(ABranch.Hook.X-block.TopHook.X, ABranch.Hook.Y+1);
+         var p := if blockPrev <> nil then
+                     Point(blockPrev.BottomPoint.X+blockPrev.Left-block.TopHook.X, blockPrev.BoundsRect.Bottom)
+                  else
+                     Point(ABranch.Hook.X-block.TopHook.X, ABranch.Hook.Y+1);
          TInfra.MoveWin(block, p);
          blockPrev := block;
       end;
@@ -2464,7 +2435,7 @@ begin
    var template := GetBlockTemplate(ALangId);
    if template.IsEmpty then
       template := PRIMARY_PLACEHOLDER;
-   template := ReplaceStr(template, PRIMARY_PLACEHOLDER, txt);
+   template := ReplaceText(template, PRIMARY_PLACEHOLDER, txt);
    GenerateTemplateSection(ALines, template, ALangId, ADeep);
 end;
 
@@ -2504,7 +2475,7 @@ procedure TGroupBlock.GenerateTemplateSection(ALines: TStringList; ATemplate: TS
    end;
    function ExtractBranchIndex(const AString: string): integer;
    begin
-      result := Pos(BRANCH_PLACEHOLDER, AString);
+      result := TInfra.PosText(BRANCH_PLACEHOLDER, AString);
       if result > 0 then
       begin
          var val := '';
@@ -2546,17 +2517,6 @@ begin
       var idx := FParentBranch.IndexOf(Self);
       if (idx <> -1) and (FParentBranch.Last <> Self) then
          result := FParentBranch.Items[idx+1];
-   end;
-end;
-
-function TBlock.Prev: TBlock;
-begin
-   result := nil;
-   if FParentBranch <> nil then
-   begin
-      var idx := FParentBranch.IndexOf(Self);
-      if idx > 0 then
-         result := FParentBranch.Items[idx-1];
    end;
 end;
 
@@ -2630,10 +2590,7 @@ end;
 
 function TBranch.QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
 begin
-   if GetInterface(IID, Obj) then
-      result := 0
-   else
-      result := E_NOINTERFACE;
+   result := if GetInterface(IID, Obj) then 0 else E_NOINTERFACE;
 end;
 
 function TBranch._AddRef: Integer; stdcall;    // no reference counting

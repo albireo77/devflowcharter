@@ -41,7 +41,7 @@ type
 implementation
 
 uses
-   Vcl.Controls, System.Types, System.Classes, Infrastructure, YaccLib;
+   Vcl.Controls, Vcl.Graphics, System.Types, System.Classes, Infrastructure, YaccLib;
 
 constructor TInstrBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin

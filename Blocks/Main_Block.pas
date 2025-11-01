@@ -50,15 +50,15 @@ type
          function GetZOrder: integer;
          function IsBoldDesc: boolean; override;
          procedure Resize; override;
+         procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
          function Remove(ANode: TTreeNodeWithFriend = nil): boolean; override;
          function GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer; override;
       protected
          FZOrder: integer;
          FStartLabel,
          FStopLabel: string;
-         procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
          procedure Paint; override;
-         procedure MoveComment(AComment: TComment; dx, dy: integer); override;
+         procedure MoveComment(AComment: TComment; const APoint: TPoint); override;
          procedure SetPage(APage: TBlockTabSheet); override;
          function GetFunctionLabel(var ARect: TRect): string;
          function GetPage: TBlockTabSheet; override;
@@ -72,8 +72,8 @@ const
 implementation
 
 uses
-   Vcl.Forms, System.SysUtils, System.StrUtils, Infrastructure, XMLProcessor, OmniXMLUtils,
-   Navigator_Form, UserFunction, Constants;
+   Vcl.Forms, System.SysUtils, System.StrUtils, System.Types, System.UITypes, Infrastructure,
+   XMLProcessor, OmniXMLUtils, Navigator_Form, UserFunction, Constants;
 
 constructor TMainBlock.Create(APage: TBlockTabSheet; const ABlockParms: TBlockParms);
 begin
@@ -194,37 +194,24 @@ begin
 end;
 
 procedure TMainBlock.ExportToGraphic(AGraphic: TGraphic);
-var
-   bitmap: TBitmap;
-   pnt: TPoint;
-   comment: TComment;
-   bStyle: TBorderStyle;
-   selStart: integer;
-   pdi: boolean;
 begin
    DeSelect;
-   if AGraphic is TBitmap then
-      bitmap := TBitmap(AGraphic)
-   else
-      bitmap := TBitmap.Create;
-   pnt := GetMaxBounds;
-   pnt.X := pnt.X - Left - MARGIN_X + 1;
-   pnt.Y := pnt.Y - Top - MARGIN_Y + 1;
-   bitmap.Width := pnt.X;
-   bitmap.Height := pnt.Y;
-   pdi := FPage.DrawI;
+   var pnt := GetMaxBounds - Point(Left + MARGIN_X - 1, Top + MARGIN_Y - 1);
+   var bitmap := if AGraphic is TBitmap then TBitmap(AGraphic) else TBitmap.Create;
+   bitmap.SetSize(pnt.X, pnt.Y);
+   var pdi := FPage.DrawI;
    FPage.DrawI := False;
    bitmap.Canvas.Lock;
    try
       PaintTo(bitmap.Canvas, 1, 1);
       if Expanded then
       begin
-         for comment in GetComments do
+         for var comment in GetComments do
          begin
             if comment.Visible then
             begin
-               bStyle := comment.BorderStyle;
-               selStart := comment.SelStart;
+               var bStyle := comment.BorderStyle;
+               var selStart := comment.SelStart;
                comment.BorderStyle := bsNone;
                comment.PaintTo(bitmap.Canvas, comment.Left-Left, comment.Top-Top);
                comment.BorderStyle := bStyle;
@@ -282,12 +269,8 @@ end;
 
 procedure TMainBlock.DrawStop;
 begin
-   var y := GetEllipseTextRect(0, 0, FStopLabel).Height;
-   if Branch.IsEmpty then
-      Inc(y, Branch.Hook.Y+1)
-   else
-      Inc(y, Branch.Last.BoundsRect.Bottom);
-   DrawEllipsedText(BottomHook, y, FStopLabel);
+   var y := if Branch.IsEmpty then (Branch.Hook.Y + 1) else Branch.Last.BoundsRect.Bottom;
+   DrawEllipsedText(BottomHook, GetEllipseTextRect(0, 0, FStopLabel).Height + y, FStopLabel);
 end;
 
 function TMainBlock.GetFunctionLabel(var ARect: TRect): string;
@@ -326,19 +309,16 @@ end;
 function TMainBlock.GetExportFileName: string;
 begin
    var userFunction := GProject.FindUserFunction(Self);
-   if userFunction <> nil then
-      result := userFunction.GetName
-   else
-      result := inherited GetExportFileName;
+   result := if userFunction <> nil then userFunction.GetName else inherited;
 end;
 
 function TMainBlock.ExportToXMLFile(const AFile: string): TError;
 begin
    var userFunction := GProject.FindUserFunction(Self);
-   if userFunction <> nil then
-      result := TXMLProcessor.ExportToXMLFile(userFunction.ExportToXML, AFile)
-   else
-      result := inherited ExportToXMLFile(AFile);
+   result := if userFunction <> nil then
+                TXMLProcessor.ExportToXMLFile(userFunction.ExportToXML, AFile)
+             else
+                inherited ExportToXMLFile(AFile);
 end;
 
 procedure TMainBlock.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -391,7 +371,7 @@ begin
             var progList := TStringList.Create;
             var varList := TStringList.Create;
             try
-               progList.Text := ReplaceStr(template, PRIMARY_PLACEHOLDER, lName);
+               progList.Text := ReplaceText(template, PRIMARY_PLACEHOLDER, lName);
                if header = nil then
                   TInfra.InsertTemplateLines(progList, '%s3', IfThen(not Branch.EndsWithReturnBlock, lang.ProgramReturnTemplate));
                if not Assigned(lang.VarSectionGenerator) then
@@ -413,23 +393,15 @@ begin
 end;
 
 procedure TMainBlock.SetWidth(AMinX: integer);
-var
-   minVal, val: integer;
-   R: TRect;
 begin
    if Expanded then
    begin
-      minVal := Branch.GetMostRight + 30;
-      if not GetFunctionLabel(R).IsEmpty then
-         val := R.Right + 10
-      else
-         val := minVal;
+      var r := TRect.Empty;
+      var minVal := Branch.GetMostRight + 30;
+      var val := if GetFunctionLabel(r).IsEmpty then minVal else (r.Right + 10);
       if val > minVal then
          minVal := val;
-      if AMinX < minVal then
-         Width := minVal
-      else
-         Width := AMinX + 5;
+      Width := if AMinX < minVal then minVal else (AMinX + 5);
    end;
 end;
 
@@ -463,10 +435,10 @@ begin
    result := True;
 end;
 
-procedure TMainBlock.MoveComment(AComment: TComment; dx, dy: integer);
+procedure TMainBlock.MoveComment(AComment: TComment; const APoint: TPoint);
 begin
    if AComment.Visible then
-      TInfra.MoveWinTopZ(AComment, AComment.Left+dx, AComment.Top+dy);
+      TInfra.MoveWinTopZ(AComment, AComment.BoundsRect.TopLeft + APoint);
 end;
 
 function TMainBlock.GetUndoObject: TObject;

@@ -166,6 +166,9 @@ type
       ExternalLabel,
       StaticLabel,
       RecordLabel,
+      CustomLabel,
+      EnumLabel,
+      OtherLabel,
       FunctionHeaderExternal,
       FunctionHeaderTransExternal,
       FunctionHeaderNotExternal,
@@ -198,6 +201,7 @@ type
       EnabledUserDataTypeOther,
       EnabledUserDataTypeEnum,
       EnabledUserDataTypeArray,
+      EnabledUserDataTypeCustom,
       EnabledPointers,
       EnabledExplorer,
       EnabledCodeGenerator,
@@ -526,6 +530,9 @@ begin
    ExternalLabel                   := GetNodeTextStr(ANode, 'ExternalLabel', ExternalLabel);
    StaticLabel                     := GetNodeTextStr(ANode, 'StaticLabel', StaticLabel);
    RecordLabel                     := GetNodeTextStr(ANode, 'RecordLabel', RecordLabel);
+   CustomLabel                     := GetNodeTextStr(ANode, 'CustomLabel', CustomLabel);
+   EnumLabel                       := GetNodeTextStr(ANode, 'EnumLabel', EnumLabel);
+   OtherLabel                      := GetNodeTextStr(ANode, 'OtherLabel', OtherLabel);
 
    FuncBracketsCursorPos           := GetNodeTextInt(ANode, 'FuncBracketsCursorPos', FuncBracketsCursorPos);
    LabelFontSize                   := GetNodeTextInt(ANode, 'LabelFontSize', LabelFontSize);
@@ -548,6 +555,7 @@ begin
    EnabledUserDataTypeReal         := GetNodeTextBool(ANode, 'EnabledUserDataTypeReal', EnabledUserDataTypeReal);
    EnabledUserDataTypeOther        := GetNodeTextBool(ANode, 'EnabledUserDataTypeOther', EnabledUserDataTypeOther);
    EnabledUserDataTypeArray        := GetNodeTextBool(ANode, 'EnabledUserDataTypeArray', EnabledUserDataTypeArray);
+   EnabledUserDataTypeCustom       := GetNodeTextBool(ANode, 'EnabledUserDataTypeCustom', EnabledUserDataTypeCustom);
    EnabledUserDataTypeEnum         := GetNodeTextBool(ANode, 'EnabledUserDataTypeEnum', EnabledUserDataTypeEnum);
    EnabledExplorer                 := GetNodeTextBool(ANode, 'EnabledExplorer', EnabledExplorer);
    EnabledCodeGenerator            := GetNodeTextBool(ANode, 'EnabledCodeGenerator', EnabledCodeGenerator);
@@ -650,10 +658,7 @@ begin
          foldRegion.AddClose := GetNodeAttrBool(rnode, 'AddClose', False);
          foldRegion.NoSubFolds := GetNodeAttrBool(rnode, 'NoSubFolds', True);
          foldRegion.WholeWords := GetNodeAttrBool(rnode, 'WholeWords', True);
-         if GetNodeAttrStr(rnode, 'Type', '') = 'rtChar' then
-            foldRegion.RegionType := rtChar
-         else
-            foldRegion.RegionType := rtKeyword;
+         foldRegion.RegionType := if GetNodeAttrStr(rnode, 'Type', '') = 'rtChar' then rtChar else rtKeyword;
          FoldRegions := FoldRegions + [foldRegion];
          rnode := foldRegionNodes.NextNode;
       end;

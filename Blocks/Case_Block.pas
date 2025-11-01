@@ -67,8 +67,8 @@ const
 implementation
 
 uses
-   System.StrUtils, System.Math, System.SysUtils, Infrastructure, Constants, YaccLib,
-   OmniXMLUtils;
+   System.StrUtils, System.Math, System.SysUtils, System.UITypes, Infrastructure,
+   Constants, YaccLib, OmniXMLUtils;
 
 constructor TCaseBlock.Create(AParentBranch: TBranch; const ABlockParms: TBlockParms);
 begin
@@ -146,7 +146,7 @@ begin
       Canvas.LineTo(DefaultBranch.Hook.X, TopHook.Y);
       Canvas.LineTo(DefaultBranch.Hook.X, TopHook.Y-10);
       Canvas.MoveTo(BottomHook, BottomPoint.Y);
-      Canvas.LineTo(BottomPoint.X, BottomPoint.Y);
+      Canvas.LineTo(BottomPoint);
    end;
    DrawI;
 end;
@@ -250,12 +250,7 @@ begin
       LinkBlocks(br);
       PlaceBranchStatement(br);
       if not br.EndsWithReturnBlock then
-      begin
-         if not br.IsEmpty then
-            BottomHook := br.Last.Left + br.Last.BottomPoint.X
-         else
-            BottomHook := br.Hook.X;
-      end;
+         BottomHook := if br.IsEmpty then br.Hook.X else (br.Last.Left + br.Last.BottomPoint.X);
       rightX := br.GetMostRight + 60;
    end;
    TopHook.X := DefaultBranch.Hook.X;
@@ -311,22 +306,22 @@ begin
          var edit := FBranchList[i].Statement;
          var obj := TObject(edit);
          var template := GetTemplateByControl(edit, obj);
-         tmpList.Text := ReplaceStr(template, BRANCH_PLACEHOLDER + '1', BRANCH_PLACEHOLDER + i.ToString);
+         tmpList.Text := ReplaceText(template, BRANCH_PLACEHOLDER + '1', BRANCH_PLACEHOLDER + i.ToString);
          caseLines.AddStrings(tmpList);
          tmpList.Clear;
          for var a := 0 to caseLines.Count-1 do
          begin
-            if caseLines[a].Contains(PRIMARY_PLACEHOLDER) then
+            if caseLines[a].Contains(PRIMARY_PLACEHOLDER, True) then
             begin
-               caseLines[a] := ReplaceStr(caseLines[a], PRIMARY_PLACEHOLDER, Trim(edit.Text));
+               caseLines[a] := ReplaceText(caseLines[a], PRIMARY_PLACEHOLDER, Trim(edit.Text));
                caseLines.Objects[a] := obj;
             end;
-            if caseLines[a].Contains('%s2') then
-               caseLines[a] := ReplaceStr(caseLines[a], '%s2', statement);
+            if caseLines[a].Contains('%s2', True) then
+               caseLines[a] := ReplaceText(caseLines[a], '%s2', statement);
          end;
       end;
 
-      lines.Text := ReplaceStr(caseOfTemplate, PRIMARY_PLACEHOLDER, statement);
+      lines.Text := ReplaceText(caseOfTemplate, PRIMARY_PLACEHOLDER, statement);
       TInfra.InsertTemplateLines(lines, '%s2', caseLines);
 
       var defTemplate := IfThen(not DefaultBranch.IsEmpty, GInfra.GetLangDefinition(ALangId).CaseOfDefaultValueTemplate);
@@ -374,8 +369,8 @@ begin
       var chLine := TInfra.GetChangeLine(obj, AEdit, GetTemplateByControl(AEdit, obj));
       if chLine.Row <> ROW_NOT_FOUND then
       begin
-         chLine.Text := ReplaceStr(chLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
-         chLine.Text := ReplaceStr(chLine.Text, '%s2', Trim(FStatement.Text));
+         chLine.Text := ReplaceText(chLine.Text, PRIMARY_PLACEHOLDER, Trim(AEdit.Text));
+         chLine.Text := ReplaceText(chLine.Text, '%s2', Trim(FStatement.Text));
          TInfra.GetEditorForm.UpdateEditorForBlock(Self, chLine);
       end;
    end;
@@ -461,10 +456,8 @@ end;
 
 function TCaseBlock.GetDescTemplate(const ALangId: string): string;
 begin
-   result := '';
    var lang := GInfra.GetLangDefinition(ALangId);
-   if lang <> nil then
-      result := lang.CaseOfDescTemplate;
+   result := if lang <> nil then lang.CaseOfDescTemplate else '';
 end;
 
 procedure TCaseBlock.ExpandFold(AResize: boolean);

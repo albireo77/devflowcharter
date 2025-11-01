@@ -217,6 +217,7 @@ rgTypeBox=类型:
 dtInt=整数
 dtReal=实数
 dtRecord=记录
+dtCustom=Custom
 dtEnum=枚举类型
 dtOther=其他
 dtArray=数组

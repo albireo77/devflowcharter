@@ -63,15 +63,13 @@ type
          class procedure InsertLinesIntoList(ADestList, ASourceList: TStringList; AFromLine: integer);
          class procedure DecrementNodeSiblingOffsets(ANode: TTreeNode);
          class procedure DeleteLinesContaining(ALines: TStrings; const AText: string);
-         class procedure MoveWin(AWinControl: TWinControl; x, y: integer); overload;
-         class procedure MoveWin(AWinControl: TWinControl; const APoint: TPoint); overload;
-         class procedure MoveWinTopZ(AWinControl: TWinControl; x, y: integer);
+         class procedure MoveWin(AWinControl: TWinControl; const APoint: TPoint);
+         class procedure MoveWinTopZ(AWinControl: TWinControl; const APoint: TPoint);
          class procedure IndentSpacesToTabs(ALines: TStringList);
          class function GetScrolledPos(AMemo: TCustomMemo): TPoint;
          class function CreateDOSProcess(const ACommand: string; ADir: string = ''): boolean;
          class function ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer; overload;
          class function ShowQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer; overload;
-         class function FindText(ASubstr, AText: string; idx: integer; ACaseSens: boolean): integer;
          class function IsPrinter: boolean;
          class function IsValidControl(AObject: TObject): boolean;
          class function SameStrings(const AStr1, AStr2: string): boolean;
@@ -112,6 +110,7 @@ type
          class function Scaled(AControl: TControl; on96: integer): integer;
          class function ReplaceXMLIndents(const ALine: string): string;
          class function ShouldUpdateEditor: boolean;
+         class function PosText(const ASubStr, AStr: string; Offset: integer = 1; MatchCase: boolean = False): integer;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetNativeFunction(const AName: string): PNativeFunction;
          function GetLangDefinition(const AName: string): TLangDefinition;
@@ -425,10 +424,7 @@ end;
 // compares two strings based on current case-sensitive context
 class function TInfra.SameStrings(const AStr1, AStr2: string): boolean;
 begin
-   if GInfra.CurrentLang.CaseSensitiveSyntax then
-      result := SameStr(AStr1, AStr2)
-   else
-      result := SameText(AStr1, AStr2);
+   result := if GInfra.CurrentLang.CaseSensitiveSyntax then SameStr(AStr1, AStr2) else SameText(AStr1, AStr2);
 end;
 
 class procedure TInfra.PrintBitmap(ABitmap: TBitmap);
@@ -479,14 +475,8 @@ begin
            LogPixY1 := GetDeviceCaps(ABitmap.Canvas.Handle, LOGPIXELSY);
            LogPixX2 := GetDeviceCaps(Printer.Canvas.Handle, LOGPIXELSX);
            LogPixY2 := GetDeviceCaps(Printer.Canvas.Handle, LOGPIXELSY);
-           if LogPixX1 > LogPixX2 then      // horizontal
-              ScaleX := LogPixX1 div LogPixX2
-           else
-              ScaleX := LogPixX2 div LogPixX1;
-           if LogPixY1 > LogPixY2 then      // vertical
-              ScaleY := LogPixY1 div LogPixY2
-           else
-              ScaleY := LogPixY2 div LogPixY1;
+           ScaleX := if LogPixX1 > LogPixX2 then (LogPixX1 div LogPixX2) else (LogPixX2 div LogPixX1);
+           ScaleY := if LogPixY1 > LogPixY2 then (LogPixY1 div LogPixY2) else (LogPixY2 div LogPixY1);
            stepX := printRect.Width div ScaleX;
            stepY := printRect.Height div ScaleY;
         end
@@ -580,17 +570,9 @@ begin
    end;
 end;
 
-class function TInfra.FindText(ASubstr, AText: string; idx: integer; ACaseSens: boolean): integer;
+class function TInfra.PosText(const ASubStr, AStr: string; Offset: integer = 1; MatchCase: boolean = False): integer;
 begin
-   AText := Copy(AText, idx);
-   if not ACaseSens then
-   begin
-      AText := AText.ToUpper;
-      ASubstr := ASubstr.ToUpper;
-   end;
-   result := Pos(ASubstr, AText);
-   if result > 0 then
-      result :=  result + idx - 1;
+   result := if MatchCase then Pos(ASubStr, AStr, Offset) else Pos(ASubStr.ToUpper, AStr.ToUpper, Offset);
 end;
 
 class function TInfra.IsPrinter: boolean;
@@ -736,7 +718,7 @@ begin
    while i < ADestList.Count do
    begin
       var line := ADestList[i];
-      if ContainsText(line, APlaceHolder) then
+      if line.Contains(APlaceHolder, True) then
       begin
          if (ATemplate <> nil) and not ATemplate.IsEmpty then
          begin
@@ -915,9 +897,7 @@ end;
 
 class function TInfra.GetParserErrMsg: string;
 begin
-   result := '';
-   if GInfra.CurrentLang.Parser <> nil then
-      result := GInfra.CurrentLang.Parser.GetErrMsg;
+   result := if GInfra.CurrentLang.Parser <> nil then GInfra.CurrentLang.Parser.GetErrMsg else '';
 end;
 
 class function TInfra.IsNOkColor(AColor: TColor): boolean;
@@ -948,7 +928,7 @@ begin
             templateLines.Text := template;
             for var i := 0 to templateLines.Count-1 do
             begin
-               p := Pos(PRIMARY_PLACEHOLDER, templateLines[i]);
+               p := PosText(PRIMARY_PLACEHOLDER, templateLines[i]);
                if p <> 0 then
                begin
                   if (i = templateLines.Count-1) and (i <> 0) then
@@ -1016,8 +996,8 @@ end;
 class procedure TInfra.SetFontSize(AControl: TControl; ASize: integer);
 begin
    var flag := (AControl is TCustomEdit)
-               and not (AControl is TCustomMemo)
-               and not (csFixedHeight in AControl.ControlStyle);
+               and (AControl is not TCustomMemo)
+               and (csFixedHeight not in AControl.ControlStyle);
    if flag then
       AControl.ControlStyle := AControl.ControlStyle + [csFixedHeight];
    TControlHack(AControl).Font.Size := ASize;
@@ -1177,17 +1157,12 @@ end;
 
 class procedure TInfra.MoveWin(AWinControl: TWinControl; const APoint: TPoint);
 begin
-   MoveWin(AWinControl, APoint.X, APoint.Y);
+   SetWindowPos(AWinControl.Handle, 0, APoint.X, APoint.Y, 0, 0, SWP_NOSIZE or SWP_NOZORDER);
 end;
 
-class procedure TInfra.MoveWin(AWinControl: TWinControl; x, y: integer);
+class procedure TInfra.MoveWinTopZ(AWinControl: TWinControl; const APoint: TPoint);
 begin
-   SetWindowPos(AWinControl.Handle, 0, x, y, 0, 0, SWP_NOSIZE or SWP_NOZORDER);
-end;
-
-class procedure TInfra.MoveWinTopZ(AWinControl: TWinControl; x, y: integer);
-begin
-   SetWindowPos(AWinControl.Handle, HWND_TOP, x, y, 0, 0, SWP_NOSIZE);
+   SetWindowPos(AWinControl.Handle, HWND_TOP, APoint.X, APoint.Y, 0, 0, SWP_NOSIZE);
 end;
 
 class function TInfra.GetPageFromXY(APageControl: TPageControl; x, y: integer): TTabSheet;
@@ -1211,10 +1186,7 @@ end;
 class function TInfra.Scaled(AControl: TControl; on96: integer): integer;
 begin
    var ppi := AControl.CurrentPPI;
-   if ppi = 96 then
-      result := on96
-   else
-      result := MulDiv(on96, ppi, 96);
+   result := if ppi = 96 then on96 else MulDiv(on96, ppi, 96);
 end;
 
 class function TInfra.ReplaceXMLIndents(const ALine: string): string;

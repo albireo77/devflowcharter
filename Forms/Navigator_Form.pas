@@ -3,8 +3,8 @@ unit Navigator_Form;
 interface
 
 uses
-  System.Classes, Vcl.Controls, Vcl.StdCtrls, System.Types, WinApi.Messages,
-  Base_Form, OmniXML;
+  System.Classes, Vcl.Controls, Vcl.StdCtrls, System.Types, WinApi.Messages, Base_Form,
+  OmniXML;
 
 type
   TNavigatorForm = class(TBaseForm)
@@ -22,13 +22,13 @@ type
   private
     { Private declarations }
     procedure SetAlphaValVisible(AValue: boolean);
-    procedure MouseWheelHandler(var AMessage: TMessage); override;
   public
     { Public declarations }
     InvalidateIndicator: boolean;
     procedure ResetForm; override;
     procedure ExportToXML(ANode: IXMLNode); override;
     procedure ImportFromXML(ANode: IXMLNode); override;
+    procedure MouseWheelHandler(var AMessage: TMessage); override;
   end;
 
 var
@@ -190,16 +190,8 @@ end;
 
 procedure TNavigatorForm.SetAlphaValVisible(AValue: boolean);
 begin
-   if AValue then
-   begin
-      scbAlphaVal.Width := 33;
-      scbAlphaVal.Height := 89;
-   end
-   else
-   begin
-      scbAlphaVal.Width := 1;
-      scbAlphaVal.Height := 1;
-   end;
+   scbAlphaVal.Width := if AValue then 33 else 1;
+   scbAlphaVal.Height := if AValue then 89 else 1;
 end;
 
 procedure TNavigatorForm.scbAlphaValChange(Sender: TObject);

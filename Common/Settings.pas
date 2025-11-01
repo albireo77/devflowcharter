@@ -340,7 +340,7 @@ begin
    FFlowchartFontName         := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_FLOWCHART_FONT_NAME, FLOWCHART_DEFAULT_FONT_NAME);
    FTranslationFile           := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_TRANSLATION_FILE, '');
    FCurrentLangName           := FSettingsFile.ReadString(SETTINGS_SECTION, KEY_CURRENT_LANGUAGE, '');
-   if not (FFlowchartFontSize in FLOWCHART_VALID_FONT_SIZES) then
+   if FFlowchartFontSize not in FLOWCHART_VALID_FONT_SIZES then
       FFlowchartFontSize := FLOWCHART_MIN_FONT_SIZE;
    if TInfra.IsNOkColor(FFontColor) then
       FFontColor := OK_COLOR;
@@ -447,10 +447,7 @@ end;
 
 function TSettings.IndentString(ATimes: integer = 1): string;
 begin
-   if ATimes = 1 then
-      result := FIndentSpaces
-   else
-      result := DupeString(FIndentSpaces, ATimes);
+   result := if ATimes = 1 then FIndentSpaces else DupeString(FIndentSpaces, ATimes);
 end;
 
 procedure TSettings.UpdateForHLighter(AHLighter: TSynCustomHighlighter);
@@ -514,10 +511,7 @@ begin
    FEditorFontSize        := StrToIntDef(sForm.cbFontSize.Text, EDITOR_DEFAULT_FONT_SIZE);
    FIndentLength          := StrToIntDef(sForm.edtEditorIndent.Text, EDITOR_DEFAULT_INDENT_LENGTH);
 
-   if sForm.cbIndentChar.ItemIndex = 1 then
-      FIndentChar := TAB_CHAR
-   else
-      FIndentChar := SPACE_CHAR;
+   FIndentChar := if sForm.cbIndentChar.ItemIndex = 1 then TAB_CHAR else SPACE_CHAR;
    FIndentSpaces := StringOfChar(SPACE_CHAR, FIndentLength);
 
    for var colorShape in COLOR_SHAPES do

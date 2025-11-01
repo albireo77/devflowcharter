@@ -199,9 +199,7 @@ end;
 
 function TUserFunction.GetId: integer;
 begin
-   result := ID_UNDEFINED;
-   if FHeader <> nil then
-      result := FHeader.Id;
+   result := if FHeader <> nil then FHeader.Id else ID_UNDEFINED;
 end;
 
 procedure TUserFunction.BringAllToFront;
@@ -218,16 +216,12 @@ end;
 
 function TUserFunction.GetZOrder: integer;
 begin
-   result := -1;
-   if FBody <> nil then
-      result := FBody.GetZOrder;
+   result := if FBody <> nil then FBody.GetZOrder else -1;
 end;
 
 function TUserFunction.GetLibrary: string;
 begin
-   result := '';
-   if FHeader <> nil then
-      result := FHeader.GetLibrary;
+   result := if FHeader <> nil then FHeader.GetLibrary else '';
 end;
 
 destructor TUserFunctionHeader.Destroy;
@@ -506,10 +500,7 @@ begin
    chkConstructor.Font.Color := clWindowText;
    chkConstructor.Alignment := taLeftJustify;
    chkConstructor.Caption := trnsManager.GetString('constructor');
-   if chkStatic.Visible then
-      ctrl := chkStatic
-   else
-      ctrl := chkExternal;
+   ctrl := if chkStatic.Visible then chkStatic else chkExternal;
    chkConstructor.SetBounds(ctrl.BoundsRect.Right + 15, 52, TInfra.GetAutoWidth(chkConstructor), 17);
    chkConstructor.DoubleBuffered := True;
    chkConstructor.Anchors := [akBottom, akLeft];
@@ -680,10 +671,7 @@ end;
 
 procedure TUserFunctionHeader.ExportCode(ALines: TStringList);
 begin
-   if Assigned(GInfra.CurrentLang.UserFunctionGenerator) then
-      GInfra.CurrentLang.UserFunctionGenerator(ALines, FUserFunction, False)
-   else
-      GInfra.TemplateLang.UserFunctionGenerator(ALines, FUserFunction, False);
+   (if Assigned(GInfra.CurrentLang.UserFunctionGenerator) then GInfra.CurrentLang else GInfra.TemplateLang).UserFunctionGenerator(ALines, FUserFunction, False);
 end;
 
 procedure TUserFunctionHeader.AddElement(Sender: TObject);
@@ -876,7 +864,7 @@ begin
    var functionNode := AppendNode(ANode, FUNCTION_TAG);
    var headerNode := AppendNode(functionNode, HEADER_TAG);
    inherited ExportToXML(headerNode);
-   SetNodeAttrStr(headerNode, TYPE_ATTR, IfThen(cbType.ItemIndex = 0, 'none', cbType.Text));
+   SetNodeAttrStr(headerNode, TYPE_ATTR, if cbType.ItemIndex = 0 then 'none' else cbType.Text);
    if memDesc.Text <> '' then
       SetNodeCData(headerNode, 'desc', ReplaceStr(memDesc.Text, sLineBreak, LB_PHOLDER));
    SetNodeAttrBool(headerNode, 'show_body', chkBodyVisible.Checked);

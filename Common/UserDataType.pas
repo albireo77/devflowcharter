@@ -44,6 +44,9 @@ type
    end;
 
    TUserDataType = class(TTabComponent)
+   private
+      function FindItemIndex(Kind: TUserDataTypeKind): integer;
+      function CreateTypeBox: TRadioGroup;
    protected
       procedure OnChangeName(Sender: TObject); override;
       procedure OnClickType(Sender: TObject);
@@ -88,7 +91,8 @@ constructor TUserDataType.Create(AParentForm: TDataTypesForm);
 begin
 
    FElementTypeId := 'field';
-   FCodeIncludeExtern := GInfra.CurrentLang.CodeIncludeExternDataType;
+   var currLang := GInfra.CurrentLang;
+   FCodeIncludeExtern := currLang.CodeIncludeExternDataType;
 
    inherited Create(AParentForm);
 
@@ -140,29 +144,17 @@ begin
 
    CreateLibControls(Self, edtName.Left+edtName.Width+7, 10);
 
-   rgTypeBox := TRadioGroup.Create(Self);
-   rgTypeBox.Parent := Self;
-   rgTypeBox.ParentFont := False;
-   rgTypeBox.ParentBackground := False;
-   rgTypeBox.Font.Style := [];
-   rgTypeBox.Font.Color := clWindowText;
-   rgTypeBox.Columns := 2;
-   rgTypeBox.Caption := trnsManager.GetString('rgTypeBox');
-   for var dt := Low(TUserDataTypeKind) to High(TUserDataTypeKind) do
-   begin
-      var s := TRttiEnumerationType.GetName(dt);
-      rgTypeBox.Items.Add(trnsManager.GetString(s));
-   end;
-   rgTypeBox.Buttons[Ord(dtInt)].Enabled := GInfra.CurrentLang.EnabledUserDataTypeInt;
-   rgTypeBox.Buttons[Ord(dtReal)].Enabled := GInfra.CurrentLang.EnabledUserDataTypeReal;
-   rgTypeBox.Buttons[Ord(dtOther)].Enabled := GInfra.CurrentLang.EnabledUserDataTypeOther;
-   rgTypeBox.Buttons[Ord(dtArray)].Enabled := GInfra.CurrentLang.EnabledUserDataTypeArray;
-   rgTypeBox.Buttons[Ord(dtEnum)].Enabled := GInfra.CurrentLang.EnabledUserDataTypeEnum;
-   if not GInfra.CurrentLang.RecordLabel.IsEmpty then
-      rgTypeBox.Items[Ord(dtRecord)] := GInfra.CurrentLang.RecordLabel;
-   rgTypeBox.ItemIndex := Ord(dtRecord);
+   rgTypeBox := CreateTypeBox;
+   if not currLang.RecordLabel.IsEmpty then
+      rgTypeBox.Items[FindItemIndex(dtRecord)] := currLang.RecordLabel;
+   if currLang.EnabledUserDataTypeOther and not currLang.OtherLabel.IsEmpty then
+      rgTypeBox.Items[FindItemIndex(dtOther)] := currLang.OtherLabel;
+   if currLang.EnabledUserDataTypeCustom and not currLang.CustomLabel.IsEmpty then
+      rgTypeBox.Items[FindItemIndex(dtCustom)] := currLang.CustomLabel;
+   if currLang.EnabledUserDataTypeEnum and not currLang.EnumLabel.IsEmpty then
+      rgTypeBox.Items[FindItemIndex(dtEnum)] := currLang.EnumLabel;
+   rgTypeBox.ItemIndex := FindItemIndex(dtRecord);
    rgTypeBox.OnClick := OnClickType;
-   rgTypeBox.SetBounds(1, 28, rgTypeBox.Buttons[Ord(dtEnum)].BoundsRect.Right-9, 73);
 
    chkAddPtrType := TCheckBox.Create(Self);
    chkAddPtrType.Parent := Self;
@@ -171,18 +163,59 @@ begin
    chkAddPtrType.Font.Style := [];
    chkAddPtrType.Font.Color := clWindowText;
    chkAddPtrType.SetBounds(rgTypeBox.BoundsRect.Right+6, 42, TInfra.GetAutoWidth(chkAddPtrType), 17);
-   chkAddPtrType.Enabled := GInfra.CurrentLang.EnabledPointers;
+   chkAddPtrType.Enabled := currLang.EnabledPointers;
    chkAddPtrType.OnClick := OnClickCh;
 
    CreateExtDeclareChBox(Self, chkAddPtrType.Left, 60);
-   chkExternal.AllowGrayed := GInfra.CurrentLang.AllowTransExternDataType;
+   chkExternal.AllowGrayed := currLang.AllowTransExternDataType;
 
    GProject.AddComponent(Self);
 end;
 
+function TUserDataType.CreateTypeBox: TRadioGroup;
+begin
+   result := TRadioGroup.Create(Self);
+   result.Parent := Self;
+   result.ParentFont := False;
+   result.ParentBackground := False;
+   result.Font.Style := [];
+   result.Font.Color := clWindowText;
+   result.Caption := trnsManager.GetString('rgTypeBox');
+   var currLang := GInfra.CurrentLang;
+   var caps := TStringList.Create;
+   try
+      for var k := Low(TUserDataTypeKind) to High(TUserDataTypeKind) do
+      begin
+         if (k = dtInt) and not currLang.EnabledUserDataTypeInt then
+            continue;
+         if (k = dtReal) and not currLang.EnabledUserDataTypeReal then
+            continue;
+         if (k = dtOther) and not currLang.EnabledUserDataTypeOther then
+            continue;
+         if (k = dtArray) and not currLang.EnabledUserDataTypeArray then
+            continue;
+         if (k = dtEnum) and not currLang.EnabledUserDataTypeEnum then
+            continue;
+         if (k = dtCustom) and not currLang.EnabledUserDataTypeCustom then
+            continue;
+         caps.AddObject(trnsManager.GetString(TRttiEnumerationType.GetName(k)), TObject(k));
+      end;
+      result.Columns := Ceil(caps.Count / 3);
+      result.SetBounds(1, 28, Min(180, 85 * result.Columns), 73);
+      result.Items.AddStrings(caps);
+   finally
+      caps.Free;
+   end;
+end;
+
 function TUserDataType.Kind: TUserDataTypeKind;
 begin
-   result := TUserDataTypeKind(rgTypeBox.ItemIndex);
+   result := TUserDataTypeKind(rgTypeBox.Items.Objects[rgTypeBox.ItemIndex]);
+end;
+
+function TUserDataType.FindItemIndex(Kind: TUserDataTypeKind): integer;
+begin
+   result := rgTypeBox.Items.IndexOfObject(TObject(Kind));
 end;
 
 procedure TUserDataType.SetActive(AValue: boolean);
@@ -225,10 +258,7 @@ end;
 
 procedure TUserDataType.ExportCode(ALines: TStringList);
 begin
-   if Assigned(GInfra.CurrentLang.UserDataTypeGenerator) then
-      GInfra.CurrentLang.UserDataTypeGenerator(ALines, Self)
-   else
-      GInfra.TemplateLang.UserDataTypeGenerator(ALines, Self);
+   (if Assigned(GInfra.CurrentLang.UserDataTypeGenerator) then GInfra.CurrentLang else GInfra.TemplateLang).UserDataTypeGenerator(ALines, Self);
 end;
 
 procedure TUserDataType.Resize;
@@ -244,14 +274,14 @@ end;
 procedure TUserDataType.OnClickType(Sender: TObject);
 begin
    var t := Kind;
-   var b := t in [dtRecord, dtEnum, dtOther, dtArray];
+   var b := t in [dtRecord, dtEnum, dtOther, dtArray, dtCustom];
    sbxElements.Enabled := b;
    lblName2.Enabled := b and (t <> dtArray);
-   lblSize.Enabled := t in [dtRecord, dtArray];
+   lblSize.Enabled := t in [dtRecord, dtArray, dtCustom];
    lblType.Enabled := lblSize.Enabled;
    if b then
    begin
-      var str := IfThen(t = dtRecord, 'Field', 'Value');
+      var str := if t in [dtRecord, dtCustom] then 'Field' else 'Value';
       btnAddElement.Caption := trnsManager.GetString('btnAdd' + str);
       lblName2.Caption := trnsManager.GetString('lbl' + str);
    end;
@@ -259,7 +289,7 @@ begin
    for var field in GetFields do
    begin
       field.edtName.Enabled := b;
-      field.cbType.Enabled := t = dtRecord;
+      field.cbType.Enabled := t in [dtRecord, dtCustom];
       field.btnRemove.Enabled := b;
       field.edtSize.Enabled := field.cbType.Enabled;
       if i = 0 then
@@ -313,7 +343,7 @@ end;
 function TUserDataType.CreateElement: TElement;
 begin
    result := TField.Create(Self);
-   result.cbType.Enabled := Kind in [dtRecord, dtArray];
+   result.cbType.Enabled := Kind in [dtRecord, dtArray, dtCustom];
    TField(result).edtSize.Enabled := result.cbType.Enabled;
    result.edtName.Enabled := Kind <> dtArray;
 end;
@@ -351,7 +381,7 @@ begin
    inherited ImportFromXML(ANode, APinControl);
    if chkAddPtrType.Enabled then
       chkAddPtrType.Checked := GetNodeAttrBool(ANode, POINTER_ATTR, False);
-   rgTypeBox.ItemIndex := Ord(TRttiEnumerationType.GetValue<TUserDataTypeKind>(GetNodeAttrStr(ANode, KIND_ATTR)));
+   rgTypeBox.ItemIndex := FindItemIndex(TRttiEnumerationType.GetValue<TUserDataTypeKind>(GetNodeAttrStr(ANode, KIND_ATTR)));
 end;
 
 function TUserDataType.GetDimensionCount: integer;
@@ -446,7 +476,7 @@ end;
 procedure TField.OnChangeSize(Sender: TObject);
 begin
    var sizeEdit := TSizeEdit(Sender);
-   sizeEdit.Font.Color := IfThen(sizeEdit.ParseSize, BLACK_COLOR, NOK_COLOR);
+   sizeEdit.Font.Color := if sizeEdit.ParseSize then BLACK_COLOR else NOK_COLOR;
    ParentTab.PageControl.Refresh;
    GProject.SetChanged;
    if ParentForm.UpdateCodeEditor then

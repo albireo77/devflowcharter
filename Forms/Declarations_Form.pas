@@ -46,7 +46,7 @@ var
 implementation
 
 uses
-   Vcl.Forms, System.SysUtils, OmniXMLUtils, DeclareList, Infrastructure, Constants;
+   Vcl.Forms, OmniXMLUtils, DeclareList, Infrastructure, Constants;
 
 {$R *.dfm}
 

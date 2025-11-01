@@ -62,7 +62,7 @@ implementation
 
 uses
    Vcl.StdCtrls, Vcl.Forms, System.SysUtils, Vcl.Dialogs, Vcl.Menus, Vcl.Buttons,
-   System.StrUtils, Vcl.Controls, Base_Form;
+   Vcl.Controls, Base_Form;
 
 type
    TControlHack = class(TControl);
@@ -233,7 +233,7 @@ function TTranslationManager.GetJoinedString(const AJoiner: string; const AKeys:
 begin
    result := '';
    for var i := 0 to High(AKeys) do
-      result := result + IfThen(i > 0, AJoiner) + GetString(AKeys[i]);
+      result := result + (if i > 0 then AJoiner else '') + GetString(AKeys[i]);
 end;
 
 end.

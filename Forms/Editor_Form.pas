@@ -168,8 +168,9 @@ var
 implementation
 
 uses
-   System.StrUtils, System.Math, System.UITypes, WinApi.Windows, Infrastructure, Goto_Form, Main_Block,
-   Help_Form, Comment, OmniXMLUtils, Main_Form, SynEditTypes, ParserHelper, Constants;
+   System.StrUtils, System.Math, System.UITypes, System.Contnrs, WinApi.Windows,
+   Infrastructure, Goto_Form, Main_Block, Help_Form, Comment, OmniXMLUtils, Main_Form,
+   SynEditTypes, ParserHelper, Constants;
 
 {$R *.dfm}
 
@@ -297,22 +298,10 @@ begin
       miGutter.Checked := EditorShowGutter;
       miScrollbars.Checked := EditorShowScrollbars;
       miRichText.Enabled := GInfra.CurrentLang.Highlighter <> nil;
-      if miRichText.Enabled then
-         miRichText.Checked := EditorShowRichText
-      else
-         miRichText.Checked := False;
-      if EditorShowScrollbars then
-         memCodeEditor.ScrollBars := TScrollStyle.ssBoth
-      else
-         memCodeEditor.ScrollBars := TScrollStyle.ssNone;
-      if stbEditorBar.Visible then
-         memCodeEditor.Height := ClientHeight - stbEditorBar.Height
-      else
-         memCodeEditor.Height := ClientHeight;
-      if EditorShowRichText then
-         memCodeEditor.Highlighter := GInfra.CurrentLang.Highlighter
-      else
-         memCodeEditor.Highlighter := nil;
+      miRichText.Checked := if miRichText.Enabled then EditorShowRichText else False;
+      memCodeEditor.ScrollBars := if EditorShowScrollbars then TScrollStyle.ssBoth else TScrollStyle.ssNone;
+      memCodeEditor.Height := if stbEditorBar.Visible then (ClientHeight - stbEditorBar.Height) else ClientHeight;
+      memCodeEditor.Highlighter := if EditorShowRichText then GInfra.CurrentLang.Highlighter else nil;
 {$IFDEF USE_CODEFOLDING}
       miCodeFoldingEnable.Enabled := Length(GInfra.CurrentLang.FoldRegions) > 0;
 {$ELSE}
@@ -357,7 +346,7 @@ procedure TEditorForm.AfterTranslation(AList: TStringList);
 begin
    if stbEditorBar.Panels[1].Text <> '' then
       stbEditorBar.Panels[1].Text := AList.Values['Modified'];
-   stbEditorBar.Panels[2].Text := AList.Values[IfThen(memCodeEditor.InsertMode, 'InsertMode', 'OverwriteMode')];
+   stbEditorBar.Panels[2].Text := AList.Values[if memCodeEditor.InsertMode then 'InsertMode' else 'OverwriteMode'];
    inherited AfterTranslation(AList);
 end;
 
@@ -535,7 +524,7 @@ begin
          memCodeEditor.SelStart := 0;
          while True do
          begin
-            var i := TInfra.FindText(ReplaceDialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart+1, frMatchCase in ReplaceDialog.Options);
+            var i := TInfra.PosText(ReplaceDialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart+1, frMatchCase in ReplaceDialog.Options);
             if i = 0 then
                Exit;
             memCodeEditor.SelStart := i - 1;
@@ -577,13 +566,13 @@ begin
    len := dialog.FindText.Length;
    memCodeEditor.Repaint;
    if frDown in dialog.Options then
-      i := TInfra.FindText(dialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart + memCodeEditor.SelLength + 1, frMatchCase in dialog.Options)
+      i := TInfra.PosText(dialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart + memCodeEditor.SelLength + 1, frMatchCase in dialog.Options)
    else
    begin
       startPos := 1;
       while True do
       begin
-         i := TInfra.FindText(dialog.FindText, memCodeEditor.Text, startPos, frMatchCase in dialog.Options);
+         i := TInfra.PosText(dialog.FindText, memCodeEditor.Text, startPos, frMatchCase in dialog.Options);
          if (i > 0) and (i <= memCodeEditor.SelStart) then
             startPos := i + len
          else
@@ -766,7 +755,7 @@ begin
          stbEditorBar.Panels[1].Text := '';
    end;
    if scInsertMode in Changes then
-      stbEditorBar.Panels[2].Text := trnsManager.GetString(IfThen(memCodeEditor.InsertMode, 'InsertMode', 'OverwriteMode'));
+      stbEditorBar.Panels[2].Text := trnsManager.GetString(if memCodeEditor.InsertMode then 'InsertMode' else 'OverwriteMode');
 end;
 
 procedure TEditorForm.memCodeEditorGutterClick(Sender: TObject;
@@ -893,7 +882,7 @@ begin
       for i := 0 to memCodeEditor.Lines.Count-1 do
       begin
          s := memCodeEditor.Lines[i];
-         f := TInfra.FindText(FDialog.FindText, s, 1, frMatchCase in FDialog.Options);
+         f := TInfra.PosText(FDialog.FindText, s, 1, frMatchCase in FDialog.Options);
          while f > 0 do
          begin
             p := BufferCoord(f, i+1);
@@ -903,7 +892,7 @@ begin
             if hAttr <> nil then
                Canvas.Font.Style := hAttr.Style;
             Canvas.TextOut(pos.X, pos.Y, s1);
-            f := TInfra.FindText(FDialog.FindText, s, f+len, frMatchCase in FDialog.Options);
+            f := TInfra.PosText(FDialog.FindText, s, f+len, frMatchCase in FDialog.Options);
          end;
       end;
       Canvas.Brush.Color := brushColor;
@@ -1097,10 +1086,10 @@ begin
 {$ENDIF}
       if result.Lines <> nil then
       begin
-         if AObject is TBlock then
-            result.LastRow := TBlock(AObject).FindLastRow(result.FirstRow, result.Lines)
-         else
-            result.LastRow := TInfra.FindLastRow(AObject, result.FirstRow, result.Lines);
+         result.LastRow := if AObject is TBlock then
+                              TBlock(AObject).FindLastRow(result.FirstRow, result.Lines)
+                           else
+                              TInfra.FindLastRow(AObject, result.FirstRow, result.Lines);
          if ADoSelect then
          begin
             with memCodeEditor do
@@ -1246,7 +1235,6 @@ end;
 
 procedure TEditorForm.ExportToXML(ANode: IXMLNode);
 begin
-   var i := 0;
    if Visible then
    begin
       SetNodeAttrBool(ANode, 'src_win_show', True);
@@ -1257,6 +1245,7 @@ begin
       SetNodeAttrInt(ANode, 'src_win_sel_start', memCodeEditor.SelStart);
       if memCodeEditor.SelAvail then
          SetNodeAttrInt(ANode, 'src_win_sel_length', memCodeEditor.SelLength);
+      var i := 0;
       for i := 0 to memCodeEditor.Marks.Count-1 do
       begin
          var mark := memCodeEditor.Marks[i];
@@ -1391,10 +1380,7 @@ begin
    begin
       DefaultExt := GInfra.CurrentLang.DefaultExt;
       Filter := trnsManager.GetFormattedString('SourceFilesFilter', [GInfra.CurrentLang.Name, DefaultExt, DefaultExt]);
-      if GProject.Name.IsEmpty then
-         FileName := trnsManager.GetString('Unknown')
-      else
-         FileName := GProject.Name;
+      FileName := if GProject.Name.IsEmpty then trnsManager.GetString('Unknown') else GProject.Name;
    end;
 end;
 
@@ -1426,12 +1412,7 @@ end;
 procedure TEditorForm.miRichTextClick(Sender: TObject);
 begin
    if Sender = miRichText then
-   begin
-      if miRichText.Checked then
-         memCodeEditor.Highlighter := GInfra.CurrentLang.Highlighter
-      else
-         memCodeEditor.Highlighter := nil;
-   end
+      memCodeEditor.Highlighter := if miRichText.Checked then GInfra.CurrentLang.Highlighter else nil
    else if Sender = miCodeFoldingEnable then
    begin
 {$IFDEF USE_CODEFOLDING}
@@ -1451,18 +1432,10 @@ begin
    else if Sender = miStatusBar then
    begin
       stbEditorBar.Visible := miStatusBar.Checked;
-      if stbEditorBar.Visible then
-         memCodeEditor.Height := ClientHeight - stbEditorBar.Height
-      else
-         memCodeEditor.Height := ClientHeight;
+      memCodeEditor.Height := if stbEditorBar.Visible then (ClientHeight - stbEditorBar.Height) else ClientHeight;
    end
    else if Sender = miScrollbars then
-   begin
-      if miScrollbars.Checked then
-         memCodeEditor.ScrollBars := TScrollStyle.ssBoth
-      else
-         memCodeEditor.ScrollBars := TScrollStyle.ssNone;
-   end
+      memCodeEditor.ScrollBars := if miScrollbars.Checked then TScrollStyle.ssBoth else TScrollStyle.ssNone
    else if Sender = miGutter then
       memCodeEditor.Gutter.Visible := miGutter.Checked
    else if Sender = miIndentGuides then

@@ -248,7 +248,7 @@ It returns value "<=" if block is increasing or ">=" if decreasing
 <!--
 Element ForDoTemplateModifier2
 Description: It returns value based on whether for..do block is increasing or decreasing
-It returns value "++" if block is increasing or "--" if decreasing
+It returns 2 pluses if block is increasing or 2 minuses if decreasing
 -->
 <ForDoTemplateModifier2>++|--</ForDoTemplateModifier2>
 
@@ -568,7 +568,7 @@ Available placeholders:
 
 <!--
 Element RecordLabel
-Used to change default label displayed for record data type; it's not translated
+Used to change default label displayed for record data type. If not empty, it overrides label from translation file.
 -->
 <RecordLabel>struct</RecordLabel>
 

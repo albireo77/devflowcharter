@@ -72,8 +72,8 @@ type
 implementation
 
 uses
-   Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Math, YaccLib,
-   Infrastructure, Constants, OmniXMLUtils;
+   Vcl.Controls, Vcl.Forms, System.SysUtils, System.StrUtils, System.Types, System.UITypes,
+   YaccLib, Infrastructure, Constants, OmniXMLUtils;
 
 const
    DEFAULT_WIDTH = 246;
@@ -296,13 +296,13 @@ begin
       if not isVarOk then
       begin
          edtVar.Font.Color := NOK_COLOR;
-         if edtVar.Text <> '' then
-            edtVar.Hint := trnsManager.GetFormattedString('BadCVar', [edtVar.Text, sLineBreak])
-         else
-            edtVar.Hint := trnsManager.GetFormattedString('NoCVar', [sLineBreak]);
+         edtVar.Hint := if edtVar.Text <> '' then
+                           trnsManager.GetFormattedString('BadCVar', [edtVar.Text, sLineBreak])
+                        else
+                           trnsManager.GetFormattedString('NoCVar', [sLineBreak]);
       end;
    end;
-   var w := TInfra.GetAutoWidth(edtVar, IfThen(GInfra.CurrentLang.ForDoVarList, 28, 5));
+   var w := TInfra.GetAutoWidth(edtVar, if GInfra.CurrentLang.ForDoVarList then 28 else 5);
    if w <> edtVar.Width then
    begin
       edtVar.Width := w;
@@ -357,10 +357,8 @@ end;
 
 function TForDoBlock.GetDescTemplate(const ALangId: string): string;
 begin
-   result := '';
    var lang := GInfra.GetLangDefinition(ALangId);
-   if lang <> nil then
-      result := lang.ForDoDescTemplate;
+   result := if lang <> nil then lang.ForDoDescTemplate else '';
 end;
 
 function TForDoBlock.GenerateCode(ALines: TStringList; const ALangId: string; ADeep: integer; AFromLine: integer = LAST_LINE): integer;
@@ -394,7 +392,7 @@ end;
 
 procedure TForDoBlock.SetWidth(AMinX: integer);
 begin
-   Width := IfThen(AMinX < FInitParms.Width-30, FInitParms.Width, AMinX+30);
+   Width := if AMinX < FInitParms.Width - 30 then FInitParms.Width else (AMinX + 30);
    BottomPoint.X := Width - RIGHT_MARGIN;
 end;
 
@@ -470,7 +468,7 @@ begin
    if not AInfo.SelText.IsEmpty then
    begin
       var expr := GetBlockTemplateExpr(GInfra.CurrentLang.Name);
-      var i := Pos(PRIMARY_PLACEHOLDER, expr);
+      var i := TInfra.PosText(PRIMARY_PLACEHOLDER, expr);
       if i <> 0 then
       begin
          i := i + Length(edtVar.Text);
@@ -478,8 +476,8 @@ begin
             edit := edtVar
          else
          begin
-            expr := ReplaceStr(expr, PRIMARY_PLACEHOLDER, edtVar.Text);
-            i := Pos('%s2', expr);
+            expr := ReplaceText(expr, PRIMARY_PLACEHOLDER, edtVar.Text);
+            i := TInfra.PosText('%s2', expr);
             if i <> 0 then
             begin
                i := i + Length(Trim(edtStart.Text));
@@ -527,11 +525,11 @@ begin
    var lang := GInfra.GetLangDefinition(ALangId);
    if not AExpression.IsEmpty then
    begin
-      result := ReplaceStr(AExpression, PRIMARY_PLACEHOLDER, Trim(edtVar.Text));
-      result := ReplaceStr(result, '%s2', Trim(edtStart.Text));
-      result := ReplaceStr(result, '%s3', Trim(edtStop.Text));
-      result := ReplaceStr(result, '%s4', IfThen(FDescOrder, lang.ForDoDesc1, lang.ForDoAsc1));
-      result := ReplaceStr(result, '%s5', IfThen(FDescOrder, lang.ForDoDesc2, lang.ForDoAsc2));
+      result := ReplaceText(AExpression, PRIMARY_PLACEHOLDER, Trim(edtVar.Text));
+      result := ReplaceText(result, '%s2', Trim(edtStart.Text));
+      result := ReplaceText(result, '%s3', Trim(edtStop.Text));
+      result := ReplaceText(result, '%s4', IfThen(FDescOrder, lang.ForDoDesc1, lang.ForDoAsc1));
+      result := ReplaceText(result, '%s5', IfThen(FDescOrder, lang.ForDoDesc2, lang.ForDoAsc2));
    end
    else
       result := FillCodedTemplate(lang.Name);
@@ -569,7 +567,7 @@ begin
       SetNodeText(ANode, 'i_var', edtVar.Text);
       SetNodeText(ANode, 'init_val', ReplaceStr(edtStart.Text, ' ', '#'));
       SetNodeText(ANode, 'end_val', ReplaceStr(edtStop.Text, ' ', '#'));
-      SetNodeAttrStr(ANode, 'order', IfThen(FDescOrder, 'ordDesc', 'ordAsc'));
+      SetNodeAttrStr(ANode, 'order', if FDescOrder then 'ordDesc' else 'ordAsc');
    end;
 end;
 

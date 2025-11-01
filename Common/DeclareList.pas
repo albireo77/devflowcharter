@@ -385,10 +385,7 @@ end;
 
 procedure TDeclareList.SetColumnLabel(ACol: integer; const AColLabel: string = '');
 begin
-   var s := AColLabel; 
-   if s.IsEmpty then
-      s := trnsManager.GetString('sg' + FShort + 'ListCol' + ACol.ToString);
-   sgList.Cells[ACol, 0] := s;
+   sgList.Cells[ACol, 0] := if AColLabel.IsEmpty then trnsManager.GetString('sg' + FShort + 'ListCol' + ACol.ToString) else AColLabel;
 end;
 
 procedure TDeclareList.SetExternalColumn(AExternalCol: integer);
@@ -471,7 +468,7 @@ end;
 
 procedure TDeclareList.SetDefaultFocus;
 begin
-   if edtName.CanFocus and not (GetParentForm(Self, False).ActiveControl is TCustomEdit) then
+   if edtName.CanFocus and (GetParentForm(Self, False).ActiveControl is not TCustomEdit) then
       edtName.SetFocus;
 end;
 
@@ -533,10 +530,7 @@ var
    lCol, lRow: integer;
 begin
    sgList.MouseToCell(x, y, lCol, lRow);
-   if (lRow > 0) and (lRow < sgList.RowCount-1) then
-      result := lRow
-   else
-      result := INVALID_ROW;
+   result := if (lRow > 0) and (lRow < sgList.RowCount-1) then lRow else INVALID_ROW;
 end;
 
 procedure TDeclareList.OnDragOverList(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);

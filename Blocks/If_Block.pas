@@ -103,10 +103,7 @@ end;
 procedure TIfBlock.SetWidth(AMinX: integer);
 begin
    BottomPoint.X := BottomHook;
-   if AMinX < FInitParms.Width - 30 then
-      Width := FInitParms.Width
-   else
-      Width := AMinX + 30;
+   Width := if AMinX < FInitParms.Width - 30 then FInitParms.Width else (AMinX + 30);
 end;
 
 function TIfBlock.CanResize(var NewWidth, NewHeight: Integer): Boolean;

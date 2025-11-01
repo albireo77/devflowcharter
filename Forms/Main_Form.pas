@@ -665,11 +665,11 @@ begin
        begin
           miRemove.Visible := True;
           miFont.Visible := True;
-          if not (block is TReturnBlock) then
+          if block is not TReturnBlock then
              miExport.Visible := True;
           miPrint2.Visible := True;
           miCut.Visible := True;
-          if not (block is TMainBlock) then
+          if block is not TMainBlock then
              miCopy.Visible := True;
           if block is TGroupBlock then
           begin
@@ -871,9 +871,10 @@ end;
 
 function TMainForm.ConfirmSave: integer;
 begin
-   result := mrCancel;
-   if GProject <> nil then
-      result := TInfra.ShowQuestionBox('ConfirmClose', [GProject.Name]);
+   result := if GProject <> nil then
+                TInfra.ShowQuestionBox('ConfirmClose', [GProject.Name])
+             else
+                mrCancel;
 end;
 
 procedure TMainForm.SetChanged;
@@ -1052,9 +1053,10 @@ procedure TMainForm.miRemoveBranchClick(Sender: TObject);
 begin
    if pmPages.PopupComponent is TCaseBlock then
    begin
-      var res := IDYES;
-      if GSettings.ConfirmRemove then
-         res := TInfra.ShowQuestionBox(trnsManager.GetString('ConfirmRemove'));
+      var res := if GSettings.ConfirmRemove then
+                    TInfra.ShowQuestionBox(trnsManager.GetString('ConfirmRemove'))
+                 else
+                    IDYES;
       if res = IDYES then
       begin
          var caseBlock := TCaseBlock(pmPages.PopupComponent);
@@ -1164,12 +1166,7 @@ begin
          else if Sender = miMemoWordWrap then
             memo.WordWrap := miMemoWordWrap.Checked
          else if Sender = miMemoAlignRight then
-         begin
-            if miMemoAlignRight.Checked then
-               memo.Alignment := taRightJustify
-            else
-               memo.Alignment := taLeftJustify;
-         end;
+            memo.Alignment := if miMemoAlignRight.Checked then taRightJustify else taLeftJustify;
       end;
    end;
 end;
@@ -1218,9 +1215,10 @@ end;
 
 procedure TMainForm.miRemovePageClick(Sender: TObject);
 begin
-   var res := IDYES;
-   if GSettings.ConfirmRemove then
-      res := TInfra.ShowQuestionBox(trnsManager.GetString('ConfirmRemove'));
+   var res := if GSettings.ConfirmRemove then
+                 TInfra.ShowQuestionBox(trnsManager.GetString('ConfirmRemove'))
+              else
+                 IDYES;
    if res = IDYES then
    begin
       pmTabs.PopupComponent.Free;
@@ -1363,9 +1361,7 @@ function TMainForm.BuildFuncMenu: integer;
 begin
    var mItems: TMenuItemArray;
    miInsertFunc.Clear;
-   var lang := GInfra.CurrentLang;
-   if not Assigned(lang.GetUserFuncDesc) then
-      lang := GInfra.TemplateLang;
+   var lang := if Assigned(GInfra.CurrentLang.GetUserFuncDesc) then GInfra.CurrentLang else GInfra.TemplateLang;
    for var func in GProject.GetUserFunctions do
    begin
       var lName := func.GetName;
@@ -1402,10 +1398,7 @@ procedure TMainForm.miIsHeaderClick(Sender: TObject);
 begin
    if pmPages.PopupComponent is TComment then
    begin
-      if miIsHeader.Checked then
-         GProject.HeaderComment := nil
-      else
-         GProject.HeaderComment := TComment(pmPages.PopupComponent);
+      GProject.HeaderComment := if miIsHeader.Checked then nil else TComment(pmPages.PopupComponent);
       TInfra.UpdateCodeEditor;
    end;
 end;

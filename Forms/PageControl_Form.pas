@@ -76,8 +76,8 @@ implementation
 {$R *.dfm}
 
 uses
-   System.SysUtils, System.StrUtils, Vcl.Forms, Infrastructure, XMLProcessor, OmniXMLUtils,
-   TabComponent, Interfaces;
+   System.SysUtils, System.StrUtils, System.UITypes, Vcl.Forms, WinApi.Windows,
+   Infrastructure, XMLProcessor, OmniXMLUtils, TabComponent, Interfaces;
 
 procedure TPageControlForm.miRemoveClick(Sender: TObject);
 begin
@@ -190,7 +190,8 @@ end;
 
 procedure TPageControlForm.pgcTabsChange(Sender: TObject);
 begin
-   TInfra.GetEditorForm.SelectCodeRange(pgcTabs.ActivePage);
+   if GetAsyncKeyState(vkControl) < 0 then
+      TInfra.GetEditorForm.SelectCodeRange(pgcTabs.ActivePage);
 end;
 
 procedure TPageControlForm.FormDeactivate(Sender: TObject);

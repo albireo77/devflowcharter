@@ -163,7 +163,7 @@ end;
 procedure TStatement.WndProc(var msg: TMessage);
 begin
    inherited;
-   if (msg.Msg = CM_FONTCHANGED) and not (csLoading in ComponentState) then
+   if (msg.Msg = CM_FONTCHANGED) and (csLoading not in ComponentState) then
       ApplyMargins;
 end;
 
@@ -255,10 +255,7 @@ end;
 
 function TStatement.GetFocusColor: TColor;
 begin
-   if HasParent then
-      result := Font.Color
-   else
-      result := OK_COLOR;
+   result := if HasParent then Font.Color else OK_COLOR;
 end;
 
 function TStatement.Remove(ANode: TTreeNodeWithFriend = nil): boolean;
@@ -280,9 +277,7 @@ end;
 
 function TStatement.GetTreeNodeText(ANodeOffset: integer = 0): string;
 begin
-   result := '';
-   if HasFocusParent then
-      result := FFocusParent.GetTreeNodeText(ANodeOffset);
+   result := if HasFocusParent then FFocusParent.GetTreeNodeText(ANodeOffset) else '';
 end;
 
 function TStatement.RetrieveFocus(AInfo: TFocusInfo): boolean;
