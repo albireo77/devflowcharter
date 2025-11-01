@@ -386,8 +386,9 @@ begin
                var fieldSize := javaLang.GetArraySizes(field.edtSize);
                var fieldName := Trim(field.edtName.Text);
                var fieldType := field.cbType.Text;
+               var setLine := indent + indent + 'this.' + fieldName + ' = ' + fieldName + ';';
                constrParams := constrParams + fieldType + fieldSize + ' ' + fieldName + ', ';
-               ALines.InsertObject(u, indent + indent + 'this.' + fieldName + ' = ' + fieldName + ';', ADataType);
+               ALines.InsertObject(u, setLine, ADataType);
                var line := indent + 'private ' + fieldType + fieldSize + ' ' + fieldName + ';';
                ALines.InsertObject(i, line, ADataType);
                var funcStrU := fieldName;
@@ -400,8 +401,7 @@ begin
                ALines.AddObject(indent + '}', ADataType);
                line := indent + 'public void set' + funcStrU + '(' + fieldType + fieldSize + ' ' + fieldName + ') {';
                ALines.AddObject(line, ADataType);
-               line := indent + indent + 'this.' + fieldName + ' = ' + fieldName + ';';
-               ALines.AddObject(line, ADataType);
+               ALines.AddObject(setLine, ADataType);
                ALines.AddObject(indent + '}', ADataType);
                i := i + 1;
                u := u + 2;
