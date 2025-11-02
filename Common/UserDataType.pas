@@ -447,15 +447,18 @@ begin
    begin
       var lColor := OK_COLOR;
       var lHint := 'OkIdD';
-      if (edtName.Text = '') and not edtName.Focused then
+      if edtName.Text = '' then
       begin
          lColor := NOK_COLOR;
          lHint := 'BadIdD';
       end;
       edtName.Font.Color := lColor;
       edtName.Hint := trnsManager.GetString(lHint);
-      ParentTab.PageControl.Refresh;
+      if (edtName.Font.Color = OK_COLOR) or not edtName.Focused then
+         FParentTab.PageControl.Refresh;
       GProject.SetChanged;
+      if FParentForm.UpdateCodeEditor then
+         TTabComponent(FParentTab).UpdateCodeEditor;
    end
    else
       inherited OnChangeName(Sender);
@@ -478,9 +481,9 @@ end;
 
 procedure TField.OnChangeSize(Sender: TObject);
 begin
-   var sizeEdit := TSizeEdit(Sender);
-   sizeEdit.Font.Color := IfThen(sizeEdit.ParseSize, BLACK_COLOR, NOK_COLOR);
-   ParentTab.PageControl.Refresh;
+   edtSize.Font.Color := IfThen(edtSize.ParseSize, BLACK_COLOR, NOK_COLOR);
+   if (edtSize.Font.Color = BLACK_COLOR) or not edtSize.Focused then
+      FParentTab.PageControl.Refresh;
    GProject.SetChanged;
    if ParentForm.UpdateCodeEditor then
       TTabComponent(ParentTab).UpdateCodeEditor;
@@ -489,8 +492,8 @@ end;
 function TField.IsValid: boolean;
 begin
    result := inherited IsValid;
-   if result and edtSize.Enabled then
-      result := edtSize.Font.Color = BLACK_COLOR;
+   if result and edtSize.Enabled and (edtSize.Font.Color = NOK_COLOR) and not edtSize.Focused then
+      result := False;
 end;
 
 procedure TUserDataType.GenerateTree(ANode: TTreeNode);

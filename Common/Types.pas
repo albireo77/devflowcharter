@@ -156,7 +156,7 @@ type
       Offset: integer;
    end;
 
-   TNameEdit = class(TEdit)
+   TUnFocusEdit = class(TEdit)
    protected
       procedure WMKillFocus(var msg: TWMKillFocus); message WM_KILLFOCUS;
    end;
@@ -294,7 +294,7 @@ begin
                  GetNodeAttrInt(AFrom, ID_ATTR, ID_UNDEFINED));
 end;
 
-procedure TNameEdit.WMKillFocus(var msg: TWMKillFocus);
+procedure TUnFocusEdit.WMKillFocus(var msg: TWMKillFocus);
 begin
    inherited;
    Change;
