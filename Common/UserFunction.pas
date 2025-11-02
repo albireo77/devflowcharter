@@ -139,6 +139,7 @@ type
       procedure SetZOrder(AValue: integer);
       function GetZOrder: integer;
       function IsMain: boolean;
+      function IsValid: boolean;
       function GetCompareValue(ACompareType: integer): integer;
       function GetTreeNodeText(ANodeOffset: integer = 0): string;
    end;
@@ -281,6 +282,11 @@ begin
    result := '';
    if FHeader <> nil then
       result := FHeader.GetName;
+end;
+
+function TUserFunction.IsValid: boolean;
+begin
+   result := (FHeader <> nil) and FHeader.IsValid;
 end;
 
 function TUserFunction.GetTab: TTabSheet;
@@ -657,7 +663,7 @@ procedure TUserFunctionHeader.OnChangeName(Sender: TObject);
 begin
    var info := '';
    var lColor := NOK_COLOR;
-   var funcName := Trim(edtName.Text);
+   var funcName := GetName;
    if GInfra.ValidateId(funcName) <> VALID_IDENT then
       info := 'BadIdD'
    else if not GInfra.CurrentLang.AllowUserFunctionOverload then

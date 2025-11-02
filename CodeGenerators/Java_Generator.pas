@@ -182,7 +182,7 @@ begin
    // search in data types
    for dataType in GProject.GetUserDataTypes do
    begin
-      if not dataType.GetName.IsEmpty then
+      if dataType.IsValid then
       begin
          for field in dataType.GetFields do
          begin
@@ -195,7 +195,7 @@ begin
    // search in functions
    for func in GProject.GetUserFunctions do
    begin
-      if (func.Header <> nil) and not func.GetName.IsEmpty then
+      if func.IsValid then
       begin
          if func.Header.cbType.Text = AType then
             Exit(True);
@@ -365,9 +365,9 @@ end;
 
 procedure Java_UserDataTypeGenerator(ALines: TStringList; ADataType: TUserDataType);
 begin
-   var name := ADataType.GetName;
-   if not name.IsEmpty then
+   if ADataType.IsValid then
    begin
+      var name := ADataType.GetName;
       var indent := GSettings.IndentString;
       var fc := ADataType.FieldCount;
       if ADataType.Kind = dtRecord then

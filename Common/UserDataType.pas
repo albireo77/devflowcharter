@@ -355,7 +355,7 @@ procedure TUserDataType.OnChangeName(Sender: TObject);
 begin
    var lColor := NOK_COLOR;
    var info := 'OkIdD';
-   var typeName := Trim(edtName.Text);
+   var typeName := GetName;
    var dataType := GInfra.GetNativeDataType(typeName);
    if typeName.IsEmpty then
       info := 'BadIdD'
@@ -405,7 +405,7 @@ end;
 
 function TUserDataType.GetOriginalType: integer;
 begin
-   result := TParserHelper.GetType(Trim(edtName.Text));
+   result := TParserHelper.GetType(GetName);
    var field := GetFirstField;
    if (Kind = dtArray) and (field <> nil) then
       result := TParserHelper.GetType(field.cbType.Text);
