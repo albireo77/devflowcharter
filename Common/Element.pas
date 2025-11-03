@@ -50,7 +50,7 @@ type
          procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean); override;
          procedure CMHintShow(var Message: TCMHintShow); message CM_HINTSHOW;
       public
-         edtName: TNameEdit;
+         edtName: TUnFocusEdit;
          cbType: TComboBox;
          btnRemove: TButton;
          property ParentTab: TTabSheet read FParentTab;
@@ -79,7 +79,7 @@ begin
    FTypeId := ATypeId;
    FHintStr := trnsManager.GetString(FTypeId + 'HintStr');
 
-   edtName := TNameEdit.Create(Self);
+   edtName := TUnFocusEdit.Create(Self);
    edtName.Parent := Self;
    edtName.SetBounds(3, 0, TInfra.Scaled(Self, 70), 21);
    edtName.ParentFont := False;
@@ -142,7 +142,7 @@ end;
 function TElement.IsValid: boolean;
 begin
    result := True;
-   if edtName.Enabled and ((edtName.Font.Color = NOK_COLOR) or ((Trim(edtName.Text) = '') and not edtName.Focused)) then
+   if edtName.Enabled and (edtName.Font.Color = NOK_COLOR) and not edtName.Focused then
       result := False;
 end;
 
@@ -150,12 +150,7 @@ procedure TElement.OnChangeName(Sender: TObject);
 begin
    var lColor := NOK_COLOR;
    var info := '';
-   if edtName.Text = '' then
-   begin
-      if not edtName.Focused then
-         info := 'BadIdD';
-   end
-   else if GInfra.ValidateId(edtName.Text) <> VALID_IDENT then
+   if GInfra.ValidateId(edtName.Text) <> VALID_IDENT then
       info := 'BadIdD'
    else if TTabComponent(FParentTab).IsDuplicatedElement(Self) then
       info := 'DupIdD';
@@ -166,7 +161,8 @@ begin
    end;
    edtName.Font.Color := lColor;
    edtName.Hint := trnsManager.GetString(info);
-   FParentTab.PageControl.Refresh;
+   if (edtName.Font.Color = OK_COLOR) or not edtName.Focused then
+      FParentTab.PageControl.Refresh;
    GProject.SetChanged;
    if FParentForm.UpdateCodeEditor then
       TTabComponent(FParentTab).UpdateCodeEditor;
