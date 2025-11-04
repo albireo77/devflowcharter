@@ -629,9 +629,9 @@ begin
       end;
       for var userType in GProject.GetUserDataTypes do
       begin
-         var lName := userType.GetName;
-         if (userType.PageIndex < ASkipIndex) and not lName.IsEmpty then
+         if (userType.PageIndex < ASkipIndex) and userType.IsValid then
          begin
+            var lName := userType.GetName;
             AcbType.Items.Add(lName);
             if userType.chkAddPtrType.Checked and (lang <> nil) then
                AcbType.Items.Add(lang.GetPointerTypeName(lName));
