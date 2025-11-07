@@ -1251,7 +1251,7 @@ begin
    if Color <> GSettings.SelectColor then
    begin
       ChangeColor(GSettings.SelectColor);
-      if GSettings.EditorAutoSelectBlock then
+      if GetAsyncKeyState(vkControl) < 0 then
          TInfra.GetEditorForm.SelectCodeRange(Self);
       NavigatorForm.Invalidate;
    end;
@@ -1262,7 +1262,7 @@ begin
    if Color = GSettings.SelectColor then
    begin
       ChangeColor(Page.Box.Color);
-      if GSettings.EditorAutoSelectBlock and not FFrame then
+      if GetAsyncKeyState(vkControl) < 0 then
          TInfra.GetEditorForm.UnSelectCodeRange(Self);
       NavigatorForm.Invalidate;
    end;
