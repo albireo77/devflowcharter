@@ -442,7 +442,6 @@ lblMarginBottom=下:
 edtCompilerHint=可用的替换符:##%s1 - 保存的源文件名##%s2 - 除后缀名的保存源文件名##Example command:##cmd.exe /k C:\SomeCompiler\bin\compile.bat "%s1"
 edtCompilerNoMainHint=可用的替换符:##%s1 - 保存的源文件名##%s2 - 除后缀名的保存源文件名##%s3 - 标准编译指令
 chkValidateConsts=启用对变量声明的额外测错
-chkAutoSelectCode=高亮流程图框时自动高亮代码
 chkAutoUpdateCode=更改工程时自动更新代码
 lblFontSize=文字大小:
 pnlFont.Hint=红色或橄榄绿
