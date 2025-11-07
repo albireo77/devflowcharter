@@ -772,25 +772,10 @@ object SettingsForm: TSettingsForm
       ParentFont = False
       TabOrder = 0
     end
-    object chkAutoSelectCode: TCheckBox
-      Tag = 8
-      Left = 8
-      Top = 20
-      Width = 337
-      Height = 17
-      Caption = 'Auto-select code for highlighted flowchart elements'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 2
-    end
     object chkAutoUpdateCode: TCheckBox
       Tag = 8
       Left = 8
-      Top = 39
+      Top = 20
       Width = 289
       Height = 17
       Caption = 'Auto-update for flowchart changes'
@@ -800,7 +785,7 @@ object SettingsForm: TSettingsForm
       Font.Name = 'MS Sans Serif'
       Font.Style = []
       ParentFont = False
-      TabOrder = 3
+      TabOrder = 2
     end
     object cbFontSize: TComboBox
       Tag = 12
@@ -816,7 +801,7 @@ object SettingsForm: TSettingsForm
       Font.Style = []
       ItemIndex = 0
       ParentFont = False
-      TabOrder = 4
+      TabOrder = 3
       Text = '10'
       Items.Strings = (
         '10'
@@ -841,7 +826,7 @@ object SettingsForm: TSettingsForm
       Font.Name = 'MS Sans Serif'
       Font.Style = []
       ParentFont = False
-      TabOrder = 5
+      TabOrder = 4
       Items.Strings = (
         'space'
         'tab')

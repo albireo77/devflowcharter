@@ -102,7 +102,6 @@ type
     chkValidateConsts: TCheckBox;
     edtFontNameSize: TEdit;
     FontDialog: TFontDialog;
-    chkAutoSelectCode: TCheckBox;
     edtCompilerNoMain: TEdit;
     lblCompilerNoMain: TLabel;
     chkAutoUpdateCode: TCheckBox;
@@ -353,7 +352,6 @@ begin
    pnlEditorIdent.Color := clWindowText;
    pnlFont.Color := OK_COLOR;
    chkValidateConsts.Checked := True;
-   chkAutoSelectCode.Checked := False;
    chkAutoUpdateCode.Checked := False;
    edtEditorIndent.Text := IntToStr(EDITOR_DEFAULT_INDENT_LENGTH);
    SetComboBoxItem(cbFontSize, IntToStr(EDITOR_DEFAULT_FONT_SIZE));
@@ -441,7 +439,6 @@ begin
    chkParseRoutine.Checked := ASettings.ParseRoutineCall;
    chkParseReturn.Checked := ASettings.ParseReturn;
    chkValidateConsts.Checked := ASettings.ValidateDeclaration;
-   chkAutoSelectCode.Checked := ASettings.EditorAutoSelectBlock;
    chkAutoUpdateCode.Checked := ASettings.EditorAutoUpdate;
    cbIndentChar.ItemIndex := IfThen(ASettings.IndentChar = TAB_CHAR, 1);
    SetFontNameSize(ASettings.FlowchartFontName, ASettings.FlowchartFontSize);

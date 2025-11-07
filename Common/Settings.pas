@@ -46,7 +46,6 @@ type
       FEditorShowStatusBar,
       FEditorCodeFolding,
       FEditorIndentGuides,
-      FEditorAutoSelectBlock,
       FEditorAutoUpdate: boolean;
       FEditorFontSize,
       FEditorRightEdgeColumn,
@@ -133,7 +132,6 @@ type
       property EditorRightEdgeColor: TColor read FEditorRightEdgeColor;
       property EditorRightEdgeColumn: integer read FEditorRightEdgeColumn;
       property EditorIndentGuides: boolean read FEditorIndentGuides write FEditorIndentGuides;
-      property EditorAutoSelectBlock: boolean read FEditorAutoSelectBlock;
       property EditorAutoUpdate: boolean read FEditorAutoUpdate write FEditorAutoUpdate;
       property IndentLength: integer read FIndentLength;
       property IndentChar: char read FIndentChar;
@@ -322,7 +320,6 @@ begin
    FEditorCodeFolding         := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EDITOR_CODE_FOLDING, False);
    FEditorShowScrollbars      := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_EDITOR_SHOW_SCROLLBARS, True);
    FEditorShowStatusBar       := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_SHOW_STATUSBAR, True);
-   FEditorAutoSelectBlock     := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_AUTOSELECT_CODE_BLOCK, False);
    FEditorAutoUpdate          := FSettingsFile.ReadBool(SETTINGS_SECTION, KEY_AUTOUPDATE_CODE, False);
    FEditorBkgColor            := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_BKG_COLOR, clWindow);
    FEditorFontColor           := FSettingsFile.ReadInteger(SETTINGS_SECTION, KEY_EDITOR_FONT_COLOR, clWindowText);
@@ -361,7 +358,6 @@ begin
    FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_CONFIRM_REMOVE, FConfirmRemove);
    FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_PRINT_MULTI_PAGES, FPrintMultPages);
    FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_PRINT_MULTI_PAGES_HORZ, FPrintMultPagesHorz);
-   FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_AUTOSELECT_CODE_BLOCK, FEditorAutoSelectBlock);
    FSettingsFile.WriteBool(SETTINGS_SECTION, KEY_AUTOUPDATE_CODE, FEditorAutoUpdate);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_LEFT, FPrintMargins.Left);
    FSettingsFile.WriteInteger(SETTINGS_SECTION, KEY_PRINT_MARGIN_TOP, FPrintMargins.Top);
@@ -508,7 +504,6 @@ begin
    FEditorSelectColor     := sForm.pnlEditorSelect.Color;
    FEditorGutterColor     := sForm.pnlEditorGutter.Color;
    FEditorIdentColor      := sForm.pnlEditorIdent.Color;
-   FEditorAutoSelectBlock := sForm.chkAutoSelectCode.Checked;
    FEditorAutoUpdate      := sForm.chkAutoUpdateCode.Checked;
    FValidateDeclaration   := sForm.chkValidateConsts.Checked;
    FEditorFontSize        := StrToIntDef(sForm.cbFontSize.Text, EDITOR_DEFAULT_FONT_SIZE);

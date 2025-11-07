@@ -558,6 +558,10 @@ EditorHelp25=为单一函数或变量生成代码,
 EditorHelp26=拖动其至编辑器.
 EditorHelp27=为一组元素生成代码
 EditorHelp28=把他拖动至编辑器.
+EditorHelp29=4. To select code when switching function/datatype tabs
+EditorHelp30=on their form, hold Ctrl key.
+EditorHelp31=5. To select/deselect code when highlighting flowchart
+EditorHelp32=block, hold Ctrl key.
 
 [ToolBoxForm]
 FormCaption=元件工具箱
