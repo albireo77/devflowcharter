@@ -216,8 +216,8 @@ BadInitVal=无效初始值
 rgTypeBox=类型:
 dtInt=整数
 dtReal=实数
-dtRecord=结构（Pascal：记录）
-dtCustom=记录（Java只读数据类）
+dtRecord=记录
+dtCustom=自定数据
 dtEnum=枚举类型
 dtOther=其他
 dtArray=数组
@@ -557,10 +557,10 @@ EditorHelp25=为单一函数或变量生成代码,
 EditorHelp26=拖动其至编辑器.
 EditorHelp27=为一组元素生成代码
 EditorHelp28=把他拖动至编辑器.
-EditorHelp29=4. To select code when switching function/datatype tabs
-EditorHelp30=on their form, hold Ctrl key.
-EditorHelp31=5. To select/deselect code when highlighting flowchart
-EditorHelp32=block, hold Ctrl key.
+EditorHelp29=4. 按住Ctrl键以在表单中
+EditorHelp30=切换数据类型
+EditorHelp31=5. 按住Ctrl键以在高亮模式中
+EditorHelp32=选中或取消选中框图
 
 [ToolBoxForm]
 FormCaption=元件工具箱
@@ -594,4 +594,5 @@ btnCancel=取消
 btnOK=确认
 btnCancel=取消
 chkSelectAll=全选
+
 
