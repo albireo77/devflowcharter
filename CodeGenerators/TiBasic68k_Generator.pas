@@ -54,9 +54,9 @@ end;
 
 procedure TIBASIC_UserFunctionGenerator(ALines: TStringList; AFunction: TUserFunction; ASkipBodyGen: boolean);
 begin
-   var funcName := AFunction.GetName;
-   if (funcName <> '') and (tiBasicLang.CodeIncludeExternFunction or not AFunction.Header.chkExternal.Checked) then
+   if AFunction.IsValid and (tiBasicLang.CodeIncludeExternFunction or not AFunction.Header.chkExternal.Checked) then
    begin
+      var funcName := AFunction.GetName;
       var funcPrefix := IfThen(AFunction.Header.cbType.ItemIndex <> 0, 'Func', 'Prgm');
       var funcParms := '';
       for var param in AFunction.Header.GetParameters do

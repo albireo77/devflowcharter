@@ -31,9 +31,9 @@ uses
 procedure Template_UserDataTypeGenerator(ALines: TStringList; ADataType: TUserDataType);
 begin
    var lang := GInfra.CurrentLang;
-   var name := ADataType.GetName;
-   if (name <> '') and (lang.CodeIncludeExternDataType or not ADataType.chkExternal.Checked) then
+   if ADataType.IsValid and (lang.CodeIncludeExternDataType or not ADataType.chkExternal.Checked) then
    begin
+      var name := ADataType.GetName;
       var typeStr := '';
       var s2 := '';
       var s3 := '';
@@ -381,9 +381,9 @@ end;
 procedure Template_UserFunctionGenerator(ALines: TStringList; AFunction: TUserFunction; ASkipBodyGen: boolean);
 begin
    var lang := GInfra.CurrentLang;
-   var name := AFunction.GetName;
-   if (name <> '') and (lang.CodeIncludeExternFunction or not AFunction.Header.chkExternal.Checked) and not lang.FunctionTemplate.IsEmpty then
+   if AFunction.IsValid and (lang.CodeIncludeExternFunction or not AFunction.Header.chkExternal.Checked) and not lang.FunctionTemplate.IsEmpty then
    begin
+      var name := AFunction.GetName;
       var argList := '';
       for var param in AFunction.Header.GetParameters do
       begin

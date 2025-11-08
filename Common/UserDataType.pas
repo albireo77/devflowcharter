@@ -45,8 +45,8 @@ type
 
    TUserDataType = class(TTabComponent)
    private
-      function FindItemIndex(Kind: TUserDataTypeKind): integer;
       function CreateTypeBox: TRadioGroup;
+      procedure UpdateTypeBoxLabel(AKind: TUserDataTypeKind; const ALabel: string);
    protected
       procedure OnChangeName(Sender: TObject); override;
       procedure OnClickType(Sender: TObject);
@@ -145,16 +145,12 @@ begin
    CreateLibControls(Self, edtName.Left+edtName.Width+7, 10);
 
    rgTypeBox := CreateTypeBox;
-   if not currLang.RecordLabel.IsEmpty then
-      rgTypeBox.Items[FindItemIndex(dtRecord)] := currLang.RecordLabel;
-   if currLang.EnabledUserDataTypeOther and not currLang.OtherLabel.IsEmpty then
-      rgTypeBox.Items[FindItemIndex(dtOther)] := currLang.OtherLabel;
-   if currLang.EnabledUserDataTypeCustom and not currLang.CustomLabel.IsEmpty then
-      rgTypeBox.Items[FindItemIndex(dtCustom)] := currLang.CustomLabel;
-   if currLang.EnabledUserDataTypeEnum and not currLang.EnumLabel.IsEmpty then
-      rgTypeBox.Items[FindItemIndex(dtEnum)] := currLang.EnumLabel;
-   rgTypeBox.ItemIndex := FindItemIndex(dtRecord);
+   rgTypeBox.ItemIndex := rgTypeBox.Items.IndexOfObject(TObject(dtRecord));
    rgTypeBox.OnClick := OnClickType;
+   UpdateTypeBoxLabel(dtRecord, currLang.RecordLabel);
+   UpdateTypeBoxLabel(dtOther, currLang.OtherLabel);
+   UpdateTypeBoxLabel(dtCustom, currLang.CustomLabel);
+   UpdateTypeBoxLabel(dtEnum, currLang.EnumLabel);
 
    chkAddPtrType := TCheckBox.Create(Self);
    chkAddPtrType.Parent := Self;
@@ -208,14 +204,16 @@ begin
    end;
 end;
 
+procedure TUserDataType.UpdateTypeBoxLabel(AKind: TUserDataTypeKind; const ALabel: string);
+begin
+   var i := rgTypeBox.Items.IndexOfObject(TObject(AKind));
+   if (i <> -1) and not ALabel.IsEmpty then
+      rgTypeBox.Items[i] := ALabel;
+end;
+
 function TUserDataType.Kind: TUserDataTypeKind;
 begin
    result := TUserDataTypeKind(rgTypeBox.Items.Objects[rgTypeBox.ItemIndex]);
-end;
-
-function TUserDataType.FindItemIndex(Kind: TUserDataTypeKind): integer;
-begin
-   result := rgTypeBox.Items.IndexOfObject(TObject(Kind));
 end;
 
 procedure TUserDataType.SetActive(AValue: boolean);
@@ -381,7 +379,8 @@ begin
    inherited ImportFromXML(ANode, APinControl);
    if chkAddPtrType.Enabled then
       chkAddPtrType.Checked := GetNodeAttrBool(ANode, POINTER_ATTR, False);
-   rgTypeBox.ItemIndex := FindItemIndex(TRttiEnumerationType.GetValue<TUserDataTypeKind>(GetNodeAttrStr(ANode, KIND_ATTR)));
+   var tk := TRttiEnumerationType.GetValue<TUserDataTypeKind>(GetNodeAttrStr(ANode, KIND_ATTR));
+   rgTypeBox.ItemIndex := rgTypeBox.Items.IndexOfObject(TObject(tk));
 end;
 
 function TUserDataType.GetDimensionCount: integer;
@@ -444,15 +443,18 @@ begin
    begin
       var lColor := OK_COLOR;
       var lHint := 'OkIdD';
-      if (edtName.Text = '') and not edtName.Focused then
+      if edtName.Text = '' then
       begin
          lColor := NOK_COLOR;
          lHint := 'BadIdD';
       end;
       edtName.Font.Color := lColor;
       edtName.Hint := trnsManager.GetString(lHint);
-      ParentTab.PageControl.Refresh;
+      if (edtName.Font.Color = OK_COLOR) or not edtName.Focused then
+         FParentTab.PageControl.Refresh;
       GProject.SetChanged;
+      if FParentForm.UpdateCodeEditor then
+         TTabComponent(FParentTab).UpdateCodeEditor;
    end
    else
       inherited OnChangeName(Sender);
@@ -475,9 +477,9 @@ end;
 
 procedure TField.OnChangeSize(Sender: TObject);
 begin
-   var sizeEdit := TSizeEdit(Sender);
-   sizeEdit.Font.Color := if sizeEdit.ParseSize then BLACK_COLOR else NOK_COLOR;
-   ParentTab.PageControl.Refresh;
+   edtSize.Font.Color := if edtSize.ParseSize then BLACK_COLOR else NOK_COLOR;
+   if (edtSize.Font.Color = BLACK_COLOR) or not edtSize.Focused then
+      FParentTab.PageControl.Refresh;
    GProject.SetChanged;
    if ParentForm.UpdateCodeEditor then
       TTabComponent(ParentTab).UpdateCodeEditor;
@@ -486,8 +488,8 @@ end;
 function TField.IsValid: boolean;
 begin
    result := inherited IsValid;
-   if result and edtSize.Enabled then
-      result := edtSize.Font.Color = BLACK_COLOR;
+   if result and edtSize.Enabled and (edtSize.Font.Color = NOK_COLOR) and not edtSize.Focused then
+      result := False;
 end;
 
 procedure TUserDataType.GenerateTree(ANode: TTreeNode);

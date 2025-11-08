@@ -57,7 +57,7 @@ type
          procedure CreateLibControls(AParent: TWinControl; x, y: integer);
          function GetElements<T: class>(AComparer: IComparer<T> = nil): IEnumerable<T>;
       public
-         edtName: TEdit;
+         edtName: TUnFocusEdit;
          chkExternal: TCheckBox;
          edtLibrary: TEdit;
          lblName: TLabel;
@@ -79,6 +79,7 @@ type
          function GetLibrary: string;
          property ScrollPos: integer read GetScrollPos write SetScrollPos;
          function GetName: string;
+         function IsValid: boolean;
          function GetTab: TTabSheet;
          procedure RefreshSizeEdits; virtual; abstract;
          function RetrieveFocus(AInfo: TFocusInfo): boolean;
@@ -232,7 +233,7 @@ begin
    lblName.Font.Style := [];
    lblName.Font.Color := clWindowText;
 
-   edtName := TEdit.Create(AParent);
+   edtName := TUnFocusEdit.Create(AParent);
    edtName.Parent := AParent;
    edtName.SetBounds(lblName.BoundsRect.Right+5, y-4, 104, 21);
    edtName.ParentFont := False;
@@ -317,7 +318,7 @@ begin
       for var i := 0 to PageControl.PageCount-1 do
       begin
          var tab := TTabComponent(PageControl.Pages[i]);
-         if tab.TabVisible and (tab.edtName <> ANameEdit) and TInfra.SameStrings(Trim(tab.edtName.Text), Trim(ANameEdit.Text)) then
+         if tab.TabVisible and (tab.edtName <> ANameEdit) and TInfra.SameStrings(tab.GetName, Trim(ANameEdit.Text)) then
          begin
             result := True;
             break;
@@ -376,9 +377,12 @@ end;
 
 function TTabComponent.GetName: string;
 begin
-   result := '';
-   if FActive and (Font.Color <> NOK_COLOR) then
-      result := Trim(edtName.Text);
+   result := Trim(edtName.Text);
+end;
+
+function TTabComponent.IsValid: boolean;
+begin
+   result := FActive and ((Font.Color <> NOK_COLOR) or edtName.Focused);
 end;
 
 function TTabComponent.GetTab: TTabSheet;
@@ -393,7 +397,7 @@ end;
 
 procedure TTabComponent.OnChangeName(Sender: TObject);
 begin
-   Caption := Trim(edtName.Text);
+   Caption := GetName;
    PageControl.Refresh;
    if FParentForm.UpdateCodeEditor then
       UpdateCodeEditor;
@@ -440,7 +444,7 @@ end;
 procedure TTabComponent.ExportToXML(ANode: IXMLNode);
 begin
    SetNodeAttrInt(ANode, ID_ATTR, FId);
-   SetNodeAttrStr(ANode, NAME_ATTR, Trim(edtName.Text));
+   SetNodeAttrStr(ANode, NAME_ATTR, GetName);
    SetNodeAttrStr(ANode, 'ext_decl', TRttiEnumerationType.GetName(chkExternal.State));
    SetNodeAttrStr(ANode, 'library', Trim(edtLibrary.Text));
    for var elem in GetElements<TElement>(ByTopElementComparer) do

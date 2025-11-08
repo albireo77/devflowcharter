@@ -621,7 +621,7 @@ end;
 
 procedure TBlock.DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-   var isShift := GetAsyncKeyState(vkShift) <> 0;
+   var isShift := GetAsyncKeyState(vkShift) < 0;
    var shiftState := if isShift then [ssShift] else [];
    MouseMove(shiftState, X, Y);
    if (FRedArrow < 0) or (Source is not TBlock) or (Source is TMainBlock) or (Source is TReturnBlock) or ((not isShift) and ((Source = Self) or IsAncestor(Source))) then
@@ -636,7 +636,7 @@ begin
       var srcForm := srcBlock.Page.Form;
       var menuItem := srcForm.miCopy;
       srcForm.pmPages.PopupComponent := srcBlock;
-      var shiftPressed := GetAsyncKeyState(vkShift) <> 0;
+      var shiftPressed := GetAsyncKeyState(vkShift) < 0;
       if not shiftPressed then
       begin
          menuItem := srcForm.miCut;
@@ -848,7 +848,7 @@ end;
 procedure TBlock.NCHitTest(var Msg: TWMNCHitTest);
 begin
    inherited;
-   if (GetAsyncKeyState(vkLButton) <> 0) and not Mouse.IsDragging then
+   if (GetAsyncKeyState(vkLButton) < 0) and not Mouse.IsDragging then
    begin
       FMouseLeave := False;
       case Cursor of
@@ -1251,7 +1251,7 @@ begin
    if Color <> GSettings.SelectColor then
    begin
       ChangeColor(GSettings.SelectColor);
-      if GSettings.EditorAutoSelectBlock then
+      if GetAsyncKeyState(vkControl) < 0 then
          TInfra.GetEditorForm.SelectCodeRange(Self);
       NavigatorForm.Invalidate;
    end;
@@ -1262,7 +1262,7 @@ begin
    if Color = GSettings.SelectColor then
    begin
       ChangeColor(Page.Box.Color);
-      if GSettings.EditorAutoSelectBlock and not FFrame then
+      if GetAsyncKeyState(vkControl) < 0 then
          TInfra.GetEditorForm.UnSelectCodeRange(Self);
       NavigatorForm.Invalidate;
    end;

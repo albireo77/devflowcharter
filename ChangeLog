@@ -1,3 +1,7 @@
+12.1 [05-11-2025]
+- Code Editor: disable by default selecting function/datatype code when switching between tabs. To select, hold Ctrl key. 
+- Code Editor: defer removing invalid function/datatype from code till text control (name or size) containing invalid value loses focus.
+
 12.0 [28-10-2025]
 - Java: add support for records
 - Java: fix POJO classes generated as public

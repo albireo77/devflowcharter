@@ -22,11 +22,11 @@ unit SizeEdit;
 interface
 
 uses
-  Vcl.Controls, Vcl.StdCtrls;
+  Vcl.Controls, Vcl.StdCtrls, Types;
 
 type
 
-  TSizeEdit = class(TEdit)
+  TSizeEdit = class(TUnFocusEdit)
      private
         function GetDimensionCount: integer;
      public

@@ -1364,11 +1364,10 @@ begin
    var lang := if Assigned(GInfra.CurrentLang.GetUserFuncDesc) then GInfra.CurrentLang else GInfra.TemplateLang;
    for var func in GProject.GetUserFunctions do
    begin
-      var lName := func.GetName;
-      if not lName.IsEmpty then
+      if func.IsValid then
       begin
          var mItem := TMenuItem.Create(miInsertFunc);
-         mItem.Caption := lName;
+         mItem.Caption := func.GetName;
          mItem.Hint := lang.GetUserFuncDesc(func.Header);
          if func.Header <> nil then
             mItem.Name := Trim(func.Header.edtLibrary.Text);
