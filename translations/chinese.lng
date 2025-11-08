@@ -1,4 +1,4 @@
-﻿; 中文本地化文件 devFlowcharter
+; 中文本地化文件 devFlowcharter
 ; phoeagon
 ; http://github.com/phoeagon
 
@@ -551,13 +551,13 @@ EditorHelp19=Shift-Ctrl-N    正常选择模式
 EditorHelp20=
 EditorHelp21=提示:
 EditorHelp22=##
-EditorHelp23=为了复制流程图的注释到编辑器
+EditorHelp23=1. 为了复制流程图的注释到编辑器
 EditorHelp24=按住 Shift 并拖动至编辑器.
-EditorHelp25=为单一函数或变量生成代码,
+EditorHelp25=2. 为单一函数或变量生成代码,
 EditorHelp26=拖动其至编辑器.
-EditorHelp27=为一组元素生成代码
+EditorHelp27=3. 为一组元素生成代码
 EditorHelp28=把他拖动至编辑器.
-EditorHelp29=4. 按住Ctrl键以在表单中
+EditorHelp29=4. 按住 Ctrl 键以在表单中
 EditorHelp30=切换数据类型
 EditorHelp31=5. 按住Ctrl键以在高亮模式中
 EditorHelp32=选中或取消选中框图
