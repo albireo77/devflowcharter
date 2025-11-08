@@ -45,8 +45,8 @@ type
 
    TUserDataType = class(TTabComponent)
    private
-      function FindItemIndex(Kind: TUserDataTypeKind): integer;
       function CreateTypeBox: TRadioGroup;
+      procedure UpdateTypeBoxLabel(AKind: TUserDataTypeKind; const ALabel: string);
    protected
       procedure OnChangeName(Sender: TObject); override;
       procedure OnClickType(Sender: TObject);
@@ -145,16 +145,12 @@ begin
    CreateLibControls(Self, edtName.Left+edtName.Width+7, 10);
 
    rgTypeBox := CreateTypeBox;
-   if not currLang.RecordLabel.IsEmpty then
-      rgTypeBox.Items[FindItemIndex(dtRecord)] := currLang.RecordLabel;
-   if currLang.EnabledUserDataTypeOther and not currLang.OtherLabel.IsEmpty then
-      rgTypeBox.Items[FindItemIndex(dtOther)] := currLang.OtherLabel;
-   if currLang.EnabledUserDataTypeCustom and not currLang.CustomLabel.IsEmpty then
-      rgTypeBox.Items[FindItemIndex(dtCustom)] := currLang.CustomLabel;
-   if currLang.EnabledUserDataTypeEnum and not currLang.EnumLabel.IsEmpty then
-      rgTypeBox.Items[FindItemIndex(dtEnum)] := currLang.EnumLabel;
-   rgTypeBox.ItemIndex := FindItemIndex(dtRecord);
+   rgTypeBox.ItemIndex := rgTypeBox.Items.IndexOfObject(TObject(dtRecord));
    rgTypeBox.OnClick := OnClickType;
+   UpdateTypeBoxLabel(dtRecord, currLang.RecordLabel);
+   UpdateTypeBoxLabel(dtOther, currLang.OtherLabel);
+   UpdateTypeBoxLabel(dtCustom, currLang.CustomLabel);
+   UpdateTypeBoxLabel(dtEnum, currLang.EnumLabel);
 
    chkAddPtrType := TCheckBox.Create(Self);
    chkAddPtrType.Parent := Self;
@@ -208,14 +204,16 @@ begin
    end;
 end;
 
+procedure TUserDataType.UpdateTypeBoxLabel(AKind: TUserDataTypeKind; const ALabel: string);
+begin
+   var i := rgTypeBox.Items.IndexOfObject(TObject(AKind));
+   if (i <> -1) and not ALabel.IsEmpty then
+      rgTypeBox.Items[i] := ALabel;
+end;
+
 function TUserDataType.Kind: TUserDataTypeKind;
 begin
    result := TUserDataTypeKind(rgTypeBox.Items.Objects[rgTypeBox.ItemIndex]);
-end;
-
-function TUserDataType.FindItemIndex(Kind: TUserDataTypeKind): integer;
-begin
-   result := rgTypeBox.Items.IndexOfObject(TObject(Kind));
 end;
 
 procedure TUserDataType.SetActive(AValue: boolean);
@@ -384,7 +382,8 @@ begin
    inherited ImportFromXML(ANode, APinControl);
    if chkAddPtrType.Enabled then
       chkAddPtrType.Checked := GetNodeAttrBool(ANode, POINTER_ATTR, False);
-   rgTypeBox.ItemIndex := FindItemIndex(TRttiEnumerationType.GetValue<TUserDataTypeKind>(GetNodeAttrStr(ANode, KIND_ATTR)));
+   var tk := TRttiEnumerationType.GetValue<TUserDataTypeKind>(GetNodeAttrStr(ANode, KIND_ATTR));
+   rgTypeBox.ItemIndex := rgTypeBox.Items.IndexOfObject(TObject(tk));
 end;
 
 function TUserDataType.GetDimensionCount: integer;
