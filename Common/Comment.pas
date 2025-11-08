@@ -264,7 +264,7 @@ begin
    inherited;
    ChangeBorderStyle(bsSingle);
    FMouseLeave := True;
-   if GetAsyncKeyState(vkLButton) <> 0 then
+   if GetAsyncKeyState(vkLButton) < 0 then
    begin
       FMouseLeave := False;
       case Cursor of
