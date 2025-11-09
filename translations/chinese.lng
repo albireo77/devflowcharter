@@ -1,4 +1,4 @@
-﻿; 中文本地化文件 devFlowcharter
+; 中文本地化文件 devFlowcharter
 ; phoeagon
 ; http://github.com/phoeagon
 
@@ -210,14 +210,14 @@ InstanceVars=实例变量
 InstanceConstants=实例常量
 GlobalVars=全局变量
 GlobalConsts=全局常量
-GlobalDeclares=Declarations
+GlobalDeclares=全局声明
 ConfirmRemove=此操作无法撤销. 确认进行？
 BadInitVal=无效初始值
 rgTypeBox=类型:
 dtInt=整数
 dtReal=实数
 dtRecord=记录
-dtCustom=Custom
+dtCustom=自定数据
 dtEnum=枚举类型
 dtOther=其他
 dtArray=数组
@@ -225,7 +225,7 @@ lblPrefix=添加描述或限定词:
 gbDesc=函数描述或限定词（inline等）
 chkInclDescCode=生成代码时包括此描述
 chkInclDescFlow=包含进函数标志
-Flowchart=Flowchart
+Flowchart=框图
 LngNoSprt=%s 语言不被当前的devFlowcharter支持.
 OldVerMsg=该工程 (%s) 系更为新的版本的devFlowcharter内创建. 导入功能不能保证完全支持.
 EnterPage=请输入页名:
@@ -551,16 +551,16 @@ EditorHelp19=Shift-Ctrl-N    正常选择模式
 EditorHelp20=
 EditorHelp21=提示:
 EditorHelp22=##
-EditorHelp23=为了复制流程图的注释到编辑器
+EditorHelp23=1. 为了复制流程图的注释到编辑器
 EditorHelp24=按住 Shift 并拖动至编辑器.
-EditorHelp25=为单一函数或变量生成代码,
+EditorHelp25=2. 为单一函数或变量生成代码,
 EditorHelp26=拖动其至编辑器.
-EditorHelp27=为一组元素生成代码
+EditorHelp27=3. 为一组元素生成代码
 EditorHelp28=把他拖动至编辑器.
-EditorHelp29=4. To select code when switching function/datatype tabs
-EditorHelp30=on their form, hold Ctrl key.
-EditorHelp31=5. To select/deselect code when highlighting flowchart
-EditorHelp32=block, hold Ctrl key.
+EditorHelp29=4. 按住 Ctrl 键以在表单中
+EditorHelp30=切换数据类型
+EditorHelp31=5. 按住Ctrl键以在高亮模式中
+EditorHelp32=选中或取消选中框图
 
 [ToolBoxForm]
 FormCaption=元件工具箱
