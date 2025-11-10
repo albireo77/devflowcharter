@@ -407,9 +407,9 @@ begin
                u := u + 2;
             end;
             SetLength(constrParams, constrParams.Length - 2);
+            ALines.InsertObject(a + fc, indent + '}', ADataType);
+            ALines.InsertObject(a, indent + 'public ' + name + '(' + constrParams + ') {', ADataType);
             ALines.InsertObject(a, '', ADataType);
-            ALines.InsertObject(a + 1, indent + 'public ' + name + '(' + constrParams + ') {', ADataType);
-            ALines.InsertObject(a + fc + 2, indent + '}', ADataType);
          end;
          ALines.AddObject('}', ADataType);
       end
