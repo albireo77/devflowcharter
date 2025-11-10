@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <!-- 
-Reference language definition file for devFlowcharter.
-It contains all supported tags.
+This is reference language definition file for devFlowcharter as it contains all supported tags.
 To create file for new language just Save As this file and modify new file according to your needs. 
 Most of the tags are optional and may be removed if not needed. The key and mandatory tag is FileContentsTemplate that defines source file layout.
 The only valid character to set indent level in elements responsible for code generation (e.g. FileContentsTemplate) is TAB. Whitespaces will not work.
