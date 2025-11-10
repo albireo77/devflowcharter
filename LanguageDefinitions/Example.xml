@@ -891,37 +891,37 @@ Available placeholders:
 
 <!--
 Element ExternalLabel
-Used to change default label displayed for external variable/constant or function/datatype. If not empty, it overrides label from translation file.
+Used to change default label displayed for external variable/constant or function/datatype. If not empty, it overrides label from translation file (the one with key = chkExternal).
 -->
 <ExternalLabel></ExternalLabel>
 
 <!--
 Element StaticLabel
-Used to change default label displayed for static functions. If not empty, it overrides label from translation file.
+Used to change default label displayed for static functions.
 -->
 <StaticLabel></StaticLabel>
 
 <!--
 Element RecordLabel
-Used to change default label displayed for record data type. If not empty, it overrides label from translation file.
+Used to change default label displayed for record data type. If not empty, it overrides label from translation file (the one with key = dtRecord).
 -->
 <RecordLabel></RecordLabel>
 
 <!--
 Element CustomLabel
-Used to change default label displayed for custom data type if it's enabled. If not empty, it overrides label from translation file.
+Used to change default label displayed for custom data type if it's enabled. If not empty, it overrides label from translation file (the one with key = dtCustom).
 -->
 <CustomLabel></CustomLabel>
 
 <!--
 Element EnumLabel
-Used to change default label displayed for enumeration data type if it's enabled. If not empty, it overrides label from translation file.
+Used to change default label displayed for enumeration data type if it's enabled. If not empty, it overrides label from translation file (the one with key = dtEnum).
 -->
 <EnumLabel></EnumLabel>
 
 <!--
 Element OtherLabel
-Used to change default label displayed for other data type. If not empty, it overrides label from translation file.
+Used to change default label displayed for other data type. If not empty, it overrides label from translation file (the one with key = dtOther).
 -->
 <OtherLabel></OtherLabel>
 
