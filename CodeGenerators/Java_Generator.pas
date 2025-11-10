@@ -416,7 +416,7 @@ begin
       else if ADataType.Kind = dtEnum then
       begin
          ALines.AddObject('enum ' + name + ' {', ADataType);
-         if ADataType.FieldCount > 0 then
+         if fc > 0 then
          begin
             var line := indent;
             for var field in ADataType.GetFields do
