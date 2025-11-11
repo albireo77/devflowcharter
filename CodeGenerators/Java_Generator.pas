@@ -367,12 +367,12 @@ procedure Java_UserDataTypeGenerator(ALines: TStringList; ADataType: TUserDataTy
 begin
    if ADataType.IsValid then
    begin
-      var name := ADataType.GetName;
+      var typeName := ADataType.GetName;
       var indent := GSettings.IndentString;
       var fc := ADataType.FieldCount;
       if ADataType.Kind = dtRecord then
       begin
-         ALines.AddObject('class ' + name + ' {', ADataType);
+         ALines.AddObject('class ' + typeName + ' {', ADataType);
          if fc > 0 then
          begin
             ALines.AddObject('', ADataType);
@@ -384,22 +384,22 @@ begin
             for var field in ADataType.GetFields do
             begin
                var fieldSize := javaLang.GetArraySizes(field.edtSize);
-               var fieldName := Trim(field.edtName.Text);
+               var fieldName := field.GetName;
                var fieldType := field.cbType.Text;
                var setLine := indent + indent + 'this.' + fieldName + ' = ' + fieldName + ';';
                constrParams := constrParams + fieldType + fieldSize + ' ' + fieldName + ', ';
                ALines.InsertObject(u, setLine, ADataType);
                var line := indent + 'private ' + fieldType + fieldSize + ' ' + fieldName + ';';
                ALines.InsertObject(i, line, ADataType);
-               var funcStrU := fieldName;
-               if not funcStrU.IsEmpty then
-                  funcStrU[1] := funcStrU[1].ToUpper;
-               line := indent + 'public ' + fieldType + fieldSize + ' get' + funcStrU + '() {';
+               var fieldNameUpper := fieldName;
+               if not fieldNameUpper.IsEmpty then
+                  fieldNameUpper[1] := fieldNameUpper[1].ToUpper;
+               line := indent + 'public ' + fieldType + fieldSize + ' get' + fieldNameUpper + '() {';
                ALines.AddObject(line, ADataType);
                line := indent + indent + 'return ' + fieldName + ';';
                ALines.AddObject(line, ADataType);
                ALines.AddObject(indent + '}', ADataType);
-               line := indent + 'public void set' + funcStrU + '(' + fieldType + fieldSize + ' ' + fieldName + ') {';
+               line := indent + 'public void set' + fieldNameUpper + '(' + fieldType + fieldSize + ' ' + fieldName + ') {';
                ALines.AddObject(line, ADataType);
                ALines.AddObject(setLine, ADataType);
                ALines.AddObject(indent + '}', ADataType);
@@ -408,19 +408,19 @@ begin
             end;
             SetLength(constrParams, constrParams.Length - 2);
             ALines.InsertObject(a + fc, indent + '}', ADataType);
-            ALines.InsertObject(a, indent + 'public ' + name + '(' + constrParams + ') {', ADataType);
+            ALines.InsertObject(a, indent + 'public ' + typeName + '(' + constrParams + ') {', ADataType);
             ALines.InsertObject(a, '', ADataType);
          end;
          ALines.AddObject('}', ADataType);
       end
       else if ADataType.Kind = dtEnum then
       begin
-         ALines.AddObject('enum ' + name + ' {', ADataType);
+         ALines.AddObject('enum ' + typeName + ' {', ADataType);
          if fc > 0 then
          begin
             var line := indent;
             for var field in ADataType.GetFields do
-               line := line + Trim(field.edtName.Text).ToUpper + ', ';
+               line := line + field.GetName.ToUpper + ', ';
             SetLength(line, Length(line) - 2);
             ALines.AddObject(line, ADataType);
          end;
@@ -430,10 +430,10 @@ begin
       begin
          var fields := '';
          for var field in ADataType.GetFields do
-            fields := fields + field.cbType.Text + javaLang.GetArraySizes(field.edtSize) + ' ' + Trim(field.edtName.Text) + ', ';
+            fields := fields + field.cbType.Text + javaLang.GetArraySizes(field.edtSize) + ' ' + field.GetName + ', ';
          if fields.Length > 1 then
             SetLength(fields, fields.Length - 2);
-         ALines.AddObject('record ' + name + '(' + fields + ') {}', ADataType);
+         ALines.AddObject('record ' + typeName + '(' + fields + ') {}', ADataType);
       end;
    end;
 end;

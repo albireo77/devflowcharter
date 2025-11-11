@@ -64,7 +64,7 @@ begin
                typeStr := ReplaceText(typeStr, '%s9', extModifier);
                var field := ADataType.GetFirstField;
                if field <> nil then
-                  s2 := Trim(field.edtName.Text);
+                  s2 := field.GetName;
                template.Text := ReplaceText(typeStr, '%s2', s2);
             end;
 
@@ -101,7 +101,7 @@ begin
                      var fieldStr := lang.DataTypeRecordFieldArrayMask;
                      if sizeStr.IsEmpty then
                         fieldStr := lang.DataTypeRecordFieldMask;
-                     fieldStr := ReplaceText(fieldStr, PRIMARY_PLACEHOLDER, Trim(field.edtName.Text));
+                     fieldStr := ReplaceText(fieldStr, PRIMARY_PLACEHOLDER, field.GetName);
                      fieldStr := ReplaceText(fieldStr, '%s2', field.cbType.Text);
                      fieldStr := ReplaceText(fieldStr, '%s3', sizeStr);
                      var lRecord := '';
@@ -127,7 +127,7 @@ begin
                typeStr := ReplaceText(lang.DataTypeEnumTemplate, PRIMARY_PLACEHOLDER, name);
                template.Text := ReplaceText(typeStr, '%s9', extModifier);
                for var field in ADataType.GetFields do
-                  s2 := s2 + Format(lang.DataTypeEnumEntryList, [Trim(field.edtName.Text)]);
+                  s2 := s2 + Format(lang.DataTypeEnumEntryList, [field.GetName]);
                if lang.DataTypeEnumEntryListStripCount > 0 then
                   SetLength(s2, s2.Length - lang.DataTypeEnumEntryListStripCount);
                TInfra.InsertTemplateLines(template, '%s2', s2);
@@ -387,7 +387,7 @@ begin
       var argList := '';
       for var param in AFunction.Header.GetParameters do
       begin
-         var paramStr := ReplaceText(lang.FunctionHeaderArgsEntryMask, PRIMARY_PLACEHOLDER, Trim(param.edtName.Text));
+         var paramStr := ReplaceText(lang.FunctionHeaderArgsEntryMask, PRIMARY_PLACEHOLDER, param.GetName);
          paramStr := ReplaceText(paramStr, '%s2', param.cbType.Text);
          var ref := '';
          var lArray := '';
@@ -637,7 +637,7 @@ begin
    result := GInfra.CurrentLang.UserTypeDesc;
    if not result.IsEmpty then
    begin
-      result := ReplaceText(result, PRIMARY_PLACEHOLDER, ADataType.edtName.Text);
+      result := ReplaceText(result, PRIMARY_PLACEHOLDER, ADataType.GetName);
       var kind := '';
       if ADataType.rgTypeBox.ItemIndex <> -1 then
          kind := ADataType.rgTypeBox.Items[ADataType.rgTypeBox.ItemIndex];
@@ -682,7 +682,7 @@ begin
       begin
          result := trnsManager.GetString(key);
          result := ReplaceText(result, LB_PHOLDER2, lb);
-         result := ReplaceText(result, PRIMARY_PLACEHOLDER, Trim(AHeader.edtName.Text));
+         result := ReplaceText(result, PRIMARY_PLACEHOLDER, AHeader.GetName);
          result := ReplaceText(result, '%s2', params);
          result := ReplaceText(result, '%s3', lType);
          result := ReplaceText(result, '%s4', desc);
@@ -701,7 +701,7 @@ begin
        var template := TStringList.Create;
        var parms := TStringList.Create;
        try
-          template.Text := ReplaceText(lang.FunctionHeaderDescTemplate, PRIMARY_PLACEHOLDER, Trim(AHeader.edtName.Text));
+          template.Text := ReplaceText(lang.FunctionHeaderDescTemplate, PRIMARY_PLACEHOLDER, AHeader.GetName);
           template.Text := ReplaceText(template.Text, '%s2', AHeader.cbType.Text);
 
           if not lang.FunctionHeaderDescParmMask.IsEmpty then
@@ -709,7 +709,7 @@ begin
              var i := 1;
              for var parm in AHeader.GetParameters do
              begin
-                var parmString := ReplaceText(lang.FunctionHeaderDescParmMask, PRIMARY_PLACEHOLDER, Trim(parm.edtName.Text));
+                var parmString := ReplaceText(lang.FunctionHeaderDescParmMask, PRIMARY_PLACEHOLDER, parm.GetName);
                 parmString := ReplaceText(parmString, '%s2', parm.cbType.Text);
                 parmString := ReplaceText(parmString, '%s3', Trim(parm.edtDefault.Text));
                 parmString := ReplaceText(parmString, '%s4', i.ToString);
