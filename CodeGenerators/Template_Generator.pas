@@ -64,7 +64,7 @@ begin
                typeStr := ReplaceStr(typeStr, '%s9', extModifier);
                var field := ADataType.GetFirstField;
                if field <> nil then
-                  s2 := Trim(field.edtName.Text);
+                  s2 := field.GetName;
                template.Text := ReplaceStr(typeStr, '%s2', s2);
             end;
 
@@ -101,7 +101,7 @@ begin
                      var fieldStr := lang.DataTypeRecordFieldArrayMask;
                      if sizeStr.IsEmpty then
                         fieldStr := lang.DataTypeRecordFieldMask;
-                     fieldStr := ReplaceStr(fieldStr, PRIMARY_PLACEHOLDER, Trim(field.edtName.Text));
+                     fieldStr := ReplaceStr(fieldStr, PRIMARY_PLACEHOLDER, field.GetName);
                      fieldStr := ReplaceStr(fieldStr, '%s2', field.cbType.Text);
                      fieldStr := ReplaceStr(fieldStr, '%s3', sizeStr);
                      var lRecord := '';
@@ -127,7 +127,7 @@ begin
                typeStr := ReplaceStr(lang.DataTypeEnumTemplate, PRIMARY_PLACEHOLDER, name);
                template.Text := ReplaceStr(typeStr, '%s9', extModifier);
                for var field in ADataType.GetFields do
-                  s2 := s2 + Format(lang.DataTypeEnumEntryList, [Trim(field.edtName.Text)]);
+                  s2 := s2 + Format(lang.DataTypeEnumEntryList, [field.GetName]);
                if lang.DataTypeEnumEntryListStripCount > 0 then
                   SetLength(s2, s2.Length - lang.DataTypeEnumEntryListStripCount);
                TInfra.InsertTemplateLines(template, '%s2', s2);
@@ -390,7 +390,7 @@ begin
       var argList := '';
       for var param in AFunction.Header.GetParameters do
       begin
-         var paramStr := ReplaceStr(lang.FunctionHeaderArgsEntryMask, PRIMARY_PLACEHOLDER, Trim(param.edtName.Text));
+         var paramStr := ReplaceStr(lang.FunctionHeaderArgsEntryMask, PRIMARY_PLACEHOLDER, param.GetName);
          paramStr := ReplaceStr(paramStr, '%s2', param.cbType.Text);
          var ref := '';
          var lArray := '';
@@ -642,7 +642,7 @@ begin
    result := GInfra.CurrentLang.UserTypeDesc;
    if not result.IsEmpty then
    begin
-      result := ReplaceStr(result, PRIMARY_PLACEHOLDER, ADataType.edtName.Text);
+      result := ReplaceStr(result, PRIMARY_PLACEHOLDER, ADataType.GetName);
       var kind := '';
       if ADataType.rgTypeBox.ItemIndex <> -1 then
          kind := ADataType.rgTypeBox.Items[ADataType.rgTypeBox.ItemIndex];
@@ -680,14 +680,14 @@ begin
          begin
             if not params.IsEmpty then
                params := params + ', ';
-            params := params + param.cbType.Text + IfThen(param.chkTable.Checked, '[ ] ', ' ') + Trim(param.edtName.Text);
+            params := params + param.cbType.Text + IfThen(param.chkTable.Checked, '[ ] ', ' ') + param.GetName;
          end;
       end;
       if not key.IsEmpty then
       begin
          result := trnsManager.GetString(key);
          result := ReplaceStr(result, LB_PHOLDER2, lb);
-         result := ReplaceStr(result, PRIMARY_PLACEHOLDER, Trim(AHeader.edtName.Text));
+         result := ReplaceStr(result, PRIMARY_PLACEHOLDER, AHeader.GetName);
          result := ReplaceStr(result, '%s2', params);
          result := ReplaceStr(result, '%s3', lType);
          result := ReplaceStr(result, '%s4', desc);
@@ -706,7 +706,7 @@ begin
        var template := TStringList.Create;
        var parms := TStringList.Create;
        try
-          template.Text := ReplaceStr(lang.FunctionHeaderDescTemplate, PRIMARY_PLACEHOLDER, Trim(AHeader.edtName.Text));
+          template.Text := ReplaceStr(lang.FunctionHeaderDescTemplate, PRIMARY_PLACEHOLDER, AHeader.GetName);
           template.Text := ReplaceStr(template.Text, '%s2', AHeader.cbType.Text);
 
           if not lang.FunctionHeaderDescParmMask.IsEmpty then
@@ -714,7 +714,7 @@ begin
              var i := 1;
              for var parm in AHeader.GetParameters do
              begin
-                var parmString := ReplaceStr(lang.FunctionHeaderDescParmMask, PRIMARY_PLACEHOLDER, Trim(parm.edtName.Text));
+                var parmString := ReplaceStr(lang.FunctionHeaderDescParmMask, PRIMARY_PLACEHOLDER, parm.GetName);
                 parmString := ReplaceStr(parmString, '%s2', parm.cbType.Text);
                 parmString := ReplaceStr(parmString, '%s3', Trim(parm.edtDefault.Text));
                 parmString := ReplaceStr(parmString, '%s4', i.ToString);

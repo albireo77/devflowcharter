@@ -417,7 +417,7 @@ begin
    begin
       for var field in GetFields do
       begin
-         if Trim(field.edtName.Text) = AValue then
+         if field.GetName = AValue then
          begin
             result := True;
             break;

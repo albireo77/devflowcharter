@@ -63,7 +63,7 @@ begin
       begin
          if not funcParms.IsEmpty then
             funcParms := funcParms + ',';
-         funcParms := funcParms + Trim(param.edtName.Text);
+         funcParms := funcParms + param.GetName;
       end;
       var funcHeader := 'Define ' + funcName + '(' + funcParms + ')=' + funcPrefix;
       AFunction.Header.AddDescriptionToCode(ALines);

@@ -25,19 +25,11 @@ interface
 
 uses
    Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Forms, Vcl.Controls, Generics.Defaults,
-   OmniXml, PageControl_Form, Types;
+   OmniXml, PageControl_Form, Types, Interfaces;
 
 type
 
-   TElement = class;
-
-   TElementComparer = class(TComparer<TElement>)
-      FCompareType: integer;
-      constructor Create(ACompareType: integer);
-      function Compare(const L, R: TElement): integer; override;
-   end;
-
-   TElement = class(TPanel)
+   TElement = class(TPanel, IWithName)
       protected
          FTypeId,
          FHintStr: string;
@@ -59,12 +51,19 @@ type
          function ExportToXML(ANode: IXMLNode): IXMLNode; virtual;
          procedure ImportFromXML(ANode: IXMLNode); virtual;
          function IsValid: boolean; virtual;
+         function GetName: string;
+   end;
+
+   TElementComparer = class(TComparer<TElement>)
+      FCompareType: integer;
+      constructor Create(ACompareType: integer);
+      function Compare(const L, R: TElement): integer; override;
    end;
 
 implementation
 
 uses
-   Vcl.Graphics, System.SysUtils, System.Classes, Interfaces, TabComponent, Infrastructure,
+   Vcl.Graphics, System.SysUtils, System.Classes, TabComponent, Infrastructure,
    Constants, OmniXMLUtils;
 
 constructor TElement.Create(AParent: TScrollBox; const ATypeId: string);
@@ -109,6 +108,11 @@ begin
    btnRemove.OnClick := OnClickRemove;
    var w := TInfra.GetAutoWidth(btnRemove);
    btnRemove.SetBounds(Parent.Width-w-TInfra.Scaled(Self, 32), 0, w+14, TInfra.Scaled(Self, 20));
+end;
+
+function TElement.GetName: string;
+begin
+   result := Trim(edtName.Text);
 end;
 
 procedure TElement.CMHintShow(var Message: TCMHintShow);
@@ -182,7 +186,7 @@ end;
 function TElement.ExportToXML(ANode: IXMLNode): IXMLNode;
 begin
    result := AppendNode(ANode, FTypeId);
-   SetNodeAttrStr(result, NAME_ATTR, Trim(edtName.Text));
+   SetNodeAttrStr(result, NAME_ATTR, GetName);
    SetNodeAttrStr(result, TYPE_ATTR, cbType.Text);
 end;
 
@@ -222,7 +226,7 @@ begin
    else if FCompareType = TOP_COMPARE then
       result := L.Top - R.Top
    else if FCompareType = NAME_COMPARE then
-      result := TComparer<string>.Default.Compare(Trim(L.edtName.Text), Trim(R.edtName.Text))
+      result := TComparer<string>.Default.Compare(L.GetName, R.GetName)
    else if FCompareType = COMPONENT_INDEX_COMPARE then
       result := L.ComponentIndex - R.ComponentIndex
    else

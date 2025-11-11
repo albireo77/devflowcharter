@@ -153,7 +153,7 @@ begin
       begin
          for var elem in GetElements<TElement> do
          begin
-            if SameText(Trim(elem.edtName.Text), AInfo.SelText) then
+            if SameText(elem.GetName, AInfo.SelText) then
             begin
                if elem.edtName.CanFocus and (AInfo.ActiveControl = nil) then
                   elem.edtName.SetFocus;
@@ -186,7 +186,7 @@ end;
 
 function TTabComponent.GetExportFileName: string;
 begin
-   result := edtName.Text;
+   result := GetName;
 end;
 
 procedure TTabComponent.ExportToGraphic(AGraphic: TGraphic);
@@ -433,7 +433,7 @@ begin
    begin
       for var elem in GetElements<TElement> do
       begin
-         if (elem <> AElement) and TInfra.SameStrings(Trim(AElement.edtName.Text), Trim(elem.edtName.Text)) then
+         if (elem <> AElement) and TInfra.SameStrings(AElement.GetName, elem.GetName) then
          begin
             result := True;
             break;
