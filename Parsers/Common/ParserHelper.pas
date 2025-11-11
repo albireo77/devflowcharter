@@ -307,7 +307,7 @@ begin
          begin
             for var field in dataType.GetFields do
             begin
-               if (field.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(AValue, field.GetName) then
+               if field.IsValid and TInfra.SameStrings(AValue, field.GetName) then
                begin
                   result := GetType(dataType.GetName);
                   break;
@@ -355,7 +355,7 @@ begin
    begin
       for var param in AHeader.GetParameters do
       begin
-         if (param.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(AResult.Ident, param.GetName) then
+         if param.IsValid and TInfra.SameStrings(AResult.Ident, param.GetName) then
          begin
             AResult.TType := GetType(param.cbType.Text);
             with AResult do
@@ -453,7 +453,7 @@ begin
       begin
          for var field in dataType.GetFields do
          begin
-            if (field.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(field.GetName, AFieldName) then
+            if field.IsValid and TInfra.SameStrings(field.GetName, AFieldName) then
             begin
                result := GetType(field.cbType.Text);
                break;
@@ -534,7 +534,7 @@ begin
          if dataType.Active and (dataType.Font.Color <> NOK_COLOR) then
          begin
             for var field in dataType.GetFields do
-               if (field.edtName.Font.Color <> NOK_COLOR) and TInfra.SameStrings(AIdentName, field.GetName) then
+               if field.IsValid and TInfra.SameStrings(AIdentName, field.GetName) then
                   Exit;
          end;
       end;
