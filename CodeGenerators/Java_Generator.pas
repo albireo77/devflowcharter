@@ -391,15 +391,15 @@ begin
                ALines.InsertObject(u, setLine, ADataType);
                var line := indent + 'private ' + fieldType + fieldSize + ' ' + fieldName + ';';
                ALines.InsertObject(i, line, ADataType);
-               var funcStrU := fieldName;
-               if not funcStrU.IsEmpty then
-                  funcStrU[1] := funcStrU[1].ToUpper;
-               line := indent + 'public ' + fieldType + fieldSize + ' get' + funcStrU + '() {';
+               var fieldNameUpper := fieldName;
+               if not fieldNameUpper.IsEmpty then
+                  fieldNameUpper[1] := fieldNameUpper[1].ToUpper;
+               line := indent + 'public ' + fieldType + fieldSize + ' get' + fieldNameUpper + '() {';
                ALines.AddObject(line, ADataType);
                line := indent + indent + 'return ' + fieldName + ';';
                ALines.AddObject(line, ADataType);
                ALines.AddObject(indent + '}', ADataType);
-               line := indent + 'public void set' + funcStrU + '(' + fieldType + fieldSize + ' ' + fieldName + ') {';
+               line := indent + 'public void set' + fieldNameUpper + '(' + fieldType + fieldSize + ' ' + fieldName + ') {';
                ALines.AddObject(line, ADataType);
                ALines.AddObject(setLine, ADataType);
                ALines.AddObject(indent + '}', ADataType);
