@@ -450,7 +450,7 @@ begin
       end;
       edtName.Font.Color := lColor;
       edtName.Hint := trnsManager.GetString(lHint);
-      if IsValid then
+      if (edtName.Font.Color = OK_COLOR) or not edtName.Focused then
          FParentTab.PageControl.Refresh;
       GProject.SetChanged;
       if FParentForm.UpdateCodeEditor then
