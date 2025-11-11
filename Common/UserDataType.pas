@@ -380,7 +380,9 @@ begin
    if chkAddPtrType.Enabled then
       chkAddPtrType.Checked := GetNodeAttrBool(ANode, POINTER_ATTR, False);
    var tk := TRttiEnumerationType.GetValue<TUserDataTypeKind>(GetNodeAttrStr(ANode, KIND_ATTR));
-   rgTypeBox.ItemIndex := rgTypeBox.Items.IndexOfObject(TObject(tk));
+   var i := rgTypeBox.Items.IndexOfObject(TObject(tk));
+   if i <> -1 then
+      rgTypeBox.ItemIndex := i;
 end;
 
 function TUserDataType.GetDimensionCount: integer;

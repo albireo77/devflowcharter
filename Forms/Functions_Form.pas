@@ -68,7 +68,7 @@ begin
       header.edtName.SetFocus;
    if Assigned(header.edtName.OnChange) then
       header.edtName.OnChange(header.edtName);
-   if header.Font.Color <> NOK_COLOR then
+   if header.IsValid then
       TInfra.UpdateCodeEditor(header);
    GProject.SetChanged;
 end;

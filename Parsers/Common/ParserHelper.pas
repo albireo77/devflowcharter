@@ -225,7 +225,7 @@ class function TParserHelper.GetUserFunctionType: integer;
 begin
    result := NOT_DEFINED;
    var header := GProject.FindFunctionHeader(TInfra.GetParsedBlock);
-   if (header <> nil) and (header.Font.Color <> NOK_COLOR) then
+   if (header <> nil) and header.IsValid then
       result := GetType(header.cbType.Text);
 end;
 
@@ -235,7 +235,7 @@ begin
    if GProject <> nil then
    begin
       var func := GProject.GetUserFunction(AName);
-      if (func <> nil) and (func.Header <> nil) and (func.Header.Font.Color <> NOK_COLOR) then
+      if (func <> nil) and (func.Header <> nil) and func.Header.IsValid then
          result := GetType(func.Header.cbType.Text);
    end;
 end;
@@ -303,7 +303,7 @@ begin
    begin
       for var dataType in GProject.GetUserDataTypes do
       begin
-         if dataType.Active and (dataType.Font.Color <> NOK_COLOR) and (dataType.Kind = dtEnum) then
+         if dataType.IsValid and (dataType.Kind = dtEnum) then
          begin
             for var field in dataType.GetFields do
             begin
@@ -526,7 +526,7 @@ begin
    begin
       for var dataType in GProject.GetUserDataTypes do
       begin
-         if dataType.Active and (dataType.Font.Color <> NOK_COLOR) then
+         if dataType.IsValid then
          begin
             for var field in dataType.GetFields do
                if field.IsValid and TInfra.SameStrings(AIdentName, field.GetName) then
