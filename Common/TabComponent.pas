@@ -300,7 +300,7 @@ end;
 function TTabComponent.GetLibrary: string;
 begin
    result := '';
-   if FActive and (Font.Color <> NOK_COLOR) then
+   if IsValid then
       result := Trim(edtLibrary.Text);
 end;
 
