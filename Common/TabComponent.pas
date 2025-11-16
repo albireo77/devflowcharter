@@ -329,7 +329,15 @@ end;
 
 procedure TTabComponent.RefreshFontColor;
 begin
-   Font.Color := if HasInvalidElement then NOK_COLOR else edtName.Font.Color;
+   if HasInvalidElement then
+      Font.Color := NOK_COLOR
+   else if edtName.Focused then
+   begin
+      if edtName.Font.Color = OK_COLOR then
+         Font.Color := OK_COLOR
+   end
+   else
+      Font.Color := edtName.Font.Color;
 end;
 
 function TTabComponent.GetElements<T>(AComparer: IComparer<T> = nil): IEnumerable<T>;
@@ -371,7 +379,6 @@ begin
       elem.edtName.SetFocus;
       elem.edtName.OnChange(elem.edtName);
    end;
-   PageControl.Refresh;
    UpdateCodeEditor;
 end;
 
@@ -382,7 +389,7 @@ end;
 
 function TTabComponent.IsValid: boolean;
 begin
-   result := FActive and ((Font.Color <> NOK_COLOR) or edtName.Focused);
+   result := FActive and (Font.Color <> NOK_COLOR);
 end;
 
 function TTabComponent.GetTab: TTabSheet;

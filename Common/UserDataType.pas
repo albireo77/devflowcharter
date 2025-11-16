@@ -490,7 +490,7 @@ end;
 function TField.IsValid: boolean;
 begin
    result := inherited IsValid;
-   if result and edtSize.Enabled and (edtSize.Font.Color = NOK_COLOR) and not edtSize.Focused then
+   if result and edtSize.Enabled and (edtSize.Font.Color = NOK_COLOR) then
       result := False;
 end;
 

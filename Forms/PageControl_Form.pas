@@ -117,11 +117,11 @@ begin
    var page := TInfra.GetPageFromTabIndex(pgcTabs, TabIndex);
    if page <> nil then
    begin
-      var lRect := Rect;
-      lRect.Right := lRect.Right-3;
+      var r := Rect;
+      r.Right := r.Right-3;
       TTabComponent(page).RefreshFontColor;
       Control.Canvas.Font.Color := page.Font.Color;
-      Control.Canvas.TextRect(lRect, lRect.Left+5, lRect.Top+3, page.Caption);
+      Control.Canvas.TextRect(r, r.Left+5, r.Top+3, page.Caption);
    end;
 end;
 

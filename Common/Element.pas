@@ -147,7 +147,7 @@ end;
 function TElement.IsValid: boolean;
 begin
    result := True;
-   if edtName.Enabled and (edtName.Font.Color = NOK_COLOR) and not edtName.Focused then
+   if edtName.Enabled and (edtName.Font.Color = NOK_COLOR) then
       result := False;
 end;
 
