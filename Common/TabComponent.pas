@@ -175,7 +175,7 @@ end;
 procedure TTabComponent.OnChangeLib(Sender: TObject);
 begin
    GProject.SetChanged;
-   if Font.Color <> NOK_COLOR then
+   if IsValid then
       TInfra.UpdateCodeEditor(Self);
 end;
 
@@ -269,7 +269,7 @@ end;
 procedure TTabComponent.OnClickCh(Sender: TObject);
 begin
    GProject.SetChanged;
-   if Font.Color <> NOK_COLOR then
+   if IsValid then
       TInfra.UpdateCodeEditor(Self);
 end;
 
