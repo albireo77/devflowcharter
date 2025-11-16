@@ -709,7 +709,7 @@ begin
    GProject.SetChanged;
    if GSettings.ShowFuncLabels and chkInclDescFlow.Checked then
       RedrawBody;
-   if (Font.Color <> NOK_COLOR) and chkInclDescCode.Checked then
+   if IsValid and chkInclDescCode.Checked then
       UpdateCodeEditor;
 end;
 
@@ -776,7 +776,7 @@ begin
       chkArrayType.Enabled := cbType.ItemIndex > 0;
       cbType.Hint := cbType.Text;
    end;
-   if Font.Color <> NOK_COLOR then
+   if IsValid then
       UpdateCodeEditor;
    GProject.SetChanged;
    RedrawBody;
@@ -863,7 +863,7 @@ end;
 
 procedure TUserFunctionHeader.OnClickInclDescCode(Sender: TObject);
 begin
-   if Font.Color <> NOK_COLOR then
+   if IsValid then
       UpdateCodeEditor;
 end;
 
