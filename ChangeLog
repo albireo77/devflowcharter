@@ -1,3 +1,7 @@
+12.3 [16-11-2025]
+- fix array index out of bounds error in specific scenario when reading project file with language change
+- Code Editor: adjustments to function/datatype change and code update
+
 12.2 [09-11-2025]
 - Settings: remove setting to auto select code for highlighted flowchart blocks. To select code just hold Ctrl key and highlight block.
 - Code Editor: add info about above to Help.
