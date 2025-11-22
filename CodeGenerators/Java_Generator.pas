@@ -531,7 +531,7 @@ begin
    if len > 0 then
    begin
       firstChar := AValue[1];
-      lastChar := AValue[len];
+      lastChar := AValue[len].ToUpper;
       if firstChar = '$' then
          Exit;
       if not TryStrToInt(AValue, i) then
@@ -1018,12 +1018,12 @@ begin
                result := JAVA_DOUBLE_TYPE
             else if TryStrToInt64(AValue, i64) then
                result := JAVA_LONG_TYPE
-            else if AValue.Contains('_') and firstChar.IsDigit and CharInSet(lastChar.ToUpper, ['0'..'9', 'L', 'D', 'F']) then
+            else if AValue.Contains('_') and firstChar.IsDigit and CharInSet(lastChar, ['0'..'9', 'L', 'D', 'F']) then
                result := Java_GetConstantType(ReplaceText(AValue, '_', ''), s)
             else
             begin
                cValue := Copy(AValue, 1, len-1);
-               case lastChar.ToUpper of
+               case lastChar of
                   'L':
                   if TryStrToInt64(cValue, i64) then
                      result := JAVA_LONG_TYPE;
