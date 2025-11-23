@@ -663,7 +663,7 @@ begin
           command := ReplaceText(command, '%s1', fileName);
           command := ReplaceText(command, '%s2', fileNameNoExt);
           if not TInfra.CreateDOSProcess(command, ExtractFileDir(SaveDialog1.FileName)) then
-             TInfra.ShowErrorBox(trnsManager.GetString('CompileFail'), errCompile);
+             TInfra.ShowErrorBox('CompileFail', [], errCompile);
        end;
     end
     else
@@ -673,7 +673,7 @@ end;
 procedure TEditorForm.miPrintClick(Sender: TObject);
 begin
    if not TInfra.IsPrinter then
-      TInfra.ShowErrorBox(trnsManager.GetString('NoPrinter'), errPrinter)
+      TInfra.ShowErrorBox('NoPrinter', [], errPrinter)
    else if (GProject <> nil) and MainForm.PrintDialog.Execute then
    begin
       with SynEditPrint1 do

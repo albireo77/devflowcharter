@@ -129,8 +129,7 @@ implementation
 uses
    System.SysUtils, Vcl.Menus, Vcl.Forms, System.StrUtils, System.Types, System.UITypes,
    Generics.Collections, Infrastructure, Constants, XMLProcessor, Base_Form, Navigator_Form,
-   ParserHelper, SelectImport_Form, BaseEnumerator, WinApi.Messages, Vcl.ExtCtrls,
-   Rtti, OmniXMLUtils;
+   ParserHelper, SelectImport_Form, BaseEnumerator, Vcl.ExtCtrls, Rtti, OmniXMLUtils;
 
 var
    ByPageIndexUserDataTypeComparer: IComparer<TUserDataType>;
@@ -479,7 +478,7 @@ begin
    var s := if SameText(langName, GInfra.TemplateLang.Name) then 'ChangeLngNone' else 'ChangeLngAsk';
 
    if (not SameText(GInfra.CurrentLang.Name, langName)) and
-      (TInfra.ShowQuestionBox(s, [langName.Trim, sLineBreak], MB_YESNO+MB_ICONQUESTION) = mrYes) then
+      (TInfra.ShowQuestionBox(s, [langName.Trim, sLineBreak]) = mrYes) then
    begin
       GSettings.CurrentLangName := langName;
 {$IFDEF USE_CODEFOLDING}

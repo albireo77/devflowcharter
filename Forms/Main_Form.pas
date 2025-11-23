@@ -872,7 +872,7 @@ end;
 function TMainForm.ConfirmSave: integer;
 begin
    result := if GProject <> nil then
-                TInfra.ShowQuestionBox('ConfirmClose', [GProject.Name])
+                TInfra.ShowQuestionBox('ConfirmClose', [GProject.Name], MB_YESNOCANCEL)
              else
                 mrCancel;
 end;
@@ -1051,18 +1051,11 @@ end;
 
 procedure TMainForm.miRemoveBranchClick(Sender: TObject);
 begin
-   if pmPages.PopupComponent is TCaseBlock then
+   if (pmPages.PopupComponent is TCaseBlock) and TInfra.ConfirmRemove then
    begin
-      var res := if GSettings.ConfirmRemove then
-                    TInfra.ShowQuestionBox(trnsManager.GetString('ConfirmRemove'))
-                 else
-                    IDYES;
-      if res = IDYES then
-      begin
-         var caseBlock := TCaseBlock(pmPages.PopupComponent);
-         caseBlock.RemoveBranch(caseBlock.RedArrow);
-         TInfra.UpdateCodeEditor(caseBlock.Branch);
-      end;
+      var caseBlock := TCaseBlock(pmPages.PopupComponent);
+      caseBlock.RemoveBranch(caseBlock.RedArrow);
+      TInfra.UpdateCodeEditor(caseBlock.Branch);
    end;
 end;
 
@@ -1215,11 +1208,7 @@ end;
 
 procedure TMainForm.miRemovePageClick(Sender: TObject);
 begin
-   var res := if GSettings.ConfirmRemove then
-                 TInfra.ShowQuestionBox(trnsManager.GetString('ConfirmRemove'))
-              else
-                 IDYES;
-   if res = IDYES then
+   if TInfra.ConfirmRemove then
    begin
       pmTabs.PopupComponent.Free;
       NavigatorForm.Invalidate;

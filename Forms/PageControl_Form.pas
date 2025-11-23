@@ -168,10 +168,7 @@ end;
 
 procedure TPageControlForm.miRemoveAllClick(Sender: TObject);
 begin
-   var res := mrYes;
-   if GSettings.ConfirmRemove then
-      res := TInfra.ShowQuestionBox(trnsManager.GetString('ConfirmRemove'));
-   if res = mrYes then
+   if TInfra.ConfirmRemove then
    begin
       while GetVisiblePageCount > 0 do
       begin
