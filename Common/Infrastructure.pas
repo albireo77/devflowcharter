@@ -49,8 +49,7 @@ type
          class property AppVersion: string read FAppVersion;
          constructor Create;
          destructor Destroy; override;
-         class procedure ShowWarningBox(const AWarnMsg: string); overload;
-         class procedure ShowWarningBox(const AKey: string; Args: array of const); overload;
+         class procedure ShowWarningBox(const AKey: string; Args: array of const);
          class procedure ShowErrorBox(const AErrorMsg: string; AError: TError); overload;
          class procedure ShowErrorBox(const AKey: string; Args: array of const; AError: TError); overload;
          class procedure Reset;
@@ -375,12 +374,7 @@ end;
 
 class procedure TInfra.ShowWarningBox(const AKey: string; Args: array of const);
 begin
-   ShowWarningBox(trnsManager.GetFormattedString(AKey, Args));
-end;
-
-class procedure TInfra.ShowWarningBox(const AWarnMsg: string);
-begin
-   Application.MessageBox(PChar(AWarnMsg), PChar(trnsManager.GetString('Warning')), MB_ICONWARNING);
+   Application.MessageBox(PChar(trnsManager.GetFormattedString(AKey, Args)), PChar(trnsManager.GetString('Warning')), MB_ICONWARNING);
 end;
 
 class function TInfra.ShowQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_YESNO): integer;
