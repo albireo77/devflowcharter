@@ -69,8 +69,7 @@ type
          class procedure IndentSpacesToTabs(ALines: TStringList);
          class function GetScrolledPos(AMemo: TCustomMemo): TPoint;
          class function CreateDOSProcess(const ACommand: string; ADir: string = ''): boolean;
-         class function ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer; overload;
-         class function ShowQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer; overload;
+         class function ShowQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_YESNO): integer;
          class function FindText(ASubstr, AText: string; idx: integer; ACaseSens: boolean): integer;
          class function IsPrinter: boolean;
          class function IsValidControl(AObject: TObject): boolean;
@@ -384,21 +383,16 @@ begin
    Application.MessageBox(PChar(AWarnMsg), PChar(trnsManager.GetString('Warning')), MB_ICONWARNING);
 end;
 
-class function TInfra.ShowQuestionBox(const AMsg: string; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
+class function TInfra.ShowQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_YESNO): integer;
 begin
-   result := Application.MessageBox(PChar(AMsg), PChar(trnsManager.GetString('Confirmation')), AFlags);
-end;
-
-class function TInfra.ShowQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
-begin
-   result := ShowQuestionBox(trnsManager.GetFormattedString(AKey, Args), AFlags);
+   result := Application.MessageBox(PChar(trnsManager.GetFormattedString(AKey, Args)), PChar(trnsManager.GetString('Confirmation')), MB_ICONQUESTION + AFlags);
 end;
 
 class function TInfra.ConfirmRemove: boolean;
 begin
    result := True;
    if GSettings.ConfirmRemove then
-      result := ShowQuestionBox(trnsManager.GetString('ConfirmRemove'), MB_ICONQUESTION + MB_YESNO) = mrYes;
+      result := ShowQuestionBox('ConfirmRemove', []) = mrYes;
 end;
 
 class procedure TInfra.Reset;

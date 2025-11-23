@@ -873,7 +873,7 @@ function TMainForm.ConfirmSave: integer;
 begin
    result := mrCancel;
    if GProject <> nil then
-      result := TInfra.ShowQuestionBox('ConfirmClose', [GProject.Name]);
+      result := TInfra.ShowQuestionBox('ConfirmClose', [GProject.Name], MB_YESNOCANCEL);
 end;
 
 procedure TMainForm.SetChanged;
