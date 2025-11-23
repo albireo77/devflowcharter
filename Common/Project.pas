@@ -478,7 +478,7 @@ begin
    var s := IfThen(SameText(langName, GInfra.TemplateLang.Name), 'ChangeLngNone', 'ChangeLngAsk');
 
    if (not SameText(GInfra.CurrentLang.Name, langName)) and
-      (TInfra.ShowQuestionBox(s, [langName.Trim, sLineBreak]) = mrYes) then
+       TInfra.ShowQuestionBox(s, [langName.Trim, sLineBreak]) then
    begin
       GSettings.CurrentLangName := langName;
 {$IFDEF USE_CODEFOLDING}

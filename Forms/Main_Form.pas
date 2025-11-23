@@ -218,7 +218,6 @@ type
     procedure PPIDialog;
   public
     { Public declarations }
-    function ConfirmSave: integer;
     function GetMainBlockNextTopLeft: TPoint;
     procedure AcceptFile(const AFilePath: string);
     procedure SetChanged;
@@ -425,7 +424,7 @@ begin
    result := True;
    if (GProject <> nil) and GProject.IsChanged then
    begin
-      case ConfirmSave of
+      case TInfra.ShowQuestionBox2('ConfirmClose', [GProject.Name]) of
          IDYES: miSave.Click;
          IDCANCEL: result := False;
       end;
@@ -867,13 +866,6 @@ begin
          branch.ParentBlock.TopParentBlock.UnLockDrawing;
       end;
    end;
-end;
-
-function TMainForm.ConfirmSave: integer;
-begin
-   result := mrCancel;
-   if GProject <> nil then
-      result := TInfra.ShowQuestionBox('ConfirmClose', [GProject.Name], MB_YESNOCANCEL);
 end;
 
 procedure TMainForm.SetChanged;
