@@ -112,6 +112,7 @@ type
          class function Scaled(AControl: TControl; on96: integer): integer;
          class function ReplaceXMLIndents(const ALine: string): string;
          class function ShouldUpdateEditor: boolean;
+         class function ConfirmRemove: boolean;
          function GetNativeDataType(const AName: string): PNativeDataType;
          function GetNativeFunction(const AName: string): PNativeFunction;
          function GetLangDefinition(const AName: string): TLangDefinition;
@@ -391,6 +392,13 @@ end;
 class function TInfra.ShowQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_ICONQUESTION + MB_YESNOCANCEL): integer;
 begin
    result := ShowQuestionBox(trnsManager.GetFormattedString(AKey, Args), AFlags);
+end;
+
+class function TInfra.ConfirmRemove: boolean;
+begin
+   result := True;
+   if GSettings.ConfirmRemove then
+      result := ShowQuestionBox(trnsManager.GetString('ConfirmRemove'), MB_ICONQUESTION + MB_YESNO) = mrYes;
 end;
 
 class procedure TInfra.Reset;

@@ -1050,17 +1050,11 @@ end;
 
 procedure TMainForm.miRemoveBranchClick(Sender: TObject);
 begin
-   if pmPages.PopupComponent is TCaseBlock then
+   if (pmPages.PopupComponent is TCaseBlock) and TInfra.ConfirmRemove then
    begin
-      var res := IDYES;
-      if GSettings.ConfirmRemove then
-         res := TInfra.ShowQuestionBox(trnsManager.GetString('ConfirmRemove'));
-      if res = IDYES then
-      begin
-         var caseBlock := TCaseBlock(pmPages.PopupComponent);
-         caseBlock.RemoveBranch(caseBlock.RedArrow);
-         TInfra.UpdateCodeEditor(caseBlock.Branch);
-      end;
+      var caseBlock := TCaseBlock(pmPages.PopupComponent);
+      caseBlock.RemoveBranch(caseBlock.RedArrow);
+      TInfra.UpdateCodeEditor(caseBlock.Branch);
    end;
 end;
 
@@ -1218,10 +1212,7 @@ end;
 
 procedure TMainForm.miRemovePageClick(Sender: TObject);
 begin
-   var res := IDYES;
-   if GSettings.ConfirmRemove then
-      res := TInfra.ShowQuestionBox(trnsManager.GetString('ConfirmRemove'));
-   if res = IDYES then
+   if TInfra.ConfirmRemove then
    begin
       pmTabs.PopupComponent.Free;
       NavigatorForm.Invalidate;
