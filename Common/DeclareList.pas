@@ -617,7 +617,7 @@ begin
          DUPLICATED_IDENT: info := 'DupId';
          RESERVED_IDENT:   info := 'IncorrectIdKeyword';
       end;
-      TInfra.ShowErrorBox(trnsManager.GetFormattedString(info, [edit.Text, GInfra.CurrentLang.Name]), errDeclare);
+      TInfra.ShowErrorBox(info, [edit.Text, GInfra.CurrentLang.Name], errDeclare);
       edit.SetFocus;
    end
    else
@@ -684,7 +684,7 @@ begin
             edit := edtValue;
          end;
       end;
-      TInfra.ShowErrorBox(trnsManager.GetFormattedString(info, [edit.Text, GInfra.CurrentLang.Name]), errDeclare);
+      TInfra.ShowErrorBox(info, [edit.Text, GInfra.CurrentLang.Name], errDeclare);
       edit.SetFocus;
    end
    else

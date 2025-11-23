@@ -50,13 +50,10 @@ type
          constructor Create;
          destructor Destroy; override;
          class procedure ShowWarningBox(const AKey: string; Args: array of const);
-         class procedure ShowErrorBox(const AErrorMsg: string; AError: TError); overload;
-         class procedure ShowErrorBox(const AKey: string; Args: array of const; AError: TError); overload;
+         class procedure ShowErrorBox(const AKey: string; Args: array of const; AError: TError);
          class procedure Reset;
          class procedure PopulateDataTypeCombo(AcbType: TComboBox; ASkipIndex: integer = 100);
          class procedure PrintBitmap(ABitmap: TBitmap);
-         class function InsertTemplateLines(ADestList: TStringList; const APlaceHolder, ATemplateString: string; AObject: TObject = nil): integer; overload;
-         class function InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; ATemplate: TStringList; AObject: TObject = nil): integer; overload;
          class procedure SetFontSize(AControl: TControl; ASize: integer);
          class procedure UpdateCodeEditor(AObject: TObject = nil);
          class procedure InsertLinesIntoList(ADestList, ASourceList: TStringList; AFromLine: integer);
@@ -66,6 +63,8 @@ type
          class procedure MoveWin(AWinControl: TWinControl; const APoint: TPoint); overload;
          class procedure MoveWinTopZ(AWinControl: TWinControl; x, y: integer);
          class procedure IndentSpacesToTabs(ALines: TStringList);
+         class function InsertTemplateLines(ADestList: TStringList; const APlaceHolder, ATemplateString: string; AObject: TObject = nil): integer; overload;
+         class function InsertTemplateLines(ADestList: TStringList; const APlaceHolder: string; ATemplate: TStringList; AObject: TObject = nil): integer; overload;
          class function GetScrolledPos(AMemo: TCustomMemo): TPoint;
          class function CreateDOSProcess(const ACommand: string; ADir: string = ''): boolean;
          class function ShowQuestionBox(const AKey: string; Args: array of const; AFlags: Longint = MB_YESNO): integer;
@@ -358,18 +357,13 @@ begin
    end;
 end;
 
-class procedure TInfra.ShowErrorBox(const AErrorMsg: string; AError: TError);
+class procedure TInfra.ShowErrorBox(const AKey: string; Args: array of const; AError: TError);
 const
    ErrorsTypeArray: array[TError] of string = (' ', 'DeclareError', 'IOError', 'ValidationError', 'ConvertError', 'SyntaxError',
                     'PrintError', 'CompileError', 'ImportError', 'Error');
 begin
    if AError <> errNone then
-      Application.MessageBox(PChar(AErrorMsg), PChar(trnsManager.GetString(ErrorsTypeArray[AError])), MB_ICONERROR);
-end;
-
-class procedure TInfra.ShowErrorBox(const AKey: string; Args: array of const; AError: TError);
-begin
-   ShowErrorBox(trnsManager.GetFormattedString(AKey, Args), AError);
+      Application.MessageBox(PChar(trnsManager.GetFormattedString(AKey, Args)), PChar(trnsManager.GetString(ErrorsTypeArray[AError])), MB_ICONERROR);
 end;
 
 class procedure TInfra.ShowWarningBox(const AKey: string; Args: array of const);
@@ -440,7 +434,7 @@ var
    printRect: TRect;
 begin
    if not IsPrinter then
-     ShowErrorBox(trnsManager.GetString('NoPrinter'), errPrinter)
+     ShowErrorBox('NoPrinter', [], errPrinter)
    else if MainForm.PrintDialog.Execute then
    begin
      last_err := 0;
@@ -572,7 +566,7 @@ begin
      if status <> GDI_ERROR then
         Printer.EndDoc
      else
-        ShowErrorBox(trnsManager.GetFormattedString('PrinterError', [sLineBreak, SysErrorMessage(last_err)]), errPrinter);
+        ShowErrorBox('PrinterError', [sLineBreak, SysErrorMessage(last_err)], errPrinter);
    end;
 end;
 
