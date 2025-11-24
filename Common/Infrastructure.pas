@@ -137,7 +137,7 @@ implementation
 uses
    Vcl.Printers, Vcl.Menus, Vcl.Dialogs, Vcl.Imaging.jpeg, Vcl.Imaging.PngImage,
    Vcl.Forms, System.Math, System.IOUtils, System.Rtti, System.Character, System.StrUtils,
-   System.Generics.Defaults, System.SysUtils, Generics.Collections, WinApi.Messages,
+   System.Generics.Defaults, System.SysUtils, System.UITypes, Generics.Collections, WinApi.Messages,
    Constants, XMLProcessor, SynEditHighlighter, Main_Block, BaseEnumerator;
 
 type
@@ -377,7 +377,7 @@ end;
 
 class function TInfra.ConfirmRemove: boolean;
 begin
-   result := if GSettings.ConfirmRemove then (ShowQuestionBox('ConfirmRemove', []) = mrYes) else True;
+   result := if GSettings.ConfirmRemove then (ShowQuestionBox('ConfirmRemove', []) = IDYES) else True;
 end;
 
 class procedure TInfra.Reset;
