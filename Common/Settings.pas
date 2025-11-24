@@ -164,7 +164,7 @@ uses
 {$IFDEF MSWINDOWS}
    System.Win.Registry,
 {$ENDIF}
-   Vcl.Controls, System.SysUtils, System.IOUtils, System.StrUtils, Infrastructure,
+   Vcl.Controls, System.SysUtils, System.IOUtils, System.StrUtils, System.UITypes, Infrastructure,
    Navigator_Form, Constants;
 
 const
@@ -588,7 +588,7 @@ begin
                         or (FFlowchartFontName <> flowFontName)
                         or (FFlowchartFontSize <> flowFontSize)) then
    begin
-      if TInfra.ShowQuestionBox('CloseProjectAsk', [sLineBreak]) = mrYes then
+      if TInfra.ShowQuestionBox('CloseProjectAsk', [sLineBreak]) = IDYES then
          TInfra.Reset
       else
          applyAll := False;
