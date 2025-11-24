@@ -164,8 +164,8 @@ uses
 {$IFDEF MSWINDOWS}
    System.Win.Registry,
 {$ENDIF}
-   System.SysUtils, System.IOUtils, System.StrUtils, Infrastructure, Navigator_Form,
-   Constants;
+   Vcl.Controls, System.SysUtils, System.IOUtils, System.StrUtils, Infrastructure,
+   Navigator_Form, Constants;
 
 const
    KEY_SELECT_COLOR = 'HighlightColor';
@@ -588,7 +588,7 @@ begin
                         or (FFlowchartFontName <> flowFontName)
                         or (FFlowchartFontSize <> flowFontSize)) then
    begin
-      if TInfra.ShowQuestionBox('CloseProjectAsk', [sLineBreak]) then
+      if TInfra.ShowQuestionBox('CloseProjectAsk', [sLineBreak]) = mrYes then
          TInfra.Reset
       else
          applyAll := False;

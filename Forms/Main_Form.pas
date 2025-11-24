@@ -424,7 +424,7 @@ begin
    result := True;
    if (GProject <> nil) and GProject.IsChanged then
    begin
-      case TInfra.ShowQuestionBox2('ConfirmClose', [GProject.Name]) of
+      case TInfra.ShowQuestionBox('ConfirmClose', [GProject.Name], MB_YESNOCANCEL) of
          IDYES: miSave.Click;
          IDCANCEL: result := False;
       end;
