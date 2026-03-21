@@ -56,7 +56,7 @@ begin
       var idx := AList.IndexOfName('EditorHelp' + i.ToString);
       if idx = -1 then
          break;
-      txt := txt + ' ' + AList.ValueFromIndex[idx] + sLineBreak;
+      txt := txt + ' ' + AnsiDequotedStr(AList.ValueFromIndex[idx], '"') + sLineBreak;
       i := i + 1;
    end;
    lblHelp.Caption := ReplaceText(txt, ' ' + LB_PHOLDER2, StringOfChar('-', 55));
