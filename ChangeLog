@@ -1,3 +1,6 @@
+12.4 [11-08-2026]
+- compiled with Delphi 13
+
 12.3 [16-11-2025]
 - fix array index out of bounds error in specific scenario when reading project file with language change
 - Code Editor: adjustments to function/datatype change and code update
