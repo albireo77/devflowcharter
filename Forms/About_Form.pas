@@ -68,7 +68,7 @@ const
     This program is freeware and released under the
                    GNU General Public License.
 
-          The %s project (2006-2025)
+          The %s project (2006-2026)
    ''';
    WIN_PLATFORM = {$IFDEF WIN32}32{$ELSE}64{$ENDIF};
 begin
