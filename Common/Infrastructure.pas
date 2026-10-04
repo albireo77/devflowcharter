@@ -927,14 +927,14 @@ begin
                   break;
                end;
             end;
-            var indent := TInfra.ExtractIndentString(result.CodeRange.Lines[result.Row]);
-            result.Col := indent.Length;
             if result.Row = ROW_NOT_FOUND then    // row with placeholder not found
             begin
                result.Row := result.CodeRange.FirstRow;
                result.Text := result.CodeRange.Lines[result.Row];
-            end
-            else
+            end;
+            var indent := TInfra.ExtractIndentString(result.CodeRange.Lines[result.Row]);
+            result.Col := indent.Length;
+            if p <> 0 then
             begin
                result.Text := indent + result.Text.TrimLeft;
                result.Col := p + result.Col;
