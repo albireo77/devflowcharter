@@ -139,6 +139,7 @@ begin
                GenerateCode(templateLines, GInfra.CurrentLang.Name, editorForm.GetIndentLevel(chLine.CodeRange.FirstRow, chLine.CodeRange.Lines));
                if GSettings.IndentChar = TAB_CHAR then
                   TInfra.IndentSpacesToTabs(templateLines);
+               editorForm.MergeGeneratedSection(chLine.CodeRange, templateLines);   // keep what the user changed within this block's lines
                var rowNum := chLine.CodeRange.LastRow - chLine.CodeRange.FirstRow + 1;
                chLine.CodeRange.Lines.BeginUpdate;
                for var i := 1 to rowNum do
