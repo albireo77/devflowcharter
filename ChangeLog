@@ -1,3 +1,6 @@
+12.5 [XX-XX-2026]
+- Code Editor: retain user changes in code when generating or updating code from flowchart
+
 12.4 [11-08-2026]
 - compiled with Delphi 13
 
