@@ -32,7 +32,7 @@ uses
    Vcl.Menus, System.Types, System.SysUtils, System.Classes, SynEdit, SynExportRTF,
    SynEditPrint, Types, SynHighlighterPas, SynHighlighterCpp, SynMemo, SynExportHTML,
    OmniXML, Base_Form, Interfaces, SynEditExport, SynEditHighlighter, SynHighlighterPython,
-   SynHighlighterJava, Base_Block;
+   SynHighlighterJava, Base_Block, CodeMerge;
 
 type
 
@@ -133,18 +133,15 @@ type
     FDialog: TFindDialog;
     FWithFocus: IWithFocus;
     FGeneratedLines: TStringList;
-    FUndoObject: TObject;
-    FUndoBase: TStringList;
-    FUndoLines: TStringList;
+    FGeneratedIds: TObjectIds;
+    FDetached: TDetachedLines;
     function BuildBracketHint(startLine, endLine: integer): string;
     function CharToPixels(const P: TBufferCoord): TPoint;
     function GetAllLines: TStrings;
     procedure PasteComment(const AText: string);
     procedure DisplayLines(ALines: TStringList; AReset: boolean);
-    procedure SetGeneratedLines(ALines: TStrings);
+    procedure SetGeneratedLines(ALines: TStrings; AIds: TObjectIds = nil);
     function ReplaceGeneratedLine(const AChangeLine: TChangeLine): string;
-    procedure StoreUndoSection(AObject: TObject; AEditorLines, ANewLines: TStrings);
-    function RestoreUndoSection(ALines: TStringList): boolean;
 {$IFDEF USE_CODEFOLDING}
     function GetCollapsedLines: TArray<integer>;
     procedure CollapseLines(ALines: TArray<integer>);
@@ -185,27 +182,9 @@ implementation
 uses
    System.StrUtils, System.Math, System.UITypes, System.Contnrs, System.Generics.Collections, WinApi.Windows,
    Infrastructure, Goto_Form, Main_Block, Help_Form, Comment, OmniXMLUtils, Main_Form,
-   SynEditTypes, ParserHelper, Constants, UserFunction;
+   SynEditTypes, ParserHelper, Constants;
 
 {$R *.dfm}
-
-type
-   TLinesDiff = record
-      Map1: TArray<integer>;    // for each line of the first list, index of the matching line in the second one
-      Map2: TArray<integer>;    // for each line of the second list, index of the matching line in the first one
-      Tails: TArray<string>;    // for each line of the first list, text the user appended to it
-   end;
-
-   // Myers' diff in linear space: finds the longest sequence of lines common to two lists
-   // in time proportional to their length times the number of differing lines
-   TLineMatcher = record
-      Ids1, Ids2: TArray<integer>;   // lines turned into numbers so that comparing them is cheap
-      Map1, Map2: TArray<integer>;
-      Offset: integer;
-      procedure Pair(AIndex1, AIndex2: integer);
-      procedure Match(AFrom1, ATo1, AFrom2, ATo2: integer);
-      function FindSplit(AFrom1, ATo1, AFrom2, ATo2: integer; out ASplit1, ASplit2: integer): boolean;
-   end;
 
 constructor TEditorHintWindow.Create(AOwner: TComponent);
 begin
@@ -240,16 +219,16 @@ end;
 destructor TEditorForm.Destroy;
 begin
    FGeneratedLines.Free;
-   FUndoBase.Free;
-   FUndoLines.Free;
+   FGeneratedIds.Free;
+   FDetached.Free;
    inherited Destroy;
 end;
 
 procedure TEditorForm.FormCreate(Sender: TObject);
 begin
    FGeneratedLines := TStringList.Create;
-   FUndoBase := TStringList.Create;
-   FUndoLines := TStringList.Create;
+   FGeneratedIds := TObjectIds.Create;
+   FDetached := TDetachedLines.Create;
    GInfra.SetHLighters;
    SetFormAttributes;
    Application.OnShowHint := OnShowHint;
@@ -373,9 +352,8 @@ begin
    memCodeEditor.ClearAll;
    memCodeEditor.Highlighter := nil;
    FGeneratedLines.Clear;
-   FUndoBase.Clear;
-   FUndoLines.Clear;
-   FUndoObject := nil;
+   FGeneratedIds.Clear;
+   FDetached.Clear;
    FFocusEditor := True;
    FCloseBracketPosP := nil;
    FWithFocus := nil;
@@ -459,377 +437,6 @@ begin
    end;
 end;
 
-procedure TLineMatcher.Pair(AIndex1, AIndex2: integer);
-begin
-   Map1[Offset+AIndex1] := Offset + AIndex2;
-   Map2[Offset+AIndex2] := Offset + AIndex1;
-end;
-
-procedure TLineMatcher.Match(AFrom1, ATo1, AFrom2, ATo2: integer);
-begin
-   while (AFrom1 < ATo1) and (AFrom2 < ATo2) and (Ids1[AFrom1] = Ids2[AFrom2]) do
-   begin
-      Pair(AFrom1, AFrom2);
-      Inc(AFrom1);
-      Inc(AFrom2);
-   end;
-   while (AFrom1 < ATo1) and (AFrom2 < ATo2) and (Ids1[ATo1-1] = Ids2[ATo2-1]) do
-   begin
-      Dec(ATo1);
-      Dec(ATo2);
-      Pair(ATo1, ATo2);
-   end;
-   if (AFrom1 = ATo1) or (AFrom2 = ATo2) then
-      Exit;
-   var split1, split2: integer;
-   if FindSplit(AFrom1, ATo1, AFrom2, ATo2, split1, split2) and
-      not ((split1 = AFrom1) and (split2 = AFrom2)) and not ((split1 = ATo1) and (split2 = ATo2)) then
-   begin
-      Match(AFrom1, split1, AFrom2, split2);
-      Match(split1, ATo1, split2, ATo2);
-   end;
-end;
-
-// Runs the search for the shortest edit path from both ends at once and returns the point
-// where the two meet, so that each half can be matched on its own
-function TLineMatcher.FindSplit(AFrom1, ATo1, AFrom2, ATo2: integer; out ASplit1, ASplit2: integer): boolean;
-begin
-   result := False;
-   ASplit1 := AFrom1;
-   ASplit2 := AFrom2;
-   var len1 := ATo1 - AFrom1;
-   var len2 := ATo2 - AFrom2;
-   var maxD := (len1 + len2 + 1) div 2;
-   var vOffset := maxD;
-   var vLength := 2*maxD + 2;
-   var v1, v2: TArray<integer>;
-   SetLength(v1, vLength);
-   SetLength(v2, vLength);
-   for var i := 0 to vLength-1 do
-   begin
-      v1[i] := -1;
-      v2[i] := -1;
-   end;
-   v1[vOffset+1] := 0;
-   v2[vOffset+1] := 0;
-   var delta := len1 - len2;
-   var front := Odd(delta);
-   var k1Start := 0;
-   var k1End := 0;
-   var k2Start := 0;
-   var k2End := 0;
-   for var d := 0 to maxD-1 do
-   begin
-      var k1 := k1Start - d;
-      while k1 <= d - k1End do
-      begin
-         var k1Offset := vOffset + k1;
-         var x1: integer;
-         if (k1 = -d) or ((k1 <> d) and (v1[k1Offset-1] < v1[k1Offset+1])) then
-            x1 := v1[k1Offset+1]
-         else
-            x1 := v1[k1Offset-1] + 1;
-         var y1 := x1 - k1;
-         while (x1 < len1) and (y1 < len2) and (Ids1[AFrom1+x1] = Ids2[AFrom2+y1]) do
-         begin
-            Inc(x1);
-            Inc(y1);
-         end;
-         v1[k1Offset] := x1;
-         if x1 > len1 then
-            Inc(k1End, 2)
-         else if y1 > len2 then
-            Inc(k1Start, 2)
-         else if front then
-         begin
-            var k2Offset := vOffset + delta - k1;
-            if (k2Offset >= 0) and (k2Offset < vLength) and (v2[k2Offset] <> -1) and (x1 >= len1 - v2[k2Offset]) then
-            begin
-               ASplit1 := AFrom1 + x1;
-               ASplit2 := AFrom2 + y1;
-               Exit(True);
-            end;
-         end;
-         Inc(k1, 2);
-      end;
-      var k2 := k2Start - d;
-      while k2 <= d - k2End do
-      begin
-         var k2Offset := vOffset + k2;
-         var x2: integer;
-         if (k2 = -d) or ((k2 <> d) and (v2[k2Offset-1] < v2[k2Offset+1])) then
-            x2 := v2[k2Offset+1]
-         else
-            x2 := v2[k2Offset-1] + 1;
-         var y2 := x2 - k2;
-         while (x2 < len1) and (y2 < len2) and (Ids1[ATo1-x2-1] = Ids2[ATo2-y2-1]) do
-         begin
-            Inc(x2);
-            Inc(y2);
-         end;
-         v2[k2Offset] := x2;
-         if x2 > len1 then
-            Inc(k2End, 2)
-         else if y2 > len2 then
-            Inc(k2Start, 2)
-         else if not front then
-         begin
-            var k1Offset := vOffset + delta - k2;
-            if (k1Offset >= 0) and (k1Offset < vLength) and (v1[k1Offset] <> -1) then
-            begin
-               var x1 := v1[k1Offset];
-               if x1 >= len1 - x2 then
-               begin
-                  ASplit1 := AFrom1 + x1;
-                  ASplit2 := AFrom2 + vOffset + x1 - k1Offset;
-                  Exit(True);
-               end;
-            end;
-         end;
-         Inc(k2, 2);
-      end;
-   end;
-end;
-
-function LineId(AIds: TDictionary<string, integer>; const ALine: string): integer;
-begin
-   if not AIds.TryGetValue(ALine, result) then
-   begin
-      result := AIds.Count;
-      AIds.Add(ALine, result);
-   end;
-end;
-
-// Matches lines of two lists which are the same in both of them. Leading and trailing
-// lines common to both lists are matched right away so that the expensive part is
-// computed for the changed lines only
-function DiffLines(ALines1, ALines2: TStrings): TLinesDiff;
-begin
-   var cnt1 := ALines1.Count;
-   var cnt2 := ALines2.Count;
-   SetLength(result.Map1, cnt1);
-   SetLength(result.Map2, cnt2);
-   SetLength(result.Tails, cnt1);
-   for var i := 0 to cnt1-1 do
-      result.Map1[i] := ROW_NOT_FOUND;
-   for var i := 0 to cnt2-1 do
-      result.Map2[i] := ROW_NOT_FOUND;
-   var head := 0;
-   while (head < cnt1) and (head < cnt2) and (ALines1[head] = ALines2[head]) do
-   begin
-      result.Map1[head] := head;
-      result.Map2[head] := head;
-      Inc(head);
-   end;
-   var tail := 0;
-   while (head+tail < cnt1) and (head+tail < cnt2) and (ALines1[cnt1-tail-1] = ALines2[cnt2-tail-1]) do
-   begin
-      result.Map1[cnt1-tail-1] := cnt2-tail-1;
-      result.Map2[cnt2-tail-1] := cnt1-tail-1;
-      Inc(tail);
-   end;
-   var n := cnt1 - head - tail;
-   var m := cnt2 - head - tail;
-   if (n < 1) or (m < 1) then
-      Exit;
-   var matcher: TLineMatcher;
-   matcher.Map1 := result.Map1;
-   matcher.Map2 := result.Map2;
-   matcher.Offset := head;
-   SetLength(matcher.Ids1, n);
-   SetLength(matcher.Ids2, m);
-   var ids := TDictionary<string, integer>.Create;
-   try
-      for var i := 0 to n-1 do
-         matcher.Ids1[i] := LineId(ids, ALines1[head+i]);
-      for var i := 0 to m-1 do
-         matcher.Ids2[i] := LineId(ids, ALines2[head+i]);
-   finally
-      ids.Free;
-   end;
-   matcher.Match(0, n, 0, m);
-end;
-
-// Pairs generated lines with editor lines the user created out of them by appending text,
-// like a trailing comment. Such a line counts as matching the generated one and the appended
-// text is kept aside so that it can be put back when the generator changes the line
-procedure MatchExtendedLines(ABase, AEditor: TStrings; var ADiff: TLinesDiff);
-begin
-   var e := 0;
-   for var b := 0 to ABase.Count-1 do
-   begin
-      if ADiff.Map1[b] <> ROW_NOT_FOUND then
-      begin
-         e := ADiff.Map1[b] + 1;
-         Continue;
-      end;
-      var baseLine := ABase[b];
-      if baseLine.Trim.IsEmpty then
-         Continue;                      // every line starts with a blank one so it must be skipped
-      var j := e;
-      while j < AEditor.Count do
-      begin
-         if ADiff.Map2[j] <> ROW_NOT_FOUND then
-            break;                      // line belongs to another generated one so do not pair across it
-         var editorLine := AEditor[j];
-         if (editorLine.Length > baseLine.Length) and editorLine.StartsWith(baseLine) then
-         begin
-            ADiff.Map1[b] := j;
-            ADiff.Map2[j] := b;
-            ADiff.Tails[b] := editorLine.Substring(baseLine.Length);
-            e := j + 1;
-            break;
-         end;
-         Inc(j);
-      end;
-   end;
-end;
-
-function SameLines(ALines1: TStrings; AFrom1, ATo1: integer; ALines2: TStrings; AFrom2, ATo2: integer): boolean;
-begin
-   result := (ATo1-AFrom1) = (ATo2-AFrom2);
-   if result then
-   begin
-      for var i := 0 to ATo1-AFrom1-1 do
-      begin
-         if ALines1[AFrom1+i] <> ALines2[AFrom2+i] then
-            Exit(False);
-      end;
-   end;
-end;
-
-procedure AddLines(AResult: TStringList; ALines: TStrings; AFrom, ATo: integer; AWithObjects: boolean);
-begin
-   for var i := AFrom to ATo-1 do
-   begin
-      var obj: TObject := nil;
-      if AWithObjects then
-         obj := ALines.Objects[i];
-      AResult.AddObject(ALines[i], obj);
-   end;
-end;
-
-// Resolves lines enclosed by two lines which are identical in previously generated code,
-// in editor and in freshly generated code. ABaseFrom..ABaseTo are previously generated lines,
-// AEditorFrom..AEditorTo are lines currently in editor and ANewFrom..ANewTo are freshly
-// generated lines; each of these ranges may be empty
-procedure MergeChunk(AResult: TStringList; ABase, AEditor, ANew: TStrings; const ADiff: TLinesDiff;
-                     ABaseFrom, ABaseTo, AEditorFrom, AEditorTo, ANewFrom, ANewTo: integer);
-begin
-   if ABaseFrom >= ABaseTo then
-   begin
-      // no previously generated line here, so generator and user both only added lines; keep them all
-      AddLines(AResult, ANew, ANewFrom, ANewTo, True);
-      AddLines(AResult, AEditor, AEditorFrom, AEditorTo, False);
-      Exit;
-   end;
-   if SameLines(ANew, ANewFrom, ANewTo, ABase, ABaseFrom, ABaseTo) then
-   begin
-      // generator repeated what it generated before, so everything here comes from the user
-      var sameCount := (AEditorTo-AEditorFrom) = (ANewTo-ANewFrom);
-      for var i := AEditorFrom to AEditorTo-1 do
-      begin
-         var obj: TObject := nil;
-         if sameCount then
-            obj := ANew.Objects[ANewFrom+i-AEditorFrom];   // user only edited the lines so keep them bound to flowchart
-         AResult.AddObject(AEditor[i], obj);
-      end;
-      Exit;
-   end;
-   var alignedCount := (ABaseTo-ABaseFrom) = (ANewTo-ANewFrom);
-   var keepUserLines := not SameLines(AEditor, AEditorFrom, AEditorTo, ABase, ABaseFrom, ABaseTo);   // false when user changed nothing here
-   for var i := ABaseFrom to ABaseTo-1 do
-   begin
-      if ADiff.Map1[i] = ROW_NOT_FOUND then
-      begin
-         keepUserLines := False;       // user and generator changed the same line so the generated one wins
-         break;
-      end;
-   end;
-   if keepUserLines and alignedCount then
-   begin
-      // each freshly generated line takes the place of the line it replaces, so lines the user
-      // added here stay where the user put them
-      for var i := AEditorFrom to AEditorTo-1 do
-      begin
-         var b := ADiff.Map2[i];
-         if b = ROW_NOT_FOUND then
-            AResult.AddObject(AEditor[i], nil)
-         else
-         begin
-            var n := ANewFrom + b - ABaseFrom;
-            AResult.AddObject(ANew[n] + ADiff.Tails[b], ANew.Objects[n]);   // put back what the user appended to the replaced line
-         end;
-      end;
-      Exit;
-   end;
-   var used: TArray<boolean>;
-   SetLength(used, AEditorTo-AEditorFrom);
-   var e := AEditorFrom;
-   for var i := ANewFrom to ANewTo-1 do
-   begin
-      var line := ANew[i];
-      var tail := '';
-      if alignedCount then
-         tail := ADiff.Tails[ABaseFrom+i-ANewFrom];   // put back what the user appended to the replaced line
-      if tail.IsEmpty and not line.Trim.IsEmpty then
-      begin
-         // user line which is this freshly generated line with text appended already agrees with generator,
-         // even if previously generated code differs from it (e.g. project name unknown when it was generated),
-         // so that text is kept as well
-         for var j := e to AEditorTo-1 do
-         begin
-            var editorLine := AEditor[j];
-            if (ADiff.Map2[j] = ROW_NOT_FOUND) and (editorLine.Length > line.Length) and editorLine.StartsWith(line) then
-            begin
-               tail := editorLine.Substring(line.Length);
-               used[j-AEditorFrom] := True;
-               e := j + 1;
-               break;
-            end;
-         end;
-      end;
-      AResult.AddObject(line + tail, ANew.Objects[i]);
-   end;
-   if keepUserLines then
-   begin
-      for var i := AEditorFrom to AEditorTo-1 do
-      begin
-         if (ADiff.Map2[i] = ROW_NOT_FOUND) and not used[i-AEditorFrom] then
-            AResult.AddObject(AEditor[i], nil);   // user only added lines here so they survive regeneration
-      end;
-   end;
-end;
-
-// Three way merge of code in editor. ABase is code as the generator produced it last time,
-// AEditor is the current content of editor and ANew is freshly generated code. Lines added,
-// modified or removed by the user are carried over to the result unless the generator
-// has changed the very same lines in the meantime
-function MergeLines(ABase, AEditor, ANew: TStrings): TStringList;
-begin
-   result := TStringList.Create;
-   var diffEditor := DiffLines(ABase, AEditor);
-   MatchExtendedLines(ABase, AEditor, diffEditor);
-   var diffNew := DiffLines(ABase, ANew);
-   var baseFrom := 0;
-   var editorFrom := 0;
-   var newFrom := 0;
-   for var i := 0 to ABase.Count-1 do
-   begin
-      var e := diffEditor.Map1[i];
-      var n := diffNew.Map1[i];
-      if (e <> ROW_NOT_FOUND) and (n <> ROW_NOT_FOUND) then    // line left intact by user and by generator
-      begin
-         MergeChunk(result, ABase, AEditor, ANew, diffEditor, baseFrom, i, editorFrom, e, newFrom, n);
-         result.AddObject(ANew[n] + diffEditor.Tails[i], ANew.Objects[n]);
-         baseFrom := i + 1;
-         editorFrom := e + 1;
-         newFrom := n + 1;
-      end;
-   end;
-   MergeChunk(result, ABase, AEditor, ANew, diffEditor, baseFrom, ABase.Count, editorFrom, AEditor.Count, newFrom, ANew.Count);
-end;
-
 function LastSectionRow(ALines: TStrings; AObject: TObject; AFirstRow: integer): integer;
 begin
    if AObject is TBlock then
@@ -852,95 +459,31 @@ begin
       ALines.InsertObject(AFirstRow, ANewLines[i], ANewLines.Objects[i]);
 end;
 
-// Finds rows of lines which AObject generated, together with whatever the user put between them.
-// User function has no line of its own: its header lines belong to its header and the rest to its body
-function FindSection(ALines: TStrings; AObject: TObject; out AFirstRow, ALastRow: integer): boolean;
+// Project ids of objects freshly generated lines are bound to. They are taken while the objects surely exist,
+// as some of them may be freed before the lines are compared with the next generated code
+function CollectIds(ALines: TStrings): TObjectIds;
 begin
-   var firstObject := AObject;
-   var lastObject: TObject := nil;
-   if AObject is TUserFunction then
+   result := TObjectIds.Create;
+   for var i := 0 to ALines.Count-1 do
    begin
-      firstObject := TUserFunction(AObject).Header;
-      lastObject := TUserFunction(AObject).Body;
-      if firstObject = nil then
-      begin
-         firstObject := lastObject;
-         lastObject := nil;
-      end;
-   end;
-   AFirstRow := ROW_NOT_FOUND;
-   ALastRow := ROW_NOT_FOUND;
-   if firstObject <> nil then
-      AFirstRow := ALines.IndexOfObject(firstObject);
-   result := AFirstRow <> ROW_NOT_FOUND;
-   if result then
-   begin
-      ALastRow := LastSectionRow(ALines, firstObject, AFirstRow);
-      if lastObject <> nil then
-         ALastRow := Max(ALastRow, LastSectionRow(ALines, lastObject, AFirstRow));
+      var obj := ALines.Objects[i];
+      var withId: IWithId := nil;
+      if (obj <> nil) and not result.ContainsKey(NativeInt(obj)) and Supports(obj, IWithId, withId) then
+         result.Add(NativeInt(obj), withId.Id);
    end;
 end;
 
-// Removing a flowchart object can be undone, so its code section disappears from editor only
-// for the time being. Remembers that section as the generator made it and as the user left it,
-// and takes it out of editor as a whole, user changes included, so that all of it can be
-// brought back when the removal is undone
-procedure TEditorForm.StoreUndoSection(AObject: TObject; AEditorLines, ANewLines: TStrings);
-begin
-   FUndoBase.Clear;
-   FUndoLines.Clear;
-   var firstRow, lastRow: integer;
-   if (AObject <> nil) and (ANewLines <> nil) and FindSection(ANewLines, AObject, firstRow, lastRow) then
-      Exit;                            // object still generates code, e.g. removed function's main block is hidden before its header is
-                                       // deactivated, so its section is stored by the regeneration which actually takes it away
-   FUndoObject := AObject;
-   if (AObject = nil) or (AEditorLines = nil) or (ANewLines = nil) then
-      Exit;
-   if not FindSection(FGeneratedLines, AObject, firstRow, lastRow) then
-      Exit;
-   CopyRows(FGeneratedLines, firstRow, lastRow, FUndoBase);
-   if not FindSection(AEditorLines, AObject, firstRow, lastRow) then
-   begin
-      FUndoBase.Clear;
-      Exit;
-   end;
-   CopyRows(AEditorLines, firstRow, lastRow, FUndoLines);
-   for var i := lastRow downto firstRow do
-      AEditorLines.Delete(i);
-end;
-
-// Code section of a removed object showed up again because its removal has been undone, so
-// user changes which went away with it are merged back into the regenerated lines
-function TEditorForm.RestoreUndoSection(ALines: TStringList): boolean;
-begin
-   result := False;
-   if (FUndoObject = nil) or FUndoBase.IsEmpty or FUndoLines.IsEmpty then
-      Exit;
-   var firstRow, lastRow: integer;
-   if not FindSection(ALines, FUndoObject, firstRow, lastRow) then
-      Exit;
-   var section := TStringList.Create;
-   try
-      CopyRows(ALines, firstRow, lastRow, section);
-      var merged := MergeLines(FUndoBase, FUndoLines, section);
-      try
-         ReplaceRows(ALines, firstRow, lastRow, merged);
-      finally
-         merged.Free;
-      end;
-   finally
-      section.Free;
-   end;
-   FUndoBase.Clear;
-   FUndoLines.Clear;
-   result := True;
-end;
-
-procedure TEditorForm.SetGeneratedLines(ALines: TStrings);
+// Remembers freshly generated lines (and ids of their objects, unless given in AIds which this form takes over)
+// as code generated last time, which next generated code is merged with
+procedure TEditorForm.SetGeneratedLines(ALines: TStrings; AIds: TObjectIds = nil);
 begin
    FGeneratedLines.Clear;
    for var i := 0 to ALines.Count-1 do
       FGeneratedLines.AddObject(ALines[i], ALines.Objects[i]);   // objects are only ever compared, never used
+   if AIds = nil then
+      AIds := CollectIds(ALines);
+   FGeneratedIds.Free;
+   FGeneratedIds := AIds;
 end;
 
 // Blocks update the line they generated directly in editor instead of regenerating the whole
@@ -1096,32 +639,24 @@ begin
    var merged: TStringList := nil;
    try
       editorLines := GetAllLines;    // must be read before fold ranges are destroyed
-      if not FGeneratedLines.IsEmpty then
-      begin
-         var trimmedLines: TStringList := nil;
-         try
-            var userLines := editorLines;
-            if GClpbrd.UndoObject <> FUndoObject then
-            begin
-               // section of removed object is taken out of a copy, as lines shown in editor are still needed below
-               trimmedLines := TStringList.Create;
-               trimmedLines.Assign(editorLines);
-               StoreUndoSection(GClpbrd.UndoObject, trimmedLines, ALines);
-               userLines := trimmedLines;
-            end;
-            if userLines.Count > 0 then
-               merged := MergeLines(FGeneratedLines, userLines, ALines);
-         finally
-            trimmedLines.Free;
+      var newIds := CollectIds(ALines);
+      try
+         if not FGeneratedLines.IsEmpty and (editorLines.Count > 0) then
+         begin
+            FDetached.Purge(function(AId: integer; AObject: NativeInt): boolean
+                            begin
+                               result := (GProject <> nil) and (NativeInt(GProject.FindObject(AId)) = AObject);   // freed objects never come back
+                            end);
+            merged := MergeLines(FGeneratedLines, editorLines, ALines, FGeneratedIds, newIds, FDetached);
          end;
+      except
+         newIds.Free;
+         raise;
       end;
-      SetGeneratedLines(ALines);
+      SetGeneratedLines(ALines, newIds);
       var lines: TStrings := ALines;
       if merged <> nil then
-      begin
-         RestoreUndoSection(merged);
          lines := merged;
-      end;
       // replacing editor text expands all folds and clears undo history, so it is done only when text changes
       if AReset or not SameContents(lines, editorLines) then
       begin

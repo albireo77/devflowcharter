@@ -176,6 +176,7 @@
         <DCCReference Include="Common\FlashThread.pas"/>
         <DCCReference Include="Common\History.pas"/>
         <DCCReference Include="Common\XMLProcessor.pas"/>
+        <DCCReference Include="Common\CodeMerge.pas"/>
         <DCCReference Include="Blocks\If_Block.pas"/>
         <DCCReference Include="Forms\Functions_Form.pas">
             <Form>FunctionsForm</Form>

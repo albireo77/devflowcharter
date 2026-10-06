@@ -49,6 +49,7 @@ uses
   FlashThread in 'Common\FlashThread.pas',
   History in 'Common\History.pas',
   XMLProcessor in 'Common\XMLProcessor.pas',
+  CodeMerge in 'Common\CodeMerge.pas',
   If_Block in 'Blocks\If_Block.pas',
   Functions_Form in 'Forms\Functions_Form.pas' {FunctionsForm},
   UserFunction in 'Common\UserFunction.pas',
