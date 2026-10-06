@@ -145,6 +145,11 @@ type
     function ReplaceGeneratedLine(const AChangeLine: TChangeLine): string;
     procedure StoreUndoSection(AObject: TObject; AEditorLines, ANewLines: TStrings);
     function RestoreUndoSection(ALines: TStringList): boolean;
+{$IFDEF USE_CODEFOLDING}
+    function GetCollapsedLines: TArray<integer>;
+    procedure CollapseLines(ALines: TArray<integer>);
+    function MapCollapsedLines(AOldLines, ANewLines: TStrings): TArray<integer>;
+{$ENDIF}
   public
     { Public declarations }
     destructor Destroy; override;
@@ -201,11 +206,6 @@ type
       procedure Match(AFrom1, ATo1, AFrom2, ATo2: integer);
       function FindSplit(AFrom1, ATo1, AFrom2, ATo2: integer; out ASplit1, ASplit2: integer): boolean;
    end;
-
-function CompareIntegers(AList: TStringList; idx1, idx2: integer): integer;
-begin
-   result := AList[idx1].ToInteger - AList[idx2].ToInteger;
-end;
 
 constructor TEditorHintWindow.Create(AOwner: TComponent);
 begin
@@ -763,18 +763,39 @@ begin
       end;
       Exit;
    end;
+   var used: TArray<boolean>;
+   SetLength(used, AEditorTo-AEditorFrom);
+   var e := AEditorFrom;
    for var i := ANewFrom to ANewTo-1 do
    begin
+      var line := ANew[i];
       var tail := '';
       if alignedCount then
          tail := ADiff.Tails[ABaseFrom+i-ANewFrom];   // put back what the user appended to the replaced line
-      AResult.AddObject(ANew[i] + tail, ANew.Objects[i]);
+      if tail.IsEmpty and not line.Trim.IsEmpty then
+      begin
+         // user line which is this freshly generated line with text appended already agrees with generator,
+         // even if previously generated code differs from it (e.g. project name unknown when it was generated),
+         // so that text is kept as well
+         for var j := e to AEditorTo-1 do
+         begin
+            var editorLine := AEditor[j];
+            if (ADiff.Map2[j] = ROW_NOT_FOUND) and (editorLine.Length > line.Length) and editorLine.StartsWith(line) then
+            begin
+               tail := editorLine.Substring(line.Length);
+               used[j-AEditorFrom] := True;
+               e := j + 1;
+               break;
+            end;
+         end;
+      end;
+      AResult.AddObject(line + tail, ANew.Objects[i]);
    end;
    if keepUserLines then
    begin
       for var i := AEditorFrom to AEditorTo-1 do
       begin
-         if ADiff.Map2[i] = ROW_NOT_FOUND then
+         if (ADiff.Map2[i] = ROW_NOT_FOUND) and not used[i-AEditorFrom] then
             AResult.AddObject(AEditor[i], nil);   // user only added lines here so they survive regeneration
       end;
    end;
@@ -962,24 +983,114 @@ begin
    end;
 end;
 
+function SameContents(ALines1, ALines2: TStrings): boolean;
+begin
+   result := ALines1.Count = ALines2.Count;
+   if result then
+   begin
+      for var i := 0 to ALines1.Count-1 do
+      begin
+         if (ALines1[i] <> ALines2[i]) or (ALines1.Objects[i] <> ALines2.Objects[i]) then
+            Exit(False);
+      end;
+   end;
+end;
+
+// Finds row of ALines2 which is the same line of the same flowchart object's section as row ARow of ALines1
+function FindRowByObject(ALines1, ALines2: TStrings; ARow: integer): integer;
+begin
+   result := ROW_NOT_FOUND;
+   var obj := ALines1.Objects[ARow];
+   if obj = nil then
+      Exit;
+   var firstRow := ALines2.IndexOfObject(obj);
+   if firstRow = ROW_NOT_FOUND then
+      Exit;
+   var row := firstRow + ARow - ALines1.IndexOfObject(obj);
+   if (row < ALines2.Count) and (ALines2.Objects[row] = obj) then
+      result := row;
+end;
+
+{$IFDEF USE_CODEFOLDING}
+// Returns first lines of collapsed folds, numbered from 1 as if no fold was collapsed
+function TEditorForm.GetCollapsedLines: TArray<integer>;
+begin
+   result := nil;
+   for var i := 0 to memCodeEditor.AllFoldRanges.AllCount-1 do
+   begin
+      var foldRange := memCodeEditor.AllFoldRanges[i];
+      if foldRange.Collapsed then
+         result := result + [memCodeEditor.GetRealLineNumber(foldRange.FromLine)];
+   end;
+end;
+
+// Collapses folds starting at given lines, numbered as in GetCollapsedLines. Folds are collapsed
+// from the bottom up so that collapsing one does not move lines of those still to be collapsed
+procedure TEditorForm.CollapseLines(ALines: TArray<integer>);
+begin
+   TArray.Sort<integer>(ALines);
+   for var i := High(ALines) downto 0 do
+   begin
+      var foldRange := memCodeEditor.CollapsableFoldRangeForLine(ALines[i]);
+      if (foldRange <> nil) and not foldRange.Collapsed then
+      begin
+         memCodeEditor.Collapse(foldRange);
+         memCodeEditor.Refresh;
+      end;
+   end;
+end;
+
+// Replacing editor text expands collapsed folds, so their first lines are located in the new text
+// to be collapsed again: as the same line if it is still there, or else as the same line of the
+// flowchart object it belongs to, e.g. function header with a renamed parameter
+function TEditorForm.MapCollapsedLines(AOldLines, ANewLines: TStrings): TArray<integer>;
+begin
+   result := nil;
+   var collapsedLines := GetCollapsedLines;
+   if Length(collapsedLines) = 0 then
+      Exit;
+   var diff := DiffLines(AOldLines, ANewLines);
+   for var line in collapsedLines do
+   begin
+      var row := line - 1;
+      if (row < 0) or (row >= AOldLines.Count) then
+         Continue;
+      var newRow := diff.Map1[row];
+      if newRow = ROW_NOT_FOUND then
+         newRow := FindRowByObject(AOldLines, ANewLines, row);
+      if newRow <> ROW_NOT_FOUND then
+         result := result + [newRow + 1];
+   end;
+end;
+{$ENDIF}
+
 procedure TEditorForm.DisplayLines(ALines: TStringList; AReset: boolean);
 begin
    if (ALines = nil) or ALines.IsEmpty then
       Exit;
    if GSettings.IndentChar = TAB_CHAR then
       TInfra.IndentSpacesToTabs(ALines);
+   var editorLines: TStrings := nil;
    var merged: TStringList := nil;
    try
+      editorLines := GetAllLines;    // must be read before fold ranges are destroyed
       if not FGeneratedLines.IsEmpty then
       begin
-         var editorLines := GetAllLines;    // must be read before fold ranges are destroyed
+         var trimmedLines: TStringList := nil;
          try
+            var userLines := editorLines;
             if GClpbrd.UndoObject <> FUndoObject then
-               StoreUndoSection(GClpbrd.UndoObject, editorLines, ALines);
-            if editorLines.Count > 0 then
-               merged := MergeLines(FGeneratedLines, editorLines, ALines);
+            begin
+               // section of removed object is taken out of a copy, as lines shown in editor are still needed below
+               trimmedLines := TStringList.Create;
+               trimmedLines.Assign(editorLines);
+               StoreUndoSection(GClpbrd.UndoObject, trimmedLines, ALines);
+               userLines := trimmedLines;
+            end;
+            if userLines.Count > 0 then
+               merged := MergeLines(FGeneratedLines, userLines, ALines);
          finally
-            editorLines.Free;
+            trimmedLines.Free;
          end;
       end;
       SetGeneratedLines(ALines);
@@ -989,19 +1100,30 @@ begin
          RestoreUndoSection(merged);
          lines := merged;
       end;
+      // replacing editor text expands all folds and clears undo history, so it is done only when text changes
+      if AReset or not SameContents(lines, editorLines) then
+      begin
 {$IFDEF USE_CODEFOLDING}
-      memCodeEditor.AllFoldRanges.DestroyAll;
+         var collapsedLines := MapCollapsedLines(editorLines, lines);
+         memCodeEditor.AllFoldRanges.DestroyAll;
 {$ENDIF}
-      if AReset then
-         memCodeEditor.Marks.Clear;
-      memCodeEditor.Highlighter := nil;
-      memCodeEditor.Lines.Assign(lines);
+         if AReset then
+            memCodeEditor.Marks.Clear;
+         memCodeEditor.Highlighter := nil;
+         memCodeEditor.Lines.Assign(lines);
+         if GSettings.EditorShowRichText then
+            memCodeEditor.Highlighter := GInfra.CurrentLang.HighLighter;
+         OnChangeEditor;
+{$IFDEF USE_CODEFOLDING}
+         CollapseLines(collapsedLines);
+{$ENDIF}
+         memCodeEditor.ClearUndo;
+         memCodeEditor.Modified := not AReset;
+      end;
    finally
       merged.Free;
+      editorLines.Free;
    end;
-   if GSettings.EditorShowRichText then
-      memCodeEditor.Highlighter := GInfra.CurrentLang.HighLighter;
-   OnChangeEditor;
    if FFocusEditor then
    begin
       if memCodeEditor.CanFocus then
@@ -1009,8 +1131,6 @@ begin
    end
    else
       FFocusEditor := True;
-   memCodeEditor.ClearUndo;
-   memCodeEditor.Modified := not AReset;
 end;
 
 procedure TEditorForm.FormShow(Sender: TObject);
@@ -1836,15 +1956,11 @@ begin
       if memCodeEditor.CodeFolding.Enabled then
       begin
          var node: IXMLNode := nil;
-         for i := 0 to memCodeEditor.AllFoldRanges.AllCount-1 do
+         for var line in GetCollapsedLines do
          begin
-            var foldRange := memCodeEditor.AllFoldRanges[i];
-            if foldRange.Collapsed then
-            begin
-               if node = nil then
-                  node := AppendNode(ANode, 'fold_ranges');
-               AppendNode(node, 'fold_range').Text := memCodeEditor.GetRealLineNumber(foldRange.FromLine).ToString;
-            end;
+            if node = nil then
+               node := AppendNode(ANode, 'fold_ranges');
+            AppendNode(node, 'fold_range').Text := line.ToString;
          end;
       end;
 {$ENDIF}
@@ -1905,29 +2021,17 @@ begin
          var node := FindNode(ANode, 'fold_ranges');
          if node <> nil then
          begin
-            var foldLines := TStringList.Create;
-            try
-               var rangeNodes := FilterNodes(node, 'fold_range');
-               var rangeNode := rangeNodes.NextNode;
-               while rangeNode <> nil do
-               begin
-                  if StrToIntDef(rangeNode.Text, 0) > 0 then
-                     foldLines.Add(rangeNode.Text);
-                  rangeNode := rangeNodes.NextNode;
-               end;
-               foldLines.CustomSort(@CompareIntegers);
-               for var i := foldLines.Count-1 downto 0 do
-               begin
-                  var foldRange := memCodeEditor.CollapsableFoldRangeForLine(foldLines[i].ToInteger);
-                  if (foldRange <> nil) and not foldRange.Collapsed then
-                  begin
-                     memCodeEditor.Collapse(foldRange);
-                     memCodeEditor.Refresh;
-                  end;
-               end;
-            finally
-               foldLines.Free;
+            var foldLines: TArray<integer> := nil;
+            var rangeNodes := FilterNodes(node, 'fold_range');
+            var rangeNode := rangeNodes.NextNode;
+            while rangeNode <> nil do
+            begin
+               var line := StrToIntDef(rangeNode.Text, 0);
+               if line > 0 then
+                  foldLines := foldLines + [line];
+               rangeNode := rangeNodes.NextNode;
             end;
+            CollapseLines(foldLines);
          end;
       end;
 {$ENDIF}
