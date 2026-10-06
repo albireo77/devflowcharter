@@ -84,9 +84,9 @@ begin
    if pgcTabs.ActivePage <> nil then
    begin
       var tab := TTabComponent(pgcTabs.ActivePage);
-      tab.Active := False;
       GClpbrd.UndoObject.Free;
-      GClpbrd.UndoObject := tab.ParentObject;
+      GClpbrd.UndoObject := tab.ParentObject;   // set before deactivation, which may already regenerate code
+      tab.Active := False;
       TInfra.UpdateCodeEditor;
    end;
 end;

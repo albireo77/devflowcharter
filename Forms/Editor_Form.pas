@@ -185,7 +185,7 @@ implementation
 uses
    System.StrUtils, System.Math, System.UITypes, System.Contnrs, System.Generics.Collections, WinApi.Windows,
    Infrastructure, Goto_Form, Main_Block, Help_Form, Comment, OmniXMLUtils, Main_Form,
-   SynEditTypes, ParserHelper, Constants;
+   SynEditTypes, ParserHelper, Constants, UserFunction;
 
 {$R *.dfm}
 
@@ -852,13 +852,33 @@ begin
       ALines.InsertObject(AFirstRow, ANewLines[i], ANewLines.Objects[i]);
 end;
 
-// Copies lines which AObject generated, together with whatever the user put between them
-function CopySection(ALines: TStrings; AObject: TObject; ADestLines: TStringList): boolean;
+// Finds rows of lines which AObject generated, together with whatever the user put between them.
+// User function has no line of its own: its header lines belong to its header and the rest to its body
+function FindSection(ALines: TStrings; AObject: TObject; out AFirstRow, ALastRow: integer): boolean;
 begin
-   var firstRow := ALines.IndexOfObject(AObject);
-   result := firstRow <> ROW_NOT_FOUND;
+   var firstObject := AObject;
+   var lastObject: TObject := nil;
+   if AObject is TUserFunction then
+   begin
+      firstObject := TUserFunction(AObject).Header;
+      lastObject := TUserFunction(AObject).Body;
+      if firstObject = nil then
+      begin
+         firstObject := lastObject;
+         lastObject := nil;
+      end;
+   end;
+   AFirstRow := ROW_NOT_FOUND;
+   ALastRow := ROW_NOT_FOUND;
+   if firstObject <> nil then
+      AFirstRow := ALines.IndexOfObject(firstObject);
+   result := AFirstRow <> ROW_NOT_FOUND;
    if result then
-      CopyRows(ALines, firstRow, LastSectionRow(ALines, AObject, firstRow), ADestLines);
+   begin
+      ALastRow := LastSectionRow(ALines, firstObject, AFirstRow);
+      if lastObject <> nil then
+         ALastRow := Max(ALastRow, LastSectionRow(ALines, lastObject, AFirstRow));
+   end;
 end;
 
 // Removing a flowchart object can be undone, so its code section disappears from editor only
@@ -867,20 +887,23 @@ end;
 // brought back when the removal is undone
 procedure TEditorForm.StoreUndoSection(AObject: TObject; AEditorLines, ANewLines: TStrings);
 begin
-   FUndoObject := AObject;
    FUndoBase.Clear;
    FUndoLines.Clear;
+   var firstRow, lastRow: integer;
+   if (AObject <> nil) and (ANewLines <> nil) and FindSection(ANewLines, AObject, firstRow, lastRow) then
+      Exit;                            // object still generates code, e.g. removed function's main block is hidden before its header is
+                                       // deactivated, so its section is stored by the regeneration which actually takes it away
+   FUndoObject := AObject;
    if (AObject = nil) or (AEditorLines = nil) or (ANewLines = nil) then
       Exit;
-   if ANewLines.IndexOfObject(AObject) <> ROW_NOT_FOUND then
-      Exit;                            // object still generates code so nothing goes away
-   var firstRow := AEditorLines.IndexOfObject(AObject);
-   if (firstRow = ROW_NOT_FOUND) or not CopySection(FGeneratedLines, AObject, FUndoBase) then
+   if not FindSection(FGeneratedLines, AObject, firstRow, lastRow) then
+      Exit;
+   CopyRows(FGeneratedLines, firstRow, lastRow, FUndoBase);
+   if not FindSection(AEditorLines, AObject, firstRow, lastRow) then
    begin
       FUndoBase.Clear;
       Exit;
    end;
-   var lastRow := LastSectionRow(AEditorLines, AObject, firstRow);
    CopyRows(AEditorLines, firstRow, lastRow, FUndoLines);
    for var i := lastRow downto firstRow do
       AEditorLines.Delete(i);
@@ -893,10 +916,9 @@ begin
    result := False;
    if (FUndoObject = nil) or FUndoBase.IsEmpty or FUndoLines.IsEmpty then
       Exit;
-   var firstRow := ALines.IndexOfObject(FUndoObject);
-   if firstRow = ROW_NOT_FOUND then
+   var firstRow, lastRow: integer;
+   if not FindSection(ALines, FUndoObject, firstRow, lastRow) then
       Exit;
-   var lastRow := LastSectionRow(ALines, FUndoObject, firstRow);
    var section := TStringList.Create;
    try
       CopyRows(ALines, firstRow, lastRow, section);
