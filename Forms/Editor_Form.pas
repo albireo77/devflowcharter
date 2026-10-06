@@ -142,7 +142,7 @@ type
     procedure DisplayLines(ALines: TStringList; AReset: boolean);
     procedure SetGeneratedLines(ALines: TStrings; AIds: TObjectIds = nil);
     function PatchEditorLines(ALines: TStrings): boolean;
-    function ReplaceGeneratedLine(const AChangeLine: TChangeLine): string;
+    function ApplyLines(AOldLines, ANewLines: TStrings): boolean;
 {$IFDEF USE_CODEFOLDING}
     function GetCollapsedLines: TArray<integer>;
     procedure CollapseLines(ALines: TArray<integer>);
@@ -158,13 +158,11 @@ type
     function GetIndentLevel(idx: integer; ALines: TStrings): integer;
     procedure RefreshEditorForObject(AObject: TObject);
     procedure UpdateEditorForBlock(ABlock: TBlock; const AChangeLine: TChangeLine);
-    procedure MergeGeneratedSection(const ACodeRange: TCodeRange; ANewLines: TStringList);
+    procedure UpdateBlockSection(ABlock: TBlock);
     procedure SetCaretPos(const ALine: TChangeLine);
     procedure SaveToFile(const APath: string);
     procedure InsertLibraryEntry(const ALibrary: string);
 {$IFDEF USE_CODEFOLDING}
-    procedure RemoveFoldRange(var AFoldRange: TSynEditFoldRange);
-    function FindFoldRangeInCodeRange(const ACodeRange: TCodeRange; ACount: integer): TSynEditFoldRange;
     procedure ReloadFoldRegions;
 {$ENDIF}
   end;
@@ -487,65 +485,59 @@ begin
    FGeneratedIds := AIds;
 end;
 
-// Blocks update the line they generated directly in editor instead of regenerating the whole
-// program. Replaces the previously generated line behind the line about to be updated with its
-// new text so that both stay in step, and returns text the user had appended to that line so
-// that the caller can put it back. The previously generated line is found through the object
-// the code range belongs to, at the same place within its section as the updated line in editor
-function TEditorForm.ReplaceGeneratedLine(const AChangeLine: TChangeLine): string;
+// Blocks whose text is edited update their own code only, instead of the whole program being generated.
+// Code of ABlock is generated again and merged with what the user changed within its lines, the same way
+// as code of the whole program is, and only lines which differ are changed in editor
+procedure TEditorForm.UpdateBlockSection(ABlock: TBlock);
 begin
-   result := '';
-   var codeRange := AChangeLine.CodeRange;
-   if (codeRange.Lines = nil) or (AChangeLine.Row < codeRange.FirstRow) or (AChangeLine.Row > codeRange.LastRow) then
-      Exit;
-   var editorLine := codeRange.Lines[AChangeLine.Row];
-   if editorLine = AChangeLine.Text then
-      Exit;                            // nothing changes, e.g. line without placeholder is taken from editor as it is
-   var obj := codeRange.Lines.Objects[codeRange.FirstRow];
-   var firstRow := FGeneratedLines.IndexOfObject(obj);
-   if firstRow = ROW_NOT_FOUND then
-      Exit;
-   var lastRow := LastSectionRow(FGeneratedLines, obj, firstRow);
-   var row := firstRow + AChangeLine.Row - codeRange.FirstRow;
-   if (AChangeLine.Row = codeRange.LastRow) and (AChangeLine.Row > codeRange.FirstRow) then
-      row := lastRow;                  // placeholder is in the last line of the template, see TInfra.GetChangeLine
-   if row > lastRow then
-      Exit;
-   var generatedLine := FGeneratedLines[row];
-   if (editorLine.Length > generatedLine.Length) and editorLine.StartsWith(generatedLine) and not generatedLine.Trim.IsEmpty then
-      result := editorLine.Substring(generatedLine.Length);
-   FGeneratedLines[row] := AChangeLine.Text;
-end;
-
-// Multi-line blocks regenerate their whole section in editor instead of the whole program.
-// Merges what the user changed within that section into its freshly generated lines ANewLines
-// the same way regeneration of the whole program does, and keeps generated lines in step
-procedure TEditorForm.MergeGeneratedSection(const ACodeRange: TCodeRange; ANewLines: TStringList);
-begin
-   if (ACodeRange.Lines = nil) or (ACodeRange.FirstRow < 0) or (ACodeRange.LastRow < ACodeRange.FirstRow) then
-      Exit;
-   var obj := ACodeRange.Lines.Objects[ACodeRange.FirstRow];
-   var firstRow := FGeneratedLines.IndexOfObject(obj);
-   if firstRow = ROW_NOT_FOUND then
-      Exit;
-   var lastRow := LastSectionRow(FGeneratedLines, obj, firstRow);
-   var base: TStringList := nil;
-   var section: TStringList := nil;
+   var allLines := GetAllLines;
+   var newAllLines := TStringList.Create;
+   var newLines := TStringList.Create;
+   var generated := TStringList.Create;
+   var section := TStringList.Create;
    try
-      base := TStringList.Create;
-      section := TStringList.Create;
-      CopyRows(FGeneratedLines, firstRow, lastRow, base);
-      CopyRows(ACodeRange.Lines, ACodeRange.FirstRow, ACodeRange.LastRow, section);
-      ReplaceRows(FGeneratedLines, firstRow, lastRow, ANewLines);
-      var merged := MergeLines(base, section, ANewLines);
+      var firstRow := allLines.IndexOfObject(ABlock);
+      if firstRow = ROW_NOT_FOUND then
+         Exit;
+      var lastRow := LastSectionRow(allLines, ABlock, firstRow);
+      var genFirstRow := FGeneratedLines.IndexOfObject(ABlock);
+      var deep := GetIndentLevel(firstRow, allLines);
+      if genFirstRow <> ROW_NOT_FOUND then
+         deep := GetIndentLevel(genFirstRow, FGeneratedLines);
+      ABlock.GenerateCode(newLines, GInfra.CurrentLang.Name, deep);
+      if GSettings.IndentChar = TAB_CHAR then
+         TInfra.IndentSpacesToTabs(newLines);
+      var merged: TStrings := newLines;   // no previously generated code to tell user changes by
+      if genFirstRow <> ROW_NOT_FOUND then
+      begin
+         var genLastRow := LastSectionRow(FGeneratedLines, ABlock, genFirstRow);
+         CopyRows(FGeneratedLines, genFirstRow, genLastRow, generated);
+         CopyRows(allLines, firstRow, lastRow, section);
+         ReplaceRows(FGeneratedLines, genFirstRow, genLastRow, newLines);
+         merged := MergeLines(generated, section, newLines);
+      end;
       try
-         ANewLines.Assign(merged);
+         newAllLines.Assign(allLines);
+         ReplaceRows(newAllLines, firstRow, lastRow, merged);
       finally
-         merged.Free;
+         if merged <> newLines then
+            merged.Free;
+      end;
+      var topLine := memCodeEditor.TopLine;
+      memCodeEditor.LockDrawing;
+      try
+         if ApplyLines(allLines, newAllLines) then
+            memCodeEditor.Modified := True;
+      finally
+         memCodeEditor.TopLine := topLine;
+         memCodeEditor.UnlockDrawing;
       end;
    finally
       section.Free;
-      base.Free;
+      generated.Free;
+      newLines.Free;
+      newAllLines.Free;
+      allLines.Free;
    end;
 end;
 
@@ -705,6 +697,22 @@ begin
    end;
 end;
 
+// Shows ANewLines in editor in place of AOldLines, which are its current lines with no fold collapsed.
+// Only lines which differ are changed, so that the rest of editor stays as it is, and folds collapsed
+// before stay collapsed. Returns whether any text changed
+function TEditorForm.ApplyLines(AOldLines, ANewLines: TStrings): boolean;
+begin
+{$IFDEF USE_CODEFOLDING}
+   var collapsedLines := MapCollapsedLines(AOldLines, ANewLines);
+   memCodeEditor.UncollapseAll;   // editor lines are then the same as AOldLines
+{$ENDIF}
+   result := PatchEditorLines(ANewLines);
+   OnChangeEditor;
+{$IFDEF USE_CODEFOLDING}
+   CollapseLines(collapsedLines);
+{$ENDIF}
+end;
+
 procedure TEditorForm.DisplayLines(ALines: TStringList; AReset: boolean);
 begin
    if (ALines = nil) or ALines.IsEmpty then
@@ -747,23 +755,10 @@ begin
          memCodeEditor.ClearUndo;
          memCodeEditor.Modified := False;
       end
-      else if not SameContents(lines, editorLines) then
+      else if not SameContents(lines, editorLines) and ApplyLines(editorLines, lines) then
       begin
-         // only lines which differ are changed, so that the rest of editor stays as it is
-{$IFDEF USE_CODEFOLDING}
-         var collapsedLines := MapCollapsedLines(editorLines, lines);
-         memCodeEditor.UncollapseAll;   // editor lines are then the same as editorLines
-{$ENDIF}
-         var textChanged := PatchEditorLines(lines);
-         OnChangeEditor;
-{$IFDEF USE_CODEFOLDING}
-         CollapseLines(collapsedLines);
-{$ENDIF}
-         if textChanged then
-         begin
-            memCodeEditor.ClearUndo;   // changes made directly to editor lines are not in undo history
-            memCodeEditor.Modified := True;
-         end;
+         memCodeEditor.ClearUndo;   // changes made directly to editor lines are not in undo history
+         memCodeEditor.Modified := True;
       end;
    finally
       merged.Free;
@@ -1481,40 +1476,10 @@ begin
    end;
 end;
 
-{$IFDEF USE_CODEFOLDING}
-procedure TEditorForm.RemoveFoldRange(var AFoldRange: TSynEditFoldRange);
-begin
-   var idx := memCodeEditor.AllFoldRanges.AllRanges.IndexOf(AFoldRange);
-   if idx <> -1 then
-      memCodeEditor.AllFoldRanges.AllRanges.Delete(idx);
-   AFoldRange.Free;
-   AFoldRange := nil;
-end;
-
-function TEditorForm.FindFoldRangeInCodeRange(const ACodeRange: TCodeRange; ACount: integer): TSynEditFoldRange;
-begin
-   result := nil;
-   if ACodeRange.Lines = memCodeEditor.Lines then
-   begin
-      for var i := ACodeRange.FirstRow to ACodeRange.FirstRow+ACount do
-      begin
-         result := memCodeEditor.CollapsableFoldRangeForLine(i+1);
-         if result <> nil then
-            break;
-      end;
-   end;
-end;
-{$ENDIF}
-
 procedure TEditorForm.UpdateEditorForBlock(ABlock: TBlock; const AChangeLine: TChangeLine);
 begin
    if ABlock.ShouldUpdateEditor then
-   begin
-      var chLine := AChangeLine;
-      chLine.Text := chLine.Text + ReplaceGeneratedLine(AChangeLine);   // put back what the user appended to this line
-      if chLine.Change then
-         memCodeEditor.Modified := True;
-   end;
+      UpdateBlockSection(ABlock);
    SetCaretPos(AChangeLine);
 end;
 

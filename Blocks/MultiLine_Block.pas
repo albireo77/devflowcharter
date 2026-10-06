@@ -133,55 +133,7 @@ begin
       if chLine.CodeRange.FirstRow <> ROW_NOT_FOUND then
       begin
          if (chLine.CodeRange.Lines <> nil) and ShouldUpdateEditor then
-         begin
-            var templateLines := TStringList.Create;
-            try
-               GenerateCode(templateLines, GInfra.CurrentLang.Name, editorForm.GetIndentLevel(chLine.CodeRange.FirstRow, chLine.CodeRange.Lines));
-               if GSettings.IndentChar = TAB_CHAR then
-                  TInfra.IndentSpacesToTabs(templateLines);
-               editorForm.MergeGeneratedSection(chLine.CodeRange, templateLines);   // keep what the user changed within this block's lines
-               var rowNum := chLine.CodeRange.LastRow - chLine.CodeRange.FirstRow + 1;
-               chLine.CodeRange.Lines.BeginUpdate;
-               for var i := 1 to rowNum do
-                  chLine.CodeRange.Lines.Delete(chLine.CodeRange.FirstRow);
-{$IFDEF USE_CODEFOLDING}
-               if chLine.CodeRange.FoldRange <> nil then
-               begin
-                  if chLine.CodeRange.IsFolded then
-                  begin
-                     rowNum := templateLines.Count - rowNum;
-                     chLine.CodeRange.FoldRange.Widen(rowNum);
-                     for var i := 0 to templateLines.Count-1 do
-                        chLine.CodeRange.Lines.InsertObject(chLine.CodeRange.FirstRow, templateLines[i], templateLines.Objects[i]);
-                  end
-                  else
-                  begin
-                     var foldRegion := chLine.CodeRange.FoldRange.FoldRegion;
-                     editorForm.RemoveFoldRange(chLine.CodeRange.FoldRange);
-                     for var i := templateLines.Count-1 downto 0 do
-                        chLine.CodeRange.Lines.InsertObject(chLine.CodeRange.FirstRow, templateLines[i], templateLines.Objects[i]);
-                     editorForm.OnChangeEditor;
-                     var foldRange := editorForm.FindFoldRangeInCodeRange(chLine.CodeRange, templateLines.Count);
-                     if (foldRange <> nil) and (foldRange.FoldRegion = foldRegion) and not foldRange.Collapsed then
-                     begin
-                        editorForm.memCodeEditor.Collapse(foldRange);
-                        editorForm.memCodeEditor.Refresh;
-                     end;
-                  end;
-               end
-               else
-{$ENDIF}
-               begin
-                  for var i := templateLines.Count-1 downto 0 do
-                     chLine.CodeRange.Lines.InsertObject(chLine.CodeRange.FirstRow, templateLines[i], templateLines.Objects[i]);
-               end;
-               chLine.CodeRange.Lines.EndUpdate;
-               editorForm.OnChangeEditor;
-            finally
-               templateLines.Free;
-            end;
-            editorForm.memCodeEditor.Modified := True;
-         end;
+            editorForm.UpdateBlockSection(Self);
          editorForm.SetCaretPos(chLine);
       end;
    end;
