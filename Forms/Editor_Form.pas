@@ -141,6 +141,7 @@ type
     procedure PasteComment(const AText: string);
     procedure DisplayLines(ALines: TStringList; AReset: boolean);
     procedure SetGeneratedLines(ALines: TStrings; AIds: TObjectIds = nil);
+    function PatchEditorLines(ALines: TStrings): boolean;
     function ReplaceGeneratedLine(const AChangeLine: TChangeLine): string;
 {$IFDEF USE_CODEFOLDING}
     function GetCollapsedLines: TArray<integer>;
@@ -629,6 +630,81 @@ begin
 end;
 {$ENDIF}
 
+// Turns editor lines into ALines by changing only lines which differ: they are overwritten in place
+// and lines are inserted or deleted only where their numbers differ, from the bottom up so that rows
+// still to be changed keep their positions. Bookmarks are moved along with their lines and lines which
+// stay get objects of their counterparts. Returns whether any text changed
+function TEditorForm.PatchEditorLines(ALines: TStrings): boolean;
+begin
+   result := False;
+   var lines := memCodeEditor.Lines;
+   var diff := DiffLines(lines, ALines);
+   lines.BeginUpdate;
+   try
+      for var i := 0 to lines.Count-1 do
+      begin
+         var j := diff.Map1[i];
+         if (j <> ROW_NOT_FOUND) and (lines.Objects[i] <> ALines.Objects[j]) then
+            lines.Objects[i] := ALines.Objects[j];
+      end;
+      var i := lines.Count;
+      var j := ALines.Count;
+      while (i > 0) or (j > 0) do
+      begin
+         var prevI := i - 1;
+         while (prevI >= 0) and (diff.Map1[prevI] = ROW_NOT_FOUND) do
+            Dec(prevI);
+         var prevJ := -1;
+         if prevI >= 0 then
+            prevJ := diff.Map1[prevI];
+         var start := prevI + 1;
+         var delCount := i - start;
+         var insCount := j - prevJ - 1;
+         if (delCount > 0) or (insCount > 0) then
+         begin
+            result := True;
+            var k := Min(delCount, insCount);
+            for var r := 0 to k-1 do
+            begin
+               lines[start+r] := ALines[prevJ+1+r];
+               lines.Objects[start+r] := ALines.Objects[prevJ+1+r];
+            end;
+            var atRow := start + k;
+            if insCount > delCount then
+            begin
+               var count := insCount - delCount;
+               for var r := 0 to count-1 do
+                  lines.InsertObject(atRow+r, ALines[prevJ+1+k+r], ALines.Objects[prevJ+1+k+r]);
+               for var m := 0 to memCodeEditor.Marks.Count-1 do
+               begin
+                  var mark := memCodeEditor.Marks[m];
+                  if mark.Line >= atRow + 1 then
+                     mark.Line := mark.Line + count;
+               end;
+            end
+            else if delCount > insCount then
+            begin
+               var count := delCount - insCount;
+               for var r := 0 to count-1 do
+                  lines.Delete(atRow);
+               for var m := 0 to memCodeEditor.Marks.Count-1 do
+               begin
+                  var mark := memCodeEditor.Marks[m];
+                  if mark.Line > atRow + count then
+                     mark.Line := mark.Line - count
+                  else if mark.Line > atRow then
+                     mark.Line := atRow + 1;      // its line is gone, so it stays where that line was
+               end;
+            end;
+         end;
+         i := prevI;
+         j := prevJ;
+      end;
+   finally
+      lines.EndUpdate;
+   end;
+end;
+
 procedure TEditorForm.DisplayLines(ALines: TStringList; AReset: boolean);
 begin
    if (ALines = nil) or ALines.IsEmpty then
@@ -657,25 +733,37 @@ begin
       var lines: TStrings := ALines;
       if merged <> nil then
          lines := merged;
-      // replacing editor text expands all folds and clears undo history, so it is done only when text changes
-      if AReset or not SameContents(lines, editorLines) then
+      if AReset then
       begin
 {$IFDEF USE_CODEFOLDING}
-         var collapsedLines := MapCollapsedLines(editorLines, lines);
          memCodeEditor.AllFoldRanges.DestroyAll;
 {$ENDIF}
-         if AReset then
-            memCodeEditor.Marks.Clear;
+         memCodeEditor.Marks.Clear;
          memCodeEditor.Highlighter := nil;
          memCodeEditor.Lines.Assign(lines);
          if GSettings.EditorShowRichText then
             memCodeEditor.Highlighter := GInfra.CurrentLang.HighLighter;
          OnChangeEditor;
+         memCodeEditor.ClearUndo;
+         memCodeEditor.Modified := False;
+      end
+      else if not SameContents(lines, editorLines) then
+      begin
+         // only lines which differ are changed, so that the rest of editor stays as it is
+{$IFDEF USE_CODEFOLDING}
+         var collapsedLines := MapCollapsedLines(editorLines, lines);
+         memCodeEditor.UncollapseAll;   // editor lines are then the same as editorLines
+{$ENDIF}
+         var textChanged := PatchEditorLines(lines);
+         OnChangeEditor;
 {$IFDEF USE_CODEFOLDING}
          CollapseLines(collapsedLines);
 {$ENDIF}
-         memCodeEditor.ClearUndo;
-         memCodeEditor.Modified := not AReset;
+         if textChanged then
+         begin
+            memCodeEditor.ClearUndo;   // changes made directly to editor lines are not in undo history
+            memCodeEditor.Modified := True;
+         end;
       end;
    finally
       merged.Free;
