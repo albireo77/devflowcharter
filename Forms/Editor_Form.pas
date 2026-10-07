@@ -70,6 +70,7 @@ type
     N3: TMenuItem;
     miView: TMenuItem;
     miRegenerate: TMenuItem;
+    miRegenerateFromScratch: TMenuItem;
     miStatusBar: TMenuItem;
     miGutter: TMenuItem;
     miScrollbars: TMenuItem;
@@ -1127,6 +1128,12 @@ end;
 
 procedure TEditorForm.miRegenerateClick(Sender: TObject);
 begin
+   if Sender = miRegenerateFromScratch then
+   begin
+      // with no previously generated code to merge with, code is generated afresh and user changes are dropped
+      FGeneratedLines.Clear;
+      FDetached.Clear;
+   end;
    OnShow(Self);
 end;
 

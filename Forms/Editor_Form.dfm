@@ -354,6 +354,12 @@ object EditorForm: TEditorForm
         ShortCut = 116
         OnClick = miRegenerateClick
       end
+      object miRegenerateFromScratch: TMenuItem
+        Tag = 2
+        Caption = 'Regenerate from scratch'
+        ShortCut = 8308
+        OnClick = miRegenerateClick
+      end
     end
     object miHelp: TMenuItem
       Tag = 2
