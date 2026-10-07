@@ -851,10 +851,10 @@ begin
                detached.TextMatchable := True;
                Inc(ADetached.FSequence);
             end;
-            var line: TDetachedLine;
-            line.Text := FBase[b];
-            line.Tail := FTails[b];
-            detached.Lines := detached.Lines + [line];
+            var detachedLine: TDetachedLine;
+            detachedLine.Text := FBase[b];
+            detachedLine.Tail := FTails[b];
+            detached.Lines := detached.Lines + [detachedLine];
             ADetached.FItems.AddOrSetValue(id, detached);
          end;
       end;

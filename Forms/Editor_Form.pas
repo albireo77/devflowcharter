@@ -667,11 +667,11 @@ begin
                var count := insCount - delCount;
                for var r := 0 to count-1 do
                   lines.InsertObject(atRow+r, ALines[prevJ+1+k+r], ALines.Objects[prevJ+1+k+r]);
-               for var m := 0 to memCodeEditor.Marks.Count-1 do
+               for var m: integer := 0 to memCodeEditor.Marks.Count-1 do   // integer index selects typed Items of mark list, not inherited TObject one
                begin
-                  var mark := memCodeEditor.Marks[m];
-                  if mark.Line >= atRow + 1 then
-                     mark.Line := mark.Line + count;
+                  var insMark: TSynEditMark := memCodeEditor.Marks[m];
+                  if insMark.Line >= atRow + 1 then
+                     insMark.Line := insMark.Line + count;
                end;
             end
             else if delCount > insCount then
@@ -679,13 +679,13 @@ begin
                var count := delCount - insCount;
                for var r := 0 to count-1 do
                   lines.Delete(atRow);
-               for var m := 0 to memCodeEditor.Marks.Count-1 do
+               for var m: integer := 0 to memCodeEditor.Marks.Count-1 do   // integer index selects typed Items of mark list, not inherited TObject one
                begin
-                  var mark := memCodeEditor.Marks[m];
-                  if mark.Line > atRow + count then
-                     mark.Line := mark.Line - count
-                  else if mark.Line > atRow then
-                     mark.Line := atRow + 1;      // its line is gone, so it stays where that line was
+                  var delMark: TSynEditMark := memCodeEditor.Marks[m];
+                  if delMark.Line > atRow + count then
+                     delMark.Line := delMark.Line - count
+                  else if delMark.Line > atRow then
+                     delMark.Line := atRow + 1;      // its line is gone, so it stays where that line was
                end;
             end;
          end;
