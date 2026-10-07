@@ -62,6 +62,8 @@ type
    TDetachedObject = record
       Obj: NativeInt;
       Lines: TArray<TDetachedLine>;
+      Sequence: integer;               // order in which objects were detached
+      TextMatchable: boolean;          // whether a new object with the same lines may take it over
    end;
 
    // User changes of lines whose flowchart object no longer generates code (e.g. removed block),
@@ -69,6 +71,7 @@ type
    TDetachedLines = class
    private
       FItems: TDictionary<integer, TDetachedObject>;
+      FSequence: integer;
    public
       constructor Create;
       destructor Destroy; override;
@@ -544,37 +547,106 @@ begin
    FTrailing := pending;
 end;
 
-// Lines of objects which generate code again join previously generated lines with what the user made of them
+// Lines of objects which generate code again join previously generated lines with what the user made of them.
+// An object comes back by its id (e.g. undo of removal) or, when it is a copy of an object detached since
+// the last time new objects appeared (e.g. block moved by drag and drop, which cuts it and pastes a copy),
+// by having the same lines
 procedure TCodeMerger.Rejoin(ANewIds: TObjectIds; ADetached: TDetachedLines);
+
+   procedure Take(AObject: TObject; const ADetachedObject: TDetachedObject);
+   begin
+      for var line in ADetachedObject.Lines do
+      begin
+         FBase := FBase + [line.Text];
+         FBaseObjects := FBaseObjects + [AObject];
+         FEdits := FEdits + [line.Edit];
+      end;
+   end;
+
 begin
    if (ADetached = nil) or (ANewIds = nil) or (ADetached.FItems.Count = 0) then
       Exit;
    var baseObjects := TDictionary<NativeInt, boolean>.Create;
+   var newRows := TDictionary<NativeInt, TArray<integer>>.Create;
    try
       for var obj in FBaseObjects do
       begin
          if obj <> nil then
             baseObjects.AddOrSetValue(NativeInt(obj), True);
       end;
-      for var obj in FNewObjects do
+      var appeared: TArray<TObject> := nil;   // objects new to the code, in order of their lines
+      for var i := 0 to High(FNewObjects) do
+      begin
+         var obj := FNewObjects[i];
+         if (obj = nil) or baseObjects.ContainsKey(NativeInt(obj)) then
+            continue;
+         var rows: TArray<integer> := nil;
+         if not newRows.TryGetValue(NativeInt(obj), rows) then
+            appeared := appeared + [obj];
+         newRows.AddOrSetValue(NativeInt(obj), rows + [i]);
+      end;
+      for var obj in appeared do
       begin
          var id: integer;
          var detached: TDetachedObject;
-         if (obj = nil) or baseObjects.ContainsKey(NativeInt(obj)) or not ANewIds.TryGetValue(NativeInt(obj), id) or
-            not ADetached.FItems.TryGetValue(id, detached) then
-            continue;
-         ADetached.FItems.Remove(id);
-         if detached.Obj <> NativeInt(obj) then
-            continue;                  // id given to another object meanwhile
-         baseObjects.AddOrSetValue(NativeInt(obj), True);
-         for var line in detached.Lines do
+         if ANewIds.TryGetValue(NativeInt(obj), id) and ADetached.FItems.TryGetValue(id, detached) then
          begin
-            FBase := FBase + [line.Text];
-            FBaseObjects := FBaseObjects + [obj];
-            FEdits := FEdits + [line.Edit];
+            ADetached.FItems.Remove(id);
+            if detached.Obj = NativeInt(obj) then    // otherwise id given to another object meanwhile
+            begin
+               baseObjects.AddOrSetValue(NativeInt(obj), True);
+               Take(obj, detached);
+            end;
+         end;
+      end;
+      for var obj in appeared do
+      begin
+         if baseObjects.ContainsKey(NativeInt(obj)) then
+            continue;
+         var rows := newRows[NativeInt(obj)];
+         var found := False;
+         var bestId := 0;
+         var best: TDetachedObject;
+         for var pair in ADetached.FItems do
+         begin
+            var detached := pair.Value;
+            if not detached.TextMatchable or (Length(detached.Lines) <> Length(rows)) or (found and (detached.Sequence >= best.Sequence)) then
+               continue;
+            var same := True;
+            for var k := 0 to High(rows) do
+            begin
+               if detached.Lines[k].Text.TrimLeft <> FNew[rows[k]].TrimLeft then
+               begin
+                  same := False;
+                  break;
+               end;
+            end;
+            if same then
+            begin
+               found := True;
+               bestId := pair.Key;
+               best := detached;
+            end;
+         end;
+         if found then
+         begin
+            ADetached.FItems.Remove(bestId);
+            baseObjects.AddOrSetValue(NativeInt(obj), True);
+            Take(obj, best);
+         end;
+      end;
+      if appeared <> nil then
+      begin
+         // objects detached before can come back by their id only
+         for var id in ADetached.FItems.Keys.ToArray do
+         begin
+            var detached := ADetached.FItems[id];
+            detached.TextMatchable := False;
+            ADetached.FItems[id] := detached;
          end;
       end;
    finally
+      newRows.Free;
       baseObjects.Free;
    end;
 end;
@@ -785,6 +857,9 @@ begin
             begin
                detached.Obj := NativeInt(obj);
                detached.Lines := nil;
+               detached.Sequence := ADetached.FSequence;
+               detached.TextMatchable := True;
+               Inc(ADetached.FSequence);
             end;
             var line: TDetachedLine;
             line.Text := FBase[b];
