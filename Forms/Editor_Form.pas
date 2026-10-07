@@ -980,10 +980,7 @@ begin
        begin
           SaveToFile(SaveDialog1.FileName);
           var fileName := ExtractFileName(SaveDialog1.FileName);
-          var fileNameNoExt := fileName;
-          var p := Pos('.', fileNameNoExt);
-          if p > 0 then
-             SetLength(fileNameNoExt, p-1);
+          var fileNameNoExt := ChangeFileExt(fileName, '');
           if main = nil then
           begin
              if commandNoMain.IsEmpty then
