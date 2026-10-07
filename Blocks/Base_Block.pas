@@ -55,6 +55,8 @@ type
          FParentBlock: TGroupBlock;
          FParentBranch: TBranch;
          FId: integer;
+         FUndoPrev: TBlock;                 // block this one followed in its branch before it was removed, compared only
+         FUndoIndex: integer;               // position in its branch before it was removed; -1: not removed
          procedure RefreshStatements;
       protected
          FType: TBlockType;
@@ -253,9 +255,7 @@ type
    TBranch = class(TList<TBlock>, IWithId)
       private
          FParentBlock: TGroupBlock;
-         FRemovedBlockIdx: integer;
          FId: integer;
-         procedure ResetRemovedBlockIdx;
          function GetHeight: integer;
          function GetId: integer;
          function _AddRef: Integer; stdcall;
@@ -322,6 +322,7 @@ begin
    SetBounds(ABlockParms.x, ABlockParms.y, ABlockParms.w, ABlockParms.h);
 
    FRedArrow := -1;
+   FUndoIndex := -1;
    FId := GProject.Register(Self, ABlockParms.bid);
    FMouseLeave := True;
    FShape := AShape;
@@ -2530,7 +2531,6 @@ begin
    inherited Create;
    FParentBlock := AParentBlock;
    Hook := AHook;
-   ResetRemovedBlockIdx;
    FId := GProject.Register(Self, AId);
 end;
 
@@ -2542,11 +2542,6 @@ begin
    if GProject <> nil then
       GProject.UnRegister(Self);
    inherited Destroy;
-end;
-
-procedure TBranch.ResetRemovedBlockIdx;
-begin
-   FRemovedBlockIdx := -1;	// it must be negative value
 end;
 
 function TBranch.GetMostRight: integer;
@@ -2573,19 +2568,41 @@ begin
    result := (not IsEmpty) and (Last is TReturnBlock);
 end;
 
+// Puts back a removed block after the block it followed, as other blocks may have been added to or
+// removed from the branch since; at its former position if the block it followed is gone too
 procedure TBranch.UndoRemove(ABlock: TBlock);
 begin
-   if (ABlock <> nil) and (Self = ABlock.ParentBranch) and (FRemovedBlockIdx >= 0) then
+   if (ABlock <> nil) and (Self = ABlock.ParentBranch) and (ABlock.FUndoIndex >= 0) then
    begin
-      Insert(FRemovedBlockIdx, ABlock);
-      ResetRemovedBlockIdx;
+      var idx := Min(ABlock.FUndoIndex, Count);
+      if ABlock.FUndoPrev = nil then
+         idx := 0
+      else
+      begin
+         for var i := 0 to Count-1 do
+         begin
+            if Items[i] = ABlock.FUndoPrev then
+            begin
+               idx := i + 1;
+               break;
+            end;
+         end;
+      end;
+      Insert(idx, ABlock);
+      ABlock.FUndoIndex := -1;
+      ABlock.FUndoPrev := nil;
    end;
 end;
 
+// Removal is remembered by the removed block itself, so that removing another block does not affect its undo
 function TBranch.Remove(ABlock: TBlock): integer;
 begin
    result := inherited Remove(ABlock);
-   FRemovedBlockIdx := result;
+   if (result >= 0) and (ABlock <> nil) then
+   begin
+      ABlock.FUndoIndex := result;
+      ABlock.FUndoPrev := if result > 0 then Items[result-1] else nil;
+   end;
 end;
 
 function TBranch.GetId: integer;
