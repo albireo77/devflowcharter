@@ -861,7 +861,7 @@ begin
             memCodeEditor.SelLength := ReplaceDialog.FindText.Length;
             memCodeEditor.ClearSelection;
             memCodeEditor.PasteFromClipboard;
-            memCodeEditor.SelStart := memCodeEditor.SelStart + ReplaceDialog.ReplaceText.Length;
+            memCodeEditor.SelStart := i - 1 + ReplaceDialog.ReplaceText.Length;   // next search starts right after the replacement
          end;
       end;
       if memCodeEditor.SelAvail then
