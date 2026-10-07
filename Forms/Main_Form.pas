@@ -244,6 +244,12 @@ uses
 type
   TPopupMenuHack = class(TPopupMenu);
 
+  // menu item for user function, carrying library of the function
+  TFuncMenuItem = class(TMenuItem)
+  public
+    Lib: string;
+  end;
+
 var
    ByCaptionMenuItemComparer: IComparer<TMenuItem>;
 
@@ -1314,7 +1320,7 @@ begin
       var funcName := StripHotKey(menuItem.Caption);
       var fCursorPos := GInfra.CurrentLang.FuncBracketsCursorPos;
       var fBrackets := GInfra.CurrentLang.FuncBrackets;
-      var fLibrary := menuItem.Name;
+      var fLibrary := if menuItem is TFuncMenuItem then TFuncMenuItem(menuItem).Lib else '';
       if menuItem.Tag <> 0 then
       begin
          var func := PNativeFunction(menuItem.Tag);
@@ -1346,11 +1352,11 @@ begin
    begin
       if func.IsValid then
       begin
-         var mItem := TMenuItem.Create(miInsertFunc);
+         var mItem: TMenuItem := TFuncMenuItem.Create(miInsertFunc);
          mItem.Caption := func.GetName;
          mItem.Hint := lang.GetUserFuncDesc(func.Header);
          if func.Header <> nil then
-            mItem.Name := Trim(func.Header.edtLibrary.Text);
+            TFuncMenuItem(mItem).Lib := Trim(func.Header.edtLibrary.Text);   // not in Name, which must be unique identifier
          mItem.OnClick := FuncMenuClick;
          mItems := mItems + [mItem];
       end;
