@@ -22,12 +22,11 @@
 
 unit CodeMerge;
 
-// Keeps what the user changed in code editor when code is generated again from flowchart.
-// Every generated line is identified by flowchart object it belongs to rather than by its text,
-// and every change the user made is attached to such line: text appended to it or put in its place,
-// its removal and lines the user wrote in front of it. Freshly generated code is then walked line
-// by line and each line brings along what the user attached to it, so user changes follow their
-// lines when blocks move, change or disappear and come back (undo of removal).
+// Keeps text the user appended after the end of generated lines in code editor (e.g. trailing comments)
+// when code is generated again from flowchart. Everything else in editor is replaced by freshly generated
+// code, so that code always matches flowchart. Every generated line is identified by flowchart object it
+// belongs to rather than by its text, so appended text follows its line when blocks move, change or
+// disappear and come back (undo of removal).
 
 interface
 
@@ -45,18 +44,9 @@ type
    // as objects of previously generated lines may be freed already and must not be touched
    TObjectIds = TDictionary<NativeInt, integer>;
 
-   TUserEditKind = (ueKept, ueAppended, ueChanged, ueDeleted);
-
-   // what the user made of one previously generated line
-   TUserEdit = record
-      Kind: TUserEditKind;
-      Text: string;                    // text appended for ueAppended, whole line for ueChanged
-      Leading: TArray<string>;         // lines the user wrote in front of it
-   end;
-
    TDetachedLine = record
       Text: string;                    // line as generated last time
-      Edit: TUserEdit;
+      Tail: string;                    // text the user appended to it
    end;
 
    TDetachedObject = record
@@ -66,7 +56,7 @@ type
       TextMatchable: boolean;          // whether a new object with the same lines may take it over
    end;
 
-   // User changes of lines whose flowchart object no longer generates code (e.g. removed block),
+   // Text appended to lines whose flowchart object no longer generates code (e.g. removed block),
    // kept for when the object generates code again (e.g. removal is undone)
    TDetachedLines = class
    private
@@ -86,7 +76,11 @@ function MergeLines(ABase, AEditor, ANew: TStrings; ABaseIds: TObjectIds = nil; 
 implementation
 
 uses
-   Constants;
+   System.Math, Constants;
+
+const
+   MAX_PAIR_CELLS = 2000000;
+   MAX_CHAR_CELLS = 1000000;
 
 type
    // Myers' diff in linear space: finds the longest sequence of lines common to two lists
@@ -104,17 +98,18 @@ type
    private
       FBase, FEditor, FNew: TArray<string>;
       FBaseObjects, FEditorObjects, FNewObjects: TArray<TObject>;
-      FEdits: TArray<TUserEdit>;
-      FTrailing: TArray<string>;
+      FTails: TArray<string>;              // text the user appended to each previously generated line
+      FUnpaired: TDictionary<NativeInt, TArray<integer>>;   // editor lines paired with no previously generated line, by object
       FIdBase, FIdNew: TArray<integer>;    // identity: matching line of the other list
-      procedure PairGap(AFromBase, AToBase, AFromEditor, AToEditor: integer; var AMapBase, AMapEditor: TArray<integer>);
-      procedure FindUserEdits;
+      procedure PairRows(const ABaseRows, AEditorRows: TArray<integer>; ABound: boolean; var APairs: TArray<integer>);
+      procedure FindTails;
       procedure Rejoin(ANewIds: TObjectIds; ADetached: TDetachedLines);
       procedure MatchRuns(const ABaseRows, ANewRows: TArray<integer>);
       procedure FindIdentity;
       function Emit(ABaseIds: TObjectIds; ADetached: TDetachedLines): TStringList;
    public
       constructor Create(ABase, AEditor, ANew: TStrings);
+      destructor Destroy; override;
       function Merge(ABaseIds, ANewIds: TObjectIds; ADetached: TDetachedLines): TStringList;
    end;
 
@@ -320,28 +315,68 @@ begin
       result[i] := ALines.Objects[i];
 end;
 
-// Line with the object it is bound to, so that lines of different objects never match
-function Token(const AText: string; AObject: TObject): string;
-begin
-   result := AText;
-   if AObject <> nil then
-      result := result + #0 + IntToHex(Int64(NativeInt(AObject)), 16);
-end;
-
 function Extends(const ALine, ABase: string): boolean;
 begin
    result := (ALine.Length > ABase.Length) and ALine.StartsWith(ABase) and not ABase.Trim.IsEmpty;
 end;
 
-function JoinLines(const A, B: TArray<string>): TArray<string>;
+// How well editor line fits previously generated line: 3 - the same, 2 - with text appended, 1 - changed
+// by the user (only line bound to flowchart object, which stays bound to it when changed), 0 - not at all
+function Score(const AEditorLine, ABaseLine: string; ABound: boolean): integer;
 begin
-   result := A;
-   if Length(B) > 0 then
+   if AEditorLine = ABaseLine then
+      result := 3
+   else if Extends(AEditorLine, ABaseLine) then
+      result := 2
+   else if ABound then
+      result := 1
+   else
+      result := 0;
+end;
+
+// Text the user appended after the end of generated line ABaseLine within line AEditorLine, whose generated
+// part the user also changed. Characters of generated line are aligned within edited one and text after the
+// position its last character got is returned; nothing if that character cannot be aligned
+function AppendedAfter(const AEditorLine, ABaseLine: string): string;
+begin
+   result := '';
+   var base := ABaseLine.TrimRight;
+   var n := base.Length;
+   var m := AEditorLine.Length;
+   if base.Trim.IsEmpty or (m = 0) or (Int64(n)*m > MAX_CHAR_CELLS) then
+      Exit;
+   var w := m + 1;
+   var common: TArray<integer>;        // length of longest common subsequence of base from i on and line from j on
+   SetLength(common, (n+1)*w);
+   for var i := n-1 downto 0 do
    begin
-      SetLength(result, Length(A) + Length(B));
-      for var i := 0 to High(B) do
-         result[Length(A)+i] := B[i];
+      for var j := m-1 downto 0 do
+      begin
+         if base.Chars[i] = AEditorLine.Chars[j] then
+            common[i*w+j] := 1 + common[(i+1)*w+j+1]
+         else
+            common[i*w+j] := Max(common[(i+1)*w+j], common[i*w+j+1]);
+      end;
    end;
+   var bi := 0;
+   var ej := 0;
+   var endPos := -1;
+   while (bi < n) and (ej < m) do
+   begin
+      if (base.Chars[bi] = AEditorLine.Chars[ej]) and (common[bi*w+ej] = 1 + common[(bi+1)*w+ej+1]) then
+      begin
+         if bi = n-1 then
+            endPos := ej;
+         Inc(bi);
+         Inc(ej);
+      end
+      else if common[(bi+1)*w+ej] >= common[bi*w+ej+1] then
+         Inc(bi)
+      else
+         Inc(ej);
+   end;
+   if endPos >= 0 then
+      result := AEditorLine.Substring(endPos+1);
 end;
 
 constructor TDetachedLines.Create;
@@ -381,173 +416,134 @@ begin
    FBaseObjects := ObjectsOf(ABase);
    FEditorObjects := ObjectsOf(AEditor);
    FNewObjects := ObjectsOf(ANew);
+   FUnpaired := TDictionary<NativeInt, TArray<integer>>.Create;
 end;
 
-// Pairs lines left unmatched within one gap between matched lines, keeping their order: line bound
-// to an object pairs with editor line of the same object, unbound one with editor line extending it.
-// Equal numbers of unbound lines left between such pairs are taken for lines changed in place
-procedure TCodeMerger.PairGap(AFromBase, AToBase, AFromEditor, AToEditor: integer; var AMapBase, AMapEditor: TArray<integer>);
+destructor TCodeMerger.Destroy;
 begin
-   var baseRows: TArray<integer> := nil;
-   var editorRows: TArray<integer> := nil;
-   for var b := AFromBase to AToBase-1 do
-   begin
-      if AMapBase[b] = ROW_NOT_FOUND then
-         baseRows := baseRows + [b];
-   end;
-   for var e := AFromEditor to AToEditor-1 do
-   begin
-      if AMapEditor[e] = ROW_NOT_FOUND then
-         editorRows := editorRows + [e];
-   end;
-   if (baseRows = nil) or (editorRows = nil) then
+   FUnpaired.Free;
+   inherited Destroy;
+end;
+
+// Pairs previously generated lines with editor lines of the same object, keeping their order, so that
+// identical lines, lines with text appended and changed lines weigh as much as possible (see Score)
+procedure TCodeMerger.PairRows(const ABaseRows, AEditorRows: TArray<integer>; ABound: boolean; var APairs: TArray<integer>);
+begin
+   var n := Length(ABaseRows);
+   var m := Length(AEditorRows);
+   if (n = 0) or (m = 0) then
       Exit;
-   var pairsBase: TArray<integer> := nil;
-   var pairsEditor: TArray<integer> := nil;
-   var cursor := 0;
-   for var b in baseRows do
+   if Int64(n)*m > MAX_PAIR_CELLS then
    begin
-      for var k := cursor to High(editorRows) do
+      // too many lines to weigh every pairing, so each line takes the first editor line fitting it
+      var cursor := 0;
+      for var b in ABaseRows do
       begin
-         var e := editorRows[k];
-         var fits := False;
-         if FBaseObjects[b] <> nil then
-            fits := FEditorObjects[e] = FBaseObjects[b]
-         else if FEditorObjects[e] = nil then
-            fits := Extends(FEditor[e], FBase[b]);
-         if fits then
+         for var k := cursor to m-1 do
          begin
-            AMapBase[b] := e;
-            AMapEditor[e] := b;
-            pairsBase := pairsBase + [b];
-            pairsEditor := pairsEditor + [e];
-            cursor := k + 1;
-            break;
-         end;
-      end;
-   end;
-   var ib := 0;
-   var ie := 0;
-   for var p := 0 to Length(pairsBase) do
-   begin
-      var limitBase := AToBase;
-      var limitEditor := AToEditor;
-      if p < Length(pairsBase) then
-      begin
-         limitBase := pairsBase[p];
-         limitEditor := pairsEditor[p];
-      end;
-      var restBase: TArray<integer> := nil;
-      var restEditor: TArray<integer> := nil;
-      while (ib < Length(baseRows)) and (baseRows[ib] < limitBase) do
-      begin
-         if AMapBase[baseRows[ib]] = ROW_NOT_FOUND then
-            restBase := restBase + [baseRows[ib]];
-         Inc(ib);
-      end;
-      while (ie < Length(editorRows)) and (editorRows[ie] < limitEditor) do
-      begin
-         if AMapEditor[editorRows[ie]] = ROW_NOT_FOUND then
-            restEditor := restEditor + [editorRows[ie]];
-         Inc(ie);
-      end;
-      if (restBase <> nil) and (Length(restBase) = Length(restEditor)) then
-      begin
-         var unbound := True;
-         for var k := 0 to High(restBase) do
-         begin
-            if (FBaseObjects[restBase[k]] <> nil) or (FEditorObjects[restEditor[k]] <> nil) then
+            if Score(FEditor[AEditorRows[k]], FBase[b], ABound) > 0 then
             begin
-               unbound := False;
+               APairs[b] := AEditorRows[k];
+               cursor := k + 1;
                break;
             end;
          end;
-         if unbound then
+      end;
+      Exit;
+   end;
+   var w := m + 1;
+   var weights: TArray<integer>;        // best total weight of pairing base rows from i on and editor rows from j on
+   SetLength(weights, (n+1)*w);
+   for var i := n-1 downto 0 do
+   begin
+      for var j := m-1 downto 0 do
+      begin
+         var best := Max(weights[(i+1)*w+j], weights[i*w+j+1]);
+         var fit := Score(FEditor[AEditorRows[j]], FBase[ABaseRows[i]], ABound);
+         if fit > 0 then
+            best := Max(best, fit + weights[(i+1)*w+j+1]);
+         weights[i*w+j] := best;
+      end;
+   end;
+   var bi := 0;
+   var ej := 0;
+   while (bi < n) and (ej < m) do
+   begin
+      var fit := Score(FEditor[AEditorRows[ej]], FBase[ABaseRows[bi]], ABound);
+      if (fit > 0) and (weights[bi*w+ej] = fit + weights[(bi+1)*w+ej+1]) then
+      begin
+         APairs[ABaseRows[bi]] := AEditorRows[ej];
+         Inc(bi);
+         Inc(ej);
+      end
+      else if weights[bi*w+ej] = weights[(bi+1)*w+ej] then
+         Inc(bi)
+      else
+         Inc(ej);
+   end;
+end;
+
+// Finds text the user appended to each previously generated line, pairing lines of the same flowchart
+// object (or lines bound to none) in editor and in previously generated code
+procedure TCodeMerger.FindTails;
+begin
+   var baseGroups := TDictionary<NativeInt, TArray<integer>>.Create;
+   var editorGroups := TDictionary<NativeInt, TArray<integer>>.Create;
+   try
+      for var b := 0 to High(FBase) do
+      begin
+         var rows: TArray<integer> := nil;
+         baseGroups.TryGetValue(NativeInt(FBaseObjects[b]), rows);
+         baseGroups.AddOrSetValue(NativeInt(FBaseObjects[b]), rows + [b]);
+      end;
+      for var e := 0 to High(FEditor) do
+      begin
+         var rows: TArray<integer> := nil;
+         editorGroups.TryGetValue(NativeInt(FEditorObjects[e]), rows);
+         editorGroups.AddOrSetValue(NativeInt(FEditorObjects[e]), rows + [e]);
+      end;
+      var pairs: TArray<integer>;
+      SetLength(pairs, Length(FBase));
+      for var b := 0 to High(pairs) do
+         pairs[b] := ROW_NOT_FOUND;
+      for var group in baseGroups do
+      begin
+         var editorRows: TArray<integer>;
+         if editorGroups.TryGetValue(group.Key, editorRows) then
+            PairRows(group.Value, editorRows, group.Key <> 0, pairs);   // key 0: lines bound to no object
+      end;
+      var used: TArray<boolean>;
+      SetLength(used, Length(FEditor));
+      SetLength(FTails, Length(FBase));
+      for var b := 0 to High(FBase) do
+      begin
+         FTails[b] := '';
+         var e := pairs[b];
+         if e <> ROW_NOT_FOUND then
          begin
-            for var k := 0 to High(restBase) do
-            begin
-               AMapBase[restBase[k]] := restEditor[k];
-               AMapEditor[restEditor[k]] := restBase[k];
-            end;
+            used[e] := True;
+            if Extends(FEditor[e], FBase[b]) then
+               FTails[b] := FEditor[e].Substring(FBase[b].Length)
+            else if FEditor[e] <> FBase[b] then
+               FTails[b] := AppendedAfter(FEditor[e], FBase[b]);   // line the user also changed
          end;
       end;
-      if p < Length(pairsBase) then
+      for var e := 0 to High(FEditor) do
       begin
-         Inc(ib);                      // the paired lines themselves
-         Inc(ie);
+         if not used[e] and not FEditor[e].Trim.IsEmpty then
+         begin
+            var rows: TArray<integer> := nil;
+            FUnpaired.TryGetValue(NativeInt(FEditorObjects[e]), rows);
+            FUnpaired.AddOrSetValue(NativeInt(FEditorObjects[e]), rows + [e]);
+         end;
       end;
+   finally
+      editorGroups.Free;
+      baseGroups.Free;
    end;
 end;
 
-// Finds what the user made of each previously generated line, by comparing it with editor content
-procedure TCodeMerger.FindUserEdits;
-begin
-   var baseTokens: TArray<string>;
-   var editorTokens: TArray<string>;
-   SetLength(baseTokens, Length(FBase));
-   SetLength(editorTokens, Length(FEditor));
-   for var i := 0 to High(FBase) do
-      baseTokens[i] := Token(FBase[i], FBaseObjects[i]);
-   for var i := 0 to High(FEditor) do
-      editorTokens[i] := Token(FEditor[i], FEditorObjects[i]);
-   var diff := DiffArrays(baseTokens, editorTokens);
-   var mapBase := diff.Map1;
-   var mapEditor := diff.Map2;
-   var exact: TArray<boolean>;
-   SetLength(exact, Length(FBase));
-   for var b := 0 to High(FBase) do
-      exact[b] := mapBase[b] <> ROW_NOT_FOUND;
-   var fromBase := 0;
-   var fromEditor := 0;
-   for var b := 0 to Length(FBase) do
-   begin
-      if (b = Length(FBase)) or exact[b] then
-      begin
-         var toEditor := Length(FEditor);
-         if b < Length(FBase) then
-            toEditor := mapBase[b];
-         PairGap(fromBase, b, fromEditor, toEditor, mapBase, mapEditor);
-         fromBase := b + 1;
-         fromEditor := toEditor + 1;
-      end;
-   end;
-   SetLength(FEdits, Length(FBase));
-   for var b := 0 to High(FBase) do
-   begin
-      var e := mapBase[b];
-      FEdits[b].Leading := nil;
-      FEdits[b].Text := '';
-      if e = ROW_NOT_FOUND then
-         FEdits[b].Kind := ueDeleted
-      else if exact[b] then
-         FEdits[b].Kind := ueKept
-      else if Extends(FEditor[e], FBase[b]) then
-      begin
-         FEdits[b].Kind := ueAppended;
-         FEdits[b].Text := FEditor[e].Substring(FBase[b].Length);
-      end
-      else
-      begin
-         FEdits[b].Kind := ueChanged;
-         FEdits[b].Text := FEditor[e];
-      end;
-   end;
-   var pending: TArray<string> := nil;
-   for var e := 0 to High(FEditor) do
-   begin
-      var b := mapEditor[e];
-      if b = ROW_NOT_FOUND then
-         pending := pending + [FEditor[e]]      // written by the user
-      else
-      begin
-         FEdits[b].Leading := JoinLines(FEdits[b].Leading, pending);
-         pending := nil;
-      end;
-   end;
-   FTrailing := pending;
-end;
-
-// Lines of objects which generate code again join previously generated lines with what the user made of them.
+// Lines of objects which generate code again join previously generated lines with text appended to them.
 // An object comes back by its id (e.g. undo of removal) or, when it is a copy of an object detached since
 // the last time new objects appeared (e.g. block moved by drag and drop, which cuts it and pastes a copy),
 // by having the same lines
@@ -559,7 +555,7 @@ procedure TCodeMerger.Rejoin(ANewIds: TObjectIds; ADetached: TDetachedLines);
       begin
          FBase := FBase + [line.Text];
          FBaseObjects := FBaseObjects + [AObject];
-         FEdits := FEdits + [line.Edit];
+         FTails := FTails + [line.Tail];
       end;
    end;
 
@@ -826,9 +822,8 @@ begin
    end;
 end;
 
-// Builds the result from freshly generated lines and what the user made of their counterparts.
-// User lines of previously generated lines which are gone move on to the next line still there,
-// unless the object they belong to no longer generates code, then they are kept for its return
+// Builds the result from freshly generated lines with text the user appended to their counterparts.
+// Text appended to lines of objects which no longer generate code is kept for their return
 function TCodeMerger.Emit(ABaseIds: TObjectIds; ADetached: TDetachedLines): TStringList;
 begin
    var newObjects := TDictionary<NativeInt, boolean>.Create;
@@ -838,15 +833,10 @@ begin
          if obj <> nil then
             newObjects.AddOrSetValue(NativeInt(obj), True);
       end;
-      var carry: TArray<string> := nil;
       for var b := 0 to High(FBase) do
       begin
          if FIdBase[b] <> ROW_NOT_FOUND then
-         begin
-            FEdits[b].Leading := JoinLines(carry, FEdits[b].Leading);
-            carry := nil;
             continue;
-         end;
          var obj := FBaseObjects[b];
          var id: integer;
          if (obj <> nil) and (ADetached <> nil) and (ABaseIds <> nil) and not newObjects.ContainsKey(NativeInt(obj)) and
@@ -863,71 +853,61 @@ begin
             end;
             var line: TDetachedLine;
             line.Text := FBase[b];
-            line.Edit := FEdits[b];
+            line.Tail := FTails[b];
             detached.Lines := detached.Lines + [line];
             ADetached.FItems.AddOrSetValue(id, detached);
-         end
-         else
-         begin
-            carry := JoinLines(carry, FEdits[b].Leading);
-            if (obj = nil) and (FEdits[b].Kind = ueChanged) then
-               carry := carry + [FEdits[b].Text];      // text the user put in place of an unbound line is the user's own
          end;
       end;
-      FTrailing := JoinLines(carry, FTrailing);
    finally
       newObjects.Free;
    end;
+   var used: TArray<boolean>;
+   SetLength(used, Length(FEditor));
    result := TStringList.Create;
    for var n := 0 to High(FNew) do
    begin
       var line := FNew[n];
       var obj := FNewObjects[n];
       var b := FIdNew[n];
-      if b = ROW_NOT_FOUND then
+      var tail := '';
+      if b <> ROW_NOT_FOUND then
+         tail := FTails[b];
+      if line.Trim.IsEmpty then
+         tail := ''                    // text is never appended to blank line
+      else if tail.IsEmpty then
       begin
-         result.AddObject(line, obj);
-         continue;
-      end;
-      for var userLine in FEdits[b].Leading do
-         result.Add(userLine);
-      var changed := FBase[b] <> line;
-      case FEdits[b].Kind of
-         ueKept:
-            result.AddObject(line, obj);
-         ueAppended:
-            result.AddObject(line + FEdits[b].Text, obj);
-         ueChanged:
+         // editor line which already is this line with text appended, e.g. when generated text changed
+         // in a way previously generated code does not show (project name unknown when it was generated)
+         var rows: TArray<integer>;
+         if FUnpaired.TryGetValue(NativeInt(obj), rows) then
          begin
-            // user's version wins while generator keeps the line, or when it already is the new line with text appended
-            if not changed or Extends(FEdits[b].Text, line) then
-               result.AddObject(FEdits[b].Text, obj)
-            else
-               result.AddObject(line, obj);
-         end;
-         ueDeleted:
-         begin
-            if changed then
-               result.AddObject(line, obj);    // generator changed the line the user removed, so it is back
+            for var e in rows do
+            begin
+               if not used[e] and Extends(FEditor[e], line) then
+               begin
+                  tail := FEditor[e].Substring(line.Length);
+                  used[e] := True;
+                  break;
+               end;
+            end;
          end;
       end;
+      result.AddObject(line + tail, obj);
    end;
-   for var userLine in FTrailing do
-      result.Add(userLine);
 end;
 
 function TCodeMerger.Merge(ABaseIds, ANewIds: TObjectIds; ADetached: TDetachedLines): TStringList;
 begin
-   FindUserEdits;
+   FindTails;
    Rejoin(ANewIds, ADetached);
    FindIdentity;
    result := Emit(ABaseIds, ADetached);
 end;
 
-// Three way merge of code in editor. ABase is code as the generator produced it last time, AEditor is
-// current content of editor and ANew is freshly generated code. ABaseIds and ANewIds give project ids of
-// objects lines are bound to, so that user changes of an object which stops generating code can be kept
-// in ADetached and brought back when the object generates code again; with no ADetached they are dropped
+// Freshly generated code ANew with text the user appended to lines in editor. ABase is code as the generator
+// produced it last time and AEditor is current content of editor. ABaseIds and ANewIds give project ids of
+// objects lines are bound to, so that text appended to lines of an object which stops generating code can be
+// kept in ADetached and brought back when the object generates code again; with no ADetached it is dropped
 function MergeLines(ABase, AEditor, ANew: TStrings; ABaseIds: TObjectIds = nil; ANewIds: TObjectIds = nil;
                     ADetached: TDetachedLines = nil): TStringList;
 begin
