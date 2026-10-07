@@ -648,16 +648,20 @@ begin
       GClpbrd.Instance := nil;
       GClpbrd.UndoObject := nil;
       var mForm := Page.Form;
+      var cutBlock: TBlock := nil;
       try
          menuItem.OnClick(menuItem);
          mForm.pmPages.PopupComponent := Self;
          mForm.miPaste.OnClick(mForm.miPaste);
       finally
+         if (not shiftPressed) and (GClpbrd.UndoObject = srcBlock) then
+            cutBlock := srcBlock;          // moved block was cut and its copy pasted, and it is not to be undone
          GClpbrd.Instance := inst;
          GClpbrd.UndoObject := uobj;
          if not shiftPressed then
             srcBlock.TopParentBlock.UnLockDrawing;
       end;
+      cutBlock.Free;
    end;
 end;
 
