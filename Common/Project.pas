@@ -54,6 +54,7 @@ type
       function GetIWinControlComponent(AHandle: THandle): IWinControl;
       procedure RefreshZOrder;
       procedure ExportPagesToXML(ANode: IXMLNode);
+      procedure ReserveSavedIds(ANode: IXMLNode);
       function GetSelectList(ANode: IXMLNode; const ALabel, ANodeName: string; const ANodeName2: string = ''): TStringList;
       function GetComponents<T: class>(AComparer: IComparer<T> = nil): IEnumerable<T>;
       function GetIComponents<I: IInterface>(AComparer: IComparer<TComponent> = nil): IEnumerable<I>; overload;
@@ -343,6 +344,28 @@ begin
    end;
 end;
 
+// Objects created while project is loaded (e.g. block statements) get ids which are not saved, so they
+// must not take ids saved in the file for objects loaded later; otherwise those objects would get new
+// ids and lines of code editor saved with their ids would be bound to wrong objects
+procedure TProject.ReserveSavedIds(ANode: IXMLNode);
+begin
+   if ANode = nil then
+      Exit;
+   var id := GetNodeAttrInt(ANode, ID_ATTR, ID_UNDEFINED);
+   if id >= FNextObjectId then
+      FNextObjectId := id + 1;
+   id := GetNodeAttrInt(ANode, BRANCH_TEXT_ATTR, ID_UNDEFINED);
+   if id >= FNextObjectId then
+      FNextObjectId := id + 1;
+   var child := ANode.FirstChild;
+   while child <> nil do
+   begin
+      if child.NodeType = ELEMENT_NODE then
+         ReserveSavedIds(child);
+      child := child.NextSibling;
+   end;
+end;
+
 procedure TProject.UnRegister(AObject: TObject);
 begin
    var idx := FObjectIds.IndexOfObject(AObject);
@@ -474,6 +497,8 @@ begin
    var ver := GetNodeAttrStr(ANode, APP_VERSION_ATTR, '');
    if TInfra.CompareWithAppVersion(ver) > 0 then
       TInfra.ShowWarningBox('OldVerMsg', [ver]);
+
+   ReserveSavedIds(ANode);
 
    var s := if SameText(langName, GInfra.TemplateLang.Name) then 'ChangeLngNone' else 'ChangeLngAsk';
 

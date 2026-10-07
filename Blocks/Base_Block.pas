@@ -2167,6 +2167,11 @@ begin
             node := FindNode(branchNode, 'y');
             var hy := if node <> nil then StrToIntDef(node.Text, 0) else 0;
             AddBranch(Point(hx, hy), GetNodeAttrInt(branchNode, ID_ATTR), GetNodeAttrInt(branchNode, BRANCH_TEXT_ATTR, ID_UNDEFINED));
+         end
+         else
+         begin
+            var br := GetBranch(idx);     // created by constructor, so it gets its saved id only now
+            br.FId := GProject.Register(br, GetNodeAttrInt(branchNode, ID_ATTR, ID_UNDEFINED));
          end;
          var node := FindNode(branchNode, BLOCK_TAG);
          if node <> nil then
