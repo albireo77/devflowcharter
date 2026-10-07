@@ -127,6 +127,8 @@ end;
 
 destructor TTabComponent.Destroy;
 begin
+   if Self = GClpbrd.UndoObject then
+      GClpbrd.UndoObject := nil;
    GProject.UnRegister(Self);
    inherited Destroy;
 end;

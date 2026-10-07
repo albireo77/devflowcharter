@@ -121,6 +121,8 @@ end;
 
 destructor TComment.Destroy;
 begin
+   if Self = GClpbrd.Instance then
+      GClpbrd.Instance := nil;        // e.g. copied comment freed with its page
    Hide;
    FPage.Box.SetScrollBars;
    if GProject.HeaderComment = Self then

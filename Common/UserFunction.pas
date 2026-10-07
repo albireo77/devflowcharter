@@ -179,6 +179,8 @@ end;
 
 destructor TUserFunction.Destroy;
 begin
+   if Self = GClpbrd.UndoObject then
+      GClpbrd.UndoObject := nil;      // e.g. removed function freed with the page its body is on
    FBody.Free;
    FBody := nil;
    FHeader.Free;
