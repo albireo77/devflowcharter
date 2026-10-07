@@ -1175,9 +1175,10 @@ begin
       var lines := TStringList.Create;
       try
          exportable.ExportCode(lines);
-         var pos := memCodeEditor.PixelsToRowColumn(X, Y);
+         var pos := memCodeEditor.DisplayToBufferPos(memCodeEditor.PixelsToRowColumn(X, Y));
+         var row := Min(pos.Line - 1, memCodeEditor.Lines.Count);   // dropped below last line
          for var i := 0 to lines.Count-1 do
-            memCodeEditor.Lines.Insert(pos.Row + i - 1, StringOfChar(SPACE_CHAR, pos.Column - 1) + lines.Strings[i]);
+            memCodeEditor.Lines.Insert(row + i, StringOfChar(SPACE_CHAR, pos.Char - 1) + lines.Strings[i]);
       finally
          lines.Free;
          memCodeEditor.EndUpdate;
