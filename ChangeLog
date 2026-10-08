@@ -1,3 +1,7 @@
+12.6 [08-10-2026]
+- Code Editor: allow generating code with or without retaining user changes
+- numerous fixes from Claude Code
+
 12.5 [05-10-2026]
 - Code Editor: retain user changes in code when generating or updating code from flowchart
 
