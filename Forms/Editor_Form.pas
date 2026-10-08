@@ -942,12 +942,13 @@ begin
    end;
    if not found then
    begin
-      var libObj := TInfra.GetLibObject;
-      var i := memCodeEditor.Lines.IndexOfObject(libObj);
+      // inserted lines are bound to no object, as lines the user added, since generator may not produce them
+      // and they are to be kept when code is regenerated
+      var i := memCodeEditor.Lines.IndexOfObject(TInfra.GetLibObject);
       if i <> -1 then
       begin
          var indent := TInfra.ExtractIndentString(memCodeEditor.Lines[i]);
-         memCodeEditor.Lines.InsertObject(i, indent + libEntry, libObj);
+         memCodeEditor.Lines.Insert(i, indent + libEntry);
       end
       else if GProject.LibSectionOffset >= 0 then
       begin
@@ -956,15 +957,15 @@ begin
             var lines := TStringList.Create;
             try
                lines.Text := GInfra.CurrentLang.LibTemplate;
-               TInfra.InsertTemplateLines(lines, PRIMARY_PLACEHOLDER, libEntry, libObj);
+               TInfra.InsertTemplateLines(lines, PRIMARY_PLACEHOLDER, libEntry);
                for var a := lines.Count-1 downto 0 do
-                  memCodeEditor.Lines.InsertObject(GProject.LibSectionOffset, lines.Strings[a], lines.Objects[a]);
+                  memCodeEditor.Lines.Insert(GProject.LibSectionOffset, lines.Strings[a]);
             finally
                lines.Free;
             end;
          end
          else
-            memCodeEditor.Lines.InsertObject(GProject.LibSectionOffset, libEntry, libObj);
+            memCodeEditor.Lines.Insert(GProject.LibSectionOffset, libEntry);
       end;
    end;
 end;

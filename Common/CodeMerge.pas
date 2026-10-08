@@ -54,6 +54,7 @@ type
       Obj: NativeInt;
       Lines: TArray<TDetachedLine>;
       Sequence: integer;               // order in which objects were detached
+      Batch: integer;                  // merge in which object was detached
       TextMatchable: boolean;          // whether a new object with the same lines may take it over
    end;
 
@@ -62,7 +63,8 @@ type
    TDetachedLines = class
    private
       FItems: TDictionary<integer, TDetachedObject>;
-      FSequence: integer;
+      FSequence,
+      FBatch: integer;
    public
       constructor Create;
       destructor Destroy; override;
@@ -324,11 +326,12 @@ begin
 end;
 
 // How well editor line fits previously generated line: 3 - the same, 2 - with text appended, 1 - changed
-// by the user (only line bound to flowchart object, which stays bound to it when changed), 0 - not at all
+// by the user (only line bound to flowchart object, which stays bound to it when changed) or the same blank
+// line (blank lines are alike, so they are paired last), 0 - not at all
 function Score(const AEditorLine, ABaseLine: string; ABound: boolean): integer;
 begin
    if AEditorLine = ABaseLine then
-      result := 3
+      result := if ABaseLine.Trim.IsEmpty then 1 else 3
    else if Extends(AEditorLine, ABaseLine) then
       result := 2
    else if ABound then
@@ -608,27 +611,47 @@ begin
       end;
       SetLength(FLeading, Length(FBase));
       FTrailing := nil;
-      var pending: TArray<string> := nil;
-      for var e := 0 to High(FEditor) do
-      begin
-         if used[e] then
+      // unpaired previously generated lines bound to no object, which the user may have moved
+      var moved := TDictionary<string, integer>.Create;
+      try
+         for var b := 0 to High(FBase) do
          begin
-            FLeading[editorBase[e]] := FLeading[editorBase[e]] + pending;
-            pending := nil;
-         end
-         else if not FEditor[e].Trim.IsEmpty then
+            var line := FBase[b].Trim;
+            if (FBaseObjects[b] = nil) and (pairs[b] = ROW_NOT_FOUND) and not line.IsEmpty then
+            begin
+               var count := 0;
+               moved.TryGetValue(line, count);
+               moved.AddOrSetValue(line, count + 1);
+            end;
+         end;
+         var pending: TArray<string> := nil;
+         for var e := 0 to High(FEditor) do
          begin
-            if FEditorObjects[e] = nil then
-               pending := pending + [FEditor[e]]     // line the user added
-            else
+            if used[e] then
+            begin
+               FLeading[editorBase[e]] := FLeading[editorBase[e]] + pending;
+               pending := nil;
+            end
+            else if FEditorObjects[e] = nil then
+            begin
+               var count := 0;
+               var line := FEditor[e].Trim;
+               if moved.TryGetValue(line, count) and (count > 0) then
+                  moved[line] := count - 1        // generated line moved by the user, regenerated in its place
+               else
+                  pending := pending + [FEditor[e]];  // line the user added
+            end
+            else if not FEditor[e].Trim.IsEmpty then
             begin
                var rows: TArray<integer> := nil;
                FUnpaired.TryGetValue(NativeInt(FEditorObjects[e]), rows);
                FUnpaired.AddOrSetValue(NativeInt(FEditorObjects[e]), rows + [e]);
             end;
          end;
+         FTrailing := pending;
+      finally
+         moved.Free;
       end;
-      FTrailing := pending;
    finally
       editorGroups.Free;
       baseGroups.Free;
@@ -700,7 +723,10 @@ begin
          for var pair in ADetached.FItems do
          begin
             var detached := pair.Value;
-            if not detached.TextMatchable or (Length(detached.Lines) <> Length(rows)) or (found and (detached.Sequence >= best.Sequence)) then
+            // the latest detached object first (e.g. block just cut by drag and drop, not one removed before
+            // with the same lines), objects detached in the same merge in their order
+            if not detached.TextMatchable or (Length(detached.Lines) <> Length(rows)) or
+               (found and ((detached.Batch < best.Batch) or ((detached.Batch = best.Batch) and (detached.Sequence >= best.Sequence)))) then
                continue;
             var same := True;
             for var k := 0 to High(rows) do
@@ -870,6 +896,7 @@ begin
                detached.Obj := NativeInt(obj);
                detached.Lines := nil;
                detached.Sequence := ADetached.FSequence;
+               detached.Batch := ADetached.FBatch;
                detached.TextMatchable := True;
                Inc(ADetached.FSequence);
             end;
@@ -930,6 +957,8 @@ end;
 
 function TCodeMerger.Merge(ABaseIds, ANewIds: TObjectIds; ADetached: TDetachedLines): TStringList;
 begin
+   if ADetached <> nil then
+      Inc(ADetached.FBatch);
    FindTails;
    Rejoin(ANewIds, ADetached);
    FindIdentity;
