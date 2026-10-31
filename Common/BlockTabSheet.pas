@@ -187,7 +187,7 @@ procedure TScrollBoxEx.PerformFormsRepaint;
 begin
    if GSettings.EnableDBuffering or NavigatorForm.Visible then
       Repaint;
-   NavigatorForm.Invalidate;
+   NavigatorForm.RepaintIndicator;
 end;
 
 procedure TScrollBoxEx.BoxMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
