@@ -308,6 +308,7 @@ begin
       edtVar.Width := w;
       PutTextControls;
    end;
+   MyOnChange(Sender);
 end;
 
 function TForDoBlock.FillCodedTemplate(const ALangId: string): string;

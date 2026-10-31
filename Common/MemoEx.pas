@@ -24,7 +24,7 @@ unit MemoEx;
 interface
 
 uses
-   Vcl.StdCtrls, Vcl.Forms, System.Classes, System.UITypes, Vcl.Controls, OmniXML, CommonTypes;
+   WinApi.Messages, Vcl.StdCtrls, Vcl.Forms, System.Classes, System.UITypes, Vcl.Controls, OmniXML, CommonTypes;
 
 type
 
@@ -39,6 +39,7 @@ type
          procedure UpdateHScroll;
          procedure SetHasVScroll(AValue: boolean);
          procedure SetHasHScroll(AValue: boolean);
+         procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
       protected
          procedure SetWordWrap(AValue: boolean);
          procedure SetScrollBars(AValue: TScrollStyle);
@@ -65,12 +66,13 @@ type
          property Color;
          property BorderStyle;
          property WordWrap write SetWordWrap;
+         property Alignment write SetAlignment;
    end;
 
 implementation
 
 uses
-   WinApi.Windows, WinApi.Messages, System.StrUtils, System.SysUtils, System.Rtti,
+   WinApi.Windows, System.StrUtils, System.SysUtils, System.Rtti,
    OmniXMLUtils, Infrastructure, Navigator_Form;
 
 constructor TMemoEx.Create(AOwner: TComponent);
@@ -153,6 +155,15 @@ begin
    if AValue and not WordWrap then
       SetHasHScroll(False);
    inherited SetWordWrap(AValue);
+   if NavigatorForm.InvalidateIndicator then
+      NavigatorForm.Invalidate;
+end;
+
+procedure TMemoEx.CMFontChanged(var Msg: TMessage);
+begin
+   inherited;
+   if NavigatorForm.InvalidateIndicator then
+      NavigatorForm.Invalidate;
 end;
 
 procedure TMemoEx.SetAlignment(AValue: TAlignment);
@@ -162,6 +173,8 @@ begin
       var pos := TInfra.GetScrolledPos(Self);
       inherited SetAlignment(AValue);
       Perform(EM_LINESCROLL, pos.X, pos.Y);
+      if NavigatorForm.InvalidateIndicator then
+         NavigatorForm.Invalidate;
    end;
 end;
 
@@ -182,6 +195,8 @@ begin
       var pos := TInfra.GetScrolledPos(Self);
       BorderStyle := AStyle;
       Perform(EM_LINESCROLL, pos.X, pos.Y);
+      if NavigatorForm.InvalidateIndicator then
+         NavigatorForm.Invalidate;
    end;
 end;
 

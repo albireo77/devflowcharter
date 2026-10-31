@@ -1004,6 +1004,7 @@ begin
    for var comment in GetPinComments do
       comment.Font.Style := AStyle;
    Refresh;
+   NavigatorForm.Invalidate;
 end;
 
 procedure TBlock.SetFontSize(ASize: integer);
@@ -1023,6 +1024,7 @@ begin
       comment.Font.Size := ASize;
    PutTextControls;
    Refresh;
+   NavigatorForm.Invalidate;
 end;
 
 function TBlock.GetFont: TFont;
