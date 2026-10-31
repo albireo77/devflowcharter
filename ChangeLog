@@ -1,3 +1,6 @@
+12.7 [31-10-2026]
+- Navigator: no more disappearing lines
+
 12.6 [08-10-2026]
 - Code Editor: allow generating code with or without retaining user changes
 - numerous fixes from Claude Code
