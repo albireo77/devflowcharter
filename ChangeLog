@@ -1,3 +1,11 @@
+12.8 [05-11-2026]
+- Code Editor: reduce space between fold/unfold icons and code, same at every screen scaling
+- Code Editor: fix searching up not finding text right before cursor
+- Code Editor: Replace changes selected text only if it matches searched text and then moves to next match
+- Code Editor: Find/Replace no longer overwrites clipboard contents
+- Code Editor: Replace All can be undone in one step
+- Project Explorer: highlighting selected item no longer freezes application for a moment
+
 12.7 [31-10-2026]
 - Navigator: no more disappearing lines
 
