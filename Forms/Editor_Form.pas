@@ -844,36 +844,41 @@ end;
 
 procedure TEditorForm.ReplaceDialogReplace(Sender: TObject);
 begin
-   var txt := '';
-   Clipboard.Open;
-   try
-      if Clipboard.HasFormat(CF_TEXT) then
-         txt := Clipboard.AsText;
-      Clipboard.AsText := ReplaceDialog.ReplaceText;
-      if frReplaceAll in ReplaceDialog.Options then
-      begin
-         memCodeEditor.SelStart := 0;
-         while True do
+   var findText := ReplaceDialog.FindText;
+   var replaceText := ReplaceDialog.ReplaceText;
+   var matchCase := frMatchCase in ReplaceDialog.Options;
+   if findText.IsEmpty then
+      Exit;
+   if frReplaceAll in ReplaceDialog.Options then
+   begin
+      // searched text is one line, so each line is searched on its own; replacing all is one undo step
+      memCodeEditor.BeginUndoBlock;
+      try
+         for var line := 0 to memCodeEditor.Lines.Count-1 do
          begin
-            var i := TInfra.PosText(ReplaceDialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart+1, frMatchCase in ReplaceDialog.Options);
-            if i = 0 then
-               Exit;
-            memCodeEditor.SelStart := i - 1;
-            memCodeEditor.SelLength := ReplaceDialog.FindText.Length;
-            memCodeEditor.ClearSelection;
-            memCodeEditor.PasteFromClipboard;
-            memCodeEditor.SelStart := i - 1 + ReplaceDialog.ReplaceText.Length;   // next search starts right after the replacement
+            var col := 1;
+            while True do
+            begin
+               var i := TInfra.PosText(findText, memCodeEditor.Lines[line], col, matchCase);
+               if i = 0 then
+                  break;
+               memCodeEditor.BlockBegin := BufferCoord(i, line+1);
+               memCodeEditor.BlockEnd := BufferCoord(i + findText.Length, line+1);
+               memCodeEditor.SelText := replaceText;
+               col := i + replaceText.Length;   // next search starts right after the replacement
+            end;
          end;
+      finally
+         memCodeEditor.EndUndoBlock;
       end;
-      if memCodeEditor.SelAvail then
-      begin
-         memCodeEditor.ClearSelection;
-         memCodeEditor.PasteFromClipboard;
-      end;
-   finally
-      if not txt.IsEmpty then
-         Clipboard.AsText := txt;
-      Clipboard.Close;
+   end
+   else
+   begin
+      // replace selection only if it is the searched text, then go to the next match
+      var selected := memCodeEditor.SelText;
+      if (selected.Length = findText.Length) and (TInfra.PosText(findText, selected, 1, matchCase) = 1) then
+         memCodeEditor.SelText := replaceText;
+      ReplaceDialogFind(ReplaceDialog);
    end;
 end;
 
@@ -896,25 +901,24 @@ begin
    dialog := TFindDialog(Sender);
    len := dialog.FindText.Length;
    memCodeEditor.Repaint;
+   var txt := memCodeEditor.Text;
    if frDown in dialog.Options then
-      i := TInfra.PosText(dialog.FindText, memCodeEditor.Text, memCodeEditor.SelStart + memCodeEditor.SelLength + 1, frMatchCase in dialog.Options)
+      i := TInfra.PosText(dialog.FindText, txt, memCodeEditor.SelStart + memCodeEditor.SelLength + 1, frMatchCase in dialog.Options)
    else
    begin
+      // last match starting before selection
+      var selStart := memCodeEditor.SelStart;
+      var found := 0;
       startPos := 1;
       while True do
       begin
-         i := TInfra.PosText(dialog.FindText, memCodeEditor.Text, startPos, frMatchCase in dialog.Options);
-         if (i > 0) and (i <= memCodeEditor.SelStart) then
-            startPos := i + len
-         else
-         begin
-            if startPos > 1 then
-               i := startPos - len;
-            if i >= memCodeEditor.SelStart then
-               i := 0;
+         i := TInfra.PosText(dialog.FindText, txt, startPos, frMatchCase in dialog.Options);
+         if (i = 0) or (i > selStart) then
             break;
-         end;
+         found := i;
+         startPos := i + len;
       end;
+      i := found;
    end;
    if i > 0 then
    begin
