@@ -281,7 +281,7 @@ implementation
 uses
    System.StrUtils, Vcl.Menus, System.Types, System.Math, System.Rtti, System.TypInfo,
    System.Character, System.SysUtils, System.UITypes, Main_Block, Return_Block, Infrastructure,
-   BlockFactory, XMLProcessor, Navigator_Form, FlashThread, OmniXMLUtils, Constants;
+   BlockFactory, XMLProcessor, Navigator_Form, Flash, OmniXMLUtils, Constants;
 
 type
    TControlHack = class(TControl);
@@ -1703,7 +1703,7 @@ begin
       end;
       AInfo.FocusEditCallBack := UpdateEditor;
       AInfo.FocusEditForm := lPage.Form;
-      TFlashThread.Create(AInfo);
+      TFlash.Start(AInfo);
    end;
    lPage.Box.ScrollInView(scrollTo);
    lPage.Box.Repaint;

@@ -46,7 +46,7 @@ uses
   Toolbox_Form in 'Forms\Toolbox_Form.pas' {ToolboxForm},
   Explorer_Form in 'Forms\Explorer_Form.pas' {ExplorerForm},
   Pascal_Parser in 'Parsers\Pascal\Pascal_Parser.pas',
-  FlashThread in 'Common\FlashThread.pas',
+  Flash in 'Common\Flash.pas',
   History in 'Common\History.pas',
   XMLProcessor in 'Common\XMLProcessor.pas',
   CodeMerge in 'Common\CodeMerge.pas',
